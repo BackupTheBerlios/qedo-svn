@@ -69,6 +69,12 @@ private:
         throw(CPFReadException);
 
 	/**
+	 * handle configuration (COACH extension)
+	 */
+    Components::ConfigValue* configuration (DOMElement*)
+        throw(CPFReadException);
+
+	/**
 	 * handle defaultvalue
 	 */
 	std::string defaultvalue (DOMElement*)
@@ -134,10 +140,17 @@ public:
 	virtual ~CPFReader();
 
 	/**
-	 * provides the list of config values
+	 * provides the list of config values for attribute configuration
 	 * \return The list of ConfigValue.
 	 */
 	Components::ConfigValues* readCPF(std::string descriptor)
+		throw(CPFReadException);
+
+	/**
+	 * provides the list of config values for initial configuration
+	 * \return The list of ConfigValue.
+	 */
+	Components::ConfigValues* readConf(std::string descriptor)
 		throw(CPFReadException);
 };
 
