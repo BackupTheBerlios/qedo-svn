@@ -18,12 +18,20 @@ AC_ARG_WITH(mico,
 AC_SUBST(MICODIR)
 
 AC_ARG_ENABLE(optimize,
- [  --disable-optimize      do not use -O2 to compile],
+ [  --disable-optimize      do not use -O2 to compile (default on)],
  use_opt=$enableval, use_opt=yes)
 
 AC_ARG_ENABLE(debug,
- [  --enable-debug          use -g to compile],
+ [  --enable-debug          use -g to compile (default off)],
  use_debug=$enableval, use_debug=no)
+
+AC_ARG_ENABLE(streams,
+ [  --enable-streams          compile stream support in container (default on)],
+ use_streams=$enableval, use_streams=yes)
+
+AC_ARG_ENABLE(qos,
+ [  --enable-qos          compile QoS support in container (default off)],
+ use_qos=$enableval, use_qos=no)
 
 # Checks for programs.
 AC_PROG_CXX
@@ -118,6 +126,13 @@ if test X"$use_debug" != Xno; then
   CFLAGS="$CONF_DEBUG_FLAGS $CFLAGS"
 fi
 
+if test X"$use_streams" != Xyes; then
+	AC_DEFINE(_QEDO_NO_STREAMS)
+fi
+
+if test X"$use_qos" != Xno; then
+	AC_DEFINE(_QEDO_QOS)
+fi
 
 # Checks for header files.
 AC_HEADER_STDC
