@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=ComponentContainer - Win32 Debug_tao
+CFG=ComponentContainer - Win32 Release_orbacus
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,7 +13,7 @@ CFG=ComponentContainer - Win32 Debug_tao
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "ComponentContainer.mak" CFG="ComponentContainer - Win32 Debug_tao"
+!MESSAGE NMAKE /f "ComponentContainer.mak" CFG="ComponentContainer - Win32 Release_orbacus"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
@@ -21,6 +21,7 @@ CFG=ComponentContainer - Win32 Debug_tao
 !MESSAGE "ComponentContainer - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "ComponentContainer - Win32 Debug_orbacus" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "ComponentContainer - Win32 Debug_tao" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ComponentContainer - Win32 Release_orbacus" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -136,6 +137,34 @@ LINK32=link.exe
 # ADD BASE LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 # ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 
+!ELSEIF  "$(CFG)" == "ComponentContainer - Win32 Release_orbacus"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "ComponentContainer___Win32_Release_orbacus"
+# PROP BASE Intermediate_Dir "ComponentContainer___Win32_Release_orbacus"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "Release_orbacus"
+# PROP Intermediate_Dir "Release_orbacus"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "$(ORBACUS)\include" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "VC6" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "$(ORBACUS)\include" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "VC6" /YX /FD /c
+# SUBTRACT CPP /Fr
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x407 /d "_DEBUG"
+# ADD RSC /l 0x407 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 jtc.lib ob.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+
 !ENDIF 
 
 # Begin Target
@@ -144,6 +173,7 @@ LINK32=link.exe
 # Name "ComponentContainer - Win32 Debug"
 # Name "ComponentContainer - Win32 Debug_orbacus"
 # Name "ComponentContainer - Win32 Debug_tao"
+# Name "ComponentContainer - Win32 Release_orbacus"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstance.cpp,v 1.1 2002/10/07 07:17:02 tom Exp $";
+static char rcsid[] = "$Id: ComponentInstance.cpp,v 1.2 2002/11/28 07:58:43 tom Exp $";
 
 #include "ComponentInstance.h"
 #include "Output.h"
@@ -78,7 +78,7 @@ ComponentInstance::operator= (const ComponentInstance& component_instance)
 
 ComponentInstance::~ComponentInstance()
 {
-	NORMAL_OUT ("ComponentInstance: Destructor called");
+	DEBUG_OUT ("ComponentInstance: Destructor called");
 
 	ccm_object_executor_->_remove_ref();
 }

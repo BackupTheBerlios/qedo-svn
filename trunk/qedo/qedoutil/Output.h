@@ -84,7 +84,7 @@ extern CONTAINERDLL_API JTCMonitor* container_monitor;
 }
 
 
-
+#ifdef _DEBUG
 // Debug stuff
 #define DEBUG_OUT(x) \
 { \
@@ -105,8 +105,23 @@ extern CONTAINERDLL_API JTCMonitor* container_monitor;
 	SYNC_WITH_CONTAINER \
 	std::cout << x << y << z << std::endl; \
 }
+#else
+
+// no Debug output
+#define DEBUG_OUT(x) \
+{ \
+}
 
 
+#define DEBUG_OUT2(x,y) \
+{ \
+}
+
+
+#define DEBUG_OUT3(x,y,z) \
+{ \
+}
+#endif
 } // namespace Qedo
-
+ 
 #endif

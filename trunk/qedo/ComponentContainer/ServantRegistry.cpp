@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServantRegistry.cpp,v 1.1 2002/10/07 07:17:02 tom Exp $";
+static char rcsid[] = "$Id: ServantRegistry.cpp,v 1.2 2002/11/28 07:58:43 tom Exp $";
 
 #include "GlobalHelpers.h"
 #include "ServantRegistry.h"
@@ -66,7 +66,7 @@ ServantEntry::operator= (const ServantEntry& servant_entry)
 
 ServantEntry::~ServantEntry()
 {
-	NORMAL_OUT ("ServantEntry: Destructor called");
+	DEBUG_OUT ("ServantEntry: Destructor called");
 
 	servant_->_remove_ref();
 }
@@ -112,7 +112,7 @@ ServantFactoryEntry::operator= (const ServantFactoryEntry& servant_factory_entry
 
 ServantFactoryEntry::~ServantFactoryEntry()
 {
-	NORMAL_OUT ("ServantFactoryEntry: Destructor called");
+	DEBUG_OUT ("ServantFactoryEntry: Destructor called");
 
 	servant_factory_->_remove_ref();
 }
