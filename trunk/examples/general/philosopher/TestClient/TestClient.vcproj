@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(QEDO)/ComponentIDL/Debug/ComponentIDL.lib CosNamingd.lib obd.lib"
-				OutputFile="../../../Runtime/tc.exe"
+				OutputFile="../../../../Runtime/tc.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"

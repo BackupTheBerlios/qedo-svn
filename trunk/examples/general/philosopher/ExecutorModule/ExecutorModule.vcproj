@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib"
-				OutputFile="../../../Runtime/Example1E.dll"
+				OutputFile="../../../../Runtime/philosopherE.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)\ComponentIDL\Debug;$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
