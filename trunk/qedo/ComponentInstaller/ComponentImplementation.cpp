@@ -24,7 +24,7 @@
 #include "CSDReader.h"
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.13 2003/09/09 12:04:36 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.14 2003/09/09 17:34:51 boehme Exp $";
 
 
 namespace Qedo {
@@ -32,19 +32,21 @@ namespace Qedo {
 
 ComponentImplementation::ComponentImplementation
 (ComponentImplementationData data, std::string installationDirectory, std::string package)
-: data_(data), package_(package), installation_count_(0)
 {
-	installation_dir_ = getPath(installationDirectory) + data.uuid;
-    installation_path_ = getPath(installation_dir_);
+	data_ = data;
 	build_dir_ = installation_path_ + "build";
-    build_path_ = getPath(build_dir_);
+	build_path_ = getPath(build_dir_);
+	installation_dir_ = getPath(installationDirectory) + data.uuid;
+	installation_path_ = getPath(installation_dir_);
+	package_ = package;
+	installation_count_ = 0;
 }
 
 
 ComponentImplementation::ComponentImplementation (ComponentImplementationData data)
-: data_(data), package_(""), installation_count_(1),
-  installation_dir_(""), installation_path_(""), build_dir_(""), build_path_("")
 {
+	data_=data;
+	installation_count_=1;
 }
 
 
