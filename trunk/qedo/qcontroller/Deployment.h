@@ -6,6 +6,7 @@
 #include "wx/button.h"
 #include "wx/textctrl.h"
 #include "wx/listctrl.h"
+#include "wx/filedlg.h"
 
 #include "ComponentDeployment.h"
 
@@ -17,17 +18,28 @@ public:
                        long style);
 
 	void OnDeployButton(wxCommandEvent& WXUNUSED(event));
+	void OnFileChoiseButton(wxCommandEvent& WXUNUSED(event));
+	void OnUndeployButton(wxCommandEvent& WXUNUSED(event));
 
 private:
+	struct r_assemblies{
+		int id;
+		Qedo::ComponentDeployment* reference;
+	};
 
-	std::list < Qedo::ComponentDeployment* > running_assemblies_;
-
+	typedef std::list < r_assemblies > running_assemblies_;
+	running_assemblies_ running_assemblies;
+	long assemblies_counter_;
+	
 	CORBA::ORB_var orb; 
 	wxTextCtrl* assembly_name_;
 	wxButton* file_choice_btn;
 	wxButton* deploy_btn;
 	wxListCtrl* running_ass_list;
 	wxButton* undeploy_btn;
+	wxFileDialog* file_dialog;
+	
+
     DECLARE_EVENT_TABLE()
 
 };

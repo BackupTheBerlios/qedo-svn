@@ -2,11 +2,16 @@
 #include "wx/sizer.h"
 #include "wx/stattext.h"
 #include "wx/statline.h"
+#include "wx/log.h"
+//#include "MainFrame.h"
+
 
 
 
 BEGIN_EVENT_TABLE(Deployment, wxPanel)
    EVT_BUTTON(ID_DEPLOY_BUTTON, Deployment::OnDeployButton)
+   EVT_BUTTON(ID_FILE_CHOICE_BUTTON, Deployment::OnFileChoiseButton)
+   EVT_BUTTON(ID_UNDEPLOY_BUTTON, Deployment::OnUndeployButton)
  
 END_EVENT_TABLE()
 
@@ -59,42 +64,82 @@ Deployment::Deployment(wxWindow *parent, const wxWindowID id,
     wxButton* undeploy_btn = new wxButton( this, ID_UNDEPLOY_BUTTON, _T("Undeploy"), wxDefaultPosition, wxDefaultSize, 0 );
     item11->Add(undeploy_btn, 0, wxALIGN_LEFT|wxALL, 5);
 
-		//
+	assemblies_counter_=0;
+	
+
+}
+
+void Deployment::OnFileChoiseButton(wxCommandEvent& WXUNUSED(event))
+{
+	wxFileDialog* file_dialog=new wxFileDialog(this,"Choose a file","","","*.zip",0,wxDefaultPosition);
+	int t=file_dialog->ShowModal();
+	if (t==wxID_OK) {
+		assembly_name_->Clear();
+		assembly_name_->WriteText(file_dialog->GetPath());
+	}
+	file_dialog->~wxFileDialog();
+
+}
+
+void 
+Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
+
+{
+	//
 	// init ORB
 	//
+	
 	int dummy=0;
 	orb = CORBA::ORB_init (dummy, 0);
 
 	//
 	// Register valuetype factories
 	//
-	CORBA::ValueFactoryBase* factory;
+	 CORBA::ValueFactoryBase* factory;
+
+	
+
+
 	factory = new Qedo::CookieFactory_impl();
     orb -> register_value_factory ( "IDL:omg.org/Components/Cookie:1.0", factory );
-
-}
-
-void 
-Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
-{
 	std::string package;
-//	package = "file:///c:/devel/berlios_cvs/Main_test/examples/general/hello_world/hello_win32_assembly.zip";
-
-	package = assembly_name_->GetValue();
+	
+	package="file:///";
+	wxString tmp_string;
+	
+	tmp_string=assembly_name_->GetValue();
+	tmp_string.Replace ("\\","/");
+	
+	package.append( tmp_string  );
 
 
 	//
 	// deploy the assembly
 	//
+
+	
 	Qedo::ComponentDeployment *current_assembly = new Qedo::ComponentDeployment(package);
 	try
 	{
-		std::cerr << "..... deploy " << package << std::endl;
+		
 		current_assembly->deploy();
+		assembly_name_->Clear();
+
+		// update internal List of pointers
+		r_assemblies new_r_assembly;
+		new_r_assembly.id=assemblies_counter_;
+		new_r_assembly.reference=current_assembly;
+
+		running_assemblies.push_back(new_r_assembly);
+
+		// update running assemblies list
+		running_ass_list->InsertItem(assemblies_counter_,package.c_str());
+		assemblies_counter_++;
+		
 	}
 	catch(Qedo::ComponentDeployment::DeploymentFailure&)
 	{
-		std::cerr << "Cannot deploy " << package << std::endl;
+		wxLogMessage ("Cannot deploy ");
 	//	orb->destroy();
 	//	exit(1);
 	}
@@ -104,14 +149,74 @@ Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
 	//	orb->destroy();
 	//	exit(1);
 	}
+	
 
-	// update internal List of pointers
-	running_assemblies_.push_back(current_assembly);
+	
+	
 
-	// update running assemblies list
-	running_ass_list->InsertItem(running_assemblies_.size(),package.c_str());
+	
+	
+}
 
-	// this code has to be moved
+void Deployment::OnUndeployButton(wxCommandEvent& WXUNUSED(event))
+{	
+	long item=-1;
+	for(int t=0;t<=running_ass_list->GetSelectedItemCount();t++)
+	{
+		item=running_ass_list->GetNextItem(item,
+										   wxLIST_NEXT_ALL,
+										   wxLIST_STATE_SELECTED);
+		//wxLogMessage("%ld und %ld",item,running_ass_list->GetSelectedItemCount());
+		if (item!=-1)
+			break;
+
+	}
+	//wxLogMessage("%ld",item);
+
+	
+	r_assemblies tmp_a;
+	std::list< r_assemblies >::iterator it = running_assemblies.begin();
+	
+	for (;it!=running_assemblies.end();it++)
+	{
+		tmp_a=(*it);
+		
+		if (tmp_a.id==item) {
+			//wxLogMessage ("%ld ",tmp_a.id) ;
+			Qedo::ComponentDeployment *current_assembly=tmp_a.reference;
+
+			try
+			{
+				current_assembly->undeploy();
+				running_ass_list->DeleteItem(item);
+				assemblies_counter_--;
+
+			}
+			catch(Qedo::ComponentDeployment::DeploymentFailure&)
+			{
+				wxLogMessage ("Cannot undeploy ") ;
+	
+			}
+			catch(CORBA::SystemException&)
+			{
+				wxLogMessage ("Cannot undeploy ") ;
+	
+			}
+
+			
+		}
+
+
+	}
+
+
+	
+	//wxListItem listitem = running_ass_list->GetSelection();
+
+	//running_ass_list->
+	/*
+	
+
 	try
 	{
 		current_assembly->undeploy();
@@ -128,7 +233,5 @@ Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
 	//	orb->destroy();
 	//	exit(1);
 	}
-
-
+	*/
 }
-
