@@ -65,6 +65,7 @@ class CONTAINERDLL_API HomeServantBase : public PortableServer::RefCountServantB
 #ifndef _QEDO_NO_QOS
 	/** to access the servant_locator */
 	friend class ExtensionContext;
+	friend class CCMContext;
 
 	friend class ServerInterceptorDispatcher;
 #endif
