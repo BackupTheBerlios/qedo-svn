@@ -20,7 +20,8 @@
 
 .NOTPARALLEL:
 
-SUBDIRS = general/hello_world
+SUBDIRS = general/hello_world \
+	streams/simple
 
 all: $(SUBDIRS:%=%-all)
 
