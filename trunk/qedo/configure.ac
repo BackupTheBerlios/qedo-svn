@@ -124,6 +124,8 @@ AC_SUBST(XERCES_INCLUDES)
 # do enable debug
 CONF_OPT_FLAGS="-O2"
 CONF_DEBUG_FLAGS="-g -D_DEBUG"
+PICFLAGS="-fPIC"
+AC_SUBST(PICFLAGS)
 
 changequote(<<, >>)
 CXXFLAGS=`echo " $CXXFLAGS " | sed -e 's/ -g / /g' -e 's/ -O[0-9]* / /g'`

@@ -32,7 +32,7 @@ SUFFIXES += .so
 # rule for shared libraries
 
 %.so:
-	${CXX} -shared ${LD_SHARED_FLAGS} -o $@ $^ $(LIBS)
+	${CXX} -shared @PICFLAGS@ ${LD_SHARED_FLAGS} -o $@ $^ $(LIBS)
 
 CXXFLAGS +=
 
