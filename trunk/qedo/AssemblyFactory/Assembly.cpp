@@ -439,7 +439,7 @@ throw(Components::CreateFailure)
 		//
 		// property configuration
 		//
-		if( (*iter).comp_prop != "" )
+		if( (*iter).comp_prop.length())
 		{
 			CPFReader reader;
 			Components::ConfigValues_var config = reader.readCPF( (*iter).comp_prop );
@@ -480,7 +480,7 @@ throw(Components::CreateFailure)
     Components::CCMHome_var home;
 
 	// extension, existing home can be referenced
-	if(data.file != "")
+	if(data.file.length())
 	{
 		//
 		// create home
@@ -545,7 +545,7 @@ throw(Components::CreateFailure)
 	//
 	// registerwithnaming
 	//
-	if (data.naming != "")
+	if (data.naming.length())
     {
 		DEBUG_OUT2( "..... register home with naming ", data.naming );
         registerName( data.naming, home, true );
@@ -589,7 +589,7 @@ throw(Components::CreateFailure)
 		facet = (*iter).provide.name;
 		DEBUG_OUT2( ".......... provider is ", (*iter).provide.ref.name );
 		provider = getRef((*iter).provide.ref);
-		if(facet != "")
+		if(facet.length())
 		{
 			// get facet
 			DEBUG_OUT2( ".......... facet is ", facet );
