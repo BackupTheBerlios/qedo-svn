@@ -92,7 +92,9 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="zip ../HelloWorld_CallerImpl.zip -j  Debug_mico/HelloWorld_CallerImpl.dll ../HelloWorld_CallerImpl_SERVANT/Debug_mico/HelloWorld_CallerImpl_SERVANT.dll ../hello.cidl
+zip ../HelloWorld_CallerImpl.zip meta-inf/HelloWorld_CallerImpl.ccd meta-inf/HelloWorld_CallerImpl.csd"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -314,34 +316,10 @@ copy HelloWorld_CallerImpl_LOCAL.h HelloWorld_CallerImpl_LOCAL_skel.h
 			Name="xml"
 			Filter="ccd;csd">
 			<File
-				RelativePath="HelloWorld_CallerImpl.ccd">
+				RelativePath="meta-inf\HelloWorld_CallerImpl.ccd">
 			</File>
 			<File
-				RelativePath="HelloWorld_CallerImpl.csd">
-				<FileConfiguration
-					Name="Debug_orbacus|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../HelloWorld_CallerImpl.zip Debug_orbacus/HelloWorld_CallerImpl.dll ../HelloWorld_CallerImpl_SERVANT/Debug_orbacus/HelloWorld_CallerImpl_SERVANT.dll HelloWorld_CallerImpl.idl HelloWorld_CallerImpl.ccd HelloWorld_CallerImpl.csd
-"
-						Outputs="HelloWorld_CallerImpl.zip"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../HelloWorld_CallerImpl.zip Debug_mico/HelloWorld_CallerImpl.dll ../HelloWorld_CallerImpl_SERVANT/Debug_mico/HelloWorld_CallerImpl_SERVANT.dll HelloWorld_CallerImpl.idl HelloWorld_CallerImpl.ccd HelloWorld_CallerImpl.csd
-"
-						Outputs="HelloWorld_CallerImpl.zip"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_tao|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../HelloWorld_CallerImpl.zip Debug_orbacus/HelloWorld_CallerImpl.dll ../HelloWorld_CallerImpl_SERVANT/Debug_orbacus/HelloWorld_CallerImpl_SERVANT.dll HelloWorld_CallerImpl.idl HelloWorld_CallerImpl.ccd HelloWorld_CallerImpl.csd
-"
-						Outputs="HelloWorld_CallerImpl.zip"/>
-				</FileConfiguration>
+				RelativePath="meta-inf\HelloWorld_CallerImpl.csd">
 			</File>
 		</Filter>
 	</Files>

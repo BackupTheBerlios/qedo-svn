@@ -92,7 +92,9 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="zip ../HelloWorld_CalleeImpl.zip -j  Debug_mico/HelloWorld_CalleeImpl.dll ../HelloWorld_CalleeImpl_SERVANT/Debug_mico/HelloWorld_CalleeImpl_SERVANT.dll ../hello.cidl
+zip ../HelloWorld_CalleeImpl.zip meta-inf/HelloWorld_CalleeImpl.ccd meta-inf/HelloWorld_CalleeImpl.csd"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -314,34 +316,10 @@ copy HelloWorld_CalleeImpl_LOCAL.h HelloWorld_CalleeImpl_LOCAL_skel.h
 			Name="xml"
 			Filter="ccd;csd">
 			<File
-				RelativePath="HelloWorld_CalleeImpl.ccd">
+				RelativePath="meta-inf\HelloWorld_CalleeImpl.ccd">
 			</File>
 			<File
-				RelativePath="HelloWorld_CalleeImpl.csd">
-				<FileConfiguration
-					Name="Debug_orbacus|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../HelloWorld_CalleeImpl.zip Debug_orbacus/HelloWorld_CalleeImpl.dll ../HelloWorld_CalleeImpl_SERVANT/Debug_orbacus/HelloWorld_CalleeImpl_SERVANT.dll HelloWorld_CalleeImpl.idl HelloWorld_CalleeImpl.ccd HelloWorld_CalleeImpl.csd
-"
-						Outputs="HelloWorld_CalleeImpl.zip"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../HelloWorld_CalleeImpl.zip Debug_mico/HelloWorld_CalleeImpl.dll ../HelloWorld_CalleeImpl_SERVANT/Debug_mico/HelloWorld_CalleeImpl_SERVANT.dll HelloWorld_CalleeImpl.idl HelloWorld_CalleeImpl.ccd HelloWorld_CalleeImpl.csd
-"
-						Outputs="HelloWorld_CalleeImpl.zip"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_tao|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../HelloWorld_CalleeImpl.zip Debug_orbacus/HelloWorld_CalleeImpl.dll ../HelloWorld_CalleeImpl_SERVANT/Debug_orbacus/HelloWorld_CalleeImpl_SERVANT.dll HelloWorld_CalleeImpl.idl HelloWorld_CalleeImpl.ccd HelloWorld_CalleeImpl.csd
-"
-						Outputs="HelloWorld_CalleeImpl.zip"/>
-				</FileConfiguration>
+				RelativePath="meta-inf\HelloWorld_CalleeImpl.csd">
 			</File>
 		</Filter>
 	</Files>
