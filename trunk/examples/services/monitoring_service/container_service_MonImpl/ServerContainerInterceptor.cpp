@@ -2,9 +2,14 @@
 
 namespace Qedo {
 
-ServerContainerInterceptor::ServerContainerInterceptor();
+ServerContainerInterceptor::ServerContainerInterceptor ()
+{
 
-ServerContainerInterceptor::~ServerContainerinterceptor();
+}
+
+ServerContainerInterceptor::~ServerContainerInterceptor ()
+{
+}
 
 void
 ServerContainerInterceptor::receive_request (::PortableInterceptor::ServerRequestInfo_ptr info)
@@ -13,12 +18,14 @@ ServerContainerInterceptor::receive_request (::PortableInterceptor::ServerReques
 }
 
 void
-ServerContainerInterceptor::send_reply (::PortableInterceptor::ServerRequestInfo_ptr info) {
+ServerContainerInterceptor::send_reply (::PortableInterceptor::ServerRequestInfo_ptr info)
+{
 
 }
 
 void
-ServerContainerInterceptor::send_system_exception (::PortableInterceptor::ServerRequestInfo_ptr info) {
+ServerContainerInterceptor::send_system_exception (::PortableInterceptor::ServerRequestInfo_ptr info)
+{
 
 }
 

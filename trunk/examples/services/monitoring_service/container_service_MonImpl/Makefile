@@ -4,11 +4,12 @@ CIDL_FILES = ../monitoring_service.cidl
 
 IDL_FILES = container_service_MonImpl_LOCAL.idl \
 	container_service_MonImpl_EQUIVALENT.idl \
-	container_service_MonImpl_BUSINESS.idl 
+	container_service_MonImpl_BUSINESS.idl
 
 CPP_FILES = container_service_MonImpl_BUSINESS.cpp \
 	container_service_MonImpl.cpp \
-	valuetypes.cpp 
+	ServerContainerInterceptor.cpp \
+	valuetypes.cpp
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 
