@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.18 2003/07/02 22:11:45 tom Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.19 2003/07/23 16:18:19 boehme Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -30,6 +30,7 @@ static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.18 2003/07/02 22:11:45 tom
 #ifdef WIN32
 #include "objbase.h"
 #else /* Linux */
+#include <sys/types.h>
 extern "C" {
 #include "uuid/uuid.h"
 }
@@ -54,35 +55,35 @@ CCMObjectExecutor::CCMObjectExecutor (const PortableServer::ObjectId& component_
 	LPOLESTR lpolestr;
 	StringFromCLSID(guid, &lpolestr);
 	int i = wcstombs(NULL, lpolestr, 0);
-    char *buf = (char *)malloc(i);
+   char *buf = new char[i];
     wcstombs(buf, lpolestr, i);
 	// remove { and }
 	buf[i - 1] = '\0';
 	uuid_ = buf;
 	uuid_.erase(0, 1);
-	free(buf);
+	delete [] buf;
 	CoTaskMemFree(lpolestr);
 #else /* Linux */
 	uuid_t uuid;
 	char buf[38];
 	uuid_generate(uuid);
 	sprintf(buf,"%2.2X%2.2X%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X\n"
-	                ,(u_int32_t)uuid[0]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*1]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*2]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*3]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*4]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*5]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*6]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*7]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*8]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*9]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*10]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*11]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*12]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*13]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*14]
-	                ,(u_int8_t)uuid[sizeof(u_int8_t)*15]);
+	                ,(uint32_t)uuid[0]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*1]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*2]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*3]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*4]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*5]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*6]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*7]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*8]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*9]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*10]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*11]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*12]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*13]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*14]
+	                ,(uint8_t)uuid[sizeof(uint8_t)*15]);
 	uuid_ = buf;
 #endif
 }
