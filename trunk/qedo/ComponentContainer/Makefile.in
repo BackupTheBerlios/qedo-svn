@@ -30,7 +30,7 @@ LIBS=@LIBS@
 
 CXXFLAGS +=  $(IDLCXXFLAGS) $(INCLUDES)
 
-LIBS += -L../ComponentIDL -lComponent -luuid
+LIBS += -L../ComponentIDL -lComponentIDL -luuid
 
 ifeq "${ORB}" "MICO_ORB"
 LIBS += $(shell mico-config --cosslibs)

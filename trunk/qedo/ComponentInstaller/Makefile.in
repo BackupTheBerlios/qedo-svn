@@ -33,7 +33,7 @@ CC=$(CXX)
 
 @SET_MAKE@
 
-LIBS += -L../ComponentIDL -lComponent\
+LIBS += -L../ComponentIDL -lComponentIDL\
         -L../ComponentContainer -lComponentContainer \
 		  @XERCES_LIBS@
 
