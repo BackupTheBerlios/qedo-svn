@@ -26,7 +26,7 @@
 #include <CORBA.h>
 
 
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef CONTAINERDLL_EXPORTS
 #define CONTAINERDLL_API __declspec(dllexport)
 #define CONTAINERDLL_EXTERN
@@ -44,7 +44,6 @@
 #define CONTAINERDLL_API 
 #define CONTAINERDLL_EXTERN
 #endif
-
 
 #if !defined(UNUSED) && defined(__GNUC__)
 #define UNUSED __attribute__((unused))
