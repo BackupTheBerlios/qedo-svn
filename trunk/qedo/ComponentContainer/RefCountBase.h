@@ -50,7 +50,7 @@ public:
 
 
 /**
- * This is a simple refounted mix-in class that can be used for all classes that
+ * This is a simple refcounted mix-in class that can be used for all classes that
  * have no CORBA-defined refcount mix-ins
  */
 class CONTAINERDLL_API RefCountBase
@@ -152,6 +152,23 @@ public:
 	 */
 	virtual ~CreateDestructCORBAObjectCounter();
 };
+
+
+/**
+ * helper class for value factory refcounting during unloading a shared library
+ */
+class CONTAINERDLL_API ValueFactoryCleaner
+{
+private:
+	bool						is_registered_;
+	std::string					repid_;
+
+public:
+	class CORBA::ValueFactoryBase* factory_;
+	ValueFactoryCleaner (class CORBA::ValueFactoryBase* factory, char* repid);
+	~ValueFactoryCleaner();
+};
+
 
 /** @} */
 

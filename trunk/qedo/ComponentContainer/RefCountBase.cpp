@@ -25,7 +25,7 @@
 #include <iostream>
 #include <cassert>
 
-static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.12 2003/08/08 10:04:31 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.13 2003/08/27 06:33:51 neubauer Exp $";
 
 
 namespace Qedo {
@@ -153,6 +153,43 @@ CreateDestructCORBAObjectCounter::CreateDestructCORBAObjectCounter()
 CreateDestructCORBAObjectCounter::~CreateDestructCORBAObjectCounter()
 {
 	--GlobalObjectManagement::CORBA_object_count_;
+}
+
+
+//
+// cleaner object for a ValueFactory
+// 
+ValueFactoryCleaner::ValueFactoryCleaner (class CORBA::ValueFactoryBase* factory, char* repid)
+: factory_ (factory), is_registered_(false), repid_(repid)
+{
+	int dummy = 0;
+    CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+
+	// check whether there is already a factory
+	if (orb->lookup_value_factory( repid ))
+	{
+		DEBUG_OUT3("..... factory for ", repid, " already registered");
+	}
+	else
+	{
+		DEBUG_OUT2( "..... register factory for ", repid );
+		orb->register_value_factory( repid, factory_ );
+		is_registered_ = true;
+	}
+}
+
+
+ValueFactoryCleaner::~ValueFactoryCleaner()
+{
+	if (is_registered_)
+	{
+		int dummy = 0;
+		CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+		DEBUG_OUT2( "..... unregister factory for ", repid_ );
+		orb->unregister_value_factory( repid_.c_str() );
+	}
+	DEBUG_OUT ("ValueFactoryCleaner: Destructor called");
+	factory_->_remove_ref();
 }
 
 
