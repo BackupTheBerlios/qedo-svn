@@ -26,7 +26,7 @@
 #include "ComponentServerImpl.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.6 2003/12/02 14:28:19 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.7 2003/12/09 08:00:52 tom Exp $";
 
 
 namespace Qedo {
@@ -75,13 +75,21 @@ ExtensionContext::get_client_interceptor_dispatcher_registration()
 void
 ExtensionContext::register_servant_locator_for_all(Components::Extension::ServerContainerInterceptor_ptr server_interceptor)
 {
+
 // identify all servant locators
-Qedo::ContainerInterfaceImpl* temp_container = container_->component_server_->get_all_containers();
+	Qedo::ContainerList* temp_container_list = container_->component_server_->get_all_containers();
 
-HomeServantBase* temp_home = temp_container->installed_homes_[0].home_servant_;
+	std::list <ContainerInterfaceImpl*>::iterator container_iter;
 
-temp_home -> servant_locator_ -> register_interceptor (server_interceptor);
+	for (container_iter = temp_container_list->begin(); container_iter != temp_container_list->end(); container_iter++)
+	{
+		for (unsigned int i = 0; i < (*container_iter) -> installed_homes_.size(); i++)
+		{
+			((*container_iter) -> installed_homes_)[i].home_servant_->servant_locator_ -> register_interceptor(server_interceptor);
+		}
+	}
 }
+
 
 #endif
 } // namepscae Qedo
