@@ -67,13 +67,13 @@ private:
 	typedef std::vector < r_assemblies > running_assemblies_;
 	running_assemblies_ running_assemblies;
 	
-	long assemblies_counter_;
+	//long assemblies_counter_;
 	
 	CORBA::ORB_var orb;
 	wxTextCtrl* assembly_name_;
 	wxButton* file_choice_btn;
 	wxButton* deploy_btn;
-	wxButton* instance_btn;
+//	wxButton* instance_btn;
 	wxButton* descript_btn;
 	wxListCtrl* running_ass_list;
 	wxButton* undeploy_btn;
