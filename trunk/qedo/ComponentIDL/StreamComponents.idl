@@ -59,7 +59,7 @@ exception IllegalStream {};				// Raised when the wrong send_stream_data_* opera
 // Structures
 //
 struct TransportSpec {
-	string protocol;
+	string transport_profile;
 	Components::ConfigValues transport_parameters;
 };
 
@@ -68,6 +68,12 @@ struct TransportSpec {
 // A stream ends when the stream_number increases by one
 // Since TCP delivers reliable and in correct order, we can omit a sequence number
 struct TCPProfileHeader {
+	unsigned short stream_number;
+	unsigned long seq_length;
+};
+
+// UDP Profile Header
+struct UDPProfileHeader {
 	unsigned short stream_number;
 	unsigned long seq_length;
 };
@@ -117,6 +123,8 @@ interface SinkStreamPort {
 
 	void consider_transport (inout TransportSpec the_transport)
 		raises (AlreadyBound, TransportFailure);
+
+	void release_transport();
 };
 
 
@@ -127,7 +135,7 @@ interface Streams {
 	SinkStreamPort provide_sink_stream_port (in Components::FeatureName name)
 		raises (Components::InvalidName);
 
-	Components::Cookie bind (in Components::FeatureName name, in SinkStreamPort the_sink)
+	Components::Cookie bind (in Components::FeatureName name, in SinkStreamPort the_sink, in string transport_profile)
 		raises (Components::InvalidName, AlreadyBound, InvalidBinding, ExceededBindingLimit);
 
 	SinkStreamPort unbind (in Components::FeatureName name, in Components::Cookie ck)
