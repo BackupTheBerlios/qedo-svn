@@ -137,7 +137,7 @@ class CONTAINERDLL_API StorageObjectRefImpl : public virtual CosPersistentState:
 		~StorageObjectRefImpl();
 
 		StorageObjectRef& operator=(const StorageObjectRef& ref) 
-				throw();
+			throw();
 
 		StorageObjectRef& operator=(StorageObject* obj) 
 			throw();

@@ -79,7 +79,13 @@ StorageHomeBaseImpl::find_by_pid(string pid)
 		Close();
 
 		//use factory to create a storage object
+#ifdef ORBACUS_ORB
 		StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();
+#endif
+
+#ifdef MICO_ORB
+		StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();
+#endif
 		CatalogBaseImpl* tmp_catalog = dynamic_cast <CatalogBaseImpl*> (m_pCatalogBase);
 		factory = tmp_catalog->getConnector()->register_storage_object_factory(NULL, factory);
 		StorageObjectImpl* pStorageObjectImpl = factory->create();
@@ -129,7 +135,13 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 		Close();
 
 		//use factory to create a storage object
+#ifdef ORBACUS_ORB
 		StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();
+#endif
+
+#ifdef MICO_ORB
+		StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();
+#endif
 		CatalogBaseImpl* tmp_catalog = dynamic_cast <CatalogBaseImpl*> (m_pCatalogBase);
 		factory = tmp_catalog->getConnector()->register_storage_object_factory(NULL, factory);
 		StorageObjectImpl* pStorageObjectImpl = factory->create();
@@ -366,8 +378,8 @@ StorageHomeBaseImpl::FreeAllStorageObjects()
 		 storageObject_iter != m_lStorageObjectes.end();
 		 storageObject_iter++)
 	{
-		if((*storageObject_iter)->_get_refcount()>0)
-			(*storageObject_iter)->_remove_ref();
+		//if((*storageObject_iter)->_get_refcount()>0)
+		//	(*storageObject_iter)->_remove_ref();
 	}
 }
 } // namespace Qedo

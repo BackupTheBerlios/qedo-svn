@@ -44,7 +44,7 @@ GeneratorPSD::~GeneratorPSD
 			valuetype_iter != m_lValueTypes.end();
 			valuetype_iter++)
 		{
-			(dynamic_cast <IR__::ValueDef_ptr> (*valuetype_iter))->_remove_ref();
+			//(dynamic_cast <IR__::ValueDef_ptr> (*valuetype_iter))->_remove_ref();
 		}
 
 		m_lValueTypes.clear();

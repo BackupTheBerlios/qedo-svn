@@ -46,7 +46,7 @@ GeneratorPersistenceC::~GeneratorPersistenceC
 			valuetype_iter != m_lValueTypes.end();
 			valuetype_iter++)
 		{
-			(dynamic_cast <IR__::ValueDef_ptr> (*valuetype_iter))->_remove_ref();
+			//(dynamic_cast <IR__::ValueDef_ptr> (*valuetype_iter))->_remove_ref();
 		}
 
 		m_lValueTypes.clear();
@@ -654,7 +654,11 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	for(CORBA::ULong j=0; j<pards->length(); j++)
 	{
 		IR__::ParameterDescription pardescr = (*pards)[j];
-		out << "tmp_ptr->" << string(pardescr.name) << "(" << string(pardescr.name) << ");\n";
+		ret_type = pardescr.type_def;
+		out << "tmp_ptr->" << string(pardescr.name) << "(";
+		if( ret_type->type()->kind() == CORBA::tk_value )
+			out << "*"; // special for valuetype
+		out << string(pardescr.name) << ");\n";
 	}
 	out << "\nreturn tmp_ptr;\n";
 	out.unindent();
@@ -1260,6 +1264,8 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	out << "::" << "setValue(map<string, CORBA::Any> valueMap)\n";
 	out << "{\n";
 	out.indent();
+	out << "char* szTemp;\n";
+	out << "bool bTemp;\n";
 	out << "map <string, CORBA::Any> :: const_iterator colIter;\n\n";
 	out << "colIter = valueMap.find(\"pid\");\n";
 	out << "colIter->second >>= m_pid;\n\n";
@@ -1296,10 +1302,12 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 						case CPPBase::_DOUBLE:
 						case CPPBase::_LONGDOUBLE:
 						case CPPBase::_STRING:
-							out << "colIter->second >>= m_" << mapName(attribute) << "->" << mapName(vMember) << "();\n\n";
+							out << "colIter->second >>= szTemp;\n";
+							out << "m_" << mapName(attribute) << "->" << mapName(vMember) << "(szTemp);\n\n";
 							break;
 						case CPPBase::_BOOL:
-							out << "colIter->second >>= CORBA::Any::to_boolean(m_" << mapName(attribute) << "->" << mapName(vMember) << "());\n\n";
+							out << "colIter->second >>= CORBA::Any::to_boolean(bTemp);\n";
+							out << "m_" << mapName(attribute) << "->" << mapName(vMember) << "(bTemp);\n\n";
 							break;
 						}
 					}
@@ -1653,7 +1661,10 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 		for(CORBA::ULong i=0; i<ulLen; i++)
 		{
 			attribute = IR__::AttributeDef::_narrow(state_members[i]);
-			out << "tmp_ptr->" << mapName(attribute) << "(" << mapName(attribute) << ");\n";
+			out << "tmp_ptr->" << mapName(attribute) << "(";
+			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+				out << "*"; // special for valuetype :-(
+			out << mapName(attribute) << ");\n";
 		}
 		out << "\nreturn tmp_ptr;\n";
 	}

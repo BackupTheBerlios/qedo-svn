@@ -188,14 +188,16 @@ StorageObjectRefImpl::~StorageObjectRefImpl()
 StorageObjectRef& 
 StorageObjectRefImpl::operator=(const StorageObjectRef& ref) 
 	throw()
-{/*
-	m_pid = new CosPersistentState::Pid(*(ref.get_pid()));
-	m_shortPid = new CosPersistentState::ShortPid(*(ref.get_short_pid()));
-	m_storageHomeBase = CosPersistentState::StorageHomeBase::_duplicate(ref.get_storage_home());
+{
+	//m_pid = new CosPersistentState::Pid(*(ref.get_pid()));
+	//m_shortPid = new CosPersistentState::ShortPid(*(ref.get_short_pid()));
+	//m_storageHomeBase = CosPersistentState::StorageHomeBase::_duplicate(ref.get_storage_home());
 	//m_strUpdate = ref.m_strUpdate;
 	//m_strSelect = ref.m_strSelect;
 	//m_bModified = ref.m_bModified;
-*/	
+	
+	//StorageObjectRef a;
+	//return a;
 	return *this;
 }
 
@@ -206,14 +208,16 @@ StorageObjectRefImpl::operator=(const StorageObjectRef& ref)
 StorageObjectRef& 
 StorageObjectRefImpl::operator=(StorageObject* obj) 
 	throw()
-{/*
-	m_pid = new CosPersistentState::Pid(*(obj->get_pid()));
-	m_shortPid = new CosPersistentState::ShortPid(*(obj->get_short_pid()));
-	m_storageHomeBase = CosPersistentState::StorageHomeBase::_duplicate(obj->get_storage_home());
+{
+	//m_pid = new CosPersistentState::Pid(*(obj->get_pid()));
+	//m_shortPid = new CosPersistentState::ShortPid(*(obj->get_short_pid()));
+	//m_storageHomeBase = CosPersistentState::StorageHomeBase::_duplicate(obj->get_storage_home());
 	//m_strUpdate = ref.m_strUpdate;
 	//m_strSelect = ref.m_strSelect;
 	//m_bModified = ref.m_bModified;
-*/
+
+	//StorageObjectRef a;
+	//return a;
 	return *this;
 }
 

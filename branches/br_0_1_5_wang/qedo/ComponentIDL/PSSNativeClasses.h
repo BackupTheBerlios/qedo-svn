@@ -33,7 +33,14 @@ namespace Qedo
 	class SessionPoolImpl;
 }
 
+#ifdef MICO_ORB
+namespace CosPersistentState
+#endif
+
+#ifdef ORBACUS_ORB
 namespace OBNative_CosPersistentState
+#endif
+
 {
 
 class StorageObjectBase_pre
@@ -70,11 +77,21 @@ typedef Factory<Qedo::StorageHomeBaseImpl> StorageHomeFactory_pre;
 typedef Factory<Qedo::SessioImpl> SessionFactory_pre;
 typedef Factory<Qedo::SessionPoolImpl> SessionPoolFactory_pre;
 
+#ifdef ORBACUS_ORB
 typedef StorageObjectBase_pre* StorageObjectBase;
 typedef StorageObjectFactory_pre* StorageObjectFactory;
 typedef StorageHomeFactory_pre* StorageHomeFactory;
 typedef SessionFactory_pre* SessionFactory;
 typedef SessionPoolFactory_pre* SessionPoolFactory;
+#endif
+
+#ifdef MICO_ORB
+typedef StorageObjectBase_pre* MICO_Native_CosPersistentState_StorageObjectBase;
+typedef StorageObjectFactory_pre* MICO_Native_CosPersistentState_StorageObjectFactory;
+typedef StorageHomeFactory_pre* MICO_Native_CosPersistentState_StorageHomeFactory;
+typedef SessionFactory_pre* MICO_Native_CosPersistentState_SessionFactory;
+typedef SessionPoolFactory_pre* MICO_Native_CosPersistentState_SessionPoolFactory;
+#endif
 
 };
 

@@ -155,7 +155,14 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 		throw CosPersistentState::NotFound();
 
 	//if not in the list, new one.
-	StorageHomeFactory factory = new OBNative_CosPersistentState::StorageHomeFactory_pre();
+#ifdef ORBACUS_ORB
+	StorageHomeFactory factory = new OBNative_CosPersistentState::StorageHomeFactory_pre();	
+#endif
+
+#ifdef MICO_ORB
+	StorageHomeFactory factory = new CosPersistentState::StorageHomeFactory_pre();
+#endif
+	
 	factory = m_connector->register_storage_home_factory(storage_home_id, factory);
 	StorageHomeBase_ptr pStorageHomeBase = factory->create();
     StorageHomeBaseImpl* pStorageHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pStorageHomeBase);

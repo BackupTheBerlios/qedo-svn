@@ -23,7 +23,7 @@
 #include "EntityContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: EntityContext.cpp,v 1.1.4.1 2003/12/19 14:09:24 hao Exp $";
+static char rcsid[] UNUSED = "$Id: EntityContext.cpp,v 1.1.4.2 2004/01/11 13:16:07 hao Exp $";
 
 
 namespace Qedo {
@@ -49,7 +49,7 @@ EntityContext::get_CCM_object()
 Components::PrimaryKeyBase* 
 EntityContext::get_primary_key()
 {
-	return 0;
+	return ccm_object_executor_->get_primary_key();
 }
 
 } // namepscae Qedo
