@@ -20,11 +20,12 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qdeploy.cpp,v 1.7 2003/07/31 21:25:10 tom Exp $";
-
 
 #include "DeploymentClient.h"
+#include "Util.h"
 #include "version.h"
+
+static char rcsid[] UNUSED = "$Id: qdeploy.cpp,v 1.8 2003/08/01 12:25:30 boehme Exp $";
 
 
 /**

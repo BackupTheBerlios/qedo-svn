@@ -20,8 +20,6 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.15 2003/07/29 14:27:56 tom Exp $";
-
 #include <iostream>
 #include "fstream"
 #include "ServerActivatorImpl.h"
@@ -30,6 +28,8 @@ static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.15 2003/07/29 14:27:56 t
 #else
 #include <CosNaming.h>
 #endif
+
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.16 2003/08/01 12:25:30 boehme Exp $";
 
 #ifdef _WIN32
 //#include <strstream>

@@ -20,10 +20,11 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerInterceptorDispatcher.cpp,v 1.1 2003/06/13 08:08:02 tom Exp $";
-
 #include "ServerInterceptorDispatcher.h"
+#include "Util.h"
 #include "fstream"
+
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.2 2003/08/01 12:25:30 boehme Exp $";
 
 namespace Qedo {
 

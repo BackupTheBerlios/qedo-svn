@@ -20,10 +20,11 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: PlatformBase.cpp,v 1.5 2003/05/09 10:42:40 neubauer Exp $";
-
 
 #include "PlatformBase.h"
+#include "Util.h"
+
+static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.6 2003/08/01 12:25:30 boehme Exp $";
 
 #ifndef _WIN32
 #include <time.h>

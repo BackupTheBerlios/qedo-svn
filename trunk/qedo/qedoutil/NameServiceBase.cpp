@@ -20,12 +20,13 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: NameServiceBase.cpp,v 1.7 2003/04/15 07:19:39 neubauer Exp $";
-
 
 #include "NameServiceBase.h"
+#include "Util.h"
 #include <iostream>
 
+
+static char rcsid[] UNUSED = "$Id: NameServiceBase.cpp,v 1.8 2003/08/01 12:25:30 boehme Exp $";
 
 namespace Qedo {
 

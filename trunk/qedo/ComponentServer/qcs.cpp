@@ -20,8 +20,6 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qcs.cpp,v 1.12 2003/07/31 21:25:10 tom Exp $";
-
 #include "ComponentServerImpl.h"
 #include "Synchronisation.h"
 #include "ORBInitializerImpl.h"
@@ -29,6 +27,8 @@ static char rcsid[] = "$Id: qcs.cpp,v 1.12 2003/07/31 21:25:10 tom Exp $";
 #include <cstring>
 #include <string>
 #include "version.h"
+
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.13 2003/08/01 12:25:30 boehme Exp $";
 
 
 /**

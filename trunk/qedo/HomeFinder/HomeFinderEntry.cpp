@@ -20,9 +20,9 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeFinderEntry.cpp,v 1.2 2003/04/01 07:50:10 neubauer Exp $";
-
 #include "HomeFinderEntry.h"
+
+static char rcsid[] UNUSED = "$Id: HomeFinderEntry.cpp,v 1.3 2003/08/01 12:25:30 boehme Exp $";
 
 
 namespace Qedo {

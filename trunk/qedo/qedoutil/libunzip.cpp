@@ -1,11 +1,17 @@
-static char rcsid[] = "$Id: libunzip.cpp,v 1.1 2002/11/08 10:32:11 neubauer Exp $";
-
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <zlib.h>
 #include "libunzip.h"
+
+#if !defined(UNUSED) && defined(__GNUC__)
+#define UNUSED __attribute__((unused))
+#else
+#define UNUSED
+#endif
+
+static char rcsid[] UNUSED = "$Id: libunzip.cpp,v 1.2 2003/08/01 12:25:30 boehme Exp $";
 
 #ifdef STDC
 #  include <stddef.h>

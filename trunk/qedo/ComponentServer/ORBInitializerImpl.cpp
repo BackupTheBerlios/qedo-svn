@@ -20,11 +20,11 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ORBInitializerImpl.cpp,v 1.4 2003/07/25 13:57:12 tom Exp $";
-
 #include "ORBInitializerImpl.h"
 #include "Output.h"
 #include "ServerInterceptorDispatcher.h"
+
+static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.5 2003/08/01 12:25:30 boehme Exp $";
 
 
 namespace Qedo {

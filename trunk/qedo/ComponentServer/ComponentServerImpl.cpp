@@ -20,12 +20,12 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.10 2003/07/16 19:42:58 tom Exp $";
-
 #include "ComponentServerImpl.h"
 #include "ContainerInterfaceImpl.h"
 #include "Output.h"
 #include "Valuetypes.h"
+
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.11 2003/08/01 12:25:30 boehme Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -36,8 +36,8 @@ namespace Qedo {
 ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb, 
 										  const char* csa_string_ref,
 										  PortableInterceptor::SlotId slot_id)
-: orb_ (CORBA::ORB::_duplicate (orb)),
-  csa_string_ref_ (CORBA::string_dup (csa_string_ref)),
+: csa_string_ref_ (CORBA::string_dup (csa_string_ref)),
+  orb_ (CORBA::ORB::_duplicate (orb)),
   slot_id_ (slot_id)
 {
 }

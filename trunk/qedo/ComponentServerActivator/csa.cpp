@@ -20,12 +20,12 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: csa.cpp,v 1.9 2003/07/31 21:25:10 tom Exp $";
-
 #include "ServerActivatorImpl.h"
 #include <iostream>
 #include <cstring>
 #include "version.h"
+
+static char rcsid[] UNUSED = "$Id: csa.cpp,v 1.10 2003/08/01 12:25:30 boehme Exp $";
 
 /**
  * addtogroup ServerActivator
