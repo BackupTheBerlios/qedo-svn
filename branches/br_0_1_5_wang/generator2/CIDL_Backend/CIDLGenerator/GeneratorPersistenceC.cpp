@@ -775,7 +775,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	out << "StorageObjectFactory factory = NULL;\n";
 	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
-	out << "factory->_remove_ref();\n";
+	out << "//factory->_remove_ref();\n";
 	out << map_psdl_return_type(ret_type, false) << " pActObject = dynamic_cast <" << map_psdl_return_type(ret_type, false) << "> (pObjectImpl);\n";
 	out << "\n//set values to current storageobject incarnation\n";
 	out << "//How to handle with pid, spid and the other member variables not given?\n";
@@ -1265,16 +1265,18 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	out << "bool bTemp = false;\n";
 	out << "std::map <std::string, CORBA::Any> :: const_iterator colIter;\n\n";
 	out << "colIter = valueMap.find(\"pid\");\n";
-	out << "colIter->second >>= pPid_;\n\n";
+	out << "colIter->second >>= szTemp;\n";
+	out << "set_pid(szTemp);\n\n";
 	out << "colIter = valueMap.find(\"spid\");\n";
-	out << "colIter->second >>= pShortPid_;\n\n";
+	out << "colIter->second >>= szTemp;\n";
+	out << "set_short_pid(szTemp);\n\n";
 
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
-		{
+		{/*
 			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
@@ -1310,7 +1312,7 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 					}
 					break;
 				}
-			}
+			}*/
 		}
 		else
 		{
@@ -1847,7 +1849,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out << "StorageObjectFactory factory = NULL;\n";
 	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << storagehome->managed_storagetype()->name() << "\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
-	out << "factory->_remove_ref();\n";
+	out << "//factory->_remove_ref();\n";
 	if(!isRef)
 		out << szRetType << " pActObject = dynamic_cast <" << szRetType << "> (pObjectImpl);\n";
 	else
@@ -1988,7 +1990,7 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 					break;
 				}
 			}
-			strContent_ = ");";
+			strContent_ = ";";
 			out << genSQLLine(strName_, strContent_, true, false, false);
 			//++++++++++++++++++++++++++++++++++++++++
 			// end of SELECT sentence for KEY !!!!!!!!
@@ -2258,16 +2260,18 @@ GeneratorPersistenceC::genComponentPersistence(IR__::HomeDef_ptr home, IR__::Com
 	out << "bool bTemp = false;\n";
 	out << "std::map <std::string, CORBA::Any> :: const_iterator colIter;\n\n";
 	out << "colIter = valueMap.find(\"pid\");\n";
-	out << "colIter->second >>= pPid_;\n\n";
+	out << "colIter->second >>= szTemp;\n";
+	out << "set_pid(szTemp);\n\n";
 	out << "colIter = valueMap.find(\"spid\");\n";
-	out << "colIter->second >>= pShortPid_;\n\n";
+	out << "colIter->second >>= szTemp;\n";
+	out << "set_short_pid(szTemp);\n\n";
 
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
-		{
+		{/*
 			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
@@ -2303,7 +2307,7 @@ GeneratorPersistenceC::genComponentPersistence(IR__::HomeDef_ptr home, IR__::Com
 					}
 					break;
 				}
-			}
+			}*/
 		}
 		else
 		{
@@ -2590,7 +2594,7 @@ GeneratorPersistenceC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_pt
 	out << "StorageObjectFactory factory = NULL;\n";
 	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strComponentName << "Persistence\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
-	out << "factory->_remove_ref();\n";
+	out << "//factory->_remove_ref();\n";
 	out << strComponentName << "Persistence* pActObject = dynamic_cast <" << strComponentName << "Persistence*> (pObjectImpl);\n";
 	out << "\n//set values to current storageobject incarnation\n";
 	out << "pActObject->set_pid(pid);\n";
@@ -3007,7 +3011,7 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	out << "StorageObjectFactory factory = NULL;\n";
 	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strComponentName << "Persistence\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
-	out << "factory->_remove_ref();\n";
+	out << "//factory->_remove_ref();\n";
 	out << strComponentName << "Persistence* pActObject = dynamic_cast <" << strComponentName << "Persistence*> (pObjectImpl);\n";
 	out << "\n//set values to current storageobject incarnation\n";
 	out << "pActObject->set_pid(pid);\n";
@@ -3109,7 +3113,7 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 			break;
 		}
 	}
-	strContent_ = ");";
+	strContent_ = ";";
 	out << genSQLLine(strName_, strContent_, true, false, false);
 	//++++++++++++++++++++++++++++++++++++++++
 	// end of SELECT sentence for KEY !!!!!!!!

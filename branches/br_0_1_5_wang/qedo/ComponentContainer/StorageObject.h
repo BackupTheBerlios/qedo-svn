@@ -55,6 +55,10 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 
 		void set_short_pid(CosPersistentState::ShortPid* pShortPid);
 
+		void set_pid(const char* szPid);
+
+		void set_short_pid(const char* szShortPid);
+
 		void setStorageHome( StorageHomeBase_ptr pHomeBase );
 
 		virtual void setValue(std::map<std::string, CORBA::Any>& valueMap) = 0;

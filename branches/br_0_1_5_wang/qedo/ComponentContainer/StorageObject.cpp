@@ -82,6 +82,26 @@ StorageObjectImpl::set_short_pid(CosPersistentState::ShortPid* pShortPid)
 		(*pShortPid_)[i] = (*pShortPid)[i];
 }
 
+void
+StorageObjectImpl::set_pid(const char* szPid)
+{
+	int iLength = strlen(szPid);
+	pPid_->length(iLength);
+	
+	for(int i=0; i<iLength; i++)
+		(*pPid_)[i] = szPid[i];
+}
+
+void
+StorageObjectImpl::set_short_pid(const char* szShortPid)
+{
+	int iLength = strlen(szShortPid);
+	pShortPid_->length(iLength);
+	
+	for(int i=0; i<iLength; i++)
+		(*pShortPid_)[i] = szShortPid[i];
+}
+
 void 
 StorageObjectImpl::_add_ref()
 {

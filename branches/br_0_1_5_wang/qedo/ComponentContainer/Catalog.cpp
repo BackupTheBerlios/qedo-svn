@@ -166,7 +166,7 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 		throw CosPersistentState::NotFound();
 
 	StorageHomeBaseImpl* pHomeBaseImpl = factory->create();
-	factory->_remove_ref();
+	//factory->_remove_ref();
 
 	pHomeBaseImpl->Init(this, storage_home_id);
 

@@ -2189,8 +2189,16 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "new_context->set_storage_object(pPssStorageObject);\n\n";
 		
 		out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
-		out << "servant = " << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
-		out << "return servant._retn();\n";
+		out << "servant = " << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n";
+		for( CORBA::ULong i=0; i<ulLen; i++ )
+		{
+			attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			if( attribute->type_def()->type()->kind()!=CORBA::tk_value )
+			{
+				out << "servant->" << attribute->name() << "(pCcmStorageObject->" << attribute->name() << "());\n";
+			}
+		}
+		out << "\nreturn servant._retn();\n";
 		out.unindent();
 		out << "}\n\n";
 

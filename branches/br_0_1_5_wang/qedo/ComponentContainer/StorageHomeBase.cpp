@@ -154,7 +154,6 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 	}
 
 	std::string strType = strShortPid.substr(++idxBegin, strShortPid.length()-idxBegin);
-	strType = convert2Lowercase(strType);
 
 	std::string strToExecute;
 	strToExecute = "SELECT * FROM ";
@@ -163,7 +162,7 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 	strToExecute += strShortPid;
 	strToExecute += "\';";
 
-	if(Open(strToExecute.c_str()))
+    if(Open(strToExecute.c_str()))
 	{
 		std::map<std::string, CORBA::Any> valueMap;
 		ValuePaser(valueMap);
@@ -176,10 +175,10 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 		factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(strType.c_str(), factory);
 		if( factory==NULL )
 			throw CosPersistentState::NotFound();
-
+	
 		StorageObjectImpl* pObjectImpl = factory->create();
-		factory->_remove_ref();
-
+		//factory->_remove_ref();
+	
 		pObjectImpl->setValue(valueMap);
 		lObjectes_.push_back(pObjectImpl);
 		pObj = dynamic_cast <StorageObjectBase> (pObjectImpl);
