@@ -21,6 +21,7 @@
 .NOTPARALLEL:
 
 SUBDIRS = general/hello_world \
+	general/philosopher \
 	streams/simple
 
 all: $(SUBDIRS:%=%-all)
