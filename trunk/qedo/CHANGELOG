@@ -1,3 +1,7 @@
+version0.5.0
+- first version of stream extensions
+- configuration file
+- improved stability (deployment container)
 - moving output.* Synchronisation.* Valuetypes.* and StreamingVauetypes.* to the qedoutil lib
 
 version 0.4.2
