@@ -26,7 +26,7 @@
 #include <fstream>
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.18 2003/10/05 18:45:21 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.18.4.1 2003/10/11 00:06:54 tom Exp $";
 
 
 namespace Qedo {
@@ -148,7 +148,7 @@ throw(Components::CreateFailure)
     //
 	// install any code
 	//
-    try	
+    try
 	{
 		installCode();
 	}
@@ -196,7 +196,7 @@ throw( Components::CreateFailure )
 	//
 	std::vector < HostData > ::const_iterator host_iter;
 	for(host_iter = data_.assembly.hosts_.begin(); 
-		host_iter != data_.assembly.hosts_.end(); 
+		host_iter != data_.assembly.hosts_.end();
 		host_iter++)
 	{
 		Qedo_Components::Deployment::ComponentInstallation_var componentInstallation;
@@ -382,127 +382,17 @@ throw(Components::CreateFailure)
 		if ((data_.servant_module.length()) && (data_.servant_entry_point.length()))
 		{
 			name = data_.servant_module;
-			if (copyFile( build_path_ + name, installation_path_ + name ) == 0) 
+			if (copyFile( build_path_ + name, installation_path_ + name ) == 0)
 			{
-				std::cerr << "Error during installing servant code " << name << "; try to generate" << std::endl;
+				std::cerr << "Error during installing servant code " << name << std::endl;
 			}
-			else 
+			else
 			{
 				return;
 			}
 		}
-
-		//
-		// build servant code
-		//
-		buildServants();
 	}
 }
+} // namespace
 
-
-void
-ComponentImplementation::buildServants()
-throw(Components::CreateFailure)
-{
-	data_.servant_module = data_.uuid + "_servants." + DLL_EXT;
-	data_.servant_entry_point = "create_" + data_.home_name + "S";
-
-#ifdef _WIN32
-	makefile_ = g_qedo_dir + "\\etc\\makefile";
-#else
-	makefile_ = g_qedo_dir + "/etc/makefile";
-#endif
-
-	if ( !checkExistence(makefile_, IS_FILE)) 
-	{
-		std::cerr << "missing makefile : " << makefile_ << std::endl;
-		throw Components::CreateFailure();
-	}
-
-#ifdef _WIN32
-	std::string command = "nmake /f " + makefile_;
-	command += " SOURCE=" + build_path_ + data_.idl.location.file;
-	command += " TARGET=" + data_.home_repid;
-	command += " DLL=" + installation_path_ + data_.servant_module;
-	std::cout << command << std::endl;
-
-	{
-	char* command_line = strdup(command.c_str());
-	char* command_dir = strdup(build_path_.c_str());
-
-	STARTUPINFO si;
-    PROCESS_INFORMATION pi;
-
-    ZeroMemory( &si, sizeof(si) );
-    si.cb = sizeof(si);
-    ZeroMemory( &pi, sizeof(pi) );
-
-    // Start the child process. 
-    if( !CreateProcess( NULL, // No module name (use command line). 
-        command_line,     // Command line. 
-        NULL,             // Process handle not inheritable. 
-        NULL,             // Thread handle not inheritable. 
-        FALSE,            // Set handle inheritance to FALSE. 
-        0,                // No creation flags. 
-        NULL,             // Use parent's environment block. 
-        command_dir,      // Use parent's starting directory. 
-        &si,              // Pointer to STARTUPINFO structure.
-        &pi )             // Pointer to PROCESS_INFORMATION structure.
-    ) 
-    {
-		LPVOID lpMsgBuf;
-		FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-			(LPTSTR) &lpMsgBuf, 0, NULL);
-		std::cerr << "CreateProcess failed: " << (LPCTSTR)lpMsgBuf << std::endl;
-		
-		// Free the buffer.
-		LocalFree( lpMsgBuf );
-		throw Components::CreateFailure();
-    }
-
-    // Wait until child process exits.
-    WaitForSingleObject( pi.hProcess, INFINITE );
-
-    //
-    // get exit code
-    //
-    DWORD exitCode;
-    if (GetExitCodeProcess(pi.hProcess, &exitCode))
-    {
-        if (exitCode)
-        {
-			std::cerr << "Servant code generation failed !!!" << std::endl;
-            throw Components::CreateFailure();
-        }
-    }
-    else 
-    {
-        std::cerr << "GetExitCodeProcess() failed !!!" << std::endl;
-        throw Components::CreateFailure();
-    }
-
-    // Close process and thread handles. 
-    CloseHandle( pi.hProcess );
-    CloseHandle( pi.hThread );
-
-	delete command_line;
-	delete command_dir;
-	}
-#else
-	std::string command = "cd " + build_dir_ + ";make -f " + makefile_;
-	command += " SOURCE=" + data_.idl.location.file;
-	command += " TARGET=" + installation_path_ + data_.servant_module;
-	std::cout << command << std::endl;
-	int ret=system(command.c_str());
-	if(!WIFEXITED(ret))
-	{
-		std::cerr << "Error while making: "  << ret << std::endl;
-        throw Components::CreateFailure();
-	}
-#endif
-}
-
-
-}
 

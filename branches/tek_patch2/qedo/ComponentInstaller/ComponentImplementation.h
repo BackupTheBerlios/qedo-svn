@@ -117,12 +117,6 @@ private:
     void installCode()
         throw(Components::CreateFailure);
 
-	/**
-	 * build servant code
-	 */
-	void buildServants()
-		throw(Components::CreateFailure);
-
 public:
 	/**
 	 * constructor
