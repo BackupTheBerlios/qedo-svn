@@ -623,50 +623,50 @@ d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yysty
 			<File
 				RelativePath=".\cidl.y">
 				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y;
+cp cidl.hpp cidl.h"/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
-copy cidl.hpp cidl.h
-"
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y;
+cp cidl.hpp cidl.h"
 						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="C:\opt\cygwin\bin\bison -y -v -d cidl.y
-copy y.tab.c cidl.cpp
-copy y.tab.h cidl.h
-"
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y;
+cp cidl.hpp cidl.h"
 						Outputs="cidl.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="C:\opt\cygwin\bin\bison -y -v -d cidl.y
-copy y.tab.c cidl.cpp
-copy y.tab.h cidl.h
-"
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y;
+cp cidl.hpp cidl.h"
 						Outputs="cidl.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(YACC) -y -v -d -o cidl.cpp cidl.y
-copy cidl.hpp cidl.h
-"
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y;
+cp cidl.hpp cidl.h"
 						Outputs="cidl.cpp;cidl.h"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
-copy cidl.hpp cidl.h
-"
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y;
+cp cidl.hpp cidl.h"
 						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
 				</FileConfiguration>
 			</File>
