@@ -1,0 +1,10 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE properties PUBLIC "-//OMG//DTD Property File Descriptor" "properties.dtd">
+
+<properties>
+    <configuration>
+        <simple name="id" type="string">
+            <value>client</value>
+        </simple>
+    </configuration>
+</properties>
