@@ -126,8 +126,8 @@ copy cidl_gen.exe $(QEDO)\bin
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
-			OutputDirectory=".\CIDLGenerator___Win32_Debug_mico"
-			IntermediateDirectory=".\CIDLGenerator___Win32_Debug_mico"
+			OutputDirectory=".\Debug_mico"
+			IntermediateDirectory=".\Debug_mico"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -141,10 +141,10 @@ copy cidl_gen.exe $(QEDO)\bin
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				PrecompiledHeaderFile=".\CIDLGenerator___Win32_Debug_mico/CIDLGenerator.pch"
-				AssemblerListingLocation=".\CIDLGenerator___Win32_Debug_mico/"
-				ObjectFile=".\CIDLGenerator___Win32_Debug_mico/"
-				ProgramDataBaseFileName=".\CIDLGenerator___Win32_Debug_mico/"
+				PrecompiledHeaderFile=".\Debug_mico/CIDLGenerator.pch"
+				AssemblerListingLocation=".\Debug_mico/"
+				ObjectFile=".\Debug_mico/"
+				ProgramDataBaseFileName=".\Debug_mico/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -163,7 +163,7 @@ copy cidl_gen.exe $(QEDO)\bin
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\CIDLGenerator___Win32_Debug_mico/CIDLGenerator.tlb"/>
+				TypeLibraryName=".\Debug_mico/CIDLGenerator.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
@@ -185,8 +185,8 @@ copy cidl_gen.exe $(QEDO)\bin
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
-			OutputDirectory=".\CIDLGenerator___Win32_Debug_tao"
-			IntermediateDirectory=".\CIDLGenerator___Win32_Debug_tao"
+			OutputDirectory=".\Debug_tao"
+			IntermediateDirectory=".\Debug_tao"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -200,10 +200,10 @@ copy cidl_gen.exe $(QEDO)\bin
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				PrecompiledHeaderFile=".\CIDLGenerator___Win32_Debug_tao/CIDLGenerator.pch"
-				AssemblerListingLocation=".\CIDLGenerator___Win32_Debug_tao/"
-				ObjectFile=".\CIDLGenerator___Win32_Debug_tao/"
-				ProgramDataBaseFileName=".\CIDLGenerator___Win32_Debug_tao/"
+				PrecompiledHeaderFile=".\Debug_tao/CIDLGenerator.pch"
+				AssemblerListingLocation=".\Debug_tao/"
+				ObjectFile=".\Debug_tao/"
+				ProgramDataBaseFileName=".\Debug_tao/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -222,7 +222,7 @@ copy cidl_gen.exe $(QEDO)\bin
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\CIDLGenerator___Win32_Debug_tao/CIDLGenerator.tlb"/>
+				TypeLibraryName=".\Debug_tao/CIDLGenerator.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
@@ -268,7 +268,7 @@ copy cidl_gen.exe $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib obd.lib jtcd.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib OBD.lib JTCD.lib odbc32.lib odbccp32.lib"
 				OutputFile="cidl_gen.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -277,7 +277,7 @@ copy cidl_gen.exe $(QEDO)\bin
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\CIDLGenerator___Win32_Debug_orbacus/CIDLGenerator.tlb"/>
+				TypeLibraryName=".\Debug_orbacus/CIDLGenerator.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
@@ -314,7 +314,7 @@ copy cidl_gen.exe &quot;%QEDO%\bin&quot;
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE,__DEBUG__,_WINDOWS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
-				PrecompiledHeaderFile=".\CIDLGenerator___Win32_Debug_orbacus/CIDLGenerator.pch"
+				PrecompiledHeaderFile=".\Debug_orbacus/CIDLGenerator.pch"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				CompileAs="0"/>
@@ -323,7 +323,7 @@ copy cidl_gen.exe &quot;%QEDO%\bin&quot;
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib ob.lib jtc.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib OB.lib JTC.lib odbc32.lib odbccp32.lib"
 				OutputFile="cidl_gen.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -332,7 +332,7 @@ copy cidl_gen.exe &quot;%QEDO%\bin&quot;
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\CIDLGenerator___Win32_Debug_orbacus/CIDLGenerator.tlb"/>
+				TypeLibraryName=".\Debug_orbacus/CIDLGenerator.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"

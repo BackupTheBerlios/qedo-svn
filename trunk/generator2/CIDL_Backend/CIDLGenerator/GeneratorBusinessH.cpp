@@ -296,6 +296,7 @@ GeneratorBusinessH::doConsumes(IR__::ConsumesDef_ptr consumes)
 void
 GeneratorBusinessH::doSource(IR__::SourceDef_ptr source)
 {
+#if 0
 	IR__::StreamTypeDef* st_def = source->stream_type();
 	IR__::Contained::Description* c_descr = st_def->describe(); 
 	IR__::StreamTypeDescription* st_descr;
@@ -310,6 +311,7 @@ GeneratorBusinessH::doSource(IR__::SourceDef_ptr source)
 		out /*<< map_absolute_under_name(component_def)*/  << "_provide_" << source->name();
 		out << "();\n\n";
 	}
+#endif
 }
 
 

@@ -276,3 +276,4 @@ frontend_replacement_feed
 		composition_story -> create_executor (
 		"IDL:Studio/StoryImpl/StorySessionImpl:1.0", "StorySessionImpl", "1.0" );
 }
+

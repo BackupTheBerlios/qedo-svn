@@ -70,10 +70,10 @@
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\CIDLFrontendLib___Win32_Debug_orbacus/CIDLFrontendLib.pch"
-				AssemblerListingLocation=".\CIDLFrontendLib___Win32_Debug_orbacus/"
-				ObjectFile=".\CIDLFrontendLib___Win32_Debug_orbacus/"
-				ProgramDataBaseFileName=".\CIDLFrontendLib___Win32_Debug_orbacus/"
+				PrecompiledHeaderFile=".\Debug_orbacus/CIDLFrontendLib.pch"
+				AssemblerListingLocation=".\Debug_orbacus/"
+				ObjectFile=".\Debug_orbacus/"
+				ProgramDataBaseFileName=".\Debug_orbacus/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -101,8 +101,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
-			OutputDirectory=".\CIDLFrontendLib___Win32_Debug_tao"
-			IntermediateDirectory=".\CIDLFrontendLib___Win32_Debug_tao"
+			OutputDirectory=".\Debug_tao"
+			IntermediateDirectory=".\Debug_tao"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -115,10 +115,10 @@
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\CIDLFrontendLib___Win32_Debug_tao/CIDLFrontendLib.pch"
-				AssemblerListingLocation=".\CIDLFrontendLib___Win32_Debug_tao/"
-				ObjectFile=".\CIDLFrontendLib___Win32_Debug_tao/"
-				ProgramDataBaseFileName=".\CIDLFrontendLib___Win32_Debug_tao/"
+				PrecompiledHeaderFile=".\Debug_tao/CIDLFrontendLib.pch"
+				AssemblerListingLocation=".\Debug_tao/"
+				ObjectFile=".\Debug_tao/"
+				ProgramDataBaseFileName=".\Debug_tao/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -146,8 +146,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
-			OutputDirectory=".\CIDLFrontendLib___Win32_Debug_mico"
-			IntermediateDirectory=".\CIDLFrontendLib___Win32_Debug_mico"
+			OutputDirectory=".\Debug_mico"
+			IntermediateDirectory=".\Debug_mico"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -160,10 +160,10 @@
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\CIDLFrontendLib___Win32_Debug_mico/CIDLFrontendLib.pch"
-				AssemblerListingLocation=".\CIDLFrontendLib___Win32_Debug_mico/"
-				ObjectFile=".\CIDLFrontendLib___Win32_Debug_mico/"
-				ProgramDataBaseFileName=".\CIDLFrontendLib___Win32_Debug_mico/"
+				PrecompiledHeaderFile=".\Debug_mico/CIDLFrontendLib.pch"
+				AssemblerListingLocation=".\Debug_mico/"
+				ObjectFile=".\Debug_mico/"
+				ProgramDataBaseFileName=".\Debug_mico/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -252,7 +252,7 @@
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\CIDLFrontendLib___Win32_Debug_orbacus/CIDLFrontendLib.pch"
+				PrecompiledHeaderFile=".\Debug_orbacus/CIDLFrontendLib.pch"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				CompileAs="0"/>
@@ -349,7 +349,7 @@
 				RelativePath=".\util.cpp">
 			</File>
 			<File
-				RelativePath=".\version.c">
+				RelativePath=".\version.cpp">
 			</File>
 		</Filter>
 		<Filter

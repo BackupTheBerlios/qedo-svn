@@ -122,7 +122,8 @@ GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 	out << class_name_ << "::" << operation_name << "(";
 	IR__::ParDescriptionSeq* pards = operation->params();
 	CORBA::ULong len = pards->length();
-	for(CORBA::ULong i = len; i > 0; i--)
+	CORBA::ULong i;
+	for( i= len; i > 0; i--)
 	{
 		if(i < len)
 		{
@@ -183,7 +184,8 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << class_name_ << "::" << factory_name << "(";
 	IR__::ParDescriptionSeq* pards = factory->params();
 	CORBA::ULong len = pards->length();
-	for(CORBA::ULong i = len; i > 0; i--)
+	CORBA::ULong i;
+	for( i= len; i > 0; i--)
 	{
 		if(i < len)
 		{
@@ -290,7 +292,8 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << class_name_ << "::" << finder_name << "(";
 	IR__::ParDescriptionSeq* pards = finder->params();
 	CORBA::ULong len = pards->length();
-	for(CORBA::ULong i = len; i > 0; i--)
+	CORBA::ULong i;
+	for( i= len; i > 0; i--)
 	{
 		if(i < len)
 		{
@@ -392,7 +395,8 @@ GeneratorServantC::doInterface(IR__::InterfaceDef_ptr intf)
 	// base interfaces
 	IR__::InterfaceDefSeq_var base_seq = intf->base_interfaces();
 	CORBA::ULong len = base_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
 	{
 		doInterface((*base_seq)[i]);
 	}
@@ -667,7 +671,8 @@ GeneratorServantC::genFacetServants(IR__::ComponentDef_ptr component)
 
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Provides, false);
 	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
 	{
 		//
 		// facet servant
@@ -724,7 +729,8 @@ GeneratorServantC::genConsumerServants(IR__::ComponentDef_ptr component)
 
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Consumes, false);
 	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
 	{
 		//
 		// consumer servant
@@ -925,7 +931,8 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 	// uses ports
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Uses, false);
 	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
 	{
 		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
 		std::string interface_name = mapFullName(a_uses->interface_type());
@@ -1170,7 +1177,8 @@ GeneratorServantC::genFacetRegistration(IR__::HomeDef_ptr home)
 
 	IR__::ProvidesDefSeq_var facets = home->managed_component()->provides_interfaces();
 	CORBA::ULong len = facets->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
 	{
 		std::string name = (*facets)[i]->name();
 
@@ -1198,7 +1206,8 @@ GeneratorServantC::genReceptacleRegistration(IR__::HomeDef_ptr home)
 
 	IR__::UsesDefSeq_var receptacles = home->managed_component()->uses_interfaces();
 	CORBA::ULong len = receptacles->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
 	{
 		out << "component_instance.ccm_object_executor_->add_receptacle(\"";
 		out << (*receptacles)[i]->name() << "\", \"" << (*receptacles)[i]->interface_type()->id() << "\", ";
@@ -1224,7 +1233,8 @@ GeneratorServantC::genEmitterRegistration(IR__::HomeDef_ptr home)
 
 	IR__::EmitsDefSeq_var emits = home->managed_component()->emits_events();
 	CORBA::ULong len = emits->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
 	{
 		std::string id = (*emits)[i]->event()->id();
 		id.insert(id.find_last_of(":"), "Consumer");
@@ -1247,7 +1257,8 @@ GeneratorServantC::genPublisherRegistration(IR__::HomeDef_ptr home)
 
 	IR__::PublishesDefSeq_var publishes = home->managed_component()->publishes_events();
 	CORBA::ULong len = publishes->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
 	{
 		std::string id = (*publishes)[i]->event()->id();
 		id.insert(id.find_last_of(":"), "Consumer");
@@ -1270,7 +1281,8 @@ GeneratorServantC::genConsumerRegistration(IR__::HomeDef_ptr home)
 
 	IR__::ConsumesDefSeq_var consumes = home->managed_component()->consumes_events();
 	CORBA::ULong len = consumes->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
 	{
 		std::string id = (*consumes)[i]->event()->id();
 		id.insert(id.find_last_of(":"), "Consumer");

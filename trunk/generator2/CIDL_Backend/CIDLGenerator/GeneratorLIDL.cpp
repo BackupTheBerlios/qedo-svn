@@ -73,7 +73,8 @@ GeneratorLIDL::doAttribute(IR__::AttributeDef_ptr attribute)
 
 	// exceptions
 	IR__::ExceptionDefSeq_var exception_seq = attribute->get_exceptions();
-	for(CORBA::ULong i = 0; i < exception_seq->length(); i++)
+	CORBA::ULong i;
+	for( i= 0; i < exception_seq->length(); i++)
 	{
 	}
 
@@ -108,7 +109,8 @@ GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 	CORBA::ULong len = supported_seq->length();
 	if(len)
 	{
-		for(CORBA::ULong i = 0; i < len; i++)
+		CORBA::ULong i;
+		for( i= 0; i < len; i++)
 		{
 			out << ", " << map_absolute_name((*supported_seq)[i]);
 		}
@@ -217,7 +219,8 @@ GeneratorLIDL::doOperation(IR__::OperationDef_ptr operation)
 	// parameters
 	IR__::ParDescriptionSeq_var para_seq = operation->params();
 	CORBA::ULong len = para_seq->length();
-	for(CORBA::ULong i = len; i > 0; i--)
+	CORBA::ULong i;
+	for( i= len; i > 0; i--)
 	{
 		if(i < len)
 		{
@@ -271,7 +274,8 @@ GeneratorLIDL::doFactory(IR__::FactoryDef_ptr factory)
 	// parameters
 	IR__::ParDescriptionSeq_var para_seq = factory->params();
 	CORBA::ULong len = para_seq->length();
-	for(CORBA::ULong i = len; i > 0; i--)
+	CORBA::ULong i;
+	for( i= len; i > 0; i--)
 	{
 		if(i < len)
 		{
@@ -313,7 +317,8 @@ GeneratorLIDL::doFinder(IR__::FinderDef_ptr finder)
 	// parameters
 	IR__::ParDescriptionSeq_var para_seq = finder->params();
 	CORBA::ULong len = para_seq->length();
-	for(CORBA::ULong i = len; i > 0; i--)
+	CORBA::ULong i;
+	for( i= len; i > 0; i--)
 	{
 		if(i < len)
 		{

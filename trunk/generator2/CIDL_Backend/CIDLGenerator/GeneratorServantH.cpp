@@ -36,7 +36,8 @@ GeneratorServantH::doModule(IR__::ModuleDef_ptr module)
 
 	// contained compositions
 	contained_seq = repository_->contents(CORBA__::dk_Composition, true);
-	for(CORBA::ULong i = 0; i < contained_seq->length(); i++)
+	CORBA::ULong i;
+	for( i= 0; i < contained_seq->length(); i++)
 	{
 		CIDL::CompositionDef_var act_composition = CIDL::CompositionDef::_narrow(((*contained_seq)[i]));
 		doComposition(act_composition);
@@ -102,7 +103,8 @@ GeneratorServantH::doInterface(IR__::InterfaceDef_ptr intf)
 {
 	// base interfaces
 	IR__::InterfaceDefSeq_var base_seq = intf->base_interfaces();
-	for(CORBA::ULong i = 0; i < base_seq->length(); i++)
+	CORBA::ULong i;
+	for( i= 0; i < base_seq->length(); i++)
 	{
 		doInterface((*base_seq)[i]);
 	}
@@ -310,7 +312,8 @@ GeneratorServantH::genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_
 	// parameters
 	//
 	IR__::ParDescriptionSeq* pards = operation->params();
-	for(CORBA::ULong i = pards->length(); i > 0; i--)
+	CORBA::ULong i;
+	for( i= pards->length(); i > 0; i--)
 	{
 		if(i < pards->length()) { out << ", "; }
 		IR__::ParameterDescription pardescr = (*pards)[i - 1];
@@ -337,7 +340,8 @@ GeneratorServantH::genFacetServants(IR__::ComponentDef_ptr component)
 	}
 
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Provides, false);
-	for(CORBA::ULong i = 0; i < contained_seq->length(); i++)
+	CORBA::ULong i;
+	for( i= 0; i < contained_seq->length(); i++)
 	{
 		IR__::ProvidesDef_var provides = IR__::ProvidesDef::_narrow(((*contained_seq)[i]));
 		std::string class_name = std::string(provides->name()) + "_servant";
@@ -370,7 +374,8 @@ GeneratorServantH::genConsumerServants(IR__::ComponentDef_ptr component)
 
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Consumes, false);
 	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
 	{
 		IR__::ConsumesDef_var consumes = IR__::ConsumesDef::_narrow(((*contained_seq)[i]));
 		std::string class_name = string(consumes->name()) + "_servant";
@@ -462,7 +467,8 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component)
 	// uses ports
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Uses, false);
 	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
 	{
 		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
 		out << "\n";
@@ -547,3 +553,4 @@ GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home)
 
 
 } //
+

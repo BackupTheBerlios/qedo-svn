@@ -3,6 +3,11 @@
 
 #include <string>
 
+#ifdef WIN32
+#define unlink _unlink
+#else
+#include <unistd.h>
+#endif
 
 namespace QEDO_CIDL_Generator {
 
@@ -76,7 +81,8 @@ GeneratorEIDL::beginModule(IR__::ModuleDef_ptr module)
 	out << "// forward declarations\n";
 	IR__::ContainedSeq_var contained_seq = module->contents(CORBA__::dk_Interface, true);
 	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
 	{
 		out << "interface " << (*contained_seq)[i]->name() << ";\n";
 	}
@@ -232,7 +238,8 @@ GeneratorEIDL::doOperation(IR__::OperationDef_ptr operation)
 	// parameters
 	IR__::ParDescriptionSeq_var para_seq = operation->params();
 	CORBA::ULong len = para_seq->length();
-	for(CORBA::ULong i = len; i > 0; i--)
+	CORBA::ULong i;
+	for( i= len; i > 0; i--)
 	{
 		if(i < len)
 		{
@@ -294,7 +301,8 @@ GeneratorEIDL::doFactory(IR__::FactoryDef_ptr factory)
 	// parameters
 	IR__::ParDescriptionSeq_var para_seq = factory->params();
 	CORBA::ULong len = para_seq->length();
-	for(CORBA::ULong i = len; i > 0; i--)
+	CORBA::ULong i;
+	for( i= len; i > 0; i--)
 	{
 		if(i < len)
 		{
@@ -341,7 +349,8 @@ GeneratorEIDL::doFinder(IR__::FinderDef_ptr finder)
 	// parameters
 	IR__::ParDescriptionSeq_var para_seq = finder->params();
 	CORBA::ULong len = para_seq->length();
-	for(CORBA::ULong i = len; i > 0; i--)
+	CORBA::ULong i;
+	for( i= len; i > 0; i--)
 	{
 		if(i < len)
 		{
@@ -669,7 +678,7 @@ GeneratorEIDL::doSink(IR__::SinkDef_ptr sink)
 
 	IR__::StreamTypeDef* st_def = sink->stream_type();
 	IR__::Contained::Description* c_descr = st_def->describe(); 
-	IR__::StreamTypeDescription* st_descr;
+	const IR__::StreamTypeDescription* st_descr;
 	(c_descr->value) >>= st_descr;
 	if (!strcmp("simple::h323_stream", map_absolute_name(st_def)))
 	{
@@ -692,7 +701,7 @@ GeneratorEIDL::doSource(IR__::SourceDef_ptr source)
 
 	IR__::StreamTypeDef* st_def = source->stream_type();
 	IR__::Contained::Description* c_descr = st_def->describe(); 
-	IR__::StreamTypeDescription* st_descr;
+	const IR__::StreamTypeDescription* st_descr;
 	(c_descr->value) >>= st_descr;
 	if (!strcmp("simple::h323_stream", map_absolute_name(st_def)))
 	{
@@ -712,7 +721,7 @@ GeneratorEIDL::doSiSo(IR__::SiSoDef_ptr siso)
 
 	IR__::StreamTypeDef* st_def = siso->stream_type();
 	IR__::Contained::Description* c_descr = st_def->describe(); 
-	IR__::StreamTypeDescription* st_descr;
+	const IR__::StreamTypeDescription* st_descr;
 	(c_descr->value) >>= st_descr;
 	if (!strcmp("simple::h323_stream", map_absolute_name(st_def)))
 	{
@@ -769,8 +778,9 @@ GeneratorEIDL::generate(string target)
 	out << "\n#endif\n";
 	out.close();
 	temp_file.close();
-	_unlink(temp_filename.c_str());
+	unlink(temp_filename.c_str());
 }
 
 
 } // namespace HU_CIDL_Generator
+
