@@ -719,8 +719,8 @@ AssemblyImpl::connectinterface ()
 throw(Components::CreateFailure)
 {
 	std::string receptacle;
-	Components::CCMObject_var user;
 	std::string facet;
+	Components::CCMObject_var user;
 	CORBA::Object_var provider;
 	std::vector < InterfaceConnectionData > ::const_iterator iter;
 	for(iter = data_.interface_connections_.begin();
@@ -740,10 +740,10 @@ throw(Components::CreateFailure)
 		//
 		// facet
 		//
-		facet = (*iter).provide.name;
 		DEBUG_OUT2( "..... provider is ", (*iter).provide.ref.name );
 		provider = getRef((*iter).provide.ref);
-		if(facet.length())
+		facet = (*iter).provide.name;
+		if( !facet.empty() )
 		{
 			// get facet
 			DEBUG_OUT2( "..... facet is ", facet );
@@ -756,6 +756,35 @@ throw(Components::CreateFailure)
 				NORMAL_ERR2( "AssemblyImpl: invalid facet name ", facet );
 				throw Components::CreateFailure();
 			}
+		}
+		else if( (*iter).provide.ref.kind == COMPONENTID )
+		{
+			// todo
+		}
+		else if( (*iter).provide.ref.kind == HOMEID )
+		{
+			// todo
+		}
+		else if( (*iter).provide.ref.kind == NAMING )
+		{
+			provider = resolveName( (*iter).provide.ref.name );
+			if( CORBA::is_nil( provider ) )
+			{
+				NORMAL_ERR2( "AssemblyImpl: invalid name binding ", (*iter).provide.ref.name );
+				throw Components::CreateFailure();
+			}
+		}
+		else if( (*iter).provide.ref.kind == OBJECTREF )
+		{
+			// todo
+		}
+		else if( (*iter).provide.ref.kind == TRADER )
+		{
+			// todo
+		}
+		else if( (*iter).provide.ref.kind == FINDER )
+		{
+			// todo
 		}
 
 		//
