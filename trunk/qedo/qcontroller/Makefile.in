@@ -18,19 +18,19 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-#wxGTk related
-WXGTK = $(shell @WXGTKDIR@/bin/wx-config --prefix)
-WXGTKCXXFLAGS = $(shell @WXGTKDIR@/bin/wx-config --cxxflags)
-WXGTKLIBS = $(shell @WXGTKDIR@/bin/wx-config --libs)
+#wxWindows related
+WXWINDOWS = $(shell @WXWINDOWSDIR@/bin/wx-config --prefix)
+WXWINDOWSCXXFLAGS = $(shell @WXWINDOWSDIR@/bin/wx-config --cxxflags)
+WXWINDOWSLIBS = $(shell @WXWINDOWSDIR@/bin/wx-config --libs)
 
 CXX = @CXX@
 INCLUDES+=-I. \
 	-I../qedoutil \
 	$(NAMING_INCLUDES) \
 	@XERCES_INCLUDES@
-CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@ $(WXGTKCXXFLAGS)
+CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@ $(WXWINDOWSCXXFLAGS)
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
-LIBS+=@LIBS@ $(WXGTKLIBS)
+LIBS+=@LIBS@ $(WXWINDOWSLIBS)
 CC=$(CXX)
 
 @SET_MAKE@
