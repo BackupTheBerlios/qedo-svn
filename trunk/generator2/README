@@ -11,7 +11,13 @@ In this file you need to specify the compositions that should implement your com
 
 3. Open a command line tool
 In this command line tool you need to execute the following command.
-%QEDO%\bin\cidl_gen --vc7 -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\OB  -I%ORBACUS%\idl -DWIN32 -DORBACUS_ORB --target <your_target> <your_name>.cidl
+For MICo you should use a commmand similar to this
+
+%QEDO%\bin\cidl_gen -I%QEDO%\idl -I%MICO%\include  -I%MICO%\include\mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --vc7 --target CallerImpl hello.cidl
+
+
+FOR Orbacus you can use a command similar tho this.
+%QEDO%\bin\cidl_gen -I%QEDO%\idl -I%ORBACUS%\idl\OB  -I%ORBACUS%\idl -DWIN32 -DORBACUS_ORB --vc7 --target CallerImpl hello.cidl
 
 The target could be a composition name or a module name. Depending on the target the code generator will create new directories and within them new project files. for each composition there is a servant and an executor module.
 
