@@ -179,6 +179,7 @@ void
 GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind)
 {
 	std::string attribute_name = mapName(attribute);
+
 	out << map_psdl_return_type(attribute->type_def(), false) << "\n";
 	out << class_name_ << "::" << attribute_name << "(";
 	out << map_psdl_parameter_type(attribute->type_def(), false) << " param)\n";
@@ -260,6 +261,194 @@ GeneratorPersistenceC::doOperation(IR__::OperationDef_ptr operation)
 }
 
 void
+GeneratorPersistenceC::genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type)
+{
+	out << "\n//\n// " << operation->id() << "\n//\n";
+	out << map_psdl_return_type(ret_type, false) << "\n";
+	out << class_name_ << "::" << mapName(operation) << "(";
+
+	//
+	// parameters
+	//
+	IR__::ParDescriptionSeq* pards = operation->params();
+	CORBA::ULong i;
+	for( i=0; i<pards->length(); i++)
+	{
+		IR__::ParameterDescription pardescr = (*pards)[i];
+		if (pardescr.mode == IR__::PARAM_IN) {
+			out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		};
+		if (pardescr.mode == IR__::PARAM_OUT) {
+			out << map_out_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		};
+		if (pardescr.mode == IR__::PARAM_INOUT) {
+			out << map_inout_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		};
+		if((i+1)!=pards->length()) { out << ", "; }
+	};
+
+	out << ")\n";
+	out << "{\n// BEGIN USER INSERT SECTION " << class_name_ << "::" << mapName(operation) << "()\n";
+	out << "// END USER INSERT SECTION " << class_name_ << "::" << mapName(operation) << "()\n}\n\n";
+}
+
+void
+GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::InterfaceDef_ptr inf_type, IR__::InterfaceDef_ptr inf_home )
+{
+	out << "\n//\n// " << operation->id() << "\n//\n";
+	IR__::IDLType_ptr ret_type = IR__::IDLType::_narrow(inf_type);
+	out << map_psdl_return_type(ret_type, false) << "\n";
+	out << class_name_ << "::" << mapName(operation) << "(";
+
+	//
+	// parameters
+	//
+	IR__::ParDescriptionSeq* pards = operation->params();
+	CORBA::ULong i;
+	for( i=0; i<pards->length(); i++)
+	{
+		IR__::ParameterDescription pardescr = (*pards)[i];
+		if (pardescr.mode == IR__::PARAM_IN) {
+			out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		};
+		if (pardescr.mode == IR__::PARAM_OUT) {
+			out << map_out_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		};
+		if (pardescr.mode == IR__::PARAM_INOUT) {
+			out << map_inout_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		};
+		if((i+1)!=pards->length()) { out << ", "; }
+	};
+
+	out << ")\n";
+	out << "{\n";
+	out.indent();
+	
+	IR__::AttributeDefSeq state_members = collectStateMembers(inf_type, CORBA__::dk_Create);
+	out << "string strFactory = \"\";\n\n";
+	m_strName = "strFactory";
+	out << m_strName << " = \"INSERT INTO " << inf_home->name() << " ( pid, spid, ";
+	CORBA::ULong len = state_members.length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		out << mapName(a_attribute);
+		( (i+1)!=len ) ? out << ", " : out << " ) \";\n";
+	}
+	m_strContent = "VALUES (";
+	out << genSQLLine(m_strName, m_strContent, false, false, true);
+	m_strContent = "\\'";
+	out << genSQLLine(m_strName, m_strContent, false, false, false);
+	m_strContent = "convertPidToString(m_pid)";
+	out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+	m_strContent = "\\'";
+	out << genSQLLine(m_strName, m_strContent, false, true, true);
+	m_strContent = "\\'";
+	out << genSQLLine(m_strName, m_strContent, false, false, false);
+	m_strContent = "convertSpidToString(m_shortPid)";
+	out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+	m_strContent = "\\'";
+	out << genSQLLine(m_strName, m_strContent, false, true, true);
+
+	for(i=0; i<state_members.length(); i++)
+	{
+		bool bFound = false;
+		string strTemp = "";
+		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		
+		for(CORBA::ULong j=0; j<pards->length(); j++)
+		{
+			IR__::ParameterDescription pardescr = (*pards)[j];	
+			strTemp = string(pardescr.name);
+			if(strTemp.compare(a_attribute->name())==0)
+			{
+				bFound = true;
+				break;
+			}
+		}
+		
+		if(bFound)
+		{
+			switch(psdl_check_type(a_attribute->type_def()))
+			{
+			case CPPBase::_SHORT:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%hd\", m_" << strTemp << ");\n";
+				if((i+1)!=state_members.length())
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_INT:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%d\", m_" << strTemp << ");\n";
+				if((i+1)!=state_members.length())
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_LONG:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%ld\", m_" << strTemp << ");\n";
+				if((i+1)!=state_members.length())
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_FLOAT:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%f\", m_" << strTemp << ");\n";
+				if((i+1)!=state_members.length())
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_DOUBLE:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%lf\", m_" << strTemp << ");\n";
+				if((i+1)!=state_members.length())
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_LONGDOUBLE:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%Lf\", m_" << strTemp << ");\n";
+				if((i+1)!=state_members.length())
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_STRING:
+				m_strContent = "\\'";
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				m_strContent = "m_" + strTemp;
+				out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+				m_strContent = "\\'";
+				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=state_members.length()), true);
+				break;
+			case CPPBase::_BOOL:
+				m_strContent = "convertBool2String(m_" + strTemp + ")";
+				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=state_members.length()), false, true);
+				m_strContent = "";
+				out << genSQLLine(m_strName, m_strContent, false, false, true);
+				break;
+			}
+		}
+		else
+		{
+			m_strContent = "NULL";
+			out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=state_members.length()), true);
+		}
+	}
+	m_strContent = ");";
+	out << genSQLLine(m_strName, m_strContent, false, false, false);
+	out.unindent();
+	out << "\n// BEGIN USER INSERT SECTION " << class_name_ << "::" << mapName(operation) << "()\n";
+	out << "// END USER INSERT SECTION " << class_name_ << "::" << mapName(operation) << "()\n}\n\n";
+}
+
+void
 GeneratorPersistenceC::doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDef_ptr inf_def)
 {
 	if(isAbstract)
@@ -269,7 +458,7 @@ GeneratorPersistenceC::doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDe
 		if(!CORBA::is_nil(abs_storagehome))
 			abs_storagetype = abs_storagehome->managed_abstract_storage_type();
 		if(!CORBA::is_nil(abs_storagetype))
-			genOperation(factory, abs_storagetype);
+			genFactory(factory, abs_storagetype, abs_storagehome);
 	}
 	else
 	{
@@ -278,7 +467,7 @@ GeneratorPersistenceC::doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDe
 		if(!CORBA::is_nil(storagehome))
 			storagetype = storagehome->managed_storage_type();
 		if(!CORBA::is_nil(storagetype))
-			genOperation(factory, storagetype);
+			genFactory(factory, storagetype, storagehome);
 	}
 }
 
@@ -293,22 +482,183 @@ GeneratorPersistenceC::doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_de
 			abs_storagetype = abs_storagehome->managed_abstract_storage_type();
 		if(!CORBA::is_nil(abs_storagetype))
 		{
-			genKey(key, abs_storagetype, false);
-			genKey(key, abs_storagetype, true);
+			genKey(key, abs_storagetype, abs_storagehome, false);
+			genKey(key, abs_storagetype, abs_storagehome, true);
 		}
 	}
 	else
 	{
+		//
+		//still necessary as the concrete storage home has no relational table?
+		//
 		IR__::StorageTypeDef_var storagetype;
 		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(inf_def);
 		if(!CORBA::is_nil(storagehome))
 			storagetype = storagehome->managed_storage_type();
 		if(!CORBA::is_nil(storagetype))
 		{
-			genKey(key, storagetype, false);
-			genKey(key, storagetype, true);
+			genKey(key, storagetype, storagehome, false);
+			genKey(key, storagetype, storagehome, true);
 		}
 	}
+}
+
+void
+GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceDef_ptr inf_type, IR__::InterfaceDef_ptr inf_home, bool isRef)
+{
+	IR__::IDLType_ptr ret_type = IR__::IDLType::_narrow(inf_type);
+
+	if(!isRef)
+		out << "\n//\n// " << operation->id() << "\n//\n";
+	char* szReturnType = map_psdl_return_type(ret_type, false);
+
+	//since the definition of a abstract stoage type is not yet supported, 
+	//we have to replcace the "_ptr" with "&" for operation find_by_ref_... 
+	if(isRef)
+	{
+		char* pdest = strstr( szReturnType, "_ptr" );
+		if( pdest != NULL )
+		{
+			memset(pdest, '\0', 4);
+			memset(pdest, '&', 1);
+		}
+	}
+	
+	out << szReturnType << "\n" << class_name_ << "::";
+	isRef ? out << "find_ref_by_" : out << "find_by_";
+	out << mapName(operation) << "(";
+
+	//
+	// parameters
+	//
+	IR__::ParDescriptionSeq* pards = operation->params();
+	CORBA::ULong i;
+	for( i=0; i<pards->length(); i++)
+	{
+		IR__::ParameterDescription pardescr = (*pards)[i];
+		if (pardescr.mode == IR__::PARAM_IN) {
+			out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		};
+		if (pardescr.mode == IR__::PARAM_OUT) {
+			out << map_out_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		};
+		if (pardescr.mode == IR__::PARAM_INOUT) {
+			out << map_inout_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		};
+
+		if((i+1)!=pards->length()) { out << ", "; }
+	};
+
+	out << ")";
+	
+	if(!isRef)
+	{
+		out << "\n";
+		out.indent();
+		out << "throw(CosPersistentState::NotFound";
+		handleException(operation);
+		out << ")";
+		out.unindent();
+	}
+	
+	out << "\n{\n";
+	out.indent();
+
+	// make the SQL sentence for select(key)
+	out << "char* szTemp = new char[64];\n";
+	out << "string strKey = \"\";\n\n";
+	m_strName = "strKey";
+	m_strContent = "SELECT * FROM ONLY ";
+	m_strContent += inf_home->name();
+	out << genSQLLine(m_strName, m_strContent, true, false, true);
+	m_strContent = "WHERE";
+	out << genSQLLine(m_strName, m_strContent, false, false, true);
+	for( i=0; i<pards->length(); i++ )
+	{
+		IR__::ParameterDescription pardescr = (*pards)[i];
+		m_strContent = string(pardescr.name);
+		if(psdl_check_type(pardescr.type_def)!=CPPBase::_STRING)
+			m_strContent += " =";
+		else
+			m_strContent += " LIKE";
+		out << genSQLLine(m_strName, m_strContent, false, false, true);
+
+		switch(psdl_check_type(pardescr.type_def))
+		{
+		case CPPBase::_SHORT:
+			out << "memset(szTemp, \'\\0\', 64);\n";
+			out << "sprintf(szTemp, \"%hd\", m_" << string(pardescr.name) << ");\n";
+			if((i+1)!=pards->length())
+				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+			else
+				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+			break;
+		case CPPBase::_INT:
+			out << "memset(szTemp, \'\\0\', 64);\n";
+			out << "sprintf(szTemp, \"%d\", m_" << string(pardescr.name) << ");\n";
+			if((i+1)!=pards->length())
+				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+			else
+				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+			break;
+		case CPPBase::_LONG:
+			out << "memset(szTemp, \'\\0\', 64);\n";
+			out << "sprintf(szTemp, \"%ld\", m_" << string(pardescr.name) << ");\n";
+			if((i+1)!=pards->length())
+				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+			else
+				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+			break;
+		case CPPBase::_FLOAT:
+			out << "memset(szTemp, \'\\0\', 64);\n";
+			out << "sprintf(szTemp, \"%f\", m_" << string(pardescr.name) << ");\n";
+			if((i+1)!=pards->length())
+				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+			else
+				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+			break;
+		case CPPBase::_DOUBLE:
+			out << "memset(szTemp, \'\\0\', 64);\n";
+			out << "sprintf(szTemp, \"%lf\", m_" << string(pardescr.name) << ");\n";
+			if((i+1)!=pards->length())
+				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+			else
+				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+			break;
+		case CPPBase::_LONGDOUBLE:
+			out << "memset(szTemp, \'\\0\', 64);\n";
+			out << "sprintf(szTemp, \"%Lf\", m_" << string(pardescr.name) << ");\n";
+			if((i+1)!=pards->length())
+				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+			else
+				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+			break;
+		case CPPBase::_STRING:
+			m_strContent = "\\'";
+			out << genSQLLine(m_strName, m_strContent, false, false, false);
+			m_strContent = "m_" + string(pardescr.name);
+			out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+			m_strContent = "\\'";
+			out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=pards->length()), true);
+			break;
+		case CPPBase::_BOOL:
+			m_strContent = "convertBool2String(m_" + string(pardescr.name) + ")";
+			out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=pards->length()), false, true);
+			m_strContent = "";
+			out << genSQLLine(m_strName, m_strContent, false, false, true);
+			break;
+		}
+	}
+	m_strContent = ");";
+	out << genSQLLine(m_strName, m_strContent, false, false, false);
+	out.unindent();
+
+	out << "\n// BEGIN USER INSERT SECTION " << class_name_;
+	isRef ? out << "::find_ref_by_" : out << "::find_by_";
+	out << mapName(operation) << "()\n";
+	out << "// END USER INSERT SECTION " << class_name_;
+	isRef ? out << "::find_ref_by_" : out << "::find_by_";
+	out << mapName(operation) << "()\n}\n\n";
 }
 
 void 
@@ -336,28 +686,42 @@ GeneratorPersistenceC::genAbstractObjsForConcreteType(IR__::AbstractStorageTypeD
 void 
 GeneratorPersistenceC::doStorageType(IR__::StorageTypeDef_ptr storage_type)
 {
+	class_name_ = string(storage_type->name());
+
+	IR__::InterfaceDefSeq_var supported_infs = storage_type->supported_interfaces();
+	if(supported_infs->length()!=1)
+		throw CORBA::BAD_PARAM(); // is this exception appropriate?
+	IR__::AbstractStorageTypeDef_var abs_storagetype;
+	abs_storagetype = IR__::AbstractStorageTypeDef::_narrow((*supported_infs)[0]);
+
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";	
 	open_module(out, storage_type, "");
 	out << "\n\n";
-	
-	class_name_ = string(storage_type->name());
 	out << "// BEGIN USER INSERT SECTION " << class_name_ << "\n";
 	out << "// END USER INSERT SECTION " << class_name_ << "\n\n";
 	out << class_name_ << "::" << class_name_ << "()\n";
-	out << "{\n// BEGIN USER INSERT SECTION " << class_name_ << "::" << class_name_ << "()\n";
+	out << "{\n";
+	out.indent();
+	out << "char* szTemp = new char[64];\n\n";
+	genSQLSentences(abs_storagetype, sql_SELECT);
+	genSQLSentences(abs_storagetype, sql_UPDATE);
+	out.unindent();
+	out << "// BEGIN USER INSERT SECTION " << class_name_ << "::" << class_name_ << "()\n";
 	out << "// END USER INSERT SECTION " <<class_name_ << "::" << class_name_ << "()\n}\n\n";
 	out << class_name_ << "::~" << class_name_ << "()\n";
 	out << "{\n// BEGIN USER INSERT SECTION " << class_name_ << "::~" << class_name_ << "()\n";
 	out << "// END USER INSERT SECTION " <<class_name_ << "::~" << class_name_ << "()\n}\n\n";
 
-	IR__::InterfaceDefSeq_var supported_infs = storage_type->supported_interfaces();
+	/*
 	for(CORBA::ULong i = 0; i < supported_infs->length(); i++) 
 	{
 		IR__::AbstractStorageTypeDef_ptr abs_storage_type_inh;
 		abs_storage_type_inh = IR__::AbstractStorageTypeDef::_narrow((*supported_infs)[i]);
 		genAbstractObjsForConcreteType(abs_storage_type_inh);
 	};
+	*/
+	genAbstractObjsForConcreteType(abs_storagetype);
 
 	handleAttribute(storage_type);
 	handleOperation(storage_type);
@@ -398,18 +762,19 @@ GeneratorPersistenceC::genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeD
 void 
 GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storage_home)
 {
-	storagehome_ = IR__::StorageHomeDef::_duplicate(storage_home);
-	storagetype_ = IR__::StorageTypeDef::_duplicate(storage_home->managed_storage_type());
+	m_storagehome = IR__::StorageHomeDef::_duplicate(storage_home);
+	m_storagetype = IR__::StorageTypeDef::_duplicate(storage_home->managed_storage_type());
 
 	IR__::InterfaceDefSeq_var supported_infs = storage_home->supported_interfaces();
 	if(supported_infs->length()!=1)
 		throw CORBA::BAD_PARAM(); // is this exception appropriate?
 	IR__::AbstractStorageHomeDef_var abs_storagehome;
 	abs_storagehome = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[0]);
+	m_SthMap.insert( Sth_Pair(abs_storagehome->managed_abstract_storage_type()->name(), abs_storagehome->name()) );
 
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";
-	open_module(out, storagetype_, "");
+	open_module(out, m_storagetype, "");
 	out << "\n\n";
 
 	class_name_ = string(storage_home->name());
@@ -446,102 +811,7 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storage_home)
 	handleFactory(storage_home);
 	handleKey(storage_home);
 
-	close_module(out, storagetype_);
-}
-
-void
-GeneratorPersistenceC::genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type)
-{
-	out << "\n//\n// " << operation->id() << "\n//\n";
-	out << map_psdl_return_type(ret_type, false) << "\n";
-	out << class_name_ << "::" << mapName(operation) << "(";
-
-	//
-	// parameters
-	//
-	IR__::ParDescriptionSeq* pards = operation->params();
-	CORBA::ULong i;
-	for( i= pards->length(); i > 0; i--)
-	{
-		if(i < pards->length()) { out << ", "; }
-		IR__::ParameterDescription pardescr = (*pards)[i - 1];
-		if (pardescr.mode == IR__::PARAM_IN) {
-			out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
-		};
-		if (pardescr.mode == IR__::PARAM_OUT) {
-			out << map_out_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
-		};
-		if (pardescr.mode == IR__::PARAM_INOUT) {
-			out << map_inout_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
-		};
-	};
-
-	out << ")\n";
-	out << "{\n// BEGIN USER INSERT SECTION " << class_name_ << "::" << mapName(operation) << "()\n";
-	out << "// END USER INSERT SECTION " << class_name_ << "::" << mapName(operation) << "()\n}\n\n";
-}
-
-void
-GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool isRef)
-{
-	if(!isRef)
-		out << "\n//\n// " << operation->id() << "\n//\n";
-	char* szReturnType = map_psdl_return_type(ret_type, false);
-
-	//since the definition of a abstract stoage type is not yet supported, 
-	//we have to replcace the "_ptr" with "&" for operation find_by_ref_... 
-	if(isRef)
-	{
-		char* pdest = strstr( szReturnType, "_ptr" );
-		if( pdest != NULL )
-		{
-			memset(pdest, '\0', 4);
-			memset(pdest, '&', 1);
-		}
-	}
-	
-	out << szReturnType << "\n" << class_name_ << "::";
-	isRef ? out << "find_ref_by_" : out << "find_by_";
-	out << mapName(operation) << "(";
-
-	//
-	// parameters
-	//
-	IR__::ParDescriptionSeq* pards = operation->params();
-	CORBA::ULong i;
-	for( i= pards->length(); i > 0; i--)
-	{
-		if(i < pards->length()) { out << ", "; }
-		IR__::ParameterDescription pardescr = (*pards)[i - 1];
-		if (pardescr.mode == IR__::PARAM_IN) {
-			out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
-		};
-		if (pardescr.mode == IR__::PARAM_OUT) {
-			out << map_out_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
-		};
-		if (pardescr.mode == IR__::PARAM_INOUT) {
-			out << map_inout_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
-		};
-	};
-
-	out << ")";
-	
-	if(!isRef)
-	{
-		out << "\n";
-		out.indent();
-		out << "throw(CosPersistentState::NotFound";
-		handleException(operation);
-		out << ")";
-		out.unindent();
-	}
-	
-	out << "\n{\n// BEGIN USER INSERT SECTION " << class_name_;
-	isRef ? out << "::find_ref_by_" : out << "::find_by_";
-	out << mapName(operation) << "()\n";
-	out << "// END USER INSERT SECTION " << class_name_;
-	isRef ? out << "::find_ref_by_" : out << "::find_by_";
-	out << mapName(operation) << "()\n}\n\n";
+	close_module(out, m_storagetype);
 }
 
 void
@@ -587,27 +857,138 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storage_home,
 	}
 
 	out << ")\n"; 
-	out << "{\n// BEGIN USER INSERT SECTION " << class_name_ << "::_create()\n";
+
+	IR__::InterfaceDefSeq_var supported_infs = storage_home->supported_interfaces();
+	if(supported_infs->length()!=1)
+		throw CORBA::BAD_PARAM(); // is this exception appropriate?
+	IR__::AbstractStorageHomeDef_var abs_storagehome;
+	abs_storagehome = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[0]);
+
+	out << "{\n";
+	out.indent();
+	// make the SQL sentence for insert
+	out << "string strInsert = \"\";\n\n";
+	m_strName = "strInsert";
+	out << m_strName << " = \"INSERT INTO " << abs_storagehome->name() << " ( pid, spid, ";
+	for(i = 0; i < len; i++)
+	{
+		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		out << mapName(a_attribute);
+		( (i+1)!=len ) ? out << ", " : out << " ) \";\n";
+	}
+	m_strContent = "VALUES (";
+	out << genSQLLine(m_strName, m_strContent, false, false, true);
+	m_strContent = "\\'";
+	out << genSQLLine(m_strName, m_strContent, false, false, false);
+	m_strContent = "convertPidToString(m_pid)";
+	out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+	m_strContent = "\\'";
+	out << genSQLLine(m_strName, m_strContent, false, true, true);
+	m_strContent = "\\'";
+	out << genSQLLine(m_strName, m_strContent, false, false, false);
+	m_strContent = "convertSpidToString(m_shortPid)";
+	out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+	m_strContent = "\\'";
+	out << genSQLLine(m_strName, m_strContent, false, true, true);
+
+	for(unsigned int i=0; i<len; i++)
+	{
+		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+
+		switch(psdl_check_type(a_attribute->type_def()))
+		{
+		case CPPBase::_SHORT:
+			out << "memset(szTemp, \'\\0\', 64);\n";
+			out << "sprintf(szTemp, \"%hd\", m_" << mapName(a_attribute) << ");\n";
+			if((i+1)!=state_members.length())
+				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+			else
+				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+			break;
+		case CPPBase::_INT:
+			out << "memset(szTemp, \'\\0\', 64);\n";
+			out << "sprintf(szTemp, \"%d\", m_" << mapName(a_attribute) << ");\n";
+			if((i+1)!=state_members.length())
+				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+			else
+				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+			break;
+		case CPPBase::_LONG:
+			out << "memset(szTemp, \'\\0\', 64);\n";
+			out << "sprintf(szTemp, \"%ld\", m_" << mapName(a_attribute) << ");\n";
+			if((i+1)!=state_members.length())
+				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+			else
+				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+			break;
+		case CPPBase::_FLOAT:
+			out << "memset(szTemp, \'\\0\', 64);\n";
+			out << "sprintf(szTemp, \"%f\", m_" << mapName(a_attribute) << ");\n";
+			if((i+1)!=state_members.length())
+				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+			else
+				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+			break;
+		case CPPBase::_DOUBLE:
+			out << "memset(szTemp, \'\\0\', 64);\n";
+			out << "sprintf(szTemp, \"%lf\", m_" << mapName(a_attribute) << ");\n";
+			if((i+1)!=state_members.length())
+				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+			else
+				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+			break;
+		case CPPBase::_LONGDOUBLE:
+			out << "memset(szTemp, \'\\0\', 64);\n";
+			out << "sprintf(szTemp, \"%Lf\", m_" << mapName(a_attribute) << ");\n";
+			if((i+1)!=state_members.length())
+				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+			else
+				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+			break;
+		case CPPBase::_STRING:
+			m_strContent = "\\'";
+			out << genSQLLine(m_strName, m_strContent, false, false, false);
+			m_strContent = "m_" + mapName(a_attribute);
+			out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+			m_strContent = "\\'";
+			out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=state_members.length()), true);
+			break;
+		case CPPBase::_BOOL:
+			m_strContent = "convertBool2String(m_" + mapName(a_attribute) + ")";
+			out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=state_members.length()), false, true);
+			m_strContent = "";
+			out << genSQLLine(m_strName, m_strContent, false, false, true);
+			break;
+		}
+	}
+	m_strContent = ");";
+	out << genSQLLine(m_strName, m_strContent, false, false, false);
+	out.unindent();
+	out << "\n// BEGIN USER INSERT SECTION " << class_name_ << "::_create()\n";
 	out << "// END USER INSERT SECTION " << class_name_ << "::_create()\n}\n\n";
 }
 
 string
-GeneratorPersistenceC::genSQLLine(string strName, string strContent, bool start, bool comma, bool space)
+GeneratorPersistenceC::genSQLLine(string strName, string strContent, bool start, bool comma, bool space, bool func)
 {
 	string strRet = strName;
-	start ? strRet += " = \"" : strRet += " += \"";
+
+	start ? strRet += " = " : strRet += " += ";
+	if(!func) strRet += "\"";
 	strRet += strContent;
 	if(comma) strRet += ",";
 	if(space) strRet += " ";
-	strRet += "\";\n";
+	if(!func) strRet += "\"";
+	strRet += ";\n";
+
 	return strRet;
 }
 
 void
 GeneratorPersistenceC::genSQLSentences(IR__::AbstractStorageHomeDef_ptr abs_storage_home, SQLFunc sf)
 {
-	string strContent = "";
-	string strName= "";
+	m_strContent = "";
+	m_strName= "";
 	IR__::AttributeDefSeq state_members;
 	abs_storage_home->managed_abstract_storage_type()->get_StateMembers(state_members, CORBA__::dk_Self);
 	IR__::InterfaceDefSeq_var base_abs_storagetypes = abs_storage_home->managed_abstract_storage_type()->base_abstract_storage_types();
@@ -615,63 +996,63 @@ GeneratorPersistenceC::genSQLSentences(IR__::AbstractStorageHomeDef_ptr abs_stor
 	switch(sf)
 	{
 	case sql_CREATE:
-		strName = "strCreateTable";
-		strContent = "CREATE TABLE ";
-		strContent += abs_storage_home->name();
-		strContent += " (";
-		out << genSQLLine(strName, strContent, true, false, true);
+		m_strName = "strCreateTable";
+		m_strContent = "CREATE TABLE ";
+		m_strContent += abs_storage_home->name();
+		m_strContent += " (";
+		out << genSQLLine(m_strName, m_strContent, true, false, true);
 
 		if(base_abs_storagetypes->length()==0)
 		{
-			strContent = "pid  text  not null  references PID_CONTENT";
-			out << genSQLLine(strName, strContent, false, true, true);
-			strContent = "spid  text";
-			out << genSQLLine(strName, strContent, false, true, true);
+			m_strContent = "pid  TEXT  NOT NULL  REFERENCES PID_CONTENT";
+			out << genSQLLine(m_strName, m_strContent, false, true, true);
+			m_strContent = "spid  TEXT";
+			out << genSQLLine(m_strName, m_strContent, false, true, true);
 		}
 
 		for(unsigned int i=0; i<state_members.length(); i++)
 		{
 			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
-			strContent = mapName(a_attribute);
-			strContent += "  ";
-			strContent.append( map_psdl2sql_type(a_attribute->type_def()) );
+			m_strContent = mapName(a_attribute);
+			m_strContent += "  ";
+			m_strContent.append( map_psdl2sql_type(a_attribute->type_def()) );
 			bool isComma = ((i+1)!=state_members.length()) || (base_abs_storagetypes->length()==0);
-			out << genSQLLine(strName, strContent, false, isComma, true);
+			out << genSQLLine(m_strName, m_strContent, false, isComma, true);
 		}
 
 		if(base_abs_storagetypes->length()>0)
 		{
-			strContent = ") INHERITS ( ";
+			m_strContent = ") INHERITS ( ";
 			for(unsigned int j=0; j<base_abs_storagetypes->length(); j++)
 			{
-				strContent.append(((*base_abs_storagetypes)[j])->name());
+				m_strContent.append(((*base_abs_storagetypes)[j])->name());
 				
 				if((j+1)!=base_abs_storagetypes->length())
-					strContent += ", ";
+					m_strContent += ", ";
 				else
-                    strContent += " );";
+                    m_strContent += " );";
 
-				out << genSQLLine(strName, strContent, false, false, false);
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
 			}
 		}
 		else
 		{
-			strContent = "constraint PK_";
-			strContent += abs_storage_home->name();
-			strContent += " primary key (PID)";
-			out << genSQLLine(strName, strContent, false, false, true);
-			strContent = ");";
-			out << genSQLLine(strName, strContent, false, false, false);
+			m_strContent = "CONSTRAINT PK_";
+			m_strContent += abs_storage_home->name();
+			m_strContent += " PRIMARY KEY (pid)";
+			out << genSQLLine(m_strName, m_strContent, false, false, true);
+			m_strContent = ");";
+			out << genSQLLine(m_strName, m_strContent, false, false, false);
 		}
 
 		out << "\n";
 		break;
 	case sql_SELECT:
-
 		break;
 	case sql_UPDATE:
 		break;
 	case sql_INSERT:
+		break;
 	case sql_DELETE:
 		break;
 	default:
@@ -682,22 +1063,121 @@ GeneratorPersistenceC::genSQLSentences(IR__::AbstractStorageHomeDef_ptr abs_stor
 void
 GeneratorPersistenceC::genSQLSentences(IR__::AbstractStorageTypeDef_ptr abs_storage_type, SQLFunc sf)
 {
-	string strContent = "";
-	string strName= "";
+	m_strContent = "";
+	m_strName= "";
 	IR__::AttributeDefSeq state_members;
-	//abs_storage_type->get_StateMembers(state_members, CORBA__::dk_Self);
+	abs_storage_type->get_StateMembers(state_members, CORBA__::dk_Variable);
 	IR__::InterfaceDefSeq_var base_abs_storagetypes = abs_storage_type->base_abstract_storage_types();
 
 	switch(sf)
 	{
 	case sql_SELECT:
-		strName = "m_strSelect";
-		strContent = "SELECT * FROM ONLY ";
-		strContent += 
-
+		m_strName = "m_strSelect";
+		m_strContent = "SELECT * FROM ONLY ";
+		m_SthIter = m_SthMap.find(abs_storage_type->name());
+		m_strContent += m_SthIter->second;
+		out << genSQLLine(m_strName, m_strContent, true, false, true);
+		m_strContent = "WHERE pid LIKE \\'";
+		out << genSQLLine(m_strName, m_strContent, false, false, false);
+		m_strContent = "convertPidToString(m_pid)";
+		out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+		m_strContent = "\\';";
+		out << genSQLLine(m_strName, m_strContent, false, false, false);
+		out << "\n";
 		break;
 	case sql_UPDATE:
-		strName = "m_strUpdate";
+		m_strName = "m_strUpdate";
+		m_strContent = "UPDATE ";
+		m_SthIter = m_SthMap.find(abs_storage_type->name());
+		m_strContent += m_SthIter->second;
+		m_strContent += " SET";
+		out << genSQLLine(m_strName, m_strContent, true, false, true);
+		for(unsigned int i=0; i<state_members.length(); i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			m_strContent = mapName(a_attribute) + " = ";
+
+			switch(psdl_check_type(a_attribute->type_def()))
+			{
+			case CPPBase::_SHORT:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%hd\", m_" << mapName(a_attribute) << ");\n";
+				if((i+1)!=state_members.length())
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_INT:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%d\", m_" << mapName(a_attribute) << ");\n";
+				if((i+1)!=state_members.length())
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_LONG:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%ld\", m_" << mapName(a_attribute) << ");\n";
+				if((i+1)!=state_members.length())
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_FLOAT:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%f\", m_" << mapName(a_attribute) << ");\n";
+				if((i+1)!=state_members.length())
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_DOUBLE:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%lf\", m_" << mapName(a_attribute) << ");\n";
+				if((i+1)!=state_members.length())
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_LONGDOUBLE:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%Lf\", m_" << mapName(a_attribute) << ");\n";
+				if((i+1)!=state_members.length())
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_STRING:
+				m_strContent += "\\'";
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				m_strContent = "m_" + mapName(a_attribute);
+				out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+				m_strContent = "\\'";
+				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=state_members.length()), true);
+				break;
+			case CPPBase::_BOOL:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				m_strContent = "convertBool2String(m_" + mapName(a_attribute) + ")";
+				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=state_members.length()), false, true);
+				m_strContent = "";
+				out << genSQLLine(m_strName, m_strContent, false, false, true);
+				break;
+			}
+		}
+	
+		m_strContent = "WHERE pid LIKE \\'";
+		out << genSQLLine(m_strName, m_strContent, false, false, false);
+		m_strContent = "convertPidToString(m_pid)";
+		out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+		m_strContent = "\\';";
+		out << genSQLLine(m_strName, m_strContent, false, false, false);
+		out << "\n";
 		break;
 	case sql_INSERT:
 	case sql_DELETE:
@@ -705,6 +1185,24 @@ GeneratorPersistenceC::genSQLSentences(IR__::AbstractStorageTypeDef_ptr abs_stor
 	default:
 		return;
 	}
+}
+
+IR__::AttributeDefSeq 
+GeneratorPersistenceC::collectStateMembers(IR__::InterfaceDef_ptr inf_def, CORBA__::CollectStyle style)
+{
+	IR__::AttributeDefSeq state_members;
+
+	IR__::AbstractStorageTypeDef_ptr abs_storagetype;
+	abs_storagetype = IR__::AbstractStorageTypeDef::_narrow(inf_def);
+	if(!CORBA::is_nil(abs_storagetype))
+		abs_storagetype->get_StateMembers(state_members, style);
+
+	IR__::StorageTypeDef_ptr storagetype;
+	storagetype = IR__::StorageTypeDef::_narrow(inf_def);
+	if(!CORBA::is_nil(storagetype))
+		storagetype->get_StateMembers(state_members, style);
+
+	return state_members;
 }
 
 } // namespace

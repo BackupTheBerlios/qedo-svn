@@ -107,4 +107,14 @@ PSSHelper::compareShortPid(const ShortPid& rSrc, const ShortPid& rDest)
 		return FALSE;
 }
 
+string 
+PSSHelper::convertBool2String(bool bc)
+{
+	if(bc)
+		return "true";
+	else
+		return "false";
+	//(bc) ? return ("true") : return ("false");
+}
+
 }

@@ -276,6 +276,12 @@ throw(CORBA::SystemException)
 	CORBA::ULong i = 0;
 	if(style==CORBA__::dk_Create)
 	{
+		//**********************************************************
+		//we don't create relational table for concrete storagetype,
+		//so we don't need state members in concrete storagetype as
+		//parameters in concrete storagehome's _create() operator.
+		//**********************************************************
+
 		//collect state members for storagehome's _create operation
 		//++ begin with the base type of the storage type
 		/*
@@ -328,7 +334,14 @@ throw(CORBA::SystemException)
 	}
 	else if(style==CORBA__::dk_default)
 	{
+		//********************************************************************
+		//This default case is to collect statemembers for comparation with 
+		//the parameters defined in KEY or FACTORY, since concrete storagetype
+		//has no appropriate relational table now, the state members of it are 
+		//also unnecessary.
+		//********************************************************************
 		//collect state members for storagehome's key operation
+		/*
 		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
 		CORBA::ULong len = contained_seq->length();
 		CORBA::ULong ulPre = state_members.length();
@@ -342,6 +355,7 @@ throw(CORBA::SystemException)
 		IR__::StorageTypeDef_ptr storagetype = base_storage_type();
 		if(!CORBA::is_nil(storagetype))
 			storagetype->get_StateMembers(state_members, style);
+		*/
 	}	
 }
 

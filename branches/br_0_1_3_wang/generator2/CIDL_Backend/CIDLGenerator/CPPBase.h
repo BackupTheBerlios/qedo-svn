@@ -43,7 +43,9 @@ class CPPBase : public GeneratorBase
 {
 
 protected:
-
+	
+	enum RETTYPE{ _SHORT, _INT, _LONG, _FLOAT, _DOUBLE, _LONGDOUBLE, _STRING, _BOOL };
+	
 	bool open_module(Printer& out, IR__::Contained* cur_cont, std::string prefix = "");
 	void close_module(Printer& out, IR__::Contained* cur_cont);
 
@@ -83,6 +85,9 @@ protected:
 		throw ( CannotMapType );
 
 	char* map_psdl2sql_type ( IR__::IDLType_ptr type )
+		throw ( CannotMapType );
+
+	CPPBase::RETTYPE psdl_check_type (IR__::IDLType_ptr type )
 		throw ( CannotMapType );
 
 	char* map_attribute_type ( IR__::IDLType_ptr type )

@@ -789,43 +789,93 @@ throw ( CannotMapType )
 	{
 	case CORBA::tk_short:
 	case CORBA::tk_ushort:
-		ret_string = "smallint";
+		ret_string = "SMALLINT";
 		break;
 	case CORBA::tk_long:
 	case CORBA::tk_ulong:
-		ret_string = "integer";
+		ret_string = "INTEGER";
 		break;
 	case CORBA::tk_longlong:
 	case CORBA::tk_ulonglong:
-		ret_string = "bigint";
+		ret_string = "BIGINT";
 		break;
 	case CORBA::tk_float:
-		ret_string = "real";
+		ret_string = "REAL";
 		break;
 	case CORBA::tk_double:
 	case CORBA::tk_longdouble:
-		ret_string = "double";
+		ret_string = "DOUBLE";
 		break;
 	case CORBA::tk_char:
-		ret_string = "char(1)";
+		ret_string = "CHAR(1)";
 		break;
 	case CORBA::tk_wchar:
-		ret_string = "char(2)";
+		ret_string = "CHAR(2)";
 		break;
 	case CORBA::tk_string:
 	case CORBA::tk_wstring:
-		ret_string = "text";
+		ret_string = "TEXT";
 		break;
 	case CORBA::tk_boolean:
-		ret_string = "boolean";
+		ret_string = "BOOLEAN";
 		break;
 	case CORBA::tk_octet:
-		ret_string = "bytea";
+		ret_string = "BYTEA";
 		break;
 	default:
 		throw CannotMapType();
 	}
 	return CORBA::string_dup ( ret_string.c_str() );
+}
+
+CPPBase::RETTYPE
+CPPBase::psdl_check_type
+(IR__::IDLType_ptr type )
+throw ( CannotMapType )
+{
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
+
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
+
+	switch ( typecodekind )
+	{
+	case CORBA::tk_short:
+	case CORBA::tk_ushort:
+		return _SHORT;
+	case CORBA::tk_long:
+	case CORBA::tk_ulong:
+		return _INT;
+	case CORBA::tk_longlong:
+	case CORBA::tk_ulonglong:
+		return _LONG;
+	case CORBA::tk_float:
+		return _FLOAT;
+	case CORBA::tk_double:
+		return _DOUBLE;
+	case CORBA::tk_longdouble:
+		return _LONGDOUBLE;
+	case CORBA::tk_char:
+	case CORBA::tk_wchar:
+	case CORBA::tk_string:
+	case CORBA::tk_wstring:
+	case CORBA::tk_octet:
+		return _STRING;
+	case CORBA::tk_boolean:
+		return _BOOL;
+	default:
+		throw CannotMapType();
+	}
 }
 
 char*

@@ -1723,7 +1723,7 @@ FactoryDcl1(idl_name_v, dcls_v)
     
     dcls_v : my_build
     {
-		// generate factory in abstract storage type 
+		// generate factory in abstract storage home 
 		IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
 		abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
 		if(!CORBA::is_nil(abs_storagehome_ptr))
@@ -1771,7 +1771,11 @@ FactoryDcl1(idl_name_v, dcls_v)
 					"1.0", my_build.paradescseq, my_build.excdefseq);
 		}
 		
-		// generate factory in storage type 
+		//
+		//since concrete storagehome has no relational table now, 
+		//is it still necessary to create one factory?
+		//
+		// generate factory in storage home 
 		IR__::StorageHomeDef_ptr storagehome_ptr; 
 		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
 		if(!CORBA::is_nil(storagehome_ptr))
@@ -1832,7 +1836,7 @@ KeyDcl(idl_name_v, dcls_v)
     
     dcls_v : my_build
     {
-		// generate key in abstract storage type 
+		// generate key in abstract storage home 
 		IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
 		abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
 		if(!CORBA::is_nil(abs_storagehome_ptr))
@@ -1880,7 +1884,11 @@ KeyDcl(idl_name_v, dcls_v)
 					"1.0",my_build.paradescseq);
 		}
 		
-		// generate key in storage type 
+		//
+		//since concrete storagehome has no relational table now, 
+		//is it still necessary to create one key?
+		//
+		// generate key in storage home 
 		IR__::StorageHomeDef_ptr storagehome_ptr; 
 		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
 		if(!CORBA::is_nil(storagehome_ptr))

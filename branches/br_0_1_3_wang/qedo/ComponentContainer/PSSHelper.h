@@ -33,7 +33,7 @@ using namespace CosPersistentState;
 namespace Qedo
 {
 
-class PSSHelper
+class CONTAINERDLL_API PSSHelper
 {
 	public:
 
@@ -50,6 +50,8 @@ class PSSHelper
 		static bool comparePid(const Pid& rSrc, const Pid& rDest);
 
 		static bool compareShortPid(const ShortPid& rSrc, const ShortPid& rDest);
+
+		static string convertBool2String(bool bc);
 
 };
 

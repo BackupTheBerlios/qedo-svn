@@ -22,13 +22,15 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
 /*                                                                           */
 /*****************************************************************************/
-
 #ifndef __GENERATOR_PERSISTENCEH_H__
 #define __GENERATOR_PERSISTENCEH_H__
 
 #include "CPPBase.h"
 #include "Printer.h"
-#include <iostream>
+#include "Debug.h"
+#include <map>
+
+using namespace std;
 
 
 namespace QEDO_CIDL_Generator {
@@ -39,36 +41,34 @@ class GeneratorPersistenceH : public virtual CPPBase
 
 private:
 
-	std::string filename_;
 	Printer out;
 	bool isAbstract;
 	bool isASHKey; // key is from abstract storage home
-	IR__::AbstractStorageHomeDef_var	abs_storagehome_;
-	IR__::StorageHomeDef_var			storagehome_;
-	IR__::AbstractStorageTypeDef_var	abs_storagetype_;
-	IR__::StorageTypeDef_var			storagetype_;
-	std::set<std::string>				m_recursion_set;
+	std::string m_filename;
+	std::set<std::string> m_recursion_set;
+
 
 	void check_for_generation(IR__::Contained_ptr item);
 
 	void doAttribute(IR__::AttributeDef_ptr attribute);
 	void doOperation(IR__::OperationDef_ptr operation);
 	void doException(IR__::ExceptionDef_ptr except);
-	void doAbstractStorageType(IR__::AbstractStorageTypeDef_ptr abs_storage_type);
-	void doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
-	void doStorageType(IR__::StorageTypeDef_ptr storage_type);
-	void doStorageHome(IR__::StorageHomeDef_ptr storage_home);
 	void doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_def);
 	void doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDef_ptr inf_def);
+	void doAbstractStorageType(IR__::AbstractStorageTypeDef_ptr abs_storagetype);
+	void doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome);
+	void doStorageType(IR__::StorageTypeDef_ptr storagetype);
+	void doStorageHome(IR__::StorageHomeDef_ptr storagehome);
 
+	void genAttribute(IR__::StorageTypeDef_ptr storagetype);
 	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
 	void genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool isRef);
-	void genAbstractStorageTypeBody(IR__::AbstractStorageTypeDef_ptr abs_storage_type, bool isRef);
-	void genAbstractObjsForConcreteType(IR__::AbstractStorageTypeDef_ptr abs_storage_type);
-	void genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
-	void genStorageTypeBody(IR__::StorageTypeDef_ptr storage_type, bool isRef);
-	void genCreateOperation(IR__::StorageHomeDef_ptr storage_home, bool isRef);
-	void genAttribute(IR__::StorageTypeDef_ptr storagetype);
+	void genAbstractStorageTypeBody(IR__::AbstractStorageTypeDef_ptr abs_storagetype, bool isRef);
+	void genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, bool isRef);
+	void genAbstractObjsForConcreteType(IR__::AbstractStorageTypeDef_ptr abs_storagetype);
+	void genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome);
+	void genCreateOperation(IR__::StorageHomeDef_ptr storagehome, bool isRef);
+	
 	
 public:
 
