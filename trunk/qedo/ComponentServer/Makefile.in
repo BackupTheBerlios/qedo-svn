@@ -35,8 +35,9 @@ CC=$(CXX)
 LIBS += -L../ComponentIDL -lComponentIDL \
         -L../ComponentContainer -lComponentContainer \
         -L../qedoutil -lqedoutil \
-		  $(NAMING_LIBS)\
-		  -luuid
+	$(NAMING_LIBS)\
+	@XERCES_LIBS@ \
+	-luuid
 
 LDLIBS = ${LIBS}
 
