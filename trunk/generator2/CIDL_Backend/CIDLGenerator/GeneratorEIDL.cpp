@@ -1591,9 +1591,6 @@ GeneratorEIDL::generate(std::string target, std::string fileprefix)
 	out << "#ifndef __" << file_prefix_ << "_EQUIVALENT_IDL\n";
 	out << "#define __" << file_prefix_ << "_EQUIVALENT_IDL\n\n";
 	out << "#include \"Components.idl\"\n";
-	out << "#ifndef _QEDO_NO_STREAMS\n";
-	out << "#include \"StreamComponents.idl\"\n";
-	out << "#endif\n";
 	out << "#include \"orb.idl\"\n";
 	
 	std::map < std::string, bool > ::iterator it;
