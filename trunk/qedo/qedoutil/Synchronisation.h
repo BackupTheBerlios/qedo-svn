@@ -207,7 +207,7 @@ public:
 struct ReadWriteMutexDelegate;
 
 /**
- *  This is a read/write mutex based ion normal mutex
+ *  This is a read/write mutex based on normal mutex
  */
 class QEDOUTIL_API QedoReadWriteMutex : private QedoMutex
 {
@@ -245,6 +245,75 @@ public:
 	 */
 	void unlock_object();
 };
+
+/**
+ * This is a auto read lock implementation based on QedoReadWriteMutex.
+ */
+class QEDOUTIL_API QedoReadLock
+{
+private:
+	/** the qedo mutex */
+	QedoReadWriteMutex* rw_mutex_;
+
+public:
+	/**
+	 * constructor
+	 * \param m The qedo read write mutex.
+	 */
+	QedoReadLock (const QedoReadWriteMutex*);
+
+	/**
+	 * constructor
+	 * \param m The qedo read write mutex.
+	 */
+	QedoReadLock (QedoReadWriteMutex*);
+
+	/**
+	 * constructor
+	 * \param m The qedo read write mutex.
+	 */
+	QedoReadLock (const QedoReadWriteMutex&);
+
+	/**
+	 * destructor
+	 */
+	~QedoReadLock();
+};
+
+/**
+ * This is a auto write lock implementation based on QedoReadWriteMutex.
+ */
+class QEDOUTIL_API QedoWriteLock
+{
+private:
+	/** the qedo mutex */
+	QedoReadWriteMutex* rw_mutex_;
+
+public:
+	/**
+	 * constructor
+	 * \param m The qedo read write mutex.
+	 */
+	QedoWriteLock (const QedoReadWriteMutex*);
+
+	/**
+	 * constructor
+	 * \param m The qedo read write mutex.
+	 */
+	QedoWriteLock (QedoReadWriteMutex*);
+
+	/**
+	 * constructor
+	 * \param m The qedo read write mutex.
+	 */
+	QedoWriteLock (const QedoReadWriteMutex&);
+
+	/**
+	 * destructor
+	 */
+	~QedoWriteLock();
+};
+
 
 struct ThreadDelegate;
 
