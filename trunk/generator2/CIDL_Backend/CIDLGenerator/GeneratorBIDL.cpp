@@ -151,6 +151,23 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 			}
 		}
 	}
+
+	// inherit from consumer for each event
+	facet_types.clear();
+	IR__::ConsumesDefSeq_var consumes_seq = composition->ccm_component()->consumes_events();
+	len = consumes_seq->length();
+	for (i = 0; i < len; i++)
+	{
+		facet_type = consumes_seq[i]->event()->id();
+			
+		// if type already inherited, skip it
+		if(facet_types.find(facet_type) == facet_types.end())
+		{
+			facet_types[facet_type] = true;
+			out << ", " << mapLocalName(consumes_seq[i]->event()) << "Consumer";
+		}
+	}
+
 	out << "\n{\n};\n\n";
 
 
