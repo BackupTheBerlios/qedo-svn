@@ -29,7 +29,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.13 2003/11/25 16:03:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.14 2003/11/26 16:19:43 tom Exp $";
 
 
 namespace Qedo {
@@ -928,12 +928,12 @@ throw(CSDReadException)
 	// parse the software package descriptor file
     //
 	DOMXMLParser parser;
-    if ( parser.parse( const_cast<char*>(csdfile.c_str()) ) != 0 ) 
+    if ( parser.parse( const_cast<char*>(csdfile.c_str()) ) != 0 )
 	{
 		NORMAL_ERR2( "CSDReader: error during parsing ", csdfile );
         throw CSDReadException();
 	}
-	
+
 	csd_document_ = parser.getDocument();
 	DOMElement* element = csd_document_->getDocumentElement();
 	DOMNodeList* nodeList;
@@ -942,7 +942,6 @@ throw(CSDReadException)
 	unsigned int len = 0;
 	unsigned int len2 = 0;
 	unsigned int i = 0;
-	unsigned int i2 = 0;
 
     //
 	// implementation
