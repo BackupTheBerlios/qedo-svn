@@ -129,11 +129,16 @@ Deployment::Deployment(wxWindow *parent, const wxWindowID id,
 
 void Deployment::OnFileChoiseButton(wxCommandEvent& WXUNUSED(event))
 {
-	wxFileDialog* file_dialog=new wxFileDialog(this,"Choose a file","","","*.zip",0,wxDefaultPosition);
+	wxFileDialog* file_dialog=new wxFileDialog(this,"Choose a file","","","Package files (*.zip)|*.zip|CAR files (*.car)|*.car|All files|*.*",0,wxDefaultPosition);
 	int t=file_dialog->ShowModal();
 	if (t==wxID_OK) {
 		assembly_name_->Clear();
-		assembly_name_->WriteText(file_dialog->GetPath());
+		wxString text="file:///";
+		wxString tmp_string=file_dialog->GetPath();
+		tmp_string.Replace ("\\","/");
+		text.Append(tmp_string);
+		assembly_name_->WriteText(text);
+		
 	}
 	file_dialog->~wxFileDialog();
 
@@ -162,11 +167,11 @@ Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
     orb -> register_value_factory ( "IDL:omg.org/Components/Cookie:1.0", factory );
 	std::string package;
 	
-	package="file:///";
+	
 	wxString tmp_string;
 	
 	tmp_string=assembly_name_->GetValue();
-	tmp_string.Replace ("\\","/");
+	//tmp_string.Replace ("\\","/");
 	
 	package.append( tmp_string  );
 
