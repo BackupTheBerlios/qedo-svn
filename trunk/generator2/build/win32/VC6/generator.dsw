@@ -78,6 +78,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "RepositoryStandAlone"=..\..\..\CIDL_REPOSITORY\RepositoryStandAlone\RepositoryStandAlone.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name CIDLRepositoryLib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ComponentRepositoryLib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name IFRidl
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Global:
 
 Package=<5>
