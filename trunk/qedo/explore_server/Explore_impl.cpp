@@ -132,11 +132,11 @@ string get_short_name(char *full_scope_name) {
 		name[0].kind=CORBA::string_dup("");
 		name[1].id=CORBA::string_dup("Activators");
 		name[1].kind=CORBA::string_dup("");
-		name[2].id=CORBA::string_dup(b.binding_name[as].id);
+		name[2].id=CORBA::string_dup(b.binding_name[0].id);
 		name[2].kind=CORBA::string_dup("");
 
 		try {
-			std::cout<< "ServerActivator: " << b.binding_name[as].id << endl;
+			std::cout<< "ServerActivator: " << b.binding_name[0].id << endl;
 			server_activator_obj=nc->resolve(name);
 
 		}
@@ -158,7 +158,7 @@ string get_short_name(char *full_scope_name) {
 		{
 			std::cout<<"Cannon narrow"<<endl;
 			e_orb -> destroy();
-			exit(1);
+			continue;
 		}
 	
 		// get Component Servers	
@@ -169,7 +169,7 @@ string get_short_name(char *full_scope_name) {
 
 		ComponentServerActivatorInfo ComponentServerActivator;
 		const char* host="schlepptop";
-		ComponentServerActivator.host_name=(const char*)hostname;
+		ComponentServerActivator.host_name=CORBA::string_dup(b.binding_name[0].id);
 		ComponentServerActivator.component_server_activator_ref=server_activator;
 	
 		ComponentServerInfoList ComponentServerList;
@@ -188,7 +188,7 @@ string get_short_name(char *full_scope_name) {
 			// the information about the host name ist missing
 			// should be removed
 			const char* host="schlepptop";
-			ComponentServer.host_name=(const char*)hostname;
+			ComponentServer.host_name=(const char*)CORBA::string_dup(b.binding_name[0].id);
 			ComponentServer.component_server_ref=comp_server;
 
 			Components::Deployment::Containers *comp_containers; 
