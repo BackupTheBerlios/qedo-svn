@@ -3,11 +3,11 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.8 2003/09/15 13:12:11 neubauer Exp $
+// $Id: main.cpp,v 1.9 2003/10/01 08:52:23 neubauer Exp $
 //
 
 
-static char rcsid[] = "$Id: main.cpp,v 1.8 2003/09/15 13:12:11 neubauer Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.9 2003/10/01 08:52:23 neubauer Exp $";
 
 
 #ifdef ORBACUS_ORB
@@ -129,9 +129,9 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	}
 
 #ifdef _WIN32
-	std::string loc_p = "philosopherS.dll;create_PhilosopherHomeS;philosopherE.dll;create_PhilosopherHomeE";
-	std::string loc_c = "philosopherS.dll;create_CutleryHomeS;philosopherE.dll;create_CutleryHomeE";
-	std::string loc_o = "philosopherS.dll;create_ObserverHomeS;philosopherE.dll;create_ObserverHomeE";
+	std::string loc_p = "dinner_SERVANT.dll;create_PhilosopherHomeS;dinner_PhilosopherImpl.dll;create_PhilosopherHomeE";
+	std::string loc_c = "dinner_SERVANT.dll;create_CutleryHomeS;dinner_CutleryImpl.dll;create_CutleryHomeE";
+	std::string loc_o = "dinner_SERVANT.dll;create_ObserverHomeS;dinner_ObserverImpl.dll;create_ObserverHomeE";
 #else
 	std::string loc_p = "libphilosopherS.so;create_PhilosopherHomeS;libphilosopherE.so;create_PhilosopherHomeE";
 	std::string loc_c = "libphilosopherS.so;create_CutleryHomeS;libphilosopherE.so;create_CutleryHomeE";
@@ -436,7 +436,6 @@ main (int argc, char** argv)
 
 	try
 	{
-		container->remove_home (p_home);
 #if 0
 		container1->remove_home (c_home);
 		container2->remove_home (o_home);
@@ -444,6 +443,9 @@ main (int argc, char** argv)
 		container->remove_home (c_home);
 		container->remove_home (o_home);
 #endif
+		// remove at last because of it was installed first
+		// registering the valuetype factories
+		container->remove_home (p_home);
 	}
 	catch (Components::RemoveFailure&)
 	{

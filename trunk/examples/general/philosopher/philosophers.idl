@@ -1,0 +1,192 @@
+//
+// TETRA
+// Example 1 for Stream Container Implementation
+// (C)2000-2002 Humboldt University Berlin, Department of Computer Science
+//
+// $Id: philosophers.idl,v 1.1 2003/10/01 08:52:49 neubauer Exp $
+//
+#include "Components.idl"
+
+module dinner
+{
+    component Philosopher;
+
+    /**
+     **  During its life, a philosopher could be in the following different status:
+     **  EATING, THINKING, SLEEPING, HUNGRY or DEAD.
+     **/
+    enum PhilosopherStatus
+    {
+        EATING,
+        THINKING,
+        SLEEPING,
+        HUNGRY,
+        DEAD
+    };
+
+    /**
+     **  This exception is thrown when a fork is not available,
+     **  already in use by another philosopher.
+     **/
+    exception ForkNotAvailable {};
+
+    /**
+     **  This exception is thrown when a philosopher releases
+     **  a fork which has not obtained previously.
+     **/
+    exception NotTheEater {};
+
+    /**
+     **  This event is sent by philosophers to signal
+     **  their current state.
+     **/
+    eventtype PhilosopherState
+    {
+        /**
+         **  The current philosopher status.
+         **/
+        public PhilosopherStatus status;
+
+        /**
+         **  The philosopher name.
+         **/
+        public string name;
+
+        /**
+         **  The philosopher reference.
+         **/
+        public Philosopher ref;
+
+        /**
+         **  The factory operation to create
+         **  a new PhilosopherState event.
+         **
+         **  @param status The current philosopher status.
+         **  @param name The philosopher name.
+         **  @param ref The philosopher reference.
+         **/
+        factory create(in PhilosopherStatus status,
+                       in string name,
+                       in Philosopher ref);
+    };
+
+    /**
+     **  This interface defines how a fork is used by philosophers.
+     **/
+    interface Fork
+    {
+        /**
+         **  Obtain the fork.
+         **
+         **  @return A cookie which must be used to release the fork.
+         **
+         **  @exception ForkNotAvailable
+         **    Thrown if the fork has already used by another philosopher.
+         **/
+        Components::Cookie obtain_fork()
+                                raises(ForkNotAvailable);
+
+        /**
+         **  Release the fork.
+         **
+         **  @param ck The cookie returned when obtaining the fork.
+         **
+         **  @exception NotTheEater
+         **    Thrown if the fork is used by another philosopher.
+         **/
+        void release_fork(in Components::Cookie ck)
+                   raises(NotTheEater);
+    };
+
+    /**
+     **  Base interface for named objects and components.
+     **/
+    interface Named
+    {
+        /**
+         ** The name could be obtained or changed.
+         **/
+        attribute string name;
+    };
+
+    /**
+     **  The philosopher component.
+     **
+     **  A philosopher is a named component.
+     **/
+    component Philosopher supports Named
+    {
+        /**
+         **  Time for thinking.
+         **/
+        attribute unsigned long thinking_seconds;
+
+        /**
+         **  Time for eating.
+         **/
+        attribute unsigned long eating_seconds;
+
+        /**
+         **  Time for sleeping.
+         **/
+        attribute unsigned long sleeping_seconds;
+
+        /**
+         **  A philosopher could use a fork with its left hand.
+         **/
+        uses Fork left_hand;
+
+        /**
+         **  A philosopher could use a fork with its right hand.
+         **/
+        uses Fork right_hand;
+
+        /**
+         **  A philosopher send events to signal its current state.
+         **/
+        publishes PhilosopherState philosopher_state;
+    };
+
+    /**
+     **  The simple home for instantiating Philosopher components.
+     **/
+    home PhilosopherHome manages Philosopher {};
+
+    /**
+     **  This component provides one fork used by philosophers.
+     **/
+    component Cutlery
+    {
+        /**
+         **  The provided fork facet used by philosophers.
+         **/
+        provides Fork the_fork;
+		  provides Named the_name;
+    };
+
+    /**
+     **  The simple home for instantiating Cutlery components.
+     **/
+    home CutleryHome manages Cutlery {};
+
+    /**
+     **  The Observer component observes philosopher state changes.
+     **/
+    component Observer
+    {
+        /**
+         **  The event sink to receive philosopher states.
+         **/
+        consumes PhilosopherState philosopher_state;
+    };
+
+    /**
+     **  The simple home for instantiating Observer components.
+     **/
+    home ObserverHome manages Observer {
+		 readonly attribute PhilosopherState my_name;
+		 factory do_it(in string name, in PhilosopherState state) raises(NotTheEater) ;
+		 finder find_it(in string name);
+		 void muell(in long l);
+	 };
+};
