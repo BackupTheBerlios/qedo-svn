@@ -22,7 +22,7 @@ CXX = @CXX@
 INCLUDES+=-I. -I../ComponentIDL \
           -I../ComponentContainer \
           -I../ComponentInstaller \
-	  -I../qedoutil \
+          -I../qedoutil \
           $(NAMING_INCLUDES)
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
@@ -34,7 +34,7 @@ CC=$(CXX)
 
 LIBS += -L../ComponentIDL -lComponentIDL \
         -L../ComponentContainer -lComponentContainer \
-	-L../qedoutil -lqedoutil \
+        -L../qedoutil -lqedoutil \
 		  $(NAMING_LIBS)\
 		  -luuid
 
@@ -44,18 +44,17 @@ SOURCES = ComponentServerImpl.cpp \
 			 ClientInterceptorDispatcher.cpp \
 			 ServerInterceptorDispatcher.cpp \
 			 ORBInitializerImpl.cpp \
-          cs.cpp 
+          qcs.cpp 
 
-CLEAN_FILES = $(SOURCES:.cpp=.o) cs
+CLEAN_FILES = $(SOURCES:.cpp=.o) qcs
 
 include ../MakeVars
 
 .PHONY:all
 
-all: cs
+all: qcs
 
-
-cs: $(SOURCES:.cpp=.o)
+qcs: $(SOURCES:.cpp=.o) 
 
 .PHONY:install
 
@@ -63,5 +62,5 @@ install: install-prog
 
 .PHONY:install-prog
 
-install-prog: cs
+install-prog: qcs
 
