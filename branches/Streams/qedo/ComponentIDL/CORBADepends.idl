@@ -67,4 +67,8 @@ module CosPersistentState {
 };
 #pragma prefix ""
 
+
+// The BufferPtr native type
+#include "NativeTypes.idl"
+
 #endif

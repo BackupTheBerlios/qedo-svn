@@ -20,65 +20,55 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+#ifndef __SINK_STREAM_PORT_SERVANT_H__
+#define __SINK_STREAM_PORT_SERVANT_H__
 
-#include "CCMHomeServant.h"
+#ifndef _QEDO_NO_STREAMS
+
+
+#include <CORBA.h>
+#include <StreamComponents_skel.h>
+
+#include "StreamCCMObjectExecutor.h"
+#include "ServantBase.h"
 #include "Util.h"
 
 
 namespace Qedo {
 
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+class CONTAINERDLL_API SinkStreamPortServant : public virtual POA_StreamComponents::SinkStreamPort,
+											   public virtual Qedo::ServantBase
 {
 private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
+	std::string port_name_;
 
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
+protected:
 
 public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
+	SinkStreamPortServant (const char*);
+	virtual ~SinkStreamPortServant();
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
+	//
+    // IDL:omg.org/StreamComponents/SinkStreamPort/check_stream_type:1.0
+    //
+    void check_streamtype(const CORBA::RepositoryIdSeq&)
+        throw(StreamComponents::UnsupportedStreamtype,
+              CORBA::SystemException);
 
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
-
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
+    //
+    // IDL:omg.org/StreamComponents/SinkStreamPort/consider_transport:1.0
+    //
+    void consider_transport(StreamComponents::TransportSpec&)
+        throw(StreamComponents::AlreadyBound,
+			  StreamComponents::TransportFailure,
+              CORBA::SystemException);
 };
 
-/** @} */
 
 } // namespace Qedo
 
+
 #endif
 
+#endif

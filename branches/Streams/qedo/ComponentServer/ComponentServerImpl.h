@@ -27,6 +27,7 @@
 #include "QedoComponents_skel.h"
 
 #include "ContainerInterfaceImpl.h"
+#include "TransportEndpoint.h"
 #include "Util.h"
 
 #include <vector>
@@ -53,17 +54,11 @@ public:
 	ContainerInterfaceImpl* container_;
 
 	ContainerEntry (ContainerInterfaceImpl*);
-
 	ContainerEntry();
-	
 	ContainerEntry (const ContainerEntry&);
-
 	ContainerEntry& operator= (const ContainerEntry&);
-
 	~ContainerEntry();
 };
-
-
 typedef std::vector < ContainerEntry > ContainerVector;
 
 

@@ -135,7 +135,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentValuetypes;../ComponentServer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../StreamComponentIDL;../ComponentValuetypes;../ComponentServer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="ORBACUS_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -200,7 +200,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentValuetypes;../ComponentServer;&quot;$(MICO)\include\win32&quot;;&quot;$(MICO)\include&quot;"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../StreamComponentIDL;../ComponentValuetypes;../ComponentServer;&quot;$(MICO)\include\win32&quot;;&quot;$(MICO)\include&quot;"
 				PreprocessorDefinitions="MICO_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -224,7 +224,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="mico2310.lib micocoss2310.lib pthreadVC.lib"
+				AdditionalDependencies="mico2310.lib micocoss2310.lib pthreadVC.lib Ws2_32.lib"
 				OutputFile="$(OutDir)/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -549,6 +549,96 @@ copy $(TargetPath) $(QEDO)\bin
 		<Filter
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+		<Filter
+			Name="Streaming"
+			Filter="">
+			<Filter
+				Name="Header Files"
+				Filter="">
+				<File
+					RelativePath="PrimaryStreamServant.h">
+				</File>
+				<File
+					RelativePath="SinkPort.h">
+				</File>
+				<File
+					RelativePath="SinkStreamPortServant.h">
+				</File>
+				<File
+					RelativePath="SourcePort.h">
+				</File>
+				<File
+					RelativePath="StreamCCMObjectExecutor.h">
+				</File>
+				<File
+					RelativePath="StreamDataDispatcher.h">
+				</File>
+				<File
+					RelativePath="StreamingBuffer.h">
+				</File>
+				<File
+					RelativePath="StreamingValuetypes.h">
+				</File>
+				<File
+					RelativePath="TCPSinkTransportEndpoint.h">
+				</File>
+				<File
+					RelativePath="TCPSourceTransportEndpoint.h">
+				</File>
+				<File
+					RelativePath="TCPTransportEndpointFactory.h">
+				</File>
+				<File
+					RelativePath="TransportEndpoint.h">
+				</File>
+				<File
+					RelativePath="TransportRegistry.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="Source Files"
+				Filter="">
+				<File
+					RelativePath="PrimeryStreamServant.cpp">
+				</File>
+				<File
+					RelativePath="SinkPort.cpp">
+				</File>
+				<File
+					RelativePath="SinkStreamPortServant.cpp">
+				</File>
+				<File
+					RelativePath="SourcePort.cpp">
+				</File>
+				<File
+					RelativePath="StreamCCMObjectExecutor.cpp">
+				</File>
+				<File
+					RelativePath="StreamDataDispatcher.cpp">
+				</File>
+				<File
+					RelativePath="StreamingBuffer.cpp">
+				</File>
+				<File
+					RelativePath="StreamingValuetypes.cpp">
+				</File>
+				<File
+					RelativePath="TCPSinkTransportEndpoint.cpp">
+				</File>
+				<File
+					RelativePath="TCPSourceTransportEndpoint.cpp">
+				</File>
+				<File
+					RelativePath="TCPTransportEndpointFactory.cpp">
+				</File>
+				<File
+					RelativePath="TransportEndpoint.cpp">
+				</File>
+				<File
+					RelativePath="TransportRegistry.cpp">
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

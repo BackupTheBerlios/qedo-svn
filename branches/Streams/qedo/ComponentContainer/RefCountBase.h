@@ -92,6 +92,37 @@ public:
 
 
 /**
+ * This is a simple smart pointer class that can be used for all RefCountBase classes
+ */
+template <class T> class RefCountBaseSmartPtr
+{
+private:
+	T* t_ptr_;
+
+public:
+	RefCountBaseSmartPtr (T* t_ptr) : t_ptr_ (t_ptr) { t_ptr_->_add_ref(); }
+	RefCountBaseSmartPtr() : t_ptr_ (0) {}
+	RefCountBaseSmartPtr (const RefCountBaseSmartPtr<T>& r) 
+		: t_ptr_ (r.t_ptr_) { t_ptr_->_add_ref(); }
+	RefCountBaseSmartPtr& operator= (const RefCountBaseSmartPtr<T>& r)
+	{
+		if (t_ptr_)
+			t_ptr_->_remove_ref();
+
+		t_ptr_ = r.t_ptr_;
+		t_ptr_->_add_ref();
+
+		return *this;
+	}
+	~RefCountBaseSmartPtr() { t_ptr_->_remove_ref(); }
+
+	T* operator->() { return t_ptr_; }
+	const T* operator->() const { return t_ptr_; }
+	T& operator*() { return *t_ptr_; }
+};
+
+
+/**
  * reference count class for local objects (for MICO this class only provides the creation/destruction count)
  */
 class CONTAINERDLL_API RefCountLocalObject : public virtual CORBA::LocalObject
@@ -137,7 +168,7 @@ public:
 
 
 /**
- * creation/destruction count class for CORBA objects
+ * creation/destruction count helper class for CORBA objects
  */
 class CONTAINERDLL_API CreateDestructCORBAObjectCounter
 {

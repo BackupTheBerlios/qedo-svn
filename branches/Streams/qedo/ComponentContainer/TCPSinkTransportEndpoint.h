@@ -20,65 +20,91 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+#ifndef __TCP_SINK_TRANSPORT_ENDPOINT_H__
+#define __TCP_SINK_TRANSPORT_ENDPOINT_H__
 
-#include "CCMHomeServant.h"
-#include "Util.h"
+#ifndef _QEDO_NO_STREAMS
+
+
+#include "Synchronisation.h"
+#include "TransportEndpoint.h"
 
 
 namespace Qedo {
 
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+class TCPSinkTransportEndpoint : public virtual SinkTransportEndpoint
 {
 private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
+	StreamDataDispatcher* dispatcher_;
+	bool listening_;
+	bool connected_;
+	bool stream_demarcation_detected_;
+	CORBA::UShort current_stream_number_;
 
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
+	QedoMutex transport_closure_mutex_;
+	QedoMutex acceptor_thread_stop_mutex_;
+
+	QedoCond end_stream_cond_;
+	QedoMutex end_stream_mutex_;
+	bool end_stream_tag_;
+
+	QedoCond pause_stream_cond_;
+	QedoMutex pause_stream_mutex_;
+	bool pause_stream_tag_;
+
+#ifdef _WIN32
+	SOCKET listen_socket_;
+	SOCKET accept_socket_;
+#else
+#endif
+
+#ifdef _WIN32
+	bool recv_complete (SOCKET sock, char* buf, int len);
+#else
+#endif
+
+	void check_wait_or_signal_end_stream();
+	void check_wait_or_signal_pause_stream();
+
+	QedoThread* acceptor_thread_handle_;
+
+	bool acceptor_thread_stopped_;
+
+	static void* acceptor_thread (void*);
+	void do_read();
+	void do_accept();
+
+	void close_transport();
 
 public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
+	class ThreadExitHelper
+	{
+	public:
+		TCPSinkTransportEndpoint* thread_class_;
+		ThreadExitHelper (TCPSinkTransportEndpoint* thread_class) : thread_class_ (thread_class) 
+			{ thread_class_->_add_ref(); }
+		~ThreadExitHelper() 
+			{ thread_class_->_remove_ref(); }
+	};
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
+	TCPSinkTransportEndpoint (SinkPort*, StreamDataDispatcher*);
+	virtual ~TCPSinkTransportEndpoint();
 
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
+	void close();
 
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
+	void begin_stream();
+	
+	void end_stream();
+	
+	void setup_for_accept (StreamComponents::TransportSpec&)
+		throw (StreamComponents::TransportFailure);
 };
 
-/** @} */
 
-} // namespace Qedo
+}
+
 
 #endif
 
+#endif

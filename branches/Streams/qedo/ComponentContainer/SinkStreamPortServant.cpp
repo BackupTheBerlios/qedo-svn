@@ -20,65 +20,52 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+static char rcsid[] = "$Id: SinkStreamPortServant.cpp,v 1.1.2.1 2003/09/26 14:26:02 stoinski Exp $";
 
-#include "CCMHomeServant.h"
-#include "Util.h"
+#ifndef _QEDO_NO_STREAMS
+
+
+#include "SinkStreamPortServant.h"
+#include "Output.h"
 
 
 namespace Qedo {
+	
 
-
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+SinkStreamPortServant::SinkStreamPortServant (const char* port_name)
+: port_name_ (port_name)
 {
-private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
+}
 
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
 
-public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
+SinkStreamPortServant::~SinkStreamPortServant()
+{
+	DEBUG_OUT ("SinkStreamPortServant: Destructor called");
+}
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
 
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
+void 
+SinkStreamPortServant::check_streamtype (const CORBA::RepositoryIdSeq& streamtypes)
+throw(StreamComponents::UnsupportedStreamtype,
+	  CORBA::SystemException)
+{
+	SinkPort& sink = stream_ccm_object_executor_->get_sink (port_name_.c_str());
+	sink.check_streamtype (streamtypes);
+}
 
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
-};
 
-/** @} */
+void 
+SinkStreamPortServant::consider_transport (StreamComponents::TransportSpec& the_transport)
+throw(StreamComponents::AlreadyBound,
+	  StreamComponents::TransportFailure,
+	  CORBA::SystemException)
+{
+	SinkPort& sink = stream_ccm_object_executor_->get_sink (port_name_.c_str());
+	sink.consider_transport (the_transport);
+}
+
 
 } // namespace Qedo
 
-#endif
 
+#endif

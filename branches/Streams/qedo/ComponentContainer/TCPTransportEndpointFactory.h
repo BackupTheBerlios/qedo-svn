@@ -20,65 +20,34 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+#ifndef __TCP_TRANSPORT_ENDPOINT_FACTORY_H__
+#define __TCP_TRANSPORT_ENDPOINT_FACTORY_H__
 
-#include "CCMHomeServant.h"
-#include "Util.h"
+#ifndef _QEDO_NO_STREAMS
+
+
+#include "TCPSourceTransportEndpoint.h"
+#include "TCPSinkTransportEndpoint.h"
+#include "StreamDataDispatcher.h"
 
 
 namespace Qedo {
 
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+class CONTAINERDLL_API TCPTransportEndpointFactory : public virtual TransportEndpointFactory
 {
-private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
-
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
-
 public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
+	TCPTransportEndpointFactory();
+	virtual ~TCPTransportEndpointFactory();
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
-
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
-
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
+	SourceTransportEndpoint* create_source_tep();
+	SinkTransportEndpoint* create_sink_tep (SinkPort*, StreamDataDispatcher*);
 };
 
-/** @} */
 
-} // namespace Qedo
+}
+
 
 #endif
 
+#endif

@@ -194,7 +194,7 @@ private:
 	std::vector <Qedo::ComponentInstance>					services_postinvoke_;
 	
 	/** the list of pending events to be dispatched*/
-	std::vector<EventEntry>									event_list;
+	std::vector<EventEntry>									event_list_;
 
 	/** the mutex for accessing the event_list member*/
 	QedoMutex												event_queue_mutex_;

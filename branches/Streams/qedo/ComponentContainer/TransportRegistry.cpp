@@ -20,65 +20,84 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+static char rcsid[] = "$Id: TransportRegistry.cpp,v 1.1.2.1 2003/09/26 14:26:02 stoinski Exp $";
 
-#include "CCMHomeServant.h"
-#include "Util.h"
+#ifndef _QEDO_NO_STREAMS
 
+
+#include "TransportRegistry.h"
+
+#include "Output.h"
 
 namespace Qedo {
 
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+TransportEntry::TransportEntry (const char* transport_protocol, TransportEndpointFactory* transport_factory)
+: transport_protocol_ (transport_protocol),
+  factory_ (transport_factory)
 {
-private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
+	factory_->_add_ref();
+}
 
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
+	
+TransportEntry::TransportEntry()
+{
+	factory_ = 0;
+}
 
-public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
+TransportEntry::TransportEntry (const TransportEntry& entry)
+: transport_protocol_ (entry.transport_protocol_),
+  factory_ (entry.factory_)
+{
+	factory_->_add_ref();
+}
 
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
 
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
-};
+TransportEntry&
+TransportEntry::operator= (const TransportEntry& entry)
+{
+	transport_protocol_ = entry.transport_protocol_;
 
-/** @} */
+	if (factory_)
+		factory_->_remove_ref();
+
+	factory_ = entry.factory_;
+	factory_->_add_ref();
+
+	return *this;
+}
+
+
+TransportEntry::~TransportEntry()
+{
+	if (factory_)
+		factory_->_remove_ref();
+}
+
+
+TransportVector TransportRegistry::transports_;
+
+
+void
+TransportRegistry::register_transport (const char* transport_protocol, TransportEndpointFactory* transport_factory)
+{
+	DEBUG_OUT2 ("TransportRegistry: New transport registered for transport protocol ", transport_protocol);
+
+	TransportEntry new_transport (transport_protocol, transport_factory);
+
+	transports_.push_back (new_transport);
+}
+
+
+void
+TransportRegistry::clear_registry()
+{
+	transports_.erase (transports_.begin(), transports_.end());
+}
+
 
 } // namespace Qedo
 
-#endif
 
+#endif

@@ -25,7 +25,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantRegistry.cpp,v 1.10 2003/08/01 14:57:26 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServantRegistry.cpp,v 1.10.4.1 2003/09/26 14:26:02 stoinski Exp $";
 
 namespace Qedo {
 
@@ -190,28 +190,6 @@ ServantRegistry::unregister_servant_factory (const PortableServer::ObjectId& obj
 	}
 
 	servant_factories_.erase (servant_factories_iter);
-}
-
-
-void 
-ServantRegistry::set_variables_static_servant (const Qedo::ComponentInstance& instance)
-{
-	std::vector <ServantEntry>::iterator servants_iter;
-
-	for (servants_iter = static_servants_.begin(); servants_iter != static_servants_.end(); servants_iter++)
-	{
-		if (Qedo::compare_object_ids ((*servants_iter).object_id_, instance.object_id_))
-		{
-			break;
-		}
-	}
-
-	if (servants_iter == static_servants_.end())
-	{
-		return;
-	}
-
-	(*servants_iter).servant_->set_instance(instance);
 }
 
 

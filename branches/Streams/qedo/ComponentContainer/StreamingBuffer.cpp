@@ -20,65 +20,83 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+static char rcsid[] = "$Id: StreamingBuffer.cpp,v 1.1.2.1 2003/09/26 14:26:02 stoinski Exp $";
 
-#include "CCMHomeServant.h"
-#include "Util.h"
+#ifndef _QEDO_NO_STREAMS
+
+
+#include "StreamingBuffer.h"
+#include "Output.h"
 
 
 namespace Qedo {
-
-
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+	
+	
+StreamingBuffer::StreamingBuffer (CORBA::ULong min_size)
+: size_ (min_size),
+  bytes_used_ (min_size),
+  release_ (true)
 {
-private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
+	buffer_ = malloc (min_size);
 
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
+	if (! buffer_)
+	{
+		NORMAL_ERR ("StreamingBuffer: Could not allocate memory");
+		size_ = 0;
+		assert (0);
+	}
+}
 
-public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
+StreamingBuffer::StreamingBuffer (void *data, CORBA::ULong data_size, bool release)
+: buffer_ (data),
+  size_ (data_size),
+  bytes_used_ (data_size),
+  release_ (release)
+{
+}
 
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
 
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
-};
+StreamingBuffer::~StreamingBuffer()
+{
+	DEBUG_OUT ("StreamingBuffer: Destructor called");
 
-/** @} */
+	if (buffer_)
+		free (buffer_);
+}
+
+
+StreamComponents::BufferPtr 
+StreamingBuffer::get_buffer()
+{
+	return buffer_;
+}
+
+
+CORBA::ULong 
+StreamingBuffer::get_size()
+{
+	return size_;
+}
+
+
+void 
+StreamingBuffer::set_used (CORBA::ULong bytes_used)
+{
+	if (bytes_used > size_)
+		DEBUG_OUT ("StreamingBuffer: set_used(): Warning: Supplied value greater than current size");
+
+	bytes_used_ = bytes_used > size_ ? size_ : bytes_used;
+}
+
+
+CORBA::ULong 
+StreamingBuffer::get_used()
+{
+	return bytes_used_;
+}
+
 
 } // namespace Qedo
 
 #endif
-

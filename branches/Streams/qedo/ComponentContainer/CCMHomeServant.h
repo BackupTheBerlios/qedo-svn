@@ -63,7 +63,7 @@ public:
 	/**
 	 * destructor
 	 */
-	~CCMHomeServant();
+	virtual ~CCMHomeServant();
 
 	/**
 	 * implements IDL:omg.org/Components/CCMHome/get_component_def:1.0

@@ -176,12 +176,6 @@ public:
 	void unregister_servant_factory (const PortableServer::ObjectId& object_id);
 
 	/**
-	 * set the component instance information
-	 * \param instance The component instance.
-	 */
-	void set_variables_static_servant (const Qedo::ComponentInstance& instance);
-	
-	/**
 	 * lookup a servant
 	 * \param object_id The object id of an object.
 	 * \return The servant for the given object.

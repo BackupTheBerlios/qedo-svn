@@ -20,65 +20,52 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+static char rcsid[] = "$Id: TCPTransportEndpointFactory.cpp,v 1.1.2.1 2003/09/26 14:26:02 stoinski Exp $";
 
-#include "CCMHomeServant.h"
-#include "Util.h"
+#ifndef _QEDO_NO_STREAMS
 
+
+#include "TCPTransportEndpointFactory.h"
+#include "TransportRegistry.h"
+#include "Output.h"
+#include "Valuetypes.h"
+
+#include <cstdlib>
+#include <cstring>
 
 namespace Qedo {
 
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+TCPTransportEndpointFactory::TCPTransportEndpointFactory()
 {
-private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
+	TransportRegistry::register_transport ("CCM_TCP", this);
+}
 
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
 
-public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
+TCPTransportEndpointFactory::~TCPTransportEndpointFactory()
+{
+	DEBUG_OUT ("TCPTransportEndpointFactory: Destructor called");
+}
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
 
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
+SourceTransportEndpoint* 
+TCPTransportEndpointFactory::create_source_tep()
+{
+	DEBUG_OUT ("TCPTransportEndpointFactory: create_source_tep() called");
 
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
-};
+	return new TCPSourceTransportEndpoint();
+}
 
-/** @} */
+
+SinkTransportEndpoint*
+TCPTransportEndpointFactory::create_sink_tep (SinkPort* sink_port, StreamDataDispatcher* dispatcher)
+{
+	DEBUG_OUT ("TCPTransportEndpointFactory: create_sink_tep() called");
+
+	return new TCPSinkTransportEndpoint (sink_port, dispatcher);
+}
+
 
 } // namespace Qedo
 
 #endif
-

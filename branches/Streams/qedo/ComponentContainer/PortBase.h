@@ -77,7 +77,7 @@ protected:
 	/**
 	 * destructor
 	 */
-    ~PortBase();
+    virtual ~PortBase();
 
 public:
 	/**

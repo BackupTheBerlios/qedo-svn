@@ -141,8 +141,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(ORBACUS)\include;$(ORBACUS)\include\OB"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
+				AdditionalIncludeDirectories=".;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;ORBACUS_ORB"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
@@ -211,7 +211,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;&quot;$(MICO)\include\&quot;;&quot;$(MICO)\include\win32&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BUILD_QEDODLL_DLL;;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MICO_ORB;BUILD_QEDODLL_DLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
@@ -344,7 +344,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Optimization="2"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories=".;$(ORBACUS)\include;$(ORBACUS)\include\OB"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_USRDLL"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_USRDLL;ORBACUS_ORB"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
@@ -401,9 +401,6 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath=".\ComponentIDL.def">
-			</File>
-			<File
 				RelativePath=".\Components.cpp">
 			</File>
 			<File
@@ -424,6 +421,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\Components_skel.h">
+			</File>
+			<File
+				RelativePath="NativeTypes.h">
+			</File>
+			<File
+				RelativePath="NativeTypes_skel.h">
 			</File>
 			<File
 				RelativePath="QedoComponents.h">
@@ -515,7 +518,7 @@ copy CORBADepends.h CORBADepends_skel.h
 						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL --typecode --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 Components.idl
 copy Components.h Components_skel.h
 "
-						Outputs="Components.h"/>
+						Outputs="Components.h;Components_skel.h;Components.cpp;Components_skel.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_orbacus|Win32">
@@ -525,6 +528,21 @@ copy Components.h Components_skel.h
 						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB Components.idl
 "
 						Outputs="Components.h;Components.cpp;Components_skel.h;Components_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="NativeTypes.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32"
+					ExcludedFromBuild="TRUE">
+					<Tool
+						Name="VCCustomBuildTool"/>
 				</FileConfiguration>
 			</File>
 			<File

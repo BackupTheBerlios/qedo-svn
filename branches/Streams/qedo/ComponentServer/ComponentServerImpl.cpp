@@ -24,7 +24,7 @@
 #include "Output.h"
 #include "Valuetypes.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.13 2003/08/06 12:24:29 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.13.4.1 2003/09/26 14:26:02 stoinski Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -43,6 +43,7 @@ ContainerEntry::ContainerEntry (ContainerInterfaceImpl* container)
 
 ContainerEntry::ContainerEntry()
 {
+	container_ = 0;
 }
 
 

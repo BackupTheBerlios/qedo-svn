@@ -20,65 +20,79 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+static char rcsid[] = "$Id: TransportEndpoint.cpp,v 1.1.2.1 2003/09/26 14:26:02 stoinski Exp $";
 
-#include "CCMHomeServant.h"
-#include "Util.h"
+#ifndef _QEDO_NO_STREAMS
 
+
+#include "TransportEndpoint.h"
+#include "SinkPort.h"			// SinkPort.cpp and TransportEndpoint.cpp depend on each other, that's why the include is found here and not in the header
+#include "Output.h"
+
+#include <cstdlib>
+#include <ctime>
 
 namespace Qedo {
 
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+TransportEndpoint::TransportEndpoint()
 {
-private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
+	// Initialize random numbers generator
+	std::srand ((unsigned)std::time (NULL));
+	rand();
+}
 
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
 
-public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
+TransportEndpoint::~TransportEndpoint()
+{
+	DEBUG_OUT ("TransportEndpoint: Destructor called");
+}
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
 
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
+int
+TransportEndpoint::rand_int()
+{
+	return std::rand();
+}
 
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
-};
 
-/** @} */
+SourceTransportEndpoint::SourceTransportEndpoint()
+{
+}
+
+
+SourceTransportEndpoint::~SourceTransportEndpoint()
+{
+	DEBUG_OUT ("SourceTransportEndpoint: Destructor called");
+}
+
+
+SinkTransportEndpoint::SinkTransportEndpoint (SinkPort* my_sink)
+: my_sink_ (my_sink)
+{
+	my_sink_->_add_ref();
+}
+
+
+SinkTransportEndpoint::~SinkTransportEndpoint()
+{
+	DEBUG_OUT ("SinkTransportEndpoint: Destructor called");
+
+	my_sink_->_remove_ref();
+}
+
+
+TransportEndpointFactory::TransportEndpointFactory()
+{
+}
+
+
+TransportEndpointFactory::~TransportEndpointFactory()
+{
+	DEBUG_OUT ("TransportEndpointFactory: Destructor called");
+}
+
 
 } // namespace Qedo
 
 #endif
-

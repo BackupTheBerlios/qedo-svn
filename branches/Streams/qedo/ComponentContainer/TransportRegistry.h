@@ -20,65 +20,46 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+#ifndef __TRANSPORT_REGISTRY_H__
+#define __TRANSPORT_REGISTRY_H__
 
-#include "CCMHomeServant.h"
-#include "Util.h"
+#ifndef _QEDO_NO_STREAMS
+
+
+#include "TransportEndpoint.h"
+
+#include <vector>
 
 
 namespace Qedo {
 
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+class TransportEntry
 {
-private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
-
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
-
 public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
+	std::string transport_protocol_;
+	TransportEndpointFactory* factory_;
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
+	TransportEntry (const char*, TransportEndpointFactory*);
+	TransportEntry();
+	TransportEntry (const TransportEntry&);
+	TransportEntry& operator= (const TransportEntry&);
+	~TransportEntry();
+};
+typedef std::vector < TransportEntry > TransportVector;
 
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
 
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
+class CONTAINERDLL_API TransportRegistry
+{
+public:
+	static TransportVector transports_;
+	static void register_transport (const char*, TransportEndpointFactory*);
+	static void clear_registry();
 };
 
-/** @} */
 
 } // namespace Qedo
 
 #endif
 
+#endif

@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.20 2003/08/06 12:22:56 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.20.4.1 2003/09/26 14:26:02 stoinski Exp $";
 
 
 namespace Qedo {
@@ -130,7 +130,7 @@ HomeServantBase::reference_to_oid (const CORBA::Object_ptr obj)
 
 
 ComponentInstance& 
-HomeServantBase::incarnate_component (Components::ExecutorLocator_ptr executor_locator, ExecutorContext* ccm_context)
+HomeServantBase::incarnate_component (Components::ExecutorLocator_ptr executor_locator, CCMContext* ccm_context)
 {
 	ccm_context->container (this->container_);
 
@@ -153,7 +153,7 @@ HomeServantBase::finalize_component_incarnation (const PortableServer::ObjectId&
 {
 	// Check whether a static servant was registered for this object id and set
 	// the executor context, executor locator and ccm object executor
-	std::vector <ComponentInstance>::const_iterator components_iter;
+	ComponentInstanceVector::const_iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
@@ -171,8 +171,6 @@ HomeServantBase::finalize_component_incarnation (const PortableServer::ObjectId&
 		return;
 	}
 
-	servant_registry_->set_variables_static_servant (*components_iter);
-
 	this->do_finalize_component_incarnation ((*components_iter).executor_locator_.in());
 }
 
@@ -181,7 +179,7 @@ void
 HomeServantBase::remove_component_with_oid (const PortableServer::ObjectId& object_id)
 {
 	// Look, whether we know this component instance
-	std::vector <ComponentInstance>::iterator components_iter;
+	ComponentInstanceVector::iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
@@ -195,7 +193,7 @@ HomeServantBase::remove_component_with_oid (const PortableServer::ObjectId& obje
 
 	if (components_iter == component_instances_.end())
 	{
-		NORMAL_ERR ("HomeServantBase: Unknown component supplied to remove_component()");
+		NORMAL_ERR ("HomeServantBase: Unknown component supplied to remove_component_with_oid()");
 		return;
 	}
 
@@ -204,6 +202,9 @@ HomeServantBase::remove_component_with_oid (const PortableServer::ObjectId& obje
 	// Before removing the component and associating servants, let the different homes
 	// decide, what additional things to do
 	this->before_remove_component ((*components_iter).executor_locator_);
+
+	// Break up cyclic dependencies
+	(*components_iter).prepare_remove();
 
 	component_instances_.erase (components_iter);
 
@@ -301,7 +302,7 @@ HomeServantBase::lookup_component (const PortableServer::ObjectId& object_id)
 	CORBA::OctetSeq_var foreign_key_seq = Key::key_value_from_object_id (object_id);
 	CORBA::OctetSeq_var our_key_seq;
 
-	std::vector <ComponentInstance>::const_iterator components_iter;
+	ComponentInstanceVector::const_iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
@@ -339,7 +340,7 @@ HomeServantBase::lookup_servant (const PortableServer::ObjectId& object_id)
 	CORBA::OctetSeq_var foreign_key_seq = Key::key_value_from_object_id (object_id);
 	CORBA::OctetSeq_var our_key_seq;
 
-	std::vector <Qedo::ComponentInstance>::const_iterator components_iter;
+	ComponentInstanceVector::const_iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 

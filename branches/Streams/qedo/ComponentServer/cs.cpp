@@ -24,11 +24,15 @@
 #include "Synchronisation.h"
 #include "ORBInitializerImpl.h"
 #include "Output.h"
-#include <cstring>
-#include <string>
+#ifndef _QEDO_NO_STREAMS
+#include "TCPTransportEndpointFactory.h"
+#endif
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: cs.cpp,v 1.16 2003/08/06 14:32:14 stoinski Exp $";
+#include <cstring>
+#include <string>
+
+static char rcsid[] UNUSED = "$Id: cs.cpp,v 1.16.4.1 2003/09/26 14:26:02 stoinski Exp $";
 
 
 /**
@@ -119,12 +123,42 @@ main (int argc, char** argv)
 	}
 	catch (Qedo::ComponentServerImpl::CannotInitialize&)
 	{
-		NORMAL_ERR ("Cannot initialize Component Server... exiting.");
+		NORMAL_ERR ("ComponentServer: initialize() failed");
 		orb->destroy();
 		exit (1);
 	}
 
+#ifndef _QEDO_NO_STREAMS
+	// Register the transport factories
+	Qedo::TCPTransportEndpointFactory* the_factory = new Qedo::TCPTransportEndpointFactory();
+	the_factory->_remove_ref();
+
+#ifdef _WIN32
+	// Initialize the Windows Socket Environment
+	WSADATA winsock_data;
+	if (WSAStartup( 0x0102 /*Version 1.2*/, &winsock_data) != 0)
+	{
+		NORMAL_ERR ("ComponentServer: Cannot initialize Windows Socket Environment");
+		orb->destroy();
+		exit (1);
+	}
+#endif
+#endif
+
 	orb->run();
+
+#ifndef _QEDO_NO_STREAMS
+	// Clear transport registry
+	Qedo::TransportRegistry::clear_registry();
+
+#ifdef _WIN32
+	// Clear Windows Socket Environment
+	if (WSACleanup() != 0)
+	{
+		NORMAL_ERR ("ComponentServer: Cannot clean up Windows Socket Environment");
+	}
+#endif
+#endif
 
 	orb->destroy();
 
@@ -143,7 +177,7 @@ main (int argc, char** argv)
 		}
 		if (Qedo::GlobalObjectManagement::CORBA_object_count_)
 		{
-			DEBUG_OUT2 ("# Number of still running CORBA objects        : ", Qedo::GlobalObjectManagement::CORBA_object_count_);
+			DEBUG_OUT2 ("# Number of still running CORBA objects       : ", Qedo::GlobalObjectManagement::CORBA_object_count_);
 		}
 		if (Qedo::GlobalObjectManagement::CORBA_local_object_count_)
 		{

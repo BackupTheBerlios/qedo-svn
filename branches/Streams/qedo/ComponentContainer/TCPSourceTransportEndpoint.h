@@ -20,65 +20,54 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+#ifndef __TCP_SOURCE_TRANSPORT_ENDPOINT_H__
+#define __TCP_SOURCE_TRANSPORT_ENDPOINT_H__
 
-#include "CCMHomeServant.h"
-#include "Util.h"
+#ifndef _QEDO_NO_STREAMS
+
+
+#include "TransportEndpoint.h"
 
 
 namespace Qedo {
 
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+class TCPSourceTransportEndpoint : public virtual SourceTransportEndpoint
 {
 private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
+	CORBA::UShort current_stream_number_;
+	bool connected_;
 
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
+#ifdef _WIN32
+	SOCKET connect_socket_;
+#else
+#endif
+
+#ifdef _WIN32
+	bool send_complete (SOCKET sock, const char* data, int len);
+#else
+#endif
 
 public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
+	TCPSourceTransportEndpoint();
+	virtual ~TCPSourceTransportEndpoint();
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
+	bool send_buffer (StreamComponents::StreamingBuffer_ptr);
 
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
+	void begin_stream();
 
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
+	void end_stream();
+
+	void close();
+
+	void setup_for_connect (StreamComponents::TransportSpec&)
+		throw (StreamComponents::TransportFailure);
 };
 
-/** @} */
 
-} // namespace Qedo
+}
+
 
 #endif
 
+#endif

@@ -28,6 +28,9 @@
 #include "CCMContext.h"
 #include "HomeServantBase.h"
 #include "Util.h"
+#ifndef _QEDO_NO_STREAMS
+#include "StreamCCMObjectExecutor.h"
+#endif
 
 
 namespace Qedo {
@@ -39,7 +42,7 @@ namespace Qedo {
  */
 
 
-class ExecutorContext;
+class CCMContext;
 
 
 /**
@@ -57,6 +60,10 @@ public:
 	/** generic executor */
 	Qedo::CCMObjectExecutor*			ccm_object_executor_;
 
+#ifndef _QEDO_NO_STREAMS
+	Qedo::StreamCCMObjectExecutor*		stream_ccm_object_executor_;
+#endif
+
 	/**
 	 * constructor
 	 * \param object_id
@@ -68,7 +75,7 @@ public:
 	ComponentInstance (const PortableServer::ObjectId& object_id, 
 					   CORBA::Object_ptr component_ref, 
 					   Components::ExecutorLocator_ptr executor_locator,
-					   ExecutorContext* executor_context,
+					   CCMContext* executor_context,
 					   HomeServantBase* home_servant);
 
 	/**
@@ -91,13 +98,25 @@ public:
 	 */
 	~ComponentInstance();
 
+	bool operator < (const ComponentInstance&) const {return true;}
+	bool operator == (const ComponentInstance&) const {return true;}
+
 	/**
 	 * provides the object reference of the component
 	 * \return The object reference of the component.
 	 */
 	CORBA::Object_ptr component_ref();
+
+	/**
+	 * helper function to split cyclic dependencies
+	 */
+	void prepare_remove();
 };
 
+
+// Export template class
+CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<ComponentInstance>;
+typedef std::vector<ComponentInstance> ComponentInstanceVector;
 
 
 /** @} */

@@ -21,13 +21,14 @@
 /***************************************************************************/
 
 #include "Synchronisation.h"
+#include "Output.h"
 
 #ifdef QEDO_PTHREAD
 #include <pthread.h>
 #include <signal.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.17.2.1 2003/08/11 08:36:05 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.17.2.2 2003/09/26 14:26:02 stoinski Exp $";
 
 
 namespace Qedo {
@@ -48,6 +49,16 @@ struct CondDelegate
 	HANDLE event_handle_;
 #else
 	pthread_cond_t cond_;
+#endif
+};
+
+
+struct ThreadDelegate {
+#ifdef QEDO_WINTHREAD
+       HANDLE th_handle_;
+       DWORD th_id_;
+#else
+       pthread_t t_;
 #endif
 };
 
@@ -209,6 +220,38 @@ QedoCond::signal()
 }
 
 
+QedoThread::QedoThread()
+{
+	delegate_ = new ThreadDelegate;
+};
+
+
+void
+QedoThread::stop()
+{
+#ifdef QEDO_WINTHREAD
+	DWORD exitcode = 0;
+	if (! TerminateThread(delegate_->th_handle_, exitcode)) 
+		DEBUG_OUT("QedoThread: stop(): TerminateThread() failed");
+#else
+	if (pthread_cancel (delegate_->t_)) 
+		DEBUG_OUT("QedoThread: stop(): pthread_cancel() failed");
+#endif
+}
+
+void
+QedoThread::join()
+{
+#ifdef QEDO_WINTHREAD
+	if (WaitForSingleObject (delegate_->th_handle_, INFINITE) != WAIT_OBJECT_0)
+        DEBUG_OUT ("QedoThread: WaitForSingleObject() failed");
+#else
+	void *state;
+	if(pthread_join(delegate_->t_,&state)) 
+		DEBUG_OUT ("QedoThread: pthread_join() failed");
+#endif
+}
+
 #ifdef QEDO_WINTHREAD
 DWORD WINAPI startFunc(LPVOID p) {
 #else
@@ -226,29 +269,24 @@ void* startFunc(void* p) {
 	return 0;
 }
 
-void
+QedoThread*
 qedo_startDetachedThread(void* (*p)(void*), void* arg) {
 
 	T_Start* startParams = new T_Start();
 	startParams->p = p;
 	startParams->a = arg;
+	QedoThread * thread = new QedoThread();
 
 #ifdef QEDO_WINTHREAD
-	HANDLE th_handle;
-	DWORD th_id;
-	th_handle = CreateThread(NULL,
-							0,
-							startFunc,
-							(LPVOID) startParams,
-							NULL,
-							&th_id);
+	thread->delegate_->th_handle_ = CreateThread(NULL, 0, startFunc, (LPVOID) startParams, NULL, &(thread->delegate_->th_id_));
 #else
-	pthread_t t;
 	pthread_attr_t detached_attr;
 	pthread_attr_init(&detached_attr);
-	pthread_attr_setdetachstate(&detached_attr, PTHREAD_CREATE_DETACHED);
-	pthread_create(&t, &detached_attr, startFunc, startParams);
+	pthread_attr_setdetachstate(&detached_attr, PTHREAD_CREATE_JOINABLE);
+	pthread_create(&(thread->delegate_->t_), &detached_attr, startFunc, startParams);
 #endif
+
+	return thread;
 }
 
 

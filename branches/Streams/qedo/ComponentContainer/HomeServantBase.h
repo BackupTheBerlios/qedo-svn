@@ -43,8 +43,8 @@ namespace Qedo {
  */
 
 
-class ExecutorContext;
 class ComponentInstance;
+class CCMContext;
 class ContainerInterfaceImpl;
 class ServantRegistry;
 
@@ -52,7 +52,8 @@ class ServantRegistry;
 /**
  * base for all home servants
  */
-class CONTAINERDLL_API HomeServantBase : public PortableServer::RefCountServantBase
+class CONTAINERDLL_API HomeServantBase : public PortableServer::RefCountServantBase,
+										 public virtual CreateDestructCORBAObjectCounter
 {
 	/** makes use of this */
 	friend class ContainerInterfaceImpl;
@@ -148,7 +149,7 @@ protected:
 	 * \return The component instance.
 	 */
 	ComponentInstance& incarnate_component (Components::ExecutorLocator_ptr executor_locator, 
-											ExecutorContext* ccm_context);
+											CCMContext* ccm_context);
 	
 	/**
 	 * finalize the component incarnation
@@ -182,7 +183,7 @@ public:
 	/**
 	 * destructor
 	 */
-	~HomeServantBase();
+	virtual ~HomeServantBase();
 
 	/**
 	 * initialize

@@ -20,65 +20,79 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+#ifndef __TRANSPORT_ENDPOINT_H__
+#define __TRANSPORT_ENDPOINT_H__
 
-#include "CCMHomeServant.h"
-#include "Util.h"
+#ifndef _QEDO_NO_STREAMS
+
+
+#include "CORBA.h"
+#include "StreamComponents.h"
+
+#include "RefCountBase.h"
+#include "StreamDataDispatcher.h"
 
 
 namespace Qedo {
 
+class SinkPort;
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+class TransportEndpoint : public virtual RefCountBase
 {
-private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
-
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
+protected:
+	int rand_int();
 
 public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
+	TransportEndpoint();
+	virtual ~TransportEndpoint();
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
+	virtual void begin_stream() = 0;
+	virtual void end_stream() = 0;
 
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
-
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
+	virtual void close() = 0;
 };
 
-/** @} */
+
+class SourceTransportEndpoint : public virtual TransportEndpoint
+{
+public:
+	SourceTransportEndpoint();
+	virtual ~SourceTransportEndpoint();
+
+	virtual void setup_for_connect (StreamComponents::TransportSpec&)
+		throw (StreamComponents::TransportFailure) = 0;
+
+	virtual bool send_buffer (StreamComponents::StreamingBuffer_ptr) = 0;
+};
+
+	
+class SinkTransportEndpoint : public virtual TransportEndpoint
+{
+protected:
+	SinkPort* my_sink_;
+
+public:
+	SinkTransportEndpoint (SinkPort*);
+	virtual ~SinkTransportEndpoint();
+
+	virtual void setup_for_accept (StreamComponents::TransportSpec&)
+		throw (StreamComponents::TransportFailure) = 0;
+};
+
+
+class TransportEndpointFactory : public virtual RefCountBase
+{
+public:
+	TransportEndpointFactory();
+	virtual ~TransportEndpointFactory();
+
+	virtual SourceTransportEndpoint* create_source_tep() = 0;
+	virtual SinkTransportEndpoint* create_sink_tep (SinkPort*, StreamDataDispatcher*) = 0;
+};
+
 
 } // namespace Qedo
 
 #endif
 
+#endif

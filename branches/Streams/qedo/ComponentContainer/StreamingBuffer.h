@@ -20,65 +20,60 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+#ifndef __STREAMING_BUFFER_H__
+#define __STREAMING_BUFFER_H__
 
-#include "CCMHomeServant.h"
+#ifndef _QEDO_NO_STREAMS
+
+#include <CORBA.h>
+#include <StreamComponents_skel.h>
+
+#include "RefCountBase.h"
 #include "Util.h"
 
 
 namespace Qedo {
 
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+class CONTAINERDLL_API StreamingBuffer : public virtual StreamComponents::StreamingBuffer,
+										 public virtual RefCountLocalObject
 {
 private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
-
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
+	void* buffer_;
+	CORBA::ULong size_;
+	CORBA::ULong bytes_used_;
+	bool release_;
 
 public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
+	StreamingBuffer (CORBA::ULong);
+	StreamingBuffer (void*, CORBA::ULong, bool);
+	~StreamingBuffer();
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
+	//
+    // IDL:omg.org/StreamComponents/StreamingBuffer/get_buffer:1.0
+    //
+	StreamComponents::BufferPtr get_buffer();
 
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
+    //
+    // IDL:omg.org/StreamComponents/StreamingBuffer/get_size:1.0
+    //
+    CORBA::ULong get_size();
 
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
+    //
+    // IDL:omg.org/StreamComponents/StreamingBuffer/set_used:1.0
+    //
+    void set_used(CORBA::ULong);
+
+    //
+    // IDL:omg.org/StreamComponents/StreamingBuffer/get_used:1.0
+    //
+    CORBA::ULong get_used();
 };
 
-/** @} */
 
 } // namespace Qedo
 
+
 #endif
 
+#endif

@@ -20,65 +20,29 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+static char rcsid[] = "$Id: StreamDataDispatcher.cpp,v 1.1.2.1 2003/09/26 14:26:02 stoinski Exp $";
 
-#include "CCMHomeServant.h"
-#include "Util.h"
+#ifndef _QEDO_NO_STREAMS
 
+
+#include "StreamDataDispatcher.h"
+#include "Output.h"
 
 namespace Qedo {
 
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+StreamDataDispatcher::StreamDataDispatcher()
 {
-private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
+}
 
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
 
-public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
+StreamDataDispatcher::~StreamDataDispatcher()
+{
+	DEBUG_OUT ("StreamDataDispatcher: Destructor called");
+}
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
-
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
-
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
-};
-
-/** @} */
 
 } // namespace Qedo
 
-#endif
 
+#endif

@@ -20,65 +20,39 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_HOME_SERVANT_H__
-#define __SESSION_HOME_SERVANT_H__
+#ifndef __STREAM_DATA_DISPATCHER_H__
+#define __STREAM_DATA_DISPATCHER_H__
 
-#include "CCMHomeServant.h"
+#ifndef _QEDO_NO_STREAMS
+
+
+#include <CORBA.h>
+#include <StreamComponents.h>
+
+#include "RefCountBase.h"
+#include "Output.h"
 #include "Util.h"
 
 
 namespace Qedo {
 
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * the servant for session homes
- */
-class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
+class CONTAINERDLL_API StreamDataDispatcher : public virtual Qedo::RefCountBase
 {
-private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
-
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
-
 public:
-	/**
-	 * constructor
-	 */
-	SessionHomeServant ();
+	StreamDataDispatcher();
+	virtual ~StreamDataDispatcher();
 
-	/**
-	 * copy constructor
-	 */
-	SessionHomeServant (const SessionHomeServant&);
-
-	/**
-	 * assignment operator
-	 */
-	SessionHomeServant& operator= (const SessionHomeServant&);
-
-	/**
-	 * destructor
-	 */
-	virtual ~SessionHomeServant();
+	// Hooks for the type-specific implementations
+	virtual void begin_stream (const char*, const Components::ConfigValues&) = 0;
+	virtual void end_stream() = 0;
+	virtual void failed_stream() = 0;
+	virtual void receive_stream_data (StreamComponents::StreamingBuffer_ptr) = 0;
 };
 
-/** @} */
 
 } // namespace Qedo
 
 #endif
 
+#endif

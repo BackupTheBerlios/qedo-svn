@@ -58,6 +58,10 @@ protected:
 	Components::ExecutorLocator_var		executor_locator_;
 	/** the generic ccm object executor for the component instance */
 	CCMObjectExecutor*					ccm_object_executor_;
+	/** the generic stream ccm object executor for the component instance */
+#ifndef _QEDO_NO_STREAMS
+	StreamCCMObjectExecutor*			stream_ccm_object_executor_;
+#endif
 	/** the current executor*/
 	CORBA::Object_ptr					current_executor_;
 
@@ -80,7 +84,7 @@ public:
 	/**
 	 * destructor
 	 */
-	~ServantBase();
+	virtual ~ServantBase();
 
 	/**
 	 * set the current executor
@@ -123,7 +127,7 @@ public:
 	/**
 	 * destructor
 	 */
-	~PrimaryServant();
+	virtual ~PrimaryServant();
 
 private:
     //

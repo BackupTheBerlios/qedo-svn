@@ -29,6 +29,27 @@
 #pragma prefix "omg.org"
 
 
+#ifndef _QEDO_NO_STREAMS
+module StreamComponents{
+	local interface StreamingBuffer
+	{
+		exception OutOfRange {};
+		exception IllegalSize {};
+		exception OutOfMemory {};
+
+		BufferPtr get_buffer();
+
+		unsigned long get_size();
+
+		void set_used (in unsigned long bytes_used)
+			raises (OutOfRange);
+
+		unsigned long get_used();
+	};
+};
+#endif
+
+
 module Components {
 	
 	typedef string FeatureName;
@@ -333,11 +354,16 @@ module Components {
 		boolean is_caller_in_role (in string role);
 		void set_rollback_only()
 			raises (IllegalState);
+#ifndef _QEDO_NO_STREAMS
+		StreamComponents::StreamingBuffer get_streaming_buffer (in unsigned long min_size)
+			raises (StreamComponents::StreamingBuffer::IllegalSize,
+			StreamComponents::StreamingBuffer::OutOfMemory);
+#endif
 		/** extension */
 		Object resolve_service_reference(in string service_id)
 			raises(CCMException);
 	};
-		
+
 	local interface EnterpriseComponent {
 	};
 
@@ -677,6 +703,7 @@ module Components {
 		};
 	}; // end of module deployment
 
+/*	// Deprecated
 	module QedoStreams {
 		interface StreamConnection {};
 
@@ -684,23 +711,18 @@ module Components {
 			string get_id();
 		};
 	};
+*/
 
-	/*
-	local interface ExecutorContext : CCMContext
+	// @@@ This is a Qedo extension
+	local interface HomeContext
 	{
-		Object get_CCM_object()
-			raises (IllegalState);
-		PrimaryKeyBase get_primary_key ()
-			raises (IllegalState);
-		void req_passivate ()
-			raises (PolicyMismatch);
-		CatalogBase get_persistence (in _TypeId catalog_type_id)
-			raises (PersistenceNotAvailable);
-	};*/
+		CCMHome get_CCM_home();
+	};
 
 	local interface HomeExecutorBase
 	{
-		void set_context (in CCMContext ctx)
+		// @@@ This is a Qedo extension
+		void set_context (in HomeContext ctx)
 			raises (CCMException);
 	};
 

@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.29 2003/08/10 13:10:45 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.29.2.1 2003/09/26 14:26:02 stoinski Exp $";
 
 
 namespace Qedo {
@@ -144,7 +144,7 @@ ContainerInterfaceImpl::EventEntry::~EventEntry()
 void*
 ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 {
-	DEBUG_OUT ("ContainerInterfaceImpl: Event Dispatcher Thread started");
+	DEBUG_OUT ("ContainerInterfaceImpl: Event dispatcher thread started");
 
 	ContainerInterfaceImpl* this_ptr = (ContainerInterfaceImpl*)data;
 
@@ -152,9 +152,9 @@ ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 
 	do
 	{
-			while(!this_ptr->event_list.empty()) {
-			EventEntry e = this_ptr->event_list.front();
-			this_ptr->event_list.erase (this_ptr->event_list.begin());
+			while(!this_ptr->event_list_.empty()) {
+			EventEntry e = this_ptr->event_list_.front();
+			this_ptr->event_list_.erase (this_ptr->event_list_.begin());
 			this_ptr->event_queue_mutex_.unlock_object();
 
 			try {
@@ -394,7 +394,7 @@ ContainerInterfaceImpl::queue_event
 		QedoLock lock (event_queue_mutex_);
 		Components::EventBase* e = Components::EventBase::_downcast(ev->_copy_value());
 		EventEntry entry(consumer,e);
-		event_list.push_back(entry);
+		event_list_.push_back(entry);
 
 		CORBA::remove_ref (e);
 
@@ -420,7 +420,7 @@ ContainerInterfaceImpl::queue_event
 
 		for(iter = consumers.begin();iter != consumers.end();iter++) {
 			EventEntry entry(iter->consumer(),e);
-			event_list.push_back(entry);
+			event_list_.push_back(entry);
 		}
 
 		CORBA::remove_ref (e);
