@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.10 2003/04/14 09:17:49 tom Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.11 2003/05/27 10:59:59 boehme Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -29,7 +29,7 @@ static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.10 2003/04/14 09:17:49 tom
 #include "Valuetypes.h"
 #ifdef WIN32
 #include "objbase.h"
-#else
+#else /* Linux */
 #include "uuid/uuid.h"
 #endif
 
@@ -60,8 +60,28 @@ CCMObjectExecutor::CCMObjectExecutor (const PortableServer::ObjectId& component_
 	uuid_.erase(0, 1);
 	free(buf);
 	CoTaskMemFree(lpolestr);
-#else
-	//TODO
+#else /* Linux */
+	uuid_t uuid;
+	char buf[38];
+	uuid_generate(uuid);
+	sprintf(buff,"%2.2X%2.2X%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X\n"
+	                ,(u_int32_t)uuid[0]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*1]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*2]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*3]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*4]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*5]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*6]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*7]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*8]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*9]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*10]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*11]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*12]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*13]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*14]
+	                ,(u_int8_t)uuid[sizeof(u_int8_t)*15]);
+	uuid_ = buf;
 #endif
 }
 
