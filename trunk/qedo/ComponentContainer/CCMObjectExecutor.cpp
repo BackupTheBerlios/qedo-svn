@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.16 2003/06/18 11:50:17 stoinski Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.17 2003/06/18 15:34:19 boehme Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -30,7 +30,9 @@ static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.16 2003/06/18 11:50:17 sto
 #ifdef WIN32
 #include "objbase.h"
 #else /* Linux */
+extern "C" {
 #include "uuid/uuid.h"
+}
 #endif
 
 namespace Qedo {
