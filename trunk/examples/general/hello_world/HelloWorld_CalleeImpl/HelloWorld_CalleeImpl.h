@@ -39,14 +39,14 @@ namespace HelloWorld
     
     private:
     
-        ::HelloWorld::CCM_Callee_Context_var context_;
+        ::HelloWorld::CCM_Callee_ContextImpl_var context_;
         
     public:
     
         CalleeSessionImpl();
         virtual ~CalleeSessionImpl();
         
-        void set_context(::HelloWorld::CCM_Callee_Context_ptr context)
+        void set_context(::HelloWorld::CCM_Callee_ContextImpl_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
         
         void configuration_complete()
@@ -83,7 +83,7 @@ namespace HelloWorld
     
     private:
     
-        ::HelloWorld::CCM_Callee_Context_var context_;
+        ::HelloWorld::CCM_Callee_ContextImpl_var context_;
         
         CalleeSessionImpl* component_;
         
@@ -156,7 +156,7 @@ namespace HelloWorld
     
     private:
     
-        Components::CCMContext_var context_;
+        Components::HomeContext_var context_;
         
     public:
         CalleeHomeImpl();
@@ -165,7 +165,7 @@ namespace HelloWorld
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0
         //
-        virtual void set_context (Components::CCMContext_ptr ctx)
+        virtual void set_context (Components::HomeContext_ptr ctx)
             throw (CORBA::SystemException, Components::CCMException);
         
         //

@@ -1,0 +1,25 @@
+#include "Components.idl"
+
+module inherit {
+	interface base_interf {
+		void op1();
+	};
+
+	interface derived_interf {
+		void op2();
+	};
+	
+	component base_component {
+		provides base_interf my_base;
+	};
+	
+	home base_home manages base_component {};
+	
+	component derived_component : base_component {
+		provides derived_interf my_derived;
+	};
+	
+	home derived_home manages derived_component {};
+	
+}; // inherit
+

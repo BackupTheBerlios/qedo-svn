@@ -1,0 +1,19 @@
+#include "inherit.idl"
+
+module inherit {
+
+	composition session BaseImpl {
+		home executor BaseHomeImpl {
+			implements inherit::base_home;
+			manages BaseSessionImpl;
+		};
+	};
+
+	composition session DerivedImpl {
+		home executor DerivedHomeImpl {
+			implements inherit::derived_home;
+			manages DerivedSessionImpl;
+		};
+	};
+		
+}; // inherit

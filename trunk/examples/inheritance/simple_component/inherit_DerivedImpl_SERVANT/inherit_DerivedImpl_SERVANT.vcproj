@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+    ProjectType="Visual C++"
+    Version="7.00"
+    Name="inherit_DerivedImpl_SERVANT"
+    ProjectGUID="{19BE6D52-EE9F-4A1F-84BA-F7D71ECDEEE3}"
+    Keyword="Win32Proj">
+    <Platforms>
+        <Platform
+            Name="Win32"/>
+    </Platforms>
+    <Configurations>
+        <Configuration
+            Name="Debug_orbacus|Win32"
+            OutputDirectory="Debug_orbacus"
+            IntermediateDirectory="Debug_orbacus"
+            ConfigurationType="2"
+            CharacterSet="2">
+            <Tool
+                Name="VCCLCompilerTool"
+                Optimization="0"
+                AdditionalIncludeDirectories=".;$(QEDO)/include;$(ORBACUS)/include;$(ORBACUS)/include/OB;"
+                PreprocessorDefinitions="_DEBUG;_USRDLL;SERVANTMODULE_EXPORTS"
+                MinimalRebuild="TRUE"
+                BasicRuntimeChecks="3"
+                RuntimeLibrary="3"
+                RuntimeTypeInfo="TRUE"
+                UsePrecompiledHeader="0"
+                WarningLevel="3"
+                Detect64BitPortabilityProblems="FALSE"
+                DebugInformationFormat="4"/>
+            <Tool
+                Name="VCCustomBuildTool"/>
+            <Tool
+                Name="VCLinkerTool"
+                AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib obd.lib jtcd.lib"
+                OutputFile="$(OutDir)/inherit_DerivedImpl_SERVANT.dll"
+                LinkIncremental="2"
+                AdditionalLibraryDirectories="$(QEDO)/lib;$(ORBACUS)/lib"
+                GenerateDebugInformation="TRUE"
+                ProgramDatabaseFile="$(OutDir)/inherit_DerivedImpl_SERVANT.pdb"
+                SubSystem="2"
+                ImportLibrary="$(OutDir)/inherit_DerivedImpl_SERVANT.lib"
+                TargetMachine="1"/>
+            <Tool
+                Name="VCMIDLTool"/>
+            <Tool
+                Name="VCPostBuildEventTool"/>
+            <Tool
+                Name="VCPreBuildEventTool"/>
+            <Tool
+                Name="VCPreLinkEventTool"/>
+            <Tool
+                Name="VCResourceCompilerTool"/>
+            <Tool
+                Name="VCWebServiceProxyGeneratorTool"/>
+            <Tool
+                Name="VCWebDeploymentTool"/>
+        </Configuration>
+        <Configuration
+            Name="Debug_mico|Win32"
+            OutputDirectory="Debug_mico"
+            IntermediateDirectory="Debug_mico"
+            ConfigurationType="2"
+            CharacterSet="2">
+            <Tool
+                Name="VCCLCompilerTool"
+                Optimization="0"
+                AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;$(MICO)/include/windows;"
+                PreprocessorDefinitions="BUILD_INHERIT_DERIVEDIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+                MinimalRebuild="TRUE"
+                BasicRuntimeChecks="3"
+                RuntimeLibrary="3"
+                RuntimeTypeInfo="TRUE"
+                UsePrecompiledHeader="0"
+                WarningLevel="3"
+                Detect64BitPortabilityProblems="FALSE"
+                DebugInformationFormat="4"/>
+            <Tool
+                Name="VCCustomBuildTool"/>
+            <Tool
+                Name="VCLinkerTool"
+                AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib mico2311.lib pthreadVC.lib"
+                OutputFile="$(OutDir)/inherit_DerivedImpl_SERVANT.dll"
+                LinkIncremental="2"
+                AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib"
+                GenerateDebugInformation="TRUE"
+                ProgramDatabaseFile="$(OutDir)/inherit_DerivedImpl_SERVANT.pdb"
+                SubSystem="2"
+                ImportLibrary="$(OutDir)/inherit_DerivedImpl_SERVANT.lib"
+                TargetMachine="1"/>
+            <Tool
+                Name="VCMIDLTool"/>
+            <Tool
+                Name="VCPostBuildEventTool"/>
+            <Tool
+                Name="VCPreBuildEventTool"/>
+            <Tool
+                Name="VCPreLinkEventTool"/>
+            <Tool
+                Name="VCResourceCompilerTool"/>
+            <Tool
+                Name="VCWebServiceProxyGeneratorTool"/>
+            <Tool
+                Name="VCWebDeploymentTool"/>
+        </Configuration>
+        <Configuration
+            Name="Debug_tao|Win32"
+            OutputDirectory="Debug_tao"
+            IntermediateDirectory="Debug_tao"
+            ConfigurationType="2"
+            CharacterSet="2">
+            <Tool
+                Name="VCCLCompilerTool"
+                Optimization="0"
+                AdditionalIncludeDirectories=".;$(QEDO)/include;$(TAO)"
+                PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS"
+                MinimalRebuild="TRUE"
+                BasicRuntimeChecks="3"
+                RuntimeLibrary="3"
+                RuntimeTypeInfo="TRUE"
+                UsePrecompiledHeader="0"
+                WarningLevel="3"
+                Detect64BitPortabilityProblems="FALSE"
+                DebugInformationFormat="4"/>
+            <Tool
+                Name="VCCustomBuildTool"/>
+            <Tool
+                Name="VCLinkerTool"
+                AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib aced.lib TAOd.lib"
+                OutputFile="$(OutDir)/inherit_DerivedImpl_SERVANT.dll"
+                LinkIncremental="2"
+                AdditionalLibraryDirectories="$(QEDO)/lib;$(ORBACUS)/lib"
+                GenerateDebugInformation="TRUE"
+                ProgramDatabaseFile="$(OutDir)/inherit_DerivedImpl_SERVANT.pdb"
+                SubSystem="2"
+                ImportLibrary="$(OutDir)/inherit_DerivedImpl_SERVANT.lib"
+                TargetMachine="1"/>
+            <Tool
+                Name="VCMIDLTool"/>
+            <Tool
+                Name="VCPostBuildEventTool"/>
+            <Tool
+                Name="VCPreBuildEventTool"/>
+            <Tool
+                Name="VCPreLinkEventTool"/>
+            <Tool
+                Name="VCResourceCompilerTool"/>
+            <Tool
+                Name="VCWebServiceProxyGeneratorTool"/>
+            <Tool
+                Name="VCWebDeploymentTool"/>
+        </Configuration>
+    </Configurations>
+    <Files>
+        <Filter
+            Name="Source Files"
+            Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+            <File
+                RelativePath="inherit_DerivedImpl_SERVANT.cpp">
+            </File>
+            <File
+                RelativePath="inherit_DerivedImpl_EQUIVALENT.cpp">
+            </File>
+            <File
+                RelativePath="inherit_DerivedImpl_EQUIVALENT_skel.cpp">
+            </File>
+            <File
+                RelativePath="inherit_DerivedImpl_LOCAL.cpp">
+            </File>
+            <File
+                RelativePath="inherit_DerivedImpl_LOCAL_skel.cpp">
+            </File>
+        </Filter>
+        <Filter
+            Name="Header Files"
+            Filter="h;hpp;hxx;hm;inl;inc">
+            <File
+                RelativePath="inherit_DerivedImpl_SERVANT.h">
+            </File>
+            <File
+                RelativePath="inherit_DerivedImpl_EQUIVALENT.h">
+            </File>
+            <File
+                RelativePath="inherit_DerivedImpl_EQUIVALENT_skel.h">
+            </File>
+            <File
+                RelativePath="inherit_DerivedImpl_LOCAL.h">
+            </File>
+            <File
+                RelativePath="inherit_DerivedImpl_LOCAL_skel.h">
+            </File>
+        </Filter>
+        <Filter
+            Name="idl"
+            Filter="idl;cidl">
+            <File
+                RelativePath="../inherit.cidl">
+                <FileConfiguration
+                    Name="Debug_orbacus|Win32">
+                    <Tool
+                        Name="VCCustomBuildTool"
+                        Description="..... compiling CIDL"
+                        CommandLine="$(QEDO)/bin/cidl_gen -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --servant --target IDL:inherit/DerivedImpl:1.0 ../inherit.cidl"
+                        Outputs="inherit_DerivedImpl_LOCAL.idl;inherit_DerivedImpl_EQUIVALENT.idl"/>
+                </FileConfiguration>
+                <FileConfiguration
+                    Name="Debug_mico|Win32">
+                    <Tool
+                        Name="VCCustomBuildTool"
+                        Description="..... compiling CIDL"
+                        CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32  -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --servant --target IDL:inherit/DerivedImpl:1.0 ../inherit.cidl"
+                        Outputs="inherit_DerivedImpl_LOCAL.idl;inherit_DerivedImpl_EQUIVALENT.idl"/>
+                </FileConfiguration>
+                <FileConfiguration
+                    Name="Debug_tao|Win32">
+                    <Tool
+                        Name="VCCustomBuildTool"
+                        CommandLine="$(QEDO)/bin/cidl_gen -DWIN32 -DTAO_ORB -I$(QEDO)/idl -I$(TAO)/idl -I$(ORBACUS)/idl/OB --servant --target IDL:inherit/DerivedImpl:1.0 ../inherit.cidl"
+                        Outputs="inherit_DerivedImpl_LOCAL.idl;inherit_DerivedImpl_EQUIVALENT.idl;inherit_DerivedImpl_BUSINESS.idl"/>
+                </FileConfiguration>
+            </File>
+            <File
+                RelativePath="inherit_DerivedImpl_EQUIVALENT.idl">
+                <FileConfiguration
+                    Name="Debug_orbacus|Win32">
+                    <Tool
+                        Name="VCCustomBuildTool"
+                        Description="..... compiling equivalent IDL"
+                        CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB inherit_DerivedImpl_EQUIVALENT.idl"
+                        Outputs="inherit_DerivedImpl_EQUIVALENT.h;inherit_DerivedImpl_EQUIVALENT.cpp;inherit_DerivedImpl_EQUIVALENT_skel.h;inherit_DerivedImpl_EQUIVALENT_skel.cpp"/>
+                </FileConfiguration>
+                <FileConfiguration
+                    Name="Debug_mico|Win32">
+                    <Tool
+                        Name="VCCustomBuildTool"
+                        Description="..... compiling equivalent IDL"
+                        CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll inherit_DerivedImpl inherit_DerivedImpl_EQUIVALENT.idl
+                        copy inherit_DerivedImpl_EQUIVALENT.h inherit_DerivedImpl_EQUIVALENT_skel.h"
+                        Outputs="inherit_DerivedImpl_EQUIVALENT.h;inherit_DerivedImpl_EQUIVALENT.cpp;inherit_DerivedImpl_EQUIVALENT_skel.h;inherit_DerivedImpl_EQUIVALENT_skel.cpp"/>
+                </FileConfiguration>
+                <FileConfiguration
+                    Name="Debug_tao|Win32">
+                    <Tool
+                        Name="VCCustomBuildTool"
+                        CommandLine="$(TAO)/bin/tao_idl -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp -DTAO_ORB -DWIN32 -I$(QEDO)/idl -I$(TAO)/idl inherit_DerivedImpl_EQUIVALENT.idl"
+                        Outputs="inherit_DerivedImpl_EQUIVALENT.h;inherit_DerivedImpl_EQUIVALENT.cpp;inherit_DerivedImpl_EQUIVALENT_skel.h;inherit_DerivedImpl_EQUIVALENT_skel.cpp"/>
+                </FileConfiguration>
+            </File>
+            <File
+                RelativePath="inherit_DerivedImpl_LOCAL.idl">
+                <FileConfiguration
+                    Name="Debug_orbacus|Win32">
+                    <Tool
+                        Name="VCCustomBuildTool"
+                        Description="..... compiling local IDL"
+                        CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB inherit_DerivedImpl_LOCAL.idl"
+                        Outputs="inherit_DerivedImpl_LOCAL.h;inherit_DerivedImpl_LOCAL.cpp;inherit_DerivedImpl_LOCAL_skel.h;inherit_DerivedImpl_LOCAL_skel.cpp"/>
+                </FileConfiguration>
+                <FileConfiguration
+                    Name="Debug_mico|Win32">
+                    <Tool
+                        Name="VCCustomBuildTool"
+                        Description="..... compiling local IDL"
+                        CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll inherit_DerivedImpl inherit_DerivedImpl_LOCAL.idl
+                        copy inherit_DerivedImpl_LOCAL.h inherit_DerivedImpl_LOCAL_skel.h"
+                        Outputs="inherit_DerivedImpl_LOCAL.h;inherit_DerivedImpl_LOCAL.cpp;inherit_DerivedImpl_LOCAL_skel.h;inherit_DerivedImpl_LOCAL_skel.cpp"/>
+                </FileConfiguration>
+                <FileConfiguration
+                    Name="Debug_tao|Win32">
+                    <Tool
+                        Name="VCCustomBuildTool"
+                        CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB inherit_DerivedImpl_LOCAL.idl"
+                        Outputs="inherit_DerivedImpl_LOCAL.h;inherit_DerivedImpl_LOCAL.cpp;inherit_DerivedImpl_LOCAL_skel.h;inherit_DerivedImpl_LOCAL_skel.cpp"/>
+                </FileConfiguration>
+            </File>
+        </Filter>
+        <Filter
+            Name="Resource Files"
+            Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+        </Filter>
+    </Files>
+    <Globals>
+    </Globals>
+</VisualStudioProject>

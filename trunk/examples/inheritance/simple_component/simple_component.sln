@@ -1,0 +1,32 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "inherit_DerivedImpl", "inherit_DerivedImpl\inherit_DerivedImpl.vcproj", "{11B1BE00-289F-4858-A1C9-A00737336779}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "inherit_DerivedImpl_SERVANT", "inherit_DerivedImpl_SERVANT\inherit_DerivedImpl_SERVANT.vcproj", "{19BE6D52-EE9F-4A1F-84BA-F7D71ECDEEE3}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug_mico
+		ConfigName.1 = Debug_orbacus
+		ConfigName.2 = Debug_tao
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{11B1BE00-289F-4858-A1C9-A00737336779}.Debug_mico.ActiveCfg = Debug_mico|Win32
+		{11B1BE00-289F-4858-A1C9-A00737336779}.Debug_mico.Build.0 = Debug_mico|Win32
+		{11B1BE00-289F-4858-A1C9-A00737336779}.Debug_orbacus.ActiveCfg = Debug_orbacus|Win32
+		{11B1BE00-289F-4858-A1C9-A00737336779}.Debug_orbacus.Build.0 = Debug_orbacus|Win32
+		{11B1BE00-289F-4858-A1C9-A00737336779}.Debug_tao.ActiveCfg = Debug_tao|Win32
+		{11B1BE00-289F-4858-A1C9-A00737336779}.Debug_tao.Build.0 = Debug_tao|Win32
+		{19BE6D52-EE9F-4A1F-84BA-F7D71ECDEEE3}.Debug_mico.ActiveCfg = Debug_mico|Win32
+		{19BE6D52-EE9F-4A1F-84BA-F7D71ECDEEE3}.Debug_mico.Build.0 = Debug_mico|Win32
+		{19BE6D52-EE9F-4A1F-84BA-F7D71ECDEEE3}.Debug_orbacus.ActiveCfg = Debug_orbacus|Win32
+		{19BE6D52-EE9F-4A1F-84BA-F7D71ECDEEE3}.Debug_orbacus.Build.0 = Debug_orbacus|Win32
+		{19BE6D52-EE9F-4A1F-84BA-F7D71ECDEEE3}.Debug_tao.ActiveCfg = Debug_tao|Win32
+		{19BE6D52-EE9F-4A1F-84BA-F7D71ECDEEE3}.Debug_tao.Build.0 = Debug_tao|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

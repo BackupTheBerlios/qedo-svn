@@ -330,10 +330,10 @@ PhilosopherSessionImpl::~PhilosopherSessionImpl()
 
 
 void
-PhilosopherSessionImpl::set_context(::dinner::CCM_Philosopher_Context_ptr context)
+PhilosopherSessionImpl::set_context(::dinner::CCM_Philosopher_ContextImpl_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::dinner::CCM_Philosopher_Context::_duplicate(context);
+    context_ = ::dinner::CCM_Philosopher_ContextImpl::_duplicate(context);
 }
 
 
@@ -504,15 +504,15 @@ PhilosopherImpl::set_session_context(::Components::SessionContext_ptr context)
     #ifdef TAO_ORB
     ::dinner::CCM_Philosopher_Context_ptr tmp_context;
     
-    tmp_context = dynamic_cast<::dinner::CCM_Philosopher_Context*>(context);
+    tmp_context = dynamic_cast<::dinner::CCM_Philosopher_ContextImpl*>(context);
     
     if (tmp_context)
-        context_ = ::dinner::CCM_Philosopher_Context::_duplicate(tmp_context);
+        context_ = ::dinner::CCM_Philosopher_ContextImpl::_duplicate(tmp_context);
     else
-        context_ = ::dinner::CCM_Philosopher_Context::_nil();
+        context_ = ::dinner::CCM_Philosopher_ContextImpl::_nil();
         
     #else
-    context_ = ::dinner::CCM_Philosopher_Context::_narrow(context);
+    context_ = ::dinner::CCM_Philosopher_ContextImpl::_narrow(context);
     
     #endif
     component_->set_context(context_);
@@ -572,10 +572,10 @@ PhilosopherHomeImpl::~PhilosopherHomeImpl()
 
 
 void
-PhilosopherHomeImpl::set_context(Components::CCMContext_ptr ctx)
+PhilosopherHomeImpl::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = Components::CCMContext::_duplicate(ctx);
+    context_ = Components::HomeContext::_duplicate(ctx);
 }
 
 

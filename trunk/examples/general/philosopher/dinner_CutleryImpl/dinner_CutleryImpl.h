@@ -40,14 +40,14 @@ namespace dinner
     
     private:
     
-        ::dinner::CCM_Cutlery_Context_var context_;
+        ::dinner::CCM_Cutlery_ContextImpl_var context_;
         
     public:
     
         CutlerySessionImpl();
         virtual ~CutlerySessionImpl();
         
-        void set_context(::dinner::CCM_Cutlery_Context_ptr context)
+        void set_context(::dinner::CCM_Cutlery_ContextImpl_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
         
         void configuration_complete()
@@ -88,14 +88,14 @@ namespace dinner
     
     private:
     
-        ::dinner::CCM_Cutlery_Context_var context_;
+        ::dinner::CCM_Cutlery_ContextImpl_var context_;
         
     public:
     
         Seg();
         virtual ~Seg();
         
-        void set_context(::dinner::CCM_Cutlery_Context_ptr context)
+        void set_context(::dinner::CCM_Cutlery_ContextImpl_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
         
         void configuration_complete()
@@ -137,7 +137,7 @@ namespace dinner
     
     private:
     
-        ::dinner::CCM_Cutlery_Context_var context_;
+        ::dinner::CCM_Cutlery_ContextImpl_var context_;
         
         CutlerySessionImpl* component_;
         
@@ -212,7 +212,7 @@ namespace dinner
     
     private:
     
-        Components::CCMContext_var context_;
+        Components::HomeContext_var context_;
         
     public:
         CutleryHomeImpl();
@@ -221,7 +221,7 @@ namespace dinner
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0
         //
-        virtual void set_context (Components::CCMContext_ptr ctx)
+        virtual void set_context (Components::HomeContext_ptr ctx)
             throw (CORBA::SystemException, Components::CCMException);
         
         //

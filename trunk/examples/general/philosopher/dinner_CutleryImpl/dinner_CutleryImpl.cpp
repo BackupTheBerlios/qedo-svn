@@ -37,10 +37,10 @@ CutlerySessionImpl::~CutlerySessionImpl()
 
 
 void
-CutlerySessionImpl::set_context(::dinner::CCM_Cutlery_Context_ptr context)
+CutlerySessionImpl::set_context(::dinner::CCM_Cutlery_ContextImpl_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::dinner::CCM_Cutlery_Context::_duplicate(context);
+    context_ = ::dinner::CCM_Cutlery_ContextImpl::_duplicate(context);
 }
 
 
@@ -104,10 +104,10 @@ Seg::~Seg()
 
 
 void
-Seg::set_context(::dinner::CCM_Cutlery_Context_ptr context)
+Seg::set_context(::dinner::CCM_Cutlery_ContextImpl_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::dinner::CCM_Cutlery_Context::_duplicate(context);
+    context_ = ::dinner::CCM_Cutlery_ContextImpl::_duplicate(context);
 }
 
 
@@ -225,15 +225,15 @@ CutleryImpl::set_session_context(::Components::SessionContext_ptr context)
     #ifdef TAO_ORB
     ::dinner::CCM_Cutlery_Context_ptr tmp_context;
     
-    tmp_context = dynamic_cast<::dinner::CCM_Cutlery_Context*>(context);
+    tmp_context = dynamic_cast<::dinner::CCM_Cutlery_ContextImpl*>(context);
     
     if (tmp_context)
-        context_ = ::dinner::CCM_Cutlery_Context::_duplicate(tmp_context);
+        context_ = ::dinner::CCM_Cutlery_ContextImpl::_duplicate(tmp_context);
     else
-        context_ = ::dinner::CCM_Cutlery_Context::_nil();
+        context_ = ::dinner::CCM_Cutlery_ContextImpl::_nil();
         
     #else
-    context_ = ::dinner::CCM_Cutlery_Context::_narrow(context);
+    context_ = ::dinner::CCM_Cutlery_ContextImpl::_narrow(context);
     
     #endif
     component_->set_context(context_);
@@ -297,10 +297,10 @@ CutleryHomeImpl::~CutleryHomeImpl()
 
 
 void
-CutleryHomeImpl::set_context(Components::CCMContext_ptr ctx)
+CutleryHomeImpl::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = Components::CCMContext::_duplicate(ctx);
+    context_ = Components::HomeContext::_duplicate(ctx);
 }
 
 

@@ -32,10 +32,10 @@ CallerSessionImpl::~CallerSessionImpl()
 
 
 void
-CallerSessionImpl::set_context(::HelloWorld::CCM_Caller_Context_ptr context)
+CallerSessionImpl::set_context(::HelloWorld::CCM_Caller_ContextImpl_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::HelloWorld::CCM_Caller_Context::_duplicate(context);
+    context_ = ::HelloWorld::CCM_Caller_ContextImpl::_duplicate(context);
 }
 
 
@@ -118,15 +118,15 @@ CallerImpl::set_session_context(::Components::SessionContext_ptr context)
     #ifdef TAO_ORB
     ::HelloWorld::CCM_Caller_Context_ptr tmp_context;
     
-    tmp_context = dynamic_cast<::HelloWorld::CCM_Caller_Context*>(context);
+    tmp_context = dynamic_cast<::HelloWorld::CCM_Caller_ContextImpl*>(context);
     
     if (tmp_context)
-        context_ = ::HelloWorld::CCM_Caller_Context::_duplicate(tmp_context);
+        context_ = ::HelloWorld::CCM_Caller_ContextImpl::_duplicate(tmp_context);
     else
-        context_ = ::HelloWorld::CCM_Caller_Context::_nil();
+        context_ = ::HelloWorld::CCM_Caller_ContextImpl::_nil();
         
     #else
-    context_ = ::HelloWorld::CCM_Caller_Context::_narrow(context);
+    context_ = ::HelloWorld::CCM_Caller_ContextImpl::_narrow(context);
     
     #endif
     component_->set_context(context_);
@@ -180,10 +180,10 @@ CallerHomeImpl::~CallerHomeImpl()
 
 
 void
-CallerHomeImpl::set_context(Components::CCMContext_ptr ctx)
+CallerHomeImpl::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = Components::CCMContext::_duplicate(ctx);
+    context_ = Components::HomeContext::_duplicate(ctx);
 }
 
 

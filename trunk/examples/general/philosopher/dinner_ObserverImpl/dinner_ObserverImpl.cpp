@@ -37,10 +37,10 @@ ObserverSessionImpl::~ObserverSessionImpl()
 
 
 void
-ObserverSessionImpl::set_context(::dinner::CCM_Observer_Context_ptr context)
+ObserverSessionImpl::set_context(::dinner::CCM_Observer_ContextImpl_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::dinner::CCM_Observer_Context::_duplicate(context);
+    context_ = ::dinner::CCM_Observer_ContextImpl::_duplicate(context);
 }
 
 
@@ -186,15 +186,15 @@ ObserverImpl::set_session_context(::Components::SessionContext_ptr context)
     #ifdef TAO_ORB
     ::dinner::CCM_Observer_Context_ptr tmp_context;
     
-    tmp_context = dynamic_cast<::dinner::CCM_Observer_Context*>(context);
+    tmp_context = dynamic_cast<::dinner::CCM_Observer_ContextImpl*>(context);
     
     if (tmp_context)
-        context_ = ::dinner::CCM_Observer_Context::_duplicate(tmp_context);
+        context_ = ::dinner::CCM_Observer_ContextImpl::_duplicate(tmp_context);
     else
-        context_ = ::dinner::CCM_Observer_Context::_nil();
+        context_ = ::dinner::CCM_Observer_ContextImpl::_nil();
         
     #else
-    context_ = ::dinner::CCM_Observer_Context::_narrow(context);
+    context_ = ::dinner::CCM_Observer_ContextImpl::_narrow(context);
     
     #endif
     component_->set_context(context_);
@@ -257,10 +257,10 @@ ObserverHomeImpl::~ObserverHomeImpl()
 
 
 void
-ObserverHomeImpl::set_context(Components::CCMContext_ptr ctx)
+ObserverHomeImpl::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = Components::CCMContext::_duplicate(ctx);
+    context_ = Components::HomeContext::_duplicate(ctx);
 }
 
 
