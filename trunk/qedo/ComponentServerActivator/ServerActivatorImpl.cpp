@@ -20,17 +20,13 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.12 2003/05/28 13:31:25 stoinski Exp $";
+static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.13 2003/07/16 10:54:42 boehme Exp $";
 
 #include <iostream>
 #include "fstream"
 #include "ServerActivatorImpl.h"
 #ifdef MICO_ORB
-#ifdef WIN32
-#include <mico/CosNaming.h>
-#else
-#include <CosNaming.h>
-#endif
+#include <coss/CosNaming.h>
 #else
 #include <CosNaming.h>
 #endif

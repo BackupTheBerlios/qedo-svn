@@ -20,15 +20,11 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qci.cpp,v 1.11 2003/05/25 18:35:32 tom Exp $";
+static char rcsid[] = "$Id: qci.cpp,v 1.12 2003/07/16 10:55:17 boehme Exp $";
 
 #include "ComponentInstallationImpl.h"
 #ifdef MICO_ORB
-#ifdef WIN32
-#include <mico/CosNaming.h>
-#else
 #include <coss/CosNaming.h>
-#endif
 #else
 #include <CosNaming.h>
 #endif
