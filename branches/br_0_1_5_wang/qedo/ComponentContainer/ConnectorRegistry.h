@@ -19,82 +19,53 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-#ifndef __STORAGEHOMEBASE_H__
-#define __STORAGEHOMEBASE_H__
+#ifndef __CONNECTOR_REGISTRY_H__
+#define __CONNECTOR_REGISTRY_H__
 
-#include <list>
+#include <map>
 #include <string>
-#include <vector>
 #include "Util.h"
 #include "CORBADepends.h"
 #include "RefCountBase.h"
-#include "PSSStorageObject.h"
-#include "QDRecordset.h"
-#include "StorageObject.h"
-#include "PSSHelper.h"
 
 using namespace std;
 using namespace CosPersistentState;
 
+
 namespace Qedo
 {
 
-class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::StorageHomeBase,
-											public virtual RefCountLocalObject,
-											public virtual QDRecordset
+class CONTAINERDLL_API ConnectorRegistryImpl : public virtual CosPersistentState::ConnectorRegistry,
+												public virtual RefCountLocalObject
 {
 	public:
 
-		StorageHomeBaseImpl();
+		ConnectorRegistryImpl();
 
-		~StorageHomeBaseImpl();
+		~ConnectorRegistryImpl();
 
-		void Init(CatalogBase_ptr pCatalogBase, const char* szHomeName);
-
-		string getFlush();
-
-		string getFlushByPid(std::vector<Pid> lPidList);
-
-		void setBatchUnModified();
-
-		void Refresh();
-
-		void RefreshByPid(std::vector<Pid> lPidList);
-
-		void FreeAllStorageObjects();
-
-		char* getStorageHomeName() { return szHomeName_; };
-
-		void destroyObject( Pid* pPid ) throw (CORBA::SystemException);
+		//
+		// IDL:omg.org/CosPersistentState/ConnectorRegistry/find_connector:1.0
+		//
+		Connector_ptr find_connector( const char* implementation_id )
+			throw(CosPersistentState::NotFound, CORBA::SystemException);
 		
-		CORBA::Boolean objectExists( Pid* pPid ) throw (CORBA::SystemException);
-
-		StorageObjectBase find_by_pid(string pid);
-
 		//
-		// IDL:omg.org/CosPersistentState/StorageHomeBase/find_by_short_pid:1.0
+		// IDL:omg.org/CosPersistentState/ConnectorRegistry/register_connector:1.0
 		//
-		StorageObjectBase find_by_short_pid(const ShortPid& short_pid);
+		void register_connector( Connector_ptr conn, const char* implementation_id )
+			throw(CORBA::SystemException);
 
 		//
-		// IDL:omg.org/CosPersistentState/StorageHomeBase/get_catalog:1.0
+		// IDL:omg.org/CosPersistentState/ConnectorRegistry/unregister_connector:1.0
 		//
-		CatalogBase_ptr get_catalog();
+		void unregister_connector( const char* implementation_id )
+			throw(CosPersistentState::NotFound, CORBA::SystemException);
 
 	private:
-
-		void ValuePaser( map<string, CORBA::Any>& value_map );
-
-	protected:
-
-		char* szHomeName_; // its own table or view name!
-		CatalogBase_ptr pCatalogBase_;
-		std::list <StorageObjectImpl*> lObjectes_;
-		std::list <StorageObjectImpl*> ::iterator objIter_;
-
-	private:
-
-		std::list <StorageObjectImpl*> lTempList_;
+		
+		std::map<string, Connector_var> connectors_;
+		std::map<string, Connector_var>::iterator conIter_;
 };
 
 }; // namespace Qedo

@@ -61,7 +61,10 @@ ConnectorImpl::~ConnectorImpl()
 char* 
 ConnectorImpl::implementation_id()
 {
-	return szImplID_;
+	char* szID = NULL;
+
+	strcpy(szID, szImplID_);
+	return szID;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -70,10 +73,14 @@ ConnectorImpl::implementation_id()
 Pid* 
 ConnectorImpl::get_pid(StorageObjectBase obj)
 {
-	if(obj==NULL)
-		return NULL;
+	Pid* pPid = NULL;
+	StorageObject* pso = dynamic_cast <StorageObject*> (obj);
 
-	return ((dynamic_cast <StorageObject*> (obj))->get_pid());
+	if( pso==NULL )
+		throw CORBA::PERSIST_STORE();
+	
+    pPid = pso->get_pid();
+    return pPid;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -82,10 +89,14 @@ ConnectorImpl::get_pid(StorageObjectBase obj)
 ShortPid* 
 ConnectorImpl::get_short_pid(StorageObjectBase obj)
 {
-	if(obj==NULL)
-		return NULL;
+	ShortPid* pSpid = NULL;
+	StorageObject* pso = dynamic_cast <StorageObject*> (obj);
 
-	return ((dynamic_cast <StorageObject*> (obj))->get_short_pid());
+	if( pso==NULL )
+		throw CORBA::PERSIST_STORE();
+	
+    pSpid = pso->get_short_pid();
+    return pSpid;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,8 +204,9 @@ ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
 	}
 	else
 	{
-		typedef pair <const char*, StorageObjectFactory> Factory_Pair;
-		SOFMap_.insert( Factory_Pair(storage_type_name, factory) );
+		//typedef pair <const char*, StorageObjectFactory> Factory_Pair;
+		//SOFMap_.insert( Factory_Pair(storage_type_name, factory) );
+		SOFMap_[storage_type_name] = factory;
 		return NULL;
 	}
 }
@@ -221,8 +233,9 @@ ConnectorImpl::register_storage_home_factory(const char* storage_home_type_name,
 	}
 	else
 	{
-		typedef pair <const char*, StorageHomeFactory> Factory_Pair;
-		SHFMap_.insert( Factory_Pair(storage_home_type_name, factory) );
+		//typedef pair <const char*, StorageHomeFactory> Factory_Pair;
+		//SHFMap_.insert( Factory_Pair(storage_home_type_name, factory) );
+		SHFMap_[storage_home_type_name] = factory;
 		return NULL;
 	}
 }

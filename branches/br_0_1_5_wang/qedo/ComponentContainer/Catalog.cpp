@@ -37,18 +37,12 @@ CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM,
 
 CatalogBaseImpl::~CatalogBaseImpl()
 {
-	if(!lStorageHomeBases_.empty())
+	if(!lHomeBases_.empty())
 	{
-		list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
-	
-		for (storageHomeBase_iter = lStorageHomeBases_.begin();
-			 storageHomeBase_iter != lStorageHomeBases_.end();
-			 storageHomeBase_iter++)
-		{
-			(*storageHomeBase_iter)->_remove_ref();
-		}
+		for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+			(*homeBaseIter)->_remove_ref();
 
-		lStorageHomeBases_.clear();
+		lHomeBases_.clear();
 	}
 
 	_remove_ref();
@@ -138,16 +132,17 @@ StorageHomeBase_ptr
 CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 {
 	//find it in the list
-	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
+	StorageHomeBase_var pStorageHomeBase = StorageHomeBase::_nil();
 	
-	for (storageHomeBase_iter = lStorageHomeBases_.begin();
-		 storageHomeBase_iter != lStorageHomeBases_.end();
-		 storageHomeBase_iter++)
+	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
 	{
-		const char* szName = (*storageHomeBase_iter)->getStorageHomeName();
+		const char* szName = (*homeBaseIter)->getStorageHomeName();
 		
 		if(strcmp(szName, storage_home_id)==0)
-			return *storageHomeBase_iter;
+		{
+			pStorageHomeBase = (*homeBaseIter);
+			return pStorageHomeBase._retn();
+		}
 	}
 	
 	//check it whether in the database
@@ -164,14 +159,16 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 #endif
 	
 	factory = connector_->register_storage_home_factory(storage_home_id, factory);
-	StorageHomeBase_ptr pStorageHomeBase = factory->create();
-    StorageHomeBaseImpl* pStorageHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pStorageHomeBase);
+	pStorageHomeBase = factory->create();
+	factory->_remove_ref();
+
+    StorageHomeBaseImpl* pStorageHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pStorageHomeBase.out());
 	pStorageHomeBaseImpl->Init((dynamic_cast <CatalogBase_ptr> (this)), storage_home_id);
 
-	lStorageHomeBases_.push_back(pStorageHomeBaseImpl);
+	lHomeBases_.push_back(pStorageHomeBaseImpl);
 
 	//return (CosPersistentState::StorageHomeBase::_narrow(pStorageHomeBase));
-	return pStorageHomeBase;
+	return pStorageHomeBase._retn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -191,9 +188,9 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 	QDRecordset prs;
 	prs.Init(&hDbc_);
 
-	strToExecute = "SELECT ownhome FROM pid_content WHERE pid LIKE ";
+	strToExecute = "SELECT ownhome FROM pid_content WHERE pid LIKE \'";
 	strToExecute += strPid;
-	strToExecute += ";";
+	strToExecute += "\';";
 
 	if(prs.Open(strToExecute.c_str()))
 	{
@@ -203,12 +200,22 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 		prs.Destroy();
 	}
 
-	StorageHomeBase_ptr p_sHomeBase = find_storage_home((const char*)szStorageHome);
+	try
+	{
+		StorageHomeBase_var pHomeBase = find_storage_home((const char*)szStorageHome);
+		StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase.out());
+		StorageObjectBase pObj = NULL;
 	
-	if(p_sHomeBase)
-		return ( (dynamic_cast <StorageHomeBaseImpl*> (p_sHomeBase))->find_by_pid(strPid) );
-	else 
-		return NULL;
+		pObj = pHomeBaseImpl->find_by_pid(strPid);
+		if(!pObj)
+			throw CosPersistentState::NotFound();
+
+		return pObj;
+	}
+	catch(CORBA::SystemException)
+	{
+		throw CosPersistentState::NotFound();
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -218,34 +225,43 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 void 
 CatalogBaseImpl::flush()
 {
-	string strFlush = "";
-	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
-	
-	for( storageHomeBase_iter = lStorageHomeBases_.begin();
-		 storageHomeBase_iter != lStorageHomeBases_.end();
-		 storageHomeBase_iter++ )
-	{
-		strFlush += (*storageHomeBase_iter)->getFlush();
+	if( !CanTransact() )
+		NORMAL_OUT( "CatalogBaseImpl::flush() - Database do not support transaction, flush is errorprone!" );
+
+	if( access_mode==READ_ONLY )
+	{	
+		NORMAL_ERR( "CatalogBaseImpl::flush() - Session is read-only!" );
+		return;
 	}
 
-	if(CanTransact()==TRUE && access_mode!=READ_ONLY)
+	string strFlush = "";
+	
+	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+		strFlush += (*homeBaseIter)->getFlush();
+
+	if(ExecuteSQL(strFlush.c_str()))
 	{
-		if(ExecuteSQL(strFlush.c_str()))
+		SQLRETURN ret;
+		ret = SQLEndTran(SQL_HANDLE_DBC, hDbc_, SQL_COMMIT);
+		if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
-			SQLRETURN ret;
-			ret = SQLEndTran(SQL_HANDLE_DBC, hDbc_, SQL_COMMIT);
-			if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+			for( homeBaseIter = lHomeBases_.begin();
+					homeBaseIter != lHomeBases_.end();
+					homeBaseIter++ )
 			{
-				for( storageHomeBase_iter = lStorageHomeBases_.begin();
-					 storageHomeBase_iter != lStorageHomeBases_.end();
-					 storageHomeBase_iter++ )
-				{
-					// the flush is successfull, we set the modified-value of each
-					// storage object back to FALSE
-					(*storageHomeBase_iter)->setBatchUnModified();
-				}
+				// the flush is successfull, we set the modified-value of each
+				// storage object back to FALSE
+				(*homeBaseIter)->setBatchUnModified();
 			}
 		}
+		else
+		{
+			NORMAL_ERR( "CatalogBaseImpl::flush() - Transaction is not successful!" );
+		}
+	}
+	else
+	{
+		NORMAL_ERR( "CatalogBaseImpl::flush() - flush is not executed!" );
 	}
 }
 
@@ -256,14 +272,8 @@ CatalogBaseImpl::flush()
 void 
 CatalogBaseImpl::refresh()
 {
-	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
-	
-	for( storageHomeBase_iter = lStorageHomeBases_.begin();
-		 storageHomeBase_iter != lStorageHomeBases_.end();
-		 storageHomeBase_iter++ )
-	{
-		(*storageHomeBase_iter)->Refresh();
-	}
+	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+		(*homeBaseIter)->Refresh();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -273,14 +283,8 @@ CatalogBaseImpl::refresh()
 void 
 CatalogBaseImpl::free_all()
 {
-	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
-	
-	for( storageHomeBase_iter = lStorageHomeBases_.begin();
-		 storageHomeBase_iter != lStorageHomeBases_.end();
-		 storageHomeBase_iter++ )
-	{
-		(*storageHomeBase_iter)->FreeAllStorageObjects();
-	}
+	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+		(*homeBaseIter)->FreeAllStorageObjects();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -366,6 +370,15 @@ SessionPoolImpl::Init()
 void 
 SessionPoolImpl::flush_by_pids(const PidList& pids)
 {
+	if( !CanTransact() )
+		NORMAL_OUT( "CatalogBaseImpl::flush_by_pids() - Database do not support transaction, flush is errorprone!" );
+
+	if( access_mode==READ_ONLY )
+	{	
+		NORMAL_ERR( "CatalogBaseImpl::flush_by_pids() - Session pool is read-only!" );
+		return;
+	}
+
 	string strFlush = "";
 	std::vector <Pid> vPidList; 
 
@@ -376,32 +389,28 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 		vPidList.push_back(pids[i]);
 	}
 
-	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
-	for( storageHomeBase_iter = lStorageHomeBases_.begin();
-		 storageHomeBase_iter != lStorageHomeBases_.end();
-		 storageHomeBase_iter++ )
-	{
-		strFlush += (*storageHomeBase_iter)->getFlushByPid(vPidList);
-	}
+	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+		strFlush += (*homeBaseIter)->getFlushByPid(vPidList);
 
-	if(CanTransact()==TRUE && access_mode!=READ_ONLY)
+	if(ExecuteSQL(strFlush.c_str()))
 	{
-		if(ExecuteSQL(strFlush.c_str()))
+		SQLRETURN ret;
+		ret = SQLEndTran(SQL_HANDLE_DBC, hDbc_, SQL_COMMIT);
+		if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
-			SQLRETURN ret;
-			ret = SQLEndTran(SQL_HANDLE_DBC, hDbc_, SQL_COMMIT);
-			if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
-			{
-				for( storageHomeBase_iter = lStorageHomeBases_.begin();
-					 storageHomeBase_iter != lStorageHomeBases_.end();
-					 storageHomeBase_iter++ )
-				{
-					// the flush is successfull, we set the modified-value of each
-					// storage object back to FALSE
-					(*storageHomeBase_iter)->setBatchUnModified();
-				}
-			}
+			// the flush is successfull, we set the modified-value of each
+			// storage object back to FALSE
+			for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+				(*homeBaseIter)->setBatchUnModified();
 		}
+		else
+		{
+			NORMAL_ERR( "CatalogBaseImpl::flush_by_pids() - Transaction is not successful!" );
+		}
+	}
+	else
+	{
+		NORMAL_ERR( "CatalogBaseImpl::flush_by_pids() - flush_by_pids is not executed!" );
 	}
 }
 
@@ -431,13 +440,8 @@ SessionPoolImpl::refresh_by_pids(const PidList& pids)
 		vPidList.push_back(pids[i]);
 	}
 
-	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
-	for( storageHomeBase_iter = lStorageHomeBases_.begin();
-		 storageHomeBase_iter != lStorageHomeBases_.end();
-		 storageHomeBase_iter++ )
-	{
-		(*storageHomeBase_iter)->RefreshByPid(vPidList);
-	}
+	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+		(*homeBaseIter)->RefreshByPid(vPidList);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

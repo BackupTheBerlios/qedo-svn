@@ -19,10 +19,7 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-
 #include "StorageObject.h"
-#include "StorageHomeBase.h"
-#include "Catalog.h"
 
 namespace Qedo
 {
@@ -30,10 +27,10 @@ namespace Qedo
 StorageObjectImpl::StorageObjectImpl() :
 	pid_(NULL),
 	shortPid_(NULL),
-	bModified_(FALSE),
 	strUpdate_(""),
 	strSelect_(""),
-	storageHomeBase_(NULL)
+	pHomeBaseImpl_(NULL),
+	bModified_(FALSE)
 {
 }
 
@@ -45,25 +42,11 @@ StorageObjectImpl::StorageObjectImpl() :
 //MEMO: delete its record in database;
 ////////////////////////////////////////////////////////////////////////////////
 void 
-StorageObjectImpl::destroy_object() 
+StorageObjectImpl::destroy_object()
 	throw (CORBA::SystemException)
 {
-	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (storageHomeBase_);
-	char* homename = homeimpl->getStorageHomeName();
-	string my_pid = PSSHelper::convertPidToString(pid_);
-
-	string strSqlDel;
-	strSqlDel = "DELETE FROM ";
-	strSqlDel.append((const char*)homename);
-	strSqlDel += " WHERE pid LIKE ";
-	strSqlDel += my_pid;
-	strSqlDel += ";";
-	strSqlDel += "DELETE FROM pid_content WHERE pid LIKE ";
-	strSqlDel += my_pid;
-	strSqlDel += ";";
-
-	CatalogBaseImpl* cbImpl = dynamic_cast <CatalogBaseImpl*> (homeimpl->get_catalog());
-	cbImpl->ExecuteSQL(strSqlDel.c_str());
+	Pid_var pPid = get_pid();
+	pHomeBaseImpl_->destroyObject(pPid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,28 +57,8 @@ CORBA::Boolean
 StorageObjectImpl::object_exists() 
 	throw (CORBA::SystemException)
 {
-	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (storageHomeBase_);
-	char* homename = homeimpl->getStorageHomeName();
-	string my_pid = PSSHelper::convertPidToString(pid_);
-
-	string strSqlSel;
-	strSqlSel = "SELECT COUNT(*) FROM ";
-	strSqlSel.append((const char*)homename);
-	strSqlSel += " WHERE pid LIKE ";
-	strSqlSel += my_pid;
-	strSqlSel += ";";
-    
-	if(homeimpl->Open(strSqlSel.c_str()))
-	{
-		long nID = -1;
-		homeimpl->GetFieldValue(0, &nID);
-		if(nID==1)
-			return TRUE;
-		else
-			return FALSE;
-	}
-	else
-		return FALSE;
+	Pid_var pPid = get_pid();
+	return pHomeBaseImpl_->objectExists(pPid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +71,13 @@ Pid*
 StorageObjectImpl::get_pid()
 	throw (CORBA::SystemException)
 {
-	return pid_;
+	Pid_var pid = new Pid;
+	pid->length( pid_->length() );
+
+	for( CORBA::ULong i=0; i<pid_->length(); i++ )
+		(*pid)[i] = (*pid_)[i];
+
+	return pid._retn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +90,13 @@ ShortPid*
 StorageObjectImpl::get_short_pid()
 	throw (CORBA::SystemException)
 {
-	return shortPid_;
+	ShortPid_var spid = new ShortPid;
+	spid->length( shortPid_->length() );
+
+	for( CORBA::ULong i=0; i<shortPid_->length(); i++ )
+		(*spid)[i] = (*shortPid_)[i];
+
+	return spid._retn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,8 +107,16 @@ StorageHomeBase_ptr
 StorageObjectImpl::get_storage_home()
 	throw (CORBA::SystemException)
 {
-	return storageHomeBase_;
+	StorageHomeBase_var pHomeBase = pHomeBaseImpl_;
+	return pHomeBase._retn();
 }
+
+void
+StorageObjectImpl::setStorageHome( StorageHomeBaseImpl* pHomeBaseImpl )
+{
+	pHomeBaseImpl_ = pHomeBaseImpl;
+}
+
 }
 
 

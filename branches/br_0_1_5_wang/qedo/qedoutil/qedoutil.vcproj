@@ -252,22 +252,22 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="Output.cpp">
 			</File>
 			<File
-				RelativePath="Package.cpp">
-			</File>
-			<File
-				RelativePath="PlatformBase.cpp">
-            </File>
-			<File
-				RelativePath="Output.cpp">
-			</File>
-			<File
 				RelativePath="PSDReader.cpp">
 			</File>
 			<File
 				RelativePath="Package.cpp">
 			</File>
 			<File
+				RelativePath="Package.cpp">
+			</File>
+			<File
+				RelativePath="PlatformBase.cpp">
+			</File>
+			<File
 				RelativePath="StreamingValuetypes.cpp">
+			</File>
+			<File
+				RelativePath="Synchronisation.cpp">
 			</File>
 			<File
 				RelativePath="Synchronisation.cpp">
@@ -277,9 +277,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="Valuetypes.cpp">
-			</File>
-			<File
-				RelativePath="Synchronisation.cpp">
 			</File>
 			<File
 				RelativePath="Valuetypes.cpp">
@@ -346,19 +343,16 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="Output.h">
 			</File>
 			<File
-				RelativePath="Package.h">
-			</File>
-			<File
-				RelativePath="PlatformBase.h">
-            </File>
-			<File
-				RelativePath="Output.h">
-			</File>
-			<File
 				RelativePath="PSDReader.h">
 			</File>
 			<File
 				RelativePath="Package.h">
+			</File>
+			<File
+				RelativePath="Package.h">
+			</File>
+			<File
+				RelativePath="PlatformBase.h">
 			</File>
 			<File
 				RelativePath="StreamingValuetypes.h">

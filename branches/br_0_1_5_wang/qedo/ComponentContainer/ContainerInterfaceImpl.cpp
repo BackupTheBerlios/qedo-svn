@@ -36,7 +36,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52 2003/11/24 10:27:45 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.1 2004/01/19 16:38:23 hao Exp $";
 
 
 namespace Qedo {
@@ -272,7 +272,7 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 			{
 				obj = orb_->resolve_initial_references( "NameService" );
 			}
-	}
+		}
 		catch (const CORBA::ORB::InvalidName&)
 		{
 			std::cerr << "ContainerInterfaceImpl: Can't resolve NameService" << std::endl;

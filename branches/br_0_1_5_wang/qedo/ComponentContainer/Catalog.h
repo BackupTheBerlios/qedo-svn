@@ -25,6 +25,7 @@
 #include <list>
 #include <vector>
 #include "Util.h"
+#include "Output.h"
 #include "CORBADepends.h"
 #include "RefCountBase.h"
 #include "QDDatabase.h"
@@ -92,7 +93,8 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 	protected:
 
 		Connector_ptr connector_;
-		std::list <StorageHomeBaseImpl*> lStorageHomeBases_;
+		std::list <StorageHomeBaseImpl*> lHomeBases_;
+		std::list <StorageHomeBaseImpl*> ::iterator homeBaseIter;
 
 	private:
 

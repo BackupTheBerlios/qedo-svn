@@ -22,8 +22,6 @@
 #ifndef __PSSNATIVECLASSES_H__
 #define __PSSNATIVECLASSES_H__
 
-#include "RefCountBase.h"
-
 
 namespace Qedo
 {
@@ -50,26 +48,28 @@ class StorageObjectBase_pre
 };
 
 template <class T>
-class Factory : public virtual Qedo::RefCountLocalObject
+class Factory
 {
 	public:
-		//virtual T* create() throw (CORBA::SystemException) = 0;
-		virtual T* create() throw (CORBA::SystemException)
+		Factory() : refcount_(1) {};
+		virtual ~Factory() {};
+
+		virtual T* create() //throw (CORBA::SystemException)
 		{
 			return new T;
 		};
 		virtual void _add_ref() 
 		{
-			Qedo::RefCountLocalObject::_add_ref();
+			refcount_++;
 		};
 		virtual void _remove_ref()
 		{
-			Qedo::RefCountLocalObject::_remove_ref();
+			if( --refcount_==0 )
+				delete this;
 		};
-		virtual ~Factory()
-		{
-			Qedo::RefCountLocalObject::~RefCountLocalObject();
-		};
+
+	private:
+		CORBA::ULong refcount_;
 };
 
 typedef Factory<Qedo::StorageObjectImpl> StorageObjectFactory_pre;

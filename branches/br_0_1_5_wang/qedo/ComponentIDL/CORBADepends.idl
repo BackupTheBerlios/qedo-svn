@@ -131,16 +131,16 @@ module CosPersistentState {
     };    
 #endif
 
-    //local interface ConnectorRegistry
-    //{
-    //    Connector find_connector(in string implementation_id) 
-    //        raises(NotFound);
-	//
-    //    void register_connector(in Connector conn);
-	//
-    //    void unregister_connector(in string implementation_id)
-    //        raises(NotFound);
-    //};
+    local interface ConnectorRegistry
+    {
+        Connector find_connector(in string implementation_id)
+            raises(NotFound);
+	
+        void register_connector(in Connector conn, in string implementation_id);
+	
+        void unregister_connector(in string implementation_id)
+            raises(NotFound);
+    };
 
     enum YieldRef { YIELD_REF };
     enum ForUpdate { FOR_UPDATE };

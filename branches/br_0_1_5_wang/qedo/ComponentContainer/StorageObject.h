@@ -25,9 +25,10 @@
 #include <map>
 #include <string>
 #include "Util.h"
-#include "PSSStorageObject.h"
 #include "RefCountBase.h"
+#include "PSSStorageObject.h"
 #include "PSSHelper.h"
+#include "StorageHomeBase.h"
 
 using namespace std;
 using namespace CosPersistentState;
@@ -49,6 +50,8 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 		bool isModified() { return bModified_; };
 
 		void setModified(bool bModified) { bModified_ = bModified; };
+
+		void setStorageHome( StorageHomeBaseImpl* pHomeBaseImpl );
 
 		virtual void setValue(map<string, CORBA::Any> valueMap) { throw CORBA::NO_IMPLEMENT(); };
 
@@ -104,7 +107,7 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 
 	private:
 
-		StorageHomeBase_ptr storageHomeBase_;
+		StorageHomeBaseImpl* pHomeBaseImpl_;
 		bool bModified_;
 };
 
