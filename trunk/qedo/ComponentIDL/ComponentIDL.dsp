@@ -1,27 +1,27 @@
 # Microsoft Developer Studio Project File - Name="ComponentIDL" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=ComponentIDL - Win32 Debug_mico
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "ComponentIDL.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "ComponentIDL.mak" CFG="ComponentIDL - Win32 Debug_mico"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "ComponentIDL - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ComponentIDL - Win32 Debug_orbacus" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ComponentIDL - Win32 Debug_tao" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ComponentIDL - Win32 Release_orbacus" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ComponentIDL - Win32 Debug_mico" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ComponentIDL - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ComponentIDL - Win32 Debug_orbacus" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ComponentIDL - Win32 Debug_tao" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ComponentIDL - Win32 Release_orbacus" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ComponentIDL - Win32 Debug_mico" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -83,12 +83,16 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentIDL.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 # SUBTRACT BASE LINK32 /profile /map
-# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentIDL.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"$(QEDO)/bin/ComponentIDL.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 # SUBTRACT LINK32 /profile /map
 # Begin Special Build Tool
+OutDir=.\Debug_orbacus_vc6
+TargetName=ComponentIDL
 SOURCE="$(InputPath)"
 PreLink_Desc=Creating DEF file for ComponentIDL.dll
 PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll Debug_orbacus_vc6/*.obj
+PostBuild_Desc=Distribution
+PostBuild_Cmds=mkdir $(QEDO)\include	copy *.h $(QEDO)\include	copy *.def $(QEDO)\include	mkdir $(QEDO)\lib	copy $(OutDir)\$(TargetName).lib $(QEDO)\lib
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug_tao"
@@ -117,12 +121,16 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentIDL.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 # SUBTRACT BASE LINK32 /profile /map
-# ADD LINK32 aced.lib taod.lib TAO_IFR_Clientd.lib TAO_PortableServerd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentIDL.dll" /pdbtype:sept /libpath:"$(TAO)\ace" /libpath:"$(TAO)\tao\tao" /libpath:"$(TAO)/tao/tao/IFR_Client" /libpath:"$(TAO)/tao/tao/PortableServer"
+# ADD LINK32 aced.lib taod.lib TAO_IFR_Clientd.lib TAO_PortableServerd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"$(QEDO)/bin/ComponentIDL.dll" /pdbtype:sept /libpath:"$(TAO)\ace" /libpath:"$(TAO)\tao\tao" /libpath:"$(TAO)/tao/tao/IFR_Client" /libpath:"$(TAO)/tao/tao/PortableServer"
 # SUBTRACT LINK32 /profile /map
 # Begin Special Build Tool
+OutDir=.\Win32_Debug_tao
+TargetName=ComponentIDL
 SOURCE="$(InputPath)"
 PreLink_Desc=Creating DEF file for ComponentIDL.dll
 PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll Win32_Debug_tao/*.obj
+PostBuild_Desc=Distribution
+PostBuild_Cmds=mkdir $(QEDO)\include	copy *.h $(QEDO)\include	copy *.def $(QEDO)\include	mkdir $(QEDO)\lib	copy $(OutDir)\$(TargetName).lib $(QEDO)\lib
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Release_orbacus"

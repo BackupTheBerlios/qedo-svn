@@ -1,26 +1,26 @@
 # Microsoft Developer Studio Project File - Name="CIDLGenerator" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
 CFG=CIDLGenerator - Win32 Debug_tao
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "CIDLGenerator.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "CIDLGenerator.mak" CFG="CIDLGenerator - Win32 Debug_tao"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "CIDLGenerator - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "CIDLGenerator - Win32 Debug_mico" (based on "Win32 (x86) Console Application")
-!MESSAGE "CIDLGenerator - Win32 Debug_orbacus" (based on "Win32 (x86) Console Application")
-!MESSAGE "CIDLGenerator - Win32 Debug_tao" (based on "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Release" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Debug_mico" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Debug_orbacus" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Debug_tao" (basierend auf  "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -110,8 +110,8 @@ LINK32=link.exe
 # ADD LINK32 CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib obd.lib jtcd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"cidl_gen.exe" /pdbtype:sept /libpath:"..\..\CIDL_Frontend\CIDLFrontendLib" /libpath:"..\..\CIDL_Repository\IFRidl" /libpath:"..\..\CIDL_Repository\ComponentRepositoryLib" /libpath:"..\..\CIDL_Repository\CIDLRepositoryLib" /libpath:"$(ORBACUS)\lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Desc=distribution
-PostBuild_Cmds=md           ..\..\..\qedo_dist_orbacus_d          	md           ..\..\..\qedo_dist_orbacus_d\bin          	copy           cidl_gen.exe           ..\..\..\qedo_dist_orbacus_d\bin          	mkdir           $(QEDO)\bin          	copy           cidl_gen.exe           $(QEDO)\bin\ 
+PostBuild_Desc=Distribution
+PostBuild_Cmds=mkdir            $(QEDO)\bin           	copy            cidl_gen.exe            $(QEDO)\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "CIDLGenerator - Win32 Debug_tao"
@@ -142,8 +142,8 @@ LINK32=link.exe
 # SUBTRACT LINK32 /nodefaultlib
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Desc=distribution
-PostBuild_Cmds=md     ..\..\..\qedo_dist_tao_d    	md     ..\..\..\qedo_dist_tao_d\bin    	copy     cidl_gen.exe     ..\..\..\qedo_dist_tao_d\bin    	copy           cidl_gen.exe           $(QEDO)\bin\ 
+PostBuild_Desc=Distribution
+PostBuild_Cmds=mkdir $(QEDO)\bin    	copy cidl_gen.exe $(QEDO)\bin    
 # End Special Build Tool
 
 !ENDIF 

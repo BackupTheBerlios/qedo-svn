@@ -1,27 +1,27 @@
 # Microsoft Developer Studio Project File - Name="ComponentServer" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
 CFG=ComponentServer - Win32 Debug_mico
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "ComponentServer.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "ComponentServer.mak" CFG="ComponentServer - Win32 Debug_mico"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "ComponentServer - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "ComponentServer - Win32 Debug_orbacus" (based on "Win32 (x86) Console Application")
-!MESSAGE "ComponentServer - Win32 Debug_tao" (based on "Win32 (x86) Console Application")
-!MESSAGE "ComponentServer - Win32 Release_orbacus" (based on "Win32 (x86) Console Application")
-!MESSAGE "ComponentServer - Win32 Debug_mico" (based on "Win32 (x86) Console Application")
+!MESSAGE "ComponentServer - Win32 Release" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "ComponentServer - Win32 Debug_orbacus" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "ComponentServer - Win32 Debug_tao" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "ComponentServer - Win32 Release_orbacus" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "ComponentServer - Win32 Debug_mico" (basierend auf  "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -77,7 +77,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/cs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/cs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"$(QEDO)/bin/cs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 
 !ELSEIF  "$(CFG)" == "ComponentServer - Win32 Debug_tao"
 
@@ -102,7 +102,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/cs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/cs.exe" /pdbtype:sept /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client"
+# ADD LINK32 aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib /nologo /subsystem:console /debug /machine:I386 /out:"$(QEDO)/bin/cs.exe" /pdbtype:sept /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client"
 
 !ELSEIF  "$(CFG)" == "ComponentServer - Win32 Release_orbacus"
 

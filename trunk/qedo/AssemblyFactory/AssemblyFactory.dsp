@@ -1,27 +1,27 @@
 # Microsoft Developer Studio Project File - Name="AssemblyFactory" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
 CFG=AssemblyFactory - Win32 Debug_mico
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "AssemblyFactory.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "AssemblyFactory.mak" CFG="AssemblyFactory - Win32 Debug_mico"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "AssemblyFactory - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "AssemblyFactory - Win32 Debug_orbacus" (based on "Win32 (x86) Console Application")
-!MESSAGE "AssemblyFactory - Win32 Debug_tao" (based on "Win32 (x86) Console Application")
-!MESSAGE "AssemblyFactory - Win32 Release_orbacus" (based on "Win32 (x86) Console Application")
-!MESSAGE "AssemblyFactory - Win32 Debug_mico" (based on "Win32 (x86) Console Application")
+!MESSAGE "AssemblyFactory - Win32 Release" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "AssemblyFactory - Win32 Debug_orbacus" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "AssemblyFactory - Win32 Debug_tao" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "AssemblyFactory - Win32 Release_orbacus" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "AssemblyFactory - Win32 Debug_mico" (basierend auf  "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -76,7 +76,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 xerces-c_2D.lib zlib.lib jtcd.lib CosNamingd.lib obd.lib shell32.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/AssemblyFactory.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib" /libpath:"$(XERCES)\lib" /libpath:"$(ZLIB)\dll32"
+# ADD LINK32 xerces-c_2D.lib zlib.lib jtcd.lib CosNamingd.lib obd.lib shell32.lib /nologo /subsystem:console /debug /machine:I386 /out:"$(QEDO)/bin/assf.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib" /libpath:"$(XERCES)\lib" /libpath:"$(ZLIB)\dll32"
 
 !ELSEIF  "$(CFG)" == "AssemblyFactory - Win32 Debug_tao"
 
@@ -100,7 +100,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2D.lib zlib.lib shell32.lib aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib TAO_DynamicInterfaced.lib  /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client" /libpath:"$(TAO)\TAO\tao\DynamicInterface" /libpath:"$(XERCES)\lib" /libpath:"$(ZLIB)\dll32"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2D.lib zlib.lib shell32.lib aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib TAO_DynamicInterfaced.lib /nologo /subsystem:console /debug /machine:I386 /out:"$(QEDO)/bin/assf.exe" /pdbtype:sept /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client" /libpath:"$(TAO)\TAO\tao\DynamicInterface" /libpath:"$(XERCES)\lib" /libpath:"$(ZLIB)\dll32"
 
 !ELSEIF  "$(CFG)" == "AssemblyFactory - Win32 Release_orbacus"
 
