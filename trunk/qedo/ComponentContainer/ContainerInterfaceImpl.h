@@ -295,17 +295,14 @@ public:
 	 * \param consumer The consumer is the receiver of the event.
 	 * \param ev The ev is the event to be deliver.
 	 */
-	void queue_event(Components::EventConsumerBase_ptr
-	consumer,Components::EventBase_ptr ev);
+	void queue_event(Components::EventConsumerBase_ptr consumer, Components::EventBase* ev);
 
 	/**
 	 * qeue events for delivering
 	 * \param consumers The consumers are the receivers of the event.
 	 * \param ev The ev is the event to be deliver.
 	 */
-
-	void queue_event(SubscribedConsumerVector& consumers,
-	Components::EventBase_ptr ev);
+	void queue_event(SubscribedConsumerVector& consumers, Components::EventBase* ev);
 };
 
 /** @} */

@@ -27,7 +27,7 @@
 #include <signal.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.14 2003/08/05 14:21:50 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.15 2003/08/06 11:40:06 neubauer Exp $";
 
 namespace Qedo {
 
@@ -143,9 +143,9 @@ void
 qedo_cond::qedo_wait(const qedo_mutex& m) {
 
 #ifdef QEDO_WINTHREAD
-	m.qedo_unlock_object();
+	const_cast<qedo_mutex* const>(&m)->qedo_unlock_object();
 	WaitForMultipleObjects(1, &(delegate->m_event_handle), TRUE, INFINITE /*wait for ever*/);
-	m.qedo_lock_object();
+	const_cast<qedo_mutex* const>(&m)->qedo_lock_object();
 #else
 	pthread_cond_wait(&(delegate->m_cond),&(m.delegate->m_mutex));
 #endif
@@ -155,9 +155,9 @@ void
 qedo_cond::qedo_wait(const qedo_mutex* m) {
 
 #ifdef QEDO_WINTHREAD
-	m.qedo_unlock_object();
+	const_cast<qedo_mutex* const>(m)->qedo_unlock_object();
 	WaitForMultipleObjects(1, &(delegate->m_event_handle), TRUE, INFINITE /*wait for ever*/);
-	m.qedo_lock_object();
+	const_cast<qedo_mutex* const>(m)->qedo_lock_object();
 #else
 	pthread_cond_wait(&(delegate->m_cond),&(m->delegate->m_mutex));
 #endif

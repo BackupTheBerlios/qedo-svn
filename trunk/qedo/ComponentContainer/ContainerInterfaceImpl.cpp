@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.22 2003/08/05 14:50:12 neubauer Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.23 2003/08/06 11:40:06 neubauer Exp $";
 
 
 namespace Qedo {
@@ -712,32 +712,32 @@ throw (Components::CCMException)
 static qedo_mutex event_queue_mutex;
 static qedo_cond event_queue_cond;
 
-struct event_entry {
-	event_entry(Components::EventConsumerBase_ptr c, Components::EventBase_ptr e);
+struct event_entry 
+{
+	event_entry(Components::EventConsumerBase_ptr c, Components::EventBase* e);
 	event_entry(const event_entry& e);
 	~event_entry();
 	Components::EventConsumerBase_var consumer;
-	Components::EventBase_ptr event;
+	Components::EventBase* event;
 };
 
-event_entry::event_entry(Components::EventConsumerBase_ptr c,
-Components::EventBase_ptr e)
-: consumer(Components::EventConsumerBase::_duplicate(c)),
-  event(e)
+event_entry::event_entry(Components::EventConsumerBase_ptr c, Components::EventBase* e)
+: consumer(Components::EventConsumerBase::_duplicate(c))
+, event(e)
 {
-	add_ref(event);
+	CORBA::add_ref(event);
 }
 
 event_entry::event_entry(const event_entry& e)
-: consumer(Components::EventConsumerBase::_duplicate(e.consumer)),
-  event(e.event)
+: consumer(Components::EventConsumerBase::_duplicate(e.consumer))
+, event(e.event)
 {
-	add_ref(event);
+	CORBA::add_ref(event);
 }
 
 event_entry::~event_entry()
 {
-	remove_ref(event);
+	CORBA::remove_ref(event);
 }
 
 static std::vector<event_entry> event_list;
@@ -786,8 +786,8 @@ dummy::dummy()
 static dummy d;
 
 void 
-ContainerInterfaceImpl::queue_event(Components::EventConsumerBase_ptr
-consumer,Components::EventBase_ptr ev)
+ContainerInterfaceImpl::queue_event
+(Components::EventConsumerBase_ptr consumer, Components::EventBase* ev)
 {
 	qedo_lock lock(event_queue_mutex);
 	event_entry entry(consumer,Components::EventBase::_downcast(ev->_copy_value()));
@@ -796,12 +796,12 @@ consumer,Components::EventBase_ptr ev)
 }
 
 void 
-ContainerInterfaceImpl::queue_event(SubscribedConsumerVector& consumers,
-Components::EventBase_ptr ev)
+ContainerInterfaceImpl::queue_event
+(SubscribedConsumerVector& consumers, Components::EventBase* ev)
 {
 	qedo_lock lock(event_queue_mutex);
 	SubscribedConsumerVector::iterator iter;
-	Components::EventBase_ptr e = Components::EventBase::_downcast(ev->_copy_value());
+	Components::EventBase* e = Components::EventBase::_downcast(ev->_copy_value());
 	for(iter = consumers.begin();iter != consumers.end();iter++) {
 		event_entry entry(iter->consumer(),e);
 		event_list.push_back(entry);

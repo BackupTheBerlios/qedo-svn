@@ -23,7 +23,7 @@
 #include "CCMContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.10 2003/08/05 14:40:02 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.11 2003/08/06 11:40:06 neubauer Exp $";
 
 
 namespace Qedo {
@@ -100,18 +100,18 @@ throw (Components::CCMException)
 
 
 void 
-CCMContext::queue_event(Components::EventConsumerBase_ptr
-consumer,Components::EventBase_ptr ev)
+CCMContext::queue_event(Components::EventConsumerBase_ptr consumer,Components::EventBase* ev)
 {
 	container_->queue_event(consumer,ev);
 }
 
+
 void 
-CCMContext::queue_event(SubscribedConsumerVector& consumers,
-Components::EventBase_ptr ev)
+CCMContext::queue_event(SubscribedConsumerVector& consumers, Components::EventBase* ev)
 {
 	container_->queue_event(consumers,ev);
 }
+
 
 ExecutorContext::ExecutorContext()
 {
