@@ -29,7 +29,6 @@
 #include "Package.h"
 #include "DOMXMLParser.h"
 #include "PlatformBase.h"
-#include "Util.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -45,6 +44,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#if !defined(UNUSED) && defined(__GNUC__)
+#define UNUSED __attribute__((unused))
+#else
+#define UNUSED
+#endif
 
 namespace Qedo {
 

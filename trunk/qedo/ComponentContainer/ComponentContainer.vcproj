@@ -246,7 +246,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Creating DEF file for ComponentContainer.dll"
-				CommandLine="gendef Debug_mico/ComponentContainer.def ComponentContainer Debug_mico/*.obj"/>
+				CommandLine="$(QEDO)\bin\gendef Debug_mico/ComponentContainer.def ComponentContainer Debug_mico/*.obj"/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"

@@ -257,7 +257,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Creating DEF file for ComponentIDL.dll"
-				CommandLine="gendef Debug_mico/ComponentIDL.def ComponentIDL Debug_mico/*.obj
+				CommandLine="$(QEDO)\bin\gendef Debug_mico/ComponentIDL.def ComponentIDL Debug_mico/*.obj
 "/>
 			<Tool
 				Name="VCResourceCompilerTool"
