@@ -1,9 +1,9 @@
 QEDO = /home/boehme
 CIDL_GEN = ${QEDO}/bin/cidl_gen
-ORB_IDL_INCLUDE = -I../IDL -I/home/boehme/include -I/home/boehme/include/mico 
+ORB_IDL_INCLUDE = -I.. -I/home/boehme/include -I/home/boehme/include/mico 
 CIDL_ORB_DEF = -DMICO_ORB -DMICO_CIDL_GEN
 
-CIDL_FILES = ../IDL/philosophers.cidl
+CIDL_FILES = ../philosophers.cidl
 IDL_FILES = dinner_EQUIVALENT.idl
 
 CPP_FILES = dinner_EQUIVALENT.cpp \
