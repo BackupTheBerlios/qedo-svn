@@ -200,6 +200,7 @@ HomeMonExec::create ()
     throw (CORBA::SystemException, Components::CreateFailure)
 {
 // BEGIN USER INSERT SECTION HomeMonExec::create
+	std::cout << "create called." << std::endl;
 // END USER INSERT SECTION HomeMonExec::create
     return new MonImpl();
 }

@@ -1,5 +1,5 @@
 
-static char rcsid[] = "$Id: main.cpp,v 1.2 2003/09/09 13:05:13 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.3 2003/11/10 16:39:38 tom Exp $";
 
 #include <CORBA.h>
 
@@ -105,7 +105,7 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 #ifdef _WIN32
     ::GetCurrentDirectory(1024, path);
 #else
-    getcwd(path,1023));
+    getcwd(path,1023);
 #endif
 	std::string MonImpl_servant = path;
 	std::string MonImpl_exec = path;
@@ -125,15 +125,15 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	MonImpl_exec.append("/Debug_orbacus/libHelloWorld_CalleeImpl.so");
 #endif
 #ifdef MICO_ORB
-	MonImpl_servant.append("/Debug_mico/libHelloWorld_CalleeImpl_SERVANT.so");
-	MonImpl_exec.append("/Debug_mico/libHelloWorld_CalleeImpl.so");
+	MonImpl_servant.append("/../container_service_MonImpl_SERVANT/libcontainer_service_MonImpl_SERVANT.so");
+	MonImpl_exec.append("/../container_service_MonImpl/libcontainer_service_MonImpl.so");
 #endif
 #endif
 
 	std::string MonImpl_loc = MonImpl_servant + ";create_monitor_homeS;" + MonImpl_exec + ";create_monitor_homeE";
 	try
 	{
-		component_installer->install ("MONITORINGSERVICE/1.0", MonImpl_loc.c_str());
+		component_installer->install ("MONITORINGSERVICE", MonImpl_loc.c_str());
 
 	}
 	catch (Components::Deployment::InvalidLocation&)

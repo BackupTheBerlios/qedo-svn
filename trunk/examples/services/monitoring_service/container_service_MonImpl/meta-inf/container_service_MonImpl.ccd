@@ -6,9 +6,9 @@
     <componentrepid repid="IDL:container_service/monitor:1.0"/>
     <homerepid repid="IDL:container_service/monitor_home:1.0"/>
     <componentkind>
-        <container_extension>
+        <containerextension>
             <servant lifetime="container"/>
-        </container_extension>
+        </containerextension>
     </componentkind>
     <threading policy="multithread"/>
     <configurationcomplete set="true"/>
