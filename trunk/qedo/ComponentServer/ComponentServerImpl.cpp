@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.30 2004/04/26 13:30:04 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.31 2004/05/09 19:16:24 heini2004 Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -431,7 +431,8 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < containers_.size(); i++)
 	{
-		Components::Deployment::Container_var container = containers_[i].container_->_this();
+		Components::Deployment::Container_var container = 
+			Components::Deployment::Container::_duplicate(containers_[i].container_->_this());
         	containers.inout()[i] = container.in();
 	}
 
