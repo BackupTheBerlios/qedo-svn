@@ -12,7 +12,7 @@
 
 #include <CORBA.h>
 #include "dinner_ObserverImpl_BUSINESS.h"
-#include "valuetypes.h"
+#include "component_valuetypes.h"
 #include "RefCountBase.h"
 #include <string>
 
@@ -181,30 +181,6 @@ namespace dinner
         //
         virtual ::Components::EnterpriseComponent_ptr create()
             throw (CORBA::SystemException, Components::CreateFailure);
-        
-        //
-        // IDL:dinner/ObserverHome/my_name:1.0
-        //
-        dinner::PhilosopherState* my_name()
-        	throw(CORBA::SystemException);
-        
-        //
-        // IDL:dinner/ObserverHome/muell:1.0
-        //
-        virtual void muell(CORBA::Long l)
-        	throw(CORBA::SystemException);
-        
-        //
-        // IDL:dinner/ObserverHome/do_it:1.0
-        //
-        virtual ::Components::EnterpriseComponent_ptr do_it(const char* name, dinner::PhilosopherState* state)
-        	throw(CORBA::SystemException, ::dinner::NotTheEater);
-        
-        //
-        // IDL:dinner/ObserverHome/find_it:1.0
-        //
-        virtual ::Components::EnterpriseComponent_ptr find_it(const char* name)
-        	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION ObserverHomeImpl
 // END USER INSERT SECTION ObserverHomeImpl

@@ -274,7 +274,7 @@ PhilosopherSessionImpl::run(void *p)
 		{
 			cout << "PhilosopherSessionImpl: Unexpected dinner::NotTheEater exception. I'm in hell, aborting... -> " << impl->id_ << endl;
 			abort();
-		}
+		} 
 		catch (CORBA::SystemException&)
 		{
 			cout << "PhilosopherSessionImpl: CORBA system exception during release_fork(). I'm in hell, aborting... -> " << impl->id_ << endl;
@@ -576,6 +576,7 @@ PhilosopherHomeImpl::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = Components::HomeContext::_duplicate(ctx);
+    
 }
 
 

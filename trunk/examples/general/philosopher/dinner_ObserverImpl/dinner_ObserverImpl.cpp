@@ -261,6 +261,7 @@ ObserverHomeImpl::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = Components::HomeContext::_duplicate(ctx);
+    
 }
 
 
@@ -272,45 +273,6 @@ ObserverHomeImpl::create ()
 	cout << "ObserverHomeImpl: create() called" << endl;
 // END USER INSERT SECTION ObserverHomeImpl::create
     return new ObserverImpl();
-}
-
-
-dinner::PhilosopherState*
-ObserverHomeImpl::my_name()
-	throw(CORBA::SystemException)
-{
-// BEGIN USER INSERT SECTION ObserverHomeImpl::my_name
-	return 0;
-// END USER INSERT SECTION ObserverHomeImpl::my_name
-}
-
-
-void
-ObserverHomeImpl::muell(CORBA::Long l)
-	throw(CORBA::SystemException)
-{
-// BEGIN USER INSERT SECTION ObserverHomeImpl::muell
-// END USER INSERT SECTION ObserverHomeImpl::muell
-}
-
-
-::Components::EnterpriseComponent_ptr
-ObserverHomeImpl::do_it(const char* name, dinner::PhilosopherState* state)
-	throw(CORBA::SystemException, ::dinner::NotTheEater)
-{
-// BEGIN USER INSERT SECTION ObserverHomeImpl::do_it
-	return 0;
-// END USER INSERT SECTION ObserverHomeImpl::do_it
-}
-
-
-::Components::EnterpriseComponent_ptr
-ObserverHomeImpl::find_it(const char* name)
-	throw(CORBA::SystemException)
-{
-// BEGIN USER INSERT SECTION ObserverHomeImpl::find_it
-	return 0;
-// END USER INSERT SECTION ObserverHomeImpl::find_it
 }
 
 

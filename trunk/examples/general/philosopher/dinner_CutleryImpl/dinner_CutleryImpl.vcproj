@@ -160,6 +160,9 @@ zip ../dinner_CutleryImpl.zip meta-inf/dinner_CutleryImpl.ccd meta-inf/dinner_Cu
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
+				RelativePath="component_valuetypes.cpp">
+			</File>
+			<File
 				RelativePath="dinner_CutleryImpl.cpp">
 			</File>
 			<File
@@ -174,13 +177,13 @@ zip ../dinner_CutleryImpl.zip meta-inf/dinner_CutleryImpl.ccd meta-inf/dinner_Cu
 			<File
 				RelativePath="dinner_CutleryImpl_LOCAL.cpp">
 			</File>
-			<File
-				RelativePath="valuetypes.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="component_valuetypes.h">
+			</File>
 			<File
 				RelativePath="dinner_CutleryImpl.h">
 			</File>
@@ -195,9 +198,6 @@ zip ../dinner_CutleryImpl.zip meta-inf/dinner_CutleryImpl.ccd meta-inf/dinner_Cu
 			</File>
 			<File
 				RelativePath="dinner_CutleryImpl_LOCAL.h">
-			</File>
-			<File
-				RelativePath="valuetypes.h">
 			</File>
 		</Filter>
 		<Filter

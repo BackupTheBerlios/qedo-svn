@@ -33,7 +33,7 @@ namespace dinner {
         
     public:
     
-        PhilosopherStateImpl(dinner::PhilosopherStatus status, const char* name, dinner::Philosopher_ptr ref);
+        PhilosopherStateImpl(dinner::PhilosopherStatus status, const char* name, dinner::Philosopher_ptr phil_ref);
         PhilosopherStateImpl();
         ~PhilosopherStateImpl();
         

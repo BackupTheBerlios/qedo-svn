@@ -7,8 +7,8 @@
 
 // BEGIN USER INSERT SECTION file
 #include <iostream>
-#include "Valuetypes.h"
-
+#include "component_valuetypes.h"
+  
 using namespace std;
 // END USER INSERT SECTION file
 
@@ -301,6 +301,7 @@ CutleryHomeImpl::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = Components::HomeContext::_duplicate(ctx);
+    
 }
 
 
