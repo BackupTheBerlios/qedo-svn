@@ -89,26 +89,30 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 		if (!id.compare("IDL:Deployment:1.0")) {
 			return;
 		};
-		if (!id.compare("IDL:omg.org/Components:1.0")) {
-			return;
-		};
-		if (!id.compare("IDL:Components:1.0")) {
+		if (!id.compare("IDL:omg.org/Components:1.0") ||
+		    !id.compare("IDL:Components:1.0"))
+		{
 			return;
 		}
-		if (!id.compare("IDL:omg.org/CORBA:1.0")) {
-			return;
-		};
-		if (!id.compare("IDL:CORBA:1.0")) {
+		if (!id.compare("IDL:omg.org/CORBA:1.0") ||
+		    !id.compare("IDL:CORBA:1.0"))
+		{
 			return;
 		}
 		if (!id.compare("IDL:omg.org/CosPropertyService:1.0") ||
-			!id.compare("IDL:CosPropertyService:1.0") ) {
-			
+			!id.compare("IDL:CosPropertyService:1.0") )
+		{
+			std::string name = "CosProperty.idl";
+			if(includes_.find(name) == includes_.end())
+			{
+				includes_[name] = true;
+			}
+
 			return;
 		};
 		if (!id.compare("IDL:omg.org/CosNaming:1.0") ||
-			!id.compare("IDL:CosNaming:1.0") ) {
-			
+			!id.compare("IDL:CosNaming:1.0") )
+		{
 			std::string name = "CosNaming.idl";
 			if(includes_.find(name) == includes_.end())
 			{
