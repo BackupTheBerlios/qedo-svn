@@ -69,8 +69,8 @@ void PropertyUtils::convert_prop_to_config_value ( XMLDOMParser::Property* prop,
 			Components::ConfigValue* mem_;
 			convert_prop_to_config_value ((*i_), &mem_ );
 			cvlist_->length (++elem_);
-			(*cvlist_)[elem_-1] = mem_;	
-			
+			(*cvlist_)[elem_-1] = mem_;
+
 		}
 		member_ <<= cvlist_;
 		cv_ ->value( member_ );
@@ -83,7 +83,7 @@ void PropertyUtils::convert_prop_to_config_value ( XMLDOMParser::Property* prop,
 		CORBA::Any member_;
 		XMLDOMParser::PropertySequence* sprop_ = dynamic_cast <XMLDOMParser::PropertySequence*> (prop);
 		cv_ -> name ( CORBA::string_dup ( (prop -> name()).c_str() ));
-		
+
 		XMLDOMParser::PropertySimpleList *simplelist_;
 		XMLDOMParser::PropertySimpleList::iterator simplei_;
 		simplelist_ = sprop_ ->simplelist();
@@ -105,7 +105,7 @@ void PropertyUtils::convert_prop_to_config_value ( XMLDOMParser::Property* prop,
 				Components::ConfigValue* mem_;
 				convert_prop_to_config_value ((*simplei_), &mem_ );
 				cvlist_->length (++elem_);
-				(*cvlist_)[elem_-1] = mem_;		
+				(*cvlist_)[elem_-1] = mem_;
 			}
 		}
 		if (structlist_)
@@ -115,7 +115,7 @@ void PropertyUtils::convert_prop_to_config_value ( XMLDOMParser::Property* prop,
 				Components::ConfigValue* mem_;
 				convert_prop_to_config_value ((*structi_), &mem_ );
 				cvlist_->length (++elem_);
-				(*cvlist_)[elem_-1] = mem_;		
+				(*cvlist_)[elem_-1] = mem_;
 			}
 		}
 		if (sequencelist_)
@@ -144,7 +144,7 @@ void PropertyUtils::convert_prop_to_config_value ( XMLDOMParser::Property* prop,
 
 void PropertyUtils::parser_properties_and_convert ( const string& xmldoc, Components::ConfigValues& val)
 {
-	if ( xmldoc == "") 
+	if ( xmldoc.empty() )
 		return;
 	XMLDOMParser::ATParser* parser_;
 	try
