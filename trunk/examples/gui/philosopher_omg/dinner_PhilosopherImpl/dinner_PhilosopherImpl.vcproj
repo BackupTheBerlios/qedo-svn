@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="dinner_PhilosopherImpl"
+	ProjectGUID="{11FC6168-69F4-4713-8B07-B65DBE80F9FC}"
+	Keyword="Win32Proj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug_orbacus|Win32"
+			OutputDirectory="Debug_orbacus"
+			IntermediateDirectory="Debug_orbacus"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(ORBACUS)/include;$(ORBACUS)/include/OB;"
+				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib obd.lib jtcd.lib"
+				OutputFile="$(OutDir)/dinner_PhilosopherImpl.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(ORBACUS)/lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/dinner_PhilosopherImpl.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/dinner_PhilosopherImpl.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_mico|Win32"
+			OutputDirectory="Debug_mico"
+			IntermediateDirectory="Debug_mico"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;"
+				PreprocessorDefinitions="BUILD_DINNER_PHILOSOPHERIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC.lib"
+				OutputFile="$(OutDir)/dinner_PhilosopherImpl.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/dinner_PhilosopherImpl.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/dinner_PhilosopherImpl.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="zip ../dinner_PhilosopherImpl.zip -j  Debug_mico/libdinner_PhilosopherImpl.so Debug_mico/dinner_PhilosopherImpl.dll ../dinner_PhilosopherImpl_SERVANT/Debug_mico/libdinner_PhilosopherImpl_SERVANT.so ../dinner_PhilosopherImpl_SERVANT/Debug_mico/dinner_PhilosopherImpl_SERVANT.dll ../dinner.cidl
+zip ../dinner_PhilosopherImpl.zip meta-inf/dinner_PhilosopherImpl.ccd meta-inf/dinner_PhilosopherImpl.csd
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_tao|Win32"
+			OutputDirectory="Debug_tao"
+			IntermediateDirectory="Debug_tao"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;"
+				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib mico2311.lib"
+				OutputFile="$(OutDir)/dinner_PhilosopherImpl.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/dinner_PhilosopherImpl.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/dinner_PhilosopherImpl.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			<File
+				RelativePath="dinner_PhilosopherImpl.cpp">
+			</File>
+			<File
+				RelativePath="dinner_PhilosopherImpl_BUSINESS.cpp">
+			</File>
+			<File
+				RelativePath="dinner_PhilosopherImpl_BUSINESS_skel.cpp">
+			</File>
+			<File
+				RelativePath="dinner_PhilosopherImpl_EQUIVALENT.cpp">
+			</File>
+			<File
+				RelativePath="dinner_PhilosopherImpl_LOCAL.cpp">
+			</File>
+			<File
+				RelativePath="valuetypes.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="dinner_PhilosopherImpl.h">
+			</File>
+			<File
+				RelativePath="dinner_PhilosopherImpl_BUSINESS.h">
+			</File>
+			<File
+				RelativePath="dinner_PhilosopherImpl_BUSINESS_skel.h">
+			</File>
+			<File
+				RelativePath="dinner_PhilosopherImpl_EQUIVALENT.h">
+			</File>
+			<File
+				RelativePath="dinner_PhilosopherImpl_LOCAL.h">
+			</File>
+			<File
+				RelativePath="valuetypes.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="idl"
+			Filter="idl;cidl">
+			<File
+				RelativePath="../dinner.cidl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling CIDL"
+						CommandLine="$(QEDO)/bin/cidl_gen -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --business -d --target IDL:dinner/PhilosopherImpl:1.0 ../dinner.cidl
+"
+						Outputs="dinner_PhilosopherImpl_LOCAL.idl;dinner_PhilosopherImpl_EQUIVALENT.idl;dinner_PhilosopherImpl_BUSINESS.idl"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling CIDL"
+						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --business -d --target IDL:dinner/PhilosopherImpl:1.0 ../dinner.cidl
+"
+						Outputs="dinner_PhilosopherImpl_LOCAL.idl;dinner_PhilosopherImpl_EQUIVALENT.idl;dinner_PhilosopherImpl_BUSINESS.idl"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_PhilosopherImpl_LOCAL.idl
+"
+						Outputs="dinner_PhilosopherImpl_LOCAL.h;dinner_PhilosopherImpl_LOCAL.cpp;dinner_PhilosopherImpl_LOCAL_skel.h;dinner_PhilosopherImpl_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="dinner_PhilosopherImpl_BUSINESS.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling business IDL"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_PhilosopherImpl_BUSINESS.idl
+"
+						Outputs="dinner_PhilosopherImpl_BUSINESS.h;dinner_PhilosopherImpl_BUSINESS.cpp;dinner_PhilosopherImpl_BUSINESS_skel.h;dinner_PhilosopherImpl_BUSINESS_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling business IDL"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll dinner_PhilosopherImpl dinner_PhilosopherImpl_BUSINESS.idl
+copy dinner_PhilosopherImpl_BUSINESS.h dinner_PhilosopherImpl_BUSINESS_skel.h
+"
+						Outputs="dinner_PhilosopherImpl_BUSINESS.h;dinner_PhilosopherImpl_BUSINESS.cpp;dinner_PhilosopherImpl_BUSINESS_skel.h;dinner_PhilosopherImpl_BUSINESS_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_PhilosopherImpl_LOCAL.idl
+"
+						Outputs="dinner_PhilosopherImpl_LOCAL.h;dinner_PhilosopherImpl_LOCAL.cpp;dinner_PhilosopherImpl_LOCAL_skel.h;dinner_PhilosopherImpl_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="dinner_PhilosopherImpl_EQUIVALENT.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling equivalent IDL"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_PhilosopherImpl_EQUIVALENT.idl
+"
+						Outputs="dinner_PhilosopherImpl_EQUIVALENT.h;dinner_PhilosopherImpl_EQUIVALENT.cpp;dinner_PhilosopherImpl_EQUIVALENT_skel.h;dinner_PhilosopherImpl_EQUIVALENT_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling equivalent IDL"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll dinner_PhilosopherImpl dinner_PhilosopherImpl_EQUIVALENT.idl
+copy dinner_PhilosopherImpl_EQUIVALENT.h dinner_PhilosopherImpl_EQUIVALENT_skel.h
+"
+						Outputs="dinner_PhilosopherImpl_EQUIVALENT.h;dinner_PhilosopherImpl_EQUIVALENT.cpp;dinner_PhilosopherImpl_EQUIVALENT_skel.h;dinner_PhilosopherImpl_EQUIVALENT_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_PhilosopherImpl_LOCAL.idl
+"
+						Outputs="dinner_PhilosopherImpl_LOCAL.h;dinner_PhilosopherImpl_LOCAL.cpp;dinner_PhilosopherImpl_LOCAL_skel.h;dinner_PhilosopherImpl_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="dinner_PhilosopherImpl_LOCAL.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling local IDL"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_PhilosopherImpl_LOCAL.idl
+"
+						Outputs="dinner_PhilosopherImpl_LOCAL.h;dinner_PhilosopherImpl_LOCAL.cpp;dinner_PhilosopherImpl_LOCAL_skel.h;dinner_PhilosopherImpl_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling local IDL"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll dinner_PhilosopherImpl dinner_PhilosopherImpl_LOCAL.idl
+copy dinner_PhilosopherImpl_LOCAL.h dinner_PhilosopherImpl_LOCAL_skel.h
+"
+						Outputs="dinner_PhilosopherImpl_LOCAL.h;dinner_PhilosopherImpl_LOCAL.cpp;dinner_PhilosopherImpl_LOCAL_skel.h;dinner_PhilosopherImpl_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_PhilosopherImpl_LOCAL.idl
+"
+						Outputs="dinner_PhilosopherImpl_LOCAL.h;dinner_PhilosopherImpl_LOCAL.cpp;dinner_PhilosopherImpl_LOCAL_skel.h;dinner_PhilosopherImpl_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+		<Filter
+			Name="meta-inf"
+			Filter="">
+			<File
+				RelativePath="meta-inf\dinner_PhilosopherImpl.ccd">
+			</File>
+			<File
+				RelativePath="meta-inf\dinner_PhilosopherImpl.csd">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>
