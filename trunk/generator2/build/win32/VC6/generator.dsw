@@ -1,0 +1,89 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNUNG: DIESE ARBEITSBEREICHSDATEI DARF NICHT BEARBEITET ODER GELÖSCHT WERDEN!
+
+###############################################################################
+
+Project: "CIDLFrontendLib"=..\..\..\CIDL_Frontend\CIDLFrontendLib\CIDLFrontendLib.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "CIDLGenerator"=..\..\..\CIDL_Backend\CIDLGenerator\CIDLGenerator.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name CIDLRepositoryLib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ComponentRepositoryLib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "CIDLRepositoryLib"=..\..\..\CIDL_Repository\CIDLRepositoryLib\CIDLRepositoryLib.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ComponentRepositoryLib
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ComponentRepositoryLib"=..\..\..\CIDL_Repository\ComponentRepositoryLib\ComponentRepositoryLib.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name IFRidl
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "IFRidl"=..\..\..\CIDL_Repository\IFRidl\IFRidl.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+
