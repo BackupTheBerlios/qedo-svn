@@ -93,7 +93,7 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="zip ../Chat_Writer_Compo.zip -j  Debug_mico/Chat_Writer_Compo.dll ../Chat_Writer_Compo_SERVANT/Debug_mico/Chat_Writer_Compo_SERVANT.dll ../chat.idl 
+				CommandLine="zip ../Chat_Writer_Compo.zip -j  Debug_mico/Chat_Writer_Compo.dll ../Chat_Writer_Compo_SERVANT/Debug_mico/Chat_Writer_Compo_SERVANT.dll ../chat.cidl
 zip ../Chat_Writer_Compo.zip meta-inf/Chat_Writer_Compo.ccd meta-inf/Chat_Writer_Compo.csd
 "/>
 			<Tool
@@ -217,7 +217,7 @@ zip ../Chat_Writer_Compo.zip meta-inf/Chat_Writer_Compo.ccd meta-inf/Chat_Writer
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --business --servant --target IDL:Chat/Writer_Compo:1.0 ../chat.cidl
+						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --business --target IDL:Chat/Writer_Compo:1.0 ../chat.cidl
 "
 						Outputs="Chat_Writer_Compo_LOCAL.idl;Chat_Writer_Compo_EQUIVALENT.idl;Chat_Writer_Compo_BUSINESS.idl"/>
 				</FileConfiguration>

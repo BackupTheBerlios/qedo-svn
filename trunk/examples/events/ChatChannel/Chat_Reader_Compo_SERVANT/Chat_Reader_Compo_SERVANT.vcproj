@@ -208,7 +208,7 @@
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico  -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --business --servant --target IDL:Chat/Reader_Compo:1.0 ../chat.cidl
+						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico  -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --servant --target IDL:Chat/Reader_Compo:1.0 ../chat.cidl
 "
 						Outputs="Chat_Reader_Compo_LOCAL.idl;Chat_Reader_Compo_EQUIVALENT.idl;Chat_Reader_Compo_BUSINESS.idl"/>
 				</FileConfiguration>
