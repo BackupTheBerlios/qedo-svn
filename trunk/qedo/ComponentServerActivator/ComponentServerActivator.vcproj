@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="ComponentServerActivator"
 	ProjectGUID="{A34AAEDC-36A4-4A67-9573-19027AC22CAA}"
 	Keyword="Win32Proj">
@@ -54,7 +54,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -99,7 +105,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_orbacus|Win32"
@@ -150,7 +162,13 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
@@ -161,7 +179,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../QedoUtil;../ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(XERCES)/include&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;../QedoUtil;../ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;MICO_ORB;_WINDOWS;;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -183,7 +201,7 @@ copy $(TargetPath) $(QEDO)\bin
 				AdditionalDependencies="micocoss2311.lib mico2311.lib wsock32.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/qcsa.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib,$(MICO)\coss"
+				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(MICO)\coss&quot;;&quot;$(PTHREADS)&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/ComponentServerActivator.pdb"
 				SubSystem="1"
@@ -201,7 +219,13 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
@@ -247,7 +271,13 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release_orbacus|Win32"
@@ -293,18 +323,26 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="ServerActivatorImpl.cpp">
+				RelativePath="qcsa.cpp">
 			</File>
 			<File
-				RelativePath="qcsa.cpp">
+				RelativePath="ServerActivatorImpl.cpp">
 			</File>
 		</Filter>
 		<Filter

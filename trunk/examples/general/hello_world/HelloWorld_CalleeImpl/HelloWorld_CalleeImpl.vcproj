@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="HelloWorld_CalleeImpl"
 	ProjectGUID="{0}"
 	Keyword="Win32Proj">
@@ -55,7 +55,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
@@ -66,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)\include;$(MICO)\include;"
+				AdditionalIncludeDirectories="&quot;$(QEDO)\include\pthreads&quot;;.;&quot;$(QEDO)\include&quot;;&quot;$(MICO)\include&quot;"
 				PreprocessorDefinitions="BUILD_HELLOWORLD_CALLEEIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -93,8 +99,8 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="zip ../HelloWorld_CalleeImpl.zip -j  Debug_mico/HelloWorld_CalleeImpl.dll ../HelloWorld_CalleeImpl_SERVANT/Debug_mico/HelloWorld_CalleeImpl_SERVANT.dll ../hello.cidl
-zip ../HelloWorld_CalleeImpl.zip meta-inf/HelloWorld_CalleeImpl.ccd meta-inf/HelloWorld_CalleeImpl.csd
+				CommandLine="$(CYGWIN)\zip ../HelloWorld_CalleeImpl.zip -j  Debug_mico/HelloWorld_CalleeImpl.dll ../HelloWorld_CalleeImpl_SERVANT/Debug_mico/HelloWorld_CalleeImpl_SERVANT.dll ../hello.cidl
+$(CYGWIN)\zip ../HelloWorld_CalleeImpl.zip meta-inf/HelloWorld_CalleeImpl.ccd meta-inf/HelloWorld_CalleeImpl.csd
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -105,7 +111,13 @@ zip ../HelloWorld_CalleeImpl.zip meta-inf/HelloWorld_CalleeImpl.ccd meta-inf/Hel
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
@@ -152,9 +164,17 @@ zip ../HelloWorld_CalleeImpl.zip meta-inf/HelloWorld_CalleeImpl.ccd meta-inf/Hel
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"

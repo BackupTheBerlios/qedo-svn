@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="win32_assembly"
 	ProjectGUID="{070C16AC-E03C-4198-BF79-99F0FFF50DB7}"
 	Keyword="Win32Proj">
@@ -50,7 +50,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -95,9 +101,17 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="meta-inf"
@@ -108,8 +122,8 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="zip ../win32_assembly.zip -j ../Computation_ServerCompo.zip ../Computation_ClientCompo.zip
-zip ../win32_assembly.zip meta-inf/win32_assembly.cad
+						CommandLine="$(CYGWIN)/zip ../win32_assembly.zip -j ../Computation_ServerCompo.zip ../Computation_ClientCompo.zip
+$(CYGWIN)/zip ../win32_assembly.zip meta-inf/win32_assembly.cad
 "
 						Outputs="win32_assembly.zip"/>
 				</FileConfiguration>

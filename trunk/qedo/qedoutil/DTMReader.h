@@ -53,7 +53,7 @@ class QEDOUTIL_API DTMReader : public virtual PlatformBase
 private:
 
 	/** the parsed datatype map */
-    DOMDocument*							dtm_document_;
+	DOMDocument*							dtm_document_;
 	/** the vector for corba type */
 	std::vector<std::string>				vCorba_;
 	/** the vector for cpp type */

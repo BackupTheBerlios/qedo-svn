@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="hello_win32_assembly"
 	ProjectGUID="{53EDE9DB-2203-4D47-AC25-051CC2B96246}"
 	Keyword="Win32Proj">
@@ -50,7 +50,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -95,9 +101,17 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<File
 			RelativePath="meta-inf\hello_win32.cad">
@@ -105,8 +119,9 @@
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="zip ../hello_win32_assembly.zip -j ../HelloWorld_CallerImpl.zip ../HelloWorld_CalleeImpl.zip
-zip ../hello_win32_assembly.zip meta-inf/hello_win32.cad"
+					CommandLine="$(CYGWIN)\zip ../hello_win32_assembly.zip -j ../HelloWorld_CallerImpl.zip ../HelloWorld_CalleeImpl.zip
+$(CYGWIN)\zip ../hello_win32_assembly.zip meta-inf/hello_win32.cad
+"
 					Outputs="creating assemby package"/>
 			</FileConfiguration>
 		</File>

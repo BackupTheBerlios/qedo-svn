@@ -1,30 +1,40 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CIDLFrontendLib", "..\..\..\CIDL_Frontend\CIDLFrontendLib\CIDLFrontendLib.vcproj", "{EC26F348-6B67-45DA-9B54-157BC2552520}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A194B3E7-27BD-4852-AE1A-A7EA3FF304CA} = {A194B3E7-27BD-4852-AE1A-A7EA3FF304CA}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CIDLGenerator", "..\..\..\CIDL_Backend\CIDLGenerator\CIDLGenerator.vcproj", "{25C7712A-0F39-4183-9139-F7AC1F7B48FB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{15E2A0A9-B134-4340-BE75-9036CEFB9074} = {15E2A0A9-B134-4340-BE75-9036CEFB9074}
+		{EC26F348-6B67-45DA-9B54-157BC2552520} = {EC26F348-6B67-45DA-9B54-157BC2552520}
+		{3BD7500F-CA12-43C9-8393-89017491F83C} = {3BD7500F-CA12-43C9-8393-89017491F83C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CIDLRepositoryLib", "..\..\..\CIDL_Repository\CIDLRepositoryLib\CIDLRepositoryLib.vcproj", "{3BD7500F-CA12-43C9-8393-89017491F83C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{15E2A0A9-B134-4340-BE75-9036CEFB9074} = {15E2A0A9-B134-4340-BE75-9036CEFB9074}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ComponentRepositoryLib", "..\..\..\CIDL_Repository\ComponentRepositoryLib\ComponentRepositoryLib.vcproj", "{15E2A0A9-B134-4340-BE75-9036CEFB9074}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A194B3E7-27BD-4852-AE1A-A7EA3FF304CA} = {A194B3E7-27BD-4852-AE1A-A7EA3FF304CA}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IFRidl", "..\..\..\CIDL_Repository\IFRidl\IFRidl.vcproj", "{A194B3E7-27BD-4852-AE1A-A7EA3FF304CA}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RepositoryStandAlone", "..\..\..\CIDL_Repository\RepositoryStandAlone\RepositoryStandAlone.vcproj", "{B6808150-E67A-409C-A4E9-1A12D375E730}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug_mico
-		ConfigName.1 = Debug_orbacus
-		ConfigName.2 = Debug_tao
-		ConfigName.3 = Release_orbacus
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
-		{EC26F348-6B67-45DA-9B54-157BC2552520}.0 = {A194B3E7-27BD-4852-AE1A-A7EA3FF304CA}
-		{25C7712A-0F39-4183-9139-F7AC1F7B48FB}.0 = {3BD7500F-CA12-43C9-8393-89017491F83C}
-		{25C7712A-0F39-4183-9139-F7AC1F7B48FB}.1 = {EC26F348-6B67-45DA-9B54-157BC2552520}
-		{25C7712A-0F39-4183-9139-F7AC1F7B48FB}.2 = {15E2A0A9-B134-4340-BE75-9036CEFB9074}
-		{3BD7500F-CA12-43C9-8393-89017491F83C}.0 = {15E2A0A9-B134-4340-BE75-9036CEFB9074}
-		{15E2A0A9-B134-4340-BE75-9036CEFB9074}.0 = {A194B3E7-27BD-4852-AE1A-A7EA3FF304CA}
+		Debug_mico = Debug_mico
+		Debug_orbacus = Debug_orbacus
+		Debug_tao = Debug_tao
+		Release_orbacus = Release_orbacus
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{EC26F348-6B67-45DA-9B54-157BC2552520}.Debug_mico.ActiveCfg = Debug_mico|Win32

@@ -68,7 +68,7 @@ private:
 	CompositionData*						data_;
 	
 	/** the parsed CORBA component descriptor */
-    DOMDocument*							ccd_document_;
+	DOMDocument*							ccd_document_;
 	/** the package */
 	Package*								package_;
 	/** the descriptor file */

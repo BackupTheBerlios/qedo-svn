@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="CIDLGenerator"
 	SccProjectName="CIDLGenerator"
 	SccLocalPath=".">
@@ -49,7 +49,7 @@ copy $(TargetPath) $(QEDO)\bin
 				OutputFile="$(OutDir)/cidl_gen.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;;&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)&quot;"
 				IgnoreDefaultLibraryNames="MSVCRT"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"/>
@@ -69,7 +69,13 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
@@ -127,7 +133,13 @@ copy cidl_gen.exe $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_orbacus|Win32"
@@ -183,7 +195,13 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release_orbacus|Win32"
@@ -238,21 +256,32 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
+				RelativePath=".\cidl_gen.cpp">
+			</File>
+			<File
 				RelativePath="CPPBase.cpp">
 			</File>
 			<File
-				RelativePath=".\GeneratorBIDL.cpp">
+				RelativePath="GeneratorBase.cpp">
 			</File>
 			<File
-				RelativePath="GeneratorBase.cpp">
+				RelativePath=".\GeneratorBIDL.cpp">
 			</File>
 			<File
 				RelativePath=".\GeneratorBusinessC.cpp">
@@ -276,13 +305,13 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 				RelativePath="GeneratorMakefile.cpp">
 			</File>
 			<File
-				RelativePath="GeneratorPSD.cpp">
-			</File>
-			<File
 				RelativePath="GeneratorPersistenceC.cpp">
 			</File>
 			<File
 				RelativePath="GeneratorPersistenceH.cpp">
+			</File>
+			<File
+				RelativePath="GeneratorPSD.cpp">
 			</File>
 			<File
 				RelativePath=".\GeneratorServantC.cpp">
@@ -291,13 +320,13 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 				RelativePath=".\GeneratorServantH.cpp">
 			</File>
 			<File
-				RelativePath="GeneratorVC7.cpp">
-			</File>
-			<File
 				RelativePath="GeneratorValuetypesC.cpp">
 			</File>
 			<File
 				RelativePath="GeneratorValuetypesH.cpp">
+			</File>
+			<File
+				RelativePath="GeneratorVC7.cpp">
 			</File>
 			<File
 				RelativePath="IDLBase.cpp">
@@ -308,9 +337,6 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 			<File
 				RelativePath=".\TestMode.cpp">
 			</File>
-			<File
-				RelativePath=".\cidl_gen.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -319,10 +345,10 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 				RelativePath="CPPBase.h">
 			</File>
 			<File
-				RelativePath=".\GeneratorBIDL.h">
+				RelativePath="GeneratorBase.h">
 			</File>
 			<File
-				RelativePath="GeneratorBase.h">
+				RelativePath=".\GeneratorBIDL.h">
 			</File>
 			<File
 				RelativePath=".\GeneratorBusinessC.h">
@@ -346,13 +372,13 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 				RelativePath="GeneratorMakefile.h">
 			</File>
 			<File
-				RelativePath="GeneratorPSD.h">
-			</File>
-			<File
 				RelativePath="GeneratorPersistenceC.h">
 			</File>
 			<File
 				RelativePath="GeneratorPersistenceH.h">
+			</File>
+			<File
+				RelativePath="GeneratorPSD.h">
 			</File>
 			<File
 				RelativePath=".\GeneratorServantC.h">
@@ -361,13 +387,13 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 				RelativePath=".\GeneratorServantH.h">
 			</File>
 			<File
-				RelativePath="GeneratorVC7.h">
-			</File>
-			<File
 				RelativePath="GeneratorValuetypesC.h">
 			</File>
 			<File
 				RelativePath="GeneratorValuetypesH.h">
+			</File>
+			<File
+				RelativePath="GeneratorVC7.h">
 			</File>
 			<File
 				RelativePath="IDLBase.h">

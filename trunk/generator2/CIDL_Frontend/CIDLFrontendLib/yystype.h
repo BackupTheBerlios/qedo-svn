@@ -1,6 +1,6 @@
 #ifndef YYSTYPE_HEADER
 #define YYSTYPE_HEADER
-union YYSTYPE {
+union KC_YYSTYPE {
     kc::nocasestring yt_nocasestring;
     kc::casestring yt_casestring;
     kc::real yt_real;
@@ -61,4 +61,5 @@ union YYSTYPE {
     kc::interface_header yt_interface_header;
     kc::component_header yt_component_header;
 };
+#define YYSTYPE KC_YYSTYPE
 #endif // YYSTYPE_HEADER

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="Computation_ServerCompo"
 	ProjectGUID="{F9478353-9D46-4F6D-8A93-B64055FD5C27}"
 	Keyword="Win32Proj">
@@ -55,7 +55,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
@@ -66,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;../Computation_ServerCompo_SERVANT"
+				AdditionalIncludeDirectories=".;&quot;$(QEDO)/include/pthreads&quot;;&quot;$(QEDO)/include&quot;;&quot;$(MICO)/include&quot;;../Computation_ServerCompo_SERVANT"
 				PreprocessorDefinitions="BUILD_COMPUTATION_SERVERCOMPO_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -93,8 +99,8 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="zip ../Computation_ServerCompo.zip -j Debug_mico/Computation_ServerCompo.dll ../Computation_ServerCompo_SERVANT/Debug_mico/Computation_ServerCompo_SERVANT.dll ../compute.cidl
-zip ../Computation_ServerCompo.zip meta-inf/Computation_ServerCompo.ccd meta-inf/Computation_ServerCompo.csd
+				CommandLine="$(CYGWIN)/zip ../Computation_ServerCompo.zip -j Debug_mico/Computation_ServerCompo.dll ../Computation_ServerCompo_SERVANT/Debug_mico/Computation_ServerCompo_SERVANT.dll ../compute.cidl
+$(CYGWIN)/zip ../Computation_ServerCompo.zip meta-inf/Computation_ServerCompo.ccd meta-inf/Computation_ServerCompo.csd
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -105,7 +111,13 @@ zip ../Computation_ServerCompo.zip meta-inf/Computation_ServerCompo.ccd meta-inf
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
@@ -152,13 +164,24 @@ zip ../Computation_ServerCompo.zip meta-inf/Computation_ServerCompo.ccd meta-inf
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			<File
+				RelativePath="component_valuetypes.cpp">
+			</File>
 			<File
 				RelativePath="Computation_ServerCompo.cpp">
 			</File>
@@ -174,13 +197,13 @@ zip ../Computation_ServerCompo.zip meta-inf/Computation_ServerCompo.ccd meta-inf
 			<File
 				RelativePath="Computation_ServerCompo_LOCAL.cpp">
 			</File>
-			<File
-				RelativePath="component_valuetypes.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="component_valuetypes.h">
+			</File>
 			<File
 				RelativePath="Computation_ServerCompo.h">
 			</File>
@@ -195,9 +218,6 @@ zip ../Computation_ServerCompo.zip meta-inf/Computation_ServerCompo.ccd meta-inf
 			</File>
 			<File
 				RelativePath="Computation_ServerCompo_LOCAL.h">
-			</File>
-			<File
-				RelativePath="component_valuetypes.h">
 			</File>
 		</Filter>
 		<Filter

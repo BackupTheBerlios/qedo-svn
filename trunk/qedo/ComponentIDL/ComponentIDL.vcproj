@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="ComponentIDL"
 	ProjectGUID="{861222F4-9ADE-4721-B531-4BCDC95DCC73}"
 	SccProjectName=""
@@ -72,7 +72,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -128,7 +134,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_orbacus|Win32"
@@ -197,7 +209,13 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
@@ -210,7 +228,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;&quot;$(MICO)/include&quot;;..\ComponentContainer;..\qedoutil"
+				AdditionalIncludeDirectories=".;&quot;$(PTHREADS)&quot;;&quot;$(MICO)/include&quot;;..\ComponentContainer;..\qedoutil"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;BUILD_QEDODLL_DLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -238,7 +256,7 @@ copy $(TargetPath) $(QEDO)\bin
 				OutputFile="$(OutDir)/ComponentIDL.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib"
+				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)&quot;"
 				ModuleDefinitionFile="$(OutDir)/ComponentIDL.def"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug_mico/ComponentIDL.pdb"
@@ -265,7 +283,13 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
@@ -328,7 +352,13 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release_orbacus|Win32"
@@ -392,13 +422,27 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath=".\Components.cpp">
+			</File>
+			<File
+				RelativePath=".\Components_skel.cpp">
+			</File>
 			<File
 				RelativePath="CORBADepends.cpp">
 				<FileConfiguration
@@ -412,12 +456,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="CORBADepends_skel.cpp">
 			</File>
 			<File
-				RelativePath=".\Components.cpp">
-			</File>
-			<File
-				RelativePath=".\Components_skel.cpp">
-			</File>
-			<File
 				RelativePath="QedoComponents.cpp">
 			</File>
 			<File
@@ -428,25 +466,19 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath="CORBADepends.h">
-			</File>
-			<File
-				RelativePath="CORBADepends_skel.h">
-			</File>
-			<File
 				RelativePath=".\Components.h">
 			</File>
 			<File
 				RelativePath=".\Components_skel.h">
 			</File>
 			<File
+				RelativePath="CORBADepends.h">
+			</File>
+			<File
+				RelativePath="CORBADepends_skel.h">
+			</File>
+			<File
 				RelativePath="PSSNativeClasses.h">
-			</File>
-			<File
-				RelativePath="QedoComponents.h">
-			</File>
-			<File
-				RelativePath="QedoComponents_skel.h">
 			</File>
 			<File
 				RelativePath="qedo_orbacus.h">
@@ -454,56 +486,16 @@ copy $(TargetPath) $(QEDO)\bin
 			<File
 				RelativePath="qedo_orbacus_skel.h">
 			</File>
+			<File
+				RelativePath="QedoComponents.h">
+			</File>
+			<File
+				RelativePath="QedoComponents_skel.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="idl"
 			Filter="idl">
-			<File
-				RelativePath=".\CORBADepends.idl">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB CORBADepends.idl
-"
-						Outputs="CORBADepends.h;CORBADepends.cpp;CORBADepends_skel.h;CORBADepends_skel.cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCMIDLTool"
-						TargetEnvironment="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_orbacus|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -D_QEDO_NO_QOS -DWIN32 -DORBACUS_ORB CORBADepends.idl
-"
-						Outputs="CORBADepends.h;CORBADepends.cpp;CORBADepends_skel.h;CORBADepends_skel.cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 CORBADepends.idl
-copy CORBADepends.h CORBADepends_skel.h
-"
-						Outputs="CORBADepends.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release_orbacus|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB CORBADepends.idl
-"
-						Outputs="CORBADepends.h;CORBADepends.cpp;CORBADepends_skel.h;CORBADepends_skel.cpp"/>
-				</FileConfiguration>
-			</File>
 			<File
 				RelativePath=".\Components.idl">
 				<FileConfiguration
@@ -548,6 +540,52 @@ copy Components.h Components_skel.h
 						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB Components.idl
 "
 						Outputs="Components.h;Components.cpp;Components_skel.h;Components_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CORBADepends.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB CORBADepends.idl
+"
+						Outputs="CORBADepends.h;CORBADepends.cpp;CORBADepends_skel.h;CORBADepends_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCMIDLTool"
+						TargetEnvironment="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -D_QEDO_NO_QOS -DWIN32 -DORBACUS_ORB CORBADepends.idl
+"
+						Outputs="CORBADepends.h;CORBADepends.cpp;CORBADepends_skel.h;CORBADepends_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 CORBADepends.idl
+copy CORBADepends.h CORBADepends_skel.h
+"
+						Outputs="CORBADepends.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB CORBADepends.idl
+"
+						Outputs="CORBADepends.h;CORBADepends.cpp;CORBADepends_skel.h;CORBADepends_skel.cpp"/>
 				</FileConfiguration>
 			</File>
 			<File

@@ -1,36 +1,50 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_CutleryImpl", "dinner_CutleryImpl\dinner_CutleryImpl.vcproj", "{00000001-0000-0000-0000-000000000000}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2304DAE3-7470-4751-8749-08674F06EEC0} = {2304DAE3-7470-4751-8749-08674F06EEC0}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_ObserverImpl", "dinner_ObserverImpl\dinner_ObserverImpl.vcproj", "{00000002-0000-0000-0000-000000000000}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DC64CEBC-6682-491C-894D-F1E79B379837} = {DC64CEBC-6682-491C-894D-F1E79B379837}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_PhilosopherImpl", "dinner_PhilosopherImpl\dinner_PhilosopherImpl.vcproj", "{F438E863-5250-441C-86DF-BF4DB8C39B62}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757} = {F39C9B67-3DE5-4F7E-A777-E69D3250E757}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestClient", "TestClient\TestClient.vcproj", "{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_PhilosopherImpl_SERVANT", "dinner_PhilosopherImpl_SERVANT\dinner_PhilosopherImpl_SERVANT.vcproj", "{F39C9B67-3DE5-4F7E-A777-E69D3250E757}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_CutleryImpl_SERVANT", "dinner_CutleryImpl_SERVANT\dinner_CutleryImpl_SERVANT.vcproj", "{2304DAE3-7470-4751-8749-08674F06EEC0}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_ObserverImpl_SERVANT", "dinner_ObserverImpl_SERVANT\dinner_ObserverImpl_SERVANT.vcproj", "{DC64CEBC-6682-491C-894D-F1E79B379837}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_win32_assembly", "dinner_win32_assembly\dinner_win32_assembly.vcproj", "{43B7EFE3-67CE-49B1-82BF-800D359F5A0B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F438E863-5250-441C-86DF-BF4DB8C39B62} = {F438E863-5250-441C-86DF-BF4DB8C39B62}
+		{00000002-0000-0000-0000-000000000000} = {00000002-0000-0000-0000-000000000000}
+		{00000001-0000-0000-0000-000000000000} = {00000001-0000-0000-0000-000000000000}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug
-		ConfigName.1 = Debug_mico
-		ConfigName.2 = Debug_orbacus
-		ConfigName.3 = Debug_tao
-		ConfigName.4 = Release
-		ConfigName.5 = Release_orbacus
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
-		{00000001-0000-0000-0000-000000000000}.0 = {2304DAE3-7470-4751-8749-08674F06EEC0}
-		{00000002-0000-0000-0000-000000000000}.0 = {DC64CEBC-6682-491C-894D-F1E79B379837}
-		{F438E863-5250-441C-86DF-BF4DB8C39B62}.0 = {F39C9B67-3DE5-4F7E-A777-E69D3250E757}
-		{43B7EFE3-67CE-49B1-82BF-800D359F5A0B}.0 = {00000001-0000-0000-0000-000000000000}
-		{43B7EFE3-67CE-49B1-82BF-800D359F5A0B}.1 = {00000002-0000-0000-0000-000000000000}
-		{43B7EFE3-67CE-49B1-82BF-800D359F5A0B}.2 = {F438E863-5250-441C-86DF-BF4DB8C39B62}
+		Debug = Debug
+		Debug_mico = Debug_mico
+		Debug_orbacus = Debug_orbacus
+		Debug_tao = Debug_tao
+		Release = Release
+		Release_orbacus = Release_orbacus
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{00000001-0000-0000-0000-000000000000}.Debug.ActiveCfg = Debug_tao|Win32

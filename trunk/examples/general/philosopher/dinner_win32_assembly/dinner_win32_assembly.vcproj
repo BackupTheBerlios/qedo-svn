@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="dinner_win32_assembly"
 	ProjectGUID="{43B7EFE3-67CE-49B1-82BF-800D359F5A0B}"
 	Keyword="Win32Proj">
@@ -50,7 +50,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -95,9 +101,17 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<File
 			RelativePath="meta-inf\dinner_win32.cad">
@@ -105,8 +119,8 @@
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="zip ../dinner_win32_assembly.zip -j ../dinner_CutleryImpl.zip ../dinner_PhilosopherImpl.zip ../dinner_ObserverImpl.zip
-zip ../dinner_win32_assembly.zip meta-inf/dinner_win32.cad meta-inf/atze.cpf meta-inf/bob.cpf meta-inf/charly.cpf
+					CommandLine="$(CYGWIN)/zip ../dinner_win32_assembly.zip -j ../dinner_CutleryImpl.zip ../dinner_PhilosopherImpl.zip ../dinner_ObserverImpl.zip
+$(CYGWIN)/zip ../dinner_win32_assembly.zip meta-inf/dinner_win32.cad meta-inf/atze.cpf meta-inf/bob.cpf meta-inf/charly.cpf
 "
 					Outputs="creating assembly"/>
 			</FileConfiguration>

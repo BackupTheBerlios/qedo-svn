@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="dinner_ObserverImpl"
 	ProjectGUID="{0}"
 	Keyword="Win32Proj">
@@ -55,7 +55,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
@@ -66,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(QEDO)/include/pthreads;$(MICO)/include;"
 				PreprocessorDefinitions="BUILD_DINNER_OBSERVERIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -93,8 +99,8 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="zip ../dinner_ObserverImpl.zip -j  Debug_mico/dinner_ObserverImpl.dll ../dinner_ObserverImpl_SERVANT/Debug_mico/dinner_ObserverImpl_SERVANT.dll ../philosophers.cidl
-zip ../dinner_ObserverImpl.zip meta-inf/dinner_ObserverImpl.ccd meta-inf/dinner_ObserverImpl.csd
+				CommandLine="$(CYGWIN)/zip ../dinner_ObserverImpl.zip -j  Debug_mico/dinner_ObserverImpl.dll ../dinner_ObserverImpl_SERVANT/Debug_mico/dinner_ObserverImpl_SERVANT.dll ../philosophers.cidl
+$(CYGWIN)/zip ../dinner_ObserverImpl.zip meta-inf/dinner_ObserverImpl.ccd meta-inf/dinner_ObserverImpl.csd
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -105,7 +111,13 @@ zip ../dinner_ObserverImpl.zip meta-inf/dinner_ObserverImpl.ccd meta-inf/dinner_
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
@@ -152,9 +164,17 @@ zip ../dinner_ObserverImpl.zip meta-inf/dinner_ObserverImpl.ccd meta-inf/dinner_
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"

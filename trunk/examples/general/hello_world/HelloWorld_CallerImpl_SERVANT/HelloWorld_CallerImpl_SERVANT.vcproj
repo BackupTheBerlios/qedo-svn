@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="HelloWorld_CallerImpl_SERVANT"
 	ProjectGUID="{665D8DBF-02BD-4BE0-B91C-90EB2CA2B896}"
 	Keyword="Win32Proj">
@@ -55,7 +55,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
@@ -66,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;$(MICO)/include/windows"
+				AdditionalIncludeDirectories=".;&quot;$(QEDO)/include&quot;;&quot;$(MICO)/include&quot;;&quot;$(MICO)/include/windows&quot;;&quot;$(QEDO)/include/pthreads&quot;"
 				PreprocessorDefinitions="BUILD_HELLOWORLD_CALLERIMPL_DLL;WIN32;_DEBUG;_USRDLL;SERVANTMODULE_EXPORTS;MICO_ORB;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -102,7 +108,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
@@ -149,9 +161,17 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
@@ -210,7 +230,7 @@
 						Name="VCCustomBuildTool"
 						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico  -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --servant --target IDL:HelloWorld/CallerImpl:1.0 ../hello.cidl
 "
-						Outputs="HelloWorld_CallerImpl_LOCAL.idl;HelloWorld_CallerImpl_EQUIVALENT.idl;HelloWorld_CallerImpl_BUSINESS.idl"/>
+						Outputs="HelloWorld_CallerImpl_LOCAL.idl;HelloWorld_CallerImpl_EQUIVALENT.idl;"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_tao|Win32">

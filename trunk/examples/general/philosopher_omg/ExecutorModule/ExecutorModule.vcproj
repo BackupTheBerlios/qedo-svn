@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="ExecutorModule"
 	SccProjectName=""
 	SccLocalPath="">
@@ -68,7 +68,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -124,9 +130,17 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
@@ -139,6 +153,15 @@
 			</File>
 			<File
 				RelativePath=".\CutleryGUI.cpp">
+			</File>
+			<File
+				RelativePath="..\IDL\dinner_CutleryImpl.cpp">
+			</File>
+			<File
+				RelativePath="..\IDL\dinner_ObserverImpl.cpp">
+			</File>
+			<File
+				RelativePath="..\IDL\dinner_PhilosopherImpl.cpp">
 			</File>
 			<File
 				RelativePath=".\ObserverGUI.cpp">
@@ -155,15 +178,6 @@
 			<File
 				RelativePath=".\RefCountLocalObject.cpp">
 			</File>
-			<File
-				RelativePath="..\IDL\dinner_CutleryImpl.cpp">
-			</File>
-			<File
-				RelativePath="..\IDL\dinner_ObserverImpl.cpp">
-			</File>
-			<File
-				RelativePath="..\IDL\dinner_PhilosopherImpl.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -178,6 +192,15 @@
 				RelativePath=".\CutleryGUI.h">
 			</File>
 			<File
+				RelativePath="..\IDL\dinner_CutleryImpl.h">
+			</File>
+			<File
+				RelativePath="..\IDL\dinner_ObserverImpl.h">
+			</File>
+			<File
+				RelativePath="..\IDL\dinner_PhilosopherImpl.h">
+			</File>
+			<File
 				RelativePath=".\ObserverGUI.h">
 			</File>
 			<File
@@ -188,15 +211,6 @@
 			</File>
 			<File
 				RelativePath=".\RefCountLocalObject.h">
-			</File>
-			<File
-				RelativePath="..\IDL\dinner_CutleryImpl.h">
-			</File>
-			<File
-				RelativePath="..\IDL\dinner_ObserverImpl.h">
-			</File>
-			<File
-				RelativePath="..\IDL\dinner_PhilosopherImpl.h">
 			</File>
 		</Filter>
 		<Filter

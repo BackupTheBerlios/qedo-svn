@@ -1,21 +1,27 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExecutorModule", "ExecutorModule\ExecutorModule.vcproj", "{133C0091-4ED4-4898-940C-BA66FD56CD46}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BEDF77AA-47DD-44B4-8712-C19C6F94AC10} = {BEDF77AA-47DD-44B4-8712-C19C6F94AC10}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IDL", "IDL\IDL.vcproj", "{BEDF77AA-47DD-44B4-8712-C19C6F94AC10}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServantModule", "ServantModule\ServantModule.vcproj", "{3B59FD2F-925E-4896-947D-80968343D413}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BEDF77AA-47DD-44B4-8712-C19C6F94AC10} = {BEDF77AA-47DD-44B4-8712-C19C6F94AC10}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestClient", "TestClient\TestClient.vcproj", "{94052160-D452-4FA1-868C-CC941D282AE9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BEDF77AA-47DD-44B4-8712-C19C6F94AC10} = {BEDF77AA-47DD-44B4-8712-C19C6F94AC10}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug
-		ConfigName.1 = Release
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
-		{133C0091-4ED4-4898-940C-BA66FD56CD46}.0 = {BEDF77AA-47DD-44B4-8712-C19C6F94AC10}
-		{3B59FD2F-925E-4896-947D-80968343D413}.0 = {BEDF77AA-47DD-44B4-8712-C19C6F94AC10}
-		{94052160-D452-4FA1-868C-CC941D282AE9}.0 = {BEDF77AA-47DD-44B4-8712-C19C6F94AC10}
+		Debug = Debug
+		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{133C0091-4ED4-4898-940C-BA66FD56CD46}.Debug.ActiveCfg = Debug|Win32

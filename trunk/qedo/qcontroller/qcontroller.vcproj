@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="qcontroller"
 	ProjectGUID="{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}"
 	Keyword="Win32Proj">
@@ -64,7 +64,13 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -109,7 +115,13 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
@@ -120,7 +132,7 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;../ComponentIDL;../qedoutil;c:\opt\wxWindows\include;C:\opt\wxWindows\lib\mswdlld;$(MICO)/include;$(XERCES)/include;&quot;$(ZLIB)&quot;"
+				AdditionalIncludeDirectories=".\;../ComponentIDL;../qedoutil;&quot;$(WXWIDGETS)\include&quot;;&quot;$(WXWIDGETS)\lib\mswdlld&quot;;&quot;$(MICO)/include&quot;;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)&quot;;&quot;$(ZLIB)\include&quot;"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_CONSOLE;_WINDOWS,WINVER=0x400,_MT;,wxUSE_GUI=1,__WXDEBUG__,WXDEBUG=1,WXUSINGDLL"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -141,7 +153,7 @@ copy $(TargetPath) $(QEDO)\bin
 				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxmsw24d.lib mico2311.lib micocoss2311.lib $(MICO)\coss\micocoss2311.lib"
 				OutputFile="$(OutDir)/qcontroller.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="C:\opt\wxWindows\lib;$(MICO)\win32-bin\lib"
+				AdditionalLibraryDirectories="&quot;$(WXWIDGETS)\lib&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/qcontroller.pdb"
 				SubSystem="2"
@@ -165,9 +177,17 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
@@ -185,6 +205,9 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 				RelativePath="DescriptorFrame.cpp">
 			</File>
 			<File
+				RelativePath="explore.cpp">
+			</File>
+			<File
 				RelativePath="HelpFrame.cpp">
 			</File>
 			<File
@@ -200,16 +223,13 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 				RelativePath="QCexplorer.cpp">
 			</File>
 			<File
+				RelativePath="qcontroller.cpp">
+			</File>
+			<File
 				RelativePath="QedoEditor.cpp">
 			</File>
 			<File
 				RelativePath="QedoExplorer.cpp">
-			</File>
-			<File
-				RelativePath="explore.cpp">
-			</File>
-			<File
-				RelativePath="qcontroller.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -228,6 +248,9 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 				RelativePath="DescriptorFrame.h">
 			</File>
 			<File
+				RelativePath="explore.h">
+			</File>
+			<File
 				RelativePath="HelpFrame.h">
 			</File>
 			<File
@@ -243,16 +266,13 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 				RelativePath="QCexplorer.h">
 			</File>
 			<File
+				RelativePath="qcontroller.h">
+			</File>
+			<File
 				RelativePath="QedoEditor.h">
 			</File>
 			<File
 				RelativePath="QedoExplorer.h">
-			</File>
-			<File
-				RelativePath="explore.h">
-			</File>
-			<File
-				RelativePath="qcontroller.h">
 			</File>
 			<File
 				RelativePath="resource.h">
@@ -263,6 +283,12 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 			<File
 				RelativePath="qcontroller.rc">
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="$(WXWIDGETS)\include"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -282,7 +308,7 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="idl -I%MICO%\include\mico -I..\ComponentIDL -I%MICO%\include -DMICO_ORB --c++-suffix cpp explore.idl
+						CommandLine="$(MICO)\win32-bin\idl -I%MICO%\include\mico -I..\ComponentIDL -I%MICO%\include -DMICO_ORB --c++-suffix cpp explore.idl
 "
 						Outputs="explore.h;explore.cpp"/>
 				</FileConfiguration>

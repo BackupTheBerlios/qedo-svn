@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="HelloWorld"
 	ProjectGUID="{C00F750C-5EA1-472D-A140-6830933DB284}"
 	SccProjectName=""
@@ -61,7 +61,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
@@ -117,7 +123,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_orbacus|Win32"
@@ -147,7 +159,8 @@
 			<Tool
 				Name="VCCustomBuildTool"
 				Description="copy target to $(QEDO)\bin"
-				CommandLine="copy $(TargetPath) $(QEDO)\bin"
+				CommandLine="copy $(TargetPath) $(QEDO)\bin
+"
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
@@ -176,7 +189,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
@@ -206,7 +225,8 @@
 			<Tool
 				Name="VCCustomBuildTool"
 				Description="copy target to $(QEDO)\bin"
-				CommandLine="copy $(TargetPath) $(QEDO)\bin"
+				CommandLine="copy $(TargetPath) $(QEDO)\bin
+"
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
@@ -235,7 +255,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release_orbacus|Win32"
@@ -291,9 +317,17 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
@@ -348,6 +382,26 @@
 			Name="idl"
 			Filter="">
 			<File
+				RelativePath="..\hello.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="producing equivalent idl"
+						CommandLine="$(QEDO)/bin/cidl_gen -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --target HelloWorld ../hello.idl
+"
+						Outputs="HelloWorld_EQUIVALENT.idl"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN  --target HelloWorld ../hello.idl
+"
+						Outputs="HelloWorld_EQUIVALENT.idl; HelloWorld_LOCAL.idl"/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="HelloWorld_EQUIVALENT.idl">
 				<FileConfiguration
 					Name="Debug_orbacus|Win32">
@@ -366,26 +420,6 @@
 copy HelloWorld_EQUIVALENT.h HelloWorld_EQUIVALENT_skel.h
 "
 						Outputs="HelloWorld_EQUIVALENT.h;HelloWorld_EQUIVALENT.cpp;HelloWorld_EQUIVALENT_skel.h;HelloWorld_EQUIVALENT_skel.cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\hello.idl">
-				<FileConfiguration
-					Name="Debug_orbacus|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="producing equivalent idl"
-						CommandLine="$(QEDO)/bin/cidl_gen -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --target HelloWorld ../hello.idl
-"
-						Outputs="HelloWorld_EQUIVALENT.idl"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN  --target HelloWorld ../hello.idl
-"
-						Outputs="HelloWorld_EQUIVALENT.idl; HelloWorld_LOCAL.idl"/>
 				</FileConfiguration>
 			</File>
 		</Filter>

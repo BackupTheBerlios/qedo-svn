@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="ComponentRepositoryLib"
 	SccProjectName="ComponentRepositoryLib"
 	SccLocalPath=".">
@@ -54,6 +54,12 @@
 				Culture="1033"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
@@ -99,6 +105,12 @@
 				Culture="1033"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
@@ -144,6 +156,12 @@
 				Culture="1033"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release_orbacus|Win32"
@@ -185,8 +203,16 @@
 				Culture="1033"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
@@ -252,10 +278,10 @@
 				RelativePath=".\IDLType_impl.cpp">
 			</File>
 			<File
-				RelativePath=".\IRObject_impl.cpp">
+				RelativePath=".\InterfaceDef_impl.cpp">
 			</File>
 			<File
-				RelativePath=".\InterfaceDef_impl.cpp">
+				RelativePath=".\IRObject_impl.cpp">
 			</File>
 			<File
 				RelativePath="KeyDef_impl.cpp">
@@ -270,9 +296,6 @@
 				RelativePath=".\OperationDef_impl.cpp">
 			</File>
 			<File
-				RelativePath="PSSPrimaryKeyDef_impl.cpp">
-			</File>
-			<File
 				RelativePath=".\PrimaryKeyDef_impl.cpp">
 			</File>
 			<File
@@ -280,6 +303,9 @@
 			</File>
 			<File
 				RelativePath=".\ProvidesDef_impl.cpp">
+			</File>
+			<File
+				RelativePath="PSSPrimaryKeyDef_impl.cpp">
 			</File>
 			<File
 				RelativePath=".\PublishesDef_impl.cpp">
@@ -391,10 +417,10 @@
 				RelativePath=".\IDLType_impl.h">
 			</File>
 			<File
-				RelativePath=".\IRObject_impl.h">
+				RelativePath=".\InterfaceDef_impl.h">
 			</File>
 			<File
-				RelativePath=".\InterfaceDef_impl.h">
+				RelativePath=".\IRObject_impl.h">
 			</File>
 			<File
 				RelativePath="KeyDef_impl.h">
@@ -409,9 +435,6 @@
 				RelativePath=".\OperationDef_impl.h">
 			</File>
 			<File
-				RelativePath="PSSPrimaryKeyDef_impl.h">
-			</File>
-			<File
 				RelativePath=".\PrimaryKeyDef_impl.h">
 			</File>
 			<File
@@ -419,6 +442,9 @@
 			</File>
 			<File
 				RelativePath=".\ProvidesDef_impl.h">
+			</File>
+			<File
+				RelativePath="PSSPrimaryKeyDef_impl.h">
 			</File>
 			<File
 				RelativePath=".\PublishesDef_impl.h">

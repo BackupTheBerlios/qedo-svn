@@ -55,7 +55,7 @@ class QEDOUTIL_API PSDReader : public virtual PlatformBase
 private:
 
 	/** the parsed CORBA persistence descriptor */
-    DOMDocument*							psd_document_;
+	DOMDocument*							psd_document_;
 	/** the path to drop files */
 	std::string								path_;
 	/** the database connection string */

@@ -45,7 +45,7 @@ XMLCatalog::XMLCatalog (XercesDOMParser & aParser, const URI & aCatalog, bool aM
 
     URLInputSource uis(empty, aCatalog.getText());
     aParser.parse(uis);
-    DOMDocument* doc = aParser.getDocument();
+	DOMDocument* doc = aParser.getDocument();
 
     // determine catalog base
     nl = doc->getElementsByTagName(X("Base"));
