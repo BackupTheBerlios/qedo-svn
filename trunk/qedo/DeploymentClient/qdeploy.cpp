@@ -30,7 +30,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qdeploy.cpp,v 1.11 2003/09/26 08:27:15 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qdeploy.cpp,v 1.12 2003/10/01 11:51:16 neubauer Exp $";
 
 
 /**
@@ -67,6 +67,7 @@ main (int argc, char** argv)
 	}
 
 	std::string package = argv[argc - 1];
+	bool debug_mode = false;
 
     for(int i = 1; i < argc;)
     {
@@ -75,6 +76,10 @@ main (int argc, char** argv)
 		{
 			printUsage();
 			exit ( 1 );
+		}
+		else if(strcmp(option, "--debug") == 0)
+		{
+			debug_mode = true;
 		}
 		else if(strcmp(option, "-f") == 0)
 		{
@@ -96,10 +101,15 @@ main (int argc, char** argv)
             
             argc--;
 		}
-		else
-		{
-			i++;
-		}
+
+		i++;
+	}
+
+	if (debug_mode)
+	{
+		std::cerr << "..... Running in debug mode" << std::endl;
+		std::cerr << "..... Please press a key when attached to process and breakpoints are set" << std::endl;
+		getchar();
 	}
 
 	//
