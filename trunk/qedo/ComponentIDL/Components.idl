@@ -170,7 +170,7 @@ module Components {
 		FacetDescriptions get_all_facets();
 		FacetDescriptions get_named_facets ( in NameList names )
 			raises ( InvalidName );
-		boolean same_component (in Object ref);
+		boolean same_component (in Object object_ref);
 	};
 	
 	interface Receptacles {
@@ -529,7 +529,7 @@ module Components {
 		set_contract_data (in Components::ConfigValues contracts);
 
 		void 
-		install_service_reference(in string id, in Object ref) raises (CCMException);
+		install_service_reference(in string id, in Object objref) raises (CCMException);
 
 
 	};
@@ -606,7 +606,7 @@ module Components {
 			in PortableServer::ObjectId oid,
 			in CORBA::RepositoryId repid);
 		PortableServer::ObjectId get_oid_from_ref (
-			in Object ref)
+			in Object objref)
 			raises (IllegalState, BadComponentReference);
 	};
 
@@ -681,7 +681,7 @@ module Components {
 			in CORBA::RepositoryId repid,
 			in ComponentId cid);
 		ComponentId get_cid_from_ref (
-			in Object ref)
+			in Object objref)
 			raises (BadComponentReference);
 	};
 
@@ -830,7 +830,7 @@ module Components {
 			void remove() raises (RemoveFailure);
 
 			/** extension */
-			void install_service_reference(in string id, in Object ref) raises (CCMException);
+			void install_service_reference(in string id, in Object objref) raises (CCMException);
 		};
 
 
