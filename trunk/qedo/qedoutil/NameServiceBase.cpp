@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: NameServiceBase.cpp,v 1.6 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: NameServiceBase.cpp,v 1.7 2003/04/15 07:19:39 neubauer Exp $";
 
 
 #include "NameServiceBase.h"
@@ -144,19 +144,19 @@ NameServiceBase::registerName(std::string name, CORBA::Object_ptr obj, bool rebi
                 return false;
             }
         }
-	    catch (const CosNaming::NamingContext::NotFound& ex)
+	    catch (const CosNaming::NamingContext::NotFound&)
         {
-            std::cerr << "Got a `NotFound' exception : " << /*ex <<*/ std::endl;
+            std::cerr << "Got a `NotFound' exception : " << std::endl;
     		return false;
         }
-        catch (const CosNaming::NamingContext::CannotProceed& ex)
+        catch (const CosNaming::NamingContext::CannotProceed&)
         {
-            std::cerr << "Got a `CannotProceed' exception : " << /*ex << */std::endl;
+            std::cerr << "Got a `CannotProceed' exception : " << std::endl;
     		return false;
         }
-        catch (const CosNaming::NamingContext::InvalidName& ex)
+        catch (const CosNaming::NamingContext::InvalidName&)
         {
-            std::cerr << "Got a `InvalidName' exception : " << /*ex <<*/ std::endl;
+            std::cerr << "Got a `InvalidName' exception : " << std::endl;
 		    return false;
         }
     }
@@ -175,19 +175,19 @@ NameServiceBase::registerName(std::string name, CORBA::Object_ptr obj, bool rebi
 		    {
 			    context->rebind(aName, obj);
 		    }
-		    catch (const CosNaming::NamingContext::NotFound& ex)
+		    catch (const CosNaming::NamingContext::NotFound&)
 	        {
-	            std::cerr << "Got a `NotFound' exception : " << /* ex <<*/  std::endl;
+	            std::cerr << "Got a `NotFound' exception : " << std::endl;
 			    return false;
 	        }
-	        catch (const CosNaming::NamingContext::CannotProceed& ex)
+	        catch (const CosNaming::NamingContext::CannotProceed&)
 		    {
-		        std::cerr << "Got a `CannotProceed' exception : " << /* ex <<*/  std::endl;
+		        std::cerr << "Got a `CannotProceed' exception : " << std::endl;
 			    return false;
 		    }
-		    catch (const CosNaming::NamingContext::InvalidName& ex)
+		    catch (const CosNaming::NamingContext::InvalidName&)
 	        {
-			    std::cerr << "Got a `InvalidName' exception : " << /* ex <<*/  std::endl;
+			    std::cerr << "Got a `InvalidName' exception : " << std::endl;
 			    return false;
 		    }
         }
@@ -197,19 +197,19 @@ NameServiceBase::registerName(std::string name, CORBA::Object_ptr obj, bool rebi
             return false;
         }
     }
-	catch (const CosNaming::NamingContext::NotFound& ex)
+	catch (const CosNaming::NamingContext::NotFound&)
     {
-        std::cerr << "Got a `NotFound' exception : " << /* ex  <<*/ std::endl;
+        std::cerr << "Got a `NotFound' exception : " << std::endl;
 		return false;
     }
-    catch (const CosNaming::NamingContext::CannotProceed& ex)
+    catch (const CosNaming::NamingContext::CannotProceed&)
     {
-        std::cerr << "Got a `CannotProceed' exception : " << /* ex  <<*/ std::endl;
+        std::cerr << "Got a `CannotProceed' exception : " << std::endl;
 		return false;
     }
-    catch (const CosNaming::NamingContext::InvalidName& ex)
+    catch (const CosNaming::NamingContext::InvalidName&)
     {
-        std::cerr << "Got a `InvalidName' exception : " << /* ex <<*/ std::endl;
+        std::cerr << "Got a `InvalidName' exception : " << std::endl;
 		return false;
     }
 
@@ -262,14 +262,14 @@ NameServiceBase::resolveName(std::string name)
 		std::cerr << "\n name binding not found : " << name << std::endl;
 		return 0;
 	}
-	catch(const CosNaming::NamingContext::CannotProceed& ex)
+	catch(const CosNaming::NamingContext::CannotProceed&)
 	{
-		std::cerr << "Got a `CannotProceed' exception : " << /* ex  <<*/ std::endl;
+		std::cerr << "Got a `CannotProceed' exception : " << std::endl;
 		return 0;
 	}
-	catch( const CosNaming::NamingContext::InvalidName& ex )
+	catch(const CosNaming::NamingContext::InvalidName&)
 	{
-	    std::cerr << "Got a `InvalidName' exception : " << /* ex << */ std::endl;
+	    std::cerr << "Got a `InvalidName' exception : " << std::endl;
 		return 0;
 	}
 
