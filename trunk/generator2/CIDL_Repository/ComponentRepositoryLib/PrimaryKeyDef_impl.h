@@ -68,12 +68,14 @@ public:
     //
     // IDL:omg.org/IR__/PrimaryKeyDef/is_a:1.0
     //
-    virtual CORBA::Boolean is_a(const char* primary_key_id);
+    virtual CORBA::Boolean is_a(const char* primary_key_id)
+        throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/PrimaryKeyDef/primary_key:1.0
     //
-    virtual IR__::ValueDef_ptr primary_key();
+    virtual IR__::ValueDef_ptr primary_key()
+        throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository

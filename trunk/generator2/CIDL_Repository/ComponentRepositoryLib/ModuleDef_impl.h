@@ -53,6 +53,7 @@ public:
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
     //
 	virtual CORBA__::DefinitionKind def_kind()
+        throw(CORBA::SystemException)
 	{
 		return CORBA__::dk_Module;
 	}
@@ -67,3 +68,4 @@ public:
 } // namespace QEDO_ComponentRepository
 
 #endif
+

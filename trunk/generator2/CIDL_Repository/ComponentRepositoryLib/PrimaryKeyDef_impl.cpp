@@ -90,6 +90,7 @@ throw(CORBA::SystemException)
 CORBA::Boolean
 PrimaryKeyDef_impl::is_a
 (const char* primary_key_id)
+throw(CORBA::SystemException)
 {
 	IR__::Contained_var primary_key_impl;
 
@@ -104,6 +105,7 @@ PrimaryKeyDef_impl::is_a
 IR__::ValueDef_ptr
 PrimaryKeyDef_impl::primary_key
 ()
+throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "PrimaryKeyDef_impl::primary_key() called" );
 
@@ -111,3 +113,4 @@ PrimaryKeyDef_impl::primary_key
 }
 
 } // namespace QEDO_ComponentRepository
+

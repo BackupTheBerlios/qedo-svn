@@ -121,6 +121,7 @@ throw(CORBA::SystemException)
 IR__::StructMemberSeq*
 StructDef_impl::members
 ()
+throw(CORBA::SystemException)
 {
     //
     // Recalculate TypeCodes every time, as ids may have changed, and
@@ -140,6 +141,7 @@ StructDef_impl::members
 void
 StructDef_impl::members
 (const IR__::StructMemberSeq& seq)
+throw(CORBA::SystemException)
 {
     //
     // Ensure we don't have duplicate declarator names
@@ -208,3 +210,4 @@ StructDef_impl::members
 }
 
 } // namespace QEDO_ComponentRepository
+

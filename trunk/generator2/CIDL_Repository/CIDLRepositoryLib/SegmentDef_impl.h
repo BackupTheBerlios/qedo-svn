@@ -73,9 +73,11 @@ public:
     //
     // IDL:omg.org/CIDL/SegmentDef/provided_facets:1.0
     //
-    virtual IR__::ProvidesDefSeq* provided_facets();
+    virtual IR__::ProvidesDefSeq* provided_facets()
+        throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository
 
 #endif
+

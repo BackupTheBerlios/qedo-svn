@@ -52,3 +52,4 @@ ComponentRepository_impl::destroy_repository
 }
 
 } // namespace QEDO_ComponentRepository
+

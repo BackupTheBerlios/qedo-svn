@@ -128,6 +128,7 @@ throw(CORBA::SystemException)
 IR__::ProvidesDefSeq*
 SegmentDef_impl::provided_facets
 ()
+throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "SegmentDef_impl::provided_facets() called" );
 

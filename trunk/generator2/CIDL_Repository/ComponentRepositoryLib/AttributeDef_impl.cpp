@@ -137,6 +137,7 @@ throw(CORBA::SystemException)
 CORBA::TypeCode_ptr
 AttributeDef_impl::type
 ()
+throw(CORBA::SystemException)
 {
    if ( !idl_type_ )
        throw CORBA::BAD_INV_ORDER();
@@ -147,6 +148,7 @@ AttributeDef_impl::type
 IR__::IDLType_ptr
 AttributeDef_impl::type_def
 ()
+throw(CORBA::SystemException)
 {
    if ( !idl_type_ )
        throw CORBA::BAD_INV_ORDER();
@@ -157,6 +159,7 @@ AttributeDef_impl::type_def
 void
 AttributeDef_impl::type_def
 (IR__::IDLType_ptr type )
+throw(CORBA::SystemException)
 {
     if ( CORBA::is_nil ( type ) )
         throw CORBA::BAD_PARAM(); // Is this exception correct?
@@ -185,6 +188,7 @@ AttributeDef_impl::type_def
 IR__::AttributeMode
 AttributeDef_impl::mode
 ()
+throw(CORBA::SystemException)
 {
 	return mode_;
 }
@@ -192,6 +196,7 @@ AttributeDef_impl::mode
 void
 AttributeDef_impl::mode
 (IR__::AttributeMode mode)
+throw(CORBA::SystemException)
 {
 	mode_ = mode;
 }
@@ -301,3 +306,4 @@ throw(CORBA::SystemException)
 }
 
 } // namespace QEDO_ComponentRepository
+

@@ -75,10 +75,13 @@ public:
     //
     // IDL:omg.org/IR__/StructDef/members:1.0
     //
-    virtual IR__::StructMemberSeq* members();
-    virtual void members(const IR__::StructMemberSeq&);
+    virtual IR__::StructMemberSeq* members()
+        throw(CORBA::SystemException);
+    virtual void members(const IR__::StructMemberSeq&)
+        throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository
 
 #endif
+

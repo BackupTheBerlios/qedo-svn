@@ -88,6 +88,7 @@ throw(CORBA::SystemException)
 CORBA::TypeCode_ptr
 ConstantDef_impl::type
 ()
+throw(CORBA::SystemException)
 {
      if(!idl_type_)
          throw CORBA::BAD_INV_ORDER();
@@ -98,6 +99,7 @@ ConstantDef_impl::type
 IR__::IDLType_ptr
 ConstantDef_impl::type_def
 ()
+throw(CORBA::SystemException)
 {
     if(!idl_type_)
         throw CORBA::BAD_INV_ORDER();
@@ -108,6 +110,7 @@ ConstantDef_impl::type_def
 void
 ConstantDef_impl::type_def
 (IR__::IDLType_ptr idl_type)
+throw(CORBA::SystemException)
 {
     if(CORBA::is_nil(idl_type))
         throw CORBA::BAD_PARAM();
@@ -136,6 +139,7 @@ ConstantDef_impl::type_def
 CORBA::Any*
 ConstantDef_impl::value
 ()
+throw(CORBA::SystemException)
 {
     return new CORBA::Any ( value_ );
 }
@@ -143,8 +147,10 @@ ConstantDef_impl::value
 void
 ConstantDef_impl::value
 (const CORBA::Any& value)
+throw(CORBA::SystemException)
 {
     value_ = value;
 }
 
 } // namespace QEDO_ComponentRepository
+

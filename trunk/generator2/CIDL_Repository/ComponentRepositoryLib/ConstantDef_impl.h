@@ -68,19 +68,24 @@ public:
     //
     // IDL:omg.org/IR__/ConstantDef/type:1.0
     //
-    virtual CORBA::TypeCode_ptr type();
+    virtual CORBA::TypeCode_ptr type()
+        throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/ConstantDef/type_def:1.0
     //
-    virtual IR__::IDLType_ptr type_def();
-    virtual void type_def(IR__::IDLType_ptr);
+    virtual IR__::IDLType_ptr type_def()
+        throw(CORBA::SystemException);
+    virtual void type_def(IR__::IDLType_ptr)
+        throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/ConstantDef/value:1.0
     //
-    virtual CORBA::Any* value();
-    virtual void value(const CORBA::Any&);
+    virtual CORBA::Any* value()
+        throw(CORBA::SystemException);
+    virtual void value(const CORBA::Any&)
+        throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository

@@ -65,6 +65,7 @@ public:
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
     //
 	virtual CORBA__::DefinitionKind def_kind()
+        throw(CORBA::SystemException)
 	{
 		return CORBA__::dk_String;
 	}
@@ -113,6 +114,7 @@ public:
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
     //
 	virtual CORBA__::DefinitionKind def_kind()
+        throw(CORBA::SystemException)
 	{
 		return CORBA__::dk_Wstring;
 	}
@@ -157,6 +159,7 @@ public:
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
     //
 	virtual CORBA__::DefinitionKind def_kind()
+        throw(CORBA::SystemException)
 	{
 		return CORBA__::dk_Sequence;
 	}
@@ -215,6 +218,7 @@ public:
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
     //
 	virtual CORBA__::DefinitionKind def_kind()
+        throw(CORBA::SystemException)
 	{
 		return CORBA__::dk_Array;
 	}
@@ -278,6 +282,7 @@ public:
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
     //
 	virtual CORBA__::DefinitionKind def_kind()
+        throw(CORBA::SystemException)
 	{
 		return CORBA__::dk_Fixed;
 	}
@@ -308,3 +313,4 @@ public:
 } // namespace QEDO_ComponentRepository
 
 #endif
+
