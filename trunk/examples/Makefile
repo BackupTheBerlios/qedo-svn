@@ -38,7 +38,7 @@ clean: $(SUBDIRS:%=%-clean)
 %-clean: %
 	$(MAKE) -C $< clean
 
-%-package:
+%-package: %
 	$(MAKE) -C $< package
 
 %-assembly: &-package
