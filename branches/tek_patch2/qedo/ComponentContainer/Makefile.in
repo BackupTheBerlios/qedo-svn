@@ -20,10 +20,10 @@
 
 CXX = @CXX@
 INCLUDES+=-I. \
-          -I../ComponentIDL \
-			 -I../ComponentServer \
-			 $(NAMING_INCLUDES) \
-			 @CPPFLAGS@
+	-I../ComponentIDL \
+	-I../ComponentServer \
+	$(NAMING_INCLUDES) \
+	@CPPFLAGS@
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS=@LIBS@
@@ -31,38 +31,38 @@ LIBS=@LIBS@
 @SET_MAKE@
 
 LIBS += -L../ComponentIDL -lComponentIDL \
-		  $(NAMING_LIBS) \
-        -luuid
+	$(NAMING_LIBS) \
+	-luuid
 
 SOURCES = Key.cpp \
-     	ServantBase.cpp \
-     	ServantLocator.cpp \
-		Output.cpp \
-		HomeServantBase.cpp \
-		CCMObjectExecutor.cpp \
-		CCMContext.cpp \
-		ComponentInstance.cpp \
-		ConsumerPort.cpp \
-		ContainerInterfaceImpl.cpp \
-		EmitterPort.cpp \
-		EntityHomeServant.cpp \
-		FacetPort.cpp \
-		GlobalHelpers.cpp \
-		PortBase.cpp \
-		PublisherPort.cpp \
-		ReceptaclePort.cpp \
-		RefCountBase.cpp \
-		ServantRegistry.cpp \
-		SessionContext.cpp \
-		SessionHomeServant.cpp \
-		GetComponentHelperServant.cpp \
-		Synchronisation.cpp \
-		Valuetypes.cpp \
-		CCMHomeServant.cpp \
-		ExtensionHomeServant.cpp \
-		ExtensionContext.cpp \
-		InternalConfiguration.cpp \
-		Util.cpp
+	ServantBase.cpp \
+	ServantLocator.cpp \
+	Output.cpp \
+	HomeServantBase.cpp \
+	CCMObjectExecutor.cpp \
+	CCMContext.cpp \
+	ComponentInstance.cpp \
+	ConsumerPort.cpp \
+	ContainerInterfaceImpl.cpp \
+	EmitterPort.cpp \
+	EntityHomeServant.cpp \
+	FacetPort.cpp \
+	GlobalHelpers.cpp \
+	PortBase.cpp \
+	PublisherPort.cpp \
+	ReceptaclePort.cpp \
+	RefCountBase.cpp \
+	ServantRegistry.cpp \
+	SessionContext.cpp \
+	SessionHomeServant.cpp \
+	GetComponentHelperServant.cpp \
+	Synchronisation.cpp \
+	Valuetypes.cpp \
+	CCMHomeServant.cpp \
+	ExtensionHomeServant.cpp \
+	ExtensionContext.cpp \
+	InternalConfiguration.cpp \
+	Util.cpp
 
 HEADER = ${SOURCES:.cpp=.h}
 
