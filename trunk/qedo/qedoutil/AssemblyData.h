@@ -43,18 +43,22 @@ namespace Qedo {
 
 
 /**
+ * kind of port
+ */
+enum PortKind { COMPONENT_PORT, FACET_PORT, EMITTER_PORT, PUBLISHER_PORT };
+
+
+/*
  * data for a component instantiation registration
  */
-struct ComponentInstanceRegistrationData
+struct NamingRegistrationData
 {
-	/** emitter */
-	std::string									emitter;
-	/** provider */
-	std::string									provider;
-	/** publisher */
-	std::string									publisher;
+	/** port kind */
+	PortKind									port_kind;
+	/** port name */
+	std::string									port;
 	/** naming service */
-	std::string									naming;
+	std::string									name;
 };
 
 
@@ -69,8 +73,8 @@ struct ComponentInstanceData
 	std::string									id;
 	/** component properties */
 	std::string									comp_prop;
-	/** registration */
-	ComponentInstanceRegistrationData			registration;
+	/** list of registrations */
+	std::vector< NamingRegistrationData >		naming_registrations;
 };
 
 

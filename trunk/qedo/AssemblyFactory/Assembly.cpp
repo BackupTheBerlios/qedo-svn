@@ -230,18 +230,19 @@ throw(Components::CreateFailure)
 {
     CORBA::Object_var obj;
 
-	switch(data.kind)
+	switch( data.kind )
 	{
 	case COMPONENTID:
-		obj = getInstance(data.name);
+		obj = getInstance( data.name );
 		break;
 	case HOMEID:
-		obj = getInstance(data.name);
+		obj = getHomeInstance( data.name );
 		break;
 	case NAMING:
-		obj = resolveName(data.name);
-        if ( CORBA::is_nil(obj))
+		obj = resolveName( data.name );
+        if( CORBA::is_nil(obj) )
         {
+			NORMAL_ERR2( "AssemblyImpl: invalid name binding ", data.name );
 			throw Components::CreateFailure();
         }
 		break;
@@ -623,25 +624,50 @@ throw(Components::CreateFailure)
 		//
 		// register in nameservice
 		//
-		if( !(*iter).registration.naming.empty() )
+		std::vector < NamingRegistrationData > ::const_iterator naming_iter;
+		for(naming_iter = (*iter).naming_registrations.begin();
+			naming_iter != (*iter).naming_registrations.end();
+			naming_iter++)
 		{
-			if( !(*iter).registration.emitter.empty() ) // register ???
+			//
+			// register facet
+			//
+			if( (*naming_iter).port_kind == FACET_PORT )
 			{
-				// todo
-			}
-			else if( !(*iter).registration.provider.empty() ) // register facet
-			{
-				// todo
-			}
-			else if( !(*iter).registration.publisher.empty() ) // register publisher
-			{
-				// todo
-			}
-			else // register component
-			{
-				if( !registerName( (*iter).registration.naming, comp, true ) )
+				CORBA::Object_var facet;
+
+				try
 				{
-					NORMAL_ERR2( "AssemblyImpl: cannot register Component", (*iter).id );
+					facet = comp->provide_facet( (*naming_iter).port.c_str() );
+				}
+				catch( Components::InvalidName& )
+				{
+					NORMAL_ERR2( "AssemblyImpl: no facet ", (*naming_iter).port );
+					NORMAL_ERR2( "AssemblyImpl: cannot register facet for component", (*iter).id );
+					break;
+				}
+
+				if( !registerName( (*naming_iter).name, facet, true ) )
+				{
+					NORMAL_ERR2( "AssemblyImpl: cannot register facet for component", (*iter).id );
+				}
+
+				continue;
+			}
+
+			//
+			// register event
+			//
+			// todo
+			
+			//
+			// register component
+			//
+			if( (*naming_iter).port_kind == COMPONENT_PORT )
+			{
+				if( !registerName( (*naming_iter).name, comp, true ) )
+				{
+					NORMAL_ERR2( "AssemblyImpl: cannot register component", (*iter).id );
 				}
 			}
 		}
@@ -760,22 +786,25 @@ throw(Components::CreateFailure)
 		DEBUG_OUT( "AssemblyImpl: make interface connection" );
 
 		//
-		// receptacle
+		// the receptacle port
 		//
 		receptacle = (*iter).use.name;
 		DEBUG_OUT2( "..... user is ", (*iter).use.ref.name );
 		DEBUG_OUT2( "..... receptacle is ", receptacle );
-		user = Components::CCMObject::_narrow(getRef((*iter).use.ref));
+		user = Components::CCMObject::_narrow( getRef((*iter).use.ref) );
 		
 		//
-		// facet
+		// the interface to be connected
 		//
 		DEBUG_OUT2( "..... provider is ", (*iter).provide.ref.name );
-		provider = getRef((*iter).provide.ref);
+		provider = getRef( (*iter).provide.ref );
+
+		//
+		// in case of facet get the facet ref
+		//
 		facet = (*iter).provide.name;
 		if( !facet.empty() )
 		{
-			// get facet
 			DEBUG_OUT2( "..... facet is ", facet );
 			try
 			{
@@ -787,38 +816,9 @@ throw(Components::CreateFailure)
 				throw Components::CreateFailure();
 			}
 		}
-		else if( (*iter).provide.ref.kind == COMPONENTID )
-		{
-			// todo
-		}
-		else if( (*iter).provide.ref.kind == HOMEID )
-		{
-			// todo
-		}
-		else if( (*iter).provide.ref.kind == NAMING )
-		{
-			provider = resolveName( (*iter).provide.ref.name );
-			if( CORBA::is_nil( provider ) )
-			{
-				NORMAL_ERR2( "AssemblyImpl: invalid name binding ", (*iter).provide.ref.name );
-				throw Components::CreateFailure();
-			}
-		}
-		else if( (*iter).provide.ref.kind == OBJECTREF )
-		{
-			// todo
-		}
-		else if( (*iter).provide.ref.kind == TRADER )
-		{
-			// todo
-		}
-		else if( (*iter).provide.ref.kind == FINDER )
-		{
-			// todo
-		}
 
 		//
-		// connect
+		// make the connection
 		//
 		Components::Cookie_var cookie;
 		try

@@ -47,6 +47,11 @@ void
 CADReader::componentassembly (DOMElement* element)
 throw(CADReadException)
 {
+	//
+	// get assembly id
+	//
+	data_->uuid_ = Qedo::transcode(element->getAttribute(X("id")));
+	
 	std::string element_name;
 	DOMNode* child = element->getFirstChild();
 	while (child != 0)
@@ -410,7 +415,7 @@ throw(CADReadException)
 			//
 			if (element_name == "usesport")
 			{
-				interface_connection.use = usesport((DOMElement*)(child));
+				interface_connection.use = usesport((DOMElement*)child);
 			}
 
 			//
@@ -418,7 +423,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "providesport")
 			{
-				interface_connection.provide = providesport((DOMElement*)(child));
+				interface_connection.provide = providesport((DOMElement*)child);
 			}
 
 			//
@@ -426,7 +431,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "componentsupportedinterface")
 			{
-				interface_connection.provide.ref = componentsupportedinterface((DOMElement*)(child));
+				interface_connection.provide.ref = componentsupportedinterface((DOMElement*)child);
 			}
 
 			//
@@ -434,7 +439,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "existinginterface")
 			{
-				interface_connection.provide.ref = existinginterface((DOMElement*)(child));
+				interface_connection.provide.ref = existinginterface((DOMElement*)child);
 			}
 
 			//
@@ -442,7 +447,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "homeinterface")
 			{
-				interface_connection.provide.ref = homeinterface((DOMElement*)(child));
+				interface_connection.provide.ref = homeinterface((DOMElement*)child);
 			}
 		}
 
@@ -472,7 +477,7 @@ throw(CADReadException)
 			//
 			if (element_name == "connectinterface")
 			{
-				connectinterface((DOMElement*)(child));
+				connectinterface((DOMElement*)child);
 			}
 
 			//
@@ -480,7 +485,7 @@ throw(CADReadException)
 			//
 			if (element_name == "connectevent")
 			{
-				connectevent((DOMElement*)(child));
+				connectevent((DOMElement*)child);
 			}
 
 			//
@@ -488,7 +493,7 @@ throw(CADReadException)
 			//
 			if (element_name == "connecthomes")
 			{
-				connecthomes((DOMElement*)(child));
+				connecthomes((DOMElement*)child);
 			}
 
 			//
@@ -496,7 +501,7 @@ throw(CADReadException)
 			//
 			if (element_name == "extension")
 			{
-				extension((DOMElement*)(child));
+				extension((DOMElement*)child);
 			}
 		}
 
@@ -873,7 +878,7 @@ throw(CADReadException)
 			if (element_name == "homeplacementref")
 			{
 				data.kind = HOMEID;
-				data.name = homeplacementref((DOMElement*)(child));
+				data.name = homeplacementref((DOMElement*)child);
 			}
 
 			//
@@ -881,7 +886,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "findby")
 			{
-				data = findby((DOMElement*)(child));
+				data = findby((DOMElement*)child);
 			}
 		}
 
@@ -1533,6 +1538,9 @@ void
 CADReader::registercomponent (DOMElement* element, ComponentInstanceData& data)
 throw(CADReadException)
 {
+	PortKind port_kind = COMPONENT_PORT;
+	std::string port;
+
 	std::string element_name;
 	DOMNode* child = element->getFirstChild();
 	DOMElement* elem;
@@ -1548,7 +1556,8 @@ throw(CADReadException)
 			//
 			if (element_name == "emitsidentifier")
 			{
-				data.registration.emitter = emitsidentifier(elem);
+				port_kind = EMITTER_PORT;
+				port = emitsidentifier(elem);
 			}
 
 			//
@@ -1556,7 +1565,8 @@ throw(CADReadException)
 			//
 			else if (element_name == "providesidentifier")
 			{
-				data.registration.provider = providesidentifier(elem);
+				port_kind = FACET_PORT;
+				port = providesidentifier(elem);
 			}
 
 			//
@@ -1564,7 +1574,8 @@ throw(CADReadException)
 			//
 			else if (element_name == "publishesidentifier")
 			{
-				data.registration.publisher = publishesidentifier(elem);
+				port_kind = PUBLISHER_PORT;
+				port = publishesidentifier(elem);
 			}
 
 			//
@@ -1572,7 +1583,15 @@ throw(CADReadException)
 			//
 			else if (element_name == "registerwithnaming")
 			{
-				data.registration.naming = registerwithnaming(elem);
+				NamingRegistrationData reg;
+				reg.port_kind = port_kind;
+				reg.port = port;
+				reg.name = registerwithnaming(elem);
+
+				data.naming_registrations.push_back( reg );
+
+				port_kind = COMPONENT_PORT;
+				port = "";
 			}
 
 			//
@@ -1582,6 +1601,9 @@ throw(CADReadException)
 			{
 				// todo
 				registerwithtrader(elem);
+
+				port_kind = COMPONENT_PORT;
+				port = "";
 			}
 		}
 
