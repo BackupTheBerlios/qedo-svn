@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.15 2003/05/19 15:10:23 tom Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.16 2003/05/25 17:28:19 tom Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -260,7 +260,8 @@ throw (Components::Deployment::InstallationFailure)
 	try
 	{
 #ifdef MICO_ORB
-	    home_poa_->set_servant_manager (dynamic_cast<PortableServer::ServantManager*>(servant_locator_));
+//	    home_poa_->set_servant_manager (dynamic_cast<PortableServer::ServantManager*>(servant_locator_));
+	    home_poa_->set_servant_manager (servant_locator_->_this());
 #else
 	    home_poa_->set_servant_manager (servant_locator_);
 #endif
