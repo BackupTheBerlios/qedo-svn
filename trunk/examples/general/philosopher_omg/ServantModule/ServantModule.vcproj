@@ -132,26 +132,14 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath="..\IDL\DiningPhilosophers_ForkHome_SERVANT.cpp">
-			</File>
-			<File
-				RelativePath="..\IDL\DiningPhilosophers_ObserverHome_SERVANT.cpp">
-			</File>
-			<File
-				RelativePath="..\IDL\DiningPhilosophers_PhilosopherHome_SERVANT.cpp">
+				RelativePath="..\IDL\dinner_SERVANT.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath="..\IDL\DiningPhilosophers_ForkHome_SERVANT.h">
-			</File>
-			<File
-				RelativePath="..\IDL\DiningPhilosophers_ObserverHome_SERVANT.h">
-			</File>
-			<File
-				RelativePath="..\IDL\DiningPhilosophers_PhilosopherHome_SERVANT.h">
+				RelativePath="..\IDL\dinner_SERVANT.h">
 			</File>
 		</Filter>
 		<Filter

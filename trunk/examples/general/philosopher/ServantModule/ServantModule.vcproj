@@ -109,26 +109,14 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="..\IDL\dinner_CutleryHome_SERVANT.cpp">
-			</File>
-			<File
-				RelativePath="..\IDL\dinner_ObserverHome_SERVANT.cpp">
-			</File>
-			<File
-				RelativePath="..\IDL\dinner_PhilosopherHome_SERVANT.cpp">
+				RelativePath="..\IDL\dinner_SERVANT.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
-				RelativePath="..\IDL\dinner_CutleryHome_SERVANT.h">
-			</File>
-			<File
-				RelativePath="..\IDL\dinner_ObserverHome_SERVANT.h">
-			</File>
-			<File
-				RelativePath="..\IDL\dinner_PhilosopherHome_SERVANT.h">
+				RelativePath="..\IDL\dinner_SERVANT.h">
 			</File>
 		</Filter>
 		<Filter

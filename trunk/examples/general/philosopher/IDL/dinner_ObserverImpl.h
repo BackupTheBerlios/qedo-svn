@@ -179,7 +179,7 @@ namespace dinner
         // IDL:dinner/ObserverHome/do_it:1.0
         //
         virtual ::Components::EnterpriseComponent_ptr do_it(const char* name, dinner::PhilosopherState* state)
-        	throw(CORBA::SystemException);
+        	throw(CORBA::SystemException, ::dinner::NotTheEater);
         
         //
         // IDL:dinner/ObserverHome/find_it:1.0

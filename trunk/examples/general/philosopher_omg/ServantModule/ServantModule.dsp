@@ -91,15 +91,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\IDL\DiningPhilosophers_ForkHome_SERVANT.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\IDL\DiningPhilosophers_ObserverHome_SERVANT.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\IDL\DiningPhilosophers_PhilosopherHome_SERVANT.cpp
+SOURCE=..\IDL\dinner_SERVANT.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -107,15 +99,7 @@ SOURCE=..\IDL\DiningPhilosophers_PhilosopherHome_SERVANT.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\IDL\DiningPhilosophers_ForkHome_SERVANT.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\IDL\DiningPhilosophers_ObserverHome_SERVANT.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\IDL\DiningPhilosophers_PhilosopherHome_SERVANT.h
+SOURCE=..\IDL\dinner_SERVANT.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
