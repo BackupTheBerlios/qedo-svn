@@ -624,7 +624,20 @@ GeneratorLIDL::doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr compo
 	out << "raises (StreamComponents::NoStream);\n\n";
 	out.unindent();
 
-	out << "void send_stream_" << source->name() << " (in StreamComponents::StreamingBuffer buffer)\n";
+	IR__::StreamTypeDef_var stream_type = source->stream_type();
+	IR__::IDLType_var transported_type = stream_type->transported_type();
+
+	if (CORBA::is_nil (transported_type))
+	{
+		// Multimedia stream
+		out << "void send_stream_" << source->name() << " (in StreamComponents::StreamingBuffer buffer)\n";
+	}
+	else
+	{
+		// Value stream
+		out << "void send_stream_" << source->name() << " (in " << map_absolute_name(transported_type) << " data)\n";
+	}
+
 	out.indent();
 	out << "raises (StreamComponents::NoStream);\n\n";
 	out.unindent();

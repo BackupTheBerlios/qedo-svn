@@ -281,7 +281,18 @@ GeneratorBusinessH::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr compon
 	out << "void begin_stream_" << sink_name << " (const char*, const ::Components::ConfigValues&);\n";
 	out << "void end_stream_" << sink_name << "();\n";
 	out << "void failed_stream_" << sink_name << "();\n";
-	out << "void receive_stream_" << sink_name << " (StreamComponents::StreamingBuffer_ptr);\n\n";
+
+	IR__::StreamTypeDef_var stream_type = sink->stream_type();
+	IR__::IDLType_var transported_type = stream_type->transported_type();
+
+	if (CORBA::is_nil (transported_type))
+	{
+		out << "void receive_stream_" << sink_name << " (StreamComponents::StreamingBuffer_ptr);\n\n";
+	}
+	else
+	{
+		out << "void receive_stream_" << sink_name << " (" << map_in_parameter_type (transported_type) << ");\n\n";
+	}
 }
 
 

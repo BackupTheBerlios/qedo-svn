@@ -321,7 +321,19 @@ GeneratorBusinessC::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr compon
 
 	// receive_stream_*
 	out << "void\n";
-	out << class_name_ << "::receive_stream_" << sink_name << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
+
+	IR__::StreamTypeDef_var stream_type = sink->stream_type();
+	IR__::IDLType_var transported_type = stream_type->transported_type();
+
+	if (CORBA::is_nil (transported_type))
+	{
+		out << class_name_ << "::receive_stream_" << sink_name << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
+	}
+	else
+	{
+		out << class_name_ << "::receive_stream_" << sink_name << " (" << map_in_parameter_type (transported_type) << " data)\n";
+	}
+
 	out << "throw (CORBA::SystemException)\n";
 	out << "{\n"; out.indent();
 	out.insertUserSection(class_name_ + "::receive_stream_" + sink_name, 0); out.unindent();

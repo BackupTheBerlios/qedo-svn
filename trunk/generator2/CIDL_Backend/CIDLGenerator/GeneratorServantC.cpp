@@ -886,7 +886,21 @@ GeneratorServantC::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr compone
 	out << "void\n";
 	out << comp_name << "::" << sink_name << "_dispatcher::receive_stream (StreamComponents::StreamingBuffer_ptr buffer)\n";
 	out << "{\n"; out.indent();
-	out << "the_sink_->receive_stream_" << sink_name << " (buffer);\n"; out.unindent();
+
+	IR__::StreamTypeDef_var stream_type = sink->stream_type();
+	IR__::IDLType_var transported_type = stream_type->transported_type();
+
+	if (CORBA::is_nil (transported_type))
+	{
+		out << "the_sink_->receive_stream_" << sink_name << " (buffer);\n";
+	}
+	else
+	{
+		out << "// Unmarshal data and call the following operation\n";
+		out << "// the_sink_->receive_stream_" << sink_name << " (data);\n";
+	}
+
+	out.unindent();
 	out << "}\n\n\n";
 
 	// the sink ports servant factory cleaner variable
@@ -1432,11 +1446,32 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 
 		// send_stream_*
 		out << "void\n";
-		out << class_name_ << "::send_stream_" << a_source->name() << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
+
+		IR__::StreamTypeDef_var stream_type = a_source->stream_type();
+		IR__::IDLType_var transported_type = stream_type->transported_type();
+
+		if (CORBA::is_nil (transported_type))
+		{
+			out << class_name_ << "::send_stream_" << a_source->name() << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
+		}
+		else
+		{
+			out << class_name_ << "::send_stream_" << a_source->name() << " (" << map_in_parameter_type (transported_type) << " data)\n";
+		}
+
 		out << "throw (StreamComponents::NoStream)\n";
 		out << "{\n";
 		out.indent();
-		out << "this->send_buffer (\"" << a_source->name() << "\", buffer);\n";
+
+		if (CORBA::is_nil (transported_type))
+		{
+			out << "this->send_buffer (\"" << a_source->name() << "\", buffer);\n";
+		}
+		else
+		{
+			out << "// Marshal data into a StreamingBuffer and call\n// this->send_buffer (\"" << a_source->name() << "\", buffer);\n";
+		}
+
 		out.unindent();
 		out << "}\n\n";
 	}

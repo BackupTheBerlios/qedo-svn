@@ -288,8 +288,24 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 		};
 
 		// sinks
+		IR__::SinkDefSeq_var sink_seq = a_component->sinks();
+		len = sink_seq->length();
+		for(i = 0; i < len; i++) {
+			IR__::StreamTypeDef_var stream_type = (*sink_seq)[i]->stream_type();
+			IR__::Contained_var transported_type = IR__::Contained::_narrow (stream_type->transported_type());
+			assert (!CORBA::is_nil (transported_type));
+			this->check_for_generation (transported_type);
+		};
 
 		// sources
+		IR__::SourceDefSeq_var source_seq = a_component->sources();
+		len = source_seq->length();
+		for(i = 0; i < len; i++) {
+			IR__::StreamTypeDef_var stream_type = (*source_seq)[i]->stream_type();
+			IR__::Contained_var transported_type = IR__::Contained::_narrow (stream_type->transported_type());
+			assert (!CORBA::is_nil (transported_type));
+			this->check_for_generation (transported_type);
+		};
 
 		break; }
 	case CORBA__::dk_Interface : {
@@ -1355,7 +1371,20 @@ GeneratorEIDL::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component)
 	out << "void begin_stream_" << sink_name << " (in CORBA::RepositoryId repos_id, in Components::ConfigValues meta_data);\n";
 	out << "void end_stream_" << sink_name << "();\n";
 	out << "void failed_stream_" << sink_name << "();\n";
-	out << "void receive_stream_" << sink_name << " (in StreamComponents::StreamingBuffer data);\n"; out.unindent();
+
+	IR__::StreamTypeDef_var stream_type = sink->stream_type();
+	IR__::IDLType_var transported_type = stream_type->transported_type();
+
+	if (CORBA::is_nil (transported_type))
+	{
+		out << "void receive_stream_" << sink_name << " (in StreamComponents::StreamingBuffer data);\n";
+	}
+	else
+	{
+		out << "void receive_stream_" << sink_name << " (in " << map_absolute_name(transported_type) << " data);\n";
+	}
+	
+	out.unindent();
 	out << "};\n";
 }
 

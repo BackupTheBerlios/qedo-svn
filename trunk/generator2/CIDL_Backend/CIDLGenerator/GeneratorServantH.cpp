@@ -635,7 +635,9 @@ GeneratorServantH::genSinkServants(IR__::ComponentDef_ptr component)
 		out << "void begin_stream (const char*, const Components::ConfigValues&);\n";
 		out << "void end_stream();\n";
 		out << "void failed_stream();\n";
-		out << "void receive_stream (StreamComponents::StreamingBuffer_ptr);\n"; out.unindent();
+		out << "void receive_stream (StreamComponents::StreamingBuffer_ptr);\n";
+	
+		out.unindent();
 		out << "};\n\n";
 
 	}
@@ -888,7 +890,18 @@ GeneratorServantH::genContextServantBody(IR__::ComponentDef_ptr component)
 		out << "throw (StreamComponents::NoStream);\n\n";
 		out.unindent();
 
-		out << "void send_stream_" << a_source->name() << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
+		IR__::StreamTypeDef_var stream_type = a_source->stream_type();
+		IR__::IDLType_var transported_type = stream_type->transported_type();
+
+		if (CORBA::is_nil (transported_type))
+		{
+			out << "void send_stream_" << a_source->name() << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
+		}
+		else
+		{
+			out << "void send_stream_" << a_source->name() << " (" << map_in_parameter_type (transported_type) << " data)\n";
+		}
+
 		out.indent();
 		out << "throw (StreamComponents::NoStream);\n\n";
 		out.unindent();
