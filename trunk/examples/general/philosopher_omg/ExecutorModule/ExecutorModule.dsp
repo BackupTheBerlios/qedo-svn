@@ -68,7 +68,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "EXECUTORMODULE_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(QEDO)/ComponentIDL" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /I "../IDL" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "EXECUTORMODULE_EXPORTS" /D "VC6" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(QEDO)/ComponentIDL" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /I "../IDL" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_WINDLL" /D "_AFXDLL" /D "_MBCS" /D "_USRDLL" /D "EXECUTORMODULE_EXPORTS" /D "VC6" /D "OBSERVER_WITH_GUI" /D "HAVE_JTC" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
@@ -91,6 +91,18 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\ComponentOutput.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CutleryExecutor.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CutleryGUI.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\IDL\dinner_CutleryImpl.cpp
 # End Source File
 # Begin Source File
@@ -103,12 +115,40 @@ SOURCE=..\IDL\dinner_PhilosopherImpl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\ObserverGUI.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Output.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PhilosopherGUI.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PhilosopherState.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\RefCountLocalObject.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\ComponentOutput.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CutleryExecutor.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CutleryGUI.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\IDL\dinner_CutleryImpl.h
@@ -123,12 +163,28 @@ SOURCE=..\IDL\dinner_PhilosopherImpl.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ObserverGUI.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PhilosopherGUI.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PhilosopherState.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\RefCountLocalObject.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
+# Begin Source File
+
+SOURCE=.\ExecutorModule.rc
+# End Source File
 # End Group
 # End Target
 # End Project
