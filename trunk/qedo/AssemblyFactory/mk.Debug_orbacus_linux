@@ -3,8 +3,8 @@ ProjectName=AssemblyFactory
 OutDir=Debug_orbacus_linux
 IntDir=Debug_orbacus_linux
 Name=Debug_orbacus_linux
-CFLAGS=-DZLIB_DLL -DHAVE_JTC -DHAVE_JTC -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller -I$(ORBACUS)/include -I$(ZLIB) -I$(XERCES)/include -g
-CXXFLAGS=-DZLIB_DLL -DHAVE_JTC -DHAVE_JTC -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller -I$(ORBACUS)/include -I$(ZLIB) -I$(XERCES)/include -g
+CFLAGS=-DZLIB_DLL -DHAVE_JTC -DHAVE_JTC -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -I$(ZLIB) -I$(XERCES)/include -g
+CXXFLAGS=-DZLIB_DLL -DHAVE_JTC -DHAVE_JTC -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -I$(ZLIB) -I$(XERCES)/include -g
 LIBS=-L$(ORBACUS)/lib -L$(XERCES)/lib -L$(ZLIB)/dll32 -L../ComponentIDL/../../Runtime -L../ComponentContainer/../../Runtime -lxerces-c -lz -lJTC -lpthread -lOB -lCosNaming -lComponentIDL -lComponentContainer -ldl
 
 $(IntDir)/%.o:%.cpp

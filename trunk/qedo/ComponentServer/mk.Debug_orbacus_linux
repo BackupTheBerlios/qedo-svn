@@ -3,9 +3,9 @@ ProjectName=ComponentServer
 OutDir=Debug_orbacus_linux
 IntDir=Debug_orbacus_linux
 Name=Debug_orbacus_linux
-CFLAGS=-DHAVE_JTC -DHAVE_JTC -I../ComponentIDL -I../ComponentValuetypes -I../ComponentContainer -I$(ORBACUS)/include -g
-CXXFLAGS=-DHAVE_JTC -DHAVE_JTC -I../ComponentIDL -I../ComponentValuetypes -I../ComponentContainer -I$(ORBACUS)/include -g
-LIBS=-L$(ORBACUS)/lib -L../ComponentContainer/../../Runtime -L../ComponentIDL/../../Runtime -lCosNaming -lOB  -lJTC -ldl -lpthread -lComponentContainer -lComponentIDL
+CFLAGS=-I../ComponentIDL -I../ComponentValuetypes -I../ComponentContainer -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -g
+CXXFLAGS=-I../ComponentIDL -I../ComponentValuetypes -I../ComponentContainer -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -g
+LIBS=-L$(ORBACUS)/lib -L../ComponentContainer/../../Runtime -L../ComponentIDL/../../Runtime -lCosNaming -lOB -ldl -lpthread -lComponentContainer -lComponentIDL
 
 $(IntDir)/%.o:%.cpp
 	$(COMPILE.cc) $(OUTPUT_OPTION) $<
@@ -17,10 +17,11 @@ CC=$(CXX)
 
 all:  ../../Runtime/cs 
 
-../../Runtime/cs : $(IntDir)/ComponentServerImpl.o $(IntDir)/main.o 
+../../Runtime/cs : $(IntDir)/ComponentServerImpl.o $(IntDir)/NameServiceBase.o $(IntDir)/main.o 
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 $(IntDir)/ComponentServerImpl.o:	ComponentServerImpl.cpp
+$(IntDir)/NameServiceBase.o:		../ComponentInstaller/NameServiceBase.cpp
 $(IntDir)/main.o:	main.cpp
 cidl:  
 idl:  cidl

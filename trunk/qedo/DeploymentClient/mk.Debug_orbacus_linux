@@ -3,8 +3,8 @@ ProjectName=DeploymentClient
 OutDir=Debug_orbacus_linux
 IntDir=Debug_orbacus_linux
 Name=Debug_orbacus_linux
-CFLAGS=-DHAVE_JTC -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller -I$(ORBACUS)/include -g
-CXXFLAGS=-DHAVE_JTC -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller -I$(ORBACUS)/include -g
+CFLAGS=-I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller -I$(ORBACUS)/include -I(ORBACUS)/include/OB -g
+CXXFLAGS= -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller -I$(ORBACUS)/include -I$(ORBACUS)/include/OB  -g
 LIBS=-L$(ORBACUS)/lib -L../ComponentContainer/../../Runtime -L../ComponentIDL/../../Runtime -lCosNaming -lOB -ldl -lComponentContainer -lComponentIDL
 
 $(IntDir)/%.o:%.cpp
