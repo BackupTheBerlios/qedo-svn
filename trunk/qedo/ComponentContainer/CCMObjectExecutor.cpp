@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.12 2003/05/27 19:58:27 tom Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.13 2003/05/28 13:13:20 stoinski Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -271,14 +271,14 @@ throw (Components::InvalidName, CORBA::SystemException)
 
 	for (unsigned int i = 0; i < names.length(); i++)
 	{
-		const char * name = static_cast<const char*>(names[i]);
+		const char * name = names[i];
 
 		for (unsigned int j = 0; j < facets_.size(); j++)
 		{	
 			if (facets_[j].port_name() == name)
 			{
                 facets->length (facets->length() + 1);
-				(*facets)[facets->length() - 1] = facets_[j].facet_description();
+				facets[facets->length() - 1] = facets_[j].facet_description();
 				break;
 			}
 		}
@@ -407,7 +407,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < receptacles_.size(); i++)
 	{
-		(*receptacles)[i] = receptacles_[i].receptacle_description();
+		receptacles[i] = receptacles_[i].receptacle_description();
 	}
 
 	return receptacles._retn();
@@ -425,15 +425,13 @@ throw (Components::InvalidName, CORBA::SystemException)
 
 	for (unsigned int i = 0; i < names.length(); i++)
 	{
-		const char * name = static_cast<const char*>(names[i]);
-
 		for (unsigned int j = 0; j < receptacles_.size(); j++)
 		{
-			if (receptacles_[j].port_name() == name)
+			if (receptacles_[j].port_name() == names[i])
 			{
                 receptacles->length (receptacles->length() + 1);
 
-				(*receptacles)[receptacles->length() - 1] = 
+				receptacles[receptacles->length() - 1] = 
                     receptacles_[j].receptacle_description();
 			}
 		}
@@ -558,7 +556,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < consumers_.size(); i++)
 	{
-		(*consumers)[i] = consumers_[i].consumer_description();
+		consumers[i] = consumers_[i].consumer_description();
 	}
 
 	return consumers._retn();
@@ -578,13 +576,11 @@ throw (Components::InvalidName, CORBA::SystemException)
 	{
 		for (unsigned int j = 0; j < names.length(); j++)
 		{
-			const char * name = static_cast<const char*>(names[j]);
-
-			if (consumers_[i].port_name() == name)
+			if (consumers_[i].port_name() == names[j])
 			{
        			consumers->length (consumers->length () + 1);
 
-				(*consumers)[consumers->length() - 1] = consumers_[i].consumer_description();
+				consumers[consumers->length() - 1] = consumers_[i].consumer_description();
 			}
 		}
 
@@ -608,7 +604,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < emitters_.size(); i++)
 	{
-		(*emitters)[i] = emitters_[i].emitter_description();
+		emitters[i] = emitters_[i].emitter_description();
 	}
 
 	return emitters._retn();
@@ -627,13 +623,11 @@ throw (Components::InvalidName, CORBA::SystemException)
 	{
 		for (unsigned int j = 0; j < names.length(); j++)
 		{
-			const char * name = static_cast<const char*>(names[j]);
-
-			if (emitters_[i].port_name() == name)
+			if (emitters_[i].port_name() == names[j])
 			{
 				emitters->length ( emitters->length() + 1);
 
-                (*emitters)[emitters->length() - 1] = emitters_[i].emitter_description();
+                emitters[emitters->length() - 1] = emitters_[i].emitter_description();
 			}
 		}
 
@@ -685,9 +679,7 @@ throw (Components::InvalidName, CORBA::SystemException)
 	{
 		for (unsigned int j = 0; j < names.length(); j++)
 		{
-			const char * name = static_cast<const char*>(names[j]);
-
-			if (publishers_[i].port_name() == name)
+			if (publishers_[i].port_name() == names[j])
 			{
 		        // Get subscriber descriptions for current publisher
                 Components::SubscriberDescriptions_var sub_helper;
