@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.13 2003/05/05 11:08:01 stoinski Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.14 2003/05/14 11:02:31 tom Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -326,7 +326,7 @@ HomeServantBase::lookup_component (const PortableServer::ObjectId& object_id)
 		throw CORBA::OBJECT_NOT_EXIST();
 	}
 
-	return Components::CCMObject::_narrow ((*components_iter)->component_ref_);
+	return Components::CCMObject::_narrow ((*components_iter)->component_ref_.in());
 }
 
 
