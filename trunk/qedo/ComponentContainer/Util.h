@@ -23,7 +23,12 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
+
 #include <CORBA.h>
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 
 #ifdef _WIN32
@@ -53,6 +58,32 @@
 #endif
 #endif
 
+
+namespace Qedo
+{
+
+	/**
+	 * loads a shared library
+	 * \param name The path of the shared library.
+	 * \param dir The directory of the shared library.
+	 */
+#ifdef _WIN32
+	CONTAINERDLL_API HINSTANCE load_shared_library (const char* name,const char* dir);
+#else
+	void* load_shared_library (const char* name,const char* dir);
+#endif
+
+	/**
+	 * unload a shared library
+	 * \param handle The handle of the shared library.
+	 */
+#ifdef _WIN32
+	CONTAINERDLL_API void unload_shared_library (HINSTANCE handle);
+#else
+	void unload_shared_library (void* handle);
+#endif
+
+};
 
 #endif
 

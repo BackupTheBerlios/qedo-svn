@@ -25,7 +25,6 @@
 #include "EntityHomeServant.h"
 #include "SessionHomeServant.h"
 #include "Output.h"
-#include "qedoutil.h"
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -33,7 +32,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.38 2003/09/29 14:50:11 boehme Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.39 2003/09/29 17:00:07 neubauer Exp $";
 
 
 namespace Qedo {
