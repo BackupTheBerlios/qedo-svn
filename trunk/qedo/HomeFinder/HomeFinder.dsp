@@ -132,7 +132,7 @@ SOURCE=.\HomeFinderImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\main.cpp
+SOURCE=.\HomeFinder.cpp
 # End Source File
 # Begin Source File
 

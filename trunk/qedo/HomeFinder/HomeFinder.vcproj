@@ -310,7 +310,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="..\ComponentInstaller\NameServiceBase.cpp">
 			</File>
 			<File
-				RelativePath="main.cpp">
+				RelativePath="HomeFinder.cpp">
 			</File>
 		</Filter>
 		<Filter
