@@ -1154,7 +1154,7 @@ throw(CADReadException)
 			if (element_name == "homeplacement")
 			{
 				HomeInstanceData home = homeplacement((DOMElement*)child);
-				if(home.file == "")
+				if(home.file.empty())
 				{
 					// extension, use existing home
 					data_->existing_homes_.push_back(home);

@@ -235,7 +235,7 @@ throw(CPFReadException)
 		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
 			( !XMLString::compareString(child->getNodeName(), X("defaultvalue")) ) )
 		{
-			if(val == "")
+			if(val.empty())
 			{
 				val = defaultvalue((DOMElement*)(child));
 			}
