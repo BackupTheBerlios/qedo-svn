@@ -33,7 +33,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.25 2003/10/30 17:24:14 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.26 2003/11/05 14:40:25 neubauer Exp $";
 
 
 namespace Qedo {
@@ -182,10 +182,10 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 	// check uuid
 	//
 	std::string uuid = implUUID;
-	if( uuid.find_first_of( "/\\" ) != std::string::npos )
+	if( uuid.find_first_of( ":/\\" ) != std::string::npos )
 	{
 		NORMAL_ERR2( "ComponentInstallationImpl: invalid characters in uuid ", uuid );
-		NORMAL_ERR( "..... do not use /\\" );
+		NORMAL_ERR( "..... do not use :/\\" );
 		throw Components::Deployment::InstallationFailure();
 	}
 
