@@ -34,9 +34,9 @@ DCI_RepNodeManagerImpl.cpp: DCI_RepNodeManagerImpl_BUSINESS.h
 
 package: DCI_RepNodeManagerImpl.zip
 
-DCI_RepNodeManagerImpl.zip : meta-inf/DCI_RepNodeManagerImpl.ccd meta-inf/DCI_RepNodeManagerImpl.csd libDCI_RepNodeManagerImpl.so
+DCI_RepNodeManagerImpl.zip : meta-inf/DCI_RepNodeManagerImpl.ccd meta-inf/DCI_RepNodeManagerImpl_linux.csd libDCI_RepNodeManagerImpl.so
 	zip DCI_RepNodeManagerImpl.zip -j ../DCI_SERVANT/libDCI_SERVANT.so libDCI_RepNodeManagerImpl.so $(CIDL_FILES)
-	zip DCI_RepNodeManagerImpl.zip meta-inf/*
+	zip DCI_RepNodeManagerImpl.zip meta-inf/DCI_RepNodeManagerImpl.ccd meta-inf/DCI_RepNodeManagerImpl_linux.csd meta-inf/*.idl
 
 #DCI_RepNodeManagerImpl.zip : libDCI_RepNodeManagerImpl.so
 #	zip DCI_RepNodeManagerImpl.zip -j ../DCI_SERVANT/libDCI_SERVANT.so libDCI_RepNodeManagerImpl.so $(CIDL_FILES)
