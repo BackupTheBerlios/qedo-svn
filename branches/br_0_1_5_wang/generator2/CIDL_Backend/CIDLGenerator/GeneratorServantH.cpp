@@ -940,19 +940,13 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out.indent();
     out << class_name << "();\n";
     out << "~" << class_name << "();\n\n";
-	out << mapFullName(component_) << "_ptr create()\n"; 
-	out << "	throw(CORBA::SystemException, Components::CreateFailure);\n\n";
-	out << "Components::CCMObject_ptr create_component()\n";
-	out << "	throw(CORBA::SystemException,Components::CreateFailure);\n\n";
-	out << "// COACH extension\n";
-	out << "Components::CCMObject_ptr create_component_with_config(const Components::ConfigValues& config)\n";
-	out << "	throw(CORBA::SystemException, Components::CreateFailure);\n";
+
 	switch (lc) {
 	case (CIDL::lc_Session) :
 		out << mapFullName(component_) << "_ptr create()\n"; 
 		out << "	throw(CORBA::SystemException, Components::CreateFailure);\n\n";
 		out << "Components::CCMObject_ptr create_component()\n";
-		out << "	throw(CORBA::SystemException,Components::CreateFailure);\n";
+		out << "	throw(CORBA::SystemException,Components::CreateFailure);\n\n";
 		break;
 	case (CIDL::lc_Entity) :
 		out << mapFullName(component_) << "_ptr create(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
@@ -967,12 +961,13 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << mapFullNamePK(home->primary_key()) << "* get_primary_key(" << mapFullName(component_) << "_ptr comp)\n"; 
 		out << "	throw(CORBA::SystemException);\n\n";
 		break;
-	case (CIDL::lc_Extension) :
-		out << ",public Qedo::ExtensionHomeServant\n";
-		break;
 	default:
 		out << "// not supported lifecycle\n";
-	}	
+	}
+
+	out << "// COACH extension\n";
+	out << "Components::CCMObject_ptr create_component_with_config(const Components::ConfigValues& config)\n";
+	out << "	throw(CORBA::SystemException, Components::CreateFailure);\n";
 }
 
 

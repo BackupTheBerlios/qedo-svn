@@ -1548,18 +1548,6 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out.unindent();
 	out << "}\n";
 	out << "catch (CORBA::SystemException&)\n{\n";
-	switch (lc) {
-	case (CIDL::lc_Session):
-        out << class_name_ << "::create()\n";
-		out << "throw(CORBA::SystemException, Components::CreateFailure)\n{\n";
-		break;
-	case (CIDL::lc_Entity):
-        out << class_name_ << "::create(" << mapFullNamePK(home->primary_key()) << "* pkey)\n";
-		out << "throw(CORBA::SystemException, Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey)\n{\n";
-		break;
-	default:
-		out << "// not supported lifecycle\n";
-	}
 	out.indent();
 	out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
 	out << "throw Components::CreateFailure();\n";
@@ -1630,15 +1618,46 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
+	
+	switch (lc) {
+	case (CIDL::lc_Session):
+        // create_component
+		out << "Components::CCMObject_ptr\n";
+		out << class_name_ << "::create_component()\n";
+		out << "throw(CORBA::SystemException,Components::CreateFailure)\n{\n";
+		out.indent();
+		out << "return this->create();\n";
+		out.unindent();
+		out << "}\n\n\n";
+		break;
+	case (CIDL::lc_Entity):
+        out << mapFullName(component_) << "_ptr\n";
+		out << class_name_ << "::find_by_primary_key(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
+		out << "throw(CORBA::SystemException, Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey)\n";
+		out << "{\n";
+		out.indent();
+		out << "return 0;\n";
+		out.unindent();
+		out << "}\n\n";
 
-	// create_component
-	out << "Components::CCMObject_ptr\n";
-	out << class_name_ << "::create_component()\n";
-	out << "throw(CORBA::SystemException,Components::CreateFailure)\n{\n";
-	out.indent();
-	out << "return this->create();\n";
-	out.unindent();
-	out << "}\n\n\n";
+		out << "void\n";
+		out << class_name_ << "::remove(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
+		out << "throw(CORBA::SystemException, Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey)\n";
+		out << "{\n";
+		out << "}\n\n";
+
+		out << mapFullNamePK(home->primary_key()) << "*\n";
+		out << class_name_ << "::get_primary_key(" << mapFullName(component_) << "_ptr comp)\n";
+        out << "throw(CORBA::SystemException)\n";
+		out << "{\n";
+		out.indent();
+		out << "return 0;\n";
+		out.unindent();
+		out << "}\n\n";
+		break;
+	default:
+		out << "// not supported lifecycle\n";
+	}
 
 	// create_component_with_config
 	out << "Components::CCMObject_ptr\n";
@@ -1801,46 +1820,6 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
-	
-	switch (lc) {
-	case (CIDL::lc_Session):
-        // create_component
-		out << "Components::CCMObject_ptr\n";
-		out << class_name_ << "::create_component()\n";
-		out << "throw(CORBA::SystemException,Components::CreateFailure)\n{\n";
-		out.indent();
-		out << "return this->create();\n";
-		out.unindent();
-		out << "}\n\n\n";
-		break;
-	case (CIDL::lc_Entity):
-        out << mapFullName(component_) << "_ptr\n";
-		out << class_name_ << "::find_by_primary_key(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
-		out << "throw(CORBA::SystemException, Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey)\n";
-		out << "{\n";
-		out.indent();
-		out << "return 0;\n";
-		out.unindent();
-		out << "}\n\n";
-
-		out << "void\n";
-		out << class_name_ << "::remove(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
-		out << "throw(CORBA::SystemException, Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey)\n";
-		out << "{\n";
-		out << "}\n\n";
-
-		out << mapFullNamePK(home->primary_key()) << "*\n";
-		out << class_name_ << "::get_primary_key(" << mapFullName(component_) << "_ptr comp)\n";
-        out << "throw(CORBA::SystemException)\n";
-		out << "{\n";
-		out.indent();
-		out << "return 0;\n";
-		out.unindent();
-		out << "}\n\n";
-		break;
-	default:
-		out << "// not supported lifecycle\n";
-	}
 }
 
 
