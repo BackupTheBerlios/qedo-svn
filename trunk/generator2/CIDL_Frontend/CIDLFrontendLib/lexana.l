@@ -8,6 +8,8 @@
 #include "lexana.h"
 #include <string.h>
 
+using namespace std;
+
 static int state_before_coment = YYSTATE;
 static int yylineno = 1;
 static char filename[1024];

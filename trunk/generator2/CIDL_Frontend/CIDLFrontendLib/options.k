@@ -119,7 +119,6 @@ extern struct options_S options;
 #define V_NOINTERNAL 0x800
 #define V_HASH 0x8000
 
-#include "getopt.h"
 #ifdef YYDEBUG
 extern int yydebug;
 #endif
