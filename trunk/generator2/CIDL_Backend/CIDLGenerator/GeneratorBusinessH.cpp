@@ -243,7 +243,9 @@ GeneratorBusinessH::doComponent(IR__::ComponentDef_ptr component)
 		out << "    throw (CORBA::SystemException);\n\n";
 		need_push_ = false;
 	}
+
 	handleConsumes(component);
+	handleSink(component);
 }
 
 
@@ -261,42 +263,19 @@ GeneratorBusinessH::doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDe
 void
 GeneratorBusinessH::doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr component)
 {
-#if 0
-	IR__::StreamTypeDef* st_def = source->stream_type();
-	IR__::Contained::Description* c_descr = st_def->describe(); 
-	IR__::StreamTypeDescription* st_descr;
-	(c_descr->value) >>= st_descr;
-	if (!strcmp("simple::h323_stream", getAbsoluteName(st_def))) {
-		out << "virtual CCMStream::h323Stream_ptr ";
-		out /*<< map_absolute_under_name(component_def)*/  << "_provide_" << source->name() << "()\n";
-		out << "    throw (CORBA::SystemException);\n\n";
-	}
-	if (!strcmp("Components::CCMStream::QoSRealStream", getAbsoluteName(st_def))) {
-		out << "virtual CCMStream::QoSRealStream_ptr ";
-		out /*<< map_absolute_under_name(component_def)*/  << "_provide_" << source->name() << "()\n";
-		out << "    throw (CORBA::SystemException);\n\n";
-	}
-#endif
 }
 
 
 void
 GeneratorBusinessH::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component)
 {
-/*	IR__::StreamTypeDef* st_def = (*act_sinks)[sink_n]->stream_type();
-	IR__::Contained::Description* c_descr = st_def->describe(); 
-	IR__::StreamTypeDescription* st_descr;
-	(c_descr->value) >>= st_descr;
-	if (!strcmp("simple::h323_stream", getAbsoluteName(st_def))) {
-		hserv << "virtual void " << endl;
-		hserv << map_absolute_under_name(component_def)  << "_connect_" << (*act_sinks)[sink_n]->name();
-		hserv << "( CCMStream::h323Stream_ptr str) = 0;" << endl;
-	}
-	if (!strcmp("Components::CCMStream::QoSRealStream", getAbsoluteName(st_def))) {
-		hserv << "virtual void " << endl;
-		hserv << map_absolute_under_name(component_def)  << "_connect_" << (*act_sinks)[sink_n]->name();
-		hserv << "( CCMStream::QoSRealStream_ptr str) = 0;" << endl;
-	}*/
+	std::string sink_name = sink->name();
+
+	out << "//\n// " << sink->id() << "\n//\n";
+	out << "void begin_stream_" << sink_name << " (const char*, const ::Components::ConfigValues&);\n";
+	out << "void end_stream_" << sink_name << "();\n";
+	out << "void failed_stream_" << sink_name << "();\n";
+	out << "void receive_stream_" << sink_name << " (StreamComponents::StreamingBuffer_ptr);\n\n";
 }
 
 

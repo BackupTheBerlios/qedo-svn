@@ -771,6 +771,90 @@ GeneratorServantC::doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr compone
 void 
 GeneratorServantC::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component)
 {
+	std::string sink_name = sink->name();
+	std::string comp_name = component->name();
+
+	// sink port servant constructor
+	out << "//\n// " << sink_name << "\n//\n";
+	out << comp_name << "::" << sink_name << "::" << sink_name << "()\n";
+	out << ": SinkStreamPortServant (\"" << sink_name << "\")\n";
+	out << "{\n";
+	out << "}\n\n\n";
+
+	// sink port servant destructor
+	out << comp_name << "::" << sink_name << "::~" << sink_name << "()\n";
+	out << "{\n";
+	out << "}\n\n\n";
+
+	// sink port servants begin_stream_* operation
+	out << "void\n";
+	out << comp_name << "::" << sink_name << "::begin_stream (const char* repos_id, const Components::ConfigValues& meta_data)\n";
+	out << "throw(StreamComponents::UnsupportedStreamtype,\n"; out.indent();
+	out << "StreamComponents::DuplicateStream,\n";
+	out << "CORBA::SystemException)\n"; out.unindent();
+	out << "{\n"; out.indent();
+	out << "stream_ccm_object_executor_->begin_stream_sink (\"" << sink_name << "\", repos_id, meta_data);\n"; out.unindent();
+	out << "}\n\n\n";	
+
+	// sink port servants end_stream_* operation
+	out << "void\n";
+	out << comp_name << "::" << sink_name << "::end_stream()\n";
+	out << "throw(StreamComponents::NoStream,\n"; out.indent();
+	out << "CORBA::SystemException)\n"; out.unindent();
+	out << "{\n"; out.indent();
+	out << "stream_ccm_object_executor_->end_stream_sink (\"" << sink_name << "\");\n"; out.unindent();
+	out << "}\n\n\n";
+
+	// sink port dispatcher constructor
+	out << comp_name << "::" << sink_name << "_dispatcher::" << sink_name << "_dispatcher (Components::ExecutorLocator_ptr executor_locator)\n";
+	out << "{\n"; out.indent();
+	out << "CORBA::Object_var the_sink_obj = executor_locator->obtain_executor (\"" << sink_name << "\");\n";
+	out << "the_sink_ = " << mapFullName (IR__::Contained::_narrow(component->defined_in()));
+	out << "::CCM_" << component->name() << "_" << sink_name << "::_narrow (the_sink_obj);\n\n";
+	out << "if (CORBA::is_nil (the_sink_))\n"; 
+	out << "{\n"; out.indent();
+	out << "NORMAL_ERR (\"" << comp_name << "::" << sink_name << "_dispatcher: Cannot narrow sink port executor\");\n";
+	out << "return;\n"; out.unindent();
+	out << "}\n"; out.unindent();
+	out << "}\n\n\n";
+
+	// sink port dispatcher destructor
+	out << comp_name << "::" << sink_name << "_dispatcher::~" << sink_name << "_dispatcher()\n";
+	out << "{\n"; out.indent();
+	out << "NORMAL_ERR (\"" << comp_name << "::" << sink_name << "_dispatcher: Cannot narrow sink port executor\");\n"; out.unindent();
+	out << "}\n\n\n";
+
+	// sink port dispatchers begin_stream
+	out << "void\n";
+	out << comp_name << "::" << sink_name << "_dispatcher::begin_stream (const char* repos_id, const Components::ConfigValues& meta_data)\n";
+	out << "{\n"; out.indent();
+	out << "the_sink_->begin_stream_" << sink_name << " (repos_id, meta_data);\n"; out.unindent();
+	out << "}\n\n\n";
+
+	// sink port dispatchers end_stream
+	out << "void\n";
+	out << comp_name << "::" << sink_name << "_dispatcher::end_stream()\n";
+	out << "{\n"; out.indent();
+	out << "the_sink_->end_stream_" << sink_name << "();\n"; out.unindent();
+	out << "}\n\n\n";
+
+	// sink port dispatchers failed_stream
+	out << "void\n";
+	out << comp_name << "::" << sink_name << "_dispatcher::failed_stream()\n";
+	out << "{\n"; out.indent();
+	out << "the_sink_->failed_stream_" << sink_name << "();\n"; out.unindent();
+	out << "}\n\n\n";
+
+	// sink port dispatchers receive_stream
+	out << "void\n";
+	out << comp_name << "::" << sink_name << "_dispatcher::receive_stream (StreamComponents::StreamingBuffer_ptr buffer)\n";
+	out << "{\n"; out.indent();
+	out << "the_sink_->receive_stream_" << sink_name << " (buffer);\n"; out.unindent();
+	out << "}\n\n\n";
+
+	// the sink ports servant factory cleaner variable
+	out << "Qedo::ServantFactoryCleaner " << component->name() << "::" << sink->name();
+	out << "::cleaner_ (new " << component->name() << "::" << sink->name() << "::ServantFactory());\n";
 };
 
 void 
@@ -1296,9 +1380,9 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 		out.unindent();
 		out << "}\n\n";
 
-		// send_stream_data_*
+		// send_stream_*
 		out << "void\n";
-		out << class_name_ << "::send_stream_data_" << a_source->name() << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
+		out << class_name_ << "::send_stream_" << a_source->name() << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
 		out << "throw (StreamComponents::NoStream)\n";
 		out << "{\n";
 		out.indent();
@@ -1768,7 +1852,29 @@ GeneratorServantC::genSinkRegistration(IR__::HomeDef_ptr home)
 	CORBA::ULong i;
 	for( i= 0; i < len; i++)
 	{
-	
+		std::string sink_name = sinks[i]->name();
+
+		out << "//\n// the sink port " << sink_name << "\n//\n";
+		out << "CORBA::Object_var " << sink_name << "_ref = this->create_object_reference (key, \"IDL:StreamComponents/SinkStreamPort:1.0\");\n";
+		out << "PortableServer::ObjectId_var " << sink_name << "_object_id = this->reference_to_oid (" << sink_name << "_ref);\n";
+		out << "servant_registry_->register_servant_factory (" << sink_name << "_object_id,";
+		out << mapFullNameServant(sinks[i]) << "::cleaner_.factory_);\n";
+		out << "StreamComponents::SinkStreamPort_var " << sink_name << " = StreamComponents::SinkStreamPort::_narrow (" << sink_name << "_ref);\n\n";
+
+		// The following must be changed when going to support grouped stream types
+		out << "CORBA::RepositoryIdSeq streamtypes;\n";
+		out << "streamtypes.length (1);\n";
+		out << "streamtypes[0] = CORBA::string_dup (\"";
+		out << sinks[i]->stream_type()->id() << "\");\n\n";
+
+		out << "// Initialize the dispatcher\n";
+		out << "Qedo::StreamDataDispatcher* " << sink_name << "_dispatcher =\n"; out.indent();
+		out << "new " << mapFullNameServant(sinks[i]) << "_dispatcher (executor_locator.in());\n\n"; out.unindent();
+		
+		out << "component_instance.stream_ccm_object_executor_->add_sink (\"" << sink_name << "\",\n"; out.indent();
+		out << "\"" << sinks[i]->id() << "\"" << ", streamtypes, " << sink_name << ", " << sink_name << "_dispatcher);\n\n"; out.unindent();
+
+		out << sink_name << "_dispatcher->_remove_ref();\n";
 	}
 }
 

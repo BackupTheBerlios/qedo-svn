@@ -74,7 +74,7 @@ private:
 
 	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
 	void genFacetServants(IR__::ComponentDef_ptr component);
-	void genSourceServants(IR__::ComponentDef_ptr component);
+	void genSinkServants(IR__::ComponentDef_ptr component);
 	void genConsumerServants(IR__::ComponentDef_ptr component);
 	void genContextServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
 	void genContextServantBody(IR__::ComponentDef_ptr component);

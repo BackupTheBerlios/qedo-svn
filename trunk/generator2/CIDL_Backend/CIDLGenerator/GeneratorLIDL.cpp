@@ -334,11 +334,11 @@ GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 	handleEmits(component);
 	handlePublishes(component);
 	handleSource(component);
-	handleSink(component);
 
 	out.unindent();
 	out << "};\n\n";
 	
+	handleSink(component);
 }
 
 
@@ -601,7 +601,7 @@ GeneratorLIDL::doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr compo
 	out << "raises (StreamComponents::NoStream);\n\n";
 	out.unindent();
 
-	out << "void send_stream_data_" << source->name() << " (in StreamComponents::StreamingBuffer buffer)\n";
+	out << "void send_stream_" << source->name() << " (in StreamComponents::StreamingBuffer buffer)\n";
 	out.indent();
 	out << "raises (StreamComponents::NoStream);\n\n";
 	out.unindent();
@@ -611,6 +611,12 @@ GeneratorLIDL::doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr compo
 void 
 GeneratorLIDL::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component)
 {
+
+	out << "//\n// sink executor interface for " << sink->name() << "\n//\n";
+	out << "local interface CCM_" << component->name() << "_" << sink->name() << " : ";
+	out << component->name() << "_" << sink->name() << "\n";
+	out << "{\n";
+	out << "};\n\n";
 }
 
 

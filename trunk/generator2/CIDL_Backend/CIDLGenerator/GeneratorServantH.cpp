@@ -45,6 +45,7 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "#include \"ServantBase.h\"\n";
 	out << "#ifndef _QEDO_NO_STREAMS\n";
 	out << "#include \"PrimaryStreamServant.h\"\n";
+	out << "#include \"SinkStreamPortServant.h\"\n";
 	out << "#endif\n";
 	out << "#ifndef _QEDO_NO_QOS\n";
 	out << "#include \"ExtensionHomeServant.h\"\n\n\n";
@@ -561,64 +562,67 @@ GeneratorServantH::genFacetServants(IR__::ComponentDef_ptr component)
 }
 
 void
-GeneratorServantH::genSourceServants(IR__::ComponentDef_ptr component)
+GeneratorServantH::genSinkServants(IR__::ComponentDef_ptr component)
 {
 	// handle base component
 	IR__::ComponentDef_var base = component->base_component();
 	if(!CORBA::is_nil(base))
 	{ 
-		genSourceServants(base);
+		genSinkServants(base);
 	}
 
-	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Source, false);
+	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Sink, false);
 	CORBA::ULong i;
 	for( i= 0; i < contained_seq->length(); i++)
 	{
-		IR__::SourceDef_var source = IR__::SourceDef::_narrow(((*contained_seq)[i]));
-		std::string stream_type_name = mapFullName(source->stream_type());
-		std::string stream_interface_name;
-		if (stream_type_name == "::QedoStream::h323_stream") {
-			stream_interface_name = "POA_Components::QedoStreams::H323Streamconnection"; 
-		} else {
-			stream_interface_name = "error";
-			return;
-		};
+		IR__::SinkDef_var sink = IR__::SinkDef::_narrow(((*contained_seq)[i]));
+		std::string stream_type_name = mapFullName(sink->stream_type());
 
 		//
-		// servant for source
+		// servant for sink
 		//
-		out << "\n//\n// servant for source " << source->name() << "\n//\n";
-		std::string class_name = source->name();
-		out << "class " << class_name;
-		out.indent();	
-		out << ": public " << stream_interface_name << "\n";
-		out << ", public Qedo::ServantBase\n";
-		out.unindent();
-		out << "{\n\n";
-		out << "public:\n\n";
-		out.indent();
-		out << class_name << "();\n";
-		out << "~" << class_name << "();\n";
-//		doInterface(source->stream_type());
-// do interface with the h323 interface
-		// at first hardcoded
-		out << "    virtual char* get_id()\n";
-		out << "        throw(CORBA::SystemException);\n\n"; 
+		std::string sink_name = sink->name();
+		out << "\n//\n// servant for sink " << sink_name << "\n//\n";
+		out << "class " << sink_name << " : public virtual Qedo::SinkStreamPortServant\n";
+		out << "{\n";
+		out << "public:\n";	out.indent();
+		out << sink_name << "();\n";
+		out << "virtual ~" << sink_name << "();\n\n";
+		out << "//\n// IDL:omg.org/StreamComponents/SinkStreamPort/begin_stream:1.0\n//\n";
+		out << "void begin_stream (const char*, const Components::ConfigValues&)\n"; out.indent();
+		out << "throw (StreamComponents::UnsupportedStreamtype,\n"; out.indent();
+		out << "StreamComponents::DuplicateStream,\n";
+		out << "CORBA::SystemException);\n\n"; out.unindent(); out.unindent();
 
-		//
-		// servantfactory for source
-		//
-		out << "\n//\n// servantfactory for source " << source->name() << "\n//\n";
-		out << "class ServantFactory : public Qedo::ServantFactory\n{\n";
-		out << "public:\n";
-		out.indent();
-		out << "Qedo::ServantBase* create_servant() { return new " << class_name << "(); }\n";
-		out.unindent();
+		out << "//\n// IDL:omg.org/StreamComponents/SinkStreamPort/end_stream:1.0\n//\n";
+		out << "void end_stream()\n"; out.indent();
+		out << "throw (StreamComponents::NoStream,\n"; out.indent();
+		out << "CORBA::SystemException);\n\n"; out.unindent(); out.unindent();
+
+		out << "//\n// servant factory for SinkStreamPort " << sink_name << "\n//\n";
+		out << "class ServantFactory : public Qedo::ServantFactory\n";
+		out << "{\n";
+		out << "public:\n"; out.indent();
+		out << "Qedo::ServantBase* create_servant() { return new " << sink_name << "(); }\n"; out.unindent();
 		out << "};\n";
-		out << "static class Qedo::ServantFactoryCleaner cleaner_;\n\n";
+		out << "static class Qedo::ServantFactoryCleaner cleaner_;\n\n"; out.unindent();
+		out << "};\n\n";
 
-		out.unindent();
-		out << "};\n\n\n";
+		out << "//\n// dispatcher for sink " << sink_name << "\n//\n";
+		out << "class " << sink_name << "_dispatcher : public Qedo::StreamDataDispatcher\n";
+		out << "{\n";
+		out << "private:\n"; out.indent();
+		out << mapFullName (IR__::Contained::_narrow(component->defined_in()));
+		out << "::CCM_" << component->name() << "_" << sink_name << "_var the_sink_;\n\n"; out.unindent();
+		out << "public:\n"; out.indent();
+		out << sink_name << "_dispatcher (Components::ExecutorLocator_ptr);\n";
+		out << "virtual ~" << sink_name << "_dispatcher();\n\n";
+		out << "void begin_stream (const char*, const Components::ConfigValues&);\n";
+		out << "void end_stream();\n";
+		out << "void failed_stream();\n";
+		out << "void receive_stream (StreamComponents::StreamingBuffer_ptr);\n"; out.unindent();
+		out << "};\n\n";
+
 	}
 }
 
@@ -719,7 +723,7 @@ GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component, CIDL::L
 	out << "static class Qedo::ServantFactoryCleaner cleaner_;\n\n";
 
 	genFacetServants(component);
-	genSourceServants(component);
+	genSinkServants(component);
 	genConsumerServants(component);
 	genComponentServantBody(component,lc);
 	out.unindent();
@@ -869,7 +873,7 @@ GeneratorServantH::genContextServantBody(IR__::ComponentDef_ptr component)
 		out << "throw (StreamComponents::NoStream);\n\n";
 		out.unindent();
 
-		out << "void send_stream_data_" << a_source->name() << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
+		out << "void send_stream_" << a_source->name() << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
 		out.indent();
 		out << "throw (StreamComponents::NoStream);\n\n";
 		out.unindent();

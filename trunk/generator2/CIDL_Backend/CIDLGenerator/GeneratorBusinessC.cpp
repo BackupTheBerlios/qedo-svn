@@ -262,7 +262,9 @@ GeneratorBusinessC::doComponent(IR__::ComponentDef_ptr component)
 		out << "}\n\n\n";
 		need_push_ = false;
 	}
+
 	handleConsumes(component);
+	handleSink(component);
 }
 
 
@@ -274,6 +276,45 @@ GeneratorBusinessC::doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDe
 	out << class_name_ << "::push_" << consumes->event()->name() << "(" << mapFullName(consumes->event()) << "* ev)\n";
 	out << "    throw (CORBA::SystemException)\n{\n";
 	out.insertUserSection(class_name_ + "::push_" + consumes->event()->name(), 0);
+	out << "}\n\n\n";
+}
+
+
+void
+GeneratorBusinessC::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component)
+{
+	std::string sink_name = sink->name();
+
+	// begin_stream_*
+	out << "void\n";
+	out << class_name_ << "::begin_stream_" << sink_name << " (const char* repos_id, const ::Components::ConfigValues& meta_data)\n";
+	out << "throw (CORBA::SystemException)\n";
+	out << "{\n"; out.indent();
+	out.insertUserSection(class_name_ + "::begin_stream_" + sink_name, 0); out.unindent();
+	out << "}\n\n\n";
+
+	// end_stream_*
+	out << "void\n";
+	out << class_name_ << "::end_stream_" << sink_name << "()\n";
+	out << "throw (CORBA::SystemException)\n";
+	out << "{\n"; out.indent();
+	out.insertUserSection(class_name_ + "::end_stream_" + sink_name, 0); out.unindent();
+	out << "}\n\n\n";
+
+	// failed_stream_*
+	out << "void\n";
+	out << class_name_ << "::failed_stream_" << sink_name << "()\n";
+	out << "throw (CORBA::SystemException)\n";
+	out << "{\n"; out.indent();
+	out.insertUserSection(class_name_ + "::failed_stream_" + sink_name, 0); out.unindent();
+	out << "}\n\n\n";
+
+	// receive_stream_*
+	out << "void\n";
+	out << class_name_ << "::receive_stream_" << sink_name << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
+	out << "throw (CORBA::SystemException)\n";
+	out << "{\n"; out.indent();
+	out.insertUserSection(class_name_ + "::receive_stream_" + sink_name, 0); out.unindent();
 	out << "}\n\n\n";
 }
 

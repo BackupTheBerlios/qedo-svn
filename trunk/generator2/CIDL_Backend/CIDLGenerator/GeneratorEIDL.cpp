@@ -1203,11 +1203,11 @@ GeneratorEIDL::doComponent(IR__::ComponentDef_ptr component)
 	handleEmits(component);
 	handlePublishes(component);
 	handleConsumes(component);
-	handleSink(component);
-	handleSource(component);
 
 	out.unindent();
 	out << "};\n\n";
+
+	handleSink(component);
 }
 
 
@@ -1324,6 +1324,16 @@ GeneratorEIDL::doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDef_ptr
 void
 GeneratorEIDL::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component)
 {
+	std::string sink_name = sink->name();
+
+	out << "//\n// " << sink->id() << "\n//\n";
+	out << "local interface " << component->name() << "_" << sink_name << "\n";
+	out << "{\n"; out.indent();
+	out << "void begin_stream_" << sink_name << " (in CORBA::RepositoryId repos_id, in Components::ConfigValues meta_data);\n";
+	out << "void end_stream_" << sink_name << "();\n";
+	out << "void failed_stream_" << sink_name << "();\n";
+	out << "void receive_stream_" << sink_name << " (in StreamComponents::StreamingBuffer data);\n"; out.unindent();
+	out << "};\n";
 }
 
 
