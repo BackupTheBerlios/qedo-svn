@@ -1,5 +1,5 @@
 /***************************************************************************/
-/* Qedo - Qualitiy of Service Enabled Distributed Objects                  */
+/* Qedo - Quality of Service Enabled Distributed Objects                  */
 /*                                                                         */
 /* http://qedo.berlios.de/                                                 */
 /*                                                                         */
@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: PublisherPort.cpp,v 1.2 2002/11/05 07:35:48 boehme Exp $";
+static char rcsid[] = "$Id: PublisherPort.cpp,v 1.3 2002/12/03 07:48:58 stoinski Exp $";
 
 #include "PublisherPort.h"
 #include "Output.h"

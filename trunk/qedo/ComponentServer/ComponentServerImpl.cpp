@@ -1,5 +1,5 @@
 /***************************************************************************/
-/* Qedo - Qualitiy of Service Enabled Distributed Objects                  */
+/* Qedo - Quality of Service Enabled Distributed Objects                  */
 /*                                                                         */
 /* http://qedo.berlios.de/                                                 */
 /*                                                                         */
@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.3 2002/11/08 10:30:09 neubauer Exp $";
+static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.4 2002/12/03 07:48:58 stoinski Exp $";
 
 #include "ComponentServerImpl.h"
 #include "ContainerInterfaceImpl.h"

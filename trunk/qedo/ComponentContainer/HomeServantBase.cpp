@@ -1,5 +1,5 @@
 /***************************************************************************/
-/* Qedo - Qualitiy of Service Enabled Distributed Objects                  */
+/* Qedo - Quality of Service Enabled Distributed Objects                  */
 /*                                                                         */
 /* http://qedo.berlios.de/                                                 */
 /*                                                                         */
@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.2 2002/11/05 11:02:04 tom Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.3 2002/12/03 07:48:58 stoinski Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
