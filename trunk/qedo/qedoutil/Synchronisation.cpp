@@ -75,9 +75,9 @@ qedo_lock::~qedo_lock() {
 }
 
 
-qedo_cond::qedo_cond() {
+qedo_cond::qedo_cond(char * sig_name) {
 #ifdef WIN32
-	m_mutex = CreateMutex(NULL,FALSE,NULL);
+		m_event_handle = CreateEvent (NULL, TRUE /*auto-reset*/, FALSE /*initial: non-signaled*/, sig_name);
 #else
 	pthread_cond_init(&m_cond, NULL):
 #endif
@@ -92,10 +92,10 @@ qedo_cond::~qedo_cond() {
 }
 
 void
-qedo_cond::qedo_wait(qedo_mutex* mutex) {
+qedo_cond::qedo_wait() {
 
 #ifdef WIN32
-	WaitForSingleObject(m_mutex, INFINITE);
+	WaitForMultipleObjects(1, &m_event_handle, TRUE, INFINITE /*wait for ever*/);
 #else
 	pthread_cond_signal(&m_cond, &mutex->m_mutex);
 #endif
@@ -105,7 +105,7 @@ void
 qedo_cond::qedo_signal() {
 
 #ifdef WIN32
-	ReleaseMutex(m_mutex);
+	SetEvent(m_event_handle);
 #else
 	pthread_cond_signal(&m_cond);
 #endif

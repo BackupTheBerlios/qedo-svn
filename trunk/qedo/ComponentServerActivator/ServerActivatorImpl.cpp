@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.6 2003/02/07 14:08:58 tom Exp $";
+static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.7 2003/02/18 14:35:34 tom Exp $";
 
 #include <iostream>
 
@@ -39,9 +39,11 @@ static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.6 2003/02/07 14:08:58 to
 
 namespace Qedo {
 
+	
 ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode)
 : orb_ (CORBA::ORB::_duplicate (orb)),
-  debug_mode_ (debug_mode)
+  debug_mode_ (debug_mode),
+  component_server_activation ("QEDO_ACTIVATOR_SIGNAL")
 {
 }
 
@@ -185,16 +187,7 @@ ServerActivatorImpl::initialize()
 	}
 
 
-#if _WIN32
-	// Create an event handle to be used for the notification from the created component server
-	event_handle_ = CreateEvent (NULL, TRUE /*auto-reset*/, FALSE /*initial: non-signaled*/, "QEDO_NOTIFY_EVENT");
-	    
-	if (event_handle_ == NULL)
-	{
-		std::cerr << "ServerActivatorImpl: ServerActivatorImpl: Cannot create event object for notify_component_server() operation"<< std::endl;
-		throw CannotInitialize();
-	}
-#endif
+
 }
 
 
@@ -204,9 +197,6 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 {
 	std::cout << "ServerActivatorImpl: create_component_server() called" << std::endl;
 
-//#ifdef HAVE_JTC
-//	JTCSynchronized sync(monitor);
-//#endif
 	CORBA::String_var my_string_ref;
 
 
@@ -268,13 +258,8 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 #endif
 
-//#if HAVE_JTC
-//	monitor.wait();
-//#else
-#ifdef _WIN32
-	// Now wait for the component server to call notify_component_server() on me
-	WaitForMultipleObjects(1, &event_handle_, TRUE, INFINITE /*wait for ever*/);
-#endif
+	component_server_activation.qedo_wait();
+
 //#endif
 
 	if (CORBA::is_nil (last_created_component_server_))
@@ -319,21 +304,12 @@ throw (CORBA::SystemException)
 {
 	std::cout << "ServerActivatorImpl: notify_component_server() called" << std::endl;
 
-//#ifdef HAVE_JTC
-//	JTCSynchronized sync(monitor);
-//#endif
 
 	last_created_component_server_ = Components::Deployment::ComponentServer::_duplicate(server);
 
 	// Signal that the callback function has been called by the Component Server,
 	// so we can return the IOR to the client
-//#ifdef HAVE_JTC
-//	monitor.notify();
-//#else
-#ifdef _WIN32
-	SetEvent(event_handle_);
-#endif
-//#endif
+	component_server_activation.qedo_signal();
 }
 
 } // namespace Qedo

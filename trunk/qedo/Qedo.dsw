@@ -95,6 +95,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name ComponentIDL
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ComponentContainer
+    End Project Dependency
 }}}
 
 ###############################################################################

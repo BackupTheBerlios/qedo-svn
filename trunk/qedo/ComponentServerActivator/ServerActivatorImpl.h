@@ -29,11 +29,11 @@
 #include <vector>
 
 #include "QedoComponents_skel.h"
-//#ifdef HAVE_JTC
-//#include <JTC/JTC.h>
-//#endif
+#include "Synchronisation.h"
+
 
 namespace Qedo {
+
 
 typedef std::vector < Components::Deployment::ComponentServer_var > ComponentServerVector;
 
@@ -42,15 +42,7 @@ class ServerActivatorImpl : public POA_Qedo_Components::Deployment::ServerActiva
 {
 private:
 	bool debug_mode_;
-//#ifdef HAVE_JTC
-//	JTCMonitor monitor;
-//#else
-#ifdef _WIN32
-	HANDLE event_handle_;
-#else
-#error Have no semaphore
-#endif
-//#endif
+	qedo_cond component_server_activation;
 
 	CORBA::ORB_var									orb_;
 	PortableServer::POA_var							root_poa_;
