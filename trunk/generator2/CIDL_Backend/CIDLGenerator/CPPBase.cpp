@@ -269,12 +269,12 @@ CPPBase::hasVariableLength(IR__::IDLType_ptr type)
 	//
 	// skip typedefs
 	//
-	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	IR__::IDLType_var orig_type = IR__::IDLType::_duplicate(type);
 	while(typecodekind == CORBA::tk_alias)
 	{
-		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
-		a_type = alias->original_type_def();
-		typecodekind = a_type->type()->kind();
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(orig_type);
+		orig_type = alias->original_type_def();
+		typecodekind = orig_type->type()->kind();
 	}
 
 	switch (typecodekind)
@@ -301,7 +301,7 @@ CPPBase::hasVariableLength(IR__::IDLType_ptr type)
 	case CORBA::tk_value:
 		return true;
 	case CORBA::tk_struct:
-		s = IR__::StructDef::_narrow(type);
+		s = IR__::StructDef::_narrow(orig_type);
 		s_members = s->members();
 		for(i = 0; i < s_members->length(); i++)
 		{
@@ -312,7 +312,7 @@ CPPBase::hasVariableLength(IR__::IDLType_ptr type)
 		}
 		return false;
 	case CORBA::tk_union:
-		u = IR__::UnionDef::_narrow(type);
+		u = IR__::UnionDef::_narrow(orig_type);
 		u_members = u->members();
 		for(i = 0; i < u_members->length(); i++)
 		{
@@ -323,7 +323,7 @@ CPPBase::hasVariableLength(IR__::IDLType_ptr type)
 		}
 		return false;
 	case CORBA::tk_sequence:
-		seq = IR__::SequenceDef::_narrow(type);
+		seq = IR__::SequenceDef::_narrow(orig_type);
 		if( (seq->bound() == 0) || hasVariableLength(seq->element_type_def()) )
 		{
 			return true;
