@@ -100,7 +100,7 @@ GeneratorCSD::generate(std::string target, std::string fileprefix)
 	try { initialize(target, fileprefix); }
 	catch (InitializeError) { return; }
 
-	idlfilename_ = file_prefix_ + ".idl";
+	idlfilename_ = file_prefix_ + ".cidl";
 
 	doGenerate();
 }
@@ -175,8 +175,6 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
     out << "<processor name=\"" << processor << "\" />\n";
     out << "<compiler name=\"" << compiler << "\" version=\"" << compiler_version << "\" />\n";
     out << "<programminglanguage name=\"C++\" />\n";
-    out << "<dependency type=\"DLL\"><localfile name=\"jtcd.dll\"/></dependency>\n";
-    out << "<dependency type=\"DLL\"><localfile name=\"obd.dll\"/></dependency>\n";
     out << "<descriptor type=\"CORBA-Component\">\n";
 	out.indent();
     out << "<fileinarchive name=\"meta-inf/" << name << ".ccd\" />\n";
