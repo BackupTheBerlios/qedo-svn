@@ -486,7 +486,7 @@ RepNodeManagerSessionImpl::RepNodeManagerSessionImpl()
 
     std::string hostStr(_hostname);
     nodenameStr = hostStr;
-    strncpy(nodename, _hostname, strlen(nodename));
+    strncpy(nodename, _hostname,strlen(_hostname));
   
     qcsaIsRegistered = false;
     qcsaIsStarted_ = false;
@@ -559,7 +559,7 @@ RepNodeManagerSessionImpl::configuration_complete()
 	printerr_("could not obtain reference to self through context" );
 	return;
       }                
-      //printout_("Registering to DCIManager" );
+      printout_("Registering to DCIManager with name ", nodename );
       nodeMgmt -> register_node(nodename,myRef);
             
       printout_("Nodemanager has successfully registered to DCIManager" );
@@ -1009,7 +1009,7 @@ RepNodeManagerSessionImpl::remove(const char* implUUID)
 	  throw ::Components::RemoveFailure();
 	}
 
-      remove(dirElt->d_name);
+      std::remove(dirElt->d_name);
             
       //             if(remove(dirElt->d_name) < 0){            
       //                 printerr_("Could not remove file:", dirElt->d_name);
