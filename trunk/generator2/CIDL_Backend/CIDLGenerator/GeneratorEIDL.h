@@ -25,6 +25,8 @@ class GeneratorEIDL : public virtual IDLBase
 	void check_for_generation ( IR__::Contained_ptr item );
 	void generate_the_item ( IR__::Contained_ptr item ) ;
 
+//	void open_scope(IR__::Contained_ptr item );
+//	void close_scope(IR__::Contained_ptr item );
 	string filename_;
 	Printer out;
 	string managed_component_;
@@ -32,8 +34,8 @@ class GeneratorEIDL : public virtual IDLBase
 
 	void checkForInclude(CORBA::TypeCode_ptr type);
 
-	void open_module(IR__::Contained* cont);
-	void close_module(IR__::Contained* cont);
+	void open_module(IR__::Contained_ptr cont);
+	void close_module(IR__::Contained_ptr cont);
 
 	void doModule(IR__::ModuleDef_ptr module);
 	void beginModule(IR__::ModuleDef_ptr module);

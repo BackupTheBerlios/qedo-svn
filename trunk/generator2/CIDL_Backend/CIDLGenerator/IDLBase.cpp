@@ -606,6 +606,15 @@ IDLBase::tcToName(CORBA::TypeCode_ptr type)
     case CORBA::tk_fixed:
         break;
     case CORBA::tk_objref:
+		try {
+			return map_absolute_name(repository_->lookup_id(type->id()));
+		} catch (...) {
+			// CORBA::Object is not in the repository 
+			// but it can be used as parameter
+			return "CORBA::Object";
+		}
+		break;
+
     case CORBA::tk_abstract_interface:
     case CORBA::tk_local_interface:
     case CORBA::tk_native:

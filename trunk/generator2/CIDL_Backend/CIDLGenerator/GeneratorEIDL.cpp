@@ -107,6 +107,7 @@ GeneratorEIDL::insert_to_generate(IR__::Contained_ptr item) {
 	case CORBA__::dk_Interface:
 	case CORBA__::dk_Exception:
 	case CORBA__::dk_Enum:
+	case CORBA__::dk_Module:
 		// check if already included in the list
 		if (this->already_included (item)) {
 			return;
@@ -140,6 +141,7 @@ CORBA::ULong i2;
 IR__::ContainedSeq_var contained_seq2;
 
 IR__::ModuleDef_var act_module;
+IR__::ModuleDef_var act_module2;
 IR__::ComponentDef_var act_component;
 IR__::ComponentDef_var base_component;
 IR__::HomeDef_var act_home;
@@ -165,7 +167,29 @@ IR__::ValueDef_var act_value;
 	switch (item->describe()->kind) {
 	case CORBA__::dk_Module:
 		act_module = IR__::ModuleDef::_narrow(item);
-		this->doModule(act_module);
+
+		//	traverse module
+		contained_seq2 = act_module->contents(CORBA__::dk_Module, true);
+		len2 = contained_seq2->length();
+		for(i2 = 0; i2 < len2; i2++)
+		{
+			act_module2 = IR__::ModuleDef::_narrow(((*contained_seq2)[i2]));
+			check_for_generation(act_module2);
+		}
+		// check for homes
+		contained_seq2 = act_module->contents(CORBA__::dk_Home, true);
+		len2 = contained_seq2->length();
+		for(i2 = 0; i2 < len2; i2++)
+		{
+			IR__::HomeDef_var act_home = IR__::HomeDef::_narrow(((*contained_seq2)[i2]));
+			check_for_generation(act_home);
+		}
+
+		// included modules
+
+		this->insert_to_generate(act_module);
+
+//		this->doModule(act_module);
 		break;
 	case CORBA__::dk_Home:
 		act_home = IR__::HomeDef::_narrow(item);
@@ -440,9 +464,16 @@ GeneratorEIDL::generate_the_item ( IR__::Contained_ptr item ) {
 	IR__::EventDef_var act_event;
 	IR__::ExceptionDef_var act_exception;
 	IR__::EnumDef_var act_enum;
+	IR__::ModuleDef_var act_module;
 
-
+	std::cout << "Debug: item to generate: " << item->name() << std::endl;
+	this->open_module (item);
 	switch (item->describe()->kind) {
+	case CORBA__::dk_Module:
+		act_module = IR__::ModuleDef::_narrow(item);
+		beginModule (act_module);
+		endModule(act_module);
+		break;
 	case CORBA__::dk_Home:
 		act_home = IR__::HomeDef::_narrow(item);
 		
@@ -481,10 +512,24 @@ GeneratorEIDL::generate_the_item ( IR__::Contained_ptr item ) {
 		break;
 
 	default:
-		return;
+		break;
+		//return;
 	};
+	this->close_module(item);
 	
 }
+
+/*
+GeneratorEIDL::open_scope(IR__::Contained_ptr item) {
+
+};
+
+
+GeneratorEIDL::close_scope(IR__::Contained_ptr item) {
+
+};
+*/
+
 //
 // module
 //
@@ -495,7 +540,7 @@ GeneratorEIDL::doModule(IR__::ModuleDef_ptr module)
 	CORBA::ULong len;
 	CORBA::ULong i;
 
-
+/*
 	// find  items to generate starting from the components
 	contained_seq = module->contents(CORBA__::dk_Home, true);
 	len = contained_seq->length();
@@ -511,8 +556,10 @@ GeneratorEIDL::doModule(IR__::ModuleDef_ptr module)
 		IR__::ModuleDef_var act_module = IR__::ModuleDef::_narrow(((*contained_seq)[i]));
 		check_for_generation(act_module);
 	}
+*/
+	this->check_for_generation(module);
 
-	beginModule ( module );
+//	beginModule ( module );
 
 	len = m_to_generate_seq->length();
 	for (i = 0; i < len ; i++) {
@@ -520,7 +567,7 @@ GeneratorEIDL::doModule(IR__::ModuleDef_ptr module)
 	}
 
 
-	endModule ( module );
+//	endModule ( module );
 };
 
 void

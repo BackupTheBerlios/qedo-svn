@@ -426,7 +426,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection("file_pre", 2);
 	out << "#include <OB/CORBA.h>\n";
 	out << "#include \"" << file_prefix_ << "_BUSINESS.h\"\n";
-	out << "#include \"RefCountLocalObject.h\"\n";
+//	out << "#include \"RefCountLocalObject.h\"\n";
 	out << "#include <string>\n\n\n";
 	out.insertUserSection("file_post", 2);
 
