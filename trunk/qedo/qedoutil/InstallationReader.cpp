@@ -21,13 +21,14 @@
 /***************************************************************************/
 
 #include "InstallationReader.h"
+#include "Output.h"
 #include <fstream>
 #include <xercesc/util/XMLURL.hpp>
 #include <xercesc/framework/URLInputSource.hpp>
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: InstallationReader.cpp,v 1.3 2003/10/23 09:55:01 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: InstallationReader.cpp,v 1.4 2003/10/24 11:19:35 neubauer Exp $";
 
 
 namespace Qedo {
@@ -144,7 +145,7 @@ throw(InstallationReadException)
 		std::ofstream deployment_file(file.c_str());
 		if ( ! deployment_file)
 		{
-			std::cerr << "..... Cannot open file " << file << std::endl;
+			NORMAL_ERR2( "InstallationReader: cannot open file ", file );
 			throw InstallationReadException();
 		}
 		deployment_file << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
@@ -158,14 +159,14 @@ throw(InstallationReadException)
 	//
 	// parse the descriptor file
     //
-	DOMXMLParser parser;
+	DOMXMLParser parser_;
 	char* xmlfile = strdup(file.c_str());
-    if ( parser.parse( xmlfile ) != 0 ) 
+    if( parser_.parse( xmlfile ) != 0 ) 
 	{
-		std::cerr << "Error during XML parsing" << std::endl;
+		NORMAL_ERR( "InstallationReader: error during XML parsing" );
         throw InstallationReadException();
 	}
-	document_ = parser.getDocument();
+	document_ = parser_.getDocument();
 
 	deployed(document_->getDocumentElement());
 }
@@ -178,22 +179,23 @@ throw(InstallationReadException)
 	//
 	// parse the descriptor file
     //
-	DOMXMLParser parser;
-    if (parser.parse(strdup(file.c_str())) != 0) 
+	DOMXMLParser parser_;
+	char* xmlfile = strdup(file.c_str());
+    if( parser_.parse( xmlfile ) != 0 ) 
 	{
-		std::cerr << "Error during parsing " << file << std::endl;
+		NORMAL_ERR( "InstallationReader: error during XML parsing" );
         throw InstallationReadException();
 	}
-
+	document_ = parser_.getDocument();
+	
 	//
 	// add the new implementation
 	//
-	DOMDocument* doc = parser.getDocument();
-	DOMElement* root = doc->getDocumentElement();
-	root->appendChild(doc->createTextNode(X("\n    ")));
+	DOMElement* root = document_->getDocumentElement();
+	root->appendChild(document_->createTextNode(X("\n    ")));
 
 	// implementation
-	DOMElement* implem = doc->createElement(X("implementation"));
+	DOMElement* implem = document_->createElement(X("implementation"));
 	implem->setAttribute(X("id"), X(data->uuid.c_str()));
 	implem->setAttribute(X("installation"), X(data->installation_dir.c_str()));
 	if(data->csd.length())
@@ -206,17 +208,17 @@ throw(InstallationReadException)
 	}
 	
 	// servants
-	implem->appendChild (doc->createTextNode(X("\n        ")));
-	DOMElement* servants = doc->createElement(X("servants"));
-	servants->appendChild(doc->createTextNode(X("\n        ")));
+	implem->appendChild (document_->createTextNode(X("\n        ")));
+	DOMElement* servants = document_->createElement(X("servants"));
+	servants->appendChild(document_->createTextNode(X("\n        ")));
 	servants->setAttribute(X("code"), X(data->servant_module.c_str()));
 	servants->setAttribute(X("entry"), X(data->servant_entry_point.c_str()));
 	implem->appendChild (servants);
 	
 	// business
-	implem->appendChild (doc->createTextNode(X("\n        ")));
-	DOMElement* business = doc->createElement(X("business"));
-	business->appendChild(doc->createTextNode(X("\n        ")));
+	implem->appendChild (document_->createTextNode(X("\n        ")));
+	DOMElement* business = document_->createElement(X("business"));
+	business->appendChild(document_->createTextNode(X("\n        ")));
 	business->setAttribute(X("code"), X(data->executor_module.c_str()));
 	business->setAttribute(X("entry"), X(data->executor_entry_point.c_str()));
 	implem->appendChild (business);
@@ -227,17 +229,17 @@ throw(InstallationReadException)
 		iter != data->valuetypes.end();
 		iter++)
 	{
-		implem->appendChild (doc->createTextNode(X("\n        ")));
-		DOMElement* valuetype = doc->createElement(X("valuetype"));
-		valuetype->appendChild(doc->createTextNode(X("\n        ")));
+		implem->appendChild (document_->createTextNode(X("\n        ")));
+		DOMElement* valuetype = document_->createElement(X("valuetype"));
+		valuetype->appendChild(document_->createTextNode(X("\n        ")));
 		valuetype->setAttribute(X("repid"), X(((*iter).repid).c_str()));
 		valuetype->setAttribute(X("code"), X(((*iter).location.file).c_str()));
 		implem->appendChild (valuetype);
 	}
 
-	implem->appendChild (doc->createTextNode(X("\n    ")));
+	implem->appendChild (document_->createTextNode(X("\n    ")));
 	root->appendChild (implem);
-	root->appendChild (doc->createTextNode(X("\n")));
+	root->appendChild (document_->createTextNode(X("\n")));
 
 	//
 	// write the new list
@@ -262,7 +264,7 @@ throw(InstallationReadException)
 		//
 		// do the serialization through DOMWriter::writeNode();
 		//
-		theSerializer->writeNode(myFormTarget, *doc);
+		theSerializer->writeNode(myFormTarget, *document_);
 
 		delete theSerializer;
 		delete myFormTarget;
@@ -282,18 +284,18 @@ throw(InstallationReadException)
 	//
 	// parse the descriptor file
     //
-	DOMXMLParser parser;
+	DOMXMLParser parser_;
 	char* xmlfile = strdup(file.c_str());
-    if ( parser.parse( xmlfile ) != 0 ) 
+    if( parser_.parse( xmlfile ) != 0 ) 
 	{
-		std::cerr << "Error during XML parsing" << std::endl;
+		NORMAL_ERR( "InstallationReader: error during XML parsing" );
         throw InstallationReadException();
 	}
-
+	document_ = parser_.getDocument();
+	
 	//
 	// remove implementation
 	//
-	document_ = parser.getDocument();
 	DOMElement* root = document_->getDocumentElement();
 	std::string element_name;
     DOMNode* child = root->getFirstChild();

@@ -32,7 +32,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.20 2003/10/23 09:50:36 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.21 2003/10/24 11:19:35 neubauer Exp $";
 
 
 namespace Qedo {
@@ -165,9 +165,20 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 	DEBUG_OUT2( "ComponentInstallationImpl: installing ", implUUID );
 
 	//
-	// exclusive operation
+	// exclusive
 	//
 	QedoLock lock(&mutex_);
+
+	//
+	// check uuid
+	//
+	std::string uuid = implUUID;
+	if( uuid.find_first_of( "/\\" ) != std::string::npos )
+	{
+		NORMAL_ERR2( "ComponentInstallationImpl: invalid characters in uuid ", uuid );
+		NORMAL_ERR( "..... do not use /\\" );
+		throw Components::Deployment::InstallationFailure();
+	}
 
 	//
 	// already installed ?
@@ -251,9 +262,9 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		ComponentImplementationData data;
 		data.uuid = implUUID;
 		data.installation_dir = getPath(installationDirectory_) + implUUID;
-		data.servant_module = servant_module;
+		data.servant_module = getFileName(servant_module);
 		data.servant_entry_point = servant_entry_point;
-		data.executor_module = executor_module;
+		data.executor_module = getFileName(executor_module);
 		data.executor_entry_point = executor_entry_point;
 		impl = new ComponentImplementation( data, "", nameService_ );
 
@@ -261,8 +272,14 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		// create directory for the component implementation
 		//
 		makeDir( data.installation_dir );
-		copyFile( servant_module, getPath(data.installation_dir) + servant_module );
-		copyFile( executor_module, getPath(data.installation_dir) + executor_module );
+		if( !copyFile( servant_module, getPath(data.installation_dir) + data.servant_module ) )
+		{
+			throw Components::Deployment::InstallationFailure();
+		}
+		if( !copyFile( executor_module, getPath(data.installation_dir) + data.executor_module ) )
+		{
+			throw Components::Deployment::InstallationFailure();
+		}
 	}
 
 	if( !impl )
@@ -293,7 +310,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		delete impl;
 	}
 
-	DEBUG_OUT3( "ComponentInstallationImpl: ", implUUID, "installed" );
+	DEBUG_OUT3( "ComponentInstallationImpl: ", implUUID, " installed" );
 }
 
 

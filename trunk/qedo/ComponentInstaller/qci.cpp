@@ -33,10 +33,11 @@
 #include <iostream>
 #include "version.h"
 #include <signal.h>
-
 #include "Output.h"
+#include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.22 2003/10/09 16:00:12 boehme Exp $";
+
+static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.23 2003/10/24 11:19:35 neubauer Exp $";
 
 
 /**
@@ -119,6 +120,14 @@ int
 main (int argc, char** argv)
 {
 	std::cout << "Qedo Component Installer " << QEDO_VERSION << std::endl;
+
+	//
+	// Resolve config values from config file
+	//
+	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/VerboseOutput"), "true"))
+	{
+		Qedo::debug_output = true;
+	}
 
 	for (int i = 1; i < argc; i++)
 	{

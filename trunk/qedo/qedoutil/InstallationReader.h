@@ -58,11 +58,12 @@ class InstallationReadException
  */
 class QEDOUTIL_API InstallationReader : public virtual PlatformBase
 {
-
 private:
 
 	/** the component installation */
 	ComponentImplementationDataVector*			data_;
+	/** the parser */
+	//DOMXMLParser								parser_;
     /** the parsed document */
 	DOMDocument*								document_;
     

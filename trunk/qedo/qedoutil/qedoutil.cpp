@@ -21,6 +21,7 @@
 /***************************************************************************/
 
 #include "qedoutil.h"
+#include "Output.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -31,7 +32,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qedoutil.cpp,v 1.4 2003/10/23 09:53:14 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qedoutil.cpp,v 1.5 2003/10/24 11:19:35 neubauer Exp $";
 
 
 namespace Qedo {
@@ -77,7 +78,21 @@ int
 copyFile(std::string src, std::string dst)
 {
 #ifdef _WIN32
-	return CopyFile(src.c_str(), dst.c_str(), false);
+	if( CopyFile(src.c_str(), dst.c_str(), false) )
+	{
+		return 1;
+	}
+
+	LPVOID lpMsgBuf;
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+		(LPTSTR) &lpMsgBuf, 0, NULL);
+	NORMAL_ERR3( "copyFile ", src, " failed: " );
+	NORMAL_ERR2( "..... ", (LPCTSTR)lpMsgBuf );
+		
+	// Free the buffer.
+	LocalFree( lpMsgBuf );
+	return 0;
 #else
 	int buf[1024];
 	size_t bytes_read,bytes_write,delta;
