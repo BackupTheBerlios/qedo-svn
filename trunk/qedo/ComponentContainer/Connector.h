@@ -22,6 +22,8 @@
 #ifndef __CONNECTOR_H__
 #define __CONNECTOR_H__
 
+#ifndef _QEDO_NO_DB
+
 #include <map>
 #include <string>
 #include "Util.h"
@@ -124,5 +126,7 @@ class CONTAINERDLL_API ConnectorImpl : public virtual CosPersistentState::Connec
 };
 
 }; // namespace Qedo
+
+#endif // _QEDO_NO_DB
 
 #endif

@@ -22,6 +22,8 @@
 #ifndef __STORAGE_OBJECT_H__
 #define __STORAGE_OBJECT_H__
 
+#ifndef _QEDO_NO_DB
+
 #include <map>
 #include <string>
 #include "Util.h"
@@ -109,5 +111,7 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 
 
 }; // namespace Qedo
+
+#endif //  _QEDO_NO_DB
 
 #endif

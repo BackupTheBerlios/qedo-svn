@@ -22,6 +22,8 @@
 #ifndef __CATALOG_H__
 #define __CATALOG_H__
 
+#ifndef _QEDO_NO_DB
+
 #include <list>
 #include <vector>
 #include "Util.h"
@@ -155,5 +157,7 @@ class  SessionPoolImpl : public virtual CosPersistentState::SessionPool,
 };
 
 }; // namespace Qedo
+
+#endif //_QEDO_NO_DB
 
 #endif

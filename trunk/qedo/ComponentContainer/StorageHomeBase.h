@@ -22,6 +22,8 @@
 #ifndef __STORAGEHOMEBASE_H__
 #define __STORAGEHOMEBASE_H__
 
+#ifndef _QEDO_NO_DB
+
 #include <list>
 #include <string>
 #include <vector>
@@ -101,5 +103,7 @@ class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::
 };
 
 }; // namespace Qedo
+
+#endif // _QEDO_NO_DB
 
 #endif

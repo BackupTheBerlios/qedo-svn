@@ -23,6 +23,8 @@
 #ifndef __ENTITY_HOME_SERVANT_H__
 #define __ENTITY_HOME_SERVANT_H__
 
+#ifndef _QEDO_NO_DB
+
 //#include "HomeServantBase.h"
 #include "CCMHomeServant.h"
 #include "Connector.h"
@@ -86,6 +88,8 @@ public:
 /** @} */
 
 } // namespace Qedo
+
+#endif // _QEDO_NO_DB
 
 #endif
 

@@ -31,7 +31,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.39 2004/04/26 13:30:58 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.40 2004/07/02 09:30:44 tom Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -394,7 +394,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 			args[args_nr] = 0;
 
 			long err = execvp (prog,args);
-			if (err == -1) 
+			if (err == -1)
 			{
 				std::cerr << "ServerActivatorImpl: execvp() for component server failed" << std::endl;
 				std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;

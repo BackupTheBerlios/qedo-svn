@@ -22,6 +22,8 @@
 #ifndef __STORAGEOBJECT_H__
 #define __STORAGEOBJECT_H__
 
+#ifndef _QEDO_NO_DB
+
 #include <CORBA.h>
 #include "CORBADepends.h"
 
@@ -106,5 +108,7 @@ class CONTAINERDLL_API StorageObjectRef
 };
 
 };
+
+#endif // _QEDO_NO_DB
 
 #endif
