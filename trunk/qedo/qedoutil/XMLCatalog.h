@@ -60,6 +60,7 @@ namespace Qedo {
 class Entry
 {
 public:
+	virtual ~Entry() {};
     virtual bool lookup (const std::string & aPublicId, URI & aTarget) const = 0;
 };
 
@@ -67,6 +68,7 @@ public:
 class RemapEntryBase
 {
 public:
+	virtual ~RemapEntryBase() {};
     virtual bool lookup (const URI & aSystemId, URI & aTarget) const = 0;
 };
 

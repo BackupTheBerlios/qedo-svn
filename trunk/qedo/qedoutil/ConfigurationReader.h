@@ -38,7 +38,6 @@ private:
 	~ConfigurationReader();
 	void init();
 
-	static ConfigurationReader instance_;
 	DOMElement* config_top_;
 	DOMXMLParser parser_;
 	bool broken_config_file_;
