@@ -1,27 +1,27 @@
 # Microsoft Developer Studio Project File - Name="ComponentServer" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
 CFG=ComponentServer - Win32 Debug_mico
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "ComponentServer.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "ComponentServer.mak" CFG="ComponentServer - Win32 Debug_mico"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ComponentServer - Win32 Release" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "ComponentServer - Win32 Debug_orbacus" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "ComponentServer - Win32 Debug_tao" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "ComponentServer - Win32 Release_orbacus" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "ComponentServer - Win32 Debug_mico" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "ComponentServer - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "ComponentServer - Win32 Debug_orbacus" (based on "Win32 (x86) Console Application")
+!MESSAGE "ComponentServer - Win32 Debug_tao" (based on "Win32 (x86) Console Application")
+!MESSAGE "ComponentServer - Win32 Release_orbacus" (based on "Win32 (x86) Console Application")
+!MESSAGE "ComponentServer - Win32 Debug_mico" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -180,6 +180,10 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\ClientInterceptorDispatcher.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ComponentServerImpl.cpp
 # End Source File
 # Begin Source File
@@ -194,10 +198,18 @@ SOURCE=..\ComponentInstaller\NameServiceBase.cpp
 
 SOURCE=.\ORBInitializerImpl.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\ServerInterceptorDispatcher.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\ClientInterceptorDispatcher.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\ComponentServerImpl.h
@@ -205,6 +217,10 @@ SOURCE=.\ComponentServerImpl.h
 # Begin Source File
 
 SOURCE=.\ORBInitializerImpl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ServerInterceptorDispatcher.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
