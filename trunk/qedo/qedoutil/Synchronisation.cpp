@@ -34,7 +34,7 @@
 #include <sys/time.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.32 2004/02/09 16:34:34 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.33 2004/02/11 14:51:49 boehme Exp $";
 
 
 namespace Qedo {
@@ -51,8 +51,6 @@ struct MutexDelegate
 struct RecursivMutexDelegate 
 {
 #ifdef QEDO_WINTHREAD
-#error
-	HANDLE mutex_;
 #else
 	unsigned long count;
 	pthread_t thread_;
@@ -238,19 +236,11 @@ QedoRecursivMutex::QedoRecursivMutex()
 {
     rdelegate_ = new RecursivMutexDelegate();
 	 rdelegate_->count = 0;
-#ifdef QEDO_WINTHREAD
-#error
-#else
-#endif
 }
 
 
 QedoRecursivMutex::~QedoRecursivMutex() 
 {
-#ifdef QEDO_WINTHREAD
-#error
-#else
-#endif
 	assert(rdelegate_->count == 0);
 	delete rdelegate_;
 }
@@ -260,12 +250,8 @@ void
 QedoRecursivMutex::lock_object() 
 {
 #ifdef QEDO_WINTHREAD
-#error
-	if (WaitForSingleObject (delegate_->mutex_, INFINITE) != WAIT_OBJECT_0)
-	{
-		std::cerr << "QedoRecursivMutex: lock_object() failed: " << GetLastError() << std::endl;
-		assert (0);
-	}
+	// Win32 mutex is recursiv
+	this->QedoMutex::lock_object();
 #else
 
 	pthread_t t = pthread_self();
@@ -289,11 +275,8 @@ void
 QedoRecursivMutex::unlock_object() 
 {
 #ifdef QEDO_WINTHREAD
-	if (! ReleaseMutex (delegate_->mutex_))
-	{
-		std::cerr << "QedoRecursivMutex: unlock_object() failed: " << GetLastError() << std::endl;
-		assert (0);
-	}
+	// Win32 mutex is recursiv
+	this->QedoMutex::unlock_object();
 #else
 	pthread_t t = pthread_self();
 
