@@ -59,7 +59,13 @@ Launcher::Launcher(wxWindow *parent, const wxWindowID id,
 	NSDStartBtn = new wxButton(this, NSD, _T("Start"));
 	NSDStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 	h_NSD_sizer-> Add(NSDStartBtn, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-/*
+
+	wxStaticText* hostname_text = new wxStaticText( this, wxID_STATIC, _T("on Hostname or IP:"), wxDefaultPosition, wxDefaultSize, 0 );
+    h_NSD_sizer->Add(hostname_text , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+	
+	host_name_nsd_ = new wxTextCtrl( this, ID_HOSTNAME_NSD, _T("localhost"), wxDefaultPosition, wxDefaultSize, 0 );
+	h_NSD_sizer->Add(host_name_nsd_, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
 	wxStaticText* hostname_text = new wxStaticText( this, wxID_STATIC, _T("on Hostname or IP:"), wxDefaultPosition, wxDefaultSize, 0 );
     h_NSD_sizer->Add(hostname_text , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 	
@@ -68,7 +74,7 @@ Launcher::Launcher(wxWindow *parent, const wxWindowID id,
 
     wxStaticText* port_text = new wxStaticText( this, wxID_STATIC, _T("Port Number:"), wxDefaultPosition, wxDefaultSize, 0 );
     h_NSD_sizer->Add(port_text , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
-	*/
+
 	port_number_ = new wxTextCtrl( this, ID_PORTNUMBER, _T("12356"), wxDefaultPosition, wxDefaultSize, 0 );
 	h_NSD_sizer->Add(port_number_, 0, wxALIGN_CENTER_VERTICAL|wxALL,5);
 
@@ -133,7 +139,12 @@ void Launcher::OnNSDStartButton(wxCommandEvent& WXUNUSED(event))
 	{
 		wxString port_nr = port_number_->GetValue(); 
 		
+<<<<<<< Launcher.cpp
+		wxString host_name = host_name_nsd_->GetValue();
+		
+=======
 		wxString host_name = "localhost" ;//host_name_nsd_->GetValue();
+>>>>>>> 1.6
 		// get the computers name first 
 
 		wxString cmd = "nsd -ORBIIOPAddr inet:";
