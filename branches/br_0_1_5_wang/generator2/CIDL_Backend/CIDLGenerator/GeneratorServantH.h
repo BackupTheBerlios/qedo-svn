@@ -87,14 +87,6 @@ private:
 	void genComponentServantBody(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
 	void genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
 	void genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
-	
-	// for persistence
-	void genFactoryTemplate(bool isHome);
-	void genMemberVariable(IR__::ComponentDef_ptr component);
-	void genPersistentOperation(IR__::OperationDef_ptr operation, IR__::ComponentDef_ptr component, bool isFinder);
-	void genComponentPersistence(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
-	void genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
-
 
 public:
 

@@ -59,14 +59,17 @@ private:
 	void doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome);
 	void doStorageType(IR__::StorageTypeDef_ptr storagetype);
 	void doStorageHome(IR__::StorageHomeDef_ptr storagehome);
+	void doComposition(CIDL::CompositionDef_ptr coposition);
 
 	void genMemberVariable(IR__::StorageTypeDef_ptr storagetype);
+	void genMemberVariable(IR__::ComponentDef_ptr component);
 	void genDuplAndDown(std::string strClassName);
 	void genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	//void genAttributeWithAbsStorageType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	//void genAttributeWithAbsStorageTypeRef(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	void genAttributeWithOtherType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
+	void genPersistentOperation(IR__::OperationDef_ptr operation, IR__::ComponentDef_ptr component, bool isFinder);
 	void genFactory(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
 	void genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool bRef);
 	void genBaseRefBody(std::string strTypeName);
@@ -78,6 +81,8 @@ private:
 	void genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome);
 	void genCreateOperation(IR__::StorageHomeDef_ptr storagehome, bool bRef);
 	void genFactoryTemplate(bool isHome);
+	void genComponentPersistence(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
+	void genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
 	
 	
 public:

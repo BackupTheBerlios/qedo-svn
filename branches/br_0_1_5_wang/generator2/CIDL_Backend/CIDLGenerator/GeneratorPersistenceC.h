@@ -65,7 +65,9 @@ private:
 	void doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome);
 	void doStorageType(IR__::StorageTypeDef_ptr storagetype);
 	void doStorageHome(IR__::StorageHomeDef_ptr storagehome);
+	void doComposition(CIDL::CompositionDef_ptr composition);
 
+	// operations to generate persistent code for PSS
 	void genDuplAndDown(std::string strClassName);
 	void genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	//void genAttributeWithAbsStorageType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
@@ -81,11 +83,18 @@ private:
 	void genCreateOperation(IR__::StorageHomeDef_ptr storagehome, bool isRef);
 	void genAbstractObjsForConcreteType(IR__::AbstractStorageTypeDef_ptr abs_storagetype);
 	void genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome);
-	std::string genSQLLine(std::string strName, std::string strContent, bool end, bool comma, bool space, bool func=false);
-	std::string genSQLLine(std::string strContent, bool end, bool comma, bool space, bool func=false);
 	IR__::AttributeDefSeq collectStateMembers(IR__::InterfaceDef_ptr inf_def, CORBA__::CollectStyle style);
 
+	// operations to generate persistent code for CCM Entity Component
+	void genComponentPersistence(IR__::HomeDef_ptr home, IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
+	void genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_ptr home);
+	void genFinder(IR__::FinderDef_ptr key, IR__::HomeDef_ptr home);
+	void genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
 
+	// for common usage
+	std::string genSQLLine(std::string strName, std::string strContent, bool end, bool comma, bool space, bool func=false);
+	std::string genSQLLine(std::string strContent, bool end, bool comma, bool space, bool func=false);
+	
 public:
 
 	GeneratorPersistenceC(QEDO_ComponentRepository::CIDLRepository_impl *repository);

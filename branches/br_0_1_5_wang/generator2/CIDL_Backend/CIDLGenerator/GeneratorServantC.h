@@ -98,20 +98,12 @@ private:
 	void genSourceRegistration(IR__::HomeDef_ptr home);
 
 	// for persistence
-	void genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind, IR__::ComponentDef_ptr component);
-	void genAttributeWithOtherType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind, IR__::ComponentDef_ptr component);
-	void genPersistentAttribute(IR__::AttributeDef_ptr attribute, IR__::ComponentDef_ptr component);
-	void genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_ptr home);
-	void genFinder(IR__::FinderDef_ptr key, IR__::HomeDef_ptr home);
-	void genComponentPersistence(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
-	void genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
 	void genTableForAbsStorageHome();
 	void genTableForStorageHome(IR__::StorageHomeDef_ptr storagehome);
 	void genTableForHome(IR__::HomeDef_ptr home);
 	std::string genSQLLine(std::string strName, std::string strContent, bool end, bool comma, bool space, bool func=false);
 	std::string genSQLLine(std::string strContent, bool end, bool comma, bool space, bool func=false);
 	
-
 public:
 
 	GeneratorServantC(QEDO_ComponentRepository::CIDLRepository_impl *repository);

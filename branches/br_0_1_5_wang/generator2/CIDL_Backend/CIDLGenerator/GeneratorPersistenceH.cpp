@@ -128,11 +128,12 @@ GeneratorPersistenceH::check_for_generation(IR__::Contained_ptr item)
 	}
 	case CORBA__::dk_Composition : {
 		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
+		this->insert_to_generate(item);
 
-		// storage home
 		if( a_composition->lifecycle()==CIDL::lc_Entity || 
 			a_composition->lifecycle()==CIDL::lc_Process )
 		{
+			// storage home
 			IR__::StorageHomeDef_var storagehome = a_composition->home_executor()->binds_to();
 			if( !CORBA::is_nil(storagehome) )
 				check_for_generation(storagehome);
@@ -231,6 +232,39 @@ GeneratorPersistenceH::check_for_generation(IR__::Contained_ptr item)
 };
 
 void
+GeneratorPersistenceH::doComposition(CIDL::CompositionDef_ptr composition)
+{
+	//
+	// determine the componentDef and HomeDef
+	//
+	IR__::ComponentDef_var component = composition->ccm_component();
+	IR__::HomeDef_var home = composition->ccm_home();
+
+	//
+	// determine lifecycle
+	//
+	CIDL::LifecycleCategory lc = composition->lifecycle();
+	
+	//
+	// generate persistence for home
+	//
+	out << "\n\n";
+	open_module(out, component, "");
+	out << "\n\n";
+	genHomePersistence(home, lc);
+	close_module(out, component);
+	out << "\n\n";
+
+	//
+	// generate persistence for component
+	//
+	open_module(out, component, "");
+	out << "\n\n";
+	genComponentPersistence(component, lc);
+	close_module(out, component);
+}
+
+void
 GeneratorPersistenceH::genDuplAndDown(std::string strClassName)
 {
 	//generate _duplicate and _downcast operation
@@ -253,6 +287,31 @@ GeneratorPersistenceH::genMemberVariable(IR__::StorageTypeDef_ptr storagetype)
 		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		std::string attribute_name = mapName(attribute);
 
+		if( strcmp("char*", (const char*)(map_attribute_type(attribute->type_def())))==0 )
+			out << "std::string ";
+		else
+            out << map_attribute_type(attribute->type_def()) << " ";
+		out << attribute_name << "_;\n";
+	}
+
+	out.unindent();
+}
+
+void
+GeneratorPersistenceH::genMemberVariable(IR__::ComponentDef_ptr component)
+{
+	IR__::AttributeDefSeq state_members;
+	component->get_state_members(state_members, CORBA__::dk_Variable);
+	CORBA::ULong ulLen = state_members.length();
+	
+	out << "private:\n\n";
+	out.indent();
+
+	for(CORBA::ULong i=0; i<ulLen; i++)
+	{
+		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		std::string attribute_name = mapName(attribute);
+		
 		if( strcmp("char*", (const char*)(map_attribute_type(attribute->type_def())))==0 )
 			out << "std::string ";
 		else
@@ -392,6 +451,55 @@ GeneratorPersistenceH::genOperation(IR__::OperationDef_ptr operation, IR__::IDLT
 	};
 
 	bAbstract_ ? out << ") = 0;\n" : out << ");\n";
+}
+
+void
+GeneratorPersistenceH::genPersistentOperation(IR__::OperationDef_ptr operation, IR__::ComponentDef_ptr component, bool isFinder)
+{
+	std::string strDummy = "";
+	out << component->name() << "Persistence* " << mapName(operation) << "(";
+
+	//
+	// parameters
+	//
+	strDummy = mapName(operation) + component->name();
+	int iLength = strDummy.length() + 14;
+	strDummy = "";
+	strDummy.append(iLength, ' ');
+
+	if(!isFinder)
+	{
+		out << "Pid* pid,\n";
+		out << strDummy;
+		out << "ShortPid* shortPid,\n";
+		out << strDummy;
+	}
+	
+	IR__::ParDescriptionSeq* pards = operation->params();
+	for( CORBA::ULong i=pards->length(); i > 0; i--)
+	{
+		IR__::ParameterDescription pardescr = (*pards)[i - 1];
+		if (pardescr.mode == IR__::PARAM_IN) {
+			out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		}
+		if (pardescr.mode == IR__::PARAM_OUT) {
+			out << map_out_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		}
+		if (pardescr.mode == IR__::PARAM_INOUT) {
+			out << map_inout_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		}
+		if( (i-1)!=0 ) out << ",\n" << strDummy;
+	}
+
+	if(isFinder)
+	{
+		out << ")\n";
+		out.indent();
+		out << "throw(CosPersistentState::NotFound);\n";
+		out.unindent();
+	}
+	else
+		out << ");\n";
 }
 
 void
@@ -706,24 +814,28 @@ void
 GeneratorPersistenceH::genFactoryTemplate(bool isHome)
 {
 	std::string strPre = "";
-	std::string strTemp = "PSS";
-
+	std::string strTemplate = "";
 	(isHome) ? strPre = "HomeFactory" : strPre = "ObjectFactory";
-	strTemp += strPre + "Template";
-
+	strTemplate = strPre + "Template";
+		
 	out << "template <class T>\n";
+	out << "class " << strTemplate << "\n";
 	out << "#ifdef ORBACUS_ORB\n";
-	out << "class " << strTemp << " : public OBNative_CosPersistentState::Storage" << strPre << "_pre\n";
+	out.indent();
+	out << ": public OBNative_CosPersistentState::Storage" << strPre << "_pre\n";
+	out.unindent();
 	out << "#endif\n";
 	out << "#ifdef MICO_ORB\n";
-	out << "class " << strTemp << " : public CosPersistentState::Storage" << strPre << "_pre\n";
+	out.indent();
+	out << ": public CosPersistentState::Storage" << strPre << "_pre\n";
+	out.unindent();
 	out << "#endif\n";
 	out << "{\n";
 	out.indent();
 	out << "public:\n";
 	out.indent();
-	out << strTemp << "() : refcount_(1) {};\n";
-	out << "virtual ~" << strTemp << "() {};\n";
+	out << strTemplate << "() : refcount_(1) {};\n";
+	out << "virtual ~" << strTemplate << "() {};\n";
 	out << "virtual T* create() { return new T; };\n";
 	out << "virtual void _add_ref() { refcount_++; };\n";
 	out << "virtual void _remove_ref() { if( --refcount_==0 ) delete this; };\n";
@@ -788,8 +900,8 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	handleAttribute(storagetype);
 	handleOperation(storagetype);
 
-	out << "\nvoid write_state();\n\n";
-	out << "void read_state();\n\n";
+	out << "\nvoid write_state();\n";
+	out << "void read_state();\n";
 	out << "void setValue(std::map<std::string, CORBA::Any>& valueMap);\n\n";
 	
 	//generate _duplicate and _downcast operation
@@ -804,7 +916,7 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	//bRef ? out << "Ref\n" : out << "\n\n";
 	out << "};\n\n";
 
-	out << "\ntypedef PSSObjectFactoryTemplate<" << storagetype->name() << "> PSS" << storagetype->name() << "Factory;\n\n\n";
+	out << "\ntypedef ObjectFactoryTemplate<" << storagetype->name() << "> " << storagetype->name() << "Factory;\n\n\n";
 }
 
 void
@@ -854,14 +966,6 @@ GeneratorPersistenceH::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr ab
 	out << "\n\n";
 	open_module(out, abs_storagetype, "");
 	out << "\n\n";
-	
-	// generate factory template for storage object and storage home
-	if( !bTempGenerated_ )
-	{
-		genFactoryTemplate(false);
-		genFactoryTemplate(true);
-		bTempGenerated_ = true;
-	}
 
 	out << "class " << std::string(abs_storagetype->name()) << ";\n";
 	out << "class " << std::string(abs_storagetype->name()) << "Ref;\n\n";
@@ -1035,18 +1139,147 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	//genDuplAndDown(strClassName);
 
 	out.unindent();
-	/*out << "\n\nprivate:\n\n";
-	out.indent();
-	out << "std::string strCreateTable_;\n";
-	out.unindent();*/
 
 	out << "\n// BEGIN USER INSERT SECTION " << strClassName << "\n";
 	out << "// END USER INSERT SECTION " << strClassName << "\n\n";
 	out << "};\n\n\n";
 
-	out << "typedef PSSHomeFactoryTemplate<" << storagehome->name() << "> PSS" << storagehome->name() << "Factory;\n\n";
+	out << "typedef HomeFactoryTemplate<" << storagehome->name() << "> " << storagehome->name() << "Factory;\n\n";
 	
 	close_module(out, storagetype);
+}
+
+void
+GeneratorPersistenceH::genComponentPersistence(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc)
+{
+	if( lc!=CIDL::lc_Entity && lc!=CIDL::lc_Process )
+		return;
+
+	// handle base component
+	IR__::ComponentDef_var base_component = component->base_component();
+	if(base_component)
+		genComponentPersistence(base_component, lc);
+
+	out << "//\n// component persistence\n//\n";
+	out << "class " << component->name() << "Persistence\n";
+	out.indent();
+	if(base_component)
+		out << ": public virtual " << base_component->name() << "Persistence\n";
+	else
+		out << ": public virtual StorageObjectImpl\n";
+	out.unindent();
+	out << "{\n\npublic:\n\n";
+	out.indent();
+    out << component->name() << "Persistence();\n";
+	out << "~" << component->name() << "Persistence();\n";
+	
+	bAbstract_ = false;
+	handleAttribute(component);
+	
+	out << "\nvoid write_state();\n";
+	out << "void read_state();\n";
+	out << "void setValue(std::map<std::string, CORBA::Any>& valueMap);\n\n";
+	
+	//generate _duplicate and _downcast operation
+	//genDuplAndDown(strClassName);
+	out.unindent();
+
+	genMemberVariable(component);
+
+	out << "};\n\n";
+
+	out << "typedef ObjectFactoryTemplate<" << component->name() << "Persistence> " << component->name() << "PersistenceFactory;\n\n";
+}
+
+void
+GeneratorPersistenceH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc)
+{
+	if( lc!=CIDL::lc_Entity && lc!=CIDL::lc_Process )
+		return;
+
+	// generate factory template for storage object and storage home
+	if( !bTempGenerated_ )
+	{
+		genFactoryTemplate(false);
+		genFactoryTemplate(true);
+		bTempGenerated_ = true;
+	}
+
+	// handle base home
+	IR__::HomeDef_var base_home = home->base_home();
+	if(base_home)
+		genHomePersistence(base_home, lc);
+
+	int iLength = 0;
+	std::string strDummy = "";
+	IR__::AttributeDefSeq state_members;
+
+	out << "//\n// home persistence\n//\n";
+
+	IR__::ComponentDef_var component = home->managed_component();
+	out << "class " << component->name() << "Persistence;\n\n";
+	out << "class " << home->name() << "Persistence\n";
+	out.indent();
+	if(base_home)
+		out << ": public virtual " << home->name() << "Persistence\n";
+	else
+		out << ": public virtual StorageHomeBaseImpl\n";
+	out.unindent();
+	out << "{\n\npublic:\n\n";
+	out.indent();
+    out << home->name() << "Persistence();\n";
+	out << "~" << home->name() << "Persistence();\n\n";
+
+	char* szDisplay = map_psdl_return_type(component, false);
+	iLength = strlen(szDisplay) + 10;
+	
+	out << component->name() << "Persistence* _create(";
+	out << "Pid* pid,\n";
+	strDummy.append(iLength, ' ');
+	out << strDummy.c_str();
+	out << "ShortPid* shortPid,\n";
+	
+	// handel other in-parameters
+	component->get_state_members(state_members, CORBA__::dk_Create);
+	CORBA::ULong ulLen = state_members.length();
+	for(CORBA::ULong i=0; i<ulLen; i++)
+	{
+		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		out << strDummy.c_str() << map_in_parameter_type(attribute->type_def()) << " " << mapName(attribute);
+		if( (i+1)!=ulLen )
+			out << ",\n";
+	}
+	
+	out << ");\n\n";
+
+	// handel factory
+	IR__::ContainedSeq_var contained_seq = home->contents(CORBA__::dk_Factory, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
+		genPersistentOperation(a_factory, component, false);
+	}
+
+	// handel finder
+	contained_seq = home->contents(CORBA__::dk_Finder, false);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::FinderDef_var a_finder = IR__::FinderDef::_narrow(((*contained_seq)[i]));
+		genPersistentOperation(a_finder, component, true);
+	}
+	
+	// generate finder for find_by_primary_key
+	out << component->name() << "Persistence* find_by_primary_key(" << mapFullNamePK(home->primary_key()) << "* pkey)\n";
+	out.indent();
+	out << "throw(CosPersistentState::NotFound);\n";
+	out.unindent();
+
+	out.unindent();
+	out << "};\n\n";
+
+	out << "typedef HomeFactoryTemplate<" << home->name() << "Persistence> " << home->name() << "PersistenceFactory;\n\n";
 }
 
 } // namespace

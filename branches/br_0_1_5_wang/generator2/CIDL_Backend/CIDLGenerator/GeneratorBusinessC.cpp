@@ -719,20 +719,34 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "void\n";
 		out << class_name_ << "::ccm_store()\n";
 		out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
+
+		out.indent();
+		out << "StorageObject* ccm_obj = dynamic_cast <StorageObject*> (context_->get_ccm_storage_object());\n";
+		out << composition->ccm_component()->name() << "Persistence* ccm_object = dynamic_cast <" << composition->ccm_component()->name() << "Persistence*> (ccm_obj);\n";
+		IR__::AttributeDefSeq state_members;
+		composition->ccm_component()->get_state_members(state_members, CORBA__::dk_Create);
+		CORBA::ULong ulLen = state_members.length();
+		for(CORBA::ULong i=0; i<ulLen; i++)
+		{
+			IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			if(attribute->type_def()->type()->kind() != CORBA::tk_value)
+				out << "ccm_object->" << mapName(attribute) << "( component_->" << mapName(attribute) << "() );\n";
+		}
+
 		if( !CORBA::is_nil(storagehome_) )
 		{
-			out.indent();
-			out << "StorageObject* obj = dynamic_cast <StorageObject*> (context_->get_storage_object());\n";
+			out << "\nStorageObject* obj = dynamic_cast <StorageObject*> (context_->get_storage_object());\n";
 			out << storagehome_->managed_storagetype()->name() << "* object = dynamic_cast <" << storagehome_->managed_storagetype()->name() << "*> (obj);\n\n";
-			out.unindent();
 		}
+		out.unindent();
+
 		out.insertUserSection(class_name_ + "::ccm_store", 0);
+		
+		out.indent();
+		out << "\nccm_object->write_state();\n";
 		if( !CORBA::is_nil(storagehome_) )
-		{	
-			out.indent();
-			out << "\nobject->write_state();\n";
-			out.unindent();
-		}
+			out << "object->write_state();\n";
+		out.unindent();
 		out << "}\n\n\n";
 	}
 
@@ -748,12 +762,25 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << class_name_ << "::ccm_remove()\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.insertUserSection(class_name_ + "::ccm_remove", 0);
-	if( !CORBA::is_nil(storagehome_) )
+	if(composition->lifecycle()==CIDL::lc_Entity)
 	{
 		out.indent();
-		out << "StorageObject* obj = dynamic_cast <StorageObject*> (context_->get_storage_object());\n";
-		out << storagehome_->managed_storagetype()->name() << "* object = dynamic_cast <" << storagehome_->managed_storagetype()->name() << "*> (obj);\n\n";
-		out << "object->destroy_object();\n";
+		out << "StorageObject* ccm_obj = dynamic_cast <StorageObject*> (context_->get_ccm_storage_object());\n";
+		out << composition->ccm_component()->name() << "Persistence* ccm_object = dynamic_cast <" << composition->ccm_component()->name() << "Persistence*> (ccm_obj);\n";
+		out << "if( ccm_object->object_exists() )\n";
+		out.indent();
+		out << "ccm_object->destroy_object();\n";
+		out.unindent();
+
+		if( !CORBA::is_nil(storagehome_) )
+		{	
+			out << "\nStorageObject* obj = dynamic_cast <StorageObject*> (context_->get_storage_object());\n";
+			out << storagehome_->managed_storagetype()->name() << "* object = dynamic_cast <" << storagehome_->managed_storagetype()->name() << "*> (obj);\n";
+			out << "if( object->object_exists() )\n";
+			out.indent();
+			out << "object->destroy_object();\n";
+			out.unindent();
+		}
 		out.unindent();
 	}
 	out << "}\n\n\n";
