@@ -41,7 +41,7 @@
 
 #include <signal.h>
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.12 2003/10/01 17:10:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.13 2003/10/08 14:23:46 boehme Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -49,6 +49,7 @@ static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.12 2003/10/01 17:10:54 boehme Ex
  */
 
 CORBA::ORB_var orb;
+Qedo::ServerActivatorImpl* server_activator;
 
 void
 handle_sigint
@@ -136,7 +137,10 @@ handle_sigchld
     }
 
 	 std::cout << "Got signal child from " << pid << std::endl;
-	// update the list of CS's
+
+	 assert(server_activator);
+
+	 server_activator->remove_by_pid(pid);
 }
 #endif
 
@@ -171,7 +175,7 @@ main (int argc, char** argv)
 
 	orb = CORBA::ORB_init (argc, argv);
 
-	Qedo::ServerActivatorImpl* server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled, terminal_enabled);
+	server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled, terminal_enabled);
 
 	try
 	{

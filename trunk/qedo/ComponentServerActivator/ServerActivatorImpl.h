@@ -81,6 +81,7 @@ private:
 	/** for syncronization */
 	QedoCond										component_server_activation_;
 	QedoMutex										component_server_mutex_;
+	QedoMutex										component_servers_mutex_;
 
 	/** the orb */
 	CORBA::ORB_var									orb_;
@@ -92,6 +93,17 @@ private:
 	Components::Deployment::ComponentServer_var		last_created_component_server_;
 	/** the list of all created component servers */
 	ComponentServerVector							component_servers_;
+
+	class RemoveStruct
+	{
+		public:
+			RemoveStruct(const ComponentServerEntry& e);
+			const ComponentServerEntry entry;
+			QedoMutex mutex;
+			QedoCond cond;
+	};
+
+	static void* timer_thread(void *);
 
 public:
 	/**
@@ -143,6 +155,12 @@ public:
 	 * exception to indicate the initialization was not sucessful
 	 */
 	class CannotInitialize{};
+
+	/*
+	 * remove a component server from the list by the pid
+	 */
+
+	void remove_by_pid(pid_t);
 };
 
 /** @} */

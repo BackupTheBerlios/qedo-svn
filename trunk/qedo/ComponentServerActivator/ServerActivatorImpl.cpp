@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.24 2003/10/05 18:55:44 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.25 2003/10/08 14:23:46 boehme Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -37,6 +37,8 @@ static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.24 2003/10/05 18:
 #else
 #include <unistd.h>
 #include <sstream>
+#include <sys/types.h>
+#include <signal.h>
 #endif
 
 
@@ -330,6 +332,8 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	e.server = Components::Deployment::ComponentServer::_duplicate(last_created_component_server_);
 	e.pid = component_server_pid;
 
+	Qedo::QedoLock l(component_servers_mutex_);
+
 	component_servers_.push_back(e);
 
 	return Components::Deployment::ComponentServer::_duplicate(last_created_component_server_);
@@ -345,6 +349,8 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	// Test whether this component server is known to us
 	ComponentServerVector::iterator cs_iter;
 
+	component_servers_mutex_.lock_object();
+
 	for (cs_iter = component_servers_.begin(); cs_iter != component_servers_.end(); cs_iter++)
 	{
 		if ((*cs_iter).server->_is_equivalent (server))
@@ -354,10 +360,37 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	if (cs_iter == component_servers_.end())
 	{
 		std::cerr << "ServerActivatorImpl: remove_component_server(): Unknown component server supplied" << std::endl;
+		component_servers_mutex_.unlock_object();
 		throw Components::RemoveFailure();
 	}
 
-	(*cs_iter).server->remove();
+	// the struct will be freed in the thread
+	
+	RemoveStruct *r = new RemoveStruct((*cs_iter));
+
+	component_servers_mutex_.unlock_object();
+
+	Qedo::QedoThread* thread;
+
+	thread = Qedo::qedo_startDetachedThread(timer_thread,r);
+
+	try
+	{
+		(*cs_iter).server->remove();
+	}
+	catch (...)
+	{
+	}
+
+	r->mutex.lock_object();
+	r->cond.signal();
+	r->mutex.lock_object();
+
+	thread->join();
+
+	delete r;
+
+	delete thread;
 }
 
 
@@ -366,6 +399,7 @@ ServerActivatorImpl::get_component_servers()
 throw (CORBA::SystemException)
 {
 	Components::Deployment::ComponentServers_var servers = new Components::Deployment::ComponentServers();
+	Qedo::QedoLock l(component_servers_mutex_);
 	servers->length (component_servers_.size());
 
 	for (unsigned int i = 0; i < component_servers_.size(); i++)
@@ -399,6 +433,7 @@ throw(CORBA::SystemException)
 	// Test whether this component server is known to us
 	ComponentServerVector::iterator cs_iter;
 
+	Qedo::QedoLock l(component_servers_mutex_);
 	for (cs_iter = component_servers_.begin(); cs_iter != component_servers_.end(); cs_iter++)
 	{
 		if ((*cs_iter).server->_is_equivalent (server))
@@ -411,8 +446,62 @@ throw(CORBA::SystemException)
 		return;
 	}
 
-	component_servers_.erase (cs_iter);
 }
 
+void 
+ServerActivatorImpl::remove_by_pid (pid_t server)
+{
+	std::cout << "ServerActivatorImpl: remove_by_pid() called" << std::endl;
 
+	// Test whether this component server is known to us
+	ComponentServerVector::iterator cs_iter;
+
+	Qedo::QedoLock l(component_servers_mutex_);
+
+	for (cs_iter = component_servers_.begin(); cs_iter != component_servers_.end(); cs_iter++)
+	{
+		if ((*cs_iter).pid == server)
+			break;
+	}
+
+	if (cs_iter == component_servers_.end())
+	{
+		std::cerr << "ServerActivatorImpl: remove_by_pid(): Unknown component server supplied" << std::endl;
+	}
+	else
+	{
+		component_servers_.erase (cs_iter);
+	}
+}
+
+ServerActivatorImpl::RemoveStruct::RemoveStruct(const ComponentServerEntry& e)
+	: entry(e)
+{
+}
+
+void *
+ServerActivatorImpl::timer_thread(void *data)
+{
+	RemoveStruct* s = static_cast<RemoveStruct*>(data);
+
+	Qedo::QedoLock l(s->mutex);
+
+	if( !s->cond.wait_timed(s->mutex,5000) )
+	{
+		// got timeout
+
+#ifdef _WIN32
+		// XXX this has also to be implemented for Windows
+#else
+		if ( kill(s->entry.pid,SIGKILL) == -1 )
+		{
+			std::cerr << "ServerActivatorImpl: Cannot kill Component Server process" << std::endl;
+			std::cerr << "ServerActivatorImpl: " << strerror(errno) << std::endl;
+		}
+#endif
+
+	}
+
+	return 0;
+}
 } // namespace Qedo
