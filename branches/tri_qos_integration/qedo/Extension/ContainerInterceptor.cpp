@@ -4,7 +4,7 @@ namespace Qedo {
 
 	ContainerInterceptor::ContainerInterceptor()
 	{
-
+		log_file.open("log_file.txt");		
 	}
 
 	ContainerInterceptor::~ContainerInterceptor()
@@ -13,7 +13,7 @@ namespace Qedo {
 
 	void ContainerInterceptor::get_message(const char* mess) 
 	{
-		std::cout << "!!!! got message !!!" << mess << std::endl;
+		log_file << "!!!! got message !!!" << mess << std::endl;
 
 	}
 } // Qedo

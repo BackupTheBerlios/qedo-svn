@@ -1,5 +1,5 @@
 
-static char rcsid[] = "$Id: main.cpp,v 1.2 2003/09/09 13:05:13 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.3 2003/09/10 06:13:09 tom Exp $";
 
 #include <CORBA.h>
 
@@ -119,10 +119,10 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	caller_exec.append("/../../HelloWorld_CallerImpl/Debug_orbacus/HelloWorld_CallerImpl.dll");
 #endif
 #ifdef MICO_ORB
-	callee_servant.append("/HelloWorld_CalleeImpl_SERVANT.dll");
-	callee_exec.append("/HelloWorld_CalleeImpl.dll");
-	caller_servant.append("/HelloWorld_CallerImpl_SERVANT.dll");
-	caller_exec.append("/HelloWorld_CallerImpl.dll");
+	callee_servant.append("/../../HelloWorld_CalleeImpl_SERVANT/Debug_mico/HelloWorld_CalleeImpl_SERVANT.dll");
+	callee_exec.append("/../../HelloWorld_CalleeImpl/Debug_mico/HelloWorld_CalleeImpl.dll");
+	caller_servant.append("/../../HelloWorld_CallerImpl_SERVANT/Debug_mico/HelloWorld_CallerImpl_SERVANT.dll");
+	caller_exec.append("/../../HelloWorld_CallerImpl/Debug_mico/HelloWorld_CallerImpl.dll");
 #endif
 #else
 #ifdef ORBACUS_ORB

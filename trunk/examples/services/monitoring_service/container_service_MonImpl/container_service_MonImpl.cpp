@@ -111,7 +111,7 @@ MonImpl::configuration_complete()
     component_->configuration_complete();
 
 // BEGIN USER INSERT SECTION MonImpl::configuration_complete
-	register_container_interceptors(context_);
+	register_container_interceptors(context_); 
 // END USER INSERT SECTION MonImpl::configuration_complete
 }
 

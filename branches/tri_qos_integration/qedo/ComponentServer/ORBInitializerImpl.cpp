@@ -24,7 +24,7 @@
 #include "Output.h"
 #include "ServerInterceptorDispatcher.h"
 
-static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.5.6.1 2003/09/08 10:37:55 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.5.6.2 2003/09/10 06:13:33 tom Exp $";
 
 
 namespace Qedo {
@@ -73,7 +73,7 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	// First resolve the Name Service
 	//
     CORBA::Object_var obj;
-
+#ifndef MICO_ORB
 	try
     {
         obj = info->resolve_initial_references("NameService");
@@ -138,7 +138,7 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	// register HomeFinder
 	//
 	info->register_initial_reference ("ComponentHomeFinder", home_finder);
-
+#endif
 	//
 	// Allocate a slot id to communicate data towards our components
 	//
@@ -146,6 +146,7 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 
 
 	if (m_enable_qos) {
+		DEBUG_OUT("ComponentServer: ORBInitializer is registering interceptor dispatcher");
 		//
 		// Install ServerInterceptorDispatcher
 		//

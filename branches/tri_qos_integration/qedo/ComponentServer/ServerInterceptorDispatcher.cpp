@@ -23,8 +23,9 @@
 #include "ServerInterceptorDispatcher.h"
 #include "Util.h"
 #include "fstream"
+#include "string"
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.2.6.1 2003/09/08 10:37:55 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.2.6.2 2003/09/10 06:13:33 tom Exp $";
 
 namespace Qedo {
 
@@ -48,24 +49,34 @@ namespace Qedo {
 			}
 
 		void
-			ServerInterceptorDispatcher::receive_request_service_contexts(PortableInterceptor::ServerRequestInfo_ptr)
+			ServerInterceptorDispatcher::receive_request_service_contexts(PortableInterceptor::ServerRequestInfo_ptr info)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
 				try
 				{
 					if ( !CORBA::is_nil(interceptor_))
-						interceptor_ -> get_message("#### rec_req_service_context ####");
+					{
+						std::string mes;
+						mes.append("rec_service_context : ");
+						mes.append(info -> operation());
+						interceptor_ -> get_message(mes.c_str());
+					}
 				} catch ( ... )
 				{
 				}
 		}
 
 	    void
-			ServerInterceptorDispatcher::receive_request(PortableInterceptor::ServerRequestInfo_ptr)
+			ServerInterceptorDispatcher::receive_request(PortableInterceptor::ServerRequestInfo_ptr info)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
 				try
 				{
 					if ( !CORBA::is_nil(interceptor_))
-						interceptor_ -> get_message("#### rec_req ####");
+					{
+						std::string mes;
+						mes.append("rec_req : ");
+						mes.append(info -> operation());
+						interceptor_ -> get_message(mes.c_str());
+					}
 				}  catch ( ... )
 				{
 				}
@@ -73,36 +84,51 @@ namespace Qedo {
 
 
 		void
-			ServerInterceptorDispatcher::send_reply(PortableInterceptor::ServerRequestInfo_ptr)
+			ServerInterceptorDispatcher::send_reply(PortableInterceptor::ServerRequestInfo_ptr info)
 			throw(CORBA::SystemException){
 				try
 				{
 					if ( !CORBA::is_nil(interceptor_))
-						interceptor_ -> get_message("#### send_reply ####");
+					{
+						std::string mes;
+						mes.append("send_reply : ");
+						mes.append(info -> operation());
+						interceptor_ -> get_message(mes.c_str());
+					}
 				}  catch ( ... )
 				{
 				}				
 			}
 
 		void
-			ServerInterceptorDispatcher::send_exception(PortableInterceptor::ServerRequestInfo_ptr)
+			ServerInterceptorDispatcher::send_exception(PortableInterceptor::ServerRequestInfo_ptr info)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
 				try
 				{
 					if ( !CORBA::is_nil(interceptor_))
-						interceptor_ -> get_message("#### send_exception ####");
+					{
+						std::string mes;
+						mes.append("send_exception : ");
+						mes.append(info -> operation());
+						interceptor_ -> get_message(mes.c_str());
+					}
 				} catch ( ... )
 				{
 				}
 			}
 
 		void
-			ServerInterceptorDispatcher::send_other(PortableInterceptor::ServerRequestInfo_ptr)
+			ServerInterceptorDispatcher::send_other(PortableInterceptor::ServerRequestInfo_ptr info)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
 				try
 				{
 					if ( !CORBA::is_nil(interceptor_))
-						interceptor_ -> get_message("#### send_other ####");
+					{
+						std::string mes;
+						mes.append("send_other : ");
+						mes.append(info -> operation());
+						interceptor_ -> get_message(mes.c_str());
+					}
 				} catch ( ... )
 				{
 				}
