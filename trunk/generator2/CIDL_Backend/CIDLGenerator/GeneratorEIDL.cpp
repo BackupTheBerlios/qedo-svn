@@ -13,9 +13,10 @@ namespace QEDO_CIDL_Generator {
 
 
 GeneratorEIDL::GeneratorEIDL
-( QEDO_ComponentRepository::CIDLRepository_impl *repository)
+( QEDO_ComponentRepository::CIDLRepository_impl *repository, CORBA::ORB_ptr orb )
 : IDLBase(repository), m_recursion_set()
 {
+	_orb = CORBA::ORB::_duplicate( orb );
 }
 
 
@@ -454,6 +455,37 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 		{
 			act_idl_type = (*act_struct_members)[i].type_def;
 			contained_type = IR__::Contained::_narrow(act_idl_type);
+			if (!CORBA::is_nil(contained_type)) {
+				this->check_for_generation(contained_type);
+			};
+		};
+		std::string id = item->id();
+		if(!definedInInterface(item)) {
+			this->insert_to_generate(item);
+		}
+		else {
+			planInterfaceContent(item);
+		}
+		break; }
+	case CORBA__::dk_Union : {
+		IR__::UnionDef_var a_union = IR__::UnionDef::_narrow(item);
+		IR__::IDLType_var idl_type;
+		IR__::Contained_var contained_type;
+
+		// discriminator
+		idl_type = a_union->discriminator_type_def();
+		contained_type = IR__::Contained::_narrow(idl_type);
+		if (!CORBA::is_nil(contained_type)) {
+			this->check_for_generation(contained_type);
+		};
+
+		// members
+		IR__::UnionMemberSeq_var members = a_union->members();
+		len = members->length();
+		for(i = 0; i < len; i++)
+		{
+			idl_type = (*members)[i].type_def;
+			contained_type = IR__::Contained::_narrow(idl_type);
 			if (!CORBA::is_nil(contained_type)) {
 				this->check_for_generation(contained_type);
 			};
@@ -989,13 +1021,6 @@ GeneratorEIDL::doEnum(IR__::EnumDef_ptr enumeration)
 };
 
 
-void
-GeneratorEIDL::doTypedef(IR__::TypedefDef_ptr tdef)
-{
-	out << "typedefXXXXXX " << tdef -> type() -> name () << " " << tdef->name() << ";\n";
-}
-
-
 //
 // alias
 //
@@ -1005,19 +1030,42 @@ GeneratorEIDL::doAlias(IR__::AliasDef_ptr adef)
 	out << "//\n// " << adef->id() << "\n//\n";
 	switch(adef->original_type_def()->def_kind())
 	{
-	case CORBA__::dk_Alias :  {
-		IR__::AliasDef_var ali = IR__::AliasDef::_narrow(adef->original_type_def());
-		out << "typedef " << map_absolute_name(ali) << " " << adef -> name () << ";\n";
+	case CORBA__::dk_Alias :
+	case CORBA__::dk_Struct :
+	case CORBA__::dk_Union :
+	case CORBA__::dk_Enum :
+	case CORBA__::dk_Value :
+	case CORBA__::dk_ValueBox : {
+		out << "typedef " << map_absolute_name(adef->original_type_def()) << " " << adef -> name () << ";\n";
 		break; }
 	case CORBA__::dk_Primitive : {
 		IR__::PrimitiveDef_var prim = IR__::PrimitiveDef::_narrow(adef->original_type_def());
 		out << "typedef " << tcToName(prim->type ()) << " " << adef -> name () << ";\n";
 		break; }
+    case CORBA__::dk_String : {
+		IR__::StringDef_var str = IR__::StringDef::_narrow(adef->original_type_def());
+		out << "typedef string [" << str->bound() << "] " << adef -> name () << ";\n";
+		break; }
 	case CORBA__::dk_Sequence : {
 		IR__::SequenceDef_var seq = IR__::SequenceDef::_narrow(adef->original_type_def());
 		out << "typedef sequence<" << tcToName(seq-> element_type () ) << "> " << adef -> name () << ";\n";
 		break; }
+	case CORBA__::dk_Array : {
+		IR__::ArrayDef_var arr = IR__::ArrayDef::_narrow(adef->original_type_def());
+		out << "typedef " << "todo" << " " << adef -> name () << ";\n";
+		break; }
+    case CORBA__::dk_Wstring : {
+		IR__::WstringDef_var str = IR__::WstringDef::_narrow(adef->original_type_def());
+		out << "typedef wstring [" << str->bound() << "] " << adef -> name () << ";\n";
+		break; }
+	case CORBA__::dk_Fixed : {
+		out << "typedef " << "todo" << " " << adef -> name () << ";\n";
+		break; }
+    case CORBA__::dk_Native : {
+		out << "typedef " << "todo" << " " << adef -> name () << ";\n";
+		break; }
 	default :
+		out << "todo\n";
 		break;
 	}
 }
@@ -1035,6 +1083,79 @@ GeneratorEIDL::doStruct(IR__::StructDef_ptr sdef)
 	CORBA::ULong len = str_seq->length();
 	for (CORBA::ULong i = 0; i < len; i++) {
 		out << "   " << tcToName(str_seq[i].type) << " " << str_seq[i].name.in() << ";\n";
+	};
+	out << "};\n";
+}
+
+
+//
+// union
+//
+void 
+GeneratorEIDL::doUnion(IR__::UnionDef_ptr udef)
+{
+	out << "//\n// " << udef->id() << "\n//\n";
+	out << "union " << udef -> name () << " switch(" << tcToName(udef->discriminator_type()) << ") {\n";
+	IR__::UnionMemberSeq_var members = udef->members();
+	CORBA::ULong len = members->length();
+	for (CORBA::ULong i = 0; i < len; i++) {
+		CORBA::Any a_any = members[i].label;
+		std::stringstream label;
+
+		// default
+		if (udef->discriminator_type()->kind() == CORBA::tk_octet)
+		{
+			out << "   default : " << tcToName(members[i].type) << " " << members[i].name.in() << ";\n";
+			continue;
+		}
+
+		// case
+		switch (udef->discriminator_type()->kind()) {
+			case CORBA::tk_short:
+			case CORBA::tk_long:
+			case CORBA::tk_longlong:
+			case CORBA::tk_ushort:
+			case CORBA::tk_ulong:
+			case CORBA::tk_ulonglong: {
+				CORBA::Long l;
+				a_any >>= l;
+				label << l;
+									  }
+			case CORBA::tk_boolean: {
+				CORBA::Boolean b;
+				a_any >>= CORBA::Any::to_boolean(b);
+				label << b;
+									}
+			case CORBA::tk_char: {
+				CORBA::Char c;
+				a_any >>= CORBA::Any::to_char(c);
+				label << c;
+								 }
+			case CORBA::tk_wchar: {
+				CORBA::WChar w;
+				a_any >>= CORBA::Any::to_wchar(w);
+				label << w;
+								  }
+			case CORBA::tk_enum: {
+				DynamicAny::DynAnyFactory_var factory;
+				try
+				{
+					factory = DynamicAny::DynAnyFactory::_narrow( _orb->resolve_initial_references( "DynAnyFactory" ) );
+				}
+				catch ( ... )
+				{
+					std::cerr << "Error during DynAny stuff" << std::endl;
+				}
+				DynamicAny::DynEnum_var dyn_enum;
+				dyn_enum = DynamicAny::DynEnum::_narrow ( factory -> create_dyn_any( a_any ) );
+				label << dyn_enum->get_as_string();
+								 }
+			case CORBA::tk_alias: {
+				// todo
+								  }
+			default: {}
+		}
+		out << "   case " << label.str() << " : " << tcToName(members[i].type) << " " << members[i].name.in() << ";\n";
 	};
 	out << "};\n";
 }

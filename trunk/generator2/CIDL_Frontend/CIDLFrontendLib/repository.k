@@ -577,17 +577,17 @@ EnumType(name, name_list)
       IR__::EnumMemberSeq enumemseq;
       enumemseq.length(name_list->length());
 
+	  // members
       CORBA::ULong i = 0;
-      foreach(name2; idl_name_list name_list) {
-	enumemseq[i] = name2->get_name();
-	i++;
+      foreach(name2; idl_name_list phylum_cast<idl_name_list>(name_list->reverse())) {
+		enumemseq[i] = name2->get_name();
+		i++;
       }
 
-     // create EnumDef
+      // create EnumDef
       IR__::EnumDef_ptr enu;
       try {
-        enu = container->create_enum(get_repid(def_v,name), name->get_name(),
-          "1.0", enumemseq);
+        enu = container->create_enum(get_repid(def_v,name), name->get_name(), "1.0", enumemseq);
       }
       catch (...) { Error("Exception in creating enum %k\n", name, name); }
       NOT_NIL(enu);
@@ -607,17 +607,16 @@ EnumType(name, name_list)
     DynamicAny::DynAny_var dyn_any;
 	DynamicAny::DynEnum_var dyn_enum;
 	  try {
-	    dyn_any =
-		factory -> create_dyn_any_from_type_code ( enu -> type() );
+	    dyn_any = factory -> create_dyn_any_from_type_code ( enu -> type() );
 		dyn_enum = DynamicAny::DynEnum::_narrow ( dyn_any );
 		} catch ( ... ) {
 			Error("Exception in creating typecode");
 		}
       i = 0;
-      foreach(name2; idl_name_list name_list) {
+      foreach(name2; idl_name_list phylum_cast<idl_name_list>(name_list->reverse())) {
         dyn_enum -> set_as_ulong ( i );
-	name2->symtab_entry->value = *(dyn_enum -> to_any());
-	i++;
+		name2->symtab_entry->value = *(dyn_enum -> to_any());
+		i++;
       }
     }
   ]

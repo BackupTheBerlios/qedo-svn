@@ -210,7 +210,7 @@ main
 	// generate equivalent IDL
 	std::cout << "Generating equivalent IDL for " << target << std::endl;
 	QEDO_CIDL_Generator::GeneratorEIDL *eidl_generator =
-		new QEDO_CIDL_Generator::GeneratorEIDL(repository);
+		new QEDO_CIDL_Generator::GeneratorEIDL(repository, orb.in());
 	eidl_generator->generate(target, fileprefix);
 	eidl_generator->destroy();
 

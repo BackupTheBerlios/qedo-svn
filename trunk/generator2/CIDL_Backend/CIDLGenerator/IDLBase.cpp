@@ -34,6 +34,7 @@ IDLBase::generate_the_item(IR__::Contained_ptr item)
 	IR__::EnumDef_var act_enum;
 	IR__::ModuleDef_var act_module;
 	IR__::StructDef_var act_struct;
+	IR__::UnionDef_var act_union;
 
 	std::cout << "Debug: item to generate: " << item->id() << std::endl;
 	if(!definedInInterface(item)) {
@@ -81,6 +82,10 @@ IDLBase::generate_the_item(IR__::Contained_ptr item)
 	case CORBA__::dk_Struct:
 		act_struct = IR__::StructDef::_narrow(item);
 		doStruct(act_struct);
+		break;
+	case CORBA__::dk_Union:
+		act_union = IR__::UnionDef::_narrow(item);
+		doUnion(act_union);
 		break;
 	case CORBA__::dk_Composition : {
 		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
@@ -225,7 +230,7 @@ IDLBase::tcToName(CORBA::TypeCode_ptr type)
 		} catch (...) {
 			// CORBA::Object is not in the repository 
 			// but it can be used as parameter
-			return "CORBA::Object";
+			return "Object";
 		}
 		break;
 

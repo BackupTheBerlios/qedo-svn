@@ -30,6 +30,7 @@
 #include "Printer.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <set>
 
 
@@ -39,6 +40,7 @@ namespace QEDO_CIDL_Generator {
 class GeneratorEIDL : public virtual IDLBase
 {
 
+	CORBA::ORB_var _orb;
 	std::set<std::string> m_recursion_set;
 	void check_for_generation(IR__::Contained_ptr item);
 
@@ -71,14 +73,14 @@ class GeneratorEIDL : public virtual IDLBase
 	void doSink(IR__::SinkDef_ptr sink);
 	void doSource(IR__::SourceDef_ptr source);
 	void doSiSo(IR__::SiSoDef_ptr siso);
-	void doTypedef(IR__::TypedefDef_ptr tdef);
 	void doAlias(IR__::AliasDef_ptr adef);
 	void doStruct(IR__::StructDef_ptr sdef);
+	void doUnion(IR__::UnionDef_ptr udef);
 
 
 public:
 
-	GeneratorEIDL(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorEIDL(QEDO_ComponentRepository::CIDLRepository_impl *repository, CORBA::ORB_ptr orb);
 	~GeneratorEIDL();
 
 	void generate(std::string target, std::string fileprefix);

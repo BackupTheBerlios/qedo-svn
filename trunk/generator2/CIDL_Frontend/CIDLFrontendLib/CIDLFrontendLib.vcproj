@@ -412,7 +412,8 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release_orbacus|Win32">
+					Name="Release_orbacus|Win32"
+					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
@@ -537,7 +538,7 @@ cp cidl.hpp cidl.h
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Processing grammar file $(InputPath): Tool is $(YACC)"
-						CommandLine="set LC_ALL=C 
+						CommandLine="set LC_ALL=C
 $(YACC) -y -v -d -o cidl.cpp cidl.y
 copy cidl.hpp cidl.h
 "
