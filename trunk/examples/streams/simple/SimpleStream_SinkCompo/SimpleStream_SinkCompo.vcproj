@@ -99,8 +99,8 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(QEDO)/bin/zip ../SimpleStream_SinkCompo.zip -j Debug_mico/SimpleStream_SinkCompo.dll ../SimpleStream_SinkCompo_SERVANT/Debug_mico/SimpleStream_SinkCompo_SERVANT.dll ../simple_stream.cidl
-$(QEDO)/bin/zip ../SimpleStream_SinkCompo.zip meta-inf/SimpleStream_SinkCompo.ccd meta-inf/SimpleStream_SinkCompo.csd
+				CommandLine="$(cygwin)\zip ../SimpleStream_SinkCompo.zip -j Debug_mico/SimpleStream_SinkCompo.dll ../SimpleStream_SinkCompo_SERVANT/Debug_mico/SimpleStream_SinkCompo_SERVANT.dll ../simple_stream.cidl
+$(cygwin)\zip ../SimpleStream_SinkCompo.zip meta-inf/SimpleStream_SinkCompo.ccd meta-inf/SimpleStream_SinkCompo.csd
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
