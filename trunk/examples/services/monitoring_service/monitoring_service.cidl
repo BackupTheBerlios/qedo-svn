@@ -1,7 +1,7 @@
 #include "monitoring_service.idl"
 module container_service {
 	
-	composition service MonImpl {
+	composition session MonImpl {
 		home executor HomeMonExec {
 			implements monitor_home;
 			manages MonExec;
