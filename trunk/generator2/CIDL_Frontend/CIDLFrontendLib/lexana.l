@@ -139,8 +139,8 @@ MkIdentifier()
 	if(k->foo) {
 		sprintf(my_buff,"found identifier which differs only in capitalization from keyword ('%s')"
 		,yytext);
-		yyerror_1(my_buff);
-		exit(1);
+//		yyerror_1(my_buff);
+//		exit(1);
 	}
 	name = Name(mkcasestring(yytext));
 	name->filename=mkcasestring(filename);
