@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.33 2003/09/04 12:17:07 boehme Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.34 2003/09/05 14:00:42 boehme Exp $";
 
 
 namespace Qedo {
@@ -133,10 +133,12 @@ ContainerInterfaceImpl::EventEntry::EventEntry (Components::EventConsumerBase_pt
 }
 
 ContainerInterfaceImpl::EventEntry::EventEntry (const EventEntry& e)
-: consumer_ (Components::EventConsumerBase::_duplicate(e.consumer_))
-, event_ (e.event_)
 {
-	CORBA::add_ref(e.event_);
+	const Components::EventConsumerBase_ptr a = e.consumer_;
+	Components::EventConsumerBase_ptr c = const_cast<Components::EventConsumerBase_ptr>(a);
+	consumer_ = Components::EventConsumerBase::_duplicate(c);
+	event_ = e.event_;
+	CORBA::add_ref(event_);
 }
 
 ContainerInterfaceImpl::EventEntry::~EventEntry()
@@ -145,13 +147,13 @@ ContainerInterfaceImpl::EventEntry::~EventEntry()
 }
 
 ContainerInterfaceImpl::EventEntry&
-ContainerInterfaceImpl::EventEntry::operator=(const ContainerInterfaceImpl::EventEntry& e)
+ContainerInterfaceImpl::EventEntry::operator= (const ContainerInterfaceImpl::EventEntry& e)
 {
 	if( &e != this) {
-	CORBA::remove_ref (event_);
-	event_ = e.event_;
-	CORBA::add_ref(event_);
-	consumer_ = Components::EventConsumerBase::_duplicate(e.consumer_);
+		CORBA::remove_ref (event_);
+		consumer_ = Components::EventConsumerBase::_duplicate(e.consumer_);
+		event_ = e.event_;
+		CORBA::add_ref(event_);
 	}
 	return *this;
 }
@@ -175,9 +177,12 @@ ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 			try {
 				e.consumer_->push_event(e.event_);
 			}
-			catch(const CORBA::Exception&)
+			catch(const CORBA::Exception& e)
 			{
 			   DEBUG_OUT("event_delivering: got CORBA exception");
+#ifdef MICO_ORB
+				e._print(std::cerr);
+#endif
 			}
 			catch(...)
 			{
@@ -190,6 +195,9 @@ ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 		this_ptr->event_queue_cond_.wait(this_ptr->event_queue_mutex_);
 	} while(true);
 	// here hast to be checked for finalize of the thread
+
+	this_ptr->event_queue_mutex_.unlock_object();
+
 	return 0;
 }
 
@@ -643,6 +651,9 @@ throw (Components::Deployment::UnknownImplId,
 			throw Components::Deployment::InstallationFailure();
 		}
 		break;
+	default:
+		NORMAL_ERR ("ContainerInterfaceImpl: Container type is unknown");
+		throw Components::Deployment::InstallationFailure();
 	}
 
 	//
