@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.14 2003/05/14 11:02:31 tom Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.15 2003/05/19 15:10:23 tom Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -71,10 +71,8 @@ HomeServantBase::~HomeServantBase()
 
 	home_poa_->destroy (false /*no etherealize objects*/, false /*no wait for completion*/);
 
-#ifndef MICO_ORB
-	//// ########## check for a solution #############
 	servant_locator_->_remove_ref();
-#endif
+
 	servant_registry_->_remove_ref();
 
 	if (container_)
@@ -261,7 +259,11 @@ throw (Components::Deployment::InstallationFailure)
 	// Set servant locator
 	try
 	{
-		home_poa_->set_servant_manager (servant_locator_);
+#ifdef MICO_ORB
+	    home_poa_->set_servant_manager (dynamic_cast<PortableServer::ServantManager*>(servant_locator_));
+#else
+	    home_poa_->set_servant_manager (servant_locator_);
+#endif
 	}
 	catch (PortableServer::POA::WrongPolicy&)
 	{

@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.11 2003/05/12 13:14:14 neubauer Exp $";
+static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.12 2003/05/19 15:10:23 tom Exp $";
 
 #include "ComponentInstallationImpl.h"
 
@@ -415,6 +415,7 @@ Components::Deployment::Location
 ComponentInstallationImpl::get_implementation( const char* implUUID)
 throw (Components::Deployment::UnknownImplId, Components::Deployment::InstallationFailure)
 {
+    std::cout << "get_implementation " << implUUID << std::endl;
 	// Scan through the installed components
 	std::vector < ComponentImplementation >::const_iterator inst_iter;
 

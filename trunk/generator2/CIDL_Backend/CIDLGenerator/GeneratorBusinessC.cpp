@@ -611,7 +611,11 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << class_name_ << "::set_session_context(::Components::SessionContext_ptr context)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.indent();
-    out << "context_ = dynamic_cast<" << context_name << "*>(context);\n\n";
+	out << "#ifdef TAO_ORB\n";
+	out << "context_ = dynamic_cast<" << context_name << "*>(context);\n\n";
+	out << "#else\n";
+	out << "context_ = " << context_name << "::_narrow(context);\n\n";
+	out << "#endif\n";
 	out << "component_->set_context(context_);\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
 		out << segment_seq[i]->name() << "_->set_context(context_);\n";
