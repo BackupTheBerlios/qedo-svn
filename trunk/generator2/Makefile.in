@@ -38,7 +38,7 @@ all: $(SUBDIRS:%=%-all)
 
 install-dir: @bindir@
 
-install: install-dir $(SUBDIRS:%=%-install)
+install: all install-dir $(SUBDIRS:%=%-install)
 
 %-install: %
 	make -C $< install
