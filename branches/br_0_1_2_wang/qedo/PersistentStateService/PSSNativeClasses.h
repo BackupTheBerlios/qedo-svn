@@ -33,31 +33,31 @@ class StorageObjectBase
 {
 	protected:
 	
-		virtual ~StorageObjectBase () {}
+		virtual ~StorageObjectBase() {}
 };
 
 class StorageObject : public virtual StorageObjectBase
 {
 	public:
 		
-		virtual void _add_ref () = 0;
+		virtual void _add_ref() = 0;
 		
-		virtual void _remove_ref () = 0;
+		virtual void _remove_ref() = 0;
 		
 		// normal mapping of PSDL operations
-		virtual void destroy_object () 
+		virtual void destroy_object() 
 			throw (CORBA::SystemException) = 0;
 		
-		virtual CORBA::Boolean object_exists () 
+		virtual CORBA::Boolean object_exists() 
 			throw (CORBA::SystemException) = 0;
 		
-		virtual CosPersistentState::Pid* get_pid ()
+		virtual CosPersistentState::Pid* get_pid()
 			throw (CORBA::SystemException) = 0;
 		
-		virtual CosPersistentState::ShortPid* get_short_pid ()
+		virtual CosPersistentState::ShortPid* get_short_pid()
 			throw (CORBA::SystemException) = 0;
 		
-		virtual CosPersistentState::StorageHomeBase_ptr get_storage_home ()
+		virtual CosPersistentState::StorageHomeBase_ptr get_storage_home()
 			throw (CORBA::SystemException) = 0;
 
 		static StorageObject* _duplicate(StorageObject*);
@@ -67,7 +67,7 @@ class StorageObject : public virtual StorageObjectBase
 	
 	protected:
 		
-		virtual ~StorageObject () {}
+		virtual ~StorageObject() {}
 };
 
 class StorageObjectRef
@@ -80,7 +80,7 @@ class StorageObjectRef
 		StorageObjectRef(const StorageObjectRef& ref) // copy constructure
 			throw();
 
-		~StorageObjectRef ();
+		~StorageObjectRef();
 
 		StorageObjectRef& operator=(const StorageObjectRef& ref) 
 			throw();
@@ -122,21 +122,21 @@ class StorageObjectRef
 		typedef StorageObject _target_type;
 };
 
-template class<T>
+template <class T>
 class Factory
 {
 	public:
 
-		virtual T* create() throw (SystemException) = 0;
+		virtual T* create() throw (CORBA::SystemException) = 0;
 		virtual void _add_ref() {};
 		virtual void _remove_ref() {};
 		virtual ~Factory() {};
 };
 
-typedef Factory<StorageObject> StorageObjectFactory;
-typedef Factory<StorageHomeBase> StorageHomeFactory;
-typedef Factory<Sessio> SessionFactory;
-typedef Factory<SessionPool> SessionPoolFactory;
+typedef Factory<StorageObject> TStorageObjectFactory;
+typedef Factory<StorageHomeBase> TStorageHomeFactory;
+typedef Factory<Sessio> TSessionFactory;
+typedef Factory<SessionPool> TSessionPoolFactory;
 
 };
 

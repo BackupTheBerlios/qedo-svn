@@ -35,4 +35,44 @@ void StorageObject::_remove_ref()
 
 }
 
+void StorageObject::destroy_object() 
+	throw (CORBA::SystemException)
+{
+
+}
+
+CORBA::Boolean StorageObject::object_exists() 
+	throw (CORBA::SystemException)
+{
+	return TRUE;
+}
+		
+Pid* StorageObject::get_pid()
+	throw (CORBA::SystemException)
+{
+	return NULL;
+}
+		
+ShortPid* get_short_pid()
+	throw (CORBA::SystemException)
+{
+	return NULL;
+}
+		
+StorageHomeBase_ptr StorageObject::get_storage_home()
+	throw (CORBA::SystemException)
+{
+	return NULL;
+}
+
+StorageObject* StorageObject::_duplicate(StorageObject*)
+{
+	return NULL;
+}
+
+StorageObject* StorageObject::_downcast(StorageObject*)
+{
+	return NULL;
+}
+		
 }
