@@ -447,6 +447,24 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection(class_name_ + "::remove", 0);	
 	out << "}\n\n\n";
 
+	// for service extension
+	if(composition->lifecycle() == 0)
+	{
+		// preinvoke
+		out << "void\n";
+		out << class_name_ << "::preinvoke(const char* comp_id, const char* operation)\n";
+		out << "    throw (CORBA::SystemException)\n{\n";
+		out.insertUserSection(class_name_ + "::preinvoke", 0);	
+		out << "}\n\n\n";
+
+		// postinvoke
+		out << "void\n";
+		out << class_name_ << "::postinvoke(const char* comp_id, const char* operation)\n";
+		out << "    throw (CORBA::SystemException)\n{\n";
+		out.insertUserSection(class_name_ + "::postinvoke", 0);	
+		out << "}\n\n\n";
+	}
+
 	need_push_ = true;
 	doComponent(composition->ccm_component());
 
@@ -613,6 +631,28 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.insertUserSection(class_name_ + "::ccm_remove", 0);
 	out << "}\n\n\n";
+
+	// for service extension
+	if(composition->lifecycle() == 0)
+	{
+		// preinvoke
+		out << "void\n";
+		out << class_name_ << "::preinvoke(const char* comp_id, const char* operation)\n";
+		out << "    throw (CORBA::SystemException)\n{\n";
+		out.indent();
+		out << "component_->preinvoke(comp_id, operation);\n";
+		out.unindent();	
+		out << "}\n\n\n";
+
+		// postinvoke
+		out << "void\n";
+		out << class_name_ << "::postinvoke(const char* comp_id, const char* operation)\n";
+		out << "    throw (CORBA::SystemException)\n{\n";
+		out.indent();
+		out << "component_->postinvoke(comp_id, operation);\n";
+		out.unindent();
+		out << "}\n\n\n";
+	}
 
 	//
 	// home executor
