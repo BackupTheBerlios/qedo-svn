@@ -84,7 +84,7 @@ namespace Qedo {
 
 class ContainerInterfaceImpl;
 
-class ThreadSupport : public virtual Components::CCMContext
+class CONTAINERDLL_API ThreadSupport : public virtual Components::CCMContext
 {
 	public:
 	/**
@@ -100,7 +100,7 @@ class ThreadSupport : public virtual Components::CCMContext
    Components::Mutex_ptr create_mutex();
 
 	/**
-	 * implements IDL:omg.org/Components/CCMContext/create_mutex:1.0
+	 * implements IDL:omg.org/Components/CCMContext/create_cond:1.0
 	 */
 
    Components::Cond_ptr create_cond();
