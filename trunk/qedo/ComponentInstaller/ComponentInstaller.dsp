@@ -101,7 +101,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 CosNamingd.lib obd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/ci.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 xerces-c_1D.lib zlib.lib jtcd.lib CosNamingd.lib obd.lib shell32.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/ci.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib" /libpath:"$(XERCES)\lib" /libpath:"$(ZLIB)\dll32"
+# ADD LINK32 xerces-c_2D.lib zlib.lib jtcd.lib CosNamingd.lib obd.lib shell32.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/ci.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib" /libpath:"$(XERCES)\lib" /libpath:"$(ZLIB)\dll32"
 
 !ELSEIF  "$(CFG)" == "ComponentInstaller - Win32 Debug_tao"
 
@@ -181,10 +181,6 @@ SOURCE=.\ComponentInstallationImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\DOMOutput.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\DOMTreeErrorReporter.cpp
 # End Source File
 # Begin Source File
@@ -226,10 +222,6 @@ SOURCE=.\ComponentImplementation.h
 # Begin Source File
 
 SOURCE=.\ComponentInstallationImpl.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\DOMOutput.h
 # End Source File
 # Begin Source File
 
