@@ -115,18 +115,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="CADReaderDialog.cpp">
 			</File>
 			<File
-				RelativePath="CORBADepends.cpp">
-			</File>
-			<File
-				RelativePath="CORBADepends.cpp">
-			</File>
-			<File
-				RelativePath="Components.cpp">
-			</File>
-			<File
-				RelativePath="Components.cpp">
-			</File>
-			<File
 				RelativePath="ControllerNotebook.cpp">
 			</File>
 			<File
@@ -168,18 +156,6 @@ copy $(TargetPath) $(QEDO)\bin
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
 				RelativePath="CADReaderDialog.h">
-			</File>
-			<File
-				RelativePath="CORBADepends.h">
-			</File>
-			<File
-				RelativePath="CORBADepends.h">
-			</File>
-			<File
-				RelativePath="Components.h">
-			</File>
-			<File
-				RelativePath="Components.h">
 			</File>
 			<File
 				RelativePath="ControllerNotebook.h">
@@ -225,28 +201,6 @@ copy $(TargetPath) $(QEDO)\bin
 		<Filter
 			Name="idl"
 			Filter="">
-			<File
-				RelativePath="CORBADepends.idl">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="idl -I%MICO%\include\mico -I%MICO%\include -DMICO_ORB --c++-suffix cpp CORBADepends.idl
-"
-						Outputs="CORBADepends.h;CORBADepends.cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="Components.idl">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="idl -I%MICO%\include\mico -I%MICO%\include -DMICO_ORB --c++-suffix cpp Components.idl
-"
-						Outputs="Components.h;Components.cpp"/>
-				</FileConfiguration>
-			</File>
 			<File
 				RelativePath="explore.idl">
 				<FileConfiguration
