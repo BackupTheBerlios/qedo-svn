@@ -154,12 +154,13 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="0"
 				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(MICO)\include,$(MICO)\include\windows"
-				PreprocessorDefinitions="WIN32,_DEBUG,_LIB,__STDC__,_WINDOWS"
+				PreprocessorDefinitions="KC_DEPRECATED,WIN32,_DEBUG,_LIB,__STDC__,YYERROR_VERBOSE,YYDEBUG,_WINDOWS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug_mico/CIDLFrontendLib.pch"
 				AssemblerListingLocation=".\Debug_mico/"
 				ObjectFile=".\Debug_mico/"
@@ -495,11 +496,7 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="c:\opt\cygwin\bin\touch k.h
-c:\opt\cygwin\bin\touch unpk.h
-d:/generatoren/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl -I..\..\CIDL_Repository\CIDLRepositoryLib -I..\..\CIDL_Repository\ComponentRepositoryLib -I%MICO%\include -I%MICO%\include\windows -D_WINDOWS attributes.k &gt; attributes
-d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp tree.k frontend.k symtab.k error.k printer.k options.k resolve_symtab.k cg_io.k debug.k util.k global.k attributes pretty.k repository.k
-"
+						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k"
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration

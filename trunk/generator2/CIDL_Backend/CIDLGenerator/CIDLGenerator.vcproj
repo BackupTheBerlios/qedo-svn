@@ -153,10 +153,11 @@ copy cidl_gen.exe $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib mico236.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib mico237.lib odbc32.lib odbccp32.lib"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;"
+				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
+				IgnoreDefaultLibraryNames="MSVCRT"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"/>
 			<Tool

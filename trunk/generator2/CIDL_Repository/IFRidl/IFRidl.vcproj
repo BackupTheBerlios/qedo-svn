@@ -338,7 +338,7 @@
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)\win32-bin\idl --any -I. --c++-suffix cpp --c++-skel  CIDL_Extension.idl
+						CommandLine="$(MICO)\win32-bin\idl -I$(MICO)\include -I$(MICO)\include\mico  --any -I. --c++-suffix cpp --c++-skel  CIDL_Extension.idl
 copy CIDL_Extension.h CIDL_Extension_skel.h
 "
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
@@ -383,7 +383,7 @@ copy CIDL_Extension.h CIDL_Extension_skel.h
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)\win32-bin\idl --any --c++-suffix cpp --c++-skel IFR.idl
+						CommandLine="$(MICO)\win32-bin\idl -I$(MICO)\include -I$(MICO)\include\mico --any --c++-suffix cpp --c++-skel IFR.idl
 copy IFR.h IFR_skel.h
 "
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
