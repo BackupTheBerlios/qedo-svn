@@ -21,8 +21,7 @@
 /***************************************************************************/
 
 #include "CatalogResolver.h"
-
-
+#include "Output.h"
 #include <string>
 #include <iostream>
 #include <xercesc/framework/URLInputSource.hpp>
@@ -46,21 +45,20 @@ InputSource*
 CatalogResolver::resolveEntity (const XMLCh* const publicId, const XMLCh* const systemId)
 {
     URI target;
-    if (publicId && mCatalog.lookup(std::string(XMLString::transcode(publicId)), target))
+    if( publicId && mCatalog.lookup( std::string(XMLString::transcode(publicId)), target) )
     {
-        target = mCatalog.lookup(target);
+        target = mCatalog.lookup( target );
     }
     else
     {
-        if (!(systemId && mCatalog.lookup(URI(XMLString::transcode(systemId)), target)))
+        if( systemId )
         {
-            // lookup failed
-            std::cerr << "CatalogResolver: unable to resolve public id \"" << XMLString::transcode(publicId) << "\"\n";
-            return 0;
+			mCatalog.lookup( URI(XMLString::transcode(systemId)), target );
         }
     }
 
-    return new URLInputSource(XMLURL(target.getText()));
+    return new URLInputSource( XMLURL(target.getText()) );
 }
 
-} // namespace HU_CCM_Container
+
+} // namespace Qedo
