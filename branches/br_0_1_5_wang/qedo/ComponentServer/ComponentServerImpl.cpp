@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.26.2.6 2004/02/15 22:23:20 hao Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.26.2.7 2004/03/03 23:41:52 hao Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -89,6 +89,18 @@ ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb,
 ComponentServerImpl::~ComponentServerImpl()
 {
 	std::cout << "ComponentServerImpl::~ComponentServerImpl()\n";
+	std::cout << "delete connector 1\n";
+	if(pConn_!=NULL)
+	{
+		std::cout << "delete connector 2\n";
+		pConn_->_remove_ref();
+		std::cout << "delete connector 3\n";
+		if(pConn_!=NULL)
+			std::cout << "pConn_ is still not null\n";
+		else
+			std::cout << "pConn_ is realy null\n";
+	}
+	std::cout << "delete connector 4\n";
 }
 
 
@@ -269,7 +281,7 @@ ComponentServerImpl::initialize()
 Connector_ptr
 ComponentServerImpl::getConnector()
 {
-	return Connector::_duplicate(pConn_.in());
+	return pConn_;
 }
 
 ::Components::ConfigValues*

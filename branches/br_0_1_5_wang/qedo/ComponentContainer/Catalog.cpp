@@ -113,7 +113,7 @@ CatalogBaseImpl::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND h
 Connector_ptr
 CatalogBaseImpl::getConnector()
 {
-	return Connector::_duplicate(pConnector_.in());
+	return pConnector_.in();
 }
 
 int
@@ -311,7 +311,7 @@ CatalogBaseImpl::close()
 {
 	if(IsConnected())
 	{
-		flush();
+		//flush();
 
 		bIsConnected_ = FALSE;
 

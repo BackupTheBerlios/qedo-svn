@@ -25,7 +25,7 @@
 * This connector can know how many sessions or session pools can be established
 * in a given database. It can also control how many storagehome can share one 
 * session or session pool dynamically and explicitly
-* The limitation of this connector is it can support only one database, but this
+* Supporting only one database is the limitation of this connector, but this
 * can be improved in the future ;-)
 */
 
@@ -38,9 +38,9 @@ ConnectorImpl::ConnectorImpl() :
 }
 
 ConnectorImpl::ConnectorImpl(char* szImplID) :
-	iMaxConnections(-100) // -100 means this value is to be initiated
+	iMaxConnections(-100), // -100 means this value is to be initiated
+	strImplID_(szImplID)
 {
-	strImplID_ = szImplID;
 }
 
 ConnectorImpl::~ConnectorImpl()
@@ -49,7 +49,11 @@ ConnectorImpl::~ConnectorImpl()
 
 	// delete all sessions and session pool(s)!
 	std::cout << lSessions_.size() << " session(s) in the list\n";
-	for( sessionIter_=lSessions_.begin(); sessionIter_!=lSessions_.end(); sessionIter_++ )
+	int count = lSessions_.size();
+	sessionIter_=lSessions_.begin();
+	//for( sessionIter_=lSessions_.begin(); sessionIter_!=lSessions_.end(); sessionIter_++ )
+
+	for(int i=0; i<count; i++)
 	{
 		std::cout << "close session...\n";
 		(*sessionIter_)->close();
@@ -57,6 +61,7 @@ ConnectorImpl::~ConnectorImpl()
 		(*sessionIter_)->_remove_ref();
 		std::cout << "erase session from list...\n";
 		lSessions_.erase(sessionIter_);
+		std::cout << "end of erase session from list...\n";
 	}
 
 	std::cout << lSessionPools_.size() << " session pool(s) in the list\n";
@@ -104,7 +109,7 @@ ConnectorImpl::checkMaxConnections()
 	// '=0' means there is no specified limit or the limit is unknown
 	// '>0' means that connector know how many sessions or session pools it can be create
 	if( iMaxConnections > 0 )
-		if( (lSessions_.size()+lSessionPools_.size()) == iMaxConnections )
+		if( (lSessions_.size()+lSessionPools_.size()) >= iMaxConnections )
 			return false;
 
 	return true;

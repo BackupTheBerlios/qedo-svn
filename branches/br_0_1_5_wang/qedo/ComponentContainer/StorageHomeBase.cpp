@@ -196,7 +196,7 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 CatalogBase_ptr 
 StorageHomeBaseImpl::get_catalog()
 {
-	return CatalogBase::_duplicate(pCatalogBase_.in());
+	return pCatalogBase_.in();
 }
 
 std::string

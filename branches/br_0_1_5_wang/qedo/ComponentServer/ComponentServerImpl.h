@@ -125,7 +125,7 @@ private:
 	QedoMutex							value_mutex_;
 
 	/** the object reference of the connector */
-	CosPersistentState::Connector_var pConn_;
+	ConnectorImpl*                      pConn_;
 
 #ifndef _QEDO_NO_QOS
 	/** interceptor dispatcher for the server side */
