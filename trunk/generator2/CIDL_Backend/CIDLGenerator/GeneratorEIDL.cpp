@@ -86,7 +86,8 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 	if (!CORBA::is_nil(restricted_contained )) {
 		std::string id = restricted_contained ->id();
 
-		if (!id.compare("IDL:Deployment:1.0")) {
+		if (!id.compare("IDL:Deployment:1.0") ||
+			!id.compare("IDL:omg.org/Deployment:1.0")) {
 			return;
 		};
 		if (!id.compare("IDL:omg.org/Components:1.0") ||
