@@ -1,0 +1,17 @@
+#include "simple.idl"
+
+module simple {
+	
+	composition session vidconf_sink_compo {
+		home executor vid_sink_home_impl {
+			implements vid_sink_home;
+			manages vidconf_sinkSessionImpl;
+		};
+	};
+	composition session vidconf_source_compo {
+		home executor vid_source_home_impl {
+			implements vid_source_home;
+			manages vidconf_sourceSessionImpl;
+		};
+	};
+};
