@@ -19,7 +19,8 @@ class GeneratorLIDL : public virtual IDLBase
 
 	string filename_;
 	Printer out;
-	string managed_component_;
+	std::string managed_component_;
+	IR__::ComponentDef_var component_;
 
 	void open_module(IR__::Contained* cur_cont);
 	void close_module(IR__::Contained* cur_cont);

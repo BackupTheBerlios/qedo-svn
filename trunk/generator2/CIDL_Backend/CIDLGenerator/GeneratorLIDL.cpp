@@ -84,6 +84,8 @@ GeneratorLIDL::doAttribute(IR__::AttributeDef_ptr attribute)
 void
 GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 {
+	component_ = IR__::ComponentDef::_duplicate(component);
+
 	//
 	// executor
 	//
@@ -352,15 +354,8 @@ GeneratorLIDL::doUses(IR__::UsesDef_ptr uses)
 	// multiple
 	if(uses->is_multiple() == true)
 	{
-		out << "struct " << uses->name() << "Connection {\n";
-		out.indent();
-		out << uses->interface_type()->absolute_name() << " objref;\n";
-		out << "Components::Cookie ck;\n";
-		out.unindent();
-		out << "};\n";
-		out << "typedef sequence < " << uses->name() << "Connection > " << uses->name() << "Connections;\n\n";
-			
-		out << uses->name() << "Connections " << "get_connections_" << uses->name() << "();\n\n";
+		out << map_absolute_name(component_) << "::" << uses->name() << "Connections ";
+		out << "get_connections_" << uses->name() << "();\n";
 	}
 	// not multiple
 	else

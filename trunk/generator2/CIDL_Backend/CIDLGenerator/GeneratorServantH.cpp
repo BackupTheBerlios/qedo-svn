@@ -148,18 +148,42 @@ GeneratorServantH::doUses(IR__::UsesDef_ptr uses)
 	out << "\n//\n// " << uses->id() << "\n//\n";
 	std::string interface_name = mapFullName(uses->interface_type());
 
-	// get_connection_...
-	out << interface_name << "_ptr get_connection_" << uses->name() << "()\n";
-	out << "	throw (CORBA::SystemException);\n";
+	//
+	// multiple
+	//
+	if(uses->is_multiple() == true)
+	{
+		// connect_...
+		out << "Components::Cookie* " << "connect_" << uses->name() << "(" << interface_name << "_ptr conx)\n";
+		out << "	throw (Components::ExceededConnectionLimit, Components::InvalidConnection, CORBA::SystemException);\n";
+			
+		// disconnect_...
+		out << interface_name << "_ptr disconnect_" << uses->name() << "(Components::Cookie* ck)\n";
+		out << "    throw (Components::InvalidConnection, CORBA::SystemException);\n";
 
-	// disconnect_...
-    out << interface_name << "_ptr disconnect_" << uses->name() << "()\n";
-	out << "	throw(Components::NoConnection, CORBA::SystemException);\n";
+		// get_connections_...
+		out << mapFullName(composition_->ccm_component()) << "::" << uses->name() << "Connections* ";
+		out << "get_connections_" << uses->name() << "()\n";
+		out << "	throw (CORBA::SystemException);\n";
+	}
+	//
+	// not multiple
+	//
+	else
+	{
+		// get_connection_...
+		out << interface_name << "_ptr get_connection_" << uses->name() << "()\n";
+		out << "	throw (CORBA::SystemException);\n";
 
-	// connect_...
-    out << "void connect_" << uses->name() << "(";
-	out << interface_name << "_ptr conxn)\n";
-	out << "	throw (Components::AlreadyConnected, Components::InvalidConnection, CORBA::SystemException);\n";
+		// disconnect_...
+		out << interface_name << "_ptr disconnect_" << uses->name() << "()\n";
+		out << "	throw (Components::NoConnection, CORBA::SystemException);\n";
+
+		// connect_...
+		out << "void connect_" << uses->name() << "(";
+		out << interface_name << "_ptr conxn)\n";
+		out << "	throw (Components::AlreadyConnected, Components::InvalidConnection, CORBA::SystemException);\n";
+	}
 }
 
 
@@ -442,7 +466,23 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component)
 	{
 		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
 		out << "\n";
-		out << mapFullName(a_uses->interface_type()) << "_ptr get_connection_" << a_uses->name() << "();\n";
+		
+		//
+		// multiple
+		//
+		if(a_uses->is_multiple() == true)
+		{
+			out << mapFullName(composition_->ccm_component()) << "::" << a_uses->name() << "Connections* ";
+			out << "get_connections_" << a_uses->name() << "()\n";
+			out << "	throw (CORBA::SystemException);\n";
+		}
+		//
+		// not multiple
+		//
+		else
+		{
+			out << mapFullName(a_uses->interface_type()) << "_ptr get_connection_" << a_uses->name() << "();\n";
+		}
 	}
 
 	// emits ports

@@ -436,39 +436,91 @@ GeneratorServantC::doUses(IR__::UsesDef_ptr uses)
 {
 	std::string interface_name = mapFullName(uses->interface_type());
 
-	// get_connection_...
-	out << interface_name << "_ptr\n";
-	out << class_name_ << "::get_connection_" << uses->name() << "()\n";
-	out << "throw (CORBA::SystemException)\n{\n";
-	out.indent();
-	out << "Components::ConnectedDescriptions* connections = ccm_object_executor_->get_connections(\"";
-	out << uses->name() << "\");\n\n";
-	out << interface_name << "_var use = ";
-	out << interface_name << "::_narrow ((*connections)[0]->objref());\n\n";
-	out << "return " << interface_name << "::_duplicate(use);\n";
-	out.unindent();
-	out << "}\n\n\n";
+	//
+	// multiple
+	//
+	if(uses->is_multiple() == true)
+	{
+		std::string mult_conn = mapFullName(composition_->ccm_component()) + "::" + uses->name() + "Connections";
 
-	// disconnect_...
-    out << interface_name << "_ptr\n";
-	out << class_name_ << "::disconnect_" << uses->name() << "()\n";
-	out << "throw(Components::NoConnection, CORBA::SystemException)\n{\n";
-	out.indent();
-	out << interface_name << "_var use = get_connection_" << uses->name() << "();\n\n";
-	out << "ccm_object_executor_->disconnect(\"" << uses->name() << "\", (Components::Cookie*)0);\n\n";
-	out << "return use._retn();\n";
-	out.unindent();
-	out << "}\n\n\n";
+		// connect_...
+		out << "Components::Cookie*\n";
+		out << class_name_ << "::connect_" << uses->name() << "(" << interface_name << "_ptr conx)\n";
+		out << "throw (Components::ExceededConnectionLimit, Components::InvalidConnection, CORBA::SystemException)\n{\n";
+		out.indent();
+		out << "return ccm_object_executor_->connect(\"" << uses->name() << "\", conx);\n";
+		out.unindent();
+		out << "}\n\n\n";
+			
+		// disconnect_...
+		out << interface_name << "_ptr\n";
+		out << class_name_ << "::disconnect_" << uses->name() << "(Components::Cookie* ck)\n";
+		out << "throw (Components::InvalidConnection, CORBA::SystemException)\n{\n";
+		out.indent();
+		out << "ccm_object_executor_->disconnect(\"" << uses->name() << "\", ck);\n\n";
+		out << "// TODO\n";
+		out << "return 0;\n";
+		out.unindent();
+		out << "}\n\n\n";
 
-	// connect_...
-    out << "void\n";
-	out << class_name_ << "::connect_" << uses->name() << "(";
-	out << interface_name << "_ptr conxn)\n";
-	out << "throw (Components::AlreadyConnected, Components::InvalidConnection, CORBA::SystemException)\n{\n";
-	out.indent();
-	out << "ccm_object_executor_->connect(\"" << uses->name() << "\", conxn);\n";
-	out.unindent();
-	out << "}\n\n\n";
+		// get_connections_...
+		out << mult_conn << "*\n";
+		out << class_name_ << "::get_connections_" << uses->name() << "()\n";
+		out << "throw (CORBA::SystemException)\n{\n";
+		out.indent();
+		out << "Components::ConnectedDescriptions* connections = ccm_object_executor_->get_connections(\"";
+		out << uses->name() << "\");\n\n";
+		out << mult_conn << "_var conn = new(" << mult_conn << ");\n";
+		out << "conn->length(connections->length());\n";
+		out << "for(unsigned int i = 0; i < connections->length(); i++)\n{\n";
+		out.indent();
+		out << "conn[i].objref = " << interface_name << "::_narrow((*connections)[i]->objref());\n";
+		out << "conn[i].ck = (*connections)[i]->ck();\n";
+		out << "}\n\n";
+		out.unindent();
+		out << "return conn._retn();\n";
+		out.unindent();
+		out << "}\n\n\n";
+	}
+	//
+	// not multiple
+	//
+	else
+	{
+		// get_connection_...
+		out << interface_name << "_ptr\n";
+		out << class_name_ << "::get_connection_" << uses->name() << "()\n";
+		out << "throw (CORBA::SystemException)\n{\n";
+		out.indent();
+		out << "Components::ConnectedDescriptions* connections = ccm_object_executor_->get_connections(\"";
+		out << uses->name() << "\");\n\n";
+		out << interface_name << "_var use = ";
+		out << interface_name << "::_narrow ((*connections)[0]->objref());\n\n";
+		out << "return " << interface_name << "::_duplicate(use);\n";
+		out.unindent();
+		out << "}\n\n\n";
+
+		// disconnect_...
+		out << interface_name << "_ptr\n";
+		out << class_name_ << "::disconnect_" << uses->name() << "()\n";
+		out << "throw(Components::NoConnection, CORBA::SystemException)\n{\n";
+		out.indent();
+		out << interface_name << "_var use = get_connection_" << uses->name() << "();\n\n";
+		out << "ccm_object_executor_->disconnect(\"" << uses->name() << "\", (Components::Cookie*)0);\n\n";
+		out << "return use._retn();\n";
+		out.unindent();
+		out << "}\n\n\n";
+
+		// connect_...
+		out << "void\n";
+		out << class_name_ << "::connect_" << uses->name() << "(";
+		out << interface_name << "_ptr conxn)\n";
+		out << "throw (Components::AlreadyConnected, Components::InvalidConnection, CORBA::SystemException)\n{\n";
+		out.indent();
+		out << "ccm_object_executor_->connect(\"" << uses->name() << "\", conxn);\n";
+		out.unindent();
+		out << "}\n\n\n";
+	}
 }
 
 
@@ -878,23 +930,55 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
 		std::string interface_name = mapFullName(a_uses->interface_type());
 		
-		// get_connection_...
-		out << interface_name << "_ptr\n";
-		out << class_name_ << "::get_connection_" << a_uses->name() << "()\n{\n";
-		out.indent();
-		out << "Components::ConnectedDescriptions_var connections;\n";
-		out << "connections = ccm_object_executor_->get_connections(\"";
-		out << a_uses->name() << "\");\n\n";
-		out << "if (! connections->length())\n{\n";
-		out.indent();
-		out << "return " << interface_name << "::_nil();\n";
-		out.unindent();
-		out << "}\n\n";
-		out << interface_name << "_var use = ";
-		out << interface_name << "::_narrow (connections[0]->objref());\n\n";
-		out << "return use._retn();\n";
-		out.unindent();
-		out << "}\n\n\n";
+		//
+		// multiple
+		//
+		if(a_uses->is_multiple() == true)
+		{
+			std::string mult_conn = mapFullName(composition_->ccm_component()) + "::" + a_uses->name() + "Connections";
+
+			// get_connections_...
+			out << mult_conn << "*\n";
+			out << class_name_ << "::get_connections_" << a_uses->name() << "()\n";
+			out << "throw (CORBA::SystemException)\n{\n";
+			out.indent();
+			out << "Components::ConnectedDescriptions_var connections;\n";
+			out << "connections = ccm_object_executor_->get_connections(\"" << a_uses->name() << "\");\n\n";
+			out << mult_conn << "_var conn = new(" << mult_conn << ");\n";
+			out << "conn->length(connections->length());\n";
+			out << "for(unsigned int i = 0; i < connections->length(); i++)\n{\n";
+			out.indent();
+			out << "conn[i].objref = " << interface_name << "::_narrow((*connections)[i]->objref());\n";
+			out << "conn[i].ck = (*connections)[i]->ck();\n";
+			out << "}\n\n";
+			out.unindent();
+			out << "return conn._retn();\n";
+			out.unindent();
+			out << "}\n\n\n";
+		}
+		//
+		// not multiple
+		//
+		else
+		{
+			// get_connection_...
+			out << interface_name << "_ptr\n";
+			out << class_name_ << "::get_connection_" << a_uses->name() << "()\n{\n";
+			out.indent();
+			out << "Components::ConnectedDescriptions_var connections;\n";
+			out << "connections = ccm_object_executor_->get_connections(\"";
+			out << a_uses->name() << "\");\n\n";
+			out << "if (! connections->length())\n{\n";
+			out.indent();
+			out << "return " << interface_name << "::_nil();\n";
+			out.unindent();
+			out << "}\n\n";
+			out << interface_name << "_var use = ";
+			out << interface_name << "::_narrow (connections[0]->objref());\n\n";
+			out << "return use._retn();\n";
+			out.unindent();
+			out << "}\n\n\n";
+		}
 	}
 
 	// emits ports
