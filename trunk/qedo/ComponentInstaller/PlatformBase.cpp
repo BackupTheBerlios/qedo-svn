@@ -24,12 +24,12 @@
 #include "PlatformBase.h"
 #include "Util.h"
 
-static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.8 2003/09/01 10:48:14 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.9 2003/09/01 12:51:46 neubauer Exp $";
 
 #ifndef _WIN32
 #include <time.h>
-#else
 #include <fcntl.h>
+#else
 #endif
 
 
