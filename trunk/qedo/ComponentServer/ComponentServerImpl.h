@@ -25,10 +25,8 @@
 
 #include <CORBA.h>
 #include "QedoComponents_skel.h"
-
 #include "ContainerInterfaceImpl.h"
 #include "Util.h"
-
 #include <vector>
 
 
@@ -46,6 +44,22 @@ namespace Qedo {
  * The component server is created by the component server activator and used to create containers.
  * @{
  */
+
+
+class ValuetypeEntry
+{
+public:
+	long						count;
+	std::string					repid;
+	std::string					code;
+	/** handle of the dynamic library */
+#ifdef _WIN32
+	HINSTANCE					dll;
+#else
+	void*						dll;
+#endif
+};
+
 
 class ContainerEntry
 {
@@ -70,7 +84,7 @@ typedef std::vector < ContainerEntry > ContainerVector;
 /**
  * the server for containers
  */
-class ComponentServerImpl : public virtual POA_Components::Deployment::ComponentServer,
+class ComponentServerImpl : public virtual POA_Qedo_Components::Deployment::ComponentServer,
 							public virtual PortableServer::RefCountServantBase,
 							public virtual CreateDestructCORBAObjectCounter
 {
@@ -94,6 +108,30 @@ private:
 	ContainerVector											containers_;
 	/** the slot id where our interceptor stores information to be used by container services */
 	PortableInterceptor::SlotId								slot_id_;
+	/** the list of valuetype implementations */
+	std::vector < ValuetypeEntry >							valuetypes_;
+	/** the mutex for valuetype implementation list */
+	QedoMutex												value_mutex_;
+
+	/**
+	 * load a shared library
+	 * \param name The path of the shared library.
+	 */
+#ifdef _WIN32
+	HINSTANCE load_shared_library (const char*);
+#else
+	void* load_shared_library (const char*);
+#endif
+
+	/**
+	 * unload a shared library
+	 * \param handle The handle of the shared library.
+	 */
+#ifdef _WIN32
+	void unload_shared_library (HINSTANCE);
+#else
+	void unload_shared_library (void*);
+#endif
 
 public:
 	/**
@@ -146,6 +184,13 @@ public:
      */
     void remove()
 		throw (Components::RemoveFailure, CORBA::SystemException);
+
+	/**
+	 * implements IDL:Qedo_Components/Deployment/ComponentServer/loadValuetypeFactory:1.0
+	 * load the required valuetype factory if not already done
+	 */
+	void loadValuetypeFactory(const char* repid, const char* loc)
+		throw (CORBA::SystemException);
 
 	//
 	// Exceptions

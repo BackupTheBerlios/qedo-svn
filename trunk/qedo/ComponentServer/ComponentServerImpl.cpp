@@ -24,7 +24,7 @@
 #include "Output.h"
 #include "Valuetypes.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.13 2003/08/06 12:24:29 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.14 2003/08/27 06:52:39 neubauer Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -88,6 +88,79 @@ ComponentServerImpl::~ComponentServerImpl()
 {
 	DEBUG_OUT ("ComponentServerImpl: Destructor called");
 }
+
+
+#ifdef _WIN32
+
+HINSTANCE 
+ComponentServerImpl::load_shared_library (const char* name)
+{
+	HINSTANCE handle_lib;
+
+	handle_lib = LoadLibrary (name);
+
+	if (handle_lib < (HINSTANCE)HINSTANCE_ERROR)
+	{
+		// Unable to load DLL
+		LPVOID lpMsgBuf;
+        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+			(LPTSTR) &lpMsgBuf, 0, NULL);
+		NORMAL_ERR2 ("ComponentServerImpl: Cannot load dynamic library: ", (LPCTSTR)lpMsgBuf);
+		
+		// Free the buffer.
+		LocalFree( lpMsgBuf );
+		handle_lib = 0;
+	}
+
+	return handle_lib;
+}
+
+void
+ComponentServerImpl::unload_shared_library (HINSTANCE handle)
+{
+	if (! FreeLibrary (handle))
+	{
+		LPVOID lpMsgBuf;
+        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+			(LPTSTR) &lpMsgBuf, 0, NULL);
+		NORMAL_ERR2 ("ComponentServerImpl: Cannot unload dynamic library: ", (LPCTSTR)lpMsgBuf);	
+	}
+}
+
+#else
+
+void* 
+ComponentServerImpl::load_shared_library (const char* name)
+{
+
+	void * handle_lib;
+
+	handle_lib = dlopen( name ,RTLD_LAZY);
+
+	if (!handle_lib)
+	{
+		// Unable to load shared object
+		NORMAL_ERR2 ( "ComponentServerImpl: Cannot load dynamic library ", name );
+		NORMAL_ERR2 ( "ComponentServerImpl: Error was: ", dlerror() );
+
+	}
+
+	return handle_lib;
+}
+
+void
+ComponentServerImpl::unload_shared_library (void* handle)
+{
+	if (dlclose (handle))
+	{
+		NORMAL_ERR ( "ComponentServerImpl: Cannot unload dynamic library");
+		NORMAL_ERR2 ( "ComponentServerImpl: Error was: ", dlerror() );
+	}
+}
+
+#endif
 
 
 void
@@ -390,11 +463,26 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 {
 	DEBUG_OUT ("ComponentServerImpl: remove() called");
 
+	//
+	// remove containers
+	//
 	for (unsigned int i = 0; i < containers_.size(); i++)
 	{
 		Components::Deployment::Container_var container = containers_[i].container_->_this();
         this->remove_container (container.in());
 	}
+
+	//
+	// remove valuetype impls
+	//
+	std::vector < ValuetypeEntry > ::iterator iter;
+	for(iter = valuetypes_.begin();
+		iter != valuetypes_.end();
+		iter++)
+	{
+		this->unload_shared_library ((*iter).dll);
+	}
+	valuetypes_.clear();
 
 	root_poa_manager_->deactivate (false /*no etherealize objects*/, false /*no wait for completion*/);
 
@@ -402,6 +490,74 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	root_poa_->deactivate_object (oid.in());
 
 	orb_->shutdown (false /*wait for completion*/);
+}
+
+
+void 
+ComponentServerImpl::loadValuetypeFactory(const char* repid, const char* loc)
+throw (CORBA::SystemException)
+{
+	// get mutex
+	QedoLock lock (value_mutex_);
+
+	//
+	// search list of installed impls
+	//
+	std::vector < ValuetypeEntry > ::iterator iter;
+	for(iter = valuetypes_.begin();
+		iter != valuetypes_.end();
+		iter++)
+	{
+		if((*iter).repid == repid)
+		{
+			break;
+		}
+	}
+
+	//
+	// already installed
+	//
+	if(iter != valuetypes_.end())
+	{
+		DEBUG_OUT3("..... value factory for ", repid, " already registered");
+		// check whether factory is already registered
+		if (orb_->lookup_value_factory( repid ) == 0 )
+		{
+			DEBUG_OUT(".......... no!!!");
+			// unload and erase
+			this->unload_shared_library ((*iter).dll);
+			valuetypes_.erase(iter);
+		}
+		
+		(*iter).count++;
+	}
+	//
+	// to be installed
+	//
+	else
+	{
+		DEBUG_OUT2( "..... load value factory code for ", repid );
+#ifdef _WIN32
+		HINSTANCE handle_value_lib;
+#else
+		void* handle_value_lib;
+#endif
+
+		handle_value_lib = this->load_shared_library (loc);
+
+		if (! handle_value_lib)
+		{
+			NORMAL_ERR2 ("ComponentServerImpl: Failed to load valuetype module ", loc);
+			throw Components::CCMException();
+		}
+
+		ValuetypeEntry data;
+		data.repid = repid;
+		data.code = loc;
+		data.count = 1;
+		data.dll = handle_value_lib;
+		valuetypes_.push_back(data);
+	}
 }
 
 
