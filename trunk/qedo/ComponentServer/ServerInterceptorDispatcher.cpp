@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerInterceptorDispacher.cpp,v 1.1 2003/06/12 12:09:00 tom Exp $";
+static char rcsid[] = "$Id: ServerInterceptorDispatcher.cpp,v 1.1 2003/06/13 08:08:02 tom Exp $";
 
 #include "ServerInterceptorDispatcher.h"
 #include "fstream"
