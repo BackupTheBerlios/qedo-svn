@@ -20,19 +20,18 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: cs.cpp,v 1.4 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: cs.cpp,v 1.5 2003/01/22 08:39:15 neubauer Exp $";
 
 #include "ComponentServerImpl.h"
 #include "Output.h"
-
 #include <cstring>
+#include <string>
 
-using namespace std;
 
 void 
 usage (const char* prog_name)
 {
-	string usage_message;
+	std::string usage_message;
 
 	usage_message = "usage: ";
 	usage_message += prog_name;
