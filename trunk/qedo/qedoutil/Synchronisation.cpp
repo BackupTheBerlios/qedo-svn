@@ -34,12 +34,16 @@
 #include <sys/time.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.34 2004/02/16 07:50:53 tom Exp $";
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.35 2004/02/18 15:49:36 tom Exp $";
 
 
 namespace Qedo {
 
-struct MutexDelegate 
+struct MutexDelegate
 {
 #ifdef QEDO_WINTHREAD
 	HANDLE mutex_;
@@ -48,7 +52,7 @@ struct MutexDelegate
 #endif
 };
 
-struct RecursivMutexDelegate 
+struct RecursivMutexDelegate
 {
 #ifdef QEDO_WINTHREAD
 #else
@@ -57,7 +61,7 @@ struct RecursivMutexDelegate
 #endif
 };
 
-struct CondDelegate 
+struct CondDelegate
 {
 #ifdef QEDO_WINTHREAD
 	HANDLE event_handle_;
@@ -781,7 +785,7 @@ QedoThread::join()
 /**
  * parameter struct for thread creation
  */
-struct T_Start 
+struct T_Start
 {
 	void* (*p)(void*);
 	void* a;
@@ -801,21 +805,25 @@ void* startFunc(void* p) {
 	void* (*f)(void*) = t->p;
 	void* arg = t->a;
 	PortableInterceptor::SlotId slot_id = t->slot_id;
-	CORBA::Any* slot_content = t->slot_content;
+	CORBA::Any* slot_content=0;
+	slot_content = t->slot_content;
 	ThreadDelegate* d = t->d;
 
 	delete t;
 #ifndef _QEDO_NO_QOS
 	int dummy = 0;
-    CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
 	CORBA::Object_var obj = orb->resolve_initial_references ("PICurrent");
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
-	try 
+	try
 	{
-		piCurrent->set_slot (slot_id, *slot_content);
+		if (slot_content)
+		{
+			piCurrent->set_slot (slot_id, *slot_content);
+		}
 	} catch (PortableInterceptor::InvalidSlot&)
 	{
-		//ignore it 
+		//ignore it
 	}
 
 #endif
