@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.25 2003/10/08 14:23:46 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.25.2.1 2003/10/11 00:24:39 tom Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -448,7 +448,7 @@ throw(CORBA::SystemException)
 
 }
 
-void 
+void
 ServerActivatorImpl::remove_by_pid (pid_t server)
 {
 	std::cout << "ServerActivatorImpl: remove_by_pid() called" << std::endl;
@@ -482,18 +482,18 @@ ServerActivatorImpl::RemoveStruct::RemoveStruct(const ComponentServerEntry& e)
 void *
 ServerActivatorImpl::timer_thread(void *data)
 {
-	RemoveStruct* s = static_cast<RemoveStruct*>(data);
+	RemoveStruct* r = static_cast<RemoveStruct*>(data);
 
-	Qedo::QedoLock l(s->mutex);
+	Qedo::QedoLock l(r->mutex);
 
-	if( !s->cond.wait_timed(s->mutex,5000) )
+	if( !r->cond.wait_timed(r->mutex,10000) )
 	{
 		// got timeout
 
 #ifdef _WIN32
 		// XXX this has also to be implemented for Windows
 #else
-		if ( kill(s->entry.pid,SIGKILL) == -1 )
+		if ( kill(r->entry.pid, SIGKILL) == -1 )
 		{
 			std::cerr << "ServerActivatorImpl: Cannot kill Component Server process" << std::endl;
 			std::cerr << "ServerActivatorImpl: " << strerror(errno) << std::endl;
