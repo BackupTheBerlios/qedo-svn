@@ -1,182 +1,161 @@
-Basic Installation
-==================
+/*****************************************************************************/
+/* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
+/*                                                                           */
+/* Copyright (c) 2002 by the Qedo Team                                       */
+/*                                                                           */
+/* http://qedo.berlios.de                                                    */
+/*                                                                           */
+/* This file is part of Qedo Generator                                       */
+/*                                                                           */
+/* Qedo Generator is free software; you can redistribute it and/or modify    */
+/* it under the terms of the GNU General Public License as published by      */
+/* the Free Software Foundation; either version 2 of the License, or         */
+/* (at your option) any later version.                                       */
+/*                                                                           */ 
+/* Qedo Generator is distributed in the hope that it will be useful,         */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of            */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
+/* GNU General Public License for more details.                              */
+/*                                                                           */
+/* You should have received a copy of the GNU General Public License         */
+/* along with Qedo; if not, write to the Free Software                     */
+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
+/*                                                                           */
+/*****************************************************************************/
 
-   These are generic installation instructions.
+Version 0.1.0
 
-   The `configure' shell script attempts to guess correct values for
-various system-dependent variables used during compilation.  It uses
-those values to create a `Makefile' in each directory of the package.
-It may also create one or more `.h' files containing system-dependent
-definitions.  Finally, it creates a shell script `config.status' that
-you can run in the future to recreate the current configuration, a file
-`config.cache' that saves the results of its tests to speed up
-reconfiguring, and a file `config.log' containing compiler output
-(useful mainly for debugging `configure').
+This File describes the process of installing the Qedo code generator. Because the code generator is a complex software it need many other software products. You have to install all of them before you can compile the code generator. This will take you some time and experiences with installing such software would be very helpful. Nevertheless, we hope that this little description will give enough information to acomplish all needed steps. 
+The Qedo code generator can be compiled by using the MS Visual Studio 6, MS Visual Studio.Net, Solaris gcc, or Linux gcc.
 
-   If you need to do unusual things to compile the package, please try
-to figure out how `configure' could check whether to do them, and mail
-diffs or instructions to the address given in the `README' so they can
-be considered for the next release.  If at some point `config.cache'
-contains results you don't want to keep, you may remove or edit it.
+If you have any problem or if you have any comments do not hesitate to contact the other Qedo users by using the qedo-devel mailing list. You can reach it at qedo-devel@lists.berlios.de. You can also use the bug tracking system provided by the Qedo project. You can reach it at http://qedo.berlios.de. this site has all relevant information about the Qedo project. In any case you can also contact the authors directly. The email addresses are listed on the Qedo web page as well.
 
-   The file `configure.in' is used to create `configure' by a program
-called `autoconf'.  You only need `configure.in' if you want to change
-it or regenerate `configure' using a newer version of `autoconf'.
+The Qedo team.
 
-The simplest way to compile this package is:
+1. ORB
+======
 
-  1. `cd' to the directory containing the package's source code and type
-     `./configure' to configure the package for your system.  If you're
-     using `csh' on an old version of System V, you might need to type
-     `sh ./configure' instead to prevent `csh' from trying to execute
-     `configure' itself.
+The code generator uses an extended interface repository. This repository needs CORBA. At the moment Qedo generator supports 3 ORBs 
+Mico, TAO and ORBacus. For using one of the ORBs you need to install the ORB and to set an apropriate environment variable. Follow the instructions coming with each ORB to install it properly. We will only point out some important details.
 
-     Running `configure' takes awhile.  While running, it prints some
-     messages telling which features it is checking for.
 
-  2. Type `make' to compile the package.
+orbacus Version 4.1.1
+------------------------------------------------------------------------------
+To install ORBACUS you have to do at least the following steps.
+obtain software:
+	Version 4.1.1
+	get from: http://www.iona.com/products/orbacus_home.htm (OB-4.1.1.zip)
+install/compile:
+	configure file OB-4.1.1/config/Make.rules.mak, set 'prefix' directory, DEBUG=yes and DLL=yes
+	cd to OB-4.1.1 and compile with nmake -f Makefile.mak install_min
+set environment:
+	ORBACUS = (e.g. C:\OOC)
+	ORBACUS_CONFIG= %ORBACUS%\ooc\ini\orbacus.ini
+	create ini-dir with orbacus.ini:
+		ooc.orb.service.NameService = corbaloc:iiop:127.0.0.1:3000/NameService
+		ooc.naming.endpoint=iiop --port 3000
+	add path %ORBACUS%\lib to VC++ extras/options/directories/executable files (*.dll)
 
-  3. Optionally, type `make check' to run any self-tests that come with
-     the package.
 
-  4. Type `make install' to install the programs and any data files and
-     documentation.
 
-  5. You can remove the program binaries and object files from the
-     source code directory by typing `make clean'.  To also remove the
-     files that `configure' created (so you can compile the package for
-     a different kind of computer), type `make distclean'.  There is
-     also a `make maintainer-clean' target, but that is intended mainly
-     for the package's developers.  If you use it, you may have to get
-     all sorts of other programs in order to regenerate files that came
-     with the distribution.
+TAO Version x.3
+------------------------------------------------------------------------------
+TAO comes with the ACE Framework (Version 5.3). 
+To install TAO you have to do at least the following steps.
+obtain software:
+	Version TAO 1.3 ACE 5.3
+	get from: http://www.cs.wustl.edu/~schmidt/TAO.html
+install/compile:
+	ACE_ROOT = C:\ACE_WRAPPERS
+	TAO_ROOT = C:\ACE_WRAPPERS\TAO
+	TAO      = C:\ACE_WRAPPERS
+	create a config.h in %ACE_WRAPPERS%\ace:
+		#define ACE_HAS_STANDARD_CPP_LIBRARY 1
+		#include "ace/config-win32.h"
+	use the TAO workspace provided at %ACE_ROOT%\tao to compile TAO
+	there are a lot of project you need at least to compile these ones:
+		TAO_IDL
+		PortableServer
+		DynamicAny
 
-Compilers and Options
-=====================
 
-   Some systems require unusual options for compilation or linking that
-the `configure' script does not know about.  You can give `configure'
-initial values for variables by setting them in the environment.  Using
-a Bourne-compatible shell, you can do that on the command line like
-this:
-     CC=c89 CFLAGS=-O2 LIBS=-lposix ./configure
 
-Or on systems that have the `env' program, you can do it like this:
-     env CPPFLAGS=-I/usr/local/include LDFLAGS=-s ./configure
 
-Compiling For Multiple Architectures
-====================================
+MICO version 2.3.7
+------------------------------------------------------------------------------
+To install MICO you have to to at least the following steps.
+obtain software:
+	version MICO 2.3.7
+	get from: http://www.mico.org/
+install/compile:
+	MICO = (e.g. C:\MICO)
+	add path %MICO%\win32-bin to VC++ extras/options/directories/executable files
 
-   You can compile the package for more than one kind of computer at the
-same time, by placing the object files for each architecture in their
-own directory.  To do this, you must use a version of `make' that
-supports the `VPATH' variable, such as GNU `make'.  `cd' to the
-directory where you want the object files and executables to go and run
-the `configure' script.  `configure' automatically checks for the
-source code in the directory that `configure' is in and in `..'.
+2. Development Environment
+==========================
+In particular the text based front end of the Qedo code generator uses some of the common mechanisms to generate the text parser. Since these mechanisms are not part of a Windows system you need to install them. We recommend that you install the cygwin package. But you can also use other implementation for this purpose.
 
-   If you have to use a `make' that does not supports the `VPATH'
-variable, you have to compile the package for one architecture at a time
-in the source code directory.  After you have installed the package for
-one architecture, use `make distclean' before reconfiguring for another
-architecture.
+cygwin
+------------------------------------------------------------------------------
+Be careful that you install all the needed packages. Including all programs that are listed below.
+obtain software:
+	Version: 1.3.13-2
+	get from: http://www.cygwin.com (setup.exe)
+install/compile:
+	start setup, choose server and make sure, that the following tools are installed:
+		category devels: flex, bison 
+			 interpreters: phyton
+			 ( base: all including zlib )
+set environment:
+	add cygwin\bin to PATH
+	YACC = bison.exe
+	LEX = flex.exe
+	PYTHON = python2.2.exe 
 
-Installation Names
-==================
+	add path cygwin\bin to VC++ extras/options/directories/executable files
 
-   By default, `make install' will install the package's files in
-`/usr/local/bin', `/usr/local/man', etc.  You can specify an
-installation prefix other than `/usr/local' by giving `configure' the
-option `--prefix=PATH'.
+XERCES-C
+--------------------------------------------------------------------------------
+The XML handling
+obtain software:
+	Version: 2.1
+	get from: http://xml.apache.org/dist/xerces-c/stable/
+set environment
+XERCES=C:\opt\xerces-c2_1_0-win32
 
-   You can specify separate installation prefixes for
-architecture-specific files and architecture-independent files.  If you
-give `configure' the option `--exec-prefix=PATH', the package will use
-PATH as the prefix for installing programs and libraries.
-Documentation and other data files will still use the regular prefix.
 
-   In addition, if you use an unusual directory layout you can give
-options like `--bindir=PATH' to specify different values for particular
-kinds of files.  Run `configure --help' for a list of the directories
-you can set and what kinds of files go in them.
 
-   If the package supports it, you can cause programs to be installed
-with an extra prefix or suffix on their names by giving `configure' the
-option `--program-prefix=PREFIX' or `--program-suffix=SUFFIX'.
 
-Optional Features
+ZLib
+--------------------------------------------------------------------------------
+zip archive handling
+obtain software:
+	Version: 1.1.4
+	get from: http://www.gzip.org/zlib/
+set environment
+ZLIB=C:\opt\zlib114dll
+
+
+3. Compiling Windows
+====================
+
+If you use the MS Visual Studio 6 you have to open the workspace :
+Qedo.dsw 
+
+If you use the MS Visual Studio .NET you have to open the solution: 
+StreamContainer.sln
+
+
+Then you will have to set the active configuration. 
+mico    ->   CIDLGenerator - Win32 Debug_mico
+tao     ->   CIDLGenerator - Win32 Debug_tao
+orbacus ->   CIDLGenerator - Win32 Debug_orbacus
+
+4. Compiling Unix
 =================
 
-   Some packages pay attention to `--enable-FEATURE' options to
-`configure', where FEATURE indicates an optional part of the package.
-They may also pay attention to `--with-PACKAGE' options, where PACKAGE
-is something like `gnu-as' or `x' (for the X Window System).  The
-`README' should mention any `--enable-' and `--with-' options that the
-package recognizes.
 
-   For packages that use the X Window System, `configure' can usually
-find the X include and library files automatically, but if it doesn't,
-you can use the `configure' options `--x-includes=DIR' and
-`--x-libraries=DIR' to specify their locations.
+ 
 
-Specifying the System Type
-==========================
-
-   There may be some features `configure' can not figure out
-automatically, but needs to determine by the type of host the package
-will run on.  Usually `configure' can figure that out, but if it prints
-a message saying it can not guess the host type, give it the
-`--host=TYPE' option.  TYPE can either be a short name for the system
-type, such as `sun4', or a canonical name with three fields:
-     CPU-COMPANY-SYSTEM
-
-See the file `config.sub' for the possible values of each field.  If
-`config.sub' isn't included in this package, then this package doesn't
-need to know the host type.
-
-   If you are building compiler tools for cross-compiling, you can also
-use the `--target=TYPE' option to select the type of system they will
-produce code for and the `--build=TYPE' option to select the type of
-system on which you are compiling the package.
-
-Sharing Defaults
-================
-
-   If you want to set default values for `configure' scripts to share,
-you can create a site shell script called `config.site' that gives
-default values for variables like `CC', `cache_file', and `prefix'.
-`configure' looks for `PREFIX/share/config.site' if it exists, then
-`PREFIX/etc/config.site' if it exists.  Or, you can set the
-`CONFIG_SITE' environment variable to the location of the site script.
-A warning: not all `configure' scripts look for a site script.
-
-Operation Controls
-==================
-
-   `configure' recognizes the following options to control how it
-operates.
-
-`--cache-file=FILE'
-     Use and save the results of the tests in FILE instead of
-     `./config.cache'.  Set FILE to `/dev/null' to disable caching, for
-     debugging `configure'.
-
-`--help'
-     Print a summary of the options to `configure', and exit.
-
-`--quiet'
-`--silent'
-`-q'
-     Do not print messages saying which checks are being made.  To
-     suppress all normal output, redirect it to `/dev/null' (any error
-     messages will still be shown).
-
-`--srcdir=DIR'
-     Look for the package's source code in directory DIR.  Usually
-     `configure' can determine that directory automatically.
-
-`--version'
-     Print the version of Autoconf used to generate the `configure'
-     script, and exit.
-
-`configure' also accepts some other, not widely useful, options.
+Call:
+make Debug_orbacus_linux.
