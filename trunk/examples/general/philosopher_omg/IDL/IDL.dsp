@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "IDL___Win32_Debug_vc6"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(QEDO)\ComponentIDL" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(QEDO)\idl" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
 # ADD RSC /l 0x407 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -151,7 +151,7 @@ SOURCE=.\dinner.cidl
 InputPath=.\dinner.cidl
 
 BuildCmds= \
-	$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32 -DORBACUS_ORB --business --servant --target dinner dinner.cidl \
+	$(QEDO)\bin\cidl_gen -I%QEDO%\idl -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32 -DORBACUS_ORB --business --servant --target dinner dinner.cidl \
 	time /T > last_build_time \
 	
 
@@ -187,7 +187,7 @@ SOURCE=.\dinner_BUSINESS.idl
 InputPath=.\dinner_BUSINESS.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -DWIN32  -DORBACUS_ORB  -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_BUSINESS.idl
+	$(ORBACUS)\bin\idl -DWIN32  -DORBACUS_ORB  -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_BUSINESS.idl
 
 "dinner_BUSINESS.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -217,7 +217,7 @@ SOURCE=.\dinner_EQUIVALENT.idl
 InputPath=.\dinner_EQUIVALENT.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -DWIN32 -DORBACUS_ORB -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_EQUIVALENT.idl
+	$(ORBACUS)\bin\idl -DWIN32 -DORBACUS_ORB -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_EQUIVALENT.idl
 
 "dinner_EQUIVALENT.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -247,7 +247,7 @@ SOURCE=.\dinner_LOCAL.idl
 InputPath=.\dinner_LOCAL.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -DWIN32 -DORBACUS_ORB -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_LOCAL.idl
+	$(ORBACUS)\bin\idl -DWIN32 -DORBACUS_ORB -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_LOCAL.idl
 
 "dinner_LOCAL.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
