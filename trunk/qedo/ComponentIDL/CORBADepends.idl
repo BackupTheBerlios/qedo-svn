@@ -24,7 +24,7 @@
 #define __CORBA_DEPENDS_IDL__
 
 
-#ifdef MICO_CIDL_GEN 
+#ifdef MICO_CIDL_GEN
 module CORBA {
 	typedef sequence<octet> Principal;
 };
@@ -52,6 +52,7 @@ module CORBA {
 #ifdef MICO_ORB
 // #include "ir_base.idl"
 #include "poa.idl"
+#include "pi.idl"
 #include "qedo_mico.idl"
 #endif
 
