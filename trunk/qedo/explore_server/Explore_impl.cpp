@@ -34,12 +34,6 @@
 
 #include "Output.h"
 
-#ifdef _WIN32
-#include "process.h"
-#include "Winsock2.h"
-#include "windows/unistd.h"
-
-#endif
 
 
 
@@ -127,6 +121,7 @@ string get_short_name(char *full_scope_name) {
 		
 
 	ComponentServerActivatorInfoList_var Activatorlist = new ComponentServerActivatorInfoList;
+	Activatorlist -> length(0);
 	CORBA::ULong as = 0;
 	for (as = 0 ; as < bl -> length() ; as++) {
         CosNaming::Binding b=bl->operator [](as);
