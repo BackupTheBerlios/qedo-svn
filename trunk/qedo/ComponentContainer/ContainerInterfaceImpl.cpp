@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.16 2003/07/16 13:39:05 stoinski Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.17 2003/07/16 19:42:58 tom Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -129,7 +129,40 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
     catch (const CORBA::ORB::InvalidName&)
     {
         DEBUG_OUT("no HomeFinder");
-		return;
+		/* Since problem with MICO Initializer a new try directly over the name service*/
+		//return;
+	CosNaming::NamingContext_var nameService;
+		try
+		{
+			obj = orb->resolve_initial_references("NameService");
+		}
+		catch (const CORBA::ORB::InvalidName&)
+		{
+			std::cerr << "ORBInitializerImpl: Can't resolve NameService" << std::endl;
+			return;
+		}
+
+		if (CORBA::is_nil(obj.in()))
+		{
+			std::cerr << "ORBInitializerImpl: NameService is a nil object reference" << std::endl;
+			return;
+		}
+
+		
+		nameService = CosNaming::NamingContext::_narrow(obj.in());
+
+		//
+		// Resolve the HomeFinder
+		//
+		CosNaming::Name aName;
+	    aName.length(2);
+		aName[0].id = CORBA::string_dup("Qedo");
+		aName[0].kind = CORBA::string_dup("");
+		aName[1].id = CORBA::string_dup("HomeFinder");
+		aName[1].kind = CORBA::string_dup("");
+
+		obj = nameService->resolve(aName);
+
     }
     if (CORBA::is_nil(obj.in())) {
         DEBUG_OUT("no HomeFinder");

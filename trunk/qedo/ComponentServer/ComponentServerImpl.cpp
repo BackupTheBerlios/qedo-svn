@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.9 2003/05/05 11:08:01 stoinski Exp $";
+static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.10 2003/07/16 19:42:58 tom Exp $";
 
 #include "ComponentServerImpl.h"
 #include "ContainerInterfaceImpl.h"
@@ -222,15 +222,14 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 	// handle configuration
 	const char* container_type_string = "";
-	Qedo::ConfigValue_impl* x;
 
 	for (unsigned int i = 0; i < config.length(); i++)
 	{
 		std::cerr << "Got ConfigValue: \"" << config[i]->name() << "\"\n";
-		x = dynamic_cast<Qedo::ConfigValue_impl*>((Components::ConfigValue*)config[i].in());
 		if (! strcmp (config[i]->name(), "CONTAINER_TYPE"))
 		{
 			config[i]->value() >>= container_type_string;
+
 			break;
 		}
 	}

@@ -201,7 +201,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentValuetypes;&quot;$(MICO)\include\win32&quot;;&quot;$(MICO)\include&quot;"
-				PreprocessorDefinitions="MICO_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS;BUILD_MICO_DLL"
+				PreprocessorDefinitions="MICO_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
@@ -224,7 +224,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="mico2310.lib pthreadVSE.lib"
+				AdditionalDependencies="mico2310.lib micocoss2310.lib pthreadVCE.lib"
 				OutputFile="$(OutDir)/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -244,7 +244,9 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCPreLinkEventTool"
+				Description="Creating DEF file for ComponentContainer.dll"
+				CommandLine="gendef Debug_mico/ComponentContainer.def ComponentContainer Debug_mico/*.obj"/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"

@@ -211,7 +211,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".,$(MICO)\include\,$(MICO)\include\"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BUILD_MICO_DLL"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BUILD_QEDODLL_DLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
@@ -234,7 +234,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib mico2310.lib pthreadVSE.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib mico2310.lib pthreadVCE.lib"
 				OutputFile="$(OutDir)/ComponentIDL.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -257,7 +257,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Creating DEF file for ComponentIDL.dll"
-				CommandLine="perl  makedef.pl Debug_mico/ComponentIDL.def Debug_mico/ComponentIDL.dll Debug_mico/*.obj
+				CommandLine="gendef Debug_mico/ComponentIDL.def ComponentIDL Debug_mico/*.obj
 "/>
 			<Tool
 				Name="VCResourceCompilerTool"
@@ -466,7 +466,7 @@ copy $(TargetPath) $(QEDO)\bin
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 CORBADepends.idl
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 CORBADepends.idl
 copy CORBADepends.h CORBADepends_skel.h
 "
 						Outputs="CORBADepends.h"/>
@@ -512,7 +512,7 @@ copy CORBADepends.h CORBADepends_skel.h
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --typecode --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 Components.idl
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL --typecode --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 Components.idl
 copy Components.h Components_skel.h
 "
 						Outputs="Components.h"/>
@@ -552,7 +552,7 @@ copy Components.h Components_skel.h
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 QedoComponents.idl
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL  --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 QedoComponents.idl
 copy QedoComponents.h QedoComponents_skel.h
 "
 						Outputs="QedoComponents.h"/>
