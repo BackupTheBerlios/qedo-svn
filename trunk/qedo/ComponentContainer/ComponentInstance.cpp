@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstance.cpp,v 1.7 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: ComponentInstance.cpp,v 1.8 2003/04/14 09:17:49 tom Exp $";
 
 #include "ComponentInstance.h"
 #include "Output.h"
@@ -53,8 +53,8 @@ ComponentInstance::ComponentInstance()
 
 ComponentInstance::ComponentInstance (const ComponentInstance& component_entry)
 : object_id_ (new PortableServer::ObjectId (component_entry.object_id_)),
-  component_ref_ (CORBA::Object::_duplicate (component_entry.component_ref_)),
-  executor_locator_ (Components::ExecutorLocator::_duplicate (component_entry.executor_locator_)),
+  component_ref_ (CORBA::Object::_duplicate (component_entry.component_ref_.in())),
+  executor_locator_ (Components::ExecutorLocator::_duplicate (component_entry.executor_locator_.in())),
   ccm_object_executor_ (component_entry.ccm_object_executor_)
 {
 	ccm_object_executor_->_add_ref();
@@ -65,8 +65,8 @@ ComponentInstance&
 ComponentInstance::operator= (const ComponentInstance& component_instance)
 {
 	object_id_ = new PortableServer::ObjectId (component_instance.object_id_);
-	component_ref_ = CORBA::Object::_duplicate (component_instance.component_ref_);
-	executor_locator_ = Components::ExecutorLocator::_duplicate (component_instance.executor_locator_);
+	component_ref_ = CORBA::Object::_duplicate (component_instance.component_ref_.in());
+	executor_locator_ = Components::ExecutorLocator::_duplicate (component_instance.executor_locator_.in());
 
 	if (ccm_object_executor_)
 		ccm_object_executor_->_remove_ref();

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.10 2003/04/08 07:27:16 neubauer Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.11 2003/04/14 09:17:49 tom Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -97,7 +97,7 @@ ServiceReferenceEntry::ServiceReferenceEntry (const char* service_id, CORBA::Obj
 
 ServiceReferenceEntry::ServiceReferenceEntry (const ServiceReferenceEntry& service_entry)
 : _service_id(service_entry._service_id)
-, _service_ref(CORBA::Object::_duplicate(service_entry._service_ref))
+, _service_ref(CORBA::Object::_duplicate(service_entry._service_ref.in()))
 {
 }
 
@@ -240,7 +240,7 @@ throw (Components::Deployment::UnknownImplId,
 
 	for (CORBA::ULong i = 0; i < config.length(); i++)
 	{
-		value = (Components::ConfigValue*)config[i];
+		value = config[i].in();
 
 		if (! strcmp (config[i]->name(), "HOMEFINDERNAME"))
 		{

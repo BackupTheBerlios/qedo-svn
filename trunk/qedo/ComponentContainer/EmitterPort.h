@@ -88,7 +88,7 @@ public:
 	 */
 	const Components::EventConsumerBase_ptr consumer() const
 	{
-		return Components::EventConsumerBase::_duplicate (consumer_);
+		return Components::EventConsumerBase::_duplicate (consumer_.in());
 	}
 
 	/**

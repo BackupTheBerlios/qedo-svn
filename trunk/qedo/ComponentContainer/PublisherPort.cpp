@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: PublisherPort.cpp,v 1.7 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: PublisherPort.cpp,v 1.8 2003/04/14 09:17:49 tom Exp $";
 
 #include "PublisherPort.h"
 #include "Output.h"
@@ -44,7 +44,7 @@ SubscribedConsumer::SubscribedConsumer()
 
 
 SubscribedConsumer::SubscribedConsumer (const SubscribedConsumer& subs_cons)
-: consumer_ (Components::EventConsumerBase::_duplicate (subs_cons.consumer_)),
+: consumer_ (Components::EventConsumerBase::_duplicate (subs_cons.consumer_.in())),
   cookie_ (subs_cons.cookie_)
 {
 	cookie_->_add_ref();
@@ -54,7 +54,7 @@ SubscribedConsumer::SubscribedConsumer (const SubscribedConsumer& subs_cons)
 SubscribedConsumer& 
 SubscribedConsumer::operator= (const SubscribedConsumer& subs_cons)
 {
-	consumer_ = Components::EventConsumerBase::_duplicate (subs_cons.consumer_);
+	consumer_ = Components::EventConsumerBase::_duplicate (subs_cons.consumer_.in());
 
 	if (cookie_)
 		cookie_->_remove_ref();
@@ -83,7 +83,7 @@ SubscribedConsumer::cookie() const
 Components::EventConsumerBase_ptr
 SubscribedConsumer::consumer() const
 {
-	return Components::EventConsumerBase::_duplicate (consumer_);
+	return Components::EventConsumerBase::_duplicate (consumer_.in());
 }
 
 

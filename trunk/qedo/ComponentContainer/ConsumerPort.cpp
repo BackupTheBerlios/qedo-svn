@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ConsumerPort.cpp,v 1.4 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: ConsumerPort.cpp,v 1.5 2003/04/14 09:17:49 tom Exp $";
 
 #include "ConsumerPort.h"
 
@@ -44,7 +44,7 @@ ConsumerPort::ConsumerPort()
 
 ConsumerPort::ConsumerPort (const ConsumerPort& cons_port)
 : PortBase (cons_port),
-  consumer_ (Components::EventConsumerBase::_duplicate (cons_port.consumer_))
+  consumer_ (Components::EventConsumerBase::_duplicate (cons_port.consumer_.in()))
 {
 }
 
@@ -57,7 +57,7 @@ ConsumerPort::~ConsumerPort()
 Components::ConsumerDescription*
 ConsumerPort::consumer_description() const
 {
-	Components::ConsumerDescription_var con_desc = new ConsumerDescription_impl (port_name_.c_str(), type_id_.c_str(), consumer_);
+	Components::ConsumerDescription_var con_desc = new ConsumerDescription_impl (port_name_.c_str(), type_id_.c_str(), consumer_.in());
 
     return con_desc._retn();
 }
@@ -66,7 +66,7 @@ ConsumerPort::consumer_description() const
 const Components::EventConsumerBase_ptr 
 ConsumerPort::consumer() const
 {
-    return Components::EventConsumerBase::_duplicate (consumer_);
+    return Components::EventConsumerBase::_duplicate (consumer_.in());
 }
 
 } // namespace Qedo

@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeFinderImpl.cpp,v 1.2 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: HomeFinderImpl.cpp,v 1.3 2003/04/14 09:17:49 tom Exp $";
 
 #include "HomeFinderImpl.h"
 #include "Valuetypes.h"
@@ -152,7 +152,7 @@ throw(Components::HomeNotFound, CORBA::SystemException)
 		if (!(*iter).home_repid_.compare(home_repid))
 		{
 			// existency check ???
-			Components::CCMHome_var home = Components::CCMHome::_duplicate((*iter).home_);
+			Components::CCMHome_var home = Components::CCMHome::_duplicate((*iter).home_.in());
 			return home._retn();
 		}
 	}
@@ -172,7 +172,7 @@ throw(Components::HomeNotFound, CORBA::SystemException)
 		if (!(*iter).name_.compare(home_name))
 		{
 			// existency check ???
-			Components::CCMHome_var home = Components::CCMHome::_duplicate((*iter).home_);
+			Components::CCMHome_var home = Components::CCMHome::_duplicate((*iter).home_.in());
 			return home._retn();
 		}
 	}

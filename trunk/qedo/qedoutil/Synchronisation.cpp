@@ -88,7 +88,7 @@ qedo_cond::qedo_cond(char * sig_name) {
 #ifdef WIN32
 		m_event_handle = CreateEvent (NULL, TRUE /*manua-reset*/, FALSE /*initial: non-signaled*/, sig_name);
 #else
-	pthread_cond_init(&m_cond, NULL):
+		pthread_cond_init(&m_cond, NULL);
 #endif
 }
 
@@ -108,7 +108,7 @@ qedo_cond::qedo_wait() {
 #ifdef WIN32
 	WaitForMultipleObjects(1, &m_event_handle, TRUE, INFINITE /*wait for ever*/);
 #else
-	pthread_cond_signal(&m_cond, &mutex->m_mutex);
+	pthread_cond_signal(&m_cond);
 #endif
 }
 

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: EmitterPort.cpp,v 1.4 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: EmitterPort.cpp,v 1.5 2003/04/14 09:17:49 tom Exp $";
 
 #include "EmitterPort.h"
 #include "Output.h"
@@ -43,7 +43,7 @@ EmitterPort::EmitterPort()
 
 EmitterPort::EmitterPort (const EmitterPort& emit_port)
 : PortBase (emit_port),
-  consumer_ (Components::EventConsumerBase::_duplicate (emit_port.consumer_))
+  consumer_ (Components::EventConsumerBase::_duplicate (emit_port.consumer_.in()))
 {
 }
 
@@ -56,7 +56,7 @@ EmitterPort::~EmitterPort()
 Components::EmitterDescription*
 EmitterPort::emitter_description() const
 {
-	Components::EmitterDescription_var emi_desc = new EmitterDescription_impl (port_name_.c_str(), type_id_.c_str(), consumer_);
+	Components::EmitterDescription_var emi_desc = new EmitterDescription_impl (port_name_.c_str(), type_id_.c_str(), consumer_.in());
 
     return emi_desc._retn();
 }

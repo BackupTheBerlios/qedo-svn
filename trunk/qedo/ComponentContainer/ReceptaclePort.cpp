@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ReceptaclePort.cpp,v 1.4 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: ReceptaclePort.cpp,v 1.5 2003/04/14 09:17:49 tom Exp $";
 
 #include "ReceptaclePort.h"
 #include "Output.h"
@@ -44,7 +44,7 @@ ReceptacleConnection::ReceptacleConnection()
 
 
 ReceptacleConnection::ReceptacleConnection (const ReceptacleConnection& rec_conn)
-: connection_ (CORBA::Object::_duplicate (rec_conn.connection_)),
+: connection_ (CORBA::Object::_duplicate (rec_conn.connection_.in())),
   cookie_ (rec_conn.cookie_)
 {
 	cookie_->_add_ref();
@@ -54,7 +54,7 @@ ReceptacleConnection::ReceptacleConnection (const ReceptacleConnection& rec_conn
 ReceptacleConnection& 
 ReceptacleConnection::operator= (const ReceptacleConnection& rec_conn)
 {
-	connection_ = CORBA::Object::_duplicate (rec_conn.connection_);
+	connection_ = CORBA::Object::_duplicate (rec_conn.connection_.in());
 
 	if (cookie_)
 		cookie_->_remove_ref();
@@ -75,7 +75,7 @@ ReceptacleConnection::~ReceptacleConnection()
 ConnectionDescription_impl* 
 ReceptacleConnection::connection_description() const
 {
-	ConnectionDescription_impl* con_desc = new ConnectionDescription_impl (cookie_, connection_); 
+	ConnectionDescription_impl* con_desc = new ConnectionDescription_impl (cookie_, connection_.in()); 
 
     return con_desc;
 }
@@ -84,7 +84,7 @@ ReceptacleConnection::connection_description() const
 const CORBA::Object_ptr 
 ReceptacleConnection::connection() const
 {
-    return CORBA::Object::_duplicate (connection_);
+    return CORBA::Object::_duplicate (connection_.in());
 }
 
 

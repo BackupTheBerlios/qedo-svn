@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: FacetPort.cpp,v 1.4 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: FacetPort.cpp,v 1.5 2003/04/14 09:17:49 tom Exp $";
 
 #include "FacetPort.h"
 
@@ -44,7 +44,7 @@ FacetPort::FacetPort()
 
 FacetPort::FacetPort (const FacetPort& facet_port)
 : PortBase (facet_port),
-  facet_ref_ (CORBA::Object::_duplicate (facet_port.facet_ref_))
+  facet_ref_ (CORBA::Object::_duplicate (facet_port.facet_ref_.in()))
 {
 }
 
@@ -57,7 +57,7 @@ FacetPort::~FacetPort()
 Components::FacetDescription*
 FacetPort::facet_description() const
 {
-	Components::FacetDescription_var facet_desc = new FacetDescription_impl (port_name_.c_str(), type_id_.c_str(), facet_ref_);
+	Components::FacetDescription_var facet_desc = new FacetDescription_impl (port_name_.c_str(), type_id_.c_str(), facet_ref_.in());
 
     return facet_desc._retn();
 }
@@ -66,7 +66,7 @@ FacetPort::facet_description() const
 const CORBA::Object_ptr
 FacetPort::facet_ref() const
 {
-    return CORBA::Object::_duplicate (facet_ref_);
+    return CORBA::Object::_duplicate (facet_ref_.in());
 }
 
 } // namespace Qedo

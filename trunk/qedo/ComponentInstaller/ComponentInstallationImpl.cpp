@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.8 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.9 2003/04/14 09:17:49 tom Exp $";
 
 #include "ComponentInstallationImpl.h"
 
@@ -300,7 +300,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 #ifdef WIN32
 	if( !desc.compare(0, 8, "PACKAGE="))
 #else
-	if( !desc.compare("PACKAGE=", 0, 8))
+	if( !desc.compare(0, 8, "PACKAGE="))
 #endif
 	{
 		//

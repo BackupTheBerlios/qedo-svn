@@ -20,14 +20,18 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.9 2003/04/08 07:27:16 neubauer Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.10 2003/04/14 09:17:49 tom Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
 #include "Output.h"
 #include "Valuetypes.h"
+#ifdef WIN32
 #include "objbase.h"
+#else
+#include "uuid/uuid.h"
+#endif
 
 namespace Qedo {
 
@@ -57,7 +61,7 @@ CCMObjectExecutor::CCMObjectExecutor (const PortableServer::ObjectId& component_
 	free(buf);
 	CoTaskMemFree(lpolestr);
 #else
-	TODO
+	//TODO
 #endif
 }
 

@@ -31,13 +31,13 @@ idl:  CORBADepends.h CORBADepends.cpp CORBADepends_skel.h CORBADepends_skel.cpp 
 
 # IDL files
 CORBADepends.h CORBADepends.cpp CORBADepends_skel.h CORBADepends_skel.cpp:./CORBADepends.idl
-	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico -DMICO_ORB --any --c++-suffix cpp --c++-skel  CORBADepends.idl
+	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico -DMICO_ORB --any --c++-suffix cpp --c++-skel CORBADepends.idl;cp CORBADepends.h CORBADepends_skel.h
  
 QedoComponents.h QedoComponents.cpp QedoComponents_skel.h QedoComponents_skel.cpp:QedoComponents.idl
-	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico  -DMICO_ORB --any --c++-suffix cpp --c++-skel QedoComponents.idl 
+	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico  -DMICO_ORB --any --c++-suffix cpp --c++-skel QedoComponents.idl; cp QedoComponents.h QedoComponents_skel.h 
 
 Components.h Components.cpp Components_skel.h Components_skel.cpp:./Components.idl
-	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico -DMICO_ORB --any --c++-suffix cpp --c++-skel Components.idl 
+	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico -DMICO_ORB --any --c++-suffix cpp --c++-skel Components.idl; cp Components.h Components_skel.h
 
 lex:  
 
