@@ -106,6 +106,19 @@ StorageHomeBaseImpl::objectExists( Pid* pPid )
 		return FALSE;
 }
 
+void
+StorageHomeBaseImpl::write_state(std::string strUpdate)
+{
+	CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_.in());
+	pCatalogBaseImpl->ExecuteSQL(strUpdate.c_str());
+}
+
+void
+StorageHomeBaseImpl::read_state()
+{
+
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //The find_by_short_pid operation looks for a storage object with the given 
 //short pid in the target storage home. If such an object is not found, 

@@ -788,7 +788,9 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	handleAttribute(storagetype);
 	handleOperation(storagetype);
 
-	out << "\nvoid setValue(std::map<std::string, CORBA::Any> valueMap);\n\n";
+	out << "\nvoid write_state();\n\n";
+	out << "void read_state();\n\n";
+	out << "void setValue(std::map<std::string, CORBA::Any> valueMap);\n\n";
 	
 	//generate _duplicate and _downcast operation
 	//genDuplAndDown(strClassName);

@@ -361,6 +361,13 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	composition_ = CIDL::CompositionDef::_duplicate(composition);
 	filename_ = "";
 	CIDL::SegmentDefSeq_var segment_seq = composition->executor_def()->segments();
+
+	// get storage home
+	if( composition->lifecycle()==CIDL::lc_Entity || 
+		composition->lifecycle()==CIDL::lc_Process )
+	{
+		storagehome_ = IR__::StorageHomeDef::_duplicate(composition->home_executor()->binds_to());
+	}
 	
 	string id = composition->id();
 	IR__::Contained_ptr module_def = 0;
@@ -679,6 +686,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	for (i = 0; i < segment_seq->length(); i++)	{
 		out << segment_seq[i]->name() << "_->set_context(context_);\n";
 	}
+
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -711,7 +719,20 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "void\n";
 		out << class_name_ << "::ccm_store()\n";
 		out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out.indent();
+			out << "StorageObject* obj = dynamic_cast <StorageObject*> (context_->get_storage_object());\n";
+			out << storagehome_->managed_storagetype()->name() << "* object = dynamic_cast <" << storagehome_->managed_storagetype()->name() << "*> (obj);\n\n";
+			out.unindent();
+		}
 		out.insertUserSection(class_name_ + "::ccm_store", 0);
+		if( !CORBA::is_nil(storagehome_) )
+		{	
+			out.indent();
+			out << "\nobject->write_state();\n";
+			out.unindent();
+		}
 		out << "}\n\n\n";
 	}
 

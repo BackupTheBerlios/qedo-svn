@@ -69,6 +69,10 @@ class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::
 		
 		CORBA::Boolean objectExists( Pid* pPid ) throw (CORBA::SystemException);
 
+		void write_state(std::string strUpdate);
+
+		void read_state();
+
 		//
 		// IDL:omg.org/CosPersistentState/StorageHomeBase/find_by_short_pid:1.0
 		//

@@ -1085,145 +1085,6 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	//if(isRef) out << "Ref";
 	out	<< "()\n";
 	out << "{\n";
-	/*
-	out.indent();
-
-	//+++++++++++++++++++++++++++++++++++++++++++++++
-	// SELECT sentence for strSelect_ in StorageType
-	//+++++++++++++++++++++++++++++++++++++++++++++++
-	out << "std::stringstream strstream;\n\n";
-	out << "// for CatalogBase::refresh()\n";
-	strName_ = "strstream";
-	strContent_ = "SELECT * FROM ";
-	strContent_ += strStoragehomeName;
-	out << genSQLLine(strName_, strContent_, true, false, true);
-	strContent_ = "WHERE pid LIKE \\'";
-	out << genSQLLine(strName_, strContent_, false, false, false);
-	strContent_ = "convertPidToString(pPid_)";
-	out << genSQLLine(strContent_, false, false, false, true);
-	strContent_ = "\\';";
-	out << genSQLLine(strContent_, true, false, false);
-	out << "strSelect_ = strstream.str();\n";
-	out << "\n";
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	// end of SELECT sentence for strSelect_ in StorageType
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	//+++++++++++++++++++++++++++++++++++++++++++++++
-	// UPDATE sentence for strUpdate_ in StorageType
-	//+++++++++++++++++++++++++++++++++++++++++++++++
-	IR__::AttributeDef_var attribute = 0;
-	IR__::AttributeDefSeq state_members = collectStateMembers(storagetype, CORBA__::dk_Create);
-	CORBA::ULong ulLen = state_members.length();
-	out << "// for CatalogBase::flush()\n";
-	out << "strstream.str(\"\");\n";
-	strName_ = "strstream";
-	strContent_ = "UPDATE ";
-	strContent_ += strStoragehomeName;
-	strContent_ += " SET";
-	out << genSQLLine(strName_, strContent_, true, false, true);
-
-	for(CORBA::ULong i=0; i<ulLen; i++)
-	{
-		attribute = IR__::AttributeDef::_narrow(state_members[i]);
-
-		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
-		{
-			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
-			for(valuetype_iter = lValueTypes_.begin();
-				valuetype_iter != lValueTypes_.end();
-				valuetype_iter++)
-			{
-				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
-				std::string attr_type_name = map_attribute_type(attribute->type_def());
-				if(attr_type_name.find(mapName(value))!=std::string::npos)
-				{
-					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
-					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
-					{
-						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
-						strContent_ = "value_" + mapName(vMember) + " = ";
-
-						switch(psdl_check_type(vMember->type_def()))
-						{
-						case CPPBase::_SHORT:
-						case CPPBase::_INT:
-						case CPPBase::_LONG:
-							out << genSQLLine(strName_, strContent_, false, false, false, false);
-							strContent_ = mapName(attribute) + "_->";
-							strContent_ += mapName(vMember) + "()";
-							out << genSQLLine(strContent_, false, false, false, true);
-							strContent_ = "";
-							out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
-							break;
-						case CPPBase::_STRING:
-							out << genSQLLine(strName_, strContent_, false, false, false, false);
-							strContent_ = "\\'";
-							out << genSQLLine(strContent_, false, false, false);
-							strContent_ = mapName(attribute) + "_->";
-							strContent_ += mapName(vMember) + "()";
-							out << genSQLLine(strContent_, false, false, false, true);
-							strContent_ = "\\'";
-							out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
-							break;
-						}
-					}
-					break;
-				}
-			}
-		}
-		else
-		{
-			strContent_ = mapName(attribute) + " = ";
-
-			switch(psdl_check_type(attribute->type_def()))
-			{
-			case CPPBase::_SHORT:
-			case CPPBase::_INT:
-			case CPPBase::_LONG:
-			case CPPBase::_FLOAT:
-			case CPPBase::_DOUBLE:
-			case CPPBase::_LONGDOUBLE:
-				out << genSQLLine(strName_, strContent_, false, false, false);
-				strContent_ = mapName(attribute) + "_";
-				out << genSQLLine(strContent_, false, false, false, true);
-				strContent_ = "";
-				out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
-				break;
-			case CPPBase::_STRING:
-				out << genSQLLine(strName_, strContent_, false, false, false);
-				strContent_ = "\\'";
-				out << genSQLLine(strContent_, false, false, false);
-				strContent_ =  mapName(attribute) + "_";
-				out << genSQLLine(strContent_, false, false, false, true);
-				strContent_ = "\\'";
-				out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
-				break;
-			case CPPBase::_BOOL:
-				out << genSQLLine(strName_, strContent_, false, false, false);
-				strContent_ = "convertBool2String(" +  mapName(attribute) + "_)";
-				out << genSQLLine(strContent_, false, false, false, true);
-				strContent_ = "";
-				out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
-				break;
-			}
-		}
-	}
-
-	strContent_ = "WHERE pid LIKE \\'";
-	out << genSQLLine(strName_, strContent_, false, false, false);
-	strContent_ = "convertPidToString(pPid_)";
-	out << genSQLLine(strContent_, false, false, false, true);
-	strContent_ = "\\';";
-	out << genSQLLine(strContent_, true, false, false);
-	out << "strUpdate_ = strstream.str();\n";
-	out << "\n";
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	// end of UPDATE sentence for strUpdate_ in StorageType
-	//++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-	out.unindent();
-	*/
 
 	IR__::AttributeDef_var attribute = 0;
 	IR__::AttributeDefSeq state_members = collectStateMembers(storagetype, CORBA__::dk_Create);
@@ -1267,9 +1128,142 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	handleOperation(storagetype);
 
 	out << "void\n";
+	out << strClassname_ << "::write_state()\n";
+	out << "{\n";
+	out.indent();
+	state_members = collectStateMembers(storagetype, CORBA__::dk_Create);
+	ulLen = state_members.length();
+	out << "std::stringstream strstream;\n";
+	strName_ = "strstream";
+	strContent_ = "UPDATE ";
+	strContent_ += strStoragehomeName;
+	strContent_ += " SET";
+	out << genSQLLine(strName_, strContent_, true, false, true);
+
+	for(CORBA::ULong i=0; i<ulLen; i++)
+	{
+		attribute = IR__::AttributeDef::_narrow(state_members[i]);
+
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		{/*
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
+			for(valuetype_iter = lValueTypes_.begin();
+				valuetype_iter != lValueTypes_.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				std::string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						strContent_ = "value_" + mapName(vMember) + " = ";
+
+						switch(psdl_check_type(vMember->type_def()))
+						{
+						case CPPBase::_SHORT:
+						case CPPBase::_INT:
+						case CPPBase::_LONG:
+							out << genSQLLine(strName_, strContent_, false, false, false, false);
+							strContent_ = mapName(attribute) + "_->";
+							strContent_ += mapName(vMember) + "()";
+							out << genSQLLine(strContent_, false, false, false, true);
+							strContent_ = "";
+							out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+							break;
+						case CPPBase::_STRING:
+							out << genSQLLine(strName_, strContent_, false, false, false, false);
+							strContent_ = "\\'";
+							out << genSQLLine(strContent_, false, false, false);
+							strContent_ = mapName(attribute) + "_->";
+							strContent_ += mapName(vMember) + "()";
+							out << genSQLLine(strContent_, false, false, false, true);
+							strContent_ = "\\'";
+							out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+							break;
+						}
+					}
+					break;
+				}
+			}*/
+		}
+		else
+		{
+			strContent_ = mapName(attribute) + " = ";
+
+			switch(psdl_check_type(attribute->type_def()))
+			{
+			case CPPBase::_SHORT:
+			case CPPBase::_INT:
+			case CPPBase::_LONG:
+			case CPPBase::_FLOAT:
+			case CPPBase::_DOUBLE:
+			case CPPBase::_LONGDOUBLE:
+				out << genSQLLine(strName_, strContent_, false, false, false);
+				strContent_ = mapName(attribute) + "_";
+				out << genSQLLine(strContent_, false, false, false, true);
+				strContent_ = "";
+				out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+				break;
+			case CPPBase::_STRING:
+				out << genSQLLine(strName_, strContent_, false, false, false);
+				strContent_ = "\\'";
+				out << genSQLLine(strContent_, false, false, false);
+				strContent_ =  mapName(attribute) + "_";
+				out << genSQLLine(strContent_, false, false, false, true);
+				strContent_ = "\\'";
+				out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+				break;
+			case CPPBase::_BOOL:
+				out << genSQLLine(strName_, strContent_, false, false, false);
+				strContent_ = "convertBool2String(" +  mapName(attribute) + "_)";
+				out << genSQLLine(strContent_, false, false, false, true);
+				strContent_ = "";
+				out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+				break;
+			}
+		}
+	}
+
+	strContent_ = "WHERE pid LIKE \\'";
+	out << genSQLLine(strName_, strContent_, false, false, false);
+	strContent_ = "convertPidToString(get_pid())";
+	out << genSQLLine(strContent_, false, false, false, true);
+	strContent_ = "\\';";
+	out << genSQLLine(strContent_, true, false, false);
+	out << "StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (get_storage_home());\n";
+	out << "pHomeBaseImpl->write_state(strstream.str());\n";
+	out.unindent();
+	out << "}\n\n";
+
+	out << "void\n";
+	out << strClassname_ << "::read_state()\n";
+	out << "{\n";
+	out.indent();
+	/*
+	out << "std::stringstream strstream;\n\n";
+	out << "// for CatalogBase::refresh()\n";
+	strName_ = "strstream";
+	strContent_ = "SELECT * FROM ";
+	strContent_ += strStoragehomeName;
+	out << genSQLLine(strName_, strContent_, true, false, true);
+	strContent_ = "WHERE pid LIKE \\'";
+	out << genSQLLine(strName_, strContent_, false, false, false);
+	strContent_ = "convertPidToString(pPid_)";
+	out << genSQLLine(strContent_, false, false, false, true);
+	strContent_ = "\\';";
+	out << genSQLLine(strContent_, true, false, false);
+	out << "strSelect_ = strstream.str();\n";
+	out << "\n";*/
+	out.unindent();
+	out << "}\n\n";
+
+	out << "void\n";
 	out << strClassname_;
 	//if(isRef) out << "Ref";
-	out << "::" << "setValue(std::map<std::string, CORBA::Any> valueMap)\n";
+	out << "::setValue(std::map<std::string, CORBA::Any> valueMap)\n";
 	out << "{\n";
 	out.indent();
 	out << "char* szTemp;\n";
