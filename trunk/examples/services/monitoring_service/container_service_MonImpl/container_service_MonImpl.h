@@ -18,8 +18,7 @@
 
 
 // BEGIN USER INSERT SECTION file_post
-#include "ContainerInterceptor.h"
-#include "Extension.h"
+#include "ServerContainerInterceptor.h"
 // END USER INSERT SECTION file_post
 
 
@@ -36,20 +35,19 @@ namespace container_service
         , public virtual Qedo::RefCountLocalObject
 #endif
 // BEGIN USER INSERT SECTION INHERITANCE_MonExec
-, public virtual Qedo::ExtensionBase
 // END USER INSERT SECTION INHERITANCE_MonExec
     {
     
     private:
     
-        ::container_service::CCM_monitor_Context_var context_;
+        ::container_service::CCM_monitor_ContextImpl_var context_;
         
     public:
     
         MonExec();
         virtual ~MonExec();
         
-        void set_context(::container_service::CCM_monitor_Context_ptr context)
+        void set_context(::container_service::CCM_monitor_ContextImpl_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
         
         void configuration_complete()
@@ -60,6 +58,8 @@ namespace container_service
         
     
 // BEGIN USER INSERT SECTION MonExec
+	public:
+	Qedo::ServerContainerInterceptor* server_interceptor_;
 // END USER INSERT SECTION MonExec
 
     };
@@ -70,18 +70,17 @@ namespace container_service
     //
     class MonImpl
         : public virtual CORBA::LocalObject
-        , public virtual Components::ExtensionExecutorLocator
+        , public virtual Components::SessionExecutorLocator
 #ifndef MICO_ORB
         , public virtual Qedo::RefCountLocalObject
 #endif
 // BEGIN USER INSERT SECTION INHERITANCE_MonImpl
-, public virtual Qedo::ExtensionBase
 // END USER INSERT SECTION INHERITANCE_MonImpl
     {
     
     private:
     
-        ::container_service::CCM_monitor_Context_var context_;
+        ::container_service::CCM_monitor_ContextImpl_var context_;
         
         MonExec* component_;
         
@@ -112,7 +111,7 @@ namespace container_service
         //
         // IDL:Components/SessionComponent/set_session_context:1.0
         //
-        virtual void set_extension_context(Components::ExtensionContext_ptr ctx)
+        virtual void set_session_context(Components::SessionContext_ptr ctx)
         	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
@@ -154,7 +153,7 @@ namespace container_service
     
     private:
     
-        Components::CCMContext_var context_;
+        Components::HomeContext_var context_;
         
     public:
         HomeMonExec();
@@ -163,7 +162,7 @@ namespace container_service
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0
         //
-        virtual void set_context (Components::CCMContext_ptr ctx)
+        virtual void set_context (Components::HomeContext_ptr ctx)
             throw (CORBA::SystemException, Components::CCMException);
         
         //

@@ -26,17 +26,17 @@ MonExec::MonExec()
 MonExec::~MonExec()
 {
 // BEGIN USER INSERT SECTION MonExec::~MonExec
-		interceptor_ ->_remove_ref();
+		server_interceptor_ ->_remove_ref();
 // END USER INSERT SECTION MonExec::~MonExec
 
 }
 
 
 void
-MonExec::set_context(::container_service::CCM_monitor_Context_ptr context)
+MonExec::set_context(::container_service::CCM_monitor_ContextImpl_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::container_service::CCM_monitor_Context::_duplicate(context);
+    context_ = ::container_service::CCM_monitor_ContextImpl::_duplicate(context);
 }
 
 
@@ -45,9 +45,12 @@ MonExec::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION MonExec::configuration_complete
-	Components::Extension::ServerInterceptorRegistration_ptr server_reg = context_->get_server_interceptor_dispatcher_registration();
-	this->interceptor_ = new Qedo::ContainerInterceptor();
-	server_reg->register_server_interceptor(interceptor_);
+	Components::Extension::ServerInterceptorRegistration_ptr server_reg =
+		context_->get_server_interceptor_dispatcher_registration();
+
+	server_interceptor_ = new Qedo::ServerContainerInterceptor();
+
+	server_reg->register_server_interceptor(server_interceptor_);
 
 
 // END USER INSERT SECTION MonExec::configuration_complete
@@ -91,7 +94,7 @@ MonImpl::obtain_executor(const char* name)
     if (! strcmp ( name, "component" ) ) {
         return Components::EnterpriseComponent::_duplicate (component_);
     }
-    
+
     return Components::EnterpriseComponent::_nil();
 }
 
@@ -111,28 +114,28 @@ MonImpl::configuration_complete()
     component_->configuration_complete();
 
 // BEGIN USER INSERT SECTION MonImpl::configuration_complete
-	register_container_interceptors(context_); 
+//	register_container_interceptors(context_);
 // END USER INSERT SECTION MonImpl::configuration_complete
 }
 
 
 void
-MonImpl::set_extension_context(::Components::ExtensionContext_ptr context)
+MonImpl::set_session_context(::Components::SessionContext_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
     #ifdef TAO_ORB
     ::container_service::CCM_monitor_Context_ptr tmp_context;
-    
-    tmp_context = dynamic_cast<::container_service::CCM_monitor_Context*>(context);
-    
+
+    tmp_context = dynamic_cast<::container_service::CCM_monitor_ContextImpl*>(context);
+
     if (tmp_context)
-        context_ = ::container_service::CCM_monitor_Context::_duplicate(tmp_context);
+        context_ = ::container_service::CCM_monitor_ContextImpl::_duplicate(tmp_context);
     else
-        context_ = ::container_service::CCM_monitor_Context::_nil();
-        
+        context_ = ::container_service::CCM_monitor_ContextImpl::_nil();
+
     #else
-    context_ = ::container_service::CCM_monitor_Context::_narrow(context);
-    
+    context_ = ::container_service::CCM_monitor_ContextImpl::_narrow(context);
+
     #endif
     component_->set_context(context_);
 }
@@ -185,10 +188,10 @@ HomeMonExec::~HomeMonExec()
 
 
 void
-HomeMonExec::set_context(Components::CCMContext_ptr ctx)
+HomeMonExec::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = Components::CCMContext::_duplicate(ctx);
+    context_ = Components::HomeContext::_duplicate(ctx);
 }
 
 
