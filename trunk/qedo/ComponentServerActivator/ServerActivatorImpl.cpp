@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.11 2003/04/30 07:10:55 tom Exp $";
+static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.12 2003/05/28 13:31:25 stoinski Exp $";
 
 #include <iostream>
 #include "fstream"
@@ -222,17 +222,13 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 	if (debug_mode_)
 	{
-		std::ofstream ior_file;
-		ior_file.open("csa_callb.ior");
-		ior_file << my_string_ref << std::endl;
-		ior_file.close();
 		component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", "--debug", 
-			"--csa_ref", my_string_ref, NULL);
+			"--csa_ref", my_string_ref.in(), NULL);
 	}
 	else
 	{
 		component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", 
-			"--csa_ref", my_string_ref, NULL);
+			"--csa_ref", my_string_ref.in(), NULL);
 	}
 
 	if (component_server_pid < 0)
@@ -249,20 +245,26 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 		case 0 : /* child process */
 			if (debug_mode_)
 			{
-			    std::ofstream ior_file;
-			    ior_file.open("csa_callb.ior");
-			    ior_file << my_string_ref << std::endl;
-			    ior_file.close();
-			    execlp("cs", "cs", "--csa_ref", static_cast<const char*>(my_string_ref), "--debug", 0);
+				long err = execlp ("cs", "cs", "--csa_ref", my_string_ref.in(), "--debug", 0);
+			    if (err == -1) 
+				{
+					std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
+					std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
+					throw Components::CreateFailure();
+				}
 			}
 			else
 			{
-			    std::cout << "child process" << std::endl;
-				execlp("./cs", "./cs", "--csa_ref", static_cast<const char*>(my_string_ref), 0);
+				long err = execlp ("cs", "cs", "--csa_ref", my_string_ref.in(), 0);
+			    if (err == -1) 
+				{
+					std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
+					std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
+					throw Components::CreateFailure();
+				}
 			}
 			break;
 		default : /* parent process */
-		    std::cout << "parent process" << std::endl;
 			break;
 		case -1 : /* error in fork */
 			{
