@@ -75,14 +75,13 @@ home Auctioneers manages Auctioneer
 /**
  * the bidder
  */
-component Bidder
+component Bidder supports BidderForAuctioneer
 {
 	/** the amount of money */
 	attribute long amount;
 	/** the sold item */
 	attribute string item;
 	
-	provides BidderForAuctioneer for_auctioneer;
 	consumes GiveBid current_bid;
 	publishes Bid my_bid;
 };
@@ -94,16 +93,11 @@ home Bidders manages Bidder
 /**
  * the seller
  */
-component Seller
+component Seller supports SellerForAuctioneer
 {
-	/** the item to sell */
-	attribute string item;
-	/** the minimum price */
-	attribute long minimum;
 	/** the amount of money */
 	attribute long amount;
 	
-	provides SellerForAuctioneer for_auctioneer;
 	uses AuctioneerForSeller from_auctioneer;
 };
 home Sellers manages Seller
