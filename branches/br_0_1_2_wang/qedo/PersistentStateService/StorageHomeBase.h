@@ -23,15 +23,15 @@
 #define __STORAGEHOMEBASE_H__
 
 #include <list>
-#include <vector>
 #include <string>
+#include <vector>
 #include "PSSUtil.h"
 #include "CORBADepends.h"
 #include "RefCountBase.h"
-#include "QDRecordset.h"
-#include "PSSHelper.h"
-#include "StorageObject.h"
 #include "PSSStorageObject.h"
+#include "QDRecordset.h"
+#include "StorageObject.h"
+#include "PSSHelper.h"
 
 using namespace std;
 using namespace CosPersistentState;
@@ -39,9 +39,9 @@ using namespace CosPersistentState;
 namespace Qedo
 {
 
-class  StorageHomeBaseImpl : public virtual CosPersistentState::StorageHomeBase,
-							 public virtual RefCountLocalObject,
-							 public virtual QDRecordset
+class PSSDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::StorageHomeBase,
+							           public virtual RefCountLocalObject,
+							           public virtual QDRecordset
 {
 	public:
 
@@ -63,7 +63,7 @@ class  StorageHomeBaseImpl : public virtual CosPersistentState::StorageHomeBase,
 
 		void FreeAllStorageObjects();
 
-		char* getStorageHomeName();
+		char* getStorageHomeName() { return m_szStorageHomeName; };
 
 		//
 		// IDL:omg.org/CosPersistentState/StorageHomeBase/find_by_short_pid:1.0
@@ -81,7 +81,7 @@ class  StorageHomeBaseImpl : public virtual CosPersistentState::StorageHomeBase,
 
 	protected:
 		
-		char* m_szStorageHomeName;
+		char* m_szStorageHomeName; // its own table or view name!
 
 	private:
 		

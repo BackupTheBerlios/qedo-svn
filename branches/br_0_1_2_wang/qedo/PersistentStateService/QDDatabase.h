@@ -78,7 +78,6 @@ class QDDatabase
 		
 		SQLHDBC m_hDbc;
 		SQLHENV m_hEnv;
-		
 		int m_nRecordsAffected;
 		long m_lLoginTimeout;
 		long m_lQueryTimeout;

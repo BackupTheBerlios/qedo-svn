@@ -25,27 +25,31 @@
 namespace Qedo
 {
 
-CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM, const char* szConnString, Connector* connector)
+CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM, 
+								 const char* szConnString, 
+								 Connector* connector) :
+	m_eAM(eAM),
+	m_connector(connector)
 {
 	QDDatabase::QDDatabase();
-
-	m_eAM = eAM;
-	m_connector = connector;
 	strcpy(m_szConnString, szConnString);
 }
 
 CatalogBaseImpl::~CatalogBaseImpl()
 {
-	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
-	
-	for (storageHomeBase_iter = m_lStorageHomeBases.begin();
-		 storageHomeBase_iter != m_lStorageHomeBases.end();
-		 storageHomeBase_iter++)
+	if(!m_lStorageHomeBases.empty())
 	{
-		(*storageHomeBase_iter)->_remove_ref();
-	}
+		list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
+	
+		for (storageHomeBase_iter = m_lStorageHomeBases.begin();
+			 storageHomeBase_iter != m_lStorageHomeBases.end();
+			 storageHomeBase_iter++)
+		{
+			(*storageHomeBase_iter)->_remove_ref();
+		}
 
-	m_lStorageHomeBases.clear();
+		m_lStorageHomeBases.clear();
+	}
 
 	_remove_ref();
 }
@@ -149,7 +153,7 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 
 	//if not in the list, new one.
 	StorageHomeFactory factory = new OBNative_CosPersistentState::StorageHomeFactory_pre();
-	m_connector->register_storage_home_factory(storage_home_id, factory);
+	factory = m_connector->register_storage_home_factory(storage_home_id, factory);
 	StorageHomeBase* pStorageHomeBase = factory->create();
     StorageHomeBaseImpl* pStorageHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pStorageHomeBase);
 	pStorageHomeBaseImpl->Init((dynamic_cast <CatalogBase_ptr> (this)), storage_home_id);
@@ -157,7 +161,7 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 	m_lStorageHomeBases.push_back(pStorageHomeBaseImpl);
 
 	//return (CosPersistentState::StorageHomeBase::_narrow(pStorageHomeBase));
-	return (dynamic_cast <StorageHomeBase_ptr> (pStorageHomeBase));
+	return pStorageHomeBase;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -178,7 +182,7 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 	QDRecordset prs;
 	prs.Init(&m_hDbc);
 
-	strToExecute = "select ownhome from pid_content where pid like ";
+	strToExecute = "select OWNHOME from PID_CONTENT where PID like ";
 	strToExecute += strPid;
 	strToExecute += ";";
 
@@ -188,10 +192,10 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 		prs.GetFieldValue("OWNHOME", szStorageHome);
 		prs.Close();
 	}
-
-	strToExecute = "select spid from ";
+/*
+	strToExecute = "select SPID from ";
 	strToExecute.append((const char*)szStorageHome);
-	strToExecute += " where pid like ";
+	strToExecute += " where PID like ";
 	strToExecute += strPid;
 	strToExecute += ";";
 
@@ -207,7 +211,8 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 	PSSHelper::convertStringToSpid((const char*)szSpid, rSpid);
 	
 	StorageHomeBase_ptr p_sHomeBase = find_storage_home((const char*)szStorageHome);
-	return (p_sHomeBase->find_by_short_pid(rSpid));
+	return (p_sHomeBase->find_by_short_pid(rSpid));*/
+	return NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -303,10 +308,13 @@ CatalogBaseImpl::close()
 	}
 }
 
-SessionPoolImpl::SessionPoolImpl(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString, Connector* connector)
+SessionPoolImpl::SessionPoolImpl(AccessMode eAM, 
+								 TransactionPolicy tx_policy, 
+								 const char* szConnString, 
+								 Connector* connector) :
+	m_tx_policy(tx_policy)
 {
 	CatalogBaseImpl::CatalogBaseImpl(eAM, szConnString, connector);
-	m_tx_policy = tx_policy;
 }
 
 SessionPoolImpl::~SessionPoolImpl()
@@ -436,6 +444,9 @@ SessionPoolImpl::refresh_by_pids(const PidList& pids)
 	}
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//return the transaction policy
+////////////////////////////////////////////////////////////////////////////////
 TransactionPolicy 
 SessionPoolImpl::transaction_policy()
 {

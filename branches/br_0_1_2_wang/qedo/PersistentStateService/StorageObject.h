@@ -25,9 +25,9 @@
 #include <map>
 #include <string>
 #include "PSSUtil.h"
+#include "PSSStorageObject.h"
 #include "RefCountBase.h"
 #include "PSSHelper.h"
-#include "PSSStorageObject.h"
 
 using namespace std;
 using namespace CosPersistentState;
@@ -35,8 +35,8 @@ using namespace CosPersistentState;
 namespace Qedo
 {
 
-class StorageObjectImpl : public virtual CosPersistentState::StorageObject,
-						  public virtual RefCountLocalObject
+class PSSDLL_API StorageObjectImpl : public virtual CosPersistentState::StorageObject,
+						             public virtual RefCountLocalObject
 {
 	public:
 		
@@ -50,7 +50,7 @@ class StorageObjectImpl : public virtual CosPersistentState::StorageObject,
 
 		void setModified(bool bModified);
 
-		virtual void setValue(map<string, CORBA::Any> valueMap) {};
+		virtual void setValue(map<string, CORBA::Any> valueMap) { throw CORBA::NO_IMPLEMENT(); };
 
 		// normal mapping of PSDL operations
 		void _add_ref() {RefCountLocalObject::_add_ref();};
@@ -72,6 +72,18 @@ class StorageObjectImpl : public virtual CosPersistentState::StorageObject,
 		CosPersistentState::StorageHomeBase_ptr get_storage_home()
 			throw (CORBA::SystemException);		
 
+		static StorageObject* _duplicate(StorageObject* pStorageObject)
+		{
+			if(pStorageObject)
+				pStorageObject->_add_ref();
+			return pStorageObject;
+		};
+
+		static StorageObject* _downcast(StorageObject* pStorageObject)
+		{
+			return pStorageObject;
+		};
+
 	protected:
 		
 		~StorageObjectImpl() {};
@@ -85,8 +97,8 @@ class StorageObjectImpl : public virtual CosPersistentState::StorageObject,
 		string m_strSelect;
 };
 
-class StorageObjectRefImpl : public virtual CosPersistentState::StorageObjectRef,
-						     public virtual RefCountLocalObject
+class PSSDLL_API StorageObjectRefImpl : public virtual CosPersistentState::StorageObjectRef,
+						                public virtual RefCountLocalObject
 {
 	StorageObjectRefImpl(StorageObject* obj=0) 
 		throw();

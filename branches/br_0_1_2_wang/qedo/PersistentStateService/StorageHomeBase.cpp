@@ -26,7 +26,8 @@
 namespace Qedo
 {
 
-StorageHomeBaseImpl::StorageHomeBaseImpl()
+StorageHomeBaseImpl::StorageHomeBaseImpl() :
+	m_szStorageHomeName(NULL)
 {
 }
 
@@ -36,7 +37,7 @@ StorageHomeBaseImpl::~StorageHomeBaseImpl()
 	{
 		list <StorageObjectImpl*> ::iterator storageObject_iter;
 	
-		for (storageObject_iter = m_lStorageObjectes.begin();
+		for(storageObject_iter = m_lStorageObjectes.begin();
 			storageObject_iter != m_lStorageObjectes.end();
 			storageObject_iter++)
 		{
@@ -55,9 +56,8 @@ StorageHomeBaseImpl::~StorageHomeBaseImpl()
 
 void StorageHomeBaseImpl::Init(CatalogBase_ptr pCatalogBase, const char* szStorageHomeName)
 {
-	m_szStorageHomeName = NULL;
-	strcpy(m_szStorageHomeName, szStorageHomeName);
 	m_pCatalogBase = pCatalogBase;
+	strcpy(m_szStorageHomeName, szStorageHomeName);
 	
 	QDRecordset::Init((dynamic_cast <CatalogBaseImpl*> (m_pCatalogBase))->getHDBC());
 }
@@ -86,9 +86,9 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 	string strShortPid = PSSHelper::convertSpidToString(short_pid);
 	
 	string strToExecute;
-	strToExecute = "select * from "; //??? Which columns should be seleted?
+	strToExecute = "select * from ";
 	strToExecute.append((const char*)m_szStorageHomeName);
-	strToExecute += " where spid like ";
+	strToExecute += " where SPID like ";
 	strToExecute += strShortPid;
 	strToExecute += ";";
 
@@ -100,13 +100,13 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 
 		//use factory to create a storage object
 		StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();
-		CatalogBaseImpl* tmp_catalog = dynamic_cast <CatalogBaseImpl*> (get_catalog());
-		tmp_catalog->getConnector()->register_storage_object_factory(NULL, factory);
+		CatalogBaseImpl* tmp_catalog = dynamic_cast <CatalogBaseImpl*> (m_pCatalogBase);
+		factory = tmp_catalog->getConnector()->register_storage_object_factory(NULL, factory);
 		StorageObjectImpl* pStorageObjectImpl = factory->create();
 
 		pStorageObjectImpl->setValue(valueMap);
 		m_lStorageObjectes.push_back(pStorageObjectImpl);
-		return pStorageObjectImpl;
+		return (dynamic_cast <StorageObjectBase> (pStorageObjectImpl));
 	}
 	else
 		throw CosPersistentState::NotFound();
@@ -122,19 +122,13 @@ StorageHomeBaseImpl::get_catalog()
 	return m_pCatalogBase;
 }
 
-char*
-StorageHomeBaseImpl::getStorageHomeName()
-{
-	return m_szStorageHomeName;
-}
-
 string 
 StorageHomeBaseImpl::getFlush()
 {
+	string strFlush = "";
+
 	if(!m_lTempList.empty())
 		m_lTempList.clear();
-
-	string strFlush = "";
 
 	list <StorageObjectImpl*> ::iterator storageObject_iter;
 	
@@ -155,13 +149,13 @@ StorageHomeBaseImpl::getFlush()
 string 
 StorageHomeBaseImpl::getFlushByPid(std::vector<Pid> lPidList)
 {
-	if(!m_lTempList.empty())
-		m_lTempList.clear();
-
 	string strFlush = "";
 	vector <Pid> ::iterator pid_iter;
 	list <StorageObjectImpl*> ::iterator storageObject_iter;
 	
+	if(!m_lTempList.empty())
+		m_lTempList.clear();
+
 	for( storageObject_iter = m_lStorageObjectes.begin();
 		 storageObject_iter != m_lStorageObjectes.end();
 		 storageObject_iter++)

@@ -36,9 +36,9 @@ using namespace CosPersistentState;
 namespace Qedo
 {
 
-class CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
-                        public virtual RefCountLocalObject,
-						public virtual QDDatabase
+class PSSDLL_API CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
+                                   public virtual RefCountLocalObject,
+						           public virtual QDDatabase
 {
 	public:
 

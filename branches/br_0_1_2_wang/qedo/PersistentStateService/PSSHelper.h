@@ -33,7 +33,7 @@ using namespace CosPersistentState;
 namespace Qedo
 {
 
-class PSSDLL_API PSSHelper
+class PSSHelper
 {
 	public:
 

@@ -31,7 +31,8 @@ StorageObjectImpl::StorageObjectImpl() :
 	m_shortPid(NULL),
 	m_bModified(FALSE),
 	m_strUpdate(""),
-	m_strSelect("")
+	m_strSelect(""),
+	m_storageHomeBase(NULL)
 {
 }
 
@@ -46,21 +47,24 @@ void
 StorageObjectImpl::destroy_object() 
 	throw (CORBA::SystemException)
 {
-	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (get_storage_home());
+	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (m_storageHomeBase);
 	char* homename = homeimpl->getStorageHomeName();
-	string my_pid = PSSHelper::convertPidToString(get_pid());
+	string my_pid = PSSHelper::convertPidToString(m_pid);
 
 	string strSqlDel;
 	strSqlDel = "delete from ";
 	strSqlDel.append((const char*)homename);
 	strSqlDel += " where PID like ";
 	strSqlDel += my_pid;
+	strSqlDel += ";";
     
 	homeimpl->Open(strSqlDel.c_str());
 	homeimpl->Close();
 
 	strSqlDel = "delete from PID_CONTENT where PID like ";
 	strSqlDel += my_pid;
+	strSqlDel += ";";
+
 	homeimpl->Open(strSqlDel.c_str());
 	homeimpl->Close();
 }
@@ -73,15 +77,16 @@ CORBA::Boolean
 StorageObjectImpl::object_exists() 
 	throw (CORBA::SystemException)
 {
-	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (get_storage_home());
+	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (m_storageHomeBase);
 	char* homename = homeimpl->getStorageHomeName();
-	string my_pid = PSSHelper::convertPidToString(get_pid());
+	string my_pid = PSSHelper::convertPidToString(m_pid);
 
 	string strSqlSel;
-	strSqlSel = "select count(*) from ";
+	strSqlSel = "select COUNT(*) from ";
 	strSqlSel.append((const char*)homename);
-	strSqlSel += "where PID like ";
+	strSqlSel += " where PID like ";
 	strSqlSel += my_pid;
+	strSqlSel += ";";
     
 	if(homeimpl->Open(strSqlSel.c_str()))
 	{
@@ -145,21 +150,17 @@ StorageObjectImpl::isModified()
 	return m_bModified;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//returns the SQL-Update for CatalogBase::flush()
-////////////////////////////////////////////////////////////////////////////////
 string
 StorageObjectImpl::getUpdate()
 {
+	//returns the SQL-Update for CatalogBase::flush()
 	return m_strUpdate;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//returns the SQL-Select for CatalogBase::refresh()
-////////////////////////////////////////////////////////////////////////////////
 string
 StorageObjectImpl::getSelect()
 {
+	//returns the SQL-Select for CatalogBase::refresh()
 	return m_strSelect;
 }
 

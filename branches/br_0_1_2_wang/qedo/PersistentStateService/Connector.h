@@ -39,11 +39,11 @@ namespace Qedo
 {
 
 class PSSDLL_API ConnectorImpl : public virtual CosPersistentState::Connector,
-					   public virtual RefCountLocalObject
+					             public virtual RefCountLocalObject
 {
 	public:
 
-		ConnectorImpl();
+		ConnectorImpl() {};
 
 		ConnectorImpl(char* szImplID);
 		

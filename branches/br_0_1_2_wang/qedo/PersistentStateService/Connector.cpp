@@ -25,10 +25,6 @@
 namespace Qedo
 {
 
-ConnectorImpl::ConnectorImpl()
-{
-}
-
 ConnectorImpl::ConnectorImpl(char* szImplID) :
 	m_pSessionPool(NULL)
 {
@@ -38,20 +34,21 @@ ConnectorImpl::ConnectorImpl(char* szImplID) :
 ConnectorImpl::~ConnectorImpl()
 {	
 	// delete all sessions and session pool(s)!
-	list <SessioImpl*> ::iterator sessio_iter;
-	
-	for (sessio_iter = m_lSessions.begin();
-		 sessio_iter != m_lSessions.end();
-		 sessio_iter++)
+	if(!m_lSessions.empty())
 	{
-		(*sessio_iter)->close();
+		list <SessioImpl*> ::iterator sessio_iter;
+
+		for (sessio_iter = m_lSessions.begin();
+			sessio_iter != m_lSessions.end();
+			sessio_iter++)
+		{
+			(*sessio_iter)->close();
+		}
+
+		m_lSessions.clear();
 	}
 
-	m_lSessions.clear();
-
-	if(m_pSessionPool->IsConnected())
-		m_pSessionPool->close();
-
+	m_pSessionPool->close();
 	delete m_pSessionPool;
 	m_pSessionPool = NULL;
 
@@ -158,17 +155,14 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 	
 	if(m_pSessionPool==NULL)
 	{
-		SessionPoolImpl* pSessionPool = 
-			new SessionPoolImpl(access_mode, 
-								tx_policy, 
-								strConn.c_str(), 
-								(dynamic_cast <Connector*> (this)));
+		m_pSessionPool = new SessionPoolImpl( access_mode, 
+											  tx_policy, 
+											  strConn.c_str(), 
+											  (dynamic_cast <Connector*> (this)) );
 
-		if( pSessionPool->Init()==FALSE ||
-			pSessionPool->DriverConnect(strConn.c_str())==FALSE )
+		if( m_pSessionPool->Init()==FALSE ||
+			m_pSessionPool->DriverConnect(strConn.c_str())==FALSE )
 			throw CORBA::PERSIST_STORE();
-
-		m_pSessionPool = pSessionPool;
 	}
 	else
 	{
