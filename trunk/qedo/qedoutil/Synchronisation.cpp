@@ -34,7 +34,7 @@
 #include <sys/time.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.26 2003/11/03 13:02:48 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.27 2003/11/03 13:41:23 boehme Exp $";
 
 
 namespace Qedo {
@@ -355,7 +355,7 @@ QedoCond::wait_timed(const QedoMutex* m, unsigned long timeout)
 	gettimeofday(&tp,0);
 	abstime.tv_sec = tp.tv_sec + timeout / 1000;
 	timeout = timeout % 1000;
-	timeout = timeout * 1000
+	timeout = timeout * 1000;
 	timeout += tp.tv_usec;
 	if(timeout > 1000000)
 	{
