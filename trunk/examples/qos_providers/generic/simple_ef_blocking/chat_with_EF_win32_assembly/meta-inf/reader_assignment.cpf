@@ -14,7 +14,7 @@
     </configuration>
     <configuration>
         <simple name="frequency" type="long">
-            <value>1</value>
+            <value>5</value>
         </simple>
     </configuration>
 </properties>

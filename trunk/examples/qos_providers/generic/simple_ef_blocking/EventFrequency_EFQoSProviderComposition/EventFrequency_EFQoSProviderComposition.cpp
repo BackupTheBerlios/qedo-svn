@@ -46,7 +46,7 @@ EFQoSProviderExec::configuration_complete()
 // BEGIN USER INSERT SECTION EFQoSProviderExec::configuration_complete
 
 // get interceptor_registration
-Components::Extension::ServerInterceptorRegistration_var server_reg =
+Components::ContainerPortableInterceptor::ServerInterceptorRegistration_var server_reg =
 	context_ -> get_server_interceptor_dispatcher_registration();
 
 // check for contract assignments

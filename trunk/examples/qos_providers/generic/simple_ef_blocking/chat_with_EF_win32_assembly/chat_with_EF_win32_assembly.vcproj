@@ -119,8 +119,8 @@
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="zip ../chat_with_EF_win32_assembly.zip -j ../../../../events/ChatChannel/Chat_Channel_Compo.zip ../../../../events/ChatChannel/Chat_Reader_Compo.zip ../../../../events/ChatChannel/Chat_Writer_Compo.zip ../EventFrequency_EFQoSProviderComposition.zip
-zip ../chat_with_EF_win32_assembly.zip meta-inf/chat_with_EF_win32.cad meta-inf/reader.cpf meta-inf/reader_assignment.cpf
+					CommandLine="$(QEDO)/bin/zip ../chat_with_EF_win32_assembly.zip -j ../../../../events/ChatChannel/Chat_Channel_Compo.zip ../../../../events/ChatChannel/Chat_Reader_Compo.zip ../../../../events/ChatChannel/Chat_Writer_Compo.zip ../EventFrequency_EFQoSProviderComposition.zip
+$(QEDO)/bin/zip ../chat_with_EF_win32_assembly.zip meta-inf/chat_with_EF_win32.cad meta-inf/reader.cpf meta-inf/reader_assignment.cpf
 "
 					Outputs="creating assembly"/>
 			</FileConfiguration>

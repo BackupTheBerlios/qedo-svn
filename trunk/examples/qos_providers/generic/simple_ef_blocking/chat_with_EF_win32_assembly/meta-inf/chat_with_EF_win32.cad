@@ -44,7 +44,6 @@
 
 			</componentinstantiation>
 
-		        <destination></destination>
 		</homeplacement>
 
 		<homeplacement id="ReaderHome">
@@ -56,7 +55,6 @@
 				</componentproperties>
 			</componentinstantiation>
 
-		        <destination></destination>
 		</homeplacement>
 	
 	</processcollocation>
@@ -69,7 +67,6 @@
 			<componentinstantiation id="channel">
 			</componentinstantiation>
 
-			<destination></destination>
 		</homeplacement>
 
 	</processcollocation>
@@ -81,7 +78,6 @@
 			<componentinstantiation id="writer">
 			</componentinstantiation>
 
-			<destination></destination>
 		</homeplacement>
 
 	</processcollocation>

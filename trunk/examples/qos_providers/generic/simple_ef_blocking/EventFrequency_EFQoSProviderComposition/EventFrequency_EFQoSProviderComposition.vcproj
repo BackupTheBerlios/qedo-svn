@@ -99,8 +99,8 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="zip ../EventFrequency_EFQoSProviderComposition.zip -j  Debug_mico/EventFrequency_EFQoSProviderComposition.dll ../EventFrequency_EFQoSProviderComposition_SERVANT/Debug_mico/EventFrequency_EFQoSProviderComposition_SERVANT.dll ../event_frequency.cidl
-zip ../EventFrequency_EFQoSProviderComposition.zip meta-inf/EventFrequency_EFQoSProviderComposition.ccd meta-inf/EventFrequency_EFQoSProviderComposition.csd
+				CommandLine="$(QEDO)/bin/zip ../EventFrequency_EFQoSProviderComposition.zip -j  Debug_mico/EventFrequency_EFQoSProviderComposition.dll ../EventFrequency_EFQoSProviderComposition_SERVANT/Debug_mico/EventFrequency_EFQoSProviderComposition_SERVANT.dll ../event_frequency.cidl
+$(QEDO)/bin/zip ../EventFrequency_EFQoSProviderComposition.zip meta-inf/EventFrequency_EFQoSProviderComposition.ccd meta-inf/EventFrequency_EFQoSProviderComposition.csd
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -180,6 +180,9 @@ zip ../EventFrequency_EFQoSProviderComposition.zip meta-inf/EventFrequency_EFQoS
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
+				RelativePath=".\component_valuetypes.cpp">
+			</File>
+			<File
 				RelativePath="EventFrequency_EFQoSProviderComposition.cpp">
 			</File>
 			<File
@@ -197,13 +200,13 @@ zip ../EventFrequency_EFQoSProviderComposition.zip meta-inf/EventFrequency_EFQoS
 			<File
 				RelativePath="ServerContainerInterceptor.cpp">
 			</File>
-			<File
-				RelativePath="valuetypes.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath=".\component_valuetypes.h">
+			</File>
 			<File
 				RelativePath="EventFrequency_EFQoSProviderComposition.h">
 			</File>
@@ -221,9 +224,6 @@ zip ../EventFrequency_EFQoSProviderComposition.zip meta-inf/EventFrequency_EFQoS
 			</File>
 			<File
 				RelativePath="ServerContainerInterceptor.h">
-			</File>
-			<File
-				RelativePath="valuetypes.h">
 			</File>
 		</Filter>
 		<Filter

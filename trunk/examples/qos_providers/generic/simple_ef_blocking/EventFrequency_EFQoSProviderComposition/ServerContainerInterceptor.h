@@ -7,7 +7,7 @@
 
 namespace Qedo {
 
-	class EFServerContainerInterceptor: public virtual Components::Extension::ServerContainerInterceptor
+	class EFServerContainerInterceptor: public virtual Components::ContainerPortableInterceptor::ServerContainerInterceptor
 	{
 	private:
 		unsigned long count;
@@ -22,12 +22,14 @@ namespace Qedo {
 
 		void set_freq(long freq);
 
+		virtual char* name ();
+		virtual void destroy ();
 		virtual void set_slot_id(PortableInterceptor::SlotId id);
-		virtual void receive_request (::Components::Extension::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_reply (::Components::Extension::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_system_exception (::Components::Extension::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_user_exception (::Components::Extension::ContainerServerRequestInfo_ptr info) ;
-		virtual void rec_request_from_servant_locator(const char* operation);
+		virtual void receive_request (::Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+		virtual void send_reply (::Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+		virtual void send_system_exception (::Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+		virtual void send_user_exception (::Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+//		virtual void rec_request_from_servant_locator(const char* operation);
 
 	};
 }; // namespace Qedo

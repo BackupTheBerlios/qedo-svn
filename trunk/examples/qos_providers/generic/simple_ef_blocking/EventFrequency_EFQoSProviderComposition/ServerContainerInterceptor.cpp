@@ -2,6 +2,16 @@
 
 namespace Qedo {
 
+char*
+EFServerContainerInterceptor::name () {
+	return 0;
+};
+
+void
+EFServerContainerInterceptor::destroy () {
+
+};
+
 EFServerContainerInterceptor::EFServerContainerInterceptor ()
 {
 count = 0;
@@ -34,7 +44,7 @@ EFServerContainerInterceptor::set_slot_id(PortableInterceptor::SlotId id)
 
 
 void
-EFServerContainerInterceptor::receive_request (::Components::Extension::ContainerServerRequestInfo_ptr info)
+EFServerContainerInterceptor::receive_request (::Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
 {
 
 	if(!strcmp(info->request_info()->operation(), "push_event"))
@@ -56,29 +66,31 @@ EFServerContainerInterceptor::receive_request (::Components::Extension::Containe
 }
 
 void
-EFServerContainerInterceptor::send_reply (::Components::Extension::ContainerServerRequestInfo_ptr info)
+EFServerContainerInterceptor::send_reply (::Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
 {
 //	std::cout << "COPI: send_reply: " << info->operation() << "for id: " << std::endl;
 
 }
 
 void
-EFServerContainerInterceptor::send_system_exception (::Components::Extension::ContainerServerRequestInfo_ptr info)
+EFServerContainerInterceptor::send_system_exception (::Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
 {
 //	std::cout << "COPI: send_system_exception: " << info->operation() << "for id: " << std::endl;
 
 }
 
 void
-EFServerContainerInterceptor::send_user_exception (::Components::Extension::ContainerServerRequestInfo_ptr info) {
+EFServerContainerInterceptor::send_user_exception (::Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) {
 //	std::cout << "COPI: send_user_exception: " << info->operation() << "for id:" << std::endl;
 
 }
 
+/*
 void
 EFServerContainerInterceptor::rec_request_from_servant_locator(const char * operation)
 {
 //	std::cout << "operation: " << operation << " from servant locator" << std::endl;
 }
+*/
 
 }; // namespace Qedo
