@@ -10,7 +10,9 @@ namespace QEDO_CIDL_Generator {
 
 GeneratorServantH::GeneratorServantH
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: CPPBase(repository)
+: CPPBase(repository),
+  bTempGenerated_(false),
+  ph_generator_(new GeneratorPersistenceH(repository))
 {
 }
 
@@ -54,8 +56,8 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "#endif\n";
 	out << "#include \"SessionHomeServant.h\"\n";
 	out << "#include \"EntityHomeServant.h\"\n";
-	out << "#include \"Connector.h\"\n";
-	out << "#include \"Catalog.h\"\n\n";
+	out << "#include \"" << file_prefix_ << "_PSS.h\"\n";
+	out << "#include \"Connector.h\"\n\n";
 	out << "using namespace Qedo;\n\n";
 
 	//
@@ -77,6 +79,10 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	//
 	out << "#endif\n";
 	out.close();
+
+	// generate source code for PSS
+	ph_generator_->generate(target, fileprefix);
+	ph_generator_->destroy();
 }
 	
 
@@ -273,7 +279,7 @@ GeneratorServantH::doComposition(CIDL::CompositionDef_ptr composition)
 	// determine lifecycle
 	//
 	CIDL::LifecycleCategory lc = composition->lifecycle();
-
+	
 	//
 	// generate home
 	//
@@ -799,13 +805,13 @@ GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component, CIDL::L
 	genConsumerServants(component);
 	genComponentServantBody(component,lc);
 	out.unindent();
-	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	/*if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
 	{
 		out << "private:\n\n";
 		out.indent();
 		out << component->name() << "Persistence* pStorageObject_;\n\n";
 		out.unindent();
-	}
+	}*/
 	out << "};\n\n\n";
 }
 
@@ -835,8 +841,7 @@ GeneratorServantH::genComponentServantBody(IR__::ComponentDef_ptr component, CID
 	handleSink(component);
 	handleSource(component);
 
-	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
-		out << "void setStorageObject(" << component->name() << "Persistence* pStorageObject);\n\n";
+	//out << "void setStorageObject(StorageObjectImpl* pStorageObject);\n\n";
 }
 
 void
@@ -900,8 +905,7 @@ GeneratorServantH::genComponentPersistence(IR__::ComponentDef_ptr component, CID
 
 	out << "};\n\n";
 
-	genFactoryTemplate(false);
-	out << "typedef ObjectFactory<" << component->name() << "Persistence> CcmObjectFactory;\n\n";
+	out << "typedef CCMObjectFactoryTemplate<" << component->name() << "Persistence> CCM" << component->name() << "PersistenceFactory;\n\n";
 }
 
 void
@@ -1131,7 +1135,7 @@ GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
 	{
 		out << "\nvoid get_table_info(std::map<std::string, std::string>& mTables);\n\n";
-		out << "void init_datastore(Connector_ptr pConn, Sessio_ptr pSession);\n";
+		out << "StorageHomeBase_ptr init_datastore(Connector_ptr pConn, Sessio_ptr pSession);\n";
 		out.unindent();
 		out << "\nprivate:\n\n";
 		out.indent();
@@ -1145,21 +1149,24 @@ void
 GeneratorServantH::genFactoryTemplate(bool isHome)
 {
 	std::string strPre = "";
+	std::string strTemp = "CCM";
+
 	(isHome) ? strPre = "HomeFactory" : strPre = "ObjectFactory";
+	strTemp += strPre + "Template";
 
 	out << "template <class T>\n";
 	out << "#ifdef ORBACUS_ORB\n";
-	out << "class " << strPre << " : public OBNative_CosPersistentState::Storage" << strPre << "_pre\n";
+	out << "class " << strTemp << " : public OBNative_CosPersistentState::Storage" << strPre << "_pre\n";
 	out << "#endif\n";
 	out << "#ifdef MICO_ORB\n";
-	out << "class " << strPre << " : public CosPersistentState::Storage" << strPre << "_pre\n";
+	out << "class " << strTemp << " : public CosPersistentState::Storage" << strPre << "_pre\n";
 	out << "#endif\n";
 	out << "{\n";
 	out.indent();
 	out << "public:\n";
 	out.indent();
-	out << strPre << "() : refcount_(1) {};\n";
-	out << "virtual ~" << strPre << "() {};\n";
+	out << strTemp << "() : refcount_(1) {};\n";
+	out << "virtual ~" << strTemp << "() {};\n";
 	out << "virtual T* create() { return new T; };\n";
 	out << "virtual void _add_ref() { refcount_++; };\n";
 	out << "virtual void _remove_ref() { if( --refcount_==0 ) delete this; };\n";
@@ -1177,6 +1184,14 @@ GeneratorServantH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 {
 	if( lc!=CIDL::lc_Entity && lc!=CIDL::lc_Process )
 		return;
+
+	// generate factory template for storage object and storage home
+	if( !bTempGenerated_ )
+	{
+		genFactoryTemplate(false);
+		genFactoryTemplate(true);
+		bTempGenerated_ = true;
+	}
 
 	// handle base home
 	IR__::HomeDef_var base_home = home->base_home();
@@ -1255,8 +1270,7 @@ GeneratorServantH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 	out.unindent();
 	out << "};\n\n";
 
-	genFactoryTemplate(true);
-	out << "typedef HomeFactory<" << home->name() << "Persistence> CcmHomeFactory;\n\n";
+	out << "typedef CCMHomeFactoryTemplate<" << home->name() << "Persistence> CCM" << home->name() << "PersistenceFactory;\n\n";
 }
 
 } //

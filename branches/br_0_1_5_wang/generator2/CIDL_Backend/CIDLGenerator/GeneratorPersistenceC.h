@@ -52,7 +52,7 @@ private:
 	std::set<std::string>			sRecursion_;
 	std::map<std::string, std::string>		homeMap_;
 	std::map<std::string, std::string>::const_iterator homeIter_;
-	std::list<IR__::ValueDef_ptr>	lValueTypes_;
+	std::list<IR__::ValueDef_var>	lValueTypes_;
 
 	void check_for_generation(IR__::Contained_ptr item);
 

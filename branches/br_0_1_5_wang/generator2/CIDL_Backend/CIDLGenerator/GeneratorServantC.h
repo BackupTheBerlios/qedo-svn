@@ -28,6 +28,7 @@
 
 #include "CPPBase.h"
 #include "Printer.h"
+#include "GeneratorPersistenceC.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -49,15 +50,16 @@ private:
 	std::string					strName_;
 	std::string					strAbsHomeName_;
 	std::string					strContent_;
+	std::string					strNamespace_;
 	Printer						out;
 	CIDL::CompositionDef_var	composition_;
 	IR__::ComponentDef_var		component_;
 	IR__::HomeDef_var			home_;
 	IR__::StorageHomeDef_var	storagehome_;
 	std::set<std::string>		recursion_set_;
-	std::list<IR__::ValueDef_ptr>	lValueTypes_;
-
+	std::list<IR__::ValueDef_var>	lValueTypes_;
 	std::string					scope_name_;
+	GeneratorPersistenceC*      pc_generator_;
 
 	void check_for_generation(IR__::Contained_ptr item);
 	void resolve_atomic_streamtypes(IR__::StreamTypeDef_ptr streamtype, IR__::StreamTypeDefSeq& atomic_streamtypes);

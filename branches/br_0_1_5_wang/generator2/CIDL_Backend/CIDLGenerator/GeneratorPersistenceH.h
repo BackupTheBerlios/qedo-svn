@@ -42,6 +42,7 @@ private:
 
 	Printer out;
 	bool bAbstract_;
+	bool bTempGenerated_;
 	bool bASHKey_; // key is from abstract storage home
 	std::string strFilename_;
 	std::string strActBasename_;
@@ -76,6 +77,7 @@ private:
 	void genAbstractObjsForConcreteType(IR__::AbstractStorageTypeDef_ptr abs_storagetype);
 	void genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome);
 	void genCreateOperation(IR__::StorageHomeDef_ptr storagehome, bool bRef);
+	void genFactoryTemplate(bool isHome);
 	
 	
 public:

@@ -44,18 +44,7 @@ GeneratorPersistenceC::~GeneratorPersistenceC
 ()
 {
 	if(!lValueTypes_.empty())
-	{
-		std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
-	
-		for(valuetype_iter = lValueTypes_.begin();
-			valuetype_iter != lValueTypes_.end();
-			valuetype_iter++)
-		{
-			//(dynamic_cast <IR__::ValueDef_ptr> (*valuetype_iter))->_remove_ref();
-		}
-
 		lValueTypes_.clear();
-	}
 }
 
 void
@@ -110,18 +99,25 @@ GeneratorPersistenceC::check_for_generation(IR__::Contained_ptr item)
 		for(i=0; i<ulLen; i++)
 			check_for_generation((*contained_seq)[i]);
 
-		// abstract storagehomes
-		contained_seq = a_module->contents(CORBA__::dk_AbstractStorageHome, true);
+		// compositions
+		contained_seq = repository_->contents(CORBA__::dk_Composition, true);
 		ulLen = contained_seq->length();
-		for(i=0; i<ulLen; i++)
-			check_for_generation((*contained_seq)[i]);
-
-		// storagehomes
-		contained_seq = a_module->contents(CORBA__::dk_StorageHome, true);
-		ulLen = contained_seq->length();
-		for(i=0; i<ulLen; i++)
-			check_for_generation((*contained_seq)[i]);
-
+		CIDL::CompositionDef_var a_composition;
+		for(i = 0; i < ulLen; i++)
+		{
+			a_composition = CIDL::CompositionDef::_narrow((*contained_seq)[i]);
+			std::string id = a_composition->id();
+			std::string::size_type pos = id.find_last_of("/");
+			if(pos != std::string::npos) 
+			{
+				id.replace(pos, std::string::npos, ":1.0");
+				if(!id.compare(a_module->id())) 
+				{
+					check_for_generation(a_composition);
+				}
+			}
+		}
+		
 		// valuetypes
 		contained_seq = a_module->contents(CORBA__::dk_Value, true);
 		ulLen = contained_seq->length();
@@ -133,9 +129,60 @@ GeneratorPersistenceC::check_for_generation(IR__::Contained_ptr item)
 
 		break;
 	}
-	case CORBA__::dk_AbstractStorageType :
+	case CORBA__::dk_Composition : {
+		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
+
+		// storage home
+		if( a_composition->lifecycle()==CIDL::lc_Entity || 
+			a_composition->lifecycle()==CIDL::lc_Process )
+		{
+			IR__::StorageHomeDef_var storagehome = a_composition->home_executor()->binds_to();
+			if( !CORBA::is_nil(storagehome) )
+				check_for_generation(storagehome);
+		}
+		
+		break;
+	}
+	case CORBA__::dk_StorageHome : 
 	{
-		IR__::AbstractStorageTypeDef_var abs_storagetype = IR__::AbstractStorageTypeDef::_narrow(item);
+		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(item);
+
+		// supported interfaces
+		IR__::InterfaceDefSeq_var inf_seq = storagehome->supported_interfaces();
+		ulLen = inf_seq->length();
+		for(i=0; i<ulLen; i++)
+			check_for_generation((*inf_seq)[i]);
+
+		// base storage home
+		IR__::StorageHomeDef_var base_storagehome = storagehome->base_storagehome();
+		if( !CORBA::is_nil(base_storagehome) )
+			this->check_for_generation(base_storagehome);
+
+		// self
+		// insert this interface in generation list
+		this->insert_to_generate(item);
+
+		// managed storage type
+		IR__::StorageTypeDef_var storagetype = storagehome->managed_storagetype();
+		this->check_for_generation(storagetype);
+
+		break;
+	}
+	case CORBA__::dk_AbstractStorageHome :
+	{
+		IR__::AbstractStorageHomeDef_var abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(item);
+
+		// managed abstract storage type
+		//IR__::AbstractStorageTypeDef_var abs_storagetype = abs_storagehome->managed_abstract_storagetype();
+		//this->check_for_generation(abs_storagetype);
+
+		// supported interfaces
+		IR__::InterfaceDefSeq_var inf_seq = abs_storagehome->base_abstract_storagehomes();
+		ulLen = inf_seq->length();
+		for(i=0; i<ulLen; i++)
+			check_for_generation((*inf_seq)[i]);
+
+		// self
 		// insert this interface in generation list
 		this->insert_to_generate(item);
 
@@ -144,34 +191,39 @@ GeneratorPersistenceC::check_for_generation(IR__::Contained_ptr item)
 	case CORBA__::dk_StorageType :
 	{
 		IR__::StorageTypeDef_var storagetype = IR__::StorageTypeDef::_narrow(item);
+
+		// supported interfaces
+		IR__::InterfaceDefSeq_var inf_seq = storagetype->supported_interfaces();
+		ulLen = inf_seq->length();
+		for(i=0; i<ulLen; i++)
+			check_for_generation((*inf_seq)[i]);
+
+		// base type
+		IR__::StorageTypeDef_var base_storagetype = storagetype->base_storagetype();
+		if( !CORBA::is_nil(base_storagetype) )
+			check_for_generation(base_storagetype);
+
+		// self
 		// insert this interface in generation list
 		this->insert_to_generate(item);
 
 		break;
 	}
-	case CORBA__::dk_AbstractStorageHome :
+	case CORBA__::dk_AbstractStorageType :
 	{
-		IR__::AbstractStorageHomeDef_var abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(item);
+		IR__::AbstractStorageTypeDef_var abs_storagetype = IR__::AbstractStorageTypeDef::_narrow(item);
+
+		// supported interfaces
+		IR__::InterfaceDefSeq_var inf_seq = abs_storagetype->base_abstract_storagetypes();
+		ulLen = inf_seq->length();
+		for(i=0; i<ulLen; i++)
+			check_for_generation((*inf_seq)[i]);
+
+		// self
 		// insert this interface in generation list
 		this->insert_to_generate(item);
-
-		// managed abstract storage type
-		IR__::AbstractStorageTypeDef_var abs_storagetype = abs_storagehome->managed_abstract_storagetype();
-		this->check_for_generation(abs_storagetype);
 
 		break;
-	}
-	case CORBA__::dk_StorageHome :
-	{
-		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(item);	
-		// insert this interface in generation list
-		this->insert_to_generate(item);
-
-		// managed storage type
-		IR__::StorageTypeDef_var storagetype = storagehome->managed_storagetype();
-		this->check_for_generation(storagetype);
-
-		break; 
 	}
 	default:
 		break;
@@ -235,17 +287,7 @@ GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribut
 	out << map_psdl_parameter_type(attr_type, true) << " param)\n";
 	out << "{\n";
 	out.indent();
-	switch ( att_type_kind )
-	{
-		case CORBA::tk_string:
-			out << "strcpy( " << attribute_name << "_, param );\n";
-			break;
-		case CORBA::tk_wstring:
-			out << "wcscpy( " << attribute_name << "_, param );\n";
-			break;
-		default:
-			out << attribute_name << "_ = param;\n";
-	}
+	out << attribute_name << "_ = param;\n";
 	out << "setModified(true);\n";
 	out.unindent();
 	out << "}\n\n";
@@ -259,7 +301,7 @@ GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribut
 		out << "::" << attribute_name << "(CORBA::String_var& param)\n";
 		out << "{\n";
 		out.indent();
-		out << attribute_name << "_ = (char*)param;\n";
+		out << attribute_name << "_ = param.in();\n";
 		out << "setModified(true);\n";
 		out.unindent();
 		out << "}\n\n";
@@ -272,7 +314,7 @@ GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribut
 		out << "::" << attribute_name << "(CORBA::WString_var& param)\n";
 		out << "{\n";
 		out.indent();
-		out << attribute_name << "_ = (char*)param;\n";
+		out << attribute_name << "_ = param.in();\n";
 		out << "setModified(true);\n";
 		out.unindent();
 		out << "}\n\n";
@@ -305,7 +347,7 @@ GeneratorPersistenceC::genAttributeWithOtherType(IR__::AttributeDef_ptr attribut
 	out.indent();
 	if( attr_type->type()->kind() == CORBA::tk_value )
 	{
-		std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+		std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 		for(valuetype_iter = lValueTypes_.begin();
 			valuetype_iter != lValueTypes_.end();
 			valuetype_iter++)
@@ -356,7 +398,10 @@ GeneratorPersistenceC::doAttribute(IR__::AttributeDef_ptr attribute)
 	out << "::" << attribute_name << "() const\n";
 	out << "{\n";
 	out.indent();
-	out << "return " << attribute_name << "_;\n";
+	if(attr_type->type()->kind()==CORBA::tk_string || attr_type->type()->kind()==CORBA::tk_wstring)
+        out << "return " << attribute_name << "_.c_str();\n";
+	else
+		out << "return " << attribute_name << "_;\n";
 	out.unindent();
 	out << "}\n\n";
 
@@ -507,7 +552,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
@@ -570,7 +615,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 		{
 			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 			{
-				std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+				std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 				for(valuetype_iter = lValueTypes_.begin();
 					valuetype_iter != lValueTypes_.end();
 					valuetype_iter++)
@@ -645,7 +690,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 		{
 			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 			{
-				std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+				std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 				for(valuetype_iter = lValueTypes_.begin();
 					valuetype_iter != lValueTypes_.end();
 					valuetype_iter++)
@@ -820,7 +865,7 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	
 		if( pardescr.type_def->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
@@ -1021,6 +1066,7 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	//if(isRef) out << "Ref";
 	out	<< "()\n";
 	out << "{\n";
+	/*
 	out.indent();
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++
@@ -1064,7 +1110,7 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
@@ -1158,6 +1204,12 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	out.unindent();
+	*/
+
+	IR__::AttributeDef_var attribute = 0;
+	IR__::AttributeDefSeq state_members = collectStateMembers(storagetype, CORBA__::dk_Create);
+	CORBA::ULong ulLen = state_members.length();
+
 	out << "// BEGIN USER INSERT SECTION " << strClassname_;
 	//if(isRef) out << "Ref";
 	out << "::" << strClassname_;
@@ -1215,7 +1267,7 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
@@ -1264,8 +1316,11 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 			case CPPBase::_FLOAT:
 			case CPPBase::_DOUBLE:
 			case CPPBase::_LONGDOUBLE:
-			case CPPBase::_STRING:
 				out << "colIter->second >>= " << mapName(attribute) << "_;\n\n";
+				break;
+			case CPPBase::_STRING:
+				out << "colIter->second >>= szTemp;\n";
+				out << mapName(attribute) << "_ = szTemp;\n\n";
 				break;
 			case CPPBase::_BOOL:
 				out << "colIter->second >>= CORBA::Any::to_boolean(" << mapName(attribute) << "_);\n\n";
@@ -1629,14 +1684,15 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out << "CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase);\n\n";
 	strName_ = "strInsert";
 
-	out << strName_ << " << \"INSERT INTO pid_content (pid, home) VALUES ( \";\n";
+	out << strName_ << " << \"INSERT INTO pid_content (pid, home, type) VALUES ( \";\n";
 	strContent_ = "\\'";
 	out << genSQLLine(strName_, strContent_, false, false, false);
 	strContent_ = "convertPidToString(pid)";
 	out << genSQLLine(strContent_, false, false, false, true);
 	strContent_ = "\\'";
 	out << genSQLLine(strContent_, true, true, true);
-	out << strName_ << " << \"\\\'" << storagehome->name() << "\\\' );\";\n\n";
+	out << strName_ << " << \"\\\'" << storagehome->name() << "\\\', ";
+	out << "\\\'" << storagehome->managed_storagetype()->name() << "\\\' );\";\n\n";
 	out << "if(!pCatalogBaseImpl->ExecuteSQL(" << strName_ << ".str().c_str()))\n";
 	out.indent();
 	out << "throw CORBA::BAD_PARAM();\n\n";
@@ -1650,7 +1706,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
@@ -1677,7 +1733,6 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 		}
 	}
 	
-	out << "//Where should the pid and spid come from?\n";
 	strContent_ = "VALUES (";
 	out << genSQLLine(strName_, strContent_, true, false, true);
 	strContent_ = "\\'";
@@ -1699,7 +1754,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 		// parse valuemember from valuetype
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
@@ -1787,7 +1842,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out << "#ifdef MICO_ORB\n";
 	out << "StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();\n";
 	out << "#endif\n";
-	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"\", factory);\n";
+	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << storagehome->managed_storagetype()->name() << "\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
 	out << "factory->_remove_ref();\n";
 	out << "lObjectes_.push_back(pObjectImpl);\n";
@@ -1796,7 +1851,8 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	else
 		out << szOriginalType << " pActObject = dynamic_cast <" << szOriginalType << "> (pObjectImpl);\n";
 	out << "\n//set values to current storageobject incarnation\n";
-	out << "//How to handle with pid and spid?\n";
+	out << "pActObject->set_pid(pid);\n";
+	out << "pActObject->set_short_pid(shortPid);\n";
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
@@ -1805,6 +1861,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 			out << "*"; // special for valuetype :-(
 		out << mapName(attribute) << ");\n";
 	}
+	out << "pActObject->setStorageHome(this);\n";
 	if(!isRef)
 	{
 		out << "\nreturn pActObject;\n";

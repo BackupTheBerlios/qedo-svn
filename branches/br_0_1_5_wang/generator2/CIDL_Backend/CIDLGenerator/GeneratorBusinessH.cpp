@@ -351,6 +351,8 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "#include \"" << file_prefix_ << "_BUSINESS.h\"\n";
 	out << "#include \"valuetypes.h\"\n";
 	out << "#include \"RefCountBase.h\"\n";
+	if(composition->lifecycle()==CIDL::lc_Entity)
+		out << "#include \"CCMContext.h\"\n";
 	out << "#include <string>\n\n\n";
 	out.insertUserSection("file_post", 2);
 
@@ -607,6 +609,10 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "private:\n\n";
 	out.indent();
     out << "Components::HomeContext_var context_;\n\n";
+	if(composition->lifecycle() == CIDL::lc_Entity)
+	{
+		out << "StorageHomeBase_var storagehome_;\n\n";
+	}
 	out.unindent();
 	out << "public:\n";
 	out.indent();

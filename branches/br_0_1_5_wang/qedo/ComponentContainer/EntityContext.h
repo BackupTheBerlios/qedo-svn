@@ -27,6 +27,7 @@
 #include <Components.h>
 #include "CCMContext.h"
 #include "Util.h"
+#include "StorageObject.h"
 
 
 namespace Qedo {
@@ -67,6 +68,12 @@ public:
     // IDL:omg.org/Components/EntityContext/get_primary_key:1.0
     //
     Components::PrimaryKeyBase* get_primary_key();
+
+	::CosPersistentState::StorageObjectBase get_storage_object();
+
+private:
+
+	CosPersistentState::StorageObjectBase object_;
 };
 
 /** @} */

@@ -80,7 +80,8 @@ public:
 	
 	virtual void get_table_info(std::map<std::string, std::string>& mTables) = 0;
 
-	virtual void init_datastore(Connector_ptr pConn, Sessio_ptr pSession) = 0;
+	// return only storagehomebase of pss
+	virtual StorageHomeBase_ptr init_datastore(Connector_ptr pConn, Sessio_ptr pSession) = 0;
 
 };
 

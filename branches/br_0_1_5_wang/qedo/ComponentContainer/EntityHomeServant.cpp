@@ -23,7 +23,7 @@
 #include "EntityHomeServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: EntityHomeServant.cpp,v 1.5.20.4 2004/02/03 22:01:13 hao Exp $";
+static char rcsid[] UNUSED = "$Id: EntityHomeServant.cpp,v 1.5.20.5 2004/02/24 16:59:45 hao Exp $";
 
 
 namespace Qedo {
@@ -62,6 +62,8 @@ EntityHomeServant::before_remove_component (Components::ExecutorLocator_ptr exec
 	// Should never happen
 	assert (! CORBA::is_nil (entity_component));
 
+	entity_component->ccm_store();
+	entity_component->ccm_passivate();
 	entity_component->ccm_remove();
 }
 

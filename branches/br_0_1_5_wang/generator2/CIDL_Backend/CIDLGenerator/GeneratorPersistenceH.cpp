@@ -30,7 +30,8 @@ namespace QEDO_CIDL_Generator {
 GeneratorPersistenceH::GeneratorPersistenceH
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
 : CPPBase(repository), 
-  bAbstract_(true), 
+  bAbstract_(true),
+  bTempGenerated_(false),
   bASHKey_(true),
   strFilename_(""),
   strActBasename_("")
@@ -104,51 +105,59 @@ GeneratorPersistenceH::check_for_generation(IR__::Contained_ptr item)
 		for(i=0; i<ulLen; i++)
 			check_for_generation((*contained_seq)[i]);
 
-		// abstract storagehomes
-		contained_seq = a_module->contents(CORBA__::dk_AbstractStorageHome, true);
+		// compositions
+		contained_seq = repository_->contents(CORBA__::dk_Composition, true);
 		ulLen = contained_seq->length();
-		for(i=0; i<ulLen; i++)
-			check_for_generation((*contained_seq)[i]);
-
-		// storagehomes
-		contained_seq = a_module->contents(CORBA__::dk_StorageHome, true);
-		ulLen = contained_seq->length();
-		for(i=0; i<ulLen; i++)
-			check_for_generation((*contained_seq)[i]);
+		CIDL::CompositionDef_var a_composition;
+		for(i = 0; i < ulLen; i++)
+		{
+			a_composition = CIDL::CompositionDef::_narrow((*contained_seq)[i]);
+			std::string id = a_composition->id();
+			std::string::size_type pos = id.find_last_of("/");
+			if(pos != std::string::npos) 
+			{
+				id.replace(pos, std::string::npos, ":1.0");
+				if(!id.compare(a_module->id())) 
+				{
+					check_for_generation(a_composition);
+				}
+			}
+		}
 
 		break; 
 	}
-	case CORBA__::dk_AbstractStorageType :
-	{
-		IR__::AbstractStorageTypeDef_var abs_storagetype = IR__::AbstractStorageTypeDef::_narrow(item);
-		// insert this interface in generation list
-		this->insert_to_generate(item);
+	case CORBA__::dk_Composition : {
+		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
 
-		break;
-	}
-	case CORBA__::dk_StorageType :
-	{
-		IR__::StorageTypeDef_var storagetype = IR__::StorageTypeDef::_narrow(item);
-		// insert this interface in generation list
-		this->insert_to_generate(item);
-
-		break;
-	}
-    case CORBA__::dk_AbstractStorageHome :
-	{
-		IR__::AbstractStorageHomeDef_var abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(item);
-		// insert this interface in generation list
-		this->insert_to_generate(item);
-
-		// managed abstract storage type
-		IR__::AbstractStorageTypeDef_var abs_storagetype = abs_storagehome->managed_abstract_storagetype();
-		this->check_for_generation(abs_storagetype);
-
+		// storage home
+		if( a_composition->lifecycle()==CIDL::lc_Entity || 
+			a_composition->lifecycle()==CIDL::lc_Process )
+		{
+			IR__::StorageHomeDef_var storagehome = a_composition->home_executor()->binds_to();
+			if( !CORBA::is_nil(storagehome) )
+			{
+				check_for_generation(storagehome);
+			}
+		}
+		
 		break;
 	}
 	case CORBA__::dk_StorageHome : 
 	{
 		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(item);
+
+		// supported interfaces
+		IR__::InterfaceDefSeq_var inf_seq = storagehome->supported_interfaces();
+		ulLen = inf_seq->length();
+		for(i=0; i<ulLen; i++)
+			check_for_generation((*inf_seq)[i]);
+
+		// base storage home
+		IR__::StorageHomeDef_var base_storagehome = storagehome->base_storagehome();
+		if( !CORBA::is_nil(base_storagehome) )
+			this->check_for_generation(base_storagehome);
+
+		// self
 		// insert this interface in generation list
 		this->insert_to_generate(item);
 
@@ -158,6 +167,64 @@ GeneratorPersistenceH::check_for_generation(IR__::Contained_ptr item)
 
 		break;
 	}
+	case CORBA__::dk_AbstractStorageHome :
+	{
+		IR__::AbstractStorageHomeDef_var abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(item);
+
+		// managed abstract storage type
+		//IR__::AbstractStorageTypeDef_var abs_storagetype = abs_storagehome->managed_abstract_storagetype();
+		//this->check_for_generation(abs_storagetype);
+
+		// supported interfaces
+		IR__::InterfaceDefSeq_var inf_seq = abs_storagehome->base_abstract_storagehomes();
+		ulLen = inf_seq->length();
+		for(i=0; i<ulLen; i++)
+			check_for_generation((*inf_seq)[i]);
+
+		// self
+		// insert this interface in generation list
+		this->insert_to_generate(item);
+
+		break;
+	}
+	case CORBA__::dk_StorageType :
+	{
+		IR__::StorageTypeDef_var storagetype = IR__::StorageTypeDef::_narrow(item);
+
+		// supported interfaces
+		IR__::InterfaceDefSeq_var inf_seq = storagetype->supported_interfaces();
+		ulLen = inf_seq->length();
+		for(i=0; i<ulLen; i++)
+			check_for_generation((*inf_seq)[i]);
+
+		// base type
+		IR__::StorageTypeDef_var base_storagetype = storagetype->base_storagetype();
+		if( !CORBA::is_nil(base_storagetype) )
+			check_for_generation(base_storagetype);
+
+		// self
+		// insert this interface in generation list
+		this->insert_to_generate(item);
+
+		break;
+	}
+	case CORBA__::dk_AbstractStorageType :
+	{
+		IR__::AbstractStorageTypeDef_var abs_storagetype = IR__::AbstractStorageTypeDef::_narrow(item);
+
+		// supported interfaces
+		IR__::InterfaceDefSeq_var inf_seq = abs_storagetype->base_abstract_storagetypes();
+		ulLen = inf_seq->length();
+		for(i=0; i<ulLen; i++)
+			check_for_generation((*inf_seq)[i]);
+
+		// self
+		// insert this interface in generation list
+		this->insert_to_generate(item);
+
+		break;
+	}
+	
 	default:
 		break;
 	};
@@ -187,7 +254,12 @@ GeneratorPersistenceH::genMemberVariable(IR__::StorageTypeDef_ptr storagetype)
 	{
 		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		std::string attribute_name = mapName(attribute);
-		out << map_attribute_type(attribute->type_def()) << " " << attribute_name << "_;\n";
+
+		if( strcmp("char*", (const char*)(map_attribute_type(attribute->type_def())))==0 )
+			out << "std::string ";
+		else
+            out << map_attribute_type(attribute->type_def()) << " ";
+		out << attribute_name << "_;\n";
 	}
 
 	out.unindent();
@@ -633,6 +705,40 @@ GeneratorPersistenceH::genAbstractObjsForConcreteType(IR__::AbstractStorageTypeD
 }
 
 void
+GeneratorPersistenceH::genFactoryTemplate(bool isHome)
+{
+	std::string strPre = "";
+	std::string strTemp = "PSS";
+
+	(isHome) ? strPre = "HomeFactory" : strPre = "ObjectFactory";
+	strTemp += strPre + "Template";
+
+	out << "template <class T>\n";
+	out << "#ifdef ORBACUS_ORB\n";
+	out << "class " << strTemp << " : public OBNative_CosPersistentState::Storage" << strPre << "_pre\n";
+	out << "#endif\n";
+	out << "#ifdef MICO_ORB\n";
+	out << "class " << strTemp << " : public CosPersistentState::Storage" << strPre << "_pre\n";
+	out << "#endif\n";
+	out << "{\n";
+	out.indent();
+	out << "public:\n";
+	out.indent();
+	out << strTemp << "() : refcount_(1) {};\n";
+	out << "virtual ~" << strTemp << "() {};\n";
+	out << "virtual T* create() { return new T; };\n";
+	out << "virtual void _add_ref() { refcount_++; };\n";
+	out << "virtual void _remove_ref() { if( --refcount_==0 ) delete this; };\n";
+	out.unindent();
+	out << "\nprivate:\n";
+	out.indent();
+	out << "CORBA::ULong refcount_;\n";
+	out.unindent();
+	out.unindent();
+	out << "};\n\n";
+}
+
+void
 GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*, bool bRef*/)
 {
 	std::string strClassName = std::string(storagetype->name());
@@ -684,7 +790,7 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	handleAttribute(storagetype);
 	handleOperation(storagetype);
 
-	out << "\nvoid setValue(std::map<std::string, CORBA::Any> valueMap);\n";
+	out << "\nvoid setValue(std::map<std::string, CORBA::Any> valueMap);\n\n";
 	
 	//generate _duplicate and _downcast operation
 	//genDuplAndDown(strClassName);
@@ -696,7 +802,9 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	//bRef ? out << "Ref\n" : out << "\n";
 	out << "// END USER INSERT SECTION " << strClassName << "\n\n";
 	//bRef ? out << "Ref\n" : out << "\n\n";
-	out << "};\n\n\n";
+	out << "};\n\n";
+
+	out << "\ntypedef PSSObjectFactoryTemplate<" << storagetype->name() << "> PSS" << storagetype->name() << "Factory;\n\n\n";
 }
 
 void
@@ -746,6 +854,14 @@ GeneratorPersistenceH::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr ab
 	out << "\n\n";
 	open_module(out, abs_storagetype, "");
 	out << "\n\n";
+	
+	// generate factory template for storage object and storage home
+	if( !bTempGenerated_ )
+	{
+		genFactoryTemplate(false);
+		genFactoryTemplate(true);
+		bTempGenerated_ = true;
+	}
 
 	out << "class " << std::string(abs_storagetype->name()) << ";\n";
 	out << "class " << std::string(abs_storagetype->name()) << "Ref;\n\n";
@@ -928,6 +1044,8 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	out << "// END USER INSERT SECTION " << strClassName << "\n\n";
 	out << "};\n\n\n";
 
+	out << "typedef PSSHomeFactoryTemplate<" << storagehome->name() << "> PSS" << storagehome->name() << "Factory;\n\n";
+	
 	close_module(out, storagetype);
 }
 

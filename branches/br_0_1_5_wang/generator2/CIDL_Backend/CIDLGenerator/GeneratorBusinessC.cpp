@@ -773,7 +773,12 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.indent();
     // out << "context_ = " << context_name << "::_narrow(ctx);\n";		// this is wrong
-	out << "context_ = Components::HomeContext::_duplicate(ctx);\n";
+	out << "context_ = Components::HomeContext::_duplicate(ctx);\n\n";
+	if(composition->lifecycle() == CIDL::lc_Entity)
+	{
+		out << "Qedo::HomeExecutorContext* hec = dynamic_cast <Qedo::HomeExecutorContext*> (context_.in());\n";
+		out << "storagehome_ = StorageHomeBase::_duplicate(hec->get_storage_home());\n";
+	}
 	out.unindent();
 	out << "}\n\n\n";
 	

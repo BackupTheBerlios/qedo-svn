@@ -10,7 +10,8 @@ namespace QEDO_CIDL_Generator {
 
 GeneratorServantC::GeneratorServantC
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: CPPBase(repository)
+: CPPBase(repository),
+  pc_generator_(new GeneratorPersistenceC(repository))
 {
 }
 
@@ -19,18 +20,7 @@ GeneratorServantC::~GeneratorServantC
 ()
 {
 	if(!lValueTypes_.empty())
-	{
-		std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
-	
-		for(valuetype_iter = lValueTypes_.begin();
-			valuetype_iter != lValueTypes_.end();
-			valuetype_iter++)
-		{
-			//(dynamic_cast <IR__::ValueDef_ptr> (*valuetype_iter))->_remove_ref();
-		}
-
 		lValueTypes_.clear();
-	}
 }
 
 
@@ -51,6 +41,16 @@ GeneratorServantC::generate(std::string target, std::string fileprefix)
 	out << "//\n\n";
 	out << "#include \"" << header_name << ".h\"\n";
 	out << "#include \"Output.h\"\n\n\n";
+
+	// parse the namespace name from prefix, disadvantage is 
+	// that will not allow the user to use '_' in his namespace name
+	// a little farfetched ;-(
+	basic_string <char>::size_type idx;
+    static const basic_string <char>::size_type npos = -1;
+	
+	idx = file_prefix_.find("_");
+	if(idx!=npos)
+		strNamespace_ = file_prefix_.substr(0, idx);
 
 	//
 	// dynamic library identifier
@@ -74,6 +74,10 @@ GeneratorServantC::generate(std::string target, std::string fileprefix)
 	// close file
 	//
 	out.close();
+
+	// generate source code for PSS
+	pc_generator_->generate(target, fileprefix);
+	pc_generator_->destroy();
 }
 	
 
@@ -512,7 +516,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
 	out << component_name << "_var servant = ";
 	out << component_name << "::_narrow (component_instance.component_ref());\n\n";
-	if(composition_->lifecycle()==CIDL::lc_Entity || composition_->lifecycle()==CIDL::lc_Process)
+	/*if(composition_->lifecycle()==CIDL::lc_Entity || composition_->lifecycle()==CIDL::lc_Process)
 	{
 		out << "//create storage home incarnation\n";
 		out << "std::string strPid = component_instance.uuid_;\n";
@@ -521,7 +525,6 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 		out << "ShortPid* pSpid = new ShortPid;\n";
 		out << "convertStringToPid(strPid.c_str(), *pPid);\n";
 		out << "convertStringToSpid(strSpid.c_str(), *pSpid);\n\n";
-		out << home_->managed_component()->name() << "* pComServant = dynamic_cast <" << home_->managed_component()->name() << "*> (servant.in());\n";
 		out << home_->managed_component()->name() << "Persistence* pCcmStorageObject = pCcmStorageHome_->" << factory_name;
 		out << "(pPid, pSpid, ";
 		for(i = pards->length(); i > 0; i--)
@@ -534,8 +537,8 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 			out << mapName(string(pardescr.name));
 		};
 		out << ");\n";
-		out << "pComServant->setStorageObject(pCcmStorageObject);\n\n";
-	}
+		out << "servant->setStorageObject(pCcmStorageObject);\n\n";
+	}*/
 	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
@@ -1319,7 +1322,7 @@ GeneratorServantC::genComponentServantBegin(IR__::ComponentDef_ptr component)
 	out << class_name_ << "::" << class_name_ << "()\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (component servant) : Constructor called\");\n";
-	out << "pStorageObject_ = NULL;\n";
+	//out << "pStorageObject_ = NULL;\n";
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -1327,10 +1330,10 @@ GeneratorServantC::genComponentServantBegin(IR__::ComponentDef_ptr component)
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (component servant) : Destructor called\");\n";
-	out << "if(pStorageObject_!=NULL)\n";
-	out.indent();
-	out << "pStorageObject_->_remove_ref();\n";
-	out.unindent();
+	//out << "if(pStorageObject_!=NULL)\n";
+	//out.indent();
+	//out << "pStorageObject_->_remove_ref();\n";
+	//out.unindent();
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -1371,17 +1374,18 @@ GeneratorServantC::genComponentServant(IR__::ComponentDef_ptr component)
 	}
 	handleSink(component);
 	handleSource(component);
-
+	/*
+	out << "void\n";
+	out << class_name_ << "::setStorageObject(StorageObjectImpl* pStorageObject)\n";
+	out << "{\n";
 	if(composition_->lifecycle()==CIDL::lc_Entity || composition_->lifecycle()==CIDL::lc_Process)
 	{
-		out << "void\n";
-		out << class_name_ << "::setStorageObject(" << component->name() << "Persistence* pStorageObject)\n";
-		out << "{\n";
 		out.indent();
-		out << "pStorageObject_ = pStorageObject;\n";
+		out << "pStorageObject_ = dynamic_cast <" << component->name() << "Persistence*> (pStorageObject);\n";
 		out.unindent();
-		out << "}\n\n";
 	}
+	out << "}\n\n";
+	*/
 }
 
 void
@@ -1427,7 +1431,7 @@ GeneratorServantC::genAttributeWithOtherType(IR__::AttributeDef_ptr attribute, C
 	/*
 	if( attr_type->type()->kind() == CORBA::tk_value )
 	{
-		std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+		std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 		for(valuetype_iter = lValueTypes_.begin();
 			valuetype_iter != lValueTypes_.end();
 			valuetype_iter++)
@@ -1565,7 +1569,7 @@ GeneratorServantC::genComponentPersistence(IR__::ComponentDef_ptr component, CID
 
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
@@ -2875,19 +2879,29 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		//++++++++++++++++++++++++++++++++++++++++
 		// init_datastore(...)
 		//++++++++++++++++++++++++++++++++++++++++
-		out << "void\n";
+		out << "StorageHomeBase_ptr\n";
 		out << class_name_ << "::init_datastore(Connector_ptr pConn, Sessio_ptr pSession)\n";
 		out << "{\n";
 		out.indent();
 		out << "Connector_var _pConn = Connector::_duplicate(pConn);\n";
 		out << "pSession_ = Sessio::_duplicate(pSession);\n\n";
-		out << "CcmHomeFactory* pCcmHomeFactory = new CcmHomeFactory();\n";
-		out << "_pConn->register_storage_home_factory(\"" << home->name() << "Persistence\", pCcmHomeFactory);\n";
+		
+		out << "CCM" << home->name() << "PersistenceFactory* pCcmFac" << home->name() << " = new CCM" << home->name() << "PersistenceFactory();\n";
+		out << "_pConn->register_storage_home_factory(\"" << home->name() << "Persistence\", pCcmFac" << home->name() << ");\n";
 		IR__::ComponentDef_var component = home->managed_component();
-		out << "CcmObjectFactory* pCcmObjectFactory = new CcmObjectFactory();\n";
-		out << "_pConn->register_storage_object_factory(\"" << component->name() << "Persistence\", pCcmObjectFactory);\n\n";
+		out << "CCM" << component->name() << "PersistenceFactory* pCcmFac" << component->name() << " = new CCM" << component->name() << "PersistenceFactory();\n";
+		out << "_pConn->register_storage_object_factory(\"" << component->name() << "Persistence\", pCcmFac" << component->name() << ");\n\n";
+		
+		out << strNamespace_ << "::PSS" << storagehome_->name() << "Factory* pPssFac" << storagehome_->name() << " = new " << strNamespace_ << "::PSS" << storagehome_->name() << "Factory();\n";
+		out << "_pConn->register_storage_home_factory(\"" << storagehome_->name() << "\", pPssFac" << storagehome_->name() << ");\n";
+		IR__::StorageTypeDef_var storagetype = storagehome_->managed_storagetype();
+		out << strNamespace_ << "::PSS" << storagetype->name() << "Factory* pPssFac" << storagetype->name() << " = new " << strNamespace_ << "::PSS" << storagetype->name() << "Factory();\n";
+		out << "_pConn->register_storage_object_factory(\"" << storagetype->name() << "\", pPssFac" << storagetype->name() << ");\n\n";
+		
 		out << "StorageHomeBase_var pHomebase = pSession_->find_storage_home(\"" << home->name() << "Persistence\");\n";
 		out << "pCcmStorageHome_ = dynamic_cast <" << home->name() << "Persistence*> (pHomebase.in());\n";
+		out << "StorageHomeBase_var pssHomebase = pSession_->find_storage_home(\"" << storagehome_->name() << "\");\n";
+		out << "return pssHomebase._retn();\n";
 		out.unindent();
 		out << "}\n\n";
 
@@ -3017,7 +3031,7 @@ GeneratorServantC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_ptr ho
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
@@ -3080,7 +3094,7 @@ GeneratorServantC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_ptr ho
 		{
 			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 			{
-				std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+				std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 				for(valuetype_iter = lValueTypes_.begin();
 					valuetype_iter != lValueTypes_.end();
 					valuetype_iter++)
@@ -3155,7 +3169,7 @@ GeneratorServantC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_ptr ho
 		{
 			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 			{
-				std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+				std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 				for(valuetype_iter = lValueTypes_.begin();
 					valuetype_iter != lValueTypes_.end();
 					valuetype_iter++)
@@ -3283,7 +3297,7 @@ GeneratorServantC::genFinder(IR__::FinderDef_ptr key, IR__::HomeDef_ptr home)
 	
 		if( pardescr.type_def->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
@@ -3482,7 +3496,7 @@ GeneratorServantC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
@@ -3530,7 +3544,7 @@ GeneratorServantC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 		// parse valuemember from valuetype
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
@@ -3794,7 +3808,7 @@ GeneratorServantC::genTableForAbsStorageHome()
 			attribute = IR__::AttributeDef::_narrow(state_members[i]);
 			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 			{
-				std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+				std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 				int abc = lValueTypes_.size();
 				for(valuetype_iter = lValueTypes_.begin();
 					valuetype_iter != lValueTypes_.end();
@@ -3888,7 +3902,7 @@ GeneratorServantC::genTableForStorageHome(IR__::StorageHomeDef_ptr storagehome)
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
@@ -4009,7 +4023,7 @@ GeneratorServantC::genTableForHome(IR__::HomeDef_ptr home)
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 			for(valuetype_iter = lValueTypes_.begin();
 				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
