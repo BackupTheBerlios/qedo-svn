@@ -314,6 +314,7 @@ main
 			new QEDO_CIDL_Generator::GeneratorPersistenceC(repository);
 		pc_generator->generate(target, fileprefix);
 		pc_generator->destroy();
+		
 	}
 
 	if(generateDescriptors)

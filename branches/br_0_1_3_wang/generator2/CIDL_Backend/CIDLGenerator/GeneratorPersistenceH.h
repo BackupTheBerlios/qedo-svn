@@ -59,7 +59,11 @@ private:
 	void doStorageType(IR__::StorageTypeDef_ptr storagetype);
 	void doStorageHome(IR__::StorageHomeDef_ptr storagehome);
 
-	void genAttribute(IR__::StorageTypeDef_ptr storagetype);
+	void genMemberVariable(IR__::StorageTypeDef_ptr storagetype);
+	void genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
+	//void genAttributeWithAbsStorageType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
+	//void genAttributeWithAbsStorageTypeRef(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
+	void genAttributeWithOtherType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
 	void genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool isRef);
 	void genAbstractStorageTypeBody(IR__::AbstractStorageTypeDef_ptr abs_storagetype, bool isRef);

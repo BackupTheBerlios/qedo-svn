@@ -162,7 +162,7 @@ GeneratorPersistenceH::check_for_generation(IR__::Contained_ptr item)
 };
 
 void
-GeneratorPersistenceH::genAttribute(IR__::StorageTypeDef_ptr storagetype)
+GeneratorPersistenceH::genMemberVariable(IR__::StorageTypeDef_ptr storagetype)
 {
 	IR__::AttributeDefSeq state_members;
 	storagetype->get_state_members(state_members, CORBA__::dk_Variable);
@@ -182,6 +182,69 @@ GeneratorPersistenceH::genAttribute(IR__::StorageTypeDef_ptr storagetype)
 }
 
 void
+GeneratorPersistenceH::genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind)
+{
+	std::string attribute_name = mapName(attribute);
+	IR__::IDLType_var attr_type = attribute->type_def();
+
+	switch ( attr_type->type()->kind() )
+	{
+		case CORBA::tk_string:
+		case CORBA::tk_wstring:
+			if(m_isAbstract) out << "virtual ";
+			out << map_psdl_return_type(attr_type, false) << " " << attribute_name << "(";
+			out << map_psdl_parameter_type(attr_type, false) << " param)";
+			m_isAbstract ? out << " = 0;\n" : out << ";\n";
+	}
+
+	if(m_isAbstract) out << "virtual ";
+	out << "void " << attribute_name << "(";
+	out << map_psdl_parameter_type(attr_type, true) << " param)";
+	m_isAbstract ? out << " = 0;\n" : out << ";\n";
+
+	// the fourth operation only for string and wstring
+	if(attr_type->type()->kind()==CORBA::tk_string)
+	{
+		if(m_isAbstract) out << "virtual ";
+		out << "void " << attribute_name << "(CORBA::String_var& param)";
+		m_isAbstract ? out << " = 0;\n" : out << ";\n";
+	}
+	else if(attr_type->type()->kind()==CORBA::tk_wstring)
+	{
+		if(m_isAbstract) out << "virtual ";
+		out << "void " << attribute_name << "(CORBA::WString_var& param)";
+		m_isAbstract ? out << " = 0;\n" : out << ";\n";
+	}
+}
+
+void
+GeneratorPersistenceH::genAttributeWithOtherType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind)
+{
+	std::string attribute_name = mapName(attribute);
+	IR__::IDLType_var attr_type = attribute->type_def();
+
+	switch ( attr_type->type()->kind() )
+	{
+		case CORBA::tk_string:
+		case CORBA::tk_wstring:
+			if(m_isAbstract) out << "virtual ";
+			out << map_psdl_return_type(attr_type, false) << " " << attribute_name << "(";
+			out << map_psdl_parameter_type(attr_type, false) << " param)";
+			m_isAbstract ? out << " = 0;\n" : out << ";\n";
+	}
+
+	if(m_isAbstract) out << "virtual ";
+	out << map_psdl_return_type(attr_type, false) << " " << attribute_name << "(";
+	out << "CosPersistentState::ForUpdate fu)";
+	m_isAbstract ? out << " = 0;\n" : out << ";\n";
+
+	if(m_isAbstract) out << "virtual ";
+	out << "void " << attribute_name << "(";
+	out << map_psdl_parameter_type(attr_type, true) << " param)";
+	m_isAbstract ? out << " = 0;\n" : out << ";\n";
+}
+
+void
 GeneratorPersistenceH::doAttribute(IR__::AttributeDef_ptr attribute)
 {
 	out << "\n//\n// " << attribute->id() << "\n//\n";
@@ -196,33 +259,28 @@ GeneratorPersistenceH::doAttribute(IR__::AttributeDef_ptr attribute)
 	// not read only
 	if(attribute->mode() == IR__::ATTR_NORMAL)
 	{
-		switch ( attr_type->type()->kind() )
+		CORBA::TCKind att_type_kind = attr_type->type()->kind();
+		switch ( att_type_kind )
 		{
+			case CORBA::tk_short:
+			case CORBA::tk_long:
+			case CORBA::tk_longlong:
+			case CORBA::tk_ushort:
+			case CORBA::tk_ulong:
+			case CORBA::tk_ulonglong:
+			case CORBA::tk_float:
+			case CORBA::tk_double:
+			case CORBA::tk_longdouble:
+			case CORBA::tk_boolean:
+			case CORBA::tk_char:
+			case CORBA::tk_wchar:
+			case CORBA::tk_octet:
 			case CORBA::tk_string:
 			case CORBA::tk_wstring:
-				if(m_isAbstract) out << "virtual ";
-				out << map_psdl_return_type(attr_type, false) << " " << attribute_name << "(";
-				out << map_psdl_parameter_type(attr_type, false) << " param)";
-				m_isAbstract ? out << " = 0;\n" : out << ";\n";
-		}
-
-		if(m_isAbstract) out << "virtual ";
-		out << "void " << attribute_name << "(";
-		out << map_psdl_parameter_type(attr_type, true) << " param)";
-		m_isAbstract ? out << " = 0;\n" : out << ";\n";
-
-		// the fourth operation only for string and wstring
-		if(attr_type->type()->kind()==CORBA::tk_string)
-		{
-			if(m_isAbstract) out << "virtual ";
-			out << "void " << attribute_name << "(CORBA::String_var& param)";
-			m_isAbstract ? out << " = 0;\n" : out << ";\n";
-		}
-		else if(attr_type->type()->kind()==CORBA::tk_wstring)
-		{
-			if(m_isAbstract) out << "virtual ";
-			out << "void " << attribute_name << "(CORBA::WString_var& param)";
-			m_isAbstract ? out << " = 0;\n" : out << ";\n";
+				genAttributeWithNomalType(attribute, att_type_kind);
+				break;
+			default:
+				genAttributeWithOtherType(attribute, att_type_kind);
 		}
 	}
 }
@@ -507,7 +565,7 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	out << "\nvoid setValue(map<string, CORBA::Any> valueMap);\n\n\n";
 	out.unindent();
 
-	genAttribute(storagetype);
+	genMemberVariable(storagetype);
 	
 	out << "\n// BEGIN USER INSERT SECTION " << class_name;
 	isRef ? out << "Ref\n" : out << "\n";

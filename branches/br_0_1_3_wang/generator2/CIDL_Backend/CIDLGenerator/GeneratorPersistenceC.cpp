@@ -38,6 +38,19 @@ GeneratorPersistenceC::GeneratorPersistenceC
 GeneratorPersistenceC::~GeneratorPersistenceC
 ()
 {
+	if(!m_lValueTypes.empty())
+	{
+		list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
+	
+		for(valuetype_iter = m_lValueTypes.begin();
+			valuetype_iter != m_lValueTypes.end();
+			valuetype_iter++)
+		{
+			(dynamic_cast <IR__::ValueDef_ptr> (*valuetype_iter))->_remove_ref();
+		}
+
+		m_lValueTypes.clear();
+	}
 }
 
 void
@@ -97,6 +110,15 @@ GeneratorPersistenceC::check_for_generation(IR__::Contained_ptr item)
 		ulLen = contained_seq->length();
 		for(i=0; i<ulLen; i++)
 			check_for_generation((*contained_seq)[i]);
+
+		// valuetypes
+		contained_seq = a_module->contents(CORBA__::dk_Value, true);
+		ulLen = contained_seq->length();
+		for(i=0; i<ulLen; i++)
+		{
+			IR__::ValueDef_ptr value = IR__::ValueDef::_narrow((*contained_seq)[i]);
+			m_lValueTypes.push_back(value);
+		}
 
 		break;
 	}
@@ -382,8 +404,33 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	for(i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
-		out << mapName(attribute);
-		( (i+1)!=ulLen ) ? out << ", " : out << " ) \";\n";
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		{
+			list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
+			for(valuetype_iter = m_lValueTypes.begin();
+				valuetype_iter != m_lValueTypes.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						out << "_value_" << mapName(vMember);
+						( (i+1)!=ulLen ) ? out << ", " : out << " ) \";\n";
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			out << mapName(attribute);
+			( (i+1)!=ulLen ) ? out << ", " : out << " ) \";\n";
+		}
 	}
 
 	m_strContent = "VALUES (";
@@ -420,76 +467,158 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 		
 		if(bFound)
 		{
-			switch(psdl_check_type(attribute->type_def()))
+			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 			{
-			case CPPBase::_SHORT:
-				out << "memset(szTemp, \'\\0\', 64);\n";
-				out << "sprintf(szTemp, \"%hd\", " << strTemp << ");\n";
-				if((i+1)!=ulLen)
-					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-				else
-					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-				break;
-			case CPPBase::_INT:
-				out << "memset(szTemp, \'\\0\', 64);\n";
-				out << "sprintf(szTemp, \"%d\", " << strTemp << ");\n";
-				if((i+1)!=ulLen)
-					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-				else
-					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-				break;
-			case CPPBase::_LONG:
-				out << "memset(szTemp, \'\\0\', 64);\n";
-				out << "sprintf(szTemp, \"%ld\", " << strTemp << ");\n";
-				if((i+1)!=ulLen)
-					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-				else
-					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-				break;
-			case CPPBase::_FLOAT:
-				out << "memset(szTemp, \'\\0\', 64);\n";
-				out << "sprintf(szTemp, \"%f\", " << strTemp << ");\n";
-				if((i+1)!=ulLen)
-					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-				else
-					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-				break;
-			case CPPBase::_DOUBLE:
-				out << "memset(szTemp, \'\\0\', 64);\n";
-				out << "sprintf(szTemp, \"%lf\", " << strTemp << ");\n";
-				if((i+1)!=ulLen)
-					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-				else
-					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-				break;
-			case CPPBase::_LONGDOUBLE:
-				out << "memset(szTemp, \'\\0\', 64);\n";
-				out << "sprintf(szTemp, \"%Lf\", " << strTemp << ");\n";
-				if((i+1)!=ulLen)
-					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-				else
-					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-				break;
-			case CPPBase::_STRING:
-				m_strContent = "\\'";
-				out << genSQLLine(m_strName, m_strContent, false, false, false);
-				m_strContent = strTemp;
-				out << genSQLLine(m_strName, m_strContent, false, false, false, true);
-				m_strContent = "\\'";
-				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
-				break;
-			case CPPBase::_BOOL:
-				m_strContent = "PSSHelper::convertBool2String(" + strTemp + ")";
-				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), false, true);
-				m_strContent = "";
-				out << genSQLLine(m_strName, m_strContent, false, false, true);
-				break;
+				list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
+				for(valuetype_iter = m_lValueTypes.begin();
+					valuetype_iter != m_lValueTypes.end();
+					valuetype_iter++)
+				{
+					IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+					string attr_type_name = map_attribute_type(attribute->type_def());
+					if(attr_type_name.find(mapName(value))!=std::string::npos)
+					{
+						IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+						for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+						{
+							IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+							switch(psdl_check_type(vMember->type_def()))
+							{
+							case CPPBase::_SHORT:
+								out << "memset(szTemp, \'\\0\', 64);\n";
+								out << "sprintf(szTemp, \"%hd\", " << strTemp << "->" << mapName(vMember) << "());\n";
+								if((i+1)!=ulLen)
+									out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+								else
+									out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+								break;
+							case CPPBase::_INT:
+								out << "memset(szTemp, \'\\0\', 64);\n";
+								out << "sprintf(szTemp, \"%d\", " << strTemp << "->" << mapName(vMember) << "());\n";
+								if((i+1)!=ulLen)
+									out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+								else
+									out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+								break;
+							case CPPBase::_LONG:
+								out << "memset(szTemp, \'\\0\', 64);\n";
+								out << "sprintf(szTemp, \"%ld\", " << strTemp << "->" << mapName(vMember) << "());\n";
+								if((i+1)!=ulLen)
+									out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+								else
+									out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+								break;
+							case CPPBase::_STRING:
+								m_strContent = "\\'";
+								out << genSQLLine(m_strName, m_strContent, false, false, false);
+								m_strContent = strTemp + "->";
+								m_strContent += mapName(vMember) + "()";
+								out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+								m_strContent = "\\'";
+								out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
+								break;
+							}
+						}
+						break;
+					}
+				}
+			}
+			else
+			{
+				switch(psdl_check_type(attribute->type_def()))
+				{
+				case CPPBase::_SHORT:
+					out << "memset(szTemp, \'\\0\', 64);\n";
+					out << "sprintf(szTemp, \"%hd\", " << strTemp << ");\n";
+					if((i+1)!=ulLen)
+						out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+					else
+						out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+					break;
+				case CPPBase::_INT:
+					out << "memset(szTemp, \'\\0\', 64);\n";
+					out << "sprintf(szTemp, \"%d\", " << strTemp << ");\n";
+					if((i+1)!=ulLen)
+						out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+					else
+						out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+					break;
+				case CPPBase::_LONG:
+					out << "memset(szTemp, \'\\0\', 64);\n";
+					out << "sprintf(szTemp, \"%ld\", " << strTemp << ");\n";
+					if((i+1)!=ulLen)
+						out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+					else
+						out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+					break;
+				case CPPBase::_FLOAT:
+					out << "memset(szTemp, \'\\0\', 64);\n";
+					out << "sprintf(szTemp, \"%f\", " << strTemp << ");\n";
+					if((i+1)!=ulLen)
+						out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+					else
+						out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+					break;
+				case CPPBase::_DOUBLE:
+					out << "memset(szTemp, \'\\0\', 64);\n";
+					out << "sprintf(szTemp, \"%lf\", " << strTemp << ");\n";
+					if((i+1)!=ulLen)
+						out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+					else
+						out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+					break;
+				case CPPBase::_LONGDOUBLE:
+					out << "memset(szTemp, \'\\0\', 64);\n";
+					out << "sprintf(szTemp, \"%Lf\", " << strTemp << ");\n";
+					if((i+1)!=ulLen)
+						out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+					else
+						out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+					break;
+				case CPPBase::_STRING:
+					m_strContent = "\\'";
+					out << genSQLLine(m_strName, m_strContent, false, false, false);
+					m_strContent = strTemp;
+					out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+					m_strContent = "\\'";
+					out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
+					break;
+				case CPPBase::_BOOL:
+					m_strContent = "PSSHelper::convertBool2String(" + strTemp + ")";
+					out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), false, true);
+					m_strContent = "";
+					out << genSQLLine(m_strName, m_strContent, false, false, true);
+					break;
+				}
 			}
 		}
 		else
 		{
-			m_strContent = "NULL";
-			out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
+			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+			{
+				list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
+				for(valuetype_iter = m_lValueTypes.begin();
+					valuetype_iter != m_lValueTypes.end();
+					valuetype_iter++)
+				{
+					IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+					string attr_type_name = map_attribute_type(attribute->type_def());
+					if(attr_type_name.find(mapName(value))!=std::string::npos)
+					{
+						IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+						for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+						{
+							m_strContent = "NULL";
+							out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
+						}
+					}
+				}	
+			}
+			else
+			{
+				m_strContent = "NULL";
+				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
+			}
 		}
 	}
 	m_strContent = ");";
@@ -627,78 +756,145 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	for( i=0; i<ulLen; i++ )
 	{
 		IR__::ParameterDescription pardescr = (*pards)[i];
-		m_strContent = string(pardescr.name);
-
-		if(psdl_check_type(pardescr.type_def)!=CPPBase::_STRING)
-			m_strContent += " =";
-		else
-			m_strContent += " LIKE";
-		out << genSQLLine(m_strName, m_strContent, false, false, true);
-
-		switch(psdl_check_type(pardescr.type_def))
+	
+		if( pardescr.type_def->type()->kind() == CORBA::tk_value )
 		{
-		case CPPBase::_SHORT:
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%hd\", " << string(pardescr.name) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_INT:
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%d\", " << string(pardescr.name) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_LONG:
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%ld\", " << string(pardescr.name) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_FLOAT:
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%f\", " << string(pardescr.name) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_DOUBLE:
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%lf\", " << string(pardescr.name) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_LONGDOUBLE:
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%Lf\", " << string(pardescr.name) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_STRING:
-			m_strContent = "\\'";
-			out << genSQLLine(m_strName, m_strContent, false, false, false);
+			list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
+			for(valuetype_iter = m_lValueTypes.begin();
+				valuetype_iter != m_lValueTypes.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				string attr_type_name = map_attribute_type(pardescr.type_def);
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						m_strContent = "_value_" + mapName(vMember);
+						if(psdl_check_type(vMember->type_def())!=CPPBase::_STRING)
+							m_strContent += " =";
+						else
+							m_strContent += " LIKE";
+						out << genSQLLine(m_strName, m_strContent, false, false, true);
+
+						switch(psdl_check_type(vMember->type_def()))
+						{
+						case CPPBase::_SHORT:
+							out << "memset(szTemp, \'\\0\', 64);\n";
+							out << "sprintf(szTemp, \"%hd\", " << string(pardescr.name) << "->" << mapName(vMember) << "());\n";
+							if((i+1)!=ulLen)
+								out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+							else
+								out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+							break;
+						case CPPBase::_INT:
+							out << "memset(szTemp, \'\\0\', 64);\n";
+							out << "sprintf(szTemp, \"%d\", " << string(pardescr.name) << "->" << mapName(vMember) << "());\n";
+							if((i+1)!=ulLen)
+								out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+							else
+								out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+							break;
+						case CPPBase::_LONG:
+							out << "memset(szTemp, \'\\0\', 64);\n";
+							out << "sprintf(szTemp, \"%ld\", " << string(pardescr.name) << "->" << mapName(vMember) << "());\n";
+							if((i+1)!=ulLen)
+								out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+							else
+								out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+							break;
+						case CPPBase::_STRING:
+							m_strContent = "\\'";
+							out << genSQLLine(m_strName, m_strContent, false, false, false);
+							m_strContent = string(pardescr.name) + "->";
+							m_strContent += mapName(vMember) + "()";
+							out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+							m_strContent = "\\'";
+							out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
 			m_strContent = string(pardescr.name);
-			out << genSQLLine(m_strName, m_strContent, false, false, false, true);
-			m_strContent = "\\'";
-			out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
-			break;
-		case CPPBase::_BOOL:
-			m_strContent = "PSSHelper::convertBool2String(" + string(pardescr.name) + ")";
-			out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), false, true);
-			m_strContent = "";
+
+			if(psdl_check_type(pardescr.type_def)!=CPPBase::_STRING)
+				m_strContent += " =";
+			else
+				m_strContent += " LIKE";
 			out << genSQLLine(m_strName, m_strContent, false, false, true);
-			break;
+
+			switch(psdl_check_type(pardescr.type_def))
+			{
+			case CPPBase::_SHORT:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%hd\", " << string(pardescr.name) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_INT:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%d\", " << string(pardescr.name) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_LONG:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%ld\", " << string(pardescr.name) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_FLOAT:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%f\", " << string(pardescr.name) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_DOUBLE:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%lf\", " << string(pardescr.name) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_LONGDOUBLE:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%Lf\", " << string(pardescr.name) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_STRING:
+				m_strContent = "\\'";
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				m_strContent = string(pardescr.name);
+				out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+				m_strContent = "\\'";
+				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
+				break;
+			case CPPBase::_BOOL:
+				m_strContent = "PSSHelper::convertBool2String(" + string(pardescr.name) + ")";
+				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), false, true);
+				m_strContent = "";
+				out << genSQLLine(m_strName, m_strContent, false, false, true);
+				break;
+			}
 		}
 	}
 	m_strContent = ");";
@@ -755,7 +951,7 @@ GeneratorPersistenceC::doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_de
 	else
 	{
 		//??????????????????????????????????????????????????????????????????????
-		//still necessary as the concrete storage home has no relational table??
+		//still necessary if the concrete storage home has no relational table??
 		//??????????????????????????????????????????????????????????????????????
 		IR__::StorageTypeDef_var storagetype;
 		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(inf_def);
@@ -853,79 +1049,144 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
-		m_strContent = mapName(attribute) + " = ";
 
-		switch(psdl_check_type(attribute->type_def()))
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-		case CPPBase::_SHORT:
-			out << genSQLLine(m_strName, m_strContent, false, false, false);
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%hd\", m_" << mapName(attribute) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_INT:
-			out << genSQLLine(m_strName, m_strContent, false, false, false);
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%d\", m_" << mapName(attribute) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_LONG:
-			out << genSQLLine(m_strName, m_strContent, false, false, false);
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%ld\", m_" << mapName(attribute) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_FLOAT:
-			out << genSQLLine(m_strName, m_strContent, false, false, false);
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%f\", m_" << mapName(attribute) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_DOUBLE:
-			out << genSQLLine(m_strName, m_strContent, false, false, false);
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%lf\", m_" << mapName(attribute) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_LONGDOUBLE:
-			out << genSQLLine(m_strName, m_strContent, false, false, false);
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%Lf\", m_" << mapName(attribute) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_STRING:
-			m_strContent += "\\'";
-			out << genSQLLine(m_strName, m_strContent, false, false, false);
-			m_strContent = "m_" + mapName(attribute);
-			out << genSQLLine(m_strName, m_strContent, false, false, false, true);
-			m_strContent = "\\'";
-			out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
-			break;
-		case CPPBase::_BOOL:
-			out << genSQLLine(m_strName, m_strContent, false, false, false);
-			m_strContent = "PSSHelper::convertBool2String(m_" + mapName(attribute) + ")";
-			out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), false, true);
-			m_strContent = "";
-			out << genSQLLine(m_strName, m_strContent, false, false, true);
-			break;
+			list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
+			for(valuetype_iter = m_lValueTypes.begin();
+				valuetype_iter != m_lValueTypes.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						m_strContent = "_value_" + mapName(vMember) + " = ";
+
+						switch(psdl_check_type(vMember->type_def()))
+						{
+						case CPPBase::_SHORT:
+							out << genSQLLine(m_strName, m_strContent, false, false, false);
+							out << "memset(szTemp, \'\\0\', 64);\n";
+							out << "sprintf(szTemp, \"%hd\", m_" << mapName(attribute) << "->" << mapName(vMember) << "());\n";
+							if((i+1)!=ulLen)
+								out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+							else
+								out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+							break;
+						case CPPBase::_INT:
+							out << genSQLLine(m_strName, m_strContent, false, false, false);
+							out << "memset(szTemp, \'\\0\', 64);\n";
+							out << "sprintf(szTemp, \"%d\", m_" << mapName(attribute) << "->" << mapName(vMember) << "());\n";
+							if((i+1)!=ulLen)
+								out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+							else
+								out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+							break;
+						case CPPBase::_LONG:
+							out << genSQLLine(m_strName, m_strContent, false, false, false);
+							out << "memset(szTemp, \'\\0\', 64);\n";
+							out << "sprintf(szTemp, \"%ld\", m_" << mapName(attribute) << "->" << mapName(vMember) << "());\n";
+							if((i+1)!=ulLen)
+								out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+							else
+								out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+							break;
+						case CPPBase::_STRING:
+							m_strContent += "\\'";
+							out << genSQLLine(m_strName, m_strContent, false, false, false);
+							m_strContent = "m_" + mapName(attribute) + "->";
+							m_strContent += mapName(vMember) + "()";
+							out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+							m_strContent = "\\'";
+							out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			m_strContent = mapName(attribute) + " = ";
+
+			switch(psdl_check_type(attribute->type_def()))
+			{
+			case CPPBase::_SHORT:
+				
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%hd\", m_" << mapName(attribute) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_INT:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%d\", m_" << mapName(attribute) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_LONG:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%ld\", m_" << mapName(attribute) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_FLOAT:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%f\", m_" << mapName(attribute) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_DOUBLE:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%lf\", m_" << mapName(attribute) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_LONGDOUBLE:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%Lf\", m_" << mapName(attribute) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_STRING:
+				m_strContent += "\\'";
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				m_strContent = "m_" + mapName(attribute);
+				out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+				m_strContent = "\\'";
+				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
+				break;
+			case CPPBase::_BOOL:
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				m_strContent = "PSSHelper::convertBool2String(m_" + mapName(attribute) + ")";
+				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), false, true);
+				m_strContent = "";
+				out << genSQLLine(m_strName, m_strContent, false, false, true);
+				break;
+			}
 		}
 	}
 
@@ -996,22 +1257,63 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
-		out << "colIter = valueMap.find(\"" << mapName(attribute) << "\");\n";
 
-		switch(psdl_check_type(attribute->type_def()))
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-		case CPPBase::_SHORT:
-		case CPPBase::_INT:
-		case CPPBase::_LONG:
-		case CPPBase::_FLOAT:
-		case CPPBase::_DOUBLE:
-		case CPPBase::_LONGDOUBLE:
-		case CPPBase::_STRING:
-			out << "colIter->second >>= m_" << mapName(attribute) << ";\n\n";
-			break;
-		case CPPBase::_BOOL:
-			out << "colIter->second >>= CORBA::Any::to_boolean(m_" << mapName(attribute) << ");\n\n";
-			break;
+			list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
+			for(valuetype_iter = m_lValueTypes.begin();
+				valuetype_iter != m_lValueTypes.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						out << "colIter = valueMap.find(\"_value_" << mapName(vMember) << "\");\n";
+
+						switch(psdl_check_type(vMember->type_def()))
+						{
+						case CPPBase::_SHORT:
+						case CPPBase::_INT:
+						case CPPBase::_LONG:
+						case CPPBase::_FLOAT:
+						case CPPBase::_DOUBLE:
+						case CPPBase::_LONGDOUBLE:
+						case CPPBase::_STRING:
+							out << "colIter->second >>= m_" << mapName(attribute) << "->" << mapName(vMember) << "();\n\n";
+							break;
+						case CPPBase::_BOOL:
+							out << "colIter->second >>= CORBA::Any::to_boolean(m_" << mapName(attribute) << "->" << mapName(vMember) << "());\n\n";
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			out << "colIter = valueMap.find(\"" << mapName(attribute) << "\");\n";
+
+			switch(psdl_check_type(attribute->type_def()))
+			{
+			case CPPBase::_SHORT:
+			case CPPBase::_INT:
+			case CPPBase::_LONG:
+			case CPPBase::_FLOAT:
+			case CPPBase::_DOUBLE:
+			case CPPBase::_LONGDOUBLE:
+			case CPPBase::_STRING:
+				out << "colIter->second >>= m_" << mapName(attribute) << ";\n\n";
+				break;
+			case CPPBase::_BOOL:
+				out << "colIter->second >>= CORBA::Any::to_boolean(m_" << mapName(attribute) << ");\n\n";
+				break;
+			}
 		}
 	}
 
@@ -1143,8 +1445,33 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	for(i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
-		out << mapName(attribute);
-		( (i+1)!=ulLen ) ? out << ", " : out << " ) \";\n";
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		{
+			list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
+			for(valuetype_iter = m_lValueTypes.begin();
+				valuetype_iter != m_lValueTypes.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						out << "_value_" << mapName(vMember);
+						( (i+1)!=ulLen ) ? out << ", " : out << " ) \";\n";
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			out << mapName(attribute);
+			( (i+1)!=ulLen ) ? out << ", " : out << " ) \";\n";
+		}
 	}
 	
 	out << "//Where should the pid and spid come from?\n";
@@ -1166,71 +1493,131 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
-
-		switch(psdl_check_type(attribute->type_def()))
+		// parse valuemember from valuetype
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-		case CPPBase::_SHORT:
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%hd\", " << mapName(attribute) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_INT:
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%d\", " << mapName(attribute) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_LONG:
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%ld\", " << mapName(attribute) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_FLOAT:
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%f\", " << mapName(attribute) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_DOUBLE:
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%lf\", " << mapName(attribute) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_LONGDOUBLE:
-			out << "memset(szTemp, \'\\0\', 64);\n";
-			out << "sprintf(szTemp, \"%Lf\", " << mapName(attribute) << ");\n";
-			if((i+1)!=ulLen)
-				out << m_strName << ".append(strcat(szTemp, \", \"));\n";
-			else
-				out << m_strName << ".append(strcat(szTemp, \" \"));\n";
-			break;
-		case CPPBase::_STRING:
-			m_strContent = "\\'";
-			out << genSQLLine(m_strName, m_strContent, false, false, false);
-			m_strContent = mapName(attribute);
-			out << genSQLLine(m_strName, m_strContent, false, false, false, true);
-			m_strContent = "\\'";
-			out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
-			break;
-		case CPPBase::_BOOL:
-			m_strContent = "PSSHelper::convertBool2String(" + mapName(attribute) + ")";
-			out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), false, true);
-			m_strContent = "";
-			out << genSQLLine(m_strName, m_strContent, false, false, true);
-			break;
+			list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
+			for(valuetype_iter = m_lValueTypes.begin();
+				valuetype_iter != m_lValueTypes.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						switch(psdl_check_type(vMember->type_def()))
+						{
+						case CPPBase::_SHORT:
+							out << "memset(szTemp, \'\\0\', 64);\n";
+							out << "sprintf(szTemp, \"%hd\", " << mapName(attribute) << "->" << mapName(vMember) << "());\n";
+							if((i+1)!=ulLen)
+								out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+							else
+								out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+							break;
+						case CPPBase::_INT:
+							out << "memset(szTemp, \'\\0\', 64);\n";
+							out << "sprintf(szTemp, \"%d\", " << mapName(attribute) << "->" << mapName(vMember) << "());\n";
+							if((i+1)!=ulLen)
+								out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+							else
+								out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+							break;
+						case CPPBase::_LONG:
+							out << "memset(szTemp, \'\\0\', 64);\n";
+							out << "sprintf(szTemp, \"%ld\", " << mapName(attribute) << "->" << mapName(vMember) << "());\n";
+							if((i+1)!=ulLen)
+								out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+							else
+								out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+							break;
+						case CPPBase::_STRING:
+							m_strContent = "\\'";
+							out << genSQLLine(m_strName, m_strContent, false, false, false);
+							m_strContent = mapName(attribute) + "->";
+							m_strContent += mapName(vMember);
+							m_strContent += "()";
+							out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+							m_strContent = "\\'";
+							out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+		else // for normal state member with normal data type
+		{
+			switch(psdl_check_type(attribute->type_def()))
+			{
+			case CPPBase::_SHORT:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%hd\", " << mapName(attribute) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_INT:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%d\", " << mapName(attribute) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_LONG:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%ld\", " << mapName(attribute) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_FLOAT:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%f\", " << mapName(attribute) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_DOUBLE:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%lf\", " << mapName(attribute) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_LONGDOUBLE:
+				out << "memset(szTemp, \'\\0\', 64);\n";
+				out << "sprintf(szTemp, \"%Lf\", " << mapName(attribute) << ");\n";
+				if((i+1)!=ulLen)
+					out << m_strName << ".append(strcat(szTemp, \", \"));\n";
+				else
+					out << m_strName << ".append(strcat(szTemp, \" \"));\n";
+				break;
+			case CPPBase::_STRING:
+				m_strContent = "\\'";
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
+				m_strContent = mapName(attribute);
+				out << genSQLLine(m_strName, m_strContent, false, false, false, true);
+				m_strContent = "\\'";
+				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), true);
+				break;
+			case CPPBase::_BOOL:
+				m_strContent = "PSSHelper::convertBool2String(" + mapName(attribute) + ")";
+				out << genSQLLine(m_strName, m_strContent, false, ((i+1)!=ulLen), false, true);
+				m_strContent = "";
+				out << genSQLLine(m_strName, m_strContent, false, false, true);
+				break;
+			}
 		}
 	}
 	m_strContent = ");";
@@ -1329,13 +1716,42 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
-		m_strContent = mapName(attribute);
-		m_strContent += "  ";
-		m_strContent.append( map_psdl2sql_type(attribute->type_def()) );
-		bool isComma = ((i+1)!=ulLen) || (ulLenBaseAbsHomes==0);
-		out << genSQLLine(m_strName, m_strContent, false, isComma, true);
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		{
+			list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
+			for(valuetype_iter = m_lValueTypes.begin();
+				valuetype_iter != m_lValueTypes.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						m_strContent = "_value_";
+						m_strContent += mapName(vMember);
+						m_strContent += "  ";
+						m_strContent.append( map_psdl2sql_type(vMember->type_def()) );
+						bool isComma = ((j+1)!=ulLen) || (ulLenBaseAbsHomes==0);
+						out << genSQLLine(m_strName, m_strContent, false, isComma, true);
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			m_strContent = mapName(attribute);
+			m_strContent += "  ";
+			m_strContent.append( map_psdl2sql_type(attribute->type_def()) );
+			bool isComma = ((i+1)!=ulLen) || (ulLenBaseAbsHomes==0);
+			out << genSQLLine(m_strName, m_strContent, false, isComma, true);	
+		}
 	}
-
+	
 	if(ulLenBaseAbsHomes>0)
 	{
 		m_strContent = ") INHERITS ( ";

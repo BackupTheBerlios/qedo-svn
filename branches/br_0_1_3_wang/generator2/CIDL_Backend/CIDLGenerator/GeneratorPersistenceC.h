@@ -51,9 +51,10 @@ private:
 	std::string						m_class_name;
 	std::string						m_strName;
 	std::string						m_strContent;
-	std::set<std::string>			m_recursion_set;
-	map<string, string>				m_SthMap;
-	map <string, string> :: const_iterator m_SthIter;
+	std::set <std::string>			m_recursion_set;
+	std::map <string, string>		m_SthMap;
+	std::map <string, string> :: const_iterator m_SthIter;
+	std::list <IR__::ValueDef_ptr>	m_lValueTypes;
 
 	void check_for_generation(IR__::Contained_ptr item);
 
