@@ -405,19 +405,19 @@ ENOL                    (\n|\n)
 <stream,cidl_psdl,cidl>"composition"	{ return TOK_composition; }
 <stream,cidl_psdl,cidl>"context"	{ return TOK_context; }
 <stream,cidl_psdl,psdl,cidl>"implements"	{ return TOK_implements; }
-<cidl_psdl,psdl>"storagehome"	{ return TOK_storagehome; }
-<cidl_psdl,psdl>"storage"	{ return TOK_storage; }
-<cidl_psdl,psdl>"storedOn"	{ return TOK_storedOn; }
-<cidl_psdl,psdl>"catalog"	{ return TOK_catalog; }
-<cidl_psdl,psdl>"ref"	{ return TOK_ref; }
-<cidl_psdl,psdl>"key"	{ return TOK_key; }
-<cidl_psdl,psdl>"primary"	{ return TOK_primary; }
-<cidl_psdl,psdl>"of"	{ return TOK_of; }
-<cidl_psdl,psdl>"as"	{ return TOK_as; }
-<cidl_psdl,psdl>"stores"	{ return TOK_stores; }
-<cidl_psdl,psdl>"storagetype"	{ return TOK_storagetype; }
-<cidl_psdl,psdl>"strong"	{ return TOK_strong; }
-<cidl_psdl,psdl>"state"	{ return TOK_state; }
+<stream,cidl_psdl,psdl>"storagehome"	{ return TOK_storagehome; }
+<stream,cidl_psdl,psdl>"storage"	{ return TOK_storage; }
+<stream,cidl_psdl,psdl>"storedOn"	{ return TOK_storedOn; }
+<stream,cidl_psdl,psdl>"catalog"	{ return TOK_catalog; }
+<stream,cidl_psdl,psdl>"ref"	{ return TOK_ref; }
+<stream,cidl_psdl,psdl>"key"	{ return TOK_key; }
+<stream,cidl_psdl,psdl>"primary"	{ return TOK_primary; }
+<stream,cidl_psdl,psdl>"of"	{ return TOK_of; }
+<stream,cidl_psdl,psdl>"as"	{ return TOK_as; }
+<stream,cidl_psdl,psdl>"stores"	{ return TOK_stores; }
+<stream,cidl_psdl,psdl>"storagetype"	{ return TOK_storagetype; }
+<stream,cidl_psdl,psdl>"strong"	{ return TOK_strong; }
+<stream,cidl_psdl,psdl>"state"	{ return TOK_state; }
 <stream>"sink" { return TOK_sink; }
 <stream>"source" { return TOK_source; }
 <stream>"siso" { return TOK_siso; }
@@ -462,14 +462,6 @@ init_lexer(bool with_cidl,bool with_psdl,bool with_stream)
     key_word k = KeyWord(mknocasestring(my_key_words[i++]));
     k->foo=1;
   }
-  if(with_stream) {
-    i=0;
-    while(my_stream_key_words[i]) {
-      key_word k = KeyWord(mknocasestring(my_stream_key_words[i++]));
-      k->foo=1;
-    }
-    BEGIN(stream);
-  }
   if(with_cidl) {
     i=0;
     while(my_cidl_key_words[i]) {
@@ -486,6 +478,15 @@ init_lexer(bool with_cidl,bool with_psdl,bool with_stream)
     }
     if(with_cidl) BEGIN(cidl_psdl);
     else BEGIN(psdl);
+  }
+  /* This will enable all known key words */
+  if(with_stream) {
+    i=0;
+    while(my_stream_key_words[i]) {
+      key_word k = KeyWord(mknocasestring(my_stream_key_words[i++]));
+      k->foo=1;
+    }
+    BEGIN(stream);
   }
 }
 
