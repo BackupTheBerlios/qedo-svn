@@ -423,12 +423,6 @@ copy $(TargetPath) $(QEDO)\bin
 			<File
 				RelativePath="QedoComponents_skel.cpp">
 			</File>
-			<File
-				RelativePath="StreamComponents.cpp">
-			</File>
-			<File
-				RelativePath="StreamComponents_skel.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -453,9 +447,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="QedoComponents_skel.h">
-			</File>
-			<File
-				RelativePath="StreamComponents.h">
 			</File>
 			<File
 				RelativePath="qedo_orbacus.h">
@@ -597,28 +588,6 @@ copy QedoComponents.h QedoComponents_skel.h
 						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB QedoComponents.idl
 "
 						Outputs="QedoComponents.h;QedoComponents.cpp;QedoComponents_skel.h;QedoComponents_skel.cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="StreamComponents.idl">
-				<FileConfiguration
-					Name="Debug_orbacus|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -D_QEDO_NO_QOS -DWIN32 -DORBACUS_ORB StreamComponents.idl
-"
-						Outputs="StreamComponents.h;StreamComponents.cpp;StreamComponents_skel.h;StreamComponents_skel.cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL --typecode --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32  StreamComponents.idl
-copy StreamComponents.h StreamComponents_skel.h
-"
-						Outputs="StreamComponents.h;StreamComponents.cpp;StreamComponents_skel.h;StreamComponents_skel.cpp"/>
 				</FileConfiguration>
 			</File>
 		</Filter>

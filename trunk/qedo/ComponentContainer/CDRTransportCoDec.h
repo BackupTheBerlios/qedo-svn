@@ -27,7 +27,7 @@
 
 
 #include "CORBA.h"
-#include "StreamComponents.h"
+#include "Components.h"
 
 #include "MarshalBuffer.h"
 #include "Util.h"

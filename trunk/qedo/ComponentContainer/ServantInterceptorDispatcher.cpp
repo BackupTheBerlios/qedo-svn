@@ -30,11 +30,7 @@
 #include "Output.h"
 #include <fstream>
 
-#ifndef _QEDO_NO_STREAMS
-#include "StreamComponents.h"
-#endif
-
-static char rcsid[] UNUSED = "$Id: ServantInterceptorDispatcher.cpp,v 1.1 2004/07/16 11:56:43 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServantInterceptorDispatcher.cpp,v 1.2 2004/08/05 09:25:55 tom Exp $";
 
 namespace Qedo {
 
@@ -129,9 +125,9 @@ ServantInterceptorDispatcher::provide_facet( const char* comp_id, const char* na
 
 
 Components::Cookie* 
-ServantInterceptorDispatcher::bind(const char* comp_id, const char* name,
-                           CORBA::Object_ptr the_sink,
-						   const char* transport_profile,
+ServantInterceptorDispatcher::bind(const char* comp_id, char*&  name,
+                           StreamComponents::SinkStreamPort_ptr& the_sink,
+						   char*& transport_profile,
 						   CORBA::Boolean_out con)
 {
 
@@ -159,7 +155,7 @@ ServantInterceptorDispatcher::bind(const char* comp_id, const char* name,
 }
 
 CORBA::Object_ptr 
-ServantInterceptorDispatcher::provide_sink_stream_port( const char* comp_id, const char* name, CORBA::Boolean_out con ) 
+ServantInterceptorDispatcher::provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) 
 {
 	CORBA::Object_var anObject;
 	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)

@@ -31,25 +31,30 @@
 
 #ifndef _QEDO_NO_STREAMS
 
-
 module StreamComponents {
+	//
+	// Forward declaration
+	//
+	interface SinkStreamPort;
 
-        local interface StreamingBuffer
-        {
-                exception OutOfRange {};
-                exception IllegalSize {};
-                exception OutOfMemory {};
+    local interface StreamingBuffer
+    {
+            exception OutOfRange {};
+            exception IllegalSize {};
+            exception OutOfMemory {};
 
-                BufferPtr get_buffer();
+            BufferPtr get_buffer();
 
-                unsigned long get_size();
+            unsigned long get_size();
 
-                void set_used (in unsigned long bytes_used)
-                        raises (OutOfRange);
+            void set_used (in unsigned long bytes_used)
+                    raises (OutOfRange);
 
-                unsigned long get_used();
-        };
+            unsigned long get_used();
+    };
+
 };
+
 #endif
 
 
@@ -489,11 +494,12 @@ module Components {
 
 			Object provide_facet (in string comp_id, in FeatureName name, out boolean con)
 				raises (InvalidName);
+#ifndef _QEDO_NO_STREAMS
 
-			Components::Cookie bind(in string comp_id, in Components::FeatureName name, in Object the_sink, in string transport_profile, out boolean con);
-			Object provide_sink_stream_port (in string comp_id, in Components::FeatureName name, out boolean con)
+			Components::Cookie bind(in string comp_id, inout Components::FeatureName name, inout StreamComponents::SinkStreamPort the_sink, inout string transport_profile, out boolean con);
+			Object provide_sink_stream_port (in string comp_id, inout Components::FeatureName name, out boolean con)
 				raises (Components::InvalidName);
-
+#endif
 		};
 
 		local interface ClientContainerInterceptor : ContainerInterceptor
@@ -528,12 +534,13 @@ module Components {
 			Object provide_facet (in string comp_id, in FeatureName name, out boolean con)
 				raises (InvalidName);
 			
+#ifndef _QEDO_NO_STREAMS
 
 			// StreamCCMObject
-			Components::Cookie bind(in string comp_id, in Components::FeatureName name, in Object the_sink, in string transport_profile, out boolean con);
-			Object provide_sink_stream_port (in string comp_id, in Components::FeatureName name, out boolean con)
+			Components::Cookie bind(in string comp_id, inout Components::FeatureName name, inout StreamComponents::SinkStreamPort the_sink, inout string transport_profile, out boolean con);
+			Object provide_sink_stream_port (in string comp_id, inout Components::FeatureName name, out boolean con)
 				raises (Components::InvalidName);
-
+#endif
 		};
 
 	}; // Extension
@@ -941,6 +948,146 @@ module Components {
 
 #endif
 };
+
+#ifndef _QEDO_NO_STREAMS
+
+module StreamComponents {
+
+//
+// Forward declaration
+//
+interface SinkStreamPort;
+
+//
+// Exceptions
+//
+exception UnsupportedStreamtype {
+	CORBA::RepositoryIdSeq unsupported_streamtypes;
+};
+
+exception NoStream {};					// Raised when end_stream is called without a previous begin_stream
+exception DuplicateStream {};			// Raised when begin_stream is called twice without first calling end_stream
+exception TransportFailure {};
+exception InvalidBinding {};
+exception NoBinding {};
+exception ExceededBindingLimit {};
+exception AlreadyBound {};
+exception IllegalStream {};				// Raised when the wrong send_stream_data_* operation is used with respect to the
+										// repository identifier supplied in the preceeding begin_stream operation
+
+//
+// Structures
+//
+struct TransportSpec {
+	string transport_profile;
+	Components::ConfigValues transport_parameters;
+};
+
+
+// TCP Profile Header
+// A stream ends when the stream_number increases by one
+// Since TCP delivers reliable and in correct order, we can omit a sequence number
+struct TCPProfileHeader {
+	unsigned short stream_number;
+	unsigned long seq_length;
+};
+
+// UDP Profile Header
+struct UDPProfileHeader {
+	unsigned short stream_number;
+	unsigned long seq_length;
+	unsigned short fragment_number;
+	unsigned short last_fragment_number;
+};
+
+//
+// Valuetypes
+//
+valuetype BindingDescription {
+	public Components::Cookie ck;
+	public SinkStreamPort the_sink;
+};
+typedef sequence <BindingDescription> BindingDescriptions;
+
+valuetype SourceDescription : Components::PortDescription {
+	public boolean is_multiplex;
+	public CORBA::RepositoryIdSeq stream_types;
+	public BindingDescriptions bindings;
+};
+typedef sequence <SourceDescription> SourceDescriptions;
+
+valuetype SinkDescription : Components::PortDescription {
+	public CORBA::RepositoryIdSeq stream_types;
+	public SinkStreamPort the_sink;
+};
+typedef sequence <SinkDescription> SinkDescriptions;
+
+//
+// Interfaces
+//
+
+//
+// For each sink stream port there will be exactly one object implementing the SinkStreamPort interface
+// There is no need for typed-specific SinkStreamPort interfaces, since the source component cannot know
+// the name of the sink (in the scope of the sink component) to which it transfers data
+// Consequently operations like begin_stream_<my_sink>() make no sense
+//
+interface SinkStreamPort {
+	void begin_stream (in CORBA::RepositoryId repository_id,
+					   in Components::ConfigValues stream_meta_data)
+		raises (UnsupportedStreamtype, DuplicateStream);
+
+	void end_stream()
+		raises (NoStream);
+
+	void check_streamtype (in CORBA::RepositoryIdSeq the_streamtypes)
+		raises (UnsupportedStreamtype);
+
+	void consider_transport (inout TransportSpec the_transport)
+		raises (AlreadyBound, TransportFailure);
+
+	void release_transport();
+};
+
+
+//
+// The Streams interface with general stream management operations
+//
+interface Streams {
+	SinkStreamPort provide_sink_stream_port (in Components::FeatureName name)
+		raises (Components::InvalidName);
+
+	Components::Cookie bind (in Components::FeatureName name, in SinkStreamPort the_sink, in string transport_profile)
+		raises (Components::InvalidName, AlreadyBound, InvalidBinding, ExceededBindingLimit);
+
+	SinkStreamPort unbind (in Components::FeatureName name, in Components::Cookie ck)
+		raises (Components::CookieRequired, InvalidBinding, NoBinding);
+
+	BindingDescriptions get_bindings (in Components::FeatureName name)
+		raises (Components::InvalidName);
+
+	SinkDescriptions get_named_sinks (in Components::NameList names)
+		raises(Components::InvalidName);
+
+	SinkDescriptions get_all_sinks();
+
+	SourceDescriptions get_named_sources (in Components::NameList names)
+		raises (Components::InvalidName);
+
+	SourceDescriptions get_all_sources();
+};
+
+
+//
+// This is the CORBA interface a component with stream ports must implement
+//
+interface StreamCCMObject : Streams, Components::CCMObject 
+{
+};
+
+
+};
+#endif
 #pragma prefix ""
 
 
@@ -964,6 +1111,5 @@ module ConfigurationService
 			raises(UnknownConfiguration);
 	};
 };
-
 
 #endif

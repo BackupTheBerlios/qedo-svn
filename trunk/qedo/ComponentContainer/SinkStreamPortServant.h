@@ -27,7 +27,7 @@
 
 
 #include <CORBA.h>
-#include <StreamComponents_skel.h>
+//#include <StreamComponents_skel.h>
 
 #include "StreamCCMObjectExecutor.h"
 #include "ServantBase.h"

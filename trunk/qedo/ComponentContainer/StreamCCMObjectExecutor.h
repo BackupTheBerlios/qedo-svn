@@ -27,7 +27,7 @@
 
 
 #include <CORBA.h>
-#include <StreamComponents_skel.h>
+#include <Components_skel.h>
 
 #include "RefCountBase.h"
 #include "SourcePort.h"

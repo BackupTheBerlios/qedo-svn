@@ -78,13 +78,13 @@ namespace Qedo {
 
 // StreamCCMObject
 		virtual Components::Cookie* 
-		bind(const char* comp_id, const char* name,
-                           CORBA::Object_ptr the_sink,
-						   const char* transport_profile,
+		bind(const char* comp_id, char*& name,
+                           StreamComponents::SinkStreamPort_ptr& the_sink,
+						   char*& transport_profile,
 						   CORBA::Boolean_out con);
 
 		virtual CORBA::Object_ptr 
-		provide_sink_stream_port( const char* comp_id, const char* name, CORBA::Boolean_out con ) ;
+		provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) ;
 
 
 	};

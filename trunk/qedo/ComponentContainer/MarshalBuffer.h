@@ -26,7 +26,7 @@
 #ifndef _QEDO_NO_STREAMS
 
 #include <CORBA.h>
-#include <StreamComponents_skel.h>
+#include <Components_skel.h>
 
 #include "StreamingBuffer.h"
 #include "Util.h"

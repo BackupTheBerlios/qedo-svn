@@ -38,7 +38,7 @@
 #pragma warning (disable : 4715) // not all control paths return a value
 #endif
 
-static char rcsid[] UNUSED = "$Id: PrimaryStreamServant.cpp,v 1.7 2004/07/16 12:50:51 tom Exp $";
+static char rcsid[] UNUSED = "$Id: PrimaryStreamServant.cpp,v 1.8 2004/08/05 09:25:55 tom Exp $";
 
 
 namespace Qedo {
@@ -64,7 +64,7 @@ throw(Components::InvalidName,
 #ifndef _QEDO_NO_QOS
 	const char * act_id = this-> get_component_id();
 	CORBA::Boolean con;
-	CORBA::Object_var anObject = servant_interceptor_registry_ -> provide_sink_stream_port (act_id, name, con);
+	CORBA::Object_var anObject = servant_interceptor_registry_ -> provide_sink_stream_port (act_id, (char*&) name, con);
 	if (con) {
 #endif
 
@@ -93,7 +93,7 @@ throw(Components::InvalidName,
 #ifndef _QEDO_NO_QOS
 	const char * act_id = this-> get_component_id();
 	CORBA::Boolean con;
-	Components::Cookie* temp_ck = servant_interceptor_registry_ -> bind (act_id, name, the_sink, transport_profile, con);
+	Components::Cookie* temp_ck = servant_interceptor_registry_ -> bind (act_id, (char*&) name, the_sink, (char*&)transport_profile, con);
 	if (con)
 	{
 #endif
