@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.26 2003/10/30 17:24:14 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.27 2004/03/08 11:12:23 boehme Exp $";
 
 
 namespace Qedo {
@@ -341,30 +341,37 @@ HomeServantBase::lookup_component (const PortableServer::ObjectId& object_id)
 {
 	CORBA::OctetSeq_var foreign_key_seq = Key::key_value_from_object_id (object_id);
 	CORBA::OctetSeq_var our_key_seq;
+	CORBA::Object_ptr obj;
 
-	QedoLock lock (component_instances_mutex_);
 
-	std::vector <ComponentInstance>::iterator components_iter;
-
-	for (components_iter = component_instances_.begin(); 
-		 components_iter != component_instances_.end(); 
-		 components_iter++)
 	{
-		our_key_seq = Key::key_value_from_object_id ((*components_iter).object_id_);
+		// Do not keep this lock for a long time, it will block other operations
+		QedoLock lock (component_instances_mutex_);
 
-		if (Qedo::compare_OctetSeqs (foreign_key_seq, our_key_seq))
+		std::vector <ComponentInstance>::iterator components_iter;
+
+		for (components_iter = component_instances_.begin(); 
+			 components_iter != component_instances_.end(); 
+			 components_iter++)
 		{
-			break;
+			our_key_seq = Key::key_value_from_object_id ((*components_iter).object_id_);
+
+			if (Qedo::compare_OctetSeqs (foreign_key_seq, our_key_seq))
+			{
+				break;
+			}
 		}
+
+		if (components_iter == component_instances_.end())
+		{
+			DEBUG_OUT ("HomeServantBase: Unknown object id requested in lookup_component");
+			throw CORBA::OBJECT_NOT_EXIST();
+		}
+
+		obj = (*components_iter).component_ref_;
 	}
 
-	if (components_iter == component_instances_.end())
-	{
-		DEBUG_OUT ("HomeServantBase: Unknown object id requested in lookup_component");
-		throw CORBA::OBJECT_NOT_EXIST();
-	}
-
-	return Components::CCMObject::_narrow ((*components_iter).component_ref_);
+	return Components::CCMObject::_narrow(obj);
 }
 
 
