@@ -37,7 +37,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.14 2003/09/09 12:01:33 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.15 2003/09/29 07:31:54 neubauer Exp $";
 
 
 namespace Qedo {
@@ -121,8 +121,7 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 	std::string loc = assembly_loc;
 	if ( loc.compare(0, 7, "file://") && loc.compare(0, 7, "http://") )
     {
-		std::cout << ".......... invalid assembly location" << std::endl;
-		std::cout << ".......... file:// or http:// prefix required" << std::endl;
+		std::cout << "!!!!! invalid assembly location : " << "file:// or http:// prefix required" << std::endl;
 		throw Components::Deployment::InvalidLocation();
     }
 
@@ -138,9 +137,11 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 	// copy the package in the local package directory
 	//
     URLInputSource inputSource(uri);
+	//inputSource.setIssueFatalErrorIfNotFound( false );
     BinInputStream* inputStream = inputSource.makeStream();
     if (!inputStream)
     {
+		std::cout << "!!!!! invalid assembly location" << std::endl;
 		throw Components::Deployment::InvalidLocation();
     }
 
@@ -148,7 +149,7 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 	std::ofstream packageFile(package_name.c_str(), std::ios::binary|std::ios::app);
 	if ( ! packageFile)
 	{
-		std::cerr << "..... Cannot open file " << package_name << std::endl;
+		std::cerr << "!!!!! Cannot open file " << package_name << std::endl;
 		throw Components::CreateFailure();
 	}
     unsigned char* buf = new unsigned char[4096];

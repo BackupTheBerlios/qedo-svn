@@ -28,7 +28,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.5 2003/09/26 08:34:40 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.6 2003/09/29 07:32:23 neubauer Exp $";
 
 
 namespace Qedo {
@@ -528,6 +528,7 @@ throw(CSDReadException)
     BinInputStream* inputStream = inputSource.makeStream();
     if (!inputStream)
     {
+		std::cerr << "Cannot find " << name << std::endl;
         throw CSDReadException();
     }
         

@@ -351,6 +351,11 @@ throw( Components::CreateFailure )
 			throw Components::CreateFailure();
 		}
 	}
+	catch(Components::Deployment::InstallationFailure&)
+	{
+		std::cerr << ".......... InstallationFailure during install()" << std::endl;
+		throw Components::CreateFailure();
+	}
 	catch ( CORBA::SystemException& )
 	{
 		std::cerr << ".......... CORBA system exception during install()" << std::endl;
