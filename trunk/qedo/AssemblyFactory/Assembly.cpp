@@ -128,7 +128,8 @@ throw( Components::CreateFailure )
 
 
 Components::Deployment::Container_ptr
-AssemblyImpl::createContainer (Components::Deployment::ComponentServer_ptr component_server)
+AssemblyImpl::createContainer
+(Components::Deployment::ComponentServer_ptr component_server, const ::Components::ConfigValues& config)
 throw( Components::CreateFailure )
 {
 	DEBUG_OUT( "AssemblyImpl: create new container" );
@@ -137,15 +138,9 @@ throw( Components::CreateFailure )
 	// create new Container
 	//
     Components::Deployment::Container_var container;
-	Components::ConfigValues_var config = new Components::ConfigValues();
-	config->length(1);
-	CORBA::Any any;
-	any <<= "SESSION";
-	config.inout()[0] = new ConfigValue_impl("CONTAINER_TYPE", any);
-
 	try
 	{
-        container =	component_server->create_container(config);
+        container =	component_server->create_container( config );
 	}
 	catch (Components::CreateFailure&)
 	{
@@ -472,8 +467,18 @@ throw(Components::CreateFailure)
 				iter != (*process_iter).homes.end(); 
 				iter++)
 			{
-				container = createContainer(component_server);
+				//
+				// get config values (e.g. container kind)
+				//
+				Components::ConfigValues_var config = new Components::ConfigValues();
+				config->length(1);
+				CORBA::Any any;
+				any <<= ((*iter).component.kind.c_str());
+				config.inout()[0] = new ConfigValue_impl("CONTAINER_TYPE", any);
+
+				container = createContainer( component_server, config );
 				(*iter).container = Components::Deployment::Container::_duplicate(container);
+
 				home = instantiateHome( container, (*iter) );
 				instantiateComponents( home, (*iter) );
 			}

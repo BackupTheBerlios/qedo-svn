@@ -96,7 +96,8 @@ private:
     /**
 	 * create new container
 	 */
-    Components::Deployment::Container_ptr createContainer (Components::Deployment::ComponentServer_ptr)
+    Components::Deployment::Container_ptr createContainer
+		(Components::Deployment::ComponentServer_ptr, const ::Components::ConfigValues&)
         throw(Components::CreateFailure);
 
 	/**
