@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMHomeServant.cpp,v 1.1 2002/10/07 07:17:02 tom Exp $";
+static char rcsid[] = "$Id: CCMHomeServant.cpp,v 1.2 2002/10/29 08:45:09 neubauer Exp $";
 
 #include "CCMHomeServant.h"
 #include "Output.h"
@@ -79,12 +79,12 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 }
 
 
-Components::CCMObjects* 
+Qedo_Components::CCMObjects* 
 CCMHomeServant::get_instances()
 {
 	DEBUG_OUT ("CCMHomeServant:: get_instances() called");
 
-	Components::CCMObjects_var instances = new Components::CCMObjects();
+	Qedo_Components::CCMObjects_var instances = new Qedo_Components::CCMObjects();
 	instances->length (this->component_instances_.size());
 
 	for (unsigned int i = 0; i < this->component_instances_.size(); i++)

@@ -24,7 +24,7 @@
 #define __CCM_HOME_SERVANT_H__
 
 #include <OB/CORBA.h>
-#include "Components_skel.h"
+#include "QedoComponents_skel.h"
 
 #include "HomeServantBase.h"
 #include "Util.h"
@@ -32,7 +32,7 @@
 namespace Qedo {
 
 class CONTAINERDLL_API CCMHomeServant : public virtual HomeServantBase,
-										public virtual POA_Components::CCMHome
+										public virtual POA_Qedo_Components::CCMHome
 {
 public:
 	CCMHomeServant();
@@ -59,9 +59,9 @@ public:
         throw(Components::RemoveFailure, CORBA::SystemException);
 
 	//
-    // IDL:omg.org/Components/CCMHome/get_instances:1.0  Qedo extension !!!
+    // IDL:omg.org/Qedo_Components/CCMHome/get_instances:1.0
     //
-	Components::CCMObjects* get_instances();
+	Qedo_Components::CCMObjects* get_instances();
 };
 
 } //namespace Qedo
