@@ -11,14 +11,12 @@
     <idl id="IDL:Simulation/TAPDisplayHome:1.0">
         <fileinarchive name="simdemo.cidl"/>
     </idl>
-    
+
     <implementation id="UUID-B5256F81-D6C1-431E-B6E9-768AEFAB89C3">
         <os name="WIN" />
         <processor name="x86" />
         <compiler name="VC++" version="7,0" />
         <programminglanguage name="C++" />
-        <dependency type="DLL"><localfile name="jtcd.dll"/></dependency>
-        <dependency type="DLL"><localfile name="obd.dll"/></dependency>
         <descriptor type="CORBA-Component">
             <fileinarchive name="meta-inf/Simulation_TAPDisplayImpl.ccd" />
         </descriptor>
@@ -33,4 +31,25 @@
             <usage>servant</usage>
         </code>
     </implementation>
+
+    <implementation id="UUID-bebc9195-f0cb-4148-b62c-c7f5155890af">
+        <os name="linux" />
+        <processor name="" />
+        <compiler name="" version="" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/Simulation_TAPDisplayImpl.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="libSimulation_TAPDisplayImpl.so"/>
+            <entrypoint>create_TAPDisplayHomeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="libSimulation_TAPDisplayImpl_SERVANT.so"/>
+            <entrypoint>create_TAPDisplayHomeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>
+
 </softpkg>

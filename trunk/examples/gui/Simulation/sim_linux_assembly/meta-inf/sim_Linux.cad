@@ -1,0 +1,172 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://cif.sourceforge.net/componentassembly.dtd">
+
+<componentassembly id="Simulation">
+
+    <description>Windows assembly"</description>
+
+    <componentfiles>
+        <componentfile id="Plane_file">
+		<fileinarchive name="meta-inf/Simulation_PlaneImpl.csd">
+			<link href="Simulation_PlaneImpl.zip"/>
+		</fileinarchive>
+        </componentfile>
+
+        <componentfile id="SimulationServer_file">
+		<fileinarchive name="meta-inf/Simulation_SimulationServerImpl.csd">
+			<link href="Simulation_SimulationServerImpl.zip"/>
+		</fileinarchive>
+        </componentfile>
+
+        <componentfile id="Radar_file">
+		<fileinarchive name="meta-inf/Simulation_RadarImpl.csd">
+			<link href="Simulation_RadarImpl.zip"/>
+		</fileinarchive>
+        </componentfile>
+
+
+        <componentfile id="TAPDisplay_file">
+		<fileinarchive name="meta-inf/Simulation_TAPDisplayImpl.csd">
+			<link href="Simulation_TAPDisplayImpl.zip"/>
+		</fileinarchive>
+        </componentfile>
+
+    </componentfiles>
+       <partitioning>
+
+		<processcollocation>
+			<homeplacement id="PlaneHome">
+	        		<componentfileref idref="Plane_file"/>
+					<componentimplref idref="UUID-c185735a-6a5f-461e-804b-6028fdd03d64"/>
+  			      		<componentinstantiation id="Plane1">
+	   						<componentproperties>
+								<fileinarchive name="meta-inf/plane1.cpf"/>
+							</componentproperties>
+						</componentinstantiation>
+  			      		<componentinstantiation id="Plane2">
+	   						<componentproperties>
+								<fileinarchive name="meta-inf/plane2.cpf"/>
+							</componentproperties>
+						</componentinstantiation>
+
+					<destination></destination>
+			</homeplacement>
+		</processcollocation>
+
+		<processcollocation>
+			<homeplacement id="SimulationServerHome">
+	        		<componentfileref idref="SimulationServer_file"/>
+					<componentimplref idref="UUID-db269830-d1c7-4f43-9e02-5c75331f0dfe"/>
+  			      		<componentinstantiation id="SimulationServer">
+						</componentinstantiation>
+					<destination></destination>
+			</homeplacement>
+		</processcollocation>
+
+		<processcollocation>
+			<homeplacement id="RadarHome">
+	        		<componentfileref idref="Radar_file"/>
+					<componentimplref idref="UUID-e250625c-9fe7-4765-aa17-3af718e24a88"/>
+  			      		<componentinstantiation id="Radar1">
+	   						<componentproperties>
+								<fileinarchive name="meta-inf/radar1.cpf"/>
+							</componentproperties>
+						</componentinstantiation>
+  			      		<componentinstantiation id="Radar2">
+	   						<componentproperties>
+								<fileinarchive name="meta-inf/radar2.cpf"/>
+							</componentproperties>
+						</componentinstantiation>
+					<destination></destination>
+			</homeplacement>
+		</processcollocation>
+
+		<processcollocation>
+			<homeplacement id="TAPDisplayHome">
+	        		<componentfileref idref="TAPDisplay_file"/>
+					<componentimplref idref="UUID-bebc9195-f0cb-4148-b62c-c7f5155890af"/>
+  			      		<componentinstantiation id="TAPDisplayMain">
+	   						<componentproperties>
+								<fileinarchive name="meta-inf/tapdisplay1.cpf"/>
+							</componentproperties>  			      		
+						</componentinstantiation>
+					<destination></destination>
+			</homeplacement>
+		</processcollocation>
+		
+    </partitioning>
+    <connections>
+		<connectinterface>
+			<usesport>
+			<usesidentifier>sim_server</usesidentifier>
+			<componentinstantiationref idref="Plane1"/>
+			</usesport>
+
+			<providesport>
+			<providesidentifier>the_input</providesidentifier>
+			<componentinstantiationref idref="SimulationServer"/>
+			</providesport>
+		</connectinterface>
+
+		<connectinterface>
+			<usesport>
+			<usesidentifier>sim_server</usesidentifier>
+			<componentinstantiationref idref="Plane2"/>
+			</usesport>
+
+			<providesport>
+			<providesidentifier>the_input</providesidentifier>
+			<componentinstantiationref idref="SimulationServer"/>
+			</providesport>
+		</connectinterface>
+
+		<connectinterface>
+			<usesport>
+			<usesidentifier>sim_server</usesidentifier>
+			<componentinstantiationref idref="Radar1"/>
+			</usesport>
+
+			<providesport>
+			<providesidentifier>radar_output</providesidentifier>
+			<componentinstantiationref idref="SimulationServer"/>
+			</providesport>
+		</connectinterface>
+		<connectinterface>
+			<usesport>
+			<usesidentifier>sim_server</usesidentifier>
+			<componentinstantiationref idref="Radar2"/>
+			</usesport>
+
+			<providesport>
+			<providesidentifier>radar_output</providesidentifier>
+			<componentinstantiationref idref="SimulationServer"/>
+			</providesport>
+		</connectinterface>
+
+		<connectevent>
+			<consumesport>
+			<consumesidentifier>from_radar</consumesidentifier>
+			<componentinstantiationref idref="TAPDisplayMain"/>
+			</consumesport>
+
+			<publishesport>
+			<publishesidentifier>to_tac_display</publishesidentifier>
+			<componentinstantiationref idref="Radar1"/>
+			</publishesport>
+		</connectevent>		
+
+		<connectevent>
+			<consumesport>
+			<consumesidentifier>from_radar</consumesidentifier>
+			<componentinstantiationref idref="TAPDisplayMain"/>
+			</consumesport>
+
+			<publishesport>
+			<publishesidentifier>to_tac_display</publishesidentifier>
+			<componentinstantiationref idref="Radar2"/>
+			</publishesport>
+		</connectevent>		
+
+    </connections>
+</componentassembly>
+

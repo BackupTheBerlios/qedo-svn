@@ -11,14 +11,12 @@
     <idl id="IDL:Simulation/SimulationServerHome:1.0">
         <fileinarchive name="simdemo.cidl"/>
     </idl>
-    
+
     <implementation id="UUID-F21017D0-7B20-4871-8F85-12F89B56B100">
         <os name="WIN" />
         <processor name="x86" />
         <compiler name="VC++" version="7,0" />
         <programminglanguage name="C++" />
-        <dependency type="DLL"><localfile name="jtcd.dll"/></dependency>
-        <dependency type="DLL"><localfile name="obd.dll"/></dependency>
         <descriptor type="CORBA-Component">
             <fileinarchive name="meta-inf/Simulation_SimulationServerImpl.ccd" />
         </descriptor>
@@ -33,4 +31,25 @@
             <usage>servant</usage>
         </code>
     </implementation>
+
+    <implementation id="UUID-db269830-d1c7-4f43-9e02-5c75331f0dfe">
+        <os name="linux" />
+        <processor name="" />
+        <compiler name="" version="" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/Simulation_SimulationServerImpl.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="libSimulation_SimulationServerImpl.so"/>
+            <entrypoint>create_SimulationServerHomeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="libSimulation_SimulationServerImpl_SERVANT.so"/>
+            <entrypoint>create_SimulationServerHomeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>
+
 </softpkg>
