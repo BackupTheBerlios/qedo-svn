@@ -21,6 +21,7 @@
 /***************************************************************************/
 
 #include "ComponentInstallationImpl.h"
+#include "ConfigurationReader.h"
 #include "Output.h"
 #include <iostream>
 #include <fstream>
@@ -32,7 +33,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.22 2003/10/27 10:14:29 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.23 2003/10/27 11:13:50 boehme Exp $";
 
 
 namespace Qedo {

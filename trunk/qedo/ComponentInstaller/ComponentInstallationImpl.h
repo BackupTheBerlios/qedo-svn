@@ -65,6 +65,8 @@ private:
 	std::string								packageDirectory_;
 	/** the installation directory */
 	std::string								installationDirectory_;
+	/** the deployment directory */
+	std::string								deployment_dir_;
 	/** the installation xml file */
 	static std::string						inst_file_;
 	/** */
