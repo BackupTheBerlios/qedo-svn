@@ -1,3 +1,45 @@
+include MakeVars
+
+ifeq ($(ORB), MICO)
+TARGET = Debug_mico_linux
+endif
+
+all: ComponentIDL ComponentContainer AssemblyFactory DeploymentClient ComponentInstaller ComponentServer ComponentServerActivator HomeFinder
+
+
+DeploymentClient: AssemblyFactory ComponentContainer ComponentIDL
+	 mkdir -p DeploymentClient/$(TARGET) ;make -C DeploymentClient $(TARGET)
+
+
+ComponentContainer: ComponentIDL
+	 mkdir -p ComponentContainer/$(TARGET) ;make -C ComponentContainer $(TARGET)
+
+
+ComponentInstaller: ComponentIDL
+	 mkdir -p ComponentInstaller/$(TARGET) ;make -C ComponentInstaller $(TARGET)
+
+
+ComponentServer: ComponentContainer ComponentIDL
+	 mkdir -p ComponentServer/$(TARGET) ;make -C ComponentServer $(TARGET)
+
+
+ComponentServerActivator: ComponentIDL
+	 mkdir -p ComponentServerActivator/$(TARGET); make -C ComponentServerActivator $(TARGET)
+
+
+ComponentIDL: 
+	 mkdir -p ComponentIDL/$(TARGET); make -C ComponentIDL $(TARGET)
+
+
+AssemblyFactory: ComponentIDL ComponentContainer
+	 mkdir -p AssemblyFactory/$(TARGET); make -C AssemblyFactory $(TARGET)
+
+HomeFinder: ComponentIDL
+	 mkdir -p HomeFinder/$(TARGET) ;make -C HomeFinder $(TARGET)
+
+
+
+#### old ####
 Debug: ComponentIDL.Debug ComponentContainer.Debug AssemblyFactory.Debug DeploymentClient.Debug ComponentInstaller.Debug ComponentServer.Debug ComponentServerActivator.Debug
 
 
