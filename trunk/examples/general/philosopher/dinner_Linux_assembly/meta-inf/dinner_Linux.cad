@@ -45,7 +45,6 @@
 					<fileinarchive name="meta-inf/charly.cpf"/>
 				</componentproperties>
 	        </componentinstantiation>
-	        <destination></destination>
 	</homeplacement>
 	</processcollocation>
 
@@ -61,7 +60,6 @@
 	        <componentinstantiation id="fork2">
 				<registercomponent><registerwithnaming name="CCM/Components/fork2"/></registercomponent>
 			</componentinstantiation>
-	        <destination></destination>
 	    </homeplacement>
 	</processcollocation>
 
@@ -73,7 +71,6 @@
             <componentinstantiation id="theObserver">
 			    <registercomponent><registerwithnaming name="CCM/Components/Observer"/></registercomponent>
 			</componentinstantiation>
-	        <destination></destination>
 	    </homeplacement>
 	</processcollocation>
     </partitioning>
