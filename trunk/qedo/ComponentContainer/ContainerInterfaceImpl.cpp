@@ -36,7 +36,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.54 2004/01/23 13:19:50 neubauer Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.55 2004/03/11 14:22:24 neubauer Exp $";
 
 
 namespace Qedo {
@@ -473,6 +473,8 @@ throw (Components::Deployment::UnknownImplId,
 
 	for (CORBA::ULong i = 0; i < config.length(); i++)
 	{
+		DEBUG_OUT2("ContainerInterfaceImpl: config value : ", config[i]->name());
+
 		value = config[i].in();
 
 		if (! strcmp (config[i]->name(), "HOMEFINDERNAME"))
