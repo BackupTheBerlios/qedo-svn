@@ -23,7 +23,7 @@ SUFFIXES += .so
 %.so:
 	${CXX} -shared ${LD_SHRAED_FLAGS} -o $@ $^ $(LIBS)
 
-CXXFLAGS += -I${QEDO}/include
+CXXFLAGS += -I${QEDO}/include @XERCES_INCLUDES@
 
 %: %.o
 	${CXX} ${OBJ_FILES} $(LOADLIBES) $(LDLIBS) -o $@ 
