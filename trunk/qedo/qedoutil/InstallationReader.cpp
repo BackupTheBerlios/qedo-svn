@@ -28,7 +28,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: InstallationReader.cpp,v 1.6 2003/11/14 16:48:16 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: InstallationReader.cpp,v 1.7 2003/11/28 13:08:27 boehme Exp $";
 
 
 namespace Qedo {
@@ -159,8 +159,7 @@ throw(InstallationReadException)
 	//
 	// parse the descriptor file
     //
-	char* xmlfile = strdup(file.c_str());
-    if( parser_.parse( xmlfile ) != 0 ) 
+    if( parser_.parse( const_cast<char*>(file.c_str()) ) != 0 ) 
 	{
 		NORMAL_ERR( "InstallationReader: error during XML parsing" );
         throw InstallationReadException();
@@ -178,8 +177,7 @@ throw(InstallationReadException)
 	//
 	// parse the descriptor file
     //
-	char* xmlfile = strdup(file.c_str());
-    if( parser_.parse( xmlfile ) != 0 ) 
+    if( parser_.parse( const_cast<char*>(file.c_str()) ) != 0 ) 
 	{
 		NORMAL_ERR( "InstallationReader: error during XML parsing" );
         throw InstallationReadException();
@@ -282,8 +280,7 @@ throw(InstallationReadException)
 	//
 	// parse the descriptor file
     //
-	char* xmlfile = strdup(file.c_str());
-    if( parser_.parse( xmlfile ) != 0 ) 
+    if( parser_.parse( const_cast<char*>(file.c_str()) ) != 0 ) 
 	{
 		NORMAL_ERR( "InstallationReader: error during XML parsing" );
         throw InstallationReadException();

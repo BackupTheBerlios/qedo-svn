@@ -264,6 +264,11 @@ class QEDOUTIL_API QedoThread {
 	QedoThread();
 
 	/**
+	 * destructor
+	 */
+	~QedoThread();
+
+	/**
 	 * stop and terminat the thread (deprecated)
 	 */
 	void stop();
@@ -289,16 +294,6 @@ extern "C" void* startFunc(void* p);
  */
 QEDOUTIL_API QedoThread*
 qedo_startDetachedThread(void* (*p)(void*), void* arg);
-
-
-/**
- * parameter struct for thread creation
- */
-struct T_Start 
-{
-	void* (*p)(void*);
-	void* a;
-};
 
 
 /** @} */

@@ -34,7 +34,7 @@
 #include <sys/time.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.27 2003/11/03 13:41:23 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.28 2003/11/28 13:08:27 boehme Exp $";
 
 
 namespace Qedo {
@@ -58,6 +58,7 @@ struct CondDelegate
 };
 
 struct ThreadDelegate {
+		 bool stopped;
 #ifdef QEDO_WINTHREAD
        HANDLE th_handle_;
        DWORD th_id_;
@@ -503,16 +504,33 @@ QedoReadWriteMutex::unlock_object()
 
 QedoThread::QedoThread()
 {
-       delegate_ = new ThreadDelegate;
+	 delegate_ = new ThreadDelegate;
+	 delegate_->stopped = false;
+};
+
+QedoThread::~QedoThread()
+{
+	 if( delegate_->stopped == false )
+	 { 
+		 DEBUG_OUT("Calling Thread deestructor while thread is not stopped");
+		 return;
+	 }
+	 delete delegate_;
 };
 
 void
 QedoThread::stop()
 {
 #ifdef QEDO_WINTHREAD
-       DWORD exitcode;
-       if(!TerminateThread(delegate_->th_handle_,exitcode)) 
-               DEBUG_OUT("Error while TerminateThread");
+	DWORD exitcode;
+	if(!TerminateThread(delegate_->th_handle_,exitcode)) 
+	{
+			DEBUG_OUT("Error while TerminateThread");
+	}
+	else
+	{
+		delegate_->stopped = true;
+	}
 #else
 	int ret;
 
@@ -521,6 +539,10 @@ QedoThread::stop()
 	if ( ret )
 	{
 		std::cerr << "QedoThread::stop: " << strerror(ret) << std::endl;
+	}
+	else
+	{
+		delegate_->stopped = true;
 	}
 #endif
 }
@@ -533,6 +555,10 @@ QedoThread::join()
 	{
         std::cerr << "QedoThread::join: " << GetLastError() << std::endl;
 	}
+	else
+	{
+		delegate_->stopped = true;
+	}
 #else
 	void *state;
 	int ret;
@@ -543,8 +569,23 @@ QedoThread::join()
 	{
 		std::cerr << "QedoThread::join: " << strerror(ret) << std::endl;
 	}
+	else
+	{
+		delegate_->stopped = true;
+	}
 #endif
 }
+
+/**
+ * parameter struct for thread creation
+ */
+struct T_Start 
+{
+	void* (*p)(void*);
+	void* a;
+	ThreadDelegate* d;
+};
+
 
 #ifdef QEDO_WINTHREAD
 DWORD WINAPI startFunc(LPVOID p) {
@@ -555,10 +596,13 @@ void* startFunc(void* p) {
 	T_Start* t = (T_Start*) p;
 	void* (*f)(void*) = t->p;
 	void* arg = t->a;
+	ThreadDelegate* d = t->d;
 
 	delete t;
 
 	(f)(arg);
+
+	d->stopped = true;
 
 	return 0;
 }
@@ -570,6 +614,7 @@ qedo_startDetachedThread(void* (*p)(void*), void* arg) {
 	startParams->p = p;
 	startParams->a = arg;
 	QedoThread * thread = new QedoThread();
+	startParams->d = thread->delegate_;
 
 #ifdef QEDO_WINTHREAD
 	thread->delegate_->th_handle_ = CreateThread(NULL,
