@@ -1,19 +1,21 @@
 # Configuration Debug_mico
 ProjectName=CIDLGenerator
+OutDir=./Debug_mico
 IntDir=./Debug_mico
 Name=Debug_mico
 CFLAGS=-I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I../../CIDL_Frontend/CIDLFrontendLib -I$(MICO)/include -I$(MICO)/include/windows -g
 CXXFLAGS=-I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I../../CIDL_Frontend/CIDLFrontendLib -I$(MICO)/include -I$(MICO)/include/windows -g
-LIBS=-L../../CIDL_Frontend/CIDLFrontendLib/$(IntDir) -L../../CIDL_Repository/IFRidl/$(IntDir) -L../../CIDL_Repository/ComponentRepositoryLib/$(IntDir) -L../../CIDL_Repository/CIDLRepositoryLib/$(IntDir) -lCIDLFrontendLib -lCIDLRepositoryLib -lComponentRepositoryLib -lIFRidl -lmico236
+LIBS=-L../../..//CIDL_Repository/ComponentRepositoryLib/./Debug_mico -L../../..//CIDL_Frontend/CIDLFrontendLib/./Debug_mico -L../../..//CIDL_Repository/CIDLRepositoryLib/./Debug_mico -L../../CIDL_Frontend/CIDLFrontendLib/$(IntDir) -L../../CIDL_Repository/IFRidl/$(IntDir) -L../../CIDL_Repository/ComponentRepositoryLib/$(IntDir) -L../../CIDL_Repository/CIDLRepositoryLib/$(IntDir) -lCIDLFrontendLib -lCIDLRepositoryLib -lComponentRepositoryLib -lIFRidl -lmico236 -lCIDLRepositoryLib -lCIDLFrontendLib -lComponentRepositoryLib
 
 $(IntDir)/%.o:%.cpp
 	$(COMPILE.cc) $(OUTPUT_OPTION) $<
 
+# produce Executable
 LDLIBS+=$(LIBS)
 
 CC=$(CXX)
 
-all: idl lex yacc  $(IntDir)/$(ProjectName) 
+all:  $(IntDir)/$(ProjectName) 
 
 $(IntDir)/$(ProjectName) : $(IntDir)/CPPBase.o $(IntDir)/GeneratorBIDL.o $(IntDir)/GeneratorBase.o $(IntDir)/GeneratorBusinessC.o $(IntDir)/GeneratorBusinessH.o $(IntDir)/GeneratorCCD.o $(IntDir)/GeneratorEIDL.o $(IntDir)/GeneratorLIDL.o $(IntDir)/GeneratorServantC.o $(IntDir)/GeneratorServantH.o $(IntDir)/GeneratorVC7.o $(IntDir)/IDLBase.o $(IntDir)/Printer.o $(IntDir)/TestMode.o $(IntDir)/main.o 
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
@@ -33,7 +35,10 @@ $(IntDir)/IDLBase.o:	IDLBase.cpp
 $(IntDir)/Printer.o:	./Printer.cpp
 $(IntDir)/TestMode.o:	./TestMode.cpp
 $(IntDir)/main.o:	./main.cpp
-idl:  
+cidl:  
+idl:  cidl
+
+# CIDL files
 
 # IDL files
 

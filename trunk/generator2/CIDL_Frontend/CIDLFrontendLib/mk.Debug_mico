@@ -1,15 +1,18 @@
 # Configuration Debug_mico
 ProjectName=CIDLFrontendLib
+OutDir=./Debug_mico
 IntDir=./Debug_mico
 Name=Debug_mico
 CFLAGS=-I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I$(MICO)/include -I$(MICO)/include/windows -O1 -g
 CXXFLAGS=-I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I$(MICO)/include -I$(MICO)/include/windows -O1 -g
+LIBS=-L../../..//CIDL_Repository/IFRidl/./Debug_mico -lIFRidl
 
 $(IntDir)/%.o:%.cpp
 	$(COMPILE.cc) $(OUTPUT_OPTION) $<
 
+# produce Library
 
-all: idl yacc lex  Kimwitu  $(IntDir)/lib$(ProjectName).a 
+all:  yacc lex Kimwitu $(IntDir)/lib$(ProjectName).a 
 
 $(IntDir)/lib$(ProjectName).a : $(IntDir)/attributes.o $(IntDir)/cg_io.o $(IntDir)/cidl.o $(IntDir)/cidl_attributes.o $(IntDir)/debug.o $(IntDir)/error.o $(IntDir)/frontend.o $(IntDir)/getopt.o $(IntDir)/getopt1.o $(IntDir)/global.o $(IntDir)/k.o $(IntDir)/lexana.o $(IntDir)/options.o $(IntDir)/pretty.o $(IntDir)/print_idl.o $(IntDir)/printer.o $(IntDir)/repository.o $(IntDir)/resolve_symtab.o $(IntDir)/symtab.o $(IntDir)/tree.o $(IntDir)/unpk.o $(IntDir)/util.o $(IntDir)/version.o 
 	$(AR) $(ARFLAGS) $@ $^
@@ -37,7 +40,10 @@ $(IntDir)/tree.o:	./tree.cpp
 $(IntDir)/unpk.o:	./unpk.cpp
 $(IntDir)/util.o:	./util.cpp
 $(IntDir)/version.o:	./version.cpp
-idl:  
+cidl:  
+idl:  cidl
+
+# CIDL files
 
 # IDL files
 
@@ -47,13 +53,13 @@ lex:  lexana.cpp
 lexana.cpp:./lexana.l
 	$(LEX) -tw -Sflex.skel lexana.l  > lexana.cpp 
 
-yacc:  cidl.cpp cidl.h cidl.hpp cidl.output errmsg.cpp 
+yacc:   errmsg.cpp 
 
 # YACC files
-cidl.cpp cidl.h cidl.hpp cidl.output:./cidl.y
+:./cidl.y
 	env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ; cp cidl.hpp cidl.h 
 errmsg.cpp:./cidl.output
-	$(PYTHON) errmsg.py < cidl.output > errmsg.cpp 
+	"$(PYTHON)" errmsg.py < cidl.output > errmsg.cpp 
 
 
 # Kimwitu files

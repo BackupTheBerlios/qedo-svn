@@ -1,19 +1,21 @@
 # Configuration Release_orbacus
 ProjectName=CIDLGenerator
+OutDir=Release_orbacus
 IntDir=Release_orbacus
 Name=Release_orbacus
-CFLAGS=-I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I../../CIDL_Frontend/CIDLFrontendLib -I"$(ORBACUS)/include" -I"$(ORBACUS)/include/OB" -O2
-CXXFLAGS=-I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I../../CIDL_Frontend/CIDLFrontendLib -I"$(ORBACUS)/include" -I"$(ORBACUS)/include/OB" -O2
-LIBS=-L../../CIDL_Frontend/CIDLFrontendLib/$(IntDir) -L../../CIDL_Repository/IFRidl/$(IntDir) -L../../CIDL_Repository/ComponentRepositoryLib/$(IntDir) -L../../CIDL_Repository/CIDLRepositoryLib/$(IntDir) -L$(ORBACUS)/lib -lCIDLFrontendLib -lCIDLRepositoryLib -lComponentRepositoryLib -lIFRidl -lOB -lsocket -lJTC -lposix4
+CFLAGS=-DHAVE_JTC -DHAVE_JTC -I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I../../CIDL_Frontend/CIDLFrontendLib -I"$(ORBACUS)/include" -I"$(ORBACUS)/include/OB" -O2
+CXXFLAGS=-DHAVE_JTC -DHAVE_JTC -I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I../../CIDL_Frontend/CIDLFrontendLib -I"$(ORBACUS)/include" -I"$(ORBACUS)/include/OB" -O2
+LIBS=-L../../..//CIDL_Repository/ComponentRepositoryLib/Release_orbacus -L../../..//CIDL_Frontend/CIDLFrontendLib/Release_orbacus -L../../..//CIDL_Repository/CIDLRepositoryLib/Release_orbacus -L../../CIDL_Frontend/CIDLFrontendLib/$(IntDir) -L../../CIDL_Repository/IFRidl/$(IntDir) -L../../CIDL_Repository/ComponentRepositoryLib/$(IntDir) -L../../CIDL_Repository/CIDLRepositoryLib/$(IntDir) -L$(ORBACUS)/lib -lCIDLFrontendLib -lCIDLRepositoryLib -lComponentRepositoryLib -lIFRidl -lOB -lsocket -lJTC -lposix4 -lpthread -lCIDLRepositoryLib -lCIDLFrontendLib -lComponentRepositoryLib
 
 $(IntDir)/%.o:%.cpp
 	$(COMPILE.cc) $(OUTPUT_OPTION) $<
 
+# produce Executable
 LDLIBS+=$(LIBS)
 
 CC=$(CXX)
 
-all: idl lex yacc  $(QEDO)/bin/cidl_gen 
+all:  $(QEDO)/bin/cidl_gen 
 
 $(QEDO)/bin/cidl_gen : $(IntDir)/CPPBase.o $(IntDir)/GeneratorBIDL.o $(IntDir)/GeneratorBase.o $(IntDir)/GeneratorBusinessC.o $(IntDir)/GeneratorBusinessH.o $(IntDir)/GeneratorCCD.o $(IntDir)/GeneratorEIDL.o $(IntDir)/GeneratorLIDL.o $(IntDir)/GeneratorServantC.o $(IntDir)/GeneratorServantH.o $(IntDir)/GeneratorVC7.o $(IntDir)/IDLBase.o $(IntDir)/Printer.o $(IntDir)/TestMode.o $(IntDir)/main.o 
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
@@ -33,7 +35,10 @@ $(IntDir)/IDLBase.o:	IDLBase.cpp
 $(IntDir)/Printer.o:	./Printer.cpp
 $(IntDir)/TestMode.o:	./TestMode.cpp
 $(IntDir)/main.o:	./main.cpp
-idl:  
+cidl:  
+idl:  cidl
+
+# CIDL files
 
 # IDL files
 

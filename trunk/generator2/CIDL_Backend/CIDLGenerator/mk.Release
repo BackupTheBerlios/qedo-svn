@@ -1,19 +1,21 @@
 # Configuration Release
 ProjectName=CIDLGenerator
+OutDir=./Release
 IntDir=./Release
 Name=Release
 CFLAGS=-I -O1
 CXXFLAGS=-I -O1
-LIBS=-L../../CIDL_Frontend/CIDLFrontendLib/$(IntDir) -L../../CIDL_Repository/IFRidl/$(IntDir) -L../../CIDL_Repository/ComponentRepositoryLib/$(IntDir) -L../../CIDL_Repository/CIDLRepositoryLib/$(IntDir)
+LIBS=-L../../..//CIDL_Repository/ComponentRepositoryLib/./Release -L../../..//CIDL_Frontend/CIDLFrontendLib/./Release -L../../..//CIDL_Repository/CIDLRepositoryLib/./Release -L../../CIDL_Frontend/CIDLFrontendLib/$(IntDir) -L../../CIDL_Repository/IFRidl/$(IntDir) -L../../CIDL_Repository/ComponentRepositoryLib/$(IntDir) -L../../CIDL_Repository/CIDLRepositoryLib/$(IntDir) -lCIDLRepositoryLib -lCIDLFrontendLib -lComponentRepositoryLib
 
 $(IntDir)/%.o:%.cpp
 	$(COMPILE.cc) $(OUTPUT_OPTION) $<
 
+# produce Executable
 LDLIBS+=$(LIBS)
 
 CC=$(CXX)
 
-all: idl lex yacc  $(QEDO)/bin/cidl_gen 
+all:  $(QEDO)/bin/cidl_gen 
 
 $(QEDO)/bin/cidl_gen : $(IntDir)/CPPBase.o $(IntDir)/GeneratorBIDL.o $(IntDir)/GeneratorBase.o $(IntDir)/GeneratorBusinessC.o $(IntDir)/GeneratorBusinessH.o $(IntDir)/GeneratorCCD.o $(IntDir)/GeneratorEIDL.o $(IntDir)/GeneratorLIDL.o $(IntDir)/GeneratorServantC.o $(IntDir)/GeneratorServantH.o $(IntDir)/GeneratorVC7.o $(IntDir)/IDLBase.o $(IntDir)/Printer.o $(IntDir)/TestMode.o $(IntDir)/main.o 
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
@@ -33,7 +35,10 @@ $(IntDir)/IDLBase.o:	IDLBase.cpp
 $(IntDir)/Printer.o:	./Printer.cpp
 $(IntDir)/TestMode.o:	./TestMode.cpp
 $(IntDir)/main.o:	./main.cpp
-idl:  
+cidl:  
+idl:  cidl
+
+# CIDL files
 
 # IDL files
 

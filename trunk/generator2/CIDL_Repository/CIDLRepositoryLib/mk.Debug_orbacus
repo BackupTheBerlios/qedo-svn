@@ -1,15 +1,18 @@
 # Configuration Debug_orbacus
 ProjectName=CIDLRepositoryLib
+OutDir=./Debug_orbacus
 IntDir=./Debug_orbacus
 Name=Debug_orbacus
 CFLAGS=-I../IFRidl -I../ComponentRepositoryLib -I"$(ORBACUS)/include" -I"$(ORBACUS)/include/OB" -g
 CXXFLAGS=-I../IFRidl -I../ComponentRepositoryLib -I"$(ORBACUS)/include" -I"$(ORBACUS)/include/OB" -g
+LIBS=-L../..//ComponentRepositoryLib/./Debug_orbacus -lComponentRepositoryLib
 
 $(IntDir)/%.o:%.cpp
 	$(COMPILE.cc) $(OUTPUT_OPTION) $<
 
+# produce Library
 
-all: idl yacc lex  $(IntDir)/lib$(ProjectName).a 
+all:  $(IntDir)/lib$(ProjectName).a 
 
 $(IntDir)/lib$(ProjectName).a : $(IntDir)/CIDLRepository_impl.o $(IntDir)/CompositionDef_impl.o $(IntDir)/ExecutorDef_impl.o $(IntDir)/HomeExecutorDef_impl.o $(IntDir)/SegmentDef_impl.o 
 	$(AR) $(ARFLAGS) $@ $^
@@ -19,7 +22,10 @@ $(IntDir)/CompositionDef_impl.o:	./CompositionDef_impl.cpp
 $(IntDir)/ExecutorDef_impl.o:	./ExecutorDef_impl.cpp
 $(IntDir)/HomeExecutorDef_impl.o:	./HomeExecutorDef_impl.cpp
 $(IntDir)/SegmentDef_impl.o:	./SegmentDef_impl.cpp
-idl:  
+cidl:  
+idl:  cidl
+
+# CIDL files
 
 # IDL files
 

@@ -1,15 +1,18 @@
 # Configuration Debug_tao
 ProjectName=ComponentRepositoryLib
+OutDir=./Debug_tao
 IntDir=./Debug_tao
 Name=Debug_tao
 CFLAGS=-I. -I../IFRidl -I$(TAO)/TAO -I$(TAO)/TAO/tao -I$(TAO) -I$(TAO)/TAO/tao/DynamicAny -g
 CXXFLAGS=-I. -I../IFRidl -I$(TAO)/TAO -I$(TAO)/TAO/tao -I$(TAO) -I$(TAO)/TAO/tao/DynamicAny -g
+LIBS=-L../..//IFRidl/./Debug_tao -lIFRidl
 
 $(IntDir)/%.o:%.cpp
 	$(COMPILE.cc) $(OUTPUT_OPTION) $<
 
+# produce Library
 
-all: idl yacc lex  $(IntDir)/lib$(ProjectName).a 
+all:  $(IntDir)/lib$(ProjectName).a 
 
 $(IntDir)/lib$(ProjectName).a : $(IntDir)/AliasDef_impl.o $(IntDir)/Anonymous.o $(IntDir)/AttributeDef_impl.o $(IntDir)/ComponentDef_impl.o $(IntDir)/ComponentRepository_impl.o $(IntDir)/ConstantDef_impl.o $(IntDir)/ConsumesDef_impl.o $(IntDir)/Contained_impl.o $(IntDir)/Container_impl.o $(IntDir)/EmitsDef_impl.o $(IntDir)/EnumDef_impl.o $(IntDir)/EventDef_impl.o $(IntDir)/EventPortDef_impl.o $(IntDir)/ExceptionDef_impl.o $(IntDir)/FactoryDef_impl.o $(IntDir)/FinderDef_impl.o $(IntDir)/HomeDef_impl.o $(IntDir)/IDLType_impl.o $(IntDir)/IRObject_impl.o $(IntDir)/InterfaceDef_impl.o $(IntDir)/ModuleDef_impl.o $(IntDir)/NativeDef_impl.o $(IntDir)/OperationDef_impl.o $(IntDir)/PrimaryKeyDef_impl.o $(IntDir)/PrimitiveDef_impl.o $(IntDir)/ProvidesDef_impl.o $(IntDir)/PublishesDef_impl.o $(IntDir)/Repository_impl.o $(IntDir)/SiSoDef_impl.o $(IntDir)/Sink.o $(IntDir)/SourceDef_impl.o $(IntDir)/StreamPortDef_impl.o $(IntDir)/StreamTypeDef_impl.o $(IntDir)/StructDef_impl.o $(IntDir)/TypedefDef_impl.o $(IntDir)/UnionDef_impl.o $(IntDir)/UsesDef_impl.o $(IntDir)/ValueDef_impl.o $(IntDir)/ValueMemberDef_impl.o 
 	$(AR) $(ARFLAGS) $@ $^
@@ -53,7 +56,10 @@ $(IntDir)/UnionDef_impl.o:	./UnionDef_impl.cpp
 $(IntDir)/UsesDef_impl.o:	./UsesDef_impl.cpp
 $(IntDir)/ValueDef_impl.o:	./ValueDef_impl.cpp
 $(IntDir)/ValueMemberDef_impl.o:	./ValueMemberDef_impl.cpp
-idl:  
+cidl:  
+idl:  cidl
+
+# CIDL files
 
 # IDL files
 
