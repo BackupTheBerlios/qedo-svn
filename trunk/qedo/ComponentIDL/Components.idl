@@ -30,6 +30,7 @@
 #include "CORBADepends.idl"
 #endif
 
+
 #pragma prefix "omg.org"
 
 
@@ -194,12 +195,15 @@ module Components {
 	};
 
 	interface CCMObject;
-	
+
+	typedef sequence<CCMObject> CCMObjects; // extension !!!
+
 	interface CCMHome {
 		CORBA::IRObject get_component_def ();
 		CORBA::IRObject get_home_def ();
 		void remove_component ( in CCMObject comp)
 			raises ( RemoveFailure );
+		CCMObjects get_instances (); // extension !!!
 	};
 
 	interface KeylessCCMHome {

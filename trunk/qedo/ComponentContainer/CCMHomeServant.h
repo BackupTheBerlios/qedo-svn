@@ -32,7 +32,7 @@
 namespace Qedo {
 
 class CONTAINERDLL_API CCMHomeServant : public virtual HomeServantBase,
-										public virtual POA_Qedo_Components::CCMHome
+										public virtual POA_Components::CCMHome
 {
 public:
 	CCMHomeServant();
@@ -61,7 +61,7 @@ public:
 	//
     // IDL:omg.org/Qedo_Components/CCMHome/get_instances:1.0
     //
-	Qedo_Components::CCMObjects* get_instances();
+	Components::CCMObjects* get_instances();
 };
 
 } //namespace Qedo

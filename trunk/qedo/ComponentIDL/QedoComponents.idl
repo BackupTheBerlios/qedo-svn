@@ -24,29 +24,23 @@
 
 #include "Components.idl"
 
+
 module Qedo_Components {
 
-typedef sequence<Components::CCMObject> CCMObjects;
+	module Deployment {
 
-interface CCMHome : Components::CCMHome
-{
-	CCMObjects get_instances ();
-};
+		interface ServerActivator : Components::Deployment::ServerActivator
+		{
+			void notify_component_server (in Components::Deployment::ComponentServer server);
+		};
 
-module Deployment {
+		interface ComponentInstallation : Components::Deployment::ComponentInstallation
+		{
+			string upload(in Components::Deployment::UUID implUUID, in CORBA::OctetSeq package)
+				raises(Components::Deployment::InstallationFailure);
+		};
 
-interface ServerActivator : Components::Deployment::ServerActivator
-{
-	void notify_component_server (in Components::Deployment::ComponentServer server);
-};
-
-interface ComponentInstallation : Components::Deployment::ComponentInstallation
-{
-	string upload(in Components::Deployment::UUID implUUID, in CORBA::OctetSeq package)
-		raises(Components::Deployment::InstallationFailure);
-};
-
-};
+	};
 
 };
 
