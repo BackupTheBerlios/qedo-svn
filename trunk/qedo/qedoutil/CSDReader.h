@@ -214,6 +214,12 @@ public:
 	CSDReader();
 
 	/**
+	 * constructor
+	 * constructs a new implementation
+	 */
+	CSDReader(std::string package, std::string path);
+
+	/**
 	 * denstructor
 	 */
 	~CSDReader();
@@ -222,6 +228,12 @@ public:
 	 * read Component Software Descriptor
 	 */
 	void readCSD(std::string package, ComponentImplementationData* data, std::string path)
+		throw(CSDReadException);
+
+	/**
+	 * get ccd for the impl_id
+	 */
+	std::string getCCD(std::string id)
 		throw(CSDReadException);
 };
 

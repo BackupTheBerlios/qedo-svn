@@ -21,20 +21,23 @@
 /***************************************************************************/
 
 #include "CCDReader.h"
+#include "Output.h"
 #include <fstream>
 #include <xercesc/util/XMLURL.hpp>
 #include <xercesc/framework/URLInputSource.hpp>
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.5 2003/11/04 15:23:27 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.6 2003/11/05 14:39:01 neubauer Exp $";
 
 
 namespace Qedo {
 
 
-CCDReader::CCDReader()
+CCDReader::CCDReader(std::string descriptor, std::string path)
 {
+	descriptor_ = descriptor;
+	path_ = path;
 }
 
 
@@ -90,6 +93,14 @@ throw(CCDReadException)
 			else if (!XMLString::compareString(child->getNodeName(), X("unclassified")))
 			{
 				unclassified( (DOMElement*)child );
+			}
+
+			//
+			// containerextension
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("containerextension")))
+			{
+				containerextension( (DOMElement*)child );
 			}
 		}
 
@@ -310,21 +321,28 @@ throw(CCDReadException)
 
 
 void 
-CCDReader::readCCD(std::string descriptor, ComponentImplementationData* data, Package* package, std::string path)
+CCDReader::containerextension (DOMElement* element)
+throw(CCDReadException)
+{
+	data_->kind = "EXTENSION";
+}
+
+
+void 
+CCDReader::readCCD(CompositionData* data, Package* package)
 throw(CCDReadException)
 {
 	data_ = data;
 	package_ = package;
-	path_ = path;
 
 	//
 	// parse the corba component descriptor file
     //
 	DOMXMLParser parser;
-	char* xmlfile = strdup(descriptor.c_str());
+	char* xmlfile = strdup(descriptor_.c_str());
     if ( parser.parse( xmlfile ) != 0 ) 
 	{
-		std::cerr << "Error during XML parsing" << std::endl;
+		NORMAL_ERR( "CCDReader: error during XML parsing" );
         throw CCDReadException();
 	}
 	ccd_document_ = parser.getDocument();

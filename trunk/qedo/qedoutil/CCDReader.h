@@ -64,12 +64,14 @@ class QEDOUTIL_API CCDReader : public virtual PlatformBase
 
 private:
 
-	/** the component implementation */
-	ComponentImplementationData*			data_;
+	/** the composition data */
+	CompositionData*						data_;
 	/** the parsed CORBA component descriptor */
     DOMDocument*							ccd_document_;
 	/** the package */
 	Package*								package_;
+	/** the descriptor file */
+	std::string								descriptor_;
 	/** the path to drop files */
 	std::string								path_;
     
@@ -77,6 +79,12 @@ private:
 	 * componentkind
 	 */
     void componentkind (DOMElement*)
+        throw(CCDReadException);
+
+	/**
+	 * containerextension
+	 */
+    void containerextension (DOMElement*)
         throw(CCDReadException);
 
     /**
@@ -163,7 +171,7 @@ public:
 	 * constructor
 	 * constructs a new implementation
 	 */
-	CCDReader();
+	CCDReader(std::string descriptor, std::string path);
 
 	/**
 	 * denstructor
@@ -173,7 +181,7 @@ public:
 	/**
 	 * read CORBA Component Descriptor
 	 */
-	void readCCD(std::string descriptor, ComponentImplementationData* data, Package* package, std::string path)
+	void readCCD(CompositionData* data, Package* package)
 		throw(CCDReadException);
 };
 

@@ -27,6 +27,7 @@
 #include "CORBA.h"
 #include "Components.h"
 #include "qedoutil.h"
+#include "CompositionData.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -68,8 +69,6 @@ struct HomeInstanceData
 	std::string									file;
 	/** implementation id */
 	std::string									impl_id;
-	/** component kind */
-	std::string									kind;
 	/** destination */
 	std::string									dest;
 	/** registration with homefinder */
@@ -86,6 +85,8 @@ struct HomeInstanceData
 	std::vector < ComponentInstanceData >		instances;
 	/** container of the home */
 	Components::Deployment::Container_var		container;
+	/** component data */
+	CompositionData								component;
 };
 
 

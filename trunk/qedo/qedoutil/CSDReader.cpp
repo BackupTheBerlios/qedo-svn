@@ -29,7 +29,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.8 2003/10/23 09:55:38 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.9 2003/11/05 14:39:01 neubauer Exp $";
 
 
 namespace Qedo {
@@ -37,6 +37,13 @@ namespace Qedo {
 
 CSDReader::CSDReader()
 {
+}
+
+
+CSDReader::CSDReader( std::string package, std::string path )
+{
+	package_ = new Package(package);
+	path_ = path;
 }
 
 
@@ -768,8 +775,8 @@ throw(CSDReadException)
 	//
 	// parse the corba component descriptor file
     //
-	CCDReader reader;
-	reader.readCCD( path_ + ccd_file_, data_, package_, path_ );
+	CCDReader reader( path_ + ccd_file_, path_ );
+	reader.readCCD( &(data_->component), package_ );
 }
 
 
@@ -892,6 +899,110 @@ throw(CSDReadException)
 	delete package_;
 }
 
+
+std::string 
+CSDReader::getCCD(std::string id)
+throw(CSDReadException)
+{
+	//
+	// find and extract the software package descriptor
+	//
+    std::string csdfile_name = package_->getFileNameWithSuffix( ".csd" );
+	std::string csdfile = path_ + getFileName( csdfile_name );
+    if ( csdfile_name == std::string( "" ) )
+	{
+		NORMAL_ERR( "CSDReader: missing a csd file!" );
+        throw CSDReadException();
+	}
+    if (package_->extractFile(csdfile_name, csdfile) != 0)
+	{
+		NORMAL_ERR2( "CSDReader: error during extracting the descriptor file", csdfile_name );
+		throw CSDReadException();
+	}
+
+	//
+	// parse the software package descriptor file
+    //
+	DOMXMLParser parser;
+	char* xmlfile = strdup(csdfile.c_str());
+    if ( parser.parse( xmlfile ) != 0 ) 
+	{
+		NORMAL_ERR2( "CSDReader: error during parsing ", csdfile );
+        throw CSDReadException();
+	}
+	
+	csd_document_ = parser.getDocument();
+	DOMElement* element = csd_document_->getDocumentElement();
+	DOMNodeList* nodeList;
+	DOMNodeList* nodeList2;
+	DOMElement* elem;
+	unsigned int len = 0;
+	unsigned int len2 = 0;
+	unsigned int i = 0;
+	unsigned int i2 = 0;
+
+    //
+	// implementation
+	//
+	nodeList = element->getElementsByTagName(X("implementation"));
+	len = nodeList->getLength();
+	bool impl_found = false;
+    for( i = 0; i < len; ++i )
+    {
+		elem = (DOMElement*)(nodeList->item(i));
+		if (!XMLString::compareString(elem->getAttribute(X("id")), X(id.c_str())))
+		{
+			impl_found = true;
+
+			//
+			// search for descriptor
+			//
+			nodeList2 = elem->getElementsByTagName(X("descriptor"));
+			len2 = nodeList2->getLength();
+			if(len2 == 1)
+			{
+				ccd_file_ = descriptor((DOMElement*)(nodeList2->item(0)));
+			}
+			else if(len > 1)
+			{
+				ccd_file_ = descriptor((DOMElement*)(nodeList2->item(0)));
+				NORMAL_ERR( "CSDReader: multiple descriptors" );
+			}
+
+			break;
+		}
+    }
+	if( !impl_found )
+	{
+		NORMAL_ERR3( "CSDReader: implementation for ", id, " missing!" );
+		throw CSDReadException();
+	}
+
+    //
+	// corba component descriptor
+	//
+    if( ccd_file_.empty() )
+    {
+		nodeList = element->getElementsByTagName(X("descriptor"));
+		len = nodeList->getLength();
+		if(len == 1)
+		{
+			ccd_file_ = descriptor((DOMElement*)(nodeList->item(0)));
+		}
+		else if(len > 1)
+		{
+			NORMAL_ERR( "CSDReader: multiple descriptor elements!" );
+		}
+
+		if (ccd_file_.empty())
+        {
+			NORMAL_ERR2( "CSDReader: missing component descriptor for ", id );
+	        throw CSDReadException();
+        }
+    }
+
+	return path_ + ccd_file_;
+}
 
 }
 

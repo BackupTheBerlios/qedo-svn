@@ -21,6 +21,8 @@
 /***************************************************************************/
 
 #include "CADReader.h"
+#include "CSDReader.h"
+#include "CCDReader.h"
 #include "Output.h"
 #include <xercesc/util/XMLURL.hpp>
 #include <xercesc/framework/URLInputSource.hpp>
@@ -953,6 +955,54 @@ throw(CADReadException)
 
         // get next child
 	    child = child->getNextSibling();
+	}
+
+	//
+	// read ccd for the requested component
+	//
+	Package archive = Package( data.file );
+    std::string csdfile = archive.getFileNameWithSuffix( ".cad" );
+	std::string ccdfile;
+    if( 0 ) //!csdfile.empty() )
+	{
+		// todo extension
+	}
+	else
+	{
+		csdfile = archive.getFileNameWithSuffix( ".csd" );
+
+		//
+		// get ccd from the software package
+		//
+		CSDReader csd_reader( data.file, path_ );
+		try 
+		{
+			ccdfile = csd_reader.getCCD( data.impl_id );
+		}
+		catch( CSDReadException ) 
+		{
+			NORMAL_ERR2( "CADReader: error during reading .csd file ", data.file );
+			throw Components::CreateFailure();
+		}
+
+		//
+		// read ccd
+		//
+		if( ccdfile.empty() )
+		{
+			NORMAL_ERR2( "CADReader: no .ccd file for ", data.impl_id );
+			throw Components::CreateFailure();
+		}
+		CCDReader ccd_reader( ccdfile, path_ );
+		try 
+		{
+			ccd_reader.readCCD( &data.component, &archive );
+		}
+		catch( CSDReadException ) 
+		{
+			NORMAL_ERR2( "CADReader: error during reading .ccd file ", ccdfile );
+			throw Components::CreateFailure();
+		}
 	}
 
 	return data;

@@ -20,13 +20,11 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __COMPONENT_IMPLEMENTATION_DATA_H__
-#define __COMPONENT_IMPLEMENTATION_DATA_H__
+#ifndef __COMPOSITION_DATA_H__
+#define __COMPOSITION_DATA_H__
 
 
 #include <string>
-#include <vector>
-#include "AssemblyData.h"
 
 
 namespace Qedo {
@@ -39,85 +37,19 @@ namespace Qedo {
 
 
 /**
- * file location
+ * the component data
  */
-struct LocationData
+struct CompositionData
 {
-	/** the uri of the file */
-	std::string								uri;
-	/** the path of the file */
-	std::string								file;
-};
-
-
-/**
- * kind of the idl source
- */
-enum IDLKind { LINK, FILEINARCHIVE, REPOSITORY };
-/**
- * the idl info
- */
-struct IDLData
-{
-	/** kind if idl info */
-	IDLKind									kind;
-	/** location of idl file */
-	LocationData							location;
-};
-
-
-/**
- * the valuetype info
- */
-struct ValuetypeData
-{
-	/** the repository id of the valuetype */
-	std::string									repid;
-	/** the location of the implementation file */
-	LocationData								location;
-};
-
-
-/**
- * the component implementation data
- */
-struct ComponentImplementationData
-{
-	/** the uuid of the component implementation */
-	std::string									uuid;
-	/** the location of the idl spec */
-	IDLData										idl;
+	/** the component kind */
+	std::string									kind;
 	/** the RepId of the component */
 	std::string									repid;
-	/** the servant module */
-	std::string									servant_module;
-	/** the entry point for the servant module */
-	std::string									servant_entry_point;
-	/** the executor module */
-	std::string									executor_module;
-	/** the entry point for the executor module */
-	std::string									executor_entry_point;
 	/** the RepId of the home */
 	std::string									home_repid;
 	/** the name of the home */
 	std::string									home_name;
-	/** list of installed artifacts */
-	std::vector < std::string >					artifacts;
-	/** list of required valuetype factories */
-	std::vector < ValuetypeData >				valuetypes;
-	/** in case the component is a composition */
-	AssemblyData								assembly;
-	/** the csd file */
-	std::string									csd;
-	/** the installation directory */
-	std::string									installation_dir;
-	/** component data */
-	CompositionData								component;
 };
-
-/** Export template class */
-//QEDOUTIL_EXTERN template class QEDOUTIL_API std::vector < ComponentImplementationData >;
-typedef std::vector < ComponentImplementationData > ComponentImplementationDataVector;
 
 
 /** @} */
