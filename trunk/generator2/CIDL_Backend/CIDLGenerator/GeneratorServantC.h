@@ -87,7 +87,7 @@ private:
 	void genSourceServants(IR__::ComponentDef_ptr component);
 	void genConsumerServants(IR__::ComponentDef_ptr component);
 	void genContextServantBegin(IR__::ComponentDef_ptr component);
-	void genContextServant(IR__::ComponentDef_ptr component);
+	void genContextServant(IR__::ComponentDef_ptr component,CIDL::LifecycleCategory lc );
 
 	void genProxyStubServantBegin(IR__::ComponentDef_ptr component);
 	void genProxyStubServant(IR__::ComponentDef_ptr component);
@@ -108,7 +108,7 @@ private:
 	void genSourceRegistration(IR__::ComponentDef_ptr comp);
 	void gen_supported_home_interface(IR__::InterfaceDef_ptr interf);
 
-	void generate_component(IR__::ComponentDef* a_component );
+	void generate_component(IR__::ComponentDef* a_component,CIDL::LifecycleCategory lc );
 
 	// for persistence
 	void genTableForAbsStorageHome();

@@ -356,7 +356,9 @@ GeneratorServantH::generate_component(IR__::ComponentDef* a_component, CIDL::Lif
 	open_module(out, a_component, "SERVANT_");
 	out << "\n\n";
 
-	genProxyStubServant(a_component, lc);
+	if (lc != CIDL::lc_Extension) {
+		genProxyStubServant(a_component, lc);
+	}
 	genContextServant(a_component, lc);
 	genComponentServant(a_component, lc);
 

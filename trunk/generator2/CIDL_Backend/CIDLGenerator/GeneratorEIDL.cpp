@@ -113,6 +113,11 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 		{
 			return;
 		}
+		if (!id.compare("IDL:omg.org/Components/Extension:1.0") ||
+		    !id.compare("IDL:Components/Extension:1.0"))
+		{
+			return;
+		}
 		if (!id.compare("IDL:omg.org/CORBA:1.0") ||
 		    !id.compare("IDL:CORBA:1.0"))
 		{

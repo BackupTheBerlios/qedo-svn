@@ -1046,12 +1046,12 @@ GeneratorServantC::doComposition (CIDL::CompositionDef_ptr composition)
 
 	close_module(out, component_);
 */
-	this -> generate_component(component_);
+	this -> generate_component(component_, lc);
 }
 
 
 void 
-GeneratorServantC::generate_component(IR__::ComponentDef* a_component) {
+GeneratorServantC::generate_component(IR__::ComponentDef* a_component, CIDL::LifecycleCategory lc) {
 /*
 	// base component
 	IR__::ComponentDef_var base_component = a_component->base_component();
@@ -1069,11 +1069,14 @@ GeneratorServantC::generate_component(IR__::ComponentDef* a_component) {
 	genSourceServants(component_);
 	genConsumerServants(component_);
 	genContextServantBegin(component_);
-	genContextServant(component_);
+	genContextServant(component_, lc);
 	genComponentServantBegin(component_);
 	genComponentServant(component_);
 
-	genProxyStubServantBegin(component_);
+	if (lc != CIDL::lc_Extension) 
+	{
+		genProxyStubServantBegin(component_);
+	};
 	close_module(out, component_);
 }
 
@@ -1881,7 +1884,7 @@ GeneratorServantC::proxyOperation(IR__::UsesDef_ptr uses, IR__::OperationDef_ptr
 }
 
 void
-GeneratorServantC::genContextServantBegin(IR__::ComponentDef_ptr component)
+GeneratorServantC::genContextServantBegin(IR__::ComponentDef_ptr component )
 {
 	class_name_ = string(component->name()) + "_Context_callback";
 
@@ -1945,13 +1948,13 @@ GeneratorServantC::genContextServantBegin(IR__::ComponentDef_ptr component)
 
 
 void
-GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
+GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc )
 {
 	// handle base component
 	IR__::ComponentDef_var base = component->base_component();
 	if(!CORBA::is_nil(base))
 	{ 
-		genContextServant(base);
+		genContextServant(base, lc);
 	}
 
 	// uses ports
@@ -2007,32 +2010,36 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 			out.unindent();
 			out << "}\n\n";
 
-			out.unindent();
-			out.unindent();
-			out << "#ifndef _QEDO_NO_QOS\n";
-			out.indent();
-			out.indent();
-			out << mapFullNameServant(component) + "_" + a_uses->name() + "_stub* new_stub =\n";
-			out.indent();
-			out << "new " << mapFullNameServant(component) + "_" + a_uses->name() + "_stub ( \n";
-			out.indent();
-			if( interface_name.compare( "CORBA::Object" ) == 0 )
+			// do not generate stub interceptors for extensions
+			if (lc != CIDL::lc_Extension)
 			{
-				out << "(*connections)[0]->objref();\n\n";
+				out.unindent();
+				out.unindent();
+				out << "#ifndef _QEDO_NO_QOS\n";
+				out.indent();
+				out.indent();
+				out << mapFullNameServant(component) + "_" + a_uses->name() + "_stub* new_stub =\n";
+				out.indent();
+				out << "new " << mapFullNameServant(component) + "_" + a_uses->name() + "_stub ( \n";
+				out.indent();
+				if( interface_name.compare( "CORBA::Object" ) == 0 )
+				{
+					out << "(*connections)[0]->objref();\n\n";
+				}
+				else 
+				{
+					out << interface_name << "::_narrow ((*connections)[0]->objref())\n";
+				}
+				out << ", Components::Extension::StubInterceptorRegistration::_duplicate(stub_registration_));\n";
+				out.unindent();
+				out.unindent();
+				out << interface_name << "_var use = new_stub;";
+				out.unindent();
+				out.unindent();
+				out << "\n#else\n\n";
+				out.indent(); 
+				out.indent();
 			}
-			else 
-			{
-				out << interface_name << "::_narrow ((*connections)[0]->objref())\n";
-			}
-			out << ", Components::Extension::StubInterceptorRegistration::_duplicate(stub_registration_));\n";
-			out.unindent();
-			out.unindent();
-			out << interface_name << "_var use = new_stub;";
-			out.unindent();
-			out.unindent();
-			out << "\n#else\n\n";
-			out.indent(); 
-			out.indent();
 			out << interface_name << "_var use = ";
 			if( interface_name.compare( "CORBA::Object" ) == 0 )
 			{
@@ -2043,11 +2050,14 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 				out << interface_name << "::_narrow ((*connections)[0]->objref());\n\n";
 			}
 
-			out.unindent();
-			out.unindent();
-			out << "#endif //_QEDO_NO_QOS\n\n";
-			out.indent();
-			out.indent();
+			if (lc != CIDL::lc_Extension)
+			{
+				out.unindent();
+				out.unindent();
+				out << "#endif //_QEDO_NO_QOS\n\n";
+				out.indent();
+				out.indent();
+			};
 			out << "return use._retn();\n";
 			out.unindent();
 			out << "}\n\n\n";
