@@ -30,7 +30,7 @@
 #include <cstring>
 
 
-static char rcsid[] UNUSED = "$Id: CDRTransportCodec.cpp,v 1.3 2004/01/20 12:52:41 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: CDRTransportCoDec.cpp,v 1.1 2004/01/22 12:22:42 tom Exp $";
 
 namespace Qedo {
 
