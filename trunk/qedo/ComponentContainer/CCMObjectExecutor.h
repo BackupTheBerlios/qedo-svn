@@ -59,6 +59,11 @@ class CONTAINERDLL_API CCMObjectExecutor : public RefCountBase
 	/** needs access to home_servant_ */
 	friend class InternalConfiguration;
 
+#ifndef _QEDO_NO_QOS
+
+	friend class ServerInterceptorDispatcher;
+#endif
+
 private:
 	/** list of facets */
 	FacetVector						facets_;
