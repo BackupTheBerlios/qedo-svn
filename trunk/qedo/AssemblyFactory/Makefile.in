@@ -1,7 +1,7 @@
 include ../MakeVars
 
 CXX = @CXX@
-CPPFLAGS+=-I. -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller @CPPFLAGS@ 
+CPPFLAGS+=-I. -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller -I@XERCESDIR@/include @CPPFLAGS@ 
 CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS+=@LIBS@
