@@ -54,7 +54,7 @@ SOURCES = Key.cpp \
 		CCMHomeServant.cpp \
 		PrimaryStreamServant.cpp \
 		MarshalBuffer.cpp \
-		CDRTransportCodec.cpp \
+		CDRTransportCoDec.cpp \
 		SinkPort.cpp \
 		SinkStreamPortServant.cpp \
 		SourcePort.cpp \

@@ -28,7 +28,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: MarshalBuffer.cpp,v 1.1 2004/01/20 12:53:44 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: MarshalBuffer.cpp,v 1.2 2004/01/22 12:45:13 tom Exp $";
 
 
 namespace Qedo {
