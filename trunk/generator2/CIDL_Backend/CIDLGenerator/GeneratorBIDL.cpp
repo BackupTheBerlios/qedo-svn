@@ -96,7 +96,7 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// local interface for each segment
 	//
-	CIDL::SegmentDefSeq_var segment_seq = composition->executor()->segments();
+	CIDL::SegmentDefSeq_var segment_seq = composition->executor_def()->segments();
 	CORBA::ULong len = segment_seq->length();
 	for (i = 0; i < len; i++)
 	{
@@ -126,8 +126,8 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	// local interface for the executor
 	//
 	facet_types.clear();
-	out << "//\n// " << composition->executor()->id() << "\n//\n";
-	out << "local interface CCM_" << composition->executor()->name() << " : ";
+	out << "//\n// " << composition->executor_def()->id() << "\n//\n";
+	out << "local interface CCM_" << composition->executor_def()->name() << " : ";
 	out << mapLocalName(composition->ccm_component()) << "_Executor";
 	
 

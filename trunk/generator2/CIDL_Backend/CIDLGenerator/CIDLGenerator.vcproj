@@ -266,6 +266,7 @@ copy cidl_gen.exe $(QEDO)\bin
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib OBD.lib JTCD.lib odbc32.lib odbccp32.lib"
+				OutputFile="cidl_gend.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;;&quot;$(ORBACUS)\lib&quot;"
@@ -278,7 +279,7 @@ copy cidl_gen.exe $(QEDO)\bin
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
 				CommandLine="md &quot;%QEDO%\bin&quot;
-copy cidl_gen.exe &quot;%QEDO%\bin&quot;
+copy cidl_gend.exe &quot;%QEDO%\bin&quot;
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -330,8 +331,7 @@ copy cidl_gen.exe &quot;%QEDO%\bin&quot;
 				Name="VCMIDLTool"
 				TypeLibraryName=".\Debug_orbacus/CIDLGenerator.tlb"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Copying CIDL generator executable"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

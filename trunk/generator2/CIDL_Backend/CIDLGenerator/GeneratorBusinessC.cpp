@@ -293,7 +293,7 @@ GeneratorBusinessC::doComponent(IR__::ComponentDef_ptr component)
 		bool realized_by_segment = false;
 
 		// exclude facets realized by a segment
-		CIDL::SegmentDefSeq_var segment_seq = composition_->executor()->segments();
+		CIDL::SegmentDefSeq_var segment_seq = composition_->executor_def()->segments();
 		for (CORBA::ULong ii = 0; ii < segment_seq->length(); ii++)
 		{
 			// for each implemented facet
@@ -362,7 +362,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	CORBA::ULong i;
 	composition_ = CIDL::CompositionDef::_duplicate(composition);
 	filename_ = "";
-	CIDL::SegmentDefSeq_var segment_seq = composition->executor()->segments();
+	CIDL::SegmentDefSeq_var segment_seq = composition->executor_def()->segments();
 
 	
 	string id = composition->id();
@@ -403,7 +403,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// executor
 	//
-	class_name_ = mapName(composition->executor());
+	class_name_ = mapName(composition->executor_def());
 	out.insertUserSection(class_name_, 2);
 
 	// constructor
@@ -496,7 +496,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	// constructor
 	out << class_name_ << "::" << class_name_ << "()\n";
 	out.indent();
-	out << ": component_(new " << mapName(composition->executor()) << "())\n";
+	out << ": component_(new " << mapName(composition->executor_def()) << "())\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
 		out << ", " << segment_seq[i]->name() << "_(new " << mapName(segment_seq[i]) << "())\n";
 	}

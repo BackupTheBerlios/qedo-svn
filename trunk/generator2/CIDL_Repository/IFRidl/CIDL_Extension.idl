@@ -62,7 +62,7 @@ module CIDL {
 		readonly attribute IR__::ComponentDef ccm_component;
 		readonly attribute LifecycleCategory lifecycle;
 		readonly attribute HomeExecutorDef home_executor;
-		readonly attribute ExecutorDef executor;
+		readonly attribute ExecutorDef executor_def;
 
 		HomeExecutorDef create_home_executor (
 			in IR__::RepositoryId id,
@@ -83,7 +83,7 @@ module CIDL {
 		IR__::VersionSpec version;
 		LifecycleCategory lifecycle;
 		HomeExecutorDef home_executor;
-		ExecutorDef executor;
+		ExecutorDef executor_def;
 	};
 
 	interface SegmentDef : IR__::Contained

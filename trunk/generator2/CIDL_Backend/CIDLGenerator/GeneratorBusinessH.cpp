@@ -258,7 +258,7 @@ GeneratorBusinessH::doComponent(IR__::ComponentDef_ptr component)
 		bool realized_by_segment = false;
 
 		// exclude facets realized by a segment
-		CIDL::SegmentDefSeq_var segment_seq = composition_->executor()->segments();
+		CIDL::SegmentDefSeq_var segment_seq = composition_->executor_def()->segments();
 		for (CORBA::ULong i = 0; i < segment_seq->length(); i++)
 		{
 			// for each implemented facet
@@ -438,8 +438,8 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	}
 
 
-	CIDL::SegmentDefSeq_var segment_seq = composition->executor()->segments();
-	std::string executor_name = composition->executor()->name();
+	CIDL::SegmentDefSeq_var segment_seq = composition->executor_def()->segments();
+	std::string executor_name = composition->executor_def()->name();
 	std::string executor_class_name = mapName(executor_name);
 	std::string executor_locator_name = composition->name();
 	std::string executor_locator_class_name = mapName(executor_locator_name);
@@ -531,7 +531,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "private:\n\n";
 	out.indent();
     out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
-	out << mapName(composition->executor()) << "* component_;\n\n";
+	out << mapName(composition->executor_def()) << "* component_;\n\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
 		out << mapName(segment_seq[i]) << "* " << segment_seq[i]->name() << "_;\n\n";
 	}

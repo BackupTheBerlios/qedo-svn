@@ -87,7 +87,7 @@ throw(CORBA::SystemException)
 
 	composition_desc -> lifecycle = this -> lifecycle();
 	composition_desc -> home_executor = this -> home_executor();
-	composition_desc -> executor = this -> executor();
+	composition_desc -> executor_def = this -> executor_def();
 
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
@@ -138,7 +138,7 @@ throw(CORBA::SystemException)
 }
 
 CIDL::ExecutorDef_ptr
-CompositionDef_impl::executor
+CompositionDef_impl::executor_def
 ()
 throw(CORBA::SystemException)
 {

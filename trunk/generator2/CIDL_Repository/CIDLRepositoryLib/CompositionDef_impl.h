@@ -99,9 +99,9 @@ public:
         throw(CORBA::SystemException);
 
     //
-    // IDL:omg.org/CIDL/CompositionDef/executor:1.0
+    // IDL:omg.org/CIDL/CompositionDef/executor_def:1.0
     //
-    virtual CIDL::ExecutorDef_ptr executor()
+    virtual CIDL::ExecutorDef_ptr executor_def()
         throw(CORBA::SystemException);
 
     //
