@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ci.cpp,v 1.10 2003/05/09 10:42:40 neubauer Exp $";
+static char rcsid[] = "$Id: ci.cpp,v 1.11 2003/05/25 18:35:32 tom Exp $";
 
 #include "ComponentInstallationImpl.h"
 #ifdef MICO_ORB
@@ -60,11 +60,18 @@ main (int argc, char** argv)
 #ifdef _WIN32
 	TCHAR tchBuffer[256];
 	LPTSTR lpszSystemInfo = tchBuffer;
-	DWORD dwResult = ExpandEnvironmentStrings("%QEDO%", lpszSystemInfo, 256); 
+	DWORD dwResult = ExpandEnvironmentStrings("%QEDO%", lpszSystemInfo, 256);
 	Qedo::g_qedo_dir.append(lpszSystemInfo);
 #else
 	char *e = getenv("QEDO");
-	if(e) Qedo::g_qedo_dir.append(e);
+	if(e) {
+	    Qedo::g_qedo_dir.append(e);
+	} else {
+	    std::cout << "Missing Environment Variable QEDO" << std::endl;
+	    std::cout << "Assuming curretn dir as local deployment dir" << std::endl; 
+	    Qedo::g_qedo_dir.append("./");
+	};
+	
 #endif
 
 	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);

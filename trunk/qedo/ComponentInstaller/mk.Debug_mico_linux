@@ -7,7 +7,7 @@ IntDir=Debug_mico_linux
 Name=Debug_mico_linux
 CFLAGS= -I../ComponentIDL -I$(MICO)/include -I$(MICO)/include/coss -I"$(ZLIB)" -I"$(XERCES)/include" -g -DMICO_ORB
 CXXFLAGS= -I../ComponentIDL -I"$(MICO)/include" -I$(MICO)/include/OB -I"$(ZLIB)" -I"$(XERCES)/include" -g -DMICO_ORB
-LIBS=-L$(MICO)/lib -L$(XERCES)/lib -L$(ZLIB)/dll32 -L../ComponentIDL/../../Runtime -lxerces-c -lz  -ldl -lpthread -lmicocoss2.3.9  -lmico2.3.9 -lComponentIDL
+LIBS=-L$(MICO)/lib -L$(XERCES)/lib -L$(ZLIB)/dll32 -L../ComponentIDL -lxerces-c -lz  -ldl -lpthread -lmicocoss2.3.9  -lmico2.3.9 -lComponentIDL
 
 $(IntDir)/%.o:%.cpp
 	$(COMPILE.cc) $(OUTPUT_OPTION) $<
