@@ -213,7 +213,7 @@ copy $(TargetPath) $(QEDO)\bin
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="idl -I%MICO%\include\mico -I%MICO%\include -DMICO_ORB --c++-suffix cpp explore.idl
+						CommandLine="idl -I%MICO%\include\mico -I%MICO%\include -I../ComponentIDL -DMICO_ORB --c++-suffix cpp explore.idl
 "
 						Outputs="explore.h;explore.cpp"/>
 				</FileConfiguration>
