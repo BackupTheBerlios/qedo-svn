@@ -18,6 +18,23 @@
 
 
 // BEGIN USER INSERT SECTION file_post
+#include <FL/Fl.H>
+#include <FL/Fl_Double_Window.H>
+
+namespace dinner {
+class PhilosopherSessionImpl;
+};
+
+class PhilosopherGUI : public Fl_Window  {
+	//void draw();
+	dinner::PhilosopherSessionImpl* impl_;
+
+public:
+	
+	PhilosopherGUI(int W,int H, dinner::PhilosopherSessionImpl* impl
+,const char *l=0) : Fl_Window(W,H,l), impl_(impl) {}
+};
+
 // END USER INSERT SECTION file_post
 
 
@@ -70,6 +87,20 @@ namespace dinner
 		std::string id_;
 		bool stopped_;
 		int tickTime_;
+		
+		DiningPhilosophers::PhilosopherState status;
+
+        Components::Thread_var data_thread_;
+        Components::Thread_var gui_thread_;
+
+		bool gui_stopped;
+		PhilosopherGUI *gui_;
+		static void* run(void*);
+		void stop();
+		static void* start_gui(void*);
+		void stop_gui();
+		void run_philo();
+
 
 // END USER INSERT SECTION PhilosopherSessionImpl
 

@@ -6,6 +6,13 @@
 
 
 // BEGIN USER INSERT SECTION file
+#include <FL/fl_draw.H>
+
+//void
+//CutleryGUI::draw() {
+	//test 
+//};
+
 // END USER INSERT SECTION file
 
 
@@ -13,6 +20,7 @@ namespace dinner {
 
 
 // BEGIN USER INSERT SECTION CutlerySessionImpl
+
 // END USER INSERT SECTION CutlerySessionImpl
 
 
@@ -59,6 +67,44 @@ CutlerySessionImpl::remove()
 
 
 // BEGIN USER INSERT SECTION Seg
+
+void*
+Seg::start_gui(void *p)
+{
+	Seg* impl;
+	impl = static_cast<Seg*>(p);
+
+	impl->gui_stopped_ = false;
+
+	impl->gui = //new Fl_Double_Window(300,180, "Radar1");
+		new CutleryGUI(100,100,impl);
+
+	  impl->gui->end();
+	  impl->gui->show();
+
+	while (Fl::check()) 
+	{
+		if ( impl->gui_stopped_) 
+		{
+			break;
+		}
+// TODO		sleep(1);
+
+	};
+
+
+	return 0;
+}
+
+void
+Seg::stop_gui()
+{
+	gui_stopped_ = true;
+	delete gui;
+//	gui_thread->join();
+
+}
+
 // END USER INSERT SECTION Seg
 
 
@@ -90,6 +136,9 @@ Seg::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION Seg::configuration_complete
+		gui_thread_ = context_->start_thread(start_gui,this);
+		owner = false;
+
 // END USER INSERT SECTION Seg::configuration_complete
 }
 
@@ -99,6 +148,16 @@ Seg::get()
 	throw(CORBA::SystemException, ::DiningPhilosophers::InUse)
 {
 // BEGIN USER INSERT SECTION Seg::get
+	if(owner) 
+    {
+		throw DiningPhilosophers::InUse();
+	}
+
+/* update gui */
+	// ToDo
+	std::cout << "get() called " << std::endl;
+	owner = true;
+
 // END USER INSERT SECTION Seg::get
 }
 
@@ -108,6 +167,12 @@ Seg::release()
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION Seg::release
+
+// update GUI
+	// ToDo
+    owner = false;
+	std::cout << "release() called " << std::endl;
+
 // END USER INSERT SECTION Seg::release
 }
 

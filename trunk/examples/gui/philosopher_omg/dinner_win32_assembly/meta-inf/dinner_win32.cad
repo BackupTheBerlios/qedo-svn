@@ -34,6 +34,8 @@
 					<componentimplref idref="UUID-CC2EC6CB-D995-4580-B994-9435168EAA67"/>
   			      		<componentinstantiation id="Cutlery1">
 						</componentinstantiation>
+  			      		<componentinstantiation id="Cutlery2">
+						</componentinstantiation>
 					<destination></destination>
 			</homeplacement>
 		</processcollocation>
@@ -61,6 +63,41 @@
     </partitioning>
 
     <connections>
+		<connectinterface>
+			<usesport>
+			<usesidentifier>left</usesidentifier>
+			<componentinstantiationref idref="Philosopher1"/>
+			</usesport>
+
+			<providesport>
+			<providesidentifier>the_fork</providesidentifier>
+			<componentinstantiationref idref="Cutlery1"/>
+			</providesport>
+		</connectinterface>
+    
+		<connectinterface>
+			<usesport>
+			<usesidentifier>right</usesidentifier>
+			<componentinstantiationref idref="Philosopher1"/>
+			</usesport>
+
+			<providesport>
+			<providesidentifier>the_fork</providesidentifier>
+			<componentinstantiationref idref="Cutlery2"/>
+			</providesport>
+		</connectinterface>
+
+		<connectevent>
+			<consumesport>
+			<consumesidentifier>info</consumesidentifier>
+			<componentinstantiationref idref="Observer1"/>
+			</consumesport>
+
+			<publishesport>
+			<publishesidentifier>info</publishesidentifier>
+			<componentinstantiationref idref="Philosopher1"/>
+			</publishesport>
+		</connectevent>		
 
     </connections>
 

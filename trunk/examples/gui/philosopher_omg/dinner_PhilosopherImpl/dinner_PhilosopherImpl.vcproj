@@ -66,7 +66,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;C:\download\fltk\fltk-1.1.4"
 				PreprocessorDefinitions="BUILD_DINNER_PHILOSOPHERIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -80,10 +80,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC.lib"
+				AdditionalDependencies="fltkd.lib  wsock32.lib  comctl32.lib  ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/dinner_PhilosopherImpl.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib;C:\download\fltk\fltk-1.1.4\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/dinner_PhilosopherImpl.pdb"
 				SubSystem="2"

@@ -62,7 +62,6 @@ ObserverSessionImpl::push_event (Components::EventBase* ev)
     throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::push_event
-	  
 // END USER INSERT SECTION ObserverSessionImpl::push_event
 }
 
@@ -72,6 +71,8 @@ ObserverSessionImpl::push_StatusInfo(::DiningPhilosophers::StatusInfo* ev)
     throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::push_StatusInfo
+	std::cout << "got event" << std::endl;
+
 // END USER INSERT SECTION ObserverSessionImpl::push_StatusInfo
 }
 

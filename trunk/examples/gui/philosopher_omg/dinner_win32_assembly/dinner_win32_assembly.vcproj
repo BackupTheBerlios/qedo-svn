@@ -111,7 +111,7 @@
 						CommandLine="zip ../dinner_win32.zip -j ../dinner_CutleryImpl.zip ../dinner_ObserverImpl.zip ../dinner_PhilosopherImpl.zip
 zip ../dinner_win32.zip meta-inf/dinner_win32.cad
 "
-						Outputs="../dinner_win32.zip"/>
+						Outputs="the_output"/>
 				</FileConfiguration>
 			</File>
 		</Filter>

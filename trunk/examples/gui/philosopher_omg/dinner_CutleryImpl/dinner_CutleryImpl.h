@@ -18,6 +18,23 @@
 
 
 // BEGIN USER INSERT SECTION file_post
+#include <FL/Fl.H>
+#include <FL/Fl_Double_Window.H>
+
+namespace dinner {
+class Seg;
+};
+
+class CutleryGUI : public Fl_Window  {
+//	void draw();
+	dinner::Seg* impl_;
+
+public:
+	
+	CutleryGUI(int W,int H, dinner::Seg* impl
+,const char *l=0) : Fl_Window(W,H,l), impl_(impl) {}
+};
+
 // END USER INSERT SECTION file_post
 
 
@@ -57,6 +74,9 @@ namespace dinner
         
     
 // BEGIN USER INSERT SECTION CutlerySessionImpl
+	private:
+		std::string id_;
+
 // END USER INSERT SECTION CutlerySessionImpl
 
     };
@@ -104,6 +124,27 @@ namespace dinner
         	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION Seg
+	private:
+		static int last_fork;
+		std::string _id;
+		CORBA::Boolean owner;
+
+
+		CutleryGUI* gui;
+        Components::Thread_var data_thread_;
+        Components::Thread_var gui_thread_;
+		bool data_stopped_;
+		bool gui_stopped_;
+
+		static void* run(void*);
+		void stop();
+
+		static void* start_gui(void*);
+		void stop_gui();
+
+public:
+	void finish();
+
 // END USER INSERT SECTION Seg
 
     };

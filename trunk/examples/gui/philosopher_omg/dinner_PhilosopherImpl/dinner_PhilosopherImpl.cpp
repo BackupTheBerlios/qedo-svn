@@ -6,6 +6,10 @@
 
 
 // BEGIN USER INSERT SECTION file
+#ifdef _WIN32
+#define sleep(X) Sleep(X*1000)
+#endif
+
 // END USER INSERT SECTION file
 
 
@@ -13,12 +17,445 @@ namespace dinner {
 
 
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl
+void*
+PhilosopherSessionImpl::run(void *p)
+{
+
+	PhilosopherSessionImpl* impl;
+	impl = static_cast<PhilosopherSessionImpl*>(p);
+	impl->run_philo();
+
+	return 0;
+}
+
+void
+PhilosopherSessionImpl::stop()
+{
+//	data_stopped = true;
+//	data_thread->join();
+
+}
+
+void*
+PhilosopherSessionImpl::start_gui(void *p)
+{
+	PhilosopherSessionImpl* impl;
+	impl = static_cast<PhilosopherSessionImpl*>(p);
+
+	impl->gui_stopped = false;
+
+	impl->gui_ = //new Fl_Double_Window(300,180, "Radar1");
+		new PhilosopherGUI(100,100, impl);
+
+	  impl->gui_->end();
+	  impl->gui_->show();
+
+	while (Fl::check()) 
+	{
+		if ( impl->gui_stopped) 
+		{
+			break;
+		}
+	//	sleep(1);
+
+	};
+
+
+	return 0;
+}
+
+void
+PhilosopherSessionImpl::stop_gui()
+{
+	gui_stopped = true;
+	delete gui_;
+//	gui_thread->join();
+
+}
+
+void
+PhilosopherSessionImpl::run_philo()
+{
+
+	bool have_left=false, have_right=false;
+	DiningPhilosophers::StatusInfoImpl* report;
+
+	DiningPhilosophers::Fork_var left_hand = context_ -> get_connection_left();
+	DiningPhilosophers::Fork_var right_hand = context_ -> get_connection_right();
+
+
+    // start thinking
+    status = DiningPhilosophers::THINKING;
+    long tickCount = 0;
+    long holdFork = 0;
+    bool haveLeft = false;
+    bool haveRight = false;
+	
+    while (!stopped_)
+	{
+		std::cout <<  "PhilosopherSessionImpl: new tick ... " << std::endl;
+		switch (status)
+        {
+        case DiningPhilosophers::THINKING : 
+			{
+				std::cout << "Thinking" << std::endl;
+			}
+            break;
+        case DiningPhilosophers::STARVING : 
+			{
+				std::cout << "Starving" << std::endl;
+			}
+            break;
+        case DiningPhilosophers::HUNGRY : 
+			{
+				std::cout << "HUNGRY" << std::endl;
+			}
+            break;
+        case DiningPhilosophers::EATING : 
+			{
+				std::cout << "EATING" << std::endl;
+			}
+
+            break;
+        case DiningPhilosophers::DEAD : 
+			{
+				std::cout << "DEAD" << std::endl;
+			}
+            break;
+        }
+
+        //
+        // update gui
+		// ToDo
+        //
+
+        //
+        // push info
+        //
+		report = new DiningPhilosophers::StatusInfoImpl(id_.c_str(), status, tickCount, haveLeft, haveRight);
+		try
+		{
+			context_->push_info(report);
+		}
+		catch(CORBA::SystemException& ex)
+		{
+			std::cout <<  "PhilosopherSessionImpl: CORBA system exception during reporting : " << std::endl;
+		}
+
+        // sleep
+//		timer_sleep(tickTime_);
+		// try 
+		sleep(1);
+		// end
+        tickCount++;
+
+        //
+        // THINKING
+        //
+        if (status == DiningPhilosophers::THINKING && (tickCount > 2))
+        {
+            status = DiningPhilosophers::HUNGRY;
+        }
+        
+        //
+        // HUNGRY
+        //
+        if (status == DiningPhilosophers::HUNGRY)
+        {
+            if (tickCount > 9)
+            {
+                status = DiningPhilosophers::STARVING;
+            }
+            else
+            {
+                // try to get a fork for the strong hand
+			    try
+			    {
+				    if (right_hander_)
+				    {
+					    right_hand->get();
+					    haveRight = true;
+//    					WITH_PID_OUT3(id_, " got right fork ", thread_name);
+    				}
+	    			else
+		    		{
+			    		left_hand->get();
+				    	haveLeft = true;
+//					    WITH_PID_OUT3(id_, " got left fork ", thread_name);
+				    }
+			    }
+			    catch (DiningPhilosophers::InUse& )
+			    {
+				    if (right_hander_)
+				    {
+//					    WITH_PID_OUT3(id_, " can't get right fork ", thread_name);
+				    }
+				    else
+				    {
+//					    WITH_PID_OUT3(id_, " can't get left fork ", thread_name);
+				    }
+				    continue;
+			    }
+			    catch ( CORBA::SystemException& )
+			    {
+//				    WITH_PID_ERR("PhilosopherSessionImpl: CORBA system exception during obtain_fork(). continue...");
+    				continue;
+	    		}
+
+    			// try to get a fork for the weak hand
+			    try {
+				    if (right_hander_)
+				    {
+					    left_hand->get();
+					    haveLeft = true;
+//    					WITH_PID_OUT3(id_, " got left fork ", thread_name);
+	    			}
+		    		else
+			    	{
+				    	right_hand->get();
+					    haveRight = true;
+//    					WITH_PID_OUT3(id_, " got right fork ", thread_name);
+	    			}
+		    	}
+			    catch (DiningPhilosophers::InUse&)
+			    {
+				    try
+				    {
+					    if (right_hander_)
+					    {
+		    				right_hand->release();
+			    			haveRight = false;
+//    						WITH_PID_OUT3(id_, " doesn't need right fork anymore ", thread_name);
+	    				} 
+		    			else 
+			    		{
+				    		left_hand->release();
+					    	haveLeft = false;
+//					    	WITH_PID_OUT3(id_, " doesn't need left fork anymore ", thread_name);
+					    }
+					    continue;
+	    			}
+		    		catch (CORBA::SystemException&)
+			    	{
+//				    	WITH_PID_ERR3("PhilosopherSessionImpl: CORBA system exception during release_fork(). I'm in hell, aborting -> ", id_, thread_name );
+    					continue;
+	    			}
+		    	}
+			    catch (CORBA::SystemException&)
+			    {
+	    			try
+		    		{
+//			    		WITH_PID_ERR3("PhilosopherSessionImpl: CORBA system exception during obtain_fork() -> ", id_, thread_name );
+			
+				    	if (right_hander_)
+					    {
+						    right_hand->release();
+		    				haveRight = false;
+			    		}
+	    				else
+		    			{
+			    			left_hand->release();
+				    		haveLeft = false;
+					    }
+					    continue;
+			    	}
+	    			catch (CORBA::SystemException&)
+		    		{
+//			    		WITH_PID_ERR3("PhilosopherSessionImpl: CORBA system exception during release_fork(). I'm in hell, aborting -> ", id_, thread_name );
+					    continue;
+	    			}
+		    	}
+
+                tickCount = 0;
+                status = DiningPhilosophers::EATING;
+            }
+        }
+
+        //
+        // STARVING
+        //
+        if (status == DiningPhilosophers::STARVING)
+        {
+            if (tickCount > 39)
+            {
+                status = DiningPhilosophers::DEAD;
+            }
+            else
+            {
+                // try to get a fork for the strong hand
+			    try
+			    {
+				    if (right_hander_ && !haveRight)
+				    {
+					    right_hand->get();
+					    haveRight = true;
+//    					WITH_PID_OUT3(id_, " got right fork ", thread_name);
+    				}
+	    			if (!right_hander_ && !haveLeft)
+		    		{
+			    		left_hand->get();
+				    	haveLeft = true;
+//					    WITH_PID_OUT3(id_, " got left fork ", thread_name);
+				    }
+			    }
+			    catch (DiningPhilosophers::InUse&)
+			    {
+				    if (right_hander_)
+				    {
+//					    WITH_PID_OUT3(id_, " can't get right fork ", thread_name);
+				    }
+				    else
+				    {
+//					    WITH_PID_OUT3(id_, " can't get left fork ", thread_name);
+				    }
+				    continue;
+			    }
+			    catch (CORBA::SystemException&)
+			    {
+//				    WITH_PID_ERR("PhilosopherSessionImpl: CORBA system exception during obtain_fork(). continue...");
+    				continue;
+	    		}
+
+                holdFork++;
+    			// try to get a fork for the weak hand
+			    try {
+				    if (right_hander_)
+				    {
+					    left_hand->get();
+					    haveLeft = true;
+//    					WITH_PID_OUT3(id_, " got left fork ", thread_name);
+	    			}
+		    		else
+			    	{
+				    	right_hand->get();
+					    haveRight = true;
+//    					WITH_PID_OUT3(id_, " got right fork ", thread_name);
+	    			}
+		    	}
+			    catch (DiningPhilosophers::InUse&)
+			    {
+				    try
+				    {
+					    if (right_hander_ && (holdFork > 5))
+					    {
+		    				right_hand->release();
+			    			haveRight = false;
+//    						DEBUG_WITH_PID_OUT3(id_, " doesn't need right fork anymore ", thread_name);
+                            holdFork = 0;
+	    				} 
+		    			if (!right_hander_ && (holdFork > 5)) 
+			    		{
+				    		left_hand->release();
+					    	haveLeft = false;
+//					    	DEBUG_WITH_PID_OUT3(id_, " doesn't need right fork anymore ", thread_name);
+                            holdFork = 0;
+					    }
+					    continue;
+	    			}
+		    		catch (CORBA::SystemException&)
+			    	{
+//				    	WITH_PID_ERR3("PhilosopherSessionImpl: CORBA system exception during release_fork(). I'm in hell, aborting -> ", id_, thread_name );
+    					continue;
+	    			}
+		    	}
+			    catch (CORBA::SystemException&)
+			    {
+	    			try
+		    		{
+//			    		WITH_PID_ERR3("PhilosopherSessionImpl: CORBA system exception during obtain_fork() -> ", id_, thread_name );
+			
+				    	if (right_hander_)
+					    {
+						    right_hand->release();
+		    				haveRight = false;
+			    		}
+	    				else
+		    			{
+			    			left_hand->release();
+				    		haveLeft = false;
+					    }
+					    continue;
+			    	}
+	    			catch (CORBA::SystemException&)
+		    		{
+//			    		WITH_PID_ERR3("PhilosopherSessionImpl: CORBA system exception during release_fork(). I'm in hell, aborting -> ", id_, thread_name );
+					    continue;
+	    			}
+		    	}
+
+                tickCount = 0;
+                status = DiningPhilosophers::EATING;
+            }
+        }
+
+        //
+        // EATING
+        //
+        if (status == DiningPhilosophers::EATING && (tickCount > 3))
+        {
+            tickCount = 0;
+            status = DiningPhilosophers::THINKING;
+
+            // release the used forks
+			try
+			{
+				right_hand->release();
+				haveRight = false;
+				left_hand->release();
+				haveLeft = false;
+			}
+            catch (CORBA::SystemException&)
+			{
+//				WITH_PID_ERR3("PhilosopherSessionImpl: Unexpected CORBA system exception. I'm in hell, aborting... -> ", id_, thread_name );
+				continue;
+			}
+        }
+
+        //
+        // DEAD
+        //
+        if (status == DiningPhilosophers::DEAD)
+        {
+            try
+	        {
+        		if (haveLeft)
+                {
+	    		    left_hand->release();
+                    haveLeft = false;
+                }
+
+    	    	if (haveRight)
+                {
+		        	right_hand->release();
+                    haveRight = false;
+                }
+        	}
+	        catch (CORBA::SystemException&)
+        	{
+//	        	WITH_PID_ERR3("PhilosopherSessionImpl: CORBA system exception during release_fork(). Doesn't matter, I'm finishing anyway -> ", id_, thread_name );
+        	}
+//        	WITH_PID_OUT3(id_, " is dead ", thread_name );
+            
+            // respawn
+            if (tickCount > 50)
+            {
+                id_ = id_.append("'s son");
+                tickCount = 0;
+                status = DiningPhilosophers::THINKING;
+            }
+        }
+    }
+
+}
+
+
 // END USER INSERT SECTION PhilosopherSessionImpl
 
 
 PhilosopherSessionImpl::PhilosopherSessionImpl()
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::PhilosopherSessionImpl
+	right_hander_ = true;
 // END USER INSERT SECTION PhilosopherSessionImpl::PhilosopherSessionImpl
 }
 
@@ -44,6 +481,11 @@ PhilosopherSessionImpl::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::configuration_complete
+	stopped_ = false;
+	gui_thread_ = context_->start_thread(start_gui,this);
+	data_thread_ = context_->start_thread(run,this);
+
+
 // END USER INSERT SECTION PhilosopherSessionImpl::configuration_complete
 }
 
