@@ -14,7 +14,7 @@ namespace QEDO_CIDL_Generator {
 
 GeneratorEIDL::GeneratorEIDL
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: IDLBase(repository), m_recursion_set(), forward(false)
+: IDLBase(repository), m_recursion_set()
 {
 	m_to_generate_seq = new IR__::ContainedSeq();
 	m_to_generate_seq->length(0);

@@ -7,7 +7,7 @@
 #include <fstream>
 #include <iostream>
 
-
+#include <set>
 using namespace std;
 
 
@@ -16,6 +16,13 @@ namespace QEDO_CIDL_Generator {
 
 class GeneratorLIDL : public virtual IDLBase
 {
+	IR__::ContainedSeq_var m_to_generate_seq;
+	std::set<std::string> m_recursion_set;
+	bool already_included (IR__::Contained_ptr item);
+	void insert_to_generate(IR__::Contained_ptr item);
+	void check_for_generation ( IR__::Contained_ptr item );
+	void generate_the_item ( IR__::Contained_ptr item ) ;
+
 
 	string filename_;
 	Printer out;
@@ -25,6 +32,7 @@ class GeneratorLIDL : public virtual IDLBase
 	void open_module(IR__::Contained* cur_cont);
 	void close_module(IR__::Contained* cur_cont);
 
+	void doModule(IR__::ModuleDef_ptr module);
 	void beginModule(IR__::ModuleDef_ptr module);
 	void endModule(IR__::ModuleDef_ptr module);
 	void doInterface(IR__::InterfaceDef_ptr intface);
