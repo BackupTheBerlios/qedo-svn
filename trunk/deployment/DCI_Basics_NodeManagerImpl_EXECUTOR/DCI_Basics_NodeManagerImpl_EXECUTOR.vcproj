@@ -19,11 +19,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/ComponentIDL;$(ORBACUS)\include;$(ORBACUS)\include\OB;../IDL"
+				AdditionalIncludeDirectories=".;$(QEDO)/ComponentIDL;$(ORBACUS)\include;$(ORBACUS)\include\OB;../IDL;$(ZLIB)"
 				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -33,8 +33,8 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib"
-				OutputFile="$(OutDir)/DCI_Basics_NodeManagerImpl_EXECUTOR.dll"
+				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib CosPropertyd.lib CosNamingd.lib"
+				OutputFile="$(Qedo)/../runtime/DCI_Basics_NodeManagerImpl_EXECUTOR.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)\ComponentIDL\Debug_orbacus;$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -78,6 +78,18 @@
 			<File
 				RelativePath="DCI_Basics_NodeManagerImpl_LOCAL.cpp">
 			</File>
+			<File
+				RelativePath="InstalledUuid.cpp">
+			</File>
+			<File
+				RelativePath="PropertiesRepository.cpp">
+			</File>
+			<File
+				RelativePath="Repository.cpp">
+			</File>
+			<File
+				RelativePath="Utility_class.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -96,6 +108,18 @@
 			</File>
 			<File
 				RelativePath="DCI_Basics_NodeManagerImpl_LOCAL.h">
+			</File>
+			<File
+				RelativePath="InstalledUuid.h">
+			</File>
+			<File
+				RelativePath="PropertiesRepository.h">
+			</File>
+			<File
+				RelativePath="Repository.h">
+			</File>
+			<File
+				RelativePath="Utility_class.h">
 			</File>
 		</Filter>
 		<Filter
