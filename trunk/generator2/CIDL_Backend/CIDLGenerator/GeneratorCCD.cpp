@@ -143,11 +143,47 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
     
 	out << "<componentkind>\n";
 	out.indent();
-    out << "<session>\n";
+	switch( composition->lifecycle() )
+	{
+	case CIDL::lc_Service: 
+		out << "<service>\n";
+		break;
+	case CIDL::lc_Session: 
+		out << "<session>\n";
+		break;
+	case CIDL::lc_Process: 
+		out << "<process>\n";
+		break;
+	case CIDL::lc_Entity: 
+		out << "<entity>\n";
+		break;
+	case CIDL::lc_Extension: 
+		out << "<container_extension>\n";
+		break;
+	default : {}
+	}
 	out.indent();
     out << "<servant lifetime=\"container\"/>\n";
 	out.unindent();
-    out << "</session>\n";
+	switch( composition->lifecycle() )
+	{
+	case CIDL::lc_Service: 
+		out << "</service>\n";
+		break;
+	case CIDL::lc_Session: 
+		out << "</session>\n";
+		break;
+	case CIDL::lc_Process: 
+		out << "</process>\n";
+		break;
+	case CIDL::lc_Entity: 
+		out << "</entity>\n";
+		break;
+	case CIDL::lc_Extension: 
+		out << "</container_extension>\n";
+		break;
+	default : {}
+	}
 	out.unindent();
     out << "</componentkind>\n";
 
