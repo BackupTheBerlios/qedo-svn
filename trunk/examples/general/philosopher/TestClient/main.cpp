@@ -3,10 +3,10 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.4 2002/11/08 10:04:16 neubauer Exp $
+// $Id: main.cpp,v 1.5 2003/05/12 13:10:34 neubauer Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.4 2002/11/08 10:04:16 neubauer Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.5 2003/05/12 13:10:34 neubauer Exp $";
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
@@ -116,9 +116,9 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 
 	try
 	{
-		component_installer->install ("PHILOSOPHER/1.0", "philosopherS.dll:create_PhilosopherHomeS:philosopherE.dll:create_PhilosopherHomeE");
-		component_installer->install ("CUTLERY/1.0", "philosopherS.dll:create_CutleryHomeS:philosopherE.dll:create_CutleryHomeE");
-		component_installer->install ("OBSERVER/1.0", "philosopherS.dll:create_ObserverHomeS:philosopherE.dll:create_ObserverHomeE");
+		component_installer->install ("PHILOSOPHER/1.0", "philosopherS.dll;create_PhilosopherHomeS;philosopherE.dll;create_PhilosopherHomeE");
+		component_installer->install ("CUTLERY/1.0", "philosopherS.dll;create_CutleryHomeS;philosopherE.dll;create_CutleryHomeE");
+		component_installer->install ("OBSERVER/1.0", "philosopherS.dll;create_ObserverHomeS;philosopherE.dll;create_ObserverHomeE");
 	}
 	catch (Components::Deployment::InvalidLocation&)
 	{

@@ -3,10 +3,10 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.8 2003/01/10 13:09:29 neubauer Exp $
+// $Id: main.cpp,v 1.9 2003/05/12 13:10:15 neubauer Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.8 2003/01/10 13:09:29 neubauer Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.9 2003/05/12 13:10:15 neubauer Exp $";
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
@@ -115,9 +115,9 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 
 	try
 	{
-		component_installer->install ("PHILOSOPHER_OMG/1.0", "philosopher_omgS.dll:create_PhilosopherHomeS:philosopher_omgE.dll:create_PhilosopherHomeE");
-		component_installer->install ("FORK_OMG/1.0", "philosopher_omgS.dll:create_ForkHomeS:philosopher_omgE.dll:create_ForkHomeE");
-		component_installer->install ("OBSERVER_OMG/1.0", "philosopher_omgS.dll:create_ObserverHomeS:philosopher_omgE.dll:create_ObserverHomeE");
+		component_installer->install ("PHILOSOPHER_OMG/1.0", "philosopher_omgS.dll;create_PhilosopherHomeS;philosopher_omgE.dll;create_PhilosopherHomeE");
+		component_installer->install ("FORK_OMG/1.0", "philosopher_omgS.dll;create_ForkHomeS;philosopher_omgE.dll;create_ForkHomeE");
+		component_installer->install ("OBSERVER_OMG/1.0", "philosopher_omgS.dll;create_ObserverHomeS;philosopher_omgE.dll;create_ObserverHomeE");
 	}
 	catch (Components::Deployment::InvalidLocation&)
 	{

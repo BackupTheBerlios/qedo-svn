@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.10 2003/05/09 10:42:40 neubauer Exp $";
+static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.11 2003/05/12 13:14:14 neubauer Exp $";
 
 #include "ComponentInstallationImpl.h"
 
@@ -295,9 +295,12 @@ void
 ComponentInstallationImpl::install (const char* implUUID, const char* component_loc)
 throw (Components::Deployment::InvalidLocation, Components::Deployment::InstallationFailure)
 {
-	// The description may have two forms:
+	//
+	// The description may have 2 forms:
+	//
 	// 1) servant_module:servant_entry_point:executor_module:executor_entry_point
 	// 2) PACKAGE=<packagename>
+	//
 
 	std::cout << "..... installing Component type with UUID: " << implUUID << std::endl;
 
@@ -333,24 +336,27 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		//
 		// create new implementation
 		//
-		ComponentImplementation aComponentImplementation(implUUID, installationDirectory_, comp_loc);
-		bool ok = aComponentImplementation.install();
+		ComponentImplementation newComponentImplementation(implUUID, installationDirectory_, comp_loc);
+		bool ok = newComponentImplementation.install();
 		// remove the package
 		removeFileOrDirectory(comp_loc);
 		
 		if (ok)
 		{
-			installed_components_.push_back(aComponentImplementation);
-			addInstalledComponent(&aComponentImplementation);
+			installed_components_.push_back(newComponentImplementation);
+			addInstalledComponent(&newComponentImplementation);
 		}
 		else
 		{
 			throw Components::Deployment::InstallationFailure();
 		}
 	}
+	//
+	// component_loc contains local code location
+	//
 	else
 	{
-		pos = desc.find (":");
+		pos = desc.find (";");
 		if (pos == std::string::npos)
 		{
 			std::cerr << "ComponentInstallationImpl: Cannot extract servant module name" << std::endl;
@@ -359,8 +365,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		std::string servant_module = desc.substr (0, pos);
 
 		desc = desc.substr (pos + 1);
-
-		pos = desc.find (":");
+		pos = desc.find (";");
 		if (pos == std::string::npos)
 		{
 			std::cerr << "ComponentInstallationImpl: Cannot extract servant entry point" << std::endl;
@@ -369,8 +374,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		std::string servant_entry_point = desc.substr (0, pos);
 
 		desc = desc.substr (pos + 1);
-
-		pos = desc.find (":");
+		pos = desc.find (";");
 		if (pos == std::string::npos)
 		{
 			std::cerr << "ComponentInstallationImpl: Cannot extract executor module name" << std::endl;
@@ -379,13 +383,14 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		std::string executor_module = desc.substr (0, pos);
 
 		desc = desc.substr (pos + 1);
-
 		std::string executor_entry_point = desc;
 
-		// register this installation
-		ComponentImplementation new_component(implUUID, servant_module, servant_entry_point, executor_module, executor_entry_point);
-		installed_components_.push_back (new_component);
-		addInstalledComponent(&new_component);
+		//
+		// create new implementation
+		//
+		ComponentImplementation newComponentImplementation(implUUID, servant_module, servant_entry_point, executor_module, executor_entry_point);
+		installed_components_.push_back (newComponentImplementation);
+		addInstalledComponent(&newComponentImplementation);
 	}
 
 	std::cout << "..... done (" << implUUID << ")" << std::endl;
