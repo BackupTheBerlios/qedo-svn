@@ -29,6 +29,10 @@
 #include "Util.h"
 #include <vector>
 
+#ifndef _QEDO_NO_QOS
+#include "ServerInterceptorDispatcher.h"
+#include "ClientInterceptorDispatcher.h"
+#endif
 
 namespace Qedo {
 
@@ -69,7 +73,7 @@ public:
 	ContainerEntry (ContainerInterfaceImpl*);
 
 	ContainerEntry();
-	
+
 	ContainerEntry (const ContainerEntry&);
 
 	ContainerEntry& operator= (const ContainerEntry&);
@@ -115,6 +119,12 @@ private:
 	/** the mutex for the valuetype implementation list */
 	QedoMutex							value_mutex_;
 
+#ifndef _QEDO_NO_QOS
+	/** interceptor dispatcher for the server side */
+	Components::Extension::ServerInterceptorRegistration_var server_dispatcher_;
+	/** interceptor dispatcher for the client side */
+	Components::Extension::ClientInterceptorRegistration_var client_dispatcher_;
+#endif
 public:
 	/**
 	 * constructor
@@ -173,6 +183,34 @@ public:
 	 */
 	void loadValuetypeFactory(const char* repid, const char* loc)
 		throw (CORBA::SystemException);
+
+#ifndef _QEDO_NO_QOS
+	/**
+	 * set_server_dispatcher
+	 */
+	 void
+	 set_server_dispatcher ( Components::Extension::ServerInterceptorRegistration_ptr server_dispatcher);
+
+
+ 	/**
+	 * set_client_dispatcher
+	 */
+	 void
+	 set_client_dispatcher ( Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher);
+
+	/**
+	 * get_server_dispatcher
+	 */
+	 Components::Extension::ServerInterceptorRegistration_ptr
+	 get_server_dispatcher (  );
+
+	/**
+	 * get_client_dispatcher
+	 */
+	 Components::Extension::ClientInterceptorRegistration_ptr
+	 get_client_dispatcher (  );
+
+#endif
 
 	//
 	// Exceptions

@@ -34,7 +34,12 @@
 
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.24 2003/10/23 13:30:43 stoinski Exp $";
+#ifndef _QEDO_NO_QOS
+#include "ServerInterceptorDispatcher.h"
+#include "ClientInterceptorDispatcher.h"
+#endif
+
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.25 2003/11/04 10:12:09 tom Exp $";
 
 
 /**
@@ -43,7 +48,7 @@ static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.24 2003/10/23 13:30:43 stoinski E
  */
 
 
-void 
+void
 usage (const char* prog_name)
 {
 	std::string usage_message;
@@ -139,10 +144,43 @@ main (int argc, char** argv)
 	// initialize ORB
 	//
 	Qedo::ORBInitializerImpl initializer(qos_enabled);
+
+#ifndef _QEDO_NO_QOS
+	//
+	// create dispatcher if QoS is enabled
+	//
+
+	//Portable Interceptors
+	Qedo::ServerInterceptorDispatcher* server_dispatcher;
+	Qedo::ClientInterceptorDispatcher* client_dispatcher;
+	if (qos_enabled)
+	{
+		// create dispatchers
+		server_dispatcher = new Qedo::ServerInterceptorDispatcher();
+		client_dispatcher = new Qedo::ClientInterceptorDispatcher();
+
+		// register interceptors before ORB_init
+		initializer.set_server_dispatcher (
+			PortableInterceptor::ServerRequestInterceptor::_narrow (server_dispatcher ) );
+		initializer.set_client_dispatcher (
+			PortableInterceptor::ClientRequestInterceptor::_narrow (client_dispatcher ) );
+
+	} // if qos_enabled
+#endif
+
 	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
 
 	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer.slot_id());
 
+#ifndef _QEDO_NO_QOS
+	if (qos_enabled)
+	{
+		component_server -> set_server_dispatcher (
+			Components::Extension::ServerInterceptorRegistration::_narrow(server_dispatcher));
+		component_server -> set_client_dispatcher (
+			Components::Extension::ClientInterceptorRegistration::_narrow(client_dispatcher));
+	}
+#endif
 	try
 	{
 		component_server->initialize();
@@ -158,7 +196,7 @@ main (int argc, char** argv)
         // Register the transport factories
         Qedo::TCPTransportEndpointFactory* the_factory = new Qedo::TCPTransportEndpointFactory();
         the_factory->_remove_ref();
-                                                                                                                          
+
 #ifdef _WIN32
         // Initialize the Windows Socket Environment
         WSADATA winsock_data;

@@ -3,7 +3,7 @@
 /*                                                                         */
 /* http://qedo.berlios.de/                                                 */
 /*                                                                         */
-/* Copyright (C) 2002 by the Qedo Team                                     */
+/* Copyright (C) 2002-2003 by the Qedo Team                                */
 /*                                                                         */
 /* This program is free software; you can redistribute it and/or modify it */
 /* under the terms of the GNU General Public License as published by the   */
@@ -21,8 +21,8 @@
 /***************************************************************************/
 
 
-#ifndef __INTERCEPTORDISPATCHER_H__
-#define __INTERCEPTORDISPATCHER_H__
+#ifndef __CLIENT_INTERCEPTOR_DISPATCHER_H__
+#define __CLIENT_INTERCEPTOR_DISPATCHER_H__
 
 #include <CORBA.h>
 #ifdef MICO_ORB
@@ -36,7 +36,7 @@
 namespace Qedo {
 
 
-	class ClientInterceptorDispatcher : 
+	class ClientInterceptorDispatcher :
 		public PortableInterceptor::ServerRequestInterceptor,
 		public virtual CORBA::LocalObject
 	{

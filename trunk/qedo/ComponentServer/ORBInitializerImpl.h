@@ -56,7 +56,12 @@ private:
 	ComponentServerImpl* comp_server_;
 	PortableInterceptor::SlotId slot_id_;
 	bool m_enable_qos;
-
+#ifndef _QEDO_NO_QOS
+	/** interceptor dispatcher on server side */
+	PortableInterceptor::ServerRequestInterceptor_var server_dispatcher_;
+	/** interceptor dispatcher on client side */
+	PortableInterceptor::ClientRequestInterceptor_var client_dispatcher_;
+#endif
 public:
 	/**
 	 * constructor
@@ -78,12 +83,25 @@ public:
 	/**
 	 * post_init
 	 */
-    void post_init (PortableInterceptor::ORBInitInfo_ptr info);
+	void post_init (PortableInterceptor::ORBInitInfo_ptr info);
 
 	/**
 	 * slot_id
 	 */
 	PortableInterceptor::SlotId slot_id();
+#ifndef _QEDO_NO_QOS
+	/**
+	 * set_server_dispatcher
+	 */
+	void
+	set_server_dispatcher (PortableInterceptor::ServerRequestInterceptor_ptr server_dispatcher);
+
+	/**
+	 * set_server_dispatcher
+	 */
+	void
+	set_client_dispatcher (PortableInterceptor::ClientRequestInterceptor_ptr client_dispatcher);
+#endif
 };
 
 /** @} */

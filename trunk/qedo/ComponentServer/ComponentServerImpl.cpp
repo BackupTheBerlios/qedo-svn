@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.22 2003/10/29 15:33:22 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.23 2003/11/04 10:12:09 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -470,7 +470,7 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 }
 
 
-void 
+void
 ComponentServerImpl::loadValuetypeFactory(const char* repid, const char* loc)
 throw (CORBA::SystemException)
 {
@@ -505,7 +505,7 @@ throw (CORBA::SystemException)
 			Qedo::unload_shared_library ((*iter).dll);
 			valuetypes_.erase(iter);
 		}
-		
+
 		(*iter).count++;
 	}
 	//
@@ -536,6 +536,33 @@ throw (CORBA::SystemException)
 		valuetypes_.push_back(data);
 	}
 }
+
+#ifndef _QEDO_NO_QOS
+void
+ComponentServerImpl::set_server_dispatcher ( Components::Extension::ServerInterceptorRegistration_ptr server_dispatcher)
+{
+	server_dispatcher_ = server_dispatcher;
+}
+
+void
+ComponentServerImpl::set_client_dispatcher ( Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher)
+{
+	client_dispatcher = client_dispatcher;
+}
+
+Components::Extension::ServerInterceptorRegistration_ptr
+ComponentServerImpl::get_server_dispatcher (  )
+{
+	return Components::Extension::ServerInterceptorRegistration::_duplicate (server_dispatcher_);
+}
+
+Components::Extension::ClientInterceptorRegistration_ptr
+ComponentServerImpl::get_client_dispatcher (  )
+{
+	return Components::Extension::ClientInterceptorRegistration::_duplicate (client_dispatcher_);
+}
+
+#endif
 
 
 } // namespace Qedo

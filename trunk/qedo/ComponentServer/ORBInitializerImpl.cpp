@@ -23,9 +23,13 @@
 #include "ORBInitializerImpl.h"
 #include "Output.h"
 #include "ConfigurationReader.h"
-#include "ServerInterceptorDispatcher.h"
 
-static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.8 2003/10/29 17:22:49 tom Exp $";
+#ifndef _QEDO_NO_QOS
+#include "ServerInterceptorDispatcher.h"
+#include "ClientInterceptorDispatcher.h"
+#endif
+
+static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.9 2003/11/04 10:12:09 tom Exp $";
 
 
 namespace Qedo {
@@ -33,10 +37,10 @@ namespace Qedo {
 
 ORBInitializerImpl::ORBInitializerImpl()
 {
-    //
+	//
 	// Register our ORB initializer
 	//
-    PortableInterceptor::register_orb_initializer (this);
+	PortableInterceptor::register_orb_initializer (this);
 }
 
 ORBInitializerImpl::ORBInitializerImpl(bool enable_qos)
@@ -134,6 +138,7 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	slot_id_ = info->allocate_slot_id();
 
 
+#ifndef _QEDO_NO_QOS
 	//
 	// Install ServerInterceptorDispatcher
 	//
@@ -144,6 +149,7 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 		info->add_server_request_interceptor(server_dispatcher.in());
 	}
 
+#endif
 	CORBA::release (nameService_);
 }
 
@@ -154,4 +160,18 @@ ORBInitializerImpl::slot_id()
 	return slot_id_;
 }
 
+#ifndef _QEDO_NO_QOS
+void
+ORBInitializerImpl::set_server_dispatcher (PortableInterceptor::ServerRequestInterceptor_ptr server_dispatcher)
+{
+
+}
+
+
+void
+ORBInitializerImpl::set_client_dispatcher (PortableInterceptor::ClientRequestInterceptor_ptr client_dispatcher)
+{
+
+}
+#endif
 } // namespace Qedo
