@@ -28,6 +28,9 @@
 
 module Qedo_Components {
 
+	//
+	// HomeFinder
+	//
 	interface HomeFinder : Components::HomeFinder
 	{
 		Components::Cookie register_home(in Components::CCMHome ahome, 
@@ -38,13 +41,30 @@ module Qedo_Components {
 		void unregister_home(in Components::Cookie ahome);
 	};
 
+	//
+	// deployment
+	//
 	module Deployment {
 
+		//
+		// ComponentServer
+		//
+		interface ComponentServer : Components::Deployment::ComponentServer
+		{
+			void loadValuetypeFactory(in string repid, in string loc);
+		};
+
+		//
+		// ServerActivator
+		//
 		interface ServerActivator : Components::Deployment::ServerActivator
 		{
 			void notify_component_server (in Components::Deployment::ComponentServer server);
 		};
 
+		//
+		// ComponentInstallation
+		//
 		interface ComponentInstallation : Components::Deployment::ComponentInstallation
 		{
 			string upload(in Components::Deployment::UUID implUUID, in CORBA::OctetSeq package)
@@ -53,7 +73,9 @@ module Qedo_Components {
 
 	};
 
+	//
 	// The interface for our helper servant that serves get_component() requests
+	//
 	interface GetComponentHelper
 	{
 		Components::CCMObject get_component();
