@@ -53,5 +53,9 @@ HomeFinder: $(OBJS)
 
 .PHONY:install
 
-install: HomeFinder
+install: install-prog
+
+.PHONY:install-prog
+
+install-prog: HomeFinder
 

@@ -57,6 +57,18 @@ CXXFLAGS += -DMICO_ORB $(MICO_CXXFLAGS)
 LIBS += $(shell mico-config --libs)
 endif
 
-install:
+install-prog:
 	${INSTALL} $^ @bindir@ 
+
+install-lib:
+	${INSTALL} $^ $(exec_prefix)/lib 
+
+install-include:
+	${INSTALL} $^ $(exec_prefix)/include 
+
+install-idl:
+	${INSTALL} $^ $(exec_prefix)/idl 
+
+install-etc:
+	${INSTALL} $^ $(exec_prefix)/etc 
 

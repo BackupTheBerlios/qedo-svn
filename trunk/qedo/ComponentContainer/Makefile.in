@@ -63,16 +63,28 @@ SOURCES = Key.cpp \
 		Valuetypes.cpp \
 		CCMHomeServant.cpp
 
+HEADER = ${SOURCES:.cpp=.h} \
+          Util.h \
+			 PortEntry.h
+
 
 OBJS = ${SOURCES:.cpp=.o}
 
-.PHONY:all
+.PHONY: all
 
 all: libComponentContainer.so
 
 libComponentContainer.so : $(OBJS)
 
-.PHONY:install
+.PHONY: install
 
-install: libComponentContainer.so
+install: install-lib install-include
+
+.PHONY: install-lib
+
+install-lib: libComponentContainer.so
+
+.PHONY: install-include
+
+install-include: $(HEADER)
 

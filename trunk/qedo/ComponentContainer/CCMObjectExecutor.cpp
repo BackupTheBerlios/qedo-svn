@@ -28,14 +28,16 @@
 #ifdef WIN32
 #include "objbase.h"
 #else /* Linux */
+#ifdef __linux__
 #include <stdint.h>
+#endif
 #include <sys/types.h>
 extern "C" {
 #include "uuid/uuid.h"
 }
 #endif
 
-static char rcsid[] UNUSED = "$Id: CCMObjectExecutor.cpp,v 1.21 2003/07/24 16:12:26 tom Exp $";
+static char rcsid[] UNUSED = "$Id: CCMObjectExecutor.cpp,v 1.22 2003/07/25 11:45:16 boehme Exp $";
 
 namespace Qedo {
 

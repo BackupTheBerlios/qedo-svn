@@ -18,42 +18,22 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 
-include MakeVars
+include ../MakeVars
 
-SUBDIRS = ComponentIDL \
-	  ComponentContainer \
-	  ComponentInstaller \
-	  ComponentServer \
-	  ComponentServerActivator \
-	  AssemblyFactory \
-	  HomeFinder \
-	  DeploymentClient
+@SET_MAKE@
 
-all: $(SUBDIRS:%=%-all)
+XML_FILES = catalog.xml componentassembly.dtd corbacomponent.dtd properties.dtd softpkg.dtd
 
-.PHONY: install-dir
+.PHONY:all
 
-@bindir@:
-	mkinstalldirs $@
+all:
 
-$(exec_prefix)/etc:
-	mkinstalldirs $@
 
-$(exec_prefix)/lib:
-	mkinstalldirs $@
+.PHONY:install
 
-$(exec_prefix)/include:
-	mkinstalldirs $@
+install: install-etc
 
-$(exec_prefix)/idl:
-	mkinstalldirs $@
+.PHONY:install-etc
 
-install-dir: @bindir@ $(exec_prefix)/etc $(exec_prefix)/lib $(exec_prefix)/include $(exec_prefix)/idl
+install-etc: $(XML_FILES)
 
-install: install-dir $(SUBDIRS:%=%-install)
-
-%-all: %
-	make -C $< all
-
-%-install: %
-	make -C $< install

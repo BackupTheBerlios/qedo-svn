@@ -52,5 +52,9 @@ deploy: $(OBJS)
 
 .PHONY:install
 
-install: deploy
+install: install-prog
+
+.PHONY:install-prog
+
+install-prog: deploy
 

@@ -69,5 +69,9 @@ ci: $(OBJS)
 
 .PHONY:install
 
-install: ci
+install: install-prog
+
+.PHONY:install-prog
+
+install-prog: ci
 

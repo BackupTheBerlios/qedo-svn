@@ -62,4 +62,8 @@ cs: $(OBJS)
 
 .PHONY:install
 
-install: cs
+install: install-prog
+
+.PHONY:install-prog
+
+install-prog: cs

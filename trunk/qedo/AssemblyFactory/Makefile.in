@@ -49,5 +49,9 @@ assf: $(OBJS)
 
 .PHONY:install
 
-install: assf
+install: install-prog
+
+.PHONY:install-prog
+
+install-prog: assf
 

@@ -94,7 +94,8 @@ AC_CONFIG_FILES([Makefile
                  ComponentServerActivator/Makefile
                  AssemblyFactory/Makefile
                  HomeFinder/Makefile
-                  DeploymentClient/Makefile
+                 DeploymentClient/Makefile
+                 etc/Makefile
                  ])
 
 AC_OUTPUT

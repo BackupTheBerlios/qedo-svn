@@ -41,4 +41,16 @@ libComponent.so : $(IDL_GEN_CXX:.cpp=.o)
 
 .PHONY:install
 
-install: libComponent.so
+install: install-lib install-include install-idl
+
+.PHONY:install-lib
+
+install-lib: libComponent.so
+
+.PHONY:install-idl
+
+install-idl: $(IDL_FILES)
+
+.PHONY:install-include
+
+install-include: $(IDL_GEN_H)

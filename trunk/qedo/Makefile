@@ -18,6 +18,8 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 
+include MakeVars
+
 SUBDIRS = ComponentIDL \
 	  ComponentContainer \
 	  ComponentInstaller \
@@ -29,7 +31,26 @@ SUBDIRS = ComponentIDL \
 
 all: $(SUBDIRS:%=%-all)
 
-install: $(SUBDIRS:%=%-install)
+.PHONY: install-dir
+
+${exec_prefix}/bin:
+	mkinstalldirs $@
+
+$(exec_prefix)/etc:
+	mkinstalldirs $@
+
+$(exec_prefix)/lib:
+	mkinstalldirs $@
+
+$(exec_prefix)/include:
+	mkinstalldirs $@
+
+$(exec_prefix)/idl:
+	mkinstalldirs $@
+
+install-dir: ${exec_prefix}/bin $(exec_prefix)/etc $(exec_prefix)/lib $(exec_prefix)/include $(exec_prefix)/idl
+
+install: install-dir $(SUBDIRS:%=%-install)
 
 %-all: %
 	make -C $< all
