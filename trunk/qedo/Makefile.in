@@ -31,7 +31,8 @@ SUBDIRS = ComponentIDL \
 	  ComponentServerActivator \
 	  AssemblyFactory \
 	  HomeFinder \
-	  DeploymentClient
+	  DeploymentClient \
+	  etc
 
 all: $(SUBDIRS:%=%-all)
 
