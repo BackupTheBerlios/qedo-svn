@@ -1,5 +1,5 @@
 echo Starting mico Nameservice on 3003
-start nsd -ORBIIOPAddr inet:tri:3003
+REM start nsd -ORBIIOPAddr inet:tri:3003
 echo Starting Component Installer
 start ci
 echo Starting Assembly Manager Factory
