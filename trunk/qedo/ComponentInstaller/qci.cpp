@@ -31,7 +31,7 @@
 #include <signal.h>
 
 
-static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.18 2003/09/09 12:04:35 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.19 2003/09/26 08:24:44 neubauer Exp $";
 
 
 /**
@@ -103,23 +103,21 @@ main (int argc, char** argv)
 {
 	std::cout << "Qedo Component Installer " << QEDO_VERSION << std::endl;
 
-#ifdef _WIN32
-	TCHAR tchBuffer[256];
-	LPTSTR lpszSystemInfo = tchBuffer;
-	DWORD dwResult = ExpandEnvironmentStrings("%QEDO%", lpszSystemInfo, 256);
-	Qedo::g_qedo_dir.append(lpszSystemInfo);
-#else
-	char *e = getenv("QEDO");
-	if(e) {
-	    Qedo::g_qedo_dir.append(e);
-	} else {
+	//
+	// get the qedo dir
+	//
+	Qedo::g_qedo_dir = Qedo::getEnvironment( "QEDO" );
+	if(Qedo::g_qedo_dir == "")
+	{
 	    std::cout << "Missing Environment Variable QEDO" << std::endl;
-	    std::cout << "Assuming curretn dir as local deployment dir" << std::endl; 
+	    std::cout << "Assuming current dir as local deployment dir" << std::endl; 
 	    Qedo::g_qedo_dir.append("./");
-	};
-	
-#endif
+	}
+	std::cout << "..... Qedo directory is " << Qedo::g_qedo_dir << std::endl;
 
+	//
+	// init ORB
+	//
 	orb = CORBA::ORB_init (argc, argv);
 
 	Qedo::ComponentInstallationImpl* component_installation = new Qedo::ComponentInstallationImpl (orb);
