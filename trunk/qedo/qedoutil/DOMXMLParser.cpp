@@ -41,7 +41,7 @@ XMLInitializer::XMLInitializer()
     catch(const XMLException& toCatch)
     {
         std::cerr << "Error during Xerces-c Initialization";
-        std::cerr << "  Exception message:" << StrX(toCatch.getMessage()) << std::endl;
+        std::cerr << "..... Exception message:" << StrX(toCatch.getMessage()) << std::endl;
     }
 }
 
@@ -60,6 +60,9 @@ XMLInitializer::~XMLInitializer()
  */
 DOMXMLParser::DOMXMLParser()
 {
+	// Initialize the XML4C2 system once for all instances
+	static XMLInitializer ini;
+
 	valScheme_ =			XercesDOMParser::Val_Auto;
     doNamespaces_ =			false;
     doSchema_ =				false;
@@ -83,13 +86,8 @@ DOMXMLParser::DOMXMLParser()
 
     // set catalog and resolver
     std::string uri = "file:///";
-    
+    uri.append( Qedo::getEnvironment( "QEDO" ) );
 #ifdef _WIN32
-	TCHAR tchBuffer[256];
-	LPTSTR lpszSystemInfo = tchBuffer;
-	DWORD dwResult = ExpandEnvironmentStrings("%QEDO%", lpszSystemInfo, 256); 
-    uri.append(lpszSystemInfo);
-
 	// replace \ by /
     std::string::size_type f = uri.find_first_of("\\");
     while ((f >= 0) && (f < uri.size()))
@@ -97,12 +95,6 @@ DOMXMLParser::DOMXMLParser()
         uri.replace(f, 1, "/");
         f = uri.find_first_of("\\");
     }
-#else
-	char* e = getenv("QEDO");
-   if(e)
-	{
-		uri.append(e);
-	}
 #endif
     uri.append("/etc/catalog.xml");
     mXMLCatalog = new XMLCatalog(*parser_, uri, true);

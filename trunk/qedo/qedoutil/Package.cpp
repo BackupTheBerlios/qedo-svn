@@ -72,118 +72,6 @@ Package::change_file_date
 }
 
 
-int 
-Package::extractCurrentfile
-( unzFile uf, std::string target )
-{
-	char filename_inzip[256];
-	char* filename_withoutpath;
-	char* p;
-	int err=UNZ_OK;
-	FILE *fout=NULL;
-	unz_file_info file_info;
-	uLong ratio=0;
-	void* buf;
-		
-	
-	// allocate memory
-	buf = (void*)malloc( WRITEBUFFERSIZE );
-	if ( buf == NULL )
-	{
-		std::cerr << "Error allocating memory\n";
-		return UNZ_INTERNALERROR;
-	}
-
-
-	err = unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
-	if ( err != UNZ_OK )
-	{
-		std::cerr  << "Error " << err << " with zipfile in unzGetCurrentFileInfo\n";
-		return( err );
-	}
-
-	
-	p = filename_withoutpath = filename_inzip;
-	while ((*p) != '\0')
-	{
-		if (((*p)=='/') || ((*p)=='\\'))
-		{
-			filename_withoutpath = p+1;
-		}
-		p++;
-	}
-
-  
-	if ((*filename_withoutpath)=='\0')
-	{
-		std::cerr << "Creating directory: " << filename_inzip << std::endl;
-		makeDir(filename_inzip);
-	}
-	else
-	{
-	    const char* write_filename = target.c_str();
-
-		err = unzOpenCurrentFile( uf );
-		if ( err != UNZ_OK )
-		{
-			std::cerr << "Error " << err << " with zipfile in unzOpenCurrentFile\n";
-			return( err );
-		}
-
-		fout = fopen( write_filename, "wb" );
-		if ( fout == NULL )
-	    {
-			std::cerr << "Error opening " << write_filename << std::endl;
-			return 1;
-		}
-
-
-		do
-		{
-			err = unzReadCurrentFile( uf, buf, WRITEBUFFERSIZE );
-			if ( err < 0 )
-			{
-				std::cerr << "Error " << err << " with zipfile in unzReadCurrentFile\n";
-				break;
-			}
-			if ( err > 0 )
-			{
-				if ( fwrite( buf, err, 1, fout ) != 1 )
-				{
-					std::cerr << "Error in writing extracted file\n";
-					err = UNZ_ERRNO;
-					break;
-				}
-			}
-		}
-		while ( err > 0 );
-		fclose( fout );
-      
-		if ( err == 0 )
-		{
-			change_file_date(write_filename,file_info.dosDate,file_info.tmu_date);
-		}
-    }
-
-
-    if ( err == UNZ_OK )
-    {
-		err = unzCloseCurrentFile( uf );
-		if ( err != UNZ_OK )
-		{
-			std::cerr << "Error " << err << " with zipfile in unzCloseCurrentFile\n";
-		}
-    }
-    else
-	{
-		unzCloseCurrentFile( uf ); /* don't lose the error */
-	}
-	
-	free( buf );
-	return( err );
-}
-
-
 Package::Package
 ( std::string file )
 {
@@ -255,11 +143,6 @@ Package::getFileNameWithSuffix
 
 	}
 
-    if ( csdFileName == std::string( "" ) )
-	{
-        std::cerr << "No descriptor file or too many descriptor files\n";
-	}
-
     unzClose( uf );
     return( csdFileName );
 }
@@ -267,28 +150,98 @@ Package::getFileNameWithSuffix
 
 int 
 Package::extractFile
-( std::string filename_to_extract, std::string target )
+( std::string source, std::string target )
 {
+	// open zip
 	unzFile uf = unzOpen( zipfilename.c_str() );
 	if ( uf == NULL )
 	{
-        std::cerr << "Cannot open " << zipfilename.c_str() << " to extract the file " << filename_to_extract.c_str() << std::endl;
+        std::cerr << "Cannot open " << zipfilename << " to extract the file " << source << std::endl;
         return( -1 );
 	}
 
-
-	int err = unzLocateFile( uf, filename_to_extract.c_str(), CASESENSITIVITY );
+	// locate file
+	int err = unzLocateFile( uf, source.c_str(), CASESENSITIVITY );
     if ( err != UNZ_OK )
 	{
-        std::cerr << "File " << filename_to_extract.c_str() << " not found in the zipfile\n";
+        std::cerr << "File " << source << " not found in the zipfile\n";
         unzClose( uf );
 		return err;
 	}
-    
 
-	err = extractCurrentfile( uf, target );
-    unzClose( uf );
-    return err;
+	// get file info
+	char filename_inzip[256];
+	unz_file_info file_info;
+	err = unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
+	if ( err != UNZ_OK )
+	{
+		std::cerr  << "Error " << err << " with zipfile in unzGetCurrentFileInfo\n";
+		return( err );
+	}
+
+	// allocate memory
+	void* buf = (void*)malloc( WRITEBUFFERSIZE );
+	if ( buf == NULL )
+	{
+		std::cerr << "Error allocating memory\n";
+		return UNZ_INTERNALERROR;
+	}
+
+	// open file
+	FILE *fout=NULL;
+	err = unzOpenCurrentFile( uf );
+	if ( err != UNZ_OK )
+	{
+		std::cerr << "Error " << err << " with zipfile in unzOpenCurrentFile\n";
+		return( err );
+	}
+
+	fout = fopen( target.c_str(), "wb" );
+	if ( fout == NULL )
+    {
+		std::cerr << "Error opening " << target << std::endl;
+		return 1;
+	}
+
+	// unpack
+	do
+	{
+		err = unzReadCurrentFile( uf, buf, WRITEBUFFERSIZE );
+		if ( err < 0 )
+		{
+			std::cerr << "Error " << err << " with zipfile in unzReadCurrentFile\n";
+			break;
+		}
+		if ( err > 0 )
+		{
+			if ( fwrite( buf, err, 1, fout ) != 1 )
+			{
+				std::cerr << "Error in writing extracted file\n";
+				err = UNZ_ERRNO;
+				break;
+			}
+		}
+	}
+	while ( err > 0 );
+	fclose( fout );
+      
+	if ( err == UNZ_OK )
+	{
+		change_file_date( target.c_str(), file_info.dosDate, file_info.tmu_date );
+		err = unzCloseCurrentFile( uf );
+		if ( err != UNZ_OK )
+		{
+			std::cerr << "Error " << err << " with zipfile in unzCloseCurrentFile\n";
+		}
+    }
+    else
+	{
+		unzCloseCurrentFile( uf );
+	}
+	
+	unzClose( uf );
+	free( buf );
+	return err;
 }
 
 
@@ -301,7 +254,6 @@ Package::extractFilesWithSuffix(std::string suffix, std::string destination)
         std::cerr << "Cannot open " << zipfilename.c_str() << " to find the descriptor file\n";
         return( 0 );
 	}
-
 
     uLong i;
     unz_global_info gi;
@@ -344,7 +296,6 @@ Package::extractFilesWithSuffix(std::string suffix, std::string destination)
 
 	}
 
- 
 	unzClose( uf );
     return( err );
 }

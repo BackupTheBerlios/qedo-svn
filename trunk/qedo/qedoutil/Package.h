@@ -73,11 +73,6 @@ private:
 	 */
     void change_file_date(const char*,uLong,tm_unz);
 
-	/**
-	 * bla
-	 */
-	int extractCurrentfile (unzFile, std::string);
-
 public:
 	
 	/**
@@ -98,10 +93,10 @@ public:
 	 * extracts a file from the archive
 	 * The file is specified by the string argument which represents
      * the pathname of the file within the archive. The return value is 0 if no error.
-	 * \param filename_to_extract
+	 * \param source
 	 * \param target
 	 */
-	int extractFile (std::string filename_to_extract, std::string target);
+	int extractFile (std::string source, std::string target);
 
     /**
 	 * extracts files
