@@ -112,13 +112,12 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "IFRidl___Win32_Debug_orbacus"
-# PROP Intermediate_Dir "IFRidl___Win32_Debug_orbacus"
+# PROP Output_Dir "IFRidl___Win32_Debug_orbacus_vc6"
+# PROP Intermediate_Dir "IFRidl___Win32_Debug_orbacus_vc6"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(MICO)\include" /I "$(MICO)\include\windows" /D "_LIB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_WINDOWS" /FD /GZ /c
 # SUBTRACT BASE CPP /YX
-# ADD CPP /nologo /MD /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\windows" /D "_LIB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_WINDOWS" /FD /GZ /c
-# SUBTRACT CPP /YX
+# ADD CPP /nologo /MD /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\ob" /D "_LIB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_WINDOWS" /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -266,7 +265,7 @@ BuildCmds= \
 InputPath=.\CIDL_Extension.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl  --c-suffix .cpp   CIDL_Extension.idl
+	$(ORBACUS)\bin\idl  --c-suffix .cpp   -I$(ORBACUS)\idl  -I$(ORBACUS)\idl\OB CIDL_Extension.idl
 
 "CIDL_Extension.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -368,7 +367,7 @@ BuildCmds= \
 InputPath=.\IFR.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl  --c-suffix  .cpp   IFR.idl
+	$(ORBACUS)\bin\idl  --c-suffix  .cpp   -I$(ORBACUS)\idl  -I$(ORBACUS)\idl\OB IFR.idl
 
 "IFR.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)

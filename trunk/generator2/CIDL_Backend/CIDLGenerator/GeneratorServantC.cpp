@@ -978,6 +978,8 @@ GeneratorServantC::genConsumerRegistration(IR__::HomeDef_ptr home)
 void
 GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 {
+	CORBA::ULong i;
+	CORBA::ULong ii;
 	// handle base home
 	IR__::HomeDef_var base = home->base_home();
 	if(base){ genHomeServant(base); }
@@ -987,7 +989,7 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 	// attributes
 	IR__::ContainedSeq_var contained_seq = home->contents(CORBA__::dk_Attribute, false);
 	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	for(i = 0; i < len; i++)
 	{
 		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
 		
@@ -1036,7 +1038,7 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 	// operations
 	contained_seq = home->contents(CORBA__::dk_Operation, false);
 	len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	for(i = 0; i < len; i++)
 	{
 		IR__::OperationDef_var operation = IR__::OperationDef::_narrow(((*contained_seq)[i]));
 
@@ -1047,7 +1049,7 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 		out << class_name_ << "::" << operation->name() << "(";
 		IR__::ParDescriptionSeq* pards = operation->params();
 		CORBA::ULong len = pards->length();
-		for(CORBA::ULong ii = len; ii > 0; ii--)
+		for(ii = len; ii > 0; ii--)
 		{
 			if(ii < len) { out << ", "; }
 			IR__::ParameterDescription pardescr = (*pards)[ii - 1];
@@ -1068,7 +1070,7 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 		out << "}\n\n";
 		if(!is_void) { out << "return "; }
 		out << "home_executor->" << operation->name() << "(";
-		for(CORBA::ULong ii = len; ii > 0; ii--)
+		for(ii = len; ii > 0; ii--)
 		{
 			if(ii < len) { out << ", "; }
 			IR__::ParameterDescription pardescr = (*pards)[ii - 1];

@@ -386,6 +386,7 @@ GeneratorBusinessH::doHome(IR__::HomeDef_ptr home)
 void
 GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 {
+	CORBA::ULong i ;
 	composition_ = CIDL::CompositionDef::_duplicate(composition);
 	filename_ = "";
 
@@ -467,7 +468,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// segment
 	//
-	for (CORBA::ULong i = 0; i < segment_seq->length(); i++)
+	for (i = 0; i < segment_seq->length(); i++)
 	{
 		class_name = segment_seq[i]->name();
 		out << "\n//\n// segment\n//\n";
@@ -518,7 +519,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
     out << mapLocalName(composition->ccm_component()) << "_Context_var context_;\n\n";
 	out << composition->executor()->name() << "* component_;\n\n";
-	for (CORBA::ULong i = 0; i < segment_seq->length(); i++)	{
+	for (i = 0; i < segment_seq->length(); i++)	{
 		out << segment_seq[i]->name() << "* " << segment_seq[i]->name() << "_;\n\n";
 	}
 	out.unindent();

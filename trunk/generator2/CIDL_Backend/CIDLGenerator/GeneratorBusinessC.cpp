@@ -346,6 +346,7 @@ GeneratorBusinessC::doHome(IR__::HomeDef_ptr home)
 void
 GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 {
+	CORBA::ULong i;
 	composition_ = CIDL::CompositionDef::_duplicate(composition);
 	filename_ = "";
 	CIDL::SegmentDefSeq_var segment_seq = composition->executor()->segments();
@@ -436,7 +437,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// segment
 	//
-	for (CORBA::ULong i = 0; i < segment_seq->length(); i++)
+	for (i = 0; i < segment_seq->length(); i++)
 	{
 		class_name_ = segment_seq[i]->name();
 		out.insertUserSection(class_name_, 2);
@@ -486,7 +487,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << class_name_ << "::" << class_name_ << "()\n";
 	out.indent();
 	out << ": component_(new " << composition->executor()->name() << "())\n";
-	for (CORBA::ULong i = 0; i < segment_seq->length(); i++)	{
+	for (i = 0; i < segment_seq->length(); i++)	{
 		out << ", " << segment_seq[i]->name() << "_(new " << segment_seq[i]->name() << "())\n";
 	}
 	out.unindent();
@@ -498,7 +499,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
 	out.indent();
 	out << "component_->_remove_ref();\n";
-	for (CORBA::ULong i = 0; i < segment_seq->length(); i++)	{
+	for (i = 0; i < segment_seq->length(); i++)	{
 		out << segment_seq[i]->name() << "_->_remove_ref();\n";
 	}
 	out.unindent();

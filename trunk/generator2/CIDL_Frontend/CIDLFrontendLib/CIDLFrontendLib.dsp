@@ -1,27 +1,27 @@
 # Microsoft Developer Studio Project File - Name="CIDLFrontendLib" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
 CFG=CIDLFrontendLib - Win32 Debug_tao
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "CIDLFrontendLib.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "CIDLFrontendLib.mak" CFG="CIDLFrontendLib - Win32 Debug_tao"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "CIDLFrontendLib - Win32 Release" (basierend auf  "Win32 (x86) Static Library")
-!MESSAGE "CIDLFrontendLib - Win32 Debug" (basierend auf  "Win32 (x86) Static Library")
-!MESSAGE "CIDLFrontendLib - Win32 Debug_mico" (basierend auf  "Win32 (x86) Static Library")
-!MESSAGE "CIDLFrontendLib - Win32 Debug_orbacus" (basierend auf  "Win32 (x86) Static Library")
-!MESSAGE "CIDLFrontendLib - Win32 Debug_tao" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "CIDLFrontendLib - Win32 Release" (based on "Win32 (x86) Static Library")
+!MESSAGE "CIDLFrontendLib - Win32 Debug" (based on "Win32 (x86) Static Library")
+!MESSAGE "CIDLFrontendLib - Win32 Debug_mico" (based on "Win32 (x86) Static Library")
+!MESSAGE "CIDLFrontendLib - Win32 Debug_orbacus" (based on "Win32 (x86) Static Library")
+!MESSAGE "CIDLFrontendLib - Win32 Debug_tao" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -109,8 +109,8 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "CIDLFrontendLib___Win32_Debug_orbacus"
-# PROP Intermediate_Dir "CIDLFrontendLib___Win32_Debug_orbacus"
+# PROP Output_Dir "CIDLFrontendLib___Win32_Debug_orbacus_vc6"
+# PROP Intermediate_Dir "CIDLFrontendLib___Win32_Debug_orbacus_vc6"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /Gm /GR /GX /ZI /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /I "$(MICO)\include" /I "$(MICO)\include\windows" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "__STDC__" /D "_WINDOWS" /YX /FD /GZ /c
 # ADD CPP /nologo /MD /W3 /Gm /GR /GX /ZI /Od /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\ob" /D "KC_DEPRECATED" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "__STDC__" /D "YYERROR_VERBOSE" /D "YYDEBUG" /YX /FD /GZ /c
@@ -479,6 +479,121 @@ BuildCmds= \
 
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_orbacus"
 
+# Begin Custom Build
+InputPath=.\tree.k
+
+BuildCmds= \
+	$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
+
+"k.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"k.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"unpk.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"unpk.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"attributes.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"attributes.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cg_io.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cg_io.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cidl_attributes.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cidl_attributes.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"debug.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"debug.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"error.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"error.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"frontend.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"frontend.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"global.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"global.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"options.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"options.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"pretty.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"pretty.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"print_idl.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"print_idl.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"printer.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"printer.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"repository.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"repository.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"resolve_symtab.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"resolve_symtab.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"symtab.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"symtab.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"tree.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"tree.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"util.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"util.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_tao"
 
 # Begin Custom Build
@@ -636,7 +751,7 @@ InputPath=.\cidl.y
 InputPath=.\cidl.y
 
 BuildCmds= \
-	$(YACC) -y -v -d -o cidl.cpp cidl.y \
+	env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y \
 	copy cidl.hpp cidl.h \
 	
 

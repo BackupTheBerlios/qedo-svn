@@ -1,27 +1,27 @@
 # Microsoft Developer Studio Project File - Name="CIDLGenerator" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
 CFG=CIDLGenerator - Win32 Debug_tao
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "CIDLGenerator.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "CIDLGenerator.mak" CFG="CIDLGenerator - Win32 Debug_tao"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "CIDLGenerator - Win32 Release" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "CIDLGenerator - Win32 Debug" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "CIDLGenerator - Win32 Debug_mico" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "CIDLGenerator - Win32 Debug_orbacus" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "CIDLGenerator - Win32 Debug_tao" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Debug_mico" (based on "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Debug_orbacus" (based on "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Debug_tao" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -119,8 +119,8 @@ PostBuild_Cmds=md ..\..\..\qedo_dist_mico_d	md ..\..\..\qedo_dist_mico_d\bin	cop
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "CIDLGenerator___Win32_Debug_orbacus"
-# PROP Intermediate_Dir "CIDLGenerator___Win32_Debug_orbacus"
+# PROP Output_Dir "CIDLGenerator___Win32_Debug_orbacus_vc6"
+# PROP Intermediate_Dir "CIDLGenerator___Win32_Debug_orbacus_vc6"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /I "..\..\CIDL_Frontend\CIDLFrontendLib" /I "$(MICO)\include" /I "$(MICO)\include\windows" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "__DEBUG__" /D "_WINDOWS" /FD /GZ /Zm500 /c

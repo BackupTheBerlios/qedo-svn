@@ -112,8 +112,8 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "ComponentRepositoryLib___Win32_Debug_orbacus"
-# PROP Intermediate_Dir "ComponentRepositoryLib___Win32_Debug_orbacus"
+# PROP Output_Dir "ComponentRepositoryLib___Win32_Debug_orbacus_vc6"
+# PROP Intermediate_Dir "ComponentRepositoryLib___Win32_Debug_orbacus_vc6"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /Gm /GR /GX /ZI /Od /I "." /I "..\IFRidl" /I "$(MICO)\include" /I "$(MICO)\include\windows" /D "_LIB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_WINDOWS" /FD /GZ /c
 # SUBTRACT BASE CPP /YX
