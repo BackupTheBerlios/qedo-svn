@@ -1,0 +1,24 @@
+include ../../MakeVars
+
+CXX = @CXX@
+CPPFLAGS+=-I. -I../IFRidl -I../ComponentRepositoryLib @CPPFLAGS@ 
+CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+CXXCOMPILE=@CXX@ $(CXXFLAGS)
+LIBS=@LIBS@
+
+@SET_MAKE@
+
+CXXFLAGS +=  $(IDLCXXFLAGS) $(INCLUDES)
+
+SOURCES = CIDLRepository_impl.cpp \
+			CompositionDef_impl.cpp \
+			ExecutorDef_impl.cpp \
+			HomeExecutorDef_impl.cpp \
+			SegmentDef_impl.cpp
+
+.PHONY:all
+
+all: libCIDLRepositoryLib.a
+
+libCIDLRepositoryLib.a : $(SOURCES:.cpp=.o)
+

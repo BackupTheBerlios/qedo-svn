@@ -1,0 +1,21 @@
+#include "monitoring_service.idl"
+module container_service {
+	
+	composition service MonImpl {
+		home executor HomeMonExec {
+			implements monitor_home;
+			manages MonExec;
+		};
+	};
+
+};
+
+// example for service container definition
+//
+
+//	composition container MonImpl {
+//		home executor HomeMonExec {
+//			implements monitor_home;
+//			manages MonExec;
+//		};
+//	};
