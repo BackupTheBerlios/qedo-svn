@@ -7,15 +7,21 @@
 
     <componentfiles>
         <componentfile id="Callee_file">
-            <fileinarchive name="HelloWorld_CalleeImpl.zip"/>
+            <fileinarchive name="meta-inf/HelloWorld_CalleeImpl.csd">
+				<link href="HelloWorld_CalleeImpl.zip"/>
+			</fileinarchive>
         </componentfile>
 
         <componentfile id="Caller_file">
-            <fileinarchive name="HelloWorld_CallerImpl.zip"/>
+            <fileinarchive name="meta-inf/HelloWorld_CallerImpl.csd">
+				<link href="HelloWorld_CallerImpl.zip"/>
+			</fileinarchive>
         </componentfile>
 
         <componentfile id="Monitor_file">
-            <fileinarchive name="container_service_MonImpl.zip"/>
+            <fileinarchive name="meta-inf/container_service_MonImpl.csd">
+				<link href="container_service_MonImpl.zip"/>
+			</fileinarchive>
         </componentfile>
 
     </componentfiles>
