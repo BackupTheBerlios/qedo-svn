@@ -1,9 +1,11 @@
+#include ../MakeVars
+
 # Configuration Debug_mico_linux
 ProjectName=ComponentIDL
 OutDir=./Debug_mico_linux
 IntDir=./Debug_mico_linux
 Name=Debug_mico_linux
-CFLAGS=-I. -I$(mico)/include -g
+CFLAGS=-I. -I$(MICO)/include -g
 CXXFLAGS=-I. -I$(MICO)/include -g
 LIBS=-L$(MICO)/lib -lpthread -lmico2.3.9 
 
@@ -52,8 +54,6 @@ yacc:
 
 
 Kimwitu:  
-
-
 
 
 

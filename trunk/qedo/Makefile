@@ -6,6 +6,9 @@ endif
 
 all: Componentidl ComponentContainer AssemblyFactory DeploymentClient ComponentInstaller ComponentServer ComponentServerActivator HomeFinder
 
+install: all
+	sh distributeQedo.sh $(TARGET) $(QEDO)
+
 Componentidl:
 	mkdir -p ComponentIDL/$(TARGET) ; make -C ComponentIDL $(TARGET)
 
@@ -25,9 +28,6 @@ ComponentServer: ComponentContainer ComponentIDL
 
 ComponentServerActivator: ComponentIDL
 	 mkdir -p ComponentServerActivator/$(TARGET); make -C ComponentServerActivator $(TARGET)
-
-x:
-	echo $(TARGET)
 
 AssemblyFactory: ComponentIDL ComponentContainer
 	 mkdir -p AssemblyFactory/$(TARGET); make -C AssemblyFactory $(TARGET)

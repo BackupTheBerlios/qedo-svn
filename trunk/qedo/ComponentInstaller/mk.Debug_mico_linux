@@ -15,9 +15,9 @@ LDLIBS+=$(LIBS)
 
 CC=$(CXX)
 
-all:  ../../Runtime/ci 
+all:  ci 
 
-../../Runtime/ci : $(IntDir)/CatalogResolver.o $(IntDir)/ComponentImplementation.o $(IntDir)/ComponentInstallationImpl.o $(IntDir)/DOMTreeErrorReporter.o $(IntDir)/DOMXMLParser.o $(IntDir)/libunzip.o $(IntDir)/NameServiceBase.o $(IntDir)/Package.o $(IntDir)/PlatformBase.o $(IntDir)/XMLCatalog.o $(IntDir)/main.o 
+ci : $(IntDir)/CatalogResolver.o $(IntDir)/ComponentImplementation.o $(IntDir)/ComponentInstallationImpl.o $(IntDir)/DOMTreeErrorReporter.o $(IntDir)/DOMXMLParser.o $(IntDir)/libunzip.o $(IntDir)/NameServiceBase.o $(IntDir)/Package.o $(IntDir)/PlatformBase.o $(IntDir)/XMLCatalog.o $(IntDir)/main.o 
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 $(IntDir)/CatalogResolver.o:	CatalogResolver.cpp
