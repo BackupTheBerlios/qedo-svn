@@ -26,7 +26,7 @@
 #include <signal.h>
 
 
-static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.13 2003/09/26 08:17:21 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.14 2003/09/29 14:42:25 boehme Exp $";
 
 /**
  * @addtogroup Assembly
@@ -49,8 +49,9 @@ namespace Qedo {
 
 void
 handle_sigint
-( int signal )
+( int sig )
 {
+	signal(sig, SIG_IGN);
 	std::cout << "\nGot Crtl-C" << std::endl;
 	std::cerr << "..... unbind in NameService" << std::endl;
 
