@@ -110,7 +110,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;../qedoutil;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;../StreamComponentIDL;../ComponentContainer;../ComponentInstaller;../qedoutil;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"

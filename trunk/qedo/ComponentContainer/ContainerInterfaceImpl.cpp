@@ -32,7 +32,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.40 2003/10/01 08:35:01 neubauer Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.41 2003/10/17 10:47:57 stoinski Exp $";
 
 
 namespace Qedo {
@@ -182,7 +182,7 @@ ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 			}
 			catch (const CORBA::SystemException& e)
 			{
-				DEBUG_OUT ("ContainerInterfaceImpl: Event dispatcher thread: got CORBA system exception during delivery");
+				DEBUG_OUT ("ContainerInterfaceImpl: Event dispatcher thread: Got CORBA system exception during delivery");
 #ifdef MICO_ORB
 				e._print (std::cerr);
 #endif
