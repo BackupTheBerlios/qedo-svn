@@ -113,7 +113,7 @@ class CONTAINERDLL_API ThreadSupport : public virtual Components::CCMContext
  */
 class CONTAINERDLL_API CCMContext : public virtual Components::CCMContext,
 									public virtual RefCountLocalObject,
-									public ThreadSupport
+									public virtual ThreadSupport
 {
 	/** needs access to ccm_object_executor_ */
 	friend class InternalConfiguration;
