@@ -27,7 +27,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: InstallationReader.cpp,v 1.1 2003/09/26 08:31:46 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: InstallationReader.cpp,v 1.2 2003/10/05 19:26:40 tom Exp $";
 
 
 namespace Qedo {
@@ -196,11 +196,11 @@ throw(InstallationReadException)
 	DOMElement* implem = doc->createElement(X("implementation"));
 	implem->setAttribute(X("id"), X(data->uuid.c_str()));
 	implem->setAttribute(X("installation"), X(data->installation_dir.c_str()));
-	if(data->csd != "")
+	if(data->csd.length())
 	{
 		implem->setAttribute(X("csd"), X(data->csd.c_str()));
 	}
-	if(data->assembly.cad != "")
+	if(data->assembly.cad.length())
 	{
 		implem->setAttribute(X("cad"), X(data->assembly.cad.c_str()));
 	}
