@@ -53,10 +53,9 @@ class HomeEntry
 {
 public:
 	/** the servant of the home */
-	Qedo::HomeServantBase* home_servant_;
-
+	Qedo::HomeServantBase*						home_servant_;
 	/** id for registration in home finder */
-	Components::Cookie* home_cookie_;
+	Components::Cookie*							home_cookie_;
 
 	/** handle of the servant module dynamic library */
 #ifdef _WIN32
@@ -224,6 +223,12 @@ private:
 	 * The event dispatcher thread
 	 */
 	static void* event_dispatcher_thread (void*);
+
+	/**
+	 * register the required valuetype factories if not already done
+	 */
+	void loadValuetypeFactories(std::string)
+		throw (Components::CCMException);
 
 public:
 	/**

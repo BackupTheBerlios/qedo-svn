@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.31 2003/08/26 12:03:48 boehme Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.32 2003/08/27 06:40:30 neubauer Exp $";
 
 
 namespace Qedo {
@@ -510,6 +510,7 @@ throw (Components::Deployment::UnknownImplId,
 	std::string::size_type pos;
 	std::string desc = (const char*)description;
 
+	// servant module
 	pos = desc.find (";");
 	if (pos == std::string::npos)
 	{
@@ -517,9 +518,9 @@ throw (Components::Deployment::UnknownImplId,
 		throw Components::Deployment::InstallationFailure();
 	}
 	std::string servant_module = desc.substr (0, pos);
-
 	desc = desc.substr (pos + 1);
 
+	// servant entry point
 	pos = desc.find (";");
 	if (pos == std::string::npos)
 	{
@@ -527,9 +528,9 @@ throw (Components::Deployment::UnknownImplId,
 		throw Components::Deployment::InstallationFailure();
 	}
 	std::string servant_entry_point = desc.substr (0, pos);
-
 	desc = desc.substr (pos + 1);
 
+	// executor module
 	pos = desc.find (";");
 	if (pos == std::string::npos)
 	{
@@ -537,10 +538,22 @@ throw (Components::Deployment::UnknownImplId,
 		throw Components::Deployment::InstallationFailure();
 	}
 	std::string executor_module = desc.substr (0, pos);
-
 	desc = desc.substr (pos + 1);
 
-	std::string executor_entry_point = desc;
+	// executor entry point
+	pos = desc.find (";");
+	if (pos == std::string::npos)
+	{
+		std::cerr << "ContainerInterfaceImpl: Cannot extract executor entry point name" << std::endl;
+		throw Components::Deployment::InstallationFailure();
+	}
+	std::string executor_entry_point = desc.substr (0, pos);
+	desc = desc.substr (pos + 1);
+
+	//
+	// handle valuetypes
+	//
+	loadValuetypeFactories(desc);
 
 	// Now we have all relevant information and can go to load the dynamic code modules
 #ifdef _WIN32
@@ -768,7 +781,9 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	installed_homes_.erase (homes_iter);
 
 
+	DEBUG_OUT ("..... unload home servant code");
 	this->unload_shared_library (servant_module);
+	DEBUG_OUT ("..... unload home executor code");
 	this->unload_shared_library (executor_module);
 }
 
@@ -841,6 +856,25 @@ throw (Components::CCMException)
 	}
 
 	throw Components::CCMException();
+}
+
+
+void
+ContainerInterfaceImpl::loadValuetypeFactories(std::string desc)
+throw (Components::CCMException)
+{
+	std::string::size_type pos = desc.find (";");
+	while (pos != std::string::npos)
+	{
+		std::string value_repid = desc.substr (0, pos);
+		desc = desc.substr (pos + 1);
+		pos = desc.find (";");
+		std::string value_code = desc.substr (0, pos);
+		desc = desc.substr (pos + 1);
+		pos = desc.find (";");
+
+		component_server_->loadValuetypeFactory(value_repid.c_str(), value_code.c_str());
+	}
 }
 
 
