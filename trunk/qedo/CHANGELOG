@@ -1,3 +1,7 @@
+version 0.5.1
+- improved qos integration
+- improved stream integration
+
 version0.5.0
 - first version of stream extensions
 - configuration file

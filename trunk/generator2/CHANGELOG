@@ -1,3 +1,6 @@
+version 0.5.1
+- improved support for inheritance
+
 version 0.5.0
 - author field in the CSD
 - UUID for Component software descriptor on unix side
