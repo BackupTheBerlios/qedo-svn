@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.17 2003/06/18 15:34:19 boehme Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.18 2003/07/02 22:11:45 tom Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -275,7 +275,11 @@ throw (Components::InvalidName, CORBA::SystemException)
 	{
 		for (unsigned int j = 0; j < facets_.size(); j++)
 		{	
+#ifdef MICO_ORB
+			if (facets_[j].port_name() == names[i].in())
+#else
 			if (facets_[j].port_name() == names[i])
+#endif
 			{
                 facets->length (facets->length() + 1);
 				facets[facets->length() - 1] = facets_[j].facet_description();
