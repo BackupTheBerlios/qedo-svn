@@ -17,7 +17,7 @@ namespace QEDO_CIDL_Generator {
 class GeneratorLIDL : public virtual IDLBase
 {
 	std::set<std::string> m_recursion_set;
-	void check_for_generation ( IR__::Contained_ptr item );
+	void check_for_generation(IR__::Contained_ptr item, bool insertAllowed = true);
 
 	string filename_;
 	std::string managed_component_;

@@ -17,11 +17,7 @@ class GeneratorVC7 : public CPPBase {
 	Printer out;
 
 	void doModule(IR__::ModuleDef_ptr module);
-
 	void doComposition(CIDL::CompositionDef_ptr composition);
-
-protected:
-	void check_for_generation(IR__::Contained_ptr item) {};
 
 public:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
@@ -34,7 +30,9 @@ public:
 
 };
 
-} // namespace QEDO_CIDL_Generator
+
+} // namespace
+
 
 #endif
 

@@ -402,19 +402,25 @@ throw ( CannotMapType )
 {
 	string ret_string;
 
-	CORBA::TCKind pre_typecodekind;
-	CORBA::TCKind real_typecodekind;
-	pre_typecodekind=type->type()->kind() ;
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
 
-	if(pre_typecodekind == CORBA::tk_alias) {
-		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(type);
-		real_typecodekind = alias->original_type_def()->type()->kind();
-	} else {
-		real_typecodekind = type -> type() -> kind() ;
-	};
-
-	switch (real_typecodekind)
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
 	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
+
+	switch (typecodekind)
+	{
+	case CORBA::tk_alias : {
+		assert(0);
+		break; }
 	case CORBA::tk_void:
 		ret_string = "void";
 		break;
@@ -496,6 +502,9 @@ throw ( CannotMapType )
 	case CORBA::tk_sequence:
 		ret_string = map_absolute_name(type);
 		ret_string = ret_string + "*";
+		break;
+	case CORBA::tk_TypeCode :
+		ret_string = "CORBA::TypeCode_ptr";
 		break;
 	default:
 		throw CannotMapType();
@@ -692,18 +701,21 @@ throw ( CannotMapType )
 {
 	string ret_string;
 
-	CORBA::TCKind pre_typecodekind;
-	CORBA::TCKind real_typecodekind;
-	pre_typecodekind=type->type()->kind() ;
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
 
-	if(pre_typecodekind == CORBA::tk_alias) {
-		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(type);
-		real_typecodekind = alias->original_type_def()->type()->kind();
-	} else {
-		real_typecodekind = type -> type() -> kind() ;
-	};
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
 
-	switch (real_typecodekind)
+	switch (typecodekind)
 	{
 	case CORBA::tk_void:
 		ret_string = "void";
@@ -786,6 +798,9 @@ throw ( CannotMapType )
 	case CORBA::tk_sequence:
 		ret_string = map_absolute_name(type);
 		ret_string = ret_string + "*";
+		break;
+	case CORBA::tk_TypeCode :
+		ret_string = "CORBA::TypeCode_ptr";
 		break;
 	default:
 		throw CannotMapType();
@@ -893,19 +908,25 @@ throw ( CannotMapType )
 {
 	string ret_string;
 
-	CORBA::TCKind pre_typecodekind;
-	CORBA::TCKind real_typecodekind;
-	pre_typecodekind=type->type()->kind() ;
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
 
-	if(pre_typecodekind == CORBA::tk_alias) {
-		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(type);
-		real_typecodekind = alias->original_type_def()->type()->kind();
-	} else {
-		real_typecodekind = type -> type() -> kind() ;
-	};
-
-	switch ( real_typecodekind )
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
 	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
+
+	switch (typecodekind)
+	{
+	case CORBA::tk_alias : {
+		assert(0);
+		break; }
 	case CORBA::tk_void:
 		ret_string = "void";
 		break;
@@ -987,6 +1008,9 @@ throw ( CannotMapType )
 		ret_string=ret_string + map_absolute_name(type);
 		ret_string=ret_string + "&";
 		break;
+	case CORBA::tk_TypeCode :
+		ret_string = "CORBA::TypeCode_ptr";
+		break;
 	default:
 		throw CannotMapType();
 	}
@@ -1001,7 +1025,21 @@ throw ( CannotMapType )
 {
 	string ret_string;
 
-	switch ( type -> type() -> kind() )
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
+
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
+
+	switch(typecodekind)
 	{
 	case CORBA::tk_void:
 		ret_string = "void";
@@ -1077,6 +1115,9 @@ throw ( CannotMapType )
 		ret_string = map_absolute_name ( type );
 		ret_string = ret_string + "&";
 		break;
+	case CORBA::tk_TypeCode :
+		ret_string = "CORBA::TypeCode_ptr&";
+		break;
 	default:
 		throw CannotMapType();
 	}
@@ -1090,18 +1131,22 @@ CPPBase::map_out_parameter_type
 throw ( CannotMapType )
 {
 	string ret_string;
-	CORBA::TCKind pre_typecodekind;
-	CORBA::TCKind real_typecodekind;
-	pre_typecodekind=type->type()->kind() ;
+	
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
 
-	if(pre_typecodekind == CORBA::tk_alias) {
-		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(type);
-		real_typecodekind = alias->original_type_def()->type()->kind();
-	} else {
-		real_typecodekind = type -> type() -> kind() ;
-	};
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
 
-	switch ( real_typecodekind )
+	switch(typecodekind)
 	{
 	case CORBA::tk_void:
 		ret_string = "void";
@@ -1180,6 +1225,9 @@ throw ( CannotMapType )
 	case CORBA::tk_sequence:
 		ret_string = map_absolute_name ( type );
 		ret_string = ret_string + "_out";
+		break;
+	case CORBA::tk_TypeCode :
+		ret_string = "CORBA::TypeCode_out";
 		break;
 	default:
 		throw CannotMapType();

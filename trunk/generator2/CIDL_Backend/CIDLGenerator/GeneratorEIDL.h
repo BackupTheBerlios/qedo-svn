@@ -3,12 +3,9 @@
 
 #include "IDLBase.h"
 #include "Printer.h"
-
 #include <fstream>
 #include <iostream>
-
 #include <set>
-using namespace std;
 
 
 namespace QEDO_CIDL_Generator {
@@ -18,34 +15,27 @@ class GeneratorEIDL : public virtual IDLBase
 {
 
 	std::set<std::string> m_recursion_set;
-	void check_for_generation ( IR__::Contained_ptr item );
+	void check_for_generation(IR__::Contained_ptr item, bool insertAllowed = true);
 
-	string filename_;
-	string managed_component_;
-	map < string, bool > includes_;
+	std::string filename_;
+	std::string managed_component_;
+	std::map < std::string, bool > includes_;
 
-	void checkForInclude(CORBA::TypeCode_ptr type);
+	void checkForInclude(IR__::Contained_ptr item);
 
 	void doModule(IR__::ModuleDef_ptr module);
-	void beginModule(IR__::ModuleDef_ptr module);
-	void endModule(IR__::ModuleDef_ptr module);
 	void doInterface(IR__::InterfaceDef_ptr intface);
 	void doException(IR__::ExceptionDef_ptr except);
 	void doEnum(IR__::EnumDef_ptr enumeration);
-	void beginValue(IR__::ValueDef_ptr value);
-	void endValue(IR__::ValueDef_ptr value);
-	// event type
-	void beginEvent(IR__::ValueDef_ptr value);
-	void endEvent(IR__::ValueDef_ptr value);
+	void doValue(IR__::ValueDef_ptr value);
+	void doEvent(IR__::ValueDef_ptr value);
 	void doValueMember(IR__::ValueMemberDef_ptr member);
 	void doAttribute(IR__::AttributeDef_ptr attribute);
 	void doOperation(IR__::OperationDef_ptr operation);
 	void doFactory(IR__::FactoryDef_ptr factory);
 	void doFinder(IR__::FinderDef_ptr finder);
-	void beginHome(IR__::HomeDef_ptr home);
-	void endHome(IR__::HomeDef_ptr home);
-	void beginComponent(IR__::ComponentDef_ptr component);
-	void endComponent(IR__::ComponentDef_ptr component);
+	void doHome(IR__::HomeDef_ptr home);
+	void doComponent(IR__::ComponentDef_ptr component);
 	void doProvides(IR__::ProvidesDef_ptr provides);
 	void doUses(IR__::UsesDef_ptr uses);
 	void doEmits(IR__::EmitsDef_ptr emits);
@@ -54,7 +44,6 @@ class GeneratorEIDL : public virtual IDLBase
 	void doSink(IR__::SinkDef_ptr sink);
 	void doSource(IR__::SourceDef_ptr source);
 	void doSiSo(IR__::SiSoDef_ptr siso);
-	void doComposition(CIDL::CompositionDef_ptr composition);
 	void doTypedef(IR__::TypedefDef_ptr tdef);
 	void doAlias(IR__::AliasDef_ptr adef);
 	void doStruct(IR__::StructDef_ptr sdef);
@@ -69,6 +58,8 @@ public:
 
 };
 
-} // namespace QEDO_CIDL_Generator
+
+} // namespace
+
 
 #endif

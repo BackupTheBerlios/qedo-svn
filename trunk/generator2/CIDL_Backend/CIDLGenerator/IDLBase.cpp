@@ -34,7 +34,7 @@ IDLBase::generate_the_item ( IR__::Contained_ptr item ) {
 	IR__::ModuleDef_var act_module;
 	IR__::StructDef_var act_struct;
 
-	std::cout << "Debug: item to generate: " << item->name() << std::endl;
+	std::cout << "Debug: item to generate: " << item->id() << std::endl;
 	this->open_module(item);
 	switch (item->describe()->kind) {
 	case CORBA__::dk_Module:
@@ -87,6 +87,25 @@ IDLBase::generate_the_item ( IR__::Contained_ptr item ) {
 	};
 
 	this->close_module(item);
+}
+
+
+//
+// check whether the contained are defined in the same scope
+//
+bool 
+IDLBase::definedInTheSame(IR__::Contained_ptr cont1, IR__::Contained_ptr cont2)
+{
+	IR__::Contained_ptr c1 = IR__::Contained::_narrow(cont1->defined_in());
+	IR__::Contained_ptr c2 = IR__::Contained::_narrow(cont2->defined_in());
+	
+	if(c1 && c2) {
+		if(!strcmp(c1->id(), c2->id())) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 

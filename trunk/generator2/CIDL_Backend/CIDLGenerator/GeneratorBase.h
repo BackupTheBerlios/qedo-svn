@@ -27,6 +27,7 @@ protected:
 	IR__::Contained_var								target_;
 	// internal list for items to generate
 	IR__::ContainedSeq_var							m_to_generate_seq;
+	IR__::ContainedSeq_var							m_to_generate_interface_seq;
 
 	std::string getNameFromRepId(std::string id);
 
@@ -34,7 +35,7 @@ protected:
 	void initialize(std::string target, std::string fileprefix);
 	bool already_included (IR__::Contained_ptr item);
 	void insert_to_generate(IR__::Contained_ptr item);
-	virtual void check_for_generation(IR__::Contained_ptr item);
+	virtual void check_for_generation(IR__::Contained_ptr item, bool insertAllowed = true);
 
 	// start generation
 	void doGenerate();
@@ -90,6 +91,7 @@ protected:
 	virtual void doException(IR__::ExceptionDef_ptr except);
 
 	// enum
+	void handleEnum(IR__::Container_ptr container);
 	virtual void doEnum(IR__::EnumDef_ptr enumeration);
 
 	// constant
@@ -101,10 +103,16 @@ protected:
 	virtual void doTypedef(IR__::TypedefDef_ptr tdef);
 
 	// alias
+	void handleAlias(IR__::Container_ptr container);
 	virtual void doAlias(IR__::AliasDef_ptr adef);
 
 	// struct
+	void handleStruct(IR__::Container_ptr container);
 	virtual void doStruct(IR__::StructDef_ptr sdef);
+
+	// union
+	void handleUnion(IR__::Container_ptr container);
+	virtual void doUnion(IR__::UnionDef_ptr udef);
 
 	// provides
 	void handleProvides(IR__::ComponentDef_ptr component);

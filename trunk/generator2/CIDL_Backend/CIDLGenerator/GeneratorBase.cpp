@@ -16,6 +16,9 @@ GeneratorBase::GeneratorBase
 
 	m_to_generate_seq = new IR__::ContainedSeq();
 	m_to_generate_seq->length(0);
+
+	m_to_generate_interface_seq = new IR__::ContainedSeq();
+	m_to_generate_interface_seq->length(0);
 }
 
 
@@ -118,29 +121,52 @@ GeneratorBase::already_included (IR__::Contained_ptr item)
 	CORBA::ULong i;
 	CORBA::ULong len;
 
-	len = m_to_generate_seq -> length();
-	if (len == 0 ) 
-		return false;
-	for (i = 0 ; i < len ; i++) {
-		if (!strcmp((*m_to_generate_seq)[i]->id(), item->id())) {
-			return true;
+	switch(item->describe()->kind) {
+	case CORBA__::dk_Interface :
+	case CORBA__::dk_Home :
+	case CORBA__::dk_Component :
+		len = m_to_generate_interface_seq -> length();
+		for (i = 0 ; i < len ; i++) {
+			if (!strcmp((*m_to_generate_interface_seq)[i]->id(), item->id())) {
+				return true;
+			};
 		};
-	};
-	return false;
+		return false;
+		break;
+	default :
+		len = m_to_generate_seq -> length();
+		for (i = 0 ; i < len ; i++) {
+			if (!strcmp((*m_to_generate_seq)[i]->id(), item->id())) {
+				return true;
+			};
+		};
+		return false;
+		break;
+	}
 }
 
 
 void 
 GeneratorBase::insert_to_generate(IR__::Contained_ptr item) 
 {
-	// insert the item
-	m_to_generate_seq->length(m_to_generate_seq->length()+1);
-	m_to_generate_seq[m_to_generate_seq->length()-1] = IR__::Contained::_duplicate(item);
+	// insert interfaces in another list
+	switch(item->describe()->kind) {
+	case CORBA__::dk_Interface :
+	case CORBA__::dk_Home :
+	case CORBA__::dk_Component :
+		m_to_generate_interface_seq->length(m_to_generate_interface_seq->length()+1);
+		m_to_generate_interface_seq[m_to_generate_interface_seq->length()-1] = IR__::Contained::_duplicate(item);
+		break;
+	default :
+		m_to_generate_seq->length(m_to_generate_seq->length()+1);
+		m_to_generate_seq[m_to_generate_seq->length()-1] = IR__::Contained::_duplicate(item);
+		break;
+	}
 }
 
 
 void
-GeneratorBase::check_for_generation(IR__::Contained_ptr item) 
+GeneratorBase::check_for_generation(IR__::Contained_ptr item, bool insertAllowed) 
 {
 	insert_to_generate(item);
 }
@@ -159,6 +185,17 @@ GeneratorBase::doGenerate()
 	}
 
 	//
+	// merge the two lists
+	//
+	CORBA::ULong start = m_to_generate_seq->length();
+	CORBA::ULong end = start + m_to_generate_interface_seq->length();
+	m_to_generate_seq->length(end);
+	for(CORBA::ULong index = 0; start < end; start++, index++)
+	{
+		m_to_generate_seq[start] = IR__::Contained::_duplicate(m_to_generate_interface_seq[index]);
+	}
+
+	//
 	// generate for all items of the generation list
 	//
 	CORBA::ULong len = m_to_generate_seq->length();
@@ -171,7 +208,7 @@ GeneratorBase::doGenerate()
 void
 GeneratorBase::generate_the_item ( IR__::Contained_ptr item )
 {
-	std::cout << "Debug: item to generate: " << item->name() << std::endl;
+	std::cout << "Debug: item to generate: " << item->id() << std::endl;
 	switch (item->describe()->kind) {
 	case CORBA__::dk_Module: {
 		IR__::ModuleDef_var a_module = IR__::ModuleDef::_narrow(item);
@@ -454,6 +491,19 @@ GeneratorBase::doException(IR__::ExceptionDef_ptr except)
 // enum
 //
 void
+GeneratorBase::handleEnum(IR__::Container_ptr container)
+{
+	IR__::ContainedSeq_var contained_seq = container->contents(CORBA__::dk_Enum, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::EnumDef_var a_enum = IR__::EnumDef::_narrow(((*contained_seq)[i]));
+		doEnum(a_enum);
+	}
+}
+
+
+void
 GeneratorBase::doEnum(IR__::EnumDef_ptr enumeration)
 {
 }
@@ -505,17 +555,64 @@ GeneratorBase::doTypedef(IR__::TypedefDef_ptr tdef)
 // alias
 //
 void
+GeneratorBase::handleAlias(IR__::Container_ptr container)
+{
+	IR__::ContainedSeq_var contained_seq = container->contents(CORBA__::dk_Alias, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++) {
+		IR__::AliasDef_var a_alias = IR__::AliasDef::_narrow(((*contained_seq)[i]));
+		doAlias(a_alias);
+	}
+}
+
+
+void
 GeneratorBase::doAlias(IR__::AliasDef_ptr adef)
 {
 }
+
 
 //
 // struct
 //
 void
+GeneratorBase::handleStruct(IR__::Container_ptr container)
+{
+	IR__::ContainedSeq_var contained_seq = container->contents(CORBA__::dk_Struct, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++) {
+		IR__::StructDef_var a_struct = IR__::StructDef::_narrow(((*contained_seq)[i]));
+		doStruct(a_struct);
+	}
+}
+
+
+void
 GeneratorBase::doStruct(IR__::StructDef_ptr sdef)
 {
 }
+
+
+//
+// union
+//
+void
+GeneratorBase::handleUnion(IR__::Container_ptr container)
+{
+	IR__::ContainedSeq_var contained_seq = container->contents(CORBA__::dk_Union, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++) {
+		IR__::UnionDef_var a_union = IR__::UnionDef::_narrow(((*contained_seq)[i]));
+		doUnion(a_union);
+	}
+}
+
+
+void
+GeneratorBase::doUnion(IR__::UnionDef_ptr udef)
+{
+}
+
 
 //
 // home
