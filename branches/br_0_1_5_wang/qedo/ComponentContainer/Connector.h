@@ -105,11 +105,11 @@ class CONTAINERDLL_API ConnectorImpl : public virtual CosPersistentState::Connec
 
 	private:
 
-		char* m_szImplID;
-		SessionPoolImpl* m_pSessionPool;
-		std::list <SessioImpl*> m_lSessions;
-		map<const char*, StorageObjectFactory> m_SOFMap;
-		map<const char*, StorageHomeFactory> m_SHFMap;
+		char* szImplID_;
+		SessionPoolImpl* pSessionPool_;
+		std::list <SessioImpl*> lSessions_;
+		map<const char*, StorageObjectFactory> SOFMap_;
+		map<const char*, StorageHomeFactory> SHFMap_;
 };
 
 }; // namespace Qedo

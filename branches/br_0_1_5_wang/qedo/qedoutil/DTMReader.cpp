@@ -27,7 +27,7 @@
 #include <xercesc/framework/URLInputSource.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: DTMReader.cpp,v 1.1.4.1 2003/12/19 16:23:18 hao Exp $";
+static char rcsid[] UNUSED = "$Id: DTMReader.cpp,v 1.1.4.2 2004/01/14 16:54:42 hao Exp $";
 
 
 namespace Qedo {
@@ -39,14 +39,14 @@ DTMReader::DTMReader()
 
 DTMReader::~DTMReader()
 {
-	if(!m_vCorba.empty())
-		m_vCorba.clear();
-	if(!m_vCpp.empty())
-		m_vCpp.clear();
-	if(!m_vCppNative.empty())
-		m_vCppNative.clear();
-	if(!m_vSql.empty())
-		m_vSql.clear();
+	if(!vCorba_.empty())
+		vCorba_.clear();
+	if(!vCpp_.empty())
+		vCpp_.clear();
+	if(!vCppNative_.empty())
+		vCppNative_.clear();
+	if(!vSql_.empty())
+		vSql_.clear();
 }
 
 void
@@ -120,19 +120,19 @@ throw(DTMReadException)
 		{
 			// handle corba-type
 			if ( XMLString::compareString(child->getNodeName(), X("corba-type")) )
-				m_vCorba.push_back(get_value((DOMElement*)child));
+				vCorba_.push_back(get_value((DOMElement*)child));
 
 			// handle cpp-type
 			else if ( XMLString::compareString(child->getNodeName(), X("cpp-type")) )
-				m_vCpp.push_back(get_value((DOMElement*)child));
+				vCpp_.push_back(get_value((DOMElement*)child));
 
 			// handle cpp-native-type
 			else if ( XMLString::compareString(child->getNodeName(), X("cpp-native-type")) )
-				m_vCppNative.push_back(get_value((DOMElement*)child));
+				vCppNative_.push_back(get_value((DOMElement*)child));
 
 			// handle sql-type
 			else if ( XMLString::compareString(child->getNodeName(), X("sql-type")) )
-				m_vSql.push_back(get_value((DOMElement*)child));
+				vSql_.push_back(get_value((DOMElement*)child));
 		}
 
         // get next child
@@ -180,7 +180,7 @@ throw(DTMReadException)
 {
 	if(dt1.compare("corba-type")==0 && dt2.compare("sql-type")==0)
 	{
-		for(unsigned int i=0; i<m_vCorba.size(); i++)
+		for(unsigned int i=0; i<vCorba_.size(); i++)
 		{
 			typedef std::pair <const char*, const char*> Type_Pair;
 			std::string strA = "", strB="";

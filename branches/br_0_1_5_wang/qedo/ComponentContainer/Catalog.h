@@ -52,7 +52,7 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 
 		bool DriverConnect(const char* szConnStr, char* szConnStrOut = NULL, HWND hWnd = NULL, const int nDrvConn = SQL_DRIVER_NOPROMPT);
 
-		Connector_ptr getConnector() {return m_connector;};
+		Connector_ptr getConnector() {return connector_;};
 
 		//
 		// IDL:omg.org/CosPersistentState/CatalogBase/access_mode:1.0
@@ -91,12 +91,12 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 
 	protected:
 
-		Connector_ptr m_connector;
-		std::list <StorageHomeBaseImpl*> m_lStorageHomeBases;
+		Connector_ptr connector_;
+		std::list <StorageHomeBaseImpl*> lStorageHomeBases_;
 
 	private:
 
-		AccessMode m_eAM;
+		AccessMode eAM_;
 };
 
 
@@ -143,7 +143,7 @@ class  SessionPoolImpl : public virtual CosPersistentState::SessionPool,
 
 	private:
 
-		TransactionPolicy m_tx_policy;
+		TransactionPolicy tx_policy_;
 };
 
 }; // namespace Qedo

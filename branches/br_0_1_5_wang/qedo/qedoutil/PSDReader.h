@@ -59,11 +59,11 @@ private:
 	/** the path to drop files */
 	std::string								path_;
 	/** the database connection string */
-	std::string								m_strConn;
+	std::string								strConn_;
 	/** the list holding the create table string */
-	std::list <std::string>					m_lTableList;
+	std::list <std::string>					lTableList_;
 	/** the map for datatypes */
-	std::map <const char*, const char*>		m_mType;
+	std::map <const char*, const char*>		mType_;
     
     /**
 	 * handle corbapersistence

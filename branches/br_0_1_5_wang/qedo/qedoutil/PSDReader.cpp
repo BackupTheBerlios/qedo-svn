@@ -28,7 +28,7 @@
 #include <xercesc/framework/URLInputSource.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: PSDReader.cpp,v 1.1.4.1 2003/12/19 16:23:18 hao Exp $";
+static char rcsid[] UNUSED = "$Id: PSDReader.cpp,v 1.1.4.2 2004/01/14 16:54:42 hao Exp $";
 
 
 namespace Qedo {
@@ -40,8 +40,8 @@ PSDReader::PSDReader()
 
 PSDReader::~PSDReader()
 {
-	if(!m_lTableList.empty())
-		m_lTableList.clear();
+	if(!lTableList_.empty())
+		lTableList_.clear();
 }
 
 std::string
@@ -95,7 +95,7 @@ throw(PSDReadException)
 			{
 				DTMReader dtm_reader;
 				dtm_reader.readDTM( path_ + "qedo-datatype-map.xml", path_, get_value((DOMElement*)child) );
-				dtm_reader.getDatatypeMap(m_mType, "corba-type", "sql-type");
+				dtm_reader.getDatatypeMap(mType_, "corba-type", "sql-type");
 				return;
 			}
 			// handle connection
@@ -116,11 +116,11 @@ throw(PSDReadException)
 	unsigned int len = 0;
 	DOMNodeList* nodeList;
 
-	m_strConn = "";
+	strConn_ = "";
 	nodeList = element->getElementsByTagName(X("param"));
 	for (i = 0; i < len; ++i)
 	{
-		m_strConn += param((DOMElement*)(nodeList->item(i)));
+		strConn_ += param((DOMElement*)(nodeList->item(i)));
 	}
 }
 
@@ -210,7 +210,7 @@ throw(PSDReadException)
 	col += " )";
 
 	text += get_table_name(table) + "$$" + col + inh + ";";
-	m_lTableList.push_back(text);
+	lTableList_.push_back(text);
 }
 
 std::string
@@ -225,7 +225,7 @@ throw(PSDReadException)
 	text += " ";
 
 	tmp = XMLString::transcode(element->getAttribute(X("type")));
-	iter = m_mType.find( tmp.c_str() );
+	iter = mType_.find( tmp.c_str() );
 	text += iter->second;
 	text += " ";
 	
@@ -315,13 +315,13 @@ throw(PSDReadException)
 	// handle corbapersistence
 	corbapersistence(psd_document_->getDocumentElement());
 
-	return m_lTableList;
+	return lTableList_;
 }
 
 std::string
 PSDReader::getDBConn()
 {
-	return m_strConn;
+	return strConn_;
 }
 
 }

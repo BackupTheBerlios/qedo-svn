@@ -114,9 +114,9 @@ class CONTAINERDLL_API QDRecordset
 
 	private:
 		
-		SQLHDBC m_hDbc;
-		SQLHSTMT m_hStmt;
-		unsigned int m_nNumRowsFetched;
+		SQLHDBC hDbc_;
+		SQLHSTMT hStmt_;
+		unsigned int nNumRowsFetched_;
 };
 
 }; // namespace Qedo

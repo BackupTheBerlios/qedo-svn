@@ -77,14 +77,14 @@ class CONTAINERDLL_API QDDatabase
 
 	protected:
 		
-		SQLHDBC m_hDbc;
-		SQLHENV m_hEnv;
-		int m_nRecordsAffected;
-		long m_lLoginTimeout;
-		long m_lQueryTimeout;
-		bool m_bIsConnected;
-		char* m_szODBCVersion;
-		char* m_szConnString;
+		SQLHDBC hDbc_;
+		SQLHENV hEnv_;
+		int nRecordsAffected_;
+		long lLoginTimeout_;
+		long lQueryTimeout_;
+		bool bIsConnected_;
+		char* szODBCVersion_;
+		char* szConnString_;
 };
 
 }; // namespace Qedo

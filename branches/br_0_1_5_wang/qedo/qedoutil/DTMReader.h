@@ -60,13 +60,13 @@ private:
 	/** the path to drop files */
 	std::string								path_;
 	/** the vector for corba type */
-	std::vector <std::string>				m_vCorba;
+	std::vector <std::string>				vCorba_;
 	/** the vector for cpp type */
-	std::vector <std::string>				m_vCpp;
+	std::vector <std::string>				vCpp_;
 	/** the vector for cpp native type */
-	std::vector <std::string>				m_vCppNative;
+	std::vector <std::string>				vCppNative_;
 	/** the vector for sql type */
-	std::vector <std::string>				m_vSql;
+	std::vector <std::string>				vSql_;
     
     /**
 	 * handle qedo-datatype-map

@@ -28,27 +28,27 @@ namespace Qedo
 CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM, 
 								 const char* szConnString, 
 								 Connector_ptr connector) :
-	m_eAM(eAM),
-	m_connector(connector)
+	eAM_(eAM),
+	connector_(connector)
 {
 	QDDatabase::QDDatabase();
-	strcpy(m_szConnString, szConnString);
+	strcpy(szConnString_, szConnString);
 }
 
 CatalogBaseImpl::~CatalogBaseImpl()
 {
-	if(!m_lStorageHomeBases.empty())
+	if(!lStorageHomeBases_.empty())
 	{
 		list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
 	
-		for (storageHomeBase_iter = m_lStorageHomeBases.begin();
-			 storageHomeBase_iter != m_lStorageHomeBases.end();
+		for (storageHomeBase_iter = lStorageHomeBases_.begin();
+			 storageHomeBase_iter != lStorageHomeBases_.end();
 			 storageHomeBase_iter++)
 		{
 			(*storageHomeBase_iter)->_remove_ref();
 		}
 
-		m_lStorageHomeBases.clear();
+		lStorageHomeBases_.clear();
 	}
 
 	_remove_ref();
@@ -59,15 +59,15 @@ CatalogBaseImpl::Init()
 {
 	SQLRETURN ret;
 
-	ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HENV, &m_hEnv);
+	ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HENV, &hEnv_);
 	
 	if(ret==SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{
-        ret = SQLSetEnvAttr(m_hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0);
+        ret = SQLSetEnvAttr(hEnv_, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0);
 	
 		if(ret==SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
-			ret = SQLAllocHandle(SQL_HANDLE_DBC, m_hEnv, &m_hDbc);
+			ret = SQLAllocHandle(SQL_HANDLE_DBC, hEnv_, &hDbc_);
 			return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 		}
 		else
@@ -86,15 +86,15 @@ CatalogBaseImpl::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND h
 	if(nDrvConn == SQL_DRIVER_PROMPT && hWnd == NULL)
 		return FALSE;
 
-	SQLSetConnectAttr(m_hDbc, SQL_ATTR_LOGIN_TIMEOUT, (SQLPOINTER)m_lLoginTimeout, 0);
-	SQLSetConnectAttr(m_hDbc, SQL_ATTR_CONNECTION_TIMEOUT, (SQLPOINTER)m_lQueryTimeout, 0);
+	SQLSetConnectAttr(hDbc_, SQL_ATTR_LOGIN_TIMEOUT, (SQLPOINTER)lLoginTimeout_, 0);
+	SQLSetConnectAttr(hDbc_, SQL_ATTR_CONNECTION_TIMEOUT, (SQLPOINTER)lQueryTimeout_, 0);
 	
-	if(m_eAM==READ_ONLY)
-		SQLSetConnectAttr(m_hDbc, SQL_ATTR_ACCESS_MODE, (SQLPOINTER)SQL_MODE_READ_ONLY, 0);
+	if(eAM_==READ_ONLY)
+		SQLSetConnectAttr(hDbc_, SQL_ATTR_ACCESS_MODE, (SQLPOINTER)SQL_MODE_READ_ONLY, 0);
 	else
-		SQLSetConnectAttr(m_hDbc, SQL_ATTR_ACCESS_MODE, (SQLPOINTER)SQL_MODE_READ_WRITE, 0);
+		SQLSetConnectAttr(hDbc_, SQL_ATTR_ACCESS_MODE, (SQLPOINTER)SQL_MODE_READ_WRITE, 0);
 
-	ret = SQLDriverConnect(m_hDbc, 
+	ret = SQLDriverConnect(hDbc_, 
 							hWnd, 
 							(SQLCHAR*)szConnStr, 
 							SQL_NTS, 
@@ -103,9 +103,9 @@ CatalogBaseImpl::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND h
 							&pcbConnStrOut, 
 							(SQLUSMALLINT)nDrvConn);
 
-	m_bIsConnected = ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
+	bIsConnected_ = ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 	
-	return m_bIsConnected;
+	return bIsConnected_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -120,14 +120,14 @@ CatalogBaseImpl::access_mode()
 	
 	int nAccessMode;
 
-	SQLGetConnectAttr(m_hDbc, SQL_ATTR_ACCESS_MODE, &nAccessMode, SQL_IS_INTEGER, NULL);
+	SQLGetConnectAttr(hDbc_, SQL_ATTR_ACCESS_MODE, &nAccessMode, SQL_IS_INTEGER, NULL);
 
 	if(nAccessMode == SQL_MODE_READ_ONLY)
 		return READ_ONLY;
 	else
 		return READ_WRITE;
 	*/
-	return m_eAM;
+	return eAM_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,8 +140,8 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 	//find it in the list
 	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
 	
-	for (storageHomeBase_iter = m_lStorageHomeBases.begin();
-		 storageHomeBase_iter != m_lStorageHomeBases.end();
+	for (storageHomeBase_iter = lStorageHomeBases_.begin();
+		 storageHomeBase_iter != lStorageHomeBases_.end();
 		 storageHomeBase_iter++)
 	{
 		const char* szName = (*storageHomeBase_iter)->getStorageHomeName();
@@ -163,12 +163,12 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 	StorageHomeFactory factory = new CosPersistentState::StorageHomeFactory_pre();
 #endif
 	
-	factory = m_connector->register_storage_home_factory(storage_home_id, factory);
+	factory = connector_->register_storage_home_factory(storage_home_id, factory);
 	StorageHomeBase_ptr pStorageHomeBase = factory->create();
     StorageHomeBaseImpl* pStorageHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pStorageHomeBase);
 	pStorageHomeBaseImpl->Init((dynamic_cast <CatalogBase_ptr> (this)), storage_home_id);
 
-	m_lStorageHomeBases.push_back(pStorageHomeBaseImpl);
+	lStorageHomeBases_.push_back(pStorageHomeBaseImpl);
 
 	//return (CosPersistentState::StorageHomeBase::_narrow(pStorageHomeBase));
 	return pStorageHomeBase;
@@ -189,7 +189,7 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 	unsigned char szStorageHome[MAX_COL_SIZE];
 
 	QDRecordset prs;
-	prs.Init(&m_hDbc);
+	prs.Init(&hDbc_);
 
 	strToExecute = "SELECT ownhome FROM pid_content WHERE pid LIKE ";
 	strToExecute += strPid;
@@ -221,8 +221,8 @@ CatalogBaseImpl::flush()
 	string strFlush = "";
 	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
 	
-	for( storageHomeBase_iter = m_lStorageHomeBases.begin();
-		 storageHomeBase_iter != m_lStorageHomeBases.end();
+	for( storageHomeBase_iter = lStorageHomeBases_.begin();
+		 storageHomeBase_iter != lStorageHomeBases_.end();
 		 storageHomeBase_iter++ )
 	{
 		strFlush += (*storageHomeBase_iter)->getFlush();
@@ -233,11 +233,11 @@ CatalogBaseImpl::flush()
 		if(ExecuteSQL(strFlush.c_str()))
 		{
 			SQLRETURN ret;
-			ret = SQLEndTran(SQL_HANDLE_DBC, m_hDbc, SQL_COMMIT);
+			ret = SQLEndTran(SQL_HANDLE_DBC, hDbc_, SQL_COMMIT);
 			if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 			{
-				for( storageHomeBase_iter = m_lStorageHomeBases.begin();
-					 storageHomeBase_iter != m_lStorageHomeBases.end();
+				for( storageHomeBase_iter = lStorageHomeBases_.begin();
+					 storageHomeBase_iter != lStorageHomeBases_.end();
 					 storageHomeBase_iter++ )
 				{
 					// the flush is successfull, we set the modified-value of each
@@ -258,8 +258,8 @@ CatalogBaseImpl::refresh()
 {
 	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
 	
-	for( storageHomeBase_iter = m_lStorageHomeBases.begin();
-		 storageHomeBase_iter != m_lStorageHomeBases.end();
+	for( storageHomeBase_iter = lStorageHomeBases_.begin();
+		 storageHomeBase_iter != lStorageHomeBases_.end();
 		 storageHomeBase_iter++ )
 	{
 		(*storageHomeBase_iter)->Refresh();
@@ -275,8 +275,8 @@ CatalogBaseImpl::free_all()
 {
 	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
 	
-	for( storageHomeBase_iter = m_lStorageHomeBases.begin();
-		 storageHomeBase_iter != m_lStorageHomeBases.end();
+	for( storageHomeBase_iter = lStorageHomeBases_.begin();
+		 storageHomeBase_iter != lStorageHomeBases_.end();
 		 storageHomeBase_iter++ )
 	{
 		(*storageHomeBase_iter)->FreeAllStorageObjects();
@@ -295,12 +295,12 @@ CatalogBaseImpl::close()
 	{
 		flush();
 
-		m_bIsConnected = FALSE;
+		bIsConnected_ = FALSE;
 
-		if(m_hDbc == NULL)
+		if(hDbc_ == NULL)
 			return;
 
-		SQLDisconnect(m_hDbc);
+		SQLDisconnect(hDbc_);
 	}
 }
 
@@ -308,7 +308,7 @@ SessionPoolImpl::SessionPoolImpl(AccessMode eAM,
 								 TransactionPolicy tx_policy, 
 								 const char* szConnString, 
 								 Connector_ptr connector) :
-	m_tx_policy(tx_policy)
+	tx_policy_(tx_policy)
 {
 	CatalogBaseImpl::CatalogBaseImpl(eAM, szConnString, connector);
 }
@@ -327,15 +327,15 @@ SessionPoolImpl::Init()
 
 	if(ret==SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{
-		ret = SQLAllocHandle( SQL_HANDLE_ENV, SQL_NULL_HENV, &m_hEnv );
+		ret = SQLAllocHandle( SQL_HANDLE_ENV, SQL_NULL_HENV, &hEnv_ );
 
 		if(ret==SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
-			ret = SQLSetEnvAttr( m_hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, SQL_IS_INTEGER );
+			ret = SQLSetEnvAttr( hEnv_, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, SQL_IS_INTEGER );
 
 			if(ret==SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 			{
-				ret = SQLAllocHandle ( SQL_HANDLE_DBC, m_hEnv, &m_hDbc );
+				ret = SQLAllocHandle ( SQL_HANDLE_DBC, hEnv_, &hDbc_ );
 				return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO; 
 			}
 			else
@@ -377,8 +377,8 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 	}
 
 	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
-	for( storageHomeBase_iter = m_lStorageHomeBases.begin();
-		 storageHomeBase_iter != m_lStorageHomeBases.end();
+	for( storageHomeBase_iter = lStorageHomeBases_.begin();
+		 storageHomeBase_iter != lStorageHomeBases_.end();
 		 storageHomeBase_iter++ )
 	{
 		strFlush += (*storageHomeBase_iter)->getFlushByPid(vPidList);
@@ -389,11 +389,11 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 		if(ExecuteSQL(strFlush.c_str()))
 		{
 			SQLRETURN ret;
-			ret = SQLEndTran(SQL_HANDLE_DBC, m_hDbc, SQL_COMMIT);
+			ret = SQLEndTran(SQL_HANDLE_DBC, hDbc_, SQL_COMMIT);
 			if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 			{
-				for( storageHomeBase_iter = m_lStorageHomeBases.begin();
-					 storageHomeBase_iter != m_lStorageHomeBases.end();
+				for( storageHomeBase_iter = lStorageHomeBases_.begin();
+					 storageHomeBase_iter != lStorageHomeBases_.end();
 					 storageHomeBase_iter++ )
 				{
 					// the flush is successfull, we set the modified-value of each
@@ -432,8 +432,8 @@ SessionPoolImpl::refresh_by_pids(const PidList& pids)
 	}
 
 	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
-	for( storageHomeBase_iter = m_lStorageHomeBases.begin();
-		 storageHomeBase_iter != m_lStorageHomeBases.end();
+	for( storageHomeBase_iter = lStorageHomeBases_.begin();
+		 storageHomeBase_iter != lStorageHomeBases_.end();
 		 storageHomeBase_iter++ )
 	{
 		(*storageHomeBase_iter)->RefreshByPid(vPidList);
@@ -446,7 +446,7 @@ SessionPoolImpl::refresh_by_pids(const PidList& pids)
 TransactionPolicy 
 SessionPoolImpl::transaction_policy()
 {
-	return m_tx_policy;
+	return tx_policy_;
 }
 
 } // namespace Qedo

@@ -42,13 +42,13 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 		
 		StorageObjectImpl();
 
-		string getUpdate() { return m_strUpdate; };
+		string getUpdate() { return strUpdate_; };
 
-		string getSelect() { return m_strSelect; };
+		string getSelect() { return strSelect_; };
 
-		bool isModified() { return m_bModified; };
+		bool isModified() { return bModified_; };
 
-		void setModified(bool bModified) { m_bModified = bModified; };
+		void setModified(bool bModified) { bModified_ = bModified; };
 
 		virtual void setValue(map<string, CORBA::Any> valueMap) { throw CORBA::NO_IMPLEMENT(); };
 
@@ -83,10 +83,12 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 
 		static StorageObject* _downcast(StorageObject* pStorageObject)
 		{
-			if(pStorageObject)
-				return dynamic_cast <StorageObjectImpl*> (pStorageObject);
-			else
-				return NULL;
+			//if(pStorageObject)
+			//	return dynamic_cast <StorageObjectImpl*> (pStorageObject);
+			//else
+			//	return NULL;
+
+			return pStorageObject;
 		};
 
 	protected:
@@ -95,101 +97,17 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 
 	protected:
 
-		Pid* m_pid;
-		ShortPid* m_shortPid;
-		string m_strUpdate;
-		string m_strSelect;
+		Pid* pid_;
+		ShortPid* shortPid_;
+		string strUpdate_;
+		string strSelect_;
 
 	private:
 
-		StorageHomeBase_ptr m_storageHomeBase;
-		bool m_bModified;
+		StorageHomeBase_ptr storageHomeBase_;
+		bool bModified_;
 };
 
-class CONTAINERDLL_API StorageObjectRefImpl : public virtual CosPersistentState::StorageObjectRef,
-											public virtual RefCountLocalObject
-{
-	public:
-		
-		string getUpdate() { return m_strUpdate; };
-
-		string getSelect() { return m_strSelect; };
-
-		bool isModified() { return m_bModified; };
-
-		void setModified(bool bModified) { m_bModified = bModified; };
-
-		virtual void setValue(map<string, CORBA::Any> valueMap) { throw CORBA::NO_IMPLEMENT(); };
-		
-		//
-		// normal mapping of PSDL operations
-		//
-
-		//StorageObjectRefImpl() 
-		//	throw();
-
-		StorageObjectRefImpl(StorageObject* obj=0) 
-			throw();
-
-		StorageObjectRefImpl(const StorageObjectRef& ref) // copy constructure
-			throw();
-
-		~StorageObjectRefImpl();
-
-		StorageObjectRef& operator=(const StorageObjectRef& ref) 
-			throw();
-
-		StorageObjectRef& operator=(StorageObject* obj) 
-			throw();
-
-		void release() 
-			throw();
-
-		StorageObject* deref() 
-			throw(CORBA::SystemException);
-
-		StorageObject* operator->() 
-			throw(CORBA::SystemException); // not const!
-
-		void destroy_object() 
-			throw(CORBA::SystemException);
-
-		Pid* get_pid() const 
-			throw(CORBA::SystemException);
-
-		ShortPid* get_short_pid() const 
-			throw(CORBA::SystemException);
-
-		CORBA::Boolean is_null() const 
-			throw();
-
-		StorageHomeBase_ptr get_storage_home() const
-			throw(CORBA::SystemException);
-
-		static StorageObjectRef _duplicate(StorageObjectRef ref)
-		{
-			//if(ref)
-				//ref._add_ref();
-			return ref;
-		}
-
-		static StorageObjectRef _downcast(StorageObjectRef ref)
-		{
-			return ref;
-		}
-
-	protected:
-
-		Pid* m_pid;
-		ShortPid* m_shortPid;
-		string m_strUpdate;
-		string m_strSelect;
-
-	private:
-
-		StorageHomeBase_ptr m_storageHomeBase;
-		bool m_bModified;
-};
 
 }; // namespace Qedo
 

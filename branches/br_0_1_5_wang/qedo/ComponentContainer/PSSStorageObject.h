@@ -69,108 +69,40 @@ class StorageObject : public virtual OBNative_CosPersistentState::StorageObjectB
 		
 		virtual ~StorageObject() {}
 };
-/*
-class StorageObjectRef
+
+class CONTAINERDLL_API StorageObjectRef
 {
 	public:
 
 		typedef StorageObject _target_type;
 
-		//StorageObjectRef(StorageObject* obj=0)
-		//	throw() = 0;
+		StorageObjectRef() throw ();
+		StorageObjectRef(StorageObject* obj) throw();
+		StorageObjectRef(const StorageObjectRef& ref) throw();
+		virtual ~StorageObjectRef() throw();
+
+		StorageObjectRef& operator=(const StorageObjectRef& ref) throw();
+		StorageObjectRef& operator=(StorageObject* obj) throw();
+
+		StorageObject* deref() const throw(CORBA::SystemException);
+		StorageObject* operator->() const throw(CORBA::SystemException);
+
+		void release() throw();
+		void destroy_object() throw(CORBA::SystemException);
+
+		Pid* get_pid() const throw(CORBA::SystemException);
+		ShortPid* get_short_pid() const throw(CORBA::SystemException);
+
+		CORBA::Boolean is_null() const throw();
+
+		StorageHomeBase_ptr get_storage_home() const throw(CORBA::SystemException);
+
+		static StorageObjectRef _duplicate(const StorageObjectRef ref);
+
+	private:
 		
-		//StorageObjectRef(const StorageObjectRef& ref) // copy constructure
-		//	throw() = 0;
-	
-		virtual StorageObjectRef& operator=(const StorageObjectRef& ref) 
-			throw() = 0;
-
-		virtual StorageObjectRef& operator=(StorageObject* obj) 
-			throw() = 0;
-
-		virtual void release() 
-			throw() = 0;
-
-		virtual StorageObject* deref() 
-			throw(CORBA::SystemException) = 0;
-
-		virtual StorageObject* operator->() 
-			throw(CORBA::SystemException) = 0; // not const!
-
-		virtual void destroy_object() 
-			throw(CORBA::SystemException) = 0;
-
-		virtual Pid* get_pid() const 
-			throw(CORBA::SystemException) = 0;
-
-		virtual ShortPid* get_short_pid() const 
-			throw(CORBA::SystemException) = 0;
-
-		virtual CORBA::Boolean is_null() const 
-			throw() = 0;
-
-		virtual StorageHomeBase_ptr get_storage_home() const
-			throw(CORBA::SystemException) = 0;
-
-		static StorageObjectRef _duplicate(StorageObjectRef ref);
-
-		static StorageObjectRef _downcast(StorageObjectRef ref);
-
-	protected:
-
-		virtual ~StorageObjectRef() {};
+		StorageObject* obj_;
 };
-*/
-
-class StorageObjectRef
-{
-	public:
-
-		typedef StorageObject _target_type;
-
-		StorageObjectRef(StorageObject* obj=0)
-			throw() {};
-		
-		StorageObjectRef(const StorageObjectRef& ref) // copy constructure
-			throw() {};
-	
-		~StorageObjectRef() {};
-
-		StorageObjectRef& operator=(const StorageObjectRef& ref) 
-			throw() { throw CORBA::NO_IMPLEMENT(); };
-
-		StorageObjectRef& operator=(StorageObject* obj) 
-			throw() { throw CORBA::NO_IMPLEMENT(); };
-
-		void release() 
-			throw() { throw CORBA::NO_IMPLEMENT(); };
-
-		StorageObject* deref() 
-			throw(CORBA::SystemException) { throw CORBA::NO_IMPLEMENT(); };
-
-		StorageObject* operator->() 
-			throw(CORBA::SystemException) { throw CORBA::NO_IMPLEMENT(); }; // not const!
-
-		void destroy_object() 
-			throw(CORBA::SystemException) { throw CORBA::NO_IMPLEMENT(); };
-
-		Pid* get_pid() const 
-			throw(CORBA::SystemException) { throw CORBA::NO_IMPLEMENT(); };
-
-		ShortPid* get_short_pid() const 
-			throw(CORBA::SystemException) { throw CORBA::NO_IMPLEMENT(); };
-
-		CORBA::Boolean is_null() const 
-			throw() { throw CORBA::NO_IMPLEMENT(); };
-
-		StorageHomeBase_ptr get_storage_home() const
-			throw(CORBA::SystemException) { throw CORBA::NO_IMPLEMENT(); };
-
-		static StorageObjectRef _duplicate(StorageObjectRef ref) { throw CORBA::NO_IMPLEMENT(); };
-
-		static StorageObjectRef _downcast(StorageObjectRef ref) { throw CORBA::NO_IMPLEMENT(); };
-};
-
 
 };
 

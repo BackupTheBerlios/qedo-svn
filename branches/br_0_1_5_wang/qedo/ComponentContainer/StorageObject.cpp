@@ -28,12 +28,12 @@ namespace Qedo
 {
 
 StorageObjectImpl::StorageObjectImpl() :
-	m_pid(NULL),
-	m_shortPid(NULL),
-	m_bModified(FALSE),
-	m_strUpdate(""),
-	m_strSelect(""),
-	m_storageHomeBase(NULL)
+	pid_(NULL),
+	shortPid_(NULL),
+	bModified_(FALSE),
+	strUpdate_(""),
+	strSelect_(""),
+	storageHomeBase_(NULL)
 {
 }
 
@@ -48,9 +48,9 @@ void
 StorageObjectImpl::destroy_object() 
 	throw (CORBA::SystemException)
 {
-	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (m_storageHomeBase);
+	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (storageHomeBase_);
 	char* homename = homeimpl->getStorageHomeName();
-	string my_pid = PSSHelper::convertPidToString(m_pid);
+	string my_pid = PSSHelper::convertPidToString(pid_);
 
 	string strSqlDel;
 	strSqlDel = "DELETE FROM ";
@@ -74,9 +74,9 @@ CORBA::Boolean
 StorageObjectImpl::object_exists() 
 	throw (CORBA::SystemException)
 {
-	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (m_storageHomeBase);
+	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (storageHomeBase_);
 	char* homename = homeimpl->getStorageHomeName();
-	string my_pid = PSSHelper::convertPidToString(m_pid);
+	string my_pid = PSSHelper::convertPidToString(pid_);
 
 	string strSqlSel;
 	strSqlSel = "SELECT COUNT(*) FROM ";
@@ -108,7 +108,7 @@ Pid*
 StorageObjectImpl::get_pid()
 	throw (CORBA::SystemException)
 {
-	return m_pid;
+	return pid_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +121,7 @@ ShortPid*
 StorageObjectImpl::get_short_pid()
 	throw (CORBA::SystemException)
 {
-	return m_shortPid;
+	return shortPid_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,73 +132,68 @@ StorageHomeBase_ptr
 StorageObjectImpl::get_storage_home()
 	throw (CORBA::SystemException)
 {
-	return m_storageHomeBase;
+	return storageHomeBase_;
+}
 }
 
-////////////////////////////////////////////////////////////////////////////////
-//##############################################################################
-////////////////////////////////////////////////////////////////////////////////
 
+namespace CosPersistentState
+{
 ////////////////////////////////////////////////////////////////////////////////
 //a public default constructor that creates a null reference
 ////////////////////////////////////////////////////////////////////////////////
-/*
-StorageObjectRefImpl::StorageObjectRefImpl() 
-	throw()
+StorageObjectRef::StorageObjectRef()
 {
+	obj_ = NULL;
 }
-*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //a non-explicit constructor which takes an incarnation of the target storage
 //type
 ////////////////////////////////////////////////////////////////////////////////
-StorageObjectRefImpl::StorageObjectRefImpl(StorageObject* obj)  :
-	m_pid(NULL),
-	m_shortPid(NULL),
-	m_bModified(FALSE),
-	m_strUpdate(""),
-	m_strSelect(""),
-	m_storageHomeBase(NULL)
+StorageObjectRef::StorageObjectRef(StorageObject* obj)
 {
+	obj_ = NULL;
+    if( obj != NULL)
+        obj_ = obj;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 //a public copy constructor
 ////////////////////////////////////////////////////////////////////////////////
-StorageObjectRefImpl::StorageObjectRefImpl(const StorageObjectRef& ref) :
-	m_pid(NULL),
-	m_shortPid(NULL),
-	m_bModified(FALSE),
-	m_strUpdate(""),
-	m_strSelect(""),
-	m_storageHomeBase(NULL)
+StorageObjectRef::StorageObjectRef(const StorageObjectRef& ref)
 {
+	obj_ = ref.deref();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //a public destructor
 ////////////////////////////////////////////////////////////////////////////////
-StorageObjectRefImpl::~StorageObjectRefImpl()
+StorageObjectRef::~StorageObjectRef()
 {
+	if( obj_ != NULL)
+        obj_ -> _remove_ref();
+    obj_ = NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //a public assignment operator
 ////////////////////////////////////////////////////////////////////////////////
 StorageObjectRef& 
-StorageObjectRefImpl::operator=(const StorageObjectRef& ref) 
-	throw()
+StorageObjectRef::operator=(const StorageObjectRef& ref)
 {
-	//m_pid = new CosPersistentState::Pid(*(ref.get_pid()));
-	//m_shortPid = new CosPersistentState::ShortPid(*(ref.get_short_pid()));
-	//m_storageHomeBase = CosPersistentState::StorageHomeBase::_duplicate(ref.get_storage_home());
-	//m_strUpdate = ref.m_strUpdate;
-	//m_strSelect = ref.m_strSelect;
-	//m_bModified = ref.m_bModified;
-	
-	//StorageObjectRef a;
-	//return a;
-	return *this;
+	if( obj_ != ref.obj_ )
+    {
+        if( obj_ != NULL)
+            obj_ -> _remove_ref();
+
+        obj_ = ref.obj_;
+
+        if( obj_ != NULL)
+            obj_ -> _add_ref();
+    }
+
+    return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -206,30 +201,14 @@ StorageObjectRefImpl::operator=(const StorageObjectRef& ref)
 //abstract storage type
 ////////////////////////////////////////////////////////////////////////////////
 StorageObjectRef& 
-StorageObjectRefImpl::operator=(StorageObject* obj) 
-	throw()
+StorageObjectRef::operator=(StorageObject* obj)
 {
-	//m_pid = new CosPersistentState::Pid(*(obj->get_pid()));
-	//m_shortPid = new CosPersistentState::ShortPid(*(obj->get_short_pid()));
-	//m_storageHomeBase = CosPersistentState::StorageHomeBase::_duplicate(obj->get_storage_home());
-	//m_strUpdate = ref.m_strUpdate;
-	//m_strSelect = ref.m_strSelect;
-	//m_bModified = ref.m_bModified;
+	if( obj_ != NULL)
+        obj_ -> _remove_ref();
 
-	//StorageObjectRef a;
-	//return a;
-	return *this;
-}
+    obj_ = obj;
 
-////////////////////////////////////////////////////////////////////////////////
-//releases this reference
-////////////////////////////////////////////////////////////////////////////////
-void 
-StorageObjectRefImpl::release() 
-	throw()
-{
-	//for(CORBA::ULong i=0; i<_get_refcount(); i++)
-    _remove_ref();
+    return *this;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -237,75 +216,81 @@ StorageObjectRefImpl::release()
 //The caller is not supposed to release this incarnation
 ////////////////////////////////////////////////////////////////////////////////
 StorageObject* 
-StorageObjectRefImpl::operator->() 
+StorageObjectRef::operator->() const
 	throw(CORBA::SystemException)
 {
-	return NULL;
+	return obj_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //behaves like operator->()
 ////////////////////////////////////////////////////////////////////////////////
 StorageObject* 
-StorageObjectRefImpl::deref() 
+StorageObjectRef::deref() const
 	throw(CORBA::SystemException)
 {
-	return NULL;
+	return obj_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//return TRUE if and only if this reference is null
+//releases this reference
 ////////////////////////////////////////////////////////////////////////////////
-CORBA::Boolean 
-StorageObjectRefImpl::is_null() const 
-	throw()
+void 
+StorageObjectRef::release()
 {
-	return FALSE;
+	if( obj_ != NULL)
+        obj_ -> _remove_ref();
+    obj_ = NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //destroys the target object
 ////////////////////////////////////////////////////////////////////////////////
 void 
-StorageObjectRefImpl::destroy_object() 
+StorageObjectRef::destroy_object() 
 	throw(CORBA::SystemException)
 {
-	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (m_storageHomeBase);
-	char* homename = homeimpl->getStorageHomeName();
-	string my_pid = PSSHelper::convertPidToString(m_pid);
-
-	string strSqlDel;
-	strSqlDel = "DELETE FROM ";
-	strSqlDel.append((const char*)homename);
-	strSqlDel += " WHERE pid LIKE ";
-	strSqlDel += my_pid;
-	strSqlDel += ";";
-	strSqlDel += "DELETE FROM pid_content WHERE pid LIKE ";
-	strSqlDel += my_pid;
-	strSqlDel += ";";
-
-	CatalogBaseImpl* cbImpl = dynamic_cast <CatalogBaseImpl*> (homeimpl->get_catalog());
-	cbImpl->ExecuteSQL(strSqlDel.c_str());
+	if( obj_ != NULL)
+        obj_ -> destroy_object();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //return the pid of the target object
 ////////////////////////////////////////////////////////////////////////////////
 Pid* 
-StorageObjectRefImpl::get_pid() const 
+StorageObjectRef::get_pid() const 
 	throw(CORBA::SystemException)
 {
-	return m_pid;
+	CosPersistentState::Pid* ret = NULL;
+
+    if( obj_ != NULL)
+        ret  = obj_ -> get_pid();
+
+    return ret;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //return the short-pid of the target object
 ////////////////////////////////////////////////////////////////////////////////
 ShortPid* 
-StorageObjectRefImpl::get_short_pid() const 
+StorageObjectRef::get_short_pid() const 
 	throw(CORBA::SystemException)
 {
-	return m_shortPid;
+	CosPersistentState::ShortPid* ret = NULL;
+
+    if( obj_ != NULL)
+        ret = obj_ -> get_short_pid();
+
+    return ret;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//return TRUE if and only if this reference is null
+////////////////////////////////////////////////////////////////////////////////
+CORBA::Boolean 
+StorageObjectRef::is_null() const
+{
+	return (obj_ == NULL);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -313,10 +298,21 @@ StorageObjectRefImpl::get_short_pid() const
 //reference count of the return storage home
 ////////////////////////////////////////////////////////////////////////////////
 StorageHomeBase_ptr 
-StorageObjectRefImpl::get_storage_home() const
+StorageObjectRef::get_storage_home() const
 	throw(CORBA::SystemException)
 {
-	return m_storageHomeBase;
+	CosPersistentState::StorageHomeBase* ret = NULL ;
+
+    if( obj_ != NULL)
+        ret = obj_ -> get_storage_home();
+
+    return ret;
+}
+
+StorageObjectRef
+StorageObjectRef::_duplicate( const StorageObjectRef ref )
+{
+    return StorageObjectRef(ref);
 }
 
 }

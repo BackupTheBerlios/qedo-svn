@@ -23,7 +23,7 @@
 #include "EntityHomeServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: EntityHomeServant.cpp,v 1.5.20.1 2003/12/19 14:09:24 hao Exp $";
+static char rcsid[] UNUSED = "$Id: EntityHomeServant.cpp,v 1.5.20.2 2004/01/14 16:54:42 hao Exp $";
 
 
 namespace Qedo {
@@ -35,7 +35,8 @@ EntityHomeServant::EntityHomeServant()
 
 
 EntityHomeServant::EntityHomeServant (const EntityHomeServant& entity_home)
-: HomeServantBase (entity_home)
+: HomeServantBase (entity_home),
+  CCMHomeServant (entity_home)
 {
 }
 

@@ -26,32 +26,32 @@ namespace Qedo
 {
 
 QDDatabase::QDDatabase() :
-	m_hEnv(SQL_NULL_HENV),
-	m_hDbc(SQL_NULL_HDBC),
-	m_lLoginTimeout(DEFAULT_TIMEOUT),
-	m_lQueryTimeout(DEFAULT_TIMEOUT),
-	m_nRecordsAffected(0),
-	m_bIsConnected(FALSE)
+	hEnv_(SQL_NULL_HENV),
+	hDbc_(SQL_NULL_HDBC),
+	lLoginTimeout_(DEFAULT_TIMEOUT),
+	lQueryTimeout_(DEFAULT_TIMEOUT),
+	nRecordsAffected_(0),
+	bIsConnected_(FALSE)
 {
-	m_szODBCVersion = new char[MAX_INFO_LEN];
-	m_szConnString = new char[MAX_CONNSTR_LEN];
-	memset(m_szODBCVersion, '\0', MAX_INFO_LEN);
-	memset(m_szConnString, '\0', MAX_CONNSTR_LEN);
+	szODBCVersion_ = new char[MAX_INFO_LEN];
+	szConnString_ = new char[MAX_CONNSTR_LEN];
+	memset(szODBCVersion_, '\0', MAX_INFO_LEN);
+	memset(szConnString_, '\0', MAX_CONNSTR_LEN);
 }
 
 QDDatabase::~QDDatabase()
 {
 	Destroy();
 
-	m_lLoginTimeout = 0;
-	m_lQueryTimeout = 0;
-	m_nRecordsAffected = 0;
-	m_bIsConnected = FALSE;
+	lLoginTimeout_ = 0;
+	lQueryTimeout_ = 0;
+	nRecordsAffected_ = 0;
+	bIsConnected_ = FALSE;
 
-	delete m_szODBCVersion;
-	delete m_szConnString;
-	m_szODBCVersion = NULL;
-	m_szConnString = NULL;
+	delete szODBCVersion_;
+	delete szConnString_;
+	szODBCVersion_ = NULL;
+	szConnString_ = NULL;
 }
 
 bool 
@@ -59,15 +59,15 @@ QDDatabase::Init()
 {
 	SQLRETURN ret;
 
-	ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HENV, &m_hEnv);
+	ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HENV, &hEnv_);
 	
 	if(ret==SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{
-        ret = SQLSetEnvAttr(m_hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0);
+        ret = SQLSetEnvAttr(hEnv_, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0);
 	
 		if(ret==SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
-			ret = SQLAllocHandle(SQL_HANDLE_DBC, m_hEnv, &m_hDbc);
+			ret = SQLAllocHandle(SQL_HANDLE_DBC, hEnv_, &hDbc_);
 			return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 		}
 		else
@@ -82,23 +82,23 @@ QDDatabase::close()
 {
 	if(IsConnected())
 	{
-		m_bIsConnected = FALSE;
+		bIsConnected_ = FALSE;
 
-		if(m_hDbc == NULL)
+		if(hDbc_ == NULL)
 			return;
 
-		SQLDisconnect(m_hDbc);
+		SQLDisconnect(hDbc_);
 	}
 }
 
 void 
 QDDatabase::Destroy()
 {
-	SQLFreeHandle(SQL_HANDLE_DBC, m_hDbc);
-	SQLFreeHandle(SQL_HANDLE_ENV, m_hEnv);
+	SQLFreeHandle(SQL_HANDLE_DBC, hDbc_);
+	SQLFreeHandle(SQL_HANDLE_ENV, hEnv_);
 
-	m_hDbc = SQL_NULL_HDBC;
-	m_hEnv = SQL_NULL_HENV;
+	hDbc_ = SQL_NULL_HDBC;
+	hEnv_ = SQL_NULL_HENV;
 }
 
 bool 
@@ -110,10 +110,10 @@ QDDatabase::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND hWnd, 
 	if(nDrvConn == SQL_DRIVER_PROMPT && hWnd == NULL)
 		return FALSE;
 
-	SQLSetConnectAttr(m_hDbc, SQL_ATTR_LOGIN_TIMEOUT, (SQLPOINTER)m_lLoginTimeout, 0);
-	SQLSetConnectAttr(m_hDbc, SQL_ATTR_CONNECTION_TIMEOUT, (SQLPOINTER)m_lQueryTimeout, 0);
+	SQLSetConnectAttr(hDbc_, SQL_ATTR_LOGIN_TIMEOUT, (SQLPOINTER)lLoginTimeout_, 0);
+	SQLSetConnectAttr(hDbc_, SQL_ATTR_CONNECTION_TIMEOUT, (SQLPOINTER)lQueryTimeout_, 0);
 	
-	ret = SQLDriverConnect(m_hDbc, 
+	ret = SQLDriverConnect(hDbc_, 
 							hWnd, 
 							(SQLCHAR*)szConnStr, 
 							SQL_NTS, 
@@ -122,27 +122,27 @@ QDDatabase::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND hWnd, 
 							&pcbConnStrOut, 
 							(SQLUSMALLINT)nDrvConn);
 
-	m_bIsConnected = ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
+	bIsConnected_ = ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 	
-	return m_bIsConnected;
+	return bIsConnected_;
 }
 
 void 
 QDDatabase::SetLoginTimeout(const long nSeconds)
 {
-	m_lLoginTimeout = nSeconds;
+	lLoginTimeout_ = nSeconds;
 }
 
 void 
 QDDatabase::SetQueryTimeout(const long nSeconds)
 {
-	m_lQueryTimeout = nSeconds;
+	lQueryTimeout_ = nSeconds;
 }
 
 int 
 QDDatabase::GetRecordsAffected()
 {
-	return m_nRecordsAffected;
+	return nRecordsAffected_;
 }
 
 char* 
@@ -153,12 +153,12 @@ QDDatabase::GetODBCVersion()
 
 	SQLRETURN ret;
 	
-	ret = SQLGetInfo(m_hDbc, SQL_ODBC_VER, m_szODBCVersion, MAX_INFO_LEN, NULL);
+	ret = SQLGetInfo(hDbc_, SQL_ODBC_VER, szODBCVersion_, MAX_INFO_LEN, NULL);
 
 	if(ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 		return NULL;
 
-	return m_szODBCVersion;
+	return szODBCVersion_;
 }
 
 bool 
@@ -171,14 +171,14 @@ QDDatabase::ExecuteSQL(const char* szSqlStr)
 	SQLHSTMT hStmt = NULL;
 	SQLINTEGER nRowCount;
 
-	SQLAllocHandle(SQL_HANDLE_STMT, m_hDbc, &hStmt);
+	SQLAllocHandle(SQL_HANDLE_STMT, hDbc_, &hStmt);
 	ret = SQLExecDirect(hStmt, (SQLCHAR*)szSqlStr, SQL_NTS);
 	
 	SQLRowCount(hStmt, &nRowCount);
 	SQLFreeHandle(SQL_HANDLE_STMT , hStmt);
 	hStmt = NULL;
 	
-	m_nRecordsAffected = nRowCount;
+	nRecordsAffected_ = nRowCount;
 
 	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 }
@@ -191,7 +191,7 @@ QDDatabase::CanTransact()
 
 	SQLUSMALLINT nTxn;
 
-	SQLGetInfo(m_hDbc, SQL_TXN_CAPABLE, (SQLPOINTER)&nTxn, sizeof(nTxn), NULL);
+	SQLGetInfo(hDbc_, SQL_TXN_CAPABLE, (SQLPOINTER)&nTxn, sizeof(nTxn), NULL);
 
 	if(nTxn==SQL_TC_NONE)
 		return FALSE;
@@ -207,7 +207,7 @@ QDDatabase::CanUpdate()
 
 	SQLUINTEGER nTxn;
 
-	SQLGetConnectAttr(m_hDbc, SQL_ATTR_ACCESS_MODE, (SQLPOINTER)&nTxn, NULL, 0);
+	SQLGetConnectAttr(hDbc_, SQL_ATTR_ACCESS_MODE, (SQLPOINTER)&nTxn, NULL, 0);
 
 	if(nTxn==SQL_MODE_READ_ONLY)
 		return FALSE;
@@ -218,7 +218,7 @@ QDDatabase::CanUpdate()
 bool 
 QDDatabase::IsConnected()
 {
-	return m_bIsConnected;
+	return bIsConnected_;
 }
 
 bool 
@@ -232,7 +232,7 @@ QDDatabase::IsTableExist(const char* szTableName)
 	SQLSMALLINT nFieldCount = 0;
 	char szTable[6] = "TABLE";
 
-	SQLAllocHandle(SQL_HANDLE_STMT, m_hDbc, &hStmt);
+	SQLAllocHandle(SQL_HANDLE_STMT, hDbc_, &hStmt);
 
 	ret = SQLTables(hStmt,
 					NULL, 0,    // All catalogs
@@ -259,7 +259,7 @@ QDDatabase::IsTableExist(const char* szTableName)
 SQLHDBC 
 QDDatabase::getHDBC()
 {
-	return m_hDbc;
+	return hDbc_;
 }
 
 } // namespace Qedo

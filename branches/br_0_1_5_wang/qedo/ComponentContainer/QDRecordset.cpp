@@ -32,25 +32,25 @@ QDRecordset::QDRecordset()
 void
 QDRecordset::Init(SQLHDBC hDbc)
 {
-	m_hDbc = hDbc;
-	m_hStmt = SQL_NULL_HSTMT;
-	m_nNumRowsFetched = 0;
+	hDbc_ = hDbc;
+	hStmt_ = SQL_NULL_HSTMT;
+	nNumRowsFetched_ = 0;
 	AllocStmt();
 }
 
 void 
 QDRecordset::AllocStmt()
 {
-	SQLAllocHandle(SQL_HANDLE_STMT, m_hDbc, &m_hStmt);
+	SQLAllocHandle(SQL_HANDLE_STMT, hDbc_, &hStmt_);
 }
 
 void 
 QDRecordset::Destroy()
 {
-	if(m_hStmt != SQL_NULL_HSTMT)
-		SQLFreeHandle(SQL_HANDLE_STMT, m_hStmt);
+	if(hStmt_ != SQL_NULL_HSTMT)
+		SQLFreeHandle(SQL_HANDLE_STMT, hStmt_);
 	
-	m_hStmt = SQL_NULL_HSTMT;
+	hStmt_ = SQL_NULL_HSTMT;
 }
 
 bool 
@@ -58,14 +58,14 @@ QDRecordset::Open(const char* szSqlStr)
 {
 	SQLRETURN ret;
 	
-	SQLSetStmtAttr(m_hStmt, SQL_ATTR_CURSOR_SCROLLABLE, (SQLPOINTER)SQL_SCROLLABLE, SQL_IS_INTEGER);
-	SQLSetStmtAttr(m_hStmt, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER)SQL_CURSOR_DYNAMIC, SQL_IS_INTEGER);
-	SQLSetStmtAttr(m_hStmt, SQL_ATTR_ROWS_FETCHED_PTR, &m_nNumRowsFetched, 0);
-	ret = SQLExecDirect(m_hStmt, (SQLCHAR*)szSqlStr, SQL_NTS);
+	SQLSetStmtAttr(hStmt_, SQL_ATTR_CURSOR_SCROLLABLE, (SQLPOINTER)SQL_SCROLLABLE, SQL_IS_INTEGER);
+	SQLSetStmtAttr(hStmt_, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER)SQL_CURSOR_DYNAMIC, SQL_IS_INTEGER);
+	SQLSetStmtAttr(hStmt_, SQL_ATTR_ROWS_FETCHED_PTR, &nNumRowsFetched_, 0);
+	ret = SQLExecDirect(hStmt_, (SQLCHAR*)szSqlStr, SQL_NTS);
 
 	if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{
-		ret = SQLFetch(m_hStmt);
+		ret = SQLFetch(hStmt_);
 
 		if(ret==SQL_NO_DATA_FOUND)
 			return FALSE;
@@ -81,7 +81,7 @@ QDRecordset::Open(const char* szSqlStr)
 void 
 QDRecordset::Close()
 {
-	SQLCloseCursor(m_hStmt);
+	SQLCloseCursor(hStmt_);
 }
 
 //********** GetFieldValue **********//
@@ -94,7 +94,7 @@ QDRecordset::GetFieldValue(const int nField, unsigned char* szData)
 	SQLINTEGER cbValue;
 	int nLength = GetFieldLength(nField) + 1;
 	
-	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_CHAR, szData, nLength, &cbValue) == SQL_SUCCESS;
+	ret = SQLGetData(hStmt_, (SQLUSMALLINT)nField + 1, SQL_C_CHAR, szData, nLength, &cbValue) == SQL_SUCCESS;
 	//..................................................SQL_C_BINARY..........................................
 	//..................................................SQL_C_VARBOOKMARK.....................................
 
@@ -115,7 +115,7 @@ QDRecordset::GetFieldValue(const int nField, unsigned char& cData)
 	SQLINTEGER cbValue;
 	int nLength = GetFieldLength(nField) + 1;
 	
-	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_BIT, &cData, nLength, &cbValue) == SQL_SUCCESS;
+	ret = SQLGetData(hStmt_, (SQLUSMALLINT)nField + 1, SQL_C_BIT, &cData, nLength, &cbValue) == SQL_SUCCESS;
 	
 	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 }
@@ -140,14 +140,14 @@ QDRecordset::GetFieldValue(const int nField, float& fltData)
 	int nLength = GetFieldLength(nField) + 1;
 	long temp_val=0, divisor=1;
 
-	SQLGetStmtAttr(m_hStmt, SQL_ATTR_APP_ROW_DESC, &hDesc, 0, NULL); // wozu?
+	SQLGetStmtAttr(hStmt_, SQL_ATTR_APP_ROW_DESC, &hDesc, 0, NULL); // wozu?
 
 	SQLSetDescField (hDesc, 1, SQL_DESC_TYPE, (VOID*)SQL_C_NUMERIC, 0); // 1->column account
     SQLSetDescField (hDesc, 1, SQL_DESC_PRECISION, (VOID*)5, 0);
     SQLSetDescField (hDesc, 1, SQL_DESC_SCALE, (VOID*)3, 0);
 
 	memset(NumStr.val, 0, 16);
-	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_ARD_TYPE, &NumStr, nLength, &cbValue) == SQL_SUCCESS;
+	ret = SQLGetData(hStmt_, (SQLUSMALLINT)nField + 1, SQL_ARD_TYPE, &NumStr, nLength, &cbValue) == SQL_SUCCESS;
 
 	//Call to convert the little endian mode data into numeric data.
 	for(i=0; i<16; i++)
@@ -189,7 +189,7 @@ QDRecordset::GetFieldValue(const int nField, char& cData)
 	SQLINTEGER cbValue;
 	int nLength = GetFieldLength(nField) + 1;
 	
-	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_TINYINT, &cData, nLength, &cbValue) == SQL_SUCCESS;
+	ret = SQLGetData(hStmt_, (SQLUSMALLINT)nField + 1, SQL_C_TINYINT, &cData, nLength, &cbValue) == SQL_SUCCESS;
 	
 	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 }
@@ -208,7 +208,7 @@ QDRecordset::GetFieldValue(const int nField, short* sData)
 	SQLINTEGER cbValue;
 	int nLength = GetFieldLength(nField) + 1;
 	
-	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_SHORT, sData, nLength, &cbValue) == SQL_SUCCESS;
+	ret = SQLGetData(hStmt_, (SQLUSMALLINT)nField + 1, SQL_C_SHORT, sData, nLength, &cbValue) == SQL_SUCCESS;
 	
 	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 }
@@ -227,7 +227,7 @@ QDRecordset::GetFieldValue(const int nField, long* lData)
 	SQLINTEGER cbValue;
 	int nLength = GetFieldLength(nField) + 1;
 	
-	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_LONG, lData, nLength, &cbValue) == SQL_SUCCESS;
+	ret = SQLGetData(hStmt_, (SQLUSMALLINT)nField + 1, SQL_C_LONG, lData, nLength, &cbValue) == SQL_SUCCESS;
 	
 	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 }
@@ -246,7 +246,7 @@ QDRecordset::GetFieldValue(const int nField, float* fltData)
 	SQLRETURN ret;
 	int nLength = GetFieldLength(nField) + 1;
 	
-	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_FLOAT, fltData, nLength, &cbValue) == SQL_SUCCESS;
+	ret = SQLGetData(hStmt_, (SQLUSMALLINT)nField + 1, SQL_C_FLOAT, fltData, nLength, &cbValue) == SQL_SUCCESS;
 	
 	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 }
@@ -265,7 +265,7 @@ QDRecordset::GetFieldValue(const int nField, double* dblData)
 	SQLRETURN ret;
 	int nLength = GetFieldLength(nField) + 1;
 	
-	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_DOUBLE, dblData, nLength, &cbValue) == SQL_SUCCESS;
+	ret = SQLGetData(hStmt_, (SQLUSMALLINT)nField + 1, SQL_C_DOUBLE, dblData, nLength, &cbValue) == SQL_SUCCESS;
 	
 	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 }
@@ -286,7 +286,7 @@ QDRecordset::GetFieldValue(const int nField, struct tm* time)
 	int nLength = GetFieldLength(nField) + 1;
 	SQL_TIMESTAMP_STRUCT* sqltm = new SQL_TIMESTAMP_STRUCT;
 	
-	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_TYPE_TIMESTAMP, sqltm, nLength, &cbValue) == SQL_SUCCESS;
+	ret = SQLGetData(hStmt_, (SQLUSMALLINT)nField + 1, SQL_C_TYPE_TIMESTAMP, sqltm, nLength, &cbValue) == SQL_SUCCESS;
 	
 	if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{	
@@ -323,12 +323,12 @@ QDRecordset::GetFieldIndex(const char* szFieldName)
 	SQLSMALLINT cbColNameLen, fSqlType, ibScale, fNullable;
 	SQLUINTEGER cbColDef;
 
-	SQLNumResultCols(m_hStmt, &nCols);
+	SQLNumResultCols(hStmt_, &nCols);
 	
 	while(nCol < nCols)
 	{
 		memset(szColName, 0, MAX_COL_NAME_LEN);
-		SQLDescribeCol(m_hStmt, nCol+1, (SQLCHAR*)szColName, MAX_COL_NAME_LEN, &cbColNameLen, &fSqlType, &cbColDef, &ibScale, &fNullable);
+		SQLDescribeCol(hStmt_, nCol+1, (SQLCHAR*)szColName, MAX_COL_NAME_LEN, &cbColNameLen, &fSqlType, &cbColDef, &ibScale, &fNullable);
 
 		if(_stricmp(szColName, szFieldName) == 0)
 			return nCol;
@@ -344,7 +344,7 @@ QDRecordset::GetFieldLength(const int nField)
 	SQLSMALLINT fSqlType, ibScale, fNullable;
 	SQLUINTEGER cbColDef;
 	
-	SQLDescribeCol(m_hStmt, nField + 1, NULL, 0, 0, &fSqlType, &cbColDef, &ibScale, &fNullable);
+	SQLDescribeCol(hStmt_, nField + 1, NULL, 0, 0, &fSqlType, &cbColDef, &ibScale, &fNullable);
 
 	return cbColDef;	
 }
@@ -356,7 +356,7 @@ QDRecordset::GetFieldAttributes(const int nField, unsigned char* szFieldName, in
 	SQLSMALLINT cbColNameLen, fSqlType, ibScale, fNullable;
 	SQLUINTEGER cbColDef;
 	
-	ret = SQLDescribeCol(m_hStmt, nField + 1, szFieldName, MAX_COL_NAME_LEN, &cbColNameLen, &fSqlType, &cbColDef, &ibScale, &fNullable);
+	ret = SQLDescribeCol(hStmt_, nField + 1, szFieldName, MAX_COL_NAME_LEN, &cbColNameLen, &fSqlType, &cbColDef, &ibScale, &fNullable);
 	
 	nType = fSqlType;
 	nLength = cbColDef;
@@ -368,7 +368,7 @@ int
 QDRecordset::GetFieldCount()
 {
 	SQLSMALLINT nFieldCount = 0;
-	SQLNumResultCols(m_hStmt, &nFieldCount);
+	SQLNumResultCols(hStmt_, &nFieldCount);
 
 	return nFieldCount;
 }

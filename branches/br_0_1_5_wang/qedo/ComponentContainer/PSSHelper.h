@@ -25,6 +25,7 @@
 #include <string>
 #include "Util.h"
 #include "CORBADepends.h"
+#include "GlobalHelpers.h"
 
 using namespace std;
 using namespace CosPersistentState;

@@ -26,31 +26,31 @@ namespace Qedo
 {
 
 ConnectorImpl::ConnectorImpl(char* szImplID) :
-	m_pSessionPool(NULL)
+	pSessionPool_(NULL)
 {
-	strcpy(m_szImplID, szImplID);
+	strcpy(szImplID_, szImplID);
 }
 
 ConnectorImpl::~ConnectorImpl()
 {	
 	// delete all sessions and session pool(s)!
-	if(!m_lSessions.empty())
+	if(!lSessions_.empty())
 	{
 		list <SessioImpl*> ::iterator sessio_iter;
 
-		for (sessio_iter = m_lSessions.begin();
-			sessio_iter != m_lSessions.end();
+		for (sessio_iter = lSessions_.begin();
+			sessio_iter != lSessions_.end();
 			sessio_iter++)
 		{
 			(*sessio_iter)->close();
 		}
 
-		m_lSessions.clear();
+		lSessions_.clear();
 	}
 
-	m_pSessionPool->close();
-	delete m_pSessionPool;
-	m_pSessionPool = NULL;
+	pSessionPool_->close();
+	delete pSessionPool_;
+	pSessionPool_ = NULL;
 
 	_remove_ref();
 }
@@ -61,7 +61,7 @@ ConnectorImpl::~ConnectorImpl()
 char* 
 ConnectorImpl::implementation_id()
 {
-	return m_szImplID;
+	return szImplID_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,7 +122,7 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 	if( pSession->Init()==FALSE || pSession->DriverConnect(strConn.c_str())==FALSE )
 		throw CORBA::PERSIST_STORE();
 
-	m_lSessions.push_back(pSession);
+	lSessions_.push_back(pSession);
 
 	return (dynamic_cast <Sessio_ptr> (pSession));
 }
@@ -152,24 +152,24 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 		strConn += ";";
 	}
 	
-	if(m_pSessionPool==NULL)
+	if(pSessionPool_==NULL)
 	{
-		m_pSessionPool = new SessionPoolImpl( access_mode, 
+		pSessionPool_ = new SessionPoolImpl( access_mode, 
 											  tx_policy, 
 											  strConn.c_str(), 
 											  (dynamic_cast <Connector_ptr> (this)) );
 
-		if( m_pSessionPool->Init()==FALSE ||
-			m_pSessionPool->DriverConnect(strConn.c_str())==FALSE )
+		if( pSessionPool_->Init()==FALSE ||
+			pSessionPool_->DriverConnect(strConn.c_str())==FALSE )
 			throw CORBA::PERSIST_STORE();
 	}
 	else
 	{
-		if(!m_pSessionPool->DriverConnect(strConn.c_str()))
+		if(!pSessionPool_->DriverConnect(strConn.c_str()))
 			throw CORBA::PERSIST_STORE();
 	}
 	
-	return (dynamic_cast <SessionPool_ptr> (m_pSessionPool));
+	return (dynamic_cast <SessionPool_ptr> (pSessionPool_));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -185,16 +185,16 @@ ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
 												StorageObjectFactory factory)
 {
 	map<const char*, StorageObjectFactory>::iterator sof_iter;
-	sof_iter = m_SOFMap.find(storage_type_name);
+	sof_iter = SOFMap_.find(storage_type_name);
 
-	if(sof_iter != m_SOFMap.end())
+	if(sof_iter != SOFMap_.end())
 	{
 		return sof_iter->second;
 	}
 	else
 	{
 		typedef pair <const char*, StorageObjectFactory> Factory_Pair;
-		m_SOFMap.insert( Factory_Pair(storage_type_name, factory) );
+		SOFMap_.insert( Factory_Pair(storage_type_name, factory) );
 		return NULL;
 	}
 }
@@ -213,16 +213,16 @@ ConnectorImpl::register_storage_home_factory(const char* storage_home_type_name,
 											StorageHomeFactory factory)
 {
 	map<const char*, StorageHomeFactory>::iterator shf_iter;
-	shf_iter = m_SHFMap.find(storage_home_type_name);
+	shf_iter = SHFMap_.find(storage_home_type_name);
 
-	if(shf_iter != m_SHFMap.end())
+	if(shf_iter != SHFMap_.end())
 	{
 		return shf_iter->second;
 	}
 	else
 	{
 		typedef pair <const char*, StorageHomeFactory> Factory_Pair;
-		m_SHFMap.insert( Factory_Pair(storage_home_type_name, factory) );
+		SHFMap_.insert( Factory_Pair(storage_home_type_name, factory) );
 		return NULL;
 	}
 }

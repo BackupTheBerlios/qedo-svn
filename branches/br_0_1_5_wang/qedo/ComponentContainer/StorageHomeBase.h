@@ -63,7 +63,7 @@ class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::
 
 		void FreeAllStorageObjects();
 
-		char* getStorageHomeName() { return m_szStorageHomeName; };
+		char* getStorageHomeName() { return szStorageHomeName_; };
 
 		StorageObjectBase find_by_pid(string pid);
 
@@ -83,13 +83,13 @@ class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::
 
 	protected:
 
-		char* m_szStorageHomeName; // its own table or view name!
-		CatalogBase_ptr m_pCatalogBase;
-		std::list <StorageObjectImpl*> m_lStorageObjectes;
+		char* szStorageHomeName_; // its own table or view name!
+		CatalogBase_ptr pCatalogBase_;
+		std::list <StorageObjectImpl*> lStorageObjectes_;
 
 	private:
 
-		std::list <StorageObjectImpl*> m_lTempList;
+		std::list <StorageObjectImpl*> lTempList_;
 };
 
 }; // namespace Qedo

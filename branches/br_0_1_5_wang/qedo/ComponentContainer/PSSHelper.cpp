@@ -96,6 +96,7 @@ PSSHelper::convertStringToSpid( const char* szSpid, ShortPid& rSpid )
 bool 
 PSSHelper::comparePid(const Pid& rSrc, const Pid& rDest)
 {
+/*
 	string strSrc = convertPidToString(rSrc);
 	string strDest = convertPidToString(rDest);
 
@@ -103,11 +104,14 @@ PSSHelper::comparePid(const Pid& rSrc, const Pid& rDest)
         return TRUE;
 	else
 		return FALSE;
+*/
+	return Qedo::compare_OctetSeqs(rSrc, rDest);
 }
 
 bool 
 PSSHelper::compareShortPid(const ShortPid& rSrc, const ShortPid& rDest)
 {
+/*
 	string strSrc = convertSpidToString(rSrc);
 	string strDest = convertSpidToString(rDest);
 
@@ -115,6 +119,8 @@ PSSHelper::compareShortPid(const ShortPid& rSrc, const ShortPid& rDest)
         return TRUE;
 	else
 		return FALSE;
+*/
+	return Qedo::compare_OctetSeqs(rSrc, rDest);
 }
 
 string 
