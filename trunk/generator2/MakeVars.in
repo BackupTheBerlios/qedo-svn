@@ -54,7 +54,6 @@ ifeq "${CXX}" "g++"
 CXXFLAGS += 
 endif
 
-ARFLAGS= rvs 
 
 INSTALL = @INSTALL@
 prefix=@prefix@
