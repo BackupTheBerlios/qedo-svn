@@ -43,6 +43,7 @@ LDLIBS = ${LIBS}
 
 IDL_FILES = explore.idl
 
+IDL_FLAGS = -I../ComponentIDL 
 SOURCES = 	${IDL_FILES:.idl=.cpp} ${IDL_FILES:.idl=_skel.cpp}\
 		Explore_impl.cpp \
 		main.cpp
