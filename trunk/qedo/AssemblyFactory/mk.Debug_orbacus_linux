@@ -1,0 +1,59 @@
+# Configuration Debug_orbacus_linux
+ProjectName=AssemblyFactory
+OutDir=Debug_orbacus_linux
+IntDir=Debug_orbacus_linux
+Name=Debug_orbacus_linux
+CFLAGS=-DZLIB_DLL -DHAVE_JTC -DHAVE_JTC -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller -I$(ORBACUS)/include -I$(ZLIB) -I$(XERCES)/include -g
+CXXFLAGS=-DZLIB_DLL -DHAVE_JTC -DHAVE_JTC -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller -I$(ORBACUS)/include -I$(ZLIB) -I$(XERCES)/include -g
+LIBS=-L$(ORBACUS)/lib -L$(XERCES)/lib -L$(ZLIB)/dll32 -L../ComponentIDL/../../Runtime -L../ComponentContainer/../../Runtime -lxerces-c -lz -lJTC -lpthread -lOB -lCosNaming -lComponentIDL -lComponentContainer -ldl
+
+$(IntDir)/%.o:%.cpp
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+# produce Executable
+LDLIBS+=$(LIBS)
+
+CC=$(CXX)
+
+all:  ../../Runtime/assf 
+
+../../Runtime/assf : $(IntDir)/Assembly.o $(IntDir)/AssemblyFactory.o $(IntDir)/CatalogResolver.o $(IntDir)/DOMTreeErrorReporter.o $(IntDir)/DOMXMLParser.o $(IntDir)/NameServiceBase.o $(IntDir)/Package.o $(IntDir)/PlatformBase.o $(IntDir)/libunzip.o $(IntDir)/Properties.o $(IntDir)/StandardConfigurator.o $(IntDir)/XMLCatalog.o $(IntDir)/main.o 
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+$(IntDir)/Assembly.o:	Assembly.cpp
+$(IntDir)/AssemblyFactory.o:	AssemblyFactory.cpp
+$(IntDir)/CatalogResolver.o:	../ComponentInstaller/CatalogResolver.cpp
+$(IntDir)/DOMTreeErrorReporter.o:	../ComponentInstaller/DOMTreeErrorReporter.cpp
+$(IntDir)/DOMXMLParser.o:	../ComponentInstaller/DOMXMLParser.cpp
+$(IntDir)/NameServiceBase.o:	../ComponentInstaller/NameServiceBase.cpp
+$(IntDir)/Package.o:	../ComponentInstaller/Package.cpp
+$(IntDir)/PlatformBase.o:	../ComponentInstaller/PlatformBase.cpp
+$(IntDir)/libunzip.o:	../ComponentInstaller/libunzip.cpp
+$(IntDir)/Properties.o:	Properties.cpp
+$(IntDir)/StandardConfigurator.o:	StandardConfigurator.cpp
+$(IntDir)/XMLCatalog.o:	../ComponentInstaller/XMLCatalog.cpp
+$(IntDir)/main.o:	main.cpp
+$(IntDir)/%.o:../ComponentInstaller/%.cpp
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+cidl:  
+idl:  cidl
+
+# CIDL files
+
+# IDL files
+
+lex:  
+
+# LEX files
+
+yacc:  
+
+# YACC files
+
+
+# Kimwitu files
+
+
+Kimwitu:  
+

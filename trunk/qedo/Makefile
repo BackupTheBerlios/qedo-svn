@@ -29,6 +29,38 @@ AssemblyFactory.Debug: ComponentIDL.Debug ComponentContainer.Debug
 	 make -C AssemblyFactory Debug
 
 
+Debug_orbacus_linux: ComponentIDL.Debug_orbacus_linux ComponentContainer.Debug_orbacus_linux AssemblyFactory.Debug_orbacus_linux DeploymentClient.Debug_orbacus_linux ComponentInstaller.Debug_orbacus_linux ComponentServer.Debug_orbacus_linux ComponentServerActivator.Debug_orbacus_linux
+
+
+DeploymentClient.Debug_orbacus_linux: AssemblyFactory.Debug_orbacus_linux ComponentContainer.Debug_orbacus_linux ComponentIDL.Debug_orbacus_linux
+	 mkdir -p DeploymentClient/Debug_orbacus_linux ;make -C DeploymentClient Debug_orbacus_linux
+
+
+ComponentContainer.Debug_orbacus_linux: ComponentIDL.Debug_orbacus_linux
+	 mkdir -p ComponentContainer/Debug_orbacus_linux ;make -C ComponentContainer Debug_orbacus_linux
+
+
+ComponentInstaller.Debug_orbacus_linux: ComponentIDL.Debug_orbacus_linux
+	 mkdir -p ComponentInstaller/Debug_orbacus_linux ;make -C ComponentInstaller Debug_orbacus_linux
+
+
+ComponentServer.Debug_orbacus_linux: ComponentContainer.Debug_orbacus_linux ComponentIDL.Debug_orbacus_linux
+	 mkdir -p ComponentServer/Debug_orbacus_linux ;make -C ComponentServer Debug_orbacus_linux
+
+
+ComponentServerActivator.Debug_orbacus_linux: ComponentIDL.Debug_orbacus_linux
+	 mkdir -p ComponentServerActivator/Debug_orbacus_linux; make -C ComponentServerActivator Debug_orbacus_linux
+
+
+ComponentIDL.Debug_orbacus_linux: 
+	 mkdir -p ComponentIDL/Debug_orbacus_linux; make -C ComponentIDL Debug_orbacus_linux
+
+
+AssemblyFactory.Debug_orbacus_linux: ComponentIDL.Debug_orbacus_linux ComponentContainer.Debug_orbacus_linux
+	 mkdir -p AssemblyFactory/Debug_orbacus_linux; make -C AssemblyFactory Debug_orbacus_linux
+
+
+
 Release: ComponentIDL.Release ComponentContainer.Release AssemblyFactory.Release DeploymentClient.Release ComponentInstaller.Release ComponentServer.Release ComponentServerActivator.Release
 
 

@@ -1,0 +1,60 @@
+# Configuration Debug
+ProjectName=ComponentIDL
+OutDir=./Debug_orbacus_linux
+IntDir=./Debug_orbacus_linux
+Name=Debug_orbacus_linux
+CFLAGS=-DHAVE_JTC -DHAVE_JTC -I. -I$(ORBACUS)/include -g
+CXXFLAGS=-DHAVE_JTC -DHAVE_JTC -I. -I$(ORBACUS)/include -g
+LIBS=-L$(ORBACUS)/lib -lJTC -lpthread -lOB 
+
+$(IntDir)/%.o:%.cpp
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+# produce SharedObject
+LDLIBS+=$(LIBS)
+
+CC=$(CXX)
+
+all:  idl ../../Runtime/libComponentIDL.so
+
+../../Runtime/libComponentIDL.so : $(IntDir)/Components.o $(IntDir)/Components_skel.o $(IntDir)/QedoComponents.o $(IntDir)/QedoComponents_skel.o 
+	mkdir -p ../../Runtime; $(LINK.o)  --shared $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+$(IntDir)/Components.o:	./Components.cpp
+$(IntDir)/Components_skel.o:	./Components_skel.cpp
+$(IntDir)/QedoComponents.o:	QedoComponents.cpp
+$(IntDir)/QedoComponents_skel.o:	QedoComponents_skel.cpp
+cidl:  
+idl:  CORBADepends.h CORBADepends.cpp CORBADepends_skel.h CORBADepends_skel.cpp QedoComponents.h QedoComponents.cpp QedoComponents_skel.h QedoComponents_skel.cpp Components.h Components.cpp Components_skel.h Components_skel.cpp cidl
+
+# CIDL files
+
+# IDL files
+CORBADepends.h CORBADepends.cpp CORBADepends_skel.h CORBADepends_skel.cpp:./CORBADepends.idl
+	$(ORBACUS)/bin/idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 CORBADepends.idl 
+QedoComponents.h QedoComponents.cpp QedoComponents_skel.h QedoComponents_skel.cpp:QedoComponents.idl
+	$(ORBACUS)/bin/idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 QedoComponents.idl 
+Components.h Components.cpp Components_skel.h Components_skel.cpp:./Components.idl
+	$(ORBACUS)/bin/idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 Components.idl 
+
+lex:  
+
+# LEX files
+
+yacc:  
+
+# YACC files
+
+
+# Kimwitu files
+
+
+Kimwitu:  
+
+
+
+
+
+
+
+

@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.6 2003/01/27 18:51:07 boehme Exp $";
+static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.7 2003/02/02 18:11:28 tom Exp $";
 
 #include "ComponentInstallationImpl.h"
 
@@ -303,8 +303,11 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 
 	std::string::size_type pos;
 	std::string desc = component_loc;
-
+#ifdef WIN32
 	if( !desc.compare(0, 8, "PACKAGE="))
+#else
+	if( !desc.compare("PACKAGE=", 0, 8))
+#endif
 	{
 		//
 		// check whether the package exists

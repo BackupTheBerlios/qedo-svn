@@ -1,0 +1,45 @@
+# Configuration Debug_orbacus_linux
+ProjectName=ComponentServerActivator
+OutDir=Debug_orbacus_linux
+IntDir=Debug_orbacus_linux
+Name=Debug_orbacus_linux
+CFLAGS=-DHAVE_JTC -I../ComponentIDL -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -g
+CXXFLAGS=-DHAVE_JTC -I../ComponentIDL -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -g
+LIBS=-L$(ORBACUS)/lib -L../ComponentIDL/../../Runtime -lCosNaming -lOB -ldl -lComponentIDL
+
+$(IntDir)/%.o:%.cpp
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+# produce Executable
+LDLIBS+=$(LIBS)
+
+CC=$(CXX)
+
+all:  ../../Runtime/csa 
+
+../../Runtime/csa : $(IntDir)/ServerActivatorImpl.o $(IntDir)/main.o 
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+$(IntDir)/ServerActivatorImpl.o:	ServerActivatorImpl.cpp
+$(IntDir)/main.o:	main.cpp
+cidl:  
+idl:  cidl
+
+# CIDL files
+
+# IDL files
+
+lex:  
+
+# LEX files
+
+yacc:  
+
+# YACC files
+
+
+# Kimwitu files
+
+
+Kimwitu:  
+
