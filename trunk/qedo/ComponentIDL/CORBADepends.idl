@@ -24,7 +24,12 @@
 #define __CORBA_DEPENDS_IDL__
 
 #include <orb.idl>
+#if TAO_ORB
+#include "PortableServer.pidl"
+#include "IFR_Basic.pidl"
+#else
 #include "PortableServer.idl"
+#endif
 
 module CosPersistentState {
 
