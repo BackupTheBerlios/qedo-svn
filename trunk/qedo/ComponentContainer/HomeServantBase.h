@@ -45,14 +45,15 @@ class CONTAINERDLL_API HomeServantBase : public PortableServer::RefCountServantB
 	friend class ContainerInterfaceImpl;
 
 private:
-	PortableServer::POAManager_var home_poa_manager_;
-	PortableServer::Servant my_home_servant_;
-	PortableServer::ObjectId_var my_object_id_;
+	PortableServer::POAManager_var	home_poa_manager_;
+	PortableServer::Servant			my_home_servant_;
+	PortableServer::ObjectId_var	my_object_id_;
 	
-	Components::CCMHome_var my_home_ref_;
-	CORBA::String_var repository_id_;
+	Components::CCMHome_var			my_home_ref_;
+	CORBA::String_var				repository_id_;
+	CORBA::String_var				comp_repository_id_;
 
-	ServantLocator* servant_locator_;
+	ServantLocator*					servant_locator_;
 	
 	CORBA::ULong instance_counter_;		// This counter will be part of any object reference created by this home
 
@@ -86,7 +87,7 @@ protected:
 	void finalize_component_incarnation (const PortableServer::ObjectId&);
 
 public:
-	HomeServantBase (const char*);
+	HomeServantBase (const char*, const char*);
 	HomeServantBase();
 	HomeServantBase (const HomeServantBase&);
 	HomeServantBase& operator= (const HomeServantBase&);
@@ -102,6 +103,10 @@ public:
 
 	PortableServer::Servant lookup_servant (const PortableServer::ObjectId&);
 	void prepare_remove();
+
+	// in order to get information about repository ids
+	const char* get_home_repid();
+	const char* get_component_repid();
 };
 
 } // namespace Qedo

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.4 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.5 2003/02/07 11:33:39 neubauer Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -36,10 +36,12 @@ static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.4 2002/12/03 07:57:46
 
 namespace Qedo {
 
-HomeEntry::HomeEntry (Qedo::HomeServantBase* home_servant)
+HomeEntry::HomeEntry (Qedo::HomeServantBase* home_servant, Components::Cookie* c)
 : home_servant_ (home_servant)
+, home_cookie_(c)
 {
 	home_servant_->_add_ref();
+	if (home_cookie_) { home_cookie_->_add_ref(); }
 }
 
 
@@ -50,8 +52,10 @@ HomeEntry::HomeEntry()
 
 HomeEntry::HomeEntry (const HomeEntry& home_entry)
 : home_servant_ (home_entry.home_servant_)
+, home_cookie_(home_entry.home_cookie_)
 {
 	home_servant_->_add_ref();
+	if (home_cookie_) { home_cookie_->_add_ref(); }
 }
 
 
@@ -64,6 +68,10 @@ HomeEntry::operator= (const HomeEntry& home_entry)
 	home_servant_ = home_entry.home_servant_;
 	home_servant_->_add_ref();
 
+	if (home_cookie_) { home_cookie_->_remove_ref(); }
+	home_cookie_ = home_entry.home_cookie_;
+	if (home_cookie_) { home_cookie_->_add_ref(); }
+
 	return *this;
 }
 
@@ -72,6 +80,7 @@ HomeEntry::~HomeEntry()
 {
 	DEBUG_OUT ("HomeEntry: Destructor called");
 	home_servant_->_remove_ref();
+	if (home_cookie_) { home_cookie_->_remove_ref(); }
 }
 
 
@@ -84,6 +93,39 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
   container_type_ (container_type),
   component_installer_ (Components::Deployment::ComponentInstallation::_duplicate (component_installer))
 {
+	//
+	// get home finder
+	//
+	CORBA::Object_var obj;
+	home_finder_ = 0;
+
+    try
+    {
+        obj = orb->resolve_initial_references("ComponentHomeFinder");
+    }
+    catch (const CORBA::ORB::InvalidName&)
+    {
+        DEBUG_OUT("no HomeFinder");
+		return;
+    }
+    if (CORBA::is_nil(obj.in())) {
+        DEBUG_OUT("no HomeFinder");
+		return;
+    }
+
+	try
+	{
+		home_finder_ = Qedo_Components::HomeFinder::_narrow(obj.in());
+	}
+	catch (const CORBA::Exception&)
+	{
+		DEBUG_OUT("no HomeFinder");
+		return;
+	}
+    if (CORBA::is_nil(home_finder_.in())) {
+        DEBUG_OUT("no HomeFinder");
+		return;
+    }
 }
 
 
@@ -153,6 +195,14 @@ throw (CORBA::SystemException)
 }
 
 
+/**
+ * implementation of IDL:omg.org/Components/Deployment/Container/install_home:1.0
+ *
+ * The ConfigValue named "HOMEFINDERNAME" is used to provide a name for home registration in a HomeFinder,
+ * if available. Currently each home is registered automatically anyway by repository ids of home and
+ * managed component.
+ *
+ */
 Components::CCMHome_ptr
 ContainerInterfaceImpl::install_home (const char* id,
 									  const char* entrypt,
@@ -336,12 +386,41 @@ throw (Components::Deployment::UnknownImplId,
 	// Initialize home servant
 	qedo_home_servant->initialize (root_poa_, home_executor);
 
-	HomeEntry new_entry (qedo_home_servant);
-
-	installed_homes_.push_back (new_entry);
-
 	Components::CCMHome_var home_ref = qedo_home_servant->ref();
 
+	//
+	// register home in HomeFinder
+	//
+	Components::ConfigValue* value;
+	const char* name_forHF = "";
+	Components::Cookie_var cookie = 0;
+
+	for (CORBA::ULong i = 0; i < config.length(); i++)
+	{
+		value = (Components::ConfigValue*)config[i];
+		if (! strcmp (config[i]->name(), "HOMEFINDERNAME"))
+		{
+			config[i]->value() >>= name_forHF;
+			break;
+		}
+	}
+
+	if (!CORBA::is_nil(home_finder_.in())) {
+        try
+		{
+			cookie = home_finder_->register_home(home_ref, qedo_home_servant->get_component_repid(), 
+												 qedo_home_servant->get_home_repid(), name_forHF);
+		}
+		catch(...)
+		{
+		}
+    }
+
+	//
+	// register home
+	//
+	HomeEntry new_entry(qedo_home_servant, cookie);
+	installed_homes_.push_back (new_entry);
 	// Okay, our home servant is stored in the home entry and the executor is stored in the
 	// home servant, so we do not need any additional reference here
 	qedo_home_servant->_remove_ref();
@@ -374,8 +453,21 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 		throw Components::RemoveFailure();
 	}
 
-	Qedo::HomeServantBase* home_servant = (*homes_iter).home_servant_;
+	//
+	// unregister home in HomeFinder
+	//
+	Components::Cookie* cookie = (*homes_iter).home_cookie_;
+	if (!CORBA::is_nil(home_finder_.in()) && cookie) {
+        try
+		{
+			home_finder_->unregister_home(cookie);
+		}
+		catch(...)
+		{
+		}
+    }
 
+	Qedo::HomeServantBase* home_servant = (*homes_iter).home_servant_;
 	home_servant->prepare_remove();
 
 	installed_homes_.erase (homes_iter);

@@ -25,7 +25,7 @@
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
-#include <Components_skel.h>
+#include <QedoComponents_skel.h>
 
 #include "HomeServantBase.h"
 #include "Util.h"
@@ -38,8 +38,9 @@ class HomeEntry
 {
 public:
 	Qedo::HomeServantBase* home_servant_;
+	Components::Cookie* home_cookie_;
 
-	HomeEntry (Qedo::HomeServantBase*);
+	HomeEntry (Qedo::HomeServantBase*, Components::Cookie* c);
 	HomeEntry();
 	HomeEntry (const HomeEntry&);
 	HomeEntry& operator= (const HomeEntry&);
@@ -61,8 +62,9 @@ private:
 	PortableServer::POA_var									root_poa_;
 	ContainerType											container_type_;
 	Components::Deployment::ComponentInstallation_var		component_installer_;
+	Qedo_Components::HomeFinder_var							home_finder_;
 
-	std::vector <HomeEntry>										installed_homes_;
+	std::vector <HomeEntry>									installed_homes_;
 
 #ifdef _WIN32
 	HINSTANCE load_shared_library (const char* name);

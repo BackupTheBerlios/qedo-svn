@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.4 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.5 2003/02/07 11:33:39 neubauer Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -28,8 +28,9 @@ static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.4 2002/12/03 07:57:46 stoins
 
 namespace Qedo {
 
-HomeServantBase::HomeServantBase (const char* repository_id)
+HomeServantBase::HomeServantBase (const char* repository_id, const char* comp_repid)
 : repository_id_ (CORBA::string_dup (repository_id)),
+  comp_repository_id_(CORBA::string_dup (comp_repid)),
   instance_counter_ (0),
   servant_locator_ (new ServantLocator (this)),
   servant_registry_ (new ServantRegistry()),
@@ -49,7 +50,8 @@ HomeServantBase::HomeServantBase()
 
 HomeServantBase::HomeServantBase (const HomeServantBase& base)
 {
-	DEBUG_OUT ("HomeServantBase: Destructor called");
+	NORMAL_ERR ("HomeServantBase: Wrong constructor used");
+	assert (0);
 }
 
 
@@ -378,6 +380,21 @@ HomeServantBase::prepare_remove()
 		}
 	}
 }
+
+
+const char* 
+HomeServantBase::get_home_repid()
+{
+	return repository_id_;
+}
+
+
+const char* 
+HomeServantBase::get_component_repid()
+{
+	return comp_repository_id_;
+}
+
 
 } // namespace Qedo
 
