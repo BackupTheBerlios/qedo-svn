@@ -237,6 +237,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="DOMXMLParser.cpp">
 			</File>
 			<File
+				RelativePath="DTMReader.cpp">
+			</File>
+			<File
 				RelativePath="InstallationReader.cpp">
 			</File>
 			<File
@@ -244,6 +247,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="Output.cpp">
+			</File>
+			<File
+				RelativePath="PSDReader.cpp">
 			</File>
 			<File
 				RelativePath="Package.cpp">
@@ -301,6 +307,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="DOMXMLParser.h">
 			</File>
 			<File
+				RelativePath="DTMReader.h">
+			</File>
+			<File
 				RelativePath="InstallationReader.h">
 			</File>
 			<File
@@ -308,6 +317,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="Output.h">
+			</File>
+			<File
+				RelativePath="PSDReader.h">
 			</File>
 			<File
 				RelativePath="Package.h">

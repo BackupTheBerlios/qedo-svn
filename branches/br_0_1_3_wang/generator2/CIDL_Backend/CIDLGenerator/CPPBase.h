@@ -101,6 +101,9 @@ protected:
 	char* map_idl_type ( IR__::IDLType_ptr type )
 		throw ( CannotMapType );
 
+	char* map_direct_type ( IR__::IDLType_ptr type )
+		throw ( CannotMapType );
+
 	char* map_in_parameter_type ( IR__::IDLType_ptr type )
 		throw ( CannotMapType );
 

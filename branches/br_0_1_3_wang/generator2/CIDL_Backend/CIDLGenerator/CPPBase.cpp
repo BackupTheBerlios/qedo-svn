@@ -990,6 +990,66 @@ throw ( CannotMapType )
 	return CORBA::string_dup ( ret_string.c_str() );
 }
 
+char*
+CPPBase::map_direct_type
+( IR__::IDLType_ptr type )
+throw ( CannotMapType )
+{
+	string ret_string;
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
+
+	switch ( type -> type() -> kind() )
+	{
+	case CORBA::tk_short:
+		ret_string = "short";
+		break;
+	case CORBA::tk_long:
+		ret_string = "long";
+		break;
+	case CORBA::tk_longlong:
+		ret_string = "longlong";
+		break;
+	case CORBA::tk_ushort:
+		ret_string = "unsigned short";
+		break;
+	case CORBA::tk_ulong:
+		ret_string = "unsigned long";
+		break;
+	case CORBA::tk_ulonglong:
+		ret_string = "unsigned longlong";
+		break;
+	case CORBA::tk_float:
+		ret_string = "float";
+		break;
+	case CORBA::tk_double:
+		ret_string = "double";
+		break;
+	case CORBA::tk_longdouble:
+		ret_string = "long double";
+		break;
+	case CORBA::tk_boolean:
+		ret_string = "boolean";
+		break;
+	case CORBA::tk_octet:
+		ret_string = "octet";
+		break;
+	case CORBA::tk_char:
+		ret_string = "char";
+		break;
+	case CORBA::tk_wchar:
+		ret_string = "wchar";
+		break;
+	case CORBA::tk_string:
+		ret_string = "string";
+		break;
+	case CORBA::tk_wstring:
+		ret_string = "wstring";
+		break;
+	default:
+		throw CannotMapType();
+	}
+	return CORBA::string_dup ( ret_string.c_str() );
+}
 
 char*
 CPPBase::map_attribute_type

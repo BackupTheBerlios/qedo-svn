@@ -10,6 +10,7 @@
 #include "GeneratorServantC.h"
 #include "GeneratorPersistenceH.h"
 #include "GeneratorPersistenceC.h"
+#include "GeneratorPSD.h"
 #include "GeneratorVC7.h"
 #include "GeneratorValuetypesH.h"
 #include "GeneratorValuetypesC.h"
@@ -315,6 +316,12 @@ main
 		pc_generator->generate(target, fileprefix);
 		pc_generator->destroy();
 		
+		// generate persistent descriptor
+		std::cout << "Generating persistent descriptor " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorPSD *psd_generator =
+			new QEDO_CIDL_Generator::GeneratorPSD(repository);
+		psd_generator->generate(target, fileprefix);
+		psd_generator->destroy();
 	}
 
 	if(generateDescriptors)
