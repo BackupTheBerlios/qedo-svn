@@ -2,17 +2,17 @@
 
 module HelloWorld {
 
-	composition session CallerImpl {
-		home executor CallerHomeImpl {
-			implements HelloWorld::CallerHome;
-			manages CallerSessionImpl;
-		};
-	};
+  composition session CallerImpl {
+    home executor CallerHomeImpl {
+      implements HelloWorld::CallerHome;
+      manages CallerSessionImpl;
+    };
+  };
 
-	composition session CalleeImpl {
-		home executor CalleeHomeImpl {
-			implements HelloWorld::CalleeHome;
-			manages CalleeSessionImpl;
-		};
-	};
+  composition session CalleeImpl {
+    home executor CalleeHomeImpl {
+      implements HelloWorld::CalleeHome;
+      manages CalleeSessionImpl;
+    };
+  };
 };
