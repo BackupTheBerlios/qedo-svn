@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.20 2003/08/01 14:57:24 stoinski Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.21 2003/08/05 14:40:02 boehme Exp $";
 
 
 namespace Qedo {
@@ -184,6 +184,8 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 		aName[0].kind = CORBA::string_dup("");
 		aName[1].id = CORBA::string_dup("HomeFinder");
 		aName[1].kind = CORBA::string_dup("");
+
+		obj = nameService->resolve(aName);
 
 		try
 		{
@@ -706,6 +708,105 @@ throw (Components::CCMException)
 	throw Components::CCMException();
 }
 
+static qedo_mutex event_queue_mutex;
+static qedo_cond event_queue_cond;
+
+struct event_entry {
+	event_entry(Components::EventConsumerBase_ptr c, Components::EventBase_ptr e);
+	event_entry(const event_entry& e);
+	~event_entry();
+	Components::EventConsumerBase_var consumer;
+	Components::EventBase_ptr event;
+};
+
+event_entry::event_entry(Components::EventConsumerBase_ptr c,
+Components::EventBase_ptr e)
+: consumer(Components::EventConsumerBase::_duplicate(c)),
+  event(e)
+{
+	add_ref(event);
+}
+
+event_entry::event_entry(const event_entry& e)
+: consumer(Components::EventConsumerBase::_duplicate(e.consumer)),
+  event(e.event)
+{
+	add_ref(event);
+}
+
+event_entry::~event_entry()
+{
+	remove_ref(event);
+}
+
+static std::vector<event_entry> event_list;
+
+static void*
+deliverer(void*)
+{
+	qedo_cond cond;
+	do
+	{
+		event_queue_mutex.qedo_lock_object();
+		while(!event_list.empty()) {
+			event_entry e = event_list.front();
+			event_list.erase(event_list.begin());
+			event_queue_mutex.qedo_unlock_object();
+			try {
+				e.consumer->push_event(e.event);
+			}
+			catch(const CORBA::Exception&)
+			{
+			   DEBUG_OUT("event_delivering: got CORBA exception");
+			}
+			catch(...)
+			{
+			   DEBUG_OUT("event_delivering: exception");
+			}
+			event_queue_mutex.qedo_lock_object();
+		}
+		cond.qedo_wait(event_queue_mutex);
+	} while(true);
+	// here hast to be checked for finalize of the thread
+	return 0;
+}
+
+struct dummy {
+	int a;
+	dummy();
+};
+
+dummy::dummy()
+{
+	a=1;
+   qedo_startDetachedThread(deliverer,0);
+}
+
+static dummy d;
+
+void 
+ContainerInterfaceImpl::queue_event(Components::EventConsumerBase_ptr
+consumer,Components::EventBase_ptr ev)
+{
+	qedo_lock lock(event_queue_mutex);
+	event_entry entry(consumer,Components::EventBase::_downcast(ev->_copy_value()));
+	event_list.push_back(entry);
+	event_queue_cond.qedo_signal();
+}
+
+void 
+ContainerInterfaceImpl::queue_event(SubscribedConsumerVector& consumers,
+Components::EventBase_ptr ev)
+{
+	qedo_lock lock(event_queue_mutex);
+	SubscribedConsumerVector::iterator iter;
+	Components::EventBase_ptr e = Components::EventBase::_downcast(ev->_copy_value());
+	for(iter = consumers.begin();iter != consumers.end();iter++) {
+		event_entry entry(iter->consumer(),e);
+		event_list.push_back(entry);
+	}
+	event_queue_cond.qedo_signal();
+}
 
 void
 ContainerInterfaceImpl::prepare_remove()
@@ -725,7 +826,6 @@ ContainerInterfaceImpl::prepare_remove()
 		}
 	}
 }
-
 
 } // namespace Qedo
 
