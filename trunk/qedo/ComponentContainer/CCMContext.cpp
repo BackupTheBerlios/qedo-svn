@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMContext.cpp,v 1.6 2003/05/07 13:43:01 stoinski Exp $";
+static char rcsid[] = "$Id: CCMContext.cpp,v 1.7 2003/07/16 13:39:05 stoinski Exp $";
 
 #include "CCMContext.h"
 #include "Output.h"
@@ -120,18 +120,15 @@ ExecutorContext::ccm_object_executor (CCMObjectExecutor* ccm_object_exec)
 }
 
 
-HomeExecutorContext::HomeExecutorContext (HomeServantBase* my_home_servant)
-: my_home_servant_ (my_home_servant)
+HomeExecutorContext::HomeExecutorContext (Components::CCMHome_ptr my_home_servant_ref)
+: my_home_servant_ref_ (Components::CCMHome::_duplicate (my_home_servant_ref))
 {
-	my_home_servant_->_add_ref();
 }
 
 
 HomeExecutorContext::~HomeExecutorContext()
 {
 	DEBUG_OUT ( "CCMContext: Destructor called" );
-
-	my_home_servant_->_remove_ref();
 }
 
 
@@ -145,7 +142,7 @@ HomeExecutorContext::get_caller_principal()
 Components::CCMHome_ptr 
 HomeExecutorContext::get_CCM_home()
 {
-	return my_home_servant_->ref();
+	return Components::CCMHome::_duplicate (my_home_servant_ref_);
 }
 
 
