@@ -20,62 +20,25 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __EXECUTOR_VALUETYPES_H__
-#define __EXECUTOR_VALUETYPES_H__
+#ifndef __REFCOUNT_LOCAL_OBJECT_H__
+#define __REFCOUNT_LOCAL_OBJECT_H__
 
 #include <CORBA.h>
-#include "dinner_EQUIVALENT.h"
 
 namespace dinner {
 
-class Cookie_impl : public virtual OBV_Components::Cookie,
-					public virtual CORBA::DefaultValueRefCountBase
+class RefCountLocalObject : public virtual CORBA::LocalObject
 {
 private:
-    static CORBA::LongLong cookie_key_;
-
-	void operator=(const Cookie_impl&);
-	Cookie_impl (const Cookie_impl&);
+	CORBA::Long ref_count_;
 
 public:
-	Cookie_impl();
-	~Cookie_impl();
+	RefCountLocalObject();
+	virtual ~RefCountLocalObject();
 
-	// Extension
-	CORBA::Boolean equal (Components::Cookie*);
-};
-
-
-class CookieFactory_impl : public virtual CORBA::ValueFactoryBase
-{
-private:
-	virtual CORBA::ValueBase* create_for_unmarshal();
-};
-
-
-class PhilosopherState_impl : public virtual OBV_dinner::PhilosopherState,
-							  public virtual CORBA::DefaultValueRefCountBase
-{
-private:
-	void operator= (const PhilosopherState_impl& val);
-	PhilosopherState_impl (const PhilosopherState_impl&);
-
-public:
-	PhilosopherState_impl (dinner::PhilosopherStatus, const char*, dinner::Philosopher_ptr);
-	PhilosopherState_impl();
-	~PhilosopherState_impl();
-
-	dinner::PhilosopherState* _copy_value();
-};
-
-
-class PhilosopherStateFactory_impl : public virtual dinner::PhilosopherState_init 
-{
-private:	
-	virtual CORBA::ValueBase* create_for_unmarshal();
-
-public:
-	dinner::PhilosopherState* create (dinner::PhilosopherStatus, const char*, dinner::Philosopher_ptr);
+	void _add_ref();
+	void _remove_ref();
+	unsigned long _get_refcount();
 };
 
 } // namespace dinner

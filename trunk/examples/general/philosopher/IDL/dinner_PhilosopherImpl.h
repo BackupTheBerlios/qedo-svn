@@ -48,7 +48,7 @@ namespace dinner
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_PhilosopherSessionImpl
 #ifndef MICO_ORB
-        , public virtual Qedo::RefCountLocalObject
+  //      , public virtual Qedo::RefCountLocalObject
 #endif
 // BEGIN USER INSERT SECTION INHERITANCE_PhilosopherSessionImpl
 		, JTCThreadWithTimer
@@ -56,9 +56,6 @@ namespace dinner
     {
     
     private:
-    
-        Qedo::qedo_mutex mutex_;
-        
         ::dinner::CCM_Philosopher_Context_var context_;
         
     public:
@@ -110,7 +107,6 @@ namespace dinner
     
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl
 	private:
-		JTCThreadHandle my_thread_handle_;
 		string id_;
 		long tsec_, esec_, ssec_;
 		bool stopped_;
@@ -118,6 +114,7 @@ namespace dinner
 	public:
 		// This is the run function of the thread
 		void run();
+		void stop();
 // END USER INSERT SECTION PhilosopherSessionImpl
 
     };
@@ -137,9 +134,6 @@ namespace dinner
     {
     
     private:
-    
-        Qedo::qedo_mutex mutex_;
-        
         ::dinner::CCM_Philosopher_Context_var context_;
         
         PhilosopherSessionImpl* component_;
@@ -212,9 +206,6 @@ namespace dinner
     {
     
     private:
-    
-        Qedo::qedo_mutex mutex_;
-        
         Components::CCMContext_var context_;
         
     public:

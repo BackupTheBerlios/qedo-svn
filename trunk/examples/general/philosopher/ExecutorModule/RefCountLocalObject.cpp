@@ -20,64 +20,67 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __EXECUTOR_VALUETYPES_H__
-#define __EXECUTOR_VALUETYPES_H__
+static char rcsid[] = "$Id: RefCountLocalObject.cpp,v 1.4 2003/08/08 08:32:09 stoinski Exp $";
 
-#include <CORBA.h>
-#include "dinner_EQUIVALENT.h"
+
+#include"RefCountLocalObject.h"
+#include <iostream>
+
+using namespace std;
 
 namespace dinner {
 
-class Cookie_impl : public virtual OBV_Components::Cookie,
-					public virtual CORBA::DefaultValueRefCountBase
+RefCountLocalObject::RefCountLocalObject()
+: ref_count_ (1)
 {
-private:
-    static CORBA::LongLong cookie_key_;
-
-	void operator=(const Cookie_impl&);
-	Cookie_impl (const Cookie_impl&);
-
-public:
-	Cookie_impl();
-	~Cookie_impl();
-
-	// Extension
-	CORBA::Boolean equal (Components::Cookie*);
-};
+}
 
 
-class CookieFactory_impl : public virtual CORBA::ValueFactoryBase
+RefCountLocalObject::~RefCountLocalObject()
 {
-private:
-	virtual CORBA::ValueBase* create_for_unmarshal();
-};
+	cout << "RefCountLocalObject: Destructor called" << endl;
+
+	if (ref_count_ != 0)
+	{
+		cerr << "RefCountLocalObject: Object deleted without reference count of null" << endl;
+		cerr << "RefCountLocalObject: ref count was " << ref_count_ << endl;
+		assert (ref_count_ == 0);
+	}
+}
 
 
-class PhilosopherState_impl : public virtual OBV_dinner::PhilosopherState,
-							  public virtual CORBA::DefaultValueRefCountBase
+void
+RefCountLocalObject::_add_ref()
 {
-private:
-	void operator= (const PhilosopherState_impl& val);
-	PhilosopherState_impl (const PhilosopherState_impl&);
-
-public:
-	PhilosopherState_impl (dinner::PhilosopherStatus, const char*, dinner::Philosopher_ptr);
-	PhilosopherState_impl();
-	~PhilosopherState_impl();
-
-	dinner::PhilosopherState* _copy_value();
-};
+#ifdef WIN32
+	InterlockedIncrement (&ref_count_);
+#else
+	// Here the qedo::mutex must be added
+	++ref_count_;
+#endif
+}
 
 
-class PhilosopherStateFactory_impl : public virtual dinner::PhilosopherState_init 
+void
+RefCountLocalObject::_remove_ref()
 {
-private:	
-	virtual CORBA::ValueBase* create_for_unmarshal();
+#ifdef WIN32
+	if (InterlockedDecrement (&ref_count_) == 0)
+		delete this;
+#else
+	// Here the qedo::mutex must be added
+	if (--ref_count_ == 0)
+	{
+		delete this;
+	}
+#endif
+}
 
-public:
-	dinner::PhilosopherState* create (dinner::PhilosopherStatus, const char*, dinner::Philosopher_ptr);
-};
+
+unsigned long
+RefCountLocalObject::_get_refcount()
+{
+	return ref_count_;
+}
 
 } // namespace dinner
-
-#endif

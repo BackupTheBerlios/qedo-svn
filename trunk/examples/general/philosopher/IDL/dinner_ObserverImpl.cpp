@@ -180,9 +180,10 @@ ObserverImpl::set_session_context(::Components::SessionContext_ptr context)
         context_ = ::dinner::CCM_Observer_Context::_nil();
         
     #else
-    context_ = ::dinner::CCM_Observer_Context::_duplicate(::dinner::CCM_Observer_Context::_narrow(context));
+    context_ = ::dinner::CCM_Observer_Context::_narrow(context);
     
     #endif
+    
     component_->set_context(context_);
 }
 
@@ -232,6 +233,11 @@ ObserverHomeImpl::~ObserverHomeImpl()
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::~ObserverHomeImpl
 	cout << "ObserverHomeImpl: Destructor called" << endl;
+
+	int dummy = 0;
+	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+
+	orb->unregister_value_factory ("IDL:dinner/PhilosopherState:1.0");
 // END USER INSERT SECTION ObserverHomeImpl::~ObserverHomeImpl
 
 }
@@ -309,7 +315,7 @@ create_ObserverHomeE(void)
 	int dummy = 0;
 	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
 
-	CORBA::ValueFactoryBase* oldFact;
+	CORBA::ValueFactoryBase_var oldFact;
 	oldFact = orb->register_value_factory ("IDL:dinner/PhilosopherState:1.0", new dinner::PhilosopherStateFactory_impl() );
 // END USER INSERT SECTION create_ObserverHome
 

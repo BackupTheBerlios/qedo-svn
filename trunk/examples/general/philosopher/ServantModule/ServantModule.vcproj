@@ -112,7 +112,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(QEDO)\include&quot;;;..\IDL"
+				AdditionalIncludeDirectories="&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(QEDO)\ComponentIDL&quot;;&quot;$(QEDO)\ComponentContainer&quot;;..\IDL"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -127,7 +127,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentContainer.lib ComponentIDL.lib obd.lib jtcd.lib"
-				OutputFile="../../../../Runtime/philosopherS.dll"
+				OutputFile="$(QEDO)/bin/philosopherS.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(QEDO)/lib&quot;;&quot;$(ORBACUS)\lib&quot;"
 				GenerateDebugInformation="TRUE"

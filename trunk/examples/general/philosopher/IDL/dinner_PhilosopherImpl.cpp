@@ -226,27 +226,38 @@ PhilosopherSessionImpl::run()
 		if (stopped_)
 			break;
 	}
+}
 
+void
+PhilosopherSessionImpl::stop()
+{
 	// Remove this thread friendly
+	JTCThreadHandle my_handle = this;
+
+	stopped_ = true;
+
+	this->wake_up();
+
 	do
 	{
 		try
 		{
-			my_thread_handle_->join();
+			my_handle->join();
 		}
 		catch (...)
 		{
 			cerr << "Exception during join()" << endl;
 		}
-	} while (my_thread_handle_->isAlive());
+	} while (my_handle->isAlive());
 }
+
+
 // END USER INSERT SECTION PhilosopherSessionImpl
 
 
 PhilosopherSessionImpl::PhilosopherSessionImpl()
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::PhilosopherSessionImpl
-	my_thread_handle_ = this;
 	stopped_ = false;
 // END USER INSERT SECTION PhilosopherSessionImpl::PhilosopherSessionImpl
 }
@@ -390,7 +401,7 @@ PhilosopherImpl::~PhilosopherImpl()
 	cout << "PhilosopherImpl: Destructor called" << endl;
 // END USER INSERT SECTION PhilosopherImpl::~PhilosopherImpl
 
-    component_->_remove_ref();
+ //   component_->_remove_ref();
 }
 
 
@@ -440,9 +451,9 @@ PhilosopherImpl::set_session_context(::Components::SessionContext_ptr context)
         context_ = ::dinner::CCM_Philosopher_Context::_nil();
         
     #else
-    context_ = ::dinner::CCM_Philosopher_Context::_duplicate(::dinner::CCM_Philosopher_Context::_narrow(context));
-    
+    context_ = ::dinner::CCM_Philosopher_Context::_narrow(context);
     #endif
+    
     component_->set_context(context_);
 }
 
@@ -473,6 +484,8 @@ PhilosopherImpl::ccm_remove()
 {
 // BEGIN USER INSERT SECTION PhilosopherImpl::ccm_remove
 	cout << "PhilosopherImpl: ccm_remove() called" << endl;
+
+	component_->stop();
 // END USER INSERT SECTION PhilosopherImpl::ccm_remove
 }
 

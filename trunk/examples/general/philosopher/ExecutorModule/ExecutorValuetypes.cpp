@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ExecutorValuetypes.cpp,v 1.3 2002/10/16 09:37:40 tom Exp $";
+static char rcsid[] = "$Id: ExecutorValuetypes.cpp,v 1.4 2003/08/08 08:32:09 stoinski Exp $";
 
 #include "ExecutorValuetypes.h"
 
@@ -107,6 +107,13 @@ PhilosopherState_impl::~PhilosopherState_impl()
 }
 
 
+dinner::PhilosopherState* 
+PhilosopherState_impl::_copy_value()
+{
+	return new PhilosopherState_impl (this->status(), this->name(), this->ref());
+}
+
+
 CORBA::ValueBase* 
 PhilosopherStateFactory_impl::create_for_unmarshal() 
 {	
@@ -121,5 +128,6 @@ PhilosopherStateFactory_impl::create (dinner::PhilosopherStatus status,
 {
 	return new PhilosopherState_impl (status, name, phil);
 }
+
 
 } // namespace dinner

@@ -234,9 +234,10 @@ CutleryImpl::set_session_context(::Components::SessionContext_ptr context)
         context_ = ::dinner::CCM_Cutlery_Context::_nil();
         
     #else
-    context_ = ::dinner::CCM_Cutlery_Context::_duplicate(::dinner::CCM_Cutlery_Context::_narrow(context));
+    context_ = ::dinner::CCM_Cutlery_Context::_narrow(context);
     
     #endif
+    
     component_->set_context(context_);
     Seg_->set_context(context_);
 }
@@ -287,6 +288,11 @@ CutleryHomeImpl::~CutleryHomeImpl()
 {
 // BEGIN USER INSERT SECTION CutleryHomeImpl::~CutleryHomeImpl
 	cout << "CutleryHomeImpl: Destructor called" << endl;
+
+	int dummy = 0;
+	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+
+    orb->unregister_value_factory ("IDL:omg.org/Components/Cookie:1.0");
 // END USER INSERT SECTION CutleryHomeImpl::~CutleryHomeImpl
 
 }
@@ -324,7 +330,7 @@ create_CutleryHomeE(void)
 	int dummy = 0;
 	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
 
-	CORBA::ValueFactoryBase* oldFact;
+	CORBA::ValueFactoryBase_var oldFact;
     oldFact = orb->register_value_factory ("IDL:omg.org/Components/Cookie:1.0", new dinner::CookieFactory_impl());
 // END USER INSERT SECTION create_CutleryHome
 

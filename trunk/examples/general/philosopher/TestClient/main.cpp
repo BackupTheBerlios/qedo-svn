@@ -3,10 +3,10 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.5 2003/05/12 13:10:34 neubauer Exp $
+// $Id: main.cpp,v 1.6 2003/08/08 08:32:10 stoinski Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.5 2003/05/12 13:10:34 neubauer Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.6 2003/08/08 08:32:10 stoinski Exp $";
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
@@ -330,12 +330,37 @@ main (int argc, char** argv)
 
 	try
 	{
-		container->remove_home (c_home);
 		container->remove_home (p_home);
+		container->remove_home (c_home);
+		container->remove_home (o_home);
 	}
 	catch (Components::RemoveFailure&)
 	{
 		cerr << "Remove Failure during removing home" << endl;
+	}
+	catch (CORBA::SystemException& ex)
+	{
+		cerr << ex << endl;
+	}
+	try
+	{
+		container->remove();
+	}
+	catch (Components::RemoveFailure&)
+	{
+		cerr << "Remove Failure during removing container" << endl;
+	}
+	catch (CORBA::SystemException& ex)
+	{
+		cerr << ex << endl;
+	}
+	try
+	{
+		component_server->remove();
+	}
+	catch (Components::RemoveFailure&)
+	{
+		cerr << "Remove Failure during removing component server" << endl;
 	}
 	catch (CORBA::SystemException& ex)
 	{
