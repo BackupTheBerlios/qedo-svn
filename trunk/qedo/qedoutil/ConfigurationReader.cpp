@@ -24,26 +24,37 @@
 #include "Output.h"
 #include "DOMXMLParser.h"
 
-static char rcsid[] UNUSED = "$Id: ConfigurationReader.cpp,v 1.6 2003/11/14 18:08:34 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ConfigurationReader.cpp,v 1.7 2003/11/18 11:48:54 boehme Exp $";
 
 
 namespace Qedo {
 
 
-ConfigurationReader* ConfigurationReader::instance_ = 0;
+ConfigurationReader ConfigurationReader::instance_;
 
 
 ConfigurationReader*
 ConfigurationReader::instance()
 {
-	if (! instance_ )
-		instance_ = new ConfigurationReader();
+	static bool is_init = false;
 
-	return instance_;
+	if(! is_init) instance_.init();
+
+	return &ConfigurationReader::instance_;
 }
 
-
 ConfigurationReader::ConfigurationReader()
+{
+	config_top_=0;
+}
+
+ConfigurationReader::~ConfigurationReader()
+{
+	delete config_top_;
+}
+
+void
+ConfigurationReader::init()
 {
 	// Get the QEDO environment variable
 	std::string qedo_config = Qedo::getEnvironment ("QEDO");
@@ -77,6 +88,7 @@ ConfigurationReader::ConfigurationReader()
 	}
 
 	std::string file_name (qedo_config.c_str());
+	DOMXMLParser parser_;
 
     if (parser_.parse (const_cast<char*>(qedo_config.c_str())) != 0) 
 	{

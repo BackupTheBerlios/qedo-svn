@@ -34,10 +34,11 @@ namespace Qedo {
 class QEDOUTIL_API ConfigurationReader
 {
 private:
-	static ConfigurationReader* instance_;
 	ConfigurationReader();
+	~ConfigurationReader();
+	void init();
 
-	DOMXMLParser parser_;
+	static ConfigurationReader instance_;
 	DOMElement* config_top_;
 	bool broken_config_file_;
 

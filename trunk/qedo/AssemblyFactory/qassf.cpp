@@ -35,7 +35,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.20 2003/11/14 15:24:26 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.21 2003/11/18 11:48:54 boehme Exp $";
 
 
 /**
@@ -222,8 +222,9 @@ main (int argc, char** argv)
 	CORBA::ValueFactoryBase* factory;
 	factory = new Qedo::CookieFactory_impl();
     orb->register_value_factory("IDL:omg.org/Components/Cookie:1.0", factory);
-	factory = new Qedo::ConfigValueFactory_impl();
-    orb->register_value_factory("IDL:omg.org/Components/ConfigValue:1.0", factory);
+	CORBA::ValueFactoryBase* factory1;
+	factory1 = new Qedo::ConfigValueFactory_impl();
+    orb->register_value_factory("IDL:omg.org/Components/ConfigValue:1.0", factory1);
 
 	Qedo::AssemblyFactoryImpl* assembly_factory = new Qedo::AssemblyFactoryImpl(orb);
 
@@ -249,6 +250,11 @@ main (int argc, char** argv)
 	signal_thread->join();
 #endif // HAVE_LIBPTHREAD
 
+    orb->unregister_value_factory("IDL:omg.org/Components/Cookie:1.0");
+    orb->unregister_value_factory("IDL:omg.org/Components/ConfigValue:1.0");
+	 delete assembly_factory;
+	 delete factory1;
+	 delete factory;
 	return 0;
 }
 

@@ -44,13 +44,13 @@ namespace Qedo {
 class CatalogResolver : public EntityResolver
 {
 public:
-    CatalogResolver (const XMLCatalog & aCatalog);
+    CatalogResolver (XMLCatalog * aCatalog);
     virtual ~CatalogResolver();
     InputSource* resolveEntity( const XMLCh* const publicId, 
                                 const XMLCh* const systemId );
 
 private:
-    XMLCatalog mCatalog;
+    XMLCatalog *mCatalog;
 };
 
 

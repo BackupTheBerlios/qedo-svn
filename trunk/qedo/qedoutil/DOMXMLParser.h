@@ -86,7 +86,6 @@ private:
 	DOMTreeErrorReporter*			errReporter_;
 	XercesDOMParser*				parser_;
 	DOMDocument*					document_;
-    XMLCatalog*						mXMLCatalog;
 	 CatalogResolver*             mCatalogResolver;
 
 public:

@@ -83,6 +83,9 @@
 Revision history:
 
 $Log: Uri.h,v $
+Revision 1.6  2003/11/18 11:48:54  boehme
+memory leak fixes for qassf
+
 Revision 1.5  2003/11/14 18:08:34  boehme
 fix more memory leaks
 
@@ -124,34 +127,14 @@ Initial revision.
 
 
 #include <string>    // for template instantiation
-#include <cstring>   // for memcpy()
 #include <cassert>
-#include <stdexcept> // domain_error
-#include <cstdlib>   // malloc
-#include <iostream>
 
 
-// forward-declaration needed for instantiation
-template< class charT, class stringT > class URI_;
 
 
-// instantiate the most commonly used types
-typedef URI_< char, std::string > URI;
-// typedef URI_< wchar, wstring > WURI;
-
-
-template< class charT, class stringT >
-class URI_ {
+class URI {
 
 public:
-
-
-  /*
-  These are not used internally, but defined so they can be referenced outside
-  */
-  typedef charT   CharT;
-  typedef stringT StringT;
-
 
   /*
   This type is returned by getSchemeT()
@@ -170,7 +153,7 @@ public:
   The result is equivalent to using URI( "" ), but it is much more efficient
   because a shared Rep can be used.
   */
-  URI_();
+  URI();
 
   /*
   Construct a URI from an existing null-terminated character buffer.
@@ -178,42 +161,42 @@ public:
                      not allocate new memory; the content of the buffer may
                      change due to URI normalization
   */
-  URI_( const charT * const aString,
+  URI( const char * const aString,
         bool aAdoptBuffer = false );
 
   /*
   Same as above, but since strings tend to want to own their buffers, this
   constructor does not allow adoption.
   */
-  URI_( const stringT & aString );
+  URI( const std::string & aString );
 
   /*
   Copy constructor. Since the underlying Rep is not copied, this is a very
   lightweight operation, so URIs can be passed around "by value"
   */
-  URI_( const URI_ & aOther );
+  URI( const URI & aOther );
 
 
-  virtual ~URI_();
+  virtual ~URI();
 
 
   /*
   Returns a pointer to the normalized, null terminated URI buffer, involves
   no processing
   */
-  const charT * getText() const;
+  const char * getText() const;
 
 
   /*
   These accessors return various parts of the URI as strings; direct buffer
   access is not possible because the parts themselves are not null terminated
   */
-  stringT toString() const;
-  stringT getScheme() const;
-  stringT getAuthority() const;
-  stringT getPath() const;
-  stringT getQuery() const;
-  stringT getFragment() const;
+  std::string toString() const;
+  std::string getScheme() const;
+  std::string getAuthority() const;
+  std::string getPath() const;
+  std::string getQuery() const;
+  std::string getFragment() const;
 
 
   /*
@@ -227,17 +210,17 @@ public:
   /*
   Checks if another URI points to the same document
   */
-  bool operator==( const charT * const aText ) const;
-  bool operator==( const stringT & aText ) const;
-  bool operator==( const URI_ & aOther ) const;
+  bool operator==( const char * const aText ) const;
+  bool operator==( const std::string & aText ) const;
+  bool operator==( const URI & aOther ) const;
 
-  bool operator!=( const charT * const aText ) const;
-  bool operator!=( const stringT & aText ) const;
-  bool operator!=( const URI_ & aOther ) const;
+  bool operator!=( const char * const aText ) const;
+  bool operator!=( const std::string & aText ) const;
+  bool operator!=( const URI & aOther ) const;
 
-  void operator=( const charT * const aText );
-  void operator=( const stringT & aText );
-  void operator=( const URI_ & aOther );
+  void operator=( const char * const aText );
+  void operator=( const std::string & aText );
+  void operator=( const URI & aOther );
 
 
   /*
@@ -249,7 +232,7 @@ public:
   /*
   Checks if a URI is prefixed by another
   */
-  bool hasPrefix( const URI_ & aBase ) const;
+  bool hasPrefix( const URI & aBase ) const;
 
 
   /*
@@ -257,14 +240,14 @@ public:
   from this in its scheme or authority part, this URI is returned unchanged;
   throws an exception if either base or this is relative
   */
-  URI_ makeRelative( const URI_ & aBase ) const;
+  URI makeRelative( const URI & aBase ) const;
 
 
   /*
   Returns a new absolute URI such that base + this == result;
   throws an exception if either base is relative or this is absolute
   */
-  URI_ makeAbsolute( const URI_ & aBase ) const;
+  URI makeAbsolute( const URI & aBase ) const;
 
 
   /*
@@ -273,7 +256,7 @@ public:
   pruning a URI in one tree by removing its base, and grafting it into
   another tree with a new base
   */
-  URI_ makeRelAbs( const URI_ & aSrcBase, const URI_ & aDstBase ) const;
+  URI makeRelAbs( const URI & aSrcBase, const URI & aDstBase ) const;
 
   /*
   Convenience method equivalent to, but potentially more efficient than
@@ -281,12 +264,13 @@ public:
   moving a relative link from one base to another, and still have it point
   to the same place
   */
-  URI_ makeAbsRel( const URI_ & aSrcBase, const URI_ & aDstBase ) const;
+  URI makeAbsRel( const URI & aSrcBase, const URI & aDstBase ) const;
 
 
   /******  User documentation ends here, proceed at your own peril :-)  *******/
 
 
+#if 0
   void dump( std::ostream & aOstr ) const {
     aOstr << "u=0x" << hex << long( this ) << " "
           << "r=0x" << long( mRep ) << " "
@@ -298,520 +282,68 @@ public:
           << "q=" << long( mRep->mQuery  - mRep->mText) << "[" << mRep->mQueryLen  << "] "
           << "f=" << long( mRep->mFrag   - mRep->mText) << "[" << mRep->mFragLen   << "]";
   }
-
+#endif
 
 private:
     // inner Representation class (defined later)
     class Rep;
 
     // ctor
-    URI_( Rep * aOther );
+    URI( Rep * aOther );
 
     // class members
     Rep * mRep;
 
 public:
     // class constants
-    static const charT * const SCHEME_CONST[ SCHEME_NUM ];
-    static const charT * const DEFAULT_PORT[ SCHEME_NUM ];
-    static const URI_ EMPTY_URI;
+    static const char * const SCHEME_CONST[ SCHEME_NUM ];
+    static const char * const DEFAULT_PORT[ SCHEME_NUM ];
+    static const URI EMPTY_URI;
 
 private:
     class Rep {
 
     public:
-        Rep( const charT * aText, bool aAdoptBuffer )
-            : mText( aAdoptBuffer? const_cast< charT* >( aText ): strDup( aText ) ), mRef( 0 )
-        {
-        };
+		 int nr;
+		 static int cnt;
+        Rep( const char * aText, bool aAdoptBuffer );
 
         // "operators"
-        bool operator==( const Rep * aOther ) const
-        {
-            if( this == aOther ) { return true; }
-            if( mText == aOther->mText ) { return true; }
-            return strCmp( mText, aOther->mText ) < 0;
-        };
+        bool operator==( const Rep * aOther ) const ;
         
-        bool operator==( const charT * aText ) const
-        {
-            if( mText == aText ) { return true; }
-            return strCmp( mText, aText ) < 0;
-        };
+        bool operator==( const char * aText ) const ;
 
         // transformations
-        void parse()
-        {
-            // remove empty parts, eg. authority, query, fragment
-            // remove "." segments from path
-            // remove ".." segments from path with preceding segment
-            // reduce multiple "/" from path
-            // if there's no authority and path doesn't start with '/', discard scheme
-            // remove default ports from host, depending on scheme (not done)
-            // escape/unescape chars (not done)
-
-            charT * src = mText;
-
-            // cut URI up into scheme / authority / path / query / fragment
-
-            // scheme
-            mScheme = src;
-            while( ! isOneOf( *src, "\0:/?#" ) ) {
-                ++src;
-            }
-
-            if( src > mText && *src == ':' ) {
-                mSchemeLen = src - mScheme;
-                ++src;
-
-                // parse scheme
-                mSchemeT = SCHEME_EMPTY;
-                if( mSchemeLen > 0 ) {
-                    for( unsigned i = 0; i < SCHEME_NUM; ++i ) {
-                        if( strCmp( mScheme, SCHEME_CONST[ i ], mSchemeLen ) < 0 ) {
-                            mSchemeT = SchemeT( i );
-                            break;
-                        }
-                    }
-                    if( mSchemeT == SCHEME_EMPTY ) {
-                        mSchemeT = SCHEME_OTHER;
-                    }
-                }
-            }
-            else
-            {
-                src = mScheme;
-                mSchemeLen = 0;
-                mSchemeT = SCHEME_UNDEF;
-            }
-
-            // authority
-            if( *src == '/' && *(src+1) == '/' ) {
-                src += 2;
-                mAuth = src;
-                charT * lastColon = 0;
-                while( ! isOneOf( *src, "\0/?#" ) ) {
-                    if( *src == ':' ) {
-                        lastColon = src;
-                    }
-                    ++src;
-                }
-                if( src > mAuth ) {
-                    // discard default port number
-                    unsigned portLen = src - lastColon; // including ':'
-                    if( lastColon != 0 && mSchemeT != SCHEME_OTHER &&
-                        strCmp( lastColon+1, DEFAULT_PORT[ mSchemeT ], portLen-1 ) < 0 )
-                    {
-                        strCopy( lastColon, src );
-                        src -= portLen;
-                    }
-                    mAuthLen = src - mAuth;
-                }
-                else {
-                    mAuth -= 2;
-                    src = mAuth;
-                    mAuthLen = 0;
-                }
-            }
-            else {
-                mAuth = src;
-                mAuthLen = 0;
-            }
-
-            // path (normalize it)
-            {
-                mPath = src;
-
-                // skip initial '/'
-                if( *src == '/' ) {
-                    ++src; 
-                }
-
-                // if there is none (ie, path is relative),
-                // then discard scheme (authority is always empty in this case,
-                // because it would be terminated with '/', making path absolute)
-                else
-                {
-                    if( src > mText && ! isOneOf( *src, "\0?#" ) )
-                    {
-                        strCopy( mText, src );
-                        mScheme  = mText; mSchemeLen = 0;
-                        mSchemeT = SCHEME_UNDEF;
-                        mAuth    = mText; mAuthLen   = 0;
-                        mPath    = mText;
-                        src      = mText;
-                    }
-                }
-
-                charT * dst = src;
-
-                // beginning of segment, after '/'
-                while( ! isOneOf( *src, "\0?#" ) )
-                {
-                    // if this is another '/', skip it
-                    if( *src == '/' )
-                    {
-                        ++src;
-                        continue;
-                    }
-
-                    if( *src == '.' )
-                    {
-                        // if this is a single '.' skip it 
-                        if( isOneOf( *(src+1), "\0?#" ) )
-                        { 
-                            if( src > mPath )
-                            {
-                                ++src;
-                                continue;
-                            }
-                        }
-                        else if( *(src+1) == '/' )
-                        {
-                            if( src > mPath || !isOneOf( *(src+2), "\0?#" ) )
-                            {
-                                ++src;
-                                continue;
-                            }
-                        }
+        void parse() ;
         
-                        // if this is a '..' at the end or followed by '/',
-                        if( *(src+1) == '.' && isOneOf( *(src+2), "\0?#/" ) )
-                        {
-                            // discard the last segment and skip "../"
-                            char* c = dst - 2; // may be <= mPath
-                            while( c > mPath && *(c-1) != '/' ) { --c; }
-                            if( c >= mPath && strCmp( c, "../", 3 ) >= 0 )
-                            {
-                                dst = c;
-                                src += 2;
-                                continue;
-                            }
+        Rep * makeRelative( const Rep * bRep ) const ;
 
-                            // if there's no segment to discard, then preserve '../'
-                            else
-                            {
-                                *(dst++) = *(src++);
-                                *(dst++) = *(src++);
-                                if( *src == '/' )
-                                {
-                                    *(dst++) = *(src++);
-                                }
-                                continue;
-                            }
-                        }
-                    }
-      
-                    // we're at a new segment, copy it
-                    do
-                    {
-                        *(dst++) = *(src++);
-                    } while( ! isOneOf( *src, "\0?#/" ) );
-      
-                    // also copy the next '/', if there is one
-                    if( *src == '/' ) { *(dst++) = *(src++); }      
-                }
-
-                // if the path completely eliminates itself,
-                // make it a single "."
-                if( dst == mPath && src > mPath && isOneOf( *src, "\0?#" ) )
-                {
-                    *(dst++) = '.';
-                }
-
-                mPathLen = dst - mPath;
-
-                // if src has run ahead of dst because of normalization,
-                // copy rest of URI forward to dst
-                if( dst != src )
-                {
-                    strCopy( dst, src );
-                    src = dst;
-                }
-            }
-
-            // query
-            if( *src == '?' )
-            {
-                ++src;
-                mQuery = src;
-                while( ! isOneOf( *src, "\0#" ) )
-                {
-                    ++src;
-                }
-                mQueryLen = src - mQuery;
-
-                // if query is empty, discard '?'
-                if( mQueryLen == 0 )
-                {
-                    --mQuery;
-                    --src;
-                    strCopy( mQuery, mQuery+1 );
-                }
-            } 
-
-            else
-            {
-                mQuery = src;
-                mQueryLen = 0;
-            }
-
-            // fragment
-            if( *src == '#' )
-            {
-                ++src;
-                mFrag = src;
-                while( *src != 0 )
-                {
-                    ++src;
-                }
-                mFragLen = src - mFrag;
-
-                // if fragment is empty, discard '#'
-                if( mFragLen == 0 )
-                {
-                    --mFrag;
-                    --src;
-                    strCopy( mFrag, mFrag+1 );
-                }
-            } 
-            else
-            {
-                mFrag = src;
-                mFragLen = 0;
-            }
-        };
-        
-        Rep * makeRelative( const Rep * bRep ) const
-        {
-            // if the scheme/authority parts differ, return a copy of this
-            if(  mSchemeLen + mAuthLen != bRep->mSchemeLen + bRep->mAuthLen ||
-                strCmp( mScheme, bRep->mScheme, mSchemeLen + mAuthLen ) >= 0 )
-            {
-                return const_cast< Rep* >( this );
-            }
-
-            // determine how much of path is common
-            const charT * thisPos = mPath; 
-            const charT * basePos = bRep->mPath; 
-  
-            const charT * maxThisPos = thisPos + mPathLen;
-            const charT * maxBasePos = basePos + bRep->mPathLen;
-  
-            const charT * thisSlashPos = thisPos;
-            const charT * baseSlashPos = basePos;
-  
-            while( thisPos < maxThisPos && basePos < maxBasePos && *thisPos == *basePos )
-            {
-                if( *thisPos == '/' )
-                {
-                    thisSlashPos = thisPos;
-                    baseSlashPos = basePos;
-                }
-                ++thisPos;
-                ++basePos;
-            }
-  
-            thisPos = thisSlashPos + 1;
-            basePos = baseSlashPos + 1;
-
-            // for each '/' in remainder of base, add a "../" to new relative path
-            unsigned numBaseSlashes = 0;
-            for( const charT * i = basePos; i < maxBasePos; ++i )
-            {
-                if( *i == '/' ) { ++numBaseSlashes; }
-            }
-  
-            // create new Rep with big enough mText
-            unsigned thisSize = strLen( thisPos ) + 1;
-            charT * newText = new charT[ numBaseSlashes * 3 + thisSize ];
-
-            Rep * const rRep = new Rep( newText, true );
-
-            charT * newPathPos = rRep->mText;
-
-            // add appropriate number of "../"
-            for( unsigned i = 0; i < numBaseSlashes; ++i ) {
-                strCopy( newPathPos, "../" );
-                newPathPos += 3;
-            }
-
-            // rest of path, query, fragment
-            strCopy( newPathPos, thisPos, thisSize );
-            rRep->parse();
-
-            return rRep;
-        };
-
-        Rep * makeAbsolute( const Rep * bRep ) const
-        {
-            // calculate last position of base to be used to form new URI
-            const charT * lastBasePos;
-            const charT * firstThisPos = mPath;
-
-            // special case: this is a pure document anchor
-            if( *(mText) == '#' ) {
-                lastBasePos = bRep->mFrag - 1;
-                firstThisPos = mText + 1;
-            }
-
-            // if this path starts with a '/' or base doesn't have a path,
-            // then just take base's scheme and authority
-            else if( mPathLen > 0 && *(mPath) == '/' ||
-                bRep->mPathLen == 0)
-            {
-                lastBasePos = bRep->mPath - 1;
-            }
-
-            // else find last '/' in base path 
-            // (assuming there is at least one at this point)
-            else
-            {
-                lastBasePos = bRep->mPath + bRep->mPathLen;
-                do 
-                {
-                    --lastBasePos;
-                } while( *lastBasePos != '/' );
-
-                // we could just concatenate the left side of base with the right side of 
-                // this and let the new URI deal with canonization. But since the two URIs
-                // are already canonical, we handle the simplified case directly for 
-                // efficiency
-
-                // if this path is only "." or "./", then ignore it
-                if( *firstThisPos == '.' && isOneOf( *(firstThisPos+1), "\0/?#" ) )
-                {
-                    ++firstThisPos;
-                    if( *firstThisPos == '/' )
-                    {
-                        ++firstThisPos;
-                    }
-                }
-                else
-                {
-
-                    // for each "../" leading this path
-                    while( strCmp( firstThisPos, "..", 2 ) < 0 && isOneOf( *(firstThisPos+2), "\0/" ) )
-                    {
-          
-                        // try going back one '/' in base
-                        const charT * p = lastBasePos;
-                        do {
-                            --p;
-                        } while( p >= bRep->mPath && *p != '/' );
-        
-                        // if one is found, go forward in this and back in base
-                        if( *p == '/' ) {
-                            lastBasePos = p;
-                            firstThisPos += 2;
-                            if( *(firstThisPos) == '/' )
-                            {
-                                ++firstThisPos;
-                            }
-                        }
-        
-                        // else call it off (nothing more to discard from base) and keep the "../"
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            unsigned baseSize    = lastBasePos - bRep->mText + 1;
-            unsigned thisSize    = mFrag - firstThisPos + mFragLen;
-            int      newQFOffset = baseSize - ( firstThisPos - mText );
-
-            // create new Rep with big enough mText
-            charT * const rText = new charT[ baseSize + thisSize + 1 ];
-            Rep * const rRep = new Rep( rText, true );
-
-            // concatenate base and this into a new buffer;
-            strCopy( rRep->mText, bRep->mText, baseSize );
-            strCopy( rRep->mText + baseSize, firstThisPos );
-
-            rRep->mScheme  = rRep->mText + ( bRep->mScheme - bRep->mText );
-            rRep->mSchemeT = bRep->mSchemeT;
-            rRep->mAuth    = rRep->mText + ( bRep->mAuth   - bRep->mText );
-            rRep->mPath    = rRep->mText + ( bRep->mPath   - bRep->mText );
-            rRep->mQuery   = rRep->mText + ( mQuery - mText + newQFOffset );
-            rRep->mFrag    = rRep->mText + ( mFrag  - mText + newQFOffset );
-
-            rRep->mSchemeLen = bRep->mSchemeLen;
-            rRep->mAuthLen   = bRep->mAuthLen;
-            rRep->mPathLen   = lastBasePos - bRep->mPath + 1 + mPathLen - ( firstThisPos - mPath );
-            rRep->mQueryLen  = mQueryLen;
-            rRep->mFragLen   = mFragLen;
-
-            return rRep;
-        };
+        Rep * makeAbsolute( const Rep * bRep ) const ;
 
         // reference counting
-        unsigned getRef() const { return mRef; }
-        void acquire() { ++mRef; }
-        void release() { if( --mRef == 0 ) { delete this; } }
+        unsigned getRef() const ;
+        void acquire() ;
+        void release() ;
 
-        charT * const mText;             
-        charT * mScheme; unsigned mSchemeLen;
-        charT * mAuth;   unsigned mAuthLen;
-        charT * mPath;   unsigned mPathLen;
-        charT * mQuery;  unsigned mQueryLen;
-        charT * mFrag;   unsigned mFragLen;
+        char * const mText;             
+        char * mScheme; unsigned mSchemeLen;
+        char * mAuth;   unsigned mAuthLen;
+        char * mPath;   unsigned mPathLen;
+        char * mQuery;  unsigned mQueryLen;
+        char * mFrag;   unsigned mFragLen;
         SchemeT mSchemeT;
 
         // helper functions
-        static unsigned strLen( const charT * const aString )
-        {
-            unsigned size = 0;
-            const charT * c = aString; 
-            while( *c != 0 ) { ++c; ++size; }
-            return size;
-        };
-        static void strCopy( charT * const aDst, const charT * const aSrc, const unsigned aNumChars )
-        {
-            memcpy( aDst, aSrc, aNumChars * sizeof( charT ) );
-        };
-        static void strCopy( charT * const aDst, const charT * const aSrc )
-        {
-            unsigned size = strLen( aSrc ) + 1;
-            memcpy( aDst, aSrc, size * sizeof( charT ) );
-        };
-        static charT * strDup( const charT * const aSrc )
-        {
-            const unsigned size = strLen( aSrc ) + 1;
-            charT * const result = new charT[ size ];
-            memcpy( result, aSrc, size * sizeof( charT ) );
-            return result;
-        };
+        static unsigned strLen( const char * const aString ) ;
+        static void strCopy( char * const aDst, const char * const aSrc, const unsigned aNumChars ) ;
+        static void strCopy( char * const aDst, const char * const aSrc ) ;
+        static char * strDup( const char * const aSrc ) ;
 
         // if different, returns index of first diff, -1 else
-        static int strCmp( const charT * aFirst, const charT * aSecond, const unsigned aNumChars )
-        {
-            for( unsigned i = 0; i < aNumChars; ++i )
-            {
-                if( *(aFirst++) != *(aSecond++) ) { return i; }
-            }
-            return -1;
-        };
-        static int strCmp( const charT * aFirst, const charT * aSecond )
-        {
-            for( unsigned i = 0; *aFirst != 0; ++i )
-            {
-                if( *(aFirst++) != *(aSecond++) ) { return i; }
-            }
-            return -1;
-        };
+        static int strCmp( const char * aFirst, const char * aSecond, const unsigned aNumChars ) ;
+        static int strCmp( const char * aFirst, const char * aSecond ) ;
 
-        static bool isOneOf( const charT aChar, const charT* const aCharSet )
-        {
-            const charT * c = aCharSet;
-            if( *c == 0 && aChar == 0 ) { return true; }
-            for( ++c; *c != 0; ++c ) {
-                if( aChar == *c ) { return true; }
-            }
-            return false;
-        };
+        static bool isOneOf( const char aChar, const char* const aCharSet ) ;
 
     private:
         Rep()
@@ -819,238 +351,10 @@ private:
             assert( 0 ); 
         }
 
-        ~Rep()
-        {
-            delete [] mText;
-        };
+        ~Rep() ;
 
         unsigned mRef;
     };
 };
-
-// accessors (all const getters, this is an immutable class!)
-
-template< class charT, class stringT >
-const charT * URI_< charT, stringT >::getText() const {
-  return mRep->mText;
-}
-
-template< class charT, class stringT >
-stringT URI_< charT, stringT >::toString() const {
-  return stringT( mRep->mText );
-}
-
-template< class charT, class stringT >
-stringT URI_< charT, stringT >::getScheme() const { 
-  return stringT( mRep->mScheme, mRep->mSchemeLen );
-}
-
-template< class charT, class stringT >
-stringT URI_< charT, stringT >::getAuthority() const { 
-  return stringT( mRep->mAuth, mRep->mAuthLen ); 
-}
-
-template< class charT, class stringT >
-stringT URI_< charT, stringT >::getPath() const { 
-  return stringT( mRep->mPath, mRep->mPathLen ); 
-}
-
-template< class charT, class stringT >
-stringT URI_< charT, stringT >::getQuery() const { 
-  return stringT( mRep->mQuery, mRep->mQueryLen ); 
-}
-
-template< class charT, class stringT >
-stringT URI_< charT, stringT >::getFragment() const { 
-  return stringT( mRep->mFrag, mRep->mFragLen ); 
-}
-
-template< class charT, class stringT >
-typename URI_< charT, stringT >::SchemeT URI_< charT, stringT >::getSchemeT() const { 
-  return mRep->mSchemeT;
-}
-
-
-template< class charT, class stringT >
-const charT * const
-URI_< charT, stringT >::SCHEME_CONST[ URI_< charT, stringT >::SCHEME_NUM ] = {
-  "file", "http", "https", "ftp"
-};
-
-template< class charT, class stringT >
-const charT * const
-URI_< charT, stringT >::DEFAULT_PORT[ URI_< charT, stringT >::SCHEME_NUM ] = { 
-  "0", "80", "443", "21"
-};
-
-template< class charT, class stringT >
-const URI_< charT, stringT > 
-URI_< charT, stringT >::EMPTY_URI = URI_< charT, stringT >( "" );
-
-
-// ctors, dtors
-
-
-template< class charT, class stringT >
-URI_< charT, stringT >::URI_()
-{
-  mRep = EMPTY_URI.mRep;
-  mRep->acquire();
-}
-
-template< class charT, class stringT >
-URI_< charT, stringT >::URI_( const charT * aString, 
-                              bool aAdoptBuffer ) 
-{
-  mRep = new Rep( aString, aAdoptBuffer );
-  mRep->parse();
-  mRep->acquire();
-}
-
-template< class charT, class stringT >
-URI_< charT, stringT >::URI_( const stringT & aString ) {
-  mRep = new Rep( aString.c_str(), false );
-  mRep->parse();
-  mRep->acquire();
-}
-
-template< class charT, class stringT >
-URI_< charT, stringT >::URI_( const URI_ & aOther ) {
-  mRep = aOther.mRep;
-  mRep->acquire();
-}
-
-template< class charT, class stringT >
-URI_< charT, stringT >::URI_( Rep * aOther ) {
-  mRep = aOther;
-  mRep->acquire();
-}
-
-template< class charT, class stringT >
-URI_< charT, stringT >::~URI_() { 
-  mRep->release();
-}
-
-template< class charT, class stringT >
-bool URI_< charT, stringT >::operator==( const charT * const aText ) const {
-  return *mRep == aText;
-}
-
-template< class charT, class stringT >
-bool URI_< charT, stringT >::operator==( const stringT & aText ) const {
-  return *mRep == aText.c_str();
-}
-
-template< class charT, class stringT >
-bool URI_< charT, stringT >::operator==( const URI_ & aOther ) const {
-  return *mRep == aOther.mRep;
-}
-
-template< class charT, class stringT >
-bool URI_< charT, stringT >::operator!=( const charT * const aText ) const {
-  return !(*mRep == aText);
-}
-
-template< class charT, class stringT >
-bool URI_< charT, stringT >::operator!=( const stringT & aText ) const {
-  return !(*mRep == aText.c_str());
-}
-
-template< class charT, class stringT >
-bool URI_< charT, stringT >::operator!=( const URI_ & aOther ) const {
-  return !(*mRep == aOther.mRep);
-}
-
-template< class charT, class stringT >
-void URI_< charT, stringT >::operator=( const charT * const aText ) {
-  mRep->release();
-  mRep = new Rep( aText, false );
-  mRep->parse();
-  mRep->acquire();
-}
-
-template< class charT, class stringT >
-void URI_< charT, stringT >::operator=( const stringT & aText ) {
-  mRep->release();
-  mRep = new Rep( aText.c_str(), false );
-  mRep->parse();
-  mRep->acquire();
-}
-
-template< class charT, class stringT >
-void URI_< charT, stringT >::operator=( const URI_ & aOther ) {
-  if ( this == &aOther) return;
-  mRep->release();
-  mRep = aOther.mRep;
-  mRep->acquire();
-}
-
-template< class charT, class stringT >
-bool URI_< charT, stringT >::isRelative() const { 
-  return ( mRep->mSchemeLen + mRep->mAuthLen ) == 0;
-}
-
-template< class charT, class stringT >
-bool URI_< charT, stringT >::hasPrefix( const URI_ & aBase ) const {
-  const charT * base = aBase.mRep->mText;
-  int res = Rep::strCmp( base, mRep->mText );
-  return res < 0 || base[ res ] == 0;
-}
-
-template< class charT, class stringT >
-URI_< charT, stringT >
-URI_< charT, stringT >::makeRelative( const URI_ & aBase ) const {
-
-  if( isRelative() ) {
-    throw domain_error( "URI::makeRelative() called on a relative URI" );
-  }
-
-  if( aBase.isRelative() ) {
-    throw domain_error( "Base URI supplied to URI::makeRelative() "
-                        "must be absolute" );
-  }
-
-  Rep * newRep = mRep->makeRelative( aBase.mRep );
-  URI result = URI_( newRep );
-  return result;
-}
-
-
-template< class charT, class stringT >
-URI_< charT, stringT >
-URI_< charT, stringT >::makeAbsolute( const URI_ & aBase ) const
-{
-  if( ! isRelative() ) {
-      std::cerr << "URI::makeAbsolute() called on an absolute URI" << std::endl;
-  }
-
-  if( aBase.isRelative() ) {
-      std::cerr <<  "Base URI supplied to URI::makeAbsolute() must be absolute" << std::endl;
-  }
-
-  Rep * newRep = mRep->makeAbsolute( aBase.mRep );
-  URI result = URI_( newRep );
-  return result;
-}
-
-
-// TODO: implement this natively
-template< class charT, class stringT >
-URI_< charT, stringT > URI_< charT, stringT >::makeRelAbs(
-  const URI_ & aSrcBase, 
-  const URI_ & aDstBase ) const
-{
-  return makeRelative( aSrcBase ).makeAbsolute( aDstBase );
-}
-
-// TODO: implement this natively
-template< class charT, class stringT >
-URI_< charT, stringT > URI_< charT, stringT >::makeAbsRel(
-  const URI_ & aSrcBase, 
-  const URI_ & aDstBase ) const
-{
-  return makeAbsolute( aSrcBase ).makeRelative( aDstBase );
-}
-
 
 #endif // __URI_H__

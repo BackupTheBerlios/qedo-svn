@@ -98,8 +98,8 @@ DOMXMLParser::DOMXMLParser()
     }
 #endif
     uri.append("/etc/catalog.xml");
-    mXMLCatalog = new XMLCatalog(*parser_, uri, true);
-	 mCatalogResolver = new CatalogResolver(*mXMLCatalog);
+    XMLCatalog *xmlcatalog = new XMLCatalog(*parser_, uri, true);
+	 mCatalogResolver = new CatalogResolver(xmlcatalog);
     parser_->setEntityResolver(mCatalogResolver);
 }
 
@@ -112,7 +112,6 @@ DOMXMLParser::~DOMXMLParser()
     delete errReporter_;
     delete parser_;
 	 delete mCatalogResolver;
-	 delete mXMLCatalog;
 }
 
 

@@ -53,10 +53,10 @@ SOURCES = CADReader.cpp \
 	Output.cpp \
 	Valuetypes.cpp \
 	StreamingValuetypes.cpp \
+	Uri.cpp
 
 
 HEADER = ${SOURCES:.cpp=.h} \
-	Uri.h \
 	ComponentImplementationData.h \
 	AssemblyData.h \
 	CompositionData.h

@@ -62,7 +62,8 @@ XMLCatalog::XMLCatalog (XercesDOMParser & aParser, const URI & aCatalog, bool aM
     }
     else
     {
-        mBaseHref = URI("./").makeAbsolute(aCatalog);
+		 u = URI("./");
+        mBaseHref = u.makeAbsolute(aCatalog);
     }
 
     // add Map entries to 'map' list

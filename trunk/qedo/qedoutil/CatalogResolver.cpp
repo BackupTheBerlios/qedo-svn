@@ -30,7 +30,7 @@
 namespace Qedo {
 
 	
-CatalogResolver::CatalogResolver (const XMLCatalog & aCatalog)
+CatalogResolver::CatalogResolver (XMLCatalog * aCatalog)
 	: mCatalog (aCatalog)
 {
 }
@@ -38,6 +38,7 @@ CatalogResolver::CatalogResolver (const XMLCatalog & aCatalog)
 
 CatalogResolver::~CatalogResolver ()
 {
+	delete mCatalog;
 }
 
 
@@ -45,15 +46,15 @@ InputSource*
 CatalogResolver::resolveEntity (const XMLCh* const publicId, const XMLCh* const systemId)
 {
     URI target;
-    if( publicId && mCatalog.lookup( std::string(Qedo::transcode(publicId)), target) )
+    if( publicId && mCatalog->lookup( std::string(Qedo::transcode(publicId)), target) )
     {
-        target = mCatalog.lookup( target );
+        target = mCatalog->lookup( target );
     }
     else
     {
         if( systemId )
         {
-			mCatalog.lookup( URI(Qedo::transcode(systemId)), target );
+			mCatalog->lookup( URI(Qedo::transcode(systemId)), target );
         }
     }
 

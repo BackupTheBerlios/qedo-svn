@@ -29,7 +29,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.11 2003/11/14 18:08:34 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.12 2003/11/18 11:48:54 boehme Exp $";
 
 
 namespace Qedo {
@@ -49,6 +49,7 @@ CSDReader::CSDReader( std::string package, std::string path )
 
 CSDReader::~CSDReader()
 {
+	delete package_;
 }
 
 

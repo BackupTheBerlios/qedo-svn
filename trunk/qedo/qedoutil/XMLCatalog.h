@@ -73,6 +73,7 @@ public:
 
 class XMLCatalog
 {
+	XMLCatalog(const XMLCatalog&); //not implemented
 public:
     XMLCatalog (XercesDOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute = true);
     virtual ~XMLCatalog();
