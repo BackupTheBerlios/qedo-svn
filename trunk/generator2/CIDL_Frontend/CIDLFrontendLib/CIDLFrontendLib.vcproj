@@ -11,49 +11,6 @@
 	</Platforms>
 	<Configurations>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="1"
-				PreprocessorDefinitions="WIN32,NDEBUG,_LIB"
-				StringPooling="TRUE"
-				RuntimeLibrary="4"
-				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\Release/CIDLFrontendLib.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
-				WarningLevel="3"
-				SuppressStartupBanner="TRUE"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(IntDir)/$(ProjectName).lib"
-				SuppressStartupBanner="TRUE"/>
-			<Tool
-				Name="VCMIDLTool"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-		</Configuration>
-		<Configuration
 			Name="Debug_orbacus|Win32"
 			OutputDirectory=".\Debug_orbacus"
 			IntermediateDirectory=".\Debug_orbacus"
@@ -165,52 +122,6 @@
 				AssemblerListingLocation=".\Debug_mico/"
 				ObjectFile=".\Debug_mico/"
 				ProgramDataBaseFileName=".\Debug_mico/"
-				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="4"
-				CompileAs="0"/>
-			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(IntDir)/$(ProjectName).lib"
-				SuppressStartupBanner="TRUE"/>
-			<Tool
-				Name="VCMIDLTool"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
-		</Configuration>
-		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
-			ConfigurationType="4"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
-			CharacterSet="2">
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
-				PreprocessorDefinitions="WIN32,_DEBUG,_LIB,__STDC__,KC_DEPRECATED"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
-				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\Debug/CIDLFrontendLib.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -501,14 +412,6 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
-"
-						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
@@ -528,14 +431,6 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 			<File
 				RelativePath=".\lexana.l">
 				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
-"
-						Outputs="lexana.cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
@@ -553,14 +448,6 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
-"
-						Outputs="lexana.cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
@@ -584,14 +471,6 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 			<File
 				RelativePath=".\cidl.output">
 				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
-"
-						Outputs="errmsg.cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
@@ -609,14 +488,6 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
-"
-						Outputs="errmsg.cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
@@ -635,14 +506,6 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 			<File
 				RelativePath=".\cidl.y">
 				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
-cp cidl.hpp cidl.h
-"/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
@@ -655,7 +518,7 @@ cp cidl.hpp cidl.h
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
 cp cidl.hpp cidl.h
 "
 						Outputs="cidl.cpp"/>
@@ -670,20 +533,11 @@ cp cidl.hpp cidl.h
 						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
-cp cidl.hpp cidl.h
-"
-						Outputs="cidl.cpp;cidl.h"/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Processing grammar file $(InputPath): Tool is $(YACC)"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y 
 cp cidl.hpp cidl.h
 "
 						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
