@@ -482,8 +482,9 @@ module Components {
 		};
 
 		local interface ContainerInterceptor {
-			void set_slot_id(in PortableInterceptor::SlotId slot_id);
+			readonly attribute string name;	
 			void destroy ();
+			void set_slot_id(in PortableInterceptor::SlotId slot_id);
 		};
 
 		local interface ServerContainerInterceptor : ContainerInterceptor
