@@ -1,5 +1,5 @@
 <?xml version = '1.0' ?>
-<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor""http://cif.sourceforge.net/corbacomponent.dtd">
+<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://cif.sourceforge.net/corbacomponent.dtd">
 
 <corbacomponent>
     <corbaversion>3.0</corbaversion>
@@ -12,9 +12,9 @@
     </componentkind>
     <threading policy="multithread"/>
     <configurationcomplete set="true"/>
-    <homefeatures name="ObserverHome" repid="IDL:DiningPhilosophers/ObserverHome:1.0"/>
+    <homefeatures name="ObserverHome" repid="IDL:DiningPhilosophers/ObserverHome:1.0">
     </homefeatures>
-    <componentfeatures name="Observer" repid="IDL:DiningPhilosophers/Observer:1.0"/>
+    <componentfeatures name="Observer" repid="IDL:DiningPhilosophers/Observer:1.0">
         <ports>
         </ports>
     </componentfeatures>

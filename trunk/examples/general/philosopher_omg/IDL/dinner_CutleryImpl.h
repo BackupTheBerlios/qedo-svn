@@ -17,12 +17,13 @@
 #include <vector>
 #include "ComponentOutput.h"
 #include "Cookie.h"
+#include "RefCountLocalObject.h"
+
 // END USER INSERT SECTION file_pre
 
 
 #include <OB/CORBA.h>
 #include "DiningPhilosophers_BUSINESS.h"
-#include "RefCountLocalObject.h"
 #include <string>
 
 

@@ -22,7 +22,6 @@ namespace dinner {
 
 #include <OB/CORBA.h>
 #include "DiningPhilosophers_BUSINESS.h"
-#include "RefCountLocalObject.h"
 #include <string>
 
 
