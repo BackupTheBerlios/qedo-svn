@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.15 2003/06/16 10:39:56 neubauer Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.16 2003/06/18 11:50:17 stoinski Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -271,11 +271,9 @@ throw (Components::InvalidName, CORBA::SystemException)
 
 	for (unsigned int i = 0; i < names.length(); i++)
 	{
-		const char * name = names[i];
-
 		for (unsigned int j = 0; j < facets_.size(); j++)
 		{	
-			if (facets_[j].port_name() == name)
+			if (facets_[j].port_name() == names[i])
 			{
                 facets->length (facets->length() + 1);
 				facets[facets->length() - 1] = facets_[j].facet_description();
@@ -283,7 +281,8 @@ throw (Components::InvalidName, CORBA::SystemException)
 			}
 		}
 
-		throw Components::InvalidName();
+		if (facets->length() == 0)
+			throw Components::InvalidName();
 	}
 	
 	return facets._retn();
@@ -361,6 +360,7 @@ throw (Components::InvalidName,
 		if ((*rec_iter).port_name() == name)
 		{
             (*rec_iter).remove_connection (ck);
+			return;
         }
 	}
 
@@ -437,10 +437,13 @@ throw (Components::InvalidName, CORBA::SystemException)
 
 				receptacles[receptacles->length() - 1] = 
                     receptacles_[j].receptacle_description();
+
+				break;
 			}
 		}
 
-		throw Components::InvalidName();
+		if (receptacles->length() == 0)
+			throw Components::InvalidName();
 	}
 
 	return receptacles._retn();
@@ -589,6 +592,8 @@ throw (Components::InvalidName, CORBA::SystemException)
        			consumers->length (consumers->length () + 1);
 
 				consumers[consumers->length() - 1] = consumers_[i].consumer_description();
+
+				break;
 			}
 		}
 
@@ -640,6 +645,8 @@ throw (Components::InvalidName, CORBA::SystemException)
 				emitters->length ( emitters->length() + 1);
 
                 emitters[emitters->length() - 1] = emitters_[i].emitter_description();
+
+				break;
 			}
 		}
 
@@ -709,6 +716,8 @@ throw (Components::InvalidName, CORBA::SystemException)
 
                     publishers.inout()[ii] = sub_helper.in()[k];
                 }
+
+				break;
 			}
 		}
 
