@@ -179,8 +179,8 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
     out << "<dependency type=\"DLL\"><localfile name=\"ComponentContainer.dll\"/></dependency>\n";
     out << "<dependency type=\"DLL\"><localfile name=\"ComponentIDL.dll\"/></dependency>\n";
 #else
-    out << "<dependency type=\"DLL\"><localfile name=\"libComponentContainer" PACKAGE_VERSION ".so\"/></dependency>\n";
-    out << "<dependency type=\"DLL\"><localfile name=\"libComponentIDL" PACKAGE_VERSION ".so\"/></dependency>\n";
+    out << "<dependency type=\"DLL\"><localfile name=\"libComponentContainer.so\"/></dependency>\n";
+    out << "<dependency type=\"DLL\"><localfile name=\"libComponentIDL.so\"/></dependency>\n";
 #endif
     out << "<descriptor type=\"CORBA-Component\">\n";
 	out.indent();
