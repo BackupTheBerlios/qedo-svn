@@ -16,6 +16,11 @@ ServerContainerInterceptor::receive_request (::PortableInterceptor::ServerReques
 {
 	std::cout << "COPI: recieve_request: " << info->operation() << " for id: " << id << std::endl;
 	// write something ino the current slot
+		if (!strcmp(info->operation(), "say"))
+		{
+			std::cout << "it is not allowed to call say()" << std::endl;
+			throw CORBA::UNKNOWN();
+		}
 
 }
 
