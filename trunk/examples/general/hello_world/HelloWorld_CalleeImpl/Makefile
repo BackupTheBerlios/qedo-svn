@@ -10,21 +10,21 @@ CPP_FILES = HelloWorld_CalleeImpl_BUSINESS.cpp \
 	HelloWorld_CalleeImpl.cpp \
 	component_valuetypes.cpp
 
-OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
+OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
 
 CLEAN_FILES = ${OBJ_FILES} HelloWorld_CalleeImpl.so HelloWorld_CalleeImpl.zip
 
-LIBS += -L../HelloWorld_CalleeImpl_SERVANT -lHelloWorld_CalleeImpl_SERVANT 
+LIBS += -L../HelloWorld_CalleeImpl_SERVANT -lHelloWorld_CalleeImpl_SERVANT
 
 CXXFLAGS += -I. -g
 
 include ../MakeComponentVars
 
-all: libHelloWorld_CalleeImpl.so 
+all: libHelloWorld_CalleeImpl.so
 
-libHelloWorld_CalleeImpl.so: ${OBJ_FILES} 
+libHelloWorld_CalleeImpl.so: ${OBJ_FILES}
 
-${IDL_FILES} valuetypes.cpp : ${CIDL_FILES} 
+${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} 
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target "IDL:HelloWorld/CalleeImpl:1.0" $< 
 

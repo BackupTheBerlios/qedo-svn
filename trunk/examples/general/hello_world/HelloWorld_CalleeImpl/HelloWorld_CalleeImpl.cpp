@@ -198,6 +198,7 @@ CalleeHomeImpl::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = Components::HomeContext::_duplicate(ctx);
+    
 }
 
 
