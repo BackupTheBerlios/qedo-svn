@@ -231,6 +231,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="ComponentDeployment.cpp">
 			</File>
 			<File
+				RelativePath="ConfigurationReader.cpp">
+			</File>
+			<File
 				RelativePath="DOMTreeErrorReporter.cpp">
 			</File>
 			<File

@@ -21,6 +21,7 @@
 /***************************************************************************/
 
 #include "DOMXMLParser.h"
+#include "Output.h"
 
 
 namespace Qedo {
@@ -119,29 +120,32 @@ int
 DOMXMLParser::parse(char* fileName)
 {
     xmlFile_ = fileName;
-	std::cout << "..... parsing " << fileName << std::endl;
+
+	DEBUG_OUT2 ("DOMXMLParser: Parsing file ", fileName);
 
 	bool errorsOccured = false;
+
 	LocalFileInputSource input(X(xmlFile_)); 
+
     try
     {
         parser_->parse(input);
     }
     catch (const XMLException& e)
     {
-		std::cerr << ".......... An error occurred during parsing\n   Message: "
-			<< StrX(e.getMessage()) << std::endl;
+		NORMAL_ERR2 ("DOMXMLParser: An XML error occured during parsing file ", fileName);
+		NORMAL_ERR2 ("DOMXMLParser: ", StrX (e.getMessage()));
         errorsOccured = true;
     }
     catch (const DOMException& e)
     {
-		std::cerr << ".......... A DOM error occurred during parsing\n   DOMException code: "
-			<< e.code << std::endl;
+		NORMAL_ERR2 ("DOMXMLParser: A DOM error occurred during parsing file ", fileName);
+		NORMAL_ERR2 ("DOMXMLParser: DOMException code: ", e.code);
         errorsOccured = true;
     }
     catch (...)
     {
-		std::cerr << ".......... An error occurred during parsing\n " << std::endl;
+		NORMAL_ERR2 ("DOMXMLParser: An error occurred during parsing file ", fileName);
         errorsOccured = true;
     }
 
