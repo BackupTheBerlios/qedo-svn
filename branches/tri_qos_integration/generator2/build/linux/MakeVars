@@ -1,0 +1,48 @@
+##### Qedo Target Dir #####
+# The target dir of Qedo. After building Qedo it will be installed
+# into this directory 
+QEDO = /home/tri/test/qedo
+
+##### ORB #####
+# choose one out of MICO_ORB TAO_ORB ORBACUS_ORB
+ORB = MICO_ORB
+
+# MICO
+# MICO's root dir
+MICO = /opt/mico/
+MICO_VERSION = 2.3.10
+
+
+# ORBACUS
+#ORBACUs's root dir
+ORBACUS = /opt/OOC
+
+
+##### DEBUG #####
+# set Debug = yes to enable Debug compilation
+Debug = yes
+
+
+##### Front end Tools #####
+
+# YACC
+# the only supported version is 1.33 at the moment
+# e.g YACC = /opt/bison/bin/bison
+YACC = bison
+
+# kimwitu
+# set the executable kimwitu++ compiler
+# e.g. KC = /opt/kimwitu++-2.3.4/kc++
+KC = /home/tri/devel/kimwitu++-2.3.4/kc++
+
+# python
+# set the python
+# e.g. PYTHON = /usr/bin/python
+PYTHON = python
+
+# LEX
+# set lex
+# e.g. LEX = /usr/bin/flex
+LEX = flex
+
+
