@@ -6508,12 +6508,7 @@ done
 OS=`uname`
 
 
-<<<<<<< configure
-                                                                                                                                  ac_config_files="$ac_config_files Makefile MakeVars ComponentIDL/Makefile StreamComponentIDL/Makefile ComponentContainer/Makefile qedoutil/Makefile ComponentInstaller/Makefile ComponentServer/Makefile ComponentServerActivator/Makefile AssemblyFactory/Makefile HomeFinder/Makefile DeploymentClient/Makefile etc/Makefile etc/MakeComponentVars"
-=======
-                                                                                                                                            ac_config_files="$ac_config_files Makefile MakeVars ComponentIDL/Makefile ComponentContainer/Makefile qedoutil/Makefile ComponentInstaller/Makefile ComponentServer/Makefile ComponentServer/qcs.sh ComponentServerActivator/Makefile AssemblyFactory/Makefile HomeFinder/Makefile DeploymentClient/Makefile etc/Makefile etc/MakeComponentVars"
->>>>>>> 1.18
-
+                                                                                                                                  ac_config_files="$ac_config_files Makefile MakeVars ComponentIDL/Makefile StreamComponentIDL/Makefile ComponentContainer/Makefile qedoutil/Makefile ComponentInstaller/Makefile ComponentServer/Makefile ComponentServer/qcs.sh ComponentServerActivator/Makefile AssemblyFactory/Makefile HomeFinder/Makefile DeploymentClient/Makefile etc/Makefile etc/MakeComponentVars"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
