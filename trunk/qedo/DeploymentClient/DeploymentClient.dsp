@@ -64,8 +64,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug_orbacus"
-# PROP Intermediate_Dir "Debug_orbacus"
+# PROP Output_Dir "Debug_orbacus_vc6"
+# PROP Intermediate_Dir "Debug_orbacus_vc6"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../ComponentIDL" /I "../ComponentContainer" /I "../ComponentInstaller" /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
@@ -77,7 +77,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 CosNamingd.lib obd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/deploy.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 CosNamingd.lib obd.lib /nologo /subsystem:console /debug /machine:I386 /out:"$(QEDO)/bin/deploy.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 CosNamingd.lib obd.lib /nologo /subsystem:console /debug /machine:I386 /out:"Debug_orbacus_vc6/deploy.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# Begin Special Build Tool
+TargetPath=.\Debug_orbacus_vc6\deploy.exe
+SOURCE="$(InputPath)"
+PostBuild_Desc=Distribution:
+PostBuild_Cmds=mkdir $(QEDO)\bin	copy $(TargetPath) $(QEDO)\bin
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "DeploymentClient - Win32 Release_orbacus"
 
@@ -139,8 +145,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "DeploymentClient___Win32_Debug_tao"
-# PROP Intermediate_Dir "DeploymentClient___Win32_Debug_tao"
+# PROP Output_Dir "Debug_tao"
+# PROP Intermediate_Dir "Debug_tao"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../ComponentIDL" /I "../ComponentContainer" /I "../ComponentInstaller" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
@@ -152,7 +158,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 CosNamingd.lib obd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/deploy.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib /nologo /subsystem:console /debug /machine:I386 /out:"$(QEDO)/bin/deploy.exe" /pdbtype:sept /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client"
+# ADD LINK32 aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib /nologo /subsystem:console /debug /machine:I386 /out:"Debug_tao/deploy.exe" /pdbtype:sept /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client"
+# Begin Special Build Tool
+TargetPath=.\Debug_tao\deploy.exe
+SOURCE="$(InputPath)"
+PostBuild_Desc=Distribution:
+PostBuild_Cmds=mkdir $(QEDO)\bin	copy $(TargetPath) $(QEDO)\bin
+# End Special Build Tool
 
 !ENDIF 
 

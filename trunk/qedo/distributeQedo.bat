@@ -41,6 +41,7 @@ set actdir=%qedo%\lib
 echo *** Create %actdir%...
 mkdir %actdir%
 copy ComponentIDL\%1\ComponentIDL.lib %actdir%
+copy ComponentIDL\%1\ComponentIDL.def %actdir%
 copy ComponentContainer\%1\ComponentContainer.lib %actdir%
 
 echo ************ End Distribution.

@@ -63,8 +63,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "AssemblyFactory___Win32_Debug_orbacus"
-# PROP Intermediate_Dir "AssemblyFactory___Win32_Debug_orbacus"
+# PROP Output_Dir "Debug_orbacus_vc6"
+# PROP Intermediate_Dir "Debug_orbacus_vc6"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
@@ -76,7 +76,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 xerces-c_2D.lib zlib.lib jtcd.lib CosNamingd.lib obd.lib shell32.lib /nologo /subsystem:console /debug /machine:I386 /out:"$(QEDO)/bin/assf.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib" /libpath:"$(XERCES)\lib" /libpath:"$(ZLIB)\dll32"
+# ADD LINK32 xerces-c_2D.lib zlib.lib jtcd.lib CosNamingd.lib obd.lib shell32.lib /nologo /subsystem:console /debug /machine:I386 /out:"Debug_orbacus_vc6/assf.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib" /libpath:"$(XERCES)\lib" /libpath:"$(ZLIB)\dll32"
+# Begin Special Build Tool
+TargetPath=.\Debug_orbacus_vc6\assf.exe
+SOURCE="$(InputPath)"
+PostBuild_Desc=Distribution:
+PostBuild_Cmds=mkdir $(QEDO)\bin	copy $(TargetPath) $(QEDO)\bin
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AssemblyFactory - Win32 Debug_tao"
 
@@ -87,8 +93,8 @@ LINK32=link.exe
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "AssemblyFactory___Win32_Debug_tao"
-# PROP Intermediate_Dir "AssemblyFactory___Win32_Debug_tao"
+# PROP Output_Dir "Debug_tao"
+# PROP Intermediate_Dir "Debug_tao"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
@@ -100,7 +106,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2D.lib zlib.lib shell32.lib aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib TAO_DynamicInterfaced.lib /nologo /subsystem:console /debug /machine:I386 /out:"$(QEDO)/bin/assf.exe" /pdbtype:sept /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client" /libpath:"$(TAO)\TAO\tao\DynamicInterface" /libpath:"$(XERCES)\lib" /libpath:"$(ZLIB)\dll32"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib xerces-c_2D.lib zlib.lib shell32.lib aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib TAO_DynamicInterfaced.lib /nologo /subsystem:console /debug /machine:I386 /out:"Debug_tao/assf.exe" /pdbtype:sept /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client" /libpath:"$(TAO)\TAO\tao\DynamicInterface" /libpath:"$(XERCES)\lib" /libpath:"$(ZLIB)\dll32"
+# Begin Special Build Tool
+TargetPath=.\Debug_tao\assf.exe
+SOURCE="$(InputPath)"
+PostBuild_Desc=Distribution:
+PostBuild_Cmds=mkdir $(QEDO)\bin	copy $(TargetPath) $(QEDO)\bin
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AssemblyFactory - Win32 Release_orbacus"
 

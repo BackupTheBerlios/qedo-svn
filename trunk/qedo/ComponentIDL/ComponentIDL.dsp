@@ -83,12 +83,15 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentIDL.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 # SUBTRACT BASE LINK32 /profile /map
-# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"$(QEDO)\bin\ComponentIDL.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# SUBTRACT LINK32 /profile /map
+# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /def:"Debug_orbacus_vc6/ComponentIDL.def" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# SUBTRACT LINK32 /pdb:none
 # Begin Special Build Tool
+TargetPath=.\Debug_orbacus_vc6\ComponentIDL.dll
 SOURCE="$(InputPath)"
 PreLink_Desc=Creating DEF file for ComponentIDL.dll
-PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll Debug_orbacus_vc6/*.obj
+PreLink_Cmds=perl  makedef.pl Debug_orbacus_vc6/ComponentIDL.def Debug_orbacus_vc6/ComponentIDL.dll Debug_orbacus_vc6/*.obj
+PostBuild_Desc=Distribution:
+PostBuild_Cmds=mkdir $(QEDO)\bin	copy $(TargetPath) $(QEDO)\bin
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug_tao"
@@ -101,8 +104,8 @@ PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll Debug_orba
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Win32_Debug_tao"
-# PROP Intermediate_Dir "Win32_Debug_tao"
+# PROP Output_Dir "Debug_tao"
+# PROP Intermediate_Dir "Debug_tao"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMPONENTIDL_EXPORTS" /YX /FD /GZ /c
@@ -117,12 +120,15 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentIDL.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 # SUBTRACT BASE LINK32 /profile /map
-# ADD LINK32 aced.lib taod.lib TAO_IFR_Clientd.lib TAO_PortableServerd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"$(QEDO)/bin/ComponentIDL.dll" /pdbtype:sept /libpath:"$(TAO)\ace" /libpath:"$(TAO)\tao\tao" /libpath:"$(TAO)/tao/tao/IFR_Client" /libpath:"$(TAO)/tao/tao/PortableServer"
-# SUBTRACT LINK32 /profile /map
+# ADD LINK32 aced.lib taod.lib TAO_IFR_Clientd.lib TAO_PortableServerd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /def:"Debug_tao/ComponentIDL.def" /pdbtype:sept /libpath:"$(TAO)\ace" /libpath:"$(TAO)\tao\tao" /libpath:"$(TAO)/tao/tao/IFR_Client" /libpath:"$(TAO)/tao/tao/PortableServer"
+# SUBTRACT LINK32 /pdb:none
 # Begin Special Build Tool
+TargetPath=.\Debug_tao\ComponentIDL.dll
 SOURCE="$(InputPath)"
 PreLink_Desc=Creating DEF file for ComponentIDL.dll
-PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll Win32_Debug_tao/*.obj
+PreLink_Cmds=perl  makedef.pl Debug_tao/ComponentIDL.def Debug_tao/ComponentIDL.dll Debug_tao/*.obj
+PostBuild_Desc=Distribution:
+PostBuild_Cmds=mkdir $(QEDO)\bin	copy $(TargetPath) $(QEDO)\bin
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Release_orbacus"
@@ -208,6 +214,23 @@ PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll Debug_orba
 # Begin Source File
 
 SOURCE=.\ComponentIDL.def
+
+!IF  "$(CFG)" == "ComponentIDL - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug_orbacus"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug_tao"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Release_orbacus"
+
+!ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug_mico"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

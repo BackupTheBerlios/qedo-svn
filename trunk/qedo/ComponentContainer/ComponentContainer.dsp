@@ -83,12 +83,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib ole32.lib /nologo /dll /pdb:none /debug /machine:I386 /out:"$(QEDO)\bin\ComponentContainer.dll" /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib ole32.lib /nologo /dll /pdb:none /debug /machine:I386 /libpath:"$(ORBACUS)\lib"
 # Begin Special Build Tool
 OutDir=.\Debug_orbacus_vc6
+TargetPath=.\Debug_orbacus_vc6\ComponentContainer.dll
 SOURCE="$(InputPath)"
 PostBuild_Desc=Distribution:
-PostBuild_Cmds=..\distributeQedo.bat $(OutDir)
+PostBuild_Cmds=mkdir $(QEDO)\bin	copy $(TargetPath) $(QEDO)\bin	..\distributeQedo.bat $(OutDir)
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "ComponentContainer - Win32 Debug_tao"
@@ -101,8 +102,8 @@ PostBuild_Cmds=..\distributeQedo.bat $(OutDir)
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "ComponentContainer___Win32_Debug_tao"
-# PROP Intermediate_Dir "ComponentContainer___Win32_Debug_tao"
+# PROP Output_Dir "Debug_tao"
+# PROP Intermediate_Dir "Debug_tao"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "$(ORBACUS)\include" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "VC6" /FR /YX /FD /GZ /c
@@ -116,12 +117,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 odbc32.lib odbccp32.lib ole32.lib aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib /nologo /dll /debug /machine:I386 /out:"$(QEDO)\bin\ComponentContainer.dll" /pdbtype:sept /libpath:"..\..\CIDL_Frontend\CIDLFrontendLib" /libpath:"..\..\CIDL_Repository\IFRidl" /libpath:"..\..\CIDL_Repository\ComponentRepositoryLib" /libpath:"..\..\CIDL_Repository\CIDLRepositoryLib" /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client"
+# ADD LINK32 odbc32.lib odbccp32.lib ole32.lib aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"..\..\CIDL_Frontend\CIDLFrontendLib" /libpath:"..\..\CIDL_Repository\IFRidl" /libpath:"..\..\CIDL_Repository\ComponentRepositoryLib" /libpath:"..\..\CIDL_Repository\CIDLRepositoryLib" /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client"
 # Begin Special Build Tool
-OutDir=.\ComponentContainer___Win32_Debug_tao
+OutDir=.\Debug_tao
+TargetPath=.\Debug_tao\ComponentContainer.dll
 SOURCE="$(InputPath)"
 PostBuild_Desc=Distribution:
-PostBuild_Cmds=..\distributeQedo.bat $(OutDir)
+PostBuild_Cmds=mkdir $(QEDO)\bin	copy $(TargetPath) $(QEDO)\bin	..\distributeQedo.bat $(OutDir)
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "ComponentContainer - Win32 Release_orbacus"
