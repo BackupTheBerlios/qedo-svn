@@ -411,7 +411,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << mapFullNameLocal(home_->managed_component()) << "_Context_var new_context = new ";
 	out << home_->managed_component()->name() << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
-	out << "session_component->set_session_context ("<< mapFullNameLocal(home_->managed_component()) << "_Context::_duplicate(new_context));\n\n";
+	out << "session_component->set_session_context (new_context.in());\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
 	out << "	(executor_locator, dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
@@ -527,7 +527,7 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << mapFullNameLocal(home_->managed_component()) << "_Context_var new_context = new ";
 	out << home_->managed_component()->name() << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
-	out << "session_component->set_session_context (" << mapFullNameLocal(home_->managed_component()) << "_Context::_duplicate(new_context));\n\n";
+	out << "session_component->set_session_context (new_context.in());\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
 	out << "	(executor_locator, dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
@@ -1409,7 +1409,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out << mapFullNameLocal(home->managed_component()) << "_Context_var new_context = new ";
 	out << mapFullNameServant(home->managed_component()) << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
-	out << "session_component->set_session_context (" << mapFullNameLocal(home->managed_component()) << "_Context::_duplicate(new_context));\n\n";
+	out << "session_component->set_session_context (new_context.in());\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
 	out << "	(executor_locator, dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
