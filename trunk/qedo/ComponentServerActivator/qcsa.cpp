@@ -55,7 +55,7 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.24 2003/12/16 13:40:22 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.25 2004/01/20 12:56:23 neubauer Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -64,6 +64,19 @@ static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.24 2003/12/16 13:40:22 stoinski 
 
 CORBA::ORB_var orb;
 Qedo::ServerActivatorImpl* server_activator;
+bool g_registration = true; 
+
+
+void
+printUsage()
+{
+	std::cerr << "usage : qcsa [options]" << std::endl;
+	std::cerr << "        --debug : debug mode" << std::endl;
+	std::cerr << "        --verbose : verbose mode" << std::endl;
+	std::cerr << "        --enable-qos : enable qos" << std::endl;
+	std::cerr << "        --terminal : start each qcs in own terminal" << std::endl;
+	std::cerr << "        --no-registration : do not register in name service" << std::endl;
+}
 
 
 void
@@ -84,89 +97,93 @@ handle_sigint
 	signal(sig, SIG_IGN);
 #endif
 	std::cout << "\nGot Crtl-C" << std::endl;
-	std::cerr << "..... unbind in NameService" << std::endl;
-
+	
 	//
 	// unbind in naming service
 	//
-	CORBA::Object_var obj;
-	CosNaming::NamingContext_var nameService;
-	char hostname[256];
-	gethostname(hostname, 256);
-	CosNaming::Name name;
-	name.length(3);
-	name[0].id = CORBA::string_dup("Qedo");
-	name[0].kind = CORBA::string_dup("");
-	name[1].id = CORBA::string_dup("Activators");
-	name[1].kind = CORBA::string_dup("");
-	name[2].id = CORBA::string_dup(hostname);
-	name[2].kind = CORBA::string_dup("");
-	try
+	if( g_registration )
 	{
-		//
-		// try to get naming service from config values
-		//
+		std::cerr << "..... unbind in NameService" << std::endl;
+
 		CORBA::Object_var obj;
-		std::string ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
-		if( !ns.empty() )
-		{
-			try
-			{
-				obj = orb->string_to_object( ns.c_str() );
-			}
-			catch(...)
-			{
-				NORMAL_ERR2( "NameServiceBase: can't resolve NameService ", ns );
-			}
-
-			NORMAL_OUT2( "NameServiceBase: NameService is ", ns );
-		}
-		//
-		// try to get naming service from orb
-		//
-		else
-		{
-			try
-			{
-				obj = orb->resolve_initial_references( "NameService" );
-			}
-			catch (const CORBA::ORB::InvalidName&)
-			{
-				NORMAL_ERR( "NameServiceBase: can't resolve NameService" );
-			}
-
-			if (CORBA::is_nil(obj.in()))
-			{
-				NORMAL_ERR( "NameServiceBase: NameService is a nil object reference" );
-			}
-		}
-
+		CosNaming::NamingContext_var nameService;
+		char hostname[256];
+		gethostname(hostname, 256);
+		CosNaming::Name name;
+		name.length(3);
+		name[0].id = CORBA::string_dup("Qedo");
+		name[0].kind = CORBA::string_dup("");
+		name[1].id = CORBA::string_dup("Activators");
+		name[1].kind = CORBA::string_dup("");
+		name[2].id = CORBA::string_dup(hostname);
+		name[2].kind = CORBA::string_dup("");
 		try
 		{
-			nameService = CosNaming::NamingContext::_narrow( obj.in() );
+			//
+			// try to get naming service from config values
+			//
+			CORBA::Object_var obj;
+			std::string ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
+			if( !ns.empty() )
+			{
+				try
+				{
+					obj = orb->string_to_object( ns.c_str() );
+				}
+				catch(...)
+				{
+					NORMAL_ERR2( "NameServiceBase: can't resolve NameService ", ns );
+				}
+
+				NORMAL_OUT2( "NameServiceBase: NameService is ", ns );
+			}
+			//
+			// try to get naming service from orb
+			//
+			else
+			{
+				try
+				{
+					obj = orb->resolve_initial_references( "NameService" );
+				}
+				catch (const CORBA::ORB::InvalidName&)
+				{
+					NORMAL_ERR( "NameServiceBase: can't resolve NameService" );
+				}
+
+				if (CORBA::is_nil(obj.in()))
+				{
+					NORMAL_ERR( "NameServiceBase: NameService is a nil object reference" );
+				}
+			}
+
+			try
+			{
+				nameService = CosNaming::NamingContext::_narrow( obj.in() );
+			}
+			catch (const CORBA::Exception&)
+			{
+				NORMAL_ERR( "NameServiceBase: NameService is not running" );
+			}
+
+			if( CORBA::is_nil(nameService.in()) )
+			{
+					NORMAL_ERR( "NameService is not a NamingContext object reference" );
+			}
+
+			if (!CORBA::is_nil(nameService.in()))
+			{
+ 				nameService->unbind(name);
+			}
 		}
 		catch (const CORBA::Exception&)
 		{
-			NORMAL_ERR( "NameServiceBase: NameService is not running" );
+			std::cerr << "..... could not unbind" << std::endl;
 		}
-
-		if( CORBA::is_nil(nameService.in()) )
+		catch(...)
 		{
-        		NORMAL_ERR( "NameService is not a NamingContext object reference" );
+			std::cerr << "..... error in signal handler" << std::endl;
 		}
-
-		if (!CORBA::is_nil(nameService.in()))
-		{
- 			nameService->unbind(name);
-		}
-	}
-	catch (const CORBA::Exception&)
-	{
-		std::cerr << "..... could not unbind" << std::endl;
-	}
-	catch(...)
-	{
-		std::cerr << "..... error in signal handler" << std::endl;
 	}
 
 	orb->shutdown(false);
@@ -321,7 +338,15 @@ main (int argc, char** argv)
 
 	std::cout << "Qedo Component Server Activator " << QEDO_VERSION << std::endl;
 
-	// Check for debug mode and enable-qos mode
+	//
+	// process arguments
+	//
+	if(argc < 2)
+	{
+		printUsage();
+		exit ( 1 );
+	}
+
 	bool debug_mode = false;
 	bool verbose_mode = false;
 	bool qos_enabled = false;
@@ -346,11 +371,15 @@ main (int argc, char** argv)
 		{
 			terminal_enabled = true;
 		}
+		if (! strcmp(argv[i], "--no-registration"))
+		{
+			g_registration = false;
+		}
 	}
 
 	orb = CORBA::ORB_init (argc, argv);
 
-	server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled, terminal_enabled, verbose_mode);
+	server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled, terminal_enabled, g_registration, verbose_mode );
 
 	try
 	{
