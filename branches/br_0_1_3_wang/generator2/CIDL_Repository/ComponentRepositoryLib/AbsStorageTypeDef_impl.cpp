@@ -239,26 +239,56 @@ throw(CORBA::SystemException)
 
 void
 AbstractStorageTypeDef_impl::get_StateMembers
-(IR__::AttributeDefSeq& state_members)
+(IR__::AttributeDefSeq& state_members, CORBA__::CollectStyle style)
 throw(CORBA::SystemException)
 {
-	IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
-	CORBA::ULong len = contained_seq->length();
-	CORBA::ULong ulPre = state_members.length();
-	state_members.length(ulPre+len);
-	for(CORBA::ULong i=0; i<len; i++)
+	DEBUG_OUTLINE ( "AbstractStorageTypeDef_impl::get_StateMembers() called" );
+	
+	CORBA::ULong i = 0;
+	CORBA::ULong len = 0;
+	if( (style==CORBA__::dk_Create) || (style==CORBA__::dk_Variable) )
 	{
-		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
-		state_members[i+ulPre] = (a_attribute);
-	}
+		//++ proceed with the leftmost implemented abstract storage type
+		IR__::InterfaceDefSeq_var abs_storagetypes = base_abstract_storage_types();
+		len = abs_storagetypes->length();
+		for(i=0; i<len; i++)
+		{
+			IR__::AbstractStorageTypeDef* abs_storagetype = 
+				IR__::AbstractStorageTypeDef::_narrow(((*abs_storagetypes)[i]));
+			abs_storagetype->get_StateMembers(state_members, style);
+		}
 
-	IR__::InterfaceDefSeq_var abs_storagetypes = base_abstract_storage_types();
-	len = abs_storagetypes->length();
-	for(i=0; i<len; i++)
+		//++ and then, itself
+		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
+		CORBA::ULong len = contained_seq->length();
+		CORBA::ULong ulPre = state_members.length();
+		state_members.length(ulPre+len);
+		for(i=0; i<len; i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+			state_members[i+ulPre] = (a_attribute);
+		}
+	}
+	else if(style == CORBA__::dk_default)
 	{
-		IR__::AbstractStorageTypeDef* abs_storagetype = 
-			IR__::AbstractStorageTypeDef::_narrow(((*abs_storagetypes)[i]));
-		abs_storagetype->get_StateMembers(state_members);
+		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
+		CORBA::ULong len = contained_seq->length();
+		CORBA::ULong ulPre = state_members.length();
+		state_members.length(ulPre+len);
+		for(i=0; i<len; i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+			state_members[i+ulPre] = (a_attribute);
+		}
+
+		IR__::InterfaceDefSeq_var abs_storagetypes = base_abstract_storage_types();
+		len = abs_storagetypes->length();
+		for(i=0; i<len; i++)
+		{
+			IR__::AbstractStorageTypeDef* abs_storagetype = 
+				IR__::AbstractStorageTypeDef::_narrow(((*abs_storagetypes)[i]));
+			abs_storagetype->get_StateMembers(state_members, style);
+		}
 	}
 }
 

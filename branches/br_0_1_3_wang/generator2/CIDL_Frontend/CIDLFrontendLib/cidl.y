@@ -1370,9 +1370,9 @@ factory_dcl :
 	;
 
 factory_dcl_1 :
-	  TOK_factory TOK_identifier factory_parameters 
-	  { $$ = FactoryDcl1($2,$3); }
-  ;
+	  TOK_factory TOK_identifier factory_parameters
+	  { $$ = FactoryDcl1($2,$3); add_name(false,FactoryN(),$2,$$,0); }
+      ;
 
 factory_parameters :
     '(' simple_declarators ')'

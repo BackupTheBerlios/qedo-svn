@@ -102,7 +102,7 @@ public:
     //
     // IDL:omg.org/IR__/StorageHomeDef/keys:1.0
     //
-    virtual IR__::PSSKeyDefSeq* keys();
+    virtual IR__::KeyDefSeq* keys();
 
     //
     // IDL:omg.org/IR__/StorageHomeDef/create_primary_key:1.0
@@ -124,10 +124,10 @@ public:
     //
     // IDL:omg.org/IR__/StorageHomeDef/create_key:1.0
     //
-    virtual IR__::PSSKeyDef_ptr create_key(const char* id,
-                                              const char* name,
-                                              const char* version,
-                                              const IR__::ParDescriptionSeq& params);
+    virtual IR__::KeyDef_ptr create_key(const char* id,
+                                        const char* name,
+                                        const char* version,
+                                        const IR__::ParDescriptionSeq& params);
 };
 
 } // namespace QEDO_ComponentRepository

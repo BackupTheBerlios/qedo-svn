@@ -23,31 +23,26 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#ifndef __PSSKEY_DEF_IMPL_H__
-#define __PSSKEY_DEF_IMPL_H__
+#ifndef __KEY_DEF_IMPL_H__
+#define __KEY_DEF_IMPL_H__
 
 #include <CORBA.h>
 #include "IFR_skel.h"
 #include "Repository_impl.h"
 #include "OperationDef_impl.h"
-#include "AbsStorageTypeDef_impl.h"
-#include "StorageTypeDef_impl.h"
+#include "InterfaceDef_impl.h"
 
 namespace QEDO_ComponentRepository {
 
-class PSSKeyDef_impl : public virtual POA_IR__::PSSKeyDef,
+class KeyDef_impl : public virtual POA_IR__::KeyDef,
 						public virtual OperationDef_impl
 {
 public:
-	PSSKeyDef_impl ( Container_impl *container,
+	KeyDef_impl ( Container_impl *container,
 						Repository_impl *repository,
-						AbstractStorageTypeDef_impl *abs_storage_type );
+						InterfaceDef_impl *infDef_impl );
 
-	PSSKeyDef_impl ( Container_impl *container,
-						Repository_impl *repository,
-						StorageTypeDef_impl *storage_type );
-
-	~PSSKeyDef_impl();
+	~KeyDef_impl();
 
     //
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
@@ -55,7 +50,7 @@ public:
 	virtual CORBA__::DefinitionKind def_kind()
         throw(CORBA::SystemException)
     {
-        return CORBA__::dk_PSSKey;
+        return CORBA__::dk_Key;
     }
 
     //

@@ -1626,7 +1626,7 @@ FactoryDcl1(idl_name_v, dcls_v)
 			NOT_NIL(managed_abs_storagetype);
 			
 			IR__::AttributeDefSeq state_members;
-			managed_abs_storagetype->get_StateMembers(state_members);
+			managed_abs_storagetype->get_StateMembers(state_members, CORBA__::dk_default);
 			CORBA::ULong len = state_members.length();
 			for(CORBA::ULong i = 0; i < len; i++)
 			{
@@ -1674,7 +1674,7 @@ FactoryDcl1(idl_name_v, dcls_v)
 			NOT_NIL(managed_storagetype);
 			
 			IR__::AttributeDefSeq state_members;
-			managed_storagetype->get_StateMembers(state_members);
+			managed_storagetype->get_StateMembers(state_members, CORBA__::dk_default);
 			CORBA::ULong len = state_members.length();
 			for(CORBA::ULong i = 0; i < len; i++)
 			{
@@ -1735,7 +1735,7 @@ KeyDcl(idl_name_v, dcls_v)
 			NOT_NIL(managed_abs_storagetype);
 			
 			IR__::AttributeDefSeq state_members;
-			managed_abs_storagetype->get_StateMembers(state_members);
+			managed_abs_storagetype->get_StateMembers(state_members, CORBA__::dk_default);
 			CORBA::ULong len = state_members.length();
 			for(CORBA::ULong i = 0; i < len; i++)
 			{
@@ -1783,7 +1783,7 @@ KeyDcl(idl_name_v, dcls_v)
 			NOT_NIL(managed_storagetype);
 			
 			IR__::AttributeDefSeq state_members;
-			managed_storagetype->get_StateMembers(state_members);
+			managed_storagetype->get_StateMembers(state_members, CORBA__::dk_default);
 			CORBA::ULong len = state_members.length();
 			for(CORBA::ULong i = 0; i < len; i++)
 			{

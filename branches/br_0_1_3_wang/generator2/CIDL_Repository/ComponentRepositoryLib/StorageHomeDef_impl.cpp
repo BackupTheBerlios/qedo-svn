@@ -25,7 +25,7 @@
 
 #include "StorageHomeDef_impl.h"
 #include "FactoryDef_impl.h"
-#include "PSSKeyDef_impl.h"
+#include "KeyDef_impl.h"
 #include "PSSPrimaryKeyDef_impl.h"
 #include "Debug.h"
 
@@ -135,7 +135,7 @@ throw(CORBA::SystemException)
 		storage_home_desc -> factories[i] = factories.inout()[i];
 
 	// Keys
-	IR__::PSSKeyDefSeq_var keys = this -> keys();
+	IR__::KeyDefSeq_var keys = this -> keys();
 	storage_home_desc -> keys.length (  keys -> length() );
 	for ( i = 0; i < keys -> length(); i++ )
 		storage_home_desc -> keys[i] = keys.inout()[i];
@@ -360,28 +360,28 @@ throw(CORBA::SystemException)
 	return factory_seq._retn();
 }
 
-IR__::PSSKeyDefSeq*
+IR__::KeyDefSeq*
 StorageHomeDef_impl::keys
 ()
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "StorageHomeDef_impl::keys() called" );
 
-	IR__::PSSKeyDefSeq_var key_seq = new IR__::PSSKeyDefSeq;
+	IR__::KeyDefSeq_var key_seq = new IR__::KeyDefSeq;
 
 	list < Contained_impl* >::const_iterator contained_iter;
 	for ( contained_iter = contained_.begin();
 			contained_iter != contained_.end();
 			contained_iter++ )
 	{
-		if ( (*contained_iter) -> def_kind() == CORBA__::dk_PSSKey )
+		if ( (*contained_iter) -> def_kind() == CORBA__::dk_Key )
 		{
-			PSSKeyDef_impl *impl;
-			impl = dynamic_cast < PSSKeyDef_impl* > ( *contained_iter );
+			KeyDef_impl *impl;
+			impl = dynamic_cast < KeyDef_impl* > ( *contained_iter );
 			if ( !impl )
 			{
 				// This cannot be, what to do?
-				DEBUG_ERRLINE ( "Fatal error: Contained with kind 'dk_PSSKey' cannot be casted to PSSKeyDef_impl" );
+				DEBUG_ERRLINE ( "Fatal error: Contained with kind 'dk_Key' cannot be casted to KeyDef_impl" );
 				continue;
 			}
 			key_seq -> length ( key_seq -> length() + 1 );
@@ -469,7 +469,7 @@ throw(CORBA::SystemException)
 	return new_factory -> _this();
 }
 
-IR__::PSSKeyDef_ptr
+IR__::KeyDef_ptr
 StorageHomeDef_impl::create_key
 (const char* id,
  const char* name,
@@ -484,8 +484,8 @@ throw(CORBA::SystemException)
 	if ( check_for_name ( name ) )
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
-	PSSKeyDef_impl *new_key = 
-		new PSSKeyDef_impl ( this, repository_, managed_storage_type_impl_ );
+	KeyDef_impl *new_key = 
+		new KeyDef_impl ( this, repository_, managed_storage_type_impl_ );
 	new_key -> id ( id );
 	new_key -> name ( name );
 	new_key -> version ( version );

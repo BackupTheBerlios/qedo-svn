@@ -268,22 +268,77 @@ throw(CORBA::SystemException)
 
 void
 StorageTypeDef_impl::get_StateMembers
-(IR__::AttributeDefSeq& state_members)
+(IR__::AttributeDefSeq& state_members, CORBA__::CollectStyle style)
 throw(CORBA::SystemException)
 {
-	IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
-	CORBA::ULong len = contained_seq->length();
-	CORBA::ULong ulPre = state_members.length();
-	state_members.length(ulPre+len);
-	for(CORBA::ULong i=0; i<len; i++)
+	DEBUG_OUTLINE ( "StorageTypeDef_impl::get_StateMembers() called" );
+	
+	CORBA::ULong i = 0;
+	if(style==CORBA__::dk_Create)
 	{
-		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
-		state_members[i+ulPre] = (a_attribute);
-	}
+		//collect state members for storagehome's _create operation
+		//++ begin with the base type of the storage type
+		IR__::StorageTypeDef_ptr storagetype = base_storage_type();
+		if(!CORBA::is_nil(storagetype))
+			storagetype->get_StateMembers(state_members, style);
 
-	IR__::StorageTypeDef_ptr storagetype = base_storage_type();
-	if(!CORBA::is_nil(storagetype))
-		storagetype->get_StateMembers(state_members);
+		//++ proceed with the leftmost implemented abstract storage type
+		IR__::InterfaceDefSeq_var supported_seq = supported_interfaces();
+		for(i=0; i<supported_seq->length(); i++)
+		{
+			IR__::AbstractStorageTypeDef_var abs_storagetype = IR__::AbstractStorageTypeDef::_narrow(((*supported_seq)[i]));
+			abs_storagetype->get_StateMembers(state_members, style);
+		}
+
+		//++ end with the state members defined in the storage type itself
+		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
+		CORBA::ULong len = contained_seq->length();
+		CORBA::ULong ulPre = state_members.length();
+		state_members.length(ulPre+len);
+		for(i=0; i<len; i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+			state_members[i+ulPre] = (a_attribute);
+		}
+	}
+	else if(style==CORBA__::dk_Variable)
+	{
+		//++ proceed with the leftmost implemented abstract storage type
+		IR__::InterfaceDefSeq_var supported_seq = supported_interfaces();
+		for(i=0; i<supported_seq->length(); i++)
+		{
+			IR__::AbstractStorageTypeDef_var abs_storagetype = IR__::AbstractStorageTypeDef::_narrow(((*supported_seq)[i]));
+			abs_storagetype->get_StateMembers(state_members, style);
+		}
+
+		//++ end with the state members defined in the storage type itself
+		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
+		CORBA::ULong len = contained_seq->length();
+		CORBA::ULong ulPre = state_members.length();
+		state_members.length(ulPre+len);
+		for(i=0; i<len; i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+			state_members[i+ulPre] = (a_attribute);
+		}
+	}
+	else if(style==CORBA__::dk_default)
+	{
+		//collect state members for storagehome's key operation
+		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
+		CORBA::ULong len = contained_seq->length();
+		CORBA::ULong ulPre = state_members.length();
+		state_members.length(ulPre+len);
+		for(i=0; i<len; i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+			state_members[i+ulPre] = (a_attribute);
+		}
+
+		IR__::StorageTypeDef_ptr storagetype = base_storage_type();
+		if(!CORBA::is_nil(storagetype))
+			storagetype->get_StateMembers(state_members, style);
+	}	
 }
 
 } // namespace QEDO_ComponentRepository

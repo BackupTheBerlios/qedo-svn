@@ -619,7 +619,7 @@ throw ( CannotMapType )
 		else
 		{
 			ret_string = getAbsoluteName (contained);
-			ret_string.append ("_ptr");
+			ret_string.append ("*");
 		}
 		break;
 	case CORBA::tk_native:
@@ -728,7 +728,7 @@ throw ( CannotMapType )
 		else
 		{
 			ret_string = getAbsoluteName (contained);
-			ret_string.append ("_ptr");
+			ret_string.append ("*");
 		}
 		break;
 	case CORBA::tk_native:

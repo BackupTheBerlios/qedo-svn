@@ -91,7 +91,7 @@ public:
     //
     // IDL:omg.org/IR__/AbstractStorageHomeDef/keys:1.0
     //
-    virtual IR__::PSSKeyDefSeq* keys()
+    virtual IR__::KeyDefSeq* keys()
         throw(CORBA::SystemException);
 
     //
@@ -107,7 +107,7 @@ public:
     //
     // IDL:omg.org/IR__/AbstractStorageHomeDef/create_key:1.0
     //
-    virtual IR__::PSSKeyDef_ptr create_key(const char* id,
+    virtual IR__::KeyDef_ptr create_key(const char* id,
                                                  const char* name,
                                                  const char* version,
                                                  const IR__::ParDescriptionSeq& params)

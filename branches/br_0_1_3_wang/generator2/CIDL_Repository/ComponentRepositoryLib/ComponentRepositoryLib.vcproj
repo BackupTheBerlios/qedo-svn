@@ -258,6 +258,9 @@
 				RelativePath=".\InterfaceDef_impl.cpp">
 			</File>
 			<File
+				RelativePath="KeyDef_impl.cpp">
+			</File>
+			<File
 				RelativePath=".\ModuleDef_impl.cpp">
 			</File>
 			<File
@@ -265,9 +268,6 @@
 			</File>
 			<File
 				RelativePath=".\OperationDef_impl.cpp">
-			</File>
-			<File
-				RelativePath="PSSKeyDef_impl.cpp">
 			</File>
 			<File
 				RelativePath="PSSPrimaryKeyDef_impl.cpp">
@@ -400,6 +400,9 @@
 				RelativePath=".\InterfaceDef_impl.h">
 			</File>
 			<File
+				RelativePath="KeyDef_impl.h">
+			</File>
+			<File
 				RelativePath=".\ModuleDef_impl.h">
 			</File>
 			<File
@@ -407,9 +410,6 @@
 			</File>
 			<File
 				RelativePath=".\OperationDef_impl.h">
-			</File>
-			<File
-				RelativePath="PSSKeyDef_impl.h">
 			</File>
 			<File
 				RelativePath="PSSPrimaryKeyDef_impl.h">

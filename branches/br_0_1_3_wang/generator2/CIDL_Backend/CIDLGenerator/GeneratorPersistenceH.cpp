@@ -34,7 +34,7 @@ namespace QEDO_CIDL_Generator {
 
 GeneratorPersistenceH::GeneratorPersistenceH
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: CPPBase(repository), isAbstract(true)
+: CPPBase(repository), isAbstract(true), isASHKey(true)
 {
 }
 
@@ -208,19 +208,55 @@ GeneratorPersistenceH::doOperation(IR__::OperationDef_ptr operation)
 }
 
 void
-GeneratorPersistenceH::doFactory(IR__::FactoryDef_ptr factory)
+GeneratorPersistenceH::doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDef_ptr inf_def)
 {
-	genOperation(factory, abs_storagetype_);
-	//genOperation(factory, storagetype_);
+	if( (isAbstract==TRUE) || (isAbstract==FALSE && isASHKey==TRUE) )
+	{
+		IR__::AbstractStorageTypeDef_var abs_storagetype;
+		IR__::AbstractStorageHomeDef_var abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(inf_def);
+		if(!CORBA::is_nil(abs_storagehome))
+			abs_storagetype = abs_storagehome->managed_abstract_storage_type();
+		if(!CORBA::is_nil(abs_storagetype))
+			genOperation(factory, abs_storagetype);
+	}
+	else
+	{
+		IR__::StorageTypeDef_var storagetype;
+		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(inf_def);
+		if(!CORBA::is_nil(storagehome))
+			storagetype = storagehome->managed_storage_type();
+		if(!CORBA::is_nil(storagetype))
+			genOperation(factory, storagetype);
+	}
 }
 
 void
-GeneratorPersistenceH::doPSSKey(IR__::PSSKeyDef_ptr psskey)
+GeneratorPersistenceH::doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_def)
 {
-	if(isAbstract)
-		genKey(psskey, abs_storagetype_);
+	if( (isAbstract==TRUE) || (isAbstract==FALSE && isASHKey==TRUE) )
+	{
+		IR__::AbstractStorageTypeDef_var abs_storagetype;
+		IR__::AbstractStorageHomeDef_var abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(inf_def);
+		if(!CORBA::is_nil(abs_storagehome))
+			abs_storagetype = abs_storagehome->managed_abstract_storage_type();
+		if(!CORBA::is_nil(abs_storagetype))
+		{
+			genKey(key, abs_storagetype, false);
+			genKey(key, abs_storagetype, true);
+		}
+	}
 	else
-		genKey(psskey, storagetype_);
+	{
+		IR__::StorageTypeDef_var storagetype;
+		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(inf_def);
+		if(!CORBA::is_nil(storagehome))
+			storagetype = storagehome->managed_storage_type();
+		if(!CORBA::is_nil(storagetype))
+		{
+			genKey(key, storagetype, false);
+			genKey(key, storagetype, true);
+		}
+	}
 }
 
 void 
@@ -234,7 +270,7 @@ GeneratorPersistenceH::doAbstractStorageType(IR__::AbstractStorageTypeDef_ptr ab
 {
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";
-	open_module(out, abs_storage_type, "PSS_");
+	open_module(out, abs_storage_type, "");
 	out << "\n\n";
 
 	// generate normal class
@@ -250,7 +286,7 @@ GeneratorPersistenceH::doStorageType(IR__::StorageTypeDef_ptr storage_type)
 {
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";	
-	open_module(out, storage_type, "PSS_");
+	open_module(out, storage_type, "");
 	out << "\n\n";
 
 	// generate normal class
@@ -269,7 +305,7 @@ GeneratorPersistenceH::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr ab
 
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";
-	open_module(out, abs_storagetype_, "PSS_");
+	open_module(out, abs_storagetype_, "");
 	out << "\n\n";
 
 	std::string class_name = string(abs_storage_home->name());
@@ -299,7 +335,7 @@ GeneratorPersistenceH::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr ab
 	handleAttribute(abs_storage_home);
 	handleOperation(abs_storage_home);
 	handleFactory(abs_storage_home);
-	handlePSSKey(abs_storage_home);
+	handleKey(abs_storage_home);
 
 	out.unindent();
 	out << "};\n";
@@ -316,7 +352,7 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storage_home)
 
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";
-	open_module(out, storagetype_, "PSS_");
+	open_module(out, storagetype_, "");
 	out << "\n\n";
 
 	std::string class_name = string(storage_home->name());
@@ -346,26 +382,31 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storage_home)
 	out << "public:\n\n";
 	out.indent();
     out << class_name << "();\n";
-	out << "~" << class_name << "();\n";
+	out << "~" << class_name << "();\n\n";
+
+	genCreateOperation(storage_home, false);
+	genCreateOperation(storage_home, true);
 
 	if(supported_infs->length()==0)
 		out << "ERROR: NO SUPPORTED INTERFACES?\n";
 	else
 		for(CORBA::ULong i = 0; i < supported_infs->length(); i++) {
 			isAbstract = false;
-			IR__::AbstractStorageHomeDef_ptr abs_storage_home_inh;
-			abs_storage_home_inh = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
-			handleAttribute(abs_storage_home_inh);
-			handleOperation(abs_storage_home_inh);
-			handleFactory(abs_storage_home_inh);
-			handlePSSKey(abs_storage_home_inh);
+			isASHKey = true;
+			IR__::AbstractStorageHomeDef_ptr abs_storage_home;
+			abs_storage_home = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
+			handleAttribute(abs_storage_home);
+			handleOperation(abs_storage_home);
+			handleFactory(abs_storage_home);
+			handleKey(abs_storage_home);
 		};
 
 	isAbstract = false;
+	isASHKey = false;
 	handleAttribute(storage_home);
 	handleOperation(storage_home);
 	handleFactory(storage_home);
-	handlePSSKey(storage_home);
+	handleKey(storage_home);
 
 	out.unindent();
 	out << "\n// BEGIN USER INSERT SECTION " << class_name << "\n";
@@ -407,11 +448,25 @@ GeneratorPersistenceH::genOperation(IR__::OperationDef_ptr operation, IR__::IDLT
 }
 
 void
-GeneratorPersistenceH::genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type)
+GeneratorPersistenceH::genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool isRef)
 {
-	out << "\n//\n// " << operation->id() << "\n//\n";
+	if(!isRef)
+		out << "\n//\n// " << operation->id() << "\n//\n";
 	if(isAbstract) out << "virtual ";
-	out << map_psdl_return_type(ret_type, false) << " find_by_" << mapName(operation) << "(";
+	char* szReturnType = map_psdl_return_type(ret_type, false);
+
+	//since the definition of a abstract stoage type is not yet supported, 
+	//we have to replcace the "_ptr" with "&" for operation find_by_ref_... 
+	if(isRef)
+	{
+		char* pdest = strstr( szReturnType, "*" );
+		if( pdest != NULL )
+			memset(pdest, '&', 1);
+	}
+	
+	out << szReturnType;
+	isRef ? out << " find_ref_by_" : out << " find_by_";
+	out << mapName(operation) << "(";
 
 	//
 	// parameters
@@ -433,12 +488,19 @@ GeneratorPersistenceH::genKey(IR__::OperationDef_ptr operation, IR__::IDLType_pt
 		};
 	};
 
-	out << ")\n";
-	out.indent();
-	out << "throw(CosPersistentState::NotFound";
-	handleException(operation);
-	isAbstract ? out << ") = 0;\n" : out << ");\n";
-	out.unindent();
+	out << ")";
+	
+	if(!isRef)
+	{
+		out << "\n";
+		out.indent();
+		out << "throw(CosPersistentState::NotFound";
+		handleException(operation);
+		out << ")";
+		out.unindent();
+	}
+	
+	isAbstract ? out << " = 0;\n" : out << ";\n";
 }
 
 void 
@@ -534,13 +596,89 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storage_type,
 	handleAttribute(storage_type);
 	handleOperation(storage_type);
 
+	out << "\nvoid setValue(map<string, CORBA::Any> valueMap);\n\n\n";
 	out.unindent();
+
+	genAttribute(storage_type);
+	
 	out << "\n// BEGIN USER INSERT SECTION " << class_name;
 	isRef ? out << "Ref\n" : out << "\n";
 	out << "// END USER INSERT SECTION " << class_name;
 	isRef ? out << "Ref\n" : out << "\n\n";
 	out << "};\n";
 	out << "\n\n";
+}
+
+void
+GeneratorPersistenceH::genCreateOperation(IR__::StorageHomeDef_ptr storage_home, bool isRef)
+{
+	int iLength = 0;
+	string strDummy = "";
+	char* szDisplay = map_psdl_return_type(storage_home->managed_storage_type(), false);
+	isRef ? iLength = strlen(szDisplay) + 11 : iLength = strlen(szDisplay) + 9;
+	
+	if(isRef)
+	{
+		char* pdest = strstr( szDisplay, "*" );
+		if( pdest != NULL )
+		{
+			memset(pdest, '\0', 1);
+			strcat(szDisplay, "Ref");
+		}
+	}
+	
+	out << szDisplay << " _create(";
+	
+	IR__::AttributeDefSeq state_members;
+	storage_home->managed_storage_type()->get_StateMembers(state_members, CORBA__::dk_Create);
+	CORBA::ULong len = state_members.length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		out << map_in_parameter_type(a_attribute->type_def()) << " " << mapName(a_attribute);
+		if( (i+1)!=len )
+		{
+			out << ",\n";
+			strDummy = "";
+			strDummy.append(iLength, ' ');
+			out << strDummy.c_str();
+		}
+	}
+	
+	if(isRef)
+	{
+		strDummy = "";
+		strDummy.append(iLength, ' ');
+		out << ",\n" << strDummy.c_str() << "CosPersistentState::YieldRef yr";
+	}
+
+	out << ");\n\n"; 
+}
+
+void
+GeneratorPersistenceH::genAttribute(IR__::InterfaceDef_ptr infDef)
+{
+	IR__::StorageTypeDef_var storagetype = IR__::StorageTypeDef::_narrow(infDef);
+	if(!CORBA::is_nil(storagetype))
+	{
+		IR__::AttributeDefSeq state_members;
+		storagetype->get_StateMembers(state_members, CORBA__::dk_Variable);
+		CORBA::ULong len = state_members.length();
+		
+		out << "private:\n\n";
+		out.indent();
+
+		for(CORBA::ULong i = 0; i < len; i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			std::string attribute_name = mapName(a_attribute);
+			out << map_psdl_return_type(a_attribute->type_def(), false) << " " << attribute_name << ";\n";
+		}
+		
+		out.unindent();
+	}
+	
+	
 }
 
 } // namespace

@@ -87,7 +87,8 @@ public:
 	//
     // IDL:omg.org/IR__/StorageTypeDef/get_StateMembers:1.0
     //
-    virtual void get_StateMembers(IR__::AttributeDefSeq& state_members)
+	virtual void get_StateMembers(IR__::AttributeDefSeq& state_members,
+                                  CORBA__::CollectStyle style)
         throw(CORBA::SystemException);
     
 };

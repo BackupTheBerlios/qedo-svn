@@ -112,15 +112,14 @@ protected:
 
 	// factory
 	void handleFactory(IR__::HomeDef_ptr intf);
+	void handleFactory(IR__::AbstractStorageHomeDef_ptr abs_storage_home); //for PSS
+	void handleFactory(IR__::StorageHomeDef_ptr storage_home); //for PSS
 	virtual void doFactory(IR__::FactoryDef_ptr factory);
+	virtual void doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDef_ptr inf_def); //for PSS
 
 	// finder
 	void handleFinder(IR__::HomeDef_ptr intf);
 	virtual void doFinder(IR__::FinderDef_ptr finder);
-
-	// factory (for PSS)
-	void handleFactory(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
-	void handleFactory(IR__::StorageHomeDef_ptr storage_home);
 
 	// value member
 	void handleValueMember(IR__::ValueDef_ptr value);
@@ -200,10 +199,9 @@ protected:
 	// storage type
 	virtual void doStorageType(IR__::StorageTypeDef_ptr storage_type);
 	
-	// PSSKey
-	void handlePSSKey(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
-	void handlePSSKey(IR__::StorageHomeDef_ptr storage_home);
-	virtual void doPSSKey(IR__::PSSKeyDef_ptr psskey);
+	// Key
+	void handleKey(IR__::InterfaceDef_ptr inf_def);
+	virtual void doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_def);
 
 public:
 

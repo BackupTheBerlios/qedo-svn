@@ -466,12 +466,39 @@ GeneratorBase::handleFactory(IR__::HomeDef_ptr home)
 	}
 }
 
+void 
+GeneratorBase::handleFactory(IR__::AbstractStorageHomeDef_ptr abs_storage_home)
+{
+	IR__::ContainedSeq_var contained_seq = abs_storage_home->contents(CORBA__::dk_Factory, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
+		doFactory(a_factory, abs_storage_home);
+	}
+}
+
+void 
+GeneratorBase::handleFactory(IR__::StorageHomeDef_ptr storage_home)
+{
+	IR__::ContainedSeq_var contained_seq = storage_home->contents(CORBA__::dk_Factory, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
+		doFactory(a_factory, storage_home);
+	}
+}
 
 void
 GeneratorBase::doFactory(IR__::FactoryDef_ptr factory)
 {
 }
 
+void 
+GeneratorBase::doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDef_ptr inf_def)
+{
+}
 
 //
 // finder
@@ -492,31 +519,6 @@ GeneratorBase::handleFinder(IR__::HomeDef_ptr home)
 void
 GeneratorBase::doFinder(IR__::FinderDef_ptr finder)
 {
-}
-
-// factory (for PSS)
-void 
-GeneratorBase::handleFactory(IR__::AbstractStorageHomeDef_ptr abs_storage_home)
-{
-	IR__::ContainedSeq_var contained_seq = abs_storage_home->contents(CORBA__::dk_Factory, false);
-	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
-	{
-		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
-		doFactory(a_factory);
-	}
-}
-
-void 
-GeneratorBase::handleFactory(IR__::StorageHomeDef_ptr storage_home)
-{
-	IR__::ContainedSeq_var contained_seq = storage_home->contents(CORBA__::dk_Factory, false);
-	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
-	{
-		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
-		doFactory(a_factory);
-	}
 }
 
 //
@@ -604,7 +606,7 @@ GeneratorBase::handleException(IR__::Contained_ptr contained)
 		break; }
 	case CORBA__::dk_Factory :
 	case CORBA__::dk_Finder :
-	case CORBA__::dk_PSSKey :
+	case CORBA__::dk_Key :
 	case CORBA__::dk_Operation : {
 		IR__::OperationDef_var a_operation = IR__::OperationDef::_narrow(contained);
 		exception_seq = a_operation->exceptions();
@@ -1035,34 +1037,22 @@ GeneratorBase::doStorageType(IR__::StorageTypeDef_ptr storage_type)
 }
 
 //
-// PSSKey
+// Key
 //
 void 
-GeneratorBase::handlePSSKey(IR__::AbstractStorageHomeDef_ptr abs_storage_home)
+GeneratorBase::handleKey(IR__::InterfaceDef_ptr inf_def)
 {
-	IR__::ContainedSeq_var contained_seq = abs_storage_home->contents(CORBA__::dk_PSSKey, false);
+	IR__::ContainedSeq_var contained_seq = inf_def->contents(CORBA__::dk_Key, false);
 	CORBA::ULong len = contained_seq->length();
 	for(CORBA::ULong i = 0; i < len; i++)
 	{
-		IR__::PSSKeyDef_var a_psskey = IR__::PSSKeyDef::_narrow(((*contained_seq)[i]));
-		doPSSKey(a_psskey);
+		IR__::KeyDef_var a_key = IR__::KeyDef::_narrow(((*contained_seq)[i]));
+		doKey(a_key, inf_def);
 	}
 }
 
 void 
-GeneratorBase::handlePSSKey(IR__::StorageHomeDef_ptr storage_home)
-{
-	IR__::ContainedSeq_var contained_seq = storage_home->contents(CORBA__::dk_PSSKey, false);
-	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
-	{
-		IR__::PSSKeyDef_var a_psskey = IR__::PSSKeyDef::_narrow(((*contained_seq)[i]));
-		doPSSKey(a_psskey);
-	}
-}
-
-void 
-GeneratorBase::doPSSKey(IR__::PSSKeyDef_ptr psskey)
+GeneratorBase::doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_def)
 {
 }
 

@@ -42,6 +42,7 @@ private:
 	std::string filename_;
 	Printer out;
 	bool isAbstract;
+	bool isASHKey; // key is from abstract storage home
 	IR__::AbstractStorageHomeDef_var	abs_storagehome_;
 	IR__::StorageHomeDef_var			storagehome_;
 	IR__::AbstractStorageTypeDef_var	abs_storagetype_;
@@ -57,13 +58,15 @@ private:
 	void doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
 	void doStorageType(IR__::StorageTypeDef_ptr storage_type);
 	void doStorageHome(IR__::StorageHomeDef_ptr storage_home);
-	void doPSSKey(IR__::PSSKeyDef_ptr psskey);
-	void doFactory(IR__::FactoryDef_ptr factory);
+	void doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_def);
+	void doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDef_ptr inf_def);
 
 	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
-	void genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
+	void genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool isRef);
 	void genAbstractStorageTypeBody(IR__::AbstractStorageTypeDef_ptr abs_storage_type, bool isRef);
 	void genStorageTypeBody(IR__::StorageTypeDef_ptr storage_type, bool isRef);
+	void genCreateOperation(IR__::StorageHomeDef_ptr storage_home, bool isRef);
+	void genAttribute(IR__::InterfaceDef_ptr infDef);
 	
 public:
 
