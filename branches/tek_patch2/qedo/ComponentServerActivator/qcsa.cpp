@@ -43,7 +43,7 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.14 2003/10/09 16:00:12 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.14.2.1 2003/10/11 00:15:57 tom Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -70,7 +70,7 @@ handle_sigint
 #else
 	signal(sig, SIG_IGN);
 #endif
-	std::cout << "\nGot Crtl-C" << std::endl;
+	std::cerr << "\nGot Crtl-C" << std::endl;
 	std::cerr << "..... unbind in NameService" << std::endl;
 
 	//
@@ -102,7 +102,7 @@ handle_sigint
 	{
 		std::cerr << "..... error in signal handler" << std::endl;
 	}
-	
+
 	exit(1);
 }
 
@@ -111,17 +111,17 @@ void
 handle_sigchld
 ( int sig )
 {
-	std::cout << "\nGot SIGCHLD" << std::endl;
+	std::cerr << "\nGot SIGCHLD" << std::endl;
 	int status, child_val;
 	pid_t pid;
 
-   pid = waitpid(-1, &status, WNOHANG); 
+   pid = waitpid(-1, &status, WNOHANG);
     /* Wait for any child without blocking */
-    if ( pid == -1) 
+    if ( pid == -1)
     {
         /*
-         * calling standard I/O functions like fprintf() in a 
-         * signal handler is not recommended, but probably OK 
+         * calling standard I/O functions like fprintf() in a
+         * signal handler is not recommended, but probably OK
          * in toy programs like this one.
          */
 		 std::cerr << "waitpid failed" << std::endl;
@@ -135,10 +135,10 @@ handle_sigchld
     if (WIFEXITED(status))                /* did child exit normally? */
     {
         child_val = WEXITSTATUS(status); /* get child's exit status */
-		  std::cout << "child's exited normally with status " << child_val << std::endl;
+		  std::cerr << "child's exited normally with status " << child_val << std::endl;
     }
 
-	 std::cout << "Got signal child from " << pid << std::endl;
+	 std::cerr << "Got signal child from " << pid << std::endl;
 
 	 assert(server_activator);
 
