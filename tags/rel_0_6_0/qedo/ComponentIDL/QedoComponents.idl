@@ -1,0 +1,78 @@
+/***************************************************************************/
+/* Qedo - Quality of Service Enabled Distributed Objects                   */
+/*                                                                         */
+/* http://qedo.berlios.de/                                                 */
+/*                                                                         */
+/* Copyright (C) 2002 by the Qedo Team                                     */
+/*                                                                         */
+/* This library is free software; you can redistribute it and/or           */
+/* modify it under the terms of the GNU Lesser General Public              */
+/* License as published by the Free Software Foundation; either            */
+/* version 2.1 of the License, or (at your option) any later version.      */
+/*                                                                         */
+/* This library is distributed in the hope that it will be useful,         */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of          */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU        */
+/* Lesser General Public License for more details.                         */
+/*                                                                         */
+/* You should have received a copy of the GNU Lesser General Public        */
+/* License along with this library; if not, write to the Free Software     */
+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
+/***************************************************************************/
+
+#ifndef __QEDO_COMPONENTS_IDL__
+#define __QEDO_COMPONENTS_IDL__
+
+#include "Components.idl"
+
+
+module Qedo_Components {
+
+	//
+	// HomeFinder
+	//
+	interface HomeFinder : Components::HomeFinder
+	{
+		Components::Cookie register_home(in Components::CCMHome ahome, 
+										 in CORBA::RepositoryId comp_repid, 
+										 in CORBA::RepositoryId home_repid, 
+										 in string home_name);
+
+		void unregister_home(in Components::Cookie ahome);
+	};
+
+	//
+	// The interface for our helper servant that serves get_component() requests
+	//
+	interface GetComponentHelper
+	{
+		Components::CCMObject get_component();
+	};
+
+	//
+	// deployment
+	//
+	module Deployment {
+
+		//
+		// ComponentServer
+		//
+		interface ComponentServer : Components::Deployment::ComponentServer
+		{
+			void loadValuetypeFactory(in string repid, in string loc);
+		};
+
+		//
+		// ServerActivator
+		//
+		interface ServerActivator : Components::Deployment::ServerActivator
+		{
+			void notify_component_server_create (in Qedo_Components::Deployment::ComponentServer server);
+			void notify_component_server_remove (in Qedo_Components::Deployment::ComponentServer server);
+		};
+
+	};
+
+};
+
+#endif
