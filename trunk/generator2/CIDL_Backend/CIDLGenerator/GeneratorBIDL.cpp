@@ -137,8 +137,8 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	}
 
 	string facet_type;
-	map < string, bool > facet_types;
-	map < string, bool > implemented_facets;
+	t_string_map facet_types;
+	t_string_map implemented_facets;
 	CORBA::ULong i;
 
 	//
@@ -186,6 +186,8 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "local interface CCM_" << composition->executor_def()->name() << " : ";
 	out << getLocalName(composition->ccm_component()) << "_Executor";
 	
+	this -> gen_facet(composition->ccm_component(), implemented_facets, facet_types);
+	/*
 	//
 	// inherit from each implemented facet type
 	//
@@ -216,7 +218,8 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 			}
 		}
 	}
-
+	*/
+	/*
 	// inherit from consumer for each event
 	facet_types.clear();
 	IR__::ConsumesDefSeq_var consumes_seq = composition->ccm_component()->consumes_events();
@@ -232,7 +235,7 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 			out << ", " << getLocalName(consumes_seq[i]->event()) << "Consumer";
 		}
 	}
-
+*/
 	out << "\n{\n};\n\n";
 
 
@@ -244,5 +247,63 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	}
 }
 
+
+void
+GeneratorBIDL::gen_facet(IR__::ComponentDef_ptr component, t_string_map implemented_facets, t_string_map facet_types)
+{
+	IR__::ComponentDef_var base = component->base_component();
+	if(base)
+	{ 
+		gen_facet(base, implemented_facets, facet_types);
+	}
+
+	//
+	// inherit from each implemented facet type
+	//
+	IR__::ProvidesDefSeq_var provides_seq = component->provides_interfaces();
+	CORBA::ULong len = provides_seq->length();
+	for (CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow(provides_seq[i]->interface_type());
+		if( CORBA::is_nil(intf) )
+		{
+			continue;
+		}
+
+		//
+		// facet not already implemented by segment
+		//
+		if(implemented_facets.find(provides_seq[i]->name()) == implemented_facets.end())
+		{
+			// if type already inherited, skip it
+			string facet_type = intf->id();
+			if(facet_types.find(facet_type) == facet_types.end())
+			{
+				facet_types[facet_type] = true;
+				if(!facet_types.empty()) {
+					out << ", ";
+				}
+				out << getLocalName(intf);
+			}
+		}
+	}
+
+		// inherit from consumer for each event
+	facet_types.clear();
+	IR__::ConsumesDefSeq_var consumes_seq = component->consumes_events();
+	len = consumes_seq->length();
+	for (i = 0; i < len; i++)
+	{
+		string facet_type = consumes_seq[i]->event()->id();
+			
+		// if type already inherited, skip it
+		if(facet_types.find(facet_type) == facet_types.end())
+		{
+			facet_types[facet_type] = true;
+			out << ", " << getLocalName(consumes_seq[i]->event()) << "Consumer";
+		}
+	}
+
+}	
 } //
 

@@ -35,7 +35,7 @@
 
 namespace QEDO_CIDL_Generator {
 
-
+typedef map < string, bool > t_string_map;
 //
 //
 //
@@ -48,6 +48,9 @@ private:
 	std::string filename_;
 	
 	void doComposition(CIDL::CompositionDef_ptr composition);
+
+	void
+	gen_facet(IR__::ComponentDef_ptr component, t_string_map implemented_facets, t_string_map facet_types);
 
 protected:
 

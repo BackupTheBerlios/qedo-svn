@@ -2227,7 +2227,8 @@ GeneratorServantC::genConsumerRegistration(IR__::ComponentDef_ptr comp)
 		out << "CORBA::Object_var " << name << "_ref = this->create_object_reference (key, \"" << id << "\");\n";
 		out << "PortableServer::ObjectId_var " << name << "_id = this->reference_to_oid(" << name << "_ref);\n";
 		out << "servant_registry_->register_servant_factory (" << name << "_id, ";
-		out << mapFullNameServant((*consumes)[i]) << "::cleaner_.factory_);\n";
+//		out << mapFullNameServant((*consumes)[i]) << "::cleaner_.factory_);\n";
+		out << mapFullNameServant(component_) << "::" << name << "::cleaner_.factory_);\n";
 		out << "Components::EventConsumerBase_var " << name << "_sink = Components::EventConsumerBase::_narrow(";
 		out << name << "_ref);\n";
 		out << "component_instance.ccm_object_executor_->add_consumer(\"";
