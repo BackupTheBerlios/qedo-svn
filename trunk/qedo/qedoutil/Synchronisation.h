@@ -410,6 +410,9 @@ extern "C" void* startFunc(void* p);
 QEDOUTIL_API QedoThread*
 qedo_startDetachedThread(void* (*p)(void*), void* arg);
 
+QEDOUTIL_API QedoThread*
+qedo_startDetachedThread(void* (*p)(void*), void* arg, PortableInterceptor::SlotId slot_id, CORBA::Any* slot_content);
+
 
 /** @} */
 

@@ -34,7 +34,7 @@
 #include <sys/time.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.33 2004/02/11 14:51:49 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.34 2004/02/16 07:50:53 tom Exp $";
 
 
 namespace Qedo {
@@ -785,6 +785,8 @@ struct T_Start
 {
 	void* (*p)(void*);
 	void* a;
+	PortableInterceptor::SlotId slot_id;
+	CORBA::Any* slot_content;
 	ThreadDelegate* d;
 };
 
@@ -798,10 +800,25 @@ void* startFunc(void* p) {
 	T_Start* t = (T_Start*) p;
 	void* (*f)(void*) = t->p;
 	void* arg = t->a;
+	PortableInterceptor::SlotId slot_id = t->slot_id;
+	CORBA::Any* slot_content = t->slot_content;
 	ThreadDelegate* d = t->d;
 
 	delete t;
+#ifndef _QEDO_NO_QOS
+	int dummy = 0;
+    CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+	CORBA::Object_var obj = orb->resolve_initial_references ("PICurrent");
+	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
+	try 
+	{
+		piCurrent->set_slot (slot_id, *slot_content);
+	} catch (PortableInterceptor::InvalidSlot&)
+	{
+		//ignore it 
+	}
 
+#endif
 	(f)(arg);
 
 	d->stopped = true;
@@ -815,6 +832,54 @@ qedo_startDetachedThread(void* (*p)(void*), void* arg) {
 	T_Start* startParams = new T_Start();
 	startParams->p = p;
 	startParams->a = arg;
+	QedoThread * thread = new QedoThread();
+	startParams->d = thread->delegate_;
+
+#ifdef QEDO_WINTHREAD
+	thread->delegate_->th_handle_ = CreateThread(NULL,
+							0,
+							startFunc,
+							(LPVOID) startParams,
+							NULL,
+							&(thread->delegate_->th_id_));
+#else
+	int ret;
+	pthread_attr_t detached_attr;
+
+	ret = pthread_attr_init(&detached_attr);
+
+	if ( ret )
+	{
+		std::cerr << "qedo_startDetachedThread: " << strerror(ret) << std::endl;
+		abort();
+	}
+
+	ret = pthread_attr_setdetachstate(&detached_attr, PTHREAD_CREATE_JOINABLE);
+
+	if ( ret )
+	{
+		std::cerr << "qedo_startDetachedThread: " << strerror(ret) << std::endl;
+		abort();
+	}
+
+	ret = pthread_create(&(thread->delegate_->t_), &detached_attr, startFunc, startParams);
+
+	if ( ret )
+	{
+		std::cerr << "qedo_startDetachedThread: " << strerror(ret) << std::endl;
+		abort();
+	}
+#endif
+	return thread;
+}
+QedoThread*
+qedo_startDetachedThread(void* (*p)(void*), void* arg, PortableInterceptor::SlotId slot_id, CORBA::Any* slot_content) {
+
+	T_Start* startParams = new T_Start();
+	startParams->p = p;
+	startParams->a = arg;
+	startParams->slot_id = slot_id;
+	startParams->slot_content = slot_content;
 	QedoThread * thread = new QedoThread();
 	startParams->d = thread->delegate_;
 
