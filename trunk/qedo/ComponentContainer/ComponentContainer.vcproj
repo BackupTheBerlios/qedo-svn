@@ -140,10 +140,10 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
-				PrecompiledHeaderFile=".\Debug/ComponentContainer.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				PrecompiledHeaderFile=".\Debug_orbacus/ComponentContainer.pch"
+				AssemblerListingLocation=".\Debug_orbacus/"
+				ObjectFile=".\Debug_orbacus/"
+				ProgramDataBaseFileName=".\Debug_orbacus/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -159,8 +159,8 @@
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/ComponentContainer.pdb"
-				ImportLibrary=".\Debug/ComponentContainer.lib"/>
+				ProgramDatabaseFile=".\Debug_orbacus/ComponentContainer.pdb"
+				ImportLibrary=".\Debug_orbacus/ComponentContainer.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
