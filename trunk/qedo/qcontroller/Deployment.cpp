@@ -25,6 +25,7 @@
 #include "wx/stattext.h"
 #include "wx/statline.h"
 #include "wx/log.h"
+
 //#include "MainFrame.h"
 
 
@@ -265,10 +266,12 @@ void Deployment::OnUndeployButton(wxCommandEvent& WXUNUSED(event))
 
 void Deployment::OnDecriptButton (wxCommandEvent& WXUNUSED(event)) 
 {
-
-	DescriptorFrame *descriptor_frame = new DescriptorFrame(this,assembly_name_->GetValue());
-	//descriptor_frame->SetFile(assembly_name_->GetValue().c_str() );
+	if (!(assembly_name_->GetValue().empty()))
+	{
+		DescriptorFrame *descriptor_frame = new DescriptorFrame(this,assembly_name_->GetValue());
+		//descriptor_frame->SetFile(assembly_name_->GetValue().c_str() );
 	
-	descriptor_frame->ShowModal();
+		descriptor_frame->ShowModal();
+	}
 
 }
