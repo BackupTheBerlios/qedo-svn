@@ -221,6 +221,11 @@ NScopedName(ident_v)
 ->[ symtab_ref :
     { if(def_v->flags & FIXED_SIZE_FLAG) return; }
     %uviewvar symtab_ref symtab_ref(kc_current_view);
+	 { if (!ident_v->symtab_entry) {
+		 Error("<internal>ident '%k' has no symtab_entry\n",ident_v,ident_v);
+		 abort();
+		 }
+	 }
     ident_v->symtab_entry : symtab_ref
     { if(symtab_ref.fixed) def_v->flags |= FIXED_SIZE_FLAG; }
     { if(!symtab_ref.fixed) kc_current_view.fixed=false; }
