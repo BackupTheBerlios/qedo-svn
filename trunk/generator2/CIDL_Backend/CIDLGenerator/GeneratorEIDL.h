@@ -53,6 +53,10 @@ class GeneratorEIDL : public virtual IDLBase
 	void doSource(IR__::SourceDef_ptr source);
 	void doSiSo(IR__::SiSoDef_ptr siso);
 	void doComposition(CIDL::CompositionDef_ptr composition);
+	void doTypedef(IR__::TypedefDef_ptr tdef);
+	void doAlias(IR__::AliasDef_ptr adef);
+	void doStruct(IR__::StructDef_ptr sdef);
+
 
 public:
 

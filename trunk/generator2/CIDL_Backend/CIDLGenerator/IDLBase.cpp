@@ -29,6 +29,111 @@ IDLBase::doModule(IR__::ModuleDef_ptr module)
 	CORBA::ULong len;
 	CORBA::ULong i;
 
+	IR__::AliasDef_var act_typedef;
+	IR__::EnumDef_var act_enum;
+	IR__::StructDef_var act_struct;
+	IR__::ExceptionDef_var act_exception;
+	IR__::ValueDef_var act_value;
+	IR__::InterfaceDef_var act_interface;
+	IR__::ComponentDef_var act_component;
+	IR__::HomeDef_var act_home;
+	IR__::ModuleDef_var act_module;
+	CIDL::CompositionDef_var act_composition;
+
+
+	//begin new implementation
+
+		// contained enums
+	contained_seq = module->contents(CORBA__::dk_Enum, true);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::EnumDef_var act_enum = IR__::EnumDef::_narrow(((*contained_seq)[i]));
+		doEnum(act_enum);
+	}
+
+	contained_seq = module->contents(CORBA__::dk_all, false);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		switch (contained_seq[i]->describe()->kind) {
+		case CORBA__::dk_Alias:
+			act_typedef = IR__::AliasDef::_narrow(((*contained_seq)[i]));
+			doAlias(act_typedef);
+			break;
+		case CORBA__::dk_Struct:
+			act_struct = IR__::StructDef::_narrow(((*contained_seq)[i]));
+			doStruct(act_struct);
+			break;
+		case CORBA__::dk_Exception:
+			act_exception = IR__::ExceptionDef::_narrow(((*contained_seq)[i]));
+			doException(act_exception);
+			break;
+		case CORBA__::dk_Value:
+			act_value = IR__::ValueDef::_narrow(((*contained_seq)[i]));
+			doValue(act_value);
+			break;
+		default:;
+
+		};
+	}
+
+	// contained interfaces
+	contained_seq = module->contents(CORBA__::dk_Interface, true);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::InterfaceDef_var act_interface = IR__::InterfaceDef::_narrow(((*contained_seq)[i]));
+		doInterface(act_interface);
+	}
+
+	// contained components
+	contained_seq = module->contents(CORBA__::dk_Component, true);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::ComponentDef_var act_component = IR__::ComponentDef::_narrow(((*contained_seq)[i]));
+		doComponent(act_component);
+	}
+
+	// contained homes
+	contained_seq = module->contents(CORBA__::dk_Home, true);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::HomeDef_var act_home = IR__::HomeDef::_narrow(((*contained_seq)[i]));
+		doHome(act_home);
+	}
+
+	// contained modules
+	contained_seq = module->contents(CORBA__::dk_Module, true);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::ModuleDef_var act_module = IR__::ModuleDef::_narrow(((*contained_seq)[i]));
+		doModule(act_module);
+	}
+
+	// contained compositions
+	contained_seq = repository_->contents(CORBA__::dk_Composition, true);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		CIDL::CompositionDef_var act_composition = CIDL::CompositionDef::_narrow(((*contained_seq)[i]));
+		doComposition(act_composition);
+	}
+
+
+/*  old implementation
+	// contained alias
+	contained_seq = module->contents(CORBA__::dk_Alias, false);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::AliasDef_var act_typedef = IR__::AliasDef::_narrow(((*contained_seq)[i]));
+		doAlias(act_typedef);
+	}
+
 	// contained enums
 	contained_seq = module->contents(CORBA__::dk_Enum, true);
 	len = contained_seq->length();
@@ -36,6 +141,15 @@ IDLBase::doModule(IR__::ModuleDef_ptr module)
 	{
 		IR__::EnumDef_var act_enum = IR__::EnumDef::_narrow(((*contained_seq)[i]));
 		doEnum(act_enum);
+	}
+
+	// contained structs
+	contained_seq = module->contents(CORBA__::dk_Struct, false);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::StructDef_var act_struct = IR__::StructDef::_narrow(((*contained_seq)[i]));
+		doStruct(act_struct);
 	}
 
 	// contained exceptions
@@ -100,6 +214,8 @@ IDLBase::doModule(IR__::ModuleDef_ptr module)
 		CIDL::CompositionDef_var act_composition = CIDL::CompositionDef::_narrow(((*contained_seq)[i]));
 		doComposition(act_composition);
 	}
+
+  */
 
 	endModule(module);
 }
@@ -397,7 +513,7 @@ IDLBase::tcToName(CORBA::TypeCode_ptr type)
 		return "long";
 		break;
     case CORBA::tk_longlong:
-		return "longlong";
+		return "long long";
 		break;
     case CORBA::tk_ushort:
 		return "unsigned short";
@@ -406,7 +522,7 @@ IDLBase::tcToName(CORBA::TypeCode_ptr type)
 		return "unsigned long";
 		break;
     case CORBA::tk_ulonglong:
-		return "unsigned longlong";
+		return "unsigned long long";
 		break;
     case CORBA::tk_float:
 		return "float";
@@ -415,7 +531,7 @@ IDLBase::tcToName(CORBA::TypeCode_ptr type)
 		return "double";
 		break;
     case CORBA::tk_longdouble:
-		return "longdouble";
+		return "long double";
 		break;
     case CORBA::tk_boolean:
 		return "boolean";
@@ -527,5 +643,94 @@ IDLBase::mapLocalName
 	return CORBA::string_dup(result.c_str());
 }
 
+char*
+IDLBase::map_idl_type
+( IR__::IDLType_ptr type )
+{
+	string ret_string;
+
+	switch ( type -> type() -> kind() )
+	{
+	case CORBA::tk_void:
+		ret_string = "void";
+		break;
+	case CORBA::tk_short:
+		ret_string = "short";
+		break;
+	case CORBA::tk_long:
+		ret_string = "long";
+		break;
+	case CORBA::tk_longlong:
+		ret_string = "CORBA::LongLong";
+		break;
+	case CORBA::tk_ushort:
+		ret_string = "unsigned short";
+		break;
+	case CORBA::tk_ulong:
+		ret_string = "unsigned long";
+		break;
+	case CORBA::tk_ulonglong:
+		ret_string = "CORBA::ULongLong";
+		break;
+	case CORBA::tk_float:
+		ret_string = "float";
+		break;
+	case CORBA::tk_double:
+		ret_string = "double";
+		break;
+	case CORBA::tk_longdouble:
+		ret_string = "CORBA::LongDouble";
+		break;
+	case CORBA::tk_boolean:
+		ret_string = "CORBA::Boolean";
+		break;
+	case CORBA::tk_char:
+		ret_string = "CORBA::Char";
+		break;
+	case CORBA::tk_wchar:
+		ret_string = "CORBA::WChar";
+		break;
+	case CORBA::tk_any:
+		ret_string = "CORBA::Any*";
+		break;
+	case CORBA::tk_objref:
+		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
+		try
+		{
+			ret_string = map_absolute_name ( type );
+			ret_string = ret_string;
+		}
+		catch ( CannotMapAbsoluteName& )
+		{
+			ret_string = "CORBA::Object_ptr";
+		}
+		break;
+	case CORBA::tk_native:
+		ret_string = map_absolute_name ( type );
+		break;
+	case CORBA::tk_string:
+		ret_string = "string";
+		break;
+	case CORBA::tk_wstring:
+		ret_string = "CORBA::WChar*";
+		break;
+	case CORBA::tk_value:
+		ret_string = map_absolute_name ( type );
+		ret_string = ret_string + "*";
+		break;
+	case CORBA::tk_struct:
+	case CORBA::tk_union:
+	case CORBA::tk_enum:
+		ret_string = map_absolute_name ( type );
+	//	ret_string = ret_string + "&";
+		break;
+	case CORBA::tk_sequence:
+		ret_string = map_absolute_name ( type );
+		break;
+	default:
+		throw CannotMapType();
+	}
+	return CORBA::string_dup ( ret_string.c_str() );
+}
 
 } // namespace

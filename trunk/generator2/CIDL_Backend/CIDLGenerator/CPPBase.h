@@ -9,9 +9,6 @@
 namespace QEDO_CIDL_Generator {
 
 
-// Exceptions
-struct CannotMapType {};
-struct CannotMapAbsoluteName {};
 
 
 //

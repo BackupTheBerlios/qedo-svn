@@ -510,6 +510,43 @@ GeneratorEIDL::doEnum(IR__::EnumDef_ptr enumeration)
 	out << "\n};\n\n";
 };
 
+void
+GeneratorEIDL::doTypedef(IR__::TypedefDef_ptr tdef)
+{
+	out << "typedef " << tdef -> type() -> name () << " " << tdef->name() << ";\n";
+}
+
+//
+// alias
+//
+void
+GeneratorEIDL::doAlias(IR__::AliasDef_ptr adef)
+{
+//	out << "typedef " << adef -> type () -> name () << " " << adef->name() << ";\n";
+	if (adef -> original_type_def() -> def_kind() == CORBA__::dk_Sequence) {
+		IR__::SequenceDef_var seq = IR__::SequenceDef::_narrow(adef->original_type_def());
+		out << "typedef sequence<" << tcToName(seq-> element_type () ) << "> " << adef -> name () << ";\n";
+	}
+		if (adef -> original_type_def() -> def_kind() == CORBA__::dk_Primitive) {
+		IR__::PrimitiveDef_var prim = IR__::PrimitiveDef::_narrow(adef->original_type_def());
+		out << "typedef " << tcToName(prim->type () ) <<" " << adef -> name () << ";\n";
+	}
+}
+
+//
+// struct
+//
+void
+GeneratorEIDL::doStruct(IR__::StructDef_ptr sdef)
+{
+	out << "struct " << sdef -> name () << "{\n";
+	IR__::StructMemberSeq_var str_seq = sdef->members();
+	CORBA::ULong len = str_seq->length();
+	for (CORBA::ULong i = 0; i < len; i++) {
+		out << "   " << tcToName(str_seq[i].type) << " " << str_seq[i].name.in() << ";\n";
+	};
+	out << "};\n";
+}
 
 void
 GeneratorEIDL::open_module(IR__::Contained* cur_cont)

@@ -230,7 +230,7 @@ SequenceDef_impl::build_recursive_type_code
      if ( CORBA::is_nil(tc) )
          tc = element_type_ -> build_recursive_type_code(seq);
 
-     return repository_ -> orb() -> create_sequence_tc(bound_, tc);
+     return CORBA::TypeCode::_duplicate(repository_ -> orb() -> create_sequence_tc(bound_, tc)) ;
 }
 
 CORBA::TypeCode_ptr

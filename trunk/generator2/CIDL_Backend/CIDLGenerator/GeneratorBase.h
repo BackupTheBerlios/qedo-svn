@@ -11,6 +11,10 @@ namespace QEDO_CIDL_Generator {
 //
 //
 //
+// Exceptions
+struct CannotMapType {};
+struct CannotMapAbsoluteName {};
+
 class GeneratorBase
 {
 
@@ -81,6 +85,12 @@ protected:
 
 	// typedef
 	virtual void doTypedef(IR__::TypedefDef_ptr tdef);
+
+	// alias
+	virtual void doAlias(IR__::AliasDef_ptr adef);
+
+	// struct
+	virtual void doStruct(IR__::StructDef_ptr sdef);
 
 	// provides
 	void handleProvides(IR__::ComponentDef_ptr component);

@@ -286,7 +286,7 @@ throw(CORBA::SystemException)
     IR__::Contained::Description_var desc = new IR__::Contained::Description;
 
     desc -> kind = def_kind();
-    desc -> value <<= desc._retn();
+    desc -> value <<= value_desc._retn();
 
     return desc._retn();
 }

@@ -376,6 +376,21 @@ GeneratorBase::doTypedef(IR__::TypedefDef_ptr tdef)
 {
 }
 
+//
+// alias
+//
+void
+GeneratorBase::doAlias(IR__::AliasDef_ptr adef)
+{
+}
+
+//
+// struct
+//
+void
+GeneratorBase::doStruct(IR__::StructDef_ptr sdef)
+{
+}
 
 //
 // home
