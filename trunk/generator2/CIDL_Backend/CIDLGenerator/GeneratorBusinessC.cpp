@@ -683,7 +683,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << class_name_ << "::set_context(Components::CCMContext_ptr ctx)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.indent();
-    out << "context_ = " << context_name << "::_narrow(ctx);\n";
+    // out << "context_ = " << context_name << "::_narrow(ctx);\n";		// this is wrong
+	out << "context_ = Components::CCMContext::_duplicate(ctx);\n";
 	out.unindent();
 	out << "}\n\n\n";
 

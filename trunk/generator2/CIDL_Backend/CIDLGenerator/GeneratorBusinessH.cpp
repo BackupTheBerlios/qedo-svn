@@ -597,7 +597,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
-    out << "Components::CCMContext_ptr context_;\n\n";
+    out << "Components::CCMContext_var context_;\n\n";
 	out.unindent();
 	out << "public:\n";
 	out.indent();
