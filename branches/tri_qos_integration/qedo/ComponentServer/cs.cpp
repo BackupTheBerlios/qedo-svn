@@ -27,8 +27,10 @@
 #include <cstring>
 #include <string>
 #include "version.h"
+#include "ServerInterceptorDispatcher.h"
+#include "ClientInterceptorDispatcher.h"
 
-static char rcsid[] UNUSED = "$Id: cs.cpp,v 1.16 2003/08/06 14:32:14 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: cs.cpp,v 1.16.6.1 2003/09/08 10:37:55 tom Exp $";
 
 
 /**
@@ -108,10 +110,39 @@ main (int argc, char** argv)
 	//
 	// initialize ORB
 	//
-	Qedo::ORBInitializerImpl initializer(qos_enabled);
+	Qedo::ORBInitializerImpl* initializer = new Qedo::ORBInitializerImpl(qos_enabled);
+
+	// Portable interceptors
+	Qedo::ServerInterceptorDispatcher* server_dispatcher;
+	Qedo::ClientInterceptorDispatcher* client_dispatcher;
+
+	//
+	// create dispatchers if qos is anabled
+	//
+	if (qos_enabled) 
+	{
+		//create ServerDispatcher
+		server_dispatcher = new Qedo::ServerInterceptorDispatcher();
+		server_dispatcher -> _add_ref();
+
+		// create ClientDispatcher
+		client_dispatcher = new Qedo::ClientInterceptorDispatcher();
+		client_dispatcher -> _add_ref();
+		// register the dispatchers beofore ORB_init
+		initializer->set_server_dispatcher(PortableInterceptor::ServerRequestInterceptor::_narrow(server_dispatcher));
+		initializer->set_client_dispatcher(PortableInterceptor::ClientRequestInterceptor::_narrow(client_dispatcher));
+
+	} // qos_enabled
+
 	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
 
-	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer.slot_id());
+	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer->slot_id());
+
+	if (qos_enabled)
+	{
+		component_server->set_server_dispatcher(Components::Extension::ServerInterceptorRegistration::_narrow(server_dispatcher));
+		component_server->set_client_dispatcher(Components::Extension::ClientInterceptorRegistration::_narrow(client_dispatcher));
+	} // qos_enabled
 
 	try
 	{
@@ -129,6 +160,8 @@ main (int argc, char** argv)
 	orb->destroy();
 
 	component_server->_remove_ref();
+
+	delete initializer; 
 
 	DEBUG_OUT  ("#######################################################");
 

@@ -24,7 +24,7 @@
 #include "Output.h"
 #include "ServerInterceptorDispatcher.h"
 
-static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.5 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.5.6.1 2003/09/08 10:37:55 tom Exp $";
 
 
 namespace Qedo {
@@ -32,6 +32,9 @@ namespace Qedo {
 
 ORBInitializerImpl::ORBInitializerImpl()
 {
+	server_dispatcher_=PortableInterceptor::ServerRequestInterceptor::_nil();
+	client_dispatcher_=PortableInterceptor::ClientRequestInterceptor::_nil();
+
     //
 	// Register our ORB initializer
 	//
@@ -40,7 +43,10 @@ ORBInitializerImpl::ORBInitializerImpl()
 
 ORBInitializerImpl::ORBInitializerImpl(bool enable_qos)
 {
-    //
+	server_dispatcher_=PortableInterceptor::ServerRequestInterceptor::_nil();
+	client_dispatcher_=PortableInterceptor::ClientRequestInterceptor::_nil();
+
+	//
 	// Register our ORB initializer
 	//
     PortableInterceptor::register_orb_initializer (this);
@@ -139,14 +145,17 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	slot_id_ = info->allocate_slot_id();
 
 
-	//
-	// Install ServerInterceptorDispatcher
-	//
 	if (m_enable_qos) {
-		PortableInterceptor::ServerRequestInterceptor_var server_dispatcher;
-		server_dispatcher = new ServerInterceptorDispatcher();
+		//
+		// Install ServerInterceptorDispatcher
+		//
+		info->add_server_request_interceptor(server_dispatcher_.in());
 
-		info->add_server_request_interceptor(server_dispatcher.in());
+		//
+		// Install ClientInterceptorDispatcher
+		//
+		info->add_client_request_interceptor(client_dispatcher_.in());
+
 	}
 }
 
@@ -155,6 +164,19 @@ PortableInterceptor::SlotId
 ORBInitializerImpl::slot_id()
 {
 	return slot_id_;
+}
+
+void 
+ORBInitializerImpl::set_server_dispatcher (PortableInterceptor::ServerRequestInterceptor_ptr server_dispatcher)
+{
+	server_dispatcher_ = server_dispatcher;
+
+}
+
+void 
+ORBInitializerImpl::set_client_dispatcher (PortableInterceptor::ClientRequestInterceptor_ptr client_dispatcher)
+{
+	client_dispatcher_ = client_dispatcher;
 }
 
 } // namespace Qedo

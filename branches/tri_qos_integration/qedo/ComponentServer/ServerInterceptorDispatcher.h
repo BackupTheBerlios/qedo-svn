@@ -21,8 +21,8 @@
 /***************************************************************************/
 
 
-#ifndef __INTERCEPTORDISPATCHER_H__
-#define __INTERCEPTORDISPATCHER_H__
+#ifndef __SERVER_INTERCEPTOR_DISPATCHER_H__
+#define __SERVER_INTERCEPTOR_DISPATCHER_H__
 
 #include <CORBA.h>
 #ifdef MICO_ORB
@@ -31,15 +31,19 @@
 #include <PortableInterceptor.h>
 #endif
 #include "QedoComponents_skel.h"
-
+#include "RefCountBase.h"
 
 namespace Qedo {
 
 
 	class ServerInterceptorDispatcher : 
 		public PortableInterceptor::ServerRequestInterceptor,
-		public virtual CORBA::LocalObject
+		public Components::Extension::ServerInterceptorRegistration,
+		public virtual Qedo::RefCountLocalObject
 	{
+
+	private:
+		Components::Extension::ContainerInterceptor_ptr interceptor_;
 
 	public:
 		ServerInterceptorDispatcher();
@@ -73,6 +77,8 @@ namespace Qedo {
 		send_other(PortableInterceptor::ServerRequestInfo_ptr)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
 
+		virtual void 
+		register_server_interceptor(Components::Extension::ContainerInterceptor_ptr interceptor);
 
 	};
 }

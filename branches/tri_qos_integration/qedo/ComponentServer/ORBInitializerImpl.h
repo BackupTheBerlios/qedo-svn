@@ -56,6 +56,9 @@ private:
 	ComponentServerImpl* comp_server_;
 	PortableInterceptor::SlotId slot_id_;
 	bool m_enable_qos;
+	PortableInterceptor::ServerRequestInterceptor_var server_dispatcher_;
+	PortableInterceptor::ClientRequestInterceptor_var client_dispatcher_;
+
 
 public:
 	/**
@@ -84,6 +87,17 @@ public:
 	 * slot_id
 	 */
 	PortableInterceptor::SlotId slot_id();
+
+	/**
+	 * set_server_dispatcher
+	 */
+	void set_server_dispatcher (PortableInterceptor::ServerRequestInterceptor_ptr server_dispatcher);
+
+	/**
+	 * set_client_dispatcher
+	 */
+	void set_client_dispatcher (PortableInterceptor::ClientRequestInterceptor_ptr client_dispatcher);
+
 };
 
 /** @} */

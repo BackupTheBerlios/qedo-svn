@@ -24,6 +24,7 @@
 #include "ComponentServerImpl.h"
 #include "EntityHomeServant.h"
 #include "SessionHomeServant.h"
+#include "ExtensionHomeServant.h"
 #include "Output.h"
 #ifdef _WIN32
 #include <windows.h>
@@ -32,7 +33,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.32 2003/08/27 06:40:30 neubauer Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.32.2.1 2003/09/08 10:34:42 tom Exp $";
 
 
 namespace Qedo {
@@ -602,6 +603,7 @@ throw (Components::Deployment::UnknownImplId,
 	// Validate the created home servant
 	// Service or session container only accept Qedo::SessionHomeServants and process and entity containers
 	// only accept Qedo::EntityHomeServants
+	// Extension container accept also only Qedo::SessionHomeServants this needs to be redefined in  future
 	switch (container_type_)
 	{
 	case CT_SERVICE:
@@ -615,6 +617,21 @@ throw (Components::Deployment::UnknownImplId,
 			NORMAL_ERR ("ContainerInterfaceImpl: Container type is service or session, but loaded home servant is not a Qedo::SessionHomeServant");
 			throw Components::Deployment::InstallationFailure();
 		}
+		break;
+	case CT_EXTENSION:
+		Qedo::ExtensionHomeServant* extension_home;
+
+		extension_home = dynamic_cast <Qedo::ExtensionHomeServant*> (qedo_home_servant);
+
+		if (! extension_home)
+		{
+			NORMAL_ERR ("ContainerInterfaceImpl: Container type is extension, but loaded home servant is not a Qedo::ExtensionHomeServant");
+			throw Components::Deployment::InstallationFailure();
+		}
+		// set interceptor dispatcher reference
+		extension_home->set_server_interceptor_dispatcher(component_server_->get_server_dispatcher());
+		extension_home->set_client_interceptor_dispatcher(component_server_->get_client_dispatcher());
+
 		break;
 	case CT_PROCESS:
 	case CT_ENTITY:

@@ -21,8 +21,8 @@
 /***************************************************************************/
 
 
-#ifndef __INTERCEPTORDISPATCHER_H__
-#define __INTERCEPTORDISPATCHER_H__
+#ifndef __CLIENT_INTERCEPTOR_DISPATCHER_H__
+#define __CLIENT_INTERCEPTOR_DISPATCHER_H__
 
 #include <CORBA.h>
 #ifdef MICO_ORB
@@ -31,14 +31,16 @@
 #include <PortableInterceptor.h>
 #endif
 #include "QedoComponents_skel.h"
+#include "RefCountBase.h"
 
 
 namespace Qedo {
 
 
 	class ClientInterceptorDispatcher : 
-		public PortableInterceptor::ServerRequestInterceptor,
-		public virtual CORBA::LocalObject
+		public PortableInterceptor::ClientRequestInterceptor,
+		public Components::Extension::ClientInterceptorRegistration,
+		public virtual Qedo::RefCountLocalObject
 	{
 
 	public:
@@ -53,25 +55,26 @@ namespace Qedo {
 		virtual void
 		destroy();
 
-		virtual void
-		receive_request_service_contexts(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
+		virtual void 
+		send_request(PortableInterceptor::ClientRequestInfo_ptr ri);
 
-	    virtual void
-		receive_request(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
+	    virtual void 
+		send_poll(PortableInterceptor::ClientRequestInfo_ptr ri) ;
 
-		virtual void
-		send_reply(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(CORBA::SystemException);
+	    virtual void 
+		receive_reply(PortableInterceptor::ClientRequestInfo_ptr ri);
 
-		virtual void
-		send_exception(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
+	    virtual void 
+		receive_exception(PortableInterceptor::ClientRequestInfo_ptr ri);
 
-		virtual void
-		send_other(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
+	    virtual void 
+		receive_other(PortableInterceptor::ClientRequestInfo_ptr ri);
+	
+		/**
+		* to register a Container interceptor
+		*/
+		virtual void 
+		register_client_interceptor(Components::Extension::ContainerInterceptor_ptr interceptor);
 
 
 	};

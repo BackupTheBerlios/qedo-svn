@@ -358,6 +358,42 @@ module Components {
 			raises (IllegalState);
 	};
 
+		/**
+	 * Qedo extension
+	 */
+	module Extension {
+		local interface ContainerInterceptor {
+			void get_message(in string mess);
+		};
+
+		local interface ServerInterceptorRegistration {
+			void register_server_interceptor(in ContainerInterceptor intercpetor);
+		};
+
+		local interface ClientInterceptorRegistration {
+			void register_client_interceptor(in ContainerInterceptor interceptor);
+		};
+	}; // Extension
+
+	/** extension
+	 * extension interface used by extension components
+	 */
+	local interface ExtensionContext : CCMContext {
+		// get registration operations need to be added
+		void 
+			set_server_interceptor_dispatcher_registration (in Components::Extension::ServerInterceptorRegistration registration);
+		void 
+			set_client_interceptor_dispatcher_registration (in Components::Extension::ClientInterceptorRegistration registration);
+
+		Components::Extension::ServerInterceptorRegistration
+			get_server_interceptor_dispatcher_registration ();
+
+		Components::Extension::ClientInterceptorRegistration 
+			get_client_interceptor_dispatcher_registration ();
+
+	};
+	/** end extension */
+
 	local interface SessionComponent : EnterpriseComponent {
 		void set_session_context ( in SessionContext ctx)
 			raises (CCMException);
@@ -368,6 +404,28 @@ module Components {
 		void ccm_remove ()
 			raises (CCMException);
 	};
+
+	/**
+	 * Qedo extension
+	 */
+
+	/**
+	 * This interface is provided by an extension components
+	 */
+
+	local interface ExtensionComponent : EnterpriseComponent {
+		void set_extension_context ( in ExtensionContext ctx)
+			raises (CCMException);
+		void ccm_activate()
+			raises (CCMException);
+		void ccm_passivate()
+			raises (CCMException);
+		void ccm_remove ()
+			raises (CCMException);
+	};
+	/** 
+	 * end Qedo extnsion
+	 */
 
 	local interface SessionSynchronization {
 		void after_begin ()
@@ -686,6 +744,7 @@ module Components {
 
 			/** extension */
 			void install_service_reference(in string id, in Object ref) raises (CCMException);
+
 		};
 	}; // end of module deployment
 
@@ -734,6 +793,11 @@ module Components {
 	//
 	// extension for service integration
 	//
+	local interface ExtensionExecutorLocator : ExecutorLocator, ExtensionComponent
+	{
+	};
+
+	/** this might become obsolete */
 	local interface CCMService : ExecutorLocator, SessionComponent
 	{
 		void preinvoke(in string comp_id, in string operation);

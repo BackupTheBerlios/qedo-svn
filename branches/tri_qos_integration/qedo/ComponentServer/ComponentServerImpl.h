@@ -26,6 +26,8 @@
 #include <CORBA.h>
 #include "QedoComponents_skel.h"
 #include "ContainerInterfaceImpl.h"
+#include "ServerInterceptorDispatcher.h"
+#include "ClientInterceptorDispatcher.h"
 #include "Util.h"
 #include <vector>
 
@@ -113,6 +115,13 @@ private:
 	/** the mutex for valuetype implementation list */
 	QedoMutex												value_mutex_;
 
+	/** server dispatcher */
+	Components::Extension::ServerInterceptorRegistration_var	server_dispatcher_;
+
+	/** client dispatcher */
+	Components::Extension::ClientInterceptorRegistration_var	client_dispatcher_;
+
+
 	/**
 	 * load a shared library
 	 * \param name The path of the shared library.
@@ -191,6 +200,31 @@ public:
 	 */
 	void loadValuetypeFactory(const char* repid, const char* loc)
 		throw (CORBA::SystemException);
+
+
+	/**
+	 * set_server_dispatcher
+	 */
+	void 
+	set_server_dispatcher (Components::Extension::ServerInterceptorRegistration_ptr server_dispatcher);
+
+	/**
+	 * set_client_dispatcher
+	 */
+	void 
+	set_client_dispatcher (Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher);
+
+	/**
+	 * get_server_dispatcher
+	 */
+	virtual Components::Extension::ServerInterceptorRegistration_ptr
+	get_server_dispatcher ();
+
+	/**
+	 * get_client_dispatcher
+	 */
+	virtual Components::Extension::ClientInterceptorRegistration_ptr 
+	get_client_dispatcher ();
 
 	//
 	// Exceptions

@@ -24,7 +24,7 @@
 #include "Output.h"
 #include "Valuetypes.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.14 2003/08/27 06:52:39 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.14.2.1 2003/09/08 10:37:55 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -380,6 +380,11 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	{
 		container_type = CT_ENTITY;
 	}
+	else if (! strcmp (container_type_string, "EXTENSION"))
+	{
+		container_type = CT_EXTENSION;
+	}
+
 	else
 	{
 		message = "..... wrong CONTAINER_TYPE specified";
@@ -559,6 +564,30 @@ throw (CORBA::SystemException)
 		valuetypes_.push_back(data);
 	}
 }
+
+	void 
+	ComponentServerImpl::set_server_dispatcher (Components::Extension::ServerInterceptorRegistration_ptr server_dispatcher)
+	{
+		server_dispatcher_ = server_dispatcher;
+	}
+
+	void 
+	ComponentServerImpl::set_client_dispatcher (Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher)
+	{
+		client_dispatcher_ = client_dispatcher;
+	}
+
+	Components::Extension::ServerInterceptorRegistration_ptr
+	ComponentServerImpl::get_server_dispatcher ()
+	{
+		return server_dispatcher_ ;
+	}
+
+	Components::Extension::ClientInterceptorRegistration_ptr
+	ComponentServerImpl::get_client_dispatcher ()
+	{
+		return client_dispatcher_ ;
+	}
 
 
 } // namespace Qedo

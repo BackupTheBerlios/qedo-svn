@@ -24,62 +24,59 @@
 #include "Util.h"
 #include "fstream"
 
-static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.2 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.2.6.1 2003/09/08 10:37:55 tom Exp $";
 
 namespace Qedo {
 
-	ClientInterceptorDispatcher::ClientInterceptorDispatcher() {
-	
+	ClientInterceptorDispatcher::ClientInterceptorDispatcher()
+	{
 	}
 
 	ClientInterceptorDispatcher::~ClientInterceptorDispatcher() {
 
 	}
 
-		char* 
-			ClientInterceptorDispatcher::name () {
-				return CORBA::string_dup("ClientIntereptorDispatcher");
-
-			}
-
-		void
-			ClientInterceptorDispatcher::destroy() {
-				
-			}
-
-		void
-			ClientInterceptorDispatcher::receive_request_service_contexts(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
+	char* 
+		ClientInterceptorDispatcher::name () {
+			return CORBA::string_dup("ClientIntereptorDispatcher");
 
 		}
 
-	    void
-			ClientInterceptorDispatcher::receive_request(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
-
-			}
-
-
-		void
-			ClientInterceptorDispatcher::send_reply(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(CORBA::SystemException){
-				std::cout << "!!!!!!!!!!!!!!TEST!!!!!!!!!!!!!" << std::endl;
-
-				
-			}
-
-		void
-			ClientInterceptorDispatcher::send_exception(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
+	void
+		ClientInterceptorDispatcher::destroy() {
 			
-			}
+		}
 
-		void
-			ClientInterceptorDispatcher::send_other(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
+	void 
+	ClientInterceptorDispatcher::send_request(PortableInterceptor::ClientRequestInfo_ptr ri)
+	{
+			
+	}
 
-			}
+	void 
+	ClientInterceptorDispatcher::send_poll(PortableInterceptor::ClientRequestInfo_ptr ri) 
+	{
+	}
 
+	void 
+	ClientInterceptorDispatcher::receive_reply(PortableInterceptor::ClientRequestInfo_ptr ri)
+	{
+	}
 
+	void 
+	ClientInterceptorDispatcher::receive_exception(PortableInterceptor::ClientRequestInfo_ptr ri) 
+	{
+	}
+
+	void 
+	ClientInterceptorDispatcher::receive_other(PortableInterceptor::ClientRequestInfo_ptr ri)
+	{
+	}
+
+	void 
+	ClientInterceptorDispatcher::register_client_interceptor(Components::Extension::ContainerInterceptor_ptr interceptor)
+	{
+		
+	}
 
 }  //namespace Qedo

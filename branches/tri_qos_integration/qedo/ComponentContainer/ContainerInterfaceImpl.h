@@ -139,9 +139,11 @@ public:
 };
 
 
-/** the container type */
-enum ContainerType {CT_EMPTY, CT_SERVICE, CT_SESSION, CT_PROCESS, CT_ENTITY};
-
+/** the container type 
+ * CT_EXTENSION is Qedo specific
+ * Extension containers are used to manage container extensions
+ */
+enum ContainerType {CT_EMPTY, CT_SERVICE, CT_SESSION, CT_PROCESS, CT_ENTITY, CT_EXTENSION}; 
 
 class ComponentServerImpl;
 

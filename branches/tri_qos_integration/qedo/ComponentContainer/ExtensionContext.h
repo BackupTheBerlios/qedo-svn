@@ -20,34 +20,68 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#include "EntityHomeServant.h"
-#include "Output.h"
+#ifndef __SESSION_CONTEXT_H__
+#define __SESSION_CONTEXT_H__
 
-static char rcsid[] UNUSED = "$Id: EntityHomeServant.cpp,v 1.5.8.1 2003/09/08 10:34:42 tom Exp $";
+#include <CORBA.h>
+#include <Components.h>
+#include "CCMContext.h"
+#include "Util.h"
 
 
 namespace Qedo {
 
 
-EntityHomeServant::EntityHomeServant()
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
+/**
+ * the session context
+ */
+class CONTAINERDLL_API ExtensionContext : public virtual Components::ExtensionContext,
+	                                      public virtual ExecutorContext
 {
-}
+protected:
+	::Components::Extension::ServerInterceptorRegistration_var server_registration_;
+	::Components::Extension::ClientInterceptorRegistration_var client_registration_;
+public:
+	/**
+	 * constructor
+	 */
+	ExtensionContext();
 
+	/**
+	 * destructor
+	 */
+	~ExtensionContext();
 
-EntityHomeServant::EntityHomeServant (const EntityHomeServant& entity_home)
-: HomeServantBase (entity_home)
-{
-}
+	/**
+	 * set_server_interceptor_dispatcher_registration
+	 */
+	virtual void 
+	set_server_interceptor_dispatcher_registration(::Components::Extension::ServerInterceptorRegistration_ptr registration);
+	/**
+	 * set_client_interceptor_dispatcher_registration
+	 */
+    virtual void 
+	set_client_interceptor_dispatcher_registration(::Components::Extension::ClientInterceptorRegistration_ptr registration);
 
+	virtual ::Components::Extension::ServerInterceptorRegistration_ptr 
+	get_server_interceptor_dispatcher_registration();
+	/**
+	 * set_client_interceptor_dispatcher_registration
+	 */
+    virtual ::Components::Extension::ClientInterceptorRegistration_ptr 
+	get_client_interceptor_dispatcher_registration();
 
-EntityHomeServant& EntityHomeServant::operator= (const EntityHomeServant& entity_home)
-{
-	return *this;
-}
+};
 
-
-EntityHomeServant::~EntityHomeServant()
-{
-}
+/** @} */
 
 } // namespace Qedo
+
+#endif
+

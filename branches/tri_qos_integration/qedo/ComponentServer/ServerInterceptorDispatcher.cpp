@@ -24,7 +24,7 @@
 #include "Util.h"
 #include "fstream"
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.2 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.2.6.1 2003/09/08 10:37:55 tom Exp $";
 
 namespace Qedo {
 
@@ -50,36 +50,72 @@ namespace Qedo {
 		void
 			ServerInterceptorDispatcher::receive_request_service_contexts(PortableInterceptor::ServerRequestInfo_ptr)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
-
+				try
+				{
+					if ( !CORBA::is_nil(interceptor_))
+						interceptor_ -> get_message("#### rec_req_service_context ####");
+				} catch ( ... )
+				{
+				}
 		}
 
 	    void
 			ServerInterceptorDispatcher::receive_request(PortableInterceptor::ServerRequestInfo_ptr)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
-
+				try
+				{
+					if ( !CORBA::is_nil(interceptor_))
+						interceptor_ -> get_message("#### rec_req ####");
+				}  catch ( ... )
+				{
+				}
 			}
 
 
 		void
 			ServerInterceptorDispatcher::send_reply(PortableInterceptor::ServerRequestInfo_ptr)
 			throw(CORBA::SystemException){
-				std::cout << "!!!!!!!!!!!!!!TEST!!!!!!!!!!!!!" << std::endl;
-
-				
+				try
+				{
+					if ( !CORBA::is_nil(interceptor_))
+						interceptor_ -> get_message("#### send_reply ####");
+				}  catch ( ... )
+				{
+				}				
 			}
 
 		void
 			ServerInterceptorDispatcher::send_exception(PortableInterceptor::ServerRequestInfo_ptr)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
-			
+				try
+				{
+					if ( !CORBA::is_nil(interceptor_))
+						interceptor_ -> get_message("#### send_exception ####");
+				} catch ( ... )
+				{
+				}
 			}
 
 		void
 			ServerInterceptorDispatcher::send_other(PortableInterceptor::ServerRequestInfo_ptr)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
-
+				try
+				{
+					if ( !CORBA::is_nil(interceptor_))
+						interceptor_ -> get_message("#### send_other ####");
+				} catch ( ... )
+				{
+				}
 			}
 
+
+		void 
+		ServerInterceptorDispatcher::register_server_interceptor(Components::Extension::ContainerInterceptor_ptr interceptor)
+		{
+			interceptor_ = interceptor;
+			
+			
+		}
 
 
 }  //namespace Qedo

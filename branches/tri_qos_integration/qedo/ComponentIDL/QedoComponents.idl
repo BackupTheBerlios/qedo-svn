@@ -80,6 +80,8 @@ module Qedo_Components {
 	{
 		Components::CCMObject get_component();
 	};
-};
+
+
+}; // Qedo_Components
 
 #endif

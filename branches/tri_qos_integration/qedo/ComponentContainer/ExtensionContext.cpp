@@ -20,34 +20,51 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#include "EntityHomeServant.h"
+#include "ExtensionContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: EntityHomeServant.cpp,v 1.5.8.1 2003/09/08 10:34:42 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.1.2.1 2003/09/08 10:35:45 tom Exp $";
 
 
 namespace Qedo {
+	
 
-
-EntityHomeServant::EntityHomeServant()
+ExtensionContext::ExtensionContext()
 {
 }
 
 
-EntityHomeServant::EntityHomeServant (const EntityHomeServant& entity_home)
-: HomeServantBase (entity_home)
+ExtensionContext::~ExtensionContext()
 {
+	DEBUG_OUT ( "ExtensionContext: Destructor called" );
 }
 
 
-EntityHomeServant& EntityHomeServant::operator= (const EntityHomeServant& entity_home)
+void 
+ExtensionContext::set_server_interceptor_dispatcher_registration(::Components::Extension::ServerInterceptorRegistration_ptr registration)
 {
-	return *this;
+	server_registration_ = registration;
 }
 
 
-EntityHomeServant::~EntityHomeServant()
+void 
+ExtensionContext::set_client_interceptor_dispatcher_registration(::Components::Extension::ClientInterceptorRegistration_ptr registration)
 {
+	client_registration_ = registration;
 }
 
-} // namespace Qedo
+::Components::Extension::ServerInterceptorRegistration_ptr 
+ExtensionContext::get_server_interceptor_dispatcher_registration() 
+{
+	return ::Components::Extension::ServerInterceptorRegistration::_duplicate(server_registration_);
+}
+
+::Components::Extension::ClientInterceptorRegistration_ptr 
+ExtensionContext::get_client_interceptor_dispatcher_registration()
+{
+	return ::Components::Extension::ClientInterceptorRegistration::_duplicate(client_registration_);
+}
+
+
+
+} // namepscae Qedo
