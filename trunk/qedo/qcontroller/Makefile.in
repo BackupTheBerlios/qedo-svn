@@ -61,6 +61,7 @@ SOURCES =	 $(IDL_FILES:.idl=.cpp) \
 		 HelpFrame.cpp \
 		 DescriptorFrame.cpp \
 		 CADReaderDialog.cpp \
+		 QedoEditor.cpp \
 		 qcontroller.cpp
 
 CLEAN_FILES = $(SOURCES:.cpp=.o) qcontroller
