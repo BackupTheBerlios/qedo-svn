@@ -2548,7 +2548,7 @@ HomeExecutorDef(name, homex_body)
       // create HomeExecutorDef
       try {
         homeexec = container-> create_home_executor (get_repid(def_v,name),
-          name->get_name(), "1.0", my_build.storagehome);
+          name->get_name(), "1.0", my_build.storagehome, my_build.storagehome_delegation);
       }
       catch (...) {
         Error("Exception in creating home executor %k\n", name, name);
@@ -2602,23 +2602,27 @@ StorageHomeBinding(StorageHomeName(ah_name))
  ];
  
 StorageHomeDelegationSpec(def_list)
-->[ build :
+->[ feed:
+    %uviewvar feed my_feed;
+    def_list : my_feed
+  ]
+  [ build :
     {
       kc_current_view.storagehome_delegation.length(def_list->length()); 
       kc_current_view.pos = 0;
       foreach(pair; definition_list def_list) {
         with(pair) {
-          OperationPair(op1, Name(op2)) : {
+          OperationPair(Name(op1), Name(op2)) : {
             CIDL::StorageHomeDelegation_var dele = new CIDL::StorageHomeDelegation;
+            dele->home_op_name = CORBA::string_dup( op1->name );
             dele->storagehome_op_name = CORBA::string_dup( op2->name );
-			kc_current_view.storagehome_delegation[kc_current_view.pos] = dele;
+            kc_current_view.storagehome_delegation[kc_current_view.pos] = dele;
 		    kc_current_view.pos++;
           }
           Operation(op=Name(op_name)) : {
             CIDL::StorageHomeDelegation_var dele = new CIDL::StorageHomeDelegation;
-            dele->delegated_operation = IR__::OperationDef::_narrow( op->symtab_entry->irobj );
             dele->storagehome_op_name = CORBA::string_dup( op_name->name );
-			kc_current_view.storagehome_delegation[kc_current_view.pos] = dele;
+            kc_current_view.storagehome_delegation[kc_current_view.pos] = dele;
 		    kc_current_view.pos++;
           }
         }

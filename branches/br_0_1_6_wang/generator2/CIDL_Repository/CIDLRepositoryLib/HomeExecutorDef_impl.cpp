@@ -31,12 +31,14 @@ namespace QEDO_ComponentRepository {
 HomeExecutorDef_impl::HomeExecutorDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
-  IR__::StorageHomeDef_ptr binds_to)
+  IR__::StorageHomeDef_ptr binds_to,
+  const CIDL::StorageHomeDelegationSeq& storagehome_delegations)
 : Contained_impl ( container, repository ),
   IRObject_impl ( repository )
 {
 	DEBUG_OUTLINE ( "HomeExecutorDef_impl::HomeExecutorDef_impl() called" );
 	binds_to_ = binds_to;
+	storagehome_delegations_ = storagehome_delegations;
 }
 
 HomeExecutorDef_impl::~HomeExecutorDef_impl

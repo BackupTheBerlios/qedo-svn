@@ -57,6 +57,14 @@ module CIDL {
 		);
 	};
 
+	// binding and storagehome-delegation
+	struct StorageHomeDelegation
+	{
+		IR__::Identifier home_op_name;
+		IR__::Identifier storagehome_op_name;
+	};
+	typedef sequence < StorageHomeDelegation > StorageHomeDelegationSeq;
+
 	interface CompositionDef : IR__::Contained, IR__::Container
 	{
 		readonly attribute IR__::HomeDef ccm_home;
@@ -69,7 +77,8 @@ module CIDL {
 			in IR__::RepositoryId id,
 			in IR__::Identifier name,
 			in IR__::VersionSpec version,
-			in IR__::StorageHomeDef storagehome
+			in IR__::StorageHomeDef storagehome,
+			in StorageHomeDelegationSeq storagehome_delegations
 		);
 		ExecutorDef create_executor (
 			in IR__::RepositoryId id,
@@ -110,14 +119,6 @@ module CIDL {
 		IR__::Identifier executor_operation_name;
 	};
 	typedef sequence < Delegation > DelegationSeq;
-
-	// binding and storagehome-delegation
-	struct StorageHomeDelegation
-	{
-		IR__::OperationDef delegated_operation;
-		IR__::Identifier storagehome_op_name;
-	};
-	typedef sequence < StorageHomeDelegation > StorageHomeDelegationSeq;
 
 	interface HomeExecutorDef : IR__::Contained
 	{

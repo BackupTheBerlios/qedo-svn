@@ -44,7 +44,8 @@ class HomeExecutorDef_impl : public virtual POA_CIDL::HomeExecutorDef,
 public:
 	HomeExecutorDef_impl ( Container_impl *container,
 							Repository_impl *repository,
-							IR__::StorageHomeDef_ptr binds_to);
+							IR__::StorageHomeDef_ptr binds_to,
+							const CIDL::StorageHomeDelegationSeq& storagehome_delegations);
 
 	~HomeExecutorDef_impl();
 

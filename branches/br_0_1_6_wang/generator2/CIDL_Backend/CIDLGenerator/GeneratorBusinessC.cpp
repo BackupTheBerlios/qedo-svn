@@ -125,17 +125,28 @@ GeneratorBusinessC::doOperation(IR__::OperationDef_ptr operation)
 	if( composition_->lifecycle()==CIDL::lc_Entity || 
 		composition_->lifecycle()==CIDL::lc_Process )
 	{
+		out.indent();
 		for(i = 0; i<storagehome_delegatees_->length(); i++)
 		{
-			CIDL::StorageHomeDelegation delegatee = (*storagehome_delegatees_)[i];
-			std::string strDelegant = mapName(delegatee.delegated_operation->name());
+			CIDL::StorageHomeDelegation delegation = (*storagehome_delegatees_)[i];
+			std::string strDelegant = delegation.home_op_name;
 			if (strDelegant == operation_name)
 			{
 				out << storagehome_->name() << "* obj = dynamic_cast <" << storagehome_->name() << "*> (get_storagehome_from_context());\n";
-				std::string strTemp = delegatee.storagehome_op_name;
-				out << "obj->" << strTemp << ";\n";
+				std::string strTemp = delegation.storagehome_op_name;
+				out << "obj->" << strTemp << "(";
+				for(CORBA::ULong i = pards->length(); i > 0; i--)
+				{
+					if(i < pards->length())
+						out << ", ";
+					
+					IR__::ParameterDescription pardescr = (*pards)[i - 1];
+					out << mapName(string(pardescr.name));
+				}
+				out << ");\n";
 			}
 		}
+		out.unindent();
 	}
 	out << "}\n\n\n";
 }

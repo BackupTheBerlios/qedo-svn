@@ -111,7 +111,8 @@ public:
     virtual CIDL::HomeExecutorDef_ptr create_home_executor(	const char* id,
 															const char* name,
 															const char* version,
-															IR__::StorageHomeDef_ptr storagehome)
+															IR__::StorageHomeDef_ptr storagehome,
+															const CIDL::StorageHomeDelegationSeq& storagehome_delegations)
         throw(CORBA::SystemException);
 
     //

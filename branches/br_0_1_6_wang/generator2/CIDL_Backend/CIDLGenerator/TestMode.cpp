@@ -232,7 +232,7 @@ frontend_replacement_feed
 	// The Home Executor ToonTownImpl
 	CIDL::HomeExecutorDef_var home_executor_toon_town =
 		composition_toon -> create_home_executor (
-		"IDL:Studio/ToonImpl/ToonTownImpl:1.0", "ToonTownImpl", "1.0", NULL );
+		"IDL:Studio/ToonImpl/ToonTownImpl:1.0", "ToonTownImpl", "1.0", NULL, 0 );
 
 	// The Executor ToonSessionImpl
 	CIDL::ExecutorDef_var executor_toon_session =
@@ -267,7 +267,7 @@ frontend_replacement_feed
 	// The Home Executor StoryHomeImpl
 	CIDL::HomeExecutorDef_var home_executor_story =
 		composition_story -> create_home_executor (
-		"IDL:Studio/StoryImpl/StoryHomeImpl:1.0", "StoryHomeImpl", "1.0", NULL );
+		"IDL:Studio/StoryImpl/StoryHomeImpl:1.0", "StoryHomeImpl", "1.0", NULL, 0 );
 
 	// The Executor ToonSessionImpl
 	CIDL::ExecutorDef_var executor_story =
