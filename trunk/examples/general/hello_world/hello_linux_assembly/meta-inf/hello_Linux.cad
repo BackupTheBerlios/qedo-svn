@@ -1,0 +1,62 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://cif.sourceforge.net/componentassembly.dtd">
+
+<componentassembly id="ass1">
+
+    <description>Example assembly"</description>
+
+    <componentfiles>
+        <componentfile id="Callee_file">
+            <fileinarchive name="HelloWorld_CalleeImpl_Linux.zip"/>
+        </componentfile>
+
+        <componentfile id="Caller_file">
+            <fileinarchive name="HelloWorld_CallerImpl_Linux.zip"/>
+        </componentfile>
+
+    </componentfiles>
+
+    <partitioning>
+	<processcollocation>
+        <homeplacement id="CalleeHome">
+	        <componentfileref idref="Callee_file"/>
+			<componentimplref idref="HelleWorld_CalleeImpl-mico-linux-26-10-2003"/>
+  	        <componentinstantiation id="callee">
+		</componentinstantiation>
+
+	        <destination></destination>
+	</homeplacement>
+
+	<homeplacement id="CallerHome">
+		<componentfileref idref="Caller_file"/>
+			<componentimplref idref="HelloWorld_CallerImpl-mico-linux-26-10-2003"/>
+	        <componentinstantiation id="caller">
+		</componentinstantiation>
+
+		<destination></destination>
+	</homeplacement>
+
+	</processcollocation>
+    </partitioning>
+
+
+    <connections>
+	<connectinterface>
+		<usesport>
+			<usesidentifier>hi</usesidentifier>
+			<componentinstantiationref idref="caller"/>
+	    	</usesport>
+
+		<providesport>
+			<providesidentifier>the_hello</providesidentifier>
+			<componentinstantiationref idref="callee"/>
+	    	</providesport>
+	</connectinterface>
+
+    </connections>
+
+    <extension class="startorder" origin="QEDO">callee</extension>
+    <extension class="startorder" origin="QEDO">caller</extension>
+
+</componentassembly>
+
