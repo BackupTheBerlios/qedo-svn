@@ -29,6 +29,7 @@
 #include "printer.h"
 #include "error.h"
 #include "util.h"
+#include <stack>
 
 static node_flag node_flag_filter_flag=0;
 static node_flag *node_flag_filter_flag_n=0;
@@ -41,8 +42,26 @@ table_item_list current_scope_used_list = 0;
 table_item_list scope_stack = 0;
 idl_name last_scope_name = 0;
 node_flag last_scope_type = 0;
+static stack<string> prefix_stack;
 %}
 
+void push_prefix(const string& prefix)
+{
+  prefix_stack.push(prefix);
+}
+
+const string&
+current_prefix()
+{
+  return prefix_stack.top();
+}
+
+void
+pop_prefix()
+{
+  prefix_stack.pop();
+}
+  
 static void
 init_implicit()
 {
@@ -102,6 +121,7 @@ init_symtab()
   scope_stack = Constable_item_list(current_scope,Niltable_item_list());
   current_scope->gen_parent();
   init_implicit();
+  prefix_stack.push(string(""));
 }
 
 void
@@ -1602,7 +1622,7 @@ lookup_identifier_n(
   table_item_list res = _lookup_identifier(identifier_v,current_scope);
   node_flag_filter_flag_n = nflag;
   node_flag_filter_flag_nr = n;
-  return res->filter(node_flag_filter);
+  return res->filter(node_flag_filter_n);
   
 }
 

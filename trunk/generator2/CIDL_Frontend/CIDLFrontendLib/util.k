@@ -4,8 +4,8 @@
 *   Author  : Harald Böhme
 *   e-mail  : boehme@informatik.hu-berlin.de
 *   Remark  : 
-*   $Date: 2003/04/01 13:56:52 $
-*   $Revision: 1.2 $
+*   $Date: 2003/05/15 14:21:53 $
+*   $Revision: 1.3 $
 *   
 *******************************************************************************/
 
@@ -25,7 +25,7 @@
 %}
 
 %{
-static char id[] UNUSED = "$Id: util.k,v 1.2 2003/04/01 13:56:52 boehme Exp $";
+static char id[] UNUSED = "$Id: util.k,v 1.3 2003/05/15 14:21:53 boehme Exp $";
 %}
 
 /****************** generic parent, printing *************************/
@@ -224,6 +224,27 @@ get_repid(idl_name name_v)
 {
   static char buff[1024] ;
   strcpy(buff,"IDL:");
+  if(name_v->symtab_entry->scope)
+    scope_of(name_v->symtab_entry->scope,buff);
+  with(name_v) {
+    Name(cs),
+    EscapedName(cs) : {
+      strcat(buff,cs->name);
+      strcat(buff,":1.0");
+    }
+  }
+  return buff;
+}
+
+const char*
+get_repid(definition def_v,idl_name name_v)
+{
+  static char buff[1024] ;
+  strcpy(buff,"IDL:");
+  if(def_v && def_v->prefix.c_str()[0]) {
+    strcat(buff,def_v->prefix.c_str());
+    strcat(buff,"/");
+  }
   if(name_v->symtab_entry->scope)
     scope_of(name_v->symtab_entry->scope,buff);
   with(name_v) {

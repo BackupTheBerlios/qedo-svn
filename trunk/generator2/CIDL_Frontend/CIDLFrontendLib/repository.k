@@ -117,6 +117,7 @@ CIDLSpecification(impo_list, def_list)
 // ============================== Module =================================
 //
 
+def_v=
 Module(name_v,list_v)
 ->[ feed_container:
     %uviewvar feed_container my_feed_container;
@@ -127,7 +128,7 @@ Module(name_v,list_v)
       if(CORBA::is_nil(name_v->symtab_entry->irobj)) {
         // create ModuleDef
         try {
-          module = container-> create_module (get_repid(name_v),
+          module = container-> create_module (get_repid(def_v,name_v),
             name_v->get_name(), "1.0");
         }
         catch (...) {
@@ -403,6 +404,7 @@ WideStringType( Nilconst_expression() )
 
 // ========================= Constant ===============================
 
+def_v=
 ConstDcl(def, name, expr)
 ->[ feed:
     %uviewvar build my_build;
@@ -439,7 +441,7 @@ ConstDcl(def, name, expr)
       // create ConstantDef
       IR__::ConstantDef_ptr constant;
       try {
-        constant = container->create_constant(get_repid(name),
+        constant = container->create_constant(get_repid(def_v,name),
           name->get_name(), "1.0", type, any);
       }
       catch (...) { Error("Exception in create constant %k\n", name, name); }
@@ -451,6 +453,7 @@ ConstDcl(def, name, expr)
 
 // =========================== Struct ================================
 
+def_v=
 StructurType(name_v,list_v)
 ->[ feed:
     %uviewvar build my_build;
@@ -467,7 +470,7 @@ StructurType(name_v,list_v)
       // create StructDef
       IR__::StructDef_ptr str;
       try {
-        str = container->create_struct(get_repid(name_v),
+        str = container->create_struct(get_repid(def_v,name_v),
           name_v->get_name(), "1.0", my_build.memseq);
       }
       catch (...) {
@@ -481,6 +484,7 @@ StructurType(name_v,list_v)
 
 // ============================= Union ==============================
 
+def_v=
 UnionType(name, def, case_list)
 ->[ feed:
     %uviewvar build my_build;
@@ -502,7 +506,7 @@ UnionType(name, def, case_list)
       // create UnionDef
       IR__::UnionDef_ptr uni;
       try {
-        uni = container->create_union(get_repid(name), name->get_name(),
+        uni = container->create_union(get_repid(def_v,name), name->get_name(),
           "1.0", type, my_build.unimemseq);
       }
       catch (...) { Error("Exception in creating union %k\n", name, name); }
@@ -512,6 +516,7 @@ UnionType(name, def, case_list)
   ]
   [ feed_container: ];
 
+def_v=
 Case(label_list, ElementSpec(def, decl))
 ->[ build:
     %uviewvar build my_build;
@@ -563,6 +568,7 @@ Case(label_list, ElementSpec(def, decl))
 
 // ======================== Enum ========================================
 
+def_v=
 EnumType(name, name_list)
 ->[ feed:
     { IR__::Container_ptr container;
@@ -580,7 +586,7 @@ EnumType(name, name_list)
      // create EnumDef
       IR__::EnumDef_ptr enu;
       try {
-        enu = container->create_enum(get_repid(name), name->get_name(),
+        enu = container->create_enum(get_repid(def_v,name), name->get_name(),
           "1.0", enumemseq);
       }
       catch (...) { Error("Exception in creating enum %k\n", name, name); }
@@ -647,6 +653,7 @@ SequenceType(def, expr)
 
 // ======================== typedef ===================================
 
+def_v=
 TypeDeclarator(def, dcls)
 ->[ feed:
     %uviewvar feed my_feed;
@@ -665,7 +672,7 @@ TypeDeclarator(def, dcls)
           arrays->unparse(kc_printer, my_build);
           // create AliasDef
           try {
-            alias = container->create_alias(get_repid(name), name->get_name(),
+            alias = container->create_alias(get_repid(def_v,name), name->get_name(),
               "1.0", my_build.type);
           }
           catch (...) {
@@ -677,7 +684,7 @@ TypeDeclarator(def, dcls)
         SimpleDeclarator(name) : {
           // create AliasDef
           try {
-            alias = container->create_alias(get_repid(name), name->get_name(),
+            alias = container->create_alias(get_repid(def_v,name), name->get_name(),
               "1.0", type);
           }
           catch (...) {
@@ -699,7 +706,9 @@ AbstractValueTypeFwdDcl(name)
 ValueTypeFwdDcl(name)
 ->[ feed feed_container: ];
 
+def_v=
 AbstractValueType(ValueHeader(flag_v, name, inh), def_list),
+def_v=
 ValueType(ValueHeader(flag_v, name, inh), def_list)
 ->[ feed:
     %uviewvar feed my_feed;
@@ -746,7 +755,7 @@ ValueType(ValueHeader(flag_v, name, inh), def_list)
       // create ValueDef
       IR__::ValueDef_ptr value;
       try {
-        value = container->create_value(get_repid(name), name->get_name(),
+        value = container->create_value(get_repid(def_v,name), name->get_name(),
           "1.0", cust, abstr, my_build.valuetype, my_build.flag,
           my_build.valdefseq, my_build.intdefseq, iniseq);
       }
@@ -758,6 +767,7 @@ ValueType(ValueHeader(flag_v, name, inh), def_list)
     }
   ];
 
+def_v=
 EventType(EventTypeHeader(flag_v, name, inh), def_list)
 ->[ feed:
     %uviewvar feed my_feed;
@@ -803,7 +813,7 @@ EventType(EventTypeHeader(flag_v, name, inh), def_list)
       // create EventDef
       IR__::EventDef_ptr event;
       try {
-        event = container->create_event(get_repid(name), name->get_name(),
+        event = container->create_event(get_repid(def_v,name), name->get_name(),
           "1.0", cust, abstr, my_build.valuetype, my_build.flag,
           my_build.valdefseq, my_build.intdefseq, iniseq);
       }
@@ -886,6 +896,7 @@ FactoryDcl(name, para_dcls, attr_raise)
     }
   ];
   
+def_v=
 ValueBox(name,type_v)
 ->[ feed:
   ]
@@ -901,7 +912,7 @@ ValueBox(name,type_v)
       // create ValueBoxDef
       IR__::ValueBoxDef_ptr valbox;
       try {
-        valbox = container->create_value_box(get_repid(name),
+        valbox = container->create_value_box(get_repid(def_v,name),
           name->get_name(), "1.0", type);
       }
       catch (...) {
@@ -912,6 +923,7 @@ ValueBox(name,type_v)
     }
   ];
 
+def_v=
 StateMember(flag_v, def_v, dcls)
 ->[ feed:
     %uviewvar build my_build;
@@ -937,7 +949,7 @@ StateMember(flag_v, def_v, dcls)
           array_list->unparse(kc_printer, my_build);
           // create ValueMemberDef
           try {
-            valmem = container->create_value_member(get_repid(name),
+            valmem = container->create_value_member(get_repid(def_v,name),
               name->get_name(), "1.0", my_build.type, visi);
           }
           catch (CORBA::Exception& ex) {
@@ -948,7 +960,7 @@ StateMember(flag_v, def_v, dcls)
         SimpleDeclarator(name) : {
           // create ValueMemberDef
           try {
-            valmem = container->create_value_member(get_repid(name),
+            valmem = container->create_value_member(get_repid(def_v,name),
               name->get_name(), "1.0", type_def, visi);
           }
           catch (CORBA::Exception& ex) {
@@ -964,6 +976,7 @@ StateMember(flag_v, def_v, dcls)
 
 // ================================ Home ===============================
 
+def_v=
 HomeDcl(home_head=HomeHeader(name, base, ident_list, comp, key), def_list)
 ->[ feed:
     %uviewvar feed my_feed (irobj);
@@ -1004,7 +1017,7 @@ HomeDcl(home_head=HomeHeader(name, base, ident_list, comp, key), def_list)
       IR__::Container_ptr container;
       container = IR__::Container::_narrow(kc_current_view.container);
       try {
-        home = container->create_home(get_repid(name), name->get_name(),
+        home = container->create_home(get_repid(def_v,name), name->get_name(),
           "1.0", basehome, component_ptr, supports, value);
       }
       catch (...) {
@@ -1019,6 +1032,7 @@ HomeDcl(home_head=HomeHeader(name, base, ident_list, comp, key), def_list)
 ComponentFwdDcl(name)
 ->[ feed feed_container: ];
 
+def_v=
 NComponent(ComponentHeader(name, ident, ident_list), def_list)
 ->[ feed:
     %uviewvar feed my_feed (irobj);
@@ -1048,7 +1062,7 @@ NComponent(ComponentHeader(name, ident, ident_list), def_list)
       IR__::Container_ptr container;
       container = IR__::Container::_narrow(kc_current_view.container);
       try {
-        component_ptr = container->create_component(get_repid(name),
+        component_ptr = container->create_component(get_repid(def_v,name),
           name->get_name(), "1.0", basecomp, supports);
       }
       catch (CORBA::Exception& ex) {
@@ -1059,6 +1073,7 @@ NComponent(ComponentHeader(name, ident, ident_list), def_list)
     }
   ];
   
+def_v=
 ProvidesDcl(definition_v, name)
 ->[ feed:
     %uviewvar build my_build;
@@ -1072,7 +1087,7 @@ ProvidesDcl(definition_v, name)
       IR__::ProvidesDef_ptr provides;
       // create ProvidesDef
       try {
-        provides = component_ptr->create_provides(get_repid(name),
+        provides = component_ptr->create_provides(get_repid(def_v,name),
           name->get_name(), "1.0", interface_ptr);
       }
       catch (...) {
@@ -1083,6 +1098,7 @@ ProvidesDcl(definition_v, name)
     }
   ];
 
+def_v=
 UsesDcl(flag_v, definition_v, name)
 ->[ feed:
     %uviewvar build my_build;
@@ -1101,7 +1117,7 @@ UsesDcl(flag_v, definition_v, name)
       }
       // create UsesDef
       try {
-        uses = component_ptr->create_uses(get_repid(name),
+        uses = component_ptr->create_uses(get_repid(def_v,name),
           name->get_name(), "1.0", interface_ptr, mult);
       }
       catch (...) {
@@ -1111,6 +1127,7 @@ UsesDcl(flag_v, definition_v, name)
     }
   ];
   
+def_v=
 EmitsDcl(ident, name)
 ->[ feed:
     { IR__::ComponentDef_ptr component_ptr;
@@ -1122,7 +1139,7 @@ EmitsDcl(ident, name)
       IR__::EmitsDef_ptr emits;
       // create EmitsDef
       try {
-        emits = component_ptr->create_emits(get_repid(name),
+        emits = component_ptr->create_emits(get_repid(def_v,name),
           name->get_name(), "1.0", event);
       }
       catch (...) {
@@ -1132,6 +1149,7 @@ EmitsDcl(ident, name)
     }
   ];
 
+def_v=
 PublishesDcl(ident, name)
 ->[ feed:
     { IR__::ComponentDef_ptr component_ptr;
@@ -1143,7 +1161,7 @@ PublishesDcl(ident, name)
       IR__::PublishesDef_ptr publishes;
       // create PublishesDef
       try {
-        publishes = component_ptr->create_publishes(get_repid(name),
+        publishes = component_ptr->create_publishes(get_repid(def_v,name),
           name->get_name(), "1.0", event);
       }
       catch (...) {
@@ -1153,6 +1171,7 @@ PublishesDcl(ident, name)
     }
   ];
   
+def_v=
 ConsumesDcl(ident, name)
 ->[ feed:
     { IR__::ComponentDef_ptr component_ptr;
@@ -1164,7 +1183,7 @@ ConsumesDcl(ident, name)
       IR__::ConsumesDef_ptr consumes;
       // create ConsumesDef
       try {
-        consumes = component_ptr->create_consumes(get_repid(name),
+        consumes = component_ptr->create_consumes(get_repid(def_v,name),
           name->get_name(), "1.0", event);
       }
       catch (...) {
@@ -1174,6 +1193,7 @@ ConsumesDcl(ident, name)
     }
   ];
 
+def_v=
 StreamTypeDcl(name)
 ->[ feed_container:
 	{
@@ -1183,7 +1203,7 @@ StreamTypeDcl(name)
       // create StreamTYPE
       IR__::StreamTypeDef_ptr stream_type;
       try {
-        stream_type = container->create_stream_type(get_repid(name), name->get_name(),
+        stream_type = container->create_stream_type(get_repid(def_v,name), name->get_name(),
           "1.0");
       }
       catch (...) {
@@ -1194,6 +1214,7 @@ StreamTypeDcl(name)
 	}
 ];
 
+def_v=
 SiSoDcl(ident, name)
 ->[ feed:
 	{ IR__::ComponentDef_ptr component_ptr;
@@ -1204,7 +1225,7 @@ SiSoDcl(ident, name)
 	  NOT_NIL(stream_type);
 	  IR__::SiSoDef_ptr siso;
 	  try {
-		siso = component_ptr->create_siso(get_repid(name), name->get_name(), "1.0", stream_type);
+		siso = component_ptr->create_siso(get_repid(def_v,name), name->get_name(), "1.0", stream_type);
 	  }
 	  catch (...) {
 	    Error("Exception in creating siso %k\n", name, name);
@@ -1212,6 +1233,8 @@ SiSoDcl(ident, name)
 	  irobj = siso;
 	}
 ];
+
+def_v=
 SinkDcl(ident, name)
 ->[ feed:
 	{ IR__::ComponentDef_ptr component_ptr;
@@ -1222,7 +1245,7 @@ SinkDcl(ident, name)
 	  NOT_NIL(stream_type);
 	  IR__::SinkDef_ptr sink;
 	  try {
-		sink = component_ptr->create_sink(get_repid(name), name->get_name(), "1.0", stream_type);
+		sink = component_ptr->create_sink(get_repid(def_v,name), name->get_name(), "1.0", stream_type);
 	  }
 	  catch (...) {
 	    Error("Exception in creating sink %k\n", name, name);
@@ -1230,6 +1253,8 @@ SinkDcl(ident, name)
 	  irobj = sink;
 	}
 ];
+
+def_v=
 SourceDcl(ident, name)
 ->[ feed:
 	{ IR__::ComponentDef_ptr component_ptr;
@@ -1240,7 +1265,7 @@ SourceDcl(ident, name)
 	  NOT_NIL(stream_type);
 	  IR__::SourceDef_ptr source;
 	  try {
-		source = component_ptr->create_source(get_repid(name), name->get_name(), "1.0", stream_type);
+		source = component_ptr->create_source(get_repid(def_v,name), name->get_name(), "1.0", stream_type);
 	  }
 	  catch (...) {
 	    Error("Exception in creating source %k\n", name, name);
@@ -1254,6 +1279,7 @@ SourceDcl(ident, name)
 InterfaceFwdDcl(abstract_v,name)
 ->[ feed feed_container: ];
 
+def_v=
 Interface(InterfaceHeader(flag_v,name,ident_list), list_v )
 ->[ feed: 
     %uviewvar feed my_feed(irobj);
@@ -1280,7 +1306,7 @@ Interface(InterfaceHeader(flag_v,name,ident_list), list_v )
       IR__::InterfaceDef_ptr interface_ptr1;
       // create InterfaceDef
       try {
-        interface_ptr1 = container-> create_interface(get_repid(name),
+        interface_ptr1 = container-> create_interface(get_repid(def_v,name),
           name->get_name(), "1.0", inheritance, abstr);
       }
       catch (...) {
@@ -1293,6 +1319,7 @@ Interface(InterfaceHeader(flag_v,name,ident_list), list_v )
   ];
 
 // ======================== Factory ================================
+def_v=
 FactoryDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 ->[ feed:
 	%uviewvar build my_build;
@@ -1308,7 +1335,7 @@ FactoryDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 	{
 	    IR__::HomeDef_ptr home_ptr;
 		home_ptr= IR__::HomeDef::_narrow(kc_current_view.container);
-		home_ptr->create_factory(get_repid(idl_name_v), idl_name_v->get_name(),
+		home_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
             "1.0",my_build.paradescseq,my_build.excdefseq);
 	}
 
@@ -1316,6 +1343,7 @@ FactoryDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 
 
 // ======================== Finder ==================================
+def_v=
 FinderDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 ->[ feed:
 	%uviewvar build my_build;
@@ -1331,13 +1359,14 @@ FinderDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 	{
 	    IR__::HomeDef_ptr home_ptr;
 		home_ptr= IR__::HomeDef::_narrow(kc_current_view.container);
-		home_ptr->create_finder(get_repid(idl_name_v), idl_name_v->get_name(),
+		home_ptr->create_finder(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
             "1.0",my_build.paradescseq,my_build.excdefseq);
 	}
   ];
 
 // ======================== Operation ===============================
 
+def_v=
 OpDcl( one_way_v,
        definition_v,
        name,
@@ -1369,7 +1398,7 @@ OpDcl( one_way_v,
       if(!CORBA::is_nil(interface_ptr)) {
         // create OperationDef
         try {
-          interface_ptr->create_operation(get_repid(name), name->get_name(),
+          interface_ptr->create_operation(get_repid(def_v,name), name->get_name(),
             "1.0", IR__::IDLType::_narrow(definition_v->irobj), opmode,
             my_build.paradescseq, my_build.excdefseq, my_build.contseq);
         }
@@ -1383,7 +1412,7 @@ OpDcl( one_way_v,
         NOT_NIL(valuet);
         // create OperationDef
         try {
-          valuet->create_operation(get_repid(name), name->get_name(),
+          valuet->create_operation(get_repid(def_v,name), name->get_name(),
             "1.0", IR__::IDLType::_narrow(definition_v->irobj), opmode,
             my_build.paradescseq, my_build.excdefseq, my_build.contseq);
         }
@@ -1398,6 +1427,7 @@ OpDcl( one_way_v,
 
 // ============================ Attribute ===============================
 
+def_v=
 Attribute( readonly_v, type_v, decl_v)
 ->[ feed:
     %uviewvar build my_build;
@@ -1419,7 +1449,7 @@ Attribute( readonly_v, type_v, decl_v)
           IR__::AttributeDef_ptr attr;
           // create AttributeDef
           try {
-            attr = interface_ptr->create_attribute(get_repid(name),
+            attr = interface_ptr->create_attribute(get_repid(def_v,name),
               name->get_name(), "1.0", type, mode, my_build.excdefseq,
               my_build.excdefseq2);
           }
@@ -1434,7 +1464,7 @@ Attribute( readonly_v, type_v, decl_v)
               IR__::AttributeDef_ptr attr;
               // create AttributeDef
               try {
-                attr = interface_ptr->create_attribute(get_repid(name),
+                attr = interface_ptr->create_attribute(get_repid(def_v,name),
                   name->get_name(), "1.0", type, mode, 0, 0);
               }
               catch (...) {
@@ -1500,6 +1530,7 @@ GetSetExcepExpr(list_1, list_2)
     }
   ];
 
+def_v=
 ExceptDcl( name, list_v )
 ->[ feed:
     %uviewvar build my_build;
@@ -1517,7 +1548,7 @@ ExceptDcl( name, list_v )
       IR__::ExceptionDef_ptr except;
       // create ExceptionDef
       try {
-        except = container->create_exception(get_repid(name),
+        except = container->create_exception(get_repid(def_v,name),
           name->get_name(), "1.0", my_build.memseq);
       }
       catch (...) {
@@ -1531,6 +1562,7 @@ ExceptDcl( name, list_v )
 
 // ========================== Native ==================================
 
+def_v=
 NativeType(SimpleDeclarator(name))
 ->[ feed:
     { IR__::Container_ptr container;
@@ -1539,7 +1571,7 @@ NativeType(SimpleDeclarator(name))
       IR__::NativeDef_ptr native;
       // create NativeDef
       try {
-        native = container->create_native(get_repid(name), name->get_name(),
+        native = container->create_native(get_repid(def_v,name), name->get_name(),
           "1.0");
       }
       catch (...) {
@@ -1716,6 +1748,7 @@ ParamDcl(inout_v,definition_v,decl_v)
 // =========================== Composition ==============================
 //
 
+def_v=
 Composition(name, flag_v, compo_body)
 ->[ feed :
     %uviewvar feed my_feed;
@@ -1734,7 +1767,7 @@ Composition(name, flag_v, compo_body)
       CIDL::CIDLRepository_ptr container = g_repository;
       // create CompositionDef
       try {
-        composition = container-> create_composition(get_repid(name),
+        composition = container-> create_composition(get_repid(def_v,name),
           name->get_name(), "1.0", lifecycle, my_build.home);
       }
       catch (...) {
@@ -1760,6 +1793,7 @@ CompositionBody(catalogs, homex_def, proxy_home)
 // ============================ HomeExecutor =============================
 //
 
+def_v=
 HomeExecutorDef(name, homex_body)
 ->[ feed :
     %uviewvar feed my_feed; 
@@ -1769,7 +1803,7 @@ HomeExecutorDef(name, homex_body)
       CIDL::HomeExecutorDef_ptr homeexec;
       // create HomeExecutorDef
       try {
-        homeexec = container-> create_home_executor (get_repid(name),
+        homeexec = container-> create_home_executor (get_repid(def_v,name),
           name->get_name(), "1.0");
       }
       catch (...) {
@@ -1816,6 +1850,7 @@ AbstractSpec(name_list)
 // =========================== Executor ==================================
 //
 
+def_v=
 ExecutorDef(name, def_list)
 ->[ feed :
     %uviewvar feed my_feed;
@@ -1825,7 +1860,7 @@ ExecutorDef(name, def_list)
       CIDL::ExecutorDef_ptr exec;
       // create ExecutorDef
       try {
-        exec = container-> create_executor (get_repid(name),
+        exec = container-> create_executor (get_repid(def_v,name),
           name->get_name(), "1.0");
       }
       catch (...) {
@@ -1854,6 +1889,7 @@ FeatureDelegationSpec(def_list)
 // ============================ Segment ===================================
 //
 
+def_v=
 SegmentDef(name, def_list)
 ->[ feed :
     %uviewvar build my_build;
@@ -1872,7 +1908,7 @@ SegmentDef(name, def_list)
       CIDL::SegmentDef_ptr seg;
       // create SegmentDef
       try {
-        seg = container-> create_segment (get_repid(name),
+        seg = container-> create_segment (get_repid(def_v,name),
           name->get_name(), "1.0", my_build.provseq);
       }
       catch (...) {

@@ -1,5 +1,5 @@
 %{
-#include "k.h"
+#include "symtab.h"
 #include "yystype.h"
 #ifndef YYSTYPE
 #define YYSTYPE YYSTYPE
@@ -16,6 +16,8 @@ static char filename[1024];
 static char first_filename[1024]={0,};
 char* input_basename = 0; /* base name of the input file */
 idl_name_list g_included_files = 0;
+static char *prefix_start;
+static char *prefix_end;
 
 static char *my_stream_key_words[] = {
 "sink",
@@ -273,8 +275,18 @@ ENOL                    (\n|\n)
 {S}*"#"{S}*"ifndef"[^\n]*   {}
 {S}*"#"{S}*"define"[^\n]*   {}
 {S}*"#"{S}*"endif"[^\n]*    {}
-{S}*"#"{S}*"pragma"{S}*"prefix"[^\n]*   { ECHO; }
-{S}*"#"{S}*"pragma"[^\n]*   {}
+{S}*"#"{S}*"pragma"{S}*"prefix"{S}*\"[^\n\"]*\"[^\n]*   {
+              prefix_start = strchr(yytext,'"');
+              if(prefix_start) {
+                prefix_start+=1;
+                prefix_end = strchr(prefix_start,'"');
+                if(prefix_end) {
+                  *prefix_end = '\0';
+                  push_prefix(string(prefix_start));
+                }
+              }
+            }
+{S}*"#"{S}*"pragma"[^\n]*   { ECHO; }
 "#"{S}*{D}+{S}*\n { fprintf(stderr,">>%s<<\n",yytext); yylineno++;}
 "#"{S}*{D}+{S}+\n { fprintf(stderr,">>%s<<\n",yytext); yylineno++;}
 "#"{S}*"line"{S}+{D}+{S}*\n { fprintf(stderr,">>%s<<\n",yytext); yylineno++;}

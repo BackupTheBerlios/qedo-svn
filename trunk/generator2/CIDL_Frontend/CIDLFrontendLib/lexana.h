@@ -44,5 +44,5 @@ extern idl_name_list g_included_files; /* contains all included files */
 void init_lexer(bool with_cidl=false,bool with_psdl=false, bool with_stream=false);
 
 extern cidl_specification Spec;
-extern string current_prefix;
+extern const string& current_prefix();
 #endif
