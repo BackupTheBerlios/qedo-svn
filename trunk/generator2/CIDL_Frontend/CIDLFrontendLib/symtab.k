@@ -31,6 +31,8 @@
 #include "util.h"
 
 static node_flag node_flag_filter_flag=0;
+static node_flag *node_flag_filter_flag_n=0;
+static int node_flag_filter_flag_nr=0;
 table_item_list symtab = 0;
 table_item symtab_scope = 0;
 table_item current_scope = 0;
@@ -544,7 +546,7 @@ add_eventtype(
     ValueInheritanceSpec(*,Nilidl_identifier_list(),*) : {
     }
     ValueInheritanceSpec(*,inh_list_v,*) : {
-      found_list = resolve_value_type_names(inh_list_v);
+      found_list = resolve_event_type_names(inh_list_v);
       bool first = true;
       foreach(ident_v;idl_identifier_list inh_list_v) {
         definition def_1 = get_definition(ident_v);
@@ -1065,6 +1067,41 @@ resolve_name(
 }
 
 static table_item_lists
+_resolve_name_n(
+  bool must_be_definition,
+  idl_identifier ident_v, 
+  node_flag *nflag,
+  int n)
+{
+  bool ok = false;
+  table_item_list list_v;
+  table_item_lists res=0;
+  list_v  = lookup_identifier_n(ident_v,nflag,n);
+  foreach(item_v; table_item_list list_v) {
+    if(!ok) {
+      if(!must_be_definition) {
+        ok=true;
+        ident_v->symtab_entry=item_v;
+      }
+      with(item_v) {
+        TableItem(*,*,lists_v) : {
+          if(must_be_definition) {
+            ok=true;
+            ident_v->symtab_entry=item_v;
+          }
+          res=lists_v;
+        }
+        default : { /* has no namespace */ }
+      }
+    }
+    else  {  /* Ooops */;
+    }
+  }
+  if(!ok) Error("%k is not defined\n",ident_v,ident_v);
+  return ((res!=0)?res:Niltable_item_lists());
+}
+
+static table_item_lists
 _resolve_name(
   bool must_be_definition,
   idl_identifier ident_v, 
@@ -1096,6 +1133,16 @@ _resolve_name(
   }
   if(!ok) Error("%k is not defined\n",ident_v,ident_v);
   return ((res!=0)?res:Niltable_item_lists());
+}
+
+table_item_lists
+resolve_names_n(idl_identifier_list list_v, node_flag *nflag, int n)
+{
+  table_item_lists res = Niltable_item_lists();
+	foreach(identifier_v; idl_identifier_list list_v) {
+    res=concat(_resolve_name_n(true,identifier_v,nflag,n),res);
+	}
+  return res;
 }
 
 table_item_lists
@@ -1133,9 +1180,18 @@ resolve_abstract_storagehome_names(idl_identifier_list names)
 }
 
 table_item_lists
+resolve_event_type_names(idl_identifier_list names)
+{
+  node_flag node_flags_v[2];
+  node_flags_v[0] = the_EventTypeN;
+  node_flags_v[1] = the_ValueTypeN;
+  return resolve_names_n(names,node_flags_v,2);
+}
+
+table_item_lists
 resolve_value_type_names(idl_identifier_list names)
 {
-  return resolve_names(names,ValueTypeN());
+  return resolve_names(names,the_ValueTypeN);
 }
 
 table_item_lists
@@ -1225,12 +1281,14 @@ _resolve_type(
   NScopedName(ident_v) : {
     table_item_list list_v;
     bool error_report=true;
-    list_v = lookup_identifier(ident_v,the_TypeN);
-    list_v = concat(list_v,lookup_identifier(ident_v,the_ValueTypeN));
-    list_v = concat(list_v,lookup_identifier(ident_v,the_EventTypeN));
-    list_v = concat(list_v,lookup_identifier(ident_v,the_ValueBoxN));
-    list_v = concat(list_v,lookup_identifier(ident_v,the_InterfaceN));
-    list_v = concat(list_v,lookup_identifier(ident_v,the_ComponentN));
+	 node_flag node_flags_v[6];
+	 node_flags_v[0] = the_TypeN;
+	 node_flags_v[1] = the_ValueTypeN;
+	 node_flags_v[2] = the_EventTypeN;
+	 node_flags_v[3] = the_ValueBoxN;
+	 node_flags_v[4] = the_InterfaceN;
+	 node_flags_v[5] = the_ComponentN;
+    list_v = lookup_identifier_n(ident_v,node_flags_v,6);
     foreach(item_v;table_item_list list_v) {
       if(check_own_type
         && !ident_v->symtab_entry
@@ -1513,6 +1571,20 @@ print_idl_identifier_path(idl_identifier $ident_v)
 }
 
 static bool
+node_flag_filter_n(table_item $p)
+{
+  TableItem(nflag_v,*,*),
+  TableItemDcl(nflag_v,*) : {
+	 int i;
+	 for (i=0; i <node_flag_filter_flag_nr; i++) {
+		 if(nflag_v->eq(node_flag_filter_flag_n[i]))
+			 return true;
+	 }
+	 return false;
+  }
+}
+
+static bool
 node_flag_filter(table_item $p)
 {
   TableItem(nflag_v,*,*),
@@ -1522,11 +1594,24 @@ node_flag_filter(table_item $p)
 }
 
 static table_item_list
+lookup_identifier_n(
+  idl_identifier identifier_v,
+  node_flag *nflag,
+  int n)
+{
+  table_item_list res = _lookup_identifier(identifier_v,current_scope);
+  node_flag_filter_flag_n = nflag;
+  node_flag_filter_flag_nr = n;
+  return res->filter(node_flag_filter);
+  
+}
+
+static table_item_list
 lookup_identifier(
   idl_identifier identifier_v,
   node_flag nflag)
 {
-  table_item_list res = _lookup_identifier(identifier_v,nflag,current_scope);
+  table_item_list res = _lookup_identifier(identifier_v,current_scope);
   node_flag_filter_flag = nflag;
   return res->filter(node_flag_filter);
   
@@ -1535,7 +1620,6 @@ lookup_identifier(
 static table_item_list
 _lookup_identifier(
   idl_identifier identifier_v,
-  node_flag nflag,
   table_item scope)
 {
   table_item_list res=0;
@@ -1565,18 +1649,6 @@ _lookup_identifier(
 
   res=match_path(name_list_v,res,identifier_v);
 
-  if(!res) {
-    return res;
-  }
-
-//  foreach($item_v; table_item_list res) {
-//    TableItem(nflag_1,name_1,*),
-//    TableItemDcl(nflag_1,name_1) : {
-//      if(!equal_node_flag(nflag,nflag_1)) {
-//        Error("%k is not a %k\n",identifier_v,name_1,nflag);
-//      }
-//    }
-//  }
   return res;
 }
 
