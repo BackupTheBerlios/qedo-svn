@@ -208,7 +208,7 @@
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico  -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --business --servant --target IDL:HelloWorld/CallerImpl:1.0 ../hello.cidl
+						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico  -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --servant --target IDL:HelloWorld/CallerImpl:1.0 ../hello.cidl
 "
 						Outputs="HelloWorld_CallerImpl_LOCAL.idl;HelloWorld_CallerImpl_EQUIVALENT.idl;HelloWorld_CallerImpl_BUSINESS.idl"/>
 				</FileConfiguration>

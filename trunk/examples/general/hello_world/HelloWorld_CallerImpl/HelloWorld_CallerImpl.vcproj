@@ -94,7 +94,8 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine="zip ../HelloWorld_CallerImpl.zip -j  Debug_mico/HelloWorld_CallerImpl.dll ../HelloWorld_CallerImpl_SERVANT/Debug_mico/HelloWorld_CallerImpl_SERVANT.dll ../hello.cidl
-zip ../HelloWorld_CallerImpl.zip meta-inf/HelloWorld_CallerImpl.ccd meta-inf/HelloWorld_CallerImpl.csd"/>
+zip ../HelloWorld_CallerImpl.zip meta-inf/HelloWorld_CallerImpl.ccd meta-inf/HelloWorld_CallerImpl.csd
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -210,7 +211,7 @@ zip ../HelloWorld_CallerImpl.zip meta-inf/HelloWorld_CallerImpl.ccd meta-inf/Hel
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --business --servant --target IDL:HelloWorld/CallerImpl:1.0 ../hello.cidl
+						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --business --target IDL:HelloWorld/CallerImpl:1.0 ../hello.cidl
 "
 						Outputs="HelloWorld_CallerImpl_LOCAL.idl;HelloWorld_CallerImpl_EQUIVALENT.idl;HelloWorld_CallerImpl_BUSINESS.idl"/>
 				</FileConfiguration>
