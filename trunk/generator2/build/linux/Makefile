@@ -60,7 +60,7 @@ IFRidl.Debug_orbacus_linux:
 
 
 CIDLFrontendLib.Debug_orbacus_linux: IFRidl.Debug_orbacus_linux
-	 mkdir -p ../../CIDL_Frontend/CIDLFrontend/Debug_orbacus-linux; make -C ../../CIDL_Frontend/CIDLFrontendLib Debug_orbacus_linux
+	 mkdir -p ../../CIDL_Frontend/CIDLFrontendLib/Debug_orbacus_linux; make -C ../../CIDL_Frontend/CIDLFrontendLib Debug_orbacus_linux
 
 
 CIDLGenerator.Debug_orbacus_linux: CIDLRepositoryLib.Debug_orbacus_linux CIDLFrontendLib.Debug_orbacus_linux ComponentRepositoryLib.Debug_orbacus_linux
