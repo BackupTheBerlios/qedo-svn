@@ -24,7 +24,7 @@
 #include "Output.h"
 #include "DOMXMLParser.h"
 
-static char rcsid[] UNUSED = "$Id: ConfigurationReader.cpp,v 1.2 2003/10/22 12:35:10 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ConfigurationReader.cpp,v 1.3 2003/10/23 09:56:03 neubauer Exp $";
 
 
 namespace Qedo {
@@ -67,7 +67,7 @@ ConfigurationReader::ConfigurationReader()
 #endif
 	}
 
-	NORMAL_OUT2 ("ConfigurationReader: Parsing Qedo configuration file ", qedo_config.c_str());
+	DEBUG_OUT2 ("ConfigurationReader: Parsing Qedo configuration file ", qedo_config.c_str());
 
 	broken_config_file_ = true;
 

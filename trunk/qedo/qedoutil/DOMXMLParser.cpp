@@ -41,8 +41,8 @@ XMLInitializer::XMLInitializer()
     }
     catch(const XMLException& toCatch)
     {
-        std::cerr << "Error during Xerces-c Initialization";
-        std::cerr << "..... Exception message:" << StrX(toCatch.getMessage()) << std::endl;
+		NORMAL_ERR( "XMLInitializer: error during Xerces-c Initialization" );
+        NORMAL_ERR2( "..... Exception message: ", StrX(toCatch.getMessage()) );
     }
 }
 
@@ -133,19 +133,19 @@ DOMXMLParser::parse(char* fileName)
     }
     catch (const XMLException& e)
     {
-		NORMAL_ERR2 ("DOMXMLParser: An XML error occured during parsing file ", fileName);
-		NORMAL_ERR2 ("DOMXMLParser: ", StrX (e.getMessage()));
+		NORMAL_ERR2( "DOMXMLParser: error during parsing ", fileName );
+		NORMAL_ERR2( "..... Message: ", StrX(e.getMessage()) );
         errorsOccured = true;
     }
     catch (const DOMException& e)
     {
-		NORMAL_ERR2 ("DOMXMLParser: A DOM error occurred during parsing file ", fileName);
-		NORMAL_ERR2 ("DOMXMLParser: DOMException code: ", e.code);
+		NORMAL_ERR2( "DOMXMLParser: error during parsing ", fileName );
+		NORMAL_ERR2( "..... DOMException code: ", e.code );
         errorsOccured = true;
     }
     catch (...)
     {
-		NORMAL_ERR2 ("DOMXMLParser: An error occurred during parsing file ", fileName);
+		NORMAL_ERR2( "DOMXMLParser: error during parsing ", fileName );
         errorsOccured = true;
     }
 

@@ -51,7 +51,6 @@ class CPFReadException
  */
 class QEDOUTIL_API CPFReader
 {
-
 private:
 
     /** the parsed software package descriptor */

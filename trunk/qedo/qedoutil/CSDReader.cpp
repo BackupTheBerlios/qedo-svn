@@ -22,13 +22,14 @@
 
 #include "CSDReader.h"
 #include "CCDReader.h"
+#include "Output.h"
 #include <fstream>
 #include <xercesc/util/XMLURL.hpp>
 #include <xercesc/framework/URLInputSource.hpp>
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.7 2003/10/05 19:22:00 tom Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.8 2003/10/23 09:55:38 neubauer Exp $";
 
 
 namespace Qedo {
@@ -79,7 +80,7 @@ throw(CSDReadException)
         text.append(webpage((DOMElement*)(nodeList->item(i))));
     }
 
-	std::cerr << ".......... <author> " << text << std::endl;
+	DEBUG_OUT2( "CSDReader: <author> ", text );
 }
 
 
@@ -154,13 +155,13 @@ throw(CSDReadException)
 		{
 			data_->servant_module = file_name;
 			data_->servant_entry_point = entry;
-			std::cerr << ".......... <code> for servants " << file_name << std::endl;
+			DEBUG_OUT2( "CSDReader: <code> for servants ", file_name);
 		}
 		else 
 		{
 			data_->executor_module = file_name;
 			data_->executor_entry_point = entry;
-			std::cerr << ".......... <code> for business " << file_name << std::endl;
+			DEBUG_OUT2( "CSDReader: <code> for business ", file_name);
 		}
     }
 
@@ -170,7 +171,7 @@ throw(CSDReadException)
 	else if (type == "Executable")
 	{
 		data_->artifacts.push_back( file_name );
-		std::cerr << ".......... <code> for artifact " << file_name << std::endl;
+		DEBUG_OUT2( "CSDReader: <code> for artifact ", file_name);
     }
 }
 
@@ -294,7 +295,7 @@ throw(CSDReadException)
 	{
 		text = XMLString::transcode(node->getNodeValue());
 	}
-	std::cerr << ".......... <description> " << text << std::endl;
+	DEBUG_OUT2( "CSDReader: <description> ", text );
     return text;
 }
 
@@ -359,7 +360,7 @@ throw(CSDReadException)
 	//
 	if (package_->extractFile( file_name, path_ + data.file ) != 0)
 	{
-		std::cerr << "Error during extracting file " << file_name << std::endl;
+		NORMAL_ERR2( "CSDReader: error during extracting file ", file_name );
 		throw CSDReadException();
 	}
 
@@ -445,7 +446,7 @@ throw(CSDReadException)
     }
 	else if(len > 1)
 	{
-		std::cerr << ".......... multiple descriptors" << std::endl;
+		NORMAL_ERR( "CSDReader: multiple descriptors" );
 	}
 
 	//
@@ -455,7 +456,7 @@ throw(CSDReadException)
 	len = nodeList->getLength();
 	if(len == 0)
 	{
-		std::cerr << "missing code for " << data_->uuid << std::endl;
+		NORMAL_ERR2( "CSDReader: missing code for ", data_->uuid );
 		throw CSDReadException();
 	}
     for (i = 0; i < len; ++i)
@@ -499,7 +500,7 @@ throw(CSDReadException)
 		text.append(ref);
 	}
 
-	std::cerr << ".......... <license> " << text << std::endl;
+	DEBUG_OUT2( "CSDReader: <license> ", text );
 	return text;
 }
 
@@ -528,7 +529,7 @@ throw(CSDReadException)
     BinInputStream* inputStream = inputSource.makeStream();
     if (!inputStream)
     {
-		std::cerr << "Cannot find " << name << std::endl;
+		NORMAL_ERR2( "CSDReader: cannot find ", name );
         throw CSDReadException();
     }
         
@@ -536,7 +537,7 @@ throw(CSDReadException)
 	aFile.open(fileName.c_str(), std::ios::binary|std::ios::app);
 	if (!aFile)
 	{
-		std::cerr << "Cannot open file " << fileName << std::endl;
+		NORMAL_ERR2( "CSDReader: cannot open file ", fileName );
 		throw CSDReadException();
 	}
     unsigned char* buf = (unsigned char*)malloc(4096);
@@ -609,7 +610,7 @@ throw(CSDReadException)
 	{
 		text = XMLString::transcode(node->getNodeValue());
 	}
-	std::cerr << ".......... <title> " << text << std::endl;
+	DEBUG_OUT2( "CSDReader: <title> ", text );
     return text;
 }
 
@@ -738,7 +739,7 @@ throw(CSDReadException)
 	}
 	else
 	{
-		std::cerr << "Implementation for " << uuid << " missing!" << std::endl;
+		NORMAL_ERR3( "CSDReader: implementation for ", uuid, " missing!" );
 		throw CSDReadException();
 	}
 
@@ -755,12 +756,12 @@ throw(CSDReadException)
 		}
 		else if(len > 1)
 		{
-			std::cerr << "ComponentImplementation : multiple descriptor elements!" << std::endl;
+			NORMAL_ERR( "CSDReader: multiple descriptor elements!" );
 		}
 
 		if (ccd_file_.empty())
         {
-			std::cerr << "ComponentImplementation : missing component descriptor for " << uuid << std::endl;
+			NORMAL_ERR2( "CSDReader: missing component descriptor for ", uuid );
 	        throw CSDReadException();
         }
     }
@@ -829,7 +830,7 @@ throw(CSDReadException)
 		child = child->getNextSibling();
     }
 
-	std::cerr << ".......... <valuetypefactory> " << data.repid << std::endl;
+	DEBUG_OUT2( "CSDReader: <valuetypefactory> ", data.repid );
 	data_->valuetypes.push_back(data);
 }
 
@@ -863,12 +864,12 @@ throw(CSDReadException)
 	std::string csdfile = path_ + getFileName( csdfile_name );
     if ( csdfile_name == std::string( "" ) )
 	{
-		std::cerr << ".......... missing a csd file!" << std::endl;
+		NORMAL_ERR( "CSDReader: missing a csd file!" );
         throw CSDReadException();
 	}
     if (package_->extractFile(csdfile_name, csdfile) != 0)
 	{
-		std::cerr << ".......... error during extracting the descriptor file" << std::endl;
+		NORMAL_ERR2( "CSDReader: error during extracting the descriptor file", csdfile_name );
 		throw CSDReadException();
 	}
 
@@ -879,7 +880,7 @@ throw(CSDReadException)
 	char* xmlfile = strdup(csdfile.c_str());
     if ( parser.parse( xmlfile ) != 0 ) 
 	{
-		std::cerr << "Error during XML parsing" << std::endl;
+		NORMAL_ERR2( "CSDReader: error during parsing ", csdfile );
         throw CSDReadException();
 	}
 	csd_document_ = parser.getDocument();

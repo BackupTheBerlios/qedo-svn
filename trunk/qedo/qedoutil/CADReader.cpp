@@ -21,6 +21,7 @@
 /***************************************************************************/
 
 #include "CADReader.h"
+#include "Output.h"
 #include <xercesc/util/XMLURL.hpp>
 #include <xercesc/framework/URLInputSource.hpp>
 #include <xercesc/util/BinInputStream.hpp>
@@ -142,7 +143,7 @@ throw(CADReadException)
 	}
 
 	std::string id = XMLString::transcode(element->getAttribute(X("id")));
-	std::cerr << "..... <componentfile> " << file_name << std::endl;
+	DEBUG_OUT2( "CADReader: <componentfile> ", file_name );
 	data_->implementationMap_[id] = file_name;
 }
 
@@ -572,7 +573,8 @@ throw(CADReadException)
 	{
 		text = XMLString::transcode(node->getNodeValue());
 	}
-	std::cerr << "..... <description> " << text << std::endl;
+	
+	DEBUG_OUT2( "CADReader: <description> ", text );
     return text;
 }
 
@@ -725,7 +727,7 @@ throw(CADReadException)
 	//
 	if (package_->extractFile(file_name, file) != 0)
 	{
-		std::cerr << "Error during extracting file " << file_name << std::endl;
+		NORMAL_ERR2( "CADReader: error during extracting file ", file_name );
 		throw CADReadException();
 	}
 
@@ -1111,7 +1113,7 @@ throw(CADReadException)
 	aFile.open(fileName.c_str(), std::ios::binary|std::ios::app);
 	if (!aFile)
 	{
-		std::cerr << "Cannot open file " << fileName << std::endl;
+		NORMAL_ERR2( "CADReader: cannot open file ", fileName );
 		throw CADReadException();
 	}
     unsigned char* buf = (unsigned char*)malloc(4096);
@@ -1600,12 +1602,12 @@ throw(CADReadException)
 	std::string cadfile = path_ + getFileName( cadfile_name );
     if ( cadfile_name == std::string( "" ) )
 	{
-		std::cerr << ".......... The format of the package file is not correct\n";
+		NORMAL_ERR( "CADReader: the format of the package file is not correct" );
         throw CADReadException();
 	}
     if ( package_->extractFile( cadfile_name, cadfile) != 0 )
 	{
-		std::cerr << ".......... Error during extracting the descriptor file\n";
+		NORMAL_ERR2( "CADReader: error during extracting descriptor file ", cadfile_name );
         throw CADReadException();
 	}
 
@@ -1616,7 +1618,7 @@ throw(CADReadException)
 	char* xmlfile = strdup(cadfile.c_str());
     if ( parser.parse( xmlfile ) != 0 ) 
 	{
-		std::cerr << "Error during XML parsing" << std::endl;
+		NORMAL_ERR2( "CADReader: error during parsing ", cadfile );
         throw CADReadException();
 	}
 	cad_document_ = parser.getDocument();

@@ -30,7 +30,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qdeploy.cpp,v 1.12 2003/10/01 11:51:16 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qdeploy.cpp,v 1.13 2003/10/23 09:51:25 neubauer Exp $";
 
 
 /**
@@ -149,7 +149,7 @@ main (int argc, char** argv)
 	//
 	// wait
 	//
-    std::cout << "..... please press any key to destroy the Assembly ..." << std::endl;
+    std::cout << "..... please press any key to destroy and undeploy the Assembly ..." << std::endl;
     getchar();
 
 	//
@@ -157,7 +157,6 @@ main (int argc, char** argv)
 	//
 	try
 	{
-		std::cerr << "..... undeploy " << package << std::endl;
 		ass.undeploy();
 	}
 	catch(Qedo::ComponentDeployment::DeploymentFailure&)
