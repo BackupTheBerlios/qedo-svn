@@ -175,7 +175,7 @@ zip ../Computation_ServerCompo.zip meta-inf/Computation_ServerCompo.ccd meta-inf
 				RelativePath="Computation_ServerCompo_LOCAL.cpp">
 			</File>
 			<File
-				RelativePath="valuetypes.cpp">
+				RelativePath="component_valuetypes.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -197,7 +197,7 @@ zip ../Computation_ServerCompo.zip meta-inf/Computation_ServerCompo.ccd meta-inf
 				RelativePath="Computation_ServerCompo_LOCAL.h">
 			</File>
 			<File
-				RelativePath="valuetypes.h">
+				RelativePath="component_valuetypes.h">
 			</File>
 		</Filter>
 		<Filter
