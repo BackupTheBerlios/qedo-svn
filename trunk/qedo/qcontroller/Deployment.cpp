@@ -25,7 +25,7 @@
 #include "wx/stattext.h"
 #include "wx/statline.h"
 #include "wx/log.h"
-#include "wx/DateTime.h"
+#include "wx/datetime.h"
 
 //#include "MainFrame.h"
 
