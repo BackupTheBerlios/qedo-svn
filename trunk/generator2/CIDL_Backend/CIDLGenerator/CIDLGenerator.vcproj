@@ -282,6 +282,12 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 				RelativePath="GeneratorVC7.cpp">
 			</File>
 			<File
+				RelativePath="GeneratorValuetypesC.cpp">
+			</File>
+			<File
+				RelativePath="GeneratorValuetypesH.cpp">
+			</File>
+			<File
 				RelativePath="IDLBase.cpp">
 			</File>
 			<File
@@ -332,6 +338,12 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 			</File>
 			<File
 				RelativePath="GeneratorVC7.h">
+			</File>
+			<File
+				RelativePath="GeneratorValuetypesC.h">
+			</File>
+			<File
+				RelativePath="GeneratorValuetypesH.h">
 			</File>
 			<File
 				RelativePath="IDLBase.h">

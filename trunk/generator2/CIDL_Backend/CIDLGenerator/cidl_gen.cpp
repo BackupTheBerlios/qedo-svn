@@ -9,6 +9,8 @@
 #include "GeneratorServantH.h"
 #include "GeneratorServantC.h"
 #include "GeneratorVC7.h"
+#include "GeneratorValuetypesH.h"
+#include "GeneratorValuetypesC.h"
 #include "TestMode.h"
 #include "version.h"
 #include "frontend.h"
@@ -271,6 +273,20 @@ main
 			new QEDO_CIDL_Generator::GeneratorBusinessC(repository);
 		bc_generator->generate(target, fileprefix);
 		bc_generator->destroy();
+
+		// generate valuetype header
+		std::cout << "Generating valuetype header" << std::endl;
+		QEDO_CIDL_Generator::GeneratorValuetypesH *vth_generator =
+			new QEDO_CIDL_Generator::GeneratorValuetypesH(repository);
+		vth_generator->generate(target, fileprefix);
+		vth_generator->destroy();
+
+		// generate valuetype code
+		std::cout << "Generating valuetype code" << std::endl;
+		QEDO_CIDL_Generator::GeneratorValuetypesC *vtc_generator =
+			new QEDO_CIDL_Generator::GeneratorValuetypesC(repository);
+		vtc_generator->generate(target, fileprefix);
+		vtc_generator->destroy();
 	}
 
 	if(generateServant)
