@@ -31,7 +31,7 @@
 #include <string>
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.20 2003/10/17 13:22:52 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.21 2003/10/20 09:44:35 stoinski Exp $";
 
 
 /**
@@ -64,7 +64,6 @@ main (int argc, char** argv)
 	bool debug_mode = false;
 	bool ref_supplied = false;
 	bool qos_enabled = false;
-	Qedo::debug_output = true;
 
 	CORBA::String_var csa_string_ref;
 
