@@ -42,7 +42,7 @@
 #include "StubInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.36 2004/08/27 08:37:43 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.37 2004/09/27 12:48:26 tom Exp $";
 
 
 /**
@@ -144,6 +144,9 @@ main (int argc, char** argv)
 	if (qos_enabled)
 	{
 		DEBUG_OUT ("ComponentServer: Running in QoS mode");
+	} else
+	{
+		DEBUG_OUT ("ComponentServer: Running in non-QoS mode");
 	}
 
 	//
@@ -163,6 +166,7 @@ main (int argc, char** argv)
 	Qedo::ServantInterceptorDispatcher* servant_dispatcher;
 	// Stub Dispatcher
 	Qedo::StubInterceptorDispatcher* stub_dispatcher;
+
 	if (qos_enabled)
 	{
 		// create dispatchers
@@ -191,13 +195,15 @@ main (int argc, char** argv)
 	for (orb_n = 0; orb_n < argc; orb_n++)
 	{
 		orb_argv[orb_n] = strdup(argv[orb_n]);
+		//hack for debug
+		std::cout << argv[orb_n] << std::endl;
 	};
 
 	// check for Host Name Resolving
 	std::string resolve = Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ResolveHostName");
 	if (!resolve.compare("false"))
 	{
-		
+
 		orb_argv[orb_argc] = "-ORBNoResolve";
 		orb_argc++;
 	};

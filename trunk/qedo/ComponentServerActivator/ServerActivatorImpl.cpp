@@ -31,7 +31,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.42 2004/08/23 09:39:44 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.43 2004/09/27 12:48:26 tom Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -339,9 +339,20 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	}
 
 	// read additional commandline arguments from Qedo.conf
-	std::string additional_cmd_line = 
+	std::string additional_cmd_line =
 		Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ComponentServer/CommandLine");
+
+	std::string::size_type pos = additional_cmd_line.find(" ");
+	while (pos !=std::string::npos)
+	{
+		args[args_nr++] = strdup(additional_cmd_line.substr(0,pos).c_str());
+		additional_cmd_line = additional_cmd_line.substr(pos+1,std::string::npos);
+		pos = additional_cmd_line.find(" ");
+	}
+
 	args[args_nr++] = (char*) additional_cmd_line.c_str();
+
+
 
 	args[args_nr++] = "--csa_ref";
 	args[args_nr++] = my_string_ref.inout();
@@ -392,6 +403,21 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 			{
 				args[args_nr++] = "--verbose";
 			}
+
+			// read additional commandline arguments from Qedo.conf
+			std::string additional_cmd_line =
+				Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ComponentServer/CommandLine");
+
+			std::string::size_type pos = additional_cmd_line.find(" ");
+			while (pos !=std::string::npos)
+			{
+				args[args_nr++] = strdup(additional_cmd_line.substr(0,pos).c_str());
+				additional_cmd_line = additional_cmd_line.substr(pos+1,std::string::npos);
+				pos = additional_cmd_line.find(" ");
+			}
+
+			args[args_nr++] = (char*) additional_cmd_line.c_str();
+
 
 			args[args_nr++] = "--csa_ref";
 			args[args_nr++] = my_string_ref.inout();
