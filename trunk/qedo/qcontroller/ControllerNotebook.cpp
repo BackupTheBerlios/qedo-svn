@@ -1,5 +1,6 @@
 #include "ControllerNotebook.h"
 #include "NSBrowser.h"
+#include "Launcher.h"
 
 
 ControllerNotebook::ControllerNotebook(wxWindow *parent, wxWindowID id,
