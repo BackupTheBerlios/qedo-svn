@@ -54,7 +54,9 @@ SOURCES = Key.cpp \
 		GetComponentHelperServant.cpp \
 		Synchronisation.cpp \
 		Valuetypes.cpp \
-		CCMHomeServant.cpp
+		CCMHomeServant.cpp \
+		ExtensionHomeServant.cpp \
+		ExtensionContext.cpp
 
 HEADER = ${SOURCES:.cpp=.h} \
           Util.h \
