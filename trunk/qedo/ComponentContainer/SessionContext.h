@@ -3,7 +3,7 @@
 /*                                                                         */
 /* http://qedo.berlios.de/                                                 */
 /*                                                                         */
-/* Copyright (C) 2002 by the Qedo Team                                     */
+/* Copyright (C) 2002-2003 by the Qedo Team                                */
 /*                                                                         */
 /* This library is free software; you can redistribute it and/or           */
 /* modify it under the terms of the GNU Lesser General Public              */
