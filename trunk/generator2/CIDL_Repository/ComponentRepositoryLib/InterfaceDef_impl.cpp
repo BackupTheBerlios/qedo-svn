@@ -269,13 +269,13 @@ throw(CORBA::SystemException)
 
     for ( i = 0; i < seq.length(); i++ )
     {
-        if ( CORBA::is_nil ( seq[i] ) )
+        if ( CORBA::is_nil ( seq[i].in() ) )
             throw CORBA::BAD_PARAM(); // Is this exception correct?
         impl_seq[i] = 0;
         try
         {
 			PortableServer::ServantBase_var servant =
-				repository_ -> poa() -> reference_to_servant(seq[i]);
+				repository_ -> poa() -> reference_to_servant(seq[i].in());
             impl_seq[i] = dynamic_cast<InterfaceDef_impl*>(servant.in());
         }
         catch(...)

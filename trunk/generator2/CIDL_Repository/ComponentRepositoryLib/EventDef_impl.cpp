@@ -330,14 +330,14 @@ throw(CORBA::SystemException)
 
     for ( i = 0 ; i < seq.length() ; i++ )
     {
-        if ( CORBA::is_nil ( seq[i] ) )
+        if ( CORBA::is_nil ( seq[i].in() ) )
             throw CORBA::BAD_PARAM(); // Is this exception correct?
 
         impl_seq[i] = 0;
         try
         {
 			PortableServer::ServantBase_var servant = 
-				repository_ -> poa() -> reference_to_servant(seq[i]);
+				repository_ -> poa() -> reference_to_servant(seq[i].in());
             impl_seq[i] = dynamic_cast<InterfaceDef_impl*>(servant.in());
         }
         catch(...)
@@ -439,13 +439,13 @@ throw(CORBA::SystemException)
         impl_seq[i].resize ( seq[i].members.length(), NULL );
         for ( unsigned int j = 0 ; j < seq[i].members.length() ; j++ )
         {
-            if ( CORBA::is_nil ( seq[i].members[j].type_def ) )
+            if ( CORBA::is_nil ( seq[i].members[j].type_def.in() ) )
                 throw CORBA::BAD_PARAM(); // Is this exception correct?
             impl_seq[i][j] = 0;
             try
             {
 				PortableServer::ServantBase_var servant =
-                    repository_ -> poa() -> reference_to_servant(seq[i].members[j].type_def);
+                    repository_ -> poa() -> reference_to_servant(seq[i].members[j].type_def.in());
                 impl_seq[i][j] = dynamic_cast<IDLType_impl*>(servant.in());
             }
             catch(...)
@@ -578,7 +578,7 @@ throw(CORBA::SystemException)
     // Check for duplicates and whether all valuetypes are abstract
     for ( i = 0 ; i < seq.length() ; i++ )
     {
-        if ( CORBA::is_nil(seq[i]) )
+        if ( CORBA::is_nil(seq[i].in()) )
             throw CORBA::BAD_PARAM(); // Is this exception correct?
 
         if ( !seq[i] -> is_abstract() )
@@ -602,7 +602,7 @@ throw(CORBA::SystemException)
         try
         {
 			PortableServer::ServantBase_var servant =
-				repository_ -> poa() -> reference_to_servant(seq[i]);
+				repository_ -> poa() -> reference_to_servant(seq[i].in());
             impl_seq[i] = dynamic_cast<ValueDef_impl*>(servant.in());
         }
         catch(...)

@@ -27,9 +27,9 @@ idl:  IFR.h IFR.cpp IFR_skel.h IFR_skel.cpp CIDL_Extension.h CIDL_Extension.cpp 
 
 # IDL files
 IFR.h IFR.cpp IFR_skel.h IFR_skel.cpp:./IFR.idl
-	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico --any --c++-suffix cpp --c++-skel  IFR.idl 
+	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico --any --c++-suffix cpp --c++-skel  IFR.idl ; cp IFR.h IFR_skel.h
 CIDL_Extension.h CIDL_Extension.cpp CIDL_Extension_skel.h CIDL_Extension_skel.cpp:./CIDL_Extension.idl
-	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico --any  --c++-suffix cpp --c++-skel   CIDL_Extension.idl 
+	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico --any  --c++-suffix cpp --c++-skel   CIDL_Extension.idl ; cp CIDL_Extension.h CIDL_Extension_skel.h 
 
 lex:  
 

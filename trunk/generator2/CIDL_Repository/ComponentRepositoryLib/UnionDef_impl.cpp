@@ -245,14 +245,14 @@ throw(CORBA::SystemException)
         if ( strcmp ( seq[i].name, name_ ) == 0 )
             throw CORBA::BAD_PARAM ( 7,	CORBA::COMPLETED_NO);
 
-        if ( CORBA::is_nil ( seq[i].type_def ) )
+        if ( CORBA::is_nil ( seq[i].type_def.in() ) )
             throw CORBA::BAD_PARAM(); // Is this exception correct?
 
         impl_seq[i] = 0;
         try
         {
 			PortableServer::ServantBase_var servant =
-                repository_ -> poa() -> reference_to_servant ( seq[i].type_def );
+                repository_ -> poa() -> reference_to_servant ( seq[i].type_def.in() );
             impl_seq[i] = dynamic_cast<IDLType_impl*>(servant.in());
         }
         catch(...)
@@ -267,7 +267,7 @@ throw(CORBA::SystemException)
 
     // Check for illegal recursion
     for ( i = 0 ; i < seq.length() ; i++ )
-        check_recursion ( id_, seq[i].type );
+        check_recursion ( id_, seq[i].type.in() );
 
     for ( i = 0 ; i < impl_seq.size() ; i++ )
         impl_seq[i] -> _add_ref();

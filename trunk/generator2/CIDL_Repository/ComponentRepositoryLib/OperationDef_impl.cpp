@@ -229,14 +229,14 @@ throw(CORBA::SystemException)
     impl_seq.resize ( seq.length(), NULL );
     for ( i = 0 ; i < seq.length() ; i++ )
     {
-        if ( CORBA::is_nil ( seq[i].type_def ) )
+        if ( CORBA::is_nil ( seq[i].type_def.in() ) )
             throw CORBA::BAD_PARAM(); // Is this exception correct?
 
         impl_seq[i] = 0;
         try
         {
 			PortableServer::ServantBase_var servant =
-                repository_ -> poa() -> reference_to_servant ( seq[i].type_def );
+                repository_ -> poa() -> reference_to_servant ( seq[i].type_def.in() );
             impl_seq[i] = dynamic_cast<IDLType_impl*>(servant.in());
         }
         catch(...)
@@ -329,7 +329,7 @@ throw(CORBA::SystemException)
 
     for ( i = 0 ; i < seq.length() ; i++ )
     {
-        if ( CORBA::is_nil ( seq[i] ) )
+        if ( CORBA::is_nil ( seq[i].in() ) )
             throw CORBA::BAD_PARAM(); // Is this exception correct?
        
 		impl_seq[i] = 0;
@@ -337,7 +337,7 @@ throw(CORBA::SystemException)
         try
         {
 			PortableServer::ServantBase_var servant = 
-				repository_ -> poa() -> reference_to_servant(seq[i]);
+				repository_ -> poa() -> reference_to_servant(seq[i].in());
             impl_seq[i] = dynamic_cast<ExceptionDef_impl*>(servant.in());
         }
         catch(...)
