@@ -23,12 +23,7 @@
 #ifndef __COMPONENTS_IDL__
 #define __COMPONENTS_IDL__
 
-
-#ifndef WIN32
-#include "gen_CORBADepends.idl"
-#else
 #include "CORBADepends.idl"
-#endif
 
 
 #pragma prefix "omg.org"
