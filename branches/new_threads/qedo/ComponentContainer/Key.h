@@ -60,7 +60,7 @@ private:
     static CORBA::ULongLong key_id_;
 
 	/** mutex for synchronization */
-	static qedo_mutex* m_mutex;
+	static QedoMutex* mutex_;
 
 public:
 	/**
