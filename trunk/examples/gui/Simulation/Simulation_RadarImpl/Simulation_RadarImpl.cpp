@@ -34,7 +34,6 @@ RadarDisplay::draw() {
 	fl_color(FL_RED);
 	if (impl_->current_data_set_)
 	{
-
 		try 
 		{
 			// draw planes
