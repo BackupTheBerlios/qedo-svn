@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.17 2003/07/16 19:42:58 tom Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.18 2003/07/18 11:31:24 boehme Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -120,7 +120,7 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 	// get home finder
 	//
 	CORBA::Object_var obj;
-	home_finder_ = 0;
+	home_finder_ = Qedo_Components::HomeFinder::_nil();
 
     try
     {
