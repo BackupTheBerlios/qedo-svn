@@ -60,8 +60,10 @@ SOURCES = Key.cpp \
 		InternalConfiguration.cpp
 
 HEADER = ${SOURCES:.cpp=.h} \
-          Util.h \
-			 PortEntry.h
+		Util.h \
+		PortEntry.h \
+		ExtensionContext.h
+		ExtensionHomeServant.h
 
 
 OBJS = ${SOURCES:.cpp=.o}
