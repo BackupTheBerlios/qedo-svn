@@ -7,15 +7,21 @@
 
     <componentfiles>
         <componentfile id="a_file">
-            <fileinarchive name="auction_AuctioneerImpl.zip"/>
+		<fileinarchive name="meta-inf/auction_AuctioneerImpl.csd">
+			<link href="auction_AuctioneerImpl.zip"/>
+		</fileinarchive>
         </componentfile>
 
         <componentfile id="b_file">
-            <fileinarchive name="auction_BidderImpl.zip"/>
+		<fileinarchive name="meta-inf/auction_BidderImpl.csd">
+			<link href="auction_BidderImpl.zip"/>
+		</fileinarchive>
         </componentfile>
 
         <componentfile id="s_file">
-            <fileinarchive name="auction_SellerImpl.zip"/>
+		<fileinarchive name="meta-inf/auction_SellerImpl.csd">
+			<link href="auction_SellerImpl.zip"/>
+		</fileinarchive>
         </componentfile>
     </componentfiles>
 
