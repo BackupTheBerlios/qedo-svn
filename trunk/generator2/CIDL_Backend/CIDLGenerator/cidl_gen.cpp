@@ -158,31 +158,31 @@ main
 		else if(strcmp(option, "--testmode") == 0)
 		{
 			frontend_replacement_feed ( repository );
-            
-            for(int j = i ; j + 1 < argc ; j++)
-                argv[j] = argv[j + 1];
-            
-            argc--;
+
+			for(int j = i ; j + 1 < argc ; j++)
+				argv[j] = argv[j + 1];
+
+			argc--;
 		}
 		else if((strcmp(option, "--business") == 0) || (strcmp(option, "-b") == 0))
 		{
 			generateBusiness = true;
 			generateLIDL = true;
-            
-            for(int j = i ; j + 1 < argc ; j++)
-                argv[j] = argv[j + 1];
-            
-            argc--;
+
+			for(int j = i ; j + 1 < argc ; j++)
+				argv[j] = argv[j + 1];
+
+			argc--;
 		}
 		else if((strcmp(option, "--servant") == 0) || (strcmp(option, "-s") == 0))
 		{
 			generateServant = true;
 			generateLIDL = true;
-            
-            for(int j = i ; j + 1 < argc ; j++)
-                argv[j] = argv[j + 1];
-            
-            argc--;
+
+			for(int j = i ; j + 1 < argc ; j++)
+			argv[j] = argv[j + 1];
+
+			argc--;
 		}
 		else if(strcmp(option, "--vc7") == 0)
 		{
