@@ -23,7 +23,7 @@
 /*                                                                           */
 /*****************************************************************************/
 
-Version 0.0.1
+Version 0.1.0
 
 This File describes the process of installing the Qedo code generator. Because the code generator is a complex software it need many other software products. You have to install all of them before you can compile the code generator. This will take you some time and experiences with installing such software would be very helpful. Nevertheless, we hope that this little description will give enough information to acomplish all needed steps. 
 The Qedo code generator can be compiled by using the MS Visual Studio 6, MS Visual Studio.Net, Solaris gcc, or Linux gcc.
