@@ -198,6 +198,7 @@ namespace DCI_Basics
         	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl
+
 	public:
 		void get_host_name (std::string& ) const;
 		
@@ -276,6 +277,7 @@ namespace DCI_Basics
 #ifdef _WINDOWS
 		bool _is_NT;
 #endif
+
 
 // END USER INSERT SECTION NodeManagerSessionImpl
 
