@@ -28,7 +28,7 @@ namespace Qedo {
 
 qedo_mutex::qedo_mutex() {
 
-#ifdef WIN32
+#ifdef QEDO_WINTHREAD
 	m_mutex = CreateMutex(NULL,FALSE,NULL);
 #else
 	pthread_mutex_init(&m_mutex, NULL);
@@ -38,7 +38,7 @@ qedo_mutex::qedo_mutex() {
 
 qedo_mutex::~qedo_mutex() {
 
-#ifdef WIN32
+#ifdef QEDO_WINTHREAD
 #else
 	pthread_mutex_destroy(&m_mutex);
 #endif
@@ -48,7 +48,7 @@ qedo_mutex::~qedo_mutex() {
 void
 qedo_mutex::qedo_lock_object() {
 
-#ifdef WIN32
+#ifdef QEDO_WINTHREAD
 	WaitForSingleObject(m_mutex, INFINITE);
 #else
 	pthread_mutex_lock(&m_mutex);
@@ -59,7 +59,7 @@ qedo_mutex::qedo_lock_object() {
 void
 qedo_mutex::qedo_unlock_object() {
 
-#ifdef WIN32
+#ifdef QEDO_WINTHREAD
 	ReleaseMutex(m_mutex);
 #else
 	pthread_mutex_unlock(&m_mutex);
@@ -85,7 +85,7 @@ qedo_lock::~qedo_lock() {
 
 
 qedo_cond::qedo_cond(char * sig_name) {
-#ifdef WIN32
+#ifdef QEDO_WINTHREAD
 		m_event_handle = CreateEvent (NULL, TRUE /*manua-reset*/, FALSE /*initial: non-signaled*/, sig_name);
 #else
 		pthread_cond_init(&m_cond, NULL);
@@ -94,8 +94,7 @@ qedo_cond::qedo_cond(char * sig_name) {
 
 
 qedo_cond::~qedo_cond() {
-#ifdef WIN32
-
+#ifdef QEDO_WINTHREAD
 #else
 	pthread_cond_destroy(&m_cond);
 #endif
@@ -105,7 +104,7 @@ qedo_cond::~qedo_cond() {
 void
 qedo_cond::qedo_wait() {
 
-#ifdef WIN32
+#ifdef QEDO_WINTHREAD
 	WaitForMultipleObjects(1, &m_event_handle, TRUE, INFINITE /*wait for ever*/);
 #else
 	pthread_mutex_t mut;
@@ -120,7 +119,7 @@ qedo_cond::qedo_wait() {
 void
 qedo_cond::qedo_signal() {
 
-#ifdef WIN32
+#ifdef QEDO_WINTHREAD
 	SetEvent(m_event_handle);
 #else
 	pthread_cond_signal(&m_cond);
@@ -130,7 +129,7 @@ qedo_cond::qedo_signal() {
 
 void
 qedo_cond::qedo_reset() {
-#ifdef WIN32
+#ifdef QEDO_WINTHREAD
 	ResetEvent(m_event_handle);
 #else
 #endif
@@ -138,7 +137,7 @@ qedo_cond::qedo_reset() {
 
 
 
-#ifdef WIN32
+#ifdef QEDO_WINTHREAD
 DWORD WINAPI startFunc(LPVOID p) {
 #else
 void* startFunc(void* p) {
@@ -162,7 +161,7 @@ qedo_startDetachedThread(void* (*p)(void*), void* arg) {
 	startParams->p = p;
 	startParams->a = arg;
 
-#ifdef _WIN32
+#ifdef QEDO_WINTHREAD
 	HANDLE th_handle;
 	DWORD th_id;
 	th_handle = CreateThread(NULL,

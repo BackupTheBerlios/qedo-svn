@@ -159,7 +159,8 @@
 				Name="VCCustomBuildTool"
 				Description="Distribution:"
 				CommandLine="mkdir $(QEDO)\bin
-copy $(TargetPath) $(QEDO)\bin"
+copy $(TargetPath) $(QEDO)\bin
+"
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
@@ -210,7 +211,7 @@ copy $(TargetPath) $(QEDO)\bin"
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".,$(MICO)\include\,$(MICO)\include\"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BUILD_MICO_DLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
@@ -233,7 +234,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib mico239.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib mico2310.lib pthreadVSE.lib"
 				OutputFile="$(OutDir)/ComponentIDL.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"

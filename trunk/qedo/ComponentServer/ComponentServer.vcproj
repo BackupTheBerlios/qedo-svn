@@ -180,7 +180,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="micocoss239.lib mico239.lib wsock32.lib"
+				AdditionalDependencies="micocoss2310.lib mico2310.lib wsock32.lib pthreadVSE.lib"
 				OutputFile="$(OutDir)/cs.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib,$(MICO)\coss"
@@ -301,7 +301,7 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="ClientInterceptorDispacher.cpp">
+				RelativePath="ClientInterceptorDispatcher.cpp">
 			</File>
 			<File
 				RelativePath="ComponentServerImpl.cpp">
@@ -313,7 +313,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="ORBInitializerImpl.cpp">
 			</File>
 			<File
-				RelativePath="ServerInterceptorDispacher.cpp">
+				RelativePath="ServerInterceptorDispatcher.cpp">
 			</File>
 			<File
 				RelativePath="main.cpp">

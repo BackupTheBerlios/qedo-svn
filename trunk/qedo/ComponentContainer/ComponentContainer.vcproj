@@ -200,7 +200,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentValuetypes;$(MICO)\include\win32,$(MICO)\include"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentValuetypes;&quot;$(MICO)\include\win32&quot;;&quot;$(MICO)\include&quot;"
 				PreprocessorDefinitions="MICO_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS;BUILD_MICO_DLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -224,7 +224,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="mico2310.lib odbc32.lib odbccp32.lib pthreadVSE.lib"
+				AdditionalDependencies="mico2310.lib pthreadVSE.lib"
 				OutputFile="$(OutDir)/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"

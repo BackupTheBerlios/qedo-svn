@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.14 2003/06/13 07:26:56 tom Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.15 2003/06/16 10:39:56 neubauer Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -405,7 +405,7 @@ throw (CORBA::SystemException)
 
 	Components::ConnectedDescriptions_var con_descs;
 
-	for (unsigned int i = 0; i < receptacles_.size(); i++)
+	for (CORBA::ULong i = 0; i < receptacles_.size(); i++)
 	{
 		receptacles.inout()[i] = receptacles_[i].receptacle_description();
 	}
@@ -423,11 +423,15 @@ throw (Components::InvalidName, CORBA::SystemException)
 	Components::ReceptacleDescriptions_var receptacles = 
         new Components::ReceptacleDescriptions();
 
-	for (unsigned int i = 0; i < names.length(); i++)
+	for (CORBA::ULong i = 0; i < names.length(); i++)
 	{
-		for (unsigned int j = 0; j < receptacles_.size(); j++)
+		for (CORBA::ULong j = 0; j < receptacles_.size(); j++)
 		{
+#ifdef ORBACUS_ORB
+			if (receptacles_[j].port_name() == names[i])
+#else
 			if (receptacles_[j].port_name() == names[i].in())
+#endif
 			{
                 receptacles->length (receptacles->length() + 1);
 
@@ -554,7 +558,7 @@ throw (CORBA::SystemException)
 	Components::ConsumerDescriptions_var consumers = new Components::ConsumerDescriptions();
 	consumers->length (consumers_.size());
 
-	for (unsigned int i = 0; i < consumers_.size(); i++)
+	for (CORBA::ULong i = 0; i < consumers_.size(); i++)
 	{
 		consumers.inout()[i] = consumers_[i].consumer_description();
 	}
@@ -572,11 +576,15 @@ throw (Components::InvalidName, CORBA::SystemException)
 	Components::ConsumerDescriptions_var consumers = new Components::ConsumerDescriptions();
 	consumers -> length ( names.length() );
 
-	for (unsigned int i = 0; i < consumers_.size(); i++)
+	for (CORBA::ULong i = 0; i < consumers_.size(); i++)
 	{
-		for (unsigned int j = 0; j < names.length(); j++)
+		for (CORBA::ULong j = 0; j < names.length(); j++)
 		{
+#ifdef ORBACUS_ORB
+			if (consumers_[i].port_name() == names[j])
+#else
 			if (consumers_[i].port_name() == names[j].in())
+#endif
 			{
        			consumers->length (consumers->length () + 1);
 
@@ -602,7 +610,7 @@ throw (CORBA::SystemException)
 
     emitters->length (emitters_.size());
 
-	for (unsigned int i = 0; i < emitters_.size(); i++)
+	for (CORBA::ULong i = 0; i < emitters_.size(); i++)
 	{
 		emitters.inout()[i] = emitters_[i].emitter_description();
 	}
@@ -619,11 +627,15 @@ throw (Components::InvalidName, CORBA::SystemException)
 
 	Components::EmitterDescriptions_var emitters = new Components::EmitterDescriptions();
 
-	for (unsigned int i = 0; i < emitters_.size(); i++)
+	for (CORBA::ULong i = 0; i < emitters_.size(); i++)
 	{
-		for (unsigned int j = 0; j < names.length(); j++)
+		for (CORBA::ULong j = 0; j < names.length(); j++)
 		{
-			if (emitters_[i].port_name() == names[j].in())
+#ifdef ORBACUS_ORB
+			if (consumers_[i].port_name() == names[j])
+#else
+			if (consumers_[i].port_name() == names[j].in())
+#endif
 			{
 				emitters->length ( emitters->length() + 1);
 
@@ -675,11 +687,15 @@ throw (Components::InvalidName, CORBA::SystemException)
 	Components::SubscriberDescriptions_var publishers = 
         new Components::SubscriberDescriptions();
 
-	for (unsigned int i = 0, ii = 0; i < publishers_.size(); i++)
+	for (CORBA::ULong i = 0, ii = 0; i < publishers_.size(); i++)
 	{
-		for (unsigned int j = 0; j < names.length(); j++)
+		for (CORBA::ULong j = 0; j < names.length(); j++)
 		{
-			if (publishers_[i].port_name() == names[j].in())
+#ifdef ORBACUS_ORB
+			if (consumers_[i].port_name() == names[j])
+#else
+			if (consumers_[i].port_name() == names[j].in())
+#endif
 			{
 		        // Get subscriber descriptions for current publisher
                 Components::SubscriberDescriptions_var sub_helper;

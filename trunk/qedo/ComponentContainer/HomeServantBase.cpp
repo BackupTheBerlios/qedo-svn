@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.16 2003/05/25 17:28:19 tom Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.17 2003/06/16 10:39:56 neubauer Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -36,9 +36,9 @@ HomeServantBase::HomeServantBase (const char* repository_id, const char* comp_re
   instance_counter_ (0),
   servant_registry_ (new ServantRegistry()),
   my_home_ref_ (Components::CCMHome::_nil()),
-  container_ (0),
-  servant_locator_ (new ServantLocator (this))
+  container_ (0)
 {
+	servant_locator_ = new ServantLocator(this);
 }
 
 

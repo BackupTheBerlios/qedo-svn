@@ -24,14 +24,28 @@
 #define __THREADS_H__
 
 
+#undef QEDO_WINTHREAD
+#undef QEDO_PTHREAD
+
+#ifdef MICO_ORB
+#define QEDO_PTHREAD
+#elif defined _WIN32
+#define QEDO_WINTHREAD
+#else
+#define QEDO_PTHREAD
+#endif
+
 #ifdef _WIN32
 #ifndef TAO_ORB
 #include <windows.h>
 #endif
-#else
+#endif
+
+#ifdef QEDO_PTHREAD
 #include <pthread.h>
 #include <signal.h>
 #endif
+
 #include "Util.h"
 
 
@@ -60,7 +74,7 @@ class CONTAINERDLL_API qedo_mutex {
 private:
 
 	/** the mutex */
-#ifdef _WIN32
+#ifdef QEDO_WINTHREAD
 	HANDLE m_mutex;
 #else
 	pthread_mutex_t m_mutex;
@@ -126,12 +140,12 @@ class CONTAINERDLL_API qedo_cond
 
 private:
 	/// bla
-#ifdef _WIN32
+#ifdef QEDO_WINTHREAD
 	HANDLE m_event_handle;
-
 #else
 	pthread_cond_t m_cond;
 #endif
+
 public:
 	/**
 	 * constructor
@@ -169,7 +183,7 @@ public:
 /**
  * add comment!
  */
-#ifdef _WIN32
+#ifdef QEDO_WINTHREAD
 DWORD WINAPI startFunc(LPVOID p);
 #else
 extern "C" void* startFunc(void* p);
