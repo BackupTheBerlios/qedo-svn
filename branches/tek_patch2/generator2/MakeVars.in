@@ -58,7 +58,7 @@ ifeq "MICO_ORB" "${ORB}"
 	$(MICO)/bin/idl ${IDL_FLAGS} -I. -I$(MICO)/include -I$(MICO)/include/mico -DMICO_ORB --any --c++-suffix cpp --c++-skel $< \
 	&&  cp $*.h $*_skel.h
 MICO_CXXFLAGS := -DMICO_ORB $(shell mico-config --cxxflags)
-CXXFLAGS+=$(IDLCXXFLAGS) $(MICO_CXXFLAGS)
+CXXFLAGS+= $(MICO_CXXFLAGS)
 MICO_LIBS := $(shell mico-config --libs)
 LIBS+=$(MICO_LIBS)
 endif
