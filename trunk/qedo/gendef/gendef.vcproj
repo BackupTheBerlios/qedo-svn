@@ -31,7 +31,8 @@
 				Name="VCCustomBuildTool"
 				Description="Distribution:"
 				CommandLine="mkdir $(QEDO)\bin
-copy $(TargetPath) $(QEDO)\bin"
+copy $(TargetPath) $(QEDO)\bin
+"
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
@@ -85,6 +86,53 @@ copy $(TargetPath) $(QEDO)\bin"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_mico|Win32"
+			OutputDirectory="Debug_mico"
+			IntermediateDirectory="Debug_mico"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="5"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
+			<Tool
+				Name="VCLinkerTool"
+				OutputFile="$(OutDir)/gendef.exe"
+				LinkIncremental="2"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/gendef.pdb"
+				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
