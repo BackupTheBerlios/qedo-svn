@@ -1,3 +1,25 @@
+/***************************************************************************/
+/* Qedo - Quality of Service Enabled Distributed Objects                   */
+/*                                                                         */
+/* http://www.qedo.org                                                     */
+/*                                                                         */
+/* Copyright (C) 2002-2004 by the Qedo Team                                */
+/*                                                                         */
+/* This library is free software; you can redistribute it and/or           */
+/* modify it under the terms of the GNU Lesser General Public              */
+/* License as published by the Free Software Foundation; either            */
+/* version 2.1 of the License, or (at your option) any later version.      */
+/*                                                                         */
+/* This library is distributed in the hope that it will be useful,         */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of          */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU        */
+/* Lesser General Public License for more details.                         */
+/*                                                                         */
+/* You should have received a copy of the GNU Lesser General Public        */
+/* License along with this library; if not, write to the Free Software     */
+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
+/***************************************************************************/
+
 #include "explore.h"
 #include "iostream"
 #include "string"
@@ -6,52 +28,6 @@
 
 
 using namespace std;
-
-
-/*
-
-string get_short_name(char *full_scope_name) {
-// Liefer den short_name von der RepID zurück
-
-	
-	int len = strlen(full_scope_name); // Die Länge des Strings ermitteln
-	int ende, start; // Start und Ende Position in der RepID
-	
-	const char* short_name="" ; // Rückgabe wert
-	
-	// Start und Ende Position finden 
-	// Trennzeichen sind : für Ende
-	// "/" für start Position
-
-	for (int i=len; i>0; i--) {
-		
-		if (full_scope_name[i]==':') {
-			ende=i;
-		}
-
-		if (full_scope_name[i]=='/') {
-			start=i+1;
-			i=0;
-		}
-	}
-
-	string helpstring=((string) full_scope_name).substr(start,ende-start);
-	short_name=helpstring.c_str();
-
-	//std::cout << full_scope_name << "->" << short_name << endl;
-
-	return helpstring;
-	
-}
-*/
-
-
-
-
-
-
-
-
 
 
 
@@ -96,9 +72,11 @@ int main (int argc, char** argv)
 
 		//create a name entry
 		CosNaming::Name name;
-		name.length(1);
-		name[0].id=CORBA::string_dup("ExploreServer");
+		name.length(2);
+		name[0].id=CORBA::string_dup("Qedo");
 		name[0].kind=CORBA::string_dup("");
+		name[1].id=CORBA::string_dup("ExploreServer");
+		name[1].kind=CORBA::string_dup("");
 
 		//bind or rebind the servant to the naming service
 		try {

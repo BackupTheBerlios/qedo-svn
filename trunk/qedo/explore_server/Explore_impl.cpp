@@ -1,3 +1,25 @@
+/***************************************************************************/
+/* Qedo - Quality of Service Enabled Distributed Objects                   */
+/*                                                                         */
+/* http://www.qedo.org                                                     */
+/*                                                                         */
+/* Copyright (C) 2002-2004 by the Qedo Team                                */
+/*                                                                         */
+/* This library is free software; you can redistribute it and/or           */
+/* modify it under the terms of the GNU Lesser General Public              */
+/* License as published by the Free Software Foundation; either            */
+/* version 2.1 of the License, or (at your option) any later version.      */
+/*                                                                         */
+/* This library is distributed in the hope that it will be useful,         */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of          */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU        */
+/* Lesser General Public License for more details.                         */
+/*                                                                         */
+/* You should have received a copy of the GNU Lesser General Public        */
+/* License along with this library; if not, write to the Free Software     */
+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
+/***************************************************************************/
+
 #include "Explore_impl.h"
 #include "explore.h"
 #include "iostream"
@@ -9,6 +31,8 @@
 #include "signal.h"
 #include "stdlib.h"
 //#include "util.h"
+
+#include "Output.h"
 
 #ifdef _WIN32
 #include "process.h"
@@ -62,39 +86,18 @@ string get_short_name(char *full_scope_name) {
 ::ComponentServerActivatorInfoList* Explore_impl::explore_qedo()
 {	
 	
-	
-	//CORBA::ORB_var e_orb=CORBA::ORB_init(e_argc,e_argv);
-
 	// get name services reference
-	CORBA::Object_var nsobj = e_orb->resolve_initial_references("NameService");
+	CORBA::Object_var nsobj = e_orb -> resolve_initial_references("NameService");
 	CosNaming::NamingContext_var nc = CosNaming::NamingContext::_narrow(nsobj);
-	CORBA::Object_var saobj = e_orb ->resolve_initial_references("NameService");
-		
-	/*
-	if (CORBA::is_nil(nc)) {
-
-		cerr << "Kann den Naming Service nicht finden!" << endl;
-		cin >> t;
-		exit(1);
-
-	}
-	
-	if (CORBA::is_nil(saobj)) {
-		cout << "ServerActivator kann nicht gefunden werden" << endl;
-		cin >>  t;
-		exit(1);
-	} */
-
-
 
 	// get server activator reference
 	char hostname[256];
 	//int gethostname;
-	 gethostname (hostname, 256);
+	gethostname (hostname, 256);
 	if (gethostname (hostname, 256))
 	{
-		std::cout<< "Kann Hostname nicht finden"<<endl;
-		e_orb->destroy();
+		std::cout<< "No hostname found"<<endl;
+		e_orb -> destroy();
 		exit(1);
 	}
 	
@@ -108,194 +111,178 @@ string get_short_name(char *full_scope_name) {
 	
 		
 	CosNaming::NamingContext_var ncQA = CosNaming::NamingContext::_nil();
-	CORBA::Object_var obj = nc->resolve(cname);
+	CORBA::Object_var obj = nc -> resolve(cname);
 	ncQA = CosNaming::NamingContext::_narrow (obj);
 
 	
 	CORBA::Object_var server_activator_obj;
-		server_activator_obj=nc->resolve(cname);
-		CosNaming::BindingList *test;
-		CosNaming::BindingIterator *test2;
-		ncQA->list(100,test,test2);
+	server_activator_obj = nc -> resolve(cname);
+	CosNaming::BindingList *test;
+	CosNaming::BindingIterator *test2;
+	ncQA -> list(100,test,test2);
 
-
-
-		CosNaming::BindingList_var bl = test;
-		CosNaming::BindingIterator_var bi = test2;
-		std::cout<< bl->length() << " ServerActivator gefunden" << endl;
+	CosNaming::BindingList_var bl = test;
+	CosNaming::BindingIterator_var bi = test2;
+	DEBUG_OUT2 (bl -> length() , " ServerActivator gefunden");
 		
 
-	ComponentServerActivatorInfoList_var Activatorlist=new ComponentServerActivatorInfoList;
-	for (int as=0;as<bl->length();as++) {
-
-			
-			CosNaming::Binding b=bl->operator [](as);
-			
-
-			CosNaming::Name name;
-			name.length(3);
-			name[0].id=CORBA::string_dup("Qedo");
-			name[0].kind=CORBA::string_dup("");
-			name[1].id=CORBA::string_dup("Activators");
-			name[1].kind=CORBA::string_dup("");
-			name[2].id=CORBA::string_dup(b.binding_name[0].id);
-			name[2].kind=CORBA::string_dup("");
-
-	
-
-	try {
-		std::cout<< "ServerActivator: " << b.binding_name[0].id << endl;
-		server_activator_obj=nc->resolve(name);
-
-	}
-	catch (CosNaming::NamingContext::NotFound_catch &exec) {
-		std::cerr << "Notfound" << endl;
-	}
-	catch (CosNaming::NamingContext::CannotProceed_catch &exec) {
-		std::cerr << "CannotProceed" <<endl;
-	}
-	catch (CosNaming::NamingContext::InvalidName_catch &exec) {
-		std::cout << "InvalidName exception"<<endl;
-	}
-
-	
-	Components::Deployment::ServerActivator_var server_activator ;
-	try {
-		server_activator= Components::Deployment::ServerActivator::_narrow(server_activator_obj);
-	} 
-	catch (CORBA::SystemException&) 
-	{
-		std::cout<<"Cannon narrow"<<endl;
-		e_orb->destroy();
-		exit(1);
-	}
-	
-
-	
-	// get Component Servers
-	
-	Components::Deployment::ComponentServers *component_servers = 
-	server_activator -> get_component_servers();
-	
-
-	std::cout << "ServerActivator liefert " << component_servers->length() << " Component Server"<< endl;
-
-	
-	ComponentServerActivatorInfo ComponentServerActivator;
-	const char* host="schlepptop";
-	ComponentServerActivator.host_name=(const char*)hostname;
-	ComponentServerActivator.component_server_activator_ref=server_activator;
-	
-	ComponentServerInfoList ComponentServerList;
-	ComponentServerList.length(component_servers->length());
-	
-
-	for (int i=1; i<=component_servers->length(); i++) {
+	ComponentServerActivatorInfoList_var Activatorlist = new ComponentServerActivatorInfoList;
+	CORBA::ULong as = 0;
+	for (as = 0 ; as < bl -> length() ; as++) {
+        CosNaming::Binding b=bl->operator [](as);
 		
-	std::cout<<"ComponentServer " << i-1 << endl;	
+		CosNaming::Name name;
+		name.length(3);
+		name[0].id=CORBA::string_dup("Qedo");
+		name[0].kind=CORBA::string_dup("");
+		name[1].id=CORBA::string_dup("Activators");
+		name[1].kind=CORBA::string_dup("");
+		name[2].id=CORBA::string_dup(b.binding_name[0].id);
+		name[2].kind=CORBA::string_dup("");
 
+		try {
+			std::cout<< "ServerActivator: " << b.binding_name[0].id << endl;
+			server_activator_obj=nc->resolve(name);
 
-		Components::Deployment::ComponentServer_var comp_server = 
-			Components::Deployment::ComponentServer::_duplicate((*component_servers)[i-1]);
+		}
+		catch (CosNaming::NamingContext::NotFound_catch &exec) {
+			std::cerr << "Notfound" << endl;
+		}
+		catch (CosNaming::NamingContext::CannotProceed_catch &exec) {
+			std::cerr << "CannotProceed" <<endl;
+		}
+		catch (CosNaming::NamingContext::InvalidName_catch &exec) {
+			std::cout << "InvalidName exception"<<endl;
+		}
+	
+		Components::Deployment::ServerActivator_var server_activator ;
+		try {
+			server_activator = Components::Deployment::ServerActivator::_narrow(server_activator_obj);
+		} 
+		catch (CORBA::SystemException&) 
+		{
+			std::cout<<"Cannon narrow"<<endl;
+			e_orb -> destroy();
+			exit(1);
+		}
+	
+		// get Component Servers	
+		Components::Deployment::ComponentServers *component_servers = 
+		server_activator -> get_component_servers();	
 
-		ComponentServerInfo ComponentServer;
+		DEBUG_OUT3 ( "ServerActivator has ", component_servers->length() , " component server. ");
 
-		// Der Hostname muss noch gefunden werden
-
+		ComponentServerActivatorInfo ComponentServerActivator;
 		const char* host="schlepptop";
-		ComponentServer.host_name=(const char*)hostname;
-		ComponentServer.component_server_ref=comp_server;
-
-		Components::Deployment::Containers *comp_containers = 
-			comp_server->get_containers();
-		ContainerInstanceInfoList ContainerList;
-		ContainerList.length(comp_containers->length());
-
-		std::cout<< " ->" << comp_containers->length() << " Container"<<endl;
-
-
-
-		for (int y=1; y<=comp_containers->length(); y++) {
-			std::cout<<"    " << y-1 << " Container" << endl;
+		ComponentServerActivator.host_name=(const char*)hostname;
+		ComponentServerActivator.component_server_activator_ref=server_activator;
+	
+		ComponentServerInfoList ComponentServerList;
+		ComponentServerList.length(0);
+	
+		CORBA::ULong i=0;
+		for (i = 0 ; i < component_servers->length(); i++) {
 			
-			
-			Components::Deployment::Container_var container = 
-				Components::Deployment::Container::_duplicate((*comp_containers)[y-1]);
-			
-			ContainerInstanceInfo ContainerInfo;
-			const char* egal="SESSION";
-			
-			ContainerInfo.short_name=egal;
-			ContainerInfo.container_ref=container;
-		   // Components::Deployment::ComponentServer_var test = container->get_component_server();
-            Components::CCMHomes *homes = container->get_homes();
-			
-			HomeInstanceInfoList HomeList;
-			HomeList.length(homes->length());
-			std::cout<< "  ->" << homes->length() << " Homes" << endl;
+			DEBUG_OUT2( "ComponentServer " , i );	
 
-			for (int z=1; z<=homes->length(); z++) {
+			Components::Deployment::ComponentServer_var comp_server = 
+				Components::Deployment::ComponentServer::_duplicate((*component_servers)[i]);
 
-				std::cout<<"     " << z-1 << " Home" << endl;
+			ComponentServerInfo ComponentServer;
 
-				Components::CCMHome_var home = 
-					Components::CCMHome::_duplicate((*homes)[z-1]);
+			// the information about the host name ist missing
+			// should be removed
+			const char* host="schlepptop";
+			ComponentServer.host_name=(const char*)hostname;
+			ComponentServer.component_server_ref=comp_server;
 
-				HomeInstanceInfo HomeInfo;
-				HomeInfo.full_scoped_name=home->get_home_rep_id();
-				//std::cout << z << " " << home->get_home_rep_id() << endl;
-				std::cout << "    " <<  z-1 << get_short_name(HomeInfo.full_scoped_name)<<endl;
+			Components::Deployment::Containers *comp_containers; 
+
+			try {
+					comp_containers = comp_server->get_containers();
+			} catch (...) 
+			{
+				continue;
+			}
+
+			ContainerInstanceInfoList ContainerList;
+			ContainerList.length(comp_containers->length());
+
+			DEBUG_OUT3 (" ->", comp_containers->length() , " Container");
+			CORBA::ULong y = 0;
+			for ( y = 0; y < comp_containers->length(); y++) {
+				DEBUG_OUT3 ("    " , y , " Container");
+	
+				Components::Deployment::Container_var container = 
+					Components::Deployment::Container::_duplicate((*comp_containers)[y]);
+			
+				ContainerInstanceInfo ContainerInfo;
+				const char* egal="SESSION";
+			
+				ContainerInfo.short_name=egal;
+				ContainerInfo.container_ref=container;
+	            Components::CCMHomes *homes = container->get_homes();
+
+				HomeInstanceInfoList HomeList;
+				HomeList.length(homes->length());
+
+				DEBUG_OUT3 ("  ->", homes->length() , " Homes");
+				CORBA::ULong z = 0;
+				for (z = 0; z < homes->length(); z++) {
+
+					DEBUG_OUT3 ("     ", z , " Home" );
+					Components::CCMHome_var home = 
+						Components::CCMHome::_duplicate((*homes)[z]);
+
+					HomeInstanceInfo HomeInfo;
+					HomeInfo.full_scoped_name=home->get_home_rep_id();
+					DEBUG_OUT3 ("    " ,  z , get_short_name(HomeInfo.full_scoped_name));
 				
-				HomeInfo.short_name=get_short_name(HomeInfo.full_scoped_name).c_str();
-				//std::cout << "HomeInfo" << HomeInfo.short_name << " " <<  endl;
-				HomeInfo.home_ref=home;
-				Components::CCMObjects *homeinstances = home->get_instances();
+					HomeInfo.short_name=get_short_name(HomeInfo.full_scoped_name).c_str();
+					HomeInfo.home_ref=home;
+					Components::CCMObjects *homeinstances = home->get_instances();
 				
-				ComponentInstanceInfoList ComponentList;
-				ComponentList.length(homeinstances->length());
+					ComponentInstanceInfoList ComponentList;
+					ComponentList.length(homeinstances->length());
 
-
-				for (int a=1; a<=homeinstances->length(); a++) {
+					CORBA::ULong a = 0;
+					for (int a = 0; a < homeinstances -> length(); a++) {
 				
-					Components::CCMObject_var inst=
-						Components::CCMObject::_duplicate((*homeinstances)[a-1]);
+						Components::CCMObject_var inst=
+							Components::CCMObject::_duplicate((*homeinstances)[a]);
 
-					ComponentInstanceInfo ComponentInfo;
-					//std::cout<<a-1<<endl;
-					ComponentInfo.full_scoped_name=home->get_component_rep_id();
-					//std::cout<< a-1 << ":" << home->get_component_rep_id()<<endl;
-					std::cout<< "        " << a-1 << get_short_name(home->get_component_rep_id()).c_str() << endl;;
-					ComponentInfo.short_name=get_short_name(home->get_component_rep_id()).c_str();	
-					ComponentInfo.compont_ref=inst;
-					ComponentList[a-1]=ComponentInfo;
+						ComponentInstanceInfo ComponentInfo;
+						ComponentInfo.full_scoped_name=home->get_component_rep_id();
+						DEBUG_OUT3 ("        ", a , get_short_name(home->get_component_rep_id()).c_str());
+						ComponentInfo.short_name=get_short_name(home->get_component_rep_id()).c_str();	
+						ComponentInfo.compont_ref=inst;
+						ComponentList[a]=ComponentInfo;
 
-                } // Ende Components
+	                } // end Components
 				
-				HomeInfo.my_components=ComponentList;
-				HomeList[z-1]=HomeInfo;
+					HomeInfo.my_components=ComponentList;
+					HomeList[z]=HomeInfo;
 
-			} // Ende Homes
-			ContainerInfo.my_homes=HomeList;
-			ContainerList[y-1]=ContainerInfo;
+				} // end Homes
+
+				ContainerInfo.my_homes=HomeList;
+				ContainerList[y]=ContainerInfo;
 		
-		} // Ende Container
+			} // end Container
 
-		ComponentServer.my_containers=ContainerList;
-		ComponentServerList[i-1]=ComponentServer;
+			ComponentServer.my_containers=ContainerList;
+			ComponentServerList.length( ComponentServerList.length() + 1 );
+			ComponentServerList[ComponentServerList.length()-1] = ComponentServer;
 
-	} // Ende ComponentServers
-	ComponentServerActivator.my_component_servers=ComponentServerList;
-	
-	
-	Activatorlist->length(bl->length());
+		} // ende ComponentServers
+
+		ComponentServerActivator.my_component_servers=ComponentServerList;	
+		Activatorlist->length(bl->length());
 		
-	Activatorlist.inout()[as]=ComponentServerActivator;
+		Activatorlist.inout()[as]=ComponentServerActivator;
 	
-}
-	
-//	ComponentServerActivatorInfoList* wert = Activatorlist;
-	 
+	}
+		 
    return Activatorlist._retn() ;
-
 
 }
