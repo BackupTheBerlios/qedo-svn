@@ -273,6 +273,9 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 				RelativePath=".\GeneratorLIDL.cpp">
 			</File>
 			<File
+				RelativePath="GeneratorMakefile.cpp">
+			</File>
+			<File
 				RelativePath=".\GeneratorServantC.cpp">
 			</File>
 			<File
@@ -329,6 +332,9 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 			</File>
 			<File
 				RelativePath=".\GeneratorLIDL.h">
+			</File>
+			<File
+				RelativePath="GeneratorMakefile.h">
 			</File>
 			<File
 				RelativePath=".\GeneratorServantC.h">
