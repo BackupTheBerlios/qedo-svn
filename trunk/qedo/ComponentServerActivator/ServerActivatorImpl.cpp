@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.25 2003/10/08 14:23:46 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.26 2003/10/15 11:17:21 boehme Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -448,6 +448,7 @@ throw(CORBA::SystemException)
 
 }
 
+#ifndef _WIN32
 void 
 ServerActivatorImpl::remove_by_pid (pid_t server)
 {
@@ -473,6 +474,7 @@ ServerActivatorImpl::remove_by_pid (pid_t server)
 		component_servers_.erase (cs_iter);
 	}
 }
+#endif
 
 ServerActivatorImpl::RemoveStruct::RemoveStruct(const ComponentServerEntry& e)
 	: entry(e)

@@ -156,11 +156,13 @@ public:
 	 */
 	class CannotInitialize{};
 
+#ifndef _WIN32
 	/*
 	 * remove a component server from the list by the pid
 	 */
 
 	void remove_by_pid(pid_t);
+#endif
 };
 
 /** @} */
