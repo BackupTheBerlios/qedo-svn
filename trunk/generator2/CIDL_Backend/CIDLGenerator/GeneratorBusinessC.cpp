@@ -918,7 +918,10 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "create_" << composition->ccm_home()->name() << "E(void)\n{\n";
 	out.indent();
 	out.insertUserSection(string("create_") + composition->ccm_home()->name());
-	out << "return new " << mapFullName(module_def) << "::";
+	out << "return new ";
+	if(module_def) {
+		out << mapFullName(module_def) << "::";
+	}
 	out << mapName(composition->home_executor()) << "();\n";
 	out.unindent();
 	out << "}\n\n";
