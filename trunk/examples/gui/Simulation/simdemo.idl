@@ -34,6 +34,7 @@ module Simulation{
 	  public string radar_identifier;
 	  public Position radar_position;
 	  public RadarData radardata;
+	  public double radius;
 	};
 
 	/* dynmic informatin about airplane position */
@@ -60,7 +61,7 @@ module Simulation{
 	  
 	interface RetrieveRadarData {
 	  /* callculates the List of radar contacts visible for a given position of a Radar */
-	  RadarData get_data(in Position radar_position);
+	  RadarData get_data(in Position radar_position, in double radius);
 	};
 	  
 	component SimulationServer{
@@ -74,6 +75,9 @@ module Simulation{
 	  attribute string radar_identifier;
 	  attribute double longitude;
 	  attribute double latitude;
+	  attribute double radius;
+	  attribute double pixel_radius;
+
 	  uses RetrieveRadarData sim_server;
 	  publishes RadarEvent to_tac_display;
 	};
@@ -86,6 +90,9 @@ module Simulation{
 	  attribute double latitude;
 	  attribute double horizontal_range;
 	  attribute double vertical_range;
+
+	  attribute double horizontal_pixels;
+	  attribute double vertical_pixels;
 
 	  consumes RadarEvent from_radar;
 	};

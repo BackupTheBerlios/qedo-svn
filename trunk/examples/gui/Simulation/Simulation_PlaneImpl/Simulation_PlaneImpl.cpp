@@ -11,6 +11,9 @@
 #define sleep(X) Sleep(X*1000)
 #endif
 #include <math.h>
+#include <FL/Fl_Input.H>
+#include <FL/fl_Button.H>
+
 // END USER INSERT SECTION file
 
 
@@ -78,6 +81,12 @@ PlaneSessionImpl::start_gui(void *p)
 	impl->gui_stopped = false;
 
 	impl->window = new Fl_Window(300,180, impl->identifier());
+
+	Fl_Input *course = new Fl_Input(100,10, 100, 20, "Course:");
+	Fl_Input *speed = new Fl_Input(100,40, 100, 20, "Speed:");
+
+	Fl_Button *change = new Fl_Button(100, 70, 100, 20, "Change");
+
 	std::cout << "id: " << impl->identifier() << std::endl;
 	  impl->window->end();
 	  impl->window->show();
@@ -138,7 +147,6 @@ PlaneSessionImpl::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION PlaneSessionImpl::configuration_complete
-	speed_ = 5;
 	flight_thread = context_->start_thread(run,this);
 	gui_thread = context_->start_thread(start_gui,this);
 
@@ -253,6 +261,26 @@ PlaneSessionImpl::initial_course()
 // BEGIN USER INSERT SECTION PlaneSessionImpl::initial_course
 	return course_;
 // END USER INSERT SECTION PlaneSessionImpl::initial_course
+}
+
+
+void
+PlaneSessionImpl::speed(CORBA::Double param)
+	throw(CORBA::SystemException)
+{
+// BEGIN USER INSERT SECTION PlaneSessionImpl::_speed
+	speed_ = param;
+// END USER INSERT SECTION PlaneSessionImpl::_speed
+}
+
+
+CORBA::Double
+PlaneSessionImpl::speed()
+	throw(CORBA::SystemException)
+{
+// BEGIN USER INSERT SECTION PlaneSessionImpl::speed
+	return speed_;
+// END USER INSERT SECTION PlaneSessionImpl::speed
 }
 
 

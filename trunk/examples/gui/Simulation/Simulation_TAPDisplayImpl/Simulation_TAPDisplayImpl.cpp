@@ -19,7 +19,7 @@ Display::draw() {
  
 
     fl_color(FL_BLACK);
-	fl_rectf(10,10,impl_->horizontal_range_,impl_->vertical_range_);
+	fl_rectf(0,0,impl_->horizontal_pixel_,impl_->vertical_pixel_);
 
 	impl_->radar_data_mutex_->lock();
 	// display radar circles
@@ -27,12 +27,16 @@ Display::draw() {
 
 	try
 	{
-		Simulation::TAPDisplaySessionImpl::position_map::iterator position_itr;
+		Simulation::TAPDisplaySessionImpl::radar_data_map::iterator radar_itr;
 		
-		CORBA::ULong radar_position_index = 0;
-		for ( position_itr = impl_->radar_position_map_.begin(); position_itr != impl_->radar_position_map_.end(); position_itr++ )
+		CORBA::ULong radar_index = 0;
+		for ( radar_itr = impl_->radar_map_.begin(); radar_itr != impl_->radar_map_.end(); radar_itr++ )
 		{
-			fl_pie((*position_itr).second.longitude-90,(*position_itr).second.latitude-90,180,180, 0, 360);
+			fl_arc((((*radar_itr).second.pos.longitude - impl_ -> longitude_)* impl_ -> x_scale_ ) - ((*radar_itr).second.radius * impl_-> x_scale_ ),
+				((((*radar_itr).second.pos.latitude - impl_ -> latitude_ )* (impl_ -> y_scale_ *-1))
+				- ((*radar_itr).second.radius ) * (impl_-> y_scale_  -1 )) + impl_ -> vertical_pixel_,
+				((*radar_itr).second.radius * impl_ -> x_scale_) * 2 ,
+				(((*radar_itr).second.radius * (impl_ -> y_scale_ ) * 2) ), 0, 360);
 
 		}
 	} catch( ... ) {};
@@ -47,9 +51,9 @@ Display::draw() {
 		for ( radar_itr = impl_->radar_map_.begin(); radar_itr != impl_->radar_map_.end(); radar_itr++ )
 		{
 			CORBA::ULong object_index = 0;
-			for (object_index = 0; object_index < (*radar_itr).second.length(); object_index++)
+			for (object_index = 0; object_index < (*radar_itr).second.data.length(); object_index++)
 			{
-				fl_rectf((*radar_itr).second[object_index].position.longitude,(*radar_itr).second[object_index].position.latitude,5,5);
+				fl_rectf((((*radar_itr).second.data[object_index].position.longitude - impl_->longitude_) * impl_ -> x_scale_) ,(((*radar_itr).second.data[object_index].position.latitude - impl_->latitude_)  * (impl_ -> y_scale_ * -1)) + impl_ -> vertical_pixel_ ,5,5);
 			}
 		
 		}
@@ -108,7 +112,7 @@ TAPDisplaySessionImpl::start_gui(void *p)
 	impl->gui_stopped = false;
 
 	impl->window = //new Fl_Double_Window(300,180, "Radar1");
-		new Display((impl->horizontal_range_ + 20) ,(impl->vertical_range_ + 20), impl, impl->id_.c_str());
+		new Display((impl->horizontal_pixel_ ) ,(impl -> vertical_pixel_ ), impl, impl->id_.c_str());
 
 	  impl->window->end();
 	  impl->window->show();
@@ -169,6 +173,8 @@ TAPDisplaySessionImpl::configuration_complete()
 // BEGIN USER INSERT SECTION TAPDisplaySessionImpl::configuration_complete
 	gui_thread = context_->start_thread(start_gui,this);
 	radar_data_mutex_ = context_ -> create_mutex();
+	x_scale_ = horizontal_pixel_ / horizontal_range_;
+	y_scale_ = vertical_pixel_ / vertical_range_;
 // END USER INSERT SECTION TAPDisplaySessionImpl::configuration_complete
 }
 
@@ -179,7 +185,7 @@ TAPDisplaySessionImpl::remove()
 {
 // BEGIN USER INSERT SECTION TAPDisplaySessionImpl::remove
 
-	radar_data_mutex_ -> destroy();
+	//radar_data_mutex_ -> destroy();
 // END USER INSERT SECTION TAPDisplaySessionImpl::remove
 }
 
@@ -285,6 +291,46 @@ TAPDisplaySessionImpl::vertical_range()
 
 
 void
+TAPDisplaySessionImpl::horizontal_pixels(CORBA::Double param)
+	throw(CORBA::SystemException)
+{
+// BEGIN USER INSERT SECTION TAPDisplaySessionImpl::_horizontal_pixels
+	horizontal_pixel_ = param;
+// END USER INSERT SECTION TAPDisplaySessionImpl::_horizontal_pixels
+}
+
+
+CORBA::Double
+TAPDisplaySessionImpl::horizontal_pixels()
+	throw(CORBA::SystemException)
+{
+// BEGIN USER INSERT SECTION TAPDisplaySessionImpl::horizontal_pixels
+	return horizontal_pixel_;
+// END USER INSERT SECTION TAPDisplaySessionImpl::horizontal_pixels
+}
+
+
+void
+TAPDisplaySessionImpl::vertical_pixels(CORBA::Double param)
+	throw(CORBA::SystemException)
+{
+// BEGIN USER INSERT SECTION TAPDisplaySessionImpl::_vertical_pixels
+	vertical_pixel_ = param;
+// END USER INSERT SECTION TAPDisplaySessionImpl::_vertical_pixels
+}
+
+
+CORBA::Double
+TAPDisplaySessionImpl::vertical_pixels()
+	throw(CORBA::SystemException)
+{
+// BEGIN USER INSERT SECTION TAPDisplaySessionImpl::vertical_pixels
+	return vertical_pixel_;
+// END USER INSERT SECTION TAPDisplaySessionImpl::vertical_pixels
+}
+
+
+void
 TAPDisplaySessionImpl::push_event (Components::EventBase* ev)
     throw (CORBA::SystemException)
 {
@@ -303,6 +349,11 @@ TAPDisplaySessionImpl::push_RadarEvent(::Simulation::RadarEvent* ev)
 	// debug
 	std::cout << "got information from:" << ev->radar_identifier() << std::endl;
 
+	RadarMapEntry entry;
+	entry.pos = ev->radar_position();
+	entry.radius = ev -> radius();
+	entry.data = ev -> radardata();
+
 	try {
 		
 		std::string temp_str = ev->radar_identifier();
@@ -314,15 +365,15 @@ TAPDisplaySessionImpl::push_RadarEvent(::Simulation::RadarEvent* ev)
 		if ( radar_itr !=  radar_map_.end())
 		{
 			// update pos
-			(*radar_itr).second = ev->radardata();
+			(*radar_itr).second = entry;
 
 		} else
 		{
 			// insert new one
-			radar_map_.insert (radar_data_map::value_type(temp_str, ev->radardata()));
+			radar_map_.insert (radar_data_map::value_type(temp_str, entry));
 		}
 
-
+/*
 		position_map::iterator radar_position_itr;
 
 		//look for identifier in map
@@ -337,6 +388,7 @@ TAPDisplaySessionImpl::push_RadarEvent(::Simulation::RadarEvent* ev)
 			// insert new one
 			radar_position_map_.insert (position_map::value_type(temp_str, ev->radar_position()));
 		}
+		*/
 	} catch (...) {};
 
 	radar_data_mutex_ -> unlock();

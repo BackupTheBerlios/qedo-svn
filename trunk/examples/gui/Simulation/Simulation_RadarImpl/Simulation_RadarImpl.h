@@ -96,6 +96,22 @@ namespace Simulation
         	throw(CORBA::SystemException);
         CORBA::Double latitude()
         	throw(CORBA::SystemException);
+        
+        //
+        // IDL:Simulation/Radar/radius:1.0
+        //
+        void radius(CORBA::Double param)
+        	throw(CORBA::SystemException);
+        CORBA::Double radius()
+        	throw(CORBA::SystemException);
+        
+        //
+        // IDL:Simulation/Radar/pixel_radius:1.0
+        //
+        void pixel_radius(CORBA::Double param)
+        	throw(CORBA::SystemException);
+        CORBA::Double pixel_radius()
+        	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION RadarSessionImpl
 	private:
@@ -108,6 +124,11 @@ namespace Simulation
 		std::string id_;
 		CORBA::Double longitude_;
 		CORBA::Double latitude_;
+		CORBA::Double radius_;
+		CORBA::Double pixel_radius_;
+		CORBA::Double scale_;
+
+
 		bool current_data_set_;
 		Components::Mutex_ptr current_data_mutex_;
 		Simulation::RadarData *current_data;

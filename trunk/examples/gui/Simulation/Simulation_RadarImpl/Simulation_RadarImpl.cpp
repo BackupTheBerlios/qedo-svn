@@ -19,14 +19,17 @@ RadarDisplay::draw() {
 //	fl_rectf(10,10,w()-20,h()-20);
 	fl_pie(10,10,w()-20, h()-20, 0, 360);
 
-    fl_color(FL_GREEN);
-	fl_arc(50,50,w()-100, h()-100, 0, 360);
-	fl_arc(75,75,w()-150, h()-150, 0, 360);
+	int inner = impl_->pixel_radius_ / 3;
 
-	fl_line(100,100,100,10);
-	fl_line(100,100,100,190);
-	fl_line(100,100,10,100);
-	fl_line(100,100,190,100);
+    fl_color(FL_GREEN);
+	fl_arc((impl_->pixel_radius_ + 10) - inner,
+		(impl_->pixel_radius_ + 10) - inner,
+		(2 * inner),
+		(2 * inner), 0, 360);
+	//fl_arc(75,75,w()-150, h()-150, 0, 360);
+
+	fl_line(impl_ -> pixel_radius_ + 10 ,10 ,impl_ -> pixel_radius_ +10 ,(2 * impl_ -> pixel_radius_) +10 );
+	fl_line(10, impl_ -> pixel_radius_ + 10 ,(2 * impl_ -> pixel_radius_) + 10 , impl_ -> pixel_radius_ + 10 );
 
 	fl_color(FL_RED);
 	if (impl_->current_data_set_)
@@ -41,8 +44,12 @@ RadarDisplay::draw() {
 			for (index=0;index < impl_->current_data->length(); index++)
 			{
 				Simulation::RadarData *temp_data = impl_->current_data;
+//				std::cout << "cur " << ((*temp_data)[index].position.longitude) << std::endl;
 		//		fl_rectf((*temp_data)[index].position.longitude,impl_->current_data[index].position.latitude,5,5);
-				fl_rectf((((*temp_data)[index].position.longitude)-(impl_->longitude_))+100,(((*temp_data)[index].position.latitude)-(impl_->latitude_))+100,5,5);
+				int x_pix = (((((*temp_data)[index].position.longitude)-(impl_->longitude_) )* impl_->scale_ ) + impl_->pixel_radius_) + 10;
+				int y_pix = (((((*temp_data)[index].position.latitude)-(impl_->latitude_) )* (impl_->scale_ * -1)) + impl_->pixel_radius_) + 10;
+				std::cout << "x: " << x_pix << " y: " << y_pix << std::endl;
+				fl_rectf(x_pix,y_pix,5,5);
 			}
 		} catch (...) {};
 		impl_->current_data_mutex_->unlock();
@@ -76,9 +83,9 @@ RadarSessionImpl::scan()
 		own_pos.altitude=0;
 		current_data_mutex_->lock();
 		try {
-			current_data = context_ ->get_connection_sim_server()->get_data(own_pos);
+			current_data = context_ ->get_connection_sim_server()->get_data(own_pos, radius_);
 			current_data_set_ = true;
-			RadarEventImpl *current_event = new RadarEventImpl(id_.c_str(), own_pos, *current_data);
+			RadarEventImpl *current_event = new RadarEventImpl(id_.c_str(), own_pos, *current_data, radius_);
 			context_ -> push_to_tac_display(current_event);
 		} catch (...) {};
 		current_data_mutex_->unlock();
@@ -115,7 +122,7 @@ RadarSessionImpl::start_gui(void *p)
 	impl->gui_stopped = false;
 
 	impl->window = //new Fl_Double_Window(300,180, "Radar1");
-		new RadarDisplay(200,200, impl, impl->id_.c_str());
+		new RadarDisplay((2 * impl->pixel_radius_) + 20 ,(2 * impl->pixel_radius_ ) + 20 , impl, impl->id_.c_str());
 
 	  impl->window->end();
 	  impl->window->show();
@@ -181,6 +188,8 @@ RadarSessionImpl::configuration_complete()
 	data_thread = context_->start_thread(run,this);
 	gui_thread = context_->start_thread(start_gui,this);
 
+	scale_ = pixel_radius_ / radius_;
+
 // END USER INSERT SECTION RadarSessionImpl::configuration_complete
 }
 
@@ -190,7 +199,7 @@ RadarSessionImpl::remove()
     throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION RadarSessionImpl::remove
-	current_data_mutex_ -> destroy();
+//	current_data_mutex_ -> destroy();
 
 // END USER INSERT SECTION RadarSessionImpl::remove
 }
@@ -253,6 +262,46 @@ RadarSessionImpl::latitude()
 // BEGIN USER INSERT SECTION RadarSessionImpl::latitude
 	return latitude_;
 // END USER INSERT SECTION RadarSessionImpl::latitude
+}
+
+
+void
+RadarSessionImpl::radius(CORBA::Double param)
+	throw(CORBA::SystemException)
+{
+// BEGIN USER INSERT SECTION RadarSessionImpl::_radius
+	radius_ = param;
+// END USER INSERT SECTION RadarSessionImpl::_radius
+}
+
+
+CORBA::Double
+RadarSessionImpl::radius()
+	throw(CORBA::SystemException)
+{
+// BEGIN USER INSERT SECTION RadarSessionImpl::radius
+	return radius_;
+// END USER INSERT SECTION RadarSessionImpl::radius
+}
+
+
+void
+RadarSessionImpl::pixel_radius(CORBA::Double param)
+	throw(CORBA::SystemException)
+{
+// BEGIN USER INSERT SECTION RadarSessionImpl::_pixel_radius
+	pixel_radius_ = param;
+// END USER INSERT SECTION RadarSessionImpl::_pixel_radius
+}
+
+
+CORBA::Double
+RadarSessionImpl::pixel_radius()
+	throw(CORBA::SystemException)
+{
+// BEGIN USER INSERT SECTION RadarSessionImpl::pixel_radius
+	return pixel_radius_;
+// END USER INSERT SECTION RadarSessionImpl::pixel_radius
 }
 
 

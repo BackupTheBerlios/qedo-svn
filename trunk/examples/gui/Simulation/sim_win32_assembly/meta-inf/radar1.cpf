@@ -7,10 +7,16 @@
             <value>Radar1</value>
     </simple>
     <simple name="longitude" type="double">
-            <value>100</value>
+            <value>-2.13545</value>
     </simple>
     <simple name="latitude" type="double">
-            <value>100</value>
+            <value>0.655900</value>
+    </simple>
+    <simple name="radius" type="double">
+            <value>0.01</value>
+    </simple>
+    <simple name="pixel_radius" type="double">
+            <value>400</value>
     </simple>
 
 </properties>

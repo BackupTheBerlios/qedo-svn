@@ -114,6 +114,22 @@ namespace Simulation
         	throw(CORBA::SystemException);
         
         //
+        // IDL:Simulation/TAPDisplay/horizontal_pixels:1.0
+        //
+        void horizontal_pixels(CORBA::Double param)
+        	throw(CORBA::SystemException);
+        CORBA::Double horizontal_pixels()
+        	throw(CORBA::SystemException);
+        
+        //
+        // IDL:Simulation/TAPDisplay/vertical_pixels:1.0
+        //
+        void vertical_pixels(CORBA::Double param)
+        	throw(CORBA::SystemException);
+        CORBA::Double vertical_pixels()
+        	throw(CORBA::SystemException);
+        
+        //
         // IDL:Components/EventConsumerBase/push_event:1.0
         //
         virtual void push_event (Components::EventBase* ev)
@@ -137,6 +153,12 @@ namespace Simulation
 		CORBA::Double latitude_;
 		CORBA::Double horizontal_range_;
 		CORBA::Double vertical_range_;
+
+		CORBA::Double horizontal_pixel_;
+		CORBA::Double vertical_pixel_;
+
+		CORBA::Double x_scale_;
+		CORBA::Double y_scale_;
 		Components::Mutex_ptr current_data_mutex_;
 
 		//DataStructure for different Radar Data
@@ -149,12 +171,19 @@ namespace Simulation
 		Components::Mutex_ptr radar_data_mutex_;
 
 		// map element
-		// at this time only position
+		struct RadarMapEntry{
+			Simulation::Position pos;
+			CORBA::Double radius;
+			Simulation::RadarData data;
+		};
+
+		typedef std::map<std::string, RadarMapEntry> radar_data_map;
+
 		//map
-		typedef std::map<std::string, Simulation::RadarData> radar_data_map;
+//		typedef std::map<std::string, Simulation::RadarData> radar_data_map;
 		radar_data_map radar_map_;
-		typedef std::map<std::string, Simulation::Position> position_map;
-		position_map radar_position_map_;
+//		typedef std::map<std::string, Simulation::Position> position_map;
+//		position_map radar_position_map_;
 
 // END USER INSERT SECTION TAPDisplaySessionImpl
 

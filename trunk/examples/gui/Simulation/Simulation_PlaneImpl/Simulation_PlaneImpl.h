@@ -98,6 +98,14 @@ namespace Simulation
         	throw(CORBA::SystemException);
         CORBA::Double initial_course()
         	throw(CORBA::SystemException);
+        
+        //
+        // IDL:Simulation/Plane/speed:1.0
+        //
+        void speed(CORBA::Double param)
+        	throw(CORBA::SystemException);
+        CORBA::Double speed()
+        	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION PlaneSessionImpl
 	private:
