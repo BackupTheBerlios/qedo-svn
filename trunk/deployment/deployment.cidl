@@ -1,0 +1,27 @@
+#include "deployment.idl"
+
+
+module DCI_Basics {
+		composition session DCIManagerImpl {
+			home executor DCIManagerHomeImpl {
+				implements DCI_Basics::DCIManagerHome;
+				manages DCIManagerSessionImpl;
+			};
+		};
+
+		composition session AssemblyManagerImpl {
+			home executor AssemblyManagerHomeImpl {
+				implements DCI_Basics::AssemblyManagerHome;
+				manages AssemblyManagerSessionImpl;
+			};
+		};
+		
+		composition session NodeManagerImpl {
+			home executor NodeManagerHomeImpl {
+				implements DCI_Basics::NodeManagerHome;
+				manages NodeManagerSessionImpl;
+			};
+		};
+};
+
+

@@ -23,7 +23,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentContainer.lib ComponentIDL.lib obd.lib jtcd.lib CosPropertyd.lib "
-				OutputFile="$(OutDir)/DCI_Basics_NodeManagerImpl_SERVANT.dll"
+				OutputFile="$(Qedo)/../runtime/DCI_Basics_NodeManagerImpl_SERVANT.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)/ComponentContainer/Debug_orbacus;$(QEDO)/ComponentIDL/Debug_orbacus;$(ORBACUS)/lib"
 				GenerateDebugInformation="TRUE"

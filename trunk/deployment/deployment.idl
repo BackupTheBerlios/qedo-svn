@@ -1,0 +1,246 @@
+#include "Components.idl"
+#include "CosProperty.idl"
+
+module DCI_Basics {
+
+
+typedef sequence<Components::Deployment::Assembly> Assemblies;
+typedef sequence<Components::Deployment::UUID> UUIDs;
+typedef sequence<string> AssemblyUUIDs;
+
+
+
+	//used to initialize assembly manager
+	struct DescriptorEntry 
+	{
+		Components::Deployment::UUID name;
+		string descriptor;
+	};
+	typedef sequence <DescriptorEntry> DescriptorList;
+	struct AssemblyDescriptors
+	{
+		string ass_descriptor;
+		DescriptorList softpkg_descriptors;
+		DescriptorList comp_descriptors;
+		DescriptorList property_descriptors;
+	};
+
+	typedef sequence<octet> ComponentArchive;
+
+	enum InvalidArchiveReason {parser_error, missing_implementation, unpack_error};
+	exception InvalidArchive { InvalidArchiveReason reson;
+					string description; //unknown archive type // broken archive // parse error text
+					};
+
+	exception AlreadyInstalled {};
+	exception AssemblyTypeUsed {};
+	exception UninstallationFailure {string reason;};
+	
+	enum CreationFailureReason {resource_errror, node_unavailable, unknown};
+	exception CreationFailure {CreationFailureReason reason;
+								string description;}; //node name // resource name
+	exception DestroyError {string reason;};
+
+	exception UnknownAssemblyType{};
+
+	exception UploadError {string reason;};
+
+	//#include "i_DCIDeployment.idl"
+	interface DCIDeployment {
+
+		// implementierungen zu den nodes ³bertragen (push)
+		void install_archive(in ComponentArchive archive)
+			raises(Components::Deployment::InstallationFailure, AlreadyInstalled, InvalidArchive);
+
+		// implementierungen werden von den nodes besorgt (pull)
+		void install_descriptor(in string descriptor)
+			raises(Components::Deployment::InstallationFailure, AlreadyInstalled);
+
+		void uninstall(in Components::Deployment::UUID assemblyUUID)
+			raises (UnknownAssemblyType,AssemblyTypeUsed, UninstallationFailure);
+
+		void update_archive(in Components::Deployment::UUID old_assemblyUUID, in ComponentArchive archive)
+			raises(UnknownAssemblyType, Components::Deployment::InstallationFailure, AlreadyInstalled, InvalidArchive );
+
+		void update_descriptor(in Components::Deployment::UUID old_assemblyUUID, in string descriptor)
+			raises(UnknownAssemblyType, Components::Deployment::InstallationFailure, AlreadyInstalled);
+
+		//AssemblyTypeManager 
+		string create_assembly(in Components::Deployment::UUID assemblyUUID)
+			raises(CreationFailure);
+
+		AssemblyUUIDs get_assemblies(in Components::Deployment::UUID assemblyUUID)
+			raises(UnknownAssemblyType);
+
+		void destroy_assembly(in string assembly_id)
+			raises(DestroyError);
+
+		UUIDs get_assembly_types();
+
+		// return descriptor
+		string lookup_assembly_type(in Components::Deployment::UUID assemblyUUID) 
+			raises(UnknownAssemblyType);
+
+	};
+
+	component NodeManager;
+
+	interface DCIInformation {
+		NodeManager get_node_manager(in string node_name);
+		string get_dci_properties();
+		//proxy operation (maybe for security reason)
+		string get_node_properties(in string node_name);
+	};
+
+	//#include "i_ExtComponentInstallation.idl"
+	interface ExtComponentInstallation:Components::Deployment::ComponentInstallation {
+		void upload(in ComponentArchive archive)
+			raises(UploadError);
+	};
+	
+	enum PropertyMode {
+		undefined,
+		normal,
+		normal_readonly,
+		fixed_normal,
+		fixed_readonly
+	};
+
+	/*****************************************************/
+	/* Interface Monitoring				                 */
+	/*****************************************************/
+
+	interface Monitoring : CosPropertyService::PropertySet
+	{
+		/* - supports currently only pull model          */
+		/* - will possibly get later additional 	     */
+		/*   supporting operations for pull model	     */
+		/* - will later also inherit from event service  */
+		/*   interfaces for push model 		             */
+
+		void define_property_with_mode(
+		in CosPropertyService::PropertyName property_name,
+		in any property_value,
+		in PropertyMode property_mode)
+		raises(
+		CosPropertyService::InvalidPropertyName,
+		CosPropertyService::ConflictingProperty,
+		CosPropertyService::UnsupportedTypeCode,
+		CosPropertyService::UnsupportedProperty,
+		CosPropertyService::ReadOnlyProperty,
+		CosPropertyService::UnsupportedMode
+		);
+
+		PropertyMode get_property_mode (
+		in CosPropertyService::PropertyName property_name)
+		raises (
+		CosPropertyService::PropertyNotFound,
+		CosPropertyService::InvalidPropertyName
+		);
+
+		void set_property_mode (
+		in CosPropertyService::PropertyName property_name,
+		in PropertyMode property_mode)
+		raises (
+		CosPropertyService::InvalidPropertyName,
+		CosPropertyService::PropertyNotFound,
+		CosPropertyService::UnsupportedMode
+		);
+
+	};  /* interface Monitoring */
+
+	//#include "i_NodeInformation.idl"
+	interface NodeInformation :Monitoring {
+		string get_node_properties();
+		Components::CCMHomes get_all_homes();
+
+		// monitoring operationen
+		// interface PropertySet aud Property Service
+	};
+
+	enum changed_entity  {dci, node} ;
+	eventtype DCIChanged {
+		public changed_entity ent;
+		// includes node_name if entity==node
+		// unused otherwise
+		public string node_name;
+	};
+
+	eventtype NodeChanged {
+	// node_name of sending node
+	public string node_name;
+	};
+
+
+	component NodeManager;
+	component AssemblyManager;
+	component DCIManager {
+
+		provides DCIDeployment deployment;
+		provides DCIInformation dci_informations;
+		
+		// using dis-/connect to de-/register AssemblyManagers
+		uses multiple AssemblyManager assembly_manager;
+		
+		// using dis-/connect to de-/register NodeManagers
+		uses multiple NodeManager node_manager;
+		// uses NodeInformation node_information;
+		// uses ExtComponentInstallation component_installation;
+
+		publishes DCIChanged dci_changed;
+		consumes NodeChanged node_changed;
+	};
+
+	home DCIManagerHome manages DCIManager {
+	};
+
+
+
+///////////////
+	component AssemblyManager {
+		attribute AssemblyDescriptors descriptors;
+		attribute string ass_id;
+		provides Components::Deployment::Assembly assembly;
+		// provides AssemblyActions assemblyactions;
+		uses DCIInformation dci_information;
+
+		uses multiple NodeManager node_manager;
+		// conections established by node_manager itself (calling connect at its own)
+		// this interface are available via node_manager
+		// uses ServerActivator activator;
+		// uses ComponentServer component_server;
+		// uses Container container;
+
+		// this interface for dynamic reconfiguration
+		// uses ScriptEvaluator;
+		// uses ConstraintMonitor;
+	};
+
+
+	home AssemblyManagerHome supports Components::Deployment::AssemblyFactory manages AssemblyManager {
+	};
+
+
+/////////////////
+
+
+
+
+	component NodeManager {
+
+	//	provides ComponentInstallation component_installation;
+		provides ExtComponentInstallation component_installation;
+		provides Components::Deployment::ServerActivator server_activator;
+		provides NodeInformation node_information;
+		
+		uses Components::Deployment::ComponentInstallation orig_component_installation;
+		uses Components::Deployment::ServerActivator orig_server_activator;
+
+		publishes NodeChanged node_changed;
+
+	};
+
+	home NodeManagerHome manages NodeManager {
+
+	};
+};
