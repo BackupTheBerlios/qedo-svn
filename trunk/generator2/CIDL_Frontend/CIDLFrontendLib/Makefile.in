@@ -1,0 +1,47 @@
+include ../../MakeVars
+
+CXX = @CXX@
+CPPFLAGS+=-I. -I../../CIDL_Repository/IFRidl \
+          -I../../CIDL_Repository/ComponentRepositoryLib\
+          -I../../CIDL_Repository/CIDLRepositoryLib\
+			 -DKC_DEPRECATED -DYYERROR_VERBOSE -DYYDEBUG \
+          @CPPFLAGS@ 
+CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+CXXCOMPILE=@CXX@ $(CXXFLAGS)
+LIBS=@LIBS@
+
+@SET_MAKE@
+
+CXXFLAGS +=  $(IDLCXXFLAGS) $(INCLUDES)
+
+KIMWITU_FILES = tree.k frontend.k symtab.k error.k printer.k options.k resolve_symtab.k cg_io.k debug.k util.k global.k attributes.k pretty.k repository.k cidl_attributes.k
+KIMWITU_HEADER_FILES = $(KIMWITU_FILES:.k=.h) k.h unpk.h
+KIMWITU_CPP_FILES = $(KIMWITU_FILES:.k=.cpp) k.cpp unpk.cpp
+KIMWITU_OBJECT_FILES = $(KIMWITU_CPP_FILES:.cpp=.o)
+
+SOURCES = cidl.cpp \
+			lexana.cpp \
+			version.cpp \
+			getopt.cpp \
+			getopt1.cpp 
+
+.PHONY:all
+
+all: libCIDLFrontendLib.a
+
+libCIDLFrontendLib.a : $(KIMWITU_OBJECT_FILES) $(SOURCES:%.cpp=%.o)
+
+$(KIMWITU_HEADER_FILES) $(KIMWITU_CPP_FILES) : .kc_timestamp
+
+.kc_timestamp k.cpp unpk.cpp : $(KIMWITU_FILES)
+	$(KC_PP) --no-csgio --no-rewrite --no-printdot --yystype --suffix=cpp \
+	$(KIMWITU_FILES)
+	date > .kc_timestamp
+
+lexana.cpp : lexana.l
+	$(LEX) -Sflex.skel -tw lexana.l > lexana.cpp
+
+cidl.cpp cidl.h y.output : k.h cidl.y
+	env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
+	@mv cidl.hpp cidl.h
+
