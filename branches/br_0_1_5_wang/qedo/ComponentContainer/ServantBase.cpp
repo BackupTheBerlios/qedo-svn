@@ -25,7 +25,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.13 2003/12/16 13:37:32 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.13.2.1 2004/03/08 14:47:37 hao Exp $";
 
 namespace Qedo {
 
@@ -345,6 +345,7 @@ Components::PrimaryKeyBase*
 PrimaryServant::get_primary_key()
 throw(Components::NoKeyAvailable, CORBA::SystemException)
 {
+	std::cout << "PrimaryServant::get_primary_key()\n";
     return ccm_object_executor_->get_primary_key();
 }
 

@@ -37,7 +37,7 @@ extern "C" {
 }
 #endif
 
-static char rcsid[] UNUSED = "$Id: CCMObjectExecutor.cpp,v 1.25 2003/10/30 17:24:13 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: CCMObjectExecutor.cpp,v 1.25.2.1 2004/03/08 14:47:37 hao Exp $";
 
 namespace Qedo {
 
@@ -722,6 +722,7 @@ Components::PrimaryKeyBase*
 CCMObjectExecutor::get_primary_key()
 throw (Components::NoKeyAvailable, CORBA::SystemException)
 {
+	std::cout << "CCMObjectExecutor::get_primary_key()\n";
 	throw Components::NoKeyAvailable();
 }
 
