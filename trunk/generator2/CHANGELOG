@@ -1,3 +1,5 @@
+- reference counting for generated executors
+
 version 0.1.1
 
 - event inheritance enabled
