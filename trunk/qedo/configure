@@ -3281,30 +3281,30 @@ fi
 
 if test X"$use_streams" != Xyes; then
 	QEDO_STREAMS=$use_streams
-
 	cat >>confdefs.h <<\_ACEOF
 #define _QEDO_NO_STREAMS 1
 _ACEOF
 
 fi
 
+
 if test X"$use_qos" != Xyes; then
 	QEDO_QOS=$use_qos
-
 	cat >>confdefs.h <<\_ACEOF
 #define _QEDO_NO_QOS 1
 _ACEOF
 
 fi
 
+
 if test X"$use_db" != Xyes; then
 	QEDO_DB=$use_db
-
 	cat >>confdefs.h <<\_ACEOF
 #define _QEDO_NO_DB 1
 _ACEOF
 
 fi
+
 
 # Checks for header files.
 
