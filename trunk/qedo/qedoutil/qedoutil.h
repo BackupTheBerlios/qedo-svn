@@ -118,6 +118,56 @@ std::string
 getPath(std::string source);
 
 
+/**
+ * checks whether the file exists
+ * \param name The name of the file.
+ * \return True if name denotes a file
+ */
+QEDOUTIL_API
+bool 
+isFile(std::string name);
+
+
+/**
+ * remove file
+ * \param name The name of the file to be removed.
+ * \return 0 if removed
+ */
+QEDOUTIL_API
+int 
+removeFile(std::string name);
+
+
+/**
+ * checks whether the directory exists
+ * \param name The name of the directory.
+ * \return True if name denotes a directory
+ */
+QEDOUTIL_API
+bool 
+isDir(std::string name);
+
+
+/**
+ * create directory
+ * \param name The name of the directory.
+ * \return 0 if directory was created or already exists
+ */
+QEDOUTIL_API
+int 
+makeDir(std::string name);
+
+
+/**
+ * remove directory
+ * \param name The name of the directory to be removed.
+ * \return 0 if removed
+ */
+QEDOUTIL_API
+int 
+removeDir(std::string name);
+
+
 }
 
 /** @} */

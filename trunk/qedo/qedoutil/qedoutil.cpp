@@ -21,15 +21,17 @@
 /***************************************************************************/
 
 #include "qedoutil.h"
-#include "Output.h"
+#include <sys/types.h>
+#include <sys/stat.h>
 
-#ifndef _WIN32
-#include <sys/fcntl.h>
-#include <dlfcn.h>
+#ifdef _WIN32
+#else
+#include <unistd.h>
+#include <utime.h>
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qedoutil.cpp,v 1.3 2003/09/29 17:00:07 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qedoutil.cpp,v 1.4 2003/10/23 09:53:14 neubauer Exp $";
 
 
 namespace Qedo {
@@ -172,6 +174,211 @@ getPath(std::string source)
 
 	return path;
 }
+
+
+int
+makeDir(std::string dir)
+{
+	if( isFile(dir) ) 
+	{ 
+        return 1;
+	}
+
+	if( isDir(dir) ) 
+	{ 
+        return 0;
+	}
+
+	//
+	// check base directory
+	//
+	int err;
+	std::string::size_type pos = dir.find_last_of("/\\");
+	if(pos != std::string::npos)
+	{
+		err = makeDir( dir.substr(0, pos) );
+		if(err)
+		{
+			return err;
+		}
+	}
+
+	//
+	// create directory
+	//
+#ifdef _WIN32
+	DWORD dw;
+	if( !CreateDirectory(dir.c_str(), NULL) )
+	{
+		dw = GetLastError();
+		return 2;
+	}
+#else
+	err = mkdir( dir.c_str(), 0755 );
+	if(err)
+	{
+		return 2;
+	}
+#endif
+
+	return 0;
+}
+
+
+bool 
+isFile(std::string name)
+{
+#ifdef _WIN32
+	std::string::size_type pos = name.find_first_of("/");
+	while (pos != std::string::npos)
+    {
+        name.replace(pos, 1, "\\");
+        pos = name.find_first_of("/");
+    }
+	// if the last symbol is a delimiter, remove it
+	char* object_name = strdup(name.c_str());
+	if ((strlen(object_name)) && (object_name[strlen(object_name) - 1] == '\\'))
+#else
+	// if the last symbol is a delimiter, remove it
+	char* object_name = strdup(object.c_str());
+	if ((strlen(object_name)) && (object_name[strlen(object_name) - 1] == '/' ))
+#endif
+	{
+		object_name[strlen(object_name) - 1] = '\0';
+	}
+	
+	struct stat statbuff;
+	int rt = stat(object_name, &statbuff);
+	free(object_name);
+
+	if  (rt < 0)
+	{
+		return false; 
+	}
+		
+	if( (statbuff.st_mode & S_IFMT) == S_IFREG )
+	{
+		return true; 
+	}
+    
+	return false;
+}
+
+
+int 
+removeFile(std::string name) 
+{
+    if( isFile(name) ) 
+	{
+#ifdef _WIN32
+        char dummy[256];
+        strcpy(dummy, name.c_str());
+        dummy[strlen(dummy) + 1] = '\0';
+
+        SHFILEOPSTRUCT fileOp;
+        fileOp.hwnd = NULL;
+        fileOp.wFunc = FO_DELETE;
+        fileOp.pFrom = dummy;
+        fileOp.pTo = NULL;
+        fileOp.fFlags = FOF_NOCONFIRMATION;
+        int error =  SHFileOperation(&fileOp);
+        if (error)
+        {
+            return 1;
+        }
+#else
+		std::string command = std::string("\\rm -f ") + name;
+		system(command.c_str());
+#endif
+		return 0;
+	}
+
+    return 1;
+}
+
+
+bool 
+isDir(std::string name)
+{
+#ifdef _WIN32
+	std::string::size_type pos = name.find_first_of("/");
+	while (pos != std::string::npos)
+    {
+        name.replace(pos, 1, "\\");
+        pos = name.find_first_of("/");
+    }
+	// if the last symbol is a delimiter, remove it
+	char* object_name = strdup(name.c_str());
+	if ((strlen(object_name)) && (object_name[strlen(object_name) - 1] == '\\'))
+#else
+	// if the last symbol is a delimiter, remove it
+	char* object_name = strdup(object.c_str());
+	if ((strlen(object_name)) && (object_name[strlen(object_name) - 1] == '/' ))
+#endif
+	{
+		object_name[strlen(object_name) - 1] = '\0';
+	}
+	
+	struct stat statbuff;
+	int rt = stat(object_name, &statbuff);
+	free(object_name);
+
+	if  (rt < 0)
+	{
+		return false; 
+	}
+		
+	if( (statbuff.st_mode & S_IFMT) == S_IFDIR )
+	{
+		return true; 
+	}
+    
+	return false;
+}
+
+
+int 
+removeDir(std::string name) 
+{
+	// if the last symbol is a delimiter, remove it
+	std::string object_name = name;
+#ifdef _WIN32
+	if (object_name[object_name.size() - 1] == '\\')
+#else
+	if (object_name[object_name.size() - 1] == '/')
+#endif
+	{
+		object_name.erase(object_name.size() - 1, 1);
+	}
+    
+    if( isDir(object_name) ) 
+	{
+#ifdef _WIN32
+        char dummy[256];
+        strcpy(dummy, object_name.c_str());
+        dummy[strlen(dummy) + 1] = '\0';
+
+        SHFILEOPSTRUCT fileOp;
+        fileOp.hwnd = NULL;
+        fileOp.wFunc = FO_DELETE;
+        fileOp.pFrom = dummy;
+        fileOp.pTo = NULL;
+        fileOp.fFlags = FOF_NOCONFIRMATION;
+        int error =  SHFileOperation(&fileOp);
+        if (error)
+        {
+            return 1;
+        }
+#else
+		std::string command = std::string("\\rm -rf ") + object_name;
+		system(command.c_str());
+#endif
+		return 0;
+	}
+
+    return 1;
+}
+
 
 }
 
