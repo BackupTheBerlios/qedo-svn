@@ -25,7 +25,7 @@
 
 #include "StorageHomeDef_impl.h"
 #include "FactoryDef_impl.h"
-#include "PSSFinderDef_impl.h"
+#include "PSSKeyDef_impl.h"
 #include "PSSPrimaryKeyDef_impl.h"
 #include "Debug.h"
 
@@ -134,11 +134,11 @@ throw(CORBA::SystemException)
 	for ( i = 0; i < factories -> length(); i++ )
 		storage_home_desc -> factories[i] = factories.inout()[i];
 
-	// Finders
-	IR__::PSSFinderDefSeq_var finders = this -> finders();
-	storage_home_desc -> finders.length (  finders -> length() );
-	for ( i = 0; i < finders -> length(); i++ )
-		storage_home_desc -> finders[i] = finders.inout()[i];
+	// Keys
+	IR__::PSSKeyDefSeq_var keys = this -> keys();
+	storage_home_desc -> keys.length (  keys -> length() );
+	for ( i = 0; i < keys -> length(); i++ )
+		storage_home_desc -> keys[i] = keys.inout()[i];
 
 	// Operations and Attributes
 	list < Contained_impl* >::const_iterator contained_iter;
@@ -360,36 +360,36 @@ throw(CORBA::SystemException)
 	return factory_seq._retn();
 }
 
-IR__::PSSFinderDefSeq*
-StorageHomeDef_impl::finders
+IR__::PSSKeyDefSeq*
+StorageHomeDef_impl::keys
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "StorageHomeDef_impl::finders() called" );
+	DEBUG_OUTLINE ( "StorageHomeDef_impl::keys() called" );
 
-	IR__::PSSFinderDefSeq_var finder_seq = new IR__::PSSFinderDefSeq;
+	IR__::PSSKeyDefSeq_var key_seq = new IR__::PSSKeyDefSeq;
 
 	list < Contained_impl* >::const_iterator contained_iter;
 	for ( contained_iter = contained_.begin();
 			contained_iter != contained_.end();
 			contained_iter++ )
 	{
-		if ( (*contained_iter) -> def_kind() == CORBA__::dk_Finder )
+		if ( (*contained_iter) -> def_kind() == CORBA__::dk_PSSKey )
 		{
-			PSSFinderDef_impl *impl;
-			impl = dynamic_cast < PSSFinderDef_impl* > ( *contained_iter );
+			PSSKeyDef_impl *impl;
+			impl = dynamic_cast < PSSKeyDef_impl* > ( *contained_iter );
 			if ( !impl )
 			{
 				// This cannot be, what to do?
-				DEBUG_ERRLINE ( "Fatal error: Contained with kind 'dk_Finder' cannot be casted to PSSFinderDef_impl" );
+				DEBUG_ERRLINE ( "Fatal error: Contained with kind 'dk_PSSKey' cannot be casted to PSSKeyDef_impl" );
 				continue;
 			}
-			finder_seq -> length ( finder_seq -> length() + 1 );
-			finder_seq [ finder_seq -> length() - 1 ] = impl -> _this();
+			key_seq -> length ( key_seq -> length() + 1 );
+			key_seq [ key_seq -> length() - 1 ] = impl -> _this();
 		}
 	}
 
-	return finder_seq._retn();
+	return key_seq._retn();
 }
 
 IR__::PSSPrimaryKeyDef_ptr
@@ -469,34 +469,32 @@ throw(CORBA::SystemException)
 	return new_factory -> _this();
 }
 
-IR__::PSSFinderDef_ptr
-StorageHomeDef_impl::create_finder
+IR__::PSSKeyDef_ptr
+StorageHomeDef_impl::create_key
 (const char* id,
  const char* name,
  const char* version,
- const IR__::ParDescriptionSeq& params,
- const IR__::ExceptionDefSeq& exceptions)
+ const IR__::ParDescriptionSeq& params)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "StorageHomeDef_impl::create_finder() called" );
+	DEBUG_OUTLINE ( "StorageHomeDef_impl::create_key() called" );
 
 	if ( repository_ -> check_for_id ( id ) )
 		throw CORBA::BAD_PARAM ( 2, CORBA::COMPLETED_NO );
 	if ( check_for_name ( name ) )
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
-	PSSFinderDef_impl *new_finder = 
-		new PSSFinderDef_impl ( this, repository_, managed_storage_type_impl_ );
-	new_finder -> id ( id );
-	new_finder -> name ( name );
-	new_finder -> version ( version );
-	new_finder -> params ( params );
-	new_finder -> exceptions ( exceptions );
+	PSSKeyDef_impl *new_key = 
+		new PSSKeyDef_impl ( this, repository_, managed_storage_type_impl_ );
+	new_key -> id ( id );
+	new_key -> name ( name );
+	new_key -> version ( version );
+	new_key -> params ( params );
 
 	repository_ -> _add_ref();
 	this -> _add_ref();
 
-	return new_finder -> _this();
+	return new_key -> _this();
 }
 
 } // namespace QEDO_ComponentRepository

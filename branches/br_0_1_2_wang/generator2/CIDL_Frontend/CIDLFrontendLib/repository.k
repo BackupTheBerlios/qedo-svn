@@ -933,6 +933,16 @@ StateMember(flag_v, def_1, dcls)
   [ build :
   ];
 
+
+// ======================== Catalog ================================
+def_v=
+CatalogDcl( name, identi )
+->[ feed_container:
+    {
+	}
+  ];
+
+
 // ======================== Abstract Storage Type ================================
 
 def_v=
@@ -1579,15 +1589,14 @@ FinderDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 	}
   ];
 
-// ====================== PSSFinder -- KeyDcl =============================
-
+// ====================== PSSKey =============================
 def_v=
-KeyDcl(idl_name_v, parameter_dcls_v)
+KeyDcl(idl_name_v, dcls_v)
 ->[ feed:
 	%uviewvar build my_build;
-    // parameters
-    { my_build.pos = 0; my_build.paradescseq.length(parameter_dcls_v->length()); }
-    parameter_dcls_v : my_build
+    // declarators
+    { my_build.pos = 0; my_build.paradescseq.length(dcls_v->length()); }
+    dcls_v : my_build
     // exceptions
     { my_build.pos = 0; }
     // attr_raises_expr_v : my_build
@@ -1595,24 +1604,43 @@ KeyDcl(idl_name_v, parameter_dcls_v)
     { my_build.pos = 0; }
 
 	{
-	    IR__::StorageHomeDef_ptr storagehome_ptr; 
+		foreach($decl_v; declarators dcls_v) {
+			ArrayDeclarator(name_v, array_list) : {
+				//my_build.type = type_def;
+				array_list->unparse(kc_printer, my_build);
+				my_build.paradescseq[my_build.pos].name = name_v->get_name();
+				my_build.paradescseq[my_build.pos].type_def = my_build.type;
+				my_build.paradescseq[my_build.pos].type = 
+					my_build.paradescseq[my_build.pos].type_def->type();
+				my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
+				my_build.pos++;
+			}
+			SimpleDeclarator(name_v) : {
+				my_build.paradescseq[my_build.pos].name = name_v->get_name();
+				my_build.paradescseq[my_build.pos].type_def = my_build.type;
+				my_build.paradescseq[my_build.pos].type = 
+					my_build.paradescseq[my_build.pos].type_def->type();
+				my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
+				my_build.pos++;
+			}
+		}
+
+		// key for storage home
+		IR__::StorageHomeDef_ptr storagehome_ptr; 
 		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
-		
 		if(!CORBA::is_nil(storagehome_ptr))
 		{
-			storagehome_ptr->create_finder(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-				"1.0",my_build.paradescseq,my_build.excdefseq);
+			storagehome_ptr->create_key(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+				"1.0",my_build.paradescseq);
 		}
-		else
+
+		// key for abstract storage home
+		IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
+		abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
+		if(!CORBA::is_nil(abs_storagehome_ptr))
 		{
-			IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
-			abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
-			
-			if(!CORBA::is_nil(abs_storagehome_ptr))
-			{
-				abs_storagehome_ptr->create_finder(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-					"1.0",my_build.paradescseq,my_build.excdefseq);
-			}
+			abs_storagehome_ptr->create_key(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+					"1.0",my_build.paradescseq);
 		}
 	}
   ];

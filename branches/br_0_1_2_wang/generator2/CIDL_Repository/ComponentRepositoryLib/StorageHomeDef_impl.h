@@ -100,9 +100,9 @@ public:
     virtual IR__::FactoryDefSeq* factories();
 
     //
-    // IDL:omg.org/IR__/StorageHomeDef/finders:1.0
+    // IDL:omg.org/IR__/StorageHomeDef/keys:1.0
     //
-    virtual IR__::PSSFinderDefSeq* finders();
+    virtual IR__::PSSKeyDefSeq* keys();
 
     //
     // IDL:omg.org/IR__/StorageHomeDef/create_primary_key:1.0
@@ -122,13 +122,12 @@ public:
                                                 const IR__::ExceptionDefSeq& exceptions);
 
     //
-    // IDL:omg.org/IR__/StorageHomeDef/create_finder:1.0
+    // IDL:omg.org/IR__/StorageHomeDef/create_key:1.0
     //
-    virtual IR__::PSSFinderDef_ptr create_finder(const char* id,
+    virtual IR__::PSSKeyDef_ptr create_key(const char* id,
                                               const char* name,
                                               const char* version,
-                                              const IR__::ParDescriptionSeq& params,
-                                              const IR__::ExceptionDefSeq& exceptions);
+                                              const IR__::ParDescriptionSeq& params);
 };
 
 } // namespace QEDO_ComponentRepository

@@ -89,9 +89,9 @@ public:
         throw(CORBA::SystemException);
 
     //
-    // IDL:omg.org/IR__/AbstractStorageHomeDef/finders:1.0
+    // IDL:omg.org/IR__/AbstractStorageHomeDef/keys:1.0
     //
-    virtual IR__::PSSFinderDefSeq* finders()
+    virtual IR__::PSSKeyDefSeq* keys()
         throw(CORBA::SystemException);
 
     //
@@ -105,13 +105,12 @@ public:
         throw(CORBA::SystemException);
 
     //
-    // IDL:omg.org/IR__/AbstractStorageHomeDef/create_finder:1.0
+    // IDL:omg.org/IR__/AbstractStorageHomeDef/create_key:1.0
     //
-    virtual IR__::PSSFinderDef_ptr create_finder(const char* id,
+    virtual IR__::PSSKeyDef_ptr create_key(const char* id,
                                                  const char* name,
                                                  const char* version,
-                                                 const IR__::ParDescriptionSeq& params,
-                                                 const IR__::ExceptionDefSeq& exceptions)
+                                                 const IR__::ParDescriptionSeq& params)
         throw(CORBA::SystemException);
 };
 

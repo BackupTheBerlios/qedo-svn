@@ -257,7 +257,7 @@ SOURCE=.\ProvidesDef_impl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\PSSFinderDef_impl.cpp
+SOURCE=.\PSSKeyDef_impl.cpp
 # End Source File
 # Begin Source File
 
@@ -449,7 +449,7 @@ SOURCE=.\ProvidesDef_impl.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\PSSFinderDef_impl.h
+SOURCE=.\PSSKeyDef_impl.h
 # End Source File
 # Begin Source File
 

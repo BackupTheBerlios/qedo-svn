@@ -23,8 +23,8 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#ifndef __PSSFINDER_DEF_IMPL_H__
-#define __PSSFINDER_DEF_IMPL_H__
+#ifndef __PSSKEY_DEF_IMPL_H__
+#define __PSSKEY_DEF_IMPL_H__
 
 #include <CORBA.h>
 #include "IFR_skel.h"
@@ -35,19 +35,19 @@
 
 namespace QEDO_ComponentRepository {
 
-class PSSFinderDef_impl : public virtual POA_IR__::PSSFinderDef,
+class PSSKeyDef_impl : public virtual POA_IR__::PSSKeyDef,
 						public virtual OperationDef_impl
 {
 public:
-	PSSFinderDef_impl ( Container_impl *container,
+	PSSKeyDef_impl ( Container_impl *container,
 						Repository_impl *repository,
 						AbstractStorageTypeDef_impl *abs_storage_type );
 
-	PSSFinderDef_impl ( Container_impl *container,
+	PSSKeyDef_impl ( Container_impl *container,
 						Repository_impl *repository,
 						StorageTypeDef_impl *storage_type );
 
-	~PSSFinderDef_impl();
+	~PSSKeyDef_impl();
 
     //
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
@@ -55,7 +55,7 @@ public:
 	virtual CORBA__::DefinitionKind def_kind()
         throw(CORBA::SystemException)
     {
-        return CORBA__::dk_PSSFinder;
+        return CORBA__::dk_PSSKey;
     }
 
     //

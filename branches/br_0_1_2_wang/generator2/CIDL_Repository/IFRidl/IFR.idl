@@ -62,7 +62,7 @@ module CORBA__ {
 		, dk_Catalog, dk_AbstractStorageHome, dk_StorageHome
 		, dk_AbstractStorageType, dk_StorageType
 		//, dk_PSSFactory
-		, dk_PSSFinder, dk_PSSPrimaryKey
+		, dk_PSSKey, dk_PSSPrimaryKey
 
 	};
 
@@ -160,8 +160,8 @@ module IR__ {
 	typedef sequence <FinderDef> FinderDefSeq;
 	//interface PSSFactoryDef;
 	//typedef sequence <PSSFactoryDef> PSSFactoryDefSeq;
-	interface PSSFinderDef;
-	typedef sequence <PSSFinderDef> PSSFinderDefSeq;
+	interface PSSKeyDef;
+	typedef sequence <PSSKeyDef> PSSKeyDefSeq;
 	interface PrimaryKeyDef;
 	typedef sequence <Contained> ContainedSeq;
 	interface AbstractStorageTypeDef;
@@ -913,7 +913,7 @@ module IR__ {
 	//interface PSSFactoryDef : OperationDef { // only PARAM_IN parameters
 	//};
 	
-	interface PSSFinderDef : OperationDef { // only PARAM_IN parameters
+	interface PSSKeyDef : OperationDef { // only PARAM_IN parameters
 	};
 	
 	interface HomeDef : InterfaceDef {
@@ -1007,7 +1007,7 @@ module IR__ {
 		//attribute InterfaceDefSeq base_storage_homes;
 		attribute AbsStorageHomeDefSeq base_abstract_storage_homes;
 		readonly attribute FactoryDefSeq factories;
-		readonly attribute PSSFinderDefSeq finders;
+		readonly attribute PSSKeyDefSeq keys;
 		// write interfaces
 		FactoryDef create_factory (
 			in RepositoryId id,
@@ -1016,12 +1016,12 @@ module IR__ {
 			in ParDescriptionSeq params, // only PARAM_INs
 			in ExceptionDefSeq exceptions
 		);
-		PSSFinderDef create_finder (
+		PSSKeyDef create_key (
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in ParDescriptionSeq params, // only PARAM_INs
-			in ExceptionDefSeq exceptions
+			in ParDescriptionSeq params // only PARAM_INs
+			//in ExceptionDefSeq exceptions
 		);
 	};
 	
@@ -1033,7 +1033,7 @@ module IR__ {
 		RepositoryId managed_abstract_storage_type;
 		RepositoryIdSeq base_abstract_storage_homes;
 		FactoryDefSeq factories;
-		PSSFinderDefSeq finders;
+		PSSKeyDefSeq keys;
 		AttrDescriptionSeq attributes;
 		OpDescriptionSeq operations;
 	};
@@ -1045,7 +1045,7 @@ module IR__ {
 		attribute InterfaceDefSeq supported_interfaces;
 		readonly attribute PSSPrimaryKeyDef primary_key;
 		readonly attribute FactoryDefSeq factories;
-		readonly attribute PSSFinderDefSeq finders;
+		readonly attribute PSSKeyDefSeq keys;
 		// write interfaces
 		PSSPrimaryKeyDef create_primary_key (
 			in RepositoryId id,
@@ -1060,12 +1060,12 @@ module IR__ {
 			in ParDescriptionSeq params, // only PARAM_INs
 			in ExceptionDefSeq exceptions
 		);
-		PSSFinderDef create_finder (
+		PSSKeyDef create_key (
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in ParDescriptionSeq params, // only PARAM_INs
-			in ExceptionDefSeq exceptions
+			in ParDescriptionSeq params // only PARAM_INs
+			//in ExceptionDefSeq exceptions
 		);
 	};
 	
@@ -1079,7 +1079,7 @@ module IR__ {
 		RepositoryIdSeq supports_interfaces;
 		PSSPrimaryKeyDef primary_key_def;
 		FactoryDefSeq factories;
-		PSSFinderDefSeq finders;
+		PSSKeyDefSeq keys;
 		AttrDescriptionSeq attributes;
 		OpDescriptionSeq operations;
 	};

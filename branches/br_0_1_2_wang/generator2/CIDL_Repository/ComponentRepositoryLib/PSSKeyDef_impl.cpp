@@ -23,12 +23,12 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#include "PSSFinderDef_impl.h"
+#include "PSSKeyDef_impl.h"
 #include "Debug.h"
 
 namespace QEDO_ComponentRepository {
 
-PSSFinderDef_impl::PSSFinderDef_impl
+PSSKeyDef_impl::PSSKeyDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
   AbstractStorageTypeDef_impl *abs_storage_type)
@@ -37,13 +37,13 @@ PSSFinderDef_impl::PSSFinderDef_impl
   Contained_impl ( container, repository ),
   OperationDef_impl ( container, repository )
 {
-	DEBUG_OUTLINE ( "PSSFinderDef_impl::PSSFinderDef_impl() called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::PSSKeyDef_impl() called" );
 
 	OperationDef_impl::result_def ( abs_storage_type -> _this() );
 	OperationDef_impl::mode ( IR__::OP_NORMAL );
 }
 
-PSSFinderDef_impl::PSSFinderDef_impl
+PSSKeyDef_impl::PSSKeyDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
   StorageTypeDef_impl *storage_type)
@@ -52,43 +52,43 @@ PSSFinderDef_impl::PSSFinderDef_impl
   Contained_impl ( container, repository ),
   OperationDef_impl ( container, repository )
 {
-	DEBUG_OUTLINE ( "PSSFinderDef_impl::PSSFinderDef_impl() called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::PSSKeyDef_impl() called" );
 
 	OperationDef_impl::result_def ( storage_type -> _this() );
 	OperationDef_impl::mode ( IR__::OP_NORMAL );
 }
 
-PSSFinderDef_impl::~PSSFinderDef_impl
+PSSKeyDef_impl::~PSSKeyDef_impl
 ()
 {
-	DEBUG_OUTLINE ( "PSSFinderDef_impl::~PSSFinderDef_impl() called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::~PSSKeyDef_impl() called" );
 }
 
 void
-PSSFinderDef_impl::destroy
+PSSKeyDef_impl::destroy
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "PSSFinderDef_impl::destroy() called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::destroy() called" );
 }
 
 CORBA::TypeCode_ptr
-PSSFinderDef_impl::result
+PSSKeyDef_impl::result
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "PSSFinderDef_impl::result() called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::result() called" );
 
 	// How to implement???
 	throw CORBA::NO_IMPLEMENT();
 }
 
 void
-PSSFinderDef_impl::result_def
+PSSKeyDef_impl::result_def
 (IR__::IDLType_ptr idl_type)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "PSSFinderDef_impl::result_def(...) called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::result_def(...) called" );
 
 	// Setting the result_def has no effect in PSSFactoryDef
 	// result_def is automatically set by the home during
@@ -96,11 +96,11 @@ throw(CORBA::SystemException)
 }
 
 void
-PSSFinderDef_impl::params
+PSSKeyDef_impl::params
 (const IR__::ParDescriptionSeq& seq)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "PSSFinderDef_impl::params(...) called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::params(...) called" );
 
     // For PSSFactoryDef all parameters must be 'in' parameters
     for ( unsigned int i = 0 ; i < seq.length() ; i++ )
@@ -111,22 +111,22 @@ throw(CORBA::SystemException)
 }
 
 void
-PSSFinderDef_impl::mode
+PSSKeyDef_impl::mode
 (IR__::OperationMode mode)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "PSSFinderDef_impl::mode(...) called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::mode(...) called" );
 
 	// mode must not be changed for PSSFactoryDef
 	throw CORBA::BAD_INV_ORDER();	// Is this exception correct
 }
 
 void
-PSSFinderDef_impl::contexts
+PSSKeyDef_impl::contexts
 (const IR__::ContextIdSeq& seq)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "PSSFinderDef_impl::contexts(...) called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::contexts(...) called" );
 
 	// PSSFactoryDef has never contexts associated with it
 	if ( seq.length() > 0 )
