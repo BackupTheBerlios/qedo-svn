@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: GetComponentHelperServant.cpp,v 1.1 2003/05/05 11:53:14 stoinski Exp $";
+static char rcsid[] = "$Id: GetComponentHelperServant.cpp,v 1.2 2003/05/05 11:57:13 stoinski Exp $";
 
 
 #include "GetComponentHelperServant.h"
@@ -29,7 +29,8 @@ static char rcsid[] = "$Id: GetComponentHelperServant.cpp,v 1.1 2003/05/05 11:53
 
 namespace Qedo {
 
-GetComponentHelperServant::GetComponentHelperServant (Components::CCMObject_ptr)
+GetComponentHelperServant::GetComponentHelperServant (Components::CCMObject_ptr ccm_object)
+: ccm_object_ (Components::CCMObject::_duplicate (ccm_object))
 {
 }
 
@@ -45,7 +46,7 @@ Components::CCMObject_ptr
 GetComponentHelperServant::get_component()
 throw(CORBA::SystemException)
 {
-	return Components::CCMObject::_nil();
+	return Components::CCMObject::_duplicate (ccm_object_);
 }
 
 
