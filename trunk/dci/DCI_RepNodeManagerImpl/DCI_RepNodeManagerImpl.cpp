@@ -407,9 +407,9 @@ namespace DCI {
       }        
 #endif
         
-    printout_(" downloading file "+ filename+" ...");
+    printout_(" downloading file "+ filename);
     CorbaIdlTypes::OctetList_var octetList = theFile -> get_file();
-    printout_("OK" );
+    printout_("download completed" );
 
     std::string fullName = targetDir + PATH_SEPARATOR + filename;
     std::ofstream targetFile(fullName.data(),std::ios_base::binary);
@@ -418,7 +418,7 @@ namespace DCI {
 	const CORBA::Octet* it = octetList->get_buffer();
 	targetFile.write((char*)it, octetList->length());
 
-    std::cout << "Finished" << std::endl;
+    std::cout << "Writing completed" << std::endl;
     std::cout << "Wrote " << octetList -> length() << " Bytes" << std::endl;
 
 #ifdef WIN32
@@ -521,10 +521,6 @@ RepNodeManagerSessionImpl::RepNodeManagerSessionImpl()
 RepNodeManagerSessionImpl::~RepNodeManagerSessionImpl()
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::~RepNodeManagerSessionImpl
-   // We do not need wsock2_32.dll anymore, so we cleanup
-#ifdef WIN32
-    WSACleanup( );	  
-#endif
 // END USER INSERT SECTION RepNodeManagerSessionImpl::~RepNodeManagerSessionImpl
 
 }
@@ -623,6 +619,12 @@ RepNodeManagerSessionImpl::remove()
     throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::remove
+  printout_("entering RepNodeManagerSessionImpl::remove()");
+   deregister();
+  #ifdef WIN32
+    WSACleanup( );	  
+  #endif
+  printout_("leaving RepNodeManagerSessionImpl::remove()");
 // END USER INSERT SECTION RepNodeManagerSessionImpl::remove
 }
 
@@ -1036,6 +1038,7 @@ RepNodeManagerSessionImpl::remove(const char* implUUID)
     }   
 #endif
     printout_("Leaving remove" );    
+
 // END USER INSERT SECTION RepNodeManagerSessionImpl::remove
 }
 
@@ -1255,6 +1258,9 @@ RepNodeManagerImpl::ccm_remove()
 {
 // BEGIN USER INSERT SECTION RepNodeManagerImpl::ccm_remove
   component_ -> deregister();
+  #ifdef WIN32
+    WSACleanup( );	  
+  #endif
 // END USER INSERT SECTION RepNodeManagerImpl::ccm_remove
 }
 
