@@ -1,1 +1,62 @@
-Last minute info
+Requirements
+============
+
+The Qedo project is designed to work with arbitrary ORB implementations
+which support at least a basic set of features. This set comprises OBV, ...
+Anyway, for each ORB implementation some minimal changes have to be done.
+Currently ORBacus 4.1 and MICO are supported by deafault. In order to install
+Qedo a supported ORB implementation has to be installed on the target host.
+Pay attention that it has to be dynamically linked and the linker can find
+the according libraries.
+
+	ORBacus	      ---> available at http://www.orbacus.com
+	
+or
+	
+	Mico          ---> available at http://www.mico.org
+	All the instructions for compiling under Windows and Linux/Unix are
+	given in the Mico package.
+
+According to the CCM specification the Qedo project makes use of software
+packaging. In order to install Qedo the zlib 1.1.3 or a later version has
+to be installed on the target host.
+
+	Zlib          ---> available at www.info-zip.org/pub/infozip/zlib
+	All the instructions for compiling under Linux/Unix are given in the
+	Zlib package.
+
+The Qedo project furthermore requires the xerces-c1_7_0 XML library to
+handle the deployment XML descriptors.
+
+	Xerces-c      ---> available at xml.apache.org/dist/xerces-c
+	All the instructions for compiling under Windows and Linux/Unix are
+	given in the Xerces-c package.
+
+Automatic packaging under Windows requires the command line version of winzip,
+to be downloaded from www.winzip.com. Make sure, it is in your path.
+
+Deployment of components
+========================
+
+The subdirectory Runtime/Deployment of the Qedo installation directory
+contains all deployment related stuff. The XML file DeployedComponents.xml
+contains information about all installed component implementations and is used
+to keep those information persistent. The subdirectory ComponentPackages
+contains the softpackages for component implementations and assemblies.
+Currently for each assembly or component intended to be installed, the package
+has to be put there before manually. During component installation each
+component softpackage is unpacked into a temporary directory named by the
+UUID of the installed component implementation. These directories are created
+in the Runtime/ComponentImplementations subdirectory. Subsequently all generated
+servant code is also put into the Runtime/ComponentImplementations directory.
+The makefiles in this directory are used to generate servant code for the
+components. For each ORB implementation and architecture an own makefile
+has to be provided. In future it will be determined by the software package
+descriptor elements 'os' and 'dependency'.
+
+In order to deploy an assembly, a zip file has to be created by the assembly
+developer, containing an assembly descriptor, zip files for each component 
+and probably property file descriptors for component instances. The component
+zip files in turn contain a software package descriptor, the dynamic library
+for the components business logic and the idl file for the servant code
+generation.
