@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: RefCountBase.cpp,v 1.7 2003/05/28 12:43:09 neubauer Exp $";
+static char rcsid[] = "$Id: RefCountBase.cpp,v 1.8 2003/07/18 11:29:52 boehme Exp $";
 
 #include "Output.h"
 #include "RefCountBase.h"
@@ -60,8 +60,13 @@ RefCountBase::_add_ref()
 void
 RefCountBase::_remove_ref()
 {
-	qedo_lock lock(&mutex_);
-	if (--ref_count_ == 0)
+	bool remove = false;
+	{
+		qedo_lock lock(&mutex_);
+		if (--ref_count_ == 0)
+			remove = true;
+	}
+	if(remove)
 		delete this;
 }
 
@@ -102,8 +107,13 @@ RefCountLocalObject::_add_ref()
 void
 RefCountLocalObject::_remove_ref()
 {
-	qedo_lock lock(&mutex_);
-	if (--ref_count_ == 0)
+	bool remove = false;
+	{
+		qedo_lock lock(&mutex_);
+		if (--ref_count_ == 0)
+			remove = true;
+	}
+	if (remove)
 		delete this;
 }
 
