@@ -36,16 +36,18 @@ handle_sigint
 
 
 void
-printUsage()
+printUsage
+( int argc, char **argv)
 {
-	std::cerr << "usage : gen_cidl [options] --target <compositionname> filename" << std::endl;
+    std::cerr << "usage : " << argv[0];
+    std::cerr << " [options] --target <compositionname> filename" << std::endl;
 	std::cerr << "        [--target|-t] <compositionname> : the element to generate code for" << std::endl;
 	std::cerr << "        [--business|-b] : generate business code skeletons" << std::endl;
 	std::cerr << "        [--servant|-s] : generate servant code" << std::endl;
 	std::cerr << "        --out <fileprefix> : idl files will be prefixed with fileprefix" << std::endl;
 	std::cerr << "        --vc7 : generate VC7 projects" << std::endl;
 	std::cerr << "        -d : generate XML Descriptor skeletons" << std::endl;
-	std::cerr << "		  [--help|-h] : print this" << std::endl;
+	std::cerr << "	      [--help|-h] : print this" << std::endl;
 }
 
 
@@ -123,7 +125,7 @@ main
 
 	repository = new QEDO_ComponentRepository::CIDLRepository_impl ( orb, root_poa );
 	bool generateEIDL = true;
-	bool generateLIDL = true;
+	bool generateLIDL = false;
 	bool generateBusiness = false;
 	bool generateServant = false;
 	bool generatevc7 = false;
@@ -137,7 +139,7 @@ main
 	//
 	if(argc < 2)
 	{
-		printUsage();
+		printUsage(argc, argv);
 		orb->destroy();
 		exit ( 1 );
 	}
@@ -146,7 +148,7 @@ main
         const char* option = argv[i];
 		if((strcmp(option, "--help") == 0) || (strcmp(option, "-h") == 0))
 		{
-			printUsage();
+			printUsage(argc, argv);
 			orb->destroy();
 			exit ( 1 );
 		}
@@ -162,6 +164,8 @@ main
 		else if((strcmp(option, "--business") == 0) || (strcmp(option, "-b") == 0))
 		{
 			generateBusiness = true;
+			generateEIDL = true;
+			generateLIDL = true;
             
             for(int j = i ; j + 1 < argc ; j++)
                 argv[j] = argv[j + 1];
@@ -171,6 +175,8 @@ main
 		else if((strcmp(option, "--servant") == 0) || (strcmp(option, "-s") == 0))
 		{
 			generateServant = true;
+			generateEIDL = true;
+			generateLIDL = true;
             
             for(int j = i ; j + 1 < argc ; j++)
                 argv[j] = argv[j + 1];
@@ -180,6 +186,7 @@ main
 		else if(strcmp(option, "--vc7") == 0)
 		{
 			generatevc7 = true;
+			generateEIDL = false;
             
             for(int j = i ; j + 1 < argc ; j++)
                 argv[j] = argv[j + 1];
@@ -235,7 +242,7 @@ main
 
 	if(target == "")
 	{
-		printUsage();
+		printUsage(argc, argv);
 		orb->destroy();
 		exit ( 1 );
 	}
@@ -338,7 +345,7 @@ main
 	if(generatevc7)
 	{
 		// generate VC7 projects
-		std::cout << "Generating VC7 projetcs for " << target << std::endl;
+		std::cout << "Generating VC7 projects for " << target << std::endl;
 		QEDO_CIDL_Generator::GeneratorVC7 *vc7_generator =
 			new QEDO_CIDL_Generator::GeneratorVC7(repository);
 		vc7_generator->target_file_name_ = target_file_name;
