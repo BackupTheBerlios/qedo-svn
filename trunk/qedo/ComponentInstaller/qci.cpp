@@ -41,7 +41,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.28 2003/11/28 14:11:50 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.29 2003/12/16 13:52:28 stoinski Exp $";
 
 
 /**
@@ -249,7 +249,8 @@ main (int argc, char** argv)
 	delete signal_thread;
 #endif // HAVE_LIBPTHREAD
 
-	delete component_installation;
+	component_installation->_remove_ref();
+
 	return 0;
 }
 
