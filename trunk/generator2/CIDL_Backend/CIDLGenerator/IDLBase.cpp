@@ -255,6 +255,7 @@ IDLBase::tcToName(CORBA::TypeCode_ptr type)
 		return "wstring";
         break;
     default:
+		  std::cerr << "Unknown type code (" << (int)type->kind() << ")" << std::endl;
         assert(false);
     }
 
