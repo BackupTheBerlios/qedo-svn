@@ -74,6 +74,17 @@ private:
 		void build_tree();
 		void AddItemsRecursively(const wxTreeItemId& idParent,
 									 CosNaming::NamingContext_ptr context);
+		void get_host_and_ip();
+		void OnItem(wxMouseEvent& event);
+		wxTextCtrl* message_nsbrowser;
+		wxTextCtrl* host_nsbrowser;
+		wxTextCtrl* port_nsbrowser;
+		wxString getNSPath(wxTreeItemId& item);
+		void ior(wxString path);
+		void delete_entry(wxString path);
+		CosNaming::Name getNameContext(wxString path);
+		void onior(wxMenuEvent& event);
+		void ondelete(wxMenuEvent& event);
 	    DECLARE_EVENT_TABLE()
 
 };
