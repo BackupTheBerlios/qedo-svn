@@ -1,5 +1,5 @@
 
-static char rcsid[] = "$Id: ClientValuetypes.cpp,v 1.1 2003/08/10 15:19:11 tom Exp $";
+static char rcsid[] = "$Id: ClientValuetypes.cpp,v 1.2 2004/06/08 09:12:53 tom Exp $";
 
 
 #include "ClientValuetypes.h"
@@ -95,12 +95,12 @@ PortDescriptionFactory_impl::create_for_unmarshal
 //
 FacetDescription_impl::FacetDescription_impl (const char* name, 
 											  const char* type_id, 
-											  CORBA::Object_ptr ref)
+											  CORBA::Object_ptr facet_ref)
     :FacetDescription()
 {
     this->name(name);
     this->type_id(type_id);
-    this->ref (ref);
+    this->facet_ref (facet_ref);
 }
 
 
