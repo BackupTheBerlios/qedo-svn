@@ -19,13 +19,20 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-
 #include "QDRecordset.h"
+
 
 namespace Qedo
 {
 
-QDRecordset::QDRecordset()
+QDRecordset::QDRecordset() :
+	hDbc_(SQL_NULL_HDBC),
+	hStmt_(SQL_NULL_HSTMT),
+	uiNumRowsFetched_(0)
+{
+}
+
+QDRecordset::~QDRecordset()
 {
 }
 
@@ -34,7 +41,7 @@ QDRecordset::Init(SQLHDBC hDbc)
 {
 	hDbc_ = hDbc;
 	hStmt_ = SQL_NULL_HSTMT;
-	nNumRowsFetched_ = 0;
+	uiNumRowsFetched_ = 0;
 	AllocStmt();
 }
 
@@ -60,7 +67,7 @@ QDRecordset::Open(const char* szSqlStr)
 	
 	SQLSetStmtAttr(hStmt_, SQL_ATTR_CURSOR_SCROLLABLE, (SQLPOINTER)SQL_SCROLLABLE, SQL_IS_INTEGER);
 	SQLSetStmtAttr(hStmt_, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER)SQL_CURSOR_DYNAMIC, SQL_IS_INTEGER);
-	SQLSetStmtAttr(hStmt_, SQL_ATTR_ROWS_FETCHED_PTR, &nNumRowsFetched_, 0);
+	SQLSetStmtAttr(hStmt_, SQL_ATTR_ROWS_FETCHED_PTR, &uiNumRowsFetched_, 0);
 	ret = SQLExecDirect(hStmt_, (SQLCHAR*)szSqlStr, SQL_NTS);
 
 	if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)

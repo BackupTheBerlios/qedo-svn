@@ -122,6 +122,12 @@ GeneratorValuetypesH::check_for_generation(IR__::Contained_ptr item)
 			}
 		}
 
+		IR__::PrimaryKeyDef_ptr pk = a_composition->ccm_home()->primary_key();
+		if(!CORBA::is_nil(pk))
+		{
+			this->insert_to_generate(pk);
+		}
+
 		break; }
 	default:
 		break;

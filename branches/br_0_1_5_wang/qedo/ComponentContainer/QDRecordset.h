@@ -35,7 +35,6 @@
 
 #define MAX_COL_NAME_LEN 512
 
-using namespace std;
 
 namespace Qedo
 {
@@ -46,7 +45,7 @@ class CONTAINERDLL_API QDRecordset
 
 		QDRecordset();
 
-		~QDRecordset(){};
+		~QDRecordset();
 
 		void Init(SQLHDBC hDbc);
 
@@ -116,7 +115,7 @@ class CONTAINERDLL_API QDRecordset
 		
 		SQLHDBC hDbc_;
 		SQLHSTMT hStmt_;
-		unsigned int nNumRowsFetched_;
+		unsigned int uiNumRowsFetched_;
 };
 
 }; // namespace Qedo

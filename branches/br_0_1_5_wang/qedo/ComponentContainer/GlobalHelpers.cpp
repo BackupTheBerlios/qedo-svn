@@ -27,7 +27,7 @@
 #include <unistd.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: GlobalHelpers.cpp,v 1.7 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: GlobalHelpers.cpp,v 1.7.20.1 2004/01/22 17:07:18 hao Exp $";
 
 
 namespace Qedo {
@@ -138,6 +138,95 @@ ObjectId_to_string (const PortableServer::ObjectId& object_id)
 	}
 
 	return string_buffer._retn();
+}
+
+std::string
+convertPidToString( const CosPersistentState::Pid& rPid )
+{
+	std::string strPid;
+	int iLength = rPid.length();
+
+    for(int i=0; i<iLength; i++)
+		strPid.push_back(rPid[i]);
+
+	return strPid;
+}
+
+std::string
+convertSpidToString( const CosPersistentState::ShortPid& rSpid )
+{
+	std::string strSpid;
+	int iLength = rSpid.length();
+
+    for(int i=0; i<iLength; i++)
+		strSpid.push_back(rSpid[i]);
+
+	return strSpid;
+}
+
+std::string
+convertPidToString( const CosPersistentState::Pid* rPid )
+{
+	std::string strPid;
+	int iLength = rPid->length();
+
+    for(int i=0; i<iLength; i++)
+		strPid.push_back((*rPid)[i]);
+
+	return strPid;
+}
+
+std::string
+convertSpidToString( const CosPersistentState::ShortPid* rSpid )
+{
+	std::string strSpid;
+	int iLength = rSpid->length();
+
+    for(int i=0; i<iLength; i++)
+		strSpid.push_back((*rSpid)[i]);
+
+	return strSpid;
+}
+
+void
+convertStringToPid( const char* szPid, CosPersistentState::Pid& rPid )
+{
+	int iLength = strlen(szPid);
+	rPid.length(iLength);
+	
+	for(int i=0; i<iLength; i++)
+		rPid[i] = szPid[i];
+}
+
+void
+convertStringToSpid( const char* szSpid, CosPersistentState::ShortPid& rSpid )
+{
+	int iLength = strlen(szSpid);
+	rSpid.length(iLength);
+	
+	for(int i=0; i<iLength; i++)
+		rSpid[i] = szSpid[i];
+}
+
+bool 
+comparePid(const CosPersistentState::Pid& rSrc, const CosPersistentState::Pid& rDest)
+{
+	return Qedo::compare_OctetSeqs(rSrc, rDest);
+}
+
+bool 
+compareShortPid(const CosPersistentState::ShortPid& rSrc, const CosPersistentState::ShortPid& rDest)
+{
+	return Qedo::compare_OctetSeqs(rSrc, rDest);
+}
+
+std::string
+convertBool2String(bool bc)
+{
+	if(bc)
+		return "true";
+	else
+		return "false";
 }
 
 } // namespace Qedo

@@ -27,7 +27,7 @@ namespace Qedo
 {
 	class StorageObjectImpl;
 	class StorageHomeBaseImpl;
-	class SessioImpl;
+	class SessionImpl;
 	class SessionPoolImpl;
 }
 
@@ -74,7 +74,7 @@ class Factory
 
 typedef Factory<Qedo::StorageObjectImpl> StorageObjectFactory_pre;
 typedef Factory<Qedo::StorageHomeBaseImpl> StorageHomeFactory_pre;
-typedef Factory<Qedo::SessioImpl> SessionFactory_pre;
+typedef Factory<Qedo::SessionImpl> SessionFactory_pre;
 typedef Factory<Qedo::SessionPoolImpl> SessionPoolFactory_pre;
 
 #ifdef ORBACUS_ORB

@@ -19,48 +19,48 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-#ifndef __CONNECTOR_H__
-#define __CONNECTOR_H__
+#ifndef __STORAGE_OBJECT_H__
+#define __STORAGE_OBJECT_H__
 
 #include <map>
 #include <string>
 #include "Util.h"
+#include "Output.h"
 #include "RefCountBase.h"
 #include "PSSStorageObject.h"
-#include "PSSHelper.h"
 #include "StorageHomeBase.h"
 
-using namespace std;
 using namespace CosPersistentState;
+
 
 namespace Qedo
 {
 
 class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::StorageObject,
-											public virtual RefCountLocalObject
+										   public virtual RefCountLocalObject
 {
 	public:
 		
 		StorageObjectImpl();
 
-		string getUpdate() { return strUpdate_; };
+		std::string getUpdate();
 
-		string getSelect() { return strSelect_; };
+		std::string getSelect();
 
-		bool isModified() { return bModified_; };
+		bool isModified();
 
-		void setModified(bool bModified) { bModified_ = bModified; };
+		void setModified(bool bModified);
 
 		void setStorageHome( StorageHomeBaseImpl* pHomeBaseImpl );
 
-		virtual void setValue(map<string, CORBA::Any> valueMap) { throw CORBA::NO_IMPLEMENT(); };
+		virtual void setValue(std::map<std::string, CORBA::Any> valueMap);
 
 		//
 		// normal mapping of PSDL operations
 		//
-		void _add_ref() {RefCountLocalObject::_add_ref();};
+		void _add_ref();
 		
-		void _remove_ref() {RefCountLocalObject::_remove_ref();};
+		void _remove_ref();
 
 		void destroy_object() 
 			throw (CORBA::SystemException);
@@ -77,33 +77,20 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 		CosPersistentState::StorageHomeBase_ptr get_storage_home()
 			throw (CORBA::SystemException);		
 
-		static StorageObject* _duplicate(StorageObject* pStorageObject)
-		{
-			if(pStorageObject)
-				pStorageObject->_add_ref();
-			return pStorageObject;
-		};
+		static StorageObject* _duplicate(StorageObject* pStorageObject);
 
-		static StorageObject* _downcast(StorageObject* pStorageObject)
-		{
-			//if(pStorageObject)
-			//	return dynamic_cast <StorageObjectImpl*> (pStorageObject);
-			//else
-			//	return NULL;
-
-			return pStorageObject;
-		};
+		static StorageObject* _downcast(StorageObject* pStorageObject);
 
 	protected:
 		
-		~StorageObjectImpl() {};
+		~StorageObjectImpl();
 
 	protected:
 
-		Pid* pid_;
-		ShortPid* shortPid_;
-		string strUpdate_;
-		string strSelect_;
+		Pid* pPid_;
+		ShortPid* pShortPid_;
+		std::string strUpdate_;
+		std::string strSelect_;
 
 	private:
 

@@ -36,18 +36,18 @@ GeneratorPSD::GeneratorPSD
 GeneratorPSD::~GeneratorPSD
 ()
 {
-	if(!m_lValueTypes.empty())
+	if(!lValueTypes_.empty())
 	{
-		list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
+		std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
 	
-		for(valuetype_iter = m_lValueTypes.begin();
-			valuetype_iter != m_lValueTypes.end();
+		for(valuetype_iter = lValueTypes_.begin();
+			valuetype_iter != lValueTypes_.end();
 			valuetype_iter++)
 		{
 			//(dynamic_cast <IR__::ValueDef_ptr> (*valuetype_iter))->_remove_ref();
 		}
 
-		m_lValueTypes.clear();
+		lValueTypes_.clear();
 	}
 }
 
@@ -57,9 +57,9 @@ GeneratorPSD::generate(std::string target, std::string fileprefix)
 	try { initialize(target, fileprefix); }
 	catch (InitializeError) { return; }
 	
-	m_filename = file_prefix_ + ".psd";
+	strFilename_ = file_prefix_ + ".psd";
 	
-	out.open(m_filename.c_str());
+	out.open(strFilename_.c_str());
 	out << "<?xml version = '1.0' ?>\n";
 	out << "<!DOCTYPE corbacomponent PUBLIC \"-//OMG//DTD CORBA Persistence Descriptor\">\n\n\n";
 	out << "<corbapersistence>\n\n";
@@ -90,10 +90,10 @@ GeneratorPSD::check_for_generation(IR__::Contained_ptr item)
 		return;
 
 	// check if item is already in the list or currently processed
-	if ((this->m_recursion_set.find(item->id())) != m_recursion_set.end() || this->already_included (item))
+	if ((this->sRecursion_.find(item->id())) != sRecursion_.end() || this->already_included (item))
 		return;
 	else
-		m_recursion_set.insert(item->id());
+		sRecursion_.insert(item->id());
 
 	CORBA::ULong i;
 	CORBA::ULong ulLen;
@@ -128,7 +128,7 @@ GeneratorPSD::check_for_generation(IR__::Contained_ptr item)
 		for(i=0; i<ulLen; i++)
 		{
 			IR__::ValueDef_ptr value = IR__::ValueDef::_narrow((*contained_seq)[i]);
-			m_lValueTypes.push_back(value);
+			lValueTypes_.push_back(value);
 		}
 
 		break; 
@@ -158,7 +158,7 @@ GeneratorPSD::check_for_generation(IR__::Contained_ptr item)
 		break;
 	};
 
-	m_recursion_set.erase(item->id());
+	sRecursion_.erase(item->id());
 };
 
 IR__::AttributeDefSeq 
@@ -195,9 +195,9 @@ GeneratorPSD::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storage
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
-			for(valuetype_iter = m_lValueTypes.begin();
-				valuetype_iter != m_lValueTypes.end();
+			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			for(valuetype_iter = lValueTypes_.begin();
+				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
 			{
 				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
@@ -257,9 +257,9 @@ GeneratorPSD::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
 		{
-			list <IR__::ValueDef_ptr> ::iterator valuetype_iter;
-			for(valuetype_iter = m_lValueTypes.begin();
-				valuetype_iter != m_lValueTypes.end();
+			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			for(valuetype_iter = lValueTypes_.begin();
+				valuetype_iter != lValueTypes_.end();
 				valuetype_iter++)
 			{
 				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);

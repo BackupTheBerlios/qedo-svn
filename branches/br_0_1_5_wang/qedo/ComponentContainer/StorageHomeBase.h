@@ -26,22 +26,22 @@
 #include <string>
 #include <vector>
 #include "Util.h"
+#include "GlobalHelpers.h"
 #include "CORBADepends.h"
 #include "RefCountBase.h"
 #include "PSSStorageObject.h"
 #include "QDRecordset.h"
 #include "StorageObject.h"
-#include "PSSHelper.h"
 
-using namespace std;
 using namespace CosPersistentState;
+
 
 namespace Qedo
 {
 
 class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::StorageHomeBase,
-											public virtual RefCountLocalObject,
-											public virtual QDRecordset
+											 public virtual RefCountLocalObject,
+											 public virtual QDRecordset
 {
 	public:
 
@@ -51,9 +51,9 @@ class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::
 
 		void Init(CatalogBase_ptr pCatalogBase, const char* szHomeName);
 
-		string getFlush();
+		std::string getFlush();
 
-		string getFlushByPid(std::vector<Pid> lPidList);
+		std::string getFlushByPid(std::vector<Pid> lPidList);
 
 		void setBatchUnModified();
 
@@ -63,13 +63,13 @@ class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::
 
 		void FreeAllStorageObjects();
 
-		char* getStorageHomeName() { return szHomeName_; };
+		char* getStorageHomeName();
 
 		void destroyObject( Pid* pPid ) throw (CORBA::SystemException);
 		
 		CORBA::Boolean objectExists( Pid* pPid ) throw (CORBA::SystemException);
 
-		StorageObjectBase find_by_pid(string pid);
+		StorageObjectBase find_by_pid(std::string pid);
 
 		//
 		// IDL:omg.org/CosPersistentState/StorageHomeBase/find_by_short_pid:1.0
@@ -83,18 +83,18 @@ class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::
 
 	private:
 
-		void ValuePaser( map<string, CORBA::Any>& value_map );
+		void ValuePaser( std::map<std::string, CORBA::Any>& value_map );
 
 	protected:
 
-		char* szHomeName_; // its own table or view name!
+		char* szHomeName_;
 		CatalogBase_ptr pCatalogBase_;
-		std::list <StorageObjectImpl*> lObjectes_;
-		std::list <StorageObjectImpl*> ::iterator objIter_;
+		std::list<StorageObjectImpl*> lObjectes_;
+		std::list<StorageObjectImpl*>::iterator objIter_;
 
 	private:
 
-		std::list <StorageObjectImpl*> lTempList_;
+		std::list<StorageObjectImpl*> lTempList_;
 };
 
 }; // namespace Qedo

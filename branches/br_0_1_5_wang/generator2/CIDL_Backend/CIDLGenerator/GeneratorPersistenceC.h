@@ -32,8 +32,6 @@
 #include <iostream>
 #include <map>
 
-using namespace std;
-
 
 namespace QEDO_CIDL_Generator {
 
@@ -43,19 +41,20 @@ class GeneratorPersistenceC : public virtual CPPBase
 
 private:
 
-	typedef pair <string, string>	Sth_Pair;
+	typedef std::pair <std::string, std::string>	Sth_Pair;
 
 	Printer							out;
-	bool							m_isAbstract;
-	bool							m_isRef;
-	std::string						m_filename;
-	std::string						m_class_name;
-	std::string						m_strName;
-	std::string						m_strContent;
-	std::set <std::string>			m_recursion_set;
-	std::map <string, string>		m_SthMap;
-	std::map <string, string> :: const_iterator m_SthIter;
-	std::list <IR__::ValueDef_ptr>	m_lValueTypes;
+	bool							bAbstract_;
+	bool							bRef_;
+	std::string						strFilename_;
+	std::string						strClassname_;
+	std::string						strActBasename_;
+	std::string						strName_;
+	std::string						strContent_;
+	std::set<std::string>			sRecursion_;
+	std::map<std::string, std::string>		homeMap_;
+	std::map<std::string, std::string>::const_iterator homeIter_;
+	std::list<IR__::ValueDef_ptr>	lValueTypes_;
 
 	void check_for_generation(IR__::Contained_ptr item);
 
@@ -64,6 +63,8 @@ private:
 	void doException(IR__::ExceptionDef_ptr except);
 	void doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDef_ptr inf_def);
 	void doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_def);
+	void doAbstractStorageType(IR__::AbstractStorageTypeDef_ptr abs_storagetype);
+	void doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome);
 	void doStorageType(IR__::StorageTypeDef_ptr storagetype);
 	void doStorageHome(IR__::StorageHomeDef_ptr storagehome);
 
@@ -74,11 +75,14 @@ private:
 	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
 	void genFactory(IR__::OperationDef_ptr operation, IR__::InterfaceDef_ptr inf_type, IR__::InterfaceDef_ptr inf_home );
 	void genKey(IR__::OperationDef_ptr operation, IR__::InterfaceDef_ptr inf_type, IR__::InterfaceDef_ptr inf_home, bool isRef);
-	void genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, bool isRef);
+	void genBaseRefBody(std::string strTypeName);
+	void genAbstractRefBody(IR__::AbstractStorageTypeDef_ptr abs_storagetype);
+	void genRefBody(IR__::StorageTypeDef_ptr storagetype);
+	void genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*, bool isRef*/);
 	void genCreateOperation(IR__::StorageHomeDef_ptr storagehome, bool isRef);
 	void genAbstractObjsForConcreteType(IR__::AbstractStorageTypeDef_ptr abs_storagetype);
 	void genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome);
-	string genSQLLine(string strName, string strContent, bool start, bool comma, bool space, bool func=false);
+	std::string genSQLLine(std::string strName, std::string strContent, bool start, bool comma, bool space, bool func=false);
 	IR__::AttributeDefSeq collectStateMembers(IR__::InterfaceDef_ptr inf_def, CORBA__::CollectStyle style);
 
 

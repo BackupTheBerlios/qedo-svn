@@ -19,11 +19,16 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-
 #include "Connector.h"
+
 
 namespace Qedo
 {
+
+ConnectorImpl::ConnectorImpl() :
+	pSessionPool_(NULL)
+{
+}
 
 ConnectorImpl::ConnectorImpl(char* szImplID) :
 	pSessionPool_(NULL)
@@ -36,14 +41,10 @@ ConnectorImpl::~ConnectorImpl()
 	// delete all sessions and session pool(s)!
 	if(!lSessions_.empty())
 	{
-		list <SessioImpl*> ::iterator sessio_iter;
+		std::list<SessionImpl*>::iterator sessionIter;
 
-		for (sessio_iter = lSessions_.begin();
-			sessio_iter != lSessions_.end();
-			sessio_iter++)
-		{
-			(*sessio_iter)->close();
-		}
+		for( sessionIter=lSessions_.begin(); sessionIter!=lSessions_.end(); sessionIter++ )
+			(*sessionIter)->close();
 
 		lSessions_.clear();
 	}
@@ -61,10 +62,10 @@ ConnectorImpl::~ConnectorImpl()
 char* 
 ConnectorImpl::implementation_id()
 {
-	char* szID = NULL;
+	char* szImplID = NULL;
+	strcpy(szImplID, szImplID_);
 
-	strcpy(szID, szImplID_);
-	return szID;
+	return szImplID;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,12 +75,13 @@ Pid*
 ConnectorImpl::get_pid(StorageObjectBase obj)
 {
 	Pid* pPid = NULL;
-	StorageObject* pso = dynamic_cast <StorageObject*> (obj);
+	StorageObject* pObj = dynamic_cast <StorageObject*> (obj);
 
-	if( pso==NULL )
+	if( pObj==NULL )
 		throw CORBA::PERSIST_STORE();
 	
-    pPid = pso->get_pid();
+    pPid = pObj->get_pid();
+
     return pPid;
 }
 
@@ -90,12 +92,13 @@ ShortPid*
 ConnectorImpl::get_short_pid(StorageObjectBase obj)
 {
 	ShortPid* pSpid = NULL;
-	StorageObject* pso = dynamic_cast <StorageObject*> (obj);
+	StorageObject* pObj = dynamic_cast <StorageObject*> (obj);
 
-	if( pso==NULL )
+	if( pObj==NULL )
 		throw CORBA::PERSIST_STORE();
 	
-    pSpid = pso->get_short_pid();
+    pSpid = pObj->get_short_pid();
+
     return pSpid;
 }
 
@@ -110,10 +113,12 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 									const char* catalog_type_name,
 									const ParameterList& additional_parameters)
 {
+	DEBUG_OUT("ConnectorImpl::create_basic_session() is called");
+
 	if(additional_parameters.length()==0)
 		return NULL;
 
-	string strConn = "";
+	std::string strConn = "";
 	const char* szVal;
 	
 	//DSN=myodbc3-test;SERVER=haw;UID=root;PWD=;DATABASE=test;
@@ -126,16 +131,14 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 		strConn += ";";
 	}
 	
-	SessioImpl* pSession = new SessioImpl(access_mode, 
-										strConn.c_str(), 
-										(dynamic_cast <Connector_ptr> (this)));
+	SessionImpl* pSession = new SessionImpl(access_mode, strConn.c_str(), this);
 
 	if( pSession->Init()==FALSE || pSession->DriverConnect(strConn.c_str())==FALSE )
 		throw CORBA::PERSIST_STORE();
 
 	lSessions_.push_back(pSession);
 
-	return (dynamic_cast <Sessio_ptr> (pSession));
+	return pSession;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -147,10 +150,12 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 									const char* catalog_type_name,
 									const ParameterList& additional_parameters)
 {
+	DEBUG_OUT("ConnectorImpl::create_session_pool() is called");
+
 	if(additional_parameters.length()==0)
 		return NULL;
 
-	string strConn = "";
+	std::string strConn = "";
 	const char* szVal;
 
 	//DSN=myodbc3-test;SERVER=haw;UID=root;PWD=;DATABASE=test;
@@ -165,10 +170,7 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 	
 	if(pSessionPool_==NULL)
 	{
-		pSessionPool_ = new SessionPoolImpl( access_mode, 
-											  tx_policy, 
-											  strConn.c_str(), 
-											  (dynamic_cast <Connector_ptr> (this)) );
+		pSessionPool_ = new SessionPoolImpl( access_mode, tx_policy, strConn.c_str(), this );
 
 		if( pSessionPool_->Init()==FALSE ||
 			pSessionPool_->DriverConnect(strConn.c_str())==FALSE )
@@ -180,7 +182,7 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 			throw CORBA::PERSIST_STORE();
 	}
 	
-	return (dynamic_cast <SessionPool_ptr> (pSessionPool_));
+	return pSessionPool_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,20 +195,20 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 ////////////////////////////////////////////////////////////////////////////////
 StorageObjectFactory
 ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
-												StorageObjectFactory factory)
+											   StorageObjectFactory factory)
 {
-	map<const char*, StorageObjectFactory>::iterator sof_iter;
-	sof_iter = SOFMap_.find(storage_type_name);
+	DEBUG_OUT("ConnectorImpl::register_storage_object_factory() is called");
 
-	if(sof_iter != SOFMap_.end())
+	std::map<const char*, StorageObjectFactory>::iterator objFactoryIter;
+	objFactoryIter = objFactoryMap_.find(storage_type_name);
+
+	if( objFactoryIter!=objFactoryMap_.end() )
 	{
-		return sof_iter->second;
+		return objFactoryMap_[storage_type_name];
 	}
 	else
 	{
-		//typedef pair <const char*, StorageObjectFactory> Factory_Pair;
-		//SOFMap_.insert( Factory_Pair(storage_type_name, factory) );
-		SOFMap_[storage_type_name] = factory;
+		objFactoryMap_[storage_type_name] = factory;
 		return NULL;
 	}
 }
@@ -222,20 +224,20 @@ ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
 ////////////////////////////////////////////////////////////////////////////////
 StorageHomeFactory
 ConnectorImpl::register_storage_home_factory(const char* storage_home_type_name,
-											StorageHomeFactory factory)
+											 StorageHomeFactory factory)
 {
-	map<const char*, StorageHomeFactory>::iterator shf_iter;
-	shf_iter = SHFMap_.find(storage_home_type_name);
+	DEBUG_OUT("ConnectorImpl::register_storage_home_factory() is called");
 
-	if(shf_iter != SHFMap_.end())
+	std::map<const char*, StorageHomeFactory>::iterator homeFactoryIter;
+	homeFactoryIter = homeFactoryMap_.find(storage_home_type_name);
+
+	if( homeFactoryIter!=homeFactoryMap_.end() )
 	{
-		return shf_iter->second;
+		return homeFactoryMap_[storage_home_type_name];
 	}
 	else
 	{
-		//typedef pair <const char*, StorageHomeFactory> Factory_Pair;
-		//SHFMap_.insert( Factory_Pair(storage_home_type_name, factory) );
-		SHFMap_[storage_home_type_name] = factory;
+		homeFactoryMap_[storage_home_type_name] = factory;
 		return NULL;
 	}
 }
@@ -258,7 +260,7 @@ ConnectorImpl::register_session_factory(const char* catalog_type_name,
 ////////////////////////////////////////////////////////////////////////////////
 SessionPoolFactory
 ConnectorImpl::register_session_pool_factory(const char* catalog_type_name,
-											SessionPoolFactory factory)
+											 SessionPoolFactory factory)
 {
 	//unnecessary to implement
 	throw CORBA::NO_IMPLEMENT();

@@ -37,22 +37,26 @@ Connector_ptr
 ConnectorRegistryImpl::find_connector(const char* implementation_id)
     throw(CosPersistentState::NotFound, CORBA::SystemException)
 {
-    Connector_var conn = Connector::_nil();
+	DEBUG_OUT("ConnectorRegistryImpl::find_connector() is called");
 
-	conIter_ = connectors_.find(implementation_id);
+    Connector_var pConnector = Connector::_nil();
 
-	if( conIter_==connectors_.end() )
+	connIter_ = connectors_.find(implementation_id);
+
+	if( connIter_==connectors_.end() )
 		throw CosPersistentState::NotFound();
 	else
-		conn = connectors_[implementation_id];
+		pConnector = connectors_[implementation_id];
 
-    return conn._retn();
+    return pConnector._retn();
 }
 
 void
 ConnectorRegistryImpl::register_connector(Connector_ptr conn, const char* implementation_id)
     throw(CORBA::SystemException)
 {
+	DEBUG_OUT("ConnectorRegistryImpl::register_connector() is called");
+
     connectors_[implementation_id] = conn;
 }
 
@@ -60,9 +64,11 @@ void
 ConnectorRegistryImpl::unregister_connector(const char* implementation_id)
     throw(CosPersistentState::NotFound,CORBA::SystemException)
 {
-	conIter_ = connectors_.find(implementation_id);
+	DEBUG_OUT("ConnectorRegistryImpl::unregister_connector() is called");
 
-	if( conIter_ == connectors_.end())
+	connIter_ = connectors_.find(implementation_id);
+
+	if( connIter_ == connectors_.end())
 		throw CosPersistentState::NotFound();
 	else
 		connectors_.erase(implementation_id);

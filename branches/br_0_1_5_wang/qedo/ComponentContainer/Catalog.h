@@ -31,19 +31,19 @@
 #include "QDDatabase.h"
 #include "StorageHomeBase.h"
 
-using namespace std;
 using namespace CosPersistentState;
+
 
 namespace Qedo
 {
 
 class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
-										public virtual RefCountLocalObject,
-										public virtual QDDatabase
+										 public virtual RefCountLocalObject,
+										 public virtual QDDatabase
 {
 	public:
 
-		CatalogBaseImpl() {};
+		CatalogBaseImpl();
 
 		CatalogBaseImpl(const AccessMode eAM, const char* szConnString, Connector_ptr connector);
 
@@ -51,9 +51,12 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 
 		bool Init();
 
-		bool DriverConnect(const char* szConnStr, char* szConnStrOut = NULL, HWND hWnd = NULL, const int nDrvConn = SQL_DRIVER_NOPROMPT);
+		bool DriverConnect( const char* szConnStr,
+							char* szConnStrOut = NULL,
+							HWND hWnd = NULL,
+							const int nDrvConn = SQL_DRIVER_NOPROMPT);
 
-		Connector_ptr getConnector() {return connector_;};
+		Connector_ptr getConnector();
 
 		//
 		// IDL:omg.org/CosPersistentState/CatalogBase/access_mode:1.0
@@ -92,9 +95,9 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 
 	protected:
 
-		Connector_ptr connector_;
-		std::list <StorageHomeBaseImpl*> lHomeBases_;
-		std::list <StorageHomeBaseImpl*> ::iterator homeBaseIter;
+		Connector_ptr pConnector_;
+		std::list<StorageHomeBaseImpl*> lHomeBases_;
+		std::list<StorageHomeBaseImpl*>::iterator homeBaseIter;
 
 	private:
 
@@ -102,16 +105,16 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 };
 
 
-class  SessioImpl : public virtual CosPersistentState::Sessio,
-                    public CatalogBaseImpl
+class  SessionImpl : public virtual CosPersistentState::Sessio,
+                     public CatalogBaseImpl
 {
 	public:
 
-		SessioImpl() {};
+		SessionImpl();
 
-		SessioImpl(AccessMode eAM, const char* szConnString, Connector_ptr connector) {};
+		SessionImpl(AccessMode eAM, const char* szConnString, Connector_ptr connector);
 
-		~SessioImpl() {};
+		~SessionImpl();
 };
 
 
@@ -120,7 +123,7 @@ class  SessionPoolImpl : public virtual CosPersistentState::SessionPool,
 {
 	public:
 
-		SessionPoolImpl() {};
+		SessionPoolImpl();
 
 		SessionPoolImpl(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString, Connector_ptr connector);
 

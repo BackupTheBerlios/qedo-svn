@@ -19,24 +19,22 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-
 #ifndef __STORAGEOBJECT_H__
 #define __STORAGEOBJECT_H__
 
 #include <CORBA.h>
 #include "CORBADepends.h"
 
+
 namespace CosPersistentState
 {
-
-#ifdef MICO_ORB
-class StorageObject : public virtual CosPersistentState::StorageObjectBase_pre
-#endif
 
 #ifdef ORBACUS_ORB
 class StorageObject : public virtual OBNative_CosPersistentState::StorageObjectBase_pre
 #endif
-
+#ifdef MICO_ORB
+class StorageObject : public virtual CosPersistentState::StorageObjectBase_pre
+#endif
 {
 	public:
 		
@@ -67,7 +65,7 @@ class StorageObject : public virtual OBNative_CosPersistentState::StorageObjectB
 	
 	protected:
 		
-		virtual ~StorageObject() {}
+		virtual ~StorageObject() {};
 };
 
 class CONTAINERDLL_API StorageObjectRef
@@ -99,9 +97,11 @@ class CONTAINERDLL_API StorageObjectRef
 
 		static StorageObjectRef _duplicate(const StorageObjectRef ref);
 
+		static StorageObjectRef _downcast(const StorageObjectRef ref);
+
 	private:
 		
-		StorageObject* obj_;
+		StorageObject* pObj_;
 };
 
 };

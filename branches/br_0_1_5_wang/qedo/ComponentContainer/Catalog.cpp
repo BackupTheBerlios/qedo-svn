@@ -19,19 +19,26 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-
 #include "Catalog.h"
+
 
 namespace Qedo
 {
 
-CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM, 
-								 const char* szConnString, 
-								 Connector_ptr connector) :
-	eAM_(eAM),
-	connector_(connector)
+CatalogBaseImpl::CatalogBaseImpl() :
+	QDDatabase(),
+	pConnector_(NULL),
+	eAM_(READ_ONLY)
 {
-	QDDatabase::QDDatabase();
+}
+
+CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM, 
+								 const char* szConnString,
+								 Connector_ptr connector) :
+	QDDatabase(),
+	pConnector_(connector),
+	eAM_(eAM)
+{
 	strcpy(szConnString_, szConnString);
 }
 
@@ -39,7 +46,7 @@ CatalogBaseImpl::~CatalogBaseImpl()
 {
 	if(!lHomeBases_.empty())
 	{
-		for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+		for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
 			(*homeBaseIter)->_remove_ref();
 
 		lHomeBases_.clear();
@@ -47,6 +54,7 @@ CatalogBaseImpl::~CatalogBaseImpl()
 
 	_remove_ref();
 }
+
 
 bool 
 CatalogBaseImpl::Init()
@@ -102,6 +110,12 @@ CatalogBaseImpl::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND h
 	return bIsConnected_;
 }
 
+Connector_ptr
+CatalogBaseImpl::getConnector()
+{
+	return pConnector_;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //returns the accsss mode of this catalog
 ////////////////////////////////////////////////////////////////////////////////
@@ -131,17 +145,19 @@ CatalogBaseImpl::access_mode()
 StorageHomeBase_ptr 
 CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 {
+	DEBUG_OUT("CatalogBaseImpl::find_storage_home() is called");
+
 	//find it in the list
-	StorageHomeBase_var pStorageHomeBase = StorageHomeBase::_nil();
+	StorageHomeBase_var pHomeBase = StorageHomeBase::_nil();
 	
-	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
 	{
-		const char* szName = (*homeBaseIter)->getStorageHomeName();
+		const char* szHomeName = (*homeBaseIter)->getStorageHomeName();
 		
-		if(strcmp(szName, storage_home_id)==0)
+		if(strcmp(szHomeName, storage_home_id)==0)
 		{
-			pStorageHomeBase = (*homeBaseIter);
-			return pStorageHomeBase._retn();
+			pHomeBase = (*homeBaseIter);
+			return pHomeBase._retn();
 		}
 	}
 	
@@ -158,17 +174,17 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 	StorageHomeFactory factory = new CosPersistentState::StorageHomeFactory_pre();
 #endif
 	
-	factory = connector_->register_storage_home_factory(storage_home_id, factory);
-	pStorageHomeBase = factory->create();
+	factory = pConnector_->register_storage_home_factory(storage_home_id, factory);
+	pHomeBase = factory->create();
 	factory->_remove_ref();
 
-    StorageHomeBaseImpl* pStorageHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pStorageHomeBase.out());
-	pStorageHomeBaseImpl->Init((dynamic_cast <CatalogBase_ptr> (this)), storage_home_id);
+    StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase.out());
+	pHomeBaseImpl->Init(this, storage_home_id);
 
-	lHomeBases_.push_back(pStorageHomeBaseImpl);
+	lHomeBases_.push_back(pHomeBaseImpl);
 
 	//return (CosPersistentState::StorageHomeBase::_narrow(pStorageHomeBase));
-	return pStorageHomeBase._retn();
+	return pHomeBase._retn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -179,11 +195,13 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 StorageObjectBase 
 CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 {
-	string strPid = PSSHelper::convertPidToString(the_pid);
+	DEBUG_OUT("CatalogBaseImpl::find_by_pid() is called");
+
+	std::string strPid = convertPidToString(the_pid);
 
 	// fetch the table name where pid can be found
-	string strToExecute;
-	unsigned char szStorageHome[MAX_COL_SIZE];
+	std::string strToExecute;
+	unsigned char szHomeName[MAX_COL_SIZE];
 
 	QDRecordset prs;
 	prs.Init(&hDbc_);
@@ -194,15 +212,15 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 
 	if(prs.Open(strToExecute.c_str()))
 	{
-		memset(szStorageHome, '\0', MAX_COL_SIZE);
-		prs.GetFieldValue("ownhome", szStorageHome);
+		memset(szHomeName, '\0', MAX_COL_SIZE);
+		prs.GetFieldValue("ownhome", szHomeName);
 		prs.Close();
 		prs.Destroy();
 	}
 
 	try
 	{
-		StorageHomeBase_var pHomeBase = find_storage_home((const char*)szStorageHome);
+		StorageHomeBase_var pHomeBase = find_storage_home((const char*)szHomeName);
 		StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase.out());
 		StorageObjectBase pObj = NULL;
 	
@@ -225,6 +243,8 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 void 
 CatalogBaseImpl::flush()
 {
+	DEBUG_OUT("CatalogBaseImpl::flush() is called");
+
 	if( !CanTransact() )
 		NORMAL_OUT( "CatalogBaseImpl::flush() - Database do not support transaction, flush is errorprone!" );
 
@@ -234,9 +254,9 @@ CatalogBaseImpl::flush()
 		return;
 	}
 
-	string strFlush = "";
+	std::string strFlush = "";
 	
-	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
 		strFlush += (*homeBaseIter)->getFlush();
 
 	if(ExecuteSQL(strFlush.c_str()))
@@ -272,7 +292,9 @@ CatalogBaseImpl::flush()
 void 
 CatalogBaseImpl::refresh()
 {
-	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+	DEBUG_OUT("CatalogBaseImpl::refresh() is called");
+
+	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
 		(*homeBaseIter)->Refresh();
 }
 
@@ -283,7 +305,9 @@ CatalogBaseImpl::refresh()
 void 
 CatalogBaseImpl::free_all()
 {
-	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+	DEBUG_OUT("CatalogBaseImpl::free_all() is called");
+
+	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
 		(*homeBaseIter)->FreeAllStorageObjects();
 }
 
@@ -308,13 +332,33 @@ CatalogBaseImpl::close()
 	}
 }
 
+SessionImpl::SessionImpl() :
+	CatalogBaseImpl()
+{
+}
+
+SessionImpl::SessionImpl(AccessMode eAM, const char* szConnString, Connector_ptr connector) :
+	CatalogBaseImpl(eAM, szConnString, connector)
+{
+}
+
+SessionImpl::~SessionImpl()
+{
+}
+
+SessionPoolImpl::SessionPoolImpl() :
+	CatalogBaseImpl(),
+	tx_policy_(NON_TRANSACTIONAL)
+{
+}
+
 SessionPoolImpl::SessionPoolImpl(AccessMode eAM, 
 								 TransactionPolicy tx_policy, 
 								 const char* szConnString, 
 								 Connector_ptr connector) :
+	CatalogBaseImpl(eAM, szConnString, connector),
 	tx_policy_(tx_policy)
 {
-	CatalogBaseImpl::CatalogBaseImpl(eAM, szConnString, connector);
 }
 
 SessionPoolImpl::~SessionPoolImpl()
@@ -370,6 +414,8 @@ SessionPoolImpl::Init()
 void 
 SessionPoolImpl::flush_by_pids(const PidList& pids)
 {
+	DEBUG_OUT("CatalogBaseImpl::flush_by_pids() is called");
+
 	if( !CanTransact() )
 		NORMAL_OUT( "CatalogBaseImpl::flush_by_pids() - Database do not support transaction, flush is errorprone!" );
 
@@ -379,8 +425,8 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 		return;
 	}
 
-	string strFlush = "";
-	std::vector <Pid> vPidList; 
+	std::string strFlush = "";
+	std::vector<Pid> vPidList;
 
 	//there is no function for deleting Pid from PidList, so the PidList should 
 	//be first converted in a list of Pid
@@ -389,7 +435,7 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 		vPidList.push_back(pids[i]);
 	}
 
-	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
 		strFlush += (*homeBaseIter)->getFlushByPid(vPidList);
 
 	if(ExecuteSQL(strFlush.c_str()))
@@ -400,7 +446,7 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 		{
 			// the flush is successfull, we set the modified-value of each
 			// storage object back to FALSE
-			for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+			for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
 				(*homeBaseIter)->setBatchUnModified();
 		}
 		else
@@ -431,7 +477,9 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 void 
 SessionPoolImpl::refresh_by_pids(const PidList& pids)
 {
-	std::vector <Pid> vPidList; 
+	DEBUG_OUT("CatalogBaseImpl::refresh_by_pids() is called");
+
+	std::vector<Pid> vPidList;
 
 	//there is no function for deleting Pid from PidList, so the PidList should 
 	//be first converted in a list of Pid
@@ -440,7 +488,7 @@ SessionPoolImpl::refresh_by_pids(const PidList& pids)
 		vPidList.push_back(pids[i]);
 	}
 
-	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++)
+	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
 		(*homeBaseIter)->RefreshByPid(vPidList);
 }
 

@@ -19,18 +19,18 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-
 #include "QDDatabase.h"
+
 
 namespace Qedo
 {
 
 QDDatabase::QDDatabase() :
-	hEnv_(SQL_NULL_HENV),
 	hDbc_(SQL_NULL_HDBC),
+	hEnv_(SQL_NULL_HENV),
+	iRecordsAffected_(0),
 	lLoginTimeout_(DEFAULT_TIMEOUT),
 	lQueryTimeout_(DEFAULT_TIMEOUT),
-	nRecordsAffected_(0),
 	bIsConnected_(FALSE)
 {
 	szODBCVersion_ = new char[MAX_INFO_LEN];
@@ -45,7 +45,7 @@ QDDatabase::~QDDatabase()
 
 	lLoginTimeout_ = 0;
 	lQueryTimeout_ = 0;
-	nRecordsAffected_ = 0;
+	iRecordsAffected_ = 0;
 	bIsConnected_ = FALSE;
 
 	delete szODBCVersion_;
@@ -142,7 +142,7 @@ QDDatabase::SetQueryTimeout(const long nSeconds)
 int 
 QDDatabase::GetRecordsAffected()
 {
-	return nRecordsAffected_;
+	return iRecordsAffected_;
 }
 
 char* 
@@ -178,7 +178,7 @@ QDDatabase::ExecuteSQL(const char* szSqlStr)
 	SQLFreeHandle(SQL_HANDLE_STMT , hStmt);
 	hStmt = NULL;
 	
-	nRecordsAffected_ = nRowCount;
+	iRecordsAffected_ = nRowCount;
 
 	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 }

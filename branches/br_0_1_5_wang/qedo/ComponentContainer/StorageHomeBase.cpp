@@ -27,7 +27,8 @@ namespace Qedo
 {
 
 StorageHomeBaseImpl::StorageHomeBaseImpl() :
-	szHomeName_( NULL )
+	szHomeName_( NULL ),
+	pCatalogBase_( NULL )
 {
 }
 
@@ -61,9 +62,11 @@ void
 StorageHomeBaseImpl::destroyObject( Pid* pPid ) 
 	throw (CORBA::SystemException)
 {
-	string strPid = PSSHelper::convertPidToString( pPid );
+	DEBUG_OUT("StorageHomeBaseImpl::destroyObject() is called");
 
-	string strSqlDel;
+	std::string strPid = convertPidToString( pPid );
+
+	std::string strSqlDel;
 	strSqlDel = "DELETE FROM ";
 	strSqlDel.append((const char*)szHomeName_);
 	strSqlDel += " WHERE pid LIKE \'";
@@ -81,14 +84,16 @@ CORBA::Boolean
 StorageHomeBaseImpl::objectExists( Pid* pPid )
 	throw (CORBA::SystemException)
 {
-	string strPid = PSSHelper::convertPidToString(pPid);
+	DEBUG_OUT("StorageHomeBaseImpl::objectExists() is called");
 
-	string strSqlSel;
+	std::string strPid = convertPidToString(pPid);
+
+	std::string strSqlSel;
 	strSqlSel = "SELECT COUNT(*) FROM ";
 	strSqlSel.append((const char*)szHomeName_);
-	strSqlSel += " WHERE pid LIKE ";
+	strSqlSel += " WHERE pid LIKE \'";
 	strSqlSel += strPid;
-	strSqlSel += ";";
+	strSqlSel += "\';";
     
 	if(Open(strSqlSel.c_str()))
 	{
@@ -104,16 +109,18 @@ StorageHomeBaseImpl::objectExists( Pid* pPid )
 }
 
 StorageObjectBase 
-StorageHomeBaseImpl::find_by_pid(string pid)
+StorageHomeBaseImpl::find_by_pid(std::string pid)
 {
+	DEBUG_OUT("StorageHomeBaseImpl::find_by_pid() is called");
+
 	StorageObjectBase pObj = NULL;
 
 	//find from list
 	for( objIter_=lObjectes_.begin(); objIter_!=lObjectes_.end(); objIter_++ )
 	{
 		Pid_var pPid = (*objIter_)->get_pid();
-		string strTmp = PSSHelper::convertPidToString(pPid.out());
-		if( pid.compare(strTmp)==0 )
+		std::string strPid = convertPidToString(pPid.out());
+		if( pid.compare(strPid)==0 )
 		{
 			pObj = dynamic_cast <StorageObjectBase> (*objIter_);
 			return pObj;
@@ -121,7 +128,7 @@ StorageHomeBaseImpl::find_by_pid(string pid)
 	}
 
 	//if not in the list
-	string strToExecute;
+	std::string strToExecute;
 	strToExecute = "SELECT * FROM ";
 	strToExecute.append((const char*)szHomeName_);
 	strToExecute += " WHERE pid LIKE \'";
@@ -130,7 +137,7 @@ StorageHomeBaseImpl::find_by_pid(string pid)
 
 	if(Open(strToExecute.c_str()))
 	{
-		map<string, CORBA::Any> valueMap;
+		std::map<std::string, CORBA::Any> valueMap;
 		ValuePaser(valueMap);
 		Close();
 
@@ -138,12 +145,11 @@ StorageHomeBaseImpl::find_by_pid(string pid)
 #ifdef ORBACUS_ORB
 		StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();
 #endif
-
 #ifdef MICO_ORB
 		StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();
 #endif
-		CatalogBaseImpl* tmp_catalog = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);
-		factory = tmp_catalog->getConnector()->register_storage_object_factory("", factory);
+		CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);
+		factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory("", factory);
 		StorageObjectImpl* pStorageObjectImpl = factory->create();
 		factory->_remove_ref();
 
@@ -164,13 +170,15 @@ StorageHomeBaseImpl::find_by_pid(string pid)
 StorageObjectBase 
 StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 {
+	DEBUG_OUT("StorageHomeBaseImpl::find_by_short_pid() is called");
+
 	StorageObjectBase pObj = NULL;
 
 	//find from list
 	for( objIter_=lObjectes_.begin(); objIter_!=lObjectes_.end(); objIter_++ )
 	{
-		ShortPid_var cur_spid = (*objIter_)->get_short_pid();
-		if(PSSHelper::compareShortPid(cur_spid.in(), short_pid))
+		ShortPid_var pSpid = (*objIter_)->get_short_pid();
+		if(compareShortPid(pSpid.in(), short_pid))
 		{
 			pObj = dynamic_cast <StorageObjectBase> (*objIter_);
 			return pObj;
@@ -178,9 +186,9 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 	}
 
 	//if not in the list
-	string strShortPid = PSSHelper::convertSpidToString(short_pid);
+	std::string strShortPid = convertSpidToString(short_pid);
 	
-	string strToExecute;
+	std::string strToExecute;
 	strToExecute = "SELECT * FROM ";
 	strToExecute.append((const char*)szHomeName_);
 	strToExecute += " WHERE spid LIKE \'";
@@ -189,7 +197,7 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 
 	if(Open(strToExecute.c_str()))
 	{
-		map<string, CORBA::Any> valueMap;
+		std::map<std::string, CORBA::Any> valueMap;
 		ValuePaser(valueMap);
 		Close();
 
@@ -197,12 +205,11 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 #ifdef ORBACUS_ORB
 		StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();
 #endif
-
 #ifdef MICO_ORB
 		StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();
 #endif
-		CatalogBaseImpl* tmp_catalog = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);
-		factory = tmp_catalog->getConnector()->register_storage_object_factory("", factory);
+		CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);
+		factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory("", factory);
 		StorageObjectImpl* pStorageObjectImpl = factory->create();
 		factory->_remove_ref();
 
@@ -225,10 +232,10 @@ StorageHomeBaseImpl::get_catalog()
 	return pCatalogBase_;
 }
 
-string 
+std::string
 StorageHomeBaseImpl::getFlush()
 {
-	string strFlush = "";
+	std::string strFlush = "";
 
 	if(!lTempList_.empty())
 		lTempList_.clear();
@@ -245,29 +252,29 @@ StorageHomeBaseImpl::getFlush()
 	return strFlush;
 }
 
-string 
+std::string
 StorageHomeBaseImpl::getFlushByPid(std::vector<Pid> lPidList)
 {
-	string strFlush = "";
-	vector <Pid> ::iterator pid_iter;
+	std::string strFlush = "";
+	std::vector<Pid>::iterator pidIter;
 	
 	if(!lTempList_.empty())
 		lTempList_.clear();
 
 	for( objIter_=lObjectes_.begin(); objIter_!=lObjectes_.end(); objIter_++ )
 	{
-		pid_iter = lPidList.begin();
-		while(pid_iter != lPidList.end())
+		pidIter = lPidList.begin();
+		while(pidIter != lPidList.end())
 		{
-			if( PSSHelper::comparePid((*pid_iter), (*(*objIter_)->get_pid())) &&
+			if( comparePid((*pidIter), (*(*objIter_)->get_pid())) &&
 				(*objIter_)->isModified() )
 			{
 				lTempList_.push_back((*objIter_));
 				strFlush += (*objIter_)->getUpdate();
-				lPidList.erase(pid_iter);
+				lPidList.erase(pidIter);
 			}
 			else
-				pid_iter++;
+				pidIter++;
 		}
 	}
 
@@ -287,7 +294,7 @@ StorageHomeBaseImpl::setBatchUnModified()
 }
 
 void 
-StorageHomeBaseImpl::ValuePaser( map<string, CORBA::Any>& valueMap )
+StorageHomeBaseImpl::ValuePaser( std::map<std::string, CORBA::Any>& valueMap )
 {
 	int nType, nLen;
 	unsigned char szColName[256];
@@ -303,7 +310,7 @@ StorageHomeBaseImpl::ValuePaser( map<string, CORBA::Any>& valueMap )
 	
 	for(int iCol=0; iCol<GetFieldCount(); iCol++)
 	{
-		string strColName;
+		std::string strColName;
 		CORBA::Any anyData;
 		//typedef pair <string, CORBA::Any> Value_Pair;
 
@@ -366,7 +373,7 @@ StorageHomeBaseImpl::ValuePaser( map<string, CORBA::Any>& valueMap )
 void 
 StorageHomeBaseImpl::Refresh()
 {
-	string strRefresh;
+	std::string strRefresh;
 
 	for( objIter_=lObjectes_.begin(); objIter_!=lObjectes_.end(); objIter_++ )
 	{
@@ -374,7 +381,7 @@ StorageHomeBaseImpl::Refresh()
 	
 		if(Open(strRefresh.c_str()))
 		{
-			map<string, CORBA::Any> valueMap;
+			std::map<std::string, CORBA::Any> valueMap;
 			ValuePaser(valueMap);
 			Close();
 			//and then call ...
@@ -386,20 +393,20 @@ StorageHomeBaseImpl::Refresh()
 void 
 StorageHomeBaseImpl::RefreshByPid(std::vector<Pid> lPidList)
 {
-	string strRefresh;
-	vector <Pid> ::iterator pid_iter;
+	std::string strRefresh;
+	std::vector<Pid>::iterator pidIter;
 	
 	for( objIter_=lObjectes_.begin(); objIter_!=lObjectes_.end(); objIter_++ )
 	{
-		for( pid_iter=lPidList.begin(); pid_iter!=lPidList.end(); pid_iter++ )
+		for( pidIter=lPidList.begin(); pidIter!=lPidList.end(); pidIter++ )
 		{
-			if( PSSHelper::comparePid((*pid_iter), (*(*objIter_)->get_pid())) )
+			if( comparePid((*pidIter), (*(*objIter_)->get_pid())) )
 			{
 				strRefresh = (*objIter_)->getSelect();
 	
 				if(Open(strRefresh.c_str()))
 				{
-					map<string, CORBA::Any> valueMap;
+					std::map<std::string, CORBA::Any> valueMap;
 					ValuePaser(valueMap);
 					Close();
 					//and then call ...
@@ -408,6 +415,12 @@ StorageHomeBaseImpl::RefreshByPid(std::vector<Pid> lPidList)
 			}
 		}
 	}
+}
+
+char*
+StorageHomeBaseImpl::getStorageHomeName()
+{
+	return szHomeName_;
 }
 
 void 

@@ -25,25 +25,26 @@
 #include <map>
 #include <string>
 #include "Util.h"
+#include "Output.h"
 #include "CORBADepends.h"
 #include "RefCountBase.h"
 #include "Catalog.h"
 #include "PSSStorageObject.h"
 
-using namespace std;
 using namespace CosPersistentState;
 
 #define DEFAULT_PROCESSOR_ACCOUNT 1;
+
 
 namespace Qedo
 {
 
 class CONTAINERDLL_API ConnectorImpl : public virtual CosPersistentState::Connector,
-										public virtual RefCountLocalObject
+									   public virtual RefCountLocalObject
 {
 	public:
 
-		ConnectorImpl() {};
+		ConnectorImpl();
 
 		ConnectorImpl(char* szImplID);
 		
@@ -83,13 +84,13 @@ class CONTAINERDLL_API ConnectorImpl : public virtual CosPersistentState::Connec
 		// IDL:omg.org/CosPersistentState/Connector/register_storage_object_factory:1.0
 		//
 		StorageObjectFactory register_storage_object_factory(const char* storage_type_name,
-															StorageObjectFactory factory);
+															 StorageObjectFactory factory);
 
 		//
 		// IDL:omg.org/CosPersistentState/Connector/register_storage_home_factory:1.0
 		//
 		StorageHomeFactory register_storage_home_factory(const char* storage_home_type_name,
-														StorageHomeFactory factory);
+														 StorageHomeFactory factory);
 
 		//
 		// IDL:omg.org/CosPersistentState/Connector/register_session_factory:1.0
@@ -101,15 +102,15 @@ class CONTAINERDLL_API ConnectorImpl : public virtual CosPersistentState::Connec
 		// IDL:omg.org/CosPersistentState/Connector/register_session_pool_factory:1.0
 		//
 		SessionPoolFactory register_session_pool_factory(const char* catalog_type_name,
-														SessionPoolFactory factory);
+														 SessionPoolFactory factory);
 
 	private:
 
 		char* szImplID_;
 		SessionPoolImpl* pSessionPool_;
-		std::list <SessioImpl*> lSessions_;
-		map<const char*, StorageObjectFactory> SOFMap_;
-		map<const char*, StorageHomeFactory> SHFMap_;
+		std::list<SessionImpl*> lSessions_;
+		std::map<const char*, StorageObjectFactory> objFactoryMap_;
+		std::map<const char*, StorageHomeFactory> homeFactoryMap_;
 };
 
 }; // namespace Qedo

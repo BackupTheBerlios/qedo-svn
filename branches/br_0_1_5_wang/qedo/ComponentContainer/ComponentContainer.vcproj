@@ -446,9 +446,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\Key.cpp">
 			</File>
 			<File
-				RelativePath="PSSHelper.cpp">
-			</File>
-			<File
 				RelativePath=".\PortBase.cpp">
 			</File>
 			<File
@@ -598,9 +595,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\Key.h">
-			</File>
-			<File
-				RelativePath="PSSHelper.h">
 			</File>
 			<File
 				RelativePath="PSSStorageObject.h">

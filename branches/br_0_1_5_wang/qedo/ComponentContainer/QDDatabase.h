@@ -36,6 +36,7 @@
 #define MAX_COL_SIZE 256
 #define MAX_CONNSTR_LEN 1024
 
+
 namespace Qedo
 {
 
@@ -53,7 +54,10 @@ class CONTAINERDLL_API QDDatabase
 
 		void Destroy();
 
-		bool DriverConnect(const char* szConnStr, char* szConnStrOut = NULL, HWND hWnd = NULL, const int nDrvConn = SQL_DRIVER_NOPROMPT);
+		bool DriverConnect( const char* szConnStr,
+							char* szConnStrOut = NULL, 
+							HWND hWnd = NULL, 
+							const int nDrvConn = SQL_DRIVER_NOPROMPT);
 
 		void SetLoginTimeout(const long nSeconds); //???
 
@@ -79,7 +83,7 @@ class CONTAINERDLL_API QDDatabase
 		
 		SQLHDBC hDbc_;
 		SQLHENV hEnv_;
-		int nRecordsAffected_;
+		int iRecordsAffected_;
 		long lLoginTimeout_;
 		long lQueryTimeout_;
 		bool bIsConnected_;

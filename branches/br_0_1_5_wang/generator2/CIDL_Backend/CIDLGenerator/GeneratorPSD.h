@@ -30,8 +30,6 @@
 #include "Debug.h"
 #include <sstream>
 
-using namespace std;
-
 
 namespace QEDO_CIDL_Generator {
 
@@ -42,9 +40,9 @@ class GeneratorPSD : public virtual CPPBase
 private:
 
 	Printer out;
-	std::string m_filename;
-	std::set<std::string> m_recursion_set;
-	std::list <IR__::ValueDef_ptr>	m_lValueTypes;
+	std::string strFilename_;
+	std::set<std::string> sRecursion_;
+	std::list<IR__::ValueDef_ptr> lValueTypes_;
 
 	void check_for_generation(IR__::Contained_ptr item);
 
