@@ -297,7 +297,7 @@ private:
 	/**
 	 * registercomponent
 	 */
-	std::string registercomponent (DOMElement*)
+	void registercomponent (DOMElement*, ComponentInstanceData&)
         throw(CADReadException);
 
 	/**

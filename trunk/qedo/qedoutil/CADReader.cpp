@@ -201,18 +201,20 @@ throw(CADReadException)
 	ComponentInstanceData data;
     data.id = Qedo::transcode(element->getAttribute(X("id")));
 	DOMNode* child = element->getFirstChild();
+	DOMElement* elem;
 	while (child != 0)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
 			element_name = Qedo::transcode(child->getNodeName());
+			elem = (DOMElement*)child;
 
 			//
 			// usagename
 			//
 			if (element_name == "usagename")
 			{
-				data.usage_name = usagename((DOMElement*)(child));
+				data.usage_name = usagename(elem);
 			}
 
 			//
@@ -220,7 +222,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "componentproperties")
 			{
-				data.comp_prop = componentproperties((DOMElement*)(child));
+				data.comp_prop = componentproperties(elem);
 			}
 
 			//
@@ -228,7 +230,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "registercomponent")
 			{
-				registercomponent((DOMElement*)(child));
+				registercomponent(elem, data);
 			}
 
 			//
@@ -236,7 +238,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "extension")
 			{
-				extension((DOMElement*)(child));
+				extension(elem);
 			}
 		}
 
@@ -1452,26 +1454,26 @@ throw(CADReadException)
 }
 
 
-std::string
-CADReader::registercomponent (DOMElement* element)
+void
+CADReader::registercomponent (DOMElement* element, ComponentInstanceData& data)
 throw(CADReadException)
 {
-	// todo fix
 	std::string element_name;
-	std::string naming;
 	DOMNode* child = element->getFirstChild();
+	DOMElement* elem;
 	while (child != 0)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
 			element_name = Qedo::transcode(child->getNodeName());
+			elem = (DOMElement*)child;
 
 			//
 			// emitsidentifier
 			//
 			if (element_name == "emitsidentifier")
 			{
-				emitsidentifier((DOMElement*)(child));
+				data.registration.emitter = emitsidentifier(elem);
 			}
 
 			//
@@ -1479,7 +1481,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "providesidentifier")
 			{
-				providesidentifier((DOMElement*)(child));
+				data.registration.provider = providesidentifier(elem);
 			}
 
 			//
@@ -1487,7 +1489,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "publishesidentifier")
 			{
-				publishesidentifier((DOMElement*)(child));
+				data.registration.publisher = publishesidentifier(elem);
 			}
 
 			//
@@ -1495,7 +1497,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "registerwithnaming")
 			{
-				naming = registerwithnaming((DOMElement*)(child));
+				data.registration.naming = registerwithnaming(elem);
 			}
 
 			//
@@ -1503,15 +1505,14 @@ throw(CADReadException)
 			//
 			else if (element_name == "registerwithtrader")
 			{
-				registerwithtrader((DOMElement*)(child));
+				// todo
+				registerwithtrader(elem);
 			}
 		}
 
         // get next child
 	    child = child->getNextSibling();
 	}
-
-	return naming;
 }
 
 

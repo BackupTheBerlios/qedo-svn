@@ -598,9 +598,30 @@ throw(Components::CreateFailure)
 		}
 
 		//
-		// registercomponent
+		// register in nameservice
 		//
-		//todo
+		if( !(*iter).registration.naming.empty() )
+		{
+			if( !(*iter).registration.emitter.empty() ) // register ???
+			{
+				// todo
+			}
+			else if( !(*iter).registration.provider.empty() ) // register facet
+			{
+				// todo
+			}
+			else if( !(*iter).registration.publisher.empty() ) // register publisher
+			{
+				// todo
+			}
+			else // register component
+			{
+				if( !registerName( (*iter).registration.naming, comp, true ) )
+				{
+					NORMAL_ERR2( "AssemblyImpl: cannot register Component", (*iter).id );
+				}
+			}
+		}
     }
 }
 

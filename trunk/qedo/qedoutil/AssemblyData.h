@@ -43,6 +43,22 @@ namespace Qedo {
 
 
 /**
+ * data for a component instantiation registration
+ */
+struct ComponentInstanceRegistrationData
+{
+	/** emitter */
+	std::string									emitter;
+	/** provider */
+	std::string									provider;
+	/** publisher */
+	std::string									publisher;
+	/** naming service */
+	std::string									naming;
+};
+
+
+/**
  * data for a component instantiation
  */
 struct ComponentInstanceData
@@ -53,6 +69,8 @@ struct ComponentInstanceData
 	std::string									id;
 	/** component properties */
 	std::string									comp_prop;
+	/** registration */
+	ComponentInstanceRegistrationData			registration;
 };
 
 
