@@ -556,6 +556,10 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "}\n\n";
 
 	// facets
+	IR__::ComponentDef_var component = composition->ccm_component();
+
+	this -> gen_executor_locator_factes (component, composition);
+	/*
 	IR__::ProvidesDefSeq_var provides_seq = composition->ccm_component()->provides_interfaces();
 	string impl_by;
 	for (i = 0; i < provides_seq->length(); i++) {
@@ -577,7 +581,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		out.unindent();
 		out << "}\n\n";
 	}
-
+*/
 	// sinks
 	IR__::SinkDefSeq_var sink_seq = composition->ccm_component()->sinks();
 	for (i = 0; i < sink_seq->length(); i++) {
@@ -766,6 +770,38 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.close();
 }
 
+void
+GeneratorBusinessC::gen_executor_locator_factes (IR__::ComponentDef_var a_component, CIDL::CompositionDef_ptr composition)
+{
+	// handle base components
+	IR__::ComponentDef_var base_component = a_component->base_component();
+	if ( ! CORBA::is_nil(base_component)) {
+		this->gen_executor_locator_factes (base_component, composition);
 
+	}
+	// generate for facets
+	CIDL::SegmentDefSeq_var segment_seq = composition->executor_def()->segments();
+	IR__::ProvidesDefSeq_var provides_seq = a_component->provides_interfaces();
+	string impl_by;
 
+	for (CORBA::ULong i = 0; i < provides_seq->length(); i++) {
+		// for each facet
+		impl_by = "component";
+		out << "else if (! strcmp (name, \"" << provides_seq[i]->name() << "\")) {\n";
+		out.indent();
+		out << "return Components::EnterpriseComponent::_duplicate (";
+		// determine segment implementing the facet
+		for (CORBA::ULong ii = 0; ii < segment_seq->length(); ii++)	{
+			IR__::ProvidesDefSeq_var impl_seq = segment_seq[ii]->provided_facets();
+			for (CORBA::ULong iii = 0; iii < impl_seq->length(); iii++) {
+				if(! strcmp(provides_seq[i]->name(), impl_seq[iii]->name())) {
+					impl_by = segment_seq[ii]->name();
+				}
+			}
+		}
+		out << impl_by << "_);\n";
+		out.unindent();
+		out << "}\n\n";
+	}
+}
 } //

@@ -122,7 +122,7 @@ GeneratorServantC::calculate_marshal_buffer_size (IR__::IDLType_ptr idl_type, CO
 
 			for (unsigned int i = 0; i < members->length(); i++)
 			{
-				calculate_marshal_buffer_size (members[i].type_def, cur_len);
+				calculate_marshal_buffer_size (members.in()[i].type_def, cur_len);
 			}
 			return;
 		}
@@ -203,8 +203,8 @@ GeneratorServantC::generate_marshal_code (IR__::IDLType_ptr idl_type, std::strin
 			{
 				new_parameter_name = parameter_name;
 				new_parameter_name = new_parameter_name + ".";
-				new_parameter_name = new_parameter_name +  members[i].name.in();
-				generate_marshal_code (members[i].type_def, new_parameter_name);
+				new_parameter_name = new_parameter_name +  members.in()[i].name.in();
+				generate_marshal_code (members.in()[i].type_def, new_parameter_name);
 			}
 			return;
 		}
@@ -286,8 +286,8 @@ GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::str
 			{
 				new_parameter_name = parameter_name;
 				new_parameter_name = new_parameter_name + ".";
-				new_parameter_name = new_parameter_name +  members[i].name.in();
-				generate_unmarshal_code (members[i].type_def, new_parameter_name);
+				new_parameter_name = new_parameter_name +  members.in()[i].name.in();
+				generate_unmarshal_code (members.in()[i].type_def, new_parameter_name);
 			}
 			return;
 		}

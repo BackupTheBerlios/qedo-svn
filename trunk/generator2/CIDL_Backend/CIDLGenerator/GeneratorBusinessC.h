@@ -61,6 +61,8 @@ private:
 	void doFinder(IR__::FinderDef_ptr finder);
 	void doComposition(CIDL::CompositionDef_ptr composition);
 
+	void gen_executor_locator_factes (IR__::ComponentDef_var a_component, CIDL::CompositionDef_ptr composition);
+
 public:
 
 	GeneratorBusinessC(QEDO_ComponentRepository::CIDLRepository_impl *repository);
