@@ -114,5 +114,48 @@ The target could be a composition name or a module name. Depending on the target
 
 \end{itemize}
 
+\section{Makefile Generator}
+\label{sec:MakefileGenerator}
+
+Short instructions to use the code generator.
+
+The Qedo code generator is able to generate Makefiles, similar to the project files. These makefile can be used to compile link an package component implementations.
+After Installing the Qedo runtime, the following steps needs to be done if you start to develop you own CORBA components on Linux systems.
+
+\begin{itemize}
+	\item Create a \verb <your_name>.idl  file. 
+	In this file you need to define your plain CORBA interfaces as well as the CORBA components. Start the file with an \verb #include \verb "Components.idl"  statement.
+
+	\item Create a \verb <your_name>.cidl  file.
+	In this file you need to specify the compositions that should implement your components. Start the file with a \verb #include \verb <your_name.idl>  .
+
+	\item Open a shell. 
+	In this shell you need to execute the following command.
+
+\small
+\begin{verbatim} 
+
+	$(QEDO)/bin/cidl_gen -I$(QEDO)\idl -I$(MICO)\include  
+		-I$(MICO)\include\mico -DMICO_ORB -DMICO_CIDL_GEN 
+		--mkfile --target CallerImpl hello.cidl}
+\end{verbatim}
+\normalsize
+
+
+The target could be a composition name or a module name. It is strongly recommended to use only compositions as target. This will produce separate libraries for the servants and this may cause less trouble at runtime. Depending on the target the code generator will create new directories and within them new Makefiles. For each composition there is a servant and an executor module.
+
+	\item Create a top level Makefile . The top level Makefile is very much dependent on you personal needs. It is recommended to use the \verb MakComponentVars  to make use of a set of pre-defined variables. In the examples module are a lot of top level Makefiles which can be freely (re-)used for that purpose too. The top level Makefile at least needs to call make in the servant and in the executor directory of each relevant component created by the Makefile generator.  
+
+	\item Initial Built. This initial Built will create initial versions of the files. Since the Qedo Code Generator generates skeletons for the business code in some cases just calling make will produce the component libraries. In other case the c++ compile will complain about missing return statements. Now is the time to fill in the business code in the generated skeletons.
+
+	\item Implement the executors. 
+	In the executor directory you will now find executor files. The names of these files correspond to the composition description you gave in the \verb <your_name>.cidl  file. Within these files you can see user sections. Do only write your code between an opening and a closing user section statements. All other code is removed at next call of the code generator. If you modify the \verb <your_name>.idl  file you have to re-build the projects. But your code will remain in the implementation files.
+
+	\item Build. Just call make for each directory or preferably by using you own top-level Makefile.
+
+	\item Package. After successfully building the lib they need to get packaged into a component package. For this reason the generated Makefiles of the executor module support the \verb make  \verb package  rule. This will initially create the \verb meta-inf  directory and the CORBA Component Descriptor and the Component Software Descriptor. If these files are already present they are reserved. This files need some modification. Not all information needed for these files can be generated out of the IDL/CIDL description.
+	\item Build Assembly. Consult the examples module to see how an assembly is built.
+\end{itemize}
+
 \end{document}
 
