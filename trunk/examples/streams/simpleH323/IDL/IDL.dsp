@@ -151,7 +151,7 @@ SOURCE=.\simple.cidl
 InputPath=.\simple.cidl
 
 BuildCmds= \
-	$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32 --business --servant --target simple simple.cidl \
+	$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32 -DORBACUS_ORB  --business --servant --target simple simple.cidl \
 	time /T > last_build_time \
 	
 
@@ -191,7 +191,7 @@ SOURCE=.\simple_BUSINESS.idl
 InputPath=.\simple_BUSINESS.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 simple_BUSINESS.idl
+	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 -DORBACUS_ORB simple_BUSINESS.idl
 
 "simple_BUSINESS.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -221,7 +221,7 @@ SOURCE=.\simple_EQUIVALENT.idl
 InputPath=.\simple_EQUIVALENT.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 simple_EQUIVALENT.idl
+	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 -DORBACUS_ORB simple_EQUIVALENT.idl
 
 "simple_EQUIVALENT.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -251,7 +251,7 @@ SOURCE=.\simple_LOCAL.idl
 InputPath=.\simple_LOCAL.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 simple_LOCAL.idl
+	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 -DORBACUS_ORB  simple_LOCAL.idl
 
 "simple_LOCAL.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)

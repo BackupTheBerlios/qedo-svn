@@ -151,7 +151,7 @@ SOURCE=.\dinner.cidl
 InputPath=.\dinner.cidl
 
 BuildCmds= \
-	$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32 --business --servant --target dinner dinner.cidl \
+	$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32 -DORBACUS_ORB --business --servant --target dinner dinner.cidl \
 	time /T > last_build_time \
 	
 
@@ -187,7 +187,7 @@ SOURCE=.\dinner_BUSINESS.idl
 InputPath=.\dinner_BUSINESS.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_BUSINESS.idl
+	$(ORBACUS)\bin\idl -DWIN32  -DORBACUS_ORB  -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_BUSINESS.idl
 
 "dinner_BUSINESS.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -217,7 +217,7 @@ SOURCE=.\dinner_EQUIVALENT.idl
 InputPath=.\dinner_EQUIVALENT.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_EQUIVALENT.idl
+	$(ORBACUS)\bin\idl -DWIN32 -DORBACUS_ORB -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_EQUIVALENT.idl
 
 "dinner_EQUIVALENT.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -247,7 +247,7 @@ SOURCE=.\dinner_LOCAL.idl
 InputPath=.\dinner_LOCAL.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_LOCAL.idl
+	$(ORBACUS)\bin\idl -DWIN32 -DORBACUS_ORB -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_LOCAL.idl
 
 "dinner_LOCAL.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
