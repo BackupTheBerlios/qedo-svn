@@ -143,7 +143,7 @@ Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
 	Qedo::ComponentDeployment *current_assembly = new Qedo::ComponentDeployment(package);
 	try
 	{
-		
+		wxBusyCursor wait_for_deployment;
 		current_assembly->deploy();
 		assembly_name_->Clear();
 
@@ -209,6 +209,7 @@ void Deployment::OnUndeployButton(wxCommandEvent& WXUNUSED(event))
 
 			try
 			{
+				wxBusyCursor wait_for_undeployment;
 				current_assembly->undeploy();
 				running_ass_list->DeleteItem(item);
 				assemblies_counter_--;

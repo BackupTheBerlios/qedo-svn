@@ -137,7 +137,7 @@ NSBrowserTreeCtrl::build_tree()
 	if (!CORBA::is_nil(nameService))
 	{
     wxTreeItemId rootId = AddRoot(wxT("RootContext"),
-                                  TreeCtrlIcon_FolderOpened , TreeCtrlIcon_Folder ,
+                                  TreeCtrlIcon_Folder , TreeCtrlIcon_FolderSelected,
                                   new NSBrowserTreeItemData(wxT("Root item")));
 
 		 AddItemsRecursively(rootId, nameService);
@@ -169,12 +169,12 @@ void NSBrowserTreeCtrl::AddItemsRecursively(const wxTreeItemId& idParent,
 				if (!CORBA::is_nil(child_context))
 				{
 					str.Printf(wxT("%s"), wxT((*bl)[i].binding_name[0].id.in()));
-					wxTreeItemId id = AppendItem(idParent, str, TreeCtrlIcon_Folder, TreeCtrlIcon_Folder, new NSBrowserTreeItemData(str));
+					wxTreeItemId id = AppendItem(idParent, str, TreeCtrlIcon_Folder, TreeCtrlIcon_FolderSelected, new NSBrowserTreeItemData(str));
 
 					AddItemsRecursively(id, child_context.in());
 				} else {
 					str.Printf(wxT("%s"), wxT((*bl)[i].binding_name[0].id.in()));
-					wxTreeItemId id = AppendItem(idParent, str, TreeCtrlIcon_File, TreeCtrlIcon_File, new NSBrowserTreeItemData(str));
+					wxTreeItemId id = AppendItem(idParent, str, TreeCtrlIcon_File, TreeCtrlIcon_FileSelected, new NSBrowserTreeItemData(str));
 				}
 	//		}
 

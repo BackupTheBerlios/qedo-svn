@@ -152,7 +152,7 @@ QCexplorerTreeCtrl::build_tree()
 		ComponentServerActivatorInfoList test=CSAIL[0];
 
 	    wxTreeItemId rootId = AddRoot(wxT("ServerActivators"),
-                                  TreeCtrlIcon_FolderOpened , TreeCtrlIcon_Folder ,
+                                  TreeCtrlIcon_Folder , TreeCtrlIcon_FolderSelected,
                                   new QCexplorerTreeItemData(wxT("NIL")));
 
 		CORBA::ULong i = 0;
@@ -164,7 +164,7 @@ QCexplorerTreeCtrl::build_tree()
 			str.Printf(wxT("%s"), wxT(sa.host_name.in()));
 
 			wxTreeItemId idServerActivator = AppendItem(idParent, str , TreeCtrlIcon_Folder, 
-				TreeCtrlIcon_Folder,new QCexplorerTreeItemData(str));
+				TreeCtrlIcon_FolderSelected, new QCexplorerTreeItemData(str));
 
 			ComponentServerInfoList csil=sa.my_component_servers;
 			
@@ -183,7 +183,7 @@ QCexplorerTreeCtrl::build_tree()
 				str.Printf(wxT("%s"),wxT(csi_tmp.c_str()));
 			
 				wxTreeItemId idComponentServer = AppendItem(idServerActivator, str , TreeCtrlIcon_Folder, 
-					TreeCtrlIcon_Folder,new QCexplorerTreeItemData(str));
+					TreeCtrlIcon_FolderSelected, new QCexplorerTreeItemData(str));
 
 				ContainerInstanceInfoList ciil=csi.my_containers;
 
@@ -200,7 +200,7 @@ QCexplorerTreeCtrl::build_tree()
 					str.Printf(wxT("%s"),wxT(cii_tmp.c_str()));
 
 					wxTreeItemId idContainerInstance = AppendItem(idComponentServer, str , TreeCtrlIcon_Folder, 
-						TreeCtrlIcon_Folder,new QCexplorerTreeItemData(str));
+						TreeCtrlIcon_FolderSelected, new QCexplorerTreeItemData(str));
 				
 					HomeInstanceInfoList hiil=cii.my_homes;
 
@@ -216,7 +216,7 @@ QCexplorerTreeCtrl::build_tree()
 						str.Printf(wxT("%s"),wxT(hii_tmp.c_str()));
 
 						wxTreeItemId idHomeInstance = AppendItem(idContainerInstance, str , TreeCtrlIcon_Folder, 
-							TreeCtrlIcon_Folder,new QCexplorerTreeItemData(str));
+							TreeCtrlIcon_FolderSelected, new QCexplorerTreeItemData(str));
 
 						ComponentInstanceInfoList coiil=hii.my_components;
 						CORBA::ULong b = 0;
@@ -230,7 +230,7 @@ QCexplorerTreeCtrl::build_tree()
 							coii_tmp=(coii.short_name);
 							str.Printf(wxT("%s"),wxT(coii_tmp.c_str()));
 
-							wxTreeItemId idComponentInstance = AppendItem(idHomeInstance, str ,  TreeCtrlIcon_File, TreeCtrlIcon_File,
+							wxTreeItemId idComponentInstance = AppendItem(idHomeInstance, str ,  TreeCtrlIcon_File, TreeCtrlIcon_FileSelected,
 								new QCexplorerTreeItemData(str));
 
 						}
