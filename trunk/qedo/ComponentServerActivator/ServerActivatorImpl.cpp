@@ -20,13 +20,17 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.9 2003/03/21 12:34:42 tom Exp $";
+static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.10 2003/04/24 09:10:34 tom Exp $";
 
 #include <iostream>
 #include "fstream"
 #include "ServerActivatorImpl.h"
 #ifdef MICO_ORB
+#ifdef WIN32
 #include <mico/CosNaming.h>
+#else
+#include <CosNaming.h>
+#endif
 #else
 #include <CosNaming.h>
 #endif
@@ -256,8 +260,8 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 			break;
 		case -1 : /* error in fork */
 			{
-				cerr << "ServerActivatorImpl: Cannot spawn Component Server process" << endl;
-				cerr << "ServerActivatorImpl: " << strerror(errno) << endl;
+				std::cerr << "ServerActivatorImpl: Cannot spawn Component Server process" << std::endl;
+				std::cerr << "ServerActivatorImpl: " << strerror(errno) << std::endl;
 				throw Components::CreateFailure();
 			}
 			break;
