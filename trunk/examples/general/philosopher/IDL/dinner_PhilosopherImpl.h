@@ -33,6 +33,25 @@ public:
 	void wake_up ();
 };
 
+
+class PhilosopherSessionImpl;
+
+class PhilosopherThread : public virtual JTCThreadWithTimer
+{
+	friend class PhilosopherSessionImpl;
+
+private:
+	PhilosopherSessionImpl* phil_;
+
+public:
+	PhilosopherThread (PhilosopherSessionImpl*);
+	~PhilosopherThread();
+
+	void run();
+	void stop();
+};
+
+
 }
 // END USER INSERT SECTION file_post
 
@@ -50,7 +69,6 @@ namespace dinner
         , public virtual Qedo::RefCountLocalObject
 #endif
 // BEGIN USER INSERT SECTION INHERITANCE_PhilosopherSessionImpl
-		, JTCThreadWithTimer
 // END USER INSERT SECTION INHERITANCE_PhilosopherSessionImpl
     {
     
@@ -106,13 +124,17 @@ namespace dinner
         	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl
+		friend class PhilosopherThread;
+
 	private:
 		string id_;
 		long tsec_, esec_, ssec_;
 		bool stopped_;
 
+		PhilosopherThread* phil_thread_;
+
 	public:
-		// This is the run function of the thread
+		// This is the run function that the PhilosopherThread will enter
 		void run();
 		void stop();
 // END USER INSERT SECTION PhilosopherSessionImpl

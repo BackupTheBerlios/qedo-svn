@@ -308,12 +308,6 @@ ObserverHomeImpl::find_it(const char* name)
 create_ObserverHomeE(void)
 {
 // BEGIN USER INSERT SECTION create_ObserverHome
-	// This is a preliminary hack to register the valuetype factories
-	int dummy = 0;
-	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
-
-	CORBA::ValueFactoryBase_var oldFact;
-	oldFact = orb->register_value_factory ("IDL:dinner/PhilosopherState:1.0", new dinner::PhilosopherStateFactoryImpl() );
 // END USER INSERT SECTION create_ObserverHome
 
     return new ::dinner::ObserverHomeImpl();

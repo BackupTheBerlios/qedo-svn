@@ -52,6 +52,52 @@ JTCThreadWithTimer::wake_up()
 	this->notify();
 }
 
+
+PhilosopherThread::PhilosopherThread (PhilosopherSessionImpl* phil)
+: phil_ (phil)
+{
+	phil->_add_ref();
+}
+
+
+PhilosopherThread::~PhilosopherThread()
+{
+	cout << "PhilosopherThread: Destructor called" << endl;
+
+	phil_->_remove_ref();
+}
+
+
+void 
+PhilosopherThread::run()
+{
+	phil_->run();
+}
+
+
+void 
+PhilosopherThread::stop()
+{
+	// Remove this thread friendly
+	JTCThreadHandle my_handle = this;
+
+	phil_->stopped_ = true;
+
+	this->wake_up();
+
+	do
+	{
+		try
+		{
+			my_handle->join();
+		}
+		catch (...)
+		{
+			cerr << "Exception during join()" << endl;
+		}
+	} while (my_handle->isAlive());
+}
+
 }
 // END USER INSERT SECTION file
 
@@ -80,7 +126,7 @@ PhilosopherSessionImpl::run()
 		report = new PhilosopherStateImpl (status, id_.c_str(),
 			dinner::Philosopher::_narrow (context_->get_CCM_object()));
 		context_->push_philosopher_state (report);
-		this->timer_sleep (tsec_ *1000);
+		phil_thread_->timer_sleep (tsec_ *1000);
 	
 		if (stopped_)
 			break;
@@ -94,7 +140,7 @@ PhilosopherSessionImpl::run()
 
 		while ( status == dinner::HUNGRY && ! stopped_)
 		{
-			this->timer_sleep (2000);
+			phil_thread_->timer_sleep (2000);
 
 			if (--dead_counter == 0)
 			{
@@ -106,8 +152,8 @@ PhilosopherSessionImpl::run()
 
 				while (! stopped_)
 				{
-					JTCSynchronized synchronized (*this);
-					this->wait();
+					JTCSynchronized synchronized (*phil_thread_);
+					phil_thread_->wait();
 				}
 			}
 			try
@@ -192,7 +238,7 @@ PhilosopherSessionImpl::run()
 		report = new PhilosopherStateImpl (status, id_.c_str(),
 			dinner::Philosopher::_narrow (context_->get_CCM_object()));
 		context_->push_philosopher_state (report);
-		this->timer_sleep (esec_*1000);
+		phil_thread_->timer_sleep (esec_*1000);
 
 		if (stopped_)
 			break;
@@ -221,36 +267,19 @@ PhilosopherSessionImpl::run()
 		report = new PhilosopherStateImpl (status, id_.c_str(),
 			dinner::Philosopher::_narrow (context_->get_CCM_object()));
 			context_->push_philosopher_state (report);
-		this->timer_sleep (ssec_ * 1000);
+		phil_thread_->timer_sleep (ssec_ * 1000);
 
 		if (stopped_)
 			break;
 	}
 }
 
+
 void
 PhilosopherSessionImpl::stop()
 {
-	// Remove this thread friendly
-	JTCThreadHandle my_handle = this;
-
-	stopped_ = true;
-
-	this->wake_up();
-
-	do
-	{
-		try
-		{
-			my_handle->join();
-		}
-		catch (...)
-		{
-			cerr << "Exception during join()" << endl;
-		}
-	} while (my_handle->isAlive());
+	phil_thread_->stop();
 }
-
 
 // END USER INSERT SECTION PhilosopherSessionImpl
 
@@ -259,6 +288,8 @@ PhilosopherSessionImpl::PhilosopherSessionImpl()
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::PhilosopherSessionImpl
 	stopped_ = false;
+
+	phil_thread_ = new PhilosopherThread (this);
 // END USER INSERT SECTION PhilosopherSessionImpl::PhilosopherSessionImpl
 }
 
@@ -285,7 +316,7 @@ PhilosopherSessionImpl::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::configuration_complete
-	this->start();
+	phil_thread_->start();
 // END USER INSERT SECTION PhilosopherSessionImpl::configuration_complete
 }
 
