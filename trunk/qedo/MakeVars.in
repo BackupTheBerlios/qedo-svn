@@ -40,6 +40,8 @@ Debug = yes
 #
 XERCESDIR = @XERCESDIR@
 
+
+
 # modes for install files
 EXE_MOD=755
 FILE_MODE=644
@@ -74,13 +76,13 @@ endif
 
 ifeq "ORBACUS_ORB" "${ORB}"
 %.h %.cpp %_skel.h %_skel.cpp: %.idl
-	$(ORBACUS)/bin/idl ${IDL_FLAGS} -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DORBACUS_ORB $< 
+	$(ORBACUS)/bin/idl ${IDL_FLAGS} -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DORBACUS_ORB $<
 ORBACUS_CXXFLAGS := -DORBACUS_ORB -I$(ORBACUS)/include
 CXXFLAGS+=$(IDLCXXFLAGS) $(ORBACUS_CXXFLAGS)
-ORBACUS_LIBS := 
+ORBACUS_LIBS :=
 LIBS+=$(ORBACUS_LIBS)
-NAMING_LIBS := 
-NAMING_INCLUDES := 
+NAMING_LIBS :=
+NAMING_INCLUDES :=
 endif
 
 all:

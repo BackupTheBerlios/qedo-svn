@@ -8,25 +8,25 @@ AC_CONFIG_HEADER([ComponentIDL/config.h])
 
 
 AC_ARG_WITH(uuid,
- [  --with-uuid=uuiddir         use UUID library installed in uuiddir],
+ [  --with-uuid=dir         use UUID library installed in dir],
  UUIDDIR=$withval, UUIDDIR="")
 
 AC_ARG_WITH(xerces,
- [  --with-xerces=xercesdir         use Xerces installed in xercesdir],
+ [  --with-xerces-c=dir     use Xerces installed in dir],
  XERCESDIR=$withval, XERCESDIR="")
 AC_SUBST(XERCESDIR)
 
 AC_ARG_WITH(mico,
- [  --with-mico=micodir         use Mico installed in micodir],
+ [  --with-mico=dir         use Mico installed in dir],
  MICODIR=$withval, MICODIR="")
 AC_SUBST(MICODIR)
 
 AC_ARG_WITH(orbacus,
- [  --with-orbacus=orbacusdir         use Orbacus installed in ORBACUSDIR],
+ [  --with-orbacus=dir      use Orbacus installed in dir],
  ORBACUSDIR=$withval, ORBACUSDIR="")
 
 AC_ARG_WITH(wxGTK,
- [  --with-wxGTK=wxgtkdir         use wxGTK installed in WXGTKDIR],
+ [  --with-wxGTK=dir        use wxGTK installed in dir],
  WXGTKDIR=$withval, WXGTKDIR="/usr")
 AC_SUBST(WXGTKDIR)
 
@@ -43,7 +43,7 @@ AC_ARG_ENABLE(streams,
  use_streams=$enableval, use_streams=yes)
 
 AC_ARG_ENABLE(qos,
- [  --disable-qos            compile QoS support in container (default off)],
+ [  --disable-qos           compile QoS support in container (default off)],
  use_qos=$enableval, use_qos=no)
 
 AC_ARG_ENABLE(db,
@@ -133,19 +133,19 @@ else
 	LIBS="-L$XERCESDIR/lib -lxerces-c $LIBS"
 	CPPFLAGS="-I$XERCESDIR/include $CPPFLAGS"
 fi
-dnl      AC_TRY_LINK([
-dnl #include <xercesc/util/XercesDefs.hpp>
-dnl #include <xercesc/util/PlatformUtils.hpp>
-dnl #ifndef XERCES_HAS_CPP_NAMESPACE
-dnl #define XERCES_CPP_NAMESPACE_QUALIFIER
-dnl #endif],
-dnl        [XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::Initialize();],
-dnl        [HAVE_XERCES=yes],
-dnl        [HAVE_XERCES=no])
-dnl      LIBS=$qedo_save_LIBS
-dnl 	  CPPFLAGS=$qedo_save_CPPFLAGS
-dnl      AC_LANG_RESTORE
-dnl   ])
+     AC_TRY_LINK([
+#include <xercesc/util/XercesDefs.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+#ifndef XERCES_HAS_CPP_NAMESPACE
+#define XERCES_CPP_NAMESPACE_QUALIFIER
+#endif],
+       [XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::Initialize();],
+       [HAVE_XERCES=yes],
+       [HAVE_XERCES=no])
+       LIBS=$qedo_save_LIBS
+	  CPPFLAGS=$qedo_save_CPPFLAGS
+      AC_LANG_RESTORE
+     ])
 
 if test X"$HAVE_XERCES" = Xno; then
   AC_MSG_ERROR([cannot find libxerces-c])
@@ -154,6 +154,18 @@ AC_SUBST(HAVE_XERCES)
 AC_SUBST(XERCES_LIBS)
 AC_SUBST(XERCES_INCLUDES)
 
+HAVE_ODBCLIB=no
+ODBCLIB=""
+
+AC_CHECK_LIB([odbc],[SQLConnect],[HAVE_ODBCLIB=yes],[])
+
+if test X"$HAVE_ODBCLIB" = Xyes ; then
+	ODBCLIB="-lodbc"
+else
+	use_db=no
+fi
+
+AC_SUBST(ODBCLIB)
 
 # do enable debug
 CONF_OPT_FLAGS="-O2"

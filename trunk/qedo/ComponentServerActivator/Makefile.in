@@ -35,7 +35,8 @@ CC=$(CXX)
 LIBS += -L../ComponentIDL -lComponentIDL\
 	-L../ComponentContainer -lComponentContainer \
 	-L../qedoutil/ -lqedoutil \
-	$(NAMING_LIBS) -lodbc
+	$(NAMING_LIBS) \
+	@ODBCLIB@
 
 LDLIBS = ${LIBS}
 
