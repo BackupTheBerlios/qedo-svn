@@ -30,6 +30,7 @@
 #include "Printer.h"
 #include <fstream>
 #include <iostream>
+#include <set>
 
 
 namespace QEDO_CIDL_Generator {
@@ -45,6 +46,7 @@ private:
 	Printer out;
 	bool need_push_;
 	CIDL::CompositionDef_var composition_;
+	std::set < std::string > handled_interfaces_;
 
 	void genReferenceCounting(std::string class_name);
 

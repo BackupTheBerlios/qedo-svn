@@ -280,7 +280,18 @@ GeneratorBusinessC::doFinder(IR__::FinderDef_ptr finder)
 void
 GeneratorBusinessC::doInterface(IR__::InterfaceDef_ptr intf)
 {
+	//
+	// check whether this interface was already handled
+	//
+	if (handled_interfaces_.find(intf->id()) != handled_interfaces_.end())
+	{
+		return;
+	} 
+	handled_interfaces_.insert(intf->id());
+
+	//
 	// base interfaces
+	//
 	IR__::InterfaceDefSeq_var base_seq = intf->base_interfaces();
 	CORBA::ULong len = base_seq->length();
 	for(CORBA::ULong i = 0; i < len; i++)
@@ -308,6 +319,7 @@ GeneratorBusinessC::doComponent(IR__::ComponentDef_ptr component)
 
 	// contained provides
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Provides, false);
+	handled_interfaces_.clear();
 	CORBA::ULong len = contained_seq->length();
 	for(CORBA::ULong i = 0; i < len; i++)
 	{
@@ -539,6 +551,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 		// for each implemented facet
 		IR__::ProvidesDefSeq_var provided_seq = segment_seq[i]->provided_facets();
+		handled_interfaces_.clear();
 		for (CORBA::ULong ii = 0; ii < provided_seq->length(); ii++)
 		{
 			doInterface(provided_seq[ii]->interface_type());

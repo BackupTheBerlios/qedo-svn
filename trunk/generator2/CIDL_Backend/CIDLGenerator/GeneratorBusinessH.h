@@ -29,6 +29,7 @@
 #include "CPPBase.h"
 #include "Printer.h"
 #include <iostream>
+#include <set>
 
 
 namespace QEDO_CIDL_Generator {
@@ -44,6 +45,7 @@ private:
 	std::string target_;
 	bool need_push_;
 	CIDL::CompositionDef_var composition_;
+	std::set < std::string > handled_interfaces_;
 
 	void doModule(IR__::ModuleDef_ptr module);
 	void doException(IR__::ExceptionDef_ptr except);
