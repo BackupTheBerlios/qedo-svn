@@ -26,9 +26,50 @@
 
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
-#include <xercesc/sax/SAXParseException.hpp>
-#include <xercesc/dom/DOMString.hpp>
 #include <iostream>
+
+
+// ---------------------------------------------------------------------------
+//  This is a simple class that lets us do easy (though not terribly efficient)
+//  trancoding of char* data to XMLCh data.
+// ---------------------------------------------------------------------------
+class XStr
+{
+public :
+    // -----------------------------------------------------------------------
+    //  Constructors and Destructor
+    // -----------------------------------------------------------------------
+    XStr(const char* const toTranscode)
+    {
+        // Call the private transcoding method
+        fUnicodeForm = XMLString::transcode(toTranscode);
+    }
+
+    ~XStr()
+    {
+        delete [] fUnicodeForm;
+    }
+
+
+    // -----------------------------------------------------------------------
+    //  Getter methods
+    // -----------------------------------------------------------------------
+    const XMLCh* unicodeForm() const
+    {
+        return fUnicodeForm;
+    }
+
+private :
+    // -----------------------------------------------------------------------
+    //  Private data members
+    //
+    //  fUnicodeForm
+    //      This is the Unicode XMLCh format of the string.
+    // -----------------------------------------------------------------------
+    XMLCh*   fUnicodeForm;
+};
+
+#define X(str) XStr(str).unicodeForm()
 
 
 class DOMTreeErrorReporter : public ErrorHandler
@@ -45,6 +86,7 @@ public:
     ~DOMTreeErrorReporter()
     {
     }
+
 
     // -----------------------------------------------------------------------
     //  Implementation of the error handler interface
@@ -74,5 +116,53 @@ inline bool DOMTreeErrorReporter::getSawErrors() const
 {
     return fSawErrors;
 }
+
+
+/**
+ * This is a simple class that lets us do easy (though not terribly efficient)
+ * trancoding of XMLCh data to local code page for display.
+ */
+class StrX
+{
+public :
+    // -----------------------------------------------------------------------
+    //  Constructors and Destructor
+    // -----------------------------------------------------------------------
+    StrX(const XMLCh* const toTranscode)
+    {
+        // Call the private transcoding method
+        fLocalForm = XMLString::transcode(toTranscode);
+    }
+
+    ~StrX()
+    {
+        delete [] fLocalForm;
+    }
+
+
+    // -----------------------------------------------------------------------
+    //  Getter methods
+    // -----------------------------------------------------------------------
+    const char* localForm() const
+    {
+        return fLocalForm;
+    }
+
+private :
+    // -----------------------------------------------------------------------
+    //  Private data members
+    //
+    //  fLocalForm
+    //      This is the local code page form of the string.
+    // -----------------------------------------------------------------------
+    char*   fLocalForm;
+};
+
+inline std::ostream& operator<<(std::ostream& target, const StrX& toDump)
+{
+    target << toDump.localForm();
+    return target;
+}
+
 
 #endif

@@ -20,16 +20,14 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.4 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.5 2003/01/21 10:52:28 neubauer Exp $";
 
 
 #include "AssemblyFactory.h"
+#include <fstream>
 #include <xercesc/util/XMLURL.hpp>
 #include <xercesc/framework/URLInputSource.hpp>
 #include <xercesc/util/BinInputStream.hpp>
-#include <iostream>
-#include <fstream>
-#include <string>
 
 #ifndef _WIN32
 #include <time.h>
@@ -49,6 +47,8 @@ namespace Qedo {
 AssemblyFactoryImpl::AssemblyFactoryImpl(CORBA::ORB_ptr orb)
 : orb_ (CORBA::ORB::_duplicate (orb))
 {
+	// Initialize the XML4C2 system once for all instances
+	static XMLInitializer ini;
 }
 
 

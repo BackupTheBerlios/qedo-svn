@@ -41,7 +41,7 @@ class Properties
 private:
 	std::string descriptor_;
 	DOMXMLParser* parser_;
-	DOM_Document document_;
+	DOMDocument* document_;
 
 
 public:

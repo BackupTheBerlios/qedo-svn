@@ -31,15 +31,17 @@ namespace Qedo {
  */
 XMLInitializer::XMLInitializer()
 {
+	//
 	// Initialize the XML4C2 system
+	//
     try
     {
         XMLPlatformUtils::Initialize();
     }
     catch(const XMLException& toCatch)
     {
-        std::cerr << "Error during Xerces-c Initialization" << std::endl;
-        std::cerr << "  Exception message:" << toCatch.getMessage() << std::endl;
+        std::cerr << "Error during Xerces-c Initialization";
+        std::cerr << "  Exception message:" << StrX(toCatch.getMessage()) << std::endl;
     }
 }
 
@@ -49,6 +51,7 @@ XMLInitializer::XMLInitializer()
  */
 XMLInitializer::~XMLInitializer()
 {
+	XMLPlatformUtils::Terminate();
 }
 
 
@@ -57,25 +60,26 @@ XMLInitializer::~XMLInitializer()
  */
 DOMXMLParser::DOMXMLParser()
 {
-	// Initialize the XML4C2 system once for all instances
-	static XMLInitializer ini;
-
-	valScheme_ = DOMParser::Val_Auto;
-    doNamespaces_ = false;
-    doSchema_ = false;
-    doCreate_ = false;
+	valScheme_ =			XercesDOMParser::Val_Auto;
+    doNamespaces_ =			false;
+    doSchema_ =				false;
+	doSchemaFullChecking_ = false;
+    doCreate_ =				false;
     
     //  Create our parser, then attach an error handler to the parser.
     //  The parser will call back to methods of the ErrorHandler if it
     //  discovers errors during the course of parsing the XML document.
-    parser_ = new DOMParser;
-    parser_->setValidationScheme( valScheme_ );
-    parser_->setDoNamespaces( doNamespaces_ );
-    parser_->setDoSchema( doSchema_ );
+    parser_ = new XercesDOMParser;
+    parser_->setValidationScheme(valScheme_);
+    parser_->setDoNamespaces(doNamespaces_);
+    parser_->setDoSchema(doSchema_);
+	parser_->setValidationSchemaFullChecking(doSchemaFullChecking_);
+	parser_->setCreateEntityReferenceNodes(doCreate_);
+
     errReporter_ = new DOMTreeErrorReporter();
-    parser_->setErrorHandler( errReporter_ );
-    parser_->setCreateEntityReferenceNodes( doCreate_ );
-    parser_->setToCreateXMLDeclTypeNode( true );
+    parser_->setErrorHandler(errReporter_);
+    
+    //parser_->setToCreateXMLDeclTypeNode( true );
 
     // set catalog and resolver
     std::string uri = "file:///";
@@ -107,12 +111,7 @@ DOMXMLParser::DOMXMLParser()
  */
 DOMXMLParser::~DOMXMLParser()
 {
-    //  Clean up the error handler. The parser does not adopt handlers
-    //  since they could be many objects or one object installed for multiple
-    //  handlers.
     delete errReporter_;
-
-    //  Delete the parser itself.
     delete parser_;
 }
 
@@ -123,49 +122,46 @@ DOMXMLParser::~DOMXMLParser()
 int
 DOMXMLParser::parse(char* fileName)
 {
-	int error = 0;
     xmlFile_ = fileName;
+	std::cout << "..... parsing " << fileName << std::endl;
 
-    //  Parse the XML file, catching any XML exceptions that might propogate
-    //  out of it.
+	bool errorsOccured = false;
+	LocalFileInputSource input(X(xmlFile_)); 
     try
     {
-        parser_->parse( xmlFile_ );
-        error = parser_->getErrorCount();
+        parser_->parse(input);
     }
     catch (const XMLException& e)
     {
-        std::cerr << "An error occured during parsing\n   Message: "
-             << DOMString(e.getMessage()) << std::endl;
-        error = 1;
+		std::cerr << ".......... An error occurred during parsing\n   Message: "
+			<< StrX(e.getMessage()) << std::endl;
+        errorsOccured = true;
     }
-    catch (const DOM_DOMException& e)
+    catch (const DOMException& e)
     {
-        std::cerr << "A DOM error occured during parsing\n   DOMException code: "
-             << e.code << std::endl;
-        error = 1;
+		std::cerr << ".......... A DOM error occurred during parsing\n   DOMException code: "
+			<< e.code << std::endl;
+        errorsOccured = true;
     }
     catch (...)
     {
-        std::cerr << "An error occured during parsing\n " << std::endl;
-        error = 1;
+		std::cerr << ".......... An error occurred during parsing\n " << std::endl;
+        errorsOccured = true;
     }
 
-    if ( ! error &&  ! errReporter_->getSawErrors() )
+    if ( !errorsOccured &&  !errReporter_->getSawErrors())
     {
         document_ = parser_->getDocument();
     }
 
-    //  The DOM document and its contents are reference counted, and need
-    //  no explicit deletion.
-    return error;
+    return errorsOccured;
 }
 
 
 /**
  *
  */
-DOM_Document
+DOMDocument*
 DOMXMLParser::getDocument()
 {
 	return parser_->getDocument();

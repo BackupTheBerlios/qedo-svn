@@ -20,10 +20,9 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.4 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.5 2003/01/21 10:52:28 neubauer Exp $";
 
 #include "ComponentInstallationImpl.h"
-#include <OB/CosNaming.h>
 
 #include <iostream>
 #include <fstream>
@@ -39,6 +38,8 @@ namespace Qedo {
 ComponentInstallationImpl::ComponentInstallationImpl (CORBA::ORB_ptr orb)
 : orb_ (CORBA::ORB::_duplicate (orb))
 {
+	// Initialize the XML4C2 system once for all instances
+	static XMLInitializer ini;
 }
 
 
@@ -161,23 +162,23 @@ ComponentInstallationImpl::readInstalledComponents (const char* inst_file)
         return false;
     }
 
-	DOM_Document doc = parser->getDocument();
-	DOM_Element root = doc.getDocumentElement();
-	DOM_NodeList aNodeList = root.getElementsByTagName("implementation");
-	for (unsigned int i = 0; i < aNodeList.getLength(); i++)
+	DOMDocument* doc = parser->getDocument();
+	DOMElement* root = doc->getDocumentElement();
+	DOMNodeList* aNodeList = root->getElementsByTagName(X("implementation"));
+	for (unsigned int i = 0; i < aNodeList->getLength(); i++)
 	{
-		DOM_Element iElement = ( const DOM_Element&) aNodeList.item( i );
-		DOM_Element sElement = ( const DOM_Element&) (iElement.getElementsByTagName("servants").item(0));
-		DOM_Element bElement = ( const DOM_Element&) (iElement.getElementsByTagName("business").item(0));
+		DOMElement* iElement = (DOMElement*) aNodeList->item(i);
+		DOMElement* sElement = (DOMElement*) (iElement->getElementsByTagName(X("servants"))->item(0));
+		DOMElement* bElement = (DOMElement*) (iElement->getElementsByTagName(X("business"))->item(0));
 		
         //
         // extract descriptions
 		//
-		std::string uu_id = iElement.getAttribute("id").transcode();
-		std::string servants_DLL_name = sElement.getAttribute("code").transcode();
-		std::string servants_DLL_entry_point_function = sElement.getAttribute("entry").transcode();
-		std::string executors_DLL_name = bElement.getAttribute("code").transcode();
-		std::string executors_DLL_entry_point_function = bElement.getAttribute("entry").transcode();
+		std::string uu_id = XMLString::transcode(iElement->getAttribute(X("id")));
+		std::string servants_DLL_name = XMLString::transcode(sElement->getAttribute(X("code")));
+		std::string servants_DLL_entry_point_function = XMLString::transcode(sElement->getAttribute(X("entry")));
+		std::string executors_DLL_name = XMLString::transcode(bElement->getAttribute(X("code")));
+		std::string executors_DLL_entry_point_function = XMLString::transcode(bElement->getAttribute(X("entry")));
 		
 		//
 		// create new ComponentImplementation
@@ -213,43 +214,63 @@ ComponentInstallationImpl::addInstalledComponent (ComponentImplementation* aComp
 	//
 	// add the new implementation
 	//
-	DOM_Document doc = parser->getDocument();
-	DOM_Element root = doc.getDocumentElement();
-	root.appendChild(doc.createTextNode("\n    "));
+	DOMDocument* doc = parser->getDocument();
+	DOMElement* root = doc->getDocumentElement();
+	root->appendChild(doc->createTextNode(X("\n    ")));
 
-	DOM_Element servants = doc.createElement("servants");
-	servants.appendChild(doc.createTextNode("\n        "));
-	servants.setAttribute("code", aComponentImplementation->servant_module_.c_str());
-	servants.setAttribute("entry", aComponentImplementation->servant_entry_point_.c_str());
+	DOMElement* servants = doc->createElement(X("servants"));
+	servants->appendChild(doc->createTextNode(X("\n        ")));
+	servants->setAttribute(X("code"), X(aComponentImplementation->servant_module_.c_str()));
+	servants->setAttribute(X("entry"), X(aComponentImplementation->servant_entry_point_.c_str()));
 
-	DOM_Element business = doc.createElement("business");
-	business.appendChild(doc.createTextNode("\n        "));
-	business.setAttribute("code", aComponentImplementation->executor_module_.c_str());
-	business.setAttribute("entry", aComponentImplementation->executor_entry_point_.c_str());
+	DOMElement* business = doc->createElement(X("business"));
+	business->appendChild(doc->createTextNode(X("\n        ")));
+	business->setAttribute(X("code"), X(aComponentImplementation->executor_module_.c_str()));
+	business->setAttribute(X("entry"), X(aComponentImplementation->executor_entry_point_.c_str()));
 
-	DOM_Element impl = doc.createElement("implementation");
-	impl.setAttribute("id", aComponentImplementation->uuid_.c_str());
-	impl.appendChild (doc.createTextNode("\n        "));
-	impl.appendChild (servants);
-	impl.appendChild (doc.createTextNode("\n        "));
-	impl.appendChild (business);
-	impl.appendChild (doc.createTextNode("\n    "));
-	root.appendChild (impl);
-	root.appendChild (doc.createTextNode("\n"));
+	DOMElement* impl = doc->createElement(X("implementation"));
+	impl->setAttribute(X("id"), X(aComponentImplementation->uuid_.c_str()));
+	impl->appendChild (doc->createTextNode(X("\n        ")));
+	impl->appendChild (servants);
+	impl->appendChild (doc->createTextNode(X("\n        ")));
+	impl->appendChild (business);
+	impl->appendChild (doc->createTextNode(X("\n    ")));
+	root->appendChild (impl);
+	root->appendChild (doc->createTextNode(X("\n")));
 
 	//
 	// write the new list
 	//
-	std::ofstream deployment_file(DEPLOYMENT_PERSISTENCE_FILE);
-	if ( !deployment_file)
-	{
-		std::cerr << "ComponentServerActivator_impl: Cannot open file " << DEPLOYMENT_PERSISTENCE_FILE << std::endl;
-		return false;
-	}
+	try
+    {
+		//
+		// get a serializer, an instance of DOMWriter
+		//
+		XMLCh tempStr[100];
+		XMLString::transcode("LS", tempStr, 99);
+		DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+		DOMWriter *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
 
-	DOMOutput output(deployment_file);
-	output << doc;
-	deployment_file.close();
+		if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true))
+		{
+			theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+		}
+
+		XMLFormatTarget *myFormTarget = new LocalFileFormatTarget(DEPLOYMENT_PERSISTENCE_FILE);
+
+		//
+		// do the serialization through DOMWriter::writeNode();
+		//
+		theSerializer->writeNode(myFormTarget, *doc);
+
+		delete theSerializer;
+		delete myFormTarget;
+	}
+    catch (XMLException& e)
+	{
+		std::cerr << "An error occurred during creation of output transcoder. Msg is:" << std::endl;
+		std::cerr << StrX(e.getMessage()) << std::endl;
+    }
 
 	// delete parser
 	delete parser;
@@ -266,6 +287,8 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 	// 1) servant_module:servant_entry_point:executor_module:executor_entry_point
 	// 2) PACKAGE=<packagename>
 
+	std::cout << "..... installing Component type with UUID: " << implUUID << std::endl;
+
 	// First test for duplicate UUIDs
 	std::vector < ComponentImplementation >::const_iterator inst_iter;
 
@@ -273,7 +296,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 	{
 		if ((*inst_iter).uuid_ == implUUID)
 		{
-			std::cout << "..... Component type with UUID " << implUUID << " already installed !" << std::endl;
+			std::cout << ".......... already installed !" << std::endl;
 			return;
 		}
 	}
@@ -289,7 +312,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		std::string comp_loc = packageDirectory_ + "/" + desc.substr(8);
 		if (!checkExistence(comp_loc, IS_FILE))
 		{
-			std::cerr << "..... missing package " << comp_loc << std::endl;
+			std::cerr << ".......... missing package " << comp_loc << std::endl;
 			std::cerr << ".......... upload before installing" << std::endl;
 			throw Components::Deployment::InvalidLocation();
 		}
@@ -349,7 +372,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		addInstalledComponent(&new_component);
 	}
 
-	std::cout << "ComponentInstallationImpl: New component installed with UUID " << implUUID << std::endl;
+	std::cout << "..... done (" << implUUID << ")" << std::endl;
 }
 
 

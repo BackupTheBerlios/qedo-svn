@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_1D.lib zlib.lib jtcd.lib CosNamingd.lib obd.lib"
+				AdditionalDependencies="xerces-c_2D.lib zlib.lib jtcd.lib CosNamingd.lib obd.lib"
 				OutputFile="../../Runtime/ci.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(XERCES)\lib;$(ZLIB)\dll32"
@@ -116,9 +116,6 @@
 				RelativePath="ComponentInstallationImpl.cpp">
 			</File>
 			<File
-				RelativePath="DOMOutput.cpp">
-			</File>
-			<File
 				RelativePath="DOMTreeErrorReporter.cpp">
 			</File>
 			<File
@@ -151,9 +148,6 @@
 			</File>
 			<File
 				RelativePath="ComponentInstallationImpl.h">
-			</File>
-			<File
-				RelativePath="DOMOutput.h">
 			</File>
 			<File
 				RelativePath="DOMTreeErrorReporter.h">

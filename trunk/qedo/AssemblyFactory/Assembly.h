@@ -76,7 +76,7 @@ private:
 	DOMXMLParser* cadParser_;
 	
     // the dom document of the assembly description
-	DOM_Document document_;
+	DOMDocument* document_;
 	
     // the mapping of component implementation ids to softpackages
 	std::map < std::string, std::string > implementationMap_;
@@ -93,7 +93,7 @@ private:
 private:
 	
     // handle extension elements
-    void extension (DOM_Element)
+    void extension (DOMElement*)
         throw(Components::CreateFailure);
 
     // get the named component instance
@@ -113,49 +113,49 @@ private:
         throw(Components::CreateFailure);
 
     // get the destination name for home
-	std::string destination (DOM_Element)
+	std::string destination (DOMElement*)
         throw(Components::CreateFailure);
 
     // get reference for port
-    CORBA::Object_ptr getPort (DOM_Element)
+    CORBA::Object_ptr getPort (DOMElement*)
         throw(Components::CreateFailure);
 
     // get componentfileref for home
-	std::string componentfileref (DOM_Element)
+	std::string componentfileref (DOMElement*)
         throw(Components::CreateFailure);
 
     // get componentimplref for home
-	std::string componentimplref (DOM_Element)
+	std::string componentimplref (DOMElement*)
         throw(Components::CreateFailure);
 
     // get usesidentifier for port
-	std::string usesidentifier (DOM_Element)
+	std::string usesidentifier (DOMElement*)
         throw(Components::CreateFailure);
 
     // get providesidentifier for port
-	std::string providesidentifier (DOM_Element)
+	std::string providesidentifier (DOMElement*)
         throw(Components::CreateFailure);
 
     // get consumesidentifier for port
-	std::string consumesidentifier (DOM_Element)
+	std::string consumesidentifier (DOMElement*)
         throw(Components::CreateFailure);
 
     // get emitsidentifier for port
-	std::string emitsidentifier (DOM_Element)
+	std::string emitsidentifier (DOMElement*)
         throw(Components::CreateFailure);
 
     // get publishesidentifier for port
-	std::string publishesidentifier (DOM_Element)
+	std::string publishesidentifier (DOMElement*)
         throw(Components::CreateFailure);
 
     // register in NS
-    void registerWithNaming (DOM_Element, CORBA::Object_ptr);
+    void registerWithNaming (DOMElement*, CORBA::Object_ptr);
 
     // register component
-    void registerComponent (DOM_Element, CORBA::Object_ptr);
+    void registerComponent (DOMElement*, CORBA::Object_ptr);
 
     // install a component
-    void installImplementation (DOM_Element)
+    void installImplementation (DOMElement*)
         throw(Components::CreateFailure);
 
 	// installs all component implementations referenced in the assembly descriptor
@@ -163,15 +163,15 @@ private:
 		throw(Components::CreateFailure);
 
 	// instantiates a component in the given home
-	void instantiateComponent (DOM_Element, Components::CCMHome_ptr)
+	void instantiateComponent (DOMElement*, Components::CCMHome_ptr)
 		throw(Components::CreateFailure);
 
     // processcollocation
-    void processcollocation (DOM_Element)
+    void processcollocation (DOMElement*)
         throw(Components::CreateFailure);
 
     // homeplacement
-    void homeplacement (DOM_Element, Components::Deployment::Container_ptr)
+    void homeplacement (DOMElement*, Components::Deployment::Container_ptr)
         throw(Components::CreateFailure);
 
 	// instantiates all components according to the partitioning section in the assembly descriptor
@@ -179,11 +179,11 @@ private:
 		throw(Components::CreateFailure);
 
     // connect interfaces
-    void connectinterface (DOM_Element)
+    void connectinterface (DOMElement*)
         throw(Components::CreateFailure);
 
     // connect events
-    void connectevent (DOM_Element)
+    void connectevent (DOMElement*)
         throw(Components::CreateFailure);
 
 	// makes all required connections between instances

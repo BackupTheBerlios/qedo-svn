@@ -70,7 +70,7 @@ private:
 	std::string mIdlTarget;
     
     // the CORBA component descriptor
-    DOM_Document mComponentDescriptor;
+    DOMDocument* mComponentDescriptor;
     
     // path of component implementations
 	std::string mBuildPath;
@@ -88,7 +88,7 @@ private:
 	DOMXMLParser* mParser;
     
     // the parsed document
-	DOM_Document mDocument;
+	DOMDocument* mDocument;
     
     // the package
 	Package* mPackage;
@@ -97,67 +97,67 @@ private:
     int mCounter;
 
     // handle author
-    void author (DOM_Element)
+    void author (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle code
-    void code (DOM_Element)
+    void code (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle corbacomponent
-    void corbacomponent (DOM_Document)
+    void corbacomponent (DOMDocument*)
         throw(Components::CreateFailure);
 
     // handle dependency
-    void dependency (DOM_Element)
+    void dependency (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle description
-    void description (DOM_Element)
+    void description (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle descriptor
-    DOM_Document descriptor (DOM_Element)
+    DOMDocument* descriptor (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle extension
-    void extension (DOM_Element)
+    void extension (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle fileinarchive
-	std::string fileinarchive (DOM_Element, std::string)
+	std::string fileinarchive (DOMElement*, std::string)
         throw(Components::CreateFailure);
 
     // handle idl element
-    void idl (DOM_Element)
+    void idl (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle implementation elements
-    void implementation (DOM_Element)
+    void implementation (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle license
-    void license (DOM_Element)
+    void license (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle link
-	std::string link (DOM_Element, std::string)
+	std::string link (DOMElement*, std::string)
         throw(Components::CreateFailure);
 
     // handle os
-    void os (DOM_Element)
+    void os (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle package type
-    void pkgtype (DOM_Element)
+    void pkgtype (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle propertyfile
-    void propertyfile (DOM_Element)
+    void propertyfile (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle title
-    void title (DOM_Element)
+    void title (DOMElement*)
         throw(Components::CreateFailure);
 
     // buildServantCode

@@ -94,11 +94,11 @@ ComponentImplementation::operator ==
  *
  */
 void
-ComponentImplementation::author (DOM_Element element)
+ComponentImplementation::author (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("author");
-    if (nodeList.getLength() > 0)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("author"));
+    if (nodeList->getLength() > 0)
     {
         // TODO
     }
@@ -109,24 +109,24 @@ throw(Components::CreateFailure)
  *
  */
 void
-ComponentImplementation::code (DOM_Element element)
+ComponentImplementation::code (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("code");
-    if (nodeList.getLength() > 0)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("code"));
+    if (nodeList->getLength() > 0)
     {
-        DOM_Element codeEl = (const DOM_Element&)(nodeList.item(0));
-		if ( std::string(codeEl.getAttribute("type").transcode()) == "DLL" )
+        DOMElement* codeEl = (DOMElement*)(nodeList->item(0));
+		if (!XMLString::compareString(codeEl->getAttribute(X("type")), X("DLL")))
 		{
 		    // set file name
-			DOM_NodeList aNodeList = codeEl.getElementsByTagName("fileinarchive");
-			DOM_Element subElement = (const DOM_Element&)aNodeList.item(0);
-			executor_module_ = std::string(subElement.getAttribute("name").transcode());
+			DOMNodeList* aNodeList = codeEl->getElementsByTagName(X("fileinarchive"));
+			DOMElement* subElement = (DOMElement*)(aNodeList->item(0));
+			executor_module_ = XMLString::transcode(subElement->getAttribute(X("name")));
 
 			// set entry point
-			aNodeList = codeEl.getElementsByTagName("entrypoint");
-			subElement = (const DOM_Element&)aNodeList.item(0);
-			executor_entry_point_ = std::string(subElement.getFirstChild().getNodeValue().transcode());
+			aNodeList = codeEl->getElementsByTagName(X("entrypoint"));
+			subElement = (DOMElement*)(aNodeList->item(0));
+			executor_entry_point_ = XMLString::transcode(subElement->getFirstChild()->getNodeValue());
 		}
     }
     else
@@ -141,36 +141,38 @@ throw(Components::CreateFailure)
  *
  */
 void
-ComponentImplementation::corbacomponent (DOM_Document document)
+ComponentImplementation::corbacomponent (DOMDocument* document)
 throw(Components::CreateFailure)
 {
     std::string repid_of_home;
-    DOM_Node child = document.getDocumentElement().getFirstChild();
+	DOMNode* xxx = document->getDocumentElement();
+    DOMNode* child = document->getDocumentElement()->getFirstChild();
 	while (child != 0)
 	{
-		//
-		// homerepid
-		//
-		if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-			(child.getNodeName().equals("homerepid")))
-        {
-            repid_of_home = ((const DOM_Element&)child).getAttribute("repid").transcode();
-        }
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			//
+			// homerepid
+			//
+			if (!XMLString::compareString(child->getNodeName(), X("homerepid")))
+			{
+				repid_of_home = XMLString::transcode(((DOMElement*)child)->getAttribute(X("repid")));
+			}
 
-        //
-		// homefeatures
-		//
-		if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-			(child.getNodeName().equals("homefeatures")))
-        {
-            if (repid_of_home == ((const DOM_Element&)child).getAttribute("repid").transcode())
-            {
-                mHomeName = ((const DOM_Element&)child).getAttribute("name").transcode();
-            }
-        }
+			//
+			// homefeatures
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("homefeatures")))
+			{
+				if (repid_of_home == XMLString::transcode(((DOMElement*)child)->getAttribute(X("repid"))))
+				{
+					mHomeName = XMLString::transcode(((DOMElement*)child)->getAttribute(X("name")));
+				}
+			}
+		}
 
         // get next child
-		child = child.getNextSibling();
+		child = child->getNextSibling();
     }
 }
 
@@ -179,24 +181,24 @@ throw(Components::CreateFailure)
  *
  */
 void
-ComponentImplementation::dependency (DOM_Element element)
+ComponentImplementation::dependency (DOMElement* element)
 throw(Components::CreateFailure)
 {
     std::string orb;
-    DOM_NodeList nodeList = element.getElementsByTagName("dependency");
-    for (unsigned int i = 0; i < nodeList.getLength(); ++i)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("dependency"));
+    for (unsigned int i = 0; i < nodeList->getLength(); ++i)
     {
-        DOM_Element dependencyEl = (const DOM_Element&)nodeList.item(i);
-        std::string type = dependencyEl.getAttribute("type").transcode();
+        DOMElement* dependencyEl = (DOMElement*)(nodeList->item(i));
+		std::string type = XMLString::transcode(dependencyEl->getAttribute(X("type")));
 
         //
     	// ORB
 		//
 		if (type == "ORB")
 		{
-		    DOM_NodeList aNodeList = dependencyEl.getElementsByTagName("name");
-			DOM_Element orbname = (const DOM_Element&)aNodeList.item(0);
-			orb = orbname.getFirstChild().getNodeValue().transcode();
+		    DOMNodeList* aNodeList = dependencyEl->getElementsByTagName(X("name"));
+			DOMElement* orbname = (DOMElement*)(aNodeList->item(0));
+			orb = XMLString::transcode(orbname->getFirstChild()->getNodeValue());
 	    }
     }
 }
@@ -206,11 +208,11 @@ throw(Components::CreateFailure)
  *
  */
 void
-ComponentImplementation::description (DOM_Element element)
+ComponentImplementation::description (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("description");
-    if (nodeList.getLength() > 0)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("description"));
+    if (nodeList->getLength() > 0)
     {
         // TODO
     }
@@ -220,53 +222,53 @@ throw(Components::CreateFailure)
 /**
  *
  */
-DOM_Document 
-ComponentImplementation::descriptor (DOM_Element element)
+DOMDocument* 
+ComponentImplementation::descriptor (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_Document document;
-
-    DOM_NodeList nodeList = element.getElementsByTagName("descriptor");
-    if (nodeList.getLength() > 0)
+    DOMDocument* document;
+    DOMNodeList* nodeList = element->getElementsByTagName(X("descriptor"));
+    if (nodeList->getLength() > 0)
     {
         std::string cfile;
-        DOM_Node child = nodeList.item(0).getFirstChild();
+        DOMNode* child = nodeList->item(0)->getFirstChild();
 	    while (child != 0)
 	    {
-            //
-	        // link
-	        //
-	        if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-	            (child.getNodeName().equals("link")))
-            {
-                cfile = link((const DOM_Element&)child, mBuildPath);
-            }
+			if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+			{
+				//
+				// link
+				//
+				if (!XMLString::compareString(child->getNodeName(), X("link")))
+				{
+					cfile = link((DOMElement*)(child), mBuildPath);
+				}
 
-            //
-		    // fileinarchive
-		    //
-		    if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		        (child.getNodeName().equals("fileinarchive")))
-            {
-                cfile = fileinarchive((const DOM_Element&)child, mBuildPath);
-            }
+				//
+				// fileinarchive
+				//
+				else if (!XMLString::compareString(child->getNodeName(), X("fileinarchive")))
+				{
+					cfile = fileinarchive((DOMElement*)(child), mBuildPath);
+				}
+			}
 
             // get next child
-		    child = child.getNextSibling();
+		    child = child->getNextSibling();
         }
 
         //
         // parse file
         //
-        DOMXMLParser parser;
+        static DOMXMLParser* parser = new DOMXMLParser;
         char* xmlfile = strdup((getPath(mBuildPath) + cfile).c_str());
-        if (parser.parse(xmlfile) != 0) 
+        if (parser->parse(xmlfile) != 0) 
         {
 			std::cerr << "Error during XML parsing" << std::endl;
             delete(xmlfile);
             throw Components::CreateFailure();
 	    }
-	    document = parser.getDocument();
+	    document = parser->getDocument();
     }
 
     return document;
@@ -277,11 +279,11 @@ throw(Components::CreateFailure)
  *
  */
 void
-ComponentImplementation::extension(DOM_Element element)
+ComponentImplementation::extension(DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("extension");
-    for (unsigned int i = 0; i < nodeList.getLength(); ++i)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("extension"));
+    for (unsigned int i = 0; i < nodeList->getLength(); ++i)
     {
         // TODO
     }
@@ -292,10 +294,10 @@ throw(Components::CreateFailure)
  *
  */
 std::string
-ComponentImplementation::fileinarchive(DOM_Element element, std::string destination)
+ComponentImplementation::fileinarchive(DOMElement* element, std::string destination)
 throw(Components::CreateFailure)
 {
-    std::string fileName = element.getAttribute("name").transcode();
+	std::string fileName = XMLString::transcode(element->getAttribute(X("name")));
 
 	// extract the file
     if (mPackage->extractFile(fileName, getPath(destination) + fileName) != 0)
@@ -312,47 +314,47 @@ throw(Components::CreateFailure)
  *
  */
 void
-ComponentImplementation::idl (DOM_Element element)
+ComponentImplementation::idl (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("idl");
-    if (nodeList.getLength() > 0)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("idl"));
+    if (nodeList->getLength() > 0)
     {
-		DOM_Element idl_element = (const DOM_Element&)(nodeList.item(0));
+		DOMElement* idl_element = (DOMElement*)(nodeList->item(0));
 		// TODO the attribute id refers to the home instead to the component !!!
-		mIdlTarget = idl_element.getAttribute("id").transcode();
-        DOM_Node child = idl_element.getFirstChild();
+		mIdlTarget = XMLString::transcode(idl_element->getAttribute(X("id")));
+        DOMNode* child = idl_element->getFirstChild();
 	    while (child != 0)
 	    {
-	        //
-            // link
-	        //
-	        if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-	            (child.getNodeName().equals("link")))
-            {
-                mIdlFile = link((const DOM_Element&)child, mBuildPath);
-            }
+			if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+			{
+				//
+				// link
+				//
+				if (!XMLString::compareString(child->getNodeName(), X("link")))
+				{
+					mIdlFile = link((DOMElement*)(child), mBuildPath);
+				}
 
-            //
-		    // fileinarchive
-		    //
-		    if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		        (child.getNodeName().equals("fileinarchive")))
-            {
-                mIdlFile = fileinarchive((const DOM_Element&)child, mBuildPath);
-            }
+				//
+				// fileinarchive
+				//
+				if (!XMLString::compareString(child->getNodeName(), X("fileinarchive")))
+				{
+					mIdlFile = fileinarchive((DOMElement*)(child), mBuildPath);
+				}
 
-            //
-		    // repository
-		    //
-		    if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		        (child.getNodeName().equals("repository")))
-            {
-                // TODO
-            }
+				//
+				// repository
+				//
+				if (!XMLString::compareString(child->getNodeName(), X("repository")))
+				{
+					// TODO
+				}
+			}
 
-            // get next child
-		    child = child.getNextSibling();
+			// get next child
+		    child = child->getNextSibling();
         }
     }
     else
@@ -367,34 +369,41 @@ throw(Components::CreateFailure)
  *
  */
 void
-ComponentImplementation::implementation (DOM_Element element)
+ComponentImplementation::implementation (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_Node child = element.getFirstChild();
+    DOMNode* child = element->getFirstChild();
+	DOMElement* child_element = 0;
 	while (child != 0)
 	{
-		//
-		// get the right implementation
-		//
-		if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-			(child.getNodeName().equals("implementation")) &&
-            (((const DOM_Element&)child).getAttribute("id").transcode() == uuid_))
-        {
-            // handle dependencies
-            dependency((const DOM_Element&)child);
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			child_element = (DOMElement*)(child);
 
-            // handle descriptor
-            mComponentDescriptor = descriptor((const DOM_Element&)child);
+			//
+			// get the right implementation
+			//
+			if ((!XMLString::compareString(child->getNodeName(), X("implementation"))) &&
+				(!XMLString::compareString(child_element->getAttribute(X("id")), X(uuid_.c_str()))))
+			{
+				// handle dependencies
+				dependency(child_element);
 
-            // handle code
-            code((const DOM_Element&)child);
+				// handle descriptor
+				mComponentDescriptor = descriptor(child_element);
 
-            // handle os
-            os((const DOM_Element&)child);
+				// handle code
+				code(child_element);
+
+				// handle os
+				os(child_element);
+
+				break;
+			}
 		}
 
         // next child
-		child = child.getNextSibling();
+		child = child->getNextSibling();
 	}
 }
 
@@ -403,11 +412,11 @@ throw(Components::CreateFailure)
  *
  */
 void
-ComponentImplementation::license (DOM_Element element)
+ComponentImplementation::license (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("license");
-    if (nodeList.getLength() > 0)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("license"));
+    if (nodeList->getLength() > 0)
     {
         // TODO
     }
@@ -418,10 +427,10 @@ throw(Components::CreateFailure)
  *
  */
 std::string
-ComponentImplementation::link (DOM_Element element, std::string destination)
+ComponentImplementation::link (DOMElement* element, std::string destination)
 throw(Components::CreateFailure)
 {
-    XMLURL uri(element.getAttribute("href").transcode());
+    XMLURL uri(element->getAttribute(X("href")));
     std::string name = XMLString::transcode(uri.getPath());
     std::string::size_type pos = name.find_last_of("/");
     if (pos != std::string::npos)
@@ -462,14 +471,14 @@ throw(Components::CreateFailure)
  *
  */
 void
-ComponentImplementation::os (DOM_Element element)
+ComponentImplementation::os (DOMElement* element)
 throw(Components::CreateFailure)
 {
     std::string os;
-    DOM_NodeList nodeList = element.getElementsByTagName("os");
-    if (nodeList.getLength() > 0)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("os"));
+    if (nodeList->getLength() > 0)
     {
-        os = ((const DOM_Element&)nodeList.item(0)).getAttribute("name").transcode();
+		os = XMLString::transcode(((DOMElement*)nodeList->item(0))->getAttribute(X("name")));
     }
 }
 
@@ -478,26 +487,11 @@ throw(Components::CreateFailure)
  *
  */
 void
-ComponentImplementation::pkgtype (DOM_Element element)
+ComponentImplementation::pkgtype (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("pkgtype");
-    if (nodeList.getLength() > 0)
-    {
-        // TODO
-    }
-}
-
-
-/**
- *
- */
-void
-ComponentImplementation::propertyfile (DOM_Element element)
-throw(Components::CreateFailure)
-{
-    DOM_NodeList nodeList = element.getElementsByTagName("propertyfile");
-    if (nodeList.getLength() > 0)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("pkgtype"));
+    if (nodeList->getLength() > 0)
     {
         // TODO
     }
@@ -508,11 +502,26 @@ throw(Components::CreateFailure)
  *
  */
 void
-ComponentImplementation::title (DOM_Element element)
+ComponentImplementation::propertyfile (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("title");
-    if (nodeList.getLength() > 0)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("propertyfile"));
+    if (nodeList->getLength() > 0)
+    {
+        // TODO
+    }
+}
+
+
+/**
+ *
+ */
+void
+ComponentImplementation::title (DOMElement* element)
+throw(Components::CreateFailure)
+{
+    DOMNodeList* nodeList = element->getElementsByTagName(X("title"));
+    if (nodeList->getLength() > 0)
     {
         // TODO
     }
@@ -564,7 +573,7 @@ ComponentImplementation::install ()
         return false;
 	}
 	mDocument = mParser->getDocument();
-    DOM_Element rootElement = mDocument.getDocumentElement();
+    DOMElement* rootElement = mDocument->getDocumentElement();
 
     // handle title
     title(rootElement);

@@ -29,7 +29,7 @@
 #include <xercesc/util/XMLURL.hpp>
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/sax/EntityResolver.hpp>
-#include <xercesc/parsers/DOMParser.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
 
 
 namespace Qedo {

@@ -53,27 +53,27 @@ Properties::getConfigValues()
 	char* fileName = strdup( descriptor_.c_str() );
 	parser_->parse( fileName );
 	document_ = parser_->getDocument();
-	DOM_Element property = document_.getDocumentElement();
+	DOMElement* property = document_->getDocumentElement();
 	
 	Components::ConfigValues* config = new Components::ConfigValues();
 	int len = 0;
-	DOM_Node child = property.getFirstChild();
+	DOMNode* child = property->getFirstChild();
     while( child != 0)
     {
 		// simple
-		if( ( child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			( child.getNodeName().equals( "simple" ) ) )
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("simple")) ) )
 		{
-			DOM_NodeList nodeList;
-			DOM_Element simple = ( DOM_Element& )child;
-			std::string type = simple.getAttribute( "type" ).transcode();
-			std::string name = simple.getAttribute( "name" ).transcode();
+			DOMNodeList* nodeList;
+			DOMElement* simple = ( DOMElement* )child;
+			std::string type = XMLString::transcode(simple->getAttribute(X("type")));
+			std::string name = XMLString::transcode(simple->getAttribute(X("name")));
 
-			nodeList = simple.getElementsByTagName( "value" );
-			DOM_Element value = ( const DOM_Element& )nodeList.item( 0 );
+			nodeList = simple->getElementsByTagName(X("value"));
+			DOMElement* value = ( DOMElement* )nodeList->item( 0 );
 
 			CORBA::Any any;
-			std::string val = value.getFirstChild().getNodeValue().transcode();
+			std::string val = XMLString::transcode(value->getFirstChild()->getNodeValue());
 			
 			if( type == "boolean" )
 			{
@@ -153,25 +153,25 @@ Properties::getConfigValues()
 		}
 
 		// sequence
-		if( ( child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			( child.getNodeName().equals( "sequence" ) ) )
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("sequence")) ) )
 		{
 		}
 
 		// struct
-		if( ( child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			( child.getNodeName().equals( "struct" ) ) )
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("struct")) ) )
 		{
 		}
 
 		// value
-		if( ( child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			( child.getNodeName().equals( "valuetype" ) ) )
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("valuetype")) ) )
 		{
 		}
 
 		// next element
-		child = child.getNextSibling();
+		child = child->getNextSibling();
 	}
 
 	return config;

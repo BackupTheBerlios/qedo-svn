@@ -25,29 +25,27 @@
 
 
 #include <xercesc/util/PlatformUtils.hpp>
-#include <xercesc/util/XMLString.hpp>
-#include <xercesc/util/XMLUniDefs.hpp>
-#include <xercesc/util/TranscodingException.hpp>
-#include <xercesc/framework/XMLFormatter.hpp>
-#include <xercesc/framework/LocalFileInputSource.hpp>
-#include <xercesc/dom/DOM_DOMException.hpp>
 #include <xercesc/dom/DOM.hpp>
-#include <xercesc/parsers/DOMParser.hpp>
-#include <xercesc/sax/EntityResolver.hpp>
-#include <xercesc/sax/InputSource.hpp>
+#include <xercesc/dom/DOMImplementation.hpp>
+#include <xercesc/dom/DOMImplementationLS.hpp>
+#include <xercesc/dom/DOMWriter.hpp>
+#include <xercesc/framework/StdOutFormatTarget.hpp>
+#include <xercesc/framework/LocalFileFormatTarget.hpp>
+#include <xercesc/framework/LocalFileInputSource.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/util/XMLUni.hpp>
+#include <string>
+#include <stdlib.h>
+
 #include "CatalogResolver.h"
 #include "DOMTreeErrorReporter.h"
-#include "DOMOutput.h"
 #include "XMLCatalog.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <string>
-#include <stdlib.h>
 #include <vector>
 #ifdef _WIN32
 #include <windows.h>
 #endif
-
 
 
 namespace Qedo {
@@ -70,25 +68,34 @@ public:
 class DOMXMLParser
 {
 private:
-    char*  xmlFile_;
-    bool doNamespaces_;
-    bool doSchema_;
-    bool doCreate_;
-    DOMParser::ValSchemes valScheme_;
-	DOMTreeErrorReporter* errReporter_;
-	DOMParser* parser_;
-	DOM_Document document_;
-    XMLCatalog * mXMLCatalog;
+    char*							xmlFile_;
+    bool							doNamespaces_;
+    bool							doSchema_;
+	bool							doSchemaFullChecking_;
+    bool							doCreate_;
+
+	const XMLCh*					gOutputEncoding;
+	const XMLCh*					gMyEOLSequence;
+	bool							gSplitCdataSections;
+	bool							gDiscardDefaultContent;
+	bool							gUseFilter;
+	bool							gFormatPrettyPrint;
+
+    XercesDOMParser::ValSchemes		valScheme_;
+	DOMTreeErrorReporter*			errReporter_;
+	XercesDOMParser*				parser_;
+	DOMDocument*					document_;
+    XMLCatalog*						mXMLCatalog;
 
 public:
 	DOMXMLParser();
 	virtual ~DOMXMLParser();
 
 	//
-	int parse( char* );
+	int parse(char*);
 
 	//
-	DOM_Document getDocument();
+	DOMDocument* getDocument();
 };
 
 

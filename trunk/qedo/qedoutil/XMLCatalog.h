@@ -28,8 +28,10 @@
 #pragma warning (disable : 4786) // identifier was truncated to '255' characters ...
 #endif
 
-#include <xercesc/parsers/DOMParser.hpp>
+#include <xercesc/parsers/XercesDOMParser.hpp>
+#include <xercesc/dom/DOM.hpp>
 #include "Uri.h"
+#include "DOMTreeErrorReporter.h"
 #include <list>
 
 
@@ -72,7 +74,7 @@ public:
 class XMLCatalog
 {
 public:
-    XMLCatalog (DOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute = true);
+    XMLCatalog (XercesDOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute = true);
     virtual ~XMLCatalog();
 
     // returns false if no mapping found
@@ -129,7 +131,7 @@ private:
     long mPrefixLen;
     XMLCatalog mCatalog;
 public:
-    DelegateEntry (const std::string & aPrefix, DOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute);
+    DelegateEntry (const std::string & aPrefix, XercesDOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute);
 
     bool lookup (const std::string & aPublicId, URI & aTarget) const;
 };
@@ -140,7 +142,7 @@ class ExtendEntry : public virtual Entry, public virtual RemapEntryBase
 private:
     XMLCatalog mCatalog;
 public:
-    ExtendEntry (DOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute);
+    ExtendEntry (XercesDOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute);
 
     bool lookup (const std::string & aPublicId, URI & aTarget) const;
     bool lookup (const URI & aSystemId, URI & aTarget) const;

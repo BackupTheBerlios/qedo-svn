@@ -82,9 +82,9 @@ AssemblyImpl::operator == (Components::Cookie* cook)
  *
  */
 void
-AssemblyImpl::registerWithNaming (DOM_Element element, CORBA::Object_ptr obj)
+AssemblyImpl::registerWithNaming (DOMElement* element, CORBA::Object_ptr obj)
 {
-	std::string binding = element.getAttribute("name").transcode();
+	std::string binding = XMLString::transcode(element->getAttribute(X("name")));
     registerName(binding, obj, true);
 }
 
@@ -93,58 +93,56 @@ AssemblyImpl::registerWithNaming (DOM_Element element, CORBA::Object_ptr obj)
  *
  */
 void
-AssemblyImpl::registerComponent (DOM_Element element, CORBA::Object_ptr obj)
+AssemblyImpl::registerComponent (DOMElement* element, CORBA::Object_ptr obj)
 {
-    DOM_Node child = element.getFirstChild();
+    DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
-		//
-		// emitsidentifier
-		//
-		if((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		   (child.getNodeName().equals("emitsidentifier")))
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-            // TODO
-        }
+			//
+			// emitsidentifier
+			//
+			if(!XMLString::compareString(child->getNodeName(), X("emitsidentifier")))
+			{
+				// TODO
+			}
 
-        //
-		// providesidetifier
-		//
-		if((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		   (child.getNodeName().equals("providesidetifier")))
-		{
-            // TODO
-        }
+			//
+			// providesidetifier
+			//
+			if(!XMLString::compareString(child->getNodeName(), X("providesidetifier")))
+			{
+				// TODO
+			}
 
-        //
-		// publishesidentifier
-		//
-		if((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		   (child.getNodeName().equals("publishesidentifier")))
-		{
-            // TODO
-        }
+			//
+			// publishesidentifier
+			//
+			if(!XMLString::compareString(child->getNodeName(), X("publishesidentifier")))
+			{
+				// TODO
+			}
 
-        //
-		// registerwithnaming
-		//
-		if((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		   (child.getNodeName().equals("registerwithnaming")))
-		{
-            registerWithNaming((DOM_Element&)child, obj);
-        }
+			//
+			// registerwithnaming
+			//
+			if(!XMLString::compareString(child->getNodeName(), X("registerwithnaming")))
+			{
+				registerWithNaming((DOMElement*)child, obj);
+			}
 
-        //
-		// registerwithtrader
-		//
-		if((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		   (child.getNodeName().equals("registerwithtrader")))
-		{
-            // TODO
-        }
+			//
+			// registerwithtrader
+			//
+			if(!XMLString::compareString(child->getNodeName(), X("registerwithtrader")))
+			{
+				// TODO
+			}
+		}
 
         // get next child element
-		child = child.getNextSibling();
+		child = child->getNextSibling();
     }
 }
 
@@ -153,17 +151,17 @@ AssemblyImpl::registerComponent (DOM_Element element, CORBA::Object_ptr obj)
  *
  */
 void
-AssemblyImpl::extension (DOM_Element ext)
+AssemblyImpl::extension (DOMElement* ext)
 throw( Components::CreateFailure )
 {
-	std::string class_attr = ext.getAttribute("class").transcode();
+	std::string class_attr = XMLString::transcode(ext->getAttribute(X("class")));
 	
     //
     // startorder
     //
     if( class_attr == "startorder" )
 	{
-		std::string comp_id = ext.getFirstChild().getNodeValue().transcode();
+		std::string comp_id = XMLString::transcode(ext->getFirstChild()->getNodeValue());
 		Components::CCMObject_var comp = instanceMap_[comp_id];
 		if( comp )
 		{
@@ -196,21 +194,21 @@ throw( Components::CreateFailure )
  * if destination is empty, return the local hostname (for convenience)
  */
 std::string
-AssemblyImpl::destination (DOM_Element homeplacement)
+AssemblyImpl::destination (DOMElement* homeplacement)
 throw(Components::CreateFailure)
 {
-	DOM_NodeList nodeList = homeplacement.getElementsByTagName("destination");
-	if (nodeList.getLength() != 1)
+	DOMNodeList* nodeList = homeplacement->getElementsByTagName(X("destination"));
+	if (nodeList->getLength() != 1)
 	{
-		DEBUG_OUT2("\nAssembly: not exactly one destination element for ", homeplacement.getAttribute("id").transcode());
+		DEBUG_OUT2("\nAssembly: not exactly one destination element for ", XMLString::transcode(homeplacement->getAttribute(X("id"))));
 		throw Components::CreateFailure();
 	}
 
 	std::string name;
-    DOM_Node dest = ((const DOM_Element& )nodeList.item(0)).getFirstChild();
+    DOMNode* dest = ((DOMElement*)nodeList->item(0))->getFirstChild();
     if (dest != 0)
     {
-        name = dest.getNodeValue().transcode();
+        name = XMLString::transcode(dest->getNodeValue());
         return name;
     }
 
@@ -226,17 +224,17 @@ throw(Components::CreateFailure)
  *
  */
 std::string
-AssemblyImpl::componentfileref (DOM_Element homeplacement)
+AssemblyImpl::componentfileref (DOMElement* homeplacement)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = homeplacement.getElementsByTagName("componentfileref");
-    if (nodeList.getLength() != 1)
+    DOMNodeList* nodeList = homeplacement->getElementsByTagName(X("componentfileref"));
+    if (nodeList->getLength() != 1)
 	{
-		DEBUG_OUT2("\nAssembly: not exactly one componentfileref element for ", homeplacement.getAttribute("id").transcode());
+		DEBUG_OUT2("\nAssembly: not exactly one componentfileref element for ", homeplacement->getAttribute(X("id")));
 		throw Components::CreateFailure();
 	}
-	DOM_Element fileElement = (const DOM_Element&)nodeList.item(0);
-	std::string id = fileElement.getAttribute("idref").transcode();
+	DOMElement* fileElement = (DOMElement*)nodeList->item(0);
+	std::string id = XMLString::transcode(fileElement->getAttribute(X("idref")));
     return id;
 }
 
@@ -245,17 +243,17 @@ throw(Components::CreateFailure)
  *
  */
 std::string
-AssemblyImpl::componentimplref (DOM_Element homeplacement)
+AssemblyImpl::componentimplref (DOMElement* homeplacement)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = homeplacement.getElementsByTagName("componentimplref");
-    if (nodeList.getLength() != 1)
+    DOMNodeList* nodeList = homeplacement->getElementsByTagName(X("componentimplref"));
+    if (nodeList->getLength() != 1)
 	{
-		DEBUG_OUT2("\nAssembly : missing componentimplref element for ", homeplacement.getAttribute("id").transcode());
+		DEBUG_OUT2("\nAssembly : missing componentimplref element for ", homeplacement->getAttribute(X("id")));
 		throw Components::CreateFailure();
 	}
-	DOM_Element fileElement = (const DOM_Element&)nodeList.item(0);
-	std::string id = fileElement.getAttribute("idref").transcode();
+	DOMElement* fileElement = (DOMElement*)nodeList->item(0);
+	std::string id = XMLString::transcode(fileElement->getAttribute(X("idref")));
     return id;
 }
 
@@ -264,17 +262,17 @@ throw(Components::CreateFailure)
  *
  */
 std::string
-AssemblyImpl::usesidentifier (DOM_Element element)
+AssemblyImpl::usesidentifier (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("usesidentifier");
-    if (nodeList.getLength() != 1)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("usesidentifier"));
+    if (nodeList->getLength() != 1)
 	{
 		DEBUG_OUT("\nAssembly : missing usesidentifier element");
 		throw Components::CreateFailure();
 	}
-	DOM_Element elem = (const DOM_Element&)nodeList.item(0);
-	std::string receptacle = elem.getFirstChild().getNodeValue().transcode();
+	DOMElement* elem = (DOMElement*)nodeList->item(0);
+	std::string receptacle = XMLString::transcode(elem->getFirstChild()->getNodeValue());
 
     return receptacle;
 }
@@ -284,17 +282,17 @@ throw(Components::CreateFailure)
  *
  */
 std::string
-AssemblyImpl::providesidentifier (DOM_Element element)
+AssemblyImpl::providesidentifier (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("providesidentifier");
-    if (nodeList.getLength() != 1)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("providesidentifier"));
+    if (nodeList->getLength() != 1)
 	{
 		DEBUG_OUT("\nAssembly : missing providesidentifier element");
 		throw Components::CreateFailure();
 	}
-	DOM_Element elem = (const DOM_Element&)nodeList.item(0);
-	std::string facet = elem.getFirstChild().getNodeValue().transcode();
+	DOMElement* elem = (DOMElement*)nodeList->item(0);
+	std::string facet = XMLString::transcode(elem->getFirstChild()->getNodeValue());
 
     return facet;
 }
@@ -304,17 +302,17 @@ throw(Components::CreateFailure)
  *
  */
 std::string
-AssemblyImpl::consumesidentifier (DOM_Element element)
+AssemblyImpl::consumesidentifier (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("consumesidentifier");
-    if (nodeList.getLength() != 1)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("consumesidentifier"));
+    if (nodeList->getLength() != 1)
 	{
 		DEBUG_OUT("\nAssembly : missing consumesidentifier element");
 		throw Components::CreateFailure();
 	}
-	DOM_Element elem = (const DOM_Element&)nodeList.item(0);
-	std::string name = elem.getFirstChild().getNodeValue().transcode();
+	DOMElement* elem = (DOMElement*)nodeList->item(0);
+	std::string name = XMLString::transcode(elem->getFirstChild()->getNodeValue());
 
     return name;
 }
@@ -324,17 +322,17 @@ throw(Components::CreateFailure)
  *
  */
 std::string
-AssemblyImpl::emitsidentifier (DOM_Element element)
+AssemblyImpl::emitsidentifier (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("emitsidentifier");
-    if (nodeList.getLength() != 1)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("emitsidentifier"));
+    if (nodeList->getLength() != 1)
 	{
 		DEBUG_OUT("\nAssembly : missing emitsidentifier element");
 		throw Components::CreateFailure();
 	}
-	DOM_Element elem = (const DOM_Element&)nodeList.item(0);
-	std::string name = elem.getFirstChild().getNodeValue().transcode();
+	DOMElement* elem = (DOMElement*)nodeList->item(0);
+	std::string name = XMLString::transcode(elem->getFirstChild()->getNodeValue());
 
     return name;
 }
@@ -344,17 +342,17 @@ throw(Components::CreateFailure)
  *
  */
 std::string
-AssemblyImpl::publishesidentifier (DOM_Element element)
+AssemblyImpl::publishesidentifier (DOMElement* element)
 throw(Components::CreateFailure)
 {
-    DOM_NodeList nodeList = element.getElementsByTagName("publishesidentifier");
-    if (nodeList.getLength() != 1)
+    DOMNodeList* nodeList = element->getElementsByTagName(X("publishesidentifier"));
+    if (nodeList->getLength() != 1)
 	{
 		DEBUG_OUT("\nAssembly : missing publishesidentifier element");
 		throw Components::CreateFailure();
 	}
-	DOM_Element elem = (const DOM_Element&)nodeList.item(0);
-	std::string name = elem.getFirstChild().getNodeValue().transcode();
+	DOMElement* elem = (DOMElement*)nodeList->item(0);
+	std::string name = XMLString::transcode(elem->getFirstChild()->getNodeValue());
 
     return name;
 }
@@ -364,22 +362,22 @@ throw(Components::CreateFailure)
  *
  */
 CORBA::Object_ptr
-AssemblyImpl::getPort (DOM_Element port)
+AssemblyImpl::getPort (DOMElement* port)
 throw(Components::CreateFailure)
 {
     CORBA::Object_var obj;
     std::string name;
-    DOM_Node child = port.getFirstChild();
+    DOMNode* child = port->getFirstChild();
 	while (child != 0)
 	{
 		//
 		// componentinstantiationref
 		//
-		if((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		   (child.getNodeName().equals("componentinstantiationref")))
+		if((child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+		   (!XMLString::compareString(child->getNodeName(), X("componentinstantiationref"))))
 		{
-			DOM_Element componentinstantiationref = (const DOM_Element&)child;
-			name = componentinstantiationref.getAttribute("idref").transcode();
+			DOMElement* componentinstantiationref = (DOMElement*)child;
+			name = XMLString::transcode(componentinstantiationref->getAttribute(X("idref")));
             obj = getInstance(name);
             break;
 		}
@@ -387,19 +385,19 @@ throw(Components::CreateFailure)
 		//
 		// findby
 		//
-		if((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		   (child.getNodeName().equals("findby")))
+		if((child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+		   (!XMLString::compareString(child->getNodeName(), X("findby"))))
 		{
-            DOM_Node find_child = ((DOM_Element&)child).getFirstChild();
+            DOMNode* find_child = ((DOMElement*)child)->getFirstChild();
 	        while (find_child != 0)
 	        {
                 //
 		        // namingservice
 		        //
-		        if((find_child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		           (find_child.getNodeName().equals("namingservice")))
+		        if((find_child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+		           (!XMLString::compareString(find_child->getNodeName(), X("namingservice"))))
 		        {
-                    name = ((const DOM_Element&)find_child).getAttribute("name").transcode();
+                    name = XMLString::transcode(((DOMElement*)find_child)->getAttribute(X("name")));
                     obj = resolveName(name);
                     if ( ! obj)
                     {
@@ -411,8 +409,8 @@ throw(Components::CreateFailure)
                 //
 		        // stringifiedobjectref
 		        //
-		        if((find_child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		           (find_child.getNodeName().equals("stringifiedobjectref")))
+		        if((find_child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+		           (!XMLString::compareString(find_child->getNodeName(), X("stringifiedobjectref"))))
 		        {
                     // TODO
                 }
@@ -420,8 +418,8 @@ throw(Components::CreateFailure)
                 //
 		        // traderquery
 		        //
-		        if((find_child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		           (find_child.getNodeName().equals("traderquery")))
+		        if((find_child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+		           (!XMLString::compareString(find_child->getNodeName(), X("traderquery"))))
 		        {
                     // TODO
                 }
@@ -429,8 +427,8 @@ throw(Components::CreateFailure)
                 //
 		        // homefinder
 		        //
-		        if((find_child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		           (find_child.getNodeName().equals("homefinder")))
+		        if((find_child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+		           (!XMLString::compareString(find_child->getNodeName(), X("homefinder"))))
 		        {
                     // TODO
                 }
@@ -438,25 +436,25 @@ throw(Components::CreateFailure)
                 //
 		        // extension
 		        //
-		        if((find_child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		           (find_child.getNodeName().equals("extension")))
+		        if((find_child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+		           (!XMLString::compareString(find_child->getNodeName(), X("extension"))))
 		        {
                     // TODO
                 }
 
                 // get next child
-		        find_child = find_child.getNextSibling();
+		        find_child = find_child->getNextSibling();
             }
 		}
 
 		// get next child
-		child = child.getNextSibling();
+		child = child->getNextSibling();
 	}
 
     //
     // usesport
     //
-    if (port.getNodeName().equals("usesport"))
+    if (!XMLString::compareString(port->getNodeName(), X("usesport")))
 	{
         DEBUG_OUT2("\tuser is ", name);
         return obj._retn();
@@ -465,7 +463,7 @@ throw(Components::CreateFailure)
     //
     // providesport
     //
-    if (port.getNodeName().equals("providesport"))
+    if (!XMLString::compareString(port->getNodeName(), X("providesport")))
 	{
         Components::CCMObject_var comp = Components::CCMObject::_narrow(obj);
 		std::string facet = providesidentifier(port);
@@ -486,7 +484,7 @@ throw(Components::CreateFailure)
     //
     // consumesport
     //
-    if (port.getNodeName().equals("consumesport"))
+    if (!XMLString::compareString(port->getNodeName(), X("consumesport")))
 	{
         Components::CCMObject_var comp;
         try
@@ -517,7 +515,7 @@ throw(Components::CreateFailure)
     //
     // emitsport
     //
-    if (port.getNodeName().equals("emitsport"))
+    if (!XMLString::compareString(port->getNodeName(), X("emitsport")))
 	{
         DEBUG_OUT2("\temitter is ", name);
         return obj._retn();
@@ -526,7 +524,7 @@ throw(Components::CreateFailure)
     //
     // publishesport
     //
-    if (port.getNodeName().equals("publishesport"))
+    if (!XMLString::compareString(port->getNodeName(), X("publishesport")))
 	{
         DEBUG_OUT2("\tpublisher is ", name);
         return obj._retn();
@@ -697,7 +695,7 @@ throw( Components::CreateFailure )
  * install a component implementation
  */
 void
-AssemblyImpl::installImplementation (DOM_Element homeplacement)
+AssemblyImpl::installImplementation (DOMElement* homeplacement)
 throw(Components::CreateFailure)
 {
     std::string file = componentfileref(homeplacement);
@@ -775,25 +773,25 @@ throw( Components::CreateFailure )
 	//
 	// map uuid to package and extract all packages
 	//
-	DOM_Element document = document_.getDocumentElement();
-	DOM_NodeList aNodeList;
-	aNodeList = document.getElementsByTagName( "componentfiles" );
-	if ( aNodeList.getLength() != 1 )
+	DOMElement* document = document_->getDocumentElement();
+	DOMNodeList* aNodeList;
+	aNodeList = document->getElementsByTagName(X("componentfiles"));
+	if ( aNodeList->getLength() != 1 )
 	{
 		DEBUG_OUT2("\nAssembly: there must be one componentfiles element in ", package_->getName());
 		throw Components::CreateFailure();
 	}
 
-	DOM_Element anElement;
-	anElement = ( const DOM_Element& )aNodeList.item( 0 );
-	aNodeList = anElement.getElementsByTagName( "componentfile" );
-	for(CORBA::ULong i = 0; i < aNodeList.getLength(); i++ )
+	DOMElement* anElement;
+	anElement = (DOMElement*)aNodeList->item( 0 );
+	aNodeList = anElement->getElementsByTagName(X("componentfile"));
+	for(CORBA::ULong i = 0; i < aNodeList->getLength(); i++ )
 	{
-		anElement = ( const DOM_Element& )aNodeList.item( i );
-		std::string id = anElement.getAttribute( "id" ).transcode();
-		DOM_NodeList fileNodeList = anElement.getElementsByTagName( "fileinarchive" );
-		anElement = ( const DOM_Element& )fileNodeList.item( 0 );
-		std::string package = anElement.getAttribute( "name" ).transcode();
+		anElement = (DOMElement*)aNodeList->item( i );
+		std::string id = XMLString::transcode(anElement->getAttribute(X("id")));
+		DOMNodeList* fileNodeList = anElement->getElementsByTagName(X("fileinarchive"));
+		anElement = (DOMElement*)fileNodeList->item( 0 );
+		std::string package = XMLString::transcode(anElement->getAttribute(X("name")));
 		
 		
 		// extract package
@@ -807,35 +805,35 @@ throw( Components::CreateFailure )
 	//
 	// install component implementations for all homeplacements
 	//
-	aNodeList = document.getElementsByTagName("partitioning");
-	anElement = (const DOM_Element&)aNodeList.item( 0 );
-	DOM_Node partition_child = anElement.getFirstChild();
+	aNodeList = document->getElementsByTagName(X("partitioning"));
+	anElement = (DOMElement*)aNodeList->item( 0 );
+	DOMNode* partition_child = anElement->getFirstChild();
 	while (partition_child != 0)
 	{
 		//
 		// processcollocation
 		//
-		if( ( partition_child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			( partition_child.getNodeName().equals( "processcollocation" ) ) )
+		if( ( partition_child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(partition_child->getNodeName(), X("processcollocation"))))
 		{
-			aNodeList = ((DOM_Element&)partition_child).getElementsByTagName("homeplacement");
-			for(CORBA::ULong i = 0; i < aNodeList.getLength(); i++ )
+			aNodeList = ((DOMElement*)partition_child)->getElementsByTagName(X("homeplacement"));
+			for(CORBA::ULong i = 0; i < aNodeList->getLength(); i++ )
 			{
-				installImplementation((const DOM_Element&)aNodeList.item(i));
+				installImplementation((DOMElement*)aNodeList->item(i));
 			}
 		}
 	
 		//
 		// homeplacement
 		//
-		if( ( partition_child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			( partition_child.getNodeName().equals( "homeplacement" ) ) )
+		if( ( partition_child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(partition_child->getNodeName(), X("homeplacement"))))
 		{
-            installImplementation((DOM_Element&)partition_child);
+            installImplementation((DOMElement*)partition_child);
 		}
 
 		// get next partition element
-		partition_child = partition_child.getNextSibling();
+		partition_child = partition_child->getNextSibling();
 	}
 
     //
@@ -853,10 +851,10 @@ throw( Components::CreateFailure )
  * instantiate a component according to the xml element in the assembly descriptor
  */
 void
-AssemblyImpl::instantiateComponent (DOM_Element instance, Components::CCMHome_ptr home)
+AssemblyImpl::instantiateComponent (DOMElement* instance, Components::CCMHome_ptr home)
 throw(Components::CreateFailure)
 {
-	DEBUG_OUT2 ("\nAssembly: create new Component : ", instance.getAttribute( "id" ).transcode());
+	DEBUG_OUT2 ("\nAssembly: create new Component : ", XMLString::transcode(instance->getAttribute(X("id"))));
 
     //
     // instantiate component
@@ -871,36 +869,36 @@ throw(Components::CreateFailure)
 		std::cerr << "Cannot create Component" << std::endl;
 		throw Components::CreateFailure();
 	}
-	instanceMap_[instance.getAttribute( "id" ).transcode()] = Components::CCMObject::_duplicate(comp);
+	instanceMap_[XMLString::transcode(instance->getAttribute(X("id")))] = Components::CCMObject::_duplicate(comp);
 
-    DOM_Node child = instance.getFirstChild();
+    DOMNode* child = instance->getFirstChild();
 	std::string property_descriptor = "";
 	while( child != 0 )
 	{
 		//
 		// property configuration
 		//
-		if( ( child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			( child.getNodeName().equals( "componentproperties" ) ) )
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("componentproperties"))))
 		{
-			DOM_Node location = child.getFirstChild();
+			DOMNode* location = child->getFirstChild();
 			while( location != 0 )
 			{
-				if( ( location.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-					( location.getNodeName().equals( "fileinarchive" ) ) )
+				if( ( location->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+					( !XMLString::compareString(location->getNodeName(), X("fileinarchive"))))
 				{
-					property_descriptor = ( ( DOM_Element& )location ).getAttribute( "name" ).transcode();
+					property_descriptor = XMLString::transcode(((DOMElement*)location )->getAttribute(X("name")));
 				}
 
 				
-				if( ( location.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-					( location.getNodeName().equals( "codebase" ) ) )
+				if( ( location->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+					( !XMLString::compareString(location->getNodeName(), X("codebase"))) )
 				{
 					// TODO
 				}
 
 				// next element in componentproperties
-				location = location.getNextSibling();
+				location = location->getNextSibling();
 			}
 
 			//
@@ -940,14 +938,14 @@ throw(Components::CreateFailure)
         //
 		// registercomponent
 		//
-		if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-			(child.getNodeName().equals("registercomponent")))
+		if ((child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+			(!XMLString::compareString(child->getNodeName(), X("registercomponent"))))
 		{
-            registerComponent((DOM_Element&)child, comp);
+            registerComponent((DOMElement*)child, comp);
         }
 
 		// next element in componentinstantiation
-		child = child.getNextSibling();
+		child = child->getNextSibling();
 	}
 }
 
@@ -956,7 +954,7 @@ throw(Components::CreateFailure)
  * processcollocation
  */
 void
-AssemblyImpl::processcollocation (DOM_Element element)
+AssemblyImpl::processcollocation (DOMElement* element)
 throw(Components::CreateFailure)
 {
     Components::Deployment::ComponentServer_var component_server;
@@ -965,15 +963,15 @@ throw(Components::CreateFailure)
     //
 	// get a homeplacement to determine destination
 	//
-	DOM_NodeList nodeList = element.getElementsByTagName("homeplacement");
-	if (nodeList.getLength() == 0)
+	DOMNodeList* nodeList = element->getElementsByTagName(X("homeplacement"));
+	if (nodeList->getLength() == 0)
 	{
 		DEBUG_OUT2("\nAssembly: no homeplacements in processcollocation in ", package_->getName());
 		return;
 	}
 
 	// create new Component Server
-    component_server = createComponentServer(destination((const DOM_Element&)nodeList.item(0)));
+    component_server = createComponentServer(destination((DOMElement*)nodeList->item(0)));
 
 	// create new Container
     container = createContainer(component_server);
@@ -981,9 +979,9 @@ throw(Components::CreateFailure)
 	//
     // create new homes and instances
 	//
-	for (CORBA::ULong i = 0; i < nodeList.getLength(); i++)
+	for (CORBA::ULong i = 0; i < nodeList->getLength(); i++)
 	{
-		homeplacement((const DOM_Element&)nodeList.item(i), container); // !!!!!!!! var type
+		homeplacement((DOMElement*)nodeList->item(i), container); // !!!!!!!! var type
 	}
 }
 
@@ -992,22 +990,22 @@ throw(Components::CreateFailure)
  * home placement
  */
 void
-AssemblyImpl::homeplacement (DOM_Element element, Components::Deployment::Container_ptr contain)
+AssemblyImpl::homeplacement (DOMElement* element, Components::Deployment::Container_ptr contain)
 throw(Components::CreateFailure)
 {
     Components::Deployment::Container_var container = Components::Deployment::Container::_duplicate(contain);
 	Components::CCMHome_var home;
 
-	DOM_Node child = element.getFirstChild();
+	DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
 		//
 		// componentfileref
 		//
-		if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-			(child.getNodeName().equals("componentfileref")))
+		if ((child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+			(!XMLString::compareString(child->getNodeName(), X("componentfileref"))))
         {
-            std::string idref = ((const DOM_Element&)child).getAttribute("idref").transcode();
+            std::string idref = XMLString::transcode(((DOMElement*)child)->getAttribute(X("idref")));
             if (idref != "")
             {
                 if ( ! container)
@@ -1024,7 +1022,7 @@ throw(Components::CreateFailure)
                 home = createHome(container, componentimplref(element));
 
                 // register home reference
-                homeMap_[((const DOM_Element&)element).getAttribute("id").transcode()] = 
+                homeMap_[XMLString::transcode(((DOMElement*)element)->getAttribute(X("id")))] = 
                     Components::CCMHome::_duplicate(home);
             }
             else
@@ -1046,23 +1044,23 @@ throw(Components::CreateFailure)
         //
 		// registerwithnaming
 		//
-		if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-			(child.getNodeName().equals("registerwithnaming")))
+		if ((child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+			(!XMLString::compareString(child->getNodeName(), X("registerwithnaming"))))
         {
-            registerWithNaming((const DOM_Element&)child, home);
+            registerWithNaming((DOMElement*)child, home);
         }
 
         //
 		// componentinstantiation
 		//
-		if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-			(child.getNodeName().equals("componentinstantiation")))
+		if ((child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+			(!XMLString::compareString(child->getNodeName(), X("componentinstantiation"))))
         {
-		    instantiateComponent((const DOM_Element&)child, home);
+		    instantiateComponent((DOMElement*)child, home);
         }
 
         // get next child
-		child = child.getNextSibling();
+		child = child->getNextSibling();
 	}
 }
 
@@ -1074,45 +1072,45 @@ void
 AssemblyImpl::instantiate ()
 throw(Components::CreateFailure)
 {
-	DOM_NodeList aNodeList = document_.getDocumentElement().getElementsByTagName("partitioning");
-	if (aNodeList.getLength() != 1)
+	DOMNodeList* aNodeList = document_->getDocumentElement()->getElementsByTagName(X("partitioning"));
+	if (aNodeList->getLength() != 1)
 	{
 		DEBUG_OUT2("XMLParser : missing partitioning element in ", package_->getName());
 		throw Components::CreateFailure();
 	}
 
-	DOM_Node child = ((const DOM_Element&)aNodeList.item(0)).getFirstChild();
+	DOMNode* child = ((DOMElement*)aNodeList->item(0))->getFirstChild();
 	while (child != 0)
 	{
 		//
 		// processcollocation
 		//
-		if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-			(child.getNodeName().equals("processcollocation")))
+		if ((child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+			(!XMLString::compareString(child->getNodeName(), X("processcollocation"))))
 		{
-			processcollocation((DOM_Element&)child);
+			processcollocation((DOMElement*)child);
 		}
 
 		//
 		// homeplacement
 		//
-		if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-			(child.getNodeName().equals("homeplacement")))
+		if ((child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+			(!XMLString::compareString(child->getNodeName(), X("homeplacement"))))
 		{
-			homeplacement((DOM_Element&)child, 0);
+			homeplacement((DOMElement*)child, 0);
 		}
 
         //
 		// extension
 		//
-		if ((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-			(child.getNodeName().equals( "extension")))
+		if ((child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+			(!XMLString::compareString(child->getNodeName(), X("extension"))))
 		{
-            extension((DOM_Element&)child);
+            extension((DOMElement*)child);
         }
 
 		// get next child
-		child = child.getNextSibling();
+		child = child->getNextSibling();
 	}
 }
 
@@ -1121,7 +1119,7 @@ throw(Components::CreateFailure)
  * connect interface
  */
 void
-AssemblyImpl::connectinterface (DOM_Element element)
+AssemblyImpl::connectinterface (DOMElement* element)
 throw(Components::CreateFailure)
 {
 	DEBUG_OUT("\nAssembly: make connection");
@@ -1129,16 +1127,16 @@ throw(Components::CreateFailure)
     Components::CCMObject_var user;
     std::string receptacle;
     CORBA::Object_var used;
-    DOM_Node child = element.getFirstChild();
+    DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
         //
 	    // usesport
 		//
-		if((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		   (child.getNodeName().equals("usesport")))
+		if((child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+		   (!XMLString::compareString(child->getNodeName(), X("usesport"))))
 		{
-		    DOM_Element port = (const DOM_Element&)child;
+		    DOMElement* port = (DOMElement*)child;
             CORBA::Object_var dummy = getPort(port);
             user = Components::CCMObject::_narrow(dummy);
             receptacle = usesidentifier(port);
@@ -1148,17 +1146,17 @@ throw(Components::CreateFailure)
         //
         // providesport etc
         //
-		if((child.getNodeType() == DOM_Node::ELEMENT_NODE) &&
-		   (child.getNodeName().equals("providesport") ||
-            child.getNodeName().equals("componentsupportedinterface") ||
-            child.getNodeName().equals("existinginterface") ||
-            child.getNodeName().equals("homeinterface")))
+		if((child->getNodeType() == DOMNode::ELEMENT_NODE) &&
+		   (!XMLString::compareString(child->getNodeName(), X("providesport")) ||
+            !XMLString::compareString(child->getNodeName(), X("componentsupportedinterface")) ||
+            !XMLString::compareString(child->getNodeName(), X("existinginterface")) ||
+            !XMLString::compareString(child->getNodeName(), X("homeinterface"))))
 		{
-            used = getPort((const DOM_Element&)child);
+            used = getPort((DOMElement*)child);
         }
 
         // next child
-        child = child.getNextSibling();
+        child = child->getNextSibling();
     }
 
     //
@@ -1196,33 +1194,33 @@ throw(Components::CreateFailure)
  * connect events
  */
 void
-AssemblyImpl::connectevent (DOM_Element element)
+AssemblyImpl::connectevent (DOMElement* element)
 throw(Components::CreateFailure)
 {
     DEBUG_OUT( "\nAssembly: make event connection" );
 			
     Components::EventConsumerBase_var consumer;
     Components::CCMObject_var source;
-    DOM_Node child = element.getFirstChild();
+    DOMNode* child = element->getFirstChild();
     while (child != 0)
     {
 	    //
 		// consumesport
 		//
-		if ((child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-		    (child.getNodeName().equals( "consumesport" ) ) )
+		if ((child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+		    (!XMLString::compareString(child->getNodeName(), X("consumesport" ))))
 		{
-            CORBA::Object_var dummy = getPort((const DOM_Element&)child);
+            CORBA::Object_var dummy = getPort((DOMElement*)child);
             consumer = Components::EventConsumerBase::_narrow(dummy);
         }
 
         //
         // emitsport
         //
-        if ((child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			(child.getNodeName().equals( "emitsport" ) ) )
+        if ((child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			(!XMLString::compareString(child->getNodeName(), X("emitsport" ))))
 		{
-        	DOM_Element port = (const DOM_Element&)child;
+        	DOMElement* port = (DOMElement*)child;
             CORBA::Object_var dummy = getPort(port);
             source = Components::CCMObject::_narrow(dummy);
             std::string emit = emitsidentifier(port);
@@ -1250,10 +1248,10 @@ throw(Components::CreateFailure)
         //
         // publishesport
 		//
-		if ((child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			(child.getNodeName().equals( "publishesport" ) ) )
+		if ((child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			(!XMLString::compareString(child->getNodeName(), X("publishesport" ))))
 		{
-            DOM_Element port = (const DOM_Element&)child;
+            DOMElement* port = (DOMElement*)child;
             CORBA::Object_var dummy = getPort(port);
             source = Components::CCMObject::_narrow(dummy);
             std::string publish = publishesidentifier(port);
@@ -1275,7 +1273,7 @@ throw(Components::CreateFailure)
         }
 
         // get next child
-        child = child.getNextSibling();
+        child = child->getNextSibling();
     }
 }
 
@@ -1287,38 +1285,38 @@ void
 AssemblyImpl::connections ()
 throw(Components::CreateFailure)
 {
-	DOM_NodeList aNodeList = document_.getDocumentElement().getElementsByTagName("connections");
-	if (aNodeList.getLength() == 0)
+	DOMNodeList* aNodeList = document_->getDocumentElement()->getElementsByTagName(X("connections"));
+	if (aNodeList->getLength() == 0)
 	{
 		return;
 	}
 
-	DOM_Node child = ((const DOM_Element&)aNodeList.item(0)).getFirstChild();
+	DOMNode* child = ((DOMElement*)aNodeList->item(0))->getFirstChild();
     while (child != 0)
     {
 		//
 		// connectinterface
 		//
-		if( ( child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			( child.getNodeName().equals( "connectinterface" ) ) )
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("connectinterface" ))))
 		{
-			connectinterface((DOM_Element&)child);
+			connectinterface((DOMElement*)child);
 		}
 
 		//
 		// connectevent
 		//
-		if( ( child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			( child.getNodeName().equals( "connectevent" ) ) )
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("connectevent" ))))
 		{
-            connectevent((DOM_Element&)child);
+            connectevent((DOMElement*)child);
         }
 
         //
 		// connecthomes
 		//
-		if( ( child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			( child.getNodeName().equals( "connecthomes" ) ) )
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("connecthomes" ))))
 		{
 			// TODO
 		}
@@ -1326,14 +1324,14 @@ throw(Components::CreateFailure)
         //
 		// extension
 		//
-		if( ( child.getNodeType() == DOM_Node::ELEMENT_NODE ) &&
-			( child.getNodeName().equals( "extension" ) ) )
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("extension" ))))
 		{
 			// TODO
 		}
 
 		// get next connection element
-		child = child.getNextSibling();
+		child = child->getNextSibling();
     }
 }
 
@@ -1348,11 +1346,11 @@ throw(Components::CreateFailure)
 	//
 	// use the startorder extension
 	//
-	DOM_Element anElement = document_.getDocumentElement();
-	DOM_NodeList aNodeList = anElement.getElementsByTagName("extension");
-	for (CORBA::ULong i = 0; i < aNodeList.getLength(); i++)
+	DOMElement* anElement = document_->getDocumentElement();
+	DOMNodeList* aNodeList = anElement->getElementsByTagName(X("extension"));
+	for (CORBA::ULong i = 0; i < aNodeList->getLength(); i++)
 	{
-		extension((const DOM_Element&)aNodeList.item(i));
+		extension((DOMElement*)aNodeList->item(i));
 	}
 
 	//

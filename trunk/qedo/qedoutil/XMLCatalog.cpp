@@ -29,30 +29,30 @@
 namespace Qedo {
 
 	
-XMLCatalog::XMLCatalog (DOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute)
+XMLCatalog::XMLCatalog (XercesDOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute)
   : mMakeAbsolute(aMakeAbsolute)
 {
     // reuse some variables
-    DOM_NodeList nl;
-    DOM_Node n;
-    DOM_Element e;
+    DOMNodeList* nl;
+    DOMNode* n;
+    DOMElement* e;
     URI u, v;
     std::string s;
 
     // parse the catalog file
-	 XMLCh empty[1] = {0};
+	XMLCh empty[1] = {0};
 
     URLInputSource uis(empty, aCatalog.getText());
     aParser.parse(uis);
-    DOM_Document doc = aParser.getDocument();
+    DOMDocument* doc = aParser.getDocument();
 
     // determine catalog base
-    nl = doc.getElementsByTagName("Base");
-    if (nl.getLength() > 0)
+    nl = doc->getElementsByTagName(X("Base"));
+    if (nl->getLength() > 0)
     {
-        n = nl.item(0);
-        e = static_cast< DOM_Element & >(n);
-        s = e.getAttribute("HRef").transcode();
+        n = nl->item(0);
+        e = static_cast< DOMElement * >(n);
+		s = XMLString::transcode(e->getAttribute(X("HRef")));
         mBaseHref = s;
         if (mBaseHref.isRelative())
         {
@@ -66,13 +66,13 @@ XMLCatalog::XMLCatalog (DOMParser & aParser, const URI & aCatalog, bool aMakeAbs
 
     // add Map entries to 'map' list
     unsigned i = 0;
-    nl = doc.getElementsByTagName("Map");
-    for (i = 0; i < nl.getLength(); ++i)
+    nl = doc->getElementsByTagName(X("Map"));
+    for (i = 0; i < nl->getLength(); ++i)
     {
-        n = nl.item(i);
-        e = static_cast< DOM_Element & >( n );
-        s = e.getAttribute("Publicsystem-identifier").transcode();
-        u = e.getAttribute("HRef").transcode();
+        n = nl->item(i);
+        e = static_cast< DOMElement * >(n);
+		s = XMLString::transcode(e->getAttribute(X("Publicsystem-identifier")));
+        u = XMLString::transcode(e->getAttribute(X("HRef")));
         if( mMakeAbsolute && u.isRelative() )
         {
             u = u.makeAbsolute( mBaseHref );
@@ -81,13 +81,13 @@ XMLCatalog::XMLCatalog (DOMParser & aParser, const URI & aCatalog, bool aMakeAbs
     }
 
     // add Delegate entries to 'map' list
-    nl = doc.getElementsByTagName("Delegate");
-    for (i = 0; i < nl.getLength(); ++i)
+    nl = doc->getElementsByTagName(X("Delegate"));
+    for (i = 0; i < nl->getLength(); ++i)
     {
-        n = nl.item(i);
-        e = static_cast< DOM_Element & >(n);
-        s = e.getAttribute("PublicId").transcode();
-        u = e.getAttribute("HRef").transcode();
+        n = nl->item(i);
+        e = static_cast< DOMElement * >(n);
+        s = XMLString::transcode(e->getAttribute(X("PublicId")));
+        u = XMLString::transcode(e->getAttribute(X("HRef")));
         if (u.isRelative())
         { 
 	        u = u.makeAbsolute( mBaseHref );
@@ -96,17 +96,17 @@ XMLCatalog::XMLCatalog (DOMParser & aParser, const URI & aCatalog, bool aMakeAbs
     }
 
     // add Remap entries to 'remap' list
-    nl = doc.getElementsByTagName("Remap");
-    for (i = 0; i < nl.getLength(); ++i)
+    nl = doc->getElementsByTagName(X("Remap"));
+    for (i = 0; i < nl->getLength(); ++i)
     {
-        n = nl.item(i);
-        e = static_cast< DOM_Element & >(n);
-        u = e.getAttribute("SystemId").transcode();
+        n = nl->item(i);
+        e = static_cast< DOMElement * >(n);
+        u = XMLString::transcode(e->getAttribute(X("SystemId")));
         if (mMakeAbsolute && u.isRelative())
         { 
 	        u = u.makeAbsolute(mBaseHref);
         }
-        v = e.getAttribute("HRef").transcode();
+        v = XMLString::transcode(e->getAttribute(X("HRef")));
         if( mMakeAbsolute && v.isRelative() )
         { 
 	        v = v.makeAbsolute(mBaseHref);
@@ -115,12 +115,12 @@ XMLCatalog::XMLCatalog (DOMParser & aParser, const URI & aCatalog, bool aMakeAbs
     }
 
     // add Extend entries to 'map' and 'remap' list
-    nl = doc.getElementsByTagName("Extend");
-    for (i = 0; i < nl.getLength(); ++i)
+    nl = doc->getElementsByTagName(X("Extend"));
+    for (i = 0; i < nl->getLength(); ++i)
     {
-        n = nl.item(i);
-        e = static_cast< DOM_Element & >(n);
-        u = e.getAttribute("HRef").transcode();
+        n = nl->item(i);
+        e = static_cast< DOMElement * >(n);
+        u = XMLString::transcode(e->getAttribute(X("HRef")));
         if (u.isRelative())
         { 
 	        u = u.makeAbsolute(mBaseHref);
@@ -200,7 +200,7 @@ XMLCatalog::getBaseHref () const
 }
 
 
-DelegateEntry::DelegateEntry (const std::string & aPrefix, DOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute)
+DelegateEntry::DelegateEntry (const std::string & aPrefix, XercesDOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute)
 //  : mPrefix(aPrefix), mPrefixLen(aPrefix.length()), mCatalog(aParser, aCatalog, aMakeAbsolute)
 : mCatalog(aParser, aCatalog, aMakeAbsolute)
 {
@@ -264,7 +264,7 @@ RemapEntry::lookup (const URI & aSystemId, URI & aTarget) const
 }
 
 
-ExtendEntry::ExtendEntry (DOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute)
+ExtendEntry::ExtendEntry (XercesDOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute)
 : mCatalog(aParser, aCatalog, aMakeAbsolute)
 {
 }
