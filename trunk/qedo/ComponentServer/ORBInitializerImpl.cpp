@@ -20,10 +20,11 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ORBInitializerImpl.cpp,v 1.2 2003/05/05 11:08:01 stoinski Exp $";
+static char rcsid[] = "$Id: ORBInitializerImpl.cpp,v 1.3 2003/06/12 12:09:00 tom Exp $";
 
 #include "ORBInitializerImpl.h"
 #include "Output.h"
+#include "ServerInterceptorDispatcher.h"
 
 
 namespace Qedo {
@@ -126,6 +127,16 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	// Allocate a slot id to communicate data towards our components
 	//
 	slot_id_ = info->allocate_slot_id();
+
+
+	//
+	// Install ServerInterceptorDispatcher
+	//
+	PortableInterceptor::ServerRequestInterceptor_var server_dispatcher;
+	server_dispatcher = new ServerInterceptorDispatcher();
+
+	info->add_server_request_interceptor(server_dispatcher.in());
+
 }
 
 

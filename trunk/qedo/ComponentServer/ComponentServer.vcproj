@@ -124,7 +124,8 @@
 				Name="VCCustomBuildTool"
 				Description="Distribution:"
 				CommandLine="mkdir $(QEDO)\bin
-copy $(TargetPath) $(QEDO)\bin"
+copy $(TargetPath) $(QEDO)\bin
+"
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
@@ -300,6 +301,9 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
+				RelativePath="ClientInterceptorDispacher.cpp">
+			</File>
+			<File
 				RelativePath="ComponentServerImpl.cpp">
 			</File>
 			<File
@@ -309,12 +313,18 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="ORBInitializerImpl.cpp">
 			</File>
 			<File
+				RelativePath="ServerInterceptorDispacher.cpp">
+			</File>
+			<File
 				RelativePath="main.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="ClientInterceptorDispatcher.h">
+			</File>
 			<File
 				RelativePath="ComponentServerImpl.h">
 			</File>
@@ -323,6 +333,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="ORBInitializerImpl.h">
+			</File>
+			<File
+				RelativePath="ServerInterceptorDispatcher.h">
 			</File>
 		</Filter>
 		<Filter
