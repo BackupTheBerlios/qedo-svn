@@ -635,7 +635,7 @@ GeneratorEIDL::doHome(IR__::HomeDef_ptr home)
 		out.unindent();
 		out << "{\n";
 
-		//only attribute can be defined in a valuetype which is defined specially for primary key
+		//only attributes can be defined in a valuetype which is specially for a primary key
 		IR__::ContainedSeq_var contained_seq = act_value->contents(CORBA__::dk_ValueMember, true);
 		len = contained_seq->length();
 		out.indent();
