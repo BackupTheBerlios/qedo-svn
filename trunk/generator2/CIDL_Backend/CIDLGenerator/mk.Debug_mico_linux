@@ -7,7 +7,7 @@ IntDir=./Debug_mico_linux
 Name=Debug_mico_linux
 CFLAGS=-I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I../../CIDL_Frontend/CIDLFrontendLib -I$(MICO)/include -I$(MICO)/include/windows -g
 CXXFLAGS=-I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I../../CIDL_Frontend/CIDLFrontendLib -I$(MICO)/include -I$(MICO)/include/windows -I/usr/include -g
-LIBS=-L../../..//CIDL_Repository/ComponentRepositoryLib/./Debug_mico_linux -L../../..//CIDL_Frontend/CIDLFrontendLib/./Debug_mico_linux -L../../..//CIDL_Repository/CIDLRepositoryLib/./Debug_mico_linux -L../../CIDL_Frontend/CIDLFrontendLib/$(IntDir) -L../../CIDL_Repository/IFRidl/$(IntDir) -L../../CIDL_Repository/ComponentRepositoryLib/$(IntDir) -L../../CIDL_Repository/CIDLRepositoryLib/$(IntDir) -L$(MICO)/lib -lCIDLFrontendLib -lCIDLRepositoryLib -lComponentRepositoryLib -lIFRidl -lmico2.3.9 -ldl -lCIDLRepositoryLib -lCIDLFrontendLib -lComponentRepositoryLib -lpthread
+LIBS=-L../../..//CIDL_Repository/ComponentRepositoryLib/./Debug_mico_linux -L../../..//CIDL_Frontend/CIDLFrontendLib/./Debug_mico_linux -L../../..//CIDL_Repository/CIDLRepositoryLib/./Debug_mico_linux -L../../CIDL_Frontend/CIDLFrontendLib/$(IntDir) -L../../CIDL_Repository/IFRidl/$(IntDir) -L../../CIDL_Repository/ComponentRepositoryLib/$(IntDir) -L../../CIDL_Repository/CIDLRepositoryLib/$(IntDir) -L$(MICO)/lib -lCIDLFrontendLib -lCIDLRepositoryLib -lComponentRepositoryLib -lIFRidl -lmico$(MICO_VERSION) -ldl -lCIDLRepositoryLib -lCIDLFrontendLib -lComponentRepositoryLib -lpthread
 
 $(IntDir)/%.o:%.cpp
 	$(COMPILE.cc) $(OUTPUT_OPTION) $<

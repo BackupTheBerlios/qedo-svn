@@ -10,6 +10,8 @@ ORB = MICO_ORB
 # MICO
 # MICO's root dir
 MICO = /opt/mico/
+MICO_VERSION = 2.3.10
+
 
 # ORBACUS
 #ORBACUs's root dir
