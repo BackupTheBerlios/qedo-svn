@@ -33,7 +33,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.44 2003/10/29 00:57:57 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.45 2003/10/29 15:32:47 tom Exp $";
 
 
 namespace Qedo {
@@ -257,7 +257,7 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 			if( !ns.empty() )
 			{
 				obj = orb_->string_to_object( ns.c_str() );
-				NORMAL_OUT2( "ComponentServerImpl:: NameService is ", ns );
+				DEBUG_OUT2( "ContainerInterfaceImpl:: NameService is ", ns );
 			}
 			//
 			// try to get naming service from orb
