@@ -33,7 +33,7 @@ IDL_FILES = CORBADepends.idl Components.idl QedoComponents.idl
 IDL_GEN_H = $(IDL_FILES:.idl=.h) $(IDL_FILES:.idl=_skel.h)
 IDL_GEN_CXX = $(IDL_FILES:.idl=.cpp) $(IDL_FILES:.idl=_skel.cpp)
 
-CLEAN_FILES = $(IDL_GEN_CXX) $(IDL_GEN_H) libComponentIDL.so
+CLEAN_FILES = $(IDL_GEN_CXX) $(IDL_GEN_H) $(IDL_GEN_CXX:.cpp=.o) libComponentIDL.so
 
 include ../MakeVars
 
