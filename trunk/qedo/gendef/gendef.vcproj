@@ -151,12 +151,17 @@ copy $(TargetPath) $(QEDO)\bin
 		</Configuration>
 		<Configuration
 			Name="Debug_orbacus|Win32"
+			OutputDirectory="Debug_orbacus"
 			IntermediateDirectory="Debug_orbacus"
 			ConfigurationType="1">
 			<Tool
 				Name="VCCLCompilerTool"/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCCustomBuildTool"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"/>
 			<Tool
