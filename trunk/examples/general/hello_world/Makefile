@@ -34,6 +34,7 @@ clean: $(SUBDIRS:%=%-clean)
 %-all: %
 	$(MAKE) -C $< all
 
+	
 MakeComponentVars:
 	cp ${QEDO}/etc/MakeComponentVars .
 
