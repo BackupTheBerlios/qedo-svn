@@ -32,6 +32,8 @@ echo *** Create %actdir%...
 mkdir %actdir%
 copy ComponentIDL\*.h %actdir%
 copy ComponentContainer\*.h %actdir%
+copy ComponentServer\ServerInterceptorDispatcher.h %actdir%
+copy ComponentServer\ClientInterceptorDispatcher.h %actdir%
 
 set actdir=%qedo%\idl
 echo *** Create %actdir%...
