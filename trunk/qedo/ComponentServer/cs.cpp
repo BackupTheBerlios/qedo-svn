@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: cs.cpp,v 1.9 2003/04/30 07:10:55 tom Exp $";
+static char rcsid[] = "$Id: cs.cpp,v 1.10 2003/05/05 11:08:01 stoinski Exp $";
 
 #include "ComponentServerImpl.h"
 #include "Synchronisation.h"
@@ -102,7 +102,7 @@ main (int argc, char** argv)
 	Qedo::ORBInitializerImpl initializer;
 	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
 
-	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref);
+	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer.slot_id());
 
 	try
 	{

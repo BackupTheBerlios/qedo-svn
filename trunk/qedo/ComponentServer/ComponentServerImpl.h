@@ -72,12 +72,14 @@ private:
 	PortableServer::POAManager_var							root_poa_manager_;
 	/** the list of created containers */
 	ContainerVector											containers_;
+	/** the slot id where our interceptor stores information to be used by container services */
+	PortableInterceptor::SlotId								slot_id_;
 
 public:
 	/**
 	 * constructor
 	 */
-	ComponentServerImpl (CORBA::ORB_ptr, const char*);
+	ComponentServerImpl (CORBA::ORB_ptr, const char*, PortableInterceptor::SlotId);
 
 	/**
 	 * destructor

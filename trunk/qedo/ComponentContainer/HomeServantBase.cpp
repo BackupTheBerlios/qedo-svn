@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.12 2003/04/24 10:05:36 tom Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.13 2003/05/05 11:08:01 stoinski Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -35,9 +35,10 @@ HomeServantBase::HomeServantBase (const char* repository_id, const char* comp_re
   comp_repository_id_(CORBA::string_dup (comp_repid)),
   instance_counter_ (0),
   servant_registry_ (new ServantRegistry()),
-  my_home_ref_ (Components::CCMHome::_nil())
+  my_home_ref_ (Components::CCMHome::_nil()),
+  container_ (0),
+  servant_locator_ (new ServantLocator (this))
 {
-  servant_locator_ = new ServantLocator (this);
 }
 
 
@@ -75,6 +76,9 @@ HomeServantBase::~HomeServantBase()
 	servant_locator_->_remove_ref();
 #endif
 	servant_registry_->_remove_ref();
+
+	if (container_)
+		container_->_remove_ref();
 }
 
 
@@ -82,6 +86,8 @@ void
 HomeServantBase::container(ContainerInterfaceImpl* container)
 {
 	container_ = container;
+
+	container_->_add_ref();
 }
 
 
@@ -130,7 +136,6 @@ HomeServantBase::reference_to_oid (const CORBA::Object_ptr obj)
 ComponentInstance& 
 HomeServantBase::incarnate_component (Components::ExecutorLocator_ptr executor_locator, ExecutorContext* ccm_context)
 {
-	// set the container where the home is installed in to the context
 	ccm_context->container (this->container_);
 
 	// create object reference
@@ -295,6 +300,36 @@ HomeServantBase::ref()
 }
 
 
+Components::CCMObject_ptr
+HomeServantBase::lookup_component (const PortableServer::ObjectId& object_id)
+{
+	CORBA::OctetSeq_var foreign_key_seq = Key::key_value_from_object_id (object_id);
+	CORBA::OctetSeq_var our_key_seq;
+
+	std::vector <ComponentInstance_var>::const_iterator components_iter;
+
+	for (components_iter = component_instances_.begin(); 
+		 components_iter != component_instances_.end(); 
+		 components_iter++)
+	{
+		our_key_seq = Key::key_value_from_object_id ((*components_iter)->object_id_);
+
+		if (Qedo::compare_OctetSeqs (foreign_key_seq, our_key_seq))
+		{
+			break;
+		}
+	}
+
+	if (components_iter == component_instances_.end())
+	{
+		DEBUG_OUT ("HomeServantBase: Unknown object id requested in lookup_component");
+		throw CORBA::OBJECT_NOT_EXIST();
+	}
+
+	return Components::CCMObject::_narrow ((*components_iter)->component_ref_);
+}
+
+
 PortableServer::Servant
 HomeServantBase::lookup_servant (const PortableServer::ObjectId& object_id)
 {
@@ -325,8 +360,8 @@ HomeServantBase::lookup_servant (const PortableServer::ObjectId& object_id)
 
 	if (components_iter == component_instances_.end())
 	{
-		NORMAL_ERR ("HomeServantBase: Unknown object id requested in lookup_servant");
-		return 0;
+		DEBUG_OUT ("HomeServantBase: Unknown object id requested in lookup_servant");
+		throw CORBA::OBJECT_NOT_EXIST();
 	}
 
 	// Now look for a servant to handle this request
@@ -346,8 +381,8 @@ HomeServantBase::lookup_servant (const PortableServer::ObjectId& object_id)
 
 	if (!servant)
 	{
-		NORMAL_ERR ("HomeServantBase: There is neither a static servant nor a servant factory registered");
-		return 0;
+		NORMAL_ERR ("HomeServantBase: Fatal internal error: There is neither a static servant nor a servant factory registered");
+		assert (0);
 	}
 
 	// set the instance

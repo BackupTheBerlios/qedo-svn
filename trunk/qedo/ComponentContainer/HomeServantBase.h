@@ -200,6 +200,9 @@ public:
 	 */
 	Components::CCMHome_ptr ref();
 
+	// This is a helper function to implement our get_component()
+	Components::CCMObject_ptr HomeServantBase::lookup_component (const PortableServer::ObjectId&);
+
 	/**
 	 * extract the object id from the given object reference
 	 * \param obj The object reference.
@@ -224,6 +227,7 @@ public:
 	/**
 	 * bla
 	 */
+
 	void prepare_remove();
 
 	/**

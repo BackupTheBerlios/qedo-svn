@@ -405,6 +405,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\FacetPort.cpp">
 			</File>
 			<File
+				RelativePath="GetComponentHelperServant.cpp">
+			</File>
+			<File
 				RelativePath="GlobalHelpers.cpp">
 			</File>
 			<File
@@ -479,6 +482,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\FacetPort.h">
+			</File>
+			<File
+				RelativePath="GetComponentHelperServant.h">
 			</File>
 			<File
 				RelativePath="GlobalHelpers.h">

@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.8 2003/04/14 09:17:49 tom Exp $";
+static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.9 2003/05/05 11:08:01 stoinski Exp $";
 
 #include "ComponentServerImpl.h"
 #include "ContainerInterfaceImpl.h"
@@ -34,9 +34,11 @@ static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.8 2003/04/14 09:17:49 to
 namespace Qedo {
 
 ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb, 
-										  const char* csa_string_ref)
+										  const char* csa_string_ref,
+										  PortableInterceptor::SlotId slot_id)
 : orb_ (CORBA::ORB::_duplicate (orb)),
-  csa_string_ref_ (CORBA::string_dup (csa_string_ref))
+  csa_string_ref_ (CORBA::string_dup (csa_string_ref)),
+  slot_id_ (slot_id)
 {
 }
 

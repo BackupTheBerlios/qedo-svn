@@ -30,6 +30,8 @@
 #include <PortableInterceptor.h>
 #endif
 #include "QedoComponents_skel.h"
+
+#include "ComponentServerImpl.h"
 #include "NameServiceBase.h"
 #include "Util.h"
 
@@ -50,6 +52,10 @@ class ORBInitializerImpl : public virtual PortableInterceptor::ORBInitializer,
 						   public virtual NameServiceBase,
 						   public virtual CORBA::LocalObject
 {
+private:
+	ComponentServerImpl* comp_server_;
+	PortableInterceptor::SlotId slot_id_;
+
 public:
 	/**
 	 * constructor
@@ -70,6 +76,11 @@ public:
 	 * post_init
 	 */
     void post_init (PortableInterceptor::ORBInitInfo_ptr info);
+
+	/**
+	 * slot_id
+	 */
+	PortableInterceptor::SlotId slot_id();
 };
 
 /** @} */

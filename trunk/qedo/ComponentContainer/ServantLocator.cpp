@@ -20,10 +20,11 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServantLocator.cpp,v 1.5 2003/04/15 07:26:07 neubauer Exp $";
+static char rcsid[] = "$Id: ServantLocator.cpp,v 1.6 2003/05/05 11:08:01 stoinski Exp $";
 
 #include "HomeServantBase.h"
 #include "ServantLocator.h"
+#include "GetComponentHelperServant.h"
 #include "Output.h"
 
 
@@ -49,6 +50,18 @@ ServantLocator::preinvoke (const PortableServer::ObjectId& oid,
 						   PortableServer::ServantLocator::Cookie& the_cookie )
 throw (PortableServer::ForwardRequest, CORBA::SystemException)
 {
+	// Our helper get_component operation will be handled by a special servant
+	if (!strcmp (operation, "get_component"))
+	{
+		DEBUG_OUT ("ServantLocator: ######### GetComponentHelperServant: returning parametrized helper servant ########");
+
+		Components::CCMObject_var ccm_object = home_servant_->lookup_component (oid);
+
+		Qedo::GetComponentHelperServant* helper_servant = new Qedo::GetComponentHelperServant (ccm_object);
+
+		return helper_servant;
+	}
+
 	//
 	// call services registered for preinvoke, but exclude services itself
 	//

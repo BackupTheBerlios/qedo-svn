@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ORBInitializerImpl.cpp,v 1.1 2003/02/07 11:29:40 neubauer Exp $";
+static char rcsid[] = "$Id: ORBInitializerImpl.cpp,v 1.2 2003/05/05 11:08:01 stoinski Exp $";
 
 #include "ORBInitializerImpl.h"
 #include "Output.h"
@@ -121,7 +121,18 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	// register HomeFinder
 	//
 	info->register_initial_reference ("ComponentHomeFinder", home_finder);
+
+	//
+	// Allocate a slot id to communicate data towards our components
+	//
+	slot_id_ = info->allocate_slot_id();
 }
 
+
+PortableInterceptor::SlotId
+ORBInitializerImpl::slot_id()
+{
+	return slot_id_;
+}
 
 } // namespace Qedo
