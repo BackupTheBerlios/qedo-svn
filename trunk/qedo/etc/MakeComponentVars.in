@@ -1,10 +1,30 @@
 ##### Qedo Target Dir #####
 # The target dir of Qedo. After building Qedo it will be installed
-# into this directory 
+# into this directory
 QEDO = @prefix@
 
 # operating system
 OS=@OS@
+
+##### QEDO CONFIG ####
+QEDO_STREAMS=@QEDO_STREAMS@
+QEDO_QOS=@QEDO_QOS@
+QEDO_DB=@QEDO_DB@
+
+ifeq "no" "$(QEDO_STREAMS)"
+IDL_FLAGS+=-D_QEDO_NO_STREAMS
+CXXFLAGS +=-D_QEDO_NO_STREAMS
+endif
+
+ifeq "no" "$(QEDO_QOS)"
+IDL_FLAGS+=-D_QEDO_NO_QOS
+CXXFLAGS +=-D_QEDO_NO_QOS
+endif
+
+ifeq "no" "$(QEDO_DB)"
+IDL_FLAGS+=-D_QEDO_NO_DB
+CXXFLAGS +=-D_QEDO_NO_DB
+endif
 
 ##### ORB #####
 # choose one out of MICO_ORB TAO_ORB ORBACUS_ORB
@@ -26,11 +46,11 @@ SUFFIXES += .so
 CXXFLAGS += -I${QEDO}/include @XERCES_INCLUDES@
 
 %: %.o
-	${CXX} ${OBJ_FILES} $(LOADLIBES) $(LDLIBS) -o $@ 
+	${CXX} ${OBJ_FILES} $(LOADLIBES) $(LDLIBS) -o $@
 
 CIDL_GEN = ${QEDO}/bin/cidl_gen
 
-IDL_FLAGS = -I${QEDO}/idl
+IDL_FLAGS += -I${QEDO}/idl
 
 %.h %.cpp %_skel.h %_skel.cpp: %.idl
 	$(MICO)/bin/idl ${IDL_FLAGS} -I. -I$(MICO)/include -I$(MICO)/include/mico -DMICO_ORB --any --c++-suffix cpp --c++-skel $< \
