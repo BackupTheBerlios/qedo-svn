@@ -43,7 +43,7 @@ all:
 	$(AR) $(ARFLAGS) $@ $^
 
 %.so:
-	${CXX} -shared ${LD_SHRAED_FLAGS} -o $@ $^ $(LIBS)
+	${CXX} -shared ${LD_SHARED_FLAGS} -o $@ $^ $(LIBS)
 
 CXXFLAGS +=
 
