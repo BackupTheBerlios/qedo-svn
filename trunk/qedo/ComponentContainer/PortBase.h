@@ -31,7 +31,9 @@
 #include <vector>
 
 
+#ifdef WIN32
 #pragma warning (disable : 4231) // nonstandard extension used : 'extern' before template explicit instantiation
+#endif
 
 
 namespace Qedo {
