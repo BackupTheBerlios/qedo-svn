@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.25.2.2 2003/08/08 13:54:06 boehme Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.25.2.3 2003/08/26 11:38:38 boehme Exp $";
 
 
 namespace Qedo {
@@ -125,7 +125,7 @@ ContainerInterfaceImpl::EventEntry::EventEntry (Components::EventConsumerBase_pt
 : consumer_ (Components::EventConsumerBase::_duplicate(c))
 , event_ (e)
 {
-	CORBA::add_ref (event_);
+	CORBA::add_ref (e);
 }
 
 ContainerInterfaceImpl::EventEntry::EventEntry (const EventEntry& e)
@@ -396,7 +396,7 @@ ContainerInterfaceImpl::queue_event
 		EventEntry entry(consumer,e);
 		event_list.push_back(entry);
 
-		CORBA::remove_ref (e);
+		//CORBA::remove_ref (e);
 
 		event_queue_cond_.signal();
 	}
@@ -408,9 +408,9 @@ ContainerInterfaceImpl::queue_event
 
 void 
 ContainerInterfaceImpl::queue_event
-(SubscribedConsumerVector& consumers, Components::EventBase* ev, CORBA::Long module_id)
+(const SubscribedConsumerVector& consumers, Components::EventBase* ev, CORBA::Long module_id)
 {
-	SubscribedConsumerVector::iterator iter;
+	SubscribedConsumerVector::const_iterator iter;
 
 	if (event_communication_mode_ == EVENT_COMMUNICATION_ASYNCHRONOUS)
 	{
@@ -423,7 +423,7 @@ ContainerInterfaceImpl::queue_event
 			event_list.push_back(entry);
 		}
 
-		CORBA::remove_ref (e);
+		//CORBA::remove_ref (e);
 
 		event_queue_cond_.signal();
 	}
