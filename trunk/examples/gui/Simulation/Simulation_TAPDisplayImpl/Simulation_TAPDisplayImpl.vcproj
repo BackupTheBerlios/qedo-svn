@@ -93,7 +93,7 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="zip ../Simulation_TAPDisplayImpl.zip -j  Debug_mico/Simulation_TAPDisplayImpl.dll ../Simulation_TAPDisplayImpl_SERVANT/Debug_mico/Simulation_TAPDisplayImpl_SERVANT.dll ../c4idemo.cidl
+				CommandLine="zip ../Simulation_TAPDisplayImpl.zip -j  Debug_mico/Simulation_TAPDisplayImpl.dll ../Simulation_TAPDisplayImpl_SERVANT/Debug_mico/Simulation_TAPDisplayImpl_SERVANT.dll ../simdemo.cidl
 zip ../Simulation_TAPDisplayImpl.zip meta-inf/Simulation_TAPDisplayImpl.ccd meta-inf/Simulation_TAPDisplayImpl.csd
 "/>
 			<Tool
@@ -300,7 +300,8 @@ copy Simulation_TAPDisplayImpl_LOCAL.h Simulation_TAPDisplayImpl_LOCAL_skel.h
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="..... compiling CIDL"
-						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --business -d --target IDL:Simulation/TAPDisplayImpl:1.0 ../simdemo.cidl"
+						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --business -d --target IDL:Simulation/TAPDisplayImpl:1.0 ../simdemo.cidl
+"
 						Outputs="Simulation_TAPDisplayImpl_LOCAL.idl;Simulation_TAPDisplayImpl_EQUIVALENT.idl;Simulation_TAPDisplayImpl_BUSINESS.idl"/>
 				</FileConfiguration>
 			</File>

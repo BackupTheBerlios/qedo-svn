@@ -93,7 +93,7 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="zip ../Simulation_PlaneImpl.zip -j  Debug_mico/Simulation_PlaneImpl.dll ../Simulation_PlaneImpl_SERVANT/Debug_mico/Simulation_PlaneImpl_SERVANT.dll ../c4idemo.cidl
+				CommandLine="zip ../Simulation_PlaneImpl.zip -j  Debug_mico/Simulation_PlaneImpl.dll ../Simulation_PlaneImpl_SERVANT/Debug_mico/Simulation_PlaneImpl_SERVANT.dll ../simdemo.cidl
 zip ../Simulation_PlaneImpl.zip meta-inf/Simulation_PlaneImpl.ccd meta-inf/Simulation_PlaneImpl.csd
 "/>
 			<Tool
