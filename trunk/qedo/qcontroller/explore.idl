@@ -1,0 +1,47 @@
+#include "Components.idl"
+
+
+struct ComponentInstanceInfo {
+	string full_scoped_name;
+	string short_name;
+	Components::CCMObject compont_ref;
+};
+
+typedef sequence < ComponentInstanceInfo > ComponentInstanceInfoList;
+
+struct HomeInstanceInfo {
+	string full_scoped_name;
+	string short_name;
+	ComponentInstanceInfoList my_components;
+	Components::CCMHome home_ref;
+};
+
+typedef sequence < HomeInstanceInfo > HomeInstanceInfoList;
+
+struct ContainerInstanceInfo {
+	string short_name;
+	HomeInstanceInfoList my_homes;
+	Components::Deployment::Container container_ref;
+};
+
+typedef sequence < ContainerInstanceInfo > ContainerInstanceInfoList;
+
+struct ComponentServerInfo {
+	string host_name;
+	ContainerInstanceInfoList my_containers;
+	Components::Deployment::ComponentServer component_server_ref;
+};
+
+typedef sequence < ComponentServerInfo > ComponentServerInfoList;
+
+struct ComponentServerActivatorInfo {
+	string host_name;
+	ComponentServerInfoList my_component_servers;
+	Components::Deployment::ServerActivator component_server_activator_ref;
+};
+
+typedef sequence < ComponentServerActivatorInfo > ComponentServerActivatorInfoList;
+
+interface Explore {
+	ComponentServerActivatorInfoList explore_qedo();
+};
