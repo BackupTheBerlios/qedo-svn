@@ -960,14 +960,22 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 
 		out << mapFullNamePK(home->primary_key()) << "* get_primary_key(" << mapFullName(component_) << "_ptr comp)\n"; 
 		out << "	throw(CORBA::SystemException);\n\n";
+		out.unindent();
+		out << "private:\n\n";
+		out.indent();
+		out << "bool compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b);\n\n";
+
 		break;
 	default:
 		out << "// not supported lifecycle\n";
 	}
 
-	out << "// COACH extension\n";
-	out << "Components::CCMObject_ptr create_component_with_config(const Components::ConfigValues& config)\n";
-	out << "	throw(CORBA::SystemException, Components::CreateFailure);\n";
+	if(lc==CIDL::lc_Session)
+	{
+		out << "// COACH extension\n";
+		out << "Components::CCMObject_ptr create_component_with_config(const Components::ConfigValues& config)\n";
+		out << "	throw(CORBA::SystemException, Components::CreateFailure);\n";
+	}
 }
 
 
