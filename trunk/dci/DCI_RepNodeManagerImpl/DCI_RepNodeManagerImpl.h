@@ -18,40 +18,6 @@
 
 
 // BEGIN USER INSERT SECTION file_post
-#include "MDE.h"
-#include <list>
-#include "PropertiesRepository.h"
-#ifdef _WIN32
-#define PATH_SEPARATOR "\\"
-#else
-#include <limits.h>
-#include <sys/types.h>
-#define PATH_SEPARATOR "/"
-#endif
-
-#ifndef _MAX_PATH
-#ifdef PATH_MAX
-#define _MAX_PATH PATH_MAX
-#else
-#define _MAX_PATH 256
-#endif
-#endif
-
-namespace DCI
-{
-    class localImpl{
-        public:
-        std::string implUUID;
-        std::string servant_module;
-        std::string servant_entrypoint;
-        std::string executor_module;
-        std::string executor_entrypoint;
-        std::string installation_dir;
-        
-        localImpl(std::string uuid);
-        char* get_description();
-    };
-}
 // END USER INSERT SECTION file_post
 
 
@@ -165,44 +131,6 @@ namespace DCI
         	throw(CORBA::SystemException, ::Components::InvalidName);
     
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl
-    char nodename[32];
-    std::string nodenameStr;
-    #ifdef WIN32
-    int qcsaProcHdle;
-    #else
-    pid_t qcsaProcHdle;
-    #endif
-
-    //Buffer for storing the primary working directory
-    char cwd_buffer[_MAX_PATH];
-    std::list <localImpl*> installed_impls_;    
-    void ccm_remove()
-         throw (CORBA::SystemException);
-    
-    bool qcsaIsRegistered;
-    bool qcsaIsStarted_;
-    CORBA::ORB_var orb_;
-    Components::Deployment::ServerActivator_var server_activator_;
-    std::list <Components::Deployment::ComponentServer_ptr> created_component_servers_;
-         
-    CORBA::Object_var resolve_from_NS_(char** name, unsigned int size);
-    void get_server_activator_();
-    localImpl* get_impl_for_uuid_(std::string implUUID);
-    void add_impl_(localImpl* entry);
-    void remove_impl_(const char * implUUID);
-   void installFile_( std::string implUUID_str, MDE::Deployment::File_var theFile)
-      throw (::Components::Deployment::InstallationFailure);
-      void printout_( const char* outStr);
-        void printout_(const char* outStr1, const char* outStr2);
-      void printerr_( const char* errStr);
-        void printerr_(const char* errStr1, const char* errStr2);
-            void printout_( std::string outStr);
-
-      
-    //NodeInformation interface stuff
-      
- PropertiesRepository* prop_repository_;
-
 // END USER INSERT SECTION RepNodeManagerSessionImpl
 
     };

@@ -14,9 +14,9 @@ OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
 
 CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} libDCI_RepNodeManagerImpl.so DCI_RepNodeManagerImpl.zip
 
-LIBS += -L../DCI_SERVANT -lDCI_SERVANT -L../mda-infra -lDCI_mda_infra
+LIBS += -L../DCI_SERVANT -lDCI_SERVANT -L../ClientIDL -lDCI_ClientIDL
 
-CXXFLAGS += -I. -I../mda-infra -g
+CXXFLAGS += -I. -I../ClientIDL -g
 
 include ../MakeComponentVars
 
@@ -36,7 +36,10 @@ package: DCI_RepNodeManagerImpl.zip
 
 DCI_RepNodeManagerImpl.zip : meta-inf/DCI_RepNodeManagerImpl.ccd meta-inf/DCI_RepNodeManagerImpl.csd libDCI_RepNodeManagerImpl.so
 	zip DCI_RepNodeManagerImpl.zip -j ../DCI_SERVANT/libDCI_SERVANT.so libDCI_RepNodeManagerImpl.so $(CIDL_FILES)
-	zip DCI_RepNodeManagerImpl.zip meta-inf/DCI_RepNodeManagerImpl.ccd meta-inf/DCI_RepNodeManagerImpl.csd
+	zip DCI_RepNodeManagerImpl.zip meta-inf/*
+
+#DCI_RepNodeManagerImpl.zip : libDCI_RepNodeManagerImpl.so
+#	zip DCI_RepNodeManagerImpl.zip -j ../DCI_SERVANT/libDCI_SERVANT.so libDCI_RepNodeManagerImpl.so $(CIDL_FILES)
 
 meta-inf/DCI_RepNodeManagerImpl.ccd meta-inf/DCI_RepNodeManagerImpl.csd :
 	[ -d meta-inf ] || mkdir ./meta-inf
