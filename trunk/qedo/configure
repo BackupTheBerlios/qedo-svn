@@ -6506,7 +6506,7 @@ done
 OS=`uname`
 
 
-                                                                                                                                  ac_config_files="$ac_config_files Makefile MakeVars ComponentIDL/Makefile ComponentContainer/Makefile qedoutil/Makefile ComponentInstaller/Makefile ComponentServer/Makefile ComponentServerActivator/Makefile AssemblyFactory/Makefile HomeFinder/Makefile DeploymentClient/Makefile etc/Makefile etc/MakeComponentVars"
+                                                                                                                                            ac_config_files="$ac_config_files Makefile MakeVars ComponentIDL/Makefile ComponentContainer/Makefile qedoutil/Makefile ComponentInstaller/Makefile ComponentServer/Makefile ComponentServer/qcs.sh ComponentServerActivator/Makefile AssemblyFactory/Makefile HomeFinder/Makefile DeploymentClient/Makefile etc/Makefile etc/MakeComponentVars"
 
 
 cat >confcache <<\_ACEOF
@@ -7040,6 +7040,7 @@ do
   "qedoutil/Makefile" ) CONFIG_FILES="$CONFIG_FILES qedoutil/Makefile" ;;
   "ComponentInstaller/Makefile" ) CONFIG_FILES="$CONFIG_FILES ComponentInstaller/Makefile" ;;
   "ComponentServer/Makefile" ) CONFIG_FILES="$CONFIG_FILES ComponentServer/Makefile" ;;
+  "ComponentServer/qcs.sh" ) CONFIG_FILES="$CONFIG_FILES ComponentServer/qcs.sh" ;;
   "ComponentServerActivator/Makefile" ) CONFIG_FILES="$CONFIG_FILES ComponentServerActivator/Makefile" ;;
   "AssemblyFactory/Makefile" ) CONFIG_FILES="$CONFIG_FILES AssemblyFactory/Makefile" ;;
   "HomeFinder/Makefile" ) CONFIG_FILES="$CONFIG_FILES HomeFinder/Makefile" ;;

@@ -158,6 +158,7 @@ AC_CONFIG_FILES([Makefile
                  qedoutil/Makefile
                  ComponentInstaller/Makefile
                  ComponentServer/Makefile
+                 ComponentServer/qcs.sh
                  ComponentServerActivator/Makefile
                  AssemblyFactory/Makefile
                  HomeFinder/Makefile

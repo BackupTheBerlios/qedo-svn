@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.22 2003/10/01 17:10:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.23 2003/10/02 14:38:36 boehme Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -255,26 +255,53 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	switch (component_server_pid = fork())
 	{
 		case 0 : /* child process */
-			if (debug_mode_)
+			if (enable_terminal_)
 			{
-				long err = execlp ("qcs", "qcs", "--csa_ref", my_string_ref.in(), "--debug", 0);
-			    if (err == -1) 
+				if (debug_mode_)
 				{
-					std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
-					std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
-					throw Components::CreateFailure();
+					long err = execlp ("xterm", "xterm", "-e", "qcs.sh", "--csa_ref", my_string_ref.in(), "--debug", 0);
+					 if (err == -1) 
+					{
+						std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
+						std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
+						throw Components::CreateFailure();
+					}
+				}
+				else
+				{
+					long err = execlp ("xterm", "xterm", "-e", "qcs.sh", "--csa_ref", my_string_ref.in(), 0);
+					 if (err == -1) 
+					{
+						std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
+						std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
+						throw Components::CreateFailure();
+					}
 				}
 			}
 			else
 			{
-				long err = execlp ("qcs", "qcs", "--csa_ref", my_string_ref.in(), 0);
-			    if (err == -1) 
+				if (debug_mode_)
 				{
-					std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
-					std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
-					throw Components::CreateFailure();
+					long err = execlp ("qcs", "qcs", "--csa_ref", my_string_ref.in(), "--debug", 0);
+					 if (err == -1) 
+					{
+						std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
+						std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
+						throw Components::CreateFailure();
+					}
+				}
+				else
+				{
+					long err = execlp ("qcs", "qcs", "--csa_ref", my_string_ref.in(), 0);
+					 if (err == -1) 
+					{
+						std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
+						std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
+						throw Components::CreateFailure();
+					}
 				}
 			}
+
 			break;
 		default : /* parent process */
 			break;

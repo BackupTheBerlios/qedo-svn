@@ -62,5 +62,5 @@ install: install-prog
 
 .PHONY:install-prog
 
-install-prog: qcs
+install-prog: qcs qcs.sh
 
