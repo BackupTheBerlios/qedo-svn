@@ -25,7 +25,7 @@
 #include <iostream>
 #include <cassert>
 
-static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.10 2003/08/01 14:57:26 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.11 2003/08/06 12:21:33 stoinski Exp $";
 
 
 namespace Qedo {
@@ -33,7 +33,9 @@ namespace Qedo {
 
 CORBA::Long GlobalObjectManagement::native_object_count_ = 0;
 CORBA::Long GlobalObjectManagement::CORBA_local_object_count_ = 0;
+CORBA::Long GlobalObjectManagement::CORBA_object_count_ = 0;
 CORBA::Long GlobalObjectManagement::native_object_instantiation_count_ = 0;
+CORBA::Long GlobalObjectManagement::CORBA_object_instantiation_count_ = 0;
 CORBA::Long GlobalObjectManagement::CORBA_local_object_instantiation_count_ = 0;
 
 
@@ -87,7 +89,9 @@ RefCountBase::_get_refcount()
 
 
 RefCountLocalObject::RefCountLocalObject()
+#ifndef MICO_ORB
 : ref_count_ (1)
+#endif
 {
 	++GlobalObjectManagement::CORBA_local_object_count_;
 	++GlobalObjectManagement::CORBA_local_object_instantiation_count_;
@@ -98,14 +102,17 @@ RefCountLocalObject::~RefCountLocalObject()
 {
 	--GlobalObjectManagement::CORBA_local_object_count_;
 
+#ifndef MICO_ORB
 	if (ref_count_ != 0)
 	{
 		NORMAL_ERR ("RefCountLocalObject: Object deleted without reference count of null");
 		assert (ref_count_ == 0);
 	}
+#endif
 }
 
 
+#ifndef MICO_ORB
 void
 RefCountLocalObject::_add_ref()
 {
@@ -133,5 +140,20 @@ RefCountLocalObject::_get_refcount()
 {
 	return ref_count_;
 }
+#endif
+
+
+CreateDestructCORBAObjectCounter::CreateDestructCORBAObjectCounter()
+{
+	++GlobalObjectManagement::CORBA_object_count_;
+	++GlobalObjectManagement::CORBA_object_instantiation_count_;
+}
+
+
+CreateDestructCORBAObjectCounter::~CreateDestructCORBAObjectCounter()
+{
+	--GlobalObjectManagement::CORBA_object_count_;
+}
+
 
 } // namespace Qedo

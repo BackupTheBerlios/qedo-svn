@@ -35,8 +35,10 @@ class CONTAINERDLL_API GlobalObjectManagement
 {
 public:
 	static CORBA::Long native_object_count_;
+	static CORBA::Long CORBA_object_count_;
 	static CORBA::Long CORBA_local_object_count_;
 	static CORBA::Long native_object_instantiation_count_;
+	static CORBA::Long CORBA_object_instantiation_count_;
 	static CORBA::Long CORBA_local_object_instantiation_count_;
 };
 
@@ -90,16 +92,19 @@ public:
 
 
 /**
- * reference count class for local objects
+ * reference count class for local objects (for MICO this class only provides the creation/destruction count)
  */
 class CONTAINERDLL_API RefCountLocalObject : public virtual CORBA::LocalObject
 {
+
+#ifndef MICO_ORB
 private:
 	/** the reference counter */
 	CORBA::Long ref_count_;
 
 	/** the mutex for ref_count_ manipulation */
 	qedo_mutex mutex_;
+#endif
 
 public:
 	/**
@@ -112,6 +117,7 @@ public:
 	 */
 	virtual ~RefCountLocalObject();
 
+#ifndef MICO_ORB
 	/**
 	 * increment the reference counter
 	 */
@@ -126,6 +132,25 @@ public:
 	 * provide the reference counter
 	 */
 	unsigned long _get_refcount();
+#endif
+};
+
+
+/**
+ * creation/destruction count class for CORBA objects
+ */
+class CONTAINERDLL_API CreateDestructCORBAObjectCounter
+{
+public:
+	/**
+	 * constructor
+	 */
+	CreateDestructCORBAObjectCounter();
+
+	/**
+	 * destructor
+	 */
+	virtual ~CreateDestructCORBAObjectCounter();
 };
 
 /** @} */
