@@ -27,7 +27,7 @@
 #include <fstream>
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.21 2004/03/11 14:23:28 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.22 2004/04/13 09:30:19 neubauer Exp $";
 
 
 namespace Qedo {
@@ -184,6 +184,7 @@ ComponentImplementation::getData()
 }
 
 
+/*
 void
 ComponentImplementation::installAssembly()
 throw( Components::CreateFailure )
@@ -301,6 +302,7 @@ throw( Components::CreateFailure )
     }
 #endif
 }
+*/
 
 
 void
@@ -312,12 +314,12 @@ throw(Components::CreateFailure)
 	//
 	// install subcomponents (if existing)
 	//
-	if(data_.assembly.cad.length())
+	/*if(data_.assembly.cad.length())
 	{
 		installAssembly();
 		name = data_.assembly.cad;
 		copyFile( build_path_ + name, installation_path_ + name );
-	}
+	}*/
 
 	if(data_.csd.empty())
 	{

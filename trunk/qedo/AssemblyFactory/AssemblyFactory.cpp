@@ -39,7 +39,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.21 2003/11/14 18:08:34 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.22 2004/04/13 09:30:19 neubauer Exp $";
 
 
 namespace Qedo {
@@ -262,7 +262,7 @@ throw (Components::Deployment::InvalidAssembly, Components::RemoveFailure)
 		{
 			root_poa_->deactivate_object( *(root_poa_->servant_to_id(ass)) );
 
-			std::string dir = getPath( packageDirectory_ ) + ass->get_uuid();
+			std::string dir = getPath( packageDirectory_ ) + ass->get_cookie();
 			if( removeDir(dir) )
 			{
 				NORMAL_ERR2( "AssemblyFactoryImpl: could not remove directory ", dir );

@@ -72,6 +72,12 @@ private:
 		throw(CADReadException);
 
 	/**
+	 * activation
+	 */
+	ReferenceData activation (DOMElement*)
+		throw(CADReadException);
+
+	/**
 	 * componentassembly
 	 */
 	void componentassembly (DOMElement*)
@@ -174,10 +180,9 @@ private:
 		throw(CADReadException);
 
     /**
-	 * return the destination for placement,
-	 * if destination is empty, return the local hostname (for convenience)
+	 * return the destination for placement
 	 */
-	std::string destination (DOMElement*)
+	DestinationData destination (DOMElement*)
         throw(CADReadException);
 
 	/**
@@ -259,6 +264,12 @@ private:
         throw(CADReadException);
 
 	/**
+	 * installation
+	 */
+	ReferenceData installation (DOMElement*)
+		throw(CADReadException);
+
+	/**
 	 * link
 	 */
 	std::string link (DOMElement*)
@@ -268,6 +279,12 @@ private:
 	 * namingservice
 	 */
 	std::string namingservice (DOMElement*)
+        throw(CADReadException);
+
+	/**
+	 * node
+	 */
+	std::string node (DOMElement*)
         throw(CADReadException);
 
 	/**

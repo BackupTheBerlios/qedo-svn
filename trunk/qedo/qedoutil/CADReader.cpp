@@ -93,6 +93,36 @@ throw(CADReadException)
 }
 
 
+ReferenceData
+CADReader::activation (DOMElement* element)
+throw(CADReadException)
+{
+	std::string element_name;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// findby
+			//
+			if (element_name == "findby")
+			{
+				return findby( (DOMElement*)child );
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	NORMAL_ERR( "CADReader: no activation ref" );
+	throw CADReadException();
+}
+
+
 void
 CADReader::componentassembly (DOMElement* element)
 throw(CADReadException)
@@ -637,8 +667,9 @@ PortData
 CADReader::consumesport (DOMElement* element)
 throw(CADReadException)
 {
-	std::string element_name;
 	PortData data;
+
+	std::string element_name;
 	DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
@@ -696,23 +727,66 @@ throw(CADReadException)
 }
 
 
-std::string
+DestinationData
 CADReader::destination (DOMElement* element)
 throw(CADReadException)
 {
-	std::string text = "";
-	DOMNode* node = element->getFirstChild();
-	if(node)
+	DestinationData data;
+
+	std::string element_name;
+	DOMNode* child = element->getFirstChild();
+	DOMElement* elem;
+	while (child != 0)
 	{
-		text = Qedo::transcode(node->getNodeValue());
-		return text;
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+			elem = (DOMElement*)child;
+
+			//
+			// node
+			//
+			if (element_name == "node")
+			{
+				data.node = node( elem );
+				
+				// if empty take local host
+				if( data.node.empty() )
+				{
+					char hostname[256];
+					gethostname(hostname, 256);
+					data.node = hostname;
+					DEBUG_OUT2( "CADReader: unspecified node, take ", hostname );
+				}
+			}
+
+			//
+			// installation
+			//
+			else if (element_name == "installation")
+			{
+				// get type of installation
+				data.installation_type = Qedo::transcode( elem->getAttribute(X("type")) );
+				data.installation_ref = installation( elem );
+			}
+
+			//
+			// activation
+			//
+			else if (element_name == "activation")
+			{
+				// get type of activation
+				data.activation_type = Qedo::transcode( elem->getAttribute(X("type")) );
+				data.activation_ref = activation( elem );
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
 	}
 
-    // destination was empty
-    char hostname[256];
-	gethostname(hostname, 256);
-    text = hostname;
-    return text;
+	data.specified = true;
+	return data;
 }
 
 
@@ -1010,13 +1084,16 @@ HomeInstanceData
 CADReader::homeplacement (DOMElement* element)
 throw(CADReadException)
 {
-	std::string element_name;
 	HomeInstanceData data;
 
+	//
 	// attribute id
+	//
 	data.id = Qedo::transcode(element->getAttribute(X("id")));
 
+	//
 	// attribute cardinality
+	//
 	std::string cardinality = Qedo::transcode(element->getAttribute(X("cardinality")));
 	if( !cardinality.empty() )
 	{
@@ -1027,6 +1104,10 @@ throw(CADReadException)
 		data.cardinality = 1;
 	}
 
+	//
+	// content
+	//
+	std::string element_name;
 	DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
@@ -1269,7 +1350,7 @@ throw(CADReadException)
 			{
 				HomeInstanceData home_instance = homeplacement((DOMElement*)child);
 				ProcessData process;
-				process.host = home_instance.dest;
+				process.dest = home_instance.dest;
 				process.homes.push_back(home_instance);
 				data.processes.push_back(process);
 			}
@@ -1288,7 +1369,7 @@ throw(CADReadException)
 			else if (element_name == "processcollocation")
 			{
 				ProcessData process = processcollocation((DOMElement*)child);
-				data.host = process.host;
+				data.dest = process.dest;
 				data.processes.push_back(process);
 			}
 
@@ -1305,7 +1386,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "destination")
 			{
-				data.host = destination((DOMElement*)child);
+				data.dest = destination((DOMElement*)child);
 			}
 		}
 
@@ -1314,6 +1395,36 @@ throw(CADReadException)
 	}
 
 	return data;
+}
+
+
+ReferenceData
+CADReader::installation (DOMElement* element)
+throw(CADReadException)
+{
+	std::string element_name;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// findby
+			//
+			if (element_name == "findby")
+			{
+				return findby( (DOMElement*)child );
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	NORMAL_ERR( "CADReader: no installation ref" );
+	throw CADReadException();
 }
 
 
@@ -1386,6 +1497,14 @@ throw(CADReadException)
 }
 
 
+std::string
+CADReader::node (DOMElement* element)
+throw(CADReadException)
+{
+	return Qedo::transcode(element->getAttribute(X("name")));
+}
+
+
 void
 CADReader::partitioning (DOMElement* element)
 throw(CADReadException)
@@ -1406,16 +1525,29 @@ throw(CADReadException)
 				HomeInstanceData home = homeplacement((DOMElement*)child);
 				if(home.file.empty())
 				{
+					//
 					// extension, use existing home
+					//
 					data_->existing_homes_.push_back(home);
 				}
 				else
 				{
+					//
+					// if destination is not specified take local host
+					//
+					if( !home.dest.specified )
+					{
+						char hostname[256];
+						gethostname(hostname, 256);
+						home.dest.node = hostname;
+						DEBUG_OUT2( "CADReader: unspecified destination for home, take ", hostname );
+					}
+
 					ProcessData process;
-					process.host = home.dest;
+					process.dest = home.dest;
 					process.homes.push_back(home);
 					HostData host;
-					host.host = process.host;
+					host.dest = process.dest;
 					host.processes.push_back(process);
 					data_->hosts_.push_back(host);
 				}
@@ -1435,8 +1567,20 @@ throw(CADReadException)
 			else if (element_name == "processcollocation")
 			{
 				ProcessData process = processcollocation((DOMElement*)child);
+
+				//
+				// if destination is not specified take local host
+				//
+				if( !process.dest.specified )
+				{
+					char hostname[256];
+					gethostname(hostname, 256);
+					process.dest.node = hostname;
+					DEBUG_OUT2( "CADReader: unspecified destination for processcollocation, take ", hostname );
+				}
+
 				HostData host;
-				host.host = process.host;
+				host.dest = process.dest;
 				host.processes.push_back(process);
 				data_->hosts_.push_back(host);
 			}
@@ -1446,7 +1590,20 @@ throw(CADReadException)
 			//
 			else if (element_name == "hostcollocation")
 			{
-				data_->hosts_.push_back(hostcollocation((DOMElement*)child));
+				HostData host = hostcollocation( (DOMElement*)child );
+
+				//
+				// if destination is not specified take local host
+				//
+				if( !host.dest.specified )
+				{
+					char hostname[256];
+					gethostname(hostname, 256);
+					host.dest.node = hostname;
+					DEBUG_OUT2( "CADReader: unspecified destination for hostcollocation, take ", hostname );
+				}
+
+				data_->hosts_.push_back( host );
 			}
 
 			//
@@ -1499,7 +1656,7 @@ throw(CADReadException)
 			else if (element_name == "homeplacement")
 			{
 				HomeInstanceData home_instance = homeplacement((DOMElement*)child);
-				data.host = home_instance.dest;
+				data.dest = home_instance.dest;
 				data.homes.push_back(home_instance);
 			}
 
@@ -1516,7 +1673,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "destination")
 			{
-				data.host = destination((DOMElement*)child);
+				data.dest = destination((DOMElement*)child);
 			}
 		}
 

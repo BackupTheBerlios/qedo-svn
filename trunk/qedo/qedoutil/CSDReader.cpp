@@ -29,7 +29,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.16 2004/03/23 16:11:05 ogr Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.17 2004/04/13 09:30:19 neubauer Exp $";
 
 
 namespace Qedo {
@@ -232,6 +232,12 @@ void
 CSDReader::dependency (DOMElement* element)
 throw(CSDReadException)
 {
+	//
+	// get type and action attribute
+	//
+	std::string type = Qedo::transcode(element->getAttribute(X("type")));
+	std::string action = Qedo::transcode(element->getAttribute(X("action")));
+
     std::string element_name;
 	DOMNode* child = element->getFirstChild();
 	while (child != 0)
@@ -366,12 +372,16 @@ LocationData
 CSDReader::fileinarchive(DOMElement* element)
 throw(CSDReadException)
 {
-	if ( !package_ ) abort();
+	//
+	// get file name
+	//
+	std::string file_name = Qedo::transcode(element->getAttribute(X("name")));
+
 	LocationData data;
 	data.uri = "file://";
-	std::string file_name = Qedo::transcode(element->getAttribute(X("name")));
+	data.uri.append( path_ );
 	data.file = getFileName( file_name );
-	data.uri.append( path_ + data.file );
+	data.uri.append( data.file );
 
 	//
 	// extract the file

@@ -117,7 +117,27 @@
 
 <!ELEMENT description ( #PCDATA ) >
 
-<!ELEMENT destination ( #PCDATA ) >
+<!-- replaced <!ELEMENT destination ( #PCDATA ) > -->
+<!ELEMENT destination
+    ( node
+    | ( installation
+      , activation
+      )
+    ) >
+
+<!ELEMENT node EMPTY>
+<!ATTLIST node
+    name CDATA #REQUIRED>
+
+<!ELEMENT installation ( findby ) >
+<!ATTLIST installation
+    type CDATA #IMPLIED>
+    <!-- currently, valid values are: componentinstallation -->
+
+<!ELEMENT activation ( findby ) >
+<!ATTLIST activation
+    type CDATA #IMPLIED>
+    <!-- currently, valid values are: serveractivator | componentserver -->
 
 <!ELEMENT destinationhome
      ( homeplacementref

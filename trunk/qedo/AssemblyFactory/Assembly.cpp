@@ -61,15 +61,17 @@ AssemblyImpl::~AssemblyImpl ()
 std::string 
 AssemblyImpl::get_uuid () const
 {
-    if( data_.uuid_.empty() )
-	{
-		const char* s = cookie_->to_string();
-		std::string x = s;
-		CORBA::string_free(const_cast<char*>(s));
-		return x;
-	}
-
 	return data_.uuid_;
+}
+
+
+std::string 
+AssemblyImpl::get_cookie () const
+{
+	const char* s = cookie_->to_string();
+	std::string x = s;
+	CORBA::string_free(const_cast<char*>(s));
+	return x;
 }
 
 
@@ -81,49 +83,114 @@ AssemblyImpl::operator == (Components::Cookie* cook)
 
 
 Components::Deployment::ComponentServer_ptr
-AssemblyImpl::createComponentServer (std::string dest)
+AssemblyImpl::createComponentServer (DestinationData dest)
 throw( Components::CreateFailure )
 {
-	DEBUG_OUT2("..... create new component server on ", dest);
+	DEBUG_OUT( "..... create new component server" );
+	Components::Deployment::ServerActivator_var serverActivator;
+	Components::Deployment::ComponentServer_var component_server;
+	CORBA::Object_var obj;
 
     //
-	// get server activator for destination
+	// destination is given as node
 	//
-	Components::Deployment::ServerActivator_var serverActivator;
-    Components::Deployment::ComponentServer_var component_server;
-
-	CORBA::Object_var obj = resolveName(SERVER_ACTIVATOR_CONTEXT + dest);
-    if ( CORBA::is_nil(obj))
-    {
-        DEBUG_OUT2(".......... no ServerActivator found for ", dest);
-        throw Components::CreateFailure();
-    }
-
-    serverActivator = Components::Deployment::ServerActivator::_narrow(obj.in());
-    if ( CORBA::is_nil(serverActivator.in()))
-    {
-        DEBUG_OUT(".......... ServerActivator is NIL ");
-        throw Components::CreateFailure();
-    }
-
-	//
-	// create new Component Server
-	//
-	try
+	if(!dest.node.empty())
 	{
-		Components::ConfigValues_var config = new Components::ConfigValues();
-        component_server = serverActivator->create_component_server(config);
+		//
+		// get server activator for destination node
+		//
+		obj = resolveName( SERVER_ACTIVATOR_CONTEXT + dest.node );
+		if ( CORBA::is_nil(obj))
+		{
+			DEBUG_OUT2(".......... no ServerActivator found for ", dest.node );
+			throw Components::CreateFailure();
+		}
+
+		serverActivator = Components::Deployment::ServerActivator::_narrow(obj.in());
+		if ( CORBA::is_nil(serverActivator.in()))
+		{
+			DEBUG_OUT(".......... ServerActivator is NIL ");
+			throw Components::CreateFailure();
+		}
+
+		//
+		// create new Component Server
+		//
+		try
+		{
+			Components::ConfigValues_var config = new Components::ConfigValues();
+			component_server = serverActivator->create_component_server(config);
+		}
+		catch ( CORBA::SystemException& )
+		{
+			std::cerr << ".......... CORBA system exception during create_component_server()" << std::endl;
+			std::cerr << ".......... is ServerActivator running?" << std::endl;
+			throw Components::CreateFailure();
+		}
+		if (CORBA::is_nil(component_server))
+		{
+			std::cerr << ".......... Component Server is NIL" << std::endl;
+			throw Components::CreateFailure();
+		}
 	}
-	catch ( CORBA::SystemException& )
+	//
+	// destination is given as activation
+	//
+	else
 	{
-		std::cerr << ".......... CORBA system exception during create_component_server()" << std::endl;
-		std::cerr << ".......... is ServerActivator running?" << std::endl;
-		throw Components::CreateFailure();
-	}
-	if (CORBA::is_nil(component_server))
-	{
-		std::cerr << ".......... Component Server is NIL" << std::endl;
-		throw Components::CreateFailure();
+		obj = getRef( dest.activation_ref );
+
+		//
+		// serveractivator is given
+		//
+		if(dest.activation_type.compare( "serveractivator" ))
+		{
+			serverActivator = Components::Deployment::ServerActivator::_narrow(obj.in());
+			if ( CORBA::is_nil(serverActivator.in()))
+			{
+				NORMAL_ERR( "AssemblyImpl: ServerActivator is NIL " );
+				throw Components::CreateFailure();
+			}
+
+			//
+			// create new Component Server
+			//
+			try
+			{
+				Components::ConfigValues_var config = new Components::ConfigValues();
+				component_server = serverActivator->create_component_server(config);
+			}
+			catch ( CORBA::SystemException& )
+			{
+				NORMAL_ERR( "AssemblyImpl: CORBA system exception during create_component_server()" );
+				throw Components::CreateFailure();
+			}
+			if (CORBA::is_nil(component_server))
+			{
+				NORMAL_ERR( "AssemblyImpl: Component Server is NIL" );
+				throw Components::CreateFailure();
+			}
+		}
+		//
+		// componentserver is given
+		//
+		else if(dest.activation_type.compare( "componentserver" ))
+		{
+			component_server = Components::Deployment::ComponentServer::_narrow(obj.in());
+			if ( CORBA::is_nil(component_server.in()))
+			{
+				NORMAL_ERR( "AssemblyImpl: ComponentServer is NIL " );
+				throw Components::CreateFailure();
+			}
+		}
+		//
+		// unknown activation type
+		//
+		else
+		{
+			NORMAL_ERR2( "unknown activation type", dest.activation_type );
+			throw Components::CreateFailure();
+		}
 	}
 
     return component_server._retn();
@@ -161,27 +228,45 @@ throw( Components::CreateFailure )
 
 
 Components::Deployment::ExtComponentInstallation_ptr
-AssemblyImpl::getComponentInstallation(std::string host)
+AssemblyImpl::getComponentInstallation(DestinationData dest)
 throw( Components::CreateFailure )
 {
 	Components::Deployment::ExtComponentInstallation_var componentInstallation;
 	CORBA::Object_var obj;
 
 	//
-	// get ComponentInstallation for destination
+	// get ComponentInstallation for destination node
 	//
-	obj = resolveName(COMPONENT_INSTALLATION_CONTEXT + host);
-	if ( CORBA::is_nil(obj))
+	if(!dest.node.empty())
 	{
-		NORMAL_ERR2( "AssemblyImpl: no Object for ", host );
-		throw Components::CreateFailure();
-	}
+		obj = resolveName(COMPONENT_INSTALLATION_CONTEXT + dest.node);
+		if ( CORBA::is_nil(obj))
+		{
+			NORMAL_ERR2( "AssemblyImpl: no Object for ", dest.node );
+			throw Components::CreateFailure();
+		}
     
-	componentInstallation = Components::Deployment::ExtComponentInstallation::_narrow(obj.in());
-	if ( CORBA::is_nil(componentInstallation.in()))
+		componentInstallation = Components::Deployment::ExtComponentInstallation::_narrow(obj.in());
+		if ( CORBA::is_nil(componentInstallation.in()))
+		{
+			NORMAL_ERR2( "AssemblyImpl: no ComponentInstallation for ", dest.node );
+			throw Components::CreateFailure();
+		}
+	}
+	//
+	// get ComponentInstallation according to installation ref
+	//
+	else
 	{
-		NORMAL_ERR2( "AssemblyImpl: no ComponentInstallation for ", host );
-		throw Components::CreateFailure();
+		obj = getRef( dest.installation_ref );
+
+		// todo check type of installation
+		componentInstallation = Components::Deployment::ExtComponentInstallation::_narrow(obj.in());
+		if ( CORBA::is_nil(componentInstallation.in()))
+		{
+			NORMAL_ERR( "AssemblyImpl: no ComponentInstallation" );
+			throw Components::CreateFailure();
+		}
 	}
 
 	return componentInstallation._retn();
@@ -277,7 +362,7 @@ throw( Components::CreateFailure )
 		host_iter != data_.hosts_.end(); 
 		host_iter++)
 	{
-		componentInstallation = getComponentInstallation((*host_iter).host);
+		componentInstallation = getComponentInstallation((*host_iter).dest);
 
 		//
 		// for each processcollocation
@@ -301,18 +386,15 @@ throw( Components::CreateFailure )
 				try
 				{
 					DEBUG_OUT2( "AssemblyImpl: uninstall component ", (*iter).impl_id );
-					DEBUG_OUT2( "..... host is ", (*host_iter).host );
 					componentInstallation->remove( (*iter).impl_id.c_str() );
 				}
 				catch(Components::Deployment::UnknownImplId&)
 				{
 					NORMAL_ERR3( "AssemblyImpl: component ", (*iter).impl_id, " not installed" );
-					NORMAL_ERR2( "..... host is ", (*host_iter).host );
 				}
 				catch(Components::RemoveFailure&)
 				{
 					NORMAL_ERR3( "AssemblyImpl: component ", (*iter).impl_id, " not removed" );
-					NORMAL_ERR2( "..... host is ", (*host_iter).host )
 				}
 				catch ( CORBA::SystemException& )
 				{
@@ -330,7 +412,7 @@ AssemblyImpl::install ()
 throw( Components::CreateFailure )
 {
 	Components::Deployment::ExtComponentInstallation_var componentInstallation;
-	std::string destination;
+	DestinationData destination;
 
 	//
 	// for each hostcollocation
@@ -340,8 +422,8 @@ throw( Components::CreateFailure )
 		host_iter != data_.hosts_.end(); 
 		host_iter++)
 	{
-		destination = (*host_iter).host;
-		componentInstallation = getComponentInstallation(destination);
+		destination = (*host_iter).dest;
+		componentInstallation = getComponentInstallation( destination );
 
 		//
 		// for each processcollocation
@@ -351,7 +433,7 @@ throw( Components::CreateFailure )
 			process_iter != (*host_iter).processes.end();
 			process_iter++)
 		{
-			(*process_iter).host = destination;
+			(*process_iter).dest = destination;
 
 			//
 			// for each homeplacement
@@ -397,7 +479,7 @@ throw( Components::CreateFailure )
 	try
 	{
 		DEBUG_OUT("..... install implementation ");
-		DEBUG_OUT2(".......... destination is ", data.dest);
+		//DEBUG_OUT2(".......... destination is ", data.dest);
 		DEBUG_OUT2(".......... implementation id is ", impl_id);
 		DEBUG_OUT2(".......... package is ", package_file);
 		componentInstallation->install(impl_id.c_str(), location.c_str());
@@ -478,7 +560,7 @@ throw(Components::CreateFailure)
 			{
 				if( (*iter).cardinality > 0 )
 				{
-					component_server = createComponentServer((*host_iter).host);
+					component_server = createComponentServer((*host_iter).dest);
 					(*process_iter).server = Components::Deployment::ComponentServer::_duplicate(component_server);
 					break;
 				}

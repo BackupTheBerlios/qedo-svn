@@ -71,6 +71,45 @@ struct RuleData
 
 
 /**
+ * kind of the reference
+ */
+enum ReferenceKind { COMPONENTID, HOMEID, NAMING, OBJECTREF, TRADER, FINDER };
+/**
+ * reference data
+ */
+struct ReferenceData
+{
+	/** reference kind */
+	ReferenceKind								kind;
+	/** reference name */
+	std::string									name;
+};
+
+
+/**
+ * destination data
+ */
+class DestinationData
+{
+public:
+	/** was specified */
+	bool										specified;
+	/** node name */
+	std::string									node;
+	/** type of installation */
+	std::string									installation_type;
+	/** reference to installation */
+	ReferenceData								installation_ref;
+	/** type of activation */
+	std::string									activation_type;
+	/** reference to activation */
+	ReferenceData								activation_ref;
+
+	DestinationData() { specified = false; };
+};
+
+
+/**
  * kind of port
  */
 enum PortKind { COMPONENT_PORT, FACET_PORT, EMITTER_PORT, PUBLISHER_PORT };
@@ -124,7 +163,7 @@ struct HomeInstanceData
 	/** implementation id */
 	std::string									impl_id;
 	/** destination */
-	std::string									dest;
+	DestinationData								dest;
 	/** registration with homefinder */
 	std::string									finder;
 	/** registration with naming service */
@@ -155,8 +194,8 @@ struct ProcessData
 	std::string									usage_name;
 	/** id */
 	std::string									id;
-	/** destination host */
-	std::string									host;
+	/** destination */
+	DestinationData								dest;
 	/** list of home instances */
 	std::vector < HomeInstanceData >			homes;
 	/** component server */
@@ -173,26 +212,10 @@ struct HostData
 	std::string									usage_name;
 	/** id */
 	std::string									id;
-	/** destination host */
-	std::string									host;
+	/** destination */
+	DestinationData								dest;
 	/** list of processes */
 	std::vector < ProcessData >					processes;
-};
-
-
-/**
- * kind of the reference
- */
-enum ReferenceKind { COMPONENTID, HOMEID, NAMING, OBJECTREF, TRADER, FINDER };
-/**
- * reference data
- */
-struct ReferenceData
-{
-	/** reference kind */
-	ReferenceKind								kind;
-	/** reference name */
-	std::string									name;
 };
 
 

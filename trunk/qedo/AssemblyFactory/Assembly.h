@@ -90,7 +90,7 @@ private:
     /**
 	 * create new component server
 	 */
-    Components::Deployment::ComponentServer_ptr createComponentServer (std::string)
+    Components::Deployment::ComponentServer_ptr createComponentServer (DestinationData)
         throw(Components::CreateFailure);
 
     /**
@@ -115,7 +115,7 @@ private:
 	/**
 	 * get component installation
 	 */
-	Components::Deployment::ExtComponentInstallation_ptr getComponentInstallation(std::string host)
+	Components::Deployment::ExtComponentInstallation_ptr getComponentInstallation(DestinationData host)
 		throw(Components::CreateFailure);
 
 	/**
@@ -204,6 +204,11 @@ public:
 	 * provide the uuid
 	 */
     std::string get_uuid() const;
+
+	/**
+	 * provide the cookie value
+	 */
+    std::string get_cookie() const;
 
 	bool operator == ( Components::Cookie* );
 
