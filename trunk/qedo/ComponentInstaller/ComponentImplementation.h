@@ -65,6 +65,9 @@ private:
 
     //the path of the idl file
 	std::string mIdlFile;
+
+	// the RepId of the home
+	std::string mIdlTarget;
     
     // the CORBA component descriptor
     DOM_Document mComponentDescriptor;

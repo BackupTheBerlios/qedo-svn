@@ -924,9 +924,9 @@ throw(Components::CreateFailure)
                 // configure with standard configurator
                 //
 				StandardConfiguratorImpl* configurator = new StandardConfiguratorImpl();
-				configurator->_this()->set_configuration(config);
 				try
 				{
+					configurator->_this()->set_configuration(config);
 					configurator->_this()->configure(comp);
 				}
 				catch( ... )

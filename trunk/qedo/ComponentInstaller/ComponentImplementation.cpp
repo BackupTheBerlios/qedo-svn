@@ -318,7 +318,10 @@ throw(Components::CreateFailure)
     DOM_NodeList nodeList = element.getElementsByTagName("idl");
     if (nodeList.getLength() > 0)
     {
-        DOM_Node child = nodeList.item(0).getFirstChild();
+		DOM_Element idl_element = (const DOM_Element&)(nodeList.item(0));
+		// TODO the attribute id refers to the home instead to the component !!!
+		mIdlTarget = idl_element.getAttribute("id").transcode();
+        DOM_Node child = idl_element.getFirstChild();
 	    while (child != 0)
 	    {
 	        //
@@ -652,8 +655,12 @@ throw(Components::CreateFailure)
 	}
 
 #ifdef _WIN32
-	std::string command = "nmake /f " + mMakeFile + " SOURCE=" + mIdlFile + " TARGET=" + servant_module_;
+	std::string command = "nmake /f " + mMakeFile;
+	command += " SOURCE=" + mIdlFile;
+	command += " TARGET=" + mIdlTarget;
+	command += " DLL=" + servant_module_;
 	std::cout << command << std::endl;
+
 	{
 	char* command_line = strdup(command.c_str());
 	char* command_dir = strdup(mBuildPath.c_str());

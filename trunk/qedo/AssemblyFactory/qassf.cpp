@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qassf.cpp,v 1.1 2002/11/08 10:36:12 neubauer Exp $";
+static char rcsid[] = "$Id: qassf.cpp,v 1.2 2002/11/18 15:21:17 neubauer Exp $";
 
 #include "AssemblyFactory.h"
 #include "Output.h"
@@ -36,9 +36,14 @@ main (int argc, char** argv)
 
 	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
 
+	//
 	// register valuetype factories
-	CORBA::ValueFactoryBase_var factory = new Qedo::CookieFactory_impl();
+	//
+	CORBA::ValueFactoryBase_var factory;
+	factory = new Qedo::CookieFactory_impl();
     orb->register_value_factory("IDL:omg.org/Components/Cookie:1.0", factory);
+	factory = new Qedo::ConfigValueFactory_impl();
+    orb->register_value_factory("IDL:omg.org/Components/ConfigValue:1.0", factory);
 
 	Qedo::AssemblyFactoryImpl* assembly_factory = new Qedo::AssemblyFactoryImpl(orb);
 

@@ -17,12 +17,11 @@ LINK32_FLAGS=$(LINK_PATH) $(LINK_LIBS) /nologo /dll /incremental:no /pdb:"foo.pd
 
 
 ALL :
-	"$(QEDO)\bin\cidl_gen" -DWIN32 -I"$(QEDO)\ComponentIDL" -I$(IDL_IDL) -I$(IDL_IDL)/OB --deploy --target dinner $(SOURCE)
-	$(IDL_EXE) -DWIN32 -I"$(QEDO)\ComponentIDL" -I$(IDL_IDL) -I$(IDL_IDL)/OB $(SOURCE:.idl=_EQUIVALENT.idl)
-	$(IDL_EXE) -DWIN32 -I"$(QEDO)\ComponentIDL" -I$(IDL_IDL) -I$(IDL_IDL)/OB $(SOURCE:.idl=_LOCAL.idl)
-	$(IDL_EXE) -DWIN32 -I"$(QEDO)\ComponentIDL" -I$(IDL_IDL) -I$(IDL_IDL)/OB $(SOURCE:.idl=_BUSINESS.idl)
+	"$(QEDO)\bin\cidl_gen" -DWIN32 -I"$(QEDO)\ComponentIDL" -I$(IDL_IDL) -I$(IDL_IDL)/OB --servant --out idl --target $(TARGET) $(SOURCE)
+	$(IDL_EXE) -DWIN32 -I"$(QEDO)\ComponentIDL" -I$(IDL_IDL) -I$(IDL_IDL)/OB idl_EQUIVALENT.idl
+	$(IDL_EXE) -DWIN32 -I"$(QEDO)\ComponentIDL" -I$(IDL_IDL) -I$(IDL_IDL)/OB idl_LOCAL.idl
 	$(CPP) $(CPP_PROJ) *.cpp
-	$(LINK32) $(LINK32_FLAGS) *.obj /out:$(TARGET)
+	$(LINK32) $(LINK32_FLAGS) *.obj /out:$(DLL)
 
 
 .c{$(INTDIR)}.obj::
