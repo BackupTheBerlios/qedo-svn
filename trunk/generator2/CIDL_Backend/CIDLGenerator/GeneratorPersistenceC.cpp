@@ -117,16 +117,16 @@ GeneratorPersistenceC::check_for_generation(IR__::Contained_ptr item)
 			a_composition = CIDL::CompositionDef::_narrow((*contained_seq)[i]);
 			std::string id = a_composition->id();
 			std::string::size_type pos = id.find_last_of("/");
-			if(pos != std::string::npos) 
+			if(pos != std::string::npos)
 			{
 				id.replace(pos, std::string::npos, ":1.0");
-				if(!id.compare(a_module->id())) 
+				if(!id.compare(a_module->id()))
 				{
 					check_for_generation(a_composition);
 				}
 			}
 		}
-		
+
 		// valuetypes
 		contained_seq = a_module->contents(CORBA__::dk_Value, true);
 		ulLen = contained_seq->length();
@@ -143,7 +143,7 @@ GeneratorPersistenceC::check_for_generation(IR__::Contained_ptr item)
 		this->insert_to_generate(item);
 
 		// home and storage home
-		if( a_composition->lifecycle()==CIDL::lc_Entity || 
+		if( a_composition->lifecycle()==CIDL::lc_Entity ||
 			a_composition->lifecycle()==CIDL::lc_Process )
 		{
 			IR__::HomeDef_var home = a_composition->ccm_home();
@@ -339,6 +339,10 @@ GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribut
 			out << "setModified(true);\n";
 			out.unindent();
 			out << "}\n\n";
+			break;
+		default:
+			break;
+
 	}
 
 	out << "void\n";
@@ -559,7 +563,8 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 
 	// parameters
 	IR__::ParDescriptionSeq_var pards = operation->params();
-	for( CORBA::ULong i=0; i<pards->length(); i++)
+	CORBA::ULong i;
+	for( i=0; i<pards->length(); i++)
 	{
 		out << strDummy.c_str();
 		IR__::ParameterDescription pardescr = (*pards)[i];
@@ -705,6 +710,8 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 								out << genSQLLine(strContent_, false, false, false, true);
 								strContent_ = "\\'";
 								out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+								break;
+							default:
 								break;
 							}
 						}
@@ -863,7 +870,8 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 
 	// parameters
 	IR__::ParDescriptionSeq_var pards = operation->params();
-	for( CORBA::ULong i=0; i<pards->length(); i++)
+	CORBA::ULong i;
+	for( i=0; i<pards->length(); i++)
 	{
 		IR__::ParameterDescription pardescr = (*pards)[i];
 		if (pardescr.mode == IR__::PARAM_IN) {
@@ -956,6 +964,8 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 							out << genSQLLine(strContent_, false, false, false, true);
 							strContent_ = "\\'";
 							out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+							break;
+						default:
 							break;
 						}
 					}
@@ -1674,8 +1684,8 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 		collectStateMembers(storagehome->managed_storagetype(), CORBA__::dk_Create);
 
 	CORBA::ULong ulLen = state_members.length();
-
-	for(CORBA::ULong i=0; i<ulLen; i++)
+	CORBA::ULong i;
+	for(i=0; i<ulLen; i++)
 	{
 		strDummy = "";
 		strDummy.append(iLength, ' ');
@@ -1808,6 +1818,8 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 							out << genSQLLine(strContent_, false, false, false, true);
 							strContent_ = "\\'";
 							out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+							break;
+						default:
 							break;
 						}
 					}
@@ -2000,6 +2012,8 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 					out << genSQLLine(strContent_, false, false, false, true);
 					strContent_ = "\\'";
 					out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+					break;
+				default:
 					break;
 				}
 			}
@@ -2374,14 +2388,15 @@ GeneratorPersistenceC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_pt
 
 	ulLen = strDisplay.str().length();
 	strDummy.append(ulLen, ' ');
-	
+
 	out << "Pid* pid,\n";
 	out << strDummy.c_str();
 	out << "ShortPid* shortPid,\n";
 
 	// parameters
 	IR__::ParDescriptionSeq_var pards = factory->params();
-	for( CORBA::ULong i=pards->length(); i>0; i--)
+	CORBA::ULong i;
+	for( i=pards->length(); i>0; i--)
 	{
 		out << strDummy.c_str();
 		IR__::ParameterDescription pardescr = (*pards)[i-1];
@@ -2528,6 +2543,8 @@ GeneratorPersistenceC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_pt
 								strContent_ = "\\'";
 								out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
 								break;
+							default:
+								break;
 							}
 						}
 						break;
@@ -2644,7 +2661,8 @@ GeneratorPersistenceC::genFinder(IR__::FinderDef_ptr key, IR__::HomeDef_ptr home
 
 	// parameters
 	IR__::ParDescriptionSeq_var pards = key->params();
-	for( CORBA::ULong i=pards->length(); i>0; i--)
+	CORBA::ULong i;
+	for( i=pards->length(); i>0; i--)
 	{
 		IR__::ParameterDescription pardescr = (*pards)[i-1];
 		if (pardescr.mode == IR__::PARAM_IN) {
@@ -2732,6 +2750,8 @@ GeneratorPersistenceC::genFinder(IR__::FinderDef_ptr key, IR__::HomeDef_ptr home
 							out << genSQLLine(strContent_, false, false, false, true);
 							strContent_ = "\\'";
 							out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+							break;
+						default:
 							break;
 						}
 					}
@@ -2851,14 +2871,15 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	
 	component->get_state_members(state_members, CORBA__::dk_Create);
 	CORBA::ULong ulLen = state_members.length();
-	for(CORBA::ULong i=0; i<ulLen; i++)
+	CORBA::ULong i;
+	for(i=0; i<ulLen; i++)
 	{
 		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		out << strDummy.c_str() << map_in_parameter_type(attribute->type_def()) << " " << mapName(attribute);
 		if( (i+1)!=ulLen )
 			out << ",\n";
 	}
-	
+
 	out << ")\n{\n";
 	out.indent();
 	//+++++++++++++++++++++++++++++++++++++++++++
@@ -2886,7 +2907,7 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 
 	out << strName_ << ".str(\"\");\n";
 	out << strName_ << " << \"INSERT INTO " << strNamespace_ << "_" << strHomeName << "Persistence ( pid, spid, ";
-	
+
 	for(i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
@@ -2973,6 +2994,8 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 							strContent_ = "\\'";
 							out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
 							break;
+						default:
+							break;
 						}
 					}
 					break;
@@ -3030,7 +3053,7 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	out << "\n//set values to current storageobject incarnation\n";
 	out << "pActObject->set_pid(pid);\n";
 	out << "pActObject->set_short_pid(shortPid);\n";
-	for(CORBA::ULong i=0; i<ulLen; i++)
+	for(i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		out << "pActObject->" << mapName(attribute) << "(";
@@ -3039,7 +3062,7 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	out << "pActObject->setStorageHome(this);\n\n";
 	out << "lObjectes_.push_back(pActObject);\n\n";
 	out << "return pActObject;\n";
-	
+
 	out.unindent();
 	out << "}\n";
 	out << "else\n";
@@ -3052,7 +3075,7 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	// handel factory
 	IR__::ContainedSeq_var contained_seq = home->contents(CORBA__::dk_Factory, false);
 	ulLen = contained_seq->length();
-	for(CORBA::ULong i = 0; i < ulLen; i++)
+	for(i = 0; i < ulLen; i++)
 	{
 		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
 		genFactory(a_factory, home);
@@ -3125,6 +3148,8 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 			out << genSQLLine(strContent_, false, false, false, true);
 			strContent_ = "\\'";
 			out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+			break;
+		default:
 			break;
 		}
 	}

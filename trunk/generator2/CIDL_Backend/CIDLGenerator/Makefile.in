@@ -54,6 +54,9 @@ SOURCES = cidl_gen.cpp \
 			GeneratorEIDL.cpp \
 			GeneratorLIDL.cpp \
 			GeneratorMakefile.cpp \
+			GeneratorPersistenceC.cpp \
+			GeneratorPersistenceH.cpp \
+			GeneratorPSD.cpp \
 			GeneratorServantC.cpp \
 			GeneratorServantH.cpp \
 			GeneratorVC7.cpp \

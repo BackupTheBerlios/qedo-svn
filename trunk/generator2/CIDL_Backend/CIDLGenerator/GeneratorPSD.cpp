@@ -196,7 +196,8 @@ GeneratorPSD::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storage
 	IR__::AttributeDef_var attribute = 0;
 
 	out.indent();
-	for( CORBA::ULong i=0; i<state_members.length(); i++)
+	CORBA::ULong i;
+	for( i=0; i<state_members.length(); i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
@@ -258,7 +259,8 @@ GeneratorPSD::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	IR__::AttributeDef_var attribute = 0;
 
 	out.indent();
-	for( CORBA::ULong i=0; i<state_members.length(); i++)
+	CORBA::ULong i;
+	for( i=0; i<state_members.length(); i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )

@@ -1256,7 +1256,8 @@ GeneratorPersistenceH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	// handel factory
 	IR__::ContainedSeq_var contained_seq = home->contents(CORBA__::dk_Factory, false);
 	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for(i = 0; i < len; i++)
 	{
 		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
 		genPersistentOperation(a_factory, component, false);
