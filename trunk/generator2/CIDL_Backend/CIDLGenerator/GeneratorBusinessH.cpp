@@ -192,7 +192,7 @@ GeneratorBusinessH::doFactory(IR__::FactoryDef_ptr factory)
 {
 	out << "\n//\n// " << factory->id() << "\n//\n";
 
-	out << "virtual " << map_return_type(composition_->ccm_component()) << " " << mapName(factory) << "(";
+	out << "virtual ::Components::EnterpriseComponent_ptr " << mapName(factory) << "(";
 	// Parameter of the operation
 	IR__::ParDescriptionSeq* pards = factory->params();
 	for(CORBA::ULong i = pards->length(); i > 0; i--)
@@ -216,7 +216,7 @@ GeneratorBusinessH::doFinder(IR__::FinderDef_ptr finder)
 {
 	out << "\n//\n// " << finder->id() << "\n//\n";
 
-	out << "virtual " << map_return_type(composition_->ccm_component()) << " " << mapName(finder) << "(";
+	out << "virtual ::Components::EnterpriseComponent_ptr " << mapName(finder) << "(";
 	// Parameter of the operation
 	IR__::ParDescriptionSeq* pards = finder->params();
 	for(CORBA::ULong i = pards->length(); i > 0; i--)
@@ -586,7 +586,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "//\n// IDL:Components/HomeExecutorBase/set_context:1.0\n//\n";
     out << "virtual void set_context (Components::CCMContext_ptr ctx);\n\n";
     out << "//\n// IDL:.../create:1.0\n//\n";
-    out << "virtual ::Components::ExecutorLocator_ptr create();\n";
+    out << "virtual ::Components::EnterpriseComponent_ptr create();\n";
 	doHome(composition->ccm_home());
 	out.unindent();
 	out << "\n";

@@ -220,7 +220,7 @@ GeneratorBusinessC::doFactory(IR__::FactoryDef_ptr factory)
 {
 	std::string factory_name = mapName(factory);
 
-	out << map_return_type(composition_->ccm_component()) << "\n";
+	out << "::Components::EnterpriseComponent_ptr\n";
 	out << class_name_ << "::" << factory_name << "(";
 
 	//
@@ -248,7 +248,7 @@ GeneratorBusinessC::doFinder(IR__::FinderDef_ptr finder)
 {
 	std::string finder_name = mapName(finder);
 
-	out << map_return_type(composition_->ccm_component()) << "\n";
+	out << "::Components::EnterpriseComponent_ptr\n";
 	out << class_name_ << "::" << finder_name << "(";
 
 	//
@@ -644,7 +644,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "}\n\n\n";
 
 	// create
-	out << "::Components::ExecutorLocator_ptr\n";
+	out << "::Components::EnterpriseComponent_ptr\n";
 	out << class_name_ << "::create ()\n{\n";
 	out.indent();
 	out.insertUserSection(class_name_ + "::create", 0);

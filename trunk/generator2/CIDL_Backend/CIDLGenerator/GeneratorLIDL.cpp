@@ -156,7 +156,7 @@ GeneratorLIDL::doHome(IR__::HomeDef_ptr home)
 	out << "local interface CCM_" << home->name() << "Implicit\n";
 	out << "{\n";
 	out.indent();
-	out << "::Components::ExecutorLocator create();\n";
+	out << "::Components::EnterpriseComponent create();\n";
 	out.unindent();
 	out << "};\n\n";
 
@@ -264,7 +264,7 @@ void
 GeneratorLIDL::doFactory(IR__::FactoryDef_ptr factory)
 {
 	out << "\n//\n// " << factory->id() << "\n//\n";
-	out << managed_component_ << " " << factory->name() << "(";
+	out << "::Components::EnterpriseComponent " << factory->name() << "(";
 	
 	// parameters
 	IR__::ParDescriptionSeq_var para_seq = factory->params();
@@ -306,7 +306,7 @@ void
 GeneratorLIDL::doFinder(IR__::FinderDef_ptr finder)
 {
 	out << "\n//\n// " << finder->id() << "\n//\n";
-	out << managed_component_ << " " << finder->name() << "(";
+	out << "::Components::EnterpriseComponent " << finder->name() << "(";
 
 	// parameters
 	IR__::ParDescriptionSeq_var para_seq = finder->params();
