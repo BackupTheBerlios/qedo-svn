@@ -53,6 +53,7 @@ endif
 INSTALL = @INSTALL@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+bindir=@bindir@
 
 ifeq "MICO_ORB" "${ORB}"
 %.h %.cpp %_skel.h %_skel.cpp: %.idl
@@ -69,7 +70,7 @@ all:
 install:
 
 install-prog:
-	${INSTALL} -m $(EXE_MOD) $^ @bindir@ 
+	${INSTALL} -m $(EXE_MOD) $^ $(bindir) 
 
 install-lib:
 	${INSTALL} -m $(EXE_MOD) $^ $(exec_prefix)/lib 

@@ -22,6 +22,7 @@
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+bindir=@bindir@
 
 SUBDIRS = CIDL_Repository/IFRidl \
      CIDL_Repository/ComponentRepositoryLib \
@@ -38,10 +39,10 @@ clean: $(SUBDIRS:%=%-clean)
 
 .PHONY: install-dir
 
-@bindir@:
+$(bindir):
 	mkdir -p $@
 
-install-dir: @bindir@
+install-dir: $(bindir)
 
 install: all install-dir $(SUBDIRS:%=%-install)
 
