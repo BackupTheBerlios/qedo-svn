@@ -39,12 +39,29 @@
 
 namespace Qedo {
 
+	class ClientInterceptorEntry {
+	public:
+		Components::Extension::ClientContainerInterceptor_var interceptor;
+		std::string id;
+	};
+
+	typedef std::vector < ClientInterceptorEntry > ClientInterceptorVector;
 
 	class ClientInterceptorDispatcher :
 		public virtual Components::Extension::ClientInterceptorRegistration,
 		public virtual CORBA::LocalObject
 	{
 	private:
+		/** vector of interceptors registered for all */
+		ClientInterceptorVector all_client_interceptors_;
+		/** Mutex for all_server_interceptors_ */
+		QedoReadWriteMutex all_client_interceptors_mutex_;
+
+		/** vector of interceptors registered for all */
+		ClientInterceptorVector for_component_id_client_interceptors_;
+		/** Mutex for all_server_interceptors_ */
+		QedoMutex for_component_id_client_interceptors_mutex_;
+
 		/** reference to the component server */
 		Qedo::ComponentServerImpl* component_server_;
 

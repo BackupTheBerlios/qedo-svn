@@ -26,8 +26,9 @@
 #include "ClientInterceptorDispatcher.h"
 #include "Util.h"
 #include <fstream>
+#include "ContainerClientRequestInfo.h"
 
-static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.8 2003/12/17 08:40:21 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.9 2004/02/16 07:42:13 tom Exp $";
 
 namespace Qedo {
 
@@ -53,6 +54,32 @@ ClientInterceptorDispatcher::destroy()
 void
 ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInfo_ptr info )
 {
+	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
+
+	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
+	char* id = 0;
+	slot >>= id;
+	if (!id)
+	{
+		id = "UNKNOWN_COMP_ID";
+	}
+
+//	all_client_interceptors_mutex_.read_lock_object();
+	Qedo::ContainerClientRequestInfo *container_info= new Qedo::ContainerClientRequestInfo(info,id,id,id);
+
+	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
+	{
+		try {
+			all_client_interceptors_[i].interceptor->send_request( container_info );
+		} catch (CORBA::SystemException e)
+		{
+			throw e;
+		} catch ( ... )
+			// catch of user exception is probably missing
+		{
+		}
+	}
+//	all_client_interceptors_mutex_.unlock_object();
 
 }
 
@@ -65,12 +92,64 @@ ClientInterceptorDispatcher::send_poll( PortableInterceptor::ClientRequestInfo_p
 void
 ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestInfo_ptr info )
 {
+	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
+
+	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
+	char* id = 0;
+	slot >>= id;
+	if (!id)
+	{
+		id = "UNKNOWN_COMP_ID";
+	}
+
+//	all_client_interceptors_mutex_.read_lock_object();
+	Qedo::ContainerClientRequestInfo *container_info= new Qedo::ContainerClientRequestInfo(info,id,id,id);
+
+	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
+	{
+		try {
+			all_client_interceptors_[i].interceptor->receive_reply( container_info );
+		} catch (CORBA::SystemException e)
+		{
+			throw e;
+		} catch ( ... )
+			// catch of user exception is probably missing
+		{
+		}
+	}
+//	all_client_interceptors_mutex_.unlock_object();
 
 }
 
 void
 ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientRequestInfo_ptr info )
 {
+	DEBUG_OUT ("ClientInterceptorDispatcher: receive_exception");
+
+	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
+	char* id = 0;
+	slot >>= id;
+	if (!id)
+	{
+		id = "UNKNOWN_COMP_ID";
+	}
+
+//	all_client_interceptors_mutex_.read_lock_object();
+	Qedo::ContainerClientRequestInfo *container_info= new Qedo::ContainerClientRequestInfo(info,id,id,id);
+
+	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
+	{
+		try {
+			all_client_interceptors_[i].interceptor->receive_user_exception( container_info );
+		} catch (CORBA::SystemException e)
+		{
+			throw e;
+		} catch ( ... )
+			// catch of user exception is probably missing
+		{
+		}
+	}
+//	all_client_interceptors_mutex_.unlock_object();
 
 }
 
@@ -83,6 +162,16 @@ ClientInterceptorDispatcher::receive_other( PortableInterceptor::ClientRequestIn
 void
 ClientInterceptorDispatcher::register_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor)
 {
+	DEBUG_OUT("ClientInterceptorDispatcher: Client COPI registered for all components");
+
+	ClientInterceptorEntry e;
+	e.interceptor = Components::Extension::ClientContainerInterceptor::_duplicate( interceptor );
+
+	interceptor->set_slot_id(component_server_->slot_id_);
+	//Qedo::QedoLock l(all_client_interceptors_mutex_);
+	//all_client_interceptors_mutex_.write_lock_object();
+	all_client_interceptors_.push_back(e);
+	//all_client_interceptors_mutex_.unlock_object();
 
 }
 

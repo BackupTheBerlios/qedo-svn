@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.27 2004/02/12 09:38:45 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.28 2004/02/16 07:42:13 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -550,6 +550,13 @@ throw (CORBA::SystemException)
 }
 
 #ifndef _QEDO_NO_QOS
+PortableInterceptor::SlotId
+ComponentServerImpl::slot_id()
+{
+	return slot_id_;
+}
+
+
 void
 ComponentServerImpl::set_server_dispatcher ( Components::Extension::ServerInterceptorRegistration_ptr server_dispatcher)
 {
@@ -559,7 +566,7 @@ ComponentServerImpl::set_server_dispatcher ( Components::Extension::ServerInterc
 void
 ComponentServerImpl::set_client_dispatcher ( Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher)
 {
-	client_dispatcher = client_dispatcher;
+	client_dispatcher_ = client_dispatcher;
 }
 
 Components::Extension::ServerInterceptorRegistration_ptr

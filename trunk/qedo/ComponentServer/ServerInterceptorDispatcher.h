@@ -107,6 +107,12 @@ namespace Qedo {
 		virtual void
 		register_interceptor_for_component(Components::Extension::ServerContainerInterceptor_ptr interceptor, const char * id);
 
+		virtual void
+		unregister_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor);
+
+		virtual void
+		unregister_interceptor_for_component(Components::Extension::ServerContainerInterceptor_ptr interceptor, const char * id);
+
 		void
 		set_component_server(Qedo::ComponentServerImpl* component_server);
 

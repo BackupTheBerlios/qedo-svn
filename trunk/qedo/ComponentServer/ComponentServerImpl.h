@@ -114,8 +114,6 @@ private:
 	PortableServer::POAManager_var					root_poa_manager_;
 	/** the list of created containers */
 	ContainerVector							containers_;
-	/** the slot id where our interceptor stores information to be used by container services */
-	PortableInterceptor::SlotId					slot_id_;
 	/** the list of valuetype implementations */
 	std::vector < ValuetypeEntry >					valuetypes_;
 	/** the mutex for the container list */
@@ -132,6 +130,9 @@ private:
 	Components::Extension::ClientInterceptorRegistration_var client_dispatcher_;
 #endif
 public:
+	/** the slot id where our interceptor stores information to be used by container services */
+	PortableInterceptor::SlotId					slot_id_;
+
 	/**
 	 * constructor
 	 */
@@ -191,6 +192,12 @@ public:
 		throw (CORBA::SystemException);
 
 #ifndef _QEDO_NO_QOS
+	/**
+	 * slot_id
+	 */
+	virtual PortableInterceptor::SlotId 
+	slot_id();
+
 	/**
 	 * set_server_dispatcher
 	 */

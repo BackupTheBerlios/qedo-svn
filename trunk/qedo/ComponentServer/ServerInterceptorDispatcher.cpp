@@ -28,8 +28,9 @@
 #include <fstream>
 #include "ComponentServerImpl.h"
 #include "GlobalHelpers.h"
+#include "ContainerServerRequestInfo.h"
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.13 2004/01/19 07:34:01 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.14 2004/02/16 07:42:13 tom Exp $";
 
 namespace Qedo {
 
@@ -80,8 +81,12 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	Qedo::ContainerList* temp_container_list = component_server_ -> get_all_containers();
 	std::list <ContainerInterfaceImpl*>::iterator container_iter;
 
-	//identify the id
+	//identify the component id
 	const char* id = 0;
+	// identify th component_UUID
+	const char* uuid = 0;
+	// identify port_id
+	const char* port_id = 0;
 
 	for (container_iter = temp_container_list->begin(); container_iter != temp_container_list->end(); container_iter++)
 	{
@@ -93,6 +98,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 				// search for the oid
 				if (Qedo::compare_OctetSeqs((*info->object_id()),((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_[j].object_id_))
 				{
+					port_id = "component";
 					temp_config = ((*container_iter)->installed_homes_)[i].home_servant_->component_instances_[j].config_;
 
 					if (temp_config != 0)
@@ -119,6 +125,8 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 				{
 					if (Qedo::compare_OctetSeqs((*info->object_id()),*((*container_iter) -> installed_homes_)[i].home_servant_->reference_to_oid(((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_[j].ccm_object_executor_->facets_[k].facet_ref())))
 					{
+						port_id = strdup(((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_[j].ccm_object_executor_->facets_[k].port_name().c_str());
+
 						temp_config = ((*container_iter)->installed_homes_)[i].home_servant_->component_instances_[j].config_;
 
 						if (temp_config != 0)
@@ -147,6 +155,8 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 				{
 					if (Qedo::compare_OctetSeqs((*info->object_id()),*((*container_iter) -> installed_homes_)[i].home_servant_->reference_to_oid(((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_[j].ccm_object_executor_->consumers_[k].consumer())))
 					{
+						port_id = strdup(((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_[j].ccm_object_executor_->consumers_[k].port_name().c_str());
+
 						temp_config = ((*container_iter)->installed_homes_)[i].home_servant_->component_instances_[j].config_;
 
 						if (temp_config != 0)
@@ -179,12 +189,33 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	{
 		id="__QEDO__NOT_COMPONENT_ID__";
 	}
+	if (!port_id)
+	{
+		port_id="QEOD_UNKNOWN_PORT_ID";
+	}
+	// set identity in the slot
+	int dummy = 0;
+	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+
+	CORBA::Object_var obj = orb->resolve_initial_references ("PICurrent");
+
+	if ( CORBA::is_nil (obj) )
+		return;
+
+	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
+
+	CORBA::Any slot ;
+	slot <<= id;
+	piCurrent -> set_slot(component_server_ -> slot_id_, slot);
+
 	Qedo::QedoLock l_all(all_server_interceptors_mutex_);
 
+	Qedo::ContainerServerRequestInfo *container_info= new Qedo::ContainerServerRequestInfo(info,id,id,port_id);
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
 		try {
-			all_server_interceptors_[i].interceptor->receive_request( info, id );
+
+			all_server_interceptors_[i].interceptor->receive_request( container_info );
 		} catch (CORBA::SystemException e)
 		{
 			throw e;
@@ -203,7 +234,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 		if (!strcmp(id, for_component_id_server_interceptors_[m].id.c_str()))
 		{
 			try{
-				for_component_id_server_interceptors_[m].interceptor->receive_request( info, id );
+				for_component_id_server_interceptors_[m].interceptor->receive_request( container_info);
 			} catch (CORBA::SystemException e)
 			{
 				throw e;
@@ -224,13 +255,31 @@ ServerInterceptorDispatcher::send_reply(PortableInterceptor::ServerRequestInfo_p
 throw(CORBA::SystemException)
 {
 	DEBUG_OUT ("ServerInterceptorDispatcher: send_reply");
+	int dummy = 0;
+	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+
+	CORBA::Object_var obj = orb->resolve_initial_references ("PICurrent");
+
+	if ( CORBA::is_nil (obj) )
+		return;
+
+	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
+
+	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
+	char* id = 0;
+	slot >>= id;
+	if (!id)
+	{
+		id = "UNKNOWN_COMP_ID";
+	}
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
+	Qedo::ContainerServerRequestInfo *container_info= new Qedo::ContainerServerRequestInfo(info,id,id,id);
 
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
 		try{
-            all_server_interceptors_[i].interceptor->send_reply( info ,"NOT_IMPLEMENTED_YET");
+            all_server_interceptors_[i].interceptor->send_reply( container_info);
 		} catch ( ... )
 			// catch of user exceptions is probably missing
 		{
@@ -242,9 +291,42 @@ throw(CORBA::SystemException)
 }
 
 void
-ServerInterceptorDispatcher::send_exception(PortableInterceptor::ServerRequestInfo_ptr)
+ServerInterceptorDispatcher::send_exception(PortableInterceptor::ServerRequestInfo_ptr info)
 throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 {
+	DEBUG_OUT ("ServerInterceptorDispatcher: send_exception");
+	int dummy = 0;
+	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+
+	CORBA::Object_var obj = orb->resolve_initial_references ("PICurrent");
+
+	if ( CORBA::is_nil (obj) )
+		return;
+
+	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
+
+	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
+	char* id = 0;
+	slot >>= id;
+	if (!id)
+	{
+		id = "UNKNOWN_COMP_ID";
+	}
+
+	Qedo::QedoLock l(all_server_interceptors_mutex_);
+	Qedo::ContainerServerRequestInfo *container_info= new Qedo::ContainerServerRequestInfo(info,id,id,id);
+
+	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
+	{
+		try{
+            all_server_interceptors_[i].interceptor->send_user_exception( container_info);
+		} catch ( ... )
+			// catch of user exceptions is probably missing
+		{
+
+		}
+	}
+
 
 }
 
@@ -281,6 +363,58 @@ ServerInterceptorDispatcher::register_interceptor_for_component(Components::Exte
 	Qedo::QedoLock l(for_component_id_server_interceptors_mutex_);
 
 	for_component_id_server_interceptors_.push_back(e);
+
+}
+
+void
+ServerInterceptorDispatcher::unregister_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor)
+{
+	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI unregister_for_all called");
+
+	std::vector <ServerInterceptorEntry>::iterator interceptor_iter;
+
+	for (interceptor_iter = all_server_interceptors_.begin(); interceptor_iter != all_server_interceptors_.end(); interceptor_iter++)
+	{
+
+		if ((*interceptor_iter).interceptor == interceptor)
+		{
+			DEBUG_OUT ("ServerInterceptorDispatcher: unregister_interceptor_for_all(): interceptor found");
+			all_server_interceptors_.erase (interceptor_iter);
+
+			break;
+		}
+	}
+
+	if (interceptor_iter == all_server_interceptors_.end())
+	{
+		DEBUG_OUT ("ServerinterceptorDispatcher: Unknown interceptor");
+	}
+
+}
+
+void
+ServerInterceptorDispatcher::unregister_interceptor_for_component(Components::Extension::ServerContainerInterceptor_ptr interceptor, const char* id)
+{
+	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI unregister_for_component called");
+
+	std::vector <ServerInterceptorEntry>::iterator interceptor_iter;
+
+	for (interceptor_iter = all_server_interceptors_.begin(); interceptor_iter != all_server_interceptors_.end(); interceptor_iter++)
+	{
+
+		if (!strcmp((*interceptor_iter).id.c_str() ,id))
+		{
+			DEBUG_OUT ("ServerInterceptorDispatcher: unregister_interceptor_for_all(): interceptor found");
+			all_server_interceptors_.erase (interceptor_iter);
+
+			break;
+		}
+	}
+
+	if (interceptor_iter == all_server_interceptors_.end())
+	{
+		DEBUG_OUT ("ServerinterceptorDispatcher: Unknown interceptor");
+	}
 
 }
 

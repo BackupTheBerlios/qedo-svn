@@ -29,7 +29,7 @@
 #include "ClientInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.11 2004/01/23 13:18:30 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.12 2004/02/16 07:42:13 tom Exp $";
 
 
 namespace Qedo {
@@ -137,7 +137,6 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	//
 	slot_id_ = info->allocate_slot_id();
 
-
 #ifndef _QEDO_NO_QOS
 	//
 	// Install ServerInterceptorDispatcher
@@ -146,7 +145,7 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 
 		info->add_server_request_interceptor(server_dispatcher_.in());
 
-		//info->add_client_request_interceptor(client_dispatcher_.in());
+		info->add_client_request_interceptor(client_dispatcher_.in());
 
 		DEBUG_OUT("ORBInitializerImpl:post_init: interceptors dispatchers registered at ORB");
 
@@ -174,7 +173,7 @@ ORBInitializerImpl::set_server_dispatcher (PortableInterceptor::ServerRequestInt
 void
 ORBInitializerImpl::set_client_dispatcher (PortableInterceptor::ClientRequestInterceptor_ptr client_dispatcher)
 {
-	client_dispatcher = client_dispatcher;
+	client_dispatcher_ = client_dispatcher;
 	DEBUG_OUT("ORBInitializerImpl: client dispatcher set");
 }
 #endif
