@@ -26,7 +26,7 @@ CPPBase::open_module(Printer& out, IR__::Contained* cur_cont, std::string prefix
 	if(a_container->def_kind() == CORBA__::dk_Module) 
 	{
 		IR__::ModuleDef_var a_module = IR__::ModuleDef::_narrow(a_container);
-		if(! this->open_module(out, a_module))
+		if(! this->open_module(out, a_module, prefix))
 		{
 			// the prefix must be written first
 			out << "namespace " << prefix;
