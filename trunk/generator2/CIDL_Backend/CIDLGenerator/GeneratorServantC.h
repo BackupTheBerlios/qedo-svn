@@ -89,6 +89,8 @@ private:
 	void genSinkRegistration(IR__::ComponentDef_ptr comp);
 	void genSourceRegistration(IR__::ComponentDef_ptr comp);
 
+	void generate_component(IR__::ComponentDef* a_component );
+
 public:
 
 	GeneratorServantC(QEDO_ComponentRepository::CIDLRepository_impl *repository);

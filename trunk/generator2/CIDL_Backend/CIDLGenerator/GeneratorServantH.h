@@ -83,6 +83,8 @@ private:
 	void genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
 	void genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
 
+	void generate_component(IR__::ComponentDef* a_component, CIDL::LifecycleCategory lc );
+
 public:
 
 	GeneratorServantH(QEDO_ComponentRepository::CIDLRepository_impl *repository);

@@ -174,6 +174,12 @@ GeneratorServantH::check_for_generation(IR__::Contained_ptr item)
 			this->insert_to_generate((*consumes_seq)[i]);
 		}*/
 
+		// base component
+		IR__::ComponentDef_var base_component = a_component->base_component();
+		if ( ! CORBA::is_nil(base_component)) {
+			this->check_for_generation(base_component);
+		}
+
 		// insert this interface in generation list
 		this->insert_to_generate(item);
 
@@ -294,7 +300,7 @@ GeneratorServantH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "#endif\n";
 	out << "Qedo::HomeServantBase* create_" << home->name() << "S(void);\n";
 	out << "}\n\n";
-
+/*
 	//
 	// generate component
 	//
@@ -305,6 +311,29 @@ GeneratorServantH::doComposition(CIDL::CompositionDef_ptr composition)
 	genComponentServant(component_, lc);
 
 	close_module(out, component_);
+*/
+	this->generate_component(component_.in(),lc);
+}
+
+void 
+GeneratorServantH::generate_component(IR__::ComponentDef* a_component, CIDL::LifecycleCategory lc ) {
+
+	// base component
+	IR__::ComponentDef_var base_component = a_component->base_component();
+	if ( ! CORBA::is_nil(base_component)) {
+		this->generate_component(base_component, lc);
+	}
+
+	//
+	// generate component
+	//
+	open_module(out, a_component, "SERVANT_");
+	out << "\n\n";
+
+	genContextServant(a_component, lc);
+	genComponentServant(a_component, lc);
+
+	close_module(out, a_component);
 
 }
 
@@ -778,6 +807,7 @@ GeneratorServantH::genComponentServantBody(IR__::ComponentDef_ptr component, CID
 void
 GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc)
 {
+
 	std::string class_name = string(component->name()) + "_Context_callback";
 
 	out << "//\n// servant for context of component " << component->name() << "\n//\n";

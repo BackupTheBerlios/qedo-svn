@@ -66,6 +66,8 @@ class GeneratorLIDL : public virtual IDLBase
 	void doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr component);
 	void doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component);
 
+	void generate_component(IR__::ComponentDef* a_component, CIDL::LifecycleCategory lc );
+
 public:
 
 	GeneratorLIDL(QEDO_ComponentRepository::CIDLRepository_impl *repository);

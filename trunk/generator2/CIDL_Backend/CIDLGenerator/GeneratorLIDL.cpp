@@ -240,6 +240,7 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	component_ = composition->ccm_component();
 
+/*
 	//
 	// generate
 	//
@@ -273,6 +274,53 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "\n{ };\n\n";
 
 	close_module(component_);
+	*/
+	this -> generate_component(component_, lc);
+}
+
+void 
+GeneratorLIDL::generate_component(IR__::ComponentDef* a_component, CIDL::LifecycleCategory lc)
+ {
+	// base component
+	IR__::ComponentDef_var base_component = a_component->base_component();
+	if ( ! CORBA::is_nil(base_component)) {
+		this->generate_component(base_component, lc);
+
+	}
+	//
+	// generate
+	//
+
+	open_module(a_component);
+	//
+	// container specific context interface 
+	//
+	out << "//\n// container interface for the context for " << a_component->id() << "\n//\n";
+	out << "local interface CCM_" << a_component->name() << "_ContextImpl : ";
+	out << "CCM_" << a_component->name() << "_Context,\n";
+
+	switch(lc) {
+	case (CIDL::lc_Session) : 
+		{
+			out << "::Components::SessionContext";
+			break;
+		}
+	case (CIDL::lc_Extension) :
+		{
+			out << "::Components::ExtensionContext";
+			break;
+		}
+	default:
+		{
+			//unsupported lifecycle category
+			std::cerr << "unsupported lifecycle category" << std::endl;
+		}
+	}
+
+	out << "\n{ };\n\n";
+
+	close_module(a_component);
+
 }
 
 void

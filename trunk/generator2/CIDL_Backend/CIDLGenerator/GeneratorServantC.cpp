@@ -626,11 +626,39 @@ GeneratorServantC::doComposition (CIDL::CompositionDef_ptr composition)
 	out << "}\n\n";
 
 
+	/*
 	//
 	// generat Component
 	//
+	open_module(out, component_, "SERVANT_");
+	out << "\n\n";
 
-	
+	genFacetServants(component_);
+	genSourceServants(component_);
+	genConsumerServants(component_);
+	genContextServantBegin(component_);
+	genContextServant(component_);
+	genComponentServantBegin(component_);
+	genComponentServant(component_);
+
+	close_module(out, component_);
+*/
+	this -> generate_component(component_);
+}
+
+
+void 
+GeneratorServantC::generate_component(IR__::ComponentDef* a_component) {
+/*
+	// base component
+	IR__::ComponentDef_var base_component = a_component->base_component();
+	if ( ! CORBA::is_nil(base_component)) {
+		this->generate_component(base_component);
+	}
+*/
+	//
+	// generat Component
+	//	
 	open_module(out, component_, "SERVANT_");
 	out << "\n\n";
 
@@ -646,7 +674,6 @@ GeneratorServantC::doComposition (CIDL::CompositionDef_ptr composition)
 
 
 }
-
 
 void
 GeneratorServantC::doComponent(IR__::ComponentDef_ptr component)
