@@ -140,7 +140,7 @@ private:
 	 * uninstall all component implementations referred to in the assembly descriptor
 	 */
 	void uninstall()
-		throw(Components::CreateFailure);
+		throw(Components::RemoveFailure);
 
 	/**
 	 * install all component implementations referred to in the assembly descriptor

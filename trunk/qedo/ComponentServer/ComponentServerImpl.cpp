@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.29 2004/04/15 09:50:56 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.30 2004/04/26 13:30:04 neubauer Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -173,11 +173,19 @@ ComponentServerImpl::initialize()
 		{
 			obj = orb_->resolve_initial_references( "NameService" );
 		}
-		nameService_ = CosNaming::NamingContext::_narrow( obj.in() );
+		
+		try
+		{
+			nameService_ = CosNaming::NamingContext::_narrow( obj.in() );
+		}
+		catch (const CORBA::Exception&)
+		{
+			NORMAL_ERR( "ComponentServerImpl: NameService is not running" );
+		}
 
 		if( CORBA::is_nil(nameService_.in()) )
 		{
-        		NORMAL_ERR( "NameService is not a NamingContext object reference" );
+			NORMAL_ERR( "ComponentServerImpl: NameService is not a NamingContext object reference" );
 		}
 	}
 	catch (CORBA::ORB::InvalidName&)

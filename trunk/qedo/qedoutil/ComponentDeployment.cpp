@@ -58,22 +58,31 @@ throw (DeploymentFailure)
     }
 
 	//
-	// try to get a local AssemblyFactory
+	// get local host name
 	//
 	char hostname[256];
-	gethostname(hostname, 256);
+	if (gethostname (hostname, 256))
+	{
+		NORMAL_ERR( "ComponentDeployment: Cannot determine my hostname" );
+		throw DeploymentFailure();
+	}
+
+	//
+	// try to get a local AssemblyFactory
+	//
 	CORBA::Object_var obj = resolveName(std::string("Qedo/AssemblyFactory/") + hostname);
 	assemblyFactory_ = Components::Deployment::AssemblyFactory::_narrow( obj.in() );
     if( !CORBA::is_nil( assemblyFactory_.in() ) && !assemblyFactory_->_non_existent() )
 	{
-		NORMAL_OUT2( "ComponentDeployment: take assembly factory on ", hostname );
+		NORMAL_OUT2( "ComponentDeployment: take local assembly factory on ", hostname );
 		return;
 	}
 
 	//
 	// try to get another one
 	//
-	NORMAL_OUT( "ComponentDeployment: no local assembly factory, try to get another one" );
+	NORMAL_OUT2( "ComponentDeployment: no local assembly factory on ", hostname );
+	NORMAL_OUT( "..... try to get another one" );
 
 	obj = resolveName(std::string("Qedo/AssemblyFactory"));
 	CosNaming::NamingContext_var ctx = CosNaming::NamingContext::_narrow( obj.in() );
@@ -163,7 +172,11 @@ throw (DeploymentFailure)
 	}
 	catch( Components::CreateFailure& ex )
 	{
-		NORMAL_ERR2( "ComponentDeployment: CreateFailure exception during assembly building : ", ex );
+		NORMAL_ERR( "ComponentDeployment: CreateFailure during assembly building" );
+		if( ex.reason == 11 )
+		{
+			NORMAL_ERR( "ComponentDeployment: no contact to ComponentInstallation" );
+		}
 		throw DeploymentFailure();
 	}
 	catch( CORBA::SystemException& ex )
@@ -193,7 +206,11 @@ throw (DeploymentFailure)
 	}
 	catch( Components::RemoveFailure& ex )
 	{
-		NORMAL_ERR2( "ComponentDeployment: RemoveFailure exception during tear down assembly : ", ex );
+		NORMAL_ERR( "ComponentDeployment: RemoveFailure during tear down assembly" );
+		if( ex.reason == 11 )
+		{
+			NORMAL_ERR( "ComponentDeployment: no contact to ComponentInstallation" );
+		}
 		throw DeploymentFailure();
 	}
 	catch( CORBA::SystemException& ex )

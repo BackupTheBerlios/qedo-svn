@@ -246,7 +246,20 @@ throw( Components::CreateFailure )
 			throw Components::CreateFailure();
 		}
     
-		componentInstallation = Components::Deployment::ExtComponentInstallation::_narrow(obj.in());
+		try
+		{
+			componentInstallation = Components::Deployment::ExtComponentInstallation::_narrow(obj.in());
+		}
+		catch( CORBA::SystemException& ex )
+		{
+			NORMAL_ERR2( "AssemblyImpl: problem with ComponentInstallation for ", dest.node );
+			NORMAL_ERR2( "AssemblyImpl: ", ex );
+
+			Components::CreateFailure my_ex;
+			my_ex.reason = 11;
+			throw my_ex;
+		}
+
 		if ( CORBA::is_nil(componentInstallation.in()))
 		{
 			NORMAL_ERR2( "AssemblyImpl: no ComponentInstallation for ", dest.node );
@@ -350,7 +363,7 @@ throw(Components::CreateFailure)
 
 void
 AssemblyImpl::uninstall ()
-throw( Components::CreateFailure )
+throw( Components::RemoveFailure )
 {
 	Components::Deployment::ExtComponentInstallation_var componentInstallation;
 
@@ -362,7 +375,16 @@ throw( Components::CreateFailure )
 		host_iter != data_.hosts_.end(); 
 		host_iter++)
 	{
-		componentInstallation = getComponentInstallation((*host_iter).dest);
+		try
+		{
+			componentInstallation = getComponentInstallation((*host_iter).dest);
+		}
+		catch( Components::CreateFailure& ex )
+		{
+			Components::RemoveFailure my_ex;
+			my_ex.reason = ex.reason;
+			throw my_ex;
+		}
 
 		//
 		// for each processcollocation
@@ -391,15 +413,17 @@ throw( Components::CreateFailure )
 				catch(Components::Deployment::UnknownImplId&)
 				{
 					NORMAL_ERR3( "AssemblyImpl: component ", (*iter).impl_id, " not installed" );
+					throw Components::RemoveFailure();
 				}
 				catch(Components::RemoveFailure&)
 				{
 					NORMAL_ERR3( "AssemblyImpl: component ", (*iter).impl_id, " not removed" );
+					throw Components::RemoveFailure();
 				}
 				catch ( CORBA::SystemException& )
 				{
 					NORMAL_ERR( "AssemblyImpl: CORBA system exception during uninstall()" );
-					throw Components::CreateFailure();
+					throw Components::RemoveFailure();
 				}
 			}
 		}
