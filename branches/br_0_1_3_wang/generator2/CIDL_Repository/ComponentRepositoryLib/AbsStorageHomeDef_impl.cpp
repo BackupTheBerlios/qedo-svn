@@ -22,18 +22,15 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
 /*                                                                           */
 /*****************************************************************************/
-
 #include "AbsStorageHomeDef_impl.h"
-#include "FactoryDef_impl.h"
-#include "KeyDef_impl.h"
-#include "PSSPrimaryKeyDef_impl.h"
-#include "Debug.h"
+
 
 namespace QEDO_ComponentRepository {
 
-AbstractStorageHomeDef_impl::AbstractStorageHomeDef_impl ( Container_impl *container,
-					    Repository_impl *repository,
-						AbstractStorageTypeDef_impl *managed_abstract_storage_type_impl )
+AbstractStorageHomeDef_impl::AbstractStorageHomeDef_impl
+( Container_impl *container,
+  Repository_impl *repository,
+  AbstractStorageTypeDef_impl *managed_abstract_storagetype_impl )
 : IRObject_impl ( repository ),
   IDLType_impl ( repository ),
   Container_impl ( repository ),
@@ -43,8 +40,8 @@ AbstractStorageHomeDef_impl::AbstractStorageHomeDef_impl ( Container_impl *conta
 	DEBUG_OUTLINE ( "AbstractStorageHomeDef_impl::AbstractStorageHomeDef_impl() called" );
 
 	// Abstract storage homes must always manage a abstract storage type
-	managed_abstract_storage_type_impl_ = managed_abstract_storage_type_impl;
-	managed_abstract_storage_type_impl_ -> _add_ref();
+	managed_abstract_storagetype_impl_ = managed_abstract_storagetype_impl;
+	managed_abstract_storagetype_impl_ -> _add_ref();
 }
 
 AbstractStorageHomeDef_impl::~AbstractStorageHomeDef_impl
@@ -60,12 +57,12 @@ throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "AbstractStorageHomeDef_impl::destroy() called" );
 
-	managed_abstract_storage_type_impl_ -> _remove_ref();
+	managed_abstract_storagetype_impl_ -> _remove_ref();
 
 	// Release all inherited interface impls
 	unsigned int i;
-    for ( i = 0 ; i < base_abstract_storage_home_impls_.size() ; i++)
-        base_abstract_storage_home_impls_[i] -> _remove_ref();
+    for ( i = 0 ; i < base_abstract_storagehome_impls_.size() ; i++)
+        base_abstract_storagehome_impls_[i] -> _remove_ref();
 
 	InterfaceDef_impl::destroy();
 }
@@ -77,38 +74,38 @@ throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "AbstractStorageHomeDef_impl::describe() called" );
 
-	IR__::AbstractStorageHomeDescription_var storage_home_desc = new IR__::AbstractStorageHomeDescription();
-	storage_home_desc -> id = this -> id();
-	storage_home_desc -> name = this -> name();
-	storage_home_desc -> version = this -> version();
+	IR__::AbstractStorageHomeDescription_var storagehome_desc = new IR__::AbstractStorageHomeDescription();
+	storagehome_desc -> id = this -> id();
+	storagehome_desc -> name = this -> name();
+	storagehome_desc -> version = this -> version();
 
 	Contained_impl *contained = dynamic_cast<Contained_impl*>(defined_in_);
 	if ( contained )
-		storage_home_desc -> defined_in = CORBA::string_dup ( contained -> id() );
+		storagehome_desc -> defined_in = CORBA::string_dup ( contained -> id() );
 	else
-		storage_home_desc -> defined_in = CORBA::string_dup ( "" );
+		storagehome_desc -> defined_in = CORBA::string_dup ( "" );
 
 	// Managed abstract storage type
-	storage_home_desc -> managed_abstract_storage_type = managed_abstract_storage_type_impl_ -> id();
+	storagehome_desc -> managed_abstract_storagetype = managed_abstract_storagetype_impl_ -> id();
 
 	unsigned int i;
 
 	// Inherited interfaces
-	storage_home_desc -> base_abstract_storage_homes.length ( base_abstract_storage_home_impls_.size() );
-	for ( i = 0; i < base_abstract_storage_home_impls_.size(); i++ )
-		storage_home_desc -> base_abstract_storage_homes[i] = base_abstract_storage_home_impls_[i] -> id();
+	storagehome_desc -> base_abstract_storagehomes.length ( base_abstract_storagehome_impls_.size() );
+	for ( i = 0; i < base_abstract_storagehome_impls_.size(); i++ )
+		storagehome_desc -> base_abstract_storagehomes[i] = base_abstract_storagehome_impls_[i] -> id();
 
 	// Factories
 	IR__::FactoryDefSeq_var factories = this -> factories();
-	storage_home_desc -> factories.length (  factories -> length() );
+	storagehome_desc -> factories.length (  factories -> length() );
 	for ( i = 0; i < factories -> length(); i++ )
-		storage_home_desc -> factories[i] = factories.inout()[i];
+		storagehome_desc -> factories[i] = factories.inout()[i];
 
 	// Keys
 	IR__::KeyDefSeq_var keys = this -> keys();
-	storage_home_desc -> keys.length (  keys -> length() );
+	storagehome_desc -> keys.length (  keys -> length() );
 	for ( i = 0; i < keys -> length(); i++ )
-		storage_home_desc -> keys[i] = keys.inout()[i];
+		storagehome_desc -> keys[i] = keys.inout()[i];
 
 	// Operations and Attributes
 	list < Contained_impl* >::const_iterator contained_iter;
@@ -134,8 +131,8 @@ throw(CORBA::SystemException)
 				// This cannot be, what to do???
 				throw;
 			}
-			storage_home_desc -> attributes.length ( storage_home_desc -> attributes.length() + 1 );
-			storage_home_desc -> attributes[storage_home_desc -> attributes.length() - 1] =	*attr_desc;
+			storagehome_desc -> attributes.length ( storagehome_desc -> attributes.length() + 1 );
+			storagehome_desc -> attributes[storagehome_desc -> attributes.length() - 1] =	*attr_desc;
 		}
 		// Do Operations
 		if ( (*contained_iter) -> def_kind() == CORBA__::dk_Operation )
@@ -153,64 +150,58 @@ throw(CORBA::SystemException)
 				// This cannot be, what to do???
 				throw;
 			}
-			storage_home_desc -> operations.length ( storage_home_desc -> operations.length() + 1 );
-			storage_home_desc -> operations[storage_home_desc -> operations.length() - 1] = *operation_desc;
+			storagehome_desc -> operations.length ( storagehome_desc -> operations.length() + 1 );
+			storagehome_desc -> operations[storagehome_desc -> operations.length() - 1] = *operation_desc;
 		}
 	}
 
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
 	CORBA::Any any;
-	any <<= storage_home_desc._retn();;
+	any <<= storagehome_desc._retn();;
 	desc -> value = any;
 
 	return desc._retn();
 }
 
 IR__::AbstractStorageTypeDef_ptr 
-AbstractStorageHomeDef_impl::managed_abstract_storage_type
+AbstractStorageHomeDef_impl::managed_abstract_storagetype
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "AbstractStorageHomeDef_impl::managed_abstract_storage_type() called" );
+	DEBUG_OUTLINE ( "AbstractStorageHomeDef_impl::managed_abstract_storagetype() called" );
 
-	if ( managed_abstract_storage_type_impl_ )
-		return managed_abstract_storage_type_impl_ -> _this();
+	if ( managed_abstract_storagetype_impl_ )
+		return managed_abstract_storagetype_impl_ -> _this();
 	else
 		return IR__::AbstractStorageTypeDef::_nil();
 }
 
 IR__::InterfaceDefSeq* 
-AbstractStorageHomeDef_impl::base_abstract_storage_homes
+AbstractStorageHomeDef_impl::base_abstract_storagehomes
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "AbstractStorageHomeDef_impl::base_abstract_storage_homes() called" );
+	DEBUG_OUTLINE ( "AbstractStorageHomeDef_impl::base_abstract_storagehomes() called" );
 
 	IR__::InterfaceDefSeq_var inherited_seq = new IR__::InterfaceDefSeq;
 
-	inherited_seq -> length ( base_abstract_storage_home_impls_.size() );
+	inherited_seq -> length ( base_abstract_storagehome_impls_.size() );
 
 	for ( unsigned int i = 0; i < inherited_seq -> length(); i++ )
-		inherited_seq.inout()[i] = base_abstract_storage_home_impls_[i] -> _this();
+		inherited_seq.inout()[i] = base_abstract_storagehome_impls_[i] -> _this();
 
 	return inherited_seq._retn();
 }
  
 void 
-AbstractStorageHomeDef_impl::base_abstract_storage_homes
+AbstractStorageHomeDef_impl::base_abstract_storagehomes
 (const IR__::InterfaceDefSeq& seq)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "AbstractStorageHomeDef_impl::base_abstract_storage_homes() called" );
+	DEBUG_OUTLINE ( "AbstractStorageHomeDef_impl::base_abstract_storagehomes() called" );
 
     unsigned int i;
-
-	// Check: Derived storage homes may not directly support an interface
-	//if ( base_storage_home_impl_ && seq.length() > 0 )
-	//{
-	//	throw CORBA::BAD_PARAM();
-	//}
 
 	// Check for name clash for each inherited interface
 	for ( i = 0; i < seq.length(); i++ )
@@ -265,10 +256,10 @@ throw(CORBA::SystemException)
     for ( i = 0; i < impl_seq.size(); i++ )
         impl_seq[i] -> _add_ref();
 
-    for ( i = 0; i < base_abstract_storage_home_impls_.size(); i++)
-        base_abstract_storage_home_impls_[i] -> _remove_ref();
+    for ( i = 0; i < base_abstract_storagehome_impls_.size(); i++)
+        base_abstract_storagehome_impls_[i] -> _remove_ref();
 
-    base_abstract_storage_home_impls_ = impl_seq;
+    base_abstract_storagehome_impls_ = impl_seq;
 }
 
 IR__::FactoryDefSeq* 
@@ -352,7 +343,8 @@ throw(CORBA::SystemException)
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
 	FactoryDef_impl *new_factory = 
-		new FactoryDef_impl ( this, repository_, managed_abstract_storage_type_impl_ );
+		new FactoryDef_impl ( this, repository_, managed_abstract_storagetype_impl_ );
+
 	new_factory -> id ( id );
 	new_factory -> name ( name );
 	new_factory -> version ( version );
@@ -381,7 +373,8 @@ throw(CORBA::SystemException)
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
 	KeyDef_impl *new_key = 
-		new KeyDef_impl ( this, repository_, managed_abstract_storage_type_impl_ );
+		new KeyDef_impl ( this, repository_, managed_abstract_storagetype_impl_ );
+
 	new_key -> id ( id );
 	new_key -> name ( name );
 	new_key -> version ( version );

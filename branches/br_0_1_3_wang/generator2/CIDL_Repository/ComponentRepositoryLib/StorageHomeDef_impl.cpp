@@ -22,20 +22,17 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
 /*                                                                           */
 /*****************************************************************************/
-
 #include "StorageHomeDef_impl.h"
-#include "FactoryDef_impl.h"
-#include "KeyDef_impl.h"
-#include "PSSPrimaryKeyDef_impl.h"
-#include "Debug.h"
+
 
 namespace QEDO_ComponentRepository {
 
-StorageHomeDef_impl::StorageHomeDef_impl ( Container_impl *container,
-					    Repository_impl *repository,
-						StorageHomeDef_impl *base_storage_home_impl,
-						StorageTypeDef_impl *managed_storage_type_impl,
-						IDLType_impl *primary_key_impl )
+StorageHomeDef_impl::StorageHomeDef_impl
+( Container_impl *container,
+  Repository_impl *repository,
+  StorageTypeDef_impl *managed_storagetype_impl,
+  StorageHomeDef_impl *base_storagehome_impl,
+  IDLType_impl *primary_key_impl )
 : IRObject_impl ( repository ),
   IDLType_impl ( repository ),
   Container_impl ( repository ),
@@ -44,14 +41,14 @@ StorageHomeDef_impl::StorageHomeDef_impl ( Container_impl *container,
 {
 	DEBUG_OUTLINE ( "StorageHomeDef_impl::StorageHomeDef_impl() called" );
 
-	// If there is no base storage home, base_storage_home_impl will be NULL
-	base_storage_home_impl_ = base_storage_home_impl;
-	if ( base_storage_home_impl_ )
-		base_storage_home_impl_ -> _add_ref();
+	// If there is no base storage home, base_storagehome_impl will be NULL
+	base_storagehome_impl_ = base_storagehome_impl;
+	if ( base_storagehome_impl_ )
+		base_storagehome_impl_ -> _add_ref();
 
 	// Storage homes must always manage a storage type
-	managed_storage_type_impl_ = managed_storage_type_impl;
-	managed_storage_type_impl_ -> _add_ref();
+	managed_storagetype_impl_ = managed_storagetype_impl;
+	managed_storagetype_impl_ -> _add_ref();
 
 	// If there is no primary key, primary_key_impl will be NULL
 	primary_key_impl_ = primary_key_impl;
@@ -72,10 +69,10 @@ throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "StorageHomeDef_impl::destroy() called" );
 
-	if ( base_storage_home_impl_ )
-		base_storage_home_impl_ -> _remove_ref();
+	if ( base_storagehome_impl_ )
+		base_storagehome_impl_ -> _remove_ref();
 
-	managed_storage_type_impl_ -> _remove_ref();
+	managed_storagetype_impl_ -> _remove_ref();
 
 	// Release all supported interface impls
 	unsigned int i;
@@ -95,50 +92,50 @@ throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "StorageHomeDef_impl::describe() called" );
 
-	IR__::StorageHomeDescription_var storage_home_desc = new IR__::StorageHomeDescription();
-	storage_home_desc -> id = this -> id();
-	storage_home_desc -> name = this -> name();
-	storage_home_desc -> version = this -> version();
+	IR__::StorageHomeDescription_var storagehome_desc = new IR__::StorageHomeDescription();
+	storagehome_desc -> id = this -> id();
+	storagehome_desc -> name = this -> name();
+	storagehome_desc -> version = this -> version();
 
 	Contained_impl *contained = dynamic_cast<Contained_impl*>(defined_in_);
 	if ( contained )
-		storage_home_desc -> defined_in = CORBA::string_dup ( contained -> id() );
+		storagehome_desc -> defined_in = CORBA::string_dup ( contained -> id() );
 	else
-		storage_home_desc -> defined_in = CORBA::string_dup ( "" );
+		storagehome_desc -> defined_in = CORBA::string_dup ( "" );
 
 	// Base storage home
-	if ( base_storage_home_impl_ )
-		storage_home_desc -> base_storage_home = base_storage_home_impl_ -> id();
+	if ( base_storagehome_impl_ )
+		storagehome_desc -> base_storagehome = base_storagehome_impl_ -> id();
 	else
-		storage_home_desc -> base_storage_home = CORBA::string_dup ( "" );
+		storagehome_desc -> base_storagehome = CORBA::string_dup ( "" );
 
 	// Managed storage type
-	storage_home_desc -> managed_storage_type = managed_storage_type_impl_ -> id();
+	storagehome_desc -> managed_storagetype = managed_storagetype_impl_ -> id();
 
 	unsigned int i;
 
 	// Supports interfaces
-	storage_home_desc -> supports_interfaces.length ( supported_interface_impls_.size() );
+	storagehome_desc -> supports_interfaces.length ( supported_interface_impls_.size() );
 	for ( i = 0; i < supported_interface_impls_.size(); i++ )
-		storage_home_desc -> supports_interfaces[i] = supported_interface_impls_[i] -> id();
+		storagehome_desc -> supports_interfaces[i] = supported_interface_impls_[i] -> id();
 
 	// Primary Key
 	// TODO: What should be inserted here? -> primary key during
 	// creation is a IDLType, so should a PSSPrimaryKeyDef created
 	// automatically???
-	storage_home_desc -> primary_key_def = IR__::PSSPrimaryKeyDef::_nil();
+	storagehome_desc -> primary_key_def = IR__::PSSPrimaryKeyDef::_nil();
 
 	// Factories
 	IR__::FactoryDefSeq_var factories = this -> factories();
-	storage_home_desc -> factories.length (  factories -> length() );
+	storagehome_desc -> factories.length (  factories -> length() );
 	for ( i = 0; i < factories -> length(); i++ )
-		storage_home_desc -> factories[i] = factories.inout()[i];
+		storagehome_desc -> factories[i] = factories.inout()[i];
 
 	// Keys
 	IR__::KeyDefSeq_var keys = this -> keys();
-	storage_home_desc -> keys.length (  keys -> length() );
+	storagehome_desc -> keys.length (  keys -> length() );
 	for ( i = 0; i < keys -> length(); i++ )
-		storage_home_desc -> keys[i] = keys.inout()[i];
+		storagehome_desc -> keys[i] = keys.inout()[i];
 
 	// Operations and Attributes
 	list < Contained_impl* >::const_iterator contained_iter;
@@ -164,8 +161,8 @@ throw(CORBA::SystemException)
 				// This cannot be, what to do???
 				throw;
 			}
-			storage_home_desc -> attributes.length ( storage_home_desc -> attributes.length() + 1 );
-			storage_home_desc -> attributes[storage_home_desc -> attributes.length() - 1] =	*attr_desc;
+			storagehome_desc -> attributes.length ( storagehome_desc -> attributes.length() + 1 );
+			storagehome_desc -> attributes[storagehome_desc -> attributes.length() - 1] =	*attr_desc;
 		}
 		// Do Operations
 		if ( (*contained_iter) -> def_kind() == CORBA__::dk_Operation )
@@ -183,42 +180,42 @@ throw(CORBA::SystemException)
 				// This cannot be, what to do???
 				throw;
 			}
-			storage_home_desc -> operations.length ( storage_home_desc -> operations.length() + 1 );
-			storage_home_desc -> operations[storage_home_desc -> operations.length() - 1] = *operation_desc;
+			storagehome_desc -> operations.length ( storagehome_desc -> operations.length() + 1 );
+			storagehome_desc -> operations[storagehome_desc -> operations.length() - 1] = *operation_desc;
 		}
 	}
 
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
 	CORBA::Any any;
-	any <<= storage_home_desc._retn();;
+	any <<= storagehome_desc._retn();;
 	desc -> value = any;
 
 	return desc._retn();
 }
 
 IR__::StorageHomeDef_ptr
-StorageHomeDef_impl::base_storage_home
+StorageHomeDef_impl::base_storagehome
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "StorageHomeDef_impl::base_storage_home() called" );
+	DEBUG_OUTLINE ( "StorageHomeDef_impl::base_storagehome() called" );
 
-	if ( base_storage_home_impl_ )
-		return base_storage_home_impl_ -> _this();
+	if ( base_storagehome_impl_ )
+		return base_storagehome_impl_ -> _this();
 	else
 		return IR__::StorageHomeDef::_nil();
 }
 
 IR__::StorageTypeDef_ptr
-StorageHomeDef_impl::managed_storage_type
+StorageHomeDef_impl::managed_storagetype
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "StorageHomeDef_impl::managed_storage_type() called" );
+	DEBUG_OUTLINE ( "StorageHomeDef_impl::managed_storagetype() called" );
 
-	if ( managed_storage_type_impl_ )
-		return managed_storage_type_impl_ -> _this();
+	if ( managed_storagetype_impl_ )
+		return managed_storagetype_impl_ -> _this();
 	else
 		return IR__::StorageTypeDef::_nil();
 }
@@ -250,7 +247,7 @@ throw(CORBA::SystemException)
     unsigned int i;
 
 	// Check: Derived storage homes may not directly support an interface
-	if ( base_storage_home_impl_ && seq.length() > 0 )
+	if ( base_storagehome_impl_ && seq.length() > 0 )
 	{
 		throw CORBA::BAD_PARAM();
 	}
@@ -298,6 +295,7 @@ throw(CORBA::SystemException)
         catch(...)
         {
         }
+
         if(!impl_seq[i])
         {
             // Must be same repository
@@ -455,8 +453,7 @@ throw(CORBA::SystemException)
 	if ( check_for_name ( name ) )
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
-	FactoryDef_impl *new_factory = 
-		new FactoryDef_impl ( this, repository_, managed_storage_type_impl_ );
+	FactoryDef_impl *new_factory = new FactoryDef_impl ( this, repository_, managed_storagetype_impl_ );
 	new_factory -> id ( id );
 	new_factory -> name ( name );
 	new_factory -> version ( version );
@@ -484,8 +481,7 @@ throw(CORBA::SystemException)
 	if ( check_for_name ( name ) )
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
-	KeyDef_impl *new_key = 
-		new KeyDef_impl ( this, repository_, managed_storage_type_impl_ );
+	KeyDef_impl *new_key = new KeyDef_impl ( this, repository_, managed_storagetype_impl_ );
 	new_key -> id ( id );
 	new_key -> name ( name );
 	new_key -> version ( version );

@@ -74,6 +74,16 @@ PSSHelper::convertSpidToString( const ShortPid* rSpid )
 }
 
 void
+PSSHelper::convertStringToPid( const char* szPid, Pid& rPid )
+{
+	int iLength = strlen(szPid);
+	rPid.length(iLength);
+	
+	for(int i=0; i<iLength; i++)
+		rPid[i] = szPid[i];
+}
+
+void
 PSSHelper::convertStringToSpid( const char* szSpid, ShortPid& rSpid )
 {
 	int iLength = strlen(szSpid);

@@ -152,7 +152,7 @@ SegmentDef_impl::stored_on
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "SegmentDef_impl::abs_storage_home() called" );
+	DEBUG_OUTLINE ( "SegmentDef_impl::abs_storagehome() called" );
 
 	return IR__::AbstractStorageHomeDef::_duplicate(stored_on_);
 }

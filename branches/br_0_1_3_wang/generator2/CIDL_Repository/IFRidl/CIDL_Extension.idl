@@ -68,7 +68,7 @@ module CIDL {
 			in IR__::RepositoryId id,
 			in IR__::Identifier name,
 			in IR__::VersionSpec version,
-			in IR__::AbstractStorageHomeDef _abs_storage_home
+			in IR__::AbstractStorageHomeDef abs_storagehome
 		);
 		ExecutorDef create_executor (
 			in IR__::RepositoryId id,
@@ -114,7 +114,7 @@ module CIDL {
 	struct AbsStorageHomeDelegation 
 	{
 		IR__::OperationDef delegated_operation;
-		IR__::Identifier abs_storage_home_operation_name;
+		IR__::Identifier abs_storagehome_op_name;
 	};
 	typedef sequence < AbsStorageHomeDelegation > AbsStorageHomeDelegationSeq;
 
@@ -122,7 +122,7 @@ module CIDL {
 	{
 		attribute IR__::AbstractStorageHomeDef binds_to;
 		attribute DelegationSeq delegations;
-		attribute AbsStorageHomeDelegationSeq abs_storage_home_delegations;
+		attribute AbsStorageHomeDelegationSeq abs_storagehome_delegations;
 	};
 
 	struct HomeExecutorDescription {
@@ -132,7 +132,7 @@ module CIDL {
 		IR__::VersionSpec version;
 		IR__::AbstractStorageHomeDef binds_to;
 		DelegationSeq delegations;
-		AbsStorageHomeDelegationSeq abs_storage_home_delegations;
+		AbsStorageHomeDelegationSeq abs_storagehome_delegations;
 	};
 
 	interface ExecutorDef : IR__::Contained, IR__::Container
@@ -144,7 +144,7 @@ module CIDL {
 			in IR__::Identifier name,
 			in IR__::VersionSpec version,
 			in IR__::ProvidesDefSeq provided_facets,
-			in IR__::AbstractStorageHomeDef _abs_storage_home
+			in IR__::AbstractStorageHomeDef abs_storagehome
 		);
 	};
 

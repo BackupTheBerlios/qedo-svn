@@ -22,17 +22,15 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
 /*                                                                           */
 /*****************************************************************************/
-
 #include "StorageTypeDef_impl.h"
-#include "Debug.h"
+
 
 namespace QEDO_ComponentRepository {
 
 StorageTypeDef_impl::StorageTypeDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
-  StorageTypeDef_impl *base_storage_type_impl )
-  
+  StorageTypeDef_impl *base_storagetype_impl )
 : IRObject_impl ( repository ),
   IDLType_impl ( repository ),
   Container_impl ( repository ),
@@ -41,9 +39,9 @@ StorageTypeDef_impl::StorageTypeDef_impl
 {
 	DEBUG_OUTLINE ( "StorageTypeDef_impl::StorageTypeDef_impl() called" );
 
-	base_storage_type_impl_ = base_storage_type_impl;
-	if ( base_storage_type_impl_ )
-		base_storage_type_impl_ -> _add_ref();
+	base_storagetype_impl_ = base_storagetype_impl;
+	if ( base_storagetype_impl_ )
+		base_storagetype_impl_ -> _add_ref();
 }
 
 StorageTypeDef_impl::~StorageTypeDef_impl
@@ -62,8 +60,8 @@ throw(CORBA::SystemException)
 	unsigned int i;
 
 	// Release base storage type impl
-	if ( base_storage_type_impl_ )
-		base_storage_type_impl_ -> _remove_ref();
+	if ( base_storagetype_impl_ )
+		base_storagetype_impl_ -> _remove_ref();
 
 	// Release all supported interface impls
     for ( i = 0 ; i < supported_interface_impls_.size() ; i++)
@@ -79,29 +77,29 @@ throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "StorageTypeDef_impl::describe() called" );
 
-	IR__::StorageTypeDescription_var storage_type_desc = new IR__::StorageTypeDescription();
-	storage_type_desc -> id = this -> id();
-	storage_type_desc -> name = this -> name();
-	storage_type_desc -> version = this -> version();
+	IR__::StorageTypeDescription_var storagetype_desc = new IR__::StorageTypeDescription();
+	storagetype_desc -> id = this -> id();
+	storagetype_desc -> name = this -> name();
+	storagetype_desc -> version = this -> version();
 
 	Contained_impl *contained = dynamic_cast<Contained_impl*>(defined_in_);
 	if ( contained )
-		storage_type_desc -> defined_in = CORBA::string_dup ( contained -> id() );
+		storagetype_desc -> defined_in = CORBA::string_dup ( contained -> id() );
 	else
-		storage_type_desc -> defined_in = CORBA::string_dup ( "" );
+		storagetype_desc -> defined_in = CORBA::string_dup ( "" );
 
 	// Base storage type
-	if ( base_storage_type_impl_ )
-		storage_type_desc -> base_storage_type = base_storage_type_impl_ -> id();
+	if ( base_storagetype_impl_ )
+		storagetype_desc -> base_storagetype = base_storagetype_impl_ -> id();
 	else
-		storage_type_desc -> base_storage_type = CORBA::string_dup ( "" );
+		storagetype_desc -> base_storagetype = CORBA::string_dup ( "" );
 
 	unsigned int i;
 
 	// Supports interfaces
-	storage_type_desc -> supports_interfaces.length ( supported_interface_impls_.size() );
+	storagetype_desc -> supports_interfaces.length ( supported_interface_impls_.size() );
 	for ( i = 0; i < supported_interface_impls_.size(); i++ )
-		storage_type_desc -> supports_interfaces[i] = supported_interface_impls_[i] -> id();
+		storagetype_desc -> supports_interfaces[i] = supported_interface_impls_[i] -> id();
 
 	// Operations and Attributes
 	list < Contained_impl* >::const_iterator contained_iter;
@@ -127,8 +125,8 @@ throw(CORBA::SystemException)
 				// This cannot be, what to do???
 				throw;
 			}
-			storage_type_desc -> attributes.length ( storage_type_desc -> attributes.length() + 1 );
-			storage_type_desc -> attributes[storage_type_desc -> attributes.length() - 1] =
+			storagetype_desc -> attributes.length ( storagetype_desc -> attributes.length() + 1 );
+			storagetype_desc -> attributes[storagetype_desc -> attributes.length() - 1] =
 				*attr_desc;
 		}
 
@@ -148,15 +146,15 @@ throw(CORBA::SystemException)
 				// This cannot be, what to do???
 				throw;
 			}
-			storage_type_desc -> operations.length ( storage_type_desc -> operations.length() + 1 );
-			storage_type_desc -> operations[storage_type_desc -> operations.length() - 1] = *operation_desc;
+			storagetype_desc -> operations.length ( storagetype_desc -> operations.length() + 1 );
+			storagetype_desc -> operations[storagetype_desc -> operations.length() - 1] = *operation_desc;
 		}
 	}
 
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
 	CORBA::Any any;
-	any <<= storage_type_desc._retn();;
+	any <<= storagetype_desc._retn();;
 	desc -> value = any;
 
 	return desc._retn();
@@ -189,7 +187,7 @@ throw(CORBA::SystemException)
     unsigned int i;
 
 	// Check: Derived storage types may not directly support an interface
-	if ( base_storage_type_impl_ && seq.length() > 0 )
+	if ( base_storagetype_impl_ && seq.length() > 0 )
 	{
 		throw CORBA::BAD_PARAM();
 	}
@@ -237,6 +235,7 @@ throw(CORBA::SystemException)
         catch(...)
         {
         }
+
         if(!impl_seq[i])
         {
             // Must be same repository
@@ -254,24 +253,24 @@ throw(CORBA::SystemException)
 }
 
 IR__::StorageTypeDef_ptr
-StorageTypeDef_impl::base_storage_type
+StorageTypeDef_impl::base_storagetype
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "StorageTypeDef_impl::base_storage_type() called" );
+	DEBUG_OUTLINE ( "StorageTypeDef_impl::base_storagetype() called" );
 
-	if ( base_storage_type_impl_ )
-		return base_storage_type_impl_ -> _this();
+	if ( base_storagetype_impl_ )
+		return base_storagetype_impl_ -> _this();
 	else
 		return IR__::StorageTypeDef::_nil();
 }
 
 void
-StorageTypeDef_impl::get_StateMembers
+StorageTypeDef_impl::get_state_members
 (IR__::AttributeDefSeq& state_members, CORBA__::CollectStyle style)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "StorageTypeDef_impl::get_StateMembers() called" );
+	DEBUG_OUTLINE ( "StorageTypeDef_impl::get_state_members() called" );
 	
 	CORBA::ULong i = 0;
 	if(style==CORBA__::dk_Create)
@@ -285,9 +284,9 @@ throw(CORBA::SystemException)
 		//collect state members for storagehome's _create operation
 		//++ begin with the base type of the storage type
 		/*
-		IR__::StorageTypeDef_ptr storagetype = base_storage_type();
+		IR__::StorageTypeDef_var storagetype = base_storagetype();
 		if(!CORBA::is_nil(storagetype))
-			storagetype->get_StateMembers(state_members, style);
+			storagetype->get_state_members(state_members, style);
 		*/
 
 		//++ proceed with the leftmost implemented abstract storage type
@@ -295,9 +294,14 @@ throw(CORBA::SystemException)
 		for(i=0; i<supported_seq->length(); i++)
 		{
 			IR__::AbstractStorageTypeDef_var abs_storagetype = IR__::AbstractStorageTypeDef::_narrow(((*supported_seq)[i]));
-			abs_storagetype->get_StateMembers(state_members, style);
+			abs_storagetype->get_state_members(state_members, style);
 		}
 
+		//**********************************************************
+		//we don't create relational table for concrete storagetype,
+		//so we don't need state members in concrete storagetype as
+		//parameters in concrete storagehome's _create() operator.
+		//**********************************************************
 		//++ end with the state members defined in the storage type itself
 		/*
 		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
@@ -318,7 +322,7 @@ throw(CORBA::SystemException)
 		for(i=0; i<supported_seq->length(); i++)
 		{
 			IR__::AbstractStorageTypeDef_var abs_storagetype = IR__::AbstractStorageTypeDef::_narrow(((*supported_seq)[i]));
-			abs_storagetype->get_StateMembers(state_members, style);
+			abs_storagetype->get_state_members(state_members, style);
 		}
 
 		//++ end with the state members defined in the storage type itself
@@ -335,9 +339,9 @@ throw(CORBA::SystemException)
 	else if(style==CORBA__::dk_default)
 	{
 		//********************************************************************
-		//This default case is to collect statemembers for comparation with 
+		//This default case is to collect state members for comparation with 
 		//the parameters defined in KEY or FACTORY, since concrete storagetype
-		//has no appropriate relational table now, the state members of it are 
+		//has no appropriate relational table now, its state members are here
 		//also unnecessary.
 		//********************************************************************
 		//collect state members for storagehome's key operation
@@ -352,9 +356,9 @@ throw(CORBA::SystemException)
 			state_members[i+ulPre] = (a_attribute);
 		}
 
-		IR__::StorageTypeDef_ptr storagetype = base_storage_type();
+		IR__::StorageTypeDef_var storagetype = base_storagetype();
 		if(!CORBA::is_nil(storagetype))
-			storagetype->get_StateMembers(state_members, style);
+			storagetype->get_state_members(state_members, style);
 		*/
 	}	
 }

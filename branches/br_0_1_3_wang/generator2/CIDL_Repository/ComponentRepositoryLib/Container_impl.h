@@ -254,42 +254,42 @@ public:
         throw(CORBA::SystemException);
 
 	//
-    // IDL:omg.org/IR__/Container/create_abstract_storage_type:1.0
+    // IDL:omg.org/IR__/Container/create_abstract_storagetype:1.0
     //
-    virtual IR__::AbstractStorageTypeDef_ptr create_abstract_storage_type(const char* id,
+    virtual IR__::AbstractStorageTypeDef_ptr create_abstract_storagetype(const char* id,
                                                                           const char* name,
                                                                           const char* version,
-                                                                          const IR__::InterfaceDefSeq& base_abstract_storage_types)
+                                                                          const IR__::InterfaceDefSeq& base_abstract_storagetypes)
         throw(CORBA::SystemException);
 
 	//
-    // IDL:omg.org/IR__/Container/create_storage_type:1.0
+    // IDL:omg.org/IR__/Container/create_storagetype:1.0
     //
-    virtual IR__::StorageTypeDef_ptr create_storage_type(const char* id,
+    virtual IR__::StorageTypeDef_ptr create_storagetype(const char* id,
                                                          const char* name,
                                                          const char* version,
-                                                         IR__::StorageTypeDef_ptr base_storage_type,
+                                                         IR__::StorageTypeDef_ptr base_storagetype,
                                                          const IR__::InterfaceDefSeq& supports_interfaces)
 		throw(CORBA::SystemException);
 
 	//
-    // IDL:omg.org/IR__/Container/create_abstract_storage_home:1.0
+    // IDL:omg.org/IR__/Container/create_abstract_storagehome:1.0
     //
-    virtual IR__::AbstractStorageHomeDef_ptr create_abstract_storage_home(const char* id,
+    virtual IR__::AbstractStorageHomeDef_ptr create_abstract_storagehome(const char* id,
                                                                           const char* name,
                                                                           const char* version,
-                                                                          IR__::AbstractStorageTypeDef_ptr managed_abstract_storage_type,
-                                                                          const IR__::InterfaceDefSeq& base_abstract_storage_homes)
+                                                                          IR__::AbstractStorageTypeDef_ptr managed_abstract_storagetype,
+                                                                          const IR__::InterfaceDefSeq& base_abstract_storagehomes)
         throw(CORBA::SystemException);
 
     //
-    // IDL:omg.org/IR__/Container/create_storage_home:1.0
+    // IDL:omg.org/IR__/Container/create_storagehome:1.0
     //
-    virtual IR__::StorageHomeDef_ptr create_storage_home(const char* id,
+    virtual IR__::StorageHomeDef_ptr create_storagehome(const char* id,
                                                          const char* name,
                                                          const char* version,
-                                                         IR__::StorageHomeDef_ptr base_storage_home,
-                                                         IR__::StorageTypeDef_ptr managed_storage_type,
+														 IR__::StorageTypeDef_ptr managed_storagetype,
+                                                         IR__::StorageHomeDef_ptr base_storagehome,
                                                          const IR__::InterfaceDefSeq& supports_interfaces,
                                                          IR__::IDLType_ptr primary_key)
 		throw(CORBA::SystemException);

@@ -22,24 +22,24 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
 /*                                                                           */
 /*****************************************************************************/
-
 #ifndef __ABS_STORAGETYPE_DEF_IMPL_H__
 #define __ABS_STORAGETYPE_DEF_IMPL_H__
 
 #include <CORBA.h>
 #include "IFR_skel.h"
 #include "InterfaceDef_impl.h"
-
+#include "Debug.h"
 #include <vector>
 
 using namespace std;
 
+
 namespace QEDO_ComponentRepository {
 
 class AbstractStorageTypeDef_impl : public virtual POA_IR__::AbstractStorageTypeDef,
-							public virtual InterfaceDef_impl
+									public virtual InterfaceDef_impl
 {
-	vector < AbstractStorageTypeDef_impl* > base_abs_storage_type_impls_;
+	vector < AbstractStorageTypeDef_impl* > base_abstract_storagetype_impls_;
 
 public:
 	AbstractStorageTypeDef_impl ( Container_impl *container,
@@ -47,8 +47,7 @@ public:
 
 	~AbstractStorageTypeDef_impl();
 
-	//void getStateMembers(std::list<IR__::AttributeDef*> lStateMembers);
-
+	
     //
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
     //
@@ -71,17 +70,17 @@ public:
         throw(CORBA::SystemException);
 
 	//
-    // IDL:omg.org/IR__/AbstractStorageTypeDef/base_abstract_storage_types:1.0
+    // IDL:omg.org/IR__/AbstractStorageTypeDef/base_abstract_storagetypes:1.0
     //
-    virtual IR__::InterfaceDefSeq* base_abstract_storage_types()
+    virtual IR__::InterfaceDefSeq* base_abstract_storagetypes()
         throw(CORBA::SystemException);
-    virtual void base_abstract_storage_types(const IR__::InterfaceDefSeq& seq)
+    virtual void base_abstract_storagetypes(const IR__::InterfaceDefSeq& seq)
         throw(CORBA::SystemException);
 
 	//
-    // IDL:omg.org/IR__/AbstractStorageTypeDef/get_StateMembers:1.0
+    // IDL:omg.org/IR__/AbstractStorageTypeDef/get_state_members:1.0
     //
-    virtual void get_StateMembers(IR__::AttributeDefSeq& state_members,
+    virtual void get_state_members(IR__::AttributeDefSeq& state_members,
 								  CORBA__::CollectStyle style)
         throw(CORBA::SystemException);
 };

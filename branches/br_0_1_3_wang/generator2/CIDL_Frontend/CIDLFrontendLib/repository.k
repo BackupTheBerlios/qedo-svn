@@ -75,8 +75,8 @@ struct build_class : build_baseclass {
   IR__::IDLType_ptr type;
   IR__::ValueDef_ptr valuetype;
   IR__::HomeDef_ptr home;
-  IR__::AbstractStorageHomeDef_ptr abs_storage_home;
-  CIDL::AbsStorageHomeDelegationSeq abs_sh_delegation;
+  IR__::AbstractStorageHomeDef_ptr abs_storagehome;
+  CIDL::AbsStorageHomeDelegationSeq abs_storagehome_delegation;
   definition def;
   int pos;
   bool flag;
@@ -84,7 +84,7 @@ struct build_class : build_baseclass {
     type = IR__::IDLType::_nil();
     valuetype = IR__::ValueDef::_nil();
     home = IR__::HomeDef::_nil();
-	abs_storage_home = IR__::AbstractStorageHomeDef::_nil();
+	abs_storagehome = IR__::AbstractStorageHomeDef::_nil();
   }
 };
 
@@ -960,7 +960,7 @@ AbstractStorageType( AbstractStorageTypeHeader(name, inh_v), def_list )
       // create AbstractStorageTypeDef
       IR__::AbstractStorageTypeDef_ptr a_abs_storagetype;
       try {
-        a_abs_storagetype = container->create_abstract_storage_type(get_repid(def_v,name), name->get_name(),
+        a_abs_storagetype = container->create_abstract_storagetype(get_repid(def_v,name), name->get_name(),
           "1.0", base_abs_storagetypes);
       }
       catch (...) {
@@ -1009,7 +1009,7 @@ StorageType( StorageTypeHeader(name, base_v, impl_v), def_list )
       // create StorageTypeDef
       IR__::StorageTypeDef_ptr a_storagetype;
       try {
-        a_storagetype = container->create_storage_type(get_repid(def_v,name), name->get_name(),
+        a_storagetype = container->create_storagetype(get_repid(def_v,name), name->get_name(),
           "1.0", base_storagetype, supported_seq);
       }
       catch (...) {
@@ -1055,7 +1055,7 @@ AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
       // check whether inheritence of abstract storagetype and abstract storagehome
       // appears in pairs
       IR__::InterfaceDefSeq_var inh_abs_storagetypes;
-      inh_abs_storagetypes = managed_abs_storagetype->base_abstract_storage_types();
+      inh_abs_storagetypes = managed_abs_storagetype->base_abstract_storagetypes();
       int iLenAbsStorageTypes = inh_abs_storagetypes->length();
       if(iLenAbsStorageTypes != iLenAbsStorageHomes)
 	  {
@@ -1070,7 +1070,7 @@ AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
         IR__::AbstractStorageHomeDef_ptr tmp_abs_storagehome;
         tmp_abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(base_abs_storagehomes[i]);
         IR__::AbstractStorageTypeDef_ptr tmp_abs_storagetype;
-        tmp_abs_storagetype = tmp_abs_storagehome->managed_abstract_storage_type();
+        tmp_abs_storagetype = tmp_abs_storagehome->managed_abstract_storagetype();
         for( j=0; j<iLenAbsStorageTypes; j++)
         {
           if(strcmp(tmp_abs_storagetype->name(), ((*inh_abs_storagetypes)[j])->name())==0)
@@ -1091,7 +1091,7 @@ AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
       // create AbstractStorageHomeDef
       IR__::AbstractStorageHomeDef_ptr a_abstract_storagehome;
       try {
-        a_abstract_storagehome = container->create_abstract_storage_home(get_repid(def_v,name), name->get_name(),
+        a_abstract_storagehome = container->create_abstract_storagehome(get_repid(def_v,name), name->get_name(),
           "1.0", managed_abs_storagetype, base_abs_storagehomes);
       }
       catch (...) {
@@ -1132,12 +1132,12 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
       
       // get inherited storagetype of this managed storagetype above
       IR__::StorageTypeDef_ptr base_storagetype;
-      base_storagetype = managed_storagetype->base_storage_type();
+      base_storagetype = managed_storagetype->base_storagetype();
       
       // check whether the inherited storagetype is managed by the inherited storagehome
       if( (base_storagetype!=0) && (base_storagehome!=0) )
       {
-		if( strcmp(base_storagehome->managed_storage_type()->name(), base_storagetype->name()) != 0 )
+		if( strcmp(base_storagehome->managed_storagetype()->name(), base_storagetype->name()) != 0 )
 		{
 		  std::cout << "Error in creating storage home:" << std::endl;
 		  std::cout << "The inheritence of storagetype and storagehome must appear in pairs." << std::endl;
@@ -1172,7 +1172,7 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
         throw "Exception in creating storage home!";
       }
       
-      // new constraint added that storagehome and its managed storagetype can implement only
+      // new constraint added: storagehome and its managed storagetype can implement only
       // one abstract storagehome and one abstract storagetype, otherwise we do not know, in 
       // Operator _create() of storagehome, in which abstract storagehome should one abstract
       // storagetype be added. This constraint is not yet open.
@@ -1189,7 +1189,7 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
         IR__::AbstractStorageHomeDef_ptr tmp_abs_storagehome;
         tmp_abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(supported_seq[i]);
         IR__::AbstractStorageTypeDef_ptr tmp_abs_storagetype;
-        tmp_abs_storagetype = tmp_abs_storagehome->managed_abstract_storage_type();
+        tmp_abs_storagetype = tmp_abs_storagehome->managed_abstract_storagetype();
         for( j=0; j<iLenAbsStorageTypes; j++)
         {
           if(strcmp(tmp_abs_storagetype->name(), ((*supported_abs_storagetypes)[j])->name())==0)
@@ -1221,8 +1221,8 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
       // create StorageHomeDef
       IR__::StorageHomeDef_ptr a_storagehome;
       try {
-        a_storagehome = container->create_storage_home(get_repid(def_v,name), name->get_name(),
-          "1.0", base_storagehome, managed_storagetype, supported_seq, idltype);
+        a_storagehome = container->create_storagehome(get_repid(def_v,name), name->get_name(),
+          "1.0", managed_storagetype, base_storagehome, supported_seq, idltype);
       }
       catch (...) {
         Error("Exception in creating storagehome %k\n", name, name);
@@ -1670,21 +1670,21 @@ FactoryDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 				"1.0",my_build.paradescseq,my_build.excdefseq);
 		}
 
-		// factory for storage home
-		IR__::StorageHomeDef_ptr storagehome_ptr; 
-		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
-		if(!CORBA::is_nil(storagehome_ptr))
-		{
-			storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-				"1.0",my_build.paradescseq,my_build.excdefseq);
-		}
-		
 		// factory for abstract storage home
 		IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
 		abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
 		if(!CORBA::is_nil(abs_storagehome_ptr))
 		{
 			abs_storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+				"1.0",my_build.paradescseq,my_build.excdefseq);
+		}
+		
+		// factory for storage home
+		IR__::StorageHomeDef_ptr storagehome_ptr; 
+		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
+		if(!CORBA::is_nil(storagehome_ptr))
+		{
+			storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
 				"1.0",my_build.paradescseq,my_build.excdefseq);
 		}
 	}
@@ -1729,11 +1729,11 @@ FactoryDcl1(idl_name_v, dcls_v)
 		if(!CORBA::is_nil(abs_storagehome_ptr))
 		{
 			IR__::AbstractStorageTypeDef_ptr managed_abs_storagetype;
-			managed_abs_storagetype = abs_storagehome_ptr->managed_abstract_storage_type();
+			managed_abs_storagetype = abs_storagehome_ptr->managed_abstract_storagetype();
 			NOT_NIL(managed_abs_storagetype);
 			
 			IR__::AttributeDefSeq state_members;
-			managed_abs_storagetype->get_StateMembers(state_members, CORBA__::dk_default);
+			managed_abs_storagetype->get_state_members(state_members, CORBA__::dk_default);
 			CORBA::ULong len = state_members.length();
 			for(CORBA::ULong i = 0; i < len; i++)
 			{
@@ -1771,21 +1771,17 @@ FactoryDcl1(idl_name_v, dcls_v)
 					"1.0", my_build.paradescseq, my_build.excdefseq);
 		}
 		
-		//
-		//since concrete storagehome has no relational table now, 
-		//is it still necessary to create one factory?
-		//
 		// generate factory in storage home 
 		IR__::StorageHomeDef_ptr storagehome_ptr; 
 		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
 		if(!CORBA::is_nil(storagehome_ptr))
 		{
 			IR__::StorageTypeDef_ptr managed_storagetype;
-			managed_storagetype = storagehome_ptr->managed_storage_type();
+			managed_storagetype = storagehome_ptr->managed_storagetype();
 			NOT_NIL(managed_storagetype);
 			
 			IR__::AttributeDefSeq state_members;
-			managed_storagetype->get_StateMembers(state_members, CORBA__::dk_default);
+			managed_storagetype->get_state_members(state_members, CORBA__::dk_default);
 			CORBA::ULong len = state_members.length();
 			for(CORBA::ULong i = 0; i < len; i++)
 			{
@@ -1842,11 +1838,11 @@ KeyDcl(idl_name_v, dcls_v)
 		if(!CORBA::is_nil(abs_storagehome_ptr))
 		{
 			IR__::AbstractStorageTypeDef_ptr managed_abs_storagetype;
-			managed_abs_storagetype = abs_storagehome_ptr->managed_abstract_storage_type();
+			managed_abs_storagetype = abs_storagehome_ptr->managed_abstract_storagetype();
 			NOT_NIL(managed_abs_storagetype);
 			
 			IR__::AttributeDefSeq state_members;
-			managed_abs_storagetype->get_StateMembers(state_members, CORBA__::dk_default);
+			managed_abs_storagetype->get_state_members(state_members, CORBA__::dk_default);
 			CORBA::ULong len = state_members.length();
 			for(CORBA::ULong i = 0; i < len; i++)
 			{
@@ -1884,21 +1880,17 @@ KeyDcl(idl_name_v, dcls_v)
 					"1.0",my_build.paradescseq);
 		}
 		
-		//
-		//since concrete storagehome has no relational table now, 
-		//is it still necessary to create one key?
-		//
 		// generate key in storage home 
 		IR__::StorageHomeDef_ptr storagehome_ptr; 
 		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
 		if(!CORBA::is_nil(storagehome_ptr))
 		{
 			IR__::StorageTypeDef_ptr managed_storagetype;
-			managed_storagetype = storagehome_ptr->managed_storage_type();
+			managed_storagetype = storagehome_ptr->managed_storagetype();
 			NOT_NIL(managed_storagetype);
 			
 			IR__::AttributeDefSeq state_members;
-			managed_storagetype->get_StateMembers(state_members, CORBA__::dk_default);
+			managed_storagetype->get_state_members(state_members, CORBA__::dk_default);
 			CORBA::ULong len = state_members.length();
 			for(CORBA::ULong i = 0; i < len; i++)
 			{
@@ -2478,7 +2470,7 @@ HomeExecutorDef(name, homex_body)
       // create HomeExecutorDef
       try {
         homeexec = container-> create_home_executor (get_repid(def_v,name),
-          name->get_name(), "1.0", my_build.abs_storage_home);
+          name->get_name(), "1.0", my_build.abs_storagehome);
       }
       catch (...) {
         Error("Exception in creating home executor %k\n", name, name);
@@ -2521,35 +2513,35 @@ HomeExecutorBody(HomeImplDcl(ident), home_binding_v, *, exec, home_delegation_v,
 AbstractStorageHomeBinding(AbstractStorageHomeName(ash_name))
 ->[ build :
     {
-      kc_current_view.abs_storage_home = IR__::AbstractStorageHomeDef::_narrow (
+      kc_current_view.abs_storagehome = IR__::AbstractStorageHomeDef::_narrow (
         ash_name->symtab_entry->irobj);
-      if(CORBA::is_nil(kc_current_view.abs_storage_home)) { 
-        kc_current_view.abs_storage_home = IR__::AbstractStorageHomeDef::_narrow (
+      if(CORBA::is_nil(kc_current_view.abs_storagehome)) { 
+        kc_current_view.abs_storagehome = IR__::AbstractStorageHomeDef::_narrow (
           g_repository->lookup_id (get_repid(ash_name)));
       }
-      NOT_NIL(kc_current_view.abs_storage_home); 
+      NOT_NIL(kc_current_view.abs_storagehome); 
     }
  ];
  
 AbstractStorageHomeDelegationSpec(def_list)
 ->[ build :
     {
-      kc_current_view.abs_sh_delegation.length(def_list->length()); 
+      kc_current_view.abs_storagehome_delegation.length(def_list->length()); 
       kc_current_view.pos = 0;
       foreach(pair; definition_list def_list) {
         with(pair) {
           OperationPair(op1, Name(op2)) : {
             CIDL::AbsStorageHomeDelegation dele;
             dele.delegated_operation = IR__::OperationDef::_narrow( op1->symtab_entry->irobj );
-            dele.abs_storage_home_operation_name = CORBA::string_dup( op2->name );
-			kc_current_view.abs_sh_delegation[kc_current_view.pos] = dele;
+            dele.abs_storagehome_op_name = CORBA::string_dup( op2->name );
+			kc_current_view.abs_storagehome_delegation[kc_current_view.pos] = dele;
 		    kc_current_view.pos++;
           }
           Operation(op=Name(op_name)) : {
             CIDL::AbsStorageHomeDelegation dele;
             dele.delegated_operation = IR__::OperationDef::_narrow( op->symtab_entry->irobj );
-            dele.abs_storage_home_operation_name = CORBA::string_dup( op_name->name );
-			kc_current_view.abs_sh_delegation[kc_current_view.pos] = dele;
+            dele.abs_storagehome_op_name = CORBA::string_dup( op_name->name );
+			kc_current_view.abs_storagehome_delegation[kc_current_view.pos] = dele;
 		    kc_current_view.pos++;
           }
         }
@@ -2624,7 +2616,7 @@ SegmentDef(name, def_list)
       // create SegmentDef
       try {
         seg = container-> create_segment (get_repid(def_v,name),
-          name->get_name(), "1.0", my_build.provseq, my_build.abs_storage_home);
+          name->get_name(), "1.0", my_build.provseq, my_build.abs_storagehome);
       }
       catch (...) {
         Error("Exception in creating segment %k\n", name, name);
@@ -2639,13 +2631,13 @@ SegmentDef(name, def_list)
 SegmentPersistenceDcl(AbstractStorageHomeName(ash_name))
 ->[ build :
     {
-      kc_current_view.abs_storage_home = IR__::AbstractStorageHomeDef::_narrow (
+      kc_current_view.abs_storagehome = IR__::AbstractStorageHomeDef::_narrow (
         ash_name->symtab_entry->irobj);
-      if(CORBA::is_nil(kc_current_view.abs_storage_home)) { 
-        kc_current_view.abs_storage_home = IR__::AbstractStorageHomeDef::_narrow (
+      if(CORBA::is_nil(kc_current_view.abs_storagehome)) { 
+        kc_current_view.abs_storagehome = IR__::AbstractStorageHomeDef::_narrow (
           g_repository->lookup_id( get_repid(ash_name) ) );
       }
-      NOT_NIL(kc_current_view.abs_storage_home);
+      NOT_NIL(kc_current_view.abs_storagehome);
     }
   ];
 

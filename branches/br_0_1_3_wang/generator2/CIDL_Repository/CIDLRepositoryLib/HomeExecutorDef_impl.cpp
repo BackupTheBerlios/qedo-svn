@@ -74,7 +74,7 @@ throw(CORBA::SystemException)
 
 	home_executor_desc -> binds_to = this -> binds_to();
 	home_executor_desc -> delegations = *(this->delegations());
-	home_executor_desc -> abs_storage_home_delegations = *(this->abs_storage_home_delegations());
+	home_executor_desc -> abs_storagehome_delegations = *(this->abs_storagehome_delegations());
 
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
@@ -106,23 +106,23 @@ throw(CORBA::SystemException)
 }
 
 CIDL::AbsStorageHomeDelegationSeq*
-HomeExecutorDef_impl::abs_storage_home_delegations
+HomeExecutorDef_impl::abs_storagehome_delegations
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::abs_storage_home_delegations() called" );
+	DEBUG_OUTLINE ( "HomeExecutorDef_impl::abs_storagehome_delegations() called" );
 
-	return new CIDL::AbsStorageHomeDelegationSeq ( abs_storage_home_delegations_ );
+	return new CIDL::AbsStorageHomeDelegationSeq ( abs_storagehome_delegations_ );
 }
 
 void
-HomeExecutorDef_impl::abs_storage_home_delegations
+HomeExecutorDef_impl::abs_storagehome_delegations
 (const CIDL::AbsStorageHomeDelegationSeq& seq)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::abs_storage_home_delegations(...) called" );
+	DEBUG_OUTLINE ( "HomeExecutorDef_impl::abs_storagehome_delegations(...) called" );
 
-	abs_storage_home_delegations_ = seq;
+	abs_storagehome_delegations_ = seq;
 }
 
 IR__::AbstractStorageHomeDef_ptr

@@ -19,7 +19,7 @@
 /*                                                                           */
 /* You should have received a copy of the GNU General Public License         */
 /* along with Foobar; if not, write to the Free Software                     */
-/* Foundation, Inc., 59 TempleIDLType_impl Place, Suite 330, Boston, MA  02111-1307  USA */
+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
 /*                                                                           */
 /*****************************************************************************/
 
@@ -56,8 +56,8 @@ module CORBA__ {
 		// the following is the stream extension
 		, dk_Stream, dk_Sink, dk_Source, dk_SiSo
 		// The following extensions are for PSDL
-		, dk_AbstractStorageHome, dk_StorageHome
 		, dk_AbstractStorageType, dk_StorageType
+		, dk_AbstractStorageHome, dk_StorageHome
 		, dk_Key, dk_PSSPrimaryKey
 
 	};
@@ -325,32 +325,32 @@ module IR__ {
 			in InterfaceDefSeq supports_interfaces,
 			in ValueDef primary_key
 		);
-		AbstractStorageTypeDef create_abstract_storage_type(
+		AbstractStorageTypeDef create_abstract_storagetype(
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in InterfaceDefSeq base_abstract_storage_types
+			in InterfaceDefSeq base_abstract_storagetypes
 		);
-		StorageTypeDef create_storage_type(
+		StorageTypeDef create_storagetype(
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in StorageTypeDef base_storage_type,
+			in StorageTypeDef base_storagetype,
 			in InterfaceDefSeq supports_interfaces
 		);
-		AbstractStorageHomeDef create_abstract_storage_home(
+		AbstractStorageHomeDef create_abstract_storagehome(
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in AbstractStorageTypeDef managed_abstract_storage_type,
-			in InterfaceDefSeq base_abstract_storage_homes
+			in AbstractStorageTypeDef managed_abstract_storagetype,
+			in InterfaceDefSeq base_abstract_storagehomes
 		);
-		StorageHomeDef create_storage_home(
+		StorageHomeDef create_storagehome(
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in StorageHomeDef base_storage_home,
-			in StorageTypeDef managed_storage_type,
+			in StorageTypeDef managed_storagetype,
+			in StorageHomeDef base_storagehome,
 			in InterfaceDefSeq supports_interfaces,
 			in IDLType primary_key 
 		);
@@ -952,10 +952,9 @@ module IR__ {
 	};
 
 	interface AbstractStorageTypeDef : InterfaceDef {
-		// read/write interface
 		// can be derived from more than one abstract storage types
-		attribute InterfaceDefSeq base_abstract_storage_types;
-		void get_StateMembers(inout AttributeDefSeq state_members, in CORBA__::CollectStyle style);
+		attribute InterfaceDefSeq base_abstract_storagetypes;
+		void get_state_members(inout AttributeDefSeq state_members, in CORBA__::CollectStyle style);
 	};
 	
 	struct AbstractStorageTypeDescription {
@@ -963,17 +962,15 @@ module IR__ {
 		RepositoryId id;
 		RepositoryId defined_in;
 		VersionSpec version;
-		RepositoryIdSeq base_abstract_storage_types;
+		RepositoryIdSeq base_abstract_storagetypes;
 		AttrDescriptionSeq attributes;
 		OpDescriptionSeq operations;
 	};
 
 	interface StorageTypeDef : InterfaceDef {
-		// read interface
-		readonly attribute StorageTypeDef base_storage_type;
-		// read/write interface
+		readonly attribute StorageTypeDef base_storagetype;
 		attribute InterfaceDefSeq supported_interfaces;
-		void get_StateMembers(inout AttributeDefSeq state_members, in CORBA__::CollectStyle style);
+		void get_state_members(inout AttributeDefSeq state_members, in CORBA__::CollectStyle style);
 	};
 	
 	struct StorageTypeDescription {
@@ -981,7 +978,7 @@ module IR__ {
 		RepositoryId id;
 		RepositoryId defined_in;
 		VersionSpec version;
-		RepositoryId base_storage_type;
+		RepositoryId base_storagetype;
 		RepositoryIdSeq supports_interfaces;
 		AttrDescriptionSeq attributes;
 		OpDescriptionSeq operations;
@@ -989,9 +986,9 @@ module IR__ {
 
 	interface AbstractStorageHomeDef : InterfaceDef {
 		// read operations
-		readonly attribute AbstractStorageTypeDef managed_abstract_storage_type;
+		readonly attribute AbstractStorageTypeDef managed_abstract_storagetype;
 		// can be derived from more than one abstract storage homes
-		attribute InterfaceDefSeq base_abstract_storage_homes;
+		attribute InterfaceDefSeq base_abstract_storagehomes;
 		readonly attribute FactoryDefSeq factories;
 		readonly attribute KeyDefSeq keys;
 		// write interfaces
@@ -1016,18 +1013,18 @@ module IR__ {
 		RepositoryId id;
 		RepositoryId defined_in;
 		VersionSpec version;
-		RepositoryId managed_abstract_storage_type;
-		RepositoryIdSeq base_abstract_storage_homes;
-		FactoryDefSeq factories;
-		KeyDefSeq keys;
+		RepositoryId managed_abstract_storagetype;
+		RepositoryIdSeq base_abstract_storagehomes;
 		AttrDescriptionSeq attributes;
 		OpDescriptionSeq operations;
+		FactoryDefSeq factories;
+		KeyDefSeq keys;
 	};
 
 	interface StorageHomeDef : InterfaceDef {
 		// read operations
-		readonly attribute StorageHomeDef base_storage_home;
-		readonly attribute StorageTypeDef managed_storage_type;
+		readonly attribute StorageTypeDef managed_storagetype;
+		readonly attribute StorageHomeDef base_storagehome;
 		attribute InterfaceDefSeq supported_interfaces;
 		readonly attribute PSSPrimaryKeyDef primary_key;
 		readonly attribute FactoryDefSeq factories;
@@ -1060,14 +1057,14 @@ module IR__ {
 		RepositoryId id;
 		RepositoryId defined_in;
 		VersionSpec version;
-		RepositoryId base_storage_home;
-		RepositoryId managed_storage_type;
+		RepositoryId managed_storagetype;
+		RepositoryId base_storagehome;
 		RepositoryIdSeq supports_interfaces;
+		AttrDescriptionSeq attributes;
+		OpDescriptionSeq operations;
 		PSSPrimaryKeyDef primary_key_def;
 		FactoryDefSeq factories;
 		KeyDefSeq keys;
-		AttrDescriptionSeq attributes;
-		OpDescriptionSeq operations;
 	};
 };
 

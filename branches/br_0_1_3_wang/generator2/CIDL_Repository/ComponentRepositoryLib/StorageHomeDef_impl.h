@@ -22,7 +22,6 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
 /*                                                                           */
 /*****************************************************************************/
-
 #ifndef __STORAGEHOME_DEF_IMPL_H__
 #define __STORAGEHOME_DEF_IMPL_H__
 
@@ -32,22 +31,27 @@
 #include "InterfaceDef_impl.h"
 #include "IDLType_impl.h"
 #include "StorageTypeDef_impl.h"
+#include "FactoryDef_impl.h"
+#include "KeyDef_impl.h"
+#include "PSSPrimaryKeyDef_impl.h"
+#include "Debug.h"
+
 
 namespace QEDO_ComponentRepository {
 
 class StorageHomeDef_impl : public virtual POA_IR__::StorageHomeDef,
 							public virtual InterfaceDef_impl
 {
-	StorageHomeDef_impl *base_storage_home_impl_;
-	StorageTypeDef_impl *managed_storage_type_impl_;
+	StorageTypeDef_impl *managed_storagetype_impl_;	
+	StorageHomeDef_impl *base_storagehome_impl_;
 	vector < InterfaceDef_impl* > supported_interface_impls_;
 	IDLType_impl *primary_key_impl_;
 
 public:
 	StorageHomeDef_impl ( Container_impl *container,
 							Repository_impl *repository,
-							StorageHomeDef_impl *base_storage_home_impl,
-							StorageTypeDef_impl *managed_storage_type_impl,
+							StorageTypeDef_impl *managed_storagetype_impl,
+							StorageHomeDef_impl *base_storagehome_impl,
 							IDLType_impl *primary_key );
 
 	~StorageHomeDef_impl();
@@ -74,15 +78,15 @@ public:
         throw(CORBA::SystemException);
 
     //
-    // IDL:omg.org/IR__/StorageHomeDef/base_storage_home:1.0
+    // IDL:omg.org/IR__/StorageHomeDef/base_storagehome:1.0
     //
-    virtual IR__::StorageHomeDef_ptr base_storage_home()
+    virtual IR__::StorageHomeDef_ptr base_storagehome()
 		throw(CORBA::SystemException);
 
     //
-    // IDL:omg.org/IR__/StorageHomeDef/managed_storage_type:1.0
+    // IDL:omg.org/IR__/StorageHomeDef/managed_storagetype:1.0
     //
-    virtual IR__::StorageTypeDef_ptr managed_storage_type()
+    virtual IR__::StorageTypeDef_ptr managed_storagetype()
 		throw(CORBA::SystemException);
 
     //

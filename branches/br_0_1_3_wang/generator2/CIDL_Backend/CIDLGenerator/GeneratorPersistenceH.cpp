@@ -30,8 +30,8 @@ namespace QEDO_CIDL_Generator {
 GeneratorPersistenceH::GeneratorPersistenceH
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
 : CPPBase(repository), 
-  isAbstract(true), 
-  isASHKey(true)
+  m_isAbstract(true), 
+  m_isASHKey(true)
 {
 }
 
@@ -56,11 +56,13 @@ GeneratorPersistenceH::generate(std::string target, std::string fileprefix)
 	out << "#define _" << file_prefix_ << "_PSS_H_\n\n\n";
 	out << "// BEGIN USER INSERT SECTION file_pre\n";
 	out << "// END USER INSERT SECTION file_pre\n\n";
+	out << "#include <CORBA.h>\n";
 	out << "#include \"CORBADepends.h\"\n";
-	//out << "#include \"PSSStorageObject.h\"\n";
 	out << "#include \"StorageObject.h\"\n";
 	out << "#include \"StorageHomeBase.h\"\n";
+	out << "#include \"Catalog.h\"\n";
 	out << "#include \"PSSHelper.h\"\n\n";
+	out << "using namespace Qedo;\n\n";
 	out << "// BEGIN USER INSERT SECTION file_post\n";
 	out << "// END USER INSERT SECTION file_post\n";
 
@@ -84,7 +86,7 @@ GeneratorPersistenceH::check_for_generation(IR__::Contained_ptr item)
 		m_recursion_set.insert(item->id());
 
 	CORBA::ULong i;
-	CORBA::ULong len;
+	CORBA::ULong ulLen;
 
 	switch (item->def_kind())
 	{
@@ -94,20 +96,20 @@ GeneratorPersistenceH::check_for_generation(IR__::Contained_ptr item)
 
 		// modules
 		IR__::ContainedSeq_var contained_seq = a_module->contents(CORBA__::dk_Module, true);
-		len = contained_seq->length();
-		for(i = 0; i < len; i++)
+		ulLen = contained_seq->length();
+		for(i=0; i<ulLen; i++)
 			check_for_generation((*contained_seq)[i]);
 
 		// abstract storagehomes
 		contained_seq = a_module->contents(CORBA__::dk_AbstractStorageHome, true);
-		len = contained_seq->length();
-		for(i = 0; i < len; i++)
+		ulLen = contained_seq->length();
+		for(i=0; i<ulLen; i++)
 			check_for_generation((*contained_seq)[i]);
 
 		// storagehomes
 		contained_seq = a_module->contents(CORBA__::dk_StorageHome, true);
-		len = contained_seq->length();
-		for(i = 0; i < len; i++)
+		ulLen = contained_seq->length();
+		for(i=0; i<ulLen; i++)
 			check_for_generation((*contained_seq)[i]);
 
 		break; 
@@ -135,7 +137,7 @@ GeneratorPersistenceH::check_for_generation(IR__::Contained_ptr item)
 		this->insert_to_generate(item);
 
 		// managed abstract storage type
-		IR__::AbstractStorageTypeDef_var abs_storagetype = abs_storagehome->managed_abstract_storage_type();
+		IR__::AbstractStorageTypeDef_var abs_storagetype = abs_storagehome->managed_abstract_storagetype();
 		this->check_for_generation(abs_storagetype);
 
 		break;
@@ -147,7 +149,7 @@ GeneratorPersistenceH::check_for_generation(IR__::Contained_ptr item)
 		this->insert_to_generate(item);
 
 		// managed storage type
-		IR__::StorageTypeDef_var storagetype = storagehome->managed_storage_type();
+		IR__::StorageTypeDef_var storagetype = storagehome->managed_storagetype();
 		this->check_for_generation(storagetype);
 
 		break;
@@ -163,7 +165,7 @@ void
 GeneratorPersistenceH::genAttribute(IR__::StorageTypeDef_ptr storagetype)
 {
 	IR__::AttributeDefSeq state_members;
-	storagetype->get_StateMembers(state_members, CORBA__::dk_Variable);
+	storagetype->get_state_members(state_members, CORBA__::dk_Variable);
 	CORBA::ULong ulLen = state_members.length();
 	
 	out << "private:\n\n";
@@ -187,35 +189,35 @@ GeneratorPersistenceH::doAttribute(IR__::AttributeDef_ptr attribute)
 	IR__::IDLType_var attr_type = attribute->type_def();
 	
 	// read only
-	if(isAbstract) out << "virtual ";
+	if(m_isAbstract) out << "virtual ";
 	out << map_psdl_return_type(attr_type, true) << " " << attribute_name << "() const";
-	isAbstract ? out << " = 0;\n" : out << ";\n";
+	m_isAbstract ? out << " = 0;\n" : out << ";\n";
 
 	// not read only
 	if(attribute->mode() == IR__::ATTR_NORMAL)
 	{
-		if(isAbstract) out << "virtual ";
+		if(m_isAbstract) out << "virtual ";
 		out << map_psdl_return_type(attr_type, false) << " " << attribute_name << "(";
 		out << map_psdl_parameter_type(attr_type, false) << " param)";
-		isAbstract ? out << " = 0;\n" : out << ";\n";
+		m_isAbstract ? out << " = 0;\n" : out << ";\n";
 
-		if(isAbstract) out << "virtual ";
+		if(m_isAbstract) out << "virtual ";
 		out << "void " << attribute_name << "(";
 		out << map_psdl_parameter_type(attr_type, true) << " param)";
-		isAbstract ? out << " = 0;\n" : out << ";\n";
+		m_isAbstract ? out << " = 0;\n" : out << ";\n";
 
 		// the fourth operation only for string and wstring
 		if(attr_type->type()->kind()==CORBA::tk_string)
 		{
-			if(isAbstract) out << "virtual ";
+			if(m_isAbstract) out << "virtual ";
 			out << "void " << attribute_name << "(CORBA::String_var& param)";
-			isAbstract ? out << " = 0;\n" : out << ";\n";
+			m_isAbstract ? out << " = 0;\n" : out << ";\n";
 		}
 		else if(attr_type->type()->kind()==CORBA::tk_wstring)
 		{
-			if(isAbstract) out << "virtual ";
+			if(m_isAbstract) out << "virtual ";
 			out << "void " << attribute_name << "(CORBA::WString_var& param)";
-			isAbstract ? out << " = 0;\n" : out << ";\n";
+			m_isAbstract ? out << " = 0;\n" : out << ";\n";
 		}
 	}
 }
@@ -224,13 +226,12 @@ void
 GeneratorPersistenceH::genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type)
 {
 	out << "\n//\n// " << operation->id() << "\n//\n";
-	if(isAbstract) out << "virtual ";
+	if(m_isAbstract) out << "virtual ";
 	out << map_psdl_return_type(ret_type, false) << " " << mapName(operation) << "(";
 
 	// parameters
-	CORBA::ULong i;
 	IR__::ParDescriptionSeq_var pards = operation->params();
-	for( i=0; i<pards->length(); i++)
+	for( CORBA::ULong i=0; i<pards->length(); i++)
 	{
 		IR__::ParameterDescription pardescr = (*pards)[i];
 		if (pardescr.mode == IR__::PARAM_IN) {
@@ -245,7 +246,7 @@ GeneratorPersistenceH::genOperation(IR__::OperationDef_ptr operation, IR__::IDLT
 		if((i+1)!=pards->length()) { out << ", "; }
 	};
 
-	isAbstract ? out << ") = 0;\n" : out << ");\n";
+	m_isAbstract ? out << ") = 0;\n" : out << ");\n";
 }
 
 void
@@ -257,12 +258,12 @@ GeneratorPersistenceH::doOperation(IR__::OperationDef_ptr operation)
 void
 GeneratorPersistenceH::doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDef_ptr inf_def)
 {
-	if( (isAbstract==TRUE) || (isAbstract==FALSE && isASHKey==TRUE) )
+	if( (m_isAbstract==TRUE) || (m_isAbstract==FALSE && m_isASHKey==TRUE) )
 	{
 		IR__::AbstractStorageTypeDef_var abs_storagetype;
 		IR__::AbstractStorageHomeDef_var abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(inf_def);
 		if(!CORBA::is_nil(abs_storagehome))
-			abs_storagetype = abs_storagehome->managed_abstract_storage_type();
+			abs_storagetype = abs_storagehome->managed_abstract_storagetype();
 		if(!CORBA::is_nil(abs_storagetype))
 			genOperation(factory, abs_storagetype);
 	}
@@ -271,7 +272,7 @@ GeneratorPersistenceH::doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDe
 		IR__::StorageTypeDef_var storagetype;
 		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(inf_def);
 		if(!CORBA::is_nil(storagehome))
-			storagetype = storagehome->managed_storage_type();
+			storagetype = storagehome->managed_storagetype();
 		if(!CORBA::is_nil(storagetype))
 			genOperation(factory, storagetype);
 	}
@@ -281,7 +282,7 @@ void
 GeneratorPersistenceH::genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool isRef)
 {
 	if(!isRef) out << "\n//\n// " << operation->id() << "\n//\n";
-	if(isAbstract) out << "virtual ";
+	if(m_isAbstract) out << "virtual ";
 	char* szReturnType = map_psdl_return_type(ret_type, false);
 
 	//since the definition of a abstract stoage type is not yet supported, 
@@ -298,9 +299,8 @@ GeneratorPersistenceH::genKey(IR__::OperationDef_ptr operation, IR__::IDLType_pt
 	out << mapName(operation) << "(";
 
 	// parameters
-	CORBA::ULong i;
 	IR__::ParDescriptionSeq* pards = operation->params();
-	for( i=0; i<pards->length(); i++)
+	for( CORBA::ULong i=0; i<pards->length(); i++)
 	{
 		IR__::ParameterDescription pardescr = (*pards)[i];
 		if (pardescr.mode == IR__::PARAM_IN) {
@@ -327,18 +327,18 @@ GeneratorPersistenceH::genKey(IR__::OperationDef_ptr operation, IR__::IDLType_pt
 		out.unindent();
 	}
 	
-	isAbstract ? out << " = 0;\n" : out << ";\n";
+	m_isAbstract ? out << " = 0;\n" : out << ";\n";
 }
 
 void
 GeneratorPersistenceH::doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_def)
 {
-	if( (isAbstract==TRUE) || (isAbstract==FALSE && isASHKey==TRUE) )
+	if( (m_isAbstract==TRUE) || (m_isAbstract==FALSE && m_isASHKey==TRUE) )
 	{
 		IR__::AbstractStorageTypeDef_var abs_storagetype;
 		IR__::AbstractStorageHomeDef_var abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(inf_def);
 		if(!CORBA::is_nil(abs_storagehome))
-			abs_storagetype = abs_storagehome->managed_abstract_storage_type();
+			abs_storagetype = abs_storagehome->managed_abstract_storagetype();
 		if(!CORBA::is_nil(abs_storagetype))
 		{
 			genKey(key, abs_storagetype, false);
@@ -350,7 +350,7 @@ GeneratorPersistenceH::doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_de
 		IR__::StorageTypeDef_var storagetype;
 		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(inf_def);
 		if(!CORBA::is_nil(storagehome))
-			storagetype = storagehome->managed_storage_type();
+			storagetype = storagehome->managed_storagetype();
 		if(!CORBA::is_nil(storagetype))
 		{
 			genKey(key, storagetype, false);
@@ -374,14 +374,14 @@ GeneratorPersistenceH::genAbstractStorageTypeBody(IR__::AbstractStorageTypeDef_p
 	isRef ? out << "Ref\n" : out << "\n";
 	out.indent();
 	
-	IR__::InterfaceDefSeq_var abs_storagetype_seq = abs_storagetype->base_abstract_storage_types();
+	IR__::InterfaceDefSeq_var abs_storagetype_seq = abs_storagetype->base_abstract_storagetypes();
 	if(abs_storagetype_seq->length()==0)
 	{
 		out << ": public virtual CosPersistentState::StorageObject";
 		isRef ? out << "Ref\n" : out << "\n";
 	}
 	else
-		for(CORBA::ULong i = 0; i < abs_storagetype_seq->length(); i++) 
+		for(CORBA::ULong i=0; i<abs_storagetype_seq->length(); i++) 
 		{
 			i==0 ? out << ": " : out << ", ";
 			out << "public virtual " << ((*abs_storagetype_seq)[i])->name();
@@ -396,7 +396,7 @@ GeneratorPersistenceH::genAbstractStorageTypeBody(IR__::AbstractStorageTypeDef_p
 	out << "~" << class_name;
 	isRef ? out << "Ref();\n" : out << "();\n";
 
-	isAbstract = true;
+	m_isAbstract = true;
 	handleAttribute(abs_storagetype);
 	handleOperation(abs_storagetype);
 
@@ -434,15 +434,15 @@ GeneratorPersistenceH::doAbstractStorageType(IR__::AbstractStorageTypeDef_ptr ab
 void
 GeneratorPersistenceH::genAbstractObjsForConcreteType(IR__::AbstractStorageTypeDef_ptr abs_storagetype)
 {
-	IR__::InterfaceDefSeq_var abs_storagetype_seq = abs_storagetype->base_abstract_storage_types();
-	for(CORBA::ULong i = 0; i < abs_storagetype_seq->length(); i++) 
+	IR__::InterfaceDefSeq_var abs_storagetype_seq = abs_storagetype->base_abstract_storagetypes();
+	for(CORBA::ULong i=0; i<abs_storagetype_seq->length(); i++) 
 	{
-		isAbstract = false;
+		m_isAbstract = false;
 		handleAttribute((*abs_storagetype_seq)[i]);
 		handleOperation((*abs_storagetype_seq)[i]);
 	}
 
-	isAbstract = false;
+	m_isAbstract = false;
 	handleAttribute(abs_storagetype);
 	handleOperation(abs_storagetype);
 }
@@ -456,7 +456,7 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	isRef ? out << "Ref\n" : out << "\n";
 	out.indent();
 	
-	IR__::StorageTypeDef_var base_storagetype = storagetype->base_storage_type();
+	IR__::StorageTypeDef_var base_storagetype = storagetype->base_storagetype();
 	if(base_storagetype)
 	{
 		out << ": public virtual " << base_storagetype->name();
@@ -465,11 +465,11 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	else
 	{
 		out << ": public virtual StorageObjectImpl";
-		isRef ? out << "Ref,\n" : out << "\n";
+		isRef ? out << "Ref\n" : out << "\n";
 	}
 
 	IR__::InterfaceDefSeq_var supported_infs = storagetype->supported_interfaces();
-	for(CORBA::ULong i = 0; i < supported_infs->length(); i++)
+	for(CORBA::ULong i=0; i<supported_infs->length(); i++)
 	{
 		out << ", public virtual " << ((*supported_infs)[i])->name();
 		isRef ? out << "Ref\n" : out << "\n";
@@ -487,14 +487,14 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	out << "~" << class_name;
 	isRef ? out << "Ref();\n" : out << "();\n";
 
-	for(CORBA::ULong i = 0; i < supported_infs->length(); i++) 
+	for(CORBA::ULong i=0; i<supported_infs->length(); i++) 
 	{
 		IR__::AbstractStorageTypeDef_var abs_storagetype_inh;
 		abs_storagetype_inh = IR__::AbstractStorageTypeDef::_narrow((*supported_infs)[i]);
 		genAbstractObjsForConcreteType(abs_storagetype_inh);
 	};
 
-	isAbstract = false;
+	m_isAbstract = false;
 	handleAttribute(storagetype);
 	handleOperation(storagetype);
 
@@ -507,8 +507,7 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	isRef ? out << "Ref\n" : out << "\n";
 	out << "// END USER INSERT SECTION " << class_name;
 	isRef ? out << "Ref\n" : out << "\n\n";
-	out << "};\n";
-	out << "\n\n";
+	out << "};\n\n\n";
 }
 
 void 
@@ -530,8 +529,7 @@ GeneratorPersistenceH::doStorageType(IR__::StorageTypeDef_ptr storagetype)
 void 
 GeneratorPersistenceH::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome)
 {
-	IR__::AbstractStorageTypeDef_var abs_storagetype = 
-		IR__::AbstractStorageTypeDef::_duplicate(abs_storagehome->managed_abstract_storage_type());
+	IR__::AbstractStorageTypeDef_var abs_storagetype = abs_storagehome->managed_abstract_storagetype();
 
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";
@@ -543,11 +541,11 @@ GeneratorPersistenceH::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr ab
 	out << "class " << class_name << "\n";
 	out.indent();
 	
-	IR__::InterfaceDefSeq_var abs_storagehome_seq = abs_storagehome->base_abstract_storage_homes();
+	IR__::InterfaceDefSeq_var abs_storagehome_seq = abs_storagehome->base_abstract_storagehomes();
 	if(abs_storagehome_seq->length()==0)
 		out << ": public virtual CosPersistentState::StorageHomeBase\n";
 	else
-		for(CORBA::ULong i = 0; i < abs_storagehome_seq->length(); i++)
+		for(CORBA::ULong i=0; i<abs_storagehome_seq->length(); i++)
 		{
 			i==0 ? out << ": " : out << ", ";
 			out << "public virtual " << ((*abs_storagehome_seq)[i])->name() << "\n";
@@ -559,7 +557,7 @@ GeneratorPersistenceH::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr ab
     out << class_name << "();\n";
 	out << "~" << class_name << "();\n";
 
-	isAbstract = true;
+	m_isAbstract = true;
 	handleAttribute(abs_storagehome);
 	handleOperation(abs_storagehome);
 	handleFactory(abs_storagehome);
@@ -577,21 +575,21 @@ GeneratorPersistenceH::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr ab
 void
 GeneratorPersistenceH::genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome)
 {
-	IR__::InterfaceDefSeq_var abs_storagehome_seq = abs_storagehome->base_abstract_storage_homes();
-	for(CORBA::ULong i = 0; i < abs_storagehome_seq->length(); i++) 
+	IR__::InterfaceDefSeq_var abs_storagehome_seq = abs_storagehome->base_abstract_storagehomes();
+	for(CORBA::ULong i=0; i<abs_storagehome_seq->length(); i++) 
 	{
 		IR__::AbstractStorageHomeDef_var abs_storagehome_inh;
 		abs_storagehome_inh = IR__::AbstractStorageHomeDef::_narrow((*abs_storagehome_seq)[i]);
-		isAbstract = false;
-		isASHKey = true;
+		m_isAbstract = false;
+		m_isASHKey = true;
 		handleAttribute(abs_storagehome_inh);
 		handleOperation(abs_storagehome_inh);
 		handleFactory(abs_storagehome_inh);
 		handleKey(abs_storagehome_inh);
 	}
 
-	isAbstract = false;
-	isASHKey = true;
+	m_isAbstract = false;
+	m_isASHKey = true;
 	handleAttribute(abs_storagehome);
 	handleOperation(abs_storagehome);
 	handleFactory(abs_storagehome);
@@ -603,7 +601,7 @@ GeneratorPersistenceH::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 {
 	int iLength = 0;
 	string strDummy = "";
-	char* szDisplay = map_psdl_return_type(storagehome->managed_storage_type(), false);
+	char* szDisplay = map_psdl_return_type(storagehome->managed_storagetype(), false);
 	isRef ? iLength = strlen(szDisplay) + 11 : iLength = strlen(szDisplay) + 9;
 	
 	if(isRef)
@@ -619,13 +617,13 @@ GeneratorPersistenceH::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out << szDisplay << " _create(";
 	
 	IR__::AttributeDefSeq state_members;
-	storagehome->managed_storage_type()->get_StateMembers(state_members, CORBA__::dk_Create);
-	CORBA::ULong len = state_members.length();
-	for(CORBA::ULong i = 0; i < len; i++)
+	storagehome->managed_storagetype()->get_state_members(state_members, CORBA__::dk_Create);
+	CORBA::ULong ulLen = state_members.length();
+	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
-		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
-		out << map_in_parameter_type(a_attribute->type_def()) << " " << mapName(a_attribute);
-		if( (i+1)!=len )
+		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		out << map_in_parameter_type(attribute->type_def()) << " " << mapName(attribute);
+		if( (i+1)!=ulLen )
 		{
 			out << ",\n";
 			strDummy = "";
@@ -647,8 +645,7 @@ GeneratorPersistenceH::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 void 
 GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 {
-	IR__::StorageTypeDef_var storagetype = 
-		IR__::StorageTypeDef::_duplicate(storagehome->managed_storage_type());
+	IR__::StorageTypeDef_var storagetype = storagehome->managed_storagetype();
 
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";
@@ -660,7 +657,7 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	out << "class " << class_name << "\n";
 	out.indent();
 	
-	IR__::StorageHomeDef_var base_storagehome = storagehome->base_storage_home();
+	IR__::StorageHomeDef_var base_storagehome = storagehome->base_storagehome();
 	if(base_storagehome)
 		out << ": public virtual " << base_storagehome->name() << "\n";
 	else
@@ -681,15 +678,15 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	genCreateOperation(storagehome, false);
 	genCreateOperation(storagehome, true);
 
-	for(CORBA::ULong i = 0; i < supported_infs->length(); i++) 
+	for(CORBA::ULong i=0; i<supported_infs->length(); i++) 
 	{
 		IR__::AbstractStorageHomeDef_var abs_storagehome_inh;
 		abs_storagehome_inh = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
 		genAbstractObjsForConcreteHome(abs_storagehome_inh);
 	};
 
-	isAbstract = false;
-	isASHKey = false;
+	m_isAbstract = false;
+	m_isASHKey = false;
 	handleAttribute(storagehome);
 	handleOperation(storagehome);
 	handleFactory(storagehome);
@@ -703,8 +700,7 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 
 	out << "\n// BEGIN USER INSERT SECTION " << class_name << "\n";
 	out << "// END USER INSERT SECTION " << class_name << "\n\n";
-	out << "};\n";
-	out << "\n\n";
+	out << "};\n\n\n";
 
 	close_module(out, storagetype);
 }

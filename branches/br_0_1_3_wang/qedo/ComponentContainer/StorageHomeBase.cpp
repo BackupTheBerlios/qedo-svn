@@ -253,7 +253,7 @@ StorageHomeBaseImpl::ValuePaser( map<string, CORBA::Any>& valueMap )
 		
 		switch(nType)
 		{
-			case SQL_CHAR:
+			case SQL_CHAR: // also for CORBA::Boolean
 			case SQL_VARCHAR:
 				memset(szData, '\0', 1024);
 				GetFieldValue(iCol, szData);

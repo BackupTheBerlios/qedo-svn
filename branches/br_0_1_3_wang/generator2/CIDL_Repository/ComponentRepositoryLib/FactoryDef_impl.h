@@ -46,11 +46,11 @@ public:
 
 	FactoryDef_impl ( Container_impl *container,
 						Repository_impl *repository,
-						AbstractStorageTypeDef_impl *abs_storage_type );
+						AbstractStorageTypeDef_impl *abs_storagetype );
 
 	FactoryDef_impl ( Container_impl *container,
 						Repository_impl *repository,
-						StorageTypeDef_impl *storage_type );
+						StorageTypeDef_impl *storagetype );
 
 	~FactoryDef_impl();
 

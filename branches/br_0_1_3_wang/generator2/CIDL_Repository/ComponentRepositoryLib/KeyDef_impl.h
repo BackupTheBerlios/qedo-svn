@@ -39,8 +39,8 @@ class KeyDef_impl : public virtual POA_IR__::KeyDef,
 {
 public:
 	KeyDef_impl ( Container_impl *container,
-						Repository_impl *repository,
-						InterfaceDef_impl *infDef_impl );
+					Repository_impl *repository,
+					InterfaceDef_impl *infDef_impl );
 
 	~KeyDef_impl();
 

@@ -22,7 +22,6 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
 /*                                                                           */
 /*****************************************************************************/
-
 #ifndef __ABS_STORAGEHOME_DEF_IMPL_H__
 #define __ABS_STORAGEHOME_DEF_IMPL_H__
 
@@ -31,19 +30,23 @@
 #include "Repository_impl.h"
 #include "InterfaceDef_impl.h"
 #include "AbsStorageTypeDef_impl.h"
+#include "FactoryDef_impl.h"
+#include "KeyDef_impl.h"
+#include "Debug.h"
+
 
 namespace QEDO_ComponentRepository {
 
 class AbstractStorageHomeDef_impl : public virtual POA_IR__::AbstractStorageHomeDef,
-							public virtual InterfaceDef_impl
+									public virtual InterfaceDef_impl
 {
-	AbstractStorageTypeDef_impl *managed_abstract_storage_type_impl_;
-	vector < AbstractStorageHomeDef_impl* > base_abstract_storage_home_impls_;
+	AbstractStorageTypeDef_impl *managed_abstract_storagetype_impl_;
+	vector < AbstractStorageHomeDef_impl* > base_abstract_storagehome_impls_;
 
 public:
 	AbstractStorageHomeDef_impl ( Container_impl *container,
-							Repository_impl *repository,
-							AbstractStorageTypeDef_impl *managed_abstract_storage_type_impl);
+									Repository_impl *repository,
+									AbstractStorageTypeDef_impl *managed_abstract_storagetype_impl);
 
 	~AbstractStorageHomeDef_impl();
 
@@ -69,17 +72,17 @@ public:
         throw(CORBA::SystemException);
 
     //
-    // IDL:omg.org/IR__/AbstractStorageHomeDef/managed_abstract_storage_type:1.0
+    // IDL:omg.org/IR__/AbstractStorageHomeDef/managed_abstract_storagetype:1.0
     //
-    virtual IR__::AbstractStorageTypeDef_ptr managed_abstract_storage_type()
+    virtual IR__::AbstractStorageTypeDef_ptr managed_abstract_storagetype()
         throw(CORBA::SystemException);
 
     //
-    // IDL:omg.org/IR__/AbstractStorageHomeDef/base_abstract_storage_homes:1.0
+    // IDL:omg.org/IR__/AbstractStorageHomeDef/base_abstract_storagehomes:1.0
     //
-    virtual IR__::InterfaceDefSeq* base_abstract_storage_homes()
+    virtual IR__::InterfaceDefSeq* base_abstract_storagehomes()
         throw(CORBA::SystemException);
-    virtual void base_abstract_storage_homes(const IR__::InterfaceDefSeq& seq)
+    virtual void base_abstract_storagehomes(const IR__::InterfaceDefSeq& seq)
         throw(CORBA::SystemException);
 
     //
@@ -98,19 +101,19 @@ public:
     // IDL:omg.org/IR__/AbstractStorageHomeDef/create_factory:1.0
     //
     virtual IR__::FactoryDef_ptr create_factory(const char* id,
-                                                   const char* name,
-                                                   const char* version,
-                                                   const IR__::ParDescriptionSeq& params,
-                                                   const IR__::ExceptionDefSeq& exceptions)
+                                                const char* name,
+                                                const char* version,
+                                                const IR__::ParDescriptionSeq& params,
+                                                const IR__::ExceptionDefSeq& exceptions)
         throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/AbstractStorageHomeDef/create_key:1.0
     //
     virtual IR__::KeyDef_ptr create_key(const char* id,
-                                                 const char* name,
-                                                 const char* version,
-                                                 const IR__::ParDescriptionSeq& params)
+                                        const char* name,
+                                        const char* version,
+                                        const IR__::ParDescriptionSeq& params)
         throw(CORBA::SystemException);
 };
 

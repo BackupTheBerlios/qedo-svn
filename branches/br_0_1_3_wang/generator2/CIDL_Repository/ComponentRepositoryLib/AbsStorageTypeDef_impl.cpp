@@ -22,16 +22,14 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
 /*                                                                           */
 /*****************************************************************************/
-
 #include "AbsStorageTypeDef_impl.h"
-#include "Debug.h"
+
 
 namespace QEDO_ComponentRepository {
 
 AbstractStorageTypeDef_impl::AbstractStorageTypeDef_impl
 ( Container_impl *container,
   Repository_impl *repository )
-  
 : IRObject_impl ( repository ),
   IDLType_impl ( repository ),
   Container_impl ( repository ),
@@ -57,8 +55,8 @@ throw(CORBA::SystemException)
 	unsigned int i;
 
 	// Release all inherited interface impls
-    for ( i = 0 ; i < base_abs_storage_type_impls_.size() ; i++)
-        base_abs_storage_type_impls_[i] -> _remove_ref();
+    for ( i = 0 ; i < base_abstract_storagetype_impls_.size() ; i++)
+        base_abstract_storagetype_impls_[i] -> _remove_ref();
 
 	InterfaceDef_impl::destroy();
 }
@@ -70,23 +68,23 @@ throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "AbstractStorageTypeDef_impl::describe() called" );
 
-	IR__::AbstractStorageTypeDescription_var storage_type_desc = new IR__::AbstractStorageTypeDescription();
-	storage_type_desc -> id = this -> id();
-	storage_type_desc -> name = this -> name();
-	storage_type_desc -> version = this -> version();
+	IR__::AbstractStorageTypeDescription_var storagetype_desc = new IR__::AbstractStorageTypeDescription();
+	storagetype_desc -> id = this -> id();
+	storagetype_desc -> name = this -> name();
+	storagetype_desc -> version = this -> version();
 
 	Contained_impl *contained = dynamic_cast<Contained_impl*>(defined_in_);
 	if ( contained )
-		storage_type_desc -> defined_in = CORBA::string_dup ( contained -> id() );
+		storagetype_desc -> defined_in = CORBA::string_dup ( contained -> id() );
 	else
-		storage_type_desc -> defined_in = CORBA::string_dup ( "" );
+		storagetype_desc -> defined_in = CORBA::string_dup ( "" );
 
 	unsigned int i;
 
 	// derived interfaces
-	storage_type_desc -> base_abstract_storage_types.length ( base_abs_storage_type_impls_.size() );
-	for ( i = 0; i < base_abs_storage_type_impls_.size(); i++ )
-		storage_type_desc -> base_abstract_storage_types[i] = base_abs_storage_type_impls_[i] -> id();
+	storagetype_desc -> base_abstract_storagetypes.length ( base_abstract_storagetype_impls_.size() );
+	for ( i = 0; i < base_abstract_storagetype_impls_.size(); i++ )
+		storagetype_desc -> base_abstract_storagetypes[i] = base_abstract_storagetype_impls_[i] -> id();
 
 	// Operations and Attributes
 	list < Contained_impl* >::const_iterator contained_iter;
@@ -112,8 +110,8 @@ throw(CORBA::SystemException)
 				// This cannot be, what to do???
 				throw;
 			}
-			storage_type_desc -> attributes.length ( storage_type_desc -> attributes.length() + 1 );
-			storage_type_desc -> attributes[storage_type_desc -> attributes.length() - 1] = *attr_desc;
+			storagetype_desc -> attributes.length ( storagetype_desc -> attributes.length() + 1 );
+			storagetype_desc -> attributes[storagetype_desc -> attributes.length() - 1] = *attr_desc;
 		}
 
 		// Do Operations
@@ -132,51 +130,45 @@ throw(CORBA::SystemException)
 				// This cannot be, what to do???
 				throw;
 			}
-			storage_type_desc -> operations.length ( storage_type_desc -> operations.length() + 1 );
-			storage_type_desc -> operations[storage_type_desc -> operations.length() - 1] = *operation_desc;
+			storagetype_desc -> operations.length ( storagetype_desc -> operations.length() + 1 );
+			storagetype_desc -> operations[storagetype_desc -> operations.length() - 1] = *operation_desc;
 		}
 	}
 
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
 	CORBA::Any any;
-	any <<= storage_type_desc._retn();;
+	any <<= storagetype_desc._retn();;
 	desc -> value = any;
 
 	return desc._retn();
 }
 
 IR__::InterfaceDefSeq* 
-AbstractStorageTypeDef_impl::base_abstract_storage_types
+AbstractStorageTypeDef_impl::base_abstract_storagetypes
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "AbstractStorageTypeDef_impl::base_abstract_storage_types() called" );
+	DEBUG_OUTLINE ( "AbstractStorageTypeDef_impl::base_abstract_storagetypes() called" );
 	
 	IR__::InterfaceDefSeq_var inherited_seq = new IR__::InterfaceDefSeq;
 
-	inherited_seq -> length ( base_abs_storage_type_impls_.size() );
+	inherited_seq -> length ( base_abstract_storagetype_impls_.size() );
 
 	for ( unsigned int i = 0; i < inherited_seq -> length(); i++ )
-		inherited_seq.inout()[i] = base_abs_storage_type_impls_[i] -> _this();
+		inherited_seq.inout()[i] = base_abstract_storagetype_impls_[i] -> _this();
 
 	return inherited_seq._retn();
 }
 
 void 
-AbstractStorageTypeDef_impl::base_abstract_storage_types
+AbstractStorageTypeDef_impl::base_abstract_storagetypes
 (const IR__::InterfaceDefSeq& seq)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "AbstractStorageTypeDef_impl::base_abstract_storage_types(...) called" );
+	DEBUG_OUTLINE ( "AbstractStorageTypeDef_impl::base_abstract_storagetypes(...) called" );
 
     unsigned int i;
-
-	// Check: Derived storage types may not directly support an interface
-	//if ( base_storage_type_impl_ && seq.length() > 0 )
-	//{
-	//	throw CORBA::BAD_PARAM();
-	//}
 
 	// Check for name clash for each derived interface
 	for ( i = 0; i < seq.length(); i++ )
@@ -231,31 +223,31 @@ throw(CORBA::SystemException)
     for ( i = 0; i < impl_seq.size(); i++ )
         impl_seq[i] -> _add_ref();
 
-    for ( i = 0; i < base_abs_storage_type_impls_.size(); i++)
-        base_abs_storage_type_impls_[i] -> _remove_ref();
+    for ( i = 0; i < base_abstract_storagetype_impls_.size(); i++)
+        base_abstract_storagetype_impls_[i] -> _remove_ref();
 
-    base_abs_storage_type_impls_ = impl_seq;
+    base_abstract_storagetype_impls_ = impl_seq;
 }
 
 void
-AbstractStorageTypeDef_impl::get_StateMembers
+AbstractStorageTypeDef_impl::get_state_members
 (IR__::AttributeDefSeq& state_members, CORBA__::CollectStyle style)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "AbstractStorageTypeDef_impl::get_StateMembers() called" );
+	DEBUG_OUTLINE ( "AbstractStorageTypeDef_impl::get_state_members() called" );
 	
 	CORBA::ULong i = 0;
 	CORBA::ULong len = 0;
 	if( (style==CORBA__::dk_Create) || (style==CORBA__::dk_Variable) )
 	{
 		//++ proceed with the leftmost implemented abstract storage type
-		IR__::InterfaceDefSeq_var abs_storagetypes = base_abstract_storage_types();
+		IR__::InterfaceDefSeq_var abs_storagetypes = base_abstract_storagetypes();
 		len = abs_storagetypes->length();
 		for(i=0; i<len; i++)
 		{
-			IR__::AbstractStorageTypeDef* abs_storagetype = 
+			IR__::AbstractStorageTypeDef_var abs_storagetype = 
 				IR__::AbstractStorageTypeDef::_narrow(((*abs_storagetypes)[i]));
-			abs_storagetype->get_StateMembers(state_members, style);
+			abs_storagetype->get_state_members(state_members, style);
 		}
 
 		//++ and then, itself
@@ -292,13 +284,13 @@ throw(CORBA::SystemException)
 			state_members[i+ulPre] = a_attribute;
 		}
 
-		IR__::InterfaceDefSeq_var abs_storagetypes = base_abstract_storage_types();
+		IR__::InterfaceDefSeq_var abs_storagetypes = base_abstract_storagetypes();
 		len = abs_storagetypes->length();
 		for(i=0; i<len; i++)
 		{
-			IR__::AbstractStorageTypeDef* abs_storagetype = 
+			IR__::AbstractStorageTypeDef_var abs_storagetype = 
 				IR__::AbstractStorageTypeDef::_narrow(((*abs_storagetypes)[i]));
-			abs_storagetype->get_StateMembers(state_members, style);
+			abs_storagetype->get_state_members(state_members, style);
 		}
 	}
 }

@@ -78,7 +78,7 @@ public:
                                                 const char* name,
                                                 const char* version,
                                                 const IR__::ProvidesDefSeq& provided_facets,
-												IR__::AbstractStorageHomeDef_ptr abs_storage_home)
+												IR__::AbstractStorageHomeDef_ptr abs_storagehome)
         throw(CORBA::SystemException);
 };
 

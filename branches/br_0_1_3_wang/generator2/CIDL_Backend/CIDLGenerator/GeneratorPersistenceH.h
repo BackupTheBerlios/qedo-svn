@@ -42,11 +42,10 @@ class GeneratorPersistenceH : public virtual CPPBase
 private:
 
 	Printer out;
-	bool isAbstract;
-	bool isASHKey; // key is from abstract storage home
+	bool m_isAbstract;
+	bool m_isASHKey; // key is from abstract storage home
 	std::string m_filename;
 	std::set<std::string> m_recursion_set;
-
 
 	void check_for_generation(IR__::Contained_ptr item);
 
@@ -81,6 +80,4 @@ public:
 
 
 } // namespace
-
-
 #endif

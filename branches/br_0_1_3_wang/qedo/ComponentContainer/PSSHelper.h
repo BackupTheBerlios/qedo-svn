@@ -38,17 +38,15 @@ class CONTAINERDLL_API PSSHelper
 	public:
 
 		static string convertPidToString( const Pid& rPid );
-
-		static string convertSpidToString( const ShortPid& rSpid );
-
 		static string convertPidToString( const Pid* rPid );
 
+		static string convertSpidToString( const ShortPid& rSpid );
 		static string convertSpidToString( const ShortPid* rSpid );
 
+		static void convertStringToPid( const char* szPid, Pid& rPid );
 		static void convertStringToSpid( const char* szSpid, ShortPid& rSpid );
 		
 		static bool comparePid(const Pid& rSrc, const Pid& rDest);
-
 		static bool compareShortPid(const ShortPid& rSrc, const ShortPid& rDest);
 
 		static string convertBool2String(bool bc);

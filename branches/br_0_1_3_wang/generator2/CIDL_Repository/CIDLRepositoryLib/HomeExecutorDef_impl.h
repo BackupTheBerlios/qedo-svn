@@ -39,7 +39,7 @@ class HomeExecutorDef_impl : public virtual POA_CIDL::HomeExecutorDef,
 {
 	IR__::AbstractStorageHomeDef_ptr binds_to_;
 	CIDL::DelegationSeq delegations_;
-	CIDL::AbsStorageHomeDelegationSeq abs_storage_home_delegations_;
+	CIDL::AbsStorageHomeDelegationSeq abs_storagehome_delegations_;
 
 public:
 	HomeExecutorDef_impl ( Container_impl *container,
@@ -78,11 +78,11 @@ public:
         throw(CORBA::SystemException);
 
 	//
-    // IDL:omg.org/CIDL/HomeExecutorDef/abs_storage_home_delegations:1.0
+    // IDL:omg.org/CIDL/HomeExecutorDef/abs_storagehome_delegations:1.0
     //
-    virtual CIDL::AbsStorageHomeDelegationSeq* abs_storage_home_delegations()
+    virtual CIDL::AbsStorageHomeDelegationSeq* abs_storagehome_delegations()
 		throw(CORBA::SystemException);
-    virtual void abs_storage_home_delegations(const CIDL::AbsStorageHomeDelegationSeq&)
+    virtual void abs_storagehome_delegations(const CIDL::AbsStorageHomeDelegationSeq&)
 		throw(CORBA::SystemException);
 
     //
