@@ -834,7 +834,7 @@ GeneratorVC7::generateServant()
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCLinkerTool\"\n";
-	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib obd.lib jtcd.lib\"\n";
+	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib qedoutil.lib obd.lib jtcd.lib\"\n";
 	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
 	out << "LinkIncremental=\"2\"\n";
 	out << "AdditionalLibraryDirectories=\"$(QEDO)/lib;$(ORBACUS)/lib\"\n";
@@ -908,7 +908,7 @@ GeneratorVC7::generateServant()
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCLinkerTool\"\n";
-	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib mico2311.lib pthreadVC.lib\"\n";
+	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib qedoutil.lib mico2311.lib pthreadVC.lib\"\n";
 	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
 	out << "LinkIncremental=\"2\"\n";
 	out << "AdditionalLibraryDirectories=\"$(QEDO)/lib;$(MICO)/win32-bin/lib\"\n";
@@ -981,7 +981,7 @@ GeneratorVC7::generateServant()
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCLinkerTool\"\n";
-	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib aced.lib TAOd.lib\"\n";
+	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib qedoutil.lib aced.lib TAOd.lib\"\n";
 	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
 	out << "LinkIncremental=\"2\"\n";
 	out << "AdditionalLibraryDirectories=\"$(QEDO)/lib;$(ORBACUS)/lib\"\n";
