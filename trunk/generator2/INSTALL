@@ -62,17 +62,32 @@ TAO comes with the ACE Framework (Version 5.3).
 To install TAO you have to do at least the following steps.
 obtain software:
 	Version TAO 1.3 ACE 5.3
-	get from : http://www.cs.wustl.edu/~schmidt/TAO.html
-install/compile
+	get from: http://www.cs.wustl.edu/~schmidt/TAO.html
+install/compile:
 	ACE_ROOT = C:\ACE_WRAPPERS
 	TAO_ROOT = C:\ACE_WRAPPERS\TAO
 	TAO      = C:\ACE_WRAPPERS
-	create a config.h in ACE
+	create a config.h in %ACE_WRAPPERS%\ace:
+		#define ACE_HAS_STANDARD_CPP_LIBRARY 1
+		#include "ace/config-win32.h"
+	use the TAO workspace provided at %ACE_ROOT%\tao to compile TAO
+	there are a lot of project you need at least to compile these ones:
+		TAO_IDL
+		PortableServer
+		DynamicAny
+
+
 
 
 MICO version 2.3.7
 ------------------------------------------------------------------------------
-
+To install MICO you have to to at least the following steps.
+obtain software:
+	version MICO 2.3.7
+	get from: http://www.mico.org/
+install/compile:
+	MICO = (e.g. C:\MICO)
+	add path %MICO%\win32-bin to VC++ extras/options/directories/executable files
 
 2. Development Environment
 ==========================
