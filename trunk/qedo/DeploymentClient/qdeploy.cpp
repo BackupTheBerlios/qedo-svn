@@ -30,7 +30,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qdeploy.cpp,v 1.15 2003/10/29 17:23:40 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qdeploy.cpp,v 1.16 2003/11/14 15:18:31 boehme Exp $";
 
 
 /**
@@ -44,6 +44,7 @@ printUsage()
 {
 	std::cerr << "usage : qdeploy [options] <package>" << std::endl;
 	std::cerr << "        [--help|-h] : print this" << std::endl;
+	std::cerr << "        -s don't wait for a key press, sleep 1 sec" << std::endl;
 	std::cerr << "        -f : <package> is a local file" << std::endl;
 	std::cerr << "        <package> is the URL of an assembly package" << std::endl;
 }
@@ -68,6 +69,7 @@ main (int argc, char** argv)
 
 	std::string package = argv[argc - 1];
 	bool debug_mode = false;
+	bool sleep_mode = false;
 
     for(int i = 1; i < argc;)
     {
@@ -80,6 +82,10 @@ main (int argc, char** argv)
 		else if(strcmp(option, "--debug") == 0)
 		{
 			debug_mode = true;
+		}
+		else if(strcmp(option, "-s") == 0)
+		{
+			sleep_mode = true;
 		}
 		else if(strcmp(option, "-f") == 0)
 		{
@@ -149,8 +155,19 @@ main (int argc, char** argv)
 	//
 	// wait
 	//
+	if ( sleep_mode )
+	{
+#ifdef _WIN32
+		Sleep(1000);
+#else
+		sleep(1);
+#endif
+	}
+	else
+	{
     std::cout << "..... please press any key to destroy and undeploy the Assembly ..." << std::endl;
     getchar();
+	}
 	//
 	// undeploy the assembly
 	//
