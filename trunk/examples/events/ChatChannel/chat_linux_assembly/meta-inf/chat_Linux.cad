@@ -24,7 +24,7 @@
 	<processcollocation>
 		<homeplacement id="ReaderHome">
 	        	<componentfileref idref="Reader_file"/>
-				<componentimplref idref="UUID-62c5b725-b870-421b-9dea-6b0805296a36"/>
+				<componentimplref idref="UUID-d4eb84e6-9929-4d07-bc41-c973b1a1f9d5"/>
   	        	<componentinstantiation id="reader">
 			</componentinstantiation>
 
@@ -36,7 +36,7 @@
 
 		<homeplacement id="ChannelHome">
 			<componentfileref idref="Channel_file"/>
-				<componentimplref idref="UUID-d9c5228c-72af-404f-8ab2-bebea0b81e80"/>
+				<componentimplref idref="UUID-1d2ee222-9592-4819-996f-8cf90d65565b"/>
 			<componentinstantiation id="channel">
 			</componentinstantiation>
 
@@ -48,7 +48,7 @@
 
 		<homeplacement id="WriterHome">
 			<componentfileref idref="Writer_file"/>
-				<componentimplref idref="UUID-b683596d-123f-49da-9653-ce5541113983"/>
+				<componentimplref idref="UUID-0ef50e60-f613-4e3e-91da-37c71d21c6c9"/>
 			<componentinstantiation id="writer">
 			</componentinstantiation>
 
@@ -81,9 +81,9 @@
             </consumesport>
 
             <emitsport>
-                <publishesidentifier>to_channel</publishesidentifier>
+                <emitsidentifier>to_channel</emitsidentifier>
                 <componentinstantiationref idref="writer"/>
-            </publishesport>
+            </emitsport>
         </connectevent>
 
     </connections>

@@ -12,7 +12,7 @@ CPP_FILES = Chat_Channel_Compo_EQUIVALENT.cpp \
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
 
-CLEAN_FILES = OBJ_FILES libChat_Channel_Compo_SERVANT.so
+CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} libChat_Channel_Compo_SERVANT.so
 
 CXXFLAGS += -I.
 
