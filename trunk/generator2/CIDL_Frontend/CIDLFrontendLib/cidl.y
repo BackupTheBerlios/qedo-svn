@@ -748,7 +748,7 @@ value_abs_dcl :
 value_abs_header :
  	  TOK_abstract TOK_valuetype TOK_identifier value_inheritance_spec 
 	  { $$ = AbstractValueType(ValueHeader(NilFlag(),$3,$4),Nildefinition_list()); 
-      add_value_type($3,$$,$4);
+      add_abs_value_type($3,$$,$4);
     }
  ;
 

@@ -584,8 +584,27 @@ add_eventtype(
 }
 
 void
+add_abs_value_type(
+  idl_name name,
+  definition def_v, 
+  value_inheritance_spec inh_spec_v)
+{
+  _add_value_type(name,the_AbstractValueTypeN,def_v,inh_spec_v);
+}
+
+void
 add_value_type(
+  idl_name name,
+  definition def_v, 
+  value_inheritance_spec inh_spec_v)
+{
+  _add_value_type(name,the_ValueTypeN,def_v,inh_spec_v);
+}
+
+static void
+_add_value_type(
   idl_name name, 
+  node_flag abs_or_normal,
   definition def_v, 
   value_inheritance_spec inh_spec_v)
 {
@@ -630,7 +649,7 @@ add_value_type(
     }
     default: {}
   }
-  add_name(true,ValueTypeN(),name,def_v,inh_v);
+  add_name(true,abs_or_normal,name,def_v,inh_v);
 }
 
 void
@@ -1227,6 +1246,7 @@ _resolve_type(
     bool error_report=true;
     list_v = lookup_identifier(ident_v,the_TypeN);
     list_v = concat(list_v,lookup_identifier(ident_v,the_ValueTypeN));
+    list_v = concat(list_v,lookup_identifier(ident_v,the_AbstractValueTypeN));
     list_v = concat(list_v,lookup_identifier(ident_v,the_EventTypeN));
     list_v = concat(list_v,lookup_identifier(ident_v,the_ValueBoxN));
     list_v = concat(list_v,lookup_identifier(ident_v,the_InterfaceN));
