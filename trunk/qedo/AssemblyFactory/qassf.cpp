@@ -35,7 +35,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.22 2004/04/26 13:28:13 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.23 2004/08/10 08:44:02 tom Exp $";
 
 
 /**
@@ -92,7 +92,7 @@ handle_sigint
     name[1].kind = CORBA::string_dup("");
 	name[2].id = CORBA::string_dup(hostname);
     name[2].kind = CORBA::string_dup("");
-    
+
 	//
 	// unbind name in name service
 	//
@@ -162,7 +162,7 @@ handle_sigint
 	{
 		std::cerr << "..... error in signal handler" << std::endl;
 	}
-	
+
 	orb->shutdown(false);
 }
 
@@ -204,7 +204,7 @@ int
 main (int argc, char** argv)
 {
 #ifdef HAVE_LIBPTHREAD
-	// block SIGINT 
+	// block SIGINT
 	// Only the signal thread will handle this signal
 	sigset_t sigs;
 	sigset_t osigs;
@@ -228,11 +228,11 @@ main (int argc, char** argv)
     sigemptyset(&act.sa_mask);
 
     /*
-     * Make these values effective. If we were writing a real 
-     * application, we would probably save the old value instead of 
+     * Make these values effective. If we were writing a real
+     * application, we would probably save the old value instead of
      * passing NULL.
      */
-    if (sigaction(SIGINT, &act, NULL) < 0) 
+    if (sigaction(SIGINT, &act, NULL) < 0)
     {
 		 std::cerr << "sigaction failed" << std::endl;
         return 1;
@@ -244,6 +244,7 @@ main (int argc, char** argv)
 #endif // HAVE_LIBPTHREAD
 	std::cout << "Qedo Assembly Factory " << QEDO_VERSION << std::endl;
 
+	Qedo::debug_output = false;
 	//
 	// Resolve config values from config file
 	//
