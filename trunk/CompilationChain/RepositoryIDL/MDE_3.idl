@@ -1155,6 +1155,47 @@ class proxy::MDE::Deployment::ExternalInstance
 					Reflective::NotFound);
 		};
 
+		struct ConfPropForCompInstanceLink
+		{
+			ComponentInstantiation conf_prop_owner_end;
+			Property conf_prop_end;
+		};
+
+		typedef sequence < ConfPropForCompInstanceLink >  ConfPropForCompInstanceLinkSet;
+		
+
+/* 
+::MDE::Deployment::conf_prop_for_comp_instance
+*/
+		interface ConfPropForCompInstance
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::ConfPropForCompInstanceLinkSet all_conf_prop_for_comp_instance_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::ComponentInstantiation conf_prop_owner,
+				in MDE::Deployment::Property conf_prop) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::PropertySet conf_prop ( 
+				in MDE::Deployment::ComponentInstantiation conf_prop_owner) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::ComponentInstantiation conf_prop_owner,
+				in MDE::Deployment::Property conf_prop) raises ( 
+					Reflective::MofError);
+			void modify_conf_prop ( 
+				in MDE::Deployment::ComponentInstantiation conf_prop_owner,
+				in MDE::Deployment::Property conf_prop,
+				in MDE::Deployment::Property new_conf_prop) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::ComponentInstantiation conf_prop_owner,
+				in MDE::Deployment::Property conf_prop) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 		interface RegisterComponentInstance;
 		struct CompRegistrationLink
 		{
@@ -1420,6 +1461,23 @@ class proxy::MDE::Deployment::ComponentInstantiation
 					Reflective::MofError);
 			void remove_registration ( 
 				in MDE::Deployment::RegisterComponentInstance old_element) raises ( 
+					Reflective::NotFound,
+					Reflective::MofError);
+			MDE::Deployment::PropertySet conf_prop ( ) raises ( 
+					Reflective::MofError);
+			void set_conf_prop ( 
+				in MDE::Deployment::PropertySet new_value) raises ( 
+					Reflective::MofError);
+			void add_conf_prop ( 
+				in MDE::Deployment::Property new_element) raises ( 
+					Reflective::MofError);
+			void modify_conf_prop ( 
+				in MDE::Deployment::Property old_element,
+				in MDE::Deployment::Property new_element) raises ( 
+					Reflective::NotFound,
+					Reflective::MofError);
+			void remove_conf_prop ( 
+				in MDE::Deployment::Property old_element) raises ( 
 					Reflective::NotFound,
 					Reflective::MofError);
 		};
@@ -2375,7 +2433,7 @@ class proxy::MDE::Deployment::DependentFile
 				in MDE::CIF::HomeImplDef homeimpl,
 				in MDE::Deployment::DeploymentUnit unit) raises ( 
 					Reflective::MofError);
-			MDE::CIF::HomeImplDefSet homeimpl ( 
+			MDE::CIF::HomeImplDef homeimpl ( 
 				in MDE::Deployment::DeploymentUnit unit) raises ( 
 					Reflective::MofError);
 			void add ( 
@@ -2452,22 +2510,10 @@ class proxy::MDE::Deployment::DeploymentUnit
 			void set_uuid ( 
 				in string new_value) raises ( 
 					Reflective::MofError);
-			MDE::CIF::HomeImplDefSet homeimpl ( ) raises ( 
+			MDE::CIF::HomeImplDef homeimpl ( ) raises ( 
 					Reflective::MofError);
 			void set_homeimpl ( 
-				in MDE::CIF::HomeImplDefSet new_value) raises ( 
-					Reflective::MofError);
-			void add_homeimpl ( 
-				in MDE::CIF::HomeImplDef new_element) raises ( 
-					Reflective::MofError);
-			void modify_homeimpl ( 
-				in MDE::CIF::HomeImplDef old_element,
-				in MDE::CIF::HomeImplDef new_element) raises ( 
-					Reflective::NotFound,
-					Reflective::MofError);
-			void remove_homeimpl ( 
-				in MDE::CIF::HomeImplDef old_element) raises ( 
-					Reflective::NotFound,
+				in MDE::CIF::HomeImplDef new_value) raises ( 
 					Reflective::MofError);
 			MDE::Deployment::DependentFileSet dependent_file ( ) raises ( 
 					Reflective::MofError);
@@ -2684,6 +2730,7 @@ class proxy::MDE::Deployment::Property
 			readonly attribute MDE::Deployment::RegisterComponentInstanceClass register_component_instance_ref;
 			readonly attribute MDE::Deployment::RegisteredFeature registered_feature_ref;
 			readonly attribute MDE::Deployment::CompRegistration comp_registration_ref;
+			readonly attribute MDE::Deployment::ConfPropForCompInstance conf_prop_for_comp_instance_ref;
 			readonly attribute MDE::Deployment::ConnectedInstance connected_instance_ref;
 			readonly attribute MDE::Deployment::ExternalInstanceClass external_instance_ref;
 			readonly attribute MDE::Deployment::FinderServiceClass finder_service_ref;

@@ -44,11 +44,11 @@ void CCDBackendSessionImpl::begin ( ostream& out )
 {
 	out << "<?xml version=\"1.0\" ?>";
 	HelpFunctions::new_line ( out, 0 );
-	out << "<!DOCTYPE corbacomponent PUBLIC \"-//OMG//DTD CORBA Component Descriptor\n \"http:qedo.berlios.de/corbacomponent.dtd\">";
+	out << "<!DOCTYPE corbacomponent PUBLIC \"-//OMG//DTD CORBA Component Descriptor\" \"corbacomponent.dtd\">";
 	HelpFunctions::new_line ( out, 0 );
 }
 
-std::string CCDBackendSessionImpl::extract_component_category (std::string str)
+/*std::string CCDBackendSessionImpl::extract_component_category (std::string str)
 {
 	std::string category = "";
 	static const basic_string <char>::size_type npos = -1;
@@ -62,11 +62,25 @@ std::string CCDBackendSessionImpl::extract_component_category (std::string str)
 	if ( str.find ( "Service" )!= npos )
 		return category = "service";
 	return category;
+}*/
+std::string CCDBackendSessionImpl::extract_component_category ( MDE::CIF::ComponentImplDef_ptr comp_impl )
+{
+	std::string category = "";
+
+	if ( comp_impl->category() == MDE::CIF::SESSION )
+      return category = "session";
+	if ( comp_impl->category() == MDE::CIF::ENTITY )
+		return category = "entity";
+	if ( comp_impl->category() == MDE::CIF::PROCESS )
+		return category = "process";
+	if ( comp_impl->category() == MDE::CIF::SERVICE )
+		return category = "service";
+	return category;
 }
 
-void CCDBackendSessionImpl::_generte_componentkind_element( MDE::ComponentIDL::ComponentDef_ptr component_, ostream& out, unsigned long & indent_level )
+void CCDBackendSessionImpl::_generte_componentkind_element( MDE::ComponentIDL::ComponentDef_ptr component_, MDE::CIF::ComponentImplDef_ptr comp_impl, ostream& out, unsigned long & indent_level )
 {
-	cout << "generte_componentkind_element:" <<  endl;
+	cout << "generte_componentkind_element:" << component_->identifier() << endl;
 	MDE::CIF::ComponentImplDefSet_var segs_ = component_->segs();
 	MDE::CIF::ComponentImplDef_var selected_comp_;
 	for (CORBA::ULong i = 0; i < segs_->length (); i++)
@@ -82,14 +96,14 @@ void CCDBackendSessionImpl::_generte_componentkind_element( MDE::ComponentIDL::C
 		std::cerr << "generte_componentkind_element: selected component doesn't have a ComponentImpl " << std::endl;
 		exit (1);
 	}
-	std::string category_ = extract_component_category ( selected_comp_->identifier() );
+	std::string category_ = extract_component_category ( comp_impl );
 	out << "<componentkind>";
 	HelpFunctions::inc_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
 	out << "<" << category_ << ">";
 	HelpFunctions::inc_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
-	out << "servant lifetime = \"container\"/>";
+	out << "<servant lifetime = \"container\"/>";
 	HelpFunctions::dec_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
 	out << "</" << category_ << ">";
@@ -104,8 +118,7 @@ void CCDBackendSessionImpl::_generate_homefeatures_element
 {
 	out << "<homefeatures name = \"" << id << "\" repid=\"" << HelpFunctions::convert_uml_string_in_path(rep_id) << "\">";
 	MDE::BaseIDL::InterfaceDefSet_var set_ = home->base();
-	HelpFunctions::inc_indent_level ( indent_level );
-	HelpFunctions::new_line ( out, indent_level );
+	
 	CORBA::ULong l_ = set_->length ();
 	if (l_ == 1)
 	{				
@@ -114,8 +127,12 @@ void CCDBackendSessionImpl::_generate_homefeatures_element
 			{
 				throw NilObjectRef ( "Narrow problem: Base Component for Component!" );
 			}
+		HelpFunctions::inc_indent_level ( indent_level );
+		HelpFunctions::new_line ( out, indent_level );
 		out << "<inheritshome repid=" << HelpFunctions::convert_uml_string_in_path( inherit_->repository_id() ) << "\">" ;
+		HelpFunctions::dec_indent_level ( indent_level );
 	}
+	HelpFunctions::inc_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
 	out << "<operationpolicies>" ;
 	HelpFunctions::inc_indent_level ( indent_level );
@@ -137,6 +154,7 @@ void CCDBackendSessionImpl::_generate_homefeatures_element
 }
 void CCDBackendSessionImpl::_generate_support_interface( MDE::BaseIDL::InterfaceDef_ptr s_itf, ostream& out, unsigned long & indent_level )
 {
+	HelpFunctions::inc_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
 	out << "<operationpolicies>" ;
 	HelpFunctions::inc_indent_level ( indent_level );
@@ -156,12 +174,15 @@ void CCDBackendSessionImpl::_generate_support_interface( MDE::BaseIDL::Interface
 void CCDBackendSessionImpl::_generate_component_facet 
 ( MDE::ComponentIDL::ProvidesDefSet_var facets, ostream& out, unsigned long & indent_level )
 {
+	CORBA::ULong how_much_ = facets->length ();
 	for (CORBA::ULong i = 0; i < facets->length (); i++)
 		{
 			out << "<provides";
 			HelpFunctions::inc_indent_level ( indent_level );
 			HelpFunctions::new_line ( out, indent_level );
-			out << "providesname=\"" << facets[i]->identifier() << "\"";
+			std::string str_ = facets[i]->identifier();
+			str_.erase(str_.find("_provides"), 9 );
+			out << "providesname=\"" << str_ << "\"";
 			HelpFunctions::new_line ( out, indent_level );
 			MDE::BaseIDL::InterfaceDef_var provides_itf_ = facets[i]->provides_itf ();
 			out << "repid=\"" << HelpFunctions::convert_uml_string_in_path( provides_itf_->repository_id() ) << "\""; 
@@ -171,9 +192,9 @@ void CCDBackendSessionImpl::_generate_component_facet
 			bool b_ = false;
 			int op_counter_ = 0;
 			MDE::BaseIDL::ContainedSet_var nested_ = provides_itf_->contents ();
-			for ( i = 0; i < nested_->length (); i++ )
+			for ( CORBA::ULong j = 0; j < nested_->length (); j++ )
 			{
-				MDE::BaseIDL::OperationDef_var op_ = MDE::BaseIDL::OperationDef::_narrow ( (*nested_)[i] );
+				MDE::BaseIDL::OperationDef_var op_ = MDE::BaseIDL::OperationDef::_narrow ( (*nested_)[j] );
 
 				if ( !CORBA::is_nil ( op_ ) )
 				{
@@ -195,16 +216,22 @@ void CCDBackendSessionImpl::_generate_component_facet
 
 			}
 			if (!op_counter_)
+			{
 				out << "facettag=\" \"/>";
+				HelpFunctions::dec_indent_level ( indent_level );
+				HelpFunctions::new_line ( out, indent_level );
+			}
 			else
 			{
 				HelpFunctions::dec_indent_level ( indent_level );
 				HelpFunctions::new_line ( out, indent_level );
 				out << "</operationpolicies>";
+				HelpFunctions::dec_indent_level ( indent_level );
+				HelpFunctions::new_line ( out, indent_level );
+				out << "</provides>";
+				HelpFunctions::new_line ( out, indent_level );
 			}
-			HelpFunctions::dec_indent_level ( indent_level );
-			HelpFunctions::new_line ( out, indent_level );
-			out << "</provides>";
+			
 		}
 }
 
@@ -216,7 +243,9 @@ void CCDBackendSessionImpl::_generate_component_receptacle
 			out << "<uses";
 			HelpFunctions::inc_indent_level ( indent_level );
 			HelpFunctions::new_line ( out, indent_level );
-			out << "usesname=\"" << receptacles[i]->identifier() << "\"";
+			std::string str_ = receptacles[i]->identifier();
+			str_.erase(str_.find("_uses"), 5 );
+			out << "usesname=\"" << str_ << "\"";
 			HelpFunctions::new_line ( out, indent_level );
 			MDE::BaseIDL::InterfaceDef_var uses_itf_ = receptacles[i]->uses_itf ();
 			out << "repid=\"" << HelpFunctions::convert_uml_string_in_path( uses_itf_->repository_id() ) << "\"/>"; 
@@ -232,7 +261,9 @@ void CCDBackendSessionImpl::_generate_component_consumes
 			out << "<consumes";
 			HelpFunctions::inc_indent_level ( indent_level );
 			HelpFunctions::new_line ( out, indent_level );
-			out << "consumesname=\"" << consumes[i]->identifier() << "\"";
+			std::string str_ = consumes[i]->identifier();
+			str_.erase(str_.find("_consumes"), 9 );
+			out << "consumesname=\"" << str_ << "\"";
 			HelpFunctions::new_line ( out, indent_level );
 			MDE::ComponentIDL::EventDef_var consumes_type_ = consumes[i]->type ();
 			out << "eventtype=\"" << consumes_type_->identifier() << "\">";
@@ -253,7 +284,9 @@ void CCDBackendSessionImpl::_generate_component_emits
 			out << "<emits";
 			HelpFunctions::inc_indent_level ( indent_level );
 			HelpFunctions::new_line ( out, indent_level );
-			out << "emitsname=\"" << emits[i]->identifier() << "\"";
+			std::string str_ = emits[i]->identifier();
+			str_.erase(str_.find("_emits"), 6 );
+			out << "emitsname=\"" << str_ << "\"";
 			HelpFunctions::new_line ( out, indent_level );
 			MDE::ComponentIDL::EventDef_var emits_type_ = emits[i]->type ();
 			out << "eventtype=\"" << emits_type_->identifier() << "\">";
@@ -273,7 +306,9 @@ void CCDBackendSessionImpl::_generate_component_publishes
 			out << "<publishes";
 			HelpFunctions::inc_indent_level ( indent_level );
 			HelpFunctions::new_line ( out, indent_level );
-			out << "publishesname=\"" << publishes[i]->identifier() << "\"";
+			std::string str_ = publishes[i]->identifier();
+			str_.erase(str_.find("_publishes"), 10 );
+			out << "publishesname=\"" << str_ << "\"";
 			HelpFunctions::new_line ( out, indent_level );
 			MDE::ComponentIDL::EventDef_var publishes_type_ = publishes[i]->type ();
 			out << "eventtype=\"" << publishes_type_->identifier() << "\">";
@@ -295,10 +330,10 @@ void CCDBackendSessionImpl::_generate_ports_element
 	MDE::ComponentIDL::ConsumesDefSet_var consumes_ = component_->consumess();
 	MDE::ComponentIDL::EmitsDefSet_var emits_ = component_->emitss();
 	MDE::ComponentIDL::PublishesDefSet_var publishes_ = component_->publishess();
-	if ( (facets_->length () > 0) || (receptacle_->length () > 0) || (publishes_->length () > 0) || (consumes_->length () > 0) || (emits_->length () > 0) )
+	/*if ( (facets_->length () > 0) || (receptacle_->length () > 0) || (publishes_->length () > 0) || (consumes_->length () > 0) || (emits_->length () > 0) )
 		b_ = true;
 	if ( b_ == false )
-		return;
+		return;*/
 	out << "<ports>";
 	HelpFunctions::inc_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
@@ -337,6 +372,7 @@ bool CCDBackendSessionImpl::is_contaned_generated_interface(  MDE::BaseIDL::Inte
 void CCDBackendSessionImpl::_generate_all_interfaces 
 	( MDE::ComponentIDL::ComponentDef_ptr component_, ostream& out, unsigned long & indent_level )
 {
+	//HelpFunctions::inc_indent_level ( indent_level );
 	CORBA::ULong i;
 	bool provides_ = false;
 	// generate supported interfaces
@@ -442,16 +478,17 @@ void CCDBackendSessionImpl::_generate_all_interfaces
 				}
 		}
 	}
+	//HelpFunctions::dec_indent_level ( indent_level );
 }
 void CCDBackendSessionImpl::_generate_componentfeatures_element 
 	( MDE::ComponentIDL::ComponentDef_ptr component_, ostream& out, unsigned long & indent_level )
 {
 	out << "<componentfeatures name = \"" << component_->identifier() << "\" repid=\"" << HelpFunctions::convert_uml_string_in_path( component_->repository_id() ) << "\">";
 	MDE::BaseIDL::InterfaceDefSet_var set_ = component_->base();
-	HelpFunctions::inc_indent_level ( indent_level );
 	CORBA::ULong l_ = set_->length ();
 	if (l_ == 1)
-	{		
+	{	
+		HelpFunctions::inc_indent_level ( indent_level );
 		HelpFunctions::new_line ( out, indent_level );
 		MDE::ComponentIDL::ComponentDef_var inherit_ = MDE::ComponentIDL::ComponentDef::_narrow ( set_[set_->length ()-1] );
 		if( CORBA::is_nil ( inherit_ ) ) 
@@ -460,6 +497,7 @@ void CCDBackendSessionImpl::_generate_componentfeatures_element
 			}
 		_base = MDE::ComponentIDL::ComponentDef::_duplicate(inherit_);
 		out << "<inheritscomponent repid=" << HelpFunctions::convert_uml_string_in_path( inherit_->repository_id() ) << "\">" ;
+		HelpFunctions::dec_indent_level ( indent_level );
 	}
 	MDE::BaseIDL::InterfaceDefSet_var s_itfs_ = component_->supports_itf();
 	CORBA::ULong s_ = s_itfs_->length ();
@@ -468,32 +506,39 @@ void CCDBackendSessionImpl::_generate_componentfeatures_element
 		_supported_itfs = s_itfs_;
 		if ( l_ == 1)
 		{
+			HelpFunctions::inc_indent_level ( indent_level );
 			HelpFunctions::new_line ( out, indent_level );
 			for (CORBA::ULong i = 0; i < s_itfs_->length (); i++)
 			{
-				out << "<supportsinterface repid=" << HelpFunctions::convert_uml_string_in_path( s_itfs_[i]->repository_id() ) << "\">" ;
+				out << "<supportsinterface repid=\"" << HelpFunctions::convert_uml_string_in_path( s_itfs_[i]->repository_id() ) << "\">" ;
 				this->_generate_support_interface( s_itfs_[i], out, indent_level );
 			}
+			HelpFunctions::dec_indent_level ( indent_level );
 			HelpFunctions::new_line ( out, indent_level );
 			out << "</supportsinterface>";
+			HelpFunctions::dec_indent_level ( indent_level );
 		}
 		if ( l_ != 1)
 		{
+			HelpFunctions::inc_indent_level ( indent_level );
 			HelpFunctions::new_line ( out, indent_level );
 			for (CORBA::ULong i = 0; i < s_itfs_->length (); i++)
 			{
 				out << "<supportsinterface repid=" << HelpFunctions::convert_uml_string_in_path( s_itfs_[i]->repository_id() ) << "\">" ;
 				this->_generate_support_interface( s_itfs_[i], out, indent_level );
 			}
+			HelpFunctions::dec_indent_level ( indent_level );
 			HelpFunctions::new_line ( out, indent_level );
 			out << "</supportsinterface>";
+			HelpFunctions::dec_indent_level ( indent_level );
 		}
 	}
+	HelpFunctions::inc_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
 	this->_generate_ports_element( component_, out, indent_level );
+	
+	HelpFunctions::dec_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
-	HelpFunctions::dec_indent_level ( indent_level );
-	HelpFunctions::dec_indent_level ( indent_level );
 	out << "</componentfeatures>";
 	HelpFunctions::new_line ( out, indent_level );
 }
@@ -583,25 +628,26 @@ CCDBackendSessionImpl::generate(const char* target, const char* output)
 
 		this->connect_the_whole_repository ();
 
-		MDE::ComponentIDL::HomeDefSet_var all_homes_= 
-			_repconnector._home_def_ref->all_of_class_home_def();
-		int all_ = all_homes_->length ();
+		MDE::CIF::HomeImplDefSet_var all_homeimpls_= 
+			_repconnector._home_impl_def_ref->all_of_class_home_impl_def();
+		int all_ = all_homeimpls_->length ();
 		MDE::ComponentIDL::ComponentDef_var component_;
 		MDE::ComponentIDL::HomeDef_var home_;
+		MDE::CIF::ComponentImplDef_var comp_impl_;
 		std::string home_rep_id_;
-		std::string home_rep_id_temp;
 		std::string home_id_;
 		std::string comp_rep_id_ = "";
-		for (CORBA::ULong i = 0; i < all_homes_->length (); i++)
+		for (CORBA::ULong i = 0; i < all_homeimpls_->length (); i++)
 		{
-			home_rep_id_temp = all_homes_[i]->repository_id();
-			if ( ! strcmp (home_rep_id_temp.c_str(), target) )
+			if ( ! strcmp ( all_homeimpls_[i]->repository_id(), target) )
 			{
-				home_ = all_homes_[i];
-				component_ = all_homes_[i]->component_end();
+				comp_impl_ = all_homeimpls_[i]->component_impl();
+				home_ = all_homeimpls_[i]->home_end();
+				component_ = comp_impl_->component_end();
 				comp_rep_id_ =  component_->repository_id();
-				home_id_ = all_homes_[i]->identifier();
-				home_rep_id_ = home_rep_id_temp;
+				home_id_ = home_->identifier();
+				home_rep_id_ = home_->repository_id();
+				break;
 			}
 		}
 		if ( comp_rep_id_ == "" )
@@ -622,7 +668,7 @@ CCDBackendSessionImpl::generate(const char* target, const char* output)
 		HelpFunctions::new_line ( out, indent_level );
 		out << "<homerepid repid=\"" << HelpFunctions::convert_uml_string_in_path(home_rep_id_) << "\"/>";
 		HelpFunctions::new_line ( out, indent_level );
-		this->_generte_componentkind_element ( component_, out, indent_level );
+		this->_generte_componentkind_element ( component_, comp_impl_, out, indent_level );
 		out << "<threading policy=\"multithread\"/>";
 		HelpFunctions::new_line ( out, indent_level );
 		out << "<configurationcomplete set=\"true\"/>";

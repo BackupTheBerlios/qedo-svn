@@ -107,9 +107,6 @@
 			Name="Quelldateien"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="CADBackEnd_start.cpp">
-			</File>
-			<File
 				RelativePath="CCMGenerator_EQUIVALENT.cpp">
 			</File>
 			<File
@@ -122,6 +119,9 @@
 		<Filter
 			Name="Headerdateien"
 			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="CADBackEnd_start.cpp">
+			</File>
 			<File
 				RelativePath="CCMGenerator_EQUIVALENT.h">
 			</File>

@@ -40,16 +40,17 @@ void CPDBackendSessionImpl::begin ( ostream& out )
 {
 	out << "<?xml version=\"1.0\" ?>";
 	HelpFunctions::new_line ( out, 0 );
-	out << "<!DOCTYPE properties PUBLIC \"-//OMG//DTD Property File Descriptor\" \"http://cif.sourceforge.net/properties.dtd\">";
+	out << "<!DOCTYPE properties PUBLIC \"-//OMG//DTD Property File Descriptor\" \"properties.dtd\">";
 	HelpFunctions::new_line ( out, 0 );
 }
 void CPDBackendSessionImpl::_generte_property_element
 		( MDE::Deployment::Property_ptr property, ostream& out, unsigned long & indent_level )
 {
-	MDE::Deployment::ElementName name_ = property->el_name();
+	std::string name_ = property->identifier();
+
 	if ( property->el_name() == MDE::Deployment::SIMPLE_EL )
 	{
-		out << "<simple name=\"" << property->identifier() << "\" type=\"" << property->type() << "\">";
+		out << "<simple name=\"" << name_.erase( 0, _name.length()+1 ) << "\" type=\"" << property->type() << "\">";
 		HelpFunctions::inc_indent_level( indent_level );
 		HelpFunctions::new_line ( out, indent_level );
 		out << "<value>" << property->value() << "</value>";
@@ -61,7 +62,7 @@ void CPDBackendSessionImpl::_generte_property_element
 
 	if ( property->el_name() == MDE::Deployment::SEQUENCE_EL )
 	{
-		out << "<sequence name=\"" << property->identifier() << "\" type=\"" << property->type() << "\">";
+		out << "<sequence name=\"" << name_.erase( 0, _name.length()+1 ) << "\" type=\"" << property->type() << "\">";
 		HelpFunctions::inc_indent_level( indent_level );
 		HelpFunctions::new_line ( out, indent_level );
 		out << "<value>" << property->value() << "</value>";
@@ -73,7 +74,7 @@ void CPDBackendSessionImpl::_generte_property_element
 
 	if ( property->el_name() == MDE::Deployment::STRUCT_EL )
 	{
-		out << "<struct name=\"" << property->identifier() << "\" type=\"" << property->type() << "\">";
+		out << "<struct name=\"" << name_.erase( 0, _name.length()+1 ) << "\" type=\"" << property->type() << "\">";
 		HelpFunctions::inc_indent_level( indent_level );
 		HelpFunctions::new_line ( out, indent_level );
 		out << "<value>" << property->value() << "</value>";
@@ -85,7 +86,7 @@ void CPDBackendSessionImpl::_generte_property_element
 
 	if ( property->el_name() == MDE::Deployment::VALUETYPE_EL )
 	{
-		out << "<valuetype name=\"" << property->identifier() << "\" type=\"" << property->type() << "\">";
+		out << "<valuetype name=\"" << name_.erase( 0, _name.length()+1 ) << "\" type=\"" << property->type() << "\">";
 		HelpFunctions::inc_indent_level( indent_level );
 		HelpFunctions::new_line ( out, indent_level );
 		out << "<value>" << property->value() << "</value>";
@@ -233,14 +234,25 @@ CPDBackendSessionImpl::generate(const char* target, const char* output)
 			throw NilObjectRef ( "Element for CPD generating wasn't found!!!" );
 
 		MDE::Deployment::PropertySet_var property_set_;
+		MDE::Deployment::PropertySet_var config_property_set_;
 		MDE::Deployment::Property_var property_;
 		if ( ! CORBA::is_nil (comp_instance_) )
+		{
+			_name = comp_instance_->identifier();
 			property_set_ = comp_instance_->prop();
+			config_property_set_ = comp_instance_->conf_prop();
+		}
 		else
 			if ( ! CORBA::is_nil (home_instance_) )
+			{
 				property_set_ = home_instance_->prop();
+				_name = home_instance_->identifier();
+			}
 			else
+			{
 				property_set_ = unit_->prop();
+				_name = unit_->identifier();
+			}
 
 		HelpFunctions::new_line ( out, indent_level );
 		HelpFunctions::new_line ( out, indent_level );
@@ -248,11 +260,28 @@ CPDBackendSessionImpl::generate(const char* target, const char* output)
 		HelpFunctions::inc_indent_level ( indent_level );
 		HelpFunctions::new_line ( out, indent_level );
 		for (CORBA::ULong i = 0; i < property_set_->length (); i++)
+		{
+			property_ = property_set_[i];
+			HelpFunctions::new_line ( out, indent_level );
+			this->_generte_property_element ( property_,  out, indent_level );
+		}
+		if ( config_property_set_->length () > 0 )
+		{
+			HelpFunctions::new_line ( out, indent_level );
+			out << "<configuration>" ;
+			HelpFunctions::inc_indent_level ( indent_level );
+			HelpFunctions::new_line ( out, indent_level );
+			for ( i = 0; i < config_property_set_->length (); i++)
 			{
-				property_ = property_set_[i];
+				property_ = config_property_set_[i];
 				HelpFunctions::new_line ( out, indent_level );
 				this->_generte_property_element ( property_,  out, indent_level );
 			}
+			HelpFunctions::dec_indent_level ( indent_level );
+			HelpFunctions::new_line ( out, indent_level );
+			out << "</configuration>" ;
+			HelpFunctions::new_line ( out, indent_level );
+		}
 		HelpFunctions::dec_indent_level ( indent_level );
 		HelpFunctions::new_line ( out, indent_level );
 		out << "</properties>" ;

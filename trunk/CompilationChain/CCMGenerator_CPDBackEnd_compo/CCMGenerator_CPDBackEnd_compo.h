@@ -80,6 +80,7 @@ namespace CCMGenerator
 	MDE::CIF::CIFPackage_var _cif_ref;
 	MDE::ComponentIDL::ComponentIDLPackage_var _component_idl_ref;
 	MDE::Deployment::DeploymentPackage_var _deployment_ref;
+	std::string _name;
 
 	void connect_the_whole_repository ();
 	//generate methods

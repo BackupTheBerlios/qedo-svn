@@ -27,7 +27,11 @@ void HelpFunctions::new_line ( ostream& out, unsigned long indent_level )
 }
 std::string HelpFunctions::convert_uml_string_in_path (std::string uml_string)
 {
-	uml_string.replace ( uml_string.find( "::" ),2,"/" );
+	static const std::basic_string <char>::size_type npos = -1;
+
+	if ( uml_string.find( "::" ) != npos )
+		uml_string.replace ( uml_string.find( "::" ),2,"/" );
+
 	return uml_string;
 }
 CORBA::Object_ptr HelpFunctions::get_repository_ref ( CORBA::ORB_ptr orb )

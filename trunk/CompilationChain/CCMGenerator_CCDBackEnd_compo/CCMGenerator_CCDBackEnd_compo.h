@@ -90,7 +90,7 @@ namespace CCMGenerator
 	void connect_the_whole_repository ();
 	//generate methods
 	void _generte_componentkind_element
-		( MDE::ComponentIDL::ComponentDef_ptr component_, ostream& out, unsigned long & indent_level );
+		( MDE::ComponentIDL::ComponentDef_ptr component_, MDE::CIF::ComponentImplDef_ptr, ostream& out, unsigned long & indent_level );
 	void _generate_homefeatures_element 
 		( MDE::ComponentIDL::HomeDef_ptr all_homes, std::string id, std::string rep_id, ostream& out, unsigned long & indent_level );
 	void _generate_componentfeatures_element 
@@ -116,7 +116,7 @@ namespace CCMGenerator
 
 	public:
 		void begin ( ostream& out );
-		std::string extract_component_category (std::string str);
+		std::string extract_component_category ( MDE::CIF::ComponentImplDef_ptr );
 // END USER INSERT SECTION CCDBackendSessionImpl
 
     };

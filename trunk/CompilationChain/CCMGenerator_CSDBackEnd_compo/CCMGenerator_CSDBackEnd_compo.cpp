@@ -39,7 +39,7 @@ void CSDBackendSessionImpl::begin ( ostream& out )
 {
 	out << "<?xml version = '1.0' ?>";
 	HelpFunctions::new_line ( out, 0 );
-	out << "<!DOCTYPE softpkg PUBLIC \"-//OMG//DTD Software Package Descriptor\" \"http://qedo.berlios.de/softpkg.dtd\">";
+	out << "<!DOCTYPE softpkg PUBLIC \"-//OMG//DTD Software Package Descriptor\" \"softpkg.dtd\">";
 	HelpFunctions::new_line ( out, 0 );
 }
 void CSDBackendSessionImpl::_generate_deployment_unit_element ( MDE::Deployment::DeploymentUnit_ptr unit, ostream& out, unsigned long & indent_level )
@@ -68,10 +68,10 @@ void CSDBackendSessionImpl::_generate_deployment_unit_element ( MDE::Deployment:
 	this->_generate_prog_language_element( unit, req_name_, out, indent_level );
 	// generate descriptorfile element
 	HelpFunctions::new_line ( out, indent_level );
-	req_name_ = unit_name_ + "_descriptorfile_link";
+	/*req_name_ = unit_name_ + "_descriptorfile_link";
 	std::string str_ = get_req_value( unit, req_name_ );
-	if ( ! str_.empty() )
-		this->_generate_descriptor_element( unit, req_name_, out, indent_level );
+	if ( ! str_.empty() )*/
+	this->_generate_descriptor_element( unit, out, indent_level );
 	// generate code elements
 	HelpFunctions::new_line ( out, indent_level );
 	if ( contained_->length() > 0 )
@@ -111,7 +111,7 @@ void CSDBackendSessionImpl::_generate_compiler_element
 	if ( get_req_version (unit, req_name) == "" )
 		out << "\"/>";
 	else
-		out << "\" version=\"" << get_req_version (unit, req_name) << "/>";
+		out << "\" version=\"" << get_req_version (unit, req_name) << "\"/>";
 }
 
 void CSDBackendSessionImpl::_generate_prog_language_element 
@@ -125,15 +125,20 @@ void CSDBackendSessionImpl::_generate_prog_language_element
 }
 
 void CSDBackendSessionImpl::_generate_descriptor_element
-	( MDE::Deployment::DeploymentUnit_ptr unit, std::string req_name, ostream& out, unsigned long & indent_level )
+	( MDE::Deployment::DeploymentUnit_ptr unit, ostream& out, unsigned long & indent_level )
 {
+	MDE::CIF::HomeImplDef_var home_impl_ = unit->homeimpl();
+	MDE::CIF::ComponentImplDef_var comp_impl_ = home_impl_->component_impl();
+	std::string path_ = "meta-inf/";
+	path_.append( comp_impl_->identifier() );
+	path_.append(".ccd");
 	out << "<descriptor type=\"CORBA-Component\">";
 	HelpFunctions::inc_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
-	out << "<fileinarchive name=\"" << get_req_value( unit, req_name ) << "\" />";
+	out << "<fileinarchive name=\"" << path_ << "\" />";
 	HelpFunctions::dec_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
-	out << "<descriptor>";
+	out << "</descriptor>";
 }
 
 void CSDBackendSessionImpl::_generate_code_element
@@ -143,16 +148,19 @@ void CSDBackendSessionImpl::_generate_code_element
 	HelpFunctions::inc_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
 	out << "<fileinarchive name=\"" << contained->filename();
-	if ( contained->location() != "" )
+	std::string test_ = contained->location();
+	if ( ! strcmp (contained->location(), "" ) )
+		out << "\"/>";	
+	else 
 	{
 		out << "\">";
 		HelpFunctions::inc_indent_level ( indent_level );
 		HelpFunctions::new_line ( out, indent_level );
 		out << "<link href=\"" << contained->location() << "\"/>";
 		HelpFunctions::dec_indent_level ( indent_level );
+		HelpFunctions::new_line ( out, indent_level );
+		out << "</fileinarchive>";
 	}
-	else 
-		out << "\"/>";
 	HelpFunctions::new_line ( out, indent_level );
 	out << "<entrypoint>" << contained->entrypoint() << "</entrypoint>";
 	HelpFunctions::new_line ( out, indent_level );
@@ -281,9 +289,9 @@ CSDBackendSessionImpl::generate(const char* name, const char* vers, const char* 
 	out << "<softpkg name=\"" << name << "\" " << "version=\"" << vers << "\">";
 	HelpFunctions::inc_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
-	out << "<title> " << title << " <title>";
+	out << "<title> " << title << " </title>";
 	HelpFunctions::new_line ( out, indent_level );
-	out << "<autor>";
+	out << "<author>";
 	HelpFunctions::inc_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
 	out << "<name>" << a_name << "</name>";
@@ -293,7 +301,7 @@ CSDBackendSessionImpl::generate(const char* name, const char* vers, const char* 
 	out << "<webpage href=\"" << a_web << "\"/>";
 	HelpFunctions::dec_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
-	out << "</autor>";
+	out << "</author>";
 	HelpFunctions::new_line ( out, indent_level );
 	out << "<description>" << description << "</description>";
 	HelpFunctions::new_line ( out, indent_level );
@@ -305,7 +313,7 @@ CSDBackendSessionImpl::generate(const char* name, const char* vers, const char* 
 	out << "<fileinarchive name=\"" << idl_file << "\"/>";
 	HelpFunctions::dec_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
-	out << "<idl>";
+	out << "</idl>";
 	HelpFunctions::new_line ( out, indent_level );
 	
 	MDE::Deployment::DeploymentUnitSet_var all_units_= 

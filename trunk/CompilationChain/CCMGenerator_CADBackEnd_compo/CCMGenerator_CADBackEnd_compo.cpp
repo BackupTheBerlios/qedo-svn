@@ -40,20 +40,29 @@ void CADBackendSessionImpl::begin ( ostream& out )
 {
 	out << "<?xml version = '1.0' ?>";
 	HelpFunctions::new_line ( out, 0 );
-	out << "<!DOCTYPE componentassembly SYSTEM \"componentassembly.dtd\">";
+	out << "<!DOCTYPE componentassembly PUBLIC \"-//OMG//DTD Component Assembly Descriptor\" \"componentassembly.dtd\">";
 	HelpFunctions::new_line ( out, 0 );
 }
 void CADBackendSessionImpl::_generate_componentfile_element ( MDE::Deployment::DeploymentUnit_ptr unit, ostream& out, unsigned long & indent_level )
 {
-	std::string unit_name_ = unit->identifier();
-	unit_name_.append ("_file");
-	out << "<componentfile id=\"" << unit_name_  << "\">";
+	MDE::CIF::HomeImplDef_var home_impl_ = unit->homeimpl();
+	MDE::CIF::ComponentImplDef_var comp_impl_ = home_impl_->component_impl();
+	MDE::ComponentIDL::ComponentDef_var comp_ = comp_impl_->component_end ();
+	std::string path_ = "meta-inf/";
+	path_.append( comp_impl_->identifier() );
+	std::string path_zip_ = comp_impl_->identifier();
+	path_.append(".csd");
+	path_zip_.append(".car");
+
+	std::string ref_ = comp_->identifier();
+	ref_.append ("_file");
+	out << "<componentfile id=\"" << ref_  << "\">";
 	HelpFunctions::inc_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
-	out << "<fileinarchive name=\" \">";
+	out << "<fileinarchive name=\"" << path_ << "\">";
 	HelpFunctions::inc_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
-	out << "<link href=\" \" xml:link=\"SIMPLE\"/>";
+	out << "<link href=\"" << path_zip_ << "\"/>";
 	HelpFunctions::dec_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
 	out << "</fileinarchive>";
@@ -94,51 +103,73 @@ void CADBackendSessionImpl::_generate_connection_element ( MDE::Deployment::Conn
 void CADBackendSessionImpl::_generate_target_end_element 
 	( MDE::Deployment::ConnectionEnd_ptr conn, ostream& out, unsigned long & indent_level )
 {
-	MDE::ComponentIDL::EventPortDef_var event_ = MDE::ComponentIDL::EventPortDef::_narrow ( conn->thefeature() );
-	MDE::ComponentIDL::ConsumesDef_var consumes_ = MDE::ComponentIDL::ConsumesDef::_narrow ( conn->thefeature() );
-	MDE::ComponentIDL::UsesDef_var uses_ = MDE::ComponentIDL::UsesDef::_narrow ( conn->thefeature() );
-	if ( CORBA::is_nil ( event_ ) )
-		if( ! CORBA::is_nil ( uses_ ) ) 
+	static const basic_string <char>::size_type npos = -1;
+	CORBA::Object_var obj_ = conn->thefeature();
+	MDE::ComponentIDL::EventPortDef_var event_ = MDE::ComponentIDL::EventPortDef::_narrow ( obj_ );
+	MDE::ComponentIDL::ConsumesDef_var consumes_ = MDE::ComponentIDL::ConsumesDef::_narrow ( obj_ );
+	MDE::ComponentIDL::UsesDef_var uses_ = MDE::ComponentIDL::UsesDef::_narrow ( obj_ );
+	//if ( CORBA::is_nil ( event_ ) )
+	if( ! CORBA::is_nil ( uses_ ) )
+	{
+		std::string str_ = uses_->identifier();
+		if ( str_.find("_uses") != npos )
 		{
 			out << "<usesport>";
 			HelpFunctions::inc_indent_level ( indent_level );
 			HelpFunctions::new_line ( out, indent_level );
-			out << "<usesidentifier>" << uses_->identifier() << "</usesidentifier>";
+			
+			str_.erase(str_.find("_uses"), 5 );
+			out << "<usesidentifier>" << str_ << "</usesidentifier>";
 			HelpFunctions::new_line ( out, indent_level );
 			out << "<componentinstantiationref idref=\"" << conn->int_comp_inst()->identifier() << "\"/>";
 			HelpFunctions::dec_indent_level ( indent_level );
 			HelpFunctions::new_line ( out, indent_level );
 			out << "</usesport>";
 			return;
-		} 
-	if( ! CORBA::is_nil ( consumes_ ) ) 
+		}
+	}
+	if( ! CORBA::is_nil ( consumes_ ) )
 	{
-		out << "<consumesport>";
-		HelpFunctions::inc_indent_level ( indent_level );
-		HelpFunctions::new_line ( out, indent_level );
-		out << "<consumesidentifier>" << consumes_->identifier() << "</consumesidentifier>";
-		HelpFunctions::new_line ( out, indent_level );
-		out << "<componentinstantiationref idref=\"" << conn->int_comp_inst()->identifier() << "\"/>";
-		HelpFunctions::dec_indent_level ( indent_level );
-		HelpFunctions::new_line ( out, indent_level );
-		out << "</consumesport>";
-		return;
-	}	
+		std::string str_ = consumes_->identifier();
+		if ( str_.find("_consumes") != npos )
+		{
+			out << "<consumesport>";
+			HelpFunctions::inc_indent_level ( indent_level );
+			HelpFunctions::new_line ( out, indent_level );
+			std::string str_ = consumes_->identifier();
+			str_.erase(str_.find("_consumes"), 9 );
+			out << "<consumesidentifier>" << str_ << "</consumesidentifier>";
+			HelpFunctions::new_line ( out, indent_level );
+			out << "<componentinstantiationref idref=\"" << conn->int_comp_inst()->identifier() << "\"/>";
+			HelpFunctions::dec_indent_level ( indent_level );
+			HelpFunctions::new_line ( out, indent_level );
+			out << "</consumesport>";
+			return;
+		}
+	}
 }
 void CADBackendSessionImpl::_generate_source_end_element 
 	( MDE::Deployment::ConnectionEnd_ptr conn, ostream& out, unsigned long & indent_level )
 {
-	MDE::ComponentIDL::EventPortDef_var event_ = MDE::ComponentIDL::EventPortDef::_narrow ( conn->thefeature() );
-	MDE::ComponentIDL::ProvidesDef_var provides_ = MDE::ComponentIDL::ProvidesDef::_narrow ( conn->thefeature() );
-	MDE::ComponentIDL::PublishesDef_var publishes_ = MDE::ComponentIDL::PublishesDef::_narrow ( conn->thefeature() );
-	MDE::ComponentIDL::EmitsDef_var emits_ = MDE::ComponentIDL::EmitsDef::_narrow ( conn->thefeature());
-	if ( CORBA::is_nil ( event_ ) )
-		if( ! CORBA::is_nil ( provides_ ) ) 
+	static const basic_string <char>::size_type npos = -1;
+	CORBA::Object_var obj_ = conn->thefeature();
+
+	MDE::ComponentIDL::EventPortDef_var event_ = MDE::ComponentIDL::EventPortDef::_narrow ( obj_ );
+	MDE::ComponentIDL::ProvidesDef_var provides_ = MDE::ComponentIDL::ProvidesDef::_narrow ( obj_ );
+	MDE::ComponentIDL::PublishesDef_var publishes_ = MDE::ComponentIDL::PublishesDef::_narrow ( obj_ );
+	MDE::ComponentIDL::EmitsDef_var emits_ = MDE::ComponentIDL::EmitsDef::_narrow ( obj_ );
+	//if ( CORBA::is_nil ( event_ ) )
+	if( ! CORBA::is_nil ( provides_ ) ) 
+	{
+		std::string str_ = provides_->identifier();
+		if ( str_.find("_provides") != npos )
 		{
 			out << "<providesport>";
 			HelpFunctions::inc_indent_level ( indent_level );
 			HelpFunctions::new_line ( out, indent_level );
-			out << "<providesidentifier>" << provides_->identifier() << "</providesidentifier>";
+			std::string str_ = provides_->identifier();
+			str_.erase(str_.find("_provides"), 9 );
+			out << "<providesidentifier>" << str_ << "</providesidentifier>";
 			HelpFunctions::new_line ( out, indent_level );
 			out << "<componentinstantiationref idref=\"" << conn->int_comp_inst()->identifier() << "\"/>";
 			HelpFunctions::dec_indent_level ( indent_level );
@@ -146,45 +177,62 @@ void CADBackendSessionImpl::_generate_source_end_element
 			out << "</providesport>";
 			return;
 		}
+	}
 	if( ! CORBA::is_nil ( emits_ ) ) 
 	{
-		out << "<emitsport>";
-		HelpFunctions::inc_indent_level ( indent_level );
-		HelpFunctions::new_line ( out, indent_level );
-		out << "<emitsidentifier>" << emits_->identifier() << "</emitsidentifier>";
-		HelpFunctions::new_line ( out, indent_level );
-		out << "<componentinstantiationref idref=\"" << conn->int_comp_inst()->identifier() << "\"/>";
-		HelpFunctions::dec_indent_level ( indent_level );
-		HelpFunctions::new_line ( out, indent_level );
-		out << "</emitsport>";
-		return;
+		std::string str_ = emits_->identifier();
+		if ( str_.find("_emits") != npos )
+		{
+			out << "<emitsport>";
+			HelpFunctions::inc_indent_level ( indent_level );
+			HelpFunctions::new_line ( out, indent_level );
+			std::string str_ = emits_->identifier();
+			str_.erase(str_.find("_emits"), 6 );
+			out << "<emitsidentifier>" << str_ << "</emitsidentifier>";
+			HelpFunctions::new_line ( out, indent_level );
+			out << "<componentinstantiationref idref=\"" << conn->int_comp_inst()->identifier() << "\"/>";
+			HelpFunctions::dec_indent_level ( indent_level );
+			HelpFunctions::new_line ( out, indent_level );
+			out << "</emitsport>";
+			return;
+		}
 	}
 	if( ! CORBA::is_nil ( publishes_ ) ) 
 	{
-		out << "<publishesport>";
-		HelpFunctions::inc_indent_level ( indent_level );
-		HelpFunctions::new_line ( out, indent_level );
-		out << "<publishesidentifier>" << publishes_->identifier() << "</publishesidentifier>";
-		HelpFunctions::new_line ( out, indent_level );
-		out << "<componentinstantiationref idref=\"" << conn->int_comp_inst()->identifier() << "\"/>";
-		HelpFunctions::dec_indent_level ( indent_level );
-		HelpFunctions::new_line ( out, indent_level );
-		out << "</publishesport>";
-		return;
-	}	
+		std::string str_ = publishes_->identifier();
+		if ( str_.find("_publishes") != npos )
+		{
+			out << "<publishesport>";
+			HelpFunctions::inc_indent_level ( indent_level );
+			HelpFunctions::new_line ( out, indent_level );
+			std::string str_ = publishes_->identifier();
+			str_.erase(str_.find("_publishes"), 10 );
+			out << "<publishesidentifier>" << str_ << "</publishesidentifier>";
+			HelpFunctions::new_line ( out, indent_level );
+			out << "<componentinstantiationref idref=\"" << conn->int_comp_inst()->identifier() << "\"/>";
+			HelpFunctions::dec_indent_level ( indent_level );
+			HelpFunctions::new_line ( out, indent_level );
+			out << "</publishesport>";
+			return;
+		}
+	}
 }
 void CADBackendSessionImpl::_generate_homeplacement_element 
 	( MDE::Deployment::HomeInstantiation_ptr home_inst, ostream& out, unsigned long & indent_level )
 {
-	out << "<homeplacement id=\"" << home_inst->identifier()  << "\">";
-	HelpFunctions::inc_indent_level ( indent_level );
-	HelpFunctions::new_line ( out, indent_level );
 	MDE::Deployment::DeploymentUnit_var unit_ = home_inst->unit();
-	std::string ref_ = unit_->identifier();
+	MDE::CIF::HomeImplDef_var home_impl_ = unit_->homeimpl();
+	MDE::CIF::ComponentImplDef_var comp_impl_ = home_impl_->component_impl();
+	MDE::ComponentIDL::ComponentDef_var comp_ = comp_impl_->component_end ();
+
+	out << "<homeplacement id=\"" << home_inst->identifier()  << "\" cardinality=\"" << home_inst->cardinality() <<"\">";
+	HelpFunctions::inc_indent_level ( indent_level );
+	HelpFunctions::new_line ( out, indent_level );	
+	std::string ref_ = comp_->identifier();
 	ref_.append("_file");
 	out << "<componentfileref idref=\"" << ref_ << "\"/>";
 	HelpFunctions::new_line ( out, indent_level );
-	out << "<componentimplref idref=\"" << unit_->uuid() << "\"/>";
+	out << "<!-- <componentimplref idref=\"" << unit_->uuid() << "\"/> -->";
 	
 	MDE::Deployment::ComponentInstantiationSet_var comp_instancies_ = home_inst->comp();
 	if ( comp_instancies_->length () > 0)
@@ -195,6 +243,8 @@ void CADBackendSessionImpl::_generate_homeplacement_element
 			_comp_inst_count++;
 			this->add_comp_instance( comp_instancies_[i] );
 		}
+	//HelpFunctions::new_line ( out, indent_level );
+	//out << "<destination></destination>";
 	HelpFunctions::dec_indent_level ( indent_level );
 	HelpFunctions::new_line ( out, indent_level );
 	out << "</homeplacement>";
@@ -209,7 +259,8 @@ void CADBackendSessionImpl::_generate_comp_instantiation_element
 	if ( properties_->length () > 0 && registers_->length () == 0 )
 	{
 		out << "<componentinstantiation id=\"" << comp_inst->identifier() << "\">";
-		std::string ref_ = comp_inst->identifier();
+		std::string ref_ = "meta-inf/";
+		ref_.append ( comp_inst->identifier() );
 		ref_.append(".cpf");
 		HelpFunctions::inc_indent_level ( indent_level );
 		HelpFunctions::new_line ( out, indent_level );
@@ -228,7 +279,8 @@ void CADBackendSessionImpl::_generate_comp_instantiation_element
 	else if ( properties_->length () > 0 && registers_->length () > 0 )
 	{
 		out << "<componentinstantiation id=\"" << comp_inst->identifier() << "\">";
-		std::string ref_ = comp_inst->identifier();
+		std::string ref_ = "meta-inf/";
+		ref_.append ( comp_inst->identifier() );
 		ref_.append(".cpf");
 		HelpFunctions::inc_indent_level ( indent_level );
 		HelpFunctions::new_line ( out, indent_level );

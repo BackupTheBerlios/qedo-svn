@@ -89,7 +89,7 @@ namespace CCMGenerator
 	void _generate_processor_element ( MDE::Deployment::DeploymentUnit_ptr , std::string , ostream& out, unsigned long & indent_level );
 	void _generate_compiler_element( MDE::Deployment::DeploymentUnit_ptr , std::string , ostream& out, unsigned long & indent_level );
 	void _generate_prog_language_element ( MDE::Deployment::DeploymentUnit_ptr , std::string, ostream& out, unsigned long & indent_level );
-	void _generate_descriptor_element ( MDE::Deployment::DeploymentUnit_ptr , std::string , ostream& out, unsigned long & indent_level );
+	void _generate_descriptor_element ( MDE::Deployment::DeploymentUnit_ptr , ostream& out, unsigned long & indent_level );
 	void _generate_code_element ( MDE::Deployment::ContainedFile_ptr , ostream& out, unsigned long & indent_level );
 
 	// help methods	
