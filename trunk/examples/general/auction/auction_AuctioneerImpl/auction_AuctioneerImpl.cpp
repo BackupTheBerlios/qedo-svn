@@ -82,7 +82,9 @@ AuctioneerSessionImpl::run(void *p)
 
 		if ( ! no_timeout )
 		{
+			impl->current_item_mutex->unlock();
 			impl->timeout();
+			impl->current_item_mutex->lock();
 		}
 	}
 
@@ -108,7 +110,6 @@ AuctioneerSessionImpl::timeout()
 		if ( count > 0 )
 		{
 			call_out_item();
-			count -= 1;
 		}
 		else {
 			sell_item();
@@ -132,6 +133,8 @@ void
 AuctioneerSessionImpl::sell_item()
 {
 	// do sell
+	current_bidder->sold(current_price);
+	current_item.seller->pay(current_item.contract,current_price);
 	get_new_item();
 }
 
@@ -147,7 +150,12 @@ AuctioneerSessionImpl::get_new_item()
 		count = 3;
 		call_out_item();
 	}
-	have_current_item = false;
+	else
+	{
+		std::cout << "Wait for a new item" << std::endl;
+		have_current_item = false;
+		time = 0;
+	}
 	item_list_mutex->unlock();
 }
 
@@ -264,7 +272,6 @@ AuctioneerSessionImpl::push_Bid(::auction::Bid* ev)
 		current_bidder = ::auction::BidderForAuctioneer::_duplicate(ev->bidder());
 		current_price = ev->price();
 		count = 3;
-		time = 5000;
 		call_out_item();
 	}
 	current_item_mutex->unlock();

@@ -91,6 +91,7 @@ BidderSessionImpl::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION BidderSessionImpl::configuration_complete
+	bidder_thread = context_->start_thread(run,this);
 // END USER INSERT SECTION BidderSessionImpl::configuration_complete
 }
 
@@ -149,6 +150,7 @@ BidderSessionImpl::sold(CORBA::Long amount)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION BidderSessionImpl::sold
+	std::cout << "You got item '" << bidder_item << "' for " << amount << std::endl;
 	bidder_amount = bidder_amount - amount;
 // END USER INSERT SECTION BidderSessionImpl::sold
 }

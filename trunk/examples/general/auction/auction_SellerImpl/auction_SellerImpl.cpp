@@ -46,6 +46,7 @@ void
 SellerSessionImpl::stop()
 {
 	stopped = true;
+	seller_cond->signal();
 	seller_thread->join();
 }
 
