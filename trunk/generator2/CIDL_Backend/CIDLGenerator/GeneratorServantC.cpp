@@ -2031,7 +2031,11 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "// Set container interceptor registration on context\n";
 		out << "new_context -> set_server_interceptor_dispatcher_registration(server_dispatcher_.in());\n";
 		out << "new_context -> set_client_interceptor_dispatcher_registration(client_dispatcher_.in());\n";
+		out << "\n";
+		out << "new_context-> set_contract_data (config);\n\n";
+
    	};	
+
 	out << "// Set context on component\n";
 	switch (lc) {
 		case (CIDL::lc_Session):

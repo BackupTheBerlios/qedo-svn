@@ -502,6 +502,11 @@ module Components {
 
 		void register_servant_locator_for_all (in Components::Extension::ServerContainerInterceptor server_interceptor);
 
+		Components::ConfigValues
+		get_contract_data ();
+
+		void
+		set_contract_data (in Components::ConfigValues contracts);
 	};
 
 	local interface ExtensionComponent : EnterpriseComponent

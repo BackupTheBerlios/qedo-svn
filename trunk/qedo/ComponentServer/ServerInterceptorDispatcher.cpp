@@ -29,7 +29,7 @@
 #include "ComponentServerImpl.h"
 #include "GlobalHelpers.h"
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.12 2004/01/14 08:36:40 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.13 2004/01/19 07:34:01 tom Exp $";
 
 namespace Qedo {
 
@@ -97,7 +97,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 					if (temp_config != 0)
 					{
-						std::cout << temp_config->length() << std::endl;
+//						std::cout << temp_config->length() << std::endl;
 
 						Components::ConfigValue* value;
 						for (CORBA::ULong k = 0; k < temp_config->length(); k++)
@@ -123,7 +123,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 						if (temp_config != 0)
 						{
-							std::cout << temp_config->length() << std::endl;
+//							std::cout << temp_config->length() << std::endl;
 
 							Components::ConfigValue* value;
 							for (CORBA::ULong k = 0; k < temp_config->length(); k++)
@@ -151,7 +151,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 						if (temp_config != 0)
 						{
-							std::cout << temp_config->length() << std::endl;
+//							std::cout << temp_config->length() << std::endl;
 
 							Components::ConfigValue* value;
 							for (CORBA::ULong k = 0; k < temp_config->length(); k++)

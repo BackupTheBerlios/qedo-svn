@@ -4,14 +4,17 @@
 
 namespace Qedo {
 
-	class ServerContainerInterceptor: public virtual Components::Extension::ServerContainerInterceptor
+	class EFServerContainerInterceptor: public virtual Components::Extension::ServerContainerInterceptor
 	{
 	private:
 		unsigned long count;
+		long frequency_;
+		time_t stamp;
 	public:
-		ServerContainerInterceptor();
+		EFServerContainerInterceptor();
+		EFServerContainerInterceptor(long freq);
 
-		~ServerContainerInterceptor();
+		~EFServerContainerInterceptor();
 
 		virtual void receive_request (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id) ;
 		virtual void send_reply (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id) ;

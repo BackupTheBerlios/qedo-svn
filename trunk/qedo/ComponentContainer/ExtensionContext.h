@@ -48,6 +48,11 @@ private:
 	Components::Extension::ServerInterceptorRegistration_var server_registration_;
 	Components::Extension::ClientInterceptorRegistration_var client_registration_;
 
+	/*
+	* list of config values to store contract inforamtion 
+	*/
+	Components::ConfigValues contracts_;
+
 public:
 	/**
 	 * constructor
@@ -86,6 +91,13 @@ public:
 
 	 virtual void
 	 register_servant_locator_for_all(Components::Extension::ServerContainerInterceptor_ptr server_interceptor);
+
+	 virtual void
+	 set_contract_data ( const Components::ConfigValues& contract_data);
+
+	 virtual Components::ConfigValues*
+	 get_contract_data();
+
 };
 
 /** @} */

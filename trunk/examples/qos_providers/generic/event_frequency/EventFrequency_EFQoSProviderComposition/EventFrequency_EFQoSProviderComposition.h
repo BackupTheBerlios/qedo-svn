@@ -59,7 +59,7 @@ namespace EventFrequency
     
 // BEGIN USER INSERT SECTION EFQoSProviderExec
 public:
-	Qedo::ServerContainerInterceptor* server_interceptor_;
+	Qedo::EFServerContainerInterceptor* server_interceptor_;
 // END USER INSERT SECTION EFQoSProviderExec
 
     };

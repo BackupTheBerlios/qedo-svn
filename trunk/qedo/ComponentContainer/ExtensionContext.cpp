@@ -26,7 +26,7 @@
 #include "ComponentServerImpl.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.7 2003/12/09 08:00:52 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.8 2004/01/19 07:34:01 tom Exp $";
 
 
 namespace Qedo {
@@ -90,6 +90,24 @@ ExtensionContext::register_servant_locator_for_all(Components::Extension::Server
 	}
 }
 
+
+void
+ExtensionContext::set_contract_data ( const Components::ConfigValues& contract_data) {
+
+	// test wehter the config data is a contract data
+
+	// append data to the current list of contract data
+//	contracts_ = new Components::ConfigValues();
+	contracts_ = Components::ConfigValues(contract_data);
+}
+
+Components::ConfigValues*
+ExtensionContext::get_contract_data ( ) {
+
+	Components::ConfigValues* ret_contract = new Components::ConfigValues(contracts_);
+//	ret_contract = contracts_;
+	return ret_contract;
+}
 
 #endif
 } // namepscae Qedo

@@ -49,16 +49,30 @@ EFQoSProviderExec::configuration_complete()
 Components::Extension::ServerInterceptorRegistration_var server_reg =
 	context_ -> get_server_interceptor_dispatcher_registration();
 
+// check for contract assignments
+Components::ConfigValues_var contract_info = 
+	context_ -> get_contract_data();
+
+//for (CORBA::ULong counter = 0; counter < contract_info -> length(), counter++ )
+//{
+CORBA::Any an_any;
+	an_any = contract_info.in()[2]->value();
+	CORBA::Long freq;
+	an_any >>= freq;
+//}
 //create Server interceptor interface
-server_interceptor_ = new Qedo::ServerContainerInterceptor();
+server_interceptor_ = new Qedo::EFServerContainerInterceptor(freq);
 
 //register it with interceptor dispatcher
 std::string component_id = "reader";
 server_reg -> register_interceptor_for_component(server_interceptor_, component_id.c_str());
 
 // register interceptor for all
-server_reg -> register_interceptor_for_all(server_interceptor_);
+//server_reg -> register_interceptor_for_all(server_interceptor_);
 // END USER INSERT SECTION EFQoSProviderExec::configuration_complete
+
+
+
 }
 
 
