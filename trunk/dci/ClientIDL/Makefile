@@ -28,15 +28,15 @@ H_FILES = MDE.h \
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
 
-CLEAN_FILES = ${CPP_FILES} ${H_FILES} ${OBJ_FILES} libDCI_mda_infra.so
+CLEAN_FILES = ${CPP_FILES} ${H_FILES} ${OBJ_FILES} libDCI_ClientIDL.so
 
 CXXFLAGS += -I.
 
 include ../MakeComponentVars
 
-all: libDCI_mda_infra.a
+all: libDCI_ClientIDL.a
 
-libDCI_mda_infra.a: ${OBJ_FILES}
+libDCI_ClientIDL.a: ${OBJ_FILES}
 
 MDE.cpp: MDE.idl
 	$(MICO)/bin/idl ${IDL_FLAGS} -I. -I$(MICO)/include -I$(MICO)/include/coss -I$(MICO)/include/mico --codegen-c++ --gen-included-defs -DMICO_ORB --c++-suffix cpp $<
