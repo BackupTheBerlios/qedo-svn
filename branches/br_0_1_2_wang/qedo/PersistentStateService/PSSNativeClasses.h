@@ -80,9 +80,6 @@ class StorageObjectRef
 		StorageObjectRef(const StorageObjectRef& ref) // copy constructure
 			throw();
 
-		StorageObjectRef(StorageObject* obj) 
-			throw();
-
 		~StorageObjectRef ();
 
 		StorageObjectRef& operator=(const StorageObjectRef& ref) 
