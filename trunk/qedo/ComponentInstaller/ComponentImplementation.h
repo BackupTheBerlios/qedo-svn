@@ -43,10 +43,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#if !defined(UNUSED) && defined(__GNUC__)
+#if !defined(UNUSED) 
+#ifdef __GNUC__
 #define UNUSED __attribute__((unused))
 #else
 #define UNUSED
+#endif
 #endif
 
 
