@@ -20,55 +20,72 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __STORAGEHOMEBASE_H__
-#define __STORAGEHOMEBASE_H__
+#ifndef __QDDATABASE_H__
+#define __QDDATABASE_H__
 
-#include <list>
-#include "PSSUtil.h"
-#include "CORBADepends.h"
-#include "RefCountBase.h"
-#include "QDRecordset.h"
-#include "PSSNativeClasses.h"
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <dlfcn.h>
+#include <sys/types.h>
+#endif
+#include <sqlext.h>
 
-using namespace std;
-using namespace CosPersistentState;
+#define DEFAULT_TIMEOUT 15
+#define MAX_INFO_LEN 64
+#define MAX_COL_SIZE 256
+#define MAX_CONNSTR_LEN 1024
 
 namespace Qedo
 {
 
-class  StorageHomeBaseImpl : public virtual CosPersistentState::StorageHomeBase,
-							 public virtual RefCountLocalObject,
-							 public virtual QDRecordset
+class QDDatabase
 {
 	public:
 
-		StorageHomeBaseImpl() {};
+		QDDatabase() ;
 
-		StorageHomeBaseImpl(CatalogBase_ptr pCatalogBase, const char* szBaseStorageHomeName, const char* szOwnStorageHomeName);
+		~QDDatabase() ;
 
-		~StorageHomeBaseImpl();
+		virtual bool Init();
+
+		void close();
+
+		void Destroy();
+
+		bool DriverConnect(const char* szConnStr, char* szConnStrOut = NULL, HWND hWnd = NULL, const int nDrvConn = SQL_DRIVER_NOPROMPT);
+
+		void SetLoginTimeout(const long nSeconds); //???
+
+		void SetQueryTimeout(const long nSeconds); //???
+
+		int GetRecordsAffected();
+
+		char* GetODBCVersion();
+
+		bool ExecuteSQL(const char* szSqlStr);
+
+		bool CanTransact();
 		
-		//
-		// IDL:omg.org/CosPersistentState/StorageHomeBase/find_by_short_pid:1.0
-		//
-		StorageObjectBase_ptr find_by_short_pid(const ShortPid& short_pid);
+		bool CanUpdate();
+		
+		bool IsConnected();
 
-		//
-		// IDL:omg.org/CosPersistentState/StorageHomeBase/get_catalog:1.0
-		//
-		CatalogBase_ptr get_catalog();
+		bool IsTableExist(const char* szTableName);
 
-		char* getOwnStorageHomeName();
+		SQLHDBC getHDBC();
 
 	protected:
 		
-		char* m_szOwnStorageHomeName;
-
-	private:
+		SQLHDBC m_hDbc;
+		SQLHENV m_hEnv;
 		
-		CatalogBase_ptr m_pCatalogBase;
-		char* m_szBaseStorageHomeName;
-		std::list <StorageObject*> m_lStorageObjectes;
+		int m_nRecordsAffected;
+		long m_lLoginTimeout;
+		long m_lQueryTimeout;
+		bool m_bIsConnected;
+		char* m_szODBCVersion;
+		char* m_szConnString;
 };
 
 }; // namespace Qedo

@@ -107,6 +107,8 @@ class PSSDLL_API ConnectorImpl : public virtual CosPersistentState::Connector,
 	private:
 
 		char* m_szImplID;
+		SessionPoolImpl* m_pSessionPool;
+		std::list <SessioImpl*> m_lSessions;
 };
 
 }; // namespace Qedo

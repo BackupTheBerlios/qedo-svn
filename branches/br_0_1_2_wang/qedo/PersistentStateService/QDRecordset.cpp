@@ -123,6 +123,7 @@ QDRecordset::GetFieldValue(const char* szFieldName, unsigned char& cData)
 }
 
 // for SQL_C_NUMERIC
+/*
 bool 
 QDRecordset::GetFieldValue(const int nField, float& fltData)
 {
@@ -175,7 +176,7 @@ QDRecordset::GetFieldValue(const char* szFieldName, float& fltData)
 {
 	return GetFieldValue(GetFieldIndex(szFieldName), fltData);	
 }
-
+*/
 // for SQL_C_TINYINT
 bool 
 QDRecordset::GetFieldValue(const int nField, char& cData)

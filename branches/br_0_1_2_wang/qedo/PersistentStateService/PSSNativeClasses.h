@@ -27,6 +27,7 @@
 #include "CORBADepends.h"
 
 namespace CosPersistentState
+//namespace OBNative_CosPersistentState
 {
 
 class StorageObjectBase

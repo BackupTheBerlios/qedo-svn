@@ -76,8 +76,8 @@ class QDRecordset
 		bool GetFieldValue(const char* szFieldName, unsigned char& cData);
 
 		// for SQL_C_NUMERIC
-		bool GetFieldValue(const int nField, float& fltData);
-		bool GetFieldValue(const char* szFieldName, float& fltData);
+		//bool GetFieldValue(const int nField, float& fltData);
+		//bool GetFieldValue(const char* szFieldName, float& fltData);
 
 		// for SQL_C_TINYINT
 		bool GetFieldValue(const int nField, char& cData);

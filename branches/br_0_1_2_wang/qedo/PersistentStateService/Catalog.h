@@ -23,27 +23,22 @@
 #ifndef __CATALOG_H__
 #define __CATALOG_H__
 
-#include "PSSUtil.h"
-#include <sqlext.h>
 #include <list>
+#include "PSSUtil.h"
 #include "CORBADepends.h"
 #include "RefCountBase.h"
+#include "QDDatabase.h"
 #include "StorageHomeBase.h"
-
-#define DEFAULT_TIMEOUT 15
-#define MAX_INFO_LEN 64
-#define MAX_COL_SIZE 256
-#define MAX_CONNSTR_LEN 1024
 
 using namespace std;
 using namespace CosPersistentState;
-
 
 namespace Qedo
 {
 
 class CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
-                        public virtual RefCountLocalObject
+                        public virtual RefCountLocalObject,
+						public virtual QDDatabase
 {
 	public:
 
@@ -54,6 +49,8 @@ class CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
 		~CatalogBaseImpl();
 
 		virtual bool Init();
+
+		bool DriverConnect(const char* szConnStr, char* szConnStrOut = NULL, HWND hWnd = NULL, const int nDrvConn = SQL_DRIVER_NOPROMPT);
 
 		//
 		// IDL:omg.org/CosPersistentState/CatalogBase/access_mode:1.0
@@ -90,45 +87,8 @@ class CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
 		//
 		void close();
 
-		SQLHDBC getHDBC();
-
-	protected:
-		
-		bool DriverConnect(const char* szConnStr, char* szConnStrOut = NULL, HWND hWnd = NULL, const int nDrvConn = SQL_DRIVER_NOPROMPT);
-		
-		void Destroy();
-
-		void SetLoginTimeout(const long nSeconds); //???
-
-		void SetQueryTimeout(const long nSeconds); //???
-
-		int GetRecordsAffected();
-
-		char* GetODBCVersion();
-
-		bool ExecuteSQL(const char* szSqlStr);
-
-		bool CanTransact();
-		
-		bool CanUpdate();
-
-		bool IsConnected();
-
-		bool IsTableExist(const char* szTableName);
-
-	protected:
-		
-		SQLHDBC m_hDbc;
-		SQLHENV m_hEnv;
-		char* m_szConnString;
-
 	private:
 
-		int m_nRecordsAffected;
-		long m_lLoginTimeout;
-		long m_lQueryTimeout;
-		bool m_bIsConnected;
-		char* m_szODBCVersion;
 		AccessMode m_eAM;
 		std::list <StorageHomeBaseImpl*> m_lStorageHomeBases;
 };

@@ -25,55 +25,39 @@
 namespace Qedo
 {
 
-CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM, const char* szConnString) :
-	m_hEnv(SQL_NULL_HENV),
-	m_hDbc(SQL_NULL_HDBC),
-	m_lLoginTimeout(DEFAULT_TIMEOUT),
-	m_lQueryTimeout(DEFAULT_TIMEOUT),
-	m_nRecordsAffected(0),
-	m_bIsConnected(FALSE),
-	m_eAM(eAM)
+CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM, const char* szConnString)
 {
-	m_szODBCVersion = new char[MAX_INFO_LEN];
-	m_szConnString = new char[MAX_CONNSTR_LEN];
-	memset(m_szODBCVersion, '\0', MAX_INFO_LEN);
-	memset(m_szConnString, '\0', MAX_CONNSTR_LEN);
+	QDDatabase::QDDatabase();
+
+	m_eAM = eAM;
 	strcpy(m_szConnString, szConnString);
 }
 
 CatalogBaseImpl::~CatalogBaseImpl()
 {
-	Destroy();
-
-	m_lLoginTimeout = 0;
-	m_lQueryTimeout = 0;
-	m_nRecordsAffected = 0;
-	m_bIsConnected = FALSE;
-
-	delete m_szODBCVersion;
-	delete m_szConnString;
-	m_szODBCVersion = NULL;
-	m_szConnString = NULL;
 }
 
 bool 
 CatalogBaseImpl::Init()
 {
-	SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HENV, &m_hEnv);
-	SQLSetEnvAttr(m_hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0); 
-	SQLAllocHandle(SQL_HANDLE_DBC, m_hEnv, &m_hDbc);
+	SQLRETURN ret;
 
-	return DriverConnect(m_szConnString);
-}
-
-void 
-CatalogBaseImpl::Destroy()
-{
-	SQLFreeHandle(SQL_HANDLE_DBC, m_hDbc);
-	SQLFreeHandle(SQL_HANDLE_ENV, m_hEnv);
-
-	m_hDbc = SQL_NULL_HDBC;
-	m_hEnv = SQL_NULL_HENV;
+	ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HENV, &m_hEnv);
+	
+	if(ret==SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+	{
+        ret = SQLSetEnvAttr(m_hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0);
+	
+		if(ret==SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+		{
+			ret = SQLAllocHandle(SQL_HANDLE_DBC, m_hEnv, &m_hDbc);
+			return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
+		}
+		else
+			return FALSE;
+	}
+	else
+		return FALSE;
 }
 
 bool 
@@ -107,141 +91,6 @@ CatalogBaseImpl::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND h
 	return m_bIsConnected;
 }
 
-void 
-CatalogBaseImpl::SetLoginTimeout(const long nSeconds)
-{
-	m_lLoginTimeout = nSeconds;
-}
-
-void 
-CatalogBaseImpl::SetQueryTimeout(const long nSeconds)
-{
-	m_lQueryTimeout = nSeconds;
-}
-
-int 
-CatalogBaseImpl::GetRecordsAffected()
-{
-	return m_nRecordsAffected;
-}
-
-char* 
-CatalogBaseImpl::GetODBCVersion()
-{
-	if(!IsConnected())
-		return NULL;
-
-	SQLRETURN ret;
-	
-	ret = SQLGetInfo(m_hDbc, SQL_ODBC_VER, m_szODBCVersion, MAX_INFO_LEN, NULL);
-
-	if(ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
-		return NULL;
-
-	return m_szODBCVersion;
-}
-
-bool 
-CatalogBaseImpl::ExecuteSQL(const char* szSqlStr)
-{
-	if(!IsConnected())
-		return FALSE;
-
-	SQLRETURN ret;
-	SQLHSTMT hStmt = NULL;
-	SQLINTEGER nRowCount;
-
-	SQLAllocHandle(SQL_HANDLE_STMT, m_hDbc, &hStmt);
-	ret = SQLExecDirect(hStmt, (SQLCHAR*)szSqlStr, SQL_NTS);
-	
-	SQLRowCount(hStmt, &nRowCount);
-	SQLFreeHandle(SQL_HANDLE_STMT , hStmt);
-	hStmt = NULL;
-	
-	m_nRecordsAffected = nRowCount;
-
-	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
-}
-
-bool 
-CatalogBaseImpl::CanTransact()
-{
-	if(!IsConnected())
-		return FALSE;
-
-	SQLUSMALLINT nTxn;
-
-	SQLGetInfo(m_hDbc, SQL_TXN_CAPABLE, (SQLPOINTER)&nTxn, sizeof(nTxn), NULL);
-
-	if(nTxn==SQL_TC_NONE)
-		return FALSE;
-
-	return TRUE;
-}
-
-bool 
-CatalogBaseImpl::CanUpdate()
-{
-	if(!IsConnected())
-		return FALSE;
-
-	SQLUINTEGER nTxn;
-
-	SQLGetConnectAttr(m_hDbc, SQL_ATTR_ACCESS_MODE, (SQLPOINTER)&nTxn, NULL, 0);
-
-	if(nTxn==SQL_MODE_READ_ONLY)
-		return FALSE;
-
-	return TRUE;
-}
-
-bool 
-CatalogBaseImpl::IsConnected()
-{
-	return m_bIsConnected;
-}
-
-bool 
-CatalogBaseImpl::IsTableExist(const char* szTableName)
-{
-	if(!IsConnected())
-		return FALSE;
-
-	SQLRETURN ret;
-	SQLHSTMT hStmt = NULL;
-	SQLSMALLINT nFieldCount = 0;
-	char szTable[6] = "TABLE";
-
-	SQLAllocHandle(SQL_HANDLE_STMT, m_hDbc, &hStmt);
-
-	ret = SQLTables(hStmt,
-					NULL, 0,    // All catalogs
-					NULL, 0,    // All schemas
-					//NULL, 0,	// All tables 
-					(unsigned char*)szTableName, strlen(szTableName),
-					//NULL, 0);   // All table types 
-					(unsigned char*)szTable, strlen(szTable)); // only TABLE
-
-	// fetch and close the current cursor
-	ret = SQLFetch(hStmt);
-	SQLCloseCursor(hStmt);
-
-	// free SQLHSTMT
-	SQLFreeHandle(SQL_HANDLE_STMT, hStmt);
-	hStmt = NULL;
-
-	if(ret!=SQL_NO_DATA)
-		return TRUE;
-
-	return FALSE;
-}
-
-SQLHDBC 
-CatalogBaseImpl::getHDBC()
-{
-	return m_hDbc;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 //returns the accsss mode of this catalog
 ////////////////////////////////////////////////////////////////////////////////
@@ -271,6 +120,12 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 	if(!IsConnected())
 		return NULL;
 
+	//
+	//ToDo: add a function to find the base-home-name of storage_home_id
+	//If not found, raises the exception NotFound()
+	//
+	char* base_home_id = NULL;
+
 	if(!IsTableExist(storage_home_id))
 		throw CosPersistentState::NotFound();
 
@@ -287,7 +142,9 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 	}
 
 	StorageHomeBaseImpl* pStorageHomeBase = 
-		new StorageHomeBaseImpl((dynamic_cast <Sessio_ptr> (this)), storage_home_id);
+		new StorageHomeBaseImpl((dynamic_cast <CatalogBase_ptr> (this)), base_home_id, storage_home_id);
+
+	m_lStorageHomeBases.push_back(pStorageHomeBase);
 
 	//return (CosPersistentState::StorageHomeBase::_narrow(pStorageHomeBase));
 	return (dynamic_cast <StorageHomeBase_ptr> (pStorageHomeBase));
@@ -415,18 +272,38 @@ SessionPoolImpl::~SessionPoolImpl()
 bool 
 SessionPoolImpl::Init()
 {
-	SQLSetEnvAttr( SQL_NULL_HENV, SQL_ATTR_CONNECTION_POOLING, (SQLPOINTER)SQL_CP_ONE_PER_DRIVER, 0 );
-    SQLAllocHandle( SQL_HANDLE_ENV, SQL_NULL_HENV, &m_hEnv );
-	SQLSetEnvAttr( m_hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, SQL_IS_INTEGER );
-	SQLAllocHandle ( SQL_HANDLE_DBC, m_hEnv, &m_hDbc );
+	SQLRETURN ret;
 
-	return DriverConnect(m_szConnString);
+	ret = SQLSetEnvAttr( SQL_NULL_HENV, SQL_ATTR_CONNECTION_POOLING, (SQLPOINTER)SQL_CP_ONE_PER_DRIVER, 0 );
+
+	if(ret==SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+	{
+		ret = SQLAllocHandle( SQL_HANDLE_ENV, SQL_NULL_HENV, &m_hEnv );
+
+		if(ret==SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+		{
+			ret = SQLSetEnvAttr( m_hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, SQL_IS_INTEGER );
+
+			if(ret==SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+			{
+				ret = SQLAllocHandle ( SQL_HANDLE_DBC, m_hEnv, &m_hDbc );
+				return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO; 
+			}
+			else
+				return FALSE;
+		}
+		else
+			return FALSE;
+	}
+	else
+		return FALSE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //with NON_TRANSACTIONAL, it makes durable all of the modifications to active
 //incarnations whose PIDs are contained in the pids parameter, regardless of the
 //transactional context of the calling thread
+//
 //with TRANSACTIONAL, it behaves as follows:
 //$$ if the invoking thread is accociated with a transcation context, it makes
 //   durable all state modifications made in the current transactional scope for
@@ -451,6 +328,7 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 //$$ If any of the given PIDs are associated with incarnations which are themselves
 //   not associated with the current transaction, the INVALID_TRANSACTION standard
 //   exception is raised
+//
 //with TRANSACTIONAL and the invoking thread is not associated with a transaction
 //context, the standard exception TRANSACTION_REQUIRED is raised.
 //if the session pool implementatin is unable to refresh the appropriate incarnations,

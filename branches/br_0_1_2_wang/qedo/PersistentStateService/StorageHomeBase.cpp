@@ -27,18 +27,23 @@
 namespace Qedo
 {
 
-StorageHomeBaseImpl::StorageHomeBaseImpl(Sessio_ptr pSession, const char* szOwnStorageHomeName) :
+StorageHomeBaseImpl::StorageHomeBaseImpl(CatalogBase_ptr pCatalogBase, const char* szBaseStorageHomeName, const char* szOwnStorageHomeName) :
 	m_szBaseStorageHomeName(NULL),
 	m_szOwnStorageHomeName(NULL)
 {
+	strcpy(m_szBaseStorageHomeName, szBaseStorageHomeName);
 	strcpy(m_szOwnStorageHomeName, szOwnStorageHomeName);
-	m_pCatalogBase = dynamic_cast <CatalogBase_ptr> (pSession);
+	m_pCatalogBase = pCatalogBase;
 
-	QDRecordset::QDRecordset((dynamic_cast <CatalogBaseImpl*> (pSession))->getHDBC());
+	QDRecordset::QDRecordset((dynamic_cast <CatalogBaseImpl*> (m_pCatalogBase))->getHDBC());
 }
 
 StorageHomeBaseImpl::~StorageHomeBaseImpl()
 {
+	//
+	//ToDo: delete all of the StorageObjectBase_ptr from the list
+	//
+
 	delete m_szBaseStorageHomeName;
 	delete m_szOwnStorageHomeName;
 	m_szBaseStorageHomeName = NULL;
@@ -53,21 +58,40 @@ StorageHomeBaseImpl::~StorageHomeBaseImpl()
 StorageObjectBase_ptr 
 StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 {
+	int i = 0;
 	int iLength = short_pid.length();
 
+	list <StorageObject*> ::iterator storageObject_iter;
+	
+	for (storageObject_iter = m_lStorageObjectes.begin();
+		 storageObject_iter != m_lStorageObjectes.end();
+		 storageObject_iter++)
+	{
+		ShortPid* sp = (*storageObject_iter)->get_short_pid();
+		if(sp->length()==iLength)
+		{
+			for(i=0; i<iLength; i++)
+			{
+				if( (*sp)[i]!=short_pid[i] )
+					break;
+			}
+			
+			if(i+1==iLength)
+				return (dynamic_cast <StorageObjectBase_ptr> (*storageObject_iter));
+		}
+	}
+
+	throw CosPersistentState::NotFound();
+/*
 	unsigned char* sz_shortPid = new unsigned char[iLength];
 	
-	for(int i=0; i<iLength; i++)
+	for(i=0; i<iLength; i++)
 	{
 		sz_shortPid[i] = short_pid[i];
 	}
 
-	//if(the short_pid in the list)
-	//	then return
-	//else
-
 	string strToExecute;
-	strToExecute = "select * from ";
+	strToExecute = "select * from "; //??? Which columns should be seleted?
 	strToExecute.append((const char*)m_szBaseStorageHomeName);
 	strToExecute += " where storagehome like ";
 	strToExecute.append((const char*)m_szOwnStorageHomeName);
@@ -76,8 +100,14 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 	strToExecute += ";";
 	
 	Open(strToExecute.c_str());
+
+	//
+	//ToDo: fetch the data into a storage object, for example through an operation setValue()
+	//
+
+	//m_lStorageObjectBases.push_back();
 	
-	return NULL;
+	return NULL;*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////

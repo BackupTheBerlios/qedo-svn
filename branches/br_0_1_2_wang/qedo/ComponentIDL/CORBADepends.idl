@@ -65,8 +65,6 @@ module CosPersistentState {
     local interface StorageHomeBase;
     //local interface TransactionalSession;
 
-    //The keyword native is only used internally,
-	//so here will be the following classes declared as local interface.
     //native StorageObjectBase;
     //native StorageObjectFactory;
     //native StorageHomeFactory;
@@ -280,11 +278,11 @@ module CosPersistentState {
 
     local interface SessionPool : CatalogBase 
     {
-        void flush_by_pids(in PidList pids);
+        readonly attribute TransactionPolicy transaction_policy;
+
+		void flush_by_pids(in PidList pids);
 
         void refresh_by_pids(in PidList pids);
-
-        readonly attribute TransactionPolicy transaction_policy;
     };
 
 };

@@ -29,13 +29,31 @@ ConnectorImpl::ConnectorImpl()
 {
 }
 
-ConnectorImpl::ConnectorImpl(char* szImplID)
+ConnectorImpl::ConnectorImpl(char* szImplID) :
+	m_pSessionPool(NULL)
 {
 	strcpy(m_szImplID, szImplID);
 }
 
 ConnectorImpl::~ConnectorImpl()
 {	
+	// delete all sessions and session pool(s)!
+	list <SessioImpl*> ::iterator sessio_iter;
+	
+	for (sessio_iter = m_lSessions.begin();
+		 sessio_iter != m_lSessions.end();
+		 sessio_iter++)
+	{
+		(*sessio_iter)->close();
+	}
+
+	m_lSessions.clear();
+
+	if(m_pSessionPool->IsConnected())
+		m_pSessionPool->close();
+
+	delete m_pSessionPool;
+	m_pSessionPool = NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +107,7 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 	const char* szVal;
 
 	//DSN=myodbc3-test;SERVER=haw;UID=root;PWD=;DATABASE=test;
-	for(int i=0; i<additional_parameters.length(); i++)
+	for(unsigned int i=0; i<additional_parameters.length(); i++)
 	{
 		strConn += additional_parameters[i].name;
 		strConn += "=";
@@ -99,9 +117,14 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 	}
 	
 	SessioImpl* pSession = new SessioImpl(access_mode, strConn.c_str());
-	
+
 	if(!pSession->Init())
 		throw CORBA::PERSIST_STORE();
+
+	if(!pSession->DriverConnect(strConn.c_str()))
+		throw CORBA::PERSIST_STORE();
+
+	m_lSessions.push_back(pSession);
 
 	return (dynamic_cast <Sessio_ptr> (pSession));
 }
@@ -122,7 +145,7 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 	const char* szVal;
 
 	//DSN=myodbc3-test;SERVER=haw;UID=root;PWD=;DATABASE=test;
-	for(int i=0; i<additional_parameters.length(); i++)
+	for(unsigned int i=0; i<additional_parameters.length(); i++)
 	{
 		strConn += additional_parameters[i].name;
 		strConn += "=";
@@ -131,12 +154,25 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 		strConn += ";";
 	}
 	
-	SessionPoolImpl* pSessionPool = new SessionPoolImpl(access_mode, tx_policy, strConn.c_str());
-	
-	if(!pSessionPool->Init())
-		throw CORBA::PERSIST_STORE();
+	if(m_pSessionPool==NULL)
+	{
+		SessionPoolImpl* pSessionPool = new SessionPoolImpl(access_mode, tx_policy, strConn.c_str());
 
-	return (dynamic_cast <SessionPool_ptr> (pSessionPool));
+		if(!pSessionPool->Init())
+			throw CORBA::PERSIST_STORE();
+
+		if(!pSessionPool->DriverConnect(strConn.c_str()))
+			throw CORBA::PERSIST_STORE();
+
+		m_pSessionPool = pSessionPool;
+	}
+	else
+	{
+		if(!m_pSessionPool->DriverConnect(strConn.c_str()))
+			throw CORBA::PERSIST_STORE();
+	}
+	
+	return (dynamic_cast <SessionPool_ptr> (m_pSessionPool));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +205,8 @@ SessionFactory_ptr
 ConnectorImpl::register_session_factory(const char* catalog_type_name,
                                     SessionFactory_ptr factory)
 {
-	return NULL;
+	//unnessicary
+	throw CORBA::NO_IMPLEMENT();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -180,7 +217,7 @@ SessionPoolFactory_ptr
 ConnectorImpl::register_session_pool_factory(const char* catalog_type_name,
                                          SessionPoolFactory_ptr factory)
 {
-	return NULL;
+	throw CORBA::NO_IMPLEMENT();
 }
 
 } // namespace Qedo

@@ -205,6 +205,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\PSSNativeClasses_impl.cpp">
 			</File>
 			<File
+				RelativePath="QDDatabase.cpp">
+			</File>
+			<File
 				RelativePath=".\QDRecordset.cpp">
 			</File>
 			<File
@@ -228,6 +231,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\PSSUtil.h">
+			</File>
+			<File
+				RelativePath="QDDatabase.h">
 			</File>
 			<File
 				RelativePath=".\QDRecordset.h">
