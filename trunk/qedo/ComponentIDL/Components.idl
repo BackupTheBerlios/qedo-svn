@@ -455,29 +455,47 @@ module Components {
 
 #ifndef _QEDO_NO_QOS
 	module Extension {
-		local interface ContainerInterceptor {};
+		local interface ContainerServerRequestInfo {
+			readonly attribute string component_uuid;
+			readonly attribute string component_id;
+			readonly attribute string port_id;
+			PortableInterceptor::ServerRequestInfo request_info();
+		};
+
+		local interface ContainerClientRequestInfo {
+			readonly attribute string component_uuid;
+			readonly attribute string component_id;
+			readonly attribute string port_id;
+			PortableInterceptor::ClientRequestInfo request_info();
+		};
+
+		local interface ContainerInterceptor {
+			void set_slot_id(in PortableInterceptor::SlotId slot_id);
+		};
 
 		local interface ServerContainerInterceptor : ContainerInterceptor
 		{
-			void receive_request ( in PortableInterceptor::ServerRequestInfo info, in string id);
-			void send_reply ( in PortableInterceptor::ServerRequestInfo info, in string id);
-			void send_system_exception ( in PortableInterceptor::ServerRequestInfo info, in string id);
-			void send_user_exception ( in PortableInterceptor::ServerRequestInfo info, in string id);
+			void receive_request ( in Extension::ContainerServerRequestInfo info );
+			void send_reply ( in Extension::ContainerServerRequestInfo info );
+			void send_system_exception ( in Extension::ContainerServerRequestInfo info );
+			void send_user_exception ( in Extension::ContainerServerRequestInfo info );
 
 			void rec_request_from_servant_locator(in string operation);
 		};
 
 		local interface ClientContainerInterceptor : ContainerInterceptor
 		{
-			void send_request ( in PortableInterceptor::ServerRequestInfo info);
-			void receive_reply ( in PortableInterceptor::ServerRequestInfo info);
-			void receive_system_exception ( in PortableInterceptor::ServerRequestInfo info);
-			void receive_user_exception ( in PortableInterceptor::ServerRequestInfo info);
+			void send_request ( in Extension::ContainerClientRequestInfo info );
+			void receive_reply ( in Extension::ContainerClientRequestInfo info );
+			void receive_system_exception ( in Extension::ContainerClientRequestInfo info );
+			void receive_user_exception ( in Extension::ContainerClientRequestInfo info );
 		};
 		local interface ServerInterceptorRegistration : PortableInterceptor::ServerRequestInterceptor
 		{
 			void register_interceptor_for_all (in ServerContainerInterceptor server_interceptor);
 			void register_interceptor_for_component (in ServerContainerInterceptor server_interceptor, in string id);
+			void unregister_interceptor_for_all ( in ServerContainerInterceptor server_interceptor);
+			void unregister_interceptor_for_component ( in ServerContainerInterceptor server_interceptor, in string id);
 			
 		};
 
