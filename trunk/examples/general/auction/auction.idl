@@ -1,0 +1,115 @@
+#ifndef AUCTION_IDL
+#define AUCTION_IDL
+
+#include "Components.idl"
+
+/**
+ * example for an auction with events
+ */
+module auction
+{
+
+
+// contract between auctioneer and seller to sell an item
+typedef long Contract;
+
+
+interface BidderForAuctioneer;
+
+eventtype Bid
+{
+	public BidderForAuctioneer bidder;
+	public long price;
+};
+
+
+eventtype GiveBid
+{
+	public string item;
+	public long current_bid;
+};
+
+
+/**
+ * interface between Seller and Auctioneer
+ */
+interface SellerForAuctioneer
+{
+	void pay(in Contract cnt, in long amount);
+};
+
+
+/**
+ * interface between Auctioneer and Seller
+ */
+interface AuctioneerForSeller
+{
+	Contract sell(in SellerForAuctioneer seller, in string item, in long minimum);
+};
+
+
+/**
+ * interface between Bidder and Auctioneer
+ */
+interface BidderForAuctioneer
+{
+	//void give_bid(in long current_bid);
+	void sold(in long amount);
+};
+
+
+/**
+ * the auctioneer
+ */
+component Auctioneer
+{
+	provides AuctioneerForSeller for_seller;
+	consumes Bid a_bid;
+	publishes GiveBid current_bid;
+};
+home Auctioneers manages Auctioneer
+{
+};
+
+
+/**
+ * the bidder
+ */
+component Bidder
+{
+	/** the amount of money */
+	attribute long amount;
+	/** the sold item */
+	attribute string item;
+	
+	provides BidderForAuctioneer for_auctioneer;
+	consumes GiveBid current_bid;
+	publishes Bid my_bid;
+};
+home Bidders manages Bidder
+{
+};
+
+
+/**
+ * the seller
+ */
+component Seller
+{
+	/** the item to sell */
+	attribute string item;
+	/** the minimum price */
+	attribute long minimum;
+	/** the amount of money */
+	attribute long amount;
+	
+	provides SellerForAuctioneer for_auctioneer;
+	uses AuctioneerForSeller from_auctioneer;
+};
+home Sellers manages Seller
+{
+};
+
+};
+
+#endif /* AUCTION_IDL */
