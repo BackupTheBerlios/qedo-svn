@@ -88,12 +88,6 @@ namespace dinner
     {
     
     private:
-    
-<<<<<<< dinner_ObserverImpl.h
-=======
-        Qedo::qedo_mutex mutex_;
-        
->>>>>>> 1.8
         ::dinner::CCM_Observer_Context_var context_;
         
         ObserverSessionImpl* component_;
@@ -166,12 +160,6 @@ namespace dinner
     {
     
     private:
-    
-<<<<<<< dinner_ObserverImpl.h
-=======
-        Qedo::qedo_mutex mutex_;
-        
->>>>>>> 1.8
         Components::CCMContext_var context_;
         
     public:

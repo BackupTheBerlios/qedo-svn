@@ -124,7 +124,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(QEDO)/ComponentIDL/Debug_orbacus/ComponentIDL.lib CosNamingd.lib obd.lib"
+				AdditionalDependencies="ComponentIDL.lib CosNamingd.lib obd.lib"
 				OutputFile="$(QEDO)/bin/tc.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(QEDO)\lib"

@@ -85,12 +85,6 @@ namespace dinner
     {
     
     private:
-    
-<<<<<<< dinner_CutleryImpl.h
-=======
-        Qedo::qedo_mutex mutex_;
-        
->>>>>>> 1.7
         ::dinner::CCM_Cutlery_Context_var context_;
         
     public:
@@ -139,12 +133,6 @@ namespace dinner
     {
     
     private:
-    
-<<<<<<< dinner_CutleryImpl.h
-=======
-        Qedo::qedo_mutex mutex_;
-        
->>>>>>> 1.7
         ::dinner::CCM_Cutlery_Context_var context_;
         
         CutlerySessionImpl* component_;
@@ -219,12 +207,6 @@ namespace dinner
     {
     
     private:
-    
-<<<<<<< dinner_CutleryImpl.h
-=======
-        Qedo::qedo_mutex mutex_;
-        
->>>>>>> 1.7
         Components::CCMContext_var context_;
         
     public:
