@@ -23,7 +23,21 @@
 /*                                                                           */
 /*****************************************************************************/
 
-orbacus
+This File decribes the process of installing the Qedo code generator. Because the code generator is a complex software it need many other software products. You have to install all of them before you can compile the code generator. This will take you an amount of time and some expiriences with installing such software qould be very helpfull. Nevertheless, we hopte that this little discription will give enough information to acomplish all needed steps. 
+The Qedo code generator can be compiled by using the MS Visual Studio 6 oder MS Visual Studio.Net.
+
+If yuo have any problem or if you have any comments do not hesitate to contact the other Qedo users by using the qedo-devel mailing list. You can reach it at qedo-devel@lists.berlios.de. You can also use the bug tracking system provided by the Qedo project. You can reach it at http://qedo.berlios.de. this site has all relevant information about the Qedo project. In any case you can also contact the authors directly. The email addresses are listed on the Qedo web page as well.
+
+The Qedo team.
+
+1. ORB
+======
+
+The code generator uses an extended interface repository. This repository needs CORBA. At the moment Qedo generator supports 3 ORBs 
+Mico, TAO and ORBacus. For using one of the ORBs you need to install the ORB and to set an apropriate environment variable. Follow the instruction coming with each ORB to install ist properly. We will only point out some important details.
+
+
+orbacus Version 4.1.1
 ------------------------------------------------------------------------------
 obtain software:
 	Version 4.1.1
@@ -39,8 +53,24 @@ set environment:
 		ooc.naming.endpoint=iiop --port 3000
 	add path ooc\lib to VC++ extras/options/directories/executable files (*.dll)
 
+
+
+TAO Version x.3
+------------------------------------------------------------------------------
+
+
+
+MICO version 2.3.7
+------------------------------------------------------------------------------
+
+
+2. Development Environment
+==========================
+In particular the text based front end of the Qedo code generator uses some of the common mechanisms to generate the text parser. Since these mechanisms are not part of a Windows system you need to install them. We recommend that you install the cygwin package. But you can also use other implementation for this purpose.
+
 cygwin
 ------------------------------------------------------------------------------
+Be careful that you install all the needed packages. Including all programs that are listed below.
 obtain software:
 	Version: 1.3.13-2
 	get from: http://www.cygwin.com (setup.exe)
@@ -71,8 +101,6 @@ set environment:
 ORB
 ---
 
-The code generator uses an extended interface repository. This repository needs CORBA. At the moment Qedo generator supports 3 ORBs 
-Mico, TAO and ORBacus. For using one of the ORBs you need to install the ORB and to set an apropriate environment variable.
 
 For Mico you have to set the MICO environment variable to the root of your mico installation. (e.g. C:\opt\MICO) But pay attention you have to add the path 'Mico install directory' + '\win32_bin' to the Visual Studio settings. Otherwise mico will not find its own preprocessor mico-cpp.exe
 
