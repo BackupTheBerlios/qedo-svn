@@ -48,7 +48,7 @@ ConnectorImpl::~ConnectorImpl()
 	std::cout << "ConnectorImpl::~ConnectorImpl()\n";
 
 	// delete all sessions and session pool(s)!
-	std::cout << "There are " << lSessions_.size() << " sessions in the list\n";
+	std::cout << lSessions_.size() << " session(s) in the list\n";
 	for( sessionIter_=lSessions_.begin(); sessionIter_!=lSessions_.end(); sessionIter_++ )
 	{
 		std::cout << "close session...\n";
@@ -59,7 +59,7 @@ ConnectorImpl::~ConnectorImpl()
 		lSessions_.erase(sessionIter_);
 	}
 
-	std::cout << "There are " << lSessionPools_.size() << " session pools in the list\n";
+	std::cout << lSessionPools_.size() << " session pool(s) in the list\n";
 	for( sessionPoolIter_=lSessionPools_.begin(); 
 		 sessionPoolIter_!=lSessionPools_.end(); 
 		 sessionPoolIter_++ )
@@ -73,7 +73,7 @@ ConnectorImpl::~ConnectorImpl()
 	}
 
 	// release factories
-	std::cout << "There are " << objFactoryMap_.size() << " object factories in the map\n";
+	std::cout << objFactoryMap_.size() << " object factory(ies) in the map\n";
 	for( objFactoryIter_=objFactoryMap_.begin();
 		 objFactoryIter_!=objFactoryMap_.end();
 		 objFactoryIter_++ )
@@ -84,7 +84,7 @@ ConnectorImpl::~ConnectorImpl()
 		objFactoryMap_.erase(objFactoryIter_);
 	}
 
-	std::cout << "There are " << homeFactoryMap_.size() << " home factories in the map\n";
+	std::cout << homeFactoryMap_.size() << " home factory(ies) in the map\n";
 	for( homeFactoryIter_=homeFactoryMap_.begin();
 		 homeFactoryIter_!=homeFactoryMap_.end();
 		 homeFactoryIter_++ )

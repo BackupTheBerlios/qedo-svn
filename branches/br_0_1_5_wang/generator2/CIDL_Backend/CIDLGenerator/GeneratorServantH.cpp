@@ -799,6 +799,13 @@ GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component, CIDL::L
 	genConsumerServants(component);
 	genComponentServantBody(component,lc);
 	out.unindent();
+	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	{
+		out << "private:\n\n";
+		out.indent();
+		out << component->name() << "Persistence* pStorageObject_;\n\n";
+		out.unindent();
+	}
 	out << "};\n\n\n";
 }
 
@@ -827,6 +834,9 @@ GeneratorServantH::genComponentServantBody(IR__::ComponentDef_ptr component, CID
 	}
 	handleSink(component);
 	handleSource(component);
+
+	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+		out << "void setStorageObject(" << component->name() << "Persistence* pStorageObject);\n\n";
 }
 
 void
@@ -891,7 +901,7 @@ GeneratorServantH::genComponentPersistence(IR__::ComponentDef_ptr component, CID
 	out << "};\n\n";
 
 	genFactoryTemplate(false);
-	out << "typedef ObjectFactory<" << component->name() << "Persistence> " << component->name() << "PersistenceFactory;\n\n";
+	out << "typedef ObjectFactory<" << component->name() << "Persistence> CcmObjectFactory;\n\n";
 }
 
 void
@@ -1127,7 +1137,7 @@ GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		out.indent();
 		out << "bool compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b);\n\n";
 		out << "Sessio_var pSession_;\n";
-		out << home->name() << "Persistence* " << "pCcm" << home->name() << "_;\n\n";
+		out << home->name() << "Persistence* " << "pCcmStorageHome_;\n\n";
 	}
 }
 
@@ -1246,7 +1256,7 @@ GeneratorServantH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 	out << "};\n\n";
 
 	genFactoryTemplate(true);
-	out << "typedef HomeFactory<" << home->name() << "Persistence> " << home->name() << "PersistenceFactory;\n\n";
+	out << "typedef HomeFactory<" << home->name() << "Persistence> CcmHomeFactory;\n\n";
 }
 
 } //

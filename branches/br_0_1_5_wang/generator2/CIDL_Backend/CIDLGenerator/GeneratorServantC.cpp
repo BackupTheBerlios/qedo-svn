@@ -509,9 +509,33 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	genEmitterRegistration(home_);
 	genPublisherRegistration(home_);
 	genConsumerRegistration(home_);
-	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
+	out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
 	out << component_name << "_var servant = ";
 	out << component_name << "::_narrow (component_instance.component_ref());\n\n";
+	if(composition_->lifecycle()==CIDL::lc_Entity || composition_->lifecycle()==CIDL::lc_Process)
+	{
+		out << "//create storage home incarnation\n";
+		out << "std::string strPid = component_instance.uuid_;\n";
+		out << "std::string strSpid = strPid + \"@" << home_->managed_component()->name() << "Persistence\";\n";
+		out << "Pid* pPid = new Pid;\n";
+		out << "ShortPid* pSpid = new ShortPid;\n";
+		out << "convertStringToPid(strPid.c_str(), *pPid);\n";
+		out << "convertStringToSpid(strSpid.c_str(), *pSpid);\n\n";
+		out << home_->managed_component()->name() << "* pComServant = dynamic_cast <" << home_->managed_component()->name() << "*> (servant.in());\n";
+		out << home_->managed_component()->name() << "Persistence* pCcmStorageObject = pCcmStorageHome_->" << factory_name;
+		out << "(pPid, pSpid, ";
+		for(i = pards->length(); i > 0; i--)
+		{
+			if(i < pards->length())
+			{
+				out << ", ";
+			}
+			IR__::ParameterDescription pardescr = (*pards)[i - 1];
+			out << mapName(string(pardescr.name));
+		};
+		out << ");\n";
+		out << "pComServant->setStorageObject(pCcmStorageObject);\n\n";
+	}
 	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
@@ -667,7 +691,7 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	genEmitterRegistration(home_);
 	genPublisherRegistration(home_);
 	genConsumerRegistration(home_);
-	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
+	out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
 	out << component_name << "_var servant = ";
 	out << component_name << "::_narrow (component_instance.component_ref());\n\n";
 	out << "return servant._retn();\n";
@@ -1295,6 +1319,7 @@ GeneratorServantC::genComponentServantBegin(IR__::ComponentDef_ptr component)
 	out << class_name_ << "::" << class_name_ << "()\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (component servant) : Constructor called\");\n";
+	out << "pStorageObject_ = NULL;\n";
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -1302,6 +1327,10 @@ GeneratorServantC::genComponentServantBegin(IR__::ComponentDef_ptr component)
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (component servant) : Destructor called\");\n";
+	out << "if(pStorageObject_!=NULL)\n";
+	out.indent();
+	out << "pStorageObject_->_remove_ref();\n";
+	out.unindent();
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -1342,6 +1371,17 @@ GeneratorServantC::genComponentServant(IR__::ComponentDef_ptr component)
 	}
 	handleSink(component);
 	handleSource(component);
+
+	if(composition_->lifecycle()==CIDL::lc_Entity || composition_->lifecycle()==CIDL::lc_Process)
+	{
+		out << "void\n";
+		out << class_name_ << "::setStorageObject(" << component->name() << "Persistence* pStorageObject)\n";
+		out << "{\n";
+		out.indent();
+		out << "pStorageObject_ = pStorageObject;\n";
+		out.unindent();
+		out << "}\n\n";
+	}
 }
 
 void
@@ -1807,6 +1847,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << ": HomeServantBase(\"" << home->id() << "\", \"" << home->managed_component()->id() << "\")\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (home servant) : Constructor called\");\n";
+	out << "pCcmStorageHome_=NULL;\n";
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -1814,7 +1855,10 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (home servant) : Destructor called\");\n";
-	out << "pCcm" << home->name() << "_->_remove_ref();\n";
+	out << "if(pCcmStorageHome_!=NULL)\n";
+	out.indent();
+	out << "pCcmStorageHome_->_remove_ref();\n";
+	out.unindent();
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -1836,9 +1880,9 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	}
 	}
 	out.indent();
-	out << "DEBUG_OUT (\"Home_servant: create() called\");\n\n";
-	if( lc==CIDL::lc_Entity )
+	if( lc==CIDL::lc_Entity || lc==CIDL::lc_Process )
 	{
+		out << "DEBUG_OUT (\"Home_servant: create(" << mapFullNamePK(home->primary_key()) << "*" << ") called\");\n\n";
 		out << "if(!pkey)\n";
 		out.indent();
 		out << "throw Components::InvalidKey();\n\n";
@@ -1867,6 +1911,9 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out.unindent();
         out << "}\n\n";
 	}
+	else
+		out << "DEBUG_OUT (\"Home_servant: create() called\");\n\n";
+
 	out << "#ifdef TAO_ORB\n";
 	out << mapFullNameLocal(home) << "_ptr home_executor = dynamic_cast < ";
 	out << mapFullNameLocal(home) << "_ptr > (home_executor_.in());\n";
@@ -2032,9 +2079,24 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	genSinkRegistration(home);
 	genSourceRegistration(home);
 
-	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
+	out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
 	out << mapFullName(home->managed_component()) << "_var servant = ";
 	out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
+	
+	/*if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	{
+		// create storage home incarnation
+		out << "//create storage home incarnation\n";
+		out << "std::string strPid = component_instance.uuid_;\n";
+		out << "std::string strSpid = strPid + \"@" << home->managed_component()->name() << "Persistence\";\n";
+		out << "Pid* pPid = new Pid;\n";
+		out << "ShortPid* pSpid = new ShortPid;\n";
+		out << "convertStringToPid(strPid.c_str(), *pPid);\n";
+		out << "convertStringToSpid(strSpid.c_str(), *pSpid);\n";
+		out << home->managed_component()->name() << "* p" << home->managed_component()->name() << " = dynamic_cast <" << home->managed_component()->name() << "*> (servant.in());\n";
+		out << "p" << home->managed_component()->name() << "->setStorageObject(0);\n\n";
+	}*/
+
 	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
@@ -2280,7 +2342,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "CORBA::RepositoryIdSeq streamtypes;\n\n";
 		genSinkRegistration(home);
 		genSourceRegistration(home);
-		out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
+		out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
 		out << mapFullName(home->managed_component()) << "_var servant = ";
 		out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
 		out << "return servant._retn();\n";
@@ -2819,13 +2881,13 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		out.indent();
 		out << "Connector_var _pConn = Connector::_duplicate(pConn);\n";
 		out << "pSession_ = Sessio::_duplicate(pSession);\n\n";
-		out << home->name() << "PersistenceFactory* _ccmfac" << home->name()<<  " = new " << home->name() << "PersistenceFactory();\n";
-		out << "_pConn->register_storage_home_factory(\"" << home->name() << "Persistence\", _ccmfac" << home->name() << ");\n";
+		out << "CcmHomeFactory* pCcmHomeFactory = new CcmHomeFactory();\n";
+		out << "_pConn->register_storage_home_factory(\"" << home->name() << "Persistence\", pCcmHomeFactory);\n";
 		IR__::ComponentDef_var component = home->managed_component();
-		out << component->name() << "PersistenceFactory* _ccmfac" << component->name()<<  " = new " << component->name() << "PersistenceFactory();\n";
-		out << "_pConn->register_storage_object_factory(\"" << component->name() << "Persistence\", _ccmfac" << component->name() << ");\n\n";
+		out << "CcmObjectFactory* pCcmObjectFactory = new CcmObjectFactory();\n";
+		out << "_pConn->register_storage_object_factory(\"" << component->name() << "Persistence\", pCcmObjectFactory);\n\n";
 		out << "StorageHomeBase_var pHomebase = pSession_->find_storage_home(\"" << home->name() << "Persistence\");\n";
-		out << "pCcm" << home->name() << "_ = dynamic_cast <" << home->name() << "Persistence*> (pHomebase.in());\n";
+		out << "pCcmStorageHome_ = dynamic_cast <" << home->name() << "Persistence*> (pHomebase.in());\n";
 		out.unindent();
 		out << "}\n\n";
 
@@ -3136,12 +3198,11 @@ GeneratorServantC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_ptr ho
 	out << "#endif\n";
 	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strComponentName << "Persistence\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
-	out << "pObjectImpl->set_pid(pid);\n";
-	out << "pObjectImpl->set_short_pid(shortPid);\n";
 	out << "factory->_remove_ref();\n";
-	out << "lObjectes_.push_back(pObjectImpl);\n";
 	out << strComponentName << "Persistence* pActObject = dynamic_cast <" << strComponentName << "Persistence*> (pObjectImpl);\n";
 	out << "\n//set values to current storageobject incarnation\n";
+	out << "pActObject->set_pid(pid);\n";
+	out << "pActObject->set_short_pid(shortPid);\n";
 	for(CORBA::ULong j=0; j<pards->length(); j++)
 	{
 		IR__::ParameterDescription pardescr = (*pards)[j];
@@ -3149,7 +3210,8 @@ GeneratorServantC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_ptr ho
 		out << "pActObject->" << std::string(pardescr.name) << "(";
 		out << std::string(pardescr.name) << ");\n";
 	}
-	out << "pActObject->setStorageHome(this);\n";
+	out << "pActObject->setStorageHome(this);\n\n";
+	out << "lObjectes_.push_back(pObjectImpl);\n\n";
 	out << "return pActObject;\n";
 	out.unindent();
 	out << "}\n";
@@ -3330,8 +3392,8 @@ GeneratorServantC::genFinder(IR__::FinderDef_ptr key, IR__::HomeDef_ptr home)
 	out << "std::string strSpid = \"\";\n";
 	out << "strSpid.append((const char*)szSpid);\n";
 	out << "ShortPid* pSpid = new ShortPid;\n";
-	out << "convertStringToSpid(strSpid.c_str(), *pSpid);\n";
-	out << "StorageObjectBase pObject = find_by_short_pid(*pSpid);\n";
+	out << "convertStringToSpid(strSpid.c_str(), *pSpid);\n\n";
+	out << "StorageObjectBase pObject = find_by_short_pid(*pSpid);\n\n";
 	out << "pActObject = dynamic_cast <" << component->name() << "Persistence*> (pObject);\n";
 	out << "pActObject->setStorageHome(this);\n\n";
 	out << "return pActObject;\n";
@@ -3558,20 +3620,19 @@ GeneratorServantC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 	out << "#endif\n";
 	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strComponentName << "Persistence\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
-	out << "pObjectImpl->set_pid(pid);\n";
-	out << "pObjectImpl->set_short_pid(shortPid);\n";
 	out << "factory->_remove_ref();\n";
-	out << "lObjectes_.push_back(pObjectImpl);\n";
 	out << strComponentName << "Persistence* pActObject = dynamic_cast <" << strComponentName << "Persistence*> (pObjectImpl);\n";
-	
 	out << "\n//set values to current storageobject incarnation\n";
+	out << "pActObject->set_pid(pid);\n";
+	out << "pActObject->set_short_pid(shortPid);\n";
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		out << "pActObject->" << mapName(attribute) << "(";
 		out << mapName(attribute) << ");\n";
 	}
-	out << "pActObject->setStorageHome(this);\n";
+	out << "pActObject->setStorageHome(this);\n\n";
+	out << "lObjectes_.push_back(pObjectImpl);\n\n";
 	out << "return pActObject;\n";
 	
 	out.unindent();
@@ -3687,8 +3748,8 @@ GeneratorServantC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 	out << "std::string strSpid = \"\";\n";
 	out << "strSpid.append((const char*)szSpid);\n";
 	out << "ShortPid* pSpid = new ShortPid;\n";
-	out << "convertStringToSpid(strSpid.c_str(), *pSpid);\n";
-	out << "StorageObjectBase pObject = find_by_short_pid(*pSpid);\n";
+	out << "convertStringToSpid(strSpid.c_str(), *pSpid);\n\n";
+	out << "StorageObjectBase pObject = find_by_short_pid(*pSpid);\n\n";
 	out << "pActObject = dynamic_cast <" << strComponentName << "Persistence*> (pObject);\n";
 	out << "pActObject->setStorageHome(this);\n\n";
 	out << "return pActObject;\n";

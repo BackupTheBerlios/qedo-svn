@@ -46,7 +46,7 @@ CatalogBaseImpl::~CatalogBaseImpl()
 {
 	std::cout << "CatalogBaseImpl::~CatalogBaseImpl()\n";
 
-	std::cout << "There are " << lHomeBases_.size() << " storage homes in the list\n";
+	std::cout << lHomeBases_.size() << " storage home(s) in the list\n";
 	for( homeBaseIter_=lHomeBases_.begin(); homeBaseIter_!=lHomeBases_.end(); homeBaseIter_++ )
 	{
 		std::cout << "storage home base _remove_ref...\n";

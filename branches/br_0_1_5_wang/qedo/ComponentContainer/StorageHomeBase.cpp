@@ -35,7 +35,7 @@ StorageHomeBaseImpl::~StorageHomeBaseImpl()
 {
 	std::cout << "StorageHomeBaseImpl::~StorageHomeBaseImpl()\n";
 
-	std::cout << "There are " << lObjectes_.size() << " storage objects in the list\n";
+	std::cout << lObjectes_.size() << " storage object(s) in the list\n";
 	for( objIter_=lObjectes_.begin(); objIter_!=lObjectes_.end(); objIter_++ )
 	{
 		std::cout << "storage object _remove_ref...\n";
