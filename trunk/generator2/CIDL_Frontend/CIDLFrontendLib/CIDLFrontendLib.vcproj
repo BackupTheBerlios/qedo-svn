@@ -529,43 +529,45 @@ d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yysty
 			<File
 				RelativePath=".\lexana.l">
 				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  -o lexana.cpp"
+						Outputs="lexana.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
-"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  -o lexana.cpp"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="c:\opt\cygwin\bin\flex -Sflex.skel -tw lexana.l  &gt; lexana.cpp
-"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  -o lexana.cpp"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="c:\opt\cygwin\bin\flex -Sflex.skel -tw lexana.l  &gt; lexana.cpp
-"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  -o lexana.cpp"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(LEX) -Sflex.skel -tw lexana.l  &gt; lexana.cpp
-"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  -o lexana.cpp"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
-"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  -o lexana.cpp"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 			</File>
