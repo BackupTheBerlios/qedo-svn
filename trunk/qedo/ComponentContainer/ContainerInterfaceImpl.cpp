@@ -33,7 +33,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.45 2003/10/29 15:32:47 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.46 2003/10/29 16:05:07 boehme Exp $";
 
 
 namespace Qedo {
@@ -198,7 +198,7 @@ ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 
 		this_ptr->event_queue_cond_.wait (this_ptr->event_queue_mutex_);
 
-	} while(true);
+	} while( ! this_ptr->event_queue_stopping_);
 
 	// here has to be checked for finalize of the thread
 
@@ -219,6 +219,9 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
   component_server_ (component_server),
   component_installer_ (Components::Deployment::ComponentInstallation::_duplicate (component_installer))
 {
+	event_queue_thread_ = 0;
+	event_queue_stopping_ = false ;
+
 	component_server_->_add_ref();
 
 	// Retrieve config values
@@ -332,7 +335,7 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 
 	// Start global event dispatcher thread
 	if (event_communication_mode_ == EVENT_COMMUNICATION_ASYNCHRONOUS)
-		qedo_startDetachedThread (event_dispatcher_thread, this);
+		event_queue_thread_ = qedo_startDetachedThread (event_dispatcher_thread, this);
 }
 
 
@@ -341,6 +344,17 @@ ContainerInterfaceImpl::~ContainerInterfaceImpl()
 	DEBUG_OUT ("ContainerInterfaceImpl: Destructor called");
 	service_references_.clear();
 	component_server_->_remove_ref();
+
+	/* stop the event thread */
+	if ( event_queue_thread_ )
+	{
+		event_queue_mutex_.lock_object();
+		event_queue_stopping_ = true;
+		event_queue_cond_.signal();
+		event_queue_mutex_.unlock_object();
+		event_queue_thread_->join();
+		delete event_queue_thread_;
+	}
 }
 
 

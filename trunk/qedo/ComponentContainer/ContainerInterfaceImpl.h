@@ -202,6 +202,11 @@ private:
 	/** this condition is signaled when a new entry is added to the event_list member*/
 	QedoCond												event_queue_cond_;
 
+	/* this bool indicates to the events thread the hi should stop */
+	QedoThread*											event_queue_thread_;
+	/* this bool indicates to the events thread the hi should stop */
+	bool													event_queue_stopping_;
+
 	/** Configuration values */
 	enum EventCommunicationMode {EVENT_COMMUNICATION_ASYNCHRONOUS, 
 								 EVENT_COMMUNICATION_SYNCHRONOUS};
