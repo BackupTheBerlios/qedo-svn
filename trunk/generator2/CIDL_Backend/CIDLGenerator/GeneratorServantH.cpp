@@ -613,7 +613,7 @@ GeneratorServantH::genSinkServants(IR__::ComponentDef_ptr component)
 		out << "{\n";
 		out << "private:\n"; out.indent();
 		out << mapFullName (IR__::Contained::_narrow(component->defined_in()));
-		out << "::CCM_" << component->name() << "_" << sink_name << "_var the_sink_;\n\n"; out.unindent();
+		out << "::CCM_" << component->name() << "_" << sink_name << "_Sink_var the_sink_;\n\n"; out.unindent();
 		out << "public:\n"; out.indent();
 		out << sink_name << "_dispatcher (Components::ExecutorLocator_ptr);\n";
 		out << "virtual ~" << sink_name << "_dispatcher();\n\n";

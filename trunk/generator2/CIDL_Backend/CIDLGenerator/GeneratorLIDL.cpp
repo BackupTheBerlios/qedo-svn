@@ -276,6 +276,8 @@ GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 	
 	component_ = IR__::ComponentDef::_duplicate(component);
 
+	handleSink(component);
+
 	//
 	// executor
 	//
@@ -304,6 +306,20 @@ GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 			out << ", " << map_absolute_name((*supported_seq)[i]);
 		}
 	}
+
+	// sinks
+	IR__::SinkDefSeq_var sink_seq = component->sinks();
+	len = sink_seq->length();
+	if(len)
+	{
+		CORBA::ULong i;
+		for( i= 0; i < len; i++)
+		{
+			out << ", CCM_" << component->name() << "_" << (*sink_seq)[i]->name() << "_Sink";
+		}
+	}
+
+
 	out << "\n{\n";
 	out.indent();
 
@@ -337,8 +353,6 @@ GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 
 	out.unindent();
 	out << "};\n\n";
-	
-	handleSink(component);
 }
 
 
@@ -613,8 +627,8 @@ GeneratorLIDL::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component)
 {
 
 	out << "//\n// sink executor interface for " << sink->name() << "\n//\n";
-	out << "local interface CCM_" << component->name() << "_" << sink->name() << " : ";
-	out << component->name() << "_" << sink->name() << "\n";
+	out << "local interface CCM_" << component->name() << "_" << sink->name() << "_Sink : ";
+	out << component->name() << "_" << sink->name() << "_Sink\n";
 	out << "{\n";
 	out << "};\n\n";
 }

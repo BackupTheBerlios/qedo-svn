@@ -810,7 +810,7 @@ GeneratorServantC::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr compone
 	out << "{\n"; out.indent();
 	out << "CORBA::Object_var the_sink_obj = executor_locator->obtain_executor (\"" << sink_name << "\");\n";
 	out << "the_sink_ = " << mapFullName (IR__::Contained::_narrow(component->defined_in()));
-	out << "::CCM_" << component->name() << "_" << sink_name << "::_narrow (the_sink_obj);\n\n";
+	out << "::CCM_" << component->name() << "_" << sink_name << "_Sink::_narrow (the_sink_obj);\n\n";
 	out << "if (CORBA::is_nil (the_sink_))\n"; 
 	out << "{\n"; out.indent();
 	out << "NORMAL_ERR (\"" << comp_name << "::" << sink_name << "_dispatcher: Cannot narrow sink port executor\");\n";

@@ -528,6 +528,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "return Components::EnterpriseComponent::_duplicate (component_);\n";
 	out.unindent();
 	out << "}\n\n";
+
+	// facets
 	IR__::ProvidesDefSeq_var provides_seq = composition->ccm_component()->provides_interfaces();
 	string impl_by;
 	for (i = 0; i < provides_seq->length(); i++) {
@@ -549,6 +551,16 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		out.unindent();
 		out << "}\n\n";
 	}
+
+	// sinks
+	IR__::SinkDefSeq_var sink_seq = composition->ccm_component()->sinks();
+	for (i = 0; i < sink_seq->length(); i++) {
+		out << "else if (! strcmp (name, \"" << sink_seq[i]->name() << "\")) {\n";
+		out.indent();
+		out << "return Components::EnterpriseComponent::_duplicate (component_);\n"; out.unindent();
+		out << "}\n\n";
+	}
+
 	out << "return Components::EnterpriseComponent::_nil();\n";
 	out.unindent();
 	out << "}\n\n\n";

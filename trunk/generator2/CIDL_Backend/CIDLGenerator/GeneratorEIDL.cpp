@@ -1327,7 +1327,7 @@ GeneratorEIDL::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component)
 	std::string sink_name = sink->name();
 
 	out << "//\n// " << sink->id() << "\n//\n";
-	out << "local interface " << component->name() << "_" << sink_name << "\n";
+	out << "local interface " << component->name() << "_" << sink_name << "_Sink\n";
 	out << "{\n"; out.indent();
 	out << "void begin_stream_" << sink_name << " (in CORBA::RepositoryId repos_id, in Components::ConfigValues meta_data);\n";
 	out << "void end_stream_" << sink_name << "();\n";
