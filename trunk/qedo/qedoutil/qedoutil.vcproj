@@ -240,9 +240,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="DOMXMLParser.cpp">
 			</File>
 			<File
-				RelativePath="DTMReader.cpp">
-			</File>
-			<File
 				RelativePath="InstallationReader.cpp">
 			</File>
 			<File
@@ -250,9 +247,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="Output.cpp">
-			</File>
-			<File
-				RelativePath="PSDReader.cpp">
 			</File>
 			<File
 				RelativePath="Package.cpp">
@@ -267,13 +261,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="Synchronisation.cpp">
 			</File>
 			<File
-				RelativePath="Synchronisation.cpp">
-			</File>
-			<File
 				RelativePath="Uri.cpp">
-			</File>
-			<File
-				RelativePath="Valuetypes.cpp">
 			</File>
 			<File
 				RelativePath="Valuetypes.cpp">
@@ -328,7 +316,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="DOMXMLParser.h">
 			</File>
 			<File
-				RelativePath="DTMReader.h">
+				RelativePath="DestinationData.h">
 			</File>
 			<File
 				RelativePath="InstallationReader.h">
@@ -338,9 +326,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="Output.h">
-			</File>
-			<File
-				RelativePath="PSDReader.h">
 			</File>
 			<File
 				RelativePath="Package.h">
