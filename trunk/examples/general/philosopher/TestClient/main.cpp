@@ -3,11 +3,11 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.10 2003/10/11 14:29:53 tom Exp $
+// $Id: main.cpp,v 1.11 2003/10/24 11:08:04 neubauer Exp $
 //
 
 
-static char rcsid[] = "$Id: main.cpp,v 1.10 2003/10/11 14:29:53 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.11 2003/10/24 11:08:04 neubauer Exp $";
 
 
 #ifdef ORBACUS_ORB
@@ -83,6 +83,23 @@ get_server_activator (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const
 }
 
 
+std::string 
+getCurrentDirectory() 
+{
+    char path[1024];
+#ifdef _WIN32
+    GetCurrentDirectory(1024, path);
+#else
+    if(!getcwd(path,1023))
+    {
+        perror("css");
+        assert(0);
+    }
+#endif
+    return std::string(path);
+}
+
+
 void
 deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const char* hostname)
 {
@@ -129,20 +146,25 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	}
 
 #ifdef _WIN32
-	std::string loc_p = "dinner_SERVANT.dll;create_PhilosopherHomeS;dinner_PhilosopherImpl.dll;create_PhilosopherHomeE";
-	std::string loc_c = "dinner_SERVANT.dll;create_CutleryHomeS;dinner_CutleryImpl.dll;create_CutleryHomeE";
-	std::string loc_o = "dinner_SERVANT.dll;create_ObserverHomeS;dinner_ObserverImpl.dll;create_ObserverHomeE";
+	std::string servant_loc = getCurrentDirectory() + "\\dinner_SERVANT.dll";
+	std::string phil_loc = getCurrentDirectory() + "\\dinner_PhilosopherImpl.dll";
+	std::string cutl_loc = getCurrentDirectory() + "\\dinner_CutleryImpl.dll";
+	std::string obse_loc = getCurrentDirectory() + "\\dinner_ObserverImpl.dll";
 #else
-	std::string loc_p = "libdinner_SERVANT.so;create_PhilosopherHomeS;libdinner_PhilosopherImpl.so;create_PhilosopherHomeE";
-	std::string loc_c = "libdinner_SERVANT.so;create_CutleryHomeS;libdinner_CutleryImpl.so;create_CutleryHomeE";
-	std::string loc_o = "libdinner_SERVANT.so;create_ObserverHomeS;libdinner_ObserverImpl.so;create_ObserverHomeE";
+	std::string servant_loc = getCurrentDirectory() + "/libdinner_SERVANT.so";
+	std::string phil_loc = getCurrentDirectory() + "/libdinner_PhilosopherImpl.so";
+	std::string cutl_loc = getCurrentDirectory() + "/libdinner_CutleryImpl.so";
+	std::string obse_loc = getCurrentDirectory() + "/libdinner_ObserverImpl.so";
 #endif
+	std::string loc_p = servant_loc + ";create_PhilosopherHomeS;" + phil_loc + ";create_PhilosopherHomeE";
+	std::string loc_c = servant_loc + ";create_CutleryHomeS;" + cutl_loc + ";create_CutleryHomeE";
+	std::string loc_o = servant_loc + ";create_ObserverHomeS;" + obse_loc + ";create_ObserverHomeE";
 
 	try
 	{
-		component_installer->install ("PHILOSOPHER/1.0", loc_p.c_str());
-		component_installer->install ("CUTLERY/1.0", loc_c.c_str());
-		component_installer->install ("OBSERVER/1.0", loc_o.c_str());
+		component_installer->install ("PHILOSOPHER", loc_p.c_str());
+		component_installer->install ("CUTLERY", loc_c.c_str());
+		component_installer->install ("OBSERVER", loc_o.c_str());
 	}
 	catch (Components::Deployment::InvalidLocation&)
 	{
@@ -324,20 +346,20 @@ main (int argc, char** argv)
 
 	Components::CCMHome_var home;
 
-	home = container->install_home ("PHILOSOPHER/1.0", "", config1);
+	home = container->install_home ("PHILOSOPHER", "", config1);
 	dinner::PhilosopherHome_var p_home = dinner::PhilosopherHome::_narrow (home);
 
 #if 0
-	home = container1->install_home ("CUTLERY/1.0", "", config1);
+	home = container1->install_home ("CUTLERY", "", config1);
 	dinner::CutleryHome_var c_home = dinner::CutleryHome::_narrow (home);
 
-	home = container2->install_home ("OBSERVER/1.0", "", config1);
+	home = container2->install_home ("OBSERVER", "", config1);
 	dinner::ObserverHome_var o_home = dinner::ObserverHome::_narrow (home);
 #else
-	home = container->install_home ("CUTLERY/1.0", "", config1);
+	home = container->install_home ("CUTLERY", "", config1);
 	dinner::CutleryHome_var c_home = dinner::CutleryHome::_narrow (home);
 
-	home = container->install_home ("OBSERVER/1.0", "", config1);
+	home = container->install_home ("OBSERVER", "", config1);
 	dinner::ObserverHome_var o_home = dinner::ObserverHome::_narrow (home);
 #endif
 	dinner::Philosopher_var phil1;
