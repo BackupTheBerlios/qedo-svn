@@ -246,8 +246,7 @@ ENOL                    (\n|\n)
                section = string(yytext+29,yyleng-30);
                (*user_sections)[section]=string("");
             }
-<sections>"// BEGIN USER INSERT SECTION "[a-zA-Z_:~]*
-"\n" {
+<sections>"// BEGIN USER INSERT SECTION "[a-zA-Z_:~]*"\n" {
                BEGIN(userinput);
                section = string(yytext+29,yyleng-31);
                (*user_sections)[section]=string("");
