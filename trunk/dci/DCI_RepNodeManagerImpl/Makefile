@@ -8,6 +8,7 @@ IDL_FILES = DCI_RepNodeManagerImpl_LOCAL.idl \
 
 CPP_FILES = DCI_RepNodeManagerImpl_BUSINESS.cpp \
 	DCI_RepNodeManagerImpl.cpp \
+	PropertiesRepository.cpp \
 	valuetypes.cpp 
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 

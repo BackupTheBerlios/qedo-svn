@@ -18,7 +18,9 @@ bool PropertiesRepository::is_property_name_valid (const char *name) {
 PropertiesRepository::PropertiesRepository():
 prop_counter(0)
 {
+#ifdef WIN32
    nodeprop_ = new NodeProperties();
+#endif
    initialize_properties_();
 }
 
@@ -53,14 +55,14 @@ PropertiesRepository::PropertiesRepository(const PropertyDefs &apv) {
     }
         
 
-void PropertiesRepository::definition (const char *property_name, const CORBA::Any &property_value) {
+void PropertiesRepository::definition (const char *property_name, const CORBA::Any &property_value) throw (InvalidPropertyName, UnsupportedProperty){
 	if (! is_property_name_valid (property_name))
-		throw (InvalidPropertyName ()); // The name is not correct.
+		throw InvalidPropertyName (); // The name is not correct.
 
 	CORBA::TypeCode_var prop_type = property_value.type();
 
 	if (! is_property_allowed (property_name, property_value))
-		throw (UnsupportedProperty ()); // The property is not allowed.
+		throw UnsupportedProperty (); // The property is not allowed.
 
 	int ind;
 	bool successful = get_index(property_name, &ind);
@@ -68,7 +70,7 @@ void PropertiesRepository::definition (const char *property_name, const CORBA::A
 	if (successful) { // The property already exists.
  		CORBA::TypeCode_var old_property_type = properties_vector[ind]-> property_value.type ();
 		if (! (old_property_type->equal (prop_type)) )
-			throw (ConflictingProperty ()); // The new type is not the same as the old one.
+			throw ConflictingProperty (); // The new type is not the same as the old one.
 		properties_vector[ind]->property_value = property_value; // The value is modified.
 	} else { // The property does not exist.
 		PropertyDef * new_property = new PropertyDef (); // Creation of a new property.
@@ -164,6 +166,8 @@ void PropertiesRepository::initialize_properties_(){
 }
 
 void PropertiesRepository::retrieve_property_(const char * name) {
+
+#ifdef WIN32
 
     int i;
     bool found = this -> get_index(name, &i);
@@ -306,6 +310,7 @@ void PropertiesRepository::retrieve_property_(const char * name) {
 		} catch (...) {
 			//std::cout<< "???\n"; // Can't be reached
 		}
+#endif
 }
 
 // Returns the name of the property corresponding to the number. This name is used for the
