@@ -28,7 +28,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.8 2003/11/14 18:08:34 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.9 2004/06/02 09:48:17 heini2004 Exp $";
 
 
 namespace Qedo {
@@ -43,6 +43,31 @@ CCDReader::CCDReader(std::string descriptor, std::string path)
 
 CCDReader::~CCDReader()
 {
+}
+
+void 
+CCDReader::componentfeatures (DOMElement* element)
+throw(CCDReadException)
+{
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			//
+			// ports
+			//
+			if (!XMLString::compareString(child->getNodeName(), X("ports")))
+			{
+				ports((DOMElement*)child);
+			}
+
+		}
+
+        // get next child
+		child = child->getNextSibling();
+    }
+
 }
 
 
@@ -142,6 +167,14 @@ throw(CCDReadException)
 			else if (!XMLString::compareString(child->getNodeName(), X("componentkind")))
 			{
 				componentkind( (DOMElement*)child );
+			}
+
+			//
+			// componentfeatures
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("componentfeatures")))
+			{
+				componentfeatures( (DOMElement*) child);
 			}
 		}
 
@@ -293,8 +326,153 @@ CCDReader::session (DOMElement* element)
 throw(CCDReadException)
 {
 	data_->kind = "SESSION";
+
 }
 
+void
+CCDReader::sink (DOMElement* element)
+throw(CCDReadException)
+{
+	
+    DOMNode* child = element->getFirstChild();
+	Port port;
+	ComponentFeature componentfeature;
+	StreamSinkPort stream_sink_port;
+
+	stream_sink_port.name=Qedo::transcode(element->getAttribute(X("sink_name")));
+	stream_sink_port.port_repid=Qedo::transcode(element->getAttribute(X("repid")));
+
+	/*
+
+    while (child != 0)
+    {
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			//
+			// sink_name
+			//
+			if (!XMLString::compareString(child->getNodeName(), X("sink_name")))
+			{
+				//data_->   Qedo::transcode(element->getAttribute(X("sink_name")));
+				stream_sink_port.name=Qedo::transcode(element->getAttribute(X("sink_name")));
+			}
+
+			//
+			// repid
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("repid")))
+			{
+				stream_sink_port.port_repid=Qedo::transcode(element->getAttribute(X("repid")));
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+		
+	}
+	*/
+	port.stream_sink_ports.push_back(stream_sink_port);
+	componentfeature.ports.push_back(port);
+	data_->component_features.push_back(componentfeature);
+    
+}
+
+void
+CCDReader::source (DOMElement* element)
+throw(CCDReadException)
+{
+	
+    DOMNode* child = element->getFirstChild();
+	Port port;
+	ComponentFeature componentfeature;
+	StreamSourcePort stream_source_port;
+
+	stream_source_port.name=Qedo::transcode(element->getAttribute(X("source_name")));
+	stream_source_port.port_repid=Qedo::transcode(element->getAttribute(X("repid")));
+	stream_source_port.fixed_transport =Qedo::transcode(element->getAttribute(X("fixed_transport")));
+	stream_source_port.packet_timing =Qedo::transcode(element->getAttribute(X("packet_timing")));
+
+	/*
+    while (child != 0)
+    {
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			//
+			// sink_name
+			//
+			if (!XMLString::compareString(child->getNodeName(), X("source_name")))
+			{
+				stream_source_port.name=Qedo::transcode(element->getAttribute(X("source_name")));
+			}
+
+			//
+			// repid
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("repid")))
+			{
+				stream_source_port.port_repid=Qedo::transcode(element->getAttribute(X("repid")));
+			}
+
+			//
+			// fixed_transport
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("fixed_transport")))
+			{
+				stream_source_port.fixed_transport =Qedo::transcode(element->getAttribute(X("fixed_transport")));
+			}
+			//
+			// packet_timing
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("packet_timing")))
+			{
+				stream_source_port.packet_timing =Qedo::transcode(element->getAttribute(X("packet_timing")));
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+	*/
+
+	port.stream_source_ports.push_back(stream_source_port);
+	componentfeature.ports.push_back(port);
+	data_->component_features.push_back(componentfeature);
+    
+}
+
+
+void
+CCDReader::ports (DOMElement* element)
+throw(CCDReadException)
+{
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			//
+			// source
+			//
+			if (!XMLString::compareString(child->getNodeName(), X("source")))
+			{
+				 source((DOMElement*)child);
+			}
+			//
+			// sink
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("sink")))
+			{
+				 sink( (DOMElement*) child);
+			}
+
+
+		}
+
+        // get next child
+		child = child->getNextSibling();
+    }
+
+}
 
 void 
 CCDReader::process (DOMElement* element)

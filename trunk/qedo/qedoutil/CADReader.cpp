@@ -122,6 +122,47 @@ throw(CADReadException)
 	throw CADReadException();
 }
 
+void CADReader::binding (DOMElement* element)
+throw(CADReadException)
+{
+	std::string element_name;
+	StreamConnectionData stream_connection_data;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// sourceport
+			//
+			if (element_name == "sourceport")
+			{
+				stream_connection_data.kind=SOURCE;
+				stream_connection_data.source=sourceport((DOMElement*)child);
+			}
+
+			//
+			// sinkport
+			//
+			else if (element_name == "sinkport")
+			{
+				stream_connection_data.kind=SINK;
+				stream_connection_data.sink=sinkport((DOMElement*)child);
+			}
+
+			
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	data_->stream_connections_.push_back(stream_connection_data);
+
+
+}
 
 void
 CADReader::componentassembly (DOMElement* element)
@@ -641,6 +682,14 @@ throw(CADReadException)
 			{
 				extension((DOMElement*)child);
 			}
+
+			// extension by Heini
+			// binding
+			//
+			if (element_name == "binding")
+			{
+				binding((DOMElement*)child);
+			}
 		}
 
 		// get next child
@@ -823,7 +872,8 @@ throw(CADReadException)
 			if (element_name == "emitsidentifier")
 			{
 				data.name = emitsidentifier((DOMElement*)(child));
-			}
+				
+			}  
 
 			//
 			// componentinstantiationref
@@ -1961,6 +2011,7 @@ throw(CADReadException)
 }
 
 
+
 std::string 
 CADReader::scriptcode (DOMElement* element)
 throw(CADReadException)
@@ -1974,6 +2025,83 @@ throw(CADReadException)
     return text;
 }
 
+PortData CADReader::sinkport (DOMElement* element)
+throw(CADReadException)
+{
+	PortData data;
+
+	std::string element_name;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// sinkportname
+			//
+			if (element_name == "sinkportname")
+			{
+				data.name = consumesidentifier((DOMElement*)(child));
+			}
+
+			//
+			// componentinstantiationref
+			//
+			else if (element_name == "componentinstantiationref")
+			{
+				data.ref.kind = COMPONENTID;
+				data.ref.name = componentinstantiationref((DOMElement*)(child));
+			}
+
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	return data;
+}
+
+PortData CADReader::sourceport (DOMElement* element)
+throw(CADReadException)
+{
+	PortData data;
+
+	std::string element_name;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// sourceportname
+			//
+			if (element_name == "sourceportname")
+			{
+				data.name = consumesidentifier((DOMElement*)(child));
+			}
+
+			//
+			// componentinstantiationref
+			//
+			else if (element_name == "componentinstantiationref")
+			{
+				data.ref.kind = COMPONENTID;
+				data.ref.name = componentinstantiationref((DOMElement*)(child));
+			}
+
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	return data;
+}
 
 std::string 
 CADReader::stringifiedobjectref (DOMElement* element)

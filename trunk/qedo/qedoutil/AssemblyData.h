@@ -112,7 +112,8 @@ public:
 /**
  * kind of port
  */
-enum PortKind { COMPONENT_PORT, FACET_PORT, EMITTER_PORT, PUBLISHER_PORT };
+enum PortKind { COMPONENT_PORT, FACET_PORT, EMITTER_PORT, PUBLISHER_PORT, 
+				SINK_PORT, SOURCE_PORT};
 
 
 /*
@@ -230,6 +231,20 @@ struct PortData
 	ReferenceData								ref;
 };
 
+/**
+ * data of a stream source port
+ */
+struct StreamSourcePortData
+{
+	/** port name */
+	std::string									name;
+	/** port reference */
+	ReferenceData								ref;
+	/** packet timing */
+	std::string									packet_timing;
+	/** transport protocol */
+	std::string									fixed_transport;
+};
 
 /**
  * data for an interface connection
@@ -259,6 +274,27 @@ struct EventConnectionData
 	/** emitter or publisher*/
 	PortData									emitter;
 };
+
+
+/*
+ * kind of the stream connection
+ */
+enum StreamConnectionKind{ SINK, SOURCE};
+
+/**
+ * data for an stream connection
+ */
+struct StreamConnectionData
+{
+	/** consumer port */
+	PortData									sink;
+	/** connection kind */
+	StreamConnectionKind						kind;
+	/** sink or source*/
+	PortData									source;
+
+};
+
 
 
 /**
@@ -292,6 +328,8 @@ struct AssemblyData
 	std::vector < InterfaceConnectionData >		interface_connections_;
 	/** list of event connections */
 	std::vector < EventConnectionData >			event_connections_;
+	/** list of stream connections */
+	std::vector < StreamConnectionData >		stream_connections_;
 	/** the cad file */
 	std::string									cad;
 };

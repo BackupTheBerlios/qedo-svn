@@ -66,6 +66,7 @@ private:
 
 	/** the composition data */
 	CompositionData*						data_;
+	
 	/** the parsed CORBA component descriptor */
     DOMDocument*							ccd_document_;
 	/** the package */
@@ -74,6 +75,13 @@ private:
 	std::string								descriptor_;
 	/** the path to drop files */
 	std::string								path_;
+
+
+	/**
+	 * componentfeature
+	 */
+	void componentfeatures (DOMElement*)
+		throw(CCDReadException);
     
 	/**
 	 * componentkind
@@ -142,10 +150,22 @@ private:
         throw(CCDReadException);
 
 	/**
+	 * ports
+	 */
+	void ports (DOMElement*)
+		throw(CCDReadException);
+
+	/**
 	 * process
 	 */
     void process (DOMElement*)
         throw(CCDReadException);
+
+	/**
+	 * sink
+	 */
+	void sink(DOMElement*)
+		throw(CCDReadException);
 
 	/**
 	 * service
@@ -158,6 +178,13 @@ private:
 	 */
     void session (DOMElement*)
         throw(CCDReadException);
+
+	/**
+	 * source
+	 */
+	void source(DOMElement*)
+		throw(CCDReadException);
+
 
 	/**
 	 * unclassified

@@ -23,6 +23,7 @@
 #include "Assembly.h"
 #include "CADReader.h"
 #include "CPFReader.h"
+#include "StreamComponents.h"
 
 
 namespace Qedo {
@@ -978,7 +979,6 @@ throw(Components::CreateFailure)
 		DEBUG_OUT2( "..... consumer is ", (*iter).consumer.ref.name );
 		DEBUG_OUT2( "..... port is ", consume );
 		consumer = Components::CCMObject::_narrow(getRef((*iter).consumer.ref));
-        
 		try
 	    {
 		    consumer_port = consumer->get_consumer(consume.c_str());
@@ -1051,8 +1051,111 @@ throw(Components::CreateFailure)
 {
 	connectinterface();
 	connectevent();
+	connectstream();
+
 }
 
+void
+AssemblyImpl::connectstream()
+throw(Components::CreateFailure)
+{
+	std::string consume;
+	
+	std::string emit;
+	//Components::CCMObject_var consumer;
+	StreamComponents::SinkStreamPort_var consumer_port;
+	//Components::CCMObject_var source;
+	StreamComponents::StreamCCMObject_var consumer;
+	StreamComponents::StreamCCMObject_var source;
+	std::vector < StreamConnectionData > ::const_iterator iter;
+	for(iter = data_.stream_connections_.begin();
+		iter != data_.stream_connections_.end();
+		iter++)
+	{
+		DEBUG_OUT( "AssemblyImpl: make stream connection" );
+		
+		//
+		// consumer
+		//
+		consume =  (*iter).sink.name ;
+		DEBUG_OUT2( "..... sink is ", (*iter).sink.ref.name );
+		DEBUG_OUT2( "..... port is ", consume );
+		
+		
+		consumer = StreamComponents::StreamCCMObject::_narrow(getRef((*iter).sink.ref));
+	
+		
+		try
+	    {
+
+			consumer_port = consumer->provide_sink_stream_port(consume.c_str());
+				
+	    }
+		catch(Components::InvalidName&)
+	    {
+			NORMAL_ERR2( "AssemblyImpl: invalid sink name ", consume );
+		    throw Components::CreateFailure();
+		}
+
+		if((*iter).kind == SOURCE)
+		{
+			//
+			// source
+			//
+            source = StreamComponents::StreamCCMObject::_narrow( getRef((*iter).source.ref) );
+            emit = (*iter).source.name;
+            DEBUG_OUT2( "..... source is ", (*iter).source.ref.name );
+			DEBUG_OUT2( "..... port is ", emit );
+                    
+            //
+            // connect
+            //
+      		try
+      		{
+				
+       			source->bind(emit.c_str(), consumer_port.in(), "CCM_TCP");
+				
+       		}
+       		catch(Components::InvalidName&)
+       		{
+				NORMAL_ERR2( "AssemblyImpl: invalid emits name ", emit );
+       			throw Components::CreateFailure();
+       		}
+       		catch(Components::AlreadyConnected&)
+            {
+				NORMAL_ERR2( "AssemblyImpl: already connected with ", emit );
+       			throw Components::CreateFailure();
+       		}
+        }
+		else
+		{ 
+			//
+			// sourceport
+			//
+			source = StreamComponents::StreamCCMObject::_narrow( getRef((*iter).source.ref) );
+            emit = (*iter).source.name;
+            DEBUG_OUT2( "..... source is ", (*iter).source.ref.name );
+			DEBUG_OUT2( "..... port is ", emit );
+
+            //
+            // connect
+            //
+		
+		    try
+       		{
+
+        		source->bind(emit.c_str(), consumer_port.in(), "CCM_TCP");
+
+	   		}
+	   		catch( Components::InvalidName& )
+	   		{
+				NORMAL_ERR2( "AssemblyImpl: invalid source name ", emit );
+	   			throw Components::CreateFailure();
+	   		}
+			
+        }
+    }
+}
 
 void
 AssemblyImpl::configurationComplete()

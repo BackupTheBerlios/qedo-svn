@@ -78,6 +78,12 @@ private:
 		throw(CADReadException);
 
 	/**
+	 * binding
+	 */
+	void binding (DOMElement*)
+		throw(CADReadException);
+
+	/**
 	 * componentassembly
 	 */
 	void componentassembly (DOMElement*)
@@ -353,11 +359,27 @@ private:
 	RuleData rule (DOMElement*)
         throw(CADReadException);
 
+	
+
 	/**
 	 * scriptcode
 	 */
 	std::string scriptcode (DOMElement*)
         throw(CADReadException);
+
+	/**
+	 * sinkport
+	 */
+	PortData sinkport (DOMElement*)
+		throw(CADReadException);
+	 
+
+	/**
+	 * sourceport
+	 */
+	PortData sourceport (DOMElement*)
+		throw(CADReadException);
+	 
 
 	/**
 	 * stringifiedobjectref

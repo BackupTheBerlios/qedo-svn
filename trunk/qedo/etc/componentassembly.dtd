@@ -11,6 +11,12 @@
      href          CDATA               #REQUIRED " >
 
 <!-- If file not available locally, then download via codebase link -->
+
+<!ELEMENT binding
+     ( sourceport,
+       sinkport
+     ) >
+
 <!ELEMENT codebase EMPTY >
 <!ATTLIST codebase
      filename CDATA #IMPLIED
@@ -104,7 +110,11 @@
      | connectevent
      | connecthomes
      | extension
+     | binding
      )* >
+
+
+
 
 <!ELEMENT consumesidentifier ( #PCDATA ) >
 
@@ -328,6 +338,20 @@
      ( homeplacementref
      | findby
      ) >
+
+<!ELEMENT sinkport
+	( sinkportname,
+	  componentinstantiationref
+	) >
+
+<!ELEMENT sinkportname ( #PCDATA) >
+
+<!ELEMENT sourceport
+	( sourceportname,
+	  componentinstantiationref
+	) >
+
+<!ELEMENT sourceportname ( #PCDATA) >
 
 <!ELEMENT stringifiedobjectref ( #PCDATA ) >
 

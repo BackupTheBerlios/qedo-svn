@@ -172,6 +172,12 @@ private:
 	 */
     void connectevent()
         throw(Components::CreateFailure);
+	
+	/**
+	 * make stream connections
+	 */
+	void AssemblyImpl::connectstream()
+		throw(Components::CreateFailure);
 
 	/**
 	 * make all connections according to the assembly descriptor

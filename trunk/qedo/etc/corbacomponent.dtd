@@ -219,6 +219,8 @@
      | emits
      | publishes
      | consumes
+     | source
+     | sink
      )* >
 
 <!ELEMENT process
@@ -295,9 +297,21 @@
 <!ELEMENT session
      ( servant ) >
 
+<!ELEMENT sink EMPTY >
+<!ATTLIST sink
+	sink_name CDATA #REQUIRED
+	repid CDATA #REQUIRED >
+
 <!ELEMENT storagehome EMPTY >
 <!ATTLIST storagehome
     id CDATA #REQUIRED >
+
+<!ELEMENT source EMPTY >
+<!ATTLIST source
+	source_name CDATA #REQUIRED
+	repid CDATA #REQUIRED
+	packet_timing ( EXPLICIT | IMPLICIT ) #REQUIRED
+	fixed_transport CDATA #IMPLIED >
 
 <!ELEMENT supportsinterface
      ( operationpolicies?
