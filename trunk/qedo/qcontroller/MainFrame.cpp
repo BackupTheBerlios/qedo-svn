@@ -27,7 +27,11 @@
 #include "wx/statbmp.h"
 #include "HelpFrame.h"
 #include "qedologo.xpm"
+
+#include "wx/html/helpctrl.h"
+
 #include "qedoicon.xpm"
+
 
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
@@ -49,7 +53,9 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
     wxSize notebook_size(800,600);
     wxPoint notebook_point(5,5);
 
-	 notebook_ = new ControllerNotebook(panel_, ID_NOTEBOOK, notebook_point, notebook_size);
+	hf=0;
+	
+	notebook_ = new ControllerNotebook(panel_, ID_NOTEBOOK, notebook_point, notebook_size);
 
 	// create image list
 	wxSize imagesize (32,32);
@@ -86,15 +92,25 @@ MainFrame::~MainFrame() {
 
 void MainFrame::onHelp()
 {
+
+	/*
 	hf = new HelpFrame("Help",wxDefaultPosition,wxDefaultSize,wxDEFAULT_FRAME_STYLE);
-	hf->Show();
+	int t=hf->Show();
+	*/
+	wxHtmlHelpController *help=new wxHtmlHelpController(wxHF_DEFAULT_STYLE);
+	
+	help->AddBook("qedodoc/controllerdoc.hhp",true);
+	help->Display("Contents");
+
+
 }
 
 void MainFrame::onClose()
-{
-	if (hf)
+
+{	if (hf)
 	{
-		hf -> Destroy();
+		hf->Destroy();
 	}
+
 	delete(this);
 }
