@@ -21,6 +21,85 @@ The Qedo Run-Time.
 
 ...
 
+\section{Contact}
+\label{sec:Contact}
+
+If you have any problem or if you have any comments do not hesitate to contact the other Qedo users by using the qedo-devel mailing list. You can reach it at qedo-devel@lists.berlios.de. You can also use the bug tracking system provided by the Qedo project. You can reach it at http://qedo.berlios.de. this site has all relevant information about the Qedo project. In any case you can also contact the authors directly. The email addresses are listed on the Qedo web page as well.
+
+
+\chapter{Installation}
+\label{sec:Installation}
+
+
+This section describes the process of installing the Qedo run-time. Because the run-time is a complex software it needs many other software products. You have to install all of them before you can compile the run-time. This will take you some time and experiences with installing such software would be very helpful. Nevertheless, we hope that this little description will give enough information to accomplish all needed steps. 
+The Qedo run-tim can be compiled by using the MS Visual Studio 6 (deprecated, no longer supported), MS Visual Studio.Net 2002 (VC7.0), Solaris gcc, or Linux gcc.
+
+\section{ORB}
+\label{sec:ORB}
+The Qedo project is designed to work with arbitrary ORB implementations which support at least a basic set of features. This set comprises OBV, Portable Interceptors, ... 
+
+Anyway, for each ORB implementation some minimal changes have to be done. Currently ORBacus 4.1 and MICO are supported by deafault. The TAO support is deprecated. In order to install Qedo a supported ORB implementation has to be installed on the target host. Pay attention that it has to be dynamically linked and the linker can find the according libraries. At the moment Qedo generator supports 3 ORBs Mico, TAO and ORBacus. For using one of the ORBs you need to install the ORB and to set an apropriate environment variable. Follow the instructions coming with each ORB to install it properly. We will only point out some important details.
+
+\subsection{ORBacus}
+\label{sec:ORBacus}
+To install ORBACUS you have to do at least the following steps.
+
+\begin{itemize}
+	\item Obtain the ORBacus Software (version 4.1.1) from \\ 
+	\small	
+	\verb http://www.iona.com/products/orbacus_home.htm .
+	\normalsize
+	
+	\item Configure ORBacus by editing the file \\ \verb /config/Makefile.rules.mak  set the prefix and use \verb DEBUG=yes  and \verb DLL=yes . 
+
+	\item compile ORBacus by calling
+	\begin{verbatim} nmake -f Makefile.mak install_min} 
+	\end{verbatim}
+
+	\item set the environment by defining the following vars.	
+	\begin{verbatim}
+	ORBACUS = (e.g. C:\OOC)
+	ORBACUS_CONFIG= %ORBACUS%\ooc\ini\orbacus.ini
+	\end{verbatim}
+
+	\item Create an ini directory somewhere in your filesystem, preferably in your home directory or in the ORBACUS installation. Create an ini file in this directory. The path to this ini file must correspond to the \verb ORBACUS_CONFIG  var. This ini file must contain lines similar to this:
+	\small
+	\begin{verbatim}
+			ooc.orb.service.NameService = corbaloc:iiop:127.0.0.1:3000/NameService
+			ooc.naming.endpoint=iiop --port 3000
+	\end{verbatim}
+	\normalsize
+	
+	\item add the following directories to your path and to the setting of you visual studio (executable files)
+	\begin{verbatim}
+	%ORBACUS%\lib 
+	%ORBACUS%\bin
+	\end{verbatim}
+	
+\end{itemize}
+
+
+\subsection{MICO}
+\label{sec:MICO}
+To install MICO you have to to at least the following steps.
+\begin{itemize}
+	\item Obtain the software from \verb http://www.mico.org/ .
+	
+	\item Install the software by following the installation steps provided by MICO. You need to install a multi-threaded version.
+	
+	\item Add the following directory to your path and to the settings of your visual studio
+	
+\end{itemize}
+obtain software:
+	version MICO 2.3.7
+	get from: http://www.mico.org/
+install/compile:
+	MICO = (e.g. C:\MICO)
+	add path %MICO%\win32-bin to VC++ extras/options/directories/executable files
+
+After compiling and installing MICO, you need to create a .micorc file. This file needs to be in the home directory or in the current wirking directory or you can point to it by using an environment setting pointing to this file (MICORC). Consult the MICO documentation for details.
+
+
 \chapter{Architecture}
 \label{sec:Architecture}
 Qedo run-tim has the following architecture.
@@ -28,7 +107,7 @@ Qedo run-tim has the following architecture.
  ...
 
 \section{Component Server}
-\label{sec:ComponentServer}
+\label{sec:AComponentServer}
 The component server. 
 
  ... 
@@ -48,6 +127,96 @@ The Component Installer.
 \chapter{Usage}
 \label{sec:Usage}
 This section explain the options. ...
+
+\section{Start up}
+\label{sec:StartUp}
+To start the tun-time environment of Qedo you need to start a number of processes. 
+
+\subsection{Name Service}
+\label{sec:NameService}
+
+The first of all is a name service. This name service needs to be started once for a Qedo deployment domain. Such a domain consist of a number of computers where distributed systems can be installed. How to start a name service depends on the used nameservice implementation. But you need to be sure to know the host where the name service is runnning and on what port the name service is listening. This information is needed for the other servers. Currently we use orb depend mechanism to promote the name service information to the other Qedo servers. E.g. if you ar using MICO you need to create a .micorc file. this file need to contain the following line:
+\small
+\begin{verbatim}
+
+  -ORBInitRef NameService=corbaloc::<hostname>:<port>/NameService
+  
+\end{verbatim}
+\normalsize
+
+To start a name service on a specific port usually works with the following option:
+
+\small
+\begin{verbatim}
+
+  nsd -ORBIIOPAddr inet:<hostname>:<port>
+
+\end{verbatim}
+\normalsize
+
+\subsection{Home Finder}
+\label{sec:HomeFinder}
+
+The HomeFinder is an optional Feature which can be used to find running homes. If a HomeFinder is available it is used. If a HomeFinder is not available a warninf message would be displayed but the creation of homes continues. The Homefinder is started by calling
+
+\small
+\begin{verbatim}
+
+  homefinder
+
+\end{verbatim}
+\normalsize
+
+\subsection{Component Installation}
+\label{sec:ComponentInstallation}
+The ComponentInstallation server is an implementation of the ComponentInstallation interface defined by CCM. This server is used to install the binaries of the components. This server is mandatory. To start this server you need to call
+
+\small
+\begin{verbatim}
+
+  ci
+
+\end{verbatim}
+\normalsize
+
+\subsection{Component Server Activator}
+\label{sec:ComponentServerActivator}
+
+The ComponentServerActivator server is an implementation of the correspoding interface defined by CCM. This server is used to create new component server and to manage them. This server is mandatory. To start this server you need to call 
+
+\small
+\begin{verbatim}
+
+  csa
+
+\end{verbatim}
+\normalsize
+
+\subsection{Assembly Factory}
+\label{sec:AssemblyFactory}
+
+This server implements the assembly factory and assembly interface defined be CCM. This server is mandatory if you like to use the automatic deployment features of CCM. You can also create component servers and containers by yourself. In this case you do not need this server. To start the server you need to call:
+
+\small
+\begin{verbatim}
+
+  assf
+
+\end{verbatim}
+\normalsize
+
+\subsection{Component Server}
+\label{sec:ComponentServer}
+
+The ComponentServer is started by the ComponentServerActivator automatically.
+
+
+\chapter{Deployment}
+\label{sec:Deployment}
+The subdirectory Deployment of the Qedo installation directory contains all deployment related stuff. The XML file DeployedComponents.xml contains information about all installed component implementations and is used to keep those information persistent. The subdirectory ComponentPackages contains the softpackages for component implementations and assemblies. Currently for each assembly or component intended to be installed, the package has to be put there before manually. During component installation each component softpackage is unpacked into a temporary directory named by the UUID of the installed component implementation. These directories are created in the Runtime/ComponentImplementations subdirectory. Subsequently all generated servant code is also put into the Runtime/ComponentImplementations directory. The makefiles in this directory are used to generate servant code for the components. For each ORB implementation and architecture an own makefile
+has to be provided. In future it will be determined by the software package descriptor elements 'os' and 'dependency'.
+
+In order to deploy an assembly, a zip file has to be created by the assembly developer, containing an assembly descriptor, zip files for each component  and probably property file descriptors for component instances. The component zip files in turn contain a software package descriptor, the dynamic library for the components business logic and the idl file for the servant code generation.
 
 \chapter{API Reference}
 \label{sec:APIReference}
