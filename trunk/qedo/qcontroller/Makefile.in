@@ -79,9 +79,17 @@ qcontroller: $(SOURCES:.cpp=.o)
 
 .PHONY:install
 
-install: install-prog
+install: install-prog install-qedodoc
 
 .PHONY:install-prog
 
 install-prog: qcontroller
+
+install-qedodoc:
+	${INSTALL} -m $(FILE_MODE) qedodoc/*.htm  $(exec_prefix)/qedodoc
+	${INSTALL} -m $(FILE_MODE) qedodoc/*.hhp  $(exec_prefix)/qedodoc
+	${INSTALL} -m $(FILE_MODE) qedodoc/*.hhk  $(exec_prefix)/qedodoc
+	${INSTALL} -m $(FILE_MODE) qedodoc/*.hhc  $(exec_prefix)/qedodoc
+	${INSTALL} -m $(FILE_MODE) qedodoc/images/*.gif  $(exec_prefix)/qedodoc/images
+	${INSTALL} -m $(FILE_MODE) qedodoc/images/*.jpg  $(exec_prefix)/qedodoc/images
 
