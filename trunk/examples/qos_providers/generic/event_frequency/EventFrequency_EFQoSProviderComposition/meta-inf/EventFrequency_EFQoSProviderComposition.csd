@@ -9,7 +9,7 @@
     <description></description>
     <license href="" />
     <idl id="IDL:EventFrequency/EFQoSProviderHome:1.0">
-        <fileinarchive name="event_frequency.idl"/>
+        <fileinarchive name="event_frequency.cidl"/>
     </idl>
 
     <implementation id="UUID-01e7eb19-b096-4f41-b207-0f35c11ff6c8">

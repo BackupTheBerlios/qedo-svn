@@ -4,11 +4,12 @@ CIDL_FILES = ../event_frequency.cidl
 
 IDL_FILES = EventFrequency_EFQoSProviderComposition_LOCAL.idl \
 	EventFrequency_EFQoSProviderComposition_EQUIVALENT.idl \
-	EventFrequency_EFQoSProviderComposition_BUSINESS.idl 
+	EventFrequency_EFQoSProviderComposition_BUSINESS.idl
 
 CPP_FILES = EventFrequency_EFQoSProviderComposition_BUSINESS.cpp \
 	EventFrequency_EFQoSProviderComposition.cpp \
-	valuetypes.cpp 
+	ServerContainerInterceptor.cpp \
+	valuetypes.cpp
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 

@@ -3,19 +3,19 @@
 
 <componentassembly id="HelloWorld_Example">
 
-    <description>Example assembly"</description>
+    <description>QoS Example assembly"</description>
 
     <componentfiles>
         <componentfile id="Reader_file">
             <fileinarchive name="Chat_Reader_Compo.zip"/>
         </componentfile>
 
-        <componentfile id="Channel_file">
-            <fileinarchive name="Chat_Channel_Compo.zip"/>
-        </componentfile>
-
         <componentfile id="Writer_file">
             <fileinarchive name="Chat_Writer_Compo.zip"/>
+        </componentfile>
+
+        <componentfile id="Channel_file">
+            <fileinarchive name="Chat_Channel_Compo.zip"/>
         </componentfile>
 
         <componentfile id="EFQosProvider_file">
@@ -26,19 +26,22 @@
 
     <partitioning>
 	<processcollocation>
-		<homeplacement id="ReaderHome">
-	        	<componentfileref idref="Reader_file"/>
-				<componentimplref idref="UUID-d4eb84e6-9929-4d07-bc41-c973b1a1f9d5"/>
-  	        	<componentinstantiation id="reader">
+		<homeplacement id="EFQoSProviderHome">
+	        	<componentfileref idref="EFQosProvider_file"/>
+				<componentimplref idref="UUID-01e7eb19-b096-4f41-b207-0f35c11ff6c8"/>
+  	        	<componentinstantiation id="EFQoSProvider">
 			</componentinstantiation>
 
 		        <destination></destination>
 		</homeplacement>
 
-		<homeplacement id="EFQoSProviderHome">
-	        	<componentfileref idref="EFQoSProvider_file"/>
-				<componentimplref idref="UUID-01e7eb19-b096-4f41-b207-0f35c11ff6c8"/>
-  	        	<componentinstantiation id="EFQoSProvider">
+		<homeplacement id="ReaderHome">
+	        	<componentfileref idref="Reader_file"/>
+				<componentimplref idref="UUID-d4eb84e6-9929-4d07-bc41-c973b1a1f9d5"/>
+  	        	<componentinstantiation id="reader">
+				<componentproperties>
+					<fileinarchive name="meta-inf/reader.cpf" />
+				</componentproperties>
 			</componentinstantiation>
 
 		        <destination></destination>

@@ -128,11 +128,11 @@ Writer_Compo::obtain_executor(const char* name)
     if (! strcmp ( name, "component" ) ) {
         return Components::EnterpriseComponent::_duplicate (component_);
     }
-
+    
     else if (! strcmp (name, "control")) {
         return Components::EnterpriseComponent::_duplicate (component_);
     }
-
+    
     return Components::EnterpriseComponent::_nil();
 }
 

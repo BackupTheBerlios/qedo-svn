@@ -51,17 +51,17 @@ namespace Chat
         
         void configuration_complete()
             throw (CORBA::SystemException, Components::InvalidConfiguration);
-
+        
         void remove()
             throw (CORBA::SystemException);
-
-
+        
+        
         //
         // IDL:Chat/ClientControl/request_and_push_message:1.0
         //
         virtual void request_and_push_message()
         	throw(CORBA::SystemException);
-
+    
 // BEGIN USER INSERT SECTION ChatWriterSessionImpl
 	private:
 		Components::Thread_var writer_thread;
@@ -76,8 +76,8 @@ namespace Chat
 // END USER INSERT SECTION ChatWriterSessionImpl
 
     };
-
-
+    
+    
     //
     // executor locator
     //

@@ -45,7 +45,7 @@ namespace Chat
     
         ChatReaderSessionImpl();
         virtual ~ChatReaderSessionImpl();
-
+        
         void set_context(::Chat::CCM_ChatReader_ContextImpl_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
         
@@ -76,8 +76,8 @@ private:
 // END USER INSERT SECTION ChatReaderSessionImpl
 
     };
-
-
+    
+    
     //
     // executor locator
     //
@@ -90,11 +90,11 @@ private:
 // BEGIN USER INSERT SECTION INHERITANCE_Reader_Compo
 // END USER INSERT SECTION INHERITANCE_Reader_Compo
     {
-
+    
     private:
-
+    
         ::Chat::CCM_ChatReader_ContextImpl_var context_;
-
+        
         ChatReaderSessionImpl* component_;
         
     public:
