@@ -105,6 +105,56 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebDeploymentTool"/>
 		</Configuration>
+		<Configuration
+			Name="Debug_mico|Win32"
+			OutputDirectory="Debug_mico"
+			IntermediateDirectory="Debug_mico"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(MICO)\include&quot;;&quot;./&quot;;../qedoutil;$(XERCES)/include"
+				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_WINDOWSL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="mico2311.lib $(MICO)\coss\micocoss2311.lib ws2_32.lib wsock32.lib pthreadVC.lib"
+				OutputFile="$(OutDir)/explore_server.exe"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="mpr.lib;msock32.lib;&quot;$(MICO)\win32-bin\lib&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/explore_server.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
 	</Configurations>
 	<Files>
 		<Filter
@@ -146,6 +196,11 @@ copy $(TargetPath) $(QEDO)\bin
 						CommandLine="idl -I%MICO%\include\mico -I../ComponentIDL -I%MICO%\include -DMICO_ORB --c++-suffix cpp explore.idl
 "
 						Outputs="explore.h;explore.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCMIDLTool"/>
 				</FileConfiguration>
 			</File>
 		</Filter>

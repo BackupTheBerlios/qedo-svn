@@ -53,7 +53,8 @@ copy $(TargetPath) $(QEDO)\bin
 				CommandLine="mkdir $(QEDO)\qedodoc
 copy qedodoc $(QEDO)\qedodoc
 mkdir $(QEDO)\qedodoc\images
-copy qedodoc\images $(QEDO)\qedodoc\images"/>
+copy qedodoc\images $(QEDO)\qedodoc\images
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -99,6 +100,62 @@ copy qedodoc\images $(QEDO)\qedodoc\images"/>
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_mico|Win32"
+			OutputDirectory="Debug_mico"
+			IntermediateDirectory="Debug_mico"
+			ConfigurationType="1"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".\;../ComponentIDL;../qedoutil;c:\opt\wxWindows\include;C:\opt\wxWindows\lib\mswdlld;$(MICO)/include;$(XERCES)/include;&quot;$(ZLIB)&quot;"
+				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_CONSOLE;_WINDOWS,WINVER=0x400,_MT;,wxUSE_GUI=1,__WXDEBUG__,WXDEBUG=1,WXUSINGDLL"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxmsw24d.lib mico2311.lib micocoss2311.lib $(MICO)\coss\micocoss2311.lib"
+				OutputFile="$(OutDir)/qcontroller.exe"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="C:\opt\wxWindows\lib;$(MICO)\win32-bin\lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/qcontroller.pdb"
+				SubSystem="2"
+				ImportLibrary="qedoutil.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir $(QEDO)\qedodoc
+copy qedodoc $(QEDO)\qedodoc
+mkdir $(QEDO)\qedodoc\images
+copy qedodoc\images $(QEDO)\qedodoc\images
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -220,6 +277,11 @@ copy qedodoc\images $(QEDO)\qedodoc\images"/>
 						CommandLine="idl -I%MICO%\include\mico -I%MICO%\include -I../ComponentIDL -DMICO_ORB --c++-suffix cpp explore.idl
 "
 						Outputs="explore.h;explore.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCMIDLTool"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
