@@ -21,17 +21,58 @@
 /***************************************************************************/
 
 #include "ComponentServerImpl.h"
-#include "ContainerInterfaceImpl.h"
 #include "Output.h"
 #include "Valuetypes.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.11 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.12 2003/08/01 14:57:26 stoinski Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
 #endif
 
 namespace Qedo {
+
+
+
+ContainerEntry::ContainerEntry (ContainerInterfaceImpl* container)
+: container_ (container)
+{
+	container_->_add_ref();
+}
+
+
+ContainerEntry::ContainerEntry()
+{
+}
+
+
+ContainerEntry::ContainerEntry (const ContainerEntry& container_entry)
+: container_ (container_entry.container_)
+{
+	container_->_add_ref();
+}
+
+
+ContainerEntry& 
+ContainerEntry::operator= (const ContainerEntry& container_entry)
+{
+	if (container_)
+		container_->_remove_ref();
+
+	container_ = container_entry.container_;
+	container_->_add_ref();
+
+	return *this;
+}
+
+
+ContainerEntry::~ContainerEntry()
+{
+	DEBUG_OUT ("ContainerEntry: Destructor called");
+
+	container_->_remove_ref();
+}
+
 
 ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb, 
 										  const char* csa_string_ref,
@@ -45,6 +86,28 @@ ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb,
 
 ComponentServerImpl::~ComponentServerImpl()
 {
+	DEBUG_OUT ("ComponentServerImpl: Destructor called");
+
+	DEBUG_OUT  ("ComponentServerImpl: #######################################################");
+	if (GlobalObjectManagement::native_object_count_ || GlobalObjectManagement::CORBA_local_object_count_)
+	{
+		DEBUG_OUT  ("ComponentServerImpl: # MEMORY LEAKS DETECTED!!!");
+		if (GlobalObjectManagement::native_object_count_)
+		{
+			DEBUG_OUT2 ("ComponentServerImpl: # Number of still running native objects      : ", GlobalObjectManagement::native_object_count_ );
+		}
+		else
+		{
+			DEBUG_OUT2 ("ComponentServerImpl: # Number of still running CORBA local objects : ", GlobalObjectManagement::CORBA_local_object_count_ );
+		}
+	}
+	else
+	{
+		DEBUG_OUT  ("ComponentServerImpl: # All objects destroyed");
+	}
+	DEBUG_OUT2 ("ComponentServerImpl: # Number of constructed native objects        : ", GlobalObjectManagement::native_object_instantiation_count_ );
+	DEBUG_OUT2 ("ComponentServerImpl: # Number of constructed CORBA local objects   : ", GlobalObjectManagement::CORBA_local_object_instantiation_count_ );
+	DEBUG_OUT  ("ComponentServerImpl: #######################################################");
 }
 
 
@@ -194,7 +257,9 @@ ComponentServerImpl::initialize()
 	factory = new Qedo::CookieFactory_impl();
     orb_->register_value_factory ("IDL:omg.org/Components/Cookie:1.0", factory);
 
-	csa_ref_->notify_component_server (this->_this());
+	Components::Deployment::ComponentServer_var component_server = this->_this();
+	csa_ref_->notify_component_server (component_server.in());
+	
 }
 
 
@@ -225,7 +290,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 	for (unsigned int i = 0; i < config.length(); i++)
 	{
-		std::cerr << "Got ConfigValue: \"" << config[i]->name() << "\"\n";
+		DEBUG_OUT2 ("ComponentServerImpl: Got ConfigValue: ", config[i]->name());
 		if (! strcmp (config[i]->name(), "CONTAINER_TYPE"))
 		{
 			config[i]->value() >>= container_type_string;
@@ -275,14 +340,17 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	DEBUG_OUT (message);
 
 	container_if = new ContainerInterfaceImpl (orb_, 
-											   root_poa_, 
-											   container_type, 
+											   root_poa_,
+											   container_type,
+											   this,
 											   component_installer_);
 
-	Components::Deployment::Container_var container = container_if->_this();
-	containers_.push_back(Components::Deployment::Container::_duplicate(container));
+	ContainerEntry new_container (container_if);
+	containers_.push_back (new_container);
 
-	return container._retn();
+	container_if->_remove_ref();
+
+	return container_if->_this();
 }
  
  
@@ -290,7 +358,33 @@ void
 ComponentServerImpl::remove_container(::Components::Deployment::Container_ptr cref)
 throw (Components::RemoveFailure, CORBA::SystemException)
 {
-	// TODO
+	// Find the container in our list of created containers
+	std::vector <ContainerEntry>::iterator container_iter;
+
+	for (container_iter = containers_.begin(); container_iter != containers_.end(); container_iter++)
+	{
+		Components::Deployment::Container_var container_ref = (*container_iter).container_->_this();
+
+		if (container_ref->_is_equivalent (cref))
+		{
+			DEBUG_OUT ("ComponentServerImpl: remove_container(): Container servant found");
+			break;
+		}
+	}
+
+	if (container_iter == containers_.end())
+	{
+		DEBUG_OUT ("ComponentServerImpl: remove_container(): Unknown container");
+		throw Components::RemoveFailure();
+	}
+
+	Qedo::ContainerInterfaceImpl* container = (*container_iter).container_;
+	container->prepare_remove();
+
+	PortableServer::ObjectId_var oid = root_poa_->servant_to_id (container);
+	root_poa_->deactivate_object (oid.in());
+
+	containers_.erase (container_iter);
 }
 
 
@@ -303,7 +397,8 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < containers_.size(); i++)
 	{
-        containers.inout()[i] = containers_[i];
+		Components::Deployment::Container_var container = containers_[i].container_->_this();
+        	containers.inout()[i] = container.in();
 	}
 
 	return containers._retn();
@@ -314,7 +409,14 @@ void
 ComponentServerImpl::remove()
 throw (Components::RemoveFailure, CORBA::SystemException)
 {
-	// TODO
+	DEBUG_OUT ("ComponentServerImpl: remove() called");
+
+	root_poa_manager_->deactivate (false /*no etherealize objects*/, false /*no wait for completion*/);
+
+	PortableServer::ObjectId_var oid = root_poa_->servant_to_id (this);
+	root_poa_->deactivate_object (oid.in());
+
+	orb_->shutdown (false /*wait for completion*/);
 }
 
 

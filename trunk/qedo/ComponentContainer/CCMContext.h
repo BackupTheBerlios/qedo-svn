@@ -196,7 +196,7 @@ class CONTAINERDLL_API HomeExecutorContext : public virtual Components::CCMConte
 											 public virtual Qedo::RefCountLocalObject
 {
 private:
-	Components::CCMHome_var my_home_servant_ref_;
+	Components::CCMHome_var my_home_ref_;
 
 public:
 	/**

@@ -25,15 +25,15 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.7 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.8 2003/08/01 14:57:26 stoinski Exp $";
 
 namespace Qedo {
 
 
 ServantBase::ServantBase()
-: executor_locator_ (Components::ExecutorLocator::_nil()),
-  ccm_object_executor_ (0),
-  current_executor_ (CORBA::Object::_nil())
+: current_executor_ (CORBA::Object::_nil()),
+  executor_locator_ (Components::ExecutorLocator::_nil()),
+  ccm_object_executor_ (0)
 {
 }
 
@@ -77,12 +77,10 @@ ServantBase::current_executor (CORBA::Object_ptr cur_exec)
 
 
 void 
-ServantBase::set_instance (Qedo::ComponentInstance* instance)
+ServantBase::set_instance (const Qedo::ComponentInstance& instance)
 {
-	instance_ = instance;
-	instance->_add_ref();
-	executor_locator_ = Components::ExecutorLocator::_duplicate (instance->executor_locator_);
-	ccm_object_executor_ = instance->ccm_object_executor_;
+	executor_locator_ = Components::ExecutorLocator::_duplicate (instance.executor_locator_);
+	ccm_object_executor_ = instance.ccm_object_executor_;
 	ccm_object_executor_->_add_ref();
 }
 
@@ -351,8 +349,8 @@ throw (Components::InvalidConfiguration, CORBA::SystemException)
 		//
 		// register the service to be called in call chain
 		//
-		container->services_preinvoke_.push_back(instance_);
-		container->services_postinvoke_.push_back(instance_);
+//		container->services_preinvoke_.push_back(instance_);
+//		container->services_postinvoke_.push_back(instance_);
 	}
 }
 
@@ -371,5 +369,21 @@ throw (CORBA::SystemException)
 {
     return ccm_object_executor_->get_all_ports();
 }
+
+
+//
+// The cleaner object for a ServantFactory
+// 
+ServantFactoryCleaner::ServantFactoryCleaner (class ServantFactory* factory)
+: factory_ (factory)
+{
+}
+
+ServantFactoryCleaner::~ServantFactoryCleaner()
+{
+	DEBUG_OUT ("ServantFactoryCleaner: Destructor called");
+	factory_->_remove_ref();
+}
+
 
 } // namespace Qedo

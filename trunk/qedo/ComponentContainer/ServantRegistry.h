@@ -179,8 +179,8 @@ public:
 	 * set the component instance information
 	 * \param instance The component instance.
 	 */
-	void set_variables_static_servant (Qedo::ComponentInstance* instance);
-
+	void set_variables_static_servant (const Qedo::ComponentInstance& instance);
+	
 	/**
 	 * lookup a servant
 	 * \param object_id The object id of an object.

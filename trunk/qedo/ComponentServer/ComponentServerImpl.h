@@ -25,7 +25,10 @@
 
 #include <CORBA.h>
 #include "QedoComponents_skel.h"
+
+#include "ContainerInterfaceImpl.h"
 #include "Util.h"
+
 #include <vector>
 
 
@@ -44,8 +47,24 @@ namespace Qedo {
  * @{
  */
 
+class ContainerEntry
+{
+public:
+	ContainerInterfaceImpl* container_;
 
-typedef std::vector < Components::Deployment::Container_var > ContainerVector;
+	ContainerEntry (ContainerInterfaceImpl*);
+
+	ContainerEntry();
+	
+	ContainerEntry (const ContainerEntry&);
+
+	ContainerEntry& operator= (const ContainerEntry&);
+
+	~ContainerEntry();
+};
+
+
+typedef std::vector < ContainerEntry > ContainerVector;
 
 
 /**

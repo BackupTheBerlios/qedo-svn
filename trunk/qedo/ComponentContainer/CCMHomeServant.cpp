@@ -23,7 +23,7 @@
 #include "CCMHomeServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: CCMHomeServant.cpp,v 1.10 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: CCMHomeServant.cpp,v 1.11 2003/08/01 14:57:24 stoinski Exp $";
 
 
 namespace Qedo {
@@ -92,7 +92,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < this->component_instances_.size(); i++)
 	{
-		instances.inout()[i] = Components::CCMObject::_narrow(this->component_instances_[i]->component_ref_);
+		instances.inout()[i] = Components::CCMObject::_narrow(this->component_instances_[i].component_ref_);
 	}
 
 	return instances._retn();

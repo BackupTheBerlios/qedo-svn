@@ -45,7 +45,6 @@ namespace Qedo {
 
 class ExecutorContext;
 class ComponentInstance;
-class ComponentInstance_var;
 class ContainerInterfaceImpl;
 class ServantRegistry;
 
@@ -132,7 +131,7 @@ protected:
 	Qedo::ServantRegistry*						servant_registry_;
 
 	/** list of component instances */
-	std::vector <Qedo::ComponentInstance_var>	component_instances_;
+	std::vector <Qedo::ComponentInstance>		component_instances_;
 
 	/**
 	 * create an object reference

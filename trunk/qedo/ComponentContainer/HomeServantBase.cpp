@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.18 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.19 2003/08/01 14:57:25 stoinski Exp $";
 
 
 namespace Qedo {
@@ -68,8 +68,6 @@ HomeServantBase::operator= (const HomeServantBase&)
 HomeServantBase::~HomeServantBase()
 {
 	DEBUG_OUT ("HomeServantBase: Destructor called");
-
-	home_poa_->destroy (false /*no etherealize objects*/, false /*no wait for completion*/);
 
 	servant_locator_->_remove_ref();
 
@@ -143,8 +141,7 @@ HomeServantBase::incarnate_component (Components::ExecutorLocator_ptr executor_l
 	PortableServer::ObjectId_var object_id = this->reference_to_oid (component_ref);
 
 	// create component instance and register it
-	ComponentInstance* new_component;
-	new_component = new ComponentInstance (object_id, component_ref, executor_locator, ccm_context, this);
+	ComponentInstance new_component (object_id, component_ref, executor_locator, ccm_context, this);
 	component_instances_.push_back (new_component);
 	
 	return component_instances_.back ();
@@ -156,13 +153,13 @@ HomeServantBase::finalize_component_incarnation (const PortableServer::ObjectId&
 {
 	// Check whether a static servant was registered for this object id and set
 	// the executor context, executor locator and ccm object executor
-	std::vector <ComponentInstance_var>::const_iterator components_iter;
+	std::vector <ComponentInstance>::const_iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
 		 components_iter++)
 	{
-		if (Qedo::compare_object_ids ((*components_iter)->object_id_, object_id))
+		if (Qedo::compare_object_ids ((*components_iter).object_id_, object_id))
 		{
 			break;
 		}
@@ -176,7 +173,7 @@ HomeServantBase::finalize_component_incarnation (const PortableServer::ObjectId&
 
 	servant_registry_->set_variables_static_servant (*components_iter);
 
-	this->do_finalize_component_incarnation ((*components_iter)->executor_locator_.in());
+	this->do_finalize_component_incarnation ((*components_iter).executor_locator_.in());
 }
 
 
@@ -184,13 +181,13 @@ void
 HomeServantBase::remove_component_with_oid (const PortableServer::ObjectId& object_id)
 {
 	// Look, whether we know this component instance
-	std::vector <ComponentInstance_var>::iterator components_iter;
+	std::vector <ComponentInstance>::iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
 		 components_iter++)
 	{
-		if (Qedo::compare_object_ids ((*components_iter)->object_id_, object_id))
+		if (Qedo::compare_object_ids ((*components_iter).object_id_, object_id))
 		{
 			break;
 		}
@@ -206,7 +203,7 @@ HomeServantBase::remove_component_with_oid (const PortableServer::ObjectId& obje
 
 	// Before removing the component and associating servants, let the different homes
 	// decide, what additional things to do
-	this->before_remove_component ((*components_iter)->executor_locator_);
+	this->before_remove_component ((*components_iter).executor_locator_);
 
 	component_instances_.erase (components_iter);
 
@@ -261,7 +258,7 @@ throw (Components::Deployment::InstallationFailure)
 	{
 #ifdef MICO_ORB
 //	    home_poa_->set_servant_manager (dynamic_cast<PortableServer::ServantManager*>(servant_locator_));
-	    home_poa_->set_servant_manager (servant_locator_->_this());
+	    home_poa_->set_servant_manager (servant_locator_->_this());		// THIS IS WRONG - ServantLocator is no CORBA::Object!
 #else
 	    home_poa_->set_servant_manager (servant_locator_);
 #endif
@@ -309,13 +306,13 @@ HomeServantBase::lookup_component (const PortableServer::ObjectId& object_id)
 	CORBA::OctetSeq_var foreign_key_seq = Key::key_value_from_object_id (object_id);
 	CORBA::OctetSeq_var our_key_seq;
 
-	std::vector <ComponentInstance_var>::const_iterator components_iter;
+	std::vector <ComponentInstance>::const_iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
 		 components_iter++)
 	{
-		our_key_seq = Key::key_value_from_object_id ((*components_iter)->object_id_);
+		our_key_seq = Key::key_value_from_object_id ((*components_iter).object_id_);
 
 		if (Qedo::compare_OctetSeqs (foreign_key_seq, our_key_seq))
 		{
@@ -329,7 +326,7 @@ HomeServantBase::lookup_component (const PortableServer::ObjectId& object_id)
 		throw CORBA::OBJECT_NOT_EXIST();
 	}
 
-	return Components::CCMObject::_narrow ((*components_iter)->component_ref_.in());
+	return Components::CCMObject::_narrow ((*components_iter).component_ref_);
 }
 
 
@@ -347,13 +344,13 @@ HomeServantBase::lookup_servant (const PortableServer::ObjectId& object_id)
 	CORBA::OctetSeq_var foreign_key_seq = Key::key_value_from_object_id (object_id);
 	CORBA::OctetSeq_var our_key_seq;
 
-	std::vector <Qedo::ComponentInstance_var>::const_iterator components_iter;
+	std::vector <Qedo::ComponentInstance>::const_iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
 		 components_iter++)
 	{
-		our_key_seq = Key::key_value_from_object_id ((*components_iter)->object_id_);
+		our_key_seq = Key::key_value_from_object_id ((*components_iter).object_id_);
 
 		if (Qedo::compare_OctetSeqs (foreign_key_seq, our_key_seq))
 		{
@@ -412,11 +409,15 @@ HomeServantBase::prepare_remove()
 			// We do need to construct a copy of the object key, since (*components_iter).object_id_ will
 			// get destroyed in the first part of remove_component_with_oid(), but the object key is
 			// afterwards needed in the function to remove static servants and servant factories
-			PortableServer::ObjectId_var object_id = new PortableServer::ObjectId (component_instances_[0]->object_id_);
+			PortableServer::ObjectId_var object_id = new PortableServer::ObjectId (component_instances_[0].object_id_);
 
 			this->remove_component_with_oid (object_id);
 		}
 	}
+
+	home_poa_manager_->deactivate (false /*no etherealize objects*/, false /*no wait for completion*/);
+
+	home_poa_->destroy (false /*no etherealize objects*/, false /*no wait for completion*/);
 }
 
 

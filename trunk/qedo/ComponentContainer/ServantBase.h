@@ -53,8 +53,6 @@ class CONTAINERDLL_API ServantBase : public virtual PortableServer::RefCountServ
 	friend class HomeServantBase;
 
 protected:
-	/** the component instance */
-	Qedo::ComponentInstance_var			instance_;
 	/** the executor locator of the component instance */
 	Components::ExecutorLocator_var		executor_locator_;
 	/** the generic ccm object executor for the component instance */
@@ -93,7 +91,7 @@ public:
 	 * set the component instance
 	 * \param instance The component instance.
 	 */
-	void set_instance (Qedo::ComponentInstance* instance);
+	void set_instance (const Qedo::ComponentInstance& instance);
 };
 
 
@@ -423,6 +421,19 @@ public:
 	 */
 	virtual Qedo::ServantBase* create_servant() = 0;
 };
+
+
+/**
+ * helper class for servant factories during unloading a shared library
+ */
+class CONTAINERDLL_API ServantFactoryCleaner
+{
+public:
+	class ServantFactory* factory_;
+	ServantFactoryCleaner (class ServantFactory* factory);
+	~ServantFactoryCleaner();
+};
+
 
 /** @} */
 

@@ -27,7 +27,6 @@
 #include "Components.h"
 #include "CCMContext.h"
 #include "HomeServantBase.h"
-#include "RefCountBase.h"
 #include "Util.h"
 
 
@@ -46,7 +45,7 @@ class ExecutorContext;
 /**
  * a component instance
  */
-class CONTAINERDLL_API ComponentInstance : public RefCountBase
+class CONTAINERDLL_API ComponentInstance
 {
 public:
 	/** object id of the component */
@@ -100,48 +99,6 @@ public:
 };
 
 
-/**
- * a component instance var type
- */
-class ComponentInstance_var
-{
-	/** the component instance */
-	ComponentInstance* ptr_;
-
-public:
-
-    ComponentInstance_var() : ptr_(0) { }
-    ComponentInstance_var(ComponentInstance* p) : ptr_(p) { assert(p != 0); }
-    ComponentInstance_var(const ComponentInstance& r) : ptr_(new ComponentInstance(r)) { }
-    ComponentInstance_var(const ComponentInstance_var& r) : ptr_(r.ptr_ ? new ComponentInstance(*r.ptr_) : 0) { }
-    ~ComponentInstance_var() { ptr_->_remove_ref(); }
-
-    ComponentInstance_var& operator=(ComponentInstance* p)
-	{
-		ptr_ ? ptr_->_remove_ref() : (void)0;
-        ptr_ = p;
-        return *this;
-    }
-    ComponentInstance_var& operator=(const ComponentInstance&);
-    ComponentInstance_var& operator=(const ComponentInstance_var& r)
-	{
-        if(r.ptr_ != ptr_)
-        {
-            ptr_ ? ptr_->_remove_ref() : (void)0;
-            ptr_ = r.ptr_;
-            ptr_->_add_ref();
-        }
-        return *this;
-    }
-
-    ComponentInstance* operator->() { assert(ptr_ != 0); return ptr_; }
-    const ComponentInstance* operator->() const { assert(ptr_ != 0); return ptr_; }
-
-	operator const ComponentInstance&() const { assert(ptr_ != 0); return *ptr_; }
-    operator ComponentInstance&() { assert(ptr_ != 0); return *ptr_; }
-
-	operator ComponentInstance*() const { assert(ptr_ != 0); return ptr_; }
-};
 
 /** @} */
 

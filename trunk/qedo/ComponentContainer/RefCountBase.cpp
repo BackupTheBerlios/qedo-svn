@@ -25,21 +25,29 @@
 #include <iostream>
 #include <cassert>
 
-static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.9 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.10 2003/08/01 14:57:26 stoinski Exp $";
 
 
 namespace Qedo {
 
 
+CORBA::Long GlobalObjectManagement::native_object_count_ = 0;
+CORBA::Long GlobalObjectManagement::CORBA_local_object_count_ = 0;
+CORBA::Long GlobalObjectManagement::native_object_instantiation_count_ = 0;
+CORBA::Long GlobalObjectManagement::CORBA_local_object_instantiation_count_ = 0;
+
+
 RefCountBase::RefCountBase()
 : ref_count_ (1)
 {
+	++GlobalObjectManagement::native_object_count_;
+	++GlobalObjectManagement::native_object_instantiation_count_;
 }
 
 
 RefCountBase::~RefCountBase()
 {
-	DEBUG_OUT ("RefCountBase: Destructor called");
+	--GlobalObjectManagement::native_object_count_;
 	
 	if (ref_count_ != 0)
 	{
@@ -81,12 +89,14 @@ RefCountBase::_get_refcount()
 RefCountLocalObject::RefCountLocalObject()
 : ref_count_ (1)
 {
+	++GlobalObjectManagement::CORBA_local_object_count_;
+	++GlobalObjectManagement::CORBA_local_object_instantiation_count_;
 }
 
 
 RefCountLocalObject::~RefCountLocalObject()
 {
-	DEBUG_OUT ("RefCountLocalObject: Destructor called");
+	--GlobalObjectManagement::CORBA_local_object_count_;
 
 	if (ref_count_ != 0)
 	{

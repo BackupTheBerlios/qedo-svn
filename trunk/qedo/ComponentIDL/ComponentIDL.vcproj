@@ -188,7 +188,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Creating DEF file for ComponentIDL.dll"
-				CommandLine="perl  makedef.pl Debug_orbacus/ComponentIDL.def Debug_orbacus/ComponentIDL.dll Debug_orbacus/*.obj
+				CommandLine="$(QEDO)\bin\gendef Debug_orbacus/ComponentIDL.def Debug_orbacus/ComponentIDL.dll Debug_orbacus/*.obj
 "/>
 			<Tool
 				Name="VCResourceCompilerTool"

@@ -38,7 +38,7 @@
 // VC++ warnings 
 #pragma warning (disable : 4251) // class OB::ObjVar<*> needs to have dll-interface to be used by clients of class ...
 #pragma warning (disable : 4275) // non dll-interface class ... used as base class for dll-interface class ...
-#pragma warning (disable : 4290) // exception specification ignaored
+#pragma warning (disable : 4290) // exception specification ignored
 
 #else // WIN32
 #define CONTAINERDLL_API 

@@ -21,6 +21,7 @@
 /***************************************************************************/
 
 #include "ContainerInterfaceImpl.h"
+#include "ComponentServerImpl.h"
 #include "EntityHomeServant.h"
 #include "SessionHomeServant.h"
 #include "Output.h"
@@ -31,19 +32,29 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.19 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.20 2003/08/01 14:57:24 stoinski Exp $";
 
 
 namespace Qedo {
 
 
-HomeEntry::HomeEntry (Qedo::HomeServantBase* home_servant, Components::Cookie* c)
+HomeEntry::HomeEntry (Qedo::HomeServantBase* home_servant, 
+					  Components::Cookie* c, 
+#ifdef _WIN32
+					  HINSTANCE servant_module,
+					  HINSTANCE executor_module
+#else
+					  void* servant_module,
+					  void* executor_module
+#endif
+					  )
 : home_servant_ (home_servant)
 , home_cookie_(c)
+, servant_module_ (servant_module)
+, executor_module_ (executor_module)
 {
 	home_servant_->_add_ref();
 	if (home_cookie_) { home_cookie_->_add_ref(); }
-	DEBUG_OUT2("HomeEntry: constructor called for ", this);
 }
 
 
@@ -55,10 +66,11 @@ HomeEntry::HomeEntry()
 HomeEntry::HomeEntry (const HomeEntry& home_entry)
 : home_servant_ (home_entry.home_servant_)
 , home_cookie_(home_entry.home_cookie_)
+, servant_module_ (home_entry.servant_module_)
+, executor_module_ (home_entry.executor_module_)
 {
 	home_servant_->_add_ref();
 	if (home_cookie_) { home_cookie_->_add_ref(); }
-	DEBUG_OUT2("HomeEntry: copy constructor called for ", this);
 }
 
 
@@ -75,13 +87,15 @@ HomeEntry::operator= (const HomeEntry& home_entry)
 	home_cookie_ = home_entry.home_cookie_;
 	if (home_cookie_) { home_cookie_->_add_ref(); }
 
+	servant_module_ = home_entry.servant_module_;
+	executor_module_ = home_entry.executor_module_;
+
 	return *this;
 }
 
 
 HomeEntry::~HomeEntry()
 {
-	DEBUG_OUT2("HomeEntry: Destructor called for ", this);
 	home_servant_->_remove_ref();
 	if (home_cookie_) { home_cookie_->_remove_ref(); }
 }
@@ -110,17 +124,20 @@ ServiceReferenceEntry::~ServiceReferenceEntry()
 ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb, 
 												PortableServer::POA_ptr root_poa, 
 												ContainerType container_type,
+												ComponentServerImpl* component_server,
 												Components::Deployment::ComponentInstallation_ptr component_installer)
 : orb_ (CORBA::ORB::_duplicate (orb)),
   root_poa_ (PortableServer::POA::_duplicate (root_poa)),
   container_type_ (container_type),
+  component_server_ (component_server),
   component_installer_ (Components::Deployment::ComponentInstallation::_duplicate (component_installer))
 {
+	component_server_->_add_ref();
+
 	//
 	// get home finder
 	//
-	CORBA::Object_var obj;
-	home_finder_ = Qedo_Components::HomeFinder::_nil();
+	CORBA::Object_var obj = Qedo_Components::HomeFinder::_nil();
 
     try
     {
@@ -128,7 +145,7 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
     }
     catch (const CORBA::ORB::InvalidName&)
     {
-        DEBUG_OUT("no HomeFinder");
+        DEBUG_OUT("ContainerInterfaceImpl: No HomeFinder");
 		/* Since problem with MICO Initializer a new try directly over the name service*/
 		//return;
 	CosNaming::NamingContext_var nameService;
@@ -138,18 +155,25 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 		}
 		catch (const CORBA::ORB::InvalidName&)
 		{
-			std::cerr << "ORBInitializerImpl: Can't resolve NameService" << std::endl;
+			std::cerr << "ContainerInterfaceImpl: Can't resolve NameService" << std::endl;
 			return;
 		}
 
 		if (CORBA::is_nil(obj.in()))
 		{
-			std::cerr << "ORBInitializerImpl: NameService is a nil object reference" << std::endl;
+			std::cerr << "ContainerInterfaceImpl: NameService is a nil object reference" << std::endl;
 			return;
 		}
 
-		
-		nameService = CosNaming::NamingContext::_narrow(obj.in());
+		try
+		{
+			nameService = CosNaming::NamingContext::_narrow(obj.in());
+		}
+		catch (CORBA::SystemException&)
+		{
+			std::cerr << "ContainerInterfaceImpl: ORB knows NameService, but I cannot contact it" << std::endl;
+			return;
+		}
 
 		//
 		// Resolve the HomeFinder
@@ -161,11 +185,25 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 		aName[1].id = CORBA::string_dup("HomeFinder");
 		aName[1].kind = CORBA::string_dup("");
 
-		obj = nameService->resolve(aName);
-
+		try
+		{
+			obj = nameService->resolve(aName);
+		}
+		catch (CosNaming::NamingContext::InvalidName&)
+		{
+			obj = CORBA::Object::_nil();
+		}
+		catch (CosNaming::NamingContext::NotFound&)
+		{
+			obj = CORBA::Object::_nil();
+		}
+		catch (CORBA::SystemException&)
+		{
+			obj = CORBA::Object::_nil();
+		}
     }
     if (CORBA::is_nil(obj.in())) {
-        DEBUG_OUT("no HomeFinder");
+        DEBUG_OUT("ContainerInterfaceImpl: No HomeFinder");
 		return;
     }
 
@@ -173,13 +211,13 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 	{
 		home_finder_ = Qedo_Components::HomeFinder::_narrow(obj.in());
 	}
-	catch (const CORBA::Exception&)
+	catch (const CORBA::SystemException&)
 	{
-		DEBUG_OUT("no HomeFinder");
+		DEBUG_OUT("ContainerInterfaceImpl: No HomeFinder");
 		return;
 	}
     if (CORBA::is_nil(home_finder_.in())) {
-        DEBUG_OUT("no HomeFinder");
+        DEBUG_OUT("ContainerInterfaceImpl: No HomeFinder");
 		return;
     }
 }
@@ -187,10 +225,14 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 
 ContainerInterfaceImpl::~ContainerInterfaceImpl()
 {
+	DEBUG_OUT ("ContainerInterfaceImpl: Destructor called");
+
+	component_server_->_remove_ref();
 }
 
 
 #ifdef _WIN32
+
 HINSTANCE 
 ContainerInterfaceImpl::load_shared_library (const char* name)
 {
@@ -214,7 +256,22 @@ ContainerInterfaceImpl::load_shared_library (const char* name)
 
 	return handle_lib;
 }
+
+void
+ContainerInterfaceImpl::unload_shared_library (HINSTANCE handle)
+{
+	if (! FreeLibrary (handle))
+	{
+		LPVOID lpMsgBuf;
+        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+			(LPTSTR) &lpMsgBuf, 0, NULL);
+		NORMAL_ERR2 ("ContainerInterfaceImpl: Cannot unload dynamic library: ", (LPCTSTR)lpMsgBuf);	
+	}
+}
+
 #else
+
 void* 
 ContainerInterfaceImpl::load_shared_library (const char* name)
 {
@@ -233,6 +290,17 @@ ContainerInterfaceImpl::load_shared_library (const char* name)
 
 	return handle_lib;
 }
+
+void
+ContainerInterfaceImpl::unload_shared_library (void* handle)
+{
+	if (dlclose (handle))
+	{
+		NORMAL_ERR ( "ContainerBase: Cannot unload dynamic library");
+		NORMAL_ERR2 ( "ContainerBase: Error was: ", dlerror() );
+	}
+}
+
 #endif
 
 
@@ -268,7 +336,7 @@ throw (Components::Deployment::UnknownImplId,
 	// analyse the configuration values
 	//
 	Components::ConfigValue* value;
-	const char* homefinder_name = "";
+	const char* homefinder_name = 0;
 	const char* service_name = 0;
 
 	for (CORBA::ULong i = 0; i < config.length(); i++)
@@ -287,7 +355,7 @@ throw (Components::Deployment::UnknownImplId,
 			break;
 		}
 
-		DEBUG_OUT2("ContainerInterfaceImpl: unknown config value : ", config[i]->name());
+		DEBUG_OUT2("ContainerInterfaceImpl: Unknown config value : ", config[i]->name());
 	}
 
 	//
@@ -345,14 +413,16 @@ throw (Components::Deployment::UnknownImplId,
 
 	// Now we have all relevant information and can go to load the dynamic code modules
 #ifdef _WIN32
-	HINSTANCE handle_lib;
+	HINSTANCE handle_servant_lib;
+	HINSTANCE handle_executor_lib;
 #else
-	void* handle_lib;
+	void* handle_servant_lib;
+	void* handle_executor_lib;
 #endif
 
-	handle_lib = load_shared_library (servant_module.c_str());
+	handle_servant_lib = load_shared_library (servant_module.c_str());
 
-	if (! handle_lib)
+	if (! handle_servant_lib)
 	{
 		NORMAL_ERR2 ("ContainerInterfaceImpl: Failed to load servant module ", servant_module);
 		throw Components::Deployment::InstallationFailure();
@@ -362,10 +432,10 @@ throw (Components::Deployment::UnknownImplId,
 	Qedo::HomeServantBase* (*servant_entry_proc)();
 
 #ifdef _WIN32
-	(FARPROC&)servant_entry_proc = GetProcAddress (handle_lib, servant_entry_point.c_str());
+	(FARPROC&)servant_entry_proc = GetProcAddress (handle_servant_lib, servant_entry_point.c_str());
 #else
 	servant_entry_proc = (Qedo::HomeServantBase* (*)()) 
-				dlsym (handle_lib, servant_entry_point.c_str());
+				dlsym (handle_servant_lib, servant_entry_point.c_str());
 #endif
 
 	if (servant_entry_proc == NULL)
@@ -419,9 +489,9 @@ throw (Components::Deployment::UnknownImplId,
 	//
 	// Load the executor module
 	//
-	handle_lib = load_shared_library (executor_module.c_str());
+	handle_executor_lib = load_shared_library (executor_module.c_str());
 
-	if (! handle_lib)
+	if (! handle_executor_lib)
 	{
 		NORMAL_ERR2 ("ContainerInterfaceImpl: Failed to load executor module ", executor_module);
 		throw Components::Deployment::InstallationFailure();
@@ -433,10 +503,10 @@ throw (Components::Deployment::UnknownImplId,
 	Components::HomeExecutorBase_ptr (*executor_entry_proc)();
 
 #ifdef _WIN32
-	(FARPROC&)executor_entry_proc = GetProcAddress (handle_lib, executor_entry_point.c_str());
+	(FARPROC&)executor_entry_proc = GetProcAddress (handle_executor_lib, executor_entry_point.c_str());
 #else
 	executor_entry_proc = (::Components::HomeExecutorBase_ptr (*)())
-				dlsym ( handle_lib, executor_entry_point.c_str() );
+				dlsym ( handle_executor_lib, executor_entry_point.c_str() );
 #endif
 
 	if (executor_entry_proc == NULL)
@@ -493,7 +563,7 @@ throw (Components::Deployment::UnknownImplId,
 	//
 	// register home in container
 	//
-	HomeEntry new_entry(qedo_home_servant, cookie);
+	HomeEntry new_entry(qedo_home_servant, cookie, handle_servant_lib, handle_executor_lib);
 	installed_homes_.push_back (new_entry);
 	// Okay, our home servant is stored in the home entry and the executor is stored in the
 	// home servant, so we do not need any additional reference here
@@ -526,6 +596,7 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 
 	if (homes_iter == installed_homes_.end())
 	{
+		DEBUG_OUT ("ContainerInterfaceImpl: Unknown home");
 		throw Components::RemoveFailure();
 	}
 
@@ -546,7 +617,22 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	Qedo::HomeServantBase* home_servant = (*homes_iter).home_servant_;
 	home_servant->prepare_remove();
 
+#ifdef _WIN32
+	HINSTANCE servant_module;
+	HINSTANCE executor_module;
+#else
+	void* servant_module;
+	void* executor_module;
+#endif
+
+	servant_module = (*homes_iter).servant_module_;
+	executor_module = (*homes_iter).executor_module_;
+
 	installed_homes_.erase (homes_iter);
+
+
+	this->unload_shared_library (servant_module);
+	this->unload_shared_library (executor_module);
 }
 
 
@@ -570,7 +656,8 @@ void
 ContainerInterfaceImpl::remove()
 throw (Components::RemoveFailure, CORBA::SystemException)
 {
-	throw Components::RemoveFailure();
+	Components::Deployment::Container_var container = this->_this();
+	component_server_->remove_container (container.in());
 }
 
 
@@ -617,6 +704,26 @@ throw (Components::CCMException)
 	}
 
 	throw Components::CCMException();
+}
+
+
+void
+ContainerInterfaceImpl::prepare_remove()
+{
+	DEBUG_OUT ("ContainerInterfaceImpl: prepare_remove() called");
+
+	// Here we must remove all home instances that are still running
+	if (installed_homes_.size() > 0)
+	{
+		DEBUG_OUT ("ContainerInterfaceImpl: Warning: There are still home instances around");
+
+		// We cannot use an iterator to iterate through the list, since this list will be
+		// manipulated by the remove actions
+		while (installed_homes_.size())
+		{
+			this->remove_home (installed_homes_[0].home_servant_->ref());
+		}
+	}
 }
 
 

@@ -25,7 +25,7 @@
 
 #include <CORBA.h>
 #ifdef MICO_ORB
-#include <coss/CosNaming.h>
+#include <mico/CosNaming.h>
 #else
 #include <CosNaming.h>
 #endif
@@ -58,10 +58,33 @@ public:
 	/** id for registration in home finder */
 	Components::Cookie* home_cookie_;
 
+	/** handle of the servant module dynamic library */
+#ifdef _WIN32
+	HINSTANCE servant_module_;
+#else
+	void* servant_module_;
+#endif
+
+	/** handle of the executor module dynamic library */
+#ifdef _WIN32
+	HINSTANCE executor_module_;
+#else
+	void* executor_module_;
+#endif
+
 	/**
 	 * constructor
 	 */
-	HomeEntry (Qedo::HomeServantBase*, Components::Cookie* c);
+	HomeEntry (Qedo::HomeServantBase*, 
+			   Components::Cookie* c,
+#ifdef _WIN32
+			   HINSTANCE servant_module,
+			   HINSTANCE executor_module
+#else
+			   void* servant_module,
+			   void* executor_module
+#endif
+			   );
 
 	/**
 	 * constructor
@@ -121,6 +144,9 @@ public:
 enum ContainerType {CT_EMPTY, CT_SERVICE, CT_SESSION, CT_PROCESS, CT_ENTITY};
 
 
+class ComponentServerImpl;
+
+
 /**
  * implementation of IDL:omg.org/Components/Deployment/Container
  */
@@ -140,6 +166,8 @@ private:
 
 	/** the conatiner type */
 	ContainerType											container_type_;
+	/** the component server */
+	ComponentServerImpl*									component_server_;
 	/** the component installer */
 	Components::Deployment::ComponentInstallation_var		component_installer_;
 	/** the home finder */
@@ -150,18 +178,20 @@ private:
 	/** the list of service references */
 	std::vector <ServiceReferenceEntry>						service_references_;
 	/** the list of service components for preinvoke*/
-	std::vector <Qedo::ComponentInstance_var>				services_preinvoke_;
+	std::vector <Qedo::ComponentInstance>					services_preinvoke_;
 	/** the list of service components for postinvoke*/
-	std::vector <Qedo::ComponentInstance_var>				services_postinvoke_;
-
+	std::vector <Qedo::ComponentInstance>					services_postinvoke_;
+	
 	/**
 	 * loads a shared library
 	 * \param name The path of the shared library.
 	 */
 #ifdef _WIN32
 	HINSTANCE load_shared_library (const char* name);
+	void unload_shared_library (HINSTANCE handle);
 #else
 	void* load_shared_library (const char* name);
+	void unload_shared_library (void* handle);
 #endif
 
 public:
@@ -171,6 +201,7 @@ public:
 	ContainerInterfaceImpl (CORBA::ORB_ptr, 
 							PortableServer::POA_ptr, 
 							ContainerType,
+							ComponentServerImpl*,
 							Components::Deployment::ComponentInstallation_ptr);
 
 	/**
@@ -185,6 +216,11 @@ public:
 	 */
 	CORBA::Object_ptr resolve_service_reference(const char* service_id)
 		throw (Components::CCMException);
+
+	/**
+	 * removes any homes that are still running
+	 * */
+	void prepare_remove();
 
 	/**
 	 * implements IDL:omg.org/Components/Deployment/Container/configuration:1.0

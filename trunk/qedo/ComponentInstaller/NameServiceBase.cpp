@@ -26,7 +26,7 @@
 #include <iostream>
 
 
-static char rcsid[] UNUSED = "$Id: NameServiceBase.cpp,v 1.8 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: NameServiceBase.cpp,v 1.9 2003/08/01 14:57:26 stoinski Exp $";
 
 namespace Qedo {
 
@@ -260,7 +260,7 @@ NameServiceBase::resolveName(std::string name)
 	}
 	catch(const CosNaming::NamingContext::NotFound&)
 	{
-		std::cerr << "\n name binding not found : " << name << std::endl;
+		std::cerr << "NameServiceBase: Name binding not found : " << name << std::endl;
 		return 0;
 	}
 	catch(const CosNaming::NamingContext::CannotProceed&)

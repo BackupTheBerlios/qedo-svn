@@ -25,7 +25,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantRegistry.cpp,v 1.9 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServantRegistry.cpp,v 1.10 2003/08/01 14:57:26 stoinski Exp $";
 
 namespace Qedo {
 
@@ -113,11 +113,6 @@ ServantFactoryEntry::operator= (const ServantFactoryEntry& servant_factory_entry
 
 ServantFactoryEntry::~ServantFactoryEntry()
 {
-#ifndef TAO_ORB
-	DEBUG_OUT2("ServantFactoryEntry: Destructor called for ", object_id_);
-#else
-	DEBUG_OUT("ServantFactoryEntry: Destructor called for ") 
-#endif
 	servant_factory_->_remove_ref();
 }
 
@@ -199,17 +194,13 @@ ServantRegistry::unregister_servant_factory (const PortableServer::ObjectId& obj
 
 
 void 
-/*ServantRegistry::set_variables_static_servant (const PortableServer::ObjectId& object_id,
-											   Components::ExecutorLocator_ptr executor_locator,
-											   CCMObjectExecutor* ccm_object_executor)
-											   */
-ServantRegistry::set_variables_static_servant (Qedo::ComponentInstance* instance)
+ServantRegistry::set_variables_static_servant (const Qedo::ComponentInstance& instance)
 {
 	std::vector <ServantEntry>::iterator servants_iter;
 
 	for (servants_iter = static_servants_.begin(); servants_iter != static_servants_.end(); servants_iter++)
 	{
-		if (Qedo::compare_object_ids ((*servants_iter).object_id_, instance->object_id_))
+		if (Qedo::compare_object_ids ((*servants_iter).object_id_, instance.object_id_))
 		{
 			break;
 		}

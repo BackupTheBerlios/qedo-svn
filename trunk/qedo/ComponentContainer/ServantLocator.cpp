@@ -26,7 +26,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.7 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.8 2003/08/01 14:57:26 stoinski Exp $";
 
 namespace Qedo {
 
@@ -67,14 +67,16 @@ throw (PortableServer::ForwardRequest, CORBA::SystemException)
 	//
 	if(home_servant_->service_name_ == "")
 	{
-		std::vector <Qedo::ComponentInstance_var> ::iterator iter;
+		std::vector <Qedo::ComponentInstance> ::iterator iter;
+		
 		Components::CCMService_ptr service;
 
 		for (iter = home_servant_->container_->services_preinvoke_.begin();
 			 iter != home_servant_->container_->services_preinvoke_.end(); iter++)
 		{
-			service = dynamic_cast<Components::CCMService_ptr>((*iter)->executor_locator_.in());
-			service->preinvoke((*iter)->ccm_object_executor_->uuid_.c_str(), operation);
+ 			service = dynamic_cast<Components::CCMService_ptr>((*iter).executor_locator_.in());
+ 			service->preinvoke((*iter).ccm_object_executor_->uuid_.c_str(), operation);
+
 		}
 	}
 
@@ -95,14 +97,15 @@ throw (CORBA::SystemException)
 	//
 	if(home_servant_->service_name_ == "")
 	{
-		std::vector <Qedo::ComponentInstance_var> ::iterator iter;
+		std::vector <Qedo::ComponentInstance> ::iterator iter;
+		
 		Components::CCMService_ptr service;
 
 		for (iter = home_servant_->container_->services_postinvoke_.begin();
 			 iter != home_servant_->container_->services_postinvoke_.end(); iter++)
 		{
-			service = dynamic_cast<Components::CCMService_ptr>((*iter)->executor_locator_.in());
-			service->postinvoke((*iter)->ccm_object_executor_->uuid_.c_str(), operation);
+ 			service = dynamic_cast<Components::CCMService_ptr>((*iter).executor_locator_.in());
+ 			service->postinvoke((*iter).ccm_object_executor_->uuid_.c_str(), operation);
 		}
 	}
 

@@ -23,7 +23,7 @@
 #include "CCMContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.8 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.9 2003/08/01 14:57:24 stoinski Exp $";
 
 
 namespace Qedo {
@@ -120,15 +120,15 @@ ExecutorContext::ccm_object_executor (CCMObjectExecutor* ccm_object_exec)
 }
 
 
-HomeExecutorContext::HomeExecutorContext (Components::CCMHome_ptr my_home_servant_ref)
-: my_home_servant_ref_ (Components::CCMHome::_duplicate (my_home_servant_ref))
+HomeExecutorContext::HomeExecutorContext (Components::CCMHome_ptr my_home_ref)
+: my_home_ref_ (Components::CCMHome::_duplicate (my_home_ref))
 {
 }
 
 
 HomeExecutorContext::~HomeExecutorContext()
 {
-	DEBUG_OUT ( "CCMContext: Destructor called" );
+	DEBUG_OUT ( "HomeExecutorContext: Destructor called" );
 }
 
 
@@ -142,7 +142,7 @@ HomeExecutorContext::get_caller_principal()
 Components::CCMHome_ptr 
 HomeExecutorContext::get_CCM_home()
 {
-	return Components::CCMHome::_duplicate (my_home_servant_ref_);
+	return Components::CCMHome::_duplicate (my_home_ref_);
 }
 
 

@@ -28,7 +28,7 @@
 #include <string>
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.13 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.14 2003/08/01 14:57:26 stoinski Exp $";
 
 
 /**
@@ -125,6 +125,11 @@ main (int argc, char** argv)
 	}
 
 	orb->run();
+
+	orb->destroy();
+
+	component_server->_remove_ref();
+
 	return 0;
 }
 

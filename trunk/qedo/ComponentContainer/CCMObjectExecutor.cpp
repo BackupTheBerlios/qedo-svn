@@ -25,7 +25,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 #include "Valuetypes.h"
-#ifdef WIN32
+#ifdef _WIN32
 #include "objbase.h"
 #else /* Linux */
 #ifdef __linux__
@@ -37,7 +37,7 @@ extern "C" {
 }
 #endif
 
-static char rcsid[] UNUSED = "$Id: CCMObjectExecutor.cpp,v 1.22 2003/07/25 11:45:16 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: CCMObjectExecutor.cpp,v 1.23 2003/08/01 14:57:24 stoinski Exp $";
 
 namespace Qedo {
 
@@ -412,8 +412,6 @@ throw (CORBA::SystemException)
 	Components::ReceptacleDescriptions_var receptacles = 
         new Components::ReceptacleDescriptions();
 	receptacles->length (receptacles_.size());
-
-	Components::ConnectedDescriptions_var con_descs;
 
 	for (CORBA::ULong i = 0; i < receptacles_.size(); i++)
 	{
