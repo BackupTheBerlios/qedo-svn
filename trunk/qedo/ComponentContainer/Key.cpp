@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: Key.cpp,v 1.4 2003/02/07 12:22:40 tom Exp $";
+static char rcsid[] = "$Id: Key.cpp,v 1.5 2003/03/21 12:34:42 tom Exp $";
 
 #include "Key.h"
 #include "Output.h"
@@ -40,10 +40,10 @@ Key::Key
 	key_value_ = new CORBA::OctetSeq();
 	key_value_->length (12);
 
-	key_value_[0] = QEDO_KEY_MAGIC_BYTE_1;
-	key_value_[1] = QEDO_KEY_MAGIC_BYTE_2;
-	key_value_[2] = QEDO_KEY_MAGIC_BYTE_3;
-	key_value_[3] = QEDO_KEY_MAGIC_BYTE_4;
+	key_value_.inout()[0] = QEDO_KEY_MAGIC_BYTE_1;
+	key_value_.inout()[1] = QEDO_KEY_MAGIC_BYTE_2;
+	key_value_.inout()[2] = QEDO_KEY_MAGIC_BYTE_3;
+	key_value_.inout()[3] = QEDO_KEY_MAGIC_BYTE_4;
 
 	key_id_++;
 	memcpy(key_value_->get_buffer()+4,&key_id_,sizeof(key_id_));
@@ -78,18 +78,18 @@ Key::to_string
 
 	for (unsigned int i = 0; i < 12; i++)
 	{
-		unsigned int val1 = (unsigned int)(key_value_[i] & 0xf0) >> 4;
-		unsigned int val2 = (unsigned int)key_value_[i] & 0x0f;
+		unsigned int val1 = (unsigned int)(key_value_.in()[i] & 0xf0) >> 4;
+		unsigned int val2 = (unsigned int)key_value_.in()[i] & 0x0f;
 
 		if (val1 >= 0 && val1 <= 9)
-			key_id_buffer[2*i+2] = val1 + 48;
+			key_id_buffer.inout()[2*i+2] = val1 + 48;
 		else
-			key_id_buffer[2*i+2] = val1 + 87;       // a..f
+			key_id_buffer.inout()[2*i+2] = val1 + 87;       // a..f
 
 		if (val2 >= 0 && val2 <= 9)
-			key_id_buffer[2*i+2+1] = val2 + 48;
+			key_id_buffer.inout()[2*i+2+1] = val2 + 48;
 		else
-			key_id_buffer[2*i+2+1] = val2 + 87;
+			key_id_buffer.inout()[2*i+2+1] = val2 + 87;
 	}
 
 	return key_id_buffer._retn();

@@ -31,8 +31,12 @@ namespace Qedo {
 
 class HomeServantBase;
 
+#ifdef MICO_ORB
+class ServantLocator : public PortableServer::ServantLocator
+#else
 class ServantLocator : public PortableServer::ServantLocator,
-					   public RefCountLocalObject
+#endif
+//					   public RefCountLocalObject
 {
 private:
 	HomeServantBase* home_servant_;

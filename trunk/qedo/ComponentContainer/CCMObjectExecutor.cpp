@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.5 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.6 2003/03/21 12:34:42 tom Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -203,7 +203,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < facets_.size(); i++)
 	{
-        facets[i] = facets_[i].facet_description();
+        facets.inout()[i] = facets_[i].facet_description();
 	}
 
 	return facets._retn();
@@ -612,7 +612,7 @@ throw (CORBA::SystemException)
         // Append new sequence to existing sequence
         for (unsigned int j = 0; j < sub_helper->length(); j++, ii++)
         {
-            publishers[ii] = sub_helper[j];
+            publishers.inout()[ii] = sub_helper.in()[j];
         }
 	}
 
@@ -647,7 +647,7 @@ throw (Components::InvalidName, CORBA::SystemException)
                 {
 					publishers->length (publishers->length() + 1);
 
-                    publishers[ii] = sub_helper[k];
+                    publishers.inout()[ii] = sub_helper.in()[k];
                 }
 			}
 		}

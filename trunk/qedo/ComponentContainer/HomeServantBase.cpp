@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.6 2003/02/07 12:22:40 tom Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.7 2003/03/21 12:34:42 tom Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -68,7 +68,10 @@ HomeServantBase::~HomeServantBase()
 
 	home_poa_->destroy (false /*no etherealize objects*/, false /*no wait for completion*/);
 
+#ifndef MICO_ORB
+	//// ########## check for a solution #############
 	servant_locator_->_remove_ref();
+#endif
 	servant_registry_->_remove_ref();
 }
 

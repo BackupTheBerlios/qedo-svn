@@ -156,11 +156,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;&quot;$(MICO)\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE,MICO_ORB,_WINDOWS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -170,10 +170,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="obd.lib jtcd.lib CosNamingd.lib"
+				AdditionalDependencies="mico239.lib micocoss239.lib wsock32.lib"
 				OutputFile="../../Runtime/HomeFinder.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(ORBACUS)\lib"
+				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib;$(MICO)/coss"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/HomeFinder.pdb"
 				SubSystem="1"

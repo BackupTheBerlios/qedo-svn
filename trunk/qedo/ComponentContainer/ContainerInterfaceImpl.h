@@ -24,7 +24,11 @@
 #define __CONTAINER_INTERFACE_IMPL_H__
 
 #include <CORBA.h>
+#ifdef MICO_ORB
+#include <mico/CosNaming.h>
+#else
 #include <CosNaming.h>
+#endif
 #include <QedoComponents_skel.h>
 
 #include "HomeServantBase.h"

@@ -20,13 +20,16 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.8 2003/02/27 14:36:47 tom Exp $";
+static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.9 2003/03/21 12:34:42 tom Exp $";
 
 #include <iostream>
 #include "fstream"
 #include "ServerActivatorImpl.h"
+#ifdef MICO_ORB
+#include <mico/CosNaming.h>
+#else
 #include <CosNaming.h>
-
+#endif
 
 #ifdef _WIN32
 //#include <strstream>
@@ -296,7 +299,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < component_servers_.size(); i++)
 	{
-        servers[i] = component_servers_[i];
+        servers.inout()[i] = component_servers_[i];
 	}
 
 	return servers._retn();

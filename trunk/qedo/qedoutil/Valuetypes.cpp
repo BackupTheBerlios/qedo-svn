@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: Valuetypes.cpp,v 1.7 2003/02/07 12:22:40 tom Exp $";
+static char rcsid[] = "$Id: Valuetypes.cpp,v 1.8 2003/03/21 12:34:42 tom Exp $";
 
 
 #include "Valuetypes.h"
@@ -125,17 +125,15 @@ FacetDescription_impl::FacetDescription_impl (const char* name,
 											  const char* type_id, 
 											  CORBA::Object_ptr ref)
 
-#if _MSC_VER < 1300 
+
 : FacetDescription ( )
-#else
-: FacetDescription (name, type_id, ref)
-#endif
+
 {
-#if _MSC_VER < 1300
+
 	this -> name ( name );
 	this -> type_id ( type_id );
 	this -> ref ( ref );
-#endif
+
 }
 
 
@@ -200,18 +198,16 @@ ReceptacleDescription_impl::ReceptacleDescription_impl (const char* name,
 														const char* type_id, 
 														CORBA::Boolean is_multiplex, 
 														const Components::ConnectedDescriptions& connections)
-#if _MSC_VER < 1300 
+ 
 : ReceptacleDescription ()
-#else
-: ReceptacleDescription (name, type_id, is_multiplex, connections)
-#endif
+
 {
-#if _MSC_VER < 1300
+
 	this -> name( name );
 	this -> type_id( type_id );
 	this -> is_multiplex( is_multiplex );
 	this -> connections( connections );
-#endif
+
 }
 
 
@@ -238,17 +234,11 @@ ReceptacleDescriptionFactory_impl::create_for_unmarshal()
 ConsumerDescription_impl::ConsumerDescription_impl (const char* name, 
 													const char* type_id, 
 													Components::EventConsumerBase_ptr consumer)
-#if _MSC_VER < 1300 
 : ConsumerDescription ()
-#else
-: ConsumerDescription (name, type_id, consumer)
-#endif
 {
-#if _MSC_VER < 1300
 	this -> name ( name );
 	this -> type_id ( type_id );
 	this -> consumer ( consumer );
-#endif
 }
 
 
@@ -275,17 +265,11 @@ ConsumerDescriptionFactory_impl::create_for_unmarshal()
 EmitterDescription_impl::EmitterDescription_impl (const char* name, 
 												  const char* type_id, 
 												  Components::EventConsumerBase_ptr consumer)
-#if _MSC_VER < 1300 
 : EmitterDescription ( )
-#else
-: EmitterDescription (name, type_id, consumer)
-#endif
 {
-#if _MSC_VER < 1300
 	this -> name ( name );
 	this -> type_id ( type_id );
 	this -> consumer ( consumer );
-#endif
 }
 
 
@@ -318,18 +302,12 @@ SubscriberDescription_impl::SubscriberDescription_impl (const char* name,
 						   const char* type_id, 
 						   Components::Cookie* ck, 
 						   Components::EventConsumerBase_ptr consumer)
-#if _MSC_VER < 1300 
 : SubscriberDescription ( )
-#else
-: SubscriberDescription (name, type_id, ck, consumer)
-#endif
 {
-#if _MSC_VER < 1300
 	this -> name ( name );
 	this -> type_id (type_id );
 	this -> ck ( ck );
 	this -> consumer ( consumer );
-#endif
 }
 
 

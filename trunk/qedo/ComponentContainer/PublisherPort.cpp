@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: PublisherPort.cpp,v 1.5 2003/02/07 12:22:40 tom Exp $";
+static char rcsid[] = "$Id: PublisherPort.cpp,v 1.6 2003/03/21 12:34:42 tom Exp $";
 
 #include "PublisherPort.h"
 #include "Output.h"
@@ -128,7 +128,7 @@ PublisherPort::subscriber_descriptions() const
 		Components::Cookie_var cookie = consumers_[i].cookie();
 		Components::EventConsumerBase_var consumer = consumers_[i].consumer();
 
-        sub_desc[i] = new SubscriberDescription_impl (port_name_.c_str(), type_id_.c_str(), cookie, consumer);
+        sub_desc.inout()[i] = new SubscriberDescription_impl (port_name_.c_str(), type_id_.c_str(), cookie, consumer);
     }
 
     return sub_desc._retn();

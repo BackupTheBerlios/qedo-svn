@@ -270,9 +270,14 @@ public:
 	~ConfigValue_impl ();
 };
 
-
+#ifdef MICO_ORB
+class CONTAINERDLL_API ConfigValueFactory_impl : public virtual CORBA::ValueFactoryBase
+{
+#endif
+#ifdef ORBACUS_ORB
 class CONTAINERDLL_API ConfigValueFactory_impl : public virtual Components::ConfigValue_init
 {
+#endif
 private:
 	virtual CORBA::ValueBase* create_for_unmarshal();
 };

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMHomeServant.cpp,v 1.6 2003/01/27 18:51:07 boehme Exp $";
+static char rcsid[] = "$Id: CCMHomeServant.cpp,v 1.7 2003/03/21 12:34:42 tom Exp $";
 
 #include "CCMHomeServant.h"
 #include "Output.h"
@@ -90,7 +90,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < this->component_instances_.size(); i++)
 	{
-		instances[i] = Components::CCMObject::_narrow(this->component_instances_[i].component_ref_);
+		instances.inout()[i] = Components::CCMObject::_narrow(this->component_instances_[i].component_ref_);
 	}
 
 	return instances._retn();

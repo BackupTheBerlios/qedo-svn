@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: GlobalHelpers.cpp,v 1.4 2003/02/07 12:22:40 tom Exp $";
+static char rcsid[] = "$Id: GlobalHelpers.cpp,v 1.5 2003/03/21 12:34:42 tom Exp $";
 
 #include "GlobalHelpers.h"
 
@@ -44,7 +44,7 @@ create_object_id (const CORBA::OctetSeq* octet_key, const char* variable_info)
 
 	for (i = 0; i < cur_len; i++)
 	{
-		object_id[i] = (*octet_key)[i];
+		object_id.inout()[i] = (*octet_key)[i];
 	}
 
 	// Append the process id
@@ -54,7 +54,7 @@ create_object_id (const CORBA::OctetSeq* octet_key, const char* variable_info)
 
 	for (i = 0; i < 4; i++, cur_len++)
 	{
-		object_id[cur_len] = ((CORBA::Octet*)&process_id)[i];
+		object_id.inout()[cur_len] = ((CORBA::Octet*)&process_id)[i];
 	}
 
 	unsigned int variable_info_len = strlen (variable_info);
@@ -63,7 +63,7 @@ create_object_id (const CORBA::OctetSeq* octet_key, const char* variable_info)
 
 	for (i = 0; i < variable_info_len; i++, cur_len++)
 	{
-		object_id[cur_len] = variable_info[i];
+		object_id.inout()[cur_len] = variable_info[i];
 	}
 
 	return object_id._retn();
@@ -126,14 +126,14 @@ ObjectId_to_string (const PortableServer::ObjectId& object_id)
 		unsigned int val2 = (unsigned int)object_id[i] & 0x0f;
 
 		if (val1 >= 0 && val1 <= 9)
-			string_buffer[2*i+2] = val1 + 48;
+			string_buffer.inout()[2*i+2] = val1 + 48;
 		else
-			string_buffer[2*i+2] = val1 + 87;       // a..f
+			string_buffer.inout()[2*i+2] = val1 + 87;       // a..f
 
 		if (val2 >= 0 && val2 <= 9)
-			string_buffer[2*i+2+1] = val2 + 48;
+			string_buffer.inout()[2*i+2+1] = val2 + 48;
 		else
-			string_buffer[2*i+2+1] = val2 + 87;
+			string_buffer.inout()[2*i+2+1] = val2 + 87;
 	}
 
 	return string_buffer._retn();

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.7 2003/03/10 14:23:38 neubauer Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.8 2003/03/21 12:34:42 tom Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -426,8 +426,10 @@ throw (Components::Deployment::UnknownImplId,
 	// Okay, our home servant is stored in the home entry and the executor is stored in the
 	// home servant, so we do not need any additional reference here
 	qedo_home_servant->_remove_ref();
+#ifndef MICO_ORB
+	//// ################## find a solution ####################
 	home_executor->_remove_ref();
-
+#endif
 	return home_ref._retn();
 }
 
@@ -485,7 +487,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < installed_homes_.size(); i++)
 	{
-        homes[i] = installed_homes_[i].home_servant_->ref();
+        homes.inout()[i] = installed_homes_[i].home_servant_->ref();
 	}
 
 	return homes._retn();

@@ -204,16 +204,16 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".,$(MICO)\include\win32,$(MICO)\include"
+				AdditionalIncludeDirectories=".,$(MICO)\include\,$(MICO)\include\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\Debug/ComponentIDL.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				PrecompiledHeaderFile=".\Debug_mico/ComponentIDL.pch"
+				AssemblerListingLocation=".\Debug_mico/"
+				ObjectFile=".\Debug_mico/"
+				ProgramDataBaseFileName=".\Debug_mico/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -223,15 +223,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib mico238.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib mico239.lib"
 				OutputFile="../../Runtime/ComponentIDL.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib"
 				ModuleDefinitionFile=".\ComponentIDL.def"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/ComponentIDL.pdb"
-				ImportLibrary=".\Debug/ComponentIDL.lib"/>
+				ProgramDatabaseFile=".\Debug_mico/ComponentIDL.pdb"
+				ImportLibrary=".\Debug_mico/ComponentIDL.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -246,7 +246,7 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Creating DEF file for ComponentIDL.dll"
-				CommandLine="perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll Debug/*.obj"/>
+				CommandLine="perl  makedef.pl ComponentIDL.def Debug_mico/ComponentIDL.dll Debug_mico/*.obj"/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -455,8 +455,9 @@
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
 						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 CORBADepends.idl
+copy CORBADepends.h CORBADepends_skel.h
 "
-						Outputs="CORBADepends.h;CORBADepends.cpp;CORBADepends_skel.h;CORBADepends_skel.cpp"/>
+						Outputs="CORBADepends.h"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_orbacus|Win32">
@@ -500,8 +501,9 @@
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
 						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --typecode --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 Components.idl
+copy Components.h Components_skel.h
 "
-						Outputs="Components.h;Components.cpp;Components_skel.h;Components_skel.cpp"/>
+						Outputs="Components.h"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_orbacus|Win32">
@@ -539,8 +541,9 @@
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
 						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 QedoComponents.idl
+copy QedoComponents.h QedoComponents_skel.h
 "
-						Outputs="QedoComponents.h;QedoComponents.cpp;QedoComponents_skel.h;QedoComponents_skel.cpp"/>
+						Outputs="QedoComponents.h"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_orbacus|Win32">

@@ -24,7 +24,11 @@
 #define __ORB_INITIALIZER_IMPL_H__
 
 #include <CORBA.h>
+#ifdef MICO_ORB
+#include <mico/pi.h>
+#else
 #include <PortableInterceptor.h>
+#endif
 #include "QedoComponents_skel.h"
 #include "NameServiceBase.h"
 #include "Util.h"

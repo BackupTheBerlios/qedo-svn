@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.6 2003/02/07 12:22:40 tom Exp $";
+static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.7 2003/03/21 12:34:42 tom Exp $";
 
 #include "ComponentServerImpl.h"
 #include "ContainerInterfaceImpl.h"
@@ -302,7 +302,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < containers_.size(); i++)
 	{
-        containers[i] = containers_[i];
+        containers.inout()[i] = containers_[i];
 	}
 
 	return containers._retn();
