@@ -23,6 +23,7 @@
 #include "qcontroller.h"
 #include "wx/frame.h"
 #include "wx/sizer.h"
+#include "wx/log.h"
 #include "ControllerNotebook.h"
 
 
@@ -36,12 +37,17 @@ public:
 
     virtual ~MainFrame();
 
+	void onHelp();
+	void onClose();
+
 private:
 	wxPanel *panel_;
     wxBoxSizer *sizerFrame_;
+	wxButton *help;
+	wxButton *quit;
 
 
 	ControllerNotebook *notebook_;
 
-
+	DECLARE_EVENT_TABLE()
 };
