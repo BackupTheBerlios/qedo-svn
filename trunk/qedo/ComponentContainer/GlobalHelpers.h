@@ -39,13 +39,13 @@ namespace Qedo {
 /**
  * creates an object id
  */
-PortableServer::ObjectId* create_object_id (const CORBA::OctetSeq*, const char*);
+CONTAINERDLL_API PortableServer::ObjectId* create_object_id (const CORBA::OctetSeq*, const char*);
 
 
 /**
  *
  */
-bool compare_OctetSeqs (const CORBA::OctetSeq&, const CORBA::OctetSeq&);
+CONTAINERDLL_API bool compare_OctetSeqs (const CORBA::OctetSeq&, const CORBA::OctetSeq&);
 
 
 /**
@@ -57,7 +57,7 @@ bool compare_object_ids (const PortableServer::ObjectId&, const PortableServer::
 /**
  *
  */
-char* ObjectId_to_string (const PortableServer::ObjectId&);
+CONTAINERDLL_API char* ObjectId_to_string (const PortableServer::ObjectId&);
 
 /** @} */
 
