@@ -59,8 +59,12 @@ AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
 # Checks for libraries.
 AC_CHECK_LIB([dl], [dlopen])
 AC_CHECK_LIB([z], [deflate])
-AC_CHECK_LIB([uuid], [uuid_generate])
+AC_CHECK_LIB([uuid], [uuid_generate],,[uuid=no])
 AC_CHECK_LIB([pthread], [pthread_mutexattr_init])
+
+if test X"$uuid" == Xno; then
+  AC_MSG_ERROR([you need a uuid library for Qedo])
+fi
 
 if test X"$HAVE_MKDIR_PROG" != Xyes; then
   AC_MSG_ERROR([cannot mkdir program])
