@@ -30,7 +30,7 @@
 #include <errno.h>
 #include <iostream>
 #include <string>
-
+#include <cassert>
 
 #ifndef _WIN32
 # include <unistd.h>
