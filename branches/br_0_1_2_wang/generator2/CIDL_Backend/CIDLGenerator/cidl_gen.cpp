@@ -40,8 +40,6 @@ printUsage()
 	std::cerr << "        --target <compositionname> : the element to generate code for" << std::endl;
 	std::cerr << "        --business : generate business code skeletons" << std::endl;
 	std::cerr << "        --servant : generate servant code" << std::endl;
-	//std::cerr << "        --pcm : generate persistent code for container-managed persistence" << std::endl;
-	//std::cerr << "        --psm : generate persistent code for self-managed persistence" << std::endl;
 	std::cerr << "        --out <fileprefix> : idl files will be prefixed with fileprefix" << std::endl;
 	std::cerr << "		  --vc7 : generate VC7 projects" << std::endl;
 }
@@ -109,8 +107,6 @@ main
 	bool generateBusiness = false;
 	bool generateServant = false;
 	bool generatevc7 = false;
-	//bool pssContainerManaged = false;
-	//bool pssSelfManaged = false;
 	std::string target;
 	std::string fileprefix = "";
 	std::string target_file_name = argv[argc - 1];
@@ -155,24 +151,6 @@ main
             
             argc--;
 		}
-		/*else if(strcmp(option, "--pcm") == 0)
-		{
-			pssContainerManaged = true;
-            
-            for(int j = i ; j + 1 < argc ; j++)
-                argv[j] = argv[j + 1];
-            
-            argc--;
-		}
-		else if(strcmp(option, "--psm") == 0)
-		{
-			pssSelfManaged = true;
-            
-            for(int j = i ; j + 1 < argc ; j++)
-                argv[j] = argv[j + 1];
-            
-            argc--;
-		}*/
 		else if(strcmp(option, "--vc7") == 0)
 		{
 			generatevc7 = true;
