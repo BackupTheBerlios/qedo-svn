@@ -18,6 +18,7 @@ Global
 		ConfigName.4 = Release
 	EndGlobalSection
 	GlobalSection(ProjectDependencies) = postSolution
+		{562A99B9-A003-4CA8-9865-7FA880878373}.0 = {E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{562A99B9-A003-4CA8-9865-7FA880878373}.Debug.ActiveCfg = Debug_tao|Win32

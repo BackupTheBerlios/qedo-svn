@@ -7,19 +7,27 @@
 
     <componentfiles>
         <componentfile id="philosopher_file">
-            <fileinarchive name="dinner_PhilosopherImpl.zip"/>
+            <fileinarchive name="meta-inf/dinner_PhilosopherImpl.csd">
+				<link href="dinner_PhilosopherImpl.zip"/>
+			</fileinarchive>
         </componentfile>
 
         <componentfile id="cutlery_file">
-            <fileinarchive name="dinner_CutleryImpl.zip"/>
+            <fileinarchive name="meta-inf/dinner_CutleryImpl.csd">
+				<link href="dinner_CutleryImpl.zip"/>
+			</fileinarchive>
         </componentfile>
 
         <componentfile id="observer_file">
-            <fileinarchive name="dinner_ObserverImpl.zip"/>
+            <fileinarchive name="meta-inf/dinner_ObserverImpl.csd">
+				<link href="dinner_ObserverImpl.zip"/>
+			</fileinarchive>
         </componentfile>
 
         <componentfile id="Monitor_file">
-            <fileinarchive name="container_service_MonImpl.zip"/>
+            <fileinarchive name="meta-inf/container_service_MonImpl.csd">
+				<link href="container_service_MonImpl.zip"/>
+			</fileinarchive>
         </componentfile>
         
     </componentfiles>
