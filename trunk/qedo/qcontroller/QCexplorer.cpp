@@ -51,7 +51,7 @@ QCexplorerTreeCtrl::QCexplorerTreeCtrl(wxWindow *parent, const wxWindowID id,
                        long style)
           : wxTreeCtrl(parent, id, pos, size, style)
 
-{		
+{
 }
 
 QCexplorerTreeCtrl::~QCexplorerTreeCtrl()
@@ -161,7 +161,7 @@ QCexplorerTreeCtrl::build_tree()
 			wxTreeItemId idParent=rootId;
 			ComponentServerActivatorInfo sa = test[i];
 			wxString str ;
-			str.Printf(wxT("%s"), wxT(sa.host_name));
+			str.Printf(wxT("%s"), wxT(sa.host_name.in()));
 
 			wxTreeItemId idServerActivator = AppendItem(idParent, str , TreeCtrlIcon_Folder, 
 				TreeCtrlIcon_Folder,new QCexplorerTreeItemData(str));
@@ -179,8 +179,8 @@ QCexplorerTreeCtrl::build_tree()
 
 				csi_tmp.append(wxString::Format("%d",z));
 				csi_tmp.append(" on ");
-				csi_tmp.append(csi.host_name);
-				str.Printf(wxT("%s"),wxT(csi_tmp));
+				csi_tmp.append(csi.host_name.in());
+				str.Printf(wxT("%s"),wxT(csi_tmp.c_str()));
 			
 				wxTreeItemId idComponentServer = AppendItem(idServerActivator, str , TreeCtrlIcon_Folder, 
 					TreeCtrlIcon_Folder,new QCexplorerTreeItemData(str));
@@ -197,7 +197,7 @@ QCexplorerTreeCtrl::build_tree()
 					cii_tmp.append(wxString::Format("%d",y));
 					cii_tmp.append(" - ");
 					cii_tmp.append(cii.short_name);
-					str.Printf(wxT("%s"),wxT(cii_tmp));
+					str.Printf(wxT("%s"),wxT(cii_tmp.c_str()));
 
 					wxTreeItemId idContainerInstance = AppendItem(idComponentServer, str , TreeCtrlIcon_Folder, 
 						TreeCtrlIcon_Folder,new QCexplorerTreeItemData(str));
@@ -213,7 +213,7 @@ QCexplorerTreeCtrl::build_tree()
 						wxString hii_tmp;
 					
 						hii_tmp=(hii.short_name);
-						str.Printf(wxT("%s"),wxT(hii_tmp));
+						str.Printf(wxT("%s"),wxT(hii_tmp.c_str()));
 
 						wxTreeItemId idHomeInstance = AppendItem(idContainerInstance, str , TreeCtrlIcon_Folder, 
 							TreeCtrlIcon_Folder,new QCexplorerTreeItemData(str));
@@ -228,7 +228,7 @@ QCexplorerTreeCtrl::build_tree()
 							wxString coii_tmp;
 					
 							coii_tmp=(coii.short_name);
-							str.Printf(wxT("%s"),wxT(coii_tmp));
+							str.Printf(wxT("%s"),wxT(coii_tmp.c_str()));
 
 							wxTreeItemId idComponentInstance = AppendItem(idHomeInstance, str ,  TreeCtrlIcon_File, TreeCtrlIcon_File,
 								new QCexplorerTreeItemData(str));

@@ -135,7 +135,7 @@ QedoExplorer::QedoExplorer(wxWindow *parent, const wxWindowID id,
 
 //	qcexplorer_->set_info_box(info_box_);
 
-	
+
 
 }
 
@@ -152,8 +152,8 @@ void QedoExplorer::OnStartExplorerButton(wxCommandEvent& WXUNUSED(event))
 	} else
 	{
 		wxProcess *process = new wxProcess (this);
-	
-		// wxString portnr = port_->GetValue(); 
+
+		// wxString portnr = port_->GetValue();
 		// wxString host_name = hostname_->GetValue();
 
 		wxString cmd = "explore_server -ORBInitRef NameService="; //corbaloc::";
@@ -166,7 +166,7 @@ void QedoExplorer::OnStartExplorerButton(wxCommandEvent& WXUNUSED(event))
 		//cmd.append(portnr);
 		//cmd.append("/NameService");
 
-		sexp_pid_ = wxExecute(cmd, wxEXEC_ASYNC, process);
+		sexp_pid_ = wxExecute(cmd, wxEXEC_ASYNC | wxEXEC_NOHIDE, process);
 		if ( !sexp_pid_ )
 		{
 			wxLogError( _T("Execution of '%s' failed."), "explore_server" );
@@ -187,15 +187,15 @@ void QedoExplorer::OnStartExplorerButton(wxCommandEvent& WXUNUSED(event))
 }
 
 void QedoExplorer::OnStartClientButton(wxCommandEvent& WXUNUSED(event))
-{	
+{
 	if (sclp_started_){
-		
+
 		sclp_started_= false;
 		start_explorer_client_btn->SetLabel("Start ExploreClient");
 		start_explorer_client_btn -> SetBackgroundColour(wxColour(255, 0, 0));
 		start_explorer_client_btn->Refresh();
 		qcexplorer_->clear();
-		
+
 
 	} else {
 		// change Button
@@ -203,10 +203,10 @@ void QedoExplorer::OnStartClientButton(wxCommandEvent& WXUNUSED(event))
 		start_explorer_client_btn ->SetLabel("Stop ExploreClient");
 		start_explorer_client_btn ->SetBackgroundColour(wxColour(0, 255, 0));
 		start_explorer_client_btn->Refresh();
-		
+
 		std::string ns;
 		ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
-				
+
 //		qcexplorer_->cmd_ns="corbaloc::";
 //		wxString portnr_c=port_client_->GetValue();
 //		wxString hostname_c=hostname_client_->GetValue();
