@@ -138,15 +138,13 @@
 			Name="cidl"
 			Filter="*.idl">
 			<File
-				RelativePath="Example1.cidl">
+				RelativePath="philosophers.cidl">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(QEDO)\bin\cidl_gen Example1.cidl dinner
-time /T &gt; last_build_time
-"
+						CommandLine="$(QEDO)\bin\cidl_gen philosophers.cidl dinner
+time /T &gt; last_build_time"
 						Outputs="last_build_time;dinner_LOCAL.idl;dinner_EQUIVALENT.idl;dinner_BUSINESS.idl"/>
 				</FileConfiguration>
 			</File>
