@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="obd.lib jtcd.lib CosNamingd.lib"
-				OutputFile="../../Runtime/HomeFinder.exe"
+				OutputFile="../../Runtime/homefinder.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -79,7 +79,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/HomeFinder.exe"
+				OutputFile="$(OutDir)/homefinder.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
@@ -130,7 +130,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="obd.lib jtcd.lib CosNamingd.lib"
-				OutputFile="$(OutDir)/HomeFinder.exe"
+				OutputFile="$(OutDir)/homefinder.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -181,7 +181,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="mico2310.lib micocoss2310.lib wsock32.lib pthreadVC.lib"
-				OutputFile="$(OutDir)/HomeFinder.exe"
+				OutputFile="$(OutDir)/homefinder.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib;$(MICO)/coss"
 				GenerateDebugInformation="TRUE"
@@ -227,7 +227,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="obd.lib jtcd.lib CosNamingd.lib"
-				OutputFile="../../Runtime/HomeFinder.exe"
+				OutputFile="../../Runtime/homefinder.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -273,7 +273,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ob.lib jtc.lib CosNaming.lib"
-				OutputFile="../../Runtime/HomeFinder.exe"
+				OutputFile="../../Runtime/homefinder.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"

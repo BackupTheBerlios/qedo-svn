@@ -51,9 +51,9 @@ include ../MakeVars
 
 .PHONY:all
 
-all: HomeFinder
+all: homefinder
 
-HomeFinder: $(OBJS)
+homefinder: $(OBJS)
 
 .PHONY:install
 
@@ -61,5 +61,5 @@ install: install-prog
 
 .PHONY:install-prog
 
-install-prog: HomeFinder
+install-prog: homefinder
 
