@@ -389,6 +389,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\CCMObjectExecutor.cpp">
 			</File>
 			<File
+				RelativePath="CDRTransportCodec.cpp">
+			</File>
+			<File
 				RelativePath="ComponentInstance.cpp">
 			</File>
 			<File
@@ -520,6 +523,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\CCMObjectExecutor.h">
+			</File>
+			<File
+				RelativePath="CDRTransportCoDec.h">
 			</File>
 			<File
 				RelativePath="ComponentInstance.h">
