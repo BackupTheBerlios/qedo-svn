@@ -123,6 +123,8 @@ private:
 	/** the mutex for the valuetype implementation list */
 	QedoMutex							value_mutex_;
 
+	/** Name service referenz */
+	CosNaming::NamingContext_var nameService_;
 #ifndef _QEDO_NO_QOS
 	/** interceptor dispatcher for the server side */
 	Components::Extension::ServerInterceptorRegistration_var server_dispatcher_;

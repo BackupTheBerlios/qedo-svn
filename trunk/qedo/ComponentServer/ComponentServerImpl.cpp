@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.26 2003/12/09 07:58:10 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.27 2004/02/12 09:38:45 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -148,7 +148,6 @@ ComponentServerImpl::initialize()
 	// Now retrieve the Component Installer to be used for containers created by this Component Server
 	// From now, we also inform the Component Server Activator to return a nil reference in case of any failure
 	// First get the Name Service
-	CosNaming::NamingContext_var nameService;
 
 	try
 	{
@@ -169,9 +168,9 @@ ComponentServerImpl::initialize()
 		{
 			obj = orb_->resolve_initial_references( "NameService" );
 		}
-		nameService = CosNaming::NamingContext::_narrow( obj.in() );
+		nameService_ = CosNaming::NamingContext::_narrow( obj.in() );
 
-		if( CORBA::is_nil(nameService.in()) )
+		if( CORBA::is_nil(nameService_.in()) )
 		{
         		NORMAL_ERR( "NameService is not a NamingContext object reference" );
 		}
@@ -189,7 +188,7 @@ ComponentServerImpl::initialize()
 		throw CannotInitialize();
 	}
 
-	if (CORBA::is_nil (nameService))
+	if (CORBA::is_nil (nameService_))
 	{
 		NORMAL_ERR ("ComponentServerImpl: Name Service is nil");
 		csa_ref_->notify_component_server_create (Qedo_Components::Deployment::ComponentServer::_nil());
@@ -219,7 +218,7 @@ ComponentServerImpl::initialize()
 
 	try
 	{
-		component_installer_obj = nameService->resolve (installer_name);
+		component_installer_obj = nameService_->resolve (installer_name);
 	}
 	catch (CosNaming::NamingContext::NotFound&)
 	{
@@ -359,6 +358,14 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	containers_.push_back (new_container);
 
 	container_if->_remove_ref();
+
+	/*
+	 * install service references 
+	 * these service references are unique reference in the container
+	 * can be used to register CORBA services
+	 */
+	/* Name service */
+	container_if -> install_service_reference ("NameService", nameService_.in());
 
 	return container_if->_this();
 }
