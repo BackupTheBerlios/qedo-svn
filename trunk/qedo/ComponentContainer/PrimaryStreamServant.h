@@ -65,7 +65,7 @@ public:
     // IDL:omg.org/StreamComponents/Streams/unbind:1.0
     //
     StreamComponents::SinkStreamPort_ptr unbind(const char* name,
-                                                        Components::Cookie*& ck)
+                                                        Components::Cookie* ck)
         throw(Components::CookieRequired,
               StreamComponents::InvalidBinding,
               StreamComponents::NoBinding,
