@@ -30,7 +30,7 @@
 
 #include <cstring>
 
-static char rcsid[] UNUSED = "$Id: SinkPort.cpp,v 1.2 2003/10/17 09:11:40 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: SinkPort.cpp,v 1.3 2003/11/07 09:49:12 stoinski Exp $";
 
 namespace Qedo {
 
@@ -107,6 +107,7 @@ throw (StreamComponents::UnsupportedStreamtype, StreamComponents::DuplicateStrea
 	if (active_stream_)
 		throw StreamComponents::DuplicateStream();
 
+	/*
 	// Now test for the compatibility of the streamtype
 	unsigned int i;
 
@@ -127,6 +128,13 @@ throw (StreamComponents::UnsupportedStreamtype, StreamComponents::DuplicateStrea
 		unsupported_streamtype[0] = CORBA::string_dup (repos_id);
 		throw StreamComponents::UnsupportedStreamtype (unsupported_streamtype);
 	}
+	*/
+
+	CORBA::RepositoryIdSeq streamtype;
+	streamtype.length (1);
+	streamtype[0] = CORBA::string_dup (repos_id);
+
+	this->check_streamtype (streamtype);
 
 	active_stream_ = true;
 
