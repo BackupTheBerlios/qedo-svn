@@ -965,7 +965,7 @@ add_storagehome(
 	table_item_list key;
   with(primary_key) {
 	  PrimaryKeyDcl(key_ident_v=LocalName(Considl_name_list(key_name_v,Nilidl_name_list()))) : {
-		key = lookup_name(,name->symtab_entry);
+		key = lookup_name(key_name_v,name->symtab_entry);
 		with(key) {
 			Constable_item_list(item_v,Niltable_item_list()) : {
 				key_ident_v->symtab_entry=item_v;
