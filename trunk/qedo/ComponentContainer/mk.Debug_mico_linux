@@ -1,3 +1,5 @@
+include ../MakeVars
+
 # Configuration Debug_mico_linux
 ProjectName=ComponentContainer
 OutDir=./Debug_mico_linux

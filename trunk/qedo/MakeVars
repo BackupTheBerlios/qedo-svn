@@ -19,7 +19,8 @@ ORBACUS = /opt/OOC
 Debug = yes
 
 # Xerces - XML handling
-XERCES = /home/tri/devel/xerces-c-src2_1_0
+# 
+XERCES = /home/tri/xercesc
 
 # ZLib - Zip File handling
 ZLIB = /home/tri/devel/zlib-1.1.4
