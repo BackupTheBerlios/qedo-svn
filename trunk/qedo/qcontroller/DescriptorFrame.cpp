@@ -13,17 +13,20 @@
 #include "wx/listctrl.h"
 #include "wx/statline.h"
 #include "wx/process.h"
+#include "wx/utils.h"
 
 BEGIN_EVENT_TABLE(DescriptorFrame, wxDialog)
    EVT_BUTTON(ID_COMPONENTS_TO_SERVER, DescriptorFrame::OnComponents_to_Server)
    EVT_BUTTON(ID_COMPONENTS_TO_COMPONENTS, DescriptorFrame::OnComponents_to_Components)
    EVT_BUTTON(ID_SAVE_SETTINGS, DescriptorFrame::OnSave_Settings )
    EVT_BUTTON(ID_CANCEL, DescriptorFrame::OnQuit)
+   EVT_BUTTON(ID_ALL_TO_COMPONENTS, DescriptorFrame::OnAllComponentsBack)
+   EVT_BUTTON(ID_SAVE_SETTINGS_AS, DescriptorFrame::OnSave_as)
 END_EVENT_TABLE()
 
 DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename) 
 			: wxDialog(parent, -1, "Edit Destinitation", wxDefaultPosition,
-					   wxSize(650,480),wxDEFAULT_DIALOG_STYLE)
+					   wxSize(650,510),wxDEFAULT_DIALOG_STYLE)
 {
 	wxBoxSizer *sizerLauncher = new wxBoxSizer(wxVERTICAL);
 	this->SetSizer(sizerLauncher);
@@ -35,17 +38,14 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 	sizerLauncher->Add(5, 5, 0, wxGROW | wxALL, 5);
 
 	// static text 
-	wxStaticText* explorer_text = new wxStaticText( this, wxID_STATIC, _T("Change the destination of processcollocation or homeplacements by .... :"), wxDefaultPosition, wxDefaultSize, 0 );
-    sizerLauncher->Add(explorer_text , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+	wxStaticText *e_text = new wxStaticText( this, wxID_STATIC, _T("Change the destination of hostcollocation, processcollocation or homeplacements in:"), wxDefaultPosition, wxDefaultSize, 0 );
+    sizerLauncher->Add(e_text, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
-	explorer_text->SetLabel(this->file.c_str() );
+	file_text=new wxStaticText(this,wxID_STATIC, _T(file.c_str()),wxDefaultPosition,wxDefaultSize,0);
+	sizerLauncher->Add(file_text,0,wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE,5);
 
 	wxBoxSizer *midSizer=new wxBoxSizer(wxHORIZONTAL);
 	sizerLauncher->Add(midSizer, 0, wxALIGN_CENTER_VERTICAL| wxALL, 5);
-	
-	
-	
-	
 	
 	// Explorer Tree Controll
 	wxStaticBox *exp_tree_ctrl_box = new wxStaticBox(this, -1, _T("&Process or homeplacements without destination"));
@@ -63,10 +63,6 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 
 	wxBoxSizer *midmidSizer=new wxBoxSizer(wxVERTICAL);
 	midSizer->Add(midmidSizer, 0, wxALIGN_CENTER_VERTICAL| wxALL, 5);
-
-	//wxStaticText* button_text = new wxStaticText( this, wxID_STATIC, _T("Set destination of the components"), wxDefaultPosition, wxDefaultSize, 0 );
-	//midmidSizer->Add(button_text , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
-
 
 	// >>> Button
 	components_to_server = new wxButton(this, ID_COMPONENTS_TO_SERVER, _T("   Selection to server >>>"));
@@ -135,7 +131,7 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 	
 	// cadreader_frame->ShowModal():
 
-		//partitioning = cadreader_frame->partitioning;
+	//partitioning = cadreader_frame->partitioning;
 		processdatas = cadreader_frame->processdatas;
 		homedatas = cadreader_frame->homedatas;
 		hostdatas = cadreader_frame->hostdatas;
@@ -1006,7 +1002,7 @@ bool DescriptorFrame::into_zip(std::string cad,std::string zip)
 	cmd.append(" ");
 	cmd.append(cad.c_str());
 	
-	wxLogMessage(cmd);
+	
 	value = wxExecute(cmd, wxEXEC_SYNC, NULL);
 	delete process;
 	
@@ -1018,8 +1014,67 @@ void DescriptorFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 	delete(this);
 }
 
+void DescriptorFrame::OnAllComponentsBack(wxCommandEvent& WXUNUSED(event))
+{
+	if (!(DestinationInfoList.empty())) 
+	{
+		std::vector <DestinationInfo> ::iterator dest_iter;
+		std::vector <DestinationInfo> tmp_list;
+	
+		for(dest_iter = DestinationInfoList.begin(); 
+			dest_iter != DestinationInfoList.end();
+			dest_iter++)
+			{
+				tmp_list.push_back(*dest_iter);
+			}
+		for (dest_iter = tmp_list.begin();
+			 dest_iter != tmp_list.end();
+			 dest_iter++)
+			{
+				add_component_to_components(*dest_iter);
+			}
+		server_ctrl_->Refresh();
+		server_ctrl_->Expand(rootId);
+		component_list_->Refresh();
+		component_list_->Expand(rootId2);
+	}
+	
+}
+void DescriptorFrame::OnSave_as(wxCommandEvent& WXUNUSED(event))
+{
+	wxString path;
+	wxFileDialog* file_dialog=new wxFileDialog(this,"Choose a file or enter a name","","","*.zip",wxSAVE,wxDefaultPosition);
+	int t=file_dialog->ShowModal();
+	if (t==wxID_OK)
+	{	
+		// copy old file to new 
+		path=file_dialog->GetPath();
+		if (!(wxCopyFile(file.c_str(),path,TRUE))) 
+		{
+			wxString message="Writing error ";
+			message.Append(path);
+			wxLogMessage(message);
+		} else {
+			file=path.c_str();
+			file_text->SetLabel(this->file.c_str() );
+			save();
+		}
+	}
+	file_dialog->~wxFileDialog();
+	
+	
+	
+
+
+}
+
 
 void DescriptorFrame::OnSave_Settings(wxCommandEvent& WXUNUSED(event))
+{
+	save();
+}
+
+void DescriptorFrame::save()
 {
 	bool empty=true;
 	FILE *cadfile_;
@@ -1093,8 +1148,8 @@ void DescriptorFrame::OnSave_Settings(wxCommandEvent& WXUNUSED(event))
 
 	// delete tmp_cadfile
 
-    wxLogMessage("Setting save OK");
-    
+    wxLogMessage("Save OK");
+
 }
 
 

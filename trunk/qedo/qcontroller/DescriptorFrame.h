@@ -35,6 +35,8 @@ class DescriptorFrame : public wxDialog
 	 void OnComponents_to_Components(wxCommandEvent& WXUNUSED(event));
 	 void OnSave_Settings(wxCommandEvent& WXUNUSED(event));
 	 void OnQuit(wxCommandEvent& WXUNUSED(event));
+	 void OnAllComponentsBack(wxCommandEvent& WXUNUSED(event));
+	 void OnSave_as(wxCommandEvent& WXUNUSED(event));
 
 	private:
 
@@ -127,6 +129,7 @@ class DescriptorFrame : public wxDialog
 		DestinationInfo getLastParent_server(wxTreeItemId item);
 
 		void warningserver(wxString server);
+		void save();
 		bool into_zip(std::string cad,std::string zip);
 
 		CORBA::ORB_var e_orb;
@@ -138,6 +141,7 @@ class DescriptorFrame : public wxDialog
 		wxTreeItemId rootId;
 		wxTreeItemId rootId2;
 		wxStaticText *d_text;
+		wxStaticText* file_text;
 		wxTreeCtrl *component_list_;
 		wxTextCtrl *tc;
 		wxTreeCtrl *server_ctrl_;
@@ -155,7 +159,6 @@ class DescriptorFrame : public wxDialog
 		wxString rules(std::vector<Qedo::RuleData >	rules);
 		wxString usagename(wxString usagename);
 
-		
 		DECLARE_EVENT_TABLE()
 
 
