@@ -29,6 +29,7 @@
 #include "wx/textctrl.h"
 #include "wx/listctrl.h"
 #include "wx/filedlg.h"
+#include "descriptorframe.h"
 
 #include "ComponentDeployment.h"
 
@@ -42,6 +43,7 @@ public:
 	void OnDeployButton(wxCommandEvent& WXUNUSED(event));
 	void OnFileChoiseButton(wxCommandEvent& WXUNUSED(event));
 	void OnUndeployButton(wxCommandEvent& WXUNUSED(event));
+	void OnDecriptButton (wxCommandEvent& WXUNUSED(event));
 
 private:
 	struct r_assemblies{
@@ -57,9 +59,11 @@ private:
 	wxTextCtrl* assembly_name_;
 	wxButton* file_choice_btn;
 	wxButton* deploy_btn;
+	wxButton* descript_btn;
 	wxListCtrl* running_ass_list;
 	wxButton* undeploy_btn;
 	wxFileDialog* file_dialog;
+	DescriptorFrame* descriptor_frame;
 	
 
     DECLARE_EVENT_TABLE()

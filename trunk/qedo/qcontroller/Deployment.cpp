@@ -34,6 +34,7 @@ BEGIN_EVENT_TABLE(Deployment, wxPanel)
    EVT_BUTTON(ID_DEPLOY_BUTTON, Deployment::OnDeployButton)
    EVT_BUTTON(ID_FILE_CHOICE_BUTTON, Deployment::OnFileChoiseButton)
    EVT_BUTTON(ID_UNDEPLOY_BUTTON, Deployment::OnUndeployButton)
+   EVT_BUTTON(ID_DESCRIPT_BUTTON, Deployment::OnDecriptButton)
  
 END_EVENT_TABLE()
 
@@ -67,6 +68,9 @@ Deployment::Deployment(wxWindow *parent, const wxWindowID id,
 
     deploy_btn = new wxButton( this, ID_DEPLOY_BUTTON, _T("Deploy"), wxDefaultPosition, wxDefaultSize, 0 );
     item8->Add(deploy_btn, 0, wxGROW|wxALL, 5);
+
+	descript_btn = new wxButton( this, ID_DESCRIPT_BUTTON, _T("Edit Destination"), wxDefaultPosition, wxDefaultSize, 0 );
+    item8->Add(descript_btn, 0, wxGROW|wxALL, 5);
 
     wxStaticLine* item10 = new wxStaticLine( this, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
     item2->Add(item10, 0, wxGROW|wxALL, 5);
@@ -257,4 +261,14 @@ void Deployment::OnUndeployButton(wxCommandEvent& WXUNUSED(event))
 	//	exit(1);
 	}
 	*/
+}
+
+void Deployment::OnDecriptButton (wxCommandEvent& WXUNUSED(event)) 
+{
+
+	DescriptorFrame *descriptor_frame = new DescriptorFrame(this,assembly_name_->GetValue());
+	//descriptor_frame->SetFile(assembly_name_->GetValue().c_str() );
+	
+	descriptor_frame->ShowModal();
+
 }
