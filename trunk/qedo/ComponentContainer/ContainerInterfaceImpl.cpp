@@ -36,7 +36,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.55 2004/03/11 14:22:24 neubauer Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.56 2004/04/15 09:50:11 tom Exp $";
 
 
 namespace Qedo {
@@ -914,8 +914,8 @@ throw (Components::CCMException)
 			return iter->_service_ref;
 		}
 	}
-
-	throw Components::CCMException();
+	return component_server_ -> resolve_service_reference(service_id);
+//	throw Components::CCMException();
 }
 
 

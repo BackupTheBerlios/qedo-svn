@@ -111,7 +111,7 @@ public:
  * entry in a list of service references
  * the entry is part of the list of service references in the container interface class
  */
-class ServiceReferenceEntry
+class CONTAINERDLL_API ServiceReferenceEntry
 {
 public:
 	/** the service id */

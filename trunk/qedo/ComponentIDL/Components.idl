@@ -527,6 +527,11 @@ module Components {
 
 		void
 		set_contract_data (in Components::ConfigValues contracts);
+
+		void 
+		install_service_reference(in string id, in Object ref) raises (CCMException);
+
+
 	};
 
 	local interface ExtensionComponent : EnterpriseComponent

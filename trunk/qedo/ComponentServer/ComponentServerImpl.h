@@ -124,6 +124,11 @@ private:
 	/** Name service referenz */
 	CosNaming::NamingContext_var nameService_;
 #ifndef _QEDO_NO_QOS
+	/** the list of service references */
+	std::vector <ServiceReferenceEntry>						service_references_;
+	/** the mutex for service_references_ */
+	QedoMutex												service_references_mutex_;
+
 	/** interceptor dispatcher for the server side */
 	Components::Extension::ServerInterceptorRegistration_var server_dispatcher_;
 	/** interceptor dispatcher for the client side */
@@ -225,6 +230,25 @@ public:
 
 	virtual ContainerList*
 	get_all_containers();
+
+	/**
+	 * provide the initial service reference of the specified service
+	 * \param service_id The service id.
+	 * \return The initial reference of the service.
+	 */
+	virtual CORBA::Object_ptr resolve_service_reference(const char*)
+		throw (Components::CCMException);
+
+	/**
+     * implements IDL:omg.org/Components/Deployment/Container/install_service_reference:1.0
+     * Qedo extension!
+	 * register an initial reference of a service
+	 * \param id The id of the service.
+	 * \param ref The reference of the service.
+	 */
+    virtual void install_service_reference(const char* id, CORBA::Object_ptr ref)
+		throw (Components::CCMException, CORBA::SystemException);
+
 #endif
 
 	//

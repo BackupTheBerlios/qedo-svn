@@ -98,6 +98,9 @@ public:
 	 virtual Components::ConfigValues*
 	 get_contract_data();
 
+	 virtual void
+	 install_service_reference(const char* id, CORBA::Object_ptr obj);
+
 };
 
 /** @} */

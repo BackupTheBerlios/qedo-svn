@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.28 2004/02/16 07:42:13 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.29 2004/04/15 09:50:56 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -89,6 +89,11 @@ ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb,
 ComponentServerImpl::~ComponentServerImpl()
 {
 	DEBUG_OUT ("ComponentServerImpl: Destructor called");
+#ifndef _QEDO_NO_QOS
+	QedoLock lock (service_references_mutex_);
+
+	service_references_.clear();
+#endif
 }
 
 
@@ -592,6 +597,57 @@ ComponentServerImpl::get_all_containers()
 	}
 
 	return list;
+}
+
+void 
+ComponentServerImpl::install_service_reference(const char* id, CORBA::Object_ptr ref)
+throw (Components::CCMException, CORBA::SystemException)
+{
+	//
+	// check whether a service for this id is already in our list of services
+	//
+	std::vector <ServiceReferenceEntry>::iterator iter;
+
+	QedoLock lock (service_references_mutex_);
+
+	for (iter = service_references_.begin(); iter != service_references_.end(); iter++)
+	{
+		if(!iter->_service_id.compare(id)) {
+			// throw an exception
+			// this policy could be configured by ConfigValue (e.g. replace the old service by the new one)
+			throw Components::CCMException();
+		}
+	}
+
+	//
+	// register service
+	//
+	ServiceReferenceEntry new_entry(id, ref);
+	service_references_.push_back (new_entry);
+
+	DEBUG_OUT2("ComponentServerImpl: service registered for ", id);
+}
+
+
+CORBA::Object_ptr 
+ComponentServerImpl::resolve_service_reference(const char* service_id)
+throw (Components::CCMException)
+{
+	//
+	// find the service in our list of services
+	//
+	std::vector <ServiceReferenceEntry>::iterator iter;
+
+	QedoLock lock (service_references_mutex_);
+
+	for (iter = service_references_.begin(); iter != service_references_.end(); iter++)
+	{
+		if(!iter->_service_id.compare(service_id)) {
+			return iter->_service_ref;
+		}
+	}
+
+	throw Components::CCMException();
 }
 
 

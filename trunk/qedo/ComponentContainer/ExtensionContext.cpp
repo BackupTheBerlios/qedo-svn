@@ -26,7 +26,7 @@
 #include "ComponentServerImpl.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.8 2004/01/19 07:34:01 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.9 2004/04/15 09:50:11 tom Exp $";
 
 
 namespace Qedo {
@@ -108,6 +108,14 @@ ExtensionContext::get_contract_data ( ) {
 //	ret_contract = contracts_;
 	return ret_contract;
 }
+
+void
+ExtensionContext::install_service_reference(const char* id, CORBA::Object_ptr obj)
+{
+	container_ -> component_server_ -> install_service_reference(id, obj);
+
+}
+
 
 #endif
 } // namepscae Qedo
