@@ -26,7 +26,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.11 2003/10/30 17:24:14 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.12 2003/12/02 14:28:19 tom Exp $";
 
 namespace Qedo {
 
@@ -43,7 +43,7 @@ ServantLocator::~ServantLocator()
 }
 
 
-PortableServer::Servant 
+PortableServer::Servant
 ServantLocator::preinvoke (const PortableServer::ObjectId& oid,
 						   PortableServer::POA_ptr adapter,
 						   const char* operation,
@@ -69,7 +69,7 @@ throw (PortableServer::ForwardRequest, CORBA::SystemException)
 	if(home_servant_->service_name_.empty())
 	{
 		std::vector <Qedo::ComponentInstance> ::iterator iter;
-		
+
 		Components::CCMService_ptr service;
 
 		for (iter = home_servant_->container_->services_preinvoke_.begin();
@@ -81,11 +81,16 @@ throw (PortableServer::ForwardRequest, CORBA::SystemException)
 		}
 	}*/
 
+#ifndef _QEDO_NO_QOS
+if(!CORBA::is_nil(server_interceptor_))
+	server_interceptor_->rec_request_from_servant_locator();
+#endif
+
 	return home_servant_->lookup_servant (oid);
 }
 
 
-void 
+void
 ServantLocator::postinvoke (const PortableServer::ObjectId& oid,
 							PortableServer::POA_ptr adapter,
 							const char* operation,
@@ -100,7 +105,7 @@ throw (CORBA::SystemException)
 	if(home_servant_->service_name_.empty())
 	{
 		std::vector <Qedo::ComponentInstance> ::iterator iter;
-		
+
 		Components::CCMService_ptr service;
 
 		for (iter = home_servant_->container_->services_postinvoke_.begin();
@@ -114,4 +119,13 @@ throw (CORBA::SystemException)
 	the_servant->_remove_ref();
 }
 
+#ifndef _QEDO_NO_QOS
+void
+ServantLocator::register_interceptor(Components::Extension::ServerContainerInterceptor_ptr interceptor)
+{
+server_interceptor_ = interceptor;
+}
+
+
+#endif
 } // namespace Qedo

@@ -92,6 +92,8 @@ class ComponentServerImpl : public virtual POA_Qedo_Components::Deployment::Comp
 							public virtual PortableServer::RefCountServantBase,
 							public virtual CreateDestructCORBAObjectCounter
 {
+
+
 private:
 	/** the stringified object reference of the server activator */
 	CORBA::String_var						csa_string_ref_;
@@ -188,28 +190,30 @@ public:
 	/**
 	 * set_server_dispatcher
 	 */
-	 virtual void
-	 set_server_dispatcher ( Components::Extension::ServerInterceptorRegistration_ptr server_dispatcher);
+	virtual void
+	set_server_dispatcher ( Components::Extension::ServerInterceptorRegistration_ptr server_dispatcher);
 
 
  	/**
 	 * set_client_dispatcher
 	 */
 	virtual void
-	 set_client_dispatcher ( Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher);
+	set_client_dispatcher ( Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher);
 
 	/**
 	 * get_server_dispatcher
 	 */
 	virtual Components::Extension::ServerInterceptorRegistration_ptr
-	 get_server_dispatcher (  );
+	get_server_dispatcher (  );
 
 	/**
 	 * get_client_dispatcher
 	 */
 	virtual Components::Extension::ClientInterceptorRegistration_ptr
-	 get_client_dispatcher (  );
+	get_client_dispatcher (  );
 
+	virtual Qedo::ContainerInterfaceImpl*
+	get_all_containers();
 #endif
 
 	//

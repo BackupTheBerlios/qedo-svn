@@ -62,6 +62,11 @@ class CONTAINERDLL_API HomeServantBase : public PortableServer::RefCountServantB
 	/** needs access to install_dir_ */
 	friend class InternalConfiguration;
 
+#ifndef _QEDO_NO_QOS
+	/** to access the servant_locator */
+	friend class ExtensionContext;
+#endif
+
 private:
 	/** poa manager */
 	PortableServer::POAManager_var	home_poa_manager_;
@@ -69,7 +74,7 @@ private:
 	PortableServer::Servant			my_home_servant_;
 	/** object id */
 	PortableServer::ObjectId_var	my_object_id_;
-	
+
 	/** home reference */
 	Components::CCMHome_var			my_home_ref_;
 	/** repository id of the home */

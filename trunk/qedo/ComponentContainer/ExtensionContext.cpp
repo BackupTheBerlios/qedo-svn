@@ -22,8 +22,11 @@
 
 #include "ExtensionContext.h"
 #include "Output.h"
+#ifndef _QEDO_NO_QOS
+#include "ComponentServerImpl.h"
+#endif
 
-static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.5 2003/12/01 15:40:49 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.6 2003/12/02 14:28:19 tom Exp $";
 
 
 namespace Qedo {
@@ -68,6 +71,18 @@ ExtensionContext::get_client_interceptor_dispatcher_registration()
 	return Components::Extension::ClientInterceptorRegistration::_duplicate(client_registration_);
 
 }
+
+void
+ExtensionContext::register_servant_locator_for_all(Components::Extension::ServerContainerInterceptor_ptr server_interceptor)
+{
+// identify all servant locators
+Qedo::ContainerInterfaceImpl* temp_container = container_->component_server_->get_all_containers();
+
+HomeServantBase* temp_home = temp_container->installed_homes_[0].home_servant_;
+
+temp_home -> servant_locator_ -> register_interceptor (server_interceptor);
+}
+
 #endif
 } // namepscae Qedo
 

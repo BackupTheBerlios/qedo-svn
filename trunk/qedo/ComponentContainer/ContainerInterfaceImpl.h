@@ -153,7 +153,7 @@ class CONTAINERDLL_API ContainerInterfaceImpl : public virtual POA_Components::D
 												public virtual PortableServer::RefCountServantBase,
 												public virtual CreateDestructCORBAObjectCounter
 {
-	class EventEntry 
+	class EventEntry
 	{
 	public:
 		EventEntry (Components::EventConsumerBase_ptr c, Components::EventBase* e);
@@ -169,6 +169,10 @@ class CONTAINERDLL_API ContainerInterfaceImpl : public virtual POA_Components::D
 	/** to access services */
 	friend class ServantLocator;
 
+#ifndef _QEDO_NO_QOS
+	/** to access the component server */
+	friend class ExtensionContext;
+#endif
 private:
 	/** the orb */
 	CORBA::ORB_var											orb_;
@@ -197,7 +201,7 @@ private:
 	//std::vector <Qedo::ComponentInstance>					services_preinvoke_;
 	/** the list of service components for postinvoke*/
 	//std::vector <Qedo::ComponentInstance>					services_postinvoke_;
-	
+
 	/** the list of pending events to be dispatched*/
 	std::vector<EventEntry>									event_list;
 
@@ -213,7 +217,7 @@ private:
 	bool													event_queue_stopping_;
 
 	/** Configuration values */
-	enum EventCommunicationMode {EVENT_COMMUNICATION_ASYNCHRONOUS, 
+	enum EventCommunicationMode {EVENT_COMMUNICATION_ASYNCHRONOUS,
 								 EVENT_COMMUNICATION_SYNCHRONOUS};
 
 	EventCommunicationMode									event_communication_mode_;

@@ -25,7 +25,7 @@
 #include "Output.h"
 #include <fstream>
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.5 2003/12/01 15:40:49 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.6 2003/12/02 14:28:19 tom Exp $";
 
 namespace Qedo {
 
@@ -60,9 +60,17 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 }
 
 void
-ServerInterceptorDispatcher::receive_request(PortableInterceptor::ServerRequestInfo_ptr)
+ServerInterceptorDispatcher::receive_request(PortableInterceptor::ServerRequestInfo_ptr info)
 throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 {
+	DEBUG_OUT ("ServerInterceptorDispatcher: receive_request");
+
+	Qedo::QedoLock l(all_server_interceptors_mutex_);
+
+	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
+	{
+		all_server_interceptors_[i].interceptor->receive_request( info );
+	}
 
 }
 
@@ -71,7 +79,7 @@ void
 ServerInterceptorDispatcher::send_reply(PortableInterceptor::ServerRequestInfo_ptr info)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUT ("!!!!!!!!!!!!!!TEST!!!!!!!!!!!!!");
+	DEBUG_OUT ("ServerInterceptorDispatcher: send_reply");
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
 
@@ -100,7 +108,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 void
 ServerInterceptorDispatcher::register_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor)
 {
-	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI registered for all");
+	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI registered for all components");
 
 	ServerInterceptorEntry e;
 	e.interceptor = Components::Extension::ServerContainerInterceptor::_duplicate( interceptor );

@@ -461,6 +461,8 @@ module Components {
 			void send_reply ( in PortableInterceptor::ServerRequestInfo info);
 			void send_system_exception ( in PortableInterceptor::ServerRequestInfo info);
 			void send_user_exception ( in PortableInterceptor::ServerRequestInfo info);
+
+			void rec_request_from_servant_locator();
 		};
 
 		local interface ClientContainerInterceptor : ContainerInterceptor
@@ -495,6 +497,9 @@ module Components {
 
 		Components::Extension::ClientInterceptorRegistration
 			get_client_interceptor_dispatcher_registration ();
+
+		void register_servant_locator_for_all (in Components::Extension::ServerContainerInterceptor server_interceptor);
+
 	};
 
 	local interface ExtensionComponent : EnterpriseComponent

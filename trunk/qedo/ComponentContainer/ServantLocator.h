@@ -48,6 +48,9 @@ class ServantLocator : public PortableServer::ServantLocator
 private:
 	/** the home servant */
 	HomeServantBase* home_servant_;
+#ifndef _QEDO_NO_QOS
+	Components::Extension::ServerContainerInterceptor_var server_interceptor_;
+#endif
 
 public:
 	/**
@@ -71,7 +74,7 @@ public:
 	 * \param the_cookie The cookie.
 	 * \return The servant to handle the request.
 	*/
-	PortableServer::Servant preinvoke ( 
+	PortableServer::Servant preinvoke (
 		const PortableServer::ObjectId& oid,
 		PortableServer::POA_ptr adapter,
 		const char* operation,
@@ -87,13 +90,18 @@ public:
 	 * \param the_cookie The cookie.
 	 * \param the_servant The servant which processed the request.
 	 */
-	void postinvoke ( 
+	void postinvoke (
 		const PortableServer::ObjectId& oid,
 		PortableServer::POA_ptr adapter,
 	    const char* operation,
 	    PortableServer::ServantLocator::Cookie the_cookie,
 		PortableServer::Servant the_servant )
         throw ( CORBA::SystemException );
+#ifndef _QEDO_NO_QOS
+
+	void register_interceptor(Components::Extension::ServerContainerInterceptor_ptr interceptor);
+
+#endif
 };
 
 /** @} */

@@ -84,6 +84,8 @@ public:
 	 virtual Components::Extension::ClientInterceptorRegistration_ptr
 	 get_client_interceptor_dispatcher_registration();
 
+	 virtual void
+	 register_servant_locator_for_all(Components::Extension::ServerContainerInterceptor_ptr server_interceptor);
 };
 
 /** @} */
