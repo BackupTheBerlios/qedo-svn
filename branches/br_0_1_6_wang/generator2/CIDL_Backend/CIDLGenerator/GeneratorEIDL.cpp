@@ -1026,7 +1026,7 @@ GeneratorEIDL::doValue(IR__::ValueDef_ptr value)
 	}
 	out.unindent();
 
-	out << " {\n";
+	out << "{\n";
 	out.indent();
 
 	// contents
