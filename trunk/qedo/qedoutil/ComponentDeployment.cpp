@@ -22,7 +22,7 @@
 
 
 #include "ComponentDeployment.h"
-
+#include "Output.h"
 #ifndef _WIN32
 #include <unistd.h>
 #endif
@@ -64,17 +64,16 @@ throw (DeploymentFailure)
 	gethostname(hostname, 256);
 	CORBA::Object_var obj = resolveName(std::string("Qedo/AssemblyFactory/") + hostname);
 	assemblyFactory_ = Components::Deployment::AssemblyFactory::_narrow( obj.in() );
-    if( !CORBA::is_nil( assemblyFactory_.in() ) && 
-		!assemblyFactory_->_non_existent() )
+    if( !CORBA::is_nil( assemblyFactory_.in() ) && !assemblyFactory_->_non_existent() )
 	{
-		std::cerr << "..... take assembly factory on " << hostname << std::endl;
+		NORMAL_OUT2( "ComponentDeployment: take assembly factory on ", hostname );
 		return;
 	}
 
 	//
 	// try to get another one
 	//
-	std::cerr << "..... no local assembly factory, try to get another one" << std::endl;
+	NORMAL_OUT( "ComponentDeployment: no local assembly factory, try to get another one" );
 
 	obj = resolveName(std::string("Qedo/AssemblyFactory"));
 	CosNaming::NamingContext_var ctx = CosNaming::NamingContext::_narrow( obj.in() );
@@ -101,10 +100,9 @@ throw (DeploymentFailure)
 				continue;
 			}
 			assemblyFactory_ = Components::Deployment::AssemblyFactory::_narrow( obj.in() );
-			if( !CORBA::is_nil( assemblyFactory_.in() ) &&
-				!assemblyFactory_->_non_existent() )
+			if( !CORBA::is_nil( assemblyFactory_.in() ) && !assemblyFactory_->_non_existent() )
 			{
-				std::cerr << "..... take assembly factory on " << list[i].binding_name[0].id << std::endl;
+				NORMAL_OUT2( "ComponentDeployment: take assembly factory on ", list[i].binding_name[0].id );
 				return;
 			}
 		}
@@ -116,7 +114,7 @@ throw (DeploymentFailure)
 	// todo
 
 
-	std::cerr << "!!!!! no assembly factory found" << std::endl;
+	NORMAL_ERR( "ComponentDeployment: no assembly factory found" );
 	throw DeploymentFailure();
 }
 
@@ -137,22 +135,22 @@ throw (DeploymentFailure)
 	}
 	catch( Components::Deployment::InvalidLocation& )
 	{
-		std::cerr << "InvalidLocation during assembly creation" << std::endl;
+		NORMAL_ERR( "ComponentDeployment: InvalidLocation during assembly creation" );
 		throw DeploymentFailure();
 	}
 	catch( Components::CreateFailure& )
 	{
-		std::cerr << "CreateFailure during assembly creation" << std::endl;
+		NORMAL_ERR( "ComponentDeployment: CreateFailure during assembly creation" );
 		throw DeploymentFailure();
 	}
 	catch( Components::Deployment::InvalidAssembly& )
 	{
-		std::cerr << "InvalidAssembly during assembly creation" << std::endl;
+		NORMAL_ERR( "ComponentDeployment: InvalidAssembly during assembly creation" );
 		throw DeploymentFailure();
 	}
 	catch( CORBA::SystemException& ex )
 	{
-		std::cerr << "CORBA system exception during assembly creation : " << ex << std::endl;
+		NORMAL_ERR2( "ComponentDeployment: CORBA system exception during assembly creation : ", ex );
 		throw DeploymentFailure();
 	}
 
@@ -165,12 +163,12 @@ throw (DeploymentFailure)
 	}
 	catch( Components::CreateFailure& ex )
 	{
-		std::cerr << ".......... CreateFailure exception during assembly building : " << ex << std::endl;
+		NORMAL_ERR2( "ComponentDeployment: CreateFailure exception during assembly building : ", ex );
 		throw DeploymentFailure();
 	}
 	catch( CORBA::SystemException& ex )
 	{
-		std::cerr << ".......... CORBA system exception during assembly building : " << ex << std::endl;
+		NORMAL_ERR2( "ComponentDeployment: CORBA system exception during assembly building : ", ex );
 		throw DeploymentFailure();
 	}
 }
@@ -186,15 +184,21 @@ throw (DeploymentFailure)
 	try
 	{
 		assembly_->tear_down();
+		assemblyFactory_->destroy( cookie_ );
+	}
+	catch( Components::Deployment::InvalidAssembly& ex )
+	{
+		NORMAL_ERR2( "ComponentDeployment: InvalidAssembly exception during destroy assembly : ", ex );
+		throw DeploymentFailure();
 	}
 	catch( Components::RemoveFailure& ex )
 	{
-		std::cerr << ".......... RemoveFailure exception during tear down assembly : " << ex << std::endl;
+		NORMAL_ERR2( "ComponentDeployment: RemoveFailure exception during tear down assembly : ", ex );
 		throw DeploymentFailure();
 	}
 	catch( CORBA::SystemException& ex )
 	{
-		std::cerr << ".......... CORBA system exception during tear down assembly : " << ex << std::endl;
+		NORMAL_ERR2( "ComponentDeployment: CORBA system exception during tear down assembly : ", ex );
 		throw DeploymentFailure();
 	}
 }
