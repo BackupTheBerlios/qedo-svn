@@ -1496,6 +1496,8 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 
 		out << "//check whether the key is duplicated!\n";
 		out << mapFullName(home->managed_component()) << "_var comp;\n\n";
+		out << "try\n{\n";
+		out.indent();
 		out << "Components::CCMObjects_var entity_components = this->get_instances();\n";
 		out << "for( CORBA::ULong i=0; i<entity_components->length(); i++ )\n{\n";
 		out.indent();
@@ -1506,7 +1508,14 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "throw Components::DuplicateKeyValue();\n";
 		out.unindent();
 		out.unindent();
-		out << "}\n\n";
+		out << "}\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException&)\n{\n";
+		out.indent();
+        out << "throw Components::CreateFailure();\n";
+		out.unindent();
+        out << "}\n\n";
 	}
 	out << "#ifdef TAO_ORB\n";
 	out << mapFullNameLocal(home) << "_ptr home_executor = dynamic_cast < ";
@@ -1703,6 +1712,8 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "throw Components::InvalidKey();\n\n";
 		out.unindent();
 		out << mapFullName(home->managed_component()) << "_var servant;\n\n";
+		out << "try\n{\n";
+		out.indent();
 		out << "Components::CCMObjects_var entity_components = this->get_instances();\n";
 		out << "for( CORBA::ULong i=0; i<entity_components->length(); i++ )\n{\n";
 		out.indent();
@@ -1713,8 +1724,16 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "return servant._retn();\n";
 		out.unindent();
 		out.unindent();
-		out << "}\n\n";
-		out << "throw Components::FinderFailure();\n";
+		out << "}\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException&)\n{\n";
+		out.indent();
+        out << "NORMAL_ERR (\"Home_servant: Component not found\");\n";
+        out << "throw Components::FinderFailure();\n";
+		out.unindent();
+        out << "}\n\n";
+		out << "throw Components::UnknownKeyValue();\n";
 		out.unindent();
 		out << "}\n\n";
 
@@ -1722,6 +1741,38 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << class_name_ << "::remove(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
 		out << "throw(CORBA::SystemException, Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey)\n";
 		out << "{\n";
+		out.indent();
+		out << "if(!pkey)\n";
+		out.indent();
+		out << "throw Components::InvalidKey();\n\n";
+		out.unindent();
+		out << mapFullName(home->managed_component()) << "_var servant;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "Components::CCMObjects_var entity_components = this->get_instances();\n";
+		out << "for( CORBA::ULong i=0; i<entity_components->length(); i++ )\n{\n";
+		out.indent();
+		out << "servant = " << mapFullName(home->managed_component()) << "::_narrow( entity_components.in()[i] );\n";
+		out << mapFullNamePK(home->primary_key()) << "* pActKey = dynamic_cast <" << mapFullNamePK(home->primary_key()) << "*> (servant->get_primary_key());\n\n";
+		out << "if( compare_primarykey(pActKey, pkey) )\n";
+		out << "{\n";
+		out.indent();
+		out << "this->remove_component(entity_components.in()[i]);\n";
+		out << "return;\n";
+		out.unindent();
+		out << "}\n";
+		out.unindent();
+		out << "}\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException&)\n{\n";
+		out.indent();
+        out << "NORMAL_ERR (\"Home_servant: Component can not be removed\");\n";
+        out << "throw Components::RemoveFailure();\n";
+		out.unindent();
+        out << "}\n\n";
+		out << "throw Components::UnknownKeyValue();\n";
+		out.unindent();
 		out << "}\n\n";
 
 		out << mapFullNamePK(home->primary_key()) << "*\n";

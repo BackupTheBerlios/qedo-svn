@@ -393,7 +393,17 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out << "public:\n\n";
 	out.indent();
-	out << executor_class_name << "();\n";
+	switch(composition->lifecycle())
+	{
+	case CIDL::lc_Session :
+		out << executor_class_name << "();\n";
+		break;
+	case CIDL::lc_Entity :
+		out << executor_class_name << "(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey);\n";
+		break;
+	default :
+		out << "// not supported lifecycle\n";
+	}
 	out << "virtual ~" << executor_class_name << "();\n\n";
 	out << "void set_context(" << mapFullNameLocal(composition->ccm_component()) << "_ContextImpl_ptr context)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
@@ -529,7 +539,17 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out << "public:\n\n";
 	out.indent();
-    out << executor_locator_class_name << "();\n";
+	switch(composition->lifecycle())
+	{
+	case CIDL::lc_Session :
+		out << executor_locator_class_name << "();\n";
+		break;
+	case CIDL::lc_Entity :
+		out << executor_locator_class_name << "(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey);\n";
+		break;
+	default :
+		out << "// not supported lifecycle\n";
+	}
     out << "virtual ~" << executor_locator_class_name << "();\n\n";
 	IR__::InterfaceDef_ptr executor_locator;
 	switch(lc) {
@@ -603,7 +623,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "    throw (CORBA::SystemException, Components::CreateFailure);\n";
 		break;
 	case CIDL::lc_Entity :
-		out << "virtual ::Components::EnterpriseComponent_ptr create(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey" << ")\n";
+		out << "virtual ::Components::EnterpriseComponent_ptr create(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n";
 		out << "    throw(CORBA::SystemException, Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey);\n\n";
 
 		out << "virtual ::Components::EnterpriseComponent_ptr find_by_primary_key(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n"; 

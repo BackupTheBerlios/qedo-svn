@@ -403,10 +403,23 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection(class_name_, 2);
 
 	// constructor
-	out << class_name_ << "::" << class_name_ << "()\n";
-	out << "{\n";
-	out.insertUserSection(class_name_ + "::" + class_name_, 0);
-	out << "}\n\n\n";
+	switch(composition->lifecycle())
+	{
+	case CIDL::lc_Session :
+		out << class_name_ << "::" << class_name_ << "()\n";
+		out << "{\n";
+		out.insertUserSection(class_name_ + "::" + class_name_, 0);
+		out << "}\n\n\n";
+		break;
+	case CIDL::lc_Entity :
+		out << class_name_ << "::" << class_name_ << "(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n";
+		out << "{\n";
+		out.insertUserSection(class_name_ + "::" + class_name_, 0);
+		out << "}\n\n\n";
+		break;
+	default :
+		out << "// not supported lifecycle\n";
+	}
 
 	// destructor
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
@@ -511,14 +524,31 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection(class_name_, 2);
 
 	// constructor
-	out << class_name_ << "::" << class_name_ << "()\n";
-	out << ":component_(new " << mapName(composition->executor_def()) << "())\n";
-	for (i = 0; i < segment_seq->length(); i++)	{
-		out << ", " << segment_seq[i]->name() << "_(new " << mapName(segment_seq[i]) << "())\n";
+	switch(composition->lifecycle())
+	{
+	case CIDL::lc_Session :
+		out << class_name_ << "::" << class_name_ << "()\n";
+		out << ":component_(new " << mapName(composition->executor_def()) << "())\n";
+		for (i = 0; i < segment_seq->length(); i++)	{
+			out << ", " << segment_seq[i]->name() << "_(new " << mapName(segment_seq[i]) << "())\n";
+		}
+		out << "{\n";
+		out.insertUserSection(class_name_ + "::" + class_name_, 0);
+		out << "}\n\n\n";
+		break;
+	case CIDL::lc_Entity :
+		out << class_name_ << "::" << class_name_ << "(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n";
+		out << ":component_(new " << mapName(composition->executor_def()) << "(pkey))\n";
+		for (i = 0; i < segment_seq->length(); i++)	{
+			out << ", " << segment_seq[i]->name() << "_(new " << mapName(segment_seq[i]) << "())\n";
+		}
+		out << "{\n";
+		out.insertUserSection(class_name_ + "::" + class_name_, 0);
+		out << "}\n\n\n";
+		break;
+	default :
+		out << "// not supported lifecycle\n";
 	}
-	out << "{\n";
-	out.insertUserSection(class_name_ + "::" + class_name_, 0);
-	out << "}\n\n\n";
 
 	// destructor
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
@@ -766,7 +796,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "    throw(CORBA::SystemException, Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey)\n{\n";
 		out.indent();
 		out.insertUserSection(class_name_ + "create", 0);
-		out << "return 0;\n";
+		out << "return new " << mapName(composition) << "(pkey);\n";
 		out.unindent();
 		out << "}\n\n\n";
 
@@ -775,7 +805,6 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "	throw(CORBA::SystemException, Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey)\n{\n";
 		out.indent();
 		out.insertUserSection(class_name_ + "find_by_primary_key", 0);
-		out << "return 0;\n";
 		out.unindent();
 		out << "}\n\n\n";
 
