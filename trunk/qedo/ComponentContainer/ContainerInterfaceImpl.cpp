@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.13 2003/05/07 13:43:01 stoinski Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.14 2003/05/07 13:54:53 stoinski Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -429,8 +429,6 @@ throw (Components::Deployment::UnknownImplId,
 	qedo_home_servant->container(this);
 	qedo_home_servant->initialize (root_poa_, home_executor);
 
-	// SessionHomeContext ctx = new SessionHomeContext (qedo_home_servant);
-	// home_executor->set_context (ctx);
 	home_executor->set_context (new HomeExecutorContext (qedo_home_servant));	// Qedo extension (hack)
 																				// Standard home executor has no context!
 
