@@ -127,7 +127,7 @@ public:
 	 * \param consumers The consumers are the receivers of the event.
 	 * \param ev The ev is the event to be deliver.
 	 */
-	void queue_event(SubscribedConsumerVector&, Components::EventBase*, CORBA::Long);
+	void queue_event(const SubscribedConsumerVector&, Components::EventBase*, CORBA::Long);
 
 	/**
 	 * implements IDL:omg.org/Components/CCMContext/get_caller_principal:1.0
