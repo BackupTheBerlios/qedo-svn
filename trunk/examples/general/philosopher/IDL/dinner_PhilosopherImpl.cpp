@@ -484,7 +484,7 @@ PhilosopherHomeImpl::set_context(Components::CCMContext_ptr ctx)
 }
 
 
-::Components::ExecutorLocator_ptr
+::Components::EnterpriseComponent_ptr
 PhilosopherHomeImpl::create ()
 {
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl::create
@@ -505,6 +505,6 @@ create_PhilosopherHomeE(void)
 // BEGIN USER INSERT SECTION create_PhilosopherHome
 // END USER INSERT SECTION create_PhilosopherHome
 
-    return new dinner::PhilosopherHomeImpl();
+    return new ::dinner::PhilosopherHomeImpl();
 }
 

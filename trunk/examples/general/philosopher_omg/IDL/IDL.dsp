@@ -151,7 +151,7 @@ SOURCE=.\dinner.cidl
 InputPath=.\dinner.cidl
 
 BuildCmds= \
-	$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32  --target DiningPhilosophers dinner.cidl \
+	$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32 --business --servant --target DiningPhilosophers dinner.cidl \
 	time /T > last_build_time \
 	
 

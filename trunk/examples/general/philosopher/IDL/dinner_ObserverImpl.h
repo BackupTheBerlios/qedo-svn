@@ -28,7 +28,7 @@ namespace dinner
     //
     class ObserverSessionImpl
         : public virtual CORBA::LocalObject
-        , public virtual dinner::CCM_ObserverSessionImpl
+        , public virtual ::dinner::CCM_ObserverSessionImpl
 // BEGIN USER INSERT SECTION INHERITANCE_ObserverSessionImpl
 		, public RefCountLocalObject
 // END USER INSERT SECTION INHERITANCE_ObserverSessionImpl
@@ -56,7 +56,7 @@ namespace dinner
         //
         // IDL:dinner/Observer/philosopher_state:1.0
         //
-        void push_PhilosopherState(dinner::PhilosopherState* ev);
+        void push_PhilosopherState(::dinner::PhilosopherState* ev);
     
 // BEGIN USER INSERT SECTION ObserverSessionImpl
 // END USER INSERT SECTION ObserverSessionImpl
@@ -102,31 +102,31 @@ namespace dinner
         // IDL:Components/ExecutorLocator/configuration_complete:1.0
         //
         virtual void configuration_complete()
-        	throw(CORBA::SystemException, Components::InvalidConfiguration);
+        	throw(CORBA::SystemException, ::Components::InvalidConfiguration);
         
         //
         // IDL:Components/SessionComponent/set_session_context:1.0
         //
         virtual void set_session_context(Components::SessionContext_ptr ctx)
-        	throw(CORBA::SystemException, Components::CCMException);
+        	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
         // IDL:Components/SessionComponent/ccm_activate:1.0
         //
         virtual void ccm_activate()
-        	throw(CORBA::SystemException, Components::CCMException);
+        	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
         // IDL:Components/SessionComponent/ccm_passivate:1.0
         //
         virtual void ccm_passivate()
-        	throw(CORBA::SystemException, Components::CCMException);
+        	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
         // IDL:Components/SessionComponent/ccm_remove:1.0
         //
         virtual void ccm_remove()
-        	throw(CORBA::SystemException, Components::CCMException);
+        	throw(CORBA::SystemException, ::Components::CCMException);
     
 // BEGIN USER INSERT SECTION ObserverImpl
 // END USER INSERT SECTION ObserverImpl
@@ -161,7 +161,7 @@ namespace dinner
         //
         // IDL:.../create:1.0
         //
-        virtual ::Components::ExecutorLocator_ptr create();
+        virtual ::Components::EnterpriseComponent_ptr create();
         
         //
         // IDL:dinner/ObserverHome/my_name:1.0
@@ -178,13 +178,13 @@ namespace dinner
         //
         // IDL:dinner/ObserverHome/do_it:1.0
         //
-        virtual dinner::Observer_ptr do_it(const char* name, dinner::PhilosopherState* state)
+        virtual ::Components::EnterpriseComponent_ptr do_it(const char* name, dinner::PhilosopherState* state)
         	throw(CORBA::SystemException);
         
         //
         // IDL:dinner/ObserverHome/find_it:1.0
         //
-        virtual dinner::Observer_ptr find_it(const char* name)
+        virtual ::Components::EnterpriseComponent_ptr find_it(const char* name)
         	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION ObserverHomeImpl

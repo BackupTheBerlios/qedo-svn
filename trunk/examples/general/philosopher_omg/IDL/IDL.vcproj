@@ -154,7 +154,7 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32  --target DiningPhilosophers dinner.cidl
+						CommandLine="$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32  --business --servant --target DiningPhilosophers dinner.cidl
 time /T &gt; last_build_time
 "
 						Outputs="last_build_time;DiningPhilosophers_LOCAL.idl;DiningPhilosophers_EQUIVALENT.idl;DiningPhilosophers_BUSINESS.idl"/>

@@ -276,7 +276,7 @@ CutleryHomeImpl::set_context(Components::CCMContext_ptr ctx)
 }
 
 
-::Components::ExecutorLocator_ptr
+::Components::EnterpriseComponent_ptr
 CutleryHomeImpl::create ()
 {
 // BEGIN USER INSERT SECTION CutleryHomeImpl::create
@@ -303,6 +303,6 @@ create_CutleryHomeE(void)
     oldFact = orb->register_value_factory ("IDL:omg.org/Components/Cookie:1.0", new dinner::CookieFactory_impl());
 // END USER INSERT SECTION create_CutleryHome
 
-    return new dinner::CutleryHomeImpl();
+    return new ::dinner::CutleryHomeImpl();
 }
 

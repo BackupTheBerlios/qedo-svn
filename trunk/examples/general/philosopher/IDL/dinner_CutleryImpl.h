@@ -29,7 +29,7 @@ namespace dinner
     //
     class CutlerySessionImpl
         : public virtual CORBA::LocalObject
-        , public virtual dinner::CCM_CutlerySessionImpl
+        , public virtual ::dinner::CCM_CutlerySessionImpl
 // BEGIN USER INSERT SECTION INHERITANCE_CutlerySessionImpl
 		, public RefCountLocalObject
 // END USER INSERT SECTION INHERITANCE_CutlerySessionImpl
@@ -70,7 +70,7 @@ namespace dinner
     //
     class Seg
         : public virtual CORBA::LocalObject
-        , public virtual dinner::CCM_Seg
+        , public virtual ::dinner::CCM_Seg
 // BEGIN USER INSERT SECTION INHERITANCE_Seg
 		, public RefCountLocalObject
 // END USER INSERT SECTION INHERITANCE_Seg
@@ -93,13 +93,13 @@ namespace dinner
         // IDL:dinner/Fork/obtain_fork:1.0
         //
         virtual Components::Cookie* obtain_fork()
-        	throw(CORBA::SystemException, dinner::ForkNotAvailable);
+        	throw(CORBA::SystemException, ::dinner::ForkNotAvailable);
         
         //
         // IDL:dinner/Fork/release_fork:1.0
         //
         virtual void release_fork(Components::Cookie* ck)
-        	throw(CORBA::SystemException, dinner::NotTheEater);
+        	throw(CORBA::SystemException, ::dinner::NotTheEater);
     
 // BEGIN USER INSERT SECTION Seg
 		private:
@@ -149,31 +149,31 @@ namespace dinner
         // IDL:Components/ExecutorLocator/configuration_complete:1.0
         //
         virtual void configuration_complete()
-        	throw(CORBA::SystemException, Components::InvalidConfiguration);
+        	throw(CORBA::SystemException, ::Components::InvalidConfiguration);
         
         //
         // IDL:Components/SessionComponent/set_session_context:1.0
         //
         virtual void set_session_context(Components::SessionContext_ptr ctx)
-        	throw(CORBA::SystemException, Components::CCMException);
+        	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
         // IDL:Components/SessionComponent/ccm_activate:1.0
         //
         virtual void ccm_activate()
-        	throw(CORBA::SystemException, Components::CCMException);
+        	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
         // IDL:Components/SessionComponent/ccm_passivate:1.0
         //
         virtual void ccm_passivate()
-        	throw(CORBA::SystemException, Components::CCMException);
+        	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
         // IDL:Components/SessionComponent/ccm_remove:1.0
         //
         virtual void ccm_remove()
-        	throw(CORBA::SystemException, Components::CCMException);
+        	throw(CORBA::SystemException, ::Components::CCMException);
     
 // BEGIN USER INSERT SECTION CutleryImpl
 // END USER INSERT SECTION CutleryImpl
@@ -208,7 +208,7 @@ namespace dinner
         //
         // IDL:.../create:1.0
         //
-        virtual ::Components::ExecutorLocator_ptr create();
+        virtual ::Components::EnterpriseComponent_ptr create();
     
 // BEGIN USER INSERT SECTION CutleryHomeImpl
 // END USER INSERT SECTION CutleryHomeImpl

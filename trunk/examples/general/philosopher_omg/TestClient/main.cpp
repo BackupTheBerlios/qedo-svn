@@ -3,10 +3,10 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.6 2002/11/07 20:53:59 tom Exp $
+// $Id: main.cpp,v 1.7 2002/11/08 10:04:16 neubauer Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.6 2002/11/07 20:53:59 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.7 2002/11/08 10:04:16 neubauer Exp $";
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
@@ -71,13 +71,13 @@ get_server_activator (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const
 void
 deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const char* hostname)
 {
-	std::cout << "Getting Component Installation from Qedo/Installers/" << hostname << std::endl;
+	std::cout << "Getting Component Installation from Qedo/ComponentInstallation/" << hostname << std::endl;
 
 	CosNaming::Name installer_name;
 	installer_name.length (3);
 	installer_name[0].id = CORBA::string_dup ("Qedo");
 	installer_name[0].kind = CORBA::string_dup ("");
-	installer_name[1].id = CORBA::string_dup ("Installers");
+	installer_name[1].id = CORBA::string_dup ("ComponentInstallation");
 	installer_name[1].kind = CORBA::string_dup ("");
 	installer_name[2].id = CORBA::string_dup (hostname);
 	installer_name[2].kind = CORBA::string_dup ("");
@@ -115,9 +115,9 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 
 	try
 	{
-		component_installer->install ("PHILOSOPHER/1.0", "philosopher_omgS.dll:create_PhilosopherHomeS:philosopher_omgE.dll:create_PhilosopherHomeE");
-		component_installer->install ("FORK/1.0", "philosopher_omgS.dll:create_ForkHomeS:philosopher_omgE.dll:create_ForkHomeE");
-		component_installer->install ("OBSERVER/1.0", "philosopher_omgS.dll:create_ObserverHomeS:philosopher_omgE.dll:create_ObserverHomeE");
+		component_installer->install ("PHILOSOPHER_OMG/1.0", "philosopher_omgS.dll:create_PhilosopherHomeS:philosopher_omgE.dll:create_PhilosopherHomeE");
+		component_installer->install ("FORK_OMG/1.0", "philosopher_omgS.dll:create_ForkHomeS:philosopher_omgE.dll:create_ForkHomeE");
+		component_installer->install ("OBSERVER_OMG/1.0", "philosopher_omgS.dll:create_ObserverHomeS:philosopher_omgE.dll:create_ObserverHomeE");
 	}
 	catch (Components::Deployment::InvalidLocation&)
 	{
@@ -234,13 +234,13 @@ main (int argc, char** argv)
 
 	Components::CCMHome_var home;
 
-	home = container->install_home ("PHILOSOPHER/1.0", "", config);
+	home = container->install_home ("PHILOSOPHER_OMG/1.0", "", config);
 	DiningPhilosophers::PhilosopherHome_var p_home = DiningPhilosophers::PhilosopherHome::_narrow (home);
 
-	home = container->install_home ("FORK/1.0", "", config);
+	home = container->install_home ("FORK_OMG/1.0", "", config);
 	DiningPhilosophers::ForkHome_var c_home = DiningPhilosophers::ForkHome::_narrow (home);
 
-	home = container->install_home ("OBSERVER/1.0", "", config);
+	home = container->install_home ("OBSERVER_OMG/1.0", "", config);
 	DiningPhilosophers::ObserverHome_var o_home = DiningPhilosophers::ObserverHome::_narrow (home);
 
 	DiningPhilosophers::Philosopher_var phil1;

@@ -84,7 +84,7 @@ ObserverSessionImpl::push_event (Components::EventBase* ev)
 
 
 void
-ObserverSessionImpl::push_PhilosopherState(dinner::PhilosopherState* ev)
+ObserverSessionImpl::push_PhilosopherState(::dinner::PhilosopherState* ev)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::push_PhilosopherState
 	cout << "ObserverSessionImpl: EVENT: Philosoph " << ev->name() << " is ";
@@ -225,7 +225,7 @@ ObserverHomeImpl::set_context(Components::CCMContext_ptr ctx)
 }
 
 
-::Components::ExecutorLocator_ptr
+::Components::EnterpriseComponent_ptr
 ObserverHomeImpl::create ()
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::create
@@ -252,7 +252,7 @@ ObserverHomeImpl::muell(CORBA::Long l)
 }
 
 
-dinner::Observer_ptr
+::Components::EnterpriseComponent_ptr
 ObserverHomeImpl::do_it(const char* name, dinner::PhilosopherState* state)
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::do_it
@@ -261,7 +261,7 @@ ObserverHomeImpl::do_it(const char* name, dinner::PhilosopherState* state)
 }
 
 
-dinner::Observer_ptr
+::Components::EnterpriseComponent_ptr
 ObserverHomeImpl::find_it(const char* name)
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::find_it
@@ -288,6 +288,6 @@ create_ObserverHomeE(void)
 	oldFact = orb->register_value_factory ("IDL:dinner/PhilosopherState:1.0", new dinner::PhilosopherStateFactory_impl() );
 // END USER INSERT SECTION create_ObserverHome
 
-    return new dinner::ObserverHomeImpl();
+    return new ::dinner::ObserverHomeImpl();
 }
 

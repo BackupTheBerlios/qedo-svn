@@ -3,10 +3,10 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.3 2002/10/28 23:02:07 tom Exp $
+// $Id: main.cpp,v 1.4 2002/11/08 10:04:16 neubauer Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.3 2002/10/28 23:02:07 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.4 2002/11/08 10:04:16 neubauer Exp $";
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
@@ -72,13 +72,13 @@ get_server_activator (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const
 void
 deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const char* hostname)
 {
-	cout << "Getting Component Installation from Qedo/Installers/" << hostname << endl;
+	cout << "Getting Component Installation from Qedo/ComponentInstallation/" << hostname << endl;
 
 	CosNaming::Name installer_name;
 	installer_name.length (3);
 	installer_name[0].id = CORBA::string_dup ("Qedo");
 	installer_name[0].kind = CORBA::string_dup ("");
-	installer_name[1].id = CORBA::string_dup ("Installers");
+	installer_name[1].id = CORBA::string_dup ("ComponentInstallation");
 	installer_name[1].kind = CORBA::string_dup ("");
 	installer_name[2].id = CORBA::string_dup (hostname);
 	installer_name[2].kind = CORBA::string_dup ("");
@@ -226,7 +226,7 @@ main (int argc, char** argv)
 	}
 	catch (CORBA::SystemException& ex)
 	{
-		cerr << "CORBA system exception during creating container" << endl;
+		cerr << "CORBA system exception during creating container : " << ex << endl;
 		orb->destroy();
 		exit (1);
 	}
