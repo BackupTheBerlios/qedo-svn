@@ -54,6 +54,7 @@ SOURCES = Key.cpp \
 		ServantRegistry.cpp \
 		SessionContext.cpp \
 		SessionHomeServant.cpp \
+		StubInterceptorDispatcher.cpp \
 		GetComponentHelperServant.cpp \
 		CCMHomeServant.cpp \
 		PrimaryStreamServant.cpp \
