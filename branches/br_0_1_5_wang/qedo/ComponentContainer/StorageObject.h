@@ -57,7 +57,7 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 
 		void setStorageHome( StorageHomeBase_ptr pHomeBase );
 
-		virtual void setValue(std::map<std::string, CORBA::Any>& valueMap);
+		virtual void setValue(std::map<std::string, CORBA::Any>& valueMap) = 0;
 
 		//
 		// normal mapping of PSDL operations

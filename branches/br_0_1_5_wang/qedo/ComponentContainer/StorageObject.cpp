@@ -82,12 +82,6 @@ StorageObjectImpl::set_short_pid(CosPersistentState::ShortPid* pShortPid)
 		(*pShortPid_)[i] = (*pShortPid)[i];
 }
 
-void
-StorageObjectImpl::setValue(std::map<std::string, CORBA::Any>& valueMap)
-{ 
-	throw CORBA::NO_IMPLEMENT();
-}
-
 void 
 StorageObjectImpl::_add_ref()
 {

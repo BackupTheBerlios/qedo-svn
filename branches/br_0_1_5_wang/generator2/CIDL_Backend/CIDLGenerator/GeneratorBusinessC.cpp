@@ -748,6 +748,14 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << class_name_ << "::ccm_remove()\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.insertUserSection(class_name_ + "::ccm_remove", 0);
+	if( !CORBA::is_nil(storagehome_) )
+	{
+		out.indent();
+		out << "StorageObject* obj = dynamic_cast <StorageObject*> (context_->get_storage_object());\n";
+		out << storagehome_->managed_storagetype()->name() << "* object = dynamic_cast <" << storagehome_->managed_storagetype()->name() << "*> (obj);\n\n";
+		out << "object->destroy_object();\n";
+		out.unindent();
+	}
 	out << "}\n\n\n";
 
 	if(composition->lifecycle() == CIDL::lc_Service)

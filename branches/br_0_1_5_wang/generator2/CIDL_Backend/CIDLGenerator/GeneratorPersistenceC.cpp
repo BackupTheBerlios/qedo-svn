@@ -744,16 +744,10 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	out << "{\n";
 	out.indent();
 	out << "//use factory to create a storage object\n";
-	out << "#ifdef ORBACUS_ORB\n";
-	out << "StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();\n";
-	out << "#endif\n";
-	out << "#ifdef MICO_ORB\n";
-	out << "StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();\n";
-	out << "#endif\n";
+	out << "StorageObjectFactory factory = NULL;\n";
 	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
 	out << "factory->_remove_ref();\n";
-	out << "lObjectes_.push_back(pObjectImpl);\n";
 	out << map_psdl_return_type(ret_type, false) << " pActObject = dynamic_cast <" << map_psdl_return_type(ret_type, false) << "> (pObjectImpl);\n";
 	out << "\n//set values to current storageobject incarnation\n";
 	out << "//How to handle with pid, spid and the other member variables not given?\n";
@@ -766,6 +760,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 			out << "*"; // special for valuetype
 		out << std::string(pardescr.name) << ");\n";
 	}
+	out << "lObjectes_.push_back(pActObject);\n";
 	out << "\nreturn pActObject;\n";
 	out.unindent();
 	out << "}\n";
@@ -1263,7 +1258,7 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	out << "void\n";
 	out << strClassname_;
 	//if(isRef) out << "Ref";
-	out << "::setValue(std::map<std::string, CORBA::Any> valueMap)\n";
+	out << "::setValue(std::map<std::string, CORBA::Any>& valueMap)\n";
 	out << "{\n";
 	out.indent();
 	out << "char* szTemp;\n";
@@ -1849,16 +1844,10 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out.indent();
 	
 	out << "//use factory to create a storage object\n";
-	out << "#ifdef ORBACUS_ORB\n";
-	out << "StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();\n";
-	out << "#endif\n";
-	out << "#ifdef MICO_ORB\n";
-	out << "StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();\n";
-	out << "#endif\n";
+	out << "StorageObjectFactory factory = NULL;\n";
 	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << storagehome->managed_storagetype()->name() << "\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
 	out << "factory->_remove_ref();\n";
-	out << "lObjectes_.push_back(pObjectImpl);\n";
 	if(!isRef)
 		out << szRetType << " pActObject = dynamic_cast <" << szRetType << "> (pObjectImpl);\n";
 	else
@@ -1874,15 +1863,16 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 		//	out << "*"; // special for valuetype :-(
 		out << mapName(attribute) << ");\n";
 	}
-	out << "pActObject->setStorageHome(this);\n";
+	out << "pActObject->setStorageHome(this);\n\n";
+	out << "lObjectes_.push_back(pActObject);\n\n";
 	if(!isRef)
 	{
-		out << "\nreturn pActObject;\n";
+		out << "return pActObject;\n";
 	}
 	else
 	{
 		out << szRetType << " ref = pActObject;\n";
-		out << "\nreturn ref;\n";
+		out << "return ref;\n";
 	}
 	
 	out.unindent();

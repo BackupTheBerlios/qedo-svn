@@ -34,11 +34,9 @@ namespace Qedo
 #ifdef MICO_ORB
 namespace CosPersistentState
 #endif
-
 #ifdef ORBACUS_ORB
 namespace OBNative_CosPersistentState
 #endif
-
 {
 
 class StorageObjectBase_pre
@@ -51,25 +49,10 @@ template <class T>
 class Factory
 {
 	public:
-		Factory() : refcount_(1) {};
+		virtual T* create() = 0;
+		virtual void _add_ref() = 0;
+		virtual void _remove_ref() = 0;
 		virtual ~Factory() {};
-
-		virtual T* create() //throw (CORBA::SystemException)
-		{
-			return new T;
-		};
-		virtual void _add_ref() 
-		{
-			refcount_++;
-		};
-		virtual void _remove_ref()
-		{
-			if( --refcount_==0 )
-				delete this;
-		};
-
-	private:
-		CORBA::ULong refcount_;
 };
 
 typedef Factory<Qedo::StorageObjectImpl> StorageObjectFactory_pre;

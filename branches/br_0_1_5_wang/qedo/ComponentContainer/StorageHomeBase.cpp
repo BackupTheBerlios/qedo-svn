@@ -170,14 +170,13 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 		Close();
 
 		//use factory to create a storage object
-#ifdef ORBACUS_ORB
-		StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();
-#endif
-#ifdef MICO_ORB
-		StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();
-#endif
 		CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_.in());
+
+		StorageObjectFactory factory = NULL;
 		factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(strType.c_str(), factory);
+		if( factory==NULL )
+			throw CosPersistentState::NotFound();
+
 		StorageObjectImpl* pObjectImpl = factory->create();
 		factory->_remove_ref();
 

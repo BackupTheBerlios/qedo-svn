@@ -1547,7 +1547,7 @@ GeneratorServantC::genComponentPersistence(IR__::ComponentDef_ptr component, CID
 
 	// create operation 'setValue(...)'
 	out << "\nvoid\n";
-	out << component->name() << "Persistence::" << "setValue(std::map<std::string, CORBA::Any> valueMap)\n";
+	out << component->name() << "Persistence::" << "setValue(std::map<std::string, CORBA::Any>& valueMap)\n";
 	out << "{\n";
 	out.indent();
 	out << "char* szTemp;\n";
@@ -1870,8 +1870,11 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << ": HomeServantBase(\"" << home->id() << "\", \"" << home->managed_component()->id() << "\")\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (home servant) : Constructor called\");\n";
-	out << "pCcmStorageHome_=NULL;\n";
-	out << "pPssStorageHome_=NULL;\n";
+	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	{
+		out << "pCcmStorageHome_=NULL;\n";
+		out << "pPssStorageHome_=NULL;\n";
+	}
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -1879,14 +1882,17 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (home servant) : Destructor called\");\n";
-	out << "if(pCcmStorageHome_!=NULL)\n";
-	out.indent();
-	out << "pCcmStorageHome_->_remove_ref();\n";
-	out.unindent();
-	out << "if(pPssStorageHome_!=NULL)\n";
-	out.indent();
-	out << "pPssStorageHome_->_remove_ref();\n";
-	out.unindent();
+	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	{
+		out << "if(pCcmStorageHome_!=NULL)\n";
+		out.indent();
+		out << "pCcmStorageHome_->_remove_ref();\n";
+		out.unindent();
+		out << "if(pPssStorageHome_!=NULL)\n";
+		out.indent();
+		out << "pPssStorageHome_->_remove_ref();\n";
+		out.unindent();
+	}
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -3275,12 +3281,7 @@ GeneratorServantC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_ptr ho
 	out << "{\n";
 	out.indent();
 	out << "//use factory to create a storage object\n";
-	out << "#ifdef ORBACUS_ORB\n";
-	out << "StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();\n";
-	out << "#endif\n";
-	out << "#ifdef MICO_ORB\n";
-	out << "StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();\n";
-	out << "#endif\n";
+	out << "StorageObjectFactory factory = NULL;\n";
 	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strComponentName << "Persistence\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
 	out << "factory->_remove_ref();\n";
@@ -3296,7 +3297,7 @@ GeneratorServantC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_ptr ho
 		out << std::string(pardescr.name) << ");\n";
 	}
 	out << "pActObject->setStorageHome(this);\n\n";
-	out << "lObjectes_.push_back(pObjectImpl);\n\n";
+	out << "lObjectes_.push_back(pActObject);\n\n";
 	out << "return pActObject;\n";
 	out.unindent();
 	out << "}\n";
@@ -3697,12 +3698,7 @@ GeneratorServantC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 	out.indent();
 	
 	out << "//use factory to create a storage object\n";
-	out << "#ifdef ORBACUS_ORB\n";
-	out << "StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();\n";
-	out << "#endif\n";
-	out << "#ifdef MICO_ORB\n";
-	out << "StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();\n";
-	out << "#endif\n";
+	out << "StorageObjectFactory factory = NULL;\n";
 	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strComponentName << "Persistence\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
 	out << "factory->_remove_ref();\n";
@@ -3717,7 +3713,7 @@ GeneratorServantC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 		out << mapName(attribute) << ");\n";
 	}
 	out << "pActObject->setStorageHome(this);\n\n";
-	out << "lObjectes_.push_back(pObjectImpl);\n\n";
+	out << "lObjectes_.push_back(pActObject);\n\n";
 	out << "return pActObject;\n";
 	
 	out.unindent();

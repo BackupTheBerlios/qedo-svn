@@ -908,7 +908,7 @@ GeneratorServantH::genComponentPersistence(IR__::ComponentDef_ptr component, CID
 	
 	handleAttribute(component);
 
-	out << "\nvoid setValue(std::map<std::string, CORBA::Any> valueMap);\n\n";
+	out << "\nvoid setValue(std::map<std::string, CORBA::Any>& valueMap);\n\n";
 	
 	//generate _duplicate and _downcast operation
 	//genDuplAndDown(strClassName);
