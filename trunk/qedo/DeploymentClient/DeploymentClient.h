@@ -110,7 +110,7 @@ public:
 	 * create an assembly
 	 * \param packageName The name of the assembly package.
 	 */
-	void create(std::string packageName);
+	void create(std::string uri);
 };
 
 /** @} */

@@ -25,13 +25,23 @@
 #include "Util.h"
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: qdeploy.cpp,v 1.8 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qdeploy.cpp,v 1.9 2003/08/28 09:24:45 neubauer Exp $";
 
 
 /**
  * @addtogroup DeploymentClient
  * @{
  */
+
+
+void
+printUsage()
+{
+	std::cerr << "usage : deploy [options] <package>" << std::endl;
+	std::cerr << "		  [--help|-h] : print this" << std::endl;
+	std::cerr << "        -f : <package> is a local file" << std::endl;
+	std::cerr << "        <package> is the URL of an assembly package" << std::endl;
+}
 
 
 /**
@@ -42,22 +52,64 @@ main (int argc, char** argv)
 {
 	std::cout << "Qedo Deployment Client " << QEDO_VERSION << std::endl;
 
-	std::string packageName;
-    if (argc != 2)
-    {
-		std::cerr << "Usage : deploy <assembly_package>" << std::endl;
-		std::cerr << "               <assembly_package> is a package in the local directory" << std::endl;
-        return 1;
-    }
-    else
-    {
-        packageName = argv[1];
-    }
+	//
+	// process arguments
+	//
+	if(argc < 2)
+	{
+		printUsage();
+		exit ( 1 );
+	}
 
+	std::string package = argv[argc - 1];
+
+    for(int i = 1; i < argc;)
+    {
+        const char* option = argv[i];
+		if((strcmp(option, "--help") == 0) || (strcmp(option, "-h") == 0))
+		{
+			printUsage();
+			exit ( 1 );
+		}
+		else if(strcmp(option, "-f") == 0)
+		{
+			package = "file:///";
+			char path[1024];
+#ifdef _WIN32
+			GetCurrentDirectory(1024, path);
+			package.append(path);
+			std::string::size_type pos = package.find_first_of("\\");
+			while ((pos >= 0) && (pos < package.size()))
+			{
+				package.replace(pos, 1, "/");
+				pos = package.find_first_of("\\");
+			}
+#else
+			getcwd(path,1023);
+			package.append(path);
+#endif
+			package.append("/");
+			package.append(argv[argc - 1]);
+            
+            for(int j = i ; j + 1 < argc ; j++)
+                argv[j] = argv[j + 1];
+            
+            argc--;
+		}
+		else
+		{
+			i++;
+		}
+	}
+
+	//
 	// init ORB
+	//
 	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
 
+	//
 	// Register valuetype factories
+	//
 	CORBA::ValueFactoryBase* factory;
 	factory = new Qedo::CookieFactory_impl();
     orb -> register_value_factory ( "IDL:omg.org/Components/Cookie:1.0", factory );
@@ -67,7 +119,7 @@ main (int argc, char** argv)
 	try
 	{
 		client->initialize();
-		client->create(packageName);
+		client->create(package);
 	}
 	catch(Qedo::DeploymentClient::CannotInitialize&)
 	{

@@ -45,46 +45,88 @@ void
 DeploymentClient::initialize()
 throw (CannotInitialize)
 {
-    // get NameService
+    //
+	// get NameService
+	//
     if (! initNameService(orb_))
     {
         throw CannotInitialize();
     }
 
+	//
 	// get an AssemblyFactory
+	//
 	char hostname[256];
 	gethostname(hostname, 256);
+	// first try local one
 	CORBA::Object_var obj = resolveName(std::string("Qedo/AssemblyFactory/") + hostname);
 	assemblyFactory_ = Components::Deployment::AssemblyFactory::_narrow( obj.in() );
-    assert( !CORBA::is_nil( assemblyFactory_.in() ) );
+    if( CORBA::is_nil( assemblyFactory_.in() ) )
+	{
+		std::cerr << "..... no local assembly factory" << std::endl;
+		std::cerr << "..... try to get another one" << std::endl;
+
+		obj = resolveName(std::string("Qedo/AssemblyFactory"));
+		CosNaming::NamingContext_var ctx = CosNaming::NamingContext::_narrow( obj.in() );
+		if( CORBA::is_nil( ctx.in() ) )
+		{
+			std::cerr << "..... no assembly factories at all" << std::endl;
+			throw CannotInitialize();
+		}
+
+		//
+		// try another one
+		//
+		CosNaming::BindingList_var list;
+		CosNaming::BindingIterator_var iter;
+		try
+		{
+			ctx->list(10, list.out(), iter.out());
+		}
+		catch (...)
+		{
+		}
+
+		for(CORBA::ULong i = 0; i < list->length(); i++)
+		{
+			try
+			{
+				obj = ctx->resolve(list[i].binding_name);
+			}
+			catch (...)
+			{
+			}
+			assemblyFactory_ = Components::Deployment::AssemblyFactory::_narrow( obj.in() );
+			if( !CORBA::is_nil( assemblyFactory_.in() ) )
+			{
+				std::cerr << "..... take assembly factory of " << list[i].binding_name[0].id << std::endl;
+				break;
+			}
+		}
+
+		if( CORBA::is_nil( assemblyFactory_.in() ) )
+		{
+			std::cerr << "..... no assembly factory" << std::endl;
+			throw CannotInitialize();
+		}
+	}
+	else
+	{
+		std::cerr << "..... take assembly factory on " << hostname << std::endl;
+	}
 }
 
 
 void
-DeploymentClient::create(std::string packageName)
+DeploymentClient::create(std::string uri)
 {
+	std::cerr << "..... deploy " << uri << std::endl;
+
 	//
 	// create assembly
 	//
 	Components::Cookie* cookie;
 	Components::Deployment::Assembly_var assembly;
-    std::string uri = "file:///";
-    char path[1024];
-#ifdef _WIN32
-    ::GetCurrentDirectory(1024, path);
-    uri.append(path);
-    std::string::size_type f = uri.find_first_of("\\");
-    while ((f >= 0) && (f < uri.size()))
-    {
-        uri.replace(f, 1, "/");
-        f = uri.find_first_of("\\");
-    }
-#else
-    getcwd(path,1023);
-    uri.append(path);
-#endif
-    uri.append("/");
-    uri.append(packageName);
 
 	try
 	{
@@ -115,44 +157,43 @@ DeploymentClient::create(std::string packageName)
 	//
 	// build assembly
 	//
-	std::cout << "Start the assembly!\n" << std::endl;
+	std::cout << "..... start the assembly!\n" << std::endl;
 	try
 	{
 		assembly->build();
 	}
 	catch( Components::CreateFailure& ex )
 	{
-		std::cerr << "CreateFailure exception during assembly building : " << ex << std::endl;
+		std::cerr << ".......... CreateFailure exception during assembly building : " << ex << std::endl;
 		return;
 	}
 	catch( CORBA::SystemException& ex )
 	{
-		std::cerr << "CORBA system exception during assembly building : " << ex << std::endl;
+		std::cerr << ".......... CORBA system exception during assembly building : " << ex << std::endl;
 		throw;
 	}
 	
 	//
 	// wait
 	//
-    std::cout << "Please press any key to destroy the Assembly ..." << std::endl;
+    std::cout << "..... please press any key to destroy the Assembly ..." << std::endl;
     getchar();
 	
 	//
 	// tear down assembly
 	//
-	std::cout << "Stop the assembly!" << std::endl;
 	try
 	{
 		assembly->tear_down();
 	}
 	catch( Components::RemoveFailure& ex )
 	{
-		std::cerr << "RemoveFailure exception during tear down assembly : " << ex << std::endl;
+		std::cerr << ".......... RemoveFailure exception during tear down assembly : " << ex << std::endl;
 		return;
 	}
 	catch( CORBA::SystemException& ex )
 	{
-		std::cerr << "CORBA system exception during tear down assembly : " << ex << std::endl;
+		std::cerr << ".......... CORBA system exception during tear down assembly : " << ex << std::endl;
 		throw;
 	}
 }
