@@ -180,9 +180,59 @@ public:
 	bool wait_timed (const QedoMutex*, unsigned long );
 
 	/**
-	 * insert comments
+	 * unblocks at least one of the threads that are blocked on condition variable
 	 */
 	void signal();
+
+	/**
+	 * unblocks all threads currently blocked on the condition variable
+	 */
+
+	void broadcast();
+};
+
+struct ReadWriteMutexDelegate;
+
+/**
+ * a read/write mutex for Qedo
+ */
+class CONTAINERDLL_API QedoReadWriteMutex : private QedoMutex
+{
+	/** makes use of this */
+	friend class QedoLock;
+	/** makes use of this */
+	friend class QedoCond;
+
+private:
+
+	/** the mutex */
+	struct ReadWriteMutexDelegate* rwdelegate_;
+
+public:
+	/**
+	 * constructor
+	 */
+	QedoReadWriteMutex();
+
+	/**
+	 * destructor
+	 */
+	~QedoReadWriteMutex();
+
+	/**
+	 * read lock an object
+	 */
+	void read_lock_object();
+
+	/**
+	 * write lock an object
+	 */
+	void write_lock_object();
+
+	/**
+	 * unlock an object
+	 */
+	void unlock_object();
 };
 
 struct ThreadDelegate;

@@ -34,7 +34,7 @@
 #include <sys/time.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.22 2003/10/09 15:59:24 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.23 2003/10/17 11:50:39 boehme Exp $";
 
 
 namespace Qedo {
@@ -66,13 +66,51 @@ struct ThreadDelegate {
 #endif
 };
 
+enum  lock_state_t
+{
+		READ_LOCK,
+		WRITE_LOCK
+};
+
+struct ReadWriteMutexDelegate
+{
+	ReadWriteMutexDelegate();
+	~ReadWriteMutexDelegate();
+	lock_state_t state;
+	unsigned long readers;
+	unsigned long writers;
+	QedoCond* reader_cond;
+	QedoCond* writer_cond;
+};
+
+
+ReadWriteMutexDelegate::ReadWriteMutexDelegate()
+	: state(READ_LOCK), readers(0), writers(0)
+{
+	reader_cond = new QedoCond();
+	writer_cond = new QedoCond();
+}
+
+ReadWriteMutexDelegate::~ReadWriteMutexDelegate()
+{
+	delete writer_cond;
+	delete reader_cond;
+}
+
 QedoMutex::QedoMutex() 
 {
     delegate_ = new MutexDelegate();
 #ifdef QEDO_WINTHREAD
 	delegate_->mutex_ = CreateMutex (NULL,FALSE,NULL);
 #else
-	pthread_mutex_init (&(delegate_->mutex_), NULL);
+	int ret;
+	ret = pthread_mutex_init (&(delegate_->mutex_), NULL);
+
+	if ( ret )
+	{
+		std::cerr << "QedoMutex::QedoMutex: " << strerror(ret) << std::endl;
+		abort();
+	}
 #endif
 }
 
@@ -80,8 +118,16 @@ QedoMutex::QedoMutex()
 QedoMutex::~QedoMutex() 
 {
 #ifdef QEDO_WINTHREAD
+	// XXX must be implemented
 #else
-	pthread_mutex_destroy( &(delegate_->mutex_));
+	int ret;
+
+	ret = pthread_mutex_destroy( &(delegate_->mutex_));
+
+	if ( ret )
+	{
+		std::cerr << "QedoMutex::~QedoMutex: " << strerror(ret) << std::endl;
+	}
 #endif
 	delete delegate_;
 }
@@ -97,7 +143,14 @@ QedoMutex::lock_object()
 		assert (0);
 	}
 #else
-	pthread_mutex_lock (&(delegate_->mutex_));
+	int ret;
+
+	ret = pthread_mutex_lock (&(delegate_->mutex_));
+
+	if ( ret )
+	{
+		std::cerr << "QedoMutex::lock_object: " << strerror(ret) << std::endl;
+	}
 #endif
 }
 
@@ -112,7 +165,14 @@ QedoMutex::unlock_object()
 		assert (0);
 	}
 #else
-	pthread_mutex_unlock (&(delegate_->mutex_));
+	int ret;
+	
+	ret = pthread_mutex_unlock (&(delegate_->mutex_));
+
+	if ( ret )
+	{
+		std::cerr << "QedoMutex::unlock_object: " << strerror(ret) << std::endl;
+	}
 #endif
 }
 
@@ -150,7 +210,15 @@ QedoCond::QedoCond()
 #ifdef QEDO_WINTHREAD
 		delegate_->event_handle_ = CreateEvent (0, FALSE /*manual-reset*/, FALSE /*initial: non-signaled*/, 0);
 #else
-		pthread_cond_init (&(delegate_->cond_), 0);
+	int ret;
+
+	ret = pthread_cond_init (&(delegate_->cond_), 0);
+
+	if ( ret )
+	{
+		std::cerr << "QedoCond::QedoCond: " << strerror(ret) << std::endl;
+		abort();
+	}
 #endif
 }
 
@@ -160,7 +228,15 @@ QedoCond::QedoCond (char * sig_name)
 #ifdef QEDO_WINTHREAD
 		delegate_->event_handle_ = CreateEvent (0, FALSE /*manual-reset*/, FALSE /*initial: non-signaled*/, sig_name);
 #else
-		pthread_cond_init (&(delegate_->cond_), 0);
+	int ret;
+
+	ret = pthread_cond_init (&(delegate_->cond_), 0);
+
+	if ( ret )
+	{
+		std::cerr << "QedoCond::QedoCond: " << strerror(ret) << std::endl;
+		abort();
+	}
 #endif
 }
 
@@ -168,8 +244,16 @@ QedoCond::QedoCond (char * sig_name)
 QedoCond::~QedoCond() 
 {
 #ifdef QEDO_WINTHREAD
+	// XXX must be implemented
 #else
-	pthread_cond_destroy (&(delegate_->cond_));
+	int ret;
+
+	ret = pthread_cond_destroy (&(delegate_->cond_));
+
+	if ( ret )
+	{
+		std::cerr << "QedoCond::~QedoCond: " << strerror(ret) << std::endl;
+	}
 #endif
 	delete delegate_;
 }
@@ -193,7 +277,14 @@ QedoCond::wait(const QedoMutex* m)
 	}
 	const_cast<QedoMutex* const>(m)->lock_object();
 #else
-	pthread_cond_wait (&(delegate_->cond_),&(m->delegate_->mutex_));
+	int ret;
+
+	ret = pthread_cond_wait (&(delegate_->cond_),&(m->delegate_->mutex_));
+
+	if ( ret )
+	{
+		std::cerr << "QedoCond::wait: " << strerror(ret) << std::endl;
+	}
 #endif
 }
 
@@ -264,7 +355,7 @@ QedoCond::wait_timed(const QedoMutex* m, unsigned long timeout)
 		case 0:
 			break;
 		default:
-			std::cerr << "QedoCond: qedo_wait() failed " << std::endl;
+			std::cerr << "QedoCond::wait_timed: " << strerror(x) << std::endl;
 			assert (0);
 			break;
 	};
@@ -283,8 +374,100 @@ QedoCond::signal()
 		assert (0);
 	}
 #else
-	pthread_cond_signal (&(delegate_->cond_));
+	int ret;
+
+	ret = pthread_cond_signal (&(delegate_->cond_));
+
+	if ( ret )
+	{
+		std::cerr << "QedoCond::signal: " << strerror(ret) << std::endl;
+	}
 #endif
+}
+
+void
+QedoCond::broadcast() 
+{
+#ifdef QEDO_WINTHREAD
+	// XXX must be implemented
+#else
+	int ret;
+
+	ret = pthread_cond_broadcast (&(delegate_->cond_));
+
+	if ( ret )
+	{
+		std::cerr << "QedoCond::broadcast: " << strerror(ret) << std::endl;
+	}
+#endif
+}
+
+QedoReadWriteMutex::QedoReadWriteMutex()
+{
+	rwdelegate_ = new ReadWriteMutexDelegate;
+}
+
+QedoReadWriteMutex::~QedoReadWriteMutex()
+{
+	delete rwdelegate_;
+}
+
+void
+QedoReadWriteMutex::read_lock_object()
+{
+	QedoLock l(this);
+
+	while (rwdelegate_->state != READ_LOCK)
+	{
+		rwdelegate_->reader_cond->wait(*this);
+	}
+
+	rwdelegate_->readers += 1;
+}
+
+void
+QedoReadWriteMutex::write_lock_object()
+{
+	QedoLock l(this);
+
+	rwdelegate_->writers += 1;
+
+	while (rwdelegate_->state != WRITE_LOCK )
+	{
+		rwdelegate_->writer_cond->wait(*this);
+	}
+
+	rwdelegate_->writers -= 1;
+
+}
+
+void
+QedoReadWriteMutex::unlock_object()
+{
+	QedoLock l(this);
+
+	switch (rwdelegate_->state)
+	{
+		case READ_LOCK:
+			rwdelegate_->readers -= 1;
+			if ( rwdelegate_->readers == 0 && rwdelegate_->writers ) 
+			{
+				rwdelegate_->state = WRITE_LOCK;
+				rwdelegate_->writer_cond->signal();
+			}
+			break;
+		case WRITE_LOCK:
+			if ( rwdelegate_->writers )
+			{
+				rwdelegate_->writer_cond->signal();
+			}
+			else 
+			{
+				rwdelegate_->state = READ_LOCK;
+				rwdelegate_->reader_cond->signal();
+			}
+			break;
+	}
 }
 
 QedoThread::QedoThread()
@@ -300,7 +483,14 @@ QedoThread::stop()
        if(!TerminateThread(delegate_->th_handle_,exitcode)) 
                DEBUG_OUT("Error while TerminateThread");
 #else
-       if(pthread_cancel(delegate_->t_)) DEBUG_OUT("Error while pthread_cancel");
+	int ret;
+
+   ret = pthread_cancel(delegate_->t_);
+
+	if ( ret )
+	{
+		std::cerr << "QedoThread::stop: " << strerror(ret) << std::endl;
+	}
 #endif
 }
 
@@ -308,9 +498,17 @@ void
 QedoThread::join()
 {
 #ifdef QEDO_WINTHREAD
+	// XXX must be implemented
 #else
-       void *state;
-       if(pthread_join(delegate_->t_,&state)) DEBUG_OUT("Error while pthread_join");
+	void *state;
+	int ret;
+
+   ret = pthread_join(delegate_->t_,&state);
+
+	if ( ret )
+	{
+		std::cerr << "QedoThread::join: " << strerror(ret) << std::endl;
+	}
 #endif
 }
 
@@ -347,13 +545,34 @@ qedo_startDetachedThread(void* (*p)(void*), void* arg) {
 							NULL,
 							&(thread->delegate_->th_id_));
 #else
+	int ret;
 	pthread_attr_t detached_attr;
-	pthread_attr_init(&detached_attr);
-	pthread_attr_setdetachstate(&detached_attr, PTHREAD_CREATE_JOINABLE);
-	pthread_create(&(thread->delegate_->t_), &detached_attr, startFunc, startParams);
+
+	ret = pthread_attr_init(&detached_attr);
+
+	if ( ret )
+	{
+		std::cerr << "qedo_startDetachedThread: " << strerror(ret) << std::endl;
+		abort();
+	}
+
+	ret = pthread_attr_setdetachstate(&detached_attr, PTHREAD_CREATE_JOINABLE);
+
+	if ( ret )
+	{
+		std::cerr << "qedo_startDetachedThread: " << strerror(ret) << std::endl;
+		abort();
+	}
+
+	ret = pthread_create(&(thread->delegate_->t_), &detached_attr, startFunc, startParams);
+
+	if ( ret )
+	{
+		std::cerr << "qedo_startDetachedThread: " << strerror(ret) << std::endl;
+		abort();
+	}
 #endif
 	return thread;
 }
-
 
 } // end namespace Qedo
