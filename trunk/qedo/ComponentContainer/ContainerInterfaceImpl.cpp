@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.23 2003/08/06 11:40:06 neubauer Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.24 2003/08/06 12:17:25 stoinski Exp $";
 
 
 namespace Qedo {
@@ -539,8 +539,9 @@ throw (Components::Deployment::UnknownImplId,
 
 	HomeExecutorContext *home_ctx = new HomeExecutorContext (home_ref);
 
-	home_executor->set_context (home_ctx);	// Qedo extension (hack)
-	home_ctx->_remove_ref();				// Standard home executor has no context!
+	home_executor->set_context (home_ctx);	// Qedo extension (hack): Standard home executor has no context!
+
+	home_ctx->_remove_ref();
 
 	if(service_name)
 	{
@@ -571,10 +572,9 @@ throw (Components::Deployment::UnknownImplId,
 	// Okay, our home servant is stored in the home entry and the executor is stored in the
 	// home servant, so we do not need any additional reference here
 	qedo_home_servant->_remove_ref();
-#ifndef MICO_ORB
-	//// ################## find a solution ####################
-	home_executor->_remove_ref();
-#endif
+
+	CORBA::release (home_executor);
+
 	return home_ref._retn();
 }
 
