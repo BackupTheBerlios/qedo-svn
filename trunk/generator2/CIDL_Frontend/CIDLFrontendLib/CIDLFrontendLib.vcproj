@@ -385,7 +385,8 @@
 			<File
 				RelativePath=".\tree.k">
 				<FileConfiguration
-					Name="Debug_orbacus|Win32">
+					Name="Debug_orbacus|Win32"
+					ExcludedFromBuild="TRUE">
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
