@@ -1,0 +1,77 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://cif.sourceforge.net/componentassembly.dtd">
+
+<componentassembly id="HelloWorld_with_monitoring_Example">
+
+    <description>Example assembly"</description>
+
+    <componentfiles>
+        <componentfile id="Callee_file">
+            <fileinarchive name="HelloWorld_CalleeImpl.zip"/>
+        </componentfile>
+
+        <componentfile id="Caller_file">
+            <fileinarchive name="HelloWorld_CallerImpl.zip"/>
+        </componentfile>
+
+        <componentfile id="Monitor_file">
+            <fileinarchive name="container_service_MonImpl.zip"/>
+        </componentfile>
+
+    </componentfiles>
+
+    <partitioning>
+	<processcollocation>
+		<homeplacement id="CalleeHome">
+	        	<componentfileref idref="Callee_file"/>
+				<componentimplref idref="UUID-80164643-3114-4A57-97D0-98BB773F869F"/>
+  	        	<componentinstantiation id="callee">
+			</componentinstantiation>
+
+		        <destination></destination>
+		</homeplacement>
+		<homeplacement id="MonintorHome">
+	        	<componentfileref idref="Monitor_file"/>
+				<componentimplref idref="UUID-8CBEE3D8-6AC6-49AD-88D4-060A340CC697"/>
+  	        	<componentinstantiation id="monitor_service">
+			</componentinstantiation>
+
+		        <destination></destination>
+		</homeplacement>
+	</processcollocation>
+
+	<processcollocation>
+		<homeplacement id="CallerHome">
+			<componentfileref idref="Caller_file"/>
+				<componentimplref idref="UUID-CDE9D487-2CFA-4E66-88EF-B21EA2F40E0D"/>
+			<componentinstantiation id="caller">
+			</componentinstantiation>
+
+			<destination></destination>
+		</homeplacement>
+
+	</processcollocation>
+    </partitioning>
+
+
+    <connections>
+	<connectinterface>
+		<usesport>
+			<usesidentifier>hi</usesidentifier>
+			<componentinstantiationref idref="caller"/>
+	    	</usesport>
+
+		<providesport>
+			<providesidentifier>the_hello</providesidentifier>
+			<componentinstantiationref idref="callee"/>
+	    	</providesport>
+	</connectinterface>
+
+    </connections>
+
+    <extension class="startorder" origin="QEDO">monitor_service</extension>
+    <extension class="startorder" origin="QEDO">callee</extension>
+    <extension class="startorder" origin="QEDO">caller</extension>
+
+</componentassembly>
+

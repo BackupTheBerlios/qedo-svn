@@ -92,7 +92,10 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="zip ../container_service_MonImpl.zip -j  Debug_mico/container_service_MonImpl.dll ../container_service_MonImpl_SERVANT/Debug_mico/container_service_MonImpl_SERVANT.dll ../monitoring_service.cidl
+zip ../container_service_MonImpl.zip meta-inf/container_service_MonImpl.ccd meta-inf/container_service_MonImpl.csd
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -334,25 +337,10 @@ copy container_service_MonImpl_LOCAL.h container_service_MonImpl_LOCAL_skel.h
 			Name="xml"
 			Filter="ccd;csd">
 			<File
-				RelativePath="container_service_MonImpl.ccd">
+				RelativePath="meta-inf\container_service_MonImpl.ccd">
 			</File>
 			<File
-				RelativePath="container_service_MonImpl.csd">
-				<FileConfiguration
-					Name="Debug_orbacus|Win32">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_tao|Win32">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
+				RelativePath="meta-inf\container_service_MonImpl.csd">
 			</File>
 		</Filter>
 	</Files>
