@@ -5,6 +5,9 @@
 
 #include <string>
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 namespace QEDO_CIDL_Generator {
 
@@ -131,23 +134,56 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
 	// obtain uuid for the implementation
 	//
 	std::string uuid_string = "";
+	std::string os = "linux";
+	std::string processor = "";
+	std::string compiler = "";
+	std::string compiler_version = "";
+
 #ifdef _WIN32
+	// create uuid
 	GUID guid;
 	CoCreateGuid(&guid);
 	LPOLESTR lpolestr;
 	StringFromCLSID(guid, &lpolestr);
-	uuid_string = *lpolestr;
+	int i = wcstombs(NULL, lpolestr, 0);
+    char *buf = (char *)malloc(i);
+    wcstombs(buf, lpolestr, i);
+	// remove { and }
+	buf[i - 1] = '\0';
+	uuid_string = buf;
+	uuid_string.erase(0, 1);
+	free(buf);
 	CoTaskMemFree(lpolestr);
+	os = "WIN";
+	processor = "x86";
+	compiler = "VC++";
+	compiler_version = "7,0";
 #endif
 	
+	//
 	// open output file
-	std::string name = mapAbsoluteName(composition, "_");
+	//
+	std::string name;
+	std::string id = composition->id();
+	IR__::Contained_ptr module_def = 0;
+	std::string::size_type pos = id.find_last_of("/");
+	if(pos != std::string::npos)
+	{
+		id.replace(pos, string::npos, ":1.0");
+		module_def = repository_->lookup_id(id.c_str());
+		name = mapAbsoluteName(module_def, "_");
+		name.append("_");
+	}
+	name.append(composition->name());
 	filename_ = name + ".csd";
 	out.open(filename_.c_str());
 
+	//
+	// xml file begin
+	//
 	out << "<?xml version = '1.0' ?>\n";
 	out << "<!DOCTYPE softpkg PUBLIC \"-//OMG//DTD Software Package Descriptor\"";
-	out << " \"http://cif.sourceforge.net/softpkg.dtd\">\n\n";
+	out << " \"http://qedo.berlios.de/softpkg.dtd\">\n\n";
 	out << "<softpkg name=\"" << composition->name() << "_softpkg\" version=\"1,0\">\n\n";
 	out.indent();
     out << "<pkgtype>CORBA Component</pkgtype>\n";
@@ -162,11 +198,14 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out << "</idl>\n\n";
 
+	//
+	// implementation
+	//
     out << "<implementation id=\"" << uuid_string << "\">\n";
 	out.indent();
-    out << "<os name=\"Win\" />\n";
-    out << "<processor name=\"x86\" />\n";
-    out << "<compiler name=\"VC++\" version=\"7,0\" />\n";
+    out << "<os name=\"" << os << "\" />\n";
+    out << "<processor name=\"" << processor << "\" />\n";
+    out << "<compiler name=\"" << compiler << "\" version=\"" << compiler_version << "\" />\n";
     out << "<programminglanguage name=\"C++\" />\n";
     out << "<dependency type=\"DLL\"><localfile name=\"jtcd.dll\"/></dependency>\n";
     out << "<dependency type=\"DLL\"><localfile name=\"obd.dll\"/></dependency>\n";
@@ -177,16 +216,14 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
     out << "</descriptor>\n";
     out << "<code type=\"DLL\">\n";
 	out.indent();
-    out << "<fileinarchive name=\"" << name << "E.dll\"/>\n";
-	out.indent();
+    out << "<fileinarchive name=\"" << name << "_EXECUTOR.dll\"/>\n";
     out << "<entrypoint>create_" << composition->ccm_home()->name() << "E</entrypoint>\n";
 	out << "<usage>executor</usage>\n";
 	out.unindent();
-    out << "</code>\n\n";
+    out << "</code>\n";
 	out << "<code type=\"DLL\">\n";
 	out.indent();
-    out << "<fileinarchive name=\"" << name << "S.dll\"/>\n";
-	out.indent();
+    out << "<fileinarchive name=\"" << name << "_SERVANT.dll\"/>\n";
     out << "<entrypoint>create_" << composition->ccm_home()->name() << "S</entrypoint>\n";
 	out << "<usage>servant</usage>\n";
 	out.unindent();

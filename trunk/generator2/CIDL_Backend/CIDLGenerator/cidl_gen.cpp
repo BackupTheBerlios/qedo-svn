@@ -3,6 +3,7 @@
 #include "GeneratorLIDL.h"
 #include "GeneratorBIDL.h"
 #include "GeneratorCCD.h"
+#include "GeneratorCSD.h"
 #include "GeneratorBusinessH.h"
 #include "GeneratorBusinessC.h"
 #include "GeneratorServantH.h"
@@ -235,6 +236,13 @@ main
 			new QEDO_CIDL_Generator::GeneratorCCD(repository);
 		ccd_generator->generate(target, fileprefix);
 		ccd_generator->destroy();
+
+		// generate Software Package Descriptor
+		std::cout << "Generating Software Package Descriptor for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorCSD *csd_generator =
+			new QEDO_CIDL_Generator::GeneratorCSD(repository);
+		csd_generator->generate(target, fileprefix);
+		csd_generator->destroy();
 
 		// generate business header
 		std::cout << "Generating business code header for " << target << std::endl;

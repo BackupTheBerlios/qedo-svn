@@ -288,7 +288,7 @@ GeneratorServantH::doUses(IR__::UsesDef_ptr uses)
 	//
 	// multiple
 	//
-	if(uses->is_multiple() == true)
+	if(uses->is_multiple())
 	{
 		// connect_...
 		out << "Components::Cookie* " << "connect_" << uses->name() << "(" << interface_name << "_ptr conx)\n";
@@ -760,7 +760,7 @@ GeneratorServantH::genContextServantBody(IR__::ComponentDef_ptr component)
 		//
 		// multiple
 		//
-		if(a_uses->is_multiple() == true)
+		if(a_uses->is_multiple())
 		{
 			out << mapFullName(component_) << "::" << a_uses->name() << "Connections* ";
 			out << "get_connections_" << a_uses->name() << "()\n";

@@ -513,7 +513,7 @@ GeneratorLIDL::doUses(IR__::UsesDef_ptr uses)
 	out << "\n//\n// " << uses->id() << "\n//\n";
 
 	// multiple
-	if(uses->is_multiple() == true)
+	if(uses->is_multiple())
 	{
 		out << map_absolute_name(component_) << "::" << uses->name() << "Connections ";
 		out << "get_connections_" << uses->name() << "();\n";

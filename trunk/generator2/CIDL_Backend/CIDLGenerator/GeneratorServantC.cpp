@@ -596,7 +596,7 @@ GeneratorServantC::doUses(IR__::UsesDef_ptr uses)
 	//
 	// multiple
 	//
-	if(uses->is_multiple() == true)
+	if(uses->is_multiple())
 	{
 		std::string mult_conn = mapFullName(component_) + "::" + uses->name() + "Connections";
 
@@ -1182,7 +1182,7 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 		//
 		// multiple
 		//
-		if(a_uses->is_multiple() == true)
+		if(a_uses->is_multiple())
 		{
 			std::string mult_conn = mapFullName(component_) + "::" + a_uses->name() + "Connections";
 

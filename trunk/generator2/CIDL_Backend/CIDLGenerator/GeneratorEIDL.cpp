@@ -1097,7 +1097,7 @@ GeneratorEIDL::doUses(IR__::UsesDef_ptr uses)
 	//
 	// multiple
 	//
-	if(uses->is_multiple() == true)
+	if(uses->is_multiple())
 	{
 		out << "struct " << uses->name() << "Connection {\n";
 		out.indent();

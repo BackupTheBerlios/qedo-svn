@@ -151,7 +151,7 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 
 	out << "<?xml version = '1.0' ?>\n";
 	out << "<!DOCTYPE corbacomponent PUBLIC \"-//OMG//DTD CORBA Component Descriptor\"";
-	out << " \"http://cif.sourceforge.net/corbacomponent.dtd\">\n\n";
+	out << " \"http://qedo.berlios.de/corbacomponent.dtd\">\n\n";
 
 	out << "<corbacomponent>\n";
 	out.indent();

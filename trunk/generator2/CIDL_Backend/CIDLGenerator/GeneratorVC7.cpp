@@ -313,6 +313,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	std::string id = composition->id();
 	std::string project_name;
+	std::string servant_project_name;
 	std::string composition_name;
 	IR__::Contained_ptr module_def = 0;
 	std::string::size_type pos = id.find_last_of("/");
@@ -325,6 +326,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	}
 	composition_name.append(composition->name());
 	project_name = composition_name + "_EXECUTOR";
+	servant_project_name = composition_name + "_SERVANT";
 	filename_ = project_name + ".vcproj";
 	out.open(filename_.c_str());
 
@@ -339,6 +341,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "Name=\"" << project_name << "\"\n";
 	out << "ProjectGUID=\"{" << uid_++ << "}\"\n";
 	out << "Keyword=\"Win32Proj\">\n";
+
 	//
 	// platforms
 	//
@@ -350,6 +353,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out.unindent();
 	out << "</Platforms>\n";
+
 	//
 	// configurations
 	//
@@ -398,13 +402,21 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << "Name=\"VCMIDLTool\"/>\n";
 	out.unindent();
+
+	//
+	// packaging
+	//
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCPostBuildEventTool\"\n";
-	out << "CommandLine=\"wzzip.exe " << project_name << ".zip $(TargetPath) philosophers.idl philosopher.csd ";
-	out << composition_name << ".ccd\n";
-	out << "copy $(TargetPath) &quot;$(QEDO)\\..\\runtime&quot;\"/>\n";
+	out << "CommandLine=\"wzzip.exe " << composition_name << ".zip ";
+	out << "Debug/" << project_name << ".dll ";
+	out << "Debug/" << servant_project_name << ".dll ";
+	out << file_prefix_ << "_EQUIVALENT.idl ";
+	out << composition_name << ".ccd ";
+	out << composition_name << ".csd\"/>\n";
 	out.unindent();
+
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCPreBuildEventTool\"/>\n";
