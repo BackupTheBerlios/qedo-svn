@@ -400,24 +400,18 @@ namespace DCI {
 #endif
         
     printout_(" downloading file "+ filename+" ...");
-    CorbaIdlTypes::OctetBag_var octetBag = theFile -> get_file();
+    CorbaIdlTypes::OctetList_var octetList = theFile -> get_file();
     printout_("OK" );
 
     std::string fullName = targetDir + PATH_SEPARATOR + filename;
     std::ofstream targetFile(fullName.data(),std::ios_base::binary);
         
     printout_("Writing received data to file " , fullName.data());
-    int counter = 1;
-    for(CORBA::ULong j=0; j < octetBag -> length(); j++){
-      if(j % (counter * 1000) == 0) {
-	std::cout<<".";
-	counter ++;
-      }
-      CORBA::Octet currentOctet = octetBag[j];
-      targetFile << currentOctet;
-    }                    
+	const CORBA::Octet* it = octetList->get_buffer();
+	targetFile.write((char*)it, octetList->length());
+
     std::cout << "Finished" << std::endl;
-    std::cout << "Wrote " << counter << " kB" << std::endl;
+    std::cout << "Wrote " << octetList -> length() << " kB" << std::endl;
 
 #ifdef WIN32
     _findclose( hFile );
@@ -518,7 +512,7 @@ RepNodeManagerSessionImpl::RepNodeManagerSessionImpl()
 RepNodeManagerSessionImpl::~RepNodeManagerSessionImpl()
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::~RepNodeManagerSessionImpl
-    // We do not need wsock2_32.dll anymore, so we cleanup
+   // We do not need wsock2_32.dll anymore, so we cleanup
 #ifdef WIN32
     WSACleanup( );	  
 #endif
