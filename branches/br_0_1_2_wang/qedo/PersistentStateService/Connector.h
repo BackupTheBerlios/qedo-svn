@@ -22,12 +22,13 @@
 #ifndef __CONNECTOR_H__
 #define __CONNECTOR_H__
 
-#include "PSSUtil.h"
+#include <map>
 #include <string>
+#include "PSSUtil.h"
 #include "CORBADepends.h"
 #include "RefCountBase.h"
 #include "Catalog.h"
-#include "PSSNativeClasses.h"
+#include "PSSStorageObject.h"
 
 
 #define DEFAULT_PROCESSOR_ACCOUNT 1;
@@ -58,12 +59,12 @@ class PSSDLL_API ConnectorImpl : public virtual CosPersistentState::Connector,
 		//
 		// IDL:omg.org/CosPersistentState/Connector/get_pid:1.0
 		//
-		Pid* get_pid(StorageObjectBase_ptr obj);
+		Pid* get_pid(StorageObjectBase obj);
 
 		//
 		// IDL:omg.org/CosPersistentState/Connector/get_short_pid:1.0
 		//
-		ShortPid* get_short_pid(StorageObjectBase_ptr obj);
+		ShortPid* get_short_pid(StorageObjectBase obj);
 
 		//
 		// IDL:omg.org/CosPersistentState/Connector/create_basic_session:1.0
@@ -83,32 +84,34 @@ class PSSDLL_API ConnectorImpl : public virtual CosPersistentState::Connector,
 		//
 		// IDL:omg.org/CosPersistentState/Connector/register_storage_object_factory:1.0
 		//
-		StorageObjectFactory_ptr register_storage_object_factory(const char* storage_type_name,
-																 StorageObjectFactory_ptr factory);
+		StorageObjectFactory register_storage_object_factory(const char* storage_type_name,
+															StorageObjectFactory factory);
 
 		//
 		// IDL:omg.org/CosPersistentState/Connector/register_storage_home_factory:1.0
 		//
-		StorageHomeFactory_ptr register_storage_home_factory(const char* storage_home_type_name,
-															 StorageHomeFactory_ptr factory);
+		StorageHomeFactory register_storage_home_factory(const char* storage_home_type_name,
+														StorageHomeFactory factory);
 
 		//
 		// IDL:omg.org/CosPersistentState/Connector/register_session_factory:1.0
 		//
-		SessionFactory_ptr register_session_factory(const char* catalog_type_name,
-													SessionFactory_ptr factory);
+		SessionFactory register_session_factory(const char* catalog_type_name,
+												SessionFactory factory);
 
 		//
 		// IDL:omg.org/CosPersistentState/Connector/register_session_pool_factory:1.0
 		//
-		SessionPoolFactory_ptr register_session_pool_factory(const char* catalog_type_name,
-															 SessionPoolFactory_ptr factory);
+		SessionPoolFactory register_session_pool_factory(const char* catalog_type_name,
+														SessionPoolFactory factory);
 
 	private:
 
 		char* m_szImplID;
 		SessionPoolImpl* m_pSessionPool;
 		std::list <SessioImpl*> m_lSessions;
+		map<char*, StorageObjectFactory> m_SOFMap;
+		map<char*, StorageHomeFactory> m_SHFMap;
 };
 
 }; // namespace Qedo

@@ -44,11 +44,11 @@ class QDRecordset
 {
 	public:
 
-		QDRecordset(){};
-
-		QDRecordset(SQLHDBC hDbc);
+		QDRecordset();
 
 		~QDRecordset(){};
+
+		void Init(SQLHDBC hDbc);
 
 		bool Open(const char* szSqlStr);
 

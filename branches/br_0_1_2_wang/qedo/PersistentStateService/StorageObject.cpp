@@ -20,10 +20,17 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#include "PSSNativeClasses_impl.h"
+#include "StorageObject.h"
 
 namespace Qedo
 {
+
+StorageObjectImpl::StorageObjectImpl() :
+	m_bModified(FALSE),
+	m_strUpdate(""),
+	m_strSelect("")
+{
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //When called on an incarnation, the destroy_object operation destroys the 
@@ -90,6 +97,35 @@ StorageObjectImpl::get_storage_home()
 		NULL;
 }
 
+void 
+StorageObjectImpl::setModified(bool bModified)
+{
+	m_bModified = bModified;
+}
+
+bool 
+StorageObjectImpl::isModified()
+{
+	return m_bModified;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//returns the SQL-Update for CatalogBase::flush()
+////////////////////////////////////////////////////////////////////////////////
+string
+StorageObjectImpl::getUpdate()
+{
+	return m_strUpdate;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//returns the SQL-Select for CatalogBase::refresh()
+////////////////////////////////////////////////////////////////////////////////
+string
+StorageObjectImpl::getSelect()
+{
+	return m_strSelect;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //------------------------------------------------------------------------------
@@ -224,17 +260,4 @@ StorageObjectRefImpl::get_storage_home() const
 	return NULL;
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-//------------------------------------------------------------------------------
-////////////////////////////////////////////////////////////////////////////////
-//a public default constructor that creates a null reference
-////////////////////////////////////////////////////////////////////////////////
-/*template <class T>
-T* 
-FactoryImpl<T>::create()
-{
-	return (new Qedo::T());
-}
-*/
 }

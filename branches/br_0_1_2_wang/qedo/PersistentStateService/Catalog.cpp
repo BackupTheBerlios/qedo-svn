@@ -25,16 +25,29 @@
 namespace Qedo
 {
 
-CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM, const char* szConnString)
+CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM, const char* szConnString, Connector* connector)
 {
 	QDDatabase::QDDatabase();
 
 	m_eAM = eAM;
+	m_connector = connector;
 	strcpy(m_szConnString, szConnString);
 }
 
 CatalogBaseImpl::~CatalogBaseImpl()
 {
+	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
+	
+	for (storageHomeBase_iter = m_lStorageHomeBases.begin();
+		 storageHomeBase_iter != m_lStorageHomeBases.end();
+		 storageHomeBase_iter++)
+	{
+		delete (*storageHomeBase_iter);
+	}
+
+	m_lStorageHomeBases.clear();
+
+	_remove_ref();
 }
 
 bool 
@@ -117,34 +130,34 @@ CatalogBaseImpl::access_mode()
 StorageHomeBase_ptr 
 CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 {
-	if(!IsConnected())
-		return NULL;
-
-	//
-	//ToDo: add a function to find the base-home-name of storage_home_id
-	//If not found, raises the exception NotFound()
-	//
-	char* base_home_id = NULL;
-
-	if(!IsTableExist(storage_home_id))
-		throw CosPersistentState::NotFound();
-
+	//find it in the list
 	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
 	
 	for (storageHomeBase_iter = m_lStorageHomeBases.begin();
 		 storageHomeBase_iter != m_lStorageHomeBases.end();
 		 storageHomeBase_iter++)
 	{
-		const char* szName = (*storageHomeBase_iter)->getOwnStorageHomeName();
+		const char* szName = (*storageHomeBase_iter)->getStorageHomeName();
 		
 		if(strcmp(szName, storage_home_id)==0)
 			return *storageHomeBase_iter;
 	}
+	
+	//check it whether in the database
+	if(!IsConnected())
+		return NULL;
 
-	StorageHomeBaseImpl* pStorageHomeBase = 
-		new StorageHomeBaseImpl((dynamic_cast <CatalogBase_ptr> (this)), base_home_id, storage_home_id);
+	if(!IsTableExist(storage_home_id))
+		throw CosPersistentState::NotFound();
 
-	m_lStorageHomeBases.push_back(pStorageHomeBase);
+	//if not in the list, new one.
+	StorageHomeFactory factory = new OBNative_CosPersistentState::StorageHomeFactory_pre();
+	m_connector->register_storage_home_factory(storage_home_id, factory);
+	StorageHomeBase* pStorageHomeBase = factory->create();
+    StorageHomeBaseImpl* pStorageHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pStorageHomeBase);
+	pStorageHomeBaseImpl->Init((dynamic_cast <CatalogBase_ptr> (this)), storage_home_id);
+
+	m_lStorageHomeBases.push_back(pStorageHomeBaseImpl);
 
 	//return (CosPersistentState::StorageHomeBase::_narrow(pStorageHomeBase));
 	return (dynamic_cast <StorageHomeBase_ptr> (pStorageHomeBase));
@@ -155,11 +168,10 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 //the target catalog. It raises NotFound if it cannot find a storage object with
 //this pid; otherwise, it returns an incarnation of this storage object
 ////////////////////////////////////////////////////////////////////////////////
-StorageObjectBase_ptr 
+StorageObjectBase 
 CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 {
 	int iLength = the_pid.length();
-
 	unsigned char* sz_Pid = new unsigned char[iLength];
 	
 	for(int i=0; i<iLength; i++)
@@ -169,29 +181,25 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 
 	// fetch the table name where pid can be found
 	string strToExecute;
-	unsigned char szBaseHome[MAX_COL_SIZE];
-	unsigned char szOwnHome[MAX_COL_SIZE];
+	unsigned char szStorageHome[MAX_COL_SIZE];
 	unsigned char szSpid[MAX_COL_SIZE];
 
-	QDRecordset prs = QDRecordset(&m_hDbc);
+	QDRecordset prs;
+	prs.Init(&m_hDbc);
 
-	strToExecute = "select basehome, ownhome from pid_content where pid like ";
+	strToExecute = "select ownhome from pid_content where pid like ";
 	strToExecute.append((const char*)sz_Pid);
 	strToExecute += ";";
 
 	if(prs.Open(strToExecute.c_str()))
 	{
-		memset(szBaseHome, '\0', MAX_COL_SIZE);
-		memset(szOwnHome, '\0', MAX_COL_SIZE);
-
-		prs.GetFieldValue("BASEHOME", szBaseHome);
-		prs.GetFieldValue("OWNHOME", szOwnHome);
-
+		memset(szStorageHome, '\0', MAX_COL_SIZE);
+		prs.GetFieldValue("OWNHOME", szStorageHome);
 		prs.Close();
 	}
 
 	strToExecute = "select spid from ";
-	strToExecute.append((const char*)szBaseHome);
+	strToExecute.append((const char*)szStorageHome);
 	strToExecute += " where pid like ";
 	strToExecute.append((const char*)sz_Pid);
 	strToExecute += ";";
@@ -204,28 +212,68 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 		prs.Destroy();
 	}
 
-	StorageHomeBase_ptr p_sHomeBase = find_storage_home((const char*)szOwnHome);
+	//convert char* to ShortPid
+	ShortPid spid;
+	spid.length(8);
+	for(i=0; i<iLength; i++)
+	{
+		spid[i] = sz_Pid[i];
+	}
 
-	return (p_sHomeBase->find_by_short_pid(NULL));
+	StorageHomeBase_ptr p_sHomeBase = find_storage_home((const char*)szStorageHome);
+	return (p_sHomeBase->find_by_short_pid(spid));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//The flush operation instructs the PSS implementation to write to disk any 
-//cached modifications of storage object incarnations managed by this catalog.
+//write to disk any cached modifications of storage object incarnations managed 
+//by this catalog.
 ////////////////////////////////////////////////////////////////////////////////
 void 
 CatalogBaseImpl::flush()
 {
+	string strFlush = "";
+
+	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
+	
+	for( storageHomeBase_iter = m_lStorageHomeBases.begin();
+		 storageHomeBase_iter != m_lStorageHomeBases.end();
+		 storageHomeBase_iter++ )
+	{
+		strFlush += (*storageHomeBase_iter)->getFlush();
+	}
+
 	if(CanTransact()==TRUE && access_mode!=READ_ONLY)
-		SQLEndTran(SQL_HANDLE_DBC, m_hDbc, SQL_COMMIT);
+	{
+		if(ExecuteSQL(strFlush.c_str()))
+		{
+			SQLRETURN ret;
+			ret = SQLEndTran(SQL_HANDLE_DBC, m_hDbc, SQL_COMMIT);
+			if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+			{
+				for( storageHomeBase_iter = m_lStorageHomeBases.begin();
+					 storageHomeBase_iter != m_lStorageHomeBases.end();
+					 storageHomeBase_iter++ )
+				{
+					// the flush is successfull, we set the modified-value of each
+					// storage object back to FALSE
+					(*storageHomeBase_iter)->setBatchUnModified();
+				}
+			}
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//refresh any cached storage object incarnations accesed by this catalog
 //Calling refresh is unusual: most applications will never use this operation
 ////////////////////////////////////////////////////////////////////////////////
 void 
 CatalogBaseImpl::refresh()
 {
+	// 1. add a static map<pid, storageobject*> in storage object 
+	//    (or fetch storage objects from every storage home in catalogBase? )
+	// 2. here get any one instance of storage object
+	// 3. select * from ...
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -259,14 +307,15 @@ CatalogBaseImpl::close()
 	}
 }
 
-SessionPoolImpl::SessionPoolImpl(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString)
+SessionPoolImpl::SessionPoolImpl(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString, Connector* connector)
 {
-	CatalogBaseImpl::CatalogBaseImpl(eAM, szConnString);
+	CatalogBaseImpl::CatalogBaseImpl(eAM, szConnString, connector);
 	m_tx_policy = tx_policy;
 }
 
 SessionPoolImpl::~SessionPoolImpl()
 {
+	_remove_ref();
 }
 
 bool 
@@ -317,7 +366,13 @@ SessionPoolImpl::Init()
 void 
 SessionPoolImpl::flush_by_pids(const PidList& pids)
 {
+	PidList temp_pids = pids;
 
+	
+	for(unsigned int i=0; i<pids.length(); i++)
+	{
+		//pids[i];
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

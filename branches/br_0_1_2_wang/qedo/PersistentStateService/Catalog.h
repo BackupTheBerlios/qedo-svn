@@ -44,7 +44,7 @@ class CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
 
 		CatalogBaseImpl() {};
 
-		CatalogBaseImpl(const AccessMode eAM, const char* szConnString);
+		CatalogBaseImpl(const AccessMode eAM, const char* szConnString, Connector* connector);
 
 		~CatalogBaseImpl();
 
@@ -65,7 +65,7 @@ class CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
 		//
 		// IDL:omg.org/CosPersistentState/CatalogBase/find_by_pid:1.0
 		//
-		StorageObjectBase_ptr find_by_pid(const Pid& the_pid);
+		StorageObjectBase find_by_pid(const Pid& the_pid);
 
 		//
 		// IDL:omg.org/CosPersistentState/CatalogBase/flush:1.0
@@ -87,6 +87,10 @@ class CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
 		//
 		void close();
 
+	protected:
+
+		Connector* m_connector;
+
 	private:
 
 		AccessMode m_eAM;
@@ -101,7 +105,7 @@ class  SessioImpl : public virtual CosPersistentState::Sessio,
 
 		SessioImpl() {};
 
-		SessioImpl(AccessMode eAM, const char* szConnString) {};
+		SessioImpl(AccessMode eAM, const char* szConnString, Connector* connector) {};
 
 		~SessioImpl() {};
 };
@@ -114,7 +118,7 @@ class  SessionPoolImpl : public virtual CosPersistentState::SessionPool,
 
 		SessionPoolImpl() {};
 
-		SessionPoolImpl(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString);
+		SessionPoolImpl(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString, Connector* connector);
 
 		~SessionPoolImpl();
 

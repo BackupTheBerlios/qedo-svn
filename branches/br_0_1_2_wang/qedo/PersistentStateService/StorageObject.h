@@ -1,11 +1,12 @@
 #ifndef __CONNECTOR_H__
 #define __CONNECTOR_H__
 
+#include <string>
 #include "PSSUtil.h"
 #include "RefCountBase.h"
-#include "PSSNativeClasses.h"
+#include "PSSStorageObject.h"
 
-
+using namespace std;
 using namespace CosPersistentState;
 
 namespace Qedo
@@ -16,6 +17,16 @@ class StorageObjectImpl : public virtual CosPersistentState::StorageObject,
 {
 	public:
 		
+		StorageObjectImpl();
+
+		string getUpdate();
+
+		string getSelect();
+
+		bool isModified();
+
+		void setModified(bool bModified);
+
 		// normal mapping of PSDL operations
 		void destroy_object() 
 			throw (CORBA::SystemException);
@@ -34,11 +45,14 @@ class StorageObjectImpl : public virtual CosPersistentState::StorageObject,
 	
 	protected:
 		
-		~StorageObjectImpl() {}
+		~StorageObjectImpl() {};
 
 	private:
 
 		StorageHomeBase* m_storageHomeBase;
+		bool m_bModified;
+		string m_strUpdate;
+		string m_strSelect;
 };
 
 class StorageObjectRefImpl : public virtual CosPersistentState::StorageObjectRef,

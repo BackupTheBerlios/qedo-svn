@@ -141,7 +141,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(ORBACUS)\include;$(ORBACUS)\include\OB"
+				AdditionalIncludeDirectories=".;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;..\PersistentStateService;..\ComponentContainer"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -436,6 +436,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\Components_skel.h">
+			</File>
+			<File
+				RelativePath="PSSNativeClasses.h">
+			</File>
+			<File
+				RelativePath="PSSStorageObject.h">
 			</File>
 			<File
 				RelativePath="QedoComponents.h">

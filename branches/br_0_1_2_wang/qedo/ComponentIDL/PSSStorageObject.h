@@ -20,24 +20,16 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __PSSNATIVECLASSES_H__
-#define __PSSNATIVECLASSES_H__
+#ifndef __STORAGEOBJECT_H__
+#define __STORAGEOBJECT_H__
 
 #include <CORBA.h>
 #include "CORBADepends.h"
 
 namespace CosPersistentState
-//namespace OBNative_CosPersistentState
 {
 
-class StorageObjectBase
-{
-	protected:
-	
-		virtual ~StorageObjectBase() {}
-};
-
-class StorageObject : public virtual StorageObjectBase
+class StorageObject : public virtual OBNative_CosPersistentState::StorageObjectBase_pre
 {
 	public:
 		
@@ -122,22 +114,6 @@ class StorageObjectRef
 		
 		typedef StorageObject _target_type;
 };
-
-template <class T>
-class Factory
-{
-	public:
-
-		virtual T* create() throw (CORBA::SystemException) = 0;
-		virtual void _add_ref() {};
-		virtual void _remove_ref() {};
-		virtual ~Factory() {};
-};
-
-typedef Factory<StorageObject> TStorageObjectFactory;
-typedef Factory<StorageHomeBase> TStorageHomeFactory;
-typedef Factory<Sessio> TSessionFactory;
-typedef Factory<SessionPool> TSessionPoolFactory;
 
 };
 

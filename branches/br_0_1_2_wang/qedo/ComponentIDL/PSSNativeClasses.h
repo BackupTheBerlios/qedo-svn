@@ -19,66 +19,63 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
+#ifndef __PSSNATIVECLASSES_H__
+#define __PSSNATIVECLASSES_H__
 
-#ifndef __STORAGEHOMEBASE_H__
-#define __STORAGEHOMEBASE_H__
-
-#include <list>
-#include <string>
-#include "PSSUtil.h"
-#include "CORBADepends.h"
 #include "RefCountBase.h"
-#include "QDRecordset.h"
-#include "StorageObject.h"
-#include "PSSStorageObject.h"
 
-using namespace std;
-using namespace CosPersistentState;
 
 namespace Qedo
 {
+	class StorageObjectImpl;
+	class StorageHomeBaseImpl;
+	class SessioImpl;
+	class SessionPoolImpl;
+}
 
-class  StorageHomeBaseImpl : public virtual CosPersistentState::StorageHomeBase,
-							 public virtual RefCountLocalObject,
-							 public virtual QDRecordset
+namespace OBNative_CosPersistentState
 {
-	public:
 
-		StorageHomeBaseImpl();
-
-		~StorageHomeBaseImpl();
-
-		void Init(CatalogBase_ptr pCatalogBase, const char* szStorageHomeName);
-
-		string getFlush();
-
-		string getRefresh();
-
-		void setBatchUnModified();
-		
-		//
-		// IDL:omg.org/CosPersistentState/StorageHomeBase/find_by_short_pid:1.0
-		//
-		StorageObjectBase find_by_short_pid(const ShortPid& short_pid);
-
-		//
-		// IDL:omg.org/CosPersistentState/StorageHomeBase/get_catalog:1.0
-		//
-		CatalogBase_ptr get_catalog();
-
-		char* getStorageHomeName();
-
+class StorageObjectBase_pre
+{
 	protected:
-		
-		char* m_szStorageHomeName;
-
-	private:
-		
-		CatalogBase_ptr m_pCatalogBase;
-		std::list <StorageObjectImpl*> m_lStorageObjectes;
-		std::list <StorageObjectImpl*> m_lTempList;
+		virtual ~StorageObjectBase_pre() {}
 };
 
-}; // namespace Qedo
+template <class T>
+class Factory : public virtual Qedo::RefCountLocalObject
+{
+	public:
+		//virtual T* create() throw (CORBA::SystemException) = 0;
+		virtual T* create() throw (CORBA::SystemException)
+		{
+			return new T;
+		};
+		virtual void _add_ref() 
+		{
+			Qedo::RefCountLocalObject::_add_ref();
+		};
+		virtual void _remove_ref()
+		{
+			Qedo::RefCountLocalObject::_remove_ref();
+		};
+		virtual ~Factory()
+		{
+			Qedo::RefCountLocalObject::~RefCountLocalObject();
+		};
+};
+
+typedef Factory<Qedo::StorageObjectImpl> StorageObjectFactory_pre;
+typedef Factory<Qedo::StorageHomeBaseImpl> StorageHomeFactory_pre;
+typedef Factory<Qedo::SessioImpl> SessionFactory_pre;
+typedef Factory<Qedo::SessionPoolImpl> SessionPoolFactory_pre;
+
+typedef StorageObjectBase_pre* StorageObjectBase;
+typedef StorageObjectFactory_pre* StorageObjectFactory;
+typedef StorageHomeFactory_pre* StorageHomeFactory;
+typedef SessionFactory_pre* SessionFactory;
+typedef SessionPoolFactory_pre* SessionPoolFactory;
+
+};
 
 #endif

@@ -54,6 +54,8 @@ ConnectorImpl::~ConnectorImpl()
 
 	delete m_pSessionPool;
 	m_pSessionPool = NULL;
+
+	_remove_ref();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +71,7 @@ ConnectorImpl::implementation_id()
 //return the pid of the given storage object
 ////////////////////////////////////////////////////////////////////////////////
 Pid* 
-ConnectorImpl::get_pid(StorageObjectBase_ptr obj)
+ConnectorImpl::get_pid(StorageObjectBase obj)
 {
 	if(obj==NULL)
 		return NULL;
@@ -81,7 +83,7 @@ ConnectorImpl::get_pid(StorageObjectBase_ptr obj)
 //return the short pid of the given storage object
 ////////////////////////////////////////////////////////////////////////////////
 ShortPid* 
-ConnectorImpl::get_short_pid(StorageObjectBase_ptr obj)
+ConnectorImpl::get_short_pid(StorageObjectBase obj)
 {
 	if(obj==NULL)
 		return NULL;
@@ -116,12 +118,13 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 		strConn += ";";
 	}
 	
-	SessioImpl* pSession = new SessioImpl(access_mode, strConn.c_str());
+	SessioImpl* pSession = new SessioImpl(access_mode, 
+										strConn.c_str(), 
+										(dynamic_cast <Connector*> (this)));
 
-	if(!pSession->Init())
-		throw CORBA::PERSIST_STORE();
 
-	if(!pSession->DriverConnect(strConn.c_str()))
+	if( pSession->Init()==FALSE ||
+		pSession->DriverConnect(strConn.c_str())==FALSE )
 		throw CORBA::PERSIST_STORE();
 
 	m_lSessions.push_back(pSession);
@@ -156,12 +159,14 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 	
 	if(m_pSessionPool==NULL)
 	{
-		SessionPoolImpl* pSessionPool = new SessionPoolImpl(access_mode, tx_policy, strConn.c_str());
+		SessionPoolImpl* pSessionPool = 
+			new SessionPoolImpl(access_mode, 
+								tx_policy, 
+								strConn.c_str(), 
+								(dynamic_cast <Connector*> (this)));
 
-		if(!pSessionPool->Init())
-			throw CORBA::PERSIST_STORE();
-
-		if(!pSessionPool->DriverConnect(strConn.c_str()))
+		if( pSessionPool->Init()==FALSE ||
+			pSessionPool->DriverConnect(strConn.c_str())==FALSE )
 			throw CORBA::PERSIST_STORE();
 
 		m_pSessionPool = pSessionPool;
@@ -179,33 +184,67 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 //returns the storage object factory previously registered with the given name
 //; return NULL when there is no previously registered factory
 ////////////////////////////////////////////////////////////////////////////////
-StorageObjectFactory_ptr 
+StorageObjectFactory
 ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
-                                           StorageObjectFactory_ptr factory)
+												StorageObjectFactory factory)
 {
-	return NULL;
+	//To invoke this method, a new instance of StorageObjectFactory and its 
+	//storage_type_name are necessary. When the factory is not found, we 
+	//register it in the map and return NULL; Otherwise the registert factory 
+	//will be returned. That means, to retrive a factory this method can be 
+	//perhaps twice invoked.
+	map<char*, StorageObjectFactory>::iterator sof_iter;
+	sof_iter = m_SOFMap.find((char*)storage_type_name);
+
+	if(sof_iter != m_SOFMap.end())
+	{
+		return sof_iter->second;
+	}
+	else
+	{
+		typedef pair <char*, StorageObjectFactory> Factory_Pair;
+		m_SOFMap.insert( Factory_Pair((char*)storage_type_name, factory) );
+		return NULL;
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //returns the storage home factory previously registered with the given name
 //; return NULL when there is no previously registered factory
 ////////////////////////////////////////////////////////////////////////////////
-StorageHomeFactory_ptr 
+StorageHomeFactory
 ConnectorImpl::register_storage_home_factory(const char* storage_home_type_name,
-                                         StorageHomeFactory_ptr factory)
+											StorageHomeFactory factory)
 {
-	return NULL;
+	//To invoke this method, a new instance of StorageHomeFactory and its 
+	//storage_home_type_name are necessary. When the factory is not found, we 
+	//register it in the map and return NULL; Otherwise the registert factory 
+	//will be returned. That means, to retrive a factory this method can be 
+	//perhaps twice invoked.
+	map<char*, StorageHomeFactory>::iterator shf_iter;
+	shf_iter = m_SHFMap.find((char*)storage_home_type_name);
+
+	if(shf_iter != m_SHFMap.end())
+	{
+		return shf_iter->second;
+	}
+	else
+	{
+		typedef pair <char*, StorageHomeFactory> Factory_Pair;
+		m_SHFMap.insert( Factory_Pair((char*)storage_home_type_name, factory) );
+		return NULL;
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //returns the session factory previously registered with the given name
 //; return NULL when there is no previously registered factory
 ////////////////////////////////////////////////////////////////////////////////
-SessionFactory_ptr 
+SessionFactory
 ConnectorImpl::register_session_factory(const char* catalog_type_name,
-                                    SessionFactory_ptr factory)
+										SessionFactory factory)
 {
-	//unnessicary
+	//unnecessary to implement
 	throw CORBA::NO_IMPLEMENT();
 }
 
@@ -213,10 +252,11 @@ ConnectorImpl::register_session_factory(const char* catalog_type_name,
 //returns the session pool factory previously registered with the given name
 //; return NULL when there is no previously registered factory
 ////////////////////////////////////////////////////////////////////////////////
-SessionPoolFactory_ptr 
+SessionPoolFactory
 ConnectorImpl::register_session_pool_factory(const char* catalog_type_name,
-                                         SessionPoolFactory_ptr factory)
+											SessionPoolFactory factory)
 {
+	//unnecessary to implement
 	throw CORBA::NO_IMPLEMENT();
 }
 

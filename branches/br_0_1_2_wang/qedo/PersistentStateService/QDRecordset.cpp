@@ -26,11 +26,16 @@
 namespace Qedo
 {
 
-QDRecordset::QDRecordset(SQLHDBC hDbc) :
-	m_hDbc(m_hDbc),
-	m_hStmt(SQL_NULL_HSTMT),
-	m_nNumRowsFetched(0)
+QDRecordset::QDRecordset()
 {
+}
+
+void
+QDRecordset::Init(SQLHDBC hDbc)
+{
+	m_hDbc = hDbc;
+	m_hStmt = SQL_NULL_HSTMT;
+	m_nNumRowsFetched = 0;
 	AllocStmt();
 }
 

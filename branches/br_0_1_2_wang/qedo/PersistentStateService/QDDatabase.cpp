@@ -239,8 +239,8 @@ QDDatabase::IsTableExist(const char* szTableName)
 					NULL, 0,    // All schemas
 					//NULL, 0,	// All tables 
 					(unsigned char*)szTableName, strlen(szTableName),
-					//NULL, 0);   // All table types 
-					(unsigned char*)szTable, strlen(szTable)); // only TABLE
+					NULL, 0);   // All table types 
+					//(unsigned char*)szTable, strlen(szTable)); // only TABLE
 
 	// fetch and close the current cursor
 	ret = SQLFetch(hStmt);

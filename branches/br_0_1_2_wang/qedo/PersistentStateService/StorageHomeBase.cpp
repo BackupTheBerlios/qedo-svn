@@ -27,27 +27,40 @@
 namespace Qedo
 {
 
-StorageHomeBaseImpl::StorageHomeBaseImpl(CatalogBase_ptr pCatalogBase, const char* szBaseStorageHomeName, const char* szOwnStorageHomeName) :
-	m_szBaseStorageHomeName(NULL),
-	m_szOwnStorageHomeName(NULL)
+StorageHomeBaseImpl::StorageHomeBaseImpl()
 {
-	strcpy(m_szBaseStorageHomeName, szBaseStorageHomeName);
-	strcpy(m_szOwnStorageHomeName, szOwnStorageHomeName);
-	m_pCatalogBase = pCatalogBase;
-
-	QDRecordset::QDRecordset((dynamic_cast <CatalogBaseImpl*> (m_pCatalogBase))->getHDBC());
 }
 
 StorageHomeBaseImpl::~StorageHomeBaseImpl()
 {
-	//
-	//ToDo: delete all of the StorageObjectBase_ptr from the list
-	//
+	if(!m_lStorageObjectes.empty())
+	{
+		list <StorageObjectImpl*> ::iterator storageObject_iter;
+	
+		for (storageObject_iter = m_lStorageObjectes.begin();
+			storageObject_iter != m_lStorageObjectes.end();
+			storageObject_iter++)
+		{
+			(dynamic_cast <StorageObject*> (*storageObject_iter))->_remove_ref();
+		}
 
-	delete m_szBaseStorageHomeName;
-	delete m_szOwnStorageHomeName;
-	m_szBaseStorageHomeName = NULL;
-	m_szOwnStorageHomeName = NULL;
+		m_lStorageObjectes.clear();
+	}
+
+	if(!m_lTempList.empty())
+		m_lTempList.clear();
+
+	delete m_szStorageHomeName;
+	m_szStorageHomeName = NULL;
+}
+
+void StorageHomeBaseImpl::Init(CatalogBase_ptr pCatalogBase, const char* szStorageHomeName)
+{
+	m_szStorageHomeName = NULL;
+	strcpy(m_szStorageHomeName, szStorageHomeName);
+	m_pCatalogBase = pCatalogBase;
+	
+	QDRecordset::Init((dynamic_cast <CatalogBaseImpl*> (m_pCatalogBase))->getHDBC());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,13 +68,14 @@ StorageHomeBaseImpl::~StorageHomeBaseImpl()
 //short pid in the target storage home. If such an object is not found, 
 //find_by_short_pid, raises the CosPersistentState::NotFound exception.
 ////////////////////////////////////////////////////////////////////////////////
-StorageObjectBase_ptr 
+StorageObjectBase 
 StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 {
 	int i = 0;
 	int iLength = short_pid.length();
 
-	list <StorageObject*> ::iterator storageObject_iter;
+	//find from list
+	list <StorageObjectImpl*> ::iterator storageObject_iter;
 	
 	for (storageObject_iter = m_lStorageObjectes.begin();
 		 storageObject_iter != m_lStorageObjectes.end();
@@ -77,12 +91,11 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 			}
 			
 			if(i+1==iLength)
-				return (dynamic_cast <StorageObjectBase_ptr> (*storageObject_iter));
+				return (dynamic_cast <StorageObjectBase> (*storageObject_iter));
 		}
 	}
 
-	throw CosPersistentState::NotFound();
-/*
+	//if not in the list
 	unsigned char* sz_shortPid = new unsigned char[iLength];
 	
 	for(i=0; i<iLength; i++)
@@ -92,10 +105,8 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 
 	string strToExecute;
 	strToExecute = "select * from "; //??? Which columns should be seleted?
-	strToExecute.append((const char*)m_szBaseStorageHomeName);
-	strToExecute += " where storagehome like ";
-	strToExecute.append((const char*)m_szOwnStorageHomeName);
-	strToExecute += " and spid= ";
+	strToExecute.append((const char*)m_szStorageHomeName);
+	strToExecute += " where spid like ";
 	strToExecute.append((const char*)sz_shortPid);
 	strToExecute += ";";
 	
@@ -107,7 +118,9 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 
 	//m_lStorageObjectBases.push_back();
 	
-	return NULL;*/
+	throw CosPersistentState::NotFound();
+	
+	return NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -121,9 +134,68 @@ StorageHomeBaseImpl::get_catalog()
 }
 
 char*
-StorageHomeBaseImpl::getOwnStorageHomeName()
+StorageHomeBaseImpl::getStorageHomeName()
 {
-	return m_szOwnStorageHomeName;
+	return m_szStorageHomeName;
+}
+
+string 
+StorageHomeBaseImpl::getFlush()
+{
+	if(!m_lTempList.empty())
+		m_lTempList.clear();
+
+	string strFlush = "";
+
+	list <StorageObjectImpl*> ::iterator storageObject_iter;
+	
+	for (storageObject_iter = m_lStorageObjectes.begin();
+		 storageObject_iter != m_lStorageObjectes.end();
+		 storageObject_iter++)
+	{
+		if((*storageObject_iter)->isModified())
+		{
+			m_lTempList.push_back((*storageObject_iter));
+			strFlush += (*storageObject_iter)->getUpdate();
+		}
+	}
+	
+	return strFlush;
+}
+
+string 
+StorageHomeBaseImpl::getRefresh()
+{
+	string strRefresh = "";
+
+	list <StorageObjectImpl*> ::iterator storageObject_iter;
+	
+	for (storageObject_iter = m_lStorageObjectes.begin();
+		 storageObject_iter != m_lStorageObjectes.end();
+		 storageObject_iter++)
+	{
+		strRefresh += (*storageObject_iter)->getSelect();
+	}
+	
+	return strRefresh;
+}
+
+void
+StorageHomeBaseImpl::setBatchUnModified()
+{
+	if(!m_lTempList.empty())
+	{
+		list <StorageObjectImpl*> ::iterator storageObject_iter;
+		
+		for (storageObject_iter = m_lTempList.begin();
+			storageObject_iter != m_lTempList.end();
+			storageObject_iter++)
+		{
+			(*storageObject_iter)->setModified(FALSE);
+		}
+
+		m_lTempList.clear();
+	}
 }
 
 } // namespace Qedo

@@ -31,6 +31,7 @@ module CORBA {
 #endif
 
 #include <orb.idl>
+#include "PSSNativeClasses.idl"
 
 #if TAO_ORB
 #include "PortableServer.pidl"
@@ -65,16 +66,16 @@ module CosPersistentState {
     local interface StorageHomeBase;
     //local interface TransactionalSession;
 
-    //native StorageObjectBase;
-    //native StorageObjectFactory;
-    //native StorageHomeFactory;
-    //native SessionFactory;
-    //native SessionPoolFactory;
-	local interface StorageObjectBase;
-    local interface StorageObjectFactory;
-    local interface StorageHomeFactory;
-    local interface SessionFactory;
-    local interface SessionPoolFactory;
+    native StorageObjectBase;
+    native StorageObjectFactory;
+    native StorageHomeFactory;
+    native SessionFactory;
+    native SessionPoolFactory;
+	//local interface StorageObjectBase;
+    //local interface StorageObjectFactory;
+    //local interface StorageHomeFactory;
+    //local interface SessionFactory;
+    //local interface SessionPoolFactory;
 
     exception NotFound {};
 

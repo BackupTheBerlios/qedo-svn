@@ -202,9 +202,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\Connector.cpp">
 			</File>
 			<File
-				RelativePath=".\PSSNativeClasses_impl.cpp">
-			</File>
-			<File
 				RelativePath="QDDatabase.cpp">
 			</File>
 			<File
@@ -212,6 +209,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\StorageHomeBase.cpp">
+			</File>
+			<File
+				RelativePath="StorageObject.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -224,12 +224,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\Connector.h">
 			</File>
 			<File
-				RelativePath=".\PSSNativeClasses.h">
-			</File>
-			<File
-				RelativePath=".\PSSNativeClasses_impl.h">
-			</File>
-			<File
 				RelativePath=".\PSSUtil.h">
 			</File>
 			<File
@@ -240,6 +234,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\StorageHomeBase.h">
+			</File>
+			<File
+				RelativePath="StorageObject.h">
 			</File>
 		</Filter>
 		<Filter
