@@ -11,7 +11,7 @@
 using namespace std;
 
 static int state_before_coment = YYSTATE;
-//static int yylineno = 1;
+static int yylineno = 1;
 static char filename[1024];
 static char first_filename[1024]={0,};
 char* input_basename = 0; /* base name of the input file */
