@@ -1,6 +1,6 @@
 
 //
-// $Id: philosophers.idl,v 1.2 2004/01/22 13:28:11 tom Exp $
+// $Id: philosophers.idl,v 1.3 2004/03/06 15:35:17 tom Exp $
 //
 #include "Components.idl"
 
@@ -181,9 +181,5 @@ module dinner
      **  The simple home for instantiating Observer components.
      **/
     home ObserverHome manages Observer {
-		 readonly attribute PhilosopherState my_name;
-		 factory do_it(in string name, in PhilosopherState state) raises(NotTheEater) ;
-		 finder find_it(in string name);
-		 void muell(in long l);
 	 };
 };
