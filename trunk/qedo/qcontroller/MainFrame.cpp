@@ -33,6 +33,7 @@
 #include "qedoicon.xpm"
 #include "launcher.xpm"
 
+#include "qedoutil.h"
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_BUTTON(ID_HELP_BUTTON, MainFrame::onHelp)
@@ -99,8 +100,11 @@ void MainFrame::onHelp()
 	int t=hf->Show();
 	*/
 	wxHtmlHelpController *help=new wxHtmlHelpController(wxHF_DEFAULT_STYLE);
+	
+	std::string qedo_doc = Qedo::getEnvironment ("QEDO");
+	qedo_doc.append("qedodoc/controllerdoc.hhp");
 
-	help->AddBook("qedodoc/controllerdoc.hhp",true);
+	help->AddBook(qedo_doc.c_str(),true);
 	help->Display("Contents");
 
 
