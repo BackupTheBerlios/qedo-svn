@@ -54,6 +54,7 @@ include ../MakeVars
 all: homefinder
 
 homefinder: $(OBJS)
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 .PHONY:install
 

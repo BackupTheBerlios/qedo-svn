@@ -51,6 +51,7 @@ include ../MakeVars
 all: qdeploy
 
 qdeploy: $(OBJS)
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 .PHONY:install
 

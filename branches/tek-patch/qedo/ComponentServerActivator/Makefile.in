@@ -51,6 +51,7 @@ all: qcsa
 
 
 qcsa: $(OBJS)
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 .PHONY:install
 

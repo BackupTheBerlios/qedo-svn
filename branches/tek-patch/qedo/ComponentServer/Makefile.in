@@ -54,7 +54,8 @@ include ../MakeVars
 
 all: qcs
 
-qcs: $(SOURCES:.cpp=.o) 
+qcs: $(SOURCES:.cpp=.o)
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 .PHONY:install
 

@@ -32,12 +32,10 @@ SUFFIXES += .so
 
 # rule for shared libraries
 
-ifeq "${CXX}" "g++"
 %.so:
 	${CXX} -shared ${LD_SHRAED_FLAGS} -o $@ $^ $(LIBS)
 
 CXXFLAGS += 
-endif
 
 INSTALL = @INSTALL@
 prefix=@prefix@
