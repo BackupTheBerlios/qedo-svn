@@ -54,28 +54,9 @@ GeneratorServantC::check_for_generation(IR__::Contained_ptr item)
 	//
 	// check if item is already known
 	//
-	IR__::Contained_var restricted_contained = IR__::Contained::_narrow(item->defined_in());
-	if (!CORBA::is_nil(restricted_contained )) {
-		std::string id = restricted_contained ->id();
-
-		if (!id.compare("IDL:Deployment:1.0")) {
-			return;
-		};
-		if (!id.compare("IDL:omg.org/Components:1.0")) {
-			return;
-		};
-		if (!id.compare("IDL:Components:1.0")) {
-			return;
-		}
-		if (!id.compare("IDL:omg.org/CORBA:1.0")) {
-			return;
-		};
-		if (!id.compare("IDL:CORBA:1.0")) {
-			return;
-		}
-		if (!id.compare("IDL:omg.org/CosPropertyService:1.0")) {
-			return;
-		};
+	if (item_well_known(item))
+	{
+		return;
 	}
 
 	//
@@ -1280,7 +1261,7 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 		out.indent();
 		out << "try\n{\n";
 		out.indent();
-		out << "consumer->push_" << mapName(a_emits->event()) << "(ev);\n";
+		out << "queue_event(consumer, ev);\n";
 		out.unindent();
 		out << "}\n";
 		out << "catch (CORBA::SystemException& ex)\n{\n";
@@ -1309,17 +1290,7 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 		out.indent();
 		out << "const Qedo::SubscribedConsumerVector& consumers = "; 
 		out << "ccm_object_executor_->get_consumers_for_publisher (\"" << a_publishes->name() << "\");\n\n";
-		out << "for (int i = consumers.size(); i; i--)\n{\n";
-		out.indent();
-		out << event_name << "Consumer_var consumer = ";
-		out << event_name << "Consumer::_narrow (consumers[i-1].consumer());\n\n";
-		out << "if (! CORBA::is_nil (consumer))\n{\n";
-		out.indent();
-		out << "consumer->push_" << mapName(a_publishes->event()) << "(ev);\n";
-		out.unindent();
-		out << "}\n";
-		out.unindent();	
-		out << "}\n";
+		out << "queue_event(consumers, ev);\n";
 		out.unindent();
 		out << "}\n\n\n";
 	}
