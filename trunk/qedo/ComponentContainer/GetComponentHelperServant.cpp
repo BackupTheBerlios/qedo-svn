@@ -24,7 +24,7 @@
 #include "GetComponentHelperServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: GetComponentHelperServant.cpp,v 1.4 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: GetComponentHelperServant.cpp,v 1.5 2004/03/08 11:14:03 boehme Exp $";
 
 
 namespace Qedo {
@@ -49,5 +49,12 @@ throw(CORBA::SystemException)
 	return Components::CCMObject::_duplicate (ccm_object_);
 }
 
+
+CORBA::Object_ptr 
+GetComponentHelperServant::_get_component()
+throw(CORBA::SystemException)
+{
+	return CORBA::Object::_duplicate (ccm_object_);
+}
 
 } // namespace Qedo

@@ -46,6 +46,12 @@ public:
     //
     Components::CCMObject_ptr get_component()
 		throw(CORBA::SystemException);
+
+    //
+    // IDL:Qedo_Components/GetComponentHelper/get_component:1.0
+    //
+    CORBA::Object_ptr _get_component()
+		throw(CORBA::SystemException);
 };
 
 
