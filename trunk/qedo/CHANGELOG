@@ -1,4 +1,9 @@
 
+
+version 0.3.0
+- improved remove semantic
+- improved ref-counting
+- improved event handling in the container
 - version statement at start up of each server
 
 version 0.2.0
