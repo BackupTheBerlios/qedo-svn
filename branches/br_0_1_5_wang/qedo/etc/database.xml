@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XML Spy v3.5 NT (http://www.xmlspy.com) by Wang Hao (GMD FOKUS/PLATIN) -->
-<qedo-datatype-map>
+<!-- edited with XML Spy v3.5 NT (http://www.xmlspy.com) by Wang Hao (GMD FOKUS/ECCO) -->
+<database>
+	<name>PostgreSQL 7.3</name>
+	<connection>
+		<param name="DSN" value="PostgreSQL30">
+		</param>
+		<param name="SERVER" value="localhost">
+		</param>
+		<param name="UID" value="haowang">
+		</param>
+		<param name="PWD" value="">
+		</param>
+		<param name="DATABASE" value="psstest">
+		</param>
+	</connection>
 	<type-mapping>
-		<name>PostgreSQL 7.3</name>
 		<row-locking-template>SELECT ?1 FROM ?2 WHERE ?3 FOR UPDATE</row-locking-template>
 		<pk-constraint-template>CONSTRAINT ?1 PRIMARY KEY (?2)</pk-constraint-template>
 		<fk-constraint-template>ALTER TABLE ?1 ADD CONSTRAINT ?2 FOREIGN KEY (?3) REFERENCES ?4 (?5)</fk-constraint-template>
@@ -112,4 +124,4 @@
 			<sql-type>CHAR(1)</sql-type>
 		</mapping>
 	</type-mapping>
-</qedo-datatype-map>
+</database>

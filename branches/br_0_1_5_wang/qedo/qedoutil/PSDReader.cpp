@@ -28,7 +28,7 @@
 #include <xercesc/framework/URLInputSource.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: PSDReader.cpp,v 1.1.4.4 2004/01/28 16:59:11 hao Exp $";
+static char rcsid[] UNUSED = "$Id: PSDReader.cpp,v 1.1.4.5 2004/01/29 16:00:34 hao Exp $";
 
 
 namespace Qedo {
@@ -323,5 +323,54 @@ PSDReader::getDBConn()
 {
 	return strConn_;
 }
+
+/*
+bool 
+TableBuilder::build( std::string descriptor, std::string path )
+{
+	QDDatabase pdb;
+	PSDReader psd_reader;
+	std::string strAll, strName, strSql, strConn;
+	std::basic_string <char>::size_type idxBegin;
+
+	// get the sql sentences to create tables
+	std::list<std::string> lTable(psd_reader.readPSD( path+descriptor, path ));
+	std::list<std::string>::iterator iter;
+	
+	// get database connection string
+	strConn = psd_reader.getDBConn();
+	
+	// connect to database
+	pdb.Init();
+	if(!pdb.DriverConnect(strConn.c_str()))
+	{
+		std::cout << "Failed to connect to database!" << std::endl;
+		return false;
+	}
+
+	for(iter=lTable.begin(); iter!=lTable.end(); iter++)
+	{
+		strAll = *iter;
+		idxBegin = strAll.find("$$");
+		
+		strName.substr(0, idxBegin);
+		strSql.substr(idxBegin+2, strAll.length()-idxBegin-1);
+		
+		// check whether table has been already created
+		if(!pdb.IsTableExist(strName.c_str()))
+			// if not, create it!
+			if(!pdb.ExecuteSQL(strSql.c_str()))
+			{
+				std::cout << "Failed to build table in database!" << std::endl;
+				return false;
+			}
+	}
+	
+	//close database
+	pdb.close();
+
+	return true;
+}
+*/
 
 }

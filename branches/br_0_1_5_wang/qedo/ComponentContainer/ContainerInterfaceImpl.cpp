@@ -37,7 +37,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.2 2004/01/28 16:59:11 hao Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.3 2004/01/29 16:00:34 hao Exp $";
 
 
 namespace Qedo {
@@ -692,7 +692,7 @@ throw (Components::Deployment::UnknownImplId,
 		}
 		catch( DTMReadException )
 		{
-			std::cerr << "!!!!! Error during reading .database.xml" << std::endl;
+			std::cerr << "!!!!! Error during reading database.xml" << std::endl;
 			throw Components::Deployment::InstallationFailure();
 		}
 
