@@ -1,5 +1,5 @@
 Microsoft Developer Studio Workspace File, Format Version 6.00
-# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+# WARNUNG: DIESE ARBEITSBEREICHSDATEI DARF NICHT BEARBEITET ODER GELÖSCHT WERDEN!
 
 ###############################################################################
 
@@ -31,6 +31,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name CIDLFrontendLib
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name IFRidl
     End Project Dependency
 }}}
 

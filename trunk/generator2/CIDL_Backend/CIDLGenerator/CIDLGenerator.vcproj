@@ -36,7 +36,11 @@
 				DebugInformationFormat="4"
 				CompileAs="0"/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
@@ -52,11 +56,7 @@
 				Name="VCMIDLTool"
 				TypeLibraryName=".\Debug_mico/CIDLGenerator.tlb"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Copying CIDL generator executable"
-				CommandLine="mkdir $(QEDO)\bin
-copy $(TargetPath) $(QEDO)\bin
-"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -150,7 +150,12 @@ copy cidl_gen.exe $(QEDO)\bin
 				DebugInformationFormat="4"
 				CompileAs="0"/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
@@ -165,11 +170,7 @@ copy cidl_gen.exe $(QEDO)\bin
 				Name="VCMIDLTool"
 				TypeLibraryName=".\Debug_orbacus/CIDLGenerator.tlb"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Copying CIDL generator executable"
-				CommandLine="mkdir $(QEDO)\bin
-copy $(TargetPath) $(QEDO)\bin
-"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

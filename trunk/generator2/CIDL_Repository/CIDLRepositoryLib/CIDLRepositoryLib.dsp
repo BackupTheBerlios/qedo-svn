@@ -1,26 +1,26 @@
 # Microsoft Developer Studio Project File - Name="CIDLRepositoryLib" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
 CFG=CIDLRepositoryLib - Win32 Debug_tao
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "CIDLRepositoryLib.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "CIDLRepositoryLib.mak" CFG="CIDLRepositoryLib - Win32 Debug_tao"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "CIDLRepositoryLib - Win32 Release" (based on "Win32 (x86) Static Library")
-!MESSAGE "CIDLRepositoryLib - Win32 Debug_mico" (based on "Win32 (x86) Static Library")
-!MESSAGE "CIDLRepositoryLib - Win32 Debug_orbacus" (based on "Win32 (x86) Static Library")
-!MESSAGE "CIDLRepositoryLib - Win32 Debug_tao" (based on "Win32 (x86) Static Library")
+!MESSAGE "CIDLRepositoryLib - Win32 Release" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "CIDLRepositoryLib - Win32 Debug_mico" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "CIDLRepositoryLib - Win32 Debug_orbacus" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "CIDLRepositoryLib - Win32 Debug_tao" (basierend auf  "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -87,8 +87,8 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "CIDLRepositoryLib___Win32_Debug_orbacus_vc6"
-# PROP Intermediate_Dir "CIDLRepositoryLib___Win32_Debug_orbacus_vc6"
+# PROP Output_Dir "Debug_orbacus_vc6"
+# PROP Intermediate_Dir "Debug_orbacus_vc6"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /Gm /GR /GX /ZI /Od /I "..\IFRidl" /I "..\ComponentRepositoryLib" /I "$(MICO)\include" /I "$(MICO)\include\windows" /D "_LIB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_WINDOWS" /FD /GZ /c
 # SUBTRACT BASE CPP /YX
@@ -101,7 +101,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"CIDLRepositoryLib.lib"
-# ADD LIB32 /nologo /out:"CIDLRepositoryLib.lib"
+# ADD LIB32 /nologo
 
 !ELSEIF  "$(CFG)" == "CIDLRepositoryLib - Win32 Debug_tao"
 
@@ -112,8 +112,8 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "CIDLRepositoryLib___Win32_Debug_tao"
-# PROP Intermediate_Dir "CIDLRepositoryLib___Win32_Debug_tao"
+# PROP Output_Dir "Debug_tao"
+# PROP Intermediate_Dir "Debug_tao"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /Gm /GR /GX /ZI /Od /I "..\IFRidl" /I "..\ComponentRepositoryLib" /I "$(MICO)\include" /I "$(MICO)\include\windows" /D "_LIB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_WINDOWS" /FD /GZ /c
 # SUBTRACT BASE CPP /YX
@@ -126,7 +126,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo /out:"CIDLRepositoryLib.lib"
-# ADD LIB32 /nologo /out:"CIDLRepositoryLib.lib"
+# ADD LIB32 /nologo
 
 !ENDIF 
 
