@@ -25,7 +25,6 @@
 
 #include <CORBA.h>
 #include <sqlext.h>
-#include <time.h>
 #include "Util.h"
 //#include "RefCountBase.h"
 #include "CORBADepends.h"
@@ -33,6 +32,7 @@
 
 #define DEFAULT_TIMEOUT 15
 #define MAX_INFO_LEN 64
+#define MAX_CONNSTR_LEN 1024
 
 using namespace CosPersistentState;
 
@@ -46,7 +46,7 @@ class PSSDLL_API CatalogBase : public virtual CosPersistentState::CatalogBase//,
 
 		CatalogBase() {};
 
-		CatalogBase(AccessMode eAM);
+		CatalogBase(const AccessMode eAM, const char* szConnString);
 
 		~CatalogBase();
 
@@ -87,7 +87,7 @@ class PSSDLL_API CatalogBase : public virtual CosPersistentState::CatalogBase//,
 		//
 		void close();
 
-	private:
+	protected:
 		
 		bool DriverConnect(const char* szConnStr, char* szConnStrOut = NULL, HWND hWnd = NULL, const int nDrvConn = SQL_DRIVER_NOPROMPT);
 		
@@ -103,9 +103,9 @@ class PSSDLL_API CatalogBase : public virtual CosPersistentState::CatalogBase//,
 
 		bool ExecuteSQL(const char* szSqlStr);
 
-		bool CanTransact(); //???
+		bool CanTransact();
 		
-		bool CanUpdate(); //???
+		bool CanUpdate();
 
 		bool IsConnected();
 
@@ -123,6 +123,7 @@ class PSSDLL_API CatalogBase : public virtual CosPersistentState::CatalogBase//,
 		long m_lQueryTimeout;
 		bool m_bIsConnected;
 		char* m_szODBCVersion;
+		char* m_szConnString;
 		AccessMode m_eAM;
 };
 
@@ -134,7 +135,7 @@ class PSSDLL_API Sessio : public virtual CosPersistentState::Sessio,
 
 		Sessio() {};
 
-		Sessio(AccessMode eAM) {};
+		Sessio(AccessMode eAM, const char* szConnString) {};
 
 		~Sessio() {};
 };
@@ -147,7 +148,7 @@ class PSSDLL_API SessionPool : public virtual CosPersistentState::SessionPool,
 
 		SessionPool() {};
 
-		SessionPool(AccessMode eAM);
+		SessionPool(AccessMode eAM, const char* szConnString);
 
 		~SessionPool();
 

@@ -73,8 +73,9 @@ Connector::create_basic_session(AccessMode access_mode,
 		strConn += ";";
 	}
 	
+	
 	//Sessio pSession;
-	//Qedo::CatalogBase pSession = new Qedo::CatalogBase();
+	//Qedo::CatalogBase pSession = new Qedo::CatalogBase(access_mode, strConn.c_str());
 	//pSession->Init();
 	//return pSession;
 

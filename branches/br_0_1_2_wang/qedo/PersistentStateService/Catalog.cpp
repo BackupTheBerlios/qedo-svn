@@ -25,7 +25,7 @@
 namespace Qedo
 {
 
-CatalogBase::CatalogBase(AccessMode eAM) :
+CatalogBase::CatalogBase(const AccessMode eAM, const char* szConnString) :
 	m_hEnv(SQL_NULL_HENV),
 	m_hDbc(SQL_NULL_HDBC),
 	m_lLoginTimeout(DEFAULT_TIMEOUT),
@@ -35,6 +35,10 @@ CatalogBase::CatalogBase(AccessMode eAM) :
 	m_eAM(eAM)
 {
 	m_szODBCVersion = new char[MAX_INFO_LEN];
+	m_szConnString = new char[MAX_CONNSTR_LEN];
+	memset(m_szODBCVersion, '\0', MAX_INFO_LEN);
+	memset(m_szConnString, '\0', MAX_CONNSTR_LEN);
+	strcpy(m_szConnString, szConnString);
 }
 
 CatalogBase::~CatalogBase()
@@ -47,7 +51,9 @@ CatalogBase::~CatalogBase()
 	m_bIsConnected = FALSE;
 
 	delete m_szODBCVersion;
+	delete m_szConnString;
 	m_szODBCVersion = NULL;
+	m_szConnString = NULL;
 }
 
 void 
@@ -77,7 +83,7 @@ CatalogBase::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND hWnd,
 	if(nDrvConn == SQL_DRIVER_PROMPT && hWnd == NULL)
 		return FALSE;
 
-	ret=SQLSetConnectAttr(m_hDbc, SQL_ATTR_LOGIN_TIMEOUT, (SQLPOINTER)m_lLoginTimeout, 0);
+	SQLSetConnectAttr(m_hDbc, SQL_ATTR_LOGIN_TIMEOUT, (SQLPOINTER)m_lLoginTimeout, 0);
 	SQLSetConnectAttr(m_hDbc, SQL_ATTR_CONNECTION_TIMEOUT, (SQLPOINTER)m_lQueryTimeout, 0);
 	
 	if(m_eAM==READ_ONLY)
@@ -125,7 +131,7 @@ CatalogBase::GetODBCVersion()
 	ret = SQLGetInfo(m_hDbc, SQL_ODBC_VER, m_szODBCVersion, MAX_INFO_LEN, NULL);
 
 	if(ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
-		return 0;
+		return NULL;
 
 	return m_szODBCVersion;
 }
@@ -152,12 +158,11 @@ CatalogBase::ExecuteSQL(const char* szSqlStr)
 bool 
 CatalogBase::CanTransact()
 {
-	SQLRETURN ret;
 	SQLUSMALLINT nTxn;
 
-	ret = SQLGetInfo(m_hDbc, SQL_TXN_CAPABLE, (SQLPOINTER)&nTxn, sizeof(nTxn), NULL);
+	SQLGetInfo(m_hDbc, SQL_TXN_CAPABLE, (SQLPOINTER)&nTxn, sizeof(nTxn), NULL);
 
-	if(ret==SQL_TC_NONE)
+	if(nTxn==SQL_TC_NONE)
 		return FALSE;
 
 	return TRUE;
@@ -166,12 +171,11 @@ CatalogBase::CanTransact()
 bool 
 CatalogBase::CanUpdate()
 {
-	SQLRETURN ret;
 	SQLUINTEGER nTxn;
 
-	ret = SQLGetConnectAttr(m_hDbc, SQL_ATTR_ACCESS_MODE, (SQLPOINTER)&nTxn, NULL, 0);
+	SQLGetConnectAttr(m_hDbc, SQL_ATTR_ACCESS_MODE, (SQLPOINTER)&nTxn, NULL, 0);
 
-	if(ret==SQL_MODE_READ_ONLY)
+	if(nTxn==SQL_MODE_READ_ONLY)
 		return FALSE;
 
 	return TRUE;
@@ -218,9 +222,9 @@ CatalogBase::IsTableExist(const char* szTableName)
 AccessMode 
 CatalogBase::access_mode()
 {
-	long nAccessMode;
+	int nAccessMode;
 
-	SQLGetConnectAttr(m_hDbc, SQL_ATTR_ACCESS_MODE, &nAccessMode, NULL, 0);
+	SQLGetConnectAttr(m_hDbc, SQL_ATTR_ACCESS_MODE, &nAccessMode, SQL_IS_INTEGER, NULL);
 
 	if(nAccessMode == SQL_MODE_READ_ONLY)
 		return READ_ONLY;

@@ -25,26 +25,332 @@
 namespace Qedo
 {
 
-StorageHomeBase::StorageHomeBase()
+StorageHomeBase::StorageHomeBase(Sessio_ptr pSession) :
+	//m_hDbc(pSession->m_hDbc),
+	m_hStmt(SQL_NULL_HSTMT),
+	m_nNumRowsFetched(0)
 {
-
+	m_pCatalogBase = dynamic_cast <CatalogBase_ptr> (pSession);
+	AllocStmt();
 }
 
 StorageHomeBase::~StorageHomeBase()
 {
-
+	
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//The find_by_short_pid operation looks for a storage object with the given 
+//short pid in the target storage home. If such an object is not found, 
+//find_by_short_pid, raises the CosPersistentState::NotFound exception.
+////////////////////////////////////////////////////////////////////////////////
 StorageObjectBase_ptr 
 StorageHomeBase::find_by_short_pid(const ShortPid& short_pid)
 {
+	int iLength = short_pid.length();
+
+	char* sz_shortPid = new char[iLength];
+	
+	for(int i=0; i<iLength; i++)
+	{
+		//sz_shortPid[i] = (dynamic_cast <CORBA::OctetSeq> (short_pid)).inout()[i];
+	}
+
+	string strToExecute;
+	strToExecute = "select * from person where id=";
+	//strToExecute += short_pid;
+	strToExecute += ";";
+	//open(strToExecute);
+
 	return NULL;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//The get_catalog operation returns the catalog that manages the target storage 
+//home instance.
+////////////////////////////////////////////////////////////////////////////////
 CatalogBase_ptr 
 StorageHomeBase::get_catalog()
 {
-	return NULL;
+	return m_pCatalogBase;
+}
+
+void 
+StorageHomeBase::AllocStmt()
+{
+	SQLAllocHandle(SQL_HANDLE_STMT, m_hDbc, &m_hStmt);
+}
+
+void 
+StorageHomeBase::Destroy()
+{
+	if(m_hStmt != SQL_NULL_HSTMT)
+		SQLFreeHandle(SQL_HANDLE_STMT, m_hStmt);
+	
+	m_hStmt = SQL_NULL_HSTMT;
+}
+
+bool 
+StorageHomeBase::Open(const char* szSqlStr)
+{
+	SQLRETURN ret;
+	
+	SQLSetStmtAttr(m_hStmt, SQL_ATTR_CURSOR_SCROLLABLE, (SQLPOINTER)SQL_SCROLLABLE, SQL_IS_INTEGER);
+	SQLSetStmtAttr(m_hStmt, SQL_ATTR_CURSOR_TYPE, (SQLPOINTER)SQL_CURSOR_DYNAMIC, SQL_IS_INTEGER);
+	SQLSetStmtAttr(m_hStmt, SQL_ATTR_ROWS_FETCHED_PTR, &m_nNumRowsFetched, 0);
+	ret = SQLExecDirect(m_hStmt, (SQLCHAR*)szSqlStr, SQL_NTS);
+
+	if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+	{
+		ret = SQLFetch(m_hStmt);
+
+		if(ret==SQL_NO_DATA_FOUND)
+			return FALSE;
+		else
+			return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
+}
+
+void 
+StorageHomeBase::Close()
+{
+	SQLCloseCursor(m_hStmt);
+}
+
+//********** GetFieldValue **********//
+
+// for SQL_C_CHAR, SQL_C_BINARY and SQL_C_VARBOOKMARK
+bool 
+StorageHomeBase::GetFieldValue(const int nField, unsigned char* szData)
+{
+	SQLRETURN ret;
+	SQLINTEGER cbValue;
+	int nLength = GetFieldLength(nField) + 1;
+	
+	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_CHAR, szData, nLength, &cbValue) == SQL_SUCCESS;
+	//..................................................SQL_C_BINARY..........................................
+	//..................................................SQL_C_VARBOOKMARK.....................................
+
+	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
+}
+
+bool 
+StorageHomeBase::GetFieldValue(const char* szFieldName, unsigned char* szData)
+{
+	return GetFieldValue(GetFieldIndex(szFieldName), szData);	
+}
+
+// for SQL_C_BIT
+bool 
+StorageHomeBase::GetFieldValue(const int nField, unsigned char& cData)
+{
+	SQLRETURN ret;
+	SQLINTEGER cbValue;
+	int nLength = GetFieldLength(nField) + 1;
+	
+	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_BIT, &cData, nLength, &cbValue) == SQL_SUCCESS;
+	
+	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
+}
+
+bool 
+StorageHomeBase::GetFieldValue(const char* szFieldName, unsigned char& cData)
+{
+	return GetFieldValue(GetFieldIndex(szFieldName), cData);	
+}
+
+// for SQL_C_TINYINT
+bool 
+StorageHomeBase::GetFieldValue(const int nField, char& cData)
+{
+	SQLRETURN ret;
+	SQLINTEGER cbValue;
+	int nLength = GetFieldLength(nField) + 1;
+	
+	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_TINYINT, &cData, nLength, &cbValue) == SQL_SUCCESS;
+	
+	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
+}
+
+bool
+StorageHomeBase::GetFieldValue(const char* szFieldName, char& cData)
+{
+	return GetFieldValue(GetFieldIndex(szFieldName), cData);
+}
+
+// for SQL_C_SHORT
+bool 
+StorageHomeBase::GetFieldValue(const int nField, short* sData)
+{
+	SQLRETURN ret;
+	SQLINTEGER cbValue;
+	int nLength = GetFieldLength(nField) + 1;
+	
+	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_SHORT, sData, nLength, &cbValue) == SQL_SUCCESS;
+	
+	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
+}
+
+bool 
+StorageHomeBase::GetFieldValue(const char* szFieldName, short* sData)
+{
+	return GetFieldValue(GetFieldIndex(szFieldName), sData);	
+}
+
+// for SQL_C_LONG
+bool 
+StorageHomeBase::GetFieldValue(const int nField, long* lData)
+{
+	SQLRETURN ret;
+	SQLINTEGER cbValue;
+	int nLength = GetFieldLength(nField) + 1;
+	
+	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_LONG, lData, nLength, &cbValue) == SQL_SUCCESS;
+	
+	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
+}
+
+bool 
+StorageHomeBase::GetFieldValue(const char* szFieldName, long* lData)
+{
+	return GetFieldValue(GetFieldIndex(szFieldName), lData);	
+}
+
+// for SQL_C_FLOAT
+bool 
+StorageHomeBase::GetFieldValue(const int nField, float* fltData)
+{
+	SQLINTEGER cbValue;
+	SQLRETURN ret;
+	int nLength = GetFieldLength(nField) + 1;
+	
+	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_FLOAT, fltData, nLength, &cbValue) == SQL_SUCCESS;
+	
+	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
+}
+
+bool 
+StorageHomeBase::GetFieldValue(const char* szFieldName, float* fltData)
+{
+	return GetFieldValue(GetFieldIndex(szFieldName), fltData);	
+}
+
+// for SQL_C_DOUBLE
+bool 
+StorageHomeBase::GetFieldValue(const int nField, double* dblData)
+{
+	SQLINTEGER cbValue;
+	SQLRETURN ret;
+	int nLength = GetFieldLength(nField) + 1;
+	
+	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_DOUBLE, dblData, nLength, &cbValue) == SQL_SUCCESS;
+	
+	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
+}
+
+bool 
+StorageHomeBase::GetFieldValue(const char* szFieldName, double* dblData)
+{
+	return GetFieldValue(GetFieldIndex(szFieldName), dblData);	
+}
+
+// for SQL_C_TYPE_TIMESTAMP(3.x) and SQL_C_TIMESTAMP(2.x)
+bool 
+StorageHomeBase::GetFieldValue(const int nField, struct tm* time)
+{
+	SQLINTEGER cbValue;
+	SQLRETURN ret;
+	int nLength = GetFieldLength(nField) + 1;
+	SQL_TIMESTAMP_STRUCT* sqltm = new SQL_TIMESTAMP_STRUCT;
+	
+	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_C_TYPE_TIMESTAMP, sqltm, nLength, &cbValue) == SQL_SUCCESS;
+	
+	if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+	{	
+		time->tm_year = sqltm->year;
+		time->tm_mon = sqltm->month - 1; //January must be = 0		
+		time->tm_mday = sqltm->day;
+		time->tm_hour = sqltm->hour;
+		time->tm_min = sqltm->minute;
+		time->tm_sec = sqltm->second;
+		delete sqltm;
+
+		return TRUE;
+	}
+
+	delete sqltm;
+	
+	return FALSE;
+}
+
+bool 
+StorageHomeBase::GetFieldValue(const char* szFieldName, struct tm* time)
+{
+	return GetFieldValue(GetFieldIndex(szFieldName), time);	
+}
+//********** end of GetFieldValue **********//
+
+int 
+StorageHomeBase::GetFieldIndex(const char* szFieldName)
+{
+	int nCol = 0;
+	char szColName[MAX_COL_NAME_LEN];
+	SQLSMALLINT nCols;
+	SQLSMALLINT cbColNameLen, fSqlType, ibScale, fNullable;
+	SQLUINTEGER cbColDef;
+
+	SQLNumResultCols(m_hStmt, &nCols);
+	
+	while(nCol < nCols)
+	{
+		memset(szColName, 0, MAX_COL_NAME_LEN);
+		SQLDescribeCol(m_hStmt, nCol+1, (SQLCHAR*)szColName, MAX_COL_NAME_LEN, &cbColNameLen, &fSqlType, &cbColDef, &ibScale, &fNullable);
+
+		if(_stricmp(szColName, szFieldName) == 0)
+			return nCol;
+		nCol++;
+	}
+
+	return -1;
+}
+
+long 
+StorageHomeBase::GetFieldLength(const int nField)
+{
+	SQLSMALLINT fSqlType, ibScale, fNullable;
+	SQLUINTEGER cbColDef;
+	
+	SQLDescribeCol(m_hStmt, nField + 1, NULL, 0, 0, &fSqlType, &cbColDef, &ibScale, &fNullable);
+
+	return cbColDef;	
+}
+
+bool 
+StorageHomeBase::GetFieldAttributes(const int nField, unsigned char* szFieldName, int& nType, int& nLength)
+{
+	SQLRETURN ret;
+	SQLSMALLINT cbColNameLen, fSqlType, ibScale, fNullable;
+	SQLUINTEGER cbColDef;
+	
+	ret = SQLDescribeCol(m_hStmt, nField + 1, szFieldName, MAX_COL_NAME_LEN, &cbColNameLen, &fSqlType, &cbColDef, &ibScale, &fNullable);
+	
+	nType = fSqlType;
+	nLength = cbColDef;
+
+	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;	
+}
+
+int 
+StorageHomeBase::GetFieldCount()
+{
+	SQLSMALLINT nFieldCount = 0;
+	SQLNumResultCols(m_hStmt, &nFieldCount);
+
+	return nFieldCount;
 }
 
 } // namespace Qedo

@@ -24,10 +24,16 @@
 #define __STORAGEHOMEBASE_H__
 
 #include <CORBA.h>
+#include <sqlext.h>
+#include <time.h>
+#include <string>
 #include "CORBADepends.h"
 #include "Util.h"
 
+#define MAX_COL_NAME_LEN 512
+
 using namespace CosPersistentState;
+using namespace std;
 
 namespace Qedo
 {
@@ -36,7 +42,9 @@ class PSSDLL_API StorageHomeBase : public virtual CosPersistentState::StorageHom
 {
 	public:
 
-		StorageHomeBase();
+		StorageHomeBase() {};
+
+		StorageHomeBase(Sessio_ptr pSession);
 
 		~StorageHomeBase();
 		
@@ -49,6 +57,66 @@ class PSSDLL_API StorageHomeBase : public virtual CosPersistentState::StorageHom
 		// IDL:omg.org/CosPersistentState/StorageHomeBase/get_catalog:1.0
 		//
 		CatalogBase_ptr get_catalog();
+
+	private:
+
+		void AllocStmt();
+
+		bool Open(const char* szSqlStr);
+
+		void Close();
+
+		void Destroy();
+
+		int GetFieldCount();
+
+		int GetFieldIndex(const char* szFieldName);
+		
+		long GetFieldLength(const int nField);
+
+		// give the field number, get the field name, type and length
+		bool GetFieldAttributes(const int nField, unsigned char* szFieldName, int& nType, int& nLength);
+
+		// for SQL_C_CHAR, SQL_C_BINARY and SQL_C_VARBOOKMARK
+		bool GetFieldValue(const int nField, unsigned char* szData);
+		bool GetFieldValue(const char* szFieldName, unsigned char *szData);
+
+		// for SQL_C_BIT
+		bool GetFieldValue(const int nField, unsigned char& cData);
+		bool GetFieldValue(const char* szFieldName, unsigned char& cData);
+
+		// for SQL_C_NUMERIC
+
+		// for SQL_C_TINYINT
+		bool GetFieldValue(const int nField, char& cData);
+		bool GetFieldValue(const char* szFieldName, char& cData);
+
+		// for SQL_C_SHORT
+		bool GetFieldValue(const int nField, short* sData);
+		bool GetFieldValue(const char* szFieldName, short* sData);
+
+		// for SQL_C_LONG
+		bool GetFieldValue(const int nField, long* lData);
+		bool GetFieldValue(const char* szFieldName, long* lData);
+
+		// for SQL_C_FLOAT
+		bool GetFieldValue(const int nField, float* fltData);
+		bool GetFieldValue(const char* szFieldName, float* fltData);
+
+		// for SQL_C_DOUBLE
+		bool GetFieldValue(const int nField, double* dblData);
+		bool GetFieldValue(const char* szFieldName, double* dblData);
+
+		// for SQL_C_TYPE_TIMESTAMP(3.x) and SQL_C_TIMESTAMP(2.x)
+		bool GetFieldValue(const int nField, struct tm* time);
+		bool GetFieldValue(const char* szFieldName, struct tm* time);
+
+	private:
+		
+		CatalogBase_ptr m_pCatalogBase;
+		SQLHDBC m_hDbc;
+		SQLHSTMT m_hStmt;
+		unsigned int m_nNumRowsFetched;
 };
 
 }; // namespace Qedo
