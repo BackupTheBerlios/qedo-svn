@@ -2112,7 +2112,8 @@ GeneratorServantC::genFacetRegistration(IR__::ComponentDef_ptr comp)
 		out << "PortableServer::ObjectId_var " << name << "_object_id = this->reference_to_oid (";
 		out << name << "_ref);\n";
 		out << "servant_registry_->register_servant_factory (";
-		out << name << "_object_id, " << mapFullNameServant((*facets)[i]) << "::cleaner_.factory_);\n";
+//		out << name << "_object_id, " << mapFullNameServant((*facets)[i]) << "::cleaner_.factory_);\n";
+		out << name << "_object_id, " << mapFullNameServant(component_) <<"::" << name << "::cleaner_.factory_);\n";
 		out << "component_instance.ccm_object_executor_->add_facet(\"";
 		out << name << "\", \"" << rep_id << "\", " << name << "_ref);\n\n";
 	}
