@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.13 2003/05/28 13:13:20 stoinski Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.14 2003/06/13 07:26:56 tom Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -407,7 +407,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < receptacles_.size(); i++)
 	{
-		receptacles[i] = receptacles_[i].receptacle_description();
+		receptacles.inout()[i] = receptacles_[i].receptacle_description();
 	}
 
 	return receptacles._retn();
@@ -427,7 +427,7 @@ throw (Components::InvalidName, CORBA::SystemException)
 	{
 		for (unsigned int j = 0; j < receptacles_.size(); j++)
 		{
-			if (receptacles_[j].port_name() == names[i])
+			if (receptacles_[j].port_name() == names[i].in())
 			{
                 receptacles->length (receptacles->length() + 1);
 
@@ -556,7 +556,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < consumers_.size(); i++)
 	{
-		consumers[i] = consumers_[i].consumer_description();
+		consumers.inout()[i] = consumers_[i].consumer_description();
 	}
 
 	return consumers._retn();
@@ -576,7 +576,7 @@ throw (Components::InvalidName, CORBA::SystemException)
 	{
 		for (unsigned int j = 0; j < names.length(); j++)
 		{
-			if (consumers_[i].port_name() == names[j])
+			if (consumers_[i].port_name() == names[j].in())
 			{
        			consumers->length (consumers->length () + 1);
 
@@ -604,7 +604,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < emitters_.size(); i++)
 	{
-		emitters[i] = emitters_[i].emitter_description();
+		emitters.inout()[i] = emitters_[i].emitter_description();
 	}
 
 	return emitters._retn();
@@ -623,7 +623,7 @@ throw (Components::InvalidName, CORBA::SystemException)
 	{
 		for (unsigned int j = 0; j < names.length(); j++)
 		{
-			if (emitters_[i].port_name() == names[j])
+			if (emitters_[i].port_name() == names[j].in())
 			{
 				emitters->length ( emitters->length() + 1);
 
@@ -679,7 +679,7 @@ throw (Components::InvalidName, CORBA::SystemException)
 	{
 		for (unsigned int j = 0; j < names.length(); j++)
 		{
-			if (publishers_[i].port_name() == names[j])
+			if (publishers_[i].port_name() == names[j].in())
 			{
 		        // Get subscriber descriptions for current publisher
                 Components::SubscriberDescriptions_var sub_helper;
