@@ -25,6 +25,8 @@
 #endif
 
 #include "ServerActivatorImpl.h"
+#include "ConfigurationReader.h"
+
 #ifdef MICO_ORB
 #include <coss/CosNaming.h>
 #else
@@ -43,7 +45,7 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.17 2003/10/27 12:32:20 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.18 2003/10/29 00:57:58 tom Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -60,11 +62,11 @@ handle_sigint
 #ifdef HAVE_SIGACTION
 	 struct sigaction act;
 
-    /* Assign sig_chld as our SIGINT handler */
-    act.sa_handler = SIG_IGN;
+	/* Assign sig_chld as our SIGINT handler */
+	act.sa_handler = SIG_IGN;
 
-    /* We don't want to block any other signals in this example */
-    sigemptyset(&act.sa_mask);
+	/* We don't want to block any other signals in this example */
+	sigemptyset(&act.sa_mask);
 
 	 sigaction(SIGINT,&act,0);
 #else
@@ -76,24 +78,74 @@ handle_sigint
 	//
 	// unbind in naming service
 	//
-    CORBA::Object_var obj;
+	CORBA::Object_var obj;
 	CosNaming::NamingContext_var nameService;
 	char hostname[256];
 	gethostname(hostname, 256);
 	CosNaming::Name name;
-    name.length(3);
-    name[0].id = CORBA::string_dup("Qedo");
-    name[0].kind = CORBA::string_dup("");
+	name.length(3);
+	name[0].id = CORBA::string_dup("Qedo");
+	name[0].kind = CORBA::string_dup("");
 	name[1].id = CORBA::string_dup("Activators");
-    name[1].kind = CORBA::string_dup("");
+	name[1].kind = CORBA::string_dup("");
 	name[2].id = CORBA::string_dup(hostname);
-    name[2].kind = CORBA::string_dup("");
-    try
-    {
-        obj = orb->resolve_initial_references("NameService");
-		nameService = CosNaming::NamingContext::_narrow(obj.in());
-		nameService->unbind(name);
-    }
+	name[2].kind = CORBA::string_dup("");
+	try
+	{
+		//
+		// try to get naming service from config values
+		//
+		CORBA::Object_var obj;
+		std::string ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
+		if( !ns.empty() )
+		{
+			try
+			{
+				obj = orb->string_to_object( ns.c_str() );
+			}
+			catch(...)
+			{
+				NORMAL_ERR2( "NameServiceBase: can't resolve NameService ", ns );
+			}
+
+			NORMAL_OUT2( "NameServiceBase: NameService is ", ns );
+		}
+		//
+		// try to get naming service from orb
+		//
+		else
+		{
+			try
+			{
+				obj = orb->resolve_initial_references( "NameService" );
+			}
+			catch (const CORBA::ORB::InvalidName&)
+			{
+				NORMAL_ERR( "NameServiceBase: can't resolve NameService" );
+			}
+
+			if (CORBA::is_nil(obj.in()))
+			{
+				NORMAL_ERR( "NameServiceBase: NameService is a nil object reference" );
+			}
+		}
+
+		try
+		{
+			nameService = CosNaming::NamingContext::_narrow( obj.in() );
+		}
+		catch (const CORBA::Exception&)
+		{
+			NORMAL_ERR( "NameServiceBase: NameService is not running" );
+		}
+
+		if( CORBA::is_nil(nameService.in()) )
+		{
+        		NORMAL_ERR( "NameService is not a NamingContext object reference" );
+		}
+
+ 		nameService->unbind(name);
+	}
 	catch (const CORBA::Exception&)
 	{
 		std::cerr << "..... could not unbind" << std::endl;
@@ -102,7 +154,7 @@ handle_sigint
 	{
 		std::cerr << "..... error in signal handler" << std::endl;
 	}
-	
+
 	exit(1);
 }
 
@@ -115,13 +167,13 @@ handle_sigchld
 	int status, child_val;
 	pid_t pid;
 
-   pid = waitpid(-1, &status, WNOHANG); 
+   pid = waitpid(-1, &status, WNOHANG);
     /* Wait for any child without blocking */
-    if ( pid == -1) 
+    if ( pid == -1)
     {
         /*
-         * calling standard I/O functions like fprintf() in a 
-         * signal handler is not recommended, but probably OK 
+         * calling standard I/O functions like fprintf() in a
+         * signal handler is not recommended, but probably OK
          * in toy programs like this one.
          */
 		 std::cerr << "waitpid failed" << std::endl;
@@ -206,11 +258,11 @@ main (int argc, char** argv)
     sigemptyset(&act.sa_mask);
 
     /*
-     * Make these values effective. If we were writing a real 
-     * application, we would probably save the old value instead of 
+     * Make these values effective. If we were writing a real
+     * application, we would probably save the old value instead of
      * passing NULL.
      */
-    if (sigaction(SIGINT, &act, NULL) < 0) 
+    if (sigaction(SIGINT, &act, NULL) < 0)
     {
 		 std::cerr << "sigaction failed" << std::endl;
         return 1;
@@ -230,11 +282,11 @@ main (int argc, char** argv)
 	 act.sa_flags |= SA_RESTART;
 
     /*
-     * Make these values effective. If we were writing a real 
-     * application, we would probably save the old value instead of 
+     * Make these values effective. If we were writing a real
+     * application, we would probably save the old value instead of
      * passing NULL.
      */
-    if (sigaction(SIGCHLD, &act, NULL) < 0) 
+    if (sigaction(SIGCHLD, &act, NULL) < 0)
     {
 		 std::cerr << "sigaction failed" << std::endl;
         return 1;

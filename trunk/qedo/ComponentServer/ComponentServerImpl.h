@@ -90,30 +90,30 @@ class ComponentServerImpl : public virtual POA_Qedo_Components::Deployment::Comp
 {
 private:
 	/** the stringified object reference of the server activator */
-	CORBA::String_var										csa_string_ref_;
+	CORBA::String_var						csa_string_ref_;
 	/** the object reference of the server activator */
 	Qedo_Components::Deployment::ServerActivator_var		csa_ref_;
 	/** the process id */
-	CORBA::ULong											process_id_;
+	CORBA::ULong							process_id_;
 	/** the object reference of the component installer */
 	Components::Deployment::ComponentInstallation_var		component_installer_;
 
 	/** the orb */
-	CORBA::ORB_var											orb_;
+	CORBA::ORB_var							orb_;
 	/** the root poa */
-	PortableServer::POA_var									root_poa_;
+	PortableServer::POA_var						root_poa_;
 	/** the root poa manager */
-	PortableServer::POAManager_var							root_poa_manager_;
+	PortableServer::POAManager_var					root_poa_manager_;
 	/** the list of created containers */
-	ContainerVector											containers_;
+	ContainerVector							containers_;
 	/** the slot id where our interceptor stores information to be used by container services */
-	PortableInterceptor::SlotId								slot_id_;
+	PortableInterceptor::SlotId					slot_id_;
 	/** the list of valuetype implementations */
-	std::vector < ValuetypeEntry >							valuetypes_;
+	std::vector < ValuetypeEntry >					valuetypes_;
 	/** the mutex for the container list */
-	QedoMutex												container_mutex_;
+	QedoMutex							container_mutex_;
 	/** the mutex for the valuetype implementation list */
-	QedoMutex												value_mutex_;
+	QedoMutex							value_mutex_;
 
 public:
 	/**

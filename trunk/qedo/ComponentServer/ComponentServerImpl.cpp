@@ -23,8 +23,9 @@
 #include "Output.h"
 #include "Valuetypes.h"
 #include "qedoutil.h"
+#include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.20 2003/10/27 15:30:28 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.21 2003/10/29 00:57:58 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -116,7 +117,7 @@ ComponentServerImpl::initialize()
 
 	// Convert the stringified object reference from the command line into a usable ComponentServerActivator reference
 	CORBA::Object_var csa_obj;
-	
+
 	try
 	{
 		csa_obj = orb_->string_to_object (csa_string_ref_);
@@ -147,12 +148,33 @@ ComponentServerImpl::initialize()
 	// Now retrieve the Component Installer to be used for containers created by this Component Server
 	// From now, we also inform the Component Server Activator to return a nil reference in case of any failure
 	// First get the Name Service
-	CosNaming::NamingContext_var ns;
+	CosNaming::NamingContext_var nameService;
 
 	try
 	{
-		CORBA::Object_var ns_obj = orb_->resolve_initial_references ("NameService");
-		ns = CosNaming::NamingContext::_narrow (ns_obj);
+		//
+		// try to get naming service from config values
+		//
+		CORBA::Object_var obj;
+		std::string ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
+		if( !ns.empty() )
+		{
+			obj = orb_->string_to_object( ns.c_str() );
+			NORMAL_OUT2( "ComponentServerImpl:: NameService is ", ns );
+		}
+		//
+		// try to get naming service from orb
+		//
+		else
+		{
+			obj = orb_->resolve_initial_references( "NameService" );
+		}
+		nameService = CosNaming::NamingContext::_narrow( obj.in() );
+
+		if( CORBA::is_nil(nameService.in()) )
+		{
+        		NORMAL_ERR( "NameService is not a NamingContext object reference" );
+		}
 	}
 	catch (CORBA::ORB::InvalidName&)
 	{
@@ -167,7 +189,7 @@ ComponentServerImpl::initialize()
 		throw CannotInitialize();
 	}
 
-	if (CORBA::is_nil (ns))
+	if (CORBA::is_nil (nameService))
 	{
 		NORMAL_ERR ("ComponentServerImpl: Name Service is nil");
 		csa_ref_->notify_component_server_create (Qedo_Components::Deployment::ComponentServer::_nil());
@@ -197,7 +219,7 @@ ComponentServerImpl::initialize()
 
 	try
 	{
-		component_installer_obj = ns->resolve (installer_name);
+		component_installer_obj = nameService->resolve (installer_name);
 	}
 	catch (CosNaming::NamingContext::NotFound&)
 	{
@@ -211,7 +233,7 @@ ComponentServerImpl::initialize()
 		csa_ref_->notify_component_server_create (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
-		
+
 	try
 	{
 		component_installer_ = Components::Deployment::ComponentInstallation::_narrow (component_installer_obj);
@@ -233,17 +255,17 @@ ComponentServerImpl::initialize()
 	// Register valuetype factories
 	CORBA::ValueFactoryBase* factory;
 	factory = new Qedo::ConfigValueFactory_impl();
-    orb_->register_value_factory ("IDL:omg.org/Components/ConfigValue:1.0", factory);
+	orb_->register_value_factory ("IDL:omg.org/Components/ConfigValue:1.0", factory);
 	factory = new Qedo::CookieFactory_impl();
-    orb_->register_value_factory ("IDL:omg.org/Components/Cookie:1.0", factory);
+	orb_->register_value_factory ("IDL:omg.org/Components/Cookie:1.0", factory);
 
 	Qedo_Components::Deployment::ComponentServer_var component_server = this->_this();
 	csa_ref_->notify_component_server_create (component_server.in());
-	
+
 }
 
 
-::Components::ConfigValues* 
+::Components::ConfigValues*
 ComponentServerImpl::configuration()
 throw (CORBA::SystemException)
 {

@@ -22,9 +22,10 @@
 
 #include "ORBInitializerImpl.h"
 #include "Output.h"
+#include "ConfigurationReader.h"
 #include "ServerInterceptorDispatcher.h"
 
-static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.6 2003/10/23 13:30:43 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.7 2003/10/29 00:57:58 tom Exp $";
 
 
 namespace Qedo {
@@ -54,26 +55,26 @@ ORBInitializerImpl::~ORBInitializerImpl()
 }
 
 
-void 
+void
 ORBInitializerImpl::pre_init (PortableInterceptor::ORBInitInfo_ptr info)
 {
 }
 
 
-void 
+void
 ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 {
-    //
+	//
 	// First resolve the Name Service
 	//
-    CORBA::Object_var obj;
+	CORBA::Object_var obj;
 
 	try
-    {
-        obj = info->resolve_initial_references("NameService");
-    }
-    catch (const CORBA::ORB::InvalidName&)
-    {
+	{
+		obj = info->resolve_initial_references( "NameService" );
+	}
+	catch (const CORBA::ORB::InvalidName&)
+	{
 		std::cerr << "ORBInitializerImpl: Can't resolve NameService" << std::endl;
 		return;
     }

@@ -33,7 +33,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.43 2003/10/22 12:33:12 stoinski Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.44 2003/10/29 00:57:57 tom Exp $";
 
 
 namespace Qedo {
@@ -243,16 +243,30 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
     }
     catch (const CORBA::ORB::InvalidName&)
     {
+
         DEBUG_OUT("ContainerInterfaceImpl: No HomeFinder");
-		/* Since problem with MICO Initializer a new try directly over the name service*/
+		// Since problem with MICO Initializer a new try directly over the name service  
 		//return;
-	
+
 		CosNaming::NamingContext_var nameService;
-		
+
 		try
 		{
-			obj = orb->resolve_initial_references("NameService");
-		}
+			std::string ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
+
+			if( !ns.empty() )
+			{
+				obj = orb_->string_to_object( ns.c_str() );
+				NORMAL_OUT2( "ComponentServerImpl:: NameService is ", ns );
+			}
+			//
+			// try to get naming service from orb
+			//
+			else
+			{
+				obj = orb_->resolve_initial_references( "NameService" );
+			}
+	}
 		catch (const CORBA::ORB::InvalidName&)
 		{
 			std::cerr << "ContainerInterfaceImpl: Can't resolve NameService" << std::endl;
@@ -298,6 +312,7 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 		{
 			obj = CORBA::Object::_nil();
 		}
+
     }
     if (CORBA::is_nil(obj.in())) {
         DEBUG_OUT("ContainerInterfaceImpl: No HomeFinder");
