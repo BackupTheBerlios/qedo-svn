@@ -10,7 +10,7 @@
 # version 2.1 of the License, or (at your option) any later version.
 #                                                                  
 # This library is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
+# but WITHOUT ANY WARRANTY; withabs_srcdirout even the implied warranty of 
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
 # Lesser General Public License for more details.                 
 #                                                                
@@ -20,9 +20,12 @@
 
 include ../MakeVars
 
+VPATH = @srcdir@
+
 CXX = @CXX@
-CPPFLAGS+=-I. -I../ComponentIDL \
-          -I../ComponentContainer \
+CPPFLAGS+=-I@srcdir@ \
+          -I@builddir@/../ComponentIDL \
+          -I@top_srcdir@/ComponentContainer \
 			 @XERCES_INCLUDE@ \
 			 @CPPFLAGS@ 
 CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
@@ -33,8 +36,8 @@ CC=$(CXX)
 
 @SET_MAKE@
 
-LIBS += -L../ComponentIDL -lComponent\
-        -L../ComponentContainer -lComponentContainer \
+LIBS += -L@top_builddir@/ComponentIDL -lComponent\
+        -L@top_builddir@/ComponentContainer -lComponentContainer \
 		  @XERCES_LIBS@
 
 LDLIBS = ${LIBS}

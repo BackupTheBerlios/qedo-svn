@@ -20,8 +20,10 @@
 
 include ../MakeVars
 
+VPATH = @srcdir@
+
 CXX = @CXX@
-CPPFLAGS+=-I. -I../ComponentIDL @CPPFLAGS@ 
+CPPFLAGS+=-I@srcdir@ -I@builddir@/../ComponentIDL @CPPFLAGS@ 
 CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS=@LIBS@
@@ -30,7 +32,7 @@ LIBS=@LIBS@
 
 CXXFLAGS +=  $(IDLCXXFLAGS) $(INCLUDES)
 
-LIBS += -L../ComponentIDL -lComponent -luuid
+LIBS += -L@top_builddir@/ComponentIDL -lComponent -luuid
 
 ifeq "${ORB}" "MICO_ORB"
 LIBS += $(shell mico-config --cosslibs)

@@ -20,9 +20,14 @@
 
 include ../MakeVars
 
-CXX = @CXX@
+VPATH = @srcdir@
 
-CPPFLAGS+=-I. -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller @CPPFLAGS@ 
+CXX = @CXX@
+CPPFLAGS+=-I@srcdir@ \
+          -I@top_builddir@/ComponentIDL \
+          -I@top_srcdir@/ComponentContainer \
+          -I@top_srcdir@/ComponentInstaller \
+          @CPPFLAGS@ 
 CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS+=@LIBS@
@@ -31,14 +36,13 @@ CC=$(CXX)
 @SET_MAKE@
 
 
-LIBS += -L../ComponentIDL -lComponent -luuid
 
 ifeq "${ORB}" "MICO_ORB"
 LIBS += $(shell mico-config --cosslibs)
 CPPFLAGS += -I$(shell mico-config --prefix)/include/coss
 endif
-LIBS += -L../ComponentIDL -lComponent \
-           -L../ComponentContainer -lComponentContainer 
+LIBS += -L@top_builddir@/ComponentIDL -lComponent \
+        -L@top_builddir@/ComponentContainer -lComponentContainer 
 
 LDLIBS = ${LIBS}
 

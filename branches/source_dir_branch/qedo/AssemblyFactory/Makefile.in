@@ -1,11 +1,34 @@
+# Qedo - Quality of Service Enabled Distributed Objects 
+#                                                     
+# http://qedo.berlios.de/                            
+#                                                   
+# Copyright (C) 2002-2003 by the Qedo Team         
+#                                                 
+# This library is free software; you can redistribute it and/or 
+# modify it under the terms of the GNU Lesser General Public   
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#                                                                  
+# This library is distributed in the hope that it will be useful, 
+# but WITHOUT ANY WARRANTY; without even the implied warranty of 
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+# Lesser General Public License for more details.                 
+#                                                                
+# You should have received a copy of the GNU Lesser General Public 
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+
 include ../MakeVars
 
+VPATH = @srcdir@
+
 CXX = @CXX@
-CPPFLAGS+=-I. -I../ComponentIDL \
-          -I../ComponentContainer \
-			 -I../ComponentInstaller \
-			 @XERCES_INCLUDE@ \
-			 @CPPFLAGS@ 
+CPPFLAGS+=-I@srcdir@ \
+          -I@top_builddir@/ComponentIDL \
+          -I@top_srcdir@/ComponentContainer \
+          -I@top_srcdir@/ComponentInstaller \
+          @XERCES_INCLUDE@ \
+          @CPPFLAGS@ 
 CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS+=@LIBS@
@@ -13,8 +36,8 @@ CC=$(CXX)
 
 @SET_MAKE@
 
-LIBS += -L../ComponentIDL -lComponent\
-        -L../ComponentContainer -lComponentContainer \
+LIBS += -L@top_builddir@/ComponentIDL -lComponent\
+        -L@top_builddir@/ComponentContainer -lComponentContainer \
 		  @XERCES_LIBS@
 
 LDLIBS = ${LIBS}
@@ -24,14 +47,14 @@ SOURCES =   Assembly.cpp \
 				Properties.cpp \
 				StandardConfigurator.cpp \
 				assf.cpp \
-				../ComponentInstaller/XMLCatalog.cpp \
-				../ComponentInstaller/libunzip.cpp \
-				../ComponentInstaller/CatalogResolver.cpp \
-				../ComponentInstaller/DOMTreeErrorReporter.cpp \
-				../ComponentInstaller/DOMXMLParser.cpp \
-				../ComponentInstaller/NameServiceBase.cpp \
-				../ComponentInstaller/Package.cpp \
-				../ComponentInstaller/PlatformBase.cpp 
+				@top_srcdir@/ComponentInstaller/XMLCatalog.cpp \
+				@top_srcdir@/ComponentInstaller/libunzip.cpp \
+				@top_srcdir@/ComponentInstaller/CatalogResolver.cpp \
+				@top_srcdir@/ComponentInstaller/DOMTreeErrorReporter.cpp \
+				@top_srcdir@/ComponentInstaller/DOMXMLParser.cpp \
+				@top_srcdir@/ComponentInstaller/NameServiceBase.cpp \
+				@top_srcdir@/ComponentInstaller/Package.cpp \
+				@top_srcdir@/ComponentInstaller/PlatformBase.cpp 
 
 OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
 
