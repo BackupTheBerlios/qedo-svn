@@ -27,6 +27,6 @@ cp StreamComponentIDL/*.idl $1/idl;
 mkdir -p $1/lib;
 cp ComponentIDL/libComponentIDL.so $1/lib;
 cp StreamComponentIDL/libStreamComponentIDL.so $1/lib;
-cp ComponentContainer/libComponentContainer.so /$1/lib;
-
+cp ComponentContainer/libComponentContainer.so $1/lib;
+cp qedoutil/libqedoutil.so $1/lib;
 

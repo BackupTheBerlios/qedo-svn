@@ -161,7 +161,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;../qedoutil;&quot;$(MICO)/include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)\include&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;../QedoUtil;&quot;$(MICO)/include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;ZLIB_DLL;MICO_ORB;_WINDOWS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"

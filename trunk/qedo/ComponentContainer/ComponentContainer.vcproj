@@ -135,7 +135,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../StreamComponentIDL;../ComponentValuetypes;../ComponentServer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../StreamComponentIDL;../ComponentServer;../qedoutil;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(XERCES)/include&quot;"
 				PreprocessorDefinitions="ORBACUS_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -200,7 +200,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../StreamComponentIDL;../ComponentServer/;&quot;$(MICO)\include&quot;"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../StreamComponentIDL;../QedoUtil;../ComponentServer/;&quot;$(XERCES)/include&quot;;&quot;$(MICO)/include&quot;"
 				PreprocessorDefinitions="MICO_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -428,9 +428,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\Key.cpp">
 			</File>
 			<File
-				RelativePath=".\Output.cpp">
-			</File>
-			<File
 				RelativePath=".\PortBase.cpp">
 			</File>
 			<File
@@ -479,12 +476,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="StreamingBuffer.cpp">
 			</File>
 			<File
-				RelativePath="StreamingValuetypes.cpp">
-			</File>
-			<File
-				RelativePath="Synchronisation.cpp">
-			</File>
-			<File
 				RelativePath="TCPSinkTransportEndpoint.cpp">
 			</File>
 			<File
@@ -501,9 +492,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="Util.cpp">
-			</File>
-			<File
-				RelativePath="Valuetypes.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -550,9 +538,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\Key.h">
-			</File>
-			<File
-				RelativePath=".\Output.h">
 			</File>
 			<File
 				RelativePath=".\PortBase.h">
@@ -603,12 +588,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="StreamingBuffer.h">
 			</File>
 			<File
-				RelativePath="StreamingValuetypes.h">
-			</File>
-			<File
-				RelativePath="Synchronisation.h">
-			</File>
-			<File
 				RelativePath="TCPSinkTransportEndpoint.h">
 			</File>
 			<File
@@ -625,12 +604,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\Util.h">
-			</File>
-			<File
-				RelativePath="Valuetypes.h">
-			</File>
-			<File
-				RelativePath="version.h">
 			</File>
 		</Filter>
 		<Filter

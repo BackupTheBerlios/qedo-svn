@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.00"
-	Name="gendef"
+	Name="GenDef"
 	ProjectGUID="{4E937E94-254F-4983-962E-5D05EDEC437E}"
 	Keyword="Win32Proj">
 	<Platforms>

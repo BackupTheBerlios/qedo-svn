@@ -48,6 +48,7 @@ copy ComponentIDL\%1\ComponentIDL.def %actdir%
 copy StreamComponentIDL\%1\StreamComponentIDL.lib %actdir%
 copy StreamComponentIDL\%1\StreamComponentIDL.def %actdir%
 copy ComponentContainer\%1\ComponentContainer.lib %actdir%
+copy qedoutil\%1\qedoutil.lib %actdir%
 
 echo ************ End Distribution.
 
