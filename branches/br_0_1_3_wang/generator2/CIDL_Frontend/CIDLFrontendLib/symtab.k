@@ -667,32 +667,6 @@ add_value_member(
     }
   }  
 }
-  
-void
-add_catalog_dcl(
-  idl_name name,
-  definition def_v,
-  idl_identifier type_name_v)
-{
-  resolve_name(type_name_v,the_CatalogN);
-  add_name(false,CatalogLabelN(),name,def_v,0);
-}
-
-void
-add_catalog(
-  idl_name name, 
-  definition def_v, 
-  idl_identifier_list inheritance)
-{
-  table_item_lists inh_v=0;
-  if(inheritance) {
-    inh_v=resolve_catalog_names(inheritance);
-    foreach(ident_v;idl_identifier_list inheritance) {
-      get_definition(ident_v)->derived.insert(def_v);
-    }
-  }
-  add_name(true,CatalogN(),name,def_v,inh_v);
-}
 
 void
 add_composition(
@@ -1012,31 +986,9 @@ add_type_declarators(
 
 void
 add_abstract_storage_home_name(
-  idl_name catalog_label_v,
   idl_name abstract_storage_home_label_v)
 {
   table_item_list list_1=0;
-  table_item_list list_v = search_name(catalog_label_v,the_CatalogLabelN);
-  if(!list_v || list_v->prod_sel() == sel_Niltable_item_list) {
-    Error("catalog '%k' is not declared\n",catalog_label_v,catalog_label_v);
-    return;
-  }
-  with(list_v) {
-    Constable_item_list(item_v,Niltable_item_list()) : {
-      /* Oooooh abuse of idl_name as an idl_identifier,
-       * so we have to register the referenced symtab_entry
-       * here. (HB)
-       */
-       catalog_label_v->symtab_entry=item_v;
-      /* Get all named definitions from the catalog */ 
-       list_1 = lookup_name(abstract_storage_home_label_v,item_v);
-      /* Look up for a home definition */
-       list_1 = lookup_node_flag(the_HomeN,list_1);
-    }
-    Constable_item_list(item_v,*) : {
-      Error("catalog '%k' is multiple declared\n",catalog_label_v,catalog_label_v);
-    }
-  }
 
   with(list_1) {
     Constable_item_list(item_v,Niltable_item_list()) : {
@@ -1047,8 +999,7 @@ add_abstract_storage_home_name(
        abstract_storage_home_label_v->symtab_entry=item_v;
     }
     Niltable_item_list : {
-      Error("No home definition '%k' in '%k'\n",abstract_storage_home_label_v,
-              abstract_storage_home_label_v,catalog_label_v);
+      Error("No home definition '%k'\n",abstract_storage_home_label_v);
     }
   }
 }
@@ -1239,12 +1190,6 @@ table_item_lists
 resolve_interface_names(idl_identifier_list names)
 {
   return resolve_names(names,the_InterfaceN);
-}
-
-table_item_lists
-resolve_catalog_names(idl_identifier_list names)
-{
-  return resolve_names(names,the_CatalogN);
 }
 
 table_item_lists
@@ -1860,7 +1805,6 @@ fix_definition(
   AbstractStorageType(*,nil_list),
   AbstractStorageHome(*,nil_list),
   StorageHome(*,nil_list),
-  Catalog(*,*,nil_list),
   Module(*,nil_list),
   Interface(*,nil_list) : {
     assert(nil_list->is_nil());

@@ -23,98 +23,86 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#include "FactoryDef_impl.h"
+#include "PSSKeyDef_impl.h"
 #include "Debug.h"
 
 namespace QEDO_ComponentRepository {
 
-FactoryDef_impl::FactoryDef_impl
+PSSKeyDef_impl::PSSKeyDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
-  ComponentDef_impl *component )
+  AbstractStorageTypeDef_impl *abs_storage_type)
+
 : IRObject_impl ( repository ),
   Contained_impl ( container, repository ),
   OperationDef_impl ( container, repository )
 {
-	DEBUG_OUTLINE ( "FactoryDef_impl::FactoryDef_impl() for component called" );
-
-	OperationDef_impl::result_def ( component -> _this() );
-	OperationDef_impl::mode ( IR__::OP_NORMAL );
-}
-
-FactoryDef_impl::FactoryDef_impl
-( Container_impl *container,
-  Repository_impl *repository,
-  AbstractStorageTypeDef_impl *abs_storage_type )
-: IRObject_impl ( repository ),
-  Contained_impl ( container, repository ),
-  OperationDef_impl ( container, repository )
-{
-	DEBUG_OUTLINE ( "FactoryDef_impl::FactoryDef_impl() for abstract storage home called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::PSSKeyDef_impl() called" );
 
 	OperationDef_impl::result_def ( abs_storage_type -> _this() );
 	OperationDef_impl::mode ( IR__::OP_NORMAL );
 }
 
-FactoryDef_impl::FactoryDef_impl
+PSSKeyDef_impl::PSSKeyDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
-  StorageTypeDef_impl *storage_type )
+  StorageTypeDef_impl *storage_type)
+
 : IRObject_impl ( repository ),
   Contained_impl ( container, repository ),
   OperationDef_impl ( container, repository )
 {
-	DEBUG_OUTLINE ( "FactoryDef_impl::FactoryDef_impl() for storage home called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::PSSKeyDef_impl() called" );
 
 	OperationDef_impl::result_def ( storage_type -> _this() );
 	OperationDef_impl::mode ( IR__::OP_NORMAL );
 }
 
-FactoryDef_impl::~FactoryDef_impl
+PSSKeyDef_impl::~PSSKeyDef_impl
 ()
 {
-	DEBUG_OUTLINE ( "FactoryDef_impl::~FactoryDef_impl() called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::~PSSKeyDef_impl() called" );
 }
 
 void
-FactoryDef_impl::destroy
+PSSKeyDef_impl::destroy
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "FactoryDef_impl::destroy() called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::destroy() called" );
 }
 
 CORBA::TypeCode_ptr
-FactoryDef_impl::result
+PSSKeyDef_impl::result
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "FactoryDef_impl::result() called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::result() called" );
 
 	// How to implement???
 	throw CORBA::NO_IMPLEMENT();
 }
 
 void
-FactoryDef_impl::result_def
+PSSKeyDef_impl::result_def
 (IR__::IDLType_ptr idl_type)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "FactoryDef_impl::result_def(...) called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::result_def(...) called" );
 
-	// Setting the result_def has no effect in FactoryDef
+	// Setting the result_def has no effect in PSSFactoryDef
 	// result_def is automatically set by the home during
-	// creation of the FactoryDef
+	// creation of the PSSFactoryDef
 }
 
 void
-FactoryDef_impl::params
+PSSKeyDef_impl::params
 (const IR__::ParDescriptionSeq& seq)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "FactoryDef_impl::params(...) called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::params(...) called" );
 
-    // For FactoryDef all parameters must be 'in' parameters
+    // For PSSFactoryDef all parameters must be 'in' parameters
     for ( unsigned int i = 0 ; i < seq.length() ; i++ )
 		if ( seq[i].mode != IR__::PARAM_IN )
 			throw CORBA::BAD_PARAM ();	// Is this exception correct?
@@ -123,24 +111,24 @@ throw(CORBA::SystemException)
 }
 
 void
-FactoryDef_impl::mode
+PSSKeyDef_impl::mode
 (IR__::OperationMode mode)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "FactoryDef_impl::mode(...) called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::mode(...) called" );
 
-	// mode must not be changed for FactoryDef
+	// mode must not be changed for PSSFactoryDef
 	throw CORBA::BAD_INV_ORDER();	// Is this exception correct
 }
 
 void
-FactoryDef_impl::contexts
+PSSKeyDef_impl::contexts
 (const IR__::ContextIdSeq& seq)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "FactoryDef_impl::contexts(...) called" );
+	DEBUG_OUTLINE ( "PSSKeyDef_impl::contexts(...) called" );
 
-	// FactoryDef has never contexts associated with it
+	// PSSFactoryDef has never contexts associated with it
 	if ( seq.length() > 0 )
 		throw CORBA::BAD_PARAM();	// Is this exception correct?
 

@@ -1,7 +1,7 @@
 /*****************************************************************************/
-/* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
+/* Qedo - Quality of Service Enabled Distributed Objects                     */
 /*                                                                           */
-/* Copyright (c) 2002 by the Qedo Team                                       */
+/* Copyright (c) 2002/2003 by the Qedo Team                                  */
 /*                                                                           */
 /* http://qedo.berlios.de                                                    */
 /*                                                                           */
@@ -11,7 +11,7 @@
 /* it under the terms of the GNU General Public License as published by      */
 /* the Free Software Foundation; either version 2 of the License, or         */
 /* (at your option) any later version.                                       */
-/*                                                                           */ 
+/*                                                                           */
 /* Qedo Generator is distributed in the hope that it will be useful,         */
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of            */
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
@@ -23,34 +23,26 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#ifndef __SEGMENT_DEF_IMPL_H__
-#define __SEGMENT_DEF_IMPL_H__
+#ifndef __PSSPRIMARY_KEY_DEF_IMPL_H__
+#define __PSSPRIMARY_KEY_DEF_IMPL_H__
 
 #include <CORBA.h>
-#include "CIDL_Extension_skel.h"
-#include "Contained_impl.h"
+#include "IFR_skel.h"
 #include "Repository_impl.h"
-#include "ProvidesDef_impl.h"
-
-#include <vector>
-
-//using namespace std;
+#include "IDLType_impl.h"
 
 namespace QEDO_ComponentRepository {
 
-class SegmentDef_impl : public virtual POA_CIDL::SegmentDef,
-						public virtual Contained_impl
+class PSSPrimaryKeyDef_impl : public virtual POA_IR__::PSSPrimaryKeyDef,
+							public virtual Contained_impl
 {
-	vector < ProvidesDef_impl* > provided_facet_impls_;
-	IR__::AbstractStorageHomeDef_ptr stored_on_;
-	
+	IDLType_impl *key_idltype_impl_;
 public:
-	SegmentDef_impl ( Container_impl *container,
-		            Repository_impl *repository,
-					IR__::ProvidesDefSeq provided_facets,
-					IR__::AbstractStorageHomeDef_ptr stored_on);
+	PSSPrimaryKeyDef_impl ( Container_impl *container,
+						 Repository_impl *repository,
+						 IDLType_impl *key_idltype_impl );
 
-	~SegmentDef_impl();
+	~PSSPrimaryKeyDef_impl();
 
     //
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
@@ -58,7 +50,7 @@ public:
 	virtual CORBA__::DefinitionKind def_kind()
         throw(CORBA::SystemException)
     {
-        return CORBA__::dk_Segment;
+        return CORBA__::dk_PSSPrimaryKey;
     }
 
     //
@@ -70,23 +62,22 @@ public:
     //
     // IDL:omg.org/IR__/Contained/describe:1.0
     //
-	virtual IR__::Contained::Description* describe()
+    virtual IR__::Contained::Description* describe()
         throw(CORBA::SystemException);
 
     //
-    // IDL:omg.org/CIDL/SegmentDef/provided_facets:1.0
+    // IDL:omg.org/IR__/PSSPrimaryKeyDef/is_a:1.0
     //
-    virtual IR__::ProvidesDefSeq* provided_facets()
+    virtual CORBA::Boolean is_a(const char* primary_key_id)
         throw(CORBA::SystemException);
 
-	//
-    // IDL:omg.org/CIDL/SegmentDef/stored_on:1.0
     //
-    virtual IR__::AbstractStorageHomeDef_ptr stored_on()
-		throw(CORBA::SystemException);
+    // IDL:omg.org/IR__/PSSPrimaryKeyDef/primary_key:1.0
+    //
+    virtual IR__::IDLType_ptr primary_key()
+        throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository
 
 #endif
-

@@ -82,6 +82,7 @@ protected:
 
 	// interface
 	void handleSupportedInterface(IR__::ComponentDef_ptr component);
+	void handleSupportedInterface(IR__::StorageTypeDef_ptr storage_type);
 	virtual void doInterface(IR__::InterfaceDef_ptr intface);
 
 	// value type
@@ -116,6 +117,15 @@ protected:
 	// finder
 	void handleFinder(IR__::HomeDef_ptr intf);
 	virtual void doFinder(IR__::FinderDef_ptr finder);
+
+	// factory (for PSS)
+	void handleFactory(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
+	void handleFactory(IR__::StorageHomeDef_ptr storage_home);
+
+	// PSSKey
+	void handlePSSKey(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
+	void handlePSSKey(IR__::StorageHomeDef_ptr storage_home);
+	virtual void doPSSKey(IR__::PSSKeyDef_ptr psskey);
 
 	// value member
 	void handleValueMember(IR__::ValueDef_ptr value);

@@ -1,7 +1,7 @@
 /*****************************************************************************/
-/* Qedo - Quality of Service Enabled Distributed Objects                     */
+/* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
 /*                                                                           */
-/* Copyright (c) 2002/2003 by the Qedo Team                                  */
+/* Copyright (c) 2002 by the Qedo Team                                       */
 /*                                                                           */
 /* http://qedo.berlios.de                                                    */
 /*                                                                           */
@@ -38,7 +38,7 @@ module CIDL {
 	interface SegmentDef;
 	interface HomeExecutorDef;
 	interface ExecutorDef;
-
+	
 	typedef unsigned long LifecycleCategory;
 	const LifecycleCategory lc_Service = 0;
 	const LifecycleCategory lc_Session = 1;
@@ -63,11 +63,12 @@ module CIDL {
 		readonly attribute LifecycleCategory lifecycle;
 		readonly attribute HomeExecutorDef home_executor;
 		readonly attribute ExecutorDef executor_def;
-
+		
 		HomeExecutorDef create_home_executor (
 			in IR__::RepositoryId id,
 			in IR__::Identifier name,
-			in IR__::VersionSpec version
+			in IR__::VersionSpec version,
+			in IR__::AbstractStorageHomeDef _abs_storage_home
 		);
 		ExecutorDef create_executor (
 			in IR__::RepositoryId id,
@@ -89,6 +90,7 @@ module CIDL {
 	interface SegmentDef : IR__::Contained
 	{
 		readonly attribute IR__::ProvidesDefSeq provided_facets;
+		readonly attribute IR__::AbstractStorageHomeDef stored_on;
 	};
 	typedef sequence < SegmentDef > SegmentDefSeq;
 
@@ -98,6 +100,7 @@ module CIDL {
 		IR__::RepositoryId defined_in;
 		IR__::VersionSpec version;
 		IR__::ProvidesDefSeq provided_facets;
+		IR__::AbstractStorageHomeDef stored_on;
 	};
 
 	struct Delegation
@@ -107,9 +110,19 @@ module CIDL {
 	};
 	typedef sequence < Delegation > DelegationSeq;
 
+	// binding and storagehome-delegation only occured with "abstract..."
+	struct AbsStorageHomeDelegation 
+	{
+		IR__::OperationDef delegated_operation;
+		IR__::Identifier abs_storage_home_operation_name;
+	};
+	typedef sequence < AbsStorageHomeDelegation > AbsStorageHomeDelegationSeq;
+
 	interface HomeExecutorDef : IR__::Contained
 	{
+		attribute IR__::AbstractStorageHomeDef binds_to;
 		attribute DelegationSeq delegations;
+		attribute AbsStorageHomeDelegationSeq abs_storage_home_delegations;
 	};
 
 	struct HomeExecutorDescription {
@@ -117,7 +130,9 @@ module CIDL {
 		IR__::RepositoryId id;
 		IR__::RepositoryId defined_in;
 		IR__::VersionSpec version;
+		IR__::AbstractStorageHomeDef binds_to;
 		DelegationSeq delegations;
+		AbsStorageHomeDelegationSeq abs_storage_home_delegations;
 	};
 
 	interface ExecutorDef : IR__::Contained, IR__::Container
@@ -128,7 +143,8 @@ module CIDL {
 			in IR__::RepositoryId id,
 			in IR__::Identifier name,
 			in IR__::VersionSpec version,
-			in IR__::ProvidesDefSeq provided_facets
+			in IR__::ProvidesDefSeq provided_facets,
+			in IR__::AbstractStorageHomeDef _abs_storage_home
 		);
 	};
 

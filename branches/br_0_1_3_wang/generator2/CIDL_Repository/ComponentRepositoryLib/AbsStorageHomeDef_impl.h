@@ -23,42 +23,37 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#ifndef __SEGMENT_DEF_IMPL_H__
-#define __SEGMENT_DEF_IMPL_H__
+#ifndef __ABS_STORAGEHOME_DEF_IMPL_H__
+#define __ABS_STORAGEHOME_DEF_IMPL_H__
 
 #include <CORBA.h>
-#include "CIDL_Extension_skel.h"
-#include "Contained_impl.h"
+#include "IFR_skel.h"
 #include "Repository_impl.h"
-#include "ProvidesDef_impl.h"
-
-#include <vector>
-
-//using namespace std;
+#include "InterfaceDef_impl.h"
+#include "AbsStorageTypeDef_impl.h"
 
 namespace QEDO_ComponentRepository {
 
-class SegmentDef_impl : public virtual POA_CIDL::SegmentDef,
-						public virtual Contained_impl
+class AbstractStorageHomeDef_impl : public virtual POA_IR__::AbstractStorageHomeDef,
+							public virtual InterfaceDef_impl
 {
-	vector < ProvidesDef_impl* > provided_facet_impls_;
-	IR__::AbstractStorageHomeDef_ptr stored_on_;
-	
+	AbstractStorageTypeDef_impl *managed_abstract_storage_type_impl_;
+	vector < AbstractStorageHomeDef_impl* > base_abstract_storage_home_impls_;
+
 public:
-	SegmentDef_impl ( Container_impl *container,
-		            Repository_impl *repository,
-					IR__::ProvidesDefSeq provided_facets,
-					IR__::AbstractStorageHomeDef_ptr stored_on);
+	AbstractStorageHomeDef_impl ( Container_impl *container,
+							Repository_impl *repository,
+							AbstractStorageTypeDef_impl *managed_abstract_storage_type_impl);
 
-	~SegmentDef_impl();
+	~AbstractStorageHomeDef_impl();
 
-    //
+	//
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
     //
 	virtual CORBA__::DefinitionKind def_kind()
         throw(CORBA::SystemException)
     {
-        return CORBA__::dk_Segment;
+        return CORBA__::dk_AbstractStorageHome;
     }
 
     //
@@ -70,20 +65,53 @@ public:
     //
     // IDL:omg.org/IR__/Contained/describe:1.0
     //
-	virtual IR__::Contained::Description* describe()
+    virtual IR__::Contained::Description* describe()
         throw(CORBA::SystemException);
 
     //
-    // IDL:omg.org/CIDL/SegmentDef/provided_facets:1.0
+    // IDL:omg.org/IR__/AbstractStorageHomeDef/managed_abstract_storage_type:1.0
     //
-    virtual IR__::ProvidesDefSeq* provided_facets()
+    virtual IR__::AbstractStorageTypeDef_ptr managed_abstract_storage_type()
         throw(CORBA::SystemException);
 
-	//
-    // IDL:omg.org/CIDL/SegmentDef/stored_on:1.0
     //
-    virtual IR__::AbstractStorageHomeDef_ptr stored_on()
-		throw(CORBA::SystemException);
+    // IDL:omg.org/IR__/AbstractStorageHomeDef/base_abstract_storage_homes:1.0
+    //
+    virtual IR__::InterfaceDefSeq* base_abstract_storage_homes()
+        throw(CORBA::SystemException);
+    virtual void base_abstract_storage_homes(const IR__::InterfaceDefSeq& seq)
+        throw(CORBA::SystemException);
+
+    //
+    // IDL:omg.org/IR__/AbstractStorageHomeDef/factories:1.0
+    //
+    virtual IR__::FactoryDefSeq* factories()
+        throw(CORBA::SystemException);
+
+    //
+    // IDL:omg.org/IR__/AbstractStorageHomeDef/keys:1.0
+    //
+    virtual IR__::PSSKeyDefSeq* keys()
+        throw(CORBA::SystemException);
+
+    //
+    // IDL:omg.org/IR__/AbstractStorageHomeDef/create_factory:1.0
+    //
+    virtual IR__::FactoryDef_ptr create_factory(const char* id,
+                                                   const char* name,
+                                                   const char* version,
+                                                   const IR__::ParDescriptionSeq& params,
+                                                   const IR__::ExceptionDefSeq& exceptions)
+        throw(CORBA::SystemException);
+
+    //
+    // IDL:omg.org/IR__/AbstractStorageHomeDef/create_key:1.0
+    //
+    virtual IR__::PSSKeyDef_ptr create_key(const char* id,
+                                                 const char* name,
+                                                 const char* version,
+                                                 const IR__::ParDescriptionSeq& params)
+        throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository

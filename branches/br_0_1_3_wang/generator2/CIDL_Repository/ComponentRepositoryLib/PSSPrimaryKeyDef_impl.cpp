@@ -23,124 +23,94 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#include "HomeExecutorDef_impl.h"
+#include "PSSPrimaryKeyDef_impl.h"
 #include "Debug.h"
 
 namespace QEDO_ComponentRepository {
 
-HomeExecutorDef_impl::HomeExecutorDef_impl
+PSSPrimaryKeyDef_impl::PSSPrimaryKeyDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
-  IR__::AbstractStorageHomeDef_ptr binds_to)
-: Contained_impl ( container, repository ),
-  IRObject_impl ( repository )
+  IDLType_impl *key_idltype_impl )
+: IRObject_impl ( repository ),
+  Contained_impl ( container, repository )
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::HomeExecutorDef_impl() called" );
-	binds_to_ = binds_to;
+	DEBUG_OUTLINE ( "PSSPrimaryKeyDef_impl::PSSPrimaryKeyDef_impl() called" );
+
+	key_idltype_impl_ = key_idltype_impl;
+	key_idltype_impl_ -> _add_ref();
 }
 
-HomeExecutorDef_impl::~HomeExecutorDef_impl
+PSSPrimaryKeyDef_impl::~PSSPrimaryKeyDef_impl
 ()
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::~HomeExecutorDef_impl() called" );
+	DEBUG_OUTLINE ( "PSSPrimaryKeyDef_impl::~PSSPrimaryKeyDef_impl() called" );
 }
 
 void
-HomeExecutorDef_impl::destroy
+PSSPrimaryKeyDef_impl::destroy
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::destroy() called" );
+	DEBUG_OUTLINE ( "PSSPrimaryKeyDef_impl::destroy() called" );
+
+	key_idltype_impl_ -> _add_ref();
 
 	Contained_impl::destroy();
 }
 
 IR__::Contained::Description*
-HomeExecutorDef_impl::describe
+PSSPrimaryKeyDef_impl::describe
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::describe() called" );
+	DEBUG_OUTLINE ( "PSSPrimaryKeyDef_impl::describe() called" );
 
-	CIDL::HomeExecutorDescription_var home_executor_desc = new CIDL::HomeExecutorDescription;
-	home_executor_desc -> id = this -> id();
-	home_executor_desc -> name = this -> name();
-	home_executor_desc -> version = this -> version();
+	IR__::PSSPrimaryKeyDescription_var key_desc = new IR__::PSSPrimaryKeyDescription;
+	key_desc -> id = this -> id();;
+	key_desc -> name = this -> name();
+	key_desc -> version = this -> version();
 	Contained_impl *contained = dynamic_cast<Contained_impl*>(defined_in_);
 	if ( contained )
-		home_executor_desc -> defined_in = CORBA::string_dup ( contained -> id() );
+		key_desc -> defined_in = CORBA::string_dup ( contained -> id() );
 	else
-		home_executor_desc -> defined_in = CORBA::string_dup ( "" );
+		key_desc -> defined_in = CORBA::string_dup ( "" );
 
-	home_executor_desc -> binds_to = this -> binds_to();
-	home_executor_desc -> delegations = *(this->delegations());
-	home_executor_desc -> abs_storage_home_delegations = *(this->abs_storage_home_delegations());
+	key_desc -> primary_key = key_idltype_impl_ -> _this();
 
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
 	CORBA::Any any;
-	any <<= home_executor_desc._retn();
+	any <<= key_desc._retn();;
 	desc -> value = any;
 
 	return desc._retn();
 }
 
-CIDL::DelegationSeq*
-HomeExecutorDef_impl::delegations
+CORBA::Boolean
+PSSPrimaryKeyDef_impl::is_a
+(const char* primary_key_id)
+throw(CORBA::SystemException)
+{
+	IR__::Contained_var primary_key_impl;
+
+	primary_key_impl = repository_ -> lookup_id ( primary_key_id );
+
+	if ( CORBA::is_nil ( primary_key_impl ) )
+		throw CORBA::BAD_PARAM();	// Is this exception correct ?
+
+	return this -> is_a ( primary_key_impl -> id() );
+}
+
+IR__::IDLType_ptr
+PSSPrimaryKeyDef_impl::primary_key
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::delegations() called" );
+	DEBUG_OUTLINE ( "PSSPrimaryKeyDef_impl::primary_key() called" );
 
-	return new CIDL::DelegationSeq ( delegations_ );
-}
-
-void
-HomeExecutorDef_impl::delegations
-(const CIDL::DelegationSeq& seq)
-throw(CORBA::SystemException)
-{
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::delegations(...) called" );
-
-	delegations_ = seq;
-}
-
-CIDL::AbsStorageHomeDelegationSeq*
-HomeExecutorDef_impl::abs_storage_home_delegations
-()
-throw(CORBA::SystemException)
-{
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::abs_storage_home_delegations() called" );
-
-	return new CIDL::AbsStorageHomeDelegationSeq ( abs_storage_home_delegations_ );
-}
-
-void
-HomeExecutorDef_impl::abs_storage_home_delegations
-(const CIDL::AbsStorageHomeDelegationSeq& seq)
-throw(CORBA::SystemException)
-{
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::abs_storage_home_delegations(...) called" );
-
-	abs_storage_home_delegations_ = seq;
-}
-
-IR__::AbstractStorageHomeDef_ptr
-HomeExecutorDef_impl::binds_to
-()
-throw(CORBA::SystemException)
-{
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::binds_to() called" );
-	return binds_to_;
-}
-
-void 
-HomeExecutorDef_impl::binds_to
-(IR__::AbstractStorageHomeDef_ptr binds_to)
-throw(CORBA::SystemException)
-{
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::binds_to(...) called" );
-	binds_to_ = binds_to;
+	return key_idltype_impl_ -> _this();
 }
 
 } // namespace QEDO_ComponentRepository
+

@@ -1,7 +1,7 @@
 /*****************************************************************************/
-/* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
+/* Qedo - Quality of Service Enabled Distributed Objects                     */
 /*                                                                           */
-/* Copyright (c) 2002 by the Qedo Team                                       */
+/* Copyright (c) 2002/2003 by the Qedo Team                                  */
 /*                                                                           */
 /* http://qedo.berlios.de                                                    */
 /*                                                                           */
@@ -11,7 +11,7 @@
 /* it under the terms of the GNU General Public License as published by      */
 /* the Free Software Foundation; either version 2 of the License, or         */
 /* (at your option) any later version.                                       */
-/*                                                                           */ 
+/*                                                                           */
 /* Qedo Generator is distributed in the hope that it will be useful,         */
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of            */
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
@@ -23,36 +23,50 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#ifndef __CIDL_REPOSITORY_IMPL_H__
-#define __CIDL_REPOSITORY_IMPL_H__
+#ifndef __GENERATOR_PERSISTENCEC_H__
+#define __GENERATOR_PERSISTENCEC_H__
 
-#include <CORBA.h>
-#include "CIDL_Extension_skel.h"
-#include "ComponentRepository_impl.h"
+#include "CPPBase.h"
+#include "Printer.h"
+#include <fstream>
+#include <iostream>
 
-namespace QEDO_ComponentRepository {
 
-class CIDLRepository_impl : public virtual POA_CIDL::CIDLRepository,
-								public virtual ComponentRepository_impl
+namespace QEDO_CIDL_Generator {
+
+
+class GeneratorPersistenceC : public virtual CPPBase
 {
+
+private:
+
+	std::string filename_;
+	std::string class_name_;
+	Printer out;
+	//bool need_push_;
+	//CIDL::CompositionDef_var composition_;
+
+	void doAttribute(IR__::AttributeDef_ptr attribute);
+	void doOperation(IR__::OperationDef_ptr operation);
+	void doException(IR__::ExceptionDef_ptr except);
+	void doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
+	void doAbstractStorageType(IR__::AbstractStorageTypeDef_ptr abs_storage_type);
+	void doStorageHome(IR__::StorageHomeDef_ptr storage_home);
+	void doStorageType(IR__::StorageTypeDef_ptr storage_type);
+	void doPSSKey(IR__::PSSKeyDef_ptr psskey);
+	void doFactory(IR__::FactoryDef_ptr factory);
+
 public:
-	CIDLRepository_impl ( CORBA::ORB_ptr orb, PortableServer::POA_ptr poa );
-	
-	~CIDLRepository_impl ();
 
-	virtual void destroy_repository();
+	GeneratorPersistenceC(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	~GeneratorPersistenceC();
 
-    //
-    // IDL:omg.org/CIDL/CIDLRepository/create_composition:1.0
-    //
-    virtual CIDL::CompositionDef_ptr create_composition(const char* id,
-                                                        const char* name,
-                                                        const char* version,
-                                                        CIDL::LifecycleCategory lifecycle,
-                                                        IR__::HomeDef_ptr home)
-        throw(CORBA::SystemException);
+	void generate(std::string target, std::string fileprefix);
+
 };
 
-} // namespace QEDO_ComponentRepository
+
+} // namespace
+
 
 #endif

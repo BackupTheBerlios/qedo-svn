@@ -76,7 +76,7 @@ extern table_item_set_printer table_item_set_printer;
 %}
 
 %{
-static char id[] UNUSED = "$Id: attributes.k,v 1.5 2003/05/16 12:30:50 neubauer Exp $";
+static char id[] UNUSED = "$Id: attributes.k,v 1.5.8.1 2003/09/04 15:05:17 hao Exp $";
 %}
 
 /*********************  Symbol table *********************/
@@ -99,7 +99,6 @@ table_item_lists: list table_item_list
 node_flag:
       InterfaceN()
     | ModuleN()
-    | CatalogN()
     | StorageTypeN()
     | StorageHomeN()
     | AbstractStorageTypeN()
@@ -125,7 +124,6 @@ node_flag:
     | CompositionN()
     | FacetN()
     | NilN()
-    | CatalogLabelN()
     | ProvidesDclN()
     | UsesDclN()
     | EmitsDclN()

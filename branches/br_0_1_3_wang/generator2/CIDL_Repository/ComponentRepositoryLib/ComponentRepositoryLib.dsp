@@ -1,26 +1,26 @@
 # Microsoft Developer Studio Project File - Name="ComponentRepositoryLib" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
 CFG=ComponentRepositoryLib - Win32 Debug_tao
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "ComponentRepositoryLib.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "ComponentRepositoryLib.mak" CFG="ComponentRepositoryLib - Win32 Debug_tao"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ComponentRepositoryLib - Win32 Release" (basierend auf  "Win32 (x86) Static Library")
-!MESSAGE "ComponentRepositoryLib - Win32 Debug_mico" (basierend auf  "Win32 (x86) Static Library")
-!MESSAGE "ComponentRepositoryLib - Win32 Debug_orbacus" (basierend auf  "Win32 (x86) Static Library")
-!MESSAGE "ComponentRepositoryLib - Win32 Debug_tao" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "ComponentRepositoryLib - Win32 Release" (based on "Win32 (x86) Static Library")
+!MESSAGE "ComponentRepositoryLib - Win32 Debug_mico" (based on "Win32 (x86) Static Library")
+!MESSAGE "ComponentRepositoryLib - Win32 Debug_orbacus" (based on "Win32 (x86) Static Library")
+!MESSAGE "ComponentRepositoryLib - Win32 Debug_tao" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -141,6 +141,14 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\AbsStorageHomeDef_impl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\AbsStorageTypeDef_impl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\AliasDef_impl.cpp
 # End Source File
 # Begin Source File
@@ -150,6 +158,10 @@ SOURCE=.\Anonymous.cpp
 # Begin Source File
 
 SOURCE=.\AttributeDef_impl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CatalogDef_impl.cpp
 # End Source File
 # Begin Source File
 
@@ -245,6 +257,14 @@ SOURCE=.\ProvidesDef_impl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\PSSKeyDef_impl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PSSPrimaryKeyDef_impl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\PublishesDef_impl.cpp
 # End Source File
 # Begin Source File
@@ -262,6 +282,14 @@ SOURCE=.\SiSoDef_impl.cpp
 # Begin Source File
 
 SOURCE=.\SourceDef_impl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\StorageHomeDef_impl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\StorageTypeDef_impl.cpp
 # End Source File
 # Begin Source File
 
@@ -301,6 +329,14 @@ SOURCE=.\ValueMemberDef_impl.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\AbsStorageHomeDef_impl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\AbsStorageTypeDef_impl.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\AliasDef_impl.h
 # End Source File
 # Begin Source File
@@ -310,6 +346,10 @@ SOURCE=.\Anonymous.h
 # Begin Source File
 
 SOURCE=.\AttributeDef_impl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CatalogDef_impl.h
 # End Source File
 # Begin Source File
 
@@ -409,6 +449,14 @@ SOURCE=.\ProvidesDef_impl.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\PSSKeyDef_impl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PSSPrimaryKeyDef_impl.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\PublishesDef_impl.h
 # End Source File
 # Begin Source File
@@ -426,6 +474,14 @@ SOURCE=.\SiSoDef_impl.h
 # Begin Source File
 
 SOURCE=.\SourceDef_impl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\StorageHomeDef_impl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\StorageTypeDef_impl.h
 # End Source File
 # Begin Source File
 
