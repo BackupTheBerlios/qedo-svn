@@ -689,12 +689,12 @@ throw(Components::CreateFailure)
        		}
        		catch(Components::InvalidName&)
        		{
-       			DEBUG_OUT(".......... invalid emits name");
+       			DEBUG_OUT("!!!!!!!!!! invalid emits name");
        			throw Components::CreateFailure();
        		}
        		catch(Components::AlreadyConnected&)
             {
-       			DEBUG_OUT(".......... already connected");
+       			DEBUG_OUT("!!!!!!!!!! already connected");
        			throw Components::CreateFailure();
        		}
         }
@@ -718,7 +718,7 @@ throw(Components::CreateFailure)
 	   		}
 	   		catch( Components::InvalidName& )
 	   		{
-	   			DEBUG_OUT(".......... invalid publish name");
+	   			DEBUG_OUT("!!!!!!!!!! invalid publishes name");
 	   			throw Components::CreateFailure();
 	   		}
         }
