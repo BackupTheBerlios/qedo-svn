@@ -872,7 +872,7 @@ GeneratorServantC::doComposition (CIDL::CompositionDef_ptr composition)
 	//
 	// generate Home
 	//
-
+	home_ = home;
 	open_module(out, component_, "SERVANT_");
 	out << "\n\n";
 	genHomeServantBegin(home, lc);
@@ -2364,8 +2364,8 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		genHomeServant(base, lc);
 	}
 	
-	home_ = IR__::HomeDef::_duplicate(home);
-	std::string home_name = mapFullNameLocal(home);
+//	home_ = IR__::HomeDef::_duplicate(home);
+	std::string home_name = mapFullNameLocal(home_);
 
 	// attributes
 	IR__::ContainedSeq_var contained_seq = home->contents(CORBA__::dk_Attribute, false);
