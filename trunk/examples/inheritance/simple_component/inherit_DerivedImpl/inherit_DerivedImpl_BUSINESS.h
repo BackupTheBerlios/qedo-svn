@@ -12,6 +12,26 @@
 #define __INHERIT_DERIVEDIMPL_BUSINESS_H__
 
 
+#ifdef _WIN32
+// If you compile this file and would like to link
+// it into the DLL, then please define ``BUILD_INHERIT_DERIVEDIMPL_DLL'' symbol
+// on your C++ compiler command-line.
+// Depending on your compiler, you can use either
+// ``-DBUILD_INHERIT_DERIVEDIMPL_DLL'' or ``/DBUILD_INHERIT_DERIVEDIMPL_DLL'' parameter
+#ifdef BUILD_INHERIT_DERIVEDIMPL_DLL
+// Please do not forget to use gendef tool to correctly
+// export all symbols from the resulting object file.
+// If you would like to use more common __declspec(dllexport) way,
+// then please use --windows-dll-with-export <name>
+// IDL compiler parameter
+#define INHERIT_DERIVEDIMPL_EXPORT /**/
+#else // BUILD_INHERIT_DERIVEDIMPL_DLL
+#define INHERIT_DERIVEDIMPL_EXPORT __declspec(dllimport)
+#endif // BUILD_INHERIT_DERIVEDIMPL_DLL
+#else // _WIN32
+// all other platforms
+#define INHERIT_DERIVEDIMPL_EXPORT /**/
+#endif // _WIN32
 
 
 
@@ -36,7 +56,10 @@ typedef ObjOut< CCM_DerivedSessionImpl > CCM_DerivedSessionImpl_out;
 #include <mico/ir.h>
 #include <mico/policy.h>
 #include <mico/current.h>
+#include <mico/typecode_seq.h>
+#include <mico/pi.h>
 #include <mico/poa.h>
+#include <mico/ioptypes.h>
 #include <qedo_mico.h>
 #include <Components.h>
 #include <CORBADepends.h>
@@ -88,7 +111,7 @@ class CCM_DerivedSessionImpl :
     void operator=( const CCM_DerivedSessionImpl& );
 };
 
-extern CORBA::TypeCodeConst _tc_CCM_DerivedSessionImpl;
+extern INHERIT_DERIVEDIMPL_EXPORT CORBA::TypeCodeConst _tc_CCM_DerivedSessionImpl;
 
 
 }

@@ -9,8 +9,11 @@ module inherit {
 		void op2();
 	};
 	
+	eventtype base_ev {};
+
 	component base_component {
 		provides base_interf my_base;
+		consumes base_ev my_ev_base;
 	};
 	
 	home base_home manages base_component {};
