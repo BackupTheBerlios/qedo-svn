@@ -1,7 +1,6 @@
 #include "GeneratorCSD.h"
 #include "Debug.h"
 
-#include "objbase.h"
 
 #include <string>
 
