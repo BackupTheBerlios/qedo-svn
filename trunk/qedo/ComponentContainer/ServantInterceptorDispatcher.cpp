@@ -30,7 +30,7 @@
 #include "Output.h"
 #include <fstream>
 
-static char rcsid[] UNUSED = "$Id: ServantInterceptorDispatcher.cpp,v 1.3 2004/08/06 17:38:17 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServantInterceptorDispatcher.cpp,v 1.4 2004/08/16 10:13:52 tom Exp $";
 
 namespace Qedo {
 
@@ -92,7 +92,8 @@ ServantInterceptorDispatcher::connect( const char* comp_id, const char* name, CO
 		{
 		}
 	}
-
+	con = true;
+	return 0;
 
 }
 
@@ -120,6 +121,9 @@ ServantInterceptorDispatcher::provide_facet( const char* comp_id, const char* na
 		{
 		}
 	}
+	con = true;
+	return CORBA::Object::_nil();
+
 
 }
 
@@ -152,7 +156,8 @@ ServantInterceptorDispatcher::bind(const char* comp_id, char*&  name,
 		{
 		}
 	}
-
+	con = true;
+	return 0;
 }
 
 StreamComponents::SinkStreamPort_ptr 
@@ -181,6 +186,9 @@ ServantInterceptorDispatcher::unbind(const char* comp_id, char*&  name,
 		{
 		}
 	}
+	con = true;
+	return StreamComponents::SinkStreamPort::_nil();
+
 
 }
 
@@ -207,6 +215,8 @@ ServantInterceptorDispatcher::provide_sink_stream_port( const char* comp_id, cha
 		{
 		}
 	}
+	con = true;
+	return CORBA::Object::_nil();
 
 }
 
