@@ -12,9 +12,9 @@ ServerContainerInterceptor::~ServerContainerInterceptor ()
 }
 
 void
-ServerContainerInterceptor::receive_request (::PortableInterceptor::ServerRequestInfo_ptr info)
+ServerContainerInterceptor::receive_request (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id)
 {
-	std::cout << "COPI: recieve_request" << std::endl;
+	std::cout << "COPI: recieve_request: " << info->operation() << " for id: " << id << std::endl;
 	// write something ino the current slot
 
 }
@@ -22,27 +22,27 @@ ServerContainerInterceptor::receive_request (::PortableInterceptor::ServerReques
 void
 ServerContainerInterceptor::send_reply (::PortableInterceptor::ServerRequestInfo_ptr info)
 {
-	std::cout << "COPI: send_reply" << std::endl;
+	std::cout << "COPI: send_reply: " << info->operation() << std::endl;
 
 }
 
 void
 ServerContainerInterceptor::send_system_exception (::PortableInterceptor::ServerRequestInfo_ptr info)
 {
-	std::cout << "COPI: send_system_exception" << std::endl;
+	std::cout << "COPI: send_system_exception: " << info->operation() << std::endl;
 
 }
 
 void
 ServerContainerInterceptor::send_user_exception (::PortableInterceptor::ServerRequestInfo_ptr info) {
-	std::cout << "COPI: send_user_exception" << std::endl;
+	std::cout << "COPI: send_user_exception: " << info->operation() << std::endl;
 
 }
 
 void
-ServerContainerInterceptor::rec_request_from_servant_locator()
+ServerContainerInterceptor::rec_request_from_servant_locator(const char * operation)
 {
-	std::cout << "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD" << std::endl;
+	std::cout << "operation: " << operation << "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD" << std::endl;
 }
 
 }; // namespace Qedo
