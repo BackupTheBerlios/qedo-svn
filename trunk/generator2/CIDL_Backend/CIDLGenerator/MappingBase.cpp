@@ -34,6 +34,170 @@ MappingBase::destroy
 }
 
 
+std::string
+MappingBase::mapName(std::string name)
+{
+	//
+	// check keywords
+	//
+	if(name.compare("new") == 0)
+	{
+		name.insert(0, "_cxx_");
+	}
+
+	return name;
+}
+
+
+std::string
+MappingBase::mapName(IR__::Contained_ptr obj)
+{
+	return mapName(obj->name());
+}
+
+
+/*
+ * escape each name with _cxx_ if keyword
+ */
+std::string
+MappingBase::mapFullName(IR__::Contained_ptr obj)
+{
+	std::string name;
+	name = obj->absolute_name();
+
+	std::string::size_type pos = 0;
+	std::string::size_type begin;
+	std::string::size_type end;
+	while(pos != std::string::npos)
+	{
+		begin = pos;
+		end = std::string::npos;
+
+		pos = name.find("::", pos);
+		if(pos != std::string::npos)
+		{
+			pos += 2;
+			begin = pos;
+
+			pos = name.find("::", pos);
+			end = pos;
+		}
+
+		name.replace(begin, end - begin, mapName(name.substr(begin, end - begin)));
+	}
+
+	return name;
+}
+
+
+std::string
+MappingBase::mapFullNameLocal(IR__::Contained_ptr obj)
+{
+	std::string name;
+	name = mapFullName(obj);
+
+	std::string::size_type pos;
+	pos = name.rfind("::");
+	if(pos == std::string::npos)
+	{
+		pos = 0;
+	}
+	else
+	{
+		pos += 2;
+	}
+
+	name.insert(pos, "CCM_");
+
+	return name;
+}
+
+
+std::string
+MappingBase::mapFullNameServant(IR__::Contained_ptr obj)
+{
+	std::string name;
+	name = mapFullName(obj);
+
+	std::string::size_type pos;
+	pos = name.find("::");
+	if(pos == 0)
+	{
+		pos += 2;
+	}
+	else
+	{
+		pos = 0;
+	}
+
+	name.insert(pos, "Servants_");
+
+	return name;
+}
+
+
+std::string
+MappingBase::mapFullNamePOA(IR__::Contained_ptr obj)
+{
+	std::string name;
+	name = mapFullName(obj);
+
+	std::string::size_type pos;
+	pos = name.find("::");
+	if(pos == 0)
+	{
+		pos += 2;
+	}
+	else
+	{
+		pos = 0;
+	}
+
+	name.insert(pos, "POA_");
+
+	return name;
+}
+
+
+std::string 
+MappingBase::mapScopeName
+(IR__::Contained_ptr type)
+throw(CannotMapAbsoluteName)
+{
+	string buf_string;
+	std::string name;
+
+	if(type->def_kind() == CORBA__::dk_Composition)
+	{
+		name = type->id();
+		string module;
+		IR__::Contained_ptr module_def = 0;
+		string::size_type pos = name.find_last_of("/");
+		if(pos != string::npos)
+		{
+			module = name.substr(0, pos);
+			module.append(":1.0");
+			module_def = repository_->lookup_id(module.c_str());
+			return mapFullName(module_def);
+		}
+		return "";
+	}
+
+	name = mapFullName(type);
+
+	std::string::size_type pos;
+	pos = name.rfind("::");
+	if (pos == std::string::npos)
+	{
+		pos = 0;
+	}
+
+	name.replace(pos, std::string::npos, "");
+
+	return name;
+}
+
+
 string
 MappingBase::tcToName(CORBA::TypeCode_ptr type)
 {
@@ -294,59 +458,6 @@ throw ( CannotMapAbsoluteName )
 		}
 	};
 	return CORBA::string_dup ( buf_string.c_str() + 1 );
-}
-
-
-char* 
-MappingBase::mapScopeName
-(CORBA__::IRObject_ptr type, string prefix, string suffix)
-throw(CannotMapAbsoluteName)
-{
-	string buf_string;
-	string result;
-	IR__::Contained_var contained;
-
-
-	if(type->def_kind() == CORBA__::dk_Composition) {
-		contained = IR__::Contained::_narrow ( type );
-		result = contained->id();
-		string module;
-		IR__::Contained_ptr module_def = 0;
-		string::size_type pos = result.find_last_of("/");
-		if(pos != string::npos)	{
-			module = result.substr(0, pos);
-			module.append(":1.0");
-			module_def = repository_->lookup_id(module.c_str());
-			return map_absolute_name(module_def);
-		}
-		return "";
-	}
-	
-
-	try
-	{
-		contained = IR__::Contained::_narrow ( type );
-		buf_string = contained -> absolute_name ();
-	}
-	catch ( CORBA::SystemException& )
-	{
-		throw CannotMapAbsoluteName();
-	}
-	if ( CORBA::is_nil ( contained ) )
-		throw CannotMapAbsoluteName();
-
-	string::size_type index;
-	index = buf_string.find_last_of("::");
-	if (index != string::npos)
-	{
-		result = prefix + buf_string.substr(2, index - 1) + suffix;
-	}
-	else
-	{
-		result = prefix + suffix;
-	}
-
-	return CORBA::string_dup(result.c_str());
 }
 
 

@@ -33,7 +33,7 @@ GeneratorServantC::open_module(IR__::Contained* cur_cont, std::string prefix)
 		{
 			out << prefix;
 		}
-		out << a_module->name() << " {\n";
+		out << mapName(a_module) << " {\n";
 		out.indent();
 		return true;
 	}
@@ -74,11 +74,13 @@ GeneratorServantC::doModule(IR__::ModuleDef_ptr module)
 void
 GeneratorServantC::doAttribute(IR__::AttributeDef_ptr attribute)
 {
-	// attribute mode
+	std::string attribute_name = mapName(attribute);
+
+	// not read only
 	if(attribute->mode() == IR__::ATTR_NORMAL)
 	{
 		out << "void" << "\n";
-		out << class_name_ << "::" << attribute->name() << "(";
+		out << class_name_ << "::" << attribute_name << "(";
 		out << map_in_parameter_type(attribute->type_def()) << " param)\n";
 		out << "throw(CORBA::SystemException";
 		handleException(attribute);
@@ -100,13 +102,13 @@ GeneratorServantC::doAttribute(IR__::AttributeDef_ptr attribute)
 		out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
 		out.unindent();
 		out << "}\n\n";
-		out << "facet->" << attribute->name() << "(param);\n";
+		out << "facet->" << attribute_name << "(param);\n";
 		out.unindent();
 		out << "}\n\n\n";
 	}
 
 	out << map_return_type(attribute->type_def()) << "\n";
-	out << class_name_ << "::" << attribute->name() << "()\n";
+	out << class_name_ << "::" << attribute_name << "()\n";
 	out << "throw(CORBA::SystemException";
 	handleException(attribute);
 	out << ")\n{\n";
@@ -127,7 +129,7 @@ GeneratorServantC::doAttribute(IR__::AttributeDef_ptr attribute)
 	out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "return facet->" << attribute->name() << "();\n";
+	out << "return facet->" << attribute_name << "();\n";
 	out.unindent();
 	out << "}\n\n\n";
 }
@@ -136,7 +138,7 @@ GeneratorServantC::doAttribute(IR__::AttributeDef_ptr attribute)
 void 
 GeneratorServantC::doException(IR__::ExceptionDef_ptr except)
 {
-	out << ", " << map_absolute_name(except);
+	out << ", " << mapFullName(except);
 }
 
 
@@ -144,13 +146,15 @@ void
 GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 {
 	bool is_void = false;
+	std::string operation_name = mapName(operation);
+
 	if(operation->result_def()->type()->kind() == CORBA::tk_void)
 	{
 		is_void = true;
 	}
 
 	out << map_return_type(operation->result_def()) << "\n";
-	out << class_name_ << "::" << operation->name() << "(";
+	out << class_name_ << "::" << operation_name << "(";
 	IR__::ParDescriptionSeq* pards = operation->params();
 	CORBA::ULong len = pards->length();
 	for(CORBA::ULong i = len; i > 0; i--)
@@ -160,7 +164,7 @@ GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 			out << ", ";
 		}
 		IR__::ParameterDescription pardescr = (*pards)[i - 1];
-		out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		out << map_in_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
 	}
 	out << ")\n";
 	out << "throw(CORBA::SystemException";
@@ -187,7 +191,7 @@ GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 	{
 		out << "return ";
 	}
-	out << "facet->" << operation->name() << "(";
+	out << "facet->" << operation_name << "(";
 	for(i = len; i > 0; i--)
 	{
 		if(i < len)
@@ -195,7 +199,7 @@ GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 			out << ", ";
 		}
 		IR__::ParameterDescription pardescr = (*pards)[i - 1];
-		out << string(pardescr.name);
+		out << mapName(string(pardescr.name));
 	}
 	out << ");\n";
 	out.unindent();
@@ -206,8 +210,11 @@ GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 void
 GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 {
+	std::string factory_name = mapName(factory);
+	std::string home_name = mapFullNameLocal(home_);
+
 	out << map_return_type(composition_->ccm_component()) << "\n";
-	out << class_name_ << "::" << factory->name() << "(";
+	out << class_name_ << "::" << factory_name << "(";
 	IR__::ParDescriptionSeq* pards = factory->params();
 	CORBA::ULong len = pards->length();
 	for(CORBA::ULong i = len; i > 0; i--)
@@ -217,22 +224,22 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 			out << ", ";
 		}
 		IR__::ParameterDescription pardescr = (*pards)[i - 1];
-		out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		out << map_in_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
 	};
 	out << ")\n";
 	out << "throw(CORBA::SystemException";
 	handleException(factory);
 	out << ")\n{\n";
 	out.indent();
-	out << mapLocalName(home_) << "_ptr home_executor = dynamic_cast <";
-	out << mapLocalName(home_) << "_ptr> (home_executor_.in());\n";
+	out << home_name << "_ptr home_executor = dynamic_cast <";
+	out << home_name << "_ptr> (home_executor_.in());\n";
 	out << "if (! home_executor)\n{\n";
 	out.indent();
 	out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "return home_executor->" << factory->name() << "(";
+	out << "return home_executor->" << factory_name << "(";
 	for(i = len; i > 0; i--)
 	{
 		if(i < len)
@@ -240,7 +247,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 			out << ", ";
 		}
 		IR__::ParameterDescription pardescr = (*pards)[i - 1];
-		out << string(pardescr.name);
+		out << mapName(string(pardescr.name));
 	};
 	out << ");\n";
 	out.unindent();
@@ -251,8 +258,11 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 void
 GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 {
+	std::string finder_name = mapName(finder);
+	std::string home_name = mapFullNameLocal(home_);
+
 	out << map_return_type(composition_->ccm_component()) << "\n";
-	out << class_name_ << "::" << finder->name() << "(";
+	out << class_name_ << "::" << finder_name << "(";
 	IR__::ParDescriptionSeq* pards = finder->params();
 	CORBA::ULong len = pards->length();
 	for(CORBA::ULong i = len; i > 0; i--)
@@ -262,22 +272,22 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 			out << ", ";
 		}
 		IR__::ParameterDescription pardescr = (*pards)[i - 1];
-		out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		out << map_in_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
 	};
 	out << ")\n";
 	out << "throw(CORBA::SystemException";
 	handleException(finder);
 	out << ")\n{\n";
 	out.indent();
-	out << mapLocalName(home_) << "_ptr home_executor = dynamic_cast <";
-	out << mapLocalName(home_) << "_ptr> (home_executor_.in());\n";
+	out << home_name << "_ptr home_executor = dynamic_cast <";
+	out << home_name << "_ptr> (home_executor_.in());\n";
 	out << "if (! home_executor)\n{\n";
 	out.indent();
 	out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "return home_executor->" << finder->name() << "(";
+	out << "return home_executor->" << finder_name << "(";
 	for(i = len; i > 0; i--)
 	{
 		if(i < len)
@@ -285,7 +295,7 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 			out << ", ";
 		}
 		IR__::ParameterDescription pardescr = (*pards)[i - 1];
-		out << string(pardescr.name);
+		out << mapName(string(pardescr.name));
 	};
 	out << ");\n";
 	out.unindent();
@@ -325,12 +335,12 @@ void
 GeneratorServantC::doProvides(IR__::ProvidesDef_ptr provides)
 {
 	// provide_...
-	out << map_absolute_name(provides->interface_type()) << "_ptr\n";
+	out << mapFullName(provides->interface_type()) << "_ptr\n";
 	out << class_name_ << "::provide_" << provides->name() << "()\n";
 	out << "throw (CORBA::SystemException)\n{\n";
 	out.indent();
-	out << map_absolute_name(provides->interface_type()) << "_var prov = ";
-	out << map_absolute_name(provides->interface_type()) << "::_narrow (ccm_object_executor_->provide_facet(\"";
+	out << mapFullName(provides->interface_type()) << "_var prov = ";
+	out << mapFullName(provides->interface_type()) << "::_narrow (ccm_object_executor_->provide_facet(\"";
 	out << provides->name() << "\"));\n\n";
 	out	<< "return prov._retn();\n";
 	out.unindent();
@@ -341,36 +351,36 @@ GeneratorServantC::doProvides(IR__::ProvidesDef_ptr provides)
 void 
 GeneratorServantC::doUses(IR__::UsesDef_ptr uses)
 {
+	std::string interface_name = mapFullName(uses->interface_type());
+
 	// get_connection_...
-	out << map_absolute_name(uses->interface_type()) << "_ptr\n";
+	out << interface_name << "_ptr\n";
 	out << class_name_ << "::get_connection_" << uses->name() << "()\n";
 	out << "throw (CORBA::SystemException)\n{\n";
 	out.indent();
 	out << "Components::ConnectedDescriptions* connections = ccm_object_executor_->get_connections(\"";
 	out << uses->name() << "\");\n\n";
-	out << map_absolute_name(uses->interface_type()) << "_var " << uses->name() << " = ";
-	out << map_absolute_name(uses->interface_type()) << "::_narrow ((*connections)[0]->objref());\n\n";
-	out << "return " << map_absolute_name(uses->interface_type()) << "::_duplicate(";
-	out << uses->name() << ");\n";
+	out << interface_name << "_var use = ";
+	out << interface_name << "::_narrow ((*connections)[0]->objref());\n\n";
+	out << "return " << interface_name << "::_duplicate(use);\n";
 	out.unindent();
 	out << "}\n\n\n";
 
 	// disconnect_...
-    out << map_absolute_name(uses->interface_type()) << "_ptr\n";
+    out << interface_name << "_ptr\n";
 	out << class_name_ << "::disconnect_" << uses->name() << "()\n";
 	out << "throw(Components::NoConnection, CORBA::SystemException)\n{\n";
 	out.indent();
-	out << map_absolute_name(uses->interface_type()) << "_var " << uses->name() << " = get_connection_";
-	out << uses->name() << "();\n\n";
+	out << interface_name << "_var use = get_connection_" << uses->name() << "();\n\n";
 	out << "ccm_object_executor_->disconnect(\"" << uses->name() << "\", (Components::Cookie*)0);\n\n";
-	out << "return " << uses->name() << "._retn();\n";
+	out << "return use._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
 
 	// connect_...
     out << "void\n";
 	out << class_name_ << "::connect_" << uses->name() << "(";
-	out << map_absolute_name(uses->interface_type()) << "_ptr conxn)\n";
+	out << interface_name << "_ptr conxn)\n";
 	out << "throw (Components::AlreadyConnected, Components::InvalidConnection, CORBA::SystemException)\n{\n";
 	out.indent();
 	out << "ccm_object_executor_->connect(\"" << uses->name() << "\", conxn);\n";
@@ -382,22 +392,24 @@ GeneratorServantC::doUses(IR__::UsesDef_ptr uses)
 void 
 GeneratorServantC::doEmits(IR__::EmitsDef_ptr emits)
 {
+	out << "\n//\n// " << emits->id() << "\n//\n";
+	std::string event_name = mapFullName(emits->event());
+
 	// disconnect_...
-	out << map_absolute_name(emits->event()) << "Consumer*\n";
+	out << event_name << "Consumer*\n";
 	out << class_name_ << "::disconnect_" << emits->name() << "()\n";
     out << "throw (Components::NoConnection, CORBA::SystemException)\n{\n";
 	out.indent();
-	out << "CORBA::Object_var " << emits->name() << "_obj = ccm_object_executor_->disconnect_consumer(\"";
+	out << "CORBA::Object_var emi = ccm_object_executor_->disconnect_consumer(\"";
 	out << emits->name() << "\");\n\n";
-	out << "return " << map_absolute_name(emits->event()) << "Consumer::_narrow(";
-	out << emits->name() << "_obj);\n";
+	out << "return " << event_name << "Consumer::_narrow(emi);\n";
 	out.unindent();
 	out << "}\n\n\n";
 
 	// connect_...
     out << "void\n";
 	out << class_name_ << "::connect_" << emits->name() << "(";
-	out << map_absolute_name(emits->event()) << "Consumer_ptr consumer)\n";
+	out << event_name << "Consumer_ptr consumer)\n";
     out << "throw (Components::AlreadyConnected, CORBA::SystemException)\n{\n";
 	out.indent();
 	out << "ccm_object_executor_->connect_consumer(\"" << emits->name() << "\", consumer);\n";
@@ -410,21 +422,43 @@ void
 GeneratorServantC::doPublishes(IR__::PublishesDef_ptr publishes)
 {
 	out << "\n//\n// " << publishes->id() << "\n//\n";
+	std::string event_name = mapFullName(publishes->event());
+
+	// subscribe_...
+	out << "::Components::Cookie*\n";
+	out << class_name_ << "::subscribe_" << publishes->name() << "(";
+	out << event_name << "Consumer_ptr consumer)\n";
+	out << "throw (Components::ExceededConnectionLimit, CORBA::SystemException)\n{\n";
+	out.indent();
+	out << "return ccm_object_executor_->subscribe(\"" << publishes->name() << "\", consumer);\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// unsubscribe_...
+	out << event_name << "Consumer_ptr\n";
+	out << class_name_ << "::unsubscribe_" << publishes->name() << "(";
+	out << "::Components::Cookie* ck)\n";
+	out << "throw (Components::InvalidConnection, CORBA::SystemException)\n{\n";
+	out.indent();
+	out << "return ccm_object_executor_->unsubscribe(\"" << publishes->name() << "\", ck);\n";
+	out.unindent();
+	out << "}\n\n\n";
 }
 
 
 void
 GeneratorServantC::doConsumes(IR__::ConsumesDef_ptr consumes)
 {
+	std::string event_name = mapFullName(consumes->event());
+
 	// get_consumer_...
-	out << map_absolute_name(consumes->event()) << "Consumer_ptr\n";
+	out << event_name << "Consumer_ptr\n";
 	out << class_name_ << "::get_consumer_" << consumes->name() << "()\n";
 	out << "throw(CORBA::SystemException)\n{\n";
 	out.indent();
 	out << "Components::EventConsumerBase_var base = ccm_object_executor_->get_consumer(\"";
 	out << consumes->name() << "\");\n";
-	out << map_absolute_name(consumes->event()) << "Consumer_var consumer = ";
-	out << map_absolute_name(consumes->event()) << "Consumer::_narrow(base);\n\n";
+	out << event_name << "Consumer_var consumer = " << event_name << "Consumer::_narrow(base);\n\n";
 	out << "return consumer._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
@@ -473,7 +507,7 @@ GeneratorServantC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "Qedo::HomeServantBase*\n";
 	out << "create_" << composition->ccm_home()->name() << "S(void)\n{\n";
 	out.indent();
-	out << "return new Servants_" << map_absolute_name(composition->ccm_home()) << "_servant();\n";
+	out << "return new " << mapFullNameServant(composition->ccm_home()) << "_servant();\n";
 	out.unindent();
 	out << "}\n\n";
 
@@ -491,7 +525,10 @@ GeneratorServantC::genFacetServants(IR__::ComponentDef_ptr component)
 {
 	// handle base component
 	IR__::ComponentDef_var base = component->base_component();
-	if(!CORBA::is_nil(base)) { genFacetServants(base); }
+	if(!CORBA::is_nil(base))
+	{ 
+		genFacetServants(base);
+	}
 
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Provides, false);
 	CORBA::ULong len = contained_seq->length();
@@ -515,7 +552,7 @@ GeneratorServantC::genFacetServants(IR__::ComponentDef_ptr component)
 		out << class_name_ << "::~" << class_name_ << "()\n{\n}\n\n\n";
 
 		executor_name_ = provides->name();
-		interface_name_ = string(mapLocalName(provides->interface_type()));
+		interface_name_ = mapFullNameLocal(provides->interface_type());
 		doInterface(provides->interface_type());
 
 		
@@ -545,7 +582,10 @@ GeneratorServantC::genConsumerServants(IR__::ComponentDef_ptr component)
 {
 	// handle base component
 	IR__::ComponentDef_var base = component->base_component();
-	if(!CORBA::is_nil(base)) { genConsumerServants(base); }
+	if(!CORBA::is_nil(base))
+	{ 
+		genConsumerServants(base);
+	}
 
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Consumes, false);
 	CORBA::ULong len = contained_seq->length();
@@ -572,14 +612,18 @@ GeneratorServantC::genConsumerServants(IR__::ComponentDef_ptr component)
 		out << "void\n";
 		out << class_name_ << "::push_event (Components::EventBase* ev) throw (CORBA::SystemException)\n{\n";
 		out.indent();
+		out << "// not implemented yet, please report : 432553\n";
+		out << "abort();\n";
 		out.unindent();
 		out << "}\n\n\n";
 
 		// push_...
 		out << "void\n";
-		out << class_name_ << "::push_" << consumes->event()->name() << "(" << map_absolute_name(consumes->event());
+		out << class_name_ << "::push_" << consumes->event()->name() << "(" << mapFullName(consumes->event());
 		out << "* ev)\n{\n";
 		out.indent();
+		out << "// not implemented yet, please report : 9836797\n";
+		out << "abort();\n";
 		out.unindent();
 		out << "}\n\n\n";
 
@@ -644,7 +688,7 @@ GeneratorServantC::genComponentServantBegin(IR__::ComponentDef_ptr component)
 	out << "}\n\n\n";
 
 	executor_name_ = "component";
-	interface_name_ = string(mapLocalName(component)) + "_Executor";
+	interface_name_ = mapFullNameLocal(component) + "_Executor";
 }
 
 
@@ -653,7 +697,10 @@ GeneratorServantC::genComponentServant(IR__::ComponentDef_ptr component)
 {
 	// handle base component
 	IR__::ComponentDef_var base = component->base_component();
-	if(!CORBA::is_nil(base)) { genComponentServant(base); }
+	if(!CORBA::is_nil(base))
+	{ 
+		genComponentServant(base);
+	}
 
 	handleAttribute(component);
 	handleSupportedInterface(component);
@@ -667,6 +714,8 @@ GeneratorServantC::genComponentServant(IR__::ComponentDef_ptr component)
 		out << "void\n";
 		out << class_name_ << "::push_event (Components::EventBase* ev) throw (CORBA::SystemException)\n{\n";
 		out.indent();
+		out << "// not implemented yet, please report : 274772\n";
+		out << "abort();\n";
 		out.unindent();
 		out << "}\n\n\n";
 
@@ -706,7 +755,10 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 {
 	// handle base component
 	IR__::ComponentDef_var base = component->base_component();
-	if(!CORBA::is_nil(base)) { genContextServant(base); }
+	if(!CORBA::is_nil(base))
+	{ 
+		genContextServant(base);
+	}
 
 	// uses ports
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Uses, false);
@@ -714,9 +766,10 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 	for(CORBA::ULong i = 0; i < len; i++)
 	{
 		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
+		std::string interface_name = mapFullName(a_uses->interface_type());
 		
 		// get_connection_...
-		out << map_absolute_name(a_uses->interface_type()) << "_ptr\n";
+		out << interface_name << "_ptr\n";
 		out << class_name_ << "::get_connection_" << a_uses->name() << "()\n{\n";
 		out.indent();
 		out << "Components::ConnectedDescriptions_var connections;\n";
@@ -724,13 +777,12 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 		out << a_uses->name() << "\");\n\n";
 		out << "if (! connections->length())\n{\n";
 		out.indent();
-		out << "return " << map_absolute_name(a_uses->interface_type()) << "::_nil();\n";
+		out << "return " << interface_name << "::_nil();\n";
 		out.unindent();
 		out << "}\n\n";
-		out << map_absolute_name(a_uses->interface_type()) << "_var ";
-		out << a_uses->name() << " = ";
-		out << map_absolute_name(a_uses->interface_type()) << "::_narrow (connections[0]->objref());\n\n";
-		out << "return " << a_uses->name() << "._retn();\n";
+		out << interface_name << "_var use = ";
+		out << interface_name << "::_narrow (connections[0]->objref());\n\n";
+		out << "return use._retn();\n";
 		out.unindent();
 		out << "}\n\n\n";
 	}
@@ -741,12 +793,59 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 	for(i = 0; i < len; i++) 
 	{
 		IR__::EmitsDef_var a_emits = IR__::EmitsDef::_narrow(((*contained_seq)[i]));
+		std::string event_name = mapFullName(a_emits->event());
 		
 		// push_...
 		out << "void\n";
-		out << class_name_ << "::push_" << a_emits->name() << "(" << map_absolute_name(a_emits->event());
+		out << class_name_ << "::push_" << a_emits->name() << "(" << event_name << "* ev)\n{\n";
+		out.indent();
+		out << event_name << "Consumer_var consumer = " << event_name;
+		out << "Consumer::_narrow(ccm_object_executor_->get_consumer_for_emitter(\"";
+		out << a_emits->name() << "\"));\n\n";
+		out << "if (! CORBA::is_nil (consumer))\n{\n";
+		out.indent();
+		out << "try\n{\n";
+		out.indent();
+		out << "consumer->push_" << mapName(a_emits->event()) << "(ev);\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException& ex)\n{\n";
+		out.indent();
+		out << "std::cerr << ex << std::endl;\n";
+		out.unindent();
+		out << "}\n";
+		out.unindent();
+		out << "}\n";
+		out.unindent();
+		out << "}\n\n\n";
+	}
+
+	// publishes ports
+	contained_seq = component->contents(CORBA__::dk_Publishes, false);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++) 
+	{
+		IR__::PublishesDef_var a_publishes = IR__::PublishesDef::_narrow(((*contained_seq)[i]));
+		std::string event_name = mapFullName(a_publishes->event());
+		
+		// push_...
+		out << "void\n";
+		out << class_name_ << "::push_" << a_publishes->name() << "(" << mapFullName(a_publishes->event());
 		out << "* ev)\n{\n";
 		out.indent();
+		out << "const TETRA::SubscribedConsumerVector& consumers = "; 
+		out << "ccm_object_executor_->get_consumers_for_publisher (\"" << a_publishes->name() << "\");\n\n";
+		out << "for (int i = consumers.size(); i; i--)\n{\n";
+		out.indent();
+		out << event_name << "Consumer_var consumer = ";
+		out << event_name << "Consumer::_narrow (consumers[i-1].consumer());\n\n";
+		out << "if (! CORBA::is_nil (consumer))\n{\n";
+		out.indent();
+		out << "consumer->push_" << mapName(a_publishes->event()) << "(ev);\n";
+		out.unindent();
+		out << "}\n";
+		out.unindent();	
+		out << "}\n";
 		out.unindent();
 		out << "}\n\n\n";
 	}
@@ -779,13 +878,13 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out << "}\n\n\n";
 
 	// create
-	out << map_absolute_name(composition_->ccm_component()) << "_ptr\n";
+	out << mapFullName(composition_->ccm_component()) << "_ptr\n";
 	out << class_name_ << "::create()\n";
 	out << "throw(CORBA::SystemException, Components::CreateFailure)\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"Home_servant: create() called\");\n\n";
-	out << mapLocalName(home) << "_ptr home_executor = dynamic_cast <";
-	out << mapLocalName(home) << "_ptr> (home_executor_.in());\n";
+	out << mapFullNameLocal(home) << "_ptr home_executor = dynamic_cast <";
+	out << mapFullNameLocal(home) << "_ptr> (home_executor_.in());\n";
 	out << "if (! home_executor)\n{\n";
 	out.indent();
 	out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
@@ -828,7 +927,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out.unindent();
 	out << "}\n\n";
 	out << "// Create a new context\n";
-	out << mapLocalName(home->managed_component()) << "_Context_var new_context = new ";
+	out << mapFullNameLocal(home->managed_component()) << "_Context_var new_context = new ";
 	out << home->managed_component()->name() << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
 	out << "session_component->set_session_context (new_context.in());\n\n";
@@ -848,8 +947,8 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	genPublisherRegistration(home);
 	genConsumerRegistration(home);
 	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
-	out << map_absolute_name(home->managed_component()) << "_var servant = ";
-	out << map_absolute_name(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
+	out << mapFullName(home->managed_component()) << "_var servant = ";
+	out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
 	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
@@ -870,13 +969,17 @@ GeneratorServantC::genFacetRegistration(IR__::HomeDef_ptr home)
 {
 	// handle base home
 	IR__::HomeDef_var base = home->base_home();
-	if(base){ genFacetRegistration(base); }
+	if(base)
+	{ 
+		genFacetRegistration(base);
+	}
 
 	IR__::ProvidesDefSeq_var facets = home->managed_component()->provides_interfaces();
 	CORBA::ULong len = facets->length();
 	for(CORBA::ULong i = 0; i < len; i++)
 	{
 		std::string name = (*facets)[i]->name();
+
 		out << "CORBA::Object_var "	<< name << "_ref = this->create_object_reference(key, \"";
 		out << (*facets)[i]->id() << "\");\n";
 		out << "PortableServer::ObjectId_var " << name << "_object_id = this->reference_to_oid (";
@@ -894,7 +997,10 @@ GeneratorServantC::genReceptacleRegistration(IR__::HomeDef_ptr home)
 {
 	// handle base home
 	IR__::HomeDef_var base = home->base_home();
-	if(base){ genReceptacleRegistration(base); }
+	if(base)
+	{ 
+		genReceptacleRegistration(base);
+	}
 
 	IR__::UsesDefSeq_var receptacles = home->managed_component()->uses_interfaces();
 	CORBA::ULong len = receptacles->length();
@@ -917,7 +1023,10 @@ GeneratorServantC::genEmitterRegistration(IR__::HomeDef_ptr home)
 {
 	// handle base home
 	IR__::HomeDef_var base = home->base_home();
-	if(base){ genEmitterRegistration(base); }
+	if(base)
+	{ 
+		genEmitterRegistration(base);
+	}
 
 	IR__::EmitsDefSeq_var emits = home->managed_component()->emits_events();
 	CORBA::ULong len = emits->length();
@@ -925,6 +1034,7 @@ GeneratorServantC::genEmitterRegistration(IR__::HomeDef_ptr home)
 	{
 		std::string id = (*emits)[i]->event()->id();
 		id.insert(id.find_last_of(":"), "Consumer");
+
 		out << "component_instance.ccm_object_executor_->add_emitter(\"";
 		out << (*emits)[i]->name() << "\", \"" << id << "\");\n\n";
 	}
@@ -936,7 +1046,10 @@ GeneratorServantC::genPublisherRegistration(IR__::HomeDef_ptr home)
 {
 	// handle base home
 	IR__::HomeDef_var base = home->base_home();
-	if(base){ genPublisherRegistration(base); }
+	if(base)
+	{ 
+		genPublisherRegistration(base);
+	}
 
 	IR__::PublishesDefSeq_var publishes = home->managed_component()->publishes_events();
 	CORBA::ULong len = publishes->length();
@@ -944,6 +1057,7 @@ GeneratorServantC::genPublisherRegistration(IR__::HomeDef_ptr home)
 	{
 		std::string id = (*publishes)[i]->event()->id();
 		id.insert(id.find_last_of(":"), "Consumer");
+
 		out << "component_instance.ccm_object_executor_->add_publisher(\"";
 		out << (*publishes)[i]->name() << "\", \"" << id << "\");\n\n";
 	}
@@ -955,7 +1069,10 @@ GeneratorServantC::genConsumerRegistration(IR__::HomeDef_ptr home)
 {
 	// handle base home
 	IR__::HomeDef_var base = home->base_home();
-	if(base){ genConsumerRegistration(base); }
+	if(base)
+	{ 
+		genConsumerRegistration(base);
+	}
 
 	IR__::ConsumesDefSeq_var consumes = home->managed_component()->consumes_events();
 	CORBA::ULong len = consumes->length();
@@ -980,11 +1097,16 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 {
 	CORBA::ULong i;
 	CORBA::ULong ii;
+
 	// handle base home
 	IR__::HomeDef_var base = home->base_home();
-	if(base){ genHomeServant(base); }
+	if(base)
+	{ 
+		genHomeServant(base);
+	}
 	
 	home_ = IR__::HomeDef::_duplicate(home);
+	std::string home_name = mapFullNameLocal(home);
 
 	// attributes
 	IR__::ContainedSeq_var contained_seq = home->contents(CORBA__::dk_Attribute, false);
@@ -992,45 +1114,46 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 	for(i = 0; i < len; i++)
 	{
 		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+		std::string attribute_name = mapName(attribute);
 		
-		// attribute mode
+		// not read only
 		if(attribute->mode() == IR__::ATTR_NORMAL)
 		{
 			out << "void" << "\n";
-			out << class_name_ << "::" << attribute->name() << "(";
+			out << class_name_ << "::" << attribute_name << "(";
 			out << map_in_parameter_type(attribute->type_def()) << " param)\n";
 			out << "throw(CORBA::SystemException";
 			handleException(attribute);
 			out << ")\n{\n";
 			out.indent();
-			out << mapLocalName(home) << "_ptr home_executor = dynamic_cast <";
-			out << mapLocalName(home) << "_ptr> (home_executor_.in());\n";
+			out << home_name << "_ptr home_executor = dynamic_cast <";
+			out << home_name << "_ptr> (home_executor_.in());\n";
 			out << "if (! home_executor)\n{\n";
 			out.indent();
 			out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
 			out << "throw Components::CreateFailure();\n";
 			out.unindent();
 			out << "}\n\n";
-			out << "home_executor->" << attribute->name() << "(param);\n";
+			out << "home_executor->" << attribute_name << "(param);\n";
 			out.unindent();
 			out << "}\n\n\n";
 		}
 
 		out << map_return_type(attribute->type_def()) << "\n";
-		out << class_name_ << "::" << attribute->name() << "()\n";
+		out << class_name_ << "::" << attribute_name << "()\n";
 		out << "throw(CORBA::SystemException";
 		handleException(attribute);
 		out << ")\n{\n";
 		out.indent();
-		out << mapLocalName(home) << "_ptr home_executor = dynamic_cast <";
-		out << mapLocalName(home) << "_ptr> (home_executor_.in());\n";
+		out << home_name << "_ptr home_executor = dynamic_cast <";
+		out << home_name << "_ptr> (home_executor_.in());\n";
 		out << "if (! home_executor)\n{\n";
 		out.indent();
 		out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
 		out << "throw Components::CreateFailure();\n";
 		out.unindent();
 		out << "}\n\n";
-		out << "return home_executor->" << attribute->name() << "();\n";
+		out << "return home_executor->" << attribute_name << "();\n";
 		out.unindent();
 		out << "}\n\n\n";
 	}
@@ -1041,27 +1164,28 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 	for(i = 0; i < len; i++)
 	{
 		IR__::OperationDef_var operation = IR__::OperationDef::_narrow(((*contained_seq)[i]));
+		std::string operation_name = mapName(operation);
 
 		bool is_void = false;
 		if(operation->result_def()->type()->kind() == CORBA::tk_void) { is_void = true; }
 
 		out << map_return_type(operation->result_def()) << "\n";
-		out << class_name_ << "::" << operation->name() << "(";
+		out << class_name_ << "::" << operation_name << "(";
 		IR__::ParDescriptionSeq* pards = operation->params();
 		CORBA::ULong len = pards->length();
 		for(ii = len; ii > 0; ii--)
 		{
 			if(ii < len) { out << ", "; }
 			IR__::ParameterDescription pardescr = (*pards)[ii - 1];
-			out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+			out << map_in_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
 		}
 		out << ")\n";
 		out << "throw(CORBA::SystemException";
 		handleException(operation);
 		out << ")\n{\n";
 		out.indent();
-		out << mapLocalName(home) << "_ptr home_executor = dynamic_cast <";
-		out << mapLocalName(home) << "_ptr> (home_executor_.in());\n";
+		out << home_name << "_ptr home_executor = dynamic_cast <";
+		out << home_name << "_ptr> (home_executor_.in());\n";
 		out << "if (! home_executor)\n{\n";
 		out.indent();
 		out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
@@ -1069,12 +1193,12 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 		out.unindent();
 		out << "}\n\n";
 		if(!is_void) { out << "return "; }
-		out << "home_executor->" << operation->name() << "(";
+		out << "home_executor->" << operation_name << "(";
 		for(ii = len; ii > 0; ii--)
 		{
 			if(ii < len) { out << ", "; }
 			IR__::ParameterDescription pardescr = (*pards)[ii - 1];
-			out << string(pardescr.name);
+			out << mapName(string(pardescr.name));
 		}
 		out << ");\n";
 		out.unindent();

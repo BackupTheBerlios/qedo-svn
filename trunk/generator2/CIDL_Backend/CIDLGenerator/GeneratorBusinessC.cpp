@@ -28,7 +28,7 @@ GeneratorBusinessC::open_module(IR__::Contained* cur_cont)
 	if(act_container->def_kind()==CORBA__::dk_Module) {
 		IR__::ModuleDef_var act_mod = IR__::ModuleDef::_narrow(act_container);
 		this->open_module(act_mod);
-		out << "namespace " << act_mod->name() << " {\n";
+		out << "namespace " << mapName(act_mod) << " {\n";
 	}
 };
 
@@ -71,10 +71,12 @@ GeneratorBusinessC::doModule(IR__::ModuleDef_ptr module)
 void
 GeneratorBusinessC::doValue(IR__::ValueDef_ptr value)
 {
-	class_name_ = string(value->name()) + "_impl::";
+	class_name_ = mapName(value) + "::";
 	handleValueMember(value);
 
+	//
 	// value type factory
+	//
 	out << "CORBA::ValueBase *\n";
 	out << value->name() << "_factory::create_for_unmarshal ()\n{\n";
 	out.indent();
@@ -88,72 +90,74 @@ void
 GeneratorBusinessC::doValueMember(IR__::ValueMemberDef_ptr member)
 {
 	IR__::IDLType_ptr type = member->type_def();
+	std::string member_name = mapName(member);
+
 	switch (type->type()->kind()) {
 	case CORBA::tk_string:
 		out << "void\n";
-		out << class_name_ << member->name() << "(char* _p)\n{\n";
+		out << class_name_ << member_name << "(char* _p)\n{\n";
 		out.indent();
-		out << "_m." << member->name() << " = CORBA::string_dup(_p);\n";
+		out << "_m." << member_name << " = CORBA::string_dup(_p);\n";
 		out.unindent();
 		out << "}\n\n\n";
 
 		out << "void\n";
-		out << class_name_ << member->name() << "(const char* _p)\n{\n";
+		out << class_name_ << member_name << "(const char* _p)\n{\n";
 		out.indent();
-		out << "_m." << member->name() << " = CORBA::string_dup(_p);\n";
+		out << "_m." << member_name << " = CORBA::string_dup(_p);\n";
 		out.unindent();
 		out << "}\n\n\n";
 
 		out << "void\n";
-		out << class_name_ << member->name() << "(const CORBA::String_var& _p)\n{\n";
+		out << class_name_ << member_name << "(const CORBA::String_var& _p)\n{\n";
 		out.indent();
-		out << "_m." << member->name() << " = CORBA::string_dup(_p);\n";
+		out << "_m." << member_name << " = CORBA::string_dup(_p);\n";
 		out.unindent();
 		out << "}\n\n\n";
 
 		out << "const char*\n";
-		out << class_name_ << member->name() << "() const\n{\n";
+		out << class_name_ << member_name << "() const\n{\n";
 		out.indent();
-		out << "return CORBA::string_dup(_m." << member->name() << ");\n";
+		out << "return CORBA::string_dup(_m." << member_name << ");\n";
 		out.unindent();
 		out << "}\n\n\n";
 		break;
 		
 	case CORBA::tk_enum:
 		out << "void\n";
-		out << class_name_ << member->name() << "(" << map_in_parameter_type(type) << " _p)\n{\n";
+		out << class_name_ << member_name << "(" << map_in_parameter_type(type) << " _p)\n{\n";
 		out.indent();
-		out << "_m." << member->name() << " = _p;\n";
+		out << "_m." << member_name << " = _p;\n";
 		out.unindent();
 		out << "}\n\n\n";
 
 		out << map_value_return_type(type) << "\n";
-		out << class_name_ << member->name() << "()\n{\n";
+		out << class_name_ << member_name << "()\n{\n";
 		out.indent();
-		out << "return _m." << member->name() << ";\n";
+		out << "return _m." << member_name << ";\n";
 		out.unindent();
 		out << "}\n\n\n";
 
 		out << "const " << map_value_return_type(type) << "\n";
-		out << class_name_ << member->name() << "() const\n{\n";
+		out << class_name_ << member_name << "() const\n{\n";
 		out.indent();
-		out << "return _m." << member->name() << ";\n";
+		out << "return _m." << member_name << ";\n";
 		out.unindent();
 		out << "}\n\n\n";
 		break;
 
 	default:
 		out << "void\n";
-		out << class_name_ << member->name() << "(" << map_in_parameter_type(type) << " _p)\n{\n";
+		out << class_name_ << member_name << "(" << map_in_parameter_type(type) << " _p)\n{\n";
 		out.indent();
-		out << "_m." << member->name() << " = _p;\n";
+		out << "_m." << member_name << " = _p;\n";
 		out.unindent();
 		out << "}\n\n\n";
 
 		out << map_value_return_type(type) << "\n";
-		out << class_name_ << member->name() << "() const\n{\n";
+		out << class_name_ << member_name << "() const\n{\n";
 		out.indent();
-		out << "return _m." << member->name() << ";\n";
+		out << "return _m." << member_name << ";\n";
 		out.unindent();
 		out << "}\n\n\n";
 	}
@@ -163,18 +167,22 @@ GeneratorBusinessC::doValueMember(IR__::ValueMemberDef_ptr member)
 void
 GeneratorBusinessC::doAttribute(IR__::AttributeDef_ptr attribute)
 {
-	// attribute mode
+	std::string attribute_name = mapName(attribute);
+
+	//
+	// not read only
+	//
 	if(attribute->mode() == IR__::ATTR_NORMAL)
 	{
 		out << "void\n";
-		out << class_name_ << "::" << attribute->name() << "(";
+		out << class_name_ << "::" << attribute_name << "(";
 		out << map_in_parameter_type(attribute->type_def()) << " param)\n{\n";
 		out.insertUserSection(class_name_ + "::_" + attribute->name(), 0);
 		out << "}\n\n\n";
 	}
 
 	out << map_return_type(attribute->type_def()) << "\n";
-	out << class_name_ << "::" << attribute->name() << "()\n{\n";
+	out << class_name_ << "::" << attribute_name << "()\n{\n";
 	out.insertUserSection(class_name_ + "::" + attribute->name(), 0);
 	out << "}\n\n\n";
 }
@@ -183,9 +191,14 @@ GeneratorBusinessC::doAttribute(IR__::AttributeDef_ptr attribute)
 void
 GeneratorBusinessC::doOperation(IR__::OperationDef_ptr operation)
 {
+	std::string operation_name = mapName(operation);
+
 	out << map_return_type(operation->result_def()) << "\n";
-	out << class_name_ << "::" << operation->name() << "(";
-	// Parameter of the operation
+	out << class_name_ << "::" << operation_name << "(";
+
+	//
+	// parameters
+	//
 	IR__::ParDescriptionSeq* pards = operation->params();
 	for(CORBA::ULong i = pards->length(); i > 0; i--)
 	{
@@ -194,7 +207,7 @@ GeneratorBusinessC::doOperation(IR__::OperationDef_ptr operation)
 			out << ", ";
 		}
 		IR__::ParameterDescription pardescr = (*pards)[i - 1];
-		out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		out << map_in_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
 	}
 	out << ")\n{\n";
 	out.insertUserSection(class_name_ + "::" + operation->name(), 0);
@@ -205,9 +218,14 @@ GeneratorBusinessC::doOperation(IR__::OperationDef_ptr operation)
 void
 GeneratorBusinessC::doFactory(IR__::FactoryDef_ptr factory)
 {
+	std::string factory_name = mapName(factory);
+
 	out << map_return_type(composition_->ccm_component()) << "\n";
-	out << class_name_ << "::" << factory->name() << "(";
+	out << class_name_ << "::" << factory_name << "(";
+
+	//
 	// Parameter of the operation
+	//
 	IR__::ParDescriptionSeq* pards = factory->params();
 	for(CORBA::ULong i = pards->length(); i > 0; i--)
 	{
@@ -216,7 +234,7 @@ GeneratorBusinessC::doFactory(IR__::FactoryDef_ptr factory)
 			out << ", ";
 		}
 		IR__::ParameterDescription pardescr = (*pards)[i - 1];
-		out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		out << map_in_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
 	}
 	out << ")\n";
 	out << "{\n";
@@ -228,9 +246,14 @@ GeneratorBusinessC::doFactory(IR__::FactoryDef_ptr factory)
 void
 GeneratorBusinessC::doFinder(IR__::FinderDef_ptr finder)
 {
+	std::string finder_name = mapName(finder);
+
 	out << map_return_type(composition_->ccm_component()) << "\n";
-	out << class_name_ << "::" << finder->name() << "(";
+	out << class_name_ << "::" << finder_name << "(";
+
+	//
 	// parameters
+	//
 	IR__::ParDescriptionSeq* pards = finder->params();
 	for(CORBA::ULong i = pards->length(); i > 0; i--)
 	{
@@ -239,7 +262,7 @@ GeneratorBusinessC::doFinder(IR__::FinderDef_ptr finder)
 			out << ", ";
 		}
 		IR__::ParameterDescription pardescr = (*pards)[i - 1];
-		out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		out << map_in_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
 	}
 	out << ")\n";
 	out << "{\n";
@@ -269,7 +292,10 @@ GeneratorBusinessC::doComponent(IR__::ComponentDef_ptr component)
 {
 	// handle base component
 	IR__::ComponentDef_var base = component->base_component();
-	if(!CORBA::is_nil(base)) { doComponent(base); }
+	if(!CORBA::is_nil(base))
+	{ 
+		doComponent(base);
+	}
 
 	handleAttribute(component);
 	handleSupportedInterface(component);
@@ -322,7 +348,7 @@ GeneratorBusinessC::doConsumes(IR__::ConsumesDef_ptr consumes)
 {
     // push_...
 	out << "void\n";
-	out << class_name_ << "::push_" << consumes->event()->name() << "(" << map_absolute_name(consumes->event());
+	out << class_name_ << "::push_" << consumes->event()->name() << "(" << mapFullName(consumes->event());
 	out << "* ev)\n{\n";
 	out.insertUserSection(class_name_ + "::push_" + consumes->event()->name(), 0);
 	out << "}\n\n\n";
@@ -334,7 +360,10 @@ GeneratorBusinessC::doHome(IR__::HomeDef_ptr home)
 {
 	// handle base home
 	IR__::HomeDef_var base = home->base_home();
-	if(base){ doHome(base); }
+	if(base)
+	{ 
+		doHome(base);
+	}
 
 	handleAttribute(home);
 	handleOperation(home);
@@ -382,14 +411,15 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	if(module_def)
 	{
 		open_module(module_def);
-		out << "namespace " << module_def->name() << " {\n\n\n";
+		out << "namespace " << mapName(module_def) << " {\n\n\n";
 	}
 
+	std::string context_name = mapFullNameLocal(composition->ccm_component()) + "_Context";
 
 	//
 	// executor
 	//
-	class_name_ = composition->executor()->name();
+	class_name_ = mapName(composition->executor());
 	out.insertUserSection(class_name_, 2);
 
 	// constructor
@@ -404,11 +434,9 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	
 	// set_context
 	out << "void\n";
-	out << class_name_ << "::set_context(" << mapLocalName(composition->ccm_component());
-	out << "_Context_ptr context)\n{\n";
+	out << class_name_ << "::set_context(" << context_name << "_ptr context)\n{\n";
 	out.indent();
-    out << "context_ = " << mapLocalName(composition->ccm_component());
-	out << "_Context::_duplicate(context);\n";
+    out << "context_ = " << context_name << "::_duplicate(context);\n";
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -439,7 +467,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	for (i = 0; i < segment_seq->length(); i++)
 	{
-		class_name_ = segment_seq[i]->name();
+		class_name_ = mapName(segment_seq[i]);
 		out.insertUserSection(class_name_, 2);
 
 		// constructor
@@ -454,11 +482,9 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 		// set context
 		out << "void\n";
-		out << class_name_ << "::set_context(" << mapLocalName(composition->ccm_component());
-		out << "_Context_ptr context)\n{\n";
+		out << class_name_ << "::set_context(" << context_name << "_ptr context)\n{\n";
 		out.indent();
-		out << "context_ = " << mapLocalName(composition->ccm_component());
-		out << "_Context::_duplicate(context);\n";
+		out << "context_ = " << context_name << "::_duplicate(context);\n";
 		out.unindent();
 		out << "}\n\n\n";
 
@@ -480,15 +506,15 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// executor locator
 	//
-	class_name_ = composition->name();
+	class_name_ = mapName(composition);
 	out.insertUserSection(class_name_, 2);
 
 	// constructor
 	out << class_name_ << "::" << class_name_ << "()\n";
 	out.indent();
-	out << ": component_(new " << composition->executor()->name() << "())\n";
+	out << ": component_(new " << mapName(composition->executor()) << "())\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
-		out << ", " << segment_seq[i]->name() << "_(new " << segment_seq[i]->name() << "())\n";
+		out << ", " << segment_seq[i]->name() << "_(new " << mapName(segment_seq[i]) << "())\n";
 	}
 	out.unindent();
 	out << "{\n";
@@ -566,8 +592,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "void\n";
 	out << class_name_ << "::set_session_context(::Components::SessionContext_ptr context)\n{\n";
 	out.indent();
-    out << "context_ = " << mapLocalName(composition->ccm_component());
-	out << "_Context::_narrow(context);\n\n";
+    out << "context_ = " << context_name << "::_narrow(context);\n\n";
 	out << "component_->set_context(context_);\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
 		out << segment_seq[i]->name() << "_->set_context(context_);\n";
@@ -597,7 +622,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// home executor
 	//
-	class_name_ = composition->home_executor()->name();
+	class_name_ = mapName(composition->home_executor());
 	out.insertUserSection(class_name_, 2);
 
 	// constructor
@@ -614,8 +639,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "void\n";
 	out << class_name_ << "::set_context(Components::CCMContext_ptr ctx)\n{\n";
 	out.indent();
-    out << "context_ = " << mapLocalName(composition->ccm_component());
-	out << "_Context::_narrow(ctx);\n";
+    out << "context_ = " << context_name << "::_narrow(ctx);\n";
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -624,7 +648,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << class_name_ << "::create ()\n{\n";
 	out.indent();
 	out.insertUserSection(class_name_ + "::create", 0);
-	out << "return new " << composition->name() << "();\n";
+	out << "return new " << mapName(composition) << "();\n";
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -646,8 +670,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "create_" << composition->ccm_home()->name() << "E(void)\n{\n";
 	out.indent();
 	out.insertUserSection(string("create_") + composition->ccm_home()->name());
-	out << "return new " << map_absolute_name(module_def) << "::";
-	out << composition->home_executor()->name() << "();\n";
+	out << "return new " << mapFullName(module_def) << "::";
+	out << mapName(composition->home_executor()) << "();\n";
 	out.unindent();
 	out << "}\n\n";
 

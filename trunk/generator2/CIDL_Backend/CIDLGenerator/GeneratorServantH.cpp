@@ -33,7 +33,7 @@ GeneratorServantH::open_module(IR__::Contained* cur_cont, std::string prefix)
 		{
 			out << prefix;
 		}
-		out << a_module->name() << " {\n";
+		out << mapName(a_module) << " {\n";
 		out.indent();
 		return true;
 	}
@@ -83,18 +83,21 @@ void
 GeneratorServantH::doAttribute(IR__::AttributeDef_ptr attribute)
 {
 	out << "\n//\n// " << attribute->id() << "\n//\n";
+	std::string attribute_name = mapName(attribute);
 
-	// attribute mode
+	//
+	// not read only
+	//
 	if(attribute->mode() == IR__::ATTR_NORMAL)
 	{
-		out << "void " << attribute->name() << "(";
+		out << "void " << attribute_name << "(";
 		out << map_in_parameter_type(attribute->type_def()) << " param)\n";
 		out << "	throw(CORBA::SystemException";
 		handleException(attribute);
 		out << ");\n";
 	}
 
-	out << map_return_type(attribute->type_def()) << " " << attribute->name() << "()\n";
+	out << map_return_type(attribute->type_def()) << " " << attribute_name << "()\n";
 	out << "	throw(CORBA::SystemException";
 	handleException(attribute);
 	out << ");\n";
@@ -104,7 +107,7 @@ GeneratorServantH::doAttribute(IR__::AttributeDef_ptr attribute)
 void 
 GeneratorServantH::doException(IR__::ExceptionDef_ptr except)
 {
-	out << ", " << map_absolute_name(except);
+	out << ", " << mapFullName(except);
 }
 
 
@@ -169,7 +172,7 @@ GeneratorServantH::doProvides(IR__::ProvidesDef_ptr provides)
 	out << "\n//\n// " << provides->id() << "\n//\n";
 
 	// provide_...
-	out << map_absolute_name(provides->interface_type()) << "_ptr provide_" << provides->name() << "()\n";
+	out << mapFullName(provides->interface_type()) << "_ptr provide_" << provides->name() << "()\n";
 	out << "    throw (CORBA::SystemException);\n\n";
 }
 
@@ -178,18 +181,19 @@ void
 GeneratorServantH::doUses(IR__::UsesDef_ptr uses)
 {
 	out << "\n//\n// " << uses->id() << "\n//\n";
+	std::string interface_name = mapFullName(uses->interface_type());
 
 	// get_connection_...
-	out << map_absolute_name(uses->interface_type()) << "_ptr get_connection_" << uses->name() << "()\n";
+	out << interface_name << "_ptr get_connection_" << uses->name() << "()\n";
 	out << "	throw (CORBA::SystemException);\n";
 
 	// disconnect_...
-    out << map_absolute_name(uses->interface_type()) << "_ptr disconnect_" << uses->name() << "()\n";
+    out << interface_name << "_ptr disconnect_" << uses->name() << "()\n";
 	out << "	throw(Components::NoConnection, CORBA::SystemException);\n";
 
 	// connect_...
     out << "void connect_" << uses->name() << "(";
-	out << map_absolute_name(uses->interface_type()) << "_ptr conxn)\n";
+	out << interface_name << "_ptr conxn)\n";
 	out << "	throw (Components::AlreadyConnected, Components::InvalidConnection, CORBA::SystemException);\n";
 }
 
@@ -198,14 +202,15 @@ void
 GeneratorServantH::doEmits(IR__::EmitsDef_ptr emits)
 {
 	out << "\n//\n// " << emits->id() << "\n//\n";
+	std::string event_name = mapFullName(emits->event());
 	
 	// disconnect_...
-	out << map_absolute_name(emits->event()) << "Consumer* disconnect_" << emits->name() << "()\n";
+	out << event_name << "Consumer* disconnect_" << emits->name() << "()\n";
     out << "	throw (Components::NoConnection, CORBA::SystemException);\n";
 
 	// connect_...
     out << "void connect_" << emits->name() << "(";
-	out << map_absolute_name(emits->event()) << "Consumer* consumer)\n";
+	out << event_name << "Consumer* consumer)\n";
     out << "	throw (Components::AlreadyConnected, CORBA::SystemException);\n";
 }
 
@@ -214,6 +219,17 @@ void
 GeneratorServantH::doPublishes(IR__::PublishesDef_ptr publishes)
 {
 	out << "\n//\n// " << publishes->id() << "\n//\n";
+	std::string event_name = mapFullName(publishes->event());
+
+	// subscribe_...
+	out << "::Components::Cookie* subscribe_" << publishes->name() << "(";
+	out << event_name << "Consumer_ptr consumer)\n";
+	out << "	throw (Components::ExceededConnectionLimit, CORBA::SystemException);\n";
+
+	// unsubscribe_...
+	out << event_name << "Consumer* unsubscribe_" << publishes->name() << "(";
+	out << "::Components::Cookie* ck)\n";
+	out << "	throw (Components::InvalidConnection, CORBA::SystemException);\n";
 }
 
 
@@ -223,7 +239,7 @@ GeneratorServantH::doConsumes(IR__::ConsumesDef_ptr consumes)
 	out << "\n//\n// " << consumes->id() << "\n//\n";
 	
 	// get_consumer_...
-	out << map_absolute_name(consumes->event()) << "Consumer* get_consumer_" << consumes->name();
+	out << mapFullName(consumes->event()) << "Consumer* get_consumer_" << consumes->name();
     out << "() throw(CORBA::SystemException);\n";
 }
 
@@ -299,9 +315,11 @@ void
 GeneratorServantH::genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type)
 {
 	out << "\n//\n// " << operation->id() << "\n//\n";
-	out << map_return_type(ret_type) << " " << operation->name() << "(";
+	out << map_return_type(ret_type) << " " << mapName(operation) << "(";
 
+	//
 	// parameters
+	//
 	IR__::ParDescriptionSeq* pards = operation->params();
 	for(CORBA::ULong i = pards->length(); i > 0; i--)
 	{
@@ -324,16 +342,19 @@ GeneratorServantH::genFacetServants(IR__::ComponentDef_ptr component)
 {
 	// handle base component
 	IR__::ComponentDef_var base = component->base_component();
-	if(!CORBA::is_nil(base)) { genFacetServants(base); }
+	if(!CORBA::is_nil(base))
+	{ 
+		genFacetServants(base);
+	}
 
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Provides, false);
 	for(CORBA::ULong i = 0; i < contained_seq->length(); i++)
 	{
 		IR__::ProvidesDef_var provides = IR__::ProvidesDef::_narrow(((*contained_seq)[i]));
-		string class_name = string(provides->name()) + "_servant";
+		std::string class_name = std::string(provides->name()) + "_servant";
 		out << "class " << class_name;
 		out.indent();	
-		out << ": public POA_" << map_absolute_name(provides->interface_type()) << "\n";
+		out << ": public " << mapFullNamePOA(provides->interface_type()) << "\n";
 		out << ", public Qedo::ServantBase\n";
 		out.unindent();
 		out << "{\n\n";
@@ -353,18 +374,22 @@ GeneratorServantH::genConsumerServants(IR__::ComponentDef_ptr component)
 {
 	// handle base component
 	IR__::ComponentDef_var base = component->base_component();
-	if(!CORBA::is_nil(base)) { genConsumerServants(base); }
+	if(!CORBA::is_nil(base))
+	{ 
+		genConsumerServants(base);
+	}
 
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Consumes, false);
 	CORBA::ULong len = contained_seq->length();
 	for(CORBA::ULong i = 0; i < len; i++)
 	{
 		IR__::ConsumesDef_var consumes = IR__::ConsumesDef::_narrow(((*contained_seq)[i]));
-		string class_name = string(consumes->name()) + "_servant";
-		string full_event_name = map_absolute_name(consumes->event());
+		std::string class_name = string(consumes->name()) + "_servant";
+		std::string full_event_name = mapFullName(consumes->event());
+
 		out << "class " << class_name << "\n";
 		out.indent();
-		out << ": public POA_" << full_event_name << "Consumer\n";
+		out << ": public " << mapFullNamePOA(consumes->event()) << "Consumer\n";
 		out << ", public Qedo::ServantBase\n";
 		out.unindent();
 		out << "{\n\n";
@@ -384,10 +409,11 @@ GeneratorServantH::genConsumerServants(IR__::ComponentDef_ptr component)
 void
 GeneratorServantH::genComponentServantBegin(IR__::ComponentDef_ptr component)
 {
-	string class_name = string(component->name()) + "_servant";
+	std::string class_name = string(component->name()) + "_servant";
+
 	out << "class " << class_name << "\n";
 	out.indent();
-	out << ": public POA_" << map_absolute_name(component) << "\n";
+	out << ": public " << mapFullNamePOA(component) << "\n";
 	out << ", public Qedo::PrimaryServant \n";
 	out.unindent();
 	out << "{\n\n";
@@ -403,7 +429,10 @@ GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component)
 {
 	// handle base component
 	IR__::ComponentDef_var base = component->base_component();
-	if(!CORBA::is_nil(base)) { genComponentServant(base); }
+	if(!CORBA::is_nil(base))
+	{ 
+		genComponentServant(base);
+	}
 
 	handleAttribute(component);
 	handleSupportedInterface(component);
@@ -423,10 +452,11 @@ GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component)
 void
 GeneratorServantH::genContextServantBegin(IR__::ComponentDef_ptr component)
 {
-	string class_name = string(component->name()) + "_Context_callback";
+	std::string class_name = string(component->name()) + "_Context_callback";
+
 	out << "class " << class_name << "\n";
 	out.indent();
-	out << ": public " << mapLocalName(component) << "_Context\n";
+	out << ": public " << mapFullNameLocal(component) << "_Context\n";
 	out << ", public Qedo::SessionContext\n";
 	out.unindent();
 	out << "{\n\n";
@@ -447,8 +477,9 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component)
 	{
 		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
 		out << "\n";
-		out << map_absolute_name(a_uses->interface_type()) << "_ptr get_connection_" << a_uses->name() << "();\n";
+		out << mapFullName(a_uses->interface_type()) << "_ptr get_connection_" << a_uses->name() << "();\n";
 	}
+
 	// emits ports
 	contained_seq = component->contents(CORBA__::dk_Emits, false);
 	len = contained_seq->length();
@@ -456,7 +487,17 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component)
 	{
 		IR__::EmitsDef_var a_emits = IR__::EmitsDef::_narrow(((*contained_seq)[i]));
 		out << "\n";
-		out << "void push_" << a_emits->name() << "(" << map_absolute_name(a_emits->event()) << "* ev);\n";
+		out << "void push_" << a_emits->name() << "(" << mapFullName(a_emits->event()) << "* ev);\n";
+	}
+
+	// publishes ports
+	contained_seq = component->contents(CORBA__::dk_Publishes, false);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++) 
+	{
+		IR__::PublishesDef_var a_publishes = IR__::PublishesDef::_narrow(((*contained_seq)[i]));
+		out << "\n";
+		out << "void push_" << a_publishes->name() << "(" << mapFullName(a_publishes->event()) << "* ev);\n";
 	}
 }
 
@@ -464,10 +505,11 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component)
 void
 GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home)
 {
-	string class_name = string(home->name()) + "_servant";
+	std::string class_name = string(home->name()) + "_servant";
+
 	out << "class " << class_name << "\n";
 	out.indent();
-	out << ": public POA_" << map_absolute_name(home) << "\n";
+	out << ": public " << mapFullNamePOA(home) << "\n";
 	out << ", public Qedo::SessionHomeServant\n";
 	out.unindent();
 	out << "{\n\n";
@@ -475,7 +517,7 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out.indent();
     out << class_name << "();\n";
     out << "~" << class_name << "();\n\n";
-	out << map_absolute_name(composition_->ccm_component()) << "_ptr create()\n"; 
+	out << mapFullName(composition_->ccm_component()) << "_ptr create()\n"; 
 	out << "	throw(CORBA::SystemException, Components::CreateFailure);\n\n";
 	out << "Components::CCMObject_ptr create_component()\n";
 	out << "	throw(CORBA::SystemException,Components::CreateFailure);\n";
@@ -487,7 +529,10 @@ GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home)
 {
 	// handle base home
 	IR__::HomeDef_var base = home->base_home();
-	if(base){ genHomeServant(base); }
+	if(base)
+	{ 
+		genHomeServant(base);
+	}
 
 	handleAttribute(home);
 	handleOperation(home);
