@@ -1306,7 +1306,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 
 	// constructor
 	out << class_name_ << "::" << class_name_ << "()\n";
-	out << ": HomeServantBase(\"" << home->id() << "\")\n{\n";
+	out << ": HomeServantBase(\"" << home->id() << "\", \"" << home->managed_component()->id() << "\")\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"homeservant: Constructor called\");\n";
 	out.unindent();
@@ -1426,7 +1426,7 @@ GeneratorServantC::genFacetRegistration(IR__::HomeDef_ptr home)
 		std::string name = (*facets)[i]->name();
 
 		out << "CORBA::Object_var "	<< name << "_ref = this->create_object_reference(key, \"";
-		out << (*facets)[i]->id() << "\");\n";
+		out << (*facets)[i]->interface_type()->id() << "\");\n";
 		out << "PortableServer::ObjectId_var " << name << "_object_id = this->reference_to_oid (";
 		out << name << "_ref);\n";
 		out << "servant_registry_->register_servant_factory (";
