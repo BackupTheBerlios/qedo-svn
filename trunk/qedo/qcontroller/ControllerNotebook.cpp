@@ -35,7 +35,7 @@ void ControllerNotebook::CreateControllerPages(wxBoxSizer * sizerFrame)
 	 deployment_panel_ = new Deployment(this, DEPLOYMENT_ID, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE);
 	 AddPage(deployment_panel_, wxT("Deployment"), FALSE,0);
 
-    SetSelection(2);
+    SetSelection( 0 );
 
 }
 

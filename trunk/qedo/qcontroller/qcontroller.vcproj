@@ -40,7 +40,7 @@ copy $(TargetPath) $(QEDO)\bin
 				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxmsw24d.lib mico2311.lib micocoss2311.lib"
 				OutputFile="$(OutDir)/qcontroller.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="C:\opt\wxWindows\lib;$(MICO)\win32-bin\lib"
+				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/qcontroller.pdb"
 				SubSystem="2"

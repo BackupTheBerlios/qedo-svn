@@ -232,7 +232,8 @@ void Launcher::OnSAStartButton(wxCommandEvent& WXUNUSED(event))
 	{
 		wxProcess *process = new wxProcess (this);
 	//	process->Redirect();
-		sa_pid_ = wxExecute("qcsa --terminal", wxEXEC_ASYNC, process);
+		sa_pid_ = wxExecute( "qcsa", wxEXEC_ASYNC, process);
+		//sa_pid_ = wxExecute( "qcsa --terminal", wxEXEC_ASYNC, process);
 		if ( !sa_pid_ )
 		{
 			wxLogError( _T("Execution of '%s' failed."), "qcsa" );

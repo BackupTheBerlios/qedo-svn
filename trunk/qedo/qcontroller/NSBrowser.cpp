@@ -128,26 +128,32 @@ void NSBrowserTreeCtrl::AddItemsRecursively(const wxTreeItemId& idParent,
 
 		for (CORBA::ULong i = 0; i < bl->length(); i++)
 		{
-			// if context
-	//		if ((*bl)[i].binding_type == CosNaming::ncontext)
-	//		{
+			if ((*bl)[i].binding_type == CosNaming::ncontext)
+			{
 				CosNaming::NamingContext_var child_context;
 				CORBA::Object_var tmp_obj;
-				tmp_obj = context -> resolve((*bl)[i].binding_name);
-				try {
+				try 
+				{
+					tmp_obj = context -> resolve((*bl)[i].binding_name);
 					child_context = CosNaming::NamingContext::_narrow(tmp_obj);
-				} catch (CORBA::SystemException e) {}
+				} 
+				catch (CORBA::SystemException e)
+				{
+				}
+
 				if (!CORBA::is_nil(child_context))
 				{
 					str.Printf(wxT("%s"), wxT((*bl)[i].binding_name[0].id.in()));
 					wxTreeItemId id = AppendItem(idParent, str, TreeCtrlIcon_Folder, TreeCtrlIcon_Folder, new NSBrowserTreeItemData(str));
 
 					AddItemsRecursively(id, child_context.in());
-				} else {
-					str.Printf(wxT("%s"), wxT((*bl)[i].binding_name[0].id.in()));
-					wxTreeItemId id = AppendItem(idParent, str, TreeCtrlIcon_File, TreeCtrlIcon_File, new NSBrowserTreeItemData(str));
 				}
-	//		}
+			}
+			else 
+			{
+				str.Printf(wxT("%s"), wxT((*bl)[i].binding_name[0].id.in()));
+				wxTreeItemId id = AppendItem(idParent, str, TreeCtrlIcon_File, TreeCtrlIcon_File, new NSBrowserTreeItemData(str));
+			}
 
 
 			// add to tree
