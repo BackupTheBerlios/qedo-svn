@@ -326,7 +326,6 @@ GeneratorServantH::doComponent(IR__::ComponentDef_ptr component)
 void
 GeneratorServantH::doProvides(IR__::ProvidesDef_ptr provides, IR__::ComponentDef_ptr component)
 {
-	out << "\n//\n// " << provides->id() << "\n//\n";
 
 	// provide_...
 	out << mapFullName(provides->interface_type()) << "_ptr provide_" << provides->name() << "()\n";
@@ -337,6 +336,7 @@ GeneratorServantH::doProvides(IR__::ProvidesDef_ptr provides, IR__::ComponentDef
 void 
 GeneratorServantH::doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr component)
 {
+
 	out << "\n//\n// " << uses->id() << "\n//\n";
 	std::string interface_name = mapFullName(uses->interface_type());
 
@@ -392,6 +392,7 @@ GeneratorServantH::doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr c
 void 
 GeneratorServantH::doEmits(IR__::EmitsDef_ptr emits, IR__::ComponentDef_ptr component)
 {
+
 	out << "\n//\n// " << emits->id() << "\n//\n";
 	std::string event_name = mapFullName(emits->event());
 	
@@ -427,6 +428,7 @@ GeneratorServantH::doPublishes(IR__::PublishesDef_ptr publishes, IR__::Component
 void
 GeneratorServantH::doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDef_ptr component)
 {
+
 	out << "\n//\n// " << consumes->id() << "\n//\n";
 	
 	// get_consumer_...
@@ -728,11 +730,11 @@ GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component, CIDL::L
 void
 GeneratorServantH::genComponentServantBody(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc)
 {
-	// handle base component
+	//handle base component
 	IR__::ComponentDef_var base = component->base_component();
 	if(!CORBA::is_nil(base))
 	{ 
-		genComponentServant(base, lc);
+		genComponentServantBody(base, lc);
 	}
 
 	handleAttribute(component);
@@ -794,6 +796,13 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component, CIDL::Lif
 void
 GeneratorServantH::genContextServantBody(IR__::ComponentDef_ptr component)
 {
+	// handle base component
+	IR__::ComponentDef_var base = component->base_component();
+	if(!CORBA::is_nil(base))
+	{ 
+		genContextServantBody(base);
+	}
+
 	// uses ports
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Uses, false);
 	CORBA::ULong len = contained_seq->length();

@@ -50,6 +50,8 @@ private:
 	IR__::HomeDef_var			home_;
 	std::set<std::string>		m_recursion_set;
 
+	std::string					scope_name_;
+
 	void check_for_generation(IR__::Contained_ptr item);
 
 	void doAttribute(IR__::AttributeDef_ptr attribute);

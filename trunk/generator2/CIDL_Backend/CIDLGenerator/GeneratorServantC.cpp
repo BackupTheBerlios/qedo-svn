@@ -608,6 +608,21 @@ GeneratorServantC::doComposition (CIDL::CompositionDef_ptr composition)
 	// generat Component
 	//
 
+	
+	open_module(out, component_, "SERVANT_");
+	out << "\n\n";
+
+	genFacetServants(component_);
+	genSourceServants(component_);
+	genConsumerServants(component_);
+	genContextServantBegin(component_);
+	genContextServant(component_);
+	genComponentServantBegin(component_);
+	genComponentServant(component_);
+
+	close_module(out, component_);
+
+
 }
 
 
@@ -624,6 +639,9 @@ GeneratorServantC::doComponent(IR__::ComponentDef_ptr component)
 	out << "#include \"" << header_name << ".h\"\n";
 	out << "#include \"Output.h\"\n\n\n";*/
 
+	/*
+	component_ = component;
+	
 	open_module(out, component, "SERVANT_");
 	out << "\n\n";
 
@@ -636,7 +654,7 @@ GeneratorServantC::doComponent(IR__::ComponentDef_ptr component)
 	genComponentServant(component);
 
 	close_module(out, component);
-
+*/
 	/*out.close();*/
 }
 
@@ -701,8 +719,8 @@ GeneratorServantC::doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr compone
 		out << "conn->length(connections->length());\n";
 		out << "for(unsigned int i = 0; i < connections->length(); i++)\n{\n";
 		out.indent();
-		out << "conn[i].objref = " << interface_name << "::_narrow((*connections)[i]->objref());\n";
-		out << "conn[i].ck = (*connections)[i]->ck();\n";
+		out << "conn.inout()[i].objref = " << interface_name << "::_narrow((*connections)[i]->objref());\n";
+		out << "conn.inout()[i].ck = (*connections)[i]->ck();\n";
 		out << "}\n\n";
 		out.unindent();
 		out << "return conn._retn();\n";
@@ -763,6 +781,8 @@ GeneratorServantC::doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr c
 void 
 GeneratorServantC::doEmits(IR__::EmitsDef_ptr emits, IR__::ComponentDef_ptr component)
 {
+
+
 	out << "\n//\n// " << emits->id() << "\n//\n";
 	std::string event_name = mapFullName(emits->event());
 
@@ -792,6 +812,7 @@ GeneratorServantC::doEmits(IR__::EmitsDef_ptr emits, IR__::ComponentDef_ptr comp
 void 
 GeneratorServantC::doPublishes(IR__::PublishesDef_ptr publishes, IR__::ComponentDef_ptr component)
 {
+
 	out << "\n//\n// " << publishes->id() << "\n//\n";
 	std::string event_name = mapFullName(publishes->event());
 
@@ -820,6 +841,7 @@ GeneratorServantC::doPublishes(IR__::PublishesDef_ptr publishes, IR__::Component
 void
 GeneratorServantC::doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDef_ptr component)
 {
+
 	std::string event_name = mapFullName(consumes->event());
 
 	// get_consumer_...
@@ -889,7 +911,7 @@ GeneratorServantC::genFacetServants(IR__::ComponentDef_ptr component)
 		//
 		IR__::ProvidesDef_var provides = IR__::ProvidesDef::_narrow(((*contained_seq)[i]));
 		std::string class_name = provides->name();
-		class_name_ = string(component->name()) + "::" + class_name;
+		class_name_ = string(component_->name()) + "::" + class_name;
 
 		// header
 		out << "// ================================================\n";
@@ -949,7 +971,7 @@ GeneratorServantC::genConsumerServants(IR__::ComponentDef_ptr component)
 		//
 		IR__::ConsumesDef_var consumes = IR__::ConsumesDef::_narrow(((*contained_seq)[i]));
 		std::string class_name = consumes->name();
-		class_name_ = string(component->name()) + "::" + class_name;
+		class_name_ = string(component_->name()) + "::" + class_name;
 		std::string event_consumer = mapFullNameLocal(consumes->event()) + "Consumer";
 		std::string event_name = mapFullName(consumes->event());
 
@@ -1063,6 +1085,7 @@ GeneratorServantC::genComponentServantBegin(IR__::ComponentDef_ptr component)
 void
 GeneratorServantC::genComponentServant(IR__::ComponentDef_ptr component)
 {
+//	class_name_ = string (component->name());
 	// handle base component
 	IR__::ComponentDef_var base = component->base_component();
 	if(!CORBA::is_nil(base))
@@ -1157,8 +1180,8 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 			out << "conn->length(connections->length());\n";
 			out << "for(unsigned int i = 0; i < connections->length(); i++)\n{\n";
 			out.indent();
-			out << "conn[i].objref = " << interface_name << "::_narrow((*connections)[i]->objref());\n";
-			out << "conn[i].ck = (*connections)[i]->ck();\n";
+			out << "conn.inout()[i].objref = " << interface_name << "::_narrow((*connections)[i]->objref());\n";
+			out << "conn.inout()[i].ck = (*connections)[i]->ck();\n";
 			out << "}\n\n";
 			out.unindent();
 			out << "return conn._retn();\n";
