@@ -255,6 +255,87 @@ throw (CannotMapAbsoluteName)
 }
 
 
+bool
+CPPBase::hasVariableLength(IR__::IDLType_ptr type)
+{
+	CORBA::TCKind typecodekind = type->type()->kind();
+	CORBA::ULong i;
+	IR__::StructDef_var s;
+	IR__::StructMemberSeq_var s_members;
+	IR__::UnionDef_var u;
+	IR__::UnionMemberSeq_var u_members;
+	IR__::SequenceDef_var seq;
+
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
+
+	switch (typecodekind)
+	{
+	case CORBA::tk_short:
+	case CORBA::tk_long:
+	case CORBA::tk_longlong:
+	case CORBA::tk_ushort:
+	case CORBA::tk_ulong:
+	case CORBA::tk_ulonglong:
+	case CORBA::tk_float:
+	case CORBA::tk_double:
+	case CORBA::tk_longdouble:
+	case CORBA::tk_boolean:
+	case CORBA::tk_char:
+	case CORBA::tk_wchar:
+	case CORBA::tk_enum:
+		return false;
+	case CORBA::tk_any:
+	case CORBA::tk_objref:
+	case CORBA::tk_native:
+	case CORBA::tk_string:
+	case CORBA::tk_wstring:
+	case CORBA::tk_value:
+		return true;
+	case CORBA::tk_struct:
+		s = IR__::StructDef::_narrow(type);
+		s_members = s->members();
+		for(i = 0; i < s_members->length(); i++)
+		{
+			if(hasVariableLength(s_members[i].type_def))
+			{
+				return true;
+			}
+		}
+		return false;
+	case CORBA::tk_union:
+		u = IR__::UnionDef::_narrow(type);
+		u_members = u->members();
+		for(i = 0; i < u_members->length(); i++)
+		{
+			if(hasVariableLength(u_members[i].type_def))
+			{
+				return true;
+			}
+		}
+		return false;
+	case CORBA::tk_sequence:
+		seq = IR__::SequenceDef::_narrow(type);
+		if( (seq->bound() == 0) || hasVariableLength(seq->element_type_def()) )
+		{
+			return true;
+		}
+		return false;
+	default:
+		assert(0);
+	}
+	return true;
+}
+
+
 char*
 CPPBase::map_return_type
 ( IR__::IDLType_ptr type )
@@ -350,11 +431,11 @@ throw ( CannotMapType )
 		break;
 	case CORBA::tk_struct:
 	case CORBA::tk_union:
-		//checking for fixed or variable length
-		// the check is missing yet
-		// assuming variable length
 		ret_string = getAbsoluteName(contained);
-		ret_string = ret_string + "*";
+		if(hasVariableLength(type))
+		{
+			ret_string = ret_string + "*";
+		}
 		break;
 	case CORBA::tk_enum:
 		ret_string = getAbsoluteName (contained);

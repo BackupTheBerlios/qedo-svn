@@ -67,6 +67,9 @@ protected:
 	std::string mapScopeName(IR__::Contained_ptr type)
 		throw(CannotMapAbsoluteName);
 
+	/** check whether type has variable length */
+	bool hasVariableLength(IR__::IDLType_ptr type);
+
 	char* map_return_type ( IR__::IDLType_ptr type )
 		throw ( CannotMapType );
 
