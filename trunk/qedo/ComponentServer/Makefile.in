@@ -20,7 +20,6 @@
 
 CXX = @CXX@
 INCLUDES+=-I. -I../ComponentIDL \
-	-I../StreamComponentIDL \
 	-I../ComponentContainer \
 	-I../ComponentInstaller \
 	-I../qedoutil \
@@ -35,7 +34,6 @@ CC=$(CXX)
 
 
 LIBS += -L../ComponentIDL -lComponentIDL \
-	-L../StreamComponentIDL -lStreamComponentIDL \
         -L../ComponentContainer -lComponentContainer \
         -L../qedoutil -lqedoutil \
 	$(NAMING_LIBS)\

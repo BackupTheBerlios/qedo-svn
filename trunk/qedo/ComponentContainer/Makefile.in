@@ -19,14 +19,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 CXX = @CXX@
-INCLUDES+=-I. -I../ComponentIDL -I../StreamComponentIDL -I../ComponentServer -I../qedoutil $(NAMING_INCLUDES) @CPPFLAGS@
+INCLUDES+=-I. -I../ComponentIDL -I../ComponentServer -I../qedoutil $(NAMING_INCLUDES) @CPPFLAGS@
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@ @XERCES_INCLUDES@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS=@LIBS@
 
 @SET_MAKE@
 
-LIBS += -L../ComponentIDL -L../StreamComponentIDL -lComponentIDL -lStreamComponentIDL \
+LIBS += -L../ComponentIDL -lComponentIDL \
 		  $(NAMING_LIBS) \
         -luuid
 

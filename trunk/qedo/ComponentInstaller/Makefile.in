@@ -4,28 +4,27 @@
 #
 # Copyright (C) 2002-2003 by the Qedo Team
 #
-# This library is free software; you can redistribute it and/or 
-# modify it under the terms of the GNU Lesser General Public   
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-#                                                                  
-# This library is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
-# Lesser General Public License for more details.                 
-#                                                                
-# You should have received a copy of the GNU Lesser General Public 
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 CXX = @CXX@
 INCLUDES+=-I. -I../ComponentIDL \
-	  -I../StreamComponentIDL \
           -I../ComponentContainer \
 	  -I../qedoutil \
 			 $(NAMING_INCLUDES) \
 			 @XERCES_INCLUDES@ \
-			 @CPPFLAGS@ 
+			 @CPPFLAGS@
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS+=@LIBS@
@@ -35,7 +34,6 @@ CC=$(CXX)
 @SET_MAKE@
 
 LIBS += -L../ComponentIDL -lComponentIDL \
-	-L../StreamComponentIDL -lStreamComponentIDL \
         -L../ComponentContainer -lComponentContainer \
 	-L../qedoutil -lqedoutil \
 		  $(NAMING_LIBS) \

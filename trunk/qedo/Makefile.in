@@ -25,7 +25,6 @@ exec_prefix=@exec_prefix@
 bindir=@bindir@
 
 SUBDIRS = ComponentIDL \
-	  StreamComponentIDL \
 	  ComponentContainer \
 	  qedoutil\
 	  ComponentInstaller \
