@@ -94,6 +94,9 @@ private:
 	/** the list of all created component servers */
 	ComponentServerVector							component_servers_;
 
+	/** the delay in milli seconds after which to kill a non-responding CS */
+	static unsigned long							cs_kill_delay_;
+
 	class RemoveStruct
 	{
 		public:

@@ -24,7 +24,7 @@
 #include "Output.h"
 #include "ServerInterceptorDispatcher.h"
 
-static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.5 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.6 2003/10/23 13:30:43 stoinski Exp $";
 
 
 namespace Qedo {
@@ -148,6 +148,8 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 
 		info->add_server_request_interceptor(server_dispatcher.in());
 	}
+
+	CORBA::release (nameService_);
 }
 
 

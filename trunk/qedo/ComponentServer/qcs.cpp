@@ -34,7 +34,7 @@
 
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.23 2003/10/22 12:34:02 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.24 2003/10/23 13:30:43 stoinski Exp $";
 
 
 /**

@@ -23,13 +23,15 @@
 #include <iostream>
 #include <fstream>
 #include "ServerActivatorImpl.h"
+#include "ConfigurationReader.h"
+
 #ifdef MICO_ORB
 #include <coss/CosNaming.h>
 #else
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.29 2003/10/20 12:12:17 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.30 2003/10/23 13:30:43 stoinski Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -52,8 +54,20 @@ ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode, b
   component_server_activation_ ("QEDO_ACTIVATOR_SIGNAL"),
   orb_ (CORBA::ORB::_duplicate (orb))
 {
+	std::string delay (Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ComponentServerKillDelay"));
+
+	if (delay != "")
+	{
+		cs_kill_delay_  = atol (delay.c_str());
+	}
+
+	if (! cs_kill_delay_)
+	{
+		cs_kill_delay_ = 10000;
+	}
 }
 
+unsigned long ServerActivatorImpl::cs_kill_delay_=0;
 
 ServerActivatorImpl::~ServerActivatorImpl()
 {
@@ -497,7 +511,7 @@ ServerActivatorImpl::timer_thread(void *data)
 
 	s->mutex.lock_object();
 
-	if( !s->cond.wait_timed(s->mutex,5000) )
+	if( !s->cond.wait_timed(s->mutex,cs_kill_delay_) )
 	{
 		// got timeout
 		std::cout << "ServerActivatorImpl: Component Server not responding, killing it..." << std::endl;
