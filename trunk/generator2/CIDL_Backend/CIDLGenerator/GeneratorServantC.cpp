@@ -1361,6 +1361,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "}\n";
 	out << "catch (Components::CCMException&)\n{\n";
 	out.indent();
+	out << "NORMAL_ERR (\"Home_servant: cannot create component\");\n";
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
@@ -1476,6 +1477,142 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "throw(CORBA::SystemException,Components::CreateFailure)\n{\n";
 	out.indent();
 	out << "return this->create();\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// create_component_with_config
+	out << "Components::CCMObject_ptr\n";
+	out << class_name_ << "::create_component_with_config(const Components::ConfigValues& config)\n";
+	out << "throw(CORBA::SystemException, Components::CreateFailure)\n{\n";
+	out.indent();
+	out << "DEBUG_OUT (\"Home_servant: create_component_with_config() called\");\n\n";
+	out << "#ifdef TAO_ORB\n";
+	out << mapFullNameLocal(home) << "_ptr home_executor = dynamic_cast < ";
+	out << mapFullNameLocal(home) << "_ptr > (home_executor_.in());\n";
+	out << "#else\n";
+	out << mapFullNameLocal(home) << "_var home_executor = ";
+	out << mapFullNameLocal(home) << "::_narrow (home_executor_.in());\n";
+	out << "#endif\n";
+	out << "if (CORBA::is_nil (home_executor))\n{\n";
+	out.indent();
+	out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
+	out << "throw Components::CreateFailure();\n";
+	out.unindent();
+	out << "}\n\n";
+	out << "Components::EnterpriseComponent_var enterprise_component;\n\n";
+	out << "try\n{\n";
+	out.indent();
+	out << "enterprise_component = home_executor->create();\n";
+	out.unindent();
+	out << "}\n";
+	out << "catch (Components::CCMException&)\n{\n";
+	out.indent();
+	out << "throw Components::CreateFailure();\n";
+	out.unindent();
+	out << "}\n\n";
+	out << "Components::ExecutorLocator_var executor_locator;\n\n";
+	out << "try\n{\n";
+	out.indent();
+	out << "executor_locator = Components::ExecutorLocator::_narrow (enterprise_component);\n";
+	out.unindent();
+	out << "}\n";
+	out << "catch (CORBA::SystemException&)\n{\n";
+	out.indent();
+	out << "NORMAL_ERR (\"Home_servant: This container can only handle locator-based implementations\");\n";
+	out << "throw Components::CreateFailure();\n";
+	out.unindent();
+	out << "}\n\n";
+	switch (lc) {
+		case (CIDL::lc_Session):
+		{
+            out << "Components::SessionComponent_var session_component;\n\n";
+			break;
+		}
+		case (CIDL::lc_Extension) :
+		{
+			out << "Components::ExtensionComponent_var extension_component;\n\n";
+			break;
+		}
+		default:
+		{
+			// not supported lifecycle
+		}
+	}
+	out << "try\n{\n";
+	out.indent();
+	switch (lc) {
+		case (CIDL::lc_Session):
+		{
+			out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
+			break;
+		}
+		case (CIDL::lc_Extension) :
+		{
+			out << "extension_component = Components::ExtensionComponent::_narrow (enterprise_component);\n";
+			break;
+		}
+		default:
+		{
+			// not supported lifecycle
+		}
+	}
+	out.unindent();
+	out << "}\n";
+	out << "catch (CORBA::SystemException&)\n{\n";
+	out.indent();
+	out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
+	out << "throw Components::CreateFailure();\n";
+	out.unindent();
+	out << "}\n\n";
+	out << "// Create a new context\n";
+	out << mapFullNameLocal(home->managed_component()) << "_ContextImpl_var new_context = new ";
+	out << mapFullNameServant(home->managed_component()) << "_Context_callback();\n\n";
+	if (lc==CIDL::lc_Extension) {
+		out << "// Set container interceptor registration on context\n";
+		out << "new_context -> set_server_interceptor_dispatcher_registration(server_dispatcher_.in());\n";
+		out << "new_context -> set_client_interceptor_dispatcher_registration(client_dispatcher_.in());\n";
+   	};	
+	out << "// Set context on component\n";
+	switch (lc) {
+		case (CIDL::lc_Session):
+		{
+			out << "session_component->set_session_context (new_context.in());\n\n";
+			break;
+		}
+		case (CIDL::lc_Extension) :
+		{
+			out << "extension_component->set_extension_context (new_context.in());\n\n";
+			break;
+		}
+		default:
+		{
+			// not supported lifecycle
+		}
+	}
+	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
+	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
+	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()), config);\n\n";
+	out << "// register servant factory\n";
+	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
+	out << mapFullNameServant(home->managed_component()) << "::cleaner_.factory_);\n\n";
+	out << "// Extract our Key out of the object reference\n";
+	out << "#ifdef TAO_ORB\n";
+	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
+	out << "#else\n";
+	out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
+	out << "#endif\n";
+	out << "// register all ports\n";
+	genFacetRegistration(home);
+	genReceptacleRegistration(home);
+	genEmitterRegistration(home);
+	genPublisherRegistration(home);
+	genConsumerRegistration(home);
+	genSinkRegistration(home);
+	genSourceRegistration(home);
+	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
+	out << mapFullName(home->managed_component()) << "_var servant = ";
+	out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
+	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
 }
