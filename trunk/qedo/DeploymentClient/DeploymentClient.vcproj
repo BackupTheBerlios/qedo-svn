@@ -162,7 +162,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;&quot;$(MICO)/include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;MICO_ORB;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;MICO_ORB;_WINDOWS;;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -180,7 +180,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="micocoss2310.lib mico2310.lib wsock32.lib pthreadVCE.lib"
+				AdditionalDependencies="micocoss2310.lib mico2310.lib wsock32.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/deploy.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib,$(MICO)\coss"

@@ -211,7 +211,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".,$(MICO)\include\,$(MICO)\include\"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BUILD_QEDODLL_DLL"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BUILD_QEDODLL_DLL;;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
@@ -234,7 +234,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib mico2310.lib pthreadVCE.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib mico2310.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/ComponentIDL.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"

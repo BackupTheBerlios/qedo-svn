@@ -803,11 +803,19 @@ GeneratorBusinessC::genReferenceCounting(std::string class_name)
 	out << "void\n";
 	out << class_name << "::_remove_ref()\n{\n";
 	out.indent();
+	out << "bool remove = false;\n";
+	out << "{\n";
+	out.indent();
 	out << "Qedo::qedo_lock lock(&mutex_);\n";
 	out << "if (--ref_count_ == 0)\n";
 	out.indent();
-	out << "delete this;\n";
+	out << "remove = true; \n";
 	out.unindent();
+	out.unindent();
+	out << "}\n";
+	out << "if(remove)\n";
+	out.indent();
+	out << "delete this;\n";
 	out.unindent();
 	out << "}\n\n\n";
 
