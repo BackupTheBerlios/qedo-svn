@@ -20,7 +20,7 @@ endif
 
 ##### ORB #####
 # choose one out of MICO_ORB TAO_ORB ORBACUS_ORB
-ORB = MICO_ORB
+ORB=@QEDO_ORB@
 
 HAVE_MICO_CONFIG=@HAVE_MICO_CONFIG@
 # MICO

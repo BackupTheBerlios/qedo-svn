@@ -61,28 +61,34 @@ if test X"$with_mico" != X -a X"$with_orbacus" != X; then
   AC_MSG_ERROR([you can use either Mico or Orbacus])
 fi
 
+QEDO_ORB=MICO_ORB
+
 ORBACUSDIR=""
 if test X"$with_orbacus" != X ;then
 	ORBACUSDIR="$with_orbacus"
 	HAVE_ORBACUS=yes
+	QEDO_ORB=ORBACUS_ORB
+
    AC_MSG_NOTICE([please make sure, that $ORBACUSDIR/bin/idl will run])
 else
 MICODIR=""
 if test X"$with_mico" != X ;then
 	MICODIR="$with_mico"
-AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no,[$MICODIR/bin])
-   AC_MSG_NOTICE([please make sure, that $MICODIR/bin/idl will run])
+	QEDO_ORB=MICO_ORB
+	AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no,[$MICODIR/bin])
+	AC_MSG_NOTICE([please make sure, that $MICODIR/bin/idl will run])
 else
-AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no)
+	AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no)
 fi
 if test "$HAVE_MICO_CONFIG" != "yes"; then
-  AC_MSG_ERROR([support until now only Mico, found no mico-config])
+  AC_MSG_ERROR([found no mico-config])
 fi
 fi
 
 AC_SUBST(HAVE_MICO_CONFIG)
 AC_SUBST(HAVE_ORBACUS)
 AC_SUBST(ORBACUSDIR)
+AC_SUBST(QEDO_ORB)
 
 AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
 

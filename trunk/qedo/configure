@@ -310,7 +310,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS XERCESDIR MICODIR WXGTKDIR CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT SET_MAKE RANLIB ac_ct_RANLIB LN_S INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA HAVE_MICO_CONFIG HAVE_ORBACUS ORBACUSDIR HAVE_MKDIR_PROG CC CFLAGS ac_ct_CC HAVE_XERCES XERCES_LIBS XERCES_INCLUDES PICFLAGS QEDO_STREAMS QEDO_QOS QEDO_DB CXXCPP EGREP LIBOBJS OS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS XERCESDIR MICODIR WXGTKDIR CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT SET_MAKE RANLIB ac_ct_RANLIB LN_S INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA HAVE_MICO_CONFIG HAVE_ORBACUS ORBACUSDIR QEDO_ORB HAVE_MKDIR_PROG CC CFLAGS ac_ct_CC HAVE_XERCES XERCES_LIBS XERCES_INCLUDES PICFLAGS QEDO_STREAMS QEDO_QOS QEDO_DB CXXCPP EGREP LIBOBJS OS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -2140,17 +2140,22 @@ echo "$as_me: error: you can use either Mico or Orbacus" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
+QEDO_ORB=MICO_ORBWWWWWWWWWW
+
 ORBACUSDIR=""
 if test X"$with_orbacus" != X ;then
 	ORBACUSDIR="$with_orbacus"
 	HAVE_ORBACUS=yes
+	QEDO_ORB=ORBACUS_ORB
+
    { echo "$as_me:$LINENO: please make sure, that $ORBACUSDIR/bin/idl will run" >&5
 echo "$as_me: please make sure, that $ORBACUSDIR/bin/idl will run" >&6;}
 else
 MICODIR=""
 if test X"$with_mico" != X ;then
 	MICODIR="$with_mico"
-# Extract the first word of "mico-config", so it can be a program name with args.
+	QEDO_ORB=MICO_ORB
+	# Extract the first word of "mico-config", so it can be a program name with args.
 set dummy mico-config; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
@@ -2186,10 +2191,10 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-   { echo "$as_me:$LINENO: please make sure, that $MICODIR/bin/idl will run" >&5
+	{ echo "$as_me:$LINENO: please make sure, that $MICODIR/bin/idl will run" >&5
 echo "$as_me: please make sure, that $MICODIR/bin/idl will run" >&6;}
 else
-# Extract the first word of "mico-config", so it can be a program name with args.
+	# Extract the first word of "mico-config", so it can be a program name with args.
 set dummy mico-config; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
@@ -2227,11 +2232,12 @@ fi
 
 fi
 if test "$HAVE_MICO_CONFIG" != "yes"; then
-  { { echo "$as_me:$LINENO: error: support until now only Mico, found no mico-config" >&5
-echo "$as_me: error: support until now only Mico, found no mico-config" >&2;}
+  { { echo "$as_me:$LINENO: error: found no mico-config" >&5
+echo "$as_me: error: found no mico-config" >&2;}
    { (exit 1); exit 1; }; }
 fi
 fi
+
 
 
 
@@ -6982,6 +6988,7 @@ s,@INSTALL_DATA@,$INSTALL_DATA,;t t
 s,@HAVE_MICO_CONFIG@,$HAVE_MICO_CONFIG,;t t
 s,@HAVE_ORBACUS@,$HAVE_ORBACUS,;t t
 s,@ORBACUSDIR@,$ORBACUSDIR,;t t
+s,@QEDO_ORB@,$QEDO_ORB,;t t
 s,@HAVE_MKDIR_PROG@,$HAVE_MKDIR_PROG,;t t
 s,@CC@,$CC,;t t
 s,@CFLAGS@,$CFLAGS,;t t
