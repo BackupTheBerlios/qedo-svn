@@ -4,11 +4,11 @@ CIDL_FILES = ../hello.cidl
 
 IDL_FILES = HelloWorld_CalleeImpl_LOCAL.idl \
 	HelloWorld_CalleeImpl_EQUIVALENT.idl \
-	HelloWorld_CalleeImpl_BUSINESS.idl 
+	HelloWorld_CalleeImpl_BUSINESS.idl
 
 CPP_FILES = HelloWorld_CalleeImpl_BUSINESS.cpp \
 	HelloWorld_CalleeImpl.cpp \
-	valuetypes.cpp 
+	component_valuetypes.cpp
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 
