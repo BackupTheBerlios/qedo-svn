@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.30 2003/08/26 11:33:53 boehme Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.31 2003/08/26 12:03:48 boehme Exp $";
 
 
 namespace Qedo {
@@ -125,14 +125,14 @@ ContainerInterfaceImpl::EventEntry::EventEntry (Components::EventConsumerBase_pt
 : consumer_ (Components::EventConsumerBase::_duplicate(c))
 , event_ (e)
 {
-	CORBA::add_ref (event_);
+	CORBA::add_ref (e);
 }
 
 ContainerInterfaceImpl::EventEntry::EventEntry (const EventEntry& e)
 : consumer_ (Components::EventConsumerBase::_duplicate(e.consumer_))
 , event_ (e.event_)
 {
-	CORBA::add_ref(event_);
+	CORBA::add_ref(e.event_);
 }
 
 ContainerInterfaceImpl::EventEntry::~EventEntry()
@@ -363,7 +363,6 @@ ContainerInterfaceImpl::unload_shared_library (void* handle)
 }
 
 #endif
-
 
 void
 ContainerInterfaceImpl::prepare_remove()

@@ -23,7 +23,7 @@
 #include "CCMContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.13 2003/08/26 11:33:53 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.14 2003/08/26 12:03:48 boehme Exp $";
 
 
 namespace Qedo {
@@ -99,6 +99,22 @@ throw (Components::CCMException)
 }
 
 
+class Thread_impl : public virtual Components::Thread {
+	QedoThread* thread;
+	Thread_impl();
+	public:
+	Thread_impl(QedoThread* t);
+	void stop();
+	void join();
+};
+
+Components::Thread_ptr 
+CCMContext::start_thread( Components::Function function, Components::FunctionData data )
+{
+	Thread_impl* thread = new Thread_impl(qedo_startDetachedThread(function,data));
+	return thread;
+}
+
 void 
 CCMContext::queue_event(Components::EventConsumerBase_ptr consumer, Components::EventBase* ev, CORBA::Long module_id)
 {
@@ -111,6 +127,26 @@ CCMContext::queue_event(const SubscribedConsumerVector& consumers, Components::E
 {
 	container_->queue_event(consumers, ev, module_id);
 }
+
+
+Thread_impl::Thread_impl() {};
+
+Thread_impl::Thread_impl(QedoThread* t)
+: thread(t)
+{
+};
+
+void
+Thread_impl::stop()
+{
+	thread->stop();
+};
+
+void
+Thread_impl::join()
+{
+	thread->join();
+};
 
 
 ExecutorContext::ExecutorContext()
@@ -196,6 +232,13 @@ HomeExecutorContext::resolve_service_reference(const char* service_id)
 throw (Components::CCMException)
 {
 	throw CORBA::NO_IMPLEMENT();
+}
+
+Components::Thread_ptr 
+HomeExecutorContext::start_thread( Components::Function function, Components::FunctionData data )
+{
+	Thread_impl* thread = new Thread_impl(qedo_startDetachedThread(function,data));
+	return thread;
 }
 
 

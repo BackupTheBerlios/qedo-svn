@@ -175,6 +175,15 @@ public:
 	void signal();
 };
 
+struct ThreadDelegate;
+
+class QedoThread {
+	public:
+	ThreadDelegate *delegate_;
+	QedoThread();
+	void stop();
+	void join();
+};
 
 /**
  * add comment!
@@ -189,7 +198,7 @@ extern "C" void* startFunc(void* p);
 /**
  * add comment!
  */
-void
+QedoThread*
 qedo_startDetachedThread(void* (*p)(void*), void* arg);
 
 

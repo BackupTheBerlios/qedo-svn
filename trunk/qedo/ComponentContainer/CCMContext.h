@@ -88,8 +88,8 @@ class ContainerInterfaceImpl;
 /**
  * implementation of IDL:omg.org/Components/CCMContext:1.0
  */
-class CONTAINERDLL_API CCMContext : public virtual Components::CCMContext
-								  , public virtual RefCountLocalObject
+class CONTAINERDLL_API CCMContext : public virtual Components::CCMContext,
+									public virtual RefCountLocalObject
 {
 protected:
 	/** the object executor for the component */
@@ -176,6 +176,13 @@ public:
 	 */
     CORBA::Object_ptr resolve_service_reference(const char*)
 		throw (Components::CCMException);
+
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/start_thread:1.0
+	 * (not implemented yet)
+	 */
+
+   Components::Thread_ptr start_thread( Components::Function function, Components::FunctionData data );
 };
 
 
@@ -206,8 +213,8 @@ public:
 /**
  * context for an home executor
  */
-class CONTAINERDLL_API HomeExecutorContext : public virtual Components::CCMContext
-										   , public virtual RefCountLocalObject
+class CONTAINERDLL_API HomeExecutorContext : public virtual Components::CCMContext,
+											 public virtual RefCountLocalObject
 {
 private:
 	Components::CCMHome_var my_home_ref_;
@@ -270,6 +277,13 @@ public:
 	 */
     CORBA::Object_ptr resolve_service_reference(const char*)
 		throw (Components::CCMException);
+
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/start_thread:1.0
+	 * (not implemented yet)
+	 */
+
+   Components::Thread_ptr start_thread( Components::Function function, Components::FunctionData data );
 };
 
 
