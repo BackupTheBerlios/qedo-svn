@@ -5,9 +5,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_ObserverImpl", "dinn
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_PhilosopherImpl", "dinner_PhilosopherImpl\dinner_PhilosopherImpl.vcproj", "{F438E863-5250-441C-86DF-BF4DB8C39B62}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_SERVANT", "dinner_SERVANT\dinner_SERVANT.vcproj", "{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestClient", "TestClient\TestClient.vcproj", "{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_PhilosopherImpl_SERVANT", "dinner_PhilosopherImpl_SERVANT\dinner_PhilosopherImpl_SERVANT.vcproj", "{F39C9B67-3DE5-4F7E-A777-E69D3250E757}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_CutleryImpl_SERVANT", "dinner_CutleryImpl_SERVANT\dinner_CutleryImpl_SERVANT.vcproj", "{2304DAE3-7470-4751-8749-08674F06EEC0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dinner_ObserverImpl_SERVANT", "dinner_ObserverImpl_SERVANT\dinner_ObserverImpl_SERVANT.vcproj", "{DC64CEBC-6682-491C-894D-F1E79B379837}"
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
@@ -57,18 +61,6 @@ Global
 		{F438E863-5250-441C-86DF-BF4DB8C39B62}.Release.Build.0 = Debug_tao|Win32
 		{F438E863-5250-441C-86DF-BF4DB8C39B62}.Release_orbacus.ActiveCfg = Debug_tao|Win32
 		{F438E863-5250-441C-86DF-BF4DB8C39B62}.Release_orbacus.Build.0 = Debug_tao|Win32
-		{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}.Debug.ActiveCfg = Debug_tao|Win32
-		{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}.Debug.Build.0 = Debug_tao|Win32
-		{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}.Debug_mico.ActiveCfg = Debug_mico|Win32
-		{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}.Debug_mico.Build.0 = Debug_mico|Win32
-		{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}.Debug_orbacus.ActiveCfg = Debug_orbacus|Win32
-		{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}.Debug_orbacus.Build.0 = Debug_orbacus|Win32
-		{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}.Debug_tao.ActiveCfg = Debug_tao|Win32
-		{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}.Debug_tao.Build.0 = Debug_tao|Win32
-		{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}.Release.ActiveCfg = Debug_tao|Win32
-		{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}.Release.Build.0 = Debug_tao|Win32
-		{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}.Release_orbacus.ActiveCfg = Debug_tao|Win32
-		{8EFA81DD-9728-4F1D-82B1-F5584EDCB473}.Release_orbacus.Build.0 = Debug_tao|Win32
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Debug.ActiveCfg = Debug|Win32
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Debug.Build.0 = Debug|Win32
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Debug_mico.ActiveCfg = Debug_mico|Win32
@@ -81,6 +73,42 @@ Global
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Release.Build.0 = Release|Win32
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Release_orbacus.ActiveCfg = Release_orbacus|Win32
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Release_orbacus.Build.0 = Release_orbacus|Win32
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757}.Debug.ActiveCfg = Debug_tao|Win32
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757}.Debug.Build.0 = Debug_tao|Win32
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757}.Debug_mico.ActiveCfg = Debug_mico|Win32
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757}.Debug_mico.Build.0 = Debug_mico|Win32
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757}.Debug_orbacus.ActiveCfg = Debug_orbacus|Win32
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757}.Debug_orbacus.Build.0 = Debug_orbacus|Win32
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757}.Debug_tao.ActiveCfg = Debug_tao|Win32
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757}.Debug_tao.Build.0 = Debug_tao|Win32
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757}.Release.ActiveCfg = Debug_tao|Win32
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757}.Release.Build.0 = Debug_tao|Win32
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757}.Release_orbacus.ActiveCfg = Debug_tao|Win32
+		{F39C9B67-3DE5-4F7E-A777-E69D3250E757}.Release_orbacus.Build.0 = Debug_tao|Win32
+		{2304DAE3-7470-4751-8749-08674F06EEC0}.Debug.ActiveCfg = Debug_tao|Win32
+		{2304DAE3-7470-4751-8749-08674F06EEC0}.Debug.Build.0 = Debug_tao|Win32
+		{2304DAE3-7470-4751-8749-08674F06EEC0}.Debug_mico.ActiveCfg = Debug_mico|Win32
+		{2304DAE3-7470-4751-8749-08674F06EEC0}.Debug_mico.Build.0 = Debug_mico|Win32
+		{2304DAE3-7470-4751-8749-08674F06EEC0}.Debug_orbacus.ActiveCfg = Debug_orbacus|Win32
+		{2304DAE3-7470-4751-8749-08674F06EEC0}.Debug_orbacus.Build.0 = Debug_orbacus|Win32
+		{2304DAE3-7470-4751-8749-08674F06EEC0}.Debug_tao.ActiveCfg = Debug_tao|Win32
+		{2304DAE3-7470-4751-8749-08674F06EEC0}.Debug_tao.Build.0 = Debug_tao|Win32
+		{2304DAE3-7470-4751-8749-08674F06EEC0}.Release.ActiveCfg = Debug_tao|Win32
+		{2304DAE3-7470-4751-8749-08674F06EEC0}.Release.Build.0 = Debug_tao|Win32
+		{2304DAE3-7470-4751-8749-08674F06EEC0}.Release_orbacus.ActiveCfg = Debug_tao|Win32
+		{2304DAE3-7470-4751-8749-08674F06EEC0}.Release_orbacus.Build.0 = Debug_tao|Win32
+		{DC64CEBC-6682-491C-894D-F1E79B379837}.Debug.ActiveCfg = Debug_tao|Win32
+		{DC64CEBC-6682-491C-894D-F1E79B379837}.Debug.Build.0 = Debug_tao|Win32
+		{DC64CEBC-6682-491C-894D-F1E79B379837}.Debug_mico.ActiveCfg = Debug_mico|Win32
+		{DC64CEBC-6682-491C-894D-F1E79B379837}.Debug_mico.Build.0 = Debug_mico|Win32
+		{DC64CEBC-6682-491C-894D-F1E79B379837}.Debug_orbacus.ActiveCfg = Debug_orbacus|Win32
+		{DC64CEBC-6682-491C-894D-F1E79B379837}.Debug_orbacus.Build.0 = Debug_orbacus|Win32
+		{DC64CEBC-6682-491C-894D-F1E79B379837}.Debug_tao.ActiveCfg = Debug_tao|Win32
+		{DC64CEBC-6682-491C-894D-F1E79B379837}.Debug_tao.Build.0 = Debug_tao|Win32
+		{DC64CEBC-6682-491C-894D-F1E79B379837}.Release.ActiveCfg = Debug_tao|Win32
+		{DC64CEBC-6682-491C-894D-F1E79B379837}.Release.Build.0 = Debug_tao|Win32
+		{DC64CEBC-6682-491C-894D-F1E79B379837}.Release_orbacus.ActiveCfg = Debug_tao|Win32
+		{DC64CEBC-6682-491C-894D-F1E79B379837}.Release_orbacus.Build.0 = Debug_tao|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

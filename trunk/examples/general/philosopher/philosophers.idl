@@ -1,9 +1,6 @@
+
 //
-// TETRA
-// Example 1 for Stream Container Implementation
-// (C)2000-2002 Humboldt University Berlin, Department of Computer Science
-//
-// $Id: philosophers.idl,v 1.1 2003/10/01 08:52:49 neubauer Exp $
+// $Id: philosophers.idl,v 1.2 2004/01/22 13:28:11 tom Exp $
 //
 #include "Components.idl"
 
