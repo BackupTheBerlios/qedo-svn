@@ -112,6 +112,15 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
+				RelativePath="CADReaderDialog.cpp">
+			</File>
+			<File
+				RelativePath="CORBADepends.cpp">
+			</File>
+			<File
+				RelativePath="Components.cpp">
+			</File>
+			<File
 				RelativePath="CORBADepends.cpp">
 			</File>
 			<File
@@ -122,6 +131,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="Deployment.cpp">
+			</File>
+			<File
+				RelativePath="DescriptorFrame.cpp">
 			</File>
 			<File
 				RelativePath="Launcher.cpp">
@@ -149,6 +161,15 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
+				RelativePath="CADReaderDialog.h">
+			</File>
+			<File
+				RelativePath="CORBADepends.h">
+			</File>
+			<File
+				RelativePath="Components.h">
+			</File>
+			<File
 				RelativePath="CORBADepends.h">
 			</File>
 			<File
@@ -159,6 +180,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="Deployment.h">
+			</File>
+			<File
+				RelativePath="DescriptorFrame.h">
 			</File>
 			<File
 				RelativePath="Launcher.h">
