@@ -113,8 +113,10 @@ add at the end of the file
 #endif
 
 
-MICO version 2.3.10
+MICO version 2.3.10 (latest snapshot)
 ------------------------------------------------------------------------------
+You need to install the latest MICO snapshot in order to get Qedo Makefiles created correctly.
+
 To install MICO you have to to at least the following steps.
 obtain software:
 	version MICO 2.3.7
