@@ -35,7 +35,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.23 2004/08/10 08:44:02 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.24 2004/08/23 09:13:21 tom Exp $";
 
 
 /**
@@ -261,6 +261,24 @@ main (int argc, char** argv)
 		}
 	}
 
+	// create arguments for ORB_init
+	char *orb_argv[27];
+	int orb_argc=argc;
+	int orb_n = 0;
+	for (orb_n = 0; orb_n < argc; orb_n++)
+	{
+		orb_argv[orb_n] = strdup(argv[orb_n]);
+	};
+
+	// check for Host Name Resolving
+	std::string resolve = Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ResolveHostName");
+	if (!resolve.compare("false"))
+	{
+		
+		orb_argv[orb_argc] = "-ORBNoResolve";
+		orb_argc++;
+	};
+
 	//
 	// get the qedo dir
 	//
@@ -275,7 +293,7 @@ main (int argc, char** argv)
 	//
 	// init ORB
 	//
-	orb = CORBA::ORB_init (argc, argv);
+	orb = CORBA::ORB_init (orb_argc, orb_argv);
 
 	//
 	// register valuetype factories

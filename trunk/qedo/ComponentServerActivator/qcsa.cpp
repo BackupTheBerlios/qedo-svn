@@ -55,7 +55,7 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.27 2004/02/04 13:02:49 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.28 2004/08/23 09:14:54 tom Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -398,8 +398,25 @@ main (int argc, char** argv)
 			exit ( 1 );
 		}
 	}
+	// create arguments for ORB_init
+	char *orb_argv[27];
+	int orb_argc=argc;
+	int orb_n = 0;
+	for (orb_n = 0; orb_n < argc; orb_n++)
+	{
+		orb_argv[orb_n] = strdup(argv[orb_n]);
+	};
 
-	orb = CORBA::ORB_init (argc, argv);
+	// check for Host Name Resolving
+	std::string resolve = Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ResolveHostName");
+	if (!resolve.compare("false"))
+	{
+		
+		orb_argv[orb_argc] = "-ORBNoResolve";
+		orb_argc++;
+	};
+
+	orb = CORBA::ORB_init (orb_argc, orb_argv);
 
 	server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled, terminal_enabled, g_global_context_used, g_global_context, verbose_mode );
 

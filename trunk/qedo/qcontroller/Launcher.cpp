@@ -417,6 +417,13 @@ void Launcher::startNSD()
 		cmd.append(":");
 		cmd.append(port_nr);
 
+		// check for Host Name Resolving
+		std::string resolve = Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ResolveHostName");
+		if (!resolve.compare("false"))
+		{
+			cmd.append(" -ORBNoResolve ");
+		};
+
 		wxProcess *process = new wxProcess (this);
 	//	process->Redirect();
 		nsd_pid_ = wxExecute(cmd, wxEXEC_ASYNC, process);

@@ -41,7 +41,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.30 2004/04/26 13:28:45 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.31 2004/08/23 09:13:46 tom Exp $";
 
 
 /**
@@ -275,10 +275,28 @@ main (int argc, char** argv)
 	}
 	std::cout << "..... Qedo directory is " << Qedo::g_qedo_dir << std::endl;
 
+	// create arguments for ORB_init
+	char *orb_argv[27];
+	int orb_argc=argc;
+	int orb_n = 0;
+	for (orb_n = 0; orb_n < argc; orb_n++)
+	{
+		orb_argv[orb_n] = strdup(argv[orb_n]);
+	};
+
+	// check for Host Name Resolving
+	std::string resolve = Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ResolveHostName");
+	if (!resolve.compare("false"))
+	{
+		
+		orb_argv[orb_argc] = "-ORBNoResolve";
+		orb_argc++;
+	};
+
 	//
 	// init ORB
 	//
-	orb = CORBA::ORB_init (argc, argv);
+	orb = CORBA::ORB_init (orb_argc, orb_argv);
 
 	Qedo::ComponentInstallationImpl* component_installation = new Qedo::ComponentInstallationImpl (orb);
 

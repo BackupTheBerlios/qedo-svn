@@ -27,6 +27,7 @@
 #include "Explore_impl.h"
 #include "Output.h"
 #include "ConfigurationReader.h"
+#include "version.h"
 
 using namespace std;
 
@@ -35,6 +36,8 @@ using namespace std;
 int main (int argc, char** argv)
 
 {
+	std::cout << "Qedo Home Finder " << QEDO_VERSION << std::endl;
+
 	Qedo::debug_output = false;
 	//
 	// Resolve config values from config file
@@ -52,11 +55,29 @@ int main (int argc, char** argv)
 		}
 	}
 
+	// create arguments for ORB_init
+	char *orb_argv[27];
+	int orb_argc=argc;
+	int orb_n = 0;
+	for (orb_n = 0; orb_n < argc; orb_n++)
+	{
+		orb_argv[orb_n] = strdup(argv[orb_n]);
+	};
+
+	// check for Host Name Resolving
+	std::string resolve = Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ResolveHostName");
+	if (!resolve.compare("false"))
+	{
+		
+		orb_argv[orb_argc] = "-ORBNoResolve";
+		orb_argc++;
+	};
+
 	try{
 
 
 		// Initialize orb
-		CORBA::ORB_var orb=CORBA::ORB_init(argc,argv);
+		CORBA::ORB_var orb=CORBA::ORB_init(orb_argc,orb_argv);
 
 		// Get reference to Root POA
 		CORBA::Object_var obj = orb->resolve_initial_references("RootPOA");

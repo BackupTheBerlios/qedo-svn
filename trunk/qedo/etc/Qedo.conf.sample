@@ -8,6 +8,7 @@
 <!-- General configuration -->
 <SECTION name="General">
 
+	<CONFIGVALUE name="ResolveHostName" value="true"/>
 	<CONFIGVALUE name="VerboseOutput" value="false"/>
 	<CONFIGVALUE name="NameService" value="corbaloc::geist:3000/NameService"/>
 

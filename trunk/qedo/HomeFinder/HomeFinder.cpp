@@ -36,7 +36,7 @@
 #include "Synchronisation.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.11 2004/04/26 13:31:40 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.12 2004/08/23 09:15:35 tom Exp $";
 
 
 /**
@@ -187,9 +187,29 @@ signal_handler_thread(void *p)
 int
 main (int argc, char** argv)
 {
+
+	// create arguments for ORB_init
+	char *orb_argv[27];
+	int orb_argc=argc;
+	int orb_n = 0;
+	for (orb_n = 0; orb_n < argc; orb_n++)
+	{
+		orb_argv[orb_n] = strdup(argv[orb_n]);
+	};
+
+	// check for Host Name Resolving
+	std::string resolve = Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ResolveHostName");
+	if (!resolve.compare("false"))
+	{
+		
+		orb_argv[orb_argc] = "-ORBNoResolve";
+		orb_argc++;
+	};
+
+
 	std::cout << "Qedo Home Finder " << QEDO_VERSION << std::endl;
 
-	orb = CORBA::ORB_init (argc, argv);
+	orb = CORBA::ORB_init (orb_argc, orb_argv);
 
 #ifdef HAVE_LIBPTHREAD
 	// block SIGINT

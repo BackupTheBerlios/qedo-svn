@@ -42,7 +42,7 @@
 #include "StubInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.34 2004/08/20 10:53:31 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.35 2004/08/23 09:14:15 tom Exp $";
 
 
 /**
@@ -184,8 +184,25 @@ main (int argc, char** argv)
 
 	} // if qos_enabled
 #endif
+	// create arguments for ORB_init
+	char *orb_argv[27];
+	int orb_argc=argc;
+	int orb_n = 0;
+	for (orb_n = 0; orb_n < argc; orb_n++)
+	{
+		orb_argv[orb_n] = strdup(argv[orb_n]);
+	};
 
-	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
+	// check for Host Name Resolving
+	std::string resolve = Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ResolveHostName");
+	if (!resolve.compare("false"))
+	{
+		
+		orb_argv[orb_argc] = "-ORBNoResolve";
+		orb_argc++;
+	};
+
+	CORBA::ORB_var orb = CORBA::ORB_init (orb_argc, orb_argv);
 
 	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer.slot_id());
 
