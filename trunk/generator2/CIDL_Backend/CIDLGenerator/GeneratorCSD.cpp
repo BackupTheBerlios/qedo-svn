@@ -169,7 +169,7 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// implementation
 	//
-	out << "<implementation id=\"UUID:" << uuid_string << "\">\n";
+	out << "<implementation id=\"UUID-" << uuid_string << "\">\n";
 	out.indent();
     out << "<os name=\"" << os << "\" />\n";
     out << "<processor name=\"" << processor << "\" />\n";
