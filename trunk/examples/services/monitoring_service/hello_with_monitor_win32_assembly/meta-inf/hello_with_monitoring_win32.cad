@@ -37,7 +37,6 @@
   	        	</componentproperties>
 			</componentinstantiation>
 
-		        <destination></destination>
 		</homeplacement>
 		<homeplacement id="MonintorHome">
 	        	<componentfileref idref="Monitor_file"/>
@@ -45,7 +44,6 @@
   	        	<componentinstantiation id="monitor_service">
 			</componentinstantiation>
 
-		        <destination></destination>
 		</homeplacement>
 		<homeplacement id="CallerHome">
 			<componentfileref idref="Caller_file"/>
@@ -56,7 +54,6 @@
   	        	</componentproperties>
 			</componentinstantiation>
 
-			<destination></destination>
 		</homeplacement>
 
 	</processcollocation>
