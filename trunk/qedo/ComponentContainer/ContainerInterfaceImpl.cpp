@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.32 2003/08/27 06:40:30 neubauer Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.33 2003/09/04 12:17:07 boehme Exp $";
 
 
 namespace Qedo {
@@ -77,18 +77,22 @@ HomeEntry::HomeEntry (const HomeEntry& home_entry)
 HomeEntry& 
 HomeEntry::operator= (const HomeEntry& home_entry)
 {
-	if (home_servant_)
-		home_servant_->_remove_ref();
+	if ( & home_entry != this ) {
 
-	home_servant_ = home_entry.home_servant_;
-	home_servant_->_add_ref();
+		if (home_servant_)
+			home_servant_->_remove_ref();
 
-	if (home_cookie_) { home_cookie_->_remove_ref(); }
-	home_cookie_ = home_entry.home_cookie_;
-	if (home_cookie_) { home_cookie_->_add_ref(); }
+		home_servant_ = home_entry.home_servant_;
+		home_servant_->_add_ref();
 
-	servant_module_ = home_entry.servant_module_;
-	executor_module_ = home_entry.executor_module_;
+		if (home_cookie_) { home_cookie_->_remove_ref(); }
+		home_cookie_ = home_entry.home_cookie_;
+		if (home_cookie_) { home_cookie_->_add_ref(); }
+
+		servant_module_ = home_entry.servant_module_;
+		executor_module_ = home_entry.executor_module_;
+
+	}
 
 	return *this;
 }
@@ -140,6 +144,17 @@ ContainerInterfaceImpl::EventEntry::~EventEntry()
 	CORBA::remove_ref (event_);
 }
 
+ContainerInterfaceImpl::EventEntry&
+ContainerInterfaceImpl::EventEntry::operator=(const ContainerInterfaceImpl::EventEntry& e)
+{
+	if( &e != this) {
+	CORBA::remove_ref (event_);
+	event_ = e.event_;
+	CORBA::add_ref(event_);
+	consumer_ = Components::EventConsumerBase::_duplicate(e.consumer_);
+	}
+	return *this;
+}
 
 void*
 ContainerInterfaceImpl::event_dispatcher_thread (void* data)

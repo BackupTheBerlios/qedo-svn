@@ -161,6 +161,7 @@ class CONTAINERDLL_API ContainerInterfaceImpl : public virtual POA_Components::D
 		~EventEntry();
 		Components::EventConsumerBase_var consumer_;
 		Components::EventBase* event_;
+		EventEntry& operator= (const EventEntry&);
 	};
 
 	/** to add services */
