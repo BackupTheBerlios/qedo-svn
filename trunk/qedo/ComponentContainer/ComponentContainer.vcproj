@@ -171,8 +171,11 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Distribution"
-				CommandLine="mkdir $(QEDO)\lib
-copy $(OutDir)\$(TargetName).lib $(QEDO)\lib"/>
+				CommandLine="mkdir $(QEDO)\include
+copy *.h $(QEDO)\include
+mkdir $(QEDO)\lib
+copy $(OutDir)\$(TargetName).lib $(QEDO)\lib
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -234,7 +237,8 @@ copy $(OutDir)\$(TargetName).lib $(QEDO)\lib"/>
 				Name="VCPostBuildEventTool"
 				Description="Distribution"
 				CommandLine="mkdir $(QEDO)\lib
-copy $(OutDir)\$(TargetName).lib $(QEDO)\lib"/>
+copy $(OutDir)\$(TargetName).lib $(QEDO)\lib
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

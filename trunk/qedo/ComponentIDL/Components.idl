@@ -549,6 +549,8 @@ module Components {
 		typedef string UUID;
 		typedef string Location;
 
+		enum AssemblyState { INACTIVE,  INSERVICE };
+
 
 		//
 		// exceptions
@@ -589,7 +591,14 @@ module Components {
 		};
 
 
-		interface Assembly;
+		interface Assembly
+		{
+			void build() raises (CreateFailure);
+
+			void tear_down() raises (RemoveFailure);
+
+			AssemblyState get_state();
+		};
 
 		
 		interface AssemblyFactory
@@ -602,18 +611,6 @@ module Components {
 
 			void destroy(in Cookie c)
 				raises (InvalidAssembly, RemoveFailure);
-		};
-
-		enum AssemblyState { INACTIVE,  INSERVICE };
-
-
-		interface Assembly
-		{
-			void build() raises (CreateFailure);
-
-			void tear_down() raises (RemoveFailure);
-
-			AssemblyState get_state();
 		};
 
 

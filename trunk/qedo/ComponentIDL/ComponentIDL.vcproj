@@ -183,7 +183,10 @@
 copy *.h $(QEDO)\include
 copy *.def $(QEDO)\include
 mkdir $(QEDO)\lib
-copy $(OutDir)\$(TargetName).lib $(QEDO)\lib"/>
+copy $(OutDir)\$(TargetName).lib $(QEDO)\lib
+mkdir $(QEDO)\idl
+copy *.idl $(QEDO)\idl
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -252,7 +255,8 @@ copy $(OutDir)\$(TargetName).lib $(QEDO)\lib"/>
 copy *.h $(QEDO)\include
 copy *.def $(QEDO)\include
 mkdir $(QEDO)\lib
-copy $(OutDir)\$(TargetName).lib $(QEDO)\lib"/>
+copy $(OutDir)\$(TargetName).lib $(QEDO)\lib
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
