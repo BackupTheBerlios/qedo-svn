@@ -46,7 +46,7 @@ namespace Qedo {
 
 
 /**
- * @addtogroup ComponentInstaller
+ * @addtogroup Utilities
  * @{
  */
 
@@ -54,7 +54,9 @@ namespace Qedo {
 extern std::string g_qedo_dir;
 
 
-// exception
+/**
+ * exception
+ */
 class CCDReadException
 {
 };
@@ -63,7 +65,7 @@ class CCDReadException
 /**
  * reader for component software description
  */
-class CCDReader : public virtual PlatformBase
+class QEDOUTIL_API CCDReader : public virtual PlatformBase
 {
 
 private:

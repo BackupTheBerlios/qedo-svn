@@ -22,6 +22,7 @@ CXX = @CXX@
 INCLUDES+=-I. -I../ComponentIDL \
           -I../ComponentContainer \
           -I../ComponentInstaller \
+	  -I../qedoutil \
           $(NAMING_INCLUDES)
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
@@ -33,6 +34,7 @@ CC=$(CXX)
 
 LIBS += -L../ComponentIDL -lComponentIDL \
         -L../ComponentContainer -lComponentContainer \
+	-L../qedoutil -lqedoutil \
 		  $(NAMING_LIBS)\
 		  -luuid
 
@@ -44,9 +46,6 @@ SOURCES = ComponentServerImpl.cpp \
 			 ORBInitializerImpl.cpp \
           cs.cpp 
 
-SOURCES_EXTERN = ../ComponentInstaller/NameServiceBase.cpp
-
-
 CLEAN_FILES = $(SOURCES:.cpp=.o) cs
 
 include ../MakeVars
@@ -56,7 +55,7 @@ include ../MakeVars
 all: cs
 
 
-cs: $(SOURCES:.cpp=.o) $(SOURCES_EXTERN:.cpp=.o)
+cs: $(SOURCES:.cpp=.o)
 
 .PHONY:install
 

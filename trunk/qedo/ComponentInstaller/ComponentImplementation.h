@@ -28,7 +28,6 @@
 #include "Components.h"
 #include "PlatformBase.h"
 #include "ComponentImplementationData.h"
-#include "CSDReader.h"
 
 #ifdef _WIN32
 #include <windows.h>

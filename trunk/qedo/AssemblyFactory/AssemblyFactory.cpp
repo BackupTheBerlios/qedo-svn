@@ -22,6 +22,7 @@
 
 
 #include "AssemblyFactory.h"
+#include "DOMXMLParser.h"
 #include <fstream>
 #include <xercesc/util/XMLURL.hpp>
 #include <xercesc/framework/URLInputSource.hpp>
@@ -36,7 +37,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.13 2003/08/28 13:11:29 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.14 2003/09/09 12:01:33 neubauer Exp $";
 
 
 namespace Qedo {

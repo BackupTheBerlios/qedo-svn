@@ -1,5 +1,11 @@
 /*
  * $Log: DOMTreeErrorReporter.cpp,v $
+ * Revision 1.3  2003/09/09 11:57:49  neubauer
+ * qedoutil library for code reusage;
+ *
+ * Revision 1.1  2003/09/09 11:44:59  neubauer
+ * qedoutil library for code reusage;
+ *
  * Revision 1.2  2003/01/21 10:52:28  neubauer
  * migration to Xerces 2_1;
  *

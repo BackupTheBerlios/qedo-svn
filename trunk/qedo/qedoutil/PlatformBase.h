@@ -24,6 +24,7 @@
 #define __PLATFORM_BASE_H__
 
 
+#include "qedoutil.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -53,7 +54,7 @@ namespace Qedo {
 /**
  *
  */
-class PlatformBase
+class QEDOUTIL_API PlatformBase
 {
 protected:
 	PlatformBase();

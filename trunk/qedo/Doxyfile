@@ -63,7 +63,8 @@ INPUT                  = ComponentContainer \
                          ComponentInstaller \
                          AssemblyFactory \
                          HomeFinder \
-                         DeploymentClient
+                         DeploymentClient \
+                         qedoutil
 FILE_PATTERNS          = *.h \
                          *.cpp
 RECURSIVE              = NO

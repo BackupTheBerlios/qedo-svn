@@ -22,6 +22,7 @@ CXX = @CXX@
 INCLUDES+=-I. -I../ComponentIDL \
           -I../ComponentContainer \
 			 -I../ComponentInstaller \
+			 -I../qedoutil \
 			 $(NAMING_INCLUDES) \
 			 @XERCES_INCLUDE@ 
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
@@ -33,6 +34,7 @@ CC=$(CXX)
 
 LIBS += -L../ComponentIDL -lComponentIDL\
         -L../ComponentContainer -lComponentContainer \
+	-L../qedoutil -lqedoutil \
 		  $(NAMING_LIBS) \
 		  @XERCES_LIBS@
 
@@ -40,22 +42,10 @@ LDLIBS = ${LIBS}
 
 SOURCES =   Assembly.cpp \
 				AssemblyFactory.cpp \
-				CPFReader.cpp \
-				CADReader.cpp \
 				StandardConfigurator.cpp \
 				qassf.cpp 
 
-SOURCES_EXTERN = ../ComponentInstaller/XMLCatalog.cpp \
-				../ComponentInstaller/libunzip.cpp \
-				../ComponentInstaller/CatalogResolver.cpp \
-				../ComponentInstaller/DOMTreeErrorReporter.cpp \
-				../ComponentInstaller/DOMXMLParser.cpp \
-				../ComponentInstaller/NameServiceBase.cpp \
-				../ComponentInstaller/Package.cpp \
-				../ComponentInstaller/PlatformBase.cpp 
-
-OBJS = ${SOURCES:.cpp=.o} ${SOURCES_EXTERN:.cpp=.o}
-
+OBJS = ${SOURCES:.cpp=.o} 
 
 CLEAN_FILES = ${SOURCES:.cpp=.o} qassf
 

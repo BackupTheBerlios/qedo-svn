@@ -24,9 +24,10 @@
 #define __CAD_READER_H__
 
 
+#include "Package.h"
 #include "DOMXMLParser.h"
-#include "Assembly.h"
-#include <vector>
+#include "PlatformBase.h"
+#include "AssemblyData.h"
 #include <string>
 
 
@@ -34,12 +35,14 @@ namespace Qedo {
 
 
 /**
- * @addtogroup ComponentInstaller
+ * @addtogroup Utilities
  * @{
  */
 
 
-// exception
+/**
+ * exception
+ */
 class CADReadException
 {
 };
@@ -48,15 +51,19 @@ class CADReadException
 /**
  * read component assembly descriptor
  */
-class CADReader
+class QEDOUTIL_API CADReader : public virtual PlatformBase
 {
 
 private:
 
-    /** the parsed software package descriptor */
-	DOMDocument*							cad_document_;
-	/** assembly */
-	AssemblyImpl*							assembly_;
+    /** the parsed assembly descriptor */
+	DOMDocument*								cad_document_;
+	/** assembly data */
+	AssemblyData*								data_;
+	/** the Software Package */
+	Package*									package_;
+	/** the path to drop files from the package*/
+	std::string									path_;
 
 	/**
 	 * componentassembly
@@ -356,7 +363,7 @@ public:
 	/**
 	 * read CAD
 	 */
-	void readCAD(std::string descriptor, AssemblyImpl* ass)
+	void readCAD(std::string package, AssemblyData* data, std::string path)
 		throw(CADReadException);
 };
 

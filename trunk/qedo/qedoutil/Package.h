@@ -24,6 +24,7 @@
 #define __PACKAGE_H__
 
 
+#include "qedoutil.h"
 #include <iostream>
 #include <string>
 #include <stdio.h>
@@ -52,7 +53,7 @@ namespace Qedo {
 
 
 /**
- * @addtogroup ComponentInstaller
+ * @addtogroup Utilities
  * @{
  */
 
@@ -60,7 +61,7 @@ namespace Qedo {
 /**
  * represents a package
  */
-class Package : public virtual PlatformBase
+class QEDOUTIL_API Package : public virtual PlatformBase
 {
 
 private:

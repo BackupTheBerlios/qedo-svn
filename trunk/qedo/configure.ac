@@ -145,6 +145,7 @@ AC_CONFIG_FILES([Makefile
                  MakeVars
                  ComponentIDL/Makefile
                  ComponentContainer/Makefile
+		 qedoutil/Makefile
                  ComponentInstaller/Makefile
                  ComponentServer/Makefile
                  ComponentServerActivator/Makefile

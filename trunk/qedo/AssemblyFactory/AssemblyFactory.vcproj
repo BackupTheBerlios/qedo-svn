@@ -110,7 +110,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)\include&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;../qedoutil;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;ZLIB_DLL"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -161,7 +161,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;&quot;$(MICO)/include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)\include&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;../qedoutil;&quot;$(MICO)/include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;ZLIB_DLL;MICO_ORB;_WINDOWS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -307,40 +307,10 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="AssemblyFactory.cpp">
 			</File>
 			<File
-				RelativePath="CADReader.cpp">
-			</File>
-			<File
-				RelativePath="CPFReader.cpp">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\CatalogResolver.cpp">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\DOMTreeErrorReporter.cpp">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\DOMXMLParser.cpp">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\NameServiceBase.cpp">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\Package.cpp">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\PlatformBase.cpp">
-			</File>
-			<File
 				RelativePath="StandardConfigurator.cpp">
 			</File>
 			<File
-				RelativePath="..\ComponentInstaller\XMLCatalog.cpp">
-			</File>
-			<File
 				RelativePath="qassf.cpp">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\libunzip.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -353,34 +323,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="AssemblyFactory.h">
 			</File>
 			<File
-				RelativePath="CADReader.h">
-			</File>
-			<File
-				RelativePath="CPFReader.h">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\CatalogResolver.h">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\DOMTreeErrorReporter.h">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\DOMXMLParser.h">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\NameServiceBase.h">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\Package.h">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\PlatformBase.h">
-			</File>
-			<File
 				RelativePath="StandardConfigurator.h">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\XMLCatalog.h">
 			</File>
 		</Filter>
 		<Filter

@@ -24,6 +24,7 @@
 #include <xercesc/util/XMLURL.hpp>
 #include <xercesc/framework/URLInputSource.hpp>
 #include <xercesc/util/BinInputStream.hpp>
+#include <fstream>
 
 
 namespace Qedo {
@@ -142,7 +143,7 @@ throw(CADReadException)
 
 	std::string id = XMLString::transcode(element->getAttribute(X("id")));
 	std::cerr << "..... <componentfile> " << file_name << std::endl;
-	assembly_->implementationMap_[id] = file_name;
+	data_->implementationMap_[id] = file_name;
 }
 
 
@@ -374,7 +375,7 @@ throw(CADReadException)
 	}
 
 	// add new event_connection
-	assembly_->event_connections_.push_back(event_connection);
+	data_->event_connections_.push_back(event_connection);
 }
 
 
@@ -445,7 +446,7 @@ throw(CADReadException)
 	}
 
 	// add new interface_connection
-	assembly_->interface_connections_.push_back(interface_connection);
+	data_->interface_connections_.push_back(interface_connection);
 }
 
 
@@ -707,7 +708,7 @@ throw(CADReadException)
     if( class_attr == "startorder" )
 	{
 		std::string id = XMLString::transcode(element->getFirstChild()->getNodeValue());
-		assembly_->start_order_.push_back( id );
+		data_->start_order_.push_back( id );
 	}
 }
 
@@ -721,13 +722,13 @@ throw(CADReadException)
 	//
 	// extract the file
 	//
-	if (assembly_->package_->extractFile(file_name, assembly_->pathname_ + file_name) != 0)
+	if (package_->extractFile(file_name, path_ + file_name) != 0)
 	{
 		std::cerr << "Error during extracting file " << file_name << std::endl;
 		throw CADReadException();
 	}
 
-	return assembly_->pathname_ + file_name;
+	return path_ + file_name;
 }
 
 
@@ -1097,7 +1098,7 @@ throw(CADReadException)
         name.erase(0, pos + 1);
     }
     
-    std::string fileName = assembly_->pathname_ + name;
+    std::string fileName = path_ + name;
     URLInputSource inputSource(uri);
     BinInputStream* inputStream = inputSource.makeStream();
     if (!inputStream)
@@ -1155,7 +1156,7 @@ throw(CADReadException)
 				if(home.file == "")
 				{
 					// extension, use existing home
-					assembly_->existing_homes_.push_back(home);
+					data_->existing_homes_.push_back(home);
 				}
 				else
 				{
@@ -1165,7 +1166,7 @@ throw(CADReadException)
 					HostData host;
 					host.host = process.host;
 					host.processes.push_back(process);
-					assembly_->hosts_.push_back(host);
+					data_->hosts_.push_back(host);
 				}
 			}
 
@@ -1186,7 +1187,7 @@ throw(CADReadException)
 				HostData host;
 				host.host = process.host;
 				host.processes.push_back(process);
-				assembly_->hosts_.push_back(host);
+				data_->hosts_.push_back(host);
 			}
 
 			//
@@ -1194,7 +1195,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "hostcollocation")
 			{
-				assembly_->hosts_.push_back(hostcollocation((DOMElement*)child));
+				data_->hosts_.push_back(hostcollocation((DOMElement*)child));
 			}
 
 			//
@@ -1584,16 +1585,34 @@ throw(CADReadException)
 
 
 void
-CADReader::readCAD(std::string descriptor, AssemblyImpl* ass)
+CADReader::readCAD(std::string package, AssemblyData* data, std::string path)
 throw(CADReadException)
 {
-	assembly_ = ass;
+	data_ = data;
+	path_ = path;
+	package_ = new Package(package);
+
+	//
+	// find and extract the assembly descriptor
+    //
+	std::string cadfile = package_->getFileNameWithSuffix( ".cad" );
+    if ( cadfile == std::string( "" ) )
+	{
+		std::cerr << ".......... The format of the package file is not correct\n";
+        throw CADReadException();
+	}
+    if ( package_->extractFile( cadfile, path_ + cadfile ) != 0 )
+	{
+		std::cerr << ".......... Error during extracting the descriptor file\n";
+        throw CADReadException();
+	}
+	cadfile = path_ + cadfile;
 
 	//
 	// parse the component assembly descriptor
     //
 	DOMXMLParser parser;
-	char* xmlfile = strdup(descriptor.c_str());
+	char* xmlfile = strdup(cadfile.c_str());
     if ( parser.parse( xmlfile ) != 0 ) 
 	{
 		std::cerr << "Error during XML parsing" << std::endl;
@@ -1603,6 +1622,10 @@ throw(CADReadException)
 
 	// handle componentassembly
 	componentassembly(cad_document_->getDocumentElement());
+
+	// remove assembly descriptor and package
+    removeFileOrDirectory(cadfile);
+	delete package_;
 }
 
 

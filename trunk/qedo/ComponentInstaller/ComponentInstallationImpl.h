@@ -28,7 +28,6 @@
 #include "ComponentImplementation.h"
 #include "NameServiceBase.h"
 #include "PlatformBase.h"
-#include "DOMXMLParser.h"
 #include <vector>
 
 

@@ -11,7 +11,7 @@
 #define UNUSED
 #endif
 
-static char rcsid[] UNUSED = "$Id: libunzip.cpp,v 1.2 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: libunzip.cpp,v 1.3 2003/09/09 11:57:49 neubauer Exp $";
 
 #ifdef STDC
 #  include <stddef.h>

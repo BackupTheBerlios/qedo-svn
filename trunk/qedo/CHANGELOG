@@ -1,6 +1,7 @@
 version 0.4.0
 - add thread interface in context
-- rename most executables with a staring 'q'
+- rename most executables with a starting 'q'
+- redesigned XML deployment descriptor processing
 
 version 0.3.0
 - improved remove semantic

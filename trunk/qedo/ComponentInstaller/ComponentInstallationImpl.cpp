@@ -21,9 +21,7 @@
 /***************************************************************************/
 
 #include "ComponentInstallationImpl.h"
-
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.16 2003/09/05 12:55:18 neubauer Exp $";
-
+#include "DOMXMLParser.h"
 #include <iostream>
 #include <fstream>
 #ifdef _WIN32
@@ -32,6 +30,10 @@ static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.16 2003/09/
 #else
 #include <unistd.h>
 #endif
+
+
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.17 2003/09/09 12:04:36 neubauer Exp $";
+
 
 namespace Qedo {
 

@@ -83,6 +83,12 @@
 Revision history:
 
 $Log: Uri.h,v $
+Revision 1.2  2003/09/09 11:57:49  neubauer
+qedoutil library for code reusage;
+
+Revision 1.1  2003/09/09 11:44:59  neubauer
+qedoutil library for code reusage;
+
 Revision 1.1  2002/11/08 10:32:11  neubauer
 - ComponentInstallation extended by upload operation;
 - XML is used to make installation information persistent;

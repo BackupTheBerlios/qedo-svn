@@ -25,6 +25,7 @@ exec_prefix=@exec_prefix@
 
 SUBDIRS = ComponentIDL \
 	  ComponentContainer \
+	  qedoutil\
 	  ComponentInstaller \
 	  ComponentServer \
 	  ComponentServerActivator \

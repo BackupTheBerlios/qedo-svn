@@ -33,12 +33,14 @@ namespace Qedo {
 
 
 /**
- * @addtogroup Assembly
+ * @addtogroup Utilities
  * @{
  */
 
 
-// exception
+/**
+ * exception
+ */
 class CPFReadException
 {
 };
@@ -47,7 +49,7 @@ class CPFReadException
 /**
  * read component property file descriptor
  */
-class CPFReader
+class QEDOUTIL_API CPFReader
 {
 
 private:

@@ -29,6 +29,7 @@ namespace Qedo {
 
 
 AssemblyImpl::AssemblyImpl (std::string package, Cookie_impl* cookie, CosNaming::NamingContext_ptr nameContext)
+: package_(package)
 {
 	//
 	// get the path where the package is installed
@@ -44,8 +45,7 @@ AssemblyImpl::AssemblyImpl (std::string package, Cookie_impl* cookie, CosNaming:
 		pathname_.replace( i + 1, pathname_.size() - i - 1, std::string( "" ) );
 	}
 
-    uuid_ = "";
-	package_ = new Package( package );
+    data_.uuid_ = "";
 	state_ = Components::Deployment::INACTIVE;
 	cookie_ = cookie;
     nameService_ = CosNaming::NamingContext::_duplicate(nameContext);
@@ -60,7 +60,7 @@ AssemblyImpl::~AssemblyImpl ()
 std::string 
 AssemblyImpl::get_uuid () const
 {
-    return uuid_;
+    return data_.uuid_;
 }
 
 
@@ -266,8 +266,8 @@ throw( Components::CreateFailure )
 
 	// for each hostcollocation
 	std::vector < HostData > ::const_iterator host_iter;
-	for(host_iter = hosts_.begin(); 
-		host_iter != hosts_.end(); 
+	for(host_iter = data_.hosts_.begin(); 
+		host_iter != data_.hosts_.end(); 
 		host_iter++)
 	{
 		componentInstallation = getComponentInstallation((*host_iter).host);
@@ -293,7 +293,9 @@ throw( Components::CreateFailure )
     // remove extracted packages
     //
 	std::map < std::string, std::string > ::iterator iter2;
-	for (iter2 = implementationMap_.begin(); iter2 != implementationMap_.end(); iter2++)
+	for(iter2 = data_.implementationMap_.begin();
+		iter2 != data_.implementationMap_.end();
+		iter2++)
 	{
         removeFileOrDirectory((*iter2).second);
     }
@@ -306,7 +308,7 @@ AssemblyImpl::installComponent
 throw( Components::CreateFailure )
 {
 	std::string package_file_ref = data.file;
-	std::string package_file = implementationMap_[package_file_ref];
+	std::string package_file = data_.implementationMap_[package_file_ref];
 	std::string impl_id = data.impl_id;
 
 	DEBUG_OUT("..... install implementation ");
@@ -366,8 +368,8 @@ throw(Components::CreateFailure)
 	
 	// for each hostcollocation
 	std::vector < HostData > ::iterator host_iter;
-	for(host_iter = hosts_.begin(); 
-		host_iter != hosts_.end(); 
+	for(host_iter = data_.hosts_.begin(); 
+		host_iter != data_.hosts_.end(); 
 		host_iter++)
 	{
 		// for each processcollocation
@@ -393,7 +395,9 @@ throw(Components::CreateFailure)
 	}
 
 	// for each existing home
-	for(iter = existing_homes_.begin(); iter != existing_homes_.end(); iter++)
+	for(iter = data_.existing_homes_.begin();
+		iter != data_.existing_homes_.end();
+		iter++)
 	{
 		home = instantiateHome( container, (*iter) );
 		instantiateComponents( home, (*iter) );
@@ -535,7 +539,9 @@ throw(Components::CreateFailure)
 	std::string facet;
 	CORBA::Object_var provider;
 	std::vector < InterfaceConnectionData > ::const_iterator iter;
-	for(iter = interface_connections_.begin(); iter != interface_connections_.end(); iter++)
+	for(iter = data_.interface_connections_.begin();
+		iter != data_.interface_connections_.end();
+		iter++)
 	{
 		DEBUG_OUT("..... make interface connection");
 
@@ -610,7 +616,9 @@ throw(Components::CreateFailure)
 	Components::EventConsumerBase_var consumer_port;
 	Components::CCMObject_var source;
 	std::vector < EventConnectionData > ::const_iterator iter;
-	for(iter = event_connections_.begin(); iter != event_connections_.end(); iter++)
+	for(iter = data_.event_connections_.begin();
+		iter != data_.event_connections_.end();
+		iter++)
 	{
 		DEBUG_OUT( "..... make event connection" );
 		
@@ -706,8 +714,10 @@ throw(Components::CreateFailure)
 	//
     // call configuration complete according to startorder
     //
-	std::list < std::string > ::iterator iter;
-	for(iter = start_order_.begin(); iter != start_order_.end(); iter++)
+	std::vector < std::string > ::iterator iter;
+	for(iter = data_.start_order_.begin();
+		iter != data_.start_order_.end();
+		iter++)
 	{
 		std::string id = (*iter);
 		Components::CCMObject_var comp = instanceMap_[id];
@@ -738,12 +748,16 @@ throw(Components::CreateFailure)
    	Components::CCMObject_var comp;
 	std::map < std::string, Components::CCMObject_var > ::iterator instanceIter;
 	bool found = false;
-	for( instanceIter = instanceMap_.begin(); instanceIter != instanceMap_.end(); instanceIter++ )
+	for(instanceIter = instanceMap_.begin();
+		instanceIter != instanceMap_.end();
+		instanceIter++ )
 	{
 		//
 		// if not yet started, start it
 		//
-		for( iter = start_order_.begin(); iter != start_order_.end(); iter++ )
+		for(iter = data_.start_order_.begin();
+			iter != data_.start_order_.end();
+			iter++ )
 		{
 			if( instanceIter->first == *iter )
 			{
@@ -783,45 +797,42 @@ AssemblyImpl::build
 ()
 throw( Components::CreateFailure )
 {
-	DEBUG_OUT2( "\nbuild assembly for ", package_->getName() );
+	DEBUG_OUT2( "\nbuild assembly for ", package_ );
 
+	//
+	// get data from descriptor file
     //
-	// find and extract the assembly descriptor
-    //
-	std::string cadfile = package_->getFileNameWithSuffix( ".cad" );
-    if ( cadfile == std::string( "" ) )
+	CADReader reader;
+	try 
 	{
-		std::cerr << ".......... The format of the package file is not correct\n";
-        throw Components::CreateFailure();
+		reader.readCAD( package_, &data_, pathname_ );
 	}
-    if ( package_->extractFile( cadfile, pathname_ + cadfile ) != 0 )
+	catch( CADReadException ) 
 	{
-		std::cerr << ".......... Error during extracting the descriptor file\n";
         throw Components::CreateFailure();
 	}
 
 	//
-	// parse the descriptor file
-    //
-	CADReader reader;
-	reader.readCAD( pathname_ + cadfile, this );
-
 	// install implementations
+	//
 	install();
 
+	//
 	// instantiate components
+	//
 	instantiate();
 
+	//
 	// make connections
+	//
 	connect();
 
+	//
 	// start components
+	//
 	configurationComplete();
     
-	DEBUG_OUT3("assembly for ", package_->getName(), " is running");
-
-    // remove assembly descriptor
-    removeFileOrDirectory(pathname_ + cadfile);
+	DEBUG_OUT3("assembly for ", package_, " is running");
 }
 
 
@@ -834,11 +845,12 @@ throw( Components::RemoveFailure )
 	//
 	// use reverse start order to remove components
 	//
-	start_order_.reverse();
-	std::list < std::string > ::iterator iter;
+	std::vector < std::string > ::reverse_iterator iter;
 	std::map < std::string, Components::CCMObject_var > ::iterator instanceIter;
 	Components::CCMObject_var comp;
-	for( iter = start_order_.begin(); iter != start_order_.end(); iter++ )
+	for(iter = data_.start_order_.rbegin();
+		iter != data_.start_order_.rend();
+		iter++ )
 	{
 		instanceIter = instanceMap_.find( *iter );
 		if( instanceIter != instanceMap_.end() )
@@ -888,7 +900,9 @@ throw( Components::RemoveFailure )
 	std::vector < HomeInstanceData > ::iterator home_iter;
 
 	// for each host
-	for(host_iter = hosts_.begin(); host_iter != hosts_.end(); host_iter++)
+	for(host_iter = data_.hosts_.begin();
+		host_iter != data_.hosts_.end();
+		host_iter++)
 	{
 		// for each processcollocation
 		for(process_iter = (*host_iter).processes.begin(); 

@@ -24,6 +24,7 @@
 #define __DOM_XML_PARSER_H__
 
 
+#include "qedoutil.h"
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/dom/DOM.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>
@@ -54,7 +55,7 @@ namespace Qedo {
 /**
  * this class is only used to initialize the XML system
  */
-class XMLInitializer
+class QEDOUTIL_API XMLInitializer
 {
 public:
 	XMLInitializer();
@@ -65,7 +66,7 @@ public:
 /**
  *
  */
-class DOMXMLParser
+class QEDOUTIL_API DOMXMLParser
 {
 private:
     char*							xmlFile_;

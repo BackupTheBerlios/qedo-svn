@@ -28,7 +28,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.3 2003/09/05 12:55:18 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.4 2003/09/09 11:57:49 neubauer Exp $";
 
 
 namespace Qedo {

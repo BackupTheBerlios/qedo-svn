@@ -21,9 +21,10 @@
 /***************************************************************************/
 
 #include "ComponentImplementation.h"
+#include "CSDReader.h"
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.12 2003/09/05 12:55:18 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.13 2003/09/09 12:04:36 neubauer Exp $";
 
 
 namespace Qedo {

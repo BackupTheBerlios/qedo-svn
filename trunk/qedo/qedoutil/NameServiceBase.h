@@ -24,6 +24,7 @@
 #define __NAME_SERVICE_BASE_H__
 
 
+#include "qedoutil.h"
 #include <CORBA.h>
 #ifdef MICO_ORB
 #include <coss/CosNaming.h>
@@ -42,7 +43,7 @@ namespace Qedo {
 
 
 /**
- * @defgroup Utilities
+ * @addtogroup Utilities
  * @{
  */
 
@@ -50,7 +51,7 @@ namespace Qedo {
 /**
  * base class for easy name service usage
  */
-class NameServiceBase
+class QEDOUTIL_API NameServiceBase
 {
 protected:
 	/**

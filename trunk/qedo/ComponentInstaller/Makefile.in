@@ -21,6 +21,7 @@
 CXX = @CXX@
 INCLUDES+=-I. -I../ComponentIDL \
           -I../ComponentContainer \
+	  -I../qedoutil \
 			 $(NAMING_INCLUDES) \
 			 @XERCES_INCLUDE@ \
 			 @CPPFLAGS@ 
@@ -34,23 +35,14 @@ CC=$(CXX)
 
 LIBS += -L../ComponentIDL -lComponentIDL\
         -L../ComponentContainer -lComponentContainer \
+	-L../qedoutil -lqedoutil \
 		  $(NAMING_LIBS) \
 		  @XERCES_LIBS@
 
 LDLIBS = ${LIBS}
 
-SOURCES = CatalogResolver.cpp \
-          ComponentImplementation.cpp \
+SOURCES = ComponentImplementation.cpp \
 			 ComponentInstallationImpl.cpp \
-			 DOMTreeErrorReporter.cpp \
-			 DOMXMLParser.cpp \
-			 CSDReader.cpp \
-			 CCDReader.cpp \
-          NameServiceBase.cpp \
-			 Package.cpp \
-			 PlatformBase.cpp \
-			 XMLCatalog.cpp \
-			 libunzip.cpp \
 			 qci.cpp 
 
 OBJS = ${SOURCES:.cpp=.o}

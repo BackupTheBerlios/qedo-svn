@@ -22,11 +22,12 @@
 
 
 #include "NameServiceBase.h"
-#include "Util.h"
+#include "qedoutil.h"
 #include <iostream>
 
 
-static char rcsid[] UNUSED = "$Id: NameServiceBase.cpp,v 1.9 2003/08/01 14:57:26 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: NameServiceBase.cpp,v 1.10 2003/09/09 11:57:49 neubauer Exp $";
+
 
 namespace Qedo {
 

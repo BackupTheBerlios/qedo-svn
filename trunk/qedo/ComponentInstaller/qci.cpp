@@ -31,7 +31,7 @@
 #include <signal.h>
 
 
-static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.17 2003/09/05 15:04:32 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.18 2003/09/09 12:04:35 neubauer Exp $";
 
 
 /**
@@ -44,10 +44,12 @@ CORBA::ORB_var orb;
 
 
 /**
- * the Qedo directory
+ * qedo namespace
  */
 namespace Qedo {
-std::string g_qedo_dir;
+
+	/** the Qedo directory */
+	std::string g_qedo_dir;
 };
 
 

@@ -22,15 +22,14 @@
 
 
 #include "PlatformBase.h"
-#include "Util.h"
-
-static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.9 2003/09/01 12:51:46 neubauer Exp $";
-
 #ifndef _WIN32
 #include <time.h>
 #include <fcntl.h>
 #else
 #endif
+
+
+static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.10 2003/09/09 11:57:49 neubauer Exp $";
 
 
 namespace Qedo {
