@@ -248,13 +248,15 @@ The ComponentInstallation server is an implementation of the ComponentInstallati
 \label{sec:Installation of arbitrary code}
 
 To install arbitrary files, like executables, together with a component, the files have to be put into the according Component Software Package zip file. Furthermore within the Software Package descriptor, to be found in the "meta-inf" directory, an aditional code element has to be inserted, refering to this file. It may look like
-
+\begin{verbatim}
 <code type="Executable">
     <fileinarchive name="NOTEPAD.EXE"/>
 </code>
+\end{verbatim}
 
 . As a result, after the component installation, the file is to be found in the component implementation specific subdirectory of the "components" directory for installation. To have access to these files, it is necessary to know about the installation directory path. This information can be obtained in the components executor code in Qedo the following way
 
+\begin{verbatim}
 CORBA::Object_ptr obj = context_->resolve_service_reference("ConfigurationService");
 ConfigurationService::InternalConfiguration_var cfg = ConfigurationService::InternalConfiguration::_narrow(obj);
 char* s = cfg->get_value("INSTALLATION_DIR");
@@ -265,6 +267,7 @@ exe.append("notepad.exe");
 std::cerr << "########## executing " << exe << std::endl;
 int component_server_pid = _spawnl(_P_NOWAIT, exe.c_str(), exe.c_str(), NULL);
 delete s;
+\end{verbatim}
 
 \subsection{Component Server Activator}
 \label{sec:ComponentServerActivator}
