@@ -3,10 +3,10 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.2 2002/10/31 00:02:37 tom Exp $
+// $Id: main.cpp,v 1.3 2002/10/31 16:27:29 tom Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.2 2002/10/31 00:02:37 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.3 2002/10/31 16:27:29 tom Exp $";
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
@@ -116,9 +116,9 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 
 	try
 	{
-		component_installer->install ("PHILOSOPHER/1.0", "philosopherS.dll:create_PhilosopherHomeS:philosopherE.dll:create_PhilosopherHomeE");
-		component_installer->install ("CUTLERY/1.0", "philosopherS.dll:create_CutleryHomeS:philosopherE.dll:create_CutleryHomeE");
-		component_installer->install ("OBSERVER/1.0", "philosopherS.dll:create_ObserverHomeS:philosopherE.dll:create_ObserverHomeE");
+		component_installer->install ("PHILOSOPHER/1.0", "philosopher_omgS.dll:create_PhilosopherHomeS:philosopher_omgE.dll:create_PhilosopherHomeE");
+		component_installer->install ("FORK/1.0", "philosopher_omgS.dll:create_ForkHomeS:philosopher_omgE.dll:create_ForkHomeE");
+		component_installer->install ("OBSERVER/1.0", "philosopher_omgS.dll:create_ObserverHomeS:philosopher_omgE.dll:create_ObserverHomeE");
 	}
 	catch (Components::Deployment::InvalidLocation&)
 	{
@@ -224,7 +224,7 @@ main (int argc, char** argv)
 	{
 		container = component_server->create_container (config);
 	}
-	catch (CORBA::SystemException& ex)
+	catch (CORBA::SystemException&)
 	{
 		cerr << "CORBA system exception during creating container" << endl;
 		orb->destroy();
@@ -238,7 +238,7 @@ main (int argc, char** argv)
 	home = container->install_home ("PHILOSOPHER/1.0", "", config);
 	DiningPhilosophers::PhilosopherHome_var p_home = DiningPhilosophers::PhilosopherHome::_narrow (home);
 
-	home = container->install_home ("CUTLERY/1.0", "", config);
+	home = container->install_home ("FORK/1.0", "", config);
 	DiningPhilosophers::ForkHome_var c_home = DiningPhilosophers::ForkHome::_narrow (home);
 
 	home = container->install_home ("OBSERVER/1.0", "", config);
