@@ -18,14 +18,14 @@ or
 	given in the Mico package.
 
 According to the CCM specification the Qedo project makes use of software
-packaging. In order to install Qedo the zlib 1.1.3 or a later version has
+packaging. In order to install Qedo the zlib 1.1.4 or a later version has
 to be installed on the target host.
 
-	Zlib          ---> available at www.info-zip.org/pub/infozip/zlib
+	Zlib          ---> available at http://www.gzip.org/zlib/
 	All the instructions for compiling under Linux/Unix are given in the
 	Zlib package.
 
-The Qedo project furthermore requires the xerces-c1_7_0 XML library to
+The Qedo project furthermore requires the xerces-c2_1 XML library to
 handle the deployment XML descriptors.
 
 	Xerces-c      ---> available at xml.apache.org/dist/xerces-c
