@@ -8,7 +8,7 @@
     <author><name>unknown author</name></author>
     <description></description>
     <license href="" />
-    <idl id="IDL:DCI/RepNodeManagerHome:1.0">
+    <idl id="deployment_idl" homeId="IDL:DCI/RepNodeManagerHome:1.0">
         <fileinarchive name="deployment.idl"/>
     </idl>
     

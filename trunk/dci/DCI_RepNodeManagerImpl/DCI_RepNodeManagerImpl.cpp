@@ -69,10 +69,14 @@ namespace DCI {
   }
 
   void
-  RepNodeManagerSessionImpl::ccm_remove()
-    throw (CORBA::SystemException, Components::CCMException)
+  RepNodeManagerSessionImpl::deregister()
   {
-    //printout_("deregistering from DCIManager" );
+    if(!isRegisteredToDci)
+        return;
+        
+    printout_("deregistering from DCIManager" );
+    try{    
+
     DCI::DCIManager_ptr dciMgr = context_ -> get_connection_dcimanager();
                 
     if(CORBA::is_nil(dciMgr))
@@ -80,6 +84,7 @@ namespace DCI {
 	printerr_("dciMgr is nil" );
 	return;
       }
+      
 
     NodeManagement_ptr nodeMgmt = dciMgr-> provide_node_management();
     //printout_("node_management receptacle obtained" );
@@ -88,8 +93,11 @@ namespace DCI {
 	printerr_("Could not get node management interface from DCIManager" );
 	return;
       }  
-        
+    
     nodeMgmt -> deregister_node(nodename);
+    } catch(...){
+        printerr_("Could not deregister from DCIManager");
+    }
     printout_("Node successfully deregistered from DCIManager" );
     // Remove all created component servers
         
@@ -379,9 +387,9 @@ namespace DCI {
     /* Find file in current directory */
     if( (hFile = _findfirst( theFile -> filename(), &c_file )) != -1L )
       {
-	printout_("file has already been installed: ",c_file.name);
-	_findclose( hFile );
-	return;
+	    printout_("file has already been installed: ",c_file.name);
+	    _findclose( hFile );
+	    return;
       }
 
 #else
@@ -411,7 +419,7 @@ namespace DCI {
 	targetFile.write((char*)it, octetList->length());
 
     std::cout << "Finished" << std::endl;
-    std::cout << "Wrote " << octetList -> length() << " kB" << std::endl;
+    std::cout << "Wrote " << octetList -> length() << " Bytes" << std::endl;
 
 #ifdef WIN32
     _findclose( hFile );
@@ -486,6 +494,7 @@ RepNodeManagerSessionImpl::RepNodeManagerSessionImpl()
   
     qcsaIsRegistered = false;
     qcsaIsStarted_ = false;
+    isRegisteredToDci = false;
     
     // Initialize dummy ORB
     int dummy = 0;
@@ -559,6 +568,7 @@ RepNodeManagerSessionImpl::configuration_complete()
       nodeMgmt -> register_node(nodename,myRef);
             
       printout_("Nodemanager has successfully registered to DCIManager" );
+      isRegisteredToDci = true;
           
       // Register my ComponentInstallation to naming service
           
@@ -1244,7 +1254,7 @@ RepNodeManagerImpl::ccm_remove()
     throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerImpl::ccm_remove
-  component_ -> ccm_remove();
+  component_ -> deregister();
 // END USER INSERT SECTION RepNodeManagerImpl::ccm_remove
 }
 

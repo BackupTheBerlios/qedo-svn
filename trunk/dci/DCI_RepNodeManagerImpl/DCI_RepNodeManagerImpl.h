@@ -179,11 +179,11 @@ namespace DCI
     //Buffer for storing the primary working directory
     char cwd_buffer[_MAX_PATH];
     std::list <localImpl*> installed_impls_;    
-    void ccm_remove()
-         throw (CORBA::SystemException, Components::CCMException);
+    void deregister();
     
     bool qcsaIsRegistered;
     bool qcsaIsStarted_;
+    bool isRegisteredToDci;
     CORBA::ORB_var orb_;
     Components::Deployment::ServerActivator_var server_activator_;
     std::list <Components::Deployment::ComponentServer_ptr> created_component_servers_;
