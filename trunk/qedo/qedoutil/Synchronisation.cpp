@@ -28,11 +28,13 @@
 #include <signal.h>
 #endif
 
-#ifndef _WIN32
+#ifdef _WIN32
+#include <sys/timeb.h>
+#else
 #include <sys/time.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.20 2003/10/07 14:58:03 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.21 2003/10/09 12:39:35 boehme Exp $";
 
 
 namespace Qedo {
@@ -223,8 +225,23 @@ QedoCond::wait_timed(const QedoMutex* m, unsigned long time)
  	const_cast<QedoMutex* const>(m)->lock_object();
 #else
 	int x;
-	struct timeval tp;
 	struct timespec abstime;
+
+#ifdef _WIN32
+	struct _timeb tb;
+
+	_ftime(&tb);
+	abstime.tv_sec = tb.time + time / 1000;
+	time = time % 1000;
+	time += tb.millitm;
+	if(time > 1000)
+	{
+		abstime.tv_sec = abstime.tv_sec + 1;
+		time -= 1000;
+	}
+	abstime.tv_nsec = time * 1000;
+#else
+	struct timeval tp;
 
 	gettimeofday(&tp,0);
 	abstime.tv_sec = tp.tv_sec + time / 1000;
@@ -236,6 +253,7 @@ QedoCond::wait_timed(const QedoMutex* m, unsigned long time)
 		time -= 1000;
 	}
 	abstime.tv_nsec = time * 1000;
+#endif
 	x = pthread_cond_timedwait (&(delegate_->cond_),&(m->delegate_->mutex_), &abstime);
 
 	switch (x)
