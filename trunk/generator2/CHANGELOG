@@ -1,3 +1,7 @@
+version 0.4.2
+- first version of make file generator
+- MICO 2.3.11 adaptations
+
 version 0.4.1
 - changed the backend to start from compositionDef not from ComponentDef
 - added extension lifecycle category
