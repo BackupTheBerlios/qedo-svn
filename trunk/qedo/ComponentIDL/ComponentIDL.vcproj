@@ -177,7 +177,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 CORBADepends.idl
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB CORBADepends.idl
 "
 						Outputs="CORBADepends.h;CORBADepends.cpp;CORBADepends_skel.h;CORBADepends_skel.cpp"/>
 				</FileConfiguration>
@@ -195,7 +195,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 Components.idl
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB Components.idl
 "
 						Outputs="Components.h;Components.cpp;Components_skel.h;Components_skel.cpp"/>
 				</FileConfiguration>
@@ -213,7 +213,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 QedoComponents.idl
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB QedoComponents.idl
 "
 						Outputs="QedoComponents.h;QedoComponents.cpp;QedoComponents_skel.h;QedoComponents_skel.cpp"/>
 				</FileConfiguration>
