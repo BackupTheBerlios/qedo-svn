@@ -47,6 +47,7 @@ class GeneratorLIDL : public virtual IDLBase
 	string filename_;
 	std::string managed_component_;
 	IR__::ComponentDef_var component_;
+	CIDL::CompositionDef_var composition_;
 
 	void doModule(IR__::ModuleDef_ptr module);
 	void doInterface(IR__::InterfaceDef_ptr intface);

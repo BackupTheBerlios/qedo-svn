@@ -2233,11 +2233,11 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "CORBA::RepositoryIdSeq streamtypes;\n\n";
 	genSinkRegistration(comp);
 	genSourceRegistration(comp);
-
+	/*
 	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
 	out << mapFullName(comp) << "_var servant = ";
 	out << mapFullName(comp) << "::_narrow (component_instance.component_ref());\n\n";
-
+	*/
 	if(composition_->lifecycle()==CIDL::lc_Entity || composition_->lifecycle()==CIDL::lc_Process)
 	{
 		out << "//create storage object incarnation for entity component\n";
@@ -2611,7 +2611,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	default:
 		out << "// not supported lifecycle\n";
 	}
-
+    /*
 	out.unindent();
 	out << "}\n";
 	out << "catch (CORBA::SystemException&)\n{\n";
@@ -2631,10 +2631,10 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "new_context-> set_contract_data (config);\n\n";
 
    	};	
-
+    */
 	out << "// Set context on component\n";
 
-	if(lc==CIDL::lc_Session)
+	if(lc==CIDL::lc_Session || lc==CIDL::lc_Extension)
 	{
 		// create_component_with_config
 		out << "Components::CCMObject_ptr\n";
@@ -2658,13 +2658,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "Components::EnterpriseComponent_var enterprise_component;\n\n";
 		out << "try\n{\n";
 		out.indent();
-		switch (lc) {
-		case (CIDL::lc_Session):
-			out << "enterprise_component = home_executor->create();\n";
-			break;
-		default:
-			out << "// not supported lifecycle\n";
-		}
+		out << "enterprise_component = home_executor->create();\n";
 		out.unindent();
 		out << "}\n";
 		out << "catch (Components::CCMException&)\n{\n";
@@ -2733,8 +2727,8 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 			out << "// Set container interceptor registration on context\n";
 			out << "new_context -> set_server_interceptor_dispatcher_registration(server_dispatcher_.in());\n";
 			out << "new_context -> set_client_interceptor_dispatcher_registration(client_dispatcher_.in());\n";
-		out << "\n";
-		out << "new_context-> set_contract_data (config);\n\n";
+		    out << "\n";
+		    out << "new_context-> set_contract_data (config);\n\n";
 
    		};	
 
@@ -2760,7 +2754,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()), config);\n\n";
 		out << "// register servant factory\n";
 		out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
-		out << mapFullNameServant(home->managed_component()) << "::cleaner_.factory_);\n\n";
+		out << mapFullNameServant(comp) << "::cleaner_.factory_);\n\n";
 		out << "// Extract our Key out of the object reference\n";
 		out << "#ifdef TAO_ORB\n";
 		out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
@@ -2768,43 +2762,22 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
 		out << "#endif\n";
 		out << "// register all ports\n";
+		genFacetRegistration(comp);
+		genReceptacleRegistration(comp);
+		genEmitterRegistration(comp);
+		genPublisherRegistration(comp);
+		genConsumerRegistration(comp);
+
 		out << "CORBA::RepositoryIdSeq streamtypes;\n\n";
-		out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
-		out << mapFullName(home->managed_component()) << "_var servant = ";
-		out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
+		genSinkRegistration(comp);
+		genSourceRegistration(comp);
+		out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
+		out << mapFullName(comp) << "_var servant = ";
+		out << mapFullName(comp) << "::_narrow (component_instance.component_ref());\n\n";
 		out << "return servant._retn();\n";
 		out.unindent();
 		out << "}\n\n\n";
 	}
-
-	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
-	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
-	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()), config);\n\n";
-	out << "// register servant factory\n";
-	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
-	out << mapFullNameServant(comp) << "::cleaner_.factory_);\n\n";
-	out << "// Extract our Key out of the object reference\n";
-	out << "#ifdef TAO_ORB\n";
-	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
-	out << "#else\n";
-	out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
-	out << "#endif\n";
-	out << "// register all ports\n";
-	genFacetRegistration(comp);
-	genReceptacleRegistration(comp);
-	genEmitterRegistration(comp);
-	genPublisherRegistration(comp);
-	genConsumerRegistration(comp);
-
-	out << "CORBA::RepositoryIdSeq streamtypes;\n\n";
-	genSinkRegistration(comp);
-	genSourceRegistration(comp);
-	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
-	out << mapFullName(comp) << "_var servant = ";
-	out << mapFullName(comp) << "::_narrow (component_instance.component_ref());\n\n";
-	out << "return servant._retn();\n";
-	out.unindent();
-	out << "}\n\n\n";
 }
 
 

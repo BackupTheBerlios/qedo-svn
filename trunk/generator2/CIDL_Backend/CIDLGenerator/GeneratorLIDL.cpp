@@ -239,63 +239,8 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	// detemine the component
 	//
 	component_ = composition->ccm_component();
+	composition_ = CIDL::CompositionDef::_duplicate(composition);
 
-/*
-	//
-	// generate
-	//
-
-	open_module(component_);
-	//
-	// container specific context interface 
-	//
-	out << "//\n// container interface for the context for " << component_->id() << "\n//\n";
-	out << "local interface CCM_" << component_->name() << "_ContextImpl : ";
-	out << "CCM_" << component_->name() << "_Context,\n";
-
-	switch(lc) {
-	case (CIDL::lc_Session) : 
-		{
-			out << "::Components::SessionContext";
-			break;
-		}
-	case (CIDL::lc_Entity) :
-	case (CIDL::lc_Process) :
-		{
-			out << "::Components::EntityContext";
-			break;
-		}
-	case (CIDL::lc_Extension) :
-		{
-			out << "::Components::ExtensionContext";
-			break;
-		}
-	default:
-		{
-			//unsupported lifecycle category
-			std::cerr << "unsupported lifecycle category" << std::endl;
-		}
-	}
-
-	out << "\n{\n";
-	out.indent();
-	if( lc==CIDL::lc_Entity || lc==CIDL::lc_Process )
-	{
-		out << "void set_ccm_storage_object( in CosPersistentState::StorageObjectBase obj );\n";
-		out << "CosPersistentState::StorageObjectBase get_ccm_storage_object();\n";
-		
-		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_duplicate(composition->home_executor()->binds_to());
-		if( !CORBA::is_nil(storagehome) )
-		{
-			out << "\nvoid set_storage_object( in CosPersistentState::StorageObjectBase obj );\n";
-			out << "CosPersistentState::StorageObjectBase get_storage_object();\n";
-		}
-	}
-	out.unindent();
-	out << "};\n\n";
-
-	close_module(component_);
-	*/
 	this -> generate_component(component_, lc);
 }
 
@@ -326,6 +271,11 @@ GeneratorLIDL::generate_component(IR__::ComponentDef* a_component, CIDL::Lifecyc
 			out << "::Components::SessionContext";
 			break;
 		}
+	case (CIDL::lc_Entity) : 
+		{
+			out << "::Components::EntityContext";
+			break;
+		}
 	case (CIDL::lc_Extension) :
 		{
 			out << "::Components::ExtensionContext";
@@ -338,7 +288,22 @@ GeneratorLIDL::generate_component(IR__::ComponentDef* a_component, CIDL::Lifecyc
 		}
 	}
 
-	out << "\n{ };\n\n";
+	out << "\n{\n";
+	out.indent();
+	if( lc==CIDL::lc_Entity || lc==CIDL::lc_Process )
+	{
+		out << "void set_ccm_storage_object( in CosPersistentState::StorageObjectBase obj );\n";
+		out << "CosPersistentState::StorageObjectBase get_ccm_storage_object();\n";
+		
+		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_duplicate(composition_->home_executor()->binds_to());
+		if( !CORBA::is_nil(storagehome) )
+		{
+			out << "\nvoid set_storage_object( in CosPersistentState::StorageObjectBase obj );\n";
+			out << "CosPersistentState::StorageObjectBase get_storage_object();\n";
+		}
+	}
+	out.unindent();
+	out << "};\n\n";
 
 	close_module(a_component);
 
