@@ -1,0 +1,95 @@
+#include "Components.idl"
+
+module Simulation{
+
+	/* Position e.g. of an airplane */
+	struct Position{
+	  double longitude;
+	  double latitude;
+	  double altitude;
+	};
+	
+	/* Position of a radar Contact */
+	struct PolarPosition{
+	  double angle;
+	  double distance;
+	};
+	
+	struct RadarObject{
+		string identifier;
+		Position position;  
+	};
+	
+	/* Transponder information */
+	struct TransponderObject{
+	  string identifier;
+	  double altitude;
+	};
+
+	/* a sequence of radar contacts */	
+	typedef sequence<RadarObject> RadarData;
+	
+	/* List of radar contacts submitted to base stations */
+	eventtype RadarEvent {
+	  public string radar_identifier;
+	  public Position radar_position;
+	  public RadarData radardata;
+	};
+
+	/* dynmic informatin about airplane position */
+	/* possibly frmo FlightGear */
+	interface PlaneInput {
+	  void set_position(in string identifier, in Position current_position);
+	};
+	  
+	/* plane */
+	/* only needed if FlightGear is not available */
+	component Plane {
+	  attribute string identifier;
+  	  attribute double initial_longitude;
+	  attribute double initial_latitude;
+	  attribute double initial_altitude;
+	  attribute double initial_course;
+
+	  uses PlaneInput sim_server;
+	};
+	home PlaneHome manages Plane {
+	/* will possibly need a factory for starting position*/
+	};
+	  
+	interface RetrieveRadarData {
+	  /* callculates the List of radar contacts visible for a given position of a Radar */
+	  RadarData get_data(in Position radar_position);
+	};
+	  
+	component SimulationServer{
+	  provides PlaneInput the_input;
+	  provides RetrieveRadarData radar_output;
+	};
+	home SimulationServerHome manages SimulationServer {};
+	
+	
+	component Radar {
+	  attribute string radar_identifier;
+	  attribute double longitude;
+	  attribute double latitude;
+	  uses RetrieveRadarData sim_server;
+	  publishes RadarEvent to_tac_display;
+	};
+	
+	home RadarHome manages Radar {};
+	
+	component TAPDisplay {
+	  attribute string identifier;
+  	  attribute double longitude;
+	  attribute double latitude;
+	  attribute double horizontal_range;
+	  attribute double vertical_range;
+
+	  consumes RadarEvent from_radar;
+	};
+
+	home TAPDisplayHome manages TAPDisplay {};
+};
+
+

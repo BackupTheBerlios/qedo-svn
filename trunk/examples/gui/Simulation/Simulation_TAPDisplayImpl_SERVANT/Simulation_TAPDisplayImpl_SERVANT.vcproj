@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="Simulation_TAPDisplayImpl_SERVANT"
+	ProjectGUID="{55B8531E-2DCD-49AE-986B-14188603AB68}"
+	Keyword="Win32Proj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug_orbacus|Win32"
+			OutputDirectory="Debug_orbacus"
+			IntermediateDirectory="Debug_orbacus"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(ORBACUS)/include;$(ORBACUS)/include/OB;"
+				PreprocessorDefinitions="_DEBUG;_USRDLL;SERVANTMODULE_EXPORTS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib qedoutil.lib obd.lib jtcd.lib"
+				OutputFile="$(OutDir)/Simulation_TAPDisplayImpl_SERVANT.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(ORBACUS)/lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/Simulation_TAPDisplayImpl_SERVANT.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/Simulation_TAPDisplayImpl_SERVANT.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_mico|Win32"
+			OutputDirectory="Debug_mico"
+			IntermediateDirectory="Debug_mico"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;$(MICO)/include/windows;"
+				PreprocessorDefinitions="BUILD_SIMULATION_TAPDISPLAYIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib qedoutil.lib mico2311.lib pthreadVC.lib"
+				OutputFile="$(OutDir)/Simulation_TAPDisplayImpl_SERVANT.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/Simulation_TAPDisplayImpl_SERVANT.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/Simulation_TAPDisplayImpl_SERVANT.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_tao|Win32"
+			OutputDirectory="Debug_tao"
+			IntermediateDirectory="Debug_tao"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(TAO)"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib qedoutil.lib aced.lib TAOd.lib"
+				OutputFile="$(OutDir)/Simulation_TAPDisplayImpl_SERVANT.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(ORBACUS)/lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/Simulation_TAPDisplayImpl_SERVANT.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/Simulation_TAPDisplayImpl_SERVANT.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			<File
+				RelativePath="Simulation_TAPDisplayImpl_EQUIVALENT.cpp">
+			</File>
+			<File
+				RelativePath="Simulation_TAPDisplayImpl_EQUIVALENT_skel.cpp">
+			</File>
+			<File
+				RelativePath="Simulation_TAPDisplayImpl_LOCAL.cpp">
+			</File>
+			<File
+				RelativePath="Simulation_TAPDisplayImpl_LOCAL_skel.cpp">
+			</File>
+			<File
+				RelativePath="Simulation_TAPDisplayImpl_SERVANT.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="Simulation_TAPDisplayImpl_EQUIVALENT.h">
+			</File>
+			<File
+				RelativePath="Simulation_TAPDisplayImpl_EQUIVALENT_skel.h">
+			</File>
+			<File
+				RelativePath="Simulation_TAPDisplayImpl_LOCAL.h">
+			</File>
+			<File
+				RelativePath="Simulation_TAPDisplayImpl_LOCAL_skel.h">
+			</File>
+			<File
+				RelativePath="Simulation_TAPDisplayImpl_SERVANT.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="idl"
+			Filter="idl;cidl">
+			<File
+				RelativePath="Simulation_TAPDisplayImpl_EQUIVALENT.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling equivalent IDL"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB Simulation_TAPDisplayImpl_EQUIVALENT.idl
+"
+						Outputs="Simulation_TAPDisplayImpl_EQUIVALENT.h;Simulation_TAPDisplayImpl_EQUIVALENT.cpp;Simulation_TAPDisplayImpl_EQUIVALENT_skel.h;Simulation_TAPDisplayImpl_EQUIVALENT_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling equivalent IDL"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll Simulation_TAPDisplayImpl Simulation_TAPDisplayImpl_EQUIVALENT.idl
+copy Simulation_TAPDisplayImpl_EQUIVALENT.h Simulation_TAPDisplayImpl_EQUIVALENT_skel.h
+"
+						Outputs="Simulation_TAPDisplayImpl_EQUIVALENT.h;Simulation_TAPDisplayImpl_EQUIVALENT.cpp;Simulation_TAPDisplayImpl_EQUIVALENT_skel.h;Simulation_TAPDisplayImpl_EQUIVALENT_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(TAO)/bin/tao_idl -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp -DTAO_ORB -DWIN32 -I$(QEDO)/idl -I$(TAO)/idl Simulation_TAPDisplayImpl_EQUIVALENT.idl
+"
+						Outputs="Simulation_TAPDisplayImpl_EQUIVALENT.h;Simulation_TAPDisplayImpl_EQUIVALENT.cpp;Simulation_TAPDisplayImpl_EQUIVALENT_skel.h;Simulation_TAPDisplayImpl_EQUIVALENT_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Simulation_TAPDisplayImpl_LOCAL.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling local IDL"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB Simulation_TAPDisplayImpl_LOCAL.idl
+"
+						Outputs="Simulation_TAPDisplayImpl_LOCAL.h;Simulation_TAPDisplayImpl_LOCAL.cpp;Simulation_TAPDisplayImpl_LOCAL_skel.h;Simulation_TAPDisplayImpl_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling local IDL"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll Simulation_TAPDisplayImpl Simulation_TAPDisplayImpl_LOCAL.idl
+copy Simulation_TAPDisplayImpl_LOCAL.h Simulation_TAPDisplayImpl_LOCAL_skel.h
+"
+						Outputs="Simulation_TAPDisplayImpl_LOCAL.h;Simulation_TAPDisplayImpl_LOCAL.cpp;Simulation_TAPDisplayImpl_LOCAL_skel.h;Simulation_TAPDisplayImpl_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB Simulation_TAPDisplayImpl_LOCAL.idl
+"
+						Outputs="Simulation_TAPDisplayImpl_LOCAL.h;Simulation_TAPDisplayImpl_LOCAL.cpp;Simulation_TAPDisplayImpl_LOCAL_skel.h;Simulation_TAPDisplayImpl_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\simdemo.cidl">
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling CIDL"
+						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32  -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --servant --target IDL:Simulation/TAPDisplayImpl:1.0 ../simdemo.cidl"
+						Outputs="Simulation_TAPDisplayImpl_LOCAL.idl;Simulation_TAPDisplayImpl_EQUIVALENT.idl"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

@@ -1,0 +1,22 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE properties PUBLIC "-//OMG//DTD Property File Descriptor" "http://www.qedo.org/properties.dtd">
+
+<properties>
+
+    <simple name="identifier" type="string">
+            <value>Plane2</value>
+    </simple>
+    <simple name="initial_longitude" type="double">
+            <value>50</value>
+    </simple>
+    <simple name="initial_latitude" type="double">
+            <value>50</value>
+    </simple>
+    <simple name="initial_altitude" type="double">
+            <value>2000</value>
+    </simple>
+    <simple name="initial_course" type="double">
+            <value>50</value>
+    </simple>
+
+</properties>
