@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.9 2003/05/20 04:13:36 tom Exp $";
+static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.10 2003/07/23 16:16:15 boehme Exp $";
 
 
 #include "AssemblyFactory.h"
@@ -137,14 +137,14 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 		std::cerr << "..... Cannot open file " << package_name << std::endl;
 		throw Components::CreateFailure();
 	}
-    unsigned char* buf = (unsigned char*)malloc(4096);
+    unsigned char* buf = new unsigned char[4096];
     unsigned int len = inputStream->readBytes(buf, 4096);
     while (len)
     {
 		packageFile.write((const char*)buf, len);
 		len = inputStream->readBytes(buf, 4096);
 	}
-	free(buf);
+	delete [] buf;
 	packageFile.close();
 	delete inputStream;
 
