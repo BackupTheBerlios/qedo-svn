@@ -27,7 +27,7 @@
 #include "GlobalHelpers.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.13 2003/12/09 07:59:18 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.14 2004/03/08 11:10:50 boehme Exp $";
 
 namespace Qedo {
 
@@ -52,7 +52,7 @@ ServantLocator::preinvoke (const PortableServer::ObjectId& oid,
 throw (PortableServer::ForwardRequest, CORBA::SystemException)
 {
 	// Our helper get_component operation will be handled by a special servant
-	if (!strcmp (operation, "get_component"))
+	if (!strcmp (operation, "_component") || !strcmp (operation, "get_component"))
 	{
 		DEBUG_OUT ("ServantLocator: ######### GetComponentHelperServant: returning parametrized helper servant ########");
 
