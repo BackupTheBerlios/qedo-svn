@@ -1971,7 +1971,10 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
 	{
 		out << "pCcmStorageHome_=NULL;\n";
-		out << "pPssStorageHome_=NULL;\n";
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << "pPssStorageHome_=NULL;\n";
+		}
 	}
 	out.unindent();
 	out << "}\n\n\n";
@@ -2529,7 +2532,10 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "// register all ports\n";
 		out << "CORBA::RepositoryIdSeq streamtypes;\n\n";		
 		out << "new_context->set_ccm_storage_object(pCcmStorageObject);\n";
-		out << "new_context->set_storage_object(pPssStorageObject);\n\n";
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << "new_context->set_storage_object(pPssStorageObject);\n\n";
+		}
 		out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
 		out << "servant = " << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n";
 		for( CORBA::ULong i=0; i<ulLen; i++ )
@@ -3282,7 +3288,8 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 	handleFactory(home);
 	handleFinder(home);
 
-	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	if( (lc==CIDL::lc_Entity || lc==CIDL::lc_Process) &&
+		(!CORBA::is_nil(storagehome_)) )
 	{
 		//++++++++++++++++++++++++++++++++++++++++
 		// SQL CREATE for get_table_info()
