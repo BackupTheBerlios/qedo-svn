@@ -1,5 +1,0 @@
-all :
-	( cd CIDLGenerator; make -f Makefile.unix )
-
-clean :
-	( cd CIDLGenerator; make -f Makefile.unix clean )
