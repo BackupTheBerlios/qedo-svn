@@ -25,7 +25,7 @@
 #include "Output.h"
 #include "qedoutil.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentInstance.cpp,v 1.13 2003/10/30 11:07:40 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstance.cpp,v 1.14 2003/12/18 06:16:11 tom Exp $";
 
 
 namespace Qedo {
@@ -72,9 +72,11 @@ ComponentInstance::ComponentInstance (const ComponentInstance& component_entry)
   component_ref_ (CORBA::Object::_duplicate (component_entry.component_ref_.in())),
   executor_locator_ (Components::ExecutorLocator::_duplicate (component_entry.executor_locator_.in())),
   ccm_object_executor_ (component_entry.ccm_object_executor_)
+
 #ifndef _QEDO_NO_STREAMS
   , stream_ccm_object_executor_ (component_entry.stream_ccm_object_executor_)
 #endif
+  , config_(component_entry.config_)
 {
 	ccm_object_executor_->_add_ref();
 
@@ -84,7 +86,7 @@ ComponentInstance::ComponentInstance (const ComponentInstance& component_entry)
 }
 
 
-ComponentInstance& 
+ComponentInstance&
 ComponentInstance::operator= (const ComponentInstance& component_instance)
 {
 	object_id_ = new PortableServer::ObjectId (component_instance.object_id_);
@@ -100,7 +102,7 @@ ComponentInstance::operator= (const ComponentInstance& component_instance)
 #ifndef _QEDO_NO_STREAMS
         if (stream_ccm_object_executor_)
                 stream_ccm_object_executor_->_remove_ref();
-                                                                                                  
+
         stream_ccm_object_executor_ = component_instance.stream_ccm_object_executor_;
         stream_ccm_object_executor_->_add_ref();
 #endif
