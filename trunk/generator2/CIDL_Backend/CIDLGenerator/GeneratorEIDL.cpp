@@ -627,7 +627,7 @@ GeneratorEIDL::doUses(IR__::UsesDef_ptr uses)
 void
 GeneratorEIDL::doEmits(IR__::EmitsDef_ptr emits)
 {
-	out << "//\n// " << emits->id() << "\n//\n";
+	out << "\n//\n// " << emits->id() << "\n//\n";
 	checkForInclude(emits->event()->type());
 
 	out << "void " << "connect_" << emits->name();
@@ -641,7 +641,7 @@ GeneratorEIDL::doEmits(IR__::EmitsDef_ptr emits)
 void
 GeneratorEIDL::doPublishes(IR__::PublishesDef_ptr publishes)
 {
-	out << "//\n// " << publishes->id() << "\n//\n";
+	out << "\n//\n// " << publishes->id() << "\n//\n";
 	checkForInclude(publishes->event()->type());
 
 	out << "Components::Cookie" << " subscribe_" << publishes->name();
