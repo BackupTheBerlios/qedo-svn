@@ -1034,6 +1034,7 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 
 	switch (lc) {
 	case (CIDL::lc_Session) :
+	case (CIDL::lc_Extension) :
 		out << mapFullName(component_) << "_ptr create()\n"; 
 		out << "	throw(CORBA::SystemException, Components::CreateFailure);\n\n";
 		out << "Components::CCMObject_ptr create_component()\n";
@@ -1057,7 +1058,7 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "// not supported lifecycle\n";
 	}
 
-	if(lc==CIDL::lc_Session)
+	if(lc==CIDL::lc_Session || lc == CIDL::lc_Extension)
 	{
 		out << "// COACH extension\n";
 		out << "Components::CCMObject_ptr create_component_with_config(const Components::ConfigValues& config)\n";

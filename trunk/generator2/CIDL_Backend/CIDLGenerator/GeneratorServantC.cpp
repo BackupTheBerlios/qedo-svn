@@ -704,6 +704,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	{
 	case CIDL::lc_Session :
 	case CIDL::lc_Service :
+	case CIDL::lc_Extension:
 		out << "Components::SessionComponent_var session_component;\n\n";
 		break;
 
@@ -721,6 +722,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	{
 	case CIDL::lc_Session :
 	case CIDL::lc_Service :
+	case CIDL::lc_Extension :
 		out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
 		break;
 
@@ -748,6 +750,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	{
 	case CIDL::lc_Session :
 	case CIDL::lc_Service :
+	case CIDL::lc_Extension :
 		out << "session_component->set_session_context (new_context.in());\n\n";
 		break;
 
@@ -887,6 +890,7 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	{
 	case CIDL::lc_Session :
 	case CIDL::lc_Service :
+	case CIDL::lc_Extension :
 		out << "Components::SessionComponent_var session_component;\n\n";
 		break;
 
@@ -904,6 +908,7 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	{
 	case CIDL::lc_Session :
 	case CIDL::lc_Service :
+	case CIDL::lc_Extension :
 		out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
 		break;
 
@@ -931,6 +936,7 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	{
 	case CIDL::lc_Session :
 	case CIDL::lc_Service :
+	case CIDL::lc_Extension :
 		out << "session_component->set_session_context (new_context.in());\n\n";
 		break;
 
@@ -2013,6 +2019,13 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "throw(CORBA::SystemException, Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey)\n{\n";
 		break;
 	}
+	case(CIDL::lc_Extension):
+	{
+		out << class_name_ << "::create()\n";
+		out << "throw(CORBA::SystemException, Components::CreateFailure)\n{\n";
+		break;
+	}
+	
 	}
 	out.indent();
 	if( lc==CIDL::lc_Entity || lc==CIDL::lc_Process )
@@ -2097,6 +2110,12 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "enterprise_component = home_executor->create(pkey);\n";
 		break;
 	}
+	case(CIDL::lc_Extension):
+	{
+		out << "enterprise_component = home_executor->create();\n";
+		break;
+	}
+
 	}
 	out.unindent();
 	out << "}\n";
@@ -2209,6 +2228,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "// Extract our Key out of the object reference\n";
 	switch (lc) {
 	case (CIDL::lc_Session):
+	case (CIDL::lc_Extension):
         out << "DEBUG_OUT (\"Home_servant: create() called\");\n\n";
 		break;
 	case (CIDL::lc_Entity):
@@ -2358,15 +2378,29 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	
 	switch (lc) {
 	case (CIDL::lc_Session):
-        // create_component
-		out << "Components::CCMObject_ptr\n";
-		out << class_name_ << "::create_component()\n";
-		out << "throw(CORBA::SystemException,Components::CreateFailure)\n{\n";
-		out.indent();
-		out << "return this->create();\n";
-		out.unindent();
-		out << "}\n\n\n";
-		break;
+		{
+			// create_component
+			out << "Components::CCMObject_ptr\n";
+			out << class_name_ << "::create_component()\n";
+			out << "throw(CORBA::SystemException,Components::CreateFailure)\n{\n";
+			out.indent();
+			out << "return this->create();\n";
+			out.unindent();
+			out << "}\n\n\n";
+			break;
+		}
+	case (CIDL::lc_Extension):
+		{
+			// create_component
+			out << "Components::CCMObject_ptr\n";
+			out << class_name_ << "::create_component()\n";
+			out << "throw(CORBA::SystemException,Components::CreateFailure)\n{\n";
+			out.indent();
+			out << "return this->create();\n";
+			out.unindent();
+			out << "}\n\n\n";
+			break;
+		}
 	case (CIDL::lc_Entity):
 		{
         out << mapFullName(component_) << "_ptr\n";
