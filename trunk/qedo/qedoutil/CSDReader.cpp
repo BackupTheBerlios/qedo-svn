@@ -28,7 +28,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.2 2003/08/28 09:23:12 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.3 2003/09/05 12:55:18 neubauer Exp $";
 
 
 namespace Qedo {
@@ -113,7 +113,7 @@ throw(CSDReadException)
 			//
 			else if (element_name == "fileinarchive")
 			{
-				file_name = fileinarchive((DOMElement*)(child));
+				file_name = fileinarchive((DOMElement*)child).file;
 			}
 
 			//
@@ -121,7 +121,7 @@ throw(CSDReadException)
 			//
 			else if (element_name == "link")
 			{
-				file_name = link((DOMElement*)(child));
+				file_name = link((DOMElement*)child).file;
 			}
 
 			//
@@ -129,7 +129,7 @@ throw(CSDReadException)
 			//
 			else if (element_name == "entrypoint")
 			{
-				entry = entrypoint((DOMElement*)(child));
+				entry = entrypoint((DOMElement*)child);
 			}
 
 			//
@@ -137,7 +137,7 @@ throw(CSDReadException)
 			//
 			else if (element_name == "usage")
 			{
-				use = usage((DOMElement*)(child));
+				use = usage((DOMElement*)child);
 			}
 		}
 
@@ -152,13 +152,13 @@ throw(CSDReadException)
 	{
 		if (use == "servant")
 		{
-			component_implementation_->servant_module_ = file_name;
-			component_implementation_->servant_entry_point_ = entry;
+			data_->servant_module = file_name;
+			data_->servant_entry_point = entry;
 		}
 		else 
 		{
-			component_implementation_->executor_module_ = file_name;
-			component_implementation_->executor_entry_point_ = entry;
+			data_->executor_module = file_name;
+			data_->executor_entry_point = entry;
 		}
     }
 
@@ -175,7 +175,7 @@ throw(CSDReadException)
 	//
 	else if (type == "Artifact")
 	{
-		component_implementation_->artifacts_.push_back( file_name );
+		data_->artifacts.push_back( file_name );
     }
 }
 
@@ -255,7 +255,7 @@ throw(CSDReadException)
 			//
 			else if (element_name == "fileinarchive")
 			{
-				fileinarchive((DOMElement*)(child));
+				fileinarchive((DOMElement*)child);
 			}
 
 			//
@@ -309,7 +309,6 @@ CSDReader::descriptor (DOMElement* element)
 throw(CSDReadException)
 {
 	std::string element_name;
-    std::string cfile;
     DOMNode* child = element->getFirstChild();
     while (child != 0)
     {
@@ -322,7 +321,7 @@ throw(CSDReadException)
 			//
 			if (element_name == "link")
 			{
-				cfile = link((DOMElement*)(child));
+				return link((DOMElement*)child).file;
 			}
 
 			//
@@ -330,7 +329,7 @@ throw(CSDReadException)
 			//
 			else if (element_name == "fileinarchive")
 			{
-				cfile = fileinarchive((DOMElement*)(child));
+				return fileinarchive((DOMElement*)child).file;
 			}
 		}
 
@@ -338,7 +337,7 @@ throw(CSDReadException)
 	    child = child->getNextSibling();
 	}
 
-    return cfile;
+	throw CSDReadException();
 }
 
 
@@ -350,22 +349,26 @@ throw(CSDReadException)
 }
 
 
-std::string
+LocationData
 CSDReader::fileinarchive(DOMElement* element)
 throw(CSDReadException)
 {
+	LocationData data;
+	data.uri = "file://";
 	std::string file_name = XMLString::transcode(element->getAttribute(X("name")));
+	data.uri.append(path_ + file_name);
+	data.file = path_ + file_name;
 
 	//
 	// extract the file
 	//
-	if (component_implementation_->package_->extractFile(file_name, component_implementation_->build_path_ + file_name) != 0)
+	if (package_->extractFile(file_name, path_ + file_name) != 0)
 	{
 		std::cerr << "Error during extracting file " << file_name << std::endl;
 		throw CSDReadException();
 	}
 
-	return component_implementation_->build_path_ + file_name;
+	return data;
 }
 
 
@@ -374,6 +377,8 @@ CSDReader::idl (DOMElement* element)
 throw(CSDReadException)
 {
 	std::string element_name;
+	IDLData data;
+	data_->repid = XMLString::transcode(element->getAttribute(X("id")));
     DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
@@ -386,7 +391,9 @@ throw(CSDReadException)
 			//
 			if (element_name == "link")
 			{
-				component_implementation_->idl_file_ = link((DOMElement*)(child));
+				data.kind = LINK;
+				data.location = link((DOMElement*)child);
+				data_->idl = data;
 			}
 
 			//
@@ -394,12 +401,9 @@ throw(CSDReadException)
 			//
 			if (element_name == "fileinarchive")
 			{
-				component_implementation_->idl_file_ = fileinarchive((DOMElement*)(child));
-				if(component_implementation_->idl_file_ == "")
-				{
-					std::cerr << "missing idl file name for " << component_implementation_->uuid_ << std::endl;
-					throw CSDReadException();
-				}
+				data.kind = FILEINARCHIVE;
+				data.location = fileinarchive((DOMElement*)child);
+				data_->idl = data;
 			}
 
 			//
@@ -407,7 +411,7 @@ throw(CSDReadException)
 			//
 			if (element_name == "repository")
 			{
-				// TODO
+				// todo
 			}
 		}
 
@@ -456,7 +460,7 @@ throw(CSDReadException)
 	len = nodeList->getLength();
 	if(len == 0)
 	{
-		std::cerr << "missing code for " << component_implementation_->uuid_ << std::endl;
+		std::cerr << "missing code for " << data_->uuid << std::endl;
 		throw CSDReadException();
 	}
     for (i = 0; i < len; ++i)
@@ -505,7 +509,7 @@ throw(CSDReadException)
 }
 
 
-std::string
+LocationData
 CSDReader::link (DOMElement* element)
 throw(CSDReadException)
 {
@@ -517,7 +521,14 @@ throw(CSDReadException)
         name.erase(0, pos + 1);
     }
     
-    std::string fileName = component_implementation_->build_path_ + name;
+	std::string fileName = path_ + name;
+	LocationData data;
+	data.uri = XMLString::transcode(element->getAttribute(X("href")));
+	data.file = fileName;
+
+	//
+	// get file
+	//
     URLInputSource inputSource(uri);
     BinInputStream* inputStream = inputSource.makeStream();
     if (!inputStream)
@@ -542,7 +553,7 @@ throw(CSDReadException)
     free(buf);
 	aFile.close();
 
-    return name;
+    return data;
 }
 
 
@@ -708,7 +719,7 @@ throw(CSDReadException)
 	DOMElement* elem;
 	unsigned int len = 0;
 	unsigned int i = 0;
-	std::string uuid = component_implementation_->uuid_;
+	std::string uuid = data_->uuid;
 
     //
 	// implementation
@@ -761,7 +772,7 @@ throw(CSDReadException)
 	// parse the corba component descriptor file
     //
 	CCDReader reader;
-	reader.readCCD( ccd_file_, component_implementation_ );
+	reader.readCCD( ccd_file_, data_, package_, path_ );
 }
 
 
@@ -806,7 +817,7 @@ throw(CSDReadException)
 			//
 			if (element_name == "fileinarchive")
 			{
-				data.file_name = fileinarchive((DOMElement*)(child));
+				data.location = fileinarchive((DOMElement*)child);
 			}
 
 			//
@@ -814,7 +825,7 @@ throw(CSDReadException)
 			//
 			if (element_name == "link")
 			{
-				data.file_name = link((DOMElement*)child);
+				data.location = link((DOMElement*)child);
 			}
 		}
 
@@ -823,7 +834,7 @@ throw(CSDReadException)
     }
 
 	std::cerr << ".......... <valuetypefactory> " << data.repid << std::endl;
-	component_implementation_->valuetypes_.push_back(data);
+	data_->valuetypes.push_back(data);
 }
 
 
@@ -842,16 +853,34 @@ throw(CSDReadException)
 
 
 void 
-CSDReader::readCSD(std::string descriptor, ComponentImplementation* impl)
+CSDReader::readCSD(std::string package, ComponentImplementationData* data, std::string path)
 throw(CSDReadException)
 {
-	component_implementation_ = impl;
+	data_ = data;
+	path_ = path;
+	package_ = new Package(package);
+
+	//
+	// find and extract the software package descriptor
+	//
+    std::string csdfile = package_->getFileNameWithSuffix( ".csd" );
+    if ( csdfile == std::string( "" ) )
+	{
+		std::cerr << ".......... missing a csd file!" << std::endl;
+        throw CSDReadException();
+	}
+    if (package_->extractFile(csdfile, path_ + csdfile) != 0)
+	{
+		std::cerr << ".......... error during extracting the descriptor file" << std::endl;
+		throw CSDReadException();
+	}
+	csdfile = path_ + csdfile;
 
 	//
 	// parse the software package descriptor file
     //
 	DOMXMLParser parser;
-	char* xmlfile = strdup(descriptor.c_str());
+	char* xmlfile = strdup(csdfile.c_str());
     if ( parser.parse( xmlfile ) != 0 ) 
 	{
 		std::cerr << "Error during XML parsing" << std::endl;
@@ -861,6 +890,9 @@ throw(CSDReadException)
 
 	// handle softpkg
 	softpkg(csd_document_->getDocumentElement());
+
+	// remove package
+	delete package_;
 }
 
 

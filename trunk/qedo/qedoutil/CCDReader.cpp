@@ -27,7 +27,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.1 2003/08/27 06:47:43 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.2 2003/09/05 12:55:18 neubauer Exp $";
 
 
 namespace Qedo {
@@ -58,7 +58,7 @@ throw(CCDReadException)
 			//
 			if (!XMLString::compareString(child->getNodeName(), X("homerepid")))
 			{
-				component_implementation_->home_repid_ = homerepid((DOMElement*)child);
+				data_->home_repid = homerepid((DOMElement*)child);
 			}
 
 			//
@@ -112,7 +112,7 @@ throw(CCDReadException)
 				//
 				// extract the file
 				//
-				if (component_implementation_->package_->extractFile(cfile, component_implementation_->build_path_ + cfile) != 0)
+				if (package_->extractFile(cfile, path_ + cfile) != 0)
 				{
 					std::cerr << "Error during extracting file " << cfile << std::endl;
 					throw CCDReadException();
@@ -148,9 +148,9 @@ void
 CCDReader::homefeatures (DOMElement* element)
 throw(CCDReadException)
 {
-	if (component_implementation_->home_repid_ == XMLString::transcode(element->getAttribute(X("repid"))))
+	if (data_->home_repid == XMLString::transcode(element->getAttribute(X("repid"))))
 	{
-		component_implementation_->home_name_ = XMLString::transcode(element->getAttribute(X("name")));
+		data_->home_name = XMLString::transcode(element->getAttribute(X("name")));
 	}
 }
 
@@ -175,7 +175,7 @@ throw(CCDReadException)
         name.erase(0, pos + 1);
     }
     
-    std::string fileName = component_implementation_->build_path_ + name;
+    std::string fileName = path_ + name;
     URLInputSource inputSource(uri);
     BinInputStream* inputStream = inputSource.makeStream();
     if (!inputStream)
@@ -205,10 +205,12 @@ throw(CCDReadException)
 
 
 void 
-CCDReader::readCCD(std::string descriptor, ComponentImplementation* impl)
+CCDReader::readCCD(std::string descriptor, ComponentImplementationData* data, Package* package, std::string path)
 throw(CCDReadException)
 {
-	component_implementation_ = impl;
+	data_ = data;
+	package_ = package;
+	path_ = path;
 
 	//
 	// parse the corba component descriptor file

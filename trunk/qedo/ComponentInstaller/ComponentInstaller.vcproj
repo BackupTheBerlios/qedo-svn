@@ -356,6 +356,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="ComponentImplementation.h">
 			</File>
 			<File
+				RelativePath="ComponentImplementationData.h">
+			</File>
+			<File
 				RelativePath="ComponentInstallationImpl.h">
 			</File>
 			<File

@@ -78,7 +78,7 @@ private:
 	/**
 	 * add a new installation to the DeployedComponents.xml file
 	 */
-	bool addInstalledComponent (ComponentImplementation* impl);
+	bool addInstalledComponent (ComponentImplementationData* data);
 
 public:
 	/**

@@ -21,41 +21,28 @@
 /***************************************************************************/
 
 #include "ComponentImplementation.h"
-#include "CSDReader.h"
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.11 2003/08/28 09:23:12 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.12 2003/09/05 12:55:18 neubauer Exp $";
 
 
 namespace Qedo {
 
 
-ComponentImplementation::ComponentImplementation (const char* uuid, std::string installationDirectory, std::string package)
-: uuid_ (uuid)
+ComponentImplementation::ComponentImplementation
+(ComponentImplementationData data, std::string installationDirectory, std::string package)
+: data_(data), package_(package), installation_count_(0)
 {
-    installation_count_ = 0;
-    package_ = new Package(package);
-	installation_dir_ = getPath(installationDirectory) + uuid_;
+	installation_dir_ = getPath(installationDirectory) + data.uuid;
     installation_path_ = getPath(installation_dir_);
 	build_dir_ = installation_path_ + "build";
     build_path_ = getPath(build_dir_);
 }
 
 
-ComponentImplementation::ComponentImplementation (std::string uuid, std::string servant_module, 
-												  std::string servant_entry_point, std::string executor_module,
-												  std::string executor_entry_point)
-: uuid_ (uuid), servant_module_ (servant_module), servant_entry_point_ (servant_entry_point),
-  executor_module_ (executor_module), executor_entry_point_ (executor_entry_point), installation_count_(1),
-  installation_dir_(""), installation_path_(""), build_dir_(""), build_path_(""), package_(0)
-{
-}
-
-
-ComponentImplementation::ComponentImplementation (std::string uuid) 
-: uuid_ (uuid), servant_module_ (""), servant_entry_point_ (""),
-  executor_module_ (""), executor_entry_point_ (""), installation_count_(1),
-  installation_dir_(""), installation_path_(""), build_dir_(""), build_path_(""), package_(0)
+ComponentImplementation::ComponentImplementation (ComponentImplementationData data)
+: data_(data), package_(""), installation_count_(1),
+  installation_dir_(""), installation_path_(""), build_dir_(""), build_path_("")
 {
 }
 
@@ -70,7 +57,7 @@ bool
 ComponentImplementation::operator == 
 ( ComponentImplementation id )
 {
-    if (uuid_ == id.uuid_) 
+    if (data_.uuid == id.data_.uuid) 
 	{
         return true;
 	}
@@ -96,37 +83,31 @@ ComponentImplementation::install ()
 	//
 	makeDir(installation_dir_);
     makeDir(build_dir_);
-	
-    //
-	// find and extract the software package descriptor
-	//
-    std::string csdfile = package_->getFileNameWithSuffix( ".csd" );
-    if ( csdfile == std::string( "" ) )
-	{
-		std::cerr << ".......... missing a csd file!" << std::endl;
-		removeFileOrDirectory(installation_dir_);
-		removeFileOrDirectory(build_dir_);
-        return false;
-	}
-    if (package_->extractFile(csdfile, build_path_ + csdfile) != 0)
-	{
-		std::cerr << ".......... error during extracting the descriptor file" << std::endl;
-		removeFileOrDirectory(installation_dir_);
-		removeFileOrDirectory(build_dir_);
-        return false;
-	}
 
 	//
-	// parse the software package descriptor file
+	// get info from the software package
     //
 	CSDReader reader;
-	reader.readCSD( build_path_ + csdfile, this );
+	try 
+	{
+		reader.readCSD( package_, &data_, build_path_ );
+	}
+	catch( CSDReadException ) 
+	{
+		removeFileOrDirectory(installation_dir_);
+		removeFileOrDirectory(build_dir_);
+        return false;
+	}
 
-    // install code for servants and executors
-    try	{
+    //
+	// install code for servants and executors
+	//
+    try	
+	{
 		installCode();
 	}
-	catch( Components::CreateFailure ) {
+	catch( Components::CreateFailure )
+	{
 		removeFileOrDirectory(installation_dir_);
 		removeFileOrDirectory(build_dir_);
         return false;
@@ -149,6 +130,7 @@ ComponentImplementation::uninstall()
 		//
 		// remove installed code
 		//
+		removeFileOrDirectory(installation_dir_);
 	}
 
 	return true;
@@ -165,25 +147,27 @@ throw(Components::CreateFailure)
 	std::string code;
 	std::string installation;
 	std::vector < ValuetypeData >::iterator value_iter;
-	for(value_iter = valuetypes_.begin();
-		value_iter != valuetypes_.end();
+	for(value_iter = data_.valuetypes.begin();
+		value_iter != data_.valuetypes.end();
 		value_iter++)
 	{
-		code = (*value_iter).file_name;
+		code = (*value_iter).location.file;
 		installation = installation_path_ + getFileName(code);
 		if (copyFile(code, installation) == 0) 
 		{
 			std::cerr << "Error during installing valuetype factory " << code << std::endl;
 			throw Components::CreateFailure();
 		}
-		(*value_iter).file_name = installation;
+		(*value_iter).location.file = installation;
 	}
 
 	//
 	// install artifacts
 	//
 	std::vector < std::string >::iterator iter;
-	for (iter = artifacts_.begin(); iter != artifacts_.end(); iter++)
+	for (iter = data_.artifacts.begin(); 
+		iter != data_.artifacts.end();
+		iter++)
 	{
 		code = *iter;
 		installation = installation_path_ + getFileName(code);
@@ -198,27 +182,27 @@ throw(Components::CreateFailure)
 	//
 	// install business code files
     //
-	installation = installation_path_ + getFileName(executor_module_);
-    if (copyFile(executor_module_, installation) == 0) 
+	installation = installation_path_ + getFileName(data_.executor_module);
+    if (copyFile(data_.executor_module, installation) == 0) 
 	{
-		std::cerr << "Error during installing executor code " << executor_module_ << std::endl;
+		std::cerr << "Error during installing executor code " << data_.executor_module << std::endl;
         throw Components::CreateFailure();
 	}
-	executor_module_ = installation;
+	data_.executor_module = installation;
 
 	//
 	// servant code files have to be extracted from the archive or to be build
     //
-	if ((servant_module_ != "") && (servant_entry_point_ != ""))
+	if ((data_.servant_module != "") && (data_.servant_entry_point != ""))
 	{
-		installation = installation_path_ + getFileName(servant_module_);
-		if (copyFile(servant_module_, installation) == 0) 
+		installation = installation_path_ + getFileName(data_.servant_module);
+		if (copyFile(data_.servant_module, installation) == 0) 
 		{
-			std::cerr << "Error during installing servant code " << servant_module_ << "; try to generate" << std::endl;
+			std::cerr << "Error during installing servant code " << data_.servant_module << "; try to generate" << std::endl;
 		}
 		else 
 		{
-			servant_module_ = installation;
+			data_.servant_module = installation;
 			return;
 		}
 	}
@@ -234,8 +218,8 @@ void
 ComponentImplementation::buildServants()
 throw(Components::CreateFailure)
 {
-	servant_module_ = installation_path_ + uuid_ + "_servants." + DLL_EXT;
-	servant_entry_point_ = "create_" + home_name_ + "S";
+	data_.servant_module = installation_path_ + data_.uuid + "_servants." + DLL_EXT;
+	data_.servant_entry_point = "create_" + data_.home_name + "S";
 
 #ifdef _WIN32
 	makefile_ = g_qedo_dir + "\\etc\\makefile";
@@ -251,9 +235,9 @@ throw(Components::CreateFailure)
 
 #ifdef _WIN32
 	std::string command = "nmake /f " + makefile_;
-	command += " SOURCE=" + idl_file_;
-	command += " TARGET=" + home_repid_;
-	command += " DLL=" + servant_module_;
+	command += " SOURCE=" + data_.idl.location.file;
+	command += " TARGET=" + data_.home_repid;
+	command += " DLL=" + data_.servant_module;
 	std::cout << command << std::endl;
 
 	{
@@ -320,7 +304,9 @@ throw(Components::CreateFailure)
 	delete command_dir;
 	}
 #else
-	std::string command = "cd " + build_dir_ + ";make -f " + makefile_ + " SOURCE=" + idl_file_ + " TARGET=" + servant_module_;
+	std::string command = "cd " + build_dir_ + ";make -f " + makefile_;
+	command += " SOURCE=" + data_.idl.location.file;
+	command += " TARGET=" + data_.servant_module;
 	std::cout << command << std::endl;
 	int ret=system(command.c_str());
 	if(!WIFEXITED(ret))

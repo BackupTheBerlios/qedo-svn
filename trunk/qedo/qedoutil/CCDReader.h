@@ -24,9 +24,15 @@
 #define __CCD_READER_H__
 
 
+#ifdef _WIN32
+#pragma warning (disable : 4290) // exception specification ignored
+#endif
+
+
 #include "DOMXMLParser.h"
 #include "PlatformBase.h"
-#include "ComponentImplementation.h"
+#include "Package.h"
+#include "ComponentImplementationData.h"
 #include <string>
 
 #if !defined(UNUSED) && defined(__GNUC__)
@@ -34,6 +40,7 @@
 #else
 #define UNUSED
 #endif
+
 
 namespace Qedo {
 
@@ -62,9 +69,13 @@ class CCDReader : public virtual PlatformBase
 private:
 
 	/** the component implementation */
-	ComponentImplementation*				component_implementation_;
+	ComponentImplementationData*			data_;
 	/** the parsed CORBA component descriptor */
     DOMDocument*							ccd_document_;
+	/** the package */
+	Package*								package_;
+	/** the path to drop files */
+	std::string								path_;
     
     /**
 	 * handle corbacomponent
@@ -130,7 +141,7 @@ public:
 	/**
 	 * read CORBA Component Descriptor
 	 */
-	void readCCD(std::string descriptor, ComponentImplementation* impl)
+	void readCCD(std::string descriptor, ComponentImplementationData* data, Package* package, std::string path)
 		throw(CCDReadException);
 };
 

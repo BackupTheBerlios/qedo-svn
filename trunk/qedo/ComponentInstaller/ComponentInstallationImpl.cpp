@@ -22,7 +22,7 @@
 
 #include "ComponentInstallationImpl.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.15 2003/08/28 09:23:12 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.16 2003/09/05 12:55:18 neubauer Exp $";
 
 #include <iostream>
 #include <fstream>
@@ -184,11 +184,8 @@ ComponentInstallationImpl::readInstalledComponents ()
 	{
 		std::string element_name;
 		DOMElement* element = (DOMElement*)aNodeList->item(i);
-		ComponentImplementation impl(XMLString::transcode(element->getAttribute(X("id"))));
-		std::string s_code;
-		std::string s_entry;
-		std::string e_code;
-		std::string e_entry;
+		ComponentImplementationData data;
+		data.uuid = XMLString::transcode(element->getAttribute(X("id")));
 		DOMElement* child_element;
 		DOMNode* child = element->getFirstChild();
 		while (child != 0)
@@ -203,8 +200,8 @@ ComponentInstallationImpl::readInstalledComponents ()
 				//
 				if (element_name == "servants")
 				{
-					impl.servant_module_ = XMLString::transcode(child_element->getAttribute(X("code")));
-					impl.servant_entry_point_ = XMLString::transcode(child_element->getAttribute(X("entry")));
+					data.servant_module = XMLString::transcode(child_element->getAttribute(X("code")));
+					data.servant_entry_point = XMLString::transcode(child_element->getAttribute(X("entry")));
 				}
 
 				//
@@ -212,8 +209,8 @@ ComponentInstallationImpl::readInstalledComponents ()
 				//
 				else if (element_name == "business")
 				{
-					impl.executor_module_ = XMLString::transcode(child_element->getAttribute(X("code")));
-					impl.executor_entry_point_ = XMLString::transcode(child_element->getAttribute(X("entry")));
+					data.executor_module = XMLString::transcode(child_element->getAttribute(X("code")));
+					data.executor_entry_point = XMLString::transcode(child_element->getAttribute(X("entry")));
 				}
 
 				//
@@ -221,10 +218,10 @@ ComponentInstallationImpl::readInstalledComponents ()
 				//
 				else if (element_name == "valuetype")
 				{
-					ValuetypeData data;
-					data.repid = XMLString::transcode(child_element->getAttribute(X("repid")));
-					data.file_name = XMLString::transcode(child_element->getAttribute(X("code")));
-					impl.valuetypes_.push_back(data);
+					ValuetypeData vdata;
+					vdata.repid = XMLString::transcode(child_element->getAttribute(X("repid")));
+					vdata.location.file = XMLString::transcode(child_element->getAttribute(X("code")));
+					data.valuetypes.push_back(vdata);
 				}
 			}
 
@@ -235,6 +232,7 @@ ComponentInstallationImpl::readInstalledComponents ()
 		//
 		// create new ComponentImplementation
 		//
+		ComponentImplementation impl(data);
 		installed_components_.push_back(impl);
 	}
 
@@ -243,7 +241,7 @@ ComponentInstallationImpl::readInstalledComponents ()
 
 
 bool
-ComponentInstallationImpl::addInstalledComponent (ComponentImplementation* c_impl)
+ComponentInstallationImpl::addInstalledComponent (ComponentImplementationData* data)
 {
 	//
 	// parse the descriptor file
@@ -263,30 +261,32 @@ ComponentInstallationImpl::addInstalledComponent (ComponentImplementation* c_imp
 	root->appendChild(doc->createTextNode(X("\n    ")));
 
 	DOMElement* implem = doc->createElement(X("implementation"));
-	implem->setAttribute(X("id"), X(c_impl->uuid_.c_str()));
+	implem->setAttribute(X("id"), X(data->uuid.c_str()));
 	
 	implem->appendChild (doc->createTextNode(X("\n        ")));
 	DOMElement* servants = doc->createElement(X("servants"));
 	servants->appendChild(doc->createTextNode(X("\n        ")));
-	servants->setAttribute(X("code"), X(c_impl->servant_module_.c_str()));
-	servants->setAttribute(X("entry"), X(c_impl->servant_entry_point_.c_str()));
+	servants->setAttribute(X("code"), X(data->servant_module.c_str()));
+	servants->setAttribute(X("entry"), X(data->servant_entry_point.c_str()));
 	implem->appendChild (servants);
 	
 	implem->appendChild (doc->createTextNode(X("\n        ")));
 	DOMElement* business = doc->createElement(X("business"));
 	business->appendChild(doc->createTextNode(X("\n        ")));
-	business->setAttribute(X("code"), X(c_impl->executor_module_.c_str()));
-	business->setAttribute(X("entry"), X(c_impl->executor_entry_point_.c_str()));
+	business->setAttribute(X("code"), X(data->executor_module.c_str()));
+	business->setAttribute(X("entry"), X(data->executor_entry_point.c_str()));
 	implem->appendChild (business);
 
 	std::vector < ValuetypeData > ::const_iterator iter;
-	for(iter = c_impl->valuetypes_.begin(); iter != c_impl->valuetypes_.end(); iter++)
+	for(iter = data->valuetypes.begin();
+		iter != data->valuetypes.end();
+		iter++)
 	{
 		implem->appendChild (doc->createTextNode(X("\n        ")));
 		DOMElement* valuetype = doc->createElement(X("valuetype"));
 		valuetype->appendChild(doc->createTextNode(X("\n        ")));
 		valuetype->setAttribute(X("repid"), X(((*iter).repid).c_str()));
-		valuetype->setAttribute(X("code"), X(((*iter).file_name).c_str()));
+		valuetype->setAttribute(X("code"), X(((*iter).location.file).c_str()));
 		implem->appendChild (valuetype);
 	}
 
@@ -350,9 +350,11 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 
 	// First test for duplicate UUIDs
 	std::vector < ComponentImplementation >::const_iterator inst_iter;
-	for (inst_iter = installed_components_.begin(); inst_iter != installed_components_.end(); inst_iter++)
+	for (inst_iter = installed_components_.begin();
+		inst_iter != installed_components_.end();
+		inst_iter++)
 	{
-		if ((*inst_iter).uuid_ == implUUID)
+		if ((*inst_iter).data_.uuid == implUUID)
 		{
 			std::cout << ".......... already installed !" << std::endl;
 			return;
@@ -379,7 +381,9 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		//
 		// create new implementation
 		//
-		ComponentImplementation newComponentImplementation(implUUID, installationDirectory_, comp_loc);
+		ComponentImplementationData data;
+		data.uuid = implUUID;
+		ComponentImplementation newComponentImplementation(data, installationDirectory_, comp_loc);
 		bool ok = newComponentImplementation.install();
 		// remove the package
 		removeFileOrDirectory(comp_loc);
@@ -387,7 +391,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		if (ok)
 		{
 			installed_components_.push_back(newComponentImplementation); // todo move to addInst...
-			addInstalledComponent(&newComponentImplementation);
+			addInstalledComponent(&data);
 		}
 		else
 		{
@@ -431,9 +435,15 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		//
 		// create new implementation
 		//
-		ComponentImplementation newComponentImplementation(implUUID, servant_module, servant_entry_point, executor_module, executor_entry_point);
-		installed_components_.push_back (newComponentImplementation);
-		addInstalledComponent(&newComponentImplementation);
+		ComponentImplementationData data;
+		data.uuid = implUUID;
+		data.servant_module = servant_module;
+		data.servant_entry_point = servant_entry_point;
+		data.executor_module = executor_module;
+		data.executor_entry_point = executor_entry_point;
+		ComponentImplementation newComponentImplementation( data );
+		installed_components_.push_back ( newComponentImplementation );
+		addInstalledComponent( &data );
 	}
 
 	std::cout << "..... done (" << implUUID << ")" << std::endl;
@@ -459,9 +469,11 @@ throw (Components::Deployment::UnknownImplId, Components::RemoveFailure)
 	// first test for UUID
 	//
 	std::vector < ComponentImplementation >::iterator iter;
-	for (iter = installed_components_.begin(); iter != installed_components_.end(); iter++)
+	for (iter = installed_components_.begin();
+		iter != installed_components_.end();
+		iter++)
 	{
-		if ((*iter).uuid_ == implUUID)
+		if ((*iter).data_.uuid == implUUID)
 		{
 			impl = &(*iter);
 			break;
@@ -488,26 +500,30 @@ ComponentInstallationImpl::get_implementation(const char* implUUID)
 throw (Components::Deployment::UnknownImplId, Components::Deployment::InstallationFailure)
 {
     std::cout << "..... get_implementation for " << implUUID << std::endl;
+	
+	//
 	// Scan through the installed components
+	//
 	std::vector < ComponentImplementation >::const_iterator inst_iter;
-
-	for (inst_iter = installed_components_.begin(); inst_iter != installed_components_.end(); inst_iter++)
+	for(inst_iter = installed_components_.begin();
+		inst_iter != installed_components_.end();
+		inst_iter++)
 	{
-		if ((*inst_iter).uuid_ == implUUID)
+		if ((*inst_iter).data_.uuid == implUUID)
 		{
 			// Component found
-			std::string description = (*inst_iter).servant_module_ + ";";
-			description += (*inst_iter).servant_entry_point_ + ";";
-			description += (*inst_iter).executor_module_ + ";";
-			description += (*inst_iter).executor_entry_point_ + ";";
+			std::string description = (*inst_iter).data_.servant_module + ";";
+			description += (*inst_iter).data_.servant_entry_point + ";";
+			description += (*inst_iter).data_.executor_module + ";";
+			description += (*inst_iter).data_.executor_entry_point + ";";
 
 			// valuetypes
 			std::vector < ValuetypeData > ::const_iterator iter;
-			for(iter = (*inst_iter).valuetypes_.begin();
-				iter != (*inst_iter).valuetypes_.end();
+			for(iter = (*inst_iter).data_.valuetypes.begin();
+				iter != (*inst_iter).data_.valuetypes.end();
 				iter++)
 			{
-				description += (*iter).repid + ";" + (*iter).file_name + ";";
+				description += (*iter).repid + ";" + (*iter).location.file + ";";
 			}
 
 			return CORBA::string_dup (description.c_str());

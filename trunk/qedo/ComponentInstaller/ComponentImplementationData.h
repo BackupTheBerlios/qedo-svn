@@ -20,20 +20,13 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __CCD_READER_H__
-#define __CCD_READER_H__
+#ifndef __COMPONENT_IMPLEMENTATION_DATA_H__
+#define __COMPONENT_IMPLEMENTATION_DATA_H__
 
 
-#ifdef _WIN32
-#pragma warning (disable : 4290) // exception specification ignored
-#endif
-
-
-#include "DOMXMLParser.h"
-#include "PlatformBase.h"
-#include "Package.h"
-#include "ComponentImplementationData.h"
 #include <string>
+#include <vector>
+
 
 #if !defined(UNUSED) && defined(__GNUC__)
 #define UNUSED __attribute__((unused))
@@ -51,98 +44,70 @@ namespace Qedo {
  */
 
 
-extern std::string g_qedo_dir;
-
-
-// exception
-class CCDReadException
+/**
+ * file location
+ */
+struct LocationData
 {
+	/** the uri of the file */
+	std::string								uri;
+	/** the path of the file */
+	std::string								file;
 };
 
 
 /**
- * reader for component software description
+ * the idl info
  */
-class CCDReader : public virtual PlatformBase
+enum IDLKind { LINK, FILEINARCHIVE, REPOSITORY };
+struct IDLData
 {
+	/** kind if idl info */
+	IDLKind									kind;
+	/** location of idl file */
+	LocationData							location;
+};
 
-private:
 
-	/** the component implementation */
-	ComponentImplementationData*			data_;
-	/** the parsed CORBA component descriptor */
-    DOMDocument*							ccd_document_;
-	/** the package */
-	Package*								package_;
-	/** the path to drop files */
-	std::string								path_;
-    
-    /**
-	 * handle corbacomponent
-	 */
-    void corbacomponent (DOMElement*)
-        throw(CCDReadException);
+/**
+ * the valuetype info
+ */
+struct ValuetypeData
+{
+	/** the repository id of the valuetype */
+	std::string									repid;
+	/** the location of the implementation file */
+	LocationData								location;
+};
 
-    /**
-	 * handle description
-	 */
-	std::string description (DOMElement*)
-        throw(CCDReadException);
 
-    /**
-	 * handle descriptor
-	 */
-	std::string descriptor (DOMElement*)
-        throw(CCDReadException);
-
-    /**
-	 * handle extension
-	 */
-    void extension (DOMElement*)
-        throw(CCDReadException);
-
-    /**
-	 * handle fileinarchive
-	 */
-	std::string fileinarchive (DOMElement*)
-        throw(CCDReadException);
-
-	/**
-	 * handle homefeatures
-	 */
-	void homefeatures (DOMElement*)
-		throw(CCDReadException);
-
-	/**
-	 * handle homerepid
-	 */
-	std::string homerepid (DOMElement*)
-		throw(CCDReadException);
-
-    /**
-	 * handle link
-	 */
-	std::string link (DOMElement*)
-        throw(CCDReadException);
-
-public:
-
-	/**
-	 * constructor
-	 * constructs a new implementation
-	 */
-	CCDReader();
-
-	/**
-	 * denstructor
-	 */
-	~CCDReader();
-
-	/**
-	 * read CORBA Component Descriptor
-	 */
-	void readCCD(std::string descriptor, ComponentImplementationData* data, Package* package, std::string path)
-		throw(CCDReadException);
+/**
+ * the component implementation data
+ */
+struct ComponentImplementationData
+{
+	/** the uuid of the component implementation */
+	std::string									uuid;
+	/** the location of the idl spec */
+	IDLData										idl;
+	/** the RepId of the component */
+	std::string									repid;
+	/** the servant module */
+	std::string									servant_module;
+	/** the entry point for the servant module */
+	std::string									servant_entry_point;
+	/** the executor module */
+	std::string									executor_module;
+	/** the entry point for the executor module */
+	std::string									executor_entry_point;
+	/** the RepId of the home */
+	std::string									home_repid;
+	/** the name of the home */
+	std::string									home_name;
+	/** list of installed artifacts */
+	std::vector < std::string >					artifacts;
+	/** list of required valuetype factories */
+	std::vector < ValuetypeData >				valuetypes;
 };
 
 

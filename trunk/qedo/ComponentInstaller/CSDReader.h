@@ -24,17 +24,22 @@
 #define __CSD_READER_H__
 
 
+#ifdef _WIN32
+#pragma warning (disable : 4290) // exception specification ignored
+#endif
+
 #include "Package.h"
 #include "DOMXMLParser.h"
 #include "PlatformBase.h"
-#include "ComponentImplementation.h"
-#include <string>
+#include "ComponentImplementationData.h"
+
 
 #if !defined(UNUSED) && defined(__GNUC__)
 #define UNUSED __attribute__((unused))
 #else
 #define UNUSED
 #endif
+
 
 namespace Qedo {
 
@@ -62,12 +67,16 @@ class CSDReader : public virtual PlatformBase
 
 private:
 
-	/** the component implementation */
-	ComponentImplementation*				component_implementation_;
+	/** the component implementation data */
+	ComponentImplementationData*				data_;
     /** the parsed software package descriptor */
-	DOMDocument*							csd_document_;
-	/** the CORBA component descriptor */
-	std::string								ccd_file_;
+	DOMDocument*								csd_document_;
+	/** the Software Package */
+	Package*									package_;
+	/** the path to drop files from the package*/
+	std::string									path_;
+	/** ccd file */
+	std::string									ccd_file_;
     
     /**
 	 * handle author
@@ -120,7 +129,7 @@ private:
     /**
 	 * fileinarchive
 	 */
-	std::string fileinarchive (DOMElement*)
+	LocationData fileinarchive (DOMElement*)
         throw(CSDReadException);
 
     /**
@@ -144,7 +153,7 @@ private:
     /**
 	 * link
 	 */
-	std::string link (DOMElement*)
+	LocationData link (DOMElement*)
         throw(CSDReadException);
 
 	/**
@@ -217,7 +226,7 @@ public:
 	/**
 	 * read Component Software Descriptor
 	 */
-	void readCSD(std::string descriptor, ComponentImplementation* impl)
+	void readCSD(std::string package, ComponentImplementationData* data, std::string path)
 		throw(CSDReadException);
 };
 
