@@ -10,14 +10,8 @@ CC=$(CXX)
 @SET_MAKE@
 
 LIBS += -L../ComponentIDL -lComponent\
-           -L../ComponentContainer -lComponentContainer 
-
-ifeq "${XERCESDIR}" ""
-error "No xerces"
-else
-CPPFLAGS += -I${XERCESDIR}/include
-LIBS += -L${XERCESDIR}/lib -lxerces-c
-endif
+        -L../ComponentContainer -lComponentContainer \
+		  @XERCES_LIBS@
 
 LDLIBS = ${LIBS}
 

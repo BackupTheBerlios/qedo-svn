@@ -42,9 +42,11 @@ AC_CACHE_CHECK([for Apache's Xerces-C XML library],
     [AC_LANG_SAVE
      AC_LANG_CPLUSPLUS
 if test X"$XERCESDIR" = X ;then
+	XERCES_LIBS="-lxerces-c"
 	LIBS="-lxerces-c $LIBS"
 	XERCESDIR=""
 else
+	XERCES_LIBS="-L$XERCESDIR/lib -lxerces-c"
 	LIBS="-L$XERCESDIR/lib -lxerces-c $LIBS"
 	CPPFLAGS="-I$XERCESDIR/include $CPPFLAGS"
 fi
@@ -66,6 +68,7 @@ if test X"$HAVE_XERCES" = Xno; then
   AC_MSG_ERROR([cannot find libxerces-c])
 fi
 AC_SUBST(HAVE_XERCES)
+AC_SUBST(XERCES_LIBS)
 
 
 # Checks for header files.
