@@ -22,7 +22,9 @@
 
 SUBDIRS = general/hello_world \
 	general/philosopher \
-	streams/simple
+	streams/simple \
+	general/auction \
+	events/ChatChannel
 
 all: $(SUBDIRS:%=%-all)
 

@@ -12,7 +12,7 @@ CPP_FILES = HelloWorld_CalleeImpl_EQUIVALENT.cpp \
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
 
-CLEAN_FILES = ${OBJ_FILES} HelloWorld_CalleeImpl_SERVANT.so
+CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} HelloWorld_CalleeImpl_SERVANT.so
 
 CXXFLAGS += -I.
 
