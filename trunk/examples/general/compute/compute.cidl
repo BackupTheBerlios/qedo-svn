@@ -8,7 +8,7 @@ module Computation {
 			manages ServerExec;
 		};
 	};
-	
+
 	composition session ClientCompo {
 		home executor ClientHomeExec {
 			implements Computation::ClientHome;
@@ -16,5 +16,3 @@ module Computation {
 		};
 	};
 };
-
-	
