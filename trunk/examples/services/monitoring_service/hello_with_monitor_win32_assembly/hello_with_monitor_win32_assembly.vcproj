@@ -103,6 +103,9 @@
 			RelativePath="meta-inf\callee.cpf">
 		</File>
 		<File
+			RelativePath="meta-inf\caller.cpf">
+		</File>
+		<File
 			RelativePath="meta-inf\hello_with_monitoring_win32.cad">
 			<FileConfiguration
 				Name="Debug|Win32">
