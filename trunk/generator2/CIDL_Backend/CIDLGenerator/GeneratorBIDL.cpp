@@ -60,16 +60,13 @@ GeneratorBIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 
 	CORBA::ULong len;
 	CORBA::ULong i;
-	IR__::ContainedSeq_var contained_seq;
-	IR__::ModuleDef_var act_module;
-	CIDL::CompositionDef_var a_composition;
-
-	switch (item->describe()->kind) {
-	case CORBA__::dk_Module:
-		act_module = IR__::ModuleDef::_narrow(item);
+	switch (item->describe()->kind)
+	{
+	case CORBA__::dk_Module : {
+		IR__::ModuleDef_var act_module = IR__::ModuleDef::_narrow(item);
 
 		// modules
-		contained_seq = act_module->contents(CORBA__::dk_Module, true);
+		IR__::ContainedSeq_var contained_seq = act_module->contents(CORBA__::dk_Module, true);
 		len = contained_seq->length();
 		for(i = 0; i < len; i++)
 		{
@@ -79,6 +76,7 @@ GeneratorBIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 		// compositions
 		contained_seq = repository_->contents(CORBA__::dk_Composition, true);
 		len = contained_seq->length();
+		CIDL::CompositionDef_var a_composition;
 		for(i = 0; i < len; i++)
 		{
 			a_composition = CIDL::CompositionDef::_narrow((*contained_seq)[i]);
@@ -102,7 +100,7 @@ GeneratorBIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 			}
 		}
 
-		break;
+		break; }
 	case CORBA__::dk_Composition : {
 		insert_to_generate(item);
 		break; }
