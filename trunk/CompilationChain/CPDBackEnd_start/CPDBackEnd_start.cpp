@@ -1,5 +1,5 @@
 
-static char rcsid[] = "$Id: CPDBackEnd_start.cpp,v 1.1 2004/03/05 13:43:23 jre Exp $";
+static char rcsid[] = "$Id: CPDBackEnd_start.cpp,v 1.2 2004/06/15 12:12:10 jre Exp $";
 
 #ifdef MICO_ORB
 #ifdef WIN32
@@ -121,7 +121,7 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	}
 
 	const char* path;
-	path = getenv ( "compilation_chain" );
+	path = getenv ( "qedo_backends" );
 	std::string cpd_servant = path ;
 	std::string cpd_exec = path;
 	
@@ -131,8 +131,8 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	cpd_exec.append("\\orbacus\CCMGenerator_CPDBackEnd_compo.dll");
 #endif//ORBACUS_ORB
 #ifdef MICO_ORB
-	cpd_servant.append("\\mico\\CCMGenerator_CPDBackEnd_compo_SERVANT.dll");
-	cpd_exec.append("\\mico\\CCMGenerator_CPDBackEnd_compo.dll");
+	cpd_servant.append("\\CCMGenerator_CPDBackEnd_compo_SERVANT.dll");
+	cpd_exec.append("\\CCMGenerator_CPDBackEnd_compo.dll");
 #endif//MICO_ORB
 #else//!_WIN32
 #ifdef ORBACUS_ORB
@@ -275,8 +275,15 @@ main (int argc, char** argv)
 		exit (-1);
 	}
 
-	std::cout << "register name service in the container" << std::endl;
-	container->install_service_reference("NameService", ns);
+	try
+	{ 
+		std::cout << "register name service in the container" << std::endl;
+		container->install_service_reference("NameService", ns);
+	}
+	catch (Components::CCMException&)
+	{
+		std::cerr << "Components::CCMException by install service reference" << std::endl;
+	}
 
 	Components::CCMHome_var home;
 

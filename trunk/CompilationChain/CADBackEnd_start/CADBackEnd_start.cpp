@@ -1,5 +1,5 @@
 
-static char rcsid[] = "$Id: CADBackEnd_start.cpp,v 1.1 2004/03/05 13:04:31 jre Exp $";
+static char rcsid[] = "$Id: CADBackEnd_start.cpp,v 1.2 2004/06/15 12:12:10 jre Exp $";
 
 //#include <CORBA.h>
 
@@ -126,7 +126,7 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	// install components
 	//
 	const char* path;
-	path = getenv ( "compilation_chain" );
+	path = getenv ( "qedo_backends" );
 	std::string cad_servant = path ;
 	std::string cad_exec = path;
 	
@@ -136,8 +136,8 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	cad_exec.append("\\orbacus\CCMGenerator_CADBackEnd_compo.dll");
 #endif//ORBACUS_ORB
 #ifdef MICO_ORB
-	cad_servant.append("\\mico\\CCMGenerator_CADBackEnd_compo_SERVANT.dll");
-	cad_exec.append("\\mico\\CCMGenerator_CADBackEnd_compo.dll");
+	cad_servant.append("\\CCMGenerator_CADBackEnd_compo_SERVANT.dll");
+	cad_exec.append("\\CCMGenerator_CADBackEnd_compo.dll");
 #endif//MICO_ORB
 #else//!_WIN32
 #ifdef ORBACUS_ORB
@@ -278,9 +278,17 @@ main (int argc, char** argv)
 		exit (-1);
 	}
 
-	std::cout << "register name service in the container" << std::endl;
-	container->install_service_reference("NameService", ns);
-
+	
+	try
+	{ 
+		std::cout << "register name service in the container" << std::endl;
+		container->install_service_reference("NameService", ns);
+	}
+	catch (Components::CCMException&)
+	{
+		std::cerr << "Components::CCMException by install service reference" << std::endl;
+	}
+	
 	Components::CCMHome_var home;
 
 	std::cout << "install home for caller" << std::endl;
