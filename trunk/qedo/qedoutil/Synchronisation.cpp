@@ -181,28 +181,4 @@ qedo_startDetachedThread(void* (*p)(void*), void* arg) {
 }
 
 
-CORBA::Long
-interlocked_increment (CORBA::Long* l)
-{
-#ifdef _WIN32
-	return InterlockedIncrement (l);
-#else
-	// Here the qedo::mutex must be added
-	return ++(*l);
-#endif
-}
-
-
-CORBA::Long
-interlocked_decrement (CORBA::Long* l)
-{
-#ifdef _WIN32
-	return InterlockedDecrement (l);
-#else
-	// Here the qedo::mutex must be added
-	return --(*l);
-#endif
-}
-
-
 } // end namespace Qedo

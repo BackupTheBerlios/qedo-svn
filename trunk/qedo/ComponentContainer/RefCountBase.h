@@ -24,6 +24,7 @@
 #define __REFCOUNT_BASE_H__
 
 #include <CORBA.h>
+#include "Synchronisation.h"
 #include "Util.h"
 
 
@@ -45,6 +46,9 @@ class CONTAINERDLL_API RefCountBase
 private:
 	/** the reference counter */
 	CORBA::Long ref_count_;
+
+	/** the mutex for ref_count_ manipulation */
+	qedo_mutex mutex_;
 
 public:
 	/**
@@ -83,6 +87,9 @@ class CONTAINERDLL_API RefCountLocalObject : public virtual CORBA::LocalObject
 private:
 	/** the reference counter */
 	CORBA::Long ref_count_;
+
+	/** the mutex for ref_count_ manipulation */
+	qedo_mutex mutex_;
 
 public:
 	/**

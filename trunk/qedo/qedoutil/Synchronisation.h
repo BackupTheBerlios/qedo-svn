@@ -189,20 +189,6 @@ struct t_start {
 };
 
 
-/**
- * thread safe incrementation
- */
-CORBA::Long
-CONTAINERDLL_API interlocked_increment (CORBA::Long* l);
-
-
-/**
- * thread safe decrementation
- */
-CORBA::Long
-CONTAINERDLL_API interlocked_decrement (CORBA::Long* l);
-
-
 /** @} */
 
 } // name space Qedo
