@@ -91,7 +91,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\IDL\simple_vid_sink_home_SERVANT.cpp
+SOURCE=..\IDL\simple_SERVANT.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -99,7 +99,7 @@ SOURCE=..\IDL\simple_vid_sink_home_SERVANT.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\IDL\simple_vid_sink_home_SERVANT.h
+SOURCE=..\IDL\simple_SERVANT.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

@@ -67,8 +67,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SOURCESERVANTS_EXPORTS" /YX /FD /GZ  /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /I "$(QEDO)\ComponentIDL" /I "$(QEDO)\ComponentContainer" /I "..\IDL" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SOURCESERVANTS_EXPORTS" /YX /FD /GZ  /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SOURCESERVANTS_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /I "$(QEDO)\ComponentIDL" /I "$(QEDO)\ComponentContainer" /I "..\IDL" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "SOURCESERVANTS_EXPORTS" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\IDL\simple_vid_source_home_SERVANT.cpp
+SOURCE=..\IDL\simple_SERVANT.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -99,7 +99,7 @@ SOURCE=..\IDL\simple_vid_source_home_SERVANT.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\IDL\simple_vid_source_home_SERVANT.h
+SOURCE=..\IDL\simple_SERVANT.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
