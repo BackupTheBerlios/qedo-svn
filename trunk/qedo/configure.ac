@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(Qedo, 0.5.0, qedo@qedo.berlios.de)
+AC_INIT(Qedo, 0.5.1, qedo@qedo.berlios.de)
 AC_CONFIG_SRCDIR([gendef/gendef.cc])
 AC_CONFIG_HEADER([ComponentIDL/config.h])
 
@@ -22,8 +22,8 @@ AC_ARG_WITH(mico,
 AC_SUBST(MICODIR)
 
 AC_ARG_WITH(wxGTK,
- [  --with-wxGTK=micodir         use wxGTK installed in WXGTKDIR],
- WXGTKDIR=$withval, WXGTKDIR="")
+ [  --with-wxGTK=wxgtkdir         use wxGTK installed in WXGTKDIR],
+ WXGTKDIR=$withval, WXGTKDIR="/usr")
 AC_SUBST(WXGTKDIR)
 
 AC_ARG_ENABLE(optimize,
