@@ -26,6 +26,9 @@
 	        	<componentfileref idref="Callee_file"/>
 				<componentimplref idref="UUID-e4bc061b-5ab8-494c-a21e-fab954876376"/>
   	        	<componentinstantiation id="callee">
+			<componentproperties>
+  	        		<fileinarchive name="meta-inf/callee.cpf" />
+  	        	</componentproperties>
 			</componentinstantiation>
 
 		        <destination></destination>
