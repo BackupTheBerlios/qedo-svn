@@ -13,12 +13,10 @@ GeneratorCCD::GeneratorCCD
 {
 }
 
-
 GeneratorCCD::~GeneratorCCD
 ()
 {
 }
-
 
 void
 GeneratorCCD::check_for_generation(IR__::Contained_ptr item)
@@ -26,8 +24,7 @@ GeneratorCCD::check_for_generation(IR__::Contained_ptr item)
 	//
 	// check if item is already known
 	//
-	if (item_well_known(item))
-	{
+	if (item_well_known(item)) {
 		return;
 	}
 
@@ -48,7 +45,9 @@ GeneratorCCD::check_for_generation(IR__::Contained_ptr item)
 	CIDL::CompositionDef_var a_composition;
 
 	switch (item->describe()->kind) {
+	
 	case CORBA__::dk_Module:
+	{
 		act_module = IR__::ModuleDef::_narrow(item);
 
 		// modules
@@ -86,16 +85,18 @@ GeneratorCCD::check_for_generation(IR__::Contained_ptr item)
 		}
 
 		break;
-	case CORBA__::dk_Composition : {
+	}
+	case CORBA__::dk_Composition : 
+	{
 		insert_to_generate(item);
-		break; }
+		break; 
+	}
 	default:
 		break;
 	};
 
 	m_recursion_set.erase(item->id());
 }
-
 
 void
 GeneratorCCD::generate(std::string target, std::string fileprefix)
@@ -106,10 +107,6 @@ GeneratorCCD::generate(std::string target, std::string fileprefix)
 	doGenerate();
 }
 
-
-//
-// composition
-//
 void
 GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 {
@@ -131,6 +128,8 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 	filename_.append(".ccd");
 	out.open(filename_.c_str());
 
+	CIDL::LifecycleCategory lc = composition->lifecycle();
+
 	out << "<?xml version = '1.0' ?>\n";
 	out << "<!DOCTYPE corbacomponent PUBLIC \"-//OMG//DTD CORBA Component Descriptor\"";
 	out << " \"http://qedo.berlios.de/corbacomponent.dtd\">\n\n";
@@ -143,24 +142,43 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
     
 	out << "<componentkind>\n";
 	out.indent();
-    out << "<session>\n";
+	switch(lc) {
+	case (CIDL::lc_Session):
+		out << "<session>\n";
+		break;
+	case (CIDL::lc_Entity):
+		out << "<entity>\n";
+		break;
+	default:
+		std::cerr << "unsupported lifecycle category" << std::endl;
+	}
 	out.indent();
     out << "<servant lifetime=\"container\"/>\n";
 	out.unindent();
-    out << "</session>\n";
+    switch(lc) {
+	case (CIDL::lc_Session):
+		out << "</session>\n";
+		break;
+	case (CIDL::lc_Entity):
+		out << "</entity>\n";
+		break;
+	default:
+		std::cerr << "unsupported lifecycle category" << std::endl;
+	}
 	out.unindent();
     out << "</componentkind>\n";
 
     out << "<threading policy=\"multithread\"/>\n";
-    out << "<configurationcomplete set=\"true\"/>\n";
+    out << "<configurationcomplete set=\"true\"/>\n\n";
 	
 	//<segment name="Seg" segmenttag="">
     //    <segmentmember facettag="the_fork"/>
     //</segment>
-    
+
 	out << "<homefeatures name=\"" << composition->ccm_home()->name();
 	out << "\" repid=\"" << composition->ccm_home()->id() << "\">\n";
-    out << "</homefeatures>\n";
+    out << "</homefeatures>\n\n";
+
     out << "<componentfeatures name=\"" << composition->ccm_component()->name();
 	out << "\" repid=\"" << composition->ccm_component()->id() << "\">\n";
     out.indent();
@@ -177,6 +195,4 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 	out.close();
 }
 
-
 } // namespace
-
