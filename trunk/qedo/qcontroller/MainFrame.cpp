@@ -34,8 +34,8 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	 panel_->SetAutoLayout(TRUE);
 
 //	 sizerFrame_->Fit(this);
-	
-	 Centre(wxBOTH);
+
+//	 Centre(wxBOTH);
 
 
 }
