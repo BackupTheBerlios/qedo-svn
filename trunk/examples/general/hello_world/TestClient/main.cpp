@@ -1,5 +1,5 @@
 
-static char rcsid[] = "$Id: main.cpp,v 1.3 2003/09/10 06:13:09 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.4 2003/10/10 15:58:51 tom Exp $";
 
 #include <CORBA.h>
 
@@ -105,7 +105,7 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 #ifdef _WIN32
     ::GetCurrentDirectory(1024, path);
 #else
-    getcwd(path,1023));
+    getcwd(path,1023);
 #endif
 	std::string callee_servant = path;
 	std::string callee_exec = path;
