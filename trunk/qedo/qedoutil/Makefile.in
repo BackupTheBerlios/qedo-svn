@@ -58,7 +58,8 @@ SOURCES = CADReader.cpp \
 HEADER = ${SOURCES:.cpp=.h} \
 	Uri.h \
 	ComponentImplementationData.h \
-	AssemblyData.h
+	AssemblyData.h \
+	CompositionData.h
 
 
 OBJS = ${SOURCES:.cpp=.o}
