@@ -11,24 +11,22 @@
     <idl id="IDL:Chat/ChatReaderHome:1.0">
         <fileinarchive name="chat.cidl"/>
     </idl>
-    
-    <implementation id="UUID-d95af665-7530-42e3-8c98-8b09a4cd0b75">
+
+    <implementation id="UUID-d4eb84e6-9929-4d07-bc41-c973b1a1f9d5">
         <os name="linux" />
         <processor name="" />
         <compiler name="" version="" />
         <programminglanguage name="C++" />
-        <dependency type="DLL"><localfile name="jtcd.dll"/></dependency>
-        <dependency type="DLL"><localfile name="obd.dll"/></dependency>
         <descriptor type="CORBA-Component">
             <fileinarchive name="meta-inf/Chat_Reader_Compo.ccd" />
         </descriptor>
         <code type="DLL">
-            <fileinarchive name="Chat_Reader_Compo.dll"/>
+            <fileinarchive name="libChat_Reader_Compo.so"/>
             <entrypoint>create_ChatReaderHomeE</entrypoint>
             <usage>executor</usage>
         </code>
         <code type="DLL">
-            <fileinarchive name="Chat_Reader_Compo_SERVANT.dll"/>
+            <fileinarchive name="libChat_Reader_Compo_SERVANT.so"/>
             <entrypoint>create_ChatReaderHomeS</entrypoint>
             <usage>servant</usage>
         </code>

@@ -11,24 +11,22 @@
     <idl id="IDL:Chat/ChatWriterHome:1.0">
         <fileinarchive name="chat.cidl"/>
     </idl>
-    
-    <implementation id="UUID-823583de-b0cf-4ea7-96eb-551ee57a6caf">
+
+    <implementation id="UUID-0ef50e60-f613-4e3e-91da-37c71d21c6c9">
         <os name="linux" />
         <processor name="" />
         <compiler name="" version="" />
         <programminglanguage name="C++" />
-        <dependency type="DLL"><localfile name="jtcd.dll"/></dependency>
-        <dependency type="DLL"><localfile name="obd.dll"/></dependency>
         <descriptor type="CORBA-Component">
             <fileinarchive name="meta-inf/Chat_Writer_Compo.ccd" />
         </descriptor>
         <code type="DLL">
-            <fileinarchive name="Chat_Writer_Compo.dll"/>
+            <fileinarchive name="libChat_Writer_Compo.so"/>
             <entrypoint>create_ChatWriterHomeE</entrypoint>
             <usage>executor</usage>
         </code>
         <code type="DLL">
-            <fileinarchive name="Chat_Writer_Compo_SERVANT.dll"/>
+            <fileinarchive name="libChat_Writer_Compo_SERVANT.so"/>
             <entrypoint>create_ChatWriterHomeS</entrypoint>
             <usage>servant</usage>
         </code>

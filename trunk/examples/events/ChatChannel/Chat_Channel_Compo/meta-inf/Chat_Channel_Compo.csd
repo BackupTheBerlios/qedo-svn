@@ -9,26 +9,24 @@
     <description></description>
     <license href="" />
     <idl id="IDL:Chat/ChatChannelHome:1.0">
-        <fileinarchive name="Chat_Channel_Compo.idl"/>
+        <fileinarchive name="chat.cidl"/>
     </idl>
-    
-    <implementation id="UUID-ca763c38-e98b-48f9-9e86-6eb3269a8ab8">
+
+    <implementation id="UUID-1d2ee222-9592-4819-996f-8cf90d65565b">
         <os name="linux" />
         <processor name="" />
         <compiler name="" version="" />
         <programminglanguage name="C++" />
-        <dependency type="DLL"><localfile name="jtcd.dll"/></dependency>
-        <dependency type="DLL"><localfile name="obd.dll"/></dependency>
         <descriptor type="CORBA-Component">
             <fileinarchive name="meta-inf/Chat_Channel_Compo.ccd" />
         </descriptor>
         <code type="DLL">
-            <fileinarchive name="Chat_Channel_Compo.dll"/>
+            <fileinarchive name="libChat_Channel_Compo.so"/>
             <entrypoint>create_ChatChannelHomeE</entrypoint>
             <usage>executor</usage>
         </code>
         <code type="DLL">
-            <fileinarchive name="Chat_Channel_Compo_SERVANT.dll"/>
+            <fileinarchive name="libChat_Channel_Compo_SERVANT.so"/>
             <entrypoint>create_ChatChannelHomeS</entrypoint>
             <usage>servant</usage>
         </code>
