@@ -40,7 +40,6 @@
   	        	<componentinstantiation id="monitor_service1">
 			</componentinstantiation>
 
-		        <destination></destination>
 		</homeplacement>
 
         <homeplacement id="pHome">
@@ -61,7 +60,6 @@
 					<fileinarchive name="meta-inf/charly.cpf"/>
 				</componentproperties>
 	        </componentinstantiation>
-	        <destination></destination>
 	</homeplacement>
 	</processcollocation>
 
@@ -72,7 +70,6 @@
   	        	<componentinstantiation id="monitor_service2">
 			</componentinstantiation>
 
-		        <destination></destination>
 		</homeplacement>
 
 	    <homeplacement id="cHome">
@@ -90,7 +87,6 @@
 				</componentproperties>	        
 				<registercomponent><registerwithnaming name="CCM/Components/fork2"/></registercomponent>
 			</componentinstantiation>
-	        <destination></destination>
 	    </homeplacement>
 	</processcollocation>
 
@@ -101,7 +97,6 @@
   	        	<componentinstantiation id="monitor_service3">
 			</componentinstantiation>
 
-		        <destination></destination>
 		</homeplacement>
 
 	    <homeplacement id="oHome">
@@ -113,7 +108,6 @@
 				</componentproperties>	                    
 			    <registercomponent><registerwithnaming name="CCM/Components/Observer"/></registercomponent>
 			</componentinstantiation>
-	        <destination></destination>
 	    </homeplacement>
 	</processcollocation>
     </partitioning>
