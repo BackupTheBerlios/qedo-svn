@@ -108,7 +108,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../StreamComponentIDL;../ComponentContainer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentContainer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;"
 				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;QEDOUTIL_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="3"
@@ -162,7 +162,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..\ComponentIDL;../StreamComponentIDL;..\ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;"
+				AdditionalIncludeDirectories=".;..\ComponentIDL;..\ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_WINDOWS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_USRDLL;QEDOUTIL_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="3"
