@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/ComponentIDL;$(ORBACUS)\include;$(ORBACUS)\include\OB;../IDL"
+				AdditionalIncludeDirectories=".;&quot;$(QEDO)/ComponentIDL&quot;;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;../IDL;&quot;$(QEDO)/ComponentContainer&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -49,7 +49,8 @@
 				CommandLine="wzzip.exe philosopher.zip $(TargetPath) ..\idl\philosophers.idl philosopher.csd ..\idl\dinner_PhilosopherImpl.ccd
 wzzip.exe cutlery.zip $(TargetPath) ..\idl\philosophers.idl cutlery.csd ..\idl\dinner_CutleryImpl.ccd
 wzzip.exe observer.zip $(TargetPath) ..\idl\philosophers.idl observer.csd ..\idl\dinner_ObserverImpl.ccd
-copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;"/>
+copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -86,6 +87,108 @@ copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;"/>
 				Name="VCLinkerTool"
 				OutputFile="$(OutDir)/ExecutorModule.dll"
 				LinkIncremental="1"
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				ImportLibrary="$(OutDir)/ExecutorModule.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_orbacus|Win32"
+			OutputDirectory="Debug_orbacus"
+			IntermediateDirectory="Debug_orbacus"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;&quot;$(QEDO)/ComponentIDL&quot;;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;../IDL;&quot;$(QEDO)/ComponentContainer&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib"
+				OutputFile="../../../../Runtime/philosopherE.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;$(QEDO)\ComponentIDL\Debug_orbacus&quot;;&quot;$(ORBACUS)\lib&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/ExecutorModule.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/ExecutorModule.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="wzzip.exe philosopher.zip $(TargetPath) ..\idl\philosophers.idl philosopher.csd ..\idl\dinner_PhilosopherImpl.ccd
+wzzip.exe cutlery.zip $(TargetPath) ..\idl\philosophers.idl cutlery.csd ..\idl\dinner_CutleryImpl.ccd
+wzzip.exe observer.zip $(TargetPath) ..\idl\philosophers.idl observer.csd ..\idl\dinner_ObserverImpl.ccd
+copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release_orbacus|Win32"
+			OutputDirectory="Release_orbacus"
+			IntermediateDirectory="Release_orbacus"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				AdditionalIncludeDirectories=".;&quot;$(QEDO)/ComponentIDL&quot;;&quot;$(ORBACUS)/include&quot;;&quot;$(ORBACUS)/include/OB&quot;;../IDL;&quot;$(QEDO)/ComponentContainer&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS"
+				StringPooling="TRUE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ob.lib jtc.lib"
+				OutputFile="../../../../Runtime/philosopherE.dll"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories="&quot;$(QEDO)\ComponentIDL\Release_orbacus&quot;;&quot;$(ORBACUS)/lib&quot;"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"

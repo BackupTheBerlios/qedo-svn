@@ -37,6 +37,32 @@
 				BuildCommandLine="wzzip.exe &quot;%QEDO%\..\runtime\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
 				Output="must_be_here_to_force_generation"/>
 		</Configuration>
+		<Configuration
+			Name="Debug_orbacus|Win32"
+			OutputDirectory="Debug_orbacus"
+			IntermediateDirectory="Debug_orbacus"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="wzzip.exe &quot;%QEDO%\..\runtime\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
+				ReBuildCommandLine="wzzip.exe &quot;%QEDO%\..\runtime\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
+				Output="must_be_here_to_force_generation"/>
+		</Configuration>
+		<Configuration
+			Name="Release_orbacus|Win32"
+			OutputDirectory="Release_orbacus"
+			IntermediateDirectory="Release_orbacus"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="wzzip.exe &quot;%QEDO%\..\runtime\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
+				ReBuildCommandLine="wzzip.exe &quot;%QEDO%\..\runtime\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
+				Output="must_be_here_to_force_generation"/>
+		</Configuration>
 	</Configurations>
 	<Files>
 		<File

@@ -219,7 +219,7 @@ void
 CutleryImpl::set_session_context(::Components::SessionContext_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::dinner::CCM_Cutlery_Context::_narrow(context);
+    context_ = dynamic_cast<::dinner::CCM_Cutlery_Context*>(context);
     
     component_->set_context(context_);
     Seg_->set_context(context_);
