@@ -847,6 +847,12 @@ if test -n "$ac_init_help"; then
    esac
   cat <<\_ACEOF
 
+Optional Features:
+  --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
+  --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --disable-optimize      do not use -O2 to compile
+  --enable-debug          use -g to compile
+
 Some influential environment variables:
   CXX         C++ compiler command
   CXXFLAGS    C++ compiler flags
@@ -1116,7 +1122,7 @@ _ASBOX
       echo "$as_me: caught signal $ac_signal"
     echo "$as_me: exit $exit_status"
   } >&5
-  rm -f core core.* *.core &&
+  rm -f core *.core &&
   rm -rf conftest* confdefs* conf$$* $ac_clean_files &&
     exit $exit_status
      ' 0
@@ -1278,6 +1284,22 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 #AC_CONFIG_SRCDIR([gendef/gendef.cc])
           ac_config_headers="$ac_config_headers config.h"
 
+
+# Check whether --enable-optimize or --disable-optimize was given.
+if test "${enable_optimize+set}" = set; then
+  enableval="$enable_optimize"
+  use_opt=$enableval
+else
+  use_opt=yes
+fi;
+
+# Check whether --enable-debug or --disable-debug was given.
+if test "${enable_debug+set}" = set; then
+  enableval="$enable_debug"
+  use_debug=$enableval
+else
+  use_debug=no
+fi;
 
 
 # Checks for programs.
@@ -2270,6 +2292,24 @@ echo "$as_me: error: cannot find kc++ program" >&2;}
    { (exit 1); exit 1; }; }
 fi
 KC_PP="kc++"
+
+
+# do enable debug
+CONF_OPT_FLAGS="-O2"
+CONF_DEBUG_FLAGS="-g"
+
+
+CXXFLAGS=`echo " $CXXFLAGS " | sed -e 's/ -g / /g' -e 's/ -O[0-9]* / /g'`
+CFLAGS=`echo " $CFLAGS " | sed -e 's/ -g / /g' -e 's/ -O[0-9]* / /g'`
+
+if test X"$use_opt" != Xno; then
+  CXXFLAGS="$CONF_OPT_FLAGS $CXXFLAGS"
+  CFLAGS="$CONF_OPT_FLAGS $CFLAGS"
+fi
+if test X"$use_debug" != Xno; then
+  CXXFLAGS="$CONF_DEBUG_FLAGS $CXXFLAGS"
+  CFLAGS="$CONF_DEBUG_FLAGS $CFLAGS"
+fi
 
 
 # Checks for header files.
@@ -3334,7 +3374,7 @@ sed 's/^/| /' conftest.$ac_ext >&5
 ( exit $ac_status )
 ac_cv_header_stdc=no
 fi
-rm -f core core.* *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
 fi
@@ -4350,7 +4390,7 @@ sed 's/^/| /' conftest.$ac_ext >&5
 ( exit $ac_status )
 ac_cv_func_fork_works=no
 fi
-rm -f core core.* *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
 echo "$as_me:$LINENO: result: $ac_cv_func_fork_works" >&5
@@ -4505,7 +4545,7 @@ sed 's/^/| /' conftest.$ac_ext >&5
 ( exit $ac_status )
 ac_cv_func_vfork_works=no
 fi
-rm -f core core.* *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
 echo "$as_me:$LINENO: result: $ac_cv_func_vfork_works" >&5
@@ -5003,7 +5043,7 @@ sed 's/^/| /' conftest.$ac_ext >&5
 ( exit $ac_status )
 ac_cv_func_working_mktime=no
 fi
-rm -f core core.* *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
 echo "$as_me:$LINENO: result: $ac_cv_func_working_mktime" >&5
@@ -5063,7 +5103,7 @@ sed 's/^/| /' conftest.$ac_ext >&5
 ( exit $ac_status )
 ac_cv_func_lstat_dereferences_slashed_symlink=no
 fi
-rm -f core core.* *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 else
   # If the `ln -s' command failed, then we probably don't even
@@ -5132,7 +5172,7 @@ sed 's/^/| /' conftest.$ac_ext >&5
 ( exit $ac_status )
 ac_cv_func_stat_empty_string_bug=no
 fi
-rm -f core core.* *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 fi
 echo "$as_me:$LINENO: result: $ac_cv_func_stat_empty_string_bug" >&5
@@ -5197,9 +5237,9 @@ sed 's/^/| /' conftest.$ac_ext >&5
 ( exit $ac_status )
 ac_cv_func_utime_null=no
 fi
-rm -f core core.* *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
-rm -f core core.* *.core
+rm -f core core.*
 fi
 echo "$as_me:$LINENO: result: $ac_cv_func_utime_null" >&5
 echo "${ECHO_T}$ac_cv_func_utime_null" >&6

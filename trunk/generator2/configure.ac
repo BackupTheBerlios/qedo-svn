@@ -6,6 +6,14 @@ AC_INIT(Qedo, 0.9.0, qedo@qedo.berlios.de)
 #AC_CONFIG_SRCDIR([gendef/gendef.cc])
 AC_CONFIG_HEADER([config.h])
 
+AC_ARG_ENABLE(optimize,
+ [  --disable-optimize      do not use -O2 to compile],
+ use_opt=$enableval, use_opt=yes)
+
+AC_ARG_ENABLE(debug,
+ [  --enable-debug          use -g to compile],
+ use_debug=$enableval, use_debug=no)
+
 
 # Checks for programs.
 AC_PROG_CXX
@@ -49,6 +57,24 @@ if test X"$HAVE_KC_PP" != Xyes; then
 fi
 KC_PP="kc++"
 AC_SUBST(KC_PP)
+
+# do enable debug
+CONF_OPT_FLAGS="-O2"
+CONF_DEBUG_FLAGS="-g"
+
+changequote(<<, >>)
+CXXFLAGS=`echo " $CXXFLAGS " | sed -e 's/ -g / /g' -e 's/ -O[0-9]* / /g'`
+CFLAGS=`echo " $CFLAGS " | sed -e 's/ -g / /g' -e 's/ -O[0-9]* / /g'`
+changequote([, ])
+if test X"$use_opt" != Xno; then
+  CXXFLAGS="$CONF_OPT_FLAGS $CXXFLAGS"
+  CFLAGS="$CONF_OPT_FLAGS $CFLAGS"
+fi
+if test X"$use_debug" != Xno; then
+  CXXFLAGS="$CONF_DEBUG_FLAGS $CXXFLAGS"
+  CFLAGS="$CONF_DEBUG_FLAGS $CFLAGS"
+fi
+
 
 # Checks for header files.
 AC_HEADER_STDC
