@@ -258,7 +258,7 @@ main (int argc, char** argv)
 	}
 
 	try	{
-		std::cout << "connect NodeManager with ci and csa" << std::endl;
+		std::cout << "connect NodeManager with qci and qcsa" << std::endl;
 		// needs to be adapted if other CCM implementations are used.
 		node_manager->connect_orig_component_installation(Components::Deployment::ComponentInstallation::_duplicate(component_installer.in()));
 		node_manager->connect_orig_server_activator(server_activator);
@@ -273,3 +273,4 @@ main (int argc, char** argv)
 
 	return 0;
 };
+
