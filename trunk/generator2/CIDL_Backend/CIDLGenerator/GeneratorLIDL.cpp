@@ -433,6 +433,8 @@ GeneratorLIDL::doHome(IR__::HomeDef_ptr home)
 	if(base)
 	{
 		out << getLocalName(base);
+		out << "Explicit";
+
 	}
 	else
 	{

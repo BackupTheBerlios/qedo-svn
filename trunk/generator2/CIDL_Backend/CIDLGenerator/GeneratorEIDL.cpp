@@ -639,6 +639,7 @@ GeneratorEIDL::doHome(IR__::HomeDef_ptr home)
 	IR__::HomeDef_var base = home->base_home();
 	if(base) {
 		out << map_absolute_name(base);
+		out << "Explicit";
 	}
 	else {
 		out << "::Components::CCMHome";
