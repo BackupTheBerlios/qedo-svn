@@ -572,40 +572,40 @@ throw ( CannotMapType )
 		ret_string = "void";
 		break;
 	case CORBA::tk_short:
-		isReadOnly ? ret_string = "const CORBA::Short" : ret_string = "void";
+		isReadOnly ? ret_string = "CORBA::Short" : ret_string = "void";
 		break;
 	case CORBA::tk_long:
-		isReadOnly ? ret_string = "const CORBA::Long" : ret_string = "void";
+		isReadOnly ? ret_string = "CORBA::Long" : ret_string = "void";
 		break;
 	case CORBA::tk_longlong:
-		isReadOnly ? ret_string = "const CORBA::LongLong" : ret_string = "void";
+		isReadOnly ? ret_string = "CORBA::LongLong" : ret_string = "void";
 		break;
 	case CORBA::tk_ushort:
-		isReadOnly ? ret_string = "const CORBA::UShort" : ret_string = "void";
+		isReadOnly ? ret_string = "CORBA::UShort" : ret_string = "void";
 		break;
 	case CORBA::tk_ulong:
-		isReadOnly ? ret_string = "const CORBA::ULong" : ret_string = "void";
+		isReadOnly ? ret_string = "CORBA::ULong" : ret_string = "void";
 		break;
 	case CORBA::tk_ulonglong:
-		isReadOnly ? ret_string = "const CORBA::ULongLong" : ret_string = "void";
+		isReadOnly ? ret_string = "CORBA::ULongLong" : ret_string = "void";
 		break;
 	case CORBA::tk_float:
-		isReadOnly ? ret_string = "const CORBA::Float" : ret_string = "void";
+		isReadOnly ? ret_string = "CORBA::Float" : ret_string = "void";
 		break;
 	case CORBA::tk_double:
-		isReadOnly ? ret_string = "const CORBA::Double" : ret_string = "void";
+		isReadOnly ? ret_string = "CORBA::Double" : ret_string = "void";
 		break;
 	case CORBA::tk_longdouble:
-		isReadOnly ? ret_string = "const CORBA::LongDouble" : ret_string = "void";
+		isReadOnly ? ret_string = "CORBA::LongDouble" : ret_string = "void";
 		break;
 	case CORBA::tk_boolean:
-		isReadOnly ? ret_string = "const CORBA::Boolean" : ret_string = "void";
+		isReadOnly ? ret_string = "CORBA::Boolean" : ret_string = "void";
 		break;
 	case CORBA::tk_char:
-		isReadOnly ? ret_string = "const CORBA::Char" : ret_string = "void";
+		isReadOnly ? ret_string = "CORBA::Char" : ret_string = "void";
 		break;
 	case CORBA::tk_wchar:
-		isReadOnly ? ret_string = "const CORBA::WChar" : ret_string = "void";
+		isReadOnly ? ret_string = "CORBA::WChar" : ret_string = "void";
 		break;
 	case CORBA::tk_any:
 		isReadOnly ? ret_string = "const CORBA::Any*" : ret_string = "void";
