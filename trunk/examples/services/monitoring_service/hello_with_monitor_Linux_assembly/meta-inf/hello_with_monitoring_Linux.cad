@@ -38,11 +38,9 @@
 
 		        <destination></destination>
 		</homeplacement>
-
 	</processcollocation>
 
 	<processcollocation>
-
 		<homeplacement id="CallerHome">
 			<componentfileref idref="Caller_file"/>
 				<componentimplref idref="UUID-84628f02-c896-42ca-9644-6cdc0f88e017"/>
@@ -71,6 +69,7 @@
 
     </connections>
 
+    <extension class="startorder" origin="QEDO">monitor_service</extension>
     <extension class="startorder" origin="QEDO">callee</extension>
     <extension class="startorder" origin="QEDO">caller</extension>
 
