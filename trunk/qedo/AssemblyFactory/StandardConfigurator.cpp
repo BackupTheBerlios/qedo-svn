@@ -47,7 +47,7 @@ throw( Components::WrongComponentType )
 {
 	for(CORBA::ULong i = 0; i < config_.length(); i++ )
 	{
-		DEBUG_OUT2( "\nStandardConfigurator: configure ", config_[i]->name() );
+		DEBUG_OUT2( ".......... configure ", config_[i]->name() );
 
 
 		// create a request according to the wire format of attribute operations
