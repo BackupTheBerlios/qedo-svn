@@ -44,7 +44,7 @@ class CONTAINERDLL_API RefCountBase
 {
 private:
 	/** the reference counter */
-	unsigned long ref_count_;
+	CORBA::Long ref_count_;
 
 public:
 	/**
@@ -82,7 +82,7 @@ class CONTAINERDLL_API RefCountLocalObject : public virtual CORBA::LocalObject
 {
 private:
 	/** the reference counter */
-	unsigned long ref_count_;
+	CORBA::Long ref_count_;
 
 public:
 	/**
