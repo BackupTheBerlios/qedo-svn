@@ -12,7 +12,7 @@
 
 #include <CORBA.h>
 #include "auction_SellerImpl_BUSINESS.h"
-#include "valuetypes.h"
+#include "component_valuetypes.h"
 #include "RefCountBase.h"
 #include <string>
 
