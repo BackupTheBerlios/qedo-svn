@@ -30,7 +30,12 @@
 #include <signal.h>
 
 
-static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.18 2003/10/27 10:14:29 boehme Exp $";
+#ifdef HAVE_LIBPTHREAD
+#include "Synchronisation.h"
+#endif
+
+
+static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.19 2003/11/12 14:49:35 boehme Exp $";
 
 
 /**
@@ -98,8 +103,38 @@ handle_sigint
 		std::cerr << "..... could not unbind" << std::endl;
 	}
 	
-	exit(1);
+	orb->shutdown(false);
 }
+
+#ifdef HAVE_LIBPTHREAD
+
+static bool signal_handler_thread_stop=false;
+
+void*
+signal_handler_thread(void *p)
+{
+	sigset_t sigs;
+	sigemptyset (&sigs);
+	sigaddset (&sigs, SIGINT);
+	int sig;
+	while ( !signal_handler_thread_stop)
+	{
+		sig = 0;
+		sigwait(&sigs, &sig);
+		switch(sig)
+		{
+			case SIGINT:
+				handle_sigint(sig);
+				signal_handler_thread_stop=true;
+				break;
+			default:
+				std::cerr << "Got unexpected Signal (" << sig << ")" << std::endl;
+		}
+	}
+
+	return 0;
+}
+#endif // HAVE_LIBPTHREAD
 
 
 /**
@@ -108,6 +143,45 @@ handle_sigint
 int
 main (int argc, char** argv)
 {
+#ifdef HAVE_LIBPTHREAD
+	// block SIGINT 
+	// Only the signal thread will handle this signal
+	sigset_t sigs;
+	sigset_t osigs;
+	sigemptyset (&sigs);
+	sigaddset (&sigs, SIGINT);
+	assert(pthread_sigmask (SIG_BLOCK, &sigs, &osigs) == 0);
+
+	// this thread will do the signal handling
+	Qedo::QedoThread* signal_thread;
+
+	signal_thread = Qedo::qedo_startDetachedThread(signal_handler_thread,0);
+
+#else // HAVE_LIBPTHREAD
+#ifdef HAVE_SIGACTION
+	 struct sigaction act;
+
+    /* Assign sig_chld as our SIGINT handler */
+    act.sa_handler = handle_sigint;
+
+    /* We don't want to block any other signals in this example */
+    sigemptyset(&act.sa_mask);
+
+    /*
+     * Make these values effective. If we were writing a real 
+     * application, we would probably save the old value instead of 
+     * passing NULL.
+     */
+    if (sigaction(SIGINT, &act, NULL) < 0) 
+    {
+		 std::cerr << "sigaction failed" << std::endl;
+        return 1;
+    }
+#else
+	signal ( SIGINT, handle_sigint );
+#endif
+
+#endif // HAVE_LIBPTHREAD
 	std::cout << "Qedo Assembly Factory " << QEDO_VERSION << std::endl;
 
 	//
@@ -164,31 +238,17 @@ main (int argc, char** argv)
 		exit (1);
 	}
 
-#ifdef HAVE_SIGACTION
-	 struct sigaction act;
-
-    /* Assign sig_chld as our SIGINT handler */
-    act.sa_handler = handle_sigint;
-
-    /* We don't want to block any other signals in this example */
-    sigemptyset(&act.sa_mask);
-
-    /*
-     * Make these values effective. If we were writing a real 
-     * application, we would probably save the old value instead of 
-     * passing NULL.
-     */
-    if (sigaction(SIGINT, &act, NULL) < 0) 
-    {
-		 std::cerr << "sigaction failed" << std::endl;
-        return 1;
-    }
-#else
-	signal ( SIGINT, handle_sigint );
-#endif
-
 	std::cout << "Qedo Assembly Factory Server is up and running ...\n";
 	orb->run();
+
+#ifdef HAVE_LIBPTHREAD
+	// It is not sure, that only SIGINT will break the orb/run
+	// so we have to terminate the signal thread here also
+	signal_handler_thread_stop = true;
+	signal_thread->stop();
+	signal_thread->join();
+#endif // HAVE_LIBPTHREAD
+
 	return 0;
 }
 

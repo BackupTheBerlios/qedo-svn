@@ -36,16 +36,26 @@
 #include <cstring>
 #include "version.h"
 
-#ifdef HAVE_SIGACTION
 #include <sys/types.h>  /* include this before any other sys headers */
-#include <sys/wait.h>   /* header for waitpid() and various macros */
+#if HAVE_SYS_WAIT_H
+# include <sys/wait.h> /* header for waitpid() and various macros */
+#endif
+#ifndef WEXITSTATUS
+# define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
+#endif
+#ifndef WIFEXITED
+# define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+#endif
+
+#ifdef HAVE_LIBPTHREAD
+#include "Synchronisation.h"
 #endif
 
 #include <signal.h>
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.20 2003/11/11 08:55:23 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.21 2003/11/12 14:49:35 boehme Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -54,6 +64,7 @@ static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.20 2003/11/11 08:55:23 tom Exp $
 
 CORBA::ORB_var orb;
 Qedo::ServerActivatorImpl* server_activator;
+
 
 void
 handle_sigint
@@ -158,10 +169,10 @@ handle_sigint
 		std::cerr << "..... error in signal handler" << std::endl;
 	}
 
-	exit(1);
+	orb->shutdown(false);
 }
 
-#ifdef HAVE_SIGACTION
+#ifndef _WIN32
 void
 handle_sigchld
 ( int sig )
@@ -200,14 +211,114 @@ handle_sigchld
 
 	 server_activator->remove_by_pid(pid);
 }
-#endif
+#endif // _WIN32
 
+#ifdef HAVE_LIBPTHREAD
+static bool signal_handler_thread_stop=false;
+
+void*
+signal_handler_thread(void *p)
+{
+	sigset_t sigs;
+	sigemptyset (&sigs);
+	sigaddset (&sigs, SIGINT);
+	sigaddset (&sigs, SIGCHLD);
+	int sig;
+	while ( !signal_handler_thread_stop)
+	{
+		sig = 0;
+		sigwait(&sigs, &sig);
+		switch(sig)
+		{
+			case SIGCHLD:
+				handle_sigchld(sig);
+				break;
+			case SIGINT:
+				handle_sigint(sig);
+				signal_handler_thread_stop=true;
+				break;
+			default:
+				std::cerr << "Got unexpected Signal (" << sig << ")" << std::endl;
+		}
+	}
+
+	return 0;
+}
+#endif // HAVE_LIBPTHREAD
 /**
  * starts the server for the server activator object
  */
 int
 main (int argc, char** argv)
 {
+#ifdef HAVE_LIBPTHREAD
+	// block SIGINT and SIGCHLD
+	// Only the signal thread will handle this signals
+	sigset_t sigs;
+	sigset_t osigs;
+	sigemptyset (&sigs);
+	sigaddset (&sigs, SIGINT);
+	sigaddset (&sigs, SIGCHLD);
+	assert(pthread_sigmask (SIG_BLOCK, &sigs, &osigs) == 0);
+
+	// this thread will do the signal handling
+	Qedo::QedoThread* signal_thread;
+
+	signal_thread = Qedo::qedo_startDetachedThread(signal_handler_thread,0);
+
+#else // HAVE_LIBPTHREAD
+#ifdef HAVE_SIGACTION
+	 struct sigaction act;
+
+    /* Assign handle_sigint as our SIGINT handler */
+    act.sa_handler = handle_sigint;
+
+    /* We don't want to block any other signals in this example */
+    sigemptyset(&act.sa_mask);
+
+    /*
+     * Make these values effective. If we were writing a real
+     * application, we would probably save the old value instead of
+     * passing NULL.
+     */
+    if (sigaction(SIGINT, &act, NULL) < 0)
+    {
+		 std::cerr << "sigaction failed" << std::endl;
+        return 1;
+    }
+
+    /* Assign handle_sigchld as our SIGCHLD handler */
+    act.sa_handler = handle_sigchld;
+
+    /* We don't want to block any other signals in this example */
+    sigemptyset(&act.sa_mask);
+
+	 /*
+     * We're only interested in children that have terminated, not ones
+     * which have been stopped (eg user pressing control-Z at terminal)
+     */
+    act.sa_flags = SA_NOCLDSTOP;
+	 act.sa_flags |= SA_RESTART;
+
+    /*
+     * Make these values effective. If we were writing a real
+     * application, we would probably save the old value instead of
+     * passing NULL.
+     */
+    if (sigaction(SIGCHLD, &act, NULL) < 0)
+    {
+		 std::cerr << "sigaction failed" << std::endl;
+        return 1;
+    }
+#else // HAVE_SIGACTION
+	 signal ( SIGINT, handle_sigint );
+#ifndef _WIN32
+	 signal ( SIGCHLD, handle_sigchld );
+#endif // _WIN32
+#endif // HAVE_SIGACTION
+#endif // HAVE_LIBPTHREAD
+
+
 	std::cout << "Qedo Component Server Activator " << QEDO_VERSION << std::endl;
 
 	// Check for debug mode and enable-qos mode
@@ -252,56 +363,17 @@ main (int argc, char** argv)
 		exit (1);
 	}
 
-#ifdef HAVE_SIGACTION
-	 struct sigaction act;
-
-    /* Assign handle_sigint as our SIGINT handler */
-    act.sa_handler = handle_sigint;
-
-    /* We don't want to block any other signals in this example */
-    sigemptyset(&act.sa_mask);
-
-    /*
-     * Make these values effective. If we were writing a real
-     * application, we would probably save the old value instead of
-     * passing NULL.
-     */
-    if (sigaction(SIGINT, &act, NULL) < 0)
-    {
-		 std::cerr << "sigaction failed" << std::endl;
-        return 1;
-    }
-
-    /* Assign handle_sigchld as our SIGCHLD handler */
-    act.sa_handler = handle_sigchld;
-
-    /* We don't want to block any other signals in this example */
-    sigemptyset(&act.sa_mask);
-
-	 /*
-     * We're only interested in children that have terminated, not ones
-     * which have been stopped (eg user pressing control-Z at terminal)
-     */
-    act.sa_flags = SA_NOCLDSTOP;
-	 act.sa_flags |= SA_RESTART;
-
-    /*
-     * Make these values effective. If we were writing a real
-     * application, we would probably save the old value instead of
-     * passing NULL.
-     */
-    if (sigaction(SIGCHLD, &act, NULL) < 0)
-    {
-		 std::cerr << "sigaction failed" << std::endl;
-        return 1;
-    }
-#else
-	 signal ( SIGINT, handle_sigint );
-#endif
-
 
 	std::cout << "Qedo Component Server Activator is up and running ...\n";
 	orb->run();
+
+#ifdef HAVE_LIBPTHREAD
+	// It is not sure, that only SIGINT will break the orb/run
+	// so we have to terminate the signal thread here also
+	signal_handler_thread_stop = true;
+	signal_thread->stop();
+	signal_thread->join();
+#endif // HAVE_LIBPTHREAD
 
 	return 0;
 }

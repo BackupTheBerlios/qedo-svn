@@ -52,7 +52,7 @@ SOURCES = CADReader.cpp \
 	Synchronisation.cpp \
 	Output.cpp \
 	Valuetypes.cpp \
-	StreamingValuetypes.cpp
+	StreamingValuetypes.cpp \
 
 
 HEADER = ${SOURCES:.cpp=.h} \

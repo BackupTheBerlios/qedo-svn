@@ -28,7 +28,7 @@
 #include <iostream>
 
 
-static char rcsid[] UNUSED = "$Id: NameServiceBase.cpp,v 1.12 2003/10/23 09:54:04 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: NameServiceBase.cpp,v 1.13 2003/11/12 14:49:35 boehme Exp $";
 
 
 namespace Qedo {
@@ -36,6 +36,7 @@ namespace Qedo {
 
 NameServiceBase::NameServiceBase()
 {
+	nameService_ = CosNaming::NamingContext::_nil();
 }
 
 
@@ -61,6 +62,12 @@ NameServiceBase::initNameService(CORBA::ORB_ptr orb)
 		catch(...)
 		{
 			NORMAL_ERR2( "NameServiceBase: can't resolve NameService ", ns );
+			return false;
+		}
+
+		if (CORBA::is_nil(obj.in()))
+		{
+			NORMAL_ERR( "NameServiceBase: NameService is a nil object reference" );
 			return false;
 		}
 

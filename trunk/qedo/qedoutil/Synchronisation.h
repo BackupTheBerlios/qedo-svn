@@ -20,8 +20,8 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __THREADS_H__
-#define __THREADS_H__
+#ifndef __SYNCHRONISATION_H__
+#define __SYNCHRONISATION_H__
 
 
 #undef QEDO_WINTHREAD
