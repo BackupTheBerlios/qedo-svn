@@ -42,7 +42,7 @@
 #include "StubInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.37 2004/09/27 12:48:26 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.38 2004/09/27 13:06:14 tom Exp $";
 
 
 /**
@@ -195,8 +195,7 @@ main (int argc, char** argv)
 	for (orb_n = 0; orb_n < argc; orb_n++)
 	{
 		orb_argv[orb_n] = strdup(argv[orb_n]);
-		//hack for debug
-		std::cout << argv[orb_n] << std::endl;
+		DEBUG_OUT2 ("qcs argument: ", argv[orb_n]);
 	};
 
 	// check for Host Name Resolving
