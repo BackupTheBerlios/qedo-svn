@@ -28,13 +28,13 @@
 #include <signal.h>
 #endif
 
-#ifdef QEDO_WINTHREAD
+#ifdef _WIN32
 #include <sys/timeb.h>
 #else
 #include <sys/time.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.31 2004/02/09 16:23:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.32 2004/02/09 16:34:34 boehme Exp $";
 
 
 namespace Qedo {
