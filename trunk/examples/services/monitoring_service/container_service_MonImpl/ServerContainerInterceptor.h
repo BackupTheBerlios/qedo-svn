@@ -27,6 +27,7 @@ namespace Qedo {
 
 		~ServerContainerInterceptor();
 
+		virtual char* name() ;
 		virtual void destroy();
 		virtual void set_slot_id(PortableInterceptor::SlotId slot_id);
 		virtual void receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;

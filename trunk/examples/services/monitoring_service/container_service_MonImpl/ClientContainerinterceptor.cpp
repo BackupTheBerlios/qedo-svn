@@ -4,6 +4,12 @@
 
 namespace Qedo {
 
+char*
+ClientContainerInterceptor::name()
+{
+	return "anon";
+};
+
 void 
 ClientContainerInterceptor::destroy() {
 };
