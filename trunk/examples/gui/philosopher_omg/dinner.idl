@@ -22,7 +22,7 @@ module DiningPhilosophers {
 
   eventtype StatusInfo {
     public string name;
-    public PhilosopherState state;
+    public PhilosopherState phil_state;
     public unsigned long ticks_since_last_meal;
     public boolean has_left_fork;
     public boolean has_right_fork;
