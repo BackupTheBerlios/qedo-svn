@@ -135,9 +135,6 @@ GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribut
 
 	switch ( att_type_kind )
 	{
-		case CORBA::tk_char:
-		case CORBA::tk_wchar:
-		case CORBA::tk_octet:
 		case CORBA::tk_string:
 		case CORBA::tk_wstring:
 			out << map_psdl_return_type(attr_type, false) << "\n";
@@ -1240,21 +1237,29 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out << "\nif(pCBImpl->ExecuteSQL(" << m_strName << ".c_str()))\n";
 	out << "{\n";
 	out.indent();
-	out << "//use factory to create a storage object\n";
-	out << "StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();\n";
-	out << "CatalogBaseImpl* tmp_catalog = dynamic_cast <CatalogBaseImpl*> (m_pCatalogBase);\n";
-	out << "factory = tmp_catalog->getConnector()->register_storage_object_factory(NULL, factory);\n";
-	out << "StorageObjectImpl* pStorageObjectImpl = factory->create();\n";
-	out << "m_lStorageObjectes.push_back(pStorageObjectImpl);\n";
-	out << szRetType << " tmp_ptr = dynamic_cast <" << szRetType << "> (pStorageObjectImpl);\n";
-	out << "\n//set values to current storageobject incarnation\n";
-	out << "//How to handle with pid and spid?\n";
-	for(CORBA::ULong i=0; i<ulLen; i++)
+	if(!isRef)
 	{
-		attribute = IR__::AttributeDef::_narrow(state_members[i]);
-		out << "tmp_ptr->" << mapName(attribute) << "(" << mapName(attribute) << ");\n";
+		out << "//use factory to create a storage object\n";
+		out << "StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();\n";
+		out << "CatalogBaseImpl* tmp_catalog = dynamic_cast <CatalogBaseImpl*> (m_pCatalogBase);\n";
+		out << "factory = tmp_catalog->getConnector()->register_storage_object_factory(NULL, factory);\n";
+		out << "StorageObjectImpl* pStorageObjectImpl = factory->create();\n";
+		out << "m_lStorageObjectes.push_back(pStorageObjectImpl);\n";
+		out << szRetType << " tmp_ptr = dynamic_cast <" << szRetType << "> (pStorageObjectImpl);\n";
+		out << "\n//set values to current storageobject incarnation\n";
+		out << "//How to handle with pid and spid?\n";
+		for(CORBA::ULong i=0; i<ulLen; i++)
+		{
+			attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			out << "tmp_ptr->" << mapName(attribute) << "(" << mapName(attribute) << ");\n";
+		}
+		out << "\nreturn tmp_ptr;\n";
 	}
-	out << "\nreturn tmp_ptr;\n";
+	else
+	{
+		//out << "return 0;\n";
+	}
+
 	out.unindent();
 	out << "}\n";
 	out << "else\n";

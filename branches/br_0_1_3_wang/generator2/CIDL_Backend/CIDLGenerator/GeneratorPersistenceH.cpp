@@ -198,9 +198,6 @@ GeneratorPersistenceH::doAttribute(IR__::AttributeDef_ptr attribute)
 	{
 		switch ( attr_type->type()->kind() )
 		{
-			case CORBA::tk_char:
-			case CORBA::tk_wchar:
-			case CORBA::tk_octet:
 			case CORBA::tk_string:
 			case CORBA::tk_wstring:
 				if(m_isAbstract) out << "virtual ";
