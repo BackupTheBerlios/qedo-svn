@@ -53,6 +53,10 @@ private:
 	std::string					scope_name_;
 
 	void check_for_generation(IR__::Contained_ptr item);
+	CORBA::ULong calculate_align (CORBA::ULong, CORBA::ULong);
+	void calculate_marshal_buffer_size (IR__::IDLType_ptr, CORBA::ULong&);
+	void generate_marshal_code (IR__::IDLType_ptr, std::string&);
+	void generate_unmarshal_code (IR__::IDLType_ptr, std::string&);
 	void resolve_atomic_streamtypes(IR__::StreamTypeDef_ptr streamtype, IR__::StreamTypeDefSeq& atomic_streamtypes);
 
 	void doAttribute(IR__::AttributeDef_ptr attribute);
