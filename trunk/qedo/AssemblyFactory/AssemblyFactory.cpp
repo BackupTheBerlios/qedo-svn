@@ -39,7 +39,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.18 2003/10/27 12:21:50 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.19 2003/11/14 15:20:49 boehme Exp $";
 
 
 namespace Qedo {
@@ -141,12 +141,14 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 		NORMAL_ERR( "AssemblyFactoryImpl: invalid assembly location" );
 		throw Components::Deployment::InvalidLocation();
 	}
-	std::string name = XMLString::transcode(p);
-    std::string::size_type pos = name.find_last_of("/");
-    if (pos != std::string::npos)
-    {
-        name.erase(0, pos + 1);
-    }
+	char *s = XMLString::transcode(p);
+	std::string name = s;
+	delete [] s;
+	std::string::size_type pos = name.find_last_of("/");
+	if (pos != std::string::npos)
+	{
+		name.erase(0, pos + 1);
+	}
 
 	//
 	// make input stream

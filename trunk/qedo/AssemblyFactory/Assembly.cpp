@@ -63,7 +63,10 @@ AssemblyImpl::get_uuid () const
 {
     if( data_.uuid_.empty() )
 	{
-		return cookie_->to_string();
+		const char* s = cookie_->to_string();
+		std::string x = s;
+		CORBA::string_free(const_cast<char*>(s));
+		return x;
 	}
 
 	return data_.uuid_;
@@ -552,7 +555,9 @@ throw(Components::CreateFailure)
 		{
 			try
 			{
-				comp = Components::KeylessCCMHome::_narrow(home)->create_component();
+				Components::KeylessCCMHome_var khome;
+				khome = Components::KeylessCCMHome::_narrow(home);
+				comp = khome->create_component();
 			}
 			catch( ... )
 			{
