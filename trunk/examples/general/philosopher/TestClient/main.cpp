@@ -3,11 +3,11 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.9 2003/10/01 08:52:23 neubauer Exp $
+// $Id: main.cpp,v 1.10 2003/10/11 14:29:53 tom Exp $
 //
 
 
-static char rcsid[] = "$Id: main.cpp,v 1.9 2003/10/01 08:52:23 neubauer Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.10 2003/10/11 14:29:53 tom Exp $";
 
 
 #ifdef ORBACUS_ORB
@@ -67,7 +67,7 @@ get_server_activator (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const
 		orb->destroy();
 		exit (1);
 	}
-		
+
 	try
 	{
 		server_activator = Components::Deployment::ServerActivator::_narrow (server_activator_obj);
@@ -116,7 +116,7 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 		orb->destroy();
 		exit (1);
 	}
-		
+
 	try
 	{
 		component_installer = Components::Deployment::ComponentInstallation::_narrow (component_installer_obj);
@@ -133,9 +133,9 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	std::string loc_c = "dinner_SERVANT.dll;create_CutleryHomeS;dinner_CutleryImpl.dll;create_CutleryHomeE";
 	std::string loc_o = "dinner_SERVANT.dll;create_ObserverHomeS;dinner_ObserverImpl.dll;create_ObserverHomeE";
 #else
-	std::string loc_p = "libphilosopherS.so;create_PhilosopherHomeS;libphilosopherE.so;create_PhilosopherHomeE";
-	std::string loc_c = "libphilosopherS.so;create_CutleryHomeS;libphilosopherE.so;create_CutleryHomeE";
-	std::string loc_o = "libphilosopherS.so;create_ObserverHomeS;libphilosopherE.so;create_ObserverHomeE";
+	std::string loc_p = "libdinner_SERVANT.so;create_PhilosopherHomeS;libdinner_PhilosopherImpl.so;create_PhilosopherHomeE";
+	std::string loc_c = "libdinner_SERVANT.so;create_CutleryHomeS;libdinner_CutleryImpl.so;create_CutleryHomeE";
+	std::string loc_o = "libdinner_SERVANT.so;create_ObserverHomeS;libdinner_ObserverImpl.so;create_ObserverHomeE";
 #endif
 
 	try
@@ -372,7 +372,7 @@ main (int argc, char** argv)
 		phil1->name ("Frank"); 
 		phil2->name ("Bert"); 
 		phil3->name ("Harry");
-		phil1->thinking_seconds (5); 
+		phil1->thinking_seconds (5);
 		phil2->thinking_seconds (3); 
 		phil3->thinking_seconds (6);
 		phil1->eating_seconds (4); 
