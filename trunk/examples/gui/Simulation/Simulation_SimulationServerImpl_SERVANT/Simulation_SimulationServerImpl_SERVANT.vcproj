@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="Simulation_SimulationServerImpl_SERVANT"
 	ProjectGUID="{5F7AF486-5EFC-4C4A-9289-7311DBFAC55C}"
 	Keyword="Win32Proj">
@@ -55,7 +55,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
@@ -102,7 +108,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
@@ -149,9 +161,17 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
@@ -194,6 +214,18 @@
 		<Filter
 			Name="idl"
 			Filter="idl;cidl">
+			<File
+				RelativePath="..\simdemo.cidl">
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling CIDL"
+						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32  -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --servant --target IDL:Simulation/SimulationServerImpl:1.0 ../simdemo.cidl
+"
+						Outputs="Simulation_SimulationServerImpl_LOCAL.idl;Simulation_SimulationServerImpl_EQUIVALENT.idl"/>
+				</FileConfiguration>
+			</File>
 			<File
 				RelativePath="Simulation_SimulationServerImpl_EQUIVALENT.idl">
 				<FileConfiguration
@@ -252,17 +284,6 @@ copy Simulation_SimulationServerImpl_LOCAL.h Simulation_SimulationServerImpl_LOC
 						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB Simulation_SimulationServerImpl_LOCAL.idl
 "
 						Outputs="Simulation_SimulationServerImpl_LOCAL.h;Simulation_SimulationServerImpl_LOCAL.cpp;Simulation_SimulationServerImpl_LOCAL_skel.h;Simulation_SimulationServerImpl_LOCAL_skel.cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\simdemo.cidl">
-				<FileConfiguration
-					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="..... compiling CIDL"
-						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32  -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --servant --target IDL:Simulation/SimulationServerImpl:1.0 ../simdemo.cidl"
-						Outputs="Simulation_SimulationServerImpl_LOCAL.idl;Simulation_SimulationServerImpl_EQUIVALENT.idl"/>
 				</FileConfiguration>
 			</File>
 		</Filter>

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="Simulation_PlaneImpl"
 	ProjectGUID="{C14764A5-B016-4FEF-853E-02F20173ED8D}"
 	Keyword="Win32Proj">
@@ -55,7 +55,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
@@ -105,7 +111,13 @@ zip ../Simulation_PlaneImpl.zip meta-inf/Simulation_PlaneImpl.ccd meta-inf/Simul
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
@@ -152,9 +164,17 @@ zip ../Simulation_PlaneImpl.zip meta-inf/Simulation_PlaneImpl.ccd meta-inf/Simul
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
@@ -203,6 +223,18 @@ zip ../Simulation_PlaneImpl.zip meta-inf/Simulation_PlaneImpl.ccd meta-inf/Simul
 		<Filter
 			Name="idl"
 			Filter="idl;cidl">
+			<File
+				RelativePath="..\simdemo.cidl">
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling CIDL"
+						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --business -d --target IDL:Simulation/PlaneImpl:1.0 ../simdemo.cidl
+"
+						Outputs="Simulation_PlaneImpl_LOCAL.idl;Simulation_PlaneImpl_EQUIVALENT.idl;Simulation_PlaneImpl_BUSINESS.idl"/>
+				</FileConfiguration>
+			</File>
 			<File
 				RelativePath="Simulation_PlaneImpl_BUSINESS.idl">
 				<FileConfiguration
@@ -291,18 +323,6 @@ copy Simulation_PlaneImpl_LOCAL.h Simulation_PlaneImpl_LOCAL_skel.h
 						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB Simulation_PlaneImpl_LOCAL.idl
 "
 						Outputs="Simulation_PlaneImpl_LOCAL.h;Simulation_PlaneImpl_LOCAL.cpp;Simulation_PlaneImpl_LOCAL_skel.h;Simulation_PlaneImpl_LOCAL_skel.cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\simdemo.cidl">
-				<FileConfiguration
-					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="..... compiling CIDL"
-						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --business -d --target IDL:Simulation/PlaneImpl:1.0 ../simdemo.cidl
-"
-						Outputs="Simulation_PlaneImpl_LOCAL.idl;Simulation_PlaneImpl_EQUIVALENT.idl;Simulation_PlaneImpl_BUSINESS.idl"/>
 				</FileConfiguration>
 			</File>
 		</Filter>

@@ -1,39 +1,55 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simulation_PlaneImpl", "Simulation_PlaneImpl\Simulation_PlaneImpl.vcproj", "{C14764A5-B016-4FEF-853E-02F20173ED8D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AD0CF63E-9FFF-4D9B-AACA-44B4B98E154D} = {AD0CF63E-9FFF-4D9B-AACA-44B4B98E154D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simulation_PlaneImpl_SERVANT", "Simulation_PlaneImpl_SERVANT\Simulation_PlaneImpl_SERVANT.vcproj", "{AD0CF63E-9FFF-4D9B-AACA-44B4B98E154D}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simulation_SimulationServerImpl_SERVANT", "Simulation_SimulationServerImpl_SERVANT\Simulation_SimulationServerImpl_SERVANT.vcproj", "{5F7AF486-5EFC-4C4A-9289-7311DBFAC55C}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simulation_SimulationServerImpl", "Simulation_SimulationServerImpl\Simulation_SimulationServerImpl.vcproj", "{6ED03051-86DC-4A18-8171-CC3175A52A2A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5F7AF486-5EFC-4C4A-9289-7311DBFAC55C} = {5F7AF486-5EFC-4C4A-9289-7311DBFAC55C}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simulation_RadarImpl_SERVANT", "Simulation_RadarImpl_SERVANT\Simulation_RadarImpl_SERVANT.vcproj", "{E5CB5ED3-6FF5-4AB1-8446-E4D0A7945B59}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simulation_RadarImpl", "Simulation_RadarImpl\Simulation_RadarImpl.vcproj", "{EF65A4A7-2D28-42C0-809C-E418818D3B12}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E5CB5ED3-6FF5-4AB1-8446-E4D0A7945B59} = {E5CB5ED3-6FF5-4AB1-8446-E4D0A7945B59}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simulation_TAPDisplayImpl_SERVANT", "Simulation_TAPDisplayImpl_SERVANT\Simulation_TAPDisplayImpl_SERVANT.vcproj", "{55B8531E-2DCD-49AE-986B-14188603AB68}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Simulation_TAPDisplayImpl", "Simulation_TAPDisplayImpl\Simulation_TAPDisplayImpl.vcproj", "{D3FEA2E8-7FE4-47B6-A619-6FE418911921}"
+	ProjectSection(ProjectDependencies) = postProject
+		{55B8531E-2DCD-49AE-986B-14188603AB68} = {55B8531E-2DCD-49AE-986B-14188603AB68}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sim_win32_assembly", "sim_win32_assembly\sim_win32_assembly.vcproj", "{27C4F52C-D3D3-4763-A018-14317C971DC7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D3FEA2E8-7FE4-47B6-A619-6FE418911921} = {D3FEA2E8-7FE4-47B6-A619-6FE418911921}
+		{6ED03051-86DC-4A18-8171-CC3175A52A2A} = {6ED03051-86DC-4A18-8171-CC3175A52A2A}
+		{EF65A4A7-2D28-42C0-809C-E418818D3B12} = {EF65A4A7-2D28-42C0-809C-E418818D3B12}
+		{C14764A5-B016-4FEF-853E-02F20173ED8D} = {C14764A5-B016-4FEF-853E-02F20173ED8D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug
-		ConfigName.1 = Debug_mico
-		ConfigName.2 = Debug_orbacus
-		ConfigName.3 = Debug_tao
-		ConfigName.4 = Release
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
-		{C14764A5-B016-4FEF-853E-02F20173ED8D}.0 = {AD0CF63E-9FFF-4D9B-AACA-44B4B98E154D}
-		{6ED03051-86DC-4A18-8171-CC3175A52A2A}.0 = {5F7AF486-5EFC-4C4A-9289-7311DBFAC55C}
-		{EF65A4A7-2D28-42C0-809C-E418818D3B12}.0 = {E5CB5ED3-6FF5-4AB1-8446-E4D0A7945B59}
-		{D3FEA2E8-7FE4-47B6-A619-6FE418911921}.0 = {55B8531E-2DCD-49AE-986B-14188603AB68}
-		{27C4F52C-D3D3-4763-A018-14317C971DC7}.0 = {C14764A5-B016-4FEF-853E-02F20173ED8D}
-		{27C4F52C-D3D3-4763-A018-14317C971DC7}.1 = {EF65A4A7-2D28-42C0-809C-E418818D3B12}
-		{27C4F52C-D3D3-4763-A018-14317C971DC7}.2 = {6ED03051-86DC-4A18-8171-CC3175A52A2A}
-		{27C4F52C-D3D3-4763-A018-14317C971DC7}.3 = {D3FEA2E8-7FE4-47B6-A619-6FE418911921}
+		Debug = Debug
+		Debug_mico = Debug_mico
+		Debug_orbacus = Debug_orbacus
+		Debug_tao = Debug_tao
+		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{C14764A5-B016-4FEF-853E-02F20173ED8D}.Debug.ActiveCfg = Debug_tao|Win32
