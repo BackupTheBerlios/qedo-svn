@@ -22,7 +22,11 @@
 
 #ifndef __CORBA_DEPENDS_IDL__
 #define __CORBA_DEPENDS_IDL__
-
+#ifdef MICO_CIDL_GEN 
+module CORBA {
+	typedef sequence<octet> Principal;
+};
+#endif
 #include <orb.idl>
 #if TAO_ORB
 #include "PortableServer.pidl"

@@ -218,8 +218,8 @@
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/ComponentContainer.pdb"
-				ImportLibrary=".\Debug/ComponentContainer.lib"/>
+				ProgramDatabaseFile=".\Debug_mico/ComponentContainer.pdb"
+				ImportLibrary=".\Debug_mico/ComponentContainer.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
