@@ -34,7 +34,7 @@
 #include <sys/time.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.24 2003/10/17 13:22:41 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.25 2003/10/20 11:22:17 boehme Exp $";
 
 
 namespace Qedo {
@@ -79,6 +79,9 @@ struct ReadWriteMutexDelegate
 	lock_state_t state;
 	unsigned long readers;
 	unsigned long writers;
+#ifdef QEDO_WINTHREAD
+	unsigned long blocked_readers;
+#endif
 	QedoCond* reader_cond;
 	QedoCond* writer_cond;
 };
@@ -86,6 +89,9 @@ struct ReadWriteMutexDelegate
 
 ReadWriteMutexDelegate::ReadWriteMutexDelegate()
 	: state(READ_LOCK), readers(0), writers(0)
+#ifdef QEDO_WINTHREAD
+	  , blocked_readers(0)
+#endif
 {
 	reader_cond = new QedoCond();
 	writer_cond = new QedoCond();
@@ -93,6 +99,11 @@ ReadWriteMutexDelegate::ReadWriteMutexDelegate()
 
 ReadWriteMutexDelegate::~ReadWriteMutexDelegate()
 {
+	assert(readers == 0);
+	assert(writers == 0);
+#ifdef QEDO_WINTHREAD
+	assert(blocked_readers == 0);
+#endif
 	delete writer_cond;
 	delete reader_cond;
 }
@@ -392,13 +403,10 @@ QedoCond::signal()
 #endif
 }
 
+#ifndef QEDO_WINTHREAD
 void
 QedoCond::broadcast() 
 {
-#ifdef QEDO_WINTHREAD
-	// XXX must be implemented
-	abort();
-#else
 	int ret;
 
 	ret = pthread_cond_broadcast (&(delegate_->cond_));
@@ -407,8 +415,8 @@ QedoCond::broadcast()
 	{
 		std::cerr << "QedoCond::broadcast: " << strerror(ret) << std::endl;
 	}
-#endif
 }
+#endif
 
 QedoReadWriteMutex::QedoReadWriteMutex()
 {
@@ -420,18 +428,6 @@ QedoReadWriteMutex::~QedoReadWriteMutex()
 	delete rwdelegate_;
 }
 
-void
-QedoReadWriteMutex::read_lock_object()
-{
-	QedoLock l(this);
-
-	while (rwdelegate_->state != READ_LOCK)
-	{
-		rwdelegate_->reader_cond->wait(*this);
-	}
-
-	rwdelegate_->readers += 1;
-}
 
 void
 QedoReadWriteMutex::write_lock_object()
@@ -448,6 +444,28 @@ QedoReadWriteMutex::write_lock_object()
 	rwdelegate_->writers -= 1;
 
 }
+
+#ifdef QEDO_WINTHREAD
+void
+QedoReadWriteMutex::read_lock_object()
+{
+	QedoLock l(this);
+
+	while (rwdelegate_->state != READ_LOCK)
+	{
+		rwdelegate_->blocked_readers +=1;
+		rwdelegate_->reader_cond->wait(*this);
+		rwdelegate_->blocked_readers -=1;
+	}
+
+	if (rwdelegate_->blocked_readers)
+	{
+		rwdelegate_->reader_cond->signal();
+	}
+
+	rwdelegate_->readers += 1;
+}
+#endif
 
 void
 QedoReadWriteMutex::unlock_object()
@@ -472,7 +490,11 @@ QedoReadWriteMutex::unlock_object()
 			else 
 			{
 				rwdelegate_->state = READ_LOCK;
+#ifdef QEDO_WINTHREAD
 				rwdelegate_->reader_cond->signal();
+#else
+				rwdelegate_->reader_cond->broadcast();
+#endif
 			}
 			break;
 	}

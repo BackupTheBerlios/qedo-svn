@@ -184,11 +184,13 @@ public:
 	 */
 	void signal();
 
+#ifndef QEDO_WINTHREAD
 	/**
 	 * unblocks all threads currently blocked on the condition variable
 	 */
 
 	void broadcast();
+#endif
 };
 
 struct ReadWriteMutexDelegate;
