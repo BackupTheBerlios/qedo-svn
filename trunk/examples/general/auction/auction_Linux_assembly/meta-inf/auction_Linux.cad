@@ -26,7 +26,6 @@
   	        <componentinstantiation id="auctioneer">
 				<registercomponent><registerwithnaming name="auction/auctioneer"/></registercomponent>
 	        </componentinstantiation>
-	        <destination></destination>
 	    </homeplacement>
 
 	    <homeplacement id="bHome">
@@ -34,7 +33,6 @@
 			<componentimplref idref="UUID-5a387a69-6010-40c5-a762-4e980c832b0d"/>
 	        <componentinstantiation id="bidder1">
 			</componentinstantiation>
-	        <destination></destination>
 	    </homeplacement>
 
 	    <homeplacement id="sHome">
@@ -42,7 +40,6 @@
 			<componentimplref idref="UUID-1927e659-e4dd-4237-8b2c-cb5ea349c96d"/>
             <componentinstantiation id="seller1">
 			</componentinstantiation>
-	        <destination></destination>
 	    </homeplacement>
     </partitioning>
 
