@@ -20,7 +20,7 @@
 
 .NOTPARALLEL:
 
-SUBDIRS = mda-infra \
+SUBDIRS = ClientIDL \
 	DCI_SERVANT \
 	DCI_RepNodeManagerImpl
 
