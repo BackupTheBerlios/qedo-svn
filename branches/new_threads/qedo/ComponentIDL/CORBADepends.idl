@@ -51,6 +51,7 @@ module CORBA {
 #ifdef MICO_ORB
 // #include "ir_base.idl"
 #include "poa.idl"
+#include "qedo_mico.idl"
 #endif
 
 #pragma prefix "omg.org"
