@@ -4,6 +4,7 @@
 
 #include "valuetypes.h"
 #include "Output.h"
+#include "RefCountBase.h"
 
 
 // BEGIN USER INSERT SECTION file
@@ -129,23 +130,5 @@ namespace dinner {
     }
     
     
-    PhilosopherStateFactoryImpl::PhilosopherStateFactoryImpl()
-    {
-        int dummy = 0;
-        CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
-        CORBA::ValueFactoryBase* oldFact;
-        oldFact = orb->register_value_factory ("IDL:dinner/PhilosopherState:1.0", this);
-        if (oldFact) DEBUG_OUT("factory for IDL:dinner/PhilosopherState:1.0 already registered");
-    }
-    
-    
-    PhilosopherStateFactoryImpl::~PhilosopherStateFactoryImpl()
-    {
-        int dummy = 0;
-        CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
-        orb->unregister_value_factory ("IDL:dinner/PhilosopherState:1.0");
-    }
-    
-    
-    static PhilosopherStateFactoryImpl PhilosopherStateFactory_instance;
+    static Qedo::ValueFactoryCleaner PhilosopherStateFactory_cleaner( new PhilosopherStateFactoryImpl(), "IDL:dinner/PhilosopherState:1.0" );
 };

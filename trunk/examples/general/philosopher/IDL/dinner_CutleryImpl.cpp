@@ -324,11 +324,6 @@ CutleryHomeImpl::create ()
 create_CutleryHomeE(void)
 {
 // BEGIN USER INSERT SECTION create_CutleryHome
-	int dummy = 0;
-	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
-
-	CORBA::ValueFactoryBase_var oldFact;
-    oldFact = orb->register_value_factory ("IDL:omg.org/Components/Cookie:1.0", new dinner::CookieFactory_impl());
 // END USER INSERT SECTION create_CutleryHome
 
     return new ::dinner::CutleryHomeImpl();

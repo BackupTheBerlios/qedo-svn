@@ -80,9 +80,6 @@ namespace dinner {
         
     public:
     
-        PhilosopherStateFactoryImpl();
-        ~PhilosopherStateFactoryImpl();
-        
 // BEGIN USER INSERT SECTION PhilosopherState_factory
 // END USER INSERT SECTION PhilosopherState_factory
     };
