@@ -11,6 +11,8 @@
 	<CONFIGVALUE name="VerboseOutput" value="false"/>
 	<CONFIGVALUE name="NameService" value="corbaloc::geist:3000/NameService"/>
 
+	<CONFIGVALUE name="ComponentServerKillDelay" value="50000"/>
+	
 	<SECTION name="Debug">
 		<CONFIGVALUE name="DebugMode" value="false"/>
 	</SECTION>
