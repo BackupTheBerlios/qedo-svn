@@ -29,7 +29,7 @@
 #include "ComponentServerImpl.h"
 #include "GlobalHelpers.h"
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.10 2003/12/18 06:38:18 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.11 2004/01/13 06:30:12 tom Exp $";
 
 namespace Qedo {
 
@@ -141,7 +141,34 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 					}
 
 				}
+				// current call could be the call on a consumer
+				// search for consumer
+				for (unsigned int k = 0; k < ((*container_iter)->installed_homes_)[i].home_servant_->component_instances_[j].ccm_object_executor_->consumers_.size(); k++)
+				{
+					if (Qedo::compare_OctetSeqs((*info->object_id()),*((*container_iter) -> installed_homes_)[i].home_servant_->reference_to_oid(((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_[j].ccm_object_executor_->consumers_[k].consumer())))
+					{
+						temp_config = ((*container_iter)->installed_homes_)[i].home_servant_->component_instances_[j].config_;
 
+						if (temp_config != 0)
+						{
+							std::cout << temp_config->length() << std::endl;
+
+							Components::ConfigValue* value;
+							for (CORBA::ULong k = 0; k < temp_config->length(); k++)
+							{
+								value = (*temp_config)[k];
+
+								if (! strcmp ((*temp_config)[k]->name(), "id"))
+								{
+									(*temp_config)[k]->value() >>= id;
+									break;
+								}
+							}
+						}
+
+					}
+
+				}
 			}
 		}
 	}
