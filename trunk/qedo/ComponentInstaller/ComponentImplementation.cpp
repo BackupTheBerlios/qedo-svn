@@ -27,7 +27,7 @@
 #include <fstream>
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.20 2004/02/12 15:05:38 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.21 2004/03/11 14:23:28 neubauer Exp $";
 
 
 namespace Qedo {
@@ -196,7 +196,7 @@ throw( Components::CreateFailure )
 		host_iter != data_.assembly.hosts_.end(); 
 		host_iter++)
 	{
-		Qedo_Components::Deployment::ComponentInstallation_var componentInstallation;
+		Components::Deployment::ExtComponentInstallation_var componentInstallation;
 		CORBA::Object_var obj;
 		std::string host = (*host_iter).host;
 
@@ -210,7 +210,7 @@ throw( Components::CreateFailure )
 			throw Components::CreateFailure();
 		}
     
-		componentInstallation = Qedo_Components::Deployment::ComponentInstallation::_narrow(obj.in());
+		componentInstallation = Components::Deployment::ExtComponentInstallation::_narrow(obj.in());
 		if ( CORBA::is_nil(componentInstallation.in()))
 		{
 			std::cerr << "..... no ComponentInstallation for " << host << std::endl;

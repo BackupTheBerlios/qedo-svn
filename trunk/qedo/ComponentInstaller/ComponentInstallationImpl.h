@@ -46,9 +46,9 @@ extern std::string g_qedo_dir;
 
 
 /**
- * implementation of Components::Deployment::ComponentInstallation
+ * implementation of Components::Deployment::ExtComponentInstallation
  */
-class ComponentInstallationImpl : public POA_Qedo_Components::Deployment::ComponentInstallation,
+class ComponentInstallationImpl : public POA_Components::Deployment::ExtComponentInstallation,
 								  public PortableServer::RefCountServantBase,
 								  public virtual NameServiceBase,
 								  public virtual PlatformBase
