@@ -78,7 +78,26 @@ install/compile:
 		PortableServer
 		DynamicAny
 
+The Qedo Runtime worspace supports configurations for 3 ORBs (ORBACUS, MICO, TAO). Each of these ORBs has specific characteristics (e.g the names of the skeleton files). These different characteristics make it really difficult to integrate the configurations into a single workspace. There are some serious problems with TAO. To overcome these problems you have to do the following things.
 
+copy %ACE_ROOT%\TAO\tao\IFR_Client\IFR_BasicC.h  %Qedo%\ComponentIDL\IFRBasic.h
+copy %ACE_ROOT%\TAO\tao\IFR_Client\IFR_BasicC.h  %Qedo%\ComponentIDL\IFRBasic_skel.h
+
+copy %ACE_ROOT%\TAO\tao\PortableServer\PortableServerC.h  %Qedo%\ComponentIDL\PortableServer.h
+copy %ACE_ROOT%\TAO\tao\PortableServer\PortableServerC.h  %Qedo%\ComponentIDL\PortableServer_skel.h
+
+copy %ACE_ROOT%\TAO\orbsvcs\orbsvcs\CosNamingC.h  %Qedo%\ComponentIDL\CosNaming.h
+copy %ACE_ROOT%\TAO\orbsvcs\orbsvcs\CosNamingC.h  %Qedo%\ComponentIDL\CosNaming_skel.h
+
+modify the file: %ACE_ROOT%\TAO\tao\Current.pidl
+
+add at beginning of the file:
+#ifndef _CURRENT_PIDL_
+#define _CURRENT_PIDL_
+
+add at the end of the file
+
+#endif
 
 
 MICO version 2.3.7
