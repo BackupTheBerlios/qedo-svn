@@ -30,10 +30,10 @@ In order to deploy the assembly, the Qedo runtime has to be started on the local
 host, including
 
 1. name service
-2. ComponentServerActivator (csa)
-3. ComponentInstaller (ci)
-4. AssemblyFactory (assf).
+2. ComponentServerActivator (qcsa)
+3. ComponentInstaller (qci)
+4. AssemblyFactory (qassf).
 
 Afterwards the assembly can be deployed using the generic deployment client. The
-command "deploy -f dining_philosophers_win_xxx.zip" installs, starts and stops the dining 
-philosophers assembly.
+command "qdeploy -f dining_philosophers_win_xxx.zip" installs, starts
+and stops the dining philosophers assembly.
