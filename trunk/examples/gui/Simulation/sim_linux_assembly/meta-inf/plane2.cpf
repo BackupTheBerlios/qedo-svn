@@ -18,5 +18,8 @@
     <simple name="initial_course" type="double">
             <value>50</value>
     </simple>
+    <simple name="speed" type="double">
+            <value>2</value>
+    </simple>
 
 </properties>
