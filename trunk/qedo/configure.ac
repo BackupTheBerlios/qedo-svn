@@ -159,6 +159,7 @@ AC_CONFIG_FILES([Makefile
                  HomeFinder/Makefile
                  DeploymentClient/Makefile
                  etc/Makefile
+                 etc/MakeComponentVars
                  ])
 
 AC_OUTPUT

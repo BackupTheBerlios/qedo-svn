@@ -6171,7 +6171,7 @@ done
 OS=`uname`
 
 
-                                                                                                                        ac_config_files="$ac_config_files Makefile MakeVars ComponentIDL/Makefile ComponentContainer/Makefile qedoutil/Makefile ComponentInstaller/Makefile ComponentServer/Makefile ComponentServerActivator/Makefile AssemblyFactory/Makefile HomeFinder/Makefile DeploymentClient/Makefile etc/Makefile"
+                                                                                                                                  ac_config_files="$ac_config_files Makefile MakeVars ComponentIDL/Makefile ComponentContainer/Makefile qedoutil/Makefile ComponentInstaller/Makefile ComponentServer/Makefile ComponentServerActivator/Makefile AssemblyFactory/Makefile HomeFinder/Makefile DeploymentClient/Makefile etc/Makefile etc/MakeComponentVars"
 
 
 cat >confcache <<\_ACEOF
@@ -6710,6 +6710,7 @@ do
   "HomeFinder/Makefile" ) CONFIG_FILES="$CONFIG_FILES HomeFinder/Makefile" ;;
   "DeploymentClient/Makefile" ) CONFIG_FILES="$CONFIG_FILES DeploymentClient/Makefile" ;;
   "etc/Makefile" ) CONFIG_FILES="$CONFIG_FILES etc/Makefile" ;;
+  "etc/MakeComponentVars" ) CONFIG_FILES="$CONFIG_FILES etc/MakeComponentVars" ;;
   "ComponentIDL/config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS ComponentIDL/config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}

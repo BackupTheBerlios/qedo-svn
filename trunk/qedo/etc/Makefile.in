@@ -35,5 +35,5 @@ install: install-etc
 
 .PHONY:install-etc
 
-install-etc: $(XML_FILES)
+install-etc: $(XML_FILES) MakeComponentVars
 
