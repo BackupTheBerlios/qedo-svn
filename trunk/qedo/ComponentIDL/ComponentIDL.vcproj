@@ -412,9 +412,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="CORBADepends_skel.cpp">
 			</File>
 			<File
-				RelativePath=".\ComponentIDL.def">
-			</File>
-			<File
 				RelativePath=".\Components.cpp">
 			</File>
 			<File
@@ -622,20 +619,6 @@ copy QedoComponents.h QedoComponents_skel.h
 copy StreamComponents.h StreamComponents_skel.h
 "
 						Outputs="StreamComponents.h;StreamComponents.cpp;StreamComponents_skel.h;StreamComponents_skel.cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="Streamtypes.idl">
-				<FileConfiguration
-					Name="Debug_orbacus|Win32"
-					ExcludedFromBuild="TRUE">
-					<Tool
-						Name="VCCustomBuildTool"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
