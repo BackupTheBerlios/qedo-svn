@@ -1064,9 +1064,12 @@ GeneratorEIDL::doAlias(IR__::AliasDef_ptr adef)
     case CORBA__::dk_Native : {
 		out << "typedef " << "todo" << " " << adef -> name () << ";\n";
 		break; }
-	default :
+	case CORBA__::dk_Interface : {
+		out << "typedef " << map_absolute_name(adef->original_type_def()) << " " << adef -> name () << ";\n";
+		 break; }
+	default : 
 		out << "todo\n";
-		break;
+		break; 
 	}
 }
 
