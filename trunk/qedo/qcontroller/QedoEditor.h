@@ -52,5 +52,5 @@ private:
 	DECLARE_EVENT_TABLE()
 };
 
-#endif _QEDOEDITOR_H
+#endif // _QEDOEDITOR_H
 
