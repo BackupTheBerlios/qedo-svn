@@ -1,7 +1,7 @@
 /*****************************************************************************/
 /* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
 /*                                                                           */
-/* Copyright (c) 2002 by the Qedo Team                                       */
+/* Copyright (c) 2002-2003 by the Qedo Team                                       */
 /*                                                                           */
 /* http://qedo.berlios.de                                                    */
 /*                                                                           */
@@ -81,14 +81,14 @@ install/compile:
 
 
 
-MICO version 2.3.7
+MICO version 2.3.9
 ------------------------------------------------------------------------------
 To install MICO you have to to at least the following steps.
 obtain software:
-	version MICO 2.3.7
+	version MICO 2.3.9
 	get from: http://www.mico.org/
 install/compile:
-	MICO = (e.g. C:\MICO)
+	MICO = (e.g. C:\MICO or /opt/mico)
 	add path %MICO%\win32-bin to VC++ extras/options/directories/executable files
 
 2. Development Environment
@@ -108,11 +108,16 @@ install/compile:
 			 ( base: all including zlib )
 set environment:
 	add cygwin\bin to PATH
-	YACC = bison.exe
-	LEX = flex.exe
-	PYTHON = python2.2.exe 
-
 	add path cygwin\bin to VC++ extras/options/directories/executable files
+
+
+add the following the the environment
+
+	YACC = bison.exe (bison)
+	LEX = flex.exe (flex)
+	PYTHON = python2.2.exe (python) 
+
+
 
 kimwitu++
 ------------------------------------------------------------------------------
@@ -121,7 +126,8 @@ obtain software:
 	get from: http://site.informatik.hu-berlin.de/kimwitu++/download.html -> precompiled version (kc++-2.3.4.exe)
 install/compile:
 set environment:
-	 KC++ = kimwitu++\kc++-2.3.4.exe
+	 KC = kimwitu++\kc++-2.3.4.exe
+	 
 
 ------------------------------------------------------------------------------
 
@@ -148,4 +154,5 @@ orbacus ->   CIDLGenerator - Win32 Debug_orbacus
 
 Change to the directory build/linux. 
 
-Call make Debug_orbacus_linux.
+Call make Debug_mico_linux.
+
