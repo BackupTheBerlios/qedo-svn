@@ -20,29 +20,29 @@ ServerContainerInterceptor::receive_request (::PortableInterceptor::ServerReques
 }
 
 void
-ServerContainerInterceptor::send_reply (::PortableInterceptor::ServerRequestInfo_ptr info)
+ServerContainerInterceptor::send_reply (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id)
 {
-	std::cout << "COPI: send_reply: " << info->operation() << std::endl;
+	std::cout << "COPI: send_reply: " << info->operation() << "for id: " << std::endl;
 
 }
 
 void
-ServerContainerInterceptor::send_system_exception (::PortableInterceptor::ServerRequestInfo_ptr info)
+ServerContainerInterceptor::send_system_exception (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id)
 {
-	std::cout << "COPI: send_system_exception: " << info->operation() << std::endl;
+	std::cout << "COPI: send_system_exception: " << info->operation() << "for id: " << std::endl;
 
 }
 
 void
-ServerContainerInterceptor::send_user_exception (::PortableInterceptor::ServerRequestInfo_ptr info) {
-	std::cout << "COPI: send_user_exception: " << info->operation() << std::endl;
+ServerContainerInterceptor::send_user_exception (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id) {
+	std::cout << "COPI: send_user_exception: " << info->operation() << "for id:" << std::endl;
 
 }
 
 void
 ServerContainerInterceptor::rec_request_from_servant_locator(const char * operation)
 {
-	std::cout << "operation: " << operation << "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD" << std::endl;
+	std::cout << "operation: " << operation << " from servant locator" << std::endl;
 }
 
 }; // namespace Qedo

@@ -51,12 +51,12 @@ MonExec::configuration_complete()
 
 	server_interceptor_ = new Qedo::ServerContainerInterceptor();
 
-	server_reg->register_interceptor_for_all(server_interceptor_);
+//	server_reg->register_interceptor_for_all(server_interceptor_);
 
 	std::string component_id = "callee";
 	server_reg->register_interceptor_for_component(server_interceptor_, component_id.c_str());
 
-	context_->register_servant_locator_for_all(server_interceptor_);
+//	context_->register_servant_locator_for_all(server_interceptor_);
 // END USER INSERT SECTION MonExec::configuration_complete
 }
 

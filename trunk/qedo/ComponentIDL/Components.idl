@@ -458,9 +458,9 @@ module Components {
 		local interface ServerContainerInterceptor : ContainerInterceptor
 		{
 			void receive_request ( in PortableInterceptor::ServerRequestInfo info, in string id);
-			void send_reply ( in PortableInterceptor::ServerRequestInfo info);
-			void send_system_exception ( in PortableInterceptor::ServerRequestInfo info);
-			void send_user_exception ( in PortableInterceptor::ServerRequestInfo info);
+			void send_reply ( in PortableInterceptor::ServerRequestInfo info, in string id);
+			void send_system_exception ( in PortableInterceptor::ServerRequestInfo info, in string id);
+			void send_user_exception ( in PortableInterceptor::ServerRequestInfo info, in string id);
 
 			void rec_request_from_servant_locator(in string operation);
 		};
