@@ -1,9 +1,26 @@
 # operating system
 OS=@OS@
 
+##### QEDO CONFIG ####
+QEDO_STREAMS=@QEDO_STREAMS@
+QEDO_QOS=@QEDO_QOS@
+QEDO_DB=@QEDO_DB@
+
+ifneq "yes" "$(QEDO_STREAMS)"
+IDL_FLAGS+=-D_QEDO_NO_STREAMS
+endif
+
+ifneq "yes" "$(QEDO_QOS)"
+IDL_FLAGS+=-D_QEDO_NO_QOS
+endif
+
+ifneq "yes" "$(QEDO_DB)"
+IDL_FLAGS+=-D_QEDO_NO_DB
+endif
+
 ##### ORB #####
 # choose one out of MICO_ORB TAO_ORB ORBACUS_ORB
-ORB = MICO_ORB
+ORB = ORBACUS_ORB
 
 HAVE_MICO_CONFIG=@HAVE_MICO_CONFIG@
 # MICO
@@ -11,7 +28,8 @@ MICO = $(shell mico-config --prefix)
 MICO_VERSION = $(shell mico-config --version)
 
 # ORBACUS
-ORBACUS = /opt/OOC
+HAVE_ORBACUS=@HAVE_ORBACUS@
+ORBACUS=@ORBACUSDIR@
 
 
 ##### DEBUG #####
@@ -52,6 +70,17 @@ MICO_LIBS := $(shell mico-config --libs)
 LIBS+=$(MICO_LIBS)
 NAMING_LIBS := $(shell mico-config --cosslibs)
 NAMING_INCLUDES := -I$(shell mico-config --prefix)/include/coss
+endif
+
+ifeq "ORBACUS_ORB" "${ORB}"
+%.h %.cpp %_skel.h %_skel.cpp: %.idl
+	$(ORBACUS)/bin/idl ${IDL_FLAGS} -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DORBACUS_ORB $< 
+ORBACUS_CXXFLAGS := -DORBACUS_ORB -I$(ORBACUS)/include
+CXXFLAGS+=$(IDLCXXFLAGS) $(ORBACUS_CXXFLAGS)
+ORBACUS_LIBS := 
+LIBS+=$(ORBACUS_LIBS)
+NAMING_LIBS := 
+NAMING_INCLUDES := 
 endif
 
 all:

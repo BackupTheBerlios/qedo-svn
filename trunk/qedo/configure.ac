@@ -12,7 +12,7 @@ AC_ARG_WITH(uuid,
  UUIDDIR=$withval, UUIDDIR="")
 
 AC_ARG_WITH(xerces,
- [  --with-xerces-c=xercesdir         use Xerces installed in xercesdir],
+ [  --with-xerces=xercesdir         use Xerces installed in xercesdir],
  XERCESDIR=$withval, XERCESDIR="")
 AC_SUBST(XERCESDIR)
 
@@ -20,6 +20,10 @@ AC_ARG_WITH(mico,
  [  --with-mico=micodir         use Mico installed in xercesdir],
  MICODIR=$withval, MICODIR="")
 AC_SUBST(MICODIR)
+
+AC_ARG_WITH(orbacus,
+ [  --with-orbacus=orbacusdir         use Orbacus installed in ORBACUSDIR],
+ ORBACUSDIR=$withval, ORBACUSDIR="")
 
 AC_ARG_WITH(wxGTK,
  [  --with-wxGTK=wxgtkdir         use wxGTK installed in WXGTKDIR],
@@ -53,6 +57,16 @@ AC_PROG_RANLIB
 AC_PROG_LN_S
 AC_PROG_INSTALL
 
+if test X"$with_mico" != X -a X"$with_orbacus" != X; then
+  AC_MSG_ERROR([you can use either Mico or Orbacus])
+fi
+
+ORBACUSDIR=""
+if test X"$with_orbacus" != X ;then
+	ORBACUSDIR="$with_orbacus"
+	HAVE_ORBACUS=yes
+   AC_MSG_NOTICE([please make sure, that $ORBACUSDIR/bin/idl will run])
+else
 MICODIR=""
 if test X"$with_mico" != X ;then
 	MICODIR="$with_mico"
@@ -64,8 +78,11 @@ fi
 if test "$HAVE_MICO_CONFIG" != "yes"; then
   AC_MSG_ERROR([support until now only Mico, found no mico-config])
 fi
+fi
 
 AC_SUBST(HAVE_MICO_CONFIG)
+AC_SUBST(HAVE_ORBACUS)
+AC_SUBST(ORBACUSDIR)
 
 AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
 
@@ -90,8 +107,8 @@ fi
 qedo_save_LIBS=$LIBS
 qedo_save_CPPFLAGS=$CPPFLAGS
 XERCESDIR=""
-if test X"$with_xerces_c" != X ;then
-	XERCESDIR="$with_xerces_c"
+if test X"$with_xerces" != X ;then
+	XERCESDIR="$with_xerces"
 fi
 AC_CACHE_CHECK([for Apache's Xerces-C XML library],
     [HAVE_XERCES],
@@ -108,19 +125,19 @@ else
 	LIBS="-L$XERCESDIR/lib -lxerces-c $LIBS"
 	CPPFLAGS="-I$XERCESDIR/include $CPPFLAGS"
 fi
-     AC_TRY_LINK([
-#include <xercesc/util/XercesDefs.hpp>
-#include <xercesc/util/PlatformUtils.hpp>
-#ifndef XERCES_HAS_CPP_NAMESPACE
-#define XERCES_CPP_NAMESPACE_QUALIFIER
-#endif],
-       [XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::Initialize();],
-       [HAVE_XERCES=yes],
-       [HAVE_XERCES=no])
-     LIBS=$qedo_save_LIBS
-	  CPPFLAGS=$qedo_save_CPPFLAGS
-     AC_LANG_RESTORE
-  ])
+dnl      AC_TRY_LINK([
+dnl #include <xercesc/util/XercesDefs.hpp>
+dnl #include <xercesc/util/PlatformUtils.hpp>
+dnl #ifndef XERCES_HAS_CPP_NAMESPACE
+dnl #define XERCES_CPP_NAMESPACE_QUALIFIER
+dnl #endif],
+dnl        [XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::Initialize();],
+dnl        [HAVE_XERCES=yes],
+dnl        [HAVE_XERCES=no])
+dnl      LIBS=$qedo_save_LIBS
+dnl 	  CPPFLAGS=$qedo_save_CPPFLAGS
+dnl      AC_LANG_RESTORE
+dnl   ])
 
 if test X"$HAVE_XERCES" = Xno; then
   AC_MSG_ERROR([cannot find libxerces-c])
@@ -150,14 +167,20 @@ if test X"$use_debug" != Xno; then
 fi
 
 if test X"$use_streams" != Xyes; then
+	QEDO_STREAMS=$use_streams
+	AC_SUBST(QEDO_STREAMS)
 	AC_DEFINE(_QEDO_NO_STREAMS)
 fi
 
 if test X"$use_qos" != Xyes; then
+	QEDO_QOS=$use_qos
+	AC_SUBST(QEDO_QOS)
 	AC_DEFINE(_QEDO_NO_QOS)
 fi
 
 if test X"$use_db" != Xyes; then
+	QEDO_DB=$use_db
+	AC_SUBST(QEDO_DB)
 	AC_DEFINE(_QEDO_NO_DB)
 fi
 
