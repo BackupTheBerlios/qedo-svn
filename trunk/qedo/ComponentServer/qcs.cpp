@@ -34,7 +34,7 @@
 
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.22 2003/10/21 14:06:02 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.23 2003/10/22 12:34:02 stoinski Exp $";
 
 
 /**
@@ -75,9 +75,15 @@ main (int argc, char** argv)
 		debug_mode = true;
 		Qedo::debug_output = true;
 	}
+
 	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/VerboseOutput"), "true"))
 	{
 		Qedo::debug_output = true;
+	}
+
+	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/QoS/EnableQoS"), "true"))
+	{
+		qos_enabled = true;
 	}
 
 	CORBA::String_var csa_string_ref;
