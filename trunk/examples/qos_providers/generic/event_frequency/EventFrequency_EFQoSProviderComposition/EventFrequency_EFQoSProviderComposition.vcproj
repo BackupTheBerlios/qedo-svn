@@ -175,6 +175,9 @@ zip ../EventFrequency_EFQoSProviderComposition.zip meta-inf/EventFrequency_EFQoS
 				RelativePath="EventFrequency_EFQoSProviderComposition_LOCAL.cpp">
 			</File>
 			<File
+				RelativePath="SeqUsage.cpp">
+			</File>
+			<File
 				RelativePath="ServerContainerInterceptor.cpp">
 			</File>
 			<File
@@ -198,6 +201,9 @@ zip ../EventFrequency_EFQoSProviderComposition.zip meta-inf/EventFrequency_EFQoS
 			</File>
 			<File
 				RelativePath="EventFrequency_EFQoSProviderComposition_LOCAL.h">
+			</File>
+			<File
+				RelativePath="SeqUsage.h">
 			</File>
 			<File
 				RelativePath="ServerContainerInterceptor.h">

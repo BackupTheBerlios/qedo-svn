@@ -19,6 +19,7 @@
 
 // BEGIN USER INSERT SECTION file_post
 #include "ServerContainerInterceptor.h"
+#include "SeqUsage.h"
 // END USER INSERT SECTION file_post
 
 
@@ -56,6 +57,12 @@ namespace EventFrequency
         void remove()
             throw (CORBA::SystemException);
         
+        
+        //
+        // IDL:EventFrequency/FreqUsage/set_frequency:1.0
+        //
+        virtual void set_frequency(CORBA::Long freq)
+        	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION EFQoSProviderExec
 public:

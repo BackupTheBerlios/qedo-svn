@@ -1,3 +1,6 @@
+#ifndef _EventFrequency_ServerContainerInterceptor_H_
+#define _EventFrequency_ServerContainerInterceptor_H_
+
 #include "CORBA.h"
 #include "Components_skel.h"
 #include "RefCountBase.h"
@@ -17,6 +20,8 @@ namespace Qedo {
 
 		~EFServerContainerInterceptor();
 
+		void set_freq(long freq);
+
 		virtual void set_slot_id(PortableInterceptor::SlotId id);
 		virtual void receive_request (::Components::Extension::ContainerServerRequestInfo_ptr info) ;
 		virtual void send_reply (::Components::Extension::ContainerServerRequestInfo_ptr info) ;
@@ -26,3 +31,4 @@ namespace Qedo {
 
 	};
 }; // namespace Qedo
+#endif

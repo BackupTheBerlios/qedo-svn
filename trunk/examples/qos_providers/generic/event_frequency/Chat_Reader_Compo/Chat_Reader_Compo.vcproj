@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="Chat_Reader_Compo"
+	ProjectGUID="{70BD991D-41E5-4605-A798-2DA0A40BD8F4}"
+	Keyword="Win32Proj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug_orbacus|Win32"
+			OutputDirectory="Debug_orbacus"
+			IntermediateDirectory="Debug_orbacus"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)\include;$(ORBACUS)\include;$(ORBACUS)\include\OB;"
+				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib obd.lib jtcd.lib"
+				OutputFile="$(OutDir)/Chat_Reader_Compo.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)\lib;$(ORBACUS)\lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/Chat_Reader_Compo.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/Chat_Reader_Compo.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_mico|Win32"
+			OutputDirectory="Debug_mico"
+			IntermediateDirectory="Debug_mico"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)\include;$(MICO)\include;../EventFrequency_EFQoSProviderComposition"
+				PreprocessorDefinitions="BUILD_CHAT_READER_COMPO_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  qedoutil.lib mico2311.lib pthreadVC.lib"
+				OutputFile="$(OutDir)/Chat_Reader_Compo.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)\lib;$(MICO)\win32-bin\lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/Chat_Reader_Compo.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/Chat_Reader_Compo.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="zip ../Chat_Reader_Compo.zip -j  Debug_mico/Chat_Reader_Compo.dll ../Chat_Reader_Compo_SERVANT/Debug_mico/Chat_Reader_Compo_SERVANT.dll ../chat.idl
+zip ../Chat_Reader_Compo.zip meta-inf/Chat_Reader_Compo.ccd meta-inf/Chat_Reader_Compo.csd
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_tao|Win32"
+			OutputDirectory="Debug_tao"
+			IntermediateDirectory="Debug_tao"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)\include;$(MICO)\include;"
+				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib mico2311.lib"
+				OutputFile="$(OutDir)/Chat_Reader_Compo.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)\lib;$(MICO)\win32-bin\lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/Chat_Reader_Compo.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/Chat_Reader_Compo.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			<File
+				RelativePath="Chat_Reader_Compo.cpp">
+			</File>
+			<File
+				RelativePath="Chat_Reader_Compo_BUSINESS.cpp">
+			</File>
+			<File
+				RelativePath="Chat_Reader_Compo_BUSINESS_skel.cpp">
+			</File>
+			<File
+				RelativePath="Chat_Reader_Compo_EQUIVALENT.cpp">
+			</File>
+			<File
+				RelativePath="Chat_Reader_Compo_LOCAL.cpp">
+			</File>
+			<File
+				RelativePath="..\EventFrequency_EFQoSProviderComposition\EventFrequency_EFQoSProviderComposition_EQUIVALENT.cpp">
+			</File>
+			<File
+				RelativePath="valuetypes.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="Chat_Reader_Compo.h">
+			</File>
+			<File
+				RelativePath="Chat_Reader_Compo_BUSINESS.h">
+			</File>
+			<File
+				RelativePath="Chat_Reader_Compo_BUSINESS_skel.h">
+			</File>
+			<File
+				RelativePath="Chat_Reader_Compo_EQUIVALENT.h">
+			</File>
+			<File
+				RelativePath="Chat_Reader_Compo_LOCAL.h">
+			</File>
+			<File
+				RelativePath="..\EventFrequency_EFQoSProviderComposition\EventFrequency_EFQoSProviderComposition_EQUIVALENT.h">
+			</File>
+			<File
+				RelativePath="valuetypes.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="idl"
+			Filter="idl;cidl">
+			<File
+				RelativePath="../chat.cidl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(QEDO)/bin/cidl_gen -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --business --target IDL:Chat/Reader_Compo:1.0 ../chat.cidl
+"
+						Outputs="Chat_Reader_Compo_LOCAL.idl;Chat_Reader_Compo_EQUIVALENT.idl;Chat_Reader_Compo_BUSINESS.idl"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --business --servant --target IDL:Chat/Reader_Compo:1.0 ../chat.cidl
+"
+						Outputs="Chat_Reader_Compo_LOCAL.idl;Chat_Reader_Compo_EQUIVALENT.idl;Chat_Reader_Compo_BUSINESS.idl"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB Chat_Reader_Compo_LOCAL.idl
+"
+						Outputs="Chat_Reader_Compo_LOCAL.h;Chat_Reader_Compo_LOCAL.cpp;Chat_Reader_Compo_LOCAL_skel.h;Chat_Reader_Compo_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Chat_Reader_Compo_BUSINESS.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB Chat_Reader_Compo_BUSINESS.idl
+"
+						Outputs="Chat_Reader_Compo_BUSINESS.h;Chat_Reader_Compo_BUSINESS.cpp;Chat_Reader_Compo_BUSINESS_skel.h;Chat_Reader_Compo_BUSINESS_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(MICO)/win32-bin/idl -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll Chat_Reader_Compo Chat_Reader_Compo_BUSINESS.idl
+copy Chat_Reader_Compo_BUSINESS.h Chat_Reader_Compo_BUSINESS_skel.h
+"
+						Outputs="Chat_Reader_Compo_BUSINESS.h;Chat_Reader_Compo_BUSINESS.cpp;Chat_Reader_Compo_BUSINESS_skel.h;Chat_Reader_Compo_BUSINESS_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB Chat_Reader_Compo_LOCAL.idl
+"
+						Outputs="Chat_Reader_Compo_LOCAL.h;Chat_Reader_Compo_LOCAL.cpp;Chat_Reader_Compo_LOCAL_skel.h;Chat_Reader_Compo_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Chat_Reader_Compo_EQUIVALENT.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB Chat_Reader_Compo_EQUIVALENT.idl
+"
+						Outputs="Chat_Reader_Compo_EQUIVALENT.h;Chat_Reader_Compo_EQUIVALENT.cpp;Chat_Reader_Compo_EQUIVALENT_skel.h;Chat_Reader_Compo_EQUIVALENT_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(MICO)/win32-bin/idl -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl  -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll Chat_Reader_Compo Chat_Reader_Compo_EQUIVALENT.idl
+copy Chat_Reader_Compo_EQUIVALENT.h Chat_Reader_Compo_EQUIVALENT_skel.h
+"
+						Outputs="Chat_Reader_Compo_EQUIVALENT.h;Chat_Reader_Compo_EQUIVALENT.cpp;Chat_Reader_Compo_EQUIVALENT_skel.h;Chat_Reader_Compo_EQUIVALENT_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB Chat_Reader_Compo_LOCAL.idl
+"
+						Outputs="Chat_Reader_Compo_LOCAL.h;Chat_Reader_Compo_LOCAL.cpp;Chat_Reader_Compo_LOCAL_skel.h;Chat_Reader_Compo_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Chat_Reader_Compo_LOCAL.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB Chat_Reader_Compo_LOCAL.idl
+"
+						Outputs="Chat_Reader_Compo_LOCAL.h;Chat_Reader_Compo_LOCAL.cpp;Chat_Reader_Compo_LOCAL_skel.h;Chat_Reader_Compo_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(MICO)/win32-bin/idl -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll Chat_Reader_Compo Chat_Reader_Compo_LOCAL.idl
+copy Chat_Reader_Compo_LOCAL.h Chat_Reader_Compo_LOCAL_skel.h
+"
+						Outputs="Chat_Reader_Compo_LOCAL.h;Chat_Reader_Compo_LOCAL.cpp;Chat_Reader_Compo_LOCAL_skel.h;Chat_Reader_Compo_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB Chat_Reader_Compo_LOCAL.idl
+"
+						Outputs="Chat_Reader_Compo_LOCAL.h;Chat_Reader_Compo_LOCAL.cpp;Chat_Reader_Compo_LOCAL_skel.h;Chat_Reader_Compo_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

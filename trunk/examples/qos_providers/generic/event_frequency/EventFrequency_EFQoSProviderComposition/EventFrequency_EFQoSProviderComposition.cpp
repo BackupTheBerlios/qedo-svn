@@ -69,6 +69,12 @@ server_reg -> register_interceptor_for_component(server_interceptor_, component_
 
 // register interceptor for all
 //server_reg -> register_interceptor_for_all(server_interceptor_);
+
+
+// register QoS Usage interface
+FreqUsageImpl* usage = new FreqUsageImpl(server_interceptor_);
+context_ -> install_service_reference("Freq", usage);
+
 // END USER INSERT SECTION EFQoSProviderExec::configuration_complete
 }
 
@@ -79,6 +85,15 @@ EFQoSProviderExec::remove()
 {
 // BEGIN USER INSERT SECTION EFQoSProviderExec::remove
 // END USER INSERT SECTION EFQoSProviderExec::remove
+}
+
+
+void
+EFQoSProviderExec::set_frequency(CORBA::Long freq)
+	throw(CORBA::SystemException)
+{
+// BEGIN USER INSERT SECTION EFQoSProviderExec::set_frequency
+// END USER INSERT SECTION EFQoSProviderExec::set_frequency
 }
 
 
@@ -108,6 +123,10 @@ EFQoSProviderComposition::obtain_executor(const char* name)
     throw (CORBA::SystemException)
 {
     if (! strcmp ( name, "component" ) ) {
+        return Components::EnterpriseComponent::_duplicate (component_);
+    }
+    
+    else if (! strcmp (name, "qos_usage")) {
         return Components::EnterpriseComponent::_duplicate (component_);
     }
     

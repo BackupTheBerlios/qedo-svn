@@ -19,6 +19,13 @@ EFServerContainerInterceptor::~EFServerContainerInterceptor ()
 }
 
 
+void 
+EFServerContainerInterceptor::set_freq(long freq)
+{
+	frequency_ = freq;
+}
+
+
 void
 EFServerContainerInterceptor::set_slot_id(PortableInterceptor::SlotId id)
 {
