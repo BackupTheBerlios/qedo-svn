@@ -336,7 +336,6 @@ GeneratorBusinessC::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr compon
 		out << class_name_ << "::receive_stream_" << sink_name << " (" << map_in_parameter_type (transported_type) << " data)\n";
 	}
 
-	out << "throw (CORBA::SystemException)\n";
 	out << "{\n"; out.indent();
 	out.insertUserSection(class_name_ + "::receive_stream_" + sink_name, 0); out.unindent();
 	out << "}\n\n\n";
@@ -349,7 +348,7 @@ GeneratorBusinessC::doHome(IR__::HomeDef_ptr home)
 	// handle base home
 	IR__::HomeDef_var base = home->base_home();
 	if(base)
-	{ 
+	{
 		doHome(base);
 	}
 	//
