@@ -13,7 +13,7 @@ namespace Qedo {
 
 namespace Qedo {
 
-	class ServerContainerInterceptor: public virtual Components::Extension::ServerContainerInterceptor
+	class ServerContainerInterceptor: public virtual Components::ContainerPortableInterceptor::ServerContainerInterceptor
 	{
 	private:
 	container_service::CCM_monitor_Context* context_;
@@ -27,13 +27,25 @@ namespace Qedo {
 
 		~ServerContainerInterceptor();
 
+		virtual void destroy();
 		virtual void set_slot_id(PortableInterceptor::SlotId slot_id);
-		virtual void receive_request (Components::Extension::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_reply (Components::Extension::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_system_exception (Components::Extension::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_user_exception (Components::Extension::ContainerServerRequestInfo_ptr info) ;
-		virtual void rec_request_from_servant_locator(const char* operation);
+		virtual void receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+		virtual void send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+		virtual void send_system_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+		virtual void send_user_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+//		virtual void rec_request_from_servant_locator(const char* operation);
 
+
+/*
+		virtual void call( const char* comp_id, const char* origin, const char* operation, CORBA::Boolean_out con ) ;
+
+		virtual Components::Cookie* connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con ) ;
+	    virtual CORBA::Object_ptr provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con );
+
+		virtual Components::Cookie* bind( const char* comp_id, char*& name, ::StreamComponents::SinkStreamPort_ptr& the_sink, char*& transport_profile, CORBA::Boolean_out con ) ;
+		virtual ::StreamComponents::SinkStreamPort_ptr unbind( const char* comp_id, char*& name, Components::Cookie*& ck, CORBA::Boolean_out con ) ;
+		virtual CORBA::Object_ptr provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) ;
+*/
 	};
 }; // namespace Qedo
 

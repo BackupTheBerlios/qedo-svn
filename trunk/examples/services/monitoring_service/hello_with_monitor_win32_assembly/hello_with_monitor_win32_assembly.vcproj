@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="hello_with_monitor_win32_assembly"
 	ProjectGUID="{42CE01F9-7A50-4A95-8977-3595433CDA1B}"
 	Keyword="Win32Proj">
@@ -50,7 +50,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -95,9 +101,17 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<File
 			RelativePath="meta-inf\callee.cpf">
@@ -111,8 +125,8 @@
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="zip ../hello_with_monitoring_win32_assembly.zip -j  ../container_service_MonImpl.zip ../../../general/hello_world/HelloWorld_CalleeImpl.zip ../../../general/hello_world/HelloWorld_CallerImpl.zip
-zip ../hello_with_monitoring_win32_assembly.zip meta-inf/hello_with_monitoring_win32.cad meta-inf/callee.cpf meta-inf/caller.cpf
+					CommandLine="$(QEDO)/bin/zip ../hello_with_monitoring_win32_assembly.zip -j  ../container_service_MonImpl.zip ../../../general/hello_world/HelloWorld_CalleeImpl.zip ../../../general/hello_world/HelloWorld_CallerImpl.zip
+$(QEDO)/bin/zip ../hello_with_monitoring_win32_assembly.zip meta-inf/hello_with_monitoring_win32.cad meta-inf/callee.cpf meta-inf/caller.cpf
 "
 					Outputs="hello_with_monitoring_win32_assembly.zip"/>
 			</FileConfiguration>

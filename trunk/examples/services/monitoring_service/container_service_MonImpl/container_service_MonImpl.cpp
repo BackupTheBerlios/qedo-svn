@@ -96,14 +96,14 @@ MonExec::configuration_complete()
 // BEGIN USER INSERT SECTION MonExec::configuration_complete
 	std::cout << "Monitorung Serivce: configuration_complete" << std::endl;
 
-	Components::Extension::ServerInterceptorRegistration_ptr server_reg =
+	Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_reg =
 		context_->get_server_interceptor_dispatcher_registration();
 
 	server_interceptor_ = new Qedo::ServerContainerInterceptor(context_,this);
 
 	server_reg->register_interceptor_for_all(server_interceptor_);
 
-	Components::Extension::ClientInterceptorRegistration_ptr client_reg =
+	Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr client_reg =
 		context_->get_client_interceptor_dispatcher_registration();
 
 	client_interceptor_ = new Qedo::ClientContainerInterceptor(context_,this);
@@ -123,7 +123,7 @@ MonExec::remove()
     throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION MonExec::remove
-	Components::Extension::ServerInterceptorRegistration_ptr server_reg =
+	Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_reg =
 	context_->get_server_interceptor_dispatcher_registration();
 
 	server_reg->unregister_interceptor_for_all(server_interceptor_);
@@ -257,6 +257,7 @@ HomeMonExec::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = Components::HomeContext::_duplicate(ctx);
+    
 }
 
 

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="philo_with_monitor_win32_assembly"
 	ProjectGUID="{B6606686-DD24-43D7-AF95-5E4E631FE3A2}"
 	Keyword="Win32Proj">
@@ -50,7 +50,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -95,9 +101,17 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<File
 			RelativePath="meta-inf\atze.cpf">
@@ -114,8 +128,8 @@
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="zip ../philo_with_monitor_win32_assembly.zip -j ../container_service_MonImpl.zip ../../../general/philosopher/dinner_CutleryImpl.zip ../../../general/philosopher/dinner_PhilosopherImpl.zip ../../../general/philosopher/dinner_ObserverImpl.zip
-zip ../philo_with_monitor_win32_assembly.zip meta-inf/philo_with_monitor_win32_assembly.cad meta-inf/atze.cpf meta-inf/bob.cpf meta-inf/charly.cpf meta-inf/fork1.cpf meta-inf/fork2.cpf meta-inf/observer.cpf
+					CommandLine="$(QEDO)/bin/zip ../philo_with_monitor_win32_assembly.zip -j ../container_service_MonImpl.zip ../../../general/philosopher/dinner_CutleryImpl.zip ../../../general/philosopher/dinner_PhilosopherImpl.zip ../../../general/philosopher/dinner_ObserverImpl.zip
+$(QEDO)/bin/zip ../philo_with_monitor_win32_assembly.zip meta-inf/philo_with_monitor_win32_assembly.cad meta-inf/atze.cpf meta-inf/bob.cpf meta-inf/charly.cpf meta-inf/fork1.cpf meta-inf/fork2.cpf meta-inf/observer.cpf
 "
 					Outputs="c"/>
 			</FileConfiguration>

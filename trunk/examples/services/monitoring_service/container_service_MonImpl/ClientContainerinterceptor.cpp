@@ -5,6 +5,10 @@
 namespace Qedo {
 
 void 
+ClientContainerInterceptor::destroy() {
+};
+
+void 
 ClientContainerInterceptor::set_slot_id(PortableInterceptor::SlotId slot_id) {
 	slot_id_ = slot_id;
 };
@@ -36,14 +40,14 @@ ClientContainerInterceptor::~ClientContainerInterceptor ()
 }
 
 void
-ClientContainerInterceptor::send_request (Components::Extension::ContainerClientRequestInfo_ptr info)
+ClientContainerInterceptor::send_request (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info)
 {
 
 	std::cout << "COPI: send_request: " << info->request_info()->operation() << std::endl;
 		if ( 0 == strcmp (info->request_info()->operation(), "receiveEvent") )
 	{
 		/*
-		 * Suppress PI handling for events to Trace server
+		 * Suppress interception of handling for events to Trace server
 		 */
 
 		return;
@@ -83,7 +87,7 @@ ClientContainerInterceptor::send_request (Components::Extension::ContainerClient
 		event->event_counter  = event_number;
 		event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
 
-		event->identity.object_instance_id		= CORBA::string_dup (info->port_id());
+		event->identity.object_instance_id		= CORBA::string_dup (info->name());
 		event->identity.object_repository_id	= CORBA::string_dup ("UNKNOWN");
 
 		event->identity.cmp_name				= CORBA::string_dup (info->component_id());
@@ -111,7 +115,7 @@ ClientContainerInterceptor::send_request (Components::Extension::ContainerClient
 
 		IOP::ServiceContext sc;
 
-		sc.context_id = 100;
+		sc.context_id = 101;
 
 		sc.context_data.length(data->length());
 
@@ -122,7 +126,7 @@ ClientContainerInterceptor::send_request (Components::Extension::ContainerClient
 }
 
 void
-ClientContainerInterceptor::receive_reply (Components::Extension::ContainerClientRequestInfo_ptr info)
+ClientContainerInterceptor::receive_reply (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info)
 {
 	
 	std::cout << "COPI: receive_reply: " << info->request_info()->operation() << "for id: " << std::endl;
@@ -143,7 +147,7 @@ ClientContainerInterceptor::receive_reply (Components::Extension::ContainerClien
 	char *message_data;
 	CORBA::Any_var any = new CORBA::Any;
 	try {
-		sc = info->request_info()->get_reply_service_context(100);	
+		sc = info->request_info()->get_reply_service_context(101);	
 		
 		CORBA::OctetSeq data;
 
@@ -183,7 +187,7 @@ ClientContainerInterceptor::receive_reply (Components::Extension::ContainerClien
 	event->trail_id	= CORBA::string_dup (message_data);
 	event->event_counter  = event_number;
 	event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
-	event->identity.object_instance_id		= CORBA::string_dup (info->port_id());
+	event->identity.object_instance_id		= CORBA::string_dup (info->name());
 	event->identity.object_repository_id	= CORBA::string_dup ("UNKNOWN");
 	event->identity.cmp_name				= CORBA::string_dup (info->component_id());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
@@ -206,7 +210,7 @@ ClientContainerInterceptor::receive_reply (Components::Extension::ContainerClien
 }
 
 void
-ClientContainerInterceptor::receive_system_exception (Components::Extension::ContainerClientRequestInfo_ptr info)
+ClientContainerInterceptor::receive_system_exception (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info)
 {
 	std::cout << "COPI: receive_system_exception: " << info->request_info()->operation() << "for id: " << std::endl;
 	if ( 0 == strcmp (info->request_info()->operation(), "receiveEvent") )
@@ -266,7 +270,7 @@ ClientContainerInterceptor::receive_system_exception (Components::Extension::Con
 	event->trail_id	= CORBA::string_dup (message_data);
 	event->event_counter  = event_number;
 	event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
-	event->identity.object_instance_id		= CORBA::string_dup (info->port_id());
+	event->identity.object_instance_id		= CORBA::string_dup (info->name());
 	event->identity.object_repository_id	= CORBA::string_dup ("UNKNOWN");
 	event->identity.cmp_name				= CORBA::string_dup (info->component_id());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
@@ -289,7 +293,7 @@ ClientContainerInterceptor::receive_system_exception (Components::Extension::Con
 }
 
 void
-ClientContainerInterceptor::receive_user_exception (Components::Extension::ContainerClientRequestInfo_ptr info) {
+ClientContainerInterceptor::receive_user_exception (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info) {
 	std::cout << "COPI: receive_user_exception: " << info->request_info()->operation() << "for id:" << std::endl;
 	if ( 0 == strcmp (info->request_info()->operation(), "receiveEvent") )
 	{
@@ -348,7 +352,7 @@ ClientContainerInterceptor::receive_user_exception (Components::Extension::Conta
 	event->trail_id	= CORBA::string_dup (message_data);
 	event->event_counter  = event_number;
 	event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
-	event->identity.object_instance_id		= CORBA::string_dup (info->port_id());
+	event->identity.object_instance_id		= CORBA::string_dup (info->name());
 	event->identity.object_repository_id	= CORBA::string_dup ("UNKNOWN");
 	event->identity.cmp_name				= CORBA::string_dup (info->component_id());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
@@ -370,5 +374,43 @@ ClientContainerInterceptor::receive_user_exception (Components::Extension::Conta
 
 }
 
+/*
+
+Components::Cookie* 
+ClientContainerInterceptor::connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con ) 
+{
+//	std::cout << "COPI Client: connect called" << std::endl;
+	con = true;
+	return 0;	
+}
+
+CORBA::Object_ptr 
+ClientContainerInterceptor::provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con ) 
+{
+//	std::cout << "COPI Client: provide_facet called" << std::endl;
+	return CORBA::Object::_nil();
+}
+
+Components::Cookie* 
+ClientContainerInterceptor::bind( const char* comp_id, char*& name, ::StreamComponents::SinkStreamPort_ptr& the_sink, char*& transport_profile, CORBA::Boolean_out con ) 
+{
+//	std::cout << "COPI Client: bind called" << std::endl;
+	return 0;
+}
+
+::StreamComponents::SinkStreamPort_ptr 
+ClientContainerInterceptor::unbind( const char* comp_id, char*& name, Components::Cookie*& ck, CORBA::Boolean_out con ) 
+{
+//	std::cout << "COPI Client: unbind called" << std::endl;
+	return 0;
+}
+
+CORBA::Object_ptr 
+ClientContainerInterceptor::provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) 
+{
+//	std::cout << "COPI Client: provide_sink_stream_port" << std::endl;
+	return 0;
+}
+*/
 
 }; // namespace Qedo

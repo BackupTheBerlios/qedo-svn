@@ -1,24 +1,32 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "container_service_MonImpl", "container_service_MonImpl\container_service_MonImpl.vcproj", "{562A99B9-A003-4CA8-9865-7FA880878373}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8} = {E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "container_service_MonImpl_SERVANT", "container_service_MonImpl_SERVANT\container_service_MonImpl_SERVANT.vcproj", "{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestClient", "TestClient\TestClient.vcproj", "{A388A8EA-BE9D-43A4-8194-5181040BCCAC}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hello_with_monitor_win32_assembly", "hello_with_monitor_win32_assembly\hello_with_monitor_win32_assembly.vcproj", "{42CE01F9-7A50-4A95-8977-3595433CDA1B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "philo_with_monitor_win32_assembly", "philo_with_monitor_win32_assembly\philo_with_monitor_win32_assembly.vcproj", "{B6606686-DD24-43D7-AF95-5E4E631FE3A2}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug
-		ConfigName.1 = Debug_mico
-		ConfigName.2 = Debug_orbacus
-		ConfigName.3 = Debug_tao
-		ConfigName.4 = Release
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
-		{562A99B9-A003-4CA8-9865-7FA880878373}.0 = {E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}
+		Debug = Debug
+		Debug_mico = Debug_mico
+		Debug_orbacus = Debug_orbacus
+		Debug_tao = Debug_tao
+		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{562A99B9-A003-4CA8-9865-7FA880878373}.Debug.ActiveCfg = Debug_tao|Win32

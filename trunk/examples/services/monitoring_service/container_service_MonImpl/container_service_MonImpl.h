@@ -15,7 +15,7 @@ class MonExec;
 
 #include <CORBA.h>
 #include "container_service_MonImpl_BUSINESS.h"
-#include "valuetypes.h"
+#include "component_valuetypes.h"
 #include "RefCountBase.h"
 #include <string>
 
