@@ -26,6 +26,23 @@ GeneratorEIDL::~GeneratorEIDL
 }
 
 
+bool
+GeneratorEIDL::check_stream_CCM_object (IR__::ComponentDef_ptr component)
+{
+	if (CORBA::is_nil (component))
+		return false;
+
+	IR__::ComponentDef_var base = component->base_component();
+	IR__::SourceDefSeq_var sources_seq = component->sources();
+	IR__::SinkDefSeq_var sinks_seq = component->sinks();
+
+	if (sources_seq->length() || sinks_seq->length())
+		return true;
+	else
+		return check_stream_CCM_object (base);
+}
+
+
 void
 GeneratorEIDL::planInterfaceContent(IR__::Contained_ptr item)
 {
@@ -1200,14 +1217,19 @@ GeneratorEIDL::doComponent(IR__::ComponentDef_ptr component)
 	
 	// base component
 	IR__::ComponentDef_var base = component->base_component();
+	IR__::SourceDefSeq_var sources_seq = component->sources();
+	IR__::SinkDefSeq_var sinks_seq = component->sinks();
+	bool has_streams = sources_seq->length() || sinks_seq->length();
+
 	if(!CORBA::is_nil(base)) {
 		out << map_absolute_name(base);
+
+		if (has_streams && !check_stream_CCM_object (base))
+			out << ", ::StreamComponents::StreamCCMObject";
 	}
 	else {
 		// Test whether the component has stream features
-		IR__::SourceDefSeq_var sources_seq = component->sources();
-		IR__::SinkDefSeq_var sinks_seq = component->sinks();
-		if (sources_seq->length() || sinks_seq->length())
+		if (has_streams)
 			out << "::StreamComponents::StreamCCMObject";
 		else
 			out << "::Components::CCMObject";
