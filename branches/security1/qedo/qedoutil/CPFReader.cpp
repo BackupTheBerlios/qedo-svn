@@ -21,6 +21,7 @@
 /***************************************************************************/
 
 #include "CPFReader.h"
+#include "Output.h"
 
 
 namespace Qedo {
@@ -78,6 +79,30 @@ throw(CPFReadException)
 		// next element
 		child = child->getNextSibling();
 	}
+}
+
+
+Components::ConfigValue* 
+CPFReader::configuration (DOMElement* element)
+throw(CPFReadException)
+{
+	DOMNode* child = element->getFirstChild();
+    while( child != 0)
+    {
+		//
+		// simple
+		//
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("simple")) ) )
+		{
+			return simple((DOMElement*)child);
+		}
+
+		// next element
+		child = child->getNextSibling();
+	}
+
+	return 0;
 }
 
 
@@ -373,13 +398,57 @@ throw(CPFReadException)
 	char* xmlfile = strdup(descriptor.c_str());
     if ( parser.parse( xmlfile ) != 0 ) 
 	{
-		std::cerr << "Error during XML parsing" << std::endl;
+		NORMAL_ERR2( "CPFReader: error during XML parsing of ", descriptor );
         throw CPFReadException();
 	}
 	cpf_document_ = parser.getDocument();
 
 	// handle properties
 	return properties(cpf_document_->getDocumentElement());
+}
+
+
+Components::ConfigValues*
+CPFReader::readConf(std::string descriptor)
+throw(CPFReadException)
+{
+	//
+	// parse the component property file descriptor file
+    //
+	DOMXMLParser parser;
+	char* xmlfile = strdup(descriptor.c_str());
+    if ( parser.parse( xmlfile ) != 0 ) 
+	{
+		NORMAL_ERR2( "CPFReader: error during XML parsing of ", descriptor );
+        throw CPFReadException();
+	}
+	cpf_document_ = parser.getDocument();
+
+	Components::ConfigValues* config = new Components::ConfigValues();
+	int len = 0;
+	DOMNode* child = cpf_document_->getDocumentElement()->getFirstChild();
+    while( child != 0)
+    {
+		//
+		// configuration
+		//
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("configuration")) ) )
+		{
+			// new config entry
+			Components::ConfigValue* cf = configuration((DOMElement*)(child));
+			if(cf)
+			{
+				config->length( ++len );
+				( *config )[len - 1] = cf;
+			}
+		}
+
+		// next element
+		child = child->getNextSibling();
+	}
+
+	return config;
 }
 
 
