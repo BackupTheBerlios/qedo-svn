@@ -23,7 +23,7 @@
 #include "Valuetypes.h"
 
 
-static char rcsid[] UNUSED = "$Id: Valuetypes.cpp,v 1.10 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Valuetypes.cpp,v 1.11 2003/10/23 09:52:37 neubauer Exp $";
 
 
 namespace Qedo {
@@ -73,6 +73,35 @@ Cookie_impl::equal (Components::Cookie* cook)
     }
     
 	return true;
+}
+
+
+const char*
+Cookie_impl::to_string
+()
+{
+	CORBA::String_var str = CORBA::string_alloc(19); // 2 + 2*8 + 1
+	str.inout()[0] = '0';
+	str.inout()[1] = 'x';
+	str.inout()[18] = 0;
+
+	for (unsigned int i = 0; i < 8; i++)
+	{
+		unsigned int val1 = (unsigned int)(cookieValue()[i] & 0xf0) >> 4;
+		unsigned int val2 = (unsigned int)cookieValue()[i] & 0x0f;
+
+		if (val1 >= 0 && val1 <= 9)
+			str.inout()[2*i+2] = val1 + 48;
+		else
+			str.inout()[2*i+2] = val1 + 87;       // a..f
+
+		if (val2 >= 0 && val2 <= 9)
+			str.inout()[2*i+2+1] = val2 + 48;
+		else
+			str.inout()[2*i+2+1] = val2 + 87;
+	}
+
+	return str._retn();
 }
 
 

@@ -76,6 +76,12 @@ public:
 	 * \return True if the cookies are equal.
 	 */
 	CORBA::Boolean equal (Components::Cookie* cook);
+
+	/**
+	 * provide string representation
+	 * \return A string representation of the cookie value.
+	 */
+	const char* to_string();
 };
 
 
