@@ -682,7 +682,7 @@ GeneratorServantC::doHome(IR__::HomeDef_ptr home)
 	}
 
 	component_ = IR__::ComponentDef::_duplicate(home->managed_component());
-	filename_ = mapAbsoluteName(component_, "_");
+	filename_ = mapAbsoluteName(home, "_");
 	filename_.append("_SERVANT");
 	std::string header_name = filename_ + ".h";
 	filename_.append(".cpp");
