@@ -2066,7 +2066,131 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
         out << "throw Components::FinderFailure();\n";
 		out.unindent();
         out << "}\n\n";
-		out << "throw Components::UnknownKeyValue();\n";
+		
+		out << strNamespace_ << "::" << home->managed_component()->name() << "Persistence* pCcmStorageObject = 0;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "pCcmStorageObject = pCcmStorageHome_->find_by_primary_key(pkey);\n";
+		out.unindent();
+		out << "}\ncatch (CosPersistentState::NotFound&)\n{\n";
+		out.indent();
+        out << "NORMAL_ERR (\"Home_servant: unknown key value\");\n";
+        out << "throw Components::UnknownKeyValue();\n";
+		out.unindent();
+        out << "}\n\n";
+		
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << strNamespace_ << "::" << storagehome_->managed_storagetype()->name() << "* pPssStorageObject = 0;\n\n";
+			out << "try\n{\n";
+			out.indent();
+			out << "pPssStorageObject = pPssStorageHome_->find_by_primary_key(pkey);\n";
+			out.unindent();
+			out << "}\ncatch (CosPersistentState::NotFound&)\n{\n";
+			out.indent();
+			out << "NORMAL_ERR (\"Home_servant: unknown key value\");\n";
+			out << "throw Components::UnknownKeyValue();\n";
+			out.unindent();
+			out << "}\n\n";
+		}
+
+		out << "#ifdef TAO_ORB\n";
+		out << mapFullNameLocal(home) << "_ptr home_executor = dynamic_cast < ";
+		out << mapFullNameLocal(home) << "_ptr > (home_executor_.in());\n";
+		out << "#else\n";
+		out << mapFullNameLocal(home) << "_var home_executor = ";
+		out << mapFullNameLocal(home) << "::_narrow (home_executor_.in());\n";
+		out << "#endif\n";
+		out << "if (CORBA::is_nil (home_executor))\n{\n";
+		out.indent();
+		out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
+		out << "throw Components::FinderFailure();\n";
+		out.unindent();
+		out << "}\n\n";
+		out << "Components::EnterpriseComponent_var enterprise_component;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "enterprise_component = home_executor->create(pkey);\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (Components::CCMException&)\n{\n";
+		out.indent();
+		out << "NORMAL_ERR (\"Home_servant: cannot create component\");\n";
+		out << "throw Components::FinderFailure();\n";
+		out.unindent();
+		out << "}\n\n";
+		out << "Components::ExecutorLocator_var executor_locator;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "executor_locator = Components::ExecutorLocator::_narrow (enterprise_component);\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException&)\n{\n";
+		out.indent();
+		out << "NORMAL_ERR (\"Home_servant: This container can only handle locator-based implementations\");\n";
+		out << "throw Components::FinderFailure();\n";
+		out.unindent();
+		out << "}\n\n";
+		out << "Components::EntityComponent_var entity_component;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "entity_component = Components::EntityComponent::_narrow (enterprise_component);\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException&)\n{\n";
+		out.indent();
+		out << "throw Components::FinderFailure();\n";
+		out.unindent();
+		out << "}\n\n";
+		out << "// Create a new context\n";
+		out << mapFullNameLocal(home->managed_component()) << "_ContextImpl_var new_context = new ";
+		out << mapFullNameServant(home->managed_component()) << "_Context_callback();\n\n";
+		out << "// Set context on component\n";
+		out << "entity_component->set_entity_context (new_context.in());\n\n";
+		out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
+		out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
+		out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
+		
+		out << "std::string strTemp = convertPidToString(pCcmStorageObject->get_pid());\n";
+		out << "std::basic_string <char>::size_type idxBegin;\n";
+		out << "static const std::basic_string <char>::size_type npos = -1;\n";
+		out << "idxBegin = strTemp.find(\"@\");\n";
+		out << "if( idxBegin==npos )\n";
+		out << "{\n";
+		out.indent();
+		out << "NORMAL_ERR( \"Invalid pid!\" );\n";
+		out << "throw Components::FinderFailure();\n";
+		out.unindent();
+		out << "}\n";
+		out << "component_instance.uuid_ = strTemp.substr(0, idxBegin);\n\n";
+
+		out << "// register servant factory\n";
+		out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
+		out << mapFullNameServant(home->managed_component()) << "::cleaner_.factory_);\n\n";
+		out << "// Extract our Key out of the object reference\n";
+		out << "DEBUG_OUT (\"Home_servant: create(" << mapFullNamePK(home->primary_key()) << "*" << ") called\");\n\n";
+		out << "#ifdef TAO_ORB\n";
+		out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n";
+		out << "#else\n";
+		out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n";
+		out << "#endif\n";
+		out << "// register all ports\n";
+		genFacetRegistration(home);
+		genReceptacleRegistration(home);
+		genEmitterRegistration(home);
+		genPublisherRegistration(home);
+		genConsumerRegistration(home);
+
+		out << "CORBA::RepositoryIdSeq streamtypes;\n\n";
+		genSinkRegistration(home);
+		genSourceRegistration(home);
+		
+		out << "new_context->set_ccm_storage_object(pCcmStorageObject);\n";
+		out << "new_context->set_storage_object(pPssStorageObject);\n\n";
+		
+		out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
+		out << "servant = " << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
+		out << "return servant._retn();\n";
 		out.unindent();
 		out << "}\n\n";
 

@@ -62,9 +62,7 @@ GeneratorPersistenceC::generate(std::string target, std::string fileprefix)
 	out << "#ifndef _" << file_prefix_ << "_PSS_C_\n";
 	out << "#define _" << file_prefix_ << "_PSS_C_\n\n\n";
 	out << "#include \"" << file_prefix_ << "_PSS.h\"\n";
-	out << "\n// BEGIN USER INSERT SECTION file\n";
-	out << "// END USER INSERT SECTION file\n";
-
+	
 	doGenerate();
 
 	out << "\n#endif\n";
@@ -256,6 +254,7 @@ GeneratorPersistenceC::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// determine the componentDef and HomeDef
 	//
+	composition_ = CIDL::CompositionDef::_duplicate(composition);
 	IR__::ComponentDef_var component = composition->ccm_component();
 	IR__::HomeDef_var home = composition->ccm_home();
 
@@ -514,12 +513,7 @@ GeneratorPersistenceC::genOperation(IR__::OperationDef_ptr operation, IR__::IDLT
 	};
 
 	out << ")\n";
-	out << "{\n// BEGIN USER INSERT SECTION " << strClassname_;
-	if(bRef_) out << "Ref";
-	out << "::" << mapName(operation) << "()\n";
-	out << "// END USER INSERT SECTION " << strClassname_;
-	if(bRef_) out << "Ref";
-	out << "::" << mapName(operation) << "()\n}\n\n";
+	out << "{\n}\n\n";
 }
 
 void
@@ -804,8 +798,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	out.unindent();
 
 	out.unindent();
-	out << "\n// BEGIN USER INSERT SECTION " << strClassname_ << "::" << mapName(operation) << "()\n";
-	out << "// END USER INSERT SECTION " << strClassname_ << "::" << mapName(operation) << "()\n}\n\n";
+	out << "}\n\n";
 }
 
 void
@@ -1035,12 +1028,7 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	}
 
 	out.unindent();
-	out << "\n// BEGIN USER INSERT SECTION " << strClassname_;
-	isRef ? out << "::find_ref_by_" : out << "::find_by_";
-	out << mapName(operation) << "()\n";
-	out << "// END USER INSERT SECTION " << strClassname_;
-	isRef ? out << "::find_ref_by_" : out << "::find_by_";
-	out << mapName(operation) << "()\n}\n\n";
+	out << "}\n\n";
 }
 
 void
@@ -1104,10 +1092,6 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	if( homeIter_!=homeMap_.end() )
 		strStoragehomeName = homeMap_[storagetype->name()];
 
-	out << "// BEGIN USER INSERT SECTION " << strClassname_ << "\n";
-	//isRef ? out << "Ref\n" : out << "\n";
-	out << "// END USER INSERT SECTION " << strClassname_ << "\n\n";
-	//isRef ? out << "Ref\n\n" : out << "\n\n";
 	out << strClassname_;
 	//if(isRef) out << "Ref";
 	out << "::" << strClassname_;
@@ -1119,31 +1103,13 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	IR__::AttributeDefSeq state_members = collectStateMembers(storagetype, CORBA__::dk_Create);
 	CORBA::ULong ulLen = state_members.length();
 
-	out << "// BEGIN USER INSERT SECTION " << strClassname_;
-	//if(isRef) out << "Ref";
-	out << "::" << strClassname_;
-	//if(isRef) out << "Ref";
-	out << "()\n";
-	out << "// END USER INSERT SECTION " <<strClassname_;
-	//if(isRef) out << "Ref";
-	out << "::" << strClassname_;
-	//if(isRef) out << "Ref";
-	out << "()\n}\n\n";
+	out << "}\n\n";
 	out << strClassname_;
 	//if(isRef) out << "Ref";
 	out << "::~" << strClassname_;
 	//if(isRef) out << "Ref";
 	out << "()\n";
-	out << "{\n// BEGIN USER INSERT SECTION " << strClassname_;
-	//if(isRef) out << "Ref";
-	out << "::~" << strClassname_;
-	//if(isRef) out << "Ref";
-	out << "()\n";
-	out << "// END USER INSERT SECTION " <<strClassname_;
-	//if(isRef) out << "Ref";
-	out << "::~" << strClassname_;
-	//if(isRef) out << "Ref";
-	out << "()\n}\n\n";
+	out << "{\n}\n\n";
 
 	//bRef_ = isRef;
 	//genAbstractObjsForConcreteType(abs_storagetype);
@@ -1916,8 +1882,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out << "throw CORBA::BAD_PARAM();\n";
 	out.unindent();
 	out.unindent();
-	out << "\n// BEGIN USER INSERT SECTION " << strClassname_ << "::_create()\n";
-	out << "// END USER INSERT SECTION " << strClassname_ << "::_create()\n}\n\n";
+	out << "}\n\n";
 }
 
 void 
@@ -1950,18 +1915,111 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	open_module(out, storagetype, "");
 	out << "\n\n";
 
-	out << "// BEGIN USER INSERT SECTION " << strClassname_ << "\n";
-	out << "// END USER INSERT SECTION " << strClassname_ << "\n\n";
 	out << strClassname_ << "::" << strClassname_ << "()\n";
-	out << "{\n";
-	out << "// BEGIN USER INSERT SECTION " << strClassname_ << "::" << strClassname_ << "()\n";
-	out << "// END USER INSERT SECTION " <<strClassname_ << "::" << strClassname_ << "()\n}\n\n";
+	out << "{\n}\n\n";
 	out << strClassname_ << "::~" << strClassname_ << "()\n";
-	out << "{\n// BEGIN USER INSERT SECTION " << strClassname_ << "::~" << strClassname_ << "()\n";
-	out << "// END USER INSERT SECTION " <<strClassname_ << "::~" << strClassname_ << "()\n}\n\n";
+	out << "{\n}\n\n";
 	
 	genCreateOperation(storagehome, false);
 	genCreateOperation(storagehome, true);
+	
+	//
+	//generate find_(ref)_by_primary_key, which is appropriate to find_by_primary_key from home
+	//
+	if( composition_->lifecycle()==CIDL::lc_Entity )
+	{
+		IR__::HomeDef_var home = composition_->ccm_home();
+		IR__::PrimaryKeyDef_var pkey = IR__::PrimaryKeyDef::_duplicate(home->primary_key());
+		if( !CORBA::is_nil(pkey) )
+		{
+			out << map_psdl_return_type(storagetype, false) << "\n";
+			out << strClassname_ << "::find_by_primary_key(" << mapFullNamePK(pkey) << "* pkey)\n"; 
+			out.indent();
+			out << "throw(CosPersistentState::NotFound)\n";
+			out.unindent();
+			out << "{\n";
+			out.indent();
+			//++++++++++++++++++++++++++++++++++++++++
+			// SELECT sentence for find_by_primary_key
+			//++++++++++++++++++++++++++++++++++++++++
+			out << storagetype->name() << "* pActObject = NULL;\n";
+			out << "std::stringstream strKey;\n\n";
+			strName_ = "strKey";
+			strContent_ = "SELECT spid FROM ";
+			strContent_ += storagehome->name();
+			out << genSQLLine(strName_, strContent_, true, false, true);
+			strContent_ = "WHERE";
+			out << genSQLLine(strName_, strContent_, true, false, true);
+
+			IR__::ValueDef_var value = pkey->primary_key();
+			IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+			CORBA::ULong ulLen = contained_seq->length();
+
+			for( CORBA::ULong i=0; i<ulLen; i++ )
+			{
+				IR__::ValueMemberDef_var a_vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[i]);
+
+				strContent_ = "value_" + mapName(a_vMember);
+				if(psdl_check_type(a_vMember->type_def())!=CPPBase::_STRING)
+					strContent_ += " =";
+				else
+					strContent_ += " LIKE";
+				out << genSQLLine(strName_, strContent_, true, false, true);
+
+				switch(psdl_check_type(a_vMember->type_def()))
+				{
+				case CPPBase::_SHORT:
+				case CPPBase::_INT:
+				case CPPBase::_LONG:
+					strContent_ = "pkey->";
+					strContent_ += mapName(a_vMember) + "()";
+					out << genSQLLine(strName_, strContent_, false, false, false, true);
+					strContent_ = "";
+					out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+					break;
+				case CPPBase::_STRING:
+					strContent_ = "\\'";
+					out << genSQLLine(strName_, strContent_, false, false, false);
+					strContent_ = "pkey->";
+					strContent_ += mapName(a_vMember) + "()";
+					out << genSQLLine(strContent_, false, false, false, true);
+					strContent_ = "\\'";
+					out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+					break;
+				}
+			}
+			strContent_ = ");";
+			out << genSQLLine(strName_, strContent_, true, false, false);
+			//++++++++++++++++++++++++++++++++++++++++
+			// end of SELECT sentence for KEY !!!!!!!!
+			//++++++++++++++++++++++++++++++++++++++++
+
+			out << "\nif(!Open(" << strName_ << ".str().c_str()))\n";
+			out.indent();
+			out << "throw CosPersistentState::NotFound();\n\n";
+			out.unindent();
+			out << "if (GetFieldCount()<=0)\n{\n";
+			out.indent();
+			out << "Close();\n";
+			out << "throw CosPersistentState::NotFound();\n";
+			out.unindent();
+			out << "}\n\n";
+			out << "unsigned char* szSpid = new unsigned char[254];\n";
+			out << "memset(szSpid, \'\\0\', 254);\n";
+			out << "GetFieldValue(0, szSpid);\n";
+			out << "Close();\n\n";
+			out << "std::string strSpid = \"\";\n";
+			out << "strSpid.append((const char*)szSpid);\n";
+			out << "ShortPid* pSpid = new ShortPid;\n";
+			out << "convertStringToSpid(strSpid.c_str(), *pSpid);\n\n";
+			out << "StorageObjectBase pObject = find_by_short_pid(*pSpid);\n\n";
+			out << "pActObject = dynamic_cast <" << storagetype->name() << "*> (pObject);\n";
+			out << "pActObject->setStorageHome(this);\n\n";
+			out << "return pActObject;\n";
+			out.unindent();
+			out << "}\n\n";
+		}
+	}
 
 	bRef_ = false;
 	for( CORBA::ULong i=0; i<ulLenSupportedInf; i++ )

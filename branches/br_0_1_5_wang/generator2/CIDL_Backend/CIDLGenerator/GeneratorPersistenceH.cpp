@@ -57,8 +57,6 @@ GeneratorPersistenceH::generate(std::string target, std::string fileprefix)
 	out << "//\n\n";
 	out << "#ifndef _" << file_prefix_ << "_PSS_H_\n";
 	out << "#define _" << file_prefix_ << "_PSS_H_\n\n\n";
-	out << "// BEGIN USER INSERT SECTION file_pre\n";
-	out << "// END USER INSERT SECTION file_pre\n\n";
 	out << "#include <CORBA.h>\n";
 	out << "#include <sstream>\n";
 	out << "#include \"CORBADepends.h\"\n";
@@ -68,9 +66,7 @@ GeneratorPersistenceH::generate(std::string target, std::string fileprefix)
 	out << "#include \"Catalog.h\"\n";
 	out << "#include \"" << file_prefix_ << "_EQUIVALENT.h\"\n\n";
 	out << "using namespace Qedo;\n\n";
-	out << "// BEGIN USER INSERT SECTION file_post\n";
-	out << "// END USER INSERT SECTION file_post\n";
-
+	
 	doGenerate();
 
 	out << "\n#endif\n";
@@ -237,6 +233,7 @@ GeneratorPersistenceH::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// determine the componentDef and HomeDef
 	//
+	composition_ = composition;
 	IR__::ComponentDef_var component = composition->ccm_component();
 	IR__::HomeDef_var home = composition->ccm_home();
 
@@ -877,10 +874,6 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 		//bRef ? out << "Ref\n" : out << "\n";
 	};
 
-	out << "// BEGIN USER INSERT SECTION INHERITANCE_" << strClassName << "\n";
-	//bRef ? out << "Ref\n" : out << "\n";
-	out << "// END USER INSERT SECTION INHERITANCE_" << strClassName << "\n";
-	//bRef ? out << "Ref\n" : out << "\n";
 	out.unindent();
 	out << "{\n\npublic:\n\n";
 	out.indent();
@@ -910,10 +903,6 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 
 	genMemberVariable(storagetype);
 	
-	out << "\n// BEGIN USER INSERT SECTION " << strClassName << "\n";
-	//bRef ? out << "Ref\n" : out << "\n";
-	out << "// END USER INSERT SECTION " << strClassName << "\n\n";
-	//bRef ? out << "Ref\n" : out << "\n\n";
 	out << "};\n\n";
 
 	out << "\ntypedef ObjectFactoryTemplate<" << storagetype->name() << "> " << storagetype->name() << "Factory;\n\n\n";
@@ -1110,8 +1099,6 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	for(CORBA::ULong i=0; i<supported_infs->length(); i++) 
 		out << ", public virtual " << ((*supported_infs)[i])->name() << "\n";
 
-	out << "// BEGIN USER INSERT SECTION INHERITANCE_" << strClassName << "\n";
-	out << "// END USER INSERT SECTION INHERITANCE_" << strClassName << "\n";
 	out.unindent();
 	out << "{\n\npublic:\n\n";
 	out.indent();
@@ -1120,6 +1107,22 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 
 	genCreateOperation(storagehome, false);
 	genCreateOperation(storagehome, true);
+
+	//
+	//generate find_(ref)_by_primary_key, which is appropriate to find_by_primary_key from home
+	//
+	if( composition_->lifecycle()==CIDL::lc_Entity )
+	{
+		IR__::HomeDef_var home = composition_->ccm_home();
+		IR__::PrimaryKeyDef_var pkey = IR__::PrimaryKeyDef::_duplicate(home->primary_key());
+		if( !CORBA::is_nil(pkey) )
+		{
+			out << map_psdl_return_type(storagetype, false) << " find_by_primary_key(" << mapFullNamePK(pkey) << "* pkey)\n"; 
+			out.indent();
+			out << "throw(CosPersistentState::NotFound);\n";
+			out.unindent();
+		}
+	}
 
 	for(CORBA::ULong i=0; i<supported_infs->length(); i++) 
 	{
@@ -1140,8 +1143,6 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 
 	out.unindent();
 
-	out << "\n// BEGIN USER INSERT SECTION " << strClassName << "\n";
-	out << "// END USER INSERT SECTION " << strClassName << "\n\n";
 	out << "};\n\n\n";
 
 	out << "typedef HomeFactoryTemplate<" << storagehome->name() << "> " << storagehome->name() << "Factory;\n\n";
