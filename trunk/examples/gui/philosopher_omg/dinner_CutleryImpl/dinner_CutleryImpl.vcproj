@@ -175,6 +175,12 @@ zip ../dinner_CutleryImpl.zip meta-inf/dinner_CutleryImpl.ccd meta-inf/dinner_Cu
 				RelativePath="dinner_CutleryImpl_LOCAL.cpp">
 			</File>
 			<File
+				RelativePath="unused.xpm">
+			</File>
+			<File
+				RelativePath="used.xpm">
+			</File>
+			<File
 				RelativePath="valuetypes.cpp">
 			</File>
 		</Filter>

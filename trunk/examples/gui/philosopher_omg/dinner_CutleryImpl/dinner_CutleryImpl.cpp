@@ -6,12 +6,45 @@
 
 
 // BEGIN USER INSERT SECTION file
-#include <FL/fl_draw.H>
 
-//void
-//CutleryGUI::draw() {
-	//test 
-//};
+#include "used.xpm"
+#include "unused.xpm"
+
+
+void
+CutleryGUI::init()
+{
+	// add button and empty fork
+//	button = new Fl_Button(10,10,120,120,"Bitmap");
+//	button ->image(new Fl_Bitmap(sorceress_bits,sorceress_width,sorceress_height));
+	box = new Fl_Box(0,0,this->w(),this->h()); 
+	used_img = new Fl_Pixmap(used_xpm);
+	unused_img = new Fl_Pixmap(unused_xpm);
+	box->image(unused_img);
+	box->redraw();
+	
+};
+
+void
+CutleryGUI::unused()
+{
+	// draw unused
+//	button ->image(new Fl_Bitmap(sorceress_bits,sorceress_width,sorceress_height));
+	box->image(unused_img);
+	box->redraw();
+	
+
+};
+
+void
+CutleryGUI::used()
+{
+	// draw used
+//	button ->image(new Fl_Bitmap(sorceress_bits1,sorceress_width,sorceress_height));
+	box->image(used_img);
+	box->redraw();
+	
+};
 
 // END USER INSERT SECTION file
 
@@ -77,10 +110,11 @@ Seg::start_gui(void *p)
 	impl->gui_stopped_ = false;
 
 	impl->gui = //new Fl_Double_Window(300,180, "Radar1");
-		new CutleryGUI(100,100,impl);
+		new CutleryGUI(150, 200,impl);
 
-	  impl->gui->end();
-	  impl->gui->show();
+	impl->gui->init();
+	impl->gui->end();
+	impl->gui->show();
 
 	while (Fl::check()) 
 	{
@@ -156,6 +190,7 @@ Seg::get()
 /* update gui */
 	// ToDo
 	std::cout << "get() called " << std::endl;
+	gui -> used();
 	owner = true;
 
 // END USER INSERT SECTION Seg::get
@@ -172,7 +207,7 @@ Seg::release()
 	// ToDo
     owner = false;
 	std::cout << "release() called " << std::endl;
-
+	gui -> unused();
 // END USER INSERT SECTION Seg::release
 }
 

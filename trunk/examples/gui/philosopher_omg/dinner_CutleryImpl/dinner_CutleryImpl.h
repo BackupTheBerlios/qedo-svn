@@ -20,19 +20,29 @@
 // BEGIN USER INSERT SECTION file_post
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
+#include <FL/Fl_Box.H>
+#include <FL/Fl_Pixmap.H>
 
 namespace dinner {
 class Seg;
 };
 
 class CutleryGUI : public Fl_Window  {
-//	void draw();
+	Fl_Box* box;
+	Fl_Pixmap* used_img;
+	Fl_Pixmap* unused_img;
+
 	dinner::Seg* impl_;
 
 public:
 	
 	CutleryGUI(int W,int H, dinner::Seg* impl
 ,const char *l=0) : Fl_Window(W,H,l), impl_(impl) {}
+
+	void init();
+	void unused();
+	void used();
+
 };
 
 // END USER INSERT SECTION file_post
