@@ -25,7 +25,7 @@
 #include "Output.h"
 #include <fstream>
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.4 2003/11/10 16:46:58 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.5 2003/12/01 15:40:49 tom Exp $";
 
 namespace Qedo {
 
@@ -100,13 +100,14 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 void
 ServerInterceptorDispatcher::register_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor)
 {
+	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI registered for all");
+
 	ServerInterceptorEntry e;
 	e.interceptor = Components::Extension::ServerContainerInterceptor::_duplicate( interceptor );
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
 
 	all_server_interceptors_.push_back(e);
-	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI registered for all");
 
 }
 

@@ -472,12 +472,12 @@ module Components {
 		};
 		local interface ServerInterceptorRegistration : PortableInterceptor::ServerRequestInterceptor
 		{
-			void register_server_interceptor (in ServerContainerInterceptor server_interceptor);
+			void register_interceptor_for_all (in ServerContainerInterceptor server_interceptor);
 		};
 
 		local interface ClientInterceptorRegistration : PortableInterceptor::ClientRequestInterceptor
 		{
-			void register_client_interceptor ( in ClientContainerInterceptor client_interceptor);
+			void register_interceptor_for_all ( in ClientContainerInterceptor client_interceptor);
 		};
 
 	}; // Extension

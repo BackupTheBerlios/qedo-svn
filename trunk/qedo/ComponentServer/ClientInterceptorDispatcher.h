@@ -37,7 +37,7 @@ namespace Qedo {
 
 
 	class ClientInterceptorDispatcher :
-		public PortableInterceptor::ClientRequestInterceptor,
+		public virtual Components::Extension::ClientInterceptorRegistration,
 		public virtual CORBA::LocalObject
 	{
 
@@ -67,6 +67,9 @@ namespace Qedo {
 
 		virtual void
 		receive_other( PortableInterceptor::ClientRequestInfo_ptr info );
+
+		virtual void
+		register_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor);
 
 
 	};

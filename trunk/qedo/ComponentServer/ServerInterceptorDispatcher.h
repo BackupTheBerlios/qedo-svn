@@ -47,7 +47,7 @@ namespace Qedo {
 
 
 	class ServerInterceptorDispatcher :
-		public PortableInterceptor::ServerRequestInterceptor,
+		public virtual Components::Extension::ServerInterceptorRegistration,
 		public virtual CORBA::LocalObject
 	{
 	private:
@@ -88,7 +88,7 @@ namespace Qedo {
 		send_other(PortableInterceptor::ServerRequestInfo_ptr)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
 
-		void
+		virtual void
 		register_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor);
 	};
 }

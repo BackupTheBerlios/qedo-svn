@@ -23,7 +23,7 @@
 #include "ExtensionContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.4 2003/11/24 10:27:45 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.5 2003/12/01 15:40:49 tom Exp $";
 
 
 namespace Qedo {
@@ -36,25 +36,27 @@ ExtensionContext::ExtensionContext()
 
 ExtensionContext::~ExtensionContext()
 {
-	DEBUG_OUT ( "SessionContext: Destructor called" );
+	DEBUG_OUT ( "ExtensionContext: Destructor called" );
 }
 
 void
 ExtensionContext::set_server_interceptor_dispatcher_registration(Components::Extension::ServerInterceptorRegistration_ptr registration)
 {
-
+	DEBUG_OUT ( "ExtensionContext: set_server_interceptor_dispatcher_registration called");
 	server_registration_ = registration;
 };
 
 void
 ExtensionContext::set_client_interceptor_dispatcher_registration(Components::Extension::ClientInterceptorRegistration_ptr registration)
 {
+	DEBUG_OUT ( "ExtensionContext: set_client_interceptor_dispatcher_registration called");
 	client_registration_ = registration;
 }
 
 Components::Extension::ServerInterceptorRegistration_ptr
 ExtensionContext::get_server_interceptor_dispatcher_registration()
 {
+	DEBUG_OUT ( "ExtensionContext: get_server_interceptor_dispatcher_registration called");
 	return Components::Extension::ServerInterceptorRegistration::_duplicate(server_registration_);
 
 }
@@ -62,6 +64,7 @@ ExtensionContext::get_server_interceptor_dispatcher_registration()
 Components::Extension::ClientInterceptorRegistration_ptr
 ExtensionContext::get_client_interceptor_dispatcher_registration()
 {
+	DEBUG_OUT ( "ExtensionContext: get_client_interceptor_dispatcher_registration called");
 	return Components::Extension::ClientInterceptorRegistration::_duplicate(client_registration_);
 
 }
