@@ -156,7 +156,7 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
     out << "<pkgtype>CORBA Component</pkgtype>\n";
     out << "<title></title>\n";
-    out << "<author></author>\n";
+    out << "<author><name>unknown author</name></author>\n";
     out << "<description></description>\n";
     out << "<license href=\"\" />\n";
 	// the id should be of the component but is of the home currently for deployment reason
