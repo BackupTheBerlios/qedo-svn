@@ -52,8 +52,6 @@ private:
 	void doAttribute(IR__::AttributeDef_ptr attribute);
 	void doOperation(IR__::OperationDef_ptr operation);
 	void doInterface(IR__::InterfaceDef_ptr intface);
-	void doValue(IR__::ValueDef_ptr value);
-	void doValueMember(IR__::ValueMemberDef_ptr member);
 	void doComponent(IR__::ComponentDef_ptr component);
 	void doConsumes(IR__::ConsumesDef_ptr consumes);
 	void doSource(IR__::SourceDef_ptr source);

@@ -47,63 +47,6 @@ GeneratorBusinessH::doModule(IR__::ModuleDef_ptr module)
 
 
 void
-GeneratorBusinessH::doValue(IR__::ValueDef_ptr value)
-{
-	out << "\n//\n// " << value->id() << "\n//\n";
-	std::string value_name = value->name();
-	std::string class_name = mapName(value_name);
-
-	// value type
-	out << "class " << class_name << "\n";
-	out << ": virtual public OBV_" << value->name() << "\n";
-	out << ", virtual public CORBA::DefaultValueRefCountBase\n{\n";
-	out << "public:\n\n";
-	out.indent();
-	handleValueMember(value);
-	out.unindent();
-	out << "};\n\n\n";
-
-	//
-	// value type factory
-	//
-	out << "class " << value_name << "_factory\n";
-	out << ": virtual public CORBA::ValueFactoryBase\n{\n";
-	out << "public:\n\n";
-	out.indent();
-	out << "CORBA::ValueBase * create_for_unmarshal();\n";
-	out << "};\n\n\n";
-}
-
-
-void 
-GeneratorBusinessH::doValueMember(IR__::ValueMemberDef_ptr member)
-{
-	IR__::IDLType_ptr type = member->type_def();
-	std::string name = mapName(member);
-
-	switch (type->type()->kind()) {
-	case CORBA::tk_string:
-		out << "void " << name << "(char* _p);\n";
-		out << "void " << name << "(const char* _p);\n";
-		out << "void " << name << "(const CORBA::String_var& _p);\n";
-		out << "const char* " << name << "() const;\n\n";
-		break;
-		
-	case CORBA::tk_enum:
-		out << "void " << name << "(" << map_in_parameter_type(type) << " _p);\n";
-		out << map_value_return_type(type) << " " << name << "();\n";
-		out << "const " << map_value_return_type(type) << " " << name << "() const;\n\n";
-		break;
-
-	default:
-		out << "void " << name << "(" << map_in_parameter_type(type);
-		out << " _p);\n";
-		out << map_value_return_type(type) << " " << name << "() const;\n\n";
-	}
-}
-
-
-void
 GeneratorBusinessH::doAttribute(IR__::AttributeDef_ptr attribute)
 {
 	out << "\n//\n// " << attribute->id() << "\n//\n";
@@ -489,7 +432,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
-	out << "Qedo::qedo_mutex mutex_;\n\n";
     out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
 	out.unindent();
 	out << "public:\n\n";
@@ -541,7 +483,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "{\n\n";
 		out << "private:\n\n";
 		out.indent();
-		out << "Qedo::qedo_mutex mutex_;\n\n";
 		out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
 		out.unindent();
 		out << "public:\n\n";
@@ -594,7 +535,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
-	out << "Qedo::qedo_mutex mutex_;\n\n";
     out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
 	out << mapName(composition->executor_def()) << "* component_;\n\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
@@ -641,7 +581,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
-	out << "Qedo::qedo_mutex mutex_;\n\n";
     out << "Components::CCMContext_var context_;\n\n";
 	out.unindent();
 	out << "public:\n";
