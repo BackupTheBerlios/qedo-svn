@@ -24,6 +24,6 @@ all: libphilosopherE.so
 
 libphilosopherE.so: ${OBJ_FILES}
 
-${IDL_FILES} : ${CIDL_FILES}
+${IDL_FILES} valuetypes.cpp : ${CIDL_FILES}
 	${CIDL_GEN} -I${QEDO}/idl ${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target dinner $<
