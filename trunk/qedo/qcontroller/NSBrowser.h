@@ -41,8 +41,7 @@ public:
 private:
 		int m_imageSize;
 		CosNaming::NamingContext_var nameService;
-	   void CreateImageList(int size = 16);
-		void CreateButtonsImageList(int size = 11);
+		void CreateImageList(int size = 16);
 		void build_tree();
 		void AddItemsRecursively(const wxTreeItemId& idParent,
 									 CosNaming::NamingContext_ptr context);

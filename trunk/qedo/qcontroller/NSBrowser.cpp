@@ -84,42 +84,6 @@ void NSBrowserTreeCtrl::CreateImageList(int size)
 
     AssignImageList(images);
 }
-void NSBrowserTreeCtrl::CreateButtonsImageList(int size)
-{
-#if USE_GENERIC_TREECTRL || !defined(__WXMSW__)
-    if ( size == -1 )
-    {
-        SetButtonsImageList(NULL);
-        return;
-    }
-
-    // Make an image list containing small icons
-    wxImageList *images = new wxImageList(size, size, TRUE);
-
-    // should correspond to TreeCtrlIcon_xxx enum
-    wxBusyCursor wait;
-    wxIcon icons[4];
-    icons[0] = wxIcon(icon3_xpm);   // closed
-    icons[1] = wxIcon(icon3_xpm);   // closed, selected
-    icons[2] = wxIcon(icon5_xpm);   // open
-    icons[3] = wxIcon(icon5_xpm);   // open, selected
-
-    for ( size_t i = 0; i < WXSIZEOF(icons); i++ )
-    {
-        int sizeOrig = icons[i].GetWidth();
-        if ( size == sizeOrig )
-        {
-            images->Add(icons[i]);
-        }
-        else
-        {
-            images->Add(wxBitmap(wxBitmap(icons[i]).ConvertToImage().Rescale(size, size)));
-        }
-    }
-
-    AssignButtonsImageList(images);
-#endif
-}
 
 
 void
@@ -128,7 +92,7 @@ NSBrowserTreeCtrl::build_tree()
     wxTreeItemId rootId = AddRoot(wxT("RootContext"),
                                   TreeCtrlIcon_FolderOpened , TreeCtrlIcon_Folder ,
                                   new NSBrowserTreeItemData(wxT("Root item")));
-	
+
 		 AddItemsRecursively(rootId, nameService);
 }
 
@@ -145,21 +109,23 @@ void NSBrowserTreeCtrl::AddItemsRecursively(const wxTreeItemId& idParent,
 
 	for (CORBA::ULong i = 0; i < bl->length(); i++)
 	{
-		// if context 
+		// if context
 		if ((*bl)[i].binding_type = CosNaming::ncontext)
 		{
 			CosNaming::NamingContext_var child_context;
 			CORBA::Object_var tmp_obj;
 			tmp_obj = context -> resolve((*bl)[i].binding_name);
-			child_context = CosNaming::NamingContext::_narrow(tmp_obj);
+			try {
+				child_context = CosNaming::NamingContext::_narrow(tmp_obj);
+			} catch (CORBA::SystemException e) {}
 			if (!CORBA::is_nil(child_context))
 			{
-				str.Printf(wxT("%s %s"), wxT("NamingContext"), wxT((*bl)[i].binding_name[0].id.in()));
+				str.Printf(wxT("%s"), wxT((*bl)[i].binding_name[0].id.in()));
 				wxTreeItemId id = AppendItem(idParent, str, TreeCtrlIcon_Folder, TreeCtrlIcon_Folder, new NSBrowserTreeItemData(str));
 
 				AddItemsRecursively(id, child_context.in());
 			} else {
-				str.Printf(wxT("%s %s"), wxT("Object"), wxT((*bl)[i].binding_name[0].id.in()));
+				str.Printf(wxT("%s"), wxT((*bl)[i].binding_name[0].id.in()));
 				wxTreeItemId id = AppendItem(idParent, str, TreeCtrlIcon_File, TreeCtrlIcon_File, new NSBrowserTreeItemData(str));
 			}
 		}
