@@ -23,8 +23,10 @@
 /*                                                                           */
 /*****************************************************************************/
 
-Version 0.1.0
+Version 0.2.0
 
+It might be a good idea to remove older version of Qedo and/or MICO. the installation into the same directory can cause problems.
+ 
 This File describes the process of installing the Qedo run-time. Because the run-time is a complex software it needs many other software products. You have to install all of them before you can compile the run-time. This will take you some time and experiences with installing such software would be very helpful. Nevertheless, we hope that this little description will give enough information to acomplish all needed steps. 
 The Qedo run-tim can be compiled by using the MS Visual Studio 6 (deprecated, no longer supported), MS Visual Studio.Net 2002 (VC7.0), Solaris gcc, or Linux gcc.
 
