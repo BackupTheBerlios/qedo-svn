@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm500 "
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;..\..\CIDL_Frontend\CIDLFrontendLib"
+				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;..\..\CIDL_Frontend\CIDLFrontendLib;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE,__DEBUG__"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -41,12 +41,11 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib OBD.lib JTCD.lib odbc32.lib odbccp32.lib"
-				OutputFile="$(enagoCCM)\bin\cidl_gen.exe"
+				OutputFile="$(QEDO)\bin\cidl_gen.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\CIDL_Frontend\CIDLFrontendLib,..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib"
+				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/cidl_gen.pdb"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -97,7 +96,7 @@
 				OutputFile=".\Release/CIDLGenerator.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				ProgramDatabaseFile=".\Release/CIDLGenerator.pdb"
+				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -151,9 +150,8 @@
 				OutputFile="cidl_gen.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\CIDL_Frontend\CIDLFrontendLib,..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(MICO)\win32-bin\lib"
+				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\CIDLGenerator___Win32_Debug_mico/cidl_gen.pdb"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -212,9 +210,8 @@ copy cidl_gen.exe ..\..\..\qedo_dist_mico_d\bin
 				OutputFile="cidl_gen.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\CIDL_Frontend\CIDLFrontendLib,..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(ACE_ROOT)\ace,$(TAO)\TAO\tao,$(TAO)\TAO\tao\PortableServer,$(TAO)\TAO\tao\DynamicAny"
+				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\CIDLGenerator___Win32_Debug_tao/cidl_gen.pdb"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -273,9 +270,63 @@ copy cidl_gen.exe ..\..\..\qedo_dist_tao_d\bin
 				OutputFile="cidl_gen.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\CIDL_Frontend\CIDLFrontendLib,..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(ORBACUS)\lib"
+				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;;&quot;$(ORBACUS)\lib&quot;"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\CIDLGenerator___Win32_Debug_orbacus/cidl_gen.pdb"
+				SubSystem="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\CIDLGenerator___Win32_Debug_orbacus/CIDLGenerator.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="distribution"
+				CommandLine="md &quot;%QEDO%\bin&quot;
+copy cidl_gen.exe &quot;%QEDO%\bin&quot;
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release_orbacus|Win32"
+			OutputDirectory="Release_orbacus"
+			IntermediateDirectory="Release_orbacus"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm900 "
+				Optimization="2"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,..\..\CIDL_Frontend\CIDLFrontendLib,$(ORBACUS)\include,$(ORBACUS)\include\ob"
+				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE,__DEBUG__,_WINDOWS"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=".\CIDLGenerator___Win32_Debug_orbacus/CIDLGenerator.pch"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib ob.lib jtc.lib odbc32.lib odbccp32.lib"
+				OutputFile="cidl_gen.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;;&quot;$(ORBACUS)\lib&quot;"
+				GenerateDebugInformation="TRUE"
 				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"

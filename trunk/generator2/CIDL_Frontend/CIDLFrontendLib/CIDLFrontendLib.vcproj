@@ -36,7 +36,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Release\CIDLFrontendLib.lib"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -82,7 +82,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="CIDLFrontendLib.lib"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -127,7 +127,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="CIDLFrontendLib.lib"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -172,7 +172,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="CIDLFrontendLib.lib"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -218,7 +218,49 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="CIDLFrontendLib.lib"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release_orbacus|Win32"
+			OutputDirectory="Release_orbacus"
+			IntermediateDirectory="Release_orbacus"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(ORBACUS)\include,$(ORBACUS)\include\ob"
+				PreprocessorDefinitions="KC_DEPRECATED,WIN32,_DEBUG,_LIB,__STDC__,YYERROR_VERBOSE,YYDEBUG"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\CIDLFrontendLib___Win32_Debug_orbacus/CIDLFrontendLib.pch"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -468,6 +510,14 @@ d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yysty
 "
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
+"
+						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\util.k">
@@ -510,6 +560,14 @@ d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yysty
 "
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
+						Outputs="lexana.cpp"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -531,6 +589,15 @@ echo extern char *error_message[];  &gt; errmsg.h
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="$(PYTHON) errmsg.py &lt; cidl.output &gt; errmsg.cpp
+"
+						Outputs="errmsg.cpp;errmsg.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
+echo extern char *error_message[];  &gt; errmsg.h
 "
 						Outputs="errmsg.cpp;errmsg.h"/>
 				</FileConfiguration>
@@ -574,6 +641,15 @@ copy y.tab.h cidl.h
 copy cidl.hpp cidl.h
 "
 						Outputs="cidl.cpp;cidl.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
+copy cidl.hpp cidl.h
+"
+						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
 				</FileConfiguration>
 			</File>
 		</Filter>

@@ -38,7 +38,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="IFRidl.lib"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -81,7 +81,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Release\IFRidl.lib"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -126,7 +126,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="IFRidl.lib"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -171,7 +171,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="IFRidl.lib"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -216,7 +216,48 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="IFRidl.lib"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release_orbacus|Win32"
+			OutputDirectory="Release_orbacus"
+			IntermediateDirectory="Release_orbacus"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories=".,$(ORBACUS)\include,$(ORBACUS)\include\OB"
+				PreprocessorDefinitions="_LIB,WIN32,_DEBUG,_WINDOWS"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=".\IFRidl___Win32_Debug_orbacus/IFRidl.pch"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
 				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -281,6 +322,11 @@
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
@@ -302,6 +348,14 @@ copy CIDL_Extension.h CIDL_Extension_skel.h
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB CIDL_Extension.idl
+"
+						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix .cpp   CIDL_Extension.idl
 "
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
@@ -338,6 +392,14 @@ copy IFR.h IFR_skel.h
 					<Tool
 						Name="VCCustomBuildTool"
 						CommandLine="$(ORBACUS)\bin\idl -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB IFR.idl
+"
+						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix  .cpp   IFR.idl
 "
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
 				</FileConfiguration>
