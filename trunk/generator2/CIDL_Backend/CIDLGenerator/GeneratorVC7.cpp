@@ -64,7 +64,6 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	std::string id = composition->id();
 	std::string project_name;
-	std::string servant_project_name;
 	std::string composition_name;
 	IR__::Contained_ptr module_def = 0;
 	std::string::size_type pos = id.find_last_of("/");
@@ -77,7 +76,6 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	}
 	composition_name.append(composition->name());
 	project_name = composition_name;
-	servant_project_name = composition_name + "_SERVANT";
 
 #ifdef WIN32
 	_mkdir(project_name.c_str());
