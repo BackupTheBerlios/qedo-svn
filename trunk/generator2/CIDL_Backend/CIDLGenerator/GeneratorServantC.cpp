@@ -2484,6 +2484,8 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 	//
 	IR__::InterfaceDefSeq_var supp_intfs = home -> supported_interfaces();
 	for(i = 0; i < supp_intfs->length(); i++) {
+		gen_supported_home_interface((*supp_intfs)[i]);
+		/*
 		// Attribute of supported interface
 		contained_seq = (*supp_intfs)[i]->contents(CORBA__::dk_Attribute, false);
 		CORBA::ULong len = contained_seq->length();
@@ -2594,7 +2596,9 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 			out << ");\n";
 			out.unindent();
 			out << "}\n\n\n";
+
 		}
+				*/
 	
 	};
 
@@ -2602,5 +2606,129 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 	handleFinder(home);
 }
 
+void
+GeneratorServantC::gen_supported_home_interface(IR__::InterfaceDef_ptr interf) 
+{
+		std::string home_name = mapFullNameLocal(home_);
 
+		IR__::InterfaceDefSeq_var base_seq = interf->base_interfaces();
+		CORBA::ULong i;
+		for( i= 0; i < base_seq->length(); i++)
+		{
+			gen_supported_home_interface((*base_seq)[i]);
+		}
+
+		// Attribute of supported interface
+		IR__::ContainedSeq_var contained_seq = interf->contents(CORBA__::dk_Attribute, false);
+		CORBA::ULong len = contained_seq->length();
+		for(i = 0; i < len; i++)
+		{
+			IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+			std::string attribute_name = mapName(attribute);
+			
+			// not read only
+			if(attribute->mode() == IR__::ATTR_NORMAL)
+			{
+				out << "void" << "\n";
+				out << class_name_ << "::" << attribute_name << "(";
+				out << map_in_parameter_type(attribute->type_def()) << " param)\n";
+				out << "throw(CORBA::SystemException";
+				handleException(attribute);
+				out << ")\n{\n";
+				out.indent();
+				out << "#ifdef TAO_ORB\n";
+				out << home_name << "_ptr home_executor = dynamic_cast < ";
+				out << home_name << "_ptr> (home_executor_.in());\n";
+				out << "#else\n";
+				out << home_name << "_var home_executor = ";
+				out << home_name << "::_narrow (home_executor_.in());\n";
+				out << "#endif\n";
+				out << "if (CORBA::is_nil (home_executor))\n{\n";
+				out.indent();
+				out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
+				out << "throw Components::CreateFailure();\n";
+				out.unindent();
+				out << "}\n\n";
+				out << "home_executor->" << attribute_name << "(param);\n";
+				out.unindent();
+				out << "}\n\n\n";
+			}
+
+			out << map_return_type(attribute->type_def()) << "\n";
+			out << class_name_ << "::" << attribute_name << "()\n";
+			out << "throw(CORBA::SystemException";
+			handleException(attribute);
+			out << ")\n{\n";
+			out.indent();
+			out << "#ifdef TAO_ORB\n";
+			out << home_name << "_ptr home_executor = dynamic_cast < ";
+			out << home_name << "_ptr > (home_executor_.in());\n";
+			out << "#else\n";
+			out << home_name << "_var home_executor = ";
+			out << home_name << "::_narrow (home_executor_.in());\n";
+			out << "#endif\n";
+			out << "if (CORBA::is_nil (home_executor))\n{\n";
+			out.indent();
+			out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
+			out << "throw Components::CreateFailure();\n";
+			out.unindent();
+			out << "}\n\n";
+			out << "return home_executor->" << attribute_name << "();\n";
+			out.unindent();
+			out << "}\n\n\n";
+		}
+
+		// Operation of supported interface
+		contained_seq = interf->contents(CORBA__::dk_Operation, false);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
+		{
+			IR__::OperationDef_var operation = IR__::OperationDef::_narrow(((*contained_seq)[i]));
+			std::string operation_name = mapName(operation);
+
+			bool is_void = false;
+			if(operation->result_def()->type()->kind() == CORBA::tk_void) { is_void = true; }
+
+			out << map_return_type(operation->result_def()) << "\n";
+			out << class_name_ << "::" << operation_name << "(";
+			IR__::ParDescriptionSeq* pards = operation->params();
+			CORBA::ULong len = pards->length();
+			CORBA::ULong ii;
+			for(ii = len; ii > 0; ii--)
+			{
+				if(ii < len) { out << ", "; }
+				IR__::ParameterDescription pardescr = (*pards)[ii - 1];
+				out << map_in_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
+			}
+			out << ")\n";
+			out << "throw(CORBA::SystemException";
+			handleException(operation);
+			out << ")\n{\n";
+			out.indent();
+			out << "#ifdef TAO_ORB\n";
+			out << home_name << "_ptr home_executor = dynamic_cast < ";
+			out << home_name << "_ptr > (home_executor_.in());\n";
+			out << "#else\n";
+			out << home_name << "_var home_executor = ";
+			out << home_name << "::_narrow (home_executor_.in());\n";
+			out << "#endif\n";
+			out << "if (CORBA::is_nil (home_executor))\n{\n";
+			out.indent();
+			out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
+			out << "throw Components::CreateFailure();\n";
+			out.unindent();
+			out << "}\n\n";
+			if(!is_void) { out << "return "; }
+			out << "home_executor->" << operation_name << "(";
+			for(ii = len; ii > 0; ii--)
+			{
+				if(ii < len) { out << ", "; }
+				IR__::ParameterDescription pardescr = (*pards)[ii - 1];
+				out << mapName(string(pardescr.name));
+			}
+			out << ");\n";
+			out.unindent();
+			out << "}\n\n\n";
+		}
+}
 } //

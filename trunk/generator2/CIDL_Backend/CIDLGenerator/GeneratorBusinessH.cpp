@@ -312,8 +312,9 @@ GeneratorBusinessH::doHome(IR__::HomeDef_ptr home)
 	//
 	IR__::InterfaceDefSeq_var supp_intfs = home -> supported_interfaces();
 	for(CORBA::ULong i = 0; i < supp_intfs->length(); i++) {
-		handleAttribute((*supp_intfs)[i]);
-		handleOperation((*supp_intfs)[i]);
+		doInterface((*supp_intfs)[i]);
+//		handleAttribute((*supp_intfs)[i]);
+//		handleOperation((*supp_intfs)[i]);
 	};
 
 	handleAttribute(home);

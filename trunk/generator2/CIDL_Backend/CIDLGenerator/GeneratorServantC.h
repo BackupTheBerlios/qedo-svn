@@ -91,6 +91,7 @@ private:
 	void genConsumerRegistration(IR__::ComponentDef_ptr comp);
 	void genSinkRegistration(IR__::ComponentDef_ptr comp);
 	void genSourceRegistration(IR__::ComponentDef_ptr comp);
+	void gen_supported_home_interface(IR__::InterfaceDef_ptr interf);
 
 	void generate_component(IR__::ComponentDef* a_component );
 
