@@ -42,4 +42,4 @@ package:
 	$(MAKE) -C DCI_RepNodeManagerImpl package
 
 assembly: package
-	$(MAKE) -C NodeManagerImpl_linux_assembly
+	$(MAKE) -C DCI_RepNodeManagerImpl assembly

@@ -45,4 +45,6 @@ meta-inf/DCI_RepNodeManagerImpl.ccd meta-inf/DCI_RepNodeManagerImpl.csd :
 	[ -d meta-inf ] || mkdir ./meta-inf
 	(cd meta-inf && ${CIDL_GEN} -I${QEDO}/idl ${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	-d --target "IDL:DCI/RepNodeManagerImpl:1.0" ../$(CIDL_FILES) )
+assembly: package
+	$(MAKE) -C NodeManagerImpl_linux_assembly
 
