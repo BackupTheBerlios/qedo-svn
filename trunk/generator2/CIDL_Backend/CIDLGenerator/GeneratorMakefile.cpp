@@ -101,6 +101,8 @@ GeneratorMakefile::doComposition(CIDL::CompositionDef_ptr composition)
 
 	out << "OBJ_FILES = ${CPP_FILES:%.cpp=%.o} \n\n";
 
+	out << "CLEAN_FILES = *.zip\n\n";
+
 	out << "LIBS += -L../" << composition_name << "_SERVANT -l";
 	out << composition_name << "_SERVANT \n\n";
 
@@ -121,9 +123,25 @@ GeneratorMakefile::doComposition(CIDL::CompositionDef_ptr composition)
 
 	out << composition_name << ".cpp: " << composition_name << "_BUSINESS.h\n\n";
 
+	out << "package: " << composition_name << ".zip\n\n";
+
+	out << composition_name << ".zip : meta-inf/" << composition_name << ".ccd ";
+	out << "meta-inf/" << composition_name <<".csd lib" << composition_name << ".so\n";
+	out << "\tzip " << composition_name << ".zip -j ../" << composition_name;
+	out << "_SERVANT/lib" << composition_name << "_SERVANT.so ";
+	out << "lib" << composition_name << ".so $(CIDL_FILES)\n";
+	out << "\tzip " << composition_name << ".zip meta-inf/" << composition_name;
+	out << ".ccd meta-inf/" << composition_name << ".csd\n\n";
+
+	out << "meta-inf/" << composition_name;
+	out << ".ccd meta-inf/" << composition_name << ".csd :\n";
+	out << "\t[ -d meta-inf ] || mkdir ./meta-inf\n";
+	out << "\t(cd meta-inf && ${CIDL_GEN} -I${QEDO}/idl ${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \\\n";
+	out << "\t-d --target \"" << composition->id() << "\" ../$(CIDL_FILES) )\n\n";
+
 //
 // close output file
-// 
+//
 	out.close();
 }
 
