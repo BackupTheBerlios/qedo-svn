@@ -11,9 +11,6 @@ module HelloWorld {
   };
 
   home CalleeHome manages Callee {};
-};
-
-module HelloWorld {
 
   component Caller {
     uses Hello hi;
