@@ -29,7 +29,7 @@
 #include "ClientInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.10 2003/11/10 16:46:58 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.11 2004/01/23 13:18:30 neubauer Exp $";
 
 
 namespace Qedo {
@@ -153,7 +153,6 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	}
 
 #endif
-	CORBA::release (nameService_);
 }
 
 
