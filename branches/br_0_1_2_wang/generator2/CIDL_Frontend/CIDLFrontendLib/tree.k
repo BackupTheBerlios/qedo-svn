@@ -52,9 +52,6 @@ idl_name_list: list idl_name
 idl_identifier_list: list idl_identifier
     ;
 
-catalog_use_dcl_list: list catalog_use_dcl
-	;
-
 /*********************  SPECIFICATION  ************************************/
 
 cidl_specification:
@@ -108,7 +105,6 @@ definition:
     | StorageType( storagetype_header definition_list )
     | StorageTypeFwdDcl( idl_name )
     | StorageTypeRef( flag idl_identifier )
-    | Catalog( idl_name definition_list )
     | AbstractStorageHome( abstract_storagehome_header definition_list )
     | AbstractStorageHomeFwdDcl( idl_name )
     | AbstractStorageType( abstract_storagetype_header definition_list )
@@ -169,7 +165,6 @@ definition:
     | HomeDelegationSpec( definition_list /* delegation_list */ )
     | AbstractSpec( idl_name_list )
     | NilProxyHomeMember()
-	  | CatalogDcl( idl_name idl_identifier )
     ;
 
 
@@ -218,7 +213,7 @@ const_expression_list: list const_expression
     ;
 
 composition_body:
-      CompositionBody( /*definition_list*/ catalog_use_dcl_list definition proxy_home_def )
+      CompositionBody( definition_list /*catalog_use_dcl_list*/ definition proxy_home_def )
     | NilCompositionBody()
     ;
 

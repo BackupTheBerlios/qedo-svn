@@ -31,8 +31,7 @@ namespace QEDO_ComponentRepository {
 SegmentDef_impl::SegmentDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
-  IR__::ProvidesDefSeq provided_facets,
-  IR__::CatalogDef *catalog)
+  IR__::ProvidesDefSeq provided_facets)
 : Contained_impl ( container, repository ),
   IRObject_impl ( repository )
 {
@@ -73,8 +72,6 @@ SegmentDef_impl::SegmentDef_impl
         provided_facet_impls_[i] -> _remove_ref();
 
     provided_facet_impls_ = impl_seq;
-
-	catalog_ = dynamic_cast<CatalogDef_impl*>(catalog);
 }
 
 SegmentDef_impl::~SegmentDef_impl

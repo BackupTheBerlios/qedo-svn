@@ -55,13 +55,12 @@ module CORBA__ {
 		dk_Emits, dk_Publishes, dk_Consumes, //31
 		dk_Provides, dk_Uses //33
 		// The following extensions are for CIDL
-		, dk_Composition, dk_Segment, dk_Executor, dk_HomeExecutor, dk_UsesCatalog //37
+		, dk_Composition, dk_Segment, dk_Executor, dk_HomeExecutor //37
 		// the following is the stream extension
 		, dk_Stream, dk_Sink, dk_Source, dk_SiSo
 		// The following extensions are for PSDL
-		, dk_Catalog, dk_AbstractStorageHome, dk_StorageHome
+		, dk_AbstractStorageHome, dk_StorageHome
 		, dk_AbstractStorageType, dk_StorageType
-		//, dk_PSSFactory
 		, dk_PSSKey, dk_PSSPrimaryKey
 
 	};
@@ -158,8 +157,6 @@ module IR__ {
 	typedef sequence <FactoryDef> FactoryDefSeq;
 	interface FinderDef;
 	typedef sequence <FinderDef> FinderDefSeq;
-	//interface PSSFactoryDef;
-	//typedef sequence <PSSFactoryDef> PSSFactoryDefSeq;
 	interface PSSKeyDef;
 	typedef sequence <PSSKeyDef> PSSKeyDefSeq;
 	interface PrimaryKeyDef;
@@ -170,8 +167,7 @@ module IR__ {
 	typedef sequence <AbstractStorageHomeDef> AbsStorageHomeDefSeq;
 	interface StorageTypeDef;
 	interface StorageHomeDef;
-	interface CatalogDef;
-	
+		
 	struct StructMember {
 		Identifier name;
 		CORBA::TypeCode type;
@@ -360,11 +356,6 @@ module IR__ {
 			in StorageTypeDef managed_storage_type,
 			in InterfaceDefSeq supports_interfaces,
 			in IDLType primary_key 
-		);
-		CatalogDef create_catalog(
-			in RepositoryId id,
-			in Identifier name,
-			in VersionSpec version
 		);
 	};
 	
@@ -910,9 +901,6 @@ module IR__ {
 		IDLType primary_key;
 	};
 
-	//interface PSSFactoryDef : OperationDef { // only PARAM_IN parameters
-	//};
-	
 	interface PSSKeyDef : OperationDef { // only PARAM_IN parameters
 	};
 	
@@ -967,7 +955,7 @@ module IR__ {
 	interface AbstractStorageTypeDef : InterfaceDef {
 		// read/write interface
 		// can be derived from more than one abstract storage types
-		//attribute InterfaceDefSeq base_abstract_storage_types;
+		// attribute InterfaceDefSeq base_abstract_storage_types;
 		attribute AbsStorageTypeDefSeq base_abstract_storage_types;
 	};
 	
@@ -1004,7 +992,7 @@ module IR__ {
 		// read operations
 		readonly attribute AbstractStorageTypeDef managed_abstract_storage_type;
 		// can be derived from more than one abstract storage homes
-		//attribute InterfaceDefSeq base_storage_homes;
+		// attribute InterfaceDefSeq base_storage_homes;
 		attribute AbsStorageHomeDefSeq base_abstract_storage_homes;
 		readonly attribute FactoryDefSeq factories;
 		readonly attribute PSSKeyDefSeq keys;
@@ -1082,27 +1070,6 @@ module IR__ {
 		PSSKeyDefSeq keys;
 		AttrDescriptionSeq attributes;
 		OpDescriptionSeq operations;
-	};
-
-	interface CatalogDef : InterfaceDef {
-		// read interface
-		readonly attribute ProvidesDefSeq provides_interfaces;
-		// write interface
-		ProvidesDef create_provides (
-			in RepositoryId id,
-			in Identifier name,
-			in VersionSpec version,
-			in InterfaceDef interface_type
-		);
-	};
-	typedef sequence < CatalogDef > CatalogDefSeq;
-	
-	struct CatalogDescription {
-		Identifier name;
-		RepositoryId id;
-		RepositoryId defined_in;
-		VersionSpec version;
-		ProvidesDefSeq provides_interfaces;
 	};
 };
 

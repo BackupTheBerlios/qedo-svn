@@ -153,10 +153,6 @@ frontend_replacement_feed
 		"IDL:LooneyToon/ToonTown:1.0", "ToonTown", "1.0",
 		IR__::HomeDef::_nil(), toon, toon_supported_interfaces_seq, IR__::ValueDef::_nil() );
 
-	// Catalog
-	IR__::CatalogDef_var catalog = root_module -> create_catalog (
-		"IDL:LooneyToon/ToonTown:1.0", "ToonTown", "1.0" );
-
 	// Create a normal operation on the home
 	IR__::OperationDef_var home_setup_operation = home_toon_town -> create_operation (
 		"IDL:LooneyToons/ToonTown/setup:1.0",
@@ -227,20 +223,16 @@ frontend_replacement_feed
 		"IDL:LooneyToon/StoryHome:1.0", "StoryHome", "1.0",
 		IR__::HomeDef::_nil(), story, story_supported_interfaces ,IR__::ValueDef::_nil() );
 
-	// CIDL constructs for our example
-	// Sequence of catalog
-	IR__::CatalogDefSeq catalogs;
-
 	// Composition ToonImpl
 	CIDL::CompositionDef_var composition_toon =
 		repository -> create_composition (
 		"IDL:Studio/ToonImpl:1.0", "ToonImpl", "1.0",
-		CIDL::lc_Session, home_toon_town, catalogs );
+		CIDL::lc_Session, home_toon_town );
 
 	// The Home Executor ToonTownImpl
 	CIDL::HomeExecutorDef_var home_executor_toon_town =
 		composition_toon -> create_home_executor (
-		"IDL:Studio/ToonImpl/ToonTownImpl:1.0", "ToonTownImpl", "1.0", catalog );
+		"IDL:Studio/ToonImpl/ToonTownImpl:1.0", "ToonTownImpl", "1.0" );
 
 	// The Executor ToonSessionImpl
 	CIDL::ExecutorDef_var executor_toon_session =
@@ -256,7 +248,7 @@ frontend_replacement_feed
 	CIDL::SegmentDef_var seg1 =
 		executor_toon_session -> create_segment (
 		"IDL:Studio/ToonImpl/ToonSessionImpl/Seg1:1.0", "Seg1", "1.0",
-		provided_facets, catalog );
+		provided_facets );
 
 	// The second segment of ToonSessionImpl
 	provided_facets.length ( 1 );
@@ -264,18 +256,18 @@ frontend_replacement_feed
 	CIDL::SegmentDef_var seg2 =
 		executor_toon_session -> create_segment (
 		"IDL:Studio/ToonImpl/ToonSessionImpl/Seg2:1.0", "Seg2", "1.0",
-		provided_facets, catalog );
+		provided_facets );
 
 	// Composition StoryImpl
 	CIDL::CompositionDef_var composition_story =
 		repository -> create_composition (
 		"IDL:Studio/StoryImpl:1.0", "StoryImpl", "1.0",
-		CIDL::lc_Session, home_story, catalogs );
+		CIDL::lc_Session, home_story );
 
 	// The Home Executor StoryHomeImpl
 	CIDL::HomeExecutorDef_var home_executor_story =
 		composition_story -> create_home_executor (
-		"IDL:Studio/StoryImpl/StoryHomeImpl:1.0", "StoryHomeImpl", "1.0", catalog );
+		"IDL:Studio/StoryImpl/StoryHomeImpl:1.0", "StoryHomeImpl", "1.0" );
 
 	// The Executor ToonSessionImpl
 	CIDL::ExecutorDef_var executor_story =

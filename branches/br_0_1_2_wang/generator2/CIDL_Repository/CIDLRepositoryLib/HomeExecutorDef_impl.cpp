@@ -30,13 +30,11 @@ namespace QEDO_ComponentRepository {
 
 HomeExecutorDef_impl::HomeExecutorDef_impl
 ( Container_impl *container,
-  Repository_impl *repository,
-  IR__::CatalogDef *catalog)
+  Repository_impl *repository)
 : Contained_impl ( container, repository ),
   IRObject_impl ( repository )
 {
 	DEBUG_OUTLINE ( "HomeExecutorDef_impl::HomeExecutorDef_impl() called" );
-	catalog_ = dynamic_cast<CatalogDef_impl*>(catalog);
 }
 
 HomeExecutorDef_impl::~HomeExecutorDef_impl

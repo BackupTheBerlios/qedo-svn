@@ -31,7 +31,6 @@
 #include "Contained_impl.h"
 #include "Repository_impl.h"
 #include "ProvidesDef_impl.h"
-#include "CatalogDef_impl.h"
 
 #include <vector>
 
@@ -43,14 +42,12 @@ class SegmentDef_impl : public virtual POA_CIDL::SegmentDef,
 						public virtual Contained_impl
 {
 	vector < ProvidesDef_impl* > provided_facet_impls_;
-	CatalogDef_impl* catalog_;
 	IR__::AbstractStorageHomeDef_ptr abs_storage_home_;
 	
 public:
 	SegmentDef_impl ( Container_impl *container,
 		            Repository_impl *repository,
-					IR__::ProvidesDefSeq provided_facets,
-					IR__::CatalogDef *catalog);
+					IR__::ProvidesDefSeq provided_facets);
 
 	~SegmentDef_impl();
 

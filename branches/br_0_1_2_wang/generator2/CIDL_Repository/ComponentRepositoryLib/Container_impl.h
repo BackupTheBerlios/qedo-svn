@@ -293,14 +293,6 @@ public:
                                                          const IR__::InterfaceDefSeq& supports_interfaces,
                                                          IR__::IDLType_ptr primary_key)
 		throw(CORBA::SystemException);
-
-	//
-    // IDL:omg.org/IR__/ComponentRepository/create_catalog:1.0
-    //
-    virtual IR__::CatalogDef_ptr create_catalog(const char* id,
-                                                const char* name,
-                                                const char* version)
-        throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository

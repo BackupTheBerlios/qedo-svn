@@ -30,22 +30,19 @@
 #include "CIDL_Extension_skel.h"
 #include "Contained_impl.h"
 #include "Repository_impl.h"
-#include "CatalogDef_impl.h"
 
 namespace QEDO_ComponentRepository {
 
 class HomeExecutorDef_impl : public virtual POA_CIDL::HomeExecutorDef,
 							 public virtual Contained_impl
 {
-	CatalogDef_impl* catalog_;
 	CIDL::Binding* binding_;
 	CIDL::DelegationSeq delegations_;
 	CIDL::AbsStorageHomeDelegationSeq abs_storage_home_delegations_;
 
 public:
 	HomeExecutorDef_impl ( Container_impl *container,
-							Repository_impl *repository,
-							IR__::CatalogDef *catalog);
+							Repository_impl *repository);
 
 	~HomeExecutorDef_impl();
 

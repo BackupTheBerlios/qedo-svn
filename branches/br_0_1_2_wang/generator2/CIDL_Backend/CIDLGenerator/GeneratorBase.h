@@ -177,10 +177,6 @@ protected:
 	void handleSiSo(IR__::ComponentDef_ptr component);
 	virtual void doSiSo(IR__::SiSoDef_ptr siso);
 
-	// uses catalog
-	void handleUsesCatalog(IR__::Container_ptr cont);
-	virtual void doUsesCatalog(CIDL::UsesCatalogDef_ptr usesCatalog);
-
 public:
 
 	GeneratorBase(QEDO_ComponentRepository::CIDLRepository_impl *repository);

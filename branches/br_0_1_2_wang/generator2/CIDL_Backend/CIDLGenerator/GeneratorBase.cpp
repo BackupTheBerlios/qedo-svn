@@ -296,10 +296,6 @@ GeneratorBase::generate_the_item ( IR__::Contained_ptr item )
 		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
 		doComposition(a_composition);
 		break; }
-	case CORBA__::dk_UsesCatalog : {
-		CIDL::UsesCatalogDef_var a_usescatalog = CIDL::UsesCatalogDef::_narrow(item);
-		doUsesCatalog(a_usescatalog);
-		break; }
 	default:
 		break;
 	};
@@ -742,33 +738,10 @@ GeneratorBase::handleUses(IR__::ComponentDef_ptr component)
 	}
 }
 
-
 void
 GeneratorBase::doUses(IR__::UsesDef_ptr Uses)
 {
 }
-
-
-//
-// uses catalog
-//
-void 
-GeneratorBase::handleUsesCatalog(IR__::Container_ptr cont)
-{
-	IR__::ContainedSeq_var contained_seq = cont->contents(CORBA__::dk_UsesCatalog, false);
-	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++) {
-		CIDL::UsesCatalogDef_var a_usesCatalog = CIDL::UsesCatalogDef::_narrow(((*contained_seq)[i]));
-		doUsesCatalog(a_usesCatalog);
-	}
-}
-
-
-void
-GeneratorBase::doUsesCatalog(CIDL::UsesCatalogDef_ptr usesCatalog)
-{
-}
-
 
 //
 // emits

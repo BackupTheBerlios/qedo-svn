@@ -49,8 +49,7 @@ public:
                                                         const char* name,
                                                         const char* version,
                                                         CIDL::LifecycleCategory lifecycle,
-                                                        IR__::HomeDef_ptr home,
-														const IR__::CatalogDefSeq& catalogs)
+                                                        IR__::HomeDef_ptr home)
         throw(CORBA::SystemException);
 };
 

@@ -75,8 +75,7 @@ struct build_class : build_baseclass {
   IR__::IDLType_ptr type;
   IR__::ValueDef_ptr valuetype;
   IR__::HomeDef_ptr home;
-  IR__::CatalogDef_ptr catalog;
-  IR__::CatalogDefSeq catalogs;
+  IR__::AbstractStorageHomeDef_ptr abs_storage_home;
   definition def;
   int pos;
   bool flag;
@@ -84,7 +83,7 @@ struct build_class : build_baseclass {
     type = IR__::IDLType::_nil();
     valuetype = IR__::ValueDef::_nil();
     home = IR__::HomeDef::_nil();
-	catalog = IR__::CatalogDef::_nil();
+	abs_storage_home = IR__::AbstractStorageHomeDef::_nil();
   }
 };
 
@@ -931,56 +930,6 @@ StateMember(flag_v, def_1, dcls)
     }
   ]
   [ build :
-  ];
-
-// ======================== Catalog ================================
-def_v=
-Catalog( name, def_list )
-->[ feed_container:
-    {
-      IR__::Container_ptr container;
-      container = IR__::Container::_narrow(kc_current_view.container);
-	  NOT_NIL(container);
-
-	  // create CatalogDef
-	  IR__::CatalogDef_ptr catalog_ptr;
-      try {
-        catalog_ptr = container->create_catalog(get_repid(def_v,name),
-          name->get_name(), "1.0" );
-      }
-      catch (CORBA::Exception& ex) {
-        Error("Exception %s in creating valuemember %k\n", name, name);
-      }
-      irobj = catalog_ptr;
-      name->symtab_entry->irobj = catalog_ptr;
-	}
-  ];
-
-def_v=
-CatalogDcl(name, ident)
-->[ feed:
-    %uviewvar build my_build;
-    //ident : my_build
-    { 
-	  IR__::CatalogDef_ptr catalog_ptr;
-      catalog_ptr = IR__::CatalogDef::_narrow(kc_current_view.container);
-      NOT_NIL(catalog_ptr);
-
-      IR__::InterfaceDef_ptr interface_ptr;
-      interface_ptr = IR__::InterfaceDef::_narrow(ident->symtab_entry->irobj);
-      NOT_NIL(interface_ptr);
-      IR__::ProvidesDef_ptr provides;
-      // create ProvidesDef
-      try {
-        provides = catalog_ptr->create_provides(get_repid(def_v,name),
-          name->get_name(), "1.0", interface_ptr);
-      }
-      catch (...) {
-        Error("Exception in creating provides %k\n", name, name);
-      }
-      irobj = provides;
-      name->symtab_entry->irobj = provides;
-    }
   ];
 
 // ======================== Abstract Storage Type ================================
@@ -2090,19 +2039,12 @@ Composition(name, flag_v, compo_body)
         SessionFlag : { lifecycle = CIDL::lc_Session; }
       }
 
-	  // enter component body to retieve the catalogs
-      with(compo_body) {
-        CompositionBody(catalogs, *, *) : {
-          my_build.catalogs.length(catalogs->length());
-        }
-      }
-
       CIDL::CompositionDef_ptr composition;
       CIDL::CIDLRepository_ptr container = g_repository;
       // create CompositionDef
       try {
         composition = container-> create_composition(get_repid(def_v,name),
-          name->get_name(), "1.0", lifecycle, my_build.home, my_build.catalogs);
+          name->get_name(), "1.0", lifecycle, my_build.home);
       }
       catch (...) {
         Error("Exception in creating composition %k\n", name, name);
@@ -2118,7 +2060,7 @@ Composition(name, flag_v, compo_body)
 
 CompositionBody(catalogs, homex_def, proxy_home)
 ->[ build feed :
-    catalogs
+    /* catalogs */
     homex_def
     /* proxy_home */
   ];
@@ -2139,7 +2081,7 @@ HomeExecutorDef(name, homex_body)
       // create HomeExecutorDef
       try {
         homeexec = container-> create_home_executor (get_repid(def_v,name),
-          name->get_name(), "1.0", my_build.catalog);
+          name->get_name(), "1.0");
       }
       catch (...) {
         Error("Exception in creating home executor %k\n", name, name);
@@ -2244,7 +2186,7 @@ SegmentDef(name, def_list)
       // create SegmentDef
       try {
         seg = container-> create_segment (get_repid(def_v,name),
-          name->get_name(), "1.0", my_build.provseq, my_build.catalog);
+          name->get_name(), "1.0", my_build.provseq);
       }
       catch (...) {
         Error("Exception in creating segment %k\n", name, name);

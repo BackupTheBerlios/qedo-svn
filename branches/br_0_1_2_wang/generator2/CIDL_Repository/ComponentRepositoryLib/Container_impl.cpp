@@ -43,7 +43,6 @@
 #include "AbsStorageHomeDef_impl.h"
 #include "StorageTypeDef_impl.h"
 #include "StorageHomeDef_impl.h"
-#include "CatalogDef_impl.h"
 #include "Debug.h"
 
 #include <string>
@@ -1110,31 +1109,6 @@ throw(CORBA::SystemException)
 	this -> _add_ref();
 
 	return new_storage_home -> _this();
-}
-
-IR__::CatalogDef_ptr
-Container_impl::create_catalog
-(const char* id,
- const char* name,
- const char* version)
-throw(CORBA::SystemException)
-{
-	DEBUG_OUTLINE ( "Container_impl::create_catalog() called" );
-
-	if ( repository_ -> check_for_id ( id ) )
-		throw CORBA::BAD_PARAM ( 2, CORBA::COMPLETED_NO );
-	if ( check_for_name ( name ) )
-		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
-
-	CatalogDef_impl *new_catalog = new CatalogDef_impl ( this, repository_ );
-	new_catalog -> id ( id );
-	new_catalog -> name ( name );
-	new_catalog -> version ( version );
-
-	repository_ -> _add_ref();
-	this -> _add_ref();
-	
-	return new_catalog -> _this();
 }
 
 } // namespace QEDO_ComponentRepository

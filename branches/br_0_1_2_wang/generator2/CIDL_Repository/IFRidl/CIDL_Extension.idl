@@ -45,22 +45,6 @@ module CIDL {
 	const LifecycleCategory lc_Process = 2;
 	const LifecycleCategory lc_Entity = 3;
 
-	interface UsesCatalogDef : IR__::Contained
-	{
-		attribute IR__::CatalogDef catalog_type;
-		attribute IR__::Identifier catalog_label;
-	};
-	typedef sequence < UsesCatalogDef > UsesCatalogDefSeq;
-
-	struct UsesCatalogDefDescription {
-		IR__::Identifier name;
-		IR__::RepositoryId id;
-		IR__::RepositoryId defined_in;
-		IR__::VersionSpec version;
-		IR__::CatalogDef catalog_type;
-		IR__::Identifier catalog_label;
-	};
-
 	interface CIDLRepository : IR__::ComponentRepository
 	{
 		CompositionDef create_composition (
@@ -68,8 +52,7 @@ module CIDL {
 			in IR__::Identifier name,
 			in IR__::VersionSpec version,
 			in LifecycleCategory lifecycle,
-			in IR__::HomeDef _home,
-			in IR__::CatalogDefSeq _catalogs
+			in IR__::HomeDef _home
 		);
 	};
 
@@ -80,20 +63,14 @@ module CIDL {
 		readonly attribute LifecycleCategory lifecycle;
 		readonly attribute HomeExecutorDef home_executor;
 		readonly attribute ExecutorDef executor_def;
-		readonly attribute UsesCatalogDef uses_catalog_def;
-
+		
 		HomeExecutorDef create_home_executor (
 			in IR__::RepositoryId id,
 			in IR__::Identifier name,
 			in IR__::VersionSpec version,
-			in IR__::CatalogDef catalog
+			in IR__::AbstractStorageHomeDef _abs_storage_home
 		);
 		ExecutorDef create_executor (
-			in IR__::RepositoryId id,
-			in IR__::Identifier name,
-			in IR__::VersionSpec version
-		);
-		UsesCatalogDef create_uses_catalog_def (
 			in IR__::RepositoryId id,
 			in IR__::Identifier name,
 			in IR__::VersionSpec version
@@ -108,7 +85,6 @@ module CIDL {
 		LifecycleCategory lifecycle;
 		HomeExecutorDef home_executor;
 		ExecutorDef executor_def;
-		UsesCatalogDef uses_catalog_def;
 	};
 
 	interface SegmentDef : IR__::Contained
@@ -134,7 +110,7 @@ module CIDL {
 	};
 	typedef sequence < Delegation > DelegationSeq;
 
-	// binding and storagehome delegation only occured with "abstract..."
+	// binding and storagehome-delegation only occured with "abstract..."
 	struct AbsStorageHomeDelegation 
 	{
 		IR__::OperationDef delegated_operation;
@@ -175,7 +151,7 @@ module CIDL {
 			in IR__::Identifier name,
 			in IR__::VersionSpec version,
 			in IR__::ProvidesDefSeq provided_facets,
-			in IR__::CatalogDef catalog
+			in IR__::AbstractStorageHomeDef _abs_storage_home
 		);
 	};
 

@@ -34,8 +34,6 @@
 #include "HomeExecutorDef_impl.h"
 #include "ExecutorDef_impl.h"
 #include "HomeDef_impl.h"
-#include "CatalogDef_impl.h"
-#include "UsesCatalogDef_impl.h"
 
 namespace QEDO_ComponentRepository {
 
@@ -47,14 +45,12 @@ class CompositionDef_impl : public virtual POA_CIDL::CompositionDef,
 	HomeDef_impl *home_impl_;
 	HomeExecutorDef_impl *home_executor_impl_;
 	ExecutorDef_impl *executor_impl_;
-	UsesCatalogDef_impl *uses_catalog_def_impl_;
-	vector < CatalogDef_impl* > catalogs_;
+	
 public:
 	CompositionDef_impl ( Container_impl *container,
 							Repository_impl *repository,
 							CIDL::LifecycleCategory lifecycle,
-							HomeDef_impl *home_impl,
-							IR__::CatalogDefSeq catalogs);
+							HomeDef_impl *home_impl);
 
 	~CompositionDef_impl();
 
@@ -110,18 +106,12 @@ public:
         throw(CORBA::SystemException);
 
 	//
-    // IDL:omg.org/CIDL/CompositionDef/uses_catalog_def:1.0
-    //
-    virtual CIDL::UsesCatalogDef_ptr uses_catalog_def()
-        throw(CORBA::SystemException);
-
-    //
     // IDL:omg.org/CIDL/CompositionDef/create_home_executor:1.0
     //
     virtual CIDL::HomeExecutorDef_ptr create_home_executor(	const char* id,
 															const char* name,
 															const char* version,
-															IR__::CatalogDef_ptr catalog)
+															IR__::AbstractStorageHomeDef_ptr abs_storage_home)
         throw(CORBA::SystemException);
 
     //
@@ -130,14 +120,6 @@ public:
     virtual CIDL::ExecutorDef_ptr create_executor(	const char* id,
 													const char* name,
 													const char* version	)
-        throw(CORBA::SystemException);
-
-	//
-    // IDL:omg.org/CIDL/CompositionDef/create_uses_catalog_def:1.0
-    //
-    virtual CIDL::UsesCatalogDef_ptr create_uses_catalog_def(const char* id,
-                                                             const char* name,
-                                                             const char* version)
         throw(CORBA::SystemException);
 };
 

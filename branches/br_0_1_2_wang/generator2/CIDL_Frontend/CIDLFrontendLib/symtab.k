@@ -1859,7 +1859,7 @@ fix_definition(
   AbstractStorageType(*,nil_list),
   AbstractStorageHome(*,nil_list),
   StorageHome(*,nil_list),
-  Catalog(*,nil_list),
+  /*Catalog(*,nil_list),*/
   Module(*,nil_list),
   Interface(*,nil_list) : {
     assert(nil_list->is_nil());
