@@ -31,7 +31,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.30 2003/10/23 13:30:43 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.31 2003/10/27 12:32:20 boehme Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -47,10 +47,11 @@ static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.30 2003/10/23 13:
 namespace Qedo {
 
 	
-ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode, bool qos_mode, bool terminal_enabled)
+ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode, bool qos_mode, bool terminal_enabled, bool verbose_mode)
 : debug_mode_ (debug_mode),
   enable_qos_ (qos_mode),
   enable_terminal_ (terminal_enabled),
+  verbose_mode_ (verbose_mode),
   component_server_activation_ ("QEDO_ACTIVATOR_SIGNAL"),
   orb_ (CORBA::ORB::_duplicate (orb))
 {
@@ -234,28 +235,39 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 #ifdef _WIN32
 	int component_server_pid;
+	char *args[17];
+	const char* prog;
+	int args_nr=0;
+
+	//if (enable_terminal_)
+	//{
+	//	args[args_nr++] = "xterm";
+	//	args[args_nr++] = "-e";
+	//	args[args_nr++] = "qcs.sh";
+	//	prog = "xterm";
+	//}
+	//else
+	//{
+		args[args_nr++] = "qcs.exe";
+		prog = "qcs.exe";
+	//}
 
 	if (debug_mode_)
 	{
-		if (enable_qos_) {
-			component_server_pid = _spawnl(_P_NOWAIT, "qcs.exe", "qcs.exe", "--debug", 
-				"--enable-qos", "--csa_ref", my_string_ref.in(), NULL);
+		args[args_nr++] = "--debug";
+	}
 
-		} else {
-			component_server_pid = _spawnl(_P_NOWAIT, "qcs.exe", "qcs.exe", "--debug", 
-				"--csa_ref", my_string_ref.in(), NULL);
-		}
-	}
-	else
+	if (verbose_mode_)
 	{
-		if (enable_qos_) {
-			component_server_pid = _spawnl(_P_NOWAIT, "qcs.exe", "qcs.exe", 
-				"--enable-qos", "--csa_ref", my_string_ref.in(), NULL);
-		} else {
-			component_server_pid = _spawnl(_P_NOWAIT, "qcs.exe", "qcs.exe", 
-				"--csa_ref", my_string_ref.in(), NULL);
-		}
+		args[args_nr++] = "--verbose";
 	}
+
+	args[args_nr++] = "--csa_ref";
+	args[args_nr++] = my_string_ref.out();
+
+	args[args_nr] = 0;
+
+	component_server_pid = _spawnl(_P_NOWAIT, prog, args);
 
 	if (component_server_pid < 0)
 	{
@@ -271,53 +283,49 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	switch (component_server_pid = fork())
 	{
 		case 0 : /* child process */
+		{
+			char *args[17];
+			const char* prog;
+			int args_nr=0;
+
+
 			if (enable_terminal_)
 			{
-				if (debug_mode_)
-				{
-					long err = execlp ("xterm", "xterm", "-e", "qcs.sh", "--csa_ref", my_string_ref.in(), "--debug", 0);
-					 if (err == -1) 
-					{
-						std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
-						std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
-						throw Components::CreateFailure();
-					}
-				}
-				else
-				{
-					long err = execlp ("xterm", "xterm", "-e", "qcs.sh", "--csa_ref", my_string_ref.in(), 0);
-					 if (err == -1) 
-					{
-						std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
-						std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
-						throw Components::CreateFailure();
-					}
-				}
+				args[args_nr++] = "xterm";
+				args[args_nr++] = "-e";
+				args[args_nr++] = "qcs.sh";
+				prog = "xterm";
 			}
 			else
 			{
-				if (debug_mode_)
-				{
-					long err = execlp ("qcs", "qcs", "--csa_ref", my_string_ref.in(), "--debug", 0);
-					 if (err == -1) 
-					{
-						std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
-						std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
-						throw Components::CreateFailure();
-					}
-				}
-				else
-				{
-					long err = execlp ("qcs", "qcs", "--csa_ref", my_string_ref.in(), 0);
-					 if (err == -1) 
-					{
-						std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
-						std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
-						throw Components::CreateFailure();
-					}
-				}
+				args[args_nr++] = "qcs";
+				prog = "qcs";
 			}
 
+			if (debug_mode_)
+			{
+				args[args_nr++] = "--debug";
+			}
+
+			if (verbose_mode_)
+			{
+				args[args_nr++] = "--verbose";
+			}
+
+			args[args_nr++] = "--csa_ref";
+			args[args_nr++] = my_string_ref.out();
+
+			args[args_nr] = 0;
+
+			long err = execvp (prog,args);
+			if (err == -1) 
+			{
+				std::cerr << "ServerActivatorImpl: execvp() for component server failed" << std::endl;
+				std::cerr << "ServerActivatorImpl: Error  was: " << strerror (errno) << std::endl;
+				throw Components::CreateFailure();
+			}
+
+		}
 			break;
 		default : /* parent process */
 			break;

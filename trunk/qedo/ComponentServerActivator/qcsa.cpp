@@ -39,15 +39,11 @@
 #include <sys/wait.h>   /* header for waitpid() and various macros */
 #endif
 
-#ifndef _WIN32
-#include <unistd.h>
-#endif
-
 #include <signal.h>
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.16 2003/10/17 13:22:52 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.17 2003/10/27 12:32:20 boehme Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -74,8 +70,8 @@ handle_sigint
 #else
 	signal(sig, SIG_IGN);
 #endif
-	std::cout << "ServerActivatorImpl: got Crtl-C" << std::endl;
-	std::cerr << "ServerActivatorImpl: unbinding from NameService" << std::endl;
+	std::cout << "\nGot Crtl-C" << std::endl;
+	std::cerr << "..... unbind in NameService" << std::endl;
 
 	//
 	// unbind in naming service
@@ -100,11 +96,11 @@ handle_sigint
     }
 	catch (const CORBA::Exception&)
 	{
-		std::cerr << "ServerActivatorImpl: could not unbind" << std::endl;
+		std::cerr << "..... could not unbind" << std::endl;
 	}
 	catch(...)
 	{
-		std::cerr << "ServerActivatorImpl: error in signal handler" << std::endl;
+		std::cerr << "..... error in signal handler" << std::endl;
 	}
 	
 	exit(1);
@@ -160,6 +156,7 @@ main (int argc, char** argv)
 
 	// Check for debug mode and enable-qos mode
 	bool debug_mode = false;
+	bool verbose_mode = false;
 	bool qos_enabled = false;
 	bool terminal_enabled = false;
 
@@ -172,6 +169,7 @@ main (int argc, char** argv)
 		if (! strcmp(argv[i], "--verbose"))
 		{
 			Qedo::debug_output = true;
+			verbose_mode = true;
 		}
 		if (! strcmp(argv[i], "--enable-qos"))
 		{
@@ -185,7 +183,7 @@ main (int argc, char** argv)
 
 	orb = CORBA::ORB_init (argc, argv);
 
-	server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled, terminal_enabled);
+	server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled, terminal_enabled, verbose_mode);
 
 	try
 	{

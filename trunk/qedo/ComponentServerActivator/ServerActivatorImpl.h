@@ -78,6 +78,9 @@ private:
 	/** terminal-enabled mode */
 	bool enable_terminal_;
 
+	/** terminal-enabled mode */
+	bool verbose_mode_;
+
 	/** for syncronization */
 	QedoCond										component_server_activation_;
 	QedoMutex										component_server_mutex_;
@@ -114,7 +117,7 @@ public:
 	/**
 	 * constructor
 	 */
-	ServerActivatorImpl (CORBA::ORB_ptr, bool, bool, bool);
+	ServerActivatorImpl (CORBA::ORB_ptr, bool, bool, bool, bool =false);
 
 	/**
 	 * destructor
