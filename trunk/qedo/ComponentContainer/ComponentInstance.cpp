@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstance.cpp,v 1.2 2002/11/28 07:58:43 tom Exp $";
+static char rcsid[] = "$Id: ComponentInstance.cpp,v 1.3 2002/12/02 14:49:49 stoinski Exp $";
 
 #include "ComponentInstance.h"
 #include "Output.h"
@@ -35,7 +35,7 @@ ComponentInstance::ComponentInstance (const PortableServer::ObjectId& object_id,
 : object_id_ (new PortableServer::ObjectId (object_id)),
   component_ref_ (CORBA::Object::_duplicate (component_ref)),
   executor_locator_ (Components::ExecutorLocator::_duplicate (executor_locator)),
-  ccm_object_executor_ (new CCMObjectExecutor (object_id, home_servant))
+  ccm_object_executor_ (new CCMObjectExecutor (object_id, component_ref, home_servant))
 {
 	// Finally tell the context about the ccm object executor
 	// The context always calls the generic functions of the ccm object executor to

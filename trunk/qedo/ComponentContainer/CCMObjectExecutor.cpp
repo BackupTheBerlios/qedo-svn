@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.2 2002/11/05 07:35:48 boehme Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.3 2002/12/02 14:49:49 stoinski Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -32,9 +32,11 @@ static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.2 2002/11/05 07:35:48 boeh
 namespace Qedo {
 
 
-CCMObjectExecutor::CCMObjectExecutor (const PortableServer::ObjectId& component_object_id, 
+CCMObjectExecutor::CCMObjectExecutor (const PortableServer::ObjectId& component_object_id,
+									  const CORBA::Object_ptr& component_primary_ref,
 									  HomeServantBase* home_servant)
 : component_object_id_ (new PortableServer::ObjectId (component_object_id)),
+  component_primary_ref_ (CORBA::Object::_duplicate (component_primary_ref)),
   home_servant_ (home_servant)
 {
 	home_servant_->_add_ref();
@@ -46,6 +48,13 @@ CCMObjectExecutor::~CCMObjectExecutor()
 	DEBUG_OUT ( "CCMObjectExecutor: Destructor called" );
 
 	home_servant_->_remove_ref();
+}
+
+
+const CORBA::Object_ptr 
+CCMObjectExecutor::get_component()
+{
+	return CORBA::Object::_duplicate (component_primary_ref_);
 }
 
 

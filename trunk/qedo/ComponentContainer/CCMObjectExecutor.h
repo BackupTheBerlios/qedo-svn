@@ -51,19 +51,23 @@ private:
 	ConsumerVector  			consumers_;
 
 	PortableServer::ObjectId_var component_object_id_;
+	CORBA::Object_var component_primary_ref_;
 	HomeServantBase* home_servant_;
 
 	CCMObjectExecutor (const CCMObjectExecutor&);
 	CCMObjectExecutor& operator= (const CCMObjectExecutor&);
 
 public:
-	CCMObjectExecutor (const PortableServer::ObjectId&, HomeServantBase*);
+	CCMObjectExecutor (const PortableServer::ObjectId&,
+					   const CORBA::Object_ptr&,
+					   HomeServantBase*);
 	~CCMObjectExecutor();
 
 	// Helper functions for the contexts
+	const CORBA::Object_ptr get_component();
 	const SubscribedConsumerVector& get_consumers_for_publisher (const char* name);
 	const Components::EventConsumerBase_ptr get_consumer_for_emitter (const char* name);
-
+	
 	// Functions to build up the component instance structure
 	void add_facet (const char*, const char*, const CORBA::Object_ptr);
 

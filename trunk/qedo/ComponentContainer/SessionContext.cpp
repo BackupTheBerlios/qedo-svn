@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: SessionContext.cpp,v 1.1 2002/10/07 07:17:02 tom Exp $";
+static char rcsid[] = "$Id: SessionContext.cpp,v 1.2 2002/12/02 14:49:49 stoinski Exp $";
 
 #include "SessionContext.h"
 #include "Output.h"
@@ -41,7 +41,7 @@ SessionContext::~SessionContext()
 CORBA::Object_ptr 
 SessionContext::get_CCM_object()
 {
-	return CORBA::Object::_nil();
+	return ccm_object_executor_->get_component();
 }
 
 
