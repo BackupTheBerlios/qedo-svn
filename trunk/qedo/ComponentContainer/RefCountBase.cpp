@@ -31,7 +31,7 @@
 #include <set>
 #endif
 
-static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.15 2003/09/10 12:19:00 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.16 2003/09/12 11:47:28 neubauer Exp $";
 
 
 namespace Qedo {
@@ -41,6 +41,7 @@ namespace Qedo {
 static std::set<RefCountLocalObject*> CORBA_local_object_set;
 static std::set<RefCountBase*> native_object_set;
 static std::set<CreateDestructCORBAObjectCounter*> CORBA_object_set;
+static QedoMutex CORBA_object_mutex_;
 #else
 static CORBA::Long native_object_count_ = 0;
 static CORBA::Long CORBA_local_object_count_ = 0;
@@ -55,6 +56,7 @@ RefCountBase::RefCountBase()
 : ref_count_ (1)
 {
 #ifdef _DEBUG
+	QedoLock lock(&mutex_);
 	native_object_set.insert(this);
 #else
 	++native_object_count_;
@@ -66,6 +68,7 @@ RefCountBase::RefCountBase()
 RefCountBase::~RefCountBase()
 {
 #ifdef _DEBUG
+	QedoLock lock(&mutex_);
 	native_object_set.erase(this);
 #else
 	--native_object_count_;
@@ -174,6 +177,7 @@ RefCountLocalObject::_get_refcount()
 CreateDestructCORBAObjectCounter::CreateDestructCORBAObjectCounter()
 {
 #ifdef _DEBUG
+	QedoLock lock(&CORBA_object_mutex_);
 	CORBA_object_set.insert(this);
 #else
 	++CORBA_object_count_;
@@ -185,6 +189,7 @@ CreateDestructCORBAObjectCounter::CreateDestructCORBAObjectCounter()
 CreateDestructCORBAObjectCounter::~CreateDestructCORBAObjectCounter()
 {
 #ifdef _DEBUG
+	QedoLock lock(&CORBA_object_mutex_);
 	CORBA_object_set.erase(this);
 #else
 	--CORBA_object_count_;
@@ -235,7 +240,7 @@ GlobalObjectManagement::report()
 		DEBUG_OUT  ("# MEMORY LEAKS DETECTED!!!");
 		if (native_object_set.size()) {
 			std::set<RefCountBase*>::iterator i = native_object_set.begin();
-			DEBUG_OUT("still running CORBA objects :");
+			DEBUG_OUT("still running native objects :");
 			for(;i != native_object_set.end();i++)
 			{
 				demangle(typeid(**i).name());
