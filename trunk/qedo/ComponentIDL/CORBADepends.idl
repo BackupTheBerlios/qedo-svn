@@ -75,6 +75,7 @@ pragma prefix ""
 module PortableServer {
     typedef sequence<octet> ObjectId;
 };
+#endif
 
 #pragma prefix "omg.org"
 
