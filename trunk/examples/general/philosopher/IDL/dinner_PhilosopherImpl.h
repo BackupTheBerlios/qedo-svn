@@ -10,7 +10,7 @@
 // END USER INSERT SECTION file_pre
 
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include "dinner_BUSINESS.h"
 #include <string>
 
