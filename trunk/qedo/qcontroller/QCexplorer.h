@@ -54,8 +54,16 @@ class QCexplorerTreeCtrl : public wxTreeCtrl
 public:
     enum
     {
-        TreeCtrlIcon_File,
-        TreeCtrlIcon_FileSelected,
+        TreeCtrlIcon_Component,
+        TreeCtrlIcon_ComponentSelected,
+        TreeCtrlIcon_Home,
+        TreeCtrlIcon_HomeSelected,
+        TreeCtrlIcon_Container,
+        TreeCtrlIcon_ContainerSelected,
+        TreeCtrlIcon_ComponentServer,
+        TreeCtrlIcon_ComponentServerSelected,
+        TreeCtrlIcon_Node,
+        TreeCtrlIcon_NodeSelected,
         TreeCtrlIcon_Folder,
         TreeCtrlIcon_FolderSelected,
         TreeCtrlIcon_FolderOpened

@@ -29,8 +29,17 @@
 #include "explore.h"
 #include "QedoExplorer.h"
 
-#include "icon1.xpm"
-#include "icon2.xpm"
+
+#include "component.xpm"
+#include "component_selected.xpm"
+#include "home.xpm"
+#include "home_selected.xpm"
+#include "container.xpm"
+#include "container_selected.xpm"
+#include "component_server.xpm"
+#include "component_server_selected.xpm"
+#include "node.xpm"
+#include "node_selected.xpm"
 #include "icon3.xpm"
 #include "icon4.xpm"
 #include "icon5.xpm"
@@ -49,7 +58,7 @@ END_EVENT_TABLE()
 QCexplorerTreeCtrl::QCexplorerTreeCtrl(wxWindow *parent, const wxWindowID id,
                        const wxPoint& pos, const wxSize& size,
                        long style)
-          : wxTreeCtrl(parent, id, pos, size, style)
+          : wxTreeCtrl(parent, id, pos, size, wxTR_HIDE_ROOT | wxTR_HAS_BUTTONS )
 
 {
 }
@@ -75,12 +84,20 @@ void QCexplorerTreeCtrl::CreateImageList(int size)
 
     // should correspond to TreeCtrlIcon_xxx enum
     wxBusyCursor wait;
-    wxIcon icons[5];
-    icons[0] = wxIcon(icon1_xpm);
-    icons[1] = wxIcon(icon2_xpm);
-    icons[2] = wxIcon(icon3_xpm);
-    icons[3] = wxIcon(icon4_xpm);
-    icons[4] = wxIcon(icon5_xpm);
+    wxIcon icons[13];
+    icons[0] = wxIcon(component_xpm);
+    icons[1] = wxIcon(component_selected_xpm);
+    icons[2] = wxIcon(home_xpm);
+    icons[3] = wxIcon(home_selected_xpm);
+    icons[4] = wxIcon(container_xpm);
+    icons[5] = wxIcon(container_selected_xpm);
+    icons[6] = wxIcon(component_server_xpm);
+    icons[7] = wxIcon(component_server_selected_xpm);
+    icons[8] = wxIcon(node_xpm);
+    icons[9] = wxIcon(node_selected_xpm);
+    icons[10] = wxIcon(icon3_xpm);
+    icons[11] = wxIcon(icon4_xpm);
+    icons[12] = wxIcon(icon5_xpm);
 
     int sizeOrig = icons[0].GetWidth();
     for ( size_t i = 0; i < WXSIZEOF(icons); i++ )
@@ -163,8 +180,8 @@ QCexplorerTreeCtrl::build_tree()
 			wxString str ;
 			str.Printf(wxT("%s"), wxT(sa.host_name.in()));
 
-			wxTreeItemId idServerActivator = AppendItem(idParent, str , TreeCtrlIcon_Folder, 
-				TreeCtrlIcon_FolderSelected, new QCexplorerTreeItemData(str));
+			wxTreeItemId idServerActivator = AppendItem(idParent, str , TreeCtrlIcon_Node, 
+				TreeCtrlIcon_NodeSelected, new QCexplorerTreeItemData(str));
 
 			ComponentServerInfoList csil=sa.my_component_servers;
 			
@@ -182,8 +199,8 @@ QCexplorerTreeCtrl::build_tree()
 				csi_tmp.append(csi.host_name.in());
 				str.Printf(wxT("%s"),wxT(csi_tmp.c_str()));
 			
-				wxTreeItemId idComponentServer = AppendItem(idServerActivator, str , TreeCtrlIcon_Folder, 
-					TreeCtrlIcon_FolderSelected, new QCexplorerTreeItemData(str));
+				wxTreeItemId idComponentServer = AppendItem(idServerActivator, str , TreeCtrlIcon_ComponentServer, 
+					TreeCtrlIcon_ComponentServerSelected, new QCexplorerTreeItemData(str));
 
 				ContainerInstanceInfoList ciil=csi.my_containers;
 
@@ -199,8 +216,8 @@ QCexplorerTreeCtrl::build_tree()
 					cii_tmp.append(cii.short_name);
 					str.Printf(wxT("%s"),wxT(cii_tmp.c_str()));
 
-					wxTreeItemId idContainerInstance = AppendItem(idComponentServer, str , TreeCtrlIcon_Folder, 
-						TreeCtrlIcon_FolderSelected, new QCexplorerTreeItemData(str));
+					wxTreeItemId idContainerInstance = AppendItem(idComponentServer, str , TreeCtrlIcon_Container, 
+						TreeCtrlIcon_ContainerSelected, new QCexplorerTreeItemData(str));
 				
 					HomeInstanceInfoList hiil=cii.my_homes;
 
@@ -215,8 +232,8 @@ QCexplorerTreeCtrl::build_tree()
 						hii_tmp=(hii.short_name);
 						str.Printf(wxT("%s"),wxT(hii_tmp.c_str()));
 
-						wxTreeItemId idHomeInstance = AppendItem(idContainerInstance, str , TreeCtrlIcon_Folder, 
-							TreeCtrlIcon_FolderSelected, new QCexplorerTreeItemData(str));
+						wxTreeItemId idHomeInstance = AppendItem(idContainerInstance, str , TreeCtrlIcon_Home, 
+							TreeCtrlIcon_HomeSelected, new QCexplorerTreeItemData(str));
 
 						ComponentInstanceInfoList coiil=hii.my_components;
 						CORBA::ULong b = 0;
@@ -230,7 +247,7 @@ QCexplorerTreeCtrl::build_tree()
 							coii_tmp=(coii.short_name);
 							str.Printf(wxT("%s"),wxT(coii_tmp.c_str()));
 
-							wxTreeItemId idComponentInstance = AppendItem(idHomeInstance, str ,  TreeCtrlIcon_File, TreeCtrlIcon_FileSelected,
+							wxTreeItemId idComponentInstance = AppendItem(idHomeInstance, str ,  TreeCtrlIcon_Component, TreeCtrlIcon_ComponentSelected,
 								new QCexplorerTreeItemData(str));
 
 						}
