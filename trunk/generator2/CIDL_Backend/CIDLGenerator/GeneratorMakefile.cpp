@@ -101,7 +101,7 @@ GeneratorMakefile::doComposition(CIDL::CompositionDef_ptr composition)
 
 	out << "OBJ_FILES = ${CPP_FILES:%.cpp=%.o} \n\n";
 
-	out << "CLEAN_FILES = OBJ_FILES lib" << composition_name << ".so " << composition_name << ".zip\n\n";
+	out << "CLEAN_FILES = ${OBJ_FILES} lib" << composition_name << ".so " << composition_name << ".zip\n\n";
 
 	out << "LIBS += -L../" << composition_name << "_SERVANT -l";
 	out << composition_name << "_SERVANT \n\n";
@@ -200,8 +200,8 @@ GeneratorMakefile::generateServant()
 
     out << "OBJ_FILES = ${CPP_FILES:%.cpp=%.o}\n\n";
 
-    out << "CLEAN_FILES = OBJ_FILES lib" << target_name << "_SERVANT.so\n\n";
-    
+    out << "CLEAN_FILES = ${OBJ_FILES} lib" << target_name << "_SERVANT.so\n\n";
+
     out << "CXXFLAGS += -I.\n\n";
 
     out << "include ../MakeComponentVars\n\n";
