@@ -144,7 +144,7 @@ copy cidl_gen.exe $(QEDO)\bin
 				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;..\..\CIDL_Frontend\CIDLFrontendLib;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE,__DEBUG__,_WINDOWS,ORBACUS_ORB"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"

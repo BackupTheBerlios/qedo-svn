@@ -24,7 +24,7 @@
 				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="KC_DEPRECATED,WIN32,_DEBUG,_LIB,__STDC__,YYERROR_VERBOSE,YYDEBUG"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug_orbacus/CIDLFrontendLib.pch"
