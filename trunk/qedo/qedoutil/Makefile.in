@@ -44,11 +44,13 @@ SOURCES = CADReader.cpp \
 	NameServiceBase.cpp \
 	Package.cpp \
 	PlatformBase.cpp \
-	XMLCatalog.cpp
+	XMLCatalog.cpp \
+	qedoutil.cpp \
+	InstallationReader.cpp \
+	ComponentDeployment.cpp
 
 HEADER = ${SOURCES:.cpp=.h} \
-        qedoutil.h \
-	Uri.h \
+        Uri.h \
 	ComponentImplementationData.h \
 	AssemblyData.h
 
