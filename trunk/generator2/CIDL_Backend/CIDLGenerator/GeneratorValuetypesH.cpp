@@ -78,14 +78,43 @@ GeneratorValuetypesH::check_for_generation(IR__::Contained_ptr item)
 		break; }
 	case CORBA__::dk_Composition : {
 		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
-		IR__::ConsumesDefSeq_var consumes_seq;
 		IR__::EventDef_ptr event;
+
+		IR__::ConsumesDefSeq_var consumes_seq;
 		consumes_seq = a_composition->ccm_component()->consumes_events();
 		len = consumes_seq->length();
 		for(i = 0; i < len; i++)
 		{
 			// insert each consumed event (check whether already inserted)
 			event = ((*consumes_seq)[i])->event();
+			if (id_list_.find(event->id()) == id_list_.end())
+			{
+				id_list_.insert(event->id());
+				this->insert_to_generate(event);
+			}
+		}
+
+		IR__::EmitsDefSeq_var emits_seq;
+		emits_seq = a_composition->ccm_component()->emits_events();
+		len = emits_seq->length();
+		for(i = 0; i < len; i++)
+		{
+			// insert each emited event (check whether already inserted)
+			event = ((*emits_seq)[i])->event();
+			if (id_list_.find(event->id()) == id_list_.end())
+			{
+				id_list_.insert(event->id());
+				this->insert_to_generate(event);
+			}
+		}
+
+		IR__::PublishesDefSeq_var publishes_seq;
+		publishes_seq = a_composition->ccm_component()->publishes_events();
+		len = publishes_seq->length();
+		for(i = 0; i < len; i++)
+		{
+			// insert each published event (check whether already inserted)
+			event = ((*publishes_seq)[i])->event();
 			if (id_list_.find(event->id()) == id_list_.end())
 			{
 				id_list_.insert(event->id());
