@@ -39,12 +39,13 @@
 				Name="VCCustomBuildTool"
 				Description="Distribution:"
 				CommandLine="mkdir $(QEDO)\bin
-copy $(TargetPath) $(QEDO)\bin"
+copy $(TargetPath) $(QEDO)\bin
+"
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib mico239.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib mico2310.lib odbc32.lib odbccp32.lib pthreadVSE.lib"
 				OutputFile="$(OutDir)/cidl_gen.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -141,7 +142,7 @@ copy cidl_gen.exe $(QEDO)\bin
 				AdditionalOptions="/Zm900 "
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;..\..\CIDL_Frontend\CIDLFrontendLib;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
-				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE,__DEBUG__,_WINDOWS"
+				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE,__DEBUG__,_WINDOWS,ORBACUS_ORB"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"

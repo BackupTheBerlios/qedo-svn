@@ -1,5 +1,5 @@
 #include "GeneratorBase.h"
-#ifdef TAO_ORB
+#ifndef ORBACUS_ORB
 #include "objbase.h"
 #endif
 
