@@ -35,6 +35,14 @@ The Qedo team.
 1. ORB
 ======
 
+The Qedo project is designed to work with arbitrary ORB implementations
+which support at least a basic set of features. This set comprises OBV, 
+Portable Interceptors, ...
+Anyway, for each ORB implementation some minimal changes have to be done.
+Currently ORBacus 4.1 and MICO are supported by deafault. The TAO support
+is deprecated. In order to install Qedo a supported ORB implementation has
+to be installed on the target host. Pay attention that it has to be
+dynamically linked and the linker can find the according libraries.
 At the moment Qedo generator supports 3 ORBs Mico, TAO and ORBacus. For using one of the ORBs you need to install the ORB and to set an apropriate environment variable. Follow the instructions coming with each ORB to install it properly. We will only point out some important details.
 
 
@@ -122,7 +130,13 @@ After compiling and installing MICO, you need to create a .micorc file. This fil
 
 XERCES-C
 --------------------------------------------------------------------------------
-The XML handling
+The Qedo project furthermore requires the xerces-c2_1 XML library to
+handle the deployment XML descriptors.
+
+	Xerces-c      ---> available at xml.apache.org/dist/xerces-c
+	All the instructions for compiling under Windows and Linux/Unix are
+	given in the Xerces-c package.
+	
 obtain software:
 	Version: 2.1
 	get from: http://xml.apache.org/dist/xerces-c/stable/
@@ -134,7 +148,14 @@ XERCES=C:\opt\xerces-c2_1_0-win32
 
 ZLib
 --------------------------------------------------------------------------------
-zip archive handling
+According to the CCM specification the Qedo project makes use of software
+packaging. In order to install Qedo the zlib 1.1.4 or a later version has
+to be installed on the target host.
+
+	Zlib          ---> available at http://www.gzip.org/zlib/
+	All the instructions for compiling under Linux/Unix are given in the
+	Zlib package.
+
 obtain software:
 	Version: 1.1.4
 	get from: http://www.gzip.org/zlib/
@@ -142,6 +163,9 @@ set environment
 	ZLIB=C:\opt\zlib114dll
 add the follwing to the path variable
 	%ZLIB%\dll32
+
+Automatic packaging under Windows requires the command line version of winzip,
+to be downloaded from www.winzip.com. Make sure, it is in your path.
 
 
 3. Compiling Windows

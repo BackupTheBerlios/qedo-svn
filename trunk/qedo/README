@@ -1,44 +1,56 @@
-Requirements
-============
 
-The Qedo project is designed to work with arbitrary ORB implementations
-which support at least a basic set of features. This set comprises OBV, ...
-Anyway, for each ORB implementation some minimal changes have to be done.
-Currently ORBacus 4.1 and MICO are supported by deafault. In order to install
-Qedo a supported ORB implementation has to be installed on the target host.
-Pay attention that it has to be dynamically linked and the linker can find
-the according libraries.
+Starting the Qedo run-time environment
+======================================
+To start the tun-time environment of Qedo you need to start a number of processes. 
 
-	ORBacus	      ---> available at http://www.orbacus.com
-	
-or
-	
-	Mico          ---> available at http://www.mico.org
-	All the instructions for compiling under Windows and Linux/Unix are
-	given in the Mico package.
+1. Name Service
+---------------
+The first of all is a name service. This name service needs to be started once for a Qedo deployment domain. Such a domain consist of a number of computers where distributed systems can be installed. How to start a name service depends on the used nameservice implementation. But you need to be sure to know the host where the name service is runnning and on what port the name service is listening. This information is needed for the other servers. Currently we use orb depend mechanism to promote the name service information to the other Qedo servers. E.g. if you ar using MICO you need to create a .micorc file. this file need to contain the following line:
 
-According to the CCM specification the Qedo project makes use of software
-packaging. In order to install Qedo the zlib 1.1.4 or a later version has
-to be installed on the target host.
+  -ORBInitRef NameService=corbaloc::<hostname>:<port>/NameService
 
-	Zlib          ---> available at http://www.gzip.org/zlib/
-	All the instructions for compiling under Linux/Unix are given in the
-	Zlib package.
+to start a name service on a specific port usually works with the following option:
 
-The Qedo project furthermore requires the xerces-c2_1 XML library to
-handle the deployment XML descriptors.
+  nsd -ORBIIOPAddr inet:<hostname>:<port>
 
-	Xerces-c      ---> available at xml.apache.org/dist/xerces-c
-	All the instructions for compiling under Windows and Linux/Unix are
-	given in the Xerces-c package.
 
-Automatic packaging under Windows requires the command line version of winzip,
-to be downloaded from www.winzip.com. Make sure, it is in your path.
+2. HomeFinder
+-------------
+The HomeFinder is an optional Feature which can be used to find running homes. If a HomeFinder is available it is used. If a HomeFinder is not available a warninf message would be displayed but the creation of homes continues. The Homefinder is started by calling
+
+  homefinder
+
+
+3. ComponentInstallation
+------------------------
+The ComponentInstallation server is an implementation of the ComponentInstallation interface defined by CCM. This server is used to install the binaries of the components. This server is mandatory. To start this server you need to call
+
+  ci
+
+4. ComponentServerActivator
+---------------------------
+The ComponentServerActivator server is an implementation of the correspoding interface defined by CCM. This server is used to create new component server and to manage them. This server is mandatory. To start this server you need to call 
+
+  csa
+
+5. AssemblyFactory
+------------------
+This server implements the assembly factory and assembly interface defined be CCM. This server is mandatory if you like to use the automatic deployment features of CCM. You can also create component servers and containers by yourself. In this case you do not need this server. To start the server you need to call:
+
+  assf
+
+6. ComponentServer
+------------------
+The ComponentServer is started by the ComponentServerActivator.
+
+
+
+
 
 Deployment of components
 ========================
 
-The subdirectory Runtime/Deployment of the Qedo installation directory
+The subdirectory Deployment of the Qedo installation directory
 contains all deployment related stuff. The XML file DeployedComponents.xml
 contains information about all installed component implementations and is used
 to keep those information persistent. The subdirectory ComponentPackages
