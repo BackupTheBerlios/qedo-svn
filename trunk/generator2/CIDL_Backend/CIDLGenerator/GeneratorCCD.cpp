@@ -30,6 +30,39 @@ GeneratorCCD::generate(string target)
 }
 
 
+//
+// module
+//
+void
+GeneratorCCD::doModule(IR__::ModuleDef_ptr module)
+{
+	IR__::ContainedSeq_var contained_seq;
+	CORBA::ULong len;
+	CORBA::ULong i;
+
+	// contained modules
+	contained_seq = module->contents(CORBA__::dk_Module, true);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::ModuleDef_var act_module = IR__::ModuleDef::_narrow(((*contained_seq)[i]));
+		doModule(act_module);
+	}
+
+	// contained compositions
+	contained_seq = repository_->contents(CORBA__::dk_Composition, true);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		CIDL::CompositionDef_var act_composition = CIDL::CompositionDef::_narrow(((*contained_seq)[i]));
+		doComposition(act_composition);
+	}
+}
+
+
+//
+// composition
+//
 void
 GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 {
@@ -55,7 +88,7 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 
 	out << "<?xml version = '1.0' ?>\n";
 	out << "<!DOCTYPE corbacomponent PUBLIC \"-//OMG//DTD CORBA Component Descriptor\"";
-	out << "\"http://cif.sourceforge.net/corbacomponent.dtd\">\n\n";
+	out << " \"http://cif.sourceforge.net/corbacomponent.dtd\">\n\n";
 
 	out << "<corbacomponent>\n";
 	out.indent();
@@ -81,10 +114,10 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
     //</segment>
     
 	out << "<homefeatures name=\"" << composition->ccm_home()->name();
-	out << "\" repid=\"" << composition->ccm_home()->id() << "\"/>\n";
+	out << "\" repid=\"" << composition->ccm_home()->id() << "\">\n";
     out << "</homefeatures>\n";
     out << "<componentfeatures name=\"" << composition->ccm_component()->name();
-	out << "\" repid=\"" << composition->ccm_component()->id() << "\"/>\n";
+	out << "\" repid=\"" << composition->ccm_component()->id() << "\">\n";
     out.indent();
 	out << "<ports>\n";
     //out << "        <provides providesname="the_fork" repid="IDL:dinner/Fork:1.0" facettag="the_fork"/>

@@ -56,7 +56,8 @@ GeneratorBase::doGenerate(string target)
 			IR__::ModuleDef_var module = IR__::ModuleDef::_narrow(home->defined_in());
 			if(CORBA::is_nil(module))
 			{
-				target_scope_id_ = "";
+				std::cerr << "--- error - home " << target << " not defined in module " << std::endl;
+				return;
 			}
 			target_scope_id_ = module->id();
 			doModule(module);
