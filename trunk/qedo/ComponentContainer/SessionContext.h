@@ -42,7 +42,7 @@ namespace Qedo {
  * the session context
  */
 class CONTAINERDLL_API SessionContext : public virtual Components::SessionContext,
-										public virtual ExecutorContext
+										public virtual CCMContext
 {
 public:
 	/**

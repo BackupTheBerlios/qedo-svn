@@ -20,85 +20,54 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __CORBA_DEPENDS_IDL__
-#define __CORBA_DEPENDS_IDL__
-
-
-#ifdef MICO_CIDL_GEN 
-module CORBA {
-	typedef sequence<octet> Principal;
-};
-#endif
-
-#include <orb.idl>
-
-#ifdef TAO_ORB
-#include "PortableServer.pidl"
-#ifndef TAO_CIDL_GEN
-#include "IFR_Basic.pidl"
-#else
-#pragma prefix "omg.org"
-module CORBA {
-	interface IRObject {};
-};
-#endif
-#endif
-
-#ifdef ORBACUS_ORB
-#include "PortableServer.idl"
-#include "qedo_orbacus.idl"
-#endif
-
-#ifdef MICO_ORB
-// #include "ir_base.idl"
-#include "poa.idl"
-#include "qedo_mico.idl"
-#endif
-
-#ifdef OMNIORB_ORB
-#include "ir.idl"
-#include "poa.idl"
-#endif
-
-#ifdef OPENORB_ORB
-#include "PortableServer.idl"
-#endif
-
-#ifdef IIOPNET_ORB
-#pragma prefix "omg.org"
-module CORBA {
-    interface IRObject {};
-    typedef sequence<octet> OctetSeq;
-    typedef string RepositoryId;
-};
-pragma prefix ""
-module PortableServer {
-    typedef sequence<octet> ObjectId;
-};
-#endif
-
-#pragma prefix "omg.org"
-
-module CosPersistentState {
-
-  typedef string PTypeId;
-  typedef CORBA::OctetSeq Pid;
-
-  local interface CatalogBase {
-
-  };
-
-};
-
-
-#pragma prefix ""
 
 #ifndef _QEDO_NO_STREAMS
-// The BufferPtr native type
-module StreamComponents {
-native BufferPtr;
-};
-#endif
 
 
+#include "TCPTransportEndpointFactory.h"
+#include "TransportRegistry.h"
+#include "Output.h"
+#include "Valuetypes.h"
+
+#include <cstdlib>
+#include <cstring>
+
+static char rcsid[] UNUSED = "$Id: TCPTransportEndpointFactory.cpp,v 1.2 2003/10/17 09:11:41 stoinski Exp $";
+
+namespace Qedo {
+
+
+TCPTransportEndpointFactory::TCPTransportEndpointFactory()
+{
+	TransportRegistry::register_transport ("CCM_TCP", this);
+}
+
+
+TCPTransportEndpointFactory::~TCPTransportEndpointFactory()
+{
+	DEBUG_OUT ("TCPTransportEndpointFactory: Destructor called");
+}
+
+
+SourceTransportEndpoint* 
+TCPTransportEndpointFactory::create_source_tep()
+{
+	DEBUG_OUT ("TCPTransportEndpointFactory: create_source_tep() called");
+
+	return new TCPSourceTransportEndpoint();
+}
+
+
+SinkTransportEndpoint*
+TCPTransportEndpointFactory::create_sink_tep (SinkPort* sink_port, StreamDataDispatcher* dispatcher)
+{
+	DEBUG_OUT ("TCPTransportEndpointFactory: create_sink_tep() called");
+
+	return new TCPSinkTransportEndpoint (sink_port, dispatcher);
+}
+
+
+} // namespace Qedo
+
 #endif
+

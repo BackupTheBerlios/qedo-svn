@@ -20,85 +20,61 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __CORBA_DEPENDS_IDL__
-#define __CORBA_DEPENDS_IDL__
-
-
-#ifdef MICO_CIDL_GEN 
-module CORBA {
-	typedef sequence<octet> Principal;
-};
-#endif
-
-#include <orb.idl>
-
-#ifdef TAO_ORB
-#include "PortableServer.pidl"
-#ifndef TAO_CIDL_GEN
-#include "IFR_Basic.pidl"
-#else
-#pragma prefix "omg.org"
-module CORBA {
-	interface IRObject {};
-};
-#endif
-#endif
-
-#ifdef ORBACUS_ORB
-#include "PortableServer.idl"
-#include "qedo_orbacus.idl"
-#endif
-
-#ifdef MICO_ORB
-// #include "ir_base.idl"
-#include "poa.idl"
-#include "qedo_mico.idl"
-#endif
-
-#ifdef OMNIORB_ORB
-#include "ir.idl"
-#include "poa.idl"
-#endif
-
-#ifdef OPENORB_ORB
-#include "PortableServer.idl"
-#endif
-
-#ifdef IIOPNET_ORB
-#pragma prefix "omg.org"
-module CORBA {
-    interface IRObject {};
-    typedef sequence<octet> OctetSeq;
-    typedef string RepositoryId;
-};
-pragma prefix ""
-module PortableServer {
-    typedef sequence<octet> ObjectId;
-};
-#endif
-
-#pragma prefix "omg.org"
-
-module CosPersistentState {
-
-  typedef string PTypeId;
-  typedef CORBA::OctetSeq Pid;
-
-  local interface CatalogBase {
-
-  };
-
-};
-
-
-#pragma prefix ""
+#ifndef __STREAMING_BUFFER_H__
+#define __STREAMING_BUFFER_H__
 
 #ifndef _QEDO_NO_STREAMS
-// The BufferPtr native type
-module StreamComponents {
-native BufferPtr;
+
+#include <CORBA.h>
+#include <StreamComponents_skel.h>
+
+#include "RefCountBase.h"
+#include "Util.h"
+
+
+namespace Qedo {
+
+
+class CONTAINERDLL_API StreamingBuffer : public virtual StreamComponents::StreamingBuffer,
+										 public virtual RefCountLocalObject
+{
+private:
+	void* buffer_;
+	CORBA::ULong size_;
+	CORBA::ULong bytes_used_;
+	bool release_;
+
+public:
+	StreamingBuffer (CORBA::ULong);
+	StreamingBuffer (void*, CORBA::ULong, bool);
+	~StreamingBuffer();
+
+	//
+    // IDL:omg.org/StreamComponents/StreamingBuffer/get_buffer:1.0
+    //
+	StreamComponents::BufferPtr get_buffer();
+
+    //
+    // IDL:omg.org/StreamComponents/StreamingBuffer/get_size:1.0
+    //
+    CORBA::ULong get_size();
+
+    //
+    // IDL:omg.org/StreamComponents/StreamingBuffer/set_used:1.0
+    //
+    void set_used(CORBA::ULong);
+
+    //
+    // IDL:omg.org/StreamComponents/StreamingBuffer/get_used:1.0
+    //
+    CORBA::ULong get_used();
 };
-#endif
+
+
+} // namespace Qedo
 
 
 #endif
+
+#endif
+

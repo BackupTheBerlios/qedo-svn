@@ -154,6 +154,7 @@ AC_SUBST(OS)
 AC_CONFIG_FILES([Makefile
                  MakeVars
                  ComponentIDL/Makefile
+		 StreamComponentIDL/Makefile
                  ComponentContainer/Makefile
                  qedoutil/Makefile
                  ComponentInstaller/Makefile

@@ -20,85 +20,86 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __CORBA_DEPENDS_IDL__
-#define __CORBA_DEPENDS_IDL__
-
-
-#ifdef MICO_CIDL_GEN 
-module CORBA {
-	typedef sequence<octet> Principal;
-};
-#endif
-
-#include <orb.idl>
-
-#ifdef TAO_ORB
-#include "PortableServer.pidl"
-#ifndef TAO_CIDL_GEN
-#include "IFR_Basic.pidl"
-#else
-#pragma prefix "omg.org"
-module CORBA {
-	interface IRObject {};
-};
-#endif
-#endif
-
-#ifdef ORBACUS_ORB
-#include "PortableServer.idl"
-#include "qedo_orbacus.idl"
-#endif
-
-#ifdef MICO_ORB
-// #include "ir_base.idl"
-#include "poa.idl"
-#include "qedo_mico.idl"
-#endif
-
-#ifdef OMNIORB_ORB
-#include "ir.idl"
-#include "poa.idl"
-#endif
-
-#ifdef OPENORB_ORB
-#include "PortableServer.idl"
-#endif
-
-#ifdef IIOPNET_ORB
-#pragma prefix "omg.org"
-module CORBA {
-    interface IRObject {};
-    typedef sequence<octet> OctetSeq;
-    typedef string RepositoryId;
-};
-pragma prefix ""
-module PortableServer {
-    typedef sequence<octet> ObjectId;
-};
-#endif
-
-#pragma prefix "omg.org"
-
-module CosPersistentState {
-
-  typedef string PTypeId;
-  typedef CORBA::OctetSeq Pid;
-
-  local interface CatalogBase {
-
-  };
-
-};
-
-
-#pragma prefix ""
 
 #ifndef _QEDO_NO_STREAMS
-// The BufferPtr native type
-module StreamComponents {
-native BufferPtr;
-};
-#endif
 
 
+#include "StreamingBuffer.h"
+#include "Output.h"
+
+
+static char rcsid[] UNUSED = "$Id: StreamingBuffer.cpp,v 1.2 2003/10/17 09:11:41 stoinski Exp $";
+
+
+namespace Qedo {
+	
+	
+StreamingBuffer::StreamingBuffer (CORBA::ULong min_size)
+: size_ (min_size),
+  bytes_used_ (min_size),
+  release_ (true)
+{
+	buffer_ = malloc (min_size);
+
+	if (! buffer_)
+	{
+		NORMAL_ERR ("StreamingBuffer: Could not allocate memory");
+		size_ = 0;
+		assert (0);
+	}
+}
+
+
+StreamingBuffer::StreamingBuffer (void *data, CORBA::ULong data_size, bool release)
+: buffer_ (data),
+  size_ (data_size),
+  bytes_used_ (data_size),
+  release_ (release)
+{
+}
+
+
+StreamingBuffer::~StreamingBuffer()
+{
+	DEBUG_OUT ("StreamingBuffer: Destructor called");
+
+	if (buffer_)
+		free (buffer_);
+}
+
+
+StreamComponents::BufferPtr 
+StreamingBuffer::get_buffer()
+{
+	return buffer_;
+}
+
+
+CORBA::ULong 
+StreamingBuffer::get_size()
+{
+	return size_;
+}
+
+
+void 
+StreamingBuffer::set_used (CORBA::ULong bytes_used)
+{
+	if (bytes_used > size_)
+		DEBUG_OUT ("StreamingBuffer: set_used(): Warning: Supplied value greater than current size");
+
+	bytes_used_ = bytes_used > size_ ? size_ : bytes_used;
+}
+
+
+CORBA::ULong 
+StreamingBuffer::get_used()
+{
+	return bytes_used_;
+}
+
+
+} // namespace Qedo
+
 #endif
+

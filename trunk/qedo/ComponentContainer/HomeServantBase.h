@@ -43,8 +43,8 @@ namespace Qedo {
  */
 
 
-class ExecutorContext;
 class ComponentInstance;
+class CCMContext;
 class ContainerInterfaceImpl;
 class ServantRegistry;
 
@@ -146,7 +146,7 @@ protected:
 	 * \return The component instance.
 	 */
 	ComponentInstance& incarnate_component (Components::ExecutorLocator_ptr executor_locator, 
-											ExecutorContext* ccm_context);
+											CCMContext* ccm_context);
 	
 	/**
 	 * finalize the component incarnation

@@ -31,7 +31,7 @@
 #include <set>
 #endif
 
-static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.19 2003/10/08 09:34:54 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.20 2003/10/17 09:11:40 stoinski Exp $";
 
 
 namespace Qedo {
@@ -303,7 +303,9 @@ GlobalObjectManagement::report()
 // cleaner object for a ValueFactory
 // 
 ValueFactoryCleaner::ValueFactoryCleaner (class CORBA::ValueFactoryBase* factory, char* repid)
-: factory_ (factory), is_registered_(false), repid_(repid)
+: is_registered_(false), 
+  repid_(repid),
+  factory_ (factory)
 {
 	int dummy = 0;
     CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);

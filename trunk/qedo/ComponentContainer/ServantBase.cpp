@@ -25,7 +25,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.11 2003/10/05 18:31:57 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.12 2003/10/17 09:11:40 stoinski Exp $";
 
 namespace Qedo {
 
@@ -33,23 +33,50 @@ namespace Qedo {
 ServantBase::ServantBase()
 : executor_locator_ (Components::ExecutorLocator::_nil()),
   ccm_object_executor_ (0),
+#ifdef _QEDO_NO_STREAMS
+  stream_ccm_object_executor_ (0),
+#endif
   current_executor_ (CORBA::Object::_nil())
 {
 }
 
 
 ServantBase::ServantBase (const ServantBase& base)
+: executor_locator_ (Components::ExecutorLocator::_duplicate (base.executor_locator_.in())),
+  ccm_object_executor_ (base.ccm_object_executor_),
+#ifndef QEDO_NO_STREAMS
+  stream_ccm_object_executor_ (base.stream_ccm_object_executor_),
+#endif
+  current_executor_ (base.current_executor_)
 {
-	current_executor_ = base.current_executor_;
-	executor_locator_ = base.executor_locator_;
-	ccm_object_executor_ = base.ccm_object_executor_;
+        ccm_object_executor_->_add_ref();
+#ifndef _QEDO_NO_STREAMS
+        stream_ccm_object_executor_->_add_ref();
+#endif
 }
 
 
 ServantBase&
-ServantBase::operator= (const ServantBase&)
+ServantBase::operator= (const ServantBase& base)
 {
-	return *this;
+       current_executor_ = base.current_executor_;
+       executor_locator_ = Components::ExecutorLocator::_duplicate (base.executor_locator_.in());
+                                                                                                  
+        if (ccm_object_executor_)
+                ccm_object_executor_->_remove_ref();
+                                                                                                  
+        ccm_object_executor_ = base.ccm_object_executor_;
+        ccm_object_executor_->_add_ref();
+                                                                                                  
+#ifndef _QEDO_NO_STREAMS
+        if (stream_ccm_object_executor_)
+                stream_ccm_object_executor_->_remove_ref();
+                                                                                                  
+        stream_ccm_object_executor_ = base.stream_ccm_object_executor_;
+        stream_ccm_object_executor_->_add_ref();
+#endif
+                                                                                                  
+        return *this;
 }
 
 
@@ -66,6 +93,10 @@ ServantBase::~ServantBase()
 	}
 
 	ccm_object_executor_->_remove_ref();
+
+#ifndef _QEDO_NO_STREAMS
+        stream_ccm_object_executor_->_remove_ref();
+#endif
 }
 
 
@@ -82,6 +113,11 @@ ServantBase::set_instance (Qedo::ComponentInstance& instance)
 	executor_locator_ = Components::ExecutorLocator::_duplicate (instance.executor_locator_);
 	ccm_object_executor_ = instance.ccm_object_executor_;
 	ccm_object_executor_->_add_ref();
+
+#ifndef _QEDO_NO_STREAMS
+        stream_ccm_object_executor_ = instance.stream_ccm_object_executor_;
+        stream_ccm_object_executor_->_add_ref();
+#endif
 }
 
 

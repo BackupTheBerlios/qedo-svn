@@ -20,85 +20,56 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __CORBA_DEPENDS_IDL__
-#define __CORBA_DEPENDS_IDL__
-
-
-#ifdef MICO_CIDL_GEN 
-module CORBA {
-	typedef sequence<octet> Principal;
-};
-#endif
-
-#include <orb.idl>
-
-#ifdef TAO_ORB
-#include "PortableServer.pidl"
-#ifndef TAO_CIDL_GEN
-#include "IFR_Basic.pidl"
-#else
-#pragma prefix "omg.org"
-module CORBA {
-	interface IRObject {};
-};
-#endif
-#endif
-
-#ifdef ORBACUS_ORB
-#include "PortableServer.idl"
-#include "qedo_orbacus.idl"
-#endif
-
-#ifdef MICO_ORB
-// #include "ir_base.idl"
-#include "poa.idl"
-#include "qedo_mico.idl"
-#endif
-
-#ifdef OMNIORB_ORB
-#include "ir.idl"
-#include "poa.idl"
-#endif
-
-#ifdef OPENORB_ORB
-#include "PortableServer.idl"
-#endif
-
-#ifdef IIOPNET_ORB
-#pragma prefix "omg.org"
-module CORBA {
-    interface IRObject {};
-    typedef sequence<octet> OctetSeq;
-    typedef string RepositoryId;
-};
-pragma prefix ""
-module PortableServer {
-    typedef sequence<octet> ObjectId;
-};
-#endif
-
-#pragma prefix "omg.org"
-
-module CosPersistentState {
-
-  typedef string PTypeId;
-  typedef CORBA::OctetSeq Pid;
-
-  local interface CatalogBase {
-
-  };
-
-};
-
-
-#pragma prefix ""
+#ifndef __SINK_STREAM_PORT_SERVANT_H__
+#define __SINK_STREAM_PORT_SERVANT_H__
 
 #ifndef _QEDO_NO_STREAMS
-// The BufferPtr native type
-module StreamComponents {
-native BufferPtr;
+
+
+#include <CORBA.h>
+#include <StreamComponents_skel.h>
+
+#include "StreamCCMObjectExecutor.h"
+#include "ServantBase.h"
+#include "Util.h"
+
+
+namespace Qedo {
+
+
+class CONTAINERDLL_API SinkStreamPortServant : public virtual POA_StreamComponents::SinkStreamPort,
+											   public virtual Qedo::ServantBase
+{
+private:
+	std::string port_name_;
+
+protected:
+
+public:
+	SinkStreamPortServant (const char*);
+	virtual ~SinkStreamPortServant();
+
+	//
+    // IDL:omg.org/StreamComponents/SinkStreamPort/check_stream_type:1.0
+    //
+    void check_streamtype(const CORBA::RepositoryIdSeq&)
+        throw(StreamComponents::UnsupportedStreamtype,
+              CORBA::SystemException);
+
+    //
+    // IDL:omg.org/StreamComponents/SinkStreamPort/consider_transport:1.0
+    //
+    void consider_transport(StreamComponents::TransportSpec&)
+        throw(StreamComponents::AlreadyBound,
+			  StreamComponents::TransportFailure,
+              CORBA::SystemException);
 };
-#endif
+
+
+} // namespace Qedo
 
 
 #endif
+
+#endif
+

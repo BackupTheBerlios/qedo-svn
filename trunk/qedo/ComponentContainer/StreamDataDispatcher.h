@@ -20,85 +20,40 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __CORBA_DEPENDS_IDL__
-#define __CORBA_DEPENDS_IDL__
-
-
-#ifdef MICO_CIDL_GEN 
-module CORBA {
-	typedef sequence<octet> Principal;
-};
-#endif
-
-#include <orb.idl>
-
-#ifdef TAO_ORB
-#include "PortableServer.pidl"
-#ifndef TAO_CIDL_GEN
-#include "IFR_Basic.pidl"
-#else
-#pragma prefix "omg.org"
-module CORBA {
-	interface IRObject {};
-};
-#endif
-#endif
-
-#ifdef ORBACUS_ORB
-#include "PortableServer.idl"
-#include "qedo_orbacus.idl"
-#endif
-
-#ifdef MICO_ORB
-// #include "ir_base.idl"
-#include "poa.idl"
-#include "qedo_mico.idl"
-#endif
-
-#ifdef OMNIORB_ORB
-#include "ir.idl"
-#include "poa.idl"
-#endif
-
-#ifdef OPENORB_ORB
-#include "PortableServer.idl"
-#endif
-
-#ifdef IIOPNET_ORB
-#pragma prefix "omg.org"
-module CORBA {
-    interface IRObject {};
-    typedef sequence<octet> OctetSeq;
-    typedef string RepositoryId;
-};
-pragma prefix ""
-module PortableServer {
-    typedef sequence<octet> ObjectId;
-};
-#endif
-
-#pragma prefix "omg.org"
-
-module CosPersistentState {
-
-  typedef string PTypeId;
-  typedef CORBA::OctetSeq Pid;
-
-  local interface CatalogBase {
-
-  };
-
-};
-
-
-#pragma prefix ""
+#ifndef __STREAM_DATA_DISPATCHER_H__
+#define __STREAM_DATA_DISPATCHER_H__
 
 #ifndef _QEDO_NO_STREAMS
-// The BufferPtr native type
-module StreamComponents {
-native BufferPtr;
+
+
+#include <CORBA.h>
+#include <StreamComponents.h>
+
+#include "RefCountBase.h"
+#include "Output.h"
+#include "Util.h"
+
+
+namespace Qedo {
+
+
+class CONTAINERDLL_API StreamDataDispatcher : public virtual Qedo::RefCountBase
+{
+public:
+	StreamDataDispatcher();
+	virtual ~StreamDataDispatcher();
+
+	// Hooks for the type-specific implementations
+	virtual void begin_stream (const char*, const Components::ConfigValues&) = 0;
+	virtual void end_stream() = 0;
+	virtual void failed_stream() = 0;
+	virtual void receive_stream_data (StreamComponents::StreamingBuffer_ptr) = 0;
 };
-#endif
 
 
+} // namespace Qedo
+
 #endif
+
+#endif
+

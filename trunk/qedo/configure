@@ -6508,7 +6508,11 @@ done
 OS=`uname`
 
 
+<<<<<<< configure
+                                                                                                                                  ac_config_files="$ac_config_files Makefile MakeVars ComponentIDL/Makefile StreamComponentIDL/Makefile ComponentContainer/Makefile qedoutil/Makefile ComponentInstaller/Makefile ComponentServer/Makefile ComponentServerActivator/Makefile AssemblyFactory/Makefile HomeFinder/Makefile DeploymentClient/Makefile etc/Makefile etc/MakeComponentVars"
+=======
                                                                                                                                             ac_config_files="$ac_config_files Makefile MakeVars ComponentIDL/Makefile ComponentContainer/Makefile qedoutil/Makefile ComponentInstaller/Makefile ComponentServer/Makefile ComponentServer/qcs.sh ComponentServerActivator/Makefile AssemblyFactory/Makefile HomeFinder/Makefile DeploymentClient/Makefile etc/Makefile etc/MakeComponentVars"
+>>>>>>> 1.18
 
 
 cat >confcache <<\_ACEOF
@@ -7038,8 +7042,8 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "MakeVars" ) CONFIG_FILES="$CONFIG_FILES MakeVars" ;;
   "ComponentIDL/Makefile" ) CONFIG_FILES="$CONFIG_FILES ComponentIDL/Makefile" ;;
+  "StreamComponentIDL/Makefile" ) CONFIG_FILES="$CONFIG_FILES StreamComponentIDL/Makefile" ;;
   "ComponentContainer/Makefile" ) CONFIG_FILES="$CONFIG_FILES ComponentContainer/Makefile" ;;
-  "qedoutil/Makefile" ) CONFIG_FILES="$CONFIG_FILES qedoutil/Makefile" ;;
   "ComponentInstaller/Makefile" ) CONFIG_FILES="$CONFIG_FILES ComponentInstaller/Makefile" ;;
   "ComponentServer/Makefile" ) CONFIG_FILES="$CONFIG_FILES ComponentServer/Makefile" ;;
   "ComponentServer/qcs.sh" ) CONFIG_FILES="$CONFIG_FILES ComponentServer/qcs.sh" ;;

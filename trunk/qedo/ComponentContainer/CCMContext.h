@@ -27,6 +27,9 @@
 #include <CORBA.h>
 #include <Components.h>
 #include "CCMObjectExecutor.h"
+#ifndef _QEDO_NO_STREAMS
+#include "StreamCCMObjectExecutor.h"
+#endif
 #include "RefCountBase.h"
 #include "Util.h"
 #include "ContainerInterfaceImpl.h"
@@ -122,6 +125,11 @@ protected:
 	/** the object executor for the component */
 	CCMObjectExecutor*						ccm_object_executor_;
 
+#ifndef _QEDO_NO_STREAMS
+        /** the object executor for the component */
+        StreamCCMObjectExecutor*                stream_ccm_object_executor_;
+#endif
+
 	/** the container interface where the components home is installed in */
 	ContainerInterfaceImpl*					container_;
 
@@ -137,7 +145,21 @@ public:
 	/**
 	 * destructor
 	 */
-	~CCMContext();
+	virtual ~CCMContext();
+
+        /**
+         * sets the ccm object executor
+         * \param ccm_object_exec The ccm object executor
+         */
+        void ccm_object_executor (CCMObjectExecutor*);
+                                                                                                  
+#ifndef _QEDO_NO_STREAMS
+        /**
+         * sets the stream ccm object executor
+         * \param stream_ccm_object_exec The stream ccm object executor
+         */
+        void stream_ccm_object_executor (StreamCCMObjectExecutor*);
+#endif
 
 	/**
 	 * sets the container where the home of the component is installed in
@@ -159,6 +181,33 @@ public:
 	 */
 	void queue_event(const SubscribedConsumerVector&, Components::EventBase*, CORBA::Long);
 
+#ifndef _QEDO_NO_STREAMS
+        /**
+         * begins a stream
+         * \param port_name The name of the source port that wants to start producing data
+         * \param repos_id The repository id of the atomic streamtype that the source port is going to produce
+         * \param meta_data The meta_data for the stream
+         */
+        void begin_stream (const char*, const char*, const ::Components::ConfigValues&)
+                throw (StreamComponents::UnsupportedStreamtype, StreamComponents::DuplicateStream);
+                                                                                                  
+         /**
+          * ends a stream
+          * \param port_name The name of the source port that wants to end producing stream data
+          */
+        void end_stream (const char*)
+                throw (StreamComponents::NoStream);
+                                                                                                  
+        /**
+         * transmits stream data
+         * \param port_name The name of the source port that streams data
+         * \param data A pointer to the data to be transmitted
+         * \param length The length of the memory chunk pointed to by parameter data
+         */
+        void send_buffer (const char*, StreamComponents::StreamingBuffer_ptr)
+                throw (StreamComponents::NoStream);
+#endif
+
 	/**
 	 * implements IDL:omg.org/Components/CCMContext/get_caller_principal:1.0
 	 * (not implemented yet)
@@ -200,107 +249,49 @@ public:
     void set_rollback_only()
 		throw (Components::IllegalState);
 
+#ifndef _QEDO_NO_STREAMS
+        /**
+         * implements IDL:omg.org/Components/CCMContext/get_streaming_buffer:1.0
+         */
+        StreamComponents::StreamingBuffer_ptr get_streaming_buffer (CORBA::ULong)
+                throw (StreamComponents::StreamingBuffer::IllegalSize,
+                       StreamComponents::StreamingBuffer::OutOfMemory);
+#endif
 	/**
 	 * implements IDL:omg.org/Components/CCMContext/resolve_service_reference:1.0
-     * Qedo CCM extension to allow generic handling of service integration
+	 * Qedo CCM extension to allow generic handling of service integration
 	 */
     CORBA::Object_ptr resolve_service_reference(const char*)
 		throw (Components::CCMException);
-};
-
-
-/**
- * context for an executor
- */
-class CONTAINERDLL_API ExecutorContext : public virtual CCMContext
-{
-public:
-	/**
-	 * constructor
-	 */
-	ExecutorContext();
-
-	/**
-	 * destructor
-	 */
-	~ExecutorContext();
-
-	/**
-	 * sets the object executor
-	 * \param ccm_object_exec The object executor.
-	 */
-	void ccm_object_executor (CCMObjectExecutor*);
 };
 
 
 /**
  * context for an home executor
  */
-class CONTAINERDLL_API HomeExecutorContext : public virtual Components::CCMContext,
-											 public virtual RefCountLocalObject,
-											 public virtual ThreadSupport
+class CONTAINERDLL_API HomeExecutorContext : public virtual Components::HomeContext
+                                           , public virtual RefCountLocalObject
 {
 private:
-	Components::CCMHome_var my_home_ref_;
-
+        Components::CCMHome_var my_home_ref_;
+                                                                                                  
 public:
-	/**
-	 * constructor
-	 */
-	HomeExecutorContext (Components::CCMHome_ptr);
-
-	/**
-	 * destructor
-	 */
-	~HomeExecutorContext();
-
-	/**
-	 * implements IDL:omg.org/Components/CCMContext/get_caller_principal:1.0
-	 * (not implemented yet)
-	 * \return The caller principal.
-	 */
-	Components::Principal get_caller_principal();
-
-	/**
-	 * implements IDL:omg.org/Components/CCMContext/get_CCM_home:1.0
-	 * provide the home of the component
-	 * \return The object reference of the component home. 
-	 */
-	Components::CCMHome_ptr get_CCM_home();
-
-	/**
-	 * implements IDL:omg.org/Components/CCMContext/get_rollback_only:1.0
-	 * (not implemented yet)
-	 */
-    CORBA::Boolean get_rollback_only()
-		throw (Components::IllegalState);
-
-	/**
-	 * implements IDL:omg.org/Components/CCMContext/get_user_transaction:1.0
-	 * (not implemented yet)
-	 */
-    Components::Transaction::UserTransaction_ptr get_user_transaction()
-		throw (Components::IllegalState);
-
-	/**
-	 * implements IDL:omg.org/Components/CCMContext/is_caller_in_role:1.0
-	 * (not implemented yet)
-	 */
-    CORBA::Boolean is_caller_in_role (const char*);
-
-	/**
-	 * implements IDL:omg.org/Components/CCMContext/set_rollback_only:1.0
-	 * (not implemented yet)
-	 */
-    void set_rollback_only()
-		throw (Components::IllegalState);
-
-	/**
-	 * implements IDL:omg.org/Components/CCMContext/resolve_service_reference:1.0
-     * Qedo CCM extension to allow generic handling of service integration
-	 */
-    CORBA::Object_ptr resolve_service_reference(const char*)
-		throw (Components::CCMException);
+        /**
+         * constructor
+         */
+        HomeExecutorContext (Components::CCMHome_ptr);
+                                                                                                  
+        /**
+         * destructor
+         */
+        ~HomeExecutorContext();
+                                                                                                  
+        /**
+         * implements IDL:omg.org/Components/CCMContext/get_CCM_home:1.0
+         * provide the home of the component
+         * \return The object reference of the component home.
+         */
+        Components::CCMHome_ptr get_CCM_home();
 };
 
 

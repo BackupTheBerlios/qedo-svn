@@ -58,6 +58,10 @@ protected:
 	Components::ExecutorLocator_var		executor_locator_;
 	/** the generic ccm object executor for the component instance */
 	CCMObjectExecutor*					ccm_object_executor_;
+#ifndef _QEDO_NO_STREAMS
+        /** the generic stream ccm object executor for the component instance */
+        StreamCCMObjectExecutor*                        stream_ccm_object_executor_;
+#endif
 	/** the current executor*/
 	CORBA::Object_ptr					current_executor_;
 

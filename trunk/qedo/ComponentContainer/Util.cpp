@@ -28,7 +28,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: Util.cpp,v 1.2 2003/09/30 16:36:49 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Util.cpp,v 1.3 2003/10/17 09:11:41 stoinski Exp $";
 
 
 namespace Qedo {
@@ -84,8 +84,9 @@ load_shared_library (const char* name, const char* dir)
 	char cwd[1024];
 	const char *b=dir;
 	char *b1=0;
+	const char *local_name=0;
 
-	if (!b)
+	if (!b || !strcmp (b, ""))
 	{
 		b = strrchr(name,'/');
 		if(!b) changed_cwd=false;
@@ -110,10 +111,17 @@ load_shared_library (const char* name, const char* dir)
 		{
 			perror("chdir");
 		}
+		
+		local_name = strrchr(name,'/');
+		if(local_name) local_name++;
+	}
+	else
+	{
+		local_name = name;
 	}
 
 	
-	handle_lib = dlopen( name ,RTLD_GLOBAL|RTLD_LAZY);
+	handle_lib = dlopen( local_name ,RTLD_GLOBAL|RTLD_LAZY);
 
 	if (!handle_lib)
 	{

@@ -29,6 +29,28 @@
 #pragma prefix "omg.org"
 
 
+#ifndef _QEDO_NO_STREAMS
+module StreamComponents {
+
+        local interface StreamingBuffer
+        {
+                exception OutOfRange {};
+                exception IllegalSize {};
+                exception OutOfMemory {};
+                                                                                
+                BufferPtr get_buffer();
+                                                                                
+                unsigned long get_size();
+                                                                                
+                void set_used (in unsigned long bytes_used)
+                        raises (OutOfRange);
+                                                                                
+                unsigned long get_used();
+        };
+};
+#endif
+
+
 module Components {
 	
 	typedef string FeatureName;
@@ -326,7 +348,7 @@ module Components {
 		/** extension */
 	native Function;
 	native FunctionData;
-
+	
 	local interface Thread {
 		void stop();
 		void join();
@@ -363,6 +385,11 @@ module Components {
 			raises(CCMException);
 		Mutex create_mutex()
 			raises(CCMException);
+#ifndef _QEDO_NO_STREAMS
+                StreamComponents::StreamingBuffer get_streaming_buffer (in unsigned long min_size)
+                        raises (StreamComponents::StreamingBuffer::IllegalSize,
+                        StreamComponents::StreamingBuffer::OutOfMemory);
+#endif
 		Cond create_cond()
 			raises(CCMException);
 	};
@@ -706,30 +733,15 @@ module Components {
 		};
 	}; // end of module deployment
 
-	module QedoStreams {
-		interface StreamConnection {};
-
-		interface H323Streamconnection : StreamConnection {
-			string get_id();
-		};
-	};
-
-	/*
-	local interface ExecutorContext : CCMContext
-	{
-		Object get_CCM_object()
-			raises (IllegalState);
-		PrimaryKeyBase get_primary_key ()
-			raises (IllegalState);
-		void req_passivate ()
-			raises (PolicyMismatch);
-		CatalogBase get_persistence (in _TypeId catalog_type_id)
-			raises (PersistenceNotAvailable);
-	};*/
+        // @@@ This is a Qedo extension
+        local interface HomeContext
+        {
+                CCMHome get_CCM_home();
+        };
 
 	local interface HomeExecutorBase
 	{
-		void set_context (in CCMContext ctx)
+		void set_context (in HomeContext ctx)
 			raises (CCMException);
 	};
 

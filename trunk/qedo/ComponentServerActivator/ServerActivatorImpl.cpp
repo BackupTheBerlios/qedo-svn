@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.26 2003/10/15 11:17:21 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.27 2003/10/17 09:11:41 stoinski Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -49,8 +49,8 @@ ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode, b
 : debug_mode_ (debug_mode),
   enable_qos_ (qos_mode),
   enable_terminal_ (terminal_enabled),
-  orb_ (CORBA::ORB::_duplicate (orb)),
-  component_server_activation_ ("QEDO_ACTIVATOR_SIGNAL")
+  component_server_activation_ ("QEDO_ACTIVATOR_SIGNAL"),
+  orb_ (CORBA::ORB::_duplicate (orb))
 {
 }
 

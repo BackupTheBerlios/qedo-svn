@@ -24,11 +24,14 @@
 #include "Synchronisation.h"
 #include "ORBInitializerImpl.h"
 #include "Output.h"
+#ifndef _QEDO_NO_STREAMS
+#include "TCPTransportEndpointFactory.h"
+#endif
 #include <cstring>
 #include <string>
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.18 2003/10/09 16:00:12 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.19 2003/10/17 09:11:41 stoinski Exp $";
 
 
 /**
@@ -129,7 +132,37 @@ main (int argc, char** argv)
 		exit (1);
 	}
 
+#ifndef _QEDO_NO_STREAMS
+        // Register the transport factories
+        Qedo::TCPTransportEndpointFactory* the_factory = new Qedo::TCPTransportEndpointFactory();
+        the_factory->_remove_ref();
+                                                                                                                          
+#ifdef _WIN32
+        // Initialize the Windows Socket Environment
+        WSADATA winsock_data;
+        if (WSAStartup( 0x0102 /*Version 1.2*/, &winsock_data) != 0)
+        {
+                NORMAL_ERR ("ComponentServer: Cannot initialize Windows Socket Environment");
+                orb->destroy();
+                exit (1);
+        }
+#endif
+#endif
+
 	orb->run();
+
+#ifndef _QEDO_NO_STREAMS
+        // Clear transport registry
+        Qedo::TransportRegistry::clear_registry();
+                                                                                                                          
+#ifdef _WIN32
+        // Clear Windows Socket Environment
+        if (WSACleanup() != 0)
+        {
+                NORMAL_ERR ("ComponentServer: Cannot clean up Windows Socket Environment");
+        }
+#endif
+#endif
 
 	orb->destroy();
 

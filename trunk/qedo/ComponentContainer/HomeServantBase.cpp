@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.23 2003/09/29 14:25:41 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.24 2003/10/17 09:11:40 stoinski Exp $";
 
 
 namespace Qedo {
@@ -89,7 +89,7 @@ CORBA::Object_ptr
 HomeServantBase::create_object_reference (const CORBA::OctetSeq* qedo_key, const char* rep_id)
 {
 	CORBA::String_var instance_info = CORBA::string_alloc (20 + 1);
-	sprintf (instance_info, "%d", ++instance_counter_);
+	sprintf (instance_info, "%ld", ++instance_counter_);
 
 	PortableServer::ObjectId_var object_id = Qedo::create_object_id (qedo_key, instance_info);
 
@@ -121,7 +121,7 @@ HomeServantBase::reference_to_oid (const CORBA::Object_ptr obj)
 
 
 ComponentInstance& 
-HomeServantBase::incarnate_component (Components::ExecutorLocator_ptr executor_locator, ExecutorContext* ccm_context)
+HomeServantBase::incarnate_component (Components::ExecutorLocator_ptr executor_locator, CCMContext* ccm_context)
 {
 	ccm_context->container (this->container_);
 
@@ -196,6 +196,11 @@ HomeServantBase::remove_component_with_oid (const PortableServer::ObjectId& obje
 	// decide, what additional things to do
 	this->before_remove_component ((*components_iter).executor_locator_);
 
+#ifndef _QEDO_NO_STREAMS
+       // Break up cyclic dependencies
+        (*components_iter).prepare_remove();
+#endif
+
 	component_instances_.erase (components_iter);
 
 	// Now look in the static servants list and in the servant factories list to remove
@@ -233,7 +238,7 @@ throw (Components::Deployment::InstallationFailure)
 	static CORBA::ULong poa_name = 0;
 	char buffer[17];
 
-	sprintf (buffer, "Qedo_POA_%d", ++poa_name);
+	sprintf (buffer, "Qedo_POA_%ld", ++poa_name);
 	
 	try
 	{

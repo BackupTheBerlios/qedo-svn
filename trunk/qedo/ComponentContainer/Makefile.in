@@ -19,18 +19,14 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 CXX = @CXX@
-INCLUDES+=-I. \
-          -I../ComponentIDL \
-			 -I../ComponentServer \
-			 $(NAMING_INCLUDES) \
-			 @CPPFLAGS@
+INCLUDES+=-I. -I../ComponentIDL -I../StreamComponentIDL -I../ComponentServer $(NAMING_INCLUDES) @CPPFLAGS@ 
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS=@LIBS@
 
 @SET_MAKE@
 
-LIBS += -L../ComponentIDL -lComponentIDL \
+LIBS += -L../ComponentIDL -L../StreamComponentIDL -lComponentIDL -lStreamComponentIDL \
 		  $(NAMING_LIBS) \
         -luuid
 
@@ -59,6 +55,19 @@ SOURCES = Key.cpp \
 		Synchronisation.cpp \
 		Valuetypes.cpp \
 		CCMHomeServant.cpp \
+		PrimaryStreamServant.cpp \
+		SinkPort.cpp \
+		SinkStreamPortServant.cpp \
+		SourcePort.cpp \
+		StreamCCMObjectExecutor.cpp \
+		StreamDataDispatcher.cpp \
+		StreamingBuffer.cpp \
+		StreamingValuetypes.cpp \
+		TCPSinkTransportEndpoint.cpp \
+		TCPSourceTransportEndpoint.cpp \
+		TCPTransportEndpointFactory.cpp \
+		TransportEndpoint.cpp \
+		TransportRegistry.cpp \
 		ExtensionHomeServant.cpp \
 		ExtensionContext.cpp \
 		InternalConfiguration.cpp \

@@ -39,11 +39,15 @@
 #include <sys/wait.h>   /* header for waitpid() and various macros */
 #endif
 
+#ifndef _WIN32
+#include <unistd.h>
+#endif
+
 #include <signal.h>
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.14 2003/10/09 16:00:12 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.15 2003/10/17 09:11:41 stoinski Exp $";
 
 /**
  * addtogroup ServerActivator

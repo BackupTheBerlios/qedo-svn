@@ -20,6 +20,7 @@
 
 CXX = @CXX@
 INCLUDES+=-I. -I../ComponentIDL \
+	  -I../StreamComponentIDL \
           -I../ComponentContainer \
 			 $(NAMING_INCLUDES)
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
@@ -30,6 +31,7 @@ CC=$(CXX)
 @SET_MAKE@
 
 LIBS += -L../ComponentIDL -lComponentIDL\
+	-L../StreamComponentIDL -lStreamComponentIDL \
            -L../ComponentContainer -lComponentContainer \
 			  $(NAMING_LIBS)
 

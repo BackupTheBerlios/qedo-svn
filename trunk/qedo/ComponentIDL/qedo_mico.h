@@ -10,4 +10,9 @@ namespace Components {
 	typedef void * MICO_Native_Components_FunctionData;
 };
 
+namespace StreamComponents {
+
+	typedef void  * MICO_Native_StreamComponents_BufferPtr;
+};
+
 #endif // __QEDO_MICO_H__
