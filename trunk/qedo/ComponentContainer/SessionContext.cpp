@@ -3,7 +3,7 @@
 /*                                                                         */
 /* http://qedo.berlios.de/                                                 */
 /*                                                                         */
-/* Copyright (C) 2002 by the Qedo Team                                     */
+/* Copyright (C) 2002-2003 by the Qedo Team                                */
 /*                                                                         */
 /* This library is free software; you can redistribute it and/or           */
 /* modify it under the terms of the GNU Lesser General Public              */
@@ -23,11 +23,11 @@
 #include "SessionContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: SessionContext.cpp,v 1.7 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: SessionContext.cpp,v 1.8 2003/11/03 15:43:00 tom Exp $";
 
 
 namespace Qedo {
-	
+
 
 SessionContext::SessionContext()
 {
@@ -40,7 +40,7 @@ SessionContext::~SessionContext()
 }
 
 
-CORBA::Object_ptr 
+CORBA::Object_ptr
 SessionContext::get_CCM_object()
 {
 	return ccm_object_executor_->get_component();
