@@ -26,9 +26,11 @@
 #include "StreamingBuffer.h"
 #endif
 #include "InternalConfiguration.h"
+#ifndef _QEDO_NO_QOS
+#include "ComponentServerimpl.h"
+#endif
 
-
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.21 2003/10/30 17:24:13 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.22 2004/02/16 07:34:04 tom Exp $";
 
 
 namespace Qedo {
@@ -245,6 +247,31 @@ ThreadSupport::create_cond()
 {
 	Cond_impl* cond = new Cond_impl();
 	return cond;
+}
+
+Components::Thread_ptr 
+CCMContext::start_thread( Components::Function func, Components::FunctionData data )
+{
+	Thread_impl* thread ;
+#ifndef _QEDO_NO_QOS
+	int dummy = 0;
+    CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+	CORBA::Object_var obj = orb->resolve_initial_references ("PICurrent");
+	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
+	CORBA::Any* slot_content = 0;
+	slot_content = piCurrent->get_slot(this->ccm_object_executor_->home_servant_->container_->component_server_->slot_id());
+	if (slot_content)
+	{
+		thread = new Thread_impl(qedo_startDetachedThread(func, data, ccm_object_executor_->home_servant_->container_->component_server_->slot_id(), slot_content));
+	} else
+	{
+		thread = new Thread_impl(qedo_startDetachedThread(func, data));
+	}
+#else
+	Thread_impl* thread = new Thread_impl(qedo_startDetachedThread(func, data));
+#endif
+	return thread;
+
 }
 
 void 

@@ -96,7 +96,7 @@ class CONTAINERDLL_API ThreadSupport : public virtual Components::CCMContext
 	 * implements IDL:omg.org/Components/CCMContext/start_thread:1.0
 	 */
 
-   Components::Thread_ptr start_thread( Components::Function func, Components::FunctionData data );
+   virtual Components::Thread_ptr start_thread( Components::Function func, Components::FunctionData data );
 
 	/**
 	 * implements IDL:omg.org/Components/CCMContext/create_mutex:1.0
@@ -155,6 +155,8 @@ public:
          * \param ccm_object_exec The ccm object executor
          */
         void ccm_object_executor (CCMObjectExecutor*);
+
+	virtual Components::Thread_ptr start_thread( Components::Function func, Components::FunctionData data );
                                                                                                   
 #ifndef _QEDO_NO_STREAMS
         /**
