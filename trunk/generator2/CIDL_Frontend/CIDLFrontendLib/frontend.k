@@ -85,7 +85,11 @@ frontend_feed (
   REPOSITORYOBJ repository )
 {
   int i;
+#ifdef WIN32
   std::string command = "CL -E -C ";
+#else
+  std::string command = "cpp -E ";
+#endif
   std::string filename;
 
   g_orb = CORBA::ORB_init ( argc, argv );
