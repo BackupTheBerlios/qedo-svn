@@ -50,7 +50,7 @@ namespace Qedo {
 
 
 /**
- * @addtogroup ComponentContainer
+ * @addtogroup Utilities
  * @{
  */
 
@@ -60,7 +60,7 @@ class QedoLock;
 struct MutexDelegate;
 
 /**
- * a mutex for Qedo
+ * This is a mutex implementation based on pthread mutex or  WIN32 mutex.
  */
 class QEDOUTIL_API QedoMutex 
 {
@@ -71,7 +71,9 @@ class QEDOUTIL_API QedoMutex
 
 private:
 
-	/** the mutex */
+	/**
+	 * implementation detail data
+	 */
 	struct MutexDelegate* delegate_;
 
 public:
@@ -86,19 +88,19 @@ public:
 	~QedoMutex();
 
 	/**
-	 * lock an object
+	 * lock the mutex
 	 */
 	void lock_object();
 
 	/**
-	 * unlock an object
+	 * unlock the mutex
 	 */
 	void unlock_object();
 };
 
 
 /**
- * a lock for Qedo
+ * This is a auto lock implementation based on pthread mutex or WIN32 mutex.
  */
 class QEDOUTIL_API QedoLock
 {
@@ -134,13 +136,15 @@ public:
 
 struct CondDelegate;
 /**
- * bla
+ * This is a conditional variable implementation based on pthread conditional or WIN32 events.
  */
 class QEDOUTIL_API QedoCond
 {
 
 private:
-	/// bla
+	/**
+	 * implementation detail data
+	 */
 	struct CondDelegate* delegate_;
 
 public:
@@ -151,8 +155,9 @@ public:
 
 	/**
 	 * constructor
+	 * \param name is a name for the conditional varaibale
 	 */
-	QedoCond (char*);
+	QedoCond (char* name);
 
 	/**
 	 * destructor
@@ -160,24 +165,30 @@ public:
 	~QedoCond();
 
 	/**
-	 * wait
+	 * wait for a signal on the conditional variable
+	 * \param m the mutex associated to this variable
 	 */
-	void wait (const QedoMutex&);
+	void wait (const QedoMutex& m);
 
 	/**
-	 * wait
+	 * wait for a signal on the conditional variable
+	 * \param m the mutex associated to this variable
 	 */
-	void wait (const QedoMutex*);
+	void wait (const QedoMutex* m);
 
 	/**
-	 * wait
+	 * wait for a signal on the conditional variable or return after timeout
+	 * \param m the mutex associated to this variable
+	 * \param timeout amount of time to wait in miliseconds
 	 */
-	bool wait_timed (const QedoMutex&, unsigned long );
+	bool wait_timed (const QedoMutex& m, unsigned long timeout);
 
 	/**
-	 * wait_timed
+	 * wait for a signal on the conditional variable or return after timeout
+	 * \param m the mutex associated to this variable
+	 * \param timeout amount of time to wait in miliseconds
 	 */
-	bool wait_timed (const QedoMutex*, unsigned long );
+	bool wait_timed (const QedoMutex* m, unsigned long timeout);
 
 	/**
 	 * unblocks at least one of the threads that are blocked on condition variable
@@ -196,18 +207,16 @@ public:
 struct ReadWriteMutexDelegate;
 
 /**
- * a read/write mutex for Qedo
+ *  This is a read/write mutex based ion normal mutex
  */
 class QEDOUTIL_API QedoReadWriteMutex : private QedoMutex
 {
-	/** makes use of this */
-	friend class QedoLock;
-	/** makes use of this */
-	friend class QedoCond;
 
 private:
 
-	/** the mutex */
+	/**
+	 * implementation detail data
+	 */
 	struct ReadWriteMutexDelegate* rwdelegate_;
 
 public:
@@ -222,33 +231,51 @@ public:
 	~QedoReadWriteMutex();
 
 	/**
-	 * read lock an object
+	 * get a read lock for the mutex
 	 */
 	void read_lock_object();
 
 	/**
-	 * write lock an object
+	 * get the exclusive write lock for the mutex
 	 */
 	void write_lock_object();
 
 	/**
-	 * unlock an object
+	 * unlock the mutex
 	 */
 	void unlock_object();
 };
 
 struct ThreadDelegate;
 
+/**
+ * This is a thread abstraction class implementation
+ */
 class QEDOUTIL_API QedoThread {
 	public:
+	/**
+	 * implementation detail data
+	 */
 	ThreadDelegate *delegate_;
+
+	/**
+	 * constructor
+	 */
 	QedoThread();
+
+	/**
+	 * stop and terminat the thread (deprecated)
+	 */
 	void stop();
+
+	/**
+	 * wait for termination of this thread
+	 */
 	void join();
 };
 
 /**
- * add comment!
+ * helper function for thread creation
  */
 #ifdef QEDO_WINTHREAD
 DWORD WINAPI startFunc(LPVOID p);
@@ -258,12 +285,15 @@ extern "C" void* startFunc(void* p);
 
 
 /**
- * add comment!
+ * helper function for thread creation
  */
 QEDOUTIL_API QedoThread*
 qedo_startDetachedThread(void* (*p)(void*), void* arg);
 
 
+/**
+ * parameter struct for thread creation
+ */
 struct T_Start 
 {
 	void* (*p)(void*);

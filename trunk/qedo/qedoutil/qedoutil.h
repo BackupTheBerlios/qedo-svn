@@ -62,7 +62,7 @@
 
 /**
  * @defgroup Utilities
- * bla
+ * collection of functions for plattform independen file and directory handling
  * @{
  */
 

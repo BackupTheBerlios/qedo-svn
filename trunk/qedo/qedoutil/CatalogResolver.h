@@ -35,6 +35,12 @@
 namespace Qedo {
 
 
+/**
+ * @addtogroup Utilities
+ * @{
+ */
+
+
 class CatalogResolver : public EntityResolver
 {
 public:
@@ -47,6 +53,8 @@ private:
     XMLCatalog mCatalog;
 };
 
+
+/** @} */
 
 }
 #endif

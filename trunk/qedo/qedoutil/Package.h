@@ -69,9 +69,11 @@ private:
 	std::string zipfilename;
 
 	/**
-	 * bla
+	 * change the modification time on a file
+	 * \param dosdate new modification time
+	 * \param rmu_date new modification time
 	 */
-    void change_file_date(const char*,uLong,tm_unz);
+    void change_file_date(const char* filename,uLong dosdate,tm_unz tmu_date);
 
 public:
 	
