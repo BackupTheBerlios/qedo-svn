@@ -41,7 +41,7 @@
 
 #include <signal.h>
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.11 2003/09/30 16:39:00 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.12 2003/10/01 17:10:54 boehme Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -151,6 +151,7 @@ main (int argc, char** argv)
 	// Check for debug mode and enable-qos mode
 	bool debug_mode = false;
 	bool qos_enabled = false;
+	bool terminal_enabled = false;
 
 	for (int i = 1; i < argc; i++)
 	{
@@ -162,11 +163,15 @@ main (int argc, char** argv)
 		{
 			qos_enabled = true;
 		}
+		if (! strcmp(argv[i], "--terminal"))
+		{
+			terminal_enabled = true;
+		}
 	}
 
 	orb = CORBA::ORB_init (argc, argv);
 
-	Qedo::ServerActivatorImpl* server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled);
+	Qedo::ServerActivatorImpl* server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled, terminal_enabled);
 
 	try
 	{

@@ -48,7 +48,18 @@ namespace Qedo {
  */
 
 
-typedef std::vector < Components::Deployment::ComponentServer_var > ComponentServerVector;
+class ComponentServerEntry
+{
+	public:
+		Components::Deployment::ComponentServer_var server;
+#ifdef _WIN32
+		int pid;
+#else
+		pid_t pid;
+#endif
+};
+
+typedef std::vector < ComponentServerEntry > ComponentServerVector;
 
 
 /**
@@ -63,6 +74,9 @@ private:
 
 	/** qos-enabled mode */
 	bool enable_qos_;
+
+	/** terminal-enabled mode */
+	bool enable_terminal_;
 
 	/** for syncronization */
 	QedoCond										component_server_activation_;
@@ -83,7 +97,7 @@ public:
 	/**
 	 * constructor
 	 */
-	ServerActivatorImpl (CORBA::ORB_ptr, bool, bool);
+	ServerActivatorImpl (CORBA::ORB_ptr, bool, bool, bool);
 
 	/**
 	 * destructor

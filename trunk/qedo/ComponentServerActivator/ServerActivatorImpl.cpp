@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.21 2003/09/29 14:21:30 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.22 2003/10/01 17:10:54 boehme Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -43,10 +43,11 @@ static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.21 2003/09/29 14:
 namespace Qedo {
 
 	
-ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode, bool qos_mode)
-: orb_ (CORBA::ORB::_duplicate (orb)),
-  debug_mode_ (debug_mode),
+ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode, bool qos_mode, bool terminal_enabled)
+: debug_mode_ (debug_mode),
   enable_qos_ (qos_mode),
+  enable_terminal_ (terminal_enabled),
+  orb_ (CORBA::ORB::_duplicate (orb)),
   component_server_activation_ ("QEDO_ACTIVATOR_SIGNAL")
 {
 }
@@ -249,7 +250,9 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 #else
 
-	switch (fork())
+	pid_t component_server_pid;
+
+	switch (component_server_pid = fork())
 	{
 		case 0 : /* child process */
 			if (debug_mode_)
@@ -296,7 +299,11 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 		throw Components::CreateFailure();
 	}
 
-	component_servers_.push_back(Components::Deployment::ComponentServer::_duplicate(last_created_component_server_));
+	ComponentServerEntry e;
+	e.server = Components::Deployment::ComponentServer::_duplicate(last_created_component_server_);
+	e.pid = component_server_pid;
+
+	component_servers_.push_back(e);
 
 	return Components::Deployment::ComponentServer::_duplicate(last_created_component_server_);
 }
@@ -313,7 +320,7 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 
 	for (cs_iter = component_servers_.begin(); cs_iter != component_servers_.end(); cs_iter++)
 	{
-		if ((*cs_iter)->_is_equivalent (server))
+		if ((*cs_iter).server->_is_equivalent (server))
 			break;
 	}
 
@@ -323,7 +330,7 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 		throw Components::RemoveFailure();
 	}
 
-	(*cs_iter)->remove();
+	(*cs_iter).server->remove();
 }
 
 
@@ -336,7 +343,7 @@ throw (CORBA::SystemException)
 
 	for (unsigned int i = 0; i < component_servers_.size(); i++)
 	{
-        servers.inout()[i] = component_servers_[i];
+        servers.inout()[i] = component_servers_[i].server;
 	}
 
 	return servers._retn();
@@ -367,7 +374,7 @@ throw(CORBA::SystemException)
 
 	for (cs_iter = component_servers_.begin(); cs_iter != component_servers_.end(); cs_iter++)
 	{
-		if ((*cs_iter)->_is_equivalent (server))
+		if ((*cs_iter).server->_is_equivalent (server))
 			break;
 	}
 
