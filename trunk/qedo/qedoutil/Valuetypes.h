@@ -31,23 +31,27 @@
 namespace Qedo
 {
 
-//
-// Implementation of Components::Cookie
-//
+/**
+ * implementation of IDL:omg.org/Components/Cookie:1.0
+ */
 class CONTAINERDLL_API Cookie_impl : public virtual OBV_Components::Cookie,
 									 public virtual CORBA::DefaultValueRefCountBase
 {
 private:
+	/** the cookie value */
     static CORBA::LongLong cookie_key_;
 
+	/** assignment operator shall not be called */
 	void operator=(const Cookie_impl&);
+
+	/** copy constructor shall not be called */
 	Cookie_impl (const Cookie_impl&);
 
 public:
 	Cookie_impl();
 	~Cookie_impl();
 
-	// Extension
+	/** extension to compare cookie values */
 	CORBA::Boolean equal (Components::Cookie*);
 };
 
@@ -59,13 +63,14 @@ private:
 };
 
 
-//
-// Implementation of Components::PortDescription
-//
+/**
+ * implementation of IDL:omg.org/Components/PortDescription:1.0
+ */
 class PortDescription_impl : public virtual OBV_Components::PortDescription,
-											public virtual CORBA::DefaultValueRefCountBase
+                             public virtual CORBA::DefaultValueRefCountBase
 {
 private:
+	/** assignment operator shall not be called */
 	void operator=(const PortDescription_impl&);
 
 public:
@@ -82,13 +87,14 @@ private:
 };
 
 
-//
-// Implementation of Components::FacetDescription
-//
+/**
+ * implementation of IDL:omg.org/Components/FacetDescription:1.0
+ */
 class FacetDescription_impl : public virtual OBV_Components::FacetDescription,
 				              public virtual CORBA::DefaultValueRefCountBase
 {
 private:
+	/** assignment operator shall not be called */
 	void operator=(const FacetDescription_impl&);
 
 public:
@@ -105,13 +111,14 @@ private:
 };
 
 
-//
-// Implementation of Components::ConnectionDescription
-//
+/**
+ * implementation of IDL:omg.org/Components/ConnectionDescription:1.0
+ */
 class ConnectionDescription_impl : public virtual OBV_Components::ConnectionDescription,
 								   public virtual CORBA::DefaultValueRefCountBase
 {
 private:
+	/** assignment operator shall not be called */
 	void operator=(const ConnectionDescription_impl&);
 
 public:
@@ -128,13 +135,14 @@ private:
 };
 
 
-//
-// Implementation of Components::ReceptacleDescription
-//
+/**
+ * implementation of IDL:omg.org/Components/ReceptacleDescription:1.0
+ */
 class ReceptacleDescription_impl : public virtual OBV_Components::ReceptacleDescription,
 								   public virtual CORBA::DefaultValueRefCountBase
 {
 private:
+	/** assignment operator shall not be called */
 	void operator=(const ReceptacleDescription_impl&);
 
 public:
@@ -154,13 +162,14 @@ private:
 };
 
 
-//
-// Implementation of Components::ConsumerDescription
-//
+/**
+ * implementation of IDL:omg.org/Components/ConsumerDescription:1.0
+ */
 class ConsumerDescription_impl : public virtual OBV_Components::ConsumerDescription,
 								 public virtual CORBA::DefaultValueRefCountBase
 {
 private:
+	/** assignment operator shall not be called */
 	void operator=(const ConsumerDescription_impl&);
 
 public:
@@ -177,13 +186,14 @@ private:
 };
 
 
-//
-// Implementation of Components::EmitterDescription
-//
+/**
+ * implementation of IDL:omg.org/Components/EmitterDescription:1.0
+ */
 class EmitterDescription_impl : public virtual OBV_Components::EmitterDescription,
 								public virtual CORBA::DefaultValueRefCountBase
 {
 private:
+	/** assignment operator shall not be called */
 	void operator=(const EmitterDescription_impl&);
 
 public:
@@ -201,13 +211,14 @@ private:
 };
 
 
-//
-// Implementation of Components::SubscriberDescription
-//
+/**
+ * implementation of IDL:omg.org/Components/SubscriberDescription:1.0
+ */
 class SubscriberDescription_impl : public virtual OBV_Components::SubscriberDescription,
 								   public virtual CORBA::DefaultValueRefCountBase
 {
 private:
+	/** assignment operator shall not be called */
 	void operator=(const SubscriberDescription_impl&);
 
 public:
@@ -227,13 +238,14 @@ private:
 };
 
 
-//
-// Implementation of Components::ComponentPortDescription
-//
+/**
+ * implementation of IDL:omg.org/Components/ComponentPortDescription:1.0
+ */
 class ComponentPortDescription_impl : public virtual OBV_Components::ComponentPortDescription,
 								      public virtual CORBA::DefaultValueRefCountBase
 {
 private:
+	/** assignment operator shall not be called */
 	void operator=(const ComponentPortDescription_impl&);
 
 public:
@@ -254,14 +266,17 @@ private:
 };
 
 
-//
-// Implementation of Components::ConfigValue
-//
+/**
+ * implementation of IDL:omg.org/Components/ConfigValue:1.0
+ */
 class CONTAINERDLL_API ConfigValue_impl : public virtual OBV_Components::ConfigValue,
 										  public virtual CORBA::DefaultValueRefCountBase
 {
 private:
+	/** assignment operator shall not be called */
 	void operator=(const ConfigValue_impl&);
+
+	/** copy constructor shall not be called */
 	ConfigValue_impl (const ConfigValue_impl&);
 
 public:
@@ -270,14 +285,9 @@ public:
 	~ConfigValue_impl ();
 };
 
-#ifdef MICO_ORB
+
 class CONTAINERDLL_API ConfigValueFactory_impl : public virtual CORBA::ValueFactoryBase
 {
-#endif
-#ifdef ORBACUS_ORB
-class CONTAINERDLL_API ConfigValueFactory_impl : public virtual Components::ConfigValue_init
-{
-#endif
 private:
 	virtual CORBA::ValueBase* create_for_unmarshal();
 };

@@ -57,7 +57,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = C:/work/qedo/HomeFinder/
+INPUT                  = ./
 FILE_PATTERNS          = *.h \
                          *.cpp
 RECURSIVE              = NO
