@@ -55,7 +55,7 @@ main
 	/*
 	// disable heap checks in debug mode to fasten up the idl compilations
 	*/
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef __DEBUG__
 	// Get current flag
 	int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
