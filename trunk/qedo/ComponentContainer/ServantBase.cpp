@@ -28,7 +28,7 @@
 #include "GlobalHelpers.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.15 2004/07/16 11:21:23 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.16 2004/07/16 12:50:51 tom Exp $";
 
 namespace Qedo {
 
@@ -169,7 +169,7 @@ PrimaryServant::provide_facet (const char* name)
 throw (Components::InvalidName, CORBA::SystemException)
 {
 #ifndef _QEDO_NO_QOS
-	char * comp_id = this-> get_component_id();
+	const char * comp_id = this-> get_component_id();
 	CORBA::Boolean con = true;
 	CORBA::Object_ptr anObject= servant_interceptor_registry_ -> provide_facet (comp_id, name, con);
 	if (con)
@@ -218,7 +218,7 @@ throw( Components::InvalidName,
 	   CORBA::SystemException)
 {
 #ifndef _QEDO_NO_QOS
-	char * comp_id = this-> get_component_id();
+	const char * comp_id = this-> get_component_id();
 	CORBA::Boolean con;
 	Components::Cookie* temp_ck = servant_interceptor_registry_ -> connect (comp_id, name, connection, con);
 	if (con)
@@ -445,9 +445,9 @@ throw (CORBA::SystemException)
 }
 
 #ifndef _QEDO_NO_QOS
-char *
+const char *
 PrimaryServant::get_component_id(){
-	char* comp_id = 0;
+	const char* comp_id = 0;
 	unsigned int i;
 	for (i=0; i < ccm_object_executor_ -> home_servant_ -> component_instances_.size(); i++)
 	{
@@ -478,7 +478,7 @@ PrimaryServant::get_component_id(){
 	{
 		comp_id="__QEDO__NOT_COMPONENT_ID__";
 	}
-	return comp_id;	
+	return comp_id;
 }
 
 #endif

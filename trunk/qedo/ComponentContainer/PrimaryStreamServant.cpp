@@ -38,7 +38,7 @@
 #pragma warning (disable : 4715) // not all control paths return a value
 #endif
 
-static char rcsid[] UNUSED = "$Id: PrimaryStreamServant.cpp,v 1.6 2004/07/16 11:21:23 tom Exp $";
+static char rcsid[] UNUSED = "$Id: PrimaryStreamServant.cpp,v 1.7 2004/07/16 12:50:51 tom Exp $";
 
 
 namespace Qedo {
@@ -62,7 +62,7 @@ throw(Components::InvalidName,
 {
 
 #ifndef _QEDO_NO_QOS
-	char * act_id = this-> get_component_id();
+	const char * act_id = this-> get_component_id();
 	CORBA::Boolean con;
 	CORBA::Object_var anObject = servant_interceptor_registry_ -> provide_sink_stream_port (act_id, name, con);
 	if (con) {
@@ -91,7 +91,7 @@ throw(Components::InvalidName,
 
 
 #ifndef _QEDO_NO_QOS
-	char * act_id = this-> get_component_id();
+	const char * act_id = this-> get_component_id();
 	CORBA::Boolean con;
 	Components::Cookie* temp_ck = servant_interceptor_registry_ -> bind (act_id, name, the_sink, transport_profile, con);
 	if (con)
@@ -102,11 +102,11 @@ throw(Components::InvalidName,
 #ifndef _QEDO_NO_QOS
 	}
 	return temp_ck;
-#endif 
+#endif
 }
 
 
-StreamComponents::SinkStreamPort_ptr 
+StreamComponents::SinkStreamPort_ptr
 PrimaryStreamServant::unbind(const char* name,
                              Components::Cookie* ck)
 throw(Components::CookieRequired,
@@ -118,7 +118,7 @@ throw(Components::CookieRequired,
 }
 
 
-StreamComponents::BindingDescriptions* 
+StreamComponents::BindingDescriptions*
 PrimaryStreamServant::get_bindings(const char* name)
 throw(Components::InvalidName,
       CORBA::SystemException)
@@ -127,7 +127,7 @@ throw(Components::InvalidName,
 }
 
 
-StreamComponents::SinkDescriptions* 
+StreamComponents::SinkDescriptions*
 PrimaryStreamServant::get_named_sinks(const Components::NameList& names)
 throw(Components::InvalidName,
       CORBA::SystemException)
@@ -136,7 +136,7 @@ throw(Components::InvalidName,
 }
 
 
-StreamComponents::SinkDescriptions* 
+StreamComponents::SinkDescriptions*
 PrimaryStreamServant::get_all_sinks()
 throw(CORBA::SystemException)
 {
@@ -144,7 +144,7 @@ throw(CORBA::SystemException)
 }
 
 
-StreamComponents::SourceDescriptions* 
+StreamComponents::SourceDescriptions*
 PrimaryStreamServant::get_named_sources(const Components::NameList& names)
 throw(Components::InvalidName,
       CORBA::SystemException)
@@ -153,7 +153,7 @@ throw(Components::InvalidName,
 }
 
 
-StreamComponents::SourceDescriptions* 
+StreamComponents::SourceDescriptions*
 PrimaryStreamServant::get_all_sources()
 throw(CORBA::SystemException)
 {
@@ -161,9 +161,9 @@ throw(CORBA::SystemException)
 }
 
 #ifndef _QEDO_NO_QOS
-char *
+const char *
 PrimaryStreamServant::get_component_id(){
-	char* comp_id = 0;
+	const char* comp_id = 0;
 	unsigned int i;
 	for (i=0; i < ccm_object_executor_ -> home_servant_ -> component_instances_.size(); i++)
 	{
@@ -194,7 +194,7 @@ PrimaryStreamServant::get_component_id(){
 	{
 		comp_id="__QEDO__NOT_COMPONENT_ID__";
 	}
-	return comp_id;	
+	return comp_id;
 }
 
 #endif

@@ -105,7 +105,7 @@ public:
         throw(CORBA::SystemException);
 
 #ifndef _QEDO_NO_QOS
-	char *
+	const char *
 	get_component_id();
 
 #endif
