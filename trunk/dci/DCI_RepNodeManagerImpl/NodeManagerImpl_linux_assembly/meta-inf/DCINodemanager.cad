@@ -7,7 +7,7 @@
     
     <componentfiles>
          <componentfile id="DCI_RepNodeManagerImpl_file">
-            <fileinarchive name="meta-inf/DCI_RepNodeManagerImpl.csd">
+            <fileinarchive name="meta-inf/DCI_RepNodeManagerImpl_linux.csd">
 				<link href="DCI_RepNodeManagerImpl.zip"/> 
             </fileinarchive>            
         </componentfile>
