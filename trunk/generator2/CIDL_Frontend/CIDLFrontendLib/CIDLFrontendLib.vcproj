@@ -496,7 +496,8 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k"
+						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
+"
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -645,7 +646,7 @@ cp cidl.hpp cidl.h
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y 
 cp cidl.hpp cidl.h
 "
 						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
