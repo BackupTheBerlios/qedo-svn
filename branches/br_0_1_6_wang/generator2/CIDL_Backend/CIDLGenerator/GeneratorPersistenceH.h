@@ -47,6 +47,7 @@ private:
 	std::string strFilename_;
 	std::string strActBasename_;
 	std::set<std::string> sRecursion_;
+	std::vector<std::string> vPorts_;
 	CIDL::CompositionDef_var composition_;
 
 	void check_for_generation(IR__::Contained_ptr item);

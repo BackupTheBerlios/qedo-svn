@@ -28,6 +28,7 @@
 
 #include "CPPBase.h"
 #include "Printer.h"
+#include "GeneratorPersistenceC.h"
 #include <fstream>
 #include <iostream>
 #include <set>
@@ -48,6 +49,7 @@ private:
 	CIDL::CompositionDef_var composition_;
 	IR__::StorageHomeDef_var storagehome_;
 	std::set < std::string > handled_interfaces_;
+	GeneratorPersistenceC*      pc_generator_;
 
 	void doException(IR__::ExceptionDef_ptr except);
 	void doModule(IR__::ModuleDef_ptr module);

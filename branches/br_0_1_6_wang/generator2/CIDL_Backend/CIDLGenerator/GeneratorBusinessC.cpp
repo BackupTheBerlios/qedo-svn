@@ -10,7 +10,8 @@ namespace QEDO_CIDL_Generator {
 
 GeneratorBusinessC::GeneratorBusinessC
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: CPPBase(repository)
+: CPPBase(repository),
+  pc_generator_(new GeneratorPersistenceC(repository))
 {
 }
 
@@ -28,6 +29,10 @@ GeneratorBusinessC::generate(std::string target, std::string fileprefix)
 	catch (InitializeError) { return; }
 
 	doGenerate();
+
+	// generate source code for PSS
+	pc_generator_->generate(target, fileprefix);
+	pc_generator_->destroy();
 }
 	
 

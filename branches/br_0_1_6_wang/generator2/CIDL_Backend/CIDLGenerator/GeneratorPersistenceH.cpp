@@ -315,6 +315,10 @@ GeneratorPersistenceH::genMemberVariable(IR__::ComponentDef_ptr component)
             out << map_attribute_type(attribute->type_def()) << " ";
 		out << attribute_name << "_;\n";
 	}
+	
+	// add uses, emits or publishes
+	for( CORBA::ULong cnt=0; cnt<vPorts_.size(); cnt++ )
+		out << "std::string " << vPorts_[cnt] << "_;\n";
 
 	out.unindent();
 }
@@ -1176,8 +1180,40 @@ GeneratorPersistenceH::genComponentPersistence(IR__::ComponentDef_ptr component,
 	
 	bAbstract_ = false;
 	handleAttribute(component);
+
+	// check whether component has uses, emits or publishes
+	CORBA::ULong cnt = 0;
+	cout << "\n";
+
+	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Uses, false);
+	for( cnt = 0; cnt < contained_seq->length(); cnt++ )
+	{
+		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[cnt]));
+		vPorts_.push_back(a_uses->name());
+	}
 	
-	out << "\nvoid write_state();\n";
+	contained_seq = component->contents(CORBA__::dk_Emits, false);
+	for( cnt = 0; cnt < contained_seq->length(); cnt++ )
+	{
+		IR__::EmitsDef_var a_emits = IR__::EmitsDef::_narrow(((*contained_seq)[cnt]));
+		vPorts_.push_back(a_emits->name());
+	}
+
+	contained_seq = component->contents(CORBA__::dk_Publishes, false);
+	for( cnt = 0; cnt < contained_seq->length(); cnt++ )
+	{
+		IR__::PublishesDef_var a_publishes = IR__::PublishesDef::_narrow(((*contained_seq)[cnt]));
+		vPorts_.push_back(a_publishes->name());
+	}
+	
+	// add uses, emits or publishes
+	for( cnt=0; cnt<vPorts_.size(); cnt++ )
+	{
+		out << "\nconst char* " << vPorts_[cnt] << "() const;\n";
+		out << "void " <<  vPorts_[cnt] << "(const char* param);\n\n";
+	}
+
+	out << "void write_state();\n";
 	out << "void read_state();\n";
 	out << "void setValue(std::map<std::string, CORBA::Any>& valueMap);\n\n";
 	

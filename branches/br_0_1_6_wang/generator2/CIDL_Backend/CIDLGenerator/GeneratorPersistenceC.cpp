@@ -2135,6 +2135,53 @@ GeneratorPersistenceC::genComponentPersistence(IR__::HomeDef_ptr home, IR__::Com
 	strClassname_ +=  "Persistence";
 	handleAttribute(component);
 	
+	// check whether component has uses, emits or publishes
+	CORBA::ULong cnt = 0;
+	std::vector<std::string> vPorts;
+	cout << "\n";
+	
+	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Uses, false);
+	for( cnt = 0; cnt < contained_seq->length(); cnt++ )
+	{
+		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[cnt]));
+		vPorts.push_back(a_uses->name());
+	}
+	
+	contained_seq = component->contents(CORBA__::dk_Emits, false);
+	for( cnt = 0; cnt < contained_seq->length(); cnt++ )
+	{
+		IR__::EmitsDef_var a_emits = IR__::EmitsDef::_narrow(((*contained_seq)[cnt]));
+		vPorts.push_back(a_emits->name());
+	}
+
+	contained_seq = component->contents(CORBA__::dk_Publishes, false);
+	for( cnt = 0; cnt < contained_seq->length(); cnt++ )
+	{
+		IR__::PublishesDef_var a_publishes = IR__::PublishesDef::_narrow(((*contained_seq)[cnt]));
+		vPorts.push_back(a_publishes->name());
+	}
+	
+	// add uses, emits or publishes
+	for( cnt=0; cnt<vPorts.size(); cnt++ )
+	{
+		out << "const char*\n";
+		out << strClassname_ << "::" << vPorts[cnt] << "() const\n";
+		out << "{\n";
+		out.indent();
+		out << "return " << vPorts[cnt] << "_.c_str();\n";
+		out.unindent();
+		out << "}\n\n";
+
+		out << "void\n";
+		out << strClassname_ << "::" << vPorts[cnt] << "(const char* param)\n";
+		out << "{\n";
+		out.indent();
+		out << vPorts[cnt] << "_ = param;\n";
+		out << "setModified(true);\n";
+		out.unindent();
+		out << "}\n\n";
+	}
+
 	IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
 	IR__::AttributeDefSeq state_members;
 	component->get_state_members(state_members, CORBA__::dk_Create);
