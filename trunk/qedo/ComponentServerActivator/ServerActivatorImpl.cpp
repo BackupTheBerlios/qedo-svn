@@ -31,7 +31,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.35 2003/10/30 17:24:14 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.36 2004/01/13 10:51:59 tom Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -276,7 +276,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 	if (enable_terminal_)
 	{
-		prog = "c:/windows/system32/cmd.exe";
+		prog = "c:/winnt/system32/cmd.exe";
 		args[args_nr++] = "cmd";
 		args[args_nr++] = "/c";
 		args[args_nr++] = "start";

@@ -90,7 +90,7 @@ public:
 	 * provides the event consumer
 	 * \return The event consumer.
 	 */
-    const Components::EventConsumerBase_ptr consumer() const;
+	CONTAINERDLL_API    const Components::EventConsumerBase_ptr consumer() const;
 };
 
 // Export template class
