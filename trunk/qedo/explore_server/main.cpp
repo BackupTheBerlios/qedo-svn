@@ -1,8 +1,8 @@
 #include "explore.h"
-#include "iostream.h"
-#include "string.h"
+#include "iostream"
+#include "string"
 #include "coss/CosNaming.h"
-#include "explore_impl.h"
+#include "Explore_impl.h"
 
 
 using namespace std;

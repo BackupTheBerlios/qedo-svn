@@ -1,19 +1,21 @@
 #include "Explore_impl.h"
 #include "explore.h"
-#include "iostream.h"
-#include "string.h"
+#include "iostream"
+#include "string"
 #include "coss/CosNaming.h"
-#include <strstream>
-#include "process.h"
-#include "windows/unistd.h"
+//#include <strstream>
 #include <sstream>
 #include "sys/types.h"
 #include "signal.h"
 #include "stdlib.h"
 //#include "util.h"
-#include "Winsock2.h" 
 
+#ifdef _WIN32
+#include "process.h"
+#include "Winsock2.h"
+#include "windows/unistd.h"
 
+#endif
 
 
 
