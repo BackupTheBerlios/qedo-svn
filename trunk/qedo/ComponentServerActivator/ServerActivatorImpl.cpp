@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.16 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.17 2003/08/05 14:40:49 boehme Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -44,10 +44,10 @@ namespace Qedo {
 
 	
 ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode, bool qos_mode)
-: orb_ (CORBA::ORB::_duplicate (orb)),
-  debug_mode_ (debug_mode),
+: debug_mode_ (debug_mode),
   enable_qos_ (qos_mode),
-  component_server_activation ("QEDO_ACTIVATOR_SIGNAL")
+  component_server_activation ("QEDO_ACTIVATOR_SIGNAL"),
+  orb_ (CORBA::ORB::_duplicate (orb))
 {
 }
 
@@ -199,6 +199,7 @@ Components::Deployment::ComponentServer_ptr
 ServerActivatorImpl::create_component_server (const ::Components::ConfigValues& config)
 throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, CORBA::SystemException)
 {
+	qedo_lock lock(component_server_mutex);
 	std::cout << "ServerActivatorImpl: create_component_server() called" << std::endl;
 
 	CORBA::String_var my_string_ref;
@@ -285,8 +286,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 #endif
 
-	component_server_activation.qedo_wait();
-	component_server_activation.qedo_reset();
+	component_server_activation.qedo_wait(component_server_mutex);
 
 //#endif
 
@@ -330,6 +330,7 @@ void
 ServerActivatorImpl::notify_component_server (Components::Deployment::ComponentServer_ptr server)
 throw (CORBA::SystemException)
 {
+	qedo_lock lock(component_server_mutex);
 	std::cout << "ServerActivatorImpl: notify_component_server() called" << std::endl;
 
 

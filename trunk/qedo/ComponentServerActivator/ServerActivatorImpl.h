@@ -65,6 +65,7 @@ private:
 
 	/** for syncronization */
 	qedo_cond component_server_activation;
+	qedo_mutex component_server_mutex;
 
 	/** the orb */
 	CORBA::ORB_var									orb_;
