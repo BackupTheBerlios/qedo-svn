@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.36 2003/09/26 08:22:02 neubauer Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.37 2003/09/29 14:19:33 stoinski Exp $";
 
 
 namespace Qedo {
@@ -162,7 +162,7 @@ ContainerInterfaceImpl::EventEntry::operator= (const ContainerInterfaceImpl::Eve
 void*
 ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 {
-	DEBUG_OUT ("ContainerInterfaceImpl: Event Dispatcher Thread started");
+	DEBUG_OUT ("ContainerInterfaceImpl: Event dispatcher Thread started");
 
 	ContainerInterfaceImpl* this_ptr = (ContainerInterfaceImpl*)data;
 
@@ -170,32 +170,36 @@ ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 
 	do
 	{
-			while(!this_ptr->event_list.empty()) {
+		while (! this_ptr->event_list.empty()) 
+		{
 			EventEntry e = this_ptr->event_list.front();
 			this_ptr->event_list.erase (this_ptr->event_list.begin());
 			this_ptr->event_queue_mutex_.unlock_object();
 
-			try {
-				e.consumer_->push_event(e.event_);
-			}
-			catch(const CORBA::Exception& e)
+			try 
 			{
-			   DEBUG_OUT("event_delivering: got CORBA exception");
+				e.consumer_->push_event (e.event_);
+			}
+			catch (const CORBA::SystemException& e)
+			{
+				DEBUG_OUT ("ContainerInterfaceImpl: Event dispatcher thread: got CORBA system exception during delivery");
 #ifdef MICO_ORB
-				e._print(std::cerr);
+				e._print (std::cerr);
 #endif
 			}
-			catch(...)
+			catch (...)
 			{
-			   DEBUG_OUT("event_delivering: exception");
+				DEBUG_OUT("ContainerInterfaceImpl: Event dispatcher thread: Got non-CORBA exception during delivery");
 			}
-			this_ptr->event_queue_mutex_.lock_object();
 
+			this_ptr->event_queue_mutex_.lock_object();
 		}
 
-		this_ptr->event_queue_cond_.wait(this_ptr->event_queue_mutex_);
+		this_ptr->event_queue_cond_.wait (this_ptr->event_queue_mutex_);
+
 	} while(true);
-	// here hast to be checked for finalize of the thread
+
+	// here has to be checked for finalize of the thread
 
 	this_ptr->event_queue_mutex_.unlock_object();
 
@@ -824,9 +828,10 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	installed_homes_.erase (homes_iter);
 
 
-	DEBUG_OUT ("..... unload home servant code");
+	DEBUG_OUT ("ContainerInterfaceImpl: unloading home servant code");
 	this->unload_shared_library (servant_module);
-	DEBUG_OUT ("..... unload home executor code");
+	
+	DEBUG_OUT ("ContainerInterfaceImpl: unloading home executor code");
 	this->unload_shared_library (executor_module);
 }
 
