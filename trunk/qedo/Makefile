@@ -59,7 +59,7 @@ ComponentIDL.Debug_orbacus_linux:
 AssemblyFactory.Debug_orbacus_linux: ComponentIDL.Debug_orbacus_linux ComponentContainer.Debug_orbacus_linux
 	 mkdir -p AssemblyFactory/Debug_orbacus_linux; make -C AssemblyFactory Debug_orbacus_linux
 
-Debug_mico_linux: ComponentIDL.Debug_mico_linux ComponentContainer.Debug_mico_linux AssemblyFactory.Debug_mico_linux DeploymentClient.Debug_mico_linux ComponentInstaller.Debug_mico_linux ComponentServer.Debug_mico_linux ComponentServerActivator.Debug_mico_linux
+Debug_mico_linux: ComponentIDL.Debug_mico_linux ComponentContainer.Debug_mico_linux AssemblyFactory.Debug_mico_linux DeploymentClient.Debug_mico_linux ComponentInstaller.Debug_mico_linux ComponentServer.Debug_mico_linux ComponentServerActivator.Debug_mico_linux HomeFinder.Debug_mico_linux
 
 
 DeploymentClient.Debug_mico_linux: AssemblyFactory.Debug_mico_linux ComponentContainer.Debug_mico_linux ComponentIDL.Debug_mico_linux
@@ -89,6 +89,8 @@ ComponentIDL.Debug_mico_linux:
 AssemblyFactory.Debug_mico_linux: ComponentIDL.Debug_mico_linux ComponentContainer.Debug_mico_linux
 	 mkdir -p AssemblyFactory/Debug_mico_linux; make -C AssemblyFactory Debug_mico_linux
 
+HomeFinder.Debug_mico_linux: ComponentIDL.Debug_mico_linux
+	 mkdir -p HomeFinder/Debug_mico_linux ;make -C HomeFinder Debug_mico_linux
 
 Release: ComponentIDL.Release ComponentContainer.Release AssemblyFactory.Release DeploymentClient.Release ComponentInstaller.Release ComponentServer.Release ComponentServerActivator.Release
 
