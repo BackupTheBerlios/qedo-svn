@@ -182,13 +182,16 @@ private:
 	CORBA::RepositoryIdSeq_var streamtypes_;
 	bool configured_for_async_call_;
 	bool dispatcher_thread_stopped_;
+
 	BindingVector bindings_;
-	
+	QedoMutex bindings_mutex_;
+
 	QedoMutex dispatch_mutex_;
 	QedoCond dispatch_cond_;
 
-	QedoMutex vector_mutex_;
 	DispatcherVector dispatcher_entries_;
+	QedoMutex dispatcher_entries_mutex_;
+	
 	void do_dispatch();
 	static void* dispatcher_thread (void*);
 

@@ -130,6 +130,8 @@ protected:
 
 	/** list of component instances */
 	std::vector <Qedo::ComponentInstance>		component_instances_;
+	/** the mutex for component_instances_ */
+	QedoMutex									component_instances_mutex_;
 
 	/**
 	 * create an object reference

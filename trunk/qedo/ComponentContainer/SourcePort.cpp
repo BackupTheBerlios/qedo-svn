@@ -31,7 +31,7 @@
 #include <cstring>
 
 
-static char rcsid[] UNUSED = "$Id: SourcePort.cpp,v 1.2 2003/10/17 09:11:40 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: SourcePort.cpp,v 1.3 2003/10/30 17:24:14 stoinski Exp $";
 
 
 namespace Qedo {
@@ -465,7 +465,7 @@ SourcePort::do_dispatch()
 				break;
 			}
 			{
-				QedoLock v_lock (vector_mutex_);
+				QedoLock lock (dispatcher_entries_mutex_);
 				dispatcher_entries_.erase(dispatcher_entries_.begin());
 			}
 
@@ -788,10 +788,10 @@ throw (StreamComponents::UnsupportedStreamtype, StreamComponents::DuplicateStrea
 		DispatcherEntry_smartptr entry_smartptr (new_entry);
 		new_entry->_remove_ref();
 
-		QedoLock v_lock (vector_mutex_);
+		QedoLock lock (dispatcher_entries_mutex_);
 		dispatcher_entries_.push_back (entry_smartptr);
 
-		QedoLock lock (dispatch_mutex_);
+		QedoLock lock2 (dispatch_mutex_);
 		dispatch_cond_.signal();
 	}
 	else
@@ -819,10 +819,10 @@ throw (StreamComponents::NoStream)
 		DispatcherEntry_smartptr entry_smartptr (new_entry);
 		new_entry->_remove_ref();
 
-		QedoLock v_lock (vector_mutex_);
+		QedoLock lock (dispatcher_entries_mutex_);
 		dispatcher_entries_.push_back (entry_smartptr);
 
-		QedoLock lock (dispatch_mutex_);
+		QedoLock lock2 (dispatch_mutex_);
 		dispatch_cond_.signal();
 	}
 	else
@@ -851,10 +851,10 @@ throw (StreamComponents::NoStream)
 		DispatcherEntry_smartptr entry_smartptr (new_entry);
 		new_entry->_remove_ref();
 
-		QedoLock v_lock (vector_mutex_);
+		QedoLock lock (dispatcher_entries_mutex_);
 		dispatcher_entries_.push_back (entry_smartptr);
 
-		QedoLock lock (dispatch_mutex_);
+		QedoLock lock2 (dispatch_mutex_);
 		dispatch_cond_.signal();
 	}
 	else
@@ -881,7 +881,7 @@ SourcePort::prepare_remove()
 		dispatcher_thread_->join();
 	}
 
-	QedoLock v_lock (vector_mutex_);
+	QedoLock lock (dispatcher_entries_mutex_);
 	dispatcher_entries_.clear();
 
 	// Close all transports

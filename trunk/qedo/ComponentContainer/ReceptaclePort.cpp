@@ -23,7 +23,7 @@
 #include "ReceptaclePort.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: ReceptaclePort.cpp,v 1.6 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ReceptaclePort.cpp,v 1.7 2003/10/30 17:24:14 stoinski Exp $";
 
 
 namespace Qedo {
@@ -136,6 +136,8 @@ ReceptaclePort::connected_descriptions() const
 	Components::ConnectedDescriptions_var con_descs = 
         new Components::ConnectedDescriptions();
 
+	QedoLock lock (connections_mutex_);
+
 	con_descs->length (connections_.size());
 
 	for (unsigned int i = 0; i < con_descs->length(); i++)
@@ -167,6 +169,8 @@ throw (Components::InvalidConnection,
        Components::AlreadyConnected,
        Components::ExceededConnectionLimit)
 {
+	QedoLock lock (connections_mutex_);
+
 	// Test whether already connected
 	if ( !is_multiplex_ && connections_.size() > 0 )
 	{
@@ -205,6 +209,8 @@ throw (Components::InvalidConnection,
 	}
 
 	ConnectionVector::iterator con_iter;
+
+	QedoLock lock (connections_mutex_);
 
 	// Search connection
     for (con_iter = connections_.begin();

@@ -134,9 +134,13 @@ class CONTAINERDLL_API ServantRegistry : public RefCountBase
 private:
 	/** the list of servants */
 	std::vector <ServantEntry> static_servants_;
+	/** the mutex for static_servants_ */
+	QedoMutex static_servants_mutex_;
 
 	/** the list of servant factories */
 	std::vector <ServantFactoryEntry> servant_factories_;
+	/** the mutex for servant_factories_ */
+	QedoMutex servant_factories_mutex_;
 
 public:
 	/**

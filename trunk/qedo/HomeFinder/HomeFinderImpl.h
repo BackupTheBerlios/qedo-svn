@@ -26,8 +26,11 @@
 
 #include <CORBA.h>
 #include "QedoComponents_skel.h"
+
 #include "NameServiceBase.h"
 #include "HomeFinderEntry.h"
+#include "Synchronisation.h"
+
 #include <string>
 #include <vector>
 
@@ -40,8 +43,6 @@ namespace Qedo {
  * @{
  */
 
-
-typedef std::vector < HomeFinderEntry > HomeFinderEntryVector;
 
 /**
  * implementation of the home finder
@@ -66,6 +67,8 @@ private:
 
 	/** the vector for storing the home entries */
 	HomeFinderEntryVector					entries_;
+	/** the mutex for entries_ */
+	QedoMutex								entries_mutex_;
 
 public:
 	/**

@@ -33,7 +33,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.47 2003/10/29 17:22:49 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.48 2003/10/30 17:24:13 stoinski Exp $";
 
 
 namespace Qedo {
@@ -342,7 +342,11 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 ContainerInterfaceImpl::~ContainerInterfaceImpl()
 {
 	DEBUG_OUT ("ContainerInterfaceImpl: Destructor called");
+
+	QedoLock lock (service_references_mutex_);
+
 	service_references_.clear();
+	
 	component_server_->_remove_ref();
 
 	/* stop the event thread */
@@ -837,6 +841,8 @@ throw (Components::CCMException, CORBA::SystemException)
 	//
 	std::vector <ServiceReferenceEntry>::iterator iter;
 
+	QedoLock lock (service_references_mutex_);
+
 	for (iter = service_references_.begin(); iter != service_references_.end(); iter++)
 	{
 		if(!iter->_service_id.compare(id)) {
@@ -864,6 +870,8 @@ throw (Components::CCMException)
 	// find the service in our list of services
 	//
 	std::vector <ServiceReferenceEntry>::iterator iter;
+
+	QedoLock lock (service_references_mutex_);
 
 	for (iter = service_references_.begin(); iter != service_references_.end(); iter++)
 	{

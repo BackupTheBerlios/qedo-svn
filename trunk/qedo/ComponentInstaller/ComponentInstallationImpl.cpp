@@ -33,7 +33,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.24 2003/10/27 12:22:07 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.25 2003/10/30 17:24:14 stoinski Exp $";
 
 
 namespace Qedo {
@@ -176,7 +176,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 	//
 	// exclusive
 	//
-	QedoLock lock(&mutex_);
+	QedoLock lock (installed_components_mutex_);
 
 	//
 	// check uuid
@@ -332,7 +332,9 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 	//
 	// exclusive operation
 	//
-	QedoLock lock(&mutex_);
+	QedoLock lock (installed_components_mutex_);
+
+	// TODO
 
 	throw Components::Deployment::InstallationFailure();
 }
@@ -347,7 +349,7 @@ throw (Components::Deployment::UnknownImplId, Components::RemoveFailure)
 	//
 	// exclusive operation
 	//
-	QedoLock lock(&mutex_);
+	QedoLock lock (installed_components_mutex_);
 
 	std::vector < ComponentImplementation >::iterator iter;
 	for(iter = installed_components_.begin();
@@ -393,7 +395,7 @@ throw (Components::Deployment::UnknownImplId, Components::Deployment::Installati
 	//
 	// exclusive operation
 	//
-	QedoLock lock(&mutex_);
+	QedoLock lock (installed_components_mutex_);
 
 	//
 	// Scan through the installed components
@@ -440,7 +442,7 @@ throw (Components::Deployment::InstallationFailure)
 	//
 	// exclusive operation
 	//
-	QedoLock lock(&mutex_);
+	QedoLock lock (installed_components_mutex_);
 
 	std::string name(implUUID);
 	std::string file = packageDirectory_ + "/" + name + ".zip";
@@ -451,7 +453,7 @@ throw (Components::Deployment::InstallationFailure)
 	std::ofstream ofs(file.c_str(), std::ios::binary|std::ios::out);
     if (!ofs)
     {
-		NORMAL_ERR3( "ComponentInstallationImpl: package for ", name, " can not be locally saved" );
+		NORMAL_ERR3( "ComponentInstallationImpl: Package for ", name, " can not be saved locally" );
         throw Components::Deployment::InstallationFailure();
     }
     const CORBA::Octet* it = package.get_buffer();

@@ -937,6 +937,8 @@ throw( Components::CreateFailure )
 {
 	DEBUG_OUT2( "AssemblyImpl: build assembly for ", package_ );
 
+	QedoLock lock (assembly_mutex_);
+
 	//
 	// get data from descriptor file
     //
@@ -979,6 +981,8 @@ AssemblyImpl::tear_down ()
 throw( Components::RemoveFailure )
 {
 	DEBUG_OUT2( "AssemblyImpl: tear down the application for ", package_ );
+
+	QedoLock lock (assembly_mutex_);
 
 	//
 	// use reverse start order to remove components

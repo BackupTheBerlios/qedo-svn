@@ -23,7 +23,7 @@
 #include "Key.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: Key.cpp,v 1.8 2003/08/08 10:04:31 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: Key.cpp,v 1.9 2003/10/30 17:24:14 stoinski Exp $";
 
 
 namespace Qedo {
@@ -35,10 +35,10 @@ Key::Key
 	// Keys can be generated from concurrent threads, so accessing the static
 	// key id must be synchronized
 	//	Synchronized synchronized (*this);
-	if(!Key::mutex_) {
-		Key::mutex_ = new QedoMutex();
+	if(! mutex_) {
+		mutex_ = new QedoMutex();
 	};
-	QedoLock l (Key::mutex_);
+	QedoLock lock (mutex_);
 	key_value_ = new CORBA::OctetSeq();
 	key_value_->length (12);
 

@@ -25,7 +25,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantRegistry.cpp,v 1.11 2003/09/05 14:02:06 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServantRegistry.cpp,v 1.12 2003/10/30 17:24:14 stoinski Exp $";
 
 namespace Qedo {
 
@@ -133,6 +133,8 @@ ServantRegistry::register_static_servant (const PortableServer::ObjectId& object
 {
 	ServantEntry new_servant (object_id, servant);
 
+	QedoLock lock (static_servants_mutex_);
+
 	static_servants_.push_back (new_servant);
 }
 
@@ -143,6 +145,8 @@ ServantRegistry::register_servant_factory (const PortableServer::ObjectId& objec
 {
 	ServantFactoryEntry new_factory (object_id, servant_factory);
 
+	QedoLock lock (servant_factories_mutex_);
+
 	servant_factories_.push_back (new_factory);
 }
 
@@ -151,6 +155,8 @@ void
 ServantRegistry::unregister_static_servant (const PortableServer::ObjectId& object_id)
 {
 	std::vector <ServantEntry>::iterator servants_iter;
+
+	QedoLock lock (static_servants_mutex_);
 
 	for (servants_iter = static_servants_.begin(); servants_iter != static_servants_.end(); servants_iter++)
 	{
@@ -173,6 +179,8 @@ void
 ServantRegistry::unregister_servant_factory (const PortableServer::ObjectId& object_id)
 {
 	std::vector <ServantFactoryEntry>::iterator servant_factories_iter;
+
+	QedoLock lock (servant_factories_mutex_);
 
 	for (servant_factories_iter = servant_factories_.begin(); 
 		 servant_factories_iter != servant_factories_.end(); 
@@ -198,6 +206,8 @@ ServantRegistry::set_variables_static_servant (Qedo::ComponentInstance& instance
 {
 	std::vector <ServantEntry>::iterator servants_iter;
 
+	QedoLock lock (static_servants_mutex_);
+
 	for (servants_iter = static_servants_.begin(); servants_iter != static_servants_.end(); servants_iter++)
 	{
 		if (Qedo::compare_object_ids ((*servants_iter).object_id_, instance.object_id_))
@@ -219,6 +229,8 @@ Qedo::ServantBase*
 ServantRegistry::lookup_static_servant (const PortableServer::ObjectId& object_id)
 {
 	std::vector <ServantEntry>::const_iterator servants_iter;
+
+	QedoLock lock (static_servants_mutex_);
 
 	for (servants_iter = static_servants_.begin(); servants_iter != static_servants_.end(); servants_iter++)
 	{
@@ -244,6 +256,8 @@ Qedo::ServantBase*
 ServantRegistry::lookup_factory_created_servant (const PortableServer::ObjectId& object_id)
 {
 	std::vector <ServantFactoryEntry>::const_iterator servant_factories_iter;
+
+	QedoLock lock (servant_factories_mutex_);
 
 	for (servant_factories_iter = servant_factories_.begin(); 
 		 servant_factories_iter != servant_factories_.end(); 

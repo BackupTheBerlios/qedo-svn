@@ -97,6 +97,9 @@ public:
 	bool operator == (const HomeFinderEntry&) const {return true;}
 };
 
+typedef std::vector < HomeFinderEntry > HomeFinderEntryVector;
+
+
 /** @} */
 
 /** @} */

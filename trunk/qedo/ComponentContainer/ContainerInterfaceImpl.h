@@ -185,13 +185,18 @@ private:
 	Qedo_Components::HomeFinder_var							home_finder_;
 	/** the list of installed homes */
 	std::vector <HomeEntry>									installed_homes_;
+	/** the mutex ´for installed_homes_ */
+	QedoMutex												installed_homes_mutex_;
 
 	/** the list of service references */
 	std::vector <ServiceReferenceEntry>						service_references_;
+	/** the mutex for service_references_ */
+	QedoMutex												service_references_mutex_;
+
 	/** the list of service components for preinvoke*/
-	std::vector <Qedo::ComponentInstance>					services_preinvoke_;
+	//std::vector <Qedo::ComponentInstance>					services_preinvoke_;
 	/** the list of service components for postinvoke*/
-	std::vector <Qedo::ComponentInstance>					services_postinvoke_;
+	//std::vector <Qedo::ComponentInstance>					services_postinvoke_;
 	
 	/** the list of pending events to be dispatched*/
 	std::vector<EventEntry>									event_list;

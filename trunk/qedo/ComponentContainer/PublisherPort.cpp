@@ -23,7 +23,7 @@
 #include "PublisherPort.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: PublisherPort.cpp,v 1.10 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: PublisherPort.cpp,v 1.11 2003/10/30 17:24:14 stoinski Exp $";
 
 
 namespace Qedo {
@@ -123,6 +123,8 @@ PublisherPort::subscriber_descriptions() const
 	Components::SubscriberDescriptions_var sub_desc = 
         new Components::SubscriberDescriptions();
 
+	QedoLock lock (consumers_mutex_);
+
     sub_desc->length (consumers_.size());
 
     for (unsigned int i = 0; i < consumers_.size(); i++)
@@ -145,7 +147,9 @@ PublisherPort::add_consumer (Components::EventConsumerBase_ptr consumer)
 
 	// Create new consumer entry
 	SubscribedConsumer new_entry (consumer, new_cookie);
-			
+
+	QedoLock lock (consumers_mutex_);
+
     consumers_.push_back (new_entry);
 
 	DEBUG_OUT2 ("PublisherPort: New publisher subscribed for port ", port_name_);
@@ -159,6 +163,8 @@ PublisherPort::remove_consumer (Components::Cookie* cookie)
 throw (Components::InvalidConnection)
 {
 	SubscribedConsumerVector::iterator con_iter;
+
+	QedoLock lock (consumers_mutex_);
 
     for (con_iter = consumers_.begin();
 		 con_iter != consumers_.end();

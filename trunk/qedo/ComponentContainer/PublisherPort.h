@@ -25,8 +25,11 @@
 
 #include <CORBA.h>
 #include <Components.h>
+
 #include "PortBase.h"
+#include "Synchronisation.h"
 #include "Util.h"
+
 #include <string>
 #include <vector>
 
@@ -124,6 +127,8 @@ class PublisherPort : public PortBase
 private:
 	/** the list of consumers */
 	SubscribedConsumerVector consumers_;
+	/** the mutex for consumers_ */
+	QedoMutex consumers_mutex_;
 
 public:
 	/**

@@ -73,8 +73,8 @@ private:
 	InstallationReader						reader_;
 	/** list of installed components */
 	std::vector < ComponentImplementation > installed_components_;
-	/** mutex for synchronisation */
-	QedoMutex								mutex_;
+	/** mutex for installed_components_ */
+	QedoMutex								installed_components_mutex_;
 
 public:
 	/**

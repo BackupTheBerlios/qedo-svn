@@ -84,7 +84,8 @@ private:
     /** the mapping of home instance ids to objects */
 	std::map < std::string, Components::CCMHome_var >	homeMap_;
 
-private:
+	/** the mutex that prohibits multiple threads from calling assembly CORBA operatione */
+	QedoMutex											assembly_mutex_;
 
     /**
 	 * create new component server

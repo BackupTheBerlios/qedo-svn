@@ -24,7 +24,7 @@
 #include "Valuetypes.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeFinderImpl.cpp,v 1.4 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: HomeFinderImpl.cpp,v 1.5 2003/10/30 17:24:14 stoinski Exp $";
 
 
 namespace Qedo {
@@ -90,7 +90,11 @@ HomeFinderImpl::register_home(Components::CCMHome_ptr ahome, const char* comp_re
 throw(CORBA::SystemException)
 {
 	HomeFinderEntry entry = HomeFinderEntry(home_repid, comp_repid, home_name, ahome);
+
+	QedoLock lock (entries_mutex_);
+
 	entries_.push_back(entry);
+
 	std::cout << "home registered" << std::endl;
 	std::cout << "..... home id: " << home_repid << std::endl;
 	std::cout << "..... component id: " << comp_repid << std::endl;
@@ -105,7 +109,9 @@ HomeFinderImpl::unregister_home(Components::Cookie* c)
 throw(CORBA::SystemException)
 {
 	HomeFinderEntryVector::iterator iter;
-	
+
+	QedoLock lock (entries_mutex_);
+
 	for (iter = entries_.begin(); iter != entries_.end(); iter++)
 	{
 		if ((*iter).cookie_->equal(c))
@@ -126,7 +132,9 @@ HomeFinderImpl::find_home_by_component_type(const char* comp_repid)
 throw(Components::HomeNotFound, CORBA::SystemException)
 {
 	HomeFinderEntryVector::iterator iter;
-	
+
+	QedoLock lock (entries_mutex_);
+
 	for (iter = entries_.begin(); iter != entries_.end(); iter++)
 	{
 		if (!(*iter).comp_repid_.compare(comp_repid))
@@ -146,7 +154,9 @@ HomeFinderImpl::find_home_by_home_type(const char* home_repid)
 throw(Components::HomeNotFound, CORBA::SystemException)
 {
 	HomeFinderEntryVector::const_iterator iter;
-	
+
+	QedoLock lock (entries_mutex_);
+
 	for (iter = entries_.begin(); iter != entries_.end(); iter++)
 	{
 		if (!(*iter).home_repid_.compare(home_repid))
@@ -166,7 +176,9 @@ HomeFinderImpl::find_home_by_name(const char* home_name)
 throw(Components::HomeNotFound, CORBA::SystemException)
 {
 	HomeFinderEntryVector::const_iterator iter;
-	
+
+	QedoLock lock (entries_mutex_);
+
 	for (iter = entries_.begin(); iter != entries_.end(); iter++)
 	{
 		if (!(*iter).name_.compare(home_name))

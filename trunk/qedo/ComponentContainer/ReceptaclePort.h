@@ -25,9 +25,12 @@
 
 #include <CORBA.h>
 #include <Components.h>
+
 #include "PortBase.h"
+#include "Synchronisation.h"
 #include "Valuetypes.h"
 #include "Util.h"
+
 #include <string>
 #include <vector>
 
@@ -133,6 +136,8 @@ private:
 
 	/** list of connections */
 	ConnectionVector connections_;
+	/** the mutex for connectins_ */
+	QedoMutex connections_mutex_;
 
 public:
 	/**

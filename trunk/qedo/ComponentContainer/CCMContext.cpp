@@ -28,7 +28,7 @@
 #include "InternalConfiguration.h"
 
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.20 2003/10/17 09:11:40 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.21 2003/10/30 17:24:13 stoinski Exp $";
 
 
 namespace Qedo {
@@ -54,6 +54,8 @@ CCMContext::~CCMContext()
         if (stream_ccm_object_executor_)
 		stream_ccm_object_executor_->_remove_ref();
 #endif
+
+	QedoLock lock (service_references_mutex_);
 	service_references_.clear();
 }
 
@@ -140,6 +142,9 @@ throw (Components::CCMException)
 		// find the service instance in our list
 		//
 		std::vector < ServiceReferenceEntry >::iterator iter;
+
+		QedoLock lock (service_references_mutex_);
+
 		for(iter = service_references_.begin();
 			iter != service_references_.end();
 			iter++)

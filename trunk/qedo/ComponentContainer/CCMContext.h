@@ -127,7 +127,7 @@ protected:
 
 #ifndef _QEDO_NO_STREAMS
         /** the object executor for the component */
-        StreamCCMObjectExecutor*                stream_ccm_object_executor_;
+	StreamCCMObjectExecutor*                stream_ccm_object_executor_;
 #endif
 
 	/** the container interface where the components home is installed in */
@@ -135,6 +135,9 @@ protected:
 
 	/** the list of component instance specific service references */
 	std::vector < ServiceReferenceEntry >	service_references_;
+
+	/** the mutex for the access to the service references vector */
+	QedoMutex								service_references_mutex_;
 
 public:
 	/**

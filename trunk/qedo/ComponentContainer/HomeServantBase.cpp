@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.25 2003/10/30 11:07:40 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.26 2003/10/30 17:24:14 stoinski Exp $";
 
 
 namespace Qedo {
@@ -137,6 +137,9 @@ HomeServantBase::incarnate_component
 
 	// create component instance and register it
 	ComponentInstance new_component (object_id, component_ref, executor_locator, ccm_context, this);
+
+	QedoLock lock (component_instances_mutex_);
+
 	component_instances_.push_back (new_component);
 	
 	return component_instances_.back ();
@@ -149,6 +152,8 @@ HomeServantBase::incarnate_component
 , CCMContext* ccm_context
 , const Components::ConfigValues& config)
 {
+	DEBUG_OUT ("HomeServantBase: incarnate_component() (with ConfigValues) called");
+
 	ccm_context->container (this->container_);
 
 	// create object reference
@@ -160,6 +165,9 @@ HomeServantBase::incarnate_component
 	// create component instance and register it
 	ComponentInstance new_component (object_id, component_ref, executor_locator, ccm_context, this);
 	new_component.configure( config );
+
+	QedoLock lock (component_instances_mutex_);
+
 	component_instances_.push_back (new_component);
 	
 	return component_instances_.back ();
@@ -172,6 +180,8 @@ HomeServantBase::finalize_component_incarnation (const PortableServer::ObjectId&
 	// Check whether a static servant was registered for this object id and set
 	// the executor context, executor locator and ccm object executor
 	std::vector <ComponentInstance>::iterator components_iter;
+
+	QedoLock lock (component_instances_mutex_);
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
@@ -200,6 +210,8 @@ HomeServantBase::remove_component_with_oid (const PortableServer::ObjectId& obje
 {
 	// Look, whether we know this component instance
 	std::vector <ComponentInstance>::iterator components_iter;
+
+	QedoLock lock (component_instances_mutex_);
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
@@ -330,6 +342,8 @@ HomeServantBase::lookup_component (const PortableServer::ObjectId& object_id)
 	CORBA::OctetSeq_var foreign_key_seq = Key::key_value_from_object_id (object_id);
 	CORBA::OctetSeq_var our_key_seq;
 
+	QedoLock lock (component_instances_mutex_);
+
 	std::vector <ComponentInstance>::iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
@@ -369,6 +383,8 @@ HomeServantBase::lookup_servant (const PortableServer::ObjectId& object_id)
 	CORBA::OctetSeq_var our_key_seq;
 
 	std::vector <Qedo::ComponentInstance>::iterator components_iter;
+
+	QedoLock lock (component_instances_mutex_);
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
@@ -422,6 +438,8 @@ HomeServantBase::prepare_remove()
 	DEBUG_OUT ("HomeServantBase: prepare_remove() called");
 
 	// Here we must remove all component instances that are still running
+	QedoLock lock (component_instances_mutex_);
+
 	if (component_instances_.size() > 0)
 	{
 		DEBUG_OUT ("HomeServantBase: Warning: There are still component instances around, going to remove them...");

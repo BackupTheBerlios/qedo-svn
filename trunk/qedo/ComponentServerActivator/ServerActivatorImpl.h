@@ -82,9 +82,8 @@ private:
 	bool verbose_mode_;
 
 	/** for syncronization */
-	QedoCond										component_server_activation_;
-	QedoMutex										component_server_mutex_;
-	QedoMutex										component_servers_mutex_;
+	QedoCond										cs_activation_cond_;
+	QedoMutex										cs_activation_mutex_;
 
 	/** the orb */
 	CORBA::ORB_var									orb_;
@@ -96,6 +95,8 @@ private:
 	Components::Deployment::ComponentServer_var		last_created_component_server_;
 	/** the list of all created component servers */
 	ComponentServerVector							component_servers_;
+	/** the mutex for component_servers_ */
+	QedoMutex										component_servers_mutex_;
 
 	/** the delay in milli seconds after which to kill a non-responding CS */
 	static unsigned long							cs_kill_delay_;

@@ -39,7 +39,6 @@
 #define DLL_EXT "so"
 #endif
 
-#include <vector>
 #include <string>
 #include <sys/types.h>
 #include <sys/stat.h>

@@ -37,7 +37,7 @@ extern "C" {
 }
 #endif
 
-static char rcsid[] UNUSED = "$Id: CCMObjectExecutor.cpp,v 1.24 2003/10/30 11:07:40 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CCMObjectExecutor.cpp,v 1.25 2003/10/30 17:24:13 stoinski Exp $";
 
 namespace Qedo {
 
@@ -668,9 +668,9 @@ throw (Components::InvalidName, CORBA::SystemException)
 		for (CORBA::ULong j = 0; j < names.length(); j++)
 		{
 #ifdef ORBACUS_ORB
-			if (consumers_[i].port_name() == names[j])
+			if (publishers_[i].port_name() == names[j])
 #else
-			if (consumers_[i].port_name() == names[j].in())
+			if (publishers_[i].port_name() == names[j].in())
 #endif
 			{
 		        // Get subscriber descriptions for current publisher

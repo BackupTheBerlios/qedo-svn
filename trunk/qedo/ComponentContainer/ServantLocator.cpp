@@ -26,7 +26,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.10 2003/10/30 11:07:40 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.11 2003/10/30 17:24:14 stoinski Exp $";
 
 namespace Qedo {
 
@@ -62,6 +62,7 @@ throw (PortableServer::ForwardRequest, CORBA::SystemException)
 		return helper_servant;
 	}
 
+	/*
 	//
 	// call services registered for preinvoke, but exclude services itself
 	//
@@ -78,7 +79,7 @@ throw (PortableServer::ForwardRequest, CORBA::SystemException)
  			service->preinvoke((*iter).uuid_.c_str(), operation);
 
 		}
-	}
+	}*/
 
 	return home_servant_->lookup_servant (oid);
 }
@@ -92,6 +93,7 @@ ServantLocator::postinvoke (const PortableServer::ObjectId& oid,
 							PortableServer::Servant the_servant )
 throw (CORBA::SystemException)
 {
+	/*
 	//
 	// call services registered for postinvoke
 	//
@@ -107,7 +109,7 @@ throw (CORBA::SystemException)
  			service = dynamic_cast<Components::CCMService_ptr>((*iter).executor_locator_.in());
  			service->postinvoke((*iter).uuid_.c_str(), operation);
 		}
-	}
+	}*/
 
 	the_servant->_remove_ref();
 }

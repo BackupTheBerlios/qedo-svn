@@ -31,7 +31,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.34 2003/10/29 15:26:50 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.35 2003/10/30 17:24:14 stoinski Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -52,7 +52,7 @@ ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode, b
   enable_qos_ (qos_mode),
   enable_terminal_ (terminal_enabled),
   verbose_mode_ (verbose_mode),
-  component_server_activation_ ("QEDO_ACTIVATOR_SIGNAL"),
+  cs_activation_cond_ ("QEDO_ACTIVATOR_SIGNAL"),
   orb_ (CORBA::ORB::_duplicate (orb))
 {
 	std::string delay (Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ComponentServerKillDelay"));
@@ -252,7 +252,7 @@ Components::Deployment::ComponentServer_ptr
 ServerActivatorImpl::create_component_server (const ::Components::ConfigValues& config)
 throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, CORBA::SystemException)
 {
-	QedoLock lock (component_server_mutex_);
+	QedoLock lock (cs_activation_mutex_);
 	std::cout << "ServerActivatorImpl: create_component_server() called" << std::endl;
 
 	CORBA::String_var my_string_ref;
@@ -376,7 +376,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 #endif
 
-	component_server_activation_.wait (component_server_mutex_);
+	cs_activation_cond_.wait (cs_activation_mutex_);
 
 //#endif
 
@@ -487,8 +487,8 @@ throw (CORBA::SystemException)
 
 	// Signal that the callback function has been called by the Component Server,
 	// so we can return the IOR to the client
-	QedoLock lock (component_server_mutex_);
-	component_server_activation_.signal();
+	QedoLock lock (cs_activation_mutex_);
+	cs_activation_cond_.signal();
 }
 
 
