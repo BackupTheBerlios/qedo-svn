@@ -35,7 +35,8 @@
 #include <process.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.11 2003/07/24 13:14:54 boehme Exp $";
+
+static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.12 2003/08/28 09:22:05 neubauer Exp $";
 
 
 namespace Qedo {
