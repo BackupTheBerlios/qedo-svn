@@ -1,6 +1,6 @@
 include MakeVars
 
-ifeq ($(ORB), MICO)
+ifeq ($(ORB), MICO_ORB)
 TARGET = Debug_mico_linux
 endif
 

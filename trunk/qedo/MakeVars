@@ -1,11 +1,11 @@
 ##### Qedo Target Dir #####
 # The target dir of Qedo. After building Qedo it will be installed
 # into this directory 
-QEDO = /home/tri/test/qedo
+QEDO = /home/ritter/test/qedo
 
 ##### ORB #####
-# choose one out of MICO TAO ORBACUS
-ORB = MICO
+# choose one out of MICO_ORB TAO_ORB ORBACUS_ORB
+ORB = MICO_ORB
 
 # MICO
 MICO = /opt/mico/
