@@ -859,6 +859,7 @@ Optional Features:
   --enable-debug          use -g to compile (default off)
   --enable-streams        compile stream support in container (default on)
   --disable-qos            compile QoS support in container (default off)
+  --disable-db            compile Database support in container (default off)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1371,6 +1372,14 @@ if test "${enable_qos+set}" = set; then
   use_qos=$enableval
 else
   use_qos=no
+fi;
+
+# Check whether --enable-db or --disable-db was given.
+if test "${enable_db+set}" = set; then
+  enableval="$enable_db"
+  use_db=$enableval
+else
+  use_db=no
 fi;
 
 # Checks for programs.
@@ -3310,6 +3319,13 @@ fi
 if test X"$use_qos" != Xyes; then
 	cat >>confdefs.h <<\_ACEOF
 #define _QEDO_NO_QOS 1
+_ACEOF
+
+fi
+
+if test X"$use_db" != Xyes; then
+	cat >>confdefs.h <<\_ACEOF
+#define _QEDO_NO_DB 1
 _ACEOF
 
 fi

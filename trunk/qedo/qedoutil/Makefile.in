@@ -41,6 +41,7 @@ SOURCES = CADReader.cpp \
 	CSDReader.cpp \
 	DOMTreeErrorReporter.cpp \
 	DOMXMLParser.cpp \
+	DTMReader.cpp \
 	libunzip.cpp \
 	NameServiceBase.cpp \
 	Package.cpp \

@@ -26,7 +26,9 @@
 #include <CORBA.h>
 #include "QedoComponents_skel.h"
 #include "ContainerInterfaceImpl.h"
+
 #include "Connector.h"
+
 #include "Util.h"
 #include <vector>
 
@@ -124,7 +126,6 @@ private:
 
 	/** Name service referenz */
 	CosNaming::NamingContext_var nameService_;
-
 	/** the object reference of the connector */
 	ConnectorImpl*                      pConn_;
 
@@ -200,14 +201,13 @@ public:
 	 */
 	void loadValuetypeFactory(const char* repid, const char* loc)
 		throw (CORBA::SystemException);
-
 	virtual const Connector_ptr getConnector();
 
 #ifndef _QEDO_NO_QOS
 	/**
 	 * slot_id
 	 */
-	virtual PortableInterceptor::SlotId 
+	virtual PortableInterceptor::SlotId
 	slot_id();
 
 	/**

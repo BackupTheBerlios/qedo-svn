@@ -74,7 +74,13 @@ SOURCES = Key.cpp \
 		ExtensionHomeServant.cpp \
 		ExtensionContext.cpp \
 		InternalConfiguration.cpp \
-		Util.cpp
+		Util.cpp \
+		QDDatabase.cpp \
+		QDRecordset.cpp \
+		Catalog.cpp \
+		Connector.cpp \
+		StorageHomeBase.cpp \
+		StorageObject.cpp
 
 HEADER = ${SOURCES:.cpp=.h}
 
@@ -100,5 +106,5 @@ install-lib: libComponentContainer.so
 
 .PHONY: install-include
 
-install-include: $(HEADER)
+install-include: $(HEADER) PSSStorageObject.h
 

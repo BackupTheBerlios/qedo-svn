@@ -37,7 +37,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.57 2004/05/13 13:01:57 hao Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.58 2004/06/11 12:57:24 tom Exp $";
 
 
 namespace Qedo {
@@ -679,10 +679,9 @@ throw (Components::Deployment::UnknownImplId,
 			etc_path += "/etc/";
 	#endif
 		}
-		
 		//get connector
 		Connector_var pConn = Connector::_duplicate(component_server_->getConnector());
-		
+
 		if( ! pConn )
 		{
 			std::cout << "pConn is NULL" << std::endl;
@@ -693,7 +692,7 @@ throw (Components::Deployment::UnknownImplId,
 		DTMReader reader;
 		CosPersistentState::ParameterList params;
 
-		try 
+		try
 		{
 			reader.readConnection( etc_path+"database.xml", params );
 		}
@@ -702,15 +701,15 @@ throw (Components::Deployment::UnknownImplId,
 			std::cerr << "!!!!! Error during reading database.xml" << std::endl;
 			throw Components::Deployment::InstallationFailure();
 		}
-		
+
 		std::cout << "creating session ...\n";
 		CosPersistentState::Sessio_var pSession = pConn->create_basic_session(CosPersistentState::READ_WRITE, "", params);
 		SessionImpl* pSessionImpl = dynamic_cast <SessionImpl*> (pSession.in());
-		
+
 		std::map<std::string, std::string> mTables;
 		std::map<std::string, std::string>::iterator iter;
 		entity_home->get_table_info(mTables);
-		
+
 		std::string strTable = "PID_CONTENT";
 		strTable = convert2Lowercase(strTable);
 		if( ! pSessionImpl->IsTableExist(strTable.c_str()) )
@@ -730,7 +729,7 @@ throw (Components::Deployment::UnknownImplId,
 			std::string strName = iter->first;
 			std::string strInfo = iter->second;
 			strName = convert2Lowercase(strName);
-			
+
 			if( ! pSessionImpl->IsTableExist(strName.c_str()) )
 			{
 				std::cout << "creating table " << strName << " ...\n";
@@ -739,10 +738,9 @@ throw (Components::Deployment::UnknownImplId,
 			else
 				std::cout << "table " << strName << " exists!\n";
 		}
-		
+
 		//register storage object/home factory
 		entity_home->init_datastore( pConn.in(), pSession.in() );
-		
 		break;
 	}
 	case CT_EXTENSION:

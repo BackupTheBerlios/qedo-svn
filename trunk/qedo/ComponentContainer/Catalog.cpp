@@ -145,7 +145,7 @@ CatalogBaseImpl::access_mode()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//to obtain a storage home instance, it raises NotFound if it cannot find a 
+//to obtain a storage home instance, it raises NotFound if it cannot find a
 //storage home that matches the given storage_home_id
 ////////////////////////////////////////////////////////////////////////////////
 StorageHomeBase_ptr 
@@ -255,14 +255,14 @@ CatalogBaseImpl::flush()
 	if( !CanTransact() )
 		NORMAL_OUT( "CatalogBaseImpl::flush() - Database do not support transaction, flush is errorprone!" );
 
-	if( access_mode==READ_ONLY )
-	{	
+	if( access_mode()==READ_ONLY )
+	{
 		NORMAL_ERR( "CatalogBaseImpl::flush() - Session is read-only!" );
 		return;
 	}
 
 	std::string strFlush = "";
-	
+
 	for( homeBaseIter_=lHomeBases_.begin(); homeBaseIter_!=lHomeBases_.end(); homeBaseIter_++ )
 		strFlush += (*homeBaseIter_)->getFlush();
 
@@ -421,8 +421,8 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 	if( !CanTransact() )
 		NORMAL_OUT( "CatalogBaseImpl::flush_by_pids() - Database do not support transaction, flush is errorprone!" );
 
-	if( access_mode==READ_ONLY )
-	{	
+	if( access_mode()==READ_ONLY )
+	{
 		NORMAL_ERR( "CatalogBaseImpl::flush_by_pids() - Session pool is read-only!" );
 		return;
 	}

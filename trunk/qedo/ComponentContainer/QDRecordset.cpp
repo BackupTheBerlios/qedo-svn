@@ -337,7 +337,7 @@ QDRecordset::GetFieldIndex(const char* szFieldName)
 		memset(szColName, 0, MAX_COL_NAME_LEN);
 		SQLDescribeCol(hStmt_, nCol+1, (SQLCHAR*)szColName, MAX_COL_NAME_LEN, &cbColNameLen, &fSqlType, &cbColDef, &ibScale, &fNullable);
 
-		if(_stricmp(szColName, szFieldName) == 0)
+		if(strcmp(szColName, szFieldName) == 0)
 			return nCol;
 		nCol++;
 	}

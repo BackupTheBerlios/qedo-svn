@@ -42,6 +42,10 @@ AC_ARG_ENABLE(qos,
  [  --disable-qos            compile QoS support in container (default off)],
  use_qos=$enableval, use_qos=no)
 
+AC_ARG_ENABLE(db,
+ [  --disable-db            compile Database support in container (default off)],
+ use_db=$enableval, use_db=no)
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_MAKE_SET
@@ -151,6 +155,10 @@ fi
 
 if test X"$use_qos" != Xyes; then
 	AC_DEFINE(_QEDO_NO_QOS)
+fi
+
+if test X"$use_db" != Xyes; then
+	AC_DEFINE(_QEDO_NO_DB)
 fi
 
 # Checks for header files.

@@ -233,7 +233,7 @@ namespace CosPersistentState
 //a public default constructor that creates a null reference
 ////////////////////////////////////////////////////////////////////////////////
 StorageObjectRef::StorageObjectRef() :
-	pObj_(NULL)
+	pObj_(NULL) 
 {
 }
 

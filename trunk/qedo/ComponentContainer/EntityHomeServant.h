@@ -77,11 +77,10 @@ public:
 	 * destructor
 	 */
 	~EntityHomeServant();
-	
+
 	virtual void get_table_info(std::map<std::string, std::string>& mTables) = 0;
 
 	virtual void init_datastore(const Connector_ptr pConn, const Sessio_ptr pSession) = 0;
-
 };
 
 /** @} */

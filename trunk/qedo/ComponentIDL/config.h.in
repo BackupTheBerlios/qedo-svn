@@ -192,3 +192,6 @@
 
 /* Define that the container should be without QoS */
 #undef _QEDO_NO_QOS
+
+/* Define that the container should be without Database support */
+#undef _QEDO_NO_DB

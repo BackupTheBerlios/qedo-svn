@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.32 2004/05/13 13:01:57 hao Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.33 2004/06/11 12:57:24 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -96,7 +96,6 @@ ComponentServerImpl::~ComponentServerImpl()
 #endif
 
 	std::cout << "ComponentServerImpl::~ComponentServerImpl()\n";
-
 	std::cout << "delete connector 1\n";
 	if(pConn_!=NULL)
 	{

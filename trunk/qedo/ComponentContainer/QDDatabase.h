@@ -22,6 +22,7 @@
 #ifndef __QDDATABASE_H__
 #define __QDDATABASE_H__
 
+
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -55,8 +56,8 @@ class CONTAINERDLL_API QDDatabase
 		void Destroy();
 
 		bool DriverConnect( const char* szConnStr,
-							char* szConnStrOut = NULL, 
-							HWND hWnd = NULL, 
+							char* szConnStrOut = NULL,
+							HWND hWnd = NULL,
 							const int nDrvConn = SQL_DRIVER_NOPROMPT);
 
 		void SetLoginTimeout(const long nSeconds); //???
@@ -72,9 +73,9 @@ class CONTAINERDLL_API QDDatabase
 		bool ExecuteSQL(const char* szSqlStr);
 
 		bool CanTransact();
-		
+
 		bool CanUpdate();
-		
+
 		bool IsConnected();
 
 		bool IsTableExist(const char* szTableName);
@@ -82,7 +83,7 @@ class CONTAINERDLL_API QDDatabase
 		SQLHDBC getHDBC();
 
 	protected:
-		
+
 		SQLHDBC hDbc_;
 		SQLHENV hEnv_;
 		int iRecordsAffected_;
@@ -94,5 +95,4 @@ class CONTAINERDLL_API QDDatabase
 };
 
 }; // namespace Qedo
-
 #endif
