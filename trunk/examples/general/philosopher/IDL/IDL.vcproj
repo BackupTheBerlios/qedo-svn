@@ -143,8 +143,9 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)\bin\cidl_gen philosophers.cidl dinner
-time /T &gt; last_build_time"
+						CommandLine="$(QEDO)\bin\cidl_gen -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --target dinner philosophers.cidl
+time /T &gt; last_build_time
+"
 						Outputs="last_build_time;dinner_LOCAL.idl;dinner_EQUIVALENT.idl;dinner_BUSINESS.idl"/>
 				</FileConfiguration>
 			</File>
@@ -158,7 +159,7 @@ time /T &gt; last_build_time"
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_BUSINESS.idl
+						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_BUSINESS.idl
 "
 						Outputs="dinner_BUSINESS.h;dinner_BUSINESS.cpp;dinner_BUSINESS_skel.h;dinner_BUSINESS_skel.cpp"/>
 				</FileConfiguration>
@@ -169,7 +170,7 @@ time /T &gt; last_build_time"
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_EQUIVALENT.idl
+						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_EQUIVALENT.idl
 "
 						Outputs="dinner_EQUIVALENT.h;dinner_EQUIVALENT.cpp;dinner_EQUIVALENT_skel.h;dinner_EQUIVALENT_skel.cpp"/>
 				</FileConfiguration>
@@ -180,7 +181,7 @@ time /T &gt; last_build_time"
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_LOCAL.idl
+						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_LOCAL.idl
 "
 						Outputs="dinner_LOCAL.h;dinner_LOCAL.cpp;dinner_LOCAL_skel.h;dinner_LOCAL_skel.cpp"/>
 				</FileConfiguration>
