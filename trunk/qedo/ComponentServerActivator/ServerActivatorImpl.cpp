@@ -31,7 +31,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.40 2004/07/02 09:30:44 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.41 2004/08/23 07:02:00 tom Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -337,6 +337,11 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	{
 		args[args_nr++] = "--verbose";
 	}
+
+	// read additional commandline arguments from Qedo.conf
+	std::string additional_cmd_line = 
+		Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ComponentServer/command_line");
+	args[args_nr++] = (char*) additional_cmd_line.c_str();
 
 	args[args_nr++] = "--csa_ref";
 	args[args_nr++] = my_string_ref.inout();
