@@ -1,17 +1,17 @@
 <?xml version = '1.0' ?>
 <!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://cif.sourceforge.net/componentassembly.dtd">
 
-<componentassembly id="ass1">
+<componentassembly id="HelloWorld_Example">
 
     <description>Example assembly"</description>
 
     <componentfiles>
         <componentfile id="Callee_file">
-            <fileinarchive name="HelloWorld_CalleeImpl_Linux.zip"/>
+            <fileinarchive name="HelloWorld_CalleeImpl.zip"/>
         </componentfile>
 
         <componentfile id="Caller_file">
-            <fileinarchive name="HelloWorld_CallerImpl_Linux.zip"/>
+            <fileinarchive name="HelloWorld_CallerImpl.zip"/>
         </componentfile>
 
     </componentfiles>
@@ -20,7 +20,7 @@
 	<processcollocation>
 		<homeplacement id="CalleeHome">
 	        	<componentfileref idref="Callee_file"/>
-				<componentimplref idref="HelleWorld_CalleeImpl-mico-linux-26-10-2003"/>
+				<componentimplref idref="UUID-e4bc061b-5ab8-494c-a21e-fab954876376"/>
   	        	<componentinstantiation id="callee">
 			</componentinstantiation>
 
@@ -32,7 +32,7 @@
 
 		<homeplacement id="CallerHome">
 			<componentfileref idref="Caller_file"/>
-				<componentimplref idref="HelloWorld_CallerImpl-mico-linux-26-10-2003"/>
+				<componentimplref idref="UUID-84628f02-c896-42ca-9644-6cdc0f88e017"/>
 			<componentinstantiation id="caller">
 			</componentinstantiation>
 

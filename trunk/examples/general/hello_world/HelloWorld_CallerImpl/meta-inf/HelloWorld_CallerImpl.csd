@@ -4,15 +4,15 @@
 <softpkg name="CallerImpl_softpkg" version="1,0">
 
     <pkgtype>CORBA Component</pkgtype>
-    <title></title>
-    <author></author>
-    <description></description>
+    <title>Caller Component of the Hello World example</title>
+    <author>Qedo Team</author>
+    <description>This component calls the calle component.</description>
     <license href="" />
     <idl id="IDL:HelloWorld/CallerHome:1.0">
         <fileinarchive name="hello.cidl"/>
     </idl>
 
-    <implementation id="HelloWorld_CallerImpl-mico-linux-26-10-2003">
+    <implementation id="UUID-84628f02-c896-42ca-9644-6cdc0f88e017">
         <os name="linux" />
         <processor name="" />
         <compiler name="" version="" />

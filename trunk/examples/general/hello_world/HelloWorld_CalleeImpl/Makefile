@@ -12,7 +12,7 @@ CPP_FILES = HelloWorld_CalleeImpl_BUSINESS.cpp \
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 
-CLEAN_FILES = *.zip
+CLEAN_FILES = ${OBJ_FILES} HelloWorld_CalleeImpl.so HelloWorld_CalleeImpl.zip
 
 LIBS += -L../HelloWorld_CalleeImpl_SERVANT -lHelloWorld_CalleeImpl_SERVANT 
 
@@ -32,11 +32,11 @@ HelloWorld_CalleeImpl_BUSINESS.cpp: HelloWorld_CalleeImpl_EQUIVALENT.h HelloWorl
 
 HelloWorld_CalleeImpl.cpp: HelloWorld_CalleeImpl_BUSINESS.h
 
-package: HelloWorld_CalleeImpl_$(OS).zip
+package: HelloWorld_CalleeImpl.zip
 
-HelloWorld_CalleeImpl_$(OS).zip : meta-inf/HelloWorld_CalleeImpl.ccd meta-inf/HelloWorld_CalleeImpl.csd libHelloWorld_CalleeImpl.so
-	zip HelloWorld_CalleeImpl_$(OS).zip -j ../HelloWorld_CalleeImpl_SERVANT/libHelloWorld_CalleeImpl_SERVANT.so libHelloWorld_CalleeImpl.so $(CIDL_FILES)
-	zip HelloWorld_CalleeImpl_$(OS).zip meta-inf/HelloWorld_CalleeImpl.ccd meta-inf/HelloWorld_CalleeImpl.csd
+HelloWorld_CalleeImpl.zip : meta-inf/HelloWorld_CalleeImpl.ccd meta-inf/HelloWorld_CalleeImpl.csd libHelloWorld_CalleeImpl.so
+	zip HelloWorld_CalleeImpl.zip -j ../HelloWorld_CalleeImpl_SERVANT/libHelloWorld_CalleeImpl_SERVANT.so libHelloWorld_CalleeImpl.so $(CIDL_FILES)
+	zip HelloWorld_CalleeImpl.zip meta-inf/HelloWorld_CalleeImpl.ccd meta-inf/HelloWorld_CalleeImpl.csd
 
 meta-inf/HelloWorld_CalleeImpl.ccd meta-inf/HelloWorld_CalleeImpl.csd :
 	[ -d meta-inf ] || mkdir ./meta-inf

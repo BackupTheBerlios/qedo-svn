@@ -12,7 +12,7 @@ CPP_FILES = HelloWorld_CallerImpl_BUSINESS.cpp \
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 
-CLEAN_FILES = *.zip
+CLEAN_FILES = ${OBJ_FILES} HelloWorld_CallerImpl.so HelloWorld_CallerImpl.zip
 
 LIBS += -L../HelloWorld_CallerImpl_SERVANT -lHelloWorld_CallerImpl_SERVANT 
 
@@ -32,11 +32,11 @@ HelloWorld_CallerImpl_BUSINESS.cpp: HelloWorld_CallerImpl_EQUIVALENT.h HelloWorl
 
 HelloWorld_CallerImpl.cpp: HelloWorld_CallerImpl_BUSINESS.h
 
-package: HelloWorld_CallerImpl_$(OS).zip
+package: HelloWorld_CallerImpl.zip
 
-HelloWorld_CallerImpl_$(OS).zip : meta-inf/HelloWorld_CallerImpl.ccd meta-inf/HelloWorld_CallerImpl.csd libHelloWorld_CallerImpl.so
-	zip HelloWorld_CallerImpl_$(OS).zip -j ../HelloWorld_CallerImpl_SERVANT/libHelloWorld_CallerImpl_SERVANT.so libHelloWorld_CallerImpl.so $(CIDL_FILES)
-	zip HelloWorld_CallerImpl_$(OS).zip meta-inf/HelloWorld_CallerImpl.ccd meta-inf/HelloWorld_CallerImpl.csd
+HelloWorld_CallerImpl.zip : meta-inf/HelloWorld_CallerImpl.ccd meta-inf/HelloWorld_CallerImpl.csd libHelloWorld_CallerImpl.so
+	zip HelloWorld_CallerImpl.zip -j ../HelloWorld_CallerImpl_SERVANT/libHelloWorld_CallerImpl_SERVANT.so libHelloWorld_CallerImpl.so $(CIDL_FILES)
+	zip HelloWorld_CallerImpl.zip meta-inf/HelloWorld_CallerImpl.ccd meta-inf/HelloWorld_CallerImpl.csd
 
 meta-inf/HelloWorld_CallerImpl.ccd meta-inf/HelloWorld_CallerImpl.csd :
 	[ -d meta-inf ] || mkdir ./meta-inf
