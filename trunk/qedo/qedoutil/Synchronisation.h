@@ -41,10 +41,7 @@
 #endif
 #endif
 
-#ifdef QEDO_PTHREAD
-#include <pthread.h>
-#include <signal.h>
-#endif
+
 
 #include "Util.h"
 
@@ -59,7 +56,7 @@ namespace Qedo {
 
 
 class qedo_lock;
-
+struct mutex_delegate;
 
 /**
  * a mutex for Qedo
@@ -74,11 +71,7 @@ class CONTAINERDLL_API qedo_mutex {
 private:
 
 	/** the mutex */
-#ifdef QEDO_WINTHREAD
-	HANDLE m_mutex;
-#else
-	pthread_mutex_t m_mutex;
-#endif
+	struct mutex_delegate* delegate;
 
 public:
 	/**
@@ -132,6 +125,7 @@ public:
 };
 
 
+struct cond_delegate;
 /**
  * bla
  */
@@ -140,11 +134,7 @@ class CONTAINERDLL_API qedo_cond
 
 private:
 	/// bla
-#ifdef QEDO_WINTHREAD
-	HANDLE m_event_handle;
-#else
-	pthread_cond_t m_cond;
-#endif
+	struct cond_delegate* delegate;
 
 public:
 	/**

@@ -22,16 +22,35 @@
 
 #include "Synchronisation.h"
 
+#ifdef QEDO_PTHREAD
+#include <pthread.h>
+#include <signal.h>
+#endif
 
 namespace Qedo {
 
+struct mutex_delegate {
+#ifdef QEDO_WINTHREAD
+	HANDLE m_mutex;
+#else
+	pthread_mutex_t m_mutex;
+#endif
+};
+
+struct cond_delegate {
+#ifdef QEDO_WINTHREAD
+	HANDLE m_event_handle;
+#else
+	pthread_cond_t m_cond;
+#endif
+};
 
 qedo_mutex::qedo_mutex() {
-
+    delegate = new mutex_delegate;
 #ifdef QEDO_WINTHREAD
-	m_mutex = CreateMutex(NULL,FALSE,NULL);
+	delegate->m_mutex = CreateMutex(NULL,FALSE,NULL);
 #else
-	pthread_mutex_init(&m_mutex, NULL);
+	pthread_mutex_init(&(delegate->m_mutex), NULL);
 #endif
 }
 
@@ -40,8 +59,9 @@ qedo_mutex::~qedo_mutex() {
 
 #ifdef QEDO_WINTHREAD
 #else
-	pthread_mutex_destroy(&m_mutex);
+	pthread_mutex_destroy(&(delegate->m_mutex));
 #endif
+	delete delegate;
 }
 
 
@@ -49,9 +69,9 @@ void
 qedo_mutex::qedo_lock_object() {
 
 #ifdef QEDO_WINTHREAD
-	WaitForSingleObject(m_mutex, INFINITE);
+	WaitForSingleObject(delegate->m_mutex, INFINITE);
 #else
-	pthread_mutex_lock(&m_mutex);
+	pthread_mutex_lock(&(delegate->m_mutex));
 #endif
 }
 
@@ -60,9 +80,9 @@ void
 qedo_mutex::qedo_unlock_object() {
 
 #ifdef QEDO_WINTHREAD
-	ReleaseMutex(m_mutex);
+	ReleaseMutex(delegate->m_mutex);
 #else
-	pthread_mutex_unlock(&m_mutex);
+	pthread_mutex_unlock(&(delegate->m_mutex));
 #endif
 }
 
@@ -85,10 +105,11 @@ qedo_lock::~qedo_lock() {
 
 
 qedo_cond::qedo_cond(char * sig_name) {
+	delegate = new cond_delegate;
 #ifdef QEDO_WINTHREAD
-		m_event_handle = CreateEvent (NULL, TRUE /*manua-reset*/, FALSE /*initial: non-signaled*/, sig_name);
+		delegate->m_event_handle = CreateEvent (NULL, TRUE /*manua-reset*/, FALSE /*initial: non-signaled*/, sig_name);
 #else
-		pthread_cond_init(&m_cond, NULL);
+		pthread_cond_init(&(delegate->m_cond), NULL);
 #endif
 }
 
@@ -96,8 +117,9 @@ qedo_cond::qedo_cond(char * sig_name) {
 qedo_cond::~qedo_cond() {
 #ifdef QEDO_WINTHREAD
 #else
-	pthread_cond_destroy(&m_cond);
+	pthread_cond_destroy(&(delegate->m_cond));
 #endif
+	delete delegate;
 }
 
 
@@ -105,12 +127,12 @@ void
 qedo_cond::qedo_wait() {
 
 #ifdef QEDO_WINTHREAD
-	WaitForMultipleObjects(1, &m_event_handle, TRUE, INFINITE /*wait for ever*/);
+	WaitForMultipleObjects(1, &(delegate->m_event_handle), TRUE, INFINITE /*wait for ever*/);
 #else
 	pthread_mutex_t mut;
 	pthread_mutex_init(&mut, NULL);
 	pthread_mutex_lock(&mut);
-	pthread_cond_wait(&m_cond,&mut);
+	pthread_cond_wait(&(delegate->m_cond),&mut);
 	pthread_mutex_unlock(&mut);
 #endif
 }
@@ -120,9 +142,9 @@ void
 qedo_cond::qedo_signal() {
 
 #ifdef QEDO_WINTHREAD
-	SetEvent(m_event_handle);
+	SetEvent(delegate->m_event_handle);
 #else
-	pthread_cond_signal(&m_cond);
+	pthread_cond_signal(&(delegate->m_cond));
 #endif
 }
 
@@ -130,7 +152,7 @@ qedo_cond::qedo_signal() {
 void
 qedo_cond::qedo_reset() {
 #ifdef QEDO_WINTHREAD
-	ResetEvent(m_event_handle);
+	ResetEvent(delegate->m_event_handle);
 #else
 #endif
 };
