@@ -37,14 +37,14 @@ module StreamComponents {
                 exception OutOfRange {};
                 exception IllegalSize {};
                 exception OutOfMemory {};
-                                                                                
+
                 BufferPtr get_buffer();
-                                                                                
+
                 unsigned long get_size();
-                                                                                
+
                 void set_used (in unsigned long bytes_used)
                         raises (OutOfRange);
-                                                                                
+
                 unsigned long get_used();
         };
 };
@@ -52,7 +52,7 @@ module StreamComponents {
 
 
 module Components {
-	
+
 	typedef string FeatureName;
 	typedef sequence<FeatureName> NameList;
 	typedef unsigned long FailureReason;
@@ -396,7 +396,7 @@ module Components {
 		Cond create_cond()
 			raises(CCMException);
 	};
-		
+
 	local interface EnterpriseComponent {
 	};
 
@@ -404,6 +404,7 @@ module Components {
 		Object get_CCM_object()
 			raises (IllegalState);
 	};
+
 
 	local interface SessionComponent : EnterpriseComponent {
 		void set_session_context ( in SessionContext ctx)
@@ -449,7 +450,67 @@ module Components {
 		void ccm_remove ()
 			raises (CCMException);
 	};
-		
+
+#ifndef _QEDO_NO_QOS
+	module Extension {
+		local interface ContainerInterceptor {};
+
+		local interface ServerContainerInterceptor : ContainerInterceptor
+		{
+			void receive_request ( in PortableInterceptor::ServerRequestInfo info);
+			void send_reply ( in PortableInterceptor::ServerRequestInfo info);
+			void send_system_exception ( in PortableInterceptor::ServerRequestInfo info);
+			void send_user_exception ( in PortableInterceptor::ServerRequestInfo info);
+		};
+
+		local interface ClientContainerInterceptor : ContainerInterceptor
+		{
+			void send_request ( in PortableInterceptor::ServerRequestInfo info);
+			void receive_reply ( in PortableInterceptor::ServerRequestInfo info);
+			void receive_system_exception ( in PortableInterceptor::ServerRequestInfo info);
+			void receive_user_exception ( in PortableInterceptor::ServerRequestInfo info);
+		};
+		local interface ServerInterceptorRegistration : PortableInterceptor::ServerRequestInterceptor
+		{
+			void register_server_interceptor (in ServerContainerInterceptor server_interceptor);
+		};
+
+		local interface ClientInterceptorRegistration : PortableInterceptor::ClientRequestInterceptor
+		{
+			void register_client_interceptor ( in ClientContainerInterceptor client_interceptor);
+		};
+
+	}; // Extension
+
+	local interface ExtensionContext : CCMContext
+	{
+		void set_server_interceptor_dispatcher_registration (
+			in Components::Extension::ServerInterceptorRegistration registration);
+
+		void set_client_interceptor_dispatcher_registration (
+			in Components::Extension::ClientInterceptorRegistration registration );
+
+		Components::Extension::ServerInterceptorRegistration
+			get_server_interceptor_dispatcher_registration ();
+
+		Components::Extension::ClientInterceptorRegistration
+			get_client_interceptor_dispatcher_registration ();
+	};
+
+	local interface ExtensionComponent : EnterpriseComponent
+	{
+		void set_extension_context (in ExtensionContext ctx)
+			raises (CCMException);
+		void ccm_activate ()
+			raises (CCMException);
+		void ccm_passivate ()
+			raises (CCMException);
+		void ccm_remove ()
+			raises (CCMException);
+	};
+
+#endif
+
 	enum BadComponentReferenceReason {
 		NON_LOCAL_REFERENCE,
 		NON_COMPONENT_REFERENCE,
@@ -466,7 +527,7 @@ module Components {
 	typedef sequence<octet> IdData;
 	typedef short StateIdType;
 	const StateIdType PERSISTENT_ID = 0;
-		
+
 	exception BadComponentReference {
 		BadComponentReferenceReason reason;
 	};
@@ -477,7 +538,7 @@ module Components {
 	exception InvalidStateIdData {};
 
 	local interface HomeRegistration;
-		
+
 	local interface CCM2Context : CCMContext {
 		HomeRegistration get_home_registration ();
 		void req_passivate ()
@@ -588,7 +649,7 @@ module Components {
 	};
 
 	typedef sequence<CCMHome> CCMHomes;
-	
+
 
 	//
 	// module deployment
@@ -659,7 +720,7 @@ module Components {
 			AssemblyState get_state();
 		};
 
-		
+
 		interface AssemblyFactory
 		{
 			Cookie create_assembly(in Location assembly_loc)
@@ -756,7 +817,7 @@ module Components {
 			raises (InvalidConfiguration);
 	};
 
-	
+
 	// These interfaces are not standard, but every container implementation needs to define
 	// something like this to implement session or entity components
 	local interface SessionExecutorLocator : ExecutorLocator, SessionComponent
@@ -775,6 +836,13 @@ module Components {
 	local interface EntityExecutorLocator : ExecutorLocator, EntityComponent
 	{
 	};
+
+#ifndef _QEDO_NO_QOS
+	local interface ExtensionExecutorLocator : ExecutorLocator, ExtensionComponent
+	{
+	};
+
+#endif
 };
 #pragma prefix ""
 
