@@ -26,6 +26,13 @@
 
 module Qedo_Components {
 
+typedef sequence<Components::CCMObject> CCMObjects;
+
+interface CCMHome : Components::CCMHome
+{
+	CCMObjects get_instances ();
+};
+
 module Deployment {
 
 interface ServerActivator : Components::Deployment::ServerActivator
