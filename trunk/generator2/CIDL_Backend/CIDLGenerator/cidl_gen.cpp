@@ -39,11 +39,13 @@ void
 printUsage()
 {
 	std::cerr << "usage : gen_cidl [options] --target <compositionname> filename" << std::endl;
-	std::cerr << "        --target <compositionname> : the element to generate code for" << std::endl;
-	std::cerr << "        --business : generate business code skeletons" << std::endl;
-	std::cerr << "        --servant : generate servant code" << std::endl;
+	std::cerr << "        [--target|-t] <compositionname> : the element to generate code for" << std::endl;
+	std::cerr << "        [--business|-b] : generate business code skeletons" << std::endl;
+	std::cerr << "        [--servant|-s] : generate servant code" << std::endl;
 	std::cerr << "        --out <fileprefix> : idl files will be prefixed with fileprefix" << std::endl;
 	std::cerr << "        --vc7 : generate VC7 projects" << std::endl;
+	std::cerr << "        -d : generate XML Descriptor skeletons" << std::endl;
+	std::cerr << "		  [--help|-h] : print this" << std::endl;
 }
 
 
@@ -120,9 +122,12 @@ main
 	signal ( SIGINT, handle_sigint );
 
 	repository = new QEDO_ComponentRepository::CIDLRepository_impl ( orb, root_poa );
+	bool generateEIDL = true;
+	bool generateLIDL = true;
 	bool generateBusiness = false;
 	bool generateServant = false;
 	bool generatevc7 = false;
+	bool generateDescriptors = false;
 	std::string target;
 	std::string fileprefix = "";
 	std::string target_file_name = argv[argc - 1];
@@ -139,7 +144,13 @@ main
     for(int i = 1; i < argc;)
     {
         const char* option = argv[i];
-		if(strcmp(option, "--testmode") == 0)
+		if((strcmp(option, "--help") == 0) || (strcmp(option, "-h") == 0))
+		{
+			printUsage();
+			orb->destroy();
+			exit ( 1 );
+		}
+		else if(strcmp(option, "--testmode") == 0)
 		{
 			frontend_replacement_feed ( repository );
             
@@ -148,7 +159,7 @@ main
             
             argc--;
 		}
-		else if(strcmp(option, "--business") == 0)
+		else if((strcmp(option, "--business") == 0) || (strcmp(option, "-b") == 0))
 		{
 			generateBusiness = true;
             
@@ -157,7 +168,7 @@ main
             
             argc--;
 		}
-		else if(strcmp(option, "--servant") == 0)
+		else if((strcmp(option, "--servant") == 0) || (strcmp(option, "-s") == 0))
 		{
 			generateServant = true;
             
@@ -175,7 +186,16 @@ main
             
             argc--;
 		}
-		else if(strcmp(option, "--target") == 0)
+		else if(strcmp(option, "-d") == 0)
+		{
+			generateDescriptors = true;
+            
+            for(int j = i ; j + 1 < argc ; j++)
+                argv[j] = argv[j + 1];
+            
+            argc--;
+		}
+		else if((strcmp(option, "--target") == 0) || (strcmp(option, "-t") == 0))
 		{
 			if(i + 1 >= argc)
 			{
@@ -223,19 +243,25 @@ main
 	// feed repository
 	frontend_feed ( argc, argv, repository -> _this() );
 
-	// generate equivalent IDL
-	std::cout << "Generating equivalent IDL for " << target << std::endl;
-	QEDO_CIDL_Generator::GeneratorEIDL *eidl_generator =
-		new QEDO_CIDL_Generator::GeneratorEIDL(repository, orb.in());
-	eidl_generator->generate(target, fileprefix);
-	eidl_generator->destroy();
+	if(generateEIDL)
+	{
+		// generate equivalent IDL
+		std::cout << "Generating equivalent IDL for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorEIDL *eidl_generator =
+			new QEDO_CIDL_Generator::GeneratorEIDL(repository, orb.in());
+		eidl_generator->generate(target, fileprefix);
+		eidl_generator->destroy();
+	}
 
-	// generate local IDL
-	std::cout << "Generating local IDL for " << target << std::endl;
-	QEDO_CIDL_Generator::GeneratorLIDL *lidl_generator =
-		new QEDO_CIDL_Generator::GeneratorLIDL(repository);
-	lidl_generator->generate(target, fileprefix);
-	lidl_generator->destroy();
+	if(generateLIDL)
+	{
+		// generate local IDL
+		std::cout << "Generating local IDL for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorLIDL *lidl_generator =
+			new QEDO_CIDL_Generator::GeneratorLIDL(repository);
+		lidl_generator->generate(target, fileprefix);
+		lidl_generator->destroy();
+	}
 
 	if(generateBusiness)
 	{
@@ -245,20 +271,6 @@ main
 			new QEDO_CIDL_Generator::GeneratorBIDL(repository);
 		bidl_generator->generate(target, fileprefix);
 		bidl_generator->destroy();
-
-		// generate CORBA Component Descriptor
-		std::cout << "Generating CORBA Component Descriptor for " << target << std::endl;
-		QEDO_CIDL_Generator::GeneratorCCD *ccd_generator =
-			new QEDO_CIDL_Generator::GeneratorCCD(repository);
-		ccd_generator->generate(target, fileprefix);
-		ccd_generator->destroy();
-
-		// generate Software Package Descriptor
-		std::cout << "Generating Software Package Descriptor for " << target << std::endl;
-		QEDO_CIDL_Generator::GeneratorCSD *csd_generator =
-			new QEDO_CIDL_Generator::GeneratorCSD(repository);
-		csd_generator->generate(target, fileprefix);
-		csd_generator->destroy();
 
 		// generate business header
 		std::cout << "Generating business code header for " << target << std::endl;
@@ -287,6 +299,23 @@ main
 			new QEDO_CIDL_Generator::GeneratorValuetypesC(repository);
 		vtc_generator->generate(target, fileprefix);
 		vtc_generator->destroy();
+	}
+
+	if(generateDescriptors)
+	{
+		// generate CORBA Component Descriptor
+		std::cout << "Generating CORBA Component Descriptor for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorCCD *ccd_generator =
+			new QEDO_CIDL_Generator::GeneratorCCD(repository);
+		ccd_generator->generate(target, fileprefix);
+		ccd_generator->destroy();
+
+		// generate Software Package Descriptor
+		std::cout << "Generating Software Package Descriptor for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorCSD *csd_generator =
+			new QEDO_CIDL_Generator::GeneratorCSD(repository);
+		csd_generator->generate(target, fileprefix);
+		csd_generator->destroy();
 	}
 
 	if(generateServant)
