@@ -22,31 +22,42 @@
 
 #include "ComponentImplementation.h"
 #include "CSDReader.h"
+#include "CADReader.h"
+#include <fstream>
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.15 2003/09/16 07:30:21 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.16 2003/09/26 08:25:53 neubauer Exp $";
 
 
 namespace Qedo {
 
 
 ComponentImplementation::ComponentImplementation
-(ComponentImplementationData data, std::string installationDirectory, std::string package)
+( ComponentImplementationData data 
+, std::string installationDirectory 
+, std::string package
+, CosNaming::NamingContext_ptr nameContext)
 {
 	data_ = data;
-	installation_dir_ = getPath(installationDirectory) + data.uuid;
-	installation_path_ = getPath(installation_dir_);
+	data_.installation_dir = getPath(installationDirectory) + data.uuid;
+	installation_path_ = getPath(data_.installation_dir);
 	build_dir_ = installation_path_ + "build";
 	build_path_ = getPath(build_dir_);
 	package_ = package;
 	installation_count_ = 0;
+
+	nameService_ = CosNaming::NamingContext::_duplicate(nameContext);
 }
 
 
-ComponentImplementation::ComponentImplementation (ComponentImplementationData data)
+ComponentImplementation::ComponentImplementation
+( ComponentImplementationData data
+, CosNaming::NamingContext_ptr nameContext)
 {
 	data_=data;
 	installation_count_=1;
+
+	nameService_ = CosNaming::NamingContext::_duplicate(nameContext);
 }
 
 
@@ -69,8 +80,9 @@ ComponentImplementation::operator ==
 }
 
 
-bool
-ComponentImplementation::install ()
+void
+ComponentImplementation::install()
+throw(Components::CreateFailure)
 {
     //
 	// if already installed increment counter only
@@ -78,32 +90,63 @@ ComponentImplementation::install ()
 	if (installation_count_)
 	{
 		installation_count_++;
-		return true;
+		return;
 	}
 
 	//
 	// create directories for the component implementation
 	//
-	makeDir(installation_dir_);
+	makeDir(data_.installation_dir);
     makeDir(build_dir_);
 
 	//
-	// get info from the software package
-    //
-	CSDReader reader;
-	try 
+	// package may be component or composition
+	//
+	Package archive = Package( package_ );
+    std::string xmlfile_name = archive.getFileNameWithSuffix( ".cad" );
+    if ( xmlfile_name != std::string( "" ) )
 	{
-		reader.readCSD( package_, &data_, build_path_ );
+		//
+		// get info from the assembly package
+		//
+		CADReader reader;
+		try 
+		{
+			reader.readCAD( package_, &(data_.assembly), build_path_ );
+		}
+		catch( CADReadException ) 
+		{
+			std::cerr << "!!!!! Error during reading .cad" << std::endl;
+			removeFileOrDirectory(data_.installation_dir);
+			removeFileOrDirectory(build_dir_);
+			throw Components::CreateFailure();
+		}
+		data_.assembly.cad = getFileName( xmlfile_name );
 	}
-	catch( CSDReadException ) 
+	else
 	{
-		removeFileOrDirectory(installation_dir_);
-		removeFileOrDirectory(build_dir_);
-        return false;
+		xmlfile_name = archive.getFileNameWithSuffix( ".csd" );
+
+		//
+		// get info from the software package
+		//
+		CSDReader reader;
+		try 
+		{
+			reader.readCSD( package_, &data_, build_path_ );
+		}
+		catch( CSDReadException ) 
+		{
+			std::cerr << "!!!!! Error during reading .csd" << std::endl;
+			removeFileOrDirectory(data_.installation_dir);
+			removeFileOrDirectory(build_dir_);
+			throw Components::CreateFailure();
+		}
+		data_.csd = getFileName( xmlfile_name );
 	}
 
     //
-	// install code for servants and executors
+	// install any code
 	//
     try	
 	{
@@ -111,20 +154,19 @@ ComponentImplementation::install ()
 	}
 	catch( Components::CreateFailure )
 	{
-		removeFileOrDirectory(installation_dir_);
+		removeFileOrDirectory(data_.installation_dir);
 		removeFileOrDirectory(build_dir_);
-        return false;
+        throw Components::CreateFailure();
 	}
 
 	// increment installation counter ( to 1 )
 	installation_count_++;
-
-	return true;
 }
 
 
-bool 
+void 
 ComponentImplementation::uninstall()
+throw (Components::RemoveFailure)
 {
     installation_count_--;
 
@@ -133,10 +175,132 @@ ComponentImplementation::uninstall()
 		//
 		// remove installed code
 		//
-		removeFileOrDirectory(installation_dir_);
+		removeFileOrDirectory(data_.installation_dir);
+	}
+}
+
+
+ComponentImplementationData
+ComponentImplementation::getData()
+{
+	return data_;
+}
+
+
+void
+ComponentImplementation::installAssembly()
+throw( Components::CreateFailure )
+{
+	//
+	// for each hostcollocation
+	//
+	std::vector < HostData > ::const_iterator host_iter;
+	for(host_iter = data_.assembly.hosts_.begin(); 
+		host_iter != data_.assembly.hosts_.end(); 
+		host_iter++)
+	{
+		Qedo_Components::Deployment::ComponentInstallation_var componentInstallation;
+		CORBA::Object_var obj;
+		std::string host = (*host_iter).host;
+
+		//
+		// get ComponentInstallation for destination
+		//
+		obj = resolveName(COMPONENT_INSTALLATION_CONTEXT + host);
+		if ( CORBA::is_nil(obj))
+		{
+			std::cerr << "..... no ComponentInstallation for " << host << std::endl;
+			throw Components::CreateFailure();
+		}
+    
+		componentInstallation = Qedo_Components::Deployment::ComponentInstallation::_narrow(obj.in());
+		if ( CORBA::is_nil(componentInstallation.in()))
+		{
+			std::cerr << "..... no ComponentInstallation for " << host << std::endl;
+			throw Components::CreateFailure();
+		}
+
+		//
+		// for each processcollocation
+		//
+		std::vector < ProcessData > ::const_iterator process_iter;
+		for(process_iter = (*host_iter).processes.begin(); 
+			process_iter != (*host_iter).processes.end();
+			process_iter++)
+		{
+			//
+			// for each homeplacement
+			//
+			std::vector < HomeInstanceData > ::const_iterator iter;
+			for(iter = (*process_iter).homes.begin();
+				iter != (*process_iter).homes.end(); 
+				iter++)
+			{
+				HomeInstanceData data = *iter;
+				std::string package_file_ref = data.file;
+				std::string package_file = data_.assembly.implementationMap_[package_file_ref];
+				std::string impl_id = data.impl_id;
+
+				std::cout << "..... install implementation " << std::endl;
+				std::cout << ".......... destination is " << data.dest << std::endl;
+				std::cout << ".......... implementation id is " << std::endl;
+				std::cout << ".......... package is " << package_file << std::endl;
+
+				//
+				// install
+				//
+				std::string location = std::string("PACKAGE=") + getFileName(package_file);
+				try
+				{
+					componentInstallation->install(impl_id.c_str(), location.c_str());
+				}
+				catch(Components::Deployment::InvalidLocation&)
+				{
+					std::cout << ".......... upload required" << std::endl;
+					CORBA::OctetSeq_var octSeq = new CORBA::OctetSeq();
+					struct stat statbuff;
+					int rt = stat(package_file.c_str(), &statbuff);
+					long size = statbuff.st_size;
+					octSeq->length(size);
+       
+					std::ifstream package_stream(package_file.c_str(), std::ios::binary|std::ios::in);
+					package_stream.read((char*)octSeq->get_buffer(), size);
+					package_stream.close();
+        
+					//
+					// upload first and install afterwards
+					//
+					try
+					{
+						location = componentInstallation->upload(impl_id.c_str(), octSeq);
+						std::cout << ".......... upload done, install now" << std::endl;
+						componentInstallation->install(impl_id.c_str(), location.c_str());
+					}
+					catch(Components::Deployment::InstallationFailure&)
+					{
+						throw Components::CreateFailure();
+					}
+				}
+				catch ( CORBA::SystemException& )
+				{
+					std::cerr << ".......... CORBA system exception during install()" << std::endl;
+					std::cerr << ".......... is ComponentInstallation running?" << std::endl;
+					throw Components::CreateFailure();
+				}
+			}
+		}
 	}
 
-	return true;
+    //
+    // remove extracted packages
+    //
+	std::map < std::string, std::string > ::iterator iter2;
+	for(iter2 = data_.assembly.implementationMap_.begin();
+		iter2 != data_.assembly.implementationMap_.end();
+		iter2++)
+	{
+        removeFileOrDirectory((*iter2).second);
+    }
 }
 
 
@@ -144,24 +308,39 @@ void
 ComponentImplementation::installCode()
 throw(Components::CreateFailure)
 {
+	std::string name;
+
+	//
+	// install subcomponents (if existing)
+	//
+	if(data_.assembly.cad != "")
+	{
+		installAssembly();
+		name = data_.assembly.cad;
+		copyFile( build_path_ + name, installation_path_ + name );
+	}
+
+	if(data_.csd == "")
+	{
+		return;
+	}
+	name = data_.csd;
+	copyFile( build_path_ + name, installation_path_ + name );
+
 	//
 	// install valuetype factories
 	//
-	std::string code;
-	std::string installation;
 	std::vector < ValuetypeData >::iterator value_iter;
 	for(value_iter = data_.valuetypes.begin();
 		value_iter != data_.valuetypes.end();
 		value_iter++)
 	{
-		code = (*value_iter).location.file;
-		installation = installation_path_ + getFileName(code);
-		if (copyFile(code, installation) == 0) 
+		name = (*value_iter).location.file;
+		if (copyFile( build_path_ + name, installation_path_ + name ) == 0) 
 		{
-			std::cerr << "Error during installing valuetype factory " << code << std::endl;
+			std::cerr << "Error during installing valuetype factory " << name << std::endl;
 			throw Components::CreateFailure();
 		}
-		(*value_iter).location.file = installation;
 	}
 
 	//
@@ -172,48 +351,50 @@ throw(Components::CreateFailure)
 		iter != data_.artifacts.end();
 		iter++)
 	{
-		code = *iter;
-		installation = installation_path_ + getFileName(code);
-		if (copyFile(code, installation) == 0) 
+		name = *iter;
+		if (copyFile( build_path_ + name, installation_path_ + name ) == 0) 
 		{
-			std::cerr << "Error during installing artifact " << code << std::endl;
+			std::cerr << "Error during installing artifact " << name << std::endl;
 			throw Components::CreateFailure();
 		}
-		*iter = installation;
 	}
 
 	//
-	// install business code files
-    //
-	installation = installation_path_ + getFileName(data_.executor_module);
-    if (copyFile(data_.executor_module, installation) == 0) 
+	// install implementation code
+	//
+	if(data_.executor_module != "")
 	{
-		std::cerr << "Error during installing executor code " << data_.executor_module << std::endl;
-        throw Components::CreateFailure();
-	}
-	data_.executor_module = installation;
-
-	//
-	// servant code files have to be extracted from the archive or to be build
-    //
-	if ((data_.servant_module != "") && (data_.servant_entry_point != ""))
-	{
-		installation = installation_path_ + getFileName(data_.servant_module);
-		if (copyFile(data_.servant_module, installation) == 0) 
+		//
+		// install business code files
+		//
+		name = data_.executor_module;
+		if (copyFile( build_path_ + name, installation_path_ + name ) == 0) 
 		{
-			std::cerr << "Error during installing servant code " << data_.servant_module << "; try to generate" << std::endl;
+			std::cerr << "Error during installing executor code " << name << std::endl;
+			throw Components::CreateFailure();
 		}
-		else 
-		{
-			data_.servant_module = installation;
-			return;
-		}
-	}
 
-	//
-	// build servant code
-	//
-	buildServants();
+		//
+		// servant code files have to be extracted from the archive or to be build
+		//
+		if ((data_.servant_module != "") && (data_.servant_entry_point != ""))
+		{
+			name = data_.servant_module;
+			if (copyFile( build_path_ + name, installation_path_ + name ) == 0) 
+			{
+				std::cerr << "Error during installing servant code " << name << "; try to generate" << std::endl;
+			}
+			else 
+			{
+				return;
+			}
+		}
+
+		//
+		// build servant code
+		//
+		buildServants();
+	}
 }
 
 
@@ -221,7 +402,7 @@ void
 ComponentImplementation::buildServants()
 throw(Components::CreateFailure)
 {
-	data_.servant_module = installation_path_ + data_.uuid + "_servants." + DLL_EXT;
+	data_.servant_module = data_.uuid + "_servants." + DLL_EXT;
 	data_.servant_entry_point = "create_" + data_.home_name + "S";
 
 #ifdef _WIN32
@@ -238,9 +419,9 @@ throw(Components::CreateFailure)
 
 #ifdef _WIN32
 	std::string command = "nmake /f " + makefile_;
-	command += " SOURCE=" + data_.idl.location.file;
+	command += " SOURCE=" + build_path_ + data_.idl.location.file;
 	command += " TARGET=" + data_.home_repid;
-	command += " DLL=" + data_.servant_module;
+	command += " DLL=" + installation_path_ + data_.servant_module;
 	std::cout << command << std::endl;
 
 	{
@@ -309,7 +490,7 @@ throw(Components::CreateFailure)
 #else
 	std::string command = "cd " + build_dir_ + ";make -f " + makefile_;
 	command += " SOURCE=" + data_.idl.location.file;
-	command += " TARGET=" + data_.servant_module;
+	command += " TARGET=" + installation_path_ + data_.servant_module;
 	std::cout << command << std::endl;
 	int ret=system(command.c_str());
 	if(!WIFEXITED(ret))

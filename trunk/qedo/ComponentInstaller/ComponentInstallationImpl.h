@@ -28,6 +28,7 @@
 #include "ComponentImplementation.h"
 #include "NameServiceBase.h"
 #include "PlatformBase.h"
+#include "InstallationReader.h"
 #include <vector>
 
 
@@ -52,32 +53,23 @@ class ComponentInstallationImpl : public POA_Qedo_Components::Deployment::Compon
 								  public virtual PlatformBase
 {
 private:
-	/** list of installed components */
-	std::vector < ComponentImplementation > installed_components_;
 
 	/** the orb */
-	CORBA::ORB_var					orb_;
+	CORBA::ORB_var							orb_;
 	/** the root poa */
-	PortableServer::POA_var			root_poa_;
+	PortableServer::POA_var					root_poa_;
 	/** the root poa manager */
-	PortableServer::POAManager_var	root_poa_manager_;
+	PortableServer::POAManager_var			root_poa_manager_;
 	/** the package directory */
-	std::string						packageDirectory_;
+	std::string								packageDirectory_;
 	/** the installation directory */
-	std::string						installationDirectory_;
-
+	std::string								installationDirectory_;
 	/** the installation xml file */
-	static std::string				inst_file_;
-
-	/**
-	 * read the DeployedComponents.xml file
-	 */
-	bool readInstalledComponents ();
-
-	/**
-	 * add a new installation to the DeployedComponents.xml file
-	 */
-	bool addInstalledComponent (ComponentImplementationData* data);
+	static std::string						inst_file_;
+	/** */
+	InstallationReader						reader_;
+	/** list of installed components */
+	std::vector < ComponentImplementation > installed_components_;
 
 public:
 	/**

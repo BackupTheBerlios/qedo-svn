@@ -25,7 +25,8 @@
 
 
 #include <CORBA.h>
-#include "Components.h"
+#include "QedoComponents.h"
+#include "NameServiceBase.h"
 #include "PlatformBase.h"
 #include "ComponentImplementationData.h"
 
@@ -52,6 +53,9 @@
 #endif
 
 
+#define COMPONENT_INSTALLATION_CONTEXT "Qedo/ComponentInstallation/"
+
+
 namespace Qedo {
 
 
@@ -75,7 +79,7 @@ extern std::string g_qedo_dir;
  * represents a component implementation
  */
 class ComponentImplementation : public virtual PlatformBase
-//							  , public virtual RefCountBase	
+							  , public virtual NameServiceBase	
 {
 	/** makes use of this */
 	friend class ComponentInstallationImpl;
@@ -101,6 +105,12 @@ private:
 	/** the installation counter */
     int									installation_count_;
 	
+	/**
+	 * install all subcomponents in case of assembly
+	 */
+	void installAssembly()
+		throw(Components::CreateFailure);
+
     /**
 	 * install code (for servants, executor, artifacts)
 	 */
@@ -121,14 +131,18 @@ public:
 	 * \param installationDirectory The directory for the installation.
 	 * \param package The package of the component implementation.
 	 */
-	ComponentImplementation (ComponentImplementationData data, std::string installationDirectory, std::string package);
+	ComponentImplementation(ComponentImplementationData data,
+							std::string installationDirectory,
+							std::string package,
+							CosNaming::NamingContext_ptr nameContext);
 
 	/**
 	 * constructor
 	 * constructs a new implementation
 	 * \param data The data of the implementation.
 	 */
-	ComponentImplementation (ComponentImplementationData data);
+	ComponentImplementation(ComponentImplementationData data,
+							CosNaming::NamingContext_ptr nameContext);
 
 	/**
 	 * destructor
@@ -138,17 +152,24 @@ public:
 	/**
 	 * comparison
 	 */
-    bool operator == (ComponentImplementation);
+    bool operator == ( ComponentImplementation );
 
 	/**
 	 * install a component implementation
 	 */
-	bool install();
+	void install()
+		throw( Components::CreateFailure );
 
 	/**
 	 * uninstall a component implementation
 	 */
-    bool uninstall();
+    void uninstall()
+		throw( Components::RemoveFailure );
+
+	/**
+	 * get the data of the implementation
+	 */
+    ComponentImplementationData getData();
 };
 
 /** @} */
