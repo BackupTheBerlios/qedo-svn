@@ -69,7 +69,7 @@ $(KIMWITU_HEADER_FILES) $(KIMWITU_CPP_FILES) : .kc_timestamp
 	date > .kc_timestamp
 
 lexana.cpp : lexana.l errmsg.cpp
-	$(LEX) -Sflex.skel -tw lexana.l > lexana.cpp
+	$(LEX) -Sflex.skel -t -w lexana.l > lexana.cpp
 
 cidl.cpp cidl.h cidl.output : k.h yystype.h cidl.y
 	env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
