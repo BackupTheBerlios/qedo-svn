@@ -5,7 +5,7 @@
 
     <pkgtype>CORBA Component</pkgtype>
     <title>Caller Component of the Hello World example</title>
-    <author>Qedo Team</author>
+    <author><name>Qedo Team</name></author>
     <description>This component calls the calle component.</description>
     <license href="" />
     <idl id="IDL:HelloWorld/CallerHome:1.0">
