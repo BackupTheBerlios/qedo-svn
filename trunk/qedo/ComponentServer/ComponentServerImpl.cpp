@@ -24,7 +24,7 @@
 #include "Valuetypes.h"
 #include "qedoutil.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.18 2003/09/29 14:50:11 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.19 2003/10/21 14:06:02 stoinski Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -457,11 +457,11 @@ throw (CORBA::SystemException)
 	//
 	if(iter != valuetypes_.end())
 	{
-		DEBUG_OUT3("..... value factory for ", repid, " already registered");
+		DEBUG_OUT3("ComponentServerImpl: Value factory for ", repid, " already registered");
 		// check whether factory is already registered
 		if (orb_->lookup_value_factory( repid ) == 0 )
 		{
-			DEBUG_OUT(".......... no!!!");
+			DEBUG_OUT("ComponentServerImpl: No.");
 			// unload and erase
 			Qedo::unload_shared_library ((*iter).dll);
 			valuetypes_.erase(iter);
@@ -474,7 +474,7 @@ throw (CORBA::SystemException)
 	//
 	else
 	{
-		DEBUG_OUT2( "..... load value factory code for ", repid );
+		DEBUG_OUT2( "ComponentServerImpl: Loading value factory code for ", repid );
 #ifdef _WIN32
 		HINSTANCE handle_value_lib;
 #else

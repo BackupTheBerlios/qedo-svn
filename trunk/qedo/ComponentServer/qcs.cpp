@@ -27,11 +27,14 @@
 #ifndef _QEDO_NO_STREAMS
 #include "TCPTransportEndpointFactory.h"
 #endif
+#include "ConfigurationReader.h"
+
 #include <cstring>
 #include <string>
+
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.21 2003/10/20 09:44:35 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.22 2003/10/21 14:06:02 stoinski Exp $";
 
 
 /**
@@ -60,10 +63,22 @@ main (int argc, char** argv)
 {
 	NORMAL_OUT2 ("Qedo Component Server ", QEDO_VERSION);
 
-	// Check for --debug switch and check and read object reference of Component Server Activator
 	bool debug_mode = false;
 	bool ref_supplied = false;
 	bool qos_enabled = false;
+
+	Qedo::debug_output = false;
+
+	// Resolve config values from config file
+	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/Debug/DebugMode"), "true"))
+	{
+		debug_mode = true;
+		Qedo::debug_output = true;
+	}
+	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/VerboseOutput"), "true"))
+	{
+		Qedo::debug_output = true;
+	}
 
 	CORBA::String_var csa_string_ref;
 
@@ -72,6 +87,7 @@ main (int argc, char** argv)
 		if (! strcmp (argv[i], "--debug"))
 		{
 			debug_mode = true;
+			Qedo::debug_output = true;
 		}
 
 		if (! strcmp (argv[i], "--verbose"))
