@@ -385,8 +385,7 @@
 			<File
 				RelativePath=".\tree.k">
 				<FileConfiguration
-					Name="Debug_orbacus|Win32"
-					ExcludedFromBuild="TRUE">
+					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="KC++ processes $(InputPath)"

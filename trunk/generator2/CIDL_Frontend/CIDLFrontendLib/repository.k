@@ -1046,6 +1046,7 @@ HomeDcl(home_head=HomeHeader(name, base, ident_list, comp, key), def_list)
         Error("Exception in creating home %k\n", name, name);
       }
       irobj = home;
+      name->symtab_entry->irobj = home;
     }
   ];
 
