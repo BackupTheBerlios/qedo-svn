@@ -27,7 +27,7 @@
 #include <signal.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.17 2003/08/08 10:04:31 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.17.2.1 2003/08/11 08:36:05 stoinski Exp $";
 
 
 namespace Qedo {
@@ -41,6 +41,7 @@ struct MutexDelegate
 #endif
 };
 
+
 struct CondDelegate 
 {
 #ifdef QEDO_WINTHREAD
@@ -49,6 +50,7 @@ struct CondDelegate
 	pthread_cond_t cond_;
 #endif
 };
+
 
 QedoMutex::QedoMutex() 
 {
