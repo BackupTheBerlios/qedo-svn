@@ -23,7 +23,7 @@
 #include "SessionHomeServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: SessionHomeServant.cpp,v 1.5 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: SessionHomeServant.cpp,v 1.6 2004/01/22 10:57:45 tom Exp $";
 
 
 namespace Qedo {
@@ -62,7 +62,8 @@ SessionHomeServant::before_remove_component (Components::ExecutorLocator_ptr exe
 	// Should never happen
 	assert (! CORBA::is_nil (session_component));
 
-	session_component->ccm_remove();
+	session_component -> ccm_passivate();
+	session_component -> ccm_remove();
 }
 
 

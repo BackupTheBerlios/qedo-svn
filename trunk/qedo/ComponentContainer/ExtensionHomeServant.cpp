@@ -26,7 +26,7 @@
 #include "ExtensionHomeServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: ExtensionHomeServant.cpp,v 1.3 2003/11/03 15:39:05 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ExtensionHomeServant.cpp,v 1.4 2004/01/22 10:57:45 tom Exp $";
 
 
 namespace Qedo {
@@ -65,7 +65,8 @@ ExtensionHomeServant::before_remove_component (Components::ExecutorLocator_ptr e
 	// Should never happen
 	assert (! CORBA::is_nil (extension_component));
 
-	extension_component->ccm_remove();
+	extension_component -> ccm_passivate();
+	extension_component -> ccm_remove();
 }
 
 
