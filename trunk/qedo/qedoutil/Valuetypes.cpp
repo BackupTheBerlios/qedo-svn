@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: Valuetypes.cpp,v 1.3 2002/10/21 22:52:10 tom Exp $";
+static char rcsid[] = "$Id: Valuetypes.cpp,v 1.4 2002/10/28 23:03:07 tom Exp $";
 
 
 #include "Valuetypes.h"
@@ -88,10 +88,15 @@ CookieFactory_impl::create_for_unmarshal()
 //
 PortDescription_impl::PortDescription_impl (const char* name, const char* type_id)
 #if _MSC_VER < 1300 
+:PortDescription()
 #else
-: OBV_Components::PortDescription (name, type_id)
+: PortDescription (name, type_id)
 #endif
 {
+#if _MSC_VER < 1300
+	this -> name ( name );
+	this -> type_id ( type_id );
+#endif
 }
 
 
@@ -121,10 +126,16 @@ FacetDescription_impl::FacetDescription_impl (const char* name,
 											  CORBA::Object_ptr ref)
 
 #if _MSC_VER < 1300 
+: FacetDescription ( )
 #else
 : FacetDescription (name, type_id, ref)
 #endif
 {
+#if _MSC_VER < 1300
+	this -> name ( name );
+	this -> type_id ( type_id );
+	this -> ref ( ref );
+#endif
 }
 
 
@@ -150,10 +161,16 @@ FacetDescriptionFactory_impl::create_for_unmarshal()
 //
 ConnectionDescription_impl::ConnectionDescription_impl (Components::Cookie* ck, CORBA::Object_ptr objref)
 #if _MSC_VER < 1300 
+: ConnectionDescription()
 #else
 : ConnectionDescription (ck, objref)
 #endif
 {
+#if _MSC_VER < 1300
+	this -> ck( ck );
+	this -> objref( objref );
+#endif
+
 }
 
 
@@ -181,13 +198,20 @@ ConnectionDescriptionFactory_impl::create_for_unmarshal
 //
 ReceptacleDescription_impl::ReceptacleDescription_impl (const char* name, 
 														const char* type_id, 
-														CORBA::Boolean is_multiple, 
+														CORBA::Boolean is_multiplex, 
 														const Components::ConnectedDescriptions& connections)
 #if _MSC_VER < 1300 
+: ReceptacleDescription ()
 #else
-: ReceptacleDescription (name, type_id, is_multiple, connections)
+: ReceptacleDescription (name, type_id, is_multiplex, connections)
 #endif
 {
+#if _MSC_VER < 1300
+	this -> name( name );
+	this -> type_id( type_id );
+	this -> is_multiplex( is_multiplex );
+	this -> connections( connections );
+#endif
 }
 
 
@@ -215,10 +239,16 @@ ConsumerDescription_impl::ConsumerDescription_impl (const char* name,
 													const char* type_id, 
 													Components::EventConsumerBase_ptr consumer)
 #if _MSC_VER < 1300 
+: ConsumerDescription ()
 #else
 : ConsumerDescription (name, type_id, consumer)
 #endif
 {
+#if _MSC_VER < 1300
+	this -> name ( name );
+	this -> type_id ( type_id );
+	this -> consumer ( consumer );
+#endif
 }
 
 
@@ -246,10 +276,16 @@ EmitterDescription_impl::EmitterDescription_impl (const char* name,
 												  const char* type_id, 
 												  Components::EventConsumerBase_ptr consumer)
 #if _MSC_VER < 1300 
+: EmitterDescription ( )
 #else
 : EmitterDescription (name, type_id, consumer)
 #endif
 {
+#if _MSC_VER < 1300
+	this -> name ( name );
+	this -> type_id ( type_id );
+	this -> consumer ( consumer );
+#endif
 }
 
 
@@ -283,10 +319,17 @@ SubscriberDescription_impl::SubscriberDescription_impl (const char* name,
 						   Components::Cookie* ck, 
 						   Components::EventConsumerBase_ptr consumer)
 #if _MSC_VER < 1300 
+: SubscriberDescription ( )
 #else
 : SubscriberDescription (name, type_id, ck, consumer)
 #endif
 {
+#if _MSC_VER < 1300
+	this -> name ( name );
+	this -> type_id (type_id );
+	this -> ck ( ck );
+	this -> consumer ( consumer );
+#endif
 }
 
 
@@ -316,10 +359,18 @@ ComponentPortDescription_impl::ComponentPortDescription_impl (const Components::
 															  const Components::EmitterDescriptions& emitters,
 															  const Components::SubscriberDescriptions& publishers)
 #if _MSC_VER < 1300 
+: ComponentPortDescription ( )
 #else
 : ComponentPortDescription (facets, receptacles, consumers, emitters, publishers)
 #endif
 {
+#if _MSC_VER < 1300
+	this -> facets ( facets );
+	this -> receptacles ( receptacles );
+	this -> consumers ( consumers );
+	this -> emitters ( emitters );
+	this -> publishers ( publishers );
+#endif
 }
 
 
@@ -345,10 +396,15 @@ ComponentPortDescriptionFactory_impl::create_for_unmarshal()
 //
 ConfigValue_impl::ConfigValue_impl (const char* name, const CORBA::Any& value)
 #if _MSC_VER < 1300 
+: ConfigValue ()
 #else
 : ConfigValue (name, value)
 #endif
 {
+#if _MSC_VER < 1300
+	this->name(name);
+	this->value(value);
+#endif
 }
 
 

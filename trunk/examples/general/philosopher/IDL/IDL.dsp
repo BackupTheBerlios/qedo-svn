@@ -150,10 +150,22 @@ SOURCE=.\philosophers.cidl
 # Begin Custom Build
 InputPath=.\philosophers.cidl
 
-"last_build_time;dinner_LOCAL.idl;dinner_EQUIVALENT.idl;dinner_BUSINESS.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	$(QEDO)\bin\cidl_gen --target dinner philosophers.cidl 
-	time /T > last_build_time 
+BuildCmds= \
+	$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32  --target dinner philosophers.cidl \
+	time /T > last_build_time \
 	
+
+"last_build_time" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_LOCAL.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_EQUIVALENT.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_BUSINESS.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
 # End Custom Build
 
 !ENDIF 
@@ -175,7 +187,7 @@ SOURCE=.\dinner_BUSINESS.idl
 InputPath=.\dinner_BUSINESS.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_BUSINESS.idl
+	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 dinner_BUSINESS.idl
 
 "dinner_BUSINESS.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -205,7 +217,7 @@ SOURCE=.\dinner_EQUIVALENT.idl
 InputPath=.\dinner_EQUIVALENT.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_EQUIVALENT.idl
+	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 dinner_EQUIVALENT.idl
 
 "dinner_EQUIVALENT.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -235,7 +247,7 @@ SOURCE=.\dinner_LOCAL.idl
 InputPath=.\dinner_LOCAL.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_LOCAL.idl
+	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 dinner_LOCAL.idl
 
 "dinner_LOCAL.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)

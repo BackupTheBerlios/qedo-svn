@@ -3,10 +3,10 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.2 2002/10/28 12:03:36 tom Exp $
+// $Id: main.cpp,v 1.3 2002/10/28 23:02:07 tom Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.2 2002/10/28 12:03:36 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.3 2002/10/28 23:02:07 tom Exp $";
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
@@ -224,7 +224,7 @@ main (int argc, char** argv)
 	{
 		container = component_server->create_container (config);
 	}
-	catch (CORBA::SystemException&)
+	catch (CORBA::SystemException& ex)
 	{
 		cerr << "CORBA system exception during creating container" << endl;
 		orb->destroy();

@@ -1,12 +1,5 @@
-//
-// TETRA
-// Stream Container Implementation
-// (C)2000-2002 Humboldt University Berlin, Department of Computer Science
-//
-// $Id: ClientValuetypes.cpp,v 1.2 2002/10/28 12:03:36 tom Exp $
-//
 
-static char rcsid[] = "$Id: ClientValuetypes.cpp,v 1.2 2002/10/28 12:03:36 tom Exp $";
+static char rcsid[] = "$Id: ClientValuetypes.cpp,v 1.3 2002/10/28 23:02:07 tom Exp $";
 
 
 #include "ClientValuetypes.h"
@@ -324,6 +317,10 @@ ConfigValue_impl::ConfigValue_impl (const char* name, const CORBA::Any& value)
 : ConfigValue (name, value)
 #endif
 {
+#if _MSC_VER < 1300
+	this->name(name);
+	this->value(value);
+#endif
 }
 
 
