@@ -649,7 +649,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
-	out << "CommandLine=\"wzzip.exe " << composition_name << ".zip Debug_orbacus/" << project_name << ".dll ";
+	out << "CommandLine=\"wzzip.exe ../" << composition_name << ".zip Debug_orbacus/" << project_name << ".dll ";
 	out << "../" << servant_project_name << "/Debug_orbacus/" << servant_project_name << ".dll ";
 	out << file_prefix_ << ".idl " << composition_name << ".ccd " << composition_name << ".csd\"\n";
 	out << "Outputs=\"" << composition_name << ".zip\"/>\n";
@@ -663,7 +663,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
-	out << "CommandLine=\"wzzip.exe " << composition_name << ".zip Debug_orbacus/" << project_name << ".dll ";
+	out << "CommandLine=\"wzzip.exe ../" << composition_name << ".zip Debug_orbacus/" << project_name << ".dll ";
 	out << "../" << servant_project_name << "/Debug_orbacus/" << servant_project_name << ".dll ";
 	out << file_prefix_ << ".idl " << composition_name << ".ccd " << composition_name << ".csd\"\n";
 	out << "Outputs=\"" << composition_name << ".zip\"/>\n";
@@ -677,7 +677,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
-	out << "CommandLine=\"wzzip.exe " << composition_name << ".zip Debug_orbacus/" << project_name << ".dll ";
+	out << "CommandLine=\"wzzip.exe ../" << composition_name << ".zip Debug_orbacus/" << project_name << ".dll ";
 	out << "../" << servant_project_name << "/Debug_orbacus/" << servant_project_name << ".dll ";
 	out << file_prefix_ << ".idl " << composition_name << ".ccd " << composition_name << ".csd\"\n";
 	out << "Outputs=\"" << composition_name << ".zip\"/>\n";
