@@ -1,7 +1,4 @@
-QEDO = /home/boehme
-CIDL_GEN = ${QEDO}/bin/cidl_gen
-ORB_IDL_INCLUDE = -I.. -I/home/boehme/include -I/home/boehme/include/mico 
-CIDL_ORB_DEF = -DMICO_ORB -DMICO_CIDL_GEN
+ORB_IDL_INCLUDE = -I..
 
 CIDL_FILES = ../philosophers.cidl
 IDL_FILES = dinner_LOCAL.idl dinner_EQUIVALENT.idl
@@ -12,14 +9,14 @@ CPP_FILES = dinner_EQUIVALENT.cpp \
 				dinner_SERVANT.cpp 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
 
-IDL_FLAGS += -I${QEDO}/idl --relative-paths
-CXXFLAGS += -I. -I${QEDO}/include
+CXXFLAGS += -I. 
+
 include ../MakeVars
 
-all: libphilosopherS.so
+all: libdinner_SERVANT.so
 
-libphilosopherS.so: ${OBJ_FILES}
+libdinner_SERVANT.so: ${OBJ_FILES}
 
-${IDL_FILES} : ${CIDL_FILES}
+${IDL_FILES} dinner_SERVANT.cpp : ${CIDL_FILES}
 	${CIDL_GEN} -I${QEDO}/idl ${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--servant --target dinner $<
