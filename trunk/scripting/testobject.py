@@ -5,20 +5,32 @@ import Tkinter
 from Tkconstants import *
 from tkMessageBox import *
 from Fnorb.orb import CORBA, BOA, TkReactor
-import DCI_skel
+import Components, Components_skel
 
 
 ##################################################
-class TestObject_impl( DCI_skel.TestObject_skel ):
+class TestObject_impl( Components_skel.CCMObject_skel ):
   
-  def hello( self ):
-    print "..... hello called"
-    self.text.insert(END,"\nHello World!\n",END)
-  
-  def state( self ):
-    print "..... state called"
-    return CORBA.Any(CORBA.TC_string,'alles o.k.')
+  def connect_consumer( self, emitter_name, consumer ):
+    print "..... connect_consumer called"
+    self.text.insert(END,"\nconnect_consumer " + emitter_name + " \n",END)
+    
+  def disconnect_consumer( self, source_name ):
+    print "..... disconnect_consumer called"
+    self.text.insert(END,"\ndisconnect_consumer " + source_name + " \n",END)
+    
+  def get_component_def( self ):
+    print "..... get_component_def called"
+    self.text.insert(END,"\nget_component_def\n",END)
 
+  def get_ccm_home( self ):
+    print "..... get_ccm_home called"
+    self.text.insert(END,"\nget_ccm_home\n",END)
+    
+  def remove( self ):
+    print "..... remove called"
+    self.text.insert(END,"\nremove\n",END)
+  
   def quit ( self ):
     self.frame.quit()
 

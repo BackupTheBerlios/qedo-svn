@@ -8,6 +8,7 @@ import Tkinter
 from Tkconstants import *
 import util
 import DCI
+import Components
 
 
 #################
@@ -18,7 +19,7 @@ class TestClient:
     self.boa = boa
     
     self.condition = "1"
-    self.action = "TEST.hello()"
+    self.action = "TEST.disconnect_consumer( \"foo\" )"
     self.frequency = 0
     self.rule = None
     self.id = None
@@ -28,7 +29,7 @@ class TestClient:
     #
     ior = open( "testobject.ref", "r" ).read()
     try:
-      self.test = orb.string_to_object( ior )._narrow( DCI.TestObject )
+      self.test = orb.string_to_object( ior )._narrow( Components.CCMObject )
     except:
       util.debug()
     
@@ -36,7 +37,7 @@ class TestClient:
     # create NamingContext and insert TEST
     #
     nc = self.boa.create( 'nc', NamingContext._FNORB_ID )
-    context = NamingContext()
+    context = NamingContext( boa )
     self.boa.obj_is_ready( nc, context )
     context.bind( [CosNaming.NameComponent( 'TEST', '' )], self.test )
     self.namespace = nc

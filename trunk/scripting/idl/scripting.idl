@@ -1,4 +1,6 @@
 #include "CosNaming.idl"
+#include "Components.idl"
+
 
 module DCI 
 {
@@ -65,10 +67,75 @@ module DCI
 		     in long frequency);
   };
 
-  interface TestObject
-  {
-    void hello();
 
-    any state();
+  /*
+   * The XML datatype represents any information in an XML format.
+   */
+  typedef string XML;
+    
+  /*
+   * Type of DCI desriptors:
+   * DPD - DCI property descriptor
+   * NPD - Node property descriptor
+   * CPF - Component property file
+   */
+  enum DCIDescriptorType {
+    DPD,
+    NPD,
+    CPF2 //!!!
+  };
+    
+  /*
+   * DCI descriptors for target environment with its nodes.
+   * type may be DPD, NPD or CPF files.
+   * filename is name of descriptor which may be refered to within other
+   * descriptors.
+   */ 
+  struct DCIDescriptor {
+    string filename;
+    DCIDescriptorType type;
+    XML descriptor;
+  };
+
+  /*
+   * Sequence of DCI descriptors.
+   * Descriptors can be DPD, NPD files.
+   * Descriptors may be obtained from DCI interfaces or stored in a file system.
+   */
+  typedef sequence<DCIDescriptor> DCIDescriptors;
+
+  /*
+   * The NodeInformation interface is provided
+   * to obtain node properties.
+   */
+  interface NodeInformation
+  {
+    /*
+     * The 'get_node_properties' operation returns a 
+     * sequence of DCI descriptors containing the node properties
+     * and potentially additional property files the node
+     * properties descriptor refers to in an XML format.
+     *
+     * @return sequence of DCI properties in an XML format.
+     */
+     DCIDescriptors
+     get_node_properties();
+        
+     /*
+      * The 'is_property_defined' operation returns
+      * a boolean value depending whether the property
+      * is defined or not.
+      */
+     boolean
+     is_property_defined(in string property_name)
+     raises(::Components::InvalidName); 
+
+     /*
+      * The 'get_property_value' operation returns
+      * the requested node property value.
+      */
+     any
+     get_property_value(in string property_name)
+     raises(::Components::InvalidName);
   };
 };

@@ -6,6 +6,7 @@ from Fnorb.orb import CORBA, BOA, uuid
 from Fnorb.cos.naming import CosNaming
 import thread
 import DCI, DCI_skel
+import Components
 import util
 
 
