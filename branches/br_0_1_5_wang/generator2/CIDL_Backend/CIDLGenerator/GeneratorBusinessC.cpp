@@ -828,7 +828,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "return new " << mapName(composition) << "(pkey);\n";
 		out.unindent();
 		out << "}\n\n\n";
-
+/*
 		out << "::Components::EnterpriseComponent_ptr\n";
 		out << class_name_ << "::find_by_primary_key(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n"; 
 		out << "	throw(CORBA::SystemException, Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey)\n{\n";
@@ -844,8 +844,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		out.insertUserSection(class_name_ + "remove", 0);
 		out.unindent();
 		out << "}\n\n\n";
-
-		//get_primary_key(...)???
+*/
+		//get_primary_key(...)??? !!!
 
 		break;
 	default :

@@ -280,8 +280,15 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	if( lc==CIDL::lc_Entity || lc==CIDL::lc_Process )
 	{
-		out << "void set_storage_object( in CosPersistentState::StorageObjectBase obj );\n";
-		out << "CosPersistentState::StorageObjectBase get_storage_object();\n";
+		out << "void set_ccm_storage_object( in CosPersistentState::StorageObjectBase obj );\n";
+		out << "CosPersistentState::StorageObjectBase get_ccm_storage_object();\n";
+		
+		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_duplicate(composition->home_executor()->binds_to());
+		if( !CORBA::is_nil(storagehome) )
+		{
+			out << "\nvoid set_storage_object( in CosPersistentState::StorageObjectBase obj );\n";
+			out << "CosPersistentState::StorageObjectBase get_storage_object();\n";
+		}
 	}
 	out.unindent();
 	out << "};\n\n";
@@ -394,7 +401,7 @@ GeneratorLIDL::doHome(IR__::HomeDef_ptr home)
 		out.indent();
 		out << "raises (Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey);\n\n";
 		out.unindent();
-
+/*
 		out << "::Components::EnterpriseComponent find_by_primary_key(in " << pk->name() << " key)\n";
 		out.indent();
 		out << "raises (Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
@@ -404,11 +411,11 @@ GeneratorLIDL::doHome(IR__::HomeDef_ptr home)
 		out.indent();
 		out << "raises (Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
 		out.unindent();
-		
+*/
 		out.unindent();
 		out << "};\n\n";
 
-		//get_primary_key(...)???
+		//get_primary_key(...)??? !!!
 	}
 	else
 	{

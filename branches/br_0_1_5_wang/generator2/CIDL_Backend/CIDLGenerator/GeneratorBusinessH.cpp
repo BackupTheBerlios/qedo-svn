@@ -628,14 +628,14 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	case CIDL::lc_Entity :
 		out << "virtual ::Components::EnterpriseComponent_ptr create(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n";
 		out << "    throw(CORBA::SystemException, Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey);\n\n";
-
+/*
 		out << "virtual ::Components::EnterpriseComponent_ptr find_by_primary_key(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n"; 
 		out << "	throw(CORBA::SystemException, Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
 
 		out << "void remove(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n"; 
 		out << "	throw(CORBA::SystemException, Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
-
-		//get_primary_key(...)???
+*/
+		//get_primary_key(...)??? !!!
 
 		break;
 	default :

@@ -963,19 +963,28 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component, CIDL::Lif
 
 	if(lc==CIDL::lc_Entity)
 	{
-		out << "\nvoid set_storage_object( ::CosPersistentState::StorageObjectBase obj );\n";
-		out << "::CosPersistentState::StorageObjectBase get_storage_object();\n\n";
+		out << "\nvoid set_ccm_storage_object( ::CosPersistentState::StorageObjectBase obj );\n";
+		out << "::CosPersistentState::StorageObjectBase get_ccm_storage_object();\n";
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << "\nvoid set_storage_object( ::CosPersistentState::StorageObjectBase obj );\n";
+			out << "::CosPersistentState::StorageObjectBase get_storage_object();\n";
+		}
 	}
+	out << "\n";
 
 	out.unindent();
 	
+	out << "private:\n\n";
+	out.indent();
 	if(lc==CIDL::lc_Entity)
 	{
-		out << "private:\n\n";
-		out.indent();
-		out << "::CosPersistentState::StorageObjectBase obj_;\n\n";
-		out.unindent();
+		out << "::CosPersistentState::StorageObjectBase ccm_obj_;\n";
+		if( !CORBA::is_nil(storagehome_) )
+            out << "::CosPersistentState::StorageObjectBase obj_;\n";
 	}
+	out << "\n";
+	out.unindent();
 
 	out << "};\n\n\n";
 }
