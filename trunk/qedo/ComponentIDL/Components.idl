@@ -761,4 +761,28 @@ module Components {
 	};
 };
 #pragma prefix ""
+
+
+//
+// module ConfigurationService
+//
+module ConfigurationService
+{
+
+	//
+	// exceptions
+	//
+	exception UnknownConfiguration {};
+
+	//
+	// InternalConfiguration
+	//
+	local interface InternalConfiguration
+	{
+		string get_value(in string name)
+			raises(UnknownConfiguration);
+	};
+};
+
+
 #endif

@@ -42,6 +42,14 @@ module Qedo_Components {
 	};
 
 	//
+	// The interface for our helper servant that serves get_component() requests
+	//
+	interface GetComponentHelper
+	{
+		Components::CCMObject get_component();
+	};
+
+	//
 	// deployment
 	//
 	module Deployment {
@@ -73,13 +81,6 @@ module Qedo_Components {
 
 	};
 
-	//
-	// The interface for our helper servant that serves get_component() requests
-	//
-	interface GetComponentHelper
-	{
-		Components::CCMObject get_component();
-	};
 };
 
 #endif
