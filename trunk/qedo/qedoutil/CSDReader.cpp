@@ -29,7 +29,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.9 2003/11/05 14:39:01 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.10 2003/11/14 16:48:16 boehme Exp $";
 
 
 namespace Qedo {
@@ -95,7 +95,7 @@ void
 CSDReader::code (DOMElement* element)
 throw(CSDReadException)
 {
-	std::string type = XMLString::transcode(element->getAttribute(X("type")));
+	std::string type = Qedo::transcode(element->getAttribute(X("type")));
 	std::string file_name;
 	std::string element_name;
 	std::string entry;
@@ -106,7 +106,7 @@ throw(CSDReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// codebase
@@ -191,7 +191,7 @@ throw(CSDReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -205,7 +205,7 @@ throw(CSDReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -219,7 +219,7 @@ throw(CSDReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -235,7 +235,7 @@ throw(CSDReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// softpkgref
@@ -300,7 +300,7 @@ throw(CSDReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
 	DEBUG_OUT2( "CSDReader: <description> ", text );
     return text;
@@ -317,7 +317,7 @@ throw(CSDReadException)
     {
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// link
@@ -358,7 +358,7 @@ throw(CSDReadException)
 {
 	LocationData data;
 	data.uri = "file://";
-	std::string file_name = XMLString::transcode(element->getAttribute(X("name")));
+	std::string file_name = Qedo::transcode(element->getAttribute(X("name")));
 	data.file = getFileName( file_name );
 	data.uri.append( path_ + data.file );
 
@@ -381,13 +381,13 @@ throw(CSDReadException)
 {
 	std::string element_name;
 	IDLData data;
-	data_->repid = XMLString::transcode(element->getAttribute(X("id")));
+	data_->repid = Qedo::transcode(element->getAttribute(X("id")));
     DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// link
@@ -493,10 +493,10 @@ throw(CSDReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
 
-	std::string ref = XMLString::transcode(element->getAttribute(X("href")));
+	std::string ref = Qedo::transcode(element->getAttribute(X("href")));
 	if(ref.length())
 	{
 		if(text.length())
@@ -517,7 +517,7 @@ CSDReader::link (DOMElement* element)
 throw(CSDReadException)
 {
     XMLURL uri(element->getAttribute(X("href")));
-    std::string name = XMLString::transcode(uri.getPath());
+    std::string name = Qedo::transcode(uri.getPath());
     std::string::size_type pos = name.find_last_of("/");
     if (pos != std::string::npos)
     {
@@ -526,7 +526,7 @@ throw(CSDReadException)
     
 	std::string fileName = path_ + name;
 	LocationData data;
-	data.uri = XMLString::transcode(element->getAttribute(X("href")));
+	data.uri = Qedo::transcode(element->getAttribute(X("href")));
 	data.file = name;
 
 	//
@@ -565,7 +565,7 @@ std::string
 CSDReader::os (DOMElement* element)
 throw(CSDReadException)
 {
-	return XMLString::transcode(element->getAttribute(X("name")));
+	return Qedo::transcode(element->getAttribute(X("name")));
 }
 
 
@@ -615,7 +615,7 @@ throw(CSDReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
 	DEBUG_OUT2( "CSDReader: <title> ", text );
     return text;
@@ -632,7 +632,7 @@ throw(CSDReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// title
@@ -788,7 +788,7 @@ throw(CSDReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -800,13 +800,13 @@ throw(CSDReadException)
 {
 	std::string element_name;
 	ValuetypeData data;
-	data.repid = XMLString::transcode(element->getAttribute(X("repid")));
+	data.repid = Qedo::transcode(element->getAttribute(X("repid")));
     DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// codebase
@@ -850,7 +850,7 @@ throw(CSDReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }

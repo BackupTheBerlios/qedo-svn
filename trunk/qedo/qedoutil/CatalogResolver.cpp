@@ -45,7 +45,7 @@ InputSource*
 CatalogResolver::resolveEntity (const XMLCh* const publicId, const XMLCh* const systemId)
 {
     URI target;
-    if( publicId && mCatalog.lookup( std::string(XMLString::transcode(publicId)), target) )
+    if( publicId && mCatalog.lookup( std::string(Qedo::transcode(publicId)), target) )
     {
         target = mCatalog.lookup( target );
     }
@@ -53,7 +53,7 @@ CatalogResolver::resolveEntity (const XMLCh* const publicId, const XMLCh* const 
     {
         if( systemId )
         {
-			mCatalog.lookup( URI(XMLString::transcode(systemId)), target );
+			mCatalog.lookup( URI(Qedo::transcode(systemId)), target );
         }
     }
 

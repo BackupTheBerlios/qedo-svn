@@ -28,7 +28,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: InstallationReader.cpp,v 1.5 2003/11/05 14:37:55 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: InstallationReader.cpp,v 1.6 2003/11/14 16:48:16 boehme Exp $";
 
 
 namespace Qedo {
@@ -50,17 +50,17 @@ throw(InstallationReadException)
 {
 	std::string element_name;
 	ComponentImplementationData data;
-	data.uuid = XMLString::transcode(element->getAttribute(X("id")));
-	data.installation_dir = XMLString::transcode(element->getAttribute(X("installation")));
-	data.csd = XMLString::transcode(element->getAttribute(X("csd")));
-	data.assembly.cad = XMLString::transcode(element->getAttribute(X("cad")));
+	data.uuid = Qedo::transcode(element->getAttribute(X("id")));
+	data.installation_dir = Qedo::transcode(element->getAttribute(X("installation")));
+	data.csd = Qedo::transcode(element->getAttribute(X("csd")));
+	data.assembly.cad = Qedo::transcode(element->getAttribute(X("cad")));
 	DOMElement* child_element;
 	DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 			child_element = (DOMElement*)child;
 
 			//
@@ -68,8 +68,8 @@ throw(InstallationReadException)
 			//
 			if (element_name == "servants")
 			{
-				data.servant_module = XMLString::transcode(child_element->getAttribute(X("code")));
-				data.servant_entry_point = XMLString::transcode(child_element->getAttribute(X("entry")));
+				data.servant_module = Qedo::transcode(child_element->getAttribute(X("code")));
+				data.servant_entry_point = Qedo::transcode(child_element->getAttribute(X("entry")));
 			}
 
 			//
@@ -77,8 +77,8 @@ throw(InstallationReadException)
 			//
 			else if (element_name == "business")
 			{
-				data.executor_module = XMLString::transcode(child_element->getAttribute(X("code")));
-				data.executor_entry_point = XMLString::transcode(child_element->getAttribute(X("entry")));
+				data.executor_module = Qedo::transcode(child_element->getAttribute(X("code")));
+				data.executor_entry_point = Qedo::transcode(child_element->getAttribute(X("entry")));
 			}
 
 			//
@@ -87,8 +87,8 @@ throw(InstallationReadException)
 			else if (element_name == "valuetype")
 			{
 				ValuetypeData vdata;
-				vdata.repid = XMLString::transcode(child_element->getAttribute(X("repid")));
-				vdata.location.file = XMLString::transcode(child_element->getAttribute(X("code")));
+				vdata.repid = Qedo::transcode(child_element->getAttribute(X("repid")));
+				vdata.location.file = Qedo::transcode(child_element->getAttribute(X("code")));
 				data.valuetypes.push_back(vdata);
 			}
 		}
@@ -114,7 +114,7 @@ throw(InstallationReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// implementation
@@ -301,14 +301,14 @@ throw(InstallationReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// implementation
 			//
 			if (element_name == "implementation")
 			{
-				if( !strcmp(XMLString::transcode(((DOMElement*)child)->getAttribute(X("id"))), uuid) )
+				if( Qedo::transcode(((DOMElement*)child)->getAttribute(X("id"))) == uuid )
 				{
 					root->removeChild( text_child );
 					root->removeChild( child );

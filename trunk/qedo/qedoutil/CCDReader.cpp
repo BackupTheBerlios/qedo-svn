@@ -28,7 +28,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.6 2003/11/05 14:39:01 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.7 2003/11/14 16:48:16 boehme Exp $";
 
 
 namespace Qedo {
@@ -155,7 +155,7 @@ std::string
 CCDReader::description (DOMElement* element)
 throw(CCDReadException)
 {
-	return XMLString::transcode(element->getFirstChild()->getNodeValue());
+	return Qedo::transcode(element->getFirstChild()->getNodeValue());
 }
 
 
@@ -216,7 +216,7 @@ std::string
 CCDReader::fileinarchive(DOMElement* element)
 throw(CCDReadException)
 {
-	return XMLString::transcode(element->getAttribute(X("name")));
+	return Qedo::transcode(element->getAttribute(X("name")));
 }
 
 
@@ -224,9 +224,9 @@ void
 CCDReader::homefeatures (DOMElement* element)
 throw(CCDReadException)
 {
-	if (data_->home_repid == XMLString::transcode(element->getAttribute(X("repid"))))
+	if (data_->home_repid == Qedo::transcode(element->getAttribute(X("repid"))))
 	{
-		data_->home_name = XMLString::transcode(element->getAttribute(X("name")));
+		data_->home_name = Qedo::transcode(element->getAttribute(X("name")));
 	}
 }
 
@@ -235,7 +235,7 @@ std::string
 CCDReader::homerepid (DOMElement* element)
 throw(CCDReadException)
 {
-	return XMLString::transcode(element->getAttribute(X("repid")));
+	return Qedo::transcode(element->getAttribute(X("repid")));
 }
 
 
@@ -244,7 +244,7 @@ CCDReader::link (DOMElement* element)
 throw(CCDReadException)
 {
     XMLURL uri(element->getAttribute(X("href")));
-    std::string name = XMLString::transcode(uri.getPath());
+    std::string name = Qedo::transcode(uri.getPath());
     std::string::size_type pos = name.find_last_of("/");
     if (pos != std::string::npos)
     {

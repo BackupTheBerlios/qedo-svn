@@ -31,6 +31,8 @@
 #endif
 
 
+#include <xercesc/util/XMLString.hpp>
+
 #ifdef _WIN32
 #ifdef QEDOUTIL_EXPORTS
 #define QEDOUTIL_API __declspec(dllexport)
@@ -176,6 +178,13 @@ QEDOUTIL_API
 std::string
 createUUID();
 
+/**
+ * own transcode adapter for memory handling
+ * \return the transcoded string from Xerces as std::string
+ */
+
+std::string
+transcode(const XMLCh * const);
 
 }
 

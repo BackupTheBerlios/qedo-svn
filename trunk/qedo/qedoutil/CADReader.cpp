@@ -53,7 +53,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// description
@@ -113,7 +113,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 			
 			//
 			// fileinarchive
@@ -144,7 +144,7 @@ throw(CADReadException)
 	    child = child->getNextSibling();
 	}
 
-	std::string id = XMLString::transcode(element->getAttribute(X("id")));
+	std::string id = Qedo::transcode(element->getAttribute(X("id")));
 	DEBUG_OUT2( "CADReader: <componentfile> ", file_name );
 	data_->implementationMap_[id] = file_name;
 }
@@ -160,7 +160,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// componentfile
@@ -181,7 +181,7 @@ std::string
 CADReader::componentfileref (DOMElement* element)
 throw(CADReadException)
 {
-	return XMLString::transcode(element->getAttribute(X("idref")));
+	return Qedo::transcode(element->getAttribute(X("idref")));
 }
 
 
@@ -189,7 +189,7 @@ std::string
 CADReader::componentimplref (DOMElement* element)
 throw(CADReadException)
 {
-	return XMLString::transcode(element->getAttribute(X("idref")));
+	return Qedo::transcode(element->getAttribute(X("idref")));
 }
 
 
@@ -199,13 +199,13 @@ throw(CADReadException)
 {
 	std::string element_name;
 	ComponentInstanceData data;
-    data.id = XMLString::transcode(element->getAttribute(X("id")));
+    data.id = Qedo::transcode(element->getAttribute(X("id")));
 	DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// usagename
@@ -252,7 +252,7 @@ std::string
 CADReader::componentinstantiationref (DOMElement* element)
 throw(CADReadException)
 {
-	return XMLString::transcode(element->getAttribute(X("idref")));
+	return Qedo::transcode(element->getAttribute(X("idref")));
 }
 
 
@@ -267,7 +267,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// fileinarchive
@@ -305,7 +305,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// componentinstantiationref
@@ -344,7 +344,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// consumesport
@@ -401,7 +401,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// usesport
@@ -463,7 +463,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 		
 			//
 			// connectinterface
@@ -512,7 +512,7 @@ throw(CADReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -529,7 +529,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// consumesidentifier
@@ -573,7 +573,7 @@ throw(CADReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
 	
 	DEBUG_OUT2( "CADReader: <description> ", text );
@@ -589,7 +589,7 @@ throw(CADReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 		return text;
 	}
 
@@ -609,7 +609,7 @@ throw(CADReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -626,7 +626,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// emitsidentifier
@@ -681,7 +681,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 		
 			//
 			// findby
@@ -704,14 +704,14 @@ void
 CADReader::extension (DOMElement* element)
 throw(CADReadException)
 {
-	std::string class_attr = XMLString::transcode(element->getAttribute(X("class")));
+	std::string class_attr = Qedo::transcode(element->getAttribute(X("class")));
 	
     //
     // startorder
     //
     if( class_attr == "startorder" )
 	{
-		std::string id = XMLString::transcode(element->getFirstChild()->getNodeValue());
+		std::string id = Qedo::transcode(element->getFirstChild()->getNodeValue());
 		data_->start_order_.push_back( id );
 	}
 }
@@ -721,7 +721,7 @@ std::string
 CADReader::fileinarchive(DOMElement* element)
 throw(CADReadException)
 {
-	std::string file_name = XMLString::transcode(element->getAttribute(X("name")));
+	std::string file_name = Qedo::transcode(element->getAttribute(X("name")));
 	std::string file = path_ + getFileName( file_name );
 
 	//
@@ -748,7 +748,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 		
 			//
 			// namingservice
@@ -807,7 +807,7 @@ std::string
 CADReader::homefinder (DOMElement* element)
 throw(CADReadException)
 {
-	return XMLString::transcode(element->getAttribute(X("name")));
+	return Qedo::transcode(element->getAttribute(X("name")));
 }
 
 
@@ -822,7 +822,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// homeplacementref
@@ -856,13 +856,13 @@ throw(CADReadException)
 {
 	std::string element_name;
 	HomeInstanceData data;
-	data.id = XMLString::transcode(element->getAttribute(X("id")));
+	data.id = Qedo::transcode(element->getAttribute(X("id")));
 	DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// usagename
@@ -1013,7 +1013,7 @@ std::string
 CADReader::homeplacementref (DOMElement* element)
 throw(CADReadException)
 {
-	return XMLString::transcode(element->getAttribute(X("idref")));
+	return Qedo::transcode(element->getAttribute(X("idref")));
 }
 
 
@@ -1028,7 +1028,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// fileinarchive
@@ -1066,7 +1066,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// usagename
@@ -1144,7 +1144,7 @@ CADReader::link (DOMElement* element)
 throw(CADReadException)
 {
     XMLURL uri(element->getAttribute(X("href")));
-    std::string name = XMLString::transcode(uri.getPath());
+    std::string name = Qedo::transcode(uri.getPath());
     std::string::size_type pos = name.find_last_of("/");
     if (pos != std::string::npos)
     {
@@ -1184,7 +1184,7 @@ std::string
 CADReader::namingservice (DOMElement* element)
 throw(CADReadException)
 {
-	return XMLString::transcode(element->getAttribute(X("name")));
+	return Qedo::transcode(element->getAttribute(X("name")));
 }
 
 
@@ -1198,7 +1198,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// homeplacement
@@ -1277,7 +1277,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// usagename
@@ -1338,7 +1338,7 @@ throw(CADReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -1355,7 +1355,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// providesidentifier
@@ -1399,7 +1399,7 @@ throw(CADReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -1416,7 +1416,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// publishesidentifier
@@ -1464,7 +1464,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// emitsidentifier
@@ -1519,7 +1519,7 @@ std::string
 CADReader::registerwithhomefinder (DOMElement* element)
 throw(CADReadException)
 {
-	return XMLString::transcode(element->getAttribute(X("name")));
+	return Qedo::transcode(element->getAttribute(X("name")));
 }
 
 
@@ -1527,7 +1527,7 @@ std::string
 CADReader::registerwithnaming (DOMElement* element)
 throw(CADReadException)
 {
-	return XMLString::transcode(element->getAttribute(X("name")));
+	return Qedo::transcode(element->getAttribute(X("name")));
 }
 
 
@@ -1536,7 +1536,7 @@ CADReader::registerwithtrader (DOMElement* element)
 throw(CADReadException)
 {
 	// todo more
-	return XMLString::transcode(element->getAttribute(X("tradername")));
+	return Qedo::transcode(element->getAttribute(X("tradername")));
 }
 
 
@@ -1548,7 +1548,7 @@ throw(CADReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -1570,7 +1570,7 @@ throw(CADReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -1584,7 +1584,7 @@ throw(CADReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -1601,7 +1601,7 @@ throw(CADReadException)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
-			element_name = XMLString::transcode(child->getNodeName());
+			element_name = Qedo::transcode(child->getNodeName());
 
 			//
 			// usesidentifier

@@ -87,6 +87,7 @@ private:
 	XercesDOMParser*				parser_;
 	DOMDocument*					document_;
     XMLCatalog*						mXMLCatalog;
+	 CatalogResolver*             mCatalogResolver;
 
 public:
 	DOMXMLParser();

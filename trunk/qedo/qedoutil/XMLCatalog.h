@@ -107,6 +107,7 @@ private:
     URI mTarget;
 public:
     MapEntry (const std::string & aPublicId, const URI & aTarget);
+	 virtual ~MapEntry();
 
     bool lookup (const std::string & aPublicId, URI & aTarget) const;
 };
@@ -119,6 +120,7 @@ private:
     URI mTarget;
 public:
     RemapEntry (const URI & aSystemId, const URI & aTarget);
+	 virtual ~RemapEntry();
 
     bool lookup (const URI & aSystemId, URI & aTarget) const;
 };
@@ -132,6 +134,7 @@ private:
     XMLCatalog mCatalog;
 public:
     DelegateEntry (const std::string & aPrefix, XercesDOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute);
+	 virtual ~DelegateEntry();
 
     bool lookup (const std::string & aPublicId, URI & aTarget) const;
 };
@@ -143,6 +146,7 @@ private:
     XMLCatalog mCatalog;
 public:
     ExtendEntry (XercesDOMParser & aParser, const URI & aCatalog, bool aMakeAbsolute);
+	 virtual ~ExtendEntry();
 
     bool lookup (const std::string & aPublicId, URI & aTarget) const;
     bool lookup (const URI & aSystemId, URI & aTarget) const;

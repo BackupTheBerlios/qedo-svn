@@ -45,7 +45,7 @@ throw(CPFReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -114,7 +114,7 @@ throw(CPFReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }
@@ -128,7 +128,7 @@ throw(CPFReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
 	std::cerr << "<description> " << text << std::endl;
     return text;
@@ -219,8 +219,8 @@ throw(CPFReadException)
 {
 	CORBA::Any any;
 	std::string val;
-	std::string type = XMLString::transcode(element->getAttribute(X("type")));
-	std::string name = XMLString::transcode(element->getAttribute(X("name")));
+	std::string type = Qedo::transcode(element->getAttribute(X("type")));
+	std::string name = Qedo::transcode(element->getAttribute(X("name")));
 
 	DOMNode* child = element->getFirstChild();
     while( child != 0)
@@ -372,7 +372,7 @@ throw(CPFReadException)
 	DOMNode* node = element->getFirstChild();
 	if(node)
 	{
-		text = XMLString::transcode(node->getNodeValue());
+		text = Qedo::transcode(node->getNodeValue());
 	}
     return text;
 }

@@ -23,6 +23,7 @@
 #include <sstream>
 #include <iostream>
 #include "XMLCatalog.h"
+#include "qedoutil.h"
 #include <xercesc/framework/URLInputSource.hpp>
 
 
@@ -52,7 +53,7 @@ XMLCatalog::XMLCatalog (XercesDOMParser & aParser, const URI & aCatalog, bool aM
     {
         n = nl->item(0);
         e = static_cast< DOMElement * >(n);
-		s = XMLString::transcode(e->getAttribute(X("HRef")));
+		s = Qedo::transcode(e->getAttribute(X("HRef")));
         mBaseHref = s;
         if (mBaseHref.isRelative())
         {
@@ -71,8 +72,8 @@ XMLCatalog::XMLCatalog (XercesDOMParser & aParser, const URI & aCatalog, bool aM
     {
         n = nl->item(i);
         e = static_cast< DOMElement * >(n);
-		s = XMLString::transcode(e->getAttribute(X("Publicsystem-identifier")));
-        u = XMLString::transcode(e->getAttribute(X("HRef")));
+		s = Qedo::transcode(e->getAttribute(X("Publicsystem-identifier")));
+        u = Qedo::transcode(e->getAttribute(X("HRef")));
         if( mMakeAbsolute && u.isRelative() )
         {
             u = u.makeAbsolute( mBaseHref );
@@ -86,8 +87,8 @@ XMLCatalog::XMLCatalog (XercesDOMParser & aParser, const URI & aCatalog, bool aM
     {
         n = nl->item(i);
         e = static_cast< DOMElement * >(n);
-        s = XMLString::transcode(e->getAttribute(X("PublicId")));
-        u = XMLString::transcode(e->getAttribute(X("HRef")));
+        s = Qedo::transcode(e->getAttribute(X("PublicId")));
+        u = Qedo::transcode(e->getAttribute(X("HRef")));
         if (u.isRelative())
         { 
 	        u = u.makeAbsolute( mBaseHref );
@@ -101,12 +102,12 @@ XMLCatalog::XMLCatalog (XercesDOMParser & aParser, const URI & aCatalog, bool aM
     {
         n = nl->item(i);
         e = static_cast< DOMElement * >(n);
-        u = XMLString::transcode(e->getAttribute(X("SystemId")));
+        u = Qedo::transcode(e->getAttribute(X("SystemId")));
         if (mMakeAbsolute && u.isRelative())
         { 
 	        u = u.makeAbsolute(mBaseHref);
         }
-        v = XMLString::transcode(e->getAttribute(X("HRef")));
+        v = Qedo::transcode(e->getAttribute(X("HRef")));
         if( mMakeAbsolute && v.isRelative() )
         { 
 	        v = v.makeAbsolute(mBaseHref);
@@ -120,7 +121,7 @@ XMLCatalog::XMLCatalog (XercesDOMParser & aParser, const URI & aCatalog, bool aM
     {
         n = nl->item(i);
         e = static_cast< DOMElement * >(n);
-        u = XMLString::transcode(e->getAttribute(X("HRef")));
+        u = Qedo::transcode(e->getAttribute(X("HRef")));
         if (u.isRelative())
         { 
 	        u = u.makeAbsolute(mBaseHref);
@@ -208,6 +209,9 @@ DelegateEntry::DelegateEntry (const std::string & aPrefix, XercesDOMParser & aPa
     mPrefixLen = aPrefix.length();
 }
 
+DelegateEntry::~DelegateEntry()
+{
+}
 
 bool
 DelegateEntry::lookup (const std::string & aPublicId, URI & aTarget) const
@@ -231,6 +235,9 @@ MapEntry::MapEntry (const std::string & aPublicId, const URI & aTarget)
     mTarget = aTarget;
 }
 
+MapEntry::~MapEntry()
+{
+}
 
 bool
 MapEntry::lookup (const std::string & aPublicId, URI & aTarget) const
@@ -251,6 +258,9 @@ RemapEntry::RemapEntry (const URI & aSystemId, const URI & aTarget)
     mTarget = aTarget;
 }
  
+RemapEntry::~RemapEntry()
+{
+}
 
 bool
 RemapEntry::lookup (const URI & aSystemId, URI & aTarget) const
@@ -269,6 +279,9 @@ ExtendEntry::ExtendEntry (XercesDOMParser & aParser, const URI & aCatalog, bool 
 {
 }
  
+ExtendEntry::~ExtendEntry()
+{
+}
 
 bool
 ExtendEntry::lookup (const std::string & aPublicId, URI & aTarget) const
