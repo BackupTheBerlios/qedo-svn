@@ -158,13 +158,13 @@ BuildCmds= \
 "last_build_time" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DiningPhilosophers_LOCAL.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_LOCAL.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DiningPhilosophers_EQUIVALENT.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_EQUIVALENT.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DiningPhilosophers_BUSINESS.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_BUSINESS.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
