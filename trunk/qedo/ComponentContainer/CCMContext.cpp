@@ -23,7 +23,7 @@
 #include "CCMContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.14 2003/08/26 12:03:48 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.15 2003/08/27 06:35:06 neubauer Exp $";
 
 
 namespace Qedo {
@@ -99,19 +99,22 @@ throw (Components::CCMException)
 }
 
 
-class Thread_impl : public virtual Components::Thread {
+class Thread_impl : public virtual Components::Thread,
+	public virtual Qedo::RefCountLocalObject
+{
 	QedoThread* thread;
 	Thread_impl();
-	public:
+public:
 	Thread_impl(QedoThread* t);
 	void stop();
 	void join();
 };
 
+
 Components::Thread_ptr 
-CCMContext::start_thread( Components::Function function, Components::FunctionData data )
+CCMContext::start_thread( Components::Function func, Components::FunctionData data )
 {
-	Thread_impl* thread = new Thread_impl(qedo_startDetachedThread(function,data));
+	Thread_impl* thread = new Thread_impl(qedo_startDetachedThread(func, data));
 	return thread;
 }
 
@@ -235,9 +238,9 @@ throw (Components::CCMException)
 }
 
 Components::Thread_ptr 
-HomeExecutorContext::start_thread( Components::Function function, Components::FunctionData data )
+HomeExecutorContext::start_thread( Components::Function func, Components::FunctionData data )
 {
-	Thread_impl* thread = new Thread_impl(qedo_startDetachedThread(function,data));
+	Thread_impl* thread = new Thread_impl(qedo_startDetachedThread(func, data));
 	return thread;
 }
 

@@ -182,7 +182,7 @@ public:
 	 * (not implemented yet)
 	 */
 
-   Components::Thread_ptr start_thread( Components::Function function, Components::FunctionData data );
+   Components::Thread_ptr start_thread( Components::Function func, Components::FunctionData data );
 };
 
 
