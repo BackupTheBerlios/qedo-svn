@@ -1,8 +1,3 @@
-##### Qedo Target Dir #####
-# The target dir of Qedo. After building Qedo it will be installed
-# into this directory 
-#QEDO = /home/tri/test/qedo
-
 # operating system
 OS=@OS@
 
@@ -30,12 +25,8 @@ ORBACUS = /opt/OOC
 Debug = yes
 
 # Xerces - XML handling
-# 
-#XERCES = /home/tri/devel/xerces-c-src2_1_0
+#
 XERCESDIR = @XERCESDIR@
-
-# ZLib - Zip File handling
-ZLIB = /home/tri/devel/zlib-1.1.4
 
 # modes for install files
 EXE_MOD=755
@@ -51,17 +42,16 @@ all:
 %.a:
 	$(AR) $(ARFLAGS) $@ $^
 
-ifeq "${CXX}" "g++"
 %.so:
 	${CXX} -shared ${LD_SHRAED_FLAGS} -o $@ $^ $(LIBS)
 
-CXXFLAGS += 
-endif
+CXXFLAGS +=
 
 
 INSTALL = @INSTALL@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+bindir=@bindir@
 
 ifeq "MICO_ORB" "${ORB}"
 %.h %.cpp %_skel.h %_skel.cpp: %.idl
@@ -78,10 +68,10 @@ all:
 install:
 
 install-prog:
-	${INSTALL} -m $(EXE_MOD) $^ @bindir@ 
+	${INSTALL} -m $(EXE_MOD) $^ $(bindir)
 
 install-lib:
-	${INSTALL} -m $(EXE_MOD) $^ $(exec_prefix)/lib 
+	${INSTALL} -m $(EXE_MOD) $^ $(exec_prefix)/lib
 
 install-include:
 	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/include 
