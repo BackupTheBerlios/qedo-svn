@@ -1,27 +1,27 @@
 # Microsoft Developer Studio Project File - Name="CIDLGenerator" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
 CFG=CIDLGenerator - Win32 Debug_tao
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "CIDLGenerator.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "CIDLGenerator.mak" CFG="CIDLGenerator - Win32 Debug_tao"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "CIDLGenerator - Win32 Release" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "CIDLGenerator - Win32 Debug" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "CIDLGenerator - Win32 Debug_mico" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "CIDLGenerator - Win32 Debug_orbacus" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "CIDLGenerator - Win32 Debug_tao" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Debug_mico" (based on "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Debug_orbacus" (based on "Win32 (x86) Console Application")
+!MESSAGE "CIDLGenerator - Win32 Debug_tao" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -136,7 +136,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=distribution
-PostBuild_Cmds=md    ..\..\..\qedo_dist_orbacus_d   	md    ..\..\..\qedo_dist_orbacus_d\bin   	copy    cidl_gen.exe    ..\..\..\qedo_dist_orbacus_d\bin   	mkdir    $(QEDO)\bin   	copy    cidl_gen.exe    $(QEDO)\bin\ 
+PostBuild_Cmds=md     ..\..\..\qedo_dist_orbacus_d    	md     ..\..\..\qedo_dist_orbacus_d\bin    	copy     cidl_gen.exe     ..\..\..\qedo_dist_orbacus_d\bin    	mkdir     $(QEDO)\bin    	copy     cidl_gen.exe     $(QEDO)\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "CIDLGenerator - Win32 Debug_tao"
@@ -302,6 +302,10 @@ SOURCE=.\Printer.h
 # Begin Source File
 
 SOURCE=.\TestMode.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\version.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

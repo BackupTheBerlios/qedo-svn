@@ -7,7 +7,7 @@
 *   Remark  : provides version strings
 *******************************************************************************/
 
-#define __CIDL2CPP__ 0.9
+#define __CIDL2CPP__ 0.1
 
 #define AUTHOR "Harald Boehme"
 
