@@ -8,7 +8,7 @@
 
 \maketitle
 
-\setcounter{page}{1} 
+\setcounter{page}{1}
 
 \tableofcontents
 
@@ -16,7 +16,7 @@
 \chapter{Introduction}
 \label{sec:Introduction}
 
-The Qedo Run-Time and the Qedo Code Generator are based upon other software packages. 
+The Qedo Run-Time and the Qedo Code Generator are based upon other software packages.
 This installation guide refers to {0.5.0} version of Qedo software.
 
 ...
@@ -32,12 +32,12 @@ If you have any problem or if you have any comments do not hesitate to contact t
 
 This installation guide will describe the installation process for Unix and Windows based systems.
 
-This following sections describes the process of installing the Qedo. This includes the Code Gnerator and the run-time. Because Qedo is a software that solve complex problems Qedo itself needs many other software products. You have to install all of them before you can compile Qedo. This will take you some time and experiences with installing such software would be very helpful. Nevertheless, we hope that this little description will give enough information to accomplish all needed steps. 
+This following sections describes the process of installing the Qedo. This includes the Code Gnerator and the run-time. Because Qedo is a software that solve complex problems Qedo itself needs many other software products. You have to install all of them before you can compile Qedo. This will take you some time and experiences with installing such software would be very helpful. Nevertheless, we hope that this little description will give enough information to accomplish all needed steps.
 The Qedo software can be compiled by using the MS Visual Studio 6 (deprecated, no longer supported), MS Visual Studio.Net 2002 (VC7.0), Solaris gcc, or Linux gcc.
 
 \section{ORB}
 \label{sec:ORB}
-The Qedo project is designed to work with arbitrary ORB implementations which support at least a basic set of features. This set comprises OBV, Portable Interceptors, ... 
+The Qedo project is designed to work with arbitrary ORB implementations which support at least a basic set of features. This set comprises OBV, Portable Interceptors, ...
 
 Anyway, for each ORB implementation some minimal changes have to be done. Currently ORBacus 4.1 and MICO are supported by deafault. The TAO support is deprecated. In order to install Qedo a supported ORB implementation has to be installed on the target host. Pay attention that it has to be dynamically linked and the linker can find the according libraries. At the moment Qedo generator supports 3 ORBs MICO, TAO and ORBacus. For using one of the ORBs you need to install the ORB and to set an appropriate environment variable. Follow the instructions coming with each ORB to install it properly. We will only point out some important details.
 
@@ -46,120 +46,120 @@ Anyway, for each ORB implementation some minimal changes have to be done. Curren
 To install ORBACUS you have to do at least the following steps.
 
 \begin{itemize}
-	\item Obtain the ORBacus Software (version 4.1.1) from \\ 
-	\small	
-	\verb http://www.iona.com/products/orbacus_home.htm .
-	\normalsize
-	
-	\item Configure ORBacus by editing the file \\ \verb /config/Makefile.rules.mak  set the prefix and use \verb DEBUG=yes  and \verb DLL=yes . 
+    \item Obtain the ORBacus Software (version 4.1.1) from \\
+    \small
+    \verb http://www.iona.com/products/orbacus_home.htm .
+    \normalsize
 
-	\item compile ORBacus by calling
-	\begin{verbatim} nmake -f Makefile.mak install_min} 
-	\end{verbatim}
+    \item Configure ORBacus by editing the file \\ \verb /config/Makefile.rules.mak  set the prefix and use \verb DEBUG=yes  and \verb DLL=yes .
 
-	\item set the environment by defining the following vars.	
-	\begin{verbatim}
-	ORBACUS = (e.g. C:\OOC)
-	ORBACUS_CONFIG= %ORBACUS%\ooc\ini\orbacus.ini
-	\end{verbatim}
+    \item compile ORBacus by calling
+    \begin{verbatim} nmake -f Makefile.mak install_min}
+    \end{verbatim}
 
-	\item Create an ini directory somewhere in your filesystem, preferably in your home directory or in the ORBACUS installation. Create an ini file in this directory. The path to this ini file must correspond to the \verb ORBACUS_CONFIG  var. This ini file must contain lines similar to this:
-	\small
-	\begin{verbatim}
-			ooc.orb.service.NameService = corbaloc:iiop:127.0.0.1:3000/NameService
-			ooc.naming.endpoint=iiop --port 3000
-	\end{verbatim}
-	\normalsize
-	
-	\item add the following directories to your path and to the setting of you visual studio (executable files)
-	\begin{verbatim}
-	%ORBACUS%\lib 
-	%ORBACUS%\bin
-	\end{verbatim}
-	
+    \item set the environment by defining the following vars.
+    \begin{verbatim}
+    ORBACUS = (e.g. C:\OOC)
+    ORBACUS_CONFIG= %ORBACUS%\ooc\ini\orbacus.ini
+    \end{verbatim}
+
+    \item Create an ini directory somewhere in your filesystem, preferably in your home directory or in the ORBACUS installation. Create an ini file in this directory. The path to this ini file must correspond to the \verb ORBACUS_CONFIG  var. This ini file must contain lines similar to this:
+    \small
+    \begin{verbatim}
+            ooc.orb.service.NameService = corbaloc:iiop:127.0.0.1:3000/NameService
+            ooc.naming.endpoint=iiop --port 3000
+    \end{verbatim}
+    \normalsize
+
+    \item add the following directories to your path and to the setting of you visual studio (executable files)
+    \begin{verbatim}
+    %ORBACUS%\lib
+    %ORBACUS%\bin
+    \end{verbatim}
+
 \end{itemize}
 
 
 \subsection{MICO}
 \label{sec:MICO}
-The currently supported version of MICO is 2.3.11. 
-%You need to install the latest snapshot in order to get Qedo configured correctly. 
+The currently supported version of MICO is 2.3.11.
+%You need to install the latest snapshot in order to get Qedo configured correctly.
 
 \noindent To install MICO you have to do at least the following steps.
 \begin{itemize}
-	\item Obtain the software from \verb http://www.mico.org .
-	
-	\item Install the software by following the installation steps provided by MICO. You need to install a multi-threaded version. The configuration of MICO on UNIX System differs from Windows based systems. On a UNIX based systems you need to call the configure script with appropriate options. A typical list of option should be as follows.
-	\small
-	 \begin{verbatim}
-	 ./configure --prefix=/opt/mico --enable-threads
-	 	 --enable-pthreads 
-	 \end{verbatim}
-	\normalsize
-	Calling  \verb make \verb install  will compile plain version of MICO. An option might be to use the \verb --disable-coss  this will make the compilation of MICO a lot more faster but you need to compile at least the Name Service manually because Qedo depends on it.
-	On Windows based systems you need to configure the \verb MakefVars.win32  file. Use the \verb #define  \verb RELEASE_BUILD  \verb =  \verb 1  option to decide whether to build an release or Debug version of MICO. Later on you need to activate the Threading support by uncommenting the \verb HAVE_THREADS  define. You need to configure the other threading related defines. Follow the instructions of the \verb MakeVars.win32  file to install the pthread library and to configure MICO correctly. We strongly recommend to use the second option of the pthread library \verb __CLEANUP_C .  After saving the file you need to call
-	\begin{verbatim}
-	nmake /f Makefile.win32
-	\end{verbatim}
-	
-	to compile the MICO ORB.
-	
-	\item On a Unix system you need to be sure the MICO \verb bin  directory is included in the path before you can configure Qedo. The Qedo configure script will use a script of the MICO installation to obtain the options MICO is compiled with. On Unix Systems you need to add the \verb win32-bin  directory to the PATH environment setting to use MICO. For compiling Qedo with MICO in the Visual Studio you need to add this path the settings of the visual studio \verb Tools  \verb ->  \verb Options  \verb ->  \verb Projects  \verb ->  \verb VC++Dirs . 
-	
-	\item After compiling and installing MICO, you need to create a .micorc file. This file needs to be in the home directory or in the current working directory or you can use an environment setting pointing to this file (MICORC). Consult the MICO documentation for details. This file is used late on to configure 
+    \item Obtain the software from \verb http://www.mico.org .
+
+    \item Install the software by following the installation steps provided by MICO. You need to install a multi-threaded version. The configuration of MICO on UNIX System differs from Windows based systems. On a UNIX based systems you need to call the configure script with appropriate options. A typical list of option should be as follows.
+    \small
+     \begin{verbatim}
+     ./configure --prefix=/opt/mico --enable-threads
+         --enable-pthreads
+     \end{verbatim}
+    \normalsize
+    Calling  \verb make \verb install  will compile plain version of MICO. An option might be to use the \verb --disable-coss  this will make the compilation of MICO a lot more faster but you need to compile at least the Name Service manually because Qedo depends on it.
+    On Windows based systems you need to configure the \verb MakefVars.win32  file. Use the \verb #define  \verb RELEASE_BUILD  \verb =  \verb 1  option to decide whether to build an release or Debug version of MICO. Later on you need to activate the Threading support by uncommenting the \verb HAVE_THREADS  define. You need to configure the other threading related defines. Follow the instructions of the \verb MakeVars.win32  file to install the pthread library and to configure MICO correctly. We strongly recommend to use the second option of the pthread library \verb __CLEANUP_C .  After saving the file you need to call
+    \begin{verbatim}
+    nmake /f Makefile.win32
+    \end{verbatim}
+
+    to compile the MICO ORB.
+
+    \item On a Unix system you need to be sure the MICO \verb bin  directory is included in the path before you can configure Qedo. The Qedo configure script will use a script of the MICO installation to obtain the options MICO is compiled with. On Unix Systems you need to add the \verb win32-bin  directory to the PATH environment setting to use MICO. For compiling Qedo with MICO in the Visual Studio you need to add this path the settings of the visual studio \verb Tools  \verb ->  \verb Options  \verb ->  \verb Projects  \verb ->  \verb VC++Dirs .
+
+    \item After compiling and installing MICO, you need to create a .micorc file. This file needs to be in the home directory or in the current working directory or you can use an environment setting pointing to this file (MICORC). Consult the MICO documentation for details. This file is used late on to configure
 
 \end{itemize}
 
 \subsection{TAO (deprecated)}
 \label{sec:TAODeprecated}
 
-TAO comes with the ACE Framework (Version 5.3). 
+TAO comes with the ACE Framework (Version 5.3).
 To install TAO you have to do at least the following steps.
 \small
 \begin{verbatim}
 obtain software:
-	Version TAO 1.3 ACE 5.3
-	get from: http://www.cs.wustl.edu/~schmidt/TAO.html
+    Version TAO 1.3 ACE 5.3
+    get from: http://www.cs.wustl.edu/~schmidt/TAO.html
 install/compile:
-	ACE_ROOT = C:\ACE_WRAPPERS
-	TAO_ROOT = C:\ACE_WRAPPERS\TAO
-	TAO      = C:\ACE_WRAPPERS
-	create a config.h in %ACE_WRAPPERS%\ace:
-		#define ACE_HAS_STANDARD_CPP_LIBRARY 1
-		#include "ace/config-win32.h"
-	use the TAO workspace provided at %ACE_ROOT%\tao to compile TAO
-	there are a lot of project you need at least to compile these ones:
-		TAO_IDL
-		PortableServer
-		DynamicAny
-		DynamicInterface
-		NameService
-		IFR_Client
-	add the following to the path variable
-		%ACE_ROOT%\bin
+    ACE_ROOT = C:\ACE_WRAPPERS
+    TAO_ROOT = C:\ACE_WRAPPERS\TAO
+    TAO      = C:\ACE_WRAPPERS
+    create a config.h in %ACE_WRAPPERS%\ace:
+        #define ACE_HAS_STANDARD_CPP_LIBRARY 1
+        #include "ace/config-win32.h"
+    use the TAO workspace provided at %ACE_ROOT%\tao to compile TAO
+    there are a lot of project you need at least to compile these ones:
+        TAO_IDL
+        PortableServer
+        DynamicAny
+        DynamicInterface
+        NameService
+        IFR_Client
+    add the following to the path variable
+        %ACE_ROOT%\bin
 \end{verbatim}
-\normalsize	
+\normalsize
 
 The Qedo Runtime worspace supports configurations for 3 ORBs (ORBACUS, MICO, TAO). Each of these ORBs has specific characteristics (e.g the names of the skeleton files). These different characteristics make it really difficult to integrate the configurations into a single workspace. There are some serious problems with TAO. To overcome these problems you have to do the following things.
 \small
 \begin{verbatim}
 
-copy %ACE_ROOT%\TAO\tao\IFR_Client\IFR_BasicC.h  
-	%Qedo%\ComponentIDL\IFR_Basic.h
-	
 copy %ACE_ROOT%\TAO\tao\IFR_Client\IFR_BasicC.h
-	%Qedo%\ComponentIDL\IFR_Basic_skel.h
+    %Qedo%\ComponentIDL\IFR_Basic.h
 
-copy %ACE_ROOT%\TAO\tao\PortableServer\PortableServerC.h  
-	%Qedo%\ComponentIDL\PortableServer.h
+copy %ACE_ROOT%\TAO\tao\IFR_Client\IFR_BasicC.h
+    %Qedo%\ComponentIDL\IFR_Basic_skel.h
 
-copy %ACE_ROOT%\TAO\tao\PortableServer\PortableServerC.h  
-	%Qedo%\ComponentIDL\PortableServer_skel.h
+copy %ACE_ROOT%\TAO\tao\PortableServer\PortableServerC.h
+    %Qedo%\ComponentIDL\PortableServer.h
 
-copy %ACE_ROOT%\TAO\orbsvcs\orbsvcs\CosNamingC.h  
-	%Qedo%\ComponentIDL\CosNaming.h
-copy %ACE_ROOT%\TAO\orbsvcs\orbsvcs\CosNamingC.h  
-	%Qedo%\ComponentIDL\CosNaming_skel.h
+copy %ACE_ROOT%\TAO\tao\PortableServer\PortableServerC.h
+    %Qedo%\ComponentIDL\PortableServer_skel.h
+
+copy %ACE_ROOT%\TAO\orbsvcs\orbsvcs\CosNamingC.h
+    %Qedo%\ComponentIDL\CosNaming.h
+copy %ACE_ROOT%\TAO\orbsvcs\orbsvcs\CosNamingC.h
+    %Qedo%\ComponentIDL\CosNaming_skel.h
 
 modify the file: %ACE_ROOT%\TAO\tao\Current.pidl
 
@@ -180,26 +180,26 @@ add at the end of the file
 The Qedo project furthermore requires the xerces-c XML library version 2.1 to handle the deployment XML descriptors. On Unix based system is sometimes a Xerces-c version installed. You need to be sure this xercex installation is of the right version. For installing Xerces you need to do the following steps.
 
 \begin{itemize}
-	\item Obtain Software from
-	\verb http://xml.apache.org/dist/xerces-c/stable/ . 
-	\item Follow the installation instruction of this xerces package.
-	\item On Windows based systems you need to set environment Var
-	\begin{verbatim}
-	XERCES=<YOUR_XERCES_INSTALLATION_DIR>
-	\end{verbatim}
+    \item Obtain Software from
+    \verb http://xml.apache.org/dist/xerces-c/stable/ .
+    \item Follow the installation instruction of this xerces package.
+    \item On Windows based systems you need to set environment Var
+    \begin{verbatim}
+    XERCES=<YOUR_XERCES_INSTALLATION_DIR>
+    \end{verbatim}
 \end{itemize}
 
 \section{ZLib}
 \label{sec:ZLib}
 
 
-According to the CCM specification the Qedo project makes use of software packaging. In order to install Qedo the zlib 1.1.4 or a later version has to be installed on the target host. Usually this is installed on most Unix based systems. 
+According to the CCM specification the Qedo project makes use of software packaging. In order to install Qedo the zlib 1.1.4 or a later version has to be installed on the target host. Usually this is installed on most Unix based systems.
 
 
 \begin{itemize}
-	\item Obtain Software from \verb http://www.gzip.org/zlib/ . For Windows based systems you can use the pre-compiled versions. For Unix based systems you need to follow the installation instructions.
-	\item On Windows based systems you need to set the environment var \verb ZLIB  pointing to the installation directory of the ZLib package.
-	\item On Windows based systems you need to add the directory \verb $(ZLIB)/dll32  to your path environment setting.
+    \item Obtain Software from \verb http://www.gzip.org/zlib/ . For Windows based systems you can use the pre-compiled versions. For Unix based systems you need to follow the installation instructions.
+    \item On Windows based systems you need to set the environment var \verb ZLIB  pointing to the installation directory of the ZLib package.
+    \item On Windows based systems you need to add the directory \verb $(ZLIB)/dll32  to your path environment setting.
 \end{itemize}
 Automatic packaging under Windows requires the command line version of winzip, to be downloaded from \verb www.winzip.com . Make sure, it is in your path.
 
@@ -210,11 +210,29 @@ Automatic packaging under Windows requires the command line version of winzip, t
 Kimwitu++ is used in the front-end of the code generator. You only need to install it if you want to compile the code generator. The currently supported version is 2.3.4. You need to do the following in order to install kimwitu++.
 
 \begin{itemize}
-	\item Obtain Software from 
-	
-	\verb http://site.informatik.hu-berlin.de/kimwitu++/download.html . On Windows based systems you can use the pre-compiled version of kimwitu++. On Unix based systems you should compile it on you own.
-	\item On Unix based systems kimwitu++ is compiled by calling \verb configure  and \verb make  . Consult the Installation guide of kimwitu++ for further details. The result of the compilation process is a single binary.
-	\item Add the kimwitu++ Binary to the path setting. 
+    \item Obtain Software from
+
+    \verb http://site.informatik.hu-berlin.de/kimwitu++/download.html . On Windows based systems you can use the pre-compiled version of kimwitu++. On Unix based systems you should compile it on you own.
+    \item On Unix based systems kimwitu++ is compiled by calling \verb configure  and \verb make  . Consult the Installation guide of kimwitu++ for further details. The result of the compilation process is a single binary.
+    \item Add the kimwitu++ Binary to the path setting.
+\end{itemize}
+
+\section{wxWidgets}
+\label{sec:WxWidgets}
+
+wxWidget is an open source C++ GUI framework to make
+cross-platform programming. In former times wxWidget was devoloped
+under the name wxWindows. After a polite request from Microsoft,
+wxWindows was renamed in wxWidget. The currently supported version
+of wxWidget is 2.4.2. You need to install it if you want to
+compile the \verb qcontroller .
+
+\begin{itemize}
+    \item Obtain Software from \verb http://www.wxwidgets.org .
+
+    \item Consult the Installation guide of wxWindows for further
+    details
+ 
 \end{itemize}
 
 \chapter{Installation of Code Generator}
@@ -223,11 +241,11 @@ Kimwitu++ is used in the front-end of the code generator. You only need to insta
 \section{Compiling on Windows}
 \label{sec:CompilingOnWindows}
 
-First of all you need to define an environment setting to specify where the compiled code generator shall be installed. For that reason you need to define the \verb QEDO  environment setting. It is a good idea to re-start an already running Visual Studio to be sure this change is propagated. 
+First of all you need to define an environment setting to specify where the compiled code generator shall be installed. For that reason you need to define the \verb QEDO  environment setting. It is a good idea to re-start an already running Visual Studio to be sure this change is propagated.
 
-If you use the MS Visual Studio 6 you have to open the workspace: 
+If you use the MS Visual Studio 6 you have to open the workspace:
 \begin{verbatim}
-/build/win32/vc6/generator.dsw 
+/build/win32/vc6/generator.dsw
 \end{verbatim}
 But the VC6 workspaces are not maintained currently.
 
@@ -236,7 +254,7 @@ If you use the MS Visual Studio .Net 2002 you have to open the solution file:
 /build/win32/vc7/generator.sln  solution File.
 \end{verbatim}
 
-Then you will have to set the active configuration. 
+Then you will have to set the active configuration.
 
 \begin{verbatim}
 mico    ->   Win32 Debug_mico
@@ -258,7 +276,7 @@ It might be a good idea to remove older versions of Qedo before installing a new
 
 \section{Compiling on Windows}
 \label{sec:CompilingWindows}
-First of all you need to define an environment setting to specify where the compiled Qedo shall be installed. For that reason you need to define the \verb QEDO  environment setting. Preferably you should use the same setting as used for the code generator. It is a good idea to re-start an already running Visual Studio to be sure this change is propagated. 
+First of all you need to define an environment setting to specify where the compiled Qedo shall be installed. For that reason you need to define the \verb QEDO  environment setting. Preferably you should use the same setting as used for the code generator. It is a good idea to re-start an already running Visual Studio to be sure this change is propagated.
 
 If you use the MS Visual Studio 6 you have to open the workspace \verb Qedo.dsw . But the VC6 workspaces are not maintained currently.
 
@@ -305,4 +323,3 @@ to build and install the Qedo run-time.
 \label{sec:InstallShield}
 This chapter will describe the installation process using the InstallShield. This is can only be used on Windows based systems.
 \end{document}
-
