@@ -412,8 +412,7 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release_orbacus|Win32"
-					ExcludedFromBuild="TRUE">
+					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"

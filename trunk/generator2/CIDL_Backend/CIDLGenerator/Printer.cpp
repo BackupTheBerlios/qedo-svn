@@ -119,12 +119,12 @@ Printer::initUserSections(const char* name)
 
 	std::string section;
 	std::string section_name;
-	char line[256];
-	while(in_file.getline(line, 256)) {
+	char line[512];
+	while(in_file.getline(line, 512)) {
 		if(!strncmp(line, "// BEGIN USER INSERT SECTION ", 29))	{
 			section_name = line + 29;
 		
-			while(in_file.getline(line, 256)) {
+			while(in_file.getline(line, 512)) {
 				if(!strncmp(line, "// END USER INSERT SECTION ", 27)) {
 					user_sections_[section_name] = section;
 					section = "";

@@ -256,7 +256,7 @@ ENOL                    (\n|\n)
 <userinput>.|"\n" { (*user_sections)[section]+=yytext[0]; }
 <userinput>"// END USER INSERT SECTION "[a-zA-Z_:~]*.*"\n" {
                BEGIN(sections);
-               /* fprintf(stderr,"found end section %s\n",section.c_str());
+               /*fprintf(stderr,"found end section %s\n",section.c_str());
                fprintf(stderr,"contents is '%s'\n",(*user_sections)[section].c_str()); 
                */
                section = "";
