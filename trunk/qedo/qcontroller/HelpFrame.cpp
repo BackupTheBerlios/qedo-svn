@@ -29,15 +29,11 @@ HelpFrame::HelpFrame(const wxString& title, const wxPoint& pos, const wxSize& si
                  long style)
     : wxDialog((wxWindow *) NULL, -1, title, pos, size, style)
 {
-	panel_ = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize,
-        wxTAB_TRAVERSAL | wxCLIP_CHILDREN | wxNO_BORDER);
+	wxBoxSizer *sizerLauncher = new wxBoxSizer(wxVERTICAL);
+	this->SetSizer(sizerLauncher);
+    this->SetAutoLayout(TRUE);
 
-	sizerFrame_ = new wxBoxSizer(wxBOTH);
-
-	panel_->SetSizer(sizerFrame_);
-
-	help = new wxButton(panel_, ID_HELP_BUTTON, _T("Help"),wxPoint(630,470),wxSize(100,20),0);
-
+	
 	/*
 	wxBoxSizer *sizerLauncher = new wxBoxSizer(wxVERTICAL);
 	this->SetSizer(sizerLauncher);
@@ -45,11 +41,11 @@ HelpFrame::HelpFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 	//spacer
 	sizerLauncher->Add(5, 5, 0, wxGROW | wxALL, 5);
-
+*/
 	// static text 
 	wxStaticText *e_text = new wxStaticText( this, wxID_STATIC, _T("Change the destination of hostcollocation, processcollocation or homeplacements in:"), wxDefaultPosition, wxDefaultSize, 0 );
     sizerLauncher->Add(e_text, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
-*/
+
 
 
 }
