@@ -51,10 +51,12 @@
 #endif
 
 
-#if !defined(UNUSED) && defined(__GNUC__)
+#if !defined(UNUSED) 
+#ifdef __GNUC__
 #define UNUSED __attribute__((unused))
 #else
 #define UNUSED
+#endif
 #endif
 
 
@@ -114,6 +116,28 @@ getFileName(std::string source);
 QEDOUTIL_API
 std::string 
 getPath(std::string source);
+
+	/**
+	 * loads a shared library
+	 * \param name The path of the shared library.
+	 * \param dir The directory of the shared library.
+	 */
+#ifdef _WIN32
+	HINSTANCE load_shared_library (const char* name,const char* dir);
+#else
+	void* load_shared_library (const char* name,const char* dir);
+#endif
+
+	/**
+	 * unload a shared library
+	 * \param handle The handle of the shared library.
+	 */
+#ifdef _WIN32
+	void unload_shared_library (HINSTANCE handle);
+#else
+	void unload_shared_library (void* handle);
+#endif
+
 
 }
 

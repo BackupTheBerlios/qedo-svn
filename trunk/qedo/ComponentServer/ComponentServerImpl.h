@@ -113,26 +113,6 @@ private:
 	/** the mutex for valuetype implementation list */
 	QedoMutex												value_mutex_;
 
-	/**
-	 * load a shared library
-	 * \param name The path of the shared library.
-	 */
-#ifdef _WIN32
-	HINSTANCE load_shared_library (const char*);
-#else
-	void* load_shared_library (const char*);
-#endif
-
-	/**
-	 * unload a shared library
-	 * \param handle The handle of the shared library.
-	 */
-#ifdef _WIN32
-	void unload_shared_library (HINSTANCE);
-#else
-	void unload_shared_library (void*);
-#endif
-
 public:
 	/**
 	 * constructor

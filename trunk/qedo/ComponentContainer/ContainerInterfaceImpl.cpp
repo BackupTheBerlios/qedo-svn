@@ -25,14 +25,15 @@
 #include "EntityHomeServant.h"
 #include "SessionHomeServant.h"
 #include "Output.h"
+#include "qedoutil.h"
 #ifdef _WIN32
 #include <windows.h>
 #else
-#include <dlfcn.h>
 #include <sys/types.h>
+#include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.37 2003/09/29 14:19:33 stoinski Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.38 2003/09/29 14:50:11 boehme Exp $";
 
 
 namespace Qedo {
@@ -320,78 +321,6 @@ ContainerInterfaceImpl::~ContainerInterfaceImpl()
 }
 
 
-#ifdef _WIN32
-
-HINSTANCE 
-ContainerInterfaceImpl::load_shared_library (const char* name)
-{
-	HINSTANCE handle_lib;
-
-	handle_lib = LoadLibrary (name);
-
-	if (handle_lib < (HINSTANCE)HINSTANCE_ERROR)
-	{
-		// Unable to load DLL
-		LPVOID lpMsgBuf;
-        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-			(LPTSTR) &lpMsgBuf, 0, NULL);
-		NORMAL_ERR2 ("ContainerInterfaceImpl: Cannot load dynamic library: ", (LPCTSTR)lpMsgBuf);
-		
-		// Free the buffer.
-		LocalFree( lpMsgBuf );
-		handle_lib = 0;
-	}
-
-	return handle_lib;
-}
-
-void
-ContainerInterfaceImpl::unload_shared_library (HINSTANCE handle)
-{
-	if (! FreeLibrary (handle))
-	{
-		LPVOID lpMsgBuf;
-        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-			(LPTSTR) &lpMsgBuf, 0, NULL);
-		NORMAL_ERR2 ("ContainerInterfaceImpl: Cannot unload dynamic library: ", (LPCTSTR)lpMsgBuf);	
-	}
-}
-
-#else
-
-void* 
-ContainerInterfaceImpl::load_shared_library (const char* name)
-{
-
-	void * handle_lib;
-
-	handle_lib = dlopen( name ,RTLD_LAZY);
-
-	if (!handle_lib)
-	{
-		// Unable to load shared object
-		NORMAL_ERR2 ( "ContainerBase: Cannot load dynamic library ", name );
-		NORMAL_ERR2 ( "ContainerBase: Error was: ", dlerror() );
-
-	}
-
-	return handle_lib;
-}
-
-void
-ContainerInterfaceImpl::unload_shared_library (void* handle)
-{
-	if (dlclose (handle))
-	{
-		NORMAL_ERR ( "ContainerBase: Cannot unload dynamic library");
-		NORMAL_ERR2 ( "ContainerBase: Error was: ", dlerror() );
-	}
-}
-
-#endif
-
 void
 ContainerInterfaceImpl::prepare_remove()
 {
@@ -611,7 +540,7 @@ throw (Components::Deployment::UnknownImplId,
 	//
 	// load servant module
 	//
-	handle_servant_lib = load_shared_library (servant_module.c_str());
+	handle_servant_lib = Qedo::load_shared_library (servant_module.c_str(),install_dir.c_str());
 	if (! handle_servant_lib)
 	{
 		NORMAL_ERR2 ("ContainerInterfaceImpl: Failed to load servant module ", servant_module);
@@ -684,7 +613,7 @@ throw (Components::Deployment::UnknownImplId,
 	//
 	// Load the executor module
 	//
-	handle_executor_lib = load_shared_library (executor_module.c_str());
+	handle_executor_lib = Qedo::load_shared_library (executor_module.c_str(),install_dir.c_str());
 
 	if (! handle_executor_lib)
 	{
@@ -828,11 +757,11 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	installed_homes_.erase (homes_iter);
 
 
-	DEBUG_OUT ("ContainerInterfaceImpl: unloading home servant code");
-	this->unload_shared_library (servant_module);
-	
-	DEBUG_OUT ("ContainerInterfaceImpl: unloading home executor code");
-	this->unload_shared_library (executor_module);
+	DEBUG_OUT ("..... unload home servant code");
+	Qedo::unload_shared_library (servant_module);
+
+	DEBUG_OUT ("..... unload home executor code");
+	Qedo::unload_shared_library (executor_module);
 }
 
 

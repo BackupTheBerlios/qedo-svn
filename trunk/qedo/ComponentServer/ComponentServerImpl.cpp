@@ -13,7 +13,6 @@
 /* This program is distributed in the hope that it will be useful,         */
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of          */
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                    */
-/* See the GNU General Public License for more details.                    */
 /*                                                                         */
 /* You should have received a copy of the GNU General Public License       */
 /* along with this program; if not, write to the Free Software Foundation, */
@@ -23,13 +22,9 @@
 #include "ComponentServerImpl.h"
 #include "Output.h"
 #include "Valuetypes.h"
-#ifdef _WIN32
-#else
-#include <dlfcn.h>
-#endif
+#include "qedoutil.h"
 
-
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.17 2003/09/29 14:25:04 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.18 2003/09/29 14:50:11 boehme Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -94,79 +89,6 @@ ComponentServerImpl::~ComponentServerImpl()
 {
 	DEBUG_OUT ("ComponentServerImpl: Destructor called");
 }
-
-
-#ifdef _WIN32
-
-HINSTANCE 
-ComponentServerImpl::load_shared_library (const char* name)
-{
-	HINSTANCE handle_lib;
-
-	handle_lib = LoadLibrary (name);
-
-	if (handle_lib < (HINSTANCE)HINSTANCE_ERROR)
-	{
-		// Unable to load DLL
-		LPVOID lpMsgBuf;
-        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-			(LPTSTR) &lpMsgBuf, 0, NULL);
-		NORMAL_ERR2 ("ComponentServerImpl: Cannot load dynamic library: ", (LPCTSTR)lpMsgBuf);
-		
-		// Free the buffer.
-		LocalFree( lpMsgBuf );
-		handle_lib = 0;
-	}
-
-	return handle_lib;
-}
-
-void
-ComponentServerImpl::unload_shared_library (HINSTANCE handle)
-{
-	if (! FreeLibrary (handle))
-	{
-		LPVOID lpMsgBuf;
-        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-			(LPTSTR) &lpMsgBuf, 0, NULL);
-		NORMAL_ERR2 ("ComponentServerImpl: Cannot unload dynamic library: ", (LPCTSTR)lpMsgBuf);	
-	}
-}
-
-#else
-
-void* 
-ComponentServerImpl::load_shared_library (const char* name)
-{
-
-	void * handle_lib;
-
-	handle_lib = dlopen( name ,RTLD_LAZY);
-
-	if (!handle_lib)
-	{
-		// Unable to load shared object
-		NORMAL_ERR2 ( "ComponentServerImpl: Cannot load dynamic library ", name );
-		NORMAL_ERR2 ( "ComponentServerImpl: Error was: ", dlerror() );
-
-	}
-
-	return handle_lib;
-}
-
-void
-ComponentServerImpl::unload_shared_library (void* handle)
-{
-	if (dlclose (handle))
-	{
-		NORMAL_ERR ( "ComponentServerImpl: Cannot unload dynamic library");
-		NORMAL_ERR2 ( "ComponentServerImpl: Error was: ", dlerror() );
-	}
-}
-
-#endif
 
 
 void
@@ -493,7 +415,7 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 		iter != valuetypes_.end();
 		iter++)
 	{
-		this->unload_shared_library ((*iter).dll);
+		Qedo::unload_shared_library ((*iter).dll);
 	}
 	valuetypes_.clear();
 
@@ -541,7 +463,7 @@ throw (CORBA::SystemException)
 		{
 			DEBUG_OUT(".......... no!!!");
 			// unload and erase
-			this->unload_shared_library ((*iter).dll);
+			Qedo::unload_shared_library ((*iter).dll);
 			valuetypes_.erase(iter);
 		}
 		
@@ -559,7 +481,7 @@ throw (CORBA::SystemException)
 		void* handle_value_lib;
 #endif
 
-		handle_value_lib = this->load_shared_library (loc);
+		handle_value_lib = Qedo::load_shared_library (loc,0);
 
 		if (! handle_value_lib)
 		{

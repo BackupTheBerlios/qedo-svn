@@ -209,18 +209,6 @@ private:
 	EventCommunicationMode									event_communication_mode_;
 
 	/**
-	 * loads a shared library
-	 * \param name The path of the shared library.
-	 */
-#ifdef _WIN32
-	HINSTANCE load_shared_library (const char*);
-	void unload_shared_library (HINSTANCE);
-#else
-	void* load_shared_library (const char*);
-	void unload_shared_library (void*);
-#endif
-
-	/**
 	 * The event dispatcher thread
 	 */
 	static void* event_dispatcher_thread (void*);

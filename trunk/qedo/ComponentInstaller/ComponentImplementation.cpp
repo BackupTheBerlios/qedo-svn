@@ -26,7 +26,7 @@
 #include <fstream>
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.16 2003/09/26 08:25:53 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.17 2003/09/29 14:50:11 boehme Exp $";
 
 
 namespace Qedo {
@@ -294,6 +294,7 @@ throw( Components::CreateFailure )
     //
     // remove extracted packages
     //
+#if 0
 	std::map < std::string, std::string > ::iterator iter2;
 	for(iter2 = data_.assembly.implementationMap_.begin();
 		iter2 != data_.assembly.implementationMap_.end();
@@ -301,6 +302,7 @@ throw( Components::CreateFailure )
 	{
         removeFileOrDirectory((*iter2).second);
     }
+#endif
 }
 
 
