@@ -21,6 +21,11 @@ AC_ARG_WITH(mico,
  MICODIR=$withval, MICODIR="")
 AC_SUBST(MICODIR)
 
+AC_ARG_WITH(wxGTK,
+ [  --with-wxGTK=micodir         use wxGTK installed in WXGTKDIR],
+ WXGTKDIR=$withval, WXGTKDIR="")
+AC_SUBST(WXGTKDIR)
+
 AC_ARG_ENABLE(optimize,
  [  --disable-optimize      do not use -O2 to compile (default on)],
  use_opt=$enableval, use_opt=yes)
@@ -192,6 +197,7 @@ AC_CONFIG_FILES([Makefile
                  AssemblyFactory/Makefile
                  HomeFinder/Makefile
                  DeploymentClient/Makefile
+                 qcontroller/Makefile
                  etc/Makefile
                  etc/MakeComponentVars
                  ])
