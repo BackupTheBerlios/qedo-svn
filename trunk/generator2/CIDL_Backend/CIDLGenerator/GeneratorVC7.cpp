@@ -374,7 +374,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "Filter=\"cpp;c;cxx;def;odl;idl;hpj;bat;asm\">\n";
 	out << "<File\n";
 	out.indent();
-	out << "RelativePath=\"valuetypes.cpp\">\n";
+	out << "RelativePath=\"component_valuetypes.cpp\">\n";
 	out.unindent();
 	out << "</File>\n";
 	out << "<File\n";
@@ -414,7 +414,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "Filter=\"h;hpp;hxx;hm;inl;inc\">\n";
 	out << "<File\n";
 	out.indent();
-	out << "RelativePath=\"valuetypes.h\">\n";
+	out << "RelativePath=\"component_valuetypes.h\">\n";
 	out.unindent();
 	out << "</File>\n";
 	out << "<File\n";

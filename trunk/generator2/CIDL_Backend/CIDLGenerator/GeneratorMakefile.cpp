@@ -96,7 +96,7 @@ GeneratorMakefile::doComposition(CIDL::CompositionDef_ptr composition)
 //	out << "\t" << composition_name << "_EQUIVALENT.cpp \\\n";
 //	out << "\t" << composition_name << "_LOCAL.cpp \\\n";
 	out << "\t" << composition_name << ".cpp \\\n";
-	out << "\tvaluetypes.cpp \n\n";
+	out << "\tcomponent_valuetypes.cpp \n\n";
 
 
 	out << "OBJ_FILES = ${CPP_FILES:%.cpp=%.o} \n\n";
@@ -114,7 +114,7 @@ GeneratorMakefile::doComposition(CIDL::CompositionDef_ptr composition)
 
 	out << "lib" << composition_name << ".so: ${OBJ_FILES} \n\n";
 
-	out << "${IDL_FILES} valuetypes.cpp : ${CIDL_FILES} \n";
+	out << "${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} \n";
 	out << "\t${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \\\n";
 	out << "\t--business --target \"" << composition->id() << "\" $< \n\n";
 

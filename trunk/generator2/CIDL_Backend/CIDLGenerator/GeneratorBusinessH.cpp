@@ -368,7 +368,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "#include \"" << file_prefix_ << "_BUSINESS.h\"\n";
 	if(composition->lifecycle()==CIDL::lc_Entity || composition->lifecycle()==CIDL::lc_Process)
 		out << "#include \"" << file_prefix_ << "_PSS.h\"\n";
-	out << "#include \"valuetypes.h\"\n";
+	out << "#include \"component_valuetypes.h\"\n";
 	out << "#include \"RefCountBase.h\"\n";
 	if(composition->lifecycle()==CIDL::lc_Entity)
 		out << "#include \"CCMContext.h\"\n";
