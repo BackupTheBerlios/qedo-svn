@@ -73,7 +73,7 @@ ChatChannelSessionImpl::push_ChatMessage(::Chat::ChatMessage* ev)
     throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ChatChannelSessionImpl::push_ChatMessage
-	std::cout << "ChatChannel: got message\n";
+	// std::cout << "ChatChannel: got message\n";
 	context_->push_to_reader(ev);
 // END USER INSERT SECTION ChatChannelSessionImpl::push_ChatMessage
 }
