@@ -28,13 +28,13 @@
 
 #include <CORBA.h>
 #include "StreamComponents.h"
-#include "Util.h"
+#include "qedoutil.h"
 
 
 namespace Qedo {
 
 
-class BindingDescription_impl : public virtual OBV_StreamComponents::BindingDescription,
+class QEDOUTIL_API BindingDescription_impl : public virtual OBV_StreamComponents::BindingDescription,
 								public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -51,14 +51,14 @@ public:
 };
 
 
-class BindingDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API BindingDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	virtual CORBA::ValueBase* create_for_unmarshal();
 };
 
 
-class SourceDescription_impl : public virtual OBV_StreamComponents::SourceDescription,
+class QEDOUTIL_API SourceDescription_impl : public virtual OBV_StreamComponents::SourceDescription,
 							   public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -79,14 +79,14 @@ public:
 };
 
 
-class SourceDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API SourceDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	virtual CORBA::ValueBase* create_for_unmarshal();
 };
 
 
-class SinkDescription_impl : public virtual OBV_StreamComponents::SinkDescription,
+class QEDOUTIL_API SinkDescription_impl : public virtual OBV_StreamComponents::SinkDescription,
 							 public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -106,7 +106,7 @@ public:
 };
 
 
-class SinkDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API SinkDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	virtual CORBA::ValueBase* create_for_unmarshal();

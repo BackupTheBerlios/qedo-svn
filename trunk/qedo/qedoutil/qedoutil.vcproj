@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.00"
-	Name="qedoutil"
+	Name="QedoUtil"
 	ProjectGUID="{BFEB5186-CAA5-4E9B-B198-BC5AD962F0F1}"
 	Keyword="Win32Proj">
 	<Platforms>
@@ -108,7 +108,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentContainer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../StreamComponentIDL;../ComponentContainer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;"
 				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;QEDOUTIL_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="3"
@@ -129,7 +129,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="xerces-c_2D.lib zlib.lib CosNamingd.lib jtcd.lib obd.lib"
-				OutputFile="$(OutDir)/qedoutil.dll"
+				OutputFile="$(OutDir)/QedoUtil.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(XERCES)\lib;$(ZLIB)\dll32"
@@ -162,7 +162,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..\ComponentIDL;..\ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;"
+				AdditionalIncludeDirectories=".;..\ComponentIDL;../StreamComponentIDL;..\ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;QEDOUTIL_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="3"
@@ -246,10 +246,22 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="NameServiceBase.cpp">
 			</File>
 			<File
+				RelativePath="Output.cpp">
+			</File>
+			<File
 				RelativePath="Package.cpp">
 			</File>
 			<File
 				RelativePath="PlatformBase.cpp">
+			</File>
+			<File
+				RelativePath="StreamingValuetypes.cpp">
+			</File>
+			<File
+				RelativePath="Synchronisation.cpp">
+			</File>
+			<File
+				RelativePath="Valuetypes.cpp">
 			</File>
 			<File
 				RelativePath="XMLCatalog.cpp">
@@ -304,13 +316,25 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="NameServiceBase.h">
 			</File>
 			<File
+				RelativePath="Output.h">
+			</File>
+			<File
 				RelativePath="Package.h">
 			</File>
 			<File
 				RelativePath="PlatformBase.h">
 			</File>
 			<File
+				RelativePath="StreamingValuetypes.h">
+			</File>
+			<File
+				RelativePath="Synchronisation.h">
+			</File>
+			<File
 				RelativePath="Uri.h">
+			</File>
+			<File
+				RelativePath="Valuetypes.h">
 			</File>
 			<File
 				RelativePath="XMLCatalog.h">
@@ -320,6 +344,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="qedoutil.h">
+			</File>
+			<File
+				RelativePath="version.h">
 			</File>
 		</Filter>
 		<Filter

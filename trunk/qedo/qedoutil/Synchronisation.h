@@ -43,7 +43,7 @@
 
 
 
-#include "Util.h"
+#include "qedoutil.h"
 
 
 namespace Qedo {
@@ -62,7 +62,7 @@ struct MutexDelegate;
 /**
  * a mutex for Qedo
  */
-class CONTAINERDLL_API QedoMutex 
+class QEDOUTIL_API QedoMutex 
 {
 	/** makes use of this */
 	friend class QedoLock;
@@ -100,7 +100,7 @@ public:
 /**
  * a lock for Qedo
  */
-class CONTAINERDLL_API QedoLock
+class QEDOUTIL_API QedoLock
 {
 private:
 	/** the qedo mutex */
@@ -136,7 +136,7 @@ struct CondDelegate;
 /**
  * bla
  */
-class CONTAINERDLL_API QedoCond
+class QEDOUTIL_API QedoCond
 {
 
 private:
@@ -198,7 +198,7 @@ struct ReadWriteMutexDelegate;
 /**
  * a read/write mutex for Qedo
  */
-class CONTAINERDLL_API QedoReadWriteMutex : private QedoMutex
+class QEDOUTIL_API QedoReadWriteMutex : private QedoMutex
 {
 	/** makes use of this */
 	friend class QedoLock;
@@ -239,7 +239,7 @@ public:
 
 struct ThreadDelegate;
 
-class CONTAINERDLL_API QedoThread {
+class QEDOUTIL_API QedoThread {
 	public:
 	ThreadDelegate *delegate_;
 	QedoThread();
@@ -260,7 +260,7 @@ extern "C" void* startFunc(void* p);
 /**
  * add comment!
  */
-CONTAINERDLL_API QedoThread*
+QEDOUTIL_API QedoThread*
 qedo_startDetachedThread(void* (*p)(void*), void* arg);
 
 

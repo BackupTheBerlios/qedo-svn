@@ -24,7 +24,6 @@
 #define __OUTPUT_H__
 
 #include "Synchronisation.h"
-#include <Util.h>
 
 #ifdef _WIN32
 #include <process.h>
@@ -35,8 +34,8 @@
 #include <iostream>
 
 namespace Qedo {
-	extern CONTAINERDLL_API QedoMutex* container_mutex;
-	extern CONTAINERDLL_API bool debug_output;
+	extern QEDOUTIL_API QedoMutex* container_mutex;
+	extern QEDOUTIL_API bool debug_output;
 }
 
 #define SYNC_WITH_CONTAINER  \
