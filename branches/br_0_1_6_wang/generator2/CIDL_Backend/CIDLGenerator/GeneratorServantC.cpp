@@ -2529,7 +2529,16 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n";
 		out << "#endif\n";
 		out << "// register all ports\n";
+		genFacetRegistration(home->managed_component());
+		genReceptacleRegistration(home->managed_component());
+		genEmitterRegistration(home->managed_component());
+		genPublisherRegistration(home->managed_component());
+		genConsumerRegistration(home->managed_component());
+
 		out << "CORBA::RepositoryIdSeq streamtypes;\n\n";		
+		genSinkRegistration(home->managed_component());
+		genSourceRegistration(home->managed_component());
+		
 		out << "new_context->set_ccm_storage_object(pCcmStorageObject);\n";
 		if( !CORBA::is_nil(storagehome_) )
 		{
