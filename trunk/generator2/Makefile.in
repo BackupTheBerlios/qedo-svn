@@ -18,6 +18,8 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 
+.NOTPARALLEL:
+
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 
@@ -32,7 +34,7 @@ all: $(SUBDIRS:%=%-all)
 clean: $(SUBDIRS:%=%-clean)
 
 %-all: %
-	make -C $< all
+	$(MAKE) -C $< all
 
 .PHONY: install-dir
 
@@ -44,7 +46,7 @@ install-dir: @bindir@
 install: all install-dir $(SUBDIRS:%=%-install)
 
 %-install: %
-	make -C $< install
+	$(MAKE) -C $< install
 
 %-clean: %
-	make -C $< clean
+	$(MAKE) -C $< clean
