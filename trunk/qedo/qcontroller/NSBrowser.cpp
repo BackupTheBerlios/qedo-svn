@@ -11,7 +11,9 @@
 #include "icon5.xpm"
 
 
-//#include "ConfigurationReader.h"
+
+#include "ConfigurationReader.h"
+
 
 BEGIN_EVENT_TABLE(NSBrowserTreeCtrl, wxTreeCtrl)
     EVT_BUTTON(NSD_TREE_REFRESH, NSBrowserTreeCtrl::OnNSDRefresh)
@@ -97,9 +99,11 @@ NSBrowserTreeCtrl::build_tree()
 	orbns = CORBA::ORB_init(dummy,0);
 
 	std::string ns;
-	//ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );;
-	ns = "corbaloc::localhost:12356/NameService";
+
+	ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );;
+	//ns = "corbaloc::localhost:12356/NameService";
 	//CORBA::ORB_var tmp = CORBA::ORB::_duplicate(QedoController::global_orb);
+
 	CORBA::Object_var obj;
 	obj = orbns -> string_to_object( ns.c_str() );
 	CreateImageList();
