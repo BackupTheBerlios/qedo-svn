@@ -120,8 +120,7 @@
 	TOK_setRaises
 	TOK_short
 	TOK_sink
-	TOK_siso
-  TOK_source
+	TOK_source
 	TOK_state
 	TOK_storage
 	TOK_storagehome
@@ -286,7 +285,6 @@
 										emits_decl
 										sink_decl
 										source_decl
-										siso_decl
 										publishes_decl
 										consumes_decl
 										component_forward_dcl
@@ -570,7 +568,6 @@ component_export :
 	| attr_decl ';'
 	| sink_decl ';'
 	| source_decl ';'
-	| siso_decl ';'
 	;
 
 provides_dcl :
@@ -608,8 +605,10 @@ consumes_decl :
 	;
 
 streamtype_decl :
-      TOK_streamtype TOK_identifier
-	  { $$ = StreamTypeDcl($2); add_streamtype_dcl($2,$$); }
+      TOK_streamtype '<' '>' TOK_identifier
+	  { $$ = StreamTypeDcl(NilIdentifier(), $4); add_streamtype_dcl($4,$$); }
+	| TOK_streamtype '<' scoped_name '>' TOK_identifier
+	  { $$ = StreamTypeDcl($3, $5); add_streamtype_dcl($5,$$); }
     ;
 
 sink_decl :
@@ -619,12 +618,9 @@ sink_decl :
 
 source_decl :
       TOK_source scoped_name TOK_identifier
-	  { $$ = SourceDcl($2,$3); add_source_dcl($3,$$,$2); }
-    ;
-
-siso_decl :
-      TOK_siso scoped_name TOK_identifier
-	  { $$ = SiSoDcl($2,$3); add_siso_dcl($3,$$,$2); }
+	  { $$ = SourceDcl(NilFlag(),$2,$3); add_source_dcl($3,$$,$2); }
+	| TOK_source TOK_multiple scoped_name TOK_identifier
+	  { $$ = SourceDcl(MultipleFlag(),$3,$4); add_source_dcl($4,$$,$3); }
     ;
 
 module :

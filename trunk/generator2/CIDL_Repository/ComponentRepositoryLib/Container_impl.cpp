@@ -654,7 +654,8 @@ IR__::StreamTypeDef_ptr
 Container_impl::create_stream_type
 (const char* id,
  const char* name,
- const char* version)
+ const char* version,
+ IR__::IDLType_ptr transported_type)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "Container_impl::create_stream_type() called" );
@@ -668,6 +669,7 @@ throw(CORBA::SystemException)
 	new_stream_type -> id ( id );
 	new_stream_type -> name ( name );
 	new_stream_type -> version ( version );
+	new_stream_type -> transported_type (transported_type);
 
 	repository_ -> _add_ref();
 	this -> _add_ref();

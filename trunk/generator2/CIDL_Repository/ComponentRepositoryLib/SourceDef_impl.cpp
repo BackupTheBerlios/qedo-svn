@@ -31,10 +31,12 @@ namespace QEDO_ComponentRepository {
 SourceDef_impl::SourceDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
-  StreamTypeDef_impl *stream_type_impl )
+  StreamTypeDef_impl *stream_type_impl,
+  bool is_multiple )
 : IRObject_impl ( repository ),
   Contained_impl ( container, repository ),
-  StreamPortDef_impl ( container, repository, stream_type_impl )
+  StreamPortDef_impl ( container, repository, stream_type_impl ),
+  is_multiple_ (is_multiple)
 {
 	DEBUG_OUTLINE ( "ConsumesDef_impl::ConsumesDef_impl() called" );
 }
@@ -53,6 +55,14 @@ throw(CORBA::SystemException)
 	DEBUG_OUTLINE ( "ConsumesDef_impl::destroy() called" );
 
 	StreamPortDef_impl::destroy();
+}
+
+CORBA::Boolean
+SourceDef_impl::is_multiple
+()
+throw(CORBA::SystemException)
+{
+	return is_multiple_;
 }
 
 } // namespace QEDO_ComponentRepository

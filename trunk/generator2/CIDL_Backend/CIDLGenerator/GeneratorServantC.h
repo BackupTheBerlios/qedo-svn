@@ -56,17 +56,15 @@ private:
 	void doOperation(IR__::OperationDef_ptr operation);
 	void doException(IR__::ExceptionDef_ptr except);
 	void doInterface(IR__::InterfaceDef_ptr intface);
-	//doComponets needs to be replaced by doComposition
 	void doComposition(CIDL::CompositionDef_ptr composition);
 	void doComponent(IR__::ComponentDef_ptr component);
-	void doProvides(IR__::ProvidesDef_ptr provides);
-	void doUses(IR__::UsesDef_ptr uses);
-	void doSink(IR__::SinkDef_ptr sink);
-	void doSource(IR__::SourceDef_ptr source);
-	void doSiSo(IR__::SiSoDef_ptr siso);
-	void doEmits(IR__::EmitsDef_ptr emits);
-	void doPublishes(IR__::PublishesDef_ptr publishes);
-	void doConsumes(IR__::ConsumesDef_ptr consumes);
+	void doProvides(IR__::ProvidesDef_ptr provides, IR__::ComponentDef_ptr component);
+	void doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr component);
+	void doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component);
+	void doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr component);
+	void doEmits(IR__::EmitsDef_ptr emits, IR__::ComponentDef_ptr component);
+	void doPublishes(IR__::PublishesDef_ptr publishes, IR__::ComponentDef_ptr component);
+	void doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDef_ptr component);
 	void doHome(IR__::HomeDef_ptr home);
 	void doFactory(IR__::FactoryDef_ptr factory);
 	void doFinder(IR__::FinderDef_ptr finder);

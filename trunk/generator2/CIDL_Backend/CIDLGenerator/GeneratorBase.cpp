@@ -197,6 +197,7 @@ GeneratorBase::insert_to_generate(IR__::Contained_ptr item)
 	case CORBA__::dk_Interface :
 	case CORBA__::dk_Home :
 	case CORBA__::dk_Component :
+	case CORBA__::dk_Composition :
 		m_to_generate_interface_seq->length(m_to_generate_interface_seq->length()+1);
 		m_to_generate_interface_seq[m_to_generate_interface_seq->length()-1] = IR__::Contained::_duplicate(item);
 		break;
@@ -741,13 +742,13 @@ GeneratorBase::handleProvides(IR__::ComponentDef_ptr component)
 	CORBA::ULong len = contained_seq->length();
 	for(CORBA::ULong i = 0; i < len; i++) {
 		IR__::ProvidesDef_var act_provides = IR__::ProvidesDef::_narrow(((*contained_seq)[i]));
-		doProvides(act_provides);
+		doProvides(act_provides, component);
 	}
 }
 
 
 void
-GeneratorBase::doProvides(IR__::ProvidesDef_ptr provides)
+GeneratorBase::doProvides(IR__::ProvidesDef_ptr provides, IR__::ComponentDef_ptr component)
 {
 }
 
@@ -762,13 +763,13 @@ GeneratorBase::handleUses(IR__::ComponentDef_ptr component)
 	CORBA::ULong len = contained_seq->length();
 	for(CORBA::ULong i = 0; i < len; i++) {
 		IR__::UsesDef_var act_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
-		doUses(act_uses);
+		doUses(act_uses, component);
 	}
 }
 
 
 void
-GeneratorBase::doUses(IR__::UsesDef_ptr Uses)
+GeneratorBase::doUses(IR__::UsesDef_ptr Uses, IR__::ComponentDef_ptr component)
 {
 }
 
@@ -783,13 +784,13 @@ GeneratorBase::handleEmits(IR__::ComponentDef_ptr component)
 	CORBA::ULong len = contained_seq->length();
 	for(CORBA::ULong i = 0; i < len; i++) {
 		IR__::EmitsDef_var act_emits = IR__::EmitsDef::_narrow(((*contained_seq)[i]));
-		doEmits(act_emits);
+		doEmits(act_emits, component);
 	}
 }
 
 
 void
-GeneratorBase::doEmits(IR__::EmitsDef_ptr emits)
+GeneratorBase::doEmits(IR__::EmitsDef_ptr emits, IR__::ComponentDef_ptr component)
 {
 }
 
@@ -805,13 +806,13 @@ GeneratorBase::handlePublishes(IR__::ComponentDef_ptr component)
 	for(CORBA::ULong i = 0; i < len; i++) 
 	{
 		IR__::PublishesDef_var act_publishes = IR__::PublishesDef::_narrow(((*contained_seq)[i]));
-		doPublishes(act_publishes);
+		doPublishes(act_publishes, component);
 	}
 }
 
 
 void
-GeneratorBase::doPublishes(IR__::PublishesDef_ptr publishes)
+GeneratorBase::doPublishes(IR__::PublishesDef_ptr publishes, IR__::ComponentDef_ptr component)
 {
 }
 
@@ -827,13 +828,13 @@ GeneratorBase::handleConsumes(IR__::ComponentDef_ptr component)
 	for(CORBA::ULong i = 0; i < len; i++)
 	{
 		IR__::ConsumesDef_var a_consumes = IR__::ConsumesDef::_narrow(((*contained_seq)[i]));
-		doConsumes(a_consumes);
+		doConsumes(a_consumes, component);
 	}
 }
 
 
 void
-GeneratorBase::doConsumes(IR__::ConsumesDef_ptr consumes)
+GeneratorBase::doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDef_ptr component)
 {
 }
 
@@ -848,13 +849,13 @@ GeneratorBase::handleSink(IR__::ComponentDef_ptr component)
 	for(CORBA::ULong i = 0; i < contained_seq->length(); i++)
 	{
 		IR__::SinkDef_var act_sink = IR__::SinkDef::_narrow(((*contained_seq)[i]));
-		doSink(act_sink);
+		doSink(act_sink, component);
 	}
 }
 
 
 void
-GeneratorBase::doSink(IR__::SinkDef_ptr sink)
+GeneratorBase::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component)
 {
 }
 
@@ -869,37 +870,15 @@ GeneratorBase::handleSource(IR__::ComponentDef_ptr component)
 	for(CORBA::ULong i = 0; i < contained_seq->length(); i++)
 	{
 		IR__::SourceDef_var a_source = IR__::SourceDef::_narrow(((*contained_seq)[i]));
-		doSource(a_source);
+		doSource(a_source, component);
 	}
 }
 
 
 void
-GeneratorBase::doSource(IR__::SourceDef_ptr source)
+GeneratorBase::doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr component)
 {
 }
-
-
-//
-// siso
-//
-void 
-GeneratorBase::handleSiSo(IR__::ComponentDef_ptr component)
-{
-	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_SiSo, false);
-	for(CORBA::ULong i = 0; i < contained_seq->length(); i++)
-	{
-		IR__::SiSoDef_var a_siso = IR__::SiSoDef::_narrow(((*contained_seq)[i]));
-		doSiSo(a_siso);
-	}
-}
-
-
-void
-GeneratorBase::doSiSo(IR__::SiSoDef_ptr siso)
-{
-}
-
 
 //
 // composition

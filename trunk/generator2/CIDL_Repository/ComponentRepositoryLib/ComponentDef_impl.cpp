@@ -502,6 +502,7 @@ throw(CORBA::SystemException)
 	return consumes_seq._retn();
 }
 
+
 IR__::SinkDefSeq*
 ComponentDef_impl::sinks
 ()
@@ -566,37 +567,6 @@ throw(CORBA::SystemException)
 	return source_seq._retn();
 }
 
-IR__::SiSoDefSeq*
-ComponentDef_impl::sisos
-()
-throw(CORBA::SystemException)
-{
-	DEBUG_OUTLINE ( "ComponentDef_impl::sinks() called" );
-
-	IR__::SiSoDefSeq_var siso_seq = new IR__::SiSoDefSeq;
-
-	list < Contained_impl* >::const_iterator contained_iter;
-	for ( contained_iter = contained_.begin();
-			contained_iter != contained_.end();
-			contained_iter++ )
-	{
-		if ( (*contained_iter) -> def_kind() == CORBA__::dk_SiSo )
-		{
-			SiSoDef_impl *impl;
-			impl = dynamic_cast < SiSoDef_impl* > ( *contained_iter );
-			if ( !impl )
-			{
-				// This cannot be, what to do?
-				DEBUG_ERRLINE ( "Fatal error: Contained with kind 'dk_SiSo' cannot be casted to SiSoDef_impl" );
-				continue;
-			}
-			siso_seq -> length ( siso_seq -> length() + 1 );
-			siso_seq [ siso_seq -> length() - 1 ] = impl -> _this();
-		}
-	}
-
-	return siso_seq._retn();
-}
 
 CORBA::Boolean
 ComponentDef_impl::is_basic
@@ -912,7 +882,8 @@ ComponentDef_impl::create_source
 (const char* id,
  const char* name,
  const char* version,
- IR__::StreamTypeDef_ptr stream_type)
+ IR__::StreamTypeDef_ptr stream_type,
+ CORBA::Boolean is_multiple)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "ComponentDef_impl::create_source() called" );
@@ -943,7 +914,7 @@ throw(CORBA::SystemException)
         throw CORBA::BAD_PARAM ( 4, CORBA::COMPLETED_NO );
     }
 
-	SourceDef_impl *new_source = new SourceDef_impl ( this, repository_, impl );
+	SourceDef_impl *new_source = new SourceDef_impl ( this, repository_, impl, is_multiple );
 	new_source -> id ( id );
 	new_source -> name ( name );
 	new_source -> version ( version );
@@ -954,52 +925,6 @@ throw(CORBA::SystemException)
 	return new_source -> _this();
 }
 
-IR__::SiSoDef_ptr
-ComponentDef_impl::create_siso
-(const char* id,
- const char* name,
- const char* version,
- IR__::StreamTypeDef_ptr stream_type)
-throw(CORBA::SystemException)
-{
-	DEBUG_OUTLINE ( "ComponentDef_impl::create_siso() called" );
-
-	if ( repository_ -> check_for_id ( id ) )
-		throw CORBA::BAD_PARAM ( 2, CORBA::COMPLETED_NO );
-	if ( check_for_name ( name ) )
-		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
-
-	if ( CORBA::is_nil ( stream_type ) )
-		throw CORBA::BAD_PARAM();		// Is this correct?
-
-	// TODO: Check: event_value must be derived from EventBase
-
-    StreamTypeDef_impl* impl = 0;
-    try
-    {
-		PortableServer::ServantBase_var servant =
-			repository_ -> poa() -> reference_to_servant ( stream_type );
-        impl = dynamic_cast<StreamTypeDef_impl*>(servant.in());
-    }
-    catch(...)
-    {
-    }
-    if(!impl)
-    {
-        // Must be same repository
-        throw CORBA::BAD_PARAM ( 4, CORBA::COMPLETED_NO );
-    }
-
-	SiSoDef_impl *new_siso = new SiSoDef_impl ( this, repository_, impl );
-	new_siso -> id ( id );
-	new_siso -> name ( name );
-	new_siso -> version ( version );
-
-	repository_ -> _add_ref();
-	this -> _add_ref();
-
-	return new_siso -> _this();
-}
 
 } // namespace QEDO_ComponentRepository
 

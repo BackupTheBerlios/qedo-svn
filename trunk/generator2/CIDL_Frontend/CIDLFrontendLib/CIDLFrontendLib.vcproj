@@ -388,6 +388,7 @@
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="KC++ processes $(InputPath)"
 						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
 "
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
@@ -407,6 +408,7 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="KC++ processes $(InputPath)"
 						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
 "
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp"/>
@@ -434,6 +436,7 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Lexing $(InputPath)"
 						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
 "
 						Outputs="lexana.cpp"/>
@@ -450,6 +453,7 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Lexing $(InputPath)"
 						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
 "
 						Outputs="lexana.cpp"/>
@@ -474,6 +478,7 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Generating errmsg.cpp"
 						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
 "
 						Outputs="errmsg.cpp"/>
@@ -490,6 +495,7 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Generating errmsg.cpp"
 						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
 "
 						Outputs="errmsg.cpp"/>
@@ -509,6 +515,7 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Yaccing $(InputPath)"
 						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
 cp cidl.hpp cidl.h
 "
@@ -527,6 +534,7 @@ cp cidl.hpp cidl.h
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Yaccing $INputPath)"
 						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
 cp cidl.hpp cidl.h
 "

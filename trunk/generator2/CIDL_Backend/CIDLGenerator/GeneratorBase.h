@@ -151,35 +151,32 @@ protected:
 
 	// provides
 	void handleProvides(IR__::ComponentDef_ptr component);
-	virtual void doProvides(IR__::ProvidesDef_ptr provides);
+	virtual void doProvides(IR__::ProvidesDef_ptr provides, IR__::ComponentDef_ptr component);
 
 	// uses
 	void handleUses(IR__::ComponentDef_ptr component);
-	virtual void doUses(IR__::UsesDef_ptr uses);
+	virtual void doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr component);
 
 	// emits
 	void handleEmits(IR__::ComponentDef_ptr component);
-	virtual void doEmits(IR__::EmitsDef_ptr emits);
+	virtual void doEmits(IR__::EmitsDef_ptr emits, IR__::ComponentDef_ptr component);
 
 	// publishes
 	void handlePublishes(IR__::ComponentDef_ptr component);
-	virtual void doPublishes(IR__::PublishesDef_ptr publishes);
+	virtual void doPublishes(IR__::PublishesDef_ptr publishes, IR__::ComponentDef_ptr component);
 
 	// consumes
 	void handleConsumes(IR__::ComponentDef_ptr component);
-	virtual void doConsumes(IR__::ConsumesDef_ptr consumes);
+	virtual void doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDef_ptr component);
 
 	// sink
 	void handleSink(IR__::ComponentDef_ptr component);
-	virtual void doSink(IR__::SinkDef_ptr sink);
+	virtual void doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component);
 
 	// source
 	void handleSource(IR__::ComponentDef_ptr component);
-	virtual void doSource(IR__::SourceDef_ptr source);
+	virtual void doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr component);
 
-	// siso
-	void handleSiSo(IR__::ComponentDef_ptr component);
-	virtual void doSiSo(IR__::SiSoDef_ptr siso);
 
 public:
 

@@ -489,15 +489,6 @@ add_source_dcl(
   add_name(false,SourceN(),name,def_v,0);
 }
 
-void
-add_siso_dcl(
-  idl_name name,
-  definition def_v,
-  idl_identifier ident)
-{
-  resolve_name(ident,the_StreamTypeN);
-  add_name(false,SiSoN(),name,def_v,0);
-}
 
 void
 add_streamtype_dcl(
@@ -1663,7 +1654,7 @@ _lookup_identifier(
   idl_identifier identifier_v,
   table_item scope)
 {
-  table_item_list res=0;
+  table_item_list res=Niltable_item_list();
   table_item my_current_scope=0;
   idl_name name_v=0;
   idl_name_list name_list_v=0;
@@ -1737,7 +1728,7 @@ match_path(idl_name_list $name_list_v, table_item_list scope ,idl_identifier ide
     table_item_list my_scope_list = match_path(tail,scope,identifier_v);
     if(!my_scope_list || my_scope_list->prod_sel() == sel_Niltable_item_list) {
       /* may be an Error message here ? HB */
-      return 0;
+      return Niltable_item_list();
     }
     foreach(item_v=TableItem(*,*,*); table_item_list my_scope_list) {
       my_scope = item_v;
@@ -1745,7 +1736,7 @@ match_path(idl_name_list $name_list_v, table_item_list scope ,idl_identifier ide
     if(my_scope) {
       return lookup_name(name_v,my_scope);
     }
-    return 0;
+    return Niltable_item_list();
   }
   Considl_name_list(*,Nilidl_name_list()) : {
     return scope;

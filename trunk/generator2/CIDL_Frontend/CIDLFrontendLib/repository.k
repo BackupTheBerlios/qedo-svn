@@ -1216,17 +1216,27 @@ ConsumesDcl(ident, name)
   ];
 
 def_v=
-StreamTypeDcl(name)
+StreamTypeDcl(ident, name)
 ->[ feed_container:
 	{
       IR__::Container_ptr container;
       container = IR__::Container::_narrow(kc_current_view.container);
       NOT_NIL(container);
+      IR__::IDLType_ptr transported_type;
+      with(ident)
+      {
+		NilIdentifier() : { transported_type = IR__::IDLType::_nil(); }
+        default : {
+          transported_type = IR__::IDLType::_narrow(ident->symtab_entry->irobj);
+          NOT_NIL(transported_type);
+          }
+      }
+      
       // create StreamTYPE
       IR__::StreamTypeDef_ptr stream_type;
       try {
         stream_type = container->create_stream_type(get_repid(def_v,name), name->get_name(),
-          "1.0");
+          "1.0", transported_type);
       }
       catch (...) {
         Error("Exception in creating streamtype %k\n", name, name);
@@ -1236,25 +1246,7 @@ StreamTypeDcl(name)
 	}
 ];
 
-def_v=
-SiSoDcl(ident, name)
-->[ feed:
-	{ IR__::ComponentDef_ptr component_ptr;
-      component_ptr = IR__::ComponentDef::_narrow(kc_current_view.container);
-      NOT_NIL(component_ptr);
-      IR__::StreamTypeDef_ptr stream_type;
-	  stream_type = IR__::StreamTypeDef::_narrow(ident->symtab_entry->irobj);
-	  NOT_NIL(stream_type);
-	  IR__::SiSoDef_ptr siso;
-	  try {
-		siso = component_ptr->create_siso(get_repid(def_v,name), name->get_name(), "1.0", stream_type);
-	  }
-	  catch (...) {
-	    Error("Exception in creating siso %k\n", name, name);
-	  }
-	  irobj = siso;
-	}
-];
+
 
 def_v=
 SinkDcl(ident, name)
@@ -1277,7 +1269,7 @@ SinkDcl(ident, name)
 ];
 
 def_v=
-SourceDcl(ident, name)
+SourceDcl(flag_v, ident, name)
 ->[ feed:
 	{ IR__::ComponentDef_ptr component_ptr;
       component_ptr = IR__::ComponentDef::_narrow(kc_current_view.container);
@@ -1286,8 +1278,13 @@ SourceDcl(ident, name)
 	  stream_type = IR__::StreamTypeDef::_narrow(ident->symtab_entry->irobj);
 	  NOT_NIL(stream_type);
 	  IR__::SourceDef_ptr source;
+	  bool mult = false;
+      with(flag_v) {
+        MultipleFlag : { mult = true; }
+        default : {}
+      }
 	  try {
-		source = component_ptr->create_source(get_repid(def_v,name), name->get_name(), "1.0", stream_type);
+		source = component_ptr->create_source(get_repid(def_v,name), name->get_name(), "1.0", stream_type, mult);
 	  }
 	  catch (...) {
 	    Error("Exception in creating source %k\n", name, name);

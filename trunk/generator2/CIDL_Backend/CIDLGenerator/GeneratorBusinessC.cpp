@@ -267,7 +267,7 @@ GeneratorBusinessC::doComponent(IR__::ComponentDef_ptr component)
 
 
 void
-GeneratorBusinessC::doConsumes(IR__::ConsumesDef_ptr consumes)
+GeneratorBusinessC::doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDef_ptr component)
 {
     // push_...
 	out << "void\n";
@@ -343,7 +343,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "namespace " << mapName(module_def) << " {\n\n\n";
 	}
 
-	std::string context_name = mapFullNameLocal(composition->ccm_component()) + "_Context";
+	std::string context_name = mapFullNameLocal(composition->ccm_component()) + "_ContextImpl";
 
 	//
 	// executor
@@ -623,11 +623,11 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// set context
 	out << "void\n";
-	out << class_name_ << "::set_context(Components::CCMContext_ptr ctx)\n";
+	out << class_name_ << "::set_context(Components::HomeContext_ptr ctx)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.indent();
     // out << "context_ = " << context_name << "::_narrow(ctx);\n";		// this is wrong
-	out << "context_ = Components::CCMContext::_duplicate(ctx);\n";
+	out << "context_ = Components::HomeContext::_duplicate(ctx);\n";
 	out.unindent();
 	out << "}\n\n\n";
 

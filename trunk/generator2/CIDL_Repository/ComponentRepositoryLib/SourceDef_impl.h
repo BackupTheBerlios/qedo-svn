@@ -35,10 +35,13 @@ namespace QEDO_ComponentRepository {
 class SourceDef_impl : public virtual POA_IR__::SourceDef,
 						  public virtual StreamPortDef_impl
 {
+	bool is_multiple_;
+
 public:
 	SourceDef_impl ( Container_impl *container,
 		            Repository_impl *repository,
-					StreamTypeDef_impl *stream_type_impl );
+					StreamTypeDef_impl *stream_type_impl,
+					bool is_multiple);
 
 	~SourceDef_impl();
 
@@ -55,6 +58,12 @@ public:
     // IDL:omg.org/CORBA__/IRObject/destroy:1.0
     //
     virtual void destroy()
+        throw(CORBA::SystemException);
+
+	//
+    // IDL:omg.org/IR__/SourceDef/is_multiple:1.0
+    //
+    virtual CORBA::Boolean is_multiple()
         throw(CORBA::SystemException);
 };
 

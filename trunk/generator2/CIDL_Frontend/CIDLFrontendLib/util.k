@@ -4,8 +4,8 @@
 *   Author  : Harald Böhme
 *   e-mail  : boehme@informatik.hu-berlin.de
 *   Remark  : 
-*   $Date: 2003/05/15 14:21:53 $
-*   $Revision: 1.3 $
+*   $Date: 2003/10/19 11:40:16 $
+*   $Revision: 1.4 $
 *   
 *******************************************************************************/
 
@@ -25,7 +25,7 @@
 %}
 
 %{
-static char id[] UNUSED = "$Id: util.k,v 1.3 2003/05/15 14:21:53 boehme Exp $";
+static char id[] UNUSED = "$Id: util.k,v 1.4 2003/10/19 11:40:16 tom Exp $";
 %}
 
 /****************** generic parent, printing *************************/
@@ -143,7 +143,6 @@ extern node_flag                      the_ConsumesDclN;
 extern node_flag                      the_StreamTypeN;
 extern node_flag                      the_SourceN;
 extern node_flag                      the_SinkN;
-extern node_flag                      the_SiSoN;
 
 %}
 
@@ -177,7 +176,6 @@ node_flag the_ConsumesDclN = ConsumesDclN();
 node_flag the_StreamTypeN = StreamTypeN();
 node_flag the_SinkN = SinkN();
 node_flag the_SourceN = SourceN();
-node_flag the_SiSoN = SiSoN();
 
 %}
 

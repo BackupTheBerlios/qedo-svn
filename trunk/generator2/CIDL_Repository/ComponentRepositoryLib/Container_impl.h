@@ -201,8 +201,9 @@ public:
     // IDL:omg.org/IR__/Container/create_stream_type:1.0
     //
     virtual IR__::StreamTypeDef_ptr create_stream_type(const char* id,
-                                            const char* name,
-                                            const char* version)
+                                                       const char* name,
+                                                       const char* version,
+													   IR__::IDLType_ptr transported_type)
         throw(CORBA::SystemException);
 
     //

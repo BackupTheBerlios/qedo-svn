@@ -22,7 +22,6 @@ static char *prefix_end;
 static char *my_stream_key_words[] = {
 "sink",
 "source",
-"siso",
 "streamtype",
 0};
 
@@ -434,7 +433,6 @@ ENOL                    (\n|\n)
 <stream,cidl_psdl,psdl>"state"	{ return TOK_state; }
 "sink" { return TOK_sink; }
 "source" { return TOK_source; }
-"siso" { return TOK_siso; }
 "streamtype" { return TOK_streamtype; }
 
 {L1}({L2}|{D})*  {yylval.yt_idl_name = MkIdentifier(); return TOK_identifier; }

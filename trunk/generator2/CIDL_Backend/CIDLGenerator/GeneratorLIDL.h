@@ -60,9 +60,11 @@ class GeneratorLIDL : public virtual IDLBase
 	// do component needs to be replaced by do composition
 	void doComponent(IR__::ComponentDef_ptr component);
 	void doComposition(CIDL::CompositionDef_ptr coposition);
-	void doUses(IR__::UsesDef_ptr uses);
-	void doEmits(IR__::EmitsDef_ptr emits);
-	void doPublishes(IR__::PublishesDef_ptr publishes);
+	void doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr component);
+	void doEmits(IR__::EmitsDef_ptr emits, IR__::ComponentDef_ptr component);
+	void doPublishes(IR__::PublishesDef_ptr publishes, IR__::ComponentDef_ptr component);
+	void doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr component);
+	void doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component);
 
 public:
 

@@ -146,7 +146,7 @@ IR__::HomeDef_var base_home;
 			this->check_for_generation((*consumes_seq)[i]->event());
 		}
 
-		//this->insert_to_generate(item);
+		this->insert_to_generate(item);
 		break; }
 	case CORBA__::dk_Value:
 	case CORBA__::dk_Interface: {
@@ -154,10 +154,11 @@ IR__::HomeDef_var base_home;
 		break; }
 	case CORBA__::dk_Composition : {
 		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
-		insert_to_generate(a_composition);
 
 		// home
 		check_for_generation(a_composition->ccm_home());
+
+		insert_to_generate(a_composition);
 
 		break; }
 	default:
@@ -237,89 +238,42 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// generate
 	//
-	//
-	// executor
-	//
+
 	open_module(component_);
-	out << "//\n// executor for " << component_->id() << "\n//\n";
-	out << "local interface CCM_" << component_->name() << "_Executor : ";
-	
-	// base component
-	IR__::ComponentDef_var base = component_->base_component();
-	if(!CORBA::is_nil(base))
-	{
-		out << getLocalName(base) << "_Executor";
-	}
-	else
-	{
-        out << "::Components::EnterpriseComponent";
-	}
+	//
+	// container specific context interface 
+	//
+	out << "//\n// container interface for the context for " << component_->id() << "\n//\n";
+	out << "local interface CCM_" << component_->name() << "_ContextImpl : ";
+	out << "CCM_" << component_->name() << "_Context,\n";
 
-	// supported interfaces
-	IR__::InterfaceDefSeq_var supported_seq = component_->supported_interfaces();
-	CORBA::ULong len = supported_seq->length();
-	if(len)
-	{
-		CORBA::ULong i;
-		for( i= 0; i < len; i++)
+	switch(lc) {
+	case (CIDL::lc_Session) : 
 		{
-			out << ", " << map_absolute_name((*supported_seq)[i]);
+			out << "::Components::SessionContext";
+			break;
+		}
+	case (CIDL::lc_Extension) :
+		{
+			out << "::Components::ExtensionContext";
+			break;
+		}
+	default:
+		{
+			//unsupported lifecycle category
+			std::cerr << "unsupported lifecycle category" << std::endl;
 		}
 	}
-	out << "\n{\n";
-	out.indent();
 
-	handleAttribute(component_);
+	out << "\n{ };\n\n";
 
-	out.unindent();
-	out << "};\n\n";
-
-	//
-	// context
-	//
-	out << "//\n// context for " << component_->id() << "\n//\n";
-	out << "local interface CCM_" << component_->name() << "_Context : ";
-	
-	// base component
-	if(!CORBA::is_nil(base))
-	{
-		out << getLocalName(base) << "_Context";
-	}
-	else
-	{
-		switch(lc) {
-		case (CIDL::lc_Session) : 
-			{
-				out << "::Components::SessionContext";
-				break;
-			}
-		case (CIDL::lc_Extension) :
-			{
-				out << "::Components::ExtensionContext";
-				break;
-			}
-		default:
-			{
-				//unsupported lifecycle category
-			}
-		}
-	}
-	out << "\n{\n";
-	out.indent();
-
-	handleUses(component_);
-	handleEmits(component_);
-	handlePublishes(component_);
-
-	out.unindent();
-	out << "};\n\n";
 	close_module(component_);
 }
 
 void
 GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 {
-	/*
+	
 	component_ = IR__::ComponentDef::_duplicate(component);
 
 	//
@@ -371,7 +325,7 @@ GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 	}
 	else
 	{
-		out << "::Components::SessionContext";
+		out << "::Components::CCMContext";
 	}
 	out << "\n{\n";
 	out.indent();
@@ -379,10 +333,12 @@ GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 	handleUses(component);
 	handleEmits(component);
 	handlePublishes(component);
+	handleSource(component);
+	handleSink(component);
 
 	out.unindent();
 	out << "};\n\n";
-	*/
+	
 }
 
 
@@ -594,7 +550,7 @@ GeneratorLIDL::doFinder(IR__::FinderDef_ptr finder)
 
 
 void
-GeneratorLIDL::doUses(IR__::UsesDef_ptr uses)
+GeneratorLIDL::doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr component)
 {
 	out << "\n//\n// " << uses->id() << "\n//\n";
 
@@ -613,7 +569,7 @@ GeneratorLIDL::doUses(IR__::UsesDef_ptr uses)
 
 
 void
-GeneratorLIDL::doEmits(IR__::EmitsDef_ptr emits)
+GeneratorLIDL::doEmits(IR__::EmitsDef_ptr emits, IR__::ComponentDef_ptr component)
 {
 	out << "\n//\n// " << emits->id() << "\n//\n";
 	
@@ -622,11 +578,39 @@ GeneratorLIDL::doEmits(IR__::EmitsDef_ptr emits)
 
 
 void
-GeneratorLIDL::doPublishes(IR__::PublishesDef_ptr publishes)
+GeneratorLIDL::doPublishes(IR__::PublishesDef_ptr publishes, IR__::ComponentDef_ptr component)
 {
 	out << "\n//\n// " << publishes->id() << "\n//\n";
 
 	out << "void push_" << publishes->name() << "(in " << map_absolute_name(publishes->event()) << " evt);\n";
+}
+
+
+void 
+GeneratorLIDL::doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr component)
+{
+	out << "\n//\n// " << source->id() << "\n//\n";
+
+	out << "void begin_stream_" << source->name() << " (in CORBA::RepositoryId repos_id, in Components::ConfigValues meta_data)\n";
+	out.indent();
+	out << "raises (StreamComponents::UnsupportedStreamtype, StreamComponents::DuplicateStream);\n\n";
+	out.unindent();
+
+	out << "void end_stream_" << source->name() << "()\n";
+	out.indent();
+	out << "raises (StreamComponents::NoStream);\n\n";
+	out.unindent();
+
+	out << "void send_stream_data_" << source->name() << " (in StreamComponents::StreamingBuffer buffer)\n";
+	out.indent();
+	out << "raises (StreamComponents::NoStream);\n\n";
+	out.unindent();
+}
+
+
+void 
+GeneratorLIDL::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component)
+{
 }
 
 

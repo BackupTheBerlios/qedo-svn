@@ -248,7 +248,7 @@ GeneratorBusinessH::doComponent(IR__::ComponentDef_ptr component)
 
 
 void
-GeneratorBusinessH::doConsumes(IR__::ConsumesDef_ptr consumes)
+GeneratorBusinessH::doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDef_ptr component)
 {
 	out << "\n//\n// " << consumes->id() << "\n//\n";
 
@@ -259,7 +259,7 @@ GeneratorBusinessH::doConsumes(IR__::ConsumesDef_ptr consumes)
 
 
 void
-GeneratorBusinessH::doSource(IR__::SourceDef_ptr source)
+GeneratorBusinessH::doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr component)
 {
 #if 0
 	IR__::StreamTypeDef* st_def = source->stream_type();
@@ -281,7 +281,7 @@ GeneratorBusinessH::doSource(IR__::SourceDef_ptr source)
 
 
 void
-GeneratorBusinessH::doSink(IR__::SinkDef_ptr sink)
+GeneratorBusinessH::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component)
 {
 /*	IR__::StreamTypeDef* st_def = (*act_sinks)[sink_n]->stream_type();
 	IR__::Contained::Description* c_descr = st_def->describe(); 
@@ -295,35 +295,6 @@ GeneratorBusinessH::doSink(IR__::SinkDef_ptr sink)
 	if (!strcmp("Components::CCMStream::QoSRealStream", getAbsoluteName(st_def))) {
 		hserv << "virtual void " << endl;
 		hserv << map_absolute_under_name(component_def)  << "_connect_" << (*act_sinks)[sink_n]->name();
-		hserv << "( CCMStream::QoSRealStream_ptr str) = 0;" << endl;
-	}*/
-}
-
-
-void
-GeneratorBusinessH::doSiSo(IR__::SiSoDef_ptr siso)
-{
-/*	IR__::StreamTypeDef* st_def = (*act_sisos)[siso_n]->stream_type();
-	IR__::Contained::Description* c_descr = st_def->describe(); 
-	IR__::StreamTypeDescription* st_descr;
-	(c_descr->value) >>= st_descr;
-	if (!strcmp("simple::h323_stream", getAbsoluteName(st_def))) {
-		hserv << "virtual CCMStream::h323Stream_ptr" << endl;
-		hserv << map_absolute_under_name(component_def)  << "_provide_" << (*act_sisos)[siso_n]->name();
-		hserv << "() = 0;" << endl;
-
-		hserv << "virtual void" << endl;
-		hserv << map_absolute_under_name(component_def)  << "_connect_" << (*act_sisos)[siso_n]->name();
-		hserv << "( CCMStream::h323Stream_ptr str) = 0;" << endl;
-
-	}
-	if (!strcmp("Components::CCMStream::QoSRealStream", getAbsoluteName(st_def))) {
-		hserv << "virtual CCMStream::QoSRealStream_ptr" << endl;
-		hserv << map_absolute_under_name(component_def)  << "_provide_" << (*act_sisos)[siso_n]->name();
-		hserv << "() = 0;" << endl;
-
-		hserv << "virtual void" << endl;
-		hserv << map_absolute_under_name(component_def)  << "_connect_" << (*act_sisos)[siso_n]->name();
 		hserv << "( CCMStream::QoSRealStream_ptr str) = 0;" << endl;
 	}*/
 }
@@ -433,13 +404,13 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
-    out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
+    out << mapFullNameLocal(composition->ccm_component()) << "_ContextImpl_var context_;\n\n";
 	out.unindent();
 	out << "public:\n\n";
 	out.indent();
 	out << executor_class_name << "();\n";
 	out << "virtual ~" << executor_class_name << "();\n\n";
-	out << "void set_context(" << mapFullNameLocal(composition->ccm_component()) << "_Context_ptr context)\n";
+	out << "void set_context(" << mapFullNameLocal(composition->ccm_component()) << "_ContextImpl_ptr context)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
     out << "void configuration_complete()\n";
 	out << "    throw (CORBA::SystemException, Components::InvalidConfiguration);\n\n";
@@ -484,13 +455,13 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "{\n\n";
 		out << "private:\n\n";
 		out.indent();
-		out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
+		out << mapFullNameLocal(composition->ccm_component()) << "_ContextImpl_var context_;\n\n";
 		out.unindent();
 		out << "public:\n\n";
 		out.indent();
 		out << segment_class_name << "();\n";
 		out << "virtual ~" << segment_class_name << "();\n\n";
-		out << "void set_context(" << mapFullNameLocal(composition->ccm_component()) << "_Context_ptr context)\n";
+		out << "void set_context(" << mapFullNameLocal(composition->ccm_component()) << "_ContextImpl_ptr context)\n";
 		out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
 		out << "void configuration_complete()\n";
 		out << "    throw (CORBA::SystemException, Components::InvalidConfiguration);\n\n";
@@ -536,7 +507,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
-    out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
+    out << mapFullNameLocal(composition->ccm_component()) << "_ContextImpl_var context_;\n\n";
 	out << mapName(composition->executor_def()) << "* component_;\n\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
 		out << mapName(segment_seq[i]) << "* " << segment_seq[i]->name() << "_;\n\n";
@@ -582,14 +553,14 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
-    out << "Components::CCMContext_var context_;\n\n";
+    out << "Components::HomeContext_var context_;\n\n";
 	out.unindent();
 	out << "public:\n";
 	out.indent();
     out << home_class_name << "();\n";
     out << "virtual ~" << home_class_name << "();\n\n";
 	out << "//\n// IDL:Components/HomeExecutorBase/set_context:1.0\n//\n";
-	out << "virtual void set_context (Components::CCMContext_ptr ctx)\n";
+	out << "virtual void set_context (Components::HomeContext_ptr ctx)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
     out << "//\n// IDL:.../create:1.0\n//\n";
     out << "virtual ::Components::EnterpriseComponent_ptr create()\n";

@@ -281,8 +281,6 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 
 		// sources
 
-		// sisos
-
 		break; }
 	case CORBA__::dk_Interface : {
 		IR__::InterfaceDef_var act_interface = IR__::InterfaceDef::_narrow(item);
@@ -1179,7 +1177,13 @@ GeneratorEIDL::doComponent(IR__::ComponentDef_ptr component)
 		out << map_absolute_name(base);
 	}
 	else {
-		out << "::Components::CCMObject";
+		// Test whether the component has stream features
+		IR__::SourceDefSeq_var sources_seq = component->sources();
+		IR__::SinkDefSeq_var sinks_seq = component->sinks();
+		if (sources_seq->length() || sinks_seq->length())
+			out << "::StreamComponents::StreamCCMObject";
+		else
+			out << "::Components::CCMObject";
 	}
 
 	// supported interfaces
@@ -1201,7 +1205,6 @@ GeneratorEIDL::doComponent(IR__::ComponentDef_ptr component)
 	handleConsumes(component);
 	handleSink(component);
 	handleSource(component);
-	handleSiSo(component);
 
 	out.unindent();
 	out << "};\n\n";
@@ -1212,7 +1215,7 @@ GeneratorEIDL::doComponent(IR__::ComponentDef_ptr component)
 // provides
 //
 void
-GeneratorEIDL::doProvides(IR__::ProvidesDef_ptr provides)
+GeneratorEIDL::doProvides(IR__::ProvidesDef_ptr provides, IR__::ComponentDef_ptr component)
 {
 	out << "\n//\n// " << provides->id() << "\n//\n";
 	out << provides->interface_type()->absolute_name() << " provide_" << provides->name() << "();\n";
@@ -1223,7 +1226,7 @@ GeneratorEIDL::doProvides(IR__::ProvidesDef_ptr provides)
 // uses
 //
 void
-GeneratorEIDL::doUses(IR__::UsesDef_ptr uses)
+GeneratorEIDL::doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr component)
 {
 	out << "\n//\n// " << uses->id() << "\n//\n";
 
@@ -1274,7 +1277,7 @@ GeneratorEIDL::doUses(IR__::UsesDef_ptr uses)
 // emits
 //
 void
-GeneratorEIDL::doEmits(IR__::EmitsDef_ptr emits)
+GeneratorEIDL::doEmits(IR__::EmitsDef_ptr emits, IR__::ComponentDef_ptr component)
 {
 	out << "\n//\n// " << emits->id() << "\n//\n";
 
@@ -1290,7 +1293,7 @@ GeneratorEIDL::doEmits(IR__::EmitsDef_ptr emits)
 // publishes
 //
 void
-GeneratorEIDL::doPublishes(IR__::PublishesDef_ptr publishes)
+GeneratorEIDL::doPublishes(IR__::PublishesDef_ptr publishes, IR__::ComponentDef_ptr component)
 {
 	out << "\n//\n// " << publishes->id() << "\n//\n";
 
@@ -1307,7 +1310,7 @@ GeneratorEIDL::doPublishes(IR__::PublishesDef_ptr publishes)
 // consumes
 //
 void
-GeneratorEIDL::doConsumes(IR__::ConsumesDef_ptr consumes)
+GeneratorEIDL::doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDef_ptr component)
 {
 	out << "//\n// " << consumes->id() << "\n//\n";
 
@@ -1319,25 +1322,8 @@ GeneratorEIDL::doConsumes(IR__::ConsumesDef_ptr consumes)
 // sink
 //
 void
-GeneratorEIDL::doSink(IR__::SinkDef_ptr sink)
+GeneratorEIDL::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr component)
 {
-	out << "//\n// " << sink->id() << "\n//\n";
-
-	IR__::StreamTypeDef* st_def = sink->stream_type();
-	IR__::Contained::Description* c_descr = st_def->describe(); 
-	const IR__::StreamTypeDescription* st_descr;
-	(c_descr->value) >>= st_descr;
-	if (!strcmp("QedoStream::h323_stream", map_absolute_name(st_def)))
-	{
-		out << "void " << "connect_" << sink->name() << "(in Components::QedoStreams::H323Streamconnection str);\n";
-
-		out << "Components::QedoStreams::H323Streamconnection " << "disconnect_" << sink->name() << "();\n";
-
-	}
-	if (!strcmp("Components::CCMStream::QoSRealStream", map_absolute_name(st_def)))
-	{
-		out << "void " << "connect_" << sink->name() << "(in CCMStream::QoSRealStream str);\n";
-	}
 }
 
 
@@ -1345,7 +1331,7 @@ GeneratorEIDL::doSink(IR__::SinkDef_ptr sink)
 // source
 //
 void
-GeneratorEIDL::doSource(IR__::SourceDef_ptr source)
+GeneratorEIDL::doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr component)
 {
 	out << "//\n// " << source->id() << "\n//\n";
 
@@ -1363,32 +1349,6 @@ GeneratorEIDL::doSource(IR__::SourceDef_ptr source)
 	}
 }
 
-
-//
-// siso
-//
-void
-GeneratorEIDL::doSiSo(IR__::SiSoDef_ptr siso)
-{
-	out << "//\n// " << siso->id() << "\n//\n";
-
-	IR__::StreamTypeDef* st_def = siso->stream_type();
-	IR__::Contained::Description* c_descr = st_def->describe(); 
-	const IR__::StreamTypeDescription* st_descr;
-	(c_descr->value) >>= st_descr;
-	if (!strcmp("simple::h323_stream", map_absolute_name(st_def)))
-	{
-		out << "CCMStream::h323Stream" << " provide_" << siso->name() << "();\n";
-
-		out << "void" << " connect_" << siso->name() << "(in CCMStream::h323Stream str);\n";
-	}
-	if (!strcmp("Components::CCMStream::QoSRealStream", map_absolute_name(st_def)))
-	{
-		out << "CCMStream::QoSRealStream" << " provide_" << siso->name() << "();\n";
-
-		out << "void" << " connect_" << siso->name() << "(in CCMStream::QoSRealStream str);\n";
-	}
-}
 
 
 void
@@ -1440,6 +1400,9 @@ GeneratorEIDL::generate(std::string target, std::string fileprefix)
 	out << "#ifndef __" << file_prefix_ << "_EQUIVALENT_IDL\n";
 	out << "#define __" << file_prefix_ << "_EQUIVALENT_IDL\n\n";
 	out << "#include \"Components.idl\"\n";
+	out << "#ifndef _QEDO_NO_STREAMS\n";
+	out << "#include \"StreamComponents.idl\"\n";
+	out << "#endif\n";
 	out << "#include \"orb.idl\"\n";
 	
 	std::map < std::string, bool > ::iterator it;
