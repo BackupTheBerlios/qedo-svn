@@ -4,27 +4,27 @@ CIDL_FILES = ../chat.cidl
 
 IDL_FILES = Chat_Channel_Compo_LOCAL.idl \
 	Chat_Channel_Compo_EQUIVALENT.idl \
-	Chat_Channel_Compo_BUSINESS.idl 
+	Chat_Channel_Compo_BUSINESS.idl
 
 CPP_FILES = Chat_Channel_Compo_BUSINESS.cpp \
 	Chat_Channel_Compo.cpp \
-	valuetypes.cpp 
+	component_valuetypes.cpp
 
-OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
+OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
 
 CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} libChat_Channel_Compo.so Chat_Channel_Compo.zip
 
-LIBS += -L../Chat_Channel_Compo_SERVANT -lChat_Channel_Compo_SERVANT 
+LIBS += -L../Chat_Channel_Compo_SERVANT -lChat_Channel_Compo_SERVANT
 
 CXXFLAGS += -I. -g
 
 include ../MakeComponentVars
 
-all: libChat_Channel_Compo.so 
+all: libChat_Channel_Compo.so
 
-libChat_Channel_Compo.so: ${OBJ_FILES} 
+libChat_Channel_Compo.so: ${OBJ_FILES}
 
-${IDL_FILES} valuetypes.cpp : ${CIDL_FILES} 
+${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} 
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target "IDL:Chat/Channel_Compo:1.0" $< 
 
