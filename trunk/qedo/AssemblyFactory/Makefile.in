@@ -43,7 +43,7 @@ SOURCES =   Assembly.cpp \
 				CPFReader.cpp \
 				CADReader.cpp \
 				StandardConfigurator.cpp \
-				assf.cpp 
+				qassf.cpp 
 
 SOURCES_EXTERN = ../ComponentInstaller/XMLCatalog.cpp \
 				../ComponentInstaller/libunzip.cpp \
@@ -57,15 +57,15 @@ SOURCES_EXTERN = ../ComponentInstaller/XMLCatalog.cpp \
 OBJS = ${SOURCES:.cpp=.o} ${SOURCES_EXTERN:.cpp=.o}
 
 
-CLEAN_FILES = ${SOURCES:.cpp=.o} assf
+CLEAN_FILES = ${SOURCES:.cpp=.o} qassf
 
 include ../MakeVars
 
 .PHONY:all
 
-all: assf
+all: qassf
 
-assf: $(OBJS)
+qassf: $(OBJS)
 
 .PHONY:install
 
@@ -73,5 +73,5 @@ install: install-prog
 
 .PHONY:install-prog
 
-install-prog: assf
+install-prog: qassf
 

@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="CosNamingD.lib jtcd.lib obd.lib"
-				OutputFile="../../Runtime/cs.exe"
+				OutputFile="../../Runtime/qcs.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -130,7 +130,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="CosNamingD.lib jtcd.lib obd.lib"
-				OutputFile="$(OutDir)/cs.exe"
+				OutputFile="$(OutDir)/qcs.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -181,7 +181,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="mico2310.lib micocoss2310.lib wsock32.lib pthreadVC.lib"
-				OutputFile="$(OutDir)/cs.exe"
+				OutputFile="$(OutDir)/qcs.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib,$(MICO)\coss"
 				GenerateDebugInformation="TRUE"
@@ -227,7 +227,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="CosNamingD.lib jtcd.lib obd.lib"
-				OutputFile="../../Runtime/cs.exe"
+				OutputFile="../../Runtime/qcs.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -273,7 +273,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="CosNaming.lib jtc.lib ob.lib"
-				OutputFile="../../Runtime/cs.exe"
+				OutputFile="../../Runtime/qcs.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -316,7 +316,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="ServerInterceptorDispatcher.cpp">
 			</File>
 			<File
-				RelativePath="cs.cpp">
+				RelativePath="qcs.cpp">
 			</File>
 		</Filter>
 		<Filter

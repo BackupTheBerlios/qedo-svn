@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.19 2003/09/03 14:33:26 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.20 2003/09/05 15:22:04 boehme Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -221,21 +221,21 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	if (debug_mode_)
 	{
 		if (enable_qos_) {
-			component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", "--debug", 
+			component_server_pid = _spawnl(_P_NOWAIT, "qcs.exe", "qcs.exe", "--debug", 
 				"--enable-qos", "--csa_ref", my_string_ref.in(), NULL);
 
 		} else {
-			component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", "--debug", 
+			component_server_pid = _spawnl(_P_NOWAIT, "qcs.exe", "qcs.exe", "--debug", 
 				"--csa_ref", my_string_ref.in(), NULL);
 		}
 	}
 	else
 	{
 		if (enable_qos_) {
-			component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", 
+			component_server_pid = _spawnl(_P_NOWAIT, "qcs.exe", "qcs.exe", 
 				"--enable-qos", "--csa_ref", my_string_ref.in(), NULL);
 		} else {
-			component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", 
+			component_server_pid = _spawnl(_P_NOWAIT, "qcs.exe", "qcs.exe", 
 				"--csa_ref", my_string_ref.in(), NULL);
 		}
 	}
@@ -254,7 +254,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 		case 0 : /* child process */
 			if (debug_mode_)
 			{
-				long err = execlp ("./cs", "./cs", "--csa_ref", my_string_ref.in(), "--debug", 0);
+				long err = execlp ("qcs", "qcs", "--csa_ref", my_string_ref.in(), "--debug", 0);
 			    if (err == -1) 
 				{
 					std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
@@ -264,7 +264,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 			}
 			else
 			{
-				long err = execlp ("./cs", "./cs", "--csa_ref", my_string_ref.in(), 0);
+				long err = execlp ("qcs", "qcs", "--csa_ref", my_string_ref.in(), 0);
 			    if (err == -1) 
 				{
 					std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;

@@ -4,12 +4,12 @@
 mkdir -p $1;
 #### bin dir ####
 mkdir -p $1/bin;
-cp ComponentInstaller/ci $1/bin;
-cp ComponentServerActivator/csa $1/bin;
-cp ComponentServer/cs $1/bin;
+cp ComponentInstaller/qci $1/bin;
+cp ComponentServerActivator/qcsa $1/bin;
+cp ComponentServer/qcs $1/bin;
 cp HomeFinder/homefinder $1/bin;
-cp DeploymentClient/deploy $1/bin;
-cp AssemblyFactory/assf $1/bin;
+cp DeploymentClient/qdeploy $1/bin;
+cp AssemblyFactory/qassf $1/bin;
 
 #### etc dir ####
 mkdir -p $1/etc;

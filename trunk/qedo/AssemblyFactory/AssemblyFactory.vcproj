@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="xerces-c_2D.lib zlib.lib jtcd.lib obd.lib CosNamingd.lib"
-				OutputFile="../../Runtime/assf.exe"
+				OutputFile="../../Runtime/qassf.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(XERCES)\lib;$(ZLIB)\dll32"
 				GenerateDebugInformation="TRUE"
@@ -130,7 +130,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="xerces-c_2D.lib zlib.lib jtcd.lib obd.lib CosNamingd.lib"
-				OutputFile="$(OutDir)/assf.exe"
+				OutputFile="$(OutDir)/qassf.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(XERCES)\lib;$(ZLIB)\dll32"
 				GenerateDebugInformation="TRUE"
@@ -181,7 +181,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="xerces-c_2D.lib zlib.lib mico2310.lib micocoss2310.lib wsock32.lib pthreadVC.lib"
-				OutputFile="$(OutDir)/assf.exe"
+				OutputFile="$(OutDir)/qassf.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib;$(MICO)/coss;$(XERCES)\lib;$(ZLIB)\dll32"
 				GenerateDebugInformation="TRUE"
@@ -227,7 +227,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="xerces-c_2D.lib zlib.lib jtcd.lib obd.lib CosNamingd.lib"
-				OutputFile="../../Runtime/assf.exe"
+				OutputFile="../../Runtime/qassf.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(XERCES)\lib;$(ZLIB)\dll32"
 				GenerateDebugInformation="TRUE"
@@ -273,7 +273,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="xerces-c_2D.lib zlib.lib jtc.lib ob.lib CosNaming.lib"
-				OutputFile="../../Runtime/assf.exe"
+				OutputFile="../../Runtime/qassf.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(XERCES)\lib;$(ZLIB)\dll32"
 				GenerateDebugInformation="TRUE"
@@ -337,7 +337,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="..\ComponentInstaller\XMLCatalog.cpp">
 			</File>
 			<File
-				RelativePath="assf.cpp">
+				RelativePath="qassf.cpp">
 			</File>
 			<File
 				RelativePath="..\ComponentInstaller\libunzip.cpp">

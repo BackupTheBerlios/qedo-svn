@@ -51,19 +51,19 @@ SOURCES = CatalogResolver.cpp \
 			 PlatformBase.cpp \
 			 XMLCatalog.cpp \
 			 libunzip.cpp \
-			 ci.cpp 
+			 qci.cpp 
 
 OBJS = ${SOURCES:.cpp=.o}
 
-CLEAN_FILES = $(OBJS) ci
+CLEAN_FILES = $(OBJS) qci
 
 include ../MakeVars
 
 .PHONY:all
 
-all: ci
+all: qci
 
-ci: $(OBJS)
+qci: $(OBJS)
 
 .PHONY:install
 
@@ -71,5 +71,5 @@ install: install-prog
 
 .PHONY:install-prog
 
-install-prog: ci
+install-prog: qci
 

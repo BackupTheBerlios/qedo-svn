@@ -36,21 +36,21 @@ LIBS += -L../ComponentIDL -lComponentIDL\
 LDLIBS = ${LIBS}
 
 SOURCES =  ServerActivatorImpl.cpp \
-           csa.cpp
+           qcsa.cpp
 
 OBJS = ${SOURCES:.cpp=.o}
 
 
-CLEAN_FILES = $(OBJS) csa
+CLEAN_FILES = $(OBJS) qcsa
 
 include ../MakeVars
 
 .PHONY:all
 
-all: csa
+all: qcsa
 
 
-csa: $(OBJS)
+qcsa: $(OBJS)
 
 .PHONY:install
 
@@ -58,5 +58,5 @@ install: install-prog
 
 .PHONY:install-prog
 
-install-prog: csa
+install-prog: qcsa
 

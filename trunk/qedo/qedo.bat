@@ -1,10 +1,10 @@
 echo Starting mico Nameservice on 12356
 REM start nsd -ORBIIOPAddr inet:tri:12356
 echo Starting Component Installer
-start ci
+start qci
 echo Starting Assembly Manager Factory
-start assf.exe
+start qassf.exe
 echo Starting Component Server Activator
-start csa.exe
+start qcsa.exe
 echo starting HomeFinder
 start homefinder.exe

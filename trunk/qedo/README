@@ -25,19 +25,19 @@ The HomeFinder is an optional Feature which can be used to find running homes. I
 ------------------------
 The ComponentInstallation server is an implementation of the ComponentInstallation interface defined by CCM. This server is used to install the binaries of the components. This server is mandatory. To start this server you need to call
 
-  ci
+  qci
 
 4. ComponentServerActivator
 ---------------------------
 The ComponentServerActivator server is an implementation of the correspoding interface defined by CCM. This server is used to create new component server and to manage them. This server is mandatory. To start this server you need to call 
 
-  csa
+  qcsa
 
 5. AssemblyFactory
 ------------------
 This server implements the assembly factory and assembly interface defined be CCM. This server is mandatory if you like to use the automatic deployment features of CCM. You can also create component servers and containers by yourself. In this case you do not need this server. To start the server you need to call:
 
-  assf
+  qassf
 
 6. ComponentServer
 ------------------
