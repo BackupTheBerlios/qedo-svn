@@ -110,8 +110,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../IDL;$(QEDO)/include;$(ORBACUS)\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(ORBACUS)\include"
+				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -204,8 +204,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../IDL;$(QEDO)/include;$(ORBACUS)\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				AdditionalIncludeDirectories=".;&quot;$(QEDO)/include&quot;;&quot;$(MICO)\include&quot;;&quot;$(MICO)\include\coss&quot;"
+				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -218,10 +218,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib CosNamingd.lib obd.lib"
+				AdditionalDependencies="ComponentIDL.lib mico2310.lib micocoss2310.lib wsock32.lib pthreadVC.lib"
 				OutputFile="../tc.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(QEDO)\lib"
+				AdditionalLibraryDirectories="&quot;$(QEDO)/lib&quot;;$(MICO)\win32-bin\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/TestClient.pdb"
 				SubSystem="1"
@@ -250,6 +250,9 @@
 				RelativePath="ClientValuetypes.cpp">
 			</File>
 			<File
+				RelativePath="dinner_EQUIVALENT.cpp">
+			</File>
+			<File
 				RelativePath="main.cpp">
 			</File>
 		</Filter>
@@ -259,10 +262,57 @@
 			<File
 				RelativePath="ClientValuetypes.h">
 			</File>
+			<File
+				RelativePath="dinner_EQUIVALENT.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+		<Filter
+			Name="cidl">
+			<File
+				RelativePath="..\IDL\philosophers.cidl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="CIDL compiler processes $(InputPath)"
+						CommandLine="$(QEDO)\bin\cidl_gen -I$(QEDO)\idl -I$(ORBACUS)\idl\OB  -I$(ORBACUS)\idl -DWIN32 -DORBACUS_ORB --target dinner ..\idl\philosophers.cidl"
+						Outputs="dinner_LOCAL.idl;dinner_EQUIVALENT.idl"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="CIDL compiler processes $(InputPath)"
+						CommandLine="$(QEDO)\bin\cidl_gen -I$(QEDO)\idl -I$(MICO)\include  -I$(MICO)\include\mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --target dinner ..\idl\philosophers.cidl"
+						Outputs="dinner_LOCAL.idl;dinner_EQUIVALENT.idl"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="idl">
+			<File
+				RelativePath="dinner_EQUIVALENT.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="IDL compiling $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB  dinner_EQUIVALENT.idl"
+						Outputs="dinner_EQUIVALENT.h;dinner_EQUIVALENT.cpp;dinner_EQUIVALENT_skel.h;dinner_EQUIVALENT_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="IDL compiling $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)\idl -DWIN32 -DMICO_ORB --any --typecode --c++-suffix cpp --relative-paths dinner_EQUIVALENT.idl"
+						Outputs="dinner_EQUIVALENT.h;dinner_EQUIVALENT.cpp"/>
+				</FileConfiguration>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

@@ -3,8 +3,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServantModule", "ServantMod
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExecutorModule", "ExecutorModule\ExecutorModule.vcproj", "{076BAC7F-8381-445E-A348-F9075C773370}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IDL", "IDL\IDL.vcproj", "{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestClient", "TestClient\TestClient.vcproj", "{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Assembly", "Assembly\Assembly.vcproj", "{F8A40459-5956-49BE-8644-ECF79CC7DC10}"
@@ -17,9 +15,6 @@ Global
 		ConfigName.3 = Release_orbacus
 	EndGlobalSection
 	GlobalSection(ProjectDependencies) = postSolution
-		{7F4A7EB3-0C49-49DA-99A2-3088BE6DC0F3}.0 = {397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}
-		{076BAC7F-8381-445E-A348-F9075C773370}.0 = {397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}
-		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.0 = {397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}
 		{F8A40459-5956-49BE-8644-ECF79CC7DC10}.0 = {076BAC7F-8381-445E-A348-F9075C773370}
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
@@ -39,14 +34,6 @@ Global
 		{076BAC7F-8381-445E-A348-F9075C773370}.Release.Build.0 = Release|Win32
 		{076BAC7F-8381-445E-A348-F9075C773370}.Release_orbacus.ActiveCfg = Release_orbacus|Win32
 		{076BAC7F-8381-445E-A348-F9075C773370}.Release_orbacus.Build.0 = Release_orbacus|Win32
-		{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}.Debug_mico.ActiveCfg = Debug_mico|Win32
-		{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}.Debug_mico.Build.0 = Debug_mico|Win32
-		{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}.Debug_orbacus.ActiveCfg = Debug_orbacus|Win32
-		{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}.Debug_orbacus.Build.0 = Debug_orbacus|Win32
-		{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}.Release.ActiveCfg = Release|Win32
-		{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}.Release.Build.0 = Release|Win32
-		{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}.Release_orbacus.ActiveCfg = Release_orbacus|Win32
-		{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}.Release_orbacus.Build.0 = Release_orbacus|Win32
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Debug_mico.ActiveCfg = Debug_mico|Win32
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Debug_mico.Build.0 = Debug_mico|Win32
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Debug_orbacus.ActiveCfg = Debug_orbacus|Win32

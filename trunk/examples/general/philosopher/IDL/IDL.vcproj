@@ -202,46 +202,10 @@
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
-			<File
-				RelativePath="dinner_BUSINESS.cpp">
-			</File>
-			<File
-				RelativePath="dinner_BUSINESS_skel.cpp">
-			</File>
-			<File
-				RelativePath="dinner_EQUIVALENT.cpp">
-			</File>
-			<File
-				RelativePath="dinner_EQUIVALENT_skel.cpp">
-			</File>
-			<File
-				RelativePath="dinner_LOCAL.cpp">
-			</File>
-			<File
-				RelativePath="dinner_LOCAL_skel.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
-			<File
-				RelativePath="dinner_BUSINESS.h">
-			</File>
-			<File
-				RelativePath="dinner_BUSINESS_skel.h">
-			</File>
-			<File
-				RelativePath="dinner_EQUIVALENT.h">
-			</File>
-			<File
-				RelativePath="dinner_EQUIVALENT_skel.h">
-			</File>
-			<File
-				RelativePath="dinner_LOCAL.h">
-			</File>
-			<File
-				RelativePath="dinner_LOCAL_skel.h">
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

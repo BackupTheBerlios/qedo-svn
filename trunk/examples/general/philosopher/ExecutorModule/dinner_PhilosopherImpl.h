@@ -143,7 +143,7 @@ namespace dinner
 	public:
 		// This is the run function that the PhilosopherThread will enter
 #ifdef ORBACUS_ORB
-		void run(void*);
+		void run();
 #else
 		static void* run(void*);
 #endif

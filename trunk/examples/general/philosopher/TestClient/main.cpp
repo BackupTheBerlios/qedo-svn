@@ -3,10 +3,12 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.7 2003/09/11 11:52:41 boehme Exp $
+// $Id: main.cpp,v 1.8 2003/09/15 13:12:11 neubauer Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.7 2003/09/11 11:52:41 boehme Exp $";
+
+static char rcsid[] = "$Id: main.cpp,v 1.8 2003/09/15 13:12:11 neubauer Exp $";
+
 
 #ifdef ORBACUS_ORB
 #include <OB/CORBA.h>
@@ -17,19 +19,20 @@ static char rcsid[] = "$Id: main.cpp,v 1.7 2003/09/11 11:52:41 boehme Exp $";
 #endif
 
 #include "Components.h"
-
 #include "ClientValuetypes.h"
-
 #include "dinner_EQUIVALENT.h"
-
 #include <iostream>
 
 #ifdef _WIN32
+#include <Windows.h>
 #define sleep(x)  Sleep(x*1000)
 #else
 #include <unistd.h>
 #endif
+
+
 using namespace std;
+
 
 Components::Deployment::ServerActivator_ptr
 get_server_activator (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const char* hostname)
@@ -125,11 +128,21 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 		exit (1);
 	}
 
+#ifdef _WIN32
+	std::string loc_p = "philosopherS.dll;create_PhilosopherHomeS;philosopherE.dll;create_PhilosopherHomeE";
+	std::string loc_c = "philosopherS.dll;create_CutleryHomeS;philosopherE.dll;create_CutleryHomeE";
+	std::string loc_o = "philosopherS.dll;create_ObserverHomeS;philosopherE.dll;create_ObserverHomeE";
+#else
+	std::string loc_p = "libphilosopherS.so;create_PhilosopherHomeS;libphilosopherE.so;create_PhilosopherHomeE";
+	std::string loc_c = "libphilosopherS.so;create_CutleryHomeS;libphilosopherE.so;create_CutleryHomeE";
+	std::string loc_o = "libphilosopherS.so;create_ObserverHomeS;libphilosopherE.so;create_ObserverHomeE";
+#endif
+
 	try
 	{
-		component_installer->install ("PHILOSOPHER/1.0", "libphilosopherS.so;create_PhilosopherHomeS;libphilosopherE.so;create_PhilosopherHomeE");
-		component_installer->install ("CUTLERY/1.0", "libphilosopherS.so;create_CutleryHomeS;libphilosopherE.so;create_CutleryHomeE");
-		component_installer->install ("OBSERVER/1.0", "libphilosopherS.so;create_ObserverHomeS;libphilosopherE.so;create_ObserverHomeE");
+		component_installer->install ("PHILOSOPHER/1.0", loc_p.c_str());
+		component_installer->install ("CUTLERY/1.0", loc_c.c_str());
+		component_installer->install ("OBSERVER/1.0", loc_o.c_str());
 	}
 	catch (Components::Deployment::InvalidLocation&)
 	{
