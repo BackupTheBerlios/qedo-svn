@@ -1,27 +1,35 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleStream_SinkCompo_SERVANT", "SimpleStream_SinkCompo_SERVANT\SimpleStream_SinkCompo_SERVANT.vcproj", "{2ECACC5A-E33A-4385-A5B3-C4137E99ECDF}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleStream_SinkCompo", "SimpleStream_SinkCompo\SimpleStream_SinkCompo.vcproj", "{083F61B2-C59A-41BF-9262-EB5B681C94FD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2ECACC5A-E33A-4385-A5B3-C4137E99ECDF} = {2ECACC5A-E33A-4385-A5B3-C4137E99ECDF}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleStream_SourceCompo_SERVANT", "SimpleStream_SourceCompo_SERVANT\SimpleStream_SourceCompo_SERVANT.vcproj", "{C4A58564-D603-4DC7-8E12-442CD376247D}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleStream_SourceCompo", "SimpleStream_SourceCompo\SimpleStream_SourceCompo.vcproj", "{D35E5D00-D5FD-4E44-B8C9-9755712EE50A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C4A58564-D603-4DC7-8E12-442CD376247D} = {C4A58564-D603-4DC7-8E12-442CD376247D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple_stream_win32", "simple_stream_win32\simple_stream_win32.vcproj", "{6B5CFCDF-2B97-4C6C-A501-0EEA52E73440}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D35E5D00-D5FD-4E44-B8C9-9755712EE50A} = {D35E5D00-D5FD-4E44-B8C9-9755712EE50A}
+		{083F61B2-C59A-41BF-9262-EB5B681C94FD} = {083F61B2-C59A-41BF-9262-EB5B681C94FD}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug
-		ConfigName.1 = Debug_mico
-		ConfigName.2 = Debug_orbacus
-		ConfigName.3 = Debug_tao
-		ConfigName.4 = Release
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
-		{083F61B2-C59A-41BF-9262-EB5B681C94FD}.0 = {2ECACC5A-E33A-4385-A5B3-C4137E99ECDF}
-		{D35E5D00-D5FD-4E44-B8C9-9755712EE50A}.0 = {C4A58564-D603-4DC7-8E12-442CD376247D}
-		{6B5CFCDF-2B97-4C6C-A501-0EEA52E73440}.0 = {083F61B2-C59A-41BF-9262-EB5B681C94FD}
-		{6B5CFCDF-2B97-4C6C-A501-0EEA52E73440}.1 = {D35E5D00-D5FD-4E44-B8C9-9755712EE50A}
+		Debug = Debug
+		Debug_mico = Debug_mico
+		Debug_orbacus = Debug_orbacus
+		Debug_tao = Debug_tao
+		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{2ECACC5A-E33A-4385-A5B3-C4137E99ECDF}.Debug.ActiveCfg = Debug_tao|Win32
