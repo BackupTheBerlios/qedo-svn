@@ -1281,8 +1281,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-#AC_CONFIG_SRCDIR([gendef/gendef.cc])
-          ac_config_headers="$ac_config_headers config.h"
+          ac_config_headers="$ac_config_headers CIDL_Frontend/CIDLFrontendLib/config.h"
 
 
 # Check whether --enable-optimize or --disable-optimize was given.
@@ -5946,7 +5945,7 @@ do
   "CIDL_Repository/CIDLRepositoryLib/Makefile" ) CONFIG_FILES="$CONFIG_FILES CIDL_Repository/CIDLRepositoryLib/Makefile" ;;
   "CIDL_Frontend/CIDLFrontendLib/Makefile" ) CONFIG_FILES="$CONFIG_FILES CIDL_Frontend/CIDLFrontendLib/Makefile" ;;
   "CIDL_Backend/CIDLGenerator/Makefile" ) CONFIG_FILES="$CONFIG_FILES CIDL_Backend/CIDLGenerator/Makefile" ;;
-  "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
+  "CIDL_Frontend/CIDLFrontendLib/config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS CIDL_Frontend/CIDLFrontendLib/config.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;

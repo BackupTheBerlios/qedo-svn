@@ -159,3 +159,7 @@
 
 /* Define as `fork' if `vfork' does not work. */
 #undef vfork
+
+/* Define to 1 if you have the `uuid' library (-luuid). */
+#undef HAVE_LIBUUID
+

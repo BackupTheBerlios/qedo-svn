@@ -3,8 +3,7 @@
 
 AC_PREREQ(2.57)
 AC_INIT(Qedo, 0.4.2, qedo@qedo.berlios.de)
-#AC_CONFIG_SRCDIR([gendef/gendef.cc])
-AC_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADER([CIDL_Frontend/CIDLFrontendLib/config.h])
 
 AC_ARG_ENABLE(optimize,
  [  --disable-optimize      do not use -O2 to compile],

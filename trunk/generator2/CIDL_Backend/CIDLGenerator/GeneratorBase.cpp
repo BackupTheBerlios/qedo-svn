@@ -6,11 +6,16 @@
 #endif
 #endif
 
-#ifdef _WIN32
-#else
-#include "uuid/uuid.h"
+#ifndef _WIN32
+#include "config.h"
 #endif
 
+#ifdef HAVE_LIBUUID
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
+#include "uuid/uuid.h"
+#endif
 
 namespace QEDO_CIDL_Generator {
 
