@@ -20,12 +20,12 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: RefCountBase.cpp,v 1.8 2003/07/18 11:29:52 boehme Exp $";
-
 #include "Output.h"
 #include "RefCountBase.h"
 #include <iostream>
 #include <cassert>
+
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.9 2003/07/24 13:14:54 boehme Exp $";
 
 
 namespace Qedo {

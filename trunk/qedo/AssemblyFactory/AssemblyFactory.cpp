@@ -20,8 +20,6 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.10 2003/07/23 16:16:15 boehme Exp $";
-
 
 #include "AssemblyFactory.h"
 #include <fstream>
@@ -36,6 +34,8 @@ static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.10 2003/07/23 16:16:15 boehm
 #else 
 #include <process.h>
 #endif
+
+static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.11 2003/07/24 13:14:54 boehme Exp $";
 
 
 namespace Qedo {

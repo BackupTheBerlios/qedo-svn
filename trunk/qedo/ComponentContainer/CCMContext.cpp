@@ -20,10 +20,10 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMContext.cpp,v 1.7 2003/07/16 13:39:05 stoinski Exp $";
-
 #include "CCMContext.h"
 #include "Output.h"
+
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.8 2003/07/24 13:14:54 boehme Exp $";
 
 
 namespace Qedo {

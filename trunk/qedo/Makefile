@@ -1,36 +1,38 @@
-include MakeVars
+# Qedo - Quality of Service Enabled Distributed Objects 
+#                                                     
+# http://qedo.berlios.de/                            
+#                                                   
+# Copyright (C) 2002-2003 by the Qedo Team         
+#                                                 
+# This library is free software; you can redistribute it and/or 
+# modify it under the terms of the GNU Lesser General Public   
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#                                                                  
+# This library is distributed in the hope that it will be useful, 
+# but WITHOUT ANY WARRANTY; without even the implied warranty of 
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+# Lesser General Public License for more details.                 
+#                                                                
+# You should have received a copy of the GNU Lesser General Public 
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 
-ifeq ($(ORB), MICO_ORB)
-TARGET = Debug_mico_linux
-endif
+SUBDIRS = ComponentIDL \
+	  ComponentContainer \
+	  ComponentInstaller \
+	  ComponentServer \
+	  ComponentServerActivator \
+	  AssemblyFactory \
+	  HomeFinder \
+	  DeploymentClient
 
-all: componentidl componentcontainer assemblyfactory deploymentclient componentinstaller componentserver componentserveractivator homefinder
+all: $(SUBDIRS:%=%-all)
 
-install: all
-	sh distributeQedo.sh $(QEDO)
+install: $(SUBDIRS:%=%-install)
 
-componentidl:
-	mkdir -p ComponentIDL/$(TARGET) ; make -C ComponentIDL $(TARGET)
+%-all: %
+	make -C $< all
 
-install: all
-
-deploymentclient: AssemblyFactory ComponentContainer ComponentIDL
-	 mkdir -p DeploymentClient/$(TARGET) ;make -C DeploymentClient $(TARGET)
-
-componentcontainer: ComponentIDL
-	 mkdir -p ComponentContainer/$(TARGET) ;make -C ComponentContainer $(TARGET)
-
-componentinstaller: ComponentIDL
-	 mkdir -p ComponentInstaller/$(TARGET) ;make -C ComponentInstaller $(TARGET)
-
-componentserver: ComponentContainer ComponentIDL
-	 mkdir -p ComponentServer/$(TARGET) ;make -C ComponentServer $(TARGET)
-
-componentserveractivator: ComponentIDL
-	 mkdir -p ComponentServerActivator/$(TARGET); make -C ComponentServerActivator $(TARGET)
-
-assemblyfactory: ComponentIDL ComponentContainer
-	 mkdir -p AssemblyFactory/$(TARGET); make -C AssemblyFactory $(TARGET)
-
-homefinder: ComponentIDL
-	 mkdir -p HomeFinder/$(TARGET) ;make -C HomeFinder $(TARGET)
+%-install: %
+	make -C $< install

@@ -20,12 +20,12 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeFinder.cpp,v 1.3 2003/04/01 07:50:10 neubauer Exp $";
-
 #include "HomeFinderImpl.h"
 #include "Output.h"
 #include <cstring>
 #include <string>
+
+static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.4 2003/07/24 13:14:54 boehme Exp $";
 
 
 /**

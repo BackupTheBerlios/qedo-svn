@@ -20,14 +20,14 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: Synchronisation.cpp,v 1.12 2003/07/16 19:42:58 tom Exp $";
-
 #include "Synchronisation.h"
 
 #ifdef QEDO_PTHREAD
 #include <pthread.h>
 #include <signal.h>
 #endif
+
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.13 2003/07/24 13:14:54 boehme Exp $";
 
 namespace Qedo {
 

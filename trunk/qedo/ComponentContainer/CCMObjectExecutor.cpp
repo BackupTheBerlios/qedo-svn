@@ -20,8 +20,6 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.19 2003/07/23 16:18:19 boehme Exp $";
-
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -35,6 +33,8 @@ extern "C" {
 #include "uuid/uuid.h"
 }
 #endif
+
+static char rcsid[] UNUSED = "$Id: CCMObjectExecutor.cpp,v 1.20 2003/07/24 13:14:54 boehme Exp $";
 
 namespace Qedo {
 

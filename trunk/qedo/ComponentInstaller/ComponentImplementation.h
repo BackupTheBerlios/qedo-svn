@@ -29,6 +29,7 @@
 #include "Package.h"
 #include "DOMXMLParser.h"
 #include "PlatformBase.h"
+#include "Util.h"
 
 #ifdef _WIN32
 #include <windows.h>

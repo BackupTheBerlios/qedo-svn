@@ -20,10 +20,10 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: PublisherPort.cpp,v 1.9 2003/06/18 12:34:34 stoinski Exp $";
-
 #include "PublisherPort.h"
 #include "Output.h"
+
+static char rcsid[] UNUSED = "$Id: PublisherPort.cpp,v 1.10 2003/07/24 13:14:54 boehme Exp $";
 
 
 namespace Qedo {

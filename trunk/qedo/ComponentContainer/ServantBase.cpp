@@ -20,20 +20,20 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServantBase.cpp,v 1.6 2003/04/15 07:26:07 neubauer Exp $";
-
 #include "ServantBase.h"
 #include "HomeServantBase.h"
 #include "Output.h"
 
 
+static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.7 2003/07/24 13:14:54 boehme Exp $";
+
 namespace Qedo {
 
 
 ServantBase::ServantBase()
-: current_executor_ (CORBA::Object::_nil()),
-  executor_locator_ (Components::ExecutorLocator::_nil()),
-  ccm_object_executor_ (0)
+: executor_locator_ (Components::ExecutorLocator::_nil()),
+  ccm_object_executor_ (0),
+  current_executor_ (CORBA::Object::_nil())
 {
 }
 

@@ -20,10 +20,10 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: Key.cpp,v 1.6 2003/04/01 07:50:10 neubauer Exp $";
-
 #include "Key.h"
 #include "Output.h"
+
+static char rcsid[] UNUSED = "$Id: Key.cpp,v 1.7 2003/07/24 13:14:54 boehme Exp $";
 
 
 namespace Qedo {

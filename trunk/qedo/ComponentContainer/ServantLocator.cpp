@@ -20,13 +20,13 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServantLocator.cpp,v 1.6 2003/05/05 11:08:01 stoinski Exp $";
-
 #include "HomeServantBase.h"
 #include "ServantLocator.h"
 #include "GetComponentHelperServant.h"
 #include "Output.h"
 
+
+static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.7 2003/07/24 13:14:54 boehme Exp $";
 
 namespace Qedo {
 

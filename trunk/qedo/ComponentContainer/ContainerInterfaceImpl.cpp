@@ -20,8 +20,6 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.18 2003/07/18 11:31:24 boehme Exp $";
-
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
 #include "SessionHomeServant.h"
@@ -32,6 +30,8 @@ static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.18 2003/07/18 11:31:2
 #include <dlfcn.h>
 #include <sys/types.h>
 #endif
+
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.19 2003/07/24 13:14:54 boehme Exp $";
 
 
 namespace Qedo {
