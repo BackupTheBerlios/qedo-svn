@@ -38,7 +38,7 @@ namespace Qedo {
 
 
 	class ClientInterceptorDispatcher : 
-		public PortableInterceptor::ClientRequestInterceptor,
+//		public virtual PortableInterceptor::ClientRequestInterceptor,
 		public Components::Extension::ClientInterceptorRegistration,
 		public virtual Qedo::RefCountLocalObject
 	{

@@ -366,11 +366,11 @@ module Components {
 			void get_message(in string mess);
 		};
 
-		local interface ServerInterceptorRegistration {
+		local interface ServerInterceptorRegistration : PortableInterceptor::ServerRequestInterceptor {
 			void register_server_interceptor(in ContainerInterceptor intercpetor);
 		};
 
-		local interface ClientInterceptorRegistration {
+		local interface ClientInterceptorRegistration : PortableInterceptor::ClientRequestInterceptor{
 			void register_client_interceptor(in ContainerInterceptor interceptor);
 		};
 	}; // Extension

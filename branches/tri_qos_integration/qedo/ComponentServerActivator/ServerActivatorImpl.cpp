@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.18 2003/08/08 10:04:31 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.18.4.1 2003/09/09 13:02:48 tom Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -327,13 +327,13 @@ throw (CORBA::SystemException)
 
 
 void 
-ServerActivatorImpl::notify_component_server (Components::Deployment::ComponentServer_ptr server)
+ServerActivatorImpl::notify_component_server (Qedo_Components::Deployment::ComponentServer_ptr  server)
 throw (CORBA::SystemException)
 {
 	QedoLock lock (component_server_mutex_);
 	std::cout << "ServerActivatorImpl: notify_component_server() called" << std::endl;
 
-	last_created_component_server_ = Components::Deployment::ComponentServer::_duplicate(server);
+	last_created_component_server_ = Qedo_Components::Deployment::ComponentServer::_duplicate(server);
 
 	// Signal that the callback function has been called by the Component Server,
 	// so we can return the IOR to the client

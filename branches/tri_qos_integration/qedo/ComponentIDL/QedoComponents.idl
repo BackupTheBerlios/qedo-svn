@@ -59,7 +59,7 @@ module Qedo_Components {
 		//
 		interface ServerActivator : Components::Deployment::ServerActivator
 		{
-			void notify_component_server (in Components::Deployment::ComponentServer server);
+			void notify_component_server (in Qedo_Components::Deployment::ComponentServer server);
 		};
 
 		//
