@@ -95,6 +95,21 @@ public:
 	 */
 	Components::CCMObjects* get_instances()
 		throw	(CORBA::SystemException);
+
+	/**
+	 * implements IDL:omg.org/Qedo_Components/CCMHome/get_home_rep_id:1.0
+	 * \return The repository id of this home.
+	 */
+	char* get_home_rep_id()
+		throw	(CORBA::SystemException);
+
+	/**
+	 * implements IDL:omg.org/Qedo_Components/CCMHome/get_component_rep_id:1.0
+	 * \return The repository id of this home.
+	 */
+	char* get_component_rep_id()
+		throw	(CORBA::SystemException);
+
 };
 
 /** @} */

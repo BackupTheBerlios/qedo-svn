@@ -233,6 +233,8 @@ module Components {
 		void remove_component ( in CCMObject comp)
 			raises ( RemoveFailure );
 		CCMObjects get_instances (); // extension !!!
+		string get_home_rep_id(); // extension !!!
+		string get_component_rep_id(); // extension !!!
 	};
 
 	interface KeylessCCMHome {
