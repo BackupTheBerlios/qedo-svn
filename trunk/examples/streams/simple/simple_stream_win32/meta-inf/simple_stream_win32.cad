@@ -1,0 +1,66 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://www.qedo.org/componentassembly.dtd">
+
+<componentassembly id="HelloWorld_Example">
+
+    <description>Example assembly"</description>
+
+    <componentfiles>
+        <componentfile id="Sink_file">
+		<fileinarchive name="meta-inf/SimpleStream_SinkCompo.csd">
+			<link href="SimpleStream_SinkCompo.zip"/>
+		</fileinarchive>
+        </componentfile>
+
+        <componentfile id="Source_file">
+		<fileinarchive name="meta-inf/SimpleStream_SourceCompo.csd">
+			<link href="SimpleStream_SourceCompo.zip"/>
+		</fileinarchive>
+        </componentfile>
+
+    </componentfiles>
+
+    <partitioning>
+	<processcollocation>
+		<homeplacement id="SinkHome">
+	        	<componentfileref idref="Sink_file"/>
+				<componentimplref idref="UUID-C77B2B02-DC72-48B0-BB12-C377B119798B"/>
+  	        	<componentinstantiation id="sink">
+			</componentinstantiation>
+
+		</homeplacement>
+	</processcollocation>
+
+	<processcollocation>
+
+		<homeplacement id="SourceHome">
+			<componentfileref idref="Source_file"/>
+				<componentimplref idref="UUID-F43174FD-986A-4BA5-9656-3D82F61C95FB"/>
+			<componentinstantiation id="source">
+			</componentinstantiation>
+
+		</homeplacement>
+
+	</processcollocation>
+    </partitioning>
+
+
+    <connections>
+	<binding>
+		<sourceport>
+			<sourceportname>output</sourceportname>
+			<componentinstantiationref idref="source"/>
+		</sourceport>
+		<sinkport>
+			<sinkportname>input</sinkportname>
+			<componentinstantiationref idref="sink"/>
+		</sinkport>
+	</binding>
+
+    </connections>
+
+    <extension class="startorder" origin="QEDO">sink</extension>
+    <extension class="startorder" origin="QEDO">source</extension>
+
+</componentassembly>
+
