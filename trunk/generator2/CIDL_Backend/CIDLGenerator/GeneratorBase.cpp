@@ -1,6 +1,8 @@
 #include "GeneratorBase.h"
 #ifndef ORBACUS_ORB
+#ifdef _WIN32
 #include "objbase.h"
+#endif
 #endif
 
 namespace QEDO_CIDL_Generator {
