@@ -391,7 +391,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << mapFullNameLocal(home_->managed_component()) << "_Context_var new_context = new ";
 	out << home_->managed_component()->name() << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
-	out << "session_component->set_session_context (new_context.in());\n\n";
+	out << "session_component->set_session_context ("<< mapFullNameLocal(home_->managed_component()) << "_Context::_duplicate(new_context));\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
 	out << "	(\"" << home_->managed_component()->id() << "\", executor_locator,";
@@ -400,7 +400,11 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
 	out << mapFullNameServant(home_->managed_component()) << "::factory);\n\n";
 	out << "// Extract our Key out of the object reference\n";
+	out << "#ifdef TAO_ORB\n";
+	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
+	out << "#else\n";
 	out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
+	out << "endif\n";
 	out << "// register all ports\n";
 	genFacetRegistration(home_);
 	genReceptacleRegistration(home_);
@@ -499,7 +503,7 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << mapFullNameLocal(home_->managed_component()) << "_Context_var new_context = new ";
 	out << home_->managed_component()->name() << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
-	out << "session_component->set_session_context (new_context.in());\n\n";
+	out << "session_component->set_session_context (" << mapFullNameLocal(home_->managed_component()) << "_Context::_duplicate(new_context));\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
 	out << "	(\"" << home_->managed_component()->id() << "\", executor_locator,";
@@ -508,7 +512,11 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
 	out << mapFullNameServant(home_->managed_component()) << "::factory);\n\n";
 	out << "// Extract our Key out of the object reference\n";
+	out << "#ifdef TAO_ORB\n";
+	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
+	out << "#else\n";
 	out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
+	out << "#endif\n";
 	out << "// register all ports\n";
 	genFacetRegistration(home_);
 	genReceptacleRegistration(home_);
@@ -1223,7 +1231,7 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 			out.unindent();
 			out << "}\n\n";
 			out << interface_name << "_var use = ";
-			out << interface_name << "::_narrow (connections[0]->objref());\n\n";
+			out << interface_name << "::_narrow ((*connections)[0]->objref());\n\n";
 			out << "return use._retn();\n";
 			out.unindent();
 			out << "}\n\n\n";
@@ -1373,7 +1381,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out << mapFullNameLocal(home->managed_component()) << "_Context_var new_context = new ";
 	out << mapFullNameServant(home->managed_component()) << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
-	out << "session_component->set_session_context (new_context.in());\n\n";
+	out << "session_component->set_session_context (" << mapFullNameLocal(home->managed_component()) << "_Context::_duplicate(new_context));\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
 	out << "	(\"" << home->managed_component()->id() << "\", executor_locator,";
@@ -1382,7 +1390,11 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
 	out << mapFullNameServant(home->managed_component()) << "::factory);\n\n";
 	out << "// Extract our Key out of the object reference\n";
+	out << "#ifdef TAO_ORB\n";
+	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
+	out << "#else\n";
 	out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
+	out << "#endif\n";
 	out << "// register all ports\n";
 	genFacetRegistration(home);
 	genReceptacleRegistration(home);

@@ -228,8 +228,12 @@ module Components {
 		public any value;
 	};
 
-	typedef sequence<ConfigValue> ConfigValues;
+#ifdef TAO_CIDL_GEN
+	typedef sequence<octet> ConfigValues;
+#else
 
+	typedef sequence<ConfigValue> ConfigValues;
+#endif
 	interface StandardConfigurator : Configurator {
 		void set_configuration (in ConfigValues descr);
 	};
@@ -477,7 +481,13 @@ module Components {
 #endif
 	};
 
+#ifdef TAO_CIDL_GEN
+	typedef sequence<octet> SegmentDescrSeq;
+#else
+
 	typedef sequence<SegmentDescr> SegmentDescrSeq;
+#endif
+
 
 	local interface ComponentId {
 		FacetId get_target_facet();
