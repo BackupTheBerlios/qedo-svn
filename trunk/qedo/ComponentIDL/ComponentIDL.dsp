@@ -120,7 +120,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Creating DEF file for ComponentIDL.dll
-PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll ComponentIDL___Win32_Debug_orbacus_vc6/*.obj
+PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll Debug_orbacus_vc6/*.obj
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug_tao"
