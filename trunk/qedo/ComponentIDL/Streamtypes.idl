@@ -33,12 +33,12 @@ streamtype <> Raw;
 
 // Audio streamtypes
 streamtype <> MP3;
-streamtype <> PCM
+streamtype <> PCM;
 
 // Video streamtypes
 streamtype <> RGB;
 streamtype <> MPEG1_SYSTEM;
-streamtype <> MPEG1_Video
+streamtype <> MPEG1_Video;
 streamtype <> MPEG2_PROGRAM;
 streamtype <> MPEG2_TRANSPORT;
 
