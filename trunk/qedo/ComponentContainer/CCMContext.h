@@ -88,8 +88,8 @@ class ContainerInterfaceImpl;
 /**
  * implementation of IDL:omg.org/Components/CCMContext:1.0
  */
-class CONTAINERDLL_API CCMContext : public virtual Components::CCMContext,
-									public virtual Qedo::RefCountLocalObject
+class CONTAINERDLL_API CCMContext : public virtual Components::CCMContext
+								  , public virtual RefCountLocalObject
 {
 protected:
 	/** the object executor for the component */
@@ -206,8 +206,8 @@ public:
 /**
  * context for an home executor
  */
-class CONTAINERDLL_API HomeExecutorContext : public virtual Components::CCMContext,
-											 public virtual Qedo::RefCountLocalObject
+class CONTAINERDLL_API HomeExecutorContext : public virtual Components::CCMContext
+										   , public virtual RefCountLocalObject
 {
 private:
 	Components::CCMHome_var my_home_ref_;

@@ -50,9 +50,9 @@ typedef std::vector < HomeFinderEntry > HomeFinderEntryVector;
  * This is the implementation of the Qedo_Components::HomeFinder interface which is a specialisation of 
  * Components::HomeFinder.
  */
-class HomeFinderImpl : public POA_Qedo_Components::HomeFinder,
-					   public NameServiceBase,
-					   public PortableServer::RefCountServantBase
+class HomeFinderImpl : public virtual POA_Qedo_Components::HomeFinder,
+					   public virtual PortableServer::RefCountServantBase,
+					   public virtual NameServiceBase
 {
 
 private:

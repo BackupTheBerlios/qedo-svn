@@ -45,7 +45,8 @@ class ComponentInstance;
 /**
  * base class for all servants
  */
-class CONTAINERDLL_API ServantBase : public virtual PortableServer::RefCountServantBase
+class CONTAINERDLL_API ServantBase : public virtual PortableServer::RefCountServantBase,
+									 public virtual CreateDestructCORBAObjectCounter
 {
 	/** needs access to executor_locator and ccm_object_executor */
 	friend class ServantLocator;

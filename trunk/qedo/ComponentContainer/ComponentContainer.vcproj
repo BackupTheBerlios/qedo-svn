@@ -200,7 +200,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentValuetypes;&quot;$(MICO)\include\win32&quot;;&quot;$(MICO)\include&quot;"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentValuetypes;../ComponentServer;&quot;$(MICO)\include\win32&quot;;&quot;$(MICO)\include&quot;"
 				PreprocessorDefinitions="MICO_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

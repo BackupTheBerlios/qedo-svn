@@ -24,7 +24,7 @@
 #include "ComponentInstance.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentInstance.cpp,v 1.10 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstance.cpp,v 1.11 2003/08/06 12:28:09 stoinski Exp $";
 
 
 namespace Qedo {
@@ -82,8 +82,6 @@ ComponentInstance::operator= (const ComponentInstance& component_instance)
 
 ComponentInstance::~ComponentInstance()
 {
-	DEBUG_OUT2("ComponentInstance: Destructor called for ", this);
-
 	ccm_object_executor_->_remove_ref();
 }
 

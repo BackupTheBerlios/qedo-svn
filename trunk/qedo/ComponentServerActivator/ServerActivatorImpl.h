@@ -25,10 +25,11 @@
 
 
 #include <CORBA.h>
-#include <vector>
 #include "QedoComponents_skel.h"
+
 #include "Synchronisation.h"
 
+#include <vector>
 
 namespace Qedo {
 
@@ -53,8 +54,8 @@ typedef std::vector < Components::Deployment::ComponentServer_var > ComponentSer
 /**
  * the implementation of the ServerActivator interface
  */
-class ServerActivatorImpl : public POA_Qedo_Components::Deployment::ServerActivator,
-							public PortableServer::RefCountServantBase
+class ServerActivatorImpl : public virtual POA_Qedo_Components::Deployment::ServerActivator,
+							public virtual PortableServer::RefCountServantBase
 {
 private:
 	/** debug mode */

@@ -25,7 +25,7 @@
 
 #include <CORBA.h>
 #ifdef MICO_ORB
-#include <mico/CosNaming.h>
+#include <coss/CosNaming.h>
 #else
 #include <CosNaming.h>
 #endif
@@ -151,7 +151,8 @@ class ComponentServerImpl;
  * implementation of IDL:omg.org/Components/Deployment/Container
  */
 class CONTAINERDLL_API ContainerInterfaceImpl : public virtual POA_Components::Deployment::Container,
-												public virtual PortableServer::RefCountServantBase
+												public virtual PortableServer::RefCountServantBase,
+												public virtual CreateDestructCORBAObjectCounter
 {
 	/** to add services */
 	friend class PrimaryServant;

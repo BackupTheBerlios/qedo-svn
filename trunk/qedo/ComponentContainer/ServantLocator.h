@@ -42,11 +42,8 @@ class HomeServantBase;
 /**
  * servant locator
  */
-#ifdef MICO_ORB
-class ServantLocator : public POA_PortableServer::ServantLocator
-#else
-class ServantLocator : public PortableServer::ServantLocator, public RefCountLocalObject
-#endif
+class ServantLocator : public PortableServer::ServantLocator
+					 , public RefCountLocalObject
 {
 private:
 	/** the home servant */

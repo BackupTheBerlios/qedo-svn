@@ -26,11 +26,7 @@
 
 #include <CORBA.h>
 #ifdef MICO_ORB
-#ifdef Win32
-#include <mico/CosNaming.h>
-#else
 #include <coss/CosNaming.h>
-#endif
 #else
 #include <CosNaming.h>
 #endif
