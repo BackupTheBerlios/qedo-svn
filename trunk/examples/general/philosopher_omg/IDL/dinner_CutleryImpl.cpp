@@ -360,6 +360,6 @@ create_ForkHomeE(void)
 // BEGIN USER INSERT SECTION create_ForkHome
 // END USER INSERT SECTION create_ForkHome
 
-    return new dinner::CutleryHomeImpl();
+    return new ::dinner::CutleryHomeImpl();
 }
 

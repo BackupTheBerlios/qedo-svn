@@ -259,6 +259,6 @@ create_ObserverHomeE(void)
 // BEGIN USER INSERT SECTION create_ObserverHome
 // END USER INSERT SECTION create_ObserverHome
 
-    return new dinner::ObserverHomeImpl();
+    return new ::dinner::ObserverHomeImpl();
 }
 

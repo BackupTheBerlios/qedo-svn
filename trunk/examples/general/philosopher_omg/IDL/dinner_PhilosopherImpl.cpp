@@ -765,29 +765,15 @@ PhilosopherHomeImpl::create ()
     int tick = 1000 + rand() * 2000 / RAND_MAX;
     return new PhilosopherImpl("give me a name!", tick, right_hander);
 // END USER INSERT SECTION PhilosopherHomeImpl::create
-//@@@ return new PhilosopherImpl();
+    return new PhilosopherImpl();
 }
 
 
 DiningPhilosophers::Philosopher_ptr
-//@@@ ::Components::ExecutorLocator_ptr
 PhilosopherHomeImpl::_cxx_new(const char* name)
 {
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl::new
-
-//@@@
-// BEGIN USER INSERT SECTION PhilosopherHomeImpl::_cxx_new
-    // We implement the right hander logic twice (see PhilosopherHome::create
-    // Otherwise too much code had to be changed
-   	static int right_hander_counter_ = 0;
-    bool right_hander = right_hander_counter_++ % 2 ? true : false;
-
-    int tick = 1000 + rand() * 2000 / RAND_MAX;
-//@@@ 	return new PhilosopherImpl(name, tick, right_hander);
-// END USER INSERT SECTION PhilosopherHomeImpl::_cxx_new
-   return 0;
-
-	
+	return 0;
 // END USER INSERT SECTION PhilosopherHomeImpl::new
 }
 
@@ -804,6 +790,6 @@ create_PhilosopherHomeE(void)
 // BEGIN USER INSERT SECTION create_PhilosopherHome
 // END USER INSERT SECTION create_PhilosopherHome
 
-    return new dinner::PhilosopherHomeImpl();
+    return new ::dinner::PhilosopherHomeImpl();
 }
 

@@ -99,7 +99,7 @@ namespace dinner
     //
     class PhilosopherSessionImpl
         : public virtual CORBA::LocalObject
-        , public virtual dinner::CCM_PhilosopherSessionImpl
+        , public virtual ::dinner::CCM_PhilosopherSessionImpl
 // BEGIN USER INSERT SECTION INHERITANCE_PhilosopherSessionImpl
 , public virtual ThreadWithTimer
 // END USER INSERT SECTION INHERITANCE_PhilosopherSessionImpl
@@ -187,31 +187,31 @@ public:
         // IDL:Components/ExecutorLocator/configuration_complete:1.0
         //
         virtual void configuration_complete()
-        	throw(CORBA::SystemException, Components::InvalidConfiguration);
+        	throw(CORBA::SystemException, ::Components::InvalidConfiguration);
         
         //
         // IDL:Components/SessionComponent/set_session_context:1.0
         //
         virtual void set_session_context(Components::SessionContext_ptr ctx)
-        	throw(CORBA::SystemException, Components::CCMException);
+        	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
         // IDL:Components/SessionComponent/ccm_activate:1.0
         //
         virtual void ccm_activate()
-        	throw(CORBA::SystemException, Components::CCMException);
+        	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
         // IDL:Components/SessionComponent/ccm_passivate:1.0
         //
         virtual void ccm_passivate()
-        	throw(CORBA::SystemException, Components::CCMException);
+        	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
         // IDL:Components/SessionComponent/ccm_remove:1.0
         //
         virtual void ccm_remove()
-        	throw(CORBA::SystemException, Components::CCMException);
+        	throw(CORBA::SystemException, ::Components::CCMException);
     
 // BEGIN USER INSERT SECTION PhilosopherImpl
 private:
@@ -261,7 +261,6 @@ public:
         // IDL:DiningPhilosophers/PhilosopherHome/new:1.0
         //
         virtual DiningPhilosophers::Philosopher_ptr _cxx_new(const char* name)
-//@@@		virtual ::Components::ExecutorLocator_ptr _cxx_new(const char* name)
         	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl
