@@ -28,7 +28,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: Util.cpp,v 1.1 2003/09/29 17:00:07 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: Util.cpp,v 1.2 2003/09/30 16:36:49 boehme Exp $";
 
 
 namespace Qedo {
@@ -113,7 +113,7 @@ load_shared_library (const char* name, const char* dir)
 	}
 
 	
-	handle_lib = dlopen( name ,RTLD_LAZY);
+	handle_lib = dlopen( name ,RTLD_GLOBAL|RTLD_LAZY);
 
 	if (!handle_lib)
 	{
