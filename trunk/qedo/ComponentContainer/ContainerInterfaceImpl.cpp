@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.28 2003/08/08 10:04:31 stoinski Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.29 2003/08/10 13:10:45 tom Exp $";
 
 
 namespace Qedo {
@@ -685,8 +685,14 @@ throw (Components::Deployment::UnknownImplId,
 	if (!CORBA::is_nil(home_finder_.in())) {
         try
 		{
-			cookie = home_finder_->register_home(home_ref, qedo_home_servant->get_component_repid(), 
+			if (!homefinder_name)
+			{
+				DEBUG_OUT("..... ContrainerInterface: Name for HomeFinder registration not set");
+			} else
+			{
+				cookie = home_finder_->register_home(home_ref, qedo_home_servant->get_component_repid(), 
 												 qedo_home_servant->get_home_repid(), homefinder_name);
+			}
 		}
 		catch(...)
 		{
