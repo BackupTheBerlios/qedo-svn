@@ -84,12 +84,34 @@ namespace Qedo {
 
 class ContainerInterfaceImpl;
 
+class ThreadSupport : public virtual Components::CCMContext
+{
+	public:
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/start_thread:1.0
+	 */
+
+   Components::Thread_ptr start_thread( Components::Function func, Components::FunctionData data );
+
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/create_mutex:1.0
+	 */
+
+   Components::Mutex_ptr create_mutex();
+
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/create_mutex:1.0
+	 */
+
+   Components::Cond_ptr create_cond();
+};
 
 /**
  * implementation of IDL:omg.org/Components/CCMContext:1.0
  */
 class CONTAINERDLL_API CCMContext : public virtual Components::CCMContext,
-									public virtual RefCountLocalObject
+									public virtual RefCountLocalObject,
+									public ThreadSupport
 {
 protected:
 	/** the object executor for the component */
@@ -176,13 +198,6 @@ public:
 	 */
     CORBA::Object_ptr resolve_service_reference(const char*)
 		throw (Components::CCMException);
-
-	/**
-	 * implements IDL:omg.org/Components/CCMContext/start_thread:1.0
-	 * (not implemented yet)
-	 */
-
-   Components::Thread_ptr start_thread( Components::Function func, Components::FunctionData data );
 };
 
 
@@ -214,7 +229,8 @@ public:
  * context for an home executor
  */
 class CONTAINERDLL_API HomeExecutorContext : public virtual Components::CCMContext,
-											 public virtual RefCountLocalObject
+											 public virtual RefCountLocalObject,
+											 public virtual ThreadSupport
 {
 private:
 	Components::CCMHome_var my_home_ref_;
@@ -277,13 +293,6 @@ public:
 	 */
     CORBA::Object_ptr resolve_service_reference(const char*)
 		throw (Components::CCMException);
-
-	/**
-	 * implements IDL:omg.org/Components/CCMContext/start_thread:1.0
-	 * (not implemented yet)
-	 */
-
-   Components::Thread_ptr start_thread( Components::Function function, Components::FunctionData data );
 };
 
 

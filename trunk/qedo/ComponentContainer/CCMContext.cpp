@@ -23,7 +23,7 @@
 #include "CCMContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.15 2003/08/27 06:35:06 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.16 2003/09/05 13:57:41 boehme Exp $";
 
 
 namespace Qedo {
@@ -99,9 +99,7 @@ throw (Components::CCMException)
 }
 
 
-class Thread_impl : public virtual Components::Thread,
-	public virtual Qedo::RefCountLocalObject
-{
+class Thread_impl : public virtual Components::Thread {
 	QedoThread* thread;
 	Thread_impl();
 public:
@@ -112,10 +110,52 @@ public:
 
 
 Components::Thread_ptr 
-CCMContext::start_thread( Components::Function func, Components::FunctionData data )
+ThreadSupport::start_thread( Components::Function func, Components::FunctionData data )
 {
 	Thread_impl* thread = new Thread_impl(qedo_startDetachedThread(func, data));
 	return thread;
+}
+
+class Mutex_impl : public virtual Components::Mutex ,
+                   public virtual QedoMutex
+{
+	public:
+	void lock() {this->lock_object();}
+	void unlock() {this->unlock_object();}
+	void destroy() { delete this; }
+};
+
+Components::Mutex_ptr 
+ThreadSupport::create_mutex()
+{
+	Mutex_impl* mutex = new Mutex_impl();
+	return mutex;
+}
+
+class Cond_impl : public virtual Components::Cond ,
+                   public virtual QedoCond
+{
+	public:
+	void wait(Components::Mutex_ptr);
+	void signal() { QedoCond::signal(); }
+	void destroy() { delete this; }
+};
+
+void
+Cond_impl::wait(Components::Mutex_ptr x)
+{
+	Qedo::QedoMutex* m = dynamic_cast<QedoMutex*>(x);
+
+	if(!m) abort();
+
+	QedoCond::wait(m);
+}
+
+Components::Cond_ptr 
+ThreadSupport::create_cond()
+{
+	Cond_impl* cond = new Cond_impl();
+	return cond;
 }
 
 void 
@@ -236,14 +276,6 @@ throw (Components::CCMException)
 {
 	throw CORBA::NO_IMPLEMENT();
 }
-
-Components::Thread_ptr 
-HomeExecutorContext::start_thread( Components::Function func, Components::FunctionData data )
-{
-	Thread_impl* thread = new Thread_impl(qedo_startDetachedThread(func, data));
-	return thread;
-}
-
 
 } // namespace Qedo
 

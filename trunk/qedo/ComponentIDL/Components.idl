@@ -331,6 +331,18 @@ module Components {
 		void stop();
 		void join();
 	};
+
+	local interface Mutex {
+		void lock();
+		void unlock();
+		void destroy();
+	};
+
+	local interface Cond {
+		void wait(in Mutex m);
+		void signal();
+		void destroy();
+	};
 		/** end extension */
 
 	local interface CCMContext {
@@ -347,6 +359,10 @@ module Components {
 		Object resolve_service_reference(in string service_id)
 			raises(CCMException);
 		Thread start_thread(in Function func,in FunctionData data)
+			raises(CCMException);
+		Mutex create_mutex()
+			raises(CCMException);
+		Cond create_cond()
 			raises(CCMException);
 	};
 		
