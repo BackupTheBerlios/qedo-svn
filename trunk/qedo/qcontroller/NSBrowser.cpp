@@ -33,12 +33,16 @@ NSBrowserTreeCtrl::NSBrowserTreeCtrl(wxWindow *parent, const wxWindowID id,
 	//ns = "corbaloc::tri:12356/NameService";
 	CORBA::Object_var obj;
 	obj = orb -> string_to_object( ns.c_str() );
+	CreateImageList();
 
 	
-	nameService = CosNaming::NamingContext::_narrow(obj.in());
-
-	CreateImageList();
-	build_tree();
+	try {
+		nameService = CosNaming::NamingContext::_narrow(obj.in());
+	} catch (CORBA::SystemException) {};
+	if (!CORBA::is_nil(nameService))
+	{
+		build_tree();
+	}
 }
 
 NSBrowserTreeCtrl::~NSBrowserTreeCtrl()
