@@ -158,7 +158,7 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "<entity>\n";
 		break;
 	case CIDL::lc_Extension: 
-		out << "<container_extension>\n";
+		out << "<containerextension>\n";
 		break;
 	default : {}
 	}
@@ -180,7 +180,7 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "</entity>\n";
 		break;
 	case CIDL::lc_Extension: 
-		out << "</container_extension>\n";
+		out << "</containerextension>\n";
 		break;
 	default : {}
 	}
