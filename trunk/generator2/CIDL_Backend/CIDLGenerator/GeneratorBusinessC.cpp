@@ -161,7 +161,7 @@ GeneratorBusinessC::doAttribute(IR__::AttributeDef_ptr attribute)
 	{
 		out << "void\n";
 		out << class_name_ << "::" << attribute_name << "(";
-		out << map_in_parameter_type(attribute->type_def()) << " param)\n"
+		out << map_in_parameter_type(attribute->type_def()) << " param)\n";
 		out << "	throw(CORBA::SystemException";
 		handleException(attribute);
 		out << ")\n{\n";
