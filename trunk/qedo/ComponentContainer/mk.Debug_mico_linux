@@ -7,7 +7,7 @@ IntDir=./Debug_mico_linux
 Name=Debug_mico_linux
 CFLAGS=- -I. -I../ComponentIDL -I../ComponentValuetypes -I$(MICO)/include -I$(MICO)/include/coss -g -DMICO_ORB
 CXXFLAGS= -I. -I../ComponentIDL -I../ComponentValuetypes -I$(MICO)/include -I$(MICO)/include/coss -g -DMICO_ORB
-LIBS=-L$(MICO)/lib -L../ComponentIDL/../../Runtime  -lpthread -lmico2.3.9 -lComponentIDL
+LIBS=-L$(MICO)/lib -L../ComponentIDL  -lpthread -lmico2.3.9 -lComponentIDL
 
 $(IntDir)/%.o:%.cpp
 	$(COMPILE.cc) $(OUTPUT_OPTION) $<
@@ -19,7 +19,7 @@ CC=$(CXX)
 
 all:  libComponentContainer.so
 
-libComponentContainer.so : $(IntDir)/CCMContext.o $(IntDir)/CCMHomeServant.o $(IntDir)/CCMObjectExecutor.o $(IntDir)/ComponentInstance.o $(IntDir)/ConsumerPort.o $(IntDir)/ContainerInterfaceImpl.o $(IntDir)/EmitterPort.o $(IntDir)/EntityHomeServant.o $(IntDir)/FacetPort.o $(IntDir)/GlobalHelpers.o $(IntDir)/HomeServantBase.o $(IntDir)/Key.o $(IntDir)/Output.o $(IntDir)/PortBase.o $(IntDir)/PublisherPort.o $(IntDir)/ReceptaclePort.o $(IntDir)/RefCountBase.o $(IntDir)/ServantBase.o $(IntDir)/ServantLocator.o $(IntDir)/ServantRegistry.o $(IntDir)/SessionContext.o $(IntDir)/SessionHomeServant.o $(IntDir)/Synchronisation.o $(IntDir)/Valuetypes.o $(IntDir)/GetComponentHelperServant.o ; $(LINK.o)  --shared $^ $(LOADLIBES) $(LDLIBS) -o $@
+libComponentContainer.so : $(IntDir)/CCMContext.o $(IntDir)/CCMHomeServant.o $(IntDir)/CCMObjectExecutor.o $(IntDir)/ComponentInstance.o $(IntDir)/ConsumerPort.o $(IntDir)/ContainerInterfaceImpl.o $(IntDir)/EmitterPort.o $(IntDir)/EntityHomeServant.o $(IntDir)/FacetPort.o $(IntDir)/GetComponentHelperServant.o $(IntDir)/GlobalHelpers.o $(IntDir)/HomeServantBase.o $(IntDir)/Key.o $(IntDir)/Output.o $(IntDir)/PortBase.o $(IntDir)/PublisherPort.o $(IntDir)/ReceptaclePort.o $(IntDir)/RefCountBase.o $(IntDir)/ServantBase.o $(IntDir)/ServantLocator.o $(IntDir)/ServantRegistry.o $(IntDir)/SessionContext.o $(IntDir)/SessionHomeServant.o $(IntDir)/Synchronisation.o $(IntDir)/Valuetypes.o ; $(LINK.o)  --shared $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 $(IntDir)/CCMContext.o:	CCMContext.cpp
 $(IntDir)/CCMHomeServant.o:	CCMHomeServant.cpp
@@ -30,6 +30,7 @@ $(IntDir)/ContainerInterfaceImpl.o:	./ContainerInterfaceImpl.cpp
 $(IntDir)/EmitterPort.o:	./EmitterPort.cpp
 $(IntDir)/EntityHomeServant.o:	./EntityHomeServant.cpp
 $(IntDir)/FacetPort.o:	./FacetPort.cpp
+$(IntDir)/GetComponentHelperServant.o:	./GetComponentHelperServant.cpp
 $(IntDir)/GlobalHelpers.o:	GlobalHelpers.cpp
 $(IntDir)/HomeServantBase.o:	HomeServantBase.cpp
 $(IntDir)/Key.o:	./Key.cpp
@@ -45,7 +46,7 @@ $(IntDir)/SessionContext.o:	SessionContext.cpp
 $(IntDir)/SessionHomeServant.o:	SessionHomeServant.cpp
 $(IntDir)/Synchronisation.o:	Synchronisation.cpp
 $(IntDir)/Valuetypes.o:	Valuetypes.cpp
-$(IntDir)/GetComponentHelperServant.o: GetComponentHelperServant.cpp
+
 cidl:  
 idl:  cidl
 
