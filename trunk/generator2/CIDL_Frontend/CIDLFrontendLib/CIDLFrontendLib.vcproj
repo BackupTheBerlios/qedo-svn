@@ -55,8 +55,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug_orbacus|Win32"
-			OutputDirectory=".\Win32_Debug_orbacus"
-			IntermediateDirectory=".\Win32_Debug_orbacus"
+			OutputDirectory=".\Debug_orbacus"
+			IntermediateDirectory=".\Debug_orbacus"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -477,7 +477,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Kimwitu++ processes *.k files"
-						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k"
+						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
+"
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -485,7 +486,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Kimwitu++ processes *.k files"
-						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k"
+						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
+"
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -493,7 +495,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Kimwitu++ processes *.k files"
-						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k"
+						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
+"
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -501,7 +504,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Kimwitu++ processes *.k files"
-						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k"
+						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
+"
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -509,7 +513,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Kimwitu++ processes *.k files"
-						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k"
+						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
+"
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -517,7 +522,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Kimwitu++ processes *.k files"
-						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k"
+						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
+"
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
 				</FileConfiguration>
 			</File>
@@ -535,7 +541,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Flex processes $(InputPath)"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -543,7 +550,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Flex processes $(InputPath)"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -551,7 +559,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Flex processes $(InputPath)"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -559,7 +568,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Flex processes $(InputPath)"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -567,7 +577,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Flex processes $(InputPath)"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -575,7 +586,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Flex processes $(InputPath)"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 			</File>

@@ -54,7 +54,8 @@
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
 				CommandLine="md $(QEDO)\bin
-copy cidl_gen.exe $(QEDO)\bin"/>
+copy cidl_gen.exe $(QEDO)\bin
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -108,7 +109,8 @@ copy cidl_gen.exe $(QEDO)\bin"/>
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
 				CommandLine="md $(QEDO)\bin
-copy cidl_gen.exe $(QEDO)\bin"/>
+copy cidl_gen.exe $(QEDO)\bin
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -166,7 +168,8 @@ copy cidl_gen.exe $(QEDO)\bin"/>
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
 				CommandLine="md $(QEDO)\bin
-copy cidl_gen.exe $(QEDO)\bin"/>
+copy cidl_gen.exe $(QEDO)\bin
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -224,7 +227,8 @@ copy cidl_gen.exe $(QEDO)\bin"/>
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
 				CommandLine="md $(QEDO)\bin
-copy cidl_gen.exe $(QEDO)\bin"/>
+copy cidl_gen.exe $(QEDO)\bin
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -240,8 +244,8 @@ copy cidl_gen.exe $(QEDO)\bin"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_orbacus|Win32"
-			OutputDirectory=".\Win32_Debug_orbacus"
-			IntermediateDirectory=".\Win32_Debug_orbacus"
+			OutputDirectory=".\Debug_orbacus"
+			IntermediateDirectory=".\Debug_orbacus"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -255,10 +259,6 @@ copy cidl_gen.exe $(QEDO)\bin"/>
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
-				PrecompiledHeaderFile=".\CIDLGenerator___Win32_Debug_orbacus/CIDLGenerator.pch"
-				AssemblerListingLocation=".\CIDLGenerator___Win32_Debug_orbacus/"
-				ObjectFile=".\CIDLGenerator___Win32_Debug_orbacus/"
-				ProgramDataBaseFileName=".\CIDLGenerator___Win32_Debug_orbacus/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -281,8 +281,9 @@ copy cidl_gen.exe $(QEDO)\bin"/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
-				CommandLine="md $(QEDO)\bin
-copy cidl_gen.exe $(QEDO)\bin"/>
+				CommandLine="md &quot;%QEDO%\bin&quot;
+copy cidl_gen.exe &quot;%QEDO%\bin&quot;
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -335,8 +336,9 @@ copy cidl_gen.exe $(QEDO)\bin"/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
-				CommandLine="md $(QEDO)\bin
-copy cidl_gen.exe $(QEDO)\bin"/>
+				CommandLine="md &quot;%QEDO%\bin&quot;
+copy cidl_gen.exe &quot;%QEDO%\bin&quot;
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

@@ -12,8 +12,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug_orbacus|Win32"
-			OutputDirectory=".\Win32_Debug_orbacus"
-			IntermediateDirectory=".\Win32_Debug_orbacus"
+			OutputDirectory=".\Debug_orbacus"
+			IntermediateDirectory=".\Debug_orbacus"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -318,7 +318,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="IDL compiler compiles $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix .cpp   CIDL_Extension.idl"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix .cpp   CIDL_Extension.idl
+"
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -357,7 +358,8 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="IDL compiler compiles $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix .cpp   CIDL_Extension.idl"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix .cpp   CIDL_Extension.idl
+"
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
 			</File>
