@@ -276,7 +276,7 @@
 				RelativePath=".\Repository_impl.cpp">
 			</File>
 			<File
-				RelativePath=".\Sink.cpp">
+				RelativePath="SinkDef_impl.cpp">
 			</File>
 			<File
 				RelativePath=".\SourceDef_impl.cpp">
@@ -397,7 +397,7 @@
 				RelativePath=".\Repository_impl.h">
 			</File>
 			<File
-				RelativePath=".\Sink_impl.h">
+				RelativePath="SinkDef_impl.h">
 			</File>
 			<File
 				RelativePath=".\SourceDef_impl.h">

@@ -32,6 +32,7 @@
 
 namespace QEDO_ComponentRepository {
 
+
 class SinkDef_impl : public virtual POA_IR__::SinkDef,
 						  public virtual StreamPortDef_impl
 {

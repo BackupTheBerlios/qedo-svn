@@ -34,7 +34,7 @@
 #include "EmitsDef_impl.h"
 #include "PublishesDef_impl.h"
 #include "ConsumesDef_impl.h"
-#include "Sink_impl.h"
+#include "SinkDef_impl.h"
 #include "SourceDef_impl.h"
 
 #include <vector>
