@@ -126,7 +126,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "PreprocessorDefinitions=\"ORBACUS_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
 	out << "BasicRuntimeChecks=\"3\"\n";
-	out << "RuntimeLibrary=\"2\"\n";
+	out << "RuntimeLibrary=\"3\"\n";
 	out << "RuntimeTypeInfo=\"TRUE\"\n";
 	out << "UsePrecompiledHeader=\"0\"\n";
 	out << "WarningLevel=\"3\"\n";
@@ -469,7 +469,7 @@ GeneratorVC7::generateServant()
 	out << "PreprocessorDefinitions=\"WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
 	out << "BasicRuntimeChecks=\"3\"\n";
-	out << "RuntimeLibrary=\"2\"\n";
+	out << "RuntimeLibrary=\"3\"\n";
 	out << "RuntimeTypeInfo=\"TRUE\"\n";
 	out << "UsePrecompiledHeader=\"0\"\n";
 	out << "WarningLevel=\"3\"\n";
@@ -541,7 +541,7 @@ GeneratorVC7::generateServant()
 	out << "PreprocessorDefinitions=\"WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
 	out << "BasicRuntimeChecks=\"3\"\n";
-	out << "RuntimeLibrary=\"2\"\n";
+	out << "RuntimeLibrary=\"3\"\n";
 	out << "RuntimeTypeInfo=\"TRUE\"\n";
 	out << "UsePrecompiledHeader=\"0\"\n";
 	out << "WarningLevel=\"3\"\n";
@@ -613,7 +613,7 @@ GeneratorVC7::generateServant()
 	out << "PreprocessorDefinitions=\"WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
 	out << "BasicRuntimeChecks=\"3\"\n";
-	out << "RuntimeLibrary=\"2\"\n";
+	out << "RuntimeLibrary=\"3\"\n";
 	out << "RuntimeTypeInfo=\"TRUE\"\n";
 	out << "UsePrecompiledHeader=\"0\"\n";
 	out << "WarningLevel=\"3\"\n";
