@@ -349,7 +349,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "componentproperties")
 			{
-				data.comp_prop = componentproperties_two(elem);
+				data.comp_prop = componentproperties(elem);
 			}
 
 			//
@@ -384,6 +384,69 @@ throw(CADReadException)
 	return data;
 }
 
+ComponentInstanceData
+CADReader::componentinstantiation_two (DOMElement* element)
+throw(CADReadException)
+{
+	std::string element_name;
+	ComponentInstanceData data;
+    data.id = Qedo::transcode(element->getAttribute(X("id")));
+	DOMNode* child = element->getFirstChild();
+	DOMElement* elem;
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+			elem = (DOMElement*)child;
+
+			//
+			// usagename
+			//
+			if (element_name == "usagename")
+			{
+				data.usage_name = usagename(elem);
+			}
+
+			//
+			// componentproperties
+			//
+			else if (element_name == "componentproperties")
+			{
+				data.comp_prop = componentproperties_two(elem);
+			}
+
+			//
+			// registercomponent
+			//
+			else if (element_name == "registercomponent")
+			{
+				registercomponent(elem, data);
+			}
+
+			//
+			// extension
+			//
+			else if (element_name == "extension")
+			{
+				extension(elem);
+			}
+
+			//
+			// rule
+			//
+			else if (element_name == "rule")
+			{
+				data.rules.push_back( rule(elem) );
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	return data;
+}
 
 std::string
 CADReader::componentinstantiationref (DOMElement* element)
@@ -1148,7 +1211,7 @@ throw(CADReadException)
 	std::string file = Qedo::transcode(element->getAttribute(X("name")));
 
 	FileData file_data;
-	file_data.name = path_ + getFileName( file );
+	file_data.name = file; //path_ + getFileName( file );
 
 	std::string element_name;
 	DOMNode* child = element->getFirstChild();
@@ -1739,7 +1802,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "componentinstantiation")
 			{
-				data.instances.push_back(componentinstantiation((DOMElement*)child));
+				data.instances.push_back(componentinstantiation_two((DOMElement*)child));
 			}
 
 			//

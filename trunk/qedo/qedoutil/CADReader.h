@@ -115,9 +115,15 @@ private:
 		throw(CADReadException);
 
 	/**
-	 * componentimplref
+	 * componentinstantiation
 	 */
 	ComponentInstanceData componentinstantiation (DOMElement*)
+		throw(CADReadException);
+
+	/*
+	 * componentinstantiation_two
+	 */
+	ComponentInstanceData componentinstantiation_two (DOMElement*)
 		throw(CADReadException);
 
 	/**
