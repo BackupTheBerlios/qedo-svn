@@ -20,55 +20,61 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qcsa.cpp,v 1.1 2002/10/07 07:17:02 tom Exp $";
+static char rcsid[] = "$Id: qcsa.cpp,v 1.2 2002/10/21 22:52:10 tom Exp $";
 
 #include "ServerActivatorImpl.h"
 
 #include <iostream>
 #include <cstring>
+#ifdef HAVE_JTC
 #include <JTC/JTC.h>
-
+#endif
 using namespace std;
 
 int
 main (int argc, char** argv)
 {
+#ifdef HAVE_JTC
 	try {
-	cout << "Qedo Component Server Activator" << endl;
+#endif
+		cout << "Qedo Component Server Activator" << endl;
 
-	// Check for debug mode
-	bool debug_mode = false;
+		// Check for debug mode
+		bool debug_mode = false;
 
-	for (int i = 1; i < argc; i++)
-	{
-		if (! strcmp(argv[i], "--debug"))
+		for (int i = 1; i < argc; i++)
 		{
-			debug_mode = true;
-			break;
+			if (! strcmp(argv[i], "--debug"))
+			{
+				debug_mode = true;
+				break;
+			}
 		}
-	}
 
-	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
+		CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
+	
+		Qedo::ServerActivatorImpl* server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode);
 
-	Qedo::ServerActivatorImpl* server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode);
+		try
+		{
+			server_activator->initialize();
+		}
+		catch (Qedo::ServerActivatorImpl::CannotInitialize&)
+		{
+			cerr << "Cannot initialize Component Server Activator... exiting." << endl;
+			orb->destroy();
+			exit (1);
+		}
 
-	try
-	{
-		server_activator->initialize();
-	}
-	catch (Qedo::ServerActivatorImpl::CannotInitialize&)
-	{
-		cerr << "Cannot initialize Component Server Activator... exiting." << endl;
-		orb->destroy();
-		exit (1);
-	}
-
-	orb->run();
+		orb->run();
+#ifdef HAVE_JTC
 	}
 	catch (const JTCException&e )
 	{
 		cerr << "caught JTCException" << endl;
 		cerr << e << endl;
 	}
+#endif
+return 0;
 }
 

@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;$(ORBACUS)\include"
+				AdditionalIncludeDirectories="../ComponentIDL;$(ORBACUS)\include;$(ORBACUS)\include\OB"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: Valuetypes.cpp,v 1.2 2002/10/16 09:44:42 tom Exp $";
+static char rcsid[] = "$Id: Valuetypes.cpp,v 1.3 2002/10/21 22:52:10 tom Exp $";
 
 
 #include "Valuetypes.h"
@@ -87,7 +87,8 @@ CookieFactory_impl::create_for_unmarshal()
 // PortDescription
 //
 PortDescription_impl::PortDescription_impl (const char* name, const char* type_id)
-#ifndef VC6
+#if _MSC_VER < 1300 
+#else
 : OBV_Components::PortDescription (name, type_id)
 #endif
 {
@@ -119,7 +120,8 @@ FacetDescription_impl::FacetDescription_impl (const char* name,
 											  const char* type_id, 
 											  CORBA::Object_ptr ref)
 
-#ifndef VC6
+#if _MSC_VER < 1300 
+#else
 : FacetDescription (name, type_id, ref)
 #endif
 {
@@ -147,7 +149,8 @@ FacetDescriptionFactory_impl::create_for_unmarshal()
 // ConnectionDescription
 //
 ConnectionDescription_impl::ConnectionDescription_impl (Components::Cookie* ck, CORBA::Object_ptr objref)
-#ifndef VC6
+#if _MSC_VER < 1300 
+#else
 : ConnectionDescription (ck, objref)
 #endif
 {
@@ -180,7 +183,8 @@ ReceptacleDescription_impl::ReceptacleDescription_impl (const char* name,
 														const char* type_id, 
 														CORBA::Boolean is_multiple, 
 														const Components::ConnectedDescriptions& connections)
-#ifndef VC6
+#if _MSC_VER < 1300 
+#else
 : ReceptacleDescription (name, type_id, is_multiple, connections)
 #endif
 {
@@ -210,7 +214,8 @@ ReceptacleDescriptionFactory_impl::create_for_unmarshal()
 ConsumerDescription_impl::ConsumerDescription_impl (const char* name, 
 													const char* type_id, 
 													Components::EventConsumerBase_ptr consumer)
-#ifndef VC6
+#if _MSC_VER < 1300 
+#else
 : ConsumerDescription (name, type_id, consumer)
 #endif
 {
@@ -240,7 +245,8 @@ ConsumerDescriptionFactory_impl::create_for_unmarshal()
 EmitterDescription_impl::EmitterDescription_impl (const char* name, 
 												  const char* type_id, 
 												  Components::EventConsumerBase_ptr consumer)
-#ifndef VC6
+#if _MSC_VER < 1300 
+#else
 : EmitterDescription (name, type_id, consumer)
 #endif
 {
@@ -276,7 +282,8 @@ SubscriberDescription_impl::SubscriberDescription_impl (const char* name,
 						   const char* type_id, 
 						   Components::Cookie* ck, 
 						   Components::EventConsumerBase_ptr consumer)
-#ifndef VC6
+#if _MSC_VER < 1300 
+#else
 : SubscriberDescription (name, type_id, ck, consumer)
 #endif
 {
@@ -308,7 +315,8 @@ ComponentPortDescription_impl::ComponentPortDescription_impl (const Components::
 															  const Components::ConsumerDescriptions& consumers,
 															  const Components::EmitterDescriptions& emitters,
 															  const Components::SubscriberDescriptions& publishers)
-#ifndef VC6
+#if _MSC_VER < 1300 
+#else
 : ComponentPortDescription (facets, receptacles, consumers, emitters, publishers)
 #endif
 {
@@ -336,7 +344,8 @@ ComponentPortDescriptionFactory_impl::create_for_unmarshal()
 // ConfigValue
 //
 ConfigValue_impl::ConfigValue_impl (const char* name, const CORBA::Any& value)
-#ifndef VC6
+#if _MSC_VER < 1300 
+#else
 : ConfigValue (name, value)
 #endif
 {

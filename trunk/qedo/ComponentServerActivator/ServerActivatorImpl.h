@@ -28,7 +28,7 @@
 #ifndef _WIN32
 #include "Qedo_Container.h"
 #endif
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include "QedoComponents_skel.h"
 #ifdef HAVE_JTC
 #include <JTC/JTC.h>

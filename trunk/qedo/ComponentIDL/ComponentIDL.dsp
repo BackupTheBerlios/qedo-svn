@@ -98,8 +98,8 @@ PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll ComponentI
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "ComponentIDL___Win32_Debug_orbacus"
-# PROP Intermediate_Dir "ComponentIDL___Win32_Debug_orbacus"
+# PROP Output_Dir "ComponentIDL___Win32_Debug_orbacus_vc6"
+# PROP Intermediate_Dir "ComponentIDL___Win32_Debug_orbacus_vc6"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMPONENTIDL_EXPORTS" /YX /FD /GZ /c
@@ -119,7 +119,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Creating DEF file for ComponentIDL.dll
-PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll ComponentIDL___Win32_Debug_vc6/*.obj
+PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll ComponentIDL___Win32_Debug_orbacus_vc6/*.obj
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug_tao"
@@ -148,7 +148,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentIDL.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 # SUBTRACT BASE LINK32 /profile /map
-# ADD LINK32 aced.lib taod.lib  TAO_IFR_Clientd.lib TAO_PortableServerd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentIDL.dll" /pdbtype:sept /libpath:"$(TAO)\ace" /libpath:"$(TAO)\tao\tao" /libpath:"$(TAO)/tao/tao/IFR_Client" /libpath:"$(TAO)/tao/tao/PortableServer"
+# ADD LINK32 aced.lib taod.lib TAO_IFR_Clientd.lib TAO_PortableServerd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentIDL.dll" /pdbtype:sept /libpath:"$(TAO)\ace" /libpath:"$(TAO)\tao\tao" /libpath:"$(TAO)/tao/tao/IFR_Client" /libpath:"$(TAO)/tao/tao/PortableServer"
 # SUBTRACT LINK32 /profile /map
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
