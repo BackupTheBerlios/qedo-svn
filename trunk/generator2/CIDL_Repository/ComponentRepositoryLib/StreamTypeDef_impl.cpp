@@ -139,7 +139,9 @@ throw(CORBA::SystemException)
     vector < StreamTypeDef_impl* > type_seq;
     type_seq.resize ( seq.length(), NULL );
 
-    for ( unsigned i = 0; i < seq.length(); i++ )
+    unsigned i;
+
+    for ( i = 0; i < seq.length(); i++ )
     {
         if ( CORBA::is_nil ( seq[i].in() ) )
             throw CORBA::BAD_PARAM(); // Is this exception correct?
