@@ -187,7 +187,7 @@ public:
 
 struct ThreadDelegate;
 
-class QedoThread {
+class CONTAINERDLL_API QedoThread {
 	public:
 	ThreadDelegate *delegate_;
 	QedoThread();
@@ -208,7 +208,7 @@ extern "C" void* startFunc(void* p);
 /**
  * add comment!
  */
-QedoThread*
+CONTAINERDLL_API QedoThread*
 qedo_startDetachedThread(void* (*p)(void*), void* arg);
 
 
