@@ -89,7 +89,7 @@ module Components {
 
 	typedef sequence < FacetDescription > FacetDescriptions;
 
-    valuetype ConnectionDescription { // erbt nicht von PortDescription ???
+    valuetype ConnectionDescription {
 		public Cookie ck;
 		public Object objref;
 	};
