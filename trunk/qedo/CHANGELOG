@@ -1,6 +1,7 @@
 - new dynamic library qedoutil for better code reusage
 - XML stuff (DOM parser, ...) put in qedoutil
 - CCM deployment XML readers put in qedoutil
+- improve refcount memory checking
 
 version 0.4.0
 - add thread interface in context
