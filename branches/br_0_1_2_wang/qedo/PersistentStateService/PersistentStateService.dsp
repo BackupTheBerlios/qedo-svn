@@ -96,17 +96,24 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PERSISTENTSTATESERVICE_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\ob" /I "../ComponentIDL" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PERSISTENTSTATESERVICE_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\ob" /I "../ComponentIDL" /I "../ComponentContainer" /D "PSSDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PERSISTENTSTATESERVICE_EXPORTS" /D "ORBACUS_ORB" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x407 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 jtcd.lib obd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib ole32.lib /nologo /dll /pdb:none /debug /machine:I386 /libpath:"$(ORBACUS)\lib"
+# Begin Special Build Tool
+OutDir=.\Debug_orbacus_vc6
+TargetPath=.\Debug_orbacus_vc6\PersistentStateService.dll
+SOURCE="$(InputPath)"
+PostBuild_Desc=Distribution:
+PostBuild_Cmds=mkdir $(QEDO)\bin	copy $(TargetPath) $(QEDO)\bin	..\distributeQedo.bat $(OutDir)
+# End Special Build Tool
 
 !ENDIF 
 
@@ -120,11 +127,19 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\ODBCCore.cpp
+SOURCE=.\Catalog.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Connector.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\PSSNativeClasses.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\StorageHomeBase.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -132,11 +147,23 @@ SOURCE=.\PSSNativeClasses.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\ODBCCore.h
+SOURCE=.\Catalog.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Connector.h
 # End Source File
 # Begin Source File
 
 SOURCE=.\PSSNativeClasses.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\StorageHomeBase.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Util.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

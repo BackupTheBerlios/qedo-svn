@@ -20,59 +20,37 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#include "PSSNativeClasses.h"
+#ifndef __STORAGEHOMEBASE_H__
+#define __STORAGEHOMEBASE_H__
 
-namespace CosPersistentState
+#include <CORBA.h>
+#include "CORBADepends.h"
+#include "Util.h"
+
+using namespace CosPersistentState;
+
+namespace Qedo
 {
 
-void StorageObject::_add_ref()
+class PSSDLL_API StorageHomeBase : public virtual CosPersistentState::StorageHomeBase
 {
+	public:
 
-}
+		StorageHomeBase();
 
-void StorageObject::_remove_ref()
-{
-
-}
-
-void StorageObject::destroy_object() 
-	throw (CORBA::SystemException)
-{
-
-}
-
-CORBA::Boolean StorageObject::object_exists() 
-	throw (CORBA::SystemException)
-{
-	return TRUE;
-}
+		~StorageHomeBase();
 		
-Pid* StorageObject::get_pid()
-	throw (CORBA::SystemException)
-{
-	return NULL;
-}
-		
-ShortPid* StorageObject::get_short_pid()
-	throw (CORBA::SystemException)
-{
-	return NULL;
-}
-		
-StorageHomeBase_ptr StorageObject::get_storage_home()
-	throw (CORBA::SystemException)
-{
-	return NULL;
-}
+		//
+		// IDL:omg.org/CosPersistentState/StorageHomeBase/find_by_short_pid:1.0
+		//
+		StorageObjectBase_ptr find_by_short_pid(const ShortPid& short_pid);
 
-StorageObject* StorageObject::_duplicate(StorageObject*)
-{
-	return NULL;
-}
+		//
+		// IDL:omg.org/CosPersistentState/StorageHomeBase/get_catalog:1.0
+		//
+		CatalogBase_ptr get_catalog();
+};
 
-StorageObject* StorageObject::_downcast(StorageObject*)
-{
-	return NULL;
-}
-		
-}
+}; // namespace Qedo
+
+#endif

@@ -39,6 +39,7 @@
 #include "Util.h"
 #include <vector>
 #include <string>
+#include "Connector.h"
 
 
 namespace Qedo {
@@ -157,6 +158,8 @@ private:
 	std::vector <Qedo::ComponentInstance_var>				services_preinvoke_;
 	/** the list of service components for postinvoke*/
 	std::vector <Qedo::ComponentInstance_var>				services_postinvoke_;
+
+	//Connector_var											connector_;
 
 	/**
 	 * loads a shared library

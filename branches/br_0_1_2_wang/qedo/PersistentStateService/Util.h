@@ -20,59 +20,30 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#include "PSSNativeClasses.h"
+#ifndef __UTIL_H__
+#define __UTIL_H__
 
-namespace CosPersistentState
-{
+#include <CORBA.h>
 
-void StorageObject::_add_ref()
-{
 
-}
+#ifdef WIN32
+#ifdef PSSDLL_EXPORTS
+#define PSSDLL_API __declspec(dllexport)
+#define PSSDLL_EXTERN
+#else
+#define PSSDLL_API __declspec(dllimport)
+#define PSSDLL_EXTERN extern
+#endif
+#else
+#define PSSDLL_API 
+#define PSSDLL_EXTERN
+#endif
 
-void StorageObject::_remove_ref()
-{
 
-}
+// VC++ warnings 
+#pragma warning (disable : 4251) // class OB::ObjVar<*> needs to have dll-interface to be used by clients of class ...
+#pragma warning (disable : 4275) // non dll-interface class ... used as base class for dll-interface class ...
+#pragma warning (disable : 4290) // exception specification ignaored
 
-void StorageObject::destroy_object() 
-	throw (CORBA::SystemException)
-{
+#endif
 
-}
-
-CORBA::Boolean StorageObject::object_exists() 
-	throw (CORBA::SystemException)
-{
-	return TRUE;
-}
-		
-Pid* StorageObject::get_pid()
-	throw (CORBA::SystemException)
-{
-	return NULL;
-}
-		
-ShortPid* StorageObject::get_short_pid()
-	throw (CORBA::SystemException)
-{
-	return NULL;
-}
-		
-StorageHomeBase_ptr StorageObject::get_storage_home()
-	throw (CORBA::SystemException)
-{
-	return NULL;
-}
-
-StorageObject* StorageObject::_duplicate(StorageObject*)
-{
-	return NULL;
-}
-
-StorageObject* StorageObject::_downcast(StorageObject*)
-{
-	return NULL;
-}
-		
-}

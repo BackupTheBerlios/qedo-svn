@@ -20,59 +20,31 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#include "PSSNativeClasses.h"
+#include "StorageHomeBase.h"
 
-namespace CosPersistentState
+namespace Qedo
 {
 
-void StorageObject::_add_ref()
-{
-
-}
-
-void StorageObject::_remove_ref()
+StorageHomeBase::StorageHomeBase()
 {
 
 }
 
-void StorageObject::destroy_object() 
-	throw (CORBA::SystemException)
+StorageHomeBase::~StorageHomeBase()
 {
 
 }
 
-CORBA::Boolean StorageObject::object_exists() 
-	throw (CORBA::SystemException)
-{
-	return TRUE;
-}
-		
-Pid* StorageObject::get_pid()
-	throw (CORBA::SystemException)
-{
-	return NULL;
-}
-		
-ShortPid* StorageObject::get_short_pid()
-	throw (CORBA::SystemException)
-{
-	return NULL;
-}
-		
-StorageHomeBase_ptr StorageObject::get_storage_home()
-	throw (CORBA::SystemException)
+StorageObjectBase_ptr 
+StorageHomeBase::find_by_short_pid(const ShortPid& short_pid)
 {
 	return NULL;
 }
 
-StorageObject* StorageObject::_duplicate(StorageObject*)
+CatalogBase_ptr 
+StorageHomeBase::get_catalog()
 {
 	return NULL;
 }
 
-StorageObject* StorageObject::_downcast(StorageObject*)
-{
-	return NULL;
-}
-		
-}
+} // namespace Qedo

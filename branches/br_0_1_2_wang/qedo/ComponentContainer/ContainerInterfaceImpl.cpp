@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.15.2.1 2003/07/04 13:03:05 hao Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.15.2.2 2003/07/17 15:56:35 hao Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -153,6 +153,7 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 	//
 	// create connector
 	//
+	//connector_ = new Connector();
 
 }
 
