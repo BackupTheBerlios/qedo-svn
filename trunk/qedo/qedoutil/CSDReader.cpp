@@ -28,7 +28,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.4 2003/09/09 11:57:49 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.5 2003/09/26 08:34:40 neubauer Exp $";
 
 
 namespace Qedo {
@@ -154,28 +154,23 @@ throw(CSDReadException)
 		{
 			data_->servant_module = file_name;
 			data_->servant_entry_point = entry;
+			std::cerr << ".......... <code> for servants " << file_name << std::endl;
 		}
 		else 
 		{
 			data_->executor_module = file_name;
 			data_->executor_entry_point = entry;
+			std::cerr << ".......... <code> for business " << file_name << std::endl;
 		}
-    }
-
-	//
-	// executable
-	//
-	else if (type == "Executable")
-	{
-		// todo
     }
 
 	//
 	// artifact
 	//
-	else if (type == "Artifact")
+	else if (type == "Executable")
 	{
 		data_->artifacts.push_back( file_name );
+		std::cerr << ".......... <code> for artifact " << file_name << std::endl;
     }
 }
 
@@ -356,13 +351,13 @@ throw(CSDReadException)
 	LocationData data;
 	data.uri = "file://";
 	std::string file_name = XMLString::transcode(element->getAttribute(X("name")));
-	data.uri.append(path_ + file_name);
-	data.file = path_ + file_name;
+	data.file = getFileName( file_name );
+	data.uri.append( path_ + data.file );
 
 	//
 	// extract the file
 	//
-	if (package_->extractFile(file_name, path_ + file_name) != 0)
+	if (package_->extractFile( file_name, path_ + data.file ) != 0)
 	{
 		std::cerr << "Error during extracting file " << file_name << std::endl;
 		throw CSDReadException();
@@ -524,7 +519,7 @@ throw(CSDReadException)
 	std::string fileName = path_ + name;
 	LocationData data;
 	data.uri = XMLString::transcode(element->getAttribute(X("href")));
-	data.file = fileName;
+	data.file = name;
 
 	//
 	// get file
@@ -772,7 +767,7 @@ throw(CSDReadException)
 	// parse the corba component descriptor file
     //
 	CCDReader reader;
-	reader.readCCD( ccd_file_, data_, package_, path_ );
+	reader.readCCD( path_ + ccd_file_, data_, package_, path_ );
 }
 
 
@@ -863,18 +858,18 @@ throw(CSDReadException)
 	//
 	// find and extract the software package descriptor
 	//
-    std::string csdfile = package_->getFileNameWithSuffix( ".csd" );
-    if ( csdfile == std::string( "" ) )
+    std::string csdfile_name = package_->getFileNameWithSuffix( ".csd" );
+	std::string csdfile = path_ + getFileName( csdfile_name );
+    if ( csdfile_name == std::string( "" ) )
 	{
 		std::cerr << ".......... missing a csd file!" << std::endl;
         throw CSDReadException();
 	}
-    if (package_->extractFile(csdfile, path_ + csdfile) != 0)
+    if (package_->extractFile(csdfile_name, csdfile) != 0)
 	{
 		std::cerr << ".......... error during extracting the descriptor file" << std::endl;
 		throw CSDReadException();
 	}
-	csdfile = path_ + csdfile;
 
 	//
 	// parse the software package descriptor file

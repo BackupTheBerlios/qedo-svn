@@ -34,15 +34,6 @@
 #include "ComponentImplementationData.h"
 
 
-#if !defined(UNUSED) 
-#ifdef __GNUC__
-#define UNUSED __attribute__((unused))
-#else
-#define UNUSED
-#endif
-#endif
-
-
 namespace Qedo {
 
 

@@ -26,6 +26,7 @@
 
 #include "CORBA.h"
 #include "Components.h"
+#include "qedoutil.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -184,19 +185,21 @@ struct EventConnectionData
 struct AssemblyData
 {
 	/** the uuid of the assembly */
-	std::string											uuid_;
+	std::string									uuid_;
     /** the mapping of component implementation ids to softpackages */
-	std::map < std::string, std::string >				implementationMap_;
+	std::map < std::string, std::string >		implementationMap_;
     /** start order of the instances */
-	std::vector < std::string >							start_order_;
+	std::vector < std::string >					start_order_;
 	/** list of existing homes */
-	std::vector < HomeInstanceData >					existing_homes_;
+	std::vector < HomeInstanceData >			existing_homes_;
 	/** list of server/process/home instantiations */
-	std::vector < HostData >							hosts_;
+	std::vector < HostData >					hosts_;
 	/** list of interface connections */
-	std::vector < InterfaceConnectionData >				interface_connections_;
+	std::vector < InterfaceConnectionData >		interface_connections_;
 	/** list of event connections */
-	std::vector < EventConnectionData >					event_connections_;
+	std::vector < EventConnectionData >			event_connections_;
+	/** the cad file */
+	std::string									cad;
 };
 
 /** @} */

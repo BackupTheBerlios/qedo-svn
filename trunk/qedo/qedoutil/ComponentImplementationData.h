@@ -26,13 +26,7 @@
 
 #include <string>
 #include <vector>
-
-
-#if !defined(UNUSED) && defined(__GNUC__)
-#define UNUSED __attribute__((unused))
-#else
-#define UNUSED
-#endif
+#include "AssemblyData.h"
 
 
 namespace Qedo {
@@ -111,7 +105,17 @@ struct ComponentImplementationData
 	std::vector < std::string >					artifacts;
 	/** list of required valuetype factories */
 	std::vector < ValuetypeData >				valuetypes;
+	/** in case the component is a composition */
+	AssemblyData								assembly;
+	/** the csd file */
+	std::string									csd;
+	/** the installation directory */
+	std::string									installation_dir;
 };
+
+/** Export template class */
+//QEDOUTIL_EXTERN template class QEDOUTIL_API std::vector < ComponentImplementationData >;
+typedef std::vector < ComponentImplementationData > ComponentImplementationDataVector;
 
 
 /** @} */

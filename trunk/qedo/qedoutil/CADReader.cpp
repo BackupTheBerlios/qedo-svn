@@ -718,17 +718,18 @@ CADReader::fileinarchive(DOMElement* element)
 throw(CADReadException)
 {
 	std::string file_name = XMLString::transcode(element->getAttribute(X("name")));
+	std::string file = path_ + getFileName( file_name );
 
 	//
 	// extract the file
 	//
-	if (package_->extractFile(file_name, path_ + file_name) != 0)
+	if (package_->extractFile(file_name, file) != 0)
 	{
 		std::cerr << "Error during extracting file " << file_name << std::endl;
 		throw CADReadException();
 	}
 
-	return path_ + file_name;
+	return file;
 }
 
 
@@ -1595,18 +1596,18 @@ throw(CADReadException)
 	//
 	// find and extract the assembly descriptor
     //
-	std::string cadfile = package_->getFileNameWithSuffix( ".cad" );
-    if ( cadfile == std::string( "" ) )
+	std::string cadfile_name = package_->getFileNameWithSuffix( ".cad" );
+	std::string cadfile = path_ + getFileName( cadfile_name );
+    if ( cadfile_name == std::string( "" ) )
 	{
 		std::cerr << ".......... The format of the package file is not correct\n";
         throw CADReadException();
 	}
-    if ( package_->extractFile( cadfile, path_ + cadfile ) != 0 )
+    if ( package_->extractFile( cadfile_name, cadfile) != 0 )
 	{
 		std::cerr << ".......... Error during extracting the descriptor file\n";
         throw CADReadException();
 	}
-	cadfile = path_ + cadfile;
 
 	//
 	// parse the component assembly descriptor

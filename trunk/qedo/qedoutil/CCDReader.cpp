@@ -27,7 +27,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.3 2003/09/09 11:57:49 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.4 2003/09/26 08:34:40 neubauer Exp $";
 
 
 namespace Qedo {
@@ -107,14 +107,15 @@ throw(CCDReadException)
 			//
 			else if (!XMLString::compareString(child->getNodeName(), X("fileinarchive")))
 			{
-				cfile = fileinarchive((DOMElement*)(child));
+				std::string cfile_name = fileinarchive((DOMElement*)(child));
+				cfile = path_ + getFileName( cfile );
 					
 				//
 				// extract the file
 				//
-				if (package_->extractFile(cfile, path_ + cfile) != 0)
+				if (package_->extractFile(cfile_name, cfile) != 0)
 				{
-					std::cerr << "Error during extracting file " << cfile << std::endl;
+					std::cerr << "Error during extracting file " << cfile_name << std::endl;
 					throw CCDReadException();
 				}
 			}
