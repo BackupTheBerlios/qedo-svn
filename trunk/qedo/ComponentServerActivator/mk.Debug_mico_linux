@@ -15,9 +15,9 @@ LDLIBS+=$(LIBS)
 
 CC=$(CXX)
 
-all:  ../../Runtime/csa 
+all:  csa 
 
-../../Runtime/csa : $(IntDir)/ServerActivatorImpl.o $(IntDir)/main.o 
+csa : $(IntDir)/ServerActivatorImpl.o $(IntDir)/main.o 
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 $(IntDir)/ServerActivatorImpl.o:	ServerActivatorImpl.cpp

@@ -1,5 +1,4 @@
-# input Par1 should be the Target name (e.g. Debug_mico_linux)
- #par 2 should be the Qedo install Dir (e.g. /opt/qedo)
+# input Parameter 1 should be the Qedo install directory (e.g. /opt/qedo)
 
 #### start distribution ####
 mkdir -p $2;
@@ -9,8 +8,8 @@ cp ComponentInstaller/ci $2/bin;
 cp ComponentServerActivator/csa $2/bin;
 cp ComponentServer/cs $2/bin;
 cp HomeFinder/homefinder $2/bin;
-cp DeploymentClient/deployment $2/bin;
-cp AssemblyFactory/asf $2/bin;
+cp DeploymentClient/deploy $2/bin;
+cp AssemblyFactory/assf $2/bin;
 
 #### etc dir ####
 mkdir -p $2/etc;

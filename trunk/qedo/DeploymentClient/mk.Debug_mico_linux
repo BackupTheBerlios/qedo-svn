@@ -15,9 +15,9 @@ LDLIBS+=$(LIBS)
 
 CC=$(CXX)
 
-all:  ../../Runtime/deploy 
+all:  deploy 
 
-../../Runtime/deploy : $(IntDir)/DeploymentClient.o $(IntDir)/NameServiceBase.o $(IntDir)/main.o 
+deploy : $(IntDir)/DeploymentClient.o $(IntDir)/NameServiceBase.o $(IntDir)/main.o 
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 $(IntDir)/DeploymentClient.o:	DeploymentClient.cpp

@@ -15,9 +15,9 @@ LDLIBS+=$(LIBS)
 
 CC=$(CXX)
 
-all:  ../../Runtime/assf 
+all:  assf 
 
-../../Runtime/assf : $(IntDir)/Assembly.o $(IntDir)/AssemblyFactory.o $(IntDir)/CatalogResolver.o $(IntDir)/DOMTreeErrorReporter.o $(IntDir)/DOMXMLParser.o $(IntDir)/NameServiceBase.o $(IntDir)/Package.o $(IntDir)/PlatformBase.o $(IntDir)/libunzip.o $(IntDir)/Properties.o $(IntDir)/StandardConfigurator.o $(IntDir)/XMLCatalog.o $(IntDir)/main.o 
+assf : $(IntDir)/Assembly.o $(IntDir)/AssemblyFactory.o $(IntDir)/CatalogResolver.o $(IntDir)/DOMTreeErrorReporter.o $(IntDir)/DOMXMLParser.o $(IntDir)/NameServiceBase.o $(IntDir)/Package.o $(IntDir)/PlatformBase.o $(IntDir)/libunzip.o $(IntDir)/Properties.o $(IntDir)/StandardConfigurator.o $(IntDir)/XMLCatalog.o $(IntDir)/main.o 
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 $(IntDir)/Assembly.o:	Assembly.cpp

@@ -17,9 +17,9 @@ LDLIBS+=$(LIBS)
 
 CC=$(CXX)
 
-all:  idl ../../Runtime/libComponentIDL.so
+all:  idl libComponentIDL.so
 
-../../Runtime/libComponentIDL.so : $(IntDir)/Components.o $(IntDir)/Components_skel.o $(IntDir)/QedoComponents.o $(IntDir)/QedoComponents_skel.o 
+libComponentIDL.so : $(IntDir)/Components.o $(IntDir)/Components_skel.o $(IntDir)/QedoComponents.o $(IntDir)/QedoComponents_skel.o 
 	mkdir -p ../../Runtime; $(LINK.o)  --shared $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 $(IntDir)/Components.o:	./Components.cpp
