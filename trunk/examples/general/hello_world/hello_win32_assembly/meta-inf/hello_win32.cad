@@ -28,7 +28,6 @@
   	        	<componentinstantiation id="callee">
 			</componentinstantiation>
 
-		        <destination></destination>
 		</homeplacement>
 	</processcollocation>
 
@@ -40,7 +39,6 @@
 			<componentinstantiation id="caller">
 			</componentinstantiation>
 
-			<destination></destination>
 		</homeplacement>
 
 	</processcollocation>
