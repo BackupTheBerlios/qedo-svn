@@ -15,7 +15,7 @@ LDLIBS+=$(LIBS)
 
 CC=$(CXX)
 
-all:  /homefinder 
+all:  homefinder 
 
 homefinder : $(IntDir)/HomeFinderEntry.o $(IntDir)/HomeFinderImpl.o $(IntDir)/../../ComponentInstaller/$(IntDir)/NameServiceBase.o $(IntDir)/main.o 
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
