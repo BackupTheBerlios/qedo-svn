@@ -1,8 +1,12 @@
 
-The dining_philosophers.zip is the first example of an assembly package that
+The dining_philosophers packages are the first examples of an assembly package that
 can be automatically deployed by the Qedo runtime and deployment infrastructure
-based on the CCM specification. It is intended to show how assembly packages are
-deployed using Qedo.
+based on the CCM specification. The intention is to show how assembly packages are
+deployed using Qedo. Although each package contains the complete implementation code for 
+the components for mico as well as for orbacus ORB, the .cad files differ for convenience
+reasons to prevent editing.
+The package dining_philosophers_win_mico.zip deploys the example on win23 and mico.
+The package dining_philosophers_win_ob.zip deploys the example on win32 and ORBacus.  
 
 Package content
 ======================================
@@ -31,5 +35,5 @@ host, including
 4. AssemblyFactory (assf).
 
 Afterwards the assembly can be deployed using the generic deployment client. The
-command "deploy -f dining_philosophers.zip" installs, starts and stops the dining 
+command "deploy -f dining_philosophers_win_xxx.zip" installs, starts and stops the dining 
 philosophers assembly.
