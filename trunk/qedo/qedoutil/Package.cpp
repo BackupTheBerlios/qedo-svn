@@ -83,7 +83,7 @@ std::string
 Package::getFileNameWithSuffix
 ( std::string suffix )
 {
-    std::string csdFileName( "" );
+    std::string file_name( "" );
 
     unzFile uf = unzOpen( zipfilename.c_str() );
 
@@ -91,7 +91,7 @@ Package::getFileNameWithSuffix
     if ( uf == NULL )
 	{
         std::cerr << "Cannot open " << zipfilename.c_str() << " to find the descriptor file\n";
-        return( csdFileName );
+        return( file_name );
 	}
 
     uLong i;
@@ -116,17 +116,26 @@ Package::getFileNameWithSuffix
             break;
 		}
 
+		//
+		// check each entry
+		//
         std::string filename( filename_inzip );
 		std::string::size_type j = filename.find( suffix );
-        if ( ( j >= 0 ) && ( j < filename.size() ) )
+		if( (j != std::string::npos) && ( j = filename.length() - suffix.length() ) )
 		{
-            if ( csdFileName == std::string( "" ) )
+			//
+			// only one file with suffix
+			//
+            if ( file_name.empty() )
 			{
-                csdFileName = filename;
+                file_name = filename;
 			}
-            else // A .csd file has already been found, so the string "" is returned
+			//
+			// more such files
+			//
+            else
 			{
-                csdFileName = std::string( "" );
+                file_name = std::string( "" );
                 break;
 			}
 		}
@@ -144,7 +153,7 @@ Package::getFileNameWithSuffix
 	}
 
     unzClose( uf );
-    return( csdFileName );
+    return( file_name );
 }
 
 
@@ -160,13 +169,30 @@ Package::extractFile
         return( -1 );
 	}
 
+	//
 	// locate file
+	//
 	int err = unzLocateFile( uf, source.c_str(), CASESENSITIVITY );
     if ( err != UNZ_OK )
 	{
-        std::cerr << "File " << source << " not found in the zipfile\n";
-        unzClose( uf );
-		return err;
+		//
+		// try again with "\\" as delimiter for windows
+		//
+		std::string my_source = source;
+		std::string::size_type f = my_source.find_first_of("/");
+		while( f != std::string::npos )
+		{
+			my_source.replace(f, 1, "\\");
+			f = my_source.find_first_of("/");
+		}
+
+		err = unzLocateFile( uf, my_source.c_str(), CASESENSITIVITY );
+		if ( err != UNZ_OK )
+		{
+			std::cerr << "File " << source << " not found in the zipfile\n";
+			unzClose( uf );
+			return err;
+		}
 	}
 
 	// get file info
