@@ -77,6 +77,8 @@ install/compile:
 		TAO_IDL
 		PortableServer
 		DynamicAny
+		DynamicInterface
+		NameService
 
 The Qedo Runtime worspace supports configurations for 3 ORBs (ORBACUS, MICO, TAO). Each of these ORBs has specific characteristics (e.g the names of the skeleton files). These different characteristics make it really difficult to integrate the configurations into a single workspace. There are some serious problems with TAO. To overcome these problems you have to do the following things.
 
