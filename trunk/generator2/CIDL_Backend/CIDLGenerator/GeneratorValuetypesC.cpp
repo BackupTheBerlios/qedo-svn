@@ -133,7 +133,7 @@ void
 GeneratorValuetypesC::doValue(IR__::ValueDef_ptr value)
 {
 	open_module(out, value);
-	class_name_ = mapName(value) + "_impl";
+	class_name_ = mapName(value) + "Impl";
 	
 	out << "void\n";
 	out << class_name_ << "::operator= (const " << class_name_ << "& v)\n{\n";
@@ -146,6 +146,16 @@ GeneratorValuetypesC::doValue(IR__::ValueDef_ptr value)
 	out << class_name_ << "::" << class_name_ << "(const " << class_name_ << "& v)\n{\n";
 	out.indent();
 	handleValueMember(value);
+	out.insertUserSection(class_name_ + "::" + class_name_ + "1", 0);
+	out.unindent();
+	out << "}\n\n\n";
+
+	out << class_name_ << "::" << class_name_ << "(";
+	generateMemberParam( value, false );
+	out << ")\n: " << mapFullNameWithPrefix(value, "OBV_") << "(";
+	generateMemberInit( value, false );
+	out << ")\n{\n";
+	out.indent();
 	out.insertUserSection(class_name_ + "::" + class_name_ + "2", 0);
 	out.unindent();
 	out << "}\n\n\n";
@@ -203,13 +213,13 @@ GeneratorValuetypesC::doValue(IR__::ValueDef_ptr value)
 	// value type factory
 	//
 	out << "CORBA::ValueBase *\n";
-	out << value->name() << "_factory::create_for_unmarshal ()\n{\n";
+	out << value->name() << "FactoryImpl::create_for_unmarshal ()\n{\n";
 	out.indent();
-	out << "return new " << getAbsoluteName(value, "_") << "_impl;\n";
+	out << "return new " << mapFullName( value ) << "Impl();\n";
 	out.unindent();
 	out << "}\n\n\n";
 
-	out << value->name() << "_factory::" << value->name() << "_factory()\n{\n";
+	out << value->name() << "FactoryImpl::" << value->name() << "FactoryImpl()\n{\n";
 	out.indent();
 	out << "int dummy = 0;\n";
 	out << "CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);\n";
@@ -228,8 +238,10 @@ GeneratorValuetypesC::doValue(IR__::ValueDef_ptr value)
 		// todo
 	};
 
+	//
 	// static instance of factory
-	out << "static " << value->name() << "_factory " << value->name() << "_factory_instance;\n";
+	//
+	out << "static " << value->name() << "FactoryImpl " << value->name() << "Factory_instance;\n";
 
 	close_module(out, value);
 }
@@ -249,12 +261,94 @@ GeneratorValuetypesC::doValueMember(IR__::ValueMemberDef_ptr member)
 	std::string member_name = mapName(member);
 
 	switch (type->type()->kind()) {
-	case CORBA::tk_string:
-		out << member_name << " = CORBA::string_dup(v." << member_name << ");\n";
-		break;
 	default:
-		out << member_name << " = v." << member_name << ";\n";
+		out << member_name << "( v." << member_name << "() );\n";
 	}
+}
+
+
+bool
+GeneratorValuetypesC::generateMemberParam(IR__::ValueDef_ptr value, bool comma )
+{
+	bool set_comma = comma;
+
+	//
+	// inheritance
+	//
+	// base value
+	IR__::ValueDef_var base = value->base_value();
+	if(! CORBA::is_nil(base))
+	{
+		set_comma = generateMemberParam( base, set_comma );
+	}
+	// abstract base values
+	IR__::ValueDefSeq_var abstr = value->abstract_base_values();
+	CORBA::ULong i;
+	for( i = 0; i < abstr->length(); i++ )
+	{
+		set_comma = generateMemberParam( abstr[i], set_comma );
+	};
+
+	//
+	// members
+	//
+	IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, false);
+	CORBA::ULong len = contained_seq->length();
+	for( i = 0; i < len; i++ )
+	{
+		if(set_comma)
+		{
+			out << ", ";
+		}
+		IR__::ValueMemberDef_var a_member = IR__::ValueMemberDef::_narrow(((*contained_seq)[i]));
+		out << map_in_parameter_type (a_member->type_def()) << " ";
+		out << mapName(string(a_member->name()));
+		set_comma = true;
+	};
+
+	return set_comma;
+}
+
+
+bool
+GeneratorValuetypesC::generateMemberInit(IR__::ValueDef_ptr value, bool comma )
+{
+	bool set_comma = comma;
+
+	//
+	// inheritance
+	//
+	// base value
+	IR__::ValueDef_var base = value->base_value();
+	if(! CORBA::is_nil(base))
+	{
+		set_comma = generateMemberInit( base, set_comma );
+	}
+	// abstract base values
+	IR__::ValueDefSeq_var abstr = value->abstract_base_values();
+	CORBA::ULong i;
+	for( i = 0; i < abstr->length(); i++ )
+	{
+		set_comma = generateMemberInit( abstr[i], set_comma );
+	};
+
+	//
+	// members
+	//
+	IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, false);
+	CORBA::ULong len = contained_seq->length();
+	for( i = 0; i < len; i++ )
+	{
+		if(set_comma)
+		{
+			out << ", ";
+		}
+		IR__::ValueMemberDef_var a_member = IR__::ValueMemberDef::_narrow(((*contained_seq)[i]));
+		out << mapName(string(a_member->name()));
+		set_comma = true;
+	};
+
+	return set_comma;
 }
 
 

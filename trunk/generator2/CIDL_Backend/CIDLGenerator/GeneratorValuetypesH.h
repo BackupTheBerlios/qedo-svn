@@ -52,6 +52,8 @@ private:
 	void doException(IR__::ExceptionDef_ptr except);
 	void doInterface(IR__::InterfaceDef_ptr intface);
 
+	bool generateMemberParam(IR__::ValueDef_ptr value, bool comma);
+
 public:
 
 	GeneratorValuetypesH(QEDO_ComponentRepository::CIDLRepository_impl *repository);

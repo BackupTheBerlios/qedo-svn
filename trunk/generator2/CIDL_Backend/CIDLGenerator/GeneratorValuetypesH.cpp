@@ -136,7 +136,7 @@ void
 GeneratorValuetypesH::doValue(IR__::ValueDef_ptr value)
 {	
 	std::string value_name = value->name();
-	std::string class_name = mapName(value_name) + "_impl";
+	std::string class_name = mapName(value_name) + "Impl";
 
 	//
 	// value type
@@ -144,7 +144,7 @@ GeneratorValuetypesH::doValue(IR__::ValueDef_ptr value)
 	open_module(out, value);
 	out << "\n\n//\n// " << value->id() << "\n//\n";
 	out << "class " << class_name << "\n";
-	out << ": virtual public OBV_" << value->name() << "\n";
+	out << ": virtual public " << mapFullNameWithPrefix(value, "OBV_") << "\n";
 	out << ", virtual public CORBA::DefaultValueRefCountBase\n";
 	out.insertUserSection(string("INHERITANCE_") + value_name, 0);
 	out << "{\nprivate:\n\n";
@@ -154,12 +154,13 @@ GeneratorValuetypesH::doValue(IR__::ValueDef_ptr value)
 	out.unindent();
 	out << "public:\n\n";
 	out.indent();
+	out << class_name << "(";
+	generateMemberParam( value, false );
+	out << ");\n";
 	out << class_name << "();\n";
 	out << "~" << class_name << "();\n\n";
 	out << "CORBA::ValueBase* _copy_value();\n\n";
-	//
 	// supported interfaces
-	//
 	CORBA::ULong i;
 	handled_interfaces_.clear();
 	IR__::InterfaceDefSeq_var supp_intfs = value->supported_interfaces();
@@ -168,17 +169,13 @@ GeneratorValuetypesH::doValue(IR__::ValueDef_ptr value)
 		handleAttribute((*supp_intfs)[i]);
 		handleOperation((*supp_intfs)[i]);
 	};
-	//
 	// base value
-	//
 	IR__::ValueDef_var base = value->base_value();
 	if(! CORBA::is_nil(base))
 	{
 		// todo
 	}
-	//
 	// abstract base values
-	//
 	IR__::ValueDefSeq_var abstr = value->abstract_base_values();
 	for(i = 0; i < abstr->length(); i++)
 	{
@@ -191,15 +188,16 @@ GeneratorValuetypesH::doValue(IR__::ValueDef_ptr value)
 	//
 	// value type factory
 	//
-	out << "class " << value_name << "_factory\n";
+	out << "class " << value_name << "FactoryImpl\n";
 	out << ": virtual public CORBA::ValueFactoryBase\n{\n";
+	out << "private:\n\n";
+	out.indent();
+	out << "virtual CORBA::ValueBase * create_for_unmarshal();\n\n";
+	out.unindent();
 	out << "public:\n\n";
 	out.indent();
-	out << "CORBA::ValueBase * create_for_unmarshal();\n\n";
-	out << value_name << "_factory();\n\n";
-	//
+	out << value_name << "FactoryImpl();\n\n";
 	// initializers
-	//
 	IR__::InitializerSeq_var ini = value->initializers();
 	for(i = 0; i < ini->length(); i++)
 	{
@@ -217,6 +215,49 @@ void
 GeneratorValuetypesH::doEvent(IR__::EventDef_ptr event)
 {
 	doValue(event);
+}
+
+
+bool
+GeneratorValuetypesH::generateMemberParam(IR__::ValueDef_ptr value, bool comma )
+{
+	bool set_comma = comma;
+
+	//
+	// inheritance
+	//
+	// base value
+	IR__::ValueDef_var base = value->base_value();
+	if(! CORBA::is_nil(base))
+	{
+		set_comma = generateMemberParam( base, set_comma );
+	}
+	// abstract base values
+	IR__::ValueDefSeq_var abstr = value->abstract_base_values();
+	CORBA::ULong i;
+	for( i = 0; i < abstr->length(); i++ )
+	{
+		set_comma = generateMemberParam( abstr[i], set_comma );
+	};
+
+	//
+	// members
+	//
+	IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, false);
+	CORBA::ULong len = contained_seq->length();
+	for( i = 0; i < len; i++ )
+	{
+		if(set_comma)
+		{
+			out << ", ";
+		}
+		IR__::ValueMemberDef_var a_member = IR__::ValueMemberDef::_narrow(((*contained_seq)[i]));
+		out << map_in_parameter_type (a_member->type_def()) << " ";
+		out << mapName(string(a_member->name()));
+		set_comma = true;
+	};
+
+	return set_comma;
 }
 
 
