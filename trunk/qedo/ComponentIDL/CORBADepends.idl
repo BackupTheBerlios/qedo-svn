@@ -27,8 +27,13 @@
 #if TAO_ORB
 #include "PortableServer.pidl"
 #include "IFR_Basic.pidl"
-#else
+#endif
+#ifdef ORBACUS_ORB
 #include "PortableServer.idl"
+#endif
+#ifdef MICO_ORB
+// #include "ir_base.idl"
+#include "poa.idl"
 #endif
 
 #pragma prefix "omg.org"
