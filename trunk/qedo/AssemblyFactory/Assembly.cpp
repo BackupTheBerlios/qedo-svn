@@ -486,6 +486,26 @@ throw(Components::CreateFailure)
 			Components::ConfigValues_var config = new Components::ConfigValues();
 			home = container->install_home(data.impl_id.c_str(), "", config);
 		}
+		catch (Components::Deployment::UnknownImplId&)
+		{
+			std::cerr << "!!!!! unknown impl id during install_home()" << std::endl;
+			throw Components::CreateFailure();
+		}
+		catch (Components::Deployment::ImplEntryPointNotFound&)
+		{
+			std::cerr << "!!!!! entry point not found during install_home()" << std::endl;
+			throw Components::CreateFailure();
+		}
+		catch (Components::Deployment::InstallationFailure&)
+		{
+			std::cerr << "!!!!! installation failure during install_home()" << std::endl;
+			throw Components::CreateFailure();
+		}
+		catch (Components::Deployment::InvalidConfiguration&)
+		{
+			std::cerr << "!!!!! invalid configuration during install_home()" << std::endl;
+			throw Components::CreateFailure();
+		}
 		catch (CORBA::SystemException&)
 		{
 			std::cerr << "!!!!! CORBA system exception during install_home()" << std::endl;
@@ -498,7 +518,9 @@ throw(Components::CreateFailure)
 			throw Components::CreateFailure();
 		}
 
+		//
 		// register created home
+		//
 		homeMap_[data.id] = Components::CCMHome::_duplicate(home);
 	}
 	else
