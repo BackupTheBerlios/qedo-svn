@@ -3,7 +3,7 @@
 /*                                                                         */
 /* http://qedo.berlios.de/                                                 */
 /*                                                                         */
-/* Copyright (C) 2002 by the Qedo Team                                     */
+/* Copyright (C) 2002/2003 by the Qedo Team                                */
 /*                                                                         */
 /* This program is free software; you can redistribute it and/or modify it */
 /* under the terms of the GNU General Public License as published by the   */
@@ -27,10 +27,9 @@
 #include <CORBA.h>
 #include "QedoComponents_skel.h"
 #include "NameServiceBase.h"
-#include "Util.h"
+#include "HomeFinderEntry.h"
 #include <string>
 #include <vector>
-#include "HomeFinderEntry.h"
 
 
 namespace Qedo {

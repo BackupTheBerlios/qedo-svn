@@ -23,11 +23,12 @@
 #ifndef __HOME_FINDER_ENTRY_H__
 #define __HOME_FINDER_ENTRY_H__
 
+
 #include <CORBA.h>
 #include <Components.h>
+#include "Valuetypes.h"
 #include <string>
 #include <vector>
-#include "Valuetypes.h"
 
 
 namespace Qedo {

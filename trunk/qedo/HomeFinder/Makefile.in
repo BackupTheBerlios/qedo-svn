@@ -22,6 +22,7 @@ CXX = @CXX@
 INCLUDES+=-I. -I../ComponentIDL \
           -I../ComponentContainer \
           -I../ComponentInstaller \
+	  -I../qedoutil \
 			 $(NAMING_INCLUDES)
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
@@ -32,6 +33,7 @@ CC=$(CXX)
 
 LIBS += -L../ComponentIDL -lComponentIDL\
         -L../ComponentContainer -lComponentContainer \
+	-L../qedoutil -lqedoutil \
         $(NAMING_LIBS)
 
 LDLIBS = ${LIBS}
@@ -39,9 +41,8 @@ LDLIBS = ${LIBS}
 SOURCES =  HomeFinderEntry.cpp \
 			  HomeFinderImpl.cpp \
            HomeFinder.cpp
-SOURCES_EXTERN = ../ComponentInstaller/NameServiceBase.cpp 
 
-OBJS = ${SOURCES:.cpp=.o} ${SOURCES_EXTERN:.cpp=.o}
+OBJS = ${SOURCES:.cpp=.o} 
 
 CLEAN_FILES = ${SOURCES:.cpp=.o}
 

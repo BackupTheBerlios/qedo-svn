@@ -110,7 +110,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;../qedoutil;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -161,7 +161,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;&quot;$(MICO)\include&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;../qedoutil;&quot;$(MICO)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE,MICO_ORB,_WINDOWS;;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -301,16 +301,13 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
+				RelativePath="HomeFinder.cpp">
+			</File>
+			<File
 				RelativePath="HomeFinderEntry.cpp">
 			</File>
 			<File
 				RelativePath="HomeFinderImpl.cpp">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\NameServiceBase.cpp">
-			</File>
-			<File
-				RelativePath="HomeFinder.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -321,9 +318,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="HomeFinderImpl.h">
-			</File>
-			<File
-				RelativePath="..\ComponentInstaller\NameServiceBase.h">
 			</File>
 		</Filter>
 		<Filter
