@@ -1,0 +1,63 @@
+<!DOCTYPE XMLCatalog [
+
+<!ELEMENT XMLCatalog (Base?, (Map|Remap|Delegate)+, Extend*) >
+
+<!ELEMENT Map EMPTY>
+<!ATTLIST Map
+  Publicsystem-identifier CDATA #REQUIRED
+  HRef CDATA #REQUIRED>
+
+<!ELEMENT Remap EMPTY>
+<!ATTLIST Remap
+  SystemId CDATA #REQUIRED
+  HRef CDATA #REQUIRED>
+
+<!ELEMENT Delegate EMPTY>
+<!ATTLIST Delegate
+  PublicId CDATA #REQUIRED
+  HRef CDATA #REQUIRED>
+
+<!ELEMENT Extend EMPTY>
+<!ATTLIST Extend
+  HRef CDATA #REQUIRED>
+
+<!ELEMENT Base EMPTY>
+<!ATTLIST Base
+  HRef CDATA #REQUIRED>
+]>
+
+<XMLCatalog>
+  <!-- default base is catalog location, override here:
+  <Base HRef="../" /> -->
+
+  <!-- DTD catalogs 
+  <Delegate PublicId="-//W3C//" HRef="meta/w3c_catalog.xml"/>
+  -->
+
+  <!-- local config file lookups -->
+  <Map
+    Publicsystem-identifier="-//OMG//DTD CORBA Component Descriptor"
+    HRef="corbacomponent.dtd"
+  />
+
+  <Map
+    Publicsystem-identifier="-//OMG//DTD Software Package Descriptor"
+    HRef="softpkg.dtd"
+  />
+
+  <Map
+    Publicsystem-identifier="-//OMG//DTD Component Assembly Descriptor"
+    HRef="componentassembly.dtd"
+  />
+
+  <Map
+    Publicsystem-identifier="-//OMG//DTD Property File Descriptor"
+    HRef="properties.dtd"
+  />
+
+  <!-- remap system IDs -->
+  <!-- <Remap SystemId="" HRef="" /> -->
+
+  <!-- include another catalog -->
+  <!-- <Extend HRef="" /> -->
+</XMLCatalog>
