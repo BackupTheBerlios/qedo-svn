@@ -237,7 +237,7 @@ ObserverHomeImpl::set_context(Components::CCMContext_ptr ctx)
 }
 
 
-::Components::ExecutorLocator_ptr
+::Components::EnterpriseComponent_ptr
 ObserverHomeImpl::create ()
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::create

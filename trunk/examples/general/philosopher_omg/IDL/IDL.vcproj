@@ -3,8 +3,8 @@
 	ProjectType="Visual C++"
 	Version="7.00"
 	Name="IDL"
-	ProjectGUID="{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}"
-	Keyword="Win32Proj">
+	SccProjectName=""
+	SccLocalPath="">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
@@ -12,28 +12,35 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
-			IntermediateDirectory="Debug"
+			OutputDirectory=".\IDL___Win32_Debug_vc6"
+			IntermediateDirectory=".\IDL___Win32_Debug_vc6"
 			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)\ComponentIDL;$(ORBACUS)\include;$(ORBACUS)\include\OB"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
-				MinimalRebuild="TRUE"
+				AdditionalIncludeDirectories=".,$(QEDO)\ComponentIDL,$(ORBACUS)\include,$(ORBACUS)\include\OB"
+				PreprocessorDefinitions="WIN32,_DEBUG,_LIB"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\IDL___Win32_Debug_vc6/IDL.pch"
+				AssemblerListingLocation=".\IDL___Win32_Debug_vc6/"
+				ObjectFile=".\IDL___Win32_Debug_vc6/"
+				ProgramDataBaseFileName=".\IDL___Win32_Debug_vc6/"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="4"/>
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/IDL.lib"/>
+				OutputFile="./IDL.lib"
+				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -43,34 +50,40 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1031"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
+			OutputDirectory=".\Release"
+			IntermediateDirectory=".\Release"
 			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
 				InlineFunctionExpansion="1"
-				OmitFramePointers="TRUE"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32,NDEBUG,_LIB"
 				StringPooling="TRUE"
 				RuntimeLibrary="4"
 				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Release/IDL.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="3"/>
+				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/IDL.lib"/>
+				OutputFile=".\Release\IDL.lib"
+				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -80,7 +93,9 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1031"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 		</Configuration>
@@ -88,64 +103,61 @@
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath="dinner_BUSINESS.cpp">
+				RelativePath=".\DiningPhilosophers_BUSINESS.cpp">
 			</File>
 			<File
-				RelativePath="dinner_BUSINESS_skel.cpp">
+				RelativePath=".\DiningPhilosophers_BUSINESS_skel.cpp">
 			</File>
 			<File
-				RelativePath="dinner_EQUIVALENT.cpp">
+				RelativePath=".\DiningPhilosophers_EQUIVALENT.cpp">
 			</File>
 			<File
-				RelativePath="dinner_EQUIVALENT_skel.cpp">
+				RelativePath=".\DiningPhilosophers_EQUIVALENT_skel.cpp">
 			</File>
 			<File
-				RelativePath="dinner_LOCAL.cpp">
+				RelativePath=".\DiningPhilosophers_LOCAL.cpp">
 			</File>
 			<File
-				RelativePath="dinner_LOCAL_skel.cpp">
+				RelativePath=".\DiningPhilosophers_LOCAL_skel.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc">
+			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath="dinner_BUSINESS.h">
+				RelativePath=".\DiningPhilosophers_BUSINESS.h">
 			</File>
 			<File
-				RelativePath="dinner_BUSINESS_skel.h">
+				RelativePath=".\DiningPhilosophers_BUSINESS_skel.h">
 			</File>
 			<File
-				RelativePath="dinner_EQUIVALENT.h">
+				RelativePath=".\DiningPhilosophers_EQUIVALENT.h">
 			</File>
 			<File
-				RelativePath="dinner_EQUIVALENT_skel.h">
+				RelativePath=".\DiningPhilosophers_EQUIVALENT_skel.h">
 			</File>
 			<File
-				RelativePath="dinner_LOCAL.h">
+				RelativePath=".\DiningPhilosophers_LOCAL.h">
 			</File>
 			<File
-				RelativePath="dinner_LOCAL_skel.h">
+				RelativePath=".\DiningPhilosophers_LOCAL_skel.h">
 			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		</Filter>
 		<Filter
 			Name="cidl"
-			Filter="*.idl">
+			Filter="">
 			<File
-				RelativePath="philosophers.cidl">
+				RelativePath=".\dinner.cidl">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)\bin\cidl_gen philosophers.cidl dinner
-time /T &gt; last_build_time"
-						Outputs="last_build_time;dinner_LOCAL.idl;dinner_EQUIVALENT.idl;dinner_BUSINESS.idl"/>
+						CommandLine="$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32  --target DiningPhilosophers dinner.cidl
+time /T &gt; last_build_time
+"
+						Outputs="last_build_time;DiningPhilosophers_LOCAL.idl;DiningPhilosophers_EQUIVALENT.idl;DiningPhilosophers_BUSINESS.idl"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
@@ -153,42 +165,39 @@ time /T &gt; last_build_time"
 			Name="idl"
 			Filter="">
 			<File
-				RelativePath="dinner_BUSINESS.idl">
+				RelativePath=".\DiningPhilosophers_BUSINESS.idl">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_BUSINESS.idl
+						CommandLine="$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 DiningPhilosophers_BUSINESS.idl
 "
-						Outputs="dinner_BUSINESS.h;dinner_BUSINESS.cpp;dinner_BUSINESS_skel.h;dinner_BUSINESS_skel.cpp"/>
+						Outputs="DiningPhilosophers_BUSINESS.h;DiningPhilosophers_BUSINESS.cpp;DiningPhilosophers_BUSINESS_skel.h;DiningPhilosophers_BUSINESS_skel.cpp"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="dinner_EQUIVALENT.idl">
+				RelativePath=".\DiningPhilosophers_EQUIVALENT.idl">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_EQUIVALENT.idl
+						CommandLine="$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 DiningPhilosophers_EQUIVALENT.idl
 "
-						Outputs="dinner_EQUIVALENT.h;dinner_EQUIVALENT.cpp;dinner_EQUIVALENT_skel.h;dinner_EQUIVALENT_skel.cpp"/>
+						Outputs="DiningPhilosophers_EQUIVALENT.h;DiningPhilosophers_EQUIVALENT.cpp;DiningPhilosophers_EQUIVALENT_skel.h;DiningPhilosophers_EQUIVALENT_skel.cpp"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="dinner_LOCAL.idl">
+				RelativePath=".\DiningPhilosophers_LOCAL.idl">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_LOCAL.idl
+						CommandLine="$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 DiningPhilosophers_LOCAL.idl
 "
-						Outputs="dinner_LOCAL.h;dinner_LOCAL.cpp;dinner_LOCAL_skel.h;dinner_LOCAL_skel.cpp"/>
+						Outputs="DiningPhilosophers_LOCAL.h;DiningPhilosophers_LOCAL.cpp;DiningPhilosophers_LOCAL_skel.h;DiningPhilosophers_LOCAL_skel.cpp"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
-		<File
-			RelativePath="ReadMe.txt">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

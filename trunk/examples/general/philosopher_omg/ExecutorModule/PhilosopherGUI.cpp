@@ -25,7 +25,7 @@ PhilosopherGUI::PhilosopherGUI(CWnd* pParent, dinner::PhilosopherSessionImpl* ph
 
 
 PhilosopherGUI::PhilosopherGUI(CWnd* pParent /*=NULL*/)
-	: CDialog(PhilosopherGUI::IDD, pParent)
+	: CDialog(PhilosopherGUI::IDD, pParent), philo(0)
 {
 	//{{AFX_DATA_INIT(PhilosopherGUI)
 		// NOTE: the ClassWizard will add member initialization here

@@ -87,6 +87,7 @@ GUIThread::GUIThread ()
 {
 	gui_ = 0;
 	stopped_ = false;
+	philo = 0;
 }
 
 
@@ -530,6 +531,7 @@ PhilosopherSessionImpl::run
 PhilosopherSessionImpl::PhilosopherSessionImpl()
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::PhilosopherSessionImpl
+	abort();
 // END USER INSERT SECTION PhilosopherSessionImpl::PhilosopherSessionImpl
 }
 
@@ -642,7 +644,8 @@ PhilosopherSessionImpl::name()
 
 // BEGIN USER INSERT SECTION PhilosopherImpl
 PhilosopherImpl::PhilosopherImpl (const char* my_name, int tick, bool right_hander)
-: my_name_(my_name), right_hander_ (right_hander), tickTime_(tick)
+: component_(new PhilosopherSessionImpl(my_name,tick,right_hander)),
+  my_name_(my_name), right_hander_ (right_hander), tickTime_(tick)
 {
     component_executor_ = 0;
 }
@@ -755,7 +758,7 @@ PhilosopherHomeImpl::set_context(Components::CCMContext_ptr ctx)
 }
 
 
-::Components::ExecutorLocator_ptr
+::Components::EnterpriseComponent_ptr
 PhilosopherHomeImpl::create ()
 {
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl::create
@@ -769,11 +772,20 @@ PhilosopherHomeImpl::create ()
 }
 
 
-DiningPhilosophers::Philosopher_ptr
+::Components::EnterpriseComponent_ptr
 PhilosopherHomeImpl::_cxx_new(const char* name)
 {
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl::new
-	return 0;
+//@@@
+// BEGIN USER INSERT SECTION PhilosopherHomeImpl::_cxx_new
+    // We implement the right hander logic twice (see PhilosopherHome::create
+    // Otherwise too much code had to be changed
+   	static int right_hander_counter_ = 0;
+    bool right_hander = right_hander_counter_++ % 2 ? true : false;
+
+    int tick = 1000 + rand() * 2000 / RAND_MAX;
+return 0;	
+//    return new PhilosopherImpl(name, tick, right_hander);
 // END USER INSERT SECTION PhilosopherHomeImpl::new
 }
 

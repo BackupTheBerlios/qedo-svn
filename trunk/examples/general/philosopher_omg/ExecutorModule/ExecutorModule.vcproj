@@ -3,8 +3,8 @@
 	ProjectType="Visual C++"
 	Version="7.00"
 	Name="ExecutorModule"
-	ProjectGUID="{076BAC7F-8381-445E-A348-F9075C773370}"
-	Keyword="Win32Proj">
+	SccProjectName=""
+	SccLocalPath="">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
@@ -12,38 +12,49 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
-			IntermediateDirectory="Debug"
+			OutputDirectory=".\ExecutorModule___Win32_Debug_vc6"
+			IntermediateDirectory=".\ExecutorModule___Win32_Debug_vc6"
 			ConfigurationType="2"
+			UseOfMFC="2"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/ComponentIDL;$(ORBACUS)\include;$(ORBACUS)\include\OB;../IDL"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS"
-				MinimalRebuild="TRUE"
+				AdditionalIncludeDirectories=".,$(QEDO)/ComponentIDL,$(ORBACUS)\include,$(ORBACUS)\include\OB,../IDL"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;_USRDLL;EXECUTORMODULE_EXPORTS;VC6;OBSERVER_WITH_GUI;HAVE_JTC"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\ExecutorModule___Win32_Debug_vc6/ExecutorModule.pch"
+				AssemblerListingLocation=".\ExecutorModule___Win32_Debug_vc6/"
+				ObjectFile=".\ExecutorModule___Win32_Debug_vc6/"
+				ProgramDataBaseFileName=".\ExecutorModule___Win32_Debug_vc6/"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="4"/>
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib"
-				OutputFile="../../../Runtime/Example1E.dll"
+				OutputFile="../../../../Runtime/philosopher_omgE.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(QEDO)\ComponentIDL\Debug;$(ORBACUS)\lib"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(QEDO)/ComponentIDL/Debug&quot;;&quot;$(ORBACUS)\lib&quot;"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/ExecutorModule.pdb"
-				SubSystem="2"
-				ImportLibrary="$(OutDir)/ExecutorModule.lib"
-				TargetMachine="1"/>
+				ProgramDatabaseFile=".\ExecutorModule___Win32_Debug_vc6/philosopher_omgE.pdb"
+				ImportLibrary=".\ExecutorModule___Win32_Debug_vc6/philosopher_omgE.lib"/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\ExecutorModule___Win32_Debug_vc6/ExecutorModule.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -51,7 +62,9 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1031"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
@@ -59,37 +72,45 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
+			OutputDirectory=".\Release"
+			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
 				InlineFunctionExpansion="1"
-				OmitFramePointers="TRUE"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Release/ExecutorModule.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="3"/>
+				SuppressStartupBanner="TRUE"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/ExecutorModule.dll"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile=".\Release/ExecutorModule.dll"
 				LinkIncremental="1"
-				GenerateDebugInformation="TRUE"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				ImportLibrary="$(OutDir)/ExecutorModule.lib"
-				TargetMachine="1"/>
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(QEDO)/ComponentIDL/$(OutDir)&quot;;&quot;$(ORBACUS)\lib&quot;"
+				ProgramDatabaseFile=".\Release/ExecutorModule.pdb"
+				ImportLibrary=".\Release/ExecutorModule.lib"/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Release/ExecutorModule.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -97,7 +118,9 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1031"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
@@ -107,12 +130,30 @@
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath="ExecutorValuetypes.cpp">
+				RelativePath=".\ComponentOutput.cpp">
 			</File>
 			<File
-				RelativePath="RefCountLocalObject.cpp">
+				RelativePath=".\CutleryExecutor.cpp">
+			</File>
+			<File
+				RelativePath=".\CutleryGUI.cpp">
+			</File>
+			<File
+				RelativePath=".\ObserverGUI.cpp">
+			</File>
+			<File
+				RelativePath=".\Output.cpp">
+			</File>
+			<File
+				RelativePath=".\PhilosopherGUI.cpp">
+			</File>
+			<File
+				RelativePath=".\PhilosopherState.cpp">
+			</File>
+			<File
+				RelativePath=".\RefCountLocalObject.cpp">
 			</File>
 			<File
 				RelativePath="..\IDL\dinner_CutleryImpl.cpp">
@@ -126,12 +167,27 @@
 		</Filter>
 		<Filter
 			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc">
+			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath="ExecutorValuetypes.h">
+				RelativePath=".\ComponentOutput.h">
 			</File>
 			<File
-				RelativePath="RefCountLocalObject.h">
+				RelativePath=".\CutleryExecutor.h">
+			</File>
+			<File
+				RelativePath=".\CutleryGUI.h">
+			</File>
+			<File
+				RelativePath=".\ObserverGUI.h">
+			</File>
+			<File
+				RelativePath=".\PhilosopherGUI.h">
+			</File>
+			<File
+				RelativePath=".\PhilosopherState.h">
+			</File>
+			<File
+				RelativePath=".\RefCountLocalObject.h">
 			</File>
 			<File
 				RelativePath="..\IDL\dinner_CutleryImpl.h">
@@ -145,7 +201,10 @@
 		</Filter>
 		<Filter
 			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			<File
+				RelativePath=".\ExecutorModule.rc">
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

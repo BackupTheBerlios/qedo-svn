@@ -338,7 +338,7 @@ CutleryHomeImpl::set_context(Components::CCMContext_ptr ctx)
 }
 
 
-::Components::ExecutorLocator_ptr
+::Components::EnterpriseComponent_ptr
 CutleryHomeImpl::create ()
 {
 // BEGIN USER INSERT SECTION CutleryHomeImpl::create

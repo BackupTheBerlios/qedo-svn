@@ -184,7 +184,7 @@ private:
         //
         // IDL:.../create:1.0
         //
-        virtual ::Components::ExecutorLocator_ptr create();
+        virtual ::Components::EnterpriseComponent_ptr create();
     
 // BEGIN USER INSERT SECTION ObserverHomeImpl
 // END USER INSERT SECTION ObserverHomeImpl

@@ -1,5 +1,5 @@
 
-static char rcsid[] = "$Id: ClientValuetypes.cpp,v 1.1 2002/10/30 22:51:35 tom Exp $";
+static char rcsid[] = "$Id: ClientValuetypes.cpp,v 1.2 2002/11/01 18:55:35 boehme Exp $";
 
 
 #include "ClientValuetypes.h"
@@ -312,17 +312,18 @@ ComponentPortDescriptionFactory_impl::create_for_unmarshal()
 //
 // ConfigValue
 //
-ConfigValue_impl::ConfigValue_impl (const char* name, const CORBA::Any& value)
-#ifndef VC6
-: ConfigValue (name, value)
-#endif
-{
 #if _MSC_VER < 1300
+ConfigValue_impl::ConfigValue_impl (const char* name, const CORBA::Any& value)
+{
 	this->name(name);
 	this->value(value);
-#endif
 }
-
+#else
+ConfigValue_impl::ConfigValue_impl (const char* name, const CORBA::Any& value)
+: ConfigValue (name, value)
+{
+}
+#endif
 
 ConfigValue_impl::ConfigValue_impl()
 {

@@ -255,12 +255,12 @@ public:
         //
         // IDL:.../create:1.0
         //
-        virtual ::Components::ExecutorLocator_ptr create();
+        virtual ::Components::EnterpriseComponent_ptr create();
         
         //
         // IDL:DiningPhilosophers/PhilosopherHome/new:1.0
         //
-        virtual DiningPhilosophers::Philosopher_ptr _cxx_new(const char* name)
+        virtual ::Components::EnterpriseComponent_ptr _cxx_new(const char* name)
         	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl
