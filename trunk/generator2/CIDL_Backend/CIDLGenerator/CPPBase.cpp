@@ -292,6 +292,7 @@ CPPBase::hasVariableLength(IR__::IDLType_ptr type)
 	case CORBA::tk_char:
 	case CORBA::tk_wchar:
 	case CORBA::tk_enum:
+	case CORBA::tk_octet:
 		return false;
 	case CORBA::tk_any:
 	case CORBA::tk_objref:
