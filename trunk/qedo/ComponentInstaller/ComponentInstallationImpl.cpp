@@ -32,7 +32,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.21 2003/10/24 11:19:35 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.22 2003/10/27 10:14:29 boehme Exp $";
 
 
 namespace Qedo {
@@ -44,9 +44,16 @@ std::string	ComponentInstallationImpl::inst_file_;
 ComponentInstallationImpl::ComponentInstallationImpl (CORBA::ORB_ptr orb)
 : orb_ (CORBA::ORB::_duplicate (orb))
 {
+	deployment_dir_ = Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/Debug/BaseDir");
+
+	if ( deployment_dir_.empty() )
+	{
+		deployment_dir_ =  g_qedo_dir + "/deployment" ;
+	}
+
 	if (inst_file_.empty())
 	{
-		inst_file_ = g_qedo_dir + "/deployment/installedComponentImplementations.xml";
+		inst_file_ = deployment_dir_ + "/installedComponentImplementations.xml";
 	}
 }
 
@@ -105,7 +112,7 @@ ComponentInstallationImpl::initialize()
 	//
 	// deployment directory
 	//
-	if (makeDir(g_qedo_dir + "/deployment"))
+	if (makeDir(deployment_dir_))
 	{
 		NORMAL_ERR( "ComponentInstallationImpl: deployment directory can not be created" );
 		throw CannotInitialize();
@@ -114,7 +121,7 @@ ComponentInstallationImpl::initialize()
 	//
 	// directory to put the component packages
 	//
-	packageDirectory_ = g_qedo_dir + "/deployment/packages";
+	packageDirectory_ = deployment_dir_ + "/packages";
 	if (makeDir(packageDirectory_))
 	{
 		NORMAL_ERR( "ComponentInstallationImpl: componentPackages directory can not be created" );
@@ -124,7 +131,7 @@ ComponentInstallationImpl::initialize()
 	//
 	// directory to put the component implementations
 	//
-	installationDirectory_ = g_qedo_dir + "/deployment/components";
+	installationDirectory_ = deployment_dir_ + "/components";
 	if (makeDir(installationDirectory_))
 	{
 		NORMAL_ERR( "ComponentInstallationImpl: componentImplementations directory can not be created" );

@@ -15,6 +15,11 @@
 		<CONFIGVALUE name="DebugMode" value="false"/>
 	</SECTION>
 
+	<!-- deployment related configuration values -->
+	<SECTION name="Deployment">
+		<!-- the base directory for the deployment -->
+		<CONFIGVALUE name="BaseDir" value="/home/qedo/"/>
+	</SECTION>
 </SECTION>
 
 	

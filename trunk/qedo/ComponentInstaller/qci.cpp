@@ -37,7 +37,7 @@
 #include "ConfigurationReader.h"
 
 
-static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.23 2003/10/24 11:19:35 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.24 2003/10/27 10:14:29 boehme Exp $";
 
 
 /**
@@ -145,7 +145,7 @@ main (int argc, char** argv)
 	{
 	    std::cout << "Missing Environment Variable QEDO" << std::endl;
 	    std::cout << "Assuming current dir as local deployment dir" << std::endl; 
-	    Qedo::g_qedo_dir.append("./");
+	    Qedo::g_qedo_dir = Qedo::getCurrentDirectory();
 	}
 	std::cout << "..... Qedo directory is " << Qedo::g_qedo_dir << std::endl;
 

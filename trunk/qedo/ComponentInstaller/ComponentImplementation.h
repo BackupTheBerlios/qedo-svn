@@ -105,6 +105,9 @@ private:
 	/** the installation counter */
     int									installation_count_;
 	
+    /** the package */
+	std::string							deployment_dir_;
+
 	/**
 	 * install all subcomponents in case of assembly
 	 */

@@ -27,13 +27,14 @@
 
 #ifdef _WIN32
 #else
+#include <fcntl.h>
 #include <unistd.h>
 #include <utime.h>
 #include <fcntl.h>
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qedoutil.cpp,v 1.6 2003/10/24 21:37:59 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qedoutil.cpp,v 1.7 2003/10/27 10:14:29 boehme Exp $";
 
 
 namespace Qedo {
