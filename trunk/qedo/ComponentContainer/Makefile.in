@@ -61,10 +61,10 @@ SOURCES = Key.cpp \
 		CCMHomeServant.cpp \
 		ExtensionHomeServant.cpp \
 		ExtensionContext.cpp \
-		InternalConfiguration.cpp
+		InternalConfiguration.cpp \
+		Util.cpp
 
 HEADER = ${SOURCES:.cpp=.h} \
-          Util.h \
 			 PortEntry.h
 
 
