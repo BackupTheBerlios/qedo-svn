@@ -330,6 +330,7 @@ CPPBase::hasVariableLength(IR__::IDLType_ptr type)
 		}
 		return false;
 	default:
+	   std::cerr << "Unknown TCKind (" << (int)typecodekind << ")" << std::endl;
 		assert(0);
 	}
 	return true;
