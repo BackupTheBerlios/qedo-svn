@@ -437,7 +437,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 		out.indent();
 	}
 
-
 	CIDL::SegmentDefSeq_var segment_seq = composition->executor_def()->segments();
 	std::string executor_name = composition->executor_def()->name();
 	std::string executor_class_name = mapName(executor_name);
@@ -445,7 +444,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	std::string executor_locator_class_name = mapName(executor_locator_name);
 	std::string home_name = composition->home_executor()->name();
 	std::string home_class_name = mapName(home_name);
-
 
 	//
 	// executor
@@ -476,7 +474,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "\n";
 	out.insertUserSection(executor_name);
 	out << "};\n\n";
-
 
 	//
 	// segment
@@ -516,7 +513,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "};\n\n";
 	}
 
-
 	//
 	// executor locator
 	//
@@ -547,7 +543,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "\n";
 	out.insertUserSection(executor_locator_name);
 	out << "};\n\n";
-	
 
 	//
 	// home executor
@@ -587,7 +582,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 		close_module(out, module_def);
 	}
 
-
 	//
 	// entry point
 	//
@@ -600,9 +594,9 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "::Components::HomeExecutorBase_ptr create_" << composition->ccm_home()->name() << "E(void);\n";
 	out << "}\n\n";
 
-	out << "#endif";
+	out << "#endif\n";
 	out.close();
 }
 
-} //
 
+} // namespace

@@ -5,6 +5,7 @@
 #include "Printer.h"
 #include <fstream>
 #include <iostream>
+#include <set>
 
 
 namespace QEDO_CIDL_Generator {
@@ -15,13 +16,13 @@ class GeneratorServantH : public CPPBase
 
 private:
 
-	std::string					filename_;
 	Printer						out;
 	CIDL::CompositionDef_var	composition_;
 	IR__::ComponentDef_var		component_;
-	std::map < string, bool >	already_done_;
+	std::set<std::string>		m_recursion_set;
 
-	void doModule(IR__::ModuleDef_ptr module);
+	void check_for_generation(IR__::Contained_ptr item);
+
 	void doAttribute(IR__::AttributeDef_ptr attribute);
 	void doOperation(IR__::OperationDef_ptr operation);
 	void doException(IR__::ExceptionDef_ptr except);
@@ -38,16 +39,15 @@ private:
 	void doHome(IR__::HomeDef_ptr home);
 	void doFactory(IR__::FactoryDef_ptr factory);
 	void doFinder(IR__::FinderDef_ptr finder);
-	void doComposition(CIDL::CompositionDef_ptr composition);
 
 	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
 	void genFacetServants(IR__::ComponentDef_ptr component);
 	void genSourceServants(IR__::ComponentDef_ptr component);
 	void genConsumerServants(IR__::ComponentDef_ptr component);
-	void genContextServantBegin(IR__::ComponentDef_ptr component);
 	void genContextServant(IR__::ComponentDef_ptr component);
-	void genComponentServantBegin(IR__::ComponentDef_ptr component);
+	void genContextServantBody(IR__::ComponentDef_ptr component);
 	void genComponentServant(IR__::ComponentDef_ptr component);
+	void genComponentServantBody(IR__::ComponentDef_ptr component);
 	void genHomeServantBegin(IR__::HomeDef_ptr home);
 	void genHomeServant(IR__::HomeDef_ptr home);
 
@@ -65,3 +65,4 @@ public:
 
 
 #endif
+

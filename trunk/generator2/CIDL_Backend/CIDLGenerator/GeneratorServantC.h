@@ -5,6 +5,7 @@
 #include "Printer.h"
 #include <fstream>
 #include <iostream>
+#include <set>
 
 
 namespace QEDO_CIDL_Generator 
@@ -16,16 +17,16 @@ class GeneratorServantC : public virtual CPPBase
 
 private:
 
-	std::string					filename_;
 	std::string					class_name_;
 	std::string					executor_name_;
 	std::string					interface_name_;
 	Printer						out;
 	IR__::ComponentDef_var		component_;
 	IR__::HomeDef_var			home_;
-	std::map < string, bool >	already_done_;
+	std::set<std::string>		m_recursion_set;
 
-	void doModule(IR__::ModuleDef_ptr module);
+	void check_for_generation(IR__::Contained_ptr item);
+
 	void doAttribute(IR__::AttributeDef_ptr attribute);
 	void doOperation(IR__::OperationDef_ptr operation);
 	void doException(IR__::ExceptionDef_ptr except);
@@ -42,7 +43,6 @@ private:
 	void doHome(IR__::HomeDef_ptr home);
 	void doFactory(IR__::FactoryDef_ptr factory);
 	void doFinder(IR__::FinderDef_ptr finder);
-	void doComposition(CIDL::CompositionDef_ptr composition);
 
 	void genFacetServants(IR__::ComponentDef_ptr component);
 	void genSourceServants(IR__::ComponentDef_ptr component);

@@ -47,10 +47,10 @@ CPPBase::open_module(Printer& out, IR__::Contained* cur_cont, std::string prefix
 void
 CPPBase::close_module(Printer& out, IR__::Contained* cur_cont)
 {
-	IR__::Container_ptr act_container=cur_cont->defined_in();
-	if(act_container->def_kind()==CORBA__::dk_Module) 
+	IR__::Container_ptr a_container=cur_cont->defined_in();
+	if(a_container->def_kind()==CORBA__::dk_Module) 
 	{
-		IR__::ModuleDef_var act_mod = IR__::ModuleDef::_narrow(act_container);
+		IR__::ModuleDef_var act_mod = IR__::ModuleDef::_narrow(a_container);
 		this->close_module(out, act_mod);
 		out.unindent();
 		out << "};\n";
@@ -154,7 +154,7 @@ CPPBase::mapFullNameServant(IR__::Contained_ptr obj)
 		pos = 0;
 	}
 
-	name.insert(pos, "Servants_");
+	name.insert(pos, "SERVANT_");
 
 	return name;
 }
