@@ -31,4 +31,24 @@
             <usage>servant</usage>
         </code>
     </implementation>
+    
+    <implementation id="UUID-1E42D587-648D-4B2C-BD3F-A11BFF295B4F">
+        <os name="WIN" />
+        <processor name="x86" />
+        <compiler name="VC++" version="7,0" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/dinner_PhilosopherImpl.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="dinner_PhilosopherImpl.dll"/>
+            <entrypoint>create_PhilosopherHomeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="dinner_PhilosopherImpl_SERVANT.dll"/>
+            <entrypoint>create_PhilosopherHomeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>
 </softpkg>

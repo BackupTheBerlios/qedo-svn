@@ -1,0 +1,20 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE properties PUBLIC "-//OMG//DTD Property File Descriptor" "http://cif.sourceforge.net/properties.dtd">
+
+<properties>
+    <simple name="name" type="string">
+            <value>Charly</value>
+                </simple>
+                
+    <simple name="thinking_seconds" type="ulong">
+            <value>10</value>
+     </simple>
+     
+     <simple name="eating_seconds" type="ulong">
+             <value>5</value>
+      </simple>
+      
+      <simple name="sleeping_seconds" type="ulong">
+              <value>5</value>
+      </simple>
+</properties>

@@ -93,7 +93,7 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="zip ../dinner_ObserverImpl.zip -j  Debug_mico/dinner_ObserverImpl.dll ../dinner_ObserverImpl_SERVANT/Debug_mico/dinner_ObserverImpl_SERVANT.dll ../dinner.idl
+				CommandLine="zip ../dinner_ObserverImpl.zip -j  Debug_mico/dinner_ObserverImpl.dll ../dinner_ObserverImpl_SERVANT/Debug_mico/dinner_ObserverImpl_SERVANT.dll ../philosophers.cidl
 zip ../dinner_ObserverImpl.zip meta-inf/dinner_ObserverImpl.ccd meta-inf/dinner_ObserverImpl.csd
 "/>
 			<Tool

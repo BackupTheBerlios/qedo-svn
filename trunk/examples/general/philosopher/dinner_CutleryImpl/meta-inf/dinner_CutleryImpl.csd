@@ -31,4 +31,24 @@
             <usage>servant</usage>
         </code>
     </implementation>
+    
+    <implementation id="UUID-0A1FBCDC-D196-41F0-AAFE-8015C32C51A1">
+        <os name="WIN" />
+        <processor name="x86" />
+        <compiler name="VC++" version="7,0" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/dinner_CutleryImpl.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="dinner_CutleryImpl.dll"/>
+            <entrypoint>create_CutleryHomeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="dinner_CutleryImpl_SERVANT.dll"/>
+            <entrypoint>create_CutleryHomeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>
 </softpkg>

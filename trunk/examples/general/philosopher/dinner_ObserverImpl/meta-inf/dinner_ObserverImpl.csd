@@ -31,4 +31,24 @@
             <usage>servant</usage>
         </code>
     </implementation>
+    
+    <implementation id="UUID-B8F517E8-138E-43B8-9D29-9D7D63121CDC">
+        <os name="WIN" />
+        <processor name="x86" />
+        <compiler name="VC++" version="7,0" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/dinner_ObserverImpl.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="dinner_ObserverImpl.dll"/>
+            <entrypoint>create_ObserverHomeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="dinner_ObserverImpl_SERVANT.dll"/>
+            <entrypoint>create_ObserverHomeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>    
 </softpkg>
