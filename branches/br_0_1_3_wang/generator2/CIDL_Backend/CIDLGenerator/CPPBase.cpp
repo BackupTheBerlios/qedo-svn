@@ -764,6 +764,70 @@ throw ( CannotMapType )
 	return CORBA::string_dup ( ret_string.c_str() );
 }
 
+char* 
+CPPBase::map_psdl2sql_type 
+( IR__::IDLType_ptr type )
+throw ( CannotMapType )
+{
+	string ret_string;
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
+
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
+
+	switch ( typecodekind )
+	{
+	case CORBA::tk_short:
+	case CORBA::tk_ushort:
+		ret_string = "smallint";
+		break;
+	case CORBA::tk_long:
+	case CORBA::tk_ulong:
+		ret_string = "integer";
+		break;
+	case CORBA::tk_longlong:
+	case CORBA::tk_ulonglong:
+		ret_string = "bigint";
+		break;
+	case CORBA::tk_float:
+		ret_string = "real";
+		break;
+	case CORBA::tk_double:
+	case CORBA::tk_longdouble:
+		ret_string = "double";
+		break;
+	case CORBA::tk_char:
+		ret_string = "char(1)";
+		break;
+	case CORBA::tk_wchar:
+		ret_string = "char(2)";
+		break;
+	case CORBA::tk_string:
+	case CORBA::tk_wstring:
+		ret_string = "text";
+		break;
+	case CORBA::tk_boolean:
+		ret_string = "boolean";
+		break;
+	case CORBA::tk_octet:
+		ret_string = "bytea";
+		break;
+	default:
+		throw CannotMapType();
+	}
+	return CORBA::string_dup ( ret_string.c_str() );
+}
+
 char*
 CPPBase::map_idl_type
 ( IR__::IDLType_ptr type )

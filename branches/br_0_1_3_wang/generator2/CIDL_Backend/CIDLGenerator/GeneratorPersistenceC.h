@@ -39,6 +39,7 @@ class GeneratorPersistenceC : public virtual CPPBase
 
 private:
 
+	enum SQLFunc{ sql_CREATE, sql_INSERT, sql_DELETE, sql_SELECT, sql_UPDATE };
 	std::string filename_;
 	std::string class_name_;
 	Printer out;
@@ -58,10 +59,17 @@ private:
 	void doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDef_ptr inf_def);
 
 	void genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
+	//void genAttributeWithAbsStorageType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
+	//void genAttributeWithAbsStorageTypeRef(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	void genAttributeWithOtherType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
 	void genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool isRef);
 	void genCreateOperation(IR__::StorageHomeDef_ptr storage_home, bool isRef);
+	void genAbstractObjsForConcreteType(IR__::AbstractStorageTypeDef_ptr abs_storage_type);
+	void genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
+	void genSQLSentences(IR__::AbstractStorageHomeDef_ptr abs_storage_home, SQLFunc sf);
+	void genSQLSentences(IR__::AbstractStorageTypeDef_ptr abs_storage_type, SQLFunc sf);
+	string genSQLLine(string strName, string strContent, bool start, bool comma, bool space);
 	
 public:
 

@@ -64,6 +64,8 @@ private:
 	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
 	void genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool isRef);
 	void genAbstractStorageTypeBody(IR__::AbstractStorageTypeDef_ptr abs_storage_type, bool isRef);
+	void genAbstractObjsForConcreteType(IR__::AbstractStorageTypeDef_ptr abs_storage_type);
+	void genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
 	void genStorageTypeBody(IR__::StorageTypeDef_ptr storage_type, bool isRef);
 	void genCreateOperation(IR__::StorageHomeDef_ptr storage_home, bool isRef);
 	void genAttribute(IR__::StorageTypeDef_ptr storagetype);

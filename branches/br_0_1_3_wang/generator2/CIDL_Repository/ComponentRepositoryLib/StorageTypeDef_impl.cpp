@@ -278,9 +278,11 @@ throw(CORBA::SystemException)
 	{
 		//collect state members for storagehome's _create operation
 		//++ begin with the base type of the storage type
+		/*
 		IR__::StorageTypeDef_ptr storagetype = base_storage_type();
 		if(!CORBA::is_nil(storagetype))
 			storagetype->get_StateMembers(state_members, style);
+		*/
 
 		//++ proceed with the leftmost implemented abstract storage type
 		IR__::InterfaceDefSeq_var supported_seq = supported_interfaces();
@@ -291,6 +293,7 @@ throw(CORBA::SystemException)
 		}
 
 		//++ end with the state members defined in the storage type itself
+		/*
 		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
 		CORBA::ULong len = contained_seq->length();
 		CORBA::ULong ulPre = state_members.length();
@@ -300,6 +303,7 @@ throw(CORBA::SystemException)
 			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
 			state_members[i+ulPre] = (a_attribute);
 		}
+		*/
 	}
 	else if(style==CORBA__::dk_Variable)
 	{

@@ -266,7 +266,18 @@ throw(CORBA::SystemException)
 		for(i=0; i<len; i++)
 		{
 			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
-			state_members[i+ulPre] = (a_attribute);
+			state_members[i+ulPre] = a_attribute;
+		}
+	}
+	else if(style == CORBA__::dk_Self)
+	{
+		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
+		CORBA::ULong len = contained_seq->length();
+		state_members.length(len);
+		for(i=0; i<len; i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+			state_members[i] = a_attribute;
 		}
 	}
 	else if(style == CORBA__::dk_default)
@@ -278,7 +289,7 @@ throw(CORBA::SystemException)
 		for(i=0; i<len; i++)
 		{
 			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
-			state_members[i+ulPre] = (a_attribute);
+			state_members[i+ulPre] = a_attribute;
 		}
 
 		IR__::InterfaceDefSeq_var abs_storagetypes = base_abstract_storage_types();

@@ -317,13 +317,28 @@ GeneratorPersistenceC::doException(IR__::ExceptionDef_ptr except)
 	out << ", " << mapFullName(except);
 }
 
+void
+GeneratorPersistenceC::genAbstractObjsForConcreteType(IR__::AbstractStorageTypeDef_ptr abs_storage_type)
+{
+	IR__::InterfaceDefSeq_var abs_storage_types = abs_storage_type->base_abstract_storage_types();
+	for(CORBA::ULong i = 0; i < abs_storage_types->length(); i++) 
+	{
+		IR__::AbstractStorageTypeDef_ptr abs_storage_type_inh;
+		abs_storage_type_inh = IR__::AbstractStorageTypeDef::_narrow((*abs_storage_types)[i]);
+		handleAttribute(abs_storage_type_inh);
+		handleOperation(abs_storage_type_inh);
+	}
+
+	handleAttribute(abs_storage_type);
+	handleOperation(abs_storage_type);
+}
+
 void 
 GeneratorPersistenceC::doStorageType(IR__::StorageTypeDef_ptr storage_type)
 {
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";	
 	open_module(out, storage_type, "");
-	//out.unindent();
 	out << "\n\n";
 	
 	class_name_ = string(storage_type->name());
@@ -337,22 +352,47 @@ GeneratorPersistenceC::doStorageType(IR__::StorageTypeDef_ptr storage_type)
 	out << "// END USER INSERT SECTION " <<class_name_ << "::~" << class_name_ << "()\n}\n\n";
 
 	IR__::InterfaceDefSeq_var supported_infs = storage_type->supported_interfaces();
-	if(supported_infs->length()==0)
-		out << "ERROR: NO SUPPORTED INTERFACES?\n";
-	else
-		for(CORBA::ULong i = 0; i < supported_infs->length(); i++) {
-			handleAttribute((*supported_infs)[i]);
-			handleOperation((*supported_infs)[i]);
-		};
+	for(CORBA::ULong i = 0; i < supported_infs->length(); i++) 
+	{
+		IR__::AbstractStorageTypeDef_ptr abs_storage_type_inh;
+		abs_storage_type_inh = IR__::AbstractStorageTypeDef::_narrow((*supported_infs)[i]);
+		genAbstractObjsForConcreteType(abs_storage_type_inh);
+	};
 
 	handleAttribute(storage_type);
 	handleOperation(storage_type);
 
 	out << "void\n";
 	out << class_name_ << "::" << "setValue(map<string, CORBA::Any> valueMap)\n";
-	out << "{\n}\n\n";
+	out << "{\n";
+	out.indent();
+	out << "//pid = \n//spid = \n";
+	out.unindent();
+	out << "}\n\n";
 
 	close_module(out, storage_type);
+}
+
+void
+GeneratorPersistenceC::genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home)
+{
+	IR__::InterfaceDefSeq_var abs_storage_homes = abs_storage_home->base_abstract_storage_homes();
+	for(CORBA::ULong i = 0; i < abs_storage_homes->length(); i++) 
+	{
+		IR__::AbstractStorageHomeDef_ptr abs_storage_home_inh;
+		abs_storage_home_inh = IR__::AbstractStorageHomeDef::_narrow((*abs_storage_homes)[i]);
+		isAbstract = true;
+		handleAttribute(abs_storage_home_inh);
+		handleOperation(abs_storage_home_inh);
+		handleFactory(abs_storage_home_inh);
+		handleKey(abs_storage_home_inh);
+	}
+
+	isAbstract = true;
+	handleAttribute(abs_storage_home);
+	handleOperation(abs_storage_home);
+	handleFactory(abs_storage_home);
+	handleKey(abs_storage_home);
 }
 
 void 
@@ -361,17 +401,27 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storage_home)
 	storagehome_ = IR__::StorageHomeDef::_duplicate(storage_home);
 	storagetype_ = IR__::StorageTypeDef::_duplicate(storage_home->managed_storage_type());
 
+	IR__::InterfaceDefSeq_var supported_infs = storage_home->supported_interfaces();
+	if(supported_infs->length()!=1)
+		throw CORBA::BAD_PARAM(); // is this exception appropriate?
+	IR__::AbstractStorageHomeDef_var abs_storagehome;
+	abs_storagehome = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[0]);
+
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";
 	open_module(out, storagetype_, "");
-	//out.unindent();
 	out << "\n\n";
 
 	class_name_ = string(storage_home->name());
 	out << "// BEGIN USER INSERT SECTION " << class_name_ << "\n";
 	out << "// END USER INSERT SECTION " << class_name_ << "\n\n";
 	out << class_name_ << "::" << class_name_ << "()\n";
-	out << "{\n// BEGIN USER INSERT SECTION " << class_name_ << "::" << class_name_ << "()\n";
+	// init member variables
+	out << "{\n";
+	out.indent();
+	genSQLSentences(abs_storagehome, sql_CREATE);
+	out.unindent();
+	out << "// BEGIN USER INSERT SECTION " << class_name_ << "::" << class_name_ << "()\n";
 	out << "// END USER INSERT SECTION " <<class_name_ << "::" << class_name_ << "()\n}\n\n";
 	out << class_name_ << "::~" << class_name_ << "()\n";
 	out << "{\n// BEGIN USER INSERT SECTION " << class_name_ << "::~" << class_name_ << "()\n";
@@ -380,20 +430,15 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storage_home)
 	genCreateOperation(storage_home, false);
 	genCreateOperation(storage_home, true);
 
-	IR__::InterfaceDefSeq_var supported_infs = storage_home->supported_interfaces();
-	if(supported_infs->length()==0)
-		out << "ERROR: NO SUPPORTED INTERFACES?\n";
-	else
-		for(CORBA::ULong i = 0; i < supported_infs->length(); i++) {
-			isAbstract = true;
-			handleAttribute((*supported_infs)[i]);
-			handleOperation((*supported_infs)[i]);
-			IR__::AbstractStorageHomeDef_var abs_storagehome = 
-				IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
-			if(!CORBA::is_nil(abs_storagehome))
-				handleFactory(abs_storagehome);
-			handleKey((*supported_infs)[i]);
-		};
+	/*
+	for(CORBA::ULong i = 0; i < supported_infs->length(); i++)
+	{
+		IR__::AbstractStorageHomeDef_var abs_storagehome;
+		abs_storagehome = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
+		genAbstractObjsForConcreteHome(abs_storagehome);
+	};
+	*/
+	genAbstractObjsForConcreteHome(abs_storagehome);
 
 	isAbstract = false;
 	handleAttribute(storage_home);
@@ -544,6 +589,122 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storage_home,
 	out << ")\n"; 
 	out << "{\n// BEGIN USER INSERT SECTION " << class_name_ << "::_create()\n";
 	out << "// END USER INSERT SECTION " << class_name_ << "::_create()\n}\n\n";
+}
+
+string
+GeneratorPersistenceC::genSQLLine(string strName, string strContent, bool start, bool comma, bool space)
+{
+	string strRet = strName;
+	start ? strRet += " = \"" : strRet += " += \"";
+	strRet += strContent;
+	if(comma) strRet += ",";
+	if(space) strRet += " ";
+	strRet += "\";\n";
+	return strRet;
+}
+
+void
+GeneratorPersistenceC::genSQLSentences(IR__::AbstractStorageHomeDef_ptr abs_storage_home, SQLFunc sf)
+{
+	string strContent = "";
+	string strName= "";
+	IR__::AttributeDefSeq state_members;
+	abs_storage_home->managed_abstract_storage_type()->get_StateMembers(state_members, CORBA__::dk_Self);
+	IR__::InterfaceDefSeq_var base_abs_storagetypes = abs_storage_home->managed_abstract_storage_type()->base_abstract_storage_types();
+
+	switch(sf)
+	{
+	case sql_CREATE:
+		strName = "strCreateTable";
+		strContent = "CREATE TABLE ";
+		strContent += abs_storage_home->name();
+		strContent += " (";
+		out << genSQLLine(strName, strContent, true, false, true);
+
+		if(base_abs_storagetypes->length()==0)
+		{
+			strContent = "pid  text  not null  references PID_CONTENT";
+			out << genSQLLine(strName, strContent, false, true, true);
+			strContent = "spid  text";
+			out << genSQLLine(strName, strContent, false, true, true);
+		}
+
+		for(unsigned int i=0; i<state_members.length(); i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			strContent = mapName(a_attribute);
+			strContent += "  ";
+			strContent.append( map_psdl2sql_type(a_attribute->type_def()) );
+			bool isComma = ((i+1)!=state_members.length()) || (base_abs_storagetypes->length()==0);
+			out << genSQLLine(strName, strContent, false, isComma, true);
+		}
+
+		if(base_abs_storagetypes->length()>0)
+		{
+			strContent = ") INHERITS ( ";
+			for(unsigned int j=0; j<base_abs_storagetypes->length(); j++)
+			{
+				strContent.append(((*base_abs_storagetypes)[j])->name());
+				
+				if((j+1)!=base_abs_storagetypes->length())
+					strContent += ", ";
+				else
+                    strContent += " );";
+
+				out << genSQLLine(strName, strContent, false, false, false);
+			}
+		}
+		else
+		{
+			strContent = "constraint PK_";
+			strContent += abs_storage_home->name();
+			strContent += " primary key (PID)";
+			out << genSQLLine(strName, strContent, false, false, true);
+			strContent = ");";
+			out << genSQLLine(strName, strContent, false, false, false);
+		}
+
+		out << "\n";
+		break;
+	case sql_SELECT:
+
+		break;
+	case sql_UPDATE:
+		break;
+	case sql_INSERT:
+	case sql_DELETE:
+		break;
+	default:
+		return;
+	}
+}
+
+void
+GeneratorPersistenceC::genSQLSentences(IR__::AbstractStorageTypeDef_ptr abs_storage_type, SQLFunc sf)
+{
+	string strContent = "";
+	string strName= "";
+	IR__::AttributeDefSeq state_members;
+	//abs_storage_type->get_StateMembers(state_members, CORBA__::dk_Self);
+	IR__::InterfaceDefSeq_var base_abs_storagetypes = abs_storage_type->base_abstract_storage_types();
+
+	switch(sf)
+	{
+	case sql_SELECT:
+		strName = "m_strSelect";
+		strContent = "SELECT * FROM ONLY ";
+		strContent += 
+
+		break;
+	case sql_UPDATE:
+		strName = "m_strUpdate";
+		break;
+	case sql_INSERT:
+	case sql_DELETE:
+		break;
+	default:
+		return;
+	}
 }
 
 } // namespace

@@ -60,7 +60,9 @@ GeneratorPersistenceH::generate(std::string target, std::string fileprefix)
 	out << "// BEGIN USER INSERT SECTION file_pre\n";
 	out << "// END USER INSERT SECTION file_pre\n\n";
 	out << "#include \"CORBADepends.h\"\n";
-	out << "#include \"PSSStorageObject.h\"\n\n";
+	//out << "#include \"PSSStorageObject.h\"\n";
+	out << "#include \"StorageObject.h\"\n";
+	out << "#include \"StorageHomeBase.h\"\n\n";
 	out << "// BEGIN USER INSERT SECTION file_post\n";
 	out << "// END USER INSERT SECTION file_post\n";
 
@@ -346,6 +348,30 @@ GeneratorPersistenceH::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr ab
 	close_module(out, abs_storagetype_);
 }
 
+void
+GeneratorPersistenceH::genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home)
+{
+	IR__::InterfaceDefSeq_var abs_storage_homes = abs_storage_home->base_abstract_storage_homes();
+	for(CORBA::ULong i = 0; i < abs_storage_homes->length(); i++) 
+	{
+		IR__::AbstractStorageHomeDef_ptr abs_storage_home_inh;
+		abs_storage_home_inh = IR__::AbstractStorageHomeDef::_narrow((*abs_storage_homes)[i]);
+		isAbstract = false;
+		isASHKey = true;
+		handleAttribute(abs_storage_home_inh);
+		handleOperation(abs_storage_home_inh);
+		handleFactory(abs_storage_home_inh);
+		handleKey(abs_storage_home_inh);
+	}
+
+	isAbstract = false;
+	isASHKey = true;
+	handleAttribute(abs_storage_home);
+	handleOperation(abs_storage_home);
+	handleFactory(abs_storage_home);
+	handleKey(abs_storage_home);
+}
+
 void 
 GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storage_home)
 {
@@ -362,20 +388,19 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storage_home)
 	out << "class " << class_name << "\n";
 	out.indent();
 	
-	IR__::InterfaceDefSeq_var supported_infs = storage_home->supported_interfaces();
-	if(supported_infs->length()==0)
-		out << "ERROR: NO SUPPORTED INTERFACES?\n";
-	else
-		for(CORBA::ULong i = 0; i < supported_infs->length(); i++) {
-			IR__::AbstractStorageHomeDef_ptr abs_storage_home_inh;
-			abs_storage_home_inh = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
-			i==0 ? out << ": " : out << ", ";
-			out << "public virtual " << abs_storage_home_inh->name() << "\n";
-		};
-
 	IR__::StorageHomeDef_ptr base_storage_home = storage_home->base_storage_home();
 	if(base_storage_home)
-		out << ", public virtual " << base_storage_home->name() << "\n";
+		out << ": public virtual " << base_storage_home->name() << "\n";
+	else
+		out << ": public virtual StorageHomeBaseImpl\n";
+
+	IR__::InterfaceDefSeq_var supported_infs = storage_home->supported_interfaces();
+	for(CORBA::ULong i=0; i<supported_infs->length(); i++) 
+	{
+		IR__::AbstractStorageHomeDef_ptr abs_storage_home_inh;
+		abs_storage_home_inh = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
+		out << ", public virtual " << abs_storage_home_inh->name() << "\n";
+	};
 
 	out << "// BEGIN USER INSERT SECTION INHERITANCE_" << class_name << "\n";
 	out << "// END USER INSERT SECTION INHERITANCE_" << class_name << "\n";
@@ -389,19 +414,12 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storage_home)
 	genCreateOperation(storage_home, false);
 	genCreateOperation(storage_home, true);
 
-	if(supported_infs->length()==0)
-		out << "ERROR: NO SUPPORTED INTERFACES?\n";
-	else
-		for(CORBA::ULong i = 0; i < supported_infs->length(); i++) {
-			isAbstract = false;
-			isASHKey = true;
-			IR__::AbstractStorageHomeDef_ptr abs_storage_home;
-			abs_storage_home = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
-			handleAttribute(abs_storage_home);
-			handleOperation(abs_storage_home);
-			handleFactory(abs_storage_home);
-			handleKey(abs_storage_home);
-		};
+	for(CORBA::ULong i = 0; i < supported_infs->length(); i++) 
+	{
+		IR__::AbstractStorageHomeDef_ptr abs_storage_home_inh;
+		abs_storage_home_inh = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
+		genAbstractObjsForConcreteHome(abs_storage_home_inh);
+	};
 
 	isAbstract = false;
 	isASHKey = false;
@@ -411,6 +429,11 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storage_home)
 	handleKey(storage_home);
 
 	out.unindent();
+	out << "\n\nprivate:\n\n";
+	out.indent();
+	out << "string strCreateTable;\n";
+	out.unindent();
+
 	out << "\n// BEGIN USER INSERT SECTION " << class_name << "\n";
 	out << "// END USER INSERT SECTION " << class_name << "\n\n";
 	out << "};\n";
@@ -558,6 +581,24 @@ GeneratorPersistenceH::genAbstractStorageTypeBody(IR__::AbstractStorageTypeDef_p
 	out << "\n\n";
 }
 
+void
+GeneratorPersistenceH::genAbstractObjsForConcreteType(IR__::AbstractStorageTypeDef_ptr abs_storage_type)
+{
+	IR__::InterfaceDefSeq_var abs_storage_types = abs_storage_type->base_abstract_storage_types();
+	for(CORBA::ULong i = 0; i < abs_storage_types->length(); i++) 
+	{
+		IR__::AbstractStorageTypeDef_ptr abs_storage_type_inh;
+		abs_storage_type_inh = IR__::AbstractStorageTypeDef::_narrow((*abs_storage_types)[i]);
+		isAbstract = false;
+		handleAttribute(abs_storage_type_inh);
+		handleOperation(abs_storage_type_inh);
+	}
+
+	isAbstract = false;
+	handleAttribute(abs_storage_type);
+	handleOperation(abs_storage_type);
+}
+
 void 
 GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storage_type, bool isRef)
 {
@@ -567,21 +608,26 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storage_type,
 	isRef ? out << "Ref\n" : out << "\n";
 	out.indent();
 	
-	IR__::InterfaceDefSeq_var supported_infs = storage_type->supported_interfaces();
-	if(supported_infs->length()==0)
-		out << "ERROR: NO SUPPORTED INTERFACES?\n";
-	else
-		for(CORBA::ULong i = 0; i < supported_infs->length(); i++) {
-			IR__::AbstractStorageTypeDef_ptr abs_storage_type_inh;
-			abs_storage_type_inh = IR__::AbstractStorageTypeDef::_narrow((*supported_infs)[i]);
-			i==0 ? out << ": " : out << ", ";
-			out << "public virtual " << abs_storage_type_inh->name();
-			isRef ? out << "Ref\n" : out << "\n";
-		};
-
 	IR__::StorageTypeDef_ptr base_storage_type = storage_type->base_storage_type();
 	if(base_storage_type)
-		out << ", public virtual " << base_storage_type->name() << "\n";
+	{
+		out << ": public virtual " << base_storage_type->name();
+		isRef ? out << "Ref\n" : out << "\n";
+	}
+	else
+	{
+		out << ": public virtual StorageObjectImpl";
+		isRef ? out << "Ref,\n" : out << "\n";
+	}
+
+	IR__::InterfaceDefSeq_var supported_infs = storage_type->supported_interfaces();
+	for(CORBA::ULong i = 0; i < supported_infs->length(); i++) 
+	{
+		IR__::AbstractStorageTypeDef_ptr abs_storage_type_inh;
+		abs_storage_type_inh = IR__::AbstractStorageTypeDef::_narrow((*supported_infs)[i]);
+		out << ", public virtual " << abs_storage_type_inh->name();
+		isRef ? out << "Ref\n" : out << "\n";
+	};
 
 	out << "// BEGIN USER INSERT SECTION INHERITANCE_" << class_name;
 	isRef ? out << "Ref\n" : out << "\n";
@@ -596,14 +642,12 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storage_type,
 	out << "~" << class_name;
 	isRef ? out << "Ref();\n" : out << "();\n";
 
-	if(supported_infs->length()==0)
-		out << "ERROR: NO SUPPORTED INTERFACES?\n";
-	else
-		for(CORBA::ULong i = 0; i < supported_infs->length(); i++) {
-			isAbstract = false;
-			handleAttribute((*supported_infs)[i]);
-			handleOperation((*supported_infs)[i]);
-		};
+	for(CORBA::ULong i = 0; i < supported_infs->length(); i++) 
+	{
+		IR__::AbstractStorageTypeDef_ptr abs_storage_type_inh;
+		abs_storage_type_inh = IR__::AbstractStorageTypeDef::_narrow((*supported_infs)[i]);
+		genAbstractObjsForConcreteType(abs_storage_type_inh);
+	};
 
 	isAbstract = false;
 	handleAttribute(storage_type);
@@ -684,7 +728,7 @@ GeneratorPersistenceH::genAttribute(IR__::StorageTypeDef_ptr storagetype)
 		std::string attribute_name = mapName(a_attribute);
 		out << map_attribute_type(a_attribute->type_def()) << " m_" << attribute_name << ";\n";
 	}
-	
+
 	out.unindent();
 }
 

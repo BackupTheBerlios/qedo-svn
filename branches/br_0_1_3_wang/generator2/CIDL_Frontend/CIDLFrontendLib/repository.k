@@ -932,7 +932,7 @@ StateMember(flag_v, def_1, dcls)
   [ build :
   ];
 
-// ======================== Abstract Storage Type ================================
+// ======================== Abstract Storage Type ========================
 AbstractStorageTypeFwdDcl(name)
 ->[ feed feed_container: ];
 
@@ -948,30 +948,30 @@ AbstractStorageType( AbstractStorageTypeHeader(name, inh_v), def_list )
       container = IR__::Container::_narrow(kc_current_view.container);
       NOT_NIL(container);
 
-	  IR__::InterfaceDefSeq inhseq;
-	  inhseq.length(inh_v->length());
+	  IR__::InterfaceDefSeq base_abs_storagetypes;
+	  base_abs_storagetypes.length(inh_v->length());
 	  int i=0;
 	  foreach(ident_v; idl_identifier_list inh_v) {
-	    inhseq[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
-	    NOT_NIL(inhseq[i]);
+	    base_abs_storagetypes[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
+	    NOT_NIL(base_abs_storagetypes[i]);
 		i++;
 	  };
 
       // create AbstractStorageTypeDef
-      IR__::AbstractStorageTypeDef_ptr abstract_storagetype;
+      IR__::AbstractStorageTypeDef_ptr a_abs_storagetype;
       try {
-        abstract_storagetype = container->create_abstract_storage_type(get_repid(def_v,name), name->get_name(),
-          "1.0", inhseq);
+        a_abs_storagetype = container->create_abstract_storage_type(get_repid(def_v,name), name->get_name(),
+          "1.0", base_abs_storagetypes);
       }
       catch (...) {
         Error("Exception in creating abstract storagetype %k\n", name, name);
       }
-      irobj = abstract_storagetype;
-      name->symtab_entry->irobj = abstract_storagetype;
+      irobj = a_abs_storagetype;
+      name->symtab_entry->irobj = a_abs_storagetype;
     }
   ];
 
-// ======================== Storage Type ================================
+// ======================== Storage Type ========================
 StorageTypeFwdDcl(name)
 ->[ feed feed_container: ];
 
@@ -997,30 +997,30 @@ StorageType( StorageTypeHeader(name, base_v, impl_v), def_list )
 		}
       }
 
-	  IR__::InterfaceDefSeq initseq;
-	  initseq.length(impl_v->length());
+	  IR__::InterfaceDefSeq supported_seq;
+	  supported_seq.length(impl_v->length());
 	  int i=0;
 	  foreach(ident_v; idl_identifier_list impl_v) {
-	    initseq[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
-	    NOT_NIL(initseq[i]);
+	    supported_seq[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
+	    NOT_NIL(supported_seq[i]);
 		i++;
 	  };
 
       // create StorageTypeDef
-      IR__::StorageTypeDef_ptr storagetype;
+      IR__::StorageTypeDef_ptr a_storagetype;
       try {
-        storagetype = container->create_storage_type(get_repid(def_v,name), name->get_name(),
-          "1.0", base_storagetype, initseq);
+        a_storagetype = container->create_storage_type(get_repid(def_v,name), name->get_name(),
+          "1.0", base_storagetype, supported_seq);
       }
       catch (...) {
         Error("Exception in creating storagetype %k\n", name, name);
       }
-      irobj = storagetype;
-      name->symtab_entry->irobj = storagetype;
+      irobj = a_storagetype;
+      name->symtab_entry->irobj = a_storagetype;
     }
   ];
 
-// ========================= Abstract Storage Home ===============================
+// ======================== Abstract Storage Home ========================
 AbstractStorageHomeFwdDcl(name)
 ->[ feed feed_container: ];
 
@@ -1036,35 +1036,73 @@ AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
       container = IR__::Container::_narrow(kc_current_view.container);
       NOT_NIL(container);
 
-	  IR__::InterfaceDefSeq inhseq;
-	  inhseq.length(inh_v->length());
-	  int i=0;
+      // get inherited abstract storagehomes
+      int i=0, j=0;
+	  int iLenAbsStorageHomes = inh_v->length();
+	  IR__::InterfaceDefSeq base_abs_storagehomes;
+	  base_abs_storagehomes.length(iLenAbsStorageHomes);
 	  foreach(ident_v; idl_identifier_list inh_v) {
-	    inhseq[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
-	    NOT_NIL(inhseq[i]);
+	    base_abs_storagehomes[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
+	    NOT_NIL(base_abs_storagehomes[i]);
 		i++;
 	  };
 
-      // get managed AbstractStorageTypeDef
-      IR__::AbstractStorageTypeDef_ptr abstract_storagetype;
-	  abstract_storagetype = IR__::AbstractStorageTypeDef::_narrow(type_v->symtab_entry->irobj);
-      NOT_NIL(abstract_storagetype);
+      // get managed abstract storagetype
+      IR__::AbstractStorageTypeDef_ptr managed_abs_storagetype;
+	  managed_abs_storagetype = IR__::AbstractStorageTypeDef::_narrow(type_v->symtab_entry->irobj);
+      NOT_NIL(managed_abs_storagetype);
+      
+      // check whether inheritence of abstract storagetype and abstract storagehome
+      // appears in pairs
+      IR__::InterfaceDefSeq_var inh_abs_storagetypes;
+      inh_abs_storagetypes = managed_abs_storagetype->base_abstract_storage_types();
+      int iLenAbsStorageTypes = inh_abs_storagetypes->length();
+      if(iLenAbsStorageTypes != iLenAbsStorageHomes)
+	  {
+	    std::cout << "Error in creating abstract storage home:" << std::endl;
+		std::cout << "The inheritence of abstract storagetype and abstract storagehome must appear in pairs." << std::endl;
+        throw "Exception in creating abstract storage home!";
+	  }
+      
+      bool isEqual = false;
+      for( i=0; i<iLenAbsStorageHomes; i++ )
+      {
+        IR__::AbstractStorageHomeDef_ptr tmp_abs_storagehome;
+        tmp_abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(base_abs_storagehomes[i]);
+        IR__::AbstractStorageTypeDef_ptr tmp_abs_storagetype;
+        tmp_abs_storagetype = tmp_abs_storagehome->managed_abstract_storage_type();
+        for( j=0; j<iLenAbsStorageTypes; j++)
+        {
+          if(strcmp(tmp_abs_storagetype->name(), ((*inh_abs_storagetypes)[j])->name())==0)
+          {
+            isEqual = true;
+            break;
+          }
+        }
+        
+        if(!isEqual)
+        {
+          std::cout << "Error in creating abstract storage home:" << std::endl;
+          std::cout << "The abstract storagetype's inherited abstract storagetype must be managed by its abstract storagehome's inherited abstract storagehome." << std::endl;
+          throw "Exception in creating abstract storage home!";
+        }
+      }
       
       // create AbstractStorageHomeDef
-      IR__::AbstractStorageHomeDef_ptr abstract_storagehome;
+      IR__::AbstractStorageHomeDef_ptr a_abstract_storagehome;
       try {
-        abstract_storagehome = container->create_abstract_storage_home(get_repid(def_v,name), name->get_name(),
-          "1.0", abstract_storagetype, inhseq);
+        a_abstract_storagehome = container->create_abstract_storage_home(get_repid(def_v,name), name->get_name(),
+          "1.0", managed_abs_storagetype, base_abs_storagehomes);
       }
       catch (...) {
         Error("Exception in creating abstract storagehome %k\n", name, name);
       }
-      irobj = abstract_storagehome;
-      name->symtab_entry->irobj = abstract_storagehome;
+      irobj = a_abstract_storagehome;
+      name->symtab_entry->irobj = a_abstract_storagehome;
     }
   ];
 
-// ========================= Storage Home ===============================
+// ======================== Storage Home ========================
 def_v=
 StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
 ->[ feed:
@@ -1077,23 +1115,95 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
       container = IR__::Container::_narrow(kc_current_view.container);
       NOT_NIL(container);
       
-      IR__::InterfaceDefSeq supports;
-      supports.length(impl_v->length());
-      int i = 0;
+      // get inherited storagehome
+      IR__::StorageHomeDef_ptr base_storagehome;
+      with(base_v) {
+        NilIdentifier() : { base_storagehome = IR__::StorageHomeDef::_nil(); }
+        default : {
+          base_storagehome = IR__::StorageHomeDef::_narrow(base_v->symtab_entry->irobj);
+          NOT_NIL(base_storagehome);
+        }
+      }
+      
+      // get managed storagetype
+      IR__::StorageTypeDef_ptr managed_storagetype;
+	  managed_storagetype = IR__::StorageTypeDef::_narrow(type_v->symtab_entry->irobj);
+      NOT_NIL(managed_storagetype);
+      
+      // get inherited storagetype of this managed storagetype above
+      IR__::StorageTypeDef_ptr base_storagetype;
+      base_storagetype = managed_storagetype->base_storage_type();
+      
+      // check whether the inherited storagetype is managed by the inherited storagehome
+      if( (base_storagetype!=0) && (base_storagehome!=0) )
+      {
+		if( strcmp(base_storagehome->managed_storage_type()->name(), base_storagetype->name()) != 0 )
+		{
+		  std::cout << "Error in creating storage home:" << std::endl;
+		  std::cout << "The inheritence of storagetype and storagehome must appear in pairs." << std::endl;
+          throw "Exception in creating storage home!";
+		}
+      }
+      
+      // get the implemented abstract storagehomes
+      int i = 0, j = 0;
+      int iLenAbsStorageHomes = impl_v->length();
+      IR__::InterfaceDefSeq supported_seq;
+      supported_seq.length(iLenAbsStorageHomes);
       IR__::InterfaceDef_ptr interface_ptr;
       foreach (id; idl_identifier_list impl_v) {
         interface_ptr = IR__::InterfaceDef::_narrow(id->symtab_entry->irobj);
         NOT_NIL(interface_ptr);
-        supports[i] = interface_ptr;
+        supported_seq[i] = interface_ptr;
         i++;
       }
       
-      IR__::StorageHomeDef_ptr basestoragehome;
-      with(base_v) {
-        NilIdentifier() : { basestoragehome = IR__::StorageHomeDef::_nil(); }
-        default : {
-          basestoragehome = IR__::StorageHomeDef::_narrow(base_v->symtab_entry->irobj);
-          NOT_NIL(basestoragehome);
+      // get the implemented abstract storagetypes of managed storagetype
+      IR__::InterfaceDefSeq_var supported_abs_storagetypes;
+      supported_abs_storagetypes = managed_storagetype->supported_interfaces();
+      int iLenAbsStorageTypes = supported_abs_storagetypes->length();
+      
+      // check whether implementation of abstract storagetype and abstract storagehome
+      // appears in pairs
+      if(iLenAbsStorageTypes != iLenAbsStorageHomes)
+      {
+        std::cout << "Error in creating storage home:" << std::endl;
+        std::cout << "The implementation of abstract storagetype and abstract storagehome must appear in pairs." << std::endl;
+        throw "Exception in creating storage home!";
+      }
+      
+      // new constraint added that storagehome and its managed storagetype can implement only
+      // one abstract storagehome and one abstract storagetype, otherwise we do not know, in 
+      // Operator _create() of storagehome, in which abstract storagehome should one abstract
+      // storagetype be added. This constraint is not yet open.
+      if( (iLenAbsStorageTypes!=1) && (iLenAbsStorageHomes!=1) )
+      {
+        std::cout << "Error in creating storage home:" << std::endl;
+        std::cout << "Storagehome and its managed storagetype can implement only one abstract storagehome and one abstract storagetype." << std::endl;
+        throw "Exception in creating storage home!";
+      }
+      
+      bool isEqual = false;
+      for( i=0; i<iLenAbsStorageHomes; i++ )
+      {
+        IR__::AbstractStorageHomeDef_ptr tmp_abs_storagehome;
+        tmp_abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(supported_seq[i]);
+        IR__::AbstractStorageTypeDef_ptr tmp_abs_storagetype;
+        tmp_abs_storagetype = tmp_abs_storagehome->managed_abstract_storage_type();
+        for( j=0; j<iLenAbsStorageTypes; j++)
+        {
+          if(strcmp(tmp_abs_storagetype->name(), ((*supported_abs_storagetypes)[j])->name())==0)
+          {
+            isEqual = true;
+            break;
+          }
+        }
+        
+        if(!isEqual)
+        {
+          std::cout << "Error in creating storage home:" << std::endl;
+          std::cout << "The storagetype's implemented abstract storagetype must be managed by its storagehome's implemented abstract storagehome." << std::endl;
+          throw "Exception in creating storage home!";
         }
       }
       
@@ -1109,19 +1219,16 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
       }
       
       // create StorageHomeDef
-	  IR__::StorageTypeDef_ptr storagetype;
-	  storagetype = IR__::StorageTypeDef::_narrow(type_v->symtab_entry->irobj);
-      NOT_NIL(storagetype);
-      IR__::StorageHomeDef_ptr storagehome;
+      IR__::StorageHomeDef_ptr a_storagehome;
       try {
-        storagehome = container->create_storage_home(get_repid(def_v,name), name->get_name(),
-          "1.0", basestoragehome, storagetype, supports, idltype);
+        a_storagehome = container->create_storage_home(get_repid(def_v,name), name->get_name(),
+          "1.0", base_storagehome, managed_storagetype, supported_seq, idltype);
       }
       catch (...) {
         Error("Exception in creating storagehome %k\n", name, name);
       }
-      irobj = storagehome;
-      name->symtab_entry->irobj = storagehome;
+      irobj = a_storagehome;
+      name->symtab_entry->irobj = a_storagehome;
     }
   ];
 

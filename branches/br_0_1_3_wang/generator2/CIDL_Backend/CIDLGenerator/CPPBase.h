@@ -82,6 +82,9 @@ protected:
 	char* map_psdl_parameter_type ( IR__::IDLType_ptr type, bool isCopyFunc )
 		throw ( CannotMapType );
 
+	char* map_psdl2sql_type ( IR__::IDLType_ptr type )
+		throw ( CannotMapType );
+
 	char* map_attribute_type ( IR__::IDLType_ptr type )
 		throw ( CannotMapType );
 

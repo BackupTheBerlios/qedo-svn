@@ -62,7 +62,7 @@ module CORBA__ {
 
 	};
 
-	enum CollectStyle { dk_default, dk_Create, dk_Variable };
+	enum CollectStyle { dk_default, dk_Create, dk_Variable, dk_Self };
 
 	interface IRObject
 	{
