@@ -31,7 +31,7 @@
 #pragma warning (disable : 4715) // not all control paths return a value
 #endif
 
-static char rcsid[] UNUSED = "$Id: PrimaryStreamServant.cpp,v 1.3 2003/11/14 15:24:26 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: PrimaryStreamServant.cpp,v 1.4 2003/12/16 13:37:32 stoinski Exp $";
 
 
 namespace Qedo {
@@ -59,14 +59,15 @@ throw(Components::InvalidName,
 
 Components::Cookie* 
 PrimaryStreamServant::bind(const char* name,
-                           StreamComponents::SinkStreamPort_ptr the_sink)
+                           StreamComponents::SinkStreamPort_ptr the_sink,
+						   const char* transport_profile)
 throw(Components::InvalidName,
       StreamComponents::AlreadyBound,
       StreamComponents::InvalidBinding,
       StreamComponents::ExceededBindingLimit,
       CORBA::SystemException)
 {
-	return stream_ccm_object_executor_->bind (name, the_sink);
+	return stream_ccm_object_executor_->bind (name, the_sink, transport_profile);
 }
 
 

@@ -20,12 +20,13 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
+#ifndef _QEDO_NO_STREAMS
 
 #include "StreamCCMObjectExecutor.h"
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: StreamCCMObjectExecutor.cpp,v 1.3 2003/10/22 12:30:14 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: StreamCCMObjectExecutor.cpp,v 1.4 2003/12/16 13:37:32 stoinski Exp $";
 
 namespace Qedo {
 
@@ -273,7 +274,8 @@ throw(Components::InvalidName,
 
 Components::Cookie* 
 StreamCCMObjectExecutor::bind(const char* name,
-							  StreamComponents::SinkStreamPort_ptr the_sink)
+							  StreamComponents::SinkStreamPort_ptr the_sink,
+							  const char* transport_profile)
 throw(Components::InvalidName,
       StreamComponents::AlreadyBound,
       StreamComponents::InvalidBinding,
@@ -290,7 +292,7 @@ throw(Components::InvalidName,
 	{
 		if ((*src_iter)->port_name() == name)
 		{
-			return (*src_iter)->add_binding (the_sink);
+			return (*src_iter)->add_binding (the_sink, transport_profile);
 		}
 	}
 
@@ -474,4 +476,6 @@ throw(CORBA::SystemException)
 
 
 } // namespace Qedo
+
+#endif
 

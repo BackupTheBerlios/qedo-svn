@@ -28,7 +28,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: SinkStreamPortServant.cpp,v 1.2 2003/10/17 09:11:40 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: SinkStreamPortServant.cpp,v 1.3 2003/12/16 13:37:32 stoinski Exp $";
 
 namespace Qedo {
 	
@@ -65,6 +65,14 @@ throw(StreamComponents::AlreadyBound,
 	sink.consider_transport (the_transport);
 }
 
+
+void 
+SinkStreamPortServant::release_transport()
+throw(CORBA::SystemException)
+{
+	SinkPort& sink = stream_ccm_object_executor_->get_sink (port_name_.c_str());
+	sink.release_transport();
+}
 
 } // namespace Qedo
 

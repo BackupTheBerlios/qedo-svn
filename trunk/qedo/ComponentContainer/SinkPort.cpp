@@ -30,7 +30,7 @@
 
 #include <cstring>
 
-static char rcsid[] UNUSED = "$Id: SinkPort.cpp,v 1.3 2003/11/07 09:49:12 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: SinkPort.cpp,v 1.4 2003/12/16 13:37:32 stoinski Exp $";
 
 namespace Qedo {
 
@@ -106,29 +106,6 @@ throw (StreamComponents::UnsupportedStreamtype, StreamComponents::DuplicateStrea
 	// First test whether we are already in a current stream context
 	if (active_stream_)
 		throw StreamComponents::DuplicateStream();
-
-	/*
-	// Now test for the compatibility of the streamtype
-	unsigned int i;
-
-	for (i = 0; i < streamtypes_->length(); i++)
-	{
-#ifdef MICO_ORB
-		if (! std::strcmp (streamtypes_.in()[i], repos_id))
-#else
-		if (! std::strcmp (streamtypes_[i], repos_id))
-#endif
-			break;
-	}
-
-	if (i == streamtypes_->length())
-	{
-		CORBA::RepositoryIdSeq unsupported_streamtype;
-		unsupported_streamtype.length (1);
-		unsupported_streamtype[0] = CORBA::string_dup (repos_id);
-		throw StreamComponents::UnsupportedStreamtype (unsupported_streamtype);
-	}
-	*/
 
 	CORBA::RepositoryIdSeq streamtype;
 	streamtype.length (1);
@@ -278,7 +255,7 @@ throw(StreamComponents::AlreadyBound,
 		 transport_iter != TransportRegistry::transports_.end();
 		 transport_iter++)
 	{
-		if (! strcmp (the_transport.protocol.in(), (*transport_iter).transport_protocol_.c_str()))
+		if (! strcmp (the_transport.transport_profile.in(), (*transport_iter).transport_profile_.c_str()))
 		{
 			break;
 		}
@@ -286,7 +263,7 @@ throw(StreamComponents::AlreadyBound,
 
 	if (transport_iter == TransportRegistry::transports_.end())
 	{
-		DEBUG_OUT2 ("SinkPort: Transport not supported: ", the_transport.protocol);
+		DEBUG_OUT2 ("SinkPort: Transport not supported: ", the_transport.transport_profile);
 
 		throw StreamComponents::TransportFailure();
 	}
@@ -296,16 +273,28 @@ throw(StreamComponents::AlreadyBound,
 
 	try
 	{
-		tep_->setup_for_accept (the_transport);
+		tep_->setup_connection (the_transport);
 	}
 	catch (StreamComponents::TransportFailure&)
 	{
-		DEBUG_OUT ("SinkPort: consider_transport(): setup_for_accept() on TransportEndpoint failed");
+		DEBUG_OUT ("SinkPort: consider_transport(): setup_connection() on TransportEndpoint failed");
 
 		tep_->close();
 		tep_->_remove_ref();
 		tep_ = 0;
 	}
+}
+
+
+void 
+SinkPort::release_transport()
+throw(CORBA::SystemException)
+{
+	DEBUG_OUT ("SinkPort: release_transport() called");
+
+	tep_->close();
+	tep_->_remove_ref();
+	tep_ = 0;
 }
 
 

@@ -20,62 +20,54 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SINK_STREAM_PORT_SERVANT_H__
-#define __SINK_STREAM_PORT_SERVANT_H__
 
 #ifndef _QEDO_NO_STREAMS
 
 
-#include <CORBA.h>
-#include <StreamComponents_skel.h>
+#include "UDPTransportEndpointFactory.h"
+#include "TransportRegistry.h"
+#include "Output.h"
+#include "Valuetypes.h"
 
-#include "StreamCCMObjectExecutor.h"
-#include "ServantBase.h"
-#include "Util.h"
+#include <cstdlib>
+#include <cstring>
 
+static char rcsid[] UNUSED = "$Id: UDPTransportEndpointFactory.cpp,v 1.1 2003/12/16 13:37:55 stoinski Exp $";
 
 namespace Qedo {
 
 
-class CONTAINERDLL_API SinkStreamPortServant : public virtual POA_StreamComponents::SinkStreamPort,
-											   public virtual Qedo::ServantBase
+UDPTransportEndpointFactory::UDPTransportEndpointFactory()
 {
-private:
-	std::string port_name_;
+	TransportRegistry::register_transport ("CCM_UDP", this);
+}
 
-protected:
 
-public:
-	SinkStreamPortServant (const char*);
-	virtual ~SinkStreamPortServant();
+UDPTransportEndpointFactory::~UDPTransportEndpointFactory()
+{
+	DEBUG_OUT ("UDPTransportEndpointFactory: Destructor called");
+}
 
-	//
-    // IDL:omg.org/StreamComponents/SinkStreamPort/check_stream_type:1.0
-    //
-    void check_streamtype(const CORBA::RepositoryIdSeq&)
-        throw(StreamComponents::UnsupportedStreamtype,
-              CORBA::SystemException);
 
-    //
-    // IDL:omg.org/StreamComponents/SinkStreamPort/consider_transport:1.0
-    //
-    void consider_transport(StreamComponents::TransportSpec&)
-        throw(StreamComponents::AlreadyBound,
-			  StreamComponents::TransportFailure,
-              CORBA::SystemException);
+SourceTransportEndpoint* 
+UDPTransportEndpointFactory::create_source_tep()
+{
+	DEBUG_OUT ("UDPTransportEndpointFactory: create_source_tep() called");
 
-    //
-    // IDL:omg.org/StreamComponents/SinkStreamPort/release_transport:1.0
-    //
-    void release_transport()
-		throw(CORBA::SystemException);
-};
+	return new UDPSourceTransportEndpoint();
+}
+
+
+SinkTransportEndpoint*
+UDPTransportEndpointFactory::create_sink_tep (SinkPort* sink_port, StreamDataDispatcher* dispatcher)
+{
+	DEBUG_OUT ("UDPTransportEndpointFactory: create_sink_tep() called");
+
+	return new UDPSinkTransportEndpoint (sink_port, dispatcher);
+}
 
 
 } // namespace Qedo
-
-
-#endif
 
 #endif
 

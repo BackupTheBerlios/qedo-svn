@@ -497,6 +497,15 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="TransportRegistry.cpp">
 			</File>
 			<File
+				RelativePath="UDPSinkTransportEndpoint.cpp">
+			</File>
+			<File
+				RelativePath="UDPSourceTransportEndpoint.cpp">
+			</File>
+			<File
+				RelativePath="UDPTransportEndpointFactory.cpp">
+			</File>
+			<File
 				RelativePath="Util.cpp">
 			</File>
 		</Filter>
@@ -613,6 +622,15 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="TransportRegistry.h">
+			</File>
+			<File
+				RelativePath="UDPSinkTransportEndpoint.h">
+			</File>
+			<File
+				RelativePath="UDPSourceTransportEndpoint.h">
+			</File>
+			<File
+				RelativePath="UDPTransportEndpointFactory.h">
 			</File>
 			<File
 				RelativePath=".\Util.h">

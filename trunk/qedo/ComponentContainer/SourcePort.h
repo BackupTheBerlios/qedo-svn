@@ -235,7 +235,7 @@ public:
 
     StreamComponents::SourceDescription* source_description() const;
 
-	Cookie_impl* add_binding (StreamComponents::SinkStreamPort_ptr)
+	Cookie_impl* add_binding (StreamComponents::SinkStreamPort_ptr, const char*)
         throw (StreamComponents::InvalidBinding,
                StreamComponents::AlreadyBound,
                StreamComponents::ExceededBindingLimit);

@@ -31,7 +31,7 @@
 #include <set>
 #endif
 
-static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.20 2003/10/17 09:11:40 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.21 2003/12/16 13:37:32 stoinski Exp $";
 
 
 namespace Qedo {
@@ -41,7 +41,8 @@ namespace Qedo {
 static std::set<RefCountLocalObject*> CORBA_local_object_set;
 static std::set<RefCountBase*> native_object_set;
 static std::set<CreateDestructCORBAObjectCounter*> CORBA_object_set;
-static QedoMutex CORBA_object_mutex_;
+static QedoMutex CORBA_local_object_mutex;
+static QedoMutex CORBA_object_mutex;
 #else
 static CORBA::Long native_object_count_ = 0;
 static CORBA::Long CORBA_local_object_count_ = 0;
@@ -117,6 +118,7 @@ RefCountLocalObject::RefCountLocalObject()
 #endif
 {
 #ifdef _DEBUG
+	QedoLock lock (&CORBA_local_object_mutex);
 	CORBA_local_object_set.insert(this);
 #else
 	++CORBA_local_object_count_;
@@ -128,6 +130,7 @@ RefCountLocalObject::RefCountLocalObject()
 RefCountLocalObject::~RefCountLocalObject()
 {
 #ifdef _DEBUG
+	QedoLock lock (&CORBA_local_object_mutex);
 	CORBA_local_object_set.erase(this);
 #else
 	--CORBA_local_object_count_;
@@ -177,7 +180,7 @@ RefCountLocalObject::_get_refcount()
 CreateDestructCORBAObjectCounter::CreateDestructCORBAObjectCounter()
 {
 #ifdef _DEBUG
-	QedoLock lock(&CORBA_object_mutex_);
+	QedoLock lock(&CORBA_object_mutex);
 	CORBA_object_set.insert(this);
 #else
 	++CORBA_object_count_;
@@ -189,7 +192,7 @@ CreateDestructCORBAObjectCounter::CreateDestructCORBAObjectCounter()
 CreateDestructCORBAObjectCounter::~CreateDestructCORBAObjectCounter()
 {
 #ifdef _DEBUG
-	QedoLock lock(&CORBA_object_mutex_);
+	QedoLock lock(&CORBA_object_mutex);
 	CORBA_object_set.erase(this);
 #else
 	--CORBA_object_count_;

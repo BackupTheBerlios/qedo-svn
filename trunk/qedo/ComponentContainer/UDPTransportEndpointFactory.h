@@ -20,59 +20,32 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SINK_STREAM_PORT_SERVANT_H__
-#define __SINK_STREAM_PORT_SERVANT_H__
+#ifndef __UDP_TRANSPORT_ENDPOINT_FACTORY_H__
+#define __UDP_TRANSPORT_ENDPOINT_FACTORY_H__
 
 #ifndef _QEDO_NO_STREAMS
 
 
-#include <CORBA.h>
-#include <StreamComponents_skel.h>
-
-#include "StreamCCMObjectExecutor.h"
-#include "ServantBase.h"
-#include "Util.h"
+#include "UDPSourceTransportEndpoint.h"
+#include "UDPSinkTransportEndpoint.h"
+#include "StreamDataDispatcher.h"
 
 
 namespace Qedo {
 
 
-class CONTAINERDLL_API SinkStreamPortServant : public virtual POA_StreamComponents::SinkStreamPort,
-											   public virtual Qedo::ServantBase
+class CONTAINERDLL_API UDPTransportEndpointFactory : public virtual TransportEndpointFactory
 {
-private:
-	std::string port_name_;
-
-protected:
-
 public:
-	SinkStreamPortServant (const char*);
-	virtual ~SinkStreamPortServant();
+	UDPTransportEndpointFactory();
+	virtual ~UDPTransportEndpointFactory();
 
-	//
-    // IDL:omg.org/StreamComponents/SinkStreamPort/check_stream_type:1.0
-    //
-    void check_streamtype(const CORBA::RepositoryIdSeq&)
-        throw(StreamComponents::UnsupportedStreamtype,
-              CORBA::SystemException);
-
-    //
-    // IDL:omg.org/StreamComponents/SinkStreamPort/consider_transport:1.0
-    //
-    void consider_transport(StreamComponents::TransportSpec&)
-        throw(StreamComponents::AlreadyBound,
-			  StreamComponents::TransportFailure,
-              CORBA::SystemException);
-
-    //
-    // IDL:omg.org/StreamComponents/SinkStreamPort/release_transport:1.0
-    //
-    void release_transport()
-		throw(CORBA::SystemException);
+	SourceTransportEndpoint* create_source_tep();
+	SinkTransportEndpoint* create_sink_tep (SinkPort*, StreamDataDispatcher*);
 };
 
 
-} // namespace Qedo
+}
 
 
 #endif

@@ -42,7 +42,7 @@
 #include <cerrno>
 
 
-static char rcsid[] UNUSED = "$Id: TCPSourceTransportEndpoint.cpp,v 1.2 2003/10/17 09:11:41 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: TCPSourceTransportEndpoint.cpp,v 1.3 2003/12/16 13:37:32 stoinski Exp $";
 
 namespace Qedo {
 
@@ -165,7 +165,7 @@ TCPSourceTransportEndpoint::close()
 
 
 void 
-TCPSourceTransportEndpoint::setup_for_connect (StreamComponents::TransportSpec& transport_spec)
+TCPSourceTransportEndpoint::setup_connection (StreamComponents::TransportSpec& transport_spec)
 throw (StreamComponents::TransportFailure)
 {
 	const char* hostname;
@@ -189,13 +189,13 @@ throw (StreamComponents::TransportFailure)
 
 	if (! hostname_found || ! portnumber_found)
 	{
-		DEBUG_OUT ("TCPSourceTransportEndpoint: setup_for_connect(): Insufficient transport parameters supplied by SinkTransportEndpoint");
+		DEBUG_OUT ("TCPSourceTransportEndpoint: setup_connection(): Insufficient transport parameters supplied by SinkTransportEndpoint");
 		throw StreamComponents::TransportFailure();
 	}
 
 #ifdef _DEBUG
 	std::string message;
-	message = "TCPSourceTransportEndpoint: setup_for_connect(): Now trying to connect to ";
+	message = "TCPSourceTransportEndpoint: setup_connection(): Now trying to connect to ";
 	message += hostname;
 	message += " on port number ";
 	DEBUG_OUT2 (message.c_str(), ntohs (portnumber));
@@ -207,7 +207,7 @@ throw (StreamComponents::TransportFailure)
 	if ((connect_socket_ = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1)
 #endif
 	{
-		DEBUG_OUT ("TCPSourceTransportEndpoint: setup_for_connect(): socket() call failed");
+		DEBUG_OUT ("TCPSourceTransportEndpoint: setup_connection(): socket() call failed");
 #ifdef _WIN32
 		DEBUG_OUT2 ("TCPSourceTransportEndpoint: error code was ", WSAGetLastError());
 #else
@@ -229,7 +229,7 @@ throw (StreamComponents::TransportFailure)
 	if (connect (connect_socket_, (const struct sockaddr*)&my_sock_addr, sizeof (my_sock_addr)) == -1)
 #endif
 	{
-		DEBUG_OUT ("TCPSourceTransportEndpoint: setup_for_connect(): connect() call failed");
+		DEBUG_OUT ("TCPSourceTransportEndpoint: setup_connection(): connect() call failed");
 #ifdef _WIN32
 		DEBUG_OUT2 ("TCPSourceTransportEndpoint: error code was ", WSAGetLastError());
 #else
@@ -246,7 +246,6 @@ throw (StreamComponents::TransportFailure)
 	}
 
 	connected_ = true;
-
 }
 
 

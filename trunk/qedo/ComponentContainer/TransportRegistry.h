@@ -37,7 +37,7 @@ namespace Qedo {
 class TransportEntry
 {
 public:
-	std::string transport_protocol_;
+	std::string transport_profile_;
 	TransportEndpointFactory* factory_;
 
 	TransportEntry (const char*, TransportEndpointFactory*);

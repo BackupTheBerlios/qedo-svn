@@ -45,15 +45,14 @@
 #include <cstdio>
 #include <cerrno>
 
-static char rcsid[] UNUSED = "$Id: TCPSinkTransportEndpoint.cpp,v 1.4 2003/11/14 13:57:29 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: TCPSinkTransportEndpoint.cpp,v 1.5 2003/12/16 13:37:32 stoinski Exp $";
 
 
 namespace Qedo {
 
 
 TCPSinkTransportEndpoint::TCPSinkTransportEndpoint (SinkPort* my_sink, StreamDataDispatcher* dispatcher)
-: SinkTransportEndpoint (my_sink),
-  dispatcher_ (dispatcher),
+: SinkTransportEndpoint (my_sink, dispatcher),
   listening_ (false),
   connected_ (false),
   current_stream_number_ (0),
@@ -61,17 +60,16 @@ TCPSinkTransportEndpoint::TCPSinkTransportEndpoint (SinkPort* my_sink, StreamDat
   end_stream_tag_ (false),
   pause_stream_cond_ ("TCP_SINK_TEP_PAUSE"),
   pause_stream_tag_ (false),
-  acceptor_thread_stopped_ (false)
+  acceptor_thread_stopped_ (false),
+  active_stream_ (false),
+  acceptor_thread_handle_ (0)
 {
-	dispatcher_->_add_ref();
 }
 
 
 TCPSinkTransportEndpoint::~TCPSinkTransportEndpoint()
 {
 	DEBUG_OUT ("TCPSinkTransportEndpoint: Destructor called");
-
-	dispatcher_->_remove_ref();
 }
 
 
@@ -177,8 +175,9 @@ TCPSinkTransportEndpoint::do_read()
 	{
 		if (! recv_complete (accept_socket_, (char*)&header, sizeof (header)))
 		{
-			DEBUG_OUT ("TCPSinkTransportEndpoint: do_accept(): Cannot read header");
-			dispatcher_->failed_stream();
+			DEBUG_OUT ("TCPSinkTransportEndpoint: do_read(): Cannot read header");
+			if (active_stream_)
+				dispatcher_->failed_stream();
 			return;		// End thread
 		}
 
@@ -207,7 +206,8 @@ TCPSinkTransportEndpoint::do_read()
 		{
 			// Stream demarcation detected without being called end_stream()
 			DEBUG_OUT ("TCPSinkTransportEndpoint: Illegal change of current stream number");
-			dispatcher_->failed_stream();
+			if (active_stream_)
+				dispatcher_->failed_stream();
 			return;		// End thread
 		}
 
@@ -219,8 +219,9 @@ TCPSinkTransportEndpoint::do_read()
 
 		if (! recv_complete (accept_socket_, (char*)buffer->get_buffer(), seq_length))
 		{
-			DEBUG_OUT ("TCPSinkTransportEndpoint: do_accept(): Cannot read payload");
-			dispatcher_->failed_stream();
+			DEBUG_OUT ("TCPSinkTransportEndpoint: do_read(): Cannot read payload");
+			if (active_stream_)
+				dispatcher_->failed_stream();
 			return;		// End thread
 		}
 
@@ -264,7 +265,8 @@ TCPSinkTransportEndpoint::do_accept()
 		DEBUG_OUT2 ("TCPSinkTransportEndpoint: error code was ", errno);
 #endif
 
-		dispatcher_->failed_stream();
+		//if (active_stream_)
+		//	dispatcher_->failed_stream();		// TODO: This is not needed, since at this time there could be no stream(???)
 		return;		// End thread
 	}
 
@@ -292,7 +294,8 @@ TCPSinkTransportEndpoint::do_accept()
 		DEBUG_OUT2 ("TCPSinkTransportEndpoint: error code was ", errno);
 #endif
 
-		dispatcher_->failed_stream();
+		//if (active_stream_)
+		//	dispatcher_->failed_stream();	// TODO: This is not needed, since at this time there could be no stream(???)
 
 		return;		// End thread
 	}
@@ -395,6 +398,7 @@ TCPSinkTransportEndpoint::close()
 			if (pause_stream_tag_)
 			{
 				pause_stream_cond_.signal();
+				pause_stream_cond_.signal();
 			}
 		}
 	}
@@ -402,16 +406,17 @@ TCPSinkTransportEndpoint::close()
 	// When we are closed, we join the acceptor thread
 	// Note: we do not joint the acceptor thread when it terminates without the impact of the close_transport()
 	// call in this close() call (e.g. because of the source components destruction)
-	acceptor_thread_handle_->join();
+	if (acceptor_thread_handle_)
+		acceptor_thread_handle_->join();
 }
 
 
 void 
-TCPSinkTransportEndpoint::setup_for_accept (StreamComponents::TransportSpec& transport_spec)
+TCPSinkTransportEndpoint::setup_connection (StreamComponents::TransportSpec& transport_spec)
 throw (StreamComponents::TransportFailure)
 {
 	// Open a TCP stream socket and store the transport parameters in the transport_spec variable
-	DEBUG_OUT ("TCPSinkTransportEndpoint: setup_for_accept() called");
+	DEBUG_OUT ("TCPSinkTransportEndpoint: setup_connection() called");
 
 #ifdef _WIN32
 	if ((listen_socket_ = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET)
@@ -419,7 +424,7 @@ throw (StreamComponents::TransportFailure)
 	if ((listen_socket_ = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP)) == -1)
 #endif
 	{
-		DEBUG_OUT ("TCPSinkTransportEndpoint: setup_for_accept(): socket() call failed");
+		DEBUG_OUT ("TCPSinkTransportEndpoint: setup_connection(): socket() call failed");
 #ifdef _WIN32
 		DEBUG_OUT2 ("TCPSinkTransportEndpoint: error code was ", WSAGetLastError());
 #else
@@ -439,7 +444,7 @@ throw (StreamComponents::TransportFailure)
 #endif
 
 	{
-		DEBUG_OUT ("TCPSinkTransportEndpoint: setup_for_accept(): gethostname() call failed");
+		DEBUG_OUT ("TCPSinkTransportEndpoint: setup_connection(): gethostname() call failed");
 #ifdef _WIN32
 		DEBUG_OUT2 ("TCPSinkTransportEndpoint: error code was ", WSAGetLastError());
 #else
@@ -459,7 +464,7 @@ throw (StreamComponents::TransportFailure)
 
 	if ((my_host = gethostbyname (hostname)) == NULL)
 	{
-		DEBUG_OUT ("TCPSinkTransportEndpoint: setup_for_accept(): gethostbyname() call failed");
+		DEBUG_OUT ("TCPSinkTransportEndpoint: setup_connection(): gethostbyname() call failed");
 #ifdef _WIN32
 		DEBUG_OUT2 ("TCPSinkTransportEndpoint: error code was ", WSAGetLastError());
 #else
@@ -490,7 +495,7 @@ throw (StreamComponents::TransportFailure)
 #endif
 
 	{
-		DEBUG_OUT ("TCPSinkTransportEndpoint: setup_for_accept(): bind() call failed");
+		DEBUG_OUT ("TCPSinkTransportEndpoint: setup_connection(): bind() call failed");
 #ifdef _WIN32
 		DEBUG_OUT2 ("TCPSinkTransportEndpoint: error code was ", WSAGetLastError());
 #else
@@ -521,7 +526,7 @@ throw (StreamComponents::TransportFailure)
 	if (getsockname (listen_socket_, (struct sockaddr*)&my_sock_addr, &sock_addr_len) == -1)
 #endif
 	{
-		DEBUG_OUT ("TCPSinkTransportEndpoint: setup_for_accept(): getsockname() call failed");
+		DEBUG_OUT ("TCPSinkTransportEndpoint: setup_connection(): getsockname() call failed");
 #ifdef _WIN32
 		DEBUG_OUT2 ("TCPSinkTransportEndpoint: error code was ", WSAGetLastError());
 #else
@@ -540,7 +545,7 @@ throw (StreamComponents::TransportFailure)
 	// Store the transport parameters in our transport spec
 	if (transport_spec.transport_parameters.length())
 	{
-		NORMAL_OUT ("TCPSinkTransportEndpoint: setup_for_accept(): Warning: transport_parameters sequence already holds items");
+		NORMAL_OUT ("TCPSinkTransportEndpoint: setup_connection(): Warning: transport_parameters sequence already holds items");
 		transport_spec.transport_parameters.length (0);
 	}
 
@@ -571,7 +576,7 @@ throw (StreamComponents::TransportFailure)
 	if (listen (listen_socket_, 1) == -1)
 #endif
 	{
-		DEBUG_OUT ("TCPSinkTransportEndpoint: setup_for_accept(): listen() call failed");
+		DEBUG_OUT ("TCPSinkTransportEndpoint: setup_connection(): listen() call failed");
 #ifdef _WIN32
 		DEBUG_OUT2 ("TCPSinkTransportEndpoint: error code was ", WSAGetLastError());
 #else
@@ -597,15 +602,23 @@ throw (StreamComponents::TransportFailure)
 void
 TCPSinkTransportEndpoint::begin_stream()
 {
+	assert (active_stream_ == false);
+
 	// Signal my reader thread that it can go ahead
 	this->check_wait_or_signal_pause_stream();
+
+	active_stream_ = true;
 }
 
 
 void
 TCPSinkTransportEndpoint::end_stream()
 {
+	assert (active_stream_ == true);
+
 	this->check_wait_or_signal_end_stream();
+
+	active_stream_ = false;
 }
 
 

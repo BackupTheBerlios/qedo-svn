@@ -31,7 +31,7 @@
 #include <cstdlib>
 #include <ctime>
 
-static char rcsid[] UNUSED = "$Id: TransportEndpoint.cpp,v 1.2 2003/10/17 09:11:41 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: TransportEndpoint.cpp,v 1.3 2003/12/16 13:37:32 stoinski Exp $";
 
 namespace Qedo {
 
@@ -68,10 +68,12 @@ SourceTransportEndpoint::~SourceTransportEndpoint()
 }
 
 
-SinkTransportEndpoint::SinkTransportEndpoint (SinkPort* my_sink)
-: my_sink_ (my_sink)
+SinkTransportEndpoint::SinkTransportEndpoint (SinkPort* my_sink, StreamDataDispatcher* dispatcher)
+: my_sink_ (my_sink),
+  dispatcher_ (dispatcher)
 {
 	my_sink_->_add_ref();
+	dispatcher_->_add_ref();
 }
 
 
@@ -80,6 +82,7 @@ SinkTransportEndpoint::~SinkTransportEndpoint()
 	DEBUG_OUT ("SinkTransportEndpoint: Destructor called");
 
 	my_sink_->_remove_ref();
+	dispatcher_->_remove_ref();
 }
 
 

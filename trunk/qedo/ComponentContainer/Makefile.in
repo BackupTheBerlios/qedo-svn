@@ -62,6 +62,9 @@ SOURCES = Key.cpp \
 		TCPSinkTransportEndpoint.cpp \
 		TCPSourceTransportEndpoint.cpp \
 		TCPTransportEndpointFactory.cpp \
+		UDPSinkTransportEndpoint.cpp \
+		UDPSourceTransportEndpoint.cpp \
+		UDPTransportEndpointFactory.cpp \
 		TransportEndpoint.cpp \
 		TransportRegistry.cpp \
 		ExtensionHomeServant.cpp \

@@ -53,7 +53,8 @@ public:
     // IDL:omg.org/StreamComponents/Streams/bind:1.0
     //
     Components::Cookie* bind(const char* name,
-                                     StreamComponents::SinkStreamPort_ptr the_sink)
+                             StreamComponents::SinkStreamPort_ptr the_sink,
+							 const char* transport_profile)
         throw(Components::InvalidName,
               StreamComponents::AlreadyBound,
               StreamComponents::InvalidBinding,

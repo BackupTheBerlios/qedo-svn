@@ -20,59 +20,69 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SINK_STREAM_PORT_SERVANT_H__
-#define __SINK_STREAM_PORT_SERVANT_H__
+#ifndef __UDP_SINK_TRANSPORT_ENDPOINT_H__
+#define __UDP_SINK_TRANSPORT_ENDPOINT_H__
 
 #ifndef _QEDO_NO_STREAMS
 
 
-#include <CORBA.h>
-#include <StreamComponents_skel.h>
+#include "Synchronisation.h"
+#include "TransportEndpoint.h"
 
-#include "StreamCCMObjectExecutor.h"
-#include "ServantBase.h"
-#include "Util.h"
+#ifndef _WIN32
+#include <netinet/in.h>
+#endif
 
 
 namespace Qedo {
 
 
-class CONTAINERDLL_API SinkStreamPortServant : public virtual POA_StreamComponents::SinkStreamPort,
-											   public virtual Qedo::ServantBase
+class UDPSinkTransportEndpoint : public virtual SinkTransportEndpoint
 {
 private:
-	std::string port_name_;
+#ifdef _WIN32
+	SOCKET socket_;
+#else
+	int socket_;
+#endif
 
-protected:
+	QedoThread* thread_handle_;
+	bool thread_stopped_;
+
+	QedoMutex stream_mutex_;
+	bool active_stream_;
+	bool established_;
+
+	static void* recv_thread (void*);
+	void recv_thread_entry();
+	void do_recv();
+
+	class ThreadExitHelper
+	{
+	public:
+		UDPSinkTransportEndpoint* thread_class_;
+		ThreadExitHelper (UDPSinkTransportEndpoint* thread_class) : thread_class_ (thread_class) 
+			{ thread_class_->_add_ref(); }
+		~ThreadExitHelper() 
+			{ thread_class_->_remove_ref(); }
+	};
 
 public:
-	SinkStreamPortServant (const char*);
-	virtual ~SinkStreamPortServant();
+	UDPSinkTransportEndpoint (SinkPort*, StreamDataDispatcher*);
+	virtual ~UDPSinkTransportEndpoint();
 
-	//
-    // IDL:omg.org/StreamComponents/SinkStreamPort/check_stream_type:1.0
-    //
-    void check_streamtype(const CORBA::RepositoryIdSeq&)
-        throw(StreamComponents::UnsupportedStreamtype,
-              CORBA::SystemException);
+	void close();
 
-    //
-    // IDL:omg.org/StreamComponents/SinkStreamPort/consider_transport:1.0
-    //
-    void consider_transport(StreamComponents::TransportSpec&)
-        throw(StreamComponents::AlreadyBound,
-			  StreamComponents::TransportFailure,
-              CORBA::SystemException);
-
-    //
-    // IDL:omg.org/StreamComponents/SinkStreamPort/release_transport:1.0
-    //
-    void release_transport()
-		throw(CORBA::SystemException);
+	void begin_stream();
+	
+	void end_stream();
+	
+	void setup_connection (StreamComponents::TransportSpec&)
+		throw (StreamComponents::TransportFailure);
 };
 
 
-} // namespace Qedo
+}
 
 
 #endif

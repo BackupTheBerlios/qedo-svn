@@ -62,7 +62,7 @@ public:
 
 	void close();
 
-	void setup_for_connect (StreamComponents::TransportSpec&)
+	void setup_connection (StreamComponents::TransportSpec&)
 		throw (StreamComponents::TransportFailure);
 };
 

@@ -101,6 +101,9 @@ public:
         throw(StreamComponents::AlreadyBound,
 			  StreamComponents::TransportFailure,
               CORBA::SystemException);
+
+	void release_transport()
+		throw(CORBA::SystemException);
 };
 
 

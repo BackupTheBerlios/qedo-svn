@@ -28,13 +28,13 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: TransportRegistry.cpp,v 1.2 2003/10/17 09:11:41 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: TransportRegistry.cpp,v 1.3 2003/12/16 13:37:32 stoinski Exp $";
 
 namespace Qedo {
 
 
-TransportEntry::TransportEntry (const char* transport_protocol, TransportEndpointFactory* transport_factory)
-: transport_protocol_ (transport_protocol),
+TransportEntry::TransportEntry (const char* transport_profile, TransportEndpointFactory* transport_factory)
+: transport_profile_ (transport_profile),
   factory_ (transport_factory)
 {
 	factory_->_add_ref();
@@ -48,7 +48,7 @@ TransportEntry::TransportEntry()
 
 
 TransportEntry::TransportEntry (const TransportEntry& entry)
-: transport_protocol_ (entry.transport_protocol_),
+: transport_profile_ (entry.transport_profile_),
   factory_ (entry.factory_)
 {
 	factory_->_add_ref();
@@ -58,7 +58,7 @@ TransportEntry::TransportEntry (const TransportEntry& entry)
 TransportEntry&
 TransportEntry::operator= (const TransportEntry& entry)
 {
-	transport_protocol_ = entry.transport_protocol_;
+	transport_profile_ = entry.transport_profile_;
 
 	if (factory_)
 		factory_->_remove_ref();
@@ -81,11 +81,11 @@ TransportVector TransportRegistry::transports_;
 
 
 void
-TransportRegistry::register_transport (const char* transport_protocol, TransportEndpointFactory* transport_factory)
+TransportRegistry::register_transport (const char* transport_profile, TransportEndpointFactory* transport_factory)
 {
-	DEBUG_OUT2 ("TransportRegistry: New transport registered for transport protocol ", transport_protocol);
+	DEBUG_OUT2 ("TransportRegistry: New transport registered for transport profile ", transport_profile);
 
-	TransportEntry new_transport (transport_protocol, transport_factory);
+	TransportEntry new_transport (transport_profile, transport_factory);
 
 	transports_.push_back (new_transport);
 }

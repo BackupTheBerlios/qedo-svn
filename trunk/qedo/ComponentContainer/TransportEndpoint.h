@@ -49,6 +49,9 @@ public:
 	virtual void begin_stream() = 0;
 	virtual void end_stream() = 0;
 
+	virtual void setup_connection (StreamComponents::TransportSpec&)
+		throw (StreamComponents::TransportFailure) = 0;
+
 	virtual void close() = 0;
 };
 
@@ -59,9 +62,6 @@ public:
 	SourceTransportEndpoint();
 	virtual ~SourceTransportEndpoint();
 
-	virtual void setup_for_connect (StreamComponents::TransportSpec&)
-		throw (StreamComponents::TransportFailure) = 0;
-
 	virtual bool send_buffer (StreamComponents::StreamingBuffer_ptr) = 0;
 };
 
@@ -70,13 +70,11 @@ class SinkTransportEndpoint : public virtual TransportEndpoint
 {
 protected:
 	SinkPort* my_sink_;
+	StreamDataDispatcher* dispatcher_;
 
 public:
-	SinkTransportEndpoint (SinkPort*);
+	SinkTransportEndpoint (SinkPort*, StreamDataDispatcher*);
 	virtual ~SinkTransportEndpoint();
-
-	virtual void setup_for_accept (StreamComponents::TransportSpec&)
-		throw (StreamComponents::TransportFailure) = 0;
 };
 
 

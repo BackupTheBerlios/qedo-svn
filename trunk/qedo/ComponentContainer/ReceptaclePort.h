@@ -136,7 +136,7 @@ private:
 
 	/** list of connections */
 	ConnectionVector connections_;
-	/** the mutex for connectins_ */
+	/** the mutex for connections_ */
 	QedoMutex connections_mutex_;
 
 public:

@@ -101,7 +101,7 @@ public:
     //
     // IDL:omg.org/StreamComponents/Streams/bind:1.0
     //
-    Components::Cookie* bind(const char*, StreamComponents::SinkStreamPort_ptr)
+    Components::Cookie* bind(const char*, StreamComponents::SinkStreamPort_ptr, const char*)
         throw(Components::InvalidName,
               StreamComponents::AlreadyBound,
               StreamComponents::InvalidBinding,

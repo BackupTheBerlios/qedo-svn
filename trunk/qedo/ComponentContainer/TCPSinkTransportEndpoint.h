@@ -40,7 +40,6 @@ namespace Qedo {
 class TCPSinkTransportEndpoint : public virtual SinkTransportEndpoint
 {
 private:
-	StreamDataDispatcher* dispatcher_;
 	bool listening_;
 	bool connected_;
 	bool stream_demarcation_detected_;
@@ -56,6 +55,8 @@ private:
 	QedoCond pause_stream_cond_;
 	QedoMutex pause_stream_mutex_;
 	bool pause_stream_tag_;
+
+	bool active_stream_;
 
 #ifdef _WIN32
 	SOCKET listen_socket_;
@@ -84,7 +85,6 @@ private:
 
 	void close_transport();
 
-public:
 	class ThreadExitHelper
 	{
 	public:
@@ -95,6 +95,7 @@ public:
 			{ thread_class_->_remove_ref(); }
 	};
 
+public:
 	TCPSinkTransportEndpoint (SinkPort*, StreamDataDispatcher*);
 	virtual ~TCPSinkTransportEndpoint();
 
@@ -104,7 +105,7 @@ public:
 	
 	void end_stream();
 	
-	void setup_for_accept (StreamComponents::TransportSpec&)
+	void setup_connection (StreamComponents::TransportSpec&)
 		throw (StreamComponents::TransportFailure);
 };
 

@@ -31,7 +31,7 @@
 #include <cstring>
 
 
-static char rcsid[] UNUSED = "$Id: SourcePort.cpp,v 1.3 2003/10/30 17:24:14 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: SourcePort.cpp,v 1.4 2003/12/16 13:37:32 stoinski Exp $";
 
 
 namespace Qedo {
@@ -509,6 +509,8 @@ SourcePort::dispatch_buffer (StreamComponents::StreamingBuffer_ptr buffer)
 	BindingVector::iterator binding_iter;
 	bool bogus_sink_detected = false;
 
+	QedoLock lock (bindings_mutex_);
+
 	for (binding_iter = bindings_.begin(); binding_iter != bindings_.end(); binding_iter++)
 	{
 		if (! (*binding_iter).send_buffer (buffer))
@@ -528,6 +530,8 @@ SourcePort::dispatch_begin_of_stream (const char* repos_id, const ::Components::
 	BindingVector::iterator binding_iter;
 	bool bogus_sink_detected = false;
 
+	QedoLock lock (bindings_mutex_);
+
 	for (binding_iter = bindings_.begin(); binding_iter != bindings_.end(); binding_iter++)
 	{
 		if (! (*binding_iter).begin_stream (repos_id, meta_data))
@@ -545,6 +549,8 @@ SourcePort::dispatch_end_of_stream()
 	BindingVector::iterator binding_iter;
 	bool bogus_sink_detected = false;
 
+	QedoLock lock (bindings_mutex_);
+
 	for (binding_iter = bindings_.begin(); binding_iter != bindings_.end(); binding_iter++)
 	{
 		if (! (*binding_iter).end_stream())
@@ -561,6 +567,8 @@ SourcePort::binding_descriptions() const
 {
 	StreamComponents::BindingDescriptions_var binding_descs =
         new StreamComponents::BindingDescriptions();
+
+	QedoLock lock (bindings_mutex_);
 
 	binding_descs->length (bindings_.size());
 
@@ -589,11 +597,14 @@ SourcePort::source_description() const
 
 
 Cookie_impl*
-SourcePort::add_binding (StreamComponents::SinkStreamPort_ptr the_sink)
+SourcePort::add_binding (StreamComponents::SinkStreamPort_ptr the_sink,
+						 const char* transport_profile)
 throw (StreamComponents::InvalidBinding,
        StreamComponents::AlreadyBound,
        StreamComponents::ExceededBindingLimit)
 {
+	QedoLock lock (bindings_mutex_);
+
 	// Test whether already bound
 	if ( !is_multiplex_ && bindings_.size() > 0 )
 	{
@@ -630,17 +641,33 @@ throw (StreamComponents::InvalidBinding,
 	}
 
 	// Setup transport
+	// If we get a transport_profile parameter different from "", we try to establish
+	// a connection using this transport profile and throw an exception on failure
 	SourceTransportEndpoint *tep;
 	StreamComponents::TransportSpec transport_spec;
 	TransportVector::const_iterator transport_iter;
 
-	for (transport_iter = TransportRegistry::transports_.begin();
-		 transport_iter != TransportRegistry::transports_.end();
-		 transport_iter++)
+	if (strcmp (transport_profile, ""))
 	{
-		DEBUG_OUT2 ("SourcePort: Considering transport: ", (*transport_iter).transport_protocol_);
+		// Find transport factory
+		for (transport_iter = TransportRegistry::transports_.begin();
+			 transport_iter != TransportRegistry::transports_.end();
+			 transport_iter++)
+		{
+			if (!strcmp ((*transport_iter).transport_profile_.c_str(), transport_profile))
+			{
+				// Transport found
+				break;
+			}
+		}
+		
+		if (transport_iter == TransportRegistry::transports_.end())
+		{
+			// Not found
+			throw StreamComponents::InvalidBinding();
+		}
 
-		transport_spec.protocol = (*transport_iter).transport_protocol_.c_str();
+		transport_spec.transport_profile = (*transport_iter).transport_profile_.c_str();
 		transport_spec.transport_parameters.length (0);
 
 		try
@@ -650,22 +677,22 @@ throw (StreamComponents::InvalidBinding,
 		catch (StreamComponents::TransportFailure&)
 		{
 			DEBUG_OUT2 ("SourcePort: Transport could not be set up for source ", port_name_);
-			continue;
+			throw StreamComponents::InvalidBinding();
 		}
 		catch (CORBA::SystemException&)
 		{
 			DEBUG_OUT ("SourcePort: CORBA system exception during consider_transport()");
-			continue;
+			throw StreamComponents::InvalidBinding();
 		}
 
 		// Now create a corresponding transport endpoint that connects to the one denoted in transport_spec.transport_parameters
 		tep = (*transport_iter).factory_->create_source_tep();
-		tep->setup_for_connect (transport_spec);
+		tep->setup_connection (transport_spec);
 
 		// Create cookie
 		Cookie_impl* new_cookie = new Cookie_impl();
 
-	    // Create binding entry
+		// Create binding entry
 		SourceBinding new_entry (the_sink, new_cookie, tep);
 
 		bindings_.push_back (new_entry);
@@ -673,6 +700,49 @@ throw (StreamComponents::InvalidBinding,
 		tep->_remove_ref();
 
 		return new_cookie;
+	}
+	else
+	{
+		for (transport_iter = TransportRegistry::transports_.begin();
+			 transport_iter != TransportRegistry::transports_.end();
+			transport_iter++)
+		{
+			DEBUG_OUT2 ("SourcePort: Considering transport: ", (*transport_iter).transport_profile_);
+
+			transport_spec.transport_profile = (*transport_iter).transport_profile_.c_str();
+			transport_spec.transport_parameters.length (0);
+
+			try
+			{
+				the_sink->consider_transport (transport_spec);
+			}
+			catch (StreamComponents::TransportFailure&)
+			{
+				DEBUG_OUT2 ("SourcePort: Transport could not be set up for source ", port_name_);
+				continue;
+			}
+			catch (CORBA::SystemException&)
+			{
+				DEBUG_OUT ("SourcePort: CORBA system exception during consider_transport()");
+				continue;
+			}
+
+			// Now create a corresponding transport endpoint that connects to the one denoted in transport_spec.transport_parameters
+			tep = (*transport_iter).factory_->create_source_tep();
+			tep->setup_connection (transport_spec);
+
+			// Create cookie
+			Cookie_impl* new_cookie = new Cookie_impl();
+
+			// Create binding entry
+			SourceBinding new_entry (the_sink, new_cookie, tep);
+
+			bindings_.push_back (new_entry);
+
+			tep->_remove_ref();
+
+			return new_cookie;
+		}
 	}
 
 	DEBUG_OUT ("SourcePort: No transport found or no transport found that was able to connect with the SinkPort");
@@ -692,6 +762,8 @@ throw (StreamComponents::InvalidBinding,
 		throw Components::CookieRequired();
 	}
 
+	QedoLock lock (bindings_mutex_);
+	
 	BindingVector::iterator binding_iter;
 
 	// Search binding
@@ -885,6 +957,8 @@ SourcePort::prepare_remove()
 	dispatcher_entries_.clear();
 
 	// Close all transports
+	QedoLock lock2 (bindings_mutex_);
+
 	BindingVector::iterator binding_iter;
 
 	for (binding_iter = bindings_.begin(); binding_iter != bindings_.end(); binding_iter++)

@@ -20,59 +20,49 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SINK_STREAM_PORT_SERVANT_H__
-#define __SINK_STREAM_PORT_SERVANT_H__
+#ifndef __UDP_SOURCE_TRANSPORT_ENDPOINT_H__
+#define __UDP_SOURCE_TRANSPORT_ENDPOINT_H__
 
 #ifndef _QEDO_NO_STREAMS
 
 
-#include <CORBA.h>
-#include <StreamComponents_skel.h>
-
-#include "StreamCCMObjectExecutor.h"
-#include "ServantBase.h"
-#include "Util.h"
+#include "TransportEndpoint.h"
 
 
 namespace Qedo {
 
 
-class CONTAINERDLL_API SinkStreamPortServant : public virtual POA_StreamComponents::SinkStreamPort,
-											   public virtual Qedo::ServantBase
+class UDPSourceTransportEndpoint : public virtual SourceTransportEndpoint
 {
 private:
-	std::string port_name_;
+	bool established_;
+	struct sockaddr_in sink_sock_addr_;
+	CORBA::UShort current_stream_number_;
 
-protected:
+#ifdef _WIN32
+	SOCKET socket_;
+#else
+	int socket_;
+#endif
 
 public:
-	SinkStreamPortServant (const char*);
-	virtual ~SinkStreamPortServant();
+	UDPSourceTransportEndpoint();
+	virtual ~UDPSourceTransportEndpoint();
 
-	//
-    // IDL:omg.org/StreamComponents/SinkStreamPort/check_stream_type:1.0
-    //
-    void check_streamtype(const CORBA::RepositoryIdSeq&)
-        throw(StreamComponents::UnsupportedStreamtype,
-              CORBA::SystemException);
+	bool send_buffer (StreamComponents::StreamingBuffer_ptr);
 
-    //
-    // IDL:omg.org/StreamComponents/SinkStreamPort/consider_transport:1.0
-    //
-    void consider_transport(StreamComponents::TransportSpec&)
-        throw(StreamComponents::AlreadyBound,
-			  StreamComponents::TransportFailure,
-              CORBA::SystemException);
+	void begin_stream();
 
-    //
-    // IDL:omg.org/StreamComponents/SinkStreamPort/release_transport:1.0
-    //
-    void release_transport()
-		throw(CORBA::SystemException);
+	void end_stream();
+
+	void close();
+
+	void setup_connection (StreamComponents::TransportSpec&)
+		throw (StreamComponents::TransportFailure);
 };
 
 
-} // namespace Qedo
+}
 
 
 #endif
