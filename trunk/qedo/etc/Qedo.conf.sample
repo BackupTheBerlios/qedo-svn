@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE QEDOCONFIG SYSTEM "QedoConfig.dtd">
+
+<!-- Qedo Configuration File -->
+
+<QEDOCONFIG>
+
+<!-- General configuration -->
+<SECTION name="General">
+
+	<CONFIGVALUE name="VerboseOutput" value="false"/>
+	<CONFIGVALUE name="NameService" value="corbaloc:inet:geist:3000"/>
+
+	<SECTION name="Debug">
+		<CONFIGVALUE name="DebugMode" value="false"/>
+	</SECTION>
+
+</SECTION>
+
+	
+<!-- Event related configuration -->
+<SECTION name="Events">
+	<CONFIGVALUE name="EventDispatchingStrategy" value="asynchronous"/>
+</SECTION>
+
+	
+<!-- QoS related configuration -->
+<SECTION name="QoS">
+	<CONFIGVALUE name="EnableQoS" value="true"/>
+</SECTION>
+
+
+<!-- Streams related configuration -->
+<SECTION name="Streams">
+</SECTION>
+
+</QEDOCONFIG>
