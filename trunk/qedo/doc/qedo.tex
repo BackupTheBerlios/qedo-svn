@@ -61,6 +61,143 @@ The Component Installer.
 \label{sec:Usage}
 This section explain the options. ...
 
+\section{Configuration File}
+\label{sec:ConfigurationFile}
+The Qedo run-time environment is complex software and provides a set of functionalities. Sometimes there are different ways how to provide the functionality. To allow an easy configuration of such properties at run-time (instead of compile-time) Qedo provides a configuration file. XML is used in this file, to make the integration with other tools easier. Though this file is not complex and can be edited with a normal text editor. The following will guide you through the different sections of this file.
+
+The file is structured in sections. Each section can have nested sections or configuration values. The general form of a section is:
+
+\begin{verbatim}
+<SECTION name="SectionName">
+...
+</SECTION>
+\end{verbatim}
+
+The general form of an configuration value is:
+\begin{verbatim}
+<CONFIGVALUE name="parameter_name" value="parameter_value"/>
+\end{verbatim}
+
+For those who are familiar with the XML stuff the following DTD is used to evaluate the configuration file.
+
+\begin{verbatim}
+<!ELEMENT QEDOCONFIG (SECTION)+>
+
+<!ELEMENT SECTION (SECTION | CONFIGVALUE)*>
+<!ATTLIST SECTION name CDATA #REQUIRED>
+
+<!ELEMENT CONFIGVALUE EMPTY>
+<!ATTLIST CONFIGVALUE name CDATA #REQUIRED>
+<!ATTLIST CONFIGVALUE value CDATA #REQUIRED>
+
+\end{verbatim}
+It is highly recommended to use this configuration file. Default Values are used for most of the configuration parameters if they are not set. But the beavior of the runtime might be strange if the configuration file is missing.
+
+Qedo comes with a sample file. Normally you need to modify only a few things to adapt the runtime to your needs. The file hast to be present at the \verb ${Qedo}/etc/Qedo.conf  .     
+
+\subsection{General}
+\label{sec:General}
+
+Within this section there are the following configuration values evaluated:
+\begin{itemize}
+	\item \verb VerboseOutput  if this is set \verb true  the runtime environment will print out a lot of debug information to the standard out streams. If it is set to \verb false  the output will be quiet. In case there is some trouble with the components which run on top of the Qedo run-time this switch can be used for tracing such problmes.
+	\item \verb NameService  this is used to set the Name Service which is used by the run-time to establish the contact between various parts of the run-time. This will overwrite any ORB specific settings usually provided as an ORB dependent configuration file (e.g. \verb ~/.micorc ). Furthermore, it is strongly recommended not to use ORB specific mechanisms to provide reference to the name service. As value for this parameter a corbaloc format should be used. (e.g. \verb corbaloc::geist:3000/NameService ) 
+	\item \verb ComponentServerKillDelay  This parameter sets the time the component server activator will wait for the termination of a component server. Sometimes the termination of a component server may hang. This is normally caused by component implementations which may hang while they get terminated. In this case the component server is directly killed by the server activator to free the resources allocated by that component server. To decide whether a component server is still terminating or is hanging this parameter can be used. After the time set in this parameter value it is assumed that the component server is hanging.
+	
+\end{itemize}
+
+	
+	
+\subsubsection{Debug}
+\label{sec:Debug}
+This is a subsection of the General section.
+
+\begin{itemize}
+	\item \verb DebugMode  This setting simplifies the debugging of component implementations. If this is set \verb true  the component server which is started by the component server activator will wait after the loading of the component libraries until a key is pressed. This time can be used to start the debugger, attach it to the component server process, and to set appropriate breakpoints in the component implementation. if this is set to \verb false  the component server will work normally without a break.
+\end{itemize}
+	
+\subsubsection{Deployment}
+\label{SubDeployment}
+This is a subsection of the General section.
+
+\begin{itemize}
+	\item \verb BaseDir  This parameter is used to set the directory where Assemblies and Components are stored for further processing. Make sure you have enough space on the device where the directory is.
+\end{itemize}
+	
+	
+\subsection{Events}
+\label{Events}
+This section is related to the Event handling of the container.
+\begin{itemize}
+	\item \verb EventDispatchingStrategy  This parameter can be used to set the event dispatching strategy. It can be \verb asynchronous  or \verb synchrponous  . If \verb asynchronous  is used the container will start an own event dispatching thread. This will allow components which have send an events to go on without waiting for the end of the event delivery. This is the standard behavior of an CCM Container. But in some cases it might be helpful to avoid this event dispatching thread and use synchronous communication to transmit events. In this case the component has to wait for completion of the event delivery.
+	
+\end{itemize}
+
+\subsection{QoS}
+\label{QoS}
+This section is related to the QoS Extension of the container.
+\begin{itemize}
+	\item \verb EnableQoS  Since the handling of QoS extensions at rin-time will consume a certain amount of resources (i.e. CPU cycles) it is strongly recommended to dsiable this feature if you are not planing to use it. Since this feature is not yet fully implemented it shouldn't be use anyway.
+	
+\end{itemize}
+
+
+
+\subsection{Streams}
+\label{Streams}
+This section is related to the Stream Extension of the container. This section is currently empty but will have parameters soon.
+
+\subsection{Example configuration file}
+\label{example}
+\begin{verbatim}
+<?xml version="1.0"?>
+<!DOCTYPE QEDOCONFIG SYSTEM "QedoConfig.dtd">
+
+<!-- Qedo Configuration File -->
+
+<QEDOCONFIG>
+
+<!-- General configuration -->
+<SECTION name="General">
+
+	<CONFIGVALUE name="VerboseOutput" value="false"/>
+	<CONFIGVALUE name="NameService" value="corbaloc::geist:3000/NameService"/>
+
+	<CONFIGVALUE name="ComponentServerKillDelay" value="10000"/>
+
+	<SECTION name="Debug">
+		<CONFIGVALUE name="DebugMode" value="false"/>
+	</SECTION>
+
+	<!-- deployment related configuration values -->
+	<SECTION name="Deployment">
+		<!-- the base directory for the deployment -->
+		<CONFIGVALUE name="BaseDir" value="/home/qedo"/>
+	</SECTION>
+</SECTION>
+
+	
+<!-- Event related configuration -->
+<SECTION name="Events">
+	<CONFIGVALUE name="EventDispatchingStrategy" value="asynchronous"/>
+</SECTION>
+
+	
+<!-- QoS related configuration -->
+<SECTION name="QoS">
+	<CONFIGVALUE name="EnableQoS" value="false"/>
+</SECTION>
+
+
+<!-- Streams related configuration -->
+<SECTION name="Streams">
+</SECTION>
+
+</QEDOCONFIG>
+
+\end{verbatim}
+
+
 \section{Start up}
 \label{sec:StartUp}
 To start the tun-time environment of Qedo you need to start a number of processes. 
@@ -68,14 +205,7 @@ To start the tun-time environment of Qedo you need to start a number of processe
 \subsection{Name Service}
 \label{sec:NameService}
 
-The first of all is a name service. This name service needs to be started once for a Qedo deployment domain. Such a domain consist of a number of computers where distributed systems can be installed. How to start a name service depends on the used Name Service implementation. But you need to be sure to know the host where the name service is running and on what port the name service is listening. This information is needed for the other servers. Currently we use orb depend mechanism to promote the name service information to the other Qedo servers. E.g. if you are using MICO you need to create a .micorc file. this file need to contain the following line:
-\small
-\begin{verbatim}
-
-  -ORBInitRef NameService=corbaloc::<hostname>:<port>/NameService
-  
-\end{verbatim}
-\normalsize
+The first of all which needs to be started is the name service. This name service needs to be started once for a Qedo deployment domain. Such a domain consist of a number of computers where distributed systems (i.e. component assemblies) can be installed. How to start a name service depends on the used Name Service implementation. But you need to be sure to know the host where the name service is running and on what port the name service is listening. This information is needed for the other servers. The reference to the name service is set by using the Qedo configuration file. 
 
 To start a name service on a specific port usually works with the following option:
 
@@ -107,7 +237,7 @@ The ComponentInstallation server is an implementation of the ComponentInstallati
 \small
 \begin{verbatim}
 
-  ci
+  qci
 
 \end{verbatim}
 \normalsize
