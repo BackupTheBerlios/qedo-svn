@@ -72,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;C:\download\fltk\fltk-1.1.4"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(QEDO)/include/mico/;$(QEDO)/include/mico/windows;$(QEDO)/include/pthreads;C:\download\fltk\fltk-1.1.4"
 				PreprocessorDefinitions="BUILD_DINNER_CUTLERYIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"

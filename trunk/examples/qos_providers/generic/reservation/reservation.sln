@@ -1,21 +1,25 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QedoQoS_ReservationQoSProvider_SERVANT", "QedoQoS_ReservationQoSProvider_SERVANT\QedoQoS_ReservationQoSProvider_SERVANT.vcproj", "{D175B4C0-E00E-4A97-A2D2-3F2BABFC21A2}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QedoQoS_ReservationQoSProvider", "QedoQoS_ReservationQoSProvider\QedoQoS_ReservationQoSProvider.vcproj", "{E1827CBB-A00E-4A68-B633-DEC0EC7383C9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D175B4C0-E00E-4A97-A2D2-3F2BABFC21A2} = {D175B4C0-E00E-4A97-A2D2-3F2BABFC21A2}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "win32_assembly", "win32_assembly\win32_assembly.vcproj", "{74E67823-3D3B-4154-B51E-EEB27D6F8F4A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E1827CBB-A00E-4A68-B633-DEC0EC7383C9} = {E1827CBB-A00E-4A68-B633-DEC0EC7383C9}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug
-		ConfigName.1 = Debug_mico
-		ConfigName.2 = Debug_orbacus
-		ConfigName.3 = Debug_tao
-		ConfigName.4 = Release
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
-		{E1827CBB-A00E-4A68-B633-DEC0EC7383C9}.0 = {D175B4C0-E00E-4A97-A2D2-3F2BABFC21A2}
-		{74E67823-3D3B-4154-B51E-EEB27D6F8F4A}.0 = {E1827CBB-A00E-4A68-B633-DEC0EC7383C9}
+		Debug = Debug
+		Debug_mico = Debug_mico
+		Debug_orbacus = Debug_orbacus
+		Debug_tao = Debug_tao
+		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{D175B4C0-E00E-4A97-A2D2-3F2BABFC21A2}.Debug.ActiveCfg = Debug_tao|Win32

@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="QedoQoS_ReservationQoSProvider"
 	ProjectGUID="{E1827CBB-A00E-4A68-B633-DEC0EC7383C9}"
 	Keyword="Win32Proj">
@@ -55,7 +55,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_mico|Win32"
@@ -66,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;../QedoQoS_ReservationQoSProvider_SERVANT"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(QEDO)/include/mico;$(QEDO)/include/mico/windows;$(QEDO)/include/pthreads;../QedoQoS_ReservationQoSProvider_SERVANT"
 				PreprocessorDefinitions="BUILD_QEDOQOS_RESERVATIONQOSPROVIDER_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -83,7 +89,7 @@
 				AdditionalDependencies="qedoutil.lib ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/QedoQoS_ReservationQoSProvider.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib"
+				AdditionalLibraryDirectories="$(QEDO)/lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/QedoQoS_ReservationQoSProvider.pdb"
 				SubSystem="2"
@@ -93,8 +99,8 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="zip ../QedoQoS_ReservationQoSProvider.zip -j Debug_mico/QedoQoS_ReservationQoSProvider.dll ../QedoQoS_ReservationQoSProvider_SERVANT/Debug_mico/QedoQoS_ReservationQoSProvider_SERVANT.dll ../reservation.cidl
-zip ../QedoQoS_ReservationQoSProvider.zip meta-inf/QedoQoS_ReservationQoSProvider.ccd meta-inf/QedoQoS_ReservationQoSProvider.csd
+				CommandLine="$(QEDO)/bin/zip ../QedoQoS_ReservationQoSProvider.zip -j Debug_mico/QedoQoS_ReservationQoSProvider.dll ../QedoQoS_ReservationQoSProvider_SERVANT/Debug_mico/QedoQoS_ReservationQoSProvider_SERVANT.dll ../reservation.cidl
+$(QEDO)/bin/zip ../QedoQoS_ReservationQoSProvider.zip meta-inf/QedoQoS_ReservationQoSProvider.ccd meta-inf/QedoQoS_ReservationQoSProvider.csd
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -105,7 +111,13 @@ zip ../QedoQoS_ReservationQoSProvider.zip meta-inf/QedoQoS_ReservationQoSProvide
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_tao|Win32"
@@ -152,15 +164,26 @@ zip ../QedoQoS_ReservationQoSProvider.zip meta-inf/QedoQoS_ReservationQoSProvide
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
 				RelativePath="ClientInterceptor.cpp">
+			</File>
+			<File
+				RelativePath="component_valuetypes.cpp">
 			</File>
 			<File
 				RelativePath="QedoQoS_ReservationQoSProvider.cpp">
@@ -180,15 +203,15 @@ zip ../QedoQoS_ReservationQoSProvider.zip meta-inf/QedoQoS_ReservationQoSProvide
 			<File
 				RelativePath="ServerInterceptor.cpp">
 			</File>
-			<File
-				RelativePath="component_valuetypes.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
 				RelativePath="ClientInterceptor.h">
+			</File>
+			<File
+				RelativePath="component_valuetypes.h">
 			</File>
 			<File
 				RelativePath="QedoQoS_ReservationQoSProvider.h">
@@ -207,9 +230,6 @@ zip ../QedoQoS_ReservationQoSProvider.zip meta-inf/QedoQoS_ReservationQoSProvide
 			</File>
 			<File
 				RelativePath="ServerInterceptor.h">
-			</File>
-			<File
-				RelativePath="component_valuetypes.h">
 			</File>
 		</Filter>
 		<Filter
