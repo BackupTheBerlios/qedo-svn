@@ -88,6 +88,13 @@ private:
 	void genConsumerServants(IR__::ComponentDef_ptr component);
 	void genContextServantBegin(IR__::ComponentDef_ptr component);
 	void genContextServant(IR__::ComponentDef_ptr component);
+
+	void genProxyStubServantBegin(IR__::ComponentDef_ptr component);
+	void genProxyStubServant(IR__::ComponentDef_ptr component);
+	void proxyInterface(IR__::UsesDef_ptr uses, IR__::InterfaceDef_ptr intf);
+	void proxyOperation(IR__::UsesDef_ptr uses, IR__::OperationDef_ptr operation);
+	void proxyAttribute(IR__::UsesDef_ptr uses, IR__::AttributeDef_ptr attribute);
+
 	void genComponentServantBegin(IR__::ComponentDef_ptr component);
 	void genComponentServant(IR__::ComponentDef_ptr component);
 	void genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);

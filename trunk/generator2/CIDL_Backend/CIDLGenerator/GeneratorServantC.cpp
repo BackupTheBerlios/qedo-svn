@@ -1073,6 +1073,7 @@ GeneratorServantC::generate_component(IR__::ComponentDef* a_component) {
 	genComponentServantBegin(component_);
 	genComponentServant(component_);
 
+	genProxyStubServantBegin(component_);
 	close_module(out, component_);
 }
 
@@ -1693,6 +1694,193 @@ GeneratorServantC::genComponentServant(IR__::ComponentDef_ptr component)
 }
 
 void
+GeneratorServantC::genProxyStubServantBegin(IR__::ComponentDef_ptr component)
+{
+	out.unindent();
+	out << "#ifndef _QEDO_NO_QOS\n\n";
+	out.indent();
+
+	genProxyStubServant(component);
+
+	out.unindent();
+	out << "#endif //_QEDO_NO_QOS\n\n";
+	out.indent();
+};
+
+void
+GeneratorServantC::genProxyStubServant(IR__::ComponentDef_ptr component)
+{
+
+	// handle base component
+	IR__::ComponentDef_var base = component->base_component();
+	if(!CORBA::is_nil(base))
+	{ 
+		genProxyStubServant(base);
+	}
+
+
+	// handle receptacles
+	// generate a class for every receptacle
+	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Uses, false);
+	CORBA::ULong len = contained_seq->length();
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
+	{
+		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
+		
+		// handle interfaces
+		proxyInterface(a_uses.in(), IR__::InterfaceDef::_narrow(a_uses -> interface_type()));
+	}
+};
+
+void
+GeneratorServantC::proxyInterface(IR__::UsesDef_ptr uses, IR__::InterfaceDef_ptr intf)
+{
+	// base interfaces
+	IR__::InterfaceDefSeq_var base_seq = intf->base_interfaces();
+	CORBA::ULong base_len = base_seq->length();
+	CORBA::ULong i;
+	for( i= 0; i < base_len; i++)
+	{
+		proxyInterface(uses, (*base_seq)[i]);
+	}
+
+	// constructor
+	std::string cl_name = class_name_ + "_" +string(uses->name()) + "_stub";
+	out << cl_name << "::" << cl_name << "(";
+	out << mapFullName (IR__::InterfaceDef::_narrow(uses -> interface_type())) << "_ptr orig_stub, ";
+	out << "Components::Extension::StubInterceptorRegistration_ptr stub_dispatcher)\n{\n";
+	out.indent();
+	out << "orig_stub_ = " << mapFullName (IR__::InterfaceDef::_narrow(uses -> interface_type())) << "::_duplicate(orig_stub);\n";
+	out << "stub_dispatcher_ = Components::Extension::StubInterceptorRegistration::_duplicate((stub_dispatcher));\n";
+	out.unindent();
+	out << "};\n\n";
+    
+
+	//handleAttribute(intf);
+	IR__::ContainedSeq_var contained_seq = intf -> contents(CORBA__::dk_Attribute, false);
+	CORBA::ULong len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+		proxyAttribute(uses, a_attribute);
+	}
+	
+	
+	//handleOperation(intf);
+	contained_seq = intf->contents(CORBA__::dk_Operation, false);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::OperationDef_var a_operation = IR__::OperationDef::_narrow(((*contained_seq)[i]));
+		proxyOperation(uses, a_operation);
+	}
+};
+
+void
+GeneratorServantC::proxyAttribute(IR__::UsesDef_ptr uses, IR__::AttributeDef_ptr attribute)
+{
+	std::string attribute_name = mapName(attribute);
+	std::string cl_name = class_name_ + string(uses->name()) + "_stub";
+
+	// not read only
+	if(attribute->mode() == IR__::ATTR_NORMAL)
+	{
+		out << "void" << "\n";
+		out << cl_name << "::" << attribute_name << "(";
+		out << map_in_parameter_type(attribute->type_def()) << " param)\n";
+		out << "throw(CORBA::SystemException";
+		handleException(attribute);
+		out << ")\n{\n";
+		out.indent();
+		out << "try\n{\n";
+		out.indent();
+		out << " // call interceptor \n";
+		out << " // if true continue with call to original \n\n";
+		out.unindent();
+		out << "}\n\n\n";
+	}
+
+	out << map_return_type(attribute->type_def()) << "\n";
+	out << cl_name << "::" << attribute_name << "()\n";
+	out << "throw(CORBA::SystemException";
+	handleException(attribute);
+	out << ")\n{\n";
+	out.indent();
+	out << "try\n{\n";
+	out.indent();
+	out << "// call interceptor\n";
+	out << "// if true continue\n\n";
+	out.unindent();
+	out << "}\n\n\n";
+}
+
+void
+GeneratorServantC::proxyOperation(IR__::UsesDef_ptr uses, IR__::OperationDef_ptr operation)
+{
+	bool is_void = false;
+	std::string operation_name = mapName(operation);
+	std::string cl_name = class_name_ + "_" + string(uses->name()) + "_stub";
+
+	if(operation->result_def()->type()->kind() == CORBA::tk_void)
+	{
+		is_void = true;
+	}
+
+	out << map_return_type(operation->result_def()) << "\n";
+	out << cl_name << "::" << operation_name << "(";
+	IR__::ParDescriptionSeq* pards = operation->params();
+	CORBA::ULong len = pards->length();
+	CORBA::ULong i;
+	for( i= len; i > 0; i--)
+	{
+		if(i < len)
+		{
+			out << ", ";
+		}
+		IR__::ParameterDescription pardescr = (*pards)[i - 1];
+		if (pardescr.mode == IR__::PARAM_IN) {
+			out << map_in_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
+		}
+		if (pardescr.mode == IR__::PARAM_OUT) {
+			out << map_out_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
+		}
+		if (pardescr.mode == IR__::PARAM_INOUT) {
+			out << map_inout_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
+		}
+	}
+	out << ")\n";
+	out << "throw(CORBA::SystemException";
+	handleException(operation);
+	out << ")\n{\n";
+	out.indent();
+	out << "try\n{\n";
+	out.indent();
+	out << " // call interceptor\n";
+	out << "// if true continue\n\n";
+
+	if(!is_void)
+	{
+		out << "return ";
+	}
+	out << "orig_stub_ -> " << operation_name << "(";
+	for(i = len; i > 0; i--)
+	{
+		if(i < len)
+		{
+			out << ", ";
+		}
+		IR__::ParameterDescription pardescr = (*pards)[i - 1];
+		out << mapName(string(pardescr.name));
+	}
+	out.unindent();
+	out << ");\n";
+	out << "} catch (...){};\n\n";
+	out.unindent();
+	out << "}\n\n\n";
+}
+
+void
 GeneratorServantC::genContextServantBegin(IR__::ComponentDef_ptr component)
 {
 	class_name_ = string(component->name()) + "_Context_callback";
@@ -1818,6 +2006,33 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 			out << "return " << interface_name << "::_nil();\n";
 			out.unindent();
 			out << "}\n\n";
+
+			out.unindent();
+			out.unindent();
+			out << "#ifndef _QEDO_NO_QOS\n";
+			out.indent();
+			out.indent();
+			out << mapFullNameServant(component) + "_" + a_uses->name() + "_stub* new_stub =\n";
+			out.indent();
+			out << "new " << mapFullNameServant(component) + "_" + a_uses->name() + "_stub ( \n";
+			out.indent();
+			if( interface_name.compare( "CORBA::Object" ) == 0 )
+			{
+				out << "(*connections)[0]->objref();\n\n";
+			}
+			else 
+			{
+				out << interface_name << "::_narrow ((*connections)[0]->objref())\n";
+			}
+			out << ", Components::Extension::StubInterceptorRegistration::_duplicate(stub_registration_));\n";
+			out.unindent();
+			out.unindent();
+			out << interface_name << "_var use = new_stub;";
+			out.unindent();
+			out.unindent();
+			out << "\n#else\n\n";
+			out.indent(); 
+			out.indent();
 			out << interface_name << "_var use = ";
 			if( interface_name.compare( "CORBA::Object" ) == 0 )
 			{
@@ -1827,6 +2042,12 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 			{
 				out << interface_name << "::_narrow ((*connections)[0]->objref());\n\n";
 			}
+
+			out.unindent();
+			out.unindent();
+			out << "#endif //_QEDO_NO_QOS\n\n";
+			out.indent();
+			out.indent();
 			out << "return use._retn();\n";
 			out.unindent();
 			out << "}\n\n\n";

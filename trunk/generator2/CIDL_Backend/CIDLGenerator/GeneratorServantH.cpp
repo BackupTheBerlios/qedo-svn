@@ -356,6 +356,7 @@ GeneratorServantH::generate_component(IR__::ComponentDef* a_component, CIDL::Lif
 	open_module(out, a_component, "SERVANT_");
 	out << "\n\n";
 
+	genProxyStubServant(a_component, lc);
 	genContextServant(a_component, lc);
 	genComponentServant(a_component, lc);
 
@@ -830,6 +831,20 @@ GeneratorServantH::genComponentServantBody(IR__::ComponentDef_ptr component, CID
 }
 
 void
+GeneratorServantH::genProxyStubServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc)
+{
+
+	out.unindent();
+	out << "#ifndef _QEDO_NO_QOS\n\n";
+	out.indent();
+	// generate a proxy class for every receptacle
+	genProxyStubServantBody(component);
+	out.unindent();
+	out << "#endif // _QEDO_NO_QOS\n\n";
+	out.indent();
+}
+
+void
 GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc)
 {
 
@@ -898,6 +913,59 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component, CIDL::Lif
 	out << "};\n\n\n";
 }
 
+void
+GeneratorServantH::genProxyStubServantBody(IR__::ComponentDef_ptr component)
+{
+	// handle base component
+	IR__::ComponentDef_var base = component->base_component();
+	if(!CORBA::is_nil(base))
+	{ 
+		genProxyStubServantBody(base);
+	}
+
+
+	// handle receptacles
+	// generate a class for every receptacle
+	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Uses, false);
+	CORBA::ULong len = contained_seq->length();
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
+	{
+		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
+		
+		// generate class 
+		out << "class " << component->name() << "_" << a_uses -> name() << "_stub : public virtual ";
+		out << mapFullName (IR__::InterfaceDef::_narrow(a_uses -> interface_type())) << "\n";
+		out << "{\n";
+
+		// private members
+		out << "private:\n";
+		out.indent();
+		out << mapFullName (IR__::InterfaceDef::_narrow(a_uses -> interface_type())) << "_var orig_stub_;\n";
+		out << "Components::Extension::StubInterceptorRegistration_var stub_dispatcher_;\n";
+		out.unindent();
+
+		// public members
+		out << "public:\n";
+		// constructor
+		out << component->name() << "_" << a_uses -> name() << "_stub(";
+		out << mapFullName (IR__::InterfaceDef::_narrow(a_uses -> interface_type())) << "_ptr orig_stub, ";
+		out << "Components::Extension::StubInterceptorRegistration_ptr stub_dispatcher);\n\n";
+
+		out.indent();
+		// handle the operation
+		doInterface(IR__::InterfaceDef::_narrow(a_uses -> interface_type()));
+		out.unindent();
+		out << "\n};\n\n";
+	}
+
+	//handle emits
+	// generate a clas for every emitter
+
+
+	// handle publishes
+	// generate a class for ervery publisher
+};
 
 void
 GeneratorServantH::genContextServantBody(IR__::ComponentDef_ptr component)

@@ -81,6 +81,8 @@ private:
 	void genFacetServants(IR__::ComponentDef_ptr component);
 	void genSinkServants(IR__::ComponentDef_ptr component);
 	void genConsumerServants(IR__::ComponentDef_ptr component);
+	void genProxyStubServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
+	void genProxyStubServantBody(IR__::ComponentDef_ptr component);
 	void genContextServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
 	void genContextServantBody(IR__::ComponentDef_ptr component);
 	void genComponentServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
