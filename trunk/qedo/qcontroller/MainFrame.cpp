@@ -31,7 +31,7 @@
 #include "wx/html/helpctrl.h"
 
 #include "qedoicon.xpm"
-
+#include "launcher.xpm"
 
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
@@ -54,14 +54,15 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
     wxPoint notebook_point(5,5);
 
 	hf=0;
-	
+
 	notebook_ = new ControllerNotebook(panel_, ID_NOTEBOOK, notebook_point, notebook_size);
 
 	// create image list
 	wxSize imagesize (32,32);
 	wxImageList* notebook_image_list = new wxImageList(imagesize.GetWidth(), imagesize.GetHeight(), TRUE);
 
-	notebook_image_list -> Add ( wxArtProvider::GetIcon(wxART_INFORMATION, wxART_OTHER, imagesize));
+	notebook_image_list -> Add ( wxIcon(launcher_xpm));
+	notebook_image_list -> Add ( wxIcon(qedoicon_xpm));
 
 	notebook_ -> SetImageList(notebook_image_list);
 
@@ -98,7 +99,7 @@ void MainFrame::onHelp()
 	int t=hf->Show();
 	*/
 	wxHtmlHelpController *help=new wxHtmlHelpController(wxHF_DEFAULT_STYLE);
-	
+
 	help->AddBook("qedodoc/controllerdoc.hhp",true);
 	help->Display("Contents");
 
