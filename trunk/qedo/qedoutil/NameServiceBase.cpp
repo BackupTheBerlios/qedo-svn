@@ -26,7 +26,7 @@
 #include <iostream>
 
 
-static char rcsid[] UNUSED = "$Id: NameServiceBase.cpp,v 1.10 2003/09/09 11:57:49 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: NameServiceBase.cpp,v 1.11 2003/10/05 19:31:43 tom Exp $";
 
 
 namespace Qedo {
@@ -87,7 +87,7 @@ NameServiceBase::initNameService(CORBA::ORB_ptr orb)
 bool
 NameServiceBase::registerName(std::string name, CORBA::Object_ptr obj, bool rebind)
 {
-    if (name == "")
+    if (name.empty())
     {
         return false;
     }
@@ -109,7 +109,7 @@ NameServiceBase::registerName(std::string name, CORBA::Object_ptr obj, bool rebi
 
     // make sure each context is bound
     CosNaming::NamingContext_var context = nameService_;
-    while (contexts != "")
+    while (contexts.length())
     {
         std::string ctx = contexts;
         delimiter_pos = contexts.find_first_of("/");
@@ -222,7 +222,7 @@ NameServiceBase::registerName(std::string name, CORBA::Object_ptr obj, bool rebi
 CORBA::Object_ptr
 NameServiceBase::resolveName(std::string name)
 {
-    if (name == "")
+    if (name.empty())
     {
         return 0;
     }
@@ -233,7 +233,7 @@ NameServiceBase::resolveName(std::string name)
     std::string::size_type delimiter_pos;
     int index = 0;
 
-    while (binding != "")
+    while (binding.length())
     {
         aName.length(index + 1);
         delimiter_pos = binding.find_first_of("/");
