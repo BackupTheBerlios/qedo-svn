@@ -27,10 +27,10 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 
 	 notebook_ -> CreateControllerPages(sizerFrame_);
 
-	
+
 //	 sizerNotebook_ = new wxNotebookSizer(notebook_);
 //	 sizerFrame_->Add(sizerNotebook_, 1, wxEXPAND | wxALL, 4);
- 
+
 	 panel_->SetAutoLayout(TRUE);
 
 //	 sizerFrame_->Fit(this);
@@ -44,3 +44,9 @@ MainFrame::~MainFrame() {
 
 };
 
+void
+MainFrame::Dump(wxSTD ostream& str)
+ {
+
+ }
+ 

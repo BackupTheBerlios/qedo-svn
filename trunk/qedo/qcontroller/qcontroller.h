@@ -8,6 +8,12 @@ class QedoController : public wxApp
 {
 public:
     bool OnInit();
+    void OnAssert(const wxChar *file,
+                          int line,
+                          const wxChar *cond,
+                          const wxChar *msg);
+
+
 };
 
 DECLARE_APP(QedoController)
@@ -20,3 +26,4 @@ enum ID_CONTROLS
 };
 
 #endif
+

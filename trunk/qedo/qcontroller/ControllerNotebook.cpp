@@ -38,3 +38,10 @@ void ControllerNotebook::CreateControllerPages(wxBoxSizer * sizerFrame)
     SetSelection(0);
 
 }
+
+
+void
+ControllerNotebook::Dump(wxSTD ostream& str)
+ {
+
+ }

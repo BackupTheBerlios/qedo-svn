@@ -19,9 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #wxWindows related
-WXWINDOWS = $(shell @WXWINDOWSDIR@/bin/wx-config --prefix)
-WXWINDOWSCXXFLAGS = $(shell @WXWINDOWSDIR@/bin/wx-config --cxxflags)
-WXWINDOWSLIBS = $(shell @WXWINDOWSDIR@/bin/wx-config --libs)
+WXWINDOWS = $(shell @WXGTKDIR@/bin/wx-config --prefix)
+WXWINDOWSCXXFLAGS = $(shell @WXGTKDIR@/bin/wx-config --cxxflags)
+WXWINDOWSLIBS = $(shell @WXGTKDIR@/bin/wx-config --libs)
 
 CXX = @CXX@
 INCLUDES+=-I. \
@@ -37,6 +37,8 @@ CC=$(CXX)
 
 
 LIBS += -L../qedoutil -lqedoutil \
+	-L../ComponentIDL -lComponentIDL \
+	-L../ComponentContainer -lComponentContainer \
 	$(NAMING_LIBS)\
 	@XERCES_LIBS@ \
 	-luuid

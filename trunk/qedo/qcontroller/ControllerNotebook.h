@@ -14,6 +14,8 @@ public:
         const wxSize& size = wxDefaultSize, long style = 0);
 
     void CreateControllerPages(wxBoxSizer * sizerFrame);
+    void Dump(wxSTD ostream& str);
+
 private:
 
 		wxNotebookSizer *sizerNotebook_;

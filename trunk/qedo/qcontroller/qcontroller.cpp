@@ -35,3 +35,13 @@ bool QedoController::OnInit()
 
     return TRUE;
 }
+
+void
+QedoController::OnAssert(const wxChar *file,
+                          int line,
+                          const wxChar *cond,
+                          const wxChar *msg)
+ {
+
+ }
+

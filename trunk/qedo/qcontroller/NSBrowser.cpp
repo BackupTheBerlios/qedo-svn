@@ -35,7 +35,7 @@ NSBrowserTreeCtrl::NSBrowserTreeCtrl(wxWindow *parent, const wxWindowID id,
 	obj = orb -> string_to_object( ns.c_str() );
 	CreateImageList();
 
-	
+
 	try {
 		nameService = CosNaming::NamingContext::_narrow(obj.in());
 	} catch (CORBA::SystemException) {};
@@ -114,7 +114,7 @@ void NSBrowserTreeCtrl::AddItemsRecursively(const wxTreeItemId& idParent,
 	for (CORBA::ULong i = 0; i < bl->length(); i++)
 	{
 		// if context
-		if ((*bl)[i].binding_type = CosNaming::ncontext)
+		if ((*bl)[i].binding_type == CosNaming::ncontext)
 		{
 			CosNaming::NamingContext_var child_context;
 			CORBA::Object_var tmp_obj;
@@ -141,3 +141,9 @@ void NSBrowserTreeCtrl::AddItemsRecursively(const wxTreeItemId& idParent,
 	}
 
 }
+
+void
+NSBrowserTreeCtrl::Dump(wxSTD ostream& str)
+ {
+
+ }

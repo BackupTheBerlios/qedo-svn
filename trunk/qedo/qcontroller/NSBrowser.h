@@ -37,6 +37,7 @@ public:
                const wxPoint& pos, const wxSize& size,
                long style);
     virtual ~NSBrowserTreeCtrl();
+    void Dump(wxSTD ostream& str);
 
 private:
 		int m_imageSize;
