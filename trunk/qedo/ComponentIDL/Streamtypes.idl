@@ -1,0 +1,9 @@
+module StreamComponents {
+
+module Streamtypes {
+
+streamtype <> Raw;
+
+};
+
+};
