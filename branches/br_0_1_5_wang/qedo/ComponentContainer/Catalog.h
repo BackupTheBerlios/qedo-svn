@@ -58,6 +58,8 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 
 		Connector_ptr getConnector();
 
+		int getCapacity();
+
 		//
 		// IDL:omg.org/CosPersistentState/CatalogBase/access_mode:1.0
 		//
@@ -95,7 +97,7 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 
 	protected:
 
-		Connector_ptr pConnector_;
+		Connector_var pConnector_;
 		std::list<StorageHomeBaseImpl*> lHomeBases_;
 		std::list<StorageHomeBaseImpl*>::iterator homeBaseIter;
 

@@ -21,43 +21,84 @@
 /***************************************************************************/
 #include "Connector.h"
 
+/*
+* This connector can know how many sessions or session pools can be established
+* in a given database. It can also control how many storagehome can share one 
+* session or session pool dynamically and explicitly
+* The limitation of this connector is it can support only one database, this can
+* be improved in the future ;-)
+*/
 
 namespace Qedo
 {
 
-ConnectorImpl::ConnectorImpl()
+ConnectorImpl::ConnectorImpl() :
+	iMaxConnections(-100)
 {
 }
 
-ConnectorImpl::ConnectorImpl(char* szImplID)
+ConnectorImpl::ConnectorImpl(char* szImplID) :
+	iMaxConnections(-100) // -100 means this value is to be initiated
 {
 	strImplID_ = szImplID;
 }
 
 ConnectorImpl::~ConnectorImpl()
 {	
+	std::cout << "destruct ConnectorImpl\n";
+
 	// delete all sessions and session pool(s)!
 	if(!lSessions_.empty())
 	{
-		std::list<SessionImpl*>::iterator sessionIter;
+		std::list<Sessio_var>::iterator sessionIter;
 
 		for( sessionIter=lSessions_.begin(); sessionIter!=lSessions_.end(); sessionIter++ )
-			(*sessionIter)->close();
-
+		{
+			std::cout << "convert session to impl...\n";
+			SessionImpl* pSession = dynamic_cast <SessionImpl*> ((*sessionIter).in());
+			std::cout << "close session...\n";
+			pSession->close();
+			std::cout << "remove session's ref 2...\n";
+			lSessions_.erase(sessionIter);
+			//pSession->_remove_ref();
+			std::cout << "session's ref removed...\n";
+		}
+/*
+		std::cout << "make session list empty...\n";
 		lSessions_.clear();
+		std::cout << "end of make session list empty...\n";
+*/
 	}
 
 	if(!lSessionPools_.empty())
 	{
-		std::list<SessionPoolImpl*>::iterator sessionPoolIter;
+		std::list<SessionPool_var>::iterator sessionPoolIter;
 
 		for( sessionPoolIter=lSessionPools_.begin(); sessionPoolIter!=lSessionPools_.end(); sessionPoolIter++ )
-			(*sessionPoolIter)->close();
+		{
+			std::cout << "convert session pool to impl...\n";
+			SessionPoolImpl* pSessionPool = dynamic_cast <SessionPoolImpl*> ((*sessionPoolIter).in());
+			std::cout << "close session pool...\n";
+			pSessionPool->close();
+			std::cout << "remove session pool's ref...\n";
+			pSessionPool->_remove_ref();
+		}
 
-		lSessionPools_.clear();
+		//lSessionPools_.clear();
 	}
+	std::cout << "end of destrctor of connector...\n";
+}
 
-	//_remove_ref();
+bool
+ConnectorImpl::checkMaxConnections()
+{
+	// '=0' means there is no specified limit or the limit is unknown
+	// '>0' means that connector know how many sessions or session pools it can be create
+	if( iMaxConnections > 0 )
+		if( (lSessions_.size()+lSessionPools_.size()) == iMaxConnections )
+			return false;
+
+	return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,15 +116,14 @@ ConnectorImpl::implementation_id()
 Pid* 
 ConnectorImpl::get_pid(StorageObjectBase obj)
 {
-	Pid* pPid = NULL;
 	StorageObject* pObj = dynamic_cast <StorageObject*> (obj);
 
 	if( pObj==NULL )
 		throw CORBA::PERSIST_STORE();
 	
-    pPid = pObj->get_pid();
+	Pid_var pPid = pObj->get_pid();
 
-    return pPid;
+    return pPid._retn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -92,15 +132,14 @@ ConnectorImpl::get_pid(StorageObjectBase obj)
 ShortPid* 
 ConnectorImpl::get_short_pid(StorageObjectBase obj)
 {
-	ShortPid* pSpid = NULL;
 	StorageObject* pObj = dynamic_cast <StorageObject*> (obj);
 
 	if( pObj==NULL )
 		throw CORBA::PERSIST_STORE();
 	
-    pSpid = pObj->get_short_pid();
+    ShortPid_var pSpid = pObj->get_short_pid();
 
-    return pSpid;
+    return pSpid._retn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -116,6 +155,30 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 {
 	DEBUG_OUT("ConnectorImpl::create_basic_session() is called");
 
+	Sessio_var _session = 0;
+
+	if( !lSessions_.empty() )
+	{
+		//get a session
+		std::list<Sessio_var>::iterator sessionIter;
+
+		for( sessionIter=lSessions_.begin(); sessionIter!=lSessions_.end(); sessionIter++ )
+		{
+			SessionImpl* pSession = dynamic_cast <SessionImpl*> ((*sessionIter).in());
+			if( (pSession->getCapacity()) < MAX_CAPACITY )
+			{
+				_session = Sessio::_narrow(pSession);
+				return _session._retn();
+			}
+		}
+	}
+	
+	if( !checkMaxConnections() )
+	{
+		NORMAL_ERR("The limitation of maximal connections is reached!");
+		throw CORBA::PERSIST_STORE();
+	}
+	
 	if(additional_parameters.length()==0)
 		return NULL;
 
@@ -137,9 +200,14 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 	if( pSession->Init()==FALSE || pSession->DriverConnect(strConn.c_str())==FALSE )
 		throw CORBA::PERSIST_STORE();
 
-	lSessions_.push_back(pSession);
+	// this value will be initiated if session is created at first time
+	if( iMaxConnections == -100 )
+		iMaxConnections = pSession->GetMaxDriverConnections();
 
-	return pSession;
+	_session = Sessio::_duplicate(pSession);
+	lSessions_.push_back(_session);
+
+	return _session._retn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -152,6 +220,30 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 									const ParameterList& additional_parameters)
 {
 	DEBUG_OUT("ConnectorImpl::create_session_pool() is called");
+
+	SessionPool_var _sessionpool = 0;
+
+	if( !lSessionPools_.empty() )
+	{
+		//get a session pool
+		std::list<SessionPool_var>::iterator sessionPoolIter;
+
+		for( sessionPoolIter=lSessionPools_.begin(); sessionPoolIter!=lSessionPools_.end(); sessionPoolIter++ )
+		{
+			SessionPoolImpl* pSessionPool = dynamic_cast <SessionPoolImpl*> ((*sessionPoolIter).in());
+			if( (pSessionPool->getCapacity()) < MAX_CAPACITY )
+			{
+				_sessionpool = SessionPool::_narrow(pSessionPool);
+				return _sessionpool._retn();
+			}
+		}
+	}
+
+	if( !checkMaxConnections() )
+	{
+		NORMAL_ERR("The limitation of maximal connections is reached!");
+		throw CORBA::PERSIST_STORE();
+	}
 
 	if(additional_parameters.length()==0)
 		return NULL;
@@ -173,10 +265,15 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 
 	if( pSessionPool->Init()==FALSE || pSessionPool->DriverConnect(strConn.c_str())==FALSE )
 		throw CORBA::PERSIST_STORE();
-	
-	lSessionPools_.push_back(pSessionPool);
 
-	return pSessionPool;
+	// this value will be initiated if session pool is created at first time
+	if( iMaxConnections == -100 )
+		iMaxConnections = pSessionPool->GetMaxDriverConnections();
+	
+	_sessionpool = SessionPool::_duplicate(pSessionPool);
+	lSessionPools_.push_back(_sessionpool);
+
+	return _sessionpool._retn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -192,7 +289,7 @@ ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
 											   StorageObjectFactory factory)
 {
 	DEBUG_OUT("ConnectorImpl::register_storage_object_factory() is called");
-/*
+
 	std::string strName = storage_type_name;
 	std::map<std::string, StorageObjectFactory>::iterator objFactoryIter;
 	objFactoryIter = objFactoryMap_.find(strName);
@@ -205,8 +302,7 @@ ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
 	{
 		objFactoryMap_[strName] = factory;
 		return NULL;
-	}*/
-	return 0;
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -223,11 +319,11 @@ ConnectorImpl::register_storage_home_factory(const char* storage_home_type_name,
 											 StorageHomeFactory factory)
 {
 	DEBUG_OUT("ConnectorImpl::register_storage_home_factory() is called");
-/*
+
 	std::string strName = storage_home_type_name;
 	std::map<std::string, StorageHomeFactory>::iterator homeFactoryIter;
 	homeFactoryIter = homeFactoryMap_.find(strName);
-
+	
 	if( homeFactoryIter!=homeFactoryMap_.end() )
 	{
 		return homeFactoryMap_[strName];
@@ -236,8 +332,7 @@ ConnectorImpl::register_storage_home_factory(const char* storage_home_type_name,
 	{
 		homeFactoryMap_[strName] = factory;
 		return NULL;
-	}*/
-	return 0;
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

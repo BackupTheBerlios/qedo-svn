@@ -31,6 +31,7 @@ ConnectorRegistryImpl::ConnectorRegistryImpl()
 
 ConnectorRegistryImpl::~ConnectorRegistryImpl()
 {
+	std::cout << "destruct ConnectorRegistryImpl\n";
 }
 
 Connector_ptr
@@ -68,8 +69,6 @@ ConnectorRegistryImpl::unregister_connector(const char* implementation_id)
 	if( connIter_ == connectors_.end())
 		throw CosPersistentState::NotFound();
 	
-    //ConnectorImpl* tmp = dynamic_cast <ConnectorImpl*> ((*connIter_).second);
-	//tmp->_remove_ref();
 	connectors_.erase(strID);
 }
 

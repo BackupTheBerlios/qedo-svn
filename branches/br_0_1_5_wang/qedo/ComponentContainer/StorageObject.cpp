@@ -26,8 +26,8 @@ namespace Qedo
 {
 
 StorageObjectImpl::StorageObjectImpl() :
-	pPid_(NULL),
-	pShortPid_(NULL),
+	pPid_(new CosPersistentState::Pid),
+	pShortPid_(new CosPersistentState::ShortPid),
 	strUpdate_(""),
 	strSelect_(""),
 	pHomeBaseImpl_(NULL),
@@ -37,6 +37,7 @@ StorageObjectImpl::StorageObjectImpl() :
 
 StorageObjectImpl::~StorageObjectImpl()
 {
+	std::cout << "destruct StorageObjectImpl\n";
 }
 
 std::string
@@ -64,7 +65,25 @@ StorageObjectImpl::setModified(bool bModified)
 }
 
 void
-StorageObjectImpl::setValue(std::map<std::string, CORBA::Any> valueMap)
+StorageObjectImpl::set_pid(CosPersistentState::Pid* pPid)
+{
+	pPid_->length( pPid->length() );
+
+	for( CORBA::ULong i=0; i<pPid->length(); i++ )
+		(*pPid_)[i] = (*pPid)[i];
+}
+
+void
+StorageObjectImpl::set_short_pid(CosPersistentState::ShortPid* pShortPid)
+{
+	pShortPid_->length( pShortPid->length() );
+
+	for( CORBA::ULong i=0; i<pShortPid->length(); i++ )
+		(*pShortPid_)[i] = (*pShortPid)[i];
+}
+
+void
+StorageObjectImpl::setValue(std::map<std::string, CORBA::Any>& valueMap)
 { 
 	throw CORBA::NO_IMPLEMENT();
 }

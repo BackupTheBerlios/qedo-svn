@@ -73,6 +73,7 @@ CONTAINERDLL_API bool comparePid(const CosPersistentState::Pid& rSrc, const CosP
 CONTAINERDLL_API bool compareShortPid(const CosPersistentState::ShortPid& rSrc, const CosPersistentState::ShortPid& rDest);
 
 CONTAINERDLL_API std::string convertBool2String(bool bc);
+CONTAINERDLL_API std::string convert2Lowercase(std::string strIn);
 
 /** @} */
 

@@ -28,6 +28,7 @@
 
 #include "DOMXMLParser.h"
 #include "PlatformBase.h"
+#include "CORBADepends_skel.h"
 #include <string>
 #include <vector>
 #include <map>
@@ -61,8 +62,13 @@ private:
 	std::vector<std::string>				vCppNative_;
 	/** the vector for sql type */
 	std::vector<std::string>				vSql_;
+	/** database connection information - name */
+	std::vector<std::string>				vName_;
+	/** database connection information - value */
+	std::vector<std::string>				vValue_;
     /** the database connection string */
 	std::string								strConn_;
+	
 
     /**
 	 * handle connection
@@ -104,6 +110,9 @@ public:
 	 * read database connection information
 	 */
 	std::string readConnection(std::string descriptor)
+		throw(DTMReadException);
+
+	void readConnection(std::string descriptor, CosPersistentState::ParameterList& params)
 		throw(DTMReadException);
 
 	/**

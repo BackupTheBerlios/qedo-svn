@@ -27,13 +27,14 @@ namespace Qedo
 {
 
 StorageHomeBaseImpl::StorageHomeBaseImpl() :
-	szHomeName_( NULL ),
 	pCatalogBase_( NULL )
 {
 }
 
 StorageHomeBaseImpl::~StorageHomeBaseImpl()
 {
+	std::cout << "destruct StorageHomeBaseImpl\n";
+
 	if( !lObjectes_.empty() )
 	{	
 		for( objIter_=lObjectes_.begin(); objIter_!=lObjectes_.end(); objIter_++ )
@@ -44,18 +45,17 @@ StorageHomeBaseImpl::~StorageHomeBaseImpl()
 
 	if( !lTempList_.empty() )
 		lTempList_.clear();
-
-	delete szHomeName_;
-	szHomeName_ = NULL;
 }
 
 void
 StorageHomeBaseImpl::Init( CatalogBase_ptr pCatalogBase, const char* szHomeName )
 {
-	pCatalogBase_ = pCatalogBase;
-	strcpy( szHomeName_, szHomeName );
-	
-	QDRecordset::Init( (dynamic_cast <CatalogBaseImpl*> (pCatalogBase_))->getHDBC() );
+	strHomeName_ = szHomeName;
+
+	pCatalogBase_ = CatalogBase::_duplicate(pCatalogBase);
+	CatalogBaseImpl* pCatalog = dynamic_cast <CatalogBaseImpl*> ( pCatalogBase_.in() );
+
+	QDRecordset::Init( pCatalog->getHDBC() );
 }
 
 void
@@ -68,7 +68,7 @@ StorageHomeBaseImpl::destroyObject( Pid* pPid )
 
 	std::string strSqlDel;
 	strSqlDel = "DELETE FROM ";
-	strSqlDel.append((const char*)szHomeName_);
+	strSqlDel += strHomeName_;
 	strSqlDel += " WHERE pid LIKE \'";
 	strSqlDel += strPid;
 	strSqlDel += "\';";
@@ -76,7 +76,7 @@ StorageHomeBaseImpl::destroyObject( Pid* pPid )
 	strSqlDel += strPid;
 	strSqlDel += "\';";
 
-	CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);
+	CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_.in());
 	pCatalogBaseImpl->ExecuteSQL(strSqlDel.c_str());
 }
 
@@ -90,7 +90,7 @@ StorageHomeBaseImpl::objectExists( Pid* pPid )
 
 	std::string strSqlSel;
 	strSqlSel = "SELECT COUNT(*) FROM ";
-	strSqlSel.append((const char*)szHomeName_);
+	strSqlSel += strHomeName_;
 	strSqlSel += " WHERE pid LIKE \'";
 	strSqlSel += strPid;
 	strSqlSel += "\';";
@@ -130,7 +130,7 @@ StorageHomeBaseImpl::find_by_pid(std::string pid)
 	//if not in the list
 	std::string strToExecute;
 	strToExecute = "SELECT * FROM ";
-	strToExecute.append((const char*)szHomeName_);
+	strToExecute += strHomeName_;
 	strToExecute += " WHERE pid LIKE \'";
 	strToExecute += pid;
 	strToExecute += "\';";
@@ -148,7 +148,7 @@ StorageHomeBaseImpl::find_by_pid(std::string pid)
 #ifdef MICO_ORB
 		StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();
 #endif
-		CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);
+		CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_.in());
 		factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory("", factory);
 		StorageObjectImpl* pObjectImpl = factory->create();
 		factory->_remove_ref();
@@ -190,7 +190,7 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 	
 	std::string strToExecute;
 	strToExecute = "SELECT * FROM ";
-	strToExecute.append((const char*)szHomeName_);
+	strToExecute += strHomeName_;
 	strToExecute += " WHERE spid LIKE \'";
 	strToExecute += strShortPid;
 	strToExecute += "\';";
@@ -208,7 +208,7 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 #ifdef MICO_ORB
 		StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();
 #endif
-		CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);
+		CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_.in());
 		factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory("", factory);
 		StorageObjectImpl* pObjectImpl = factory->create();
 		factory->_remove_ref();
@@ -229,7 +229,7 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 CatalogBase_ptr 
 StorageHomeBaseImpl::get_catalog()
 {
-	return pCatalogBase_;
+	return CatalogBase::_duplicate(pCatalogBase_.in());
 }
 
 std::string
@@ -418,7 +418,7 @@ StorageHomeBaseImpl::RefreshByPid(std::vector<Pid> lPidList)
 char*
 StorageHomeBaseImpl::getStorageHomeName()
 {
-	return szHomeName_;
+	return ( (char*)(strHomeName_.c_str()) );
 }
 
 void 

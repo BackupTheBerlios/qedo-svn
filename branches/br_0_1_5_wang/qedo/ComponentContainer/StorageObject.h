@@ -51,9 +51,13 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 
 		void setModified(bool bModified);
 
+		void set_pid(CosPersistentState::Pid* pPid);
+
+		void set_short_pid(CosPersistentState::ShortPid* pShortPid);
+
 		void setStorageHome( StorageHomeBaseImpl* pHomeBaseImpl );
 
-		virtual void setValue(std::map<std::string, CORBA::Any> valueMap);
+		virtual void setValue(std::map<std::string, CORBA::Any>& valueMap);
 
 		//
 		// normal mapping of PSDL operations

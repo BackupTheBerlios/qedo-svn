@@ -78,9 +78,9 @@ public:
 	 */
 	~EntityHomeServant();
 	
-	virtual std::vector<std::string> get_table_info() = 0;
+	virtual void get_table_info(std::map<std::string, std::string>& mTables) = 0;
 
-	virtual void register_storage_factory(ConnectorRegistry_ptr pConnReg) = 0;
+	virtual void init_datastore(ConnectorRegistry_ptr pConnReg, Sessio_ptr pSession) = 0;
 
 };
 

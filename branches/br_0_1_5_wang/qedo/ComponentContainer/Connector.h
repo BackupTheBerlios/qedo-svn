@@ -50,6 +50,8 @@ class CONTAINERDLL_API ConnectorImpl : public virtual CosPersistentState::Connec
 		
 		~ConnectorImpl();
 
+		bool checkMaxConnections();
+
 		//
 		// IDL:omg.org/CosPersistentState/Connector/implementation_id:1.0
 		//
@@ -105,10 +107,12 @@ class CONTAINERDLL_API ConnectorImpl : public virtual CosPersistentState::Connec
 														 SessionPoolFactory factory);
 
 	private:
-
+		
+		static const int MAX_CAPACITY = 100;
+		int iMaxConnections;
 		std::string strImplID_;
-		std::list<SessionImpl*> lSessions_;
-		std::list<SessionPoolImpl*> lSessionPools_;
+		std::list<Sessio_var> lSessions_;
+		std::list<SessionPool_var> lSessionPools_;
 		std::map<std::string, StorageObjectFactory> objFactoryMap_;
 		std::map<std::string, StorageHomeFactory> homeFactoryMap_;
 };

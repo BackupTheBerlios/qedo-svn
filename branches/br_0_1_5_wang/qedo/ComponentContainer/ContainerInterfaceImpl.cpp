@@ -38,7 +38,7 @@
 #endif
 
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.5 2004/02/04 14:17:37 hao Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.6 2004/02/07 13:47:26 hao Exp $";
 
 
 namespace Qedo {
@@ -657,9 +657,7 @@ throw (Components::Deployment::UnknownImplId,
 			throw Components::Deployment::InstallationFailure();
 		}
 
-		//
 		//get etc path
-		//
 		std::string etc_path = Qedo::getEnvironment ("QEDO");
 
 		if (etc_path == "")
@@ -681,81 +679,69 @@ throw (Components::Deployment::UnknownImplId,
 	#endif
 		}
 		
-		//
-		//get database connect-string
-		//
+		//get connector register
+		ConnectorRegistry_var pConnReg = component_server_->getConnectorRegistry();
+		if( ! pConnReg )
+		{
+			std::cout << "pConnReg is NULL" << std::endl;
+			throw Components::Deployment::InstallationFailure();
+		}
+
+		//create a session ...
 		DTMReader reader;
-		std::string strConn;
+		CosPersistentState::ParameterList params;
+
 		try 
 		{
-			strConn = reader.readConnection( etc_path+"database.xml" );
+			reader.readConnection( etc_path+"database.xml", params );
 		}
 		catch( DTMReadException )
 		{
 			std::cerr << "!!!!! Error during reading database.xml" << std::endl;
 			throw Components::Deployment::InstallationFailure();
 		}
-
-		std::vector<std::string> vecTableInfo;
-		vecTableInfo = entity_home->get_table_info();
-
-		//
-		//connect database
-		//
-		QDDatabase pdb;
-		pdb.Init();
-		if(!pdb.DriverConnect(strConn.c_str()))
-		{
-			std::cout << "Failed to connect to database!" << std::endl;
-			throw Components::Deployment::InstallationFailure();
-		}
 		
-		//check whether PID_CONTENT exists
-		if(!pdb.IsTableExist("PID_CONTENT"))
+		Connector_var pConn = pConnReg->find_connector("");
+
+		std::cout << "creating session ...\n";
+		CosPersistentState::Sessio_var pSession = pConn->create_basic_session(CosPersistentState::READ_WRITE, "", params);
+		SessionImpl* pSessionImpl = dynamic_cast <SessionImpl*> (pSession.in());
+		
+		std::map<std::string, std::string> mTables;
+		std::map<std::string, std::string>::iterator iter;
+		entity_home->get_table_info(mTables);
+		
+		std::string strTable = "PID_CONTENT";
+		strTable = convert2Lowercase(strTable);
+		if( ! pSessionImpl->IsTableExist(strTable.c_str()) )
 		{
 			std::stringstream strContent;
 			strContent << "create table PID_CONTENT ( PID VARCHAR(254) not null, ";
 			strContent << "OWNHOME VARCHAR(254) not null, ";
 			strContent << "constraint PK_PIDCONTENT primary key (PID));";
 
-			pdb.ExecuteSQL(strContent.str().c_str());
+			pSessionImpl->ExecuteSQL(strContent.str().c_str());
 		}
 
-		//
 		//create table in the database
-		//
-		for(int i=0; i<vecTableInfo.size(); i++)
+		for(iter=mTables.begin(); iter!=mTables.end(); iter++)
 		{
-			std::string strSql = vecTableInfo[i];
-			// check whether table has been already created
-			if(!pdb.IsTableExist(strSql.c_str()))
-				// if not, create it!
-				pdb.ExecuteSQL(strSql.c_str());
-
-				// postgreSQL7.3 has yet bug if foreign key is used...	
-				//if(!pdb.ExecuteSQL(strSql.c_str()))
-				//{
-				//	std::cout << "Failed to build table in database!" << std::endl;
-				//	throw Components::Deployment::InstallationFailure();
-				//}
-				
+			std::string strName = iter->first;
+			std::string strInfo = iter->second;
+			strName = convert2Lowercase(strName);
+			
+			if( ! pSessionImpl->IsTableExist(strName.c_str()) )
+			{
+				std::cout << "creating table " << strName << " ...\n";
+				pSessionImpl->ExecuteSQL(strInfo.c_str());
+			}
+			else
+				std::cout << "table " << strName << " exists!\n";
 		}
-		//close database
-		pdb.close();
 		
 		//register storage object/home factory
-		ConnectorRegistry_var pConnReg = component_server_->getConnectorRegistry();
+		entity_home->init_datastore( pConnReg.in(), pSession.in() );
 		
-		if(pConnReg)
-		{
-			entity_home->register_storage_factory( pConnReg.in() );
-		}
-		else
-		{
-			std::cout << "pConnReg is NULL" << std::endl;
-			throw Components::Deployment::InstallationFailure();
-		}
-
 		break;
 	}
 	case CT_EXTENSION:

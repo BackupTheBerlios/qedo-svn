@@ -65,6 +65,8 @@ class CONTAINERDLL_API QDDatabase
 
 		int GetRecordsAffected();
 
+		int GetMaxDriverConnections();
+
 		char* GetODBCVersion();
 
 		bool ExecuteSQL(const char* szSqlStr);

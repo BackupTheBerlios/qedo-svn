@@ -27,7 +27,7 @@
 #include <unistd.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: GlobalHelpers.cpp,v 1.7.20.1 2004/01/22 17:07:18 hao Exp $";
+static char rcsid[] UNUSED = "$Id: GlobalHelpers.cpp,v 1.7.20.2 2004/02/07 13:47:26 hao Exp $";
 
 
 namespace Qedo {
@@ -227,6 +227,24 @@ convertBool2String(bool bc)
 		return "true";
 	else
 		return "false";
+}
+
+std::string
+convert2Lowercase(std::string strIn)
+{
+	std::string strOut = "";
+
+	for(int i=0; i<strIn.size(); i++)
+	{
+		char szTemp = strIn.at(i);
+
+		if( isupper(szTemp) )
+			szTemp = tolower(szTemp);
+		
+		strOut += szTemp;
+	}
+
+	return strOut;
 }
 
 } // namespace Qedo

@@ -47,6 +47,7 @@ private:
 	std::string					executor_name_;
 	std::string					interface_name_;
 	std::string					strName_;
+	std::string					strAbsHomeName_;
 	std::string					strContent_;
 	Printer						out;
 	CIDL::CompositionDef_var	composition_;

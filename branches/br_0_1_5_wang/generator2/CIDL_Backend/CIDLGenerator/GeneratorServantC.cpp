@@ -2782,38 +2782,43 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		//++++++++++++++++++++++++++++++++++++++++
 		// SQL CREATE for get_table_info()
 		//++++++++++++++++++++++++++++++++++++++++
-		out << "std::vector<std::string>\n";
-		out << class_name_ << "::get_table_info()\n";
+		out << "void\n";
+		out << class_name_ << "::get_table_info(std::map<std::string, std::string>& mTables)\n";
 		out << "{\n";
 		out.indent();
-		out << "std::stringstream sztream;\n";
-		out << "std::vector<std::string> vecTables;\n\n";
+		out << "std::string strName;\n";
+		out << "std::stringstream sztream;\n\n";
 		genTableForAbsStorageHome();
-		out << "vecTables.push_back(sztream.str());\n\n";
+		out << "\nstrName = \"" << strAbsHomeName_ << "\";\n";
+		out << "mTables[strName] = sztream.str();\n\n";
 		out << "sztream.str(\"\");\n";
 		genTableForStorageHome(storagehome_);
-		out << "vecTables.push_back(sztream.str());\n\n";
+		out << "\nstrName = \"" << storagehome_->name() << "\";\n";
+		out << "mTables[strName] = sztream.str();\n\n";
 		out << "sztream.str(\"\");\n";
 		genTableForHome(home);
-		out << "vecTables.push_back(sztream.str());\n\n";
-		out << "return vecTables;\n";
+		out << "\nstrName = \"" << home->name() << "Persistence\";\n";
+		out << "mTables[strName] = sztream.str();\n";
 		out.unindent();
 		out << "}\n\n";
 
 		//++++++++++++++++++++++++++++++++++++++++
-		// register_storage_factory(...)
+		// init_datastore(...)
 		//++++++++++++++++++++++++++++++++++++++++
 		out << "void\n";
-		out << class_name_ << "::register_storage_factory(ConnectorRegistry_ptr pConnReg)\n";
+		out << class_name_ << "::init_datastore(ConnectorRegistry_ptr pConnReg, Sessio_ptr pSession)\n";
 		out << "{\n";
 		out.indent();
 		out << "ConnectorRegistry_var _pConnReg = ConnectorRegistry::_duplicate(pConnReg);\n";
-		out << "Connector_var pConn = _pConnReg->find_connector(\"\");\n\n";
+		out << "Connector_var pConn = _pConnReg->find_connector(\"\");\n";
+		out << "pSession_ = Sessio::_duplicate(pSession);\n\n";
 		out << home->name() << "PersistenceFactory* _ccmfac" << home->name()<<  " = new " << home->name() << "PersistenceFactory();\n";
 		out << "pConn->register_storage_home_factory(\"" << home->name() << "Persistence\", _ccmfac" << home->name() << ");\n";
 		IR__::ComponentDef_var component = home->managed_component();
 		out << component->name() << "PersistenceFactory* _ccmfac" << component->name()<<  " = new " << component->name() << "PersistenceFactory();\n";
-		out << "pConn->register_storage_object_factory(\"" << component->name() << "Persistence\", _ccmfac" << component->name() << ");\n";
+		out << "pConn->register_storage_object_factory(\"" << component->name() << "Persistence\", _ccmfac" << component->name() << ");\n\n";
+		out << "StorageHomeBase_var pHomebase = pSession_->find_storage_home(\"" << home->name() << "Persistence\");\n";
+		out << "pCcm" << home->name() << "_ = dynamic_cast <" << home->name() << "Persistence*> (pHomebase.in());\n";
 		out.unindent();
 		out << "}\n\n";
 
@@ -3121,13 +3126,14 @@ GeneratorServantC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_ptr ho
 	out << "#ifdef MICO_ORB\n";
 	out << "StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();\n";
 	out << "#endif\n";
-	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"\", factory);\n";
+	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strComponentName << "Persistence\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
+	out << "pObjectImpl->set_pid(pid);\n";
+	out << "pObjectImpl->set_short_pid(shortPid);\n";
 	out << "factory->_remove_ref();\n";
 	out << "lObjectes_.push_back(pObjectImpl);\n";
 	out << strComponentName << "Persistence* pActObject = dynamic_cast <" << strComponentName << "Persistence*> (pObjectImpl);\n";
 	out << "\n//set values to current storageobject incarnation\n";
-	out << "//How to handle with pid, spid and the other member variables not given?\n";
 	for(CORBA::ULong j=0; j<pards->length(); j++)
 	{
 		IR__::ParameterDescription pardescr = (*pards)[j];
@@ -3428,7 +3434,6 @@ GeneratorServantC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 		}
 	}
 	
-	out << "//Where should the pid and spid come from?\n";
 	strContent_ = "VALUES (";
 	out << genSQLLine(strName_, strContent_, true, false, true);
 	strContent_ = "\\'";
@@ -3538,14 +3543,15 @@ GeneratorServantC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 	out << "#ifdef MICO_ORB\n";
 	out << "StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();\n";
 	out << "#endif\n";
-	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"\", factory);\n";
+	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strComponentName << "Persistence\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
+	out << "pObjectImpl->set_pid(pid);\n";
+	out << "pObjectImpl->set_short_pid(shortPid);\n";
 	out << "factory->_remove_ref();\n";
 	out << "lObjectes_.push_back(pObjectImpl);\n";
 	out << strComponentName << "Persistence* pActObject = dynamic_cast <" << strComponentName << "Persistence*> (pObjectImpl);\n";
 	
 	out << "\n//set values to current storageobject incarnation\n";
-	out << "//How to handle with pid and spid?\n";
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
@@ -3601,6 +3607,7 @@ GeneratorServantC::genTableForAbsStorageHome()
 		CORBA::ULong ulLen = state_members.length();
 		IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
 
+		strAbsHomeName_ = abs_home->name();
 		std::string strName = "sztream";
 		std::string strContent = "CREATE TABLE ";
 		strContent += std::string(abs_home->name());

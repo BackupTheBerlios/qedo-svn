@@ -1115,12 +1115,14 @@ GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 
 	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
 	{
-		out << "\nstd::vector<std::string> get_table_info();\n\n";
-		out << "void register_storage_factory(ConnectorRegistry_ptr pConnReg);\n";
+		out << "\nvoid get_table_info(std::map<std::string, std::string>& mTables);\n\n";
+		out << "void init_datastore(ConnectorRegistry_ptr pConnReg, Sessio_ptr pSession);\n";
 		out.unindent();
 		out << "\nprivate:\n\n";
 		out.indent();
 		out << "bool compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b);\n\n";
+		out << "Sessio_var pSession_;\n";
+		out << home->name() << "Persistence* " << "pCcm" << home->name() << "_;\n\n";
 	}
 }
 

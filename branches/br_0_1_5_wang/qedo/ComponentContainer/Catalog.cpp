@@ -36,7 +36,7 @@ CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM,
 								 const char* szConnString,
 								 Connector_ptr connector) :
 	QDDatabase(),
-	pConnector_(connector),
+	pConnector_(Connector::_duplicate(connector)),
 	eAM_(eAM)
 {
 	strcpy(szConnString_, szConnString);
@@ -44,17 +44,21 @@ CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM,
 
 CatalogBaseImpl::~CatalogBaseImpl()
 {
+	std::cout << "destruct CatalogBaseImpl\n";
+
 	if(!lHomeBases_.empty())
 	{
+		std::cout << "begin to remove storage home base...\n";
 		for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
+		{
+			std::cout << "removing storage home base...\n";
 			(*homeBaseIter)->_remove_ref();
+			std::cout << "storage home base removed!\n";
+		}
 
 		lHomeBases_.clear();
 	}
-
-	//_remove_ref();
 }
-
 
 bool 
 CatalogBaseImpl::Init()
@@ -113,7 +117,13 @@ CatalogBaseImpl::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND h
 Connector_ptr
 CatalogBaseImpl::getConnector()
 {
-	return pConnector_;
+	return Connector::_duplicate(pConnector_.in());
+}
+
+int
+CatalogBaseImpl::getCapacity()
+{
+	return lHomeBases_.size();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -146,7 +156,7 @@ StorageHomeBase_ptr
 CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 {
 	DEBUG_OUT("CatalogBaseImpl::find_storage_home() is called");
-
+	
 	//find it in the list
 	StorageHomeBase_var pHomeBase = StorageHomeBase::_nil();
 	
@@ -162,29 +172,28 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 	}
 	
 	//check it whether in the database
-	if( IsConnected()==FALSE || IsTableExist(storage_home_id)==FALSE )
+	std::string strHomeID = storage_home_id;
+	strHomeID = convert2Lowercase(strHomeID);
+	if( IsConnected()==FALSE || IsTableExist(strHomeID.c_str())==FALSE )
 		throw CosPersistentState::NotFound();
 
 	//if not in the list, new one.
 #ifdef ORBACUS_ORB
 	StorageHomeFactory factory = new OBNative_CosPersistentState::StorageHomeFactory_pre();	
 #endif
-
 #ifdef MICO_ORB
 	StorageHomeFactory factory = new CosPersistentState::StorageHomeFactory_pre();
 #endif
 	
 	factory = pConnector_->register_storage_home_factory(storage_home_id, factory);
-	pHomeBase = factory->create();
+	StorageHomeBaseImpl* pHomeBaseImpl = factory->create();
 	factory->_remove_ref();
 
-    StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase.inout());
 	pHomeBaseImpl->Init(this, storage_home_id);
 
-	lHomeBases_.push_back(pHomeBaseImpl);
+	lHomeBases_.push_back(pHomeBaseImpl); // ref-number + 1?
 
-	//return (CosPersistentState::StorageHomeBase::_narrow(pStorageHomeBase));
-	return pHomeBase._retn();
+	return StorageHomeBaseImpl::_duplicate(pHomeBaseImpl);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -221,7 +230,8 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 	try
 	{
 		StorageHomeBase_var pHomeBase = find_storage_home((const char*)szHomeName);
-		StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase.inout());
+		StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase.in());
+
 		StorageObjectBase pObj = NULL;
 	
 		pObj = pHomeBaseImpl->find_by_pid(strPid);
@@ -276,7 +286,7 @@ CatalogBaseImpl::flush()
 		}
 		else
 		{
-			NORMAL_ERR( "CatalogBaseImpl::flush() - Transaction is not successful!" );
+			NORMAL_ERR( "CatalogBaseImpl::flush() - Database transaction is not successful!" );
 		}
 	}
 	else
@@ -363,7 +373,6 @@ SessionPoolImpl::SessionPoolImpl(AccessMode eAM,
 
 SessionPoolImpl::~SessionPoolImpl()
 {
-	_remove_ref();
 }
 
 bool 

@@ -26,7 +26,7 @@
 #include <xercesc/framework/URLInputSource.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: DTMReader.cpp,v 1.1.4.4 2004/02/03 22:01:13 hao Exp $";
+static char rcsid[] UNUSED = "$Id: DTMReader.cpp,v 1.1.4.5 2004/02/07 13:47:26 hao Exp $";
 
 
 namespace Qedo {
@@ -38,21 +38,19 @@ DTMReader::DTMReader()
 
 DTMReader::~DTMReader()
 {
-	if(!vCorba_.empty())
-		vCorba_.clear();
-	if(!vCpp_.empty())
-		vCpp_.clear();
-	if(!vCppNative_.empty())
-		vCppNative_.clear();
-	if(!vSql_.empty())
-		vSql_.clear();
+	if(!vCorba_.empty()) vCorba_.clear();
+	if(!vCpp_.empty()) vCpp_.clear();
+	if(!vCppNative_.empty()) vCppNative_.clear();
+	if(!vSql_.empty()) vSql_.clear();
+	if(!vName_.empty()) vName_.clear();
+	if(!vValue_.empty()) vValue_.clear();
 }
 
 void
 DTMReader::connection (DOMElement* element)
 	throw(DTMReadException)
 {
-	strConn_ = "";
+	std::string strTemp;
 	DOMElement* child_element;
 
 	DOMNode* child = element->getFirstChild();
@@ -64,10 +62,10 @@ DTMReader::connection (DOMElement* element)
 
 			if ( !XMLString::compareString(child->getNodeName(), X("param")) )
 			{
-				strConn_ += XMLString::transcode(child_element->getAttribute(X("name")));
-				strConn_ += "=";
-				strConn_ += XMLString::transcode(child_element->getAttribute(X("value")));
-				strConn_ += ";";
+				strTemp = XMLString::transcode(child_element->getAttribute(X("name")));
+				vName_.push_back(strTemp);
+				strTemp = XMLString::transcode(child_element->getAttribute(X("value")));
+				vValue_.push_back(strTemp);
 			}
 		}
 		// get next child
@@ -134,6 +132,7 @@ std::string
 DTMReader::readConnection(std::string descriptor)
 	throw(DTMReadException)
 {
+	strConn_ = "";
 	DOMXMLParser parser;
 	
     if ( parser.parse( ((char*)descriptor.c_str()) ) != 0 )
@@ -156,7 +155,49 @@ DTMReader::readConnection(std::string descriptor)
 		child = child->getNextSibling();
     }
 
+	for(int i=0; i<vName_.size(); i++)
+	{
+		strConn_ += vName_[i];
+		strConn_ += "=";
+		strConn_ += vValue_[i];
+		strConn_ += ";";
+	}
+
 	return strConn_;
+}
+
+void
+DTMReader::readConnection(std::string descriptor, CosPersistentState::ParameterList& params)
+	throw(DTMReadException)
+{
+	DOMXMLParser parser;
+	
+    if ( parser.parse( ((char*)descriptor.c_str()) ) != 0 )
+	{
+		std::cerr << "Error during XML parsing" << std::endl;
+        throw DTMReadException();
+	}
+
+	dtm_document_ = parser.getDocument();
+
+	DOMNode* child = dtm_document_->getDocumentElement()->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+			// handle connection
+			if ( !XMLString::compareString(child->getNodeName(), X("connection")) )
+				connection((DOMElement*)child);
+		
+        // get next child
+		child = child->getNextSibling();
+    }
+	
+	params.length(vName_.size());
+	for(int i=0; i<vName_.size(); i++)
+	{
+		params[i].name = vName_[i].c_str();
+		params[i].val <<= vValue_[i].c_str();
+	}
 }
 
 void

@@ -145,6 +145,15 @@ QDDatabase::GetRecordsAffected()
 	return iRecordsAffected_;
 }
 
+int
+QDDatabase::GetMaxDriverConnections()
+{
+	SQLUSMALLINT nMaxConn = 0;
+	SQLGetInfo(hDbc_, SQL_MAX_DRIVER_CONNECTIONS, (SQLPOINTER)&nMaxConn, sizeof(nMaxConn), NULL);
+
+	return nMaxConn;
+}
+
 char* 
 QDDatabase::GetODBCVersion()
 {
@@ -179,7 +188,8 @@ QDDatabase::ExecuteSQL(const char* szSqlStr)
 	hStmt = NULL;
 	
 	iRecordsAffected_ = nRowCount;
-
+	
+	std::cout << "return value in ExecuteSQL is " << ret << std::endl;
 	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 }
 
