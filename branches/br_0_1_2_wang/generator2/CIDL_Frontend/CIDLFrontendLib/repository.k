@@ -933,15 +933,55 @@ StateMember(flag_v, def_1, dcls)
   [ build :
   ];
 
-
 // ======================== Catalog ================================
 def_v=
-CatalogDcl( name, identi )
+Catalog( name, def_list )
 ->[ feed_container:
     {
+      IR__::Container_ptr container;
+      container = IR__::Container::_narrow(kc_current_view.container);
+	  NOT_NIL(container);
+
+	  // create CatalogDef
+	  IR__::CatalogDef_ptr catalog_ptr;
+      try {
+        catalog_ptr = container->create_catalog(get_repid(def_v,name),
+          name->get_name(), "1.0" );
+      }
+      catch (CORBA::Exception& ex) {
+        Error("Exception %s in creating valuemember %k\n", name, name);
+      }
+      irobj = catalog_ptr;
+      name->symtab_entry->irobj = catalog_ptr;
 	}
   ];
 
+def_v=
+CatalogDcl(name, ident)
+->[ feed:
+    %uviewvar build my_build;
+    //ident : my_build
+    { 
+	  IR__::CatalogDef_ptr catalog_ptr;
+      catalog_ptr = IR__::CatalogDef::_narrow(kc_current_view.container);
+      NOT_NIL(catalog_ptr);
+
+      IR__::InterfaceDef_ptr interface_ptr;
+      interface_ptr = IR__::InterfaceDef::_narrow(ident->symtab_entry->irobj);
+      NOT_NIL(interface_ptr);
+      IR__::ProvidesDef_ptr provides;
+      // create ProvidesDef
+      try {
+        provides = catalog_ptr->create_provides(get_repid(def_v,name),
+          name->get_name(), "1.0", interface_ptr);
+      }
+      catch (...) {
+        Error("Exception in creating provides %k\n", name, name);
+      }
+      irobj = provides;
+      name->symtab_entry->irobj = provides;
+    }
+  ];
 
 // ======================== Abstract Storage Type ================================
 
@@ -1111,6 +1151,11 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
     }
   ];
 
+// ======================== Store ================================
+//StoreDirective( decl psdl_concrete_state_type ident )
+
+// ======================== RefRep ================================
+//RefRepDirective( decls )
 
 // ======================== Event Type ================================
 
@@ -2044,6 +2089,14 @@ Composition(name, flag_v, compo_body)
         ServiceFlag : { lifecycle = CIDL::lc_Service; }
         SessionFlag : { lifecycle = CIDL::lc_Session; }
       }
+
+	  // enter component body to retieve the catalogs
+      with(compo_body) {
+        CompositionBody(catalogs, *, *) : {
+          my_build.catalogs.length(catalogs->length());
+        }
+      }
+
       CIDL::CompositionDef_ptr composition;
       CIDL::CIDLRepository_ptr container = g_repository;
       // create CompositionDef
@@ -2065,7 +2118,7 @@ Composition(name, flag_v, compo_body)
 
 CompositionBody(catalogs, homex_def, proxy_home)
 ->[ build feed :
-    /* catalogs */
+    catalogs
     homex_def
     /* proxy_home */
   ];

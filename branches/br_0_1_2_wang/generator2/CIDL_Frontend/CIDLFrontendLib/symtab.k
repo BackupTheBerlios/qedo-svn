@@ -681,17 +681,16 @@ add_catalog_dcl(
 void
 add_catalog(
   idl_name name, 
-  definition def_v, 
-  idl_identifier_list inheritance)
+  definition def_v)
 {
-  table_item_lists inh_v=0;
-  if(inheritance) {
-    inh_v=resolve_catalog_names(inheritance);
-    foreach(ident_v;idl_identifier_list inheritance) {
-      get_definition(ident_v)->derived.insert(def_v);
-    }
-  }
-  add_name(true,CatalogN(),name,def_v,inh_v);
+  //table_item_lists inh_v=0;
+  //if(inheritance) {
+  //  inh_v=resolve_catalog_names(inheritance);
+  //  foreach(ident_v;idl_identifier_list inheritance) {
+  //    get_definition(ident_v)->derived.insert(def_v);
+  //  }
+  //}
+  add_name(true,CatalogN(),name,def_v,0);
 }
 
 void
@@ -1860,7 +1859,7 @@ fix_definition(
   AbstractStorageType(*,nil_list),
   AbstractStorageHome(*,nil_list),
   StorageHome(*,nil_list),
-  Catalog(*,*,nil_list),
+  Catalog(*,nil_list),
   Module(*,nil_list),
   Interface(*,nil_list) : {
     assert(nil_list->is_nil());

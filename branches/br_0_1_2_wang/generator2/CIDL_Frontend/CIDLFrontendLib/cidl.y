@@ -388,7 +388,7 @@
 										abstract_storagetype_inh_spec
 										abstract_storagehome_inh_spec
 										abstract_storagehome_names
-										catalog_inh_spec
+										//catalog_inh_spec
 										catalog_names
 										get_excep_expr
 										set_excep_expr
@@ -1658,16 +1658,16 @@ catalog :
 
 /* differs from original grammar! catalog_header is new */
 catalog_header :
-	  TOK_catalog TOK_identifier catalog_inh_spec
-	  { $$ = Catalog($2,$3,Nildefinition_list()); add_catalog($2,$$,$3); }
-	| TOK_catalog TOK_identifier
-	  { $$ = Catalog($2,Nilidl_identifier_list(),Nildefinition_list()); add_catalog($2,$$,0); }
+	  //TOK_catalog TOK_identifier catalog_inh_spec
+	  //{ $$ = Catalog($2,Nildefinition_list()); add_catalog($2,$$); }
+	  TOK_catalog TOK_identifier
+	  { $$ = Catalog($2,Nildefinition_list()); add_catalog($2,$$); }
 	;
 
-catalog_inh_spec :
-	  ':' catalog_names
-	  { $$ = $2; }
-	;
+//catalog_inh_spec :
+//	  ':' catalog_names
+//	  { $$ = $2; }
+//	;
 
 catalog_name :
 	  scoped_name;
@@ -2489,7 +2489,7 @@ proxy_home_members :
 	(3) 	<local_op_dcl>
 	(2) 	<key_dcl>
 	(1) 	<catalog>
-	(1) 	<catalog_inh_spec>
+	//(1) 	<catalog_inh_spec>
 	(2) 	<catalog_name>
 	(1) 	<catalog_body>
 	(1) 	<catalog_member>
