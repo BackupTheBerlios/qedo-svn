@@ -404,7 +404,13 @@ copy $(TargetPath) $(QEDO)\bin
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="ContainerClientRequestInfo.cpp">
+			</File>
+			<File
 				RelativePath=".\ContainerInterfaceImpl.cpp">
+			</File>
+			<File
+				RelativePath="ContainerServerRequestInfo.cpp">
 			</File>
 			<File
 				RelativePath=".\EmitterPort.cpp">
@@ -537,7 +543,13 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\ConsumerPort.h">
 			</File>
 			<File
+				RelativePath="ContainerClientRequestInfo.h">
+			</File>
+			<File
 				RelativePath=".\ContainerInterfaceImpl.h">
+			</File>
+			<File
+				RelativePath="ContainerServerRequestInfo.h">
 			</File>
 			<File
 				RelativePath=".\EmitterPort.h">
