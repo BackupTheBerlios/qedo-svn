@@ -3,7 +3,7 @@ OS=@OS@
 
 ##### ORB #####
 # choose one out of MICO_ORB TAO_ORB ORBACUS_ORB
-ORB = MICO_ORB
+ORB = @QEDO_ORB@
 
 YACC=@YACC@
 LEX=@LEX@
@@ -17,7 +17,7 @@ MICO = $(shell mico-config --prefix)
 MICO_VERSION = $(shell mico-config --version)
 
 # ORBACUS
-ORBACUS = /opt/OOC
+ORBACUS = @ORBACUSDIR@
 
 
 ##### DEBUG #####
@@ -74,13 +74,13 @@ install-lib:
 	${INSTALL} -m $(EXE_MOD) $^ $(exec_prefix)/lib
 
 install-include:
-	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/include 
+	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/include
 
 install-idl:
-	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/idl 
+	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/idl
 
 install-etc:
-	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/etc 
+	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/etc
 
 clean:
 	-rm -rf $(CLEAN_FILES)

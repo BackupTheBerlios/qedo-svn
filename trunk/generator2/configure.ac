@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(Qedo, 0.6.0, qedo@qedo.berlios.de)
+AC_INIT(Qedo, 0.6.0, www.qedo.org)
 AC_CONFIG_HEADER([CIDL_Frontend/CIDLFrontendLib/config.h])
 
 AC_ARG_WITH(uuid,
@@ -17,13 +17,58 @@ AC_ARG_ENABLE(debug,
  [  --enable-debug          use -g to compile],
  use_debug=$enableval, use_debug=no)
 
+AC_ARG_WITH(mico,
+ [  --with-mico=micodir         use Mico installed in micodir],
+ MICODIR=$withval, MICODIR="")
+AC_SUBST(MICODIR)
+
+AC_ARG_WITH(orbacus,
+ [  --with-orbacus=orbacusdir         use Orbacus installed in ORBACUSDIR],
+ ORBACUSDIR=$withval, ORBACUSDIR="")
+
 
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 AC_PROG_INSTALL
-AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no)
+
+if test X"$with_mico" != X -a X"$with_orbacus" != X; then
+  AC_MSG_ERROR([you can use either Mico or Orbacus])
+fi
+
+QEDO_ORB=MICO_ORB
+
+ORBACUSDIR=""
+if test X"$with_orbacus" != X ;then
+	ORBACUSDIR="$with_orbacus"
+	HAVE_ORBACUS=yes
+	QEDO_ORB=ORBACUS_ORB
+
+	AC_MSG_NOTICE([please make sure, that $ORBACUSDIR/bin/idl will run])
+else
+	MICODIR=""
+	if test X"$with_mico" != X ;then
+		MICODIR="$with_mico"
+		QEDO_ORB=MICO_ORB
+		AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no,[$MICODIR/bin])
+		AC_MSG_NOTICE([please make sure, that $MICODIR/bin/idl will run])
+	else
+		AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no)
+	fi
+	if test "$HAVE_MICO_CONFIG" != "yes"; then
+ 		AC_MSG_ERROR([found no mico-config])
+	else
+		QEDO_ORB=MICO_ORB
+	fi
+fi
+
+AC_SUBST(HAVE_MICO_CONFIG)
+AC_SUBST(HAVE_ORBACUS)
+AC_SUBST(ORBACUSDIR)
+AC_SUBST(QEDO_ORB)
+
+
 AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
 AC_CHECK_PROG(HAVE_BISON,bison,yes,no)
 AC_CHECK_PROG(HAVE_FLEX,flex,yes,no)
