@@ -262,7 +262,8 @@ GeneratorBIDL::gen_facet(IR__::ComponentDef_ptr component, t_string_map implemen
 	//
 	IR__::ProvidesDefSeq_var provides_seq = component->provides_interfaces();
 	CORBA::ULong len = provides_seq->length();
-	for (CORBA::ULong i = 0; i < len; i++)
+	CORBA::ULong i;
+	for (i = 0; i < len; i++)
 	{
 		IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow(provides_seq[i]->interface_type());
 		if( CORBA::is_nil(intf) )
@@ -295,7 +296,7 @@ GeneratorBIDL::gen_facet(IR__::ComponentDef_ptr component, t_string_map implemen
 	for (i = 0; i < len; i++)
 	{
 		string facet_type = consumes_seq[i]->event()->id();
-			
+
 		// if type already inherited, skip it
 		if(facet_types.find(facet_type) == facet_types.end())
 		{

@@ -2,7 +2,8 @@
 #include "Debug.h"
 #include <map>
 
-using namespace std;
+
+//using namespace std;
 
 
 namespace QEDO_CIDL_Generator {
@@ -161,7 +162,8 @@ GeneratorServantC::generate_marshal_code (IR__::IDLType_ptr idl_type, std::strin
 
 			std::string new_parameter_name;
 			char rec_depth_str[33];
-			itoa (rec_depth, rec_depth_str, 10);
+//			itoa (rec_depth, rec_depth_str, 10); // this is not ansi and is replaced
+			sprintf(rec_depth_str,"0",rec_depth);
 
 			new_parameter_name = "(" + parameter_name + "[seq_count" + rec_depth_str + "])";
 
@@ -175,7 +177,7 @@ GeneratorServantC::generate_marshal_code (IR__::IDLType_ptr idl_type, std::strin
 
 			out << "for (unsigned int seq_count" << rec_depth << " = 0; ";
 			out << "seq_count" << rec_depth << " < seq_len" << rec_depth;
-			out << "; seq_count" << rec_depth << "++)\n"; 
+			out << "; seq_count" << rec_depth << "++)\n";
 			out << "{\n", out.indent();
 
 			generate_marshal_code (idl_type, new_parameter_name, rec_depth); out.unindent();
@@ -202,7 +204,7 @@ GeneratorServantC::generate_marshal_code (IR__::IDLType_ptr idl_type, std::strin
 }
 
 
-void 
+void
 GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::string& parameter_name, CORBA::ULong rec_depth)
 {
 	switch (idl_type->def_kind())
@@ -286,7 +288,7 @@ GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::str
 			out << "CORBA::ULong seq_len" << rec_depth << ";\n";
 
 			out << "Qedo::CDRTransportCoDec::unmarshal_ulong (unmarshal_buffer, seq_len" << rec_depth << ");\n\n";
-			
+
 			if (hasVariableLength (seq_idl_type))
 				out << parameter_name << "->length (seq_len" << rec_depth << ");\n\n";
 			else
@@ -294,7 +296,8 @@ GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::str
 
 			std::string new_parameter_name;
 			char rec_depth_str[33];
-			itoa (rec_depth, rec_depth_str, 10);
+//			itoa (rec_depth, rec_depth_str, 10); // this is not ansi and ist replaced by
+			sprintf(rec_depth_str,"0",rec_depth);
 
 			new_parameter_name = "(" + parameter_name + "[seq_count" + rec_depth_str + "])";
 
