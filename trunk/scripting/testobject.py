@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 import sys
 import Tkinter
 from Tkconstants import *
@@ -8,7 +9,6 @@ from Fnorb.orb import CORBA, BOA, TkReactor
 import Components, Components_skel
 
 
-##################################################
 class TestObject_impl( Components_skel.CCMObject_skel ):
   
   def connect_consumer( self, emitter_name, consumer ):

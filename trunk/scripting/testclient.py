@@ -208,7 +208,8 @@ class TestClient:
     try:
       self.rule.start()
     except:
-      util.debug( "start error" );
+      util.debug( "start error" )
+      return
     self.stattext.insert(END, "automatic check started\n")
 
   # stop evaluation

@@ -2,8 +2,12 @@
 
 
 import sys
+import Tkinter
+from Tkconstants import *
+from tkMessageBox import *
 from Fnorb.orb import CORBA, BOA, uuid
 from Fnorb.cos.naming import CosNaming
+import thread
 import threading
 import sched
 import time
@@ -25,6 +29,7 @@ class CheckThread( threading.Thread ):
     self.removed = []
 
     # start thread for automatic checks
+    self.setDaemon( True )
     self.start()
 
 
@@ -122,7 +127,10 @@ class Rule( DCI_skel.Rule_skel):
       self.scheduler.stop_check( self.check_id )
       self.chek_id = None
       
-    self.check_id = self.scheduler.start_check( self, self.frequency )
+    if self.frequency == 0:
+      self.eval()
+    else:
+      self.check_id = self.scheduler.start_check( self, self.frequency )
     
   
   def stop( self ):
@@ -134,7 +142,11 @@ class Rule( DCI_skel.Rule_skel):
 
   def destroy( self ):
     """deactivate this Rule"""
-    self.boa.deactivate_obj( self )
+    try:
+      #self.boa.deactivate_obj( self ) fixme
+      pass
+    except:
+      pass
 
 
   ##### other operations #####
@@ -163,24 +175,75 @@ class RuleProcessor( DCI_skel.RuleProcessor_skel ):
     impl = Rule( self.boa, cond, act, frequency, self.scheduler )
     self.boa.obj_is_ready( obj, impl )
     print "..... new rule created"
+    self.text.insert(END,"new rule created\n",END)
 
     return obj
 
 
   def destroy( self ):
     """deactivate this processor"""
-    self.boa.deactivate_obj(self)
-
+    self.quit()
 
   ##### other operations #####
 
 
-  def __init__( self, orb, boa ):
+  def quit ( self ):
+    # get NameService
+    try:
+      nsior = open( "ns.ior", "r" ).read()
+      ns = self.orb.string_to_object( nsior )._narrow( CosNaming.NamingContext )
+    except :
+      print "..... no NameService IOR in ns.ior or service not running"
+  
+    # unbind name in name service
+    nspath = [CosNaming.NameComponent('DCI', '')]
+    name = nspath + [CosNaming.NameComponent('RuleProcessor', '')]
+    try:
+      ns.unbind( name )
+    except:
+      print "..... can not unbind in name service"
+  
+    # deactivate object
+    try:
+      self.boa.deactivate_obj( self )
+    except:
+      pass
+      
+    self.frame.quit()
+
+
+  def __init__( self, root, orb, boa ):
     self.orb = orb
     self.boa = boa
     self.scheduler = CheckThread()
  
+    #
+    # GUI
+    #
+    self.frame = Tkinter.Frame ( root )
+    root.protocol( "WM_DELETE_WINDOW", self.quit )
 
+    # quit button
+    quitframe = Tkinter.Frame( self.frame, relief=FLAT, borderwidth=2 )
+    quitbutton = Tkinter.Button ( quitframe, fg="red", text="quit", command=self.quit )
+    quitbutton.pack(side=RIGHT,anchor=CENTER,expand=1)
+    quitframe.pack(side=BOTTOM, anchor=S, expand=0, fill=X)
+    
+    # text
+    frame2 = Tkinter.Frame(self.frame)
+    self.text = Tkinter.Text(frame2,width=50, height=10)
+    self.text.pack(side=LEFT,expand=1,fill=BOTH)
+    self.vscroll = Tkinter.Scrollbar(frame2,orient=VERTICAL)
+    self.vscroll.pack(side=LEFT,fill=Y,anchor=E)
+    self.vscroll.config(command=self.text.yview)
+    self.text.config(yscrollcommand=self.vscroll.set)
+    frame2.pack(expand=1,fill=BOTH)
+
+    # title
+    self.frame.pack(expand=1,fill=BOTH)
+    root.title('RuleProcessor')
+
+    
   #to suppress message complaining about no Thread object
   #def _set_daemon(self):
   #  return 0
@@ -219,8 +282,9 @@ def main ( argv ):
     pass
 
   # create object for RuleProcessor
+  root = Tkinter.Tk()
   obj = boa.create( 'RuleProcessor', RuleProcessor._FNORB_ID )
-  impl = RuleProcessor( orb, boa )
+  impl = RuleProcessor( root, orb, boa )
   boa.obj_is_ready( obj, impl )
   open( "rule.ref", "w" ).write( orb.object_to_string( obj ) )
 
@@ -231,7 +295,9 @@ def main ( argv ):
   # mainloop
   print "..... RuleProcessor running with ior:\n"
   print orb.object_to_string( obj )
-  boa._fnorb_mainloop()
+  #boa._fnorb_mainloop()
+  thread.start_new_thread(boa._fnorb_mainloop,())
+  root.mainloop()
   
 
 ##############################
