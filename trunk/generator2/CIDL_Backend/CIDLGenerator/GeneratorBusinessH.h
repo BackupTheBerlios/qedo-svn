@@ -6,18 +6,17 @@
 #include <iostream>
 
 
-using namespace std;
-
-
 namespace QEDO_CIDL_Generator {
 
 
 class GeneratorBusinessH : public virtual CPPBase
 {
 
-	string filename_;
+private:
+
+	std::string filename_;
 	Printer out;
-	string target_;
+	std::string target_;
 	bool need_push_;
 	CIDL::CompositionDef_var composition_;
 
@@ -47,6 +46,8 @@ public:
 
 };
 
-} // namespace QEDO_CIDL_Generator
+
+} // namespace
+
 
 #endif

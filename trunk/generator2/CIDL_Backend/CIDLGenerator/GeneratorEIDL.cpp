@@ -16,9 +16,6 @@ GeneratorEIDL::GeneratorEIDL
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
 : IDLBase(repository), m_recursion_set()
 {
-	m_to_generate_seq = new IR__::ContainedSeq();
-	m_to_generate_seq->length(0);
-
 }
 
 
@@ -46,7 +43,7 @@ GeneratorEIDL::checkForInclude(CORBA::TypeCode_ptr type)
 	case CORBA::tk_alias:
     case CORBA::tk_value_box:
 	case CORBA::tk_value:
-		{
+		{/*
 			// compare the id of the type with that of the target
 			std::string id = type->id();
 			std::string::size_type len = target_scope_id_.size() - 4;
@@ -65,117 +62,56 @@ GeneratorEIDL::checkForInclude(CORBA::TypeCode_ptr type)
 				{
 					includes_[id + ".h"] = true;
 				}
-			}
+			}*/
 			break;
 		}
     default: {}
     }
 }
 
-bool
-GeneratorEIDL::already_included (IR__::Contained_ptr item) {
-	CORBA::ULong i;
-	CORBA::ULong len;
 
-	len = m_to_generate_seq -> length();
-	if (len == 0 ) 
-		return false;
-	for (i = 0 ; i < len ; i++) {
-		if (!strcmp((*m_to_generate_seq)[i]->id(), item->id())) {
-			return true;
-		};
-	};
-	return false;
-};
-
-
-void 
-GeneratorEIDL::insert_to_generate(IR__::Contained_ptr item) {
-
-	// test if it is under the target
-
-	// or test if it is not in standard Modules as CORBA or Components
-	// this will be replace with a test with repositoties of included files
-
+void
+GeneratorEIDL::check_for_generation ( IR__::Contained_ptr item )
+{
+	//
+	// check if item is already known
+	//
 	IR__::Contained_var restricted_contained = IR__::Contained::_narrow(item->defined_in());
 	if (!CORBA::is_nil(restricted_contained )) {
 
-		if (!strcmp(restricted_contained ->name(), "Deployment")) {
+		if (!strcmp(restricted_contained ->id(), "IDL:Deployment:1.0")) {
 			return;
 		};
-		if (!strcmp(restricted_contained ->name(), "Components")) {
+		if (!strcmp(restricted_contained ->id(), "IDL:omg.org/Components:1.0")) {
 			return;
 		};
-		if (!strcmp(restricted_contained ->name(), "CORBA")) {
+		if (!strcmp(restricted_contained ->id(), "IDL:Components:1.0")) {
+			return;
+		}
+		if (!strcmp(restricted_contained ->id(), "IDL:omg.org/CORBA:1.0")) {
 			return;
 		};
-		if (!strcmp(restricted_contained ->name(), "CosPropertyService")) {
-//			return;
+		if (!strcmp(restricted_contained ->id(), "IDL:CORBA:1.0")) {
+			return;
+		}
+		if (!strcmp(restricted_contained ->id(), "IDL:omg.org/CosPropertyService:1.0")) {
+			return;
 		};
 	}
 
-
-	switch (item->def_kind()) {
-	case CORBA__::dk_Operation:
-
+	//
+	// check if item is already in the list or currently processed
+	//
+	if ((this->m_recursion_set.find(item->id())) != m_recursion_set.end() || this->already_included (item)) {
 		return;
-		break;
-	case CORBA__::dk_Value:
-	case CORBA__::dk_Component:
-	case CORBA__::dk_Home:
-	case CORBA__::dk_Interface:
-	case CORBA__::dk_Exception:
-	case CORBA__::dk_Enum:
-	case CORBA__::dk_Module:
-	case CORBA__::dk_Struct:
-	case CORBA__::dk_Alias:
-		// check if already included in the list
-		if (this->already_included (item)) {
-			return;
-		};
-		// insert the  item
-		m_to_generate_seq->length(m_to_generate_seq->length()+1);
-		m_to_generate_seq[m_to_generate_seq->length()-1] = IR__::Contained::_duplicate( item );
-		break;
-	default:
-		return;
-	}
-};
-
-
-void
-GeneratorEIDL::check_for_generation ( IR__::Contained_ptr item ) {
-
-// stop never ending recursion by checkin if already included
-if ((this->m_recursion_set.find(item->id())) == m_recursion_set.end()) {
-	m_recursion_set.insert(item->id());
-} else {
-	return;
-};
-IR__::Contained_var restricted_contained = IR__::Contained::_narrow(item->defined_in());
-	if (!CORBA::is_nil(restricted_contained )) {
-
-		if (!strcmp(restricted_contained ->name(), "Deployment")) {
-			return;
-		};
-		if (!strcmp(restricted_contained ->name(), "Components")) {
-			return;
-		};
-		if (!strcmp(restricted_contained ->name(), "CORBA")) {
-			return;
-		};
-		if (!strcmp(restricted_contained ->name(), "CosPropertyService")) {
-//			return;
-		};
+	} 
+	else {
+		m_recursion_set.insert(item->id());
 	}
 
-//
-CORBA::ULong len;
-CORBA::ULong i;
-CORBA::ULong len2;
-CORBA::ULong i2;
-
-IR__::ContainedSeq_var contained_seq2;
+	CORBA::ULong len;
+	CORBA::ULong i;
+	IR__::ContainedSeq_var contained_seq;
 
 IR__::ModuleDef_var act_module;
 IR__::ModuleDef_var act_module2;
@@ -195,6 +131,7 @@ IR__::ConsumesDefSeq_var consumes_seq;
 IR__::EmitsDefSeq_var emits_seq;
 IR__::ParDescriptionSeq_var act_params;
 IR__::ProvidesDefSeq_var provides_seq;
+IR__::UsesDefSeq_var uses_seq;
 IR__::ExceptionDefSeq_var act_exceptions;
 IR__::ExceptionDef_var act_exception;
 IR__::StructMemberSeq_var act_struct_members;
@@ -202,69 +139,120 @@ IR__::ValueDef_var act_value;
 IR__::StructDef_var act_struct;
 IR__::AliasDef_var act_alias;
 IR__::Contained_var act_contained;
+	CIDL::CompositionDef_var a_composition;
 
 	switch (item->describe()->kind) {
 	case CORBA__::dk_Module:
 		act_module = IR__::ModuleDef::_narrow(item);
 
-		//	traverse module
-		contained_seq2 = act_module->contents(CORBA__::dk_Module, true);
-		len2 = contained_seq2->length();
-		for(i2 = 0; i2 < len2; i2++)
+		// modules
+		contained_seq = act_module->contents(CORBA__::dk_Module, true);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
 		{
-			act_module2 = IR__::ModuleDef::_narrow(((*contained_seq2)[i2]));
-			check_for_generation(act_module2);
-		}
-		// check for homes
-		contained_seq2 = act_module->contents(CORBA__::dk_Home, true);
-		len2 = contained_seq2->length();
-		for(i2 = 0; i2 < len2; i2++)
-		{
-			IR__::HomeDef_var act_home = IR__::HomeDef::_narrow(((*contained_seq2)[i2]));
-			check_for_generation(act_home);
+			check_for_generation((*contained_seq)[i]);
 		}
 
-		// included modules
+		// homes
+		contained_seq = act_module->contents(CORBA__::dk_Home, true);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
+		{
+			check_for_generation((*contained_seq)[i]);
+		}
 
-		this->insert_to_generate(act_module);
+		// compositions
+		contained_seq = repository_->contents(CORBA__::dk_Composition, true);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
+		{
+			a_composition = CIDL::CompositionDef::_narrow((*contained_seq)[i]);
+			/*IR__::ModuleDef_var other_module = IR__::ModuleDef::_narrow(a_composition->defined_in());
+			if (!CORBA::is_nil(other_module))
+			{
+				if(!strcmp(act_module->id(), other_module->id()))
+				{
+					check_for_generation(a_composition);
+				}
+			}*/
+			std::string id = a_composition->id();
+			std::string::size_type pos = id.find_last_of("/");
+			if(pos != std::string::npos) 
+			{
+				id.replace(pos, std::string::npos, ":1.0");
+				if(!id.compare(act_module->id())) 
+				{
+					check_for_generation(a_composition);
+				}
+			}
+		}
 
-//		this->doModule(act_module);
 		break;
+	case CORBA__::dk_Composition : {
+		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
+
+		// home
+		check_for_generation(a_composition->ccm_home());
+
+		break; }
 	case CORBA__::dk_Home:
 		act_home = IR__::HomeDef::_narrow(item);
 		
-		// traverse Home
 		// base home
 		base_home = act_home->base_home();
-		if (!CORBA::is_nil(base_home)) 
+		if (!CORBA::is_nil(base_home)) {
 			this->check_for_generation(base_home);
+		}
 
 		// supported interfaces
 		interf_seq = act_home->supported_interfaces();
 		len = interf_seq->length();
 		for(i = 0; i < len; i++) {
 			this->check_for_generation((*interf_seq)[i]);
-		};
+		}
 
-		// factory operations
+		// operations
+		contained_seq = act_home->contents(CORBA__::dk_Operation, true);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
+		{
+			check_for_generation((*contained_seq)[i]);
+		}
 
+		// factories
+		contained_seq = act_home->contents(CORBA__::dk_Factory, true);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
+		{
+			//check_for_generation((*contained_seq)[i]);
+		}
 
-		// finder operations
+		// finders
+		contained_seq = act_home->contents(CORBA__::dk_Finder, true);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
+		{
+			//check_for_generation((*contained_seq)[i]);
+		}
 
+		// attributes
+		contained_seq = act_home->contents(CORBA__::dk_Attribute, true);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
+		{
+			check_for_generation((*contained_seq)[i]);
+		}
 
 		// managed component
-
 		act_component = act_home->managed_component();
 		this->check_for_generation(act_component);
 
-		//after traversing the home add it to the generation list
-		insert_to_generate ( item );
+		insert_to_generate(item);
 		break;
 	case CORBA__::dk_Component:
 		act_component = IR__::ComponentDef::_narrow(item);
-		// traverse the component
 
-		//base component
+		// base component
 		base_component = act_component->base_component();
 		if ( ! CORBA::is_nil(base_component)) {
 			this->check_for_generation(base_component);
@@ -272,57 +260,53 @@ IR__::Contained_var act_contained;
 
 		// supported interfaces
 		interf_seq = act_component->supported_interfaces();
-		len2 = interf_seq->length();
-		for(i2 = 0; i2 < len2; i2++) {
-			this->check_for_generation((*interf_seq)[i2]);
-		};
+		len = interf_seq->length();
+		for(i = 0; i < len; i++) {
+			this->check_for_generation((*interf_seq)[i]);
+		}
 
 		// attributes
-		// atributes
-		contained_seq2 = act_component->contents(CORBA__::dk_Attribute, true);
-		len2 = contained_seq2->length();
-		for(i2 = 0; i2 < len2; i2++)
+		contained_seq = act_component->contents(CORBA__::dk_Attribute, true);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
 		{
-			IR__::AttributeDef_var act_attribute = IR__::AttributeDef::_narrow(((*contained_seq2)[i2]));
-			check_for_generation(act_attribute);
+			check_for_generation((*contained_seq)[i]);
 		}
 		
-
-		// provides interfaces
+		// provided interfaces
 		provides_seq = act_component->provides_interfaces();
-		len2 = provides_seq->length();
-		for(i2 = 0; i2 < len2; i2++) {
-			this->check_for_generation((*provides_seq)[i2]->interface_type());
-//			this->insert_to_generate((*provides_seq)[i2]->interface_type());
-		};
+		len = provides_seq->length();
+		for(i = 0; i < len; i++) {
+			this->check_for_generation((*provides_seq)[i]->interface_type());
+		}
 
-		// uses interfaces
+		// used interfaces
+		uses_seq = act_component->uses_interfaces();
+		len = uses_seq->length();
+		for(i = 0; i < len; i++) {
+			this->check_for_generation((*uses_seq)[i]->interface_type());
+		}
 
 		// emits_events
 		emits_seq = act_component->emits_events();
-		len2 = emits_seq->length();
-		for(i2 = 0; i2 < len2; i2++) {
-			this->check_for_generation((*emits_seq)[i2]->event());
-//			this->insert_to_generate((*publish_seq)[i2]->event());
+		len = emits_seq->length();
+		for(i = 0; i < len; i++) {
+			this->check_for_generation((*emits_seq)[i]->event());
 		};
 
 		// publish events
 		publish_seq = act_component->publishes_events();
-		len2 = publish_seq->length();
-		for(i2 = 0; i2 < len2; i2++) {
-			this->check_for_generation((*publish_seq)[i2]->event());
-//			this->insert_to_generate((*publish_seq)[i2]->event());
+		len = publish_seq->length();
+		for(i = 0; i < len; i++) {
+			this->check_for_generation((*publish_seq)[i]->event());
 		};
-
 
 		// consumes_events
 		consumes_seq = act_component->consumes_events();
-		len2 = consumes_seq->length();
-		for(i2 = 0; i2 < len2; i2++) {
-			this->check_for_generation((*consumes_seq)[i2]->event());
-//			this->insert_to_generate((*consumes_seq)[i2]->event());
+		len = consumes_seq->length();
+		for(i = 0; i < len; i++) {
+			this->check_for_generation((*consumes_seq)[i]->event());
 		};
-
 
 		// sinks
 
@@ -330,109 +314,94 @@ IR__::Contained_var act_contained;
 
 		// sisos
 
-
-		/// after traversing the component add it to the generation list
 		this->insert_to_generate ( item );
 		break;
 	case CORBA__::dk_Interface:
 		act_interface = IR__::InterfaceDef::_narrow(item);
-
-		// traverse interface
 		
 		// base interfaces
 		interf_seq = act_interface->base_interfaces();
 		len = interf_seq->length();
 		for(i = 0; i < len; i++) {
 			this->check_for_generation((*interf_seq)[i]);
-			this->insert_to_generate((*interf_seq)[i]);
+			//this->insert_to_generate((*interf_seq)[i]);
 		};
 
 		// atributes
-		contained_seq2 = act_interface->contents(CORBA__::dk_Attribute, true);
-		len2 = contained_seq2->length();
-		for(i2 = 0; i2 < len2; i2++)
+		contained_seq = act_interface->contents(CORBA__::dk_Attribute, true);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
 		{
-			IR__::AttributeDef_var act_attribute = IR__::AttributeDef::_narrow(((*contained_seq2)[i2]));
-			check_for_generation(act_attribute);
+			check_for_generation((*contained_seq)[i]);
 		}
 
-		//operationen
-		contained_seq2 = act_interface->contents(CORBA__::dk_Operation, true);
-		len2 = contained_seq2->length();
-		for(i2 = 0; i2 < len2; i2++)
+		// operations
+		contained_seq = act_interface->contents(CORBA__::dk_Operation, true);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
 		{
-			IR__::OperationDef_var act_operation = IR__::OperationDef::_narrow(((*contained_seq2)[i2]));
-			check_for_generation(act_operation);
+			check_for_generation((*contained_seq)[i]);
 		}
 
-
-		// after traversing add it to the genration list.
-		this-> insert_to_generate ( item );
-
+		this->insert_to_generate(item);
 		break;
 	case CORBA__::dk_Value:
 		act_value = IR__::ValueDef::_narrow(item);
-
-		// traverse the value
 
 		// base value
 
 		// supports
 
-		// member
-		contained_seq2 = act_value->contents(CORBA__::dk_ValueMember, true);
-		len2 = contained_seq2->length();
-		for(i2 = 0; i2 < len2; i2++)
+		// members
+		contained_seq = act_value->contents(CORBA__::dk_ValueMember, true);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
 		{
-			IR__::ValueMemberDef_var act_valuemember = IR__::ValueMemberDef::_narrow(((*contained_seq2)[i2]));
+			IR__::ValueMemberDef_var act_valuemember = IR__::ValueMemberDef::_narrow(((*contained_seq)[i]));
 			act_idl_type = act_valuemember->type_def();
 			try {
 				contained_type = IR__::Contained::_narrow(act_idl_type);
 			
 				if (!CORBA::is_nil(contained_type)) {
 					this->check_for_generation (contained_type );
-//					this->insert_to_generate(contained_type );
 				};
 				} catch (...) {}
 		}
 
 		// attribute
-		contained_seq2 = act_value->contents(CORBA__::dk_Attribute, true);
-		len2 = contained_seq2->length();
-		for(i2 = 0; i2 < len2; i2++)
+		contained_seq = act_value->contents(CORBA__::dk_Attribute, true);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
 		{
-			IR__::AttributeDef_var act_attribute = IR__::AttributeDef::_narrow(((*contained_seq2)[i2]));
-			check_for_generation(act_attribute);
+			check_for_generation((*contained_seq)[i]);
 
 		}
 
-		// finally insert the value into the list of genration_item
-
 		this->insert_to_generate ( act_value );
 		break;
-
 	case CORBA__::dk_Struct:
 		act_struct = IR__::StructDef::_narrow(item);
 
-		//traverse te struct
+		// members
 		act_struct_members = act_struct->members();
-		len2 = act_struct_members->length();
-		for(i2 = 0; i2 < len2; i2++)
+		len = act_struct_members->length();
+		for(i = 0; i < len; i++)
 		{
-			act_idl_type = (*act_struct_members)[i2].type_def;
+			act_idl_type = (*act_struct_members)[i].type_def;
 			contained_type = IR__::Contained::_narrow(act_idl_type);
 			if (!CORBA::is_nil(contained_type)) {
 				this->check_for_generation (contained_type );
-//				this->insert_to_generate(contained_type );
 			};
 		};
+
 		this->insert_to_generate(item);
 		break;
-
-	case CORBA__::dk_Operation:
+	case CORBA__::dk_Sequence :
+		break;
+	case CORBA__::dk_Operation :
+	case CORBA__::dk_Factory :
+	case CORBA__::dk_Finder :
 		act_operation = IR__::OperationDef::_narrow(item);
-
-		// traverse the operation
 
 		// return value
 		act_idl_type = act_operation->result_def();
@@ -441,62 +410,54 @@ IR__::Contained_var act_contained;
 			this->check_for_generation (return_contained );
 		}		
 
-
-		// operation parameters
+		// parameters
 		act_params = act_operation -> params();
-		len2 = act_params->length();
-		for(i2 = 0; i2 < len2; i2++)
+		len = act_params->length();
+		for(i = 0; i < len; i++)
 		{
-			act_idl_type = (*act_params)[i2].type_def;
+			act_idl_type = (*act_params)[i].type_def;
 			contained_type = IR__::Contained::_narrow(act_idl_type);
 			if (!CORBA::is_nil(contained_type)) {
-				this->check_for_generation (contained_type );
-//				this->insert_to_generate(contained_type );
+				this->check_for_generation(contained_type);
 			};
 		};
 
-		// operation exceptsion
+		// exceptions
 		act_exceptions = act_operation->exceptions();
-		len2 = act_exceptions->length();
-		for(i2 = 0; i2 < len2; i2++) {
-			this->check_for_generation((*act_exceptions)[i2]);
+		len = act_exceptions->length();
+		for(i = 0; i < len; i++) {
+			this->check_for_generation((*act_exceptions)[i]);
 		};
 
-		// insert the types into the generated items
-
-		//this->insert_to_generate ( return_contained) ;
+		// not included itself
 		break;
 	case CORBA__::dk_Exception:
 		act_exception = IR__::ExceptionDef::_narrow(item);
 
-		// traverse 
+		// members 
 		act_struct_members = act_exception->members();
-		len2 = act_struct_members->length();
-		for(i2 = 0; i2 < len2; i2++)
+		len = act_struct_members->length();
+		for(i = 0; i < len; i++)
 		{
-			act_idl_type = (*act_struct_members)[i2].type_def;
+			act_idl_type = (*act_struct_members)[i].type_def;
 			contained_type = IR__::Contained::_narrow(act_idl_type);
 			if (!CORBA::is_nil(contained_type)) {
 				this->check_for_generation (contained_type );
-//				this->insert_to_generate(contained_type );
 			};
 		};
 		
-		
 		this->insert_to_generate(act_exception);
 		break;
-
 	case CORBA__::dk_Attribute:
 		act_attribute = IR__::AttributeDef::_narrow(item);
-		// traverse attribute
 		
-		//type
+		// type
 		act_idl_type = act_attribute->type_def ();
 		contained_type = IR__::Contained::_narrow(act_idl_type);
 		if (!CORBA::is_nil(contained_type)) {
-			this->check_for_generation (contained_type );
-//			this->insert_to_generate(contained_type );
+			this->check_for_generation(contained_type);
 		};
+
 		// exceptions
 
 		// the attribute itself must not added to the generation list.
@@ -504,7 +465,6 @@ IR__::Contained_var act_contained;
 	case CORBA__::dk_Enum:
 		this->insert_to_generate(item);
 		break;
-
 	case CORBA__::dk_Alias:
 		act_alias = IR__::AliasDef::_narrow(item);
 		if (act_alias -> original_type_def() -> def_kind() == CORBA__::dk_Sequence) {
@@ -514,100 +474,16 @@ IR__::Contained_var act_contained;
 				this->check_for_generation( act_contained);
 			}
 		}
-		this->insert_to_generate(item);
 
+		this->insert_to_generate(item);
+		break;
 	default:
 		break;
 	};
+
 	m_recursion_set.erase(item->id());
 };
 
-
-void
-GeneratorEIDL::generate_the_item ( IR__::Contained_ptr item ) {
-	IR__::HomeDef_var act_home;
-	IR__::ComponentDef_var act_component;
-	IR__::InterfaceDef_var act_interface;
-	IR__::AliasDef_var act_alias;
-	IR__::ValueDef_var act_value;
-	IR__::EventDef_var act_event;
-	IR__::ExceptionDef_var act_exception;
-	IR__::EnumDef_var act_enum;
-	IR__::ModuleDef_var act_module;
-	IR__::StructDef_var act_struct;
-
-	std::cout << "Debug: item to generate: " << item->name() << std::endl;
-	IR__::Contained_var act_contained = IR__::Contained::_narrow(item->defined_in());
-	if (!CORBA::is_nil(act_contained)) {
-		if (!strcmp(act_contained->name(), "Deployment")) {
-			return;
-		};
-		if (!strcmp(act_contained->name(), "Components")) {
-			return;
-		};
-		if (!strcmp(act_contained->name(), "CORBA")) {
-			return;
-		};
-		if (!strcmp(act_contained->name(), "CosPropertyService")) {
-//			return;
-		};
-
-	}
-	
-	this->open_module (item);
-	switch (item->describe()->kind) {
-	case CORBA__::dk_Module:
-		act_module = IR__::ModuleDef::_narrow(item);
-		beginModule (act_module);
-		endModule(act_module);
-		break;
-	case CORBA__::dk_Home:
-		act_home = IR__::HomeDef::_narrow(item);
-		
-		doHome(act_home);
-		
-		break;
-	case CORBA__::dk_Component:
-		act_component = IR__::ComponentDef::_narrow(item);
-		doComponent(act_component);
-		break;
-	case CORBA__::dk_Interface:
-		act_interface = IR__::InterfaceDef::_narrow(item);
-		doInterface ( act_interface );
-		break;
-	case CORBA__::dk_Value:
-		act_event = IR__::EventDef::_narrow(item);
-		if (!CORBA::is_nil ( act_event ) ) {
-			doEvent ( act_event );
-		} else {
-			act_value = IR__::ValueDef::_narrow(item);
-			doValue(act_value);
-		}
-		break;
-	case CORBA__::dk_Alias:
-		act_alias = IR__::AliasDef::_narrow(item);
-		doAlias (act_alias);
-		break;
-	case CORBA__::dk_Exception:
-		act_exception = IR__::ExceptionDef::_narrow(item);
-		doException(act_exception);
-		break;
-
-	case CORBA__::dk_Enum:
-		act_enum = IR__::EnumDef::_narrow(item);
-		doEnum(act_enum);
-		break;
-	case CORBA__::dk_Struct:
-		act_struct = IR__::StructDef::_narrow(item);
-		doStruct(act_struct);
-
-	default:
-		break;
-		//return;
-	};
-	this->close_module(item);
-	
-}
 
 /*
 GeneratorEIDL::open_scope(IR__::Contained_ptr item) {
@@ -626,56 +502,8 @@ GeneratorEIDL::close_scope(IR__::Contained_ptr item) {
 void
 GeneratorEIDL::doModule(IR__::ModuleDef_ptr module)
 {
-	IR__::ContainedSeq_var contained_seq;
-	CORBA::ULong len;
-	CORBA::ULong i;
-
-/*
-	// find  items to generate starting from the components
-	contained_seq = module->contents(CORBA__::dk_Home, true);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::HomeDef_var act_home = IR__::HomeDef::_narrow(((*contained_seq)[i]));
-		check_for_generation(act_home);
-	}
-	contained_seq = module->contents(CORBA__::dk_Module, true);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::ModuleDef_var act_module = IR__::ModuleDef::_narrow(((*contained_seq)[i]));
-		check_for_generation(act_module);
-	}
-*/
-	this->check_for_generation(module);
-
-//	beginModule ( module );
-
-	// forward declarations
-	len = m_to_generate_seq->length();
-	i;
-	for( i= 0; i < len; i++)
-	{
-		if ((*m_to_generate_seq)[i]->describe()->kind == CORBA__::dk_Interface) {
-			open_module((*m_to_generate_seq)[i]);
-			out << "interface " << (*m_to_generate_seq)[i]->name() << ";\n";
-			close_module((*m_to_generate_seq)[i]);
-		}
-		if ((*m_to_generate_seq)[i]->describe()->kind == CORBA__::dk_Component) {
-			open_module((*m_to_generate_seq)[i]);
-			out << "interface " << (*m_to_generate_seq)[i]->name() << ";\n";
-			close_module((*m_to_generate_seq)[i]);
-		};
-	}
-
-
-	len = m_to_generate_seq->length();
-	for (i = 0; i < len ; i++) {
-		generate_the_item ((*m_to_generate_seq)[i]);
-	}
-
-
-//	endModule ( module );
+	beginModule ( module );
+	endModule ( module );
 };
 
 void
@@ -713,12 +541,12 @@ GeneratorEIDL::endModule(IR__::ModuleDef_ptr module)
 	out.unindent();
 	out << "}; // module " << module->name() << "\n\n";
 */
-  };
+};
 
 
 void
-GeneratorEIDL::beginInterface(IR__::InterfaceDef_ptr intface)
-{	
+GeneratorEIDL::doInterface(IR__::InterfaceDef_ptr intface)
+{
 	out << "//\n// " << intface->id() << "\n//\n";
 	out << "interface " << intface->name();
 	
@@ -743,15 +571,25 @@ GeneratorEIDL::beginInterface(IR__::InterfaceDef_ptr intface)
 	}
 	out << "\n{\n";
 	out.indent();
-};
 
+	// contained constants
+	handleConstant(intface);
 
-void
-GeneratorEIDL::endInterface(IR__::InterfaceDef_ptr intface)
-{	
+	// contained typedefs
+	handleTypedef(intface);
+
+	// contained exceptions
+	handleException(intface);
+
+	// contained attributes
+	handleAttribute(intface);
+
+	// contained operations
+	handleOperation(intface);
+
 	out.unindent();
 	out << "};\n\n";
-};
+}
 
 
 void
@@ -1214,32 +1052,6 @@ GeneratorEIDL::doStruct(IR__::StructDef_ptr sdef)
 	out << "};\n";
 }
 
-void
-GeneratorEIDL::open_module(IR__::Contained* cur_cont)
-{
-	IR__::Container_ptr act_container=cur_cont->defined_in();
-	if(act_container->def_kind()==CORBA__::dk_Module)
-	{
-		IR__::ModuleDef_var act_mod = IR__::ModuleDef::_narrow(act_container);
-		this->open_module(act_mod);
-		out << "module " << act_mod->name() << " {\n";
-	}
-};
-
-
-void
-GeneratorEIDL::close_module(IR__::Contained* cur_cont) 
-{
-	IR__::Container_ptr act_container=cur_cont->defined_in();
-	if(act_container->def_kind()==CORBA__::dk_Module) 
-	{
-		IR__::ModuleDef_var act_mod = IR__::ModuleDef::_narrow(act_container);
-		this->close_module(act_mod);
-		out <<  "};\n";
-	}
-
-};
-
 
 void
 GeneratorEIDL::beginComponent(IR__::ComponentDef_ptr component)
@@ -1444,6 +1256,7 @@ GeneratorEIDL::doSiSo(IR__::SiSoDef_ptr siso)
 void
 GeneratorEIDL::doComposition(CIDL::CompositionDef_ptr composition)
 {
+	// TODO
 }
 
 
@@ -1451,16 +1264,40 @@ void
 GeneratorEIDL::generate(std::string target, std::string fileprefix)
 {
 	initialize(target, fileprefix);
-
+	
 	//
-	// write temp file without includes
+	// open temp file without includes
 	//
 	filename_ = file_prefix_ + "_EQUIVALENT.idl";
 	string temp_filename = filename_ + ".temp";
 	out.open(temp_filename.c_str());
+
+	//
+	// forward declarations
+	//
+	out << "//\n// forward declarations\n//\n"; 
+	CORBA::ULong len = m_to_generate_seq->length();
+	CORBA::ULong i;
+	for(i = 0; i < len; i++)
+	{
+		if ((*m_to_generate_seq)[i]->describe()->kind == CORBA__::dk_Interface) {
+			open_module((*m_to_generate_seq)[i]);
+			out << "interface " << (*m_to_generate_seq)[i]->name() << ";\n";
+			close_module((*m_to_generate_seq)[i]);
+		}
+		if ((*m_to_generate_seq)[i]->describe()->kind == CORBA__::dk_Component) {
+			open_module((*m_to_generate_seq)[i]);
+			out << "interface " << (*m_to_generate_seq)[i]->name() << ";\n";
+			close_module((*m_to_generate_seq)[i]);
+		};
+	}
+	out << "\n";
+
+	//
+	// generate
+	//
 	doGenerate();
 	out.close();
-
 
 	//
 	// insert includes

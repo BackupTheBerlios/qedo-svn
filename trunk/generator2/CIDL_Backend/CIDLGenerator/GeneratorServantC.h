@@ -3,12 +3,8 @@
 
 #include "CPPBase.h"
 #include "Printer.h"
-
 #include <fstream>
 #include <iostream>
-
-
-using namespace std;
 
 
 namespace QEDO_CIDL_Generator 
@@ -27,7 +23,7 @@ private:
 	Printer						out;
 	IR__::ComponentDef_var		component_;
 	IR__::HomeDef_var			home_;
-	map < string, bool >		already_done_;
+	std::map < string, bool >	already_done_;
 
 	void doModule(IR__::ModuleDef_ptr module);
 	void doAttribute(IR__::AttributeDef_ptr attribute);
@@ -72,6 +68,7 @@ public:
 };
 
 
-} // namespace QEDO_CIDL_Generator
+} // namespace
+
 
 #endif

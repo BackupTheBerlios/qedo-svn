@@ -3,12 +3,8 @@
 
 #include "CPPBase.h"
 #include "Printer.h"
-
 #include <fstream>
 #include <iostream>
-
-
-using namespace std;
 
 
 namespace QEDO_CIDL_Generator {
@@ -17,8 +13,10 @@ namespace QEDO_CIDL_Generator {
 class GeneratorBusinessC : public virtual CPPBase
 {
 
-	string filename_;
-	string class_name_;
+private:
+
+	std::string filename_;
+	std::string class_name_;
 	Printer out;
 	bool need_push_;
 	CIDL::CompositionDef_var composition_;
@@ -45,6 +43,8 @@ public:
 
 };
 
-} // namespace QEDO_CIDL_Generator
+
+} // namespace
+
 
 #endif

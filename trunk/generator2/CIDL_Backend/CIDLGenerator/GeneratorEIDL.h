@@ -17,29 +17,19 @@ namespace QEDO_CIDL_Generator {
 class GeneratorEIDL : public virtual IDLBase
 {
 
-		// internal list for items to generate
-	IR__::ContainedSeq_var m_to_generate_seq;
 	std::set<std::string> m_recursion_set;
-	bool already_included (IR__::Contained_ptr item);
-	void insert_to_generate(IR__::Contained_ptr item);
 	void check_for_generation ( IR__::Contained_ptr item );
-	void generate_the_item ( IR__::Contained_ptr item ) ;
 
 	string filename_;
-	Printer out;
 	string managed_component_;
 	map < string, bool > includes_;
 
 	void checkForInclude(CORBA::TypeCode_ptr type);
 
-	void open_module(IR__::Contained_ptr cont);
-	void close_module(IR__::Contained_ptr cont);
-
 	void doModule(IR__::ModuleDef_ptr module);
 	void beginModule(IR__::ModuleDef_ptr module);
 	void endModule(IR__::ModuleDef_ptr module);
-	void beginInterface(IR__::InterfaceDef_ptr intface);
-	void endInterface(IR__::InterfaceDef_ptr intface);
+	void doInterface(IR__::InterfaceDef_ptr intface);
 	void doException(IR__::ExceptionDef_ptr except);
 	void doEnum(IR__::EnumDef_ptr enumeration);
 	void beginValue(IR__::ValueDef_ptr value);

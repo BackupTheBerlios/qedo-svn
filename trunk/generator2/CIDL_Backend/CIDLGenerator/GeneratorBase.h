@@ -9,11 +9,11 @@ namespace QEDO_CIDL_Generator {
 
 
 //
-//
-//
 // Exceptions
+//
 struct CannotMapType {};
 struct CannotMapAbsoluteName {};
+
 
 class GeneratorBase
 {
@@ -25,12 +25,20 @@ protected:
 	std::string										target_scope_id_;
 	QEDO_ComponentRepository::CIDLRepository_impl	*repository_;
 	IR__::Contained_var								target_;
+	// internal list for items to generate
+	IR__::ContainedSeq_var							m_to_generate_seq;
 
-	std::string getName(std::string id);
+	std::string getNameFromRepId(std::string id);
+
+	// initialize the generation
 	void initialize(std::string target, std::string fileprefix);
+	bool already_included (IR__::Contained_ptr item);
+	void insert_to_generate(IR__::Contained_ptr item);
+	virtual void check_for_generation(IR__::Contained_ptr item);
 
 	// start generation
 	void doGenerate();
+	virtual void generate_the_item(IR__::Contained_ptr item);
 
 	// module
 	void handleModule(IR__::ModuleDef_ptr module);
@@ -42,6 +50,9 @@ protected:
 
 	// value type
 	virtual void doValue(IR__::ValueDef_ptr value);
+
+	// event type
+	virtual void doEvent(IR__::ValueDef_ptr value);
 
 	// component
 	virtual void doComponent(IR__::ComponentDef_ptr component);
@@ -82,9 +93,11 @@ protected:
 	virtual void doEnum(IR__::EnumDef_ptr enumeration);
 
 	// constant
+	void handleConstant(IR__::Container_ptr container);
 	virtual void doConstant(IR__::ConstantDef_ptr constant);
 
 	// typedef
+	void handleTypedef(IR__::Container_ptr container);
 	virtual void doTypedef(IR__::TypedefDef_ptr tdef);
 
 	// alias

@@ -19,8 +19,109 @@ IDLBase::~IDLBase
 
 
 //
+// start generation
+//
+void
+IDLBase::generate_the_item ( IR__::Contained_ptr item ) {
+	IR__::HomeDef_var act_home;
+	IR__::ComponentDef_var act_component;
+	IR__::InterfaceDef_var act_interface;
+	IR__::AliasDef_var act_alias;
+	IR__::ValueDef_var act_value;
+	IR__::EventDef_var act_event;
+	IR__::ExceptionDef_var act_exception;
+	IR__::EnumDef_var act_enum;
+	IR__::ModuleDef_var act_module;
+	IR__::StructDef_var act_struct;
+
+	std::cout << "Debug: item to generate: " << item->name() << std::endl;
+	this->open_module(item);
+	switch (item->describe()->kind) {
+	case CORBA__::dk_Module:
+		act_module = IR__::ModuleDef::_narrow(item);
+		doModule(act_module);
+		break;
+	case CORBA__::dk_Home:
+		act_home = IR__::HomeDef::_narrow(item);
+		doHome(act_home);
+		break;
+	case CORBA__::dk_Component:
+		act_component = IR__::ComponentDef::_narrow(item);
+		doComponent(act_component);
+		break;
+	case CORBA__::dk_Interface:
+		act_interface = IR__::InterfaceDef::_narrow(item);
+		doInterface ( act_interface );
+		break;
+	case CORBA__::dk_Value:
+		act_event = IR__::EventDef::_narrow(item);
+		if (!CORBA::is_nil ( act_event ) ) {
+			doEvent ( act_event );
+		} else {
+			act_value = IR__::ValueDef::_narrow(item);
+			doValue(act_value);
+		}
+		break;
+	case CORBA__::dk_Alias:
+		act_alias = IR__::AliasDef::_narrow(item);
+		doAlias (act_alias);
+		break;
+	case CORBA__::dk_Exception:
+		act_exception = IR__::ExceptionDef::_narrow(item);
+		doException(act_exception);
+		break;
+	case CORBA__::dk_Enum:
+		act_enum = IR__::EnumDef::_narrow(item);
+		doEnum(act_enum);
+		break;
+	case CORBA__::dk_Struct:
+		act_struct = IR__::StructDef::_narrow(item);
+		doStruct(act_struct);
+		break;
+	case CORBA__::dk_Composition : {
+		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
+		doComposition(a_composition);
+		break; }
+	default:
+		break;
+	};
+
+	this->close_module(item);
+}
+
+
+//
 // module
 //
+void
+IDLBase::open_module(IR__::Contained* cur_cont)
+{
+	IR__::Container_ptr act_container=cur_cont->defined_in();
+	if(act_container->def_kind()==CORBA__::dk_Module)
+	{
+		IR__::ModuleDef_var act_mod = IR__::ModuleDef::_narrow(act_container);
+		this->open_module(act_mod);
+		out << "module " << act_mod->name() << " {\n\n";
+		out.indent();
+	}
+}
+
+
+void
+IDLBase::close_module(IR__::Contained* cur_cont) 
+{
+	IR__::Container_ptr act_container=cur_cont->defined_in();
+	if(act_container->def_kind()==CORBA__::dk_Module) 
+	{
+		IR__::ModuleDef_var act_mod = IR__::ModuleDef::_narrow(act_container);
+		this->close_module(act_mod);
+		out.unindent();
+		out <<  "};\n\n";
+	}
+
+}
+
+
 void
 IDLBase::doModule(IR__::ModuleDef_ptr module)
 {
@@ -255,36 +356,14 @@ IDLBase::doInterface(IR__::InterfaceDef_ptr intface)
 {
 	beginInterface(intface);
 
-	IR__::ContainedSeq_var contained_seq;
-	CORBA::ULong len;
-	CORBA::ULong i;
-
 	// contained constants
-	contained_seq = intface->contents(CORBA__::dk_Constant, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::ConstantDef_var act_constant = IR__::ConstantDef::_narrow(((*contained_seq)[i]));
-		doConstant(act_constant);
-	}
+	handleConstant(intface);
 
 	// contained typedefs
-	contained_seq = intface->contents(CORBA__::dk_Typedef, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::TypedefDef_var act_typedef = IR__::TypedefDef::_narrow(((*contained_seq)[i]));
-		doTypedef(act_typedef);
-	}
+	handleTypedef(intface);
 
 	// contained exceptions
-	contained_seq = intface->contents(CORBA__::dk_Exception, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::ExceptionDef_var act_exception = IR__::ExceptionDef::_narrow(((*contained_seq)[i]));
-		doException(act_exception);
-	}
+	handleException(intface);
 
 	// contained attributes
 	handleAttribute(intface);

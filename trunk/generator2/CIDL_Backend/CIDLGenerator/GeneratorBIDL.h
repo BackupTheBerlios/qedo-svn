@@ -3,26 +3,30 @@
 
 #include "IDLBase.h"
 #include "Printer.h"
-
 #include <fstream>
 #include <iostream>
-
-
-using namespace std;
+#include <set>
 
 
 namespace QEDO_CIDL_Generator {
 
 
+//
+//
+//
 class GeneratorBIDL : public virtual IDLBase
 {
 
-	string filename_;
-	Printer out;
+private:
+
+	std::set<std::string> m_recursion_set;
+	std::string filename_;
 	
-	void open_module(IR__::Contained* cur_cont);
-	void close_module(IR__::Contained* cur_cont);
 	void doComposition(CIDL::CompositionDef_ptr composition);
+
+protected:
+
+	void check_for_generation(IR__::Contained_ptr item);
 
 public:
 
@@ -33,7 +37,9 @@ public:
 
 };
 
-} // namespace QEDO_CIDL_Generator
+
+} // namespace
+
 
 #endif
 

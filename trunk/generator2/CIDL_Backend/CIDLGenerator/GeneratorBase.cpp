@@ -8,11 +8,14 @@ GeneratorBase::GeneratorBase
 (QEDO_ComponentRepository::CIDLRepository_impl *repository)
 {
 	repository_ = repository;
-	repository_ -> _add_ref();
+	repository_->_add_ref();
 	file_prefix_ = "";
 	target_scope_id_ = "";
 	target_id_ = "";
 	target_ = IR__::Contained::_nil();
+
+	m_to_generate_seq = new IR__::ContainedSeq();
+	m_to_generate_seq->length(0);
 }
 
 
@@ -26,16 +29,16 @@ void
 GeneratorBase::destroy
 ()
 {
-	repository_ -> _remove_ref();
+	repository_->_remove_ref();
 	delete this;
 }
 
 
 /*
- * make a name from an RepId by replacing / with _
+ * make a name from a RepId by replacing / with _
  */
 std::string
-GeneratorBase::getName(std::string id)
+GeneratorBase::getNameFromRepId(std::string id)
 {
 	std::string name = id;
 
@@ -70,58 +73,76 @@ GeneratorBase::initialize(std::string target, std::string fileprefix)
 	}
 	if(CORBA::is_nil(target_))
 	{
-		std::cerr << "--- fatal internal error - not found " << target << std::endl;
+		std::cerr << "----- could not found " << target << std::endl;
+		std::cerr << "----- generation stopped !!!" << std::endl;
 		return;
 	}
 	target_id_ = target_->id();
-	target_scope_id_ = target_id_;
-	file_prefix_ = getName(target_scope_id_);
 
-	switch(target_->def_kind())
-	{
-		case CORBA__::dk_Home : {
-			// process the module where the home is defined in
-			IR__::HomeDef_var home = IR__::HomeDef::_narrow(target_);
-			IR__::ModuleDef_var module = IR__::ModuleDef::_narrow(home->defined_in());
-			if(CORBA::is_nil(module))
-			{
-				std::cerr << "--- error - home " << target << " not defined in module " << std::endl;
-				return;
-			}
-			target_ = IR__::Contained::_duplicate(module);
-			target_scope_id_ = module->id();
-			file_prefix_ = getName(target_scope_id_);
-			break;
-		}
-		case CORBA__::dk_Module : {
-			break;
-		}
-		case CORBA__::dk_Composition : {
-			// process the composition
-			std::string::size_type pos = target_scope_id_.rfind("/");
-			if(pos != std::string::npos)
-			{
-				target_scope_id_.replace(pos, std::string::npos, ":1.0");
-				file_prefix_ = getName(target_scope_id_);
-			}
-			else
-			{
-				std::cerr << "--- error - composition " << target << " not defined in module" << std::endl;
-				return;
-			}
-			break;
-		}
-		default : {
-			// no other targets supported
-			std::cerr << "--- error - kind for " << target << " not supported" << std::endl;
-			return;
-		}
+	//
+	// check whether target is of supported kind
+	//
+	switch(target_->def_kind())	{
+	case CORBA__::dk_Home :
+	case CORBA__::dk_Module : 
+	case CORBA__::dk_Composition :
+		break;
+	// no other targets supported
+	default :
+		std::cerr << "--- error - kind for " << target << " not supported" << std::endl;
+		return;
 	}
 
+	//
+	// determine the file prefix
+	//
 	if (fileprefix != "")
 	{
 		file_prefix_ = fileprefix;
 	}
+	else
+	{
+		file_prefix_ = getNameFromRepId(target_id_);
+	}
+
+	//
+	// determine the target set
+	//
+	check_for_generation(target_);
+}
+
+
+bool
+GeneratorBase::already_included (IR__::Contained_ptr item)
+{
+	CORBA::ULong i;
+	CORBA::ULong len;
+
+	len = m_to_generate_seq -> length();
+	if (len == 0 ) 
+		return false;
+	for (i = 0 ; i < len ; i++) {
+		if (!strcmp((*m_to_generate_seq)[i]->id(), item->id())) {
+			return true;
+		};
+	};
+	return false;
+}
+
+
+void 
+GeneratorBase::insert_to_generate(IR__::Contained_ptr item) 
+{
+	// insert the item
+	m_to_generate_seq->length(m_to_generate_seq->length()+1);
+	m_to_generate_seq[m_to_generate_seq->length()-1] = IR__::Contained::_duplicate(item);
+}
+
+
+void
+GeneratorBase::check_for_generation(IR__::Contained_ptr item) 
+{
+	insert_to_generate(item);
 }
 
 
@@ -137,23 +158,69 @@ GeneratorBase::doGenerate()
 		return;
 	}
 
-	switch(target_->def_kind())
-	{
-		case CORBA__::dk_Home :
-		case CORBA__::dk_Module : {
-			// process the module
-			IR__::ModuleDef_var module = IR__::ModuleDef::_narrow(target_);
-			doModule(module);
-			break;
-		}
-		case CORBA__::dk_Composition : {
-			// process the composition
-			CIDL::CompositionDef_var composition = CIDL::CompositionDef::_narrow(target_);
-			doComposition(composition);
-			break;
-		}
-		default : {}
+	//
+	// generate for all items of the generation list
+	//
+	CORBA::ULong len = m_to_generate_seq->length();
+	for (CORBA::ULong i = 0; i < len ; i++) {
+		generate_the_item ((*m_to_generate_seq)[i]);
 	}
+}
+
+
+void
+GeneratorBase::generate_the_item ( IR__::Contained_ptr item )
+{
+	std::cout << "Debug: item to generate: " << item->name() << std::endl;
+	switch (item->describe()->kind) {
+	case CORBA__::dk_Module: {
+		IR__::ModuleDef_var a_module = IR__::ModuleDef::_narrow(item);
+		doModule(a_module);
+		break; }
+	case CORBA__::dk_Home: {
+		IR__::HomeDef_var a_home = IR__::HomeDef::_narrow(item);
+		doHome(a_home);
+		break; }
+	case CORBA__::dk_Component: {
+		IR__::ComponentDef_var a_component = IR__::ComponentDef::_narrow(item);
+		doComponent(a_component);
+		break; }
+	case CORBA__::dk_Interface: {
+		IR__::InterfaceDef_var a_interface = IR__::InterfaceDef::_narrow(item);
+		doInterface(a_interface);
+		break; }
+	case CORBA__::dk_Value: {
+		IR__::EventDef_var a_event = IR__::EventDef::_narrow(item);
+		if (!CORBA::is_nil (a_event)) {
+			doEvent(a_event);
+		} else {
+			IR__::ValueDef_var a_value = IR__::ValueDef::_narrow(item);
+			doValue(a_value);
+		}
+		break; }
+	case CORBA__::dk_Alias: {
+		IR__::AliasDef_var a_alias = IR__::AliasDef::_narrow(item);
+		doAlias(a_alias);
+		break; }
+	case CORBA__::dk_Exception: {
+		IR__::ExceptionDef_var a_exception = IR__::ExceptionDef::_narrow(item);
+		doException(a_exception);
+		break; }
+	case CORBA__::dk_Enum: {
+		IR__::EnumDef_var a_enum = IR__::EnumDef::_narrow(item);
+		doEnum(a_enum);
+		break; }
+	case CORBA__::dk_Struct: {
+		IR__::StructDef_var a_struct = IR__::StructDef::_narrow(item);
+		doStruct(a_struct);
+		break; }
+	case CORBA__::dk_Composition : {
+		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
+		doComposition(a_composition);
+		break; }
+	default:
+		break;
+	};
 }
 
 
@@ -288,6 +355,26 @@ GeneratorBase::doFinder(IR__::FinderDef_ptr finder)
 
 
 //
+// event type
+//
+void
+GeneratorBase::doEvent(IR__::ValueDef_ptr value)
+{
+	IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_all, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		// contained members
+		if (((*contained_seq)[i])->def_kind() == CORBA__::dk_ValueMember)
+		{
+			IR__::ValueMemberDef_var act_member = IR__::ValueMemberDef::_narrow(((*contained_seq)[i]));
+			doValueMember(act_member);
+		}
+	}
+}
+
+
+//
 // value type
 //
 void
@@ -376,6 +463,19 @@ GeneratorBase::doEnum(IR__::EnumDef_ptr enumeration)
 // constant
 //
 void
+GeneratorBase::handleConstant(IR__::Container_ptr container)
+{
+	IR__::ContainedSeq_var contained_seq = container->contents(CORBA__::dk_Constant, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::ConstantDef_var a_constant = IR__::ConstantDef::_narrow(((*contained_seq)[i]));
+		doConstant(a_constant);
+	}
+}
+
+
+void
 GeneratorBase::doConstant(IR__::ConstantDef_ptr constant)
 {
 }
@@ -384,6 +484,18 @@ GeneratorBase::doConstant(IR__::ConstantDef_ptr constant)
 //
 // typedef
 //
+void 
+GeneratorBase::handleTypedef(IR__::Container_ptr container)
+{
+	IR__::ContainedSeq_var contained_seq = container->contents(CORBA__::dk_Typedef, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++) {
+		IR__::TypedefDef_var a_typedef = IR__::TypedefDef::_narrow(((*contained_seq)[i]));
+		doTypedef(a_typedef);
+	}
+}
+
+
 void
 GeneratorBase::doTypedef(IR__::TypedefDef_ptr tdef)
 {

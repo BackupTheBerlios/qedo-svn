@@ -2,6 +2,7 @@
 #define __IDLBASE_H__
 
 #include "GeneratorBase.h"
+#include "Printer.h"
 
 
 namespace QEDO_CIDL_Generator {
@@ -15,7 +16,13 @@ class IDLBase : public GeneratorBase
 
 protected:
 
+	Printer out;
+
+	void generate_the_item(IR__::Contained_ptr item);
+
 	// module
+	void open_module(IR__::Contained_ptr cont);
+	void close_module(IR__::Contained_ptr cont);
 	virtual void doModule(IR__::ModuleDef_ptr module);
 	virtual void beginModule(IR__::ModuleDef_ptr module);
 	virtual void endModule(IR__::ModuleDef_ptr module);
