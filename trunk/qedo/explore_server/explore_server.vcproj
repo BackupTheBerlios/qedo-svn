@@ -20,7 +20,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(MICO)\include&quot;;&quot;./&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_WINDOWS"
+				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_WINDOWSL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -111,12 +111,6 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="CORBADepends.cpp">
-			</File>
-			<File
-				RelativePath="Components.cpp">
-			</File>
-			<File
 				RelativePath="Explore_impl.cpp">
 			</File>
 			<File
@@ -129,12 +123,6 @@ copy $(TargetPath) $(QEDO)\bin
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
-			<File
-				RelativePath="CORBADepends.h">
-			</File>
-			<File
-				RelativePath="Components.h">
-			</File>
 			<File
 				RelativePath="Explore_impl.h">
 			</File>
@@ -150,34 +138,12 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="idl"
 			Filter="">
 			<File
-				RelativePath="CORBADepends.idl">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="idl -I%MICO%\include\mico -I%MICO%\include -DMICO_ORB --c++-suffix cpp CORBADepends.idl
-"
-						Outputs="CORBADepends.cpp;CORBADepends.h"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="Components.idl">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="idl -I%MICO%\include\mico -I%MICO%\include -DMICO_ORB --c++-suffix cpp Components.idl
-"
-						Outputs="Components.h;Components.cpp"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="explore.idl">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="idl -I%MICO%\include\mico -I%MICO%\include -DMICO_ORB --c++-suffix cpp explore.idl
+						CommandLine="idl -I%MICO%\include\mico -I../ComponentIDL -I%MICO%\include -DMICO_ORB --c++-suffix cpp explore.idl
 "
 						Outputs="explore.h;explore.cpp"/>
 				</FileConfiguration>
