@@ -1,3 +1,5 @@
+
+version 0.4.1
 - new dynamic library qedoutil for better code reusage
 - XML stuff (DOM parser, ...) put in qedoutil
 - CCM deployment XML readers put in qedoutil

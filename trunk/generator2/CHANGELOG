@@ -1,4 +1,12 @@
-verion 0.3.0
+version 0.4.1
+- changed the backend to start from compositionDef not from ComponentDef
+- added extension lifecycle category
+- support generation of extension servants
+
+version 0.4.0
+
+
+version 0.3.0
 - support for generation of event type skeletons
 - improved vc7 project generator
 
