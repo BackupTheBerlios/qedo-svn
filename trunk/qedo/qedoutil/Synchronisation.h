@@ -55,125 +55,124 @@ namespace Qedo {
  */
 
 
-class qedo_lock;
+class QedoLock;
 
-struct mutex_delegate;
+struct MutexDelegate;
 
 /**
  * a mutex for Qedo
  */
-class CONTAINERDLL_API qedo_mutex {
-
+class CONTAINERDLL_API QedoMutex 
+{
 	/** makes use of this */
-	friend class qedo_lock;
+	friend class QedoLock;
 	/** makes use of this */
-	friend class qedo_cond;
+	friend class QedoCond;
 
 private:
 
 	/** the mutex */
-	struct mutex_delegate* delegate;
+	struct MutexDelegate* delegate_;
 
 public:
 	/**
 	 * constructor
 	 */
-	qedo_mutex();
+	QedoMutex();
 
 	/**
 	 * destructor
 	 */
-	~qedo_mutex();
+	~QedoMutex();
 
 	/**
 	 * lock an object
 	 */
-	void qedo_lock_object();
+	void lock_object();
 
 	/**
 	 * unlock an object
 	 */
-	void qedo_unlock_object();
+	void unlock_object();
 };
 
 
 /**
  * a lock for Qedo
  */
-class CONTAINERDLL_API qedo_lock
+class CONTAINERDLL_API QedoLock
 {
 private:
 	/** the qedo mutex */
-	qedo_mutex* m_mutex;
+	QedoMutex* mutex_;
 
 public:
 	/**
 	 * constructor
 	 * \param m The qedo mutex.
 	 */
-	qedo_lock(const qedo_mutex* m);
+	QedoLock (const QedoMutex*);
 
 	/**
 	 * constructor
 	 * \param m The qedo mutex.
 	 */
-	qedo_lock(qedo_mutex* m);
+	QedoLock (QedoMutex*);
 
 	/**
 	 * constructor
 	 * \param m The qedo mutex.
 	 */
-	qedo_lock(const qedo_mutex& m);
+	QedoLock (const QedoMutex&);
 
 	/**
 	 * destructor
 	 */
-	~qedo_lock();
+	~QedoLock();
 };
 
 
-struct cond_delegate;
+struct CondDelegate;
 /**
  * bla
  */
-class CONTAINERDLL_API qedo_cond
+class CONTAINERDLL_API QedoCond
 {
 
 private:
 	/// bla
-	struct cond_delegate* delegate;
+	struct CondDelegate* delegate_;
 
 public:
 	/**
 	 * constructor
 	 */
-	qedo_cond();
+	QedoCond();
 
 	/**
 	 * constructor
-	 * \param sig_name
 	 */
-	qedo_cond (char* sig_name);
+	QedoCond (char*);
 
 	/**
 	 * destructor
 	 */
-	~qedo_cond();
+	~QedoCond();
 
 	/**
 	 * wait
 	 */
-	void qedo_wait(const qedo_mutex& m);
+	void wait (const QedoMutex&);
 
 	/**
 	 * wait
 	 */
-	void qedo_wait(const qedo_mutex* m);
+	void wait (const QedoMutex*);
 
 	/**
 	 * insert comments
 	 */
-	void qedo_signal();
+	void signal();
 };
 
 
@@ -194,7 +193,8 @@ void
 qedo_startDetachedThread(void* (*p)(void*), void* arg);
 
 
-struct t_start {
+struct T_Start 
+{
 	void* (*p)(void*);
 	void* a;
 };

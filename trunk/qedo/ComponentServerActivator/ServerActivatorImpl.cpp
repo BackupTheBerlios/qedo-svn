@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.17 2003/08/05 14:40:49 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.18 2003/08/08 10:04:31 stoinski Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -44,10 +44,10 @@ namespace Qedo {
 
 	
 ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode, bool qos_mode)
-: debug_mode_ (debug_mode),
+: orb_ (CORBA::ORB::_duplicate (orb)),
+  debug_mode_ (debug_mode),
   enable_qos_ (qos_mode),
-  component_server_activation ("QEDO_ACTIVATOR_SIGNAL"),
-  orb_ (CORBA::ORB::_duplicate (orb))
+  component_server_activation_ ("QEDO_ACTIVATOR_SIGNAL")
 {
 }
 
@@ -199,7 +199,7 @@ Components::Deployment::ComponentServer_ptr
 ServerActivatorImpl::create_component_server (const ::Components::ConfigValues& config)
 throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, CORBA::SystemException)
 {
-	qedo_lock lock(component_server_mutex);
+	QedoLock lock (component_server_mutex_);
 	std::cout << "ServerActivatorImpl: create_component_server() called" << std::endl;
 
 	CORBA::String_var my_string_ref;
@@ -286,7 +286,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 #endif
 
-	component_server_activation.qedo_wait(component_server_mutex);
+	component_server_activation_.wait (component_server_mutex_);
 
 //#endif
 
@@ -330,15 +330,14 @@ void
 ServerActivatorImpl::notify_component_server (Components::Deployment::ComponentServer_ptr server)
 throw (CORBA::SystemException)
 {
-	qedo_lock lock(component_server_mutex);
+	QedoLock lock (component_server_mutex_);
 	std::cout << "ServerActivatorImpl: notify_component_server() called" << std::endl;
-
 
 	last_created_component_server_ = Components::Deployment::ComponentServer::_duplicate(server);
 
 	// Signal that the callback function has been called by the Component Server,
 	// so we can return the IOR to the client
-	component_server_activation.qedo_signal();
+	component_server_activation_.signal();
 }
 
 } // namespace Qedo

@@ -26,7 +26,7 @@
 #include <string>
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.6 2003/07/31 21:25:10 tom Exp $";
+static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.7 2003/08/08 10:04:31 stoinski Exp $";
 
 
 /**
@@ -65,7 +65,7 @@ main (int argc, char** argv)
 		exit (1);
 	}
 
-	NORMAL_OUT("Qedo Home Finder is up and running ...")
+	NORMAL_OUT ("Qedo Home Finder is up and running ...")
 	orb->run();
 	return 0;
 }

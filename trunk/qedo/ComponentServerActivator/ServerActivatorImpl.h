@@ -65,8 +65,8 @@ private:
 	bool enable_qos_;
 
 	/** for syncronization */
-	qedo_cond component_server_activation;
-	qedo_mutex component_server_mutex;
+	QedoCond										component_server_activation_;
+	QedoMutex										component_server_mutex_;
 
 	/** the orb */
 	CORBA::ORB_var									orb_;

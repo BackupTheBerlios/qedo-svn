@@ -197,13 +197,15 @@ private:
 	std::vector<EventEntry>									event_list;
 
 	/** the mutex for accessing the event_list member*/
-	qedo_mutex event_queue_mutex;
+	QedoMutex												event_queue_mutex_;
 
 	/** this condition is signaled when a new entry is added to the event_list member*/
-	qedo_cond event_queue_cond;
+	QedoCond												event_queue_cond_;
 
 	/** Configuration values */
-	enum EventCommunicationMode {EVENT_COMMUNICATION_ASYNCHRONOUS, EVENT_COMMUNICATION_SYNCHRONOUS};
+	enum EventCommunicationMode {EVENT_COMMUNICATION_ASYNCHRONOUS, 
+								 EVENT_COMMUNICATION_SYNCHRONOUS};
+
 	EventCommunicationMode									event_communication_mode_;
 
 	/**

@@ -22,12 +22,12 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: Output.cpp,v 1.5 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Output.cpp,v 1.6 2003/08/08 10:04:31 stoinski Exp $";
 
 
 namespace Qedo {
 
-qedo_mutex* container_mutex = new qedo_mutex();
+QedoMutex* container_mutex = new QedoMutex();
 
 } // namespace Qedo
 

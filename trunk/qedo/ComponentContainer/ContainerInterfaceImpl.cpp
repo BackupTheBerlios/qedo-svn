@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.27 2003/08/08 08:15:15 stoinski Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.28 2003/08/08 10:04:31 stoinski Exp $";
 
 
 namespace Qedo {
@@ -148,14 +148,14 @@ ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 
 	ContainerInterfaceImpl* this_ptr = (ContainerInterfaceImpl*)data;
 
-	this_ptr->event_queue_mutex.qedo_lock_object();
+	this_ptr->event_queue_mutex_.lock_object();
 
 	do
 	{
 			while(!this_ptr->event_list.empty()) {
 			EventEntry e = this_ptr->event_list.front();
 			this_ptr->event_list.erase (this_ptr->event_list.begin());
-			this_ptr->event_queue_mutex.qedo_unlock_object();
+			this_ptr->event_queue_mutex_.unlock_object();
 
 			try {
 				e.consumer_->push_event(e.event_);
@@ -168,11 +168,11 @@ ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 			{
 			   DEBUG_OUT("event_delivering: exception");
 			}
-			this_ptr->event_queue_mutex.qedo_lock_object();
+			this_ptr->event_queue_mutex_.lock_object();
 
 		}
 
-		this_ptr->event_queue_cond.qedo_wait(this_ptr->event_queue_mutex);
+		this_ptr->event_queue_cond_.wait(this_ptr->event_queue_mutex_);
 	} while(true);
 	// here hast to be checked for finalize of the thread
 	return 0;
@@ -391,14 +391,14 @@ ContainerInterfaceImpl::queue_event
 {
 	if (event_communication_mode_ == EVENT_COMMUNICATION_ASYNCHRONOUS)
 	{
-		qedo_lock lock(event_queue_mutex);
+		QedoLock lock (event_queue_mutex_);
 		Components::EventBase* e = Components::EventBase::_downcast(ev->_copy_value());
 		EventEntry entry(consumer,e);
 		event_list.push_back(entry);
 
 		CORBA::remove_ref (e);
 
-		event_queue_cond.qedo_signal();
+		event_queue_cond_.signal();
 	}
 	else
 	{
@@ -414,7 +414,7 @@ ContainerInterfaceImpl::queue_event
 
 	if (event_communication_mode_ == EVENT_COMMUNICATION_ASYNCHRONOUS)
 	{
-		qedo_lock lock(event_queue_mutex);
+		QedoLock lock (event_queue_mutex_);
 
 		Components::EventBase* e = Components::EventBase::_downcast(ev->_copy_value());
 
@@ -425,7 +425,7 @@ ContainerInterfaceImpl::queue_event
 
 		CORBA::remove_ref (e);
 
-		event_queue_cond.qedo_signal();
+		event_queue_cond_.signal();
 	}
 	else
 	{

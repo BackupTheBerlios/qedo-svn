@@ -25,7 +25,7 @@
 #include <iostream>
 #include <cassert>
 
-static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.11 2003/08/06 12:21:33 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.12 2003/08/08 10:04:31 stoinski Exp $";
 
 
 namespace Qedo {
@@ -62,7 +62,7 @@ RefCountBase::~RefCountBase()
 void
 RefCountBase::_add_ref()
 {
-	qedo_lock lock(&mutex_);
+	QedoLock lock(&mutex_);
 	++ref_count_;
 }
 
@@ -72,7 +72,7 @@ RefCountBase::_remove_ref()
 {
 	bool remove = false;
 	{
-		qedo_lock lock(&mutex_);
+		QedoLock lock(&mutex_);
 		if (--ref_count_ == 0)
 			remove = true;
 	}
@@ -116,7 +116,7 @@ RefCountLocalObject::~RefCountLocalObject()
 void
 RefCountLocalObject::_add_ref()
 {
-	qedo_lock lock(&mutex_);
+	QedoLock lock (&mutex_);
 	++ref_count_;
 }
 
@@ -126,7 +126,7 @@ RefCountLocalObject::_remove_ref()
 {
 	bool remove = false;
 	{
-		qedo_lock lock(&mutex_);
+		QedoLock lock (&mutex_);
 		if (--ref_count_ == 0)
 			remove = true;
 	}

@@ -23,7 +23,7 @@
 #include "Key.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: Key.cpp,v 1.7 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Key.cpp,v 1.8 2003/08/08 10:04:31 stoinski Exp $";
 
 
 namespace Qedo {
@@ -35,10 +35,10 @@ Key::Key
 	// Keys can be generated from concurrent threads, so accessing the static
 	// key id must be synchronized
 	//	Synchronized synchronized (*this);
-	if(!Key::m_mutex) {
-		Key::m_mutex=new qedo_mutex;
+	if(!Key::mutex_) {
+		Key::mutex_ = new QedoMutex();
 	};
-	qedo_lock l(Key::m_mutex);
+	QedoLock l (Key::mutex_);
 	key_value_ = new CORBA::OctetSeq();
 	key_value_->length (12);
 
@@ -47,8 +47,8 @@ Key::Key
 	key_value_.inout()[2] = QEDO_KEY_MAGIC_BYTE_3;
 	key_value_.inout()[3] = QEDO_KEY_MAGIC_BYTE_4;
 
-	key_id_++;
-	memcpy(key_value_->get_buffer()+4,&key_id_,sizeof(key_id_));
+	++key_id_;
+	memcpy (key_value_->get_buffer()+4,&key_id_,sizeof(key_id_));
 #if 0
 	key_value_[4] = (CORBA::Octet)(++key_id_ & 0xff00000000000000UL) >> 56;
 	key_value_[5] = (CORBA::Octet)(key_id_ & 0x00ff000000000000) >> 48;
@@ -125,6 +125,6 @@ Key::key_value_from_object_id (const PortableServer::ObjectId& object_id)
 
 
 CORBA::ULongLong Key::key_id_ = 0;
-qedo_mutex* Key::m_mutex = 0;
+QedoMutex* Key::mutex_ = 0;
 
 } // namespace Qedo

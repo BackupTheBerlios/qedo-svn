@@ -60,7 +60,7 @@ private:
 	CORBA::Long ref_count_;
 
 	/** the mutex for ref_count_ manipulation */
-	qedo_mutex mutex_;
+	QedoMutex mutex_;
 
 public:
 	/**
@@ -103,7 +103,7 @@ private:
 	CORBA::Long ref_count_;
 
 	/** the mutex for ref_count_ manipulation */
-	qedo_mutex mutex_;
+	QedoMutex mutex_;
 #endif
 
 public:

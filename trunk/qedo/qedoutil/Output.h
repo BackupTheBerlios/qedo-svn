@@ -35,11 +35,11 @@
 #include <iostream>
 
 namespace Qedo {
-	extern CONTAINERDLL_API qedo_mutex* container_mutex;
+	extern CONTAINERDLL_API QedoMutex* container_mutex;
 }
 
 #define SYNC_WITH_CONTAINER  \
-Qedo::qedo_lock output( Qedo::container_mutex );
+Qedo::QedoLock output (Qedo::container_mutex);
 
 #define NORMAL_OUT(x) \
 { \
