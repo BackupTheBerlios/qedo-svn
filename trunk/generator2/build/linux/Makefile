@@ -1,10 +1,10 @@
 include MakeVars
 
-ifeq ($(ORB), MICO)
+ifeq ($(ORB), MICO_ORB)
 TARGET = Debug_mico_linux
 endif
 
-ifeq ($(ORB), ORBACUS)
+ifeq ($(ORB), ORBACUS_ORB)
 TARGET = Debug_orbacus_linux
 endif
 
