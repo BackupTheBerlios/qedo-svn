@@ -532,42 +532,48 @@ d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yysty
 					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp"
+						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
 			</File>
@@ -581,42 +587,48 @@ d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yysty
 					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp"
+						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
+"
 						Outputs="errmsg.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp"
+						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
+"
 						Outputs="errmsg.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp"
+						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
+"
 						Outputs="errmsg.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp"
+						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
+"
 						Outputs="errmsg.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp"
+						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
+"
 						Outputs="errmsg.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp"
+						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
+"
 						Outputs="errmsg.cpp"/>
 				</FileConfiguration>
 			</File>
@@ -626,47 +638,53 @@ d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yysty
 					Name="Release|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y;
-cp cidl.hpp cidl.h"/>
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
+cp cidl.hpp cidl.h
+"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y;
-cp cidl.hpp cidl.h"
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
+cp cidl.hpp cidl.h
+"
 						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y;
-cp cidl.hpp cidl.h"
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
+cp cidl.hpp cidl.h
+"
 						Outputs="cidl.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y;
-cp cidl.hpp cidl.h"
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
+cp cidl.hpp cidl.h
+"
 						Outputs="cidl.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y;
-cp cidl.hpp cidl.h"
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
+cp cidl.hpp cidl.h
+"
 						Outputs="cidl.cpp;cidl.h"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y;
-cp cidl.hpp cidl.h"
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
+cp cidl.hpp cidl.h
+"
 						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
 				</FileConfiguration>
 			</File>
