@@ -38,7 +38,7 @@
 #pragma warning (disable : 4715) // not all control paths return a value
 #endif
 
-static char rcsid[] UNUSED = "$Id: PrimaryStreamServant.cpp,v 1.8 2004/08/05 09:25:55 tom Exp $";
+static char rcsid[] UNUSED = "$Id: PrimaryStreamServant.cpp,v 1.9 2004/08/06 17:38:17 tom Exp $";
 
 
 namespace Qedo {
@@ -108,13 +108,24 @@ throw(Components::InvalidName,
 
 StreamComponents::SinkStreamPort_ptr
 PrimaryStreamServant::unbind(const char* name,
-                             Components::Cookie* ck)
+                             Components::Cookie*& ck)
 throw(Components::CookieRequired,
       StreamComponents::InvalidBinding,
       StreamComponents::NoBinding,
       CORBA::SystemException)
 {
+#ifndef _QEDO_NO_QOS
+	const char * act_id = this-> get_component_id();
+	CORBA::Boolean con;
+	StreamComponents::SinkStreamPort_ptr temp_port = servant_interceptor_registry_ -> unbind (act_id, (char*&) name, ck, con);
+	if (con)
+	{
+#endif
 	return stream_ccm_object_executor_->unbind (name, ck);
+#ifndef _QEDO_NO_QOS
+	}
+	return temp_port;
+#endif
 }
 
 

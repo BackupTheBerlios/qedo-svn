@@ -37,6 +37,11 @@ module StreamComponents {
 	//
 	interface SinkStreamPort;
 
+
+
+	exception InvalidBinding {};
+	exception NoBinding {};
+
     local interface StreamingBuffer
     {
             exception OutOfRange {};
@@ -497,6 +502,10 @@ module Components {
 #ifndef _QEDO_NO_STREAMS
 
 			Components::Cookie bind(in string comp_id, inout Components::FeatureName name, inout StreamComponents::SinkStreamPort the_sink, inout string transport_profile, out boolean con);
+
+			StreamComponents::SinkStreamPort unbind (in string comp_id, inout Components::FeatureName name, inout Components::Cookie ck, out boolean con)
+				raises (Components::CookieRequired, StreamComponents::InvalidBinding, StreamComponents::NoBinding);
+
 			Object provide_sink_stream_port (in string comp_id, inout Components::FeatureName name, out boolean con)
 				raises (Components::InvalidName);
 #endif
@@ -538,6 +547,10 @@ module Components {
 
 			// StreamCCMObject
 			Components::Cookie bind(in string comp_id, inout Components::FeatureName name, inout StreamComponents::SinkStreamPort the_sink, inout string transport_profile, out boolean con);
+
+			StreamComponents::SinkStreamPort unbind (in string comp_id, inout Components::FeatureName name, inout Components::Cookie ck, out boolean con)
+				raises (Components::CookieRequired, StreamComponents::InvalidBinding, StreamComponents::NoBinding);
+
 			Object provide_sink_stream_port (in string comp_id, inout Components::FeatureName name, out boolean con)
 				raises (Components::InvalidName);
 #endif
@@ -968,8 +981,6 @@ exception UnsupportedStreamtype {
 exception NoStream {};					// Raised when end_stream is called without a previous begin_stream
 exception DuplicateStream {};			// Raised when begin_stream is called twice without first calling end_stream
 exception TransportFailure {};
-exception InvalidBinding {};
-exception NoBinding {};
 exception ExceededBindingLimit {};
 exception AlreadyBound {};
 exception IllegalStream {};				// Raised when the wrong send_stream_data_* operation is used with respect to the

@@ -75,6 +75,7 @@ namespace Qedo {
 		virtual Components::Cookie* connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con ) ;
     virtual CORBA::Object_ptr provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con );
 
+#ifndef _QEDO_NO_STREAMS
 
 // StreamCCMObject
 		virtual Components::Cookie* 
@@ -83,9 +84,15 @@ namespace Qedo {
 						   char*& transport_profile,
 						   CORBA::Boolean_out con);
 
+		virtual StreamComponents::SinkStreamPort_ptr 
+		unbind(const char* comp_id, char*& name,
+                           Components::Cookie*& ck,
+						   CORBA::Boolean_out con);
+
 		virtual CORBA::Object_ptr 
 		provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) ;
 
+#endif //_QEDO_NO_STREAMS
 
 	};
 };

@@ -30,7 +30,7 @@
 #include "Output.h"
 #include <fstream>
 
-static char rcsid[] UNUSED = "$Id: ServantInterceptorDispatcher.cpp,v 1.2 2004/08/05 09:25:55 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServantInterceptorDispatcher.cpp,v 1.3 2004/08/06 17:38:17 tom Exp $";
 
 namespace Qedo {
 
@@ -123,6 +123,7 @@ ServantInterceptorDispatcher::provide_facet( const char* comp_id, const char* na
 
 }
 
+#ifndef _QEDO_NO_STREAMS
 
 Components::Cookie* 
 ServantInterceptorDispatcher::bind(const char* comp_id, char*&  name,
@@ -141,6 +142,35 @@ ServantInterceptorDispatcher::bind(const char* comp_id, char*&  name,
 			if (!con)
 			{
 				return temp_ck;
+				break;
+			};
+		} catch (CORBA::SystemException e)
+		{
+			throw e;
+		} catch ( ... )
+			// catch of user exception is probably missing
+		{
+		}
+	}
+
+}
+
+StreamComponents::SinkStreamPort_ptr 
+ServantInterceptorDispatcher::unbind(const char* comp_id, char*&  name,
+									 Components::Cookie*& ck,
+									CORBA::Boolean_out con)
+{
+
+	StreamComponents::SinkStreamPort_ptr temp_port;
+	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
+	{
+		try {
+
+			temp_port = all_servant_interceptors_[i].interceptor->unbind( comp_id, name, ck, con);
+
+			if (!con)
+			{
+				return temp_port;
 				break;
 			};
 		} catch (CORBA::SystemException e)
@@ -180,6 +210,7 @@ ServantInterceptorDispatcher::provide_sink_stream_port( const char* comp_id, cha
 
 }
 
+#endif //_QEDO_NO_STREAMS
 
 
 
