@@ -41,12 +41,15 @@ InterfaceDef_impl::InterfaceDef_impl
 
 	is_abstract_ = false;
 	is_local_ = false;
+        prefix_ = 0;
 }
 
 InterfaceDef_impl::~InterfaceDef_impl
 ()
 {
 	DEBUG_OUTLINE ( "InterfaceDef_impl::~InterfaceDef_impl() called" );
+
+        if ( prefix_ ) CORBA::string_free ( prefix_ );
 }
 
 void
@@ -430,5 +433,32 @@ throw(CORBA::SystemException)
 	return new_operation -> _this();
 }
 
+char*
+InterfaceDef_impl::prefix
+()
+throw(CORBA::SystemException)
+{
+	if ( prefix_ ) {
+
+		return CORBA::string_dup (prefix_);
+	}
+
+	return CORBA::string_dup ( "" );
+}
+
+void
+InterfaceDef_impl::prefix
+(const char* value)
+throw(CORBA::SystemException)
+{
+	if ( prefix_ && !strcmp(value,prefix_) )
+		return;
+
+	if ( prefix_ ) {
+		CORBA::string_free ( prefix_); 
+	}
+
+	prefix_ = CORBA::string_dup ( value );
+}
 } // namespace QEDO_ComponentRepository
 

@@ -44,6 +44,7 @@ ValueDef_impl::ValueDef_impl
 	is_abstract_ = false;
 	is_custom_ = false;
 	is_truncatable_ = false;
+        prefix_ = 0;
 
 }
 
@@ -51,6 +52,8 @@ ValueDef_impl::~ValueDef_impl
 ()
 {
 	DEBUG_OUTLINE ( "ValueDef_impl::~ValueDef_impl() called" );
+
+	if ( prefix_ ) CORBA::string_free ( prefix_ ) ;
 }
 
 CORBA::TypeCode_ptr
@@ -856,6 +859,34 @@ throw(CORBA::SystemException)
 	this -> _add_ref();
 
 	return new_operation -> _this();
+}
+
+char*
+ValueDef_impl::prefix
+()
+throw(CORBA::SystemException)
+{
+	if ( prefix_ ) {
+
+		return CORBA::string_dup (prefix_);
+	}
+
+	return CORBA::string_dup ( "" );
+}
+
+void
+ValueDef_impl::prefix
+(const char* value)
+throw(CORBA::SystemException)
+{
+	if ( prefix_ && !strcmp(value,prefix_) )
+		return;
+
+	if ( prefix_ ) {
+		CORBA::string_free ( prefix_); 
+	}
+
+	prefix_ = CORBA::string_dup ( value );
 }
 
 } // namespace QEDO_ComponentRepository

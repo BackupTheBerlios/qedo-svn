@@ -46,6 +46,7 @@ class InterfaceDef_impl : public virtual POA_IR__::InterfaceDef,
 	vector < InterfaceDef_impl* > base_interfaces_;
 	CORBA::Boolean is_abstract_;
 	CORBA::Boolean is_local_;
+        char * prefix_;
 public:
 	InterfaceDef_impl ( Container_impl *container, Repository_impl *repository );
 
@@ -112,6 +113,15 @@ public:
     virtual CORBA::Boolean is_local()
         throw(CORBA::SystemException);
     virtual void is_local(CORBA::Boolean)
+        throw(CORBA::SystemException);
+
+
+    //
+    // IDL:omg.org/IR__/InterfaceDef/prefix:1.0
+    //
+    virtual char * prefix()
+        throw(CORBA::SystemException);
+    virtual void prefix(const char *)
         throw(CORBA::SystemException);
 
     //

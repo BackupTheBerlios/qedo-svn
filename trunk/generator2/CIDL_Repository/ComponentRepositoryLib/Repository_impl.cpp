@@ -62,6 +62,7 @@ Repository_impl::Repository_impl
 	pd_wchar_ = new PrimitiveDef_impl ( IR__::pk_wchar, this );
 	pd_wstring_ = new PrimitiveDef_impl ( IR__::pk_wstring, this );
 	pd_value_base_ = new PrimitiveDef_impl ( IR__::pk_value_base, this );
+        prefix_ = 0;
 }
 
 Repository_impl::~Repository_impl
@@ -88,6 +89,8 @@ Repository_impl::~Repository_impl
 		DEBUG_OUTLINE ( "All IR objects destroyed" );
 
 	}
+
+	if ( prefix_ ) CORBA::string_free ( prefix_ ) ;
 }
 
 void
@@ -375,6 +378,34 @@ throw(CORBA::SystemException)
 	ir_anonymous_objects_.push_back ( new_fixed );
 	new_fixed -> _add_ref();
 	return new_fixed -> _this();
+}
+
+char*
+Repository_impl::prefix
+()
+throw(CORBA::SystemException)
+{
+	if ( prefix_ ) {
+
+		return CORBA::string_dup (prefix_);
+	}
+
+	return CORBA::string_dup ( "" );
+}
+
+void
+Repository_impl::prefix
+(const char* value)
+throw(CORBA::SystemException)
+{
+	if ( prefix_ && !strcmp(value,prefix_) )
+		return;
+
+	if ( prefix_ ) {
+		CORBA::string_free ( prefix_); 
+	}
+
+	prefix_ = CORBA::string_dup ( value );
 }
 
 } // namespace QEDO_ComponentRepository

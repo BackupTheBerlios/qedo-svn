@@ -38,6 +38,7 @@ class ModuleDef_impl : public virtual POA_IR__::ModuleDef,
 						public virtual Container_impl,
 						public virtual Contained_impl
 {
+        char * prefix_;
 public:
 	ModuleDef_impl ( Container_impl *container,	Repository_impl *repository );
 
@@ -57,6 +58,14 @@ public:
 	{
 		return CORBA__::dk_Module;
 	}
+
+    //
+    // IDL:omg.org/IR__/Contained/prefix:1.0
+    //
+    virtual char * prefix()
+        throw(CORBA::SystemException);
+    virtual void prefix(const char *)
+        throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/Contained/describe:1.0

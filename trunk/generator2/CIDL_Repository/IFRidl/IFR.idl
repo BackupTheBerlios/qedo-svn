@@ -372,12 +372,14 @@ module IR__ {
 			in unsigned short digits,
 			in short scale
 		);
+                attribute string prefix;
 	};
 	
 	interface ComponentRepository : Repository{
 	};
 	
 	interface ModuleDef : Container, Contained {
+                attribute string prefix;
 	};
 	
 	struct ModuleDescription {
@@ -570,6 +572,7 @@ module IR__ {
 			in ExceptionDefSeq exceptions,
 			in ContextIdSeq contexts
 		);
+                attribute string prefix;
 	};
 	
 	struct InterfaceDescription {
@@ -642,6 +645,7 @@ module IR__ {
 			in ExceptionDefSeq exceptions,
 			in ContextIdSeq contexts
 		);
+                attribute string prefix;
 	};
 	
 	struct ValueDescription {
@@ -904,3 +908,4 @@ module IR__ {
 };
 
 #endif
+

@@ -53,6 +53,7 @@ protected:
 	CORBA::Boolean is_abstract_;
 	CORBA::Boolean is_custom_;
 	CORBA::Boolean is_truncatable_;
+        char * prefix_;
 public:
 	ValueDef_impl ( Container_impl *container, Repository_impl *repository );
 
@@ -127,6 +128,14 @@ public:
     virtual void is_abstract(CORBA::Boolean)
         throw(CORBA::SystemException);
 
+    //
+    // IDL:omg.org/IR__/ValueDef/prefix:1.0
+    //
+    virtual char * prefix()
+        throw(CORBA::SystemException);
+    virtual void prefix(const char *)
+         throw(CORBA::SystemException);
+ 
     //
     // IDL:omg.org/IR__/ValueDef/is_custom:1.0
     //

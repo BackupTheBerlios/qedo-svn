@@ -37,12 +37,16 @@ ModuleDef_impl::ModuleDef_impl
   IRObject_impl ( repository )
 {
 	DEBUG_OUTLINE ( "ModuleDef_impl::ModuleDef_impl() called" );
+
+        prefix_ = 0;
 }
 
 ModuleDef_impl::~ModuleDef_impl
 ()
 {
 	DEBUG_OUTLINE ( "ModuleDef_impl::~ModuleDef_impl() called" );
+
+	if ( prefix_ ) CORBA::string_free ( prefix_ ) ;
 }
 
 void
@@ -80,6 +84,34 @@ throw(CORBA::SystemException)
 	desc -> value = any;
 
 	return desc._retn();
+}
+
+char*
+ModuleDef_impl::prefix
+()
+throw(CORBA::SystemException)
+{
+	if ( prefix_ ) {
+
+		return CORBA::string_dup (prefix_);
+	}
+
+	return CORBA::string_dup ( "" );
+}
+
+void
+ModuleDef_impl::prefix
+(const char* value)
+throw(CORBA::SystemException)
+{
+	if ( prefix_ && !strcmp(value,prefix_) )
+		return;
+
+	if ( prefix_ ) {
+		CORBA::string_free ( prefix_); 
+	}
+
+	prefix_ = CORBA::string_dup ( value );
 }
 
 } // namespace QEDO_ComponentRepository

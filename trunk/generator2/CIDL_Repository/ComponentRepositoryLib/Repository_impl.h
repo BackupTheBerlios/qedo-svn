@@ -74,6 +74,7 @@ class Repository_impl : public virtual POA_IR__::Repository,
 	PrimitiveDef_impl *pd_wchar_;
 	PrimitiveDef_impl *pd_wstring_;
 	PrimitiveDef_impl *pd_value_base_;
+        char * prefix_;
 public:
 	Repository_impl ( CORBA::ORB_ptr orb, PortableServer::POA_ptr poa );
 	
@@ -116,6 +117,14 @@ public:
 	{
 		return CORBA__::dk_Repository;
 	}
+
+    //
+    // IDL:omg.org/IR__/Repository/prefix:1.0
+    //
+    virtual char * prefix()
+        throw(CORBA::SystemException);
+    virtual void prefix(const char *)
+        throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/Repository/lookup_id:1.0
