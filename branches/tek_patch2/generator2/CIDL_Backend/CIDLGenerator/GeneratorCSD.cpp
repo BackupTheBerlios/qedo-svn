@@ -176,8 +176,8 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
     out << "<compiler name=\"" << compiler << "\" version=\"" << compiler_version << "\" />\n";
     out << "<programminglanguage name=\"C++\" />\n";
 #ifdef _WIN32
-+    out << "<dependency type=\"DLL\"><localfile name=\"ComponentContainer.dll\"/></dependency>\n";
-+    out << "<dependency type=\"DLL\"><localfile name=\"ComponentIDL.dll\"/></dependency>\n";
+    out << "<dependency type=\"DLL\"><localfile name=\"ComponentContainer.dll\"/></dependency>\n";
+    out << "<dependency type=\"DLL\"><localfile name=\"ComponentIDL.dll\"/></dependency>\n";
 #else
     out << "<dependency type=\"DLL\"><localfile name=\"libComponentContainer" PACKAGE_VERSION ".so\"/></dependency>\n";
     out << "<dependency type=\"DLL\"><localfile name=\"libComponentIDL" PACKAGE_VERSION ".so\"/></dependency>\n";
@@ -194,7 +194,7 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
 #else
     out << "<fileinarchive name=\"lib" << name << ".dll\"/>\n";
 
-#end
+#endif
     out << "<entrypoint>create_" << composition->ccm_home()->name() << "E</entrypoint>\n";
 	out << "<usage>executor</usage>\n";
 	out.unindent();
