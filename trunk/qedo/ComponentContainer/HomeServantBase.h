@@ -65,6 +65,8 @@ class CONTAINERDLL_API HomeServantBase : public PortableServer::RefCountServantB
 #ifndef _QEDO_NO_QOS
 	/** to access the servant_locator */
 	friend class ExtensionContext;
+
+	friend class ServerInterceptorDispatcher;
 #endif
 
 private:
@@ -92,9 +94,9 @@ private:
 
 	/** the servant locator for the homes components */
 	ServantLocator*					servant_locator_;
-	
+
 	/** This counter will be part of any object reference created by this home */
-	CORBA::ULong instance_counter_;		
+	CORBA::ULong instance_counter_;
 
 	/**
 	 * create an object reference for the component
@@ -114,7 +116,7 @@ private:
 	virtual void before_remove_component (Components::ExecutorLocator_ptr) = 0;
 
 	/**
-	 * This function is called in the final stage of finalize_component_incarnation 
+	 * This function is called in the final stage of finalize_component_incarnation
 	 */
 	virtual void do_finalize_component_incarnation (Components::ExecutorLocator_ptr) = 0;
 

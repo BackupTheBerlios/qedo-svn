@@ -24,9 +24,10 @@
 #include "ServantLocator.h"
 #include "GetComponentHelperServant.h"
 #include "Output.h"
+#include "GlobalHelpers.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.12 2003/12/02 14:28:19 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.13 2003/12/09 07:59:18 tom Exp $";
 
 namespace Qedo {
 
@@ -83,7 +84,11 @@ throw (PortableServer::ForwardRequest, CORBA::SystemException)
 
 #ifndef _QEDO_NO_QOS
 if(!CORBA::is_nil(server_interceptor_))
-	server_interceptor_->rec_request_from_servant_locator();
+{
+//	if (Qedo::compare_object_ids(oid_,oid))
+		server_interceptor_->rec_request_from_servant_locator(operation);
+
+}
 #endif
 
 	return home_servant_->lookup_servant (oid);
@@ -124,6 +129,15 @@ void
 ServantLocator::register_interceptor(Components::Extension::ServerContainerInterceptor_ptr interceptor)
 {
 server_interceptor_ = interceptor;
+
+}
+
+
+void
+ServantLocator::register_interceptor_with_oid(Components::Extension::ServerContainerInterceptor_ptr interceptor, PortableServer::ObjectId* oid)
+{
+server_interceptor_ = interceptor;
+oid_ = oid;
 }
 
 

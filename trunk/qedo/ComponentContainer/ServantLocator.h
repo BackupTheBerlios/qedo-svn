@@ -50,6 +50,7 @@ private:
 	HomeServantBase* home_servant_;
 #ifndef _QEDO_NO_QOS
 	Components::Extension::ServerContainerInterceptor_var server_interceptor_;
+	PortableServer::ObjectId_var oid_;
 #endif
 
 public:
@@ -100,6 +101,8 @@ public:
 #ifndef _QEDO_NO_QOS
 
 	void register_interceptor(Components::Extension::ServerContainerInterceptor_ptr interceptor);
+
+	void register_interceptor_with_oid(Components::Extension::ServerContainerInterceptor_ptr interceptor, PortableServer::ObjectId* oid);
 
 #endif
 };
