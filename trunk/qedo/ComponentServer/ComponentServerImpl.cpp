@@ -29,7 +29,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.16 2003/09/03 14:33:26 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.17 2003/09/29 14:25:04 stoinski Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -235,20 +235,20 @@ ComponentServerImpl::initialize()
 	catch (CORBA::ORB::InvalidName&)
 	{
 		NORMAL_ERR ("ComponentServerImpl: Name Service not found");
-		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server_create (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 	catch (CORBA::SystemException&)
 	{
 		NORMAL_ERR ("ComponentServerImpl: Cannot narrow object reference of Name Service");
-		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server_create (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 
 	if (CORBA::is_nil (ns))
 	{
 		NORMAL_ERR ("ComponentServerImpl: Name Service is nil");
-		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server_create (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 
@@ -257,7 +257,7 @@ ComponentServerImpl::initialize()
 	if (gethostname (hostname, 256))
 	{
 		NORMAL_ERR ("ComponentServerImpl: Cannot determine my hostname");
-		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server_create (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 
@@ -280,13 +280,13 @@ ComponentServerImpl::initialize()
 	catch (CosNaming::NamingContext::NotFound&)
 	{
 		NORMAL_ERR ("ComponentServerImpl: Component Installer not found in Name Service");
-		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server_create (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 	catch (CORBA::SystemException&)
 	{
 		NORMAL_ERR ("ComponentServerImpl: CORBA system exception during resolve()");
-		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server_create (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 		
@@ -297,14 +297,14 @@ ComponentServerImpl::initialize()
 	catch (CORBA::SystemException&)
 	{
 		NORMAL_ERR ("ComponentServerImpl: Cannot narrow Component Installer");
-		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server_create (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 
 	if (CORBA::is_nil (component_installer_))
 	{
 		NORMAL_ERR ("ComponentServerImpl: Component Installer is nil");
-		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server_create (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 
@@ -316,7 +316,7 @@ ComponentServerImpl::initialize()
     orb_->register_value_factory ("IDL:omg.org/Components/Cookie:1.0", factory);
 
 	Qedo_Components::Deployment::ComponentServer_var component_server = this->_this();
-	csa_ref_->notify_component_server (component_server.in());
+	csa_ref_->notify_component_server_create (component_server.in());
 	
 }
 
@@ -472,10 +472,17 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	//
 	// remove containers
 	//
-	for (unsigned int i = 0; i < containers_.size(); i++)
+	if (containers_.size() > 0)
 	{
-		Components::Deployment::Container_var container = containers_[i].container_->_this();
-        this->remove_container (container.in());
+		DEBUG_OUT ("ComponentServerImpl: Warning: There are still container instances around, going to remove them...");
+
+		// We cannot use an iterator to iterate through the list, since this list will be
+		// manipulated by remove_container()
+		while (containers_.size())
+		{
+			Components::Deployment::Container_var container = containers_[0].container_->_this();
+			this->remove_container (container.in());
+		}
 	}
 
 	//
@@ -496,6 +503,9 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	root_poa_->deactivate_object (oid.in());
 
 	orb_->shutdown (false /*wait for completion*/);
+
+	Qedo_Components::Deployment::ComponentServer_var component_server = this->_this();
+	csa_ref_->notify_component_server_remove (component_server.in());
 }
 
 
