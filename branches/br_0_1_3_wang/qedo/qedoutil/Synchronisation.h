@@ -43,7 +43,7 @@
 
 
 
-#include "Util.h"
+#include "qedoutil.h"
 
 
 namespace Qedo {
@@ -62,7 +62,7 @@ struct MutexDelegate;
 /**
  * a mutex for Qedo
  */
-class CONTAINERDLL_API QedoMutex 
+class QEDOUTIL_API QedoMutex 
 {
 	/** makes use of this */
 	friend class QedoLock;
@@ -100,7 +100,7 @@ public:
 /**
  * a lock for Qedo
  */
-class CONTAINERDLL_API QedoLock
+class QEDOUTIL_API QedoLock
 {
 private:
 	/** the qedo mutex */
@@ -136,7 +136,7 @@ struct CondDelegate;
 /**
  * bla
  */
-class CONTAINERDLL_API QedoCond
+class QEDOUTIL_API QedoCond
 {
 
 private:
@@ -180,14 +180,66 @@ public:
 	bool wait_timed (const QedoMutex*, unsigned long );
 
 	/**
-	 * insert comments
+	 * unblocks at least one of the threads that are blocked on condition variable
 	 */
 	void signal();
+
+#ifndef QEDO_WINTHREAD
+	/**
+	 * unblocks all threads currently blocked on the condition variable
+	 */
+
+	void broadcast();
+#endif
+};
+
+struct ReadWriteMutexDelegate;
+
+/**
+ * a read/write mutex for Qedo
+ */
+class QEDOUTIL_API QedoReadWriteMutex : private QedoMutex
+{
+	/** makes use of this */
+	friend class QedoLock;
+	/** makes use of this */
+	friend class QedoCond;
+
+private:
+
+	/** the mutex */
+	struct ReadWriteMutexDelegate* rwdelegate_;
+
+public:
+	/**
+	 * constructor
+	 */
+	QedoReadWriteMutex();
+
+	/**
+	 * destructor
+	 */
+	~QedoReadWriteMutex();
+
+	/**
+	 * read lock an object
+	 */
+	void read_lock_object();
+
+	/**
+	 * write lock an object
+	 */
+	void write_lock_object();
+
+	/**
+	 * unlock an object
+	 */
+	void unlock_object();
 };
 
 struct ThreadDelegate;
 
-class QedoThread {
+class QEDOUTIL_API QedoThread {
 	public:
 	ThreadDelegate *delegate_;
 	QedoThread();
@@ -208,7 +260,7 @@ extern "C" void* startFunc(void* p);
 /**
  * add comment!
  */
-QedoThread*
+QEDOUTIL_API QedoThread*
 qedo_startDetachedThread(void* (*p)(void*), void* arg);
 
 

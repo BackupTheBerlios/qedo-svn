@@ -24,7 +24,6 @@
 #define __OUTPUT_H__
 
 #include "Synchronisation.h"
-#include <Util.h>
 
 #ifdef _WIN32
 #include <process.h>
@@ -35,7 +34,8 @@
 #include <iostream>
 
 namespace Qedo {
-	extern CONTAINERDLL_API QedoMutex* container_mutex;
+	extern QEDOUTIL_API QedoMutex* container_mutex;
+	extern QEDOUTIL_API bool debug_output;
 }
 
 #define SYNC_WITH_CONTAINER  \
@@ -83,44 +83,26 @@ Qedo::QedoLock output (Qedo::container_mutex);
 }
 
 
-#ifdef _DEBUG
 // Debug stuff
 #define DEBUG_OUT(x) \
-{ \
+if ( Qedo::debug_output ) { \
 	SYNC_WITH_CONTAINER \
 	std::cout << x << std::endl; \
 }
 
 
 #define DEBUG_OUT2(x,y) \
-{ \
+if ( Qedo::debug_output ) { \
 	SYNC_WITH_CONTAINER \
 	std::cout << x << y << std::endl; \
 }
 
 
 #define DEBUG_OUT3(x,y,z) \
-{ \
+if ( Qedo::debug_output ) { \
 	SYNC_WITH_CONTAINER \
 	std::cout << x << y << z << std::endl; \
 }
-#else
-
-// no Debug output
-#define DEBUG_OUT(x) \
-{ \
-}
-
-
-#define DEBUG_OUT2(x,y) \
-{ \
-}
-
-
-#define DEBUG_OUT3(x,y,z) \
-{ \
-}
-#endif
 //} // namespace Qedo
  
 #endif

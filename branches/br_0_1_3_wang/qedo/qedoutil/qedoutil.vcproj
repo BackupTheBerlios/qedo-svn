@@ -124,8 +124,9 @@
 				Description="Distribution:"
 				CommandLine="mkdir $(QEDO)\bin
 copy $(TargetPath) $(QEDO)\bin
+copy $(OutDir)\qedoutil.lib $(QEDO)\lib
 "
-				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
+				Outputs="$(QEDO)\bin\$(TargetFileName);$(QEDO)\lib\qedoutil.lib"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="xerces-c_2D.lib zlib.lib CosNamingd.lib jtcd.lib obd.lib"
@@ -243,10 +244,19 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="NameServiceBase.cpp">
 			</File>
 			<File
+				RelativePath="Output.cpp">
+			</File>
+			<File
 				RelativePath="Package.cpp">
 			</File>
 			<File
 				RelativePath="PlatformBase.cpp">
+			</File>
+			<File
+				RelativePath="Synchronisation.cpp">
+			</File>
+			<File
+				RelativePath="Valuetypes.cpp">
 			</File>
 			<File
 				RelativePath="XMLCatalog.cpp">
@@ -298,13 +308,22 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="NameServiceBase.h">
 			</File>
 			<File
+				RelativePath="Output.h">
+			</File>
+			<File
 				RelativePath="Package.h">
 			</File>
 			<File
 				RelativePath="PlatformBase.h">
 			</File>
 			<File
+				RelativePath="Synchronisation.h">
+			</File>
+			<File
 				RelativePath="Uri.h">
+			</File>
+			<File
+				RelativePath="Valuetypes.h">
 			</File>
 			<File
 				RelativePath="XMLCatalog.h">

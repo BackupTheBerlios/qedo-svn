@@ -23,7 +23,7 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#include "Sink_impl.h"
+#include "SinkDef_impl.h"
 #include "Debug.h"
 
 namespace QEDO_ComponentRepository {

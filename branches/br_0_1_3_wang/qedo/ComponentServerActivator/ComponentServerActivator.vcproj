@@ -110,7 +110,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(ORBACUS)\include\OB&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;..\qedoutil;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -129,10 +129,10 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="obd.lib CosNamingd.lib"
+				AdditionalDependencies="obd.lib CosNamingd.lib qedoutil.lib"
 				OutputFile="$(OutDir)/qcsa.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(ORBACUS)\lib"
+				AdditionalLibraryDirectories="&quot;$(ORBACUS)\lib&quot;;&quot;$(QEDO)\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/ComponentServerActivator.pdb"
 				SubSystem="1"

@@ -135,7 +135,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentValuetypes;../ComponentServer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
+				AdditionalIncludeDirectories=".;../qedoutil;../ComponentIDL;../ComponentValuetypes;../ComponentServer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="ORBACUS_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -159,11 +159,11 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="CosNamingd.lib jtcd.lib obd.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="CosNamingd.lib jtcd.lib obd.lib odbc32.lib odbccp32.lib qedoutil.lib"
 				OutputFile="$(OutDir)/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="$(ORBACUS)\lib"
+				AdditionalLibraryDirectories="&quot;$(ORBACUS)\lib&quot;;&quot;$(QEDO)\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug_orbacus/ComponentContainer.pdb"
 				ImportLibrary=".\Debug_orbacus/ComponentContainer.lib"/>
@@ -434,9 +434,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\Key.cpp">
 			</File>
 			<File
-				RelativePath=".\Output.cpp">
-			</File>
-			<File
 				RelativePath="PSSHelper.cpp">
 			</File>
 			<File
@@ -479,13 +476,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="StorageObject.cpp">
 			</File>
 			<File
-				RelativePath="Synchronisation.cpp">
-			</File>
-			<File
 				RelativePath="Util.cpp">
-			</File>
-			<File
-				RelativePath="Valuetypes.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -540,9 +531,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\Key.h">
 			</File>
 			<File
-				RelativePath=".\Output.h">
-			</File>
-			<File
 				RelativePath="PSSHelper.h">
 			</File>
 			<File
@@ -585,13 +573,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="StorageObject.h">
 			</File>
 			<File
-				RelativePath="Synchronisation.h">
-			</File>
-			<File
 				RelativePath=".\Util.h">
-			</File>
-			<File
-				RelativePath="Valuetypes.h">
 			</File>
 			<File
 				RelativePath="version.h">

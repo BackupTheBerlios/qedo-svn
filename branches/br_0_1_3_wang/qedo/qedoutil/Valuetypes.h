@@ -25,7 +25,8 @@
 
 #include <CORBA.h>
 #include "Components.h"
-#include "Util.h"
+
+#include "qedoutil.h"
 
 
 namespace Qedo {
@@ -40,7 +41,7 @@ namespace Qedo {
 /**
  * implementation of IDL:omg.org/Components/Cookie:1.0
  */
-class CONTAINERDLL_API Cookie_impl : public virtual OBV_Components::Cookie,
+class QEDOUTIL_API Cookie_impl : public virtual OBV_Components::Cookie,
 									 public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -75,13 +76,19 @@ public:
 	 * \return True if the cookies are equal.
 	 */
 	CORBA::Boolean equal (Components::Cookie* cook);
+
+	/**
+	 * provide string representation
+	 * \return A string representation of the cookie value.
+	 */
+	const char* to_string();
 };
 
 
 /**
  * factory for cookies
  */
-class CONTAINERDLL_API CookieFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API CookieFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	/**
@@ -94,7 +101,7 @@ private:
 /**
  * implementation of IDL:omg.org/Components/PortDescription:1.0
  */
-class PortDescription_impl : public virtual OBV_Components::PortDescription,
+class QEDOUTIL_API PortDescription_impl : public virtual OBV_Components::PortDescription,
                              public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -131,7 +138,7 @@ public:
 /**
  * factory for port descriptions
  */
-class PortDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API PortDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	/**
@@ -144,7 +151,7 @@ private:
 /**
  * implementation of IDL:omg.org/Components/FacetDescription:1.0
  */
-class FacetDescription_impl : public virtual OBV_Components::FacetDescription,
+class QEDOUTIL_API FacetDescription_impl : public virtual OBV_Components::FacetDescription,
 				              public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -182,7 +189,7 @@ public:
 /**
  * factory for facet descriptions
  */
-class FacetDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API FacetDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	/**
@@ -195,7 +202,7 @@ private:
 /**
  * implementation of IDL:omg.org/Components/ConnectionDescription:1.0
  */
-class ConnectionDescription_impl : public virtual OBV_Components::ConnectionDescription,
+class QEDOUTIL_API ConnectionDescription_impl : public virtual OBV_Components::ConnectionDescription,
 								   public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -232,7 +239,7 @@ public:
 /**
  * factory for connection descriptions
  */
-class ConnectionDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API ConnectionDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	/**
@@ -245,7 +252,7 @@ private:
 /**
  * implementation of IDL:omg.org/Components/ReceptacleDescription:1.0
  */
-class ReceptacleDescription_impl : public virtual OBV_Components::ReceptacleDescription,
+class QEDOUTIL_API ReceptacleDescription_impl : public virtual OBV_Components::ReceptacleDescription,
 								   public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -287,7 +294,7 @@ public:
 /**
  * factory for receptacle descriptions
  */
-class ReceptacleDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API ReceptacleDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	/**
@@ -300,7 +307,7 @@ private:
 /**
  * implementation of IDL:omg.org/Components/ConsumerDescription:1.0
  */
-class ConsumerDescription_impl : public virtual OBV_Components::ConsumerDescription,
+class QEDOUTIL_API ConsumerDescription_impl : public virtual OBV_Components::ConsumerDescription,
 								 public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -338,7 +345,7 @@ public:
 /**
  * factory for consumer descriptions
  */
-class ConsumerDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API ConsumerDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	/**
@@ -351,7 +358,7 @@ private:
 /**
  * implementation of IDL:omg.org/Components/EmitterDescription:1.0
  */
-class EmitterDescription_impl : public virtual OBV_Components::EmitterDescription,
+class QEDOUTIL_API EmitterDescription_impl : public virtual OBV_Components::EmitterDescription,
 								public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -389,7 +396,7 @@ public:
 /**
  * factory for emitter descriptions
  */
-class EmitterDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API EmitterDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	/**
@@ -402,7 +409,7 @@ private:
 /**
  * implementation of IDL:omg.org/Components/SubscriberDescription:1.0
  */
-class SubscriberDescription_impl : public virtual OBV_Components::SubscriberDescription,
+class QEDOUTIL_API SubscriberDescription_impl : public virtual OBV_Components::SubscriberDescription,
 								   public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -444,7 +451,7 @@ public:
 /**
  * factory for subscriber descriptions
  */
-class SubscriberDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API SubscriberDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	/**
@@ -457,7 +464,7 @@ private:
 /**
  * implementation of IDL:omg.org/Components/ComponentPortDescription:1.0
  */
-class ComponentPortDescription_impl : public virtual OBV_Components::ComponentPortDescription,
+class QEDOUTIL_API ComponentPortDescription_impl : public virtual OBV_Components::ComponentPortDescription,
 								      public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -501,7 +508,7 @@ public:
 /**
  * factory for component port descriptions
  */
-class ComponentPortDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API ComponentPortDescriptionFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	/**
@@ -514,7 +521,7 @@ private:
 /**
  * implementation of IDL:omg.org/Components/ConfigValue:1.0
  */
-class CONTAINERDLL_API ConfigValue_impl : public virtual OBV_Components::ConfigValue,
+class QEDOUTIL_API ConfigValue_impl : public virtual OBV_Components::ConfigValue,
 										  public virtual CORBA::DefaultValueRefCountBase
 {
 private:
@@ -551,7 +558,7 @@ public:
 /**
  * factory for config values
  */
-class CONTAINERDLL_API ConfigValueFactory_impl : public virtual CORBA::ValueFactoryBase
+class QEDOUTIL_API ConfigValueFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	/**
