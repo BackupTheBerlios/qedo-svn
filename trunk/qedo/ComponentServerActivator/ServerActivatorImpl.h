@@ -114,9 +114,15 @@ public:
 		throw (CORBA::SystemException);
 
 	/**
-     * implements IDL:omg.org/HU_Components/Deployment/ServerActivator/notify_component_server:1.0
+     * implements IDL:omg.org/HU_Components/Deployment/ServerActivator/notify_component_server_create:1.0
      */
-    virtual void notify_component_server (Qedo_Components::Deployment::ComponentServer_ptr server)
+    void notify_component_server_create (Qedo_Components::Deployment::ComponentServer_ptr server)
+        throw(CORBA::SystemException);
+
+	/**
+     * implements IDL:omg.org/HU_Components/Deployment/ServerActivator/notify_component_server_remove:1.0
+     */
+    void notify_component_server_remove (Qedo_Components::Deployment::ComponentServer_ptr server)
         throw(CORBA::SystemException);
 
 	/**

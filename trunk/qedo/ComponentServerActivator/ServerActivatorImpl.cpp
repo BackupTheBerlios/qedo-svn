@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.20 2003/09/05 15:22:04 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.21 2003/09/29 14:21:30 stoinski Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -306,7 +306,24 @@ void
 ServerActivatorImpl::remove_component_server (::Components::Deployment::ComponentServer_ptr server)
 throw (Components::RemoveFailure, CORBA::SystemException)
 {
-	// TODO
+	std::cout << "ServerActivatorImpl: remove_component_server() called" << std::endl;
+
+	// Test whether this component server is known to us
+	ComponentServerVector::iterator cs_iter;
+
+	for (cs_iter = component_servers_.begin(); cs_iter != component_servers_.end(); cs_iter++)
+	{
+		if ((*cs_iter)->_is_equivalent (server))
+			break;
+	}
+
+	if (cs_iter == component_servers_.end())
+	{
+		std::cerr << "ServerActivatorImpl: remove_component_server(): Unknown component server supplied" << std::endl;
+		throw Components::RemoveFailure();
+	}
+
+	(*cs_iter)->remove();
 }
 
 
@@ -327,17 +344,41 @@ throw (CORBA::SystemException)
 
 
 void 
-ServerActivatorImpl::notify_component_server (Qedo_Components::Deployment::ComponentServer_ptr server)
+ServerActivatorImpl::notify_component_server_create (Qedo_Components::Deployment::ComponentServer_ptr server)
 throw (CORBA::SystemException)
 {
-	QedoLock lock (component_server_mutex_);
 	std::cout << "ServerActivatorImpl: notify_component_server() called" << std::endl;
 
 	last_created_component_server_ = Components::Deployment::ComponentServer::_duplicate(server);
 
 	// Signal that the callback function has been called by the Component Server,
 	// so we can return the IOR to the client
+	QedoLock lock (component_server_mutex_);
 	component_server_activation_.signal();
 }
+
+
+void 
+ServerActivatorImpl::notify_component_server_remove (Qedo_Components::Deployment::ComponentServer_ptr server)
+throw(CORBA::SystemException)
+{
+	// Test whether this component server is known to us
+	ComponentServerVector::iterator cs_iter;
+
+	for (cs_iter = component_servers_.begin(); cs_iter != component_servers_.end(); cs_iter++)
+	{
+		if ((*cs_iter)->_is_equivalent (server))
+			break;
+	}
+
+	if (cs_iter == component_servers_.end())
+	{
+		std::cerr << "ServerActivatorImpl: Unknown component server notified for removal" << std::endl;
+		return;
+	}
+
+	component_servers_.erase (cs_iter);
+}
+
 
 } // namespace Qedo
