@@ -28,32 +28,32 @@ For the Installation of the run-time consult the Installation Guide.
 \section{Contact}
 \label{sec:Contact}
 
-If you have any problem or if you have any comments do not hesitate to contact the other Qedo users by using the qedo-devel mailing list. You can reach it at qedo-devel@lists.berlios.de. You can also use the bug tracking system provided by the Qedo project. You can reach it at http://qedo.berlios.de. this site has all relevant information about the Qedo project. In any case you can also contact the authors directly. The email addresses are listed on the Qedo web page as well.
+If you have any problem or if you have any comments do not hesitate to contact the other Qedo users by using the qedo-devel mailing list. You can reach it at qedo-devel@lists.berlios.de. You can also use the bug tracking system provided by the Qedo project. You can reach it at \verb http://www.qedo.org . this site has all relevant information about the Qedo project. In any case you can also contact the authors directly. The email addresses are listed on the Qedo web page as well.
 
 
 
 
 \chapter{Architecture}
 \label{sec:Architecture}
-Qedo run-tim has the following architecture.
+Qedo run-time has the following architecture.
 
  ...
 
 \section{Component Server}
-\label{sec:AComponentServer}
-The component server. 
+\label{sec:ComponentServer}
+The component server is the actual run-time environment of a component.  
 
  ... 
 
 \section{Component Container}
 \label{sec:ComponentContainer}
-The Component Container. 
+The Component Container is a kind of an administrative entity within the component server. It offers interface to the component and the component uses interfaces of the container.
 
 ...
 
 \section{Component Installer}
 \label{sec:ComponentInstaller}
-The Component Installer.
+The Component Installer is used to install the binaries of the components, before that can be loaded into the component server.
 
 ...
 
@@ -256,18 +256,24 @@ To install arbitrary files, like executables, together with a component, the fil
 
 . As a result, after the component installation, the file is to be found in the component implementation specific subdirectory of the "components" directory for installation. To have access to these files, it is necessary to know about the installation directory path. This information can be obtained in the components executor code in Qedo the following way
 
+\small
 \begin{verbatim}
-CORBA::Object_ptr obj = context_->resolve_service_reference("ConfigurationService");
-ConfigurationService::InternalConfiguration_var cfg = ConfigurationService::InternalConfiguration::_narrow(obj);
+CORBA::Object_ptr obj = 
+  context_->resolve_service_reference("ConfigurationService");
+ConfigurationService::InternalConfiguration_var cfg =
+  ConfigurationService::InternalConfiguration::_narrow(obj);
 char* s = cfg->get_value("INSTALLATION_DIR");
-std::cerr << "########## observer install dir is " << s << std::endl;
+std::cerr << "########## observer install dir is "
+  << s << std::endl;
 std::string exe = s;
 exe.append("\\");
 exe.append("notepad.exe");
 std::cerr << "########## executing " << exe << std::endl;
-int component_server_pid = _spawnl(_P_NOWAIT, exe.c_str(), exe.c_str(), NULL);
+int component_server_pid = 
+  _spawnl(_P_NOWAIT, exe.c_str(), exe.c_str(), NULL);
 delete s;
 \end{verbatim}
+\normalsize
 
 \subsection{Component Server Activator}
 \label{sec:ComponentServerActivator}
@@ -301,6 +307,21 @@ This server implements the assembly factory and assembly interface defined be CC
 \label{sec:ComponentServer}
 
 The ComponentServer is started by the ComponentServerActivator automatically.
+
+\subsection{Controller}
+\label{sec:Controller}
+
+The controller offers a nice GUI to controll the Qedo daemons. Furthermore it offers a NameService Browser, an platform explorer and a deployment tool. The controller can be started by calling:
+
+\small
+\begin{verbatim}
+
+  qcontroller
+
+\end{verbatim}
+\normalsize
+
+For further details use the on-line help of the controller by pressing its help button.
 
 
 \chapter{Deployment}
