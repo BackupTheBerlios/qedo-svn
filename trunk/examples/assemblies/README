@@ -1,0 +1,35 @@
+
+The dining_philosophers.zip is the first example of an assembly package that
+can be automatically deployed by the Qedo runtime and deployment infrastructure
+based on the CCM specification. It is intended to show how assembly packages are
+deployed using Qedo.
+
+Package content
+======================================
+The assembly package is a zip file according to the CCM specification. It contains
+implementations of the dining philosopher components, as defined in the examples/general/philosopher example, plus a cad file for the definition of the component
+assembly and cpf files for configuration of the CORBA component instances. The 
+implementation for each component, i.e. philosopher, cutlery and observer, is a zip
+package in turn, containing the implementation code as WIN32 dlls, a ccd file and
+a csd file.
+The description of the initial configuration of the component assembly is provided
+by the cad file and the cpf files. In order to read or modify these files it is
+necessary to be familiar with the CCM specification of packaging and deployment. As
+an extension Qedo allows to have empty <destination> elements, used to indicate that
+a homeplacement, processcollocation or hostcollocation has to be deployed on the
+local host. This is to allow generic example deployment without the step of explicit
+assignment, as required by CCM.
+
+Deployment
+================================
+In order to deploy the assembly, the Qedo runtime has to be started on the local
+host, including
+
+1. name service
+2. ComponentServerActivator (csa)
+3. ComponentInstaller (ci)
+4. AssemblyFactory (assf).
+
+Afterwards the assembly can be deployed using the generic deployment client. The
+command "deploy -f dining_philosophers.zip" installs, starts and stops the dining 
+philosophers assembly.
