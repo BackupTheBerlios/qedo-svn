@@ -39,7 +39,7 @@
 #include "ClientInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.25 2003/11/04 10:12:09 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.26 2003/11/10 16:46:58 tom Exp $";
 
 
 /**
@@ -138,6 +138,11 @@ main (int argc, char** argv)
 		DEBUG_OUT ( "ComponentServer: Running in debug mode");
 		DEBUG_OUT ( "ComponentServer: Please press a key when attached to process and breakpoints are set" );
 		getchar();
+	}
+
+	if (qos_enabled)
+	{
+		DEBUG_OUT ("ComponentServer: Running in QoS mode");
 	}
 
 	//

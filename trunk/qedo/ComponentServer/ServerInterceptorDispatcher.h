@@ -31,16 +31,30 @@
 #include <PortableInterceptor.h>
 #endif
 #include "QedoComponents_skel.h"
+#include "Synchronisation.h"
 
 
 namespace Qedo {
 
 
-	class ServerInterceptorDispatcher : 
+	class ServerInterceptorEntry {
+	public:
+		Components::Extension::ServerContainerInterceptor_var interceptor;
+	};
+
+	typedef std::vector < ServerInterceptorEntry > ServerInterceptorVector;
+
+
+	class ServerInterceptorDispatcher :
 		public PortableInterceptor::ServerRequestInterceptor,
 		public virtual CORBA::LocalObject
 	{
+	private:
 
+		/** vector of interceptors registered for all */
+		ServerInterceptorVector all_server_interceptors_;
+		/** Mutex for all_server_interceptors_ */
+		QedoMutex all_server_interceptors_mutex_;
 	public:
 		ServerInterceptorDispatcher();
 
@@ -57,7 +71,7 @@ namespace Qedo {
 		receive_request_service_contexts(PortableInterceptor::ServerRequestInfo_ptr)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
 
-	    virtual void
+		virtual void
 		receive_request(PortableInterceptor::ServerRequestInfo_ptr)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
 
@@ -73,7 +87,8 @@ namespace Qedo {
 		send_other(PortableInterceptor::ServerRequestInfo_ptr)
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
 
-
+		void
+		register_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor);
 	};
 }
 

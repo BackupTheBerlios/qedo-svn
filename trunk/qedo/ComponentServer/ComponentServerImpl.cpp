@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.23 2003/11/04 10:12:09 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.24 2003/11/10 16:46:58 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -55,7 +55,7 @@ ContainerEntry::ContainerEntry (const ContainerEntry& container_entry)
 }
 
 
-ContainerEntry& 
+ContainerEntry&
 ContainerEntry::operator= (const ContainerEntry& container_entry)
 {
 	if (container_)
@@ -330,6 +330,11 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	{
 		container_type = CT_ENTITY;
 	}
+	else if (! strcmp (container_type_string, "EXTENSION"))
+	{
+		container_type = CT_EXTENSION;
+	}
+
 	else
 	{
 		message = "..... wrong CONTAINER_TYPE specified";
@@ -341,7 +346,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	message.append(container_type_string);
 	DEBUG_OUT (message);
 
-	container_if = new ContainerInterfaceImpl (orb_, 
+	container_if = new ContainerInterfaceImpl (orb_,
 											   root_poa_,
 											   container_type,
 											   this,

@@ -37,7 +37,7 @@ namespace Qedo {
 
 
 	class ClientInterceptorDispatcher :
-		public PortableInterceptor::ServerRequestInterceptor,
+		public PortableInterceptor::ClientRequestInterceptor,
 		public virtual CORBA::LocalObject
 	{
 
@@ -54,24 +54,19 @@ namespace Qedo {
 		destroy();
 
 		virtual void
-		receive_request_service_contexts(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
-
-	    virtual void
-		receive_request(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
+		send_request( PortableInterceptor::ClientRequestInfo_ptr info );
 
 		virtual void
-		send_reply(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(CORBA::SystemException);
+		send_poll( PortableInterceptor::ClientRequestInfo_ptr info );
 
 		virtual void
-		send_exception(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
+		receive_reply( PortableInterceptor::ClientRequestInfo_ptr info ) ;
 
 		virtual void
-		send_other(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
+		receive_exception( PortableInterceptor::ClientRequestInfo_ptr info );
+
+		virtual void
+		receive_other( PortableInterceptor::ClientRequestInfo_ptr info );
 
 
 	};

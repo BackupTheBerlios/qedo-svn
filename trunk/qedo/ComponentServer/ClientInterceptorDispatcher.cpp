@@ -24,62 +24,58 @@
 #include "Util.h"
 #include <fstream>
 
-static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.3 2003/10/05 18:51:41 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.4 2003/11/10 16:46:58 tom Exp $";
 
 namespace Qedo {
 
-	ClientInterceptorDispatcher::ClientInterceptorDispatcher() {
-	
-	}
+ClientInterceptorDispatcher::ClientInterceptorDispatcher() {
 
-	ClientInterceptorDispatcher::~ClientInterceptorDispatcher() {
+}
 
-	}
+ClientInterceptorDispatcher::~ClientInterceptorDispatcher() {
 
-		char* 
-			ClientInterceptorDispatcher::name () {
-				return CORBA::string_dup("ClientIntereptorDispatcher");
+}
 
-			}
+char*
+ClientInterceptorDispatcher::name ()
+{
+	return CORBA::string_dup("ClientIntereptorDispatcher");
+}
 
-		void
-			ClientInterceptorDispatcher::destroy() {
-				
-			}
+void
+ClientInterceptorDispatcher::destroy()
+{
+}
 
-		void
-			ClientInterceptorDispatcher::receive_request_service_contexts(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
+void
+ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInfo_ptr info )
+{
 
-		}
+}
 
-	    void
-			ClientInterceptorDispatcher::receive_request(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
+void
+ClientInterceptorDispatcher::send_poll( PortableInterceptor::ClientRequestInfo_ptr info )
+{
 
-			}
+}
 
+void
+ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestInfo_ptr info )
+{
 
-		void
-			ClientInterceptorDispatcher::send_reply(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(CORBA::SystemException){
-				std::cout << "!!!!!!!!!!!!!!TEST!!!!!!!!!!!!!" << std::endl;
+}
 
-				
-			}
+void
+ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientRequestInfo_ptr info )
+{
 
-		void
-			ClientInterceptorDispatcher::send_exception(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
-			
-			}
+}
 
-		void
-			ClientInterceptorDispatcher::send_other(PortableInterceptor::ServerRequestInfo_ptr)
-			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException) {
+void
+ClientInterceptorDispatcher::receive_other( PortableInterceptor::ClientRequestInfo_ptr info )
+{
 
-			}
-
+}
 
 
 }  //namespace Qedo

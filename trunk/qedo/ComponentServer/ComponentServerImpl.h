@@ -188,26 +188,26 @@ public:
 	/**
 	 * set_server_dispatcher
 	 */
-	 void
+	 virtual void
 	 set_server_dispatcher ( Components::Extension::ServerInterceptorRegistration_ptr server_dispatcher);
 
 
  	/**
 	 * set_client_dispatcher
 	 */
-	 void
+	virtual void
 	 set_client_dispatcher ( Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher);
 
 	/**
 	 * get_server_dispatcher
 	 */
-	 Components::Extension::ServerInterceptorRegistration_ptr
+	virtual Components::Extension::ServerInterceptorRegistration_ptr
 	 get_server_dispatcher (  );
 
 	/**
 	 * get_client_dispatcher
 	 */
-	 Components::Extension::ClientInterceptorRegistration_ptr
+	virtual Components::Extension::ClientInterceptorRegistration_ptr
 	 get_client_dispatcher (  );
 
 #endif

@@ -29,7 +29,7 @@
 #include "ClientInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.9 2003/11/04 10:12:09 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.10 2003/11/10 16:46:58 tom Exp $";
 
 
 namespace Qedo {
@@ -143,10 +143,13 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	// Install ServerInterceptorDispatcher
 	//
 	if (m_enable_qos) {
-		PortableInterceptor::ServerRequestInterceptor_var server_dispatcher;
-		server_dispatcher = new ServerInterceptorDispatcher();
 
-		info->add_server_request_interceptor(server_dispatcher.in());
+		info->add_server_request_interceptor(server_dispatcher_.in());
+
+		//info->add_client_request_interceptor(client_dispatcher_.in());
+
+		DEBUG_OUT("ORBInitializerImpl:post_init: interceptors dispatchers registered at ORB");
+
 	}
 
 #endif
@@ -164,14 +167,16 @@ ORBInitializerImpl::slot_id()
 void
 ORBInitializerImpl::set_server_dispatcher (PortableInterceptor::ServerRequestInterceptor_ptr server_dispatcher)
 {
-
+	server_dispatcher_ = server_dispatcher;
+	DEBUG_OUT("ORBInitializerImpl: server_dispatcher set");
 }
 
 
 void
 ORBInitializerImpl::set_client_dispatcher (PortableInterceptor::ClientRequestInterceptor_ptr client_dispatcher)
 {
-
+	client_dispatcher = client_dispatcher;
+	DEBUG_OUT("ORBInitializerImpl: client dispatcher set");
 }
 #endif
 } // namespace Qedo
