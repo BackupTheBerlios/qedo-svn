@@ -26,6 +26,7 @@
 #include <CORBA.h>
 #include "QedoComponents_skel.h"
 #include "ContainerInterfaceImpl.h"
+#include "Connector.h"
 #include "Util.h"
 #include <vector>
 
@@ -105,7 +106,7 @@ private:
 	CORBA::ULong							process_id_;
 	/** the object reference of the component installer */
 	Components::Deployment::ComponentInstallation_var		component_installer_;
-
+	
 	/** the orb */
 	CORBA::ORB_var							orb_;
 	/** the root poa */
@@ -123,6 +124,10 @@ private:
 
 	/** Name service referenz */
 	CosNaming::NamingContext_var nameService_;
+
+	/** the object reference of the connector */
+	ConnectorImpl*                      pConn_;
+
 #ifndef _QEDO_NO_QOS
 	/** the list of service references */
 	std::vector <ServiceReferenceEntry>						service_references_;
@@ -195,6 +200,8 @@ public:
 	 */
 	void loadValuetypeFactory(const char* repid, const char* loc)
 		throw (CORBA::SystemException);
+
+	virtual const Connector_ptr getConnector();
 
 #ifndef _QEDO_NO_QOS
 	/**

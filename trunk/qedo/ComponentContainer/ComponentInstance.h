@@ -50,6 +50,7 @@ class CCMContext;
  */
 class CONTAINERDLL_API ComponentInstance
 {
+
 public:
 	/** the identity of this component */
 	std::string							uuid_;

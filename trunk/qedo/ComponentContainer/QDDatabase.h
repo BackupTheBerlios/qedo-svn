@@ -19,65 +19,80 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
+#ifndef __QDDATABASE_H__
+#define __QDDATABASE_H__
 
-#ifndef __GLOBAL_HELPERS_H__
-#define __GLOBAL_HELPERS_H__
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <dlfcn.h>
+#include <sys/types.h>
+#endif
+#include <sqlext.h>
+#include "Util.h"
 
-#include <CORBA.h>
-#include "CORBADepends.h"
-#include "Key.h"
-
-
-namespace Qedo {
-
-
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * creates an object id
- */
-CONTAINERDLL_API PortableServer::ObjectId* create_object_id (const CORBA::OctetSeq*, const char*);
+#define DEFAULT_TIMEOUT 15
+#define MAX_INFO_LEN 64
+#define MAX_COL_SIZE 256
+#define MAX_CONNSTR_LEN 1024
 
 
-/**
- *
- */
-CONTAINERDLL_API bool compare_OctetSeqs (const CORBA::OctetSeq&, const CORBA::OctetSeq&);
+namespace Qedo
+{
 
+class CONTAINERDLL_API QDDatabase
+{
+	public:
 
-/**
- *
- */
-CONTAINERDLL_API bool compare_object_ids (const PortableServer::ObjectId&, const PortableServer::ObjectId&);
+		QDDatabase() ;
 
+		virtual ~QDDatabase() ;
 
-/**
- *
- */
-CONTAINERDLL_API char* ObjectId_to_string (const PortableServer::ObjectId&);
+		virtual bool Init();
 
-CONTAINERDLL_API std::string convertPidToString( const CosPersistentState::Pid& rPid );
-CONTAINERDLL_API std::string convertPidToString( const CosPersistentState::Pid* rPid );
+		void close();
 
-CONTAINERDLL_API std::string convertSpidToString( const CosPersistentState::ShortPid& rSpid );
-CONTAINERDLL_API std::string convertSpidToString( const CosPersistentState::ShortPid* rSpid );
+		void Destroy();
 
-CONTAINERDLL_API void convertStringToPid( const char* szPid, CosPersistentState::Pid& rPid );
-CONTAINERDLL_API void convertStringToSpid( const char* szSpid, CosPersistentState::ShortPid& rSpid );
+		bool DriverConnect( const char* szConnStr,
+							char* szConnStrOut = NULL, 
+							HWND hWnd = NULL, 
+							const int nDrvConn = SQL_DRIVER_NOPROMPT);
+
+		void SetLoginTimeout(const long nSeconds); //???
+
+		void SetQueryTimeout(const long nSeconds); //???
+
+		int GetRecordsAffected();
+
+		int GetMaxDriverConnections();
+
+		char* GetODBCVersion();
+
+		bool ExecuteSQL(const char* szSqlStr);
+
+		bool CanTransact();
 		
-CONTAINERDLL_API bool comparePid(const CosPersistentState::Pid& rSrc, const CosPersistentState::Pid& rDest);
-CONTAINERDLL_API bool compareShortPid(const CosPersistentState::ShortPid& rSrc, const CosPersistentState::ShortPid& rDest);
+		bool CanUpdate();
+		
+		bool IsConnected();
 
-CONTAINERDLL_API std::string convertBool2String(bool bc);
-CONTAINERDLL_API std::string convert2Lowercase(std::string strIn);
+		bool IsTableExist(const char* szTableName);
 
-/** @} */
+		SQLHDBC getHDBC();
 
-} // namespace Qedo
+	protected:
+		
+		SQLHDBC hDbc_;
+		SQLHENV hEnv_;
+		int iRecordsAffected_;
+		long lLoginTimeout_;
+		long lQueryTimeout_;
+		bool bIsConnected_;
+		char* szODBCVersion_;
+		char* szConnString_;
+};
+
+}; // namespace Qedo
 
 #endif
-

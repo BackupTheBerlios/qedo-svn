@@ -28,7 +28,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: Util.cpp,v 1.5 2003/12/10 14:17:20 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: Util.cpp,v 1.6 2004/05/13 13:01:57 hao Exp $";
 
 
 namespace Qedo {
@@ -147,7 +147,7 @@ load_shared_library (const char* name, const char* dir)
 		}
 	}
 
-	delete b1;
+	delete [] b1;
 
 	return handle_lib;
 }

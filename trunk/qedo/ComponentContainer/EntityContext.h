@@ -20,12 +20,13 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __GLOBAL_HELPERS_H__
-#define __GLOBAL_HELPERS_H__
+#ifndef __ENTITY_CONTEXT_H__
+#define __ENTITY_CONTEXT_H__
 
 #include <CORBA.h>
-#include "CORBADepends.h"
-#include "Key.h"
+#include <Components.h>
+#include "CCMContext.h"
+#include "Util.h"
 
 
 namespace Qedo {
@@ -38,42 +39,36 @@ namespace Qedo {
 
 
 /**
- * creates an object id
+ * the entity context
  */
-CONTAINERDLL_API PortableServer::ObjectId* create_object_id (const CORBA::OctetSeq*, const char*);
+class CONTAINERDLL_API EntityContext : public virtual Components::EntityContext,
+										public virtual CCMContext
+{
+public:
+	/**
+	 * constructor
+	 */
+	EntityContext();
 
+	/**
+	 * destructor
+	 */
+	~EntityContext();
 
-/**
- *
- */
-CONTAINERDLL_API bool compare_OctetSeqs (const CORBA::OctetSeq&, const CORBA::OctetSeq&);
+    /**
+	 * implements IDL:omg.org/Components/EntityContext/get_CCM_object:1.0
+	 * provide the reference to the CCMObject of the component
+	 * delegated to the object executor
+	 * \return The object reference of the component.
+	 */
+    CORBA::Object_ptr get_CCM_object();
 
+	//
+    // IDL:omg.org/Components/EntityContext/get_primary_key:1.0
+    //
+    Components::PrimaryKeyBase* get_primary_key();
 
-/**
- *
- */
-CONTAINERDLL_API bool compare_object_ids (const PortableServer::ObjectId&, const PortableServer::ObjectId&);
-
-
-/**
- *
- */
-CONTAINERDLL_API char* ObjectId_to_string (const PortableServer::ObjectId&);
-
-CONTAINERDLL_API std::string convertPidToString( const CosPersistentState::Pid& rPid );
-CONTAINERDLL_API std::string convertPidToString( const CosPersistentState::Pid* rPid );
-
-CONTAINERDLL_API std::string convertSpidToString( const CosPersistentState::ShortPid& rSpid );
-CONTAINERDLL_API std::string convertSpidToString( const CosPersistentState::ShortPid* rSpid );
-
-CONTAINERDLL_API void convertStringToPid( const char* szPid, CosPersistentState::Pid& rPid );
-CONTAINERDLL_API void convertStringToSpid( const char* szSpid, CosPersistentState::ShortPid& rSpid );
-		
-CONTAINERDLL_API bool comparePid(const CosPersistentState::Pid& rSrc, const CosPersistentState::Pid& rDest);
-CONTAINERDLL_API bool compareShortPid(const CosPersistentState::ShortPid& rSrc, const CosPersistentState::ShortPid& rDest);
-
-CONTAINERDLL_API std::string convertBool2String(bool bc);
-CONTAINERDLL_API std::string convert2Lowercase(std::string strIn);
+};
 
 /** @} */
 

@@ -200,7 +200,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../QedoUtil;../ComponentServer/;&quot;$(XERCES)/include&quot;;&quot;$(MICO)/include&quot;"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentServer/;../QedoUtil;&quot;$(MICO)/include&quot;;&quot;$(XERCES)/include&quot;"
 				PreprocessorDefinitions="MICO_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -392,7 +392,13 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="CDRTransportCoDec.cpp">
 			</File>
 			<File
+				RelativePath="Catalog.cpp">
+			</File>
+			<File
 				RelativePath="ComponentInstance.cpp">
+			</File>
+			<File
+				RelativePath="Connector.cpp">
 			</File>
 			<File
 				RelativePath=".\ConsumerPort.cpp">
@@ -414,6 +420,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\EmitterPort.cpp">
+			</File>
+			<File
+				RelativePath="EntityContext.cpp">
 			</File>
 			<File
 				RelativePath="EntityHomeServant.cpp">
@@ -455,6 +464,12 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\PublisherPort.cpp">
 			</File>
 			<File
+				RelativePath="QDDatabase.cpp">
+			</File>
+			<File
+				RelativePath="QDRecordset.cpp">
+			</File>
+			<File
 				RelativePath=".\ReceptaclePort.cpp">
 			</File>
 			<File
@@ -483,6 +498,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="SourcePort.cpp">
+			</File>
+			<File
+				RelativePath="StorageHomeBase.cpp">
+			</File>
+			<File
+				RelativePath="StorageObject.cpp">
 			</File>
 			<File
 				RelativePath="StreamCCMObjectExecutor.cpp">
@@ -537,7 +558,13 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="CDRTransportCoDec.h">
 			</File>
 			<File
+				RelativePath="Catalog.h">
+			</File>
+			<File
 				RelativePath="ComponentInstance.h">
+			</File>
+			<File
+				RelativePath="Connector.h">
 			</File>
 			<File
 				RelativePath=".\ConsumerPort.h">
@@ -553,6 +580,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\EmitterPort.h">
+			</File>
+			<File
+				RelativePath="EntityContext.h">
 			</File>
 			<File
 				RelativePath="EntityHomeServant.h">
@@ -585,6 +615,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="MarshalBuffer.h">
 			</File>
 			<File
+				RelativePath="PSSStorageObject.h">
+			</File>
+			<File
 				RelativePath=".\PortBase.h">
 			</File>
 			<File
@@ -592,6 +625,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\PublisherPort.h">
+			</File>
+			<File
+				RelativePath="QDDatabase.h">
+			</File>
+			<File
+				RelativePath="QDRecordset.h">
 			</File>
 			<File
 				RelativePath=".\ReceptaclePort.h">
@@ -622,6 +661,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="SourcePort.h">
+			</File>
+			<File
+				RelativePath="StorageHomeBase.h">
+			</File>
+			<File
+				RelativePath="StorageObject.h">
 			</File>
 			<File
 				RelativePath="StreamCCMObjectExecutor.h">

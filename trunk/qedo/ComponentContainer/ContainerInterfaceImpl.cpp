@@ -23,6 +23,7 @@
 #include "ContainerInterfaceImpl.h"
 #include "ComponentServerImpl.h"
 #include "ConfigurationReader.h"
+#include "DTMReader.h"
 #include "EntityHomeServant.h"
 #include "SessionHomeServant.h"
 #ifndef _QEDO_NO_QOS
@@ -36,7 +37,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.56 2004/04/15 09:50:11 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.57 2004/05/13 13:01:57 hao Exp $";
 
 
 namespace Qedo {
@@ -272,7 +273,7 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 			{
 				obj = orb_->resolve_initial_references( "NameService" );
 			}
-	}
+		}
 		catch (const CORBA::ORB::InvalidName&)
 		{
 			std::cerr << "ContainerInterfaceImpl: Can't resolve NameService" << std::endl;
@@ -646,6 +647,7 @@ throw (Components::Deployment::UnknownImplId,
 		break;
 	case CT_PROCESS:
 	case CT_ENTITY:
+	{
 		Qedo::EntityHomeServant* entity_home;
 
 		entity_home = dynamic_cast <Qedo::EntityHomeServant*> (qedo_home_servant);
@@ -655,7 +657,94 @@ throw (Components::Deployment::UnknownImplId,
 			NORMAL_ERR ("ContainerInterfaceImpl: Container type is incompatible. Loaded home servant is not a Qedo::EntityHomeServant");
 			throw Components::Deployment::InstallationFailure();
 		}
+
+		//get etc path
+		std::string etc_path = Qedo::getEnvironment ("QEDO");
+
+		if (etc_path == "")
+		{
+			NORMAL_OUT ("ConfigurationReader: Warning: QEDO environment varibale not set or empty");
+	#ifdef _WIN32
+			etc_path = "C:\\etc\\";
+	#else
+			etc_path = "/etc/";
+	#endif
+			NORMAL_OUT2 ("ConfigurationReader: Using default path ", etc_path.c_str());
+		}
+		else
+		{
+	#ifdef _WIN32
+			etc_path += "\\etc\\";
+	#else
+			etc_path += "/etc/";
+	#endif
+		}
+		
+		//get connector
+		Connector_var pConn = Connector::_duplicate(component_server_->getConnector());
+		
+		if( ! pConn )
+		{
+			std::cout << "pConn is NULL" << std::endl;
+			throw Components::Deployment::InstallationFailure();
+		}
+
+		//create a session ...
+		DTMReader reader;
+		CosPersistentState::ParameterList params;
+
+		try 
+		{
+			reader.readConnection( etc_path+"database.xml", params );
+		}
+		catch( DTMReadException )
+		{
+			std::cerr << "!!!!! Error during reading database.xml" << std::endl;
+			throw Components::Deployment::InstallationFailure();
+		}
+		
+		std::cout << "creating session ...\n";
+		CosPersistentState::Sessio_var pSession = pConn->create_basic_session(CosPersistentState::READ_WRITE, "", params);
+		SessionImpl* pSessionImpl = dynamic_cast <SessionImpl*> (pSession.in());
+		
+		std::map<std::string, std::string> mTables;
+		std::map<std::string, std::string>::iterator iter;
+		entity_home->get_table_info(mTables);
+		
+		std::string strTable = "PID_CONTENT";
+		strTable = convert2Lowercase(strTable);
+		if( ! pSessionImpl->IsTableExist(strTable.c_str()) )
+		{
+			std::stringstream strContent;
+			strContent << "create table PID_CONTENT ( PID VARCHAR(254) not null, ";
+			strContent << "HOME VARCHAR(254) not null, ";
+			strContent << "TYPE VARCHAR(254) not null, ";
+			strContent << "constraint PK_PIDCONTENT primary key (PID));";
+
+			pSessionImpl->ExecuteSQL(strContent.str().c_str());
+		}
+
+		//create table in the database
+		for(iter=mTables.begin(); iter!=mTables.end(); iter++)
+		{
+			std::string strName = iter->first;
+			std::string strInfo = iter->second;
+			strName = convert2Lowercase(strName);
+			
+			if( ! pSessionImpl->IsTableExist(strName.c_str()) )
+			{
+				std::cout << "creating table " << strName << " ...\n";
+				pSessionImpl->ExecuteSQL(strInfo.c_str());
+			}
+			else
+				std::cout << "table " << strName << " exists!\n";
+		}
+		
+		//register storage object/home factory
+		entity_home->init_datastore( pConn.in(), pSession.in() );
+		
 		break;
+	}
 	case CT_EXTENSION:
 #ifndef _QEDO_NO_QOS
 		Qedo::ExtensionHomeServant* extension_home;

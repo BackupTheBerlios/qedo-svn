@@ -23,7 +23,9 @@
 #ifndef __ENTITY_HOME_SERVANT_H__
 #define __ENTITY_HOME_SERVANT_H__
 
-#include "HomeServantBase.h"
+//#include "HomeServantBase.h"
+#include "CCMHomeServant.h"
+#include "Connector.h"
 #include "Util.h"
 
 
@@ -39,8 +41,22 @@ namespace Qedo {
 /**
  * home servant for entity components
  */
-class CONTAINERDLL_API EntityHomeServant : public HomeServantBase
+class CONTAINERDLL_API EntityHomeServant : public CCMHomeServant
+	//:public HomeServantBase
 {
+private:
+	/**
+	 * indicate removal
+	 * \param executor_locator The executor locator of the component instance to be removed.
+	 */
+	void before_remove_component (Components::ExecutorLocator_ptr exec_loc);
+
+	/**
+	 * finalize the component incarnation
+	 * \param exec_loc The executor locator of the component instance to be incarnated.
+	 */
+	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
+
 public:
 	/**
 	 * constructor
@@ -61,6 +77,11 @@ public:
 	 * destructor
 	 */
 	~EntityHomeServant();
+	
+	virtual void get_table_info(std::map<std::string, std::string>& mTables) = 0;
+
+	virtual void init_datastore(const Connector_ptr pConn, const Sessio_ptr pSession) = 0;
+
 };
 
 /** @} */

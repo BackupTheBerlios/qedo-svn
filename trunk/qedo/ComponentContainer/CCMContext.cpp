@@ -30,7 +30,7 @@
 #include "ComponentServerImpl.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.24 2004/02/25 10:39:14 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.25 2004/05/13 13:01:57 hao Exp $";
 
 
 namespace Qedo {
@@ -383,7 +383,6 @@ HomeExecutorContext::get_CCM_home()
 {
         return Components::CCMHome::_duplicate (my_home_ref_);
 }
-
 
 } // namespace Qedo
 

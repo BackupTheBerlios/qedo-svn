@@ -34,7 +34,6 @@
 #include "Util.h"
 #include "ContainerInterfaceImpl.h"
 
-
 namespace Qedo {
 
 

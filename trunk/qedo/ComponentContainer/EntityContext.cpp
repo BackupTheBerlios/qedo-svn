@@ -20,64 +20,40 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __GLOBAL_HELPERS_H__
-#define __GLOBAL_HELPERS_H__
+#include "EntityContext.h"
+#include "Output.h"
 
-#include <CORBA.h>
-#include "CORBADepends.h"
-#include "Key.h"
+static char rcsid[] UNUSED = "$Id: EntityContext.cpp,v 1.2 2004/05/13 13:01:57 hao Exp $";
 
 
 namespace Qedo {
+	
+
+EntityContext::EntityContext()
+{
+}
 
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
+EntityContext::~EntityContext()
+{
+	DEBUG_OUT ( "EntityContext: Destructor called" );
+}
 
 
-/**
- * creates an object id
- */
-CONTAINERDLL_API PortableServer::ObjectId* create_object_id (const CORBA::OctetSeq*, const char*);
+CORBA::Object_ptr 
+EntityContext::get_CCM_object()
+{
+	return ccm_object_executor_->get_component();
+}
+
+Components::PrimaryKeyBase* 
+EntityContext::get_primary_key()
+{
+	std::cout << "EntityContext::get_primary_key()\n";
+	return ccm_object_executor_->get_primary_key();
+    //Components::PrimaryKeyBase* pkb_ = 0;
+    //return pkb_;
+}
 
 
-/**
- *
- */
-CONTAINERDLL_API bool compare_OctetSeqs (const CORBA::OctetSeq&, const CORBA::OctetSeq&);
-
-
-/**
- *
- */
-CONTAINERDLL_API bool compare_object_ids (const PortableServer::ObjectId&, const PortableServer::ObjectId&);
-
-
-/**
- *
- */
-CONTAINERDLL_API char* ObjectId_to_string (const PortableServer::ObjectId&);
-
-CONTAINERDLL_API std::string convertPidToString( const CosPersistentState::Pid& rPid );
-CONTAINERDLL_API std::string convertPidToString( const CosPersistentState::Pid* rPid );
-
-CONTAINERDLL_API std::string convertSpidToString( const CosPersistentState::ShortPid& rSpid );
-CONTAINERDLL_API std::string convertSpidToString( const CosPersistentState::ShortPid* rSpid );
-
-CONTAINERDLL_API void convertStringToPid( const char* szPid, CosPersistentState::Pid& rPid );
-CONTAINERDLL_API void convertStringToSpid( const char* szSpid, CosPersistentState::ShortPid& rSpid );
-		
-CONTAINERDLL_API bool comparePid(const CosPersistentState::Pid& rSrc, const CosPersistentState::Pid& rDest);
-CONTAINERDLL_API bool compareShortPid(const CosPersistentState::ShortPid& rSrc, const CosPersistentState::ShortPid& rDest);
-
-CONTAINERDLL_API std::string convertBool2String(bool bc);
-CONTAINERDLL_API std::string convert2Lowercase(std::string strIn);
-
-/** @} */
-
-} // namespace Qedo
-
-#endif
-
+} // namepscae Qedo

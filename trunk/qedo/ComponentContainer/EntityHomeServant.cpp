@@ -23,7 +23,7 @@
 #include "EntityHomeServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: EntityHomeServant.cpp,v 1.5 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: EntityHomeServant.cpp,v 1.6 2004/05/13 13:01:57 hao Exp $";
 
 
 namespace Qedo {
@@ -34,13 +34,14 @@ EntityHomeServant::EntityHomeServant()
 }
 
 
-EntityHomeServant::EntityHomeServant (const EntityHomeServant& session_home)
-: HomeServantBase (session_home)
+EntityHomeServant::EntityHomeServant (const EntityHomeServant& entity_home)
+: HomeServantBase (entity_home),
+  CCMHomeServant (entity_home)
 {
 }
 
 
-EntityHomeServant& EntityHomeServant::operator= (const EntityHomeServant& session_home)
+EntityHomeServant& EntityHomeServant::operator= (const EntityHomeServant& entity_home)
 {
 	return *this;
 }
@@ -48,6 +49,35 @@ EntityHomeServant& EntityHomeServant::operator= (const EntityHomeServant& sessio
 
 EntityHomeServant::~EntityHomeServant()
 {
+	DEBUG_OUT ("EntityHomeServant: Destructor called");
+}
+
+
+void 
+EntityHomeServant::before_remove_component (Components::ExecutorLocator_ptr exec_loc)
+{
+	Components::EntityComponent_ptr entity_component = 
+		dynamic_cast <Components::EntityComponent_ptr> (exec_loc);
+
+	// Should never happen
+	assert (! CORBA::is_nil (entity_component));
+
+	entity_component->ccm_store();
+	entity_component->ccm_passivate();
+	entity_component->ccm_remove();
+}
+
+
+void 
+EntityHomeServant::do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc)
+{
+	Components::EntityComponent_ptr entity_component = 
+		dynamic_cast <Components::EntityComponent_ptr> (exec_loc);
+
+	// Should never happen
+	assert (! CORBA::is_nil (entity_component));
+
+	entity_component->ccm_activate();
 }
 
 } // namespace Qedo

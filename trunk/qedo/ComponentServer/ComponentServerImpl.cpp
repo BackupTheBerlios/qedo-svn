@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.31 2004/05/09 19:16:24 heini2004 Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.32 2004/05/13 13:01:57 hao Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -94,6 +94,21 @@ ComponentServerImpl::~ComponentServerImpl()
 
 	service_references_.clear();
 #endif
+
+	std::cout << "ComponentServerImpl::~ComponentServerImpl()\n";
+
+	std::cout << "delete connector 1\n";
+	if(pConn_!=NULL)
+	{
+		//std::cout << "delete connector 2\n";
+		pConn_->_remove_ref();
+		//std::cout << "delete connector 3\n";
+		//if(pConn_!=NULL)
+		//	std::cout << "pConn_ is still not null\n";
+		//else
+		//	std::cout << "pConn_ is realy null\n";
+	}
+	std::cout << "delete connector 4\n";
 }
 
 
@@ -274,8 +289,15 @@ ComponentServerImpl::initialize()
 	Qedo_Components::Deployment::ComponentServer_var component_server = this->_this();
 	csa_ref_->notify_component_server_create (component_server.in());
 
+	// create a handle of connector
+	pConn_ = new ConnectorImpl("");
 }
 
+const Connector_ptr
+ComponentServerImpl::getConnector()
+{
+	return pConn_;
+}
 
 ::Components::ConfigValues*
 ComponentServerImpl::configuration()
@@ -336,7 +358,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	}
 	else if (! strcmp (container_type_string, "PROCESS"))
 	{
-			container_type = CT_PROCESS;
+		container_type = CT_PROCESS;
 	}
 	else if (! strcmp (container_type_string, "ENTITY"))
 	{

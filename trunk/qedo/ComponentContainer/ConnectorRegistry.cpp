@@ -19,65 +19,60 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-
-#ifndef __GLOBAL_HELPERS_H__
-#define __GLOBAL_HELPERS_H__
-
-#include <CORBA.h>
-#include "CORBADepends.h"
-#include "Key.h"
+#include "ConnectorRegistry.h"
 
 
-namespace Qedo {
+namespace Qedo
+{
 
+ConnectorRegistryImpl::ConnectorRegistryImpl()
+{
+}
 
-/**
- * @addtogroup ComponentContainer
- * @{
- */
+ConnectorRegistryImpl::~ConnectorRegistryImpl()
+{
+	std::cout << "destruct ConnectorRegistryImpl\n";
+}
 
+Connector_ptr
+ConnectorRegistryImpl::find_connector(const char* implementation_id)
+    throw(CosPersistentState::NotFound, CORBA::SystemException)
+{
+	std::string strID = implementation_id;
 
-/**
- * creates an object id
- */
-CONTAINERDLL_API PortableServer::ObjectId* create_object_id (const CORBA::OctetSeq*, const char*);
+	connIter_ = connectors_.find(strID);
 
+	if( connIter_==connectors_.end() )
+		throw CosPersistentState::NotFound();
+	
+	Connector_var pConnector = connectors_[strID];
 
-/**
- *
- */
-CONTAINERDLL_API bool compare_OctetSeqs (const CORBA::OctetSeq&, const CORBA::OctetSeq&);
+    return pConnector._retn();
+}
 
+void
+ConnectorRegistryImpl::register_connector(Connector_ptr conn, const char* implementation_id)
+    throw(CORBA::SystemException)
+{
+	std::string strID = implementation_id;
+	connectors_[strID] = Connector::_duplicate(conn);
+}
 
-/**
- *
- */
-CONTAINERDLL_API bool compare_object_ids (const PortableServer::ObjectId&, const PortableServer::ObjectId&);
+void
+ConnectorRegistryImpl::unregister_connector(const char* implementation_id)
+    throw(CosPersistentState::NotFound,CORBA::SystemException)
+{
+	std::string strID = implementation_id;
 
+	connIter_ = connectors_.find(strID);
 
-/**
- *
- */
-CONTAINERDLL_API char* ObjectId_to_string (const PortableServer::ObjectId&);
-
-CONTAINERDLL_API std::string convertPidToString( const CosPersistentState::Pid& rPid );
-CONTAINERDLL_API std::string convertPidToString( const CosPersistentState::Pid* rPid );
-
-CONTAINERDLL_API std::string convertSpidToString( const CosPersistentState::ShortPid& rSpid );
-CONTAINERDLL_API std::string convertSpidToString( const CosPersistentState::ShortPid* rSpid );
-
-CONTAINERDLL_API void convertStringToPid( const char* szPid, CosPersistentState::Pid& rPid );
-CONTAINERDLL_API void convertStringToSpid( const char* szSpid, CosPersistentState::ShortPid& rSpid );
-		
-CONTAINERDLL_API bool comparePid(const CosPersistentState::Pid& rSrc, const CosPersistentState::Pid& rDest);
-CONTAINERDLL_API bool compareShortPid(const CosPersistentState::ShortPid& rSrc, const CosPersistentState::ShortPid& rDest);
-
-CONTAINERDLL_API std::string convertBool2String(bool bc);
-CONTAINERDLL_API std::string convert2Lowercase(std::string strIn);
-
-/** @} */
+	if( connIter_ == connectors_.end())
+		throw CosPersistentState::NotFound();
+	
+	ConnectorImpl* pConn = dynamic_cast <ConnectorImpl*> (connectors_[strID]);
+	pConn->_remove_ref();
+	connectors_.erase(strID);
+}
 
 } // namespace Qedo
-
-#endif
 
