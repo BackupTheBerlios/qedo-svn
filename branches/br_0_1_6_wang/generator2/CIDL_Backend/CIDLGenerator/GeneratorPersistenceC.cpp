@@ -170,6 +170,13 @@ GeneratorPersistenceC::check_for_generation(IR__::Contained_ptr item)
 
 		break;
 	}
+	case CORBA__::dk_Value :
+	{
+		IR__::ValueDef_ptr value = IR__::ValueDef::_narrow(item);
+		lValueTypes_.push_back(value);
+
+		break;
+	}
 	case CORBA__::dk_StorageHome : 
 	{
 		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(item);

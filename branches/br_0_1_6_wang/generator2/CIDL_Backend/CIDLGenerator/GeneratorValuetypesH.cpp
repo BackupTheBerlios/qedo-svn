@@ -189,9 +189,14 @@ GeneratorValuetypesH::doValue(IR__::ValueDef_ptr value)
 	out.unindent();
 	out << "public:\n\n";
 	out.indent();
-	out << class_name << "(";
-	generateMemberParam( value, false );
-	out << ");\n";
+	// check whether this value(eventtype) has members.
+	IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, false);
+	if( contained_seq->length() > 0 ) // if has some, generate the constructor with parameters
+	{
+		out << class_name << "(";
+		generateMemberParam( value, false );
+		out << ");\n";
+	}
 	out << class_name << "();\n";
 	out << "~" << class_name << "();\n\n";
 	out << "CORBA::ValueBase* _copy_value();\n\n";

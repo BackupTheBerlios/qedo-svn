@@ -2251,16 +2251,18 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "convertStringToPid(strCcmPid.c_str(), *pCcmPid);\n";
 		out << "convertStringToSpid(strCcmSpid.c_str(), *pCcmSpid);\n\n";
 		out << strNamespace_ << "::" << home->managed_component()->name() << "Persistence* pCcmStorageObject = pCcmStorageHome_->_create";
-		out << "(pCcmPid, pCcmSpid, pkey, ";
+		out << "(pCcmPid, pCcmSpid, pkey";
 		IR__::AttributeDefSeq state_members;
 		home->managed_component()->get_state_members(state_members, CORBA__::dk_Create);
 		CORBA::ULong ulLen = state_members.length();
+
 		for(CORBA::ULong i=0; i<ulLen; i++)
 		{
 			IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
 			if( attribute->type_def()->type()->kind()==CORBA::tk_value )
 				continue;
-
+			
+			out << ", ";
 			switch ( attribute->type_def()->type()->kind() )
 			{
 				case CORBA::tk_short:
@@ -2289,8 +2291,6 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 				default:
 					out << "NULL";
 			}
-			if( (i+1)!=ulLen )
-				out << ", ";
 		}
 		out << ");\n";
 		out << "new_context->set_ccm_storage_object(pCcmStorageObject);\n\n";
@@ -2305,7 +2305,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 			out << "convertStringToPid(strPssPid.c_str(), *pPssPid);\n";
 			out << "convertStringToSpid(strPssSpid.c_str(), *pPssSpid);\n\n";
 			out << strNamespace_ << "::" << storagehome_->managed_storagetype()->name() << "* pPssStorageObject = pPssStorageHome_->_create";
-			out << "(pPssPid, pPssSpid, pkey, ";
+			out << "(pPssPid, pPssSpid, pkey";
 			IR__::AttributeDefSeq a_state_members;
 			storagehome_->managed_storagetype()->get_state_members(a_state_members, CORBA__::dk_Create);
 			ulLen = a_state_members.length();
@@ -2314,7 +2314,8 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 				IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(a_state_members[i]);
 				if( attribute->type_def()->type()->kind()==CORBA::tk_value )
 					continue;
-
+				
+				out << ", ";
 				switch ( attribute->type_def()->type()->kind() )
 				{
 					case CORBA::tk_short:
@@ -2343,8 +2344,6 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 					default:
 						out << "NULL";
 				}
-				if( (i+1)!=ulLen )
-					out << ", ";
 			}
 			out << ");\n";
 			out << "new_context->set_storage_object(pPssStorageObject);\n\n";
@@ -3288,8 +3287,7 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 	handleFactory(home);
 	handleFinder(home);
 
-	if( (lc==CIDL::lc_Entity || lc==CIDL::lc_Process) &&
-		(!CORBA::is_nil(storagehome_)) )
+	if( lc==CIDL::lc_Entity || lc==CIDL::lc_Process )
 	{
 		//++++++++++++++++++++++++++++++++++++++++
 		// SQL CREATE for get_table_info()
@@ -3300,14 +3298,17 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		out.indent();
 		out << "std::string strName;\n";
 		out << "std::stringstream sztream;\n\n";
-		genTableForAbsStorageHome();
-		out << "\nstrName = \"" << strNamespace_ + "_" << strAbsHomeName_ << "\";\n";
-		out << "mTables[strName] = sztream.str();\n\n";
-		out << "sztream.str(\"\");\n";
-		genTableForStorageHome(storagehome_);
-		out << "\nstrName = \"" << strNamespace_ + "_" << storagehome_->name() << "\";\n";
-		out << "mTables[strName] = sztream.str();\n\n";
-		out << "sztream.str(\"\");\n";
+		if(!CORBA::is_nil(storagehome_))
+		{
+			genTableForAbsStorageHome();
+			out << "\nstrName = \"" << strNamespace_ + "_" << strAbsHomeName_ << "\";\n";
+			out << "mTables[strName] = sztream.str();\n\n";
+			out << "sztream.str(\"\");\n";
+			genTableForStorageHome(storagehome_);
+			out << "\nstrName = \"" << strNamespace_ + "_" << storagehome_->name() << "\";\n";
+			out << "mTables[strName] = sztream.str();\n\n";
+			out << "sztream.str(\"\");\n";
+		}
 		genTableForHome(home);
 		out << "\nstrName = \"" << strNamespace_ + "_" << home->name() << "Persistence\";\n";
 		out << "mTables[strName] = sztream.str();\n";
