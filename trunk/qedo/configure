@@ -857,8 +857,8 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --disable-optimize      do not use -O2 to compile (default on)
   --enable-debug          use -g to compile (default off)
-  --enable-streams          compile stream support in container (default on)
-  --enable-qos          compile QoS support in container (default off)
+  --enable-streams        compile stream support in container (default on)
+  --enable-qos            compile QoS support in container (default off)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]

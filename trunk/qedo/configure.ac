@@ -26,11 +26,11 @@ AC_ARG_ENABLE(debug,
  use_debug=$enableval, use_debug=no)
 
 AC_ARG_ENABLE(streams,
- [  --enable-streams          compile stream support in container (default on)],
+ [  --enable-streams        compile stream support in container (default on)],
  use_streams=$enableval, use_streams=yes)
 
 AC_ARG_ENABLE(qos,
- [  --enable-qos          compile QoS support in container (default off)],
+ [  --enable-qos            compile QoS support in container (default off)],
  use_qos=$enableval, use_qos=no)
 
 # Checks for programs.
