@@ -76,6 +76,7 @@ struct build_class : build_baseclass {
   IR__::ValueDef_ptr valuetype;
   IR__::HomeDef_ptr home;
   IR__::AbstractStorageHomeDef_ptr abs_storage_home;
+  CIDL::AbsStorageHomeDelegationSeq abs_sh_delegation;
   definition def;
   int pos;
   bool flag;
@@ -2104,9 +2105,15 @@ HomeExecutorDef(name, homex_body)
   ]
   [ feed_container : ];
   
+//HomeExecutorBody( home_impl_dcl abstract_storage_home_binding 
+//		     home_persistence_dcl definition   /* executor_def */
+//		     abstract_storage_home_delegation_spec 
+//		     executor_delegation_spec definition /* proxy_home_member */ )
 
-HomeExecutorBody(HomeImplDcl(ident), AbstractStorageHomeBinding(AbstractStorageHomeName(ash_name)), *, exec, *, *, def)
+HomeExecutorBody(HomeImplDcl(ident), AbstractStorageHomeBinding(AbstractStorageHomeName(ash_name)), *, exec, AbstractStorageHomeDelegationSpec(def_list), *, def)
 ->[ build :
+	%uviewvar build my_build;
+	
     { kc_current_view.home = IR__::HomeDef::_narrow (
         ident->symtab_entry->irobj);
       if(CORBA::is_nil(kc_current_view.home)) { 
@@ -2122,6 +2129,35 @@ HomeExecutorBody(HomeImplDcl(ident), AbstractStorageHomeBinding(AbstractStorageH
           g_repository->lookup_id (get_repid(ash_name)));
       }
       NOT_NIL(kc_current_view.abs_storage_home);
+      
+      // parse the def_list of abstract storage home delegation
+      //IR__::ProvidesDef_ptr provdef;
+      //foreach(name; idl_name_list name_list) {
+      //  provdef = IR__::ProvidesDef::_narrow (name->symtab_entry->irobj);
+      //  NOT_NIL(provdef);
+      //  kc_current_view.provseq[kc_current_view.pos] = provdef;
+      //  kc_current_view.pos++;
+      
+      //IR__::UnionMember& uni =
+      //      kc_current_view.unimemseq[kc_current_view.pos] ;
+      //    CORBA::Any any;
+      //    any <<= CORBA::Any::from_octet(0);
+      //    uni.name = CORBA::string_dup(name_v->get_name());
+      //    uni.label = any;
+      //    uni.type_def = my_build.type;
+      //    uni.type = my_build.type->type();
+      //    kc_current_view.pos++;
+        
+    //  my_build.abs_sh_delegation.length(def_list->length()); 
+    //  kc_current_view.pos = 0;
+    //  foreach(pair; definition_list def_list) {
+	//	kc_current_view.abs_sh_delegation[kc_current_view.pos].delegated_operation = 
+	//		pair.delegated_operation;
+	//	kc_current_view.abs_sh_delegation[kc_current_view.pos].abs_storage_home_operation_name = 
+	//		pair.abs_storage_home_operation_name;
+	//		
+	//	kc_current_view.pos++;
+    // }
     }
   ]
   [ feed :
@@ -2207,17 +2243,17 @@ SegmentDef(name, def_list)
   ]
   [ feed_container : ];
 
-SegmentPersistenceDcl(ash_name)
+SegmentPersistenceDcl(AbstractStorageHomeName(ash_name))
 ->[ build :
-    /*
-    kc_current_view.ahs_home = IR__::AbstractStorageHomeDef::_narrow (
+    {
+      kc_current_view.abs_storage_home = IR__::AbstractStorageHomeDef::_narrow (
         ash_name->symtab_entry->irobj);
-      if(CORBA::is_nil(kc_current_view.ahs_home)) { 
-        kc_current_view.ahs_home = IR__::AbstractStorageHomeDef::_narrow (
-          g_repository->lookup_id (get_repid_ident (ash_name)));
+      if(CORBA::is_nil(kc_current_view.abs_storage_home)) { 
+        kc_current_view.abs_storage_home = IR__::AbstractStorageHomeDef::_narrow (
+          g_repository->lookup_id( get_repid(ash_name) ) );
       }
-      NOT_NIL(kc_current_view.ahs_home);
-    */
+      NOT_NIL(kc_current_view.abs_storage_home);
+    }
   ];
 
 FacetDcl(name_list)

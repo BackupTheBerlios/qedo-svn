@@ -8,6 +8,8 @@
 #include "GeneratorBusinessC.h"
 #include "GeneratorServantH.h"
 #include "GeneratorServantC.h"
+#include "GeneratorPersistenceH.h"
+#include "GeneratorPersistenceC.h"
 #include "GeneratorVC7.h"
 #include "TestMode.h"
 #include "version.h"
@@ -67,7 +69,6 @@ main
 		exit ( 1 );
 	}
 
-
 	//
 	// get POA
 	//
@@ -83,8 +84,7 @@ main
 		orb -> destroy();
 		exit ( 1 );
 	}
-
-
+	
 	//
 	// get POA manager and activate it
 	//
@@ -204,9 +204,10 @@ main
 		orb->destroy();
 		exit ( 1 );
 	}
-
+	std::cout << "Punkt 4" << std::endl;
 	// feed repository
 	frontend_feed ( argc, argv, repository -> _this() );
+	std::cout << "Punkt 5" << std::endl;
 
 	// generate equivalent IDL
 	std::cout << "Generating equivalent IDL for " << target << std::endl;
@@ -258,6 +259,20 @@ main
 			new QEDO_CIDL_Generator::GeneratorBusinessC(repository);
 		bc_generator->generate(target, fileprefix);
 		bc_generator->destroy();
+
+		// generate persistent header
+		std::cout << "Generating persistent code header for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorPersistenceH *ph_generator =
+			new QEDO_CIDL_Generator::GeneratorPersistenceH(repository);
+		ph_generator->generate(target, fileprefix);
+		ph_generator->destroy();
+
+		// generate persistent code
+		std::cout << "Generating persistent code for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorPersistenceC *pc_generator =
+			new QEDO_CIDL_Generator::GeneratorPersistenceC(repository);
+		pc_generator->generate(target, fileprefix);
+		pc_generator->destroy();
 	}
 
 	if(generateServant)

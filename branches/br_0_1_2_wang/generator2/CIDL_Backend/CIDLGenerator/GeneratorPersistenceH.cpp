@@ -23,8 +23,18 @@ GeneratorPersistenceH::generate(std::string target, std::string fileprefix)
 {
 	try { initialize(target, fileprefix); }
 	catch (InitializeError) { return; }
+	
+	filename_ = file_prefix_ + "_PSS.h";
+	
+	out.open(filename_.c_str());
+	out << "#ifndef __" << file_prefix_ << "_PSS\n";
+	out << "#define __" << file_prefix_ << "_PSS\n";
+	out << "// persistent state interfaces\n\n";
 
 	doGenerate();
+
+	out << "\n#endif\n";
+	out.close();
 }
 
 void
