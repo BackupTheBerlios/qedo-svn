@@ -300,7 +300,7 @@ main
 			new QEDO_CIDL_Generator::GeneratorValuetypesC(repository);
 		vtc_generator->generate(target, fileprefix);
 		vtc_generator->destroy();
-/*
+
 		// generate persistent header
 		std::cout << "Generating persistent code header for " << target << std::endl;
 		QEDO_CIDL_Generator::GeneratorPersistenceH *ph_generator =
@@ -313,7 +313,7 @@ main
 		QEDO_CIDL_Generator::GeneratorPersistenceC *pc_generator =
 			new QEDO_CIDL_Generator::GeneratorPersistenceC(repository);
 		pc_generator->generate(target, fileprefix);
-		pc_generator->destroy();*/
+		pc_generator->destroy();
 	}
 
 	if(generateDescriptors)

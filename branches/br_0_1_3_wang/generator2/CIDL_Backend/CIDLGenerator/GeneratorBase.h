@@ -122,11 +122,6 @@ protected:
 	void handleFactory(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
 	void handleFactory(IR__::StorageHomeDef_ptr storage_home);
 
-	// PSSKey
-	void handlePSSKey(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
-	void handlePSSKey(IR__::StorageHomeDef_ptr storage_home);
-	virtual void doPSSKey(IR__::PSSKeyDef_ptr psskey);
-
 	// value member
 	void handleValueMember(IR__::ValueDef_ptr value);
 	virtual void doValueMember(IR__::ValueMemberDef_ptr member);
@@ -190,6 +185,25 @@ protected:
 	// siso
 	void handleSiSo(IR__::ComponentDef_ptr component);
 	virtual void doSiSo(IR__::SiSoDef_ptr siso);
+
+	// abstract storage home
+	void handleAbstractStorageHome(IR__::Container_ptr cont);
+	virtual void doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
+
+	// storage home
+	void handleStorageHome(IR__::Container_ptr cont);
+	virtual void doStorageHome(IR__::StorageHomeDef_ptr storage_home);
+
+	// abstract storage type
+	virtual void doAbstractStorageType(IR__::AbstractStorageTypeDef_ptr abs_storage_type);
+	
+	// storage type
+	virtual void doStorageType(IR__::StorageTypeDef_ptr storage_type);
+	
+	// PSSKey
+	void handlePSSKey(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
+	void handlePSSKey(IR__::StorageHomeDef_ptr storage_home);
+	virtual void doPSSKey(IR__::PSSKeyDef_ptr psskey);
 
 public:
 

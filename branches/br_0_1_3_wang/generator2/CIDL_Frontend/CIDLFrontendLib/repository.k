@@ -933,22 +933,28 @@ StateMember(flag_v, def_1, dcls)
   ];
 
 // ======================== Abstract Storage Type ================================
+AbstractStorageTypeFwdDcl(name)
+->[ feed feed_container: ];
 
 def_v=
 AbstractStorageType( AbstractStorageTypeHeader(name, inh_v), def_list )
-->[ feed_container:
+->[ feed:
+    %uviewvar feed my_feed (irobj);
+    def_list : my_feed
+  ]
+  [ feed_container:
     {  
       IR__::Container_ptr container;
       container = IR__::Container::_narrow(kc_current_view.container);
       NOT_NIL(container);
 
       int i = inh_v->length();
-	  IR__::InterfaceDefSeq initseq;
-	  initseq.length(i);
+	  IR__::InterfaceDefSeq inhseq;
+	  inhseq.length(i);
 	  i=0;
 	  foreach(ident_v; idl_identifier_list inh_v) {
-	    initseq[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
-	    NOT_NIL(initseq[i]);
+	    inhseq[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
+	    NOT_NIL(inhseq[i]);
 		i++;
 	  };
 
@@ -956,7 +962,7 @@ AbstractStorageType( AbstractStorageTypeHeader(name, inh_v), def_list )
       IR__::AbstractStorageTypeDef_ptr abstract_storagetype;
       try {
         abstract_storagetype = container->create_abstract_storage_type(get_repid(def_v,name), name->get_name(),
-          "1.0", initseq);
+          "1.0", inhseq);
       }
       catch (...) {
         Error("Exception in creating abstract storagetype %k\n", name, name);
@@ -967,10 +973,16 @@ AbstractStorageType( AbstractStorageTypeHeader(name, inh_v), def_list )
   ];
 
 // ======================== Storage Type ================================
+StorageTypeFwdDcl(name)
+->[ feed feed_container: ];
 
 def_v=
 StorageType( StorageTypeHeader(name, base_v, impl_v), def_list )
-->[ feed_container:
+->[ feed:
+    %uviewvar feed my_feed (irobj);
+    def_list : my_feed
+  ]
+  [ feed_container:
     {  
       IR__::Container_ptr container;
       container = IR__::Container::_narrow(kc_current_view.container);
@@ -1011,37 +1023,47 @@ StorageType( StorageTypeHeader(name, base_v, impl_v), def_list )
   ];
 
 // ========================= Abstract Storage Home ===============================
+AbstractStorageHomeFwdDcl(name)
+->[ feed feed_container: ];
 
 def_v=
 AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
-->[ feed_container:
-    { IR__::InterfaceDefSeq inherited;
-      inherited.length(inh_v->length());
-      int i = 0;
-      IR__::AbstractStorageHomeDef_ptr abstract_storagehome_ptr;
-      foreach (id; idl_identifier_list inh_v) {
-        abstract_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(id->symtab_entry->irobj);
-        NOT_NIL(abstract_storagehome_ptr);
-        inherited[i] = abstract_storagehome_ptr;
-        i++;
-      }
-
-      // create AbstractStorageHomeDef
-      IR__::AbstractStorageHomeDef_ptr abstract_storagehome;
+->[ feed:
+    %uviewvar feed my_feed (irobj);
+    def_list : my_feed
+  ]
+  [ feed_container:
+    { 
       IR__::Container_ptr container;
       container = IR__::Container::_narrow(kc_current_view.container);
       NOT_NIL(container);
-	  IR__::AbstractStorageTypeDef_ptr abstract_storagetype;
+
+      int i = inh_v->length();
+	  IR__::InterfaceDefSeq inhseq;
+	  inhseq.length(i);
+	  i=0;
+	  foreach(ident_v; idl_identifier_list inh_v) {
+	    inhseq[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
+	    NOT_NIL(inhseq[i]);
+		i++;
+	  };
+
+      // get managed AbstractStorageTypeDef
+      IR__::AbstractStorageTypeDef_ptr abstract_storagetype;
 	  abstract_storagetype = IR__::AbstractStorageTypeDef::_narrow(type_v->symtab_entry->irobj);
       NOT_NIL(abstract_storagetype);
+      
+      // create AbstractStorageHomeDef
+      IR__::AbstractStorageHomeDef_ptr abstract_storagehome;
       try {
         abstract_storagehome = container->create_abstract_storage_home(get_repid(def_v,name), name->get_name(),
-          "1.0", abstract_storagetype, inherited);
+          "1.0", abstract_storagetype, inhseq);
       }
       catch (...) {
         Error("Exception in creating abstract storagehome %k\n", name, name);
       }
       irobj = abstract_storagehome;
+      name->symtab_entry->irobj = abstract_storagehome;
     }
   ];
 
@@ -1049,7 +1071,11 @@ AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
 
 def_v=
 StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
-->[ feed_container:
+->[ feed:
+    %uviewvar feed my_feed (irobj);
+    def_list : my_feed
+  ]
+  [ feed_container:
     { IR__::InterfaceDefSeq supports;
       supports.length(impl_v->length());
       int i = 0;
@@ -1546,16 +1572,14 @@ FactoryDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 			storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
 				"1.0",my_build.paradescseq,my_build.excdefseq);
 		}
-		else
+		
+		// factory for abstract storage home
+		IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
+		abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
+		if(!CORBA::is_nil(abs_storagehome_ptr))
 		{
-			// factory for abstract storage home
-			IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
-			abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
-			if(!CORBA::is_nil(abs_storagehome_ptr))
-			{
-				abs_storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-					"1.0",my_build.paradescseq,my_build.excdefseq);
-			}
+			abs_storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+				"1.0",my_build.paradescseq,my_build.excdefseq);
 		}
 	}
   ];
@@ -1582,24 +1606,76 @@ FinderDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 	}
   ];
 
-// ====================== PSSKey =============================
+// ======================== PSS Factory ================================
+def_v=
+FactoryDcl1(idl_name_v, dcls_v)
+->[ feed:
+	%uviewvar build my_build;
+	
+	// declarators
+    { my_build.pos = 0; my_build.paradescseq.length(dcls_v->length()); }
+    
+    dcls_v : my_build
+    {
+		foreach($decl_v; declarators dcls_v) {
+			ArrayDeclarator(name_v, array_list) : {
+				//my_build.type = type_def;
+				array_list->unparse(kc_printer, my_build);
+				my_build.paradescseq[my_build.pos].name = name_v->get_name();
+				//my_build.paradescseq[my_build.pos].type_def = my_build.type;
+				//my_build.paradescseq[my_build.pos].type = 
+				//	my_build.paradescseq[my_build.pos].type_def->type();
+				my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
+				my_build.pos++;
+			}
+			SimpleDeclarator(name_v) : {
+				my_build.paradescseq[my_build.pos].name = name_v->get_name();
+				//my_build.paradescseq[my_build.pos].type_def = my_build.type;
+				//my_build.paradescseq[my_build.pos].type = 
+				//	my_build.paradescseq[my_build.pos].type_def->type();
+				my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
+				my_build.pos++;
+			}
+		}
+		
+		// factory for abstract storage home
+		IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
+		abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
+		if(!CORBA::is_nil(abs_storagehome_ptr))
+		{
+			abs_storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+				"1.0", my_build.paradescseq, my_build.excdefseq);
+			//abs_storagehome_ptr->create_factory(get_repid(idl_name_v), idl_name_v->get_name(),
+			//	"1.0", my_build.paradescseq, my_build.excdefseq);
+		}
+		
+		// factory for storage home
+		IR__::StorageHomeDef_ptr storagehome_ptr; 
+		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
+		if(!CORBA::is_nil(storagehome_ptr))
+		{
+			storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+				"1.0", my_build.paradescseq, my_build.excdefseq);
+			//storagehome_ptr->create_factory(get_repid(idl_name_v), idl_name_v->get_name(),
+			//	"1.0", my_build.paradescseq, my_build.excdefseq);
+			
+		}
+	}
+  ];
+
+// ====================== PSS Key =============================
 def_v=
 KeyDcl(idl_name_v, dcls_v)
 ->[ feed:
 	%uviewvar build my_build;
+	
     // declarators
     { my_build.pos = 0; my_build.paradescseq.length(dcls_v->length()); }
+    
     dcls_v : my_build
-    // exceptions
-    { my_build.pos = 0; }
-    // attr_raises_expr_v : my_build
-    // context
-    { my_build.pos = 0; }
-
-	{
+    {
 		foreach($decl_v; declarators dcls_v) {
 			ArrayDeclarator(name_v, array_list) : {
-				//my_build.type = type_def;
 				array_list->unparse(kc_printer, my_build);
 				my_build.paradescseq[my_build.pos].name = name_v->get_name();
 				my_build.paradescseq[my_build.pos].type_def = my_build.type;
@@ -1611,6 +1687,9 @@ KeyDcl(idl_name_v, dcls_v)
 			SimpleDeclarator(name_v) : {
 				my_build.paradescseq[my_build.pos].name = name_v->get_name();
 				my_build.paradescseq[my_build.pos].type_def = my_build.type;
+				
+				NOT_NIL(my_build.type);
+				
 				my_build.paradescseq[my_build.pos].type = 
 					my_build.paradescseq[my_build.pos].type_def->type();
 				my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
@@ -1618,6 +1697,15 @@ KeyDcl(idl_name_v, dcls_v)
 			}
 		}
 
+        // key for abstract storage home
+		IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
+		abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
+		if(!CORBA::is_nil(abs_storagehome_ptr))
+		{
+			abs_storagehome_ptr->create_key(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+					"1.0",my_build.paradescseq);
+		}
+		
 		// key for storage home
 		IR__::StorageHomeDef_ptr storagehome_ptr; 
 		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
@@ -1625,17 +1713,6 @@ KeyDcl(idl_name_v, dcls_v)
 		{
 			storagehome_ptr->create_key(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
 				"1.0",my_build.paradescseq);
-		}
-		else
-		{
-			// key for abstract storage home
-			IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
-			abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
-			if(!CORBA::is_nil(abs_storagehome_ptr))
-			{
-				abs_storagehome_ptr->create_key(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-						"1.0",my_build.paradescseq);
-			}
 		}
 	}
   ];
@@ -1669,6 +1746,65 @@ OpDcl( one_way_v,
         OneWayFlag : { opmode = IR__::OP_ONEWAY; }
         default : { opmode = IR__::OP_NORMAL; }
       }
+      IR__::InterfaceDef_ptr interface_ptr;
+      interface_ptr = IR__::InterfaceDef::_narrow(kc_current_view.container);
+      if(!CORBA::is_nil(interface_ptr)) {
+        // create OperationDef
+        try {
+          interface_ptr->create_operation(get_repid(def_v,name), name->get_name(),
+            "1.0", IR__::IDLType::_narrow(definition_v->irobj), opmode,
+            my_build.paradescseq, my_build.excdefseq, my_build.contseq);
+        }
+        catch (...) {
+          Error("Exception in creating operation %k\n", name, name);
+        }
+      }
+      else {
+        IR__::ValueDef_ptr valuet;
+        valuet = IR__::ValueDef::_narrow(kc_current_view.container);
+        NOT_NIL(valuet);
+        // create OperationDef
+        try {
+          valuet->create_operation(get_repid(def_v,name), name->get_name(),
+            "1.0", IR__::IDLType::_narrow(definition_v->irobj), opmode,
+            my_build.paradescseq, my_build.excdefseq, my_build.contseq);
+        }
+        catch (...) {
+          Error("Exception in creating operation %k\n", name, name);
+        }
+      }
+    }
+  ]
+  [ build :
+  ];
+
+// ======================== PSS Operation =============================
+def_v=
+LocalOpDcl( definition_v, name, params, attr_raises_expr_v)
+->[ feed:
+    %uviewvar build my_build;
+    //return type
+    definition_v : my_build
+    // parameters
+    { my_build.pos = 0; my_build.paradescseq.length(params->length()); }
+    params : my_build
+    // exceptions
+    { my_build.pos = 0; }
+    attr_raises_expr_v : my_build
+    // context
+    { my_build.pos = 0; }
+    //context_expr_v : my_build
+    {
+      // operation mode
+      //IR__::OperationMode opmode;
+      //with(one_way_v) {
+      //  OneWayFlag : { opmode = IR__::OP_ONEWAY; }
+      //  default : { opmode = IR__::OP_NORMAL; }
+      //}
+      
+      IR__::OperationMode opmode;
+      opmode = IR__::OP_NORMAL;
+      
       IR__::InterfaceDef_ptr interface_ptr;
       interface_ptr = IR__::InterfaceDef::_narrow(kc_current_view.container);
       if(!CORBA::is_nil(interface_ptr)) {
@@ -1750,6 +1886,44 @@ Attribute( readonly_v, type_v, decl_v)
             }
             default : { assert(0); }
           }
+        }
+        default : { assert(0); }
+      }
+    }
+  ];
+
+// ======================== PSS Attribute =============================
+def_v=
+PsdlStateDcl( readonly_v, type_v, decl_list)
+->[ feed:
+    %uviewvar build my_build;
+    
+    type_v : my_build
+    { 
+      IR__::InterfaceDef_ptr interface_ptr;
+      interface_ptr = IR__::InterfaceDef::_narrow(kc_current_view.container);
+      NOT_NIL(interface_ptr);
+      IR__::IDLType_ptr type;
+      type = IR__::IDLType::_narrow(type_v->irobj);
+      NOT_NIL(type);
+      IR__::AttributeMode mode;
+      with(readonly_v) {
+        ReadOnlyFlag : { mode = IR__::ATTR_READONLY; }
+        default : { mode = IR__::ATTR_NORMAL; }
+      }
+      
+      foreach($decl; declarators decl_list) {
+        SimpleDeclarator(name) : {
+            IR__::AttributeDef_ptr attr;
+            // create AttributeDef
+            try {
+              attr = interface_ptr->create_attribute(get_repid(def_v,name),
+                name->get_name(), "1.0", type, mode, 0, 0);
+            }
+            catch (...) {
+              Error("Exception in creating attribute %k\n", name, name);
+            }
+            name->symtab_entry->irobj = attr;
         }
         default : { assert(0); }
       }
@@ -2044,7 +2218,6 @@ Composition(name, flag_v, compo_body)
       CIDL::CIDLRepository_ptr container = g_repository;
       // create CompositionDef
       try {
-        NOT_NIL(my_build.home);
         composition = container-> create_composition(get_repid(def_v,name),
           name->get_name(), "1.0", lifecycle, my_build.home);
       }
@@ -2075,6 +2248,7 @@ HomeExecutorDef(name, homex_body)
 ->[ feed :
     %uviewvar feed my_feed; 
 	%uviewvar build my_build;
+	homex_body : my_build
     {
       CIDL::CompositionDef_ptr container;
       container = CIDL::CompositionDef::_narrow (kc_current_view.container);
@@ -2105,15 +2279,8 @@ HomeExecutorDef(name, homex_body)
   ]
   [ feed_container : ];
   
-//HomeExecutorBody( home_impl_dcl abstract_storage_home_binding 
-//		     home_persistence_dcl definition   /* executor_def */
-//		     abstract_storage_home_delegation_spec 
-//		     executor_delegation_spec definition /* proxy_home_member */ )
-
-HomeExecutorBody(HomeImplDcl(ident), AbstractStorageHomeBinding(AbstractStorageHomeName(ash_name)), *, exec, AbstractStorageHomeDelegationSpec(def_list), *, def)
+HomeExecutorBody(HomeImplDcl(ident), home_binding_v, *, exec, home_delegation_v, *, def)
 ->[ build :
-	%uviewvar build my_build;
-	
     { kc_current_view.home = IR__::HomeDef::_narrow (
         ident->symtab_entry->irobj);
       if(CORBA::is_nil(kc_current_view.home)) { 
@@ -2121,48 +2288,52 @@ HomeExecutorBody(HomeImplDcl(ident), AbstractStorageHomeBinding(AbstractStorageH
           g_repository->lookup_id (get_repid_ident (ident)));
       }
       NOT_NIL(kc_current_view.home);
-      
+    }
+    home_binding_v
+    home_delegation_v
+  ]
+  [ feed :
+    def
+  ];
+  
+AbstractStorageHomeBinding(AbstractStorageHomeName(ash_name))
+->[ build :
+    {
       kc_current_view.abs_storage_home = IR__::AbstractStorageHomeDef::_narrow (
         ash_name->symtab_entry->irobj);
       if(CORBA::is_nil(kc_current_view.abs_storage_home)) { 
         kc_current_view.abs_storage_home = IR__::AbstractStorageHomeDef::_narrow (
           g_repository->lookup_id (get_repid(ash_name)));
       }
-      NOT_NIL(kc_current_view.abs_storage_home);
-      
-      // parse the def_list of abstract storage home delegation
-      //IR__::ProvidesDef_ptr provdef;
-      //foreach(name; idl_name_list name_list) {
-      //  provdef = IR__::ProvidesDef::_narrow (name->symtab_entry->irobj);
-      //  NOT_NIL(provdef);
-      //  kc_current_view.provseq[kc_current_view.pos] = provdef;
-      //  kc_current_view.pos++;
-      
-      //IR__::UnionMember& uni =
-      //      kc_current_view.unimemseq[kc_current_view.pos] ;
-      //    CORBA::Any any;
-      //    any <<= CORBA::Any::from_octet(0);
-      //    uni.name = CORBA::string_dup(name_v->get_name());
-      //    uni.label = any;
-      //    uni.type_def = my_build.type;
-      //    uni.type = my_build.type->type();
-      //    kc_current_view.pos++;
-        
-    //  my_build.abs_sh_delegation.length(def_list->length()); 
-    //  kc_current_view.pos = 0;
-    //  foreach(pair; definition_list def_list) {
-	//	kc_current_view.abs_sh_delegation[kc_current_view.pos].delegated_operation = 
-	//		pair.delegated_operation;
-	//	kc_current_view.abs_sh_delegation[kc_current_view.pos].abs_storage_home_operation_name = 
-	//		pair.abs_storage_home_operation_name;
-	//		
-	//	kc_current_view.pos++;
-    // }
+      NOT_NIL(kc_current_view.abs_storage_home); 
     }
-  ]
-  [ feed :
-    def
-  ];
+ ];
+ 
+AbstractStorageHomeDelegationSpec(def_list)
+->[ build :
+    {
+      kc_current_view.abs_sh_delegation.length(def_list->length()); 
+      kc_current_view.pos = 0;
+      foreach(pair; definition_list def_list) {
+        with(pair) {
+          OperationPair(op1, Name(op2)) : {
+            CIDL::AbsStorageHomeDelegation dele;
+            dele.delegated_operation = IR__::OperationDef::_narrow( op1->symtab_entry->irobj );
+            dele.abs_storage_home_operation_name = CORBA::string_dup( op2->name );
+			kc_current_view.abs_sh_delegation[kc_current_view.pos] = dele;
+		    kc_current_view.pos++;
+          }
+          Operation(op=Name(op_name)) : {
+            CIDL::AbsStorageHomeDelegation dele;
+            dele.delegated_operation = IR__::OperationDef::_narrow( op->symtab_entry->irobj );
+            dele.abs_storage_home_operation_name = CORBA::string_dup( op_name->name );
+			kc_current_view.abs_sh_delegation[kc_current_view.pos] = dele;
+		    kc_current_view.pos++;
+          }
+        }
+      }
+	}
+ ];
 
 AbstractSpec(name_list)
 ->[ feed :

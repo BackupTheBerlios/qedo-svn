@@ -988,7 +988,7 @@ void
 add_abstract_storage_home_name(
   idl_name abstract_storage_home_label_v)
 {
-  table_item_list list_1=0;
+  table_item_list list_1=search_name(abstract_storage_home_label_v,AbstractStorageHomeN());
 
   with(list_1) {
     Constable_item_list(item_v,Niltable_item_list()) : {

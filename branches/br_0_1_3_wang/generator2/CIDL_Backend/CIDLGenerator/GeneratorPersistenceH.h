@@ -41,9 +41,14 @@ private:
 
 	std::string filename_;
 	Printer out;
-	std::string target_;
-	//bool need_push_;
-	//CIDL::CompositionDef_var composition_;
+	//std::string target_;
+	IR__::AbstractStorageHomeDef_var	abs_storagehome_;
+	IR__::StorageHomeDef_var			storagehome_;
+	IR__::AbstractStorageTypeDef_var	abs_storagetype_;
+	IR__::StorageTypeDef_var			storagetype_;
+	std::set<std::string>		m_recursion_set;
+
+	void check_for_generation(IR__::Contained_ptr item);
 
 	void doAttribute(IR__::AttributeDef_ptr attribute);
 	void doOperation(IR__::OperationDef_ptr operation);
@@ -54,6 +59,8 @@ private:
 	void doStorageType(IR__::StorageTypeDef_ptr storage_type);
 	void doPSSKey(IR__::PSSKeyDef_ptr psskey);
 	void doFactory(IR__::FactoryDef_ptr factory);
+
+	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool isPSSKey);
 	
 public:
 
