@@ -41,5 +41,5 @@ clean: $(SUBDIRS:%=%-clean)
 %-package: %
 	$(MAKE) -C $< package
 
-%-assembly: &-package
-	$(MAKE) -C $< hello_linux_assembly
+%-assembly: % %-package
+	$(MAKE) -C $< assembly
