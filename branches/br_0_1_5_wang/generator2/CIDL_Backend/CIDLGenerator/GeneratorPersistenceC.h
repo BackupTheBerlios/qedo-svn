@@ -68,6 +68,7 @@ private:
 	void doStorageType(IR__::StorageTypeDef_ptr storagetype);
 	void doStorageHome(IR__::StorageHomeDef_ptr storagehome);
 
+	void genDuplAndDown(std::string strClassName);
 	void genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	//void genAttributeWithAbsStorageType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	//void genAttributeWithAbsStorageTypeRef(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);

@@ -25,13 +25,11 @@
 namespace Qedo
 {
 
-ConnectorImpl::ConnectorImpl() :
-	pSessionPool_(NULL)
+ConnectorImpl::ConnectorImpl()
 {
 }
 
-ConnectorImpl::ConnectorImpl(char* szImplID) :
-	pSessionPool_(NULL)
+ConnectorImpl::ConnectorImpl(char* szImplID)
 {
 	strcpy(szImplID_, szImplID);
 }
@@ -49,9 +47,15 @@ ConnectorImpl::~ConnectorImpl()
 		lSessions_.clear();
 	}
 
-	pSessionPool_->close();
-	delete pSessionPool_;
-	pSessionPool_ = NULL;
+	if(!lSessionPools_.empty())
+	{
+		std::list<SessionPoolImpl*>::iterator sessionPoolIter;
+
+		for( sessionPoolIter=lSessionPools_.begin(); sessionPoolIter!=lSessionPools_.end(); sessionPoolIter++ )
+			(*sessionPoolIter)->close();
+
+		lSessionPools_.clear();
+	}
 
 	_remove_ref();
 }
@@ -168,21 +172,14 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 		strConn += ";";
 	}
 	
-	if(pSessionPool_==NULL)
-	{
-		pSessionPool_ = new SessionPoolImpl( access_mode, tx_policy, strConn.c_str(), this );
+	SessionPoolImpl* pSessionPool = new SessionPoolImpl( access_mode, tx_policy, strConn.c_str(), this );
 
-		if( pSessionPool_->Init()==FALSE ||
-			pSessionPool_->DriverConnect(strConn.c_str())==FALSE )
-			throw CORBA::PERSIST_STORE();
-	}
-	else
-	{
-		if(!pSessionPool_->DriverConnect(strConn.c_str()))
-			throw CORBA::PERSIST_STORE();
-	}
+	if( pSessionPool->Init()==FALSE || pSessionPool->DriverConnect(strConn.c_str())==FALSE )
+		throw CORBA::PERSIST_STORE();
 	
-	return pSessionPool_;
+	lSessionPools_.push_back(pSessionPool);
+
+	return pSessionPool;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

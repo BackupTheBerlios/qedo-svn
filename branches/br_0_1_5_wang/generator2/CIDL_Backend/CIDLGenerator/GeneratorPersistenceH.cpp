@@ -61,10 +61,10 @@ GeneratorPersistenceH::generate(std::string target, std::string fileprefix)
 	out << "#include <CORBA.h>\n";
 	out << "#include \"CORBADepends.h\"\n";
 	out << "#include \"GlobalHelpers.h\"\n";
-	out << "#include \"" << file_prefix_ << "_EQUIVALENT.h\"\n";
 	out << "#include \"StorageObject.h\"\n";
 	out << "#include \"StorageHomeBase.h\"\n";
 	out << "#include \"Catalog.h\"\n";
+	out << "#include \"" << file_prefix_ << "_EQUIVALENT.h\"\n";
 	out << "#include \"" << file_prefix_ << "_FD.h\"\n\n";
 	out << "using namespace Qedo;\n\n";
 	out << "// BEGIN USER INSERT SECTION file_post\n";
@@ -164,6 +164,14 @@ GeneratorPersistenceH::check_for_generation(IR__::Contained_ptr item)
 
 	sRecursion_.erase(item->id());
 };
+
+void
+GeneratorPersistenceH::genDuplAndDown(std::string strClassName)
+{
+	//generate _duplicate and _downcast operation
+	out << "\nstatic " << strClassName << "* _duplicate(const " << strClassName << "* obj);\n";
+    out << "static " << strClassName << "* _downcast(const " << strClassName << "* obj);\n";
+}
 
 void
 GeneratorPersistenceH::genMemberVariable(IR__::StorageTypeDef_ptr storagetype)
@@ -390,9 +398,6 @@ GeneratorPersistenceH::doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDe
 void
 GeneratorPersistenceH::genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool bRef)
 {
-	if(bRef)
-		out << "/*\n";
-
 	if(!bRef) out << "\n//\n// " << operation->id() << "\n//\n";
 	if(bAbstract_) out << "virtual ";
 	char* szReturnType = map_psdl_return_type(ret_type, false);
@@ -443,10 +448,6 @@ GeneratorPersistenceH::genKey(IR__::OperationDef_ptr operation, IR__::IDLType_pt
 	}
 	
 	bAbstract_ ? out << " = 0;\n" : out << ";\n";
-
-	if(bRef)
-		out << "*/\n";
-
 }
 
 void
@@ -520,6 +521,9 @@ GeneratorPersistenceH::genAbstractStorageTypeBody(IR__::AbstractStorageTypeDef_p
 	bAbstract_ = true;
 	handleAttribute(abs_storagetype);
 	handleOperation(abs_storagetype);
+	
+	//generate _duplicate and _downcast operation
+	//genDuplAndDown(strClassName);
 
 	out.unindent();
 	out << "};\n\n";
@@ -581,7 +585,6 @@ GeneratorPersistenceH::genAbstractRefBody(IR__::AbstractStorageTypeDef_ptr abs_s
 	std::string strClassName = std::string(abs_storagetype->name());
 	out << "class " << strClassName << "Ref\n";
 	out << "{\n";
-	out.indent();
 	genBaseRefBody(strClassName);
 	
 	// generate conversion operators
@@ -589,13 +592,11 @@ GeneratorPersistenceH::genAbstractRefBody(IR__::AbstractStorageTypeDef_ptr abs_s
 	out << "//conversion operators\n";
 	out << "//... to do ...\n\n";
 	out.unindent();
-
 	out << "private:\n\n";
 	out.indent();
 	out << strClassName << "* pObj_;\n";
 	out.unindent();
 	out << "};\n";
-	out.unindent();
 }
 
 void 
@@ -683,7 +684,10 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	handleAttribute(storagetype);
 	handleOperation(storagetype);
 
-	out << "\nvoid setValue(std::map<std::string, CORBA::Any> valueMap);\n\n\n";
+	out << "\nvoid setValue(std::map<std::string, CORBA::Any> valueMap);\n";
+	
+	//generate _duplicate and _downcast operation
+	//genDuplAndDown(strClassName);
 	out.unindent();
 
 	genMemberVariable(storagetype);
@@ -701,7 +705,6 @@ GeneratorPersistenceH::genRefBody(IR__::StorageTypeDef_ptr storagetype)
 	std::string strClassName = std::string(storagetype->name());
 	out << "class " << strClassName << "Ref\n";
 	out << "{\n";
-	out.indent();
 	genBaseRefBody(strClassName);
 	
 	// generate conversion operators
@@ -709,13 +712,11 @@ GeneratorPersistenceH::genRefBody(IR__::StorageTypeDef_ptr storagetype)
 	out << "//conversion operators\n";
 	out << "//... to do ...\n\n";
 	out.unindent();
-
 	out << "private:\n\n";
 	out.indent();
 	out << strClassName << "* pObj_;\n";
 	out.unindent();
 	out << "};\n";
-	out.unindent();
 }
 
 void 
@@ -773,6 +774,9 @@ GeneratorPersistenceH::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr ab
 	handleOperation(abs_storagehome);
 	handleFactory(abs_storagehome);
 	handleKey(abs_storagehome);
+	
+	//generate _duplicate and _downcast operation
+	//genDuplAndDown(strClassName);
 
 	out.unindent();
 	out << "};\n\n";
@@ -904,6 +908,9 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	handleOperation(storagehome);
 	handleFactory(storagehome);
 	handleKey(storagehome);
+
+	//generate _duplicate and _downcast operation
+	//genDuplAndDown(strClassName);
 
 	out.unindent();
 	/*out << "\n\nprivate:\n\n";

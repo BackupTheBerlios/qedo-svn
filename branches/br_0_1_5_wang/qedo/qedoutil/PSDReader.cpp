@@ -28,7 +28,7 @@
 #include <xercesc/framework/URLInputSource.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: PSDReader.cpp,v 1.1.4.2 2004/01/14 16:54:42 hao Exp $";
+static char rcsid[] UNUSED = "$Id: PSDReader.cpp,v 1.1.4.3 2004/01/26 15:45:42 hao Exp $";
 
 
 namespace Qedo {
@@ -72,15 +72,15 @@ throw(PSDReadException)
 			if ( XMLString::compareString(child->getNodeName(), X("storagehome")) )
 				storagehome((DOMElement*)child);
 			// get qedo datatype map
-			else if ( XMLString::compareString(child->getNodeName(), X("database-info")) )
-				database_info((DOMElement*)child);
+			//else if ( XMLString::compareString(child->getNodeName(), X("database-info")) )
+			//	database_info((DOMElement*)child);
 		}
 
         // get next child
 		child = child->getNextSibling();
     }
 }
-
+/*
 void
 PSDReader::database_info (DOMElement* element)
 throw(PSDReadException)
@@ -137,7 +137,7 @@ throw(PSDReadException)
 	
 	return text;
 }
-
+*/
 std::string
 PSDReader::get_value(DOMElement* element)
 throw(PSDReadException)

@@ -55,8 +55,7 @@ GeneratorPSSFD::generate(std::string target, std::string fileprefix)
 	out << "#define _" << file_prefix_ << "_FD_\n\n\n";
 	out << "// BEGIN USER INSERT SECTION file_pre\n";
 	out << "// END USER INSERT SECTION file_pre\n\n";
-	out << "namespace " << file_prefix_ << "\n";
-	out << "{\n";
+	out << "namespace " << file_prefix_ << " {\n";
 	out.indent();
 	doGenerate();
 	out.unindent();

@@ -258,9 +258,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="Package.cpp">
 			</File>
 			<File
-				RelativePath="Package.cpp">
-			</File>
-			<File
 				RelativePath="PlatformBase.cpp">
 			</File>
 			<File
@@ -344,9 +341,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="PSDReader.h">
-			</File>
-			<File
-				RelativePath="Package.h">
 			</File>
 			<File
 				RelativePath="Package.h">

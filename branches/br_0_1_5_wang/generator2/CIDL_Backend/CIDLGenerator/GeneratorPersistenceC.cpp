@@ -181,6 +181,31 @@ GeneratorPersistenceC::check_for_generation(IR__::Contained_ptr item)
 };
 
 void
+GeneratorPersistenceC::genDuplAndDown(std::string strClassName)
+{
+	//generate _duplicate and _downcast operation
+	out << strClassName << "*\n";
+	out << strClassName << "::_duplicate(const " << strClassName << "* obj)\n";
+	out << "{\n";
+	out.indent();
+	out << "if( obj!=NULL )\n";
+	out.indent();
+	out << "obj->_add_ref();\n";
+	out.unindent();
+	out << "return obj;\n";
+	out.unindent();
+	out << "}\n\n";
+
+	out << strClassName << "*\n";
+	out << strClassName << "::_downcast(const " << strClassName << "* obj)\n";
+	out << "{\n";
+	out.indent();
+	out << "return obj;\n";
+	out.unindent();
+	out << "}\n";
+}
+
+void
 GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind)
 {
 	std::string attribute_name = mapName(attribute);
@@ -259,7 +284,7 @@ GeneratorPersistenceC::genAttributeWithOtherType(IR__::AttributeDef_ptr attribut
 {
 	std::string attribute_name = mapName(attribute);
 	IR__::IDLType_var attr_type = attribute->type_def();
-
+	
 	out << map_psdl_return_type(attr_type, false) << "\n";
 	out << strClassname_;
 	if(bRef_) out << "Ref";
@@ -270,7 +295,7 @@ GeneratorPersistenceC::genAttributeWithOtherType(IR__::AttributeDef_ptr attribut
 	out << "return " << attribute_name << "_;\n";
 	out.unindent();
 	out << "}\n\n";
-
+	
 	out << "void\n";
 	out << strClassname_;
 	if(bRef_) out << "Ref";
@@ -278,7 +303,40 @@ GeneratorPersistenceC::genAttributeWithOtherType(IR__::AttributeDef_ptr attribut
 	out << map_psdl_parameter_type(attr_type, true) << " param)\n";
 	out << "{\n";
 	out.indent();
-	out << attribute_name << "_ = param;\n";
+	if( attr_type->type()->kind() == CORBA::tk_value )
+	{
+		std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+		for(valuetype_iter = lValueTypes_.begin();
+			valuetype_iter != lValueTypes_.end();
+			valuetype_iter++)
+		{
+			IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+			std::string attr_type_name = map_attribute_type(attribute->type_def());
+			if(attr_type_name.find(mapName(value))!=std::string::npos)
+			{
+				IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+				for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+				{
+					IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+
+					switch(psdl_check_type(vMember->type_def()))
+					{
+					case CPPBase::_SHORT:
+					case CPPBase::_INT:
+					case CPPBase::_LONG:
+					case CPPBase::_STRING:
+						out << attribute_name << "_->" << mapName(vMember) << "( param." << mapName(vMember) << "() );\n";
+						break;
+					}
+				}
+				break;
+			}
+		}
+	}
+	else
+	{
+		out << attribute_name << "_ = param;\n";
+	}
 	out << "setModified(true);\n";
 	out.unindent();
 	out << "}\n\n";
@@ -425,7 +483,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	out << "char* szTemp = new char[64];\n";
 	out << "std::string strFactory = \"\";\n\n";
 	out << "CatalogBase_ptr pCatalogBase = get_catalog();\n";
-	out << "CatalogBaseImpl* pCBImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase);\n\n";
+	out << "CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase);\n\n";
 	strName_ = "strFactory";
 
 	out << strName_ << " = \"INSERT INTO pid_content (pid, ownhome) VALUES ( \";\n";
@@ -436,7 +494,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	strContent_ = "\\'";
 	out << genSQLLine(strName_, strContent_, false, true, true);
 	out << strName_ << " += \"\\\'" << inf_home->name() << "\\\' );\";\n\n";
-	out << "if(!pCBImpl->ExecuteSQL(" << strName_ << ".c_str()))\n";
+	out << "if(!pCatalogBaseImpl->ExecuteSQL(" << strName_ << ".c_str()))\n";
 	out.indent();
 	out << "throw CORBA::BAD_PARAM();\n\n";
 	out.unindent();
@@ -670,7 +728,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	// end of INSERT sentence for FACTORY !!!!
 	//++++++++++++++++++++++++++++++++++++++++
 	
-	out << "\nif(pCBImpl->ExecuteSQL(" << strName_ << ".c_str()))\n";
+	out << "\nif(pCatalogBaseImpl->ExecuteSQL(" << strName_ << ".c_str()))\n";
 	out << "{\n";
 	out.indent();
 	out << "//use factory to create a storage object\n";
@@ -680,23 +738,23 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	out << "#ifdef MICO_ORB\n";
 	out << "StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();\n";
 	out << "#endif\n";
-	out << "CatalogBaseImpl* tmp_catalog = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);\n";
-	out << "factory = tmp_catalog->getConnector()->register_storage_object_factory(NULL, factory);\n";
-	out << "StorageObjectImpl* pStorageObjectImpl = factory->create();\n";
-	out << "lObjectes_.push_back(pStorageObjectImpl);\n";
-	out << map_psdl_return_type(ret_type, false) << " tmp_ptr = dynamic_cast <" << map_psdl_return_type(ret_type, false) << "> (pStorageObjectImpl);\n";
+	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"\", factory);\n";
+	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
+	out << "factory->_remove_ref();\n";
+	out << "lObjectes_.push_back(pObjectImpl);\n";
+	out << map_psdl_return_type(ret_type, false) << " pActObject = dynamic_cast <" << map_psdl_return_type(ret_type, false) << "> (pObjectImpl);\n";
 	out << "\n//set values to current storageobject incarnation\n";
 	out << "//How to handle with pid, spid and the other member variables not given?\n";
 	for(CORBA::ULong j=0; j<pards->length(); j++)
 	{
 		IR__::ParameterDescription pardescr = (*pards)[j];
 		ret_type = pardescr.type_def;
-		out << "tmp_ptr->" << std::string(pardescr.name) << "(";
+		out << "pActObject->" << std::string(pardescr.name) << "(";
 		if( ret_type->type()->kind() == CORBA::tk_value )
 			out << "*"; // special for valuetype
 		out << std::string(pardescr.name) << ");\n";
 	}
-	out << "\nreturn tmp_ptr;\n";
+	out << "\nreturn pActObject;\n";
 	out.unindent();
 	out << "}\n";
 	out << "else\n";
@@ -736,13 +794,11 @@ void
 GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceDef_ptr inf_type, IR__::InterfaceDef_ptr inf_home, bool isRef)
 {
 	IR__::IDLType_var ret_type = IR__::IDLType::_narrow(inf_type);
-	
-	if(isRef)
-		out << "/*\n";
 
 	if(!isRef)
 		out << "\n//\n// " << operation->id() << "\n//\n";
 	char* szReturnType = map_psdl_return_type(ret_type, false);
+	char* szOriginalType = map_psdl_return_type(ret_type, false);
 
 	//since the definition of a abstract stoage type is not yet supported, 
 	//we have to replcace the "*" with "Ref" for operation find_by_ref_... 
@@ -796,8 +852,10 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	//++++++++++++++++++++++++++++++++++++++++
 	// SELECT sentence for KEY
 	//++++++++++++++++++++++++++++++++++++++++
-	out << szReturnType << " tmp_ptr";
-	(isRef) ? out << ";\n" : out <<  "= 0;\n";
+	if(!isRef)
+		out << szReturnType << " pActObject = NULL;\n";
+	else
+		out << szOriginalType << " pActObject = NULL;\n";
 	out << "char* szTemp = new char[64];\n";
 	out << "std::string strKey = \"\";\n\n";
 	strName_ = "strKey";
@@ -959,9 +1017,10 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	// end of SELECT sentence for KEY !!!!!!!!
 	//++++++++++++++++++++++++++++++++++++++++
 
-	out << "\nif(Open(" << strName_ << ".c_str()))\n";
-	out << "{\n";
+	out << "\nif(!Open(" << strName_ << ".c_str()))\n";
 	out.indent();
+	out << "throw CosPersistentState::NotFound();\n\n";
+	out.unindent();
 	out << "if (GetFieldCount()<=0)\n{\n";
 	out.indent();
 	out << "Close();\n";
@@ -974,12 +1033,18 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	out << "Close();\n\n";
 	out << "std::string strPid = \"\";\n";
 	out << "strPid.append((const char*)szPid);\n";
-	out << "StorageObjectBase sob = find_by_pid(strPid);\n";
+	out << "StorageObjectBase pObject = find_by_pid(strPid);\n";
 	if(!isRef)
-		out << "tmp_ptr = dynamic_cast <" << szReturnType << "> (sob);\n";
-	out.unindent();
-	out << "}\n\n";
-	out << "return tmp_ptr;\n";
+	{
+		out << "pActObject = dynamic_cast <" << szReturnType << "> (pObject);\n\n";
+		out << "return pActObject;\n";
+	}
+	else
+	{
+		out << "pActObject = dynamic_cast <" << szOriginalType << "> (pObject);\n";
+		out << szReturnType << " ref = pActObject;\n\n";
+		out << "return ref;\n";
+	}
 
 	out.unindent();
 	out << "\n// BEGIN USER INSERT SECTION " << strClassname_;
@@ -988,9 +1053,6 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	out << "// END USER INSERT SECTION " << strClassname_;
 	isRef ? out << "::find_ref_by_" : out << "::find_by_";
 	out << mapName(operation) << "()\n}\n\n";
-	
-	if(isRef)
-		out << "*/\n";
 }
 
 void
@@ -1372,9 +1434,10 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 			}
 		}
 	}
-
 	out.unindent();
 	out << "}\n\n";
+	//genDuplAndDown(strClassname_);
+	//out << "\n";
 }
 
 void
@@ -1611,11 +1674,16 @@ GeneratorPersistenceC::doAbstractStorageType(IR__::AbstractStorageTypeDef_ptr ab
 	open_module(out, abs_storagetype, "");
 	out << "\n\n";
 
+	//std::string strClassName = std::string(abs_storagetype->name());
+	//genDuplAndDown(strClassName);
+	//out << "\n";
+
 	// generate ref class
 	// Don't known how to build a Ref-class :-(
 	//genStorageTypeBody(storagetype, true);
 	genAbstractRefBody(abs_storagetype); // Hopefully it's right!
-
+	
+	out << "\n\n";
 	close_module(out, abs_storagetype);
 }
 
@@ -1670,6 +1738,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	std::string strDummy = "";
 	int iLength = strClassname_.length() + 10;
 	char* szRetType = map_psdl_return_type(storagehome->managed_storagetype(), false);
+	char* szOriginalType = map_psdl_return_type(storagehome->managed_storagetype(), false);
 	IR__::AttributeDef_var attribute = 0;
 	
 	if(isRef)
@@ -1722,7 +1791,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out << "char* szTemp = new char[64];\n";
 	out << "std::string strInsert = \"\";\n\n";
 	out << "CatalogBase_ptr pCatalogBase = get_catalog();\n";
-	out << "CatalogBaseImpl* pCBImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase);\n\n";
+	out << "CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase);\n\n";
 	strName_ = "strInsert";
 
 	out << strName_ << " = \"INSERT INTO pid_content (pid, ownhome) VALUES ( \";\n";
@@ -1733,7 +1802,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	strContent_ = "\\'";
 	out << genSQLLine(strName_, strContent_, false, true, true);
 	out << strName_ << " += \"\\\'" << storagehome->name() << "\\\' );\";\n\n";
-	out << "if(!pCBImpl->ExecuteSQL(" << strName_ << ".c_str()))\n";
+	out << "if(!pCatalogBaseImpl->ExecuteSQL(" << strName_ << ".c_str()))\n";
 	out.indent();
 	out << "throw CORBA::BAD_PARAM();\n\n";
 	out.unindent();
@@ -1924,40 +1993,45 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	// end of INSERT sentence for _create in storagehome
 	//++++++++++++++++++++++++++++++++++++++++++++++++++
 	
-	out << "\nif(pCBImpl->ExecuteSQL(" << strName_ << ".c_str()))\n";
+	out << "\nif(pCatalogBaseImpl->ExecuteSQL(" << strName_ << ".c_str()))\n";
 	out << "{\n";
 	out.indent();
+	
+	out << "//use factory to create a storage object\n";
+	out << "#ifdef ORBACUS_ORB\n";
+	out << "StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();\n";
+	out << "#endif\n";
+	out << "#ifdef MICO_ORB\n";
+	out << "StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();\n";
+	out << "#endif\n";
+	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"\", factory);\n";
+	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
+	out << "factory->_remove_ref();\n";
+	out << "lObjectes_.push_back(pObjectImpl);\n";
+	if(!isRef)
+		out << szRetType << " pActObject = dynamic_cast <" << szRetType << "> (pObjectImpl);\n";
+	else
+		out << szOriginalType << " pActObject = dynamic_cast <" << szOriginalType << "> (pObjectImpl);\n";
+	out << "\n//set values to current storageobject incarnation\n";
+	out << "//How to handle with pid and spid?\n";
+	for(CORBA::ULong i=0; i<ulLen; i++)
+	{
+		attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		out << "pActObject->" << mapName(attribute) << "(";
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+			out << "*"; // special for valuetype :-(
+		out << mapName(attribute) << ");\n";
+	}
 	if(!isRef)
 	{
-		out << "//use factory to create a storage object\n";
-		out << "#ifdef ORBACUS_ORB\n";
-		out << "StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();\n";
-		out << "#endif\n";
-		out << "#ifdef MICO_ORB\n";
-		out << "StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();\n";
-		out << "#endif\n";
-		out << "CatalogBaseImpl* tmp_catalog = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);\n";
-		out << "factory = tmp_catalog->getConnector()->register_storage_object_factory(NULL, factory);\n";
-		out << "StorageObjectImpl* pStorageObjectImpl = factory->create();\n";
-		out << "lObjectes_.push_back(pStorageObjectImpl);\n";
-		out << szRetType << " tmp_ptr = dynamic_cast <" << szRetType << "> (pStorageObjectImpl);\n";
-		out << "\n//set values to current storageobject incarnation\n";
-		out << "//How to handle with pid and spid?\n";
-		for(CORBA::ULong i=0; i<ulLen; i++)
-		{
-			attribute = IR__::AttributeDef::_narrow(state_members[i]);
-			out << "tmp_ptr->" << mapName(attribute) << "(";
-			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
-				out << "*"; // special for valuetype :-(
-			out << mapName(attribute) << ");\n";
-		}
-		out << "\nreturn tmp_ptr;\n";
+		out << "\nreturn pActObject;\n";
 	}
 	else
 	{
-		//out << "return 0;\n";
+		out << szRetType << " ref = pActObject;\n";
+		out << "\nreturn ref;\n";
 	}
-
+	
 	out.unindent();
 	out << "}\n";
 	out << "else\n";
@@ -1973,6 +2047,12 @@ void
 GeneratorPersistenceC::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome)
 {
 	strActBasename_ = std::string(abs_storagehome->name());
+	/*out << "\n\n";
+	open_module(out, abs_storagehome, "");
+	out << "\n\n";
+	genDuplAndDown(strActBasename_);
+	out << "\n\n";
+	close_module(out, abs_storagehome);*/
 }
 
 void
@@ -2129,7 +2209,8 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	handleOperation(storagehome);
 	handleFactory(storagehome);
 	handleKey(storagehome);
-
+	//genDuplAndDown(strClassname_);
+	//out << "\n\n";
 	close_module(out, storagetype);
 }
 

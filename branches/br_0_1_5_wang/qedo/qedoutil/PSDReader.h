@@ -74,20 +74,20 @@ private:
 	/**
 	 * handle database-info
 	 */
-	void database_info (DOMElement*)
-        throw(PSDReadException);
+	//void database_info (DOMElement*)
+    //    throw(PSDReadException);
 
 	/**
 	 * handle connection
 	 */
-	void connection (DOMElement*)
-        throw(PSDReadException);
+	//void connection (DOMElement*)
+    //    throw(PSDReadException);
 
 	/**
 	 * handle param
 	 */
-	std::string param (DOMElement*)
-        throw(PSDReadException);
+	//std::string param (DOMElement*)
+    //    throw(PSDReadException);
 
 	/**
 	 * handle each type

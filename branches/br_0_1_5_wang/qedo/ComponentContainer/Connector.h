@@ -107,8 +107,8 @@ class CONTAINERDLL_API ConnectorImpl : public virtual CosPersistentState::Connec
 	private:
 
 		char* szImplID_;
-		SessionPoolImpl* pSessionPool_;
 		std::list<SessionImpl*> lSessions_;
+		std::list<SessionPoolImpl*> lSessionPools_;
 		std::map<const char*, StorageObjectFactory> objFactoryMap_;
 		std::map<const char*, StorageHomeFactory> homeFactoryMap_;
 };

@@ -515,6 +515,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="TCPTransportEndpointFactory.cpp">
 			</File>
 			<File
+				RelativePath="TableBuilder.cpp">
+			</File>
+			<File
 				RelativePath="TransportEndpoint.cpp">
 			</File>
 			<File
@@ -667,6 +670,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="TCPTransportEndpointFactory.h">
+			</File>
+			<File
+				RelativePath="TableBuilder.h">
 			</File>
 			<File
 				RelativePath="TransportEndpoint.h">

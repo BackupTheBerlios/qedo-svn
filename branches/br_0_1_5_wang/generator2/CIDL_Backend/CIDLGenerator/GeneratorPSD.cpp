@@ -64,6 +64,10 @@ GeneratorPSD::generate(std::string target, std::string fileprefix)
 	out << "<!DOCTYPE corbacomponent PUBLIC \"-//OMG//DTD CORBA Persistence Descriptor\">\n\n\n";
 	out << "<corbapersistence>\n\n";
 	out.indent();
+	
+	//Since a container is accessible only to one certain database, the database information in 
+	//.psd is not neccessary anymore
+	/*
 	out << "<!-- database-info must be specified before all of storagehome's definition -->\n";
 	out << "<database-info>\n";
 	out.indent();
@@ -76,6 +80,8 @@ GeneratorPSD::generate(std::string target, std::string fileprefix)
 	out << "</connection>\n";
 	out.unindent();
 	out << "</database-info>\n\n";
+	*/
+	
 	doGenerate();
 	out.unindent();
 	out << "</corbapersistence>\n";

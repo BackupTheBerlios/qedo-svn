@@ -22,13 +22,13 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: Output.cpp,v 1.8 2003/10/20 12:12:16 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: Output.cpp,v 1.8.6.1 2004/01/26 15:45:42 hao Exp $";
 
 
 namespace Qedo {
 
 QedoMutex* container_mutex = new QedoMutex();
-bool debug_output = false;
+bool debug_output = true;
 
 } // namespace Qedo
 

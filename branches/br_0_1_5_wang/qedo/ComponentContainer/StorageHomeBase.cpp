@@ -150,12 +150,12 @@ StorageHomeBaseImpl::find_by_pid(std::string pid)
 #endif
 		CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);
 		factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory("", factory);
-		StorageObjectImpl* pStorageObjectImpl = factory->create();
+		StorageObjectImpl* pObjectImpl = factory->create();
 		factory->_remove_ref();
 
-		pStorageObjectImpl->setValue(valueMap);
-		lObjectes_.push_back(pStorageObjectImpl);
-		pObj = dynamic_cast <StorageObjectBase> (pStorageObjectImpl);
+		pObjectImpl->setValue(valueMap);
+		lObjectes_.push_back(pObjectImpl);
+		pObj = dynamic_cast <StorageObjectBase> (pObjectImpl);
 		return pObj;
 	}
 	else
@@ -210,12 +210,12 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 #endif
 		CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);
 		factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory("", factory);
-		StorageObjectImpl* pStorageObjectImpl = factory->create();
+		StorageObjectImpl* pObjectImpl = factory->create();
 		factory->_remove_ref();
 
-		pStorageObjectImpl->setValue(valueMap);
-		lObjectes_.push_back(pStorageObjectImpl);
-		pObj = dynamic_cast <StorageObjectBase> (pStorageObjectImpl);
+		pObjectImpl->setValue(valueMap);
+		lObjectes_.push_back(pObjectImpl);
+		pObj = dynamic_cast <StorageObjectBase> (pObjectImpl);
 		return pObj;
 	}
 	else
