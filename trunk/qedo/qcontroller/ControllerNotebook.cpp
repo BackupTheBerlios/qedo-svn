@@ -54,8 +54,9 @@ void ControllerNotebook::CreateControllerPages(wxBoxSizer * sizerFrame)
 
 	// create ns_browser page
 	ns_browser_panel = new wxPanel(this);
-	ns_browser_ = new NSBrowserTreeCtrl (ns_browser_panel, NSBrowserTree_Ctrl, wxDefaultPosition, wxSize(400,400), wxTR_DEFAULT_STYLE );
-	AddPage( ns_browser_panel, wxT("NS Browser"), FALSE, 1 );
+
+	ns_browser_ = new NSBrowserTreeCtrl (ns_browser_panel, NSBrowserTree_Ctrl, wxDefaultPosition, wxSize(400,340), wxTR_DEFAULT_STYLE );
+	AddPage( ns_browser_panel, wxT("NS Browser"), FALSE, 0 );
 
 	// create Deployment page
 	 deployment_panel_ = new Deployment(this, DEPLOYMENT_ID, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE);
