@@ -9,26 +9,24 @@
     <description></description>
     <license href="" />
     <idl id="IDL:HelloWorld/CalleeHome:1.0">
-        <fileinarchive name="HelloWorld_CalleeImpl.idl"/>
+        <fileinarchive name="hello.cidl"/>
     </idl>
-    
-    <implementation id="UUID-">
+
+    <implementation id="HelleWorld_CalleeImpl-mico-linux-26-10-2003">
         <os name="linux" />
         <processor name="" />
         <compiler name="" version="" />
         <programminglanguage name="C++" />
-        <dependency type="DLL"><localfile name="jtcd.dll"/></dependency>
-        <dependency type="DLL"><localfile name="obd.dll"/></dependency>
         <descriptor type="CORBA-Component">
-            <fileinarchive name="HelloWorld_CalleeImpl.ccd" />
+            <fileinarchive name="meta-inf/HelloWorld_CalleeImpl.ccd" />
         </descriptor>
         <code type="DLL">
-            <fileinarchive name="HelloWorld_CalleeImpl.dll"/>
+            <fileinarchive name="libHelloWorld_CalleeImpl.so"/>
             <entrypoint>create_CalleeHomeE</entrypoint>
             <usage>executor</usage>
         </code>
         <code type="DLL">
-            <fileinarchive name="HelloWorld_CalleeImpl_SERVANT.dll"/>
+            <fileinarchive name="libHelloWorld_CalleeImpl_SERVANT.so"/>
             <entrypoint>create_CalleeHomeS</entrypoint>
             <usage>servant</usage>
         </code>

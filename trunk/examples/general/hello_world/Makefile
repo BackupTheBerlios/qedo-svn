@@ -34,7 +34,7 @@ clean: $(SUBDIRS:%=%-clean)
 %-all: %
 	$(MAKE) -C $< all
 
-	
+
 MakeComponentVars:
 	cp ${QEDO}/etc/MakeComponentVars .
 
@@ -44,3 +44,6 @@ MakeComponentVars:
 package:
 	$(MAKE) -C HelloWorld_CalleeImpl package
 	$(MAKE) -C HelloWorld_CallerImpl package
+
+assembly: package
+	$(MAKE) -C hello_linux_assembly

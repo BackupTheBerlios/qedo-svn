@@ -9,26 +9,24 @@
     <description></description>
     <license href="" />
     <idl id="IDL:HelloWorld/CallerHome:1.0">
-        <fileinarchive name="HelloWorld_CallerImpl.idl"/>
+        <fileinarchive name="hello.cidl"/>
     </idl>
-    
-    <implementation id="UUID-">
+
+    <implementation id="HelloWorld_CallerImpl-mico-linux-26-10-2003">
         <os name="linux" />
         <processor name="" />
         <compiler name="" version="" />
         <programminglanguage name="C++" />
-        <dependency type="DLL"><localfile name="jtcd.dll"/></dependency>
-        <dependency type="DLL"><localfile name="obd.dll"/></dependency>
         <descriptor type="CORBA-Component">
-            <fileinarchive name="HelloWorld_CallerImpl.ccd" />
+            <fileinarchive name="meta-inf/HelloWorld_CallerImpl.ccd" />
         </descriptor>
         <code type="DLL">
-            <fileinarchive name="HelloWorld_CallerImpl.dll"/>
+            <fileinarchive name="libHelloWorld_CallerImpl.so"/>
             <entrypoint>create_CallerHomeE</entrypoint>
             <usage>executor</usage>
         </code>
         <code type="DLL">
-            <fileinarchive name="HelloWorld_CallerImpl_SERVANT.dll"/>
+            <fileinarchive name="libHelloWorld_CallerImpl_SERVANT.so"/>
             <entrypoint>create_CallerHomeS</entrypoint>
             <usage>servant</usage>
         </code>
