@@ -349,7 +349,16 @@ GeneratorServantH::genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_
 	{
 		if(i < pards->length()) { out << ", "; }
 		IR__::ParameterDescription pardescr = (*pards)[i - 1];
-		out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		if (pardescr.mode == IR__::PARAM_IN) {
+			out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		};
+		if (pardescr.mode == IR__::PARAM_OUT) {
+			out << map_out_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		};
+		if (pardescr.mode == IR__::PARAM_INOUT) {
+			out << map_inout_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		};
+
 	};
 
 	out << ")\n";

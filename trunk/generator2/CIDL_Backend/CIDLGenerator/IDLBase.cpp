@@ -51,16 +51,23 @@ IDLBase::doModule(IR__::ModuleDef_ptr module)
 		IR__::EnumDef_var act_enum = IR__::EnumDef::_narrow(((*contained_seq)[i]));
 		doEnum(act_enum);
 	}
-
+	// contained alias
+	contained_seq = module->contents(CORBA__::dk_Alias, false);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::AliasDef_var act_typedef = IR__::AliasDef::_narrow(((*contained_seq)[i]));
+		doAlias(act_typedef);
+	}
 	contained_seq = module->contents(CORBA__::dk_all, false);
 	len = contained_seq->length();
 	for(i = 0; i < len; i++)
 	{
 		switch (contained_seq[i]->describe()->kind) {
-		case CORBA__::dk_Alias:
-			act_typedef = IR__::AliasDef::_narrow(((*contained_seq)[i]));
-			doAlias(act_typedef);
-			break;
+//		case CORBA__::dk_Alias:
+//			act_typedef = IR__::AliasDef::_narrow(((*contained_seq)[i]));
+//			doAlias(act_typedef);
+//			break;
 		case CORBA__::dk_Struct:
 			act_struct = IR__::StructDef::_narrow(((*contained_seq)[i]));
 			doStruct(act_struct);
