@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(QEDO)/ComponentIDL/Debug/ComponentIDL.lib CosNamingd.lib obd.lib"
-				OutputFile="../../../../Runtime/tc.exe"
+				OutputFile="../tc.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -79,7 +79,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/TestClient.exe"
+				OutputFile="../tc.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
@@ -125,7 +125,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentIDL.lib CosNamingd.lib obd.lib"
-				OutputFile="$(QEDO)/bin/tc.exe"
+				OutputFile="../tc.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(QEDO)\lib"
 				GenerateDebugInformation="TRUE"
@@ -173,7 +173,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(QEDO)/ComponentIDL/Release_orbacus/ComponentIDL.lib CosNaming.lib ob.lib"
-				OutputFile="../../../../Runtime/tc.exe"
+				OutputFile="../tc.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
@@ -219,7 +219,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentIDL.lib CosNamingd.lib obd.lib"
-				OutputFile="../../../../Runtime/tc.exe"
+				OutputFile="../tc.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(QEDO)\lib"
 				GenerateDebugInformation="TRUE"

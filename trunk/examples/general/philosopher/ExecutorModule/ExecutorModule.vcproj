@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib"
-				OutputFile="$(OutDir)\philosopherE.dll"
+				OutputFile="../philosopherE.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)\lib;$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -85,7 +85,7 @@ copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/ExecutorModule.dll"
+				OutputFile="../philosopherE.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
@@ -132,7 +132,7 @@ copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib obd.lib jtcd.lib"
-				OutputFile="$(QEDO)/bin/philosopherE.dll"
+				OutputFile="../philosopherE.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(QEDO)\lib&quot;;&quot;$(ORBACUS)\lib&quot;"
 				GenerateDebugInformation="TRUE"
@@ -181,7 +181,7 @@ copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentIDL.lib ob.lib jtc.lib"
-				OutputFile="../../../../Runtime/philosopherE.dll"
+				OutputFile="../philosopherE.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(QEDO)\ComponentIDL\Release_orbacus&quot;;&quot;$(ORBACUS)/lib&quot;"
 				GenerateDebugInformation="TRUE"
@@ -229,7 +229,7 @@ copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib ComponentContainer.lib"
-				OutputFile="../../../../Runtime/philosopherE.dll"
+				OutputFile="../philosopherE.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(QEDO)\lib&quot;;&quot;$(ORBACUS)\lib&quot;"
 				GenerateDebugInformation="TRUE"

@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentContainer.lib ComponentIDL.lib obd.lib jtcd.lib"
-				OutputFile="../../../../Runtime/philosopherS.dll"
+				OutputFile="../philosopherS.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)/lib;$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -80,7 +80,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/ServantModule.dll"
+				OutputFile="../philosopherS.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
@@ -112,7 +112,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(QEDO)\ComponentIDL&quot;;&quot;$(QEDO)\ComponentContainer&quot;;..\IDL"
+				AdditionalIncludeDirectories="&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(QEDO)\include&quot;;..\IDL"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -127,7 +127,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentContainer.lib ComponentIDL.lib obd.lib jtcd.lib"
-				OutputFile="$(QEDO)/bin/philosopherS.dll"
+				OutputFile="../philosopherS.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(QEDO)/lib&quot;;&quot;$(ORBACUS)\lib&quot;"
 				GenerateDebugInformation="TRUE"
@@ -176,7 +176,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentContainer.lib ComponentIDL.lib ob.lib jtc.lib"
-				OutputFile="../../../../Runtime/philosopherS.dll"
+				OutputFile="../philosopherS.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(QEDO)/ComponentContainer/Release_orbacus&quot;;&quot;$(QEDO)/ComponentIDL/Release_orbacus&quot;;&quot;$(ORBACUS)\lib&quot;"
 				GenerateDebugInformation="TRUE"
@@ -224,7 +224,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentContainer.lib ComponentIDL.lib obd.lib jtcd.lib"
-				OutputFile="../../../../Runtime/philosopherS.dll"
+				OutputFile="../philosopherS.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(QEDO)/lib&quot;;&quot;$(ORBACUS)\lib&quot;"
 				GenerateDebugInformation="TRUE"
