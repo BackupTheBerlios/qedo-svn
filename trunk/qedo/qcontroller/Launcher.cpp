@@ -136,7 +136,7 @@ void Launcher::OnNSDStartButton(wxCommandEvent& WXUNUSED(event))
 		cmd.append(port_nr);
 
 		wxProcess *process = new wxProcess (this);
-		process->Redirect();
+	//	process->Redirect();
 		nsd_pid_ = wxExecute(cmd, wxEXEC_ASYNC, process);
 		if ( !nsd_pid_ )
 		{
@@ -169,7 +169,7 @@ void Launcher::OnHFStartButton(wxCommandEvent& WXUNUSED(event))
 	} else
 	{
 		wxProcess *process = new wxProcess (this);
-		process->Redirect();
+	//	process->Redirect();
 		hf_pid_ = wxExecute("homefinder", wxEXEC_ASYNC, process);
 		if ( !hf_pid_ )
 		{
@@ -200,7 +200,7 @@ void Launcher::OnASSFStartButton(wxCommandEvent& WXUNUSED(event))
 	} else
 	{
 		wxProcess *process = new wxProcess (this);
-		process->Redirect();
+	//	process->Redirect();
 		assf_pid_ = wxExecute("qassf", wxEXEC_ASYNC, process);
 		if ( !assf_pid_ )
 		{
@@ -231,7 +231,7 @@ void Launcher::OnSAStartButton(wxCommandEvent& WXUNUSED(event))
 	} else
 	{
 		wxProcess *process = new wxProcess (this);
-		process->Redirect();
+	//	process->Redirect();
 		sa_pid_ = wxExecute("qcsa --terminal", wxEXEC_ASYNC, process);
 		if ( !sa_pid_ )
 		{
@@ -262,7 +262,7 @@ void Launcher::OnCIStartButton(wxCommandEvent& WXUNUSED(event))
 	} else
 	{
 		wxProcess *process = new wxProcess (this);
-		process->Redirect();
+	//	process->Redirect();
 		ci_pid_ = wxExecute("qci", wxEXEC_ASYNC, process);
 		if ( !ci_pid_ )
 		{

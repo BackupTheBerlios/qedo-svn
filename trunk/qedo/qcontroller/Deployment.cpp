@@ -1,10 +1,8 @@
 #include "Deployment.h"
-#include "qcontroller.h"
 #include "wx/sizer.h"
 #include "wx/stattext.h"
 #include "wx/statline.h"
 
-#include "ComponentDeployment.h"
 
 
 BEGIN_EVENT_TABLE(Deployment, wxPanel)
@@ -55,26 +53,17 @@ Deployment::Deployment(wxWindow *parent, const wxWindowID id,
     wxStaticText* item13 = new wxStaticText( this, wxID_STATIC, _T("Running \nAssemblies"), wxDefaultPosition, wxDefaultSize, 0 );
     item12->Add(item13, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
-    wxListCtrl* running_ass_list = new wxListCtrl( this, ID_RUNNING_LISTCTRL, wxDefaultPosition, wxSize(400, 100), 0 );
+    running_ass_list = new wxListCtrl( this, ID_RUNNING_LISTCTRL, wxDefaultPosition, wxSize(400, 100), wxLC_LIST  );
     item12->Add(running_ass_list, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxButton* undeploy_btn = new wxButton( this, ID_UNDEPLOY_BUTTON, _T("Undeploy"), wxDefaultPosition, wxDefaultSize, 0 );
     item11->Add(undeploy_btn, 0, wxALIGN_LEFT|wxALL, 5);
 
-}
-
-void 
-Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
-{
-	std::string package;
-	package = "file:///c:/devel/berlios_cvs/Main_test/examples/general/hello_world/hello_win32_assembly.zip";
-
-
 		//
 	// init ORB
 	//
 	int dummy=0;
-	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+	orb = CORBA::ORB_init (dummy, 0);
 
 	//
 	// Register valuetype factories
@@ -83,14 +72,25 @@ Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
 	factory = new Qedo::CookieFactory_impl();
     orb -> register_value_factory ( "IDL:omg.org/Components/Cookie:1.0", factory );
 
+}
+
+void 
+Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
+{
+	std::string package;
+//	package = "file:///c:/devel/berlios_cvs/Main_test/examples/general/hello_world/hello_win32_assembly.zip";
+
+	package = assembly_name_->GetValue();
+
+
 	//
 	// deploy the assembly
 	//
-	Qedo::ComponentDeployment ass(package);
+	Qedo::ComponentDeployment *current_assembly = new Qedo::ComponentDeployment(package);
 	try
 	{
 		std::cerr << "..... deploy " << package << std::endl;
-		ass.deploy();
+		current_assembly->deploy();
 	}
 	catch(Qedo::ComponentDeployment::DeploymentFailure&)
 	{
@@ -105,10 +105,16 @@ Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
 	//	exit(1);
 	}
 
+	// update internal List of pointers
+	running_assemblies_.push_back(current_assembly);
+
+	// update running assemblies list
+	running_ass_list->InsertItem(running_assemblies_.size(),package.c_str());
+
 	// this code has to be moved
 	try
 	{
-		ass.undeploy();
+		current_assembly->undeploy();
 	}
 	catch(Qedo::ComponentDeployment::DeploymentFailure&)
 	{
