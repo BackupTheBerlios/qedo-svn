@@ -56,7 +56,6 @@ SOURCES = AliasDef_impl.cpp \
 			PublishesDef_impl.cpp \
 			Repository_impl.cpp \
 			SinkDef_impl.cpp \
-			SiSoDef_impl.cpp \
 			SourceDef_impl.cpp \
 			StreamPortDef_impl.cpp \
 			StreamTypeDef_impl.cpp \
