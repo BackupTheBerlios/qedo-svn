@@ -1445,6 +1445,12 @@ GeneratorEIDL::generate(std::string target, std::string fileprefix)
 			out << "interface " << (*m_to_generate_interface_seq)[i]->name() << ";\n";
 			close_module((*m_to_generate_interface_seq)[i]);
 		};
+		if ((*m_to_generate_interface_seq)[i]->describe()->kind == CORBA__::dk_Home) {
+			open_module((*m_to_generate_interface_seq)[i]);
+			out << "interface " << (*m_to_generate_interface_seq)[i]->name() << ";\n";
+			close_module((*m_to_generate_interface_seq)[i]);
+		};
+
 	}
 	out << "\n";
 
