@@ -335,6 +335,12 @@ GeneratorLIDL::doHome(IR__::HomeDef_ptr home)
 	{
 		out << "::Components::HomeExecutorBase";
 	}
+
+	// supported interfaces
+	IR__::InterfaceDefSeq_var supp_intfs = home -> supported_interfaces();
+	for(CORBA::ULong i = 0; i < supp_intfs->length(); i++) {
+		out << ", " << map_absolute_name((*supp_intfs)[i]);
+	};
 	
 	out << "\n{\n";
 	out.indent();

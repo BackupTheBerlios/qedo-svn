@@ -817,6 +817,8 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out << "	throw(CORBA::SystemException, Components::CreateFailure);\n\n";
 	out << "Components::CCMObject_ptr create_component()\n";
 	out << "	throw(CORBA::SystemException,Components::CreateFailure);\n";
+
+	
 }
 
 
@@ -834,6 +836,16 @@ GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home)
 	handleOperation(home);
 	handleFactory(home);
 	handleFinder(home);
+
+	//
+	// supported interfaces
+	//
+	IR__::InterfaceDefSeq_var supp_intfs = home -> supported_interfaces();
+	for(CORBA::ULong i = 0; i < supp_intfs->length(); i++) {
+		handleAttribute((*supp_intfs)[i]);
+		handleOperation((*supp_intfs)[i]);
+	};
+	
 }
 
 
