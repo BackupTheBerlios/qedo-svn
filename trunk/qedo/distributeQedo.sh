@@ -17,16 +17,13 @@ cp etc/*.* $1/etc;
 
 mkdir -p $1/include;
 cp ComponentIDL/*.h $1/include;
-cp StreamComponentIDL/*.h $1/include;
 cp ComponentContainer/*.h $1/include;
 
 mkdir -p $1/idl;
 cp ComponentIDL/*.idl $1/idl;
-cp StreamComponentIDL/*.idl $1/idl;
 
 mkdir -p $1/lib;
 cp ComponentIDL/libComponentIDL.so $1/lib;
-cp StreamComponentIDL/libStreamComponentIDL.so $1/lib;
 cp ComponentContainer/libComponentContainer.so $1/lib;
 cp qedoutil/libqedoutil.so $1/lib;
 

@@ -31,7 +31,6 @@ set actdir=%qedo%\include
 echo *** Create %actdir%...
 mkdir %actdir%
 copy ComponentIDL\*.h %actdir%
-copy StreamComponentIDL\*.h %actdir%
 copy ComponentContainer\*.h %actdir%
 copy qedoutil\*.h %actdir%
 
@@ -39,15 +38,12 @@ set actdir=%qedo%\idl
 echo *** Create %actdir%...
 mkdir %actdir%
 copy ComponentIDL\*.idl %actdir%
-copy StreamComponentIDL\*.idl %actdir%
 
 set actdir=%qedo%\lib
 echo *** Create %actdir%...
 mkdir %actdir%
 copy ComponentIDL\%1\ComponentIDL.lib %actdir%
 copy ComponentIDL\%1\ComponentIDL.def %actdir%
-copy StreamComponentIDL\%1\StreamComponentIDL.lib %actdir%
-copy StreamComponentIDL\%1\StreamComponentIDL.def %actdir%
 copy ComponentContainer\%1\ComponentContainer.lib %actdir%
 copy qedoutil\%1\qedoutil.lib %actdir%
 
