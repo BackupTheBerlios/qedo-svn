@@ -166,23 +166,23 @@ if test X"$use_debug" != Xno; then
   CFLAGS="$CONF_DEBUG_FLAGS $CFLAGS"
 fi
 
+QEDO_STREAMS=$use_streams
+AC_SUBST(QEDO_STREAMS)
 if test X"$use_streams" != Xyes; then
-	QEDO_STREAMS=$use_streams
 	AC_DEFINE(_QEDO_NO_STREAMS)
 fi
-AC_SUBST(QEDO_STREAMS)
 
+QEDO_QOS=$use_qos
+AC_SUBST(QEDO_QOS)
 if test X"$use_qos" != Xyes; then
-	QEDO_QOS=$use_qos
 	AC_DEFINE(_QEDO_NO_QOS)
 fi
-AC_SUBST(QEDO_QOS)
 
+QEDO_DB=$use_db
+AC_SUBST(QEDO_DB)
 if test X"$use_db" != Xyes; then
-	QEDO_DB=$use_db
 	AC_DEFINE(_QEDO_NO_DB)
 fi
-AC_SUBST(QEDO_DB)
 
 # Checks for header files.
 AC_HEADER_STDC
