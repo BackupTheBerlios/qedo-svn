@@ -56,7 +56,8 @@ SOURCES = Key.cpp \
 		Valuetypes.cpp \
 		CCMHomeServant.cpp \
 		ExtensionHomeServant.cpp \
-		ExtensionContext.cpp
+		ExtensionContext.cpp \
+		InternalConfiguration.cpp
 
 HEADER = ${SOURCES:.cpp=.h} \
           Util.h \
