@@ -1787,10 +1787,10 @@ GeneratorServantC::proxyInterface(IR__::UsesDef_ptr uses, IR__::InterfaceDef_ptr
 	std::string cl_name = class_name_ + "_" +string(uses->name()) + "_stub";
 	out << cl_name << "::" << cl_name << "(";
 	out << mapFullName (IR__::InterfaceDef::_narrow(uses -> interface_type())) << "_ptr orig_stub, ";
-	out << "Components::Extension::StubInterceptorRegistration_ptr stub_dispatcher)\n{\n";
+	out << "Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_dispatcher)\n{\n";
 	out.indent();
 	out << "orig_stub_ = " << mapFullName (IR__::InterfaceDef::_narrow(uses -> interface_type())) << "::_duplicate(orig_stub);\n";
-	out << "stub_dispatcher_ = Components::Extension::StubInterceptorRegistration::_duplicate((stub_dispatcher));\n";
+	out << "stub_dispatcher_ = Components::ContainerPortableInterceptor::StubInterceptorRegistration::_duplicate((stub_dispatcher));\n";
 	out.unindent();
 	out << "};\n\n";
     
@@ -2065,7 +2065,7 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component, CIDL::Lif
 				{
 					out << interface_name << "::_narrow ((*connections)[0]->objref())\n";
 				}
-				out << ", Components::Extension::StubInterceptorRegistration::_duplicate(stub_registration_));\n";
+				out << ", Components::ContainerPortableInterceptor::StubInterceptorRegistration::_duplicate(stub_registration_));\n";
 				out.unindent();
 				out.unindent();
 				out << interface_name << "_var use = new_stub;";
