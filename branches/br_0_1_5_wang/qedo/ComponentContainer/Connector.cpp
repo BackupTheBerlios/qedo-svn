@@ -31,7 +31,7 @@ ConnectorImpl::ConnectorImpl()
 
 ConnectorImpl::ConnectorImpl(char* szImplID)
 {
-	strcpy(szImplID_, szImplID);
+	strImplID_ = szImplID;
 }
 
 ConnectorImpl::~ConnectorImpl()
@@ -66,10 +66,7 @@ ConnectorImpl::~ConnectorImpl()
 char* 
 ConnectorImpl::implementation_id()
 {
-	char* szImplID = NULL;
-	strcpy(szImplID, szImplID_);
-
-	return szImplID;
+	return (char*)(strImplID_.c_str());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -195,19 +192,21 @@ ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
 											   StorageObjectFactory factory)
 {
 	DEBUG_OUT("ConnectorImpl::register_storage_object_factory() is called");
-
-	std::map<const char*, StorageObjectFactory>::iterator objFactoryIter;
-	objFactoryIter = objFactoryMap_.find(storage_type_name);
+/*
+	std::string strName = storage_type_name;
+	std::map<std::string, StorageObjectFactory>::iterator objFactoryIter;
+	objFactoryIter = objFactoryMap_.find(strName);
 
 	if( objFactoryIter!=objFactoryMap_.end() )
 	{
-		return objFactoryMap_[storage_type_name];
+		return objFactoryMap_[strName];
 	}
 	else
 	{
-		objFactoryMap_[storage_type_name] = factory;
+		objFactoryMap_[strName] = factory;
 		return NULL;
-	}
+	}*/
+	return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -224,19 +223,21 @@ ConnectorImpl::register_storage_home_factory(const char* storage_home_type_name,
 											 StorageHomeFactory factory)
 {
 	DEBUG_OUT("ConnectorImpl::register_storage_home_factory() is called");
-
-	std::map<const char*, StorageHomeFactory>::iterator homeFactoryIter;
-	homeFactoryIter = homeFactoryMap_.find(storage_home_type_name);
+/*
+	std::string strName = storage_home_type_name;
+	std::map<std::string, StorageHomeFactory>::iterator homeFactoryIter;
+	homeFactoryIter = homeFactoryMap_.find(strName);
 
 	if( homeFactoryIter!=homeFactoryMap_.end() )
 	{
-		return homeFactoryMap_[storage_home_type_name];
+		return homeFactoryMap_[strName];
 	}
 	else
 	{
-		homeFactoryMap_[storage_home_type_name] = factory;
+		homeFactoryMap_[strName] = factory;
 		return NULL;
-	}
+	}*/
+	return 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -37,7 +37,8 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.3 2004/01/29 16:00:34 hao Exp $";
+
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.4 2004/02/03 22:01:13 hao Exp $";
 
 
 namespace Qedo {
@@ -687,7 +688,6 @@ throw (Components::Deployment::UnknownImplId,
 		std::string strConn;
 		try 
 		{
-			std::cout << "file name is : " << etc_path << "database.xml" << std::endl;
 			strConn = reader.readConnection( etc_path+"database.xml" );
 		}
 		catch( DTMReadException )
@@ -702,6 +702,7 @@ throw (Components::Deployment::UnknownImplId,
 		//
 		//connect database
 		//
+		/*
 		QDDatabase pdb;
 		pdb.Init();
 		if(!pdb.DriverConnect(strConn.c_str()))
@@ -710,6 +711,17 @@ throw (Components::Deployment::UnknownImplId,
 			throw Components::Deployment::InstallationFailure();
 		}
 		
+		//check whether PID_CONTENT exists
+		if(!pdb.IsTableExist("PID_CONTENT"))
+		{
+			std::stringstream strContent;
+			strContent << "create table PID_CONTENT ( PID VARCHAR(254) not null, ";
+			strContent << "OWNHOME VARCHAR(254) not null, ";
+			strContent << "constraint PK_PIDCONTENT primary key (PID));";
+
+			pdb.ExecuteSQL(strContent.str().c_str());
+		}
+
 		//
 		//create table in the database
 		//
@@ -731,7 +743,25 @@ throw (Components::Deployment::UnknownImplId,
 		}
 		//close database
 		pdb.close();
-		
+		*/
+		std::cout << "begin to register object and home factories..." << std::endl;
+		//register storage object/home factory
+		if(!component_server_)
+			std::cout << "component_server_ is NULL ..." << std::endl;
+
+		ConnectorRegistry_var pConnReg = component_server_->getConnectorRegistry();
+		std::cout << ".............................................." << std::endl;
+		if(pConnReg)
+		{
+			std::cout << "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii" << std::endl;
+			entity_home->register_storage_factory( pConnReg.inout() );
+		}
+		else
+		{
+			std::cout << "pConnReg is NULL" << std::endl;
+			throw Components::Deployment::InstallationFailure();
+		}
+
 		break;
 	}
 	case CT_EXTENSION:

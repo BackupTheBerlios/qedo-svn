@@ -438,7 +438,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	std::string strTemp = "";
 	std::string strDummy = "";
 	stringstream strDisplay;
-	IR__::AttributeDef_var attribute = 0;
+	IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
 
 	out << "\n//\n// " << operation->id() << "\n//\n";
 	IR__::IDLType_var ret_type = IR__::IDLType::_narrow(inf_type);
@@ -1003,11 +1003,13 @@ GeneratorPersistenceC::genAbstractObjsForConcreteType(IR__::AbstractStorageTypeD
 void
 GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*, bool isRef*/)
 {
+	std::string strStoragehomeName = "";
 	strClassname_ = std::string(storagetype->name());
 
 	IR__::InterfaceDefSeq_var supported_infs = storagetype->supported_interfaces();
 	homeIter_ = homeMap_.find(storagetype->name());
-	std::string strStoragehomeName = homeIter_->second;
+	if( homeIter_!=homeMap_.end() )
+		strStoragehomeName = homeMap_[storagetype->name()];
 
 	out << "// BEGIN USER INSERT SECTION " << strClassname_ << "\n";
 	//isRef ? out << "Ref\n" : out << "\n";
@@ -1573,7 +1575,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	int iLength = strClassname_.length() + 10;
 	char* szRetType = map_psdl_return_type(storagehome->managed_storagetype(), false);
 	char* szOriginalType = map_psdl_return_type(storagehome->managed_storagetype(), false);
-	IR__::AttributeDef_var attribute = 0;
+	IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
 	
 	if(isRef)
 	{
@@ -1842,7 +1844,7 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	
 	CORBA::ULong ulLenSupportedInf = supported_infs->length();
 
-	homeMap_.insert( Sth_Pair(storagetype->name(), storagehome->name()) );
+	homeMap_[storagetype->name()] = storagehome->name();
 
 	IR__::AttributeDefSeq state_members = collectStateMembers(storagetype, CORBA__::dk_Self);
 

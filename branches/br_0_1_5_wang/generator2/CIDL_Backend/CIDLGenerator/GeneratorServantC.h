@@ -30,6 +30,7 @@
 #include "Printer.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <set>
 
 
@@ -45,7 +46,10 @@ private:
 	std::string					class_name_;
 	std::string					executor_name_;
 	std::string					interface_name_;
+	std::string					strName_;
+	std::string					strContent_;
 	Printer						out;
+	CIDL::CompositionDef_var	composition_;
 	IR__::ComponentDef_var		component_;
 	IR__::HomeDef_var			home_;
 	IR__::StorageHomeDef_var	storagehome_;
@@ -90,10 +94,21 @@ private:
 	void genConsumerRegistration(IR__::HomeDef_ptr home);
 	void genSinkRegistration(IR__::HomeDef_ptr home);
 	void genSourceRegistration(IR__::HomeDef_ptr home);
-	std::string genSQLLine(std::string strName, std::string strContent, bool comma, bool space, bool func=false);
-	IR__::AttributeDefSeq collectStateMembers(IR__::InterfaceDef_ptr inf_def, CORBA__::CollectStyle style);
-	void genAbsSQLCreate();
-	void genSQLCreate();
+
+	// for persistence
+	void genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind, IR__::ComponentDef_ptr component);
+	void genAttributeWithOtherType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind, IR__::ComponentDef_ptr component);
+	void genPersistentAttribute(IR__::AttributeDef_ptr attribute, IR__::ComponentDef_ptr component);
+	void genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_ptr home);
+	void genFinder(IR__::FinderDef_ptr key, IR__::HomeDef_ptr home);
+	void genComponentPersistence(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
+	void genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
+	void genTableForAbsStorageHome();
+	void genTableForStorageHome(IR__::StorageHomeDef_ptr storagehome);
+	void genTableForHome(IR__::HomeDef_ptr home);
+	std::string genSQLLine(std::string strName, std::string strContent, bool end, bool comma, bool space, bool func=false);
+	std::string genSQLLine(std::string strContent, bool end, bool comma, bool space, bool func=false);
+	
 
 public:
 

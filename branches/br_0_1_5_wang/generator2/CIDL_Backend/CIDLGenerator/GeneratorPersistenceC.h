@@ -41,8 +41,6 @@ class GeneratorPersistenceC : public virtual CPPBase
 
 private:
 
-	typedef std::pair <std::string, std::string>	Sth_Pair;
-
 	Printer							out;
 	bool							bAbstract_;
 	bool							bRef_;

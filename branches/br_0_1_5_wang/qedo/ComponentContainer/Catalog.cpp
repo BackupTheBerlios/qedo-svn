@@ -178,7 +178,7 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 	pHomeBase = factory->create();
 	factory->_remove_ref();
 
-    StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase.out());
+    StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase.inout());
 	pHomeBaseImpl->Init(this, storage_home_id);
 
 	lHomeBases_.push_back(pHomeBaseImpl);
@@ -221,7 +221,7 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 	try
 	{
 		StorageHomeBase_var pHomeBase = find_storage_home((const char*)szHomeName);
-		StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase.out());
+		StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase.inout());
 		StorageObjectBase pObj = NULL;
 	
 		pObj = pHomeBaseImpl->find_by_pid(strPid);

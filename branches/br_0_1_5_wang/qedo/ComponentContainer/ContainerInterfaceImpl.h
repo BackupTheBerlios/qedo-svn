@@ -35,6 +35,7 @@
 #include "Util.h"
 #include <vector>
 #include <string>
+#include <sstream>
 
 
 namespace Qedo {

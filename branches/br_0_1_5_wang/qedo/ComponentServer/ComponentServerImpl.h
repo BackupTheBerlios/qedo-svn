@@ -108,7 +108,8 @@ private:
 	/** the object reference of the component installer */
 	Components::Deployment::ComponentInstallation_var		component_installer_;
 	/** the object reference of the connector registry*/
-	CosPersistentState::ConnectorRegistry_ptr pConnReg_;
+	CosPersistentState::ConnectorRegistry_var pConnReg_;
+	CosPersistentState::Connector_var	      pConn_;
 
 	/** the orb */
 	CORBA::ORB_var							orb_;
@@ -192,7 +193,7 @@ public:
 	void loadValuetypeFactory(const char* repid, const char* loc)
 		throw (CORBA::SystemException);
 
-	CosPersistentState::ConnectorRegistry_ptr getConnectorRegistry();
+	virtual ConnectorRegistry_ptr getConnectorRegistry();
 
 #ifndef _QEDO_NO_QOS
 	/**

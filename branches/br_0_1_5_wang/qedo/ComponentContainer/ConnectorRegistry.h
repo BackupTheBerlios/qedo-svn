@@ -28,6 +28,7 @@
 #include "Output.h"
 #include "CORBADepends.h"
 #include "RefCountBase.h"
+#include "Connector.h"
 
 using namespace CosPersistentState;
 
@@ -64,8 +65,8 @@ class CONTAINERDLL_API ConnectorRegistryImpl : public virtual CosPersistentState
 
 	private:
 		
-		std::map<std::string, Connector_var> connectors_;
-		std::map<std::string, Connector_var>::iterator connIter_;
+		std::map<std::string, Connector_ptr> connectors_;
+		std::map<std::string, Connector_ptr>::iterator connIter_;
 };
 
 }; // namespace Qedo

@@ -432,15 +432,43 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "Components::SessionComponent_var session_component;\n\n";
+	switch(composition_->lifecycle())
+	{
+	case CIDL::lc_Session :
+	case CIDL::lc_Service :
+		out << "Components::SessionComponent_var session_component;\n\n";
+		break;
+
+	case CIDL::lc_Entity :
+	case CIDL::lc_Process :
+		out << "Components::EntityComponent_var entity_component;\n\n";
+		break;
+		
+	default :
+		break;
+	}
 	out << "try\n{\n";
 	out.indent();
-	out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
+	switch(composition_->lifecycle())
+	{
+	case CIDL::lc_Session :
+	case CIDL::lc_Service :
+		out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
+		break;
+
+	case CIDL::lc_Entity :
+	case CIDL::lc_Process :
+		out << "entity_component = Components::EntityComponent::_narrow (enterprise_component);\n";
+		break;
+		
+	default :
+		break;
+	}
 	out.unindent();
 	out << "}\n";
 	out << "catch (CORBA::SystemException&)\n{\n";
 	out.indent();
-	out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
+	//out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
@@ -448,7 +476,21 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << mapFullNameLocal(home_->managed_component()) << "_ContextImpl_var new_context = new ";
 	out << home_->managed_component()->name() << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
-	out << "session_component->set_session_context (new_context.in());\n\n";
+	switch(composition_->lifecycle())
+	{
+	case CIDL::lc_Session :
+	case CIDL::lc_Service :
+		out << "session_component->set_session_context (new_context.in());\n\n";
+		break;
+
+	case CIDL::lc_Entity :
+	case CIDL::lc_Process :
+		out << "entity_component->set_entity_context (new_context.in());\n\n";
+		break;
+		
+	default :
+		break;
+	}
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
 	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
@@ -548,15 +590,43 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "Components::SessionComponent_var session_component;\n\n";
+	switch(composition_->lifecycle())
+	{
+	case CIDL::lc_Session :
+	case CIDL::lc_Service :
+		out << "Components::SessionComponent_var session_component;\n\n";
+		break;
+
+	case CIDL::lc_Entity :
+	case CIDL::lc_Process :
+		out << "Components::EntityComponent_var entity_component;\n\n";
+		break;
+		
+	default :
+		break;
+	}
 	out << "try\n{\n";
 	out.indent();
-	out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
+	switch(composition_->lifecycle())
+	{
+	case CIDL::lc_Session :
+	case CIDL::lc_Service :
+		out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
+		break;
+
+	case CIDL::lc_Entity :
+	case CIDL::lc_Process :
+		out << "entity_component = Components::EntityComponent::_narrow (enterprise_component);\n";
+		break;
+		
+	default :
+		break;
+	}
 	out.unindent();
 	out << "}\n";
 	out << "catch (CORBA::SystemException&)\n{\n";
 	out.indent();
-	out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
+	//out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
@@ -564,7 +634,21 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << mapFullNameLocal(home_->managed_component()) << "_ContextImpl_var new_context = new ";
 	out << home_->managed_component()->name() << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
-	out << "session_component->set_session_context (new_context.in());\n\n";
+	switch(composition_->lifecycle())
+	{
+	case CIDL::lc_Session :
+	case CIDL::lc_Service :
+		out << "session_component->set_session_context (new_context.in());\n\n";
+		break;
+
+	case CIDL::lc_Entity :
+	case CIDL::lc_Process :
+		out << "entity_component->set_entity_context (new_context.in());\n\n";
+		break;
+		
+	default :
+		break;
+	}
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
 	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
@@ -614,6 +698,7 @@ GeneratorServantC::doComposition (CIDL::CompositionDef_ptr composition)
 	//
 	// determine componentDef and HomeDef
 	//
+	composition_ = composition;
 	component_ = composition->ccm_component();
 	IR__::HomeDef_var home = composition->ccm_home();
 	storagehome_ = composition->home_executor()->binds_to();
@@ -626,9 +711,9 @@ GeneratorServantC::doComposition (CIDL::CompositionDef_ptr composition)
 	//
 	// generate Home
 	//
-
 	open_module(out, component_, "SERVANT_");
 	out << "\n\n";
+	genHomePersistence(home, lc);
 	genHomeServantBegin(home, lc);
 	genHomeServant(home, lc);
 	close_module(out, component_);
@@ -644,12 +729,9 @@ GeneratorServantC::doComposition (CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out << "}\n\n";
 
-
 	//
 	// generat Component
 	//
-
-	
 	open_module(out, component_, "SERVANT_");
 	out << "\n\n";
 
@@ -658,24 +740,16 @@ GeneratorServantC::doComposition (CIDL::CompositionDef_ptr composition)
 	genConsumerServants(component_);
 	genContextServantBegin(component_);
 	genContextServant(component_);
+	genComponentPersistence(component_, lc);
 	genComponentServantBegin(component_);
 	genComponentServant(component_);
 
 	close_module(out, component_);
-
-
 }
-
 
 void
 GeneratorServantC::doComponent(IR__::ComponentDef_ptr component)
 {
-	open_module(out, component, "SERVANT_");
-	out << "\n\n";
-	out << "//here is component\n";
-	out << "\n\n";
-	close_module(out, component);
-
 	/*std::string header_name = std::string(getAbsoluteName(component, "_")) + "_SERVANT";
 	std::string filename = header_name + ".cpp";
 	out.open(filename.c_str());
@@ -1009,12 +1083,6 @@ GeneratorServantC::doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDef
 void
 GeneratorServantC::doHome(IR__::HomeDef_ptr home)
 {
-	component_ = IR__::ComponentDef::_duplicate(home->managed_component());
-	open_module(out, component_, "SERVANT_");
-	out << "\n\n";
-	out << "//here is home\n";
-	out << "\n\n";
-	close_module(out, component_);
 	/*
 	component_ = IR__::ComponentDef::_duplicate(home->managed_component());
 	
@@ -1276,6 +1344,247 @@ GeneratorServantC::genComponentServant(IR__::ComponentDef_ptr component)
 	handleSource(component);
 }
 
+void
+GeneratorServantC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind, IR__::ComponentDef_ptr component)
+{
+	std::string attribute_name = mapName(attribute);
+	IR__::IDLType_var attr_type = attribute->type_def();
+	std::string strComponentName = component->name();
+
+	out << "void\n";
+	out << strComponentName << "Persistence::" << attribute_name << "(";
+	out << map_in_parameter_type(attr_type) << " param)\n";
+	out << "{\n";
+	out.indent();
+	switch ( att_type_kind )
+	{
+		case CORBA::tk_string:
+			out << "strcpy( " << attribute_name << "_, param );\n";
+			break;
+		case CORBA::tk_wstring:
+			out << "wcscpy( " << attribute_name << "_, param );\n";
+			break;
+		default:
+			out << attribute_name << "_ = param;\n";
+	}
+	out << "setModified(true);\n";
+	out.unindent();
+	out << "}\n\n";
+}
+
+void
+GeneratorServantC::genAttributeWithOtherType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind, IR__::ComponentDef_ptr component)
+{
+	std::string attribute_name = mapName(attribute);
+	IR__::IDLType_var attr_type = attribute->type_def();
+	std::string strComponentName = component->name();
+	
+	out << "void\n";
+	out << strComponentName << "Persistence::" << attribute_name << "(";
+	out << map_in_parameter_type(attr_type) << " param)\n";
+	out << "{\n";
+	out.indent();
+	if( attr_type->type()->kind() == CORBA::tk_value )
+	{
+		std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+		for(valuetype_iter = lValueTypes_.begin();
+			valuetype_iter != lValueTypes_.end();
+			valuetype_iter++)
+		{
+			IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+			std::string attr_type_name = map_attribute_type(attribute->type_def());
+			if(attr_type_name.find(mapName(value))!=std::string::npos)
+			{
+				IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+				for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+				{
+					IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+
+					switch(psdl_check_type(vMember->type_def()))
+					{
+					case CPPBase::_SHORT:
+					case CPPBase::_INT:
+					case CPPBase::_LONG:
+					case CPPBase::_STRING:
+						out << attribute_name << "_->" << mapName(vMember) << "( param->" << mapName(vMember) << "() );\n";
+						break;
+					}
+				}
+				break;
+			}
+		}
+	}
+	else
+	{
+		out << attribute_name << "_ = param;\n";
+	}
+	out << "setModified(true);\n";
+	out.unindent();
+	out << "}\n\n";
+}
+
+void
+GeneratorServantC::genPersistentAttribute(IR__::AttributeDef_ptr attribute, IR__::ComponentDef_ptr component)
+{
+	std::string attribute_name = mapName(attribute);
+	IR__::IDLType_var attr_type = attribute->type_def();
+
+	std::string strComponentName = component->name();
+	
+	// read only
+	out << map_return_type(attr_type) << "\n";
+	out << strComponentName << "Persistence::" << attribute_name << "()\n";
+	out << "{\n";
+	out.indent();
+	out << "return " << attribute_name << "_;\n";
+	out.unindent();
+	out << "}\n\n";
+
+	// not read only
+	if(attribute->mode() == IR__::ATTR_NORMAL)
+	{
+		CORBA::TCKind att_type_kind = attr_type->type()->kind();
+		switch ( att_type_kind )
+		{
+			case CORBA::tk_short:
+			case CORBA::tk_long:
+			case CORBA::tk_longlong:
+			case CORBA::tk_ushort:
+			case CORBA::tk_ulong:
+			case CORBA::tk_ulonglong:
+			case CORBA::tk_float:
+			case CORBA::tk_double:
+			case CORBA::tk_longdouble:
+			case CORBA::tk_boolean:
+			case CORBA::tk_char:
+			case CORBA::tk_wchar:
+			case CORBA::tk_octet:
+			case CORBA::tk_string:
+			case CORBA::tk_wstring:
+				genAttributeWithNomalType(attribute, att_type_kind, component);
+				break;
+			default:
+				genAttributeWithOtherType(attribute, att_type_kind, component);
+		}
+	}
+}
+
+void
+GeneratorServantC::genComponentPersistence(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc)
+{
+	if( lc!=CIDL::lc_Entity && lc!=CIDL::lc_Process )
+		return;
+
+	// handle base component
+	IR__::ComponentDef_var base_component = component->base_component();
+	if(base_component)
+		genComponentPersistence(base_component, lc);
+
+	out << "// ================================================\n";
+	out << "// " << "component persistence" << "\n";
+	out << "// ================================================\n\n";
+	out << component->name() << "Persistence::" << component->name() << "Persistence()\n";
+	out << "{\n}\n\n";
+	out << component->name() << "Persistence::~" << component->name() << "Persistence()\n";
+	out << "{\n}\n\n";
+	
+	// handle attributes
+	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Attribute, false);
+	CORBA::ULong ulLen = contained_seq->length();
+	for(CORBA::ULong i = 0; i < ulLen; i++)
+	{
+		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+		genPersistentAttribute(a_attribute, component);
+	}
+
+	// create operation 'setValue(...)'
+	out << "\nvoid\n";
+	out << component->name() << "Persistence::" << "setValue(std::map<std::string, CORBA::Any> valueMap)\n";
+	out << "{\n";
+	out.indent();
+	out << "char* szTemp;\n";
+	out << "bool bTemp = false;\n";
+	out << "std::map <std::string, CORBA::Any> :: const_iterator colIter;\n\n";
+	out << "colIter = valueMap.find(\"pid\");\n";
+	out << "colIter->second >>= pPid_;\n\n";
+	out << "colIter = valueMap.find(\"spid\");\n";
+	out << "colIter->second >>= pShortPid_;\n\n";
+
+	IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
+	IR__::AttributeDefSeq state_members;
+	component->get_state_members(state_members, CORBA__::dk_Create);
+	ulLen = state_members.length();
+
+	for(CORBA::ULong i=0; i<ulLen; i++)
+	{
+		attribute = IR__::AttributeDef::_narrow(state_members[i]);
+
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		{
+			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			for(valuetype_iter = lValueTypes_.begin();
+				valuetype_iter != lValueTypes_.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				std::string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						out << "colIter = valueMap.find(\"value_" << mapName(vMember) << "\");\n";
+
+						switch(psdl_check_type(vMember->type_def()))
+						{
+						case CPPBase::_SHORT:
+						case CPPBase::_INT:
+						case CPPBase::_LONG:
+						case CPPBase::_FLOAT:
+						case CPPBase::_DOUBLE:
+						case CPPBase::_LONGDOUBLE:
+						case CPPBase::_STRING:
+							out << "colIter->second >>= szTemp;\n";
+							out << mapName(attribute) << "_->" << mapName(vMember) << "(szTemp);\n\n";
+							break;
+						case CPPBase::_BOOL:
+							out << "colIter->second >>= CORBA::Any::to_boolean(bTemp);\n";
+							out << mapName(attribute) << "_->" << mapName(vMember) << "(bTemp);\n\n";
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			out << "colIter = valueMap.find(\"" << mapName(attribute) << "\");\n";
+
+			switch(psdl_check_type(attribute->type_def()))
+			{
+			case CPPBase::_SHORT:
+			case CPPBase::_INT:
+			case CPPBase::_LONG:
+			case CPPBase::_FLOAT:
+			case CPPBase::_DOUBLE:
+			case CPPBase::_LONGDOUBLE:
+			case CPPBase::_STRING:
+				out << "colIter->second >>= " << mapName(attribute) << "_;\n\n";
+				break;
+			case CPPBase::_BOOL:
+				out << "colIter->second >>= CORBA::Any::to_boolean(" << mapName(attribute) << "_);\n\n";
+				break;
+			}
+		}
+	}
+	out.unindent();
+	out << "}\n\n";
+	
+	//generate _duplicate and _downcast operation
+	//genDuplAndDown(strClassName);
+}
 
 void
 GeneratorServantC::genContextServantBegin(IR__::ComponentDef_ptr component)
@@ -1818,69 +2127,6 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out.unindent();
 		out << "}\n\n";
 		
-		//++++++++++++++++++++++++++++++++++++++++
-		// SQL CREATE for get_table_info()
-		//++++++++++++++++++++++++++++++++++++++++
-		out << "std::vector<std::string>\n";
-		out << class_name_ << "::get_table_info()\n";
-		out << "{\n";
-		out.indent();
-		out << "std::stringstream sztream;\n";
-		out << "std::vector<std::string> vecTables;\n\n";
-		genAbsSQLCreate();
-		out << "vecTables.push_back(sztream.str());\n";
-		out << "sztream.str(\"\");\n\n";
-		genSQLCreate();
-		out << "vecTables.push_back(sztream.str());\n\n";		
-		out << "return vecTables;\n";
-		out.unindent();
-		out << "}\n\n";
-		//++++++++++++++++++++++++++++++++++++++++
-		// end of SQL CREATE for get_table_info()
-		//++++++++++++++++++++++++++++++++++++++++
-
-		out << "bool\n";
-		out << class_name_ << "::compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b)\n";
-		out << "{\n";
-		out.indent();
-		IR__::PrimaryKeyDef_var pk = home->primary_key();
-		IR__::ValueDef_var value = pk->primary_key();
-		IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
-		out << "if( ";
-		for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
-		{
-			IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
-			
-			switch(psdl_check_type(vMember->type_def()))
-			{
-			case CPPBase::_SHORT:
-			case CPPBase::_INT:
-			case CPPBase::_LONG:
-			case CPPBase::_FLOAT:
-			case CPPBase::_DOUBLE:
-			case CPPBase::_LONGDOUBLE:
-			case CPPBase::_BOOL:
-				out << "(pk_a->" << mapName(vMember) << "()==pk_b->" << mapName(vMember) << "())";
-				break;
-			case CPPBase::_STRING:
-				out << "strcmp(pk_a->" << mapName(vMember) << "(), pk_b->" << mapName(vMember) << "())==0";
-				break;
-			}
-
-			if((j+1)!=contained_seq->length())
-				out << " ||\n    ";
-			else
-				out << " )\n";
-		}
-		out.indent();
-		out << "return true;\n";
-		out.unindent();
-		out << "else\n";
-		out.indent();
-		out << "return false;\n";
-		out.unindent();
-		out.unindent();
-		out << "}\n\n";
 		break;
 		}
 	default:
@@ -2530,10 +2776,816 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 
 	handleFactory(home);
 	handleFinder(home);
+
+	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	{
+		//++++++++++++++++++++++++++++++++++++++++
+		// SQL CREATE for get_table_info()
+		//++++++++++++++++++++++++++++++++++++++++
+		out << "std::vector<std::string>\n";
+		out << class_name_ << "::get_table_info()\n";
+		out << "{\n";
+		out.indent();
+		out << "std::stringstream sztream;\n";
+		out << "std::vector<std::string> vecTables;\n\n";
+		genTableForAbsStorageHome();
+		out << "vecTables.push_back(sztream.str());\n\n";
+		out << "sztream.str(\"\");\n";
+		genTableForStorageHome(storagehome_);
+		out << "vecTables.push_back(sztream.str());\n\n";
+		out << "sztream.str(\"\");\n";
+		genTableForHome(home);
+		out << "vecTables.push_back(sztream.str());\n\n";
+		out << "return vecTables;\n";
+		out.unindent();
+		out << "}\n\n";
+
+		//++++++++++++++++++++++++++++++++++++++++
+		// register_storage_factory(...)
+		//++++++++++++++++++++++++++++++++++++++++
+		out << "void\n";
+		out << class_name_ << "::register_storage_factory(ConnectorRegistry_ptr pConnReg)\n";
+		out << "{\n";
+		out.indent();
+		out << "Connector_ptr pConn = pConnReg->find_connector(\"\");\n\n";
+		out << home->name() << "PersistenceFactory* _ccmfac" << home->name()<<  " = new " << home->name() << "PersistenceFactory();\n";
+		out << "pConn->register_storage_home_factory(\"" << home->name() << "Persistence\", _ccmfac" << home->name() << ");\n";
+		IR__::ComponentDef_var component = home->managed_component();
+		out << component->name() << "PersistenceFactory* _ccmfac" << component->name()<<  " = new " << component->name() << "PersistenceFactory();\n";
+		out << "pConn->register_storage_object_factory(\"" << component->name() << "Persistence\", _ccmfac" << component->name() << ");\n";
+		out.unindent();
+		out << "}\n\n";
+
+		//++++++++++++++++++++++++++++++++++++++++
+		// compare_primarykey(...)
+		//++++++++++++++++++++++++++++++++++++++++
+		out << "bool\n";
+		out << class_name_ << "::compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b)\n";
+		out << "{\n";
+		out.indent();
+		IR__::PrimaryKeyDef_var pk = home->primary_key();
+		IR__::ValueDef_var value = pk->primary_key();
+		contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+		out << "if( ";
+		for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+		{
+			IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+			
+			switch(psdl_check_type(vMember->type_def()))
+			{
+			case CPPBase::_SHORT:
+			case CPPBase::_INT:
+			case CPPBase::_LONG:
+			case CPPBase::_FLOAT:
+			case CPPBase::_DOUBLE:
+			case CPPBase::_LONGDOUBLE:
+			case CPPBase::_BOOL:
+				out << "(pk_a->" << mapName(vMember) << "()==pk_b->" << mapName(vMember) << "())";
+				break;
+			case CPPBase::_STRING:
+				out << "strcmp(pk_a->" << mapName(vMember) << "(), pk_b->" << mapName(vMember) << "())==0";
+				break;
+			}
+
+			if((j+1)!=contained_seq->length())
+				out << " ||\n    ";
+			else
+				out << " )\n";
+		}
+		out.indent();
+		out << "return true;\n";
+		out.unindent();
+		out << "else\n";
+		out.indent();
+		out << "return false;\n";
+		out.unindent();
+		out.unindent();
+		out << "}\n\n";
+	}
 }
 
 void
-GeneratorServantC::genAbsSQLCreate()
+GeneratorServantC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_ptr home)
+{
+	CORBA::ULong ulLen = 0;
+	bool bFound = false;
+	std::string strTemp = "";
+	std::string strDummy = "";
+	stringstream strDisplay;
+	IR__::AttributeDefSeq state_members;
+
+	IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
+	IR__::ComponentDef_var component = home->managed_component();
+	std::string strComponentName = component->name();
+	IR__::IDLType_var ret_type = IR__::IDLType::_narrow(component);
+	out << strComponentName << "Persistence*\n";
+	strDisplay << home->name() << "Persistence::" << mapName(factory) << "(";
+	out << strDisplay.str();
+
+	ulLen = strDisplay.str().length();
+	strDummy.append(ulLen, ' ');
+	
+	out << "Pid* pid,\n";
+	out << strDummy.c_str();
+	out << "ShortPid* shortPid,\n";
+
+	// parameters
+	IR__::ParDescriptionSeq_var pards = factory->params();
+	for( CORBA::ULong i=pards->length(); i>0; i--)
+	{
+		out << strDummy.c_str();
+		IR__::ParameterDescription pardescr = (*pards)[i-1];
+		if (pardescr.mode == IR__::PARAM_IN) {
+			out << map_in_parameter_type (pardescr.type_def) << " " << std::string(pardescr.name);
+		};
+		if (pardescr.mode == IR__::PARAM_OUT) {
+			out << map_out_parameter_type (pardescr.type_def) << " " << std::string(pardescr.name);
+		};
+		if (pardescr.mode == IR__::PARAM_INOUT) {
+			out << map_inout_parameter_type (pardescr.type_def) << " " << std::string(pardescr.name);
+		};
+		if((i-1)!=0) { out << ",\n"; }
+	};
+
+	out << ")\n{\n";
+	out.indent();
+
+	//++++++++++++++++++++++++++++++++++++++++
+	// INSERT sentence for FACTORY
+	//++++++++++++++++++++++++++++++++++++++++
+	component->get_state_members(state_members, CORBA__::dk_Create);
+	out << "std::stringstream strFactory;\n\n";
+	out << "CatalogBase_ptr pCatalogBase = get_catalog();\n";
+	out << "CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase);\n\n";
+	strName_ = "strFactory";
+
+	out << strName_ << " << \"INSERT INTO pid_content (pid, ownhome) VALUES ( \";\n";
+	strContent_ = "\\'";
+	out << genSQLLine(strName_, strContent_, false, false, false);
+	strContent_ = "convertPidToString(pid)";
+	out << genSQLLine(strContent_, false, false, false, true);
+	strContent_ = "\\'";
+	out << genSQLLine(strContent_, true, true, true);
+	out << strName_ << " << \"\\\'" << home->name() << "Persistence\\\' );\";\n\n";
+	out << "if(!pCatalogBaseImpl->ExecuteSQL(" << strName_ << ".str().c_str()))\n";
+	out.indent();
+	out << "throw CORBA::BAD_PARAM();\n\n";
+	out.unindent();
+
+	out << "strFactory.str(\"\");\n";
+	out << strName_ << " << \"INSERT INTO " << home->name() << "Persistence ( pid, spid, ";
+
+	ulLen = state_members.length();
+	for(i=0; i<ulLen; i++)
+	{
+		attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		{
+			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			for(valuetype_iter = lValueTypes_.begin();
+				valuetype_iter != lValueTypes_.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				std::string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						out << "value_" << mapName(vMember);
+						( (i+1)!=ulLen ) ? out << ", " : out << " ) \";\n";
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			out << mapName(attribute);
+			( (i+1)!=ulLen ) ? out << ", " : out << " ) \";\n";
+		}
+	}
+
+	strContent_ = "VALUES (";
+	out << genSQLLine(strName_, strContent_, true, false, true);
+	strContent_ = "\\'";
+	out << genSQLLine(strName_, strContent_, false, false, false);
+	strContent_ = "convertPidToString(pid)";
+	out << genSQLLine(strContent_, false, false, false, true);
+	strContent_ = "\\'";
+	out << genSQLLine(strContent_, true, true, true);
+	strContent_ = "\\'";
+	out << genSQLLine(strName_, strContent_, false, false, false);
+	strContent_ = "convertSpidToString(shortPid)";
+	out << genSQLLine(strContent_, false, false, false, true);
+	strContent_ = "\\'";
+	out << genSQLLine(strContent_, true, true, true);
+
+	for(i=0; i<ulLen; i++)
+	{
+		bFound = false;
+		strTemp = "";
+		attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		
+		for(CORBA::ULong j=0; j<pards->length(); j++)
+		{
+			IR__::ParameterDescription pardescr = (*pards)[j];
+			strTemp = std::string(pardescr.name);
+			if(strTemp.compare(attribute->name())==0)
+			{
+				bFound = true;
+				break;
+			}
+		}
+		
+		if(bFound)
+		{
+			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+			{
+				std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+				for(valuetype_iter = lValueTypes_.begin();
+					valuetype_iter != lValueTypes_.end();
+					valuetype_iter++)
+				{
+					IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+					std::string attr_type_name = map_attribute_type(attribute->type_def());
+					if(attr_type_name.find(mapName(value))!=std::string::npos)
+					{
+						IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+						for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+						{
+							IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+							switch(psdl_check_type(vMember->type_def()))
+							{
+							case CPPBase::_SHORT:
+							case CPPBase::_INT:
+							case CPPBase::_LONG:
+								strContent_ = strTemp + "->";
+								strContent_ += mapName(vMember) + "()";
+								out << genSQLLine(strName_, strContent_, false, false, false, true);
+								strContent_ = "";
+								out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+								break;
+							case CPPBase::_STRING:
+								strContent_ = "\\'";
+								out << genSQLLine(strName_, strContent_, false, false, false);
+								strContent_ = strTemp + "->";
+								strContent_ += mapName(vMember) + "()";
+								out << genSQLLine(strContent_, false, false, false, true);
+								strContent_ = "\\'";
+								out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+								break;
+							}
+						}
+						break;
+					}
+				}
+			}
+			else
+			{
+				switch(psdl_check_type(attribute->type_def()))
+				{
+				case CPPBase::_SHORT:
+				case CPPBase::_INT:
+				case CPPBase::_LONG:
+				case CPPBase::_FLOAT:
+				case CPPBase::_DOUBLE:
+				case CPPBase::_LONGDOUBLE:
+					strContent_ = strTemp;
+					out << genSQLLine(strName_, strContent_, false, false, false, true);
+					strContent_ = "";
+					out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+					break;
+				case CPPBase::_STRING:
+					strContent_ = "\\'";
+					out << genSQLLine(strName_, strContent_, false, false, false);
+					strContent_ = strTemp;
+					out << genSQLLine(strContent_, false, false, false, true);
+					strContent_ = "\\'";
+					out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+					break;
+				case CPPBase::_BOOL:
+					strContent_ = "convertBool2String(" + strTemp + ")";
+					out << genSQLLine(strName_, strContent_, false, false, false, true);
+					strContent_ = "";
+					out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+					break;
+				}
+			}
+		}
+		else
+		{
+			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+			{
+				std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+				for(valuetype_iter = lValueTypes_.begin();
+					valuetype_iter != lValueTypes_.end();
+					valuetype_iter++)
+				{
+					IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+					std::string attr_type_name = map_attribute_type(attribute->type_def());
+					if(attr_type_name.find(mapName(value))!=std::string::npos)
+					{
+						IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+						for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+						{
+							strContent_ = "NULL";
+							out << genSQLLine(strName_, strContent_, true, ((i+1)!=ulLen), true);
+						}
+					}
+				}	
+			}
+			else
+			{
+				strContent_ = "NULL";
+				out << genSQLLine(strName_, strContent_, true, ((i+1)!=ulLen), true);
+			}
+		}
+	}
+	strContent_ = ");";
+	out << genSQLLine(strName_, strContent_, true, false, false);
+	//++++++++++++++++++++++++++++++++++++++++
+	// end of INSERT sentence for FACTORY !!!!
+	//++++++++++++++++++++++++++++++++++++++++
+	
+	out << "\nif(pCatalogBaseImpl->ExecuteSQL(" << strName_ << ".str().c_str()))\n";
+	out << "{\n";
+	out.indent();
+	out << "//use factory to create a storage object\n";
+	out << "#ifdef ORBACUS_ORB\n";
+	out << "StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();\n";
+	out << "#endif\n";
+	out << "#ifdef MICO_ORB\n";
+	out << "StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();\n";
+	out << "#endif\n";
+	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"\", factory);\n";
+	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
+	out << "factory->_remove_ref();\n";
+	out << "lObjectes_.push_back(pObjectImpl);\n";
+	out << strComponentName << "Persistence* pActObject = dynamic_cast <" << strComponentName << "Persistence*> (pObjectImpl);\n";
+	out << "\n//set values to current storageobject incarnation\n";
+	out << "//How to handle with pid, spid and the other member variables not given?\n";
+	for(CORBA::ULong j=0; j<pards->length(); j++)
+	{
+		IR__::ParameterDescription pardescr = (*pards)[j];
+		ret_type = pardescr.type_def;
+		out << "pActObject->" << std::string(pardescr.name) << "(";
+		out << std::string(pardescr.name) << ");\n";
+	}
+	out << "\nreturn pActObject;\n";
+	out.unindent();
+	out << "}\n";
+	out << "else\n";
+	out.indent();
+	out << "throw CORBA::BAD_PARAM();\n";
+	out.unindent();
+	out.unindent();
+	out << "}\n\n";
+}
+
+void
+GeneratorServantC::genFinder(IR__::FinderDef_ptr key, IR__::HomeDef_ptr home)
+{
+	IR__::IDLType_var ret_type = IR__::IDLType::_narrow(key);
+	IR__::ComponentDef_var component = home->managed_component();
+
+	out << component->name() << "Persistence*\n";
+	out << home->name() << "Persistence::" << mapName(key) << "(";
+
+	// parameters
+	IR__::ParDescriptionSeq_var pards = key->params();
+	for( CORBA::ULong i=0; i<pards->length(); i++)
+	{
+		IR__::ParameterDescription pardescr = (*pards)[i];
+		if (pardescr.mode == IR__::PARAM_IN) {
+			out << map_in_parameter_type (pardescr.type_def) << " " << std::string(pardescr.name);
+		};
+		if (pardescr.mode == IR__::PARAM_OUT) {
+			out << map_out_parameter_type (pardescr.type_def) << " " << std::string(pardescr.name);
+		};
+		if (pardescr.mode == IR__::PARAM_INOUT) {
+			out << map_inout_parameter_type (pardescr.type_def) << " " << std::string(pardescr.name);
+		};
+
+		if((i+1)!=pards->length()) { out << ", "; }
+	};
+
+	out << ")";
+	
+	out << "\n";
+	out.indent();
+	out << "throw(CosPersistentState::NotFound";
+	handleException(key);
+	out << ")";
+	out.unindent();
+	
+	out << "\n{\n";
+	out.indent();
+
+	//++++++++++++++++++++++++++++++++++++++++
+	// SELECT sentence for KEY
+	//++++++++++++++++++++++++++++++++++++++++
+	out << component->name() << "Persistence* pActObject = NULL;\n";
+	out << "std::stringstream strKey;\n\n";
+	strName_ = "strKey";
+	strContent_ = "SELECT pid FROM ";
+	strContent_ += home->name();
+	strContent_ += "Persistence";
+	out << genSQLLine(strName_, strContent_, true, false, true);
+	strContent_ = "WHERE";
+	out << genSQLLine(strName_, strContent_, true, false, true);
+
+	CORBA::ULong ulLen = pards->length();
+
+	for( i=0; i<ulLen; i++ )
+	{
+		IR__::ParameterDescription pardescr = (*pards)[i];
+	
+		if( pardescr.type_def->type()->kind() == CORBA::tk_value )
+		{
+			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			for(valuetype_iter = lValueTypes_.begin();
+				valuetype_iter != lValueTypes_.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				std::string attr_type_name = map_attribute_type(pardescr.type_def);
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						strContent_ = "value_" + mapName(vMember);
+						if(psdl_check_type(vMember->type_def())!=CPPBase::_STRING)
+							strContent_ += " =";
+						else
+							strContent_ += " LIKE";
+						out << genSQLLine(strName_, strContent_, true, false, true);
+
+						switch(psdl_check_type(vMember->type_def()))
+						{
+						case CPPBase::_SHORT:
+						case CPPBase::_INT:
+						case CPPBase::_LONG:
+							strContent_ = std::string(pardescr.name) + "->";
+							strContent_ += mapName(vMember) + "()";
+							out << genSQLLine(strName_, strContent_, false, false, false, true);
+							strContent_ = "";
+							out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+							break;
+						case CPPBase::_STRING:
+							strContent_ = "\\'";
+							out << genSQLLine(strName_, strContent_, false, false, false);
+							strContent_ = std::string(pardescr.name) + "->";
+							strContent_ += mapName(vMember) + "()";
+							out << genSQLLine(strContent_, false, false, false, true);
+							strContent_ = "\\'";
+							out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			strContent_ = std::string(pardescr.name);
+
+			if(psdl_check_type(pardescr.type_def)!=CPPBase::_STRING)
+				strContent_ += " =";
+			else
+				strContent_ += " LIKE";
+			out << genSQLLine(strName_, strContent_, true, false, true);
+
+			switch(psdl_check_type(pardescr.type_def))
+			{
+			case CPPBase::_SHORT:
+			case CPPBase::_INT:
+			case CPPBase::_LONG:
+			case CPPBase::_FLOAT:
+			case CPPBase::_DOUBLE:
+			case CPPBase::_LONGDOUBLE:
+				strContent_ = std::string(pardescr.name);
+				out << genSQLLine(strName_, strContent_, false, false, false, true);
+				strContent_ = "";
+				out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+				break;
+			case CPPBase::_STRING:
+				strContent_ = "\\'";
+				out << genSQLLine(strName_, strContent_, false, false, false);
+				strContent_ = std::string(pardescr.name);
+				out << genSQLLine(strContent_, false, false, false, true);
+				strContent_ = "\\'";
+				out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+				break;
+			case CPPBase::_BOOL:
+				strContent_ = "convertBool2String(" + std::string(pardescr.name) + ")";
+				out << genSQLLine(strName_, strContent_, false, false, false, true);
+				strContent_ = "";
+				out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+				break;
+			}
+		}
+	}
+	strContent_ = ");";
+	out << genSQLLine(strName_, strContent_, true, false, false);
+	//++++++++++++++++++++++++++++++++++++++++
+	// end of SELECT sentence for KEY !!!!!!!!
+	//++++++++++++++++++++++++++++++++++++++++
+
+	out << "\nif(!Open(" << strName_ << ".str().c_str()))\n";
+	out.indent();
+	out << "throw CosPersistentState::NotFound();\n\n";
+	out.unindent();
+	out << "if (GetFieldCount()<=0)\n{\n";
+	out.indent();
+	out << "Close();\n";
+	out << "throw CosPersistentState::NotFound();\n";
+	out.unindent();
+	out << "}\n\n";
+	out << "unsigned char* szPid = new unsigned char[254];\n";
+	out << "memset(szPid, \'\\0\', 254);\n";
+	out << "GetFieldValue(0, szPid);\n";
+	out << "Close();\n\n";
+	out << "std::string strPid = \"\";\n";
+	out << "strPid.append((const char*)szPid);\n";
+	out << "StorageObjectBase pObject = find_by_pid(strPid);\n";
+	out << "pActObject = dynamic_cast <" << component->name() << "Persistence*> (pObject);\n\n";
+	out << "return pActObject;\n";
+}
+
+void
+GeneratorServantC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc)
+{
+	if( lc!=CIDL::lc_Entity && lc!=CIDL::lc_Process )
+		return;
+
+	// handle base home
+	IR__::HomeDef_var base_home = home->base_home();
+	if(base_home)
+		genHomePersistence(base_home, lc);
+
+	int iLength = 0;
+	std::string strDummy = "";
+	IR__::AttributeDefSeq state_members;
+
+	std::string strHomeName = home->name();
+	out << "// ================================================\n";
+	out << "// " << "home persistence" << "\n";
+	out << "// ================================================\n\n";
+	out << strHomeName << "Persistence::" << strHomeName << "Persistence()\n";
+	out << "{\n}\n\n";
+	out << strHomeName << "Persistence::~" << strHomeName << "Persistence()\n";
+	out << "{\n}\n\n";
+
+	// get managed component
+	IR__::ComponentDef_var component = home->managed_component();
+	std::string strComponentName = component->name();
+
+	strDummy = home->name();
+	iLength = strDummy.length() + 21;
+	
+	strDummy = "";
+	out << strComponentName << "Persistence*\n";
+	out << strHomeName << "Persistence::_create(" << "Pid* pid,\n";
+	strDummy.append(iLength, ' ');
+	out << strDummy.c_str();
+	out << "ShortPid* shortPid,\n";
+	
+	component->get_state_members(state_members, CORBA__::dk_Create);
+	CORBA::ULong ulLen = state_members.length();
+	for(CORBA::ULong i=0; i<ulLen; i++)
+	{
+		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		out << strDummy.c_str() << map_in_parameter_type(attribute->type_def()) << " " << mapName(attribute);
+		if( (i+1)!=ulLen )
+			out << ",\n";
+	}
+	
+	out << ")\n{\n";
+	out.indent();
+	//+++++++++++++++++++++++++++++++++++++++++++
+	// INSERT sentence for _create in storagehome
+	//+++++++++++++++++++++++++++++++++++++++++++
+	IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
+	out << "std::stringstream strInsert;\n\n";
+	out << "CatalogBase_ptr pCatalogBase = get_catalog();\n";
+	out << "CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase);\n\n";
+	strName_ = "strInsert";
+
+	out << strName_ << " << \"INSERT INTO pid_content (pid, ownhome) VALUES ( \";\n";
+	strContent_ = "\\'";
+	out << genSQLLine(strName_, strContent_, false, false, false);
+	strContent_ = "convertPidToString(pid)";
+	out << genSQLLine(strContent_, false, false, false, true);
+	strContent_ = "\\'";
+	out << genSQLLine(strContent_, true, true, true);
+	out << strName_ << " << \"\\\'" << strHomeName << "Persistence\\\' );\";\n\n";
+	out << "if(!pCatalogBaseImpl->ExecuteSQL(" << strName_ << ".str().c_str()))\n";
+	out.indent();
+	out << "throw CORBA::BAD_PARAM();\n\n";
+	out.unindent();
+
+	out << strName_ << ".str(\"\");\n";
+	out << strName_ << " << \"INSERT INTO " << strHomeName << "Persistence ( pid, spid, ";
+	
+	for(i=0; i<ulLen; i++)
+	{
+		attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		{
+			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			for(valuetype_iter = lValueTypes_.begin();
+				valuetype_iter != lValueTypes_.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				std::string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						out << "value_" << mapName(vMember);
+						( (i+1)!=ulLen ) ? out << ", " : out << " ) \";\n";
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			out << mapName(attribute);
+			( (i+1)!=ulLen ) ? out << ", " : out << " ) \";\n";
+		}
+	}
+	
+	out << "//Where should the pid and spid come from?\n";
+	strContent_ = "VALUES (";
+	out << genSQLLine(strName_, strContent_, true, false, true);
+	strContent_ = "\\'";
+	out << genSQLLine(strName_, strContent_, false, false, false);
+	strContent_ = "convertPidToString(pid)";
+	out << genSQLLine(strContent_, false, false, false, true);
+	strContent_ = "\\'";
+	out << genSQLLine(strContent_, true, true, true);
+	strContent_ = "\\'";
+	out << genSQLLine(strName_, strContent_, false, false, false);
+	strContent_ = "convertSpidToString(shortPid)";
+	out << genSQLLine(strContent_, false, false, false, true);
+	strContent_ = "\\'";
+	out << genSQLLine(strContent_, true, true, true);
+
+	for(CORBA::ULong i=0; i<ulLen; i++)
+	{
+		attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		// parse valuemember from valuetype
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		{
+			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			for(valuetype_iter = lValueTypes_.begin();
+				valuetype_iter != lValueTypes_.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				std::string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						switch(psdl_check_type(vMember->type_def()))
+						{
+						case CPPBase::_SHORT:
+						case CPPBase::_INT:
+						case CPPBase::_LONG:
+							strContent_ = mapName(attribute) + "->";
+							strContent_ += mapName(vMember) + "()";
+							out << genSQLLine(strName_, strContent_, false, false, false, true);
+							strContent_ = "";
+							out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+							break;
+						case CPPBase::_STRING:
+							strContent_ = "\\'";
+							out << genSQLLine(strName_, strContent_, false, false, false);
+							strContent_ = mapName(attribute) + "->";
+							strContent_ += mapName(vMember) + "()";
+							out << genSQLLine(strContent_, false, false, false, true);
+							strContent_ = "\\'";
+							out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+		else // for normal state member with normal data type
+		{
+			switch(psdl_check_type(attribute->type_def()))
+			{
+			case CPPBase::_SHORT:
+			case CPPBase::_INT:
+			case CPPBase::_LONG:
+			case CPPBase::_FLOAT:
+			case CPPBase::_DOUBLE:
+			case CPPBase::_LONGDOUBLE:
+				strContent_ = mapName(attribute);
+				out << genSQLLine(strName_, strContent_, false, false, false, true);
+				strContent_ = "";
+				out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+				break;
+			case CPPBase::_STRING:
+				strContent_ = "\\'";
+				out << genSQLLine(strName_, strContent_, false, false, false);
+				strContent_ = mapName(attribute);
+				out << genSQLLine(strContent_, false, false, false, true);
+				strContent_ = "\\'";
+				out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+				break;
+			case CPPBase::_BOOL:
+				strContent_ = "convertBool2String(" + mapName(attribute) + ")";
+				out << genSQLLine(strName_, strContent_, false, false, false, true);
+				strContent_ = "";
+				out << genSQLLine(strContent_, true, ((i+1)!=ulLen), true);
+				break;
+			}
+		}
+	}
+	strContent_ = ");";
+	out << genSQLLine(strName_, strContent_, true, false, false);
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	// end of INSERT sentence for _create in storagehome
+	//++++++++++++++++++++++++++++++++++++++++++++++++++
+	
+	out << "\nif(pCatalogBaseImpl->ExecuteSQL(" << strName_ << ".str().c_str()))\n";
+	out << "{\n";
+	out.indent();
+	
+	out << "//use factory to create a storage object\n";
+	out << "#ifdef ORBACUS_ORB\n";
+	out << "StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();\n";
+	out << "#endif\n";
+	out << "#ifdef MICO_ORB\n";
+	out << "StorageObjectFactory factory = new CosPersistentState::StorageObjectFactory_pre();\n";
+	out << "#endif\n";
+	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"\", factory);\n";
+	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
+	out << "factory->_remove_ref();\n";
+	out << "lObjectes_.push_back(pObjectImpl);\n";
+	out << strComponentName << "Persistence* pActObject = dynamic_cast <" << strComponentName << "Persistence*> (pObjectImpl);\n";
+	
+	out << "\n//set values to current storageobject incarnation\n";
+	out << "//How to handle with pid and spid?\n";
+	for(CORBA::ULong i=0; i<ulLen; i++)
+	{
+		attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		out << "pActObject->" << mapName(attribute) << "(";
+		out << mapName(attribute) << ");\n";
+	}
+	out << "\nreturn pActObject;\n";
+	
+	out.unindent();
+	out << "}\n";
+	out << "else\n";
+	out.indent();
+	out << "throw CORBA::BAD_PARAM();\n";
+	out.unindent();
+	out.unindent();
+	out << "}\n\n";
+
+	// handel factory
+	IR__::ContainedSeq_var contained_seq = home->contents(CORBA__::dk_Factory, false);
+	ulLen = contained_seq->length();
+	for(CORBA::ULong i = 0; i < ulLen; i++)
+	{
+		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
+		genFactory(a_factory, home);
+	}
+
+	out << "\n";
+
+	// handel finder
+	contained_seq = home->contents(CORBA__::dk_Finder, false);
+	ulLen = contained_seq->length();
+	for(i = 0; i < ulLen; i++)
+	{
+		IR__::FinderDef_var a_finder = IR__::FinderDef::_narrow(((*contained_seq)[i]));
+		genFinder(a_finder, home);
+	}
+	
+	out.unindent();
+	out << "};\n\n";
+}
+
+void
+GeneratorServantC::genTableForAbsStorageHome()
 {
 	IR__::InterfaceDefSeq_var supported_infs = storagehome_->supported_interfaces();
 	
@@ -2544,7 +3596,8 @@ GeneratorServantC::genAbsSQLCreate()
 		CORBA::ULong ulLenSupportedInf = sub_supported_infs->length();
 
 		IR__::AbstractStorageTypeDef_var abs_type = abs_home->managed_abstract_storagetype();
-		IR__::AttributeDefSeq state_members = collectStateMembers(abs_type, CORBA__::dk_Self);
+		IR__::AttributeDefSeq state_members;
+		abs_type->get_state_members(state_members, CORBA__::dk_Self);
 		CORBA::ULong ulLen = state_members.length();
 		IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
 
@@ -2552,14 +3605,14 @@ GeneratorServantC::genAbsSQLCreate()
 		std::string strContent = "CREATE TABLE ";
 		strContent += std::string(abs_home->name());
 		strContent += " (";
-		out << genSQLLine(strName, strContent, false, true);
+		out << genSQLLine(strName, strContent, true, false, true);
 
 		if(ulLenSupportedInf==0)
 		{
 			strContent = "pid  VARCHAR(254)  NOT NULL  REFERENCES PID_CONTENT";
-			out << genSQLLine(strName, strContent, true, true);
+			out << genSQLLine(strName, strContent, true, true, true);
 			strContent = "spid  VARCHAR(254)";
-			out << genSQLLine(strName, strContent, true, true);
+			out << genSQLLine(strName, strContent, true, true, true);
 		}
 
 		for( CORBA::ULong i=0; i<ulLen; i++)
@@ -2586,7 +3639,7 @@ GeneratorServantC::genAbsSQLCreate()
 							strContent += "  ";
 							strContent.append( map_psdl2sql_type(vMember->type_def()) );
 							bool isComma = ((j+1)!=ulLen) || (ulLenSupportedInf==0);
-							out << genSQLLine(strName, strContent, isComma, true);
+							out << genSQLLine(strName, strContent, true, isComma, true);
 						}
 						break;
 					}
@@ -2598,7 +3651,7 @@ GeneratorServantC::genAbsSQLCreate()
 				strContent += "  ";
 				strContent.append( map_psdl2sql_type(attribute->type_def()) );
 				bool isComma = ((i+1)!=ulLen) || (ulLenSupportedInf==0);
-				out << genSQLLine(strName, strContent, isComma, true);	
+				out << genSQLLine(strName, strContent, true, isComma, true);	
 			}
 		}
 		
@@ -2610,7 +3663,7 @@ GeneratorServantC::genAbsSQLCreate()
 			{
 				strContent.append(((*sub_supported_infs)[j])->name());
 				((j+1)!=ulLenSupportedInf) ? strContent += ", " : strContent += " );";
-				out << genSQLLine(strName, strContent, false, false);
+				out << genSQLLine(strName, strContent, true, false, false);
 				strContent = "";
 			}
 		}
@@ -2619,39 +3672,41 @@ GeneratorServantC::genAbsSQLCreate()
 			strContent = "CONSTRAINT PK_";
 			strContent += abs_home->name();
 			strContent += " PRIMARY KEY (pid)";
-			out << genSQLLine(strName, strContent, false, true);
+			out << genSQLLine(strName, strContent, true, false, true);
 			strContent = ");";
-			out << genSQLLine(strName, strContent, false, false);
+			out << genSQLLine(strName, strContent, true, false, false);
 		}
-
-		out << "\n";
 	}
 }
 
 void
-GeneratorServantC::genSQLCreate()
+GeneratorServantC::genTableForStorageHome(IR__::StorageHomeDef_ptr storagehome)
 {
-	IR__::StorageHomeDef_var base_storagehome = storagehome_->base_storagehome();
-	IR__::InterfaceDefSeq_var supported_infs = storagehome_->supported_interfaces();
-	IR__::StorageTypeDef_var storagetype = storagehome_->managed_storagetype();
+	IR__::StorageHomeDef_var base_storagehome = storagehome->base_storagehome();
+	if(base_storagehome)
+		genTableForStorageHome(base_storagehome);
+
+	IR__::InterfaceDefSeq_var supported_infs = storagehome->supported_interfaces();
+	IR__::StorageTypeDef_var storagetype = storagehome->managed_storagetype();
 	
 	CORBA::ULong ulLenSupportedInf = supported_infs->length();
-	IR__::AttributeDefSeq state_members = collectStateMembers(storagetype, CORBA__::dk_Self);
+	IR__::AttributeDefSeq state_members;
+	storagetype->get_state_members(state_members, CORBA__::dk_Self);
 	CORBA::ULong ulLen = state_members.length();
 	IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
 
 	std::string strName = "sztream";
 	std::string strContent = "CREATE TABLE ";
-	strContent += std::string(storagehome_->name());
+	strContent += std::string(storagehome->name());
 	strContent += " (";
-	out << genSQLLine(strName, strContent, false, true);
+	out << genSQLLine(strName, strContent, true, false, true);
 
 	if(ulLenSupportedInf==0 && CORBA::is_nil(base_storagehome))
 	{
 		strContent = "pid  VARCHAR(254)  NOT NULL  REFERENCES PID_CONTENT";
-		out << genSQLLine(strName, strContent, true, true);
+		out << genSQLLine(strName, strContent, true, true, true);
 		strContent = "spid  VARCHAR(254)";
-		out << genSQLLine(strName, strContent, true, true);
+		out << genSQLLine(strName, strContent, true, true, true);
 	}
 
 	for( CORBA::ULong i=0; i<ulLen; i++)
@@ -2677,7 +3732,7 @@ GeneratorServantC::genSQLCreate()
 						strContent += "  ";
 						strContent.append( map_psdl2sql_type(vMember->type_def()) );
 						bool isComma = ((j+1)!=ulLen) || (ulLenSupportedInf==0);
-						out << genSQLLine(strName, strContent, isComma, true);
+						out << genSQLLine(strName, strContent, true, isComma, true);
 					}
 					break;
 				}
@@ -2689,7 +3744,7 @@ GeneratorServantC::genSQLCreate()
 			strContent += "  ";
 			strContent.append( map_psdl2sql_type(attribute->type_def()) );
 			bool isComma = ((i+1)!=ulLen) || (ulLenSupportedInf==0);
-			out << genSQLLine(strName, strContent, isComma, true);	
+			out << genSQLLine(strName, strContent, true, isComma, true);	
 		}
 	}
 	
@@ -2700,7 +3755,7 @@ GeneratorServantC::genSQLCreate()
 		{
 			strContent.append(base_storagehome->name());
 			(ulLenSupportedInf>0) ? strContent += ", " : strContent += " );";
-			out << genSQLLine(strName, strContent, false, false);
+			out << genSQLLine(strName, strContent, true, false, false);
 			strContent = "";
 		}
 		
@@ -2708,43 +3763,140 @@ GeneratorServantC::genSQLCreate()
 		{
 			strContent.append(((*supported_infs)[j])->name());
 			((j+1)!=ulLenSupportedInf) ? strContent += ", " : strContent += " );";
-			out << genSQLLine(strName, strContent, false, false);
+			out << genSQLLine(strName, strContent, true, false, false);
 			strContent = "";
 		}
 	}
 	else
 	{
 		strContent = "CONSTRAINT PK_";
-		strContent += storagehome_->name();
+		strContent += storagehome->name();
 		strContent += " PRIMARY KEY (pid)";
-		out << genSQLLine(strName, strContent, false, true);
+		out << genSQLLine(strName, strContent, true, false, true);
 		strContent = ");";
-		out << genSQLLine(strName, strContent, false, false);
+		out << genSQLLine(strName, strContent, true, false, false);
 	}
-
-	out << "\n";
 }
 
-IR__::AttributeDefSeq 
-GeneratorServantC::collectStateMembers(IR__::InterfaceDef_ptr inf_def, CORBA__::CollectStyle style)
+void
+GeneratorServantC::genTableForHome(IR__::HomeDef_ptr home)
 {
+	IR__::HomeDef_var base_home = home_->base_home();
+	if(base_home)
+		genTableForHome(base_home);
+
+	IR__::ComponentDef_var component = home->managed_component();
+
+	CORBA::ULong i = 0;
+	std::vector<std::string> required;
 	IR__::AttributeDefSeq state_members;
+	component->get_state_members(state_members, CORBA__::dk_Self);
+	CORBA::ULong ulLen = state_members.length();
+	IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
 
-	IR__::AbstractStorageTypeDef_var abs_storagetype =
-		IR__::AbstractStorageTypeDef::_narrow(inf_def);
-	if(!CORBA::is_nil(abs_storagetype))
-		abs_storagetype->get_state_members(state_members, style);
+	// check whether component has uses, emits or publishes
+	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Uses, false);
+	for( i = 0; i < contained_seq->length(); i++ )
+	{
+		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
+		required.push_back(a_uses->name());
+	}
+	
+	contained_seq = component->contents(CORBA__::dk_Emits, false);
+	for( i = 0; i < contained_seq->length(); i++ )
+	{
+		IR__::EmitsDef_var a_emits = IR__::EmitsDef::_narrow(((*contained_seq)[i]));
+		required.push_back(a_emits->name());
+	}
 
-	IR__::StorageTypeDef_var storagetype = 
-		IR__::StorageTypeDef::_narrow(inf_def);
-	if(!CORBA::is_nil(storagetype))
-		storagetype->get_state_members(state_members, style);
+	contained_seq = component->contents(CORBA__::dk_Publishes, false);
+	for( i = 0; i < contained_seq->length(); i++ )
+	{
+		IR__::PublishesDef_var a_publishes = IR__::PublishesDef::_narrow(((*contained_seq)[i]));
+		required.push_back(a_publishes->name());
+	}
 
-	return state_members;
+	std::string strName = "sztream";
+	std::string strContent = "CREATE TABLE ";
+	strContent += std::string(home_->name());
+	strContent += "Persistence (";
+	out << genSQLLine(strName, strContent, true, false, true);
+
+	if(CORBA::is_nil(base_home))
+	{
+		strContent = "pid  VARCHAR(254)  NOT NULL  REFERENCES PID_CONTENT";
+		out << genSQLLine(strName, strContent, true, true, true);
+		strContent = "spid  VARCHAR(254)";
+		out << genSQLLine(strName, strContent, true, true, true);
+	}
+
+	for( i=0; i<ulLen; i++ )
+	{
+		attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		{
+			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			for(valuetype_iter = lValueTypes_.begin();
+				valuetype_iter != lValueTypes_.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				std::string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						strContent = "value_";
+						strContent += mapName(vMember);
+						strContent += "  ";
+						strContent.append( map_psdl2sql_type(vMember->type_def()) );
+						bool isComma = ((j+1)!=ulLen) || (CORBA::is_nil(base_home) || required.size()>0);
+						out << genSQLLine(strName, strContent, true, isComma, true);
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			strContent = mapName(attribute);
+			strContent += "  ";
+			strContent.append( map_psdl2sql_type(attribute->type_def()) );
+			bool isComma = ((i+1)!=ulLen) || (CORBA::is_nil(base_home) || required.size()>0);
+			out << genSQLLine(strName, strContent, true, isComma, true);
+		}
+	}
+	
+	// add uses, emits or publishes
+	for( i=0; i<required.size(); i++ )
+	{
+		strContent = required[i];
+		strContent += "  VARCHAR(254)";
+		out << genSQLLine(strName, strContent, true, (i+1!=required.size()), true);
+	}
+	
+	if( !CORBA::is_nil(base_home) )
+	{
+		strContent = ") INHERITS ( ";
+		strContent.append(base_home->name());
+		strContent += "Persistence );";
+		out << genSQLLine(strName, strContent, true, false, false);
+	}
+	else
+	{
+		strContent = "CONSTRAINT PK_";
+		strContent += home->name();
+		strContent += "Persistence PRIMARY KEY (pid)";
+		out << genSQLLine(strName, strContent, true, false, true);
+		strContent = ");";
+		out << genSQLLine(strName, strContent, true, false, false);
+	}
 }
 
 std::string
-GeneratorServantC::genSQLLine(std::string strName, std::string strContent, bool comma, bool space, bool func)
+GeneratorServantC::genSQLLine(std::string strName, std::string strContent, bool end, bool comma, bool space, bool func)
 {
 	std::string strRet = strName;
 
@@ -2754,7 +3906,23 @@ GeneratorServantC::genSQLLine(std::string strName, std::string strContent, bool 
 	if(comma) strRet += ",";
 	if(space) strRet += " ";
 	if(!func) strRet += "\"";
-	strRet += ";\n";
+	if(end) strRet += ";\n";
+
+	return strRet;
+}
+
+std::string
+GeneratorServantC::genSQLLine(std::string strContent, bool end, bool comma, bool space, bool func)
+{
+	std::string strRet = "";
+
+	strRet += " << ";
+	if(!func) strRet += "\"";
+	strRet += strContent;
+	if(comma) strRet += ",";
+	if(space) strRet += " ";
+	if(!func) strRet += "\"";
+	if(end) strRet += ";\n";
 
 	return strRet;
 }

@@ -25,6 +25,7 @@
 
 //#include "HomeServantBase.h"
 #include "CCMHomeServant.h"
+#include "ConnectorRegistry.h"
 #include "Util.h"
 
 
@@ -78,6 +79,8 @@ public:
 	~EntityHomeServant();
 	
 	virtual std::vector<std::string> get_table_info() = 0;
+
+	virtual void register_storage_factory(ConnectorRegistry_ptr pConnReg) = 0;
 
 };
 

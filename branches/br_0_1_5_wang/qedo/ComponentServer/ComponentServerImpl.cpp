@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.26.2.3 2004/01/28 16:59:11 hao Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.26.2.4 2004/02/03 22:01:13 hao Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -90,8 +90,6 @@ ComponentServerImpl::~ComponentServerImpl()
 {
 	DEBUG_OUT ("ComponentServerImpl: Destructor called");
 	pConnReg_->unregister_connector("");
-	delete pConnReg_;
-	pConnReg_ = NULL;
 }
 
 
@@ -265,16 +263,15 @@ ComponentServerImpl::initialize()
 	Qedo_Components::Deployment::ComponentServer_var component_server = this->_this();
 	csa_ref_->notify_component_server_create (component_server.in());
 
-	pConnReg_ = new ConnectorRegistryImpl;
-	CosPersistentState::Connector_var pConn = new ConnectorImpl;
-	pConnReg_->register_connector(pConn.out(), "");
-
+	pConnReg_ = new ConnectorRegistryImpl();
+	pConn_ = new ConnectorImpl("");
+	pConnReg_->register_connector(pConn_.in(), "");
 }
 
-CosPersistentState::ConnectorRegistry_ptr
+ConnectorRegistry_ptr
 ComponentServerImpl::getConnectorRegistry()
 {
-	return pConnReg_;
+	return CosPersistentState::ConnectorRegistry::_duplicate(pConnReg_);
 }
 
 ::Components::ConfigValues*

@@ -26,7 +26,7 @@
 #include <xercesc/framework/URLInputSource.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: DTMReader.cpp,v 1.1.4.3 2004/01/28 16:59:11 hao Exp $";
+static char rcsid[] UNUSED = "$Id: DTMReader.cpp,v 1.1.4.4 2004/02/03 22:01:13 hao Exp $";
 
 
 namespace Qedo {
@@ -194,11 +194,10 @@ DTMReader::getDatatypeMap(std::map<const char*, const char*> mType, std::string 
 	{
 		for(unsigned int i=0; i<vCorba_.size(); i++)
 		{
-			typedef std::pair <const char*, const char*> Type_Pair;
 			std::string strA = "", strB="";
 			strA += dt1.at(i);
 			strB += dt2.at(i);
-			mType.insert( Type_Pair(strA.c_str(), strB.c_str()) );
+			mType[strA.c_str()] = strB.c_str();
 		}
 	}
 	else

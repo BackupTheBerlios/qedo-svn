@@ -39,6 +39,7 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "#ifndef _" << header_name << "_H_\n";
 	out << "#define _" << header_name << "_H_\n\n\n";
 	out << "#include <CORBA.h>\n";
+	out << "#include <sstream>\n";
 	out << "#include \"" << file_prefix_ << "_LOCAL_skel.h\"\n";
 	out << "#include \"SessionContext.h\"\n";
 	out << "#include \"EntityContext.h\"\n";
@@ -49,11 +50,13 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "#include \"SinkStreamPortServant.h\"\n";
 	out << "#endif\n";
 	out << "#ifndef _QEDO_NO_QOS\n";
-	out << "#include \"ExtensionHomeServant.h\"\n\n\n";
+	out << "#include \"ExtensionHomeServant.h\"\n";
 	out << "#endif\n";
 	out << "#include \"SessionHomeServant.h\"\n";
 	out << "#include \"EntityHomeServant.h\"\n";
-	out << "#include <sstream>\n\n\n";
+	out << "#include \"Connector.h\"\n";
+	out << "#include \"Catalog.h\"\n\n";
+	out << "using namespace Qedo;\n\n";
 
 	//
 	// dynamic library identifier
@@ -516,6 +519,54 @@ GeneratorServantH::genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_
 	out.unindent();
 }
 
+void
+GeneratorServantH::genPersistentOperation(IR__::OperationDef_ptr operation, IR__::ComponentDef_ptr component, bool isFinder)
+{
+	std::string strDummy = "";
+	out << component->name() << "Persistence* " << mapName(operation) << "(";
+
+	//
+	// parameters
+	//
+	if(!isFinder)
+	{
+		strDummy = mapName(operation) + component->name();
+		int iLength = strDummy.length() + 14;
+	
+		strDummy = "";
+		out << "Pid* pid,\n";
+		strDummy.append(iLength, ' ');
+		out << strDummy.c_str();
+		out << "ShortPid* shortPid,\n";
+	}
+
+	IR__::ParDescriptionSeq* pards = operation->params();
+	for( CORBA::ULong i= pards->length(); i > 0; i--)
+	{
+		if(!isFinder) out << strDummy;
+		IR__::ParameterDescription pardescr = (*pards)[i - 1];
+		if (pardescr.mode == IR__::PARAM_IN) {
+			out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		}
+		if (pardescr.mode == IR__::PARAM_OUT) {
+			out << map_out_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		}
+		if (pardescr.mode == IR__::PARAM_INOUT) {
+			out << map_inout_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
+		}
+		if( (i-1)!=0 ) out << ",\n";
+	}
+
+	if(isFinder)
+	{
+		out << ")\n";
+		out.indent();
+		out << "throw(CosPersistentState::NotFound);\n";
+		out.unindent();
+	}
+	else
+		out << ");\n";
+}
 
 void
 GeneratorServantH::genFacetServants(IR__::ComponentDef_ptr component)
@@ -832,7 +883,10 @@ GeneratorServantH::genComponentPersistence(IR__::ComponentDef_ptr component, CID
 
 	genMemberVariable(component);
 
-	out << "};\n\n\n";
+	out << "};\n\n";
+
+	genFactoryTemplate(false);
+	out << "typedef ObjectFactory<" << component->name() << "Persistence> " << component->name() << "PersistenceFactory;\n\n";
 }
 
 void
@@ -1021,13 +1075,6 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << mapFullNamePK(home->primary_key()) << "* get_primary_key(" << mapFullName(component_) << "_ptr comp)\n"; 
 		out << "	throw(CORBA::SystemException);\n\n";
 
-		out << "std::vector<std::string> get_table_info();\n";
-		/*
-		out.unindent();
-		out << "private:\n\n";
-		out.indent();
-		out << "bool compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b);\n\n";
-		*/
 		break;
 	default:
 		out << "// not supported lifecycle\n";
@@ -1066,10 +1113,46 @@ GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		handleOperation((*supp_intfs)[i]);
 	};
 
-	out.unindent();
-	out << "\n\nprivate:\n\n";
+	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	{
+		out << "\nstd::vector<std::string> get_table_info();\n\n";
+		out << "void register_storage_factory(ConnectorRegistry_ptr pConnReg);\n";
+		out.unindent();
+		out << "\nprivate:\n\n";
+		out.indent();
+		out << "bool compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b);\n\n";
+	}
+}
+
+void
+GeneratorServantH::genFactoryTemplate(bool isHome)
+{
+	std::string strPre = "";
+	(isHome) ? strPre = "HomeFactory" : strPre = "ObjectFactory";
+
+	out << "template <class T>\n";
+	out << "#ifdef ORBACUS_ORB\n";
+	out << "class " << strPre << " : public OBNative_CosPersistentState::Storage" << strPre << "_pre\n";
+	out << "#endif\n";
+	out << "#ifdef MICO_ORB\n";
+	out << "class " << strPre << " : public CosPersistentState::Storage" << strPre << "_pre\n";
+	out << "#endif\n";
+	out << "{\n";
 	out.indent();
-	out << "bool compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b);\n\n";
+	out << "public:\n";
+	out.indent();
+	out << strPre << "() : refcount_(1) {};\n";
+	out << "virtual ~" << strPre << "() {};\n";
+	out << "virtual T* create() { return new T; };\n";
+	out << "virtual void _add_ref() { refcount_++; };\n";
+	out << "virtual void _remove_ref() { if( --refcount_==0 ) delete this; };\n";
+	out.unindent();
+	out << "\nprivate:\n";
+	out.indent();
+	out << "CORBA::ULong refcount_;\n";
+	out.unindent();
+	out.unindent();
+	out << "};\n\n";
 }
 
 void
@@ -1083,12 +1166,14 @@ GeneratorServantH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 	if(base_home)
 		genHomePersistence(base_home, lc);
 
+	int iLength = 0;
+	std::string strDummy = "";
+	IR__::AttributeDefSeq state_members;
+
 	out << "//\n// home persistence\n//\n";
 
-	// get managed component
 	IR__::ComponentDef_var component = home->managed_component();
 	out << "class " << component->name() << "Persistence;\n\n";
-
 	out << "class " << home->name() << "Persistence\n";
 	out.indent();
 	if(base_home)
@@ -1101,10 +1186,8 @@ GeneratorServantH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
     out << home->name() << "Persistence();\n";
 	out << "~" << home->name() << "Persistence();\n\n";
 
-	int iLength = 0;
-	std::string strDummy = "";
 	char* szDisplay = map_psdl_return_type(component, false);
-	iLength = strlen(szDisplay) + 10;	
+	iLength = strlen(szDisplay) + 10;
 	
 	out << component->name() << "Persistence* _create(";
 	out << "Pid* pid,\n";
@@ -1112,7 +1195,7 @@ GeneratorServantH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 	out << strDummy.c_str();
 	out << "ShortPid* shortPid,\n";
 	
-	IR__::AttributeDefSeq state_members;
+	// handel other in-parameters
 	component->get_state_members(state_members, CORBA__::dk_Create);
 	CORBA::ULong ulLen = state_members.length();
 	for(CORBA::ULong i=0; i<ulLen; i++)
@@ -1125,10 +1208,31 @@ GeneratorServantH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 	
 	out << ");\n\n";
 
-	handleFactory(home);
-	handleFinder(home);
+	// handel factory
+	IR__::ContainedSeq_var contained_seq = home->contents(CORBA__::dk_Factory, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
+		genPersistentOperation(a_factory, component, false);
+	}
+
+	out << "\n";
+
+	// handel finder
+	contained_seq = home->contents(CORBA__::dk_Finder, false);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++)
+	{
+		IR__::FinderDef_var a_finder = IR__::FinderDef::_narrow(((*contained_seq)[i]));
+		genPersistentOperation(a_finder, component, true);
+	}
+	
 	out.unindent();
 	out << "};\n\n";
+
+	genFactoryTemplate(true);
+	out << "typedef HomeFactory<" << home->name() << "Persistence> " << home->name() << "PersistenceFactory;\n\n";
 }
 
 } //

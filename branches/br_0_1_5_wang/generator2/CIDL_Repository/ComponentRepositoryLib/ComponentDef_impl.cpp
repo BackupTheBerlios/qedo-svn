@@ -952,7 +952,7 @@ throw(CORBA::SystemException)
 			state_members[i+ulPre] = (a_attribute);
 		}
 	}
-	else if(style==CORBA__::dk_Variable)
+	else if(style==CORBA__::dk_Variable || style==CORBA__::dk_Self)
 	{
 		// the own attributes only
 		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);

@@ -119,7 +119,7 @@ StorageHomeBaseImpl::find_by_pid(std::string pid)
 	for( objIter_=lObjectes_.begin(); objIter_!=lObjectes_.end(); objIter_++ )
 	{
 		Pid_var pPid = (*objIter_)->get_pid();
-		std::string strPid = convertPidToString(pPid.out());
+		std::string strPid = convertPidToString(pPid.in());
 		if( pid.compare(strPid)==0 )
 		{
 			pObj = dynamic_cast <StorageObjectBase> (*objIter_);
@@ -312,7 +312,6 @@ StorageHomeBaseImpl::ValuePaser( std::map<std::string, CORBA::Any>& valueMap )
 	{
 		std::string strColName;
 		CORBA::Any anyData;
-		//typedef pair <string, CORBA::Any> Value_Pair;
 
 		memset(szColName, '\0', 256);
 		GetFieldAttributes(iCol, szColName, nType, nLen);
@@ -365,7 +364,6 @@ StorageHomeBaseImpl::ValuePaser( std::map<std::string, CORBA::Any>& valueMap )
 				break;
 		}
 
-		//valueMap.insert( Value_Pair(strColName, anyData) );
 		valueMap[strColName] = anyData;
 	}
 }
