@@ -94,7 +94,7 @@ MonImpl::obtain_executor(const char* name)
     if (! strcmp ( name, "component" ) ) {
         return Components::EnterpriseComponent::_duplicate (component_);
     }
-
+    
     return Components::EnterpriseComponent::_nil();
 }
 
@@ -125,17 +125,17 @@ MonImpl::set_session_context(::Components::SessionContext_ptr context)
 {
     #ifdef TAO_ORB
     ::container_service::CCM_monitor_Context_ptr tmp_context;
-
+    
     tmp_context = dynamic_cast<::container_service::CCM_monitor_ContextImpl*>(context);
-
+    
     if (tmp_context)
         context_ = ::container_service::CCM_monitor_ContextImpl::_duplicate(tmp_context);
     else
         context_ = ::container_service::CCM_monitor_ContextImpl::_nil();
-
+        
     #else
     context_ = ::container_service::CCM_monitor_ContextImpl::_narrow(context);
-
+    
     #endif
     component_->set_context(context_);
 }
