@@ -715,10 +715,20 @@ module Components {
 			raises (InvalidConfiguration);
 	};
 
+	
 	// These interfaces are not standard, but every container implementation needs to define
 	// something like this to implement session or entity components
 	local interface SessionExecutorLocator : ExecutorLocator, SessionComponent
 	{
+	};
+
+	//
+	// extension for service integration
+	//
+	local interface CCMService : ExecutorLocator, SessionComponent
+	{
+		void preinvoke(in string comp_id, in string operation);
+		void postinvoke(in string comp_id, in string operation);
 	};
 
 	local interface EntityExecutorLocator : ExecutorLocator, EntityComponent
