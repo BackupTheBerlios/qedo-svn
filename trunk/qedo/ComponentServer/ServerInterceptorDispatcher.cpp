@@ -20,6 +20,8 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
+#ifndef _QEDO_NO_QOS
+
 #include "ServerInterceptorDispatcher.h"
 #include "Util.h"
 #include "Output.h"
@@ -27,7 +29,7 @@
 #include "ComponentServerImpl.h"
 #include "GlobalHelpers.h"
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.7 2003/12/09 07:58:10 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.8 2003/12/16 13:39:35 stoinski Exp $";
 
 namespace Qedo {
 
@@ -190,3 +192,5 @@ ServerInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* com
 
 
 }  //namespace Qedo
+
+#endif

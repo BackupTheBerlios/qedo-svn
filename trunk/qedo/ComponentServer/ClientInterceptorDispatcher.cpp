@@ -20,11 +20,14 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
+#ifndef _QEDO_NO_QOS
+
+
 #include "ClientInterceptorDispatcher.h"
 #include "Util.h"
 #include <fstream>
 
-static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.6 2003/12/09 07:58:10 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.7 2003/12/16 13:39:35 stoinski Exp $";
 
 namespace Qedo {
 
@@ -91,3 +94,5 @@ ClientInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* com
 
 
 }  //namespace Qedo
+
+#endif

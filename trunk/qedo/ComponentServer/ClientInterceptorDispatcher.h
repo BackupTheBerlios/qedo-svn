@@ -24,6 +24,9 @@
 #ifndef __CLIENT_INTERCEPTOR_DISPATCHER_H__
 #define __CLIENT_INTERCEPTOR_DISPATCHER_H__
 
+#ifndef _QEDO_NO_QOS
+
+
 #include <CORBA.h>
 #ifdef MICO_ORB
 #include <mico/pi.h>
@@ -80,5 +83,7 @@ namespace Qedo {
 
 	};
 }
+
+#endif
 
 #endif

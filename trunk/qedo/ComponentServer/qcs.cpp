@@ -26,6 +26,7 @@
 #include "Output.h"
 #ifndef _QEDO_NO_STREAMS
 #include "TCPTransportEndpointFactory.h"
+#include "UDPTransportEndpointFactory.h"
 #endif
 #include "ConfigurationReader.h"
 
@@ -39,7 +40,7 @@
 #include "ClientInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.30 2003/12/09 07:58:10 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.31 2003/12/16 13:39:35 stoinski Exp $";
 
 
 /**
@@ -201,8 +202,10 @@ main (int argc, char** argv)
 
 #ifndef _QEDO_NO_STREAMS
         // Register the transport factories
-        Qedo::TCPTransportEndpointFactory* the_factory = new Qedo::TCPTransportEndpointFactory();
-        the_factory->_remove_ref();
+		Qedo::UDPTransportEndpointFactory* udp_factory = new Qedo::UDPTransportEndpointFactory();
+		udp_factory->_remove_ref();
+        Qedo::TCPTransportEndpointFactory* tcp_factory = new Qedo::TCPTransportEndpointFactory();
+        tcp_factory->_remove_ref();
 
 #ifdef _WIN32
         // Initialize the Windows Socket Environment
