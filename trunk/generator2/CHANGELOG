@@ -1,3 +1,4 @@
+- renaming of the valuetypes.* to component_valuetypes.*
 - modification for stub interceptors
 
 version 0.7.2
