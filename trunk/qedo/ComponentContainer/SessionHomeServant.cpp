@@ -23,7 +23,7 @@
 #include "SessionHomeServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: SessionHomeServant.cpp,v 1.7 2004/07/16 11:21:23 tom Exp $";
+static char rcsid[] UNUSED = "$Id: SessionHomeServant.cpp,v 1.8 2004/08/20 10:52:37 tom Exp $";
 
 
 namespace Qedo {
@@ -84,6 +84,12 @@ void
 SessionHomeServant::set_servant_interceptor_dispatcher(Components::Extension::ServantInterceptorRegistration_ptr servant_dispatcher)
 {
 	servant_dispatcher_ = servant_dispatcher;
+}
+void
+
+SessionHomeServant::set_stub_interceptor_dispatcher(Components::Extension::StubInterceptorRegistration_ptr stub_dispatcher)
+{
+	stub_dispatcher_ = stub_dispatcher;
 }
 #endif
 } // namespace Qedo

@@ -48,6 +48,7 @@ private:
 	Components::Extension::ServerInterceptorRegistration_var server_registration_;
 	Components::Extension::ClientInterceptorRegistration_var client_registration_;
 	Components::Extension::ServantInterceptorRegistration_var servant_registration_;
+	Components::Extension::StubInterceptorRegistration_var stub_registration_;
 
 	/*
 	* list of config values to store contract inforamtion 
@@ -83,6 +84,12 @@ public:
 	 virtual void
 	 set_servant_interceptor_dispatcher_registration(Components::Extension::ServantInterceptorRegistration_ptr registration);
 
+	/**
+	 * set_servant_intercpetor_registration
+	 */
+	 virtual void
+	 set_stub_interceptor_dispatcher_registration(Components::Extension::StubInterceptorRegistration_ptr registration);
+
 	 /**
 	 * get_server_intercpetor_registration
 	 */
@@ -101,6 +108,12 @@ public:
 	 */
 	 virtual Components::Extension::ServantInterceptorRegistration_ptr
 	 get_servant_interceptor_dispatcher_registration();
+
+	 /**
+	 * get_servant_intercpetor_registration
+	 */
+	 virtual Components::Extension::StubInterceptorRegistration_ptr
+	 get_stub_interceptor_dispatcher_registration();
 
 	 virtual void
 	 register_servant_locator_for_all(Components::Extension::ServerContainerInterceptor_ptr server_interceptor);

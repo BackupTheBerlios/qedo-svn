@@ -23,7 +23,7 @@
 #include "SessionContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: SessionContext.cpp,v 1.8 2003/11/03 15:43:00 tom Exp $";
+static char rcsid[] UNUSED = "$Id: SessionContext.cpp,v 1.9 2004/08/20 10:52:37 tom Exp $";
 
 
 namespace Qedo {
@@ -46,5 +46,12 @@ SessionContext::get_CCM_object()
 	return ccm_object_executor_->get_component();
 }
 
+#ifndef _QEDO_NO_QOS
+void
+SessionContext::set_stub_interceptor_registration(Components::Extension::StubInterceptorRegistration_ptr stub_registration)
+{
+	stub_registration_ = stub_registration;
+}
+#endif
 
 } // namepscae Qedo

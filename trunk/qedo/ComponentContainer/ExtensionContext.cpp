@@ -26,7 +26,7 @@
 #include "ComponentServerImpl.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.10 2004/07/16 11:21:23 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.11 2004/08/20 10:52:37 tom Exp $";
 
 
 namespace Qedo {
@@ -64,6 +64,13 @@ ExtensionContext::set_servant_interceptor_dispatcher_registration(Components::Ex
 	servant_registration_ = registration;
 };
 
+void
+ExtensionContext::set_stub_interceptor_dispatcher_registration(Components::Extension::StubInterceptorRegistration_ptr registration)
+{
+	DEBUG_OUT ( "ExtensionContext: set_stub_interceptor_dispatcher_registration called");
+	stub_registration_ = registration;
+};
+
 Components::Extension::ServerInterceptorRegistration_ptr
 ExtensionContext::get_server_interceptor_dispatcher_registration()
 {
@@ -85,6 +92,14 @@ ExtensionContext::get_servant_interceptor_dispatcher_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_servant_interceptor_dispatcher_registration called");
 	return Components::Extension::ServantInterceptorRegistration::_duplicate(servant_registration_);
+
+}
+
+Components::Extension::StubInterceptorRegistration_ptr
+ExtensionContext::get_stub_interceptor_dispatcher_registration()
+{
+	DEBUG_OUT ( "ExtensionContext: get_stub_interceptor_dispatcher_registration called");
+	return Components::Extension::StubInterceptorRegistration::_duplicate(stub_registration_);
 
 }
 

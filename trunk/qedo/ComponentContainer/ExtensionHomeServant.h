@@ -44,8 +44,11 @@ protected:
 	/** reference to server interceptor dispatcher intercface */
 	Components::Extension::ClientInterceptorRegistration_var client_dispatcher_;
 
-	/** reference to server interceptor dispatcher intercface */
+	/** reference to stub interceptor dispatcher intercface */
 	Components::Extension::ServantInterceptorRegistration_var servant_dispatcher_;
+
+	/** reference to stub interceptor dispatcher intercface */
+	Components::Extension::StubInterceptorRegistration_var stub_dispatcher_;
 
 private:
 	/**
@@ -95,6 +98,11 @@ public:
 	 * set servant interceptor dispatcher interface at home servant
 	 */
 	 void set_servant_interceptor_dispatcher(Components::Extension::ServantInterceptorRegistration_ptr server_dispatcher);
+
+	/**
+	 * set stub interceptor dispatcher interface at home servant
+	 */
+	 void set_stub_interceptor_dispatcher(Components::Extension::StubInterceptorRegistration_ptr server_dispatcher);
 
 }; // ExtensionHomeServant
 } // namespace Qedo

@@ -41,7 +41,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.60 2004/07/16 11:21:23 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.61 2004/08/20 10:52:37 tom Exp $";
 
 
 namespace Qedo {
@@ -647,6 +647,10 @@ throw (Components::Deployment::UnknownImplId,
 		servant_reg = component_server_ -> get_servant_dispatcher ();
 		session_home -> set_servant_interceptor_dispatcher (servant_reg);
 		DEBUG_OUT("ContainerInterfaceImpl: servant dispatcher set at home");
+
+		stub_reg = component_server_ -> get_stub_dispatcher ();
+		session_home -> set_stub_interceptor_dispatcher (stub_reg);
+		DEBUG_OUT("ContainerInterfaceImpl: stub dispatcher set at home");
 #endif
 
 		if (! session_home)
@@ -780,6 +784,10 @@ throw (Components::Deployment::UnknownImplId,
 
 		servant_reg = component_server_ -> get_servant_dispatcher ();
 		extension_home -> set_servant_interceptor_dispatcher (servant_reg);
+		DEBUG_OUT("ContainerInterfaceImpl: servant dispatcher set at home");
+
+		stub_reg = component_server_ -> get_stub_dispatcher ();
+		extension_home -> set_stub_interceptor_dispatcher (stub_reg);
 		DEBUG_OUT("ContainerInterfaceImpl: servant dispatcher set at home");
 #endif
 		break;

@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.36 2004/07/16 11:22:17 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.37 2004/08/20 10:53:31 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -617,6 +617,12 @@ ComponentServerImpl::set_servant_dispatcher ( Components::Extension::ServantInte
 	servant_dispatcher_ = servant_dispatcher;
 }
 
+void
+ComponentServerImpl::set_stub_dispatcher ( Components::Extension::StubInterceptorRegistration_ptr stub_dispatcher)
+{
+	stub_dispatcher_ = stub_dispatcher;
+}
+
 Components::Extension::ServerInterceptorRegistration_ptr
 ComponentServerImpl::get_server_dispatcher (  )
 {
@@ -633,6 +639,12 @@ Components::Extension::ServantInterceptorRegistration_ptr
 ComponentServerImpl::get_servant_dispatcher (  )
 {
 	return Components::Extension::ServantInterceptorRegistration::_duplicate (servant_dispatcher_);
+}
+
+Components::Extension::StubInterceptorRegistration_ptr
+ComponentServerImpl::get_stub_dispatcher (  )
+{
+	return Components::Extension::StubInterceptorRegistration::_duplicate (stub_dispatcher_);
 }
 
 Qedo::ContainerList*

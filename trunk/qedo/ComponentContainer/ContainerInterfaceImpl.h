@@ -239,6 +239,8 @@ private:
 
 #ifndef _QEDO_NO_QOS
 	Components::Extension::ServantInterceptorRegistration_var servant_reg;
+	Components::Extension::StubInterceptorRegistration_var stub_reg;
+
 #endif 
 
 public:

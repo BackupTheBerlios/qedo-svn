@@ -518,6 +518,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="StreamingBuffer.cpp">
 			</File>
 			<File
+				RelativePath="StubInterceptorDispatcher.cpp">
+			</File>
+			<File
 				RelativePath="TCPSinkTransportEndpoint.cpp">
 			</File>
 			<File
@@ -682,6 +685,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="StreamingBuffer.h">
+			</File>
+			<File
+				RelativePath="StubInterceptorDispatcher.h">
 			</File>
 			<File
 				RelativePath="TCPSinkTransportEndpoint.h">

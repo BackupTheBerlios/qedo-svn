@@ -39,9 +39,10 @@
 #include "ServerInterceptorDispatcher.h"
 #include "ClientInterceptorDispatcher.h"
 #include "ServantInterceptorDispatcher.h"
+#include "StubInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.33 2004/07/16 11:22:17 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.34 2004/08/20 10:53:31 tom Exp $";
 
 
 /**
@@ -160,7 +161,8 @@ main (int argc, char** argv)
 	Qedo::ClientInterceptorDispatcher* client_dispatcher;
 	// Servant Dispatcher
 	Qedo::ServantInterceptorDispatcher* servant_dispatcher;
-
+	// Stub Dispatcher
+	Qedo::StubInterceptorDispatcher* stub_dispatcher;
 	if (qos_enabled)
 	{
 		// create dispatchers
@@ -171,6 +173,8 @@ main (int argc, char** argv)
 
 		servant_dispatcher = new Qedo::ServantInterceptorDispatcher();
 		servant_dispatcher -> _add_ref();
+		stub_dispatcher = new Qedo::StubInterceptorDispatcher();
+		stub_dispatcher -> _add_ref();
 
 		// register interceptors before ORB_init
 		initializer.set_server_dispatcher (
@@ -194,6 +198,8 @@ main (int argc, char** argv)
 			Components::Extension::ClientInterceptorRegistration::_narrow(client_dispatcher));
 		component_server -> set_servant_dispatcher (
 			Components::Extension::ServantInterceptorRegistration::_narrow(servant_dispatcher));
+		component_server -> set_stub_dispatcher (
+			Components::Extension::StubInterceptorRegistration::_narrow(stub_dispatcher));
 
 		server_dispatcher -> set_component_server ( component_server );
 		client_dispatcher -> set_component_server ( component_server );
