@@ -945,7 +945,8 @@ add_storagehome(
   definition def_v,
   idl_identifier type_name,
   idl_identifier inh_spec,
-  idl_identifier_list impl_spec)
+  idl_identifier_list impl_spec,
+  definition primary_key)
 {
   table_item_lists inh_v=Niltable_item_lists();
 	if(type_name) _resolve_name(true,type_name,the_StorageTypeN);
@@ -961,6 +962,25 @@ add_storagehome(
     }  
   }
 	add_name(true,StorageHomeN(),name,def_v,inh_v);
+	table_item_list key;
+  with(primary_key) {
+	  PrimaryKeyDcl(key_ident_v=LocalName(Considl_name_list(key_name_v,Nilidl_name_list()))) : {
+		key = lookup_name(,name->symtab_entry);
+		with(key) {
+			Constable_item_list(item_v,Niltable_item_list()) : {
+				key_ident_v->symtab_entry=item_v;
+			}
+			Constable_item_list(item_v,*) : {
+				key_ident_v->symtab_entry=item_v;
+				 Error("mulitple definitions for primary key %t",primary_key,key_ident_v); 
+			}
+			default : {
+				 Error("no definition for primary key %t",primary_key,key_ident_v); 
+			}
+		}
+	  }
+	  NilDefinition(): {}
+  }
 }
 
 void

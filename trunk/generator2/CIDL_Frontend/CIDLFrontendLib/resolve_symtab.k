@@ -62,7 +62,7 @@ AbstractStorageHome(AbstractStorageHomeHeader(*,type_name_v,*),defs_v)
   ];
 
 def_v=
-StorageHome(StorageHomeHeader(name_v,type_name_v,*,identifier_list_v),defs_v)
+StorageHome(StorageHomeHeader(name_v,type_name_v,*,identifier_list_v,*),defs_v)
 ->[ symtab_ref :
     {
       do_res_keys(type_name_v,defs_v);

@@ -246,7 +246,6 @@
 										abstract_storagetype_dcl
 										abstract_storagetype_fwd_dcl
 										storagehome_member
-										abstract_storagehome_member
 										abstract_storagetype_member
 										storagetype_member
 										catalog_member
@@ -1619,11 +1618,11 @@ abstract_storagehome_header :
 abstract_storagehome_body :
 	  /* empty */
 	  { $$ = Nildefinition_list(); }
-	| abstract_storagehome_member abstract_storagehome_body
+	| storagehome_member abstract_storagehome_body
 	  { $$ = Consdefinition_list($1,$2); }
 	;
 
-abstract_storagehome_member :
+storagehome_member :
 	  local_op_dcl ';'
 	| key_dcl ';'
 	| factory_dcl_1 ';'
@@ -1780,20 +1779,36 @@ storagehome :
 
 storagehome_header :
 	  TOK_storagehome TOK_identifier TOK_of storagetype_name storagehome_inh_spec storagehome_impl_spec
-    { $$ = StorageHome(StorageHomeHeader($2,$4,$5,$6),Nildefinition_list()); 
-      add_storagehome($2,$$,$4,$5,$6);
+    { $$ = StorageHome(StorageHomeHeader($2,$4,$5,$6,NilDefinition()),Nildefinition_list()); 
+      add_storagehome($2,$$,$4,$5,$6,0);
     }
 	| TOK_storagehome TOK_identifier TOK_of storagetype_name storagehome_impl_spec
-    { $$ = StorageHome(StorageHomeHeader($2,$4,NilIdentifier(),$5),Nildefinition_list()); 
-      add_storagehome($2,$$,$4,0,$5);
+    { $$ = StorageHome(StorageHomeHeader($2,$4,NilDefinition(),$5,NilIdentifier()),Nildefinition_list()); 
+      add_storagehome($2,$$,$4,0,$5,0);
     }
 	| TOK_storagehome TOK_identifier TOK_of storagetype_name storagehome_inh_spec
-    { $$ = StorageHome(StorageHomeHeader($2,$4,$5,Nilidl_identifier_list()),Nildefinition_list()); 
-      add_storagehome($2,$$,$4,$5,0);
+    { $$ = StorageHome(StorageHomeHeader($2,$4,$5,Nilidl_identifier_list(),NilDefinition()),Nildefinition_list()); 
+      add_storagehome($2,$$,$4,$5,0,0);
     }
 	| TOK_storagehome TOK_identifier TOK_of storagetype_name
-    { $$ = StorageHome(StorageHomeHeader($2,$4,NilIdentifier(),Nilidl_identifier_list()),Nildefinition_list()); 
-      add_storagehome($2,$$,$4,0,0);
+    { $$ = StorageHome(StorageHomeHeader($2,$4,NilIdentifier(),Nilidl_identifier_list(),NilDefinition()),Nildefinition_list()); 
+      add_storagehome($2,$$,$4,0,0,0);
+    }
+	| TOK_storagehome TOK_identifier TOK_of storagetype_name storagehome_inh_spec storagehome_impl_spec primary_key_dcl
+    { $$ = StorageHome(StorageHomeHeader($2,$4,$5,$6,$7),Nildefinition_list()); 
+      add_storagehome($2,$$,$4,$5,$6,$7);
+    }
+	| TOK_storagehome TOK_identifier TOK_of storagetype_name storagehome_impl_spec primary_key_dcl
+    { $$ = StorageHome(StorageHomeHeader($2,$4,NilIdentifier(),$5,$6),Nildefinition_list()); 
+      add_storagehome($2,$$,$4,0,$5,$6);
+    }
+	| TOK_storagehome TOK_identifier TOK_of storagetype_name storagehome_inh_spec primary_key_dcl
+    { $$ = StorageHome(StorageHomeHeader($2,$4,$5,Nilidl_identifier_list(),$6),Nildefinition_list()); 
+      add_storagehome($2,$$,$4,$5,0,$6);
+    }
+	| TOK_storagehome TOK_identifier TOK_of storagetype_name primary_key_dcl
+    { $$ = StorageHome(StorageHomeHeader($2,$4,NilIdentifier(),Nilidl_identifier_list(),$5),Nildefinition_list()); 
+      add_storagehome($2,$$,$4,0,0,$6);
     }
 	;
 
@@ -1802,11 +1817,6 @@ storagehome_body :
 	  { $$ = Nildefinition_list(); }
 	| storagehome_member storagehome_body
 	  { $$ = Consdefinition_list($1,$2); }
-	;
-
-storagehome_member :
-	  key_dcl ';'
-	| primary_key_dcl ';'
 	;
 
 storagehome_inh_spec :
@@ -2475,7 +2485,6 @@ proxy_home_members :
 	(1) 	<abstract_storagehome_dcl>
 	(1) 	<abstract_storagehome_header>
 	(1) 	<abstract_storagehome_body>
-	(1) 	<abstract_storagehome_member>
 	(1) 	<abstract_storagehome_inh_spec>
 	(3) 	<local_op_dcl>
 	(2) 	<key_dcl>
