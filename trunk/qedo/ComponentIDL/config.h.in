@@ -187,5 +187,5 @@
 /* Define that the container should be without streams */
 #undef _QEDO_NO_STREAMS
 
-/* Define that the container should be wit QoS */
-#undef _QEDO_QOS
+/* Define that the container should be without QoS */
+#undef _QEDO_NO_QOS

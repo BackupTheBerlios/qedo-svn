@@ -30,7 +30,7 @@ AC_ARG_ENABLE(streams,
  use_streams=$enableval, use_streams=yes)
 
 AC_ARG_ENABLE(qos,
- [  --enable-qos            compile QoS support in container (default off)],
+ [  --disable-qos            compile QoS support in container (default off)],
  use_qos=$enableval, use_qos=no)
 
 # Checks for programs.
@@ -130,8 +130,8 @@ if test X"$use_streams" != Xyes; then
 	AC_DEFINE(_QEDO_NO_STREAMS)
 fi
 
-if test X"$use_qos" != Xno; then
-	AC_DEFINE(_QEDO_QOS)
+if test X"$use_qos" != Xyes; then
+	AC_DEFINE(_QEDO_NO_QOS)
 fi
 
 # Checks for header files.
