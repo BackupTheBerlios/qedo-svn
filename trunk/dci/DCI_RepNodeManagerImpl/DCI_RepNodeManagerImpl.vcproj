@@ -99,11 +99,11 @@ zip ../$(TargetName).zip meta-inf/$(TargetName).ccd meta-inf/$(TargetName).csd
 
 cd ..
 zip DCINodemanager.zip $(TargetName).zip
-zip DCINodemanager.zip meta-inf/$(TargetName).cpf meta-inf/DCINodemanager.cad
+zip DCINodemanager.zip meta-inf/DCINodemanager.cad
 cp DCINodemanager.zip $(QEDO)/bin
 
 zip DCINodemanagerExt.zip $(TargetName).zip
-zip DCINodemanagerExt.zip meta-inf/$(TargetName).cpf meta-inf/DCINodemanagerExt.cad
+zip DCINodemanagerExt.zip meta-inf/DCINodemanagerExt.cad
 cp DCINodemanagerExt.zip $(QEDO)/bin
 "/>
 			<Tool

@@ -19,9 +19,6 @@
 	        <componentfileref idref="DCI_RepNodeManagerImpl_file"/>
 			<componentimplref idref="UUID-2F9C6737-D25D-400C-9D4C-E21245D71F2F"/>
   	        <componentinstantiation id="DCIRepNodeManager">
-				<componentproperties>
-					<fileinarchive name="meta-inf/DCI_RepNodeManagerImpl.cpf"/>
-				</componentproperties>
 	        </componentinstantiation>
 	        <destination></destination>
 	    </homeplacement>

@@ -26,9 +26,6 @@
 	        <componentfileref idref="DCI_RepositoryImpl_file"/>
 			<componentimplref idref="UUID-0ED2D963-FA1C-4558-BA04-10624A87AA38"/>
   	        <componentinstantiation id="DCIRepository">
-				<componentproperties>
-					<fileinarchive name="meta-inf/DCI_RepositoryImpl.cpf"/>
-				</componentproperties>
 				<registercomponent>
 					<registerwithnaming name="DCI/DCIRepository"/>
 				</registercomponent>
@@ -50,9 +47,6 @@
 	        <componentfileref idref="DCI_RepNodeManagerImpl_file"/>
 			<componentimplref idref="UUID-2F9C6737-D25D-400C-9D4C-E21245D71F2F"/>
   	        <componentinstantiation id="DCIRepNodeManager">
-				<componentproperties>
-					<fileinarchive name="meta-inf/DCI_RepNodeManagerImpl.cpf"/>
-				</componentproperties>
 	        </componentinstantiation>
 	        <destination></destination>
 	    </homeplacement>

@@ -100,7 +100,7 @@ zip ../$(TargetName).zip meta-inf/$(TargetName).ccd meta-inf/$(TargetName).csd
 
 cd ..
 zip DCIManager.zip  $(TargetName).zip
-zip DCIManager.zip meta-inf/$(TargetName).cpf meta-inf/DCIManager.cad
+zip DCIManager.zip meta-inf/DCIManager.cad
 cp DCIManager.zip $(QEDO)/bin
 "
 				ExcludedFromBuild="FALSE"/>

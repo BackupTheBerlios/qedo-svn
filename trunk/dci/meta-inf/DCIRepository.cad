@@ -20,9 +20,6 @@
 	        <componentfileref idref="DCI_RepositoryImpl_file"/>
 			<componentimplref idref="UUID-0ED2D963-FA1C-4558-BA04-10624A87AA38"/>
   	        <componentinstantiation id="DCIRepository">
-				<componentproperties>
-					<fileinarchive name="meta-inf/DCI_RepositoryImpl.cpf"/>
-				</componentproperties>
 				<registercomponent>
 					<registerwithnaming name="DCI/DCIRepository"/>
 				</registercomponent>
