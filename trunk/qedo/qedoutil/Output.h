@@ -26,7 +26,7 @@
 #include "Synchronisation.h"
 #include <Util.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <process.h>
 #else
 #include <sys/types.h>
