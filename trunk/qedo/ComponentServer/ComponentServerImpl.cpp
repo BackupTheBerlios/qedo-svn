@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.21 2003/10/29 00:57:58 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.22 2003/10/29 15:33:22 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -76,7 +76,7 @@ ContainerEntry::~ContainerEntry()
 }
 
 
-ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb, 
+ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb,
 										  const char* csa_string_ref,
 										  PortableInterceptor::SlotId slot_id)
 : csa_string_ref_ (CORBA::string_dup (csa_string_ref)),
@@ -160,7 +160,7 @@ ComponentServerImpl::initialize()
 		if( !ns.empty() )
 		{
 			obj = orb_->string_to_object( ns.c_str() );
-			NORMAL_OUT2( "ComponentServerImpl:: NameService is ", ns );
+			DEBUG_OUT2( "ComponentServerImpl:: NameService is ", ns );
 		}
 		//
 		// try to get naming service from orb
@@ -272,8 +272,8 @@ throw (CORBA::SystemException)
 	return 0;
 }
 
- 
-::Components::Deployment::ServerActivator_ptr 
+
+::Components::Deployment::ServerActivator_ptr
 ComponentServerImpl::get_server_activator()
 throw (CORBA::SystemException)
 {
@@ -281,7 +281,7 @@ throw (CORBA::SystemException)
 }
 
 
-::Components::Deployment::Container_ptr 
+::Components::Deployment::Container_ptr
 ComponentServerImpl::create_container(const ::Components::ConfigValues& config)
 throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, CORBA::SystemException)
 {
