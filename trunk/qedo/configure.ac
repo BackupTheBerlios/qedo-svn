@@ -70,12 +70,12 @@ AC_CACHE_CHECK([for Apache's Xerces-C XML library],
      AC_LANG_CPLUSPLUS
 if test X"$XERCESDIR" = X ;then
 	XERCES_LIBS="-lxerces-c"
-	XERCES_INCLUDE=""
+	XERCES_INCLUDES=""
 	LIBS="-lxerces-c $LIBS"
 	XERCESDIR=""
 else
 	XERCES_LIBS="-L$XERCESDIR/lib -lxerces-c"
-	XERCES_INCLUDE="-I$XERCESDIR/include"
+	XERCES_INCLUDES="-I$XERCESDIR/include"
 	LIBS="-L$XERCESDIR/lib -lxerces-c $LIBS"
 	CPPFLAGS="-I$XERCESDIR/include $CPPFLAGS"
 fi
@@ -98,7 +98,7 @@ if test X"$HAVE_XERCES" = Xno; then
 fi
 AC_SUBST(HAVE_XERCES)
 AC_SUBST(XERCES_LIBS)
-AC_SUBST(XERCES_INCLUDE)
+AC_SUBST(XERCES_INCLUDES)
 
 
 # do enable debug

@@ -24,7 +24,7 @@ INCLUDES+=-I. -I../ComponentIDL \
 			 -I../ComponentInstaller \
 			 -I../qedoutil \
 			 $(NAMING_INCLUDES) \
-			 @XERCES_INCLUDE@ 
+			 @XERCES_INCLUDES@ 
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS+=@LIBS@
