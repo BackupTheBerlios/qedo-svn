@@ -29,6 +29,15 @@ handle_sigint
 }
 
 
+void
+printUsage()
+{
+	std::cerr << "usage : gen_cidl [options] --target <compositionname> filename" << std::endl;
+	std::cerr << "        --target <compositionname> : the element to generate code for" << std::endl;
+	std::cerr << "        --deployment : not generate business code skeletons" << std::endl;
+}
+
+
 int
 main
 ( int argc, char **argv )
@@ -87,86 +96,129 @@ main
 
 	signal ( SIGINT, handle_sigint );
 
-
-	//
-	// feed the repository (Test whether we have to use test mode)
-	//
-	string target;
 	repository = new QEDO_ComponentRepository::CIDLRepository_impl ( orb, root_poa );
-	if ( argc >= 2 && !strcmp ( argv[1], "--testmode" ) ) {
-		frontend_replacement_feed ( repository );
+	bool generateBusiness = true;
+	std::string target;
+
+	//
+	// process arguments
+	//
+	if(argc < 2)
+	{
+		printUsage();
+		orb->destroy();
+		exit ( 1 );
 	}
-	else {
-		if(argc < 3) {
-			std::cerr << std::endl;
-			std::cerr << "usage : gen_cidl [options] filename target_module" << std::endl;
-			orb->destroy();
-			exit ( 1 );
+    for(int i = 1; i < argc;)
+    {
+        const char* option = argv[i];
+		if(strcmp(option, "--testmode") == 0)
+		{
+			frontend_replacement_feed ( repository );
+            
+            for(int j = i ; j + 1 < argc ; j++)
+                argv[j] = argv[j + 1];
+            
+            argc--;
 		}
-		target = argv[--argc];
-		frontend_feed ( argc, argv, repository -> _this() );
+		else if(strcmp(option, "--deploy") == 0)
+		{
+			generateBusiness = false;
+            
+            for(int j = i ; j + 1 < argc ; j++)
+                argv[j] = argv[j + 1];
+            
+            argc--;
+		}
+		else if(strcmp(option, "--target") == 0)
+		{
+			if(i + 1 >= argc)
+			{
+				std::cerr << "argument expected for --target" << std::endl;
+				orb -> destroy();
+				exit ( 1 );
+			}
+
+            target = argv[i + 1];
+            
+            for(int j = i ; j + 2 < argc ; j++)
+                argv[j] = argv[j + 2];
+            
+            argc -= 2;
+		}
+		else
+		{
+			i++;
+		}
 	}
 
+	if(target == "" || argc < 2)
+	{
+		printUsage();
+		orb->destroy();
+		exit ( 1 );
+	}
+
+	// feed repository
+	frontend_feed ( argc, argv, repository -> _this() );
 
 	// generate equivalent IDL
 	std::cout << "Generating equivalent IDL for " << target << std::endl;
 	QEDO_CIDL_Generator::GeneratorEIDL *eidl_generator =
 		new QEDO_CIDL_Generator::GeneratorEIDL(repository);
 	eidl_generator->generate(target);
+	eidl_generator->destroy();
 
 	// generate local IDL
 	std::cout << "Generating local IDL for " << target << std::endl;
 	QEDO_CIDL_Generator::GeneratorLIDL *lidl_generator =
 		new QEDO_CIDL_Generator::GeneratorLIDL(repository);
 	lidl_generator->generate(target);
+	lidl_generator->destroy();
 
 	// generate local business IDL
 	std::cout << "Generating local business IDL for " << target << std::endl;
 	QEDO_CIDL_Generator::GeneratorBIDL *bidl_generator =
 		new QEDO_CIDL_Generator::GeneratorBIDL(repository);
 	bidl_generator->generate(target);
+	bidl_generator->destroy();
 
-	// generate CORBA Component Descriptor
-	std::cout << "Generating CORBA Component Descriptor for " << target << std::endl;
-	QEDO_CIDL_Generator::GeneratorCCD *ccd_generator =
-		new QEDO_CIDL_Generator::GeneratorCCD(repository);
-	ccd_generator->generate(target);
+	if(generateBusiness)
+	{
+		// generate CORBA Component Descriptor
+		std::cout << "Generating CORBA Component Descriptor for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorCCD *ccd_generator =
+			new QEDO_CIDL_Generator::GeneratorCCD(repository);
+		ccd_generator->generate(target);
+		ccd_generator->destroy();
 
-	// generate business header
-	std::cout << "Generating business code header for " << target << std::endl;
-	QEDO_CIDL_Generator::GeneratorBusinessH *bh_generator =
-		new QEDO_CIDL_Generator::GeneratorBusinessH(repository);
-	bh_generator->generate(target);
+		// generate business header
+		std::cout << "Generating business code header for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorBusinessH *bh_generator =
+			new QEDO_CIDL_Generator::GeneratorBusinessH(repository);
+		bh_generator->generate(target);
+		bh_generator->destroy();
 	
-	// generate business code
-	std::cout << "Generating business code for " << target << std::endl;
-	QEDO_CIDL_Generator::GeneratorBusinessC *bc_generator =
-		new QEDO_CIDL_Generator::GeneratorBusinessC(repository);
-	bc_generator->generate(target);
+		// generate business code
+		std::cout << "Generating business code for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorBusinessC *bc_generator =
+			new QEDO_CIDL_Generator::GeneratorBusinessC(repository);
+		bc_generator->generate(target);
+		bc_generator->destroy();
+	}
 
 	// generate servant header
 	std::cout << "Generating servant code header for " << target << std::endl;
 	QEDO_CIDL_Generator::GeneratorServantH *sh_generator =
 		new QEDO_CIDL_Generator::GeneratorServantH(repository);
 	sh_generator->generate(target);
+	sh_generator->destroy();
 
 	// generate servant code
 	std::cout << "Generating servant code for " << target << std::endl;
 	QEDO_CIDL_Generator::GeneratorServantC *sc_generator =
 		new QEDO_CIDL_Generator::GeneratorServantC(repository);
 	sc_generator->generate(target);
-
-
-	//
-	// destroy all
-	//
-	eidl_generator->destroy();
-	lidl_generator->destroy();
-	bidl_generator->destroy();
-	ccd_generator->destroy();
-	bh_generator->destroy();
-	bc_generator->destroy();
-	sh_generator->destroy();
 	sc_generator->destroy();
 
 	signal ( SIGINT, SIG_DFL );
