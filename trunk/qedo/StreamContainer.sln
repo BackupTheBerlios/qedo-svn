@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenDef", "gendef\gendef.vcp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QedoUtil", "qedoutil\qedoutil.vcproj", "{BFEB5186-CAA5-4E9B-B198-BC5AD962F0F1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qcontroller", "qcontroller\qcontroller.vcproj", "{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -51,6 +53,7 @@ Global
 		{1537F5B1-E922-4190-A5D3-0AB06BF822A6}.0 = {861222F4-9ADE-4721-B531-4BCDC95DCC73}
 		{1537F5B1-E922-4190-A5D3-0AB06BF822A6}.1 = {BFEB5186-CAA5-4E9B-B198-BC5AD962F0F1}
 		{BFEB5186-CAA5-4E9B-B198-BC5AD962F0F1}.0 = {861222F4-9ADE-4721-B531-4BCDC95DCC73}
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.0 = {BFEB5186-CAA5-4E9B-B198-BC5AD962F0F1}
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{54EFB068-E701-4956-8BDA-C31AD9B2901A}.Debug.ActiveCfg = Debug|Win32
@@ -173,6 +176,18 @@ Global
 		{BFEB5186-CAA5-4E9B-B198-BC5AD962F0F1}.Release.Build.0 = Release|Win32
 		{BFEB5186-CAA5-4E9B-B198-BC5AD962F0F1}.Release_orbacus.ActiveCfg = Release|Win32
 		{BFEB5186-CAA5-4E9B-B198-BC5AD962F0F1}.Release_orbacus.Build.0 = Release|Win32
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.Debug.ActiveCfg = Debug|Win32
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.Debug.Build.0 = Debug|Win32
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.Debug_mico.ActiveCfg = Debug|Win32
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.Debug_mico.Build.0 = Debug|Win32
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.Debug_orbacus.ActiveCfg = Debug|Win32
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.Debug_orbacus.Build.0 = Debug|Win32
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.Debug_tao.ActiveCfg = Debug|Win32
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.Debug_tao.Build.0 = Debug|Win32
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.Release.ActiveCfg = Release|Win32
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.Release.Build.0 = Release|Win32
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.Release_orbacus.ActiveCfg = Release|Win32
+		{954B574F-F5E4-44AD-A14F-B16E7FB1ED70}.Release_orbacus.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
