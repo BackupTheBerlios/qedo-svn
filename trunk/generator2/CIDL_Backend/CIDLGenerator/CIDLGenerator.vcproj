@@ -55,7 +55,8 @@
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
 				CommandLine="mkdir $(QEDO)\bin
-copy $(OutDir)\$(TargetFileName) $(QEDO)\bin"/>
+copy $(TargetPath) $(QEDO)\bin
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -167,7 +168,7 @@ copy cidl_gen.exe $(QEDO)\bin
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
 				CommandLine="mkdir $(QEDO)\bin
-copy $(OutDir)\$(TargetFileName) $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
