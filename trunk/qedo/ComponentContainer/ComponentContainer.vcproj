@@ -410,6 +410,12 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="EntityHomeServant.cpp">
 			</File>
 			<File
+				RelativePath="ExtensionContext.cpp">
+			</File>
+			<File
+				RelativePath="ExtensionHomeServant.cpp">
+			</File>
+			<File
 				RelativePath=".\FacetPort.cpp">
 			</File>
 			<File
@@ -520,6 +526,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="EntityHomeServant.h">
+			</File>
+			<File
+				RelativePath="ExtensionContext.h">
+			</File>
+			<File
+				RelativePath="ExtensionHomeServant.h">
 			</File>
 			<File
 				RelativePath=".\FacetPort.h">
