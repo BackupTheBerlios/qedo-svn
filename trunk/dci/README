@@ -1,1 +1,60 @@
-the qedo dci environment
+qedo dci environment
+====================
+
+compiling requirements
+----------------------
+
+* the dependency from the Repository (MDA-INFRA) ist resolved by copying the relevant files to ClientIDL:
+
+  Core:
+	CorbaIdlTypes.idl, PrimitiveTypes.idl, Reflective.idl (from mda-infra\source\idl) and 
+	RepositoryRoot.idl (from mda-infra\source\Core\RepositoryCore)
+	
+  generated Repository-Idl from the MOF-Model:
+	MDE*.idl
+	
+* dependency from Qedo Valuetypes.h :
+	resolved by including <Valuetypes.h> in RepAssemblyManagerSessionImpl.h (search along the /I paths)
+	
+	Cookie_Impl is using to realise the cookie-in/output of the AssemblyFactory-interface 
+	the Repository-UUIds are converted as binary-stream into the cookies
+	
+* the following environment variables are used:
+	QEDO
+	MICO
+		
+* the ZIP.EXE should be in path for zipping of archives (in user defined buildsteps / after linking)
+	
+* 
+
+project output (also copied to $(QEDO)\bin )
+--------------
+	DCIManager.zip
+	DCIRepository.zip
+	DCINodemanager.zip
+	DCINodemanagerExt.zip
+
+
+runtime requirements
+--------------------
+* the following environment variables are used:
+
+	MDA_ETC				path for reading/writing iors
+	
+* file-i/o
+	$(MDA_ETC)\repo-files\	directory for storing files referenced from repository
+	
+	$(MDA_ETC)\dci-tmp\ass\		temporary directory for unzipping of assemblies
+	$(MDA_ETC)\dci-tmp\comp\	temporary directory for unzipping of components
+	
+	
+* structure in naming-service (setting up while qdeploy of dci-assemblies)
+
+	DCI
+		DCIRepository
+		DCIManager
+		RepAssemblyManagerHome
+		
+		
+	
+	

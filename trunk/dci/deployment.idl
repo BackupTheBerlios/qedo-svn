@@ -1,0 +1,1215 @@
+// ===================================================================
+//
+// This file contains the OMG IDL 3.0 specification associated to
+// the Distributed Computing Infrastructure (DCI).
+//
+//
+// Version: 1.0 (10/07/2003)
+//
+// Copyright (C) 2003 IST COACH Project.
+//
+// Authors: 
+//          Frédéric Briclet - USTL/LIFL
+//          Christophe Contreras - CNRS/LIFL
+//          Andreas Hoffmann - FhG FOKUS
+//          Philippe Merle - USTL/LIFL
+//          Bertram Neubauer - HU Berlin
+//          Tom Ritter - FhG FOKUS
+//          
+// ===================================================================         
+// 
+// ===================================================================
+//
+// Design principles:
+// * Componentization of all CCM interfaces acting during the
+//   deployment process.
+// * All bindings between components are explicitly identified
+//   via ports. Then there is no hidden communication path.
+//
+// ===================================================================
+// ===================================================================
+//
+// List of all imported OMG IDL definitions,
+// i.e. reused modules, interfaces, data types and exceptions.
+//
+// ===================================================================
+
+/*
+ * Importation of the OMG's CORBA module in order to use:
+ * - ::CORBA::RepositoryId
+ * - ::CORBA::OctetSeq
+ */  
+// import CORBA;
+
+/*
+ * Importation of the OMG's Components module in order to use:
+ * - ::Components::InvalidName
+ * - ::Components::CookieRequired
+ * - ::Components::Cookie
+ * - ::Components::ConfigValues
+ * - ::Components::CCMObject
+ * - ::Components::CCMHome
+ * - ::Components::HomeFinder
+ * - ::Components::Deployment::InstallationFailure
+ * - ::Components::Deployment::AssemblyFactory
+ * - ::Components::Deployment::Assembly
+ * - ::Components::Deployment::ComponentInstallation
+ * - ::Components::Deployment::ServerActivator
+ * - ::Components::Deployment::ComponentServer
+ * - ::Components::Deployment::Container
+ */  
+// !!! import Components;
+#include "Components.idl"
+
+//###########################
+module Components__ {
+	module Deployment {
+		interface AssemblyFactory
+		{
+			Components::Cookie create_assembly(in Components::Deployment::Location assembly_loc)
+				raises (Components::Deployment::InvalidLocation, Components::CreateFailure);
+
+			Components::Deployment::Assembly lookup(in Components::Cookie c)
+				raises (Components::Deployment::InvalidAssembly);
+
+			void destroy(in Components::Cookie c)
+				raises (Components::Deployment::InvalidAssembly, Components::RemoveFailure);
+		};
+	};
+};
+
+//###########################
+module Components__ {
+	module Deployment {
+		interface ExtComponentInstallation
+				: ::Components::Deployment::ComponentInstallation
+		{
+			::Components::Deployment::Location 
+				upload(in ::Components::Deployment::UUID implUUID, in CORBA::OctetSeq archive)
+			raises(::Components::Deployment::InstallationFailure);
+		};
+	};
+};
+
+
+//#include "RepositoryRoot.idl"  // def. of M2C::MOFRepository::RepositoryRoot
+
+/*
+ * Importation of the OMG's CosNaming module in order to use:
+ * - ::CosNaming::NamingContext
+ */
+// !!! import CosNaming;
+#include "CosNaming.idl"
+
+/*
+ * Importation of the OMG's CosTrading module in order to use:
+ * - ::CosTrading::Lookup
+ */
+// !!! import CosTrading;
+// !!! #include "CosTrading.idl"
+
+// ===================================================================
+//
+// Extensions in Module Components.
+//
+// ===================================================================
+
+// !!! module Components
+// !!! {
+
+    /*
+     * The HomeRegistration interface is provided to register/unregister
+     * CCMHome instances.
+     *
+     * Can alternatively be defined as extension of homefinder interface.
+     */
+
+// !!!  interface HomeRegistration
+// !!!  {
+        /*
+         * Register a CCMHome instance.
+         *
+         * @param home_ref The CCMHome reference.
+         * @param home_repid The CCMHome Repository Id.
+         * @param component_repid The managed component Repository Id.
+         * @param name The INS name associated to the home instance.
+         *
+         *  @return The cookie associated to this registration.
+         */
+/*  !!!      ::Components::Cookie
+        register_home(in ::Components::CCMHome home_ref,
+                      in ::CORBA::RepositoryId home_repid,
+                      in ::CORBA::RepositoryId component_repid,
+                      in string name);
+ !!! */
+         /*
+          * Unregister a CCMHome.
+          *
+          * @param ck The registration cookie returned by register_home.
+          *
+          *  @throws ::Components::CookieRequired
+          *          Thrown when an invalid cookie is used.
+          */
+/*  !!!       void
+         unregister_home(in ::Components::Cookie ck)
+         raises(CookieRequired);
+    };
+};
+ !!! */
+
+
+// ===================================================================
+//
+// The Distributed Computing Infrastructure.
+//
+// ===================================================================
+
+/*
+ * The DCI module contains all the OMG IDL definitions associated
+ * to the Distributed Computing Infrastructure (DCI).
+ */
+
+module DCI 
+{
+		interface HomeRegistration
+		{
+        /*
+         * Register a CCMHome instance.
+         *
+         * @param home_ref The CCMHome reference.
+         * @param home_repid The CCMHome Repository Id.
+         * @param component_repid The managed component Repository Id.
+         * @param name The INS name associated to the home instance.
+         *
+         *  @return The cookie associated to this registration.
+         */
+        ::Components::Cookie
+        register_home(in ::Components::CCMHome home_ref,
+                      in ::CORBA::RepositoryId home_repid,
+                      in ::CORBA::RepositoryId component_repid,
+                      in string name);
+         /*
+          * Unregister a CCMHome.
+          *
+          * @param ck The registration cookie returned by register_home.
+          *
+          *  @throws ::Components::CookieRequired
+          *          Thrown when an invalid cookie is used.
+          */
+         void
+         unregister_home(in ::Components::Cookie ck)
+         raises(::Components::CookieRequired);
+    };
+
+
+    // ==============================================================
+    //
+    // Declaration of common data types.
+    //
+    // ==============================================================
+
+    /*
+     * Sequence of assemblies.
+     */
+    typedef sequence<::Components::Deployment::Assembly> Assemblies;
+
+    /*
+     * Sequence of assembly uuids.
+     */
+    typedef sequence<::Components::Deployment::UUID> AssemblyUUIDs;
+   
+    /*
+     * UUID of an assembly instance.
+     */
+    typedef ::Components::Deployment::UUID InstanceUUID;
+
+    /*
+     * Sequence of assembly instance UUISs.
+     */
+    typedef sequence<InstanceUUID> InstanceUUIDs;
+
+    /*
+     * Assembly archive containing the binary code and appropriate descriptors.
+     */
+    typedef sequence<octet> AssemblyArchive;
+
+	/*
+     * Component archive containing the binary code and appropriate descriptors.
+     */
+    typedef sequence<octet> ComponentArchive;
+
+    /*
+     * The XML datatype represents any information in an XML format.
+     */
+    typedef string XML;
+
+    /*
+     * Type of deployment descriptor files: 
+     * CAD - component assembly descriptor
+     * CSD - component software descriptor
+     * CCD - CORBA component descriptor
+     * CPF - Component property file
+     */ 
+    enum DeploymentDescriptorType {
+        CAD, 
+        CSD,
+        CCD,
+        CPF
+    };
+
+    /*
+     * Deployment descriptors for an assembly and its components.
+     * type may be CAD, CSD ,CCD or CPF files.
+     * filename is name of descriptor which may be refered to within other
+     * descriptors.
+     */ 
+    struct DeploymentDescriptor {
+        string filename;
+        DeploymentDescriptorType type;
+        XML descriptor;
+    };
+
+    /*
+     * Sequence of descriptors for an assembly.
+     * Descriptors can be CAD, CSD ,CCD or CPF files.
+     * Descriptors match to the path where the assembly descriptor can be obtained.
+     */
+    typedef sequence<DeploymentDescriptor> DeploymentDescriptors;
+
+
+    /*
+     * Type of DCI desriptors:
+     * DPD - DCI property descriptor
+     * NPD - Node property descriptor
+     * CPF - Component property file
+     */
+    enum DCIDescriptorType {
+        DPD,
+        NPD,
+        CPF2 //!!!
+    };
+
+    /*
+     * DCI descriptors for target environment with its nodes.
+     * type may be DPD, NPD or CPF files.
+     * filename is name of descriptor which may be refered to within other
+     * descriptors.
+     */ 
+    struct DCIDescriptor {
+        string filename;
+        DCIDescriptorType type;
+        XML descriptor;
+    };
+
+    /*
+     * Sequence of DCI descriptors.
+     * Descriptors can be DPD, NPD files.
+     * Descriptors may be obtained from DCI interfaces or stored in a file system.
+     */
+    typedef sequence<DCIDescriptor> DCIDescriptors;
+
+
+    /*
+     * Typedef for naming/identifying node managers.
+     */
+    typedef string NodeName;
+
+    /*
+     * Typedef for naming/identifying dci managers.
+     */
+    typedef string DCIName;
+
+    /* 
+     * The following data structures are needed for the AssemblyInformation 
+     * interface.
+     */ 
+    struct HomeInfo {
+        ::CORBA::RepositoryId home_repid;
+        ::CORBA::RepositoryId component_repid;
+        ::Components::CCMHome home_ref;
+        string uid;
+        NodeName node_name;
+    };
+    typedef sequence<HomeInfo> InstalledHomes;
+
+    struct ComponentInfo {
+        ::CORBA::RepositoryId component_repid;
+        ::Components::CCMObject comp_ref;
+        string uid;
+        NodeName node_name;
+    };
+    typedef sequence<ComponentInfo> RunningComponents;
+
+
+    // ==============================================================
+    //
+    // Declaration of common exceptions.
+    //
+    // ==============================================================
+
+    /*
+     * Exception and reason for invalid archive.
+     */
+    enum InvalidArchiveReason {
+        unknown_archive_type, 
+        broken_archive,
+        missing_implementation, 
+        unpack_error,
+        parser_error,
+        unknown_reason
+    };
+
+    exception InvalidArchive { 
+        InvalidArchiveReason reason;
+        string description;             
+    };
+
+    /*
+     * Exception for already installed assembly archive.
+     */
+    exception AlreadyInstalled {};
+
+    /*
+     * Exception to be thrown if an assembly is in use while trying to uninstall.
+     */
+    exception AssemblyUsed {};
+
+    /*
+     * Exception to be thrown if an assembly cannot be uninstalled.
+     */
+    exception UninstallationFailure {
+        string description;
+    };
+
+    /*
+     * Exception to be thrown if an assembly cannot be instantiated.
+     */
+    enum CreationFailureReason {
+        resource_error, 
+        node_unavailable, 
+        unknown_creation_failure
+    };
+
+    exception CreationFailure {
+        CreationFailureReason reason;
+        string description;     // maybe node name or resource name
+    };
+
+    /*
+     * Exception to be thrown if an assembly instance cannot be destroyed.
+     */
+    exception DestroyError {
+        string description;
+    };
+
+    /*
+     * Exception to be thrown if an assembly to be updated or installed,
+     * or an assembly descriptor or assembly instance looked for is unknown.
+     */
+    exception UnknownAssembly {};
+
+    /*
+     * Exception to be thrown if a node is already registered.
+     */
+    exception AlreadyRegistered {};
+
+    /*
+     * Exception to be thrown if a node to be deregistered is unknown.
+     */
+    exception UnknownNode {};
+
+
+    // ==============================================================
+    //
+    // Forward declaration of all interface, eventtype, component and
+    // home types.
+    //
+    // ==============================================================
+
+    /*
+     * The DCIDeployment interface can be used to install an assembly
+     * which leads to the installation of components onto the 
+     * appropriate nodes. It is also possible to update the software
+     * or to uninstall it. Apart from that the DCIDeployment interface
+     * provides operations to create or destroy assemblies (instances
+     * of assemblies) and to retrieve the installed or running assemblies.
+     */
+    interface DCIDeployment;
+
+    /*
+     * This interface is used to get information about the whole target
+     * environment or about a particular node of the environment. The
+     * information is delivered in a XML based format.
+     */
+    interface DCIInformation;
+
+    /*
+     * The NodeManagement interface provides operations to manage
+     * the list of node managers of a DCI domain, i.e. get, add, remove.
+     */
+    interface NodeManagement;
+
+    /*
+     * The ExtComponentInstallation interface extends the standard
+     * ::Components::Deployment::ComponentInstallation interface
+     * with the upload operation.
+     */
+    interface ExtComponentInstallation;
+
+    /*
+     * The NodeInformation interface is provided
+     * to obtain node properties.
+     */
+    interface NodeInformation;
+
+    /*
+     * The DCIChanged eventtype encapsulates any change
+     * in the state of a DCIManager instance.
+     */
+    eventtype DCIChanged;
+
+    /*
+     * The NodeChanged eventtype encapsulates any change
+     * in the state of a NodeManager instance.
+     */
+    eventtype NodeChanged;
+
+    /*
+     * The DCIManager component type is the 
+     * componentization of a DCI domain.
+     */
+    component DCIManager;
+
+    /*
+     * The NodeManager component type is the 
+     * componentization of the standard
+     * ::Components::Deployment::ServerActivator and
+     * ::Components::Deployment::ComponentInstallation
+     * interfaces.
+     *
+     * A NodeManager instance is part of only one domain (e.g. DCIManager).
+     * However as NodeManager is just a logical abstraction of a physical node
+     * several node managers could run in the same physical node
+     * each could be part of different domains or they could be part of
+     * the same domain if they have different node names.
+     */
+    component NodeManager;
+
+    /*
+     * A sequence of NodeManager instances.
+     */
+    typedef sequence<NodeManager> NodeManagers;
+
+
+    /*
+     * The AssemblyManager component type is the 
+     * componentization of the standard
+     * ::Components::Deployment::Assembly interface.
+     */
+    component AssemblyManager;
+
+  // !!! home decls moved to the sections !!!
+  // !!! AssemblyManager decl moved to first position !!!
+  // !!! eventtypes moved from end to first position !!!
+  
+   /*
+     * The DCIChanged eventtype encapsulates any change
+     * in the state of a DCIManager instance.
+     */
+    eventtype DCIChanged
+    {
+        /*
+         * The DCIManager sending this DCIChanged event.
+         * This event is sent to external tools to notify them
+         * about changes in the DCI.
+         */
+        public DCIManager dci_manager;
+
+        /*
+         * Optional parameter: may contain a node name indicating the
+         * origin for this change event.
+         */
+        public NodeName node_name;
+    };
+
+
+    /*
+     * The NodeChanged eventtype encapsulates any change
+     * in the state of a NodeManager instance.
+     * This event is sent to the DCIManager by NodeManagers.
+     * It is only used internally in the DCI.
+     */
+    eventtype NodeChanged
+    {
+        /*
+         * The NodeManager sending this NodeChanged event.
+         */
+        public NodeName node_name;
+    };
+
+
+
+    // ==============================================================
+    //
+    // The AssemblyManager component type.
+    //
+    // ==============================================================
+
+    /*
+     * The AssemblyInformation interface provides information about 
+     * the homes and components of a running assembly that is managed
+     * by its dedicated AssemblyManager.
+     * The information to be obtained from this interface may be based
+     * on the initial configuration as specified by the XML assembly 
+     * descriptor, or it may be based on the dynamically changing
+	 * topology of that running assembly instance.
+     */
+    interface AssemblyInformation
+    {
+    
+        /*
+         * The attribute 'is_dynamic_information' informs whether
+         * the information to be obtained from this interface also
+         * contains dynamically changing information about the running
+         * assembly or whether it just contains information about
+         * the initial configuration as described by the XML descriptor.
+         */
+        readonly attribute boolean is_dynamic_information;
+
+        /*
+         * All the descriptors used by this assembly,
+         * which include *.CAD ,*.CSD, *.CCD and *.CPF.
+         */
+        readonly attribute DeploymentDescriptors descriptors;
+
+        XML
+        get_assembly_descriptor();
+
+        /*
+         * The operation 'get_homes' returns a sequence of data structures
+         * containing information about homes belonging to the assembly 
+         * managed by the dedicated AssemblyManager.
+         */
+        InstalledHomes 
+        get_homes();
+
+        /*
+         * The operation 'get_components' returns a sequence of data 
+         * structures containing information about components belonging
+         * to the assembly managed by the dedicated AssemblyManager.
+         */
+        RunningComponents
+        get_components();
+    };
+
+    /*
+     * The AssemblyManager component type is the 
+     * componentization of the standard
+     * ::Components::Deployment::Assembly interface.
+     */
+    component AssemblyManager
+    {
+        /*
+         * Attribute for location of assembly package.
+         * 
+         * Must be set before the AssemblyManager instance can be used.
+         *
+         * Otherwise the built operation at the Assembly facet must fail and
+         * raise the exception "CreateFailure" with an appropriate description 
+         * in the "FailureReason" element of the exception.
+         *
+         * Reason: An instance of an AssemblyManager is generically  created, but
+         * needs to have information about the assembly it is dedicated to.
+         */
+        attribute ::Components::Deployment::Location assembly_loc;
+
+        /*
+         * The unique Identifier for this AssemblyManager instance.
+         */
+        readonly attribute InstanceUUID ass_id;
+
+        /*
+         * The 'assembly' facet provides the
+         * ::Components::Deployment::Assembly interface.
+         * It will be used to build and tear_down the assembly.
+         */
+        provides ::Components::Deployment::Assembly assembly;
+
+        /*
+         * The 'assembly_information' facet provides the AssemblyInformation
+         * interface.
+         * It will be used to retrieve information about the XML descriptor(s) 
+         * as well as homes and components belonging to the assembly instance
+         * managed by the dedicated AssemblyMaanger.
+         */
+        provides AssemblyInformation assembly_information;
+
+        /*
+         * The 'dci_information' receptacle contains the reference of
+         * the DCIInformation interface used to obtain NodeManager
+         * references.
+         */
+        uses DCIInformation dci_information;
+
+        /*
+         * The 'homes' receptacle contains
+         * the references of all used CCMHome instances.
+         */
+        uses multiple ::Components::CCMHome homes;
+
+        /*
+         * The 'components' receptacle contains
+         * the references of all used CCMObject instances.
+         */
+        uses multiple ::Components::CCMObject components;
+
+        /*
+         * The 'naming_service' receptacle contains the reference of
+         * the unique Naming Service used at deployment time.
+         */
+        uses ::CosNaming::NamingContext naming_service;
+
+        /*
+         * The 'trader_service' receptacle contains the reference of
+         * the unique Trader Service used at deployment time.
+         */
+// !!!        uses ::CosTrading::Lookup trader_service;
+    };
+
+    /*
+     * The AssemblyManagerHome home type manages
+     * AssemblyManager component instances.
+     * It supports the AssemblyFactory defined by CCM.
+     */
+    home AssemblyManagerHome
+         supports Components__::Deployment::AssemblyFactory // !!! NEW scope
+         manages AssemblyManager
+    {
+    };
+
+    // ==============================================================
+    //
+    // The DCIManager component type.
+    //
+    // ==============================================================
+
+    /*
+     * The DCIDeployment interface.
+     *
+     * This interface may be used to install an assembly which 
+     * leads to the installation of components onto the appropriate
+     * nodes. It is also possible to update the software or to 
+     * uninstall
+     * it. Apart from that the DCIDeployment interface provides operations 
+     * to create or destroy assemblies (instances of assemblies) and to 
+     * retrieve the installed or running assemblies.
+     */
+    interface DCIDeployment {
+
+        /*
+         * Transmit implementations to DCIManager (push) and install them.
+         */
+        ::Components::Deployment::UUID 
+        install_with_archive(in AssemblyArchive archive)
+        raises(::Components::Deployment::InstallationFailure, AlreadyInstalled, InvalidArchive);
+
+        /*
+         * Transmit only descriptor to DCIManager, 
+		 * implementation is to be downloaded by DCIManager (pull).
+         */
+        ::Components::Deployment::UUID 
+        install_with_descriptor(in XML descriptor)
+        raises(::Components::Deployment::InstallationFailure, AlreadyInstalled);
+
+        /*
+         * Update an already installed assembly with a new archive.
+         */
+        ::Components::Deployment::UUID 
+        update_with_archive(in ::Components::Deployment::UUID old_assemblyUUID, in AssemblyArchive archive)
+        raises(UninstallationFailure, UnknownAssembly, 
+                ::Components::Deployment::InstallationFailure, AlreadyInstalled, InvalidArchive );
+
+        /*
+         * Update an already installed assembly with a new descriptor.
+         */
+        ::Components::Deployment::UUID 
+        update_with_descriptor(in ::Components::Deployment::UUID old_assemblyUUID, in XML descriptor)
+        raises(UninstallationFailure, UnknownAssembly, ::Components::Deployment::InstallationFailure, AlreadyInstalled);
+
+        /*
+         * Uninstallation of an assembly.
+         */
+        void 
+        uninstall(in ::Components::Deployment::UUID assemblyUUID)
+        raises(UninstallationFailure, UnknownAssembly, AssemblyUsed);
+
+        /*
+         * Instantiation of an assembly.
+         */
+        InstanceUUID 
+        create_assembly_instance(in ::Components::Deployment::UUID assemblyUUID)
+        raises(CreationFailure);
+
+        /*
+         * Retrieve list of all instances of an assembly.
+         */
+        InstanceUUIDs 
+        get_assembly_instances(in ::Components::Deployment::UUID assemblyUUID)
+        raises(UnknownAssembly);
+
+        /*
+         * Obtain the reference of an AssemblyManager dedicated to the
+         * assembly instance with instanceUUID.
+         */
+        AssemblyManager
+        get_assembly_manager(in InstanceUUID instance_id)
+        raises(UnknownAssembly);
+
+        /*
+         * Destroy an instance of an assembly.
+         */
+        void 
+        destroy_assembly_instance(in InstanceUUID instance_id)
+        raises(DestroyError);
+
+        /*
+         * Retrieve the list of all installed assemblies.
+         */
+        AssemblyUUIDs 
+        get_assemblies();
+
+        /*
+         * Obtain descriptor of an installed assembly.
+         */
+        XML
+        lookup_assembly(in ::Components::Deployment::UUID assemblyUUID) 
+        raises(UnknownAssembly);
+    };
+
+
+    /*
+     * The DCIInformation interface is provided
+     * to obtain DCI and node properties as well as 
+     * references to NodeManagers.
+     */
+    interface DCIInformation
+    {
+        /*
+         * The 'get_node_manager' operation returns
+         * a node manager associated to the given node name.
+         *
+         * @param node_node The node name to search.
+         *
+         * @return The NodeManager instance associated to the given node name.
+         *
+         * @throw ::Components::InvalidName
+         *        Thrown when the node name is unknown,
+         *        i.e. No NodeManager instance for this node name.
+         */
+        NodeManager
+        get_node_manager(in NodeName node_name)
+        raises(::Components::InvalidName);
+
+        /*
+         * The 'get_node_managers' operation returns
+         * a sequence of all node managers registered with a DCI.
+         */
+        NodeManagers
+        get_node_managers();
+
+        /*
+         * The 'get_dci_properties' operation returns
+         * a sequence of DCI descriptors containing DCI properties 
+         * and node properties in a XML format, together with filename
+         * and type of each descriptor.
+         *
+         * @return sequence of DCI properties in an XML format.
+         */
+        DCIDescriptors
+        get_dci_properties();
+
+        /*
+         * The 'get_node_properties' operation returns a 
+         * sequence of DCI descriptors containing the node properties
+         * and potentially additional property files the node
+		 * properties descriptor refers to in an XML format.
+         * The implementation of this operation maybe a 
+         * forward request to the NodeInformation 
+         * interface of the approrpiate NodeManager.
+         *
+         * @return sequence of DCI properties in an XML format.
+         */
+        DCIDescriptors
+        get_node_properties(in NodeName node_name)
+        raises(::Components::InvalidName);
+    };
+
+    /*
+     * The NodeManagement interface provides operations to manage
+     * the list of node managers of a DCI domain.
+     */
+    interface NodeManagement
+    {
+        /*
+         * Add a node manager.
+         *
+         * @param node_name The name of the node manager.
+         * @param node_manager The reference to the node manager.
+         *
+         * @return void.
+         *
+         */
+        void
+        register_node(in NodeName node_name,
+                 in NodeManager node_manager)
+        raises(::Components::InvalidName, AlreadyRegistered);
+
+        /*
+         * Remove a previously added node manager.
+         *
+         * @param node name
+         *
+         * @throw ::Components::InvalidName
+         *        Thrown when the provided name is invalid.
+         */
+        void
+        deregister_node(in NodeName node_name)
+        raises(UnknownNode);
+    };
+
+
+    /*
+     * The DCIManager component type is the 
+     * componentization of a DCI domain.
+     */
+    component DCIManager
+    {
+        /*
+         * The 'dci_name' attribute is the logical identifier
+         * of the dci domain.
+         */
+        attribute DCIName dci_name;
+
+        /*
+         * The 'dci_deployment' facet provides the
+         * DCIDeployment interface.
+         */
+        provides DCIDeployment dci_deployment;
+
+        /*
+         * The 'dci_information' facet provides the
+         * DCIInformation interface.
+         */
+        provides DCIInformation dci_information;
+
+        /*
+         * The 'node_management' facet provides the
+         * NodeManagement interface enabling the registration
+         * of nodes in a domain.
+         */
+        provides NodeManagement node_management;
+
+        /*
+         * The 'home_finder' facet provides the
+         * ::Components::HomeFinder interface.
+         *
+         * This facet is used by AssemblyManager instances
+         * in order to handle <homefinder> CAD XML elements.
+         */
+        //!!! provides ::Components::HomeFinder home_finder;
+
+        /*
+         * The 'home_registration' facet provides the
+         * HomeRegistration interface.
+         *
+         * This facet is used by AssemblyManager instances
+         * in order to handle <registerwithhomefinder> CAD XML
+         * elements.
+         */
+        provides HomeRegistration home_registration;
+
+        /*
+         * The 'node_changed' event sink receives change notifications
+         * from NodeManager instances.
+         */
+        consumes NodeChanged node_changed;
+
+        /*
+         * The 'dci_changed' event source notifies any change
+         * in the state of the DCIManager instance.
+         */
+        publishes DCIChanged dci_changed;
+
+
+        /*
+         * The DCIManager has a receptacle for AssemblyManagerHome.
+         *
+         * AssemblyManagerHome is more specific than
+         * ::Components::Deployment::AssemblyFactory
+         * due to supports statement in its home definition.
+         */
+		uses AssemblyManagerHome ass_home;
+
+		//uses Components::CCMHome ass_home;
+
+        /*
+         * The DCIManager has a receptacle for the naming service.
+         */
+        uses ::CosNaming::NamingContext naming_service;
+	};
+
+
+    /*
+     * The DCIManagerHome home type manages
+     * DCIManager component instances.
+     */
+    home DCIManagerHome 
+         manages DCIManager
+    {
+    };
+
+    // ==============================================================
+    //
+    // The NodeManager component type.
+    //
+    // ==============================================================
+
+    /*
+     * The ExtComponentInstallation interface extends the standard
+     * ::Components::Deployment::ComponentInstallation interface
+     * with the upload operation.
+     */
+    interface ExtComponentInstallation
+            : ::Components::Deployment::ComponentInstallation
+    {
+        /*
+         * Upload an implementation.
+         *
+         * @throw ::Components::Deployment::InstallationFailure
+         *        Thrown when any installation failure obscurs.
+         */
+        ::Components::Deployment::Location 
+        upload(in ::Components::Deployment::UUID implUUID, in ComponentArchive archive)
+        raises(::Components::Deployment::InstallationFailure);
+    };
+
+    /*
+     * The NodeInformation interface is provided
+     * to obtain node properties.
+     */
+    interface NodeInformation
+    {
+        /*
+         * The 'get_node_properties' operation returns a 
+         * sequence of DCI descriptors containing the node properties
+         * and potentially additional property files the node
+		 * properties descriptor refers to in an XML format.
+         *
+         * @return sequence of DCI properties in an XML format.
+         */
+        DCIDescriptors
+        get_node_properties();
+        
+        /*
+         * The 'is_property_defined' operation returns
+         * a boolean value depending whether the property
+         * is defined or not.
+         */
+        boolean
+        is_property_defined(in string property_name)
+        raises(::Components::InvalidName); 
+
+        /*
+         * The 'get_property_value' operation returns
+         * the requested node property value.
+         */
+        any
+        get_property_value(in string property_name)
+        raises(::Components::InvalidName);
+    };
+
+// !!! eventtype-def moved 
+
+     /*
+     * The NodeManager component type is the 
+     * componentization of the standard
+     * ::Components::Deployment::ServerActivator and
+     * ::Components::Deployment::ComponentInstallation
+     * interfaces.
+     *
+     * A NodeManager instance is part of only one domain (e.g. DCIManager).
+     * However as NodeManager is just a logical abstraction of a physical node
+     * several node managers could run in the same physical node
+     * each could be part of different domains or they could be part of
+     * the same domain if they have different node names.
+     */
+    component NodeManager
+    {
+        /*
+         * The 'node_name' attribute is the logical identifier
+         * of the node in its domain.
+         */
+        attribute NodeName node_name;
+
+        /*
+         * The 'server_activator' facet provides the
+         * ::Components::Deployment::ServerActivator interface.
+         */
+        provides ::Components::Deployment::ServerActivator server_activator;
+
+        /*
+         * The 'component_installation' facet provides the
+         * ExtComponentInstallation interface.
+         */
+
+		//TODO provides ::Components__::Deployment::ExtComponentInstallation component_installation;
+		provides ExtComponentInstallation component_installation;
+
+        /*
+         * The 'node_information' facet provides the
+         * NodeInformation interface.
+         */
+        provides NodeInformation node_information;
+
+        /*
+         * The 'node_management' receptacle contains the reference
+         * of the NodeManagement interface provided by the associated
+         * DCIManager component.
+         *
+         * This receptacle allows the node manager to register/unregister
+         * itself to its DCIManager parent.
+         * 
+         * This approach requires appropriate support by the underlaying ORB,
+         * i.e. the get_component() operation needes to be implemented by the ORB
+         * in order to enable the navigation to the DCIManager.
+         * 
+         * Alternative approach: receptacle to the DCIManager.
+         */
+        uses NodeManagement node_management;
+
+        /*
+         * The 'node_changed' event source notifies any change
+         * in the state of the NodeManager instance.
+         */
+        publishes NodeChanged node_changed;
+    };  
+
+
+    /*
+     * The NodeManagerHome home type manages
+     * NodeManager component instances.
+     */
+    home NodeManagerHome 
+         manages NodeManager
+    {
+    };
+
+//===============================================
+
+	interface RepFeeder
+    {
+    	//to be used by DCIManager (install_with_archive() ...)
+    	Object // reference to assembly in repository
+    	feed_assembly(in AssemblyArchive archive)
+        raises(::Components::Deployment::InstallationFailure, AlreadyInstalled, InvalidArchive);
+
+    	//to be used by DCIManager (install_with_descriptor() ...)
+    	Object // reference to assembly in repository
+    	feed_assembly_with_descriptor(in XML descriptor)
+        raises(::Components::Deployment::InstallationFailure, AlreadyInstalled, InvalidArchive);
+
+		//to be used by AssemblyFactory-interface (DCI non-aware deployment clients)
+    	Object // reference to assembly in repository
+    	feed_assembly_with_url(in ::Components::Deployment::Location url)
+        raises(::Components::Deployment::InstallationFailure, AlreadyInstalled, InvalidArchive);
+
+		//to be used by ComponentInstallation-interface (DCI non-aware deployment clients)
+    	Object // reference to deploymentUnit in repository
+    	feed_component(in ::Components::Deployment::UUID implUUID, in ComponentArchive archive)
+        raises(::Components::Deployment::InstallationFailure, AlreadyInstalled, InvalidArchive);
+
+    	Object // reference to deploymentUnit in repository
+		feed_component_with_url(in ::Components::Deployment::UUID implUUID, in ::Components::Deployment::Location url)
+        raises(::Components::Deployment::InstallationFailure, AlreadyInstalled, InvalidArchive);
+	};
+    
+//    typedef sequence<octet> File;
+    
+/* interface FileMgmt
+    {
+    	File
+    	get_file(in ::Components::Deployment::Location location) //localpath to file
+        raises(::Components::Deployment::InvalidLocation);
+
+    };
+*/
+
+	interface RepositoryDeploymentRoot
+	{
+		Object get_root_package ();
+		//Reflective::RefPackage get_root_package ();
+	};
+
+	component Repository
+    {
+		provides RepFeeder rep_feeder;
+		provides RepositoryDeploymentRoot rep_root_proxy; 
+		//provides M2C::MOFRepository::RepositoryRoot rep_root_proxy;
+		//uses M2C::MOFRepository::RepositoryRoot rep_root;
+    };
+    home RepositoryHome 
+         manages Repository
+    {
+    };
+
+    component RepNodeManager : NodeManager
+    {
+        uses Repository repository; //navigation to RepFeeder and RepRoot
+		uses DCIManager dcimanager;
+    };
+    home RepNodeManagerHome 
+         manages RepNodeManager
+    {
+    };
+
+	interface RepAssemblyFactory : Components__::Deployment::AssemblyFactory // !!! NEW scope
+	{
+        //InstanceUUID 
+    	Object // reference to AssemblyInstance in repository
+		create_assembly_from_dci(in Object assemblyRef)
+        raises(CreationFailure);
+		void destroy_from_dci(in Object assemblyInstanceRef)
+		raises (DestroyError);
+	};
+
+
+    component RepAssemblyManager : AssemblyManager
+    {
+        //uses RepositoryRoot rep_root_proxy; 
+//??		uses RepositoryDeploymentRoot rep_root;
+        uses Repository repository; //navigation to RepFeeder and RepRoot
+    };
+	home RepAssemblyManagerHome //: AssemblyManagerHome
+         //supports Components__::Deployment::AssemblyFactory // !!! NEW scope
+		 supports RepAssemblyFactory
+         manages RepAssemblyManager 
+    {
+    };
+
+	component RepDCIManager : DCIManager
+    {
+        //uses Repository repository; //navigation to RepFeeder and RepRoot
+		uses RepositoryDeploymentRoot rep_root;
+		uses RepFeeder rep_feeder;
+		uses RepAssemblyManagerHome rep_ass_home;
+		uses RepNodeManager rep_nm;
+	};
+    home RepDCIManagerHome 
+         manages RepDCIManager
+    {
+    };
+
+//===============================================
+
+};
+

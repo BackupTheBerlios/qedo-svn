@@ -1,0 +1,296 @@
+#ifndef REFLECTIVE_IDL
+#define REFLECTIVE_IDL
+
+#pragma prefix "mof.omg.org"
+
+module Reflective {  
+  interface RefBaseObject;
+  
+  interface RefObject;
+
+  typedef sequence < RefObject > RefObjectUList;
+
+  typedef sequence < RefObject > RefObjectSet;
+
+  interface RefAssociation;
+
+  interface RefPackage;
+
+	//##ModelId=3D919B2600C9
+  typedef RefObject DesignatorType;
+
+  typedef sequence < any > AnyList;
+
+#ifdef TAO
+  typedef sequence < RefObject > Link;
+#else
+  typedef sequence < RefObject, 2 > Link;
+#endif
+
+  typedef sequence < Link > LinkSet;
+  
+  const string UNDERFLOW_VIOLATION = 
+    "org.omg.mof:structural.underflow";
+  const string OVERFLOW_VIOLATION = 
+    "org.omg.mof:structural.overflow";
+  const string DUPLICATE_VIOLATION = 
+    "org.omg.mof:structural.duplicate";
+  const string REFERENCE_CLOSURE_VIOLATION = 
+    "org.omg.mof:structural.reference_closure";
+  const string SUPERTYPE_CLOSURE_VIOLATION = 
+    "org.omg.mof:structural.supertype_closure";
+  const string COMPOSITION_CYCLE_VIOLATION = 
+    "org.omg.mof:structural.composition_cycle";
+  const string COMPOSITION_CLOSURE_VIOLATION =
+    "org.omg.mof:structural.composition_closure";
+  const string INVALID_OBJECT_VIOLATION = 
+    "org.omg.mof:structural.invalid_object";
+  const string NIL_OBJECT_VIOLATION = 
+    "org.omg.mof:structural.nil_object";
+  const string INACCESSIBLE_OBJECT_VIOLATION = 
+    "org.omg.mof:structural.inaccessible_object";
+  const string ALREADY_EXISTS_VIOLATION = 
+    "org.omg.mof:structural.already_exists";
+  const string INVALID_DESIGNATOR_VIOLATION = 
+    "org.omg.mof:reflective.invalid_designator";
+  const string WRONG_DESIGNATOR_VIOLATION =
+    "org.omg.mof:reflective.wrong_designator_kind";
+  const string UNKNOWN_DESIGNATOR_VIOLATION = 
+    "org.omg.mof:reflective.unknown_designator";
+  const string ABSTRACT_CLASS_VIOLATION =
+    "org.omg.mof:reflective.abstract_class";
+  const string NOT_CHANGEABLE_VIOLATION = 
+    "org.omg.mof:reflective.not_changeable";
+  const string NOT_NAVIGABLE_VIOLATION = 
+    "org.omg.mof:reflective.not_navigable";
+  const string NOT_PUBLIC_VIOLATION = 
+    "org.omg.mof:reflective.not_public";
+  const string WRONG_SCOPE_VIOLATION = 
+    "org.omg.mof:reflective.wrong_scope";
+  const string WRONG_MULTIPLICITY_VIOLATION =
+    "org.omg.mof:reflective.wrong_multiplicity";
+  const string WRONG_TYPE_VIOLATION = 
+    "org.omg.mof:reflective.wrong_type";
+  const string WRONG_NUMBER_PARAMETERS_VIOLATION = 
+    "org.omg.mof:reflective.wrong_number_parameters";
+  const string INVALID_DELETION_VIOLATION = 
+    "org.omg.mof:reflective.invalid_deletion";
+  
+  struct NamedValueType {
+    wstring name;
+    any value;
+  };
+//#pragma version NamedValueType 1.4
+
+  typedef sequence < NamedValueType > NamedValueList;
+//#pragma version NamedValueList 1.4
+  
+  exception MofError {
+    wstring error_kind;
+    RefObject element_in_error;
+    NamedValueList extra_info;
+    wstring error_description;
+  };
+#pragma version MofError 1.4
+  
+  exception NotFound {};
+  exception NotSet {};
+  exception BadPosition {
+    unsigned long current_size;
+  };
+  
+  exception OtherException {
+    DesignatorType exception_designator;
+    AnyList exception_values;
+  };
+#pragma version OtherException 1.4
+  
+  struct ViolationType {
+    wstring error_kind;
+    RefBaseObject object_in_error; 
+    RefObject element_in_error; 
+    NamedValueList extra_info; 
+    wstring error_description; 
+  }; 
+  
+  typedef sequence < ViolationType > ViolationTypeSet;
+  
+
+  interface RefBaseObject {
+
+/*
+medini extensions begin
+*/
+	struct Time {
+		unsigned short year; 
+		unsigned short month; 
+		unsigned short day; 
+		unsigned short hour; 
+		unsigned short minute; 
+		unsigned short second; 
+		unsigned short milliseconds;	
+	};
+	Time get_creation_time ();
+	string serialize();
+
+/*
+medini extensions end
+*/
+    string ref_mof_id ();
+    
+    DesignatorType ref_meta_object ();
+    
+    boolean ref_itself (in RefBaseObject other_object);
+    
+
+    RefPackage ref_immediate_package ();
+    
+    RefPackage ref_outermost_package ();
+    
+
+    void ref_delete ()
+      raises (MofError);
+    
+    boolean refVerifyConstraints(in boolean deepVerify, 
+				 in long maxProblems, 
+				 out ViolationTypeSet problems) 
+      raises (MofError);
+
+  };  // end of RefBaseObject interface
+  
+  
+  interface RefObject : RefBaseObject {
+      
+
+    boolean ref_is_instance_of (in DesignatorType some_class,
+				in boolean consider_subtypes)
+      raises (MofError);
+    
+
+    RefObject ref_create_instance (in AnyList args)
+      raises (MofError);
+    
+    RefObjectSet ref_all_objects (in boolean include_subtypes);
+    
+/*
+    void ref_set_value (in DesignatorType feature,
+			in any new_value)
+      raises (MofError);
+    
+    any ref_value (in DesignatorType feature)
+      raises (NotSet, MofError);
+    
+    void ref_unset_value (in DesignatorType feature)
+      raises (MofError);
+    
+    void ref_add_value (in DesignatorType feature,
+			in any new_element)
+      raises (MofError);
+    
+    void ref_add_value_before (in DesignatorType feature,
+			       in any new_element,
+			       in any before_element)
+      raises (NotFound, MofError);
+    
+    void ref_add_value_at (in DesignatorType feature,
+			   in any new_element,
+			   in unsigned long position)
+      raises (BadPosition, MofError);
+    
+    void ref_modify_value (in DesignatorType feature,
+			   in any old_element,
+			   in any new_element)
+      raises (NotFound, MofError);
+    
+    void ref_modify_value_at (in DesignatorType feature,
+			      in any new_element,
+			      in unsigned long position)
+      raises (BadPosition, MofError);
+    
+    void ref_remove_value (in DesignatorType feature,
+			   in any existing_element)
+      raises (NotFound, MofError);
+    
+    void ref_remove_value_at (in DesignatorType feature,
+			      in unsigned long position)
+      raises (BadPosition, MofError);
+    
+    RefObject ref_immediate_composite ();
+    
+    RefObject ref_outermost_composite ();
+    
+    any ref_invoke_operation (in DesignatorType requested_operation,
+			      inout AnyList args)
+      raises (OtherException, MofError);
+    
+*/
+  }; // end of RefObject interface
+  
+
+  interface RefAssociation : RefBaseObject {
+    
+    LinkSet ref_all_links ()
+      raises (MofError);
+/*    
+    boolean ref_link_exists (in Link some_link)      
+      raises (MofError);
+   
+    RefObjectUList ref_query (in DesignatorType query_end,
+			      in RefObject query_object)      
+      raises (MofError);
+*/    
+    void ref_add_link (in Link new_link)
+      raises (MofError);
+/*    
+    void ref_add_link_before (in Link new_link,
+			      in DesignatorType position_end,
+			      in RefObject before)
+      raises (NotFound, MofError);
+    
+    void ref_modify_link (in Link old_link,
+			  in DesignatorType position_end,
+			  in RefObject new_object)
+      raises (NotFound, MofError);
+    
+    void ref_remove_link (in Link old_link)
+      raises (NotFound, MofError);
+*/
+  }; // end of RefAssociation interface
+ 
+ 
+  interface RefPackage : RefBaseObject {
+/*
+	2003-04-09, Olaf
+	extensions to Reflective in order to be able to resolve class proxies,
+	associations and packages by the scoped name.
+	convention: scoped names are used without the _XContext postfix and 
+	without the enago_m2c:: prefix in IDL naming style
+*/
+	RefObject medini_ref_class_ref ( in string qualified_type_name )
+		raises (NotFound);
+	RefAssociation medini_ref_association_ref ( in string qualified_type_name )
+		raises (NotFound);
+	RefPackage medini_ref_package_ref ( in string qualified_type_name )
+		raises (NotFound);
+/*    
+    RefObject ref_class_ref (in DesignatorType class)
+      raises (MofError);
+    
+    RefAssociation ref_association_ref (in DesignatorType association)
+      raises (MofError);
+    
+    RefPackage ref_package_ref (in DesignatorType package)
+      raises (MofError);
+*/
+  }; // end of RefPackage interface
+  
+/*
+extensions for medini repository management
+*/
+  typedef sequence < RefPackage > RefPackageSet;
+
+}; // end of Reflective module
+
+#pragma prefix ""
+
+#endif

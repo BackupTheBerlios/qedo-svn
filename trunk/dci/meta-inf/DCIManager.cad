@@ -1,0 +1,150 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://cif.sourceforge.net/componentassembly.dtd">
+
+<componentassembly id="DCIManager">
+
+    <description>DCIManager assembly"</description>
+    
+    <componentfiles>
+        <componentfile id="DCI_RepositoryImpl_file">
+            <fileinarchive name="meta-inf/DCI_RepositoryImpl.csd">
+				<link href="DCI_RepositoryImpl.zip"/> 
+            </fileinarchive>            
+        </componentfile>
+
+        <componentfile id="DCI_RepDCIManagerImpl_file">
+            <fileinarchive name="meta-inf/DCI_RepDCIManagerImpl.csd">
+				<link href="DCI_RepDCIManagerImpl.zip"/> 
+            </fileinarchive>            
+        </componentfile>
+
+       <componentfile id="DCI_RepAssemblyManagerImpl_file">
+            <fileinarchive name="meta-inf/DCI_RepAssemblyManagerImpl.csd">
+				<link href="DCI_RepAssemblyManagerImpl.zip"/> 
+            </fileinarchive>            
+        </componentfile>
+ 
+    </componentfiles>
+    
+    <partitioning>
+	<processcollocation>
+
+         <homeplacement id="DCIRepositoryHome">
+	        <componentfileref idref="DCI_RepositoryImpl_file"/>
+			<componentimplref idref="UUID-0ED2D963-FA1C-4558-BA04-10624A87AA38"/>
+  	        <componentinstantiation id="DCIRepository">
+				<componentproperties>
+					<fileinarchive name="meta-inf/DCI_RepositoryImpl.cpf"/>
+				</componentproperties>
+				<registercomponent>
+					<registerwithnaming name="DCI/DCIRepository"/>
+				</registercomponent>
+<!--
+				<registercomponent>
+					<providesidentifier>rep_root_proxy</providesidentifier>
+					<registerwithnaming name="DCI/DCIRepository/rep_root_proxy"/>
+				</registercomponent>
+				<registercomponent>
+					<providesidentifier>rep_feeder</providesidentifier>
+					<registerwithnaming name="DCI/DCIRepository/rep_feeder"/>
+				</registercomponent>
+-->
+	        </componentinstantiation>
+	        <destination></destination>
+	    </homeplacement>
+
+        <homeplacement id="DCIManagerHome">
+	        <componentfileref idref="DCI_RepDCIManagerImpl_file"/>
+			<componentimplref idref="UUID-529D5220-0A8D-4469-9795-770CF78F0527"/>
+  	        <componentinstantiation id="DCIRepDCIManager">
+				<componentproperties>
+					<fileinarchive name="meta-inf/DCI_RepDCIManagerImpl.cpf"/>
+				</componentproperties>
+				<registercomponent>
+					<registerwithnaming name="DCI/DCIManager"/>
+				</registercomponent>
+<!-- dosn't work
+				<registercomponent>
+					<providesidentifier>dci_deployment</providesidentifier>
+					<registerwithnaming name="DCI/DCIManager/dci_deployment"/>
+				</registercomponent>
+				<registercomponent>
+					<providesidentifier>dci_information</providesidentifier>
+					<registerwithnaming name="DCI/DCIManager/dci_information"/>
+				</registercomponent>
+				<registercomponent>
+					<providesidentifier>node_management</providesidentifier>
+					<registerwithnaming name="DCI/DCIManager/node_management"/>
+				</registercomponent>
+				<registercomponent>
+					<providesidentifier>home_finder</providesidentifier>
+					<registerwithnaming name="DCI/DCIManager/home_finder"/>
+				</registercomponent>
+				<registercomponent>
+					<providesidentifier>home_registration</providesidentifier>
+					<registerwithnaming name="DCI/DCIManager/home_registration"/>
+				</registercomponent>
+-->
+	        </componentinstantiation>
+	        <destination></destination>
+	    </homeplacement>
+
+         <homeplacement id="RepAssemblyManagerHome">
+	        <componentfileref idref="DCI_RepAssemblyManagerImpl_file"/>
+			<componentimplref idref="UUID-EAE715D8-A6FE-44B5-B9CF-A6BD3287511A"/>
+			<registerwithnaming name="DCI/RepAssemblyManagerHome"/>
+	        <destination></destination>
+	    </homeplacement>
+
+	</processcollocation>
+    </partitioning>
+
+    <connections>
+	   	<connectinterface>
+			<usesport>
+				<usesidentifier>rep_root</usesidentifier>
+				<componentinstantiationref idref="DCIRepDCIManager"/>
+			</usesport>
+			<providesport>
+				<providesidentifier>rep_root_proxy</providesidentifier>
+				<componentinstantiationref idref="DCIRepository"/>
+			</providesport>
+		</connectinterface>
+
+    	<connectinterface>
+			<usesport>
+				<usesidentifier>rep_feeder</usesidentifier>
+				<componentinstantiationref idref="DCIRepDCIManager"/>
+			</usesport>
+			<providesport>
+				<providesidentifier>rep_feeder</providesidentifier>
+				<componentinstantiationref idref="DCIRepository"/>
+			</providesport>
+		</connectinterface>
+<!-- dosn't work
+    	<connectinterface>
+			<usesport>
+				<usesidentifier>ass_home</usesidentifier>
+				<componentinstantiationref idref="DCIRepDCIManager"/>
+			</usesport>
+			<homeinterface>
+				<homeplacementref idref="RepAssemblyManagerHome"/>
+			</homeinterface>
+		</connectinterface>
+-->
+	   	<connectinterface>
+			<usesport>
+			<usesidentifier>rep_ass_home</usesidentifier>
+			<componentinstantiationref idref="DCIRepDCIManager"/>
+			</usesport>
+		    
+			<existinginterface>
+			<findby> 
+			<namingservice name="DCI/RepAssemblyManagerHome"/> 
+			</findby>
+			</existinginterface>
+		</connectinterface>
+
+    </connections>
+</componentassembly>
+

@@ -1,0 +1,48 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://cif.sourceforge.net/componentassembly.dtd">
+
+<componentassembly id="DCIRepository">
+
+    <description>DCIRepository assembly"</description>
+    
+    <componentfiles>
+        <componentfile id="DCI_RepositoryImpl_file">
+             <fileinarchive name="meta-inf/DCI_RepositoryImpl.csd">
+				<link href="DCI_RepositoryImpl.zip"/> 
+            </fileinarchive>            
+        </componentfile>
+    </componentfiles>
+    
+    <partitioning>
+	<processcollocation>
+
+         <homeplacement id="DCIRepositoryHome">
+	        <componentfileref idref="DCI_RepositoryImpl_file"/>
+			<componentimplref idref="UUID-0ED2D963-FA1C-4558-BA04-10624A87AA38"/>
+  	        <componentinstantiation id="DCIRepository">
+				<componentproperties>
+					<fileinarchive name="meta-inf/DCI_RepositoryImpl.cpf"/>
+				</componentproperties>
+				<registercomponent>
+					<registerwithnaming name="DCI/DCIRepository"/>
+				</registercomponent>
+<!--
+				<registercomponent>
+					<providesidentifier>rep_root_proxy</providesidentifier>
+					<registerwithnaming name="DCI/DCIRepository/rep_root_proxy"/>
+				</registercomponent>
+				<registercomponent>
+					<providesidentifier>rep_feeder</providesidentifier>
+					<registerwithnaming name="DCI/DCIRepository/rep_feeder"/>
+				</registercomponent>
+-->
+	        </componentinstantiation>
+	        <destination></destination>
+	    </homeplacement>
+
+	</processcollocation>
+    </partitioning>
+
+    <connections>
+    </connections>
+</componentassembly>

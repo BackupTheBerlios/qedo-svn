@@ -1,0 +1,87 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://cif.sourceforge.net/componentassembly.dtd">
+
+<componentassembly id="Nodemanager">
+
+    <description>DCI assembly"</description>
+    
+    <componentfiles>
+         <componentfile id="DCI_RepNodeManagerImpl_file">
+            <fileinarchive name="meta-inf/DCI_RepNodeManagerImpl.csd">
+				<link href="DCI_RepNodeManagerImpl.zip"/> 
+            </fileinarchive>            
+        </componentfile>
+    </componentfiles>
+    
+    <partitioning>
+	<processcollocation>
+         <homeplacement id="DCIRepNodeManagerHome">
+	        <componentfileref idref="DCI_RepNodeManagerImpl_file"/>
+			<componentimplref idref="UUID-2F9C6737-D25D-400C-9D4C-E21245D71F2F"/>
+  	        <componentinstantiation id="DCIRepNodeManager">
+				<componentproperties>
+					<fileinarchive name="meta-inf/DCI_RepNodeManagerImpl.cpf"/>
+				</componentproperties>
+	        </componentinstantiation>
+	        <destination></destination>
+	    </homeplacement>
+
+	</processcollocation>
+    </partitioning>
+
+    <connections>
+<!-- ???
+	   	<connectinterface>
+			<usesport>
+			<usesidentifier>node_management</usesidentifier>
+			<componentinstantiationref idref="DCIRepNodeManager"/>
+			</usesport>
+		    
+			<existinginterface>
+			<findby> 
+			<namingservice name="DCI/DCIManager/node_management"/> 
+			</findby>
+			</existinginterface>
+		</connectinterface>
+
+	   	<connectinterface>
+			<usesport>
+			<usesidentifier>repository</usesidentifier>
+			<componentinstantiationref idref="DCIRepNodeManager"/>
+			</usesport>
+		    
+			<existinginterface>
+			<findby> 
+			<namingservice name="DCI/Repository/rep_root_proxy"/> 
+			</findby>
+			</existinginterface>
+		</connectinterface>
+-->
+	   	<connectinterface>
+			<usesport>
+			<usesidentifier>dcimanager</usesidentifier>
+			<componentinstantiationref idref="DCIRepNodeManager"/>
+			</usesport>
+		    
+			<existinginterface>
+			<findby> 
+			<namingservice name="DCI/DCIManager"/> 
+			</findby>
+			</existinginterface>
+		</connectinterface>
+
+	   	<connectinterface>
+			<usesport>
+			<usesidentifier>repository</usesidentifier>
+			<componentinstantiationref idref="DCIRepNodeManager"/>
+			</usesport>
+		    
+			<existinginterface>
+			<findby> 
+			<namingservice name="DCI/DCIRepository"/> 
+			</findby>
+			</existinginterface>
+		</connectinterface>
+    </connections>
+
+</componentassembly>
