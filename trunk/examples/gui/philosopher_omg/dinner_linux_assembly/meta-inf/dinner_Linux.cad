@@ -23,7 +23,7 @@
 			<link href="dinner_PhilosopherImpl.zip"/>
 		</fileinarchive>
         </componentfile>
- 
+
     </componentfiles>
        <partitioning>
 
@@ -31,17 +31,17 @@
 		<processcollocation>
 			<homeplacement id="CutleryHome">
 	        		<componentfileref idref="Cutlery_file"/>
-					<componentimplref idref="UUID-CC2EC6CB-D995-4580-B994-9435168EAA67"/>
+					<componentimplref idref="UUID-cb134dfc-e678-4eca-8e45-305e2587a80b"/>
   			      		<componentinstantiation id="Cutlery1">
 						</componentinstantiation>
 					<destination></destination>
 			</homeplacement>
 		</processcollocation>
-		
+
 		<processcollocation>
 			<homeplacement id="ObserverHome">
 	        		<componentfileref idref="Observer_file"/>
-					<componentimplref idref="UUID-5BE5DBAF-6667-4FF7-A579-0C7EFBDBF104"/>
+					<componentimplref idref="UUID-1e852f5e-8173-443c-b68c-85e70a1fb018"/>
   			      		<componentinstantiation id="Observer1">
 						</componentinstantiation>
 					<destination></destination>
@@ -51,13 +51,13 @@
 		<processcollocation>
 			<homeplacement id="PhilosopherHome">
 	        		<componentfileref idref="Philosopher_file"/>
-					<componentimplref idref="UUID-54CA2428-8A31-4E76-A7F8-8B17DA1F87AB"/>
+					<componentimplref idref="UUID-b74aa0de-aa9a-412c-a6e6-1e1d009e16f3"/>
   			      		<componentinstantiation id="Philosopher1">
 						</componentinstantiation>
 					<destination></destination>
 			</homeplacement>
 		</processcollocation>
-		
+
     </partitioning>
 
     <connections>
