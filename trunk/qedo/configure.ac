@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(Qedo, 0.4.1, qedo@qedo.berlios.de)
+AC_INIT(Qedo, 0.4.2, qedo@qedo.berlios.de)
 AC_CONFIG_SRCDIR([gendef/gendef.cc])
 AC_CONFIG_HEADER([ComponentIDL/config.h])
 

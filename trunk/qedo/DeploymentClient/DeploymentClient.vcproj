@@ -134,7 +134,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="micocoss2310.lib mico2310.lib wsock32.lib pthreadVC.lib"
+				AdditionalDependencies="micocoss2311.lib mico2311.lib wsock32.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/qdeploy.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib,$(MICO)\coss"

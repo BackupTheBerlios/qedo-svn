@@ -23,6 +23,11 @@
 /*                                                                           */
 /*****************************************************************************/
 
+!!!!!!!!
+See doc/Installation.tex for an updated version
+!!!!!!!!
+
+
 Version 0.2.0
 
 It might be a good idea to remove older version of Qedo and/or MICO. the installation into the same directory can cause problems.

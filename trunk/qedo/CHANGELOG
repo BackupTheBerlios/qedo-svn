@@ -1,3 +1,8 @@
+version 0.4.2
+- support for deployment of additional artefacts
+- reorganizing XML stuff
+- adaptation for MICO 2.3.11 version
+- MakeComponensVar ti be used for generated makefiles
 
 version 0.4.1
 - new dynamic library qedoutil for better code reusage

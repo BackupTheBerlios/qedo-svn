@@ -224,7 +224,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="mico2310.lib micocoss2310.lib pthreadVC.lib"
+				AdditionalDependencies="mico2311.lib micocoss2311.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"

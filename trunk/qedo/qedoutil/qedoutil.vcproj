@@ -182,7 +182,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2D.lib zlib.lib mico2310.lib micocoss2310.lib wsock32.lib pthreadVC.lib"
+				AdditionalDependencies="xerces-c_2D.lib zlib.lib mico2311.lib micocoss2311.lib wsock32.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/qedoutil.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
