@@ -6,6 +6,7 @@
 
 #ifdef _WIN32
 #include <Windows.h>
+#include <objbase.h>
 #endif
 
 namespace QEDO_CIDL_Generator {
