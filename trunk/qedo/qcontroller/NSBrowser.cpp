@@ -27,19 +27,16 @@ NSBrowserTreeCtrl::NSBrowserTreeCtrl(wxWindow *parent, const wxWindowID id,
 	parent -> SetSizer (h_sizer);
     parent->SetAutoLayout(TRUE);
 
-
 	wxBoxSizer * left_sizer = new wxBoxSizer(wxVERTICAL);
+
+	left_sizer -> Add(this, 0, wxGROW|wxALL|wxEXPAND , 5);
 	h_sizer -> Add(left_sizer, 0, wxEXPAND | wxALL, 5);
 
-	left_sizer -> Add(this, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-	
-
-
 	wxBoxSizer * rigth_sizer = new wxBoxSizer(wxVERTICAL);
-	h_sizer -> Add(rigth_sizer, 0, wxEXPAND | wxALL, 5);
+	h_sizer -> Add(rigth_sizer, 0, wxALIGN_RIGHT | wxALL, 5);
 
 	RefreshBtn = new wxButton(parent, NSD_TREE_REFRESH, _T("Refresh"));
-	rigth_sizer-> Add(RefreshBtn , 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+	rigth_sizer-> Add(RefreshBtn , 0, wxALIGN_RIGHT|wxALL, 5);
 
 	build_tree();
 	
