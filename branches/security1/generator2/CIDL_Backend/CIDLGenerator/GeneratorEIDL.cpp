@@ -601,7 +601,11 @@ GeneratorEIDL::doHome(IR__::HomeDef_ptr home)
 	out << "interface " << home->name() << "Implicit : ::Components::KeylessCCMHome\n";
 	out << "{\n";
 	out.indent();
-	out << map_absolute_name(home->managed_component()) << " create() raises (Components::CreateFailure);\n";
+	out << map_absolute_name(home->managed_component());
+	out << " create() raises (Components::CreateFailure);\n";
+	out << "// COACH extension\n";
+	out << map_absolute_name(home->managed_component());
+	out << " create_with_config(in Components::ConfigValues cfg) raises (Components::CreateFailure);\n";
 	out.unindent();
 	out << "};\n\n";
 

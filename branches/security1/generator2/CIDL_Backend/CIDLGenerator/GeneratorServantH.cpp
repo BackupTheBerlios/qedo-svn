@@ -909,12 +909,13 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out.indent();
     out << class_name << "();\n";
     out << "~" << class_name << "();\n\n";
+	out << "Components::CCMObject_ptr create_component()\n";
+	out << "	throw(CORBA::SystemException,Components::CreateFailure);\n\n";
 	out << mapFullName(component_) << "_ptr create()\n"; 
 	out << "	throw(CORBA::SystemException, Components::CreateFailure);\n\n";
-	out << "Components::CCMObject_ptr create_component()\n";
-	out << "	throw(CORBA::SystemException,Components::CreateFailure);\n";
-
-	
+	out << "// COACH extension\n";
+	out << mapFullName(component_) << "_ptr create_with_config(const Components::ConfigValues& config)\n";
+	out << "	throw(CORBA::SystemException, Components::CreateFailure);\n";
 }
 
 
