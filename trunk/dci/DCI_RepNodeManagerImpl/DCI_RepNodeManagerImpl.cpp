@@ -1257,10 +1257,6 @@ RepNodeManagerImpl::ccm_remove()
     throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerImpl::ccm_remove
-  component_ -> deregister();
-  #ifdef WIN32
-    WSACleanup( );	  
-  #endif
 // END USER INSERT SECTION RepNodeManagerImpl::ccm_remove
 }
 
