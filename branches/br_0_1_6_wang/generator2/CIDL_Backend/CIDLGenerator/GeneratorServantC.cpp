@@ -3823,7 +3823,8 @@ GeneratorServantC::genTableForHome(IR__::HomeDef_ptr home)
 	{
 		strContent = required[i];
 		strContent += "  VARCHAR(254)";
-		out << genSQLLine(strName, strContent, true, (i+1!=required.size()), true);
+		bool isComma = ((i+1)!=required.size()) || (CORBA::is_nil(base_home));
+		out << genSQLLine(strName, strContent, true, isComma, true);
 	}
 	
 	if( !CORBA::is_nil(base_home) )
