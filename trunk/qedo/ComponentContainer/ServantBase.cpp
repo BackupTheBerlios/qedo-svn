@@ -25,7 +25,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.10 2003/09/05 14:02:06 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.11 2003/10/05 18:31:57 tom Exp $";
 
 namespace Qedo {
 
@@ -322,7 +322,7 @@ throw (Components::InvalidConfiguration, CORBA::SystemException)
 	//
 	// check whether the components home is for container services
 	//
-	if(ccm_object_executor_->home_servant_->service_name_ != "")
+	if(ccm_object_executor_->home_servant_->service_name_.length())
 	{
 		std::string name = ccm_object_executor_->home_servant_->service_name_;
 		Components::CCMService* service = dynamic_cast< Components::CCMService_ptr >(executor_locator_.in());
