@@ -544,7 +544,6 @@ add_eventtype(
     ValueInheritanceSpec(*,Nilidl_identifier_list(),*) : {
     }
     ValueInheritanceSpec(*,inh_list_v,support_list_v) : {
-      /* XXX what about support_list_v ?? HB */
       found_list = resolve_value_type_names(inh_list_v);
       bool first = true;
       foreach(ident_v;idl_identifier_list inh_list_v) {
@@ -575,6 +574,11 @@ add_eventtype(
     }
     default : {}
   }
+  with(inh_spec_v) {
+    ValueInheritanceSpec(*,*,support_list_v) : {
+      resolve_interface_names(support_list_v);
+    }
+  }
 	add_name(true,EventTypeN(),name,def_v,inh_v);
 }
 
@@ -589,8 +593,7 @@ add_value_type(
   with(inh_spec_v) {
     ValueInheritanceSpec(*,Nilidl_identifier_list(),*) : {
     }
-    ValueInheritanceSpec(*,inh_list_v,support_list_v) : {
-      /* XXX what about support_list_v ?? HB */
+    ValueInheritanceSpec(*,inh_list_v,*) : {
       found_list = resolve_value_type_names(inh_list_v);
       bool first = true;
       foreach(ident_v;idl_identifier_list inh_list_v) {
@@ -620,7 +623,12 @@ add_value_type(
     }
     default : {}
   }
-	add_name(true,ValueTypeN(),name,def_v,inh_v);
+  with(inh_spec_v) {
+    ValueInheritanceSpec(*,*,support_list_v) : {
+      resolve_interface_names(support_list_v);
+    }
+  }
+  add_name(true,ValueTypeN(),name,def_v,inh_v);
 }
 
 void
