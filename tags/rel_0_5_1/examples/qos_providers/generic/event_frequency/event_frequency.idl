@@ -1,0 +1,9 @@
+#include "Components.idl"
+
+module EventFrequency {
+
+	component EFQoSProvider {
+	};
+
+	home EFQoSProviderHome manages EFQoSProvider {};
+};

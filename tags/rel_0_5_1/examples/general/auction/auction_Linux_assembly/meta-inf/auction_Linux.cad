@@ -1,0 +1,94 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://cif.sourceforge.net/componentassembly.dtd">
+
+<componentassembly id="auction_Linux">
+
+    <description>Example assembly"</description>
+
+    <componentfiles>
+        <componentfile id="a_file">
+            <fileinarchive name="auction_AuctioneerImpl.zip"/>
+        </componentfile>
+
+        <componentfile id="b_file">
+            <fileinarchive name="auction_BidderImpl.zip"/>
+        </componentfile>
+
+        <componentfile id="s_file">
+            <fileinarchive name="auction_SellerImpl.zip"/>
+        </componentfile>
+    </componentfiles>
+
+    <partitioning>
+        <homeplacement id="aHome">
+	        <componentfileref idref="a_file"/>
+			<componentimplref idref="UUID-7c2c2fe5-7bb7-4e89-bdca-14f5b37e15fe"/>
+  	        <componentinstantiation id="auctioneer">
+				<registercomponent><registerwithnaming name="auction/auctioneer"/></registercomponent>
+	        </componentinstantiation>
+	        <destination></destination>
+	    </homeplacement>
+
+	    <homeplacement id="bHome">
+	        <componentfileref idref="b_file"/>
+			<componentimplref idref="UUID-5a387a69-6010-40c5-a762-4e980c832b0d"/>
+	        <componentinstantiation id="bidder1">
+			</componentinstantiation>
+	        <destination></destination>
+	    </homeplacement>
+
+	    <homeplacement id="sHome">
+	        <componentfileref idref="s_file"/>
+			<componentimplref idref="UUID-1927e659-e4dd-4237-8b2c-cb5ea349c96d"/>
+            <componentinstantiation id="seller1">
+			</componentinstantiation>
+	        <destination></destination>
+	    </homeplacement>
+    </partitioning>
+
+
+    <connections>
+	<connectinterface>
+	    <usesport>
+		<usesidentifier>from_auctioneer</usesidentifier>
+		<componentinstantiationref idref="seller1"/>
+	    </usesport>
+
+	    <providesport>
+		<providesidentifier>for_seller</providesidentifier>
+		<componentinstantiationref idref="auctioneer"/>
+	    </providesport>
+	</connectinterface>
+
+	<connectevent>
+	    <consumesport>
+		<consumesidentifier>a_bid</consumesidentifier>
+		<componentinstantiationref idref="auctioneer"/>
+	    </consumesport>
+
+	    <publishesport>
+		<publishesidentifier>my_bid</publishesidentifier>
+		<componentinstantiationref idref="bidder1"/>
+	    </publishesport>
+	</connectevent>
+
+	<connectevent>
+	    <consumesport>
+		<consumesidentifier>current_bid</consumesidentifier>
+		<componentinstantiationref idref="bidder1"/>
+	    </consumesport>
+
+	    <publishesport>
+		<publishesidentifier>current_bid</publishesidentifier>
+		<componentinstantiationref idref="auctioneer"/>
+	    </publishesport>
+	</connectevent>
+
+    </connections>
+
+    <extension class="startorder" origin="HU">auctioneer</extension>
+    <extension class="startorder" origin="HU">bidder1</extension>
+    <extension class="startorder" origin="HU">seller1</extension>
+
+</componentassembly>
+

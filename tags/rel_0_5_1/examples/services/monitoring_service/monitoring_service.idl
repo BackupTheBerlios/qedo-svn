@@ -1,0 +1,9 @@
+#include "Components.idl"
+
+module container_service {
+	
+	component monitor {
+	};
+
+	home monitor_home manages monitor {};
+};
