@@ -55,12 +55,15 @@ class ORBInitializerImpl : public virtual PortableInterceptor::ORBInitializer,
 private:
 	ComponentServerImpl* comp_server_;
 	PortableInterceptor::SlotId slot_id_;
+	bool m_enable_qos;
 
 public:
 	/**
 	 * constructor
 	 */
 	ORBInitializerImpl();
+
+	ORBInitializerImpl(bool enable_qos);
 
 	/**
 	 * destructor

@@ -60,6 +60,9 @@ private:
 	/** debug mode */
 	bool debug_mode_;
 
+	/** qos-enabled mode */
+	bool enable_qos_;
+
 	/** for syncronization */
 	qedo_cond component_server_activation;
 
@@ -78,7 +81,7 @@ public:
 	/**
 	 * constructor
 	 */
-	ServerActivatorImpl (CORBA::ORB_ptr, bool);
+	ServerActivatorImpl (CORBA::ORB_ptr, bool, bool);
 
 	/**
 	 * destructor

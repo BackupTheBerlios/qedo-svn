@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.13 2003/07/16 10:54:42 boehme Exp $";
+static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.14 2003/07/25 13:57:12 tom Exp $";
 
 #include <iostream>
 #include "fstream"
@@ -43,9 +43,10 @@ static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.13 2003/07/16 10:54:42 b
 namespace Qedo {
 
 	
-ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode)
+ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode, bool qos_mode)
 : orb_ (CORBA::ORB::_duplicate (orb)),
   debug_mode_ (debug_mode),
+  enable_qos_ (qos_mode),
   component_server_activation ("QEDO_ACTIVATOR_SIGNAL")
 {
 }
@@ -218,13 +219,24 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 	if (debug_mode_)
 	{
-		component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", "--debug", 
-			"--csa_ref", my_string_ref.in(), NULL);
+		if (enable_qos_) {
+			component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", "--debug", 
+				"--enable-qos", "--csa_ref", my_string_ref.in(), NULL);
+
+		} else {
+			component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", "--debug", 
+				"--csa_ref", my_string_ref.in(), NULL);
+		}
 	}
 	else
 	{
-		component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", 
-			"--csa_ref", my_string_ref.in(), NULL);
+		if (enable_qos_) {
+			component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", 
+				"--enable-qos", "--csa_ref", my_string_ref.in(), NULL);
+		} else {
+			component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", 
+				"--csa_ref", my_string_ref.in(), NULL);
+		}
 	}
 
 	if (component_server_pid < 0)

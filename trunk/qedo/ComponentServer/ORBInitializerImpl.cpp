@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ORBInitializerImpl.cpp,v 1.3 2003/06/12 12:09:00 tom Exp $";
+static char rcsid[] = "$Id: ORBInitializerImpl.cpp,v 1.4 2003/07/25 13:57:12 tom Exp $";
 
 #include "ORBInitializerImpl.h"
 #include "Output.h"
@@ -36,6 +36,16 @@ ORBInitializerImpl::ORBInitializerImpl()
 	// Register our ORB initializer
 	//
     PortableInterceptor::register_orb_initializer (this);
+}
+
+ORBInitializerImpl::ORBInitializerImpl(bool enable_qos)
+{
+    //
+	// Register our ORB initializer
+	//
+    PortableInterceptor::register_orb_initializer (this);
+
+	m_enable_qos = enable_qos;
 }
 
 
@@ -132,11 +142,12 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	//
 	// Install ServerInterceptorDispatcher
 	//
-	PortableInterceptor::ServerRequestInterceptor_var server_dispatcher;
-	server_dispatcher = new ServerInterceptorDispatcher();
+	if (m_enable_qos) {
+		PortableInterceptor::ServerRequestInterceptor_var server_dispatcher;
+		server_dispatcher = new ServerInterceptorDispatcher();
 
-	info->add_server_request_interceptor(server_dispatcher.in());
-
+		info->add_server_request_interceptor(server_dispatcher.in());
+	}
 }
 
 

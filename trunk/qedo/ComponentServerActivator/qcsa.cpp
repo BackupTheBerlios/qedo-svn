@@ -20,15 +20,11 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qcsa.cpp,v 1.7 2003/07/25 12:29:28 tom Exp $";
+static char rcsid[] = "$Id: qcsa.cpp,v 1.8 2003/07/25 13:57:12 tom Exp $";
 
 #include "ServerActivatorImpl.h"
 #include <iostream>
 #include <cstring>
-//#ifdef HAVE_JTC
-//#include <JTC/JTC.h>
-//#endif
-
 
 /**
  * addtogroup ServerActivator
@@ -44,21 +40,25 @@ main (int argc, char** argv)
 {
 	std::cout << "Qedo Component Server Activator" << std::endl;
 
-	// Check for debug mode
+	// Check for debug mode and enable-qos mode
 	bool debug_mode = false;
+	bool qos_enabled = false;
 
 	for (int i = 1; i < argc; i++)
 	{
 		if (! strcmp(argv[i], "--debug"))
 		{
 			debug_mode = true;
-			break;
+		}
+		if (! strcmp(argv[i], "--enable-qos"))
+		{
+			qos_enabled = true;
 		}
 	}
 
 	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
 
-	Qedo::ServerActivatorImpl* server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode);
+	Qedo::ServerActivatorImpl* server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled);
 
 	try
 	{
