@@ -37,15 +37,15 @@ public:
 
     virtual ~HelpFrame();
 
-	
+
 
 private:
-	
+
 
 	wxPanel *panel_;
     wxBoxSizer *sizerFrame_;
 	wxButton *help;
 };
 
-#endif _HELPFRAME_H
+#endif // _HELPFRAME_H
 

@@ -39,7 +39,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
                  long style)
     : wxFrame((wxWindow *) NULL, -1, title, pos, size, style)
 {
-
+	hf = 0;
 	// set icon
 	SetIcon(wxIcon(qedoicon_xpm));
 
@@ -70,12 +70,12 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	// set Logo
 	wxBitmap qedologo_xpm( qedologo_xpm );
     wxStaticBitmap* qedo_logo = new wxStaticBitmap( panel_, wxID_STATIC, qedologo_xpm, wxPoint(605,20), wxSize(105, 31), 0 );
-	
+
 
 	wxSize buttonsize(110,25);
 	help = new wxButton(panel_, ID_HELP_BUTTON, _T("Help"),wxPoint(630,470),buttonsize,0);
 	quit = new wxButton(panel_, ID_QUIT_CONTROLLER, _T("Close"), wxPoint(630,510),buttonsize,0);
-	
+
 	panel_->SetAutoLayout(TRUE);
 
 }
@@ -84,13 +84,17 @@ MainFrame::~MainFrame() {
 
 };
 
-void MainFrame::onHelp() 
+void MainFrame::onHelp()
 {
-	HelpFrame *hf = new HelpFrame("Help",wxDefaultPosition,wxDefaultSize,wxDEFAULT_FRAME_STYLE);
+	hf = new HelpFrame("Help",wxDefaultPosition,wxDefaultSize,wxDEFAULT_FRAME_STYLE);
 	hf->Show();
 }
 
 void MainFrame::onClose()
-{	
+{
+	if (hf)
+	{
+		hf -> Destroy();
+	}
 	delete(this);
 }

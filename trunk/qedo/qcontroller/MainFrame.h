@@ -25,7 +25,7 @@
 #include "wx/sizer.h"
 #include "wx/log.h"
 #include "ControllerNotebook.h"
-
+#include "HelpFrame.h"
 
 
 
@@ -45,7 +45,7 @@ private:
     wxBoxSizer *sizerFrame_;
 	wxButton *help;
 	wxButton *quit;
-
+	HelpFrame *hf;
 
 	ControllerNotebook *notebook_;
 
