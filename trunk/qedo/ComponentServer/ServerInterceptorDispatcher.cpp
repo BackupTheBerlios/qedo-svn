@@ -30,7 +30,7 @@
 #include "GlobalHelpers.h"
 #include "ContainerServerRequestInfo.h"
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.15 2004/02/16 14:26:54 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.16 2004/02/25 12:19:40 boehme Exp $";
 
 namespace Qedo {
 
@@ -72,7 +72,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	DEBUG_OUT ("ServerInterceptorDispatcher: receive_request");
 
 	// call for regsitered COPI
-		const Components::ConfigValues* temp_config=0;
+		Components::ConfigValues* temp_config=0;
 
 	//call for all interceptors
 
