@@ -211,7 +211,9 @@ GeneratorBusinessC::doInterface(IR__::InterfaceDef_ptr intf)
 void
 GeneratorBusinessC::doComponent(IR__::ComponentDef_ptr component)
 {
+	//
 	// handle base component
+	//
 	IR__::ComponentDef_var base = component->base_component();
 	if(!CORBA::is_nil(base))
 	{ 
@@ -221,7 +223,9 @@ GeneratorBusinessC::doComponent(IR__::ComponentDef_ptr component)
 	handleAttribute(component);
 	handleSupportedInterface(component);
 
+	//
 	// contained provides
+	//
 	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Provides, false);
 	handled_interfaces_.clear();
 	CORBA::ULong len = contained_seq->length();
@@ -230,7 +234,9 @@ GeneratorBusinessC::doComponent(IR__::ComponentDef_ptr component)
 		IR__::ProvidesDef_var act_provides = IR__::ProvidesDef::_narrow(((*contained_seq)[i]));
 		bool realized_by_segment = false;
 
+		//
 		// exclude facets realized by a segment
+		//
 		CIDL::SegmentDefSeq_var segment_seq = composition_->executor_def()->segments();
 		for (CORBA::ULong ii = 0; ii < segment_seq->length(); ii++)
 		{
@@ -248,7 +254,11 @@ GeneratorBusinessC::doComponent(IR__::ComponentDef_ptr component)
 
 		if(!realized_by_segment)
 		{
-			doInterface(act_provides->interface_type());
+			IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow(act_provides->interface_type());
+			if( !CORBA::is_nil(intf) )
+			{
+				doInterface(intf);
+			}
 		}
 	}
 
@@ -487,7 +497,11 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		handled_interfaces_.clear();
 		for (CORBA::ULong ii = 0; ii < provided_seq->length(); ii++)
 		{
-			doInterface(provided_seq[ii]->interface_type());
+			IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow(provided_seq[ii]->interface_type());
+			if( !CORBA::is_nil(intf) )
+			{
+				doInterface(intf);
+			}
 		}
 	}
 	

@@ -603,7 +603,7 @@ ComponentDef_impl::create_provides
 (const char* id,
  const char* name,
  const char* version,
- IR__::InterfaceDef_ptr interface_type)
+ IR__::IDLType_ptr interface_type)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "ComponentDef_impl::create_provides() called" );
@@ -616,12 +616,12 @@ throw(CORBA::SystemException)
 	if ( CORBA::is_nil ( interface_type ) )
 		throw CORBA::BAD_PARAM();		// Is this correct?
 
-    InterfaceDef_impl* impl = 0;
+    IDLType_impl* impl = 0;
     try
     {
 		PortableServer::ServantBase_var servant =
 			repository_ -> poa() -> reference_to_servant ( interface_type );
-        impl = dynamic_cast<InterfaceDef_impl*>(servant.in());
+        impl = dynamic_cast<IDLType_impl*>(servant.in());
     }
     catch(...)
     {
@@ -648,7 +648,7 @@ ComponentDef_impl::create_uses
 (const char* id,
  const char* name,
  const char* version,
- IR__::InterfaceDef_ptr interface_type,
+ IR__::IDLType_ptr interface_type,
  CORBA::Boolean is_multiple)
 throw(CORBA::SystemException)
 {
@@ -662,12 +662,12 @@ throw(CORBA::SystemException)
 	if ( CORBA::is_nil ( interface_type ) )
 		throw CORBA::BAD_PARAM();		// Is this correct?
 
-    InterfaceDef_impl* impl = 0;
+    IDLType_impl* impl = 0;
     try
     {
 		PortableServer::ServantBase_var servant =
 			repository_ -> poa() -> reference_to_servant ( interface_type );
-        impl = dynamic_cast<InterfaceDef_impl*>(servant.in());
+        impl = dynamic_cast<IDLType_impl*>(servant.in());
     }
     catch(...)
     {

@@ -1359,14 +1359,15 @@ _resolve_type(
   NScopedName(ident_v) : {
     table_item_list list_v;
     bool error_report=true;
-	 node_flag node_flags_v[6];
+	 node_flag node_flags_v[7];
 	 node_flags_v[0] = the_TypeN;
 	 node_flags_v[1] = the_ValueTypeN;
 	 node_flags_v[2] = the_EventTypeN;
 	 node_flags_v[3] = the_ValueBoxN;
 	 node_flags_v[4] = the_InterfaceN;
 	 node_flags_v[5] = the_ComponentN;
-    list_v = lookup_identifier_n(ident_v,node_flags_v,6);
+	 node_flags_v[6] = the_HomeN;
+    list_v = lookup_identifier_n(ident_v,node_flags_v,7);
     foreach(item_v;table_item_list list_v) {
       if(check_own_type
         && !ident_v->symtab_entry

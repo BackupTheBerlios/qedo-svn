@@ -80,6 +80,27 @@ CPPBase::mapName(IR__::Contained_ptr obj)
 }
 
 
+std::string
+CPPBase::mapFullName_(IR__::IDLType_ptr type)
+{
+	//
+	// CORBA::Object ???
+	//
+	IR__::Contained_var obj = IR__::Contained::_narrow( type );
+	if( CORBA::is_nil(obj) )
+	{
+		return "CORBA::Object";
+	}
+	else
+	{
+		//
+		// Contained
+		//
+		return mapFullName( obj );
+	}
+}
+
+
 /*
  * escape each name with _cxx_ if keyword
  */

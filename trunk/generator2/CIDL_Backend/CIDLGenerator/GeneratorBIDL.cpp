@@ -136,7 +136,6 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 		out.indent();
 	}
 
-
 	string facet_type;
 	map < string, bool > facet_types;
 	map < string, bool > implemented_facets;
@@ -158,7 +157,15 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 		for (CORBA::ULong ii = 0; ii < provided_seq->length(); ii++)
 		{
 			implemented_facets[provided_seq[ii]->name()] = true;
-			facet_type = provided_seq[ii]->interface_type()->id();
+			IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow(provided_seq[ii]->interface_type());
+			if( !CORBA::is_nil(intf) )
+			{
+				facet_type = intf->id();
+			}
+			else
+			{
+				facet_type = "IDL:omg.org/CORBA/Object:1.0";
+			}
 			
 			// if type already inherited, skip it
 			if(facet_types.find(facet_type) == facet_types.end())
@@ -179,25 +186,33 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "local interface CCM_" << composition->executor_def()->name() << " : ";
 	out << getLocalName(composition->ccm_component()) << "_Executor";
 	
-
+	//
 	// inherit from each implemented facet type
+	//
 	IR__::ProvidesDefSeq_var provides_seq = composition->ccm_component()->provides_interfaces();
 	len = provides_seq->length();
 	for (i = 0; i < len; i++)
 	{
-		// facet already implemented by segment?
+		IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow(provides_seq[i]->interface_type());
+		if( CORBA::is_nil(intf) )
+		{
+			continue;
+		}
+
+		//
+		// facet not already implemented by segment
+		//
 		if(implemented_facets.find(provides_seq[i]->name()) == implemented_facets.end())
 		{
-			facet_type = provides_seq[i]->interface_type()->id();
-			
 			// if type already inherited, skip it
+			facet_type = intf->id();
 			if(facet_types.find(facet_type) == facet_types.end())
 			{
 				facet_types[facet_type] = true;
 				if(!facet_types.empty()) {
 					out << ", ";
 				}
-				out << getLocalName(provides_seq[i]->interface_type());
+				out << getLocalName(intf);
 			}
 		}
 	}

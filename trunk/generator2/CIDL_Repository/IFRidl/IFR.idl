@@ -668,7 +668,7 @@ module IR__ {
 	
 	interface ProvidesDef : Contained {
 		// read interface
-		readonly attribute InterfaceDef interface_type;
+		readonly attribute IDLType interface_type;
 	};
 	
 	struct ProvidesDescription {
@@ -676,12 +676,12 @@ module IR__ {
 		RepositoryId id;
 		RepositoryId defined_in;
 		VersionSpec version;
-		InterfaceDef interface_type;
+		IDLType interface_type;
 	};
 	
 	interface UsesDef : Contained {
 		// read interface
-		readonly attribute InterfaceDef interface_type;
+		readonly attribute IDLType interface_type;
 		readonly attribute boolean is_multiple;
 	};
 	
@@ -690,7 +690,7 @@ module IR__ {
 		RepositoryId id;
 		RepositoryId defined_in;
 		VersionSpec version;
-		InterfaceDef interface_type;
+		IDLType interface_type;
 		boolean is_multiple;
 	};
 	
@@ -773,13 +773,13 @@ module IR__ {
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in InterfaceDef interface_type
+			in IDLType interface_type
 		);
 		UsesDef create_uses (
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in InterfaceDef interface_type,
+			in IDLType interface_type,
 			in boolean is_multiple
 		);
 		EmitsDef create_emits (

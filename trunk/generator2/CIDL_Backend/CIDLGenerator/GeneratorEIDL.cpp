@@ -245,15 +245,25 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 		// provided interfaces
 		IR__::ProvidesDefSeq_var provides_seq = a_component->provides_interfaces();
 		len = provides_seq->length();
-		for(i = 0; i < len; i++) {
-			this->check_for_generation((*provides_seq)[i]->interface_type());
+		for(i = 0; i < len; i++)
+		{
+			IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow((*provides_seq)[i]->interface_type());
+			if( !CORBA::is_nil(intf) )
+			{
+				this->check_for_generation( intf );
+			}
 		}
 
 		// used interfaces
 		IR__::UsesDefSeq_var uses_seq = a_component->uses_interfaces();
 		len = uses_seq->length();
-		for(i = 0; i < len; i++) {
-			this->check_for_generation((*uses_seq)[i]->interface_type());
+		for(i = 0; i < len; i++)
+		{
+			IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow((*uses_seq)[i]->interface_type());
+			if( !CORBA::is_nil(intf) )
+			{
+				this->check_for_generation( intf );
+			}
 		}
 
 		// emits_events
@@ -1218,7 +1228,17 @@ void
 GeneratorEIDL::doProvides(IR__::ProvidesDef_ptr provides, IR__::ComponentDef_ptr component)
 {
 	out << "\n//\n// " << provides->id() << "\n//\n";
-	out << provides->interface_type()->absolute_name() << " provide_" << provides->name() << "();\n";
+	/*IR__::InterfaceDef_var type = IR__::InterfaceDef::_narrow(provides->interface_type());
+	if( !CORBA::is_nil(type) )
+	{
+		out << type->absolute_name() << " provide_" << provides->name() << "();\n";
+	}
+	// it is no interface, must be Object
+	else
+	{
+		out << "Object provide_" << provides->name() << "();\n";
+	}*/
+	out << tcToName(provides->interface_type()->type()) << " provide_" << provides->name() << "();\n";
 }
 
 
@@ -1229,6 +1249,7 @@ void
 GeneratorEIDL::doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr component)
 {
 	out << "\n//\n// " << uses->id() << "\n//\n";
+	std::string type = tcToName(uses->interface_type()->type());
 
 	//
 	// multiple
@@ -1237,19 +1258,21 @@ GeneratorEIDL::doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr component)
 	{
 		out << "struct " << uses->name() << "Connection {\n";
 		out.indent();
-		out << uses->interface_type()->absolute_name() << " objref;\n";
+		out << type << " objref;\n";
 		out << "Components::Cookie ck;\n";
 		out.unindent();
 		out << "};\n";
 		out << "typedef sequence < " << uses->name() << "Connection > " << uses->name() << "Connections;\n\n";
 			
-		out << "Components::Cookie " << "connect_" << uses->name();
-		out << "( in " << uses->interface_type()->absolute_name() << " conx)\n";
-		out << "    raises (Components::ExceededConnectionLimit, Components::InvalidConnection);\n\n";
+		out << "Components::Cookie " << "connect_" << uses->name() << "( in " << type << " conx)\n";
+		out.indent();
+		out << "raises (Components::ExceededConnectionLimit, Components::InvalidConnection);\n\n";
+		out.unindent();
 			
-		out << uses->interface_type()->absolute_name() << " disconnect_" << uses->name();
-		out << "(in Components::Cookie ck)\n";
-		out << "    raises (Components::InvalidConnection);\n\n";
+		out << type << " disconnect_" << uses->name() << "(in Components::Cookie ck)\n";
+		out.indent();
+		out << "raises (Components::InvalidConnection);\n\n";
+		out.unindent();
 
 		out << uses->name() << "Connections " << "get_connections_" << uses->name() << "();\n\n";
 	}
@@ -1258,14 +1281,14 @@ GeneratorEIDL::doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr component)
 	//
 	else
 	{
-		out << map_absolute_name(uses->interface_type()) << " get_connection_" << uses->name() << "();\n";
+		out << type << " get_connection_" << uses->name() << "();\n";
 		
-		out << map_absolute_name(uses->interface_type()) << " disconnect_" << uses->name() << "()\n";
+		out << type << " disconnect_" << uses->name() << "()\n";
 		out.indent();
 		out << "raises (::Components::NoConnection);\n";
 		out.unindent();
 		
-		out << "void connect_" << uses->name() << "(in " << map_absolute_name(uses->interface_type()) << " conxn)\n";
+		out << "void connect_" << uses->name() << "(in " << type << " conxn)\n";
 		out.indent();
 		out << "raises (::Components::AlreadyConnected, ::Components::InvalidConnection);\n";
 		out.unindent();

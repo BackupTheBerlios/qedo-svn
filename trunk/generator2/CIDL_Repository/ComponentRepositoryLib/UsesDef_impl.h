@@ -35,12 +35,12 @@ namespace QEDO_ComponentRepository {
 class UsesDef_impl : public virtual POA_IR__::UsesDef,
 						public virtual Contained_impl
 {
-	InterfaceDef_impl *interface_type_impl_;
+	IDLType_impl *interface_type_impl_;
 	CORBA::Boolean is_multiple_;
 public:
 	UsesDef_impl ( Container_impl *container,
 						Repository_impl *repository,
-						InterfaceDef_impl* interface_type_impl,
+						IDLType_impl* interface_type_impl,
 						CORBA::Boolean is_multiple );
 
 	~UsesDef_impl();
@@ -69,7 +69,7 @@ public:
     //
     // IDL:omg.org/IR__/ProvidesDef/interface_type:1.0
     //
-    virtual IR__::InterfaceDef_ptr interface_type()
+    virtual IR__::IDLType_ptr interface_type()
         throw(CORBA::SystemException);
 
     //

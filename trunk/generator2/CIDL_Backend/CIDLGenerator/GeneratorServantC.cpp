@@ -682,14 +682,24 @@ GeneratorServantC::doComponent(IR__::ComponentDef_ptr component)
 void
 GeneratorServantC::doProvides(IR__::ProvidesDef_ptr provides, IR__::ComponentDef_ptr component)
 {
+	std::string type = mapFullName_(provides->interface_type());
+
+	//
 	// provide_...
-	out << mapFullName(provides->interface_type()) << "_ptr\n";
+	//
+	out << type << "_ptr\n";
 	out << class_name_ << "::provide_" << provides->name() << "()\n";
 	out << "throw (CORBA::SystemException)\n{\n";
 	out.indent();
-	out << mapFullName(provides->interface_type()) << "_var prov = ";
-	out << mapFullName(provides->interface_type()) << "::_narrow (ccm_object_executor_->provide_facet(\"";
-	out << provides->name() << "\"));\n\n";
+	out << type << "_var prov = ";
+	if( type.compare( "CORBA::Object" ) == 0 )
+	{
+		out << "ccm_object_executor_->provide_facet(\"" << provides->name() << "\");\n\n";
+	}
+	else
+	{
+		out << type << "::_narrow( ccm_object_executor_->provide_facet(\"" << provides->name() << "\"));\n\n";
+	}
 	out	<< "return prov._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
@@ -699,7 +709,7 @@ GeneratorServantC::doProvides(IR__::ProvidesDef_ptr provides, IR__::ComponentDef
 void 
 GeneratorServantC::doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr component)
 {
-	std::string interface_name = mapFullName(uses->interface_type());
+	std::string interface_name = mapFullName_(uses->interface_type());
 
 	//
 	// multiple
@@ -760,7 +770,14 @@ GeneratorServantC::doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr compone
 		out << "Components::ConnectedDescriptions* connections = ccm_object_executor_->get_connections(\"";
 		out << uses->name() << "\");\n\n";
 		out << interface_name << "_var use = ";
-		out << interface_name << "::_narrow ((*connections)[0]->objref());\n\n";
+		if( interface_name.compare( "CORBA::Object" ) == 0 )
+		{
+			out << "(*connections)[0]->objref();\n\n";
+		}
+		else
+		{
+			out << interface_name << "::_narrow ((*connections)[0]->objref());\n\n";
+		}
 		out << "return " << interface_name << "::_duplicate(use);\n";
 		out.unindent();
 		out << "}\n\n\n";
@@ -998,7 +1015,9 @@ GeneratorServantC::doHome(IR__::HomeDef_ptr home)
 void
 GeneratorServantC::genFacetServants(IR__::ComponentDef_ptr component)
 {
+	//
 	// handle base component
+	//
 	IR__::ComponentDef_var base = component->base_component();
 	if(!CORBA::is_nil(base))
 	{ 
@@ -1028,9 +1047,13 @@ GeneratorServantC::genFacetServants(IR__::ComponentDef_ptr component)
 		// destructor
 		out << class_name_ << "::~" << class_name << "()\n{\n}\n\n\n";
 
-		executor_name_ = provides->name();
-		interface_name_ = mapFullNameLocal(provides->interface_type());
-		doInterface(provides->interface_type());
+		IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow(provides->interface_type());
+		if( !CORBA::is_nil(intf) )
+		{
+			executor_name_ = provides->name();
+			interface_name_ = mapFullNameLocal(intf);
+			doInterface(intf);
+		}
 
 		//
 		// facet servant factory
@@ -1264,7 +1287,7 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 	for( i= 0; i < len; i++)
 	{
 		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
-		std::string interface_name = mapFullName(a_uses->interface_type());
+		std::string interface_name = mapFullName_(a_uses->interface_type());
 		
 		//
 		// multiple
@@ -1310,7 +1333,14 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 			out.unindent();
 			out << "}\n\n";
 			out << interface_name << "_var use = ";
-			out << interface_name << "::_narrow ((*connections)[0]->objref());\n\n";
+			if( interface_name.compare( "CORBA::Object" ) == 0 )
+			{
+				out << "(*connections)[0]->objref();\n\n";
+			}
+			else
+			{
+				out << interface_name << "::_narrow ((*connections)[0]->objref());\n\n";
+			}
 			out << "return use._retn();\n";
 			out.unindent();
 			out << "}\n\n\n";
@@ -1740,18 +1770,28 @@ GeneratorServantC::genFacetRegistration(IR__::HomeDef_ptr home)
 	IR__::ProvidesDefSeq_var facets = home->managed_component()->provides_interfaces();
 	CORBA::ULong len = facets->length();
 	CORBA::ULong i;
+	std::string rep_id;
+	std::string name;
 	for( i= 0; i < len; i++)
 	{
-		std::string name = (*facets)[i]->name();
+		name = (*facets)[i]->name();
+		IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow((*facets)[i]->interface_type());
+		if( !CORBA::is_nil(intf) )
+		{
+			rep_id = intf->id();
+		}
+		else
+		{
+			rep_id = "IDL:omg.org/CORBA/Object:1.0";
+		}
 
-		out << "CORBA::Object_var "	<< name << "_ref = this->create_object_reference(key, \"";
-		out << (*facets)[i]->interface_type()->id() << "\");\n";
+		out << "CORBA::Object_var "	<< name << "_ref = this->create_object_reference(key, \"" << rep_id << "\");\n";
 		out << "PortableServer::ObjectId_var " << name << "_object_id = this->reference_to_oid (";
 		out << name << "_ref);\n";
 		out << "servant_registry_->register_servant_factory (";
 		out << name << "_object_id, " << mapFullNameServant((*facets)[i]) << "::cleaner_.factory_);\n";
 		out << "component_instance.ccm_object_executor_->add_facet(\"";
-		out << name << "\", \"" << (*facets)[i]->interface_type()->id() << "\", " << name << "_ref);\n\n";
+		out << name << "\", \"" << rep_id << "\", " << name << "_ref);\n\n";
 	}
 }
 
@@ -1769,10 +1809,21 @@ GeneratorServantC::genReceptacleRegistration(IR__::HomeDef_ptr home)
 	IR__::UsesDefSeq_var receptacles = home->managed_component()->uses_interfaces();
 	CORBA::ULong len = receptacles->length();
 	CORBA::ULong i;
+	std::string rep_id;
 	for( i= 0; i < len; i++)
 	{
+		IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow((*receptacles)[i]->interface_type());
+		if( !CORBA::is_nil(intf) )
+		{
+			rep_id = intf->id();
+		}
+		else
+		{
+			rep_id = "IDL:omg.org/CORBA/Object:1.0";
+		}
+
 		out << "component_instance.ccm_object_executor_->add_receptacle(\"";
-		out << (*receptacles)[i]->name() << "\", \"" << (*receptacles)[i]->interface_type()->id() << "\", ";
+		out << (*receptacles)[i]->name() << "\", \"" << rep_id << "\", ";
 		if((*receptacles)[i]->is_multiple()) { 
 			out << "true);\n\n";
 		}

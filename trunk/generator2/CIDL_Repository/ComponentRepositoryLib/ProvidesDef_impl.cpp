@@ -31,7 +31,7 @@ namespace QEDO_ComponentRepository {
 ProvidesDef_impl::ProvidesDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
-  InterfaceDef_impl* interface_type_impl )
+  IDLType_impl* interface_type_impl )
 : IRObject_impl ( repository ),
   Contained_impl ( container, repository )
 {
@@ -86,7 +86,7 @@ throw(CORBA::SystemException)
 	return desc._retn();
 }
 
-IR__::InterfaceDef_ptr
+IR__::IDLType_ptr
 ProvidesDef_impl::interface_type
 ()
 throw(CORBA::SystemException)

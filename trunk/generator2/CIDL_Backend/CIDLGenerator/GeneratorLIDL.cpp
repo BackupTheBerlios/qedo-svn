@@ -135,8 +135,13 @@ IR__::HomeDef_var base_home;
 		// provided interfaces
 		IR__::ProvidesDefSeq_var provides_seq = act_component->provides_interfaces();
 		len = provides_seq->length();
-		for(i = 0; i < len; i++) {
-			this->check_for_generation((*provides_seq)[i]->interface_type());
+		for(i = 0; i < len; i++)
+		{
+			IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow((*provides_seq)[i]->interface_type());
+			if( !CORBA::is_nil(intf) )
+			{
+				this->check_for_generation(intf);
+			}
 		}
 
 		// consumed events
@@ -568,16 +573,20 @@ GeneratorLIDL::doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr component)
 {
 	out << "\n//\n// " << uses->id() << "\n//\n";
 
+	//
 	// multiple
+	//
 	if(uses->is_multiple())
 	{
 		out << map_absolute_name(component_) << "::" << uses->name() << "Connections ";
 		out << "get_connections_" << uses->name() << "();\n";
 	}
+	//
 	// not multiple
+	//
 	else
 	{
-		out << map_absolute_name(uses->interface_type()) << " get_connection_" << uses->name() << "();\n";
+		out << tcToName(uses->interface_type()->type()) << " get_connection_" << uses->name() << "();\n";
 	}
 }
 

@@ -1103,14 +1103,14 @@ ProvidesDcl(definition_v, name)
     { IR__::ComponentDef_ptr component_ptr;
       component_ptr = IR__::ComponentDef::_narrow(kc_current_view.container);
       NOT_NIL(component_ptr);
-      IR__::InterfaceDef_ptr interface_ptr;
-      interface_ptr = IR__::InterfaceDef::_narrow(definition_v->irobj);
-      NOT_NIL(interface_ptr);
+      IR__::IDLType_ptr type_ptr;
+      type_ptr = IR__::IDLType::_narrow(definition_v->irobj);
+      NOT_NIL(type_ptr);
       IR__::ProvidesDef_ptr provides;
       // create ProvidesDef
       try {
         provides = component_ptr->create_provides(get_repid(def_v,name),
-          name->get_name(), "1.0", interface_ptr);
+          name->get_name(), "1.0", type_ptr);
       }
       catch (...) {
         Error("Exception in creating provides %k\n", name, name);
@@ -1128,9 +1128,9 @@ UsesDcl(flag_v, definition_v, name)
     { IR__::ComponentDef_ptr component_ptr;
       component_ptr = IR__::ComponentDef::_narrow(kc_current_view.container);
       NOT_NIL(component_ptr);
-      IR__::InterfaceDef_ptr interface_ptr;
-      interface_ptr = IR__::InterfaceDef::_narrow(definition_v->irobj);
-      NOT_NIL(interface_ptr);
+      IR__::IDLType_ptr type_ptr;
+      type_ptr = IR__::IDLType::_narrow(definition_v->irobj);
+      NOT_NIL(type_ptr);
       IR__::UsesDef_ptr uses;
       bool mult = false;
       with(flag_v) {
@@ -1140,7 +1140,7 @@ UsesDcl(flag_v, definition_v, name)
       // create UsesDef
       try {
         uses = component_ptr->create_uses(get_repid(def_v,name),
-          name->get_name(), "1.0", interface_ptr, mult);
+          name->get_name(), "1.0", type_ptr, mult);
       }
       catch (...) {
         Error("Exception in creating uses %k\n", name, name);

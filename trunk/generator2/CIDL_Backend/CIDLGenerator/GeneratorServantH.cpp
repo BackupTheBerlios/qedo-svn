@@ -329,7 +329,7 @@ GeneratorServantH::doProvides(IR__::ProvidesDef_ptr provides, IR__::ComponentDef
 {
 
 	// provide_...
-	out << mapFullName(provides->interface_type()) << "_ptr provide_" << provides->name() << "()\n";
+	out << mapFullName_(provides->interface_type()) << "_ptr provide_" << provides->name() << "()\n";
 	out << "    throw (CORBA::SystemException);\n\n";
 }
 
@@ -339,7 +339,7 @@ GeneratorServantH::doUses(IR__::UsesDef_ptr uses, IR__::ComponentDef_ptr compone
 {
 
 	out << "\n//\n// " << uses->id() << "\n//\n";
-	std::string interface_name = mapFullName(uses->interface_type());
+	std::string interface_name = mapFullName_(uses->interface_type());
 
 	//
 	// multiple
@@ -514,7 +514,9 @@ GeneratorServantH::genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_
 void
 GeneratorServantH::genFacetServants(IR__::ComponentDef_ptr component)
 {
+	//
 	// handle base component
+	//
 	IR__::ComponentDef_var base = component->base_component();
 	if(!CORBA::is_nil(base))
 	{ 
@@ -533,8 +535,18 @@ GeneratorServantH::genFacetServants(IR__::ComponentDef_ptr component)
 		out << "\n//\n// servant for facet " << provides->name() << "\n//\n";
 		std::string class_name = provides->name();
 		out << "class " << class_name;
-		out.indent();	
-		out << ": public " << mapFullNamePOA(provides->interface_type()) << "\n";
+		out.indent();
+		IR__::InterfaceDef_var intf = IR__::InterfaceDef::_narrow(provides->interface_type());
+		if( !CORBA::is_nil(intf) )
+		{
+			out << " : public " << mapFullNamePOA(intf) << "\n";
+		}
+		else
+		{
+			out << "//\n// for CORBA::Object no servant can be generated!\n";
+			out << "// please do manually\n//\n";
+			out << " : public ???\n";
+		}
 		out << ", public Qedo::ServantBase\n";
 		out.unindent();
 		out << "{\n\n";
@@ -542,7 +554,10 @@ GeneratorServantH::genFacetServants(IR__::ComponentDef_ptr component)
 		out.indent();
 		out << class_name << "();\n";
 		out << "~" << class_name << "();\n";
-		doInterface(provides->interface_type());
+		if( !CORBA::is_nil(intf) )
+		{
+			doInterface(intf);
+		}
 
 		//
 		// servantfactory for facet
@@ -830,7 +845,7 @@ GeneratorServantH::genContextServantBody(IR__::ComponentDef_ptr component)
 		//
 		else
 		{
-			out << mapFullName(a_uses->interface_type()) << "_ptr get_connection_" << a_uses->name() << "();\n";
+			out << mapFullName_(a_uses->interface_type()) << "_ptr get_connection_" << a_uses->name() << "();\n";
 		}
 	}
 

@@ -144,7 +144,7 @@ public:
     virtual IR__::ProvidesDef_ptr create_provides(const char* id,
                                           const char* name,
                                           const char* version,
-                                          IR__::InterfaceDef_ptr interface_type)
+                                          IR__::IDLType_ptr interface_type)
         throw(CORBA::SystemException);
 
     //
@@ -153,7 +153,7 @@ public:
     virtual IR__::UsesDef_ptr create_uses(const char* id,
                                   const char* name,
                                   const char* version,
-                                  IR__::InterfaceDef_ptr interface_type,
+                                  IR__::IDLType_ptr interface_type,
                                   CORBA::Boolean is_multiple)
         throw(CORBA::SystemException);
 
