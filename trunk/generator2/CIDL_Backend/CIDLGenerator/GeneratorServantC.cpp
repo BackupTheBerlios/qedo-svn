@@ -162,15 +162,14 @@ GeneratorServantC::generate_marshal_code (IR__::IDLType_ptr idl_type, std::strin
 
 			std::string new_parameter_name;
 			char rec_depth_str[33];
-//			itoa (rec_depth, rec_depth_str, 10); // this is not ansi and is replaced
-			sprintf(rec_depth_str,"%d",rec_depth);
+			sprintf(rec_depth_str, "%ld", rec_depth);
 
 			new_parameter_name = "(" + parameter_name + "[seq_count" + rec_depth_str + "])";
 
 			out << "CORBA::ULong seq_len" << rec_depth << " = " << parameter_name;
-			if (hasVariableLength (idl_type))
-				out << "->length();\n";
-			else
+			//if (hasVariableLength (idl_type))
+			//	out << "->length();\n";
+			//else
 				out << ".length();\n";
 
 			out << "Qedo::CDRTransportCoDec::marshal_ulong (marshal_buffer, seq_len" << rec_depth << ");\n\n";
@@ -289,15 +288,14 @@ GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::str
 
 			out << "Qedo::CDRTransportCoDec::unmarshal_ulong (unmarshal_buffer, seq_len" << rec_depth << ");\n\n";
 
-			if (hasVariableLength (seq_idl_type))
-				out << parameter_name << "->length (seq_len" << rec_depth << ");\n\n";
-			else
+			//if (hasVariableLength (seq_idl_type))
+			//	out << parameter_name << "->length (seq_len" << rec_depth << ");\n\n";
+			//else
 				out << parameter_name << ".length (seq_len" << rec_depth << ");\n\n";
 
 			std::string new_parameter_name;
 			char rec_depth_str[33];
-//			itoa (rec_depth, rec_depth_str, 10); // this is not ansi and ist replaced by
-			sprintf(rec_depth_str,"%d",rec_depth);
+			sprintf(rec_depth_str, "%ld", rec_depth);
 
 			new_parameter_name = "(" + parameter_name + "[seq_count" + rec_depth_str + "])";
 
