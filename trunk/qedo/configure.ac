@@ -104,6 +104,15 @@ AC_CHECK_LIB([z], [deflate])
 AC_CHECK_LIB([uuid], [uuid_generate],,[uuid=no])
 AC_CHECK_LIB([pthread], [pthread_sigmask])
 
+
+if test X"$use_debug" = Xno ; then
+	AC_CHECK_LIB([wx_gtk-2.4], [wxTheApp], [HAVE_WXGTK_LIB=yes], [HAVE_WXGTK_LIB=yes], [-L$WXGTKDIR/lib/])
+else
+	AC_CHECK_LIB([wx_gtkd-2.4], [wxTheApp], [HAVE_WXGTK_LIB=yes], [HAVE_WXGTK_LIB=yes], [-L$WXGTKDIR/lib/])
+
+fi
+AC_SUBST(HAVE_WXGTK_LIB)
+
 if test X"$uuid" == Xno; then
   AC_MSG_ERROR([you need a uuid library for Qedo])
 fi
@@ -163,6 +172,8 @@ if test X"$HAVE_ODBCLIB" = Xyes ; then
 	ODBCLIB="-lodbc"
 else
 	use_db=no
+	AC_MSG_NOTICE([Found no odbc lib. Disable database support.])
+
 fi
 
 AC_SUBST(ODBCLIB)

@@ -23,6 +23,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
+HAVE_WXGTK_LIB=@HAVE_WXGTK_LIB@
 
 SUBDIRS = ComponentIDL \
 	  ComponentContainer \
@@ -33,7 +34,12 @@ SUBDIRS = ComponentIDL \
 	  AssemblyFactory \
 	  HomeFinder \
 	  DeploymentClient \
-	  etc
+	  etc \
+	  explore_server
+
+ifeq "yes" "$(HAVE_WXGTK_LIB)"
+	SUBDIRS+=qcontroller
+endif
 
 all: $(SUBDIRS:%=%-all)
 

@@ -310,7 +310,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS XERCESDIR MICODIR WXGTKDIR CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT SET_MAKE RANLIB ac_ct_RANLIB LN_S INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA HAVE_MICO_CONFIG HAVE_ORBACUS ORBACUSDIR QEDO_ORB HAVE_MKDIR_PROG CC CFLAGS ac_ct_CC HAVE_XERCES XERCES_LIBS XERCES_INCLUDES ODBCLIB PICFLAGS QEDO_STREAMS QEDO_QOS QEDO_DB CPP EGREP CXXCPP LIBOBJS OS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS XERCESDIR MICODIR WXGTKDIR CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT SET_MAKE RANLIB ac_ct_RANLIB LN_S INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA HAVE_MICO_CONFIG HAVE_ORBACUS ORBACUSDIR QEDO_ORB HAVE_MKDIR_PROG CC CFLAGS ac_ct_CC HAVE_WXGTK_LIB HAVE_XERCES XERCES_LIBS XERCES_INCLUDES ODBCLIB PICFLAGS QEDO_STREAMS QEDO_QOS QEDO_DB CPP EGREP CXXCPP LIBOBJS OS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -3217,6 +3217,133 @@ _ACEOF
 fi
 
 
+
+if test X"$use_debug" = Xno ; then
+	echo "$as_me:$LINENO: checking for wxTheApp in -lwx_gtk-2.4" >&5
+echo $ECHO_N "checking for wxTheApp in -lwx_gtk-2.4... $ECHO_C" >&6
+if test "${ac_cv_lib_wx_gtk_2_4_wxTheApp+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lwx_gtk-2.4 -L$WXGTKDIR/lib/ $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char wxTheApp ();
+int
+main ()
+{
+wxTheApp ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_wx_gtk_2_4_wxTheApp=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_wx_gtk_2_4_wxTheApp=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_wx_gtk_2_4_wxTheApp" >&5
+echo "${ECHO_T}$ac_cv_lib_wx_gtk_2_4_wxTheApp" >&6
+if test $ac_cv_lib_wx_gtk_2_4_wxTheApp = yes; then
+  HAVE_WXGTK_LIB=yes
+else
+  HAVE_WXGTK_LIB=yes
+fi
+
+else
+	echo "$as_me:$LINENO: checking for wxTheApp in -lwx_gtkd-2.4" >&5
+echo $ECHO_N "checking for wxTheApp in -lwx_gtkd-2.4... $ECHO_C" >&6
+if test "${ac_cv_lib_wx_gtkd_2_4_wxTheApp+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lwx_gtkd-2.4 -L$WXGTKDIR/lib/ $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char wxTheApp ();
+int
+main ()
+{
+wxTheApp ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_wx_gtkd_2_4_wxTheApp=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_wx_gtkd_2_4_wxTheApp=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_wx_gtkd_2_4_wxTheApp" >&5
+echo "${ECHO_T}$ac_cv_lib_wx_gtkd_2_4_wxTheApp" >&6
+if test $ac_cv_lib_wx_gtkd_2_4_wxTheApp = yes; then
+  HAVE_WXGTK_LIB=yes
+else
+  HAVE_WXGTK_LIB=yes
+fi
+
+
+fi
+
+
 if test X"$uuid" == Xno; then
   { { echo "$as_me:$LINENO: error: you need a uuid library for Qedo" >&5
 echo "$as_me: error: you need a uuid library for Qedo" >&2;}
@@ -3389,6 +3516,9 @@ if test X"$HAVE_ODBCLIB" = Xyes ; then
 	ODBCLIB="-lodbc"
 else
 	use_db=no
+	{ echo "$as_me:$LINENO: Found no odbc lib. Disable database support." >&5
+echo "$as_me: Found no odbc lib. Disable database support." >&6;}
+
 fi
 
 
@@ -7354,6 +7484,7 @@ s,@HAVE_MKDIR_PROG@,$HAVE_MKDIR_PROG,;t t
 s,@CC@,$CC,;t t
 s,@CFLAGS@,$CFLAGS,;t t
 s,@ac_ct_CC@,$ac_ct_CC,;t t
+s,@HAVE_WXGTK_LIB@,$HAVE_WXGTK_LIB,;t t
 s,@HAVE_XERCES@,$HAVE_XERCES,;t t
 s,@XERCES_LIBS@,$XERCES_LIBS,;t t
 s,@XERCES_INCLUDES@,$XERCES_INCLUDES,;t t
