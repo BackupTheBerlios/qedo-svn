@@ -34,6 +34,22 @@ namespace Qedo {
 
 
 /**
+ * @addtogroup Runtime
+ * bla.
+ * @{
+ */
+
+
+/**
+ * @defgroup HomeFinder Home Finder
+ * When starting the homefinder executable the HomeFinder implementations starts and registers in the NameService
+ * under Qedo/HomeFinder. Thus the ORBInitializer of the ComponentServer implementation can resolve the object
+ * and register it with register_initial_reference under "ComponentHomeFinder" as required by the CCM standard.
+ * @{
+ */
+
+
+/**
  * helper class for registration
  */
 class HomeFinderEntry
@@ -55,13 +71,34 @@ public:
 	/** the cookie to identify this registration entry */
 	Qedo::Cookie_impl*			cookie_;
 
-    HomeFinderEntry(const char*, const char*, const char*, Components::CCMHome_ptr);
+	/**
+	 * constructor
+	 * \param home_repid The interface repository id of the home.
+	 * \param comp_repid The interface repository id of the component.
+	 * \param name The name of the home.
+	 * \param home The home.
+	 */
+    HomeFinderEntry(const char* home_repid, const char* comp_repid, const char* name, Components::CCMHome_ptr home);
+
+	/**
+	 * destructor
+	 */
     ~HomeFinderEntry();
 
+	/**
+	 * comparison
+	 */
 	bool operator < (const HomeFinderEntry&) const {return true;}
+
+	/**
+	 * comparison
+	 */
 	bool operator == (const HomeFinderEntry&) const {return true;}
 };
 
+/** @} */
+
+/** @} */
 
 } // namespace
 

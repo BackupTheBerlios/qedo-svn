@@ -20,13 +20,15 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServantRegistry.cpp,v 1.5 2003/03/10 14:23:38 neubauer Exp $";
+static char rcsid[] = "$Id: ServantRegistry.cpp,v 1.6 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "GlobalHelpers.h"
 #include "ServantRegistry.h"
 #include "Output.h"
 
+
 namespace Qedo {
+
 
 ServantEntry::ServantEntry (const PortableServer::ObjectId& object_id, Qedo::ServantBase* servant)
 : object_id_ (new PortableServer::ObjectId (object_id)),
@@ -70,7 +72,6 @@ ServantEntry::~ServantEntry()
 
 	servant_->_remove_ref();
 }
-
 
 
 ServantFactoryEntry::ServantFactoryEntry (const PortableServer::ObjectId& object_id, 
@@ -269,4 +270,3 @@ ServantRegistry::lookup_factory_created_servant (const PortableServer::ObjectId&
 }
 
 } // namespace Qedo
-

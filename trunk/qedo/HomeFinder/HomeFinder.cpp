@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeFinder.cpp,v 1.2 2003/02/13 13:41:17 tom Exp $";
+static char rcsid[] = "$Id: HomeFinder.cpp,v 1.3 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "HomeFinderImpl.h"
 #include "Output.h"
@@ -28,19 +28,15 @@ static char rcsid[] = "$Id: HomeFinder.cpp,v 1.2 2003/02/13 13:41:17 tom Exp $";
 #include <string>
 
 
-/** 
- * \mainpage Home Finder Documentation
- *
- * \section installation
- * The implementation for home finder is installed within the Qedo installation process.
- *
- * \section usage
- * When starting the homefinder executable the HomeFinder implementations starts and registers in the NameService
- * under Qedo/HomeFinder. Thus the ORBInitializer of the ComponentServer implementation can resolve the object
- * and register it with register_initial_reference under "ComponentHomeFinder" as required by the CCM standard.
- * 
+/**
+ * @addtogroup HomeFinder
+ * @{
  */
 
+
+/**
+ * the executable starts a HomeFinder
+ */
 int
 main (int argc, char** argv)
 {
@@ -71,3 +67,5 @@ main (int argc, char** argv)
 	orb->run();
 	return 0;
 }
+
+/** @} */

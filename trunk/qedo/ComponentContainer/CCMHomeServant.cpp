@@ -20,12 +20,14 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMHomeServant.cpp,v 1.7 2003/03/21 12:34:42 tom Exp $";
+static char rcsid[] = "$Id: CCMHomeServant.cpp,v 1.8 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "CCMHomeServant.h"
 #include "Output.h"
 
+
 namespace Qedo {
+
 
 CCMHomeServant::CCMHomeServant()
 {
@@ -97,4 +99,3 @@ throw (CORBA::SystemException)
 }
 
 } // namespace Qedo
-

@@ -25,41 +25,83 @@
 
 #include <CORBA.h>
 #include <Components.h>
-
 #include "PortBase.h"
 #include "Valuetypes.h"
 #include "Util.h"
-
 #include <string>
 #include <vector>
 
+
 namespace Qedo {
 
-//
-// Entry in the CCM object executor for a facet
-//
+
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
+/**
+ * entry in the CCM object executor for a facet
+ */
 class FacetPort : public PortBase
 {
 private:
+	/** the facet */
 	CORBA::Object_var facet_ref_;
 
 public:
-	FacetPort (const char*, const char*, const CORBA::Object_ptr);
+	/**
+	 * constructor
+	 * \param name The name of the facet.
+	 * \param type_id The interface repository id of the facets interface.
+	 * \param ref The object reference of the facet.
+	 */
+	FacetPort (const char* name, const char* type_id, const CORBA::Object_ptr ref);
+
+	/**
+	 * constructor
+	 */
 	FacetPort();
+
+	/**
+	 * copy constructor
+	 */
 	FacetPort (const FacetPort&);
+
+	/**
+	 * desctructor
+	 */
     ~FacetPort();
 
+	/**
+	 * comparison
+	 */
 	bool operator < (const FacetPort&) const {return true;}
+
+	/**
+	 * comparison
+	 */
 	bool operator == (const FacetPort&) const {return true;}
 
+	/**
+	 * provides the description of the facet
+	 * \return The description of the facet.
+	 */
     Components::FacetDescription* facet_description() const;
 
+	/**
+	 * provides the facet
+	 * \return The facet.
+	 */
     const CORBA::Object_ptr facet_ref() const;
 };
 
 // Export template class
 CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<FacetPort>;
 typedef std::vector<FacetPort> FacetVector;
+
+/** @} */
 
 } // namespace Qedo
 

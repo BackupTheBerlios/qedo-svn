@@ -25,40 +25,79 @@
 
 #include <CORBA.h>
 #include <Components.h>
-
 #include "PortBase.h"
 #include "Util.h"
-
 #include <string>
 #include <vector>
 
+
 namespace Qedo {
 
-//
-// Entry in the CCM object executor for an event consumer
-//
+
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
+/**
+ * entry in the CCM object executor for an event consumer
+ */
 class ConsumerPort : public PortBase
 {
 private:
+	/** object reference of the event consumer */
     Components::EventConsumerBase_var consumer_;
 
 public:
+	/**
+	 * constructor
+	 */
     ConsumerPort (const char*, const char*, Components::EventConsumerBase_ptr);
+
+	/**
+	 * constructor
+	 */
 	ConsumerPort();
+
+	/**
+	 * copy constructor
+	 */
 	ConsumerPort (const ConsumerPort&);
+
+	/**
+	 * destructor
+	 */
     ~ConsumerPort();
 
+	/**
+	 * comparison
+	 */
 	bool operator < (const ConsumerPort&) const {return true;}
+
+	/**
+	 * comparison
+	 */
 	bool operator == (const ConsumerPort&) const {return true;}
 
+	/**
+	 * provides a description of the consumer
+	 * \return The description of the consumer
+	 */
     Components::ConsumerDescription* consumer_description() const;
 
+	/**
+	 * provides the event consumer
+	 * \return The event consumer.
+	 */
     const Components::EventConsumerBase_ptr consumer() const;
 };
 
 // Export template class
 CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<ConsumerPort>;
 typedef std::vector<ConsumerPort> ConsumerVector;
+
+/** @} */
 
 } // namespace Qedo
 

@@ -20,17 +20,18 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: GlobalHelpers.cpp,v 1.5 2003/03/21 12:34:42 tom Exp $";
+static char rcsid[] = "$Id: GlobalHelpers.cpp,v 1.6 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "GlobalHelpers.h"
-
 #ifdef WIN32
 #include <process.h>
 #else
 #include <unistd.h>
 #endif
 
+
 namespace Qedo {
+
 
 PortableServer::ObjectId*
 create_object_id (const CORBA::OctetSeq* octet_key, const char* variable_info)
@@ -140,4 +141,3 @@ ObjectId_to_string (const PortableServer::ObjectId& object_id)
 }
 
 } // namespace Qedo
-

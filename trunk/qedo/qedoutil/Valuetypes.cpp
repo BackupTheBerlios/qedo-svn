@@ -20,18 +20,18 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: Valuetypes.cpp,v 1.8 2003/03/21 12:34:42 tom Exp $";
+static char rcsid[] = "$Id: Valuetypes.cpp,v 1.9 2003/04/01 07:50:10 neubauer Exp $";
 
 
 #include "Valuetypes.h"
 
+
 namespace Qedo {
+
 
 CORBA::LongLong Cookie_impl::cookie_key_ = 0;
 
-//
-// Cookie
-//
+
 Cookie_impl::Cookie_impl()
 {
 	CORBA::OctetSeq_var octet_key = new CORBA::OctetSeq();
@@ -83,12 +83,9 @@ CookieFactory_impl::create_for_unmarshal()
 }
 
 
-//
-// PortDescription
-//
 PortDescription_impl::PortDescription_impl (const char* name, const char* type_id)
 #if _MSC_VER < 1300 
-:PortDescription()
+: PortDescription()
 #else
 : PortDescription (name, type_id)
 #endif
@@ -118,22 +115,14 @@ PortDescriptionFactory_impl::create_for_unmarshal
 }
 
 
-//
-// FacetDescription
-//
 FacetDescription_impl::FacetDescription_impl (const char* name, 
 											  const char* type_id, 
 											  CORBA::Object_ptr ref)
-
-
-: FacetDescription ( )
-
+: FacetDescription()
 {
-
 	this -> name ( name );
 	this -> type_id ( type_id );
 	this -> ref ( ref );
-
 }
 
 
@@ -154,9 +143,6 @@ FacetDescriptionFactory_impl::create_for_unmarshal()
 }
 
 
-//
-// ConnectionDescription
-//
 ConnectionDescription_impl::ConnectionDescription_impl (Components::Cookie* ck, CORBA::Object_ptr objref)
 #if _MSC_VER < 1300 
 : ConnectionDescription()
@@ -191,23 +177,16 @@ ConnectionDescriptionFactory_impl::create_for_unmarshal
 }
 
 
-//
-// ReceptacleDescription
-//
 ReceptacleDescription_impl::ReceptacleDescription_impl (const char* name, 
 														const char* type_id, 
 														CORBA::Boolean is_multiplex, 
 														const Components::ConnectedDescriptions& connections)
- 
 : ReceptacleDescription ()
-
 {
-
 	this -> name( name );
 	this -> type_id( type_id );
 	this -> is_multiplex( is_multiplex );
 	this -> connections( connections );
-
 }
 
 
@@ -228,9 +207,6 @@ ReceptacleDescriptionFactory_impl::create_for_unmarshal()
 }
 
 
-//
-// ConsumerDescription
-//
 ConsumerDescription_impl::ConsumerDescription_impl (const char* name, 
 													const char* type_id, 
 													Components::EventConsumerBase_ptr consumer)
@@ -259,9 +235,6 @@ ConsumerDescriptionFactory_impl::create_for_unmarshal()
 }
 
 
-//
-// EmitterDescription
-//
 EmitterDescription_impl::EmitterDescription_impl (const char* name, 
 												  const char* type_id, 
 												  Components::EventConsumerBase_ptr consumer)
@@ -278,11 +251,6 @@ EmitterDescription_impl::EmitterDescription_impl()
 }
 
 
-EmitterDescription_impl::EmitterDescription_impl (const EmitterDescription_impl& emitter_desc)
-{
-}
-
-
 EmitterDescription_impl::~EmitterDescription_impl()
 {
 }
@@ -295,9 +263,6 @@ EmitterDescriptionFactory_impl::create_for_unmarshal()
 }
 
 
-//
-// SubscriberDescription
-//
 SubscriberDescription_impl::SubscriberDescription_impl (const char* name, 
 						   const char* type_id, 
 						   Components::Cookie* ck, 
@@ -328,9 +293,6 @@ SubscriberDescriptionFactory_impl::create_for_unmarshal()
 }
 
 
-//
-// ComponentPortDescription
-//
 ComponentPortDescription_impl::ComponentPortDescription_impl (const Components::FacetDescriptions& facets,
 															  const Components::ReceptacleDescriptions& receptacles,
 															  const Components::ConsumerDescriptions& consumers,
@@ -369,9 +331,6 @@ ComponentPortDescriptionFactory_impl::create_for_unmarshal()
 }
 
 
-//
-// ConfigValue
-//
 ConfigValue_impl::ConfigValue_impl (const char* name,  CORBA::Any& value)
 #if _MSC_VER < 1300 
 : ConfigValue ()

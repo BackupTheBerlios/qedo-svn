@@ -30,26 +30,17 @@
 namespace Qedo {
 
 
-/**
- *
- */
 DeploymentClient::DeploymentClient (CORBA::ORB_ptr orb)
 : orb_ (CORBA::ORB::_duplicate (orb))
 {
 }
 
 
-/**
- *
- */
 DeploymentClient::~DeploymentClient ()
 {
 }
 
 
-/**
- *
- */
 void
 DeploymentClient::initialize()
 throw (CannotInitialize)
@@ -69,9 +60,6 @@ throw (CannotInitialize)
 }
 
 
-/**
- *
- */
 void
 DeploymentClient::create(std::string packageName)
 {

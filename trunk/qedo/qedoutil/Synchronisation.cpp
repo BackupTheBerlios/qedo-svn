@@ -22,7 +22,10 @@
 
 #include "Synchronisation.h"
 
+
 namespace Qedo {
+
+
 qedo_mutex::qedo_mutex() {
 
 #ifdef WIN32
@@ -32,6 +35,7 @@ qedo_mutex::qedo_mutex() {
 #endif
 }
 
+
 qedo_mutex::~qedo_mutex() {
 
 #ifdef WIN32
@@ -39,6 +43,7 @@ qedo_mutex::~qedo_mutex() {
 	pthread_mutex_destroy(&m_mutex);
 #endif
 }
+
 
 void
 qedo_mutex::qedo_lock_object() {
@@ -50,6 +55,7 @@ qedo_mutex::qedo_lock_object() {
 #endif
 }
 
+
 void
 qedo_mutex::qedo_unlock_object() {
 
@@ -60,15 +66,18 @@ qedo_mutex::qedo_unlock_object() {
 #endif
 }
 
+
 qedo_lock::qedo_lock(const qedo_mutex* m) {
 	m_mutex = const_cast<qedo_mutex* const>(m);
 	m_mutex->qedo_lock_object();
 }
 
+
 qedo_lock::qedo_lock(qedo_mutex* m) {
 	m_mutex = m;
 	m_mutex->qedo_lock_object();
 }
+
 
 qedo_lock::~qedo_lock() {
 	m_mutex->qedo_unlock_object();
@@ -83,6 +92,7 @@ qedo_cond::qedo_cond(char * sig_name) {
 #endif
 }
 
+
 qedo_cond::~qedo_cond() {
 #ifdef WIN32
 
@@ -90,6 +100,7 @@ qedo_cond::~qedo_cond() {
 	pthread_cond_destroy(&m_cond);
 #endif
 }
+
 
 void
 qedo_cond::qedo_wait() {
@@ -101,6 +112,7 @@ qedo_cond::qedo_wait() {
 #endif
 }
 
+
 void
 qedo_cond::qedo_signal() {
 
@@ -110,6 +122,7 @@ qedo_cond::qedo_signal() {
 	pthread_cond_signal(&m_cond);
 #endif
 }
+
 
 void
 qedo_cond::qedo_reset() {

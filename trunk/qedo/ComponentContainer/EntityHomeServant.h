@@ -26,16 +26,44 @@
 #include "HomeServantBase.h"
 #include "Util.h"
 
+
 namespace Qedo {
 
+
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
+/**
+ * home servant for entity components
+ */
 class CONTAINERDLL_API EntityHomeServant : public HomeServantBase
 {
 public:
+	/**
+	 * constructor
+	 */
 	EntityHomeServant();
+
+	/**
+	 * copy constructor
+	 */
 	EntityHomeServant (const EntityHomeServant&);
+
+	/**
+	 * assignment operator
+	 */
 	EntityHomeServant& operator= (const EntityHomeServant&);
+
+	/**
+	 * destructor
+	 */
 	~EntityHomeServant();
 };
+
+/** @} */
 
 } // namespace Qedo
 

@@ -25,42 +25,89 @@
 
 #include <CORBA.h>
 #include <Components.h>
-
 #include "PortBase.h"
 #include "Util.h"
 #include <string>
 #include <vector>
 
+
 namespace Qedo {
 
-//
-// Entry in the CCM object executor for an emitter
-//
+
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
+/**
+ * Entry in the CCM object executor for an emitter
+ */
 class EmitterPort : public PortBase
 {
 private:
+	/** the consumer */
     Components::EventConsumerBase_var consumer_;
 
 public:
-    EmitterPort (const char*, const char*);
+	/**
+	 * constructor
+	 * \param name The name of the emitter.
+	 * \param type_id The interface repository id of the emitter.
+	 */
+    EmitterPort (const char* name, const char* type_id);
+
+	/**
+	 * constructor
+	 */
 	EmitterPort();
+
+	/**
+	 * copy constructor
+	 */
 	EmitterPort (const EmitterPort&);
+
+	/**
+	 * destructor
+	 */
     ~EmitterPort();
 
+	/**
+	 * comparison
+	 */
 	bool operator < (const EmitterPort&) const {return true;}
+
+	/**
+	 * comparison
+	 */
 	bool operator == (const EmitterPort&) const {return true;}
 
-	// Helper function for the contexts
+	/**
+	 * provides the consumer
+	 * \return The consumer.
+	 */
 	const Components::EventConsumerBase_ptr consumer() const
 	{
 		return Components::EventConsumerBase::_duplicate (consumer_);
 	}
 
+	/**
+	 * provides the description of the emitter
+	 * \return The description of the emitter.
+	 */
     Components::EmitterDescription* emitter_description() const;
 
-    void set_consumer (Components::EventConsumerBase_ptr)
+	/**
+	 * sets the consumer
+	 * \param consumer The consumer for this emitter.
+	 */
+    void set_consumer (Components::EventConsumerBase_ptr consumer)
         throw (Components::AlreadyConnected);
 
+	/**
+	 * unsets the consumer
+	 * \return The former consumer for this emitter.
+	 */
     Components::EventConsumerBase_ptr unset_consumer()
         throw (Components::NoConnection);
 };
@@ -68,6 +115,8 @@ public:
 // Export template class
 CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<EmitterPort>;	
 typedef std::vector<EmitterPort> EmitterVector;
+
+/** @} */
 
 } // namespace Qedo
 

@@ -20,13 +20,15 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServantLocator.cpp,v 1.3 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: ServantLocator.cpp,v 1.4 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "HomeServantBase.h"
 #include "ServantLocator.h"
 #include "Output.h"
 
+
 namespace Qedo {
+
 
 ServantLocator::ServantLocator (HomeServantBase* home_servant)
 : home_servant_ (home_servant)
@@ -50,6 +52,7 @@ throw (PortableServer::ForwardRequest, CORBA::SystemException)
 	return home_servant_->lookup_servant (oid);
 }
 
+
 void 
 ServantLocator::postinvoke (const PortableServer::ObjectId& oid,
 							PortableServer::POA_ptr adapter,
@@ -62,4 +65,3 @@ throw (CORBA::SystemException)
 }
 
 } // namespace Qedo
-

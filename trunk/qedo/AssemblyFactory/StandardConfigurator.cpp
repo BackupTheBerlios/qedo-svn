@@ -29,27 +29,18 @@
 namespace Qedo {
 
 
-/**
- *
- */
 StandardConfiguratorImpl::StandardConfiguratorImpl
 ()
 {
 }
 
 
-/**
- *
- */
 StandardConfiguratorImpl::~StandardConfiguratorImpl
 ()
 {
 }
 
 
-/**
- *
- */
 void 
 StandardConfiguratorImpl::configure(::Components::CCMObject_ptr comp)
 throw( Components::WrongComponentType )
@@ -88,9 +79,6 @@ throw( Components::WrongComponentType )
 }
 
 
-/**
- *
- */
 void 
 StandardConfiguratorImpl::set_configuration(const ::Components::ConfigValues& descr)
 throw (CORBA::SystemException)

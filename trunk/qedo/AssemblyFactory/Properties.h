@@ -34,23 +34,45 @@ namespace Qedo {
 
 
 /**
- *
+ * @addtogroup Assembly
+ * @{
+ */
+
+
+/**
+ * represents a property desription
  */
 class Properties
 {
 private:
+	/** the descriptor file */
 	std::string descriptor_;
+	/** the parser */
 	DOMXMLParser* parser_;
+	/** the parsed description */
 	DOMDocument* document_;
 
 
 public:
-	Properties (std::string);
+	/**
+	 * constructor
+	 * \param descriptor The descriptor file.
+	 */
+	Properties (std::string descriptor);
+
+	/**
+	 * destructor
+	 */
 	virtual ~Properties();
 
+	/**
+	 * provides the list of config values
+	 * \return The list of ConfigValue.
+	 */
 	Components::ConfigValues* getConfigValues();
 };
 
+/** @} */
 
 }
 

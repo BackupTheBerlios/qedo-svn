@@ -24,15 +24,42 @@
 #define __GLOBAL_HELPERS_H__
 
 #include <CORBA.h>
-
 #include "Key.h"
+
 
 namespace Qedo {
 
+
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
+/**
+ * creates an object id
+ */
 PortableServer::ObjectId* create_object_id (const CORBA::OctetSeq*, const char*);
+
+
+/**
+ *
+ */
 bool compare_OctetSeqs (const CORBA::OctetSeq&, const CORBA::OctetSeq&);
+
+
+/**
+ *
+ */
 bool compare_object_ids (const PortableServer::ObjectId&, const PortableServer::ObjectId&);
+
+
+/**
+ *
+ */
 char* ObjectId_to_string (const PortableServer::ObjectId&);
+
+/** @} */
 
 } // namespace Qedo
 

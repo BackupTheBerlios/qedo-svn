@@ -20,12 +20,13 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ConsumerPort.cpp,v 1.3 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: ConsumerPort.cpp,v 1.4 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "ConsumerPort.h"
 
 
 namespace Qedo {
+
 
 ConsumerPort::ConsumerPort (const char* name,
                             const char* type_id,

@@ -30,9 +30,6 @@
 namespace Qedo {
 
 
-/**
- * Constructor for new implementation.
- */
 ComponentImplementation::ComponentImplementation (const char* uuid, std::string installationDirectory, std::string package)
 : uuid_ (uuid)
 {
@@ -44,9 +41,6 @@ ComponentImplementation::ComponentImplementation (const char* uuid, std::string 
 }
 
 
-/**
- * Constructor for implementation read from DeployedComponents file.
- */
 ComponentImplementation::ComponentImplementation (std::string uuid, std::string servant_module, 
 												  std::string servant_entry_point, std::string executor_module,
 												  std::string executor_entry_point)
@@ -65,18 +59,12 @@ ComponentImplementation::ComponentImplementation (std::string uuid, std::string 
 }
 
 
-/**
- *
- */
 ComponentImplementation::~ComponentImplementation
 ()
 {
 }
 
 
-/**
- *
- */
 bool
 ComponentImplementation::operator == 
 ( ComponentImplementation id )
@@ -90,9 +78,6 @@ ComponentImplementation::operator ==
 }
 
 
-/**
- *
- */
 void
 ComponentImplementation::author (DOMElement* element)
 throw(Components::CreateFailure)
@@ -105,9 +90,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- * handle code elements being children of the element
- */
 void
 ComponentImplementation::code (DOMElement* element)
 throw(Components::CreateFailure)
@@ -191,9 +173,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- * handle usage element
- */
 std::string
 ComponentImplementation::usage (DOMElement* element)
 throw(Components::CreateFailure)
@@ -203,9 +182,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- * handle entrypoint element
- */
 std::string
 ComponentImplementation::entrypoint (DOMElement* element)
 throw(Components::CreateFailure)
@@ -215,9 +191,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 void
 ComponentImplementation::corbacomponent (DOMDocument* document)
 throw(Components::CreateFailure)
@@ -255,9 +228,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 void
 ComponentImplementation::dependency (DOMElement* element)
 throw(Components::CreateFailure)
@@ -282,9 +252,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 void
 ComponentImplementation::description (DOMElement* element)
 throw(Components::CreateFailure)
@@ -297,9 +264,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 DOMDocument* 
 ComponentImplementation::descriptor (DOMElement* element)
 throw(Components::CreateFailure)
@@ -362,9 +326,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 void
 ComponentImplementation::extension(DOMElement* element)
 throw(Components::CreateFailure)
@@ -377,9 +338,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 std::string
 ComponentImplementation::fileinarchive(DOMElement* element)
 throw(Components::CreateFailure)
@@ -389,9 +347,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 void
 ComponentImplementation::idl (DOMElement* element)
 throw(Components::CreateFailure)
@@ -453,9 +408,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 void
 ComponentImplementation::implementation (DOMElement* element)
 throw(Components::CreateFailure)
@@ -504,9 +456,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 void
 ComponentImplementation::license (DOMElement* element)
 throw(Components::CreateFailure)
@@ -519,9 +468,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 std::string
 ComponentImplementation::link (DOMElement* element)
 throw(Components::CreateFailure)
@@ -563,9 +509,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 void
 ComponentImplementation::os (DOMElement* element)
 throw(Components::CreateFailure)
@@ -579,9 +522,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 void
 ComponentImplementation::pkgtype (DOMElement* element)
 throw(Components::CreateFailure)
@@ -594,9 +534,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 void
 ComponentImplementation::propertyfile (DOMElement* element)
 throw(Components::CreateFailure)
@@ -609,9 +546,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 void
 ComponentImplementation::title (DOMElement* element)
 throw(Components::CreateFailure)
@@ -624,9 +558,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 bool
 ComponentImplementation::install ()
 {
@@ -723,9 +654,6 @@ ComponentImplementation::install ()
 }
 
 
-/**
- * build the servant code for the component
- */
 void
 ComponentImplementation::installCode()
 throw(Components::CreateFailure)
@@ -864,9 +792,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 void 
 ComponentImplementation::uninstall()
 {
@@ -882,9 +807,6 @@ ComponentImplementation::uninstall()
 }
 
 
-/**
- *
- */
 int 
 ComponentImplementation::get_counter()
 {

@@ -20,12 +20,14 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: PublisherPort.cpp,v 1.6 2003/03/21 12:34:42 tom Exp $";
+static char rcsid[] = "$Id: PublisherPort.cpp,v 1.7 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "PublisherPort.h"
 #include "Output.h"
 
+
 namespace Qedo {
+
 
 SubscribedConsumer::SubscribedConsumer (Components::EventConsumerBase_ptr consumer, 
                                         Cookie_impl* cookie)
@@ -180,4 +182,3 @@ throw (Components::InvalidConnection)
 }
 
 } // namespace Qedo
-

@@ -42,30 +42,52 @@ namespace Qedo {
 
 
 /**
- *
+ * @defgroup Utilities
+ * @{
+ */
+
+
+/**
+ * base class for easy name service usage
  */
 class NameServiceBase
 {
 protected:
-
+	/**
+	 * constructor
+	 */
 	NameServiceBase();
 
+	/** the name service reference */
 	CosNaming::NamingContext_var nameService_;
 
 public:
-
+	/**
+	 * desctructor
+	 */
     virtual ~NameServiceBase();
 
-    // initialize NameService
+    /**
+	 * initialize NameService
+	 */
     bool initNameService (CORBA::ORB_ptr);
 
-    // register a name in NameService
-	bool registerName (std::string, CORBA::Object_ptr, bool);
+    /**
+	 * register a name in NameService
+	 * \param name The name of the binding.
+	 * \param obj The reference of the binding.
+	 * \param rebind True if rebinding allowed.
+	 */
+	bool registerName (std::string name, CORBA::Object_ptr obj, bool rebind);
 
-    // resolve a name from NameService
-	CORBA::Object_ptr resolveName (std::string);
+    /**
+	 * resolve a name from NameService
+	 * \param name The name of the binding.
+	 */
+	CORBA::Object_ptr resolveName (std::string name);
 };
 
+/** @} */
 
 } // namespace
 

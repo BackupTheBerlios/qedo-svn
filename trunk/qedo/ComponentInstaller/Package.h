@@ -50,36 +50,73 @@
 
 namespace Qedo {
 
+
 /**
- *
+ * @addtogroup ComponentInstaller
+ * @{
+ */
+
+
+/**
+ * represents a package
  */
 class Package : public virtual PlatformBase
 {
 
 private:
+	/** the file name */
 	std::string zipfilename;
 
+	/**
+	 * bla
+	 */
     void change_file_date(const char*,uLong,tm_unz);
+
+	/**
+	 * bla
+	 */
 	int extractCurrentfile (unzFile, std::string);
 
 public:
 	
-	// Constructor of the class. The string argument is the name of the archive file.
-	Package (std::string); 
+	/**
+	 * constructor
+	 * \param file The name of the archive file.
+	 */
+	Package (std::string file); 
 
-	// Returns the pathname of the descriptor file within the archive.
-	std::string getFileNameWithSuffix (std::string);
+	/**
+	 * returns the pathname of the descriptor file within the archive
+	 * If the format of the archive is not correct or if there is no .csd file or if there are more
+	 * than one .csd file, the string "" is returned.
+	 * \param suffix
+	 */
+	std::string getFileNameWithSuffix (std::string suffix);
 
-	// Extracts a file from the archive. The file is specified by the string argument which represents
-    // the pathname of the file within the archive. The return value is 0 if no error.
-	int extractFile (std::string, std::string);
+	/**
+	 * extracts a file from the archive
+	 * The file is specified by the string argument which represents
+     * the pathname of the file within the archive. The return value is 0 if no error.
+	 * \param filename_to_extract
+	 * \param target
+	 */
+	int extractFile (std::string filename_to_extract, std::string target);
 
-    //
-	int extractFilesWithSuffix (std::string, std::string);
+    /**
+	 * extracts files
+	 * \param suffix
+	 * \param destination
+	 */
+	int extractFilesWithSuffix (std::string suffix, std::string destination);
 
-    //
+    /**
+	 * provides the package name
+	 * \return The file name.
+	 */
 	std::string getName();
 };
+
+/** @} */
 
 }
 

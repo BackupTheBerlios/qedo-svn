@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.7 2003/02/02 18:11:28 tom Exp $";
+static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.8 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "ComponentInstallationImpl.h"
 
@@ -127,9 +127,6 @@ ComponentInstallationImpl::initialize()
 }
 
 
-/**
- *
- */
 bool
 ComponentInstallationImpl::readInstalledComponents (const char* inst_file)
 {
@@ -195,9 +192,6 @@ ComponentInstallationImpl::readInstalledComponents (const char* inst_file)
 }
 
 
-/**
- *
- */
 bool
 ComponentInstallationImpl::addInstalledComponent (ComponentImplementation* aComponentImplementation)
 {

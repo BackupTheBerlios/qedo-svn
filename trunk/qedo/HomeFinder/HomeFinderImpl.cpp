@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeFinderImpl.cpp,v 1.1 2003/02/07 11:24:35 neubauer Exp $";
+static char rcsid[] = "$Id: HomeFinderImpl.cpp,v 1.2 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "HomeFinderImpl.h"
 #include "Valuetypes.h"
@@ -30,26 +30,17 @@ static char rcsid[] = "$Id: HomeFinderImpl.cpp,v 1.1 2003/02/07 11:24:35 neubaue
 namespace Qedo {
 
 
-/**
- * constructor
- */
 HomeFinderImpl::HomeFinderImpl(CORBA::ORB_ptr orb)
 : orb_ (CORBA::ORB::_duplicate (orb))
 {
 }
 
 
-/**
- * destructor
- */
 HomeFinderImpl::~HomeFinderImpl()
 {
 }
 
 
-/**
- * initialize
- */
 void
 HomeFinderImpl::initialize()
 {
@@ -94,9 +85,6 @@ HomeFinderImpl::initialize()
 }
 
 
-/**
- * implementation of IDL:Qedo_Components/HomeFinder/register_home:1.0
- */
 Components::Cookie* 
 HomeFinderImpl::register_home(Components::CCMHome_ptr ahome, const char* comp_repid, const char* home_repid, const char* home_name)
 throw(CORBA::SystemException)
@@ -112,9 +100,6 @@ throw(CORBA::SystemException)
 }
 
 
-/**
- * implementation of IDL:Qedo_Components/HomeFinder/unregister_home:1.0
- */
 void 
 HomeFinderImpl::unregister_home(Components::Cookie* c)
 throw(CORBA::SystemException)
@@ -136,9 +121,6 @@ throw(CORBA::SystemException)
 }
 
 
-/**
- * implementation of IDL:omg.org/Components/HomeFinder/find_home_by_component_type:1.0
- */
 Components::CCMHome_ptr 
 HomeFinderImpl::find_home_by_component_type(const char* comp_repid)
 throw(Components::HomeNotFound, CORBA::SystemException)
@@ -159,9 +141,6 @@ throw(Components::HomeNotFound, CORBA::SystemException)
 }
 
 
-/**
- * implementation of IDL:omg.org/Components/HomeFinder/find_home_by_home_type:1.0
- */
 Components::CCMHome_ptr 
 HomeFinderImpl::find_home_by_home_type(const char* home_repid)
 throw(Components::HomeNotFound, CORBA::SystemException)
@@ -182,9 +161,6 @@ throw(Components::HomeNotFound, CORBA::SystemException)
 }
 
 
-/**
- * implementation of IDL:omg.org/Components/HomeFinder/find_home_by_name:1.0
- */
 Components::CCMHome_ptr 
 HomeFinderImpl::find_home_by_name(const char* home_name)
 throw(Components::HomeNotFound, CORBA::SystemException)

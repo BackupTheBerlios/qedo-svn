@@ -45,8 +45,22 @@
 namespace Qedo {
 
 
+/**
+ * @addtogroup Deployment Component Deployment Support
+ * @{
+ */
+
+
+/**
+ * @defgroup Assembly Assembly and AssemblyFactory
+ * bla
+ * @{
+ */
+
+
 #define COMPONENT_INSTALLATION_CONTEXT "Qedo/ComponentInstallation/"
 #define SERVER_ACTIVATOR_CONTEXT "Qedo/Activators/"
+
 
 /**
  * the implementation of the assembly interface
@@ -57,46 +71,49 @@ class AssemblyImpl : public virtual POA_Components::Deployment::Assembly,
 {
 
 private:
-	// uuid of the assembly
+	/** the uuid of the assembly */
 	std::string uuid_;
 	
-    // path name of the assembly package
+    /** path name of the assembly package */
 	std::string pathname_;
     
-    // the package object
+    /** the package object */
     Package* package_;
 	
-    // the state of the assembly
+    /** the state of the assembly */
 	Components::Deployment::AssemblyState state_;
 	
-    // the cookie of the assembly, to be used by the AssemblyFactory
+    /** the cookie of the assembly, to be used by the AssemblyFactory */
 	Cookie_impl* cookie_;
 	
-    // the xml parser
+    /** the xml parser */
 	DOMXMLParser* cadParser_;
 	
-    // the dom document of the assembly description
+    /** the dom document of the assembly description */
 	DOMDocument* document_;
 	
-    // the mapping of component implementation ids to softpackages
+    /** the mapping of component implementation ids to softpackages */
 	std::map < std::string, std::string > implementationMap_;
 	
-    // the mapping of component instance ids to objects
+    /** the mapping of component instance ids to objects */
 	std::map < std::string, Components::CCMObject_var > instanceMap_;
     
-    // the mapping of home instance ids to objects
+    /** the mapping of home instance ids to objects */
 	std::map < std::string, Components::CCMHome_var > homeMap_;
 	
-    // start order of the instances
+    /** start order of the instances */
 	std::list < std::string > startOrder_;
 
 private:
-	
-    // handle extension elements
+    /**
+	 * handle extension elements
+	 */
     void extension (DOMElement*)
         throw(Components::CreateFailure);
 
-    // get the named component instance
+    /**
+	 * get the named component instance
+	 */
     Components::CCMObject_ptr getInstance (std::string)
         throw(Components::CreateFailure);
 
@@ -108,11 +125,16 @@ private:
     Components::Deployment::Container_ptr createContainer (Components::Deployment::ComponentServer_ptr)
         throw(Components::CreateFailure);
 
-    // create new home
+    /**
+	 * create new home
+	 */
     Components::CCMHome_ptr createHome (Components::Deployment::Container_ptr, std::string)
         throw(Components::CreateFailure);
 
-    // get the destination name for home
+    /**
+	 * return the destination for placement,
+	 * if destination is empty, return the local hostname (for convenience)
+	 */
 	std::string destination (DOMElement*)
         throw(Components::CreateFailure);
 
@@ -158,11 +180,15 @@ private:
     void installImplementation (DOMElement*)
         throw(Components::CreateFailure);
 
-	// installs all component implementations referenced in the assembly descriptor
+	/**
+	 * install all component implementations referred to in the assembly descriptor
+	 */
 	void install()
 		throw(Components::CreateFailure);
 
-	// instantiates a component in the given home
+	/**
+	 * instantiate a component according to the xml element in the assembly descriptor
+	 */
 	void instantiateComponent (DOMElement*, Components::CCMHome_ptr)
 		throw(Components::CreateFailure);
 
@@ -174,56 +200,83 @@ private:
     void homeplacement (DOMElement*, Components::Deployment::Container_ptr)
         throw(Components::CreateFailure);
 
-	// instantiates all components according to the partitioning section in the assembly descriptor
+	/**
+	 * create all component instances defined in the assembly descriptor
+	 */
 	void instantiate ()
 		throw(Components::CreateFailure);
 
-    // connect interfaces
+    /**
+	 * connect interfaces
+	 */
     void connectinterface (DOMElement*)
         throw(Components::CreateFailure);
 
-    // connect events
+    /**
+	 * connect events
+	 */
     void connectevent (DOMElement*)
         throw(Components::CreateFailure);
 
-	// makes all required connections between instances
+	/**
+	 * connect all component instances according to the assembly descriptor
+	 */
 	void connections ()
 		throw(Components::CreateFailure);
 
-	// starts all instances
+	/**
+	 * start all created component instances
+	 */
 	void configuration_complete ()
         throw(Components::CreateFailure);
 
 
 public:
-    AssemblyImpl( std::string, Cookie_impl*, CosNaming::NamingContext_ptr );
+	/**
+	 * consructor
+	 * \param package The package of the assembly.
+	 * \param cookie The cookie of the assembly (from AssemblyFactory).
+	 * \param nameContext The naming service.
+	 */
+    AssemblyImpl( std::string package, Cookie_impl* cookie, CosNaming::NamingContext_ptr nameContext);
+
+	/**
+	 * desctructor
+	 */
 	virtual ~AssemblyImpl();
 
-
+	/**
+	 * provide the uuid
+	 */
     std::string get_uuid() const;
 
 	bool operator == ( Components::Cookie* );
 
-	
-    //
-    // IDL:omg.org/Components/Deployment/Assembly/build:1.0
-    //
+    /**
+	 * implements IDL:omg.org/Components/Deployment/Assembly/build:1.0
+	 * build the assembly
+	 */
     void build()
 		throw( Components::CreateFailure );
 
-    //
-    // IDL:omg.org/Components/Deployment/Assembly/tear_down:1.0
-    //
+    /**
+     * implements IDL:omg.org/Components/Deployment/Assembly/tear_down:1.0
+	 * tear down the assembly
+	 */
     void tear_down()
 		throw( Components::RemoveFailure );
 
-    //
-    // IDL:omg.org/Components/Deployment/Assembly/get_state:1.0
-    //
+    /**
+	 * implements IDL:omg.org/Components/Deployment/Assembly/get_state:1.0
+	 * return the state of the assembly
+	 */
     Components::Deployment::AssemblyState get_state()
 		throw( CORBA::SystemException );
 };
 
+/** @} */
+
+/** @} */
 
 }
 

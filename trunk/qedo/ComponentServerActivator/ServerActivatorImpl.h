@@ -25,9 +25,7 @@
 
 
 #include <CORBA.h>
-
 #include <vector>
-
 #include "QedoComponents_skel.h"
 #include "Synchronisation.h"
 
@@ -35,54 +33,96 @@
 namespace Qedo {
 
 
+/**
+ * @addtogroup Deployment Component Deployment Support
+ * @{
+ */
+
+
+/**
+ * @defgroup ServerActivator Component Server Activator
+ * When starting the server activator executable the ServerActivator implementations starts and registers in the NameService
+ * under Qedo/<host name>/ServerActivator.
+ * @{
+ */
+
+
 typedef std::vector < Components::Deployment::ComponentServer_var > ComponentServerVector;
 
+
+/**
+ * the implementation of the ServerActivator interface
+ */
 class ServerActivatorImpl : public POA_Qedo_Components::Deployment::ServerActivator,
 							public PortableServer::RefCountServantBase
 {
 private:
+	/** debug mode */
 	bool debug_mode_;
+
+	/** for syncronization */
 	qedo_cond component_server_activation;
 
+	/** the orb */
 	CORBA::ORB_var									orb_;
+	/** the root poa */
 	PortableServer::POA_var							root_poa_;
+	/** the root poa manager */
 	PortableServer::POAManager_var					root_poa_manager_;
+	/** the last created component server */
 	Components::Deployment::ComponentServer_var		last_created_component_server_;
+	/** the list of all created component servers */
 	ComponentServerVector							component_servers_;
 
 public:
+	/**
+	 * constructor
+	 */
 	ServerActivatorImpl (CORBA::ORB_ptr, bool);
+
+	/**
+	 * destructor
+	 */
 	~ServerActivatorImpl();
 
+	/**
+	 * initialize the server
+	 */
 	void initialize();
 
-	//
-    // IDL:omg.org/Components/Deployment/ServerActivator/create_component_server:1.0
-    //
+	/**
+     * implements IDL:omg.org/Components/Deployment/ServerActivator/create_component_server:1.0
+     */
     Components::Deployment::ComponentServer_ptr create_component_server (const ::Components::ConfigValues& config)
 		throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, CORBA::SystemException);
 
-    //
-    // IDL:omg.org/Components/Deployment/ServerActivator/remove_component_server:1.0
-    //
+    /**
+     * implements IDL:omg.org/Components/Deployment/ServerActivator/remove_component_server:1.0
+     */
     void remove_component_server (::Components::Deployment::ComponentServer_ptr server)
 		throw (Components::RemoveFailure, CORBA::SystemException);
 
-    //
-    // IDL:omg.org/Components/Deployment/ServerActivator/get_component_servers:1.0
-    //
+    /**
+     * implements IDL:omg.org/Components/Deployment/ServerActivator/get_component_servers:1.0
+     */
     Components::Deployment::ComponentServers* get_component_servers()
 		throw (CORBA::SystemException);
 
-	//
-    // IDL:omg.org/HU_Components/Deployment/ServerActivator/notify_component_server:1.0
-    //
+	/**
+     * implements IDL:omg.org/HU_Components/Deployment/ServerActivator/notify_component_server:1.0
+     */
     virtual void notify_component_server (Components::Deployment::ComponentServer_ptr server)
         throw(CORBA::SystemException);
 
-	// Exceptions
+	/**
+	 * exception to indicate the initialization was not sucessful
+	 */
 	class CannotInitialize{};
 };
+
+/** @} */
+
+/** @} */
 
 } // namespace Qedo
 

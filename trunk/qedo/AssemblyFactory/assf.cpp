@@ -20,14 +20,20 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: assf.cpp,v 1.5 2003/02/13 13:41:17 tom Exp $";
+static char rcsid[] = "$Id: assf.cpp,v 1.6 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "AssemblyFactory.h"
 #include "Output.h"
 
 
 /**
- *
+ * @addtogroup Assembly
+ * @{
+ */
+
+
+/**
+ * start the server for the assembly factory object
  */
 int
 main (int argc, char** argv)
@@ -61,3 +67,5 @@ main (int argc, char** argv)
 	orb->run();
 	return 0;
 }
+
+/** @} */

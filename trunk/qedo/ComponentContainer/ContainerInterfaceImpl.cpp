@@ -20,13 +20,12 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.8 2003/03/21 12:34:42 tom Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.9 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
 #include "SessionHomeServant.h"
 #include "Output.h"
-
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -34,7 +33,9 @@ static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.8 2003/03/21 12:34:42
 #include <sys/types.h>
 #endif
 
+
 namespace Qedo {
+
 
 HomeEntry::HomeEntry (Qedo::HomeServantBase* home_servant, Components::Cookie* c)
 : home_servant_ (home_servant)
@@ -181,6 +182,7 @@ ContainerInterfaceImpl::load_shared_library (const char* name)
 }
 #endif
 
+
 Components::ConfigValues*
 ContainerInterfaceImpl::configuration()
 throw (CORBA::SystemException)
@@ -197,14 +199,6 @@ throw (CORBA::SystemException)
 }
 
 
-/**
- * implementation of IDL:omg.org/Components/Deployment/Container/install_home:1.0
- *
- * The ConfigValue named "HOMEFINDERNAME" is used to provide a name for home registration in a HomeFinder,
- * if available. Currently each home is registered automatically anyway by repository ids of home and
- * managed component.
- *
- */
 Components::CCMHome_ptr
 ContainerInterfaceImpl::install_home (const char* id,
 									  const char* entrypt,

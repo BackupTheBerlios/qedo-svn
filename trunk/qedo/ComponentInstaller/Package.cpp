@@ -31,8 +31,6 @@
 namespace Qedo {
 
 
-/**
- */
 void 
 Package::change_file_date
 ( const char* filename, uLong dosdate, tm_unz tmu_date )
@@ -74,8 +72,6 @@ Package::change_file_date
 }
 
 
-/**
- */
 int 
 Package::extractCurrentfile
 ( unzFile uf, std::string target )
@@ -188,10 +184,6 @@ Package::extractCurrentfile
 }
 
 
-/**
- * Constructor. The file parameter is the absolute or relative
- * pathname of the archive file.
- */
 Package::Package
 ( std::string file )
 {
@@ -199,11 +191,6 @@ Package::Package
 }
 
 
-/**
- * This function returns the pathname of the descriptor file within the archive.
- * If the format of the archive is not correct or if there is no .csd file or if there are more
- * than one .csd file, the string "" is returned.
- */
 std::string 
 Package::getFileNameWithSuffix
 ( std::string suffix )
@@ -278,10 +265,6 @@ Package::getFileNameWithSuffix
 }
 
 
-/**
- * This function extracts the file named filename_to_extract.
- * The return value is 0 if no error.
- */
 int 
 Package::extractFile
 ( std::string filename_to_extract, std::string target )
@@ -309,9 +292,6 @@ Package::extractFile
 }
 
 
-/**
- *
- */
 int
 Package::extractFilesWithSuffix(std::string suffix, std::string destination)
 {
@@ -370,9 +350,6 @@ Package::extractFilesWithSuffix(std::string suffix, std::string destination)
 }
 
 
-/**
- *
- */
 std::string
 Package::getName
 ()

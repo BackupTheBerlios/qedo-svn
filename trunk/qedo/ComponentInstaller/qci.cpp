@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qci.cpp,v 1.7 2003/03/24 16:05:18 neubauer Exp $";
+static char rcsid[] = "$Id: qci.cpp,v 1.8 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "ComponentInstallationImpl.h"
 #ifdef MICO_ORB
@@ -30,6 +30,16 @@ static char rcsid[] = "$Id: qci.cpp,v 1.7 2003/03/24 16:05:18 neubauer Exp $";
 #endif
 #include <iostream>
 
+
+/**
+ * @addtogroup ComponentInstaller
+ * @{
+ */
+
+
+/**
+ * starts the server for the component installer object
+ */
 int
 main (int argc, char** argv)
 {
@@ -54,3 +64,4 @@ main (int argc, char** argv)
 	return 0;
 }
 
+/** @} */

@@ -25,6 +25,7 @@
 
 #include <CORBA.h>
 
+
 #ifdef WIN32
 #ifdef CONTAINERDLL_EXPORTS
 #define CONTAINERDLL_API __declspec(dllexport)
@@ -37,6 +38,7 @@
 #define CONTAINERDLL_API 
 #define CONTAINERDLL_EXTERN
 #endif
+
 
 // VC++ warnings 
 #pragma warning (disable : 4251) // class OB::ObjVar<*> needs to have dll-interface to be used by clients of class ...

@@ -20,12 +20,14 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ReceptaclePort.cpp,v 1.3 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: ReceptaclePort.cpp,v 1.4 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "ReceptaclePort.h"
 #include "Output.h"
 
+
 namespace Qedo {
+
 
 ReceptacleConnection::ReceptacleConnection (CORBA::Object_ptr connection,
 											Cookie_impl* cookie)
@@ -232,4 +234,3 @@ throw (Components::InvalidConnection,
 }
 
 } // namespace Qedo
-

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeFinderEntry.cpp,v 1.1 2003/02/07 11:24:35 neubauer Exp $";
+static char rcsid[] = "$Id: HomeFinderEntry.cpp,v 1.2 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "HomeFinderEntry.h"
 
@@ -28,9 +28,6 @@ static char rcsid[] = "$Id: HomeFinderEntry.cpp,v 1.1 2003/02/07 11:24:35 neubau
 namespace Qedo {
 
 
-/**
- * constructor
- */
 HomeFinderEntry::HomeFinderEntry(const char* home_repid, const char* comp_repid, const char* name, Components::CCMHome_ptr home)
 : home_repid_(home_repid)
 , comp_repid_(comp_repid)
@@ -41,9 +38,6 @@ HomeFinderEntry::HomeFinderEntry(const char* home_repid, const char* comp_repid,
 }
 
 
-/**
- * destructor
- */
 HomeFinderEntry::~HomeFinderEntry()
 {
 }

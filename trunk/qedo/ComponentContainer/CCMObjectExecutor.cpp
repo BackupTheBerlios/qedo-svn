@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.6 2003/03/21 12:34:42 tom Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.7 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -40,6 +40,25 @@ CCMObjectExecutor::CCMObjectExecutor (const PortableServer::ObjectId& component_
   home_servant_ (home_servant)
 {
 	home_servant_->_add_ref();
+
+	// create uuid
+#ifdef _WIN32
+	GUID guid;
+	CoCreateGuid(&guid);
+	LPOLESTR lpolestr;
+	StringFromCLSID(guid, &lpolestr);
+	int i = wcstombs(NULL, lpolestr, 0);
+    char *buf = (char *)malloc(i);
+    wcstombs(buf, lpolestr, i);
+	// remove { and }
+	buf[i - 1] = '\0';
+	uuid_ = buf;
+	uuid_.erase(0, 1);
+	free(buf);
+	CoTaskMemFree(lpolestr);
+#else
+	TODO
+#endif
 }
 
 
@@ -170,6 +189,7 @@ CCMObjectExecutor::add_consumer (const char* name,
 //
 // from Navigation
 //
+
 CORBA::Object_ptr
 CCMObjectExecutor::provide_facet (const char* name)
 throw (Components::InvalidName, CORBA::SystemException)
@@ -268,6 +288,7 @@ throw (CORBA::SystemException)
 //
 // from Receptacles
 //
+
 Components::Cookie*
 CCMObjectExecutor::connect (const char* name, CORBA::Object_ptr connection)
 throw (Components::InvalidName, 
@@ -396,6 +417,7 @@ throw (Components::InvalidName, CORBA::SystemException)
 //
 // from Events
 //
+
 Components::EventConsumerBase_ptr 
 CCMObjectExecutor::get_consumer (const char* sink_name)
 throw (Components::InvalidName, CORBA::SystemException)
@@ -420,7 +442,7 @@ throw (Components::InvalidName, CORBA::SystemException)
 
 
 Components::Cookie* 
-CCMObjectExecutor::subscribe (const char* publisher_name, 
+CCMObjectExecutor::subscribe (const char* name, 
                               Components::EventConsumerBase_ptr subscriber)
 throw (Components::InvalidName, CORBA::SystemException)
 {
@@ -428,7 +450,7 @@ throw (Components::InvalidName, CORBA::SystemException)
 
 	for (pub_iter = publishers_.begin(); pub_iter != publishers_.end(); pub_iter++)
 	{
-		if ((*pub_iter).port_name() == publisher_name)
+		if ((*pub_iter).port_name() == name)
 		{
 			return (*pub_iter).add_consumer (subscriber);
 		}
@@ -439,14 +461,14 @@ throw (Components::InvalidName, CORBA::SystemException)
 
 
 Components::EventConsumerBase_ptr 
-CCMObjectExecutor::unsubscribe (const char* publisher_name, Components::Cookie* ck)
+CCMObjectExecutor::unsubscribe (const char* name, Components::Cookie* ck)
 throw (Components::InvalidName, Components::InvalidConnection, CORBA::SystemException)
 {
 	PublisherVector::iterator pub_iter;
 
 	for (pub_iter = publishers_.begin(); pub_iter != publishers_.end(); pub_iter++)
 	{
-		if ((*pub_iter).port_name() == publisher_name)
+		if ((*pub_iter).port_name() == name)
 		{
             return (*pub_iter).remove_consumer (ck);
         }
@@ -457,8 +479,7 @@ throw (Components::InvalidName, Components::InvalidConnection, CORBA::SystemExce
 
 
 void 
-CCMObjectExecutor::connect_consumer (const char* emitter_name, 
-                                     Components::EventConsumerBase_ptr consumer)
+CCMObjectExecutor::connect_consumer (const char* emitter_name, Components::EventConsumerBase_ptr consumer)
 throw (Components::InvalidName, Components::AlreadyConnected, CORBA::SystemException)
 {
 	EmitterVector::iterator emi_iter;
@@ -478,14 +499,14 @@ throw (Components::InvalidName, Components::AlreadyConnected, CORBA::SystemExcep
 
 
 Components::EventConsumerBase_ptr 
-CCMObjectExecutor::disconnect_consumer (const char* source_name)
+CCMObjectExecutor::disconnect_consumer (const char* name)
 throw (Components::InvalidName, Components::NoConnection, CORBA::SystemException)
 {
 	EmitterVector::iterator emi_iter;
 
 	for (emi_iter = emitters_.begin(); emi_iter != emitters_.end(); emi_iter++)
 	{
-		if ((*emi_iter).port_name() == source_name)
+		if ((*emi_iter).port_name() == name)
 		{
             return (*emi_iter).unset_consumer();
 		}
@@ -663,6 +684,7 @@ throw (Components::InvalidName, CORBA::SystemException)
 //
 // from CCMObject
 //
+
 CORBA::IRObject_ptr 
 CCMObjectExecutor::get_component_def()
 throw (CORBA::SystemException)
@@ -716,4 +738,3 @@ CCMObjectExecutor::get_all_ports()
 
 
 } // namespace Qedo
-

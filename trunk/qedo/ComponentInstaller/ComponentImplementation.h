@@ -49,145 +49,238 @@ namespace Qedo {
 
 
 /**
- * a component implementation
+ * @addtogroup Deployment Component Deployment Support
+ * @{
+ */
+
+
+/**
+ * @defgroup ComponentInstaller Component Installer
+ * bla.
+ * @{
+ */
+
+
+/**
+ * represents a component implementation
  */
 class ComponentImplementation : public virtual PlatformBase
 {
-friend class ComponentInstallationImpl;
+	/** makes use of this */
+	friend class ComponentInstallationImpl;
 
 private:
+	/** description */
 	std::string description_;
+	/** the uuid of the component implementation*/
 	std::string uuid_;
+	/** the servant module */
 	std::string servant_module_;
+	/** the entry point for the servant module */
 	std::string servant_entry_point_;
+	/** the executor module */
 	std::string executor_module_;
+	/** the entry point for the executor module */
 	std::string executor_entry_point_;
 
-    //the path of the idl file
+    /** the path of the idl file */
 	std::string mIdlFile;
 
-	// the RepId of the home
+	/** the RepId of the home */
 	std::string mIdlTarget;
     
-    // the CORBA component descriptor
-    DOMDocument* mComponentDescriptor;
-    
-    // path of component implementations
+    /** path of component implementations */
 	std::string mBuildPath;
     
-    // path of the components implementation
+    /** path of the components implementation */
 	std::string mPath;
 	
-    // the name of the components home
+    /** the name of the components home */
 	std::string mHomeName;
     
-    // the path of the make file
+    /** the path of the make file */
 	std::string mMakeFile;
     
-    // the parser
+    /** the parser */
 	DOMXMLParser* mParser;
     
-    // the parsed document
+    /** the parsed software package descriptor */
 	DOMDocument* mDocument;
+	/** the parsed CORBA component descriptor */
+    DOMDocument* mComponentDescriptor;
     
-    // the package
+    /** the package */
 	Package* mPackage;
 	
-    // the installation counter
+    /** the installation counter */
     int mCounter;
 
-    // handle author
+    /**
+	 * handle author
+	 */
     void author (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle code
+    /**
+	 * handle code
+	 * handle code elements being children of the given element
+	 */
     void code (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle corbacomponent
+    /**
+	 * handle corbacomponent
+	 */
     void corbacomponent (DOMDocument*)
         throw(Components::CreateFailure);
 
-    // handle dependency
+    /**
+	 * handle dependency
+	 */
     void dependency (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle description
+    /**
+	 * handle description
+	 */
     void description (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle descriptor
+    /**
+	 * handle descriptor
+	 */
     DOMDocument* descriptor (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle extension
+    /**
+	 * handle extension
+	 */
     void extension (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle fileinarchive
+    /**
+	 * handle fileinarchive
+	 */
 	std::string fileinarchive (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle idl element
+    /**
+	 * handle idl element
+	 */
     void idl (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle implementation elements
+    /**
+	 * handle implementation elements
+	 */
     void implementation (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle license
+    /**
+	 * handle license
+	 */
     void license (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle link
+    /**
+	 * handle link
+	 */
 	std::string link (DOMElement*)
         throw(Components::CreateFailure);
 
-	// handle usage
+	/**
+	 * handle usage element
+	 */
 	std::string usage (DOMElement*)
         throw(Components::CreateFailure);
 
-	// handle entrypoint
+	/**
+	 * handle entrypoint element
+	 */
 	std::string entrypoint (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle os
+    /**
+	 * handle os
+	 */
     void os (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle package type
+    /**
+	 * handle package type
+	 */
     void pkgtype (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle propertyfile
+    /**
+	 * handle propertyfile
+	 */
     void propertyfile (DOMElement*)
         throw(Components::CreateFailure);
 
-    // handle title
+    /**
+	 * handle title
+	 */
     void title (DOMElement*)
         throw(Components::CreateFailure);
 
-    // buildServantCode
+    /**
+	 * build the servant code for the component
+	 */
     void installCode()
         throw(Components::CreateFailure);
 
 public:
-	ComponentImplementation (const char*, std::string, std::string);
-	ComponentImplementation (std::string, std::string, std::string, std::string, std::string);
+	/**
+	 * constructor
+	 * constructs a new implementation
+	 * \param uuid The uuid of the implementation.
+	 * \param installationDirectory The directory for the installation.
+	 * \param package The package of the component implementation.
+	 */
+	ComponentImplementation (const char* uuid, std::string installationDirectory, std::string package);
+
+	/**
+	 * constructor
+	 * constructs an implementation read from DeployedComponents file
+	 * \param uuid The uuid of the implementation.
+	 * \param servant_module The servant module.
+	 * \param servant_entry_point The entry point for the servant module.
+	 * \param executor_module The executor module.
+	 * \param executor_entry_point The entry point for the executor module.
+	 */
+	ComponentImplementation (std::string uuid, std::string servant_module, std::string servant_entry_point,
+		                     std::string executor_module, std::string executor_entry_point);
+
+	/**
+	 * destructor
+	 */
 	~ComponentImplementation();
 
+	/**
+	 * comparison
+	 */
     bool operator == (ComponentImplementation);
 
+	/**
+	 * provide the installation counter
+	 */
     int get_counter();
 
-	// install a component implementation
-	bool install ();
+	/**
+	 * install a component implementation
+	 */
+	bool install();
 
-	// uninstall a component implementation
-    void uninstall ();
+	/**
+	 * uninstall a component implementation
+	 */
+    void uninstall();
 };
 
+/** @} */
+
+/** @} */
 
 }
 

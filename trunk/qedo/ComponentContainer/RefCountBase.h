@@ -24,44 +24,95 @@
 #define __REFCOUNT_BASE_H__
 
 #include <CORBA.h>
-
 #include "Util.h"
+
 
 namespace Qedo {
 
-//
-// This is a simple refounted mix-in class that can be used for all classes that
-// have no CORBA-defined refcount mix-ins
-//
+
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
+/**
+ * This is a simple refounted mix-in class that can be used for all classes that
+ * have no CORBA-defined refcount mix-ins
+ */
 class CONTAINERDLL_API RefCountBase
 {
 private:
+	/** the reference counter */
 	unsigned long ref_count_;
 
 public:
+	/**
+	 * constructor
+	 */
 	RefCountBase();
+
+	/**
+	 * destructor
+	 */
 	virtual ~RefCountBase();
 
+	/**
+	 * increment the reference counter
+	 */
 	void _add_ref();
+
+	/**
+	 * decrement the reference counter
+	 */
 	void _remove_ref();
+
+	/**
+	 * provide the reference counter
+	 * \return The reference counter.
+	 */
 	unsigned long _get_refcount();
 };
 
+
+/**
+ * reference count class for local objects
+ */
 class CONTAINERDLL_API RefCountLocalObject : public virtual CORBA::LocalObject
 {
 private:
+	/** the reference counter */
 	unsigned long ref_count_;
 
 public:
+	/**
+	 * constructor
+	 */
 	RefCountLocalObject();
+
+	/**
+	 * destructor
+	 */
 	virtual ~RefCountLocalObject();
 
+	/**
+	 * increment the reference counter
+	 */
 	void _add_ref();
+
+	/**
+	 * decrement the reference counter
+	 */
 	void _remove_ref();
+
+	/**
+	 * provide the reference counter
+	 */
 	unsigned long _get_refcount();
 };
+
+/** @} */
 
 } // namespace Qedo
 
 #endif
-

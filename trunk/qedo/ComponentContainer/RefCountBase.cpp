@@ -20,15 +20,16 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: RefCountBase.cpp,v 1.3 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: RefCountBase.cpp,v 1.4 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "Output.h"
 #include "RefCountBase.h"
-
 #include <iostream>
 #include <cassert>
 
+
 namespace Qedo {
+
 
 RefCountBase::RefCountBase()
 : ref_count_ (1)
@@ -114,4 +115,3 @@ RefCountLocalObject::_get_refcount()
 }
 
 } // namespace Qedo
-

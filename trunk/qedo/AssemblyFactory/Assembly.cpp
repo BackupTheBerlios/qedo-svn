@@ -26,9 +26,6 @@
 namespace Qedo {
 
 
-/**
- *
- */
 AssemblyImpl::AssemblyImpl (std::string package, Cookie_impl* cookie, CosNaming::NamingContext_ptr nameContext)
 {
 	//
@@ -53,9 +50,6 @@ AssemblyImpl::AssemblyImpl (std::string package, Cookie_impl* cookie, CosNaming:
 }
 
 
-/**
- *
- */
 AssemblyImpl::~AssemblyImpl ()
 {
 }
@@ -68,9 +62,6 @@ AssemblyImpl::get_uuid () const
 }
 
 
-/**
- *
- */
 bool 
 AssemblyImpl::operator == (Components::Cookie* cook)
 {
@@ -78,9 +69,6 @@ AssemblyImpl::operator == (Components::Cookie* cook)
 }
 
 
-/**
- *
- */
 void
 AssemblyImpl::registerWithNaming (DOMElement* element, CORBA::Object_ptr obj)
 {
@@ -89,9 +77,6 @@ AssemblyImpl::registerWithNaming (DOMElement* element, CORBA::Object_ptr obj)
 }
 
 
-/**
- *
- */
 void
 AssemblyImpl::registerComponent (DOMElement* element, CORBA::Object_ptr obj)
 {
@@ -147,9 +132,6 @@ AssemblyImpl::registerComponent (DOMElement* element, CORBA::Object_ptr obj)
 }
 
 
-/**
- *
- */
 void
 AssemblyImpl::extension (DOMElement* ext)
 throw( Components::CreateFailure )
@@ -189,10 +171,6 @@ throw( Components::CreateFailure )
 }
 
 
-/**
- * return the destination for placement,
- * if destination is empty, return the local hostname (for convenience)
- */
 std::string
 AssemblyImpl::destination (DOMElement* homeplacement)
 throw(Components::CreateFailure)
@@ -220,9 +198,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 std::string
 AssemblyImpl::componentfileref (DOMElement* homeplacement)
 throw(Components::CreateFailure)
@@ -239,9 +214,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 std::string
 AssemblyImpl::componentimplref (DOMElement* homeplacement)
 throw(Components::CreateFailure)
@@ -258,9 +230,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 std::string
 AssemblyImpl::usesidentifier (DOMElement* element)
 throw(Components::CreateFailure)
@@ -278,9 +247,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 std::string
 AssemblyImpl::providesidentifier (DOMElement* element)
 throw(Components::CreateFailure)
@@ -298,9 +264,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 std::string
 AssemblyImpl::consumesidentifier (DOMElement* element)
 throw(Components::CreateFailure)
@@ -318,9 +281,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 std::string
 AssemblyImpl::emitsidentifier (DOMElement* element)
 throw(Components::CreateFailure)
@@ -338,9 +298,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 std::string
 AssemblyImpl::publishesidentifier (DOMElement* element)
 throw(Components::CreateFailure)
@@ -358,9 +315,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 CORBA::Object_ptr
 AssemblyImpl::getPort (DOMElement* port)
 throw(Components::CreateFailure)
@@ -538,9 +492,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 Components::Deployment::ComponentServer_ptr
 AssemblyImpl::createComponentServer (std::string dest)
 throw( Components::CreateFailure )
@@ -598,9 +549,6 @@ throw( Components::CreateFailure )
 }
 
 
-/**
- *
- */
 Components::Deployment::Container_ptr
 AssemblyImpl::createContainer (Components::Deployment::ComponentServer_ptr component_server)
 throw( Components::CreateFailure )
@@ -635,9 +583,6 @@ throw( Components::CreateFailure )
 }
 
 
-/**
- *
- */
 Components::CCMHome_ptr
 AssemblyImpl::createHome (Components::Deployment::Container_ptr container, std::string id)
 throw(Components::CreateFailure)
@@ -669,9 +614,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- *
- */
 Components::CCMObject_ptr
 AssemblyImpl::getInstance (std::string name)
 throw( Components::CreateFailure )
@@ -691,9 +633,6 @@ throw( Components::CreateFailure )
 }
 
 
-/**
- * install a component implementation
- */
 void
 AssemblyImpl::installImplementation (DOMElement* homeplacement)
 throw(Components::CreateFailure)
@@ -763,9 +702,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- * install all component implementations referred to in the assembly descriptor
- */
 void
 AssemblyImpl::install ()
 throw( Components::CreateFailure )
@@ -847,9 +783,6 @@ throw( Components::CreateFailure )
 }
 
 
-/**
- * instantiate a component according to the xml element in the assembly descriptor
- */
 void
 AssemblyImpl::instantiateComponent (DOMElement* instance, Components::CCMHome_ptr home)
 throw(Components::CreateFailure)
@@ -950,9 +883,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- * processcollocation
- */
 void
 AssemblyImpl::processcollocation (DOMElement* element)
 throw(Components::CreateFailure)
@@ -986,9 +916,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- * home placement
- */
 void
 AssemblyImpl::homeplacement (DOMElement* element, Components::Deployment::Container_ptr contain)
 throw(Components::CreateFailure)
@@ -1065,9 +992,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- * create all component instances defined in the assembly descriptor
- */
 void
 AssemblyImpl::instantiate ()
 throw(Components::CreateFailure)
@@ -1115,9 +1039,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- * connect interface
- */
 void
 AssemblyImpl::connectinterface (DOMElement* element)
 throw(Components::CreateFailure)
@@ -1190,9 +1111,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- * connect events
- */
 void
 AssemblyImpl::connectevent (DOMElement* element)
 throw(Components::CreateFailure)
@@ -1278,9 +1196,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- * connect all component instances according to the assembly descriptor
- */
 void
 AssemblyImpl::connections ()
 throw(Components::CreateFailure)
@@ -1336,9 +1251,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- * start all created component instances
- */
 void
 AssemblyImpl::configuration_complete ()
 throw(Components::CreateFailure)
@@ -1401,9 +1313,6 @@ throw(Components::CreateFailure)
 }
 
 
-/**
- * build the assembly
- */
 void
 AssemblyImpl::build
 ()
@@ -1458,9 +1367,6 @@ throw( Components::CreateFailure )
 }
 
 
-/**
- * tear down the assembly
- */
 void 
 AssemblyImpl::tear_down ()
 throw( Components::RemoveFailure )
@@ -1526,9 +1432,6 @@ throw( Components::RemoveFailure )
 }
 
 
-/**
- * return the state of the assembly
- */
 Components::Deployment::AssemblyState 
 AssemblyImpl::get_state ()
 throw(CORBA::SystemException)

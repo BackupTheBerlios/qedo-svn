@@ -20,13 +20,15 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: SessionContext.cpp,v 1.4 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: SessionContext.cpp,v 1.5 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "SessionContext.h"
 #include "Output.h"
 
+
 namespace Qedo {
 	
+
 SessionContext::SessionContext()
 {
 }
@@ -51,7 +53,7 @@ SessionContext::get_caller_principal()
 	return 0;
 }
 
- 
+
 Components::CCMHome_ptr 
 SessionContext::get_CCM_home()
 {
@@ -82,7 +84,7 @@ SessionContext::is_caller_in_role (const char* role)
 	return 0;
 }
 
- 
+
 void 
 SessionContext::set_rollback_only()
 throw (Components::IllegalState)
@@ -90,4 +92,3 @@ throw (Components::IllegalState)
 }
 
 } // namepscae Qedo
-

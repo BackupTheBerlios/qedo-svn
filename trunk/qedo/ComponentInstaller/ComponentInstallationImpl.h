@@ -37,62 +37,100 @@
 
 namespace Qedo {
 
+
+/**
+ * @addtogroup ComponentInstaller
+ * @{
+ */
+
+
+/**
+ * implementation of Components::Deployment::ComponentInstallation
+ */
 class ComponentInstallationImpl : public POA_Qedo_Components::Deployment::ComponentInstallation,
 								  public PortableServer::RefCountServantBase,
 								  public virtual NameServiceBase,
 								  public virtual PlatformBase
 {
 private:
+	/** list of installed components */
 	std::vector < ComponentImplementation > installed_components_;
 
+	/** the orb */
 	CORBA::ORB_var					orb_;
+	/** the root poa */
 	PortableServer::POA_var			root_poa_;
+	/** the root poa manager */
 	PortableServer::POAManager_var	root_poa_manager_;
+	/** the package directory */
 	std::string						packageDirectory_;
+	/** the installation directory */
 	std::string						installationDirectory_;
 
+	/**
+	 * read the DeployedComponents.xml file
+	 */
 	bool readInstalledComponents (const char* inst_file);
+
+	/**
+	 * add a new installation to the DeployedComponents.xml file
+	 */
 	bool addInstalledComponent (ComponentImplementation* aComponentImplementation);
 
 public:
+	/**
+	 * constructor
+	 */
 	ComponentInstallationImpl (CORBA::ORB_ptr);
+
+	/**
+	 * destructor
+	 */
 	~ComponentInstallationImpl();
 
+	/**
+	 * initialize the server
+	 */
 	void initialize();
 
-	//
-    // IDL:omg.org/Components/Deployment/ComponentInstallation/install:1.0
-    //
+	/**
+     * implements IDL:omg.org/Components/Deployment/ComponentInstallation/install:1.0
+     */
     void install (const char* implUUID, const char* component_loc)
         throw (Components::Deployment::InvalidLocation, Components::Deployment::InstallationFailure);
 
-    //
-    // IDL:omg.org/Components/Deployment/ComponentInstallation/replace:1.0
-    //
+    /**
+     * implements IDL:omg.org/Components/Deployment/ComponentInstallation/replace:1.0
+     */
     void replace (const char* implUUID, const char* component_loc)
         throw (Components::Deployment::InvalidLocation, Components::Deployment::InstallationFailure);
 
-    //
-    // IDL:omg.org/Components/Deployment/ComponentInstallation/remove:1.0
-    //
+    /**
+     * implements IDL:omg.org/Components/Deployment/ComponentInstallation/remove:1.0
+     */
     void remove (const char* implUUID)
         throw (Components::Deployment::UnknownImplId, Components::RemoveFailure);
 
-    //
-    // IDL:omg.org/Components/Deployment/ComponentInstallation/get_implementation:1.0
-    //
+    /**
+     * implements IDL:omg.org/Components/Deployment/ComponentInstallation/get_implementation:1.0
+     */
 	Components::Deployment::Location get_implementation (const char* implUUID)
         throw (Components::Deployment::UnknownImplId, Components::Deployment::InstallationFailure);
 
-    //
-    // IDL:omg.org/Components/Deployment/ComponentInstallation/upload:1.0
-    //
+    /**
+     * implements IDL:omg.org/Components/Deployment/ComponentInstallation/upload:1.0
+     */
     char* upload (const char* implUUID, const ::CORBA::OctetSeq& package)
         throw (Components::Deployment::InstallationFailure);
 
+	//
 	// Exceptions
+	//
+
 	class CannotInitialize {};
 };
+
+/** @} */
 
 } // namespace Qedo
 

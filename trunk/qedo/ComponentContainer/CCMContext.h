@@ -26,68 +26,152 @@
 
 #include <CORBA.h>
 #include <Components.h>
-
 #include "CCMObjectExecutor.h"
 #include "RefCountBase.h"
 #include "Util.h"
 
+
 namespace Qedo {
 
+
+/**
+ * @defgroup Runtime Component Runtime Environment
+ * This is the Qedo runtime support for CORBA components.
+ * The Qedo project is designed to work with arbitrary ORB implementations
+ * which support at least a basic set of features. This set comprises OBV, ...
+ * Anyway, for each ORB implementation some minimal changes have to be done.
+ * Currently ORBacus 4.1 and MICO are supported by deafault. In order to install
+ * Qedo a supported ORB implementation has to be installed on the target host.
+ * Pay attention that it has to be dynamically linked and the linker can find
+ * the according libraries.
+ *
+ *	ORBacus	      ---> available at http://www.orbacus.com
+ *	
+ * or
+ *	
+ *	Mico          ---> available at http://www.mico.org
+ *	All the instructions for compiling under Windows and Linux/Unix are
+ *	given in the Mico package.
+ *
+ * According to the CCM specification the Qedo project makes use of software
+ * packaging. In order to install Qedo the zlib 1.1.4 or a later version has
+ * to be installed on the target host.
+ *
+ *	Zlib          ---> available at http://www.gzip.org/zlib/
+ *	All the instructions for compiling under Linux/Unix are given in the
+ *	Zlib package.
+ *
+ * The Qedo project furthermore requires the xerces-c2_1 XML library to
+ * handle the deployment XML descriptors.
+ *
+ *	Xerces-c      ---> available at xml.apache.org/dist/xerces-c
+ *	All the instructions for compiling under Windows and Linux/Unix are
+ *	given in the Xerces-c package.
+ *
+ * Automatic packaging under Windows requires the command line version of winzip,
+ * to be downloaded from www.winzip.com. Make sure, it is in your path.
+ * @{
+ */
+
+
+/**
+ * @defgroup ComponentContainer Component Container
+ * dynamic library ...
+ * @{
+ */
+
+
+/**
+ * implementation of IDL:omg.org/Components/CCMContext:1.0
+ */
 class CONTAINERDLL_API CCMContext : public virtual Components::CCMContext,
 									public virtual Qedo::RefCountLocalObject
 {
 public:
+	/**
+	 * constructor
+	 */
 	CCMContext();
+
+	/**
+	 * destructor
+	 */
 	~CCMContext();
 
-	//
-    // IDL:omg.org/Components/CCMContext/get_caller_principal:1.0
-    //
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/get_caller_principal:1.0
+	 * (not implemented yet)
+	 * \return The caller principal.
+	 */
 	Components::Principal get_caller_principal();
 
-	//
-    // IDL:omg.org/Components/CCMContext/get_CCM_home:1.0
-    //
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/get_CCM_home:1.0
+	 * (not implemented yet)
+	 * \return The CCMHome. 
+	 */
 	Components::CCMHome_ptr get_CCM_home();
 
-    //
-    // IDL:omg.org/Components/CCMContext/get_rollback_only:1.0
-    //
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/get_rollback_only:1.0
+	 * (not implemented yet)
+	 */
     CORBA::Boolean get_rollback_only()
 		throw (Components::IllegalState);
 
-    //
-    // IDL:omg.org/Components/CCMContext/get_user_transaction:1.0
-    //
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/get_user_transaction:1.0
+	 * (not implemented yet)
+	 */
     Components::Transaction::UserTransaction_ptr get_user_transaction()
 		throw (Components::IllegalState);
 
-    //
-    // IDL:omg.org/Components/CCMContext/is_caller_in_role:1.0
-    //
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/is_caller_in_role:1.0
+	 * (not implemented yet)
+	 */
     CORBA::Boolean is_caller_in_role (const char* role);
 
-    //
-    // IDL:omg.org/Components/CCMContext/set_rollback_only:1.0
-    //
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/set_rollback_only:1.0
+	 * (not implemented yet)
+	 */
     void set_rollback_only()
 		throw (Components::IllegalState);
 };
 
 
+/**
+ * context for an executor
+ */
 class CONTAINERDLL_API ExecutorContext : public virtual CCMContext
 {
 protected:
+	/** the object executor for the component */
 	CCMObjectExecutor* ccm_object_executor_;
 
 public:
+	/**
+	 * constructor
+	 */
 	ExecutorContext();
+
+	/**
+	 * destructor
+	 */
 	~ExecutorContext();
 
-	void ccm_object_executor (CCMObjectExecutor*);
+	/**
+	 * sets the object executor
+	 * \param ccm_object_exec The object executor.
+	 */
+	void ccm_object_executor (CCMObjectExecutor* ccm_object_exec);
 };
 
+/** @} */
+
 } // namespace Qedo
+
 
 #endif
 

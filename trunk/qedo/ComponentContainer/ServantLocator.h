@@ -24,13 +24,24 @@
 #define __SERVANT_LOCATOR_H__
 
 #include <CORBA.h>
-
 #include "ServantBase.h"
+
 
 namespace Qedo {
 
+
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
 class HomeServantBase;
 
+
+/**
+ * servant locator
+ */
 #ifdef MICO_ORB
 class ServantLocator : public PortableServer::ServantLocator
 #else
@@ -38,12 +49,31 @@ class ServantLocator : public PortableServer::ServantLocator, public RefCountLoc
 #endif
 {
 private:
+	/** the home servant */
 	HomeServantBase* home_servant_;
 
 public:
-	ServantLocator (HomeServantBase*);
+	/**
+	 * constructor
+	 * \param home_servant The servant for the home.
+	 */
+	ServantLocator (HomeServantBase* home_servant);
+
+	/**
+	 * destructor
+	 */
 	~ServantLocator();
 
+	/**
+	 * implements PortableServer/ServantLocator/preinvoke
+	 * provide the servant for a new request
+	 * calls an operation on the home servant
+	 * \param oid The object id of the target.
+	 * \param adapter The used poa.
+	 * \param operation The operation name.
+	 * \param the_cookie The cookie.
+	 * \return The servant to handle the request.
+	*/
 	PortableServer::Servant preinvoke ( 
 		const PortableServer::ObjectId& oid,
 		PortableServer::POA_ptr adapter,
@@ -51,6 +81,15 @@ public:
 		PortableServer::ServantLocator::Cookie& the_cookie )
         throw ( PortableServer::ForwardRequest, CORBA::SystemException );
 
+	/**
+	 * implements PortableServer/ServantLocator/postinvoke
+	 * called after request processing
+	 * \param oid The object id of the target.
+	 * \param adapter The used poa.
+	 * \param operation The operation name.
+	 * \param the_cookie The cookie.
+	 * \param the_servant The servant which processed the request.
+	 */
 	void postinvoke ( 
 		const PortableServer::ObjectId& oid,
 		PortableServer::POA_ptr adapter,
@@ -60,7 +99,8 @@ public:
         throw ( CORBA::SystemException );
 };
 
+/** @} */
+
 } // namespace Qedo
 
 #endif
-

@@ -20,17 +20,25 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: csa.cpp,v 1.5 2003/02/07 12:22:40 tom Exp $";
+static char rcsid[] = "$Id: csa.cpp,v 1.6 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "ServerActivatorImpl.h"
-
 #include <iostream>
 #include <cstring>
 //#ifdef HAVE_JTC
 //#include <JTC/JTC.h>
 //#endif
-using namespace std;
 
+
+/**
+ * addtogroup ServerActivator
+ * @{
+ */
+
+
+/**
+ * starts the server for the server activator object
+ */
 int
 main (int argc, char** argv)
 {
@@ -78,3 +86,4 @@ main (int argc, char** argv)
 return 0;
 }
 
+/** @} */

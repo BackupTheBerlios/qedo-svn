@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.6 2003/01/27 18:51:06 boehme Exp $";
+static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.7 2003/04/01 07:50:10 neubauer Exp $";
 
 
 #include "AssemblyFactory.h"
@@ -41,9 +41,6 @@ static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.6 2003/01/27 18:51:06 boehme
 namespace Qedo {
 
 
-/**
- *
- */
 AssemblyFactoryImpl::AssemblyFactoryImpl(CORBA::ORB_ptr orb)
 : orb_ (CORBA::ORB::_duplicate (orb))
 {
@@ -52,17 +49,11 @@ AssemblyFactoryImpl::AssemblyFactoryImpl(CORBA::ORB_ptr orb)
 }
 
 
-/**
- *
- */
 AssemblyFactoryImpl::~AssemblyFactoryImpl()
 {
 }
 
 
-/**
- *
- */
 void
 AssemblyFactoryImpl::initialize()
 {
@@ -115,9 +106,6 @@ AssemblyFactoryImpl::initialize()
 }
 
 
-/**
- *
- */
 Components::Cookie* 
 AssemblyFactoryImpl::create (const char* assembly_loc)
 throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
@@ -176,9 +164,6 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 }
 
 
-/**
- *
- */
 Components::Deployment::Assembly_ptr 
 AssemblyFactoryImpl::lookup (Components::Cookie* c)
 throw (Components::Deployment::InvalidAssembly)
@@ -199,9 +184,6 @@ throw (Components::Deployment::InvalidAssembly)
 }
 
 
-/**
- *
- */
 void 
 AssemblyFactoryImpl::destroy (Components::Cookie* c)
 throw (Components::Deployment::InvalidAssembly, Components::RemoveFailure)

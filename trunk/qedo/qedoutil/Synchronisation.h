@@ -32,19 +32,34 @@
 #include <pthread.h>
 #include <signal.h>
 #endif
-
 #include "Util.h"
 
+
 namespace Qedo {
+
+
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
 class qedo_lock;
 
+
+/**
+ * a mutex for Qedo
+ */
 class CONTAINERDLL_API qedo_mutex {
 
+	/** makes use of this */
 	friend class qedo_lock;
-        friend class qedo_cond;
+	/** makes use of this */
+	friend class qedo_cond;
 
 private:
 
+	/** the mutex */
 #ifdef WIN32
 	HANDLE m_mutex;
 #else
@@ -52,27 +67,65 @@ private:
 #endif
 
 public:
+	/**
+	 * constructor
+	 */
 	qedo_mutex();
+
+	/**
+	 * destructor
+	 */
 	~qedo_mutex();
 
+	/**
+	 * lock an object
+	 */
 	void qedo_lock_object();
 
+	/**
+	 * unlock an object
+	 */
 	void qedo_unlock_object();
 };
 
-class CONTAINERDLL_API qedo_lock {
+
+/**
+ * a lock for Qedo
+ */
+class CONTAINERDLL_API qedo_lock
+{
 private:
+	/** the qedo mutex */
 	qedo_mutex* m_mutex;
 
 public:
+	/**
+	 * constructor
+	 * \param m The qedo mutex.
+	 */
 	qedo_lock(const qedo_mutex* m);
+
+	/**
+	 * constructor
+	 * \param m The qedo mutex.
+	 */
 	qedo_lock(qedo_mutex* m);
+
+	/**
+	 * destructor
+	 */
 	~qedo_lock();
 };
 
-class CONTAINERDLL_API qedo_cond {
+
+/**
+ * bla
+ */
+class CONTAINERDLL_API qedo_cond
+{
 
 private:
+	/// bla
 #ifdef WIN32
 	HANDLE m_event_handle;
 
@@ -80,32 +133,62 @@ private:
 	pthread_cond_t m_cond;
 #endif
 public:
+	/**
+	 * constructor
+	 */
 	qedo_cond();
+
+	/**
+	 * constructor
+	 * \param sig_name
+	 */
 	qedo_cond (char* sig_name);
+
+	/**
+	 * destructor
+	 */
 	~qedo_cond();
 
+	/**
+	 * wait
+	 */
 	void qedo_wait();
 
+	/**
+	 * insert comments
+	 */
 	void qedo_signal();
 
+	/**
+	 * insert comments
+	 */
 	void qedo_reset();
-
 };
 
 
+/**
+ * add comment!
+ */
 #ifdef WIN32
 DWORD WINAPI startFunc(LPVOID p);
 #else
 extern "C" void* startFunc(void* p);
 #endif
 
+
+/**
+ * add comment!
+ */
 void
 qedo_startDetachedThread(void* (*p)(void*), void* arg);
+
 
 struct t_start {
 	void* (*p)(void*);
 	void* a;
 };
+
+/** @} */
 
 } // name space Qedo
 

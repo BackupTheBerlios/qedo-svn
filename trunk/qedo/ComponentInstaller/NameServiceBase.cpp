@@ -20,34 +20,26 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: NameServiceBase.cpp,v 1.5 2003/02/07 12:22:40 tom Exp $";
+static char rcsid[] = "$Id: NameServiceBase.cpp,v 1.6 2003/04/01 07:50:10 neubauer Exp $";
 
 
 #include "NameServiceBase.h"
 #include <iostream>
 
+
 namespace Qedo {
 
 
-/**
- *
- */
 NameServiceBase::NameServiceBase()
 {
 }
 
 
-/**
- *
- */
 NameServiceBase::~NameServiceBase()
 {
 }
 
 
-/**
- *
- */
 bool
 NameServiceBase::initNameService(CORBA::ORB_ptr orb)
 {
@@ -90,9 +82,6 @@ NameServiceBase::initNameService(CORBA::ORB_ptr orb)
 }
 
 	
-/**
- *
- */
 bool
 NameServiceBase::registerName(std::string name, CORBA::Object_ptr obj, bool rebind)
 {
@@ -228,9 +217,6 @@ NameServiceBase::registerName(std::string name, CORBA::Object_ptr obj, bool rebi
 }
 
 
-/**
- *
- */
 CORBA::Object_ptr
 NameServiceBase::resolveName(std::string name)
 {

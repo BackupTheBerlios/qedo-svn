@@ -26,20 +26,57 @@
 #include "CCMHomeServant.h"
 #include "Util.h"
 
+
 namespace Qedo {
 
+
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
+/**
+ * the servant for session homes
+ */
 class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
 {
 private:
-	void before_remove_component (Components::ExecutorLocator_ptr);
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr);
+	/**
+	 * indicate removal
+	 * \param executor_locator The executor locator of the component instance to be removed.
+	 */
+	void before_remove_component (Components::ExecutorLocator_ptr executor_locator);
+
+	/**
+	 * finalize the component incarnation
+	 * \param exec_loc The executor locator of the component instance to be incarnated.
+	 */
+	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
 
 public:
+	/**
+	 * constructor
+	 */
 	SessionHomeServant ();
+
+	/**
+	 * copy constructor
+	 */
 	SessionHomeServant (const SessionHomeServant&);
+
+	/**
+	 * assignment operator
+	 */
 	SessionHomeServant& operator= (const SessionHomeServant&);
+
+	/**
+	 * destructor
+	 */
 	~SessionHomeServant();
 };
+
+/** @} */
 
 } // namespace Qedo
 

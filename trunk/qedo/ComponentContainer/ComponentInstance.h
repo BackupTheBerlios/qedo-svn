@@ -25,33 +25,72 @@
 
 #include <CORBA.h>
 #include "Components.h"
-
 #include "CCMContext.h"
 #include "HomeServantBase.h"
 #include "Util.h"
 
+
 namespace Qedo {
 
+
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
+/**
+ * a component instance
+ */
 class CONTAINERDLL_API ComponentInstance
 {
 public:
-	PortableServer::ObjectId_var object_id_;
-	CORBA::Object_var component_ref_;
-	Components::ExecutorLocator_var executor_locator_;
-	Qedo::CCMObjectExecutor* ccm_object_executor_;
+	/** object id of the component */
+	PortableServer::ObjectId_var		object_id_;
+	/** object reference of the component */
+	CORBA::Object_var					component_ref_;
+	/** executor locator of the component */
+	Components::ExecutorLocator_var		executor_locator_;
+	/** generic executor */
+	Qedo::CCMObjectExecutor*			ccm_object_executor_;
 
+	/**
+	 * constructor
+	 */
 	ComponentInstance (const PortableServer::ObjectId&, 
 					   CORBA::Object_ptr, 
 					   Components::ExecutorLocator_ptr,
 					   ExecutorContext*,
 					   HomeServantBase*);
+
+	/**
+	 * constructor
+	 */
 	ComponentInstance();
+
+	/**
+	 * copy constructor
+	 */
 	ComponentInstance (const ComponentInstance&);
+
+	/**
+	 * assignment operator
+	 */
 	ComponentInstance& operator= (const ComponentInstance&);
+
+	/**
+	 * destructor
+	 */
 	~ComponentInstance();
 
+	/**
+	 * provides the object reference of the component
+	 * \return The object reference of the component.
+	 */
 	CORBA::Object_ptr component_ref();
 };
+
+/** @} */
 
 } // namespace Qedo
 

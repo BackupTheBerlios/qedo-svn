@@ -29,39 +29,74 @@
 #include "RefCountBase.h"
 #include "Util.h"
 #include "Synchronisation.h"
-
-
 #include <string>
+
 
 #define QEDO_KEY_MAGIC_BYTE_1 0xab
 #define QEDO_KEY_MAGIC_BYTE_2 0xad
 #define QEDO_KEY_MAGIC_BYTE_3 0xfa
 #define QEDO_KEY_MAGIC_BYTE_4 0xce
 
+
 namespace Qedo {
 
-class CONTAINERDLL_API Key : public RefCountBase
-							 
 
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
+/**
+ * internal key
+ */
+class CONTAINERDLL_API Key : public RefCountBase
 {
 private:
+	/** the key value */
 	CORBA::OctetSeq_var key_value_;
+
+	/** the key id */
     static CORBA::ULongLong key_id_;
+
+	/** mutex for synchronization */
 	static qedo_mutex* m_mutex;
 
 public:
+	/**
+	 * constructor
+	 */
 	Key();
+
+	/**
+	 * destructor
+	 */
 	~Key();
 
+	/**
+	 * provide the key value
+	 * \return The key value.
+	 */
 	CORBA::OctetSeq* key_value() const
 	{
 		return new CORBA::OctetSeq (key_value_.in());
 	}
 
+	/**
+	 * provides the stringified key
+	 * \return The string of the key.
+	 */
 	const char* to_string();
 
-	static CORBA::OctetSeq* key_value_from_object_id (const PortableServer::ObjectId&);
+	/**
+	 * provides the key value of a given object id
+	 * \param object_id The object id to get the key value from.
+	 * \return The key value.
+	 */
+	static CORBA::OctetSeq* key_value_from_object_id (const PortableServer::ObjectId& object_id);
 };
+
+/** @} */
 
 } // namespace Qedo
 

@@ -20,13 +20,15 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.7 2003/03/21 12:34:42 tom Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.8 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
 #include "Output.h"
 
+
 namespace Qedo {
+
 
 HomeServantBase::HomeServantBase (const char* repository_id, const char* comp_repid)
 : repository_id_ (CORBA::string_dup (repository_id)),

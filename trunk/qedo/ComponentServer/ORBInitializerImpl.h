@@ -37,18 +37,42 @@
 namespace Qedo {
 
 
+/**
+ * \addtogroup ComponentServer
+ * @{
+ */
+
+
+/**
+ * the orb initializer to register interceptors and HomeFinder
+ */
 class ORBInitializerImpl : public virtual PortableInterceptor::ORBInitializer,
 						   public virtual NameServiceBase,
 						   public virtual CORBA::LocalObject
 {
 public:
+	/**
+	 * constructor
+	 */
 	ORBInitializerImpl();
+
+	/**
+	 * destructor
+	 */
 	~ORBInitializerImpl();
 
+	/**
+	 * pre_init
+	 */
 	void pre_init (PortableInterceptor::ORBInitInfo_ptr info);
+
+	/**
+	 * post_init
+	 */
     void post_init (PortableInterceptor::ORBInitInfo_ptr info);
 };
 
+/** @} */
 
 } // namespace
 

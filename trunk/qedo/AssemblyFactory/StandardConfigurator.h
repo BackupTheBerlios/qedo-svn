@@ -34,30 +34,47 @@ namespace Qedo {
 
 
 /**
- *
+ * @addtogroup Assembly
+ * @{
+ */
+
+
+/**
+ * the implementation of Components::StandardConfigurator
  */
 class StandardConfiguratorImpl : public virtual POA_Components::StandardConfigurator
 {
 private:
+	/** the list of config values */
     ::Components::ConfigValues config_;
 
 public:
+	/**
+	 * constructor
+	 */
     StandardConfiguratorImpl();
+
+	/**
+	 * destructor
+	 */
 	virtual ~StandardConfiguratorImpl();
 
-    //
-    // IDL:omg.org/Components/Configurator/configure:1.0
-    //
-    void configure( ::Components::CCMObject_ptr comp )
+    /**
+     * implements IDL:omg.org/Components/Configurator/configure:1.0
+	 * \param comp The component to be configured
+     */
+    void configure(::Components::CCMObject_ptr comp)
 		throw( Components::WrongComponentType );
 	
-	//
-    // IDL:omg.org/Components/StandardConfigurator/set_configuration:1.0
-    //
-    void set_configuration( const ::Components::ConfigValues& descr )
+	/**
+     * implements IDL:omg.org/Components/StandardConfigurator/set_configuration:1.0
+	 * \param descr The list of config values to be used in configuration.
+     */
+    void set_configuration(const ::Components::ConfigValues& descr)
 	   throw (CORBA::SystemException);
 };
 
+/** @} */
 
 }
 

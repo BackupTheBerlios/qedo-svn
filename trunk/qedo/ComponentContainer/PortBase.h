@@ -25,34 +25,68 @@
 
 #include <CORBA.h>
 #include <Components.h>
-
 #include "Valuetypes.h"
 #include "Util.h"
-
 #include <string>
 #include <vector>
 
+
 #pragma warning (disable : 4231) // nonstandard extension used : 'extern' before template explicit instantiation
+
 
 namespace Qedo {
 
-//
-// Base class for all port entries
-//
+
+/**
+ * @addtogroup ComponentContainer
+ * @{
+ */
+
+
+/**
+ * Base class for all port entries
+ */
 class PortBase
 {
 protected:
+	/** the port name */
 	std::string port_name_;
+
+	/** the interface repository id of the ports interface */
 	std::string type_id_;
 
-    PortBase (const char*, const char*);
+	/**
+	 * constructor
+	 * \param port_name The name of the port.
+	 * \param type_id The interface repository type id of the port.
+	 */
+    PortBase (const char* port_name, const char* type_id);
+
+	/**
+	 * constructor
+	 */
 	PortBase();
+
+	/**
+	 * copy constructor
+	 */
 	PortBase (const PortBase&);
+
+	/**
+	 * destructor
+	 */
     ~PortBase();
 
 public:
-	const std::string& port_name() const;	// Return value is string& for the convenient ==operator for const char* and char*
+	/**
+	 * provides the port name
+	 * return value is string& for the convenient ==operator for const char* and char*
+	 * \return The port name.
+	 */
+	const std::string& port_name() const;
 };
+
+/** @} */
 
 } // namespace Qedo
 

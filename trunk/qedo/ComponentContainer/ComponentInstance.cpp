@@ -20,12 +20,14 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstance.cpp,v 1.6 2003/03/10 14:23:38 neubauer Exp $";
+static char rcsid[] = "$Id: ComponentInstance.cpp,v 1.7 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "ComponentInstance.h"
 #include "Output.h"
 
+
 namespace Qedo {
+
 
 ComponentInstance::ComponentInstance (const PortableServer::ObjectId& object_id,
 									  CORBA::Object_ptr component_ref,

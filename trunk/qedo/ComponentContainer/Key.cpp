@@ -20,19 +20,21 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: Key.cpp,v 1.5 2003/03/21 12:34:42 tom Exp $";
+static char rcsid[] = "$Id: Key.cpp,v 1.6 2003/04/01 07:50:10 neubauer Exp $";
 
 #include "Key.h"
 #include "Output.h"
 
+
 namespace Qedo {
+
 
 Key::Key
 ()
 {
 	// Keys can be generated from concurrent threads, so accessing the static
 	// key id must be synchronized
-//	Synchronized synchronized (*this);
+	//	Synchronized synchronized (*this);
 	if(!Key::m_mutex) {
 		Key::m_mutex=new qedo_mutex;
 	};
@@ -126,4 +128,3 @@ CORBA::ULongLong Key::key_id_ = 0;
 qedo_mutex* Key::m_mutex = 0;
 
 } // namespace Qedo
-

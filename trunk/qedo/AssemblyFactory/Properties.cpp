@@ -26,9 +26,6 @@
 namespace Qedo {
 
 
-/**
- *
- */
 Properties::Properties(std::string descriptor)
 {
     descriptor_ = descriptor;
@@ -36,17 +33,11 @@ Properties::Properties(std::string descriptor)
 }
 
 
-/**
- *
- */
 Properties::~Properties()
 {
 }
 
 
-/**
- *
- */
 Components::ConfigValues*
 Properties::getConfigValues()
 {

@@ -36,6 +36,12 @@
 namespace Qedo {
 
 
+/**
+ * @addtogroup HomeFinder
+ * @{
+ */
+
+
 typedef std::vector < HomeFinderEntry > HomeFinderEntryVector;
 
 /**
@@ -63,53 +69,65 @@ private:
 	HomeFinderEntryVector					entries_;
 
 public:
-	HomeFinderImpl(CORBA::ORB_ptr);
+	/**
+	 * constructor
+	 * \param orb The orb.
+	 */
+	HomeFinderImpl(CORBA::ORB_ptr orb);
+
+	/**
+	 * destructor
+	 */
 	~HomeFinderImpl();
 
+	/**
+	 * initialize the home finder
+	 */
 	void initialize();
 
-	//
-    // IDL:Qedo_Components/HomeFinder/register_home:1.0
-    //
+	/**
+     * implements IDL:Qedo_Components/HomeFinder/register_home:1.0
+     */
     virtual Components::Cookie* register_home(Components::CCMHome_ptr ahome,
                                               const char* comp_repid,
                                               const char* home_repid,
 											  const char* home_name)
         throw(CORBA::SystemException);
 
-    //
-    // IDL:Qedo_Components/HomeFinder/unregister_home:1.0
-    //
+    /**
+     * implements IDL:Qedo_Components/HomeFinder/unregister_home:1.0
+     */
     virtual void unregister_home(Components::Cookie* c)
         throw(CORBA::SystemException);
 
-	//
-    // IDL:omg.org/Components/HomeFinder/find_home_by_component_type:1.0
-    //
+	/**
+     * implements IDL:omg.org/Components/HomeFinder/find_home_by_component_type:1.0
+     */
     virtual Components::CCMHome_ptr find_home_by_component_type(const char* comp_repid)
         throw(Components::HomeNotFound,
               CORBA::SystemException);
 
-    //
-    // IDL:omg.org/Components/HomeFinder/find_home_by_home_type:1.0
-    //
+    /**
+     * implements IDL:omg.org/Components/HomeFinder/find_home_by_home_type:1.0
+     */
     virtual Components::CCMHome_ptr find_home_by_home_type(const char* home_repid)
         throw(Components::HomeNotFound,
               CORBA::SystemException);
 
-    //
-    // IDL:omg.org/Components/HomeFinder/find_home_by_name:1.0
-    //
+    /**
+     * implements IDL:omg.org/Components/HomeFinder/find_home_by_name:1.0
+     */
     virtual Components::CCMHome_ptr find_home_by_name(const char* home_name)
         throw(Components::HomeNotFound,
               CORBA::SystemException);
 
-	//
-	// Exceptions
-	//
+	/**
+	 * exception to indicate the initialization was not sucessful
+	 */
 	class CannotInitialize {};
 };
 
+/** @} */
 
 } // namespace Qedo
 
