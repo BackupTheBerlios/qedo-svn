@@ -142,12 +142,15 @@ string get_short_name(char *full_scope_name) {
 		}
 		catch (CosNaming::NamingContext::NotFound_catch &exec) {
 			std::cerr << "Notfound" << endl;
+			continue;
 		}
 		catch (CosNaming::NamingContext::CannotProceed_catch &exec) {
 			std::cerr << "CannotProceed" <<endl;
+			continue;
 		}
 		catch (CosNaming::NamingContext::InvalidName_catch &exec) {
 			std::cout << "InvalidName exception"<<endl;
+			continue;
 		}
 	
 		Components::Deployment::ServerActivator_var server_activator ;
@@ -161,9 +164,18 @@ string get_short_name(char *full_scope_name) {
 			continue;
 		}
 	
-		// get Component Servers	
-		Components::Deployment::ComponentServers *component_servers = 
-		server_activator -> get_component_servers();	
+		Components::Deployment::ComponentServers *component_servers; 
+		try {
+			// get Component Servers	
+			component_servers = 
+				server_activator -> get_component_servers();	
+		} catch (CORBA::SystemException&) 
+		{
+			continue;
+		} catch(...)
+		{
+			continue;
+		};
 
 		DEBUG_OUT3 ( "ServerActivator has ", component_servers->length() , " component server. ");
 
