@@ -68,7 +68,7 @@ fi
 AC_CHECK_LIB([dl], [dlopen])
 AC_CHECK_LIB([z], [deflate])
 AC_CHECK_LIB([uuid], [uuid_generate],,[uuid=no])
-AC_CHECK_LIB([pthread], [pthread_mutexattr_init])
+AC_CHECK_LIB([pthread], [pthread_sigmask])
 
 if test X"$uuid" == Xno; then
   AC_MSG_ERROR([you need a uuid library for Qedo])
@@ -173,7 +173,7 @@ AC_FUNC_STAT
 AC_FUNC_UTIME_NULL
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([getcwd gethostname mkdir strchr strdup strerror strstr utime])
-AC_CHECK_FUNCS([sigaction strrchr])
+AC_CHECK_FUNCS([sigaction strrchr waitpid sigwait])
 
 OS=`uname`
 AC_SUBST(OS)

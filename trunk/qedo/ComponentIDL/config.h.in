@@ -107,6 +107,9 @@
 /* Define to 1 if you have the <cxxabi.h> header file. */
 #undef HAVE_CXXABI_H
 
+/* Define to 1 if you have the `sigwait' function. */
+#undef HAVE_SIGWAIT
+
 /* Define to 1 if you have the `__cxa_demangle' function. */
 #undef HAVE___CXA_DEMANGLE
 

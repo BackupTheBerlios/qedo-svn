@@ -3258,9 +3258,9 @@ else
 fi
 
 
-echo "$as_me:$LINENO: checking for pthread_mutexattr_init in -lpthread" >&5
-echo $ECHO_N "checking for pthread_mutexattr_init in -lpthread... $ECHO_C" >&6
-if test "${ac_cv_lib_pthread_pthread_mutexattr_init+set}" = set; then
+echo "$as_me:$LINENO: checking for pthread_sigmask in -lpthread" >&5
+echo $ECHO_N "checking for pthread_sigmask in -lpthread... $ECHO_C" >&6
+if test "${ac_cv_lib_pthread_pthread_sigmask+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -3278,11 +3278,11 @@ extern "C"
 #endif
 /* We use char because int might match the return type of a gcc2
    builtin and then its argument prototype would still apply.  */
-char pthread_mutexattr_init ();
+char pthread_sigmask ();
 int
 main ()
 {
-pthread_mutexattr_init ();
+pthread_sigmask ();
   ;
   return 0;
 }
@@ -3309,20 +3309,20 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_lib_pthread_pthread_mutexattr_init=yes
+  ac_cv_lib_pthread_pthread_sigmask=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_lib_pthread_pthread_mutexattr_init=no
+ac_cv_lib_pthread_pthread_sigmask=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_pthread_pthread_mutexattr_init" >&5
-echo "${ECHO_T}$ac_cv_lib_pthread_pthread_mutexattr_init" >&6
-if test $ac_cv_lib_pthread_pthread_mutexattr_init = yes; then
+echo "$as_me:$LINENO: result: $ac_cv_lib_pthread_pthread_sigmask" >&5
+echo "${ECHO_T}$ac_cv_lib_pthread_pthread_sigmask" >&6
+if test $ac_cv_lib_pthread_pthread_sigmask = yes; then
   cat >>confdefs.h <<_ACEOF
 #define HAVE_LIBPTHREAD 1
 _ACEOF
@@ -6929,7 +6929,9 @@ done
 
 
 
-for ac_func in sigaction strrchr
+
+
+for ac_func in sigaction strrchr waitpid sigwait
 do
 as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
 echo "$as_me:$LINENO: checking for $ac_func" >&5
