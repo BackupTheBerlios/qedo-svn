@@ -213,7 +213,7 @@ SOURCE=.\IDLBase.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\main.cpp
+SOURCE=.\cidl_gen.cpp
 # End Source File
 # Begin Source File
 

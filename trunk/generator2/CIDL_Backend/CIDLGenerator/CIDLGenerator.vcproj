@@ -291,7 +291,7 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 				RelativePath=".\TestMode.cpp">
 			</File>
 			<File
-				RelativePath=".\main.cpp">
+				RelativePath=".\cidl_gen.cpp">
 			</File>
 		</Filter>
 		<Filter

@@ -1,0 +1,64 @@
+include ../../MakeVars
+
+CXX = @CXX@
+CPPFLAGS+=-I. \
+          -I../../CIDL_Repository/IFRidl \
+			 -I../../CIDL_Repository/ComponentRepositoryLib \
+			 -I../../CIDL_Repository/CIDLRepositoryLib \
+			 -I../../CIDL_Frontend/CIDLFrontendLib \
+			 @CPPFLAGS@ 
+
+CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+CXXCOMPILE=@CXX@ $(CXXFLAGS)
+LIBS+=@LIBS@
+CC=$(CXX)
+
+
+@SET_MAKE@
+
+LIBS += -L../../CIDL_Repository/IFRidl \
+		  -lIFRidl \
+   	  -L../../CIDL_Repository/ComponentRepositoryLib \
+		  -lComponentRepositoryLib \
+		  -L../../CIDL_Repository/CIDLRepositoryLib \
+		  -lCIDLRepositoryLib \
+        -L../../CIDL_Frontend/CIDLFrontendLib \
+		  -lCIDLFrontendLib 
+
+
+LDLIBS = ${LIBS}
+
+
+SOURCES = cidl_gen.cpp \
+			CPPBase.cpp \
+			GeneratorBase.cpp \
+			GeneratorBIDL.cpp \
+			GeneratorBusinessC.cpp \
+			GeneratorBusinessH.cpp \
+			GeneratorCCD.cpp \
+			GeneratorCSD.cpp \
+			GeneratorEIDL.cpp \
+			GeneratorLIDL.cpp \
+			GeneratorServantC.cpp \
+			GeneratorServantH.cpp \
+			GeneratorVC7.cpp \
+			IDLBase.cpp \
+			Printer.cpp \
+			TestMode.cpp
+
+OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
+
+.PHONY:all
+
+all: cidl_gen
+
+cidl_gen: $(OBJS)
+
+.PHONY:install
+
+install: install-prog
+
+.PHONY:install-prog
+
+install-prog: cidl_gen
+
