@@ -12,8 +12,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug_orbacus|Win32"
-			OutputDirectory=".\ComponentRepositoryLib___Win32_Debug_orbacus"
-			IntermediateDirectory=".\ComponentRepositoryLib___Win32_Debug_orbacus"
+			OutputDirectory=".\Debug_orbacus"
+			IntermediateDirectory=".\Debug_orbacus"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
