@@ -23,31 +23,29 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#ifndef __HOME_EXECUTOR_DEF_IMPL_H__
-#define __HOME_EXECUTOR_DEF_IMPL_H__
+#ifndef __ABS_STORAGETYPE_DEF_IMPL_H__
+#define __ABS_STORAGETYPE_DEF_IMPL_H__
 
 #include <CORBA.h>
-#include "CIDL_Extension_skel.h"
-#include "Contained_impl.h"
-#include "Repository_impl.h"
-#include "CatalogDef_impl.h"
+#include "IFR_skel.h"
+#include "InterfaceDef_impl.h"
+
+#include <vector>
+
+using namespace std;
 
 namespace QEDO_ComponentRepository {
 
-class HomeExecutorDef_impl : public virtual POA_CIDL::HomeExecutorDef,
-							 public virtual Contained_impl
+class AbstractStorageTypeDef_impl : public virtual POA_IR__::AbstractStorageTypeDef,
+							public virtual InterfaceDef_impl
 {
-	CatalogDef_impl* catalog_;
-	CIDL::Binding* binding_;
-	CIDL::DelegationSeq delegations_;
-	CIDL::AbsStorageHomeDelegationSeq abs_storage_home_delegations_;
+	vector < AbstractStorageTypeDef_impl* > base_abs_storage_type_impls_;
 
 public:
-	HomeExecutorDef_impl ( Container_impl *container,
-							Repository_impl *repository,
-							IR__::CatalogDef *catalog);
+	AbstractStorageTypeDef_impl ( Container_impl *container,
+									Repository_impl *repository);
 
-	~HomeExecutorDef_impl();
+	~AbstractStorageTypeDef_impl();
 
     //
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
@@ -55,7 +53,7 @@ public:
 	virtual CORBA__::DefinitionKind def_kind()
         throw(CORBA::SystemException)
     {
-        return CORBA__::dk_HomeExecutor;
+        return CORBA__::dk_AbstractStorageType;
     }
 
     //
@@ -67,35 +65,18 @@ public:
     //
     // IDL:omg.org/IR__/Contained/describe:1.0
     //
-	virtual IR__::Contained::Description* describe()
-        throw(CORBA::SystemException);
-
-    //
-    // IDL:omg.org/CIDL/HomeExecutorDef/delegations:1.0
-    //
-    virtual CIDL::DelegationSeq* delegations()
-        throw(CORBA::SystemException);
-    virtual void delegations(const CIDL::DelegationSeq&)
+    virtual IR__::Contained::Description* describe()
         throw(CORBA::SystemException);
 
 	//
-    // IDL:omg.org/CIDL/HomeExecutorDef/abs_storage_home_delegations:1.0
+    // IDL:omg.org/IR__/AbstractStorageTypeDef/base_abstract_storage_types:1.0
     //
-    virtual CIDL::AbsStorageHomeDelegationSeq* abs_storage_home_delegations()
-		throw(CORBA::SystemException);
-    virtual void abs_storage_home_delegations(const CIDL::AbsStorageHomeDelegationSeq&)
-		throw(CORBA::SystemException);
-
-    //
-    // IDL:omg.org/CIDL/HomeExecutorDef/binds_to:1.0
-    //
-    virtual CIDL::Binding* binds_to()
-		throw(CORBA::SystemException);
-    virtual void binds_to(const CIDL::Binding&)
-		throw(CORBA::SystemException);
+    virtual IR__::AbsStorageTypeDefSeq* base_abstract_storage_types()
+        throw(CORBA::SystemException);
+    virtual void base_abstract_storage_types(const IR__::AbsStorageTypeDefSeq& seq)
+        throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository
 
 #endif
-

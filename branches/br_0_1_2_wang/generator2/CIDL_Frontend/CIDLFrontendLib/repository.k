@@ -933,6 +933,175 @@ StateMember(flag_v, def_1, dcls)
   [ build :
   ];
 
+// ======================== Abstract Storage Type ================================
+
+def_v=
+AbstractStorageType( AbstractStorageTypeHeader(name, inh_v), def_list )
+->[ feed_container:
+    {  
+      IR__::Container_ptr container;
+      container = IR__::Container::_narrow(kc_current_view.container);
+      NOT_NIL(container);
+
+      int i = inh_v->length();
+	  IR__::AbsStorageTypeDefSeq initseq;
+	  initseq.length(i);
+	  i=0;
+	  foreach(ident_v; idl_identifier_list inh_v) {
+	    initseq[i] = IR__::AbstractStorageTypeDef::_narrow(ident_v->symtab_entry->irobj);
+	    NOT_NIL(initseq[i]);
+		i++;
+	  };
+
+      // create AbstractStorageTypeDef
+      IR__::AbstractStorageTypeDef_ptr abstract_storagetype;
+      try {
+        abstract_storagetype = container->create_abstract_storage_type(get_repid(def_v,name), name->get_name(),
+          "1.0", initseq);
+      }
+      catch (...) {
+        Error("Exception in creating abstract storagetype %k\n", name, name);
+      }
+      irobj = abstract_storagetype;
+      name->symtab_entry->irobj = abstract_storagetype;
+    }
+  ];
+
+// ======================== Storage Type ================================
+
+def_v=
+StorageType( StorageTypeHeader(name, base_v, impl_v), def_list )
+->[ feed_container:
+    {  
+      IR__::Container_ptr container;
+      container = IR__::Container::_narrow(kc_current_view.container);
+      NOT_NIL(container);
+
+	  IR__::StorageTypeDef_ptr base_storagetype;
+	  with(base_v) {
+		NilIdentifier: {
+	      base_storagetype = IR__::StorageTypeDef::_nil();
+		}
+		default: {
+		  base_storagetype = IR__::StorageTypeDef::_narrow(base_v->symtab_entry->irobj);
+		}
+      }
+
+      int i = impl_v->length();
+	  IR__::InterfaceDefSeq initseq;
+	  initseq.length(i);
+	  i=0;
+	  foreach(ident_v; idl_identifier_list impl_v) {
+	    initseq[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
+	    NOT_NIL(initseq[i]);
+		i++;
+	  };
+
+      // create StorageTypeDef
+      IR__::StorageTypeDef_ptr storagetype;
+      try {
+        storagetype = container->create_storage_type(get_repid(def_v,name), name->get_name(),
+          "1.0", base_storagetype, initseq);
+      }
+      catch (...) {
+        Error("Exception in creating storagetype %k\n", name, name);
+      }
+      irobj = storagetype;
+      name->symtab_entry->irobj = storagetype;
+    }
+  ];
+
+// ========================= Abstract Storage Home ===============================
+
+def_v=
+AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
+->[ feed_container:
+    { IR__::AbsStorageHomeDefSeq inherited;
+      inherited.length(inh_v->length());
+      int i = 0;
+      IR__::AbstractStorageHomeDef_ptr abstract_storagehome_ptr;
+      foreach (id; idl_identifier_list inh_v) {
+        abstract_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(id->symtab_entry->irobj);
+        NOT_NIL(abstract_storagehome_ptr);
+        inherited[i] = abstract_storagehome_ptr;
+        i++;
+      }
+
+      // create AbstractStorageHomeDef
+      IR__::AbstractStorageHomeDef_ptr abstract_storagehome;
+      IR__::Container_ptr container;
+      container = IR__::Container::_narrow(kc_current_view.container);
+      NOT_NIL(container);
+	  IR__::AbstractStorageTypeDef_ptr abstract_storagetype;
+	  abstract_storagetype = IR__::AbstractStorageTypeDef::_narrow(type_v->symtab_entry->irobj);
+      NOT_NIL(abstract_storagetype);
+      try {
+        abstract_storagehome = container->create_abstract_storage_home(get_repid(def_v,name), name->get_name(),
+          "1.0", abstract_storagetype, inherited);
+      }
+      catch (...) {
+        Error("Exception in creating abstract storagehome %k\n", name, name);
+      }
+      irobj = abstract_storagehome;
+    }
+  ];
+
+// ========================= Storage Home ===============================
+
+def_v=
+StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
+->[ feed_container:
+    { IR__::InterfaceDefSeq supports;
+      supports.length(impl_v->length());
+      int i = 0;
+      IR__::InterfaceDef_ptr interface_ptr;
+      foreach (id; idl_identifier_list impl_v) {
+        interface_ptr = IR__::InterfaceDef::_narrow(id->symtab_entry->irobj);
+        NOT_NIL(interface_ptr);
+        supports[i] = interface_ptr;
+        i++;
+      }
+      IR__::StorageHomeDef_ptr basestoragehome;
+      with(base_v) {
+        NilIdentifier() : { basestoragehome = IR__::StorageHomeDef::_nil(); }
+        default : {
+          basestoragehome = IR__::StorageHomeDef::_narrow(base_v->symtab_entry->irobj);
+          NOT_NIL(basestoragehome);
+        }
+      }
+      //IR__::StorageTypeDef_ptr storagetype_ptr;
+      //storagetype_ptr = IR__::StorageTypeDef::_narrow(type_v->symtab_entry->irobj);
+      //NOT_NIL(storagetype_ptr);
+      IR__::IDLType_ptr idltype;
+      with(pkey_v) {
+        NilDefinition() : { idltype = IR__::IDLType::_nil(); }
+        PrimaryKeyDcl(key_ident_v) : {
+          idltype = IR__::IDLType::_narrow(key_ident_v->symtab_entry->irobj);
+          NOT_NIL(idltype);
+        }
+		PrimaryKeyRef() : { // TODO 
+		}
+      }
+      // create StorageHomeDef
+      IR__::StorageHomeDef_ptr storagehome;
+      IR__::Container_ptr container;
+      container = IR__::Container::_narrow(kc_current_view.container);
+      NOT_NIL(container);
+	  IR__::StorageTypeDef_ptr storagetype;
+	  storagetype = IR__::StorageTypeDef::_narrow(type_v->symtab_entry->irobj);
+      NOT_NIL(storagetype);
+      try {
+        storagehome = container->create_storage_home(get_repid(def_v,name), name->get_name(),
+          "1.0", basestoragehome, storagetype, supports, idltype);
+      }
+      catch (...) {
+        Error("Exception in creating storagehome %k\n", name, name);
+      }
+      irobj = storagehome;
+    }
+  ];
+
+
 // ======================== Event Type ================================
 
 AbstractEventTypeFwdDcl(name)
@@ -1367,6 +1536,30 @@ FactoryDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 
   ];
 
+// ======================== PSSFactory ================================
+/*
+def_v=
+PSSFactoryDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
+->[ feed:
+	%uviewvar build my_build;
+    // parameters
+    { my_build.pos = 0; my_build.paradescseq.length(parameter_dcls_v->length()); }
+    parameter_dcls_v : my_build
+    // exceptions
+    { my_build.pos = 0; }
+    attr_raises_expr_v : my_build
+    // context
+    { my_build.pos = 0; }
+
+	{
+	    IR__::StorageHomeDef_ptr home_ptr; //???
+		home_ptr= IR__::HomeDef::_narrow(kc_current_view.container);
+		home_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+            "1.0",my_build.paradescseq,my_build.excdefseq);
+	}
+
+  ];
+*/
 
 // ======================== Finder ==================================
 def_v=
@@ -1390,6 +1583,29 @@ FinderDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 	}
   ];
 
+// ======================== PSSFinder ==================================
+/*
+def_v=
+FinderDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
+->[ feed:
+	%uviewvar build my_build;
+    // parameters
+    { my_build.pos = 0; my_build.paradescseq.length(parameter_dcls_v->length()); }
+    parameter_dcls_v : my_build
+    // exceptions
+    { my_build.pos = 0; }
+    attr_raises_expr_v : my_build
+    // context
+    { my_build.pos = 0; }
+
+	{
+	    IR__::HomeDef_ptr home_ptr;
+		home_ptr= IR__::HomeDef::_narrow(kc_current_view.container);
+		home_ptr->create_finder(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+            "1.0",my_build.paradescseq,my_build.excdefseq);
+	}
+  ];
+*/
 // ======================== Operation ===============================
 
 def_v=

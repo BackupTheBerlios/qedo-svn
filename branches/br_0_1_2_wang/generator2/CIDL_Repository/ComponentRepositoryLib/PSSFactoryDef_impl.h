@@ -30,14 +30,19 @@
 #include "IFR_skel.h"
 #include "Repository_impl.h"
 #include "OperationDef_impl.h"
+#include "AbsStorageTypeDef_impl.h"
 #include "StorageTypeDef_impl.h"
 
 namespace QEDO_ComponentRepository {
 
-class PSSFactoryDef_impl : public virtual POA_IR__::FactoryDef,
+class PSSFactoryDef_impl : public virtual POA_IR__::PSSFactoryDef,
 						public virtual OperationDef_impl
 {
 public:
+	PSSFactoryDef_impl ( Container_impl *container,
+						Repository_impl *repository,
+						AbstractStorageTypeDef_impl *abs_storage_type );
+
 	PSSFactoryDef_impl ( Container_impl *container,
 						Repository_impl *repository,
 						StorageTypeDef_impl *storage_type );

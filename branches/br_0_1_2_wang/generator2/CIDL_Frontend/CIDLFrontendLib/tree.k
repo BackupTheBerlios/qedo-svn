@@ -260,7 +260,7 @@ executor_delegation_spec:
 	 ;
 
 storagehome_header:
-      StorageHomeHeader( idl_name idl_identifier idl_identifier idl_identifier_list )
+      StorageHomeHeader( idl_name idl_identifier idl_identifier idl_identifier_list definition )
     ;
 
 storagetype_header:

@@ -31,6 +31,21 @@ namespace QEDO_ComponentRepository {
 PSSFactoryDef_impl::PSSFactoryDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
+  AbstractStorageTypeDef_impl *abs_storage_type )
+
+: IRObject_impl ( repository ),
+  Contained_impl ( container, repository ),
+  OperationDef_impl ( container, repository )
+{
+	DEBUG_OUTLINE ( "PSSFactoryDef_impl::PSSFactoryDef_impl() called" );
+
+	OperationDef_impl::result_def ( abs_storage_type -> _this() );
+	OperationDef_impl::mode ( IR__::OP_NORMAL );
+}
+
+PSSFactoryDef_impl::PSSFactoryDef_impl
+( Container_impl *container,
+  Repository_impl *repository,
   StorageTypeDef_impl *storage_type )
 
 : IRObject_impl ( repository ),

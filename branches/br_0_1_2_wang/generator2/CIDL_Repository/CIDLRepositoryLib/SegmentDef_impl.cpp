@@ -119,7 +119,7 @@ throw(CORBA::SystemException)
 		segment_desc -> provided_facets[i] = provided_facet_impls_[i] -> _this();
 	}
 
-	segment_desc -> storage_home = this -> storage_home();
+	segment_desc -> abs_storage_home = this -> abs_storage_home();
 
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
@@ -148,14 +148,14 @@ throw(CORBA::SystemException)
 	return provided_facet_seq._retn();
 }
 
-IR__::StorageHomeDef_ptr
-SegmentDef_impl::storage_home
+IR__::AbstractStorageHomeDef_ptr
+SegmentDef_impl::abs_storage_home
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "SegmentDef_impl::storage_home() called" );
+	DEBUG_OUTLINE ( "SegmentDef_impl::abs_storage_home() called" );
 
-	return IR__::StorageHomeDef::_duplicate(storage_home_);
+	return IR__::AbstractStorageHomeDef::_duplicate(abs_storage_home_);
 }
 
 } // namespace QEDO_ComponentRepository 

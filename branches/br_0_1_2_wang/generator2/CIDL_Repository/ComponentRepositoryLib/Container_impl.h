@@ -254,6 +254,15 @@ public:
         throw(CORBA::SystemException);
 
 	//
+    // IDL:omg.org/IR__/Container/create_abstract_storage_type:1.0
+    //
+    virtual IR__::AbstractStorageTypeDef_ptr create_abstract_storage_type(const char* id,
+                                                                          const char* name,
+                                                                          const char* version,
+                                                                          const IR__::AbsStorageTypeDefSeq& base_abstract_storage_types)
+        throw(CORBA::SystemException);
+
+	//
     // IDL:omg.org/IR__/Container/create_storage_type:1.0
     //
     virtual IR__::StorageTypeDef_ptr create_storage_type(const char* id,
@@ -262,6 +271,16 @@ public:
                                                          IR__::StorageTypeDef_ptr base_storage_type,
                                                          const IR__::InterfaceDefSeq& supports_interfaces)
 		throw(CORBA::SystemException);
+
+	//
+    // IDL:omg.org/IR__/Container/create_abstract_storage_home:1.0
+    //
+    virtual IR__::AbstractStorageHomeDef_ptr create_abstract_storage_home(const char* id,
+                                                                          const char* name,
+                                                                          const char* version,
+                                                                          IR__::AbstractStorageTypeDef_ptr managed_abstract_storage_type,
+                                                                          const IR__::AbsStorageHomeDefSeq& base_abstract_storage_homes)
+        throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/Container/create_storage_home:1.0
@@ -272,7 +291,7 @@ public:
                                                          IR__::StorageHomeDef_ptr base_storage_home,
                                                          IR__::StorageTypeDef_ptr managed_storage_type,
                                                          const IR__::InterfaceDefSeq& supports_interfaces,
-                                                         IR__::ValueDef_ptr primary_key)
+                                                         IR__::IDLType_ptr primary_key)
 		throw(CORBA::SystemException);
 
 	//

@@ -141,6 +141,14 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\AbsStorageHomeDef_impl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\AbsStorageTypeDef_impl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\AliasDef_impl.cpp
 # End Source File
 # Begin Source File
@@ -257,6 +265,10 @@ SOURCE=.\PSSFinderDef_impl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\PSSPrimaryKeyDef_impl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\PublishesDef_impl.cpp
 # End Source File
 # Begin Source File
@@ -319,6 +331,14 @@ SOURCE=.\ValueMemberDef_impl.cpp
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\AbsStorageHomeDef_impl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\AbsStorageTypeDef_impl.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\AliasDef_impl.h
@@ -438,6 +458,10 @@ SOURCE=.\PSSFactoryDef_impl.h
 # Begin Source File
 
 SOURCE=.\PSSFinderDef_impl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PSSPrimaryKeyDef_impl.h
 # End Source File
 # Begin Source File
 

@@ -44,7 +44,7 @@ class SegmentDef_impl : public virtual POA_CIDL::SegmentDef,
 {
 	vector < ProvidesDef_impl* > provided_facet_impls_;
 	CatalogDef_impl* catalog_;
-	IR__::StorageHomeDef_ptr storage_home_;
+	IR__::AbstractStorageHomeDef_ptr abs_storage_home_;
 	
 public:
 	SegmentDef_impl ( Container_impl *container,
@@ -82,9 +82,9 @@ public:
         throw(CORBA::SystemException);
 
 	//
-    // IDL:omg.org/CIDL/SegmentDef/storage_home:1.0
+    // IDL:omg.org/CIDL/SegmentDef/abs_storage_home:1.0
     //
-    virtual IR__::StorageHomeDef_ptr storage_home()
+    virtual IR__::AbstractStorageHomeDef_ptr abs_storage_home()
 		throw(CORBA::SystemException);
 };
 

@@ -19,7 +19,7 @@
 /*                                                                           */
 /* You should have received a copy of the GNU General Public License         */
 /* along with Foobar; if not, write to the Free Software                     */
-/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
+/* Foundation, Inc., 59 TempleIDLType_impl Place, Suite 330, Boston, MA  02111-1307  USA */
 /*                                                                           */
 /*****************************************************************************/
 
@@ -59,7 +59,9 @@ module CORBA__ {
 		// the following is the stream extension
 		, dk_Stream, dk_Sink, dk_Source, dk_SiSo
 		// The following extensions are for PSDL
-		, dk_Catalog, dk_StorageHome, dk_StorageType, dk_PSSFactory, dk_PSSFinder
+		, dk_Catalog, dk_AbstractStorageHome, dk_StorageHome
+		, dk_AbstractStorageType, dk_StorageType
+		, dk_PSSFactory, dk_PSSFinder, dk_PSSPrimaryKey
 
 	};
 
@@ -155,8 +157,16 @@ module IR__ {
 	typedef sequence <FactoryDef> FactoryDefSeq;
 	interface FinderDef;
 	typedef sequence <FinderDef> FinderDefSeq;
+	interface PSSFactoryDef;
+	typedef sequence <PSSFactoryDef> PSSFactoryDefSeq;
+	interface PSSFinderDef;
+	typedef sequence <PSSFinderDef> PSSFinderDefSeq;
 	interface PrimaryKeyDef;
 	typedef sequence <Contained> ContainedSeq;
+	interface AbstractStorageTypeDef;
+	typedef sequence <AbstractStorageTypeDef> AbsStorageTypeDefSeq;
+	interface AbstractStorageHomeDef;
+	typedef sequence <AbstractStorageHomeDef> AbsStorageHomeDefSeq;
 	interface StorageTypeDef;
 	interface StorageHomeDef;
 	interface CatalogDef;
@@ -321,12 +331,25 @@ module IR__ {
 			in InterfaceDefSeq supports_interfaces,
 			in ValueDef primary_key
 		);
+		AbstractStorageTypeDef create_abstract_storage_type(
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in AbsStorageTypeDefSeq base_abstract_storage_types
+		);
 		StorageTypeDef create_storage_type(
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
 			in StorageTypeDef base_storage_type,
 			in InterfaceDefSeq supports_interfaces
+		);
+		AbstractStorageHomeDef create_abstract_storage_home(
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in AbstractStorageTypeDef managed_abstract_storage_type,
+			in AbsStorageHomeDefSeq base_abstract_storage_homes
 		);
 		StorageHomeDef create_storage_home(
 			in RepositoryId id,
@@ -335,7 +358,7 @@ module IR__ {
 			in StorageHomeDef base_storage_home,
 			in StorageTypeDef managed_storage_type,
 			in InterfaceDefSeq supports_interfaces,
-			in ValueDef primary_key 
+			in IDLType primary_key 
 		);
 		CatalogDef create_catalog(
 			in RepositoryId id,
@@ -871,6 +894,26 @@ module IR__ {
 	
 	interface FinderDef : OperationDef { // only PARAM_IN parameters
 	};
+
+	interface PSSPrimaryKeyDef : Contained {
+		// read interface
+		boolean is_a (in RepositoryId primary_key_id);
+		readonly attribute IDLType primary_key;
+	};
+	
+	struct PSSPrimaryKeyDescription {
+		Identifier name;
+		RepositoryId id;
+		RepositoryId defined_in;
+		VersionSpec version;
+		IDLType primary_key;
+	};
+
+	interface PSSFactoryDef : OperationDef { // only PARAM_IN parameters
+	};
+	
+	interface PSSFinderDef : OperationDef { // only PARAM_IN parameters
+	};
 	
 	interface HomeDef : InterfaceDef {
 		// read operations
@@ -920,6 +963,23 @@ module IR__ {
 		boolean is_basic;
 	};
 
+	interface AbstractStorageTypeDef : InterfaceDef {
+		// read/write interface
+		// can be derived from more than one abstract storage types
+		//attribute InterfaceDefSeq base_abstract_storage_types;
+		attribute AbsStorageTypeDefSeq base_abstract_storage_types;
+	};
+	
+	struct AbstractStorageTypeDescription {
+		Identifier name;
+		RepositoryId id;
+		RepositoryId defined_in;
+		VersionSpec version;
+		RepositoryIdSeq base_abstract_storage_types;
+		AttrDescriptionSeq attributes;
+		OpDescriptionSeq operations;
+	};
+
 	interface StorageTypeDef : InterfaceDef {
 		// read/write interface
 		attribute InterfaceDefSeq supported_interfaces;
@@ -936,6 +996,45 @@ module IR__ {
 		RepositoryId base_storage_type;
 		RepositoryIdSeq supports_interfaces;
 		AttrDescriptionSeq attributes;
+		OpDescriptionSeq operations;
+	};
+
+	interface AbstractStorageHomeDef : InterfaceDef {
+		// read operations
+		readonly attribute AbstractStorageTypeDef managed_abstract_storage_type;
+		// can be derived from more than one abstract storage homes
+		//attribute InterfaceDefSeq base_storage_homes;
+		attribute AbsStorageHomeDefSeq base_abstract_storage_homes;
+		readonly attribute PSSFactoryDefSeq factories;
+		readonly attribute PSSFinderDefSeq finders;
+		// write interfaces
+		PSSFactoryDef create_factory (
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in ParDescriptionSeq params, // only PARAM_INs
+			in ExceptionDefSeq exceptions
+		);
+		PSSFinderDef create_finder (
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in ParDescriptionSeq params, // only PARAM_INs
+			in ExceptionDefSeq exceptions
+		);
+	};
+	
+	struct AbstractStorageHomeDescription {
+		Identifier name;
+		RepositoryId id;
+		RepositoryId defined_in;
+		VersionSpec version;
+		RepositoryId managed_abstract_storage_type;
+		RepositoryIdSeq base_abstract_storage_homes;
+		PSSFactoryDefSeq factories;
+		PSSFinderDefSeq finders;
+		AttrDescriptionSeq attributes;
+		OpDescriptionSeq operations;
 	};
 
 	interface StorageHomeDef : InterfaceDef {
@@ -943,24 +1042,24 @@ module IR__ {
 		readonly attribute StorageHomeDef base_storage_home;
 		readonly attribute StorageTypeDef managed_storage_type;
 		attribute InterfaceDefSeq supported_interfaces;
-		readonly attribute PrimaryKeyDef primary_key;
-		readonly attribute FactoryDefSeq factories;
-		readonly attribute FinderDefSeq finders;
+		readonly attribute PSSPrimaryKeyDef primary_key;
+		readonly attribute PSSFactoryDefSeq factories;
+		readonly attribute PSSFinderDefSeq finders;
 		// write interfaces
-		PrimaryKeyDef create_primary_key (
+		PSSPrimaryKeyDef create_primary_key (
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in ValueDef primary_key
+			in IDLType primary_key
 		);
-		FactoryDef create_factory (
+		PSSFactoryDef create_factory (
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
 			in ParDescriptionSeq params, // only PARAM_INs
 			in ExceptionDefSeq exceptions
 		);
-		FinderDef create_finder (
+		PSSFinderDef create_finder (
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
@@ -977,11 +1076,11 @@ module IR__ {
 		RepositoryId base_storage_home;
 		RepositoryId managed_storage_type;
 		RepositoryIdSeq supports_interfaces;
-		PrimaryKeyDef primary_key_def;
-		FactoryDefSeq factories;
-		FinderDefSeq finders;
-		OpDescriptionSeq operations;
+		PSSPrimaryKeyDef primary_key_def;
+		PSSFactoryDefSeq factories;
+		PSSFinderDefSeq finders;
 		AttrDescriptionSeq attributes;
+		OpDescriptionSeq operations;
 	};
 
 	interface CatalogDef : InterfaceDef {
