@@ -34,6 +34,7 @@ AC_SUBST(HAVE_MICO_CONFIG)
 AC_CHECK_LIB([dl], [dlopen])
 AC_CHECK_LIB([z], [deflate])
 AC_CHECK_LIB([uuid], [uuid_generate])
+AC_CHECK_LIB([pthread], [pthread_mutexattr_init])
 
 if test X"$HAVE_MKDIR_PROG" != Xyes; then
   AC_MSG_ERROR([cannot mkdir program])
