@@ -25,7 +25,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: StreamCCMObjectExecutor.cpp,v 1.2 2003/10/17 09:11:40 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: StreamCCMObjectExecutor.cpp,v 1.3 2003/10/22 12:30:14 stoinski Exp $";
 
 namespace Qedo {
 
@@ -53,7 +53,7 @@ StreamCCMObjectExecutor::get_source (const char* name)
 	}
 
 	NORMAL_ERR2 ("StreamCCMObjectExecutor: Fatal internal error: SourcePort for get_source not found for name ", name);
-	assert (0);
+	abort();
 }
 
 
@@ -69,7 +69,7 @@ StreamCCMObjectExecutor::get_sink (const char* name)
 	}
 
 	NORMAL_ERR2 ("StreamCCMObjectExecutor: Fatal internal error: SinkPort for get_sink not found for name ", name);
-	assert (0);
+	abort();
 }
 
 
