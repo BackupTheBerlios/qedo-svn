@@ -184,7 +184,7 @@ SOURCE=.\DeploymentClient.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\main.cpp
+SOURCE=.\deploy.cpp
 # End Source File
 # Begin Source File
 

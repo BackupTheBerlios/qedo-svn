@@ -25,8 +25,8 @@ OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
 
 all: deploy
 
-deploy.cpp : main.cpp
-	@LN_S@ $^ $@
+#deploy.cpp : main.cpp
+#	@LN_S@ $^ $@
 
 deploy: $(OBJS)
 
