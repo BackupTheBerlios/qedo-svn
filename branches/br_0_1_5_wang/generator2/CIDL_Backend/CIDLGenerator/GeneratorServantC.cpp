@@ -1807,6 +1807,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (home servant) : Destructor called\");\n";
+	out << "pCcm" << home->name() << "_->_remove_ref();\n";
 	out.unindent();
 	out << "}\n\n\n";
 
