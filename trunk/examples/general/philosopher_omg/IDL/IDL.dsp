@@ -85,27 +85,27 @@ LIB32=link.exe -lib
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_BUSINESS.cpp
+SOURCE=.\dinner_BUSINESS.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_BUSINESS_skel.cpp
+SOURCE=.\dinner_BUSINESS_skel.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_EQUIVALENT.cpp
+SOURCE=.\dinner_EQUIVALENT.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_EQUIVALENT_skel.cpp
+SOURCE=.\dinner_EQUIVALENT_skel.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_LOCAL.cpp
+SOURCE=.\dinner_LOCAL.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_LOCAL_skel.cpp
+SOURCE=.\dinner_LOCAL_skel.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -113,27 +113,27 @@ SOURCE=.\DiningPhilosophers_LOCAL_skel.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_BUSINESS.h
+SOURCE=.\dinner_BUSINESS.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_BUSINESS_skel.h
+SOURCE=.\dinner_BUSINESS_skel.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_EQUIVALENT.h
+SOURCE=.\dinner_EQUIVALENT.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_EQUIVALENT_skel.h
+SOURCE=.\dinner_EQUIVALENT_skel.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_LOCAL.h
+SOURCE=.\dinner_LOCAL.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_LOCAL_skel.h
+SOURCE=.\dinner_LOCAL_skel.h
 # End Source File
 # End Group
 # Begin Group "cidl"
@@ -177,28 +177,28 @@ BuildCmds= \
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_BUSINESS.idl
+SOURCE=.\dinner_BUSINESS.idl
 
 !IF  "$(CFG)" == "IDL - Win32 Release"
 
 !ELSEIF  "$(CFG)" == "IDL - Win32 Debug"
 
 # Begin Custom Build
-InputPath=.\DiningPhilosophers_BUSINESS.idl
+InputPath=.\dinner_BUSINESS.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 DiningPhilosophers_BUSINESS.idl
+	$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_BUSINESS.idl
 
-"DiningPhilosophers_BUSINESS.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_BUSINESS.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DiningPhilosophers_BUSINESS.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_BUSINESS.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DiningPhilosophers_BUSINESS_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_BUSINESS_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DiningPhilosophers_BUSINESS_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_BUSINESS_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -207,28 +207,28 @@ BuildCmds= \
 # End Source File
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_EQUIVALENT.idl
+SOURCE=.\dinner_EQUIVALENT.idl
 
 !IF  "$(CFG)" == "IDL - Win32 Release"
 
 !ELSEIF  "$(CFG)" == "IDL - Win32 Debug"
 
 # Begin Custom Build
-InputPath=.\DiningPhilosophers_EQUIVALENT.idl
+InputPath=.\dinner_EQUIVALENT.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 DiningPhilosophers_EQUIVALENT.idl
+	$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_EQUIVALENT.idl
 
-"DiningPhilosophers_EQUIVALENT.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_EQUIVALENT.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DiningPhilosophers_EQUIVALENT.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_EQUIVALENT.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DiningPhilosophers_EQUIVALENT_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_EQUIVALENT_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DiningPhilosophers_EQUIVALENT_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_EQUIVALENT_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -237,28 +237,28 @@ BuildCmds= \
 # End Source File
 # Begin Source File
 
-SOURCE=.\DiningPhilosophers_LOCAL.idl
+SOURCE=.\dinner_LOCAL.idl
 
 !IF  "$(CFG)" == "IDL - Win32 Release"
 
 !ELSEIF  "$(CFG)" == "IDL - Win32 Debug"
 
 # Begin Custom Build
-InputPath=.\DiningPhilosophers_LOCAL.idl
+InputPath=.\dinner_LOCAL.idl
 
 BuildCmds= \
-	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 DiningPhilosophers_LOCAL.idl
+	$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_LOCAL.idl
 
-"DiningPhilosophers_LOCAL.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_LOCAL.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DiningPhilosophers_LOCAL.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_LOCAL.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DiningPhilosophers_LOCAL_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_LOCAL_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 
-"DiningPhilosophers_LOCAL_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+"dinner_LOCAL_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
