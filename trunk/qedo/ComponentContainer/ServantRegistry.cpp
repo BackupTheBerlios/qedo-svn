@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServantRegistry.cpp,v 1.7 2003/04/03 09:08:08 tom Exp $";
+static char rcsid[] = "$Id: ServantRegistry.cpp,v 1.8 2003/04/15 07:23:07 neubauer Exp $";
 
 #include "GlobalHelpers.h"
 #include "ServantRegistry.h"
@@ -199,15 +199,17 @@ ServantRegistry::unregister_servant_factory (const PortableServer::ObjectId& obj
 
 
 void 
-ServantRegistry::set_variables_static_servant (const PortableServer::ObjectId& object_id,
+/*ServantRegistry::set_variables_static_servant (const PortableServer::ObjectId& object_id,
 											   Components::ExecutorLocator_ptr executor_locator,
 											   CCMObjectExecutor* ccm_object_executor)
+											   */
+ServantRegistry::set_variables_static_servant (Qedo::ComponentInstance* instance)
 {
 	std::vector <ServantEntry>::iterator servants_iter;
 
 	for (servants_iter = static_servants_.begin(); servants_iter != static_servants_.end(); servants_iter++)
 	{
-		if (Qedo::compare_object_ids ((*servants_iter).object_id_, object_id))
+		if (Qedo::compare_object_ids ((*servants_iter).object_id_, instance->object_id_))
 		{
 			break;
 		}
@@ -218,8 +220,7 @@ ServantRegistry::set_variables_static_servant (const PortableServer::ObjectId& o
 		return;
 	}
 
-	(*servants_iter).servant_->executor_locator (executor_locator);
-	(*servants_iter).servant_->ccm_object_executor (ccm_object_executor);
+	(*servants_iter).servant_->set_instance(instance);
 }
 
 

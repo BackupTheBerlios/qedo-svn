@@ -26,6 +26,7 @@
 #include <CORBA.h>
 #include "RefCountBase.h"
 #include "ServantBase.h"
+#include "ComponentInstance.h"
 #include "Util.h"
 
 
@@ -36,6 +37,11 @@ namespace Qedo {
  * @addtogroup ComponentContainer
  * @{
  */
+
+
+class ServantBase;
+class ServantFactory;
+class ComponentInstance;
 
 
 /**
@@ -170,11 +176,10 @@ public:
 	void unregister_servant_factory (const PortableServer::ObjectId& object_id);
 
 	/**
-	 * bla
+	 * set the component instance information
+	 * \param instance The component instance.
 	 */
-	void set_variables_static_servant (const PortableServer::ObjectId&,
-									   Components::ExecutorLocator_ptr,
-									   CCMObjectExecutor*);
+	void set_variables_static_servant (Qedo::ComponentInstance* instance);
 
 	/**
 	 * lookup a servant
