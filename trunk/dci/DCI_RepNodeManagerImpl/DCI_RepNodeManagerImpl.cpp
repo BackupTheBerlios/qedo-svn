@@ -87,7 +87,7 @@ namespace DCI {
       
 
     NodeManagement_ptr nodeMgmt = dciMgr-> provide_node_management();
-    //printout_("node_management receptacle obtained" );
+    printout_("node_management receptacle obtained" );
     if(CORBA::is_nil(nodeMgmt))
       {
 	printerr_("Could not get node management interface from DCIManager" );
@@ -95,16 +95,25 @@ namespace DCI {
       }  
     
     nodeMgmt -> deregister_node(nodename);
+    printout_("Node successfully deregistered from DCIManager" );
+    
+    printout_("Cleaning up");
+    orb_ -> destroy();
+    #ifdef WIN32
+    WSACleanup( );	  
+    #endif
+    printout_("Cleaning up finished");
+
     } catch(...){
         printerr_("Could not deregister from DCIManager");
     }
-    printout_("Node successfully deregistered from DCIManager" );
     // Remove all created component servers
         
     std::list <Components::Deployment::ComponentServer_ptr> ::iterator csIt;
     for ( csIt = created_component_servers_.begin( ); csIt != created_component_servers_.end( ); csIt++ ){
       remove_component_server(*csIt);                
     }
+    
   }
 
   localImpl* RepNodeManagerSessionImpl::get_impl_for_uuid_(std::string implUUID){
@@ -479,6 +488,7 @@ RepNodeManagerSessionImpl::RepNodeManagerSessionImpl()
 	    printerr_("WSAEINPROGRESS");
 	    break;
 	  }
+	      WSACleanup( );	  
 #else
 	perror("gethostname");
 #endif
@@ -513,7 +523,7 @@ RepNodeManagerSessionImpl::RepNodeManagerSessionImpl()
 #endif
      
     prop_repository_ = new PropertiesRepository();
-   
+
     // END USER INSERT SECTION RepNodeManagerSessionImpl::RepNodeManagerSessionImpl
   }
 
@@ -619,12 +629,6 @@ RepNodeManagerSessionImpl::remove()
     throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::remove
-  printout_("entering RepNodeManagerSessionImpl::remove()");
-   deregister();
-  #ifdef WIN32
-    WSACleanup( );	  
-  #endif
-  printout_("leaving RepNodeManagerSessionImpl::remove()");
 // END USER INSERT SECTION RepNodeManagerSessionImpl::remove
 }
 
@@ -634,11 +638,11 @@ RepNodeManagerSessionImpl::node_name(const char* param)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::_node_name
-    //printout_("entering node_name" );
+    printout_("entering node_name" );
     std::string paramStr(param);
     nodenameStr = paramStr;
     strncpy(nodename, param, strlen(nodename));
-    //printout_("leaving node_name" );
+    printout_("leaving node_name" );
 // END USER INSERT SECTION RepNodeManagerSessionImpl::_node_name
 }
 
@@ -1257,6 +1261,7 @@ RepNodeManagerImpl::ccm_remove()
     throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerImpl::ccm_remove
+   component_ -> deregister();
 // END USER INSERT SECTION RepNodeManagerImpl::ccm_remove
 }
 
