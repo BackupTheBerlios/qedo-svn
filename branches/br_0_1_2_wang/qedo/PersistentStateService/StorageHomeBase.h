@@ -65,6 +65,8 @@ class PSSDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::Storag
 
 		char* getStorageHomeName() { return m_szStorageHomeName; };
 
+		StorageObjectBase find_by_pid(string pid);
+
 		//
 		// IDL:omg.org/CosPersistentState/StorageHomeBase/find_by_short_pid:1.0
 		//

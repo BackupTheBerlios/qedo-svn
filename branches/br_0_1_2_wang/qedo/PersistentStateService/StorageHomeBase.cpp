@@ -62,6 +62,36 @@ void StorageHomeBaseImpl::Init(CatalogBase_ptr pCatalogBase, const char* szStora
 	QDRecordset::Init((dynamic_cast <CatalogBaseImpl*> (m_pCatalogBase))->getHDBC());
 }
 
+StorageObjectBase 
+StorageHomeBaseImpl::find_by_pid(string pid)
+{
+	string strToExecute;
+	strToExecute = "select * from ";
+	strToExecute.append((const char*)m_szStorageHomeName);
+	strToExecute += " where PID like ";
+	strToExecute += pid;
+	strToExecute += ";";
+
+	if(Open(strToExecute.c_str()))
+	{
+		map<string, CORBA::Any> valueMap;
+		ValuePaser(valueMap);
+		Close();
+
+		//use factory to create a storage object
+		StorageObjectFactory factory = new OBNative_CosPersistentState::StorageObjectFactory_pre();
+		CatalogBaseImpl* tmp_catalog = dynamic_cast <CatalogBaseImpl*> (m_pCatalogBase);
+		factory = tmp_catalog->getConnector()->register_storage_object_factory(NULL, factory);
+		StorageObjectImpl* pStorageObjectImpl = factory->create();
+
+		pStorageObjectImpl->setValue(valueMap);
+		m_lStorageObjectes.push_back(pStorageObjectImpl);
+		return (dynamic_cast <StorageObjectBase> (pStorageObjectImpl));
+	}
+	else
+		throw CosPersistentState::NotFound();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 //The find_by_short_pid operation looks for a storage object with the given 
 //short pid in the target storage home. If such an object is not found, 

@@ -177,7 +177,6 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 	// fetch the table name where pid can be found
 	string strToExecute;
 	unsigned char szStorageHome[MAX_COL_SIZE];
-	unsigned char szSpid[MAX_COL_SIZE];
 
 	QDRecordset prs;
 	prs.Init(&m_hDbc);
@@ -191,28 +190,15 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 		memset(szStorageHome, '\0', MAX_COL_SIZE);
 		prs.GetFieldValue("OWNHOME", szStorageHome);
 		prs.Close();
-	}
-/*
-	strToExecute = "select SPID from ";
-	strToExecute.append((const char*)szStorageHome);
-	strToExecute += " where PID like ";
-	strToExecute += strPid;
-	strToExecute += ";";
-
-	if(prs.Open(strToExecute.c_str()))
-	{
-		memset(szSpid, '\0', MAX_COL_SIZE);
-		prs.GetFieldValue("SPID", szSpid);
-		prs.Close();
 		prs.Destroy();
 	}
 
-	ShortPid rSpid;
-	PSSHelper::convertStringToSpid((const char*)szSpid, rSpid);
-	
 	StorageHomeBase_ptr p_sHomeBase = find_storage_home((const char*)szStorageHome);
-	return (p_sHomeBase->find_by_short_pid(rSpid));*/
-	return NULL;
+	
+	if(p_sHomeBase)
+		return ( (dynamic_cast <StorageHomeBaseImpl*> (p_sHomeBase))->find_by_pid(strPid) );
+	else 
+		return NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
