@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.6 2003/02/13 13:41:17 tom Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.7 2003/03/10 14:23:38 neubauer Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -42,6 +42,7 @@ HomeEntry::HomeEntry (Qedo::HomeServantBase* home_servant, Components::Cookie* c
 {
 	home_servant_->_add_ref();
 	if (home_cookie_) { home_cookie_->_add_ref(); }
+	DEBUG_OUT2("HomeEntry: constructor called for ", this);
 }
 
 
@@ -56,6 +57,7 @@ HomeEntry::HomeEntry (const HomeEntry& home_entry)
 {
 	home_servant_->_add_ref();
 	if (home_cookie_) { home_cookie_->_add_ref(); }
+	DEBUG_OUT2("HomeEntry: copy constructor called for ", this);
 }
 
 
@@ -78,7 +80,7 @@ HomeEntry::operator= (const HomeEntry& home_entry)
 
 HomeEntry::~HomeEntry()
 {
-	DEBUG_OUT ("HomeEntry: Destructor called");
+	DEBUG_OUT2("HomeEntry: Destructor called for ", this);
 	home_servant_->_remove_ref();
 	if (home_cookie_) { home_cookie_->_remove_ref(); }
 }
@@ -213,7 +215,7 @@ throw (Components::Deployment::UnknownImplId,
        Components::Deployment::InvalidConfiguration,
        CORBA::SystemException)
 {
-	DEBUG_OUT ("ContainerInterfaceImpl: install_home() called");
+	DEBUG_OUT2("ContainerInterfaceImpl: install_home() called for ", id);
 
 	//
 	// Retrieve implementation description from the Component Installer

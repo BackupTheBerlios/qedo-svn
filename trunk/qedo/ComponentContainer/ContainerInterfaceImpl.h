@@ -37,7 +37,11 @@ namespace Qedo {
 class HomeEntry
 {
 public:
+
+	/** the servant of the home */
 	Qedo::HomeServantBase* home_servant_;
+
+	/** id for registration in home finder */
 	Components::Cookie* home_cookie_;
 
 	HomeEntry (Qedo::HomeServantBase*, Components::Cookie* c);
