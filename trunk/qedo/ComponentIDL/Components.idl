@@ -517,7 +517,25 @@ module Components {
 			void receive_reply ( in Extension::ContainerClientRequestInfo info );
 			void receive_system_exception ( in Extension::ContainerClientRequestInfo info );
 			void receive_user_exception ( in Extension::ContainerClientRequestInfo info );
+
+			Cookie connect (in string comp_id, in FeatureName name,	in Object connection, out boolean con )
+				raises (InvalidName, InvalidConnection, AlreadyConnected, ExceededConnectionLimit);
+
+			Object provide_facet (in string comp_id, in FeatureName name, out boolean con)
+				raises (InvalidName);
+#ifndef _QEDO_NO_STREAMS
+
+			Components::Cookie bind(in string comp_id, inout Components::FeatureName name, inout StreamComponents::SinkStreamPort the_sink, inout string transport_profile, out boolean con);
+
+			StreamComponents::SinkStreamPort unbind (in string comp_id, inout Components::FeatureName name, inout Components::Cookie ck, out boolean con)
+				raises (Components::CookieRequired, StreamComponents::InvalidBinding, StreamComponents::NoBinding);
+
+			Object provide_sink_stream_port (in string comp_id, inout Components::FeatureName name, out boolean con)
+				raises (Components::InvalidName);
+#endif
+
 		};
+
 		local interface ServerInterceptorRegistration : PortableInterceptor::ServerRequestInterceptor
 		{
 			void register_interceptor_for_all (in ServerContainerInterceptor server_interceptor);
@@ -556,6 +574,30 @@ module Components {
 #endif
 		};
 
+		local interface StubInterceptorRegistration
+		{
+			void register_interceptor_for_all ( in ClientContainerInterceptor server_interceptor);
+			boolean call(in string oper);
+			// CCMObject
+			Cookie connect (in string comp_id, in FeatureName name,	in Object connection, out boolean con )
+				raises (InvalidName, InvalidConnection, AlreadyConnected, ExceededConnectionLimit);
+
+			Object provide_facet (in string comp_id, in FeatureName name, out boolean con)
+				raises (InvalidName);
+			
+#ifndef _QEDO_NO_STREAMS
+
+			// StreamCCMObject
+			Components::Cookie bind(in string comp_id, inout Components::FeatureName name, inout StreamComponents::SinkStreamPort the_sink, inout string transport_profile, out boolean con);
+
+			StreamComponents::SinkStreamPort unbind (in string comp_id, inout Components::FeatureName name, inout Components::Cookie ck, out boolean con)
+				raises (Components::CookieRequired, StreamComponents::InvalidBinding, StreamComponents::NoBinding);
+
+			Object provide_sink_stream_port (in string comp_id, inout Components::FeatureName name, out boolean con)
+				raises (Components::InvalidName);
+#endif
+		};
+
 	}; // Extension
 
 	local interface ExtensionContext : CCMContext
@@ -569,6 +611,9 @@ module Components {
 		void set_servant_interceptor_dispatcher_registration (
 			in Components::Extension::ServantInterceptorRegistration registration );
 
+		void set_stub_interceptor_dispatcher_registration (
+			in Components::Extension::StubInterceptorRegistration registration );
+
 		Components::Extension::ServerInterceptorRegistration
 			get_server_interceptor_dispatcher_registration ();
 
@@ -577,6 +622,9 @@ module Components {
 
 		Components::Extension::ServantInterceptorRegistration
 			get_servant_interceptor_dispatcher_registration();
+
+		Components::Extension::StubInterceptorRegistration
+			get_stub_interceptor_dispatcher_registration();
 
 		void register_servant_locator_for_all (in Components::Extension::ServerContainerInterceptor server_interceptor);
 
