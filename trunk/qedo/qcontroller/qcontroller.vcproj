@@ -37,13 +37,14 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxmsw24d.lib mico2311.lib micocoss2311.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxmsw24d.lib mico2311.lib micocoss2311.lib $(MICO)\coss\micocoss2311.lib"
 				OutputFile="$(OutDir)/qcontroller.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib"
+				AdditionalLibraryDirectories="C:\opt\wxWindows\lib;$(MICO)\win32-bin\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/qcontroller.pdb"
 				SubSystem="2"
+				ImportLibrary="qedoutil.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -111,6 +112,12 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
+				RelativePath="CORBADepends.cpp">
+			</File>
+			<File
+				RelativePath="Components.cpp">
+			</File>
+			<File
 				RelativePath="ControllerNotebook.cpp">
 			</File>
 			<File
@@ -126,12 +133,27 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="NSBrowser.cpp">
 			</File>
 			<File
+				RelativePath="QCexplorer.cpp">
+			</File>
+			<File
+				RelativePath="QedoExplorer.cpp">
+			</File>
+			<File
+				RelativePath="explore.cpp">
+			</File>
+			<File
 				RelativePath="qcontroller.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="CORBADepends.h">
+			</File>
+			<File
+				RelativePath="Components.h">
+			</File>
 			<File
 				RelativePath="ControllerNotebook.h">
 			</File>
@@ -148,12 +170,58 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="NSBrowser.h">
 			</File>
 			<File
+				RelativePath="QCexplorer.h">
+			</File>
+			<File
+				RelativePath="QedoExplorer.h">
+			</File>
+			<File
+				RelativePath="explore.h">
+			</File>
+			<File
 				RelativePath="qcontroller.h">
 			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+		<Filter
+			Name="idl"
+			Filter="">
+			<File
+				RelativePath="CORBADepends.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="idl -I%MICO%\include\mico -I%MICO%\include -DMICO_ORB --c++-suffix cpp CORBADepends.idl
+"
+						Outputs="CORBADepends.h;CORBADepends.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Components.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="idl -I%MICO%\include\mico -I%MICO%\include -DMICO_ORB --c++-suffix cpp Components.idl
+"
+						Outputs="Components.h;Components.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="explore.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="idl -I%MICO%\include\mico -I%MICO%\include -DMICO_ORB --c++-suffix cpp explore.idl
+"
+						Outputs="explore.h;explore.cpp"/>
+				</FileConfiguration>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

@@ -3,9 +3,13 @@
 #include "wx/button.h"
 #include "Launcher.h"
 #include "Deployment.h"
+#include "Qcexplorer.h"
+#include "QedoExplorer.h"
+
 
 BEGIN_EVENT_TABLE(ControllerNotebook, wxNotebook)
-    EVT_BUTTON(NSD_TREE_REFRESH, ControllerNotebook::OnNSDRefresh)
+    EVT_BUTTON(NSD_TREE_REFRESH,  ControllerNotebook::OnNSDRefresh)
+	EVT_BUTTON(EXPLORER_TREE_REFRESH, ControllerNotebook::OnExplorerRefresh)
 
 END_EVENT_TABLE()
 
@@ -35,7 +39,17 @@ void ControllerNotebook::CreateControllerPages(wxBoxSizer * sizerFrame)
 	 deployment_panel_ = new Deployment(this, DEPLOYMENT_ID, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE);
 	 AddPage(deployment_panel_, wxT("Deployment"), FALSE,0);
 
-    SetSelection( 0 );
+    // create Explorer page
+	 //qcexplorer_panel = new wxPanel(this);
+	// qcexplorer_=new QCexplorerTreeCtrl (qcexplorer_panel, QCexplorerTree_Ctrl, wxDefaultPosition, wxSize(200,200), wxTR_DEFAULT_STYLE);
+	// AddPage(qcexplorer_panel, wxT("Explorer"), FALSE,0);
+
+	// create Explorer page
+	 explorer_panel=new QedoExplorer(this, QEDOEXPLORER_ID, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE);
+	 AddPage(explorer_panel,wxT("Explorer"), FALSE,0);
+
+
+    SetSelection(2);
 
 }
 
@@ -50,5 +64,14 @@ ControllerNotebook::OnNSDRefresh(wxCommandEvent& WXUNUSED(event))
 //	};
 
 };
+
+void
+ControllerNotebook::OnExplorerRefresh(wxCommandEvent& WXUNUSED(event))
+{
+
+	qcexplorer_ -> OnExplorerRefresh();
+
+}
+
 
 

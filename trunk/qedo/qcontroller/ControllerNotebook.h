@@ -2,6 +2,7 @@
 #include "wx/panel.h"
 #include "wx/sizer.h"
 #include "NSBrowser.h"
+#include "QCexplorer.h"
 
 #ifndef __CONTROLLERNOTEBOOK_H__
 #define __CONTROLLERNOTEBOOK_H__
@@ -17,6 +18,9 @@ public:
 
 	void OnNSDRefresh(wxCommandEvent& WXUNUSED(event));
 
+	void OnExplorerRefresh(wxCommandEvent& WXUNUSED(event));
+
+
 
 private:
 
@@ -28,6 +32,9 @@ private:
 	wxPanel *deployment_panel_;
 	NSBrowserTreeCtrl *ns_browser_;
 	wxPanel * launcher_panel_;
+	wxPanel * qcexplorer_panel;
+	QCexplorerTreeCtrl *qcexplorer_;
+	wxPanel * explorer_panel;
 
 	    DECLARE_EVENT_TABLE()
 

@@ -1,7 +1,10 @@
-//#include "qcontroller.h"
+#include "qcontroller.h"
 #include "wx/frame.h"
 #include "wx/sizer.h"
 #include "ControllerNotebook.h"
+
+
+
 
 class MainFrame : public wxFrame
 {

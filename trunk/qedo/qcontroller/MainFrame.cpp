@@ -43,6 +43,7 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 //	 sizerFrame_->Fit(this);
 
 //	 Centre(wxBOTH);
+	 
 
 
 }

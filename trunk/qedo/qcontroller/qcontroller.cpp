@@ -19,12 +19,14 @@ IMPLEMENT_APP(QedoController)
 
 bool QedoController::OnInit()
 {
+	
+	
 	wxInitAllImageHandlers();
 
     wxSize main_size(800,600);
     wxPoint main_point(0,0);
     // Create the main window
-    MainFrame *frame = new MainFrame( wxT("Qedo Controller") , main_point, main_size);
+    MainFrame *frame = new MainFrame( wxT("Qedo Controller 0.3") , main_point, main_size);
 
     // Problem with generic wxNotebook implementation whereby it doesn't size
     // properly unless you set the size again
@@ -35,6 +37,7 @@ bool QedoController::OnInit()
 #endif
 
     frame->Show();
+
 
     return TRUE;
 }
