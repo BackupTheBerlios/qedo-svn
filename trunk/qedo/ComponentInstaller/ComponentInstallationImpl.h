@@ -25,22 +25,34 @@
 
 #include <OB/CORBA.h>
 #include "QedoComponents_skel.h"
-
-#include "InstalledComponent.h"
-
+#include "ComponentImplementation.h"
+#include "NameServiceBase.h"
+#include "PlatformBase.h"
+#include "DOMXMLParser.h"
 #include <vector>
+
+
+#define DEPLOYMENT_PERSISTENCE_FILE		"DeployedComponents.xml"
+
 
 namespace Qedo {
 
 class ComponentInstallationImpl : public POA_Qedo_Components::Deployment::ComponentInstallation,
-								  public PortableServer::RefCountServantBase
+								  public PortableServer::RefCountServantBase,
+								  public virtual NameServiceBase,
+								  public virtual PlatformBase
 {
 private:
-	std::vector <InstalledComponent> installed_components_;
+	std::vector < ComponentImplementation > installed_components_;
 
-	CORBA::ORB_var orb_;
-	PortableServer::POA_var root_poa_;
-	PortableServer::POAManager_var root_poa_manager_;
+	CORBA::ORB_var					orb_;
+	PortableServer::POA_var			root_poa_;
+	PortableServer::POAManager_var	root_poa_manager_;
+	std::string						packageDirectory_;
+	std::string						installationDirectory_;
+
+	bool readInstalledComponents (const char* inst_file);
+	bool addInstalledComponent (ComponentImplementation* aComponentImplementation);
 
 public:
 	ComponentInstallationImpl (CORBA::ORB_ptr);

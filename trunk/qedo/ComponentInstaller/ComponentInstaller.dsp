@@ -1,26 +1,26 @@
 # Microsoft Developer Studio Project File - Name="ComponentInstaller" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
 CFG=ComponentInstaller - Win32 Debug_tao
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "ComponentInstaller.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "ComponentInstaller.mak" CFG="ComponentInstaller - Win32 Debug_tao"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "ComponentInstaller - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "ComponentInstaller - Win32 Debug" (based on "Win32 (x86) Console Application")
-!MESSAGE "ComponentInstaller - Win32 Debug_orbacus" (based on "Win32 (x86) Console Application")
-!MESSAGE "ComponentInstaller - Win32 Debug_tao" (based on "Win32 (x86) Console Application")
+!MESSAGE "ComponentInstaller - Win32 Release" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "ComponentInstaller - Win32 Debug" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "ComponentInstaller - Win32 Debug_orbacus" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "ComponentInstaller - Win32 Debug_tao" (basierend auf  "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -143,15 +143,47 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=.\CatalogResolver.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ComponentImplementation.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ComponentInstallationImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\InstalledComponent.cpp
+SOURCE=.\DOMOutput.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DOMTreeErrorReporter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DOMXMLParser.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\main.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\NameServiceBase.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Package.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PlatformBase.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\XMLCatalog.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -159,11 +191,43 @@ SOURCE=.\main.cpp
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
+SOURCE=.\CatalogResolver.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ComponentImplementation.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ComponentInstallationImpl.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\InstalledComponent.h
+SOURCE=.\DOMOutput.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DOMTreeErrorReporter.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DOMXMLParser.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\NameServiceBase.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Package.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PlatformBase.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\XMLCatalog.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

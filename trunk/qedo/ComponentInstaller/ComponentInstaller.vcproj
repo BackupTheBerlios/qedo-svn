@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;$(ORBACUS)\include"
+				AdditionalIncludeDirectories="../ComponentIDL;&quot;$(ORBACUS)\include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -33,10 +33,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="CosNamingd.lib obd.lib"
+				AdditionalDependencies="xerces-c_1D.lib zlib.lib jtcd.lib CosNamingd.lib obd.lib"
 				OutputFile="../../Runtime/ci.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(ORBACUS)\lib"
+				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(XERCES)\lib;$(ZLIB)\dll32"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/ComponentInstaller.pdb"
 				SubSystem="1"
@@ -107,10 +107,34 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
+				RelativePath="CatalogResolver.cpp">
+			</File>
+			<File
+				RelativePath="ComponentImplementation.cpp">
+			</File>
+			<File
 				RelativePath="ComponentInstallationImpl.cpp">
 			</File>
 			<File
-				RelativePath="InstalledComponent.cpp">
+				RelativePath="DOMOutput.cpp">
+			</File>
+			<File
+				RelativePath="DOMTreeErrorReporter.cpp">
+			</File>
+			<File
+				RelativePath="DOMXMLParser.cpp">
+			</File>
+			<File
+				RelativePath="NameServiceBase.cpp">
+			</File>
+			<File
+				RelativePath="Package.cpp">
+			</File>
+			<File
+				RelativePath="PlatformBase.cpp">
+			</File>
+			<File
+				RelativePath="XMLCatalog.cpp">
 			</File>
 			<File
 				RelativePath="main.cpp">
@@ -120,10 +144,34 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
+				RelativePath="CatalogResolver.h">
+			</File>
+			<File
+				RelativePath="ComponentImplementation.h">
+			</File>
+			<File
 				RelativePath="ComponentInstallationImpl.h">
 			</File>
 			<File
-				RelativePath="InstalledComponent.h">
+				RelativePath="DOMOutput.h">
+			</File>
+			<File
+				RelativePath="DOMTreeErrorReporter.h">
+			</File>
+			<File
+				RelativePath="DOMXMLParser.h">
+			</File>
+			<File
+				RelativePath="NameServiceBase.h">
+			</File>
+			<File
+				RelativePath="Package.h">
+			</File>
+			<File
+				RelativePath="PlatformBase.h">
+			</File>
+			<File
+				RelativePath="XMLCatalog.h">
 			</File>
 		</Filter>
 		<Filter
