@@ -71,15 +71,6 @@ module Qedo_Components {
 			void notify_component_server_remove (in Qedo_Components::Deployment::ComponentServer server);
 		};
 
-		//
-		// ComponentInstallation
-		//
-		interface ComponentInstallation : Components::Deployment::ComponentInstallation
-		{
-			string upload(in Components::Deployment::UUID implUUID, in CORBA::OctetSeq package)
-				raises(Components::Deployment::InstallationFailure);
-		};
-
 	};
 
 };

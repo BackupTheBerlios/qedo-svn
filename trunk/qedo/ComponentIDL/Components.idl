@@ -827,6 +827,17 @@ module Components {
 			/** extension */
 			void install_service_reference(in string id, in Object ref) raises (CCMException);
 		};
+
+
+		/**
+		 * extension for having an upload functionality
+		 */
+		interface ExtComponentInstallation : ComponentInstallation
+		{
+			string upload(in UUID implUUID, in CORBA::OctetSeq package)
+				raises(InstallationFailure);
+		};
+
 	}; // end of module deployment
 
         // @@@ This is a Qedo extension

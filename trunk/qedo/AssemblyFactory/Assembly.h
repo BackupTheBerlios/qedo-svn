@@ -115,7 +115,7 @@ private:
 	/**
 	 * get component installation
 	 */
-	Qedo_Components::Deployment::ComponentInstallation_ptr getComponentInstallation(std::string host)
+	Components::Deployment::ExtComponentInstallation_ptr getComponentInstallation(std::string host)
 		throw(Components::CreateFailure);
 
 	/**
@@ -152,7 +152,7 @@ private:
 	 * install a component implementation
 	 */
 	void
-	installComponent (Qedo_Components::Deployment::ComponentInstallation_ptr, HomeInstanceData)
+	installComponent (Components::Deployment::ExtComponentInstallation_ptr, HomeInstanceData)
 		throw(Components::CreateFailure);
 
 	/**
