@@ -85,7 +85,7 @@ public:
 	 * return value is string& for the convenient ==operator for const char* and char*
 	 * \return The port name.
 	 */
-	const std::string& port_name() const;
+CONTAINERDLL_API	const std::string& port_name() const;
 };
 
 /** @} */
