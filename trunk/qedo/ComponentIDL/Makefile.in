@@ -53,9 +53,9 @@ install-lib: libComponentIDL.so
 
 .PHONY:install-idl
 
-install-idl: $(IDL_FILES)
+install-idl: $(IDL_FILES) qedo_mico.idl
 
 .PHONY:install-include
 
-install-include: $(IDL_GEN_H)
+install-include: $(IDL_GEN_H) qedo_mico.h
 
