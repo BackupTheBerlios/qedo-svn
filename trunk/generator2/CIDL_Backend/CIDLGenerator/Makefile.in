@@ -38,7 +38,7 @@ LIBS += -L../../CIDL_Repository/IFRidl \
 		  -lIFRidl \
 		  -L../../CIDL_Repository/CIDLRepositoryLib \
 		  -lCIDLRepositoryLib \
-   	  -L../../CIDL_Repository/ComponentRepositoryLib \
+	-L../../CIDL_Repository/ComponentRepositoryLib \
 		  -lComponentRepositoryLib \
         -L../../CIDL_Frontend/CIDLFrontendLib \
 		  -lCIDLFrontendLib
@@ -59,6 +59,8 @@ SOURCES = cidl_gen.cpp \
 			GeneratorServantC.cpp \
 			GeneratorServantH.cpp \
 			GeneratorVC7.cpp \
+			GeneratorValueTypesC.cpp
+			GeneratorValueTypesH.cpp
 			IDLBase.cpp \
 			Printer.cpp \
 			TestMode.cpp
