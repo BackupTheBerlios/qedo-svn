@@ -25,7 +25,7 @@
 
 %{
 #include <errno.h>
-#include <string.h>
+#include <string>
 #ifdef _MSC_VER
 #include <io.h>
 #define fdopen     _fdopen
@@ -84,60 +84,47 @@ frontend_feed (
   char** argv,
   REPOSITORYOBJ repository )
 {
-  int i,len, global_len;
-  char *buf;
-  char *filename;
-  char filter[] = "CL -E -C";
+  int i;
+  std::string command = "CL -E -C ";
+  std::string filename;
 
   g_orb = CORBA::ORB_init ( argc, argv );
 
   //
   // parse options
   //
-	init_options();
+  init_options();
   ParseCommandLineOptions(argc,argv);
 
-  filename = options.filename;
-	global_len= strlen(filename);
-	global_input_file_name = new char[global_len];
-	strcpy(global_input_file_name,options.filename);
-
-  if (!filename ) {
+  if (!options.filename)
+  {
     filename = "";
   }
-
+  else
+  {
+    filename = options.filename;
+  }
+  global_input_file_name = new char[filename.length() + 1];
+  strcpy(global_input_file_name, filename.c_str());
+  
   init_symtab();
   init_lexer(true);
 
-  len = strlen(filename)+strlen(filter)+2;
-  // include dirs
-  foreach(name_v;idl_name_list options.include_dirs) {
-    len += strlen(name_v->get_name()) +3;
-  }
   // defines
-  foreach(name_v;idl_name_list options.defines) {
-    len += strlen(name_v->get_name()) +3;
-  }
-  buf = new char[len] ;
-  strcpy(buf,filter);
-  strcat(buf," ");
-  // defines
-  foreach(name_v;idl_name_list options.defines) {
-    strcat(buf,"-D");
-    strcat(buf,name_v->get_name());
-    strcat(buf," ");
+  foreach(name_v;idl_name_list options.defines)
+  {
+    command += (std::string)"-D" + name_v->get_name() + " ";
   }
   // include dirs
-  foreach(name_v;idl_name_list options.include_dirs) {
-    strcat(buf,"-I");
-    strcat(buf,name_v->get_name());
-    strcat(buf," ");
+  foreach(name_v;idl_name_list options.include_dirs)
+  {
+    command += (std::string)"-I" + name_v->get_name() + " ";
   }
-  strcat(buf,filename);
+  command += filename;
 
-  std::cout << "precompiling : " << buf << std::endl;
-  if ( !(yyin = popen( buf, "r")) ) {
-    fprintf( stderr, "can not open input file <%s>\n", filename);
+  std::cout << "precompiling : " << command << std::endl;
+  if ( !(yyin = popen( command.c_str(), "r")) ) {
+    fprintf( stderr, "can not open input file <%s>\n", filename.c_str());
     return (2);
   }
 
