@@ -1945,7 +1945,7 @@ GeneratorServantC::genSourceRegistration(IR__::HomeDef_ptr home)
 		else
 			out << "false,\n";
 		out << "streamtypes,\n";
-		out << "true /* async buffer dispatcher */);\n";
+		out << "false /* sync buffer dispatcher */);\n";
 		out.unindent(); out.unindent();
 	}
 }
