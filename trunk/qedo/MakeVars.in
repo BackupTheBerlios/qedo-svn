@@ -6,21 +6,21 @@ QEDO_STREAMS=@QEDO_STREAMS@
 QEDO_QOS=@QEDO_QOS@
 QEDO_DB=@QEDO_DB@
 
-ifneq "yes" "$(QEDO_STREAMS)"
+ifeq "no" "$(QEDO_STREAMS)"
 IDL_FLAGS+=-D_QEDO_NO_STREAMS
 endif
 
-ifneq "yes" "$(QEDO_QOS)"
+ifeq "no" "$(QEDO_QOS)"
 IDL_FLAGS+=-D_QEDO_NO_QOS
 endif
 
-ifneq "yes" "$(QEDO_DB)"
+ifeq "no" "$(QEDO_DB)"
 IDL_FLAGS+=-D_QEDO_NO_DB
 endif
 
 ##### ORB #####
 # choose one out of MICO_ORB TAO_ORB ORBACUS_ORB
-ORB = ORBACUS_ORB
+ORB = MICO_ORB
 
 HAVE_MICO_CONFIG=@HAVE_MICO_CONFIG@
 # MICO

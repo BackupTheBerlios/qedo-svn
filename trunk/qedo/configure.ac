@@ -17,7 +17,7 @@ AC_ARG_WITH(xerces,
 AC_SUBST(XERCESDIR)
 
 AC_ARG_WITH(mico,
- [  --with-mico=micodir         use Mico installed in xercesdir],
+ [  --with-mico=micodir         use Mico installed in micodir],
  MICODIR=$withval, MICODIR="")
 AC_SUBST(MICODIR)
 

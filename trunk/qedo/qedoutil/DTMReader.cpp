@@ -19,14 +19,21 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#ifndef _QEDO_NO_DB
+
 #include "DTMReader.h"
+
 #include <fstream>
 #include <xercesc/util/XMLURL.hpp>
 #include <xercesc/util/BinInputStream.hpp>
 #include <xercesc/framework/URLInputSource.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: DTMReader.cpp,v 1.2 2004/05/13 13:01:57 hao Exp $";
+static char rcsid[] UNUSED = "$Id: DTMReader.cpp,v 1.3 2004/06/24 10:31:01 tom Exp $";
 
 
 namespace Qedo {
@@ -246,3 +253,4 @@ DTMReader::getDatatypeMap(std::map<const char*, const char*> mType, std::string 
 }
 
 }
+#endif // _QEDO_NO_QOS
