@@ -134,6 +134,9 @@ AC_HEADER_STDBOOL
 AC_C_CONST
 AC_C_INLINE
 AC_STRUCT_TM
+AC_TYPE_PID_T
+AC_TYPE_SIGNAL
+AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_FUNC_ERROR_AT_LINE
@@ -141,8 +144,9 @@ AC_FUNC_FORK
 AC_FUNC_MKTIME
 AC_FUNC_STAT
 AC_FUNC_UTIME_NULL
+AC_FUNC_MALLOC
 AC_CHECK_FUNCS([getcwd gethostname mkdir strchr strdup strerror strstr utime])
-AC_CHECK_FUNCS([sigaction])
+AC_CHECK_FUNCS([sigaction strrchr])
 
 OS=`uname`
 AC_SUBST(OS)
