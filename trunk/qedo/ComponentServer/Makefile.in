@@ -65,7 +65,7 @@ install: install-include install-prog
 
 .PHONY:install-include
 
-install-include: ClientInterceptorDispatcher.h ServerInterceptorDispatcher.h
+install-include: ClientInterceptorDispatcher.h ServerInterceptorDispatcher.h ComponentServerImpl.h
 
 .PHONY:install-prog
 
