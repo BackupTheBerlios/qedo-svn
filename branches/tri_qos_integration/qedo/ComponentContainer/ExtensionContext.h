@@ -20,8 +20,8 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __SESSION_CONTEXT_H__
-#define __SESSION_CONTEXT_H__
+#ifndef __EXTENSION_CONTEXT_H__
+#define __EXTENSION_CONTEXT_H__
 
 #include <CORBA.h>
 #include <Components.h>
