@@ -21,13 +21,14 @@
 /***************************************************************************/
 
 #include "Synchronisation.h"
+#include "Output.h"
 
 #ifdef QEDO_PTHREAD
 #include <pthread.h>
 #include <signal.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.15 2003/08/06 11:40:06 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.15.2.1 2003/08/06 16:17:07 boehme Exp $";
 
 namespace Qedo {
 
@@ -175,6 +176,42 @@ qedo_cond::qedo_signal() {
 }
 
 
+struct thread_delegate {
+#ifdef QEDO_WINTHREAD
+	HANDLE th_handle;
+	DWORD th_id;
+#else
+	pthread_t t;
+#endif
+};
+
+qedo_thread::qedo_thread()
+{
+	delegate = new thread_delegate;
+};
+
+void
+qedo_thread::stop()
+{
+#ifdef QEDO_WINTHREAD
+	DWORD exitcode;
+	if(!TerminateThread(delegate_>th_handle,exitcode)) 
+		DEBUG_OUT("Error while TerminateThread");
+#else
+	if(pthread_cancel(delegate->t)) DEBUG_OUT("Error while pthread_cancel");
+#endif
+}
+
+void
+qedo_thread::join()
+{
+#ifdef QEDO_WINTHREAD
+#else
+	void *state;
+	if(pthread_join(delegate->t,&state)) DEBUG_OUT("Error while pthread_join");
+#endif
+}
+
 #ifdef QEDO_WINTHREAD
 DWORD WINAPI startFunc(LPVOID p) {
 #else
@@ -192,29 +229,28 @@ void* startFunc(void* p) {
 	return 0;
 }
 
-void
+qedo_thread*
 qedo_startDetachedThread(void* (*p)(void*), void* arg) {
 
 	t_start* startParams = new t_start;
 	startParams->p = p;
 	startParams->a = arg;
+	qedo_thread * thread = new qedo_thread();
 
 #ifdef QEDO_WINTHREAD
-	HANDLE th_handle;
-	DWORD th_id;
-	th_handle = CreateThread(NULL,
+	th_handle->delegate->th_handle = CreateThread(NULL,
 							0,
 							startFunc,
 							(LPVOID) startParams,
 							NULL,
-							&th_id);
+							&(thread->delegate->th_id));
 #else
-	pthread_t t;
 	pthread_attr_t detached_attr;
 	pthread_attr_init(&detached_attr);
-	pthread_attr_setdetachstate(&detached_attr, PTHREAD_CREATE_DETACHED);
-	pthread_create(&t, &detached_attr, startFunc, startParams);
+	pthread_attr_setdetachstate(&detached_attr, PTHREAD_CREATE_JOINABLE);
+	pthread_create(&(thread->delegate->t), &detached_attr, startFunc, startParams);
 #endif
+	return thread;
 }
 
 
