@@ -4,11 +4,11 @@ CIDL_FILES = ../compute.cidl
 
 IDL_FILES = Computation_ServerCompo_LOCAL.idl \
 	Computation_ServerCompo_EQUIVALENT.idl \
-	Computation_ServerCompo_BUSINESS.idl 
+	Computation_ServerCompo_BUSINESS.idl
 
 CPP_FILES = Computation_ServerCompo_BUSINESS.cpp \
 	Computation_ServerCompo.cpp \
-	valuetypes.cpp 
+	component_valuetypes.cpp 
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 
@@ -24,7 +24,7 @@ all: libComputation_ServerCompo.so
 
 libComputation_ServerCompo.so: ${OBJ_FILES} 
 
-${IDL_FILES} valuetypes.cpp : ${CIDL_FILES} 
+${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} 
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target "IDL:Computation/ServerCompo:1.0" $< 
 
