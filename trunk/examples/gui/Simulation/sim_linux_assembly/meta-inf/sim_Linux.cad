@@ -35,14 +35,22 @@
        <partitioning>
 
 		<processcollocation>
-			<homeplacement id="PlaneHome">
+			<homeplacement id="PlaneHome1">
 	        		<componentfileref idref="Plane_file"/>
 					<componentimplref idref="UUID-c185735a-6a5f-461e-804b-6028fdd03d64"/>
   			      		<componentinstantiation id="Plane1">
-	   						<componentproperties>
-								<fileinarchive name="meta-inf/plane1.cpf"/>
-							</componentproperties>
-						</componentinstantiation>
+						<componentproperties>
+							<fileinarchive name="meta-inf/plane1.cpf"/>
+						</componentproperties>
+					</componentinstantiation>
+				<destination></destination>
+			</homeplacement>
+		</processcollocation>
+
+		<processcollocation>
+			<homeplacement id="PlaneHome2">
+	        		<componentfileref idref="Plane_file"/>
+					<componentimplref idref="UUID-c185735a-6a5f-461e-804b-6028fdd03d64"/>
   			      		<componentinstantiation id="Plane2">
 	   						<componentproperties>
 								<fileinarchive name="meta-inf/plane2.cpf"/>
@@ -64,14 +72,22 @@
 		</processcollocation>
 
 		<processcollocation>
-			<homeplacement id="RadarHome">
+			<homeplacement id="RadarHome1">
 	        		<componentfileref idref="Radar_file"/>
 					<componentimplref idref="UUID-e250625c-9fe7-4765-aa17-3af718e24a88"/>
   			      		<componentinstantiation id="Radar1">
-	   						<componentproperties>
-								<fileinarchive name="meta-inf/radar1.cpf"/>
-							</componentproperties>
-						</componentinstantiation>
+	   					<componentproperties>
+							<fileinarchive name="meta-inf/radar1.cpf"/>
+						</componentproperties>
+					</componentinstantiation>
+				<destination></destination>
+			</homeplacement>
+		</processcollocation>
+
+		<processcollocation>
+			<homeplacement id="RadarHome2">
+	        		<componentfileref idref="Radar_file"/>
+					<componentimplref idref="UUID-e250625c-9fe7-4765-aa17-3af718e24a88"/>
   			      		<componentinstantiation id="Radar2">
 	   						<componentproperties>
 								<fileinarchive name="meta-inf/radar2.cpf"/>
@@ -88,12 +104,12 @@
   			      		<componentinstantiation id="TAPDisplayMain">
 	   						<componentproperties>
 								<fileinarchive name="meta-inf/tapdisplay1.cpf"/>
-							</componentproperties>  			      		
+							</componentproperties>
 						</componentinstantiation>
 					<destination></destination>
 			</homeplacement>
 		</processcollocation>
-		
+
     </partitioning>
     <connections>
 		<connectinterface>
@@ -168,5 +184,13 @@
 		</connectevent>		
 
     </connections>
+
+    <extension class="startorder" origin="HU">SimulationServer</extension>
+    <extension class="startorder" origin="HU">TAPDisplayMain</extension>
+    <extension class="startorder" origin="HU">Radar1</extension>
+    <extension class="startorder" origin="HU">Radar2</extension>
+    <extension class="startorder" origin="HU">Plane1</extension>
+    <extension class="startorder" origin="HU">Plane2</extension>
+
 </componentassembly>
 
