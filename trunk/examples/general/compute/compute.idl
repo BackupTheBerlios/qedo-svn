@@ -1,0 +1,21 @@
+#include "Components.idl"
+
+module Computation {
+
+	interface Computing_Service {
+		long compute (in long argument_of_function);
+	};
+	
+	component Client {
+		uses Computing_Service computing_server;
+	};
+	
+	home ClientHome manages Client {};
+	
+	component Server {
+		provides Computing_Service computing_interface;
+	};
+	
+	home ServerHome manages Server {};
+};
+	

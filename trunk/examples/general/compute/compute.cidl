@@ -1,0 +1,20 @@
+#include "compute.idl"
+
+module Computation {
+
+	composition session ServerCompo {
+		home executor ServerHomeExec {
+			implements Computation::ServerHome;
+			manages ServerExec;
+		};
+	};
+	
+	composition session ClientCompo {
+		home executor ClientHomeExec {
+			implements Computation::ClientHome;
+			manages ClientExec;
+		};
+	};
+};
+
+	

@@ -1,0 +1,67 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "componentassembly.dtd">
+
+<componentassembly id="Compute_Example">
+
+    <description>Example assembly"</description>
+
+    <componentfiles>
+        <componentfile id="Server_file">
+		<fileinarchive name="meta-inf/Computation_ServerCompo.csd">
+			<link href="Computation_ServerCompo.zip"/>
+		</fileinarchive>
+        </componentfile>
+
+        <componentfile id="Client_file">
+		<fileinarchive name="meta-inf/Computation_ClientCompo.csd">
+			<link href="Computation_ClientCompo.zip"/>
+		</fileinarchive>
+        </componentfile>
+
+    </componentfiles>
+
+    <partitioning>
+	<processcollocation>
+		<homeplacement id="ServerHome">
+	        	<componentfileref idref="Server_file"/>
+				<componentimplref idref="UUID-D5BCA6EC-3759-41EC-9733-4CE717244A5C"/>
+  	        	<componentinstantiation id="server">
+			</componentinstantiation>
+
+		</homeplacement>
+	</processcollocation>
+
+	<processcollocation>
+
+		<homeplacement id="ClientHome">
+			<componentfileref idref="Client_file"/>
+				<componentimplref idref="UUID-6222631A-DD06-4561-988F-BA45ECA7984A"/>
+			<componentinstantiation id="client">
+			</componentinstantiation>
+
+		</homeplacement>
+
+	</processcollocation>
+    </partitioning>
+
+
+    <connections>
+	<connectinterface>
+		<usesport>
+			<usesidentifier>computing_server</usesidentifier>
+			<componentinstantiationref idref="client"/>
+	    	</usesport>
+
+		<providesport>
+			<providesidentifier>computing_interface</providesidentifier>
+			<componentinstantiationref idref="server"/>
+	    	</providesport>
+	</connectinterface>
+
+    </connections>
+
+    <extension class="startorder" origin="QEDO">server</extension>
+    <extension class="startorder" origin="QEDO">client</extension>
+
+</componentassembly>
+
