@@ -60,20 +60,20 @@ public:
 	static CONTAINERDLL_API void marshal_boolean (MarshalBuffer*, const CORBA::Boolean);
 	static CONTAINERDLL_API void marshal_string (MarshalBuffer*, const char*);
 
-	static CONTAINERDLL_API void unmarshal_char (MarshalBuffer*, CORBA::Char&);
-	static CONTAINERDLL_API void unmarshal_wchar (MarshalBuffer*, CORBA::WChar&);
-	static CONTAINERDLL_API void unmarshal_octet (MarshalBuffer*, CORBA::Octet&);
-	static CONTAINERDLL_API void unmarshal_short (MarshalBuffer*, CORBA::Short&);
-	static CONTAINERDLL_API void unmarshal_ushort (MarshalBuffer*, CORBA::UShort&);
-	static CONTAINERDLL_API void unmarshal_long (MarshalBuffer*, CORBA::Long&);
-	static CONTAINERDLL_API void unmarshal_ulong (MarshalBuffer*, CORBA::ULong&);
-	static CONTAINERDLL_API void unmarshal_longlong (MarshalBuffer*, CORBA::LongLong&);
-	static CONTAINERDLL_API void unmarshal_ulonglong (MarshalBuffer*, CORBA::ULongLong&);
-	static CONTAINERDLL_API void unmarshal_float (MarshalBuffer*, CORBA::Float&);
-	static CONTAINERDLL_API void unmarshal_double (MarshalBuffer*, CORBA::Double&);
-	static CONTAINERDLL_API void unmarshal_longdouble (MarshalBuffer*, CORBA::LongDouble&);
-	static CONTAINERDLL_API void unmarshal_boolean (MarshalBuffer*, CORBA::Boolean&);
-	static CONTAINERDLL_API void unmarshal_string (MarshalBuffer*, char*&);
+	static CONTAINERDLL_API void unmarshal_char (UnmarshalBuffer*, CORBA::Char&);
+	static CONTAINERDLL_API void unmarshal_wchar (UnmarshalBuffer*, CORBA::WChar&);
+	static CONTAINERDLL_API void unmarshal_octet (UnmarshalBuffer*, CORBA::Octet&);
+	static CONTAINERDLL_API void unmarshal_short (UnmarshalBuffer*, CORBA::Short&);
+	static CONTAINERDLL_API void unmarshal_ushort (UnmarshalBuffer*, CORBA::UShort&);
+	static CONTAINERDLL_API void unmarshal_long (UnmarshalBuffer*, CORBA::Long&);
+	static CONTAINERDLL_API void unmarshal_ulong (UnmarshalBuffer*, CORBA::ULong&);
+	static CONTAINERDLL_API void unmarshal_longlong (UnmarshalBuffer*, CORBA::LongLong&);
+	static CONTAINERDLL_API void unmarshal_ulonglong (UnmarshalBuffer*, CORBA::ULongLong&);
+	static CONTAINERDLL_API void unmarshal_float (UnmarshalBuffer*, CORBA::Float&);
+	static CONTAINERDLL_API void unmarshal_double (UnmarshalBuffer*, CORBA::Double&);
+	static CONTAINERDLL_API void unmarshal_longdouble (UnmarshalBuffer*, CORBA::LongDouble&);
+	static CONTAINERDLL_API void unmarshal_boolean (UnmarshalBuffer*, CORBA::Boolean&);
+	static CONTAINERDLL_API void unmarshal_string (UnmarshalBuffer*, char*&);
 };
 
 

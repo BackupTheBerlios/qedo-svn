@@ -42,7 +42,7 @@
 #include <cerrno>
 
 
-static char rcsid[] UNUSED = "$Id: UDPSourceTransportEndpoint.cpp,v 1.1 2003/12/16 13:37:55 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: UDPSourceTransportEndpoint.cpp,v 1.2 2004/01/20 12:52:41 stoinski Exp $";
 
 namespace Qedo {
 
@@ -73,6 +73,8 @@ UDPSourceTransportEndpoint::send_buffer (StreamComponents::StreamingBuffer_ptr b
 	char* buf = (char*)malloc (buf_size);
 	((StreamComponents::UDPProfileHeader*)buf)->stream_number = htons (current_stream_number_);
 	((StreamComponents::UDPProfileHeader*)buf)->seq_length = htonl (buffer->get_used());
+	((StreamComponents::UDPProfileHeader*)buf)->fragment_number = 0;
+	((StreamComponents::UDPProfileHeader*)buf)->last_fragment_number = 0;
 	memcpy (buf + sizeof (StreamComponents::UDPProfileHeader), buffer->get_buffer(), buffer->get_used());
 
 #ifdef _WIN32

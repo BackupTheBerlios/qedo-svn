@@ -45,7 +45,7 @@
 #include <cstdio>
 #include <cerrno>
 
-static char rcsid[] UNUSED = "$Id: TCPSinkTransportEndpoint.cpp,v 1.7 2004/01/19 13:07:55 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: TCPSinkTransportEndpoint.cpp,v 1.8 2004/01/20 12:52:41 stoinski Exp $";
 
 
 namespace Qedo {
@@ -214,8 +214,8 @@ TCPSinkTransportEndpoint::do_read()
 		// DEBUG_OUT2 ("TCPSinkTransportEndpoint: Received a packet with stream number: ", (int)stream_number);
 
 		// Read and dispatch data
-		MarshalBuffer* buffer;
-		buffer = new MarshalBuffer (seq_length);
+		UnmarshalBuffer* buffer;
+		buffer = new UnmarshalBuffer (seq_length);
 
 		if (! recv_complete (accept_socket_, (char*)buffer->get_buffer(), seq_length))
 		{

@@ -47,7 +47,7 @@
 
 #define MAX_DGRAM_SIZE 32768
 
-static char rcsid[] UNUSED = "$Id: UDPSinkTransportEndpoint.cpp,v 1.3 2004/01/19 13:07:55 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: UDPSinkTransportEndpoint.cpp,v 1.4 2004/01/20 12:52:41 stoinski Exp $";
 
 
 namespace Qedo {
@@ -147,8 +147,9 @@ UDPSinkTransportEndpoint::do_recv()
 		CORBA::UShort stream_number = ntohs (header->stream_number);
 		CORBA::ULong seq_length = ntohl (header->seq_length);
 
-		MarshalBuffer* buffer;
-		buffer = new MarshalBuffer (seq_length);
+		UnmarshalBuffer* buffer;
+		buffer = new UnmarshalBuffer (seq_length);
+
 		memcpy (buffer->get_buffer(), datagram + sizeof (StreamComponents::UDPProfileHeader), seq_length);
 
 		QedoLock lock (stream_mutex_);

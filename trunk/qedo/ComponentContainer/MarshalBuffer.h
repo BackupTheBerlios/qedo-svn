@@ -20,41 +20,50 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __STREAM_DATA_DISPATCHER_H__
-#define __STREAM_DATA_DISPATCHER_H__
+#ifndef __MARSHAL_BUFFER_H__
+#define __MARSHAL_BUFFER_H__
 
 #ifndef _QEDO_NO_STREAMS
 
-
 #include <CORBA.h>
-#include <StreamComponents.h>
+#include <StreamComponents_skel.h>
 
-#include "RefCountBase.h"
-#include "MarshalBuffer.h"
-#include "Output.h"
+#include "StreamingBuffer.h"
 #include "Util.h"
 
 
 namespace Qedo {
 
 
-class CONTAINERDLL_API StreamDataDispatcher : public virtual Qedo::RefCountBase
+class CONTAINERDLL_API MarshalBuffer : public StreamingBuffer
 {
-public:
-	StreamDataDispatcher();
-	virtual ~StreamDataDispatcher();
+private:
+	CORBA::ULong marshal_ptr_;
 
-	// Hooks for the type-specific implementations
-	virtual void begin_stream (const char*, const Components::ConfigValues&) = 0;
-	virtual void end_stream() = 0;
-	virtual void failed_stream() = 0;
-	virtual void receive_stream (UnmarshalBuffer*) = 0;
+public:
+	MarshalBuffer (CORBA::ULong);
+	~MarshalBuffer();
+
+	void do_align (CORBA::ULong);
+	void marshal_data (const char*, CORBA::ULong);
 };
 
+
+class CONTAINERDLL_API UnmarshalBuffer : public StreamingBuffer
+{
+private:
+	CORBA::ULong unmarshal_ptr_;
+
+public:
+	UnmarshalBuffer (CORBA::ULong);
+	~UnmarshalBuffer();
+
+	void do_align (CORBA::ULong);
+	void unmarshal_data (char*, CORBA::ULong);
+};
 
 } // namespace Qedo
 
 #endif
 
 #endif
-

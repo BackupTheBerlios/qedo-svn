@@ -30,7 +30,7 @@
 #include <cstring>
 
 
-static char rcsid[] UNUSED = "$Id: CDRTransportCodec.cpp,v 1.2 2004/01/19 13:07:55 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: CDRTransportCodec.cpp,v 1.3 2004/01/20 12:52:41 stoinski Exp $";
 
 namespace Qedo {
 
@@ -256,25 +256,25 @@ CDRTransportCoDec::marshal_string (MarshalBuffer* buf, const char* str)
 // Unmarshal functions
 //
 void 
-CDRTransportCoDec::unmarshal_char (MarshalBuffer* buf, CORBA::Char& val)
+CDRTransportCoDec::unmarshal_char (UnmarshalBuffer* buf, CORBA::Char& val)
 {
 	buf->unmarshal_data ((char*)&val, 1);
 }
 
 void 
-CDRTransportCoDec::unmarshal_wchar (MarshalBuffer* buf, CORBA::WChar& val)
+CDRTransportCoDec::unmarshal_wchar (UnmarshalBuffer* buf, CORBA::WChar& val)
 {
 	assert (0);
 }
 
 void 
-CDRTransportCoDec::unmarshal_octet (MarshalBuffer* buf, CORBA::Octet& val)
+CDRTransportCoDec::unmarshal_octet (UnmarshalBuffer* buf, CORBA::Octet& val)
 {
 	buf->unmarshal_data ((char*)&val, 1);
 }
 
 void 
-CDRTransportCoDec::unmarshal_short (MarshalBuffer* buf, CORBA::Short& val)
+CDRTransportCoDec::unmarshal_short (UnmarshalBuffer* buf, CORBA::Short& val)
 {
 	buf->do_align (2);
 
@@ -292,7 +292,7 @@ CDRTransportCoDec::unmarshal_short (MarshalBuffer* buf, CORBA::Short& val)
 }
 
 void 
-CDRTransportCoDec::unmarshal_ushort (MarshalBuffer* buf, CORBA::UShort& val)
+CDRTransportCoDec::unmarshal_ushort (UnmarshalBuffer* buf, CORBA::UShort& val)
 {
 	buf->do_align (2);
 
@@ -310,7 +310,7 @@ CDRTransportCoDec::unmarshal_ushort (MarshalBuffer* buf, CORBA::UShort& val)
 }
 
 void 
-CDRTransportCoDec::unmarshal_long (MarshalBuffer* buf, CORBA::Long& val)
+CDRTransportCoDec::unmarshal_long (UnmarshalBuffer* buf, CORBA::Long& val)
 {
 	buf->do_align (4);
 
@@ -330,7 +330,7 @@ CDRTransportCoDec::unmarshal_long (MarshalBuffer* buf, CORBA::Long& val)
 }
 
 void 
-CDRTransportCoDec::unmarshal_ulong (MarshalBuffer* buf, CORBA::ULong& val)
+CDRTransportCoDec::unmarshal_ulong (UnmarshalBuffer* buf, CORBA::ULong& val)
 {
 	buf->do_align (4);
 
@@ -350,7 +350,7 @@ CDRTransportCoDec::unmarshal_ulong (MarshalBuffer* buf, CORBA::ULong& val)
 }
 
 void 
-CDRTransportCoDec::unmarshal_longlong (MarshalBuffer* buf, CORBA::LongLong& val)
+CDRTransportCoDec::unmarshal_longlong (UnmarshalBuffer* buf, CORBA::LongLong& val)
 {
 	buf->do_align (8);
 
@@ -374,7 +374,7 @@ CDRTransportCoDec::unmarshal_longlong (MarshalBuffer* buf, CORBA::LongLong& val)
 }
 
 void 
-CDRTransportCoDec::unmarshal_ulonglong (MarshalBuffer* buf, CORBA::ULongLong& val)
+CDRTransportCoDec::unmarshal_ulonglong (UnmarshalBuffer* buf, CORBA::ULongLong& val)
 {
 	buf->do_align (8);
 
@@ -398,25 +398,25 @@ CDRTransportCoDec::unmarshal_ulonglong (MarshalBuffer* buf, CORBA::ULongLong& va
 }
 
 void 
-CDRTransportCoDec::unmarshal_float (MarshalBuffer* buf, CORBA::Float& val)
+CDRTransportCoDec::unmarshal_float (UnmarshalBuffer* buf, CORBA::Float& val)
 {
 	assert (0);
 }
 
 void 
-CDRTransportCoDec::unmarshal_double (MarshalBuffer* buf, CORBA::Double& val)
+CDRTransportCoDec::unmarshal_double (UnmarshalBuffer* buf, CORBA::Double& val)
 {
 	assert (0);
 }
 
 void 
-CDRTransportCoDec::unmarshal_longdouble (MarshalBuffer* buf, CORBA::LongDouble& val)
+CDRTransportCoDec::unmarshal_longdouble (UnmarshalBuffer* buf, CORBA::LongDouble& val)
 {
 	assert (0);
 }
 
 void 
-CDRTransportCoDec::unmarshal_boolean (MarshalBuffer* buf, CORBA::Boolean& val)
+CDRTransportCoDec::unmarshal_boolean (UnmarshalBuffer* buf, CORBA::Boolean& val)
 {
 	buf->unmarshal_data ((char*)&val, 1);
 
@@ -426,7 +426,7 @@ CDRTransportCoDec::unmarshal_boolean (MarshalBuffer* buf, CORBA::Boolean& val)
 
 
 void 
-CDRTransportCoDec::unmarshal_string (MarshalBuffer* buf, char*& str)
+CDRTransportCoDec::unmarshal_string (UnmarshalBuffer* buf, char*& str)
 {
 	CORBA::ULong str_len;
 

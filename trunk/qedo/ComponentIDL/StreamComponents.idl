@@ -76,6 +76,8 @@ struct TCPProfileHeader {
 struct UDPProfileHeader {
 	unsigned short stream_number;
 	unsigned long seq_length;
+	unsigned short fragment_number;
+	unsigned short last_fragment_number;
 };
 
 //
