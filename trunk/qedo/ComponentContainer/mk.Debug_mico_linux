@@ -17,7 +17,7 @@ CC=$(CXX)
 
 all:  ../../Runtime/libComponentContainer.so
 
-../../Runtime/libComponentContainer.so : $(IntDir)/CCMContext.o $(IntDir)/CCMHomeServant.o $(IntDir)/CCMObjectExecutor.o $(IntDir)/ComponentInstance.o $(IntDir)/ConsumerPort.o $(IntDir)/ContainerInterfaceImpl.o $(IntDir)/EmitterPort.o $(IntDir)/EntityHomeServant.o $(IntDir)/FacetPort.o $(IntDir)/GlobalHelpers.o $(IntDir)/HomeServantBase.o $(IntDir)/Key.o $(IntDir)/Output.o $(IntDir)/PortBase.o $(IntDir)/PublisherPort.o $(IntDir)/ReceptaclePort.o $(IntDir)/RefCountBase.o $(IntDir)/ServantBase.o $(IntDir)/ServantLocator.o $(IntDir)/ServantRegistry.o $(IntDir)/SessionContext.o $(IntDir)/SessionHomeServant.o $(IntDir)/Synchronisation.o $(IntDir)/Valuetypes.o ; $(LINK.o)  --shared $^ $(LOADLIBES) $(LDLIBS) -o $@
+../../Runtime/libComponentContainer.so : $(IntDir)/CCMContext.o $(IntDir)/CCMHomeServant.o $(IntDir)/CCMObjectExecutor.o $(IntDir)/ComponentInstance.o $(IntDir)/ConsumerPort.o $(IntDir)/ContainerInterfaceImpl.o $(IntDir)/EmitterPort.o $(IntDir)/EntityHomeServant.o $(IntDir)/FacetPort.o $(IntDir)/GlobalHelpers.o $(IntDir)/HomeServantBase.o $(IntDir)/Key.o $(IntDir)/Output.o $(IntDir)/PortBase.o $(IntDir)/PublisherPort.o $(IntDir)/ReceptaclePort.o $(IntDir)/RefCountBase.o $(IntDir)/ServantBase.o $(IntDir)/ServantLocator.o $(IntDir)/ServantRegistry.o $(IntDir)/SessionContext.o $(IntDir)/SessionHomeServant.o $(IntDir)/Synchronisation.o $(IntDir)/Valuetypes.o $(IntDir)/GetComponentHelperServant.o ; $(LINK.o)  --shared $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 $(IntDir)/CCMContext.o:	CCMContext.cpp
 $(IntDir)/CCMHomeServant.o:	CCMHomeServant.cpp
@@ -43,6 +43,7 @@ $(IntDir)/SessionContext.o:	SessionContext.cpp
 $(IntDir)/SessionHomeServant.o:	SessionHomeServant.cpp
 $(IntDir)/Synchronisation.o:	Synchronisation.cpp
 $(IntDir)/Valuetypes.o:	Valuetypes.cpp
+$(IntDir)/GetComponentHelperServant.o: GetComponentHelperServant.cpp
 cidl:  
 idl:  cidl
 
