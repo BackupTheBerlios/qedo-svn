@@ -23,7 +23,7 @@
 #include "Valuetypes.h"
 
 
-static char rcsid[] UNUSED = "$Id: Valuetypes.cpp,v 1.11 2003/10/23 09:52:37 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: Valuetypes.cpp,v 1.12 2004/06/08 08:59:56 tom Exp $";
 
 
 namespace Qedo {
@@ -146,12 +146,12 @@ PortDescriptionFactory_impl::create_for_unmarshal
 
 FacetDescription_impl::FacetDescription_impl (const char* name, 
 											  const char* type_id, 
-											  CORBA::Object_ptr ref)
+											  CORBA::Object_ptr facet_ref)
 : FacetDescription()
 {
 	this -> name ( name );
 	this -> type_id ( type_id );
-	this -> ref ( ref );
+	this -> facet_ref ( facet_ref );
 }
 
 

@@ -106,7 +106,7 @@ module Components {
 	};
 
 	valuetype FacetDescription : PortDescription {
-		public Object ref;
+		public Object facet_ref;
 	};
 
 	typedef sequence < FacetDescription > FacetDescriptions;
