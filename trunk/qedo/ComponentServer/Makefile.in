@@ -1,0 +1,29 @@
+CXX = @CXX@
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+VPATH = @srcdir@
+
+LD=@LD@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+LDFLAGS += -L../ComponentIDL -lComponent \
+           -L../ComponentContainer -lComponentContainer \
+	   @ORB_COSNAMING_LIB@ \
+           $(LIBS) -ldl
+
+SOURCES = ComponentServerImpl.cpp main.cpp
+
+OBJS = ${SOURCES:.cpp=.o}
+
+INCLUDES = -I@srcdir@ \
+           -I../ComponentIDL \
+           -I@top_srcdir@/ComponentContainer 
+
+CXXFLAGS += $(INCLUDES) @CPPFLAGS@ -MMD -g
+
+all: cs
+
+cs: $(OBJS)
+	${CXX} -o $@ $^ ${LDFLAGS}
+
+-include ${SOURCES:.cpp=.d}
