@@ -150,6 +150,8 @@ private:
 	Components::Extension::ServerInterceptorRegistration_var server_dispatcher_;
 	/** interceptor dispatcher for the client side */
 	Components::Extension::ClientInterceptorRegistration_var client_dispatcher_;
+	/** interceptor dispatcher for the servants */
+	Components::Extension::ServantInterceptorRegistration_var servant_dispatcher_;
 #endif
 public:
 	/** the slot id where our interceptor stores information to be used by container services */
@@ -238,6 +240,12 @@ public:
 	set_client_dispatcher ( Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher);
 
 	/**
+	 * set_servant_dispatcher
+	 */
+	virtual void
+	set_servant_dispatcher ( Components::Extension::ServantInterceptorRegistration_ptr servant_dispatcher);
+
+	/**
 	 * get_server_dispatcher
 	 */
 	virtual Components::Extension::ServerInterceptorRegistration_ptr
@@ -249,6 +257,12 @@ public:
 	virtual Components::Extension::ClientInterceptorRegistration_ptr
 	get_client_dispatcher (  );
 
+
+	/**
+	 * get_servant_dispatcher
+	 */
+	virtual Components::Extension::ServantInterceptorRegistration_ptr
+	get_servant_dispatcher (  );
 
 	virtual ContainerList*
 	get_all_containers();

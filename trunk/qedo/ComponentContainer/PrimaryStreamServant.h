@@ -103,6 +103,12 @@ public:
     //
     StreamComponents::SourceDescriptions* get_all_sources()
         throw(CORBA::SystemException);
+
+#ifndef _QEDO_NO_QOS
+	char *
+	get_component_id();
+
+#endif
 };
 
 } // namespace Qedo

@@ -41,7 +41,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.59 2004/06/24 10:27:38 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.60 2004/07/16 11:21:23 tom Exp $";
 
 
 namespace Qedo {
@@ -643,6 +643,12 @@ throw (Components::Deployment::UnknownImplId,
 
 		session_home = dynamic_cast <Qedo::SessionHomeServant*> (qedo_home_servant);
 
+#ifndef _QEDO_NO_QOS
+		servant_reg = component_server_ -> get_servant_dispatcher ();
+		session_home -> set_servant_interceptor_dispatcher (servant_reg);
+		DEBUG_OUT("ContainerInterfaceImpl: servant dispatcher set at home");
+#endif
+
 		if (! session_home)
 		{
 			NORMAL_ERR ("ContainerInterfaceImpl: Container type is incompatible. Loaded home servant is not a Qedo::SessionHomeServant");
@@ -771,6 +777,10 @@ throw (Components::Deployment::UnknownImplId,
 		client_reg = component_server_ -> get_client_dispatcher ();
 		extension_home -> set_client_interceptor_dispatcher (client_reg);
 		DEBUG_OUT("ContainerInterfaceImpl: client dispatcher set at home");
+
+		servant_reg = component_server_ -> get_servant_dispatcher ();
+		extension_home -> set_servant_interceptor_dispatcher (servant_reg);
+		DEBUG_OUT("ContainerInterfaceImpl: servant dispatcher set at home");
 #endif
 		break;
 

@@ -479,6 +479,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="ServantBase.cpp">
 			</File>
 			<File
+				RelativePath="ServantInterceptorDispatcher.cpp">
+			</File>
+			<File
 				RelativePath="ServantLocator.cpp">
 			</File>
 			<File
@@ -640,6 +643,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="ServantBase.h">
+			</File>
+			<File
+				RelativePath="ServantInterceptorDispatcher.h">
 			</File>
 			<File
 				RelativePath="ServantLocator.h">

@@ -30,6 +30,8 @@
 
 
 #ifndef _QEDO_NO_STREAMS
+
+
 module StreamComponents {
 
         local interface StreamingBuffer
@@ -481,6 +483,17 @@ module Components {
 			void send_user_exception ( in Extension::ContainerServerRequestInfo info );
 
 			void rec_request_from_servant_locator(in string operation);
+
+			Cookie connect (in string comp_id, in FeatureName name,	in Object connection, out boolean con )
+				raises (InvalidName, InvalidConnection, AlreadyConnected, ExceededConnectionLimit);
+
+			Object provide_facet (in string comp_id, in FeatureName name, out boolean con)
+				raises (InvalidName);
+
+			Components::Cookie bind(in string comp_id, in Components::FeatureName name, in Object the_sink, in string transport_profile, out boolean con);
+			Object provide_sink_stream_port (in string comp_id, in Components::FeatureName name, out boolean con)
+				raises (Components::InvalidName);
+
 		};
 
 		local interface ClientContainerInterceptor : ContainerInterceptor
@@ -504,6 +517,25 @@ module Components {
 			void register_interceptor_for_all ( in ClientContainerInterceptor client_interceptor);
 		};
 
+		local interface ServantInterceptorRegistration
+		{
+			void register_interceptor_for_all ( in ServerContainerInterceptor server_interceptor);
+			boolean call(in string oper);
+			// CCMObject
+			Cookie connect (in string comp_id, in FeatureName name,	in Object connection, out boolean con )
+				raises (InvalidName, InvalidConnection, AlreadyConnected, ExceededConnectionLimit);
+
+			Object provide_facet (in string comp_id, in FeatureName name, out boolean con)
+				raises (InvalidName);
+			
+
+			// StreamCCMObject
+			Components::Cookie bind(in string comp_id, in Components::FeatureName name, in Object the_sink, in string transport_profile, out boolean con);
+			Object provide_sink_stream_port (in string comp_id, in Components::FeatureName name, out boolean con)
+				raises (Components::InvalidName);
+
+		};
+
 	}; // Extension
 
 	local interface ExtensionContext : CCMContext
@@ -514,11 +546,17 @@ module Components {
 		void set_client_interceptor_dispatcher_registration (
 			in Components::Extension::ClientInterceptorRegistration registration );
 
+		void set_servant_interceptor_dispatcher_registration (
+			in Components::Extension::ServantInterceptorRegistration registration );
+
 		Components::Extension::ServerInterceptorRegistration
 			get_server_interceptor_dispatcher_registration ();
 
 		Components::Extension::ClientInterceptorRegistration
 			get_client_interceptor_dispatcher_registration ();
+
+		Components::Extension::ServantInterceptorRegistration
+			get_servant_interceptor_dispatcher_registration();
 
 		void register_servant_locator_for_all (in Components::Extension::ServerContainerInterceptor server_interceptor);
 
@@ -531,6 +569,7 @@ module Components {
 		void 
 		install_service_reference(in string id, in Object objref) raises (CCMException);
 
+		Object get_CCM_object();
 
 	};
 
@@ -545,6 +584,7 @@ module Components {
 		void ccm_remove ()
 			raises (CCMException);
 	};
+
 
 #endif
 

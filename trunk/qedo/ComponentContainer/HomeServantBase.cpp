@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.28 2004/03/11 16:22:40 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.29 2004/07/16 11:21:23 tom Exp $";
 
 
 namespace Qedo {
@@ -435,6 +435,12 @@ HomeServantBase::lookup_servant (const PortableServer::ObjectId& object_id)
 		assert (0);
 	}
 
+#ifndef _QEDO_NO_QOS
+	// set servant interceptor dispatcher
+	servant -> set_servant_dispatcher_registry (
+		Components::Extension::ServantInterceptorRegistration::_duplicate(container_ -> servant_reg));
+
+#endif // _QEDO_NO_QOS
 	// set the instance
 	servant->set_instance(*components_iter);
 		

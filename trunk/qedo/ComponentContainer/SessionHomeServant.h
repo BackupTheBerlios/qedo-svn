@@ -41,6 +41,11 @@ namespace Qedo {
  */
 class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
 {
+#ifndef _QEDO_NO_QOS
+protected:
+	/** reference to server interceptor dispatcher intercface */
+	Components::Extension::ServantInterceptorRegistration_var servant_dispatcher_;
+#endif
 private:
 	/**
 	 * indicate removal
@@ -74,6 +79,13 @@ public:
 	 * destructor
 	 */
 	~SessionHomeServant();
+#ifndef _QEDO_NO_QOS
+	/**
+	 * set servant interceptor dispatcher interface at home servant
+	 */
+	 void set_servant_interceptor_dispatcher(Components::Extension::ServantInterceptorRegistration_ptr server_dispatcher);
+#endif
+
 };
 
 /** @} */

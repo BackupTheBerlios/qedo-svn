@@ -24,8 +24,11 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
+#ifndef _QEDO_NO_QOS
+#include "GlobalHelpers.h"
+#endif
 
-static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.14 2004/05/13 13:01:57 hao Exp $";
+static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.15 2004/07/16 11:21:23 tom Exp $";
 
 namespace Qedo {
 
@@ -120,6 +123,16 @@ ServantBase::set_instance (Qedo::ComponentInstance& instance)
 #endif
 }
 
+#ifndef _QEDO_NO_QOS
+void
+ServantBase::set_servant_dispatcher_registry(Components::Extension::ServantInterceptorRegistration_ptr reg) 
+{
+	servant_interceptor_registry_ = Components::Extension::ServantInterceptorRegistration::_duplicate(reg);
+}
+
+
+#endif
+
 
 //
 // primary servant
@@ -155,7 +168,20 @@ CORBA::Object_ptr
 PrimaryServant::provide_facet (const char* name)
 throw (Components::InvalidName, CORBA::SystemException)
 {
+#ifndef _QEDO_NO_QOS
+	char * comp_id = this-> get_component_id();
+	CORBA::Boolean con = true;
+	CORBA::Object_ptr anObject= servant_interceptor_registry_ -> provide_facet (comp_id, name, con);
+	if (con)
+	{
+#endif
+
     return ccm_object_executor_->provide_facet (name);
+
+#ifndef _QEDO_NO_QOS
+	}
+	return anObject;
+#endif 
 }
 
 
@@ -191,7 +217,18 @@ throw( Components::InvalidName,
 	   Components::ExceededConnectionLimit,
 	   CORBA::SystemException)
 {
+#ifndef _QEDO_NO_QOS
+	char * comp_id = this-> get_component_id();
+	CORBA::Boolean con;
+	Components::Cookie* temp_ck = servant_interceptor_registry_ -> connect (comp_id, name, connection, con);
+	if (con)
+	{
+#endif
     return ccm_object_executor_->connect (name,connection);
+#ifndef _QEDO_NO_QOS
+	}
+	return temp_ck;
+#endif 
 }
 
 
@@ -407,6 +444,44 @@ throw (CORBA::SystemException)
     return ccm_object_executor_->get_all_ports();
 }
 
+#ifndef _QEDO_NO_QOS
+char *
+PrimaryServant::get_component_id(){
+	char* comp_id = 0;
+	unsigned int i;
+	for (i=0; i < ccm_object_executor_ -> home_servant_ -> component_instances_.size(); i++)
+	{
+		if (Qedo::compare_OctetSeqs(this -> ccm_object_executor_ -> component_object_id_,
+			(this -> ccm_object_executor_ -> home_servant_ -> component_instances_[i].object_id_)))
+		{
+			Components::ConfigValues* temp_config=0;
+			temp_config = this -> ccm_object_executor_ -> home_servant_ -> component_instances_[i].config_;
+
+			if (temp_config != 0)
+			{
+
+				Components::ConfigValue* value;
+				for (CORBA::ULong k = 0; k < temp_config->length(); k++)
+				{
+					value = (*temp_config)[k];
+
+					if (! strcmp ((*temp_config)[k]->name(), "id"))
+					{
+						(*temp_config)[k]->value() >>= comp_id;
+						break;
+					}
+				}
+			}
+		}
+	}
+	if (!comp_id)
+	{
+		comp_id="__QEDO__NOT_COMPONENT_ID__";
+	}
+	return comp_id;	
+}
+
+#endif
 
 //
 // The cleaner object for a ServantFactory

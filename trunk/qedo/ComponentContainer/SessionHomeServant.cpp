@@ -23,7 +23,7 @@
 #include "SessionHomeServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: SessionHomeServant.cpp,v 1.6 2004/01/22 10:57:45 tom Exp $";
+static char rcsid[] UNUSED = "$Id: SessionHomeServant.cpp,v 1.7 2004/07/16 11:21:23 tom Exp $";
 
 
 namespace Qedo {
@@ -79,4 +79,11 @@ SessionHomeServant::do_finalize_component_incarnation (Components::ExecutorLocat
 	session_component->ccm_activate();
 }
 
+#ifndef _QEDO_NO_QOS
+void
+SessionHomeServant::set_servant_interceptor_dispatcher(Components::Extension::ServantInterceptorRegistration_ptr servant_dispatcher)
+{
+	servant_dispatcher_ = servant_dispatcher;
+}
+#endif
 } // namespace Qedo

@@ -63,6 +63,8 @@ class CONTAINERDLL_API CCMObjectExecutor : public RefCountBase
 
 	friend class ServerInterceptorDispatcher;
 	friend class CCMContext;
+	friend class ServantBase;
+	friend class PrimaryStreamServant;
 #endif
 
 private:

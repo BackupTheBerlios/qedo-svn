@@ -54,6 +54,7 @@ class ServantRegistry;
  */
 class CONTAINERDLL_API HomeServantBase : public PortableServer::RefCountServantBase
 {
+
 	/** makes use of this */
 	friend class ContainerInterfaceImpl;
 	friend class PrimaryServant;
@@ -68,8 +69,9 @@ class CONTAINERDLL_API HomeServantBase : public PortableServer::RefCountServantB
 	friend class CCMContext;
 
 	friend class ServerInterceptorDispatcher;
+	friend class ServantBase;
+	friend class PrimaryStreamServant;
 #endif
-
 private:
 	/** poa manager */
 	PortableServer::POAManager_var	home_poa_manager_;

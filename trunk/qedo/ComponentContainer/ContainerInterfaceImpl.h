@@ -175,6 +175,7 @@ class CONTAINERDLL_API ContainerInterfaceImpl : public virtual POA_Components::D
 	friend class ExtensionContext;
 	friend class CCMContext;
 	friend class ServerInterceptorDispatcher;
+	friend class HomeServantBase;
 #endif
 private:
 	/** the orb */
@@ -235,6 +236,10 @@ private:
 	 */
 	void loadValuetypeFactories(std::string, std::string)
 		throw (Components::CCMException);
+
+#ifndef _QEDO_NO_QOS
+	Components::Extension::ServantInterceptorRegistration_var servant_reg;
+#endif 
 
 public:
 	/**

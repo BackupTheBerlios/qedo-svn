@@ -65,6 +65,10 @@ protected:
 	/** the current executor*/
 	CORBA::Object_ptr					current_executor_;
 
+#ifndef _QEDO_NO_QOS
+	Components::Extension::ServantInterceptorRegistration_var servant_interceptor_registry_ ;
+#endif
+
 public:
 	/**
 	 * constructor
@@ -97,6 +101,12 @@ public:
 	 * \param instance The component instance.
 	 */
 	void set_instance (Qedo::ComponentInstance& instance);
+
+#ifndef _QEDO_NO_QOS
+	void
+	set_servant_dispatcher_registry(Components::Extension::ServantInterceptorRegistration_ptr reg);
+
+#endif
 };
 
 
@@ -412,6 +422,13 @@ private:
 	 */
     Components::ComponentPortDescription* get_all_ports()
 		throw (CORBA::SystemException);
+
+#ifndef _QEDO_NO_QOS
+	char *
+	get_component_id();
+
+#endif
+
 };
 
 

@@ -30,11 +30,15 @@
 #include "PrimaryStreamServant.h"
 #include "Output.h"
 
+#ifndef _QEDO_NO_QOS
+#include "GlobalHelpers.h"
+#endif
+
 #ifdef _WIN32
 #pragma warning (disable : 4715) // not all control paths return a value
 #endif
 
-static char rcsid[] UNUSED = "$Id: PrimaryStreamServant.cpp,v 1.5 2004/06/24 14:36:07 tom Exp $";
+static char rcsid[] UNUSED = "$Id: PrimaryStreamServant.cpp,v 1.6 2004/07/16 11:21:23 tom Exp $";
 
 
 namespace Qedo {
@@ -56,7 +60,19 @@ PrimaryStreamServant::provide_sink_stream_port(const char* name)
 throw(Components::InvalidName,
       CORBA::SystemException)
 {
-	return stream_ccm_object_executor_->provide_sink_stream_port (name);
+
+#ifndef _QEDO_NO_QOS
+	char * act_id = this-> get_component_id();
+	CORBA::Boolean con;
+	CORBA::Object_var anObject = servant_interceptor_registry_ -> provide_sink_stream_port (act_id, name, con);
+	if (con) {
+#endif
+
+		return stream_ccm_object_executor_->provide_sink_stream_port (name);
+#ifndef _QEDO_NO_QOS
+	}
+	return StreamComponents::SinkStreamPort::_narrow(anObject);
+#endif
 }
 
 
@@ -70,7 +86,23 @@ throw(Components::InvalidName,
       StreamComponents::ExceededBindingLimit,
       CORBA::SystemException)
 {
+	// identify_component_id
+
+
+
+#ifndef _QEDO_NO_QOS
+	char * act_id = this-> get_component_id();
+	CORBA::Boolean con;
+	Components::Cookie* temp_ck = servant_interceptor_registry_ -> bind (act_id, name, the_sink, transport_profile, con);
+	if (con)
+	{
+#endif
+
 	return stream_ccm_object_executor_->bind (name, the_sink, transport_profile);
+#ifndef _QEDO_NO_QOS
+	}
+	return temp_ck;
+#endif 
 }
 
 
@@ -128,6 +160,44 @@ throw(CORBA::SystemException)
 	return stream_ccm_object_executor_->get_all_sources();
 }
 
+#ifndef _QEDO_NO_QOS
+char *
+PrimaryStreamServant::get_component_id(){
+	char* comp_id = 0;
+	unsigned int i;
+	for (i=0; i < ccm_object_executor_ -> home_servant_ -> component_instances_.size(); i++)
+	{
+		if (Qedo::compare_OctetSeqs(this -> ccm_object_executor_ -> component_object_id_,
+			(this -> ccm_object_executor_ -> home_servant_ -> component_instances_[i].object_id_)))
+		{
+			Components::ConfigValues* temp_config=0;
+			temp_config = this -> ccm_object_executor_ -> home_servant_ -> component_instances_[i].config_;
+
+			if (temp_config != 0)
+			{
+
+				Components::ConfigValue* value;
+				for (CORBA::ULong k = 0; k < temp_config->length(); k++)
+				{
+					value = (*temp_config)[k];
+
+					if (! strcmp ((*temp_config)[k]->name(), "id"))
+					{
+						(*temp_config)[k]->value() >>= comp_id;
+						break;
+					}
+				}
+			}
+		}
+	}
+	if (!comp_id)
+	{
+		comp_id="__QEDO__NOT_COMPONENT_ID__";
+	}
+	return comp_id;	
+}
+
+#endif
 
 } // namespace Qedo
 

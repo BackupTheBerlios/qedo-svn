@@ -26,7 +26,7 @@
 #include "ComponentServerImpl.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.9 2004/04/15 09:50:11 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.10 2004/07/16 11:21:23 tom Exp $";
 
 
 namespace Qedo {
@@ -49,12 +49,20 @@ ExtensionContext::set_server_interceptor_dispatcher_registration(Components::Ext
 	server_registration_ = registration;
 };
 
+
 void
 ExtensionContext::set_client_interceptor_dispatcher_registration(Components::Extension::ClientInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_client_interceptor_dispatcher_registration called");
 	client_registration_ = registration;
 }
+
+void
+ExtensionContext::set_servant_interceptor_dispatcher_registration(Components::Extension::ServantInterceptorRegistration_ptr registration)
+{
+	DEBUG_OUT ( "ExtensionContext: set_servant_interceptor_dispatcher_registration called");
+	servant_registration_ = registration;
+};
 
 Components::Extension::ServerInterceptorRegistration_ptr
 ExtensionContext::get_server_interceptor_dispatcher_registration()
@@ -69,6 +77,14 @@ ExtensionContext::get_client_interceptor_dispatcher_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_client_interceptor_dispatcher_registration called");
 	return Components::Extension::ClientInterceptorRegistration::_duplicate(client_registration_);
+
+}
+
+Components::Extension::ServantInterceptorRegistration_ptr
+ExtensionContext::get_servant_interceptor_dispatcher_registration()
+{
+	DEBUG_OUT ( "ExtensionContext: get_servant_interceptor_dispatcher_registration called");
+	return Components::Extension::ServantInterceptorRegistration::_duplicate(servant_registration_);
 
 }
 
@@ -116,6 +132,11 @@ ExtensionContext::install_service_reference(const char* id, CORBA::Object_ptr ob
 
 }
 
+CORBA::Object_ptr
+ExtensionContext::get_CCM_object()
+{
+	return ccm_object_executor_->get_component();
+}
 
 #endif
 } // namepscae Qedo

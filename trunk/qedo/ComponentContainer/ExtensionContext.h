@@ -47,6 +47,7 @@ class CONTAINERDLL_API ExtensionContext : public virtual Components::ExtensionCo
 private:
 	Components::Extension::ServerInterceptorRegistration_var server_registration_;
 	Components::Extension::ClientInterceptorRegistration_var client_registration_;
+	Components::Extension::ServantInterceptorRegistration_var servant_registration_;
 
 	/*
 	* list of config values to store contract inforamtion 
@@ -77,6 +78,12 @@ public:
 	 set_client_interceptor_dispatcher_registration(Components::Extension::ClientInterceptorRegistration_ptr registration);
 
 	/**
+	 * set_servant_intercpetor_registration
+	 */
+	 virtual void
+	 set_servant_interceptor_dispatcher_registration(Components::Extension::ServantInterceptorRegistration_ptr registration);
+
+	 /**
 	 * get_server_intercpetor_registration
 	 */
 	 virtual Components::Extension::ServerInterceptorRegistration_ptr
@@ -89,6 +96,12 @@ public:
 	 virtual Components::Extension::ClientInterceptorRegistration_ptr
 	 get_client_interceptor_dispatcher_registration();
 
+	 /**
+	 * get_servant_intercpetor_registration
+	 */
+	 virtual Components::Extension::ServantInterceptorRegistration_ptr
+	 get_servant_interceptor_dispatcher_registration();
+
 	 virtual void
 	 register_servant_locator_for_all(Components::Extension::ServerContainerInterceptor_ptr server_interceptor);
 
@@ -100,6 +113,14 @@ public:
 
 	 virtual void
 	 install_service_reference(const char* id, CORBA::Object_ptr obj);
+
+    /**
+	 * implements IDL:omg.org/Components/SessionContext/get_CCM_object:1.0
+	 * provide the reference to the CCMObject of the component
+	 * delegated to the object executor
+	 * \return The object reference of the component.
+	 */
+    CORBA::Object_ptr get_CCM_object();
 
 };
 

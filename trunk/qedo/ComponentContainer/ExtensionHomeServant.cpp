@@ -29,7 +29,7 @@
 #include "ExtensionHomeServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: ExtensionHomeServant.cpp,v 1.5 2004/06/24 13:11:03 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ExtensionHomeServant.cpp,v 1.6 2004/07/16 11:21:23 tom Exp $";
 
 
 namespace Qedo {
@@ -96,6 +96,12 @@ void
 ExtensionHomeServant::set_client_interceptor_dispatcher(Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher)
 {
 	client_dispatcher_ = client_dispatcher;
+}
+
+void
+ExtensionHomeServant::set_servant_interceptor_dispatcher(Components::Extension::ServantInterceptorRegistration_ptr servant_dispatcher)
+{
+	servant_dispatcher_ = servant_dispatcher;
 }
 
 } // namespace Qedo

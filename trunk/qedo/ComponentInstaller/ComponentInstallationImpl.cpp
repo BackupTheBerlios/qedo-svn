@@ -33,7 +33,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.26 2003/11/05 14:40:25 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.27 2004/07/16 11:22:01 tom Exp $";
 
 
 namespace Qedo {
@@ -189,21 +189,25 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		throw Components::Deployment::InstallationFailure();
 	}
 
-	//
-	// already installed ?
-	//
 	ComponentImplementation *impl = 0;
-	std::vector < ComponentImplementation >::iterator iter;
-	for(iter = installed_components_.begin();
-		iter != installed_components_.end();
-		iter++)
+
+	if ( Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/Deployment/Overwrite") == "false")
 	{
-		if ((*iter).data_.uuid == implUUID)
+		//
+		// already installed ?
+		//
+		std::vector < ComponentImplementation >::iterator iter;
+		for(iter = installed_components_.begin();
+			iter != installed_components_.end();
+			iter++)
 		{
-			impl = &(*iter);
-			break;
+			if ((*iter).data_.uuid == implUUID)
+			{
+				impl = &(*iter);
+				break;
+			}
 		}
-	}
+	} // end if overwrite
 
 	//
 	// component_loc contains PACKAGE location ?
