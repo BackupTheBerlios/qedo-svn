@@ -4,33 +4,33 @@ ifeq ($(ORB), MICO)
 TARGET = Debug_mico_linux
 endif
 
-all: Componentidl ComponentContainer AssemblyFactory DeploymentClient ComponentInstaller ComponentServer ComponentServerActivator HomeFinder
+all: componentidl componentcontainer assemblyfactory deploymentclient componentinstaller componentserver componentserveractivator homefinder
 
 install: all
 	sh distributeQedo.sh $(TARGET) $(QEDO)
 
-Componentidl:
+componentidl:
 	mkdir -p ComponentIDL/$(TARGET) ; make -C ComponentIDL $(TARGET)
 
 install: all
 
-DeploymentClient: AssemblyFactory ComponentContainer ComponentIDL
+deploymentclient: AssemblyFactory ComponentContainer ComponentIDL
 	 mkdir -p DeploymentClient/$(TARGET) ;make -C DeploymentClient $(TARGET)
 
-ComponentContainer: ComponentIDL
+componentcontainer: ComponentIDL
 	 mkdir -p ComponentContainer/$(TARGET) ;make -C ComponentContainer $(TARGET)
 
-ComponentInstaller: ComponentIDL
+componentinstaller: ComponentIDL
 	 mkdir -p ComponentInstaller/$(TARGET) ;make -C ComponentInstaller $(TARGET)
 
-ComponentServer: ComponentContainer ComponentIDL
+componentserver: ComponentContainer ComponentIDL
 	 mkdir -p ComponentServer/$(TARGET) ;make -C ComponentServer $(TARGET)
 
-ComponentServerActivator: ComponentIDL
+componentserveractivator: ComponentIDL
 	 mkdir -p ComponentServerActivator/$(TARGET); make -C ComponentServerActivator $(TARGET)
 
-AssemblyFactory: ComponentIDL ComponentContainer
+assemblyfactory: ComponentIDL ComponentContainer
 	 mkdir -p AssemblyFactory/$(TARGET); make -C AssemblyFactory $(TARGET)
 
-HomeFinder: ComponentIDL
+homefinder: ComponentIDL
 	 mkdir -p HomeFinder/$(TARGET) ;make -C HomeFinder $(TARGET)
