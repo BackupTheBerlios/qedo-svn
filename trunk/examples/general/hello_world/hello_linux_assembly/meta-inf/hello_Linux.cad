@@ -18,23 +18,26 @@
 
     <partitioning>
 	<processcollocation>
-        <homeplacement id="CalleeHome">
-	        <componentfileref idref="Callee_file"/>
-			<componentimplref idref="HelleWorld_CalleeImpl-mico-linux-26-10-2003"/>
-  	        <componentinstantiation id="callee">
-		</componentinstantiation>
+		<homeplacement id="CalleeHome">
+	        	<componentfileref idref="Callee_file"/>
+				<componentimplref idref="HelleWorld_CalleeImpl-mico-linux-26-10-2003"/>
+  	        	<componentinstantiation id="callee">
+			</componentinstantiation>
 
-	        <destination></destination>
-	</homeplacement>
+		        <destination></destination>
+		</homeplacement>
+	</processcollocation>
 
-	<homeplacement id="CallerHome">
-		<componentfileref idref="Caller_file"/>
-			<componentimplref idref="HelloWorld_CallerImpl-mico-linux-26-10-2003"/>
-	        <componentinstantiation id="caller">
-		</componentinstantiation>
+	<processcollocation>
 
-		<destination></destination>
-	</homeplacement>
+		<homeplacement id="CallerHome">
+			<componentfileref idref="Caller_file"/>
+				<componentimplref idref="HelloWorld_CallerImpl-mico-linux-26-10-2003"/>
+			<componentinstantiation id="caller">
+			</componentinstantiation>
+
+			<destination></destination>
+		</homeplacement>
 
 	</processcollocation>
     </partitioning>
