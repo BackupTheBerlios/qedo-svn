@@ -648,7 +648,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "context_ = " << context_name << "::_nil();\n\n";
 	out.unindent();
 	out << "#else\n";
-	out << "context_ = " << context_name << "::_duplicate(" << context_name << "::_narrow(context));\n\n";
+	out << "context_ = " << context_name << "::_narrow(context);\n\n";
 	out << "#endif\n";
 	out << "component_->set_context(context_);\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
