@@ -24,7 +24,7 @@
 #include "Output.h"
 #include "DOMXMLParser.h"
 
-static char rcsid[] UNUSED = "$Id: ConfigurationReader.cpp,v 1.10 2003/11/25 17:02:40 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ConfigurationReader.cpp,v 1.11 2003/11/27 13:53:43 boehme Exp $";
 
 
 namespace Qedo {
@@ -42,6 +42,7 @@ ConfigurationReader::instance()
 	{
 		instance_ = new ConfigurationReader();
 		instance_->init();
+		is_init = true;
 	}
 	return instance_;
 }
