@@ -134,3 +134,4 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 
 
 } // namespace HU_CIDL_Generator
+

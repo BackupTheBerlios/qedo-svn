@@ -89,14 +89,14 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	string facet_type;
 	map < string, bool > facet_types;
 	map < string, bool > implemented_facets;
-	
+	CORBA::ULong i;
 
 	//
 	// local interface for each segment
 	//
 	CIDL::SegmentDefSeq_var segment_seq = composition->executor()->segments();
 	CORBA::ULong len = segment_seq->length();
-	for (CORBA::ULong i = 0; i < len; i++)
+	for (i = 0; i < len; i++)
 	{
 		facet_types.clear();
 		out << "//\n// " << segment_seq[i]->id() << "\n//\n";
@@ -180,3 +180,4 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 }
 
 } //
+

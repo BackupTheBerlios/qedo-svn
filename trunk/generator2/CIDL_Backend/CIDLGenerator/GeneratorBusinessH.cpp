@@ -594,3 +594,4 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 }
 
 } //
+

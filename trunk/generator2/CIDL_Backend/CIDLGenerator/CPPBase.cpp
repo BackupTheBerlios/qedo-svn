@@ -1188,3 +1188,4 @@ throw ( CannotMapType )
 }
 
 } // namespace
+
