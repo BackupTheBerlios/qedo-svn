@@ -4,27 +4,27 @@ CIDL_FILES = ../auction.cidl
 
 IDL_FILES = auction_BidderImpl_LOCAL.idl \
 	auction_BidderImpl_EQUIVALENT.idl \
-	auction_BidderImpl_BUSINESS.idl 
+	auction_BidderImpl_BUSINESS.idl
 
 CPP_FILES = auction_BidderImpl_BUSINESS.cpp \
 	auction_BidderImpl.cpp \
-	valuetypes.cpp 
+	component_valuetypes.cpp
 
-OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
+OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
 
 CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} libauction_BidderImpl.so auction_BidderImpl.zip
 
-LIBS += -L../auction_BidderImpl_SERVANT -lauction_BidderImpl_SERVANT 
+LIBS += -L../auction_BidderImpl_SERVANT -lauction_BidderImpl_SERVANT
 
 CXXFLAGS += -I. -g
 
 include ../MakeComponentVars
 
-all: libauction_BidderImpl.so 
+all: libauction_BidderImpl.so
 
-libauction_BidderImpl.so: ${OBJ_FILES} 
+libauction_BidderImpl.so: ${OBJ_FILES}
 
-${IDL_FILES} valuetypes.cpp : ${CIDL_FILES} 
+${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES}
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target "IDL:auction/BidderImpl:1.0" $< 
 
