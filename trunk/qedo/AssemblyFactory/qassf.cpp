@@ -23,14 +23,18 @@
 #include "AssemblyFactory.h"
 #include "Output.h"
 #include "version.h"
+#include <signal.h>
 
 
-static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.10 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.11 2003/08/28 09:21:23 neubauer Exp $";
 
 /**
  * @addtogroup Assembly
  * @{
  */
+
+
+CORBA::ORB_var orb;
 
 
 /**
@@ -39,6 +43,43 @@ static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.10 2003/08/01 12:25:30 boehme E
 namespace Qedo {
 std::string g_qedo_dir;
 };
+
+
+void
+handle_sigint
+( int signal )
+{
+	std::cout << "\nGot Crtl-C" << std::endl;
+	std::cerr << "..... unbind in NameService" << std::endl;
+
+	//
+	// unbind in naming service
+	//
+    CORBA::Object_var obj;
+	CosNaming::NamingContext_var nameService;
+	char hostname[256];
+	gethostname(hostname, 256);
+	CosNaming::Name name;
+    name.length(3);
+    name[0].id = CORBA::string_dup("Qedo");
+    name[0].kind = CORBA::string_dup("");
+	name[1].id = CORBA::string_dup("AssemblyFactory");
+    name[1].kind = CORBA::string_dup("");
+	name[2].id = CORBA::string_dup(hostname);
+    name[2].kind = CORBA::string_dup("");
+    try
+    {
+        obj = orb->resolve_initial_references("NameService");
+		nameService = CosNaming::NamingContext::_narrow(obj.in());
+		nameService->unbind(name);
+    }
+	catch (const CORBA::Exception&)
+	{
+		std::cerr << "..... could not unbind" << std::endl;
+	}
+	
+	exit(1);
+}
 
 
 /**
@@ -60,7 +101,7 @@ main (int argc, char** argv)
 	if(e) Qedo::g_qedo_dir.append(e);
 #endif
 
-	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
+	orb = CORBA::ORB_init (argc, argv);
 
 	//
 	// register valuetype factories
@@ -84,6 +125,7 @@ main (int argc, char** argv)
 		exit (1);
 	}
 	std::cout << "Qedo Assembly Factory Server is up and running ...\n";
+	signal ( SIGINT, handle_sigint );
 	orb->run();
 	return 0;
 }
