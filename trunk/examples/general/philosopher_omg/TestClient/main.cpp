@@ -3,10 +3,10 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.1 2002/10/30 22:51:35 tom Exp $
+// $Id: main.cpp,v 1.2 2002/10/31 00:02:37 tom Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.1 2002/10/30 22:51:35 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.2 2002/10/31 00:02:37 tom Exp $";
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
@@ -14,7 +14,7 @@ static char rcsid[] = "$Id: main.cpp,v 1.1 2002/10/30 22:51:35 tom Exp $";
 
 #include "ClientValuetypes.h"
 
-#include "dinner_EQUIVALENT.h"
+#include "DiningPhilosophers_EQUIVALENT.h"
 
 #include <iostream>
 
@@ -236,20 +236,20 @@ main (int argc, char** argv)
 	Components::CCMHome_var home;
 
 	home = container->install_home ("PHILOSOPHER/1.0", "", config);
-	dinner::PhilosopherHome_var p_home = dinner::PhilosopherHome::_narrow (home);
+	DiningPhilosophers::PhilosopherHome_var p_home = DiningPhilosophers::PhilosopherHome::_narrow (home);
 
 	home = container->install_home ("CUTLERY/1.0", "", config);
-	dinner::CutleryHome_var c_home = dinner::CutleryHome::_narrow (home);
+	DiningPhilosophers::ForkHome_var c_home = DiningPhilosophers::ForkHome::_narrow (home);
 
 	home = container->install_home ("OBSERVER/1.0", "", config);
-	dinner::ObserverHome_var o_home = dinner::ObserverHome::_narrow (home);
+	DiningPhilosophers::ObserverHome_var o_home = DiningPhilosophers::ObserverHome::_narrow (home);
 
-	dinner::Philosopher_var phil1;
-	dinner::Philosopher_var phil2;
-	dinner::Philosopher_var phil3;
-	dinner::Cutlery_var cut1;
-	dinner::Cutlery_var cut2;
-	dinner::Observer_var obs;
+	DiningPhilosophers::Philosopher_var phil1;
+	DiningPhilosophers::Philosopher_var phil2;
+	DiningPhilosophers::Philosopher_var phil3;
+	DiningPhilosophers::ForkManager_var cut1;
+	DiningPhilosophers::ForkManager_var cut2;
+	DiningPhilosophers::Observer_var obs;
 
 	try 
 	{
@@ -274,28 +274,19 @@ main (int argc, char** argv)
 		phil1->name ("Frank"); 
 		phil2->name ("Bert"); 
 		phil3->name ("Harry");
-		phil1->thinking_seconds (5); 
-		phil2->thinking_seconds (3); 
-		phil3->thinking_seconds (6);
-		phil1->eating_seconds (4); 
-		phil2->eating_seconds (6); 
-		phil3->eating_seconds (3);
-		phil1->sleeping_seconds (6); 
-		phil2->sleeping_seconds (7); 
-		phil3->sleeping_seconds (5);
-		dinner::Fork_var a_fork;
+		DiningPhilosophers::Fork_var a_fork;
 		a_fork = cut1->provide_the_fork();
-		phil1->connect_left_hand (a_fork);
-		phil2->connect_left_hand (a_fork);
-		phil3->connect_left_hand (a_fork);
+		phil1->connect_left (a_fork);
+		phil2->connect_left (a_fork);
+		phil3->connect_left (a_fork);
 		a_fork = cut2->provide_the_fork();
-		phil1->connect_right_hand (a_fork);
-		phil2->connect_right_hand (a_fork);
-		phil3->connect_right_hand (a_fork);
-		dinner::PhilosopherStateConsumer_var consumer = obs->get_consumer_philosopher_state();
-		phil1->connect_philosopher_state (consumer);
-		phil2->connect_philosopher_state (consumer);
-		phil3->connect_philosopher_state (consumer);
+		phil1->connect_right (a_fork);
+		phil2->connect_right (a_fork);
+		phil3->connect_right (a_fork);
+//@@@		DiningPhilosophers::StatusInfoConsumer_var consumer = obs->get_info();
+//@@@		phil1->connect_philosopher_state (consumer);
+//@@@		phil2->connect_philosopher_state (consumer);
+//@@@		phil3->connect_philosopher_state (consumer);
 		phil1->configuration_complete(); 
 		phil2->configuration_complete(); 
 		phil3->configuration_complete();
