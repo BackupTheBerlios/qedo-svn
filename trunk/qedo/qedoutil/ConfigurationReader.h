@@ -42,7 +42,8 @@ private:
 	bool broken_config_file_;
 
 public:
-	const char* lookup_config_value (const char* name);
+	std::string lookup_config_value (const std::string&  name);
+	std::string lookup_config_value (const char* name);
 	static ConfigurationReader* instance();
 };
 

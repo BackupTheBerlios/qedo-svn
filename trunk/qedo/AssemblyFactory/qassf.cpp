@@ -35,7 +35,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.19 2003/11/12 14:49:35 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.20 2003/11/14 15:24:26 boehme Exp $";
 
 
 /**
@@ -187,7 +187,7 @@ main (int argc, char** argv)
 	//
 	// Resolve config values from config file
 	//
-	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/VerboseOutput"), "true"))
+	if ( Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/VerboseOutput") == "true")
 	{
 		Qedo::debug_output = true;
 	}

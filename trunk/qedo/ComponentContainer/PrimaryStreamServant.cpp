@@ -27,9 +27,11 @@
 #include "PrimaryStreamServant.h"
 #include "Output.h"
 
+#ifdef _WIN32
 #pragma warning (disable : 4715) // not all control paths return a value
+#endif
 
-static char rcsid[] UNUSED = "$Id: PrimaryStreamServant.cpp,v 1.2 2003/10/17 09:11:40 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: PrimaryStreamServant.cpp,v 1.3 2003/11/14 15:24:26 boehme Exp $";
 
 
 namespace Qedo {

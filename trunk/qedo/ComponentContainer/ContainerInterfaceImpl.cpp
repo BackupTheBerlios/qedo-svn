@@ -36,7 +36,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.50 2003/11/10 16:46:24 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.51 2003/11/14 15:24:26 boehme Exp $";
 
 
 namespace Qedo {
@@ -228,7 +228,7 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 	component_server_->_add_ref();
 
 	// Retrieve config values
-	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/Events/EventDispatchingStrategy"), "asynchronous"))
+	if (Qedo::ConfigurationReader::instance()->lookup_config_value ("/Events/EventDispatchingStrategy") == "asynchronous")
 	{
 		event_communication_mode_ = EVENT_COMMUNICATION_ASYNCHRONOUS;
 	}

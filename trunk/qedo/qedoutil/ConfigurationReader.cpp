@@ -24,7 +24,7 @@
 #include "Output.h"
 #include "DOMXMLParser.h"
 
-static char rcsid[] UNUSED = "$Id: ConfigurationReader.cpp,v 1.4 2003/10/23 13:42:06 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ConfigurationReader.cpp,v 1.5 2003/11/14 15:24:26 boehme Exp $";
 
 
 namespace Qedo {
@@ -89,97 +89,132 @@ ConfigurationReader::ConfigurationReader()
 	broken_config_file_ = false;
 }
 
-
-const char*
-ConfigurationReader::lookup_config_value (const char* name)
+std::string
+ConfigurationReader::lookup_config_value (const std::string& name)
 {
 	if (broken_config_file_)
 		return "";
 
 	DEBUG_OUT2 ("ConfigurationReader: lookup_config_value() called for name ", name);
 
-	char* tmp_name = strdup (name);
-	char* delimiter;
-	char* next_name_part = tmp_name;
+	const std::string delims("/");
+	std::string::size_type begIdx, endIdx;
+
+	// start at 0
+	begIdx = name.find_first_not_of(delims);
+
 	DOMElement* current_element = config_top_;
 
-	// First step into the section hierarchy
-	while ((delimiter = strchr (tmp_name, '/')) != NULL)
+	while ( begIdx != std::string::npos )
 	{
-		// Skip leading '/'
-		if (delimiter == tmp_name)
+
+		// search the end of the path name
+		endIdx = name.find_first_of ( delims, begIdx );
+
+		if ( endIdx == std::string::npos )
 		{
-			++tmp_name;
-			continue;
-		}
+			// last element must be the element name
+			std::string tmp_name  = name.substr(begIdx);
 
-		*delimiter = 0;
+			// Resolve config value in the current section
+			DOMNodeList* value_list = current_element->getChildNodes();
+			char * s;
 
-		DOMNodeList* section_list = current_element->getChildNodes();
-
-		// Search sections
-		for (unsigned int i = 0; i < section_list->getLength(); i++)
-		{
-			DOMNode* the_item = section_list->item (i);
-
-			// Test whether we have a SECTION element, if not go to next element
-			if (strcmp (XMLString::transcode (the_item->getNodeName()), "SECTION"))
-				continue;
-
-			DOMElement* the_element = (DOMElement*)the_item;
-
-			std::string the_name = XMLString::transcode (the_element->getAttribute(X("name")));
-
-			if (strcmp (the_name.c_str(), tmp_name))
+			for (unsigned int i = 0; i < value_list->getLength(); i++)
 			{
-				current_element = 0;
-				continue;
+				DOMNode* the_item = value_list->item (i);
+
+				// Test whether we have a CONFIGVALUE element, if not go to next element
+				s = XMLString::transcode (the_item->getNodeName());
+				if (strcmp (s, "CONFIGVALUE"))
+				{
+					delete [] s;
+					continue;
+				}
+				delete [] s;
+
+				DOMElement* the_element = (DOMElement*)the_item;
+
+				s = XMLString::transcode (the_element->getAttribute(X("name")));
+
+				if (tmp_name == s)
+				{
+					current_element = the_element;
+					delete [] s;
+					break;
+				}
+				else
+				{
+					current_element = 0;
+					delete [] s;
+					continue;
+				}
 			}
-			else
-			{
-				current_element = the_element;
-				break;
-			}
-		}
 
-		// If not found
-		if (! current_element)
-			return "";
+			if (! current_element)
+				return "";
 
-		tmp_name = ++delimiter;
-	}
+			s = XMLString::transcode (current_element->getAttribute(X("value")));
+			std::string x = s;
+			delete [] s;
 
-	// Resolve config value in the current section
-	DOMNodeList* value_list = current_element->getChildNodes();
-
-	for (unsigned int i = 0; i < value_list->getLength(); i++)
-	{
-		DOMNode* the_item = value_list->item (i);
-
-		// Test whether we have a CONFIGVALUE element, if not go to next element
-		if (strcmp (XMLString::transcode (the_item->getNodeName()), "CONFIGVALUE"))
-			continue;
-
-		DOMElement* the_element = (DOMElement*)the_item;
-
-		std::string the_name = XMLString::transcode (the_element->getAttribute(X("name")));
-
-		if (strcmp (the_name.c_str(), tmp_name))
-		{
-			current_element = 0;
-			continue;
+			return x;
 		}
 		else
 		{
-			current_element = the_element;
-			break;
+			// we got a path element, search for the section
+			std::string tmp_name  = name.substr(begIdx,endIdx-begIdx);
+
+			DOMNodeList* section_list = current_element->getChildNodes();
+			
+			// Search sections
+			for (unsigned int i = 0; i < section_list->getLength(); i++)
+			{
+				DOMNode* the_item = section_list->item (i);
+
+				// Test whether we have a SECTION element, if not go to next element
+				char * s = XMLString::transcode (the_item->getNodeName());
+
+				if (strcmp (s, "SECTION"))
+				{
+					delete [] s;
+					continue;
+				}
+
+				DOMElement* the_element = (DOMElement*)the_item;
+
+				s = XMLString::transcode (the_element->getAttribute(X("name")));
+
+				if ( tmp_name == s )
+				{
+					current_element = the_element;
+					delete [] s;
+					break;
+				}
+				else
+				{
+					current_element = 0;
+					delete [] s;
+					continue;
+				}
+			}
+
+			// If not found
+			if (! current_element)
+				return "";
+
 		}
+
+		begIdx = name.find_first_not_of( delims, endIdx);
 	}
 
-	if (! current_element)
-		return "";
+	assert(0);
+}
 
-	return XMLString::transcode (current_element->getAttribute(X("value")));
+std::string
+ConfigurationReader::lookup_config_value (const char* name)
+{
+	return this->lookup_config_value(std::string(name));
 }
 
 

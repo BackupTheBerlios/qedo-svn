@@ -39,7 +39,7 @@
 #include "ClientInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.28 2003/11/14 14:01:33 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.29 2003/11/14 15:24:26 boehme Exp $";
 
 
 /**
@@ -75,17 +75,17 @@ main (int argc, char** argv)
 	Qedo::debug_output = false;
 
 	// Resolve config values from config file
-	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/Debug/DebugMode"), "true"))
+	if ( Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/Debug/DebugMode") == "true")
 	{
 		debug_mode = true;
 	}
 
-	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/VerboseOutput"), "true"))
+	if (Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/VerboseOutput") == "true")
 	{
 		Qedo::debug_output = true;
 	}
 
-	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/QoS/EnableQoS"), "true"))
+	if (Qedo::ConfigurationReader::instance()->lookup_config_value ("/QoS/EnableQoS") == "true")
 	{
 		qos_enabled = true;
 	}
