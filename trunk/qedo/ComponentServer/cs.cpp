@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: cs.cpp,v 1.1 2002/10/07 07:17:02 tom Exp $";
+static char rcsid[] = "$Id: cs.cpp,v 1.2 2002/10/16 09:44:42 tom Exp $";
 
 #include "ComponentServerImpl.h"
 #include "Output.h"
@@ -102,4 +102,5 @@ main (int argc, char** argv)
 	}
 
 	orb->run();
+	return 0;
 }

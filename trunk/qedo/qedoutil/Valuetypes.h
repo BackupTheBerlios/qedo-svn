@@ -52,7 +52,7 @@ public:
 };
 
 
-class CONTAINERDLL_API CookieFactory_impl : public virtual CORBA::ValueFactoryBase
+class CookieFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	virtual CORBA::ValueBase* create_for_unmarshal();
@@ -63,7 +63,7 @@ private:
 // Implementation of Components::PortDescription
 //
 class PortDescription_impl : public virtual OBV_Components::PortDescription,
-							 public virtual CORBA::DefaultValueRefCountBase
+											public virtual CORBA::DefaultValueRefCountBase
 {
 private:
 	void operator=(const PortDescription_impl&);
