@@ -1,15 +1,17 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "inherit_DerivedImpl", "inherit_DerivedImpl\inherit_DerivedImpl.vcproj", "{11B1BE00-289F-4858-A1C9-A00737336779}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "inherit_DerivedImpl_SERVANT", "inherit_DerivedImpl_SERVANT\inherit_DerivedImpl_SERVANT.vcproj", "{19BE6D52-EE9F-4A1F-84BA-F7D71ECDEEE3}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug_mico
-		ConfigName.1 = Debug_orbacus
-		ConfigName.2 = Debug_tao
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
+		Debug_mico = Debug_mico
+		Debug_orbacus = Debug_orbacus
+		Debug_tao = Debug_tao
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{11B1BE00-289F-4858-A1C9-A00737336779}.Debug_mico.ActiveCfg = Debug_mico|Win32
