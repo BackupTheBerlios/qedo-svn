@@ -187,7 +187,7 @@ GeneratorPersistenceH::doAttribute(IR__::AttributeDef_ptr attribute)
 	out << "\n//\n// " << attribute->id() << "\n//\n";
 	std::string attribute_name = mapName(attribute);
 	IR__::IDLType_var attr_type = attribute->type_def();
-	
+		
 	// read only
 	if(m_isAbstract) out << "virtual ";
 	out << map_psdl_return_type(attr_type, true) << " " << attribute_name << "() const";
@@ -196,10 +196,18 @@ GeneratorPersistenceH::doAttribute(IR__::AttributeDef_ptr attribute)
 	// not read only
 	if(attribute->mode() == IR__::ATTR_NORMAL)
 	{
-		if(m_isAbstract) out << "virtual ";
-		out << map_psdl_return_type(attr_type, false) << " " << attribute_name << "(";
-		out << map_psdl_parameter_type(attr_type, false) << " param)";
-		m_isAbstract ? out << " = 0;\n" : out << ";\n";
+		switch ( attr_type->type()->kind() )
+		{
+			case CORBA::tk_char:
+			case CORBA::tk_wchar:
+			case CORBA::tk_octet:
+			case CORBA::tk_string:
+			case CORBA::tk_wstring:
+				if(m_isAbstract) out << "virtual ";
+				out << map_psdl_return_type(attr_type, false) << " " << attribute_name << "(";
+				out << map_psdl_parameter_type(attr_type, false) << " param)";
+				m_isAbstract ? out << " = 0;\n" : out << ";\n";
+		}
 
 		if(m_isAbstract) out << "virtual ";
 		out << "void " << attribute_name << "(";
@@ -464,8 +472,9 @@ GeneratorPersistenceH::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	}
 	else
 	{
-		out << ": public virtual StorageObjectImpl";
-		isRef ? out << "Ref\n" : out << "\n";
+		out << ": public virtual StorageObject";
+		if(isRef) out << "Ref";
+		out << "Impl\n";
 	}
 
 	IR__::InterfaceDefSeq_var supported_infs = storagetype->supported_interfaces();
@@ -615,21 +624,24 @@ GeneratorPersistenceH::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	}
 	
 	out << szDisplay << " _create(";
-	
+	out << "Pid* pid,\n";
+	strDummy.append(iLength, ' ');
+	out << strDummy.c_str();
+	out << "ShortPid* shortPid,\n";
+		
 	IR__::AttributeDefSeq state_members;
 	storagehome->managed_storagetype()->get_state_members(state_members, CORBA__::dk_Create);
 	CORBA::ULong ulLen = state_members.length();
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
+		strDummy = "";
+		strDummy.append(iLength, ' ');
+		out << strDummy.c_str();
+
 		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		out << map_in_parameter_type(attribute->type_def()) << " " << mapName(attribute);
 		if( (i+1)!=ulLen )
-		{
 			out << ",\n";
-			strDummy = "";
-			strDummy.append(iLength, ' ');
-			out << strDummy.c_str();
-		}
 	}
 	
 	if(isRef)

@@ -30,7 +30,8 @@ namespace QEDO_CIDL_Generator {
 GeneratorPersistenceC::GeneratorPersistenceC
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
 : CPPBase(repository), 
-  m_isAbstract(true)
+  m_isAbstract(true),
+  m_isRef(false)
 {
 }
 
@@ -132,17 +133,29 @@ GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribut
 	std::string attribute_name = mapName(attribute);
 	IR__::IDLType_var attr_type = attribute->type_def();
 
-	out << map_psdl_return_type(attr_type, false) << "\n";
-	out << m_class_name << "::" << attribute_name << "(";
-	out << map_psdl_parameter_type(attr_type, false) << " param)\n";
-	out << "{\n";
-	out.indent();
-	out << "m_" << attribute_name << " = param;\n";
-	out.unindent();
-	out << "}\n\n";
+	switch ( att_type_kind )
+	{
+		case CORBA::tk_char:
+		case CORBA::tk_wchar:
+		case CORBA::tk_octet:
+		case CORBA::tk_string:
+		case CORBA::tk_wstring:
+			out << map_psdl_return_type(attr_type, false) << "\n";
+			out << m_class_name;
+			if(m_isRef) out << "Ref";
+			out << "::" << attribute_name << "(";
+			out << map_psdl_parameter_type(attr_type, false) << " param)\n";
+			out << "{\n";
+			out.indent();
+			out << "m_" << attribute_name << " = param;\n";
+			out.unindent();
+			out << "}\n\n";
+	}
 
 	out << "void\n";
-	out << m_class_name << "::" << attribute_name << "(";
+	out << m_class_name;
+	if(m_isRef) out << "Ref";
+	out << "::" << attribute_name << "(";
 	out << map_psdl_parameter_type(attr_type, true) << " param)\n";
 	out << "{\n";
 	out.indent();
@@ -164,20 +177,24 @@ GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribut
 	if(attr_type->type()->kind()==CORBA::tk_string)
 	{
 		out << "void\n";
-		out << m_class_name << "::" << attribute_name << "(CORBA::String_var& param)\n";
+		out << m_class_name;
+		if(m_isRef) out << "Ref";
+		out << "::" << attribute_name << "(CORBA::String_var& param)\n";
 		out << "{\n";
 		out.indent();
-		out << "m_" << attribute_name << " = param;\n";
+		out << "m_" << attribute_name << " = (char*)param;\n";
 		out.unindent();
 		out << "}\n\n";
 	}
 	else if(attr_type->type()->kind()==CORBA::tk_wstring)
 	{
 		out << "void\n";
-		out << m_class_name << "::" << attribute_name << "(CORBA::WString_var& param)\n";
+		out << m_class_name;
+		if(m_isRef) out << "Ref";
+		out << "::" << attribute_name << "(CORBA::WString_var& param)\n";
 		out << "{\n";
 		out.indent();
-		out << "m_" << attribute_name << " = param;\n";
+		out << "m_" << attribute_name << " = (char*)param;\n";
 		out.unindent();
 		out << "}\n\n";
 	}
@@ -190,7 +207,9 @@ GeneratorPersistenceC::genAttributeWithOtherType(IR__::AttributeDef_ptr attribut
 	IR__::IDLType_var attr_type = attribute->type_def();
 
 	out << map_psdl_return_type(attr_type, false) << "\n";
-	out << m_class_name << "::" << attribute_name << "(";
+	out << m_class_name;
+	if(m_isRef) out << "Ref";
+	out << "::" << attribute_name << "(";
 	out << map_psdl_parameter_type(attr_type, false) << " param)\n";
 	out << "{\n";
 	out.indent();
@@ -199,7 +218,9 @@ GeneratorPersistenceC::genAttributeWithOtherType(IR__::AttributeDef_ptr attribut
 	out << "}\n\n";
 
 	out << "void\n";
-	out << m_class_name << "::" << attribute_name << "(";
+	out << m_class_name;
+	if(m_isRef) out << "Ref";
+	out << "::" << attribute_name << "(";
 	out << map_psdl_parameter_type(attr_type, true) << " param)\n";
 	out << "{\n";
 	out.indent();
@@ -217,7 +238,9 @@ GeneratorPersistenceC::doAttribute(IR__::AttributeDef_ptr attribute)
 	
 	// read only
 	out << map_psdl_return_type(attr_type, true) << "\n";
-	out << m_class_name << "::" << attribute_name << "() const\n";
+	out << m_class_name;
+	if(m_isRef) out << "Ref";
+	out << "::" << attribute_name << "() const\n";
 	out << "{\n";
 	out.indent();
 	out << "return m_" << attribute_name << ";\n";
@@ -258,7 +281,9 @@ GeneratorPersistenceC::genOperation(IR__::OperationDef_ptr operation, IR__::IDLT
 {
 	out << "\n//\n// " << operation->id() << "\n//\n";
 	out << map_psdl_return_type(ret_type, false) << "\n";
-	out << m_class_name << "::" << mapName(operation) << "(";
+	out << m_class_name;
+	if(m_isRef) out << "Ref";
+	out << "::" << mapName(operation) << "(";
 
 	// parameters
 	IR__::ParDescriptionSeq_var pards = operation->params();
@@ -278,8 +303,12 @@ GeneratorPersistenceC::genOperation(IR__::OperationDef_ptr operation, IR__::IDLT
 	};
 
 	out << ")\n";
-	out << "{\n// BEGIN USER INSERT SECTION " << m_class_name << "::" << mapName(operation) << "()\n";
-	out << "// END USER INSERT SECTION " << m_class_name << "::" << mapName(operation) << "()\n}\n\n";
+	out << "{\n// BEGIN USER INSERT SECTION " << m_class_name;
+	if(m_isRef) out << "Ref";
+	out << "::" << mapName(operation) << "()\n";
+	out << "// END USER INSERT SECTION " << m_class_name;
+	if(m_isRef) out << "Ref";
+	out << "::" << mapName(operation) << "()\n}\n\n";
 }
 
 void
@@ -533,7 +562,7 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	//we have to replcace the "_ptr" with "&" for operation find_by_ref_... 
 	if(isRef)
 	{
-		char* pdest = strstr( szReturnType, "_ptr" );
+		char* pdest = strstr( szReturnType, "*" );
 		if( pdest != NULL )
 		{
 			memset(pdest, '\0', 4);
@@ -682,14 +711,15 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	out << "if (GetFieldCount()<=0)\n{\n";
 	out.indent();
 	out << "Close();\n";
-	out << "throw CosPersistentState::NotFound;\n";
+	out << "throw CosPersistentState::NotFound();\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "char szPid[254];\n";
+	out << "unsigned char* szPid = new unsigned char[254];\n";
 	out << "memset(szPid, \'\\0\', 254);\n";
 	out << "GetFieldValue(0, szPid);\n";
 	out << "Close();\n\n";
-	out << "string strPid(szPid);\n";
+	out << "string strPid = \"\";\n";
+	out << "strPid.append((const char*)szPid);\n";
 	out << "StorageObjectBase sob = find_by_pid(strPid);\n";
 	out << "tmp_ptr = dynamic_cast <" << szReturnType << "> (sob);\n";
 	out.unindent();
@@ -758,8 +788,8 @@ GeneratorPersistenceC::genAbstractObjsForConcreteType(IR__::AbstractStorageTypeD
 	handleOperation(abs_storagetype);
 }
 
-void 
-GeneratorPersistenceC::doStorageType(IR__::StorageTypeDef_ptr storagetype)
+void
+GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, bool isRef)
 {
 	m_class_name = string(storagetype->name());
 
@@ -773,13 +803,15 @@ GeneratorPersistenceC::doStorageType(IR__::StorageTypeDef_ptr storagetype)
 	m_SthIter = m_SthMap.find(abs_storagetype->name());
 	string strAbsStoragehomeName = m_SthIter->second;
 
-	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
-	out << "\n\n";	
-	open_module(out, storagetype, "");
-	out << "\n\n";
-	out << "// BEGIN USER INSERT SECTION " << m_class_name << "\n";
-	out << "// END USER INSERT SECTION " << m_class_name << "\n\n";
-	out << m_class_name << "::" << m_class_name << "()\n";
+	out << "// BEGIN USER INSERT SECTION " << m_class_name;
+	isRef ? out << "Ref\n" : out << "\n";
+	out << "// END USER INSERT SECTION " << m_class_name;
+	isRef ? out << "Ref\n\n" : out << "\n\n";
+	out << m_class_name;
+	if(isRef) out << "Ref";
+	out << "::" << m_class_name;
+	if(isRef) out << "Ref";
+	out	<< "()\n";
 	out << "{\n";
 	out.indent();
 
@@ -907,11 +939,31 @@ GeneratorPersistenceC::doStorageType(IR__::StorageTypeDef_ptr storagetype)
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	out.unindent();
-	out << "// BEGIN USER INSERT SECTION " << m_class_name << "::" << m_class_name << "()\n";
-	out << "// END USER INSERT SECTION " <<m_class_name << "::" << m_class_name << "()\n}\n\n";
-	out << m_class_name << "::~" << m_class_name << "()\n";
-	out << "{\n// BEGIN USER INSERT SECTION " << m_class_name << "::~" << m_class_name << "()\n";
-	out << "// END USER INSERT SECTION " <<m_class_name << "::~" << m_class_name << "()\n}\n\n";
+	out << "// BEGIN USER INSERT SECTION " << m_class_name;
+	if(isRef) out << "Ref";
+	out << "::" << m_class_name;
+	if(isRef) out << "Ref";
+	out << "()\n";
+	out << "// END USER INSERT SECTION " <<m_class_name;
+	if(isRef) out << "Ref";
+	out << "::" << m_class_name;
+	if(isRef) out << "Ref";
+	out << "()\n}\n\n";
+	out << m_class_name;
+	if(isRef) out << "Ref";
+	out << "::~" << m_class_name;
+	if(isRef) out << "Ref";
+	out << "()\n";
+	out << "{\n// BEGIN USER INSERT SECTION " << m_class_name;
+	if(isRef) out << "Ref";
+	out << "::~" << m_class_name;
+	if(isRef) out << "Ref";
+	out << "()\n";
+	out << "// END USER INSERT SECTION " <<m_class_name;
+	if(isRef) out << "Ref";
+	out << "::~" << m_class_name;
+	if(isRef) out << "Ref";
+	out << "()\n}\n\n";
 
 	/*
 	for(CORBA::ULong i = 0; i < supported_infs->length(); i++) 
@@ -921,29 +973,28 @@ GeneratorPersistenceC::doStorageType(IR__::StorageTypeDef_ptr storagetype)
 		genAbstractObjsForConcreteType(abs_storage_type_inh);
 	};
 	*/
-	genAbstractObjsForConcreteType(abs_storagetype);
 
+	m_isRef = isRef;
+	genAbstractObjsForConcreteType(abs_storagetype);
 	handleAttribute(storagetype);
 	handleOperation(storagetype);
 
 	out << "void\n";
-	out << m_class_name << "::" << "setValue(map<string, CORBA::Any> valueMap)\n";
+	out << m_class_name;
+	if(isRef) out << "Ref";
+	out << "::" << "setValue(map<string, CORBA::Any> valueMap)\n";
 	out << "{\n";
 	out.indent();
-	out << "CORBA::Any a_value;\n";
 	out << "map <string, CORBA::Any> :: const_iterator colIter;\n\n";
 	out << "colIter = valueMap.find(\"pid\");\n";
-	out << "a_value = colIter->second;\n";
-	out << "a_value >> m_pid;\n\n";
+	out << "colIter->second >>= m_pid;\n\n";
 	out << "colIter = valueMap.find(\"spid\");\n";
-	out << "a_value = colIter->second;\n";
-	out << "a_value >> m_spid;\n\n";
+	out << "colIter->second >>= m_shortPid;\n\n";
 
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		out << "colIter = valueMap.find(\"" << mapName(attribute) << "\");\n";
-		out << "a_value = colIter->second;\n";
 
 		switch(psdl_check_type(attribute->type_def()))
 		{
@@ -954,16 +1005,29 @@ GeneratorPersistenceC::doStorageType(IR__::StorageTypeDef_ptr storagetype)
 		case CPPBase::_DOUBLE:
 		case CPPBase::_LONGDOUBLE:
 		case CPPBase::_STRING:
-			out << "a_value >> m_" << mapName(attribute) << ";\n\n";
+			out << "colIter->second >>= m_" << mapName(attribute) << ";\n\n";
 			break;
 		case CPPBase::_BOOL:
-			out << "a_value >> CORBA::Any::to_boolean(m_" << mapName(attribute) << ");\n\n";
+			out << "colIter->second >>= CORBA::Any::to_boolean(m_" << mapName(attribute) << ");\n\n";
 			break;
 		}
 	}
 
 	out.unindent();
 	out << "}\n\n";
+}
+
+void 
+GeneratorPersistenceC::doStorageType(IR__::StorageTypeDef_ptr storagetype)
+{
+	out << "\n\n";	
+	open_module(out, storagetype, "");
+	out << "\n\n";
+
+	// generate normal class
+	genStorageTypeBody(storagetype, false);
+	// generate ref class
+	genStorageTypeBody(storagetype, true);
 
 	close_module(out, storagetype);
 }
@@ -1017,7 +1081,11 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	}
 	
 	out << szRetType << "\n" << m_class_name << "::_create(";
-	
+	out << "Pid* pid,\n";
+	strDummy.append(iLength, ' ');
+	out << strDummy.c_str();
+	out << "ShortPid* shortPid,\n";
+
 	IR__::AttributeDefSeq state_members = 
 		collectStateMembers(storagehome->managed_storagetype(), CORBA__::dk_Create);
 
@@ -1025,15 +1093,14 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
+		strDummy = "";
+		strDummy.append(iLength, ' ');
+		out << strDummy.c_str();
+
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		out << map_in_parameter_type(attribute->type_def()) << " " << mapName(attribute);
 		if( (i+1)!=ulLen )
-		{
 			out << ",\n";
-			strDummy = "";
-			strDummy.append(iLength, ' ');
-			out << strDummy.c_str();
-		}
 	}
 	
 	if(isRef)
@@ -1059,7 +1126,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out << m_strName << " = \"INSERT INTO pid_content (pid, ownhome) VALUES ( \";\n";
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, false, false);
-	m_strContent = "PSSHelper::convertPidToString(m_pid)";
+	m_strContent = "PSSHelper::convertPidToString(pid)";
 	out << genSQLLine(m_strName, m_strContent, false, false, false, true);
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, true, true);
@@ -1083,13 +1150,13 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out << genSQLLine(m_strName, m_strContent, false, false, true);
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, false, false);
-	m_strContent = "PSSHelper::convertPidToString(m_pid)";
+	m_strContent = "PSSHelper::convertPidToString(pid)";
 	out << genSQLLine(m_strName, m_strContent, false, false, false, true);
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, true, true);
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, false, false);
-	m_strContent = "PSSHelper::convertSpidToString(m_shortPid)";
+	m_strContent = "PSSHelper::convertSpidToString(shortPid)";
 	out << genSQLLine(m_strName, m_strContent, false, false, false, true);
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, true, true);

@@ -91,13 +91,15 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 		
 		~StorageObjectImpl() {};
 
-	private:
+	protected:
 		Pid* m_pid;
 		ShortPid* m_shortPid;
-		StorageHomeBase* m_storageHomeBase;
-		bool m_bModified;
 		string m_strUpdate;
 		string m_strSelect;
+
+	private:
+		StorageHomeBase* m_storageHomeBase;
+		bool m_bModified;
 };
 
 class CONTAINERDLL_API StorageObjectRefImpl : public virtual CosPersistentState::StorageObjectRef,
@@ -158,11 +160,15 @@ class CONTAINERDLL_API StorageObjectRefImpl : public virtual CosPersistentState:
 			return ref;
 		}
 
-	private:
-
+	protected:
 		Pid* m_pid;
 		ShortPid* m_shortPid;
+		string m_strUpdate;
+		string m_strSelect;
+
+	private:
 		StorageHomeBase* m_storageHomeBase;
+		bool m_bModified;
 };
 
 }; // namespace Qedo
