@@ -1,6 +1,9 @@
 %{
 #include "k.h"
 #include "yystype.h"
+#ifndef YYSTYPE
+#define YYSTYPE YYSTYPE
+#endif
 #include "cidl.h"
 #include "lexana.h"
 #include <string.h>

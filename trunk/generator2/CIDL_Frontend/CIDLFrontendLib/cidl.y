@@ -28,6 +28,9 @@
 #include "symtab.h"
 #include "options.h"
 #include "yystype.h"
+#ifndef YYSTYPE
+#define YYSTYPE YYSTYPE
+#endif
 #define yyerror(s) yyerror_1(s, yystate)
 
 %}
