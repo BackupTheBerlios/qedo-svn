@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;$(ORBACUS)\include;$(ZLIB);$(XERCES)\include"
+				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;ZLIB_DLL"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
