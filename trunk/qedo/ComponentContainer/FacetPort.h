@@ -94,7 +94,7 @@ public:
 	 * provides the facet
 	 * \return The facet.
 	 */
-    const CORBA::Object_ptr facet_ref() const;
+CONTAINERDLL_API    const CORBA::Object_ptr facet_ref() const;
 };
 
 // Export template class

@@ -475,6 +475,8 @@ module Components {
 		local interface ServerInterceptorRegistration : PortableInterceptor::ServerRequestInterceptor
 		{
 			void register_interceptor_for_all (in ServerContainerInterceptor server_interceptor);
+			void register_interceptor_for_component (in ServerContainerInterceptor server_interceptor, in string id);
+			
 		};
 
 		local interface ClientInterceptorRegistration : PortableInterceptor::ClientRequestInterceptor

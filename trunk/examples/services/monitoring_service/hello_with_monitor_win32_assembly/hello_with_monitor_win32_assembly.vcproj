@@ -99,18 +99,9 @@
 		</Configuration>
 	</Configurations>
 	<Files>
-		<Filter
-			Name="Source Files"
-			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc">
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
-		</Filter>
+		<File
+			RelativePath="meta-inf\callee.cpf">
+		</File>
 		<File
 			RelativePath="meta-inf\hello_with_monitoring_win32.cad">
 			<FileConfiguration
@@ -118,7 +109,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					CommandLine="zip ../hello_with_monitoring_win32_assembly.zip -j  ../container_service_MonImpl.zip ../../../general/hello_world/HelloWorld_CalleeImpl.zip ../../../general/hello_world/HelloWorld_CallerImpl.zip
-zip ../hello_with_monitoring_win32_assembly.zip meta-inf/hello_with_monitoring_win32.cad
+zip ../hello_with_monitoring_win32_assembly.zip meta-inf/hello_with_monitoring_win32.cad meta-inf/callee.cpf
 "
 					Outputs="hello_with_monitoring_win32_assembly.zip"/>
 			</FileConfiguration>

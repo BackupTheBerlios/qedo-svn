@@ -51,7 +51,7 @@ CONTAINERDLL_API bool compare_OctetSeqs (const CORBA::OctetSeq&, const CORBA::Oc
 /**
  *
  */
-bool compare_object_ids (const PortableServer::ObjectId&, const PortableServer::ObjectId&);
+CONTAINERDLL_API bool compare_object_ids (const PortableServer::ObjectId&, const PortableServer::ObjectId&);
 
 
 /**

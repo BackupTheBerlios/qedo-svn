@@ -26,6 +26,9 @@
 	        	<componentfileref idref="Callee_file"/>
 				<componentimplref idref="UUID-80164643-3114-4A57-97D0-98BB773F869F"/>
   	        	<componentinstantiation id="callee">
+  	        	<componentproperties>
+  	        		<fileinarchive name="meta-inf/callee.cpf" />
+  	        	</componentproperties>
 			</componentinstantiation>
 
 		        <destination></destination>
@@ -38,9 +41,6 @@
 
 		        <destination></destination>
 		</homeplacement>
-	</processcollocation>
-
-	<processcollocation>
 		<homeplacement id="CallerHome">
 			<componentfileref idref="Caller_file"/>
 				<componentimplref idref="UUID-CDE9D487-2CFA-4E66-88EF-B21EA2F40E0D"/>

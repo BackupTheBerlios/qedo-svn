@@ -27,7 +27,7 @@
 #include "Util.h"
 #include <fstream>
 
-static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.7 2003/12/16 13:39:35 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.8 2003/12/17 08:40:21 tom Exp $";
 
 namespace Qedo {
 
@@ -90,6 +90,7 @@ void
 ClientInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* component_server)
 {
 	component_server_ = component_server;
+
 }
 
 

@@ -31,4 +31,24 @@
             <usage>servant</usage>
         </code>
     </implementation>
+    
+    <implementation id="UUID-8CBEE3D8-6AC6-49AD-88D4-060A340CC697">
+        <os name="WIN" />
+        <processor name="x86" />
+        <compiler name="VC++" version="7,0" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/container_service_MonImpl.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="container_service_MonImpl.dll"/>
+            <entrypoint>create_monitor_homeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="container_service_MonImpl_SERVANT.dll"/>
+            <entrypoint>create_monitor_homeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>    
 </softpkg>

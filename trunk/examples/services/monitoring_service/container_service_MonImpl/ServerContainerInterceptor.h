@@ -4,8 +4,7 @@
 
 namespace Qedo {
 
-	class ServerContainerInterceptor: public virtual Components::Extension::ServerContainerInterceptor,
-		public virtual Qedo::RefCountLocalObject
+	class ServerContainerInterceptor: public virtual Components::Extension::ServerContainerInterceptor
 	{
 	private:
 

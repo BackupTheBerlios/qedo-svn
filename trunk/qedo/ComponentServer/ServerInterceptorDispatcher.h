@@ -44,6 +44,7 @@ namespace Qedo {
 	class ServerInterceptorEntry {
 	public:
 		Components::Extension::ServerContainerInterceptor_var interceptor;
+		std::string id;
 	};
 
 	typedef std::vector < ServerInterceptorEntry > ServerInterceptorVector;
@@ -59,6 +60,11 @@ namespace Qedo {
 		ServerInterceptorVector all_server_interceptors_;
 		/** Mutex for all_server_interceptors_ */
 		QedoMutex all_server_interceptors_mutex_;
+
+		/** vector of interceptors registered for all */
+		ServerInterceptorVector for_component_id_server_interceptors_;
+		/** Mutex for all_server_interceptors_ */
+		QedoMutex for_component_id_server_interceptors_mutex_;
 
 		/** reference to the component server */
 		Qedo::ComponentServerImpl* component_server_;
@@ -97,6 +103,9 @@ namespace Qedo {
 
 		virtual void
 		register_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor);
+
+		virtual void
+		register_interceptor_for_component(Components::Extension::ServerContainerInterceptor_ptr interceptor, const char * id);
 
 		void
 		set_component_server(Qedo::ComponentServerImpl* component_server);

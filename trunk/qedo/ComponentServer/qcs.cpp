@@ -40,7 +40,7 @@
 #include "ClientInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.31 2003/12/16 13:39:35 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.32 2003/12/17 08:42:21 tom Exp $";
 
 
 /**
@@ -161,8 +161,9 @@ main (int argc, char** argv)
 	{
 		// create dispatchers
 		server_dispatcher = new Qedo::ServerInterceptorDispatcher();
+		server_dispatcher -> _add_ref();
 		client_dispatcher = new Qedo::ClientInterceptorDispatcher();
-
+		client_dispatcher -> _add_ref();
 		// register interceptors before ORB_init
 		initializer.set_server_dispatcher (
 			PortableInterceptor::ServerRequestInterceptor::_narrow (server_dispatcher ) );
