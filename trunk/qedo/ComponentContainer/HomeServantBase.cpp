@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.19 2003/08/01 14:57:25 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.20 2003/08/06 12:22:56 stoinski Exp $";
 
 
 namespace Qedo {
@@ -256,12 +256,7 @@ throw (Components::Deployment::InstallationFailure)
 	// Set servant locator
 	try
 	{
-#ifdef MICO_ORB
-//	    home_poa_->set_servant_manager (dynamic_cast<PortableServer::ServantManager*>(servant_locator_));
-	    home_poa_->set_servant_manager (servant_locator_->_this());		// THIS IS WRONG - ServantLocator is no CORBA::Object!
-#else
 	    home_poa_->set_servant_manager (servant_locator_);
-#endif
 	}
 	catch (PortableServer::POA::WrongPolicy&)
 	{
