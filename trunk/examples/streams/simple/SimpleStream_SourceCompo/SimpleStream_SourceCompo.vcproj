@@ -99,8 +99,8 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(QEDO)/bin/zip ../SimpleStream_SourceCompo.zip -j Debug_mico/SimpleStream_SourceCompo.dll ../SimpleStream_SourceCompo_SERVANT/Debug_mico/SimpleStream_SourceCompo_SERVANT.dll ../simple_stream.cidl
-$(QEDO)/bin/zip ../SimpleStream_SourceCompo.zip meta-inf/SimpleStream_SourceCompo.ccd meta-inf/SimpleStream_SourceCompo.csd
+				CommandLine="$(cygwin)\zip ../SimpleStream_SourceCompo.zip -j Debug_mico/SimpleStream_SourceCompo.dll ../SimpleStream_SourceCompo_SERVANT/Debug_mico/SimpleStream_SourceCompo_SERVANT.dll ../simple_stream.cidl
+$(cygwin)\zip ../SimpleStream_SourceCompo.zip meta-inf/SimpleStream_SourceCompo.ccd meta-inf/SimpleStream_SourceCompo.csd
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
