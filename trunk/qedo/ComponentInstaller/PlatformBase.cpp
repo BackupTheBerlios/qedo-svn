@@ -24,7 +24,7 @@
 #include "PlatformBase.h"
 #include "Util.h"
 
-static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.6 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.7 2003/08/27 06:45:48 neubauer Exp $";
 
 #ifndef _WIN32
 #include <time.h>
@@ -61,7 +61,7 @@ PlatformBase::getCurrentDirectory ()
 {
     char path[1024];
 #ifdef _WIN32
-    ::GetCurrentDirectory(1024, path);
+    GetCurrentDirectory(1024, path);
 #else
     if(!getcwd(path,1023))
     {
@@ -167,6 +167,52 @@ PlatformBase::removeFileOrDirectory(std::string object)
 }
 
 
+int 
+PlatformBase::copyFile(std::string src, std::string dst)
+{
+#ifdef _WIN32
+	return CopyFile(src.c_str(), dst.c_str(), false);
+#else
+	int buf[1024];
+	size_t bytes_read;
+	int source, dest;
+	char *src, *dst;
+
+	source = open(src.c_str(), O_RDONLY, 0);
+	dest = creat(dst.c_str(), 0700);   /* stat first to prevent overwriting existing */
+
+	while((bytes_read= read(source, buf, 1024)) > 0)
+		write(dest, buf, bytes_read);
+
+	close(dest);
+	close(source);
+	return 0;
+#endif
+}
+
+
+int 
+PlatformBase::moveFile(std::string source, std::string dest)
+{
+	return rename( source.c_str(), dest.c_str() );
+}
+
+
+std::string 
+PlatformBase::getFileName(std::string source)
+{
+	std::string::size_type pos = source.find_last_of("/\\:");
+	if(pos != std::string::npos)
+	{
+		return source.substr(pos + 1, std::string::npos);
+	}
+	else
+	{
+		return source;
+	}
+}
+
+
 /**
  *
  */
@@ -241,6 +287,7 @@ PlatformBase::getPath(std::string path)
 		return new_path.append("/");
 	}
 #endif
+
 	return path;
 }
 
