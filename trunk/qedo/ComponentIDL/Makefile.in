@@ -66,5 +66,5 @@ install-idl: $(IDL_FILES) qedo_mico.idl qedo_orbacus.idl PSSNativeClasses.idl
 
 .PHONY:install-include
 
-install-include: $(IDL_GEN_H) qedo_mico.h qedo_orbacus.h PSSNativeClasses.h PSSNativeClasses_skel.h
+install-include: $(IDL_GEN_H) qedo_mico.h qedo_orbacus.h PSSNativeClasses.h PSSNativeClasses_skel.h config.h
 
