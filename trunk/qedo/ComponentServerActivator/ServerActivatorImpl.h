@@ -26,7 +26,7 @@
 #include <vector>
 
 #ifndef _WIN32
-#include "HU_Container.h"
+#include "Qedo_Container.h"
 #endif
 #include <OB/CORBA.h>
 #include "QedoComponents_skel.h"
