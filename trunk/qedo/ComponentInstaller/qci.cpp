@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qci.cpp,v 1.9 2003/04/14 09:17:49 tom Exp $";
+static char rcsid[] = "$Id: qci.cpp,v 1.10 2003/05/09 10:42:40 neubauer Exp $";
 
 #include "ComponentInstallationImpl.h"
 #ifdef MICO_ORB
@@ -42,12 +42,30 @@ static char rcsid[] = "$Id: qci.cpp,v 1.9 2003/04/14 09:17:49 tom Exp $";
 
 
 /**
+ * the Qedo directory
+ */
+namespace Qedo {
+std::string g_qedo_dir;
+};
+
+
+/**
  * starts the server for the component installer object
  */
 int
 main (int argc, char** argv)
 {
 	std::cout << "Qedo Component Installer" << std::endl;
+
+#ifdef _WIN32
+	TCHAR tchBuffer[256];
+	LPTSTR lpszSystemInfo = tchBuffer;
+	DWORD dwResult = ExpandEnvironmentStrings("%QEDO%", lpszSystemInfo, 256); 
+	Qedo::g_qedo_dir.append(lpszSystemInfo);
+#else
+	char *e = getenv("QEDO");
+	if(e) Qedo::g_qedo_dir.append(e);
+#endif
 
 	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
 

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: PlatformBase.cpp,v 1.4 2003/01/27 18:51:07 boehme Exp $";
+static char rcsid[] = "$Id: PlatformBase.cpp,v 1.5 2003/05/09 10:42:40 neubauer Exp $";
 
 
 #include "PlatformBase.h"
@@ -124,7 +124,7 @@ PlatformBase::removeFileOrDirectory(std::string object)
 {
 	// if the last symbol is a delimiter, remove it
 	std::string object_name = object;
-#ifdef _WINDOWS
+#ifdef _WIN32
 	if (object_name[object_name.size() - 1] == '\\')
 #else
 	if (object_name[object_name.size() - 1] == '/')

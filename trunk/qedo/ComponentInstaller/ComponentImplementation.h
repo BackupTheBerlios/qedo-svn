@@ -61,6 +61,9 @@ namespace Qedo {
  */
 
 
+extern std::string g_qedo_dir;
+
+
 /**
  * represents a component implementation
  */

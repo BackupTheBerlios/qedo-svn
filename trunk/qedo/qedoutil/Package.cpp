@@ -35,7 +35,7 @@ void
 Package::change_file_date
 ( const char* filename, uLong dosdate, tm_unz tmu_date )
 {
-#ifdef _WINDOWS
+#ifdef _WIN32
     HANDLE hFile;
     FILETIME ftm, ftLocal, ftCreate, ftLastAcc, ftLastWrite;
 

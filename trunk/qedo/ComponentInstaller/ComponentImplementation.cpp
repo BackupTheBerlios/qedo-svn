@@ -686,15 +686,9 @@ throw(Components::CreateFailure)
 	servant_entry_point_ = "create_" + mHomeName + "S";
 
 #ifdef _WIN32
-	TCHAR tchBuffer[256];
-	LPTSTR lpszSystemInfo = tchBuffer;
-	DWORD dwResult = ExpandEnvironmentStrings("%QEDO%", lpszSystemInfo, 256); 
-    mMakeFile.append(lpszSystemInfo);
-	mMakeFile.append("\\etc\\makefile");
+	mMakeFile = g_qedo_dir + "\\etc\\makefile";
 #else
-	char *e = getenv("QEDO");
-	if(e) mMakeFile.append(e);
-	mMakeFile.append("/etc/makefile");
+	mMakeFile = g_qedo_dir + "/etc/makefile";
 #endif
 
 	if ( !checkExistence(mMakeFile, IS_FILE)) 

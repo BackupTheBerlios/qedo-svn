@@ -32,9 +32,6 @@
 #include <vector>
 
 
-#define DEPLOYMENT_PERSISTENCE_FILE		"DeployedComponents.xml"
-
-
 namespace Qedo {
 
 
@@ -42,6 +39,9 @@ namespace Qedo {
  * @addtogroup ComponentInstaller
  * @{
  */
+
+
+extern std::string g_qedo_dir;
 
 
 /**
@@ -67,10 +67,13 @@ private:
 	/** the installation directory */
 	std::string						installationDirectory_;
 
+	/** the installation xml file */
+	static std::string				inst_file_;
+
 	/**
 	 * read the DeployedComponents.xml file
 	 */
-	bool readInstalledComponents (const char* inst_file);
+	bool readInstalledComponents ();
 
 	/**
 	 * add a new installation to the DeployedComponents.xml file

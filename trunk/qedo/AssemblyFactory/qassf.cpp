@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qassf.cpp,v 1.6 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: qassf.cpp,v 1.7 2003/05/09 10:42:40 neubauer Exp $";
 
 #include "AssemblyFactory.h"
 #include "Output.h"
@@ -33,12 +33,31 @@ static char rcsid[] = "$Id: qassf.cpp,v 1.6 2003/04/01 07:50:10 neubauer Exp $";
 
 
 /**
+ * the Qedo directory
+ */
+namespace Qedo {
+std::string g_qedo_dir;
+};
+
+
+/**
  * start the server for the assembly factory object
  */
 int
 main (int argc, char** argv)
 {
 	std::cout << "Qedo Assembly Factory" << std::endl;
+
+	// get the qedo dir
+#ifdef _WIN32
+	TCHAR tchBuffer[256];
+	LPTSTR lpszSystemInfo = tchBuffer;
+	DWORD dwResult = ExpandEnvironmentStrings("%QEDO%", lpszSystemInfo, 256); 
+	Qedo::g_qedo_dir.append(lpszSystemInfo);
+#else
+	char *e = getenv("QEDO");
+	if(e) Qedo::g_qedo_dir.append(e);
+#endif
 
 	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
 

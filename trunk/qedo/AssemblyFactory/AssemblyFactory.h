@@ -47,6 +47,9 @@ namespace Qedo {
  */
 
 
+extern std::string g_qedo_dir;
+
+
 /**
  * the implementation of the Components::Deployment::AssemblyFactory
  */

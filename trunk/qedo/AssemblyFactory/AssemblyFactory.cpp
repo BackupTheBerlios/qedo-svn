@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.7 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.8 2003/05/09 10:42:40 neubauer Exp $";
 
 
 #include "AssemblyFactory.h"
@@ -97,10 +97,10 @@ AssemblyFactoryImpl::initialize()
 	std::cout << "..... bound under " << name << std::endl << std::endl;
 
 	// directory to put the packages
-	packageDirectory_ = getCurrentDirectory() + "/assemblyPackages";
+	packageDirectory_ = g_qedo_dir + "/deployment/assemblies";
 	if (makeDir(packageDirectory_))
 	{
-		std::cerr << "..... AssemblyPackages directory can not be created" << std::endl;
+		std::cerr << "..... directory " << packageDirectory_ << " can not be created" << std::endl;
 		throw CannotInitialize();
 	}
 }
@@ -121,40 +121,38 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
     }
     
     //
-	// ensure the package exists
+	// copy the package in the local package directory
 	//
-    std::string comp_loc = packageDirectory_ + "/" + name;
-	if ( !checkExistence(comp_loc, IS_FILE))
+    URLInputSource inputSource(uri);
+    BinInputStream* inputStream = inputSource.makeStream();
+    if (!inputStream)
+    {
+		throw Components::Deployment::InvalidLocation();
+    }
+
+	std::string package_name = packageDirectory_ + "/" + name;
+	std::ofstream packageFile(package_name.c_str(), std::ios::binary|std::ios::app);
+	if ( ! packageFile)
 	{
-        URLInputSource inputSource(uri);
-        BinInputStream* inputStream = inputSource.makeStream();
-        if (!inputStream)
-        {
-            throw Components::Deployment::InvalidLocation();
-        }
-        
-		std::ofstream packageFile(comp_loc.c_str(), std::ios::binary|std::ios::app);
-		if ( ! packageFile)
-		{
-			std::cerr << "..... Cannot open file " << comp_loc << std::endl;
-			throw Components::CreateFailure();
-		}
-        unsigned char* buf = (unsigned char*)malloc(4096);
-        unsigned int len = inputStream->readBytes(buf, 4096);
-        while (len)
-        {
-            packageFile.write((const char*)buf, len);
-            len = inputStream->readBytes(buf, 4096);
-        }
-        free(buf);
-		packageFile.close();
+		std::cerr << "..... Cannot open file " << package_name << std::endl;
+		throw Components::CreateFailure();
 	}
+    unsigned char* buf = (unsigned char*)malloc(4096);
+    unsigned int len = inputStream->readBytes(buf, 4096);
+    while (len)
+    {
+		packageFile.write((const char*)buf, len);
+		len = inputStream->readBytes(buf, 4096);
+	}
+	free(buf);
+	packageFile.close();
+	delete inputStream;
 
 	//
 	// create new assembly
 	//
 	Cookie_impl* new_cookie = new Cookie_impl();
-	AssemblyImpl* ass = new AssemblyImpl(comp_loc, new_cookie, nameService_);
+	AssemblyImpl* ass = new AssemblyImpl(package_name, new_cookie, nameService_);
 	assemblies_.push_back(ass);
 
 	std::cout << "..... done" << std::endl << std::endl;

@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.9 2003/04/14 09:17:49 tom Exp $";
+static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.10 2003/05/09 10:42:40 neubauer Exp $";
 
 #include "ComponentInstallationImpl.h"
 
@@ -35,11 +35,20 @@ static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.9 2003/04/14 09:17
 
 namespace Qedo {
 
+
+std::string	ComponentInstallationImpl::inst_file_;
+
+
 ComponentInstallationImpl::ComponentInstallationImpl (CORBA::ORB_ptr orb)
 : orb_ (CORBA::ORB::_duplicate (orb))
 {
 	// Initialize the XML4C2 system once for all instances
 	static XMLInitializer ini;
+
+	if (inst_file_ == "")
+	{
+		inst_file_ = g_qedo_dir + "/deployment/installedComponentImplementations.xml";
+	}
 }
 
 
@@ -95,9 +104,18 @@ ComponentInstallationImpl::initialize()
 	std::cout << "..... bound under " << name << std::endl;
 
 	//
+	// deployment directory
+	//
+	if (makeDir(g_qedo_dir + "/deployment"))
+	{
+		std::cerr << "deployment directory can not be created" << std::endl;
+		throw CannotInitialize();
+	}
+
+	//
 	// directory to put the component packages
 	//
-	packageDirectory_ = getCurrentDirectory() + "/componentPackages";
+	packageDirectory_ = g_qedo_dir + "/deployment/packages";
 	if (makeDir(packageDirectory_))
 	{
 		std::cerr << "componentPackages directory can not be created" << std::endl;
@@ -107,7 +125,7 @@ ComponentInstallationImpl::initialize()
 	//
 	// directory to put the component implementations
 	//
-	installationDirectory_ = getCurrentDirectory() + "/componentImplementations";
+	installationDirectory_ = g_qedo_dir + "/deployment/components";
 	if (makeDir(installationDirectory_))
 	{
 		std::cerr << "componentImplementations directory can not be created" << std::endl;
@@ -117,7 +135,7 @@ ComponentInstallationImpl::initialize()
 	//
 	// read information about deployed components
 	//
-	if ( !readInstalledComponents(DEPLOYMENT_PERSISTENCE_FILE))
+	if ( !readInstalledComponents())
 	{
 		throw CannotInitialize();
 	}
@@ -128,17 +146,17 @@ ComponentInstallationImpl::initialize()
 
 
 bool
-ComponentInstallationImpl::readInstalledComponents (const char* inst_file)
+ComponentInstallationImpl::readInstalledComponents ()
 {
 	//
 	// is there already a deployment file ?
 	//
-	if ( ! checkExistence(DEPLOYMENT_PERSISTENCE_FILE, IS_FILE)) 
+	if ( ! checkExistence(inst_file_.c_str(), IS_FILE)) 
 	{
-		std::ofstream deployment_file(DEPLOYMENT_PERSISTENCE_FILE);
+		std::ofstream deployment_file(inst_file_.c_str());
 		if ( ! deployment_file)
 		{
-			std::cerr << "..... Cannot open file " << DEPLOYMENT_PERSISTENCE_FILE << std::endl;
+			std::cerr << "..... Cannot open file " << inst_file_ << std::endl;
 			return false;
 		}
 		deployment_file << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n";
@@ -153,9 +171,9 @@ ComponentInstallationImpl::readInstalledComponents (const char* inst_file)
 	// parse the descriptor file
     //
 	DOMXMLParser* parser = new DOMXMLParser();
-    if (parser->parse(DEPLOYMENT_PERSISTENCE_FILE) != 0) 
+    if (parser->parse(strdup(inst_file_.c_str())) != 0) 
     {
-		std::cerr << "Error during parsing " << DEPLOYMENT_PERSISTENCE_FILE << std::endl;
+		std::cerr << "Error during parsing " << inst_file_ << std::endl;
         return false;
     }
 
@@ -199,9 +217,9 @@ ComponentInstallationImpl::addInstalledComponent (ComponentImplementation* aComp
 	// parse the descriptor file
     //
 	DOMXMLParser* parser = new DOMXMLParser();
-    if (parser->parse(DEPLOYMENT_PERSISTENCE_FILE) != 0) 
+    if (parser->parse(strdup(inst_file_.c_str())) != 0) 
 	{
-		std::cerr << "Error during parsing " << DEPLOYMENT_PERSISTENCE_FILE << std::endl;
+		std::cerr << "Error during parsing " << inst_file_ << std::endl;
         return false;
 	}
 
@@ -250,7 +268,7 @@ ComponentInstallationImpl::addInstalledComponent (ComponentImplementation* aComp
 			theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
 		}
 
-		XMLFormatTarget *myFormTarget = new LocalFileFormatTarget(DEPLOYMENT_PERSISTENCE_FILE);
+		XMLFormatTarget *myFormTarget = new LocalFileFormatTarget(inst_file_.c_str());
 
 		//
 		// do the serialization through DOMWriter::writeNode();
@@ -285,7 +303,6 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 
 	// First test for duplicate UUIDs
 	std::vector < ComponentImplementation >::const_iterator inst_iter;
-
 	for (inst_iter = installed_components_.begin(); inst_iter != installed_components_.end(); inst_iter++)
 	{
 		if ((*inst_iter).uuid_ == implUUID)
@@ -295,13 +312,12 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		}
 	}
 
+	//
+	// component_loc contains PACKAGE location
+	//
 	std::string::size_type pos;
 	std::string desc = component_loc;
-#ifdef WIN32
 	if( !desc.compare(0, 8, "PACKAGE="))
-#else
-	if( !desc.compare(0, 8, "PACKAGE="))
-#endif
 	{
 		//
 		// check whether the package exists
@@ -318,11 +334,14 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		// create new implementation
 		//
 		ComponentImplementation aComponentImplementation(implUUID, installationDirectory_, comp_loc);
-		if (aComponentImplementation.install())
+		bool ok = aComponentImplementation.install();
+		// remove the package
+		removeFileOrDirectory(comp_loc);
+		
+		if (ok)
 		{
 			installed_components_.push_back(aComponentImplementation);
 			addInstalledComponent(&aComponentImplementation);
-			return;
 		}
 		else
 		{
