@@ -15,6 +15,7 @@ class GeneratorVC7 : public CPPBase {
 
 	std::string filename_;
 	Printer out;
+	int uid_;
 
 	void doModule(IR__::ModuleDef_ptr module);
 	void doComposition(CIDL::CompositionDef_ptr composition);
