@@ -13,12 +13,36 @@ namespace Chat {
 
 
 // BEGIN USER INSERT SECTION ChatWriterSessionImpl
+void*
+ChatWriterSessionImpl::run(void* p)
+{
+	ChatWriterSessionImpl* impl;
+
+	impl = static_cast<ChatWriterSessionImpl*>(p);
+
+	while (! impl->stopped && impl->mess_count < 5000 )
+	{
+
+		impl->request_and_push_message();
+	};
+	return 0;
+}
+
+void
+ChatWriterSessionImpl::stop()
+{
+	stopped = true;
+	writer_thread->join();
+}
+
 // END USER INSERT SECTION ChatWriterSessionImpl
 
 
 ChatWriterSessionImpl::ChatWriterSessionImpl()
 {
 // BEGIN USER INSERT SECTION ChatWriterSessionImpl::ChatWriterSessionImpl
+	stopped = false;
+	mess_count = 0;
 // END USER INSERT SECTION ChatWriterSessionImpl::ChatWriterSessionImpl
 }
 
@@ -44,6 +68,8 @@ ChatWriterSessionImpl::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION ChatWriterSessionImpl::configuration_complete
+	writer_thread = context_->start_thread(run,this);
+
 // END USER INSERT SECTION ChatWriterSessionImpl::configuration_complete
 }
 
@@ -53,6 +79,7 @@ ChatWriterSessionImpl::remove()
     throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ChatWriterSessionImpl::remove
+	this->stop();
 // END USER INSERT SECTION ChatWriterSessionImpl::remove
 }
 
@@ -62,9 +89,13 @@ ChatWriterSessionImpl::request_and_push_message()
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ChatWriterSessionImpl::request_and_push_message
-	Chat::ChatMessageImpl* message = new Chat::ChatMessageImpl();
-	message->message(CORBA::string_dup("test"));
+	Chat::ChatMessage_var message = new Chat::ChatMessageImpl();
+	std::string mess_string("test");
+	message->message(mess_string.c_str());
 	context_->push_to_channel(message);
+	std::cout << "test" << std::endl;
+	std::cout << "message sent" << std::endl;
+	std::cout << mess_count++ << std::endl;
 // END USER INSERT SECTION ChatWriterSessionImpl::request_and_push_message
 }
 
@@ -97,11 +128,11 @@ Writer_Compo::obtain_executor(const char* name)
     if (! strcmp ( name, "component" ) ) {
         return Components::EnterpriseComponent::_duplicate (component_);
     }
-    
+
     else if (! strcmp (name, "control")) {
         return Components::EnterpriseComponent::_duplicate (component_);
     }
-    
+
     return Components::EnterpriseComponent::_nil();
 }
 

@@ -19,6 +19,7 @@ namespace Chat {
 ChatReaderSessionImpl::ChatReaderSessionImpl()
 {
 // BEGIN USER INSERT SECTION ChatReaderSessionImpl::ChatReaderSessionImpl
+mess_count = 0;
 // END USER INSERT SECTION ChatReaderSessionImpl::ChatReaderSessionImpl
 }
 
@@ -73,6 +74,7 @@ ChatReaderSessionImpl::push_ChatMessage(::Chat::ChatMessage* ev)
 // BEGIN USER INSERT SECTION ChatReaderSessionImpl::push_ChatMessage
 	std::cout << "ChannelReader: got message.\n";
 	std::cout << ev->message() << std::endl;
+	std::cout << mess_count++ << std::endl;
 // END USER INSERT SECTION ChatReaderSessionImpl::push_ChatMessage
 }
 
@@ -105,7 +107,7 @@ Reader_Compo::obtain_executor(const char* name)
     if (! strcmp ( name, "component" ) ) {
         return Components::EnterpriseComponent::_duplicate (component_);
     }
-    
+
     return Components::EnterpriseComponent::_nil();
 }
 
