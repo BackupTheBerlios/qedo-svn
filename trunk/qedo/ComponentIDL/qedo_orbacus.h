@@ -25,7 +25,7 @@ namespace StreamComponents
 {
 	namespace OBNative_StreamComponents
 	{
-		typedef * BufferPtr;
+		typedef void * BufferPtr;
 	};
 };
 
