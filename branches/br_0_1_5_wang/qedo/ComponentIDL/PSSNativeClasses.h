@@ -39,9 +39,10 @@ namespace OBNative_CosPersistentState
 #endif
 {
 
-class StorageObjectBase_pre
+class StorageObjectBase_pre : virtual public CORBA::Object
 {
-	protected:
+	//protected:
+	public:
 		virtual ~StorageObjectBase_pre() {}
 };
 

@@ -97,7 +97,8 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 
 	protected:
 
-		Connector_var pConnector_;
+		//Connector_var pConnector_;
+		Connector_ptr pConnector_;
 		std::list<StorageHomeBaseImpl*> lHomeBases_;
 		std::list<StorageHomeBaseImpl*>::iterator homeBaseIter_;
 

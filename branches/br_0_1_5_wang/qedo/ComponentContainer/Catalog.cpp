@@ -27,7 +27,8 @@ namespace Qedo
 
 CatalogBaseImpl::CatalogBaseImpl() :
 	QDDatabase(),
-	pConnector_(Connector::_nil()),
+	//pConnector_(Connector::_nil()),
+	pConnector_(NULL),
 	eAM_(READ_ONLY)
 {
 }
@@ -36,7 +37,8 @@ CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM,
 								 const char* szConnString,
 								 Connector_ptr connector) :
 	QDDatabase(),
-	pConnector_(Connector::_duplicate(connector)),
+	//pConnector_(Connector::_duplicate(connector)),
+	pConnector_(connector),
 	eAM_(eAM)
 {
 	strcpy(szConnString_, szConnString);
@@ -44,16 +46,26 @@ CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM,
 
 CatalogBaseImpl::~CatalogBaseImpl()
 {
-	std::cout << "CatalogBaseImpl::~CatalogBaseImpl()\n";
+	std::cout << "\nCatalogBaseImpl::~CatalogBaseImpl()\n";
 
 	std::cout << lHomeBases_.size() << " storage home(s) in the list\n";
 	for( homeBaseIter_=lHomeBases_.begin(); homeBaseIter_!=lHomeBases_.end(); homeBaseIter_++ )
 	{
 		std::cout << "storage home base _remove_ref...\n";
-		(*homeBaseIter_)->_remove_ref();
+		StorageHomeBaseImpl* tmp = *homeBaseIter_;
+		//(*homeBaseIter_)->_remove_ref();
+		if(tmp)
+		{
+			std::cout << "list element is ok\n";
+			tmp->_remove_ref();
+		}
+		else
+			std::cout << "list element is null!!!\n";
 		std::cout << "erase storage home base from list...\n";
 		lHomeBases_.erase(homeBaseIter_);
 	}
+
+	std::cout << std::endl;
 }
 
 bool 
@@ -113,7 +125,8 @@ CatalogBaseImpl::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND h
 Connector_ptr
 CatalogBaseImpl::getConnector()
 {
-	return pConnector_.in();
+	//return pConnector_.in();
+	return pConnector_;
 }
 
 int
@@ -170,7 +183,7 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 
 	pHomeBaseImpl->Init(this, storage_home_id);
 
-	lHomeBases_.push_back(pHomeBaseImpl); // ref + 1?
+	lHomeBases_.push_back(pHomeBaseImpl); // deep copy or?
 	pHomeBase = StorageHomeBase::_duplicate(pHomeBaseImpl);
 
 	return pHomeBase._retn();

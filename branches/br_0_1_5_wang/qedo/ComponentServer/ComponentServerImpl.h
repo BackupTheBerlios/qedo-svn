@@ -192,7 +192,7 @@ public:
 	void loadValuetypeFactory(const char* repid, const char* loc)
 		throw (CORBA::SystemException);
 
-	virtual Connector_ptr getConnector();
+	virtual const Connector_ptr getConnector();
 
 #ifndef _QEDO_NO_QOS
 	/**

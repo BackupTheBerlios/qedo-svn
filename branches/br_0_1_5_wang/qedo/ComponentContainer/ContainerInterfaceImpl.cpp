@@ -38,7 +38,7 @@
 #endif
 
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.9 2004/02/29 18:40:07 hao Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.10 2004/04/28 11:36:24 hao Exp $";
 
 
 namespace Qedo {
@@ -680,7 +680,8 @@ throw (Components::Deployment::UnknownImplId,
 		}
 		
 		//get connector
-		Connector_var pConn = component_server_->getConnector();
+		Connector_var pConn = Connector::_duplicate(component_server_->getConnector());
+		
 		if( ! pConn )
 		{
 			std::cout << "pConn is NULL" << std::endl;

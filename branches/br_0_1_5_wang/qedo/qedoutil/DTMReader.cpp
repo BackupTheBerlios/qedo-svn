@@ -26,7 +26,7 @@
 #include <xercesc/framework/URLInputSource.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: DTMReader.cpp,v 1.1.4.5 2004/02/07 13:47:26 hao Exp $";
+static char rcsid[] UNUSED = "$Id: DTMReader.cpp,v 1.1.4.6 2004/04/28 11:36:24 hao Exp $";
 
 
 namespace Qedo {
@@ -155,7 +155,7 @@ DTMReader::readConnection(std::string descriptor)
 		child = child->getNextSibling();
     }
 
-	for(int i=0; i<vName_.size(); i++)
+	for(unsigned int i=0; i<vName_.size(); i++)
 	{
 		strConn_ += vName_[i];
 		strConn_ += "=";
@@ -193,7 +193,7 @@ DTMReader::readConnection(std::string descriptor, CosPersistentState::ParameterL
     }
 	
 	params.length(vName_.size());
-	for(int i=0; i<vName_.size(); i++)
+	for(unsigned int i=0; i<vName_.size(); i++)
 	{
 		params[i].name = vName_[i].c_str();
 		params[i].val <<= vValue_[i].c_str();

@@ -27,7 +27,7 @@
 #include <unistd.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: GlobalHelpers.cpp,v 1.7.20.2 2004/02/07 13:47:26 hao Exp $";
+static char rcsid[] UNUSED = "$Id: GlobalHelpers.cpp,v 1.7.20.3 2004/04/28 11:36:24 hao Exp $";
 
 
 namespace Qedo {
@@ -234,7 +234,7 @@ convert2Lowercase(std::string strIn)
 {
 	std::string strOut = "";
 
-	for(int i=0; i<strIn.size(); i++)
+	for(unsigned int i=0; i<strIn.size(); i++)
 	{
 		char szTemp = strIn.at(i);
 

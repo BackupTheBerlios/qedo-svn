@@ -90,7 +90,8 @@ class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::
 	protected:
 
 		std::string strHomeName_;
-		CatalogBase_var pCatalogBase_;
+		//CatalogBase_var pCatalogBase_;
+		CatalogBase_ptr pCatalogBase_;
 		std::list<StorageObjectImpl*> lObjectes_;
 		std::list<StorageObjectImpl*>::iterator objIter_;
 

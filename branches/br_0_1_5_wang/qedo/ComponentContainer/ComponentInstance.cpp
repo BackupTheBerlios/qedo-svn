@@ -25,7 +25,7 @@
 #include "Output.h"
 #include "qedoutil.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentInstance.cpp,v 1.14.2.2 2004/03/08 14:47:37 hao Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstance.cpp,v 1.14.2.3 2004/04/28 11:36:24 hao Exp $";
 
 
 namespace Qedo {
@@ -54,11 +54,6 @@ ComponentInstance::ComponentInstance (const PortableServer::ObjectId& object_id,
 #endif
 
 	uuid_ = createUUID();
-	//std::cout << "uuid_ : " << uuid_ << "\n";
-
-	//strUUID_ = "";
-	//strUUID_ += uuid_;
-	//std::cout << "strUUID_ : " << strUUID_ << "\n";
 }
 
 
@@ -144,8 +139,7 @@ ComponentInstance::configure( const Components::ConfigValues& config )
 CORBA::Object_ptr
 ComponentInstance::component_ref()
 {
-	std::cout << "\n\ncomponent_ref().uuid_ : " << uuid_ << "\n\n";
-	//std::cout << "\n\ncomponent_ref().strUUID_ : " << strUUID_ << "\n\n";
+	std::cout << "\ncomponent_ref().uuid_ : " << uuid_ << "\n\n";
 	return CORBA::Object::_duplicate (component_ref_);
 }
 

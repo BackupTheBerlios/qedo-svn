@@ -27,7 +27,8 @@ namespace Qedo
 {
 
 StorageHomeBaseImpl::StorageHomeBaseImpl() :
-	pCatalogBase_( CatalogBase::_nil() )
+	//pCatalogBase_( CatalogBase::_nil() )
+	pCatalogBase_( NULL )
 {
 }
 
@@ -53,8 +54,10 @@ StorageHomeBaseImpl::Init( CatalogBase_ptr pCatalogBase, const char* szHomeName 
 {
 	strHomeName_ = szHomeName;
 
-	pCatalogBase_ = CatalogBase::_duplicate(pCatalogBase);
-	CatalogBaseImpl* pCatalog = dynamic_cast <CatalogBaseImpl*> ( pCatalogBase_.in() );
+	//pCatalogBase_ = CatalogBase::_duplicate(pCatalogBase);
+	pCatalogBase_ = pCatalogBase;
+	//CatalogBaseImpl* pCatalog = dynamic_cast <CatalogBaseImpl*> ( pCatalogBase_.in() );
+	CatalogBaseImpl* pCatalog = dynamic_cast <CatalogBaseImpl*> ( pCatalogBase_ );
 
 	QDRecordset::Init( pCatalog->getHDBC() );
 }
@@ -77,7 +80,8 @@ StorageHomeBaseImpl::destroyObject( Pid* pPid )
 	strSqlDel += strPid;
 	strSqlDel += "\';";
 
-	CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_.in());
+	//CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_.in());
+	CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);
 	pCatalogBaseImpl->ExecuteSQL(strSqlDel.c_str());
 }
 
@@ -109,7 +113,8 @@ StorageHomeBaseImpl::objectExists( Pid* pPid )
 void
 StorageHomeBaseImpl::write_state(std::string strUpdate)
 {
-	CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_.in());
+	//CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_.in());
+	CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);
 	pCatalogBaseImpl->ExecuteSQL(strUpdate.c_str());
 }
 
@@ -169,7 +174,8 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 		Close();
 
 		//use factory to create a storage object
-		CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_.in());
+		//CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_.in());
+		CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase_);
 
 		StorageObjectFactory factory = NULL;
 		factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(strType.c_str(), factory);
@@ -195,7 +201,8 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 CatalogBase_ptr 
 StorageHomeBaseImpl::get_catalog()
 {
-	return pCatalogBase_.in();
+//	return pCatalogBase_.in();
+	return pCatalogBase_;
 }
 
 std::string

@@ -60,6 +60,8 @@ ConnectorImpl::~ConnectorImpl()
 		std::cout << "session _remove_ref()...\n";
 		(*sessionIter_)->_remove_ref();
 		std::cout << "erase session from list...\n";
+		if((*sessionIter_)!=NULL)
+			std::cout << "session is not null!\n";
 		lSessions_.erase(sessionIter_);
 		std::cout << "end of erase session from list...\n";
 	}
@@ -77,6 +79,27 @@ ConnectorImpl::~ConnectorImpl()
 		lSessionPools_.erase(sessionPoolIter_);
 	}
 
+	std::cout << homeFactoryMap_.size() << " home factory(ies) in the map\n";
+	for( homeFactoryIter_=homeFactoryMap_.begin();
+		 homeFactoryIter_!=homeFactoryMap_.end();
+		 homeFactoryIter_++ )
+	{
+		std::cout << "release home factory...\n";
+		//(homeFactoryIter_->second)->_remove_ref();
+		StorageHomeFactory h_factory = homeFactoryIter_->second;
+		if(h_factory)
+		{
+			std::cout << "h_factory is not null !\n";
+			h_factory->_remove_ref();
+			//delete h_factory;
+		}
+		else
+			std::cout << "h_factory is null !\n";
+
+		std::cout << "erase home factory from map...\n";
+		homeFactoryMap_.erase(homeFactoryIter_);
+	}
+
 	// release factories
 	std::cout << objFactoryMap_.size() << " object factory(ies) in the map\n";
 	for( objFactoryIter_=objFactoryMap_.begin();
@@ -87,17 +110,6 @@ ConnectorImpl::~ConnectorImpl()
 		(objFactoryIter_->second)->_remove_ref();
 		std::cout << "erase object factory from map...\n";
 		objFactoryMap_.erase(objFactoryIter_);
-	}
-
-	std::cout << homeFactoryMap_.size() << " home factory(ies) in the map\n";
-	for( homeFactoryIter_=homeFactoryMap_.begin();
-		 homeFactoryIter_!=homeFactoryMap_.end();
-		 homeFactoryIter_++ )
-	{
-		std::cout << "release home factory...\n";
-		(homeFactoryIter_->second)->_remove_ref();
-		std::cout << "erase home factory from map...\n";
-		homeFactoryMap_.erase(homeFactoryIter_);
 	}
 
 	std::cout << "end of destrctor of connector...\n";
@@ -215,7 +227,7 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 	if( iMaxConnections == -100 )
 		iMaxConnections = pSession->GetMaxDriverConnections();
 
-	lSessions_.push_back(pSession);
+	lSessions_.push_back(pSession); //deep copy or!
 	
 	_session = Sessio::_duplicate(pSession);
 	return _session._retn();

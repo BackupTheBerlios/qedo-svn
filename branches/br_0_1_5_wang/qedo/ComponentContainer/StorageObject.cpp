@@ -30,7 +30,8 @@ StorageObjectImpl::StorageObjectImpl() :
 	pShortPid_(new CosPersistentState::ShortPid),
 	strUpdate_(""),
 	strSelect_(""),
-	pHomeBase_(StorageHomeBase::_nil()),
+	//pHomeBase_(StorageHomeBase::_nil()),
+	pHomeBase_(NULL),
 	bModified_(FALSE)
 {
 }
@@ -105,13 +106,16 @@ StorageObjectImpl::set_short_pid(const char* szShortPid)
 void 
 StorageObjectImpl::_add_ref()
 {
+	//std::cout << "StorageObjectImpl::_remove_ref()\n";
 	RefCountLocalObject::_add_ref();
 }
 		
 void
 StorageObjectImpl::_remove_ref()
 {
+	std::cout << "StorageObjectImpl::_remove_ref()\n";
 	RefCountLocalObject::_remove_ref();
+	std::cout << "StorageObjectImpl::_remove_ref()22\n";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +132,8 @@ StorageObjectImpl::destroy_object()
 	DEBUG_OUT("StorageObjectImpl::destroy_object() is called");
 
 	Pid_var pPid = get_pid();
-	StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase_.in());
+	//StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase_.in());
+	StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase_);
 	pHomeBaseImpl->destroyObject(pPid);
 }
 
@@ -143,7 +148,8 @@ StorageObjectImpl::object_exists()
 	DEBUG_OUT("StorageObjectImpl::object_exists() is called");
 
 	Pid_var pPid = get_pid();
-	StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase_.in());
+	//StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase_.in());
+	StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase_);
 	return pHomeBaseImpl->objectExists(pPid);
 }
 
@@ -193,7 +199,8 @@ StorageHomeBase_ptr
 StorageObjectImpl::get_storage_home()
 	throw (CORBA::SystemException)
 {
-	return StorageHomeBase::_duplicate(pHomeBase_.in());
+	//return StorageHomeBase::_duplicate(pHomeBase_.in());
+	return pHomeBase_;
 }
 
 StorageObject*
@@ -213,7 +220,8 @@ StorageObjectImpl::_downcast(StorageObject* pStorageObject)
 void
 StorageObjectImpl::setStorageHome( StorageHomeBase_ptr pHomeBase )
 {
-	pHomeBase_ = StorageHomeBase::_duplicate(pHomeBase);
+	//pHomeBase_ = StorageHomeBase::_duplicate(pHomeBase);
+	pHomeBase_ = pHomeBase;
 }
 
 }

@@ -63,7 +63,8 @@ class StorageObject : public virtual CosPersistentState::StorageObjectBase_pre
 		static StorageObject* _downcast(StorageObject*);
 		
 	
-	protected:
+	//protected:
+	public:
 		
 		virtual ~StorageObject() {};
 };

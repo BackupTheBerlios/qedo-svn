@@ -89,7 +89,8 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 
 		static StorageObject* _downcast(StorageObject* pStorageObject);
 
-	protected:
+	public:
+	//protected:
 		
 		virtual ~StorageObjectImpl();
 
@@ -102,7 +103,7 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 
 	private:
 
-		StorageHomeBase_var pHomeBase_;
+		StorageHomeBase_ptr pHomeBase_;
 		bool bModified_;
 };
 
