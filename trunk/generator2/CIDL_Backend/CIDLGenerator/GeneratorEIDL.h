@@ -18,15 +18,14 @@ class GeneratorEIDL : public virtual IDLBase
 {
 
 		// internal list for items to generate
+	bool forward;
 	IR__::ContainedSeq_var m_to_generate_seq;
-	std::set<std::string> m_recursion_stack;
+	std::set<std::string> m_recursion_set;
 	bool already_included (IR__::Contained_ptr item);
 	void insert_to_generate(IR__::Contained_ptr item);
 	void check_for_generation ( IR__::Contained_ptr item );
 	void generate_the_item ( IR__::Contained_ptr item ) ;
 
-//	void open_scope(IR__::Contained_ptr item );
-//	void close_scope(IR__::Contained_ptr item );
 	string filename_;
 	Printer out;
 	string managed_component_;
