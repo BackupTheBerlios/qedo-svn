@@ -85,19 +85,60 @@ public:
 	/**
 	 * destructor
 	 */
-	~QedoMutex();
+	virtual ~QedoMutex();
 
 	/**
 	 * lock the mutex
 	 */
-	void lock_object();
+	virtual void lock_object();
 
 	/**
 	 * unlock the mutex
 	 */
-	void unlock_object();
+	virtual void unlock_object();
 };
 
+
+struct RecursivMutexDelegate;
+
+/**
+ * This is a recursiv mutex implementation based on pthread mutex or  WIN32 mutex.
+ */
+class QEDOUTIL_API QedoRecursivMutex : public QedoMutex
+{
+	/** makes use of this */
+	friend class QedoLock;
+	/** makes use of this */
+	friend class QedoCond;
+
+private:
+
+	/**
+	 * implementation detail data
+	 */
+	struct RecursivMutexDelegate* rdelegate_;
+
+public:
+	/**
+	 * constructor
+	 */
+	QedoRecursivMutex();
+
+	/**
+	 * destructor
+	 */
+	virtual ~QedoRecursivMutex();
+
+	/**
+	 * lock the mutex
+	 */
+	virtual void lock_object();
+
+	/**
+	 * unlock the mutex
+	 */
+	virtual void unlock_object();
+};
 
 /**
  * This is a auto lock implementation based on pthread mutex or WIN32 mutex.
@@ -228,7 +269,7 @@ public:
 	/**
 	 * destructor
 	 */
-	~QedoReadWriteMutex();
+	virtual ~QedoReadWriteMutex();
 
 	/**
 	 * get a read lock for the mutex
@@ -241,9 +282,14 @@ public:
 	void write_lock_object();
 
 	/**
+	 * get also the exclusive write lock for the mutex
+	 */
+	virtual void lock_object();
+
+	/**
 	 * unlock the mutex
 	 */
-	void unlock_object();
+	virtual void unlock_object();
 };
 
 /**

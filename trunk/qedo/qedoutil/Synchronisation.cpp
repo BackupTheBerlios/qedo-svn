@@ -34,7 +34,7 @@
 #include <sys/time.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.30 2004/02/09 15:37:57 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.31 2004/02/09 16:23:30 boehme Exp $";
 
 
 namespace Qedo {
@@ -45,6 +45,17 @@ struct MutexDelegate
 	HANDLE mutex_;
 #else
 	pthread_mutex_t mutex_;
+#endif
+};
+
+struct RecursivMutexDelegate 
+{
+#ifdef QEDO_WINTHREAD
+#error
+	HANDLE mutex_;
+#else
+	unsigned long count;
+	pthread_t thread_;
 #endif
 };
 
@@ -202,7 +213,6 @@ QedoMutex::lock_object()
 #endif
 }
 
-
 void
 QedoMutex::unlock_object() 
 {
@@ -221,6 +231,90 @@ QedoMutex::unlock_object()
 	{
 		std::cerr << "QedoMutex::unlock_object: " << strerror(ret) << std::endl;
 	}
+#endif
+}
+
+QedoRecursivMutex::QedoRecursivMutex() 
+{
+    rdelegate_ = new RecursivMutexDelegate();
+	 rdelegate_->count = 0;
+#ifdef QEDO_WINTHREAD
+#error
+#else
+#endif
+}
+
+
+QedoRecursivMutex::~QedoRecursivMutex() 
+{
+#ifdef QEDO_WINTHREAD
+#error
+#else
+#endif
+	assert(rdelegate_->count == 0);
+	delete rdelegate_;
+}
+
+
+void
+QedoRecursivMutex::lock_object() 
+{
+#ifdef QEDO_WINTHREAD
+#error
+	if (WaitForSingleObject (delegate_->mutex_, INFINITE) != WAIT_OBJECT_0)
+	{
+		std::cerr << "QedoRecursivMutex: lock_object() failed: " << GetLastError() << std::endl;
+		assert (0);
+	}
+#else
+
+	pthread_t t = pthread_self();
+
+	if ( rdelegate_->count > 0 && rdelegate_->thread_  == t )
+	{
+		rdelegate_->count += 1;
+	}
+	else
+	{
+		this->QedoMutex::lock_object();
+
+		rdelegate_->count += 1;
+		rdelegate_->thread_ = t;
+	}
+#endif
+}
+
+
+void
+QedoRecursivMutex::unlock_object() 
+{
+#ifdef QEDO_WINTHREAD
+	if (! ReleaseMutex (delegate_->mutex_))
+	{
+		std::cerr << "QedoRecursivMutex: unlock_object() failed: " << GetLastError() << std::endl;
+		assert (0);
+	}
+#else
+	pthread_t t = pthread_self();
+
+	if ( rdelegate_->count == 0 )
+	{
+		std::cerr << "QedoRecursivMutex::unlock_object count zero" << std::endl;
+		abort();
+	}
+
+	if ( rdelegate_->thread_ != t )
+	{
+		std::cerr << "QedoRecursivMutex::unlock_object unlock by wrong thread" << std::endl;
+		abort();
+	}
+
+	if ( rdelegate_->count == 1 )
+	{
+		this->QedoMutex::unlock_object();
+	}
+
+	rdelegate_->count -= 1;
 #endif
 }
 
@@ -620,6 +714,12 @@ QedoReadWriteMutex::unlock_object()
 	}
 }
 #endif
+
+void
+QedoReadWriteMutex::lock_object()
+{
+	this->write_lock_object();
+}
 
 QedoThread::QedoThread()
 {
