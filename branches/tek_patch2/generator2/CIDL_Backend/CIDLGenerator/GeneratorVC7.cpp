@@ -440,7 +440,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "</File>\n";
 	out.unindent();
 	out << "</Filter>\n";
-	
+
 	//
 	// idl files
 	//
@@ -474,8 +474,8 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
 	out << "Description=\"..... compiling CIDL\"\n";
-	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32";
-	out << " -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --business -d --target ";
+	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 ";
+	out << "-I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --business -d --target ";
 	out << composition->id() << " ../" << target_file_name_ << "\"\n";
 	out << "Outputs=\"" << project_name << "_LOCAL.idl;" << project_name << "_EQUIVALENT.idl;";
 	out << project_name << "_BUSINESS.idl\"/>\n";
@@ -948,7 +948,7 @@ GeneratorVC7::generateServant()
 	out.unindent();
 	out.unindent();
 	out << "</Configuration>\n";
-	
+
 	//
 	// tao
 	//
@@ -963,7 +963,7 @@ GeneratorVC7::generateServant()
 	out.indent();
 	out << "Name=\"VCCLCompilerTool\"\n";
 	out << "Optimization=\"0\"\n";
-	out << "AdditionalIncludeDirectories=\".;$(QEDO)/include;$(TAO)\"\n";
+	out << "AdditionalIncludeDirectories=\".;$(QEDO)/include;$(TAO);\"\n";
 	out << "PreprocessorDefinitions=\"WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
 	out << "BasicRuntimeChecks=\"3\"\n";
@@ -1134,7 +1134,7 @@ GeneratorVC7::generateServant()
 	out << "Name=\"VCCustomBuildTool\"\n";
 	out << "Description=\"..... compiling CIDL\"\n";
 	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 ";
-	out << " -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --servant --target " << target_->id() << " ../" << target_file_name_ << "\"\n";
+	out << "-I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --servant --target " << target_->id() << " ../" << target_file_name_ << "\"\n";
 	out << "Outputs=\"" << file_prefix_ << "_LOCAL.idl;" << file_prefix_ << "_EQUIVALENT.idl\"/>\n";
 	out.unindent();
 	out.unindent();
