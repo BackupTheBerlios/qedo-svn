@@ -25,6 +25,13 @@
 
 
 %{ KC_TYPES_HEADER
+#ifdef TAO_ORB
+#define off_t _off_t
+#define O_RDWR _O_RDWR
+#define O_CREAT _O_CREAT
+#include <DynamicAny/DynamicAny.h>
+#endif
+
 #include <CORBA.h>
 #include <IFR.h>
 #include <CIDL_Extension.h>

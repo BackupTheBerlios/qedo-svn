@@ -80,7 +80,11 @@ static int empty_def_indent=0;
 %{ HEADER
 #ifdef _MSC_VER
 #include <io.h>
+#ifndef TAO_ORB
 #define mode_t int
+#else
+typedef unsigned short mode_t;
+#endif
 #define unlink _unlink
 #define fchmod _fchmod
 #define fileno _fileno

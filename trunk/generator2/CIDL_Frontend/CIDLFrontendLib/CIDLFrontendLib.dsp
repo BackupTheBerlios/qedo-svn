@@ -90,7 +90,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "CIDLFrontendLib___Win32_Debug_mico"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /Gm /GR /GX /ZI /Od /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "__STDC__" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /I "$(MICO)\include" /I "$(MICO)\include\windows" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "__STDC__" /D "_WINDOWS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /I "$(MICO)\include" /I "$(MICO)\include\windows" /D "KC_DEPRECATED" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "__STDC__" /D "YYERROR_VERBOSE" /D "YYDEBUG" /D "_WINDOWS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -136,7 +136,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "CIDLFrontendLib___Win32_Debug_tao"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /I "$(MICO)\include" /I "$(MICO)\include\windows" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "__STDC__" /D "_WINDOWS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /I "$(TAO)\TAO" /I "$(TAO)\TAO\tao" /I "$(TAO)" /I "$(TAO)\TAO\tao\DynamicAny" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "__STDC__" /D "_WINDOWS" /D "TAO_ORB" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /I "$(TAO)\TAO" /I "$(TAO)\TAO\tao" /I "$(TAO)" /I "$(TAO)\TAO\tao\DynamicAny" /D "KC_DEPRECATED" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "__STDC__" /D "YYERROR_VERBOSE" /D "YYDEBUG" /D "_WINDOWS" /D "TAO_ORB" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -458,11 +458,7 @@ BuildCmds= \
 InputPath=.\tree.k
 
 BuildCmds= \
-	c:\opt\cygwin\bin\touch k.h \
-	c:\opt\cygwin\bin\touch unpk.h \
-	d:/generatoren/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl -I..\..\CIDL_Repository\CIDLRepositoryLib -I..\..\CIDL_Repository\ComponentRepositoryLib -I%MICO%\include -I%MICO%\include\windows -D_WINDOWS attributes.k > attributes \
-	d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp tree.k frontend.k symtab.k error.k printer.k options.k resolve_symtab.k cg_io.k debug.k util.k global.k attributes pretty.k repository.k \
-	
+	$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
 
 "k.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -474,6 +470,102 @@ BuildCmds= \
    $(BuildCmds)
 
 "unpk.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"attributes.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"attributes.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cg_io.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cg_io.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cidl_attributes.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cidl_attributes.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"debug.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"debug.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"error.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"error.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"frontend.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"frontend.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"global.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"global.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"options.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"options.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"pretty.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"pretty.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"print_idl.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"print_idl.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"printer.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"printer.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"repository.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"repository.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"resolve_symtab.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"resolve_symtab.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"symtab.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"symtab.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"tree.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"tree.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"util.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"util.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -600,11 +692,7 @@ BuildCmds= \
 InputPath=.\tree.k
 
 BuildCmds= \
-	$(cygwin)\bin\touch k.h \
-	$(cygwin)\bin\touch unpk.h \
-	$(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl -I..\..\CIDL_Repository\CIDLRepositoryLib -I..\..\CIDL_Repository\ComponentRepositoryLib -I%MICO%\include -I%MICO%\include\windows -D_WINDOWS attributes.k > attributes \
-	..\..\kimwitu_mingw\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp tree.k frontend.k symtab.k error.k printer.k options.k resolve_symtab.k cg_io.k debug.k util.k global.k attributes pretty.k repository.k \
-	
+	$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
 
 "k.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -616,6 +704,102 @@ BuildCmds= \
    $(BuildCmds)
 
 "unpk.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"attributes.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"attributes.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cg_io.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cg_io.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cidl_attributes.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cidl_attributes.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"debug.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"debug.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"error.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"error.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"frontend.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"frontend.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"global.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"global.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"options.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"options.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"pretty.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"pretty.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"print_idl.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"print_idl.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"printer.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"printer.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"repository.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"repository.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"resolve_symtab.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"resolve_symtab.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"symtab.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"symtab.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"tree.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"tree.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"util.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"util.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
 # End Custom Build
 
@@ -652,7 +836,7 @@ InputPath=.\lexana.l
 InputPath=.\lexana.l
 
 "lexana.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\opt\cygwin\bin\flex -Sflex.skel -tw lexana.l  > lexana.cpp
+	$(LEX) -tw -Sflex.skel lexana.l  > lexana.cpp
 
 # End Custom Build
 
@@ -672,7 +856,7 @@ InputPath=.\lexana.l
 InputPath=.\lexana.l
 
 "lexana.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\opt\cygwin\bin\flex -Sflex.skel -tw lexana.l  > lexana.cpp
+	$(LEX) -tw -Sflex.skel lexana.l  > lexana.cpp
 
 # End Custom Build
 
@@ -693,6 +877,21 @@ SOURCE=.\cidl.output
 
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_mico"
 
+# Begin Custom Build
+InputPath=.\cidl.output
+
+BuildCmds= \
+	"$(PYTHON)" errmsg.py < cidl.output > errmsg.cpp \
+	echo extern char *error_message[];  > errmsg.h \
+	
+
+"errmsg.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"errmsg.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_orbacus"
 
 # Begin Custom Build
@@ -711,6 +910,21 @@ BuildCmds= \
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_tao"
+
+# Begin Custom Build
+InputPath=.\cidl.output
+
+BuildCmds= \
+	"$(PYTHON)" errmsg.py < cidl.output > errmsg.cpp \
+	echo extern char *error_message[];  > errmsg.h \
+	
+
+"errmsg.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"errmsg.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
 
 !ENDIF 
 
@@ -738,11 +952,22 @@ InputPath=.\cidl.y
 # Begin Custom Build
 InputPath=.\cidl.y
 
-"cidl.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	C:\opt\cygwin\bin\bison -y -v -d cidl.y 
-	copy y.tab.c cidl.cpp 
-	copy y.tab.h cidl.h 
+BuildCmds= \
+	env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y \
+	copy cidl.hpp cidl.h \
 	
+
+"cidl.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cidl.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cidl.hpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cidl.output" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
 # End Custom Build
 
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_orbacus"
@@ -773,11 +998,22 @@ BuildCmds= \
 # Begin Custom Build
 InputPath=.\cidl.y
 
-"cidl.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	C:\opt\cygwin\bin\bison -y -v -d cidl.y 
-	copy y.tab.c cidl.cpp 
-	copy y.tab.h cidl.h 
+BuildCmds= \
+	env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y \
+	copy cidl.hpp cidl.h \
 	
+
+"cidl.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cidl.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cidl.hpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"cidl.output" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
 # End Custom Build
 
 !ENDIF 

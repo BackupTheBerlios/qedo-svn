@@ -205,9 +205,8 @@ included_files(char* filename)
 
 #include <string>
 #include <map>
-using namespace std;
-map<string,string> *user_sections;
-string section;
+std::map<string,string> *user_sections;
+std::string section;
 %}
 
 %option noyywrap
@@ -223,6 +222,7 @@ EXP                     [Ee][+-]?{D}+
 FS                      [lLfF]
 IS                      [lLuU]
 ENOL                    (\n|\n)
+
 
 %s psdl
 %s cidl
@@ -241,7 +241,8 @@ ENOL                    (\n|\n)
                section = string(yytext+29,yyleng-30);
                (*user_sections)[section]=string("");
             }
-<sections>"// BEGIN USER INSERT SECTION "[a-zA-Z_:~]*"\n" {
+<sections>"// BEGIN USER INSERT SECTION "[a-zA-Z_:~]*
+"\n" {
                BEGIN(userinput);
                section = string(yytext+29,yyleng-31);
                /* fprintf(stderr,"found section %s\n",section.c_str()); */

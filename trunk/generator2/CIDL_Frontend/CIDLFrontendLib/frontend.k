@@ -51,7 +51,6 @@
 #include "unpk.h"
 
 #include "global.h"
-
 #include <CORBA.h>
 #include <IFR.h>
 #include <CIDL_Extension.h>
@@ -73,12 +72,6 @@ char *  global_input_file_name;
 %}
 
 %{ KC_TYPES_HEADER
-#ifdef TAO_ORB
-#define off_t _off_t
-#define O_RDWR _O_RDWR
-#define O_CREAT _O_CREAT
-#include <DynamicAny/DynamicAny.h>
-#endif
 #include <set>
 #include <CORBA.h>
 #include <CIDL_Extension.h>

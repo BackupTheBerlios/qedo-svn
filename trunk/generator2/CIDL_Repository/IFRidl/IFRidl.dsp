@@ -240,7 +240,7 @@ BuildCmds= \
 InputPath=.\CIDL_Extension.idl
 
 BuildCmds= \
-	$(MICO)\win32-bin\idl --any -I. --c++-suffix cpp --c++-skel  CIDL_Extension.idl \
+	$(MICO)\win32-bin\idl --any -I. --c++-suffix cpp --c++-skel  -I$(MICO)\include\mico  -I$(MICO)\include  CIDL_Extension.idl \
 	copy CIDL_Extension.h CIDL_Extension_skel.h \
 	
 
@@ -288,7 +288,7 @@ BuildCmds= \
 InputPath=.\CIDL_Extension.idl
 
 BuildCmds= \
-	$(TAO)\bin\tao_idl  -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp -DTAO_ORB    CIDL_Extension.idl
+	$(TAO)\bin\tao_idl  -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp -DTAO_ORB    -I$(TAO)/tao -I$(TAO)/tao/tao   CIDL_Extension.idl
 
 "CIDL_Extension.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -342,7 +342,7 @@ BuildCmds= \
 InputPath=.\IFR.idl
 
 BuildCmds= \
-	$(MICO)\win32-bin\idl --any --c++-suffix cpp --c++-skel IFR.idl \
+	$(MICO)\win32-bin\idl --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include IFR.idl \
 	copy IFR.h IFR_skel.h \
 	
 
@@ -390,7 +390,7 @@ BuildCmds= \
 InputPath=.\IFR.idl
 
 BuildCmds= \
-	$(TAO)\bin\tao_idl -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp  -DTAO_ORB  IFR.idl
+	$(TAO)\bin\tao_idl -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp  -DTAO_ORB  -I$(TAO)/tao -I$(TAO)/tao/tao  IFR.idl
 
 "IFR.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
