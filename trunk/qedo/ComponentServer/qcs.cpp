@@ -39,7 +39,7 @@
 #include "ClientInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.26 2003/11/10 16:46:58 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.27 2003/11/14 13:57:29 stoinski Exp $";
 
 
 /**
@@ -78,7 +78,6 @@ main (int argc, char** argv)
 	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/Debug/DebugMode"), "true"))
 	{
 		debug_mode = true;
-		Qedo::debug_output = true;
 	}
 
 	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/VerboseOutput"), "true"))
@@ -98,7 +97,6 @@ main (int argc, char** argv)
 		if (! strcmp (argv[i], "--debug"))
 		{
 			debug_mode = true;
-			Qedo::debug_output = true;
 		}
 
 		if (! strcmp (argv[i], "--verbose"))

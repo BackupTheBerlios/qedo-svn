@@ -62,7 +62,8 @@ public:
     //
     // IDL:omg.org/StreamComponents/StreamingBuffer/set_used:1.0
     //
-    void set_used(CORBA::ULong);
+    void set_used(CORBA::ULong)
+		throw (StreamComponents::StreamingBuffer::OutOfRange);
 
     //
     // IDL:omg.org/StreamComponents/StreamingBuffer/get_used:1.0

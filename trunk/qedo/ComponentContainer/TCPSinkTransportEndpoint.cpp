@@ -45,7 +45,7 @@
 #include <cstdio>
 #include <cerrno>
 
-static char rcsid[] UNUSED = "$Id: TCPSinkTransportEndpoint.cpp,v 1.3 2003/11/04 14:57:50 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: TCPSinkTransportEndpoint.cpp,v 1.4 2003/11/14 13:57:29 stoinski Exp $";
 
 
 namespace Qedo {
@@ -211,7 +211,7 @@ TCPSinkTransportEndpoint::do_read()
 			return;		// End thread
 		}
 
-		DEBUG_OUT2 ("TCPSinkTransportEndpoint: Received a packet with stream number: ", (int)stream_number);
+		// DEBUG_OUT2 ("TCPSinkTransportEndpoint: Received a packet with stream number: ", (int)stream_number);
 
 		// Read and dispatch data
 		StreamComponents::StreamingBuffer_var buffer;

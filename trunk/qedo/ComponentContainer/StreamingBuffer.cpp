@@ -28,7 +28,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: StreamingBuffer.cpp,v 1.2 2003/10/17 09:11:41 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: StreamingBuffer.cpp,v 1.3 2003/11/14 13:57:29 stoinski Exp $";
 
 
 namespace Qedo {
@@ -84,9 +84,19 @@ StreamingBuffer::get_size()
 
 void 
 StreamingBuffer::set_used (CORBA::ULong bytes_used)
+throw (StreamComponents::StreamingBuffer::OutOfRange)
 {
 	if (bytes_used > size_)
+	{
 		DEBUG_OUT ("StreamingBuffer: set_used(): Warning: Supplied value greater than current size");
+		throw StreamComponents::StreamingBuffer::OutOfRange();
+	}
+
+	if (! bytes_used)
+	{
+		DEBUG_OUT ("StreamingBuffer: set_used(): Warning: Size of null not allowed");
+		throw StreamComponents::StreamingBuffer::OutOfRange();
+	}
 
 	bytes_used_ = bytes_used > size_ ? size_ : bytes_used;
 }

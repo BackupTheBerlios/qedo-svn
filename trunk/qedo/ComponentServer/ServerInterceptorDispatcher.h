@@ -33,6 +33,7 @@
 #include "QedoComponents_skel.h"
 #include "Synchronisation.h"
 
+#include <vector>
 
 namespace Qedo {
 
