@@ -46,11 +46,16 @@ LIBS += -L../qedoutil -lqedoutil \
 
 LDLIBS = ${LIBS}
 
-SOURCES = 	 ControllerNotebook.cpp \
+IDL_FILES = explore.idl
+
+SOURCES =	 $(IDL_FILES:.idl=.cpp) \
+		 ControllerNotebook.cpp \
 		 MainFrame.cpp \
 		 NSBrowser.cpp \
 		 Launcher.cpp \
 		 Deployment.cpp \
+		 QedoExplorer.cpp \
+		 QCexplorer.cpp \
 		 qcontroller.cpp
 
 CLEAN_FILES = $(SOURCES:.cpp=.o) qcontroller

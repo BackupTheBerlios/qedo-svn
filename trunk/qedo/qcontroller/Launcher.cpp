@@ -60,15 +60,15 @@ Launcher::Launcher(wxWindow *parent, const wxWindowID id,
 	NSDStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 	h_NSD_sizer-> Add(NSDStartBtn, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-	wxStaticText* hostname_text = new wxStaticText( this, wxID_STATIC, _T("on Hostname or IP:"), wxDefaultPosition, wxDefaultSize, 0 );
-    h_NSD_sizer->Add(hostname_text , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
-	
+	wxStaticText* hostname_text1 = new wxStaticText( this, wxID_STATIC, _T("on Hostname or IP:"), wxDefaultPosition, wxDefaultSize, 0 );
+	h_NSD_sizer->Add(hostname_text1 , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+
 	host_name_nsd_ = new wxTextCtrl( this, ID_HOSTNAME_NSD, _T("localhost"), wxDefaultPosition, wxDefaultSize, 0 );
 	h_NSD_sizer->Add(host_name_nsd_, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-	wxStaticText* hostname_text = new wxStaticText( this, wxID_STATIC, _T("on Hostname or IP:"), wxDefaultPosition, wxDefaultSize, 0 );
-    h_NSD_sizer->Add(hostname_text , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
-	
+	wxStaticText* hostname_text2 = new wxStaticText( this, wxID_STATIC, _T("on Hostname or IP:"), wxDefaultPosition, wxDefaultSize, 0 );
+	h_NSD_sizer->Add(hostname_text2 , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+
 	host_name_nsd_ = new wxTextCtrl( this, ID_HOSTNAME_NSD, _T("localhost"), wxDefaultPosition, wxDefaultSize, 0 );
 	h_NSD_sizer->Add(host_name_nsd_, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 

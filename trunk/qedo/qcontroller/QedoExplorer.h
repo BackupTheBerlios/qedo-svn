@@ -7,7 +7,7 @@
 #include "wx/textctrl.h"
 #include "wx/string.h"
 
-#include "qcexplorer.h"
+#include "QCexplorer.h"
 
 // #include "ComponentDeployment.h"
 

@@ -3,7 +3,7 @@
 #include "wx/button.h"
 #include "Launcher.h"
 #include "Deployment.h"
-#include "Qcexplorer.h"
+#include "QCexplorer.h"
 #include "QedoExplorer.h"
 
 

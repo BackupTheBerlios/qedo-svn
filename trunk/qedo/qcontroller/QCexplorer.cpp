@@ -1,4 +1,4 @@
-#include "qcexplorer.h"
+#include "QCexplorer.h"
 #include "wx/image.h"
 #include "wx/imaglist.h"
 #include "wx/sizer.h"
