@@ -34,19 +34,19 @@ all: $(SUBDIRS:%=%-all)
 .PHONY: install-dir
 
 @bindir@:
-	./mkinstalldirs $@
+	mkinstalldirs $@
 
 $(exec_prefix)/etc:
-	./mkinstalldirs $@
+	mkinstalldirs $@
 
 $(exec_prefix)/lib:
-	./mkinstalldirs $@
+	mkinstalldirs $@
 
 $(exec_prefix)/include:
-	./mkinstalldirs $@
+	mkinstalldirs $@
 
 $(exec_prefix)/idl:
-	./mkinstalldirs $@
+	mkinstalldirs $@
 
 install-dir: @bindir@ $(exec_prefix)/etc $(exec_prefix)/lib $(exec_prefix)/include $(exec_prefix)/idl
 
