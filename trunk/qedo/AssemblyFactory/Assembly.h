@@ -66,6 +66,7 @@ namespace Qedo {
  * the implementation of the assembly interface
  */
 class AssemblyImpl : public virtual POA_Components::Deployment::Assembly,
+					 public virtual PortableServer::RefCountServantBase,
                      public virtual NameServiceBase,
                      public virtual PlatformBase
 {

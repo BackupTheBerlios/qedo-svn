@@ -26,6 +26,7 @@
 
 #include <CORBA.h>
 #include "Components_skel.h"
+
 #include "Valuetypes.h"
 #include "Output.h"
 
@@ -42,7 +43,8 @@ namespace Qedo {
 /**
  * the implementation of Components::StandardConfigurator
  */
-class StandardConfiguratorImpl : public virtual POA_Components::StandardConfigurator
+class StandardConfiguratorImpl : public virtual POA_Components::StandardConfigurator,
+								 public virtual PortableServer::RefCountServantBase
 {
 private:
 	/** the list of config values */

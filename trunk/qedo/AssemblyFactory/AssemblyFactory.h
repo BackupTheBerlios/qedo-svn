@@ -54,6 +54,7 @@ extern std::string g_qedo_dir;
  * the implementation of the Components::Deployment::AssemblyFactory
  */
 class AssemblyFactoryImpl : public virtual POA_Components::Deployment::AssemblyFactory,
+							public virtual PortableServer::RefCountServantBase,
                             public virtual NameServiceBase,
                             public virtual PlatformBase
 {
