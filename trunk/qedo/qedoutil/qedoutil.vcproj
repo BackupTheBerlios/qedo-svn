@@ -272,6 +272,9 @@ copy $(TargetPath) $(QEDO)\bin
 			<File
 				RelativePath="qedoutil.cpp">
 			</File>
+			<File
+				RelativePath="Uri.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
