@@ -1,5 +1,7 @@
 #include "GeneratorBase.h"
-
+#ifdef TAO_ORB
+#include "objbase.h"
+#endif
 
 namespace QEDO_CIDL_Generator {
 
