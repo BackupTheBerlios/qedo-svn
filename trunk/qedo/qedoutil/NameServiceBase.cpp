@@ -23,10 +23,12 @@
 
 #include "NameServiceBase.h"
 #include "qedoutil.h"
+#include "Output.h"
+#include "ConfigurationReader.h"
 #include <iostream>
 
 
-static char rcsid[] UNUSED = "$Id: NameServiceBase.cpp,v 1.11 2003/10/05 19:31:43 tom Exp $";
+static char rcsid[] UNUSED = "$Id: NameServiceBase.cpp,v 1.12 2003/10/23 09:54:04 neubauer Exp $";
 
 
 namespace Qedo {
@@ -45,38 +47,60 @@ NameServiceBase::~NameServiceBase()
 bool
 NameServiceBase::initNameService(CORBA::ORB_ptr orb)
 {
-    // get naming service
+    //
+	// try to get naming service from config values
+	//
     CORBA::Object_var obj;
+	std::string ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
+	if( !ns.empty() )
+	{
+		try
+		{
+			obj = orb->string_to_object( ns.c_str() );
+		}
+		catch(...)
+		{
+			NORMAL_ERR2( "NameServiceBase: can't resolve NameService ", ns );
+			return false;
+		}
 
-    try
-    {
-        obj = orb->resolve_initial_references("NameService");
-    }
-    catch (const CORBA::ORB::InvalidName&)
-    {
-        std::cerr << "Can't resolve NameService" << std::endl;
-		return false;
-    }
+		NORMAL_OUT2( "NameServiceBase: NameService is ", ns );
+	}
+	//
+	// try to get naming service from orb
+	//
+	else
+	{
+		try
+		{
+			obj = orb->resolve_initial_references( "NameService" );
+		}
+		catch (const CORBA::ORB::InvalidName&)
+		{
+			NORMAL_ERR( "NameServiceBase: can't resolve NameService" );
+			return false;
+		}
 
-    if (CORBA::is_nil(obj.in()))
-    {
-        std::cerr << "NameService is a nil object reference" << std::endl;
-		return false;
-    }
+		if (CORBA::is_nil(obj.in()))
+		{
+			NORMAL_ERR( "NameServiceBase: NameService is a nil object reference" );
+			return false;
+		}
+	}
 
 	try
 	{
-		nameService_ = CosNaming::NamingContext::_narrow(obj.in());
+		nameService_ = CosNaming::NamingContext::_narrow( obj.in() );
 	}
 	catch (const CORBA::Exception&)
 	{
-		std::cerr << "NameService is not running" << std::endl;
+		NORMAL_ERR( "NameServiceBase: NameService is not running" );
 		return false;
 	}
 
-    if (CORBA::is_nil(nameService_.in()))
+    if( CORBA::is_nil(nameService_.in()) )
     {
-        std::cerr << "NameService is not a NamingContext object reference" << std::endl;
+        NORMAL_ERR( "NameService is not a NamingContext object reference" );
 		return false;
     }
 
