@@ -1,0 +1,44 @@
+This is the prototypical implementation of a platform infrastructure for
+dynamic reconfiguration of components. It consists of a script evaluator and
+a rule engine. The implementation is using Python 2.3 and fnorb ORB. The IDL
+specification is located in the idl subdirectory.
+
+Requirements:
+=============
+
+Python 2.3 from www.python.org
+    source or binary distribution for several os.
+
+fnorb 1.3 from www.fnorb.org
+    source or binary distribution for several os.
+
+Usage:
+======
+
+To use the infrastructure the idl dependend code has to be build first. This
+is done by calling the idl compiler from fnorb fnidl:
+
+fnidl idl/scripting.idl
+
+Afterwards subdirectories with the stub and skeleton code are available, which
+are used by the implementation. To start the infrastructure, a CORBA 
+NameService has to be running. In order to make the reference of the
+NameService available, the local file ns.ref has to contain the stringified
+reference. The infrastructure is started the following way:
+
+Script.py ... starts the script evaluator. The reference of this object is
+registered in the NameService with the name "ScriptProcessorRegistry".
+
+Rule.py ... starts the rule engine. The reference of this object is
+registered in the NameService with the name "RuleProcessor".
+
+For test purposes a testclient.py and a testobject.py are available. They have
+to be started after the infrastructure is started. Since the testclient makes
+use of the testobject, it has to be started at last.
+
+
+In order to use the infrastructure for dynamic reconfiguration, special rules
+have to be inserted in the .cad file of a component assembly. They are 
+processed during runtime.
+
+
