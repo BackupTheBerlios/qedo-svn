@@ -39,6 +39,22 @@ GeneratorServantC::generate(std::string target, std::string fileprefix)
 	out << "#include \"" << header_name << ".h\"\n";
 	out << "#include \"Output.h\"\n\n\n";
 
+	//
+	// dynamic library identifier
+	//
+	out << "\n//\n// dynamic library identifier\n//\n";
+	out << "static CORBA::Long s_library_id = 0;\n\n";
+	out << "void\n set_library_id( CORBA::Long id )\n{\n";
+	out.indent();
+	out << "s_library_id = id;\n";
+	out.unindent();
+	out << "}\n\n";
+	out << "CORBA::Long\n get_library_id()\n{\n";
+	out.indent();
+	out << "return s_library_id;\n";
+	out.unindent();
+	out << "}\n\n";
+
 	doGenerate();
 
 	//
@@ -1261,7 +1277,7 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 		out.indent();
 		out << "try\n{\n";
 		out.indent();
-		out << "queue_event(consumer, ev);\n";
+		out << "queue_event(consumer, ev, s_library_id);\n";
 		out.unindent();
 		out << "}\n";
 		out << "catch (CORBA::SystemException& ex)\n{\n";
@@ -1290,7 +1306,7 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 		out.indent();
 		out << "const Qedo::SubscribedConsumerVector& consumers = "; 
 		out << "ccm_object_executor_->get_consumers_for_publisher (\"" << a_publishes->name() << "\");\n\n";
-		out << "queue_event(consumers, ev);\n";
+		out << "queue_event(consumers, ev, s_library_id);\n";
 		out.unindent();
 		out << "}\n\n\n";
 	}

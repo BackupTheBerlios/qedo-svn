@@ -44,6 +44,18 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "#include \"ServantBase.h\"\n";
 	out << "#include \"SessionHomeServant.h\"\n\n\n";
 
+	//
+	// dynamic library identifier
+	//
+	out << "\n//\n// dynamic library identifier\n//\n";
+	out << "extern \"C\" {\n";
+	out << "#ifdef _WIN32\n";
+	out << "__declspec(dllexport)\n";
+	out << "#endif\n";
+	out << "void set_library_id( CORBA::Long id );\n";
+	out << "CORBA::Long get_library_id();\n";
+	out << "}\n\n";
+
 	doGenerate();
 
 	//
