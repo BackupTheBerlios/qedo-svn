@@ -29,7 +29,7 @@
 #include "ComponentServerImpl.h"
 #include "GlobalHelpers.h"
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.11 2004/01/13 06:30:12 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.12 2004/01/14 08:36:40 tom Exp $";
 
 namespace Qedo {
 
@@ -185,6 +185,9 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	{
 		try {
 			all_server_interceptors_[i].interceptor->receive_request( info, id );
+		} catch (CORBA::SystemException e)
+		{
+			throw e;
 		} catch ( ... )
 			// catch of user exception is probably missing
 		{
@@ -201,6 +204,9 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 		{
 			try{
 				for_component_id_server_interceptors_[m].interceptor->receive_request( info, id );
+			} catch (CORBA::SystemException e)
+			{
+				throw e;
 			} catch ( ... )
 				//catch of user exceptions is probably missing
 			{
