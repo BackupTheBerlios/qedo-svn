@@ -80,7 +80,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Extension.lib ComponentIDL.lib ComponentContainer.lib  mico2310.lib pthreadVC.lib"
+				AdditionalDependencies="Extension.lib ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/container_service_MonImpl.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)\lib;$(MICO)\win32-bin\lib"
@@ -127,7 +127,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib mico2310.lib"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib mico2311.lib"
 				OutputFile="$(OutDir)/container_service_MonImpl.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)\lib;$(MICO)\win32-bin\lib"

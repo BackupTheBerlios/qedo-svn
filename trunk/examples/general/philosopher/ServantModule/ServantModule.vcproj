@@ -226,7 +226,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib mico2310.lib pthreadVC.lib"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib mico2311.lib pthreadVC.lib"
 				OutputFile="../philosopherS.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(QEDO)/lib&quot;;$(MICO)\win32-bin\lib"

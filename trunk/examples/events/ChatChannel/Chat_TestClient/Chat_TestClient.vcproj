@@ -170,7 +170,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib micocoss2310.lib mico2310.lib wsock32.lib pthreadVC.lib"
+				AdditionalDependencies="ComponentIDL.lib micocoss2311.lib mico2311.lib wsock32.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/Chat_TestClient.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(QEDO)\lib&quot;;&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(MICO)\coss&quot;"

@@ -211,7 +211,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="ComponentIDL.lib micocoss2310.lib mico2310.lib wsock32.lib pthreadVC.lib"
+				AdditionalDependencies="ComponentIDL.lib micocoss2311.lib mico2311.lib wsock32.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/simple_hello_testclient.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
