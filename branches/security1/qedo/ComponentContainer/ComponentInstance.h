@@ -53,6 +53,8 @@ class CONTAINERDLL_API ComponentInstance
 public:
 	/** the identity of this component */
 	std::string							uuid_;
+	/** configuration values */
+	Components::ConfigValues_var		config_;
 	/** object id of the component */
 	PortableServer::ObjectId_var		object_id_;
 	/** object reference of the component */
@@ -72,14 +74,12 @@ public:
 	 * \param executor_locator
 	 * \param executor_context
 	 * \param home_servant
-	 * \param cfg
 	 */
 	ComponentInstance (const PortableServer::ObjectId& object_id, 
 					   CORBA::Object_ptr component_ref, 
 					   Components::ExecutorLocator_ptr executor_locator,
 					   CCMContext* executor_context,
-					   HomeServantBase* home_servant,
-					   const Components::ConfigValues& config);
+					   HomeServantBase* home_servant);
 
 	/**
 	 * constructor
@@ -100,6 +100,12 @@ public:
 	 * destructor
 	 */
 	~ComponentInstance();
+
+	/**
+	 * configure with ConfigValues
+	 * \param config The ConfigValues for configuration.
+	 */
+	void configure( const Components::ConfigValues& config );
 
 	/**
 	 * provides the object reference of the component

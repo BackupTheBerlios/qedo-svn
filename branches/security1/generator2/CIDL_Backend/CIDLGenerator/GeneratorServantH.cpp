@@ -914,7 +914,7 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "Components::CCMObject_ptr create_component()\n";
 	out << "	throw(CORBA::SystemException,Components::CreateFailure);\n\n";
 	out << "// COACH extension\n";
-	out << mapFullName(component_) << "_ptr create_component_with_config(const Components::ConfigValues& config)\n";
+	out << "Components::CCMObject_ptr create_component_with_config(const Components::ConfigValues& config)\n";
 	out << "	throw(CORBA::SystemException, Components::CreateFailure);\n";
 }
 

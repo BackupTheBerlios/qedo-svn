@@ -491,7 +491,7 @@ throw(Components::CreateFailure)
 	for(iter = data.instances.begin(); iter != data.instances.end(); iter++)
 	{
 		DEBUG_OUT2( "AssemblyImpl: create new component ", (*iter).id );
-		Components::ConfigValues_var config;
+		Components::ConfigValues_var config = new Components::ConfigValues();
 		Components::CCMObject_var comp;
 		
 		//
@@ -550,6 +550,8 @@ throw(Components::CreateFailure)
 		//
 		if( (*iter).comp_prop.length())
 		{
+			DEBUG_OUT2( "AssemblyImpl: configure component ", (*iter).id );
+
 			CPFReader reader;
 			config = reader.readCPF( (*iter).comp_prop );
 
@@ -559,7 +561,6 @@ throw(Components::CreateFailure)
 			//
 			// configure with standard configurator
 			//
-			DEBUG_OUT2( "AssemblyImpl: configure component ", (*iter).id );
 			StandardConfiguratorImpl* configurator = new StandardConfiguratorImpl();
 			try
 			{

@@ -143,6 +143,15 @@ protected:
 	 * start component incarnation
 	 * \param executor_locator The executor locator of the component instance.
 	 * \param ccm_context The context of the component instance
+	 * \return The component instance.
+	 */
+	ComponentInstance& incarnate_component (Components::ExecutorLocator_ptr executor_locator, 
+											CCMContext* ccm_context);
+
+	/**
+	 * start component incarnation
+	 * \param executor_locator The executor locator of the component instance.
+	 * \param ccm_context The context of the component instance
 	 * \param cfg The configuration values.
 	 * \return The component instance.
 	 */

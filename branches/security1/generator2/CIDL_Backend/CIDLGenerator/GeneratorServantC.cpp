@@ -1361,6 +1361,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "}\n";
 	out << "catch (Components::CCMException&)\n{\n";
 	out.indent();
+	out << "NORMAL_ERR (\"Home_servant: cannot create component\");\n";
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
@@ -1444,9 +1445,8 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		}
 	}
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
-	out << "Components::ConfigValues config;\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
-	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()), config);\n\n";
+	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
 	out << "// register servant factory\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
 	out << mapFullNameServant(home->managed_component()) << "::cleaner_.factory_);\n\n";
@@ -1481,11 +1481,11 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "}\n\n\n";
 
 	// create_component_with_config
-	out << mapFullName(component_) << "_ptr\n";
+	out << "Components::CCMObject_ptr\n";
 	out << class_name_ << "::create_component_with_config(const Components::ConfigValues& config)\n";
 	out << "throw(CORBA::SystemException, Components::CreateFailure)\n{\n";
 	out.indent();
-	out << "DEBUG_OUT (\"Home_servant: create_with_config() called\");\n\n";
+	out << "DEBUG_OUT (\"Home_servant: create_component_with_config() called\");\n\n";
 	out << "#ifdef TAO_ORB\n";
 	out << mapFullNameLocal(home) << "_ptr home_executor = dynamic_cast < ";
 	out << mapFullNameLocal(home) << "_ptr > (home_executor_.in());\n";

@@ -25,7 +25,7 @@
 #include "Output.h"
 #include "qedoutil.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentInstance.cpp,v 1.12.4.2 2003/10/28 17:15:20 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstance.cpp,v 1.12.4.3 2003/10/29 13:53:17 neubauer Exp $";
 
 
 namespace Qedo {
@@ -35,8 +35,7 @@ ComponentInstance::ComponentInstance (const PortableServer::ObjectId& object_id,
 									  CORBA::Object_ptr component_ref,
 									  Components::ExecutorLocator_ptr executor_locator,
 									  CCMContext* executor_context,
-									  HomeServantBase* home_servant,
-									  const Components::ConfigValues& config)
+									  HomeServantBase* home_servant)
 : object_id_ (new PortableServer::ObjectId (object_id)),
   component_ref_ (CORBA::Object::_duplicate (component_ref)),
   executor_locator_ (Components::ExecutorLocator::_duplicate (executor_locator)),
@@ -54,25 +53,7 @@ ComponentInstance::ComponentInstance (const PortableServer::ObjectId& object_id,
         executor_context->stream_ccm_object_executor (stream_ccm_object_executor_);
 #endif
 
-	//
-	// process ConfigValues
-	//
-	const char* value = "";
-	for (unsigned int i = 0; i < config.length(); i++)
-	{
-		if (! strcmp (config[i]->name(), "UUID"))
-		{
-			config[i]->value() >>= value;
-			uuid_ = value;
-			DEBUG_OUT2 ("ComponentInstance: set UUID ", uuid_);
-		}
-	}
-
-	if( uuid_.empty() )
-	{
-		uuid_ = createUUID();
-		DEBUG_OUT2 ("ComponentInstance: created UUID ", uuid_);
-	}
+	uuid_ = createUUID();
 }
 
 
@@ -135,6 +116,21 @@ ComponentInstance::~ComponentInstance()
 #ifndef _QEDO_NO_STREAMS
         stream_ccm_object_executor_->_remove_ref();
 #endif
+}
+
+
+void 
+ComponentInstance::configure( const Components::ConfigValues& config )
+{
+	config_ = new Components::ConfigValues( config );
+
+	//
+	// process ConfigValues
+	//
+	for (unsigned int i = 0; i < config_->length(); i++)
+	{
+		DEBUG_OUT2 ("ComponentInstance: configure ", (*config_)[i]->name() );
+	}
 }
 
 
