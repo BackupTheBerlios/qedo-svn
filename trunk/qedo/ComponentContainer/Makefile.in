@@ -18,23 +18,19 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 
-include ../MakeVars
-
 CXX = @CXX@
-CPPFLAGS+=-I. -I../ComponentIDL @CPPFLAGS@ 
-CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+INCLUDES+=-I. -I../ComponentIDL @CPPFLAGS@ 
+CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS=@LIBS@
 
 @SET_MAKE@
 
-CXXFLAGS +=  $(IDLCXXFLAGS) $(INCLUDES)
-
 LIBS += -L../ComponentIDL -lComponentIDL -luuid
 
 ifeq "${ORB}" "MICO_ORB"
 LIBS += $(shell mico-config --cosslibs)
-CPPFLAGS += -I$(shell mico-config --prefix)/include/coss
+INCLUDES += -I$(shell mico-config --prefix)/include/coss
 endif
 
 SOURCES = Key.cpp \
@@ -71,6 +67,8 @@ HEADER = ${SOURCES:.cpp=.h} \
 OBJS = ${SOURCES:.cpp=.o}
 
 CLEAN_FILES = $(OBJS) libComponentContainer.so
+
+include ../MakeVars
 
 .PHONY: all
 

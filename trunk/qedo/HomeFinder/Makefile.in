@@ -18,11 +18,11 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 
-include ../MakeVars
-
 CXX = @CXX@
-CPPFLAGS+=-I. -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller @CPPFLAGS@ 
-CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+INCLUDES+=-I. -I../ComponentIDL \
+          -I../ComponentContainer \
+          -I../ComponentInstaller
+CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS+=@LIBS@
 CC=$(CXX)
@@ -43,6 +43,8 @@ OBJS = ${SOURCES:.cpp=.o} ${SOURCES_EXTERN:.cpp=.o}
 
 CLEAN_FILES = ${SOURCES:.cpp=.o}
 
+
+include ../MakeVars
 
 .PHONY:all
 

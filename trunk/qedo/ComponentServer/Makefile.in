@@ -18,12 +18,11 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 
-include ../MakeVars
-
 CXX = @CXX@
-
-CPPFLAGS+=-I. -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller @CPPFLAGS@ 
-CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+INCLUDES+=-I. -I../ComponentIDL \
+          -I../ComponentContainer \
+          -I../ComponentInstaller
+CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS+=@LIBS@
 CC=$(CXX)
@@ -31,16 +30,17 @@ CC=$(CXX)
 @SET_MAKE@
 
 
-LIBS += -L../ComponentIDL -lComponentIDL -luuid
+LIBS += -L../ComponentIDL -lComponentIDL \
+        -L../ComponentContainer -lComponentContainer \
+		  -luuid
+
+LDLIBS = ${LIBS}
 
 ifeq "${ORB}" "MICO_ORB"
 LIBS += $(shell mico-config --cosslibs)
-CPPFLAGS += -I$(shell mico-config --prefix)/include/coss
+COSS_INCLUDES := -I$(shell mico-config --prefix)/include/coss
+INCLUDES += $(COSS_INCLUDES)
 endif
-LIBS += -L../ComponentIDL -lComponentIDL \
-           -L../ComponentContainer -lComponentContainer 
-
-LDLIBS = ${LIBS}
 
 SOURCES = ComponentServerImpl.cpp \
 			 ClientInterceptorDispatcher.cpp \
@@ -52,6 +52,8 @@ SOURCES_EXTERN = ../ComponentInstaller/NameServiceBase.cpp
 
 
 CLEAN_FILES = $(SOURCES:.cpp=.o) cs
+
+include ../MakeVars
 
 .PHONY:all
 
