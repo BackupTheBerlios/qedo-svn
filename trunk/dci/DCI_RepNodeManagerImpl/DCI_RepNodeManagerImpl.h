@@ -177,7 +177,7 @@ namespace DCI
     char cwd_buffer[_MAX_PATH];
     std::list <localImpl*> installed_impls_;    
     void ccm_remove()
-         throw (CORBA::SystemException);
+         throw (CORBA::SystemException, Components::CCMException);
     
     bool qcsaIsRegistered;
     bool qcsaIsStarted_;

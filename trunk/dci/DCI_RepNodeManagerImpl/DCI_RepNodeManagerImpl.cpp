@@ -68,7 +68,6 @@ namespace DCI {
     std::cerr <<"RepNodeManagerSessionImpl: "<< errStr1 << errStr2 << std::endl;
   }
 
-#ifdef WIN32
   void
   RepNodeManagerSessionImpl::ccm_remove()
     throw (CORBA::SystemException, Components::CCMException)
@@ -99,38 +98,6 @@ namespace DCI {
       remove_component_server(*csIt);                
     }
   }
-#else
-  void
-  RepNodeManagerSessionImpl::ccm_remove()
-    throw (CORBA::SystemException)
-  {
-    //printout_("deregistering from DCIManager" );
-    DCI::DCIManager_ptr dciMgr = context_ -> get_connection_dcimanager();
-                
-    if(CORBA::is_nil(dciMgr))
-      {
-	printerr_("dciMgr is nil" );
-	return;
-      }
-
-    NodeManagement_ptr nodeMgmt = dciMgr-> provide_node_management();
-    //printout_("node_management receptacle obtained" );
-    if(CORBA::is_nil(nodeMgmt))
-      {
-	printerr_("Could not get node management interface from DCIManager" );
-	return;
-      }  
-        
-    nodeMgmt -> deregister_node(nodename);
-    printout_("Node successfully deregistered from DCIManager" );
-    // Remove all created component servers
-        
-    std::list <Components::Deployment::ComponentServer_ptr> ::iterator csIt;
-    for ( csIt = created_component_servers_.begin( ); csIt != created_component_servers_.end( ); csIt++ ){
-      remove_component_server(*csIt);                
-    }
-  }
-#endif
 
   localImpl* RepNodeManagerSessionImpl::get_impl_for_uuid_(std::string implUUID){
     std::list <localImpl*> ::iterator implsIt;
@@ -515,7 +482,7 @@ RepNodeManagerSessionImpl::RepNodeManagerSessionImpl()
 	return;
       }
       
-    //printout_("Hostname is : " , _hostname );
+    printout_("Hostname is : " , _hostname );
 
     std::string hostStr(_hostname);
     nodenameStr = hostStr;
@@ -1281,6 +1248,7 @@ RepNodeManagerImpl::ccm_remove()
     throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerImpl::ccm_remove
+  component_ -> ccm_remove();
 // END USER INSERT SECTION RepNodeManagerImpl::ccm_remove
 }
 
