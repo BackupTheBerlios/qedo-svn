@@ -3,8 +3,8 @@ ProjectName=CIDLFrontendLib
 OutDir=./Debug_mico_linux
 IntDir=./Debug_mico_linux
 Name=Debug_mico_linux
-CFLAGS=-I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I$(MICO)/include -I$(MICO)/include/windows -O1 -g
-CXXFLAGS=-I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I$(MICO)/include -I$(MICO)/include/windows -O1 -g
+CFLAGS=-DKC_DEPRECATED -DYYERROR_VERBOSE -DYYDEBUG -I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I$(MICO)/include -g
+CXXFLAGS=-DKC_DEPRECATED -DYYERROR_VERBOSE -DYYDEBUG -I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I$(MICO)/include  -g
 LIBS=-L../../..//CIDL_Repository/IFRidl/./Debug_mico -lIFRidl
 
 $(IntDir)/%.o:%.cpp
@@ -56,7 +56,7 @@ lexana.cpp:./lexana.l
 yacc:   errmsg.cpp 
 
 # YACC files
-:./cidl.y
+cidl.output:./cidl.y
 	env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ; cp cidl.hpp cidl.h 
 errmsg.cpp:./cidl.output
 	"$(PYTHON)" errmsg.py < cidl.output > errmsg.cpp 

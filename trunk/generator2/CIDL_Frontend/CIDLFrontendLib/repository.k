@@ -941,7 +941,7 @@ StateMember(flag_v, def_v, dcls)
               name->get_name(), "1.0", my_build.type, visi);
           }
           catch (CORBA::Exception& ex) {
-            Error("Exception %s in creating valuemember %k\n", ex, name, name);
+            Error("Exception %s in creating valuemember %k\n", name, name);
           }
           name->symtab_entry->irobj = valmem;
         }
@@ -952,7 +952,7 @@ StateMember(flag_v, def_v, dcls)
               name->get_name(), "1.0", type_def, visi);
           }
           catch (CORBA::Exception& ex) {
-            Error("Exception %s in creating valuemember %k\n", ex, name, name);
+            Error("Exception %s in creating valuemember %k\n", name, name);
           }
           name->symtab_entry->irobj = valmem;
         }
@@ -1052,7 +1052,7 @@ NComponent(ComponentHeader(name, ident, ident_list), def_list)
           name->get_name(), "1.0", basecomp, supports);
       }
       catch (CORBA::Exception& ex) {
-        Error("Exception %s in creating valuemember %k\n", ex, name, name);
+        Error("Exception %s in creating valuemember %k\n", name, name);
       }
       irobj = component_ptr;
       name->symtab_entry->irobj = component_ptr;
