@@ -1,0 +1,62 @@
+<H2>The Launcher</H2>
+<IMG SRC="images/launcher_02.gif" BORDER="0">
+<p></p>
+The Launcher is the starting point of the <A HREF="qedo-controller.htm">Qedo Controller</A>. It is showing at first time running of the controller. In the top of the dialog are two sections arranged. 
+<H3>The Qedo Start Center</H3>
+The name of the left section is called <I>Qedo start center</I>. The user can start all needed deamons by these two buttons in this area. According to that there are two ways to use it. If already a domain has been started, you only need to start the deamons <I>for this node</I>. Another way is to start all deamons on your local system.
+<B>Please take notice that sequencing could be important.</B>
+At first start the deamos <I>for the whole domain</I>, after that press the button <I>for this node</I>. 
+<p></p>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR><TD ALIGN="CENTER" VALIGN="TOP"><IMG SRC="images/launcher_03.jpg" BORDER="0"></IMG></TD></TR>
+<TR><TD ALIGN="CENTER" VALIGN="TOP"><TT>Qedo Start Center</TT></TD></TR>
+</TABLE>
+<p></p>
+Moreover it is possible to start the deamons separately. You can find this section below the <I>Qedo Start Center </I>. It is also divided into two parts like the <I>Qedo Start Center</I>. The deamons <I>for the whole domain</I> are represented by the first part. 
+<p></p>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR><TD ALIGN="CENTER" VALIGN="TOP"><IMG SRC="images/launcher_04.jpg" BORDER="0"></IMG></TD></TR>
+<TR><TD ALIGN="CENTER" VALIGN="TOP"><TT>first part - deamons for whole domain</TT></TD></TR>
+</TABLE>
+<p></p>
+The user can start or stop the deamon by pressing the relevantly button. The positioning is in a systematic arranging. According to that you have to start  a number of processes.
+<p></p>
+<TABLE BORDER="0" CELLSPACING="2" CELLPADDING="2" WIDTH="100%">
+	<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="30%"><B>1. Name Service</B></TD>
+	<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="70%">The first button stands for <I>Name Service</I>. You can start the Name Service on a hostname or ip. The hostname of your computer is given in the first "<I>text control</I>". Behind that is a another text control, which is called <I>Port Number</I>. If you want to use another port or hostname, you can change these entries. <BR><B>Tip: You can browse the Name Service by using the NSBrowser.</A></B></TD>
+	</TR>
+	<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="30%"><B>2. Home Finder</B></TD>
+	<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="70%">The <I>Home Finder</I> is an optional feature which can be used to find running homes.</TD>
+	</TR>
+	<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="30%"><B>3. Assembly Factory</B></TD>
+	<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="70%">The <I>Assembly Factory</I> implements the assembly interface defined be CCM. If you like to use the automatic deployment features of CCM it is mandatory. You can also create component servers and containers by yourself. In this case you do not need this server.</TD>
+	</TR>
+	<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="30%"><B>4. Qedo Explorer</B></TD>
+	<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="70%">The <I>Qedo Explorer</I> is a server which can be used to explore the running deployment. It uses the <I>Name Service</I> to find the running server activators and the CCM infrastructure to find component server, container and homes.</I><BR>
+	<B>Tip: You can browse the currently deployment by using the Explorer </B> </TD>
+	</TR>
+</TABLE>
+ 
+<p></p>
+The even describe deamons belongs to the whole domain. On each host or node of the <A HREF="qedo.htm">Qedo</A> platform you need to start the following two servers. The buttons for <I>Server Activator </I>and <I>Component Installer</I> are displayed in the second part. <B>These server are mandatory.</B>
+<p></p>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="100%">
+<TR><TD ALIGN="CENTER" VALIGN="TOP"><IMG SRC="images/launcher_05.jpg" BORDER="0"></IMG></TD></TR>
+<TR><TD ALIGN="CENTER" VALIGN="TOP"><TT>second part - deamons for this node</TT></TD></TR>
+</TABLE>
+<p></p> 
+<TABLE BORDER="0" CELLSPACING="2" CELLPADDING="2" WIDTH="100%">
+	<TR>
+		<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="30%"><B>5. Server Activator</B></TD>
+		<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="70%">The Server Activator is a server which is an implementation of the corresponding interface defined by CCM. The Activator is used to create new component server and to manage them.</TD>
+	</TR>
+<TR>
+		<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="30%"><B>6. Component Installer</B></TD>
+		<TD ALIGN="LEFT" VALIGN="TOP" WIDTH="70%">This server is an implementation of the ComponentInstallation interface defined by CCM. It is used to install the binaries of the components. The <I>Component Installer</I> starts the component server automatically.</TD>
+	</TR>
+</TABLE>
+

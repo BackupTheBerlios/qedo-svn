@@ -1,0 +1,4 @@
+<H2>Name Service Browser</H2>
+<IMG SRC="images/nsbrowser_01.gif" BORDER="0">
+<p></p>
+The NSBrowser (short for Name Service Browser) is a small tool to observe the Name Service. The browser connects to the Name Service which is started in the <I><B><A HREF="launcher.htm">Launcher</A> </B>panel.</I> The NSBrowser is updated by the <I>Refresh</I>-Button right beside. 

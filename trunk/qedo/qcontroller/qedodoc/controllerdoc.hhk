@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Anthemion HelpBlocks">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<OBJECT type="text/site properties">
+    <param name="ImageType" value="Folder">
+</OBJECT>
+<UL>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="Qedo">
+             <PARAM NAME="Local" VALUE="qedo.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="Launcher">
+             <PARAM NAME="Local" VALUE="launcher.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="Qedo Controller">
+             <PARAM NAME="Local" VALUE="qedo-controller.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="Edit the qedo.conf">
+             <PARAM NAME="Local" VALUE="edit_qedo_conf.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="NSBrowser">
+             <PARAM NAME="Local" VALUE="nsbrowser.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="Name Service Browser">
+             <PARAM NAME="Local" VALUE="nsbrowser.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="Qedo Explorer">
+             <PARAM NAME="Local" VALUE="explorer.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="Explorer">
+             <PARAM NAME="Local" VALUE="explorer.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="Deployment">
+             <PARAM NAME="Local" VALUE="deployment.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="Destination">
+             <PARAM NAME="Local" VALUE="destination.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="Edit the destination">
+             <PARAM NAME="Local" VALUE="destination.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="Contents">
+             <PARAM NAME="Local" VALUE="contents.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="Contact">
+             <PARAM NAME="Local" VALUE="contact.htm">
+         </OBJECT>
+</UL>
+</BODY></HTML>
