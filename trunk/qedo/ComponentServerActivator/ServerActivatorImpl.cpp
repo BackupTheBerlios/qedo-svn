@@ -31,7 +31,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.31 2003/10/27 12:32:20 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.32 2003/10/27 13:58:14 neubauer Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -239,18 +239,19 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	const char* prog;
 	int args_nr=0;
 
-	//if (enable_terminal_)
-	//{
-	//	args[args_nr++] = "xterm";
-	//	args[args_nr++] = "-e";
-	//	args[args_nr++] = "qcs.sh";
-	//	prog = "xterm";
-	//}
-	//else
-	//{
+	if (enable_terminal_)
+	{
+		prog = "c:/windows/system32/cmd.exe";
+		args[args_nr++] = "cmd";
+		args[args_nr++] = "/c";
+		args[args_nr++] = "start";
 		args[args_nr++] = "qcs.exe";
+	}
+	else
+	{
 		prog = "qcs.exe";
-	//}
+		args[args_nr++] = "qcs.exe";
+	}
 
 	if (debug_mode_)
 	{
@@ -263,11 +264,11 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	}
 
 	args[args_nr++] = "--csa_ref";
-	args[args_nr++] = my_string_ref.out();
+	args[args_nr++] = my_string_ref.inout();
 
 	args[args_nr] = 0;
 
-	component_server_pid = _spawnl(_P_NOWAIT, prog, args);
+	component_server_pid = _spawnv(_P_NOWAIT, prog, args);
 
 	if (component_server_pid < 0)
 	{
@@ -313,7 +314,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 			}
 
 			args[args_nr++] = "--csa_ref";
-			args[args_nr++] = my_string_ref.out();
+			args[args_nr++] = my_string_ref.inout();
 
 			args[args_nr] = 0;
 
