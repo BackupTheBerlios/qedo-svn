@@ -31,6 +31,7 @@
 #include <PortableInterceptor.h>
 #endif
 #include "QedoComponents_skel.h"
+#include "ComponentServerImpl.h"
 
 
 namespace Qedo {
@@ -40,6 +41,9 @@ namespace Qedo {
 		public virtual Components::Extension::ClientInterceptorRegistration,
 		public virtual CORBA::LocalObject
 	{
+	private:
+		/** reference to the component server */
+		Qedo::ComponentServerImpl* component_server_;
 
 	public:
 		ClientInterceptorDispatcher();
@@ -71,6 +75,8 @@ namespace Qedo {
 		virtual void
 		register_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor);
 
+		void
+		set_component_server(Qedo::ComponentServerImpl* component_server);
 
 	};
 }

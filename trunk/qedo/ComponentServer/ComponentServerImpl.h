@@ -84,7 +84,9 @@ public:
 
 typedef std::vector < ContainerEntry > ContainerVector;
 
-
+#ifndef _QEDO_NO_QOS
+typedef std::list <ContainerInterfaceImpl*> ContainerList;
+#endif
 /**
  * the server for containers
  */
@@ -212,7 +214,7 @@ public:
 	virtual Components::Extension::ClientInterceptorRegistration_ptr
 	get_client_dispatcher (  );
 
-	virtual Qedo::ContainerInterfaceImpl*
+	virtual ContainerList*
 	get_all_containers();
 #endif
 

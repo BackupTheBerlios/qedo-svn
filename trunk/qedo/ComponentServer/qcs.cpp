@@ -39,7 +39,7 @@
 #include "ClientInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.29 2003/11/14 15:24:26 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.30 2003/12/09 07:58:10 tom Exp $";
 
 
 /**
@@ -182,6 +182,10 @@ main (int argc, char** argv)
 			Components::Extension::ServerInterceptorRegistration::_narrow(server_dispatcher));
 		component_server -> set_client_dispatcher (
 			Components::Extension::ClientInterceptorRegistration::_narrow(client_dispatcher));
+
+		server_dispatcher -> set_component_server ( component_server );
+		client_dispatcher -> set_component_server ( component_server );
+		
 	}
 #endif
 	try

@@ -24,8 +24,10 @@
 #include "Util.h"
 #include "Output.h"
 #include <fstream>
+#include "ComponentServerImpl.h"
+#include "GlobalHelpers.h"
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.6 2003/12/02 14:28:19 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.7 2003/12/09 07:58:10 tom Exp $";
 
 namespace Qedo {
 
@@ -63,14 +65,75 @@ void
 ServerInterceptorDispatcher::receive_request(PortableInterceptor::ServerRequestInfo_ptr info)
 throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 {
+
 	DEBUG_OUT ("ServerInterceptorDispatcher: receive_request");
+	const Components::ConfigValues* temp_config=0;
+	//call for all interceptors
+
+	// detrmine the id
+	// all containers
+	Qedo::ContainerList* temp_container_list = component_server_ -> get_all_containers();
+	std::list <ContainerInterfaceImpl*>::iterator container_iter;
+
+	//identify the id
+	const char* id = 0;
+
+	for (container_iter = temp_container_list->begin(); container_iter != temp_container_list->end(); container_iter++)
+	{
+		for (unsigned int i = 0; i < (*container_iter) -> installed_homes_.size(); i++)
+		{
+			for (unsigned int j = 0; j < (((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_.size()); j++)
+			{
+//			std::cout << "XXXXXXXXXXX " << std::endl;
+			std::cout << Qedo::ObjectId_to_string( ((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_[j].object_id_) << std::endl;
+
+			std::cout << Qedo::ObjectId_to_string((*(Qedo::create_object_id(info->object_id(),"")))) << std::endl;
+				// search for the oid
+				if (Qedo::compare_OctetSeqs((*info->object_id()),((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_[j].object_id_))
+				{
+					std::cout << "WWWWWWWWWWWWWWWW found one" << std::endl;
+					std::cout << ((*container_iter) -> installed_homes_)[i].home_servant_->repository_id_ << std::endl;
+					temp_config = ((*container_iter)->installed_homes_)[i].home_servant_->component_instances_[j].config_;
+					std::cout << "tttttttttttttttt" << std::endl;
+					if (temp_config != 0)
+					{
+						std::cout << "DDDDDDDDDDDDD found config" << std::endl;
+
+						std::cout << temp_config->length() << std::endl;
+
+						Components::ConfigValue* value;
+						for (CORBA::ULong i = 0; i < temp_config->length(); i++)
+						{
+							value = (*temp_config)[i];
+
+							if (! strcmp ((*temp_config)[i]->name(), "id"))
+							{
+								(*temp_config)[i]->value() >>= id;
+								break;
+							}
+						}
+					}
+
+				}
+			}
+		}
+	}
+
+
+	// call the COPIs
+	if (!id)
+	{
+		id="test";
+	}
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
 
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
-		all_server_interceptors_[i].interceptor->receive_request( info );
+		all_server_interceptors_[i].interceptor->receive_request( info, id );
 	}
+
+	// call for regsitered COPI
 
 }
 
@@ -118,6 +181,12 @@ ServerInterceptorDispatcher::register_interceptor_for_all(Components::Extension:
 	all_server_interceptors_.push_back(e);
 
 }
+
+void
+ServerInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* component_server)
+{
+	component_server_ = component_server;
+};
 
 
 }  //namespace Qedo

@@ -32,7 +32,7 @@
 #endif
 #include "QedoComponents_skel.h"
 #include "Synchronisation.h"
-
+#include "ComponentServerImpl.h"
 #include <vector>
 
 namespace Qedo {
@@ -56,6 +56,10 @@ namespace Qedo {
 		ServerInterceptorVector all_server_interceptors_;
 		/** Mutex for all_server_interceptors_ */
 		QedoMutex all_server_interceptors_mutex_;
+
+		/** reference to the component server */
+		Qedo::ComponentServerImpl* component_server_;
+
 	public:
 		ServerInterceptorDispatcher();
 
@@ -90,6 +94,10 @@ namespace Qedo {
 
 		virtual void
 		register_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor);
+
+		void
+		set_component_server(Qedo::ComponentServerImpl* component_server);
+
 	};
 }
 

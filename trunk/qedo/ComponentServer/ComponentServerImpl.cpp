@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.25 2003/12/02 14:28:19 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.26 2003/12/09 07:58:10 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -567,10 +567,17 @@ ComponentServerImpl::get_client_dispatcher (  )
 	return Components::Extension::ClientInterceptorRegistration::_duplicate (client_dispatcher_);
 }
 
-Qedo::ContainerInterfaceImpl*
+Qedo::ContainerList*
 ComponentServerImpl::get_all_containers()
 {
-	return containers_[0].container_;
+	ContainerList* list = new ContainerList();
+
+	for (unsigned int i = 0; i < containers_.size(); i++)
+	{
+		list->push_back( containers_[i].container_ );
+	}
+
+	return list;
 }
 
 
