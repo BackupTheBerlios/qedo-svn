@@ -23,10 +23,13 @@
 #include "ComponentImplementation.h"
 #include "CSDReader.h"
 #include "CADReader.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include <fstream>
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.16 2003/09/26 08:25:53 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.16.2.1 2003/09/28 22:29:24 tom Exp $";
 
 
 namespace Qedo {
