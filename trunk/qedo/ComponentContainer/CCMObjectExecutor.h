@@ -62,6 +62,7 @@ class CONTAINERDLL_API CCMObjectExecutor : public RefCountBase
 #ifndef _QEDO_NO_QOS
 
 	friend class ServerInterceptorDispatcher;
+	friend class CCMContext;
 #endif
 
 private:

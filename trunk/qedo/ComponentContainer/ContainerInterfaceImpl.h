@@ -172,7 +172,7 @@ class CONTAINERDLL_API ContainerInterfaceImpl : public virtual POA_Components::D
 #ifndef _QEDO_NO_QOS
 	/** to access the component server */
 	friend class ExtensionContext;
-
+	friend class CCMContext;
 	friend class ServerInterceptorDispatcher;
 #endif
 private:
