@@ -12,8 +12,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug_orbacus|Win32"
-			OutputDirectory=".\Debug_orbacus"
-			IntermediateDirectory=".\Debug_orbacus"
+			OutputDirectory=".\IFRidl___Win32_Debug_orbacus"
+			IntermediateDirectory=".\IFRidl___Win32_Debug_orbacus"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -245,7 +245,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories=".,$(ORBACUS)\include,$(ORBACUS)\include\OB"
+				AdditionalIncludeDirectories=".;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="_LIB,WIN32,_DEBUG,_WINDOWS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
@@ -317,7 +317,6 @@
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="IDL compiler compiles $(InputPath)"
 						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix .cpp   CIDL_Extension.idl
 "
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
@@ -325,40 +324,37 @@
 				<FileConfiguration
 					Name="Release|Win32">
 					<Tool
-						Name="VCCustomBuildTool"
-						Description="IDL compiler compiles $(InputPath)"
-						CommandLine=""/>
+						Name="VCCustomBuildTool"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="IDL compiler compiles $(InputPath)"
-						CommandLine=""
+						CommandLine="$(TAO)\bin\tao_idl  -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp -DTAO_ORB    CIDL_Extension.idl
+"
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="IDL compiler compiles $(InputPath)"
-						CommandLine="$(MICO)\win32-bin\idl -I$(MICO)\include -I$(MICO)\include\mico  --any --c++-suffix cpp --c++-skel CIDL_Extension.idl
-copy CIDL_Extension.h CIDL_Extension_skel.h"
+						CommandLine="$(MICO)\win32-bin\idl --any -I. --c++-suffix cpp --c++-skel  CIDL_Extension.idl
+copy CIDL_Extension.h CIDL_Extension_skel.h
+"
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="IDL compiler compiles $(InputPath)"
-						CommandLine=""
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB CIDL_Extension.idl
+"
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="IDL compiler compiles $(InputPath)"
 						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix .cpp   CIDL_Extension.idl
 "
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
@@ -370,22 +366,14 @@ copy CIDL_Extension.h CIDL_Extension_skel.h"
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="IDL compiler compiles $(InputPath)"
 						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix  .cpp   IFR.idl
 "
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="IDL compiler compiles $(InputPath)"/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="IDL compiler compiles $(InputPath)"
 						CommandLine="$(TAO)\bin\tao_idl -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp  -DTAO_ORB  IFR.idl
 "
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
@@ -394,8 +382,7 @@ copy CIDL_Extension.h CIDL_Extension_skel.h"
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="IDL compiler compiles $(InputPath)"
-						CommandLine="$(MICO)\win32-bin\idl -I$(MICO)\include -I$(MICO)\include\mico --any --c++-suffix cpp --c++-skel IFR.idl
+						CommandLine="$(MICO)\win32-bin\idl --any --c++-suffix cpp --c++-skel IFR.idl
 copy IFR.h IFR_skel.h
 "
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
@@ -404,7 +391,6 @@ copy IFR.h IFR_skel.h
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="IDL compiler compiles $(InputPath)"
 						CommandLine="$(ORBACUS)\bin\idl -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB IFR.idl
 "
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
@@ -413,7 +399,6 @@ copy IFR.h IFR_skel.h
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="IDL compiler compiles $(InputPath)"
 						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix  .cpp   IFR.idl
 "
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>

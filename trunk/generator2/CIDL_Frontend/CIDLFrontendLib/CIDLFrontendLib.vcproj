@@ -55,8 +55,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug_orbacus|Win32"
-			OutputDirectory=".\Debug_orbacus"
-			IntermediateDirectory=".\Debug_orbacus"
+			OutputDirectory=".\CIDLFrontendLib___Win32_Debug_orbacus"
+			IntermediateDirectory=".\CIDLFrontendLib___Win32_Debug_orbacus"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -64,7 +64,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(ORBACUS)\include,$(ORBACUS)\include\ob"
+				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="KC_DEPRECATED,WIN32,_DEBUG,_LIB,__STDC__,YYERROR_VERBOSE,YYDEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -154,7 +154,6 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
 				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(MICO)\include,$(MICO)\include\windows"
 				PreprocessorDefinitions="WIN32,_DEBUG,_LIB,__STDC__,_WINDOWS"
 				BasicRuntimeChecks="3"
@@ -248,7 +247,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(ORBACUS)\include,$(ORBACUS)\include\ob"
+				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="KC_DEPRECATED,WIN32,_DEBUG,_LIB,__STDC__,YYERROR_VERBOSE,YYDEBUG"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
@@ -474,19 +473,9 @@
 			<File
 				RelativePath=".\tree.k">
 				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Kimwitu++ processes *.k files"
-						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
-"
-						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Kimwitu++ processes *.k files"
 						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
 "
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
@@ -495,25 +484,28 @@
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Kimwitu++ processes *.k files"
-						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
+						CommandLine="$(cygwin)\bin\touch k.h
+$(cygwin)\bin\touch unpk.h
+$(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl -I..\..\CIDL_Repository\CIDLRepositoryLib -I..\..\CIDL_Repository\ComponentRepositoryLib -I%MICO%\include -I%MICO%\include\windows -D_WINDOWS attributes.k &gt; attributes
+..\..\kimwitu_mingw\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp tree.k frontend.k symtab.k error.k printer.k options.k resolve_symtab.k cg_io.k debug.k util.k global.k attributes pretty.k repository.k
 "
-						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
+						Outputs="k.h;k.cpp;unpk.h;unpk.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Kimwitu++ processes *.k files"
-						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
+						CommandLine="c:\opt\cygwin\bin\touch k.h
+c:\opt\cygwin\bin\touch unpk.h
+d:/generatoren/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl -I..\..\CIDL_Repository\CIDLRepositoryLib -I..\..\CIDL_Repository\ComponentRepositoryLib -I%MICO%\include -I%MICO%\include\windows -D_WINDOWS attributes.k &gt; attributes
+d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp tree.k frontend.k symtab.k error.k printer.k options.k resolve_symtab.k cg_io.k debug.k util.k global.k attributes pretty.k repository.k
 "
-						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
+						Outputs="k.h;k.cpp;unpk.h;unpk.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Kimwitu++ processes *.k files"
 						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
 "
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
@@ -522,7 +514,6 @@
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Kimwitu++ processes *.k files"
 						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
 "
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
@@ -538,19 +529,9 @@
 			<File
 				RelativePath=".\lexana.l">
 				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Flex processes $(InputPath)"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
-"
-						Outputs="lexana.cpp"/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Flex processes $(InputPath)"
 						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
 "
 						Outputs="lexana.cpp"/>
@@ -559,8 +540,7 @@
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Flex processes $(InputPath)"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+						CommandLine="c:\opt\cygwin\bin\flex -Sflex.skel -tw lexana.l  &gt; lexana.cpp
 "
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
@@ -568,8 +548,7 @@
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Flex processes $(InputPath)"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+						CommandLine="c:\opt\cygwin\bin\flex -Sflex.skel -tw lexana.l  &gt; lexana.cpp
 "
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
@@ -577,8 +556,7 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Flex processes $(InputPath)"
-						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+						CommandLine="$(LEX) -Sflex.skel -tw lexana.l  &gt; lexana.cpp
 "
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
@@ -586,7 +564,6 @@
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Flex processes $(InputPath)"
 						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
 "
 						Outputs="lexana.cpp"/>
@@ -599,41 +576,10 @@
 			<File
 				RelativePath=".\cidl.output">
 				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Python generates errmsg.h and errmsg.cpp"
-						CommandLine="$(PYTHON) errmsg.py &lt; cidl.output &gt; errmsg.cpp
-echo extern char *error_message[];  &gt; errmsg.h
-"
-						Outputs="errmsg.cpp;errmsg.h"/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Python generates errmsg.h and errmsg.cpp"
-						CommandLine="$(PYTHON) errmsg.py &lt; cidl.output &gt; errmsg.cpp
-echo extern char *error_message[];  &gt; errmsg.h
-"
-						Outputs="errmsg.cpp;errmsg.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_tao|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Python generates errmsg.h and errmsg.cpp"
-						CommandLine="$(PYTHON) errmsg.py &lt; cidl.output &gt; errmsg.cpp
-echo extern char *error_message[];  &gt; errmsg.h
-"
-						Outputs="errmsg.cpp;errmsg.h"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Python generates errmsg.h and errmsg.cpp"
-						CommandLine="$(PYTHON) errmsg.py &lt; cidl.output &gt; errmsg.cpp
+						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
 echo extern char *error_message[];  &gt; errmsg.h
 "
 						Outputs="errmsg.cpp;errmsg.h"/>
@@ -642,9 +588,7 @@ echo extern char *error_message[];  &gt; errmsg.h
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Python generates errmsg.h and errmsg.cpp"
 						CommandLine="$(PYTHON) errmsg.py &lt; cidl.output &gt; errmsg.cpp
-echo extern char *error_message[];  &gt; errmsg.h
 "
 						Outputs="errmsg.cpp;errmsg.h"/>
 				</FileConfiguration>
@@ -652,8 +596,7 @@ echo extern char *error_message[];  &gt; errmsg.h
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Python generates errmsg.h and errmsg.cpp"
-						CommandLine="$(PYTHON) errmsg.py &lt; cidl.output &gt; errmsg.cpp
+						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
 echo extern char *error_message[];  &gt; errmsg.h
 "
 						Outputs="errmsg.cpp;errmsg.h"/>
@@ -662,20 +605,9 @@ echo extern char *error_message[];  &gt; errmsg.h
 			<File
 				RelativePath=".\cidl.y">
 				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Yacc processes $(InputPath)"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
-copy cidl.hpp cidl.h
-"
-						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Yacc processes $(InputPath)"
 						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
 copy cidl.hpp cidl.h
 "
@@ -685,37 +617,35 @@ copy cidl.hpp cidl.h
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Yacc processes $(InputPath)"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
-copy cidl.hpp cidl.h
+						CommandLine="C:\opt\cygwin\bin\bison -y -v -d cidl.y
+copy y.tab.c cidl.cpp
+copy y.tab.h cidl.h
 "
-						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
+						Outputs="cidl.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Yacc processes $(InputPath)"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
-copy cidl.hpp cidl.h
+						CommandLine="C:\opt\cygwin\bin\bison -y -v -d cidl.y
+copy y.tab.c cidl.cpp
+copy y.tab.h cidl.h
 "
-						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
+						Outputs="cidl.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Yacc processes $(InputPath)"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
+						CommandLine="$(YACC) -y -v -d -o cidl.cpp cidl.y
 copy cidl.hpp cidl.h
 "
-						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
+						Outputs="cidl.cpp;cidl.h"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Yacc processes $(InputPath)"
 						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
 copy cidl.hpp cidl.h
 "

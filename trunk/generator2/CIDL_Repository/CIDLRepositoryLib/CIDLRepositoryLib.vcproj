@@ -190,8 +190,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug_orbacus|Win32"
-			OutputDirectory=".\Debug_orbacus"
-			IntermediateDirectory=".\Debug_orbacus"
+			OutputDirectory=".\CIDLRepositoryLib___Win32_Debug_orbacus"
+			IntermediateDirectory=".\CIDLRepositoryLib___Win32_Debug_orbacus"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -199,7 +199,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\IFRidl,..\ComponentRepositoryLib,$(ORBACUS)\include,$(ORBACUS)\include\ob"
+				AdditionalIncludeDirectories="..\IFRidl;..\ComponentRepositoryLib;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="_LIB,WIN32,_DEBUG,_WINDOWS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -245,7 +245,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\IFRidl,..\ComponentRepositoryLib,$(ORBACUS)\include,$(ORBACUS)\include\ob"
+				AdditionalIncludeDirectories="..\IFRidl;..\ComponentRepositoryLib;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="_LIB,WIN32,_DEBUG,_WINDOWS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
