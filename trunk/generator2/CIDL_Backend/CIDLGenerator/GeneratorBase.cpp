@@ -2,8 +2,11 @@
 #ifndef ORBACUS_ORB
 #ifdef _WIN32
 #include "objbase.h"
+#else
 #endif
 #endif
+
+#include "uuid/uuid.h"
 
 namespace QEDO_CIDL_Generator {
 
@@ -81,14 +84,20 @@ GeneratorBase::uuidgen()
 	LPOLESTR lpolestr;
 	StringFromCLSID(guid, &lpolestr);
 	int i = wcstombs(NULL, lpolestr, 0);
-    char *buf = (char *)malloc(i);
-    wcstombs(buf, lpolestr, i);
+	char *buf = (char *)malloc(i);
+	wcstombs(buf, lpolestr, i);
 	// remove { and }
 	buf[i - 1] = '\0';
 	uuid = buf;
 	uuid.erase(0, 1);
 	free(buf);
 	CoTaskMemFree(lpolestr);
+#else
+	uuid_t guid;
+	uuid_generate(guid);
+	char buf[36+1];
+	uuid_unparse(guid,buf);
+	uuid=buf;
 #endif
 	return uuid;
 }

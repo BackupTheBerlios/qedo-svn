@@ -38,7 +38,7 @@ LIB_FILES = ../../CIDL_Repository/IFRidl/libIFRidl.a \
             ../../CIDL_Repository/CIDLRepositoryLib/libCIDLRepositoryLib.a \
 				../../CIDL_Repository/ComponentRepositoryLib/libComponentRepositoryLib.a \
 				../../CIDL_Frontend/CIDLFrontendLib/libCIDLFrontendLib.a
-LIBS += ${LIB_FILES}
+LIBS += ${LIB_FILES} -luuid
 
 LDLIBS = ${LIBS}
 
