@@ -32,7 +32,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.40 2003/10/01 08:35:01 neubauer Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.40.4.1 2003/10/10 23:38:53 tom Exp $";
 
 
 namespace Qedo {
@@ -340,7 +340,7 @@ ContainerInterfaceImpl::prepare_remove()
 }
 
 
-void 
+void
 ContainerInterfaceImpl::queue_event
 (Components::EventConsumerBase_ptr consumer, Components::EventBase* ev, CORBA::Long module_id)
 {
@@ -475,7 +475,7 @@ throw (Components::Deployment::UnknownImplId,
 	}
 	std::string install_dir = desc.substr (0, pos);
 	std::string path = install_dir;
-	if(install_dir != "")
+	if(install_dir.length())
 	{
 		path.append("/");
 	}
