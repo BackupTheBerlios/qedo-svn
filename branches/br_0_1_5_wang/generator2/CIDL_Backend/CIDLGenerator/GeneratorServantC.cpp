@@ -1891,7 +1891,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	{
 		out << "//create storage object incarnation for entity component\n";
 		out << "std::string strCcmPid = component_instance.uuid_ + \"@CCM\";\n";
-		out << "std::string strCcmSpid = component_instance.uuid_ + \"@" << home->managed_component()->name() << "Persistence\";\n";
+		out << "std::string strCcmSpid = component_instance.uuid_ + \"@" << strNamespace_ << "_" << home->managed_component()->name() << "Persistence\";\n";
 		out << "Pid* pCcmPid = new Pid;\n";
 		out << "ShortPid* pCcmSpid = new ShortPid;\n";
 		out << "convertStringToPid(strCcmPid.c_str(), *pCcmPid);\n";
@@ -1945,7 +1945,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		{
 			out << "//create storage object incarnation for pss definition\n";
 			out << "std::string strPssPid = component_instance.uuid_ + \"@PSS\";\n";
-			out << "std::string strPssSpid = component_instance.uuid_ + \"@" << storagehome_->managed_storagetype()->name() << "\";\n";
+			out << "std::string strPssSpid = component_instance.uuid_ + \"@" << strNamespace_ << "_" << storagehome_->managed_storagetype()->name() << "\";\n";
 			out << "Pid* pPssPid = new Pid;\n";
 			out << "ShortPid* pPssSpid = new ShortPid;\n";
 			out << "convertStringToPid(strPssPid.c_str(), *pPssPid);\n";
@@ -2926,15 +2926,15 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		out << "std::string strName;\n";
 		out << "std::stringstream sztream;\n\n";
 		genTableForAbsStorageHome();
-		out << "\nstrName = \"" << strAbsHomeName_ << "\";\n";
+		out << "\nstrName = \"" << strNamespace_ + "_" << strAbsHomeName_ << "\";\n";
 		out << "mTables[strName] = sztream.str();\n\n";
 		out << "sztream.str(\"\");\n";
 		genTableForStorageHome(storagehome_);
-		out << "\nstrName = \"" << storagehome_->name() << "\";\n";
+		out << "\nstrName = \"" << strNamespace_ + "_" << storagehome_->name() << "\";\n";
 		out << "mTables[strName] = sztream.str();\n\n";
 		out << "sztream.str(\"\");\n";
 		genTableForHome(home);
-		out << "\nstrName = \"" << home->name() << "Persistence\";\n";
+		out << "\nstrName = \"" << strNamespace_ + "_" << home->name() << "Persistence\";\n";
 		out << "mTables[strName] = sztream.str();\n";
 		out.unindent();
 		out << "}\n\n";
@@ -2943,33 +2943,31 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		// init_datastore(...)
 		//++++++++++++++++++++++++++++++++++++++++
 		out << "void\n";
-		out << class_name_ << "::init_datastore(Connector_ptr pConn, Sessio_ptr pSession)\n";
+		out << class_name_ << "::init_datastore(const Connector_ptr pConn, const Sessio_ptr pSession)\n";
 		out << "{\n";
 		out.indent();
-		out << "Connector_var _pConn = Connector::_duplicate(pConn);\n";
-		out << "pSession_ = Sessio::_duplicate(pSession);\n\n";
 		
 		out << strNamespace_ << "::" << home->name() << "PersistenceFactory* p" << home->name() << "Fac = new " << strNamespace_ << "::" << home->name() << "PersistenceFactory();\n";
-		out << "_pConn->register_storage_home_factory(\"" << home->name() << "Persistence\", p" << home->name() << "Fac);\n";
+		out << "pConn->register_storage_home_factory(\"" << strNamespace_ << "_" << home->name() << "Persistence\", p" << home->name() << "Fac);\n";
 		IR__::ComponentDef_var component = home->managed_component();
 		out << strNamespace_ << "::" << component->name() << "PersistenceFactory* p" << component->name() << "Fac = new " << strNamespace_ << "::" << component->name() << "PersistenceFactory();\n";
-		out << "_pConn->register_storage_object_factory(\"" << component->name() << "Persistence\", p" << component->name() << "Fac);\n\n";
+		out << "pConn->register_storage_object_factory(\"" << strNamespace_ << "_" << component->name() << "Persistence\", p" << component->name() << "Fac);\n\n";
 		
 		// there is binds_to in composition
 		if( !CORBA::is_nil(storagehome_) )
 		{
 			out << strNamespace_ << "::" << storagehome_->name() << "Factory* p" << storagehome_->name() << "Fac = new " << strNamespace_ << "::" << storagehome_->name() << "Factory();\n";
-			out << "_pConn->register_storage_home_factory(\"" << storagehome_->name() << "\", p" << storagehome_->name() << "Fac);\n";
+			out << "pConn->register_storage_home_factory(\"" << strNamespace_ << "_" << storagehome_->name() << "\", p" << storagehome_->name() << "Fac);\n";
 			IR__::StorageTypeDef_var storagetype = storagehome_->managed_storagetype();
 			out << strNamespace_ << "::" << storagetype->name() << "Factory* p" << storagetype->name() << "Fac = new " << strNamespace_ << "::" << storagetype->name() << "Factory();\n";
-			out << "_pConn->register_storage_object_factory(\"" << storagetype->name() << "\", p" << storagetype->name() << "Fac);\n\n";
+			out << "pConn->register_storage_object_factory(\"" << strNamespace_ << "_" << storagetype->name() << "\", p" << storagetype->name() << "Fac);\n\n";
 		}
 		
-		out << "StorageHomeBase_var pCcmHomebase = pSession_->find_storage_home(\"" << home->name() << "Persistence\");\n";
+		out << "StorageHomeBase_var pCcmHomebase = pSession->find_storage_home(\"" << strNamespace_ << "_" << home->name() << "Persistence\");\n";
 		out << "pCcmStorageHome_ = dynamic_cast <" << strNamespace_ << "::" << home->name() << "Persistence*> (pCcmHomebase.in());\n";
 		if( !CORBA::is_nil(storagehome_) )
 		{
-			out << "StorageHomeBase_var pPssHomebase = pSession_->find_storage_home(\"" << storagehome_->name() << "\");\n";
+			out << "StorageHomeBase_var pPssHomebase = pSession->find_storage_home(\"" << strNamespace_ << "_" << storagehome_->name() << "\");\n";
 			out << "pPssStorageHome_ = dynamic_cast <" << strNamespace_ << "::" << storagehome_->name() << "*> (pPssHomebase.in());\n";
 		}
 		out.unindent();
@@ -3043,6 +3041,7 @@ GeneratorServantC::genTableForAbsStorageHome()
 		strAbsHomeName_ = abs_home->name();
 		std::string strName = "sztream";
 		std::string strContent = "CREATE TABLE ";
+		strContent += strNamespace_ + "_";
 		strContent += std::string(abs_home->name());
 		strContent += " (";
 		out << genSQLLine(strName, strContent, true, false, true);
@@ -3101,6 +3100,7 @@ GeneratorServantC::genTableForAbsStorageHome()
 						
 			for(CORBA::ULong j=0; j<ulLenSupportedInf; j++)
 			{
+				strContent.append(strNamespace_ + "_");
 				strContent.append(((*sub_supported_infs)[j])->name());
 				((j+1)!=ulLenSupportedInf) ? strContent += ", " : strContent += " );";
 				out << genSQLLine(strName, strContent, true, false, false);
@@ -3110,6 +3110,7 @@ GeneratorServantC::genTableForAbsStorageHome()
 		else
 		{
 			strContent = "CONSTRAINT PK_";
+			strContent += strNamespace_ + "_";
 			strContent += abs_home->name();
 			strContent += " PRIMARY KEY (pid)";
 			out << genSQLLine(strName, strContent, true, false, true);
@@ -3137,6 +3138,7 @@ GeneratorServantC::genTableForStorageHome(IR__::StorageHomeDef_ptr storagehome)
 
 	std::string strName = "sztream";
 	std::string strContent = "CREATE TABLE ";
+	strContent += strNamespace_ + "_";
 	strContent += std::string(storagehome->name());
 	strContent += " (";
 	out << genSQLLine(strName, strContent, true, false, true);
@@ -3193,6 +3195,7 @@ GeneratorServantC::genTableForStorageHome(IR__::StorageHomeDef_ptr storagehome)
 		strContent = ") INHERITS ( ";
 		if(!CORBA::is_nil(base_storagehome))
 		{
+			strContent.append(strNamespace_ + "_");
 			strContent.append(base_storagehome->name());
 			(ulLenSupportedInf>0) ? strContent += ", " : strContent += " );";
 			out << genSQLLine(strName, strContent, true, false, false);
@@ -3201,6 +3204,7 @@ GeneratorServantC::genTableForStorageHome(IR__::StorageHomeDef_ptr storagehome)
 		
 		for(CORBA::ULong j=0; j<ulLenSupportedInf; j++)
 		{
+			strContent.append(strNamespace_ + "_");
 			strContent.append(((*supported_infs)[j])->name());
 			((j+1)!=ulLenSupportedInf) ? strContent += ", " : strContent += " );";
 			out << genSQLLine(strName, strContent, true, false, false);
@@ -3210,6 +3214,7 @@ GeneratorServantC::genTableForStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	else
 	{
 		strContent = "CONSTRAINT PK_";
+		strContent += strNamespace_ + "_";
 		strContent += storagehome->name();
 		strContent += " PRIMARY KEY (pid)";
 		out << genSQLLine(strName, strContent, true, false, true);
@@ -3258,6 +3263,7 @@ GeneratorServantC::genTableForHome(IR__::HomeDef_ptr home)
 
 	std::string strName = "sztream";
 	std::string strContent = "CREATE TABLE ";
+	strContent += strNamespace_ + "_";
 	strContent += std::string(home_->name());
 	strContent += "Persistence (";
 	out << genSQLLine(strName, strContent, true, false, true);
@@ -3320,6 +3326,7 @@ GeneratorServantC::genTableForHome(IR__::HomeDef_ptr home)
 	if( !CORBA::is_nil(base_home) )
 	{
 		strContent = ") INHERITS ( ";
+		strContent.append(strNamespace_ + "_");
 		strContent.append(base_home->name());
 		strContent += "Persistence );";
 		out << genSQLLine(strName, strContent, true, false, false);
@@ -3327,6 +3334,7 @@ GeneratorServantC::genTableForHome(IR__::HomeDef_ptr home)
 	else
 	{
 		strContent = "CONSTRAINT PK_";
+		strContent += strNamespace_ + "_";
 		strContent += home->name();
 		strContent += "Persistence PRIMARY KEY (pid)";
 		out << genSQLLine(strName, strContent, true, false, true);

@@ -36,7 +36,8 @@ GeneratorPersistenceC::GeneratorPersistenceC
   strClassname_(""),
   strActBasename_(""),
   strName_(""),
-  strContent_("")
+  strContent_(""),
+  strNamespace_("")
 {
 }
 
@@ -63,6 +64,16 @@ GeneratorPersistenceC::generate(std::string target, std::string fileprefix)
 	out << "#define _" << file_prefix_ << "_PSS_C_\n\n\n";
 	out << "#include \"" << file_prefix_ << "_PSS.h\"\n";
 	
+	// parse the namespace name from prefix, disadvantage is 
+	// that will not allow the user to use '_' in his namespace name
+	// a little farfetched ;-(
+	basic_string <char>::size_type idx;
+    static const basic_string <char>::size_type npos = -1;
+	
+	idx = file_prefix_.find("_");
+	if(idx!=npos)
+		strNamespace_ = file_prefix_.substr(0, idx);
+
 	doGenerate();
 
 	out << "\n#endif\n";
@@ -1131,6 +1142,7 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype/*
 	out << "std::stringstream strstream;\n";
 	strName_ = "strstream";
 	strContent_ = "UPDATE ";
+	strContent_ += strNamespace_ + "_";
 	strContent_ += strStoragehomeName;
 	strContent_ += " SET";
 	out << genSQLLine(strName_, strContent_, true, false, true);
@@ -1701,15 +1713,15 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out << genSQLLine(strContent_, false, false, false, true);
 	strContent_ = "\\'";
 	out << genSQLLine(strContent_, true, true, true);
-	out << strName_ << " << \"\\\'" << storagehome->name() << "\\\', ";
-	out << "\\\'" << storagehome->managed_storagetype()->name() << "\\\' );\";\n\n";
+	out << strName_ << " << \"\\\'" << strNamespace_ << "_" << storagehome->name() << "\\\', ";
+	out << "\\\'" << strNamespace_ << "_" << storagehome->managed_storagetype()->name() << "\\\' );\";\n\n";
 	out << "if(!pCatalogBaseImpl->ExecuteSQL(" << strName_ << ".str().c_str()))\n";
 	out.indent();
 	out << "throw CORBA::BAD_PARAM();\n\n";
 	out.unindent();
 
 	out << "strInsert.str(\"\");\n";
-	out << strName_ << " << \"INSERT INTO " << storagehome->name() << " ( pid, spid, ";
+	out << strName_ << " << \"INSERT INTO " << strNamespace_ << "_" << storagehome->name() << " ( pid, spid, ";
 	
 	for(i=0; i<ulLen; i++)
 	{
@@ -1847,7 +1859,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	
 	out << "//use factory to create a storage object\n";
 	out << "StorageObjectFactory factory = NULL;\n";
-	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << storagehome->managed_storagetype()->name() << "\", factory);\n";
+	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strNamespace_ << "_" << storagehome->managed_storagetype()->name() << "\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
 	out << "//factory->_remove_ref();\n";
 	if(!isRef)
@@ -1948,6 +1960,7 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 			out << "std::stringstream strKey;\n\n";
 			strName_ = "strKey";
 			strContent_ = "SELECT spid FROM ";
+			strContent_ += strNamespace_ + "_"; 
 			strContent_ += storagehome->name();
 			out << genSQLLine(strName_, strContent_, true, false, true);
 			strContent_ = "WHERE";
@@ -2127,6 +2140,7 @@ GeneratorPersistenceC::genComponentPersistence(IR__::HomeDef_ptr home, IR__::Com
 	out << "std::stringstream strstream;\n";
 	strName_ = "strstream";
 	strContent_ = "UPDATE ";
+	strContent_ += strNamespace_ + "_";
 	strContent_ += home->name();
 	strContent_ += "Persistence SET";
 	out << genSQLLine(strName_, strContent_, true, false, true);
@@ -2402,15 +2416,15 @@ GeneratorPersistenceC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_pt
 	out << genSQLLine(strContent_, false, false, false, true);
 	strContent_ = "\\'";
 	out << genSQLLine(strContent_, true, true, true);
-	out << strName_ << " << \"\\\'" << home->name() << "Persistence\\\', ";
-	out << "\\\'" << strComponentName << "Persistence\\\' );\";\n\n";
+	out << strName_ << " << \"\\\'" << strNamespace_ << "_" << home->name() << "Persistence\\\', ";
+	out << "\\\'" << strNamespace_ << "_" << strComponentName << "Persistence\\\' );\";\n\n";
 	out << "if(!pCatalogBaseImpl->ExecuteSQL(" << strName_ << ".str().c_str()))\n";
 	out.indent();
 	out << "throw CORBA::BAD_PARAM();\n\n";
 	out.unindent();
 
 	out << "strFactory.str(\"\");\n";
-	out << strName_ << " << \"INSERT INTO " << home->name() << "Persistence ( pid, spid, ";
+	out << strName_ << " << \"INSERT INTO " << strNamespace_ << "_" << home->name() << "Persistence ( pid, spid, ";
 
 	ulLen = state_members.length();
 	for(i=0; i<ulLen; i++)
@@ -2592,7 +2606,7 @@ GeneratorPersistenceC::genFactory(IR__::FactoryDef_ptr factory, IR__::HomeDef_pt
 	out.indent();
 	out << "//use factory to create a storage object\n";
 	out << "StorageObjectFactory factory = NULL;\n";
-	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strComponentName << "Persistence\", factory);\n";
+	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strNamespace_ << "_" << strComponentName << "Persistence\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
 	out << "//factory->_remove_ref();\n";
 	out << strComponentName << "Persistence* pActObject = dynamic_cast <" << strComponentName << "Persistence*> (pObjectImpl);\n";
@@ -2863,15 +2877,15 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	out << genSQLLine(strContent_, false, false, false, true);
 	strContent_ = "\\'";
 	out << genSQLLine(strContent_, true, true, true);
-	out << strName_ << " << \"\\\'" << strHomeName << "Persistence\\\', ";
-	out << "\\\'" << strComponentName << "Persistence\\\' );\";\n\n";
+	out << strName_ << " << \"\\\'" << strNamespace_ << "_" << strHomeName << "Persistence\\\', ";
+	out << "\\\'" << strNamespace_ << "_" << strComponentName << "Persistence\\\' );\";\n\n";
 	out << "if(!pCatalogBaseImpl->ExecuteSQL(" << strName_ << ".str().c_str()))\n";
 	out.indent();
 	out << "throw CORBA::BAD_PARAM();\n\n";
 	out.unindent();
 
 	out << strName_ << ".str(\"\");\n";
-	out << strName_ << " << \"INSERT INTO " << strHomeName << "Persistence ( pid, spid, ";
+	out << strName_ << " << \"INSERT INTO " << strNamespace_ << "_" << strHomeName << "Persistence ( pid, spid, ";
 	
 	for(i=0; i<ulLen; i++)
 	{
@@ -3009,7 +3023,7 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	
 	out << "//use factory to create a storage object\n";
 	out << "StorageObjectFactory factory = NULL;\n";
-	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strComponentName << "Persistence\", factory);\n";
+	out << "factory = pCatalogBaseImpl->getConnector()->register_storage_object_factory(\"" << strNamespace_ << "_" << strComponentName << "Persistence\", factory);\n";
 	out << "StorageObjectImpl* pObjectImpl = factory->create();\n";
 	out << "//factory->_remove_ref();\n";
 	out << strComponentName << "Persistence* pActObject = dynamic_cast <" << strComponentName << "Persistence*> (pObjectImpl);\n";
@@ -3070,6 +3084,7 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	out << "std::stringstream strKey;\n\n";
 	strName_ = "strKey";
 	strContent_ = "SELECT spid FROM ";
+	strContent_ += strNamespace_ + "_";
 	strContent_ += home->name();
 	strContent_ += "Persistence";
 	out << genSQLLine(strName_, strContent_, true, false, true);

@@ -49,6 +49,7 @@ private:
 	std::string						strActBasename_;
 	std::string						strName_;
 	std::string						strContent_;
+	std::string						strNamespace_;
 	std::set<std::string>			sRecursion_;
 	std::map<std::string, std::string>	homeMap_;
 	std::map<std::string, std::string>::const_iterator homeIter_;
