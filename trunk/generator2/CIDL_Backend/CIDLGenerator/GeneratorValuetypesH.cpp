@@ -197,7 +197,7 @@ GeneratorValuetypesH::doValue(IR__::ValueDef_ptr value)
 	out << "public:\n\n";
 	out.indent();
 	out << value_name << "FactoryImpl();\n";
-	out << value_name << "~FactoryImpl();\n\n";
+	out << "~" << value_name << "FactoryImpl();\n\n";
 	// initializers
 	IR__::InitializerSeq_var ini = value->initializers();
 	for(i = 0; i < ini->length(); i++)
