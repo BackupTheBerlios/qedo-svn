@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.1 2002/11/08 10:36:12 neubauer Exp $";
+static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.2 2002/11/19 08:29:20 neubauer Exp $";
 
 
 #include "AssemblyFactory.h"
@@ -73,12 +73,12 @@ AssemblyFactoryImpl::initialize()
 	}
 	catch (CORBA::ORB::InvalidName&)
 	{
-		std::cerr << "ComponentInstallationImpl: Fatal error - no root POA available." << std::endl;
+		std::cerr << "..... Fatal error - no root POA available." << std::endl << std::endl;
 		throw CannotInitialize();
 	}
 	catch (CORBA::SystemException&)
 	{
-		std::cerr << "ComponentInstallationImpl: Fatal error - cannot narrow root POA." << std::endl;
+		std::cerr << "..... Fatal error - cannot narrow root POA." << std::endl << std::endl;
 		throw CannotInitialize();
 	}
 
@@ -103,14 +103,13 @@ AssemblyFactoryImpl::initialize()
         throw CannotInitialize();
     }
 
-	std::cout << "..... bound under " << name << std::endl;
-	std::cout << std::endl;
+	std::cout << "..... bound under " << name << std::endl << std::endl;
 
 	// directory to put the packages
 	packageDirectory_ = getCurrentDirectory() + "/assemblyPackages";
 	if (makeDir(packageDirectory_))
 	{
-		std::cerr << "AssemblyPackages directory can not be created" << std::endl;
+		std::cerr << "..... AssemblyPackages directory can not be created" << std::endl;
 		throw CannotInitialize();
 	}
 }
@@ -123,6 +122,8 @@ Components::Cookie*
 AssemblyFactoryImpl::create (const char* assembly_loc)
 throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 {
+	std::cout << "..... creating new assembly for " << assembly_loc << std::endl;
+
 	XMLURL uri(assembly_loc);
     std::string name = XMLString::transcode(uri.getPath());
     std::string::size_type pos = name.find_last_of("/");
@@ -131,7 +132,9 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
         name.erase(0, pos + 1);
     }
     
-    // ensure the package exists
+    //
+	// ensure the package exists
+	//
     std::string comp_loc = packageDirectory_ + "/" + name;
 	if ( !checkExistence(comp_loc, IS_FILE))
 	{
@@ -145,7 +148,7 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 		std::ofstream packageFile(comp_loc.c_str(), std::ios::binary|std::ios::app);
 		if ( ! packageFile)
 		{
-			std::cerr << "AssemblyFactory: Cannot open file " << comp_loc << std::endl;
+			std::cerr << "..... Cannot open file " << comp_loc << std::endl;
 			throw Components::CreateFailure();
 		}
         unsigned char* buf = (unsigned char*)malloc(4096);
@@ -159,12 +162,14 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 		packageFile.close();
 	}
 
+	//
 	// create new assembly
+	//
 	Cookie_impl* new_cookie = new Cookie_impl();
 	AssemblyImpl* ass = new AssemblyImpl(comp_loc, new_cookie, nameService_);
 	assemblies_.push_back(ass);
 
-	std::cout << "..... new assembly created for " << assembly_loc << std::endl;
+	std::cout << "..... done" << std::endl << std::endl;
 
 	new_cookie->_add_ref();
 	return new_cookie;

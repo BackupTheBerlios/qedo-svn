@@ -175,12 +175,12 @@ throw( Components::CreateFailure )
 			}
 			catch (CORBA::Exception& ex)
 			{
-				DEBUG_OUT2( "EXCEPTION DURING configuration_complete : ", ex );
+				DEBUG_OUT2( "..... EXCEPTION DURING configuration_complete : ", ex );
                 throw Components::CreateFailure();
 			}
 			catch ( ... )
 			{
-				DEBUG_OUT( "UNKNOWN EXCEPTION DURING configuration_complete" );
+				DEBUG_OUT( "..... UNKNOWN EXCEPTION DURING configuration_complete" );
                 throw Components::CreateFailure();
 			}
 
@@ -202,7 +202,7 @@ throw(Components::CreateFailure)
 	DOM_NodeList nodeList = homeplacement.getElementsByTagName("destination");
 	if (nodeList.getLength() != 1)
 	{
-		DEBUG_OUT2("Assembly : not exactly one destination element for ", homeplacement.getAttribute("id").transcode());
+		DEBUG_OUT2("\nAssembly: not exactly one destination element for ", homeplacement.getAttribute("id").transcode());
 		throw Components::CreateFailure();
 	}
 
@@ -232,7 +232,7 @@ throw(Components::CreateFailure)
     DOM_NodeList nodeList = homeplacement.getElementsByTagName("componentfileref");
     if (nodeList.getLength() != 1)
 	{
-		DEBUG_OUT2("Assembly : not exactly one componentfileref element for ", homeplacement.getAttribute("id").transcode());
+		DEBUG_OUT2("\nAssembly: not exactly one componentfileref element for ", homeplacement.getAttribute("id").transcode());
 		throw Components::CreateFailure();
 	}
 	DOM_Element fileElement = (const DOM_Element&)nodeList.item(0);
@@ -251,7 +251,7 @@ throw(Components::CreateFailure)
     DOM_NodeList nodeList = homeplacement.getElementsByTagName("componentimplref");
     if (nodeList.getLength() != 1)
 	{
-		DEBUG_OUT2("Assembly : missing componentimplref element for ", homeplacement.getAttribute("id").transcode());
+		DEBUG_OUT2("\nAssembly : missing componentimplref element for ", homeplacement.getAttribute("id").transcode());
 		throw Components::CreateFailure();
 	}
 	DOM_Element fileElement = (const DOM_Element&)nodeList.item(0);
@@ -270,7 +270,7 @@ throw(Components::CreateFailure)
     DOM_NodeList nodeList = element.getElementsByTagName("usesidentifier");
     if (nodeList.getLength() != 1)
 	{
-		DEBUG_OUT("Assembly : missing usesidentifier element");
+		DEBUG_OUT("\nAssembly : missing usesidentifier element");
 		throw Components::CreateFailure();
 	}
 	DOM_Element elem = (const DOM_Element&)nodeList.item(0);
@@ -290,7 +290,7 @@ throw(Components::CreateFailure)
     DOM_NodeList nodeList = element.getElementsByTagName("providesidentifier");
     if (nodeList.getLength() != 1)
 	{
-		DEBUG_OUT("Assembly : missing providesidentifier element");
+		DEBUG_OUT("\nAssembly : missing providesidentifier element");
 		throw Components::CreateFailure();
 	}
 	DOM_Element elem = (const DOM_Element&)nodeList.item(0);
@@ -310,7 +310,7 @@ throw(Components::CreateFailure)
     DOM_NodeList nodeList = element.getElementsByTagName("consumesidentifier");
     if (nodeList.getLength() != 1)
 	{
-		DEBUG_OUT("Assembly : missing consumesidentifier element");
+		DEBUG_OUT("\nAssembly : missing consumesidentifier element");
 		throw Components::CreateFailure();
 	}
 	DOM_Element elem = (const DOM_Element&)nodeList.item(0);
@@ -330,7 +330,7 @@ throw(Components::CreateFailure)
     DOM_NodeList nodeList = element.getElementsByTagName("emitsidentifier");
     if (nodeList.getLength() != 1)
 	{
-		DEBUG_OUT("Assembly : missing emitsidentifier element");
+		DEBUG_OUT("\nAssembly : missing emitsidentifier element");
 		throw Components::CreateFailure();
 	}
 	DOM_Element elem = (const DOM_Element&)nodeList.item(0);
@@ -350,7 +350,7 @@ throw(Components::CreateFailure)
     DOM_NodeList nodeList = element.getElementsByTagName("publishesidentifier");
     if (nodeList.getLength() != 1)
 	{
-		DEBUG_OUT("Assembly : missing publishesidentifier element");
+		DEBUG_OUT("\nAssembly : missing publishesidentifier element");
 		throw Components::CreateFailure();
 	}
 	DOM_Element elem = (const DOM_Element&)nodeList.item(0);
@@ -556,7 +556,7 @@ throw( Components::CreateFailure )
 	CORBA::Object_var obj = resolveName(SERVER_ACTIVATOR_CONTEXT + dest);
     if ( ! obj)
     {
-        DEBUG_OUT2("Assembly : no ServerActivator found for ", dest);
+        DEBUG_OUT2("\nAssembly: no ServerActivator found for ", dest);
         throw Components::CreateFailure();
     }
 
@@ -566,20 +566,20 @@ throw( Components::CreateFailure )
     }
     catch (...)
     {
-        DEBUG_OUT2("Assembly : ServerActivator not reachable for ", dest);
+        DEBUG_OUT2("\nAssembly: ServerActivator not reachable for ", dest);
         throw Components::CreateFailure();
     }
 
     if ( CORBA::is_nil(serverActivator.in()))
     {
-        DEBUG_OUT2("Assembly : ServerActivator with wrong interface for ", dest);
+        DEBUG_OUT2("\nAssembly : ServerActivator with wrong interface for ", dest);
         throw Components::CreateFailure();
     }
 
 	//
 	// create new Component Server
 	//
-	DEBUG_OUT ( "..... assembly creates new Component Server" );
+	DEBUG_OUT ( "\nAssembly: create new Component Server" );
 	try
 	{
 		Components::ConfigValues_var config = new Components::ConfigValues();
@@ -610,7 +610,7 @@ throw( Components::CreateFailure )
     //
 	// create new Container
 	//
-	DEBUG_OUT("..... assembly creates new Container");
+	DEBUG_OUT("\nAssembly: create new Container");
     Components::Deployment::Container_var container;
 	Components::ConfigValues_var config = new Components::ConfigValues();
 	config->length(1);
@@ -647,7 +647,7 @@ throw(Components::CreateFailure)
 	//
     // create home
 	//
-    DEBUG_OUT2("..... assembly creates new Component Home for ", id.c_str());
+	DEBUG_OUT2("\nAssembly: create new Component Home for ", id.c_str());
     Components::CCMHome_var home;
 				
 	try
@@ -780,7 +780,7 @@ throw( Components::CreateFailure )
 	aNodeList = document.getElementsByTagName( "componentfiles" );
 	if ( aNodeList.getLength() != 1 )
 	{
-		DEBUG_OUT2( "Assembly : there must be one componentfiles element in ", package_->getName() );
+		DEBUG_OUT2("\nAssembly: there must be one componentfiles element in ", package_->getName());
 		throw Components::CreateFailure();
 	}
 
@@ -856,7 +856,7 @@ void
 AssemblyImpl::instantiateComponent (DOM_Element instance, Components::CCMHome_ptr home)
 throw(Components::CreateFailure)
 {
-	DEBUG_OUT2 ( "..... assembly creates new Component : ", instance.getAttribute( "id" ).transcode() );
+	DEBUG_OUT2 ("\nAssembly: create new Component : ", instance.getAttribute( "id" ).transcode());
 
     //
     // instantiate component
@@ -968,7 +968,7 @@ throw(Components::CreateFailure)
 	DOM_NodeList nodeList = element.getElementsByTagName("homeplacement");
 	if (nodeList.getLength() == 0)
 	{
-		DEBUG_OUT2("Assembly : no homeplacements in processcollocation in ", package_->getName());
+		DEBUG_OUT2("\nAssembly: no homeplacements in processcollocation in ", package_->getName());
 		return;
 	}
 
@@ -1387,12 +1387,12 @@ throw(Components::CreateFailure)
 			}
 			catch ( CORBA::Exception& ex )
 			{
-				DEBUG_OUT2( "EXCEPTION DURING configuration_complete : ", ex );
+				DEBUG_OUT2("\nAssembly: EXCEPTION DURING configuration_complete : ", ex );
                 throw Components::CreateFailure();
 			}
 			catch ( ... )
 			{
-				DEBUG_OUT( "UNKNOWN EXCEPTION DURING configuration_complete" );
+				DEBUG_OUT("\nAssembly: UNKNOWN EXCEPTION DURING configuration_complete" );
                 throw Components::CreateFailure();
 			}
 		}
@@ -1411,7 +1411,7 @@ AssemblyImpl::build
 ()
 throw( Components::CreateFailure )
 {
-	std::cout << "..... starting assembly for " << package_->getName() << std::endl;
+	DEBUG_OUT2("\nAssembly: starting assembly for ", package_->getName());
 
     //
 	// find and extract the assembly descriptor
@@ -1453,7 +1453,7 @@ throw( Components::CreateFailure )
 	// start components
 	configuration_complete();
     
-	std::cout << "..... Assembly for " << package_->getName() << " is running !" << std::endl;
+	DEBUG_OUT3("\nAssembly: Assembly for ", package_->getName(), " is running !");
 
     // remove assembly descriptor
     removeFileOrDirectory(pathname_ + cadfile);
@@ -1479,7 +1479,7 @@ throw( Components::RemoveFailure )
 		instanceIter = instanceMap_.find( *iter );
 		if( instanceIter != instanceMap_.end() )
 		{
-			DEBUG_OUT2( "AssemblyImpl: call remove to ", instanceIter->first );
+			DEBUG_OUT2("\nAssembly: call remove to ", instanceIter->first );
 
 			comp = Components::CCMObject::_duplicate( instanceIter->second );
 
@@ -1489,12 +1489,12 @@ throw( Components::RemoveFailure )
 			}
 			catch (CORBA::Exception&)
 			{
-				DEBUG_OUT2( "AssemblyImpl: EXCEPTION DURING removal of ", instanceIter->first);
+				DEBUG_OUT2("Assembly: EXCEPTION DURING removal of ", instanceIter->first);
 				instanceMap_.erase( instanceIter );
                 continue;
 			}
 			
-			DEBUG_OUT3( "AssemblyImpl: ", instanceIter->first, " removed!" );
+			DEBUG_OUT3("Assembly: ", instanceIter->first, " removed!");
 
 			instanceMap_.erase( instanceIter );
 		}
@@ -1507,7 +1507,7 @@ throw( Components::RemoveFailure )
 		 instanceIter != instanceMap_.end();
 		 instanceIter++ )
 	{
-		DEBUG_OUT2( "\nAssembly: call remove to ", instanceIter->first );
+		DEBUG_OUT2("\nAssembly: call remove to ", instanceIter->first);
 
 		try
 		{
@@ -1515,16 +1515,16 @@ throw( Components::RemoveFailure )
 		}
 		catch (CORBA::Exception&)
 		{
-			DEBUG_OUT2( "EXCEPTION DURING removal of ", instanceIter->first);
+			DEBUG_OUT2("Assembly: EXCEPTION DURING removal of ", instanceIter->first);
 			continue;
 		}
 
-		DEBUG_OUT3("AssemblyImpl: ", instanceIter->first, " removed!");
+		DEBUG_OUT3("Assembly: ", instanceIter->first, " removed!");
 	}
 
 	instanceMap_.clear();
 
-    DEBUG_OUT("Assembly is teared down!");
+	DEBUG_OUT("\nAssembly: Assembly is teared down!");
 }
 
 
