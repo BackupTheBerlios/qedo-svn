@@ -110,7 +110,9 @@ private:
 	PortableInterceptor::SlotId								slot_id_;
 	/** the list of valuetype implementations */
 	std::vector < ValuetypeEntry >							valuetypes_;
-	/** the mutex for valuetype implementation list */
+	/** the mutex for the container list */
+	QedoMutex												container_mutex_;
+	/** the mutex for the valuetype implementation list */
 	QedoMutex												value_mutex_;
 
 public:

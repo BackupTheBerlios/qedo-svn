@@ -24,7 +24,7 @@
 #include "Valuetypes.h"
 #include "qedoutil.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.19 2003/10/21 14:06:02 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.20 2003/10/27 15:30:28 stoinski Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -326,6 +326,9 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 											   component_installer_);
 
 	ContainerEntry new_container (container_if);
+
+	QedoLock lock (container_mutex_);
+
 	containers_.push_back (new_container);
 
 	container_if->_remove_ref();
@@ -338,6 +341,8 @@ void
 ComponentServerImpl::remove_container(::Components::Deployment::Container_ptr cref)
 throw (Components::RemoveFailure, CORBA::SystemException)
 {
+	QedoLock lock (container_mutex_);
+
 	// Find the container in our list of created containers
 	std::vector <ContainerEntry>::iterator container_iter;
 
@@ -372,6 +377,8 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 ComponentServerImpl::get_containers()
 throw (CORBA::SystemException)
 {
+	QedoLock lock (container_mutex_);
+
 	Components::Deployment::Containers_var containers = new Components::Deployment::Containers();
 	containers->length (containers_.size());
 
@@ -394,6 +401,8 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	//
 	// remove containers
 	//
+	container_mutex_.lock_object();
+
 	if (containers_.size() > 0)
 	{
 		DEBUG_OUT ("ComponentServerImpl: Warning: There are still container instances around, going to remove them...");
@@ -403,13 +412,20 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 		while (containers_.size())
 		{
 			Components::Deployment::Container_var container = containers_[0].container_->_this();
+			container_mutex_.unlock_object();
 			this->remove_container (container.in());
+			container_mutex_.lock_object();
 		}
 	}
+
+	container_mutex_.unlock_object();
 
 	//
 	// remove valuetype impls
 	//
+	// get mutex
+	QedoLock lock (value_mutex_);
+
 	std::vector < ValuetypeEntry > ::iterator iter;
 	for(iter = valuetypes_.begin();
 		iter != valuetypes_.end();
@@ -417,6 +433,7 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	{
 		Qedo::unload_shared_library ((*iter).dll);
 	}
+
 	valuetypes_.clear();
 
 	root_poa_manager_->deactivate (false /*no etherealize objects*/, false /*no wait for completion*/);
