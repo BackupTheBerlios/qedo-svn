@@ -56,8 +56,10 @@ module CORBA__ {
 		dk_Provides, dk_Uses //33
 		// The following extensions are for CIDL
 		, dk_Composition, dk_Segment, dk_Executor, dk_HomeExecutor //37
+#ifndef _QEDO_NO_STREAMS
 		// the following is the stream extension
-		, dk_Stream, dk_Sink, dk_Source, dk_SiSo
+		, dk_StreamType, dk_Sink, dk_Source
+#endif
 	};
 
 	interface IRObject
@@ -140,14 +142,15 @@ module IR__ {
 	typedef sequence <PublishesDef> PublishesDefSeq;
 	interface ConsumesDef;
 	typedef sequence <ConsumesDef> ConsumesDefSeq;
+#ifndef _QEDO_NO_STREAMS
 	interface StreamTypeDef;
+	typedef sequence <StreamTypeDef> StreamTypeDefSeq;
 	interface StreamPortDef;
 	interface SinkDef;
 	typedef sequence <SinkDef> SinkDefSeq;
 	interface SourceDef;
 	typedef sequence <SourceDef> SourceDefSeq;
-	interface SiSoDef;
-	typedef sequence <SiSoDef> SiSoDefSeq;
+#endif
 	interface FactoryDef;
 	typedef sequence <FactoryDef> FactoryDefSeq;
 	interface FinderDef;
@@ -277,11 +280,14 @@ module IR__ {
 			in InitializerSeq initializers
 		);
 
+#ifndef _QEDO_NO_STREAMS
 		StreamTypeDef create_stream_type(
 			in RepositoryId id,
 			in Identifier name,
-			in VersionSpec version
-			);
+			in VersionSpec version,
+			in IDLType transported_type
+		);
+#endif
 		ValueBoxDef create_value_box(
 			in RepositoryId id,
 			in Identifier name,
@@ -321,8 +327,11 @@ module IR__ {
 		readonly attribute CORBA::TypeCode type;
 	};
 	
+#ifndef _QEDO_NO_STREAMS
 	interface StreamTypeDef : Contained, IDLType {
+		attribute IDLType transported_type;
 	};
+#endif
 
 	interface PrimitiveDef;
 	interface StringDef;
@@ -713,6 +722,7 @@ module IR__ {
 	interface ConsumesDef : EventPortDef {
 	};
 	
+#ifndef _QEDO_NO_STREAMS
 	interface StreamPortDef : Contained {
 		boolean is_a (in RepositoryId stream_id);
 		readonly attribute StreamTypeDef stream_type;
@@ -738,10 +748,9 @@ module IR__ {
 	};
 
 	interface SourceDef : StreamPortDef {
+		readonly attribute boolean is_multiple;
 	};
-	
-	interface SiSoDef : StreamPortDef {
-	};
+#endif
 
 	interface ComponentDef : InterfaceDef {
 		// read/write interface
@@ -753,9 +762,10 @@ module IR__ {
 		readonly attribute EmitsDefSeq emits_events;
 		readonly attribute PublishesDefSeq publishes_events;
 		readonly attribute ConsumesDefSeq consumes_events;
+#ifndef _QEDO_NO_STREAMS
 		readonly attribute SinkDefSeq sinks;
 		readonly attribute SourceDefSeq sources;
-		readonly attribute SiSoDefSeq sisos;
+#endif
 		readonly attribute boolean is_basic;
 		// write interface
 		ProvidesDef create_provides (
@@ -799,13 +809,8 @@ module IR__ {
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in StreamTypeDef stream_type
-		);
-		SiSoDef create_siso (
-			in RepositoryId id,
-			in Identifier name,
-			in VersionSpec version,
-			in StreamTypeDef stream_type
+			in StreamTypeDef stream_type,
+			in boolean is_multiple
 		);
 	};
 	
@@ -823,6 +828,8 @@ module IR__ {
 		EmitsDefSeq emits_events;
 		PublishesDefSeq publishes_events;
 		ConsumesDefSeq consumes_events;
+		SourceDefSeq sources;
+		SinkDefSeq sinks;
 		boolean is_basic;
 	};
 	

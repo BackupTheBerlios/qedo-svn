@@ -61,6 +61,8 @@ class GeneratorLIDL : public virtual IDLBase
 	void doUses(IR__::UsesDef_ptr uses);
 	void doEmits(IR__::EmitsDef_ptr emits);
 	void doPublishes(IR__::PublishesDef_ptr publishes);
+	void doSource(IR__::SourceDef_ptr source);
+	void doSink(IR__::SinkDef_ptr sink);
 
 public:
 

@@ -56,7 +56,6 @@ private:
 	void doConsumes(IR__::ConsumesDef_ptr consumes);
 	void doSource(IR__::SourceDef_ptr source);
 	void doSink(IR__::SinkDef_ptr sink);
-	void doSiSo(IR__::SiSoDef_ptr siso);
 	void doHome(IR__::HomeDef_ptr home);
 	void doFactory(IR__::FactoryDef_ptr factory);
 	void doFinder(IR__::FinderDef_ptr finder);

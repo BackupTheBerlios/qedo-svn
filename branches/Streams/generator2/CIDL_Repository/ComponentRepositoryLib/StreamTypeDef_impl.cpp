@@ -99,4 +99,21 @@ throw(CORBA::SystemException)
         return CORBA::TypeCode::_duplicate(CORBA::_tc_null);
 }
 
+IR__::IDLType_ptr 
+StreamTypeDef_impl::transported_type
+()
+throw(CORBA::SystemException)
+{
+	return IR__::IDLType::_duplicate (transported_type_);
+}
+
+void 
+StreamTypeDef_impl::transported_type
+(IR__::IDLType_ptr transported_type)
+throw(CORBA::SystemException)
+{
+	transported_type_ = IR__::IDLType::_duplicate (transported_type);
+}
+
+
 } // namespace QEDO_ComponentRepository

@@ -36,7 +36,6 @@
 #include "ConsumesDef_impl.h"
 #include "Sink_impl.h"
 #include "SourceDef_impl.h"
-#include "SiSoDef_impl.h"
 
 #include <vector>
 
@@ -134,12 +133,6 @@ public:
         throw(CORBA::SystemException);
 
     //
-    // IDL:omg.org/IR__/ComponentDef/sisos:1.0
-    //
-    virtual IR__::SiSoDefSeq* sisos()
-        throw(CORBA::SystemException);
-
-    //
     // IDL:omg.org/IR__/ComponentDef/is_basic:1.0
     //
     virtual CORBA::Boolean is_basic()
@@ -207,18 +200,10 @@ public:
 	virtual IR__::SourceDef_ptr create_source(const char* id,
                                           const char* name,
                                           const char* version,
-                                          IR__::StreamTypeDef_ptr value)
+                                          IR__::StreamTypeDef_ptr stream_type,
+										  CORBA::Boolean is_multiple)
         throw(CORBA::SystemException);
 
-
-    //
-    // IDL:omg.org/IR__/ComponentDef/create_siso:1.0
-    //
-	virtual IR__::SiSoDef_ptr create_siso(const char* id,
-                                          const char* name,
-                                          const char* version,
-                                          IR__::StreamTypeDef_ptr value)
-        throw(CORBA::SystemException);
 
 	// All inherited create_* operations except create_attribute from
 	// InterfaceDef and ContainerDef throw an exception

@@ -42,6 +42,9 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "#include \"" << file_prefix_ << "_LOCAL_skel.h\"\n";
 	out << "#include \"SessionContext.h\"\n";
 	out << "#include \"ServantBase.h\"\n";
+	out << "#ifndef _QEDO_NO_STREAMS\n";
+	out << "#include \"PrimaryStreamServant.h\"\n";
+	out << "#endif\n";
 	out << "#include \"SessionHomeServant.h\"\n\n\n";
 
 	//
@@ -319,47 +322,13 @@ GeneratorServantH::doUses(IR__::UsesDef_ptr uses)
 void 
 GeneratorServantH::doSink(IR__::SinkDef_ptr sink)
 {
-	out << "\n//\n// " << sink->id() << "\n//\n";
-	std::string stream_type_name = mapFullName(sink->stream_type());
-	std::string stream_interface_name;
-	if (stream_type_name == "::QedoStream::h323_stream") {
-		stream_interface_name = "Components::QedoStreams::H323Streamconnection"; 
-	} else {
-		stream_interface_name = "error";
-	};
-	out << stream_interface_name << "_ptr get_connection_" << sink->name() << "()\n";
-	out << "	throw (CORBA::SystemException);\n";
-
-	// disconnect_...
-	out << stream_interface_name << "_ptr disconnect_" << sink->name() << "()\n";
-	out << "	throw (Components::NoConnection, CORBA::SystemException);\n";
-
-	// connect_...
-	out << "void connect_" << sink->name() << "(";
-	out << stream_interface_name << "_ptr conxn)\n";
-	out << "	throw (Components::AlreadyConnected, Components::InvalidConnection, CORBA::SystemException);\n";
 };
 
 void 
 GeneratorServantH::doSource(IR__::SourceDef_ptr source)
 {
-	out << "\n//\n// " << source->id() << "\n//\n";
-	std::string stream_type_name = mapFullName(source->stream_type());
-	std::string stream_interface_name;
-	if (stream_type_name == "::QedoStream::h323_stream") {
-		stream_interface_name = "Components::QedoStreams::H323Streamconnection"; 
-	} else {
-		stream_interface_name = "error";
-	};
-	out << stream_interface_name << "_ptr provide_" << source->name() << "()\n";
-	out << "	throw (CORBA::SystemException);\n";
-
 };
 
-void 
-GeneratorServantH::doSiSo(IR__::SiSoDef_ptr uses)
-{
-};
 
 void 
 GeneratorServantH::doEmits(IR__::EmitsDef_ptr emits)
@@ -658,7 +627,15 @@ GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component)
 	out << "class " << class_name << "\n";
 	out.indent();
 	out << ": public " << mapFullNamePOA(component) << "\n";
-	out << ", public Qedo::PrimaryServant \n";
+
+	// Test for stream features
+	IR__::SourceDefSeq_var sources_seq = component->sources();
+	IR__::SinkDefSeq_var sinks_seq = component->sinks();
+	if (sources_seq->length() || sinks_seq->length())
+		out << ", public Qedo::PrimaryStreamServant\n";
+	else
+		out << ", public Qedo::PrimaryServant\n";
+
 	out.unindent();
 	out << "{\n\n";
 	out << "public:\n\n";
@@ -711,7 +688,6 @@ GeneratorServantH::genComponentServantBody(IR__::ComponentDef_ptr component)
 	}
 	handleSink(component);
 	handleSource(component);
-	handleSiSo(component);
 }
 
 
@@ -786,6 +762,31 @@ GeneratorServantH::genContextServantBody(IR__::ComponentDef_ptr component)
 		IR__::PublishesDef_var a_publishes = IR__::PublishesDef::_narrow(((*contained_seq)[i]));
 		out << "\n";
 		out << "void push_" << a_publishes->name() << "(" << mapFullName(a_publishes->event()) << "* ev);\n";
+	}
+
+	// source ports
+	contained_seq = component->contents(CORBA__::dk_Source, false);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++) 
+	{
+		IR__::SourceDef_var a_source = IR__::SourceDef::_narrow(((*contained_seq)[i]));
+		out << "\n";
+		out << "void begin_stream_" << a_source->name() << " (const char* repos_id,\n";
+		out.indent(); out.indent();
+		out << "const ::Components::ConfigValues& meta_data)\n";
+		out.unindent();
+		out << "throw (StreamComponents::UnsupportedStreamtype, StreamComponents::DuplicateStream);\n\n";
+		out.unindent();
+
+		out << "void end_stream_" << a_source->name() << "()\n";
+		out.indent();
+		out << "throw (StreamComponents::NoStream);\n\n";
+		out.unindent();
+
+		out << "void send_stream_data_" << a_source->name() << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
+		out.indent();
+		out << "throw (StreamComponents::NoStream);\n\n";
+		out.unindent();
 	}
 }
 

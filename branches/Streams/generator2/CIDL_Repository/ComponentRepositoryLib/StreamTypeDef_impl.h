@@ -39,6 +39,8 @@ class StreamTypeDef_impl : public virtual POA_IR__::StreamTypeDef,
 							public virtual Contained_impl,
 							public virtual IDLType_impl
 {
+private:
+	IR__::IDLType_var transported_type_;
 
 public:
 	StreamTypeDef_impl (Container_impl *,  Repository_impl *);
@@ -61,7 +63,7 @@ public:
 	virtual CORBA__::DefinitionKind def_kind()
 		throw(CORBA::SystemException)
 	{
-		return CORBA__::dk_Stream;
+		return CORBA__::dk_StreamType;
 	}
 
 	//
@@ -82,6 +84,13 @@ public:
     virtual CORBA::TypeCode_ptr type()
         throw(CORBA::SystemException);
 
+    //
+    // IDL:omg.org/IR__/StreamTypeDef/transported_type:1.0
+    //
+    virtual IR__::IDLType_ptr transported_type()
+        throw(CORBA::SystemException);
+	virtual void transported_type(IR__::IDLType_ptr)
+		throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository

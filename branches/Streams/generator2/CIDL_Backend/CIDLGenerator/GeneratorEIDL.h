@@ -72,7 +72,6 @@ class GeneratorEIDL : public virtual IDLBase
 	void doConsumes(IR__::ConsumesDef_ptr consumes);
 	void doSink(IR__::SinkDef_ptr sink);
 	void doSource(IR__::SourceDef_ptr source);
-	void doSiSo(IR__::SiSoDef_ptr siso);
 	void doAlias(IR__::AliasDef_ptr adef);
 	void doStruct(IR__::StructDef_ptr sdef);
 	void doUnion(IR__::UnionDef_ptr udef);

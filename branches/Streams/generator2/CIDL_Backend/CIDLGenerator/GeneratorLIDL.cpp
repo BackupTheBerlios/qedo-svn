@@ -282,6 +282,8 @@ GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 	handleUses(component);
 	handleEmits(component);
 	handlePublishes(component);
+	handleSource(component);
+	handleSink(component);
 
 	out.unindent();
 	out << "};\n\n";
@@ -529,6 +531,34 @@ GeneratorLIDL::doPublishes(IR__::PublishesDef_ptr publishes)
 	out << "\n//\n// " << publishes->id() << "\n//\n";
 
 	out << "void push_" << publishes->name() << "(in " << map_absolute_name(publishes->event()) << " evt);\n";
+}
+
+
+void 
+GeneratorLIDL::doSource(IR__::SourceDef_ptr source)
+{
+	out << "\n//\n// " << source->id() << "\n//\n";
+
+	out << "void begin_stream_" << source->name() << " (in CORBA::RepositoryId repos_id, in Components::ConfigValues meta_data)\n";
+	out.indent();
+	out << "raises (StreamComponents::UnsupportedStreamtype, StreamComponents::DuplicateStream);\n\n";
+	out.unindent();
+
+	out << "void end_stream_" << source->name() << "()\n";
+	out.indent();
+	out << "raises (StreamComponents::NoStream);\n\n";
+	out.unindent();
+
+	out << "void send_stream_data_" << source->name() << " (in StreamComponents::StreamingBuffer buffer)\n";
+	out.indent();
+	out << "raises (StreamComponents::NoStream);\n\n";
+	out.unindent();
+}
+
+
+void 
+GeneratorLIDL::doSink(IR__::SinkDef_ptr sink)
+{
 }
 
 

@@ -300,34 +300,6 @@ GeneratorBusinessH::doSink(IR__::SinkDef_ptr sink)
 }
 
 
-void
-GeneratorBusinessH::doSiSo(IR__::SiSoDef_ptr siso)
-{
-/*	IR__::StreamTypeDef* st_def = (*act_sisos)[siso_n]->stream_type();
-	IR__::Contained::Description* c_descr = st_def->describe(); 
-	IR__::StreamTypeDescription* st_descr;
-	(c_descr->value) >>= st_descr;
-	if (!strcmp("simple::h323_stream", getAbsoluteName(st_def))) {
-		hserv << "virtual CCMStream::h323Stream_ptr" << endl;
-		hserv << map_absolute_under_name(component_def)  << "_provide_" << (*act_sisos)[siso_n]->name();
-		hserv << "() = 0;" << endl;
-
-		hserv << "virtual void" << endl;
-		hserv << map_absolute_under_name(component_def)  << "_connect_" << (*act_sisos)[siso_n]->name();
-		hserv << "( CCMStream::h323Stream_ptr str) = 0;" << endl;
-
-	}
-	if (!strcmp("Components::CCMStream::QoSRealStream", getAbsoluteName(st_def))) {
-		hserv << "virtual CCMStream::QoSRealStream_ptr" << endl;
-		hserv << map_absolute_under_name(component_def)  << "_provide_" << (*act_sisos)[siso_n]->name();
-		hserv << "() = 0;" << endl;
-
-		hserv << "virtual void" << endl;
-		hserv << map_absolute_under_name(component_def)  << "_connect_" << (*act_sisos)[siso_n]->name();
-		hserv << "( CCMStream::QoSRealStream_ptr str) = 0;" << endl;
-	}*/
-}
-
 
 void
 GeneratorBusinessH::doHome(IR__::HomeDef_ptr home)
@@ -582,14 +554,14 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
-    out << "Components::CCMContext_var context_;\n\n";
+    out << "Components::HomeContext_var context_;\n\n";
 	out.unindent();
 	out << "public:\n";
 	out.indent();
     out << home_class_name << "();\n";
     out << "virtual ~" << home_class_name << "();\n\n";
 	out << "//\n// IDL:Components/HomeExecutorBase/set_context:1.0\n//\n";
-	out << "virtual void set_context (Components::CCMContext_ptr ctx)\n";
+	out << "virtual void set_context (Components::HomeContext_ptr ctx)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
     out << "//\n// IDL:.../create:1.0\n//\n";
     out << "virtual ::Components::EnterpriseComponent_ptr create()\n";

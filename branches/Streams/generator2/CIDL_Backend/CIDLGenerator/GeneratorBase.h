@@ -177,10 +177,6 @@ protected:
 	void handleSource(IR__::ComponentDef_ptr component);
 	virtual void doSource(IR__::SourceDef_ptr source);
 
-	// siso
-	void handleSiSo(IR__::ComponentDef_ptr component);
-	virtual void doSiSo(IR__::SiSoDef_ptr siso);
-
 public:
 
 	GeneratorBase(QEDO_ComponentRepository::CIDLRepository_impl *repository);

@@ -411,7 +411,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << "session_component->set_session_context (new_context.in());\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
-	out << "	(executor_locator, dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
+	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
 	out << "// use of servant factories\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
 	out << mapFullNameServant(home_->managed_component()) << "::cleaner_.factory_);\n\n";
@@ -527,7 +527,7 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << "session_component->set_session_context (new_context.in());\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
-	out << "	(executor_locator, dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
+	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
 	out << "// use of servant factories\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
 	out << mapFullNameServant(home_->managed_component()) << "::cleaner_.factory_);\n\n";
@@ -711,78 +711,13 @@ GeneratorServantC::doUses(IR__::UsesDef_ptr uses)
 void 
 GeneratorServantC::doSink(IR__::SinkDef_ptr sink)
 {
-	out << "\n//\n// " << sink->id() << "\n//\n";
-	std::string stream_type_name = mapFullName(sink->stream_type());
-	std::string stream_interface_name;
-	if (stream_type_name == "::QedoStream::h323_stream") {
-		stream_interface_name = "Components::QedoStreams::H323Streamconnection"; 
-	} else {
-		stream_interface_name = "error";
-	};
-	// get_connection_...
-	out << stream_interface_name << "_ptr\n";
-	out << class_name_ << "::get_connection_" << sink->name() << "()\n";
-	out << "throw (CORBA::SystemException)\n{\n";
-	out.indent();
-	out << "Components::ConnectedDescriptions* connections = ccm_object_executor_->get_connections(\"";
-	out << sink->name() << "\");\n\n";
-	out << stream_interface_name << "_var use = ";
-	out << stream_interface_name << "::_narrow ((*connections)[0]->objref());\n\n";
-	out << "return " << stream_interface_name << "::_duplicate(use);\n";
-	out.unindent();
-	out << "}\n\n\n";
-
-	// disconnect_...
-	out << stream_interface_name << "_ptr\n";
-	out << class_name_ << "::disconnect_" << sink->name() << "()\n";
-	out << "throw(Components::NoConnection, CORBA::SystemException)\n{\n";
-	out.indent();
-	out << stream_interface_name << "_var use = get_connection_" << sink->name() << "();\n\n";
-	out << "ccm_object_executor_->disconnect(\"" << sink->name() << "\", (Components::Cookie*)0);\n\n";
-	out << "return use._retn();\n";
-	out.unindent();
-	out << "}\n\n\n";
-
-	// connect_...
-	out << "void\n";
-	out << class_name_ << "::connect_" << sink->name() << "(";
-	out << stream_interface_name << "_ptr conxn)\n";
-	out << "throw (Components::AlreadyConnected, Components::InvalidConnection, CORBA::SystemException)\n{\n";
-	out.indent();
-	out << "ccm_object_executor_->connect(\"" << sink->name() << "\", conxn);\n";
-	out.unindent();
-	out << "}\n\n\n";
-
 };
 
 void 
 GeneratorServantC::doSource(IR__::SourceDef_ptr source)
 {
-	out << "\n//\n// " << source->id() << "\n//\n";
-	std::string stream_type_name = mapFullName(source->stream_type());
-	std::string stream_interface_name;
-	if (stream_type_name == "::QedoStream::h323_stream") {
-		stream_interface_name = "Components::QedoStreams::H323Streamconnection"; 
-	} else {
-		stream_interface_name = "error";
-	};
-	// get_connection_...
-	out << stream_interface_name << "_ptr\n";
-	out << class_name_ << "::provide_" << source->name() << "()\n";
-	out << "throw (CORBA::SystemException)\n{\n";
-	out.indent();
-	out << stream_interface_name << "_var prov = ";
-	out << stream_interface_name << "::_narrow (ccm_object_executor_->provide_facet(\"";
-	out << source->name() << "\"));\n\n";
-	out	<< "return prov._retn();\n";
-	out.unindent();
-	out << "}\n\n\n";
 }
 
-void 
-GeneratorServantC::doSiSo(IR__::SiSoDef_ptr siso)
-{
-}
 
 void 
 GeneratorServantC::doEmits(IR__::EmitsDef_ptr emits)
@@ -956,42 +891,6 @@ GeneratorServantC::genSourceServants(IR__::ComponentDef_ptr component)
 	CORBA::ULong i;
 	for( i= 0; i < len; i++)
 	{
-		//
-		// source servant
-		//
-		IR__::SourceDef_var source = IR__::SourceDef::_narrow(((*contained_seq)[i]));
-		std::string class_name = source->name();
-		class_name_ = string(component->name()) + "::" + class_name;
-
-		// header
-		out << "// ================================================\n";
-		out << "// " << class_name_ << "\n";
-		out << "// ================================================\n\n";
-		
-		// constructor
-		out << class_name_ << "::" << class_name << "()\n{\n}\n\n\n";
-		
-		// destructor
-		out << class_name_ << "::~" << class_name << "()\n{\n}\n\n\n";
-
-		executor_name_ = source->name();
-		interface_name_ = mapFullNameLocal(source->stream_type());
-		//doInterface(provides->interface_type());
-		// at first hard coded stream servants
-		out << "char*\n";
-		out << class_name_ << "::get_id() {\n";
-		out << "//to be implemeted\n";
-		out << "return 0;\n";
-		out << "};\n";
-		
-		//
-		// source servant factory
-		//
-		out << "// ================================================\n";
-		out << "// " << class_name_ << "::cleaner_\n";
-		out << "// ================================================\n\n";
-		out << "Qedo::ServantFactoryCleaner " << class_name_ << "::cleaner_ (new ";
-		out << class_name_ << "::ServantFactory());\n\n\n";
 	}
 }
 
@@ -1158,7 +1057,6 @@ GeneratorServantC::genComponentServant(IR__::ComponentDef_ptr component)
 	}
 	handleSink(component);
 	handleSource(component);
-	handleSiSo(component);
 }
 
 
@@ -1310,6 +1208,47 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 		out.unindent();
 		out << "}\n\n\n";
 	}
+
+	// source ports
+	contained_seq = component->contents (CORBA__::dk_Source, false);
+	len = contained_seq->length();
+	for(i = 0; i < len; i++) 
+	{
+		IR__::SourceDef_var a_source = IR__::SourceDef::_narrow(((*contained_seq)[i]));
+
+		// begin_stream_*
+		out << "void\n";
+		out << class_name_ << "::begin_stream_" << a_source->name() << " (const char* repos_id,\n";
+		out.indent(); out.indent();
+		out << "const ::Components::ConfigValues& meta_data)\n";
+		out.unindent(); out.unindent();
+		out << "throw (StreamComponents::UnsupportedStreamtype, StreamComponents::DuplicateStream)\n";
+		out << "{\n";
+		out.indent();
+		out << "this->begin_stream (\"" << a_source->name() << "\", repos_id, meta_data);\n";
+		out.unindent();
+		out << "}\n\n";
+
+		// end_stream_*
+		out << "void\n";
+		out << class_name_ << "::end_stream_" << a_source->name() << "()\n";
+		out << "throw (StreamComponents::NoStream)\n";
+		out << "{\n";
+		out.indent();
+		out << "this->end_stream (\"" << a_source->name() << "\");\n";
+		out.unindent();
+		out << "}\n\n";
+
+		// send_stream_data_*
+		out << "void\n";
+		out << class_name_ << "::send_stream_data_" << a_source->name() << " (StreamComponents::StreamingBuffer_ptr buffer)\n";
+		out << "throw (StreamComponents::NoStream)\n";
+		out << "{\n";
+		out.indent();
+		out << "this->send_buffer (\"" << a_source->name() << "\", buffer);\n";
+		out.unindent();
+		out << "}\n\n";
+	}
 }
 
 
@@ -1399,7 +1338,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out << "session_component->set_session_context (new_context.in());\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
-	out << "	(executor_locator, dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
+	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
 	out << "// register servant factory\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
 	out << mapFullNameServant(home->managed_component()) << "::cleaner_.factory_);\n\n";
@@ -1585,18 +1524,7 @@ GeneratorServantC::genSinkRegistration(IR__::HomeDef_ptr home)
 	CORBA::ULong i;
 	for( i= 0; i < len; i++)
 	{
-		std::string stream_type_name = mapFullName((*sinks)[i]->stream_type());
-		std::string interface_type;
-		if (stream_type_name == "::QedoStream::h323_stream") {
-			interface_type = "IDL:Components/QedoStreams/H323Streamconnection:1.0"; 
-		} else {
-			interface_type = "error";
-			return;
-		};
-
-		out << "component_instance.ccm_object_executor_->add_receptacle(\"";
-		out << (*sinks)[i]->name() << "\", \"" << interface_type << "\", ";
-		out << "false);\n\n";
+	
 	}
 }
 
@@ -1615,25 +1543,22 @@ GeneratorServantC::genSourceRegistration(IR__::HomeDef_ptr home)
 	CORBA::ULong i;
 	for( i= 0; i < len; i++)
 	{
-		std::string stream_type_name = mapFullName((*sources)[i]->stream_type());
-		std::string interface_type;
-		if (stream_type_name == "::QedoStream::h323_stream") {
-			interface_type = "IDL:Components/QedoStreams/H323Streamconnection:1.0"; 
-		} else {
-			interface_type = "error";
-			return;
-		};
-
-		std::string name = (*sources)[i]->name();
-
-		out << "CORBA::Object_var "	<< name << "_ref = this->create_object_reference(key, \"";
-		out << interface_type << "\");\n";
-		out << "PortableServer::ObjectId_var " << name << "_object_id = this->reference_to_oid (";
-		out << name << "_ref);\n";
-		out << "servant_registry_->register_servant_factory (";
-		out << name << "_object_id, " << mapFullNameServant((*sources)[i]) << "::cleaner_.factory_);\n";
-		out << "component_instance.ccm_object_executor_->add_facet(\"";
-		out << name << "\", \"" << interface_type << "\", " << name << "_ref);\n\n";
+		out << "CORBA::RepositoryIdSeq streamtypes;\n";
+		// The following must be changed when going to support grouped stream types
+		out << "streamtypes.length (1);\n";
+		out << "streamtypes[0] = CORBA::string_dup (\"";
+		out << sources[i]->stream_type()->id() << "\");\n";
+		out << "component_instance.stream_ccm_object_executor_->add_source (\"";
+		out << sources[i]->name() << "\",\n";
+		out.indent(); out.indent();
+		out << "\"" << sources[i]->id() << "\",\n";
+		if (sources[i]->is_multiple())
+			out << "true,\n";
+		else
+			out << "false,\n";
+		out << "streamtypes,\n";
+		out << "true /* async buffer dispatcher */);\n";
+		out.unindent(); out.unindent();
 	}
 }
 

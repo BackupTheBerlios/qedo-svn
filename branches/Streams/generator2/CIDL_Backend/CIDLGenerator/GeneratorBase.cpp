@@ -881,27 +881,6 @@ GeneratorBase::doSource(IR__::SourceDef_ptr source)
 
 
 //
-// siso
-//
-void 
-GeneratorBase::handleSiSo(IR__::ComponentDef_ptr component)
-{
-	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_SiSo, false);
-	for(CORBA::ULong i = 0; i < contained_seq->length(); i++)
-	{
-		IR__::SiSoDef_var a_siso = IR__::SiSoDef::_narrow(((*contained_seq)[i]));
-		doSiSo(a_siso);
-	}
-}
-
-
-void
-GeneratorBase::doSiSo(IR__::SiSoDef_ptr siso)
-{
-}
-
-
-//
 // composition
 //
 void 
