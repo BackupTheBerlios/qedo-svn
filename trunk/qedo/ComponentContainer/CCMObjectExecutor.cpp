@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.11 2003/05/27 10:59:59 boehme Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.12 2003/05/27 19:58:27 tom Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -64,7 +64,7 @@ CCMObjectExecutor::CCMObjectExecutor (const PortableServer::ObjectId& component_
 	uuid_t uuid;
 	char buf[38];
 	uuid_generate(uuid);
-	sprintf(buff,"%2.2X%2.2X%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X\n"
+	sprintf(buf,"%2.2X%2.2X%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X\n"
 	                ,(u_int32_t)uuid[0]
 	                ,(u_int8_t)uuid[sizeof(u_int8_t)*1]
 	                ,(u_int8_t)uuid[sizeof(u_int8_t)*2]
