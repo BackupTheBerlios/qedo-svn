@@ -28,11 +28,6 @@ LIBS=@LIBS@
 
 LIBS += -L../ComponentIDL -lComponentIDL -luuid
 
-ifeq "${ORB}" "MICO_ORB"
-LIBS += $(shell mico-config --cosslibs)
-INCLUDES += -I$(shell mico-config --prefix)/include/coss
-endif
-
 SOURCES = Key.cpp \
      	ServantBase.cpp \
      	ServantLocator.cpp \
@@ -69,6 +64,11 @@ OBJS = ${SOURCES:.cpp=.o}
 CLEAN_FILES = $(OBJS) libComponentContainer.so
 
 include ../MakeVars
+
+ifeq "${ORB}" "MICO_ORB"
+LIBS += $(shell mico-config --cosslibs)
+INCLUDES += -I$(shell mico-config --prefix)/include/coss
+endif
 
 .PHONY: all
 

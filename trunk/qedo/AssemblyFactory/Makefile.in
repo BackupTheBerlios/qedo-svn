@@ -22,6 +22,7 @@ CXX = @CXX@
 INCLUDES+=-I. -I../ComponentIDL \
           -I../ComponentContainer \
 			 -I../ComponentInstaller \
+			 $(NAMING_INCLUDES) \
 			 @XERCES_INCLUDE@ 
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
@@ -32,6 +33,7 @@ CC=$(CXX)
 
 LIBS += -L../ComponentIDL -lComponentIDL\
         -L../ComponentContainer -lComponentContainer \
+		  $(NAMING_LIBS) \
 		  @XERCES_LIBS@
 
 LDLIBS = ${LIBS}

@@ -60,6 +60,8 @@ MICO_CXXFLAGS := -DMICO_ORB $(shell mico-config --cxxflags)
 CXXFLAGS+=$(IDLCXXFLAGS) $(MICO_CXXFLAGS)
 MICO_LIBS := $(shell mico-config --libs)
 LIBS+=$(MICO_LIBS)
+NAMING_LIBS := $(shell mico-config --cosslibs)
+NAMING_INCLUDES := -I$(shell mico-config --prefix)/include/coss
 endif
 
 all:

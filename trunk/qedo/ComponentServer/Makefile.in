@@ -21,7 +21,8 @@
 CXX = @CXX@
 INCLUDES+=-I. -I../ComponentIDL \
           -I../ComponentContainer \
-          -I../ComponentInstaller
+          -I../ComponentInstaller \
+          $(NAMING_INCLUDES)
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS+=@LIBS@
@@ -32,15 +33,10 @@ CC=$(CXX)
 
 LIBS += -L../ComponentIDL -lComponentIDL \
         -L../ComponentContainer -lComponentContainer \
+		  $(NAMING_LIBS)\
 		  -luuid
 
 LDLIBS = ${LIBS}
-
-ifeq "${ORB}" "MICO_ORB"
-LIBS += $(shell mico-config --cosslibs)
-COSS_INCLUDES := -I$(shell mico-config --prefix)/include/coss
-INCLUDES += $(COSS_INCLUDES)
-endif
 
 SOURCES = ComponentServerImpl.cpp \
 			 ClientInterceptorDispatcher.cpp \
