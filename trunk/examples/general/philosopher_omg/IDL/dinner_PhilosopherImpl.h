@@ -22,6 +22,7 @@ namespace dinner {
 
 #include <CORBA.h>
 #include "dinner_BUSINESS.h"
+#include "valuetypes.h"
 #include "RefCountBase.h"
 #include <string>
 
@@ -110,8 +111,6 @@ namespace dinner
     
     private:
     
-        Qedo::qedo_mutex mutex_;
-        
         ::DiningPhilosophers::CCM_Philosopher_Context_var context_;
         
     public:
@@ -175,8 +174,6 @@ public:
     
     private:
     
-        Qedo::qedo_mutex mutex_;
-        
         ::DiningPhilosophers::CCM_Philosopher_Context_var context_;
         
         PhilosopherSessionImpl* component_;
@@ -260,8 +257,6 @@ public:
     
     private:
     
-        Qedo::qedo_mutex mutex_;
-        
         Components::CCMContext_var context_;
         
     public:

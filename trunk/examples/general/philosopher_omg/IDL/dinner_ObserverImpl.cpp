@@ -265,7 +265,7 @@ ObserverImpl::set_session_context(::Components::SessionContext_ptr context)
         context_ = ::DiningPhilosophers::CCM_Observer_Context::_nil();
         
     #else
-    context_ = ::DiningPhilosophers::CCM_Observer_Context::_duplicate(::DiningPhilosophers::CCM_Observer_Context::_narrow(context));
+    context_ = ::DiningPhilosophers::CCM_Observer_Context::_narrow(context);
     
     #endif
     component_->set_context(context_);
