@@ -79,6 +79,7 @@ extern CORBA::ORB_ptr g_orb;
 
 struct prettyprint_S prettyprint;
 cidl_specification Spec;
+string current_prefix;
 CIDL::CIDLRepository_ptr g_repository;
 CORBA::ORB_ptr g_orb;
 

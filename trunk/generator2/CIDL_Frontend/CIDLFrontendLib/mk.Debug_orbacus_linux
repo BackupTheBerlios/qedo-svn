@@ -56,7 +56,7 @@ lexana.cpp:./lexana.l
 yacc:   errmsg.cpp 
 
 # YACC files
-cidl.output:./cidl.y
+cidl.output cidl.cpp :./cidl.y
 	env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ; cp cidl.hpp cidl.h 
 errmsg.cpp:./cidl.output
 	"$(PYTHON)" errmsg.py < cidl.output > errmsg.cpp 

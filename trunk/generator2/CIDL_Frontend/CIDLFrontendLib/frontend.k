@@ -88,7 +88,7 @@ frontend_feed (
 #ifdef WIN32
   std::string command = "CL -E -C ";
 #else
-  std::string command = "gcc -E -P --language=c ";
+  std::string command = "gcc -E --language=c ";
 #endif
   std::string filename;
 

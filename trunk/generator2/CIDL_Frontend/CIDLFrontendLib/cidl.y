@@ -188,6 +188,7 @@
 										module
                     module_header
 										value
+										event
 										component
 										composition
 										composition_header
@@ -266,14 +267,17 @@
 										init_dcl
 										state_member
 										value_element
-										eventtype_dcl
-										eventtype_header
 										value_dcl
+										event_dcl
                     value_header
+                    event_header
 										value_abs_dcl
+										event_abs_dcl
 										value_abs_header
+										event_abs_header
 										value_box_dcl
 										value_forward_dcl
+										event_forward_dcl
 										interface_dcl
 										forward_dcl
 										component_export
@@ -483,6 +487,7 @@ definition :
 	| abstract_storagetype ';'
 	| module ';'
 	| value ';'
+	| event ';'
 	| type_id_dcl ';'
 	| type_prefix_dcl ';'
 	| component ';'
@@ -720,7 +725,6 @@ scoped_name :
 
 value :
 	  value_dcl
-	| eventtype_dcl
 	| value_abs_dcl
 	| value_box_dcl
 	| value_forward_dcl
@@ -752,14 +756,41 @@ value_abs_header :
     }
  ;
 
-eventtype_dcl :
-	  eventtype_header '{' opt_value_elements '}'
+event :
+     event_dcl 
+   | event_abs_dcl
+   | event_forward_dcl
+   ;
+
+event_abs_dcl :
+     event_abs_header '{'  opt_exports  '}'
+	  { $$ = fix_definition($1,$3); 
+      pop_scope();
+    }
+   ;
+
+event_abs_header :
+     TOK_abstract TOK_eventtype TOK_identifier value_inheritance_spec
+	  { $$ = AbstractEventType(EventTypeHeader(NilFlag(),$3,$4),Nildefinition_list()); 
+      add_eventtype($3,$$,$4);
+    }
+   ;
+
+event_forward_dcl :
+     TOK_eventtype  TOK_identifier
+	  { $$ = EventTypeFwdDcl( $2); add_declaration(EventTypeN(),$2);}
+   | TOK_abstract TOK_eventtype  TOK_identifier
+	  { $$ = AbstractEventTypeFwdDcl($3); add_declaration(EventTypeN(),$3);}
+   ;
+
+event_dcl :
+	  event_header '{' opt_value_elements '}'
 	  { $$ = fix_definition($1,$3); 
       pop_scope();
     }
 	;
 
-eventtype_header :
+event_header :
 	  TOK_custom TOK_eventtype TOK_identifier value_inheritance_spec
 	  { $$ = EventType(EventTypeHeader(CustomFlag(),$3,$4),Nildefinition_list()); 
       add_eventtype($3,$$,$4);

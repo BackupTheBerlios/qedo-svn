@@ -273,6 +273,7 @@ ENOL                    (\n|\n)
 {S}*"#"{S}*"ifndef"[^\n]*   {}
 {S}*"#"{S}*"define"[^\n]*   {}
 {S}*"#"{S}*"endif"[^\n]*    {}
+{S}*"#"{S}*"pragma"{S}*"prefix"[^\n]*   { ECHO; }
 {S}*"#"{S}*"pragma"[^\n]*   {}
 "#"{S}*{D}+{S}*\n { fprintf(stderr,">>%s<<\n",yytext); yylineno++;}
 "#"{S}*{D}+{S}+\n { fprintf(stderr,">>%s<<\n",yytext); yylineno++;}

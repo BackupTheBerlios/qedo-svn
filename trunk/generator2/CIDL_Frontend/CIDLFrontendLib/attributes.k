@@ -59,8 +59,10 @@ inline void operator delete (void const *p, const std::nothrow_t&)
 
 #include <set>
 #include <algorithm>
+#include <string>
 typedef std::set<definition> definition_set;
 typedef std::set<table_item> table_item_set;
+typedef std::string my_kc_string;
 
 struct table_item_set_printer {
   table_item_set_printer(uview _p) : p(_p) {}
@@ -74,7 +76,7 @@ extern table_item_set_printer table_item_set_printer;
 %}
 
 %{
-static char id[] UNUSED = "$Id: attributes.k,v 1.2 2003/04/01 13:56:52 boehme Exp $";
+static char id[] UNUSED = "$Id: attributes.k,v 1.3 2003/05/14 14:55:41 boehme Exp $";
 %}
 
 /*********************  Symbol table *********************/
@@ -190,6 +192,8 @@ definition : {
   definition_set direct_implements;
   /* contains all derived types */
   definition_set derived;
+  /* contains the prefix for the definition */
+  my_kc_string prefix;
 };
 
 /* contains all provides */
