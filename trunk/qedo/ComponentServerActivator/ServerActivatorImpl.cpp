@@ -31,7 +31,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.37 2004/01/20 12:56:23 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.38 2004/02/04 13:02:49 tom Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -47,12 +47,13 @@ static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.37 2004/01/20 12:
 namespace Qedo {
 
 
-ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode, bool qos_mode, bool terminal_enabled, bool registration, bool verbose_mode )
+	ServerActivatorImpl::ServerActivatorImpl (CORBA::ORB_ptr orb, bool debug_mode, bool qos_mode, bool terminal_enabled, bool global_context_used, std::string global_context, bool verbose_mode )
 : debug_mode_ (debug_mode),
   enable_qos_ (qos_mode),
   enable_terminal_ (terminal_enabled),
   verbose_mode_ (verbose_mode),
-  registration_ (registration),
+  global_context_used_ (global_context_used),
+  global_context_ (global_context),
   cs_activation_cond_ ("QEDO_ACTIVATOR_SIGNAL"),
   orb_ (CORBA::ORB::_duplicate (orb))
 {
@@ -102,81 +103,91 @@ ServerActivatorImpl::initialize()
 	//
 	// register in name service
 	//
-	if( registration_ )
+
+	CosNaming::NamingContext_var nameService;
+
+	//
+	// try to get naming service from config values
+	//
+	CORBA::Object_var obj;
+	std::string ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
+	if( !ns.empty() )
 	{
-
-		CosNaming::NamingContext_var nameService;
-
-		//
-		// try to get naming service from config values
-		//
-		CORBA::Object_var obj;
-		std::string ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
-		if( !ns.empty() )
-		{
-			try
-			{
-				obj = orb_->string_to_object( ns.c_str() );
-			}
-			catch(...)
-			{
-				std::cerr << "ServerActivatorImpl: can't resolve NameService " << ns << std::endl;
-				throw CannotInitialize();
-			}
-
-			std::cout <<  "ServerActivatorImpl: NameService is " <<  ns << std::endl;
-		}
-		//
-		// try to get naming service from orb
-		//
-		else
-		{
-			try
-			{
-				obj = orb_->resolve_initial_references( "NameService" );
-			}
-			catch (const CORBA::ORB::InvalidName&)
-			{
-				std::cerr << "ServerActivatorImpl: can't resolve NameService" << std::endl;
-				throw CannotInitialize();
-			}
-
-			if (CORBA::is_nil(obj.in()))
-			{
-				std::cerr << "ServerActivatorImpl: NameService is a nil object reference" << std::endl;
-				throw CannotInitialize();
-			}
-		}
-
 		try
 		{
-			nameService = CosNaming::NamingContext::_narrow( obj.in() );
+			obj = orb_->string_to_object( ns.c_str() );
 		}
-		catch (const CORBA::Exception&)
+		catch(...)
 		{
-			std::cerr << "ServerActivatorImpl: NameService is not running" << std::endl;
+			std::cerr << "ServerActivatorImpl: can't resolve NameService " << ns << std::endl;
 			throw CannotInitialize();
 		}
 
-		if( CORBA::is_nil(nameService.in()) )
+		std::cout <<  "ServerActivatorImpl: NameService is " <<  ns << std::endl;
+	}
+	//
+	// try to get naming service from orb
+	//
+	else
+	{
+		try
 		{
-			std::cerr << "NameService is not a NamingContext object reference" << std::endl;
+			obj = orb_->resolve_initial_references( "NameService" );
+		}
+		catch (const CORBA::ORB::InvalidName&)
+		{
+			std::cerr << "ServerActivatorImpl: can't resolve NameService" << std::endl;
 			throw CannotInitialize();
 		}
 
+		if (CORBA::is_nil(obj.in()))
+		{
+			std::cerr << "ServerActivatorImpl: NameService is a nil object reference" << std::endl;
+			throw CannotInitialize();
+		}
+	}
 
-		// Create the Qedo and Activators naming context
-		CosNaming::Name current_name;
-		current_name.length (1);
-		current_name[0].id = CORBA::string_dup ("Qedo");
-		current_name[0].kind = CORBA::string_dup ("");
-		try
+	try
+	{
+		nameService = CosNaming::NamingContext::_narrow( obj.in() );
+	}
+	catch (const CORBA::Exception&)
+	{
+		std::cerr << "ServerActivatorImpl: NameService is not running" << std::endl;
+		throw CannotInitialize();
+	}
+
+	if( CORBA::is_nil(nameService.in()) )
+	{
+		std::cerr << "NameService is not a NamingContext object reference" << std::endl;
+		throw CannotInitialize();
+	}
+
+	CORBA::ULong context_offset;
+	if (global_context_used_)
+	{
+		context_offset = 1;
+	} else 
+	{
+		context_offset= 0;
+	};
+
+
+	// Create the Qedo and Activators naming context
+	CosNaming::Name current_name;
+
+	current_name.length (1);
+	if (global_context_used_)
+	{
+		current_name[0].id = CORBA::string_dup(global_context_.c_str());
+		current_name[0].kind = CORBA::string_dup("");
+		try 
 		{
 			nameService->bind_new_context (current_name);
 		}
 		catch (CosNaming::NamingContext::AlreadyBound&)
 		{
-			// Ignore this exception
+			// ignore this exception
 		}
 		catch (CORBA::SystemException&)
 		{
@@ -184,60 +195,67 @@ ServerActivatorImpl::initialize()
 			throw CannotInitialize();
 		}
 
-		current_name.length(2);
-		current_name[1].id = CORBA::string_dup ("Activators");
-		current_name[1].kind = CORBA::string_dup ("");
+	} 
+	current_name.length (1 + context_offset);
+	current_name[0 + context_offset].id = CORBA::string_dup ("Qedo");
+	current_name[0 + context_offset].kind = CORBA::string_dup ("");
+	try
+	{
+		nameService->bind_new_context (current_name);
+	}
+	catch (CosNaming::NamingContext::AlreadyBound&)
+	{
+		// Ignore this exception
+	}
+	catch (CORBA::SystemException&)
+	{
+		std::cerr << "ServerActivatorImpl: CORBA system exception during binding context 'Qedo'" << std::endl;
+		throw CannotInitialize();
+	}
 
+	current_name.length(2 + context_offset);
+	current_name[1+context_offset].id = CORBA::string_dup ("Activators");
+	current_name[1+context_offset].kind = CORBA::string_dup ("");
+
+	try
+	{
+		nameService->bind_new_context (current_name);
+	}
+	catch (CosNaming::NamingContext::AlreadyBound&)
+	{
+		// Ignore this exception
+	}
+	catch (CORBA::SystemException&)
+	{
+		std::cerr << "ServerActivatorImpl: CORBA system exception during binding context 'Activators'" << std::endl;
+		throw CannotInitialize();
+	}
+
+	// Now bind this Component Server Activator with the Name Service, use the name Qedo/Activators/<hostname>
+	char hostname[256];
+	if (gethostname (hostname, 256))
+	{
+		std::cerr << "ServerActivatorImpl: Cannot determine my hostname" << std::endl;
+		throw CannotInitialize();
+	}
+
+	std::cout << "ServerActivatorImpl: Binding Component Server Activator under Qedo/Activators/" << hostname << std::endl;
+
+	current_name.length (3 + context_offset);
+	current_name[2+context_offset].id = CORBA::string_dup (hostname);
+	current_name[2+context_offset].kind = CORBA::string_dup ("");
+
+	CORBA::Object_var my_ref = this->_this();
+
+	try
+	{
+		nameService->bind (current_name, my_ref);
+	}
+	catch (CosNaming::NamingContext::AlreadyBound&)
+	{
 		try
 		{
-			nameService->bind_new_context (current_name);
-		}
-		catch (CosNaming::NamingContext::AlreadyBound&)
-		{
-			// Ignore this exception
-		}
-		catch (CORBA::SystemException&)
-		{
-			std::cerr << "ServerActivatorImpl: CORBA system exception during binding context 'Activators'" << std::endl;
-			throw CannotInitialize();
-		}
-
-		// Now bind this Component Server Activator with the Name Service, use the name Qedo/Activators/<hostname>
-		char hostname[256];
-		if (gethostname (hostname, 256))
-		{
-			std::cerr << "ServerActivatorImpl: Cannot determine my hostname" << std::endl;
-			throw CannotInitialize();
-		}
-
-		std::cout << "ServerActivatorImpl: Binding Component Server Activator under Qedo/Activators/" << hostname << std::endl;
-
-		current_name.length (3);
-		current_name[2].id = CORBA::string_dup (hostname);
-		current_name[2].kind = CORBA::string_dup ("");
-
-		CORBA::Object_var my_ref = this->_this();
-
-		try
-		{
-			nameService->bind (current_name, my_ref);
-		}
-		catch (CosNaming::NamingContext::AlreadyBound&)
-		{
-			try
-			{
-				nameService->rebind (current_name, my_ref);
-			}
-			catch (CosNaming::NamingContext::InvalidName&)
-			{
-				std::cerr << "ServerActivatorImpl: Name Service complains about an invalid name" << std::endl;
-				throw CannotInitialize();
-			}
-			catch (CORBA::SystemException&)
-			{
-				std::cerr << "ServerActivatorImpl: CORBA system exception in rebind()" << std::endl;
-				throw CannotInitialize();
-			}
+			nameService->rebind (current_name, my_ref);
 		}
 		catch (CosNaming::NamingContext::InvalidName&)
 		{
@@ -246,10 +264,21 @@ ServerActivatorImpl::initialize()
 		}
 		catch (CORBA::SystemException&)
 		{
-			std::cerr << "ServerActivatorImpl: CORBA system exception during bind()" << std::endl;
+			std::cerr << "ServerActivatorImpl: CORBA system exception in rebind()" << std::endl;
 			throw CannotInitialize();
 		}
 	}
+	catch (CosNaming::NamingContext::InvalidName&)
+	{
+		std::cerr << "ServerActivatorImpl: Name Service complains about an invalid name" << std::endl;
+		throw CannotInitialize();
+	}
+	catch (CORBA::SystemException&)
+	{
+		std::cerr << "ServerActivatorImpl: CORBA system exception during bind()" << std::endl;
+		throw CannotInitialize();
+	}
+
 }
 
 

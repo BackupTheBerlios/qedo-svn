@@ -82,7 +82,10 @@ private:
 	bool verbose_mode_;
 
 	/** register in name service */
-	bool registration_;
+	bool global_context_used_;
+
+	/** register in name service */
+	std::string global_context_;
 
 	/** for syncronization */
 	QedoCond										cs_activation_cond_;
@@ -121,7 +124,7 @@ public:
 	/**
 	 * constructor
 	 */
-	ServerActivatorImpl (CORBA::ORB_ptr, bool, bool, bool, bool, bool =false);
+	ServerActivatorImpl (CORBA::ORB_ptr, bool, bool, bool, bool, std::string, bool =false);
 
 	/**
 	 * destructor

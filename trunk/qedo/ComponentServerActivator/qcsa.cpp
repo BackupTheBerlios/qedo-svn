@@ -55,7 +55,7 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.26 2004/01/21 14:50:34 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.27 2004/02/04 13:02:49 tom Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -64,8 +64,8 @@ static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.26 2004/01/21 14:50:34 neubauer 
 
 CORBA::ORB_var orb;
 Qedo::ServerActivatorImpl* server_activator;
-bool g_registration = true; 
-
+bool g_global_context_used = false;
+std::string g_global_context="";
 
 void
 printUsage()
@@ -76,7 +76,7 @@ printUsage()
 	std::cerr << "        --verbose : verbose mode" << std::endl;
 	std::cerr << "        --enable-qos : enable qos" << std::endl;
 	std::cerr << "        --terminal : start each qcs in own terminal" << std::endl;
-	std::cerr << "        --no-registration : do not register in name service" << std::endl;
+	std::cerr << "        --register-at-context <context> : modifies name service registration " << std::endl;
 }
 
 
@@ -102,90 +102,102 @@ handle_sigint
 	//
 	// unbind in naming service
 	//
-	if( g_registration )
+	std::cerr << "..... unbind in NameService" << std::endl;
+	CORBA::ULong context_offset;
+	if (g_global_context_used)
 	{
-		std::cerr << "..... unbind in NameService" << std::endl;
+		context_offset = 1;
+	} else 
+	{
+		context_offset= 0;
+	};
 
-		CORBA::Object_var obj;
-		CosNaming::NamingContext_var nameService;
-		char hostname[256];
-		gethostname(hostname, 256);
-		CosNaming::Name name;
-		name.length(3);
-		name[0].id = CORBA::string_dup("Qedo");
+
+	CORBA::Object_var obj;
+	CosNaming::NamingContext_var nameService;
+	char hostname[256];
+	gethostname(hostname, 256);
+	CosNaming::Name name;
+	name.length(3 + context_offset);
+	if (g_global_context_used)
+	{
+		name[0].id = CORBA::string_dup(g_global_context.c_str());
 		name[0].kind = CORBA::string_dup("");
-		name[1].id = CORBA::string_dup("Activators");
-		name[1].kind = CORBA::string_dup("");
-		name[2].id = CORBA::string_dup(hostname);
-		name[2].kind = CORBA::string_dup("");
-		try
+	} 
+	name[0 + context_offset].id = CORBA::string_dup("Qedo");
+	name[0 + context_offset].kind = CORBA::string_dup("");
+	name[1 + context_offset].id = CORBA::string_dup("Activators");
+	name[1 + context_offset].kind = CORBA::string_dup("");
+	name[2 + context_offset].id = CORBA::string_dup(hostname);
+	name[2 + context_offset].kind = CORBA::string_dup("");
+	try
+	{
+		//
+		// try to get naming service from config values
+		//
+		CORBA::Object_var obj;
+		std::string ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
+		if( !ns.empty() )
 		{
-			//
-			// try to get naming service from config values
-			//
-			CORBA::Object_var obj;
-			std::string ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
-			if( !ns.empty() )
-			{
-				try
-				{
-					obj = orb->string_to_object( ns.c_str() );
-				}
-				catch(...)
-				{
-					NORMAL_ERR2( "NameServiceBase: can't resolve NameService ", ns );
-				}
-
-				NORMAL_OUT2( "NameServiceBase: NameService is ", ns );
-			}
-			//
-			// try to get naming service from orb
-			//
-			else
-			{
-				try
-				{
-					obj = orb->resolve_initial_references( "NameService" );
-				}
-				catch (const CORBA::ORB::InvalidName&)
-				{
-					NORMAL_ERR( "NameServiceBase: can't resolve NameService" );
-				}
-
-				if (CORBA::is_nil(obj.in()))
-				{
-					NORMAL_ERR( "NameServiceBase: NameService is a nil object reference" );
-				}
-			}
-
 			try
 			{
-				nameService = CosNaming::NamingContext::_narrow( obj.in() );
+				obj = orb->string_to_object( ns.c_str() );
 			}
-			catch (const CORBA::Exception&)
+			catch(...)
 			{
-				NORMAL_ERR( "NameServiceBase: NameService is not running" );
+				NORMAL_ERR2( "NameServiceBase: can't resolve NameService ", ns );
 			}
 
-			if( CORBA::is_nil(nameService.in()) )
+			NORMAL_OUT2( "NameServiceBase: NameService is ", ns );
+		}
+		//
+		// try to get naming service from orb
+		//
+		else
+		{
+			try
 			{
-					NORMAL_ERR( "NameService is not a NamingContext object reference" );
+				obj = orb->resolve_initial_references( "NameService" );
+			}
+			catch (const CORBA::ORB::InvalidName&)
+			{
+				NORMAL_ERR( "NameServiceBase: can't resolve NameService" );
 			}
 
-			if (!CORBA::is_nil(nameService.in()))
+			if (CORBA::is_nil(obj.in()))
 			{
- 				nameService->unbind(name);
+				NORMAL_ERR( "NameServiceBase: NameService is a nil object reference" );
 			}
+		}
+
+		try
+		{
+			nameService = CosNaming::NamingContext::_narrow( obj.in() );
 		}
 		catch (const CORBA::Exception&)
 		{
-			std::cerr << "..... could not unbind" << std::endl;
+			NORMAL_ERR( "NameServiceBase: NameService is not running" );
 		}
-		catch(...)
+
+		if( CORBA::is_nil(nameService.in()) )
 		{
-			std::cerr << "..... error in signal handler" << std::endl;
+				NORMAL_ERR( "NameService is not a NamingContext object reference" );
+		}
+
+		if (!CORBA::is_nil(nameService.in()))
+		{
+ 			nameService->unbind(name);
 		}
 	}
+	catch (const CORBA::Exception&)
+	{
+		std::cerr << "..... could not unbind" << std::endl;
+	}
+	catch(...)
+	{
+		std::cerr << "..... error in signal handler" << std::endl;
+	}
+
 
 	orb->shutdown(false);
 }
@@ -366,9 +378,19 @@ main (int argc, char** argv)
 		{
 			terminal_enabled = true;
 		}
-		if (! strcmp(argv[i], "--no-registration"))
+		if (! strcmp(argv[i], "--register-at-context"))
 		{
-			g_registration = false;
+			if ((i + 1) < argc)
+			{
+				g_global_context = strdup(argv[i+1]);
+				g_global_context_used = true;
+			} else
+			{
+				std::cout << "Missing context argument." << std::endl;
+				printUsage();
+				exit ( 1 );
+			}
+
 		}
 		if (! strcmp(argv[i], "--help"))
 		{
@@ -379,7 +401,7 @@ main (int argc, char** argv)
 
 	orb = CORBA::ORB_init (argc, argv);
 
-	server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled, terminal_enabled, g_registration, verbose_mode );
+	server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled, terminal_enabled, g_global_context_used, g_global_context, verbose_mode );
 
 	try
 	{
