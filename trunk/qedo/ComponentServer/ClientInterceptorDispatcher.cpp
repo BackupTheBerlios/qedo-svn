@@ -28,7 +28,7 @@
 #include <fstream>
 #include "ContainerClientRequestInfo.h"
 
-static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.10 2004/02/16 14:26:54 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.11 2004/04/15 07:47:36 neubauer Exp $";
 
 namespace Qedo {
 
@@ -65,12 +65,12 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 	}
 
 //	all_client_interceptors_mutex_.read_lock_object();
-	Qedo::ContainerClientRequestInfo *container_info= new Qedo::ContainerClientRequestInfo(info,id,id,id);
+	Components::Extension::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,id,id,id);
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
 		try {
-			all_client_interceptors_[i].interceptor->send_request( container_info );
+			all_client_interceptors_[i].interceptor->send_request( container_info.in() );
 		} catch (CORBA::SystemException e)
 		{
 			throw e;
@@ -103,12 +103,12 @@ ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestIn
 	}
 
 //	all_client_interceptors_mutex_.read_lock_object();
-	Qedo::ContainerClientRequestInfo *container_info= new Qedo::ContainerClientRequestInfo(info,id,id,id);
+	Components::Extension::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,id,id,id);
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
 		try {
-			all_client_interceptors_[i].interceptor->receive_reply( container_info );
+			all_client_interceptors_[i].interceptor->receive_reply( container_info.in() );
 		} catch (CORBA::SystemException e)
 		{
 			throw e;
@@ -135,12 +135,12 @@ ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientReque
 	}
 
 //	all_client_interceptors_mutex_.read_lock_object();
-	Qedo::ContainerClientRequestInfo *container_info= new Qedo::ContainerClientRequestInfo(info,id,id,id);
+	Components::Extension::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,id,id,id);
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
 		try {
-			all_client_interceptors_[i].interceptor->receive_user_exception( container_info );
+			all_client_interceptors_[i].interceptor->receive_user_exception( container_info.in() );
 		} catch (CORBA::SystemException e)
 		{
 			throw e;

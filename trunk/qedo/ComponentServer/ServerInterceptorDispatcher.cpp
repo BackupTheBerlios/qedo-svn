@@ -30,7 +30,7 @@
 #include "GlobalHelpers.h"
 #include "ContainerServerRequestInfo.h"
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.16 2004/02/25 12:19:40 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.17 2004/04/15 07:47:36 neubauer Exp $";
 
 namespace Qedo {
 
@@ -210,12 +210,12 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 	Qedo::QedoLock l_all(all_server_interceptors_mutex_);
 
-	Qedo::ContainerServerRequestInfo *container_info= new Qedo::ContainerServerRequestInfo(info,id,id,port_id);
+	Components::Extension::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,id,id,port_id);
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
 		try {
 
-			all_server_interceptors_[i].interceptor->receive_request( container_info );
+			all_server_interceptors_[i].interceptor->receive_request( container_info.in() );
 		} catch (CORBA::SystemException e)
 		{
 			throw e;
@@ -234,7 +234,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 		if (!strcmp(id, for_component_id_server_interceptors_[m].id.c_str()))
 		{
 			try{
-				for_component_id_server_interceptors_[m].interceptor->receive_request( container_info);
+				for_component_id_server_interceptors_[m].interceptor->receive_request( container_info.in() );
 			} catch (CORBA::SystemException e)
 			{
 				throw e;
@@ -274,12 +274,12 @@ throw(CORBA::SystemException)
 	}
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
-	Qedo::ContainerServerRequestInfo *container_info= new Qedo::ContainerServerRequestInfo(info,id,id,id);
+	Components::Extension::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,id,id,id);
 
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
 		try{
-            all_server_interceptors_[i].interceptor->send_reply( container_info);
+            all_server_interceptors_[i].interceptor->send_reply( container_info.in() );
 		} catch ( ... )
 			// catch of user exceptions is probably missing
 		{
@@ -314,12 +314,12 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	}
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
-	Qedo::ContainerServerRequestInfo *container_info= new Qedo::ContainerServerRequestInfo(info,id,id,id);
+	Components::Extension::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,id,id,id);
 
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
 		try{
-            all_server_interceptors_[i].interceptor->send_user_exception( container_info);
+            all_server_interceptors_[i].interceptor->send_user_exception( container_info.in() );
 		} catch ( ... )
 			// catch of user exceptions is probably missing
 		{
