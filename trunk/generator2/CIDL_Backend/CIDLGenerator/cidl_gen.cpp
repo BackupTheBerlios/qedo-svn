@@ -36,6 +36,7 @@ printUsage()
 	std::cerr << "        --target <compositionname> : the element to generate code for" << std::endl;
 	std::cerr << "        --business : generate business code skeletons" << std::endl;
 	std::cerr << "        --servant : generate servant code" << std::endl;
+	std::cerr << "        --out <fileprefix> : idl files will be prefixed with fileprefix" << std::endl;
 }
 
 
@@ -101,6 +102,7 @@ main
 	bool generateBusiness = false;
 	bool generateServant = false;
 	std::string target;
+	std::string fileprefix = "";
 
 	//
 	// process arguments
@@ -157,6 +159,22 @@ main
             
             argc -= 2;
 		}
+		else if(strcmp(option, "--out") == 0)
+		{
+			if(i + 1 >= argc)
+			{
+				std::cerr << "argument expected for --out" << std::endl;
+				orb -> destroy();
+				exit ( 1 );
+			}
+
+            fileprefix = argv[i + 1];
+            
+            for(int j = i ; j + 2 < argc ; j++)
+                argv[j] = argv[j + 2];
+            
+            argc -= 2;
+		}
 		else
 		{
 			i++;
@@ -177,14 +195,14 @@ main
 	std::cout << "Generating equivalent IDL for " << target << std::endl;
 	QEDO_CIDL_Generator::GeneratorEIDL *eidl_generator =
 		new QEDO_CIDL_Generator::GeneratorEIDL(repository);
-	eidl_generator->generate(target);
+	eidl_generator->generate(target, fileprefix);
 	eidl_generator->destroy();
 
 	// generate local IDL
 	std::cout << "Generating local IDL for " << target << std::endl;
 	QEDO_CIDL_Generator::GeneratorLIDL *lidl_generator =
 		new QEDO_CIDL_Generator::GeneratorLIDL(repository);
-	lidl_generator->generate(target);
+	lidl_generator->generate(target, fileprefix);
 	lidl_generator->destroy();
 
 	if(generateBusiness)
@@ -193,28 +211,28 @@ main
 		std::cout << "Generating local business IDL for " << target << std::endl;
 		QEDO_CIDL_Generator::GeneratorBIDL *bidl_generator =
 			new QEDO_CIDL_Generator::GeneratorBIDL(repository);
-		bidl_generator->generate(target);
+		bidl_generator->generate(target, fileprefix);
 		bidl_generator->destroy();
 
 		// generate CORBA Component Descriptor
 		std::cout << "Generating CORBA Component Descriptor for " << target << std::endl;
 		QEDO_CIDL_Generator::GeneratorCCD *ccd_generator =
 			new QEDO_CIDL_Generator::GeneratorCCD(repository);
-		ccd_generator->generate(target);
+		ccd_generator->generate(target, fileprefix);
 		ccd_generator->destroy();
 
 		// generate business header
 		std::cout << "Generating business code header for " << target << std::endl;
 		QEDO_CIDL_Generator::GeneratorBusinessH *bh_generator =
 			new QEDO_CIDL_Generator::GeneratorBusinessH(repository);
-		bh_generator->generate(target);
+		bh_generator->generate(target, fileprefix);
 		bh_generator->destroy();
 	
 		// generate business code
 		std::cout << "Generating business code for " << target << std::endl;
 		QEDO_CIDL_Generator::GeneratorBusinessC *bc_generator =
 			new QEDO_CIDL_Generator::GeneratorBusinessC(repository);
-		bc_generator->generate(target);
+		bc_generator->generate(target, fileprefix);
 		bc_generator->destroy();
 	}
 
@@ -224,14 +242,14 @@ main
 		std::cout << "Generating servant code header for " << target << std::endl;
 		QEDO_CIDL_Generator::GeneratorServantH *sh_generator =
 			new QEDO_CIDL_Generator::GeneratorServantH(repository);
-		sh_generator->generate(target);
+		sh_generator->generate(target, fileprefix);
 		sh_generator->destroy();
 
 		// generate servant code
 		std::cout << "Generating servant code for " << target << std::endl;
 		QEDO_CIDL_Generator::GeneratorServantC *sc_generator =
 			new QEDO_CIDL_Generator::GeneratorServantC(repository);
-		sc_generator->generate(target);
+		sc_generator->generate(target, fileprefix);
 		sc_generator->destroy();
 	}
 
