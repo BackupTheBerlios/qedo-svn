@@ -491,16 +491,58 @@ throw(Components::CreateFailure)
 	for(iter = data.instances.begin(); iter != data.instances.end(); iter++)
 	{
 		DEBUG_OUT2( "AssemblyImpl: create new component ", (*iter).id );
+		Components::ConfigValues_var config;
 		Components::CCMObject_var comp;
-		try
+		
+		//
+		// get initial configuration (COACH extension)
+		//
+		if( (*iter).comp_prop.length())
 		{
-			comp = Components::KeylessCCMHome::_narrow(home)->create_component();
+			CPFReader reader;
+			config = reader.readConf( (*iter).comp_prop );
 		}
-		catch( ... )
+
+		//
+		// create with config (COACH extension)
+		//
+		if( config->length() )
 		{
-			NORMAL_ERR2( "AssemblyImpl: cannot create component ", (*iter).id );
-			throw Components::CreateFailure();
+			try
+			{
+				comp = Components::KeylessCCMHome::_narrow(home)->create_component_with_config(config);
+			}
+			catch( ... )
+			{
+				NORMAL_ERR3( "AssemblyImpl: cannot create component ", (*iter).id, " with config" );
+				
+				try
+				{
+					comp = Components::KeylessCCMHome::_narrow(home)->create_component();
+				}
+				catch( ... )
+				{
+					NORMAL_ERR2( "AssemblyImpl: cannot create component ", (*iter).id );
+					throw Components::CreateFailure();
+				}
+			}
 		}
+		//
+		// normal create
+		//
+		else
+		{
+			try
+			{
+				comp = Components::KeylessCCMHome::_narrow(home)->create_component();
+			}
+			catch( ... )
+			{
+				NORMAL_ERR2( "AssemblyImpl: cannot create component ", (*iter).id );
+				throw Components::CreateFailure();
+			}
+		}
+
 		instanceMap_[(*iter).id] = Components::CCMObject::_duplicate(comp);
 
 		//
@@ -509,7 +551,7 @@ throw(Components::CreateFailure)
 		if( (*iter).comp_prop.length())
 		{
 			CPFReader reader;
-			Components::ConfigValues_var config = reader.readCPF( (*iter).comp_prop );
+			config = reader.readCPF( (*iter).comp_prop );
 
 			// remove property descriptor file
 			removeFileOrDirectory((*iter).comp_prop);

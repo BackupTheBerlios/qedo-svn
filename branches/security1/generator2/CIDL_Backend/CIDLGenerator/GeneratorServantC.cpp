@@ -1480,9 +1480,9 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out.unindent();
 	out << "}\n\n\n";
 
-	// create_with_config
+	// create_component_with_config
 	out << mapFullName(component_) << "_ptr\n";
-	out << class_name_ << "::create_with_config(const Components::ConfigValues& config)\n";
+	out << class_name_ << "::create_component_with_config(const Components::ConfigValues& config)\n";
 	out << "throw(CORBA::SystemException, Components::CreateFailure)\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"Home_servant: create_with_config() called\");\n\n";

@@ -84,7 +84,7 @@ public:
 	/**
 	 * constructor
 	 */
-	ComponentInstance();
+	//ComponentInstance();
 
 	/**
 	 * copy constructor

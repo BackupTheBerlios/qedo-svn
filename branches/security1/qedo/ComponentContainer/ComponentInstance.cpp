@@ -25,7 +25,7 @@
 #include "Output.h"
 #include "qedoutil.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentInstance.cpp,v 1.12.4.1 2003/10/28 14:53:59 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstance.cpp,v 1.12.4.2 2003/10/28 17:15:20 neubauer Exp $";
 
 
 namespace Qedo {
@@ -76,14 +76,14 @@ ComponentInstance::ComponentInstance (const PortableServer::ObjectId& object_id,
 }
 
 
-ComponentInstance::ComponentInstance()
+/*ComponentInstance::ComponentInstance()
 {
 	ccm_object_executor_ = 0;
 
 #ifndef _QEDO_NO_STREAMS
         stream_ccm_object_executor_ = 0;
 #endif
-}
+}*/
 
 
 ComponentInstance::ComponentInstance (const ComponentInstance& component_entry)
