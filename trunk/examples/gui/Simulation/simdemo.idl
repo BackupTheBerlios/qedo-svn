@@ -50,6 +50,7 @@ module Simulation{
 	  attribute double initial_latitude;
 	  attribute double initial_altitude;
 	  attribute double initial_course;
+	  attribute double speed;
 
 	  uses PlaneInput sim_server;
 	};
