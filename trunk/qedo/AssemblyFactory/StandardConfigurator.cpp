@@ -1,5 +1,5 @@
 /***************************************************************************/
-/* Qedo - Quality of Service Enabled Distributed Objects                  */
+/* Qedo - Quality of Service Enabled Distributed Objects                   */
 /*                                                                         */
 /* http://qedo.berlios.de/                                                 */
 /*                                                                         */

@@ -1,5 +1,5 @@
 /***************************************************************************/
-/* Qedo - Quality of Service Enabled Distributed Objects                  */
+/* Qedo - Quality of Service Enabled Distributed Objects                   */
 /*                                                                         */
 /* http://qedo.berlios.de/                                                 */
 /*                                                                         */
@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.3 2002/12/03 07:48:58 stoinski Exp $";
+static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.4 2002/12/03 07:57:46 stoinski Exp $";
 
 #include "ServerActivatorImpl.h"
 #include <CosNaming.h>
