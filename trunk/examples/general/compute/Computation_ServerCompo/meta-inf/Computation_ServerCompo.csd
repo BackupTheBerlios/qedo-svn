@@ -31,4 +31,25 @@
             <usage>servant</usage>
         </code>
     </implementation>
+
+    <implementation id="UUID-d8f68d66-d8d4-4098-a46f-f9460539019d">
+        <os name="linux" />
+        <processor name="" />
+        <compiler name="" version="" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/Computation_ServerCompo.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="libComputation_ServerCompo.so"/>
+            <entrypoint>create_ServerHomeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="libComputation_ServerCompo_SERVANT.so"/>
+            <entrypoint>create_ServerHomeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>
+
 </softpkg>
