@@ -142,7 +142,7 @@ ExecutorDef_impl::create_segment
  const char* name,
  const char* version,
  const IR__::ProvidesDefSeq& provided_facets,
- IR__::AbstractStorageHomeDef_ptr abs_storagehome)
+ IR__::StorageHomeDef_ptr storagehome)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "ExecutorDef_impl::create_segment() called" );
@@ -152,7 +152,7 @@ throw(CORBA::SystemException)
 	if ( check_for_name ( name ) )
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
-	SegmentDef_impl *new_segment = new SegmentDef_impl ( this, repository_, provided_facets, abs_storagehome );
+	SegmentDef_impl *new_segment = new SegmentDef_impl ( this, repository_, provided_facets, storagehome );
 	new_segment -> id ( id );
 	new_segment -> name ( name );
 	new_segment -> version ( version );

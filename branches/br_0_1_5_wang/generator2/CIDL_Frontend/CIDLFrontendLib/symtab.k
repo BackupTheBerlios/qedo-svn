@@ -1015,10 +1015,10 @@ add_type_declarators(
 }
 
 void
-add_abstract_storage_home_name(
-  idl_name abstract_storage_home_label_v)
+add_storage_home_name(
+  idl_name storage_home_label_v)
 {
-  table_item_list list_1=search_name(abstract_storage_home_label_v,AbstractStorageHomeN());
+  table_item_list list_1=search_name(storage_home_label_v,StorageHomeN());
 
   with(list_1) {
     Constable_item_list(item_v,Niltable_item_list()) : {
@@ -1026,10 +1026,10 @@ add_abstract_storage_home_name(
        * so we have to register the referenced symtab_entry
        * here. (HB)
        */
-       abstract_storage_home_label_v->symtab_entry=item_v;
+       storage_home_label_v->symtab_entry=item_v;
     }
     Niltable_item_list : {
-      Error("No home definition '%k'\n",abstract_storage_home_label_v);
+      Error("No home definition '%k'\n",storage_home_label_v);
     }
   }
 }

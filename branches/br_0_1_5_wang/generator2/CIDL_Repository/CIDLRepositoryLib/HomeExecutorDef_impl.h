@@ -37,14 +37,14 @@ namespace QEDO_ComponentRepository {
 class HomeExecutorDef_impl : public virtual POA_CIDL::HomeExecutorDef,
 							 public virtual Contained_impl
 {
-	IR__::AbstractStorageHomeDef_ptr binds_to_;
+	IR__::StorageHomeDef_ptr binds_to_;
 	CIDL::DelegationSeq delegations_;
-	CIDL::AbsStorageHomeDelegationSeq abs_storagehome_delegations_;
+	CIDL::StorageHomeDelegationSeq storagehome_delegations_;
 
 public:
 	HomeExecutorDef_impl ( Container_impl *container,
 							Repository_impl *repository,
-							IR__::AbstractStorageHomeDef_ptr binds_to);
+							IR__::StorageHomeDef_ptr binds_to);
 
 	~HomeExecutorDef_impl();
 
@@ -78,19 +78,19 @@ public:
         throw(CORBA::SystemException);
 
 	//
-    // IDL:omg.org/CIDL/HomeExecutorDef/abs_storagehome_delegations:1.0
+    // IDL:omg.org/CIDL/HomeExecutorDef/storagehome_delegations:1.0
     //
-    virtual CIDL::AbsStorageHomeDelegationSeq* abs_storagehome_delegations()
+    virtual CIDL::StorageHomeDelegationSeq* storagehome_delegations()
 		throw(CORBA::SystemException);
-    virtual void abs_storagehome_delegations(const CIDL::AbsStorageHomeDelegationSeq&)
+    virtual void storagehome_delegations(const CIDL::StorageHomeDelegationSeq&)
 		throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/CIDL/HomeExecutorDef/binds_to:1.0
     //
-    virtual IR__::AbstractStorageHomeDef_ptr binds_to()
+    virtual IR__::StorageHomeDef_ptr binds_to()
         throw(CORBA::SystemException);
-    virtual void binds_to(IR__::AbstractStorageHomeDef_ptr)
+    virtual void binds_to(IR__::StorageHomeDef_ptr)
         throw(CORBA::SystemException);
 };
 

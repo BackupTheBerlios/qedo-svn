@@ -18,6 +18,19 @@ GeneratorServantC::GeneratorServantC
 GeneratorServantC::~GeneratorServantC
 ()
 {
+	if(!lValueTypes_.empty())
+	{
+		std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+	
+		for(valuetype_iter = lValueTypes_.begin();
+			valuetype_iter != lValueTypes_.end();
+			valuetype_iter++)
+		{
+			//(dynamic_cast <IR__::ValueDef_ptr> (*valuetype_iter))->_remove_ref();
+		}
+
+		lValueTypes_.clear();
+	}
 }
 
 
@@ -78,11 +91,11 @@ GeneratorServantC::check_for_generation(IR__::Contained_ptr item)
 	//
 	// check if item is already in the list or currently processed
 	//
-	if ((this->m_recursion_set.find(item->id())) != m_recursion_set.end() || this->already_included (item)) {
+	if ((this->recursion_set_.find(item->id())) != recursion_set_.end() || this->already_included (item)) {
 		return;
 	} 
 	else {
-		m_recursion_set.insert(item->id());
+		recursion_set_.insert(item->id());
 	}
 
 	CORBA::ULong len;
@@ -125,14 +138,21 @@ GeneratorServantC::check_for_generation(IR__::Contained_ptr item)
 				}
 			}
 		}
-
+		
 		break; }
 	case CORBA__::dk_Composition : {
 		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
 
+		// home's primary key
+		if(a_composition->lifecycle()==CIDL::lc_Entity)
+		{
+			IR__::ValueDef_ptr value = a_composition->ccm_home()->primary_key()->primary_key();
+			lValueTypes_.push_back(value);
+		}
 		// home
 		check_for_generation(a_composition->ccm_home());
 		insert_to_generate(item);
+
 		break; }
 	case CORBA__::dk_Home : {
 		IR__::HomeDef_var a_home = IR__::HomeDef::_narrow(item);
@@ -156,7 +176,7 @@ GeneratorServantC::check_for_generation(IR__::Contained_ptr item)
 		break;
 	};
 
-	m_recursion_set.erase(item->id());
+	recursion_set_.erase(item->id());
 };
 
 
@@ -596,7 +616,8 @@ GeneratorServantC::doComposition (CIDL::CompositionDef_ptr composition)
 	//
 	component_ = composition->ccm_component();
 	IR__::HomeDef_var home = composition->ccm_home();
-    
+	storagehome_ = composition->home_executor()->binds_to();
+	    
 	//
 	// determine lifecycle
 	//
@@ -1784,6 +1805,27 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << "return (dynamic_cast <" << mapFullNamePK(home->primary_key()) << "*> (pkb));\n";
 		out.unindent();
 		out << "}\n\n";
+		
+		//++++++++++++++++++++++++++++++++++++++++
+		// SQL CREATE for get_table_info()
+		//++++++++++++++++++++++++++++++++++++++++
+		out << "std::vector<std::string>\n";
+		out << class_name_ << "::get_table_info()\n";
+		out << "{\n";
+		out.indent();
+		out << "std::stringstream sztream;\n";
+		out << "std::vector<std::string> vecTables;\n\n";
+		genAbsSQLCreate();
+		out << "vecTables.push_back(sztream.str());\n";
+		out << "sztream.str(\"\");\n\n";
+		genSQLCreate();
+		out << "vecTables.push_back(sztream.str());\n\n";		
+		out << "return vecTables;\n";
+		out.unindent();
+		out << "}\n\n";
+		//++++++++++++++++++++++++++++++++++++++++
+		// end of SQL CREATE for get_table_info()
+		//++++++++++++++++++++++++++++++++++++++++
 
 		out << "bool\n";
 		out << class_name_ << "::compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b)\n";
@@ -2478,5 +2520,231 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 	handleFinder(home);
 }
 
+void
+GeneratorServantC::genAbsSQLCreate()
+{
+	IR__::InterfaceDefSeq_var supported_infs = storagehome_->supported_interfaces();
+	
+	for( CORBA::ULong i=0; i<supported_infs->length(); i++ )
+	{
+		IR__::AbstractStorageHomeDef_var abs_home = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
+		IR__::InterfaceDefSeq_var sub_supported_infs = abs_home->base_abstract_storagehomes();
+		CORBA::ULong ulLenSupportedInf = sub_supported_infs->length();
+
+		IR__::AbstractStorageTypeDef_var abs_type = abs_home->managed_abstract_storagetype();
+		IR__::AttributeDefSeq state_members = collectStateMembers(abs_type, CORBA__::dk_Self);
+		CORBA::ULong ulLen = state_members.length();
+		IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
+
+		std::string strName = "sztream";
+		std::string strContent = "CREATE TABLE ";
+		strContent += std::string(abs_home->name());
+		strContent += " (";
+		out << genSQLLine(strName, strContent, false, true);
+
+		if(ulLenSupportedInf==0)
+		{
+			strContent = "pid  VARCHAR(254)  NOT NULL  REFERENCES PID_CONTENT";
+			out << genSQLLine(strName, strContent, true, true);
+			strContent = "spid  VARCHAR(254)";
+			out << genSQLLine(strName, strContent, true, true);
+		}
+
+		for( CORBA::ULong i=0; i<ulLen; i++)
+		{
+			attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+			{
+				std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+				int abc = lValueTypes_.size();
+				for(valuetype_iter = lValueTypes_.begin();
+					valuetype_iter != lValueTypes_.end();
+					valuetype_iter++)
+				{
+					IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+					std::string attr_type_name = map_attribute_type(attribute->type_def());
+					if(attr_type_name.find(mapName(value))!=std::string::npos)
+					{
+						IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+						for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+						{
+							IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+							strContent = "value_";
+							strContent += mapName(vMember);
+							strContent += "  ";
+							strContent.append( map_psdl2sql_type(vMember->type_def()) );
+							bool isComma = ((j+1)!=ulLen) || (ulLenSupportedInf==0);
+							out << genSQLLine(strName, strContent, isComma, true);
+						}
+						break;
+					}
+				}
+			}
+			else
+			{
+				strContent = mapName(attribute);
+				strContent += "  ";
+				strContent.append( map_psdl2sql_type(attribute->type_def()) );
+				bool isComma = ((i+1)!=ulLen) || (ulLenSupportedInf==0);
+				out << genSQLLine(strName, strContent, isComma, true);	
+			}
+		}
+		
+		if( ulLenSupportedInf>0 )
+		{
+			strContent = ") INHERITS ( ";
+						
+			for(CORBA::ULong j=0; j<ulLenSupportedInf; j++)
+			{
+				strContent.append(((*sub_supported_infs)[j])->name());
+				((j+1)!=ulLenSupportedInf) ? strContent += ", " : strContent += " );";
+				out << genSQLLine(strName, strContent, false, false);
+				strContent = "";
+			}
+		}
+		else
+		{
+			strContent = "CONSTRAINT PK_";
+			strContent += abs_home->name();
+			strContent += " PRIMARY KEY (pid)";
+			out << genSQLLine(strName, strContent, false, true);
+			strContent = ");";
+			out << genSQLLine(strName, strContent, false, false);
+		}
+
+		out << "\n";
+	}
+}
+
+void
+GeneratorServantC::genSQLCreate()
+{
+	IR__::StorageHomeDef_var base_storagehome = storagehome_->base_storagehome();
+	IR__::InterfaceDefSeq_var supported_infs = storagehome_->supported_interfaces();
+	IR__::StorageTypeDef_var storagetype = storagehome_->managed_storagetype();
+	
+	CORBA::ULong ulLenSupportedInf = supported_infs->length();
+	IR__::AttributeDefSeq state_members = collectStateMembers(storagetype, CORBA__::dk_Self);
+	CORBA::ULong ulLen = state_members.length();
+	IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
+
+	std::string strName = "sztream";
+	std::string strContent = "CREATE TABLE ";
+	strContent += std::string(storagehome_->name());
+	strContent += " (";
+	out << genSQLLine(strName, strContent, false, true);
+
+	if(ulLenSupportedInf==0 && CORBA::is_nil(base_storagehome))
+	{
+		strContent = "pid  VARCHAR(254)  NOT NULL  REFERENCES PID_CONTENT";
+		out << genSQLLine(strName, strContent, true, true);
+		strContent = "spid  VARCHAR(254)";
+		out << genSQLLine(strName, strContent, true, true);
+	}
+
+	for( CORBA::ULong i=0; i<ulLen; i++)
+	{
+		attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		{
+			std::list<IR__::ValueDef_ptr>::iterator valuetype_iter;
+			for(valuetype_iter = lValueTypes_.begin();
+				valuetype_iter != lValueTypes_.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				std::string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						strContent = "value_";
+						strContent += mapName(vMember);
+						strContent += "  ";
+						strContent.append( map_psdl2sql_type(vMember->type_def()) );
+						bool isComma = ((j+1)!=ulLen) || (ulLenSupportedInf==0);
+						out << genSQLLine(strName, strContent, isComma, true);
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			strContent = mapName(attribute);
+			strContent += "  ";
+			strContent.append( map_psdl2sql_type(attribute->type_def()) );
+			bool isComma = ((i+1)!=ulLen) || (ulLenSupportedInf==0);
+			out << genSQLLine(strName, strContent, isComma, true);	
+		}
+	}
+	
+	if( !CORBA::is_nil(base_storagehome) || ulLenSupportedInf>0 )
+	{
+		strContent = ") INHERITS ( ";
+		if(!CORBA::is_nil(base_storagehome))
+		{
+			strContent.append(base_storagehome->name());
+			(ulLenSupportedInf>0) ? strContent += ", " : strContent += " );";
+			out << genSQLLine(strName, strContent, false, false);
+			strContent = "";
+		}
+		
+		for(CORBA::ULong j=0; j<ulLenSupportedInf; j++)
+		{
+			strContent.append(((*supported_infs)[j])->name());
+			((j+1)!=ulLenSupportedInf) ? strContent += ", " : strContent += " );";
+			out << genSQLLine(strName, strContent, false, false);
+			strContent = "";
+		}
+	}
+	else
+	{
+		strContent = "CONSTRAINT PK_";
+		strContent += storagehome_->name();
+		strContent += " PRIMARY KEY (pid)";
+		out << genSQLLine(strName, strContent, false, true);
+		strContent = ");";
+		out << genSQLLine(strName, strContent, false, false);
+	}
+
+	out << "\n";
+}
+
+IR__::AttributeDefSeq 
+GeneratorServantC::collectStateMembers(IR__::InterfaceDef_ptr inf_def, CORBA__::CollectStyle style)
+{
+	IR__::AttributeDefSeq state_members;
+
+	IR__::AbstractStorageTypeDef_var abs_storagetype =
+		IR__::AbstractStorageTypeDef::_narrow(inf_def);
+	if(!CORBA::is_nil(abs_storagetype))
+		abs_storagetype->get_state_members(state_members, style);
+
+	IR__::StorageTypeDef_var storagetype = 
+		IR__::StorageTypeDef::_narrow(inf_def);
+	if(!CORBA::is_nil(storagetype))
+		storagetype->get_state_members(state_members, style);
+
+	return state_members;
+}
+
+std::string
+GeneratorServantC::genSQLLine(std::string strName, std::string strContent, bool comma, bool space, bool func)
+{
+	std::string strRet = strName;
+
+	strRet += " << ";
+	if(!func) strRet += "\"";
+	strRet += strContent;
+	if(comma) strRet += ",";
+	if(space) strRet += " ";
+	if(!func) strRet += "\"";
+	strRet += ";\n";
+
+	return strRet;
+}
 
 } //

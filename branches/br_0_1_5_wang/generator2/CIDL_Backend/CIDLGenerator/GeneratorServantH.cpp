@@ -52,7 +52,8 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "#include \"ExtensionHomeServant.h\"\n\n\n";
 	out << "#endif\n";
 	out << "#include \"SessionHomeServant.h\"\n";
-	out << "#include \"EntityHomeServant.h\"\n\n\n";
+	out << "#include \"EntityHomeServant.h\"\n";
+	out << "#include <sstream>\n\n\n";
 
 	//
 	// dynamic library identifier
@@ -960,6 +961,8 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 
 		out << mapFullNamePK(home->primary_key()) << "* get_primary_key(" << mapFullName(component_) << "_ptr comp)\n"; 
 		out << "	throw(CORBA::SystemException);\n\n";
+
+		out << "std::vector<std::string> get_table_info();\n\n";
 		out.unindent();
 		out << "private:\n\n";
 		out.indent();

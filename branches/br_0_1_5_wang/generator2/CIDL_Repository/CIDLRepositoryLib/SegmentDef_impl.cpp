@@ -32,7 +32,7 @@ SegmentDef_impl::SegmentDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
   IR__::ProvidesDefSeq provided_facets,
-  IR__::AbstractStorageHomeDef_ptr stored_on)
+  IR__::StorageHomeDef_ptr stored_on)
 : Contained_impl ( container, repository ),
   IRObject_impl ( repository )
 {
@@ -147,14 +147,14 @@ throw(CORBA::SystemException)
 	return provided_facet_seq._retn();
 }
 
-IR__::AbstractStorageHomeDef_ptr
+IR__::StorageHomeDef_ptr
 SegmentDef_impl::stored_on
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "SegmentDef_impl::abs_storagehome() called" );
+	DEBUG_OUTLINE ( "SegmentDef_impl::stored_on() called" );
 
-	return IR__::AbstractStorageHomeDef::_duplicate(stored_on_);
+	return IR__::StorageHomeDef::_duplicate(stored_on_);
 }
 
 } // namespace QEDO_ComponentRepository 

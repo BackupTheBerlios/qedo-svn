@@ -347,7 +347,7 @@
 %type <yt_composition_body>	composition_body
 
 %type <yt_idl_name>				operation_name
-										abstract_storage_home_label
+										storage_home_label
 										feature_name
 										storage_member_name
 										enumerator
@@ -387,9 +387,9 @@
 
 %type <yt_home_impl_dcl>		home_impl_dcl
 
-%type <yt_abstract_storage_home_binding> abstract_storage_home_binding
+%type <yt_storage_home_binding> storage_home_binding
 
-%type <yt_abstract_storage_home_name> abstract_storage_home_name
+%type <yt_storage_home_name> storage_home_name
 
 %type <yt_idl_name_list>		identifiers
 										enumerators
@@ -397,7 +397,7 @@
 										operation_list
 									  operation_names
 
-%type <yt_abstract_storage_home_delegation_spec> abstract_storage_home_delegation_spec
+%type <yt_storage_home_delegation_spec> storage_home_delegation_spec
 
 %type <yt_executor_delegation_spec> executor_delegation_spec
 
@@ -1837,70 +1837,70 @@ home_executor_header :
     };
 
 home_executor_body :
-	  home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def abstract_storage_home_delegation_spec executor_delegation_spec abstract_spec
+	  home_impl_dcl storage_home_binding home_persistence_dcl executor_def storage_home_delegation_spec executor_delegation_spec abstract_spec
 	  { $$ = HomeExecutorBody($1,$2,$3,$4,$5,$6,$7); }
-	| home_impl_dcl home_persistence_dcl executor_def abstract_storage_home_delegation_spec executor_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,$4,$5,$6); }
-	| home_impl_dcl abstract_storage_home_binding executor_def abstract_storage_home_delegation_spec executor_delegation_spec abstract_spec
+	| home_impl_dcl home_persistence_dcl executor_def storage_home_delegation_spec executor_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,$4,$5,$6); }
+	| home_impl_dcl storage_home_binding executor_def storage_home_delegation_spec executor_delegation_spec abstract_spec
 	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,$4,$5,NilProxyHomeMember()); }
-	| home_impl_dcl executor_def abstract_storage_home_delegation_spec executor_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,$4,$5); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def executor_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	| home_impl_dcl executor_def storage_home_delegation_spec executor_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,$4,$5); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def executor_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
 	| home_impl_dcl home_persistence_dcl executor_def executor_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,NilAbstractStorageHomeDelegationSpec(),$4,$5); }
-	| home_impl_dcl abstract_storage_home_binding executor_def executor_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilAbstractStorageHomeDelegationSpec(),$4,$5); }
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,NilStorageHomeDelegationSpec(),$4,$5); }
+	| home_impl_dcl storage_home_binding executor_def executor_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilStorageHomeDelegationSpec(),$4,$5); }
 	| home_impl_dcl executor_def executor_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilAbstractStorageHomeDelegationSpec(),$3,$4); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def abstract_storage_home_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilStorageHomeDelegationSpec(),$3,$4); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def storage_home_delegation_spec abstract_spec
 	  { $$ = HomeExecutorBody($1,$2,$3,$4,$5,NilExecutorDelegationSpec(),$6); }
-	| home_impl_dcl home_persistence_dcl executor_def abstract_storage_home_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,$4,NilExecutorDelegationSpec(),$5); }
-	| home_impl_dcl abstract_storage_home_binding executor_def abstract_storage_home_delegation_spec abstract_spec
+	| home_impl_dcl home_persistence_dcl executor_def storage_home_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,$4,NilExecutorDelegationSpec(),$5); }
+	| home_impl_dcl storage_home_binding executor_def storage_home_delegation_spec abstract_spec
 	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,$4,NilExecutorDelegationSpec(),$5); }
-	| home_impl_dcl executor_def abstract_storage_home_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,NilExecutorDelegationSpec(),$4); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def abstract_spec
-	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$5); }
+	| home_impl_dcl executor_def storage_home_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,NilExecutorDelegationSpec(),$4); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def abstract_spec
+	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$5); }
 	| home_impl_dcl home_persistence_dcl executor_def abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$4); }
-	| home_impl_dcl abstract_storage_home_binding executor_def abstract_spec
-	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$4); }
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$4); }
+	| home_impl_dcl storage_home_binding executor_def abstract_spec
+	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$4); }
 	| home_impl_dcl executor_def abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$3); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def abstract_storage_home_delegation_spec executor_delegation_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$3); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def storage_home_delegation_spec executor_delegation_spec
 	  { $$ = HomeExecutorBody($1,$2,$3,$4,$5,$6,NilProxyHomeMember()); }
-	| home_impl_dcl home_persistence_dcl executor_def abstract_storage_home_delegation_spec executor_delegation_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,$4,$5,NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding executor_def abstract_storage_home_delegation_spec executor_delegation_spec
+	| home_impl_dcl home_persistence_dcl executor_def storage_home_delegation_spec executor_delegation_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,$4,$5,NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding executor_def storage_home_delegation_spec executor_delegation_spec
 	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,$4,$5,NilProxyHomeMember()); }
-	| home_impl_dcl executor_def abstract_storage_home_delegation_spec executor_delegation_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,$4,NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def executor_delegation_spec
-	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilAbstractStorageHomeDelegationSpec(),$5,NilProxyHomeMember()); }
+	| home_impl_dcl executor_def storage_home_delegation_spec executor_delegation_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,$4,NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def executor_delegation_spec
+	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilStorageHomeDelegationSpec(),$5,NilProxyHomeMember()); }
 	| home_impl_dcl home_persistence_dcl executor_def executor_delegation_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,NilAbstractStorageHomeDelegationSpec(),$4,NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding executor_def executor_delegation_spec
-	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilAbstractStorageHomeDelegationSpec(),$4,NilProxyHomeMember()); }
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,NilStorageHomeDelegationSpec(),$4,NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding executor_def executor_delegation_spec
+	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilStorageHomeDelegationSpec(),$4,NilProxyHomeMember()); }
 	| home_impl_dcl executor_def executor_delegation_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilAbstractStorageHomeDelegationSpec(),$3,NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def abstract_storage_home_delegation_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilStorageHomeDelegationSpec(),$3,NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def storage_home_delegation_spec
 	  { $$ = HomeExecutorBody($1,$2,$3,$4,$5,NilExecutorDelegationSpec(),NilProxyHomeMember()); }
-	| home_impl_dcl home_persistence_dcl executor_def abstract_storage_home_delegation_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,$4,NilExecutorDelegationSpec(),NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding executor_def abstract_storage_home_delegation_spec
+	| home_impl_dcl home_persistence_dcl executor_def storage_home_delegation_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,$4,NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding executor_def storage_home_delegation_spec
 	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,$4,NilExecutorDelegationSpec(),NilProxyHomeMember()); }
-	| home_impl_dcl executor_def abstract_storage_home_delegation_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,NilExecutorDelegationSpec(),NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def
-	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	| home_impl_dcl executor_def storage_home_delegation_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def
+	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
 	| home_impl_dcl home_persistence_dcl executor_def
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding executor_def
-	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding executor_def
+	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
 	| home_impl_dcl executor_def
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
 	;
 
 home_impl_dcl :
@@ -1915,23 +1915,23 @@ home_type_name :
     }
   ;
 
-abstract_storage_home_binding :
-	  TOK_bindsTo abstract_storage_home_name ';'
-	  { $$ = AbstractStorageHomeBinding($2); }
+storage_home_binding :
+	  TOK_bindsTo storage_home_name ';'
+	  { $$ = StorageHomeBinding($2); }
    ;
 
-abstract_storage_home_name :
-      abstract_storage_home_label
-      { $$ = AbstractStorageHomeName($1); 
-      add_abstract_storage_home_name($1);
+storage_home_name :
+      storage_home_label
+      { $$ = StorageHomeName($1); 
+      add_storage_home_name($1);
     }
 	;
 
-abstract_storage_home_label :
+storage_home_label :
 	  TOK_identifier;
 
 home_persistence_dcl :
-	  TOK_storedOn abstract_storage_home_name ';'
+	  TOK_storedOn storage_home_name ';'
 	  { $$ = HomePersistenceDcl($2);}
 	;
 
@@ -1980,7 +1980,7 @@ segment_member :
 	;
 
 segment_persistence_dcl :
-	  TOK_storedOn abstract_storage_home_name ';'
+	  TOK_storedOn storage_home_name ';'
 	  { $$ = SegmentPersistenceDcl($2); }
 	;
 
@@ -2009,9 +2009,9 @@ feature_delegation :
 feature_name :
 	  TOK_identifier;
 
-abstract_storage_home_delegation_spec :
-	  TOK_delegatesTo TOK_abstract TOK_storagehome delegation_list ';'
-	  { $$ = AbstractStorageHomeDelegationSpec($4); }
+storage_home_delegation_spec :
+	  TOK_delegatesTo TOK_storagehome delegation_list ';'
+	  { $$ = StorageHomeDelegationSpec($3); }
 	;
 
 executor_delegation_spec :
@@ -2431,9 +2431,9 @@ proxy_home_members :
 	(1) 	<home_executor_body>
 	(1) 	<home_impl_dcl>
 	(1) 	<home_type_name>
-	(1) 	<abstract_storage_home_binding>
-	(3) 	<abstract_storage_home_name>
-	(1) 	<abstract_storage_home_label>
+	(1) 	<storage_home_binding>
+	(3) 	<storage_home_name>
+	(1) 	<storage_home_label>
 	(1) 	<home_persistence_dcl>
 	(1) 	<executor_def>
 	(1) 	<executor_body>
@@ -2446,7 +2446,7 @@ proxy_home_members :
 	(1) 	<feature_delegation_list>
 	(2) 	<feature_delegation>
 	(1) 	<feature_name>
-	(1) 	<abstract_storage_home_delegation_spec>
+	(1) 	<storage_home_delegation_spec>
 	(1) 	<executor_delegation_spec>
 	(3) 	<delegation_list>
 	(2) 	<delegation>

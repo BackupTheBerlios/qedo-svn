@@ -31,7 +31,7 @@ namespace QEDO_ComponentRepository {
 HomeExecutorDef_impl::HomeExecutorDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
-  IR__::AbstractStorageHomeDef_ptr binds_to)
+  IR__::StorageHomeDef_ptr binds_to)
 : Contained_impl ( container, repository ),
   IRObject_impl ( repository )
 {
@@ -74,7 +74,7 @@ throw(CORBA::SystemException)
 
 	home_executor_desc -> binds_to = this -> binds_to();
 	home_executor_desc -> delegations = *(this->delegations());
-	home_executor_desc -> abs_storagehome_delegations = *(this->abs_storagehome_delegations());
+	home_executor_desc -> storagehome_delegations = *(this->storagehome_delegations());
 
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
@@ -105,27 +105,27 @@ throw(CORBA::SystemException)
 	delegations_ = seq;
 }
 
-CIDL::AbsStorageHomeDelegationSeq*
-HomeExecutorDef_impl::abs_storagehome_delegations
+CIDL::StorageHomeDelegationSeq*
+HomeExecutorDef_impl::storagehome_delegations
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::abs_storagehome_delegations() called" );
+	DEBUG_OUTLINE ( "HomeExecutorDef_impl::storagehome_delegations() called" );
 
-	return new CIDL::AbsStorageHomeDelegationSeq ( abs_storagehome_delegations_ );
+	return new CIDL::StorageHomeDelegationSeq ( storagehome_delegations_ );
 }
 
 void
-HomeExecutorDef_impl::abs_storagehome_delegations
-(const CIDL::AbsStorageHomeDelegationSeq& seq)
+HomeExecutorDef_impl::storagehome_delegations
+(const CIDL::StorageHomeDelegationSeq& seq)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::abs_storagehome_delegations(...) called" );
+	DEBUG_OUTLINE ( "HomeExecutorDef_impl::storagehome_delegations(...) called" );
 
-	abs_storagehome_delegations_ = seq;
+	storagehome_delegations_ = seq;
 }
 
-IR__::AbstractStorageHomeDef_ptr
+IR__::StorageHomeDef_ptr
 HomeExecutorDef_impl::binds_to
 ()
 throw(CORBA::SystemException)
@@ -136,7 +136,7 @@ throw(CORBA::SystemException)
 
 void 
 HomeExecutorDef_impl::binds_to
-(IR__::AbstractStorageHomeDef_ptr binds_to)
+(IR__::StorageHomeDef_ptr binds_to)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "HomeExecutorDef_impl::binds_to(...) called" );

@@ -48,7 +48,9 @@ private:
 	Printer						out;
 	IR__::ComponentDef_var		component_;
 	IR__::HomeDef_var			home_;
-	std::set<std::string>		m_recursion_set;
+	IR__::StorageHomeDef_var	storagehome_;
+	std::set<std::string>		recursion_set_;
+	std::list<IR__::ValueDef_ptr>	lValueTypes_;
 
 	std::string					scope_name_;
 
@@ -88,6 +90,10 @@ private:
 	void genConsumerRegistration(IR__::HomeDef_ptr home);
 	void genSinkRegistration(IR__::HomeDef_ptr home);
 	void genSourceRegistration(IR__::HomeDef_ptr home);
+	std::string genSQLLine(std::string strName, std::string strContent, bool comma, bool space, bool func=false);
+	IR__::AttributeDefSeq collectStateMembers(IR__::InterfaceDef_ptr inf_def, CORBA__::CollectStyle style);
+	void genAbsSQLCreate();
+	void genSQLCreate();
 
 public:
 

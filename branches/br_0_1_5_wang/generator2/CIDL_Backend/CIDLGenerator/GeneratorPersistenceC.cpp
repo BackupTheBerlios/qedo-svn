@@ -2083,7 +2083,7 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 
 	CORBA::ULong ulLen = state_members.length();
 	//CORBA::ULong ulLenBaseAbsHomes = base_abs_storagehomes->length();
-	IR__::AttributeDef_var attribute = 0;
+	IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
 
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";

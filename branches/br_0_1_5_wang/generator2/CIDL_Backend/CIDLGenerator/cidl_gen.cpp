@@ -341,11 +341,13 @@ main
 		pc_generator->destroy();
 		
 		// generate persistent descriptor
+		/*
 		std::cout << "Generating persistent descriptor " << target << std::endl;
 		QEDO_CIDL_Generator::GeneratorPSD *psd_generator =
 			new QEDO_CIDL_Generator::GeneratorPSD(repository);
 		psd_generator->generate(target, fileprefix);
 		psd_generator->destroy();
+		*/
 	}
 
 	if(generateDescriptors)

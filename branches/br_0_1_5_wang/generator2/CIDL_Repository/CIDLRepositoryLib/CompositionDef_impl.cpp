@@ -155,7 +155,7 @@ CompositionDef_impl::create_home_executor
 ( const char* id,
   const char* name,
   const char* version,
-  IR__::AbstractStorageHomeDef_ptr abs_storagehome)
+  IR__::StorageHomeDef_ptr storagehome)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "CompositionDef_impl::create_home_executor() called" );
@@ -166,7 +166,7 @@ throw(CORBA::SystemException)
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
 	HomeExecutorDef_impl *new_home_executor =
-		new HomeExecutorDef_impl ( this, repository_, abs_storagehome );
+		new HomeExecutorDef_impl ( this, repository_, storagehome );
 	new_home_executor -> id ( id );
 	new_home_executor -> name ( name );
 	new_home_executor -> version ( version );

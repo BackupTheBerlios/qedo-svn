@@ -75,8 +75,8 @@ struct build_class : build_baseclass {
   IR__::IDLType_ptr type;
   IR__::ValueDef_ptr valuetype;
   IR__::HomeDef_ptr home;
-  IR__::AbstractStorageHomeDef_ptr abs_storagehome;
-  CIDL::AbsStorageHomeDelegationSeq abs_storagehome_delegation;
+  IR__::StorageHomeDef_ptr storagehome;
+  CIDL::StorageHomeDelegationSeq storagehome_delegation;
   definition def;
   int pos;
   bool flag;
@@ -84,7 +84,7 @@ struct build_class : build_baseclass {
     type = IR__::IDLType::_nil();
     valuetype = IR__::ValueDef::_nil();
     home = IR__::HomeDef::_nil();
-	abs_storagehome = IR__::AbstractStorageHomeDef::_nil();
+	storagehome = IR__::StorageHomeDef::_nil();
   }
 };
 
@@ -2521,7 +2521,7 @@ HomeExecutorDef(name, homex_body)
       // create HomeExecutorDef
       try {
         homeexec = container-> create_home_executor (get_repid(def_v,name),
-          name->get_name(), "1.0", my_build.abs_storagehome);
+          name->get_name(), "1.0", my_build.storagehome);
       }
       catch (...) {
         Error("Exception in creating home executor %k\n", name, name);
@@ -2561,38 +2561,38 @@ HomeExecutorBody(HomeImplDcl(ident), home_binding_v, *, exec, home_delegation_v,
     def
   ];
   
-AbstractStorageHomeBinding(AbstractStorageHomeName(ash_name))
+StorageHomeBinding(StorageHomeName(ah_name))
 ->[ build :
     {
-      kc_current_view.abs_storagehome = IR__::AbstractStorageHomeDef::_narrow (
-        ash_name->symtab_entry->irobj);
-      if(CORBA::is_nil(kc_current_view.abs_storagehome)) { 
-        kc_current_view.abs_storagehome = IR__::AbstractStorageHomeDef::_narrow (
-          g_repository->lookup_id (get_repid(ash_name)));
+      kc_current_view.storagehome = IR__::StorageHomeDef::_narrow (
+        ah_name->symtab_entry->irobj);
+      if(CORBA::is_nil(kc_current_view.storagehome)) { 
+        kc_current_view.storagehome = IR__::StorageHomeDef::_narrow (
+          g_repository->lookup_id (get_repid(ah_name)));
       }
-      NOT_NIL(kc_current_view.abs_storagehome); 
+      NOT_NIL(kc_current_view.storagehome); 
     }
  ];
  
-AbstractStorageHomeDelegationSpec(def_list)
+StorageHomeDelegationSpec(def_list)
 ->[ build :
     {
-      kc_current_view.abs_storagehome_delegation.length(def_list->length()); 
+      kc_current_view.storagehome_delegation.length(def_list->length()); 
       kc_current_view.pos = 0;
       foreach(pair; definition_list def_list) {
         with(pair) {
           OperationPair(op1, Name(op2)) : {
-            CIDL::AbsStorageHomeDelegation dele;
+            CIDL::StorageHomeDelegation dele;
             dele.delegated_operation = IR__::OperationDef::_narrow( op1->symtab_entry->irobj );
-            dele.abs_storagehome_op_name = CORBA::string_dup( op2->name );
-			kc_current_view.abs_storagehome_delegation[kc_current_view.pos] = dele;
+            dele.storagehome_op_name = CORBA::string_dup( op2->name );
+			kc_current_view.storagehome_delegation[kc_current_view.pos] = dele;
 		    kc_current_view.pos++;
           }
           Operation(op=Name(op_name)) : {
-            CIDL::AbsStorageHomeDelegation dele;
+            CIDL::StorageHomeDelegation dele;
             dele.delegated_operation = IR__::OperationDef::_narrow( op->symtab_entry->irobj );
-            dele.abs_storagehome_op_name = CORBA::string_dup( op_name->name );
-			kc_current_view.abs_storagehome_delegation[kc_current_view.pos] = dele;
+            dele.storagehome_op_name = CORBA::string_dup( op_name->name );
+			kc_current_view.storagehome_delegation[kc_current_view.pos] = dele;
 		    kc_current_view.pos++;
           }
         }
@@ -2667,7 +2667,7 @@ SegmentDef(name, def_list)
       // create SegmentDef
       try {
         seg = container-> create_segment (get_repid(def_v,name),
-          name->get_name(), "1.0", my_build.provseq, my_build.abs_storagehome);
+          name->get_name(), "1.0", my_build.provseq, my_build.storagehome);
       }
       catch (...) {
         Error("Exception in creating segment %k\n", name, name);
@@ -2679,16 +2679,16 @@ SegmentDef(name, def_list)
   ]
   [ feed_container : ];
 
-SegmentPersistenceDcl(AbstractStorageHomeName(ash_name))
+SegmentPersistenceDcl(StorageHomeName(ah_name))
 ->[ build :
     {
-      kc_current_view.abs_storagehome = IR__::AbstractStorageHomeDef::_narrow (
-        ash_name->symtab_entry->irobj);
-      if(CORBA::is_nil(kc_current_view.abs_storagehome)) { 
-        kc_current_view.abs_storagehome = IR__::AbstractStorageHomeDef::_narrow (
-          g_repository->lookup_id( get_repid(ash_name) ) );
+      kc_current_view.storagehome = IR__::StorageHomeDef::_narrow (
+        ah_name->symtab_entry->irobj);
+      if(CORBA::is_nil(kc_current_view.storagehome)) { 
+        kc_current_view.storagehome = IR__::StorageHomeDef::_narrow (
+          g_repository->lookup_id( get_repid(ah_name) ) );
       }
-      NOT_NIL(kc_current_view.abs_storagehome);
+      NOT_NIL(kc_current_view.storagehome);
     }
   ];
 
