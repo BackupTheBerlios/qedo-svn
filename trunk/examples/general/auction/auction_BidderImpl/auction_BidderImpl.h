@@ -93,6 +93,15 @@ namespace auction
         
     
 // BEGIN USER INSERT SECTION BidderSessionImpl
+      Components::Thread_var bidder_thread;
+      bool stopped;
+		CORBA::Long            bidder_amount;
+		CORBA::Long            bidder_current_price;
+		std::string            bidder_item;
+	public:
+		static void* run(void*);
+		void stop();
+		void do_bid(unsigned long);
 // END USER INSERT SECTION BidderSessionImpl
 
     };

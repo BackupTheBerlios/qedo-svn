@@ -57,22 +57,6 @@ namespace auction
         
         
         //
-        // IDL:auction/Seller/item:1.0
-        //
-        void item(const char* param)
-        	throw(CORBA::SystemException);
-        char* item()
-        	throw(CORBA::SystemException);
-        
-        //
-        // IDL:auction/Seller/minimum:1.0
-        //
-        void minimum(CORBA::Long param)
-        	throw(CORBA::SystemException);
-        CORBA::Long minimum()
-        	throw(CORBA::SystemException);
-        
-        //
         // IDL:auction/Seller/amount:1.0
         //
         void amount(CORBA::Long param)
@@ -87,6 +71,15 @@ namespace auction
         	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION SellerSessionImpl
+      Components::Thread_var seller_thread;
+		Components::Mutex_var  seller_mutex;
+		Components::Cond_var   seller_cond;
+      bool stopped;
+		CORBA::Long            seller_amount;
+	public:
+		static void* run(void*);
+		void stop();
+		void do_sell(const char*, unsigned long);
 // END USER INSERT SECTION SellerSessionImpl
 
     };

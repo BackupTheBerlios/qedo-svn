@@ -18,6 +18,24 @@
 
 
 // BEGIN USER INSERT SECTION file_post
+#include <list>
+
+namespace auction
+{
+	class ItemEntry {
+		public:
+		ItemEntry();
+		ItemEntry(const ItemEntry&);
+		~ItemEntry();
+		const ItemEntry& operator=(const ItemEntry&);
+		char* item;
+		CORBA::Long minimum;
+		CORBA::Long contract;
+		auction::SellerForAuctioneer_var seller;
+	};
+
+	typedef std::list<ItemEntry> item_list_t;
+};
 // END USER INSERT SECTION file_post
 
 
@@ -77,6 +95,28 @@ namespace auction
         
     
 // BEGIN USER INSERT SECTION AuctioneerSessionImpl
+	private:	  
+        Components::Mutex_var item_list_mutex;
+        Components::Mutex_var current_item_mutex;
+		  Components::Cond_var current_item_cond;
+        item_list_t item_list;
+		  ItemEntry current_item;
+        Components::Thread_var auctioneer_thread;
+		  ::auction::BidderForAuctioneer_var current_bidder;
+		  CORBA::Long current_price;
+		  CORBA::Long contracts;
+        bool stopped;
+		  int count;
+		  unsigned long time;
+		  bool have_current_item;
+
+		  void call_out_item();
+		  void sell_item();
+		  void get_new_item();
+	public:
+		static void* run(void*);
+		void stop();
+		void timeout();
 // END USER INSERT SECTION AuctioneerSessionImpl
 
     };

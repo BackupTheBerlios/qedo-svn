@@ -13,12 +13,65 @@ namespace auction {
 
 
 // BEGIN USER INSERT SECTION SellerSessionImpl
+void*
+SellerSessionImpl::run(void *p)
+{
+	SellerSessionImpl* impl;
+
+	impl = static_cast<SellerSessionImpl*>(p);
+
+	std::string item;
+	unsigned long minimum;
+
+	while (! impl->stopped)
+	{
+		std::cout << "Yout have " << impl->seller_amount << " money" << std::endl;
+		std::cout << "Give a item for sell" << std::endl;
+		std::cout << "Item name:" ;
+		std::cin >> item;
+		if (impl->stopped) break;
+		std::cout << "Item minimum price:" ;
+		std::cin >> minimum;
+		if (impl->stopped) break;
+		impl->do_sell(item.c_str(),minimum);
+		impl->seller_mutex->lock();
+		impl->seller_cond->wait(impl->seller_mutex);
+		impl->seller_mutex->unlock();
+	};
+
+	return 0;
+}
+
+void
+SellerSessionImpl::stop()
+{
+	stopped = true;
+	seller_thread->join();
+}
+
+void
+SellerSessionImpl::do_sell(const char* item, unsigned long minimum)
+{
+	CORBA::Object_ptr obj;
+	auction::SellerForAuctioneer_var me;
+	CORBA::Long contract;
+
+	obj = context_->get_CCM_object();
+
+	me = auction::SellerForAuctioneer::_narrow(obj);
+
+	contract = context_->get_connection_from_auctioneer()->sell(me,item,minimum);
+
+	std::cout << "Got contract " << contract << " for item '" << item << "'" << std::endl;
+}
 // END USER INSERT SECTION SellerSessionImpl
 
 
 SellerSessionImpl::SellerSessionImpl()
 {
 // BEGIN USER INSERT SECTION SellerSessionImpl::SellerSessionImpl
+	stopped = false;
+	seller_amount = 0;
 // END USER INSERT SECTION SellerSessionImpl::SellerSessionImpl
 }
 
@@ -44,6 +97,9 @@ SellerSessionImpl::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION SellerSessionImpl::configuration_complete
+	seller_mutex = context_->create_mutex();
+	seller_cond = context_->create_cond();
+	seller_thread = context_->start_thread(run,this);
 // END USER INSERT SECTION SellerSessionImpl::configuration_complete
 }
 
@@ -58,46 +114,11 @@ SellerSessionImpl::remove()
 
 
 void
-SellerSessionImpl::item(const char* param)
-	throw(CORBA::SystemException)
-{
-// BEGIN USER INSERT SECTION SellerSessionImpl::_item
-// END USER INSERT SECTION SellerSessionImpl::_item
-}
-
-
-char*
-SellerSessionImpl::item()
-	throw(CORBA::SystemException)
-{
-// BEGIN USER INSERT SECTION SellerSessionImpl::item
-// END USER INSERT SECTION SellerSessionImpl::item
-}
-
-
-void
-SellerSessionImpl::minimum(CORBA::Long param)
-	throw(CORBA::SystemException)
-{
-// BEGIN USER INSERT SECTION SellerSessionImpl::_minimum
-// END USER INSERT SECTION SellerSessionImpl::_minimum
-}
-
-
-CORBA::Long
-SellerSessionImpl::minimum()
-	throw(CORBA::SystemException)
-{
-// BEGIN USER INSERT SECTION SellerSessionImpl::minimum
-// END USER INSERT SECTION SellerSessionImpl::minimum
-}
-
-
-void
 SellerSessionImpl::amount(CORBA::Long param)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION SellerSessionImpl::_amount
+	seller_amount = param;
 // END USER INSERT SECTION SellerSessionImpl::_amount
 }
 
@@ -107,6 +128,7 @@ SellerSessionImpl::amount()
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION SellerSessionImpl::amount
+	return seller_amount;
 // END USER INSERT SECTION SellerSessionImpl::amount
 }
 
@@ -116,6 +138,9 @@ SellerSessionImpl::pay(CORBA::Long cnt, CORBA::Long amount)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION SellerSessionImpl::pay
+	std::cout << "Got payment " << amount << "for contract " << cnt << std::endl;
+	seller_amount = seller_amount + amount;
+	seller_cond->signal();
 // END USER INSERT SECTION SellerSessionImpl::pay
 }
 
@@ -146,10 +171,6 @@ SellerImpl::obtain_executor(const char* name)
     throw (CORBA::SystemException)
 {
     if (! strcmp ( name, "component" ) ) {
-        return Components::EnterpriseComponent::_duplicate (component_);
-    }
-    
-    else if (! strcmp (name, "for_auctioneer")) {
         return Components::EnterpriseComponent::_duplicate (component_);
     }
     
@@ -221,6 +242,8 @@ SellerImpl::ccm_remove()
     throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION SellerImpl::ccm_remove
+	std::cout << "SellerImpl: ccm_remove() called" << std::endl;
+	component_->stop();
 // END USER INSERT SECTION SellerImpl::ccm_remove
 }
 

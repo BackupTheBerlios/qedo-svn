@@ -13,12 +13,59 @@ namespace auction {
 
 
 // BEGIN USER INSERT SECTION BidderSessionImpl
+void*
+BidderSessionImpl::run(void *p)
+{
+	BidderSessionImpl* impl;
+
+	impl = static_cast<BidderSessionImpl*>(p);
+
+	unsigned long my_price;
+
+	while (! impl->stopped)
+	{
+		std::cout << "Your bid is: " << std::endl;
+		std::cin >> my_price;
+		if ( impl->stopped ) break;
+		impl->do_bid(my_price);
+	}
+
+	return 0;
+}
+
+void
+BidderSessionImpl::stop()
+{
+	stopped = true;
+	bidder_thread->join();
+}
+
+void
+BidderSessionImpl::do_bid(unsigned long price)
+{
+	CORBA::Object_ptr obj;
+	auction::BidderForAuctioneer_var me;
+
+	obj = context_->get_CCM_object();
+
+	me = auction::BidderForAuctioneer::_narrow(obj);
+
+	auction::Bid *bid = new auction::BidImpl;
+	bid->price(price);
+	bid->bidder(me);
+
+	context_->push_my_bid(bid);
+
+	std::cout << "Do a bid for " << bidder_item << " with price " << price << std::endl;
+}
 // END USER INSERT SECTION BidderSessionImpl
 
 
 BidderSessionImpl::BidderSessionImpl()
 {
 // BEGIN USER INSERT SECTION BidderSessionImpl::BidderSessionImpl
+	stopped = false;
+	bidder_amount = 0;
 // END USER INSERT SECTION BidderSessionImpl::BidderSessionImpl
 }
 
@@ -62,6 +109,7 @@ BidderSessionImpl::amount(CORBA::Long param)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION BidderSessionImpl::_amount
+	bidder_amount = param;
 // END USER INSERT SECTION BidderSessionImpl::_amount
 }
 
@@ -71,6 +119,7 @@ BidderSessionImpl::amount()
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION BidderSessionImpl::amount
+	return bidder_amount;
 // END USER INSERT SECTION BidderSessionImpl::amount
 }
 
@@ -80,6 +129,7 @@ BidderSessionImpl::item(const char* param)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION BidderSessionImpl::_item
+	bidder_item = param;
 // END USER INSERT SECTION BidderSessionImpl::_item
 }
 
@@ -89,6 +139,7 @@ BidderSessionImpl::item()
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION BidderSessionImpl::item
+	return const_cast<char*>(bidder_item.c_str());
 // END USER INSERT SECTION BidderSessionImpl::item
 }
 
@@ -98,6 +149,7 @@ BidderSessionImpl::sold(CORBA::Long amount)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION BidderSessionImpl::sold
+	bidder_amount = bidder_amount - amount;
 // END USER INSERT SECTION BidderSessionImpl::sold
 }
 
@@ -116,6 +168,9 @@ BidderSessionImpl::push_GiveBid(::auction::GiveBid* ev)
     throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION BidderSessionImpl::push_GiveBid
+	bidder_item = ev->item();
+	bidder_current_price = ev->current_bid();
+	std::cout << "Bid for " << ev->item() << " price is " << ev->current_bid() << std::endl;
 // END USER INSERT SECTION BidderSessionImpl::push_GiveBid
 }
 
@@ -146,10 +201,6 @@ BidderImpl::obtain_executor(const char* name)
     throw (CORBA::SystemException)
 {
     if (! strcmp ( name, "component" ) ) {
-        return Components::EnterpriseComponent::_duplicate (component_);
-    }
-    
-    else if (! strcmp (name, "for_auctioneer")) {
         return Components::EnterpriseComponent::_duplicate (component_);
     }
     
