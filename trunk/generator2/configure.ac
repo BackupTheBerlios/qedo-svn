@@ -37,7 +37,7 @@ fi
 
 # Checks for libraries.
 
-AC_CHECK_LIB([uuiid], [uuid_generate],,[uuid=no])
+AC_CHECK_LIB([uuid], [uuid_generate],,[uuid=no])
 
 if test X"$uuid" == Xno; then
   AC_MSG_ERROR([cannot find library uuid])
