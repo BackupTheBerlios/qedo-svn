@@ -20,4 +20,4 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#define QEDO_VERSION "0.5.1"
+#define QEDO_VERSION "0.6.0"

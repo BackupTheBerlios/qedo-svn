@@ -38,7 +38,7 @@
 #include "config.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.37 2004/03/11 16:22:40 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.38 2004/03/25 16:41:05 tom Exp $";
 
 
 namespace Qedo {
@@ -818,19 +818,18 @@ void* startFunc(void* p) {
 
 	delete t;
 #ifndef _QEDO_NO_QOS
-	int dummy = 0;
-	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
-	CORBA::Object_var obj = orb->resolve_initial_references ("PICurrent");
-	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
-	try
-	{
-		if (slot_content)
+	if (slot_content) {
+	    int dummy = 0;
+	    CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+	    CORBA::Object_var obj = orb->resolve_initial_references ("PICurrent");
+	    PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
+	    try {
+		if (slot_content) {
+		    piCurrent->set_slot (slot_id, *slot_content);		}
+		} catch (PortableInterceptor::InvalidSlot&)
 		{
-			piCurrent->set_slot (slot_id, *slot_content);
+			//ignore it
 		}
-	} catch (PortableInterceptor::InvalidSlot&)
-	{
-		//ignore it
 	}
 
 #endif
@@ -849,6 +848,8 @@ qedo_startDetachedThread(void* (*p)(void*), void* arg) {
 	startParams->a = arg;
 	QedoThread * thread = new QedoThread();
 	startParams->d = thread->delegate_;
+	startParams->slot_id = 0;
+	startParams->slot_content = 0;
 
 #ifdef QEDO_WINTHREAD
 	thread->delegate_->th_handle_ = CreateThread(NULL,
