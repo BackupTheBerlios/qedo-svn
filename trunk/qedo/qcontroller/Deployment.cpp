@@ -25,7 +25,7 @@
 #include "wx/stattext.h"
 #include "wx/statline.h"
 #include "wx/log.h"
-#include "wx/datetime.h"
+#include "wx/DateTime.h"
 
 //#include "MainFrame.h"
 
@@ -244,11 +244,14 @@ void Deployment::OnUndeployButton(wxCommandEvent& WXUNUSED(event))
 
 	if(s_s>0)
 	{
+		
 		for (int i=0;i<s_s;i++) 
 		{
 			wxTreeItemId itemid = selected_[i];
-			r_assemblies assemblie=getAssembly(itemid);
-			undeploy_assembly(assemblie);
+			if (assemblie_list_->GetItemText(itemid)!="Running assemblies") 
+			{
+				r_assemblies assemblie=getAssembly(itemid);
+				undeploy_assembly(assemblie);
 			
 			/*
 			if (isInstance(itemid)) {
@@ -288,6 +291,7 @@ void Deployment::OnUndeployButton(wxCommandEvent& WXUNUSED(event))
 				undeploy_assembly(assemblie);
 			}
 			*/
+			}
 		}
 
 	}
