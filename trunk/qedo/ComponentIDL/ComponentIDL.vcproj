@@ -401,6 +401,12 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
+				RelativePath="CORBADepends.cpp">
+			</File>
+			<File
+				RelativePath="CORBADepends_skel.cpp">
+			</File>
+			<File
 				RelativePath=".\ComponentIDL.def">
 			</File>
 			<File
@@ -420,6 +426,12 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
+				RelativePath="CORBADepends.h">
+			</File>
+			<File
+				RelativePath="CORBADepends_skel.h">
+			</File>
+			<File
 				RelativePath=".\Components.h">
 			</File>
 			<File
@@ -430,6 +442,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="QedoComponents_skel.h">
+			</File>
+			<File
+				RelativePath="qedo_orbacus.h">
+			</File>
+			<File
+				RelativePath="qedo_orbacus_skel.h">
 			</File>
 		</Filter>
 		<Filter
