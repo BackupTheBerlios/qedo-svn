@@ -32,7 +32,7 @@ module CORBA {
 
 #include <orb.idl>
 
-#if TAO_ORB
+#ifdef TAO_ORB
 #include "PortableServer.pidl"
 #ifndef TAO_CIDL_GEN
 #include "IFR_Basic.pidl"
@@ -54,6 +54,27 @@ module CORBA {
 #include "poa.idl"
 #include "qedo_mico.idl"
 #endif
+
+#ifdef OMNIORB_ORB
+#include "ir.idl"
+#include "poa.idl"
+#endif
+
+#ifdef OPENORB_ORB
+#include "PortableServer.idl"
+#endif
+
+#ifdef IIOPNET_ORB
+#pragma prefix "omg.org"
+module CORBA {
+    interface IRObject {};
+    typedef sequence<octet> OctetSeq;
+    typedef string RepositoryId;
+};
+pragma prefix ""
+module PortableServer {
+    typedef sequence<octet> ObjectId;
+};
 
 #pragma prefix "omg.org"
 
