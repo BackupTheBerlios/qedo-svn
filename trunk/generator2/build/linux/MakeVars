@@ -8,11 +8,12 @@ QEDO = /home/ritter/test/qedo
 ORB = MICO_ORB
 
 # MICO
+# MICO's root dir
 MICO = /opt/mico/
 
 # ORBACUS
+#ORBACUs's root dir
 ORBACUS = /opt/OOC
-ORBACUS_CONFIG=/home/tri/devel/ini/orbacus.ini
 
 
 ##### DEBUG #####
@@ -23,12 +24,12 @@ Debug = yes
 ##### Front end Tools #####
 
 # YACC
-# the only supported version is 1.33
+# the only supported version is 1.33 at the moment
 # e.g YACC = /opt/bison/bin/bison
 YACC = bison
 
 # kimwitu
-# set the executable kimwitu compiler
+# set the executable kimwitu++ compiler
 # e.g. KC = /opt/kimwitu++-2.3.4/kc++
 KC = /home/ritter/devel/kimwitu++-2.3.4/kc++
 
