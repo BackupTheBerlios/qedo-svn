@@ -867,7 +867,7 @@ throw ( CannotMapType )
 		break;
 	case CORBA::tk_string:
 	case CORBA::tk_wstring:
-		ret_string = "VARCHAR(254)";
+		ret_string = "VARCHAR(512)";
 		break;
 	case CORBA::tk_boolean:
 		ret_string = "BOOLEAN";

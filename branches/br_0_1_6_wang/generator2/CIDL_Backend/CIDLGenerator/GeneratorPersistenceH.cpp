@@ -316,7 +316,7 @@ GeneratorPersistenceH::genMemberVariable(IR__::ComponentDef_ptr component)
 		out << attribute_name << "_;\n";
 	}
 	
-	// add uses, emits or publishes
+	// add uses, consumes
 	for( CORBA::ULong cnt=0; cnt<vPorts_.size(); cnt++ )
 		out << "std::string " << vPorts_[cnt] << "_;\n";
 
@@ -1181,7 +1181,7 @@ GeneratorPersistenceH::genComponentPersistence(IR__::ComponentDef_ptr component,
 	bAbstract_ = false;
 	handleAttribute(component);
 
-	// check whether component has uses, emits or publishes
+	// check whether component has uses, consumes
 	CORBA::ULong cnt = 0;
 	cout << "\n";
 
@@ -1192,25 +1192,18 @@ GeneratorPersistenceH::genComponentPersistence(IR__::ComponentDef_ptr component,
 		vPorts_.push_back(a_uses->name());
 	}
 	
-	contained_seq = component->contents(CORBA__::dk_Emits, false);
+	contained_seq = component->contents(CORBA__::dk_Consumes, false);
 	for( cnt = 0; cnt < contained_seq->length(); cnt++ )
 	{
-		IR__::EmitsDef_var a_emits = IR__::EmitsDef::_narrow(((*contained_seq)[cnt]));
-		vPorts_.push_back(a_emits->name());
-	}
-
-	contained_seq = component->contents(CORBA__::dk_Publishes, false);
-	for( cnt = 0; cnt < contained_seq->length(); cnt++ )
-	{
-		IR__::PublishesDef_var a_publishes = IR__::PublishesDef::_narrow(((*contained_seq)[cnt]));
-		vPorts_.push_back(a_publishes->name());
+		IR__::ConsumesDef_var a_consumes = IR__::ConsumesDef::_narrow(((*contained_seq)[cnt]));
+		vPorts_.push_back(a_consumes->name());
 	}
 	
-	// add uses, emits or publishes
+	// add uses, consumes
 	for( cnt=0; cnt<vPorts_.size(); cnt++ )
 	{
 		out << "\nconst char* " << vPorts_[cnt] << "() const;\n";
-		out << "void " <<  vPorts_[cnt] << "(const char* param);\n\n";
+		out << "void " <<  vPorts_[cnt] << "(char* param);\n\n";
 	}
 
 	out << "void write_state();\n";

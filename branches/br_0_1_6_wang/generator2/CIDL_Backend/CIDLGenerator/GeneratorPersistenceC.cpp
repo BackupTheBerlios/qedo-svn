@@ -1026,8 +1026,8 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	out << "throw CosPersistentState::NotFound();\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "unsigned char* szPid = new unsigned char[254];\n";
-	out << "memset(szPid, \'\\0\', 254);\n";
+	out << "unsigned char* szPid = new unsigned char[512];\n";
+	out << "memset(szPid, \'\\0\', 512);\n";
 	out << "GetFieldValue(0, szPid);\n";
 	out << "Close();\n\n";
 	out << "std::string strPid = \"\";\n";
@@ -2026,8 +2026,8 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 			out << "throw CosPersistentState::NotFound();\n";
 			out.unindent();
 			out << "}\n\n";
-			out << "unsigned char* szSpid = new unsigned char[254];\n";
-			out << "memset(szSpid, \'\\0\', 254);\n";
+			out << "unsigned char* szSpid = new unsigned char[512];\n";
+			out << "memset(szSpid, \'\\0\', 512);\n";
 			out << "GetFieldValue(0, szSpid);\n";
 			out << "Close();\n\n";
 			out << "std::string strSpid = \"\";\n";
@@ -2135,7 +2135,7 @@ GeneratorPersistenceC::genComponentPersistence(IR__::HomeDef_ptr home, IR__::Com
 	strClassname_ +=  "Persistence";
 	handleAttribute(component);
 	
-	// check whether component has uses, emits or publishes
+	// check whether component has uses, consumes
 	CORBA::ULong cnt = 0;
 	std::vector<std::string> vPorts;
 	cout << "\n";
@@ -2147,21 +2147,14 @@ GeneratorPersistenceC::genComponentPersistence(IR__::HomeDef_ptr home, IR__::Com
 		vPorts.push_back(a_uses->name());
 	}
 	
-	contained_seq = component->contents(CORBA__::dk_Emits, false);
+	contained_seq = component->contents(CORBA__::dk_Consumes, false);
 	for( cnt = 0; cnt < contained_seq->length(); cnt++ )
 	{
-		IR__::EmitsDef_var a_emits = IR__::EmitsDef::_narrow(((*contained_seq)[cnt]));
-		vPorts.push_back(a_emits->name());
-	}
-
-	contained_seq = component->contents(CORBA__::dk_Publishes, false);
-	for( cnt = 0; cnt < contained_seq->length(); cnt++ )
-	{
-		IR__::PublishesDef_var a_publishes = IR__::PublishesDef::_narrow(((*contained_seq)[cnt]));
-		vPorts.push_back(a_publishes->name());
+		IR__::ConsumesDef_var a_consumes = IR__::ConsumesDef::_narrow(((*contained_seq)[cnt]));
+		vPorts.push_back(a_consumes->name());
 	}
 	
-	// add uses, emits or publishes
+	// add uses, consumes
 	for( cnt=0; cnt<vPorts.size(); cnt++ )
 	{
 		out << "const char*\n";
@@ -2173,7 +2166,7 @@ GeneratorPersistenceC::genComponentPersistence(IR__::HomeDef_ptr home, IR__::Com
 		out << "}\n\n";
 
 		out << "void\n";
-		out << strClassname_ << "::" << vPorts[cnt] << "(const char* param)\n";
+		out << strClassname_ << "::" << vPorts[cnt] << "(char* param)\n";
 		out << "{\n";
 		out.indent();
 		out << vPorts[cnt] << "_ = param;\n";
@@ -2198,6 +2191,20 @@ GeneratorPersistenceC::genComponentPersistence(IR__::HomeDef_ptr home, IR__::Com
 	strContent_ += home->name();
 	strContent_ += "Persistence SET";
 	out << genSQLLine(strName_, strContent_, true, false, true);
+
+	for( cnt = 0; cnt < vPorts.size(); cnt++ )
+	{
+		strContent_ = vPorts[cnt];
+		strContent_ += " = ";
+		out << genSQLLine(strName_, strContent_, false, false, false);
+		strContent_ = "\\'";
+		out << genSQLLine(strContent_, false, false, false);
+		strContent_ =  vPorts[cnt];
+		strContent_ += "_";
+		out << genSQLLine(strContent_, false, false, false, true);
+		strContent_ = "\\'";
+		out << genSQLLine(strContent_, true, ( ((cnt+1)!=vPorts.size()) && ulLen>0 ), true);
+	}
 
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
@@ -2333,6 +2340,13 @@ GeneratorPersistenceC::genComponentPersistence(IR__::HomeDef_ptr home, IR__::Com
 	out << "colIter = valueMap.find(\"spid\");\n";
 	out << "colIter->second >>= szTemp;\n";
 	out << "set_short_pid(szTemp);\n\n";
+
+	for( cnt = 0; cnt < vPorts.size(); cnt++ )
+	{
+		out << "colIter = valueMap.find(\"" << vPorts[cnt] << "\");\n";
+		out << "colIter->second >>= szTemp;\n";
+		out << vPorts[cnt] << "(szTemp);\n\n";
+	}
 
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
@@ -2849,8 +2863,8 @@ GeneratorPersistenceC::genFinder(IR__::FinderDef_ptr key, IR__::HomeDef_ptr home
 	out << "throw CosPersistentState::NotFound();\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "unsigned char* szSpid = new unsigned char[254];\n";
-	out << "memset(szSpid, \'\\0\', 254);\n";
+	out << "unsigned char* szSpid = new unsigned char[512];\n";
+	out << "memset(szSpid, \'\\0\', 512);\n";
 	out << "GetFieldValue(0, szSpid);\n";
 	out << "Close();\n\n";
 	out << "std::string strSpid = \"\";\n";
@@ -3198,8 +3212,8 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	out << "throw CosPersistentState::NotFound();\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "unsigned char* szSpid = new unsigned char[254];\n";
-	out << "memset(szSpid, \'\\0\', 254);\n";
+	out << "unsigned char* szSpid = new unsigned char[512];\n";
+	out << "memset(szSpid, \'\\0\', 512);\n";
 	out << "GetFieldValue(0, szSpid);\n";
 	out << "Close();\n\n";
 	out << "std::string strSpid = \"\";\n";
