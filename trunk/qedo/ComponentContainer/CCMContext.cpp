@@ -30,7 +30,7 @@
 #include "ComponentServerImpl.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.23 2004/02/16 14:26:54 tom Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.24 2004/02/25 10:39:14 neubauer Exp $";
 
 
 namespace Qedo {
@@ -268,7 +268,7 @@ CCMContext::start_thread( Components::Function func, Components::FunctionData da
 		thread = new Thread_impl(qedo_startDetachedThread(func, data));
 	}
 #else
-	Thread_impl* thread = new Thread_impl(qedo_startDetachedThread(func, data));
+	thread = new Thread_impl(qedo_startDetachedThread(func, data));
 #endif
 	return thread;
 
