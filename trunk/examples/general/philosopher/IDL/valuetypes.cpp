@@ -139,5 +139,13 @@ namespace dinner {
     }
     
     
+    PhilosopherStateFactoryImpl::~PhilosopherStateFactoryImpl()
+    {
+        int dummy = 0;
+        CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+        orb->unregister_value_factory ("IDL:dinner/PhilosopherState:1.0");
+    }
+    
+    
     static PhilosopherStateFactoryImpl PhilosopherStateFactory_instance;
 };
