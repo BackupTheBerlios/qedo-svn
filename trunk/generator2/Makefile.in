@@ -18,7 +18,8 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 
-include MakeVars
+prefix=@prefix@
+exec_prefix=@exec_prefix@
 
 SUBDIRS = CIDL_Repository/IFRidl \
      CIDL_Repository/ComponentRepositoryLib \
@@ -27,6 +28,8 @@ SUBDIRS = CIDL_Repository/IFRidl \
      CIDL_Backend/CIDLGenerator 
 
 all: $(SUBDIRS:%=%-all)
+
+clean: $(SUBDIRS:%=%-clean)
 
 %-all: %
 	make -C $< all
@@ -43,3 +46,5 @@ install: all install-dir $(SUBDIRS:%=%-install)
 %-install: %
 	make -C $< install
 
+%-clean: %
+	make -C $< clean
