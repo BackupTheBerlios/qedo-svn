@@ -151,14 +151,16 @@
 			<Tool
 				Name="VCCustomBuildTool"
 				Description="Distribution:"
-				CommandLine="..\distributeQedo.bat $(OutDir)
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+..\distributeQedo.bat $(OutDir)
 "
-				Outputs="$(QEDO\lib\ComponentContainer.lib"/>
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="jtcd.lib obd.lib odbc32.lib odbccp32.lib"
-				OutputFile="$(QEDO)/bin/ComponentContainer.dll"
+				OutputFile="$(OutDir)/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
@@ -203,10 +205,10 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
-				PrecompiledHeaderFile=".\Debug/ComponentContainer.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				PrecompiledHeaderFile=".\Debug_mico/ComponentContainer.pch"
+				AssemblerListingLocation=".\Debug_mico/"
+				ObjectFile=".\Debug_mico/"
+				ProgramDataBaseFileName=".\Debug_mico/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -214,14 +216,16 @@
 			<Tool
 				Name="VCCustomBuildTool"
 				Description="Distribution:"
-				CommandLine="..\distributeQedo.bat $(OutDir)
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+..\distributeQedo.bat $(OutDir)
 "
-				Outputs="$(QEDO\lib\ComponentContainer.lib"/>
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="mico239.lib odbc32.lib odbccp32.lib"
-				OutputFile="$(QEDO)/bin/ComponentContainer.dll"
+				OutputFile="$(OutDir)/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib"

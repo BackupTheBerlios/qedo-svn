@@ -156,16 +156,20 @@
 				DebugInformationFormat="4"
 				CompileAs="0"/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="obd.lib odbc32.lib odbccp32.lib"
-				OutputFile="$(QEDO)/bin/ComponentIDL.dll"
+				OutputFile="$(OutDir)/ComponentIDL.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
-				ModuleDefinitionFile=".\ComponentIDL.def"
+				ModuleDefinitionFile="$(OutDir)/ComponentIDL.def"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug_orbacus/ComponentIDL.pdb"
 				ImportLibrary=".\Debug_orbacus/ComponentIDL.lib"/>
@@ -183,7 +187,8 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Creating DEF file for ComponentIDL.dll"
-				CommandLine="perl  makedef.pl ComponentIDL.def Debug_orbacus/ComponentIDL.dll Debug_orbacus/*.obj"/>
+				CommandLine="perl  makedef.pl Debug_orbacus/ComponentIDL.def Debug_orbacus/ComponentIDL.dll Debug_orbacus/*.obj
+"/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -219,16 +224,21 @@
 				DebugInformationFormat="4"
 				CompileAs="0"/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib mico239.lib"
-				OutputFile="$(QEDO)/bin/ComponentIDL.dll"
+				OutputFile="$(OutDir)/ComponentIDL.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib"
-				ModuleDefinitionFile=".\ComponentIDL.def"
+				ModuleDefinitionFile="$(OutDir)/ComponentIDL.def"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug_mico/ComponentIDL.pdb"
 				ImportLibrary=".\Debug_mico/ComponentIDL.lib"/>
@@ -246,7 +256,8 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Creating DEF file for ComponentIDL.dll"
-				CommandLine="perl  makedef.pl ComponentIDL.def Debug_mico/ComponentIDL.dll Debug_mico/*.obj"/>
+				CommandLine="perl  makedef.pl Debug_mico/ComponentIDL.def Debug_mico/ComponentIDL.dll Debug_mico/*.obj
+"/>
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
