@@ -1,0 +1,60 @@
+#include "Components.idl"
+
+module Chat {
+
+	//
+	// This interface is used at the chat client to 
+	// ask for an input 
+	//
+	
+	interface ClientControl {
+		void request_and_push_message();
+	};
+	
+	//
+	// this is a chat message event
+	// this event is used to transmit a chaat message
+	//
+	
+	eventtype ChatMessage {
+		public string message;
+	};
+	
+	//
+	// this component represents a writer
+	// it provides a Client Control interface
+	// it emits events to one Channel component
+	//
+		
+	component ChatWriter {
+		provides ClientControl control;
+		emits ChatMessage to_channel;
+	};
+	
+	
+	home ChatWriterHome manages ChatWriter {};
+	
+	//
+	// this is the channel componentn
+	// it consumes events and publishes events
+	//
+	
+	component ChatChannel {
+		consumes ChatMessage from_writer;
+		publishes ChatMessage to_reader;
+	};
+	
+	home ChatChannelHome manages ChatChannel {};
+	
+	//
+	// this is a ChatReader
+	// it consumes ChatMessages
+	//
+	
+	component ChatReader {
+		consumes ChatMessage from_channel;
+	};
+	
+	home ChatReaderHome manages ChatReader {};
+	
+}; // Chat
