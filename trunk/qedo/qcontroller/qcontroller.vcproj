@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;../ComponentIDL;../qedoutil;c:\opt\wxWindows\include;C:\opt\wxWindows\lib\mswdlld;$(MICO)/include;$(XERCES)/include"
+				AdditionalIncludeDirectories=".\;../ComponentIDL;../qedoutil;c:\opt\wxWindows\include;C:\opt\wxWindows\lib\mswdlld;$(MICO)/include;$(XERCES)/include;&quot;$(ZLIB)&quot;"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_CONSOLE;_WINDOWS,WINVER=0x400,_MT;,wxUSE_GUI=1,__WXDEBUG__,WXDEBUG=1,WXUSINGDLL"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
