@@ -27,7 +27,7 @@
 #include <signal.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.15 2003/08/06 11:40:06 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.16 2003/08/07 14:22:31 stoinski Exp $";
 
 namespace Qedo {
 
@@ -71,7 +71,10 @@ void
 qedo_mutex::qedo_lock_object() {
 
 #ifdef QEDO_WINTHREAD
-	WaitForSingleObject(delegate->m_mutex, INFINITE);
+	if (WaitForSingleObject(delegate->m_mutex, INFINITE) != WAIT_OBJECT_0)
+	{
+		std::cerr << "##### qedo_mutex::qedo_lock_object() error: " << GetLastError() << std::endl;
+	}
 #else
 	pthread_mutex_lock(&(delegate->m_mutex));
 #endif
@@ -82,7 +85,10 @@ void
 qedo_mutex::qedo_unlock_object() {
 
 #ifdef QEDO_WINTHREAD
-	ReleaseMutex(delegate->m_mutex);
+	if (! ReleaseMutex(delegate->m_mutex))
+	{
+		std::cerr << "##### qedo_mutex::qedo_unlock_object() error: " << GetLastError() << std::endl;
+	}
 #else
 	pthread_mutex_unlock(&(delegate->m_mutex));
 #endif
@@ -144,7 +150,10 @@ qedo_cond::qedo_wait(const qedo_mutex& m) {
 
 #ifdef QEDO_WINTHREAD
 	const_cast<qedo_mutex* const>(&m)->qedo_unlock_object();
-	WaitForMultipleObjects(1, &(delegate->m_event_handle), TRUE, INFINITE /*wait for ever*/);
+	if (WaitForMultipleObjects(1, &(delegate->m_event_handle), TRUE, INFINITE /*wait for ever*/) == WAIT_FAILED)
+	{
+		std::cerr << "##### qedo_cond::qedo_wait() error: " << GetLastError() << std::endl;
+	}
 	const_cast<qedo_mutex* const>(&m)->qedo_lock_object();
 #else
 	pthread_cond_wait(&(delegate->m_cond),&(m.delegate->m_mutex));
@@ -156,7 +165,10 @@ qedo_cond::qedo_wait(const qedo_mutex* m) {
 
 #ifdef QEDO_WINTHREAD
 	const_cast<qedo_mutex* const>(m)->qedo_unlock_object();
-	WaitForMultipleObjects(1, &(delegate->m_event_handle), TRUE, INFINITE /*wait for ever*/);
+	if (WaitForMultipleObjects(1, &(delegate->m_event_handle), TRUE, INFINITE /*wait for ever*/) == WAIT_FAILED)
+	{
+		std::cerr << "##### qedo_cond::qedo_wait() error: " << GetLastError() << std::endl;
+	}
 	const_cast<qedo_mutex* const>(m)->qedo_lock_object();
 #else
 	pthread_cond_wait(&(delegate->m_cond),&(m->delegate->m_mutex));
@@ -168,7 +180,10 @@ void
 qedo_cond::qedo_signal() {
 
 #ifdef QEDO_WINTHREAD
-	SetEvent(delegate->m_event_handle);
+	if (! SetEvent(delegate->m_event_handle))
+	{
+		std::cerr << "##### qedo_cond::qedo_signal() error: " << GetLastError() << std::endl;
+	}
 #else
 	pthread_cond_signal(&(delegate->m_cond));
 #endif
