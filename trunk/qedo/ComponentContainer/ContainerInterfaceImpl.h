@@ -140,7 +140,7 @@ public:
 
 
 /** the container type */
-enum ContainerType {CT_EMPTY, CT_SERVICE, CT_SESSION, CT_PROCESS, CT_ENTITY};
+enum ContainerType {CT_EMPTY, CT_SERVICE, CT_SESSION, CT_PROCESS, CT_ENTITY, CT_EXTENSION};
 
 
 class ComponentServerImpl;

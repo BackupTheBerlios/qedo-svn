@@ -25,6 +25,9 @@
 #include "ConfigurationReader.h"
 #include "EntityHomeServant.h"
 #include "SessionHomeServant.h"
+#ifndef _QEDO_NO_QOS
+#include "ExtensionHomeServant.h"
+#endif
 #include "Output.h"
 #ifdef _WIN32
 #include <windows.h>
@@ -33,7 +36,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.48 2003/10/30 17:24:13 stoinski Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.49 2003/11/04 10:12:50 tom Exp $";
 
 
 namespace Qedo {
@@ -631,7 +634,7 @@ throw (Components::Deployment::UnknownImplId,
 
 		if (! session_home)
 		{
-			NORMAL_ERR ("ContainerInterfaceImpl: Container type is service or session, but loaded home servant is not a Qedo::SessionHomeServant");
+			NORMAL_ERR ("ContainerInterfaceImpl: Container type is incompatible. Loaded home servant is not a Qedo::SessionHomeServant");
 			throw Components::Deployment::InstallationFailure();
 		}
 		break;
@@ -643,10 +646,22 @@ throw (Components::Deployment::UnknownImplId,
 
 		if (! entity_home)
 		{
-			NORMAL_ERR ("ContainerInterfaceImpl: Container type is process or entity, but loaded home servant is not a Qedo::EntityHomeServant");
+			NORMAL_ERR ("ContainerInterfaceImpl: Container type is incompatible. Loaded home servant is not a Qedo::EntityHomeServant");
 			throw Components::Deployment::InstallationFailure();
 		}
 		break;
+	case CT_EXTENSION:
+		Qedo::ExtensionHomeServant* extension_home;
+
+		extension_home = dynamic_cast <Qedo::ExtensionHomeServant*> (qedo_home_servant);
+
+		if (! extension_home)
+		{
+			NORMAL_ERR ("ContainerInterfaceImpl: Container type is incompatible. Loaded home servant is not a Qedo::ExtensionHomeServant");
+			throw Components::Deployment::InstallationFailure();
+		}
+		break;
+
 	default:
 		NORMAL_ERR ("ContainerInterfaceImpl: Container type is unknown");
 		throw Components::Deployment::InstallationFailure();
