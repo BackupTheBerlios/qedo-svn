@@ -27,6 +27,7 @@
 #include <limits.h>
 #include <sys/types.h>
 #define PATH_SEPARATOR "/"
+#include <sys/param.h>
 #endif
 
 #ifndef _MAX_PATH
