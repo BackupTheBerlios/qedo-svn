@@ -705,6 +705,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		out.unindent();
 		out << "}\n\n\n";
 
+		//get_primary_key(...)???
+
 		break;
 	default :
 		out << "// not supported lifecycle\n";

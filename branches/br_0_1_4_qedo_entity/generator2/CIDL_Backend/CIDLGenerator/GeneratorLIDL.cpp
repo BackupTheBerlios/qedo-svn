@@ -380,6 +380,8 @@ GeneratorLIDL::doHome(IR__::HomeDef_ptr home)
 		
 		out.unindent();
 		out << "};\n\n";
+
+		//get_primary_key(...)???
 	}
 	else
 	{

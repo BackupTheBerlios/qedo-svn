@@ -587,6 +587,9 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 
 		out << "void remove(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n"; 
 		out << "	throw(CORBA::SystemException, Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
+
+		//get_primary_key(...)???
+
 		break;
 	default :
 		out << "// not supported lifecycle\n";
