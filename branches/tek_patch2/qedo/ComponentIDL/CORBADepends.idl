@@ -24,7 +24,7 @@
 #define __CORBA_DEPENDS_IDL__
 
 
-#ifdef MICO_CIDL_GEN 
+#ifdef MICO_CIDL_GEN
 module CORBA {
 	typedef sequence<octet> Principal;
 };
@@ -67,13 +67,14 @@ module CORBA {
 #ifdef IIOPNET_ORB
 #pragma prefix "omg.org"
 module CORBA {
-    interface IRObject {};
-    typedef sequence<octet> OctetSeq;
-    typedef string RepositoryId;
+	interface IRObject {};
+	typedef sequence<octet> OctetSeq;
+	typedef string RepositoryId;
 };
-pragma prefix ""
+
+#pragma prefix ""
 module PortableServer {
-    typedef sequence<octet> ObjectId;
+	typedef sequence<octet> ObjectId;
 };
 #endif
 
