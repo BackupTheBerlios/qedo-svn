@@ -21,7 +21,7 @@
 CXX = @CXX@
 INCLUDES+=-I. -I../ComponentIDL -I../ComponentContainer \
 	$(NAMING_INCLUDES) @CPPFLAGS@ 
-CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@ @XERCES_INCLUDE@
+CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@ @XERCES_INCLUDES@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS=@LIBS@
 
@@ -34,8 +34,8 @@ LIBS += -L../ComponentIDL -lComponentIDL \
         -luuid
 
 SOURCES = CADReader.cpp \
-     	CatalogResolver.cpp \
-     	CCDReader.cpp \
+	CatalogResolver.cpp \
+	CCDReader.cpp \
 	CPFReader.cpp \
 	CSDReader.cpp \
 	DOMTreeErrorReporter.cpp \
