@@ -22,9 +22,9 @@
 
 #include "ServerInterceptorDispatcher.h"
 #include "Util.h"
-#include "fstream"
+#include <fstream>
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.2 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.3 2003/10/05 18:53:00 tom Exp $";
 
 namespace Qedo {
 
