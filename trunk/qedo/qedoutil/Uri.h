@@ -83,6 +83,9 @@
 Revision history:
 
 $Log: Uri.h,v $
+Revision 1.4  2003/10/22 06:13:33  tom
+fix of the fix
+
 Revision 1.3  2003/10/21 16:11:49  tom
 adaptation for confog file in MICO version
 
@@ -860,19 +863,19 @@ stringT URI_< charT, stringT >::getFragment() const {
 }
 
 template< class charT, class stringT >
-URI_< charT, stringT >::SchemeT URI_< charT, stringT >::getSchemeT() const { 
-  return mRep->mSchemeT; 
+typename URI_< charT, stringT >::SchemeT URI_< charT, stringT >::getSchemeT() const { 
+  return mRep->mSchemeT;
 }
 
 
 template< class charT, class stringT >
-const charT * const 
-typename URI_< charT, stringT >::SCHEME_CONST[ URI_< charT, stringT >::SCHEME_NUM ] = {
+const charT * const
+URI_< charT, stringT >::SCHEME_CONST[ URI_< charT, stringT >::SCHEME_NUM ] = {
   "file", "http", "https", "ftp"
 };
 
 template< class charT, class stringT >
-const charT * const 
+const charT * const
 URI_< charT, stringT >::DEFAULT_PORT[ URI_< charT, stringT >::SCHEME_NUM ] = { 
   "0", "80", "443", "21"
 };
