@@ -162,7 +162,7 @@ qedo_startDetachedThread(void* (*p)(void*), void* arg) {
 	startParams->p = p;
 	startParams->a = arg;
 
-#ifdef WIN32
+#ifdef _WIN32
 	HANDLE th_handle;
 	DWORD th_id;
 	th_handle = CreateThread(NULL,
@@ -179,5 +179,30 @@ qedo_startDetachedThread(void* (*p)(void*), void* arg) {
 	pthread_create(&t, &detached_attr, startFunc, startParams);
 #endif
 }
+
+
+CORBA::Long
+interlocked_increment (CORBA::Long* l)
+{
+#ifdef _WIN32
+	return InterlockedIncrement (l);
+#else
+	// Here the qedo::mutex must be added
+	return ++(*l);
+#endif
+}
+
+
+CORBA::Long
+interlocked_decrement (CORBA::Long* l)
+{
+#ifdef _WIN32
+	return InterlockedDecrement (l);
+#else
+	// Here the qedo::mutex must be added
+	return --(*l);
+#endif
+}
+
 
 } // end namespace Qedo

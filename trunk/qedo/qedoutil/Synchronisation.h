@@ -24,7 +24,7 @@
 #define __THREADS_H__
 
 
-#ifdef WIN32
+#ifdef _WIN32
 #ifndef TAO_ORB
 #include <windows.h>
 #endif
@@ -60,7 +60,7 @@ class CONTAINERDLL_API qedo_mutex {
 private:
 
 	/** the mutex */
-#ifdef WIN32
+#ifdef _WIN32
 	HANDLE m_mutex;
 #else
 	pthread_mutex_t m_mutex;
@@ -126,7 +126,7 @@ class CONTAINERDLL_API qedo_cond
 
 private:
 	/// bla
-#ifdef WIN32
+#ifdef _WIN32
 	HANDLE m_event_handle;
 
 #else
@@ -169,7 +169,7 @@ public:
 /**
  * add comment!
  */
-#ifdef WIN32
+#ifdef _WIN32
 DWORD WINAPI startFunc(LPVOID p);
 #else
 extern "C" void* startFunc(void* p);
@@ -187,6 +187,21 @@ struct t_start {
 	void* (*p)(void*);
 	void* a;
 };
+
+
+/**
+ * thread safe incrementation
+ */
+CORBA::Long
+CONTAINERDLL_API interlocked_increment (CORBA::Long* l);
+
+
+/**
+ * thread safe decrementation
+ */
+CORBA::Long
+CONTAINERDLL_API interlocked_decrement (CORBA::Long* l);
+
 
 /** @} */
 

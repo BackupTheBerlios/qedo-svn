@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: RefCountBase.cpp,v 1.5 2003/05/26 13:37:05 stoinski Exp $";
+static char rcsid[] = "$Id: RefCountBase.cpp,v 1.6 2003/05/27 08:34:48 neubauer Exp $";
 
 #include "Output.h"
 #include "RefCountBase.h"
@@ -52,28 +52,15 @@ RefCountBase::~RefCountBase()
 void
 RefCountBase::_add_ref()
 {
-#ifdef WIN32
-	InterlockedIncrement (&ref_count_);
-#else
-	// Here the qedo::mutex must be added
-	++ref_count_;
-#endif
+	interlocked_increment (&ref_count_);
 }
 
 
 void
 RefCountBase::_remove_ref()
 {
-#ifdef WIN32
-	if (InterlockedDecrement (&ref_count_) == 0)
+	if (interlocked_decrement (&ref_count_) == 0)
 		delete this;
-#else
-	// Here the qedo::mutex must be added
-	if (--ref_count_ == 0)
-	{
-		delete this;
-	}
-#endif
 }
 
 
@@ -105,28 +92,15 @@ RefCountLocalObject::~RefCountLocalObject()
 void
 RefCountLocalObject::_add_ref()
 {
-#ifdef WIN32
-	InterlockedIncrement (&ref_count_);
-#else
-	// Here the qedo::mutex must be added
-	++ref_count_;
-#endif
+	interlocked_increment (&ref_count_);
 }
 
 
 void
 RefCountLocalObject::_remove_ref()
 {
-#ifdef WIN32
-	if (InterlockedDecrement (&ref_count_) == 0)
+	if (interlocked_decrement (&ref_count_) == 0)
 		delete this;
-#else
-	// Here the qedo::mutex must be added
-	if (--ref_count_ == 0)
-	{
-		delete this;
-	}
-#endif
 }
 
 
