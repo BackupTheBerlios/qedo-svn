@@ -29,6 +29,7 @@
 #include "wx/stattext.h"
 #include "wx/menu.h"
 #include "wx/log.h"
+#include "wx/textctrl.h"
 
 
 #include "icon1.xpm"
@@ -67,7 +68,7 @@ NSBrowserTreeCtrl::NSBrowserTreeCtrl(wxWindow *parent, const wxWindowID id,
 
 	wxStaticBox *mesbox = new wxStaticBox(parent, -1, _T("&NSBrowser Message:"));
 	wxStaticBoxSizer *mes_sizer = new wxStaticBoxSizer(mesbox,wxVERTICAL);
-    
+
 	left_sizer->Add(mes_sizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
 
 	message_nsbrowser = new wxTextCtrl( parent, ID_HOSTNAME_NSD, _T("Name Service Message"), wxDefaultPosition, wxSize(400,130),wxTE_MULTILINE);
@@ -301,7 +302,7 @@ void NSBrowserTreeCtrl::OnItem(wxMouseEvent& event)
 
 }
 
-wxString NSBrowserTreeCtrl::getNSPath(wxTreeItemId& item)
+wxString NSBrowserTreeCtrl::getNSPath(wxTreeItemId item)
 {
 	wxString tmp;
 	if (item!=this->GetRootItem())

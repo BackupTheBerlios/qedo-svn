@@ -79,7 +79,7 @@ private:
 		wxTextCtrl* message_nsbrowser;
 		wxTextCtrl* host_nsbrowser;
 		wxTextCtrl* port_nsbrowser;
-		wxString getNSPath(wxTreeItemId& item);
+		wxString getNSPath(wxTreeItemId item);
 		void ior(wxString path);
 		void delete_entry(wxString path);
 		CosNaming::Name getNameContext(wxString path);
