@@ -196,6 +196,9 @@
 				RelativePath="SessionHomeServant.cpp">
 			</File>
 			<File
+				RelativePath="Synchronisation.cpp">
+			</File>
+			<File
 				RelativePath="Valuetypes.cpp">
 			</File>
 		</Filter>
@@ -267,6 +270,9 @@
 			</File>
 			<File
 				RelativePath="SessionHomeServant.h">
+			</File>
+			<File
+				RelativePath="Synchronisation.h">
 			</File>
 			<File
 				RelativePath=".\Util.h">
