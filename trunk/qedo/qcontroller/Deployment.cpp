@@ -37,7 +37,7 @@ BEGIN_EVENT_TABLE(Deployment, wxPanel)
    EVT_BUTTON(ID_FILE_CHOICE_BUTTON, Deployment::OnFileChoiseButton)
    EVT_BUTTON(ID_UNDEPLOY_BUTTON, Deployment::OnUndeployButton)
    EVT_BUTTON(ID_DESCRIPT_BUTTON, Deployment::OnDecriptButton)
-   EVT_BUTTON(ID_INSTANCE_BUTTON, Deployment::OnInstanceButton)
+  // EVT_BUTTON(ID_INSTANCE_BUTTON, Deployment::OnInstanceButton)
  
 END_EVENT_TABLE()
 
@@ -110,17 +110,17 @@ Deployment::Deployment(wxWindow *parent, const wxWindowID id,
 	rootId = assemblie_list_->AddRoot(wxT("Running assemblies"),
                                   -1 , -1 , NULL);
 
-	wxButton* instance_btn = new wxButton( this, ID_INSTANCE_BUTTON, _T("Start new instance"), wxDefaultPosition, wxSize(120,25), 0 );
-    button_sizer->Add(instance_btn, 0, wxALIGN_LEFT|wxALL, 5);
+	//wxButton* instance_btn = new wxButton( this, ID_INSTANCE_BUTTON, _T("Start new instance"), wxDefaultPosition, wxSize(120,25), 0 );
+    //button_sizer->Add(instance_btn, 0, wxALIGN_LEFT|wxALL, 5);
 
 	//spacer
-	button_sizer->Add(5, 15, 0, wxGROW | wxALL, 5);
+	//button_sizer->Add(5, 15, 0, wxGROW | wxALL, 5);
 
 	wxButton* undeploy_btn = new wxButton( this, ID_UNDEPLOY_BUTTON, _T("Undeploy"), wxDefaultPosition, wxSize(120,25), 0 );
     button_sizer->Add(undeploy_btn, 0, wxALIGN_LEFT|wxALL, 5);
 
 
-	assemblies_counter_=0;
+	//assemblies_counter_=0;
 
 
 	
@@ -213,7 +213,8 @@ Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
 		// update running assemblies list
 		//running_ass_list->InsertItem(assemblies_counter_,package.c_str());
 		//assemblies_counter_++;
-		
+		assemblie_list_->Refresh();
+		assemblie_list_->Expand(rootId);
 	}
 	catch(Qedo::ComponentDeployment::DeploymentFailure&)
 	{
@@ -247,6 +248,9 @@ void Deployment::OnUndeployButton(wxCommandEvent& WXUNUSED(event))
 		{
 			wxTreeItemId itemid = selected_[i];
 			r_assemblies assemblie=getAssembly(itemid);
+			undeploy_assembly(assemblie);
+			
+			/*
 			if (isInstance(itemid)) {
 				std::vector <instanceinfo> iinfo=assemblie.instanceinfo_list;
 				
@@ -258,15 +262,7 @@ void Deployment::OnUndeployButton(wxCommandEvent& WXUNUSED(event))
 					wxBusyCursor wait_for_undeployment;
 					current_assembly->undeploy();
 					std::vector <instanceinfo> list=deleteItem(assemblie.instanceinfo_list,itemid);
-					if (list.size()==1) {
-						wxLogMessage("1");
-					}
-					if (list.size()==2) {
-						wxLogMessage("2");
-					}
-					if (list.size()==3) {
-						wxLogMessage("3");
-					}
+					
 					assemblie.instanceinfo_list=list;
 					
 					assemblie_list_->Delete(itemid);
@@ -289,9 +285,9 @@ void Deployment::OnUndeployButton(wxCommandEvent& WXUNUSED(event))
 				}
 
 			} else {
-
+				undeploy_assembly(assemblie);
 			}
-			
+			*/
 		}
 
 	}
@@ -299,7 +295,7 @@ void Deployment::OnUndeployButton(wxCommandEvent& WXUNUSED(event))
 			
 	
 }
-
+/*
 bool Deployment::isInstance(wxTreeItemId itemid)
 {
 	bool retrn=true;
@@ -311,7 +307,9 @@ bool Deployment::isInstance(wxTreeItemId itemid)
 
 	return retrn;
 }
+*/
 
+/*
 Qedo::ComponentDeployment 
 	*Deployment::GetSelectedInstance
 	(std::vector <instanceinfo> iinfo,wxTreeItemId itemid)
@@ -330,25 +328,19 @@ Qedo::ComponentDeployment
 
 	return retrn;
 }
+*/
+
+/*
 std::vector <Deployment::instanceinfo> Deployment::deleteItem(std::vector<Deployment::instanceinfo> iinfo,wxTreeItemId itemid)
 {
 	std::vector<instanceinfo> ::iterator i_iter;
 	std::vector<instanceinfo> ::iterator i_iter_two;
-	if (iinfo.size()==0) {
-		wxLogMessage("DI:0");
-	}
-	if (iinfo.size()==1) {
-		wxLogMessage("DI:1");
-	}
-	if (iinfo.size()==2) {
-		wxLogMessage("DI:2");
-	}
-
+	
 	for(i_iter = iinfo.begin(); 
 		i_iter != iinfo.end();
 		i_iter++)
 		{	
-			wxLogMessage(assemblie_list_->GetItemText((*i_iter).itemid));
+			
 			if ((*i_iter).itemid==itemid)
 			{
 				i_iter_two=i_iter;
@@ -357,16 +349,11 @@ std::vector <Deployment::instanceinfo> Deployment::deleteItem(std::vector<Deploy
 		}
 		
 	iinfo.erase(i_iter_two);
-	if (iinfo.size()==0) {
-		wxLogMessage("DI:0:N");
-	}
-	if (iinfo.size()==1) {
-		wxLogMessage("DI:1:N");
-	}
+	
 	return iinfo;
 
 }
-
+*/
 void Deployment::delete_assemblie(wxTreeItemId itemid)
 {
 	std::vector<r_assemblies>::iterator a_iter;
@@ -405,6 +392,7 @@ void Deployment::OnDecriptButton (wxCommandEvent& WXUNUSED(event))
 
 }
 
+/*
 void Deployment::OnInstanceButton (wxCommandEvent& WXUNUSED(event))
 {
 	wxArrayTreeItemIds selected_;
@@ -483,6 +471,7 @@ void Deployment::OnInstanceButton (wxCommandEvent& WXUNUSED(event))
 
 	}
 }
+*/
 
 
 Deployment::r_assemblies Deployment::getAssembly(wxTreeItemId itemid)
@@ -509,4 +498,27 @@ Deployment::r_assemblies Deployment::getAssembly_by_Instance(wxTreeItemId itemid
 	return getAssembly(parent);
 }
 
+void Deployment::undeploy_assembly(r_assemblies assemblie)
+{
+	try
+	{
+		std::vector<instanceinfo>::iterator i_iter;
+		i_iter=assemblie.instanceinfo_list.begin();
+		instanceinfo i = (*i_iter);
+		i.reference->undeploy();
+		assemblie_list_->Delete(assemblie.itemid);
+		delete_assemblie(assemblie.itemid);
+		assemblie_list_->Refresh();
+	}
+	catch(Qedo::ComponentDeployment::DeploymentFailure&)
+	{
+		wxLogMessage ("Cannot undeploy ") ;
+	}
+	catch(CORBA::SystemException&)
+	{
+		wxLogMessage ("Cannot undeploy ") ;
+	}
+
+	
+}
 

@@ -29,7 +29,10 @@
 #include "wx/textctrl.h"
 #include "wx/listctrl.h"
 #include "wx/filedlg.h"
-#include "DescriptorFrame.h"
+#include "wx/textctrl.h"
+
+#include "descriptorframe.h"
+
 #include "ComponentDeployment.h"
 
 class Deployment : public wxPanel
@@ -83,10 +86,11 @@ private:
 	r_assemblies getAssembly(wxTreeItemId itemid);
 	r_assemblies getAssembly_by_Instance(wxTreeItemId itemid);
 	
-	Qedo::ComponentDeployment *GetSelectedInstance (std::vector<instanceinfo> iinfo,wxTreeItemId itemid);
-	bool isInstance(wxTreeItemId itemid);
-	std::vector<instanceinfo> deleteItem(std::vector<instanceinfo> iinfo,wxTreeItemId itemid);
+	//Qedo::ComponentDeployment *GetSelectedInstance (std::vector<instanceinfo> iinfo,wxTreeItemId itemid);
+	//bool isInstance(wxTreeItemId itemid);
+	//std::vector<instanceinfo> deleteItem(std::vector<instanceinfo> iinfo,wxTreeItemId itemid);
 	void delete_assemblie(wxTreeItemId itemid);
+	void undeploy_assembly(r_assemblies assemblie);
 
 	// erase function
 
@@ -96,4 +100,3 @@ private:
 
 };
 #endif
-
