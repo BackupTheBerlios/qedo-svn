@@ -205,7 +205,7 @@ QCexplorerTreeCtrl::build_tree()
 					HomeInstanceInfoList hiil=cii.my_homes;
 
 					CORBA::ULong a = 0;
-					for (a = 1; a < hiil.length(); a++) 
+					for (a = 0; a < hiil.length(); a++) 
 					{
 						HomeInstanceInfo hii=hiil[a];
 						wxString str;
