@@ -1,27 +1,27 @@
 # Microsoft Developer Studio Project File - Name="ComponentContainer" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=ComponentContainer - Win32 Debug_mico
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "ComponentContainer.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "ComponentContainer.mak" CFG="ComponentContainer - Win32 Debug_mico"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ComponentContainer - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ComponentContainer - Win32 Debug_orbacus" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ComponentContainer - Win32 Debug_tao" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ComponentContainer - Win32 Release_orbacus" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ComponentContainer - Win32 Debug_mico" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ComponentContainer - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ComponentContainer - Win32 Debug_orbacus" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ComponentContainer - Win32 Debug_tao" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ComponentContainer - Win32 Release_orbacus" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "ComponentContainer - Win32 Debug_mico" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -233,6 +233,10 @@ SOURCE=.\FacetPort.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\GetComponentHelperServant.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\GlobalHelpers.cpp
 # End Source File
 # Begin Source File
@@ -330,6 +334,10 @@ SOURCE=.\EntityHomeServant.h
 # Begin Source File
 
 SOURCE=.\FacetPort.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\GetComponentHelperServant.h
 # End Source File
 # Begin Source File
 

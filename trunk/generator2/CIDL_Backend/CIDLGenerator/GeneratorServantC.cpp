@@ -1738,7 +1738,7 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 	// supported interfaces
 	//
 	IR__::InterfaceDefSeq_var supp_intfs = home -> supported_interfaces();
-	for(CORBA::ULong i = 0; i < supp_intfs->length(); i++) {
+	for(i = 0; i < supp_intfs->length(); i++) {
 		// Attribute of supported interface
 		contained_seq = (*supp_intfs)[i]->contents(CORBA__::dk_Attribute, false);
 		CORBA::ULong len = contained_seq->length();
