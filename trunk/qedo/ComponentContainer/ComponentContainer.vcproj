@@ -136,7 +136,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentValuetypes;../ComponentServer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
-				PreprocessorDefinitions="ORBACUS_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS"
+				PreprocessorDefinitions="ORBACUS_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
