@@ -31,7 +31,7 @@
 #include "wx/filedlg.h"
 #include "wx/textctrl.h"
 
-#include "descriptorframe.h"
+#include "DescriptorFrame.h"
 
 #include "ComponentDeployment.h"
 
