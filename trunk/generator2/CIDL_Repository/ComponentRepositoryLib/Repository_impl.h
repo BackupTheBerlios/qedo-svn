@@ -26,7 +26,8 @@
 #ifndef __REPOSITORY_IMPL_H__
 #define __REPOSITORY_IMPL_H__
 
-#include <CORBA.h>
+#pragma warning( disable : 4290 )
+
 #include "IFR_skel.h"
 #include "Contained_impl.h"
 #include "Container_impl.h"

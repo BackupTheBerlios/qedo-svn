@@ -29,6 +29,8 @@
 #include <CORBA.h>
 #include "IFR_skel.h"
 
+#pragma warning( disable : 4290 )
+
 namespace QEDO_ComponentRepository {
 
 class Repository_impl;
