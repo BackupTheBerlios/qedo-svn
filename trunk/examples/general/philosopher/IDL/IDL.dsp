@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
-CFG=IDL - Win32 Debug
+CFG=IDL - Win32 Debug_tao
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,12 +13,14 @@ CFG=IDL - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "IDL.mak" CFG="IDL - Win32 Debug"
+!MESSAGE NMAKE /f "IDL.mak" CFG="IDL - Win32 Debug_tao"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "IDL - Win32 Release" (based on "Win32 (x86) Static Library")
 !MESSAGE "IDL - Win32 Debug" (based on "Win32 (x86) Static Library")
+!MESSAGE "IDL - Win32 Debug_orbacus" (based on "Win32 (x86) Static Library")
+!MESSAGE "IDL - Win32 Debug_tao" (based on "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
@@ -74,12 +76,60 @@ LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo /out:"./IDL.lib"
 
+!ELSEIF  "$(CFG)" == "IDL - Win32 Debug_orbacus"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "IDL___Win32_Debug_orbacus"
+# PROP BASE Intermediate_Dir "IDL___Win32_Debug_orbacus"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "IDL___Win32_Debug_orbacus"
+# PROP Intermediate_Dir "IDL___Win32_Debug_orbacus"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(QEDO)\ComponentIDL" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(QEDO)\ComponentIDL" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
+# ADD BASE RSC /l 0x407 /d "_DEBUG"
+# ADD RSC /l 0x407 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo /out:"./IDL.lib"
+# ADD LIB32 /nologo /out:"./IDL.lib"
+
+!ELSEIF  "$(CFG)" == "IDL - Win32 Debug_tao"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "IDL___Win32_Debug_tao"
+# PROP BASE Intermediate_Dir "IDL___Win32_Debug_tao"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "IDL___Win32_Debug_tao"
+# PROP Intermediate_Dir "IDL___Win32_Debug_tao"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(QEDO)\ComponentIDL" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(QEDO)\ComponentIDL" /I "$(TAO)\TAO" /I "$(TAO)" /I "$(TAO)\tao\tao\PortableServer" /I "$(TAO)\tao\tao\IFR_Client" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
+# ADD BASE RSC /l 0x407 /d "_DEBUG"
+# ADD RSC /l 0x407 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo /out:"./IDL.lib"
+# ADD LIB32 /nologo /out:"./IDL.lib"
+
 !ENDIF 
 
 # Begin Target
 
 # Name "IDL - Win32 Release"
 # Name "IDL - Win32 Debug"
+# Name "IDL - Win32 Debug_orbacus"
+# Name "IDL - Win32 Debug_tao"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -168,6 +218,52 @@ BuildCmds= \
    $(BuildCmds)
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "IDL - Win32 Debug_orbacus"
+
+# Begin Custom Build
+InputPath=.\philosophers.cidl
+
+BuildCmds= \
+	$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32  -DORBACUS_ORB  --business --servant --target dinner philosophers.cidl \
+	time /T > last_build_time \
+	
+
+"last_build_time" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_LOCAL.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_EQUIVALENT.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_BUSINESS.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "IDL - Win32 Debug_tao"
+
+# Begin Custom Build
+InputPath=.\philosophers.cidl
+
+BuildCmds= \
+	$(QEDO)\bin\cidl_gen -DTAO_CIDL_GEN -I%QEDO%\ComponentIDL   -I%TAO%\TAO\tao  -I%TAO%\TAO\tao\PortableServer -I%TAO%\TAO\tao\IFR_Client -DWIN32 -DTAO_ORB --business --servant --target dinner philosophers.cidl \
+	time /T > last_build_time \
+	
+
+"last_build_time" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_LOCAL.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_EQUIVALENT.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_BUSINESS.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -188,6 +284,48 @@ InputPath=.\dinner_BUSINESS.idl
 
 BuildCmds= \
 	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 -DORBACUS_ORB  dinner_BUSINESS.idl
+
+"dinner_BUSINESS.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_BUSINESS.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_BUSINESS_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_BUSINESS_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "IDL - Win32 Debug_orbacus"
+
+# Begin Custom Build
+InputPath=.\dinner_BUSINESS.idl
+
+BuildCmds= \
+	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 -DORBACUS_ORB  dinner_BUSINESS.idl
+
+"dinner_BUSINESS.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_BUSINESS.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_BUSINESS_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_BUSINESS_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "IDL - Win32 Debug_tao"
+
+# Begin Custom Build
+InputPath=.\dinner_BUSINESS.idl
+
+BuildCmds= \
+	$(TAO)\bin\tao_idl -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp  -DTAO_ORB  -I$(TAO)/tao -I$(TAO)/tao/tao  -I$(TAO)/tao/tao/PortableServer -I$(TAO)/tao/tao/IFR_Client -DWIN32  -I../../../Container2/ComponentIDL -I$(QEDO)\ComponentIDL -DWIN32  dinner_BUSINESS.idl
 
 "dinner_BUSINESS.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)
@@ -232,6 +370,48 @@ BuildCmds= \
    $(BuildCmds)
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "IDL - Win32 Debug_orbacus"
+
+# Begin Custom Build
+InputPath=.\dinner_EQUIVALENT.idl
+
+BuildCmds= \
+	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 -DORBACUS_ORB  dinner_EQUIVALENT.idl
+
+"dinner_EQUIVALENT.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_EQUIVALENT.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_EQUIVALENT_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_EQUIVALENT_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "IDL - Win32 Debug_tao"
+
+# Begin Custom Build
+InputPath=.\dinner_EQUIVALENT.idl
+
+BuildCmds= \
+	$(TAO)\bin\tao_idl -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp  -DTAO_ORB  -I$(TAO)/tao -I$(TAO)/tao/tao  -I$(TAO)/tao/tao/PortableServer -I$(TAO)/tao/tao/IFR_Client -DWIN32  -I../../../Container2/ComponentIDL -I$(QEDO)\ComponentIDL -DWIN32 dinner_EQUIVALENT.idl
+
+"dinner_EQUIVALENT.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_EQUIVALENT.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_EQUIVALENT_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_EQUIVALENT_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
 !ENDIF 
 
 # End Source File
@@ -248,6 +428,48 @@ InputPath=.\dinner_LOCAL.idl
 
 BuildCmds= \
 	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 -DORBACUS_ORB  dinner_LOCAL.idl
+
+"dinner_LOCAL.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_LOCAL.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_LOCAL_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_LOCAL_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "IDL - Win32 Debug_orbacus"
+
+# Begin Custom Build
+InputPath=.\dinner_LOCAL.idl
+
+BuildCmds= \
+	$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 -DORBACUS_ORB  dinner_LOCAL.idl
+
+"dinner_LOCAL.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_LOCAL.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_LOCAL_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"dinner_LOCAL_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "IDL - Win32 Debug_tao"
+
+# Begin Custom Build
+InputPath=.\dinner_LOCAL.idl
+
+BuildCmds= \
+	$(TAO)\bin\tao_idl -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp  -DTAO_ORB  -I$(TAO)/tao -I$(TAO)/tao/tao  -I$(TAO)/tao/tao/PortableServer -I$(TAO)/tao/tao/IFR_Client -DWIN32  -I../../../Container2/ComponentIDL -I$(QEDO)\ComponentIDL -DWIN32  dinner_LOCAL.idl
 
 "dinner_LOCAL.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
    $(BuildCmds)

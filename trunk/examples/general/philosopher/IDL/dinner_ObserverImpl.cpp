@@ -294,7 +294,7 @@ create_ObserverHomeE(void)
 	int dummy = 0;
 	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
 
-	CORBA::ValueFactoryBase_var oldFact;
+	CORBA::ValueFactoryBase* oldFact;
 	oldFact = orb->register_value_factory ("IDL:dinner/PhilosopherState:1.0", new dinner::PhilosopherStateFactory_impl() );
 // END USER INSERT SECTION create_ObserverHome
 

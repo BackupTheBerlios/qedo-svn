@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
-CFG=TestClient - Win32 Debug
+CFG=TestClient - Win32 Debug_tao
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,12 +13,14 @@ CFG=TestClient - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "TestClient.mak" CFG="TestClient - Win32 Debug"
+!MESSAGE NMAKE /f "TestClient.mak" CFG="TestClient - Win32 Debug_tao"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "TestClient - Win32 Release" (based on "Win32 (x86) Console Application")
 !MESSAGE "TestClient - Win32 Debug" (based on "Win32 (x86) Console Application")
+!MESSAGE "TestClient - Win32 Debug_orbacus" (based on "Win32 (x86) Console Application")
+!MESSAGE "TestClient - Win32 Debug_tao" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -75,12 +77,64 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 ComponentIDL.lib CosNamingd.lib obd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../../../Runtime/tc.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib" /libpath:"$(QEDO)/ComponentIDL/Debug_orbacus_vc6/"
 
+!ELSEIF  "$(CFG)" == "TestClient - Win32 Debug_orbacus"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "TestClient___Win32_Debug_orbacus"
+# PROP BASE Intermediate_Dir "TestClient___Win32_Debug_orbacus"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "TestClient___Win32_Debug_orbacus"
+# PROP Intermediate_Dir "TestClient___Win32_Debug_orbacus"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../IDL" /I "$(QEDO)/ComponentIDL" /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "VC6" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../IDL" /I "$(QEDO)/ComponentIDL" /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "VC6" /YX /FD /GZ /c
+# ADD BASE RSC /l 0x407 /d "_DEBUG"
+# ADD RSC /l 0x407 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 ComponentIDL.lib CosNamingd.lib obd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../../../Runtime/tc.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib" /libpath:"$(QEDO)/ComponentIDL/Debug_orbacus_vc6/"
+# ADD LINK32 ComponentIDL.lib CosNamingd.lib obd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../../../Runtime/tc.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib" /libpath:"$(QEDO)/ComponentIDL/Debug_orbacus_vc6/"
+
+!ELSEIF  "$(CFG)" == "TestClient - Win32 Debug_tao"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "TestClient___Win32_Debug_tao"
+# PROP BASE Intermediate_Dir "TestClient___Win32_Debug_tao"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "TestClient___Win32_Debug_tao"
+# PROP Intermediate_Dir "TestClient___Win32_Debug_tao"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../IDL" /I "$(QEDO)/ComponentIDL" /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "VC6" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../IDL" /I "$(QEDO)/ComponentIDL" /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "VC6" /YX /FD /GZ /c
+# ADD BASE RSC /l 0x407 /d "_DEBUG"
+# ADD RSC /l 0x407 /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 ComponentIDL.lib CosNamingd.lib obd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../../../Runtime/tc.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib" /libpath:"$(QEDO)/ComponentIDL/Debug_orbacus_vc6/"
+# ADD LINK32 ComponentIDL.lib CosNamingd.lib obd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../../../Runtime/tc.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib" /libpath:"$(QEDO)/ComponentIDL/Debug_orbacus_vc6/"
+
 !ENDIF 
 
 # Begin Target
 
 # Name "TestClient - Win32 Release"
 # Name "TestClient - Win32 Debug"
+# Name "TestClient - Win32 Debug_orbacus"
+# Name "TestClient - Win32 Debug_tao"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"

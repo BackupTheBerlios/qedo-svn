@@ -23,7 +23,7 @@
 #ifndef __EXECUTOR_VALUETYPES_H__
 #define __EXECUTOR_VALUETYPES_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include "dinner_EQUIVALENT.h"
 
 namespace dinner {

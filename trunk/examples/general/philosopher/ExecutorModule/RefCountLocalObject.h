@@ -23,7 +23,7 @@
 #ifndef __REFCOUNT_LOCAL_OBJECT_H__
 #define __REFCOUNT_LOCAL_OBJECT_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 
 namespace dinner {
 
