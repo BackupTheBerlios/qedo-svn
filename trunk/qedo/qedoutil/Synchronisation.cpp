@@ -27,7 +27,7 @@
 #include <signal.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.13 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.14 2003/08/05 14:21:50 boehme Exp $";
 
 namespace Qedo {
 
@@ -94,9 +94,13 @@ qedo_lock::qedo_lock(const qedo_mutex* m) {
 	m_mutex->qedo_lock_object();
 }
 
-
 qedo_lock::qedo_lock(qedo_mutex* m) {
 	m_mutex = m;
+	m_mutex->qedo_lock_object();
+}
+
+qedo_lock::qedo_lock(const qedo_mutex& m) {
+	m_mutex = const_cast<qedo_mutex* const>(&m);
 	m_mutex->qedo_lock_object();
 }
 
@@ -106,12 +110,22 @@ qedo_lock::~qedo_lock() {
 }
 
 
+qedo_cond::qedo_cond() {
+	delegate = new cond_delegate;
+#ifdef QEDO_WINTHREAD
+		delegate->m_event_handle = CreateEvent (0, FALSE /*manua-reset*/, FALSE
+		/*initial: non-signaled*/, 0);
+#else
+		pthread_cond_init(&(delegate->m_cond), 0);
+#endif
+}
+
 qedo_cond::qedo_cond(char * sig_name) {
 	delegate = new cond_delegate;
 #ifdef QEDO_WINTHREAD
-		delegate->m_event_handle = CreateEvent (NULL, TRUE /*manua-reset*/, FALSE /*initial: non-signaled*/, sig_name);
+		delegate->m_event_handle = CreateEvent (0, FALSE /*manua-reset*/, FALSE /*initial: non-signaled*/, sig_name);
 #else
-		pthread_cond_init(&(delegate->m_cond), NULL);
+		pthread_cond_init(&(delegate->m_cond), 0);
 #endif
 }
 
@@ -126,16 +140,26 @@ qedo_cond::~qedo_cond() {
 
 
 void
-qedo_cond::qedo_wait() {
+qedo_cond::qedo_wait(const qedo_mutex& m) {
 
 #ifdef QEDO_WINTHREAD
+	m.qedo_unlock_object();
 	WaitForMultipleObjects(1, &(delegate->m_event_handle), TRUE, INFINITE /*wait for ever*/);
+	m.qedo_lock_object();
 #else
-	pthread_mutex_t mut;
-	pthread_mutex_init(&mut, NULL);
-	pthread_mutex_lock(&mut);
-	pthread_cond_wait(&(delegate->m_cond),&mut);
-	pthread_mutex_unlock(&mut);
+	pthread_cond_wait(&(delegate->m_cond),&(m.delegate->m_mutex));
+#endif
+}
+
+void
+qedo_cond::qedo_wait(const qedo_mutex* m) {
+
+#ifdef QEDO_WINTHREAD
+	m.qedo_unlock_object();
+	WaitForMultipleObjects(1, &(delegate->m_event_handle), TRUE, INFINITE /*wait for ever*/);
+	m.qedo_lock_object();
+#else
+	pthread_cond_wait(&(delegate->m_cond),&(m->delegate->m_mutex));
 #endif
 }
 
@@ -149,16 +173,6 @@ qedo_cond::qedo_signal() {
 	pthread_cond_signal(&(delegate->m_cond));
 #endif
 }
-
-
-void
-qedo_cond::qedo_reset() {
-#ifdef QEDO_WINTHREAD
-	ResetEvent(delegate->m_event_handle);
-#else
-#endif
-};
-
 
 
 #ifdef QEDO_WINTHREAD

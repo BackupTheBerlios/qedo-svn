@@ -120,6 +120,12 @@ public:
 	qedo_lock(qedo_mutex* m);
 
 	/**
+	 * constructor
+	 * \param m The qedo mutex.
+	 */
+	qedo_lock(const qedo_mutex& m);
+
+	/**
 	 * destructor
 	 */
 	~qedo_lock();
@@ -157,17 +163,17 @@ public:
 	/**
 	 * wait
 	 */
-	void qedo_wait();
+	void qedo_wait(const qedo_mutex& m);
+
+	/**
+	 * wait
+	 */
+	void qedo_wait(const qedo_mutex* m);
 
 	/**
 	 * insert comments
 	 */
 	void qedo_signal();
-
-	/**
-	 * insert comments
-	 */
-	void qedo_reset();
 };
 
 
