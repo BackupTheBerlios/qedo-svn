@@ -394,8 +394,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << "session_component->set_session_context ("<< mapFullNameLocal(home_->managed_component()) << "_Context::_duplicate(new_context));\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
-	out << "	(\"" << home_->managed_component()->id() << "\", executor_locator,";
-	out << "dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
+	out << "	(executor_locator, dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
 	out << "// use of servant factories\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
 	out << mapFullNameServant(home_->managed_component()) << "::factory);\n\n";
@@ -506,8 +505,7 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << "session_component->set_session_context (" << mapFullNameLocal(home_->managed_component()) << "_Context::_duplicate(new_context));\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
-	out << "	(\"" << home_->managed_component()->id() << "\", executor_locator,";
-	out << "dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
+	out << "	(executor_locator, dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
 	out << "// use of servant factories\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
 	out << mapFullNameServant(home_->managed_component()) << "::factory);\n\n";
@@ -1384,8 +1382,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out << "session_component->set_session_context (" << mapFullNameLocal(home->managed_component()) << "_Context::_duplicate(new_context));\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
-	out << "	(\"" << home->managed_component()->id() << "\", executor_locator,";
-	out << "dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
+	out << "	(executor_locator, dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
 	out << "// use of servant factories\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
 	out << mapFullNameServant(home->managed_component()) << "::factory);\n\n";

@@ -2,6 +2,10 @@
 #include "Debug.h"
 #include <string>
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
 
 namespace QEDO_CIDL_Generator {
 
@@ -26,265 +30,7 @@ GeneratorVC7::generate(std::string target, std::string fileprefix)
 	catch (InitializeError) { return; }
 
 	doGenerate();
-
-	//
-	// build file name for servant project and open file
-	//
-	std::string project_name = file_prefix_ + "_SERVANT";
-	filename_ = project_name + ".vcproj";
-	out.open(filename_.c_str());
-
-	//
-	// print servant project file
-	//
-	out << "<?xml version=\"1.0\" encoding = \"Windows-1252\"?>\n";
-	out << "<VisualStudioProject\n";
-	out.indent();
-	out << "ProjectType=\"Visual C++\"\n";
-	out << "Version=\"7.00\"\n";
-	out << "Name=\"" << project_name << "\"\n";
-	out << "ProjectGUID=\"{" << uid_++ << "}\"\n";
-	out << "Keyword=\"Win32Proj\">\n";
-	//
-	// platforms
-	//
-	out << "<Platforms>\n";
-	out.indent();
-	out << "<Platform\n";
-	out.indent();
-	out << "Name=\"Win32\"/>\n";
-	out.unindent();
-	out.unindent();
-	out << "</Platforms>\n";
-	//
-	// configurations
-	//
-	out << "<Configurations>\n";
-	out.indent();
-	out << "<Configuration\n";
-	out.indent();
-	out << "Name=\"Debug|Win32\"\n";
-	out << "OutputDirectory=\"Debug\"\n";
-	out << "IntermediateDirectory=\"Debug\"\n";
-	out << "ConfigurationType=\"2\"\n";
-	out << "CharacterSet=\"2\">\n";
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCCLCompilerTool\"\n";
-	out << "Optimization=\"0\"\n";
-	out << "AdditionalIncludeDirectories=\".;$(QEDO)/ComponentIDL;$(ORBACUS)/include;$(ORBACUS)/include/OB;$(QEDO)/ComponentContainer\"\n";
-	out << "PreprocessorDefinitions=\"WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS\"\n";
-	out << "MinimalRebuild=\"TRUE\"\n";
-	out << "BasicRuntimeChecks=\"3\"\n";
-	out << "RuntimeLibrary=\"2\"\n";
-	out << "RuntimeTypeInfo=\"TRUE\"\n";
-	out << "UsePrecompiledHeader=\"0\"\n";
-	out << "WarningLevel=\"3\"\n";
-	out << "Detect64BitPortabilityProblems=\"FALSE\"\n";
-	out << "DebugInformationFormat=\"4\"/>\n";
-	out.unindent();
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCCustomBuildTool\"/>\n";
-	out.unindent();
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCLinkerTool\"\n";
-	out << "AdditionalDependencies=\"ComponentContainer.lib ComponentIDL.lib obd.lib jtcd.lib\"\n";
-	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
-	out << "LinkIncremental=\"2\"\n";
-	out << "AdditionalLibraryDirectories=\"$(QEDO)/ComponentContainer/Debug;$(QEDO)/ComponentIDL/Debug;$(ORBACUS)/lib\"\n";
-	out << "GenerateDebugInformation=\"TRUE\"\n";
-	out << "ProgramDatabaseFile=\"$(OutDir)/" << project_name << ".pdb\"\n";
-	out << "SubSystem=\"2\"\n";
-	out << "ImportLibrary=\"$(OutDir)/" << project_name << ".lib\"\n";
-	out << "TargetMachine=\"1\"/>\n";
-	out.unindent();
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCMIDLTool\"/>\n";
-	out.unindent();
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCPostBuildEventTool\"/>\n";
-	out.unindent();
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCPreBuildEventTool\"/>\n";
-	out.unindent();
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCPreLinkEventTool\"/>\n";
-	out.unindent();
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCResourceCompilerTool\"/>\n";
-	out.unindent();
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCWebServiceProxyGeneratorTool\"/>\n";
-	out.unindent();
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCWebDeploymentTool\"/>\n";
-	out.unindent();
-	out.unindent();
-	out << "</Configuration>\n";
-	out.unindent();
-	out << "</Configurations>\n";
-	out << "<Files>\n";
-	out.indent();
-	//
-	// source files
-	//
-	out << "<Filter\n";
-	out.indent();
-	out << "Name=\"Source Files\"\n";
-	out << "Filter=\"cpp;c;cxx;def;odl;idl;hpj;bat;asm\">\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << file_prefix_ << "_SERVANT.cpp\">\n";
-	out.unindent();
-	out << "</File>\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << file_prefix_ << "_EQUIVALENT.cpp\">\n";
-	out.unindent();
-	out << "</File>\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << file_prefix_ << "_EQUIVALENT_skel.cpp\">\n";
-	out.unindent();
-	out << "</File>\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << file_prefix_ << "_LOCAL.cpp\">\n";
-	out.unindent();
-	out << "</File>\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << file_prefix_ << "_LOCAL_skel.cpp\">\n";
-	out.unindent();
-	out << "</File>\n";
-	out.unindent();
-	out << "</Filter>\n";
-	//
-	// header files
-	//
-	out << "<Filter\n";
-	out.indent();
-	out << "Name=\"Header Files\"\n";
-	out << "Filter=\"h;hpp;hxx;hm;inl;inc\">\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << file_prefix_ << "_SERVANT.h\">\n";
-	out.unindent();
-	out << "</File>\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << file_prefix_ << "_EQUIVALENT.h\">\n";
-	out.unindent();
-	out << "</File>\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << file_prefix_ << "_EQUIVALENT_skel.h\">\n";
-	out.unindent();
-	out << "</File>\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << file_prefix_ << "_LOCAL.h\">\n";
-	out.unindent();
-	out << "</File>\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << file_prefix_ << "_LOCAL_skel.h\">\n";
-	out.unindent();
-	out << "</File>\n";
-	out.unindent();
-	out << "</Filter>\n";
-	//
-	// idl files
-	//
-	out << "<Filter\n";
-	out.indent();
-	out << "Name=\"idl\"\n";
-	out << "Filter=\"idl;cidl\">\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << target_file_name_ << "\">\n";
-	out << "<FileConfiguration\n";
-	out.indent();
-	out << "Name=\"Debug|Win32\">\n";
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCCustomBuildTool\"\n";
-	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl ";
-	out << "-I$(ORBACUS)/idl/OB --servant --target " << target_->id() << " " << target_file_name_ << "\"\n";
-	out << "Outputs=\"" << file_prefix_ << "_LOCAL.idl;" << file_prefix_ << "_EQUIVALENT.idl;";
-	out << file_prefix_ << "_BUSINESS.idl\"/>\n";
-	out.unindent();
-	out.unindent();
-	out << "</FileConfiguration>\n";
-	out.unindent();
-	out << "</File>\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << file_prefix_ << "_EQUIVALENT.idl\">\n";
-	out << "<FileConfiguration\n";
-	out.indent();
-	out << "Name=\"Debug|Win32\">\n";
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCCustomBuildTool\"\n";
-	out << "CommandLine=\"$(ORBACUS)\\bin\\idl -DWIN32 -I$(QEDO)\\ComponentIDL -I$(ORBACUS)/idl ";
-	out << "-I$(ORBACUS)/idl/OB " << file_prefix_ << "_EQUIVALENT.idl\"\n";
-	out << "Outputs=\"" << file_prefix_ << "_EQUIVALENT.h;" << file_prefix_ << "_EQUIVALENT.cpp;";
-	out << file_prefix_ << "_EQUIVALENT_skel.h;" << file_prefix_ << "_EQUIVALENT_skel.cpp\"/>\n";
-	out.unindent();
-	out.unindent();
-	out << "</FileConfiguration>\n";
-	out.unindent();
-	out << "</File>\n";
-	out << "<File\n";
-	out.indent();
-	out << "RelativePath=\"" << file_prefix_ << "_LOCAL.idl\">\n";
-	out << "<FileConfiguration\n";
-	out.indent();
-	out << "Name=\"Debug|Win32\">\n";
-	out << "<Tool\n";
-	out.indent();
-	out << "Name=\"VCCustomBuildTool\"\n";
-	out << "CommandLine=\"$(ORBACUS)\\bin\\idl -DWIN32 -I$(QEDO)\\ComponentIDL -I$(ORBACUS)/idl ";
-	out << "-I$(ORBACUS)/idl/OB " << file_prefix_ << "_LOCAL.idl\"\n";
-	out << "Outputs=\"" << file_prefix_ << "_LOCAL.h;" << file_prefix_ << "_LOCAL.cpp;";
-	out << file_prefix_ << "_LOCAL_skel.h;" << file_prefix_ << "_LOCAL_skel.cpp\"/>\n";
-	out.unindent();
-	out.unindent();
-	out << "</FileConfiguration>\n";
-	out.unindent();
-	out << "</File>\n";
-	out.unindent();
-	out << "</Filter>\n";
-	//
-	// resource files
-	//
-	out << "<Filter\n";
-	out.indent();
-	out << "Name=\"Resource Files\"\n";
-	out << "Filter=\"rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe\">\n";
-	out.unindent();
-	out << "</Filter>\n";
-	out.unindent();
-	out << "</Files>\n";
-	out << "<Globals>\n";
-	out << "</Globals>\n";
-	out.unindent();
-	out << "</VisualStudioProject>\n";
-
-	//
-	// close servant file
-	//
-	out.close();
+	generateServant();
 }
 
 
@@ -634,5 +380,548 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 }
 
 
+/**
+ *
+ */
+void
+GeneratorVC7::generateServant()
+{
+	std::string uuid_string = "";
+#ifdef _WIN32
+	// create uuid
+	GUID guid;
+	CoCreateGuid(&guid);
+	LPOLESTR lpolestr;
+	StringFromCLSID(guid, &lpolestr);
+	int i = wcstombs(NULL, lpolestr, 0);
+    char *buf = (char *)malloc(i);
+    wcstombs(buf, lpolestr, i);
+	// remove { and }
+	buf[i - 1] = '\0';
+	uuid_string = buf;
+	uuid_string.erase(0, 1);
+	free(buf);
+	CoTaskMemFree(lpolestr);
+#endif
+
+	//
+	// build file name for servant project and open file
+	//
+	std::string project_name = file_prefix_ + "_SERVANT";
+	filename_ = project_name + ".vcproj";
+	out.open(filename_.c_str());
+
+	//
+	// print servant project file
+	//
+	out << "<?xml version=\"1.0\" encoding = \"Windows-1252\"?>\n";
+	out << "<VisualStudioProject\n";
+	out.indent();
+	out << "ProjectType=\"Visual C++\"\n";
+	out << "Version=\"7.00\"\n";
+	out << "Name=\"" << project_name << "\"\n";
+	out << "ProjectGUID=\"{" << uuid_string << "}\"\n";
+	out << "Keyword=\"Win32Proj\">\n";
+
+	//
+	// platforms
+	//
+	out << "<Platforms>\n";
+	out.indent();
+	out << "<Platform\n";
+	out.indent();
+	out << "Name=\"Win32\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</Platforms>\n";
+
+	//
+	// configurations
+	//
+	out << "<Configurations>\n";
+	out.indent();
+	//
+	// orbacus
+	//
+	out << "<Configuration\n";
+	out.indent();
+	out << "Name=\"Debug_orbacus|Win32\"\n";
+	out << "OutputDirectory=\"Debug_orbacus\"\n";
+	out << "IntermediateDirectory=\"Debug_orbacus\"\n";
+	out << "ConfigurationType=\"2\"\n";
+	out << "CharacterSet=\"2\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCLCompilerTool\"\n";
+	out << "Optimization=\"0\"\n";
+	out << "AdditionalIncludeDirectories=\".;$(QEDO)/ComponentIDL;$(QEDO)/ComponentContainer;$(ORBACUS)/include;$(ORBACUS)/include/OB\"\n";
+	out << "PreprocessorDefinitions=\"WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS\"\n";
+	out << "MinimalRebuild=\"TRUE\"\n";
+	out << "BasicRuntimeChecks=\"3\"\n";
+	out << "RuntimeLibrary=\"2\"\n";
+	out << "RuntimeTypeInfo=\"TRUE\"\n";
+	out << "UsePrecompiledHeader=\"0\"\n";
+	out << "WarningLevel=\"3\"\n";
+	out << "Detect64BitPortabilityProblems=\"FALSE\"\n";
+	out << "DebugInformationFormat=\"4\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCLinkerTool\"\n";
+	out << "AdditionalDependencies=\"ComponentContainer.lib ComponentIDL.lib obd.lib jtcd.lib\"\n";
+	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
+	out << "LinkIncremental=\"2\"\n";
+	out << "AdditionalLibraryDirectories=\"$(QEDO)/ComponentContainer/Debug_orbacus;$(QEDO)/ComponentIDL/Debug_orbacus;$(ORBACUS)/lib\"\n";
+	out << "GenerateDebugInformation=\"TRUE\"\n";
+	out << "ProgramDatabaseFile=\"$(OutDir)/" << project_name << ".pdb\"\n";
+	out << "SubSystem=\"2\"\n";
+	out << "ImportLibrary=\"$(OutDir)/" << project_name << ".lib\"\n";
+	out << "TargetMachine=\"1\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCMIDLTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPostBuildEventTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPreBuildEventTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPreLinkEventTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCResourceCompilerTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCWebServiceProxyGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCWebDeploymentTool\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</Configuration>\n";
+	//
+	// mico
+	//
+	out << "<Configuration\n";
+	out.indent();
+	out << "Name=\"Debug_mico|Win32\"\n";
+	out << "OutputDirectory=\"Debug_mico\"\n";
+	out << "IntermediateDirectory=\"Debug_mico\"\n";
+	out << "ConfigurationType=\"2\"\n";
+	out << "CharacterSet=\"2\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCLCompilerTool\"\n";
+	out << "Optimization=\"0\"\n";
+	out << "AdditionalIncludeDirectories=\".;$(QEDO)/ComponentIDL;$(QEDO)/ComponentContainer;$(MICO)/include;$(MICO)/include/windows\"\n";
+	out << "PreprocessorDefinitions=\"WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS\"\n";
+	out << "MinimalRebuild=\"TRUE\"\n";
+	out << "BasicRuntimeChecks=\"3\"\n";
+	out << "RuntimeLibrary=\"2\"\n";
+	out << "RuntimeTypeInfo=\"TRUE\"\n";
+	out << "UsePrecompiledHeader=\"0\"\n";
+	out << "WarningLevel=\"3\"\n";
+	out << "Detect64BitPortabilityProblems=\"FALSE\"\n";
+	out << "DebugInformationFormat=\"4\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCLinkerTool\"\n";
+	out << "AdditionalDependencies=\"ComponentContainer.lib ComponentIDL.lib mico239.lib\"\n";
+	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
+	out << "LinkIncremental=\"2\"\n";
+	out << "AdditionalLibraryDirectories=\"$(QEDO)/ComponentContainer/Debug_mico;$(QEDO)/ComponentIDL/Debug_mico;$(MICO)/win32-bin/lib\"\n";
+	out << "GenerateDebugInformation=\"TRUE\"\n";
+	out << "ProgramDatabaseFile=\"$(OutDir)/" << project_name << ".pdb\"\n";
+	out << "SubSystem=\"2\"\n";
+	out << "ImportLibrary=\"$(OutDir)/" << project_name << ".lib\"\n";
+	out << "TargetMachine=\"1\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCMIDLTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPostBuildEventTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPreBuildEventTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPreLinkEventTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCResourceCompilerTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCWebServiceProxyGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCWebDeploymentTool\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</Configuration>\n";
+	//
+	// tao
+	//
+	out << "<Configuration\n";
+	out.indent();
+	out << "Name=\"Debug_tao|Win32\"\n";
+	out << "OutputDirectory=\"Debug_tao\"\n";
+	out << "IntermediateDirectory=\"Debug_tao\"\n";
+	out << "ConfigurationType=\"2\"\n";
+	out << "CharacterSet=\"2\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCLCompilerTool\"\n";
+	out << "Optimization=\"0\"\n";
+	out << "AdditionalIncludeDirectories=\".;$(QEDO)/ComponentIDL;$(QEDO)/ComponentContainer;$(TAO)\"\n";
+	out << "PreprocessorDefinitions=\"WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS\"\n";
+	out << "MinimalRebuild=\"TRUE\"\n";
+	out << "BasicRuntimeChecks=\"3\"\n";
+	out << "RuntimeLibrary=\"2\"\n";
+	out << "RuntimeTypeInfo=\"TRUE\"\n";
+	out << "UsePrecompiledHeader=\"0\"\n";
+	out << "WarningLevel=\"3\"\n";
+	out << "Detect64BitPortabilityProblems=\"FALSE\"\n";
+	out << "DebugInformationFormat=\"4\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCLinkerTool\"\n";
+	out << "AdditionalDependencies=\"ComponentContainer.lib ComponentIDL.lib aced.lib TAOd.lib\"\n";
+	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
+	out << "LinkIncremental=\"2\"\n";
+	out << "AdditionalLibraryDirectories=\"$(QEDO)/ComponentContainer/Debug_tao;$(QEDO)/ComponentIDL/Debug_tao;$(ORBACUS)/lib\"\n";
+	out << "GenerateDebugInformation=\"TRUE\"\n";
+	out << "ProgramDatabaseFile=\"$(OutDir)/" << project_name << ".pdb\"\n";
+	out << "SubSystem=\"2\"\n";
+	out << "ImportLibrary=\"$(OutDir)/" << project_name << ".lib\"\n";
+	out << "TargetMachine=\"1\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCMIDLTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPostBuildEventTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPreBuildEventTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPreLinkEventTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCResourceCompilerTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCWebServiceProxyGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCWebDeploymentTool\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</Configuration>\n";
+
+	out.unindent();
+	out << "</Configurations>\n";
+
+	//
+	// files
+	//
+	out << "<Files>\n";
+	out.indent();
+	//
+	// source files
+	//
+	out << "<Filter\n";
+	out.indent();
+	out << "Name=\"Source Files\"\n";
+	out << "Filter=\"cpp;c;cxx;def;odl;idl;hpj;bat;asm\">\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << file_prefix_ << "_SERVANT.cpp\">\n";
+	out.unindent();
+	out << "</File>\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << file_prefix_ << "_EQUIVALENT.cpp\">\n";
+	out.unindent();
+	out << "</File>\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << file_prefix_ << "_EQUIVALENT_skel.cpp\">\n";
+	out.unindent();
+	out << "</File>\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << file_prefix_ << "_LOCAL.cpp\">\n";
+	out.unindent();
+	out << "</File>\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << file_prefix_ << "_LOCAL_skel.cpp\">\n";
+	out.unindent();
+	out << "</File>\n";
+	out.unindent();
+	out << "</Filter>\n";
+	//
+	// header files
+	//
+	out << "<Filter\n";
+	out.indent();
+	out << "Name=\"Header Files\"\n";
+	out << "Filter=\"h;hpp;hxx;hm;inl;inc\">\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << file_prefix_ << "_SERVANT.h\">\n";
+	out.unindent();
+	out << "</File>\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << file_prefix_ << "_EQUIVALENT.h\">\n";
+	out.unindent();
+	out << "</File>\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << file_prefix_ << "_EQUIVALENT_skel.h\">\n";
+	out.unindent();
+	out << "</File>\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << file_prefix_ << "_LOCAL.h\">\n";
+	out.unindent();
+	out << "</File>\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << file_prefix_ << "_LOCAL_skel.h\">\n";
+	out.unindent();
+	out << "</File>\n";
+	out.unindent();
+	out << "</Filter>\n";
+	//
+	// idl files
+	//
+	out << "<Filter\n";
+	out.indent();
+	out << "Name=\"idl\"\n";
+	out << "Filter=\"idl;cidl\">\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << target_file_name_ << "\">\n";
+	//
+	// orbacus
+	//
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Debug_orbacus|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DWIN32 -DORBACUS_ORB -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl ";
+	out << "-I$(ORBACUS)/idl/OB --servant --target " << target_->id() << " " << target_file_name_ << "\"\n";
+	out << "Outputs=\"" << file_prefix_ << "_LOCAL.idl;" << file_prefix_ << "_EQUIVALENT.idl;";
+	out << file_prefix_ << "_BUSINESS.idl\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	//
+	// mico
+	//
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Debug_mico|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DWIN32 -DMICO_ORB -I$(QEDO)/ComponentIDL -I$(MICO)/idl ";
+	out << "-I$(ORBACUS)/idl/OB --servant --target " << target_->id() << " " << target_file_name_ << "\"\n";
+	out << "Outputs=\"" << file_prefix_ << "_LOCAL.idl;" << file_prefix_ << "_EQUIVALENT.idl;";
+	out << file_prefix_ << "_BUSINESS.idl\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	//
+	// tao
+	//
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Debug_tao|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DWIN32 -DTAO_ORB -I$(QEDO)/ComponentIDL -I$(TAO)/idl ";
+	out << "-I$(ORBACUS)/idl/OB --servant --target " << target_->id() << " " << target_file_name_ << "\"\n";
+	out << "Outputs=\"" << file_prefix_ << "_LOCAL.idl;" << file_prefix_ << "_EQUIVALENT.idl;";
+	out << file_prefix_ << "_BUSINESS.idl\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	out.unindent();
+	out << "</File>\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << file_prefix_ << "_EQUIVALENT.idl\">\n";
+	//
+	// orbacus
+	//
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Debug_orbacus|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "CommandLine=\"$(ORBACUS)\\bin\\idl -DWIN32 -I$(QEDO)\\ComponentIDL -I$(ORBACUS)/idl ";
+	out << "-I$(ORBACUS)/idl/OB " << file_prefix_ << "_EQUIVALENT.idl\"\n";
+	out << "Outputs=\"" << file_prefix_ << "_EQUIVALENT.h;" << file_prefix_ << "_EQUIVALENT.cpp;";
+	out << file_prefix_ << "_EQUIVALENT_skel.h;" << file_prefix_ << "_EQUIVALENT_skel.cpp\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	//
+	// mico
+	//
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Debug_mico|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "CommandLine=\"$(MICO)\\win32-bin\\idl -I$(MICO)\\include -I$(MICO)\\include\\mico --any --c++-suffix cpp --c++-skel -DWIN32 -I$(QEDO)\\ComponentIDL ";
+	out << file_prefix_ << "_EQUIVALENT.idl\"\n";
+	out << "Outputs=\"" << file_prefix_ << "_EQUIVALENT.h;" << file_prefix_ << "_EQUIVALENT.cpp;";
+	out << file_prefix_ << "_EQUIVALENT_skel.h;" << file_prefix_ << "_EQUIVALENT_skel.cpp\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	//
+	// tao
+	//
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Debug_tao|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "CommandLine=\"$(TAO)\\bin\\tao_idl -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp -DTAO_ORB -DWIN32 -I$(QEDO)\\ComponentIDL ";
+	out << "-I$(TAO)/idl " << file_prefix_ << "_EQUIVALENT.idl\"\n";
+	out << "Outputs=\"" << file_prefix_ << "_EQUIVALENT.h;" << file_prefix_ << "_EQUIVALENT.cpp;";
+	out << file_prefix_ << "_EQUIVALENT_skel.h;" << file_prefix_ << "_EQUIVALENT_skel.cpp\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	out.unindent();
+	out << "</File>\n";
+	out << "<File\n";
+	out.indent();
+	out << "RelativePath=\"" << file_prefix_ << "_LOCAL.idl\">\n";
+	//
+	// orbacus
+	//
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Debug_orbacus|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "CommandLine=\"$(ORBACUS)\\bin\\idl -DWIN32 -I$(QEDO)\\ComponentIDL -I$(ORBACUS)/idl ";
+	out << "-I$(ORBACUS)/idl/OB " << file_prefix_ << "_LOCAL.idl\"\n";
+	out << "Outputs=\"" << file_prefix_ << "_LOCAL.h;" << file_prefix_ << "_LOCAL.cpp;";
+	out << file_prefix_ << "_LOCAL_skel.h;" << file_prefix_ << "_LOCAL_skel.cpp\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	//
+	// mico
+	//
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Debug_mico|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "CommandLine=\"$(ORBACUS)\\bin\\idl -DWIN32 -I$(QEDO)\\ComponentIDL -I$(ORBACUS)/idl ";
+	out << "-I$(ORBACUS)/idl/OB " << file_prefix_ << "_LOCAL.idl\"\n";
+	out << "Outputs=\"" << file_prefix_ << "_LOCAL.h;" << file_prefix_ << "_LOCAL.cpp;";
+	out << file_prefix_ << "_LOCAL_skel.h;" << file_prefix_ << "_LOCAL_skel.cpp\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	//
+	// tao
+	//
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Debug_tao|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "CommandLine=\"$(ORBACUS)\\bin\\idl -DWIN32 -I$(QEDO)\\ComponentIDL -I$(ORBACUS)/idl ";
+	out << "-I$(ORBACUS)/idl/OB " << file_prefix_ << "_LOCAL.idl\"\n";
+	out << "Outputs=\"" << file_prefix_ << "_LOCAL.h;" << file_prefix_ << "_LOCAL.cpp;";
+	out << file_prefix_ << "_LOCAL_skel.h;" << file_prefix_ << "_LOCAL_skel.cpp\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	out.unindent();
+	out << "</File>\n";
+	out.unindent();
+	out << "</Filter>\n";
+	//
+	// resource files
+	//
+	out << "<Filter\n";
+	out.indent();
+	out << "Name=\"Resource Files\"\n";
+	out << "Filter=\"rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe\">\n";
+	out.unindent();
+	out << "</Filter>\n";
+	out.unindent();
+	out << "</Files>\n";
+	out << "<Globals>\n";
+	out << "</Globals>\n";
+	out.unindent();
+	out << "</VisualStudioProject>\n";
+
+	//
+	// close servant file
+	//
+	out.close();
 }
 
+
+}
