@@ -278,8 +278,8 @@ copy cidl_gen.exe $(QEDO)\bin
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
-				CommandLine="md &quot;%QEDO%\bin&quot;
-copy cidl_gend.exe &quot;%QEDO%\bin&quot;
+				CommandLine="md $(QEDO)\bin;
+copy cidl_gend.exe $(QEDO)\bin&quot;
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
