@@ -42,12 +42,10 @@ all:
 %.a:
 	$(AR) $(ARFLAGS) $@ $^
 
-ifeq "${CXX}" "g++"
 %.so:
 	${CXX} -shared ${LD_SHRAED_FLAGS} -o $@ $^ $(LIBS)
 
 CXXFLAGS += 
-endif
 
 
 INSTALL = @INSTALL@
