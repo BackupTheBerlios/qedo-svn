@@ -21,7 +21,7 @@ namespace dinner {
 
 
 #include <OB/CORBA.h>
-#include "DiningPhilosophers_BUSINESS.h"
+#include "dinner_BUSINESS.h"
 #include <string>
 
 

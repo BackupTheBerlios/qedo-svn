@@ -2,7 +2,7 @@
 // CCM Container Implementation
 // (C)2000-2001 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: PhilosopherState.h,v 1.2 2002/10/31 16:16:27 tom Exp $
+// $Id: PhilosopherState.h,v 1.3 2003/01/10 13:23:28 neubauer Exp $
 //
 
 #ifndef __PHILOSOPHERSTATE_H__
@@ -14,7 +14,7 @@
 #include CORBA_STUB_HEADER(dinner_implied)
 #else
 #include <OB/CORBA.h>
-#include "DiningPhilosophers_EQUIVALENT.h"
+#include "dinner_EQUIVALENT.h"
 #endif
 
 

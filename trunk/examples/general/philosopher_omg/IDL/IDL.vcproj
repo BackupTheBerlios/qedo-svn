@@ -105,44 +105,44 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath=".\DiningPhilosophers_BUSINESS.cpp">
+				RelativePath="dinner_BUSINESS.cpp">
 			</File>
 			<File
-				RelativePath=".\DiningPhilosophers_BUSINESS_skel.cpp">
+				RelativePath="dinner_BUSINESS_skel.cpp">
 			</File>
 			<File
-				RelativePath=".\DiningPhilosophers_EQUIVALENT.cpp">
+				RelativePath="dinner_EQUIVALENT.cpp">
 			</File>
 			<File
-				RelativePath=".\DiningPhilosophers_EQUIVALENT_skel.cpp">
+				RelativePath="dinner_EQUIVALENT_skel.cpp">
 			</File>
 			<File
-				RelativePath=".\DiningPhilosophers_LOCAL.cpp">
+				RelativePath="dinner_LOCAL.cpp">
 			</File>
 			<File
-				RelativePath=".\DiningPhilosophers_LOCAL_skel.cpp">
+				RelativePath="dinner_LOCAL_skel.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath=".\DiningPhilosophers_BUSINESS.h">
+				RelativePath="dinner_BUSINESS.h">
 			</File>
 			<File
-				RelativePath=".\DiningPhilosophers_BUSINESS_skel.h">
+				RelativePath="dinner_BUSINESS_skel.h">
 			</File>
 			<File
-				RelativePath=".\DiningPhilosophers_EQUIVALENT.h">
+				RelativePath="dinner_EQUIVALENT.h">
 			</File>
 			<File
-				RelativePath=".\DiningPhilosophers_EQUIVALENT_skel.h">
+				RelativePath="dinner_EQUIVALENT_skel.h">
 			</File>
 			<File
-				RelativePath=".\DiningPhilosophers_LOCAL.h">
+				RelativePath="dinner_LOCAL.h">
 			</File>
 			<File
-				RelativePath=".\DiningPhilosophers_LOCAL_skel.h">
+				RelativePath="dinner_LOCAL_skel.h">
 			</File>
 		</Filter>
 		<Filter
@@ -154,10 +154,10 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32  --business --servant --target DiningPhilosophers dinner.cidl
+						CommandLine="$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32  --business --servant --target dinner dinner.cidl
 time /T &gt; last_build_time
 "
-						Outputs="last_build_time;DiningPhilosophers_LOCAL.idl;DiningPhilosophers_EQUIVALENT.idl;DiningPhilosophers_BUSINESS.idl"/>
+						Outputs="last_build_time;dinner_LOCAL.idl;dinner_EQUIVALENT.idl;dinner_BUSINESS.idl"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
@@ -165,36 +165,33 @@ time /T &gt; last_build_time
 			Name="idl"
 			Filter="">
 			<File
-				RelativePath=".\DiningPhilosophers_BUSINESS.idl">
+				RelativePath="dinner_BUSINESS.idl">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 DiningPhilosophers_BUSINESS.idl
-"
-						Outputs="DiningPhilosophers_BUSINESS.h;DiningPhilosophers_BUSINESS.cpp;DiningPhilosophers_BUSINESS_skel.h;DiningPhilosophers_BUSINESS_skel.cpp"/>
+						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_BUSINESS.idl"
+						Outputs="dinner_BUSINESS.h;dinner_BUSINESS.cpp;dinner_BUSINESS_skel.h;dinner_BUSINESS_skel.cpp"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\DiningPhilosophers_EQUIVALENT.idl">
+				RelativePath="dinner_EQUIVALENT.idl">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 DiningPhilosophers_EQUIVALENT.idl
-"
-						Outputs="DiningPhilosophers_EQUIVALENT.h;DiningPhilosophers_EQUIVALENT.cpp;DiningPhilosophers_EQUIVALENT_skel.h;DiningPhilosophers_EQUIVALENT_skel.cpp"/>
+						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_EQUIVALENT.idl"
+						Outputs="dinner_EQUIVALENT.h;dinner_EQUIVALENT.cpp;dinner_EQUIVALENT_skel.h;dinner_EQUIVALENT_skel.cpp"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\DiningPhilosophers_LOCAL.idl">
+				RelativePath="dinner_LOCAL.idl">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -I../../../Container2/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -I$(QEDO)\ComponentIDL -DWIN32 DiningPhilosophers_LOCAL.idl
-"
-						Outputs="DiningPhilosophers_LOCAL.h;DiningPhilosophers_LOCAL.cpp;DiningPhilosophers_LOCAL_skel.h;DiningPhilosophers_LOCAL_skel.cpp"/>
+						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_LOCAL.idl"
+						Outputs="dinner_LOCAL.h;dinner_LOCAL.cpp;dinner_LOCAL_skel.h;dinner_LOCAL_skel.cpp"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
