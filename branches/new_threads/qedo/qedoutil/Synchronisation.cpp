@@ -28,187 +28,218 @@
 #include <signal.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.15.2.1 2003/08/06 16:17:07 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.15.2.2 2003/08/08 13:54:06 boehme Exp $";
+
 
 namespace Qedo {
 
-struct mutex_delegate {
-#ifdef QEDO_WINTHREAD
-	HANDLE m_mutex;
-#else
-	pthread_mutex_t m_mutex;
-#endif
-};
-
-struct cond_delegate {
-#ifdef QEDO_WINTHREAD
-	HANDLE m_event_handle;
-#else
-	pthread_cond_t m_cond;
-#endif
-};
-
-qedo_mutex::qedo_mutex() {
-    delegate = new mutex_delegate;
-#ifdef QEDO_WINTHREAD
-	delegate->m_mutex = CreateMutex(NULL,FALSE,NULL);
-#else
-	pthread_mutex_init(&(delegate->m_mutex), NULL);
-#endif
-}
-
-
-qedo_mutex::~qedo_mutex() {
-
-#ifdef QEDO_WINTHREAD
-#else
-	pthread_mutex_destroy(&(delegate->m_mutex));
-#endif
-	delete delegate;
-}
-
-
-void
-qedo_mutex::qedo_lock_object() {
-
-#ifdef QEDO_WINTHREAD
-	WaitForSingleObject(delegate->m_mutex, INFINITE);
-#else
-	pthread_mutex_lock(&(delegate->m_mutex));
-#endif
-}
-
-
-void
-qedo_mutex::qedo_unlock_object() {
-
-#ifdef QEDO_WINTHREAD
-	ReleaseMutex(delegate->m_mutex);
-#else
-	pthread_mutex_unlock(&(delegate->m_mutex));
-#endif
-}
-
-
-qedo_lock::qedo_lock(const qedo_mutex* m) {
-	m_mutex = const_cast<qedo_mutex* const>(m);
-	m_mutex->qedo_lock_object();
-}
-
-qedo_lock::qedo_lock(qedo_mutex* m) {
-	m_mutex = m;
-	m_mutex->qedo_lock_object();
-}
-
-qedo_lock::qedo_lock(const qedo_mutex& m) {
-	m_mutex = const_cast<qedo_mutex* const>(&m);
-	m_mutex->qedo_lock_object();
-}
-
-
-qedo_lock::~qedo_lock() {
-	m_mutex->qedo_unlock_object();
-}
-
-
-qedo_cond::qedo_cond() {
-	delegate = new cond_delegate;
-#ifdef QEDO_WINTHREAD
-		delegate->m_event_handle = CreateEvent (0, FALSE /*manua-reset*/, FALSE
-		/*initial: non-signaled*/, 0);
-#else
-		pthread_cond_init(&(delegate->m_cond), 0);
-#endif
-}
-
-qedo_cond::qedo_cond(char * sig_name) {
-	delegate = new cond_delegate;
-#ifdef QEDO_WINTHREAD
-		delegate->m_event_handle = CreateEvent (0, FALSE /*manua-reset*/, FALSE /*initial: non-signaled*/, sig_name);
-#else
-		pthread_cond_init(&(delegate->m_cond), 0);
-#endif
-}
-
-
-qedo_cond::~qedo_cond() {
-#ifdef QEDO_WINTHREAD
-#else
-	pthread_cond_destroy(&(delegate->m_cond));
-#endif
-	delete delegate;
-}
-
-
-void
-qedo_cond::qedo_wait(const qedo_mutex& m) {
-
-#ifdef QEDO_WINTHREAD
-	const_cast<qedo_mutex* const>(&m)->qedo_unlock_object();
-	WaitForMultipleObjects(1, &(delegate->m_event_handle), TRUE, INFINITE /*wait for ever*/);
-	const_cast<qedo_mutex* const>(&m)->qedo_lock_object();
-#else
-	pthread_cond_wait(&(delegate->m_cond),&(m.delegate->m_mutex));
-#endif
-}
-
-void
-qedo_cond::qedo_wait(const qedo_mutex* m) {
-
-#ifdef QEDO_WINTHREAD
-	const_cast<qedo_mutex* const>(m)->qedo_unlock_object();
-	WaitForMultipleObjects(1, &(delegate->m_event_handle), TRUE, INFINITE /*wait for ever*/);
-	const_cast<qedo_mutex* const>(m)->qedo_lock_object();
-#else
-	pthread_cond_wait(&(delegate->m_cond),&(m->delegate->m_mutex));
-#endif
-}
-
-
-void
-qedo_cond::qedo_signal() {
-
-#ifdef QEDO_WINTHREAD
-	SetEvent(delegate->m_event_handle);
-#else
-	pthread_cond_signal(&(delegate->m_cond));
-#endif
-}
-
-
-struct thread_delegate {
-#ifdef QEDO_WINTHREAD
-	HANDLE th_handle;
-	DWORD th_id;
-#else
-	pthread_t t;
-#endif
-};
-
-qedo_thread::qedo_thread()
-{
-	delegate = new thread_delegate;
-};
-
-void
-qedo_thread::stop()
+struct MutexDelegate 
 {
 #ifdef QEDO_WINTHREAD
-	DWORD exitcode;
-	if(!TerminateThread(delegate_>th_handle,exitcode)) 
-		DEBUG_OUT("Error while TerminateThread");
+	HANDLE mutex_;
 #else
-	if(pthread_cancel(delegate->t)) DEBUG_OUT("Error while pthread_cancel");
+	pthread_mutex_t mutex_;
+#endif
+};
+
+struct CondDelegate 
+{
+#ifdef QEDO_WINTHREAD
+	HANDLE event_handle_;
+#else
+	pthread_cond_t cond_;
+#endif
+};
+
+struct ThreadDelegate {
+#ifdef QEDO_WINTHREAD
+       HANDLE th_handle_;
+       DWORD th_id_;
+#else
+       pthread_t t_;
+#endif
+};
+
+QedoMutex::QedoMutex() 
+{
+    delegate_ = new MutexDelegate();
+#ifdef QEDO_WINTHREAD
+	delegate_->mutex_ = CreateMutex (NULL,FALSE,NULL);
+#else
+	pthread_mutex_init (&(delegate_->mutex_), NULL);
 #endif
 }
 
-void
-qedo_thread::join()
+
+QedoMutex::~QedoMutex() 
 {
 #ifdef QEDO_WINTHREAD
 #else
-	void *state;
-	if(pthread_join(delegate->t,&state)) DEBUG_OUT("Error while pthread_join");
+	pthread_mutex_destroy( &(delegate_->mutex_));
+#endif
+	delete delegate_;
+}
+
+
+void
+QedoMutex::lock_object() 
+{
+#ifdef QEDO_WINTHREAD
+	if (WaitForSingleObject (delegate_->mutex_, INFINITE) != WAIT_OBJECT_0)
+	{
+		std::cerr << "QedoMutex: lock_object() failed: " << GetLastError() << std::endl;
+		assert (0);
+	}
+#else
+	pthread_mutex_lock (&(delegate_->mutex_));
+#endif
+}
+
+
+void
+QedoMutex::unlock_object() 
+{
+#ifdef QEDO_WINTHREAD
+	if (! ReleaseMutex (delegate_->mutex_))
+	{
+		std::cerr << "QedoMutex: unlock_object() failed: " << GetLastError() << std::endl;
+		assert (0);
+	}
+#else
+	pthread_mutex_unlock (&(delegate_->mutex_));
+#endif
+}
+
+
+QedoLock::QedoLock (const QedoMutex* m) 
+{
+	mutex_ = const_cast<QedoMutex* const> (m);
+	mutex_->lock_object();
+}
+
+
+QedoLock::QedoLock (QedoMutex* m) 
+{
+	mutex_ = m;
+	mutex_->lock_object();
+}
+
+
+QedoLock::QedoLock (const QedoMutex& m) 
+{
+	mutex_ = const_cast<QedoMutex* const> (&m);
+	mutex_->lock_object();
+}
+
+
+QedoLock::~QedoLock() 
+{
+	mutex_->unlock_object();
+}
+
+
+QedoCond::QedoCond() 
+{
+	delegate_ = new CondDelegate;
+#ifdef QEDO_WINTHREAD
+		delegate_->event_handle_ = CreateEvent (0, FALSE /*manual-reset*/, FALSE /*initial: non-signaled*/, 0);
+#else
+		pthread_cond_init (&(delegate_->cond_), 0);
+#endif
+}
+
+QedoCond::QedoCond (char * sig_name) 
+{
+	delegate_ = new CondDelegate;
+#ifdef QEDO_WINTHREAD
+		delegate_->event_handle_ = CreateEvent (0, FALSE /*manual-reset*/, FALSE /*initial: non-signaled*/, sig_name);
+#else
+		pthread_cond_init (&(delegate_->cond_), 0);
+#endif
+}
+
+
+QedoCond::~QedoCond() 
+{
+#ifdef QEDO_WINTHREAD
+#else
+	pthread_cond_destroy (&(delegate_->cond_));
+#endif
+	delete delegate_;
+}
+
+
+void
+QedoCond::wait (const QedoMutex& m) 
+{
+#ifdef QEDO_WINTHREAD
+	const_cast<QedoMutex* const>(&m)->unlock_object();
+	if (WaitForMultipleObjects(1, &(delegate_->event_handle_), TRUE, INFINITE /*wait for ever*/) == WAIT_FAILED)
+	{
+		std::cerr << "QedoCond: wait() failed: " << GetLastError() << std::endl;
+		assert (0);
+	}
+	const_cast<QedoMutex* const>(&m)->lock_object();
+#else
+	pthread_cond_wait (&(delegate_->cond_),&(m.delegate_->mutex_));
+#endif
+}
+
+void
+QedoCond::wait(const QedoMutex* m) 
+{
+#ifdef QEDO_WINTHREAD
+	const_cast<QedoMutex* const>(m)->unlock_object();
+	if (WaitForMultipleObjects(1, &(delegate_->event_handle_), TRUE, INFINITE /*wait for ever*/) == WAIT_FAILED)
+	{
+		std::cerr << "QedoCond: qedo_wait() failed: " << GetLastError() << std::endl;
+		assert (0);
+	}
+	const_cast<QedoMutex* const>(m)->lock_object();
+#else
+	pthread_cond_wait (&(delegate_->cond_),&(m->delegate_->mutex_));
+#endif
+}
+
+
+void
+QedoCond::signal() 
+{
+#ifdef QEDO_WINTHREAD
+	if (! SetEvent(delegate_->event_handle_))
+	{
+		std::cerr << "QedoCond: qedo_signal() failed: " << GetLastError() << std::endl;
+		assert (0);
+	}
+#else
+	pthread_cond_signal (&(delegate_->cond_));
+#endif
+}
+
+QedoThread::QedoThread()
+{
+       delegate = new thread_delegate;
+};
+
+void
+QedoThread::stop()
+{
+#ifdef QEDO_WINTHREAD
+       DWORD exitcode;
+       if(!TerminateThread(delegate_>th_handle,exitcode)) 
+               DEBUG_OUT("Error while TerminateThread");
+#else
+       if(pthread_cancel(delegate->t)) DEBUG_OUT("Error while pthread_cancel");
+#endif
+}
+
+void
+QedoThread::join()
+{
+#ifdef QEDO_WINTHREAD
+#else
+       void *state;
+       if(pthread_join(delegate->t,&state)) DEBUG_OUT("Error while pthread_join");
 #endif
 }
 
@@ -218,7 +249,7 @@ DWORD WINAPI startFunc(LPVOID p) {
 void* startFunc(void* p) {
 #endif
 
-	t_start* t = (t_start*) p;
+	T_Start* t = (T_Start*) p;
 	void* (*f)(void*) = t->p;
 	void* arg = t->a;
 
@@ -229,26 +260,26 @@ void* startFunc(void* p) {
 	return 0;
 }
 
-qedo_thread*
+QedoThread*
 qedo_startDetachedThread(void* (*p)(void*), void* arg) {
 
-	t_start* startParams = new t_start;
+	T_Start* startParams = new T_Start();
 	startParams->p = p;
 	startParams->a = arg;
-	qedo_thread * thread = new qedo_thread();
+	QedoThread * thread = new QedoThread();
 
 #ifdef QEDO_WINTHREAD
-	th_handle->delegate->th_handle = CreateThread(NULL,
+	thread->delegate_->th_handle_ = CreateThread(NULL,
 							0,
 							startFunc,
 							(LPVOID) startParams,
 							NULL,
-							&(thread->delegate->th_id));
+							&(thread->delegate_->th_id_));
 #else
 	pthread_attr_t detached_attr;
 	pthread_attr_init(&detached_attr);
 	pthread_attr_setdetachstate(&detached_attr, PTHREAD_CREATE_JOINABLE);
-	pthread_create(&(thread->delegate->t), &detached_attr, startFunc, startParams);
+	pthread_create(&(thread->delegate_->t_), &detached_attr, startFunc, startParams);
 #endif
 	return thread;
 }

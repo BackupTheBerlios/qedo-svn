@@ -25,7 +25,7 @@
 #include <iostream>
 #include <cassert>
 
-static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.11.2.1 2003/08/08 12:30:03 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.11.2.2 2003/08/08 13:54:06 boehme Exp $";
 
 
 namespace Qedo {

@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.25.2.1 2003/08/08 12:30:03 boehme Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.25.2.2 2003/08/08 13:54:06 boehme Exp $";
 
 
 namespace Qedo {
