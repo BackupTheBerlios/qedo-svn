@@ -167,44 +167,46 @@ namespace DCI
     
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl
     
-    std::string nodenameStr;
-    #ifdef WIN32
-    int qcsaProcHdle;
-    char nodename[256];
-    #else
-    pid_t qcsaProcHdle;
-    char nodename[MAXHOSTNAMELEN];    
-    #endif
+	std::string nodenameStr;
+#ifdef WIN32
+	int qcsaProcHdle_;
+	char nodename[256];
+#else
+	pid_t qcsaProcHdle_;
+	char nodename[MAXHOSTNAMELEN];    
+#endif
 
-    //Buffer for storing the primary working directory
-    char cwd_buffer[_MAX_PATH];
-    std::list <localImpl*> installed_impls_;    
-    void deregister();
+	//Buffer for storing the primary working directory
+	char cwd_buffer[_MAX_PATH];
+	std::list <localImpl*> installed_impls_;    
+	void deregister();
     
-    bool qcsaIsRegistered;
-    bool qcsaIsStarted_;
-    bool isRegisteredToDci;
-    CORBA::ORB_var orb_;
-    Components::Deployment::ServerActivator_var server_activator_;
-    std::list <Components::Deployment::ComponentServer_ptr> created_component_servers_;
+	bool qcsaIsRegistered;
+	bool qcsaIsStarted_;
+	bool isRegisteredToDci;
+	CORBA::ORB_var orb_;
+	Components::Deployment::ServerActivator_var server_activator_;
+	std::list <Components::Deployment::ComponentServer_ptr> created_component_servers_;
          
-    CORBA::Object_var resolve_from_NS_(char** name, unsigned int size);
-    void get_server_activator_();
-    localImpl* get_impl_for_uuid_(std::string implUUID);
-    void add_impl_(localImpl* entry);
-    void remove_impl_(const char * implUUID);
-   void installFile_( std::string implUUID_str, MDE::Deployment::File_var theFile)
-      throw (::Components::Deployment::InstallationFailure);
-      void printout_( const char* outStr);
+	CORBA::Object_var resolve_from_NS_(char** name, unsigned int size);
+	void get_server_activator_();
+	localImpl* get_impl_for_uuid_(std::string implUUID);
+	void add_impl_(localImpl* entry);
+	void remove_impl_(const char * implUUID);
+	void installFile_( std::string implUUID_str, MDE::Deployment::File_var theFile)
+	  throw (::Components::Deployment::InstallationFailure);
+	void printout_( const char* outStr);
         void printout_(const char* outStr1, const char* outStr2);
-      void printerr_( const char* errStr);
+	void printerr_( const char* errStr);
         void printerr_(const char* errStr1, const char* errStr2);
-            void printout_( std::string outStr);
-
+	void printout_( std::string outStr);
+#ifndef WIN32         
+	void handleLstatError_(int errNo);
+#endif
       
-    //NodeInformation interface stuff
+	//NodeInformation interface stuff
       
- PropertiesRepository* prop_repository_;
+	PropertiesRepository* prop_repository_;
 // END USER INSERT SECTION RepNodeManagerSessionImpl
 
     };

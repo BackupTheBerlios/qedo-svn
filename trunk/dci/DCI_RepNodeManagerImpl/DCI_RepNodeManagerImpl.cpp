@@ -71,49 +71,71 @@ namespace DCI {
   void
   RepNodeManagerSessionImpl::deregister()
   {
-    if(!isRegisteredToDci)
-        return;
-        
-    printout_("deregistering from DCIManager" );
-    try{    
+    if(isRegisteredToDci){        
+      printout_("deregistering from DCIManager" );
+      try{    
 
-    DCI::DCIManager_ptr dciMgr = context_ -> get_connection_dcimanager();
+	DCI::DCIManager_ptr dciMgr = context_ -> get_connection_dcimanager();
                 
-    if(CORBA::is_nil(dciMgr))
-      {
-	printerr_("dciMgr is nil" );
-	return;
-      }
+	if(CORBA::is_nil(dciMgr))
+	  {
+	    printerr_("dciMgr is nil" );
+	    return;
+	  }
       
 
-    NodeManagement_ptr nodeMgmt = dciMgr-> provide_node_management();
-    printout_("node_management receptacle obtained" );
-    if(CORBA::is_nil(nodeMgmt))
-      {
-	printerr_("Could not get node management interface from DCIManager" );
-	return;
-      }  
+	NodeManagement_ptr nodeMgmt = dciMgr-> provide_node_management();
+	printout_("node_management receptacle obtained" );
+	if(CORBA::is_nil(nodeMgmt))
+	  {
+	    printerr_("Could not get node management interface from DCIManager!" );
+	    return;
+	  }  
     
-    nodeMgmt -> deregister_node(nodename);
-    printout_("Node successfully deregistered from DCIManager" );
-    
-    printout_("Cleaning up");
-    orb_ -> destroy();
-    #ifdef WIN32
-    WSACleanup( );	  
-    #endif
-    printout_("Cleaning up finished");
+	nodeMgmt -> deregister_node(nodename);
+	printout_("Node successfully deregistered from DCIManager" );
 
-    } catch(...){
-        printerr_("Could not deregister from DCIManager");
-    }
-    // Remove all created component servers
-        
-    std::list <Components::Deployment::ComponentServer_ptr> ::iterator csIt;
-    for ( csIt = created_component_servers_.begin( ); csIt != created_component_servers_.end( ); csIt++ ){
-      remove_component_server(*csIt);                
+      } catch(...){
+	printerr_("Could not deregister from DCIManager");
+      }
     }
     
+#ifdef WIN32
+    printout_("cleaning up socket stuff");
+    WSACleanup( );	  
+    printout_("Cleaning up finished");
+#endif
+
+
+//     printout_("Destroying dummy orb");
+//     try{
+//       orb_ -> destroy();
+//     } catch(...){
+//       printerr_("Could not destroy dummy orb");
+//     }
+
+    
+    if(qcsaIsStarted_){
+      // Remove all created component servers
+    
+      printout_("Removing remaining component servers");
+      int cter = 0;
+      try {
+	std::list <Components::Deployment::ComponentServer_ptr> ::iterator csIt;
+	for ( csIt = created_component_servers_.begin( ); csIt != created_component_servers_.end( ); csIt++ ){
+	  remove_component_server(*csIt);                
+	  cter++;
+	}
+      } catch(...){
+	printerr_("Could not remove remaining component server");
+      }
+
+      std::cout <<"DCI_RepNodeMangerImplSession: " << cter << " remaining component servers have been removed" << std::endl;
+
+      printout_("Killing our component server activator");
+      kill(SIGINT,qcsaProcHdle_);
+      printout_("Qcsa killed");
+    }
   }
 
   localImpl* RepNodeManagerSessionImpl::get_impl_for_uuid_(std::string implUUID){
@@ -211,11 +233,12 @@ namespace DCI {
 
 #ifdef WIN32
 
-	qcsaProcHdle = _spawnv( _P_NOWAIT , args[0], args );
-                
+//	qcsaProcHdle_ = _spawnv( _P_NOWAIT , args[0], args );
+	qcsaProcHdle_ = _spawnv( _P_WAIT, args[0], args );
+             
 	//Verify, if process was launched successfully
-	if(qcsaProcHdle == -1) {
-	  //display error message
+	if(qcsaProcHdle_ == -1) {
+	  printerr_("Could not start Qedo component server activator");
 	  return;
 	}
             
@@ -224,12 +247,12 @@ namespace DCI {
 
 	int qcsaStatus;
 
-	if( (qcsaProcHdle = fork()) < 0){
+	if( (qcsaProcHdle_ = fork()) < 0){
 	  printerr_("Fork error");
 	  return;
 	}
 
-	if (qcsaProcHdle == 0) {
+	if (qcsaProcHdle_ == 0) {
 	  if((execvp(args[0],args)) < 0){
 	    printerr_("Could not start qcsa in child process");
 	    exit(127);
@@ -237,7 +260,7 @@ namespace DCI {
 	    qcsaIsStarted_ = true;
 	}
 
-	if( (qcsaProcHdle = waitpid(qcsaProcHdle, &qcsaStatus,0)) < 0)
+	if( (qcsaProcHdle_ = waitpid(qcsaProcHdle_, &qcsaStatus,0)) < 0)
 	  {
 	    printerr_("waitpid error");
 	    return;
@@ -309,10 +332,12 @@ namespace DCI {
       } else
 	{
 	  char* dciHome_env = getenv("DCI_HOME");
+	  std::string dciHome = "";
 	  if(!dciHome_env)
-	    printout_( "DCI_HOME variable is undefined. Using current directory instead" );    
+	    printout_( "DCI_HOME variable is undefined. Using current directory instead" );
+	  else
+	    dciHome = std::string(dciHome_env);
 
-	  std::string dciHome(getenv("DCI_HOME"));
 	  std::string currentDir_str(cwd_buffer);
                 
 	  if(dciHome_env)
@@ -352,14 +377,21 @@ namespace DCI {
 	      if(chdir(cwd_buffer)){
 		printerr_("Unable to locate the directory: " , cwd_buffer );
 		throw ::Components::Deployment::InstallationFailure();
-	      } else {
-		printout_("Packages will be installed in current directory" );
-		printout_("Current Working directory is " , cwd_buffer );                        
-		prefixString_ = currentDir_str + PATH_SEPARATOR;
 	      }
-                
+	      prefixString_ = currentDir_str + PATH_SEPARATOR;
 	    }
-	  }                    
+	  } else {
+	    if(chdir(cwd_buffer)){
+	      printerr_("Unable to locate the directory: " , cwd_buffer );
+	      throw ::Components::Deployment::InstallationFailure();
+	    } else {
+	      printout_("Packages will be installed in current directory" );
+	      printout_("Current Working directory is " , cwd_buffer );                        
+	      prefixString_ = currentDir_str + PATH_SEPARATOR;
+	    }
+	  }             
+
+  
 	  struct stat buf;
 	  if(stat(implUUID_str.data(),&buf) == 0 && S_ISDIR(buf.st_mode))
 	    printout_("Directory exists: will not create a new one");
@@ -396,9 +428,9 @@ namespace DCI {
     /* Find file in current directory */
     if( (hFile = _findfirst( theFile -> filename(), &c_file )) != -1L )
       {
-	    printout_("file has already been installed: ",c_file.name);
-	    _findclose( hFile );
-	    return;
+	printout_("file has already been installed: ",c_file.name);
+	_findclose( hFile );
+	return;
       }
 
 #else
@@ -424,8 +456,8 @@ namespace DCI {
     std::ofstream targetFile(fullName.data(),std::ios_base::binary);
         
     printout_("Writing received data to file " , fullName.data());
-	const CORBA::Octet* it = octetList->get_buffer();
-	targetFile.write((char*)it, octetList->length());
+    const CORBA::Octet* it = octetList->get_buffer();
+    targetFile.write((char*)it, octetList->length());
 
     std::cout << "Writing completed" << std::endl;
     std::cout << "Wrote " << octetList -> length() << " Bytes" << std::endl;
@@ -437,92 +469,133 @@ namespace DCI {
     targetFile.close();
 
   }
+
+#ifndef WIN32
+  void RepNodeManagerSessionImpl::handleLstatError_(int errNo){
+    switch(errNo){
+    case EBADF: 
+      printerr_("filedes is bad.");
+      break;
+
+    case ENOENT: 
+      printerr_("A component of the path file_name does not exist,or the path is an empty string.");
+      break;
+
+    case ENOTDIR:
+      printerr_("A component of the path is not a directory.");
+      break;
+
+    case ELOOP:
+      printerr_("Too many symbolic links encountered while  traversing the path.");
+      break;
+
+    case EFAULT:
+      printerr_("Bad address.");
+      break;
+
+    case EACCES:
+      printerr_("Permission denied.");
+      break;
+
+    case ENOMEM:
+      printerr_("Out of memory (i.e. kernel memory).");
+      break;
+
+    case ENAMETOOLONG:
+      printerr_("File name too long.");
+      break;
+    default:
+      printerr_("Unknown error");
+
+    }
+  }
+ #endif
 // END USER INSERT SECTION RepNodeManagerSessionImpl
 
 
 RepNodeManagerSessionImpl::RepNodeManagerSessionImpl()
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::RepNodeManagerSessionImpl
-    // Constructor
-    // initializing wsock2_32.dll: this step is required for using
-    // the gethostname function.
+  // Constructor
+  // initializing wsock2_32.dll: this step is required for using
+  // the gethostname function.
 
 #ifdef WIN32
-    WORD wVersionRequested;
-    WSADATA wsaData;
-    int err;
-    char _hostname [256];
+  WORD wVersionRequested;
+  WSADATA wsaData;
+  int err;
+  char _hostname [256];
       
-    wVersionRequested = MAKEWORD( 1, 0 );
+  wVersionRequested = MAKEWORD( 1, 0 );
   
-    err = WSAStartup( wVersionRequested, &wsaData );
-    if ( err != 0 ) {
-      /* Tell the user that we could not find a usable */
-      /* WinSock DLL.                                  */
-      return ;
-    }
+  err = WSAStartup( wVersionRequested, &wsaData );
+  if ( err != 0 ) {
+    /* Tell the user that we could not find a usable */
+    /* WinSock DLL.                                  */
+    return ;
+  }
 #else
-    char _hostname[MAXHOSTNAMELEN];
+  char _hostname[MAXHOSTNAMELEN];
 #endif
     
-    if(gethostname(_hostname, sizeof(_hostname)) != 0)
-      {
+  if(gethostname(_hostname, sizeof(_hostname)) != 0)
+    {
     
-	printerr_("Error: gethostname! : ");
+      printerr_("Error: gethostname! : ");
 
 #ifdef WIN32
-	int error_code = WSAGetLastError ();
+      int error_code = WSAGetLastError ();
             
-	switch(error_code)
-	  {
-	  case WSAEFAULT:
-	    printerr_("WSAEFAULT");
-	    break;
-	  case WSANOTINITIALISED:
-	    printerr_("WSANOTINITIALISED");
-	    break;
-	  case WSAENETDOWN:
-	    printerr_("WSAENETDOWN");
-	    break;
-	  case WSAEINPROGRESS:
-	    printerr_("WSAEINPROGRESS");
-	    break;
-	  }
-	      WSACleanup( );	  
+      switch(error_code)
+	{
+	case WSAEFAULT:
+	  printerr_("WSAEFAULT");
+	  break;
+	case WSANOTINITIALISED:
+	  printerr_("WSANOTINITIALISED");
+	  break;
+	case WSAENETDOWN:
+	  printerr_("WSAENETDOWN");
+	  break;
+	case WSAEINPROGRESS:
+	  printerr_("WSAEINPROGRESS");
+	  break;
+	}
+      WSACleanup( );	  
 #else
-	perror("gethostname");
+      perror("gethostname");
 #endif
 	        
-	return;
-      }
+      return;
+    }
       
-    printout_("Hostname is : " , _hostname );
+  printout_("Hostname is : " , _hostname );
 
-    std::string hostStr(_hostname);
-    nodenameStr = hostStr;
-    strncpy(nodename, _hostname,sizeof(nodename));
+  std::string hostStr(_hostname);
+  nodenameStr = hostStr;
+  strncpy(nodename, _hostname,sizeof(nodename));
   
-    qcsaIsRegistered = false;
-    qcsaIsStarted_ = false;
-    isRegisteredToDci = false;
+  qcsaIsRegistered = false;
+  qcsaIsStarted_ = false;
+  isRegisteredToDci = false;
     
-    // Initialize dummy ORB
-    int dummy = 0;
+  // Initialize dummy ORB
+  int dummy = 0;
         
-    orb_ = CORBA::ORB_init (dummy, 0);
+  orb_ = CORBA::ORB_init (dummy, 0);
 
-    /* Get the current working directory: */
+  /* Get the current working directory: */
 #ifdef WIN32
-    if( _getcwd( cwd_buffer, _MAX_PATH ) == NULL ){
-      perror( "_getcwd error" );
-    }
+  if( _getcwd( cwd_buffer, _MAX_PATH ) == NULL ){
+    perror( "_getcwd error" );
+  }
 #else
-    if( getcwd( cwd_buffer, _MAX_PATH ) == NULL ){
-      perror( "_getcwd error" );
-    }
+  if( getcwd( cwd_buffer, _MAX_PATH ) == NULL ){
+    perror( "_getcwd error" );
+  }
 #endif
      
-    prop_repository_ = new PropertiesRepository();
+  prop_repository_ = new PropertiesRepository();
 
     // END USER INSERT SECTION RepNodeManagerSessionImpl::RepNodeManagerSessionImpl
   }
@@ -531,6 +604,8 @@ RepNodeManagerSessionImpl::RepNodeManagerSessionImpl()
 RepNodeManagerSessionImpl::~RepNodeManagerSessionImpl()
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::~RepNodeManagerSessionImpl
+  printout_("Entering destructor");
+  printout_("Leaving destructor");
 // END USER INSERT SECTION RepNodeManagerSessionImpl::~RepNodeManagerSessionImpl
 
 }
@@ -549,77 +624,77 @@ RepNodeManagerSessionImpl::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::configuration_complete
-    try {
+  try {
                 
-      DCI::DCIManager_ptr dciMgr = context_ -> get_connection_dcimanager();
+    DCI::DCIManager_ptr dciMgr = context_ -> get_connection_dcimanager();
             
-      if(CORBA::is_nil(dciMgr))
-	{
-	  printerr_("dciMgr is nil" );
-	  return;
-	}
-
-      NodeManagement_ptr nodeMgmt = dciMgr-> provide_node_management();
-      //printout_("node_management receptacle obtained" );          
-      CORBA::Object_var myRefObj = context_ -> get_CCM_object();
-            
-      //printout_("Narrowing for reference to self" );          
-      DCI::NodeManager_var myRef = DCI::NodeManager::_narrow(myRefObj);
-            
-      if(CORBA::is_nil(myRef)){
-	printerr_("could not obtain reference to self through context" );
+    if(CORBA::is_nil(dciMgr))
+      {
+	printerr_("dciMgr is nil" );
 	return;
-      }                
-      printout_("Registering to DCIManager with name ", nodename );
-      nodeMgmt -> register_node(nodename,myRef);
+      }
+
+    NodeManagement_ptr nodeMgmt = dciMgr-> provide_node_management();
+    //printout_("node_management receptacle obtained" );          
+    CORBA::Object_var myRefObj = context_ -> get_CCM_object();
             
-      printout_("Nodemanager has successfully registered to DCIManager" );
-      isRegisteredToDci = true;
+    //printout_("Narrowing for reference to self" );          
+    DCI::NodeManager_var myRef = DCI::NodeManager::_narrow(myRefObj);
+            
+    if(CORBA::is_nil(myRef)){
+      printerr_("could not obtain reference to self through context" );
+      return;
+    }                
+    printout_("Registering to DCIManager with name ", nodename );
+    nodeMgmt -> register_node(nodename,myRef);
+            
+    printout_("Nodemanager has successfully registered to DCIManager" );
+    isRegisteredToDci = true;
           
-      // Register my ComponentInstallation to naming service
+    // Register my ComponentInstallation to naming service
           
-      CORBA::Object_var ci_obj_ = myRef -> provide_facet("component_installation");
-      Components::Deployment::ComponentInstallation_var ci_ = Components::Deployment::ComponentInstallation::_narrow(ci_obj_);
+    CORBA::Object_var ci_obj_ = myRef -> provide_facet("component_installation");
+    Components::Deployment::ComponentInstallation_var ci_ = Components::Deployment::ComponentInstallation::_narrow(ci_obj_);
           
-      if(CORBA::is_nil(ci_)) {
-	printerr_("Could not retrieve own ComponentInstallation" );
-	throw Components::InvalidConfiguration();
-      }          
-      CORBA::Object_var ns_ = context_ -> resolve_service_reference("NameService");
+    if(CORBA::is_nil(ci_)) {
+      printerr_("Could not retrieve own ComponentInstallation" );
+      throw Components::InvalidConfiguration();
+    }          
+    CORBA::Object_var ns_ = context_ -> resolve_service_reference("NameService");
     
-      if(CORBA::is_nil(ns_)){
-	printerr_("Could not resolve NameService reference from context_" );
-	throw Components::InvalidConfiguration();    
-      }
-    
-      CosNaming::NamingContext_var nc_;
-
-      try {
-	nc_ = CosNaming::NamingContext::_narrow(ns_);
-      } catch	(const CORBA::Exception) {
-	printerr_("ERROR: Naming service not available." );
-	throw;
-      }
-
-
-      CosNaming::Name name_;
-      name_.length(3);
-      name_[0].id = CORBA::string_dup ("Qedo");
-      name_[1].id = CORBA::string_dup ("ComponentInstallation");
-      name_[2].id = CORBA::string_dup (nodename);
-
-      nc_ -> rebind(name_, ci_);
-        
-    } catch (CORBA::TRANSIENT trExcp) {
-      printerr_("RepNodeManagerSessionImpl:A CORBA::TRANSIENT exception occured" );
-      throw Components::InvalidConfiguration();        
-    } catch (CORBA::Exception corbaExcp) {
-      printerr_("RepNodeManagerSessionImpl:A CORBA exception occured" );
-      throw Components::InvalidConfiguration();        
-    } catch (...) {
-      printerr_("RepNodeManagerSessionImpl:An UNKNOWN exception occured" );
-      throw Components::InvalidConfiguration();               
+    if(CORBA::is_nil(ns_)){
+      printerr_("Could not resolve NameService reference from context_" );
+      throw Components::InvalidConfiguration();    
     }
+    
+    CosNaming::NamingContext_var nc_;
+
+    try {
+      nc_ = CosNaming::NamingContext::_narrow(ns_);
+    } catch	(const CORBA::Exception) {
+      printerr_("ERROR: Naming service not available." );
+      throw;
+    }
+
+
+    CosNaming::Name name_;
+    name_.length(3);
+    name_[0].id = CORBA::string_dup ("Qedo");
+    name_[1].id = CORBA::string_dup ("ComponentInstallation");
+    name_[2].id = CORBA::string_dup (nodename);
+
+    nc_ -> rebind(name_, ci_);
+        
+  } catch (CORBA::TRANSIENT trExcp) {
+    printerr_("RepNodeManagerSessionImpl:A CORBA::TRANSIENT exception occured" );
+    throw Components::InvalidConfiguration();        
+  } catch (CORBA::Exception corbaExcp) {
+    printerr_("RepNodeManagerSessionImpl:A CORBA exception occured" );
+    throw Components::InvalidConfiguration();        
+  } catch (...) {
+    printerr_("RepNodeManagerSessionImpl:An UNKNOWN exception occured" );
+    throw Components::InvalidConfiguration();               
+  }
 // END USER INSERT SECTION RepNodeManagerSessionImpl::configuration_complete
 }
 
@@ -686,22 +761,22 @@ RepNodeManagerSessionImpl::remove_component_server(Components::Deployment::Compo
 	throw(CORBA::SystemException, ::Components::RemoveFailure)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::remove_component_server
-    printout_("entering remove_component_server" );
+  printout_("entering remove_component_server" );
 
-    get_server_activator_();
+  get_server_activator_();
     
-    if(CORBA::is_nil(server_activator_)){
-      printerr_("server_activator is nil !!" );
-      return;        
-    }
+  if(CORBA::is_nil(server_activator_)){
+    printerr_("server_activator is nil !!" );
+    return;        
+  }
     
-    //Forward request to server activator
-    server_activator_ ->  remove_component_server(server);
+  //Forward request to server activator
+  server_activator_ ->  remove_component_server(server);
     
-    //Remove component server from local list
-    created_component_servers_.remove(server);
+  //Remove component server from local list
+  created_component_servers_.remove(server);
     
-    printout_("leaving remove_component_server" );
+  printout_("leaving remove_component_server" );
 // END USER INSERT SECTION RepNodeManagerSessionImpl::remove_component_server
 }
 
@@ -711,17 +786,17 @@ RepNodeManagerSessionImpl::get_component_servers()
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::get_component_servers
-    printout_("entering get_component_servers" );
-    get_server_activator_();
+  printout_("entering get_component_servers" );
+  get_server_activator_();
     
-    if(CORBA::is_nil(server_activator_)){
-      printerr_("server_activator is nil !!" );
-      return NULL;        
-    }
+  if(CORBA::is_nil(server_activator_)){
+    printerr_("server_activator is nil !!" );
+    return NULL;        
+  }
     
-    //Forward request to server activator
-    return server_activator_ ->  get_component_servers();
-    printout_("leaving get_component_servers" );
+  //Forward request to server activator
+  return server_activator_ ->  get_component_servers();
+  printout_("leaving get_component_servers" );
 // END USER INSERT SECTION RepNodeManagerSessionImpl::get_component_servers
 }
 
@@ -731,181 +806,178 @@ RepNodeManagerSessionImpl::install(const char* implUUID, const char* component_l
 	throw(CORBA::SystemException, ::Components::Deployment::InvalidLocation, ::Components::Deployment::InstallationFailure)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::install
-    printout_("entering install" );
-    std::string component_loc_str (component_loc);
-    ////printout_("component_loc is: "+component_loc_str );
-    const std::string refIorPrefix = "RepRef=";
-    const std::string filePrefix = "file=";
-    //Bei ftp und http: an DCIManager weiter leiten (bzw. RepositoryFeeder)
-    const std::string ftpPrefix = "ftp=";
-    const std::string httpPrefix = "http=";
+  printout_("entering install" );
+  std::string component_loc_str (component_loc);
+  ////printout_("component_loc is: "+component_loc_str );
+  const std::string refIorPrefix = "RepRef=";
+  const std::string filePrefix = "file=";
+  //Bei ftp und http: an DCIManager weiter leiten (bzw. RepositoryFeeder)
+  const std::string ftpPrefix = "ftp=";
+  const std::string httpPrefix = "http=";
         
-    std::string implUUID_str(implUUID);
+  std::string implUUID_str(implUUID);
     
-    std::string subStr(component_loc_str,0, refIorPrefix.length());
+  std::string subStr(component_loc_str,0, refIorPrefix.length());
  
-    ////printout_("subStr is: "+subStr );    
+  ////printout_("subStr is: "+subStr );    
 
-    if(refIorPrefix == subStr){
-      // component_loc is a stringified    
-      //printout_("component_loc is a stringified IOR" );
+  if(refIorPrefix == subStr){
+    // component_loc is a stringified    
+    //printout_("component_loc is a stringified IOR" );
         
-      try {
-	int dummy = 0;
+    try {
+      int dummy = 0;
                 
-	std::string iorString(component_loc,refIorPrefix.length(),component_loc_str.length()-1);
+      std::string iorString(component_loc,refIorPrefix.length(),component_loc_str.length()-1);
                
-	orb_ = CORBA::ORB_init (dummy, 0);
-	CORBA::Object_var obj_;
-	//printout_("string_to_object for depUnit" );
-	obj_ = orb_->string_to_object ( iorString.data() );
+      orb_ = CORBA::ORB_init (dummy, 0);
+      CORBA::Object_var obj_;
+      //printout_("string_to_object for depUnit" );
+      obj_ = orb_->string_to_object ( iorString.data() );
                                 
-	//printout_("Narrowing for depUnit" );
+      //printout_("Narrowing for depUnit" );
 
-	MDE::Deployment::DeploymentUnit_var depUnit = MDE::Deployment::DeploymentUnit::_narrow(obj_);
+      MDE::Deployment::DeploymentUnit_var depUnit = MDE::Deployment::DeploymentUnit::_narrow(obj_);
                 
-	if(CORBA::is_nil(depUnit))
-	  {
-	    printerr_("depUnit is nil" );
-	    throw Components::Deployment::InstallationFailure();
-	    return;
-	  }
+      if(CORBA::is_nil(depUnit))
+	{
+	  printerr_("depUnit is nil" );
+	  throw Components::Deployment::InstallationFailure();
+	  return;
+	}
                 
-	// Processing contained files
+      // Processing contained files
 
-	//printout_("Getting contained files" );
+      //printout_("Getting contained files" );
         
-	MDE::Deployment::ContainedFileSet_var containedFiles = depUnit -> contained_file();
-	int nrOfFiles = (int) containedFiles -> length();
+      MDE::Deployment::ContainedFileSet_var containedFiles = depUnit -> contained_file();
+      int nrOfFiles = (int) containedFiles -> length();
                 
-	//printout_("Now processing ", nrOfFiles , " contained files" );
-	for(CORBA::ULong i=0; i < containedFiles -> length() ; i++) {
-	  MDE::Deployment::ContainedFile_var currentFile = containedFiles[i];
+      //printout_("Now processing ", nrOfFiles , " contained files" );
+      for(CORBA::ULong i=0; i < containedFiles -> length() ; i++) {
+	MDE::Deployment::ContainedFile_var currentFile = containedFiles[i];
                     
                     
-	  std::string filename(currentFile -> filename());
-	  std::string entrypoint(currentFile -> entrypoint());
-	  std::string entrypoint_usage(currentFile ->entrypointusage());
+	std::string filename(currentFile -> filename());
+	std::string entrypoint(currentFile -> entrypoint());
+	std::string entrypoint_usage(currentFile ->entrypointusage());
                          
-	  printout_("Installing " , currentFile -> filename() );
-	  printout_("entrypoint: " , currentFile -> entrypoint() );
-	  printout_("entrypointusage: " , currentFile ->entrypointusage());
+	printout_("Installing " , currentFile -> filename() );
+	printout_("entrypoint: " , currentFile -> entrypoint() );
+	printout_("entrypointusage: " , currentFile ->entrypointusage());
  
-	  localImpl* currentImpl = this->get_impl_for_uuid_(implUUID);
-	  if(currentImpl == NULL){
-	    printout_("This implUUID has not been installed yet" );        
-	    localImpl* newImpl = new localImpl(implUUID_str);
-	    if(strcmp("executor",currentFile -> entrypointusage()) == 0){
-	      // Store this file's name along with the UUID in a hash table
-	      // It will be used for the get_implementation method                        
-	      newImpl->executor_module = filename;
-	      newImpl->executor_entrypoint = entrypoint;                        
-	    } else if(strcmp("servant",currentFile -> entrypointusage()) == 0){
-	      newImpl->servant_module = filename;
-	      newImpl->servant_entrypoint = entrypoint;                                        
-	    }
-	    this->add_impl_(newImpl);
-	  } else{
-	    printout_("This implUUID has already been installed" );        
-	    if(strcmp("executor",currentFile -> entrypointusage()) == 0){
-	      // Store this file's name along with the UUID in a hash table
-	      // It will be used for the get_implementation method                        
-	      currentImpl->executor_module = filename;
-	      currentImpl->executor_entrypoint = entrypoint;                        
-	    } else if(strcmp("servant",currentFile -> entrypointusage()) == 0){
-	      currentImpl->servant_module = filename;
-	      currentImpl->servant_entrypoint = entrypoint;                                        
-	    }
+	localImpl* currentImpl = this->get_impl_for_uuid_(implUUID);
+	if(currentImpl == NULL){
+	  printout_("This implUUID has not been installed yet" );        
+	  localImpl* newImpl = new localImpl(implUUID_str);
+	  if(strcmp("executor",currentFile -> entrypointusage()) == 0){
+	    // Store this file's name along with the UUID in a hash table
+	    // It will be used for the get_implementation method                        
+	    newImpl->executor_module = filename;
+	    newImpl->executor_entrypoint = entrypoint;                        
+	  } else if(strcmp("servant",currentFile -> entrypointusage()) == 0){
+	    newImpl->servant_module = filename;
+	    newImpl->servant_entrypoint = entrypoint;                                        
 	  }
+	  this->add_impl_(newImpl);
+	} else{
+	  printout_("This implUUID has already been installed" );        
+	  if(strcmp("executor",currentFile -> entrypointusage()) == 0){
+	    // Store this file's name along with the UUID in a hash table
+	    // It will be used for the get_implementation method                        
+	    currentImpl->executor_module = filename;
+	    currentImpl->executor_entrypoint = entrypoint;                        
+	  } else if(strcmp("servant",currentFile -> entrypointusage()) == 0){
+	    currentImpl->servant_module = filename;
+	    currentImpl->servant_entrypoint = entrypoint;                                        
+	  }
+	}
 
-	  try{
-	    this -> installFile_(implUUID_str, MDE::Deployment::File::_narrow(currentFile));
-	  } catch(...) {
-	    throw;
-	  }
-	}
-                
-                
-	// Processing dependent files
-	//printout_("Getting dependent files" );
-        
-	MDE::Deployment::DependentFileSet_var depFiles = depUnit -> dependent_file();
-	nrOfFiles = (int) depFiles -> length();
-                
-	//printout_("Now processing ", nrOfFiles , " dependent files" );
-	for(CORBA::ULong i=0; i < depFiles -> length() ; i++) {
-	  MDE::Deployment::DependentFile_var currentFile = depFiles[i];
+	try{
 	  this -> installFile_(implUUID_str, MDE::Deployment::File::_narrow(currentFile));
+	} catch(...) {
+	  throw;
 	}
-                
-      } catch (CORBA::TRANSIENT trExcp) {
-	printerr_("A CORBA::TRANSIENT exception occured" );
-	throw Components::Deployment::InstallationFailure();
-      } catch (CORBA::Exception corbaExcp) {
-	printerr_("A CORBA exception occured" );
-	throw Components::Deployment::InstallationFailure();
-	return;        
-      } catch (...) {
-	printerr_("An UNKNOWN exception occured" );
-	throw Components::Deployment::InstallationFailure();
-	return;               
       }
+                
+                
+      // Processing dependent files
+      //printout_("Getting dependent files" );
+        
+      MDE::Deployment::DependentFileSet_var depFiles = depUnit -> dependent_file();
+      nrOfFiles = (int) depFiles -> length();
+                
+      //printout_("Now processing ", nrOfFiles , " dependent files" );
+      for(CORBA::ULong i=0; i < depFiles -> length() ; i++) {
+	MDE::Deployment::DependentFile_var currentFile = depFiles[i];
+	this -> installFile_(implUUID_str, MDE::Deployment::File::_narrow(currentFile));
+      }
+                
+    } catch (CORBA::TRANSIENT trExcp) {
+      printerr_("A CORBA::TRANSIENT exception occured" );
+      throw Components::Deployment::InstallationFailure();
+    } catch (CORBA::Exception corbaExcp) {
+      printerr_("A CORBA exception occured" );
+      throw Components::Deployment::InstallationFailure();
+      return;        
+    } catch (...) {
+      printerr_("An UNKNOWN exception occured" );
+      throw Components::Deployment::InstallationFailure();
+      return;               
+    }
         
         
-    } else 
-      {
-	std::string subStr2(component_loc_str,0,ftpPrefix.length());
+  } else 
+    {
+      std::string subStr2(component_loc_str,0,ftpPrefix.length());
       
-	if(ftpPrefix == subStr2){
+      if(ftpPrefix == subStr2){
+    
+      } else {
+	std::string subStr3(component_loc_str,0,httpPrefix.length());  
+	if(httpPrefix == subStr3){
     
 	} else {
-	  std::string subStr3(component_loc_str,0,httpPrefix.length());  
-	  if(httpPrefix == subStr3){
+	  std::string subStr4(component_loc_str,0,filePrefix.length());
+	  if(filePrefix == subStr4){
     
 	  } else {
-	    std::string subStr4(component_loc_str,0,filePrefix.length());
-	    if(filePrefix == subStr4){
-    
-	    } else {
-	      // Unknown type of component location
-	      //printout_("Unknown type of component location " );
-	      throw ::Components::Deployment::InvalidLocation();
-	    }
+	    // Unknown type of component location
+	    //printout_("Unknown type of component location " );
+	    throw ::Components::Deployment::InvalidLocation();
 	  }
 	}
-	::DCI::Repository_var rep_ = context_ -> get_connection_repository();
-	if(CORBA::is_nil(rep_)){
-	  printerr_("No connection on repository receptacle" );
-	  throw Components::Deployment::InstallationFailure();
-	}
-            
-	CORBA::Object_var repfedObj = rep_ -> provide_facet("rep_feeder");
-	DCI::RepFeeder_var repFeeder_ = DCI::RepFeeder::_narrow(repfedObj);
-            
-	if(CORBA::is_nil(repFeeder_)){
-	  printerr_("unable to get connected RepFeeder" );
-	  throw Components::Deployment::InstallationFailure();
-	}
-            
-	//Now forward request to repository feeder
-	//printout_("Feeding assembly into repository" );
-	CORBA::Object_var depUnitObj_ = repFeeder_ -> feed_component_with_url(implUUID, component_loc);
-            
-	char* ior_ = orb_ -> object_to_string(depUnitObj_);
-	std::string iorString_(ior_);
-	std::string locationString_ = "RepRef=" + iorString_;
-            
-	//printout_("locationString is " , locationString_ );
-            
-	// Now install
-	install(implUUID, locationString_.data());
-	//printout_("leaving install" );
-
       }
+      ::DCI::Repository_var rep_ = context_ -> get_connection_repository();
+      if(CORBA::is_nil(rep_)){
+	printerr_("No connection on repository receptacle" );
+	throw Components::Deployment::InstallationFailure();
+      }
+            
+      CORBA::Object_var repfedObj = rep_ -> provide_facet("rep_feeder");
+      DCI::RepFeeder_var repFeeder_ = DCI::RepFeeder::_narrow(repfedObj);
+            
+      if(CORBA::is_nil(repFeeder_)){
+	printerr_("unable to get connected RepFeeder" );
+	throw Components::Deployment::InstallationFailure();
+      }
+            
+      //Now forward request to repository feeder
+      printout_("Feeding assembly into repository" );
+      CORBA::Object_var depUnitObj_ = repFeeder_ -> feed_component_with_url(implUUID, component_loc);
+            
+      char* ior_ = orb_ -> object_to_string(depUnitObj_);
+      std::string iorString_(ior_);
+      std::string locationString_ = "RepRef=" + iorString_;
+            
+      printout_("locationString is " , locationString_.data() );
+            
+      // Now install
+      install(implUUID, locationString_.data());
+
+    }
         
-    //Test: Trying to get executor for implUUID
-    //printout_("TEST implementation for implUUID " , implUUID , " is " , get_implementation(implUUID) );        
-    printout_("leaving install" );
+  printout_("leaving install" );
 // END USER INSERT SECTION RepNodeManagerSessionImpl::install
 }
 
@@ -915,10 +987,10 @@ RepNodeManagerSessionImpl::replace(const char* implUUID, const char* component_l
 	throw(CORBA::SystemException, ::Components::Deployment::InvalidLocation, ::Components::Deployment::InstallationFailure)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::replace
-    printout_("entering replace " );
-    this->remove(implUUID);
-    this->install(implUUID, component_loc);
-    printout_("leaving replace" );
+  printout_("entering replace " );
+  this->remove(implUUID);
+  this->install(implUUID, component_loc);
+  printout_("leaving replace" );
 // END USER INSERT SECTION RepNodeManagerSessionImpl::replace
 }
 
@@ -928,120 +1000,142 @@ RepNodeManagerSessionImpl::remove(const char* implUUID)
 	throw(CORBA::SystemException, ::Components::Deployment::UnknownImplId, ::Components::RemoveFailure)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::remove
-    printout_("Entering remove" );
+  printout_("Entering remove" );
     
-    std::string implUUID_str(implUUID);
-    printout_("RepNodeManagerSession: implUUID: " , implUUID  );
+  std::string implUUID_str(implUUID);
+  printout_("RepNodeManagerSession: implUUID: " , implUUID  );
     
-    localImpl* targetImpl = this->get_impl_for_uuid_(implUUID_str);
+  localImpl* targetImpl = this->get_impl_for_uuid_(implUUID_str);
     
-    if(targetImpl == NULL){
-      printout_("Unknown implUUID" );
-      throw ::Components::Deployment::UnknownImplId();
-    }
+  if(targetImpl == NULL){
+    printout_("Unknown implUUID" );
+    throw ::Components::Deployment::UnknownImplId();
+  }
     
-    //Remove the UUID from the local list of installed implementations
-    this->remove_impl_(implUUID);
+  //Remove the UUID from the local list of installed implementations
+  this->remove_impl_(implUUID);
     
-    //Removing installed files
+  //Removing installed files
     
 #ifdef WIN32
-    if(_chdir((targetImpl->installation_dir).data())){
-      printerr_("Unable to locate the directory: " , targetImpl->installation_dir.data() );
-      throw ::Components::RemoveFailure();
-    }
+  if(_chdir((targetImpl->installation_dir).data())){
+    printerr_("Unable to locate the directory: " , targetImpl->installation_dir.data() );
+    throw ::Components::RemoveFailure();
+  }
     
-    //Remove all the files installed with the assembly
-    struct _finddata_t current_file;
-    long hFile;
+  //Remove all the files installed with the assembly
+  struct _finddata_t current_file;
+  long hFile;
 
-    /* Find and remove first file in installation directory */
-    if( (hFile = _findfirst( "*.*", &current_file )) == -1L )
-      printf( "No files in current directory!\n" );
-    else
-      {
-	std::string fileNameStr (current_file.name);
-	if(strcmp(".",current_file.name) != 0 && strcmp("..",current_file.name) != 0 && current_file.attrib != _A_SUBDIR) {
-	  printout_("removing file " , current_file.name );
-	  if(std::remove(current_file.name) == -1){
-	    printout_("Could not remove file " , current_file.name );    
-	    _findclose( hFile );
-	    throw ::Components::RemoveFailure();                
-	  }
+  /* Find and remove first file in installation directory */
+  if( (hFile = _findfirst( "*.*", &current_file )) == -1L )
+    printf( "No files in current directory!\n" );
+  else
+    {
+      std::string fileNameStr (current_file.name);
+      if(strcmp(".",current_file.name) != 0 && strcmp("..",current_file.name) != 0 && current_file.attrib != _A_SUBDIR) {
+	printout_("removing file " , current_file.name );
+	if(std::remove(current_file.name) == -1){
+	  printout_("Could not remove file " , current_file.name );    
+	  _findclose( hFile );
+	  throw ::Components::RemoveFailure();                
 	}
-	/* Find and remove the others files */
-	while( _findnext( hFile, &current_file ) == 0 )
-	  {
-	    if(strcmp(".",current_file.name) != 0 && strcmp("..",current_file.name) != 0 && current_file.attrib != _A_SUBDIR ) {
-	      printout_("removing file " , current_file.name );
-	      if(std::remove(current_file.name) == -1){
-		printout_("Could not remove file " , current_file.name );    
-		_findclose( hFile );
-		throw ::Components::RemoveFailure();                
-	      }
+      }
+      /* Find and remove the others files */
+      while( _findnext( hFile, &current_file ) == 0 )
+	{
+	  if(strcmp(".",current_file.name) != 0 && strcmp("..",current_file.name) != 0 && current_file.attrib != _A_SUBDIR ) {
+	    printout_("removing file " , current_file.name );
+	    if(std::remove(current_file.name) == -1){
+	      printout_("Could not remove file " , current_file.name );    
+	      _findclose( hFile );
+	      throw ::Components::RemoveFailure();                
 	    }
 	  }
-
-	_findclose( hFile );
-      }
-   
-    //Get back to parent directory
-    if( _chdir(".."))
-      printerr_("Unable to change to parent directory: " );
-
-    
-    //Now try to remove the directory
-    printout_("Removing directory " , implUUID );    
-
-    if(_rmdir((targetImpl->installation_dir).data())){
-      printerr_("Unable to remove the directory: " , targetImpl->installation_dir.data() );
-      throw ::Components::RemoveFailure();
-    }
-    
-#else
-    
-    DIR *dp;
-    struct dirent *dirElt;
-    struct stat _statbuf;
-    const char* targetDir = (targetImpl->installation_dir).data();
-
-    if((dp = opendir(targetDir)) == NULL){
-      printerr_("Could not read target installation directory");
-        
-      throw ::Components::RemoveFailure();
-    }
-    
-    while ((dirElt = readdir(dp)) != NULL) {
-      if(strcmp(dirElt->d_name,".") == 0 || strcmp(dirElt->d_name,"..") == 0)
-	continue;
-            
-      if(lstat(dirElt->d_name, &_statbuf) < 0)
-	{
-	  printerr_("lstat error: ", strerror(NULL));
-	  throw ::Components::RemoveFailure();
 	}
 
-      std::remove(dirElt->d_name);
-            
-      //             if(remove(dirElt->d_name) < 0){            
-      //                 printerr_("Could not remove file:", dirElt->d_name);
-      //                 throw Components::RemoveFailure();                
-      //             }
-      printout_("File succesfully removed: ", dirElt->d_name);            
-    }    
+      _findclose( hFile );
+    }
+   
+  //Get back to parent directory
+  if( _chdir(".."))
+    printerr_("Unable to change to parent directory: " );
+
     
-    if(closedir(dp) < 0)
-      {
-	printerr_("Could not close directory ",targetDir);
-	throw Components::RemoveFailure();
-      }
+  //Now try to remove the directory
+  printout_("Removing directory " , implUUID );    
+
+  if(_rmdir((targetImpl->installation_dir).data())){
+    printerr_("Unable to remove the directory: " , targetImpl->installation_dir.data() );
+    throw ::Components::RemoveFailure();
+  }
+    
+#else
+
+  if(chdir((targetImpl->installation_dir).data()) < 0){
+    printerr_("Unable to locate the directory: " , targetImpl->installation_dir.data() );
+    throw ::Components::RemoveFailure();
+  }
+    
+  DIR *dp;
+  struct dirent *dirElt;
+  struct stat _statbuf;
+  const char* targetDir = (targetImpl->installation_dir).data();
+
+  printout_("UUID Installation directory is "+targetImpl->installation_dir);
+
+  if((dp = opendir(targetDir)) == NULL){
+    printerr_("Could not read target installation directory");
         
-    if(rmdir(targetDir) < 0){
-      printerr_("Could not remove directory ",targetDir);
-      throw Components::RemoveFailure();    
-    }   
+    throw ::Components::RemoveFailure();
+  }
+    
+  while ((dirElt = readdir(dp)) != NULL) {
+    if(strcmp(dirElt->d_name,".") == 0 || strcmp(dirElt->d_name,"..") == 0)
+      continue;
+    
+//     char fname[_MAX_PATH];
+//     strcpy(fname,targetImpl->installation_dir.data());
+//     strcat(fname,dirElt->d_name);
+
+     if(lstat(dirElt->d_name, &_statbuf) < 0)
+    //if(lstat(fname, &_statbuf) < 0)
+      {
+	//printerr_("lstat error: ", strerror(NULL));
+	printerr_("lstat error: ",dirElt->d_name);
+	//printerr_("lstat error: ",fname);
+	handleLstatError_(errno);
+	throw ::Components::RemoveFailure();
+      }
+
+    //std::remove(dirElt->d_name);
+            
+      if(std::remove(dirElt->d_name) < 0){            
+//     if(std::remove(fname) < 0){            
+      printerr_("Could not remove file:", dirElt->d_name);
+//       printerr_("Could not remove file:", fname);
+      throw Components::RemoveFailure();                
+    }
+    printout_("File succesfully removed: ", dirElt->d_name);            
+  }    
+    
+  if(closedir(dp) < 0)
+    {
+      printerr_("Could not close directory ",targetDir);
+      throw Components::RemoveFailure();
+    }
+
+  if(chdir("..") < 0){
+    printerr_("Unable to change back to installation directory");
+    throw ::Components::RemoveFailure();
+  }
+        
+  if(rmdir(targetDir) < 0){
+    printerr_("Could not remove directory ",targetDir);
+    throw Components::RemoveFailure();    
+  }   
 #endif
-    printout_("Leaving remove" );    
+  printout_("Leaving remove" );    
 
 // END USER INSERT SECTION RepNodeManagerSessionImpl::remove
 }
@@ -1052,16 +1146,16 @@ RepNodeManagerSessionImpl::get_implementation(const char* implUUID)
 	throw(CORBA::SystemException, ::Components::Deployment::UnknownImplId, ::Components::Deployment::InstallationFailure)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::get_implementation
-    printout_("entering get_implementation " );
+  printout_("entering get_implementation " );
 
-    localImpl* implData = this->get_impl_for_uuid_(implUUID);
-    if(implData == NULL){
-      throw ::Components::Deployment::UnknownImplId();
-    }
-    printout_("Implementation description: "  , implData->get_description() );
-    return implData->get_description();
+  localImpl* implData = this->get_impl_for_uuid_(implUUID);
+  if(implData == NULL){
+    throw ::Components::Deployment::UnknownImplId();
+  }
+  printout_("Implementation description: "  , implData->get_description() );
+  return implData->get_description();
 
-    printout_("leaving get_implementation" );
+  printout_("leaving get_implementation" );
 // END USER INSERT SECTION RepNodeManagerSessionImpl::get_implementation
 }
 
@@ -1071,39 +1165,39 @@ RepNodeManagerSessionImpl::upload(const char* implUUID, const DCI::ComponentArch
 	throw(CORBA::SystemException, ::Components::Deployment::InstallationFailure)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::upload
-    printout_("entering upload " );
-    //TODO: ueber repfeeder weiterleiten
-    ::DCI::Repository_var rep_ = context_ -> get_connection_repository();
-    if(CORBA::is_nil(rep_)){
-      printerr_(" No connection on repository receptacle" );
-      throw Components::Deployment::InstallationFailure();
-    }
+  printout_("entering upload " );
+  //TODO: ueber repfeeder weiterleiten
+  ::DCI::Repository_var rep_ = context_ -> get_connection_repository();
+  if(CORBA::is_nil(rep_)){
+    printerr_(" No connection on repository receptacle" );
+    throw Components::Deployment::InstallationFailure();
+  }
     
-    //printout_("Getting rep_feeder facet ...";
-    CORBA::Object_var repfedObj = rep_ -> provide_facet("rep_feeder");
-    //printout_("OK" );
-    //printout_("Narrowing rep_feeder ...";
-    DCI::RepFeeder_var repFeeder_ = DCI::RepFeeder::_narrow(repfedObj);
-    //printout_("OK" );
+  //printout_("Getting rep_feeder facet ...";
+  CORBA::Object_var repfedObj = rep_ -> provide_facet("rep_feeder");
+  //printout_("OK" );
+  //printout_("Narrowing rep_feeder ...";
+  DCI::RepFeeder_var repFeeder_ = DCI::RepFeeder::_narrow(repfedObj);
+  //printout_("OK" );
     
-    if(CORBA::is_nil(repFeeder_)){
-      printerr_("unable to get connected RepFeeder" );
-      throw Components::Deployment::InstallationFailure();
-    }
+  if(CORBA::is_nil(repFeeder_)){
+    printerr_("unable to get connected RepFeeder" );
+    throw Components::Deployment::InstallationFailure();
+  }
     
-    //Now forward request to repository feeder
-    //printout_("Feeding component archive into repository" );
-    CORBA::Object_var depUnitObj_ = repFeeder_ -> feed_component(implUUID, archive);
+  //Now forward request to repository feeder
+  //printout_("Feeding component archive into repository" );
+  CORBA::Object_var depUnitObj_ = repFeeder_ -> feed_component(implUUID, archive);
     
-    char* ior_ = orb_ -> object_to_string(depUnitObj_);
-    std::string iorString_(ior_);
-    std::string locationString_ = "RepRef=" + iorString_;
+  char* ior_ = orb_ -> object_to_string(depUnitObj_);
+  std::string iorString_(ior_);
+  std::string locationString_ = "RepRef=" + iorString_;
     
-    //printout_("locationString is " , locationString_ );
+  //printout_("locationString is " , locationString_ );
     
-    printout_("leaving upload" );
-    char* locationStr_ = strdup(locationString_.data());
-    return locationStr_;
+  printout_("leaving upload" );
+  char* locationStr_ = strdup(locationString_.data());
+  return locationStr_;
 // END USER INSERT SECTION RepNodeManagerSessionImpl::upload
 }
 
@@ -1113,8 +1207,8 @@ RepNodeManagerSessionImpl::get_node_properties()
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::get_node_properties
-    //printout_("entering get_node_properties " );
-    throw CORBA::NO_IMPLEMENT();
+  printout_("entering get_node_properties " );
+  throw CORBA::NO_IMPLEMENT();
 // END USER INSERT SECTION RepNodeManagerSessionImpl::get_node_properties
 }
 
@@ -1124,13 +1218,13 @@ RepNodeManagerSessionImpl::is_property_defined(const char* property_name)
 	throw(CORBA::SystemException, ::Components::InvalidName)
 {
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl::is_property_defined
-    printout_("entering is_property_defined " );
-    int idx;
-    bool found = prop_repository_ -> get_index(property_name, &idx);
-    if(found)
-      printout_("Found property ", property_name);
-    printout_("leaving is_property_defined " );
-    return found;
+  printout_("entering is_property_defined " );
+  int idx;
+  bool found = prop_repository_ -> get_index(property_name, &idx);
+  if(found)
+    printout_("Found property ", property_name);
+  printout_("leaving is_property_defined " );
+  return found;
 // END USER INSERT SECTION RepNodeManagerSessionImpl::is_property_defined
 }
 
@@ -1167,9 +1261,11 @@ RepNodeManagerImpl::RepNodeManagerImpl()
 RepNodeManagerImpl::~RepNodeManagerImpl()
 {
 // BEGIN USER INSERT SECTION RepNodeManagerImpl::~RepNodeManagerImpl
+  std::cout <<"RepNodeManagerImpl: entering destructor" << std::endl;
 // END USER INSERT SECTION RepNodeManagerImpl::~RepNodeManagerImpl
 
     component_->_remove_ref();
+ std::cout <<"RepNodeManagerImpl: leaving destructor" << std::endl;
 }
 
 

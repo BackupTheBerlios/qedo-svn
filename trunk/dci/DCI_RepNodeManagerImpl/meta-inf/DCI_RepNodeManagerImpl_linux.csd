@@ -17,8 +17,6 @@
         <processor name="x86" />
         <compiler name="g++" version="3.3.1" />
         <programminglanguage name="C++" />
-        <dependency type="DLL"><localfile name="jtcd.dll"/></dependency>
-        <dependency type="DLL"><localfile name="obd.dll"/></dependency>
         <descriptor type="CORBA-Component">
             <fileinarchive name="meta-inf/DCI_RepNodeManagerImpl.ccd" />
         </descriptor>
