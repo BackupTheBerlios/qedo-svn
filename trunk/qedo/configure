@@ -2140,7 +2140,7 @@ echo "$as_me: error: you can use either Mico or Orbacus" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
-QEDO_ORB=MICO_ORBWWWWWWWWWW
+QEDO_ORB=MICO_ORB
 
 ORBACUSDIR=""
 if test X"$with_orbacus" != X ;then
@@ -2148,14 +2148,14 @@ if test X"$with_orbacus" != X ;then
 	HAVE_ORBACUS=yes
 	QEDO_ORB=ORBACUS_ORB
 
-   { echo "$as_me:$LINENO: please make sure, that $ORBACUSDIR/bin/idl will run" >&5
+	{ echo "$as_me:$LINENO: please make sure, that $ORBACUSDIR/bin/idl will run" >&5
 echo "$as_me: please make sure, that $ORBACUSDIR/bin/idl will run" >&6;}
 else
-MICODIR=""
-if test X"$with_mico" != X ;then
-	MICODIR="$with_mico"
-	QEDO_ORB=MICO_ORB
-	# Extract the first word of "mico-config", so it can be a program name with args.
+	MICODIR=""
+	if test X"$with_mico" != X ;then
+		MICODIR="$with_mico"
+		QEDO_ORB=MICO_ORB
+		# Extract the first word of "mico-config", so it can be a program name with args.
 set dummy mico-config; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
@@ -2191,10 +2191,10 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-	{ echo "$as_me:$LINENO: please make sure, that $MICODIR/bin/idl will run" >&5
+		{ echo "$as_me:$LINENO: please make sure, that $MICODIR/bin/idl will run" >&5
 echo "$as_me: please make sure, that $MICODIR/bin/idl will run" >&6;}
-else
-	# Extract the first word of "mico-config", so it can be a program name with args.
+	else
+		# Extract the first word of "mico-config", so it can be a program name with args.
 set dummy mico-config; ac_word=$2
 echo "$as_me:$LINENO: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
@@ -2230,12 +2230,14 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
-fi
-if test "$HAVE_MICO_CONFIG" != "yes"; then
-  { { echo "$as_me:$LINENO: error: found no mico-config" >&5
+	fi
+	if test "$HAVE_MICO_CONFIG" != "yes"; then
+ 		{ { echo "$as_me:$LINENO: error: found no mico-config" >&5
 echo "$as_me: error: found no mico-config" >&2;}
    { (exit 1); exit 1; }; }
-fi
+	else
+		QEDO_ORB=MICO_ORB
+	fi
 fi
 
 

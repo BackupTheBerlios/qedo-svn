@@ -69,20 +69,22 @@ if test X"$with_orbacus" != X ;then
 	HAVE_ORBACUS=yes
 	QEDO_ORB=ORBACUS_ORB
 
-   AC_MSG_NOTICE([please make sure, that $ORBACUSDIR/bin/idl will run])
+	AC_MSG_NOTICE([please make sure, that $ORBACUSDIR/bin/idl will run])
 else
-MICODIR=""
-if test X"$with_mico" != X ;then
-	MICODIR="$with_mico"
-	QEDO_ORB=MICO_ORB
-	AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no,[$MICODIR/bin])
-	AC_MSG_NOTICE([please make sure, that $MICODIR/bin/idl will run])
-else
-	AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no)
-fi
-if test "$HAVE_MICO_CONFIG" != "yes"; then
-  AC_MSG_ERROR([found no mico-config])
-fi
+	MICODIR=""
+	if test X"$with_mico" != X ;then
+		MICODIR="$with_mico"
+		QEDO_ORB=MICO_ORB
+		AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no,[$MICODIR/bin])
+		AC_MSG_NOTICE([please make sure, that $MICODIR/bin/idl will run])
+	else
+		AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no)
+	fi
+	if test "$HAVE_MICO_CONFIG" != "yes"; then
+ 		AC_MSG_ERROR([found no mico-config])
+	else
+		QEDO_ORB=MICO_ORB
+	fi
 fi
 
 AC_SUBST(HAVE_MICO_CONFIG)
