@@ -33,6 +33,10 @@
 #include "IDLType_impl.h"
 #include "Debug.h"
 
+#include <vector>
+
+using namespace std;
+
 namespace QEDO_ComponentRepository {
 
 class StreamTypeDef_impl : public virtual POA_IR__::StreamTypeDef,
@@ -40,7 +44,8 @@ class StreamTypeDef_impl : public virtual POA_IR__::StreamTypeDef,
 							public virtual IDLType_impl
 {
 private:
-	IR__::IDLType_var transported_type_;
+	IR__::IDLType_var transported_type_;				// holds the IDL type when streamtype is a value streamtype
+	vector <StreamTypeDef_impl*> grouped_types_;		// holds the set of streamtypes that are grouped by this streamtype when streamtype is a logical streamtype
 
 public:
 	StreamTypeDef_impl (Container_impl *,  Repository_impl *);
@@ -91,6 +96,14 @@ public:
         throw(CORBA::SystemException);
 	virtual void transported_type(IR__::IDLType_ptr)
 		throw(CORBA::SystemException);
+
+	//
+    // IDL:omg.org/IR__/StreamTypeDef/grouped_types:1.0
+    //
+    virtual IR__::StreamTypeDefSeq* grouped_types()
+        throw(CORBA::SystemException);
+    virtual void grouped_types(const IR__::StreamTypeDefSeq&)
+        throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository

@@ -4,8 +4,8 @@
 *   Author  : Harald Böhme
 *   e-mail  : boehme@informatik.hu-berlin.de
 *   Remark  : 
-*   $Date: 2003/10/19 11:40:16 $
-*   $Revision: 1.4 $
+*   $Date: 2003/11/10 15:00:38 $
+*   $Revision: 1.5 $
 *   
 *******************************************************************************/
 
@@ -25,7 +25,7 @@
 %}
 
 %{
-static char id[] UNUSED = "$Id: util.k,v 1.4 2003/10/19 11:40:16 tom Exp $";
+static char id[] UNUSED = "$Id: util.k,v 1.5 2003/11/10 15:00:38 stoinski Exp $";
 %}
 
 /****************** generic parent, printing *************************/
@@ -141,6 +141,7 @@ extern node_flag                      the_EmitsDclN;
 extern node_flag                      the_PublishesDclN;
 extern node_flag                      the_ConsumesDclN;
 extern node_flag                      the_StreamTypeN;
+extern node_flag					  the_ValueStreamTypeN;
 extern node_flag                      the_SourceN;
 extern node_flag                      the_SinkN;
 
@@ -174,6 +175,7 @@ node_flag the_EmitsDclN = EmitsDclN();
 node_flag the_PublishesDclN = PublishesDclN();
 node_flag the_ConsumesDclN = ConsumesDclN();
 node_flag the_StreamTypeN = StreamTypeN();
+node_flag the_ValueStreamTypeN = ValueStreamTypeN();
 node_flag the_SinkN = SinkN();
 node_flag the_SourceN = SourceN();
 

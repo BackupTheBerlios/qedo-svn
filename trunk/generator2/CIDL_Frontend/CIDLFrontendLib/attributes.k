@@ -76,7 +76,7 @@ extern table_item_set_printer table_item_set_printer;
 %}
 
 %{
-static char id[] UNUSED = "$Id: attributes.k,v 1.6 2003/10/19 11:40:16 tom Exp $";
+static char id[] UNUSED = "$Id: attributes.k,v 1.7 2003/11/10 15:00:38 stoinski Exp $";
 %}
 
 /*********************  Symbol table *********************/
@@ -134,6 +134,7 @@ node_flag:
 	| SinkN()
 	| SourceN()
 	| StreamTypeN()
+	| ValueStreamTypeN()
 	  ;
 
 idl_name : {

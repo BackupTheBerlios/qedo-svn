@@ -606,9 +606,11 @@ consumes_decl :
 
 streamtype_decl :
       TOK_streamtype '<' '>' TOK_identifier
-	  { $$ = StreamTypeDcl(NilIdentifier(), $4); add_streamtype_dcl($4,$$); }
-	| TOK_streamtype '<' scoped_name '>' TOK_identifier
-	  { $$ = StreamTypeDcl($3, $5); add_streamtype_dcl($5,$$); }
+	  { $$ = AtomicStreamTypeDcl(NilDefinition(), $4); add_streamtype_dcl($4,$$); }
+	| TOK_streamtype '<' type_spec '>' TOK_identifier
+	  { $$ = AtomicStreamTypeDcl($3, $5); add_valuestreamtype_dcl($5,$$); }
+	| TOK_streamtype '{' scoped_name idl_identifier_list '}' TOK_identifier
+	  { $$ = LogicalStreamTypeDcl(Considl_identifier_list ($3, $4), $6); add_streamtype_dcl($6,$$); }
     ;
 
 sink_decl :

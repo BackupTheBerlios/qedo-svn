@@ -160,6 +160,26 @@ GeneratorServantC::check_for_generation(IR__::Contained_ptr item)
 };
 
 
+void 
+GeneratorServantC::resolve_atomic_streamtypes(IR__::StreamTypeDef_ptr streamtype, IR__::StreamTypeDefSeq& atomic_streamtypes)
+{
+	// Test for atomic streamtype
+	IR__::StreamTypeDefSeq_var grouped_types = streamtype->grouped_types();
+
+	if (! grouped_types->length())
+	{
+		atomic_streamtypes.length (atomic_streamtypes.length() + 1);
+		atomic_streamtypes[atomic_streamtypes.length() - 1] = IR__::StreamTypeDef::_duplicate (streamtype);
+		return;
+	}
+
+	for (unsigned int i = 0; i < grouped_types->length(); i++)
+	{
+		resolve_atomic_streamtypes (grouped_types[i], atomic_streamtypes);
+	}
+}
+
+
 void
 GeneratorServantC::doAttribute(IR__::AttributeDef_ptr attribute)
 {
@@ -1861,11 +1881,18 @@ GeneratorServantC::genSinkRegistration(IR__::HomeDef_ptr home)
 		out << mapFullNameServant(sinks[i]) << "::cleaner_.factory_);\n";
 		out << "StreamComponents::SinkStreamPort_var " << sink_name << " = StreamComponents::SinkStreamPort::_narrow (" << sink_name << "_ref);\n\n";
 
-		// The following must be changed when going to support grouped stream types
+		// Resolve atomic stream types from logical stream type and generate code for it
 		out << "CORBA::RepositoryIdSeq streamtypes;\n";
-		out << "streamtypes.length (1);\n";
-		out << "streamtypes[0] = CORBA::string_dup (\"";
-		out << sinks[i]->stream_type()->id() << "\");\n\n";
+		IR__::StreamTypeDefSeq atomic_types;
+		atomic_types.length(0);
+		resolve_atomic_streamtypes (sinks[i]->stream_type(), atomic_types);
+		out << "streamtypes.length (" << atomic_types.length() << ");\n";
+		for (CORBA::ULong j = 0; j < atomic_types.length(); j++)
+		{
+			out << "streamtypes[" << j << "] = CORBA::string_dup (\"";
+			out << atomic_types[j]->id() << "\");\n";
+		}
+		out << "\n";
 
 		out << "// Initialize the dispatcher\n";
 		out << "Qedo::StreamDataDispatcher* " << sink_name << "_dispatcher =\n"; out.indent();
@@ -1893,11 +1920,19 @@ GeneratorServantC::genSourceRegistration(IR__::HomeDef_ptr home)
 	CORBA::ULong i;
 	for( i= 0; i < len; i++)
 	{
+		// Resolve atomic stream types from logical stream type and generate code for it
 		out << "CORBA::RepositoryIdSeq streamtypes;\n";
-		// The following must be changed when going to support grouped stream types
-		out << "streamtypes.length (1);\n";
-		out << "streamtypes[0] = CORBA::string_dup (\"";
-		out << sources[i]->stream_type()->id() << "\");\n";
+		IR__::StreamTypeDefSeq atomic_types;
+		atomic_types.length(0);
+		resolve_atomic_streamtypes (sources[i]->stream_type(), atomic_types);
+		out << "streamtypes.length (" << atomic_types.length() << ");\n";
+		for (CORBA::ULong j = 0; j < atomic_types.length(); j++)
+		{
+			out << "streamtypes[" << j << "] = CORBA::string_dup (\"";
+			out << atomic_types[j]->id() << "\");\n";
+		}
+		out << "\n";
+
 		out << "component_instance.stream_ccm_object_executor_->add_source (\"";
 		out << sources[i]->name() << "\",\n";
 		out.indent(); out.indent();

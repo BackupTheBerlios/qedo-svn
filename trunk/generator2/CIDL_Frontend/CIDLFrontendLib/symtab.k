@@ -475,7 +475,7 @@ add_sink_dcl(
   definition def_v,
   idl_identifier ident)
 {
-  resolve_name(ident,the_StreamTypeN);
+  resolve_streamtype_name(ident);
   add_name(false,SinkN(),name,def_v,0);
 }
 
@@ -485,7 +485,7 @@ add_source_dcl(
   definition def_v,
   idl_identifier ident)
 {
-  resolve_name(ident,the_StreamTypeN);
+  resolve_streamtype_name(ident);
   add_name(false,SourceN(),name,def_v,0);
 }
 
@@ -495,7 +495,43 @@ add_streamtype_dcl(
   idl_name name,
   definition def_v)
 {
+  with(def_v) {
+    AtomicStreamTypeDcl(NilDefinition(),*) : {}
+    LogicalStreamTypeDcl(type_id_list,*) : {
+      foreach(ident;idl_identifier_list type_id_list) {
+        table_item_list list_v = lookup_identifier(ident,the_StreamTypeN);
+        with(list_v) {
+          Niltable_item_list() : {
+            Error("No multimedia streamtype or streamtype not defined for %k\n",ident,ident);
+            exit (1);
+          }
+          Constable_item_list(item_v,Niltable_item_list()) : {
+            ident->symtab_entry = item_v;
+          }
+          Constable_item_list(item_v,*) : {
+            ident->symtab_entry = item_v;
+            Error("Multiple definitions for %k\n",ident,ident);
+            // TODO: exit(1)???
+          }
+        }
+      }
+    }
+  }
   add_name(false,StreamTypeN(),name,def_v,0);
+}
+
+
+void
+add_valuestreamtype_dcl(
+  idl_name name,
+  definition def_v)
+{
+  with(def_v) {
+    AtomicStreamTypeDcl(type_def,*) : {
+      resolve_type(type_def);
+    }
+  }
+  add_name(false,ValueStreamTypeN(),name,def_v,0);
 }
 
 
@@ -1218,6 +1254,16 @@ resolve_event_type_names(idl_identifier_list names)
   node_flags_v[0] = the_EventTypeN;
   node_flags_v[1] = the_ValueTypeN;
   return resolve_names_n(names,node_flags_v,2);
+}
+
+table_item_lists
+resolve_streamtype_name(idl_identifier ident_v)
+{
+  node_flag node_flags_v[2];
+  idl_identifier_list list_v = Considl_identifier_list(ident_v,Nilidl_identifier_list());
+  node_flags_v[0] = the_StreamTypeN;
+  node_flags_v[1] = the_ValueStreamTypeN;
+  return resolve_names_n(list_v,node_flags_v,2);
 }
 
 table_item_lists

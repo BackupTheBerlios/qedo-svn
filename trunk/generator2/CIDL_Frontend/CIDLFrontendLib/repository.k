@@ -1216,23 +1216,25 @@ ConsumesDcl(ident, name)
   ];
 
 def_v=
-StreamTypeDcl(ident, name)
-->[ feed_container:
+AtomicStreamTypeDcl(type_def, name)
+->[ feed:
+    %uviewvar build my_build;
+    type_def : my_build
 	{
       IR__::Container_ptr container;
       container = IR__::Container::_narrow(kc_current_view.container);
       NOT_NIL(container);
       IR__::IDLType_ptr transported_type;
-      with(ident)
+      with(type_def)
       {
-		NilIdentifier() : { transported_type = IR__::IDLType::_nil(); }
+		NilDefinition() : { transported_type = IR__::IDLType::_nil(); }
         default : {
-          transported_type = IR__::IDLType::_narrow(ident->symtab_entry->irobj);
+          transported_type = IR__::IDLType::_narrow(type_def->irobj);
           NOT_NIL(transported_type);
           }
       }
       
-      // create StreamTYPE
+      // create StreamType
       IR__::StreamTypeDef_ptr stream_type;
       try {
         stream_type = container->create_stream_type(get_repid(def_v,name), name->get_name(),
@@ -1246,6 +1248,48 @@ StreamTypeDcl(ident, name)
 	}
 ];
 
+
+def_v=
+LogicalStreamTypeDcl(ident_list, name)
+->[ feed:
+	{
+      IR__::Container_ptr container;
+      container = IR__::Container::_narrow(kc_current_view.container);
+      NOT_NIL(container);
+      
+      // check that no grouped type is a value streamtype and build list of grouped types
+      IR__::StreamTypeDefSeq grouped_types;
+      grouped_types.length(ident_list->length());
+      IR__::StreamTypeDef_ptr streamtype_ptr;
+      int i = 0;
+      foreach (ident; idl_identifier_list ident_list) {
+        streamtype_ptr = IR__::StreamTypeDef::_narrow(ident->symtab_entry->irobj);
+        NOT_NIL(streamtype_ptr);
+        if (! CORBA::is_nil (streamtype_ptr->transported_type()))
+        {
+		  Error ("Only multimedia streamtypes allowed for grouping %k\n", name, name);
+		  exit (1);
+        }
+        grouped_types[i] = streamtype_ptr;
+        i++;
+      }  
+      
+      // create StreamType
+      IR__::StreamTypeDef_ptr stream_type;
+      try {
+        stream_type = container->create_stream_type(get_repid(def_v,name), name->get_name(),
+          "1.0", IR__::IDLType::_nil());
+      }
+      catch (...) {
+        Error("Exception in creating streamtype %k\n", name, name);
+      }
+      
+      stream_type->grouped_types (grouped_types);
+      
+      irobj = stream_type;
+      name->symtab_entry->irobj = stream_type;
+	}
+];
 
 
 def_v=

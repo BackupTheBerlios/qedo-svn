@@ -330,6 +330,7 @@ module IR__ {
 #ifndef _QEDO_NO_STREAMS
 	interface StreamTypeDef : Contained, IDLType {
 		attribute IDLType transported_type;
+		attribute StreamTypeDefSeq grouped_types;
 	};
 #endif
 

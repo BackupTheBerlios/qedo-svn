@@ -116,4 +116,58 @@ throw(CORBA::SystemException)
 }
 
 
+IR__::StreamTypeDefSeq* 
+StreamTypeDef_impl::grouped_types()
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "StreamTypeDef_impl::grouped_types() called" );
+
+	IR__::StreamTypeDefSeq_var type_seq = new IR__::StreamTypeDefSeq;
+    type_seq -> length ( grouped_types_.size() );
+    for ( unsigned int i = 0; i < type_seq -> length(); i++ )
+        type_seq.inout()[i] = grouped_types_[i] -> _this();
+    return type_seq._retn();
+}
+
+
+void 
+StreamTypeDef_impl::grouped_types (const IR__::StreamTypeDefSeq& seq)
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "StreamTypeDef_impl::grouped_types(...) called" );
+
+    vector < StreamTypeDef_impl* > type_seq;
+    type_seq.resize ( seq.length(), NULL );
+
+    for ( unsigned i = 0; i < seq.length(); i++ )
+    {
+        if ( CORBA::is_nil ( seq[i].in() ) )
+            throw CORBA::BAD_PARAM(); // Is this exception correct?
+        type_seq[i] = 0;
+        try
+        {
+			PortableServer::ServantBase_var servant =
+				repository_ -> poa() -> reference_to_servant(seq[i].in());
+            type_seq[i] = dynamic_cast<StreamTypeDef_impl*>(servant.in());
+        }
+        catch(...)
+        {
+        }
+        if(!type_seq[i])
+        {
+            // Must be same repository
+            throw CORBA::BAD_PARAM(4, CORBA::COMPLETED_NO);
+        }
+    }
+
+    for ( i = 0; i < type_seq.size(); i++ )
+        type_seq[i] -> _add_ref();
+
+    for ( i = 0; i < grouped_types_.size(); i++)
+        grouped_types_[i] -> _remove_ref();
+
+    grouped_types_ = type_seq;
+}
+
+
 } // namespace QEDO_ComponentRepository

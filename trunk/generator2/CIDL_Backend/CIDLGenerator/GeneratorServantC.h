@@ -53,6 +53,7 @@ private:
 	std::string					scope_name_;
 
 	void check_for_generation(IR__::Contained_ptr item);
+	void resolve_atomic_streamtypes(IR__::StreamTypeDef_ptr streamtype, IR__::StreamTypeDefSeq& atomic_streamtypes);
 
 	void doAttribute(IR__::AttributeDef_ptr attribute);
 	void doOperation(IR__::OperationDef_ptr operation);

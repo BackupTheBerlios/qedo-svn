@@ -158,6 +158,7 @@ void printer7(const char* s,uview v)
     }
     s++;
   }
+  fflush(stderr);
 }
 
 
