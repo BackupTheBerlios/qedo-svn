@@ -23,12 +23,18 @@
 #include "ComponentServerImpl.h"
 #include "Output.h"
 #include "Valuetypes.h"
+#ifdef _WIN32
+#else
+#include <dlfcn.h>
+#endif
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.14 2003/08/27 06:52:39 neubauer Exp $";
+
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.15 2003/09/01 10:48:00 neubauer Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
 #endif
+
 
 namespace Qedo {
 

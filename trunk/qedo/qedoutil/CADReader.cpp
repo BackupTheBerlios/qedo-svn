@@ -799,6 +799,7 @@ throw(CADReadException)
 
 std::string
 CADReader::homefinder (DOMElement* element)
+throw(CADReadException)
 {
 	return XMLString::transcode(element->getAttribute(X("name")));
 }
@@ -1462,6 +1463,7 @@ throw(CADReadException)
 
 std::string
 CADReader::registerwithhomefinder (DOMElement* element)
+throw(CADReadException)
 {
 	return XMLString::transcode(element->getAttribute(X("name")));
 }
@@ -1469,6 +1471,7 @@ CADReader::registerwithhomefinder (DOMElement* element)
 
 std::string
 CADReader::registerwithnaming (DOMElement* element)
+throw(CADReadException)
 {
 	return XMLString::transcode(element->getAttribute(X("name")));
 }
@@ -1476,6 +1479,7 @@ CADReader::registerwithnaming (DOMElement* element)
 
 std::string
 CADReader::registerwithtrader (DOMElement* element)
+throw(CADReadException)
 {
 	// todo more
 	return XMLString::transcode(element->getAttribute(X("tradername")));
@@ -1498,6 +1502,7 @@ throw(CADReadException)
 
 void
 CADReader::traderquery (DOMElement* element)
+throw(CADReadException)
 {
 	// todo
 }

@@ -24,13 +24,12 @@
 #include "PlatformBase.h"
 #include "Util.h"
 
-static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.7 2003/08/27 06:45:48 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.8 2003/09/01 10:48:14 neubauer Exp $";
 
 #ifndef _WIN32
 #include <time.h>
-//#include <Shellapi.h>
-#else 
-//#include <process.h>
+#else
+#include <fcntl.h>
 #endif
 
 
@@ -176,7 +175,6 @@ PlatformBase::copyFile(std::string src, std::string dst)
 	int buf[1024];
 	size_t bytes_read;
 	int source, dest;
-	char *src, *dst;
 
 	source = open(src.c_str(), O_RDONLY, 0);
 	dest = creat(dst.c_str(), 0700);   /* stat first to prevent overwriting existing */

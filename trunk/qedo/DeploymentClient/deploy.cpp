@@ -24,8 +24,13 @@
 #include "DeploymentClient.h"
 #include "Util.h"
 #include "version.h"
+#ifdef _WIN32
+#else
+#include <unistd.h>
+#endif
 
-static char rcsid[] UNUSED = "$Id: deploy.cpp,v 1.9 2003/08/28 09:24:45 neubauer Exp $";
+
+static char rcsid[] UNUSED = "$Id: deploy.cpp,v 1.10 2003/09/01 10:47:48 neubauer Exp $";
 
 
 /**
