@@ -11,7 +11,7 @@ In this file you need to specify the compositions that should implement your com
 
 3. Open a command line tool
 In this command line tool you need to execute the following command.
-For MICo you should use a commmand similar to this
+For MICO you should use a commmand similar to this
 
 %QEDO%\bin\cidl_gen -I%QEDO%\idl -I%MICO%\include  -I%MICO%\include\mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --vc7 --target CallerImpl hello.cidl
 
