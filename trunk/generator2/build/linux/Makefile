@@ -64,7 +64,7 @@ CIDLFrontendLib.Debug_orbacus_linux: IFRidl.Debug_orbacus_linux
 
 
 CIDLGenerator.Debug_orbacus_linux: CIDLRepositoryLib.Debug_orbacus_linux CIDLFrontendLib.Debug_orbacus_linux ComponentRepositoryLib.Debug_orbacus_linux
-	 mkdir -p ../../CIDL_Backend/CidlGenerator/Debug_orbaucs_linux; make -C ../../CIDL_Backend/CIDLGenerator Debug_orbacus_linux
+	 mkdir -p ../../CIDL_Backend/CIDLGenerator/Debug_orbacus_linux; make -C ../../CIDL_Backend/CIDLGenerator Debug_orbacus_linux
 
 
 Debug_tao: IFRidl.Debug_tao ComponentRepositoryLib.Debug_tao CIDLRepositoryLib.Debug_tao CIDLFrontendLib.Debug_tao CIDLGenerator.Debug_tao
