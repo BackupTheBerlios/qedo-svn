@@ -108,7 +108,11 @@ qedo_cond::qedo_wait() {
 #ifdef WIN32
 	WaitForMultipleObjects(1, &m_event_handle, TRUE, INFINITE /*wait for ever*/);
 #else
-	pthread_cond_signal(&m_cond);
+	pthread_mutex_t mut;
+	pthread_mutex_init(&mut, NULL);
+	pthread_mutex_lock(&mut);
+	pthread_cond_wait(&m_cond,&mut);
+	pthread_mutex_unlock(&mut);
 #endif
 }
 

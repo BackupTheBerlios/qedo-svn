@@ -37,7 +37,7 @@ QedoComponents.h QedoComponents.cpp QedoComponents_skel.h QedoComponents_skel.cp
 	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico  -DMICO_ORB --any --c++-suffix cpp --c++-skel QedoComponents.idl; cp QedoComponents.h QedoComponents_skel.h 
 
 Components.h Components.cpp Components_skel.h Components_skel.cpp:./Components.idl
-	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico -DMICO_ORB --any --c++-suffix cpp --c++-skel Components.idl; cp Components.h Components_skel.h
+	$(MICO)/bin/idl -I. -I$(MICO)/include -I$(MICO)/include/mico -DMICO_ORB --typecode --any --c++-suffix cpp --c++-skel Components.idl; cp Components.h Components_skel.h
 
 lex:  
 

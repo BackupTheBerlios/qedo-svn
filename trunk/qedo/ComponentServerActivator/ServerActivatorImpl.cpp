@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.10 2003/04/24 09:10:34 tom Exp $";
+static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.11 2003/04/30 07:10:55 tom Exp $";
 
 #include <iostream>
 #include "fstream"
@@ -249,14 +249,20 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 		case 0 : /* child process */
 			if (debug_mode_)
 			{
-				execlp("cs", "cs", "--csa_ref", static_cast<const char*>(my_string_ref), "--debug", 0);
+			    std::ofstream ior_file;
+			    ior_file.open("csa_callb.ior");
+			    ior_file << my_string_ref << std::endl;
+			    ior_file.close();
+			    execlp("cs", "cs", "--csa_ref", static_cast<const char*>(my_string_ref), "--debug", 0);
 			}
 			else
 			{
-				execlp("cs", "cs", "--csa_ref", static_cast<const char*>(my_string_ref), 0);
+			    std::cout << "child process" << std::endl;
+				execlp("./cs", "./cs", "--csa_ref", static_cast<const char*>(my_string_ref), 0);
 			}
 			break;
 		default : /* parent process */
+		    std::cout << "parent process" << std::endl;
 			break;
 		case -1 : /* error in fork */
 			{
