@@ -83,6 +83,12 @@ public:
     //
     virtual IR__::StorageTypeDef_ptr base_storage_type()
         throw(CORBA::SystemException);
+
+	//
+    // IDL:omg.org/IR__/StorageTypeDef/get_StateMembers:1.0
+    //
+    virtual void get_StateMembers(IR__::AttributeDefSeq& state_members)
+        throw(CORBA::SystemException);
     
 };
 

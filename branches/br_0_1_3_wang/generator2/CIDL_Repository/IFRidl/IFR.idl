@@ -565,6 +565,7 @@ module IR__ {
 	typedef sequence <RepositoryId> RepositoryIdSeq;
 	typedef sequence <OperationDescription> OpDescriptionSeq;
 	typedef sequence <AttributeDescription> AttrDescriptionSeq;
+	typedef sequence <AttributeDef> AttributeDefSeq;
 	
 	interface InterfaceDef : Container, Contained, IDLType {
 		// read/write interface
@@ -952,6 +953,7 @@ module IR__ {
 		// read/write interface
 		// can be derived from more than one abstract storage types
 		attribute InterfaceDefSeq base_abstract_storage_types;
+		void get_StateMembers(inout AttributeDefSeq state_members);
 	};
 	
 	struct AbstractStorageTypeDescription {
@@ -969,6 +971,7 @@ module IR__ {
 		readonly attribute StorageTypeDef base_storage_type;
 		// read/write interface
 		attribute InterfaceDefSeq supported_interfaces;
+		void get_StateMembers(inout AttributeDefSeq state_members);
 	};
 	
 	struct StorageTypeDescription {

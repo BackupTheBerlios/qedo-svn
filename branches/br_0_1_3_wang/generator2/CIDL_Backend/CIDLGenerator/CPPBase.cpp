@@ -453,7 +453,6 @@ throw ( CannotMapType )
 	return CORBA::string_dup ( ret_string.c_str() );
 }
 
-
 char*
 CPPBase::map_value_return_type
 ( IR__::IDLType_ptr type )
@@ -546,6 +545,224 @@ throw ( CannotMapType )
 	return CORBA::string_dup ( ret_string.c_str() );
 }
 
+char*
+CPPBase::map_psdl_return_type
+( IR__::IDLType_ptr type, bool isReadOnly )
+throw ( CannotMapType )
+{
+	string ret_string;
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
+
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
+
+	switch ( typecodekind )
+	{
+	case CORBA::tk_void:
+		ret_string = "void";
+		break;
+	case CORBA::tk_short:
+		isReadOnly ? ret_string = "const CORBA::Short" : ret_string = "void";
+		break;
+	case CORBA::tk_long:
+		isReadOnly ? ret_string = "const CORBA::Long" : ret_string = "void";
+		break;
+	case CORBA::tk_longlong:
+		isReadOnly ? ret_string = "const CORBA::LongLong" : ret_string = "void";
+		break;
+	case CORBA::tk_ushort:
+		isReadOnly ? ret_string = "const CORBA::UShort" : ret_string = "void";
+		break;
+	case CORBA::tk_ulong:
+		isReadOnly ? ret_string = "const CORBA::ULong" : ret_string = "void";
+		break;
+	case CORBA::tk_ulonglong:
+		isReadOnly ? ret_string = "const CORBA::ULongLong" : ret_string = "void";
+		break;
+	case CORBA::tk_float:
+		isReadOnly ? ret_string = "const CORBA::Float" : ret_string = "void";
+		break;
+	case CORBA::tk_double:
+		isReadOnly ? ret_string = "const CORBA::Double" : ret_string = "void";
+		break;
+	case CORBA::tk_longdouble:
+		isReadOnly ? ret_string = "const CORBA::LongDouble" : ret_string = "void";
+		break;
+	case CORBA::tk_boolean:
+		isReadOnly ? ret_string = "const CORBA::Boolean" : ret_string = "void";
+		break;
+	case CORBA::tk_char:
+		isReadOnly ? ret_string = "const CORBA::Char" : ret_string = "void";
+		break;
+	case CORBA::tk_wchar:
+		isReadOnly ? ret_string = "const CORBA::WChar" : ret_string = "void";
+		break;
+	case CORBA::tk_any:
+		isReadOnly ? ret_string = "const CORBA::Any*" : ret_string = "void";
+		break;
+	case CORBA::tk_objref:
+		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
+		if(CORBA::is_nil (contained))
+		{
+			ret_string = "CORBA::Object_ptr";
+		}
+		else
+		{
+			ret_string = getAbsoluteName (contained);
+			ret_string.append ("_ptr");
+		}
+		break;
+	case CORBA::tk_native:
+		ret_string = getAbsoluteName (contained);
+		break;
+	case CORBA::tk_string:
+		isReadOnly ? ret_string = "const char*" : ret_string = "void";
+		break;
+	case CORBA::tk_wstring:
+		isReadOnly ? ret_string = "const wchar_t*" : ret_string = "void";
+		break;
+	case CORBA::tk_value:
+		ret_string = getAbsoluteName (contained);
+		ret_string = ret_string + "*";
+		break;
+	case CORBA::tk_struct:
+		ret_string = getAbsoluteName (contained);
+	case CORBA::tk_union:
+		ret_string = getAbsoluteName (contained);
+	case CORBA::tk_enum:
+//		ret_string = "const ";
+		ret_string = getAbsoluteName (contained);
+		ret_string = ret_string + "&";
+		break;
+	case CORBA::tk_sequence:
+		ret_string = getAbsoluteName(contained);
+		ret_string = ret_string + "*";
+		break;
+	default:
+		throw CannotMapType();
+	}
+	return CORBA::string_dup ( ret_string.c_str() );
+}
+
+char*
+CPPBase::map_psdl_parameter_type
+( IR__::IDLType_ptr type, bool isCopyFunc )
+throw ( CannotMapType )
+{
+	string ret_string;
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
+
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
+
+	switch ( typecodekind )
+	{
+	case CORBA::tk_void:
+		ret_string = "void";
+		break;
+	case CORBA::tk_short:
+		isCopyFunc ? ret_string = "const CORBA::Short" : ret_string = "CORBA::Short";
+		break;
+	case CORBA::tk_long:
+		isCopyFunc ? ret_string = "const CORBA::Long" : ret_string = "CORBA::Long";
+		break;
+	case CORBA::tk_longlong:
+		isCopyFunc ? ret_string = "const CORBA::LongLong" : ret_string = "CORBA::LongLong";
+		break;
+	case CORBA::tk_ushort:
+		isCopyFunc ? ret_string = "const CORBA::UShort" : ret_string = "CORBA::UShort";
+		break;
+	case CORBA::tk_ulong:
+		isCopyFunc ? ret_string = "const CORBA::ULong" : ret_string = "CORBA::ULong";
+		break;
+	case CORBA::tk_ulonglong:
+		isCopyFunc ? ret_string = "const CORBA::ULongLong" : ret_string = "CORBA::ULongLong";
+		break;
+	case CORBA::tk_float:
+		isCopyFunc ? ret_string = "const CORBA::Float" : ret_string = "CORBA::Float";
+		break;
+	case CORBA::tk_double:
+		isCopyFunc ? ret_string = "const CORBA::Double" : ret_string = "CORBA::Double";
+		break;
+	case CORBA::tk_longdouble:
+		isCopyFunc ? ret_string = "const CORBA::LongDouble" : ret_string = "CORBA::LongDouble";
+		break;
+	case CORBA::tk_boolean:
+		isCopyFunc ? ret_string = "const CORBA::Boolean" : ret_string = "CORBA::Boolean";
+		break;
+	case CORBA::tk_char:
+		isCopyFunc ? ret_string = "const CORBA::Char" : ret_string = "CORBA::Char";
+		break;
+	case CORBA::tk_wchar:
+		isCopyFunc ? ret_string = "const CORBA::WChar" : ret_string = "CORBA::WChar";
+		break;
+	case CORBA::tk_any:
+		isCopyFunc ? ret_string = "const CORBA::Any*" : ret_string = "CORBA::Any*";
+		break;
+	case CORBA::tk_objref:
+		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
+		if(CORBA::is_nil (contained))
+		{
+			ret_string = "CORBA::Object_ptr";
+		}
+		else
+		{
+			ret_string = getAbsoluteName (contained);
+			ret_string.append ("_ptr");
+		}
+		break;
+	case CORBA::tk_native:
+		ret_string = getAbsoluteName (contained);
+		break;
+	case CORBA::tk_string:
+		isCopyFunc ? ret_string = "const char*" : ret_string = "char*";
+		break;
+	case CORBA::tk_wstring:
+		isCopyFunc ? ret_string = "const wchar_t*" : ret_string = "wchar_t*";
+		break;
+	case CORBA::tk_struct:
+		ret_string = getAbsoluteName (contained);
+	case CORBA::tk_union:
+		ret_string = getAbsoluteName (contained);
+	case CORBA::tk_enum:
+//		ret_string = "const ";
+		ret_string = getAbsoluteName (contained);
+		ret_string = ret_string + "&";
+		break;
+	case CORBA::tk_value:
+	case CORBA::tk_sequence:
+		if(isCopyFunc){
+			ret_string = "const ";
+			ret_string += getAbsoluteName(contained);
+			ret_string += "&";
+		} else
+			ret_string = "CosPersistentState::ForUpdate";
+		break;
+	default:
+		throw CannotMapType();
+	}
+	return CORBA::string_dup ( ret_string.c_str() );
+}
 
 char*
 CPPBase::map_idl_type

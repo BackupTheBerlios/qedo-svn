@@ -948,10 +948,9 @@ AbstractStorageType( AbstractStorageTypeHeader(name, inh_v), def_list )
       container = IR__::Container::_narrow(kc_current_view.container);
       NOT_NIL(container);
 
-      int i = inh_v->length();
 	  IR__::InterfaceDefSeq inhseq;
-	  inhseq.length(i);
-	  i=0;
+	  inhseq.length(inh_v->length());
+	  int i=0;
 	  foreach(ident_v; idl_identifier_list inh_v) {
 	    inhseq[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
 	    NOT_NIL(inhseq[i]);
@@ -998,10 +997,9 @@ StorageType( StorageTypeHeader(name, base_v, impl_v), def_list )
 		}
       }
 
-      int i = impl_v->length();
 	  IR__::InterfaceDefSeq initseq;
-	  initseq.length(i);
-	  i=0;
+	  initseq.length(impl_v->length());
+	  int i=0;
 	  foreach(ident_v; idl_identifier_list impl_v) {
 	    initseq[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
 	    NOT_NIL(initseq[i]);
@@ -1038,10 +1036,9 @@ AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
       container = IR__::Container::_narrow(kc_current_view.container);
       NOT_NIL(container);
 
-      int i = inh_v->length();
 	  IR__::InterfaceDefSeq inhseq;
-	  inhseq.length(i);
-	  i=0;
+	  inhseq.length(inh_v->length());
+	  int i=0;
 	  foreach(ident_v; idl_identifier_list inh_v) {
 	    inhseq[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
 	    NOT_NIL(inhseq[i]);
@@ -1068,7 +1065,6 @@ AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
   ];
 
 // ========================= Storage Home ===============================
-
 def_v=
 StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
 ->[ feed:
@@ -1076,7 +1072,12 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
     def_list : my_feed
   ]
   [ feed_container:
-    { IR__::InterfaceDefSeq supports;
+    { 
+      IR__::Container_ptr container;
+      container = IR__::Container::_narrow(kc_current_view.container);
+      NOT_NIL(container);
+      
+      IR__::InterfaceDefSeq supports;
       supports.length(impl_v->length());
       int i = 0;
       IR__::InterfaceDef_ptr interface_ptr;
@@ -1086,6 +1087,7 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
         supports[i] = interface_ptr;
         i++;
       }
+      
       IR__::StorageHomeDef_ptr basestoragehome;
       with(base_v) {
         NilIdentifier() : { basestoragehome = IR__::StorageHomeDef::_nil(); }
@@ -1094,9 +1096,7 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
           NOT_NIL(basestoragehome);
         }
       }
-      //IR__::StorageTypeDef_ptr storagetype_ptr;
-      //storagetype_ptr = IR__::StorageTypeDef::_narrow(type_v->symtab_entry->irobj);
-      //NOT_NIL(storagetype_ptr);
+      
       IR__::IDLType_ptr idltype;
       with(pkey_v) {
         NilDefinition() : { idltype = IR__::IDLType::_nil(); }
@@ -1107,14 +1107,12 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
 		PrimaryKeyRef() : { // TODO 
 		}
       }
+      
       // create StorageHomeDef
-      IR__::StorageHomeDef_ptr storagehome;
-      IR__::Container_ptr container;
-      container = IR__::Container::_narrow(kc_current_view.container);
-      NOT_NIL(container);
 	  IR__::StorageTypeDef_ptr storagetype;
 	  storagetype = IR__::StorageTypeDef::_narrow(type_v->symtab_entry->irobj);
       NOT_NIL(storagetype);
+      IR__::StorageHomeDef_ptr storagehome;
       try {
         storagehome = container->create_storage_home(get_repid(def_v,name), name->get_name(),
           "1.0", basestoragehome, storagetype, supports, idltype);
@@ -1123,6 +1121,7 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
         Error("Exception in creating storagehome %k\n", name, name);
       }
       irobj = storagehome;
+      name->symtab_entry->irobj = storagehome;
     }
   ];
 
@@ -1617,49 +1616,101 @@ FactoryDcl1(idl_name_v, dcls_v)
     
     dcls_v : my_build
     {
-		foreach($decl_v; declarators dcls_v) {
-			ArrayDeclarator(name_v, array_list) : {
-				//my_build.type = type_def;
-				array_list->unparse(kc_printer, my_build);
-				my_build.paradescseq[my_build.pos].name = name_v->get_name();
-				//my_build.paradescseq[my_build.pos].type_def = my_build.type;
-				//my_build.paradescseq[my_build.pos].type = 
-				//	my_build.paradescseq[my_build.pos].type_def->type();
-				my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
-				my_build.pos++;
-			}
-			SimpleDeclarator(name_v) : {
-				my_build.paradescseq[my_build.pos].name = name_v->get_name();
-				//my_build.paradescseq[my_build.pos].type_def = my_build.type;
-				//my_build.paradescseq[my_build.pos].type = 
-				//	my_build.paradescseq[my_build.pos].type_def->type();
-				my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
-				my_build.pos++;
-			}
-		}
-		
-		// factory for abstract storage home
+		// generate factory in abstract storage type 
 		IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
 		abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
 		if(!CORBA::is_nil(abs_storagehome_ptr))
 		{
+			IR__::AbstractStorageTypeDef_ptr managed_abs_storagetype;
+			managed_abs_storagetype = abs_storagehome_ptr->managed_abstract_storage_type();
+			NOT_NIL(managed_abs_storagetype);
+			
+			IR__::AttributeDefSeq state_members;
+			managed_abs_storagetype->get_StateMembers(state_members);
+			CORBA::ULong len = state_members.length();
+			for(CORBA::ULong i = 0; i < len; i++)
+			{
+				IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+				
+				foreach($decl_v; declarators dcls_v) {
+					ArrayDeclarator(name_v, array_list) : {
+						array_list->unparse(kc_printer, my_build);
+						string strAttName = a_attribute->name();
+						string strKeyName = name_v->get_name();
+						if(strKeyName.compare(strAttName)==0)
+						{
+							my_build.paradescseq[my_build.pos].name = name_v->get_name();
+							my_build.paradescseq[my_build.pos].type_def = a_attribute->type_def();
+							my_build.paradescseq[my_build.pos].type = a_attribute->type_def()->type();
+							my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
+							my_build.pos++;
+						}
+					}
+					SimpleDeclarator(name_v) : {
+						string strAttName = a_attribute->name();
+						string strKeyName = name_v->get_name();
+						if(strKeyName.compare(strAttName)==0)
+						{
+							my_build.paradescseq[my_build.pos].name = name_v->get_name();
+							my_build.paradescseq[my_build.pos].type_def = a_attribute->type_def();
+							my_build.paradescseq[my_build.pos].type = a_attribute->type_def()->type();
+							my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
+							my_build.pos++;
+						}
+					}
+				}
+			}
 			abs_storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-				"1.0", my_build.paradescseq, my_build.excdefseq);
-			//abs_storagehome_ptr->create_factory(get_repid(idl_name_v), idl_name_v->get_name(),
-			//	"1.0", my_build.paradescseq, my_build.excdefseq);
+					"1.0", my_build.paradescseq, my_build.excdefseq);
 		}
 		
-		// factory for storage home
+		// generate factory in storage type 
 		IR__::StorageHomeDef_ptr storagehome_ptr; 
 		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
 		if(!CORBA::is_nil(storagehome_ptr))
 		{
-			storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-				"1.0", my_build.paradescseq, my_build.excdefseq);
-			//storagehome_ptr->create_factory(get_repid(idl_name_v), idl_name_v->get_name(),
-			//	"1.0", my_build.paradescseq, my_build.excdefseq);
+			IR__::StorageTypeDef_ptr managed_storagetype;
+			managed_storagetype = storagehome_ptr->managed_storage_type();
+			NOT_NIL(managed_storagetype);
 			
-		}
+			IR__::AttributeDefSeq state_members;
+			managed_storagetype->get_StateMembers(state_members);
+			CORBA::ULong len = state_members.length();
+			for(CORBA::ULong i = 0; i < len; i++)
+			{
+				IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+				
+				foreach($decl_v; declarators dcls_v) {
+					ArrayDeclarator(name_v, array_list) : {
+						array_list->unparse(kc_printer, my_build);
+						string strAttName = a_attribute->name();
+						string strKeyName = name_v->get_name();
+						if(strKeyName.compare(strAttName)==0)
+						{
+							my_build.paradescseq[my_build.pos].name = name_v->get_name();
+							my_build.paradescseq[my_build.pos].type_def = a_attribute->type_def();
+							my_build.paradescseq[my_build.pos].type = a_attribute->type_def()->type();
+							my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
+							my_build.pos++;
+						}
+					}
+					SimpleDeclarator(name_v) : {
+						string strAttName = a_attribute->name();
+						string strKeyName = name_v->get_name();
+						if(strKeyName.compare(strAttName)==0)
+						{
+							my_build.paradescseq[my_build.pos].name = name_v->get_name();
+							my_build.paradescseq[my_build.pos].type_def = a_attribute->type_def();
+							my_build.paradescseq[my_build.pos].type = a_attribute->type_def()->type();
+							my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
+							my_build.pos++;
+						}
+					}
+				}
+			}
+			storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+					"1.0", my_build.paradescseq, my_build.excdefseq);
+		}	
 	}
   ];
 
@@ -1674,48 +1725,104 @@ KeyDcl(idl_name_v, dcls_v)
     
     dcls_v : my_build
     {
-		foreach($decl_v; declarators dcls_v) {
-			ArrayDeclarator(name_v, array_list) : {
-				array_list->unparse(kc_printer, my_build);
-				my_build.paradescseq[my_build.pos].name = name_v->get_name();
-				my_build.paradescseq[my_build.pos].type_def = my_build.type;
-				my_build.paradescseq[my_build.pos].type = 
-					my_build.paradescseq[my_build.pos].type_def->type();
-				my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
-				my_build.pos++;
-			}
-			SimpleDeclarator(name_v) : {
-				my_build.paradescseq[my_build.pos].name = name_v->get_name();
-				my_build.paradescseq[my_build.pos].type_def = my_build.type;
-				
-				NOT_NIL(my_build.type);
-				
-				my_build.paradescseq[my_build.pos].type = 
-					my_build.paradescseq[my_build.pos].type_def->type();
-				my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
-				my_build.pos++;
-			}
-		}
-
-        // key for abstract storage home
+		// generate key in abstract storage type 
 		IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
 		abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
 		if(!CORBA::is_nil(abs_storagehome_ptr))
 		{
+			IR__::AbstractStorageTypeDef_ptr managed_abs_storagetype;
+			managed_abs_storagetype = abs_storagehome_ptr->managed_abstract_storage_type();
+			NOT_NIL(managed_abs_storagetype);
+			
+			IR__::AttributeDefSeq state_members;
+			managed_abs_storagetype->get_StateMembers(state_members);
+			CORBA::ULong len = state_members.length();
+			for(CORBA::ULong i = 0; i < len; i++)
+			{
+				IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+				
+				foreach($decl_v; declarators dcls_v) {
+					ArrayDeclarator(name_v, array_list) : {
+						array_list->unparse(kc_printer, my_build);
+						string strAttName = a_attribute->name();
+						string strKeyName = name_v->get_name();
+						if(strKeyName.compare(strAttName)==0)
+						{
+							my_build.paradescseq[my_build.pos].name = name_v->get_name();
+							my_build.paradescseq[my_build.pos].type_def = a_attribute->type_def();
+							my_build.paradescseq[my_build.pos].type = a_attribute->type_def()->type();
+							my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
+							my_build.pos++;
+						}
+					}
+					SimpleDeclarator(name_v) : {
+						string strAttName = a_attribute->name();
+						string strKeyName = name_v->get_name();
+						if(strKeyName.compare(strAttName)==0)
+						{
+							my_build.paradescseq[my_build.pos].name = name_v->get_name();
+							my_build.paradescseq[my_build.pos].type_def = a_attribute->type_def();
+							my_build.paradescseq[my_build.pos].type = a_attribute->type_def()->type();
+							my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
+							my_build.pos++;
+						}
+					}
+				}
+			}
 			abs_storagehome_ptr->create_key(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
 					"1.0",my_build.paradescseq);
 		}
 		
-		// key for storage home
+		// generate key in storage type 
 		IR__::StorageHomeDef_ptr storagehome_ptr; 
 		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
 		if(!CORBA::is_nil(storagehome_ptr))
 		{
+			IR__::StorageTypeDef_ptr managed_storagetype;
+			managed_storagetype = storagehome_ptr->managed_storage_type();
+			NOT_NIL(managed_storagetype);
+			
+			IR__::AttributeDefSeq state_members;
+			managed_storagetype->get_StateMembers(state_members);
+			CORBA::ULong len = state_members.length();
+			for(CORBA::ULong i = 0; i < len; i++)
+			{
+				IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+				
+				foreach($decl_v; declarators dcls_v) {
+					ArrayDeclarator(name_v, array_list) : {
+						array_list->unparse(kc_printer, my_build);
+						string strAttName = a_attribute->name();
+						string strKeyName = name_v->get_name();
+						if(strKeyName.compare(strAttName)==0)
+						{
+							my_build.paradescseq[my_build.pos].name = name_v->get_name();
+							my_build.paradescseq[my_build.pos].type_def = a_attribute->type_def();
+							my_build.paradescseq[my_build.pos].type = a_attribute->type_def()->type();
+							my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
+							my_build.pos++;
+						}
+					}
+					SimpleDeclarator(name_v) : {
+						string strAttName = a_attribute->name();
+						string strKeyName = name_v->get_name();
+						if(strKeyName.compare(strAttName)==0)
+						{
+							my_build.paradescseq[my_build.pos].name = name_v->get_name();
+							my_build.paradescseq[my_build.pos].type_def = a_attribute->type_def();
+							my_build.paradescseq[my_build.pos].type = a_attribute->type_def()->type();
+							my_build.paradescseq[my_build.pos].mode = IR__::PARAM_IN;
+							my_build.pos++;
+						}
+					}
+				}
+			}
 			storagehome_ptr->create_key(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-				"1.0",my_build.paradescseq);
+					"1.0",my_build.paradescseq);
 		}
 	}
   ];
+
 
 // ======================== Operation ===============================
 

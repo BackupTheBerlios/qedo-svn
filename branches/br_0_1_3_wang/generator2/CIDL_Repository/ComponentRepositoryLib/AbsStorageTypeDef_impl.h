@@ -47,6 +47,8 @@ public:
 
 	~AbstractStorageTypeDef_impl();
 
+	//void getStateMembers(std::list<IR__::AttributeDef*> lStateMembers);
+
     //
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
     //
@@ -74,6 +76,12 @@ public:
     virtual IR__::InterfaceDefSeq* base_abstract_storage_types()
         throw(CORBA::SystemException);
     virtual void base_abstract_storage_types(const IR__::InterfaceDefSeq& seq)
+        throw(CORBA::SystemException);
+
+	//
+    // IDL:omg.org/IR__/AbstractStorageTypeDef/get_StateMembers:1.0
+    //
+    virtual void get_StateMembers(IR__::AttributeDefSeq& state_members)
         throw(CORBA::SystemException);
 };
 

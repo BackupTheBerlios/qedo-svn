@@ -41,26 +41,29 @@ private:
 
 	std::string filename_;
 	Printer out;
-	//std::string target_;
+	bool isAbstract;
 	IR__::AbstractStorageHomeDef_var	abs_storagehome_;
 	IR__::StorageHomeDef_var			storagehome_;
 	IR__::AbstractStorageTypeDef_var	abs_storagetype_;
 	IR__::StorageTypeDef_var			storagetype_;
-	std::set<std::string>		m_recursion_set;
+	std::set<std::string>				m_recursion_set;
 
 	void check_for_generation(IR__::Contained_ptr item);
 
 	void doAttribute(IR__::AttributeDef_ptr attribute);
 	void doOperation(IR__::OperationDef_ptr operation);
 	void doException(IR__::ExceptionDef_ptr except);
-	void doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
 	void doAbstractStorageType(IR__::AbstractStorageTypeDef_ptr abs_storage_type);
-	void doStorageHome(IR__::StorageHomeDef_ptr storage_home);
+	void doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
 	void doStorageType(IR__::StorageTypeDef_ptr storage_type);
+	void doStorageHome(IR__::StorageHomeDef_ptr storage_home);
 	void doPSSKey(IR__::PSSKeyDef_ptr psskey);
 	void doFactory(IR__::FactoryDef_ptr factory);
 
-	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool isPSSKey);
+	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
+	void genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
+	void genAbstractStorageTypeBody(IR__::AbstractStorageTypeDef_ptr abs_storage_type, bool isRef);
+	void genStorageTypeBody(IR__::StorageTypeDef_ptr storage_type, bool isRef);
 	
 public:
 

@@ -76,6 +76,12 @@ protected:
 	char* map_value_return_type ( IR__::IDLType_ptr type )
 		throw ( CannotMapType );
 
+	char* map_psdl_return_type ( IR__::IDLType_ptr type, bool isReadOnly )
+		throw ( CannotMapType );
+
+	char* map_psdl_parameter_type ( IR__::IDLType_ptr type, bool isCopyFunc )
+		throw ( CannotMapType );
+
 	char* map_attribute_type ( IR__::IDLType_ptr type )
 		throw ( CannotMapType );
 

@@ -237,4 +237,29 @@ throw(CORBA::SystemException)
     base_abs_storage_type_impls_ = impl_seq;
 }
 
+void
+AbstractStorageTypeDef_impl::get_StateMembers
+(IR__::AttributeDefSeq& state_members)
+throw(CORBA::SystemException)
+{
+	IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
+	CORBA::ULong len = contained_seq->length();
+	CORBA::ULong ulPre = state_members.length();
+	state_members.length(ulPre+len);
+	for(CORBA::ULong i=0; i<len; i++)
+	{
+		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+		state_members[i+ulPre] = (a_attribute);
+	}
+
+	IR__::InterfaceDefSeq_var abs_storagetypes = base_abstract_storage_types();
+	len = abs_storagetypes->length();
+	for(i=0; i<len; i++)
+	{
+		IR__::AbstractStorageTypeDef* abs_storagetype = 
+			IR__::AbstractStorageTypeDef::_narrow(((*abs_storagetypes)[i]));
+		abs_storagetype->get_StateMembers(state_members);
+	}
+}
+
 } // namespace QEDO_ComponentRepository
