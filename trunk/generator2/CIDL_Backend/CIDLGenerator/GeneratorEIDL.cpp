@@ -398,7 +398,7 @@ GeneratorEIDL::doException(IR__::ExceptionDef_ptr except)
 	for(CORBA::ULong i = 0; i < member_seq->length(); i++)
 	{
 		checkForInclude((*member_seq)[i].type);
-		out << string((*member_seq)[i].name) << " " << tcToName((*member_seq)[i].type) << "\n";
+		out << tcToName((*member_seq)[i].type) << " " << string((*member_seq)[i].name) << ";\n";
 	}
 
 	out.unindent();
