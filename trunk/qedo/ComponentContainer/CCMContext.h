@@ -113,7 +113,21 @@ public:
 	 * sets the container where the home of the component is installed in
 	 * \param container The container where the home of the component is installed in.
 	 */
-	void container(ContainerInterfaceImpl* container);
+	void container(ContainerInterfaceImpl*);
+
+	/**
+	 * qeue events for delivering
+	 * \param consumer The consumer is the receiver of the event.
+	 * \param ev The ev is the event to be deliver.
+	 */
+	void queue_event(Components::EventConsumerBase_ptr, Components::EventBase*, CORBA::Long);
+
+	/**
+	 * qeue events for delivering
+	 * \param consumers The consumers are the receivers of the event.
+	 * \param ev The ev is the event to be deliver.
+	 */
+	void queue_event(SubscribedConsumerVector&, Components::EventBase*, CORBA::Long);
 
 	/**
 	 * implements IDL:omg.org/Components/CCMContext/get_caller_principal:1.0
@@ -147,7 +161,7 @@ public:
 	 * implements IDL:omg.org/Components/CCMContext/is_caller_in_role:1.0
 	 * (not implemented yet)
 	 */
-    CORBA::Boolean is_caller_in_role (const char* role);
+    CORBA::Boolean is_caller_in_role (const char*);
 
 	/**
 	 * implements IDL:omg.org/Components/CCMContext/set_rollback_only:1.0
@@ -160,22 +174,8 @@ public:
 	 * implements IDL:omg.org/Components/CCMContext/resolve_service_reference:1.0
      * Qedo CCM extension to allow generic handling of service integration
 	 */
-    CORBA::Object_ptr resolve_service_reference(const char* service_id)
+    CORBA::Object_ptr resolve_service_reference(const char*)
 		throw (Components::CCMException);
-
-	/**
-	 * qeue events for delivering
-	 * \param consumer The consumer is the receiver of the event.
-	 * \param ev The ev is the event to be deliver.
-	 */
-	void queue_event(Components::EventConsumerBase_ptr consumer, Components::EventBase* ev);
-
-	/**
-	 * qeue events for delivering
-	 * \param consumers The consumers are the receivers of the event.
-	 * \param ev The ev is the event to be deliver.
-	 */
-	void queue_event(SubscribedConsumerVector& consumers, Components::EventBase* ev);
 };
 
 
@@ -199,7 +199,7 @@ public:
 	 * sets the object executor
 	 * \param ccm_object_exec The object executor.
 	 */
-	void ccm_object_executor (CCMObjectExecutor* ccm_object_exec);
+	void ccm_object_executor (CCMObjectExecutor*);
 };
 
 
@@ -255,7 +255,7 @@ public:
 	 * implements IDL:omg.org/Components/CCMContext/is_caller_in_role:1.0
 	 * (not implemented yet)
 	 */
-    CORBA::Boolean is_caller_in_role (const char* role);
+    CORBA::Boolean is_caller_in_role (const char*);
 
 	/**
 	 * implements IDL:omg.org/Components/CCMContext/set_rollback_only:1.0
@@ -268,7 +268,7 @@ public:
 	 * implements IDL:omg.org/Components/CCMContext/resolve_service_reference:1.0
      * Qedo CCM extension to allow generic handling of service integration
 	 */
-    CORBA::Object_ptr resolve_service_reference(const char* service_id)
+    CORBA::Object_ptr resolve_service_reference(const char*)
 		throw (Components::CCMException);
 };
 

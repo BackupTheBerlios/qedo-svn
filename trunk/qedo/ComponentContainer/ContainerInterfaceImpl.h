@@ -244,7 +244,7 @@ public:
 	 * \param service_id The service id.
 	 * \return The initial reference of the service.
 	 */
-	CORBA::Object_ptr resolve_service_reference(const char* service_id)
+	CORBA::Object_ptr resolve_service_reference(const char*)
 		throw (Components::CCMException);
 
 	/**
@@ -257,14 +257,14 @@ public:
 	 * \param consumer The consumer is the receiver of the event.
 	 * \param ev The ev is the event to be deliver.
 	 */
-	void queue_event(Components::EventConsumerBase_ptr consumer, Components::EventBase* ev);
+	void queue_event(Components::EventConsumerBase_ptr, Components::EventBase*, CORBA::Long);
 
 	/**
 	 * qeue events for delivering
 	 * \param consumers The consumers are the receivers of the event.
 	 * \param ev The ev is the event to be deliver.
 	 */
-	void queue_event(SubscribedConsumerVector& consumers, Components::EventBase* ev);
+	void queue_event(SubscribedConsumerVector&, Components::EventBase*, CORBA::Long);
 
 	/**
 	 * implements IDL:omg.org/Components/Deployment/Container/configuration:1.0

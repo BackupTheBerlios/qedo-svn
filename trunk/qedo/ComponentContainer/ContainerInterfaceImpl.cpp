@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.26 2003/08/07 14:24:13 stoinski Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.27 2003/08/08 08:15:15 stoinski Exp $";
 
 
 namespace Qedo {
@@ -387,7 +387,7 @@ ContainerInterfaceImpl::prepare_remove()
 
 void 
 ContainerInterfaceImpl::queue_event
-(Components::EventConsumerBase_ptr consumer, Components::EventBase* ev)
+(Components::EventConsumerBase_ptr consumer, Components::EventBase* ev, CORBA::Long module_id)
 {
 	if (event_communication_mode_ == EVENT_COMMUNICATION_ASYNCHRONOUS)
 	{
@@ -408,7 +408,7 @@ ContainerInterfaceImpl::queue_event
 
 void 
 ContainerInterfaceImpl::queue_event
-(SubscribedConsumerVector& consumers, Components::EventBase* ev)
+(SubscribedConsumerVector& consumers, Components::EventBase* ev, CORBA::Long module_id)
 {
 	SubscribedConsumerVector::iterator iter;
 
