@@ -4,8 +4,8 @@
 *   Author  : Harald Böhme
 *   e-mail  : boehme@informatik.hu-berlin.de
 *   Remark  : 
-*   $Date: 2002/10/11 07:36:26 $
-*   $Revision: 1.1 $
+*   $Date: 2003/04/01 13:56:52 $
+*   $Revision: 1.2 $
 *   
 *******************************************************************************/
 
@@ -25,7 +25,7 @@
 %}
 
 %{
-static char id[] UNUSED = "$Id: util.k,v 1.1 2002/10/11 07:36:26 neubauer Exp $";
+static char id[] UNUSED = "$Id: util.k,v 1.2 2003/04/01 13:56:52 boehme Exp $";
 %}
 
 /****************** generic parent, printing *************************/
@@ -128,7 +128,6 @@ extern node_flag                      the_AbstractStorageHomeN;
 extern node_flag                      the_ValueTypeN;
 extern node_flag                      the_EventTypeN;
 extern node_flag                      the_ValueBoxN;
-extern node_flag                      the_AbstractValueTypeN;
 extern node_flag                      the_OpN;
 extern node_flag                      the_TypeN;
 extern node_flag                      the_ExceptionN;
@@ -163,7 +162,6 @@ node_flag the_AbstractStorageHomeN = AbstractStorageHomeN();
 node_flag the_ValueTypeN = ValueTypeN();
 node_flag the_EventTypeN = EventTypeN();
 node_flag the_ValueBoxN = ValueBoxN();
-node_flag the_AbstractValueTypeN = AbstractValueTypeN();
 node_flag the_OpN = OpN();
 node_flag the_TypeN = TypeN();
 node_flag the_ExceptionN = ExceptionN();

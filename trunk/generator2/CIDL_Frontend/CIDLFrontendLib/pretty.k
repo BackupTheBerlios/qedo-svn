@@ -66,9 +66,6 @@ AbstractStorageHomeN
 ValueTypeN
 ->[ print_node : "valuetype" ];
 
-AbstractValueTypeN
-->[ print_node : "abstract valuetype" ];
-
 OpN
 ->[ print_node : "operation" ];
 

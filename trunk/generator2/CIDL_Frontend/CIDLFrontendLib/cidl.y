@@ -728,7 +728,7 @@ value :
 
 value_forward_dcl :
 	  TOK_abstract TOK_valuetype TOK_identifier
-	  { $$ = AbstractValueTypeFwdDcl($3); add_declaration(AbstractValueTypeN(),$3);}
+	  { $$ = AbstractValueTypeFwdDcl($3); add_declaration(ValueTypeN(),$3);}
 	| TOK_valuetype TOK_identifier
 	  { $$ = ValueTypeFwdDcl( $2); add_declaration(ValueTypeN(),$2);}
 	;
@@ -748,7 +748,7 @@ value_abs_dcl :
 value_abs_header :
  	  TOK_abstract TOK_valuetype TOK_identifier value_inheritance_spec 
 	  { $$ = AbstractValueType(ValueHeader(NilFlag(),$3,$4),Nildefinition_list()); 
-      add_abs_value_type($3,$$,$4);
+      add_value_type($3,$$,$4);
     }
  ;
 
