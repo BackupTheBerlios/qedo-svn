@@ -1,0 +1,89 @@
+# operating system
+OS=@OS@
+
+##### ORB #####
+# choose one out of MICO_ORB TAO_ORB ORBACUS_ORB
+ORB = MICO_ORB
+
+YACC=@YACC@
+LEX=@LEX@
+PYTHON=@PYTHON@
+KC_PP=@KC_PP@
+
+HAVE_MICO_CONFIG=@HAVE_MICO_CONFIG@
+# MICO
+#MICO = /opt/mico/
+MICO = $(shell mico-config --prefix)
+MICO_VERSION = $(shell mico-config --version)
+
+# ORBACUS
+ORBACUS = /opt/OOC
+
+
+##### DEBUG #####
+# set Debug = yes to enable Debug compilation
+Debug = yes
+
+# Xerces - XML handling
+#
+XERCESDIR = @XERCESDIR@
+
+# modes for install files
+EXE_MOD=755
+FILE_MODE=644
+
+# add extention for shared libraries
+SUFFIXES += .so
+
+# rule for shared libraries
+
+all:
+
+%.a:
+	$(AR) $(ARFLAGS) $@ $^
+
+%.so:
+	${CXX} -shared ${LD_SHRAED_FLAGS} -o $@ $^ $(LIBS)
+
+CXXFLAGS +=
+
+
+INSTALL = @INSTALL@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+
+ifeq "MICO_ORB" "${ORB}"
+%.h %.cpp %_skel.h %_skel.cpp: %.idl
+	$(MICO)/bin/idl ${IDL_FLAGS} -I. -I$(MICO)/include -I$(MICO)/include/mico -DMICO_ORB --any --c++-suffix cpp --c++-skel $< \
+	&&  cp $*.h $*_skel.h
+MICO_CXXFLAGS := -DMICO_ORB $(shell mico-config --cxxflags)
+CXXFLAGS+=$(IDLCXXFLAGS) $(MICO_CXXFLAGS)
+MICO_LIBS := $(shell mico-config --libs)
+LIBS+=$(MICO_LIBS)
+endif
+
+all:
+
+install:
+
+install-prog:
+	${INSTALL} -m $(EXE_MOD) $^ $(bindir)
+
+install-lib:
+	${INSTALL} -m $(EXE_MOD) $^ $(exec_prefix)/lib
+
+install-include:
+	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/include 
+
+install-idl:
+	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/idl 
+
+install-etc:
+	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/etc 
+
+clean:
+	-rm -rf $(CLEAN_FILES)
+
+full_clean: clean
+	-rm -rf $(FULL_CLEAN_FILES)
