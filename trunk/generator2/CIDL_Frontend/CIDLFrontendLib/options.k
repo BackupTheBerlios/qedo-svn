@@ -39,7 +39,7 @@
 
 /* Format: {option[':']} where
    ':' is an option which expects an argument */
-#define OPTIONS "d:hiI:o:s:SvVwx"
+#define OPTIONS "d:D:hiI:o:s:SvVwx"
 
 
 #ifdef HAVE_getopt_long
@@ -55,6 +55,7 @@ static struct option long_opt[] = {
 #if 0
   { "debug-view", 1, 0, 'D' },
 #endif
+  { "define", 1, 0, 'D' },
   { "information", 0, 0, 'i' },
   { "include-dir", 1, 0, 'I' },
   { "help", 0, 0, 'h' },
@@ -105,6 +106,7 @@ static char id[] UNUSED = "";
         int     dg_symtab;
         bool    ignore_errors;
         idl_name_list include_dirs;
+        idl_name_list defines;
     };
 
 extern struct options_S options;
@@ -224,9 +226,11 @@ ParseCommandLineOptions (int argc,char** argv)
                         case '4': options.verbose |= V_REFERENCES; break;
                         case 'o': 
 #ifndef KC_ORIGINAL
-                          if (optarg[1] == '?') {
+                          if (optarg[1] == '?')
+                          {
                             print_views(prog_name,'o');
-                          } else {
+                          } else
+                          {
                             for (i=base_uview+1; i<kc_last_uview; i++) {
                               if (strcmp(optarg+1,kc_uviews[i].name) == 0) {
                                 options.cr_print = i; i = 0; break;
@@ -236,10 +240,10 @@ ParseCommandLineOptions (int argc,char** argv)
                               fprintf(stderr,"%s: option -do view '%s' does not exists\n",
                                       prog_name, optarg);
                             } 
-                      }
-                            i = 0; optarg[1] = 0;
+						  }
+                          i = 0; optarg[1] = 0;
 #else
-                            fprintf(stderr,"%s: option -o not supported\n",prog_name);
+                          fprintf(stderr,"%s: option -o not supported\n",prog_name);
 #endif
                           break;
                         case 'y':
@@ -250,7 +254,7 @@ ParseCommandLineOptions (int argc,char** argv)
                           #endif
                           break;
 
-             default:
+						default:
                           fprintf(stderr,"wrong argument for option 'd',");
                         case '?':
                           fprintf(stderr,"use option 'd' with:\n");
@@ -259,6 +263,8 @@ ParseCommandLineOptions (int argc,char** argv)
                           fprintf(stderr,"\t3 symbol table\n");
                           fprintf(stderr,"\t4 reference resolution\n");
                       }
+                      break;
+            case 'D': options.defines = Considl_name_list(Name(mkcasestring(optarg)), options.defines);
                       break;
             case 'i': print_info(prog_name);
                       break;
@@ -317,4 +323,5 @@ init_options()
     options.dg_symtab=0;
     options.ignore_errors=false;
     options.include_dirs=Nilidl_name_list();
+    options.defines=Nilidl_name_list();
 }

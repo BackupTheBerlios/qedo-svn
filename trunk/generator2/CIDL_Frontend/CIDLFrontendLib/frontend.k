@@ -110,12 +110,24 @@ frontend_feed (
   init_lexer(true);
 
   len = strlen(filename)+strlen(filter)+2;
+  // include dirs
   foreach(name_v;idl_name_list options.include_dirs) {
+    len += strlen(name_v->get_name()) +3;
+  }
+  // defines
+  foreach(name_v;idl_name_list options.defines) {
     len += strlen(name_v->get_name()) +3;
   }
   buf = new char[len] ;
   strcpy(buf,filter);
   strcat(buf," ");
+  // defines
+  foreach(name_v;idl_name_list options.defines) {
+    strcat(buf,"-D");
+    strcat(buf,name_v->get_name());
+    strcat(buf," ");
+  }
+  // include dirs
   foreach(name_v;idl_name_list options.include_dirs) {
     strcat(buf,"-I");
     strcat(buf,name_v->get_name());
