@@ -202,7 +202,7 @@ SOURCE=.\DOMXMLParser.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\main.cpp
+SOURCE=.\ci.cpp
 # End Source File
 # Begin Source File
 

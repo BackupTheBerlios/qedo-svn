@@ -331,7 +331,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="libunzip.cpp">
 			</File>
 			<File
-				RelativePath="main.cpp">
+				RelativePath="ci.cpp">
 			</File>
 		</Filter>
 		<Filter
