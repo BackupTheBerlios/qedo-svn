@@ -952,6 +952,7 @@ GeneratorServantH::genProxyStubServantBody(IR__::ComponentDef_ptr component)
 		out << mapFullName (IR__::InterfaceDef::_narrow(a_uses -> interface_type())) << "_ptr orig_stub, ";
 		out << "Components::Extension::StubInterceptorRegistration_ptr stub_dispatcher);\n\n";
 
+		// handle attributes
 		out.indent();
 		// handle the operation
 		doInterface(IR__::InterfaceDef::_narrow(a_uses -> interface_type()));

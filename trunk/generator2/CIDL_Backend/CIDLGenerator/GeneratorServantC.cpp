@@ -1875,7 +1875,7 @@ GeneratorServantC::proxyOperation(IR__::UsesDef_ptr uses, IR__::OperationDef_ptr
 	}
 	out.unindent();
 	out << ");\n";
-	out << "} catch (...){};\n\n";
+	out << "} catch (...){throw;};\n\n";
 	out.unindent();
 	out << "}\n\n\n";
 }
