@@ -184,7 +184,7 @@ SOURCE=.\ComponentServerImpl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\main.cpp
+SOURCE=.\cs.cpp
 # End Source File
 # Begin Source File
 

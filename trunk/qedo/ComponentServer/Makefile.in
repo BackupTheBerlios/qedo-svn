@@ -35,8 +35,8 @@ OBJS = ${SOURCES:.cpp=.o}
 
 all: cs
 
-cs.cpp : main.cpp
-	@LN_S@ $^ $@
+#cs.cpp : main.cpp
+#	@LN_S@ $^ $@
 
 cs: $(OBJS)
 

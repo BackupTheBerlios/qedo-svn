@@ -316,7 +316,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="ServerInterceptorDispatcher.cpp">
 			</File>
 			<File
-				RelativePath="main.cpp">
+				RelativePath="cs.cpp">
 			</File>
 		</Filter>
 		<Filter
