@@ -101,6 +101,8 @@ private:
 			const ComponentServerEntry entry;
 			QedoMutex mutex;
 			QedoCond cond;
+			QedoCond join_cond;
+			bool locked_by_other;
 	};
 
 	static void* timer_thread(void *);

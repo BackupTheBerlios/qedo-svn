@@ -34,7 +34,7 @@
 #include <sys/time.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.23 2003/10/17 11:50:39 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.24 2003/10/17 13:22:41 stoinski Exp $";
 
 
 namespace Qedo {
@@ -118,7 +118,11 @@ QedoMutex::QedoMutex()
 QedoMutex::~QedoMutex() 
 {
 #ifdef QEDO_WINTHREAD
-	// XXX must be implemented
+	if (! CloseHandle (delegate_->mutex_))
+	{
+		std::cerr << "QedoMutex::~QedoMutex: " << GetLastError() << std::endl;
+		abort();
+	}
 #else
 	int ret;
 
@@ -244,7 +248,10 @@ QedoCond::QedoCond (char * sig_name)
 QedoCond::~QedoCond() 
 {
 #ifdef QEDO_WINTHREAD
-	// XXX must be implemented
+	if (! CloseHandle (delegate_->event_handle_))
+	{
+		std::cerr << "QedoCond::~QedoCond: " << GetLastError() << std::endl;
+	}
 #else
 	int ret;
 
@@ -301,7 +308,7 @@ QedoCond::wait_timed(const QedoMutex* m, unsigned long timeout)
 #ifdef QEDO_WINTHREAD
  	const_cast<QedoMutex* const>(m)->unlock_object();
 	long x;
-	x = WaitForMultipleObjects(1, &(delegate_->event_handle_), TRUE, timeout);
+	x = WaitForSingleObject (delegate_->event_handle_, timeout);
 
 	switch (x)
  	{
@@ -390,6 +397,7 @@ QedoCond::broadcast()
 {
 #ifdef QEDO_WINTHREAD
 	// XXX must be implemented
+	abort();
 #else
 	int ret;
 
@@ -498,7 +506,10 @@ void
 QedoThread::join()
 {
 #ifdef QEDO_WINTHREAD
-	// XXX must be implemented
+	if (WaitForSingleObject (delegate_->th_handle_, INFINITE) != WAIT_OBJECT_0)
+	{
+        std::cerr << "QedoThread::join: " << GetLastError() << std::endl;
+	}
 #else
 	void *state;
 	int ret;

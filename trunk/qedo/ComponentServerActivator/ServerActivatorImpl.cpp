@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.27 2003/10/17 09:11:41 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.28 2003/10/17 13:22:52 stoinski Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -383,8 +383,18 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	}
 
 	r->mutex.lock_object();
-	r->cond.signal();
-	r->mutex.lock_object();
+	if (r->locked_by_other)
+	{
+		r->join_cond.signal();
+	}
+	else
+	{
+		r->locked_by_other = true;
+		r->cond.signal();
+		r->join_cond.wait(r->mutex);
+	}
+
+	r->mutex.unlock_object();
 
 	thread->join();
 
@@ -479,6 +489,7 @@ ServerActivatorImpl::remove_by_pid (pid_t server)
 ServerActivatorImpl::RemoveStruct::RemoveStruct(const ComponentServerEntry& e)
 	: entry(e)
 {
+	locked_by_other = false;
 }
 
 void *
@@ -486,7 +497,7 @@ ServerActivatorImpl::timer_thread(void *data)
 {
 	RemoveStruct* s = static_cast<RemoveStruct*>(data);
 
-	Qedo::QedoLock l(s->mutex);
+	s->mutex.lock_object();
 
 	if( !s->cond.wait_timed(s->mutex,5000) )
 	{
@@ -503,6 +514,18 @@ ServerActivatorImpl::timer_thread(void *data)
 #endif
 
 	}
+
+	if ( s->locked_by_other)
+	{
+		s->join_cond.signal();
+	}
+	else
+	{
+		s->locked_by_other = true;
+		s->join_cond.wait (s->mutex);
+	}
+
+	s->mutex.unlock_object();
 
 	return 0;
 }

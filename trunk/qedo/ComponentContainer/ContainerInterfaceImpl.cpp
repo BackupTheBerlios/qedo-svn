@@ -32,7 +32,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.41 2003/10/17 10:47:57 stoinski Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.42 2003/10/17 13:22:52 stoinski Exp $";
 
 
 namespace Qedo {
@@ -757,10 +757,10 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	installed_homes_.erase (homes_iter);
 
 
-	DEBUG_OUT ("..... unload home servant code");
+	DEBUG_OUT ("ContainerInterfaceImpl: unload home servant code");
 	Qedo::unload_shared_library (servant_module);
 
-	DEBUG_OUT ("..... unload home executor code");
+	DEBUG_OUT ("ContainerInterfaceImpl: unload home executor code");
 	Qedo::unload_shared_library (executor_module);
 }
 
@@ -814,7 +814,7 @@ throw (Components::CCMException, CORBA::SystemException)
 	ServiceReferenceEntry new_entry(id, ref);
 	service_references_.push_back (new_entry);
 
-	DEBUG_OUT2("..... service registered for ", id);
+	DEBUG_OUT2("ContainerInterfaceImpl: service registered for ", id);
 }
 
 

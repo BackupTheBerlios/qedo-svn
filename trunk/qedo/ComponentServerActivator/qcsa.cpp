@@ -47,7 +47,7 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.15 2003/10/17 09:11:41 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.16 2003/10/17 13:22:52 stoinski Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -74,8 +74,8 @@ handle_sigint
 #else
 	signal(sig, SIG_IGN);
 #endif
-	std::cout << "\nGot Crtl-C" << std::endl;
-	std::cerr << "..... unbind in NameService" << std::endl;
+	std::cout << "ServerActivatorImpl: got Crtl-C" << std::endl;
+	std::cerr << "ServerActivatorImpl: unbinding from NameService" << std::endl;
 
 	//
 	// unbind in naming service
@@ -100,11 +100,11 @@ handle_sigint
     }
 	catch (const CORBA::Exception&)
 	{
-		std::cerr << "..... could not unbind" << std::endl;
+		std::cerr << "ServerActivatorImpl: could not unbind" << std::endl;
 	}
 	catch(...)
 	{
-		std::cerr << "..... error in signal handler" << std::endl;
+		std::cerr << "ServerActivatorImpl: error in signal handler" << std::endl;
 	}
 	
 	exit(1);
