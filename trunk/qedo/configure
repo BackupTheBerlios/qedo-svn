@@ -930,7 +930,7 @@ ac_abs_top_srcdir=`cd "$ac_dir" && cd $ac_top_srcdir && pwd`
     else
       echo "$as_me: WARNING: no configuration information is in $ac_dir" >&2
     fi
-    cd $ac_popdir
+    cd "$ac_popdir"
   done
 fi
 
@@ -3225,7 +3225,7 @@ fi
 
 # do enable debug
 CONF_OPT_FLAGS="-O2"
-CONF_DEBUG_FLAGS="-g"
+CONF_DEBUG_FLAGS="-g -D_DEBUG"
 
 
 CXXFLAGS=`echo " $CXXFLAGS " | sed -e 's/ -g / /g' -e 's/ -O[0-9]* / /g'`
