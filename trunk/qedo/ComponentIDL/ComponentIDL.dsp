@@ -99,8 +99,8 @@ PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll ComponentI
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "ComponentIDL___Win32_Debug_orbacus_vc6"
-# PROP Intermediate_Dir "ComponentIDL___Win32_Debug_orbacus_vc6"
+# PROP Output_Dir "Debug_orbacus_vc6"
+# PROP Intermediate_Dir "Debug_orbacus_vc6"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMPONENTIDL_EXPORTS" /YX /FD /GZ /c
