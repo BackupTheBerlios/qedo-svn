@@ -12,14 +12,13 @@
 
 #include <CORBA.h>
 #include "EventFrequency_EFQoSProviderComposition_BUSINESS.h"
-#include "valuetypes.h"
+#include "component_valuetypes.h"
 #include "RefCountBase.h"
 #include <string>
 
 
 // BEGIN USER INSERT SECTION file_post
 #include "ServerContainerInterceptor.h"
-#include "SeqUsage.h"
 // END USER INSERT SECTION file_post
 
 
