@@ -9,7 +9,7 @@
     <description></description>
     <license href="" />
     <idl id="IDL:Chat/ChatChannelHome:1.0">
-        <fileinarchive name="chat.idl"/>
+        <fileinarchive name="chat.cidl"/>
     </idl>
 
     <implementation id="UUID-1d2ee222-9592-4819-996f-8cf90d65565b">
