@@ -73,6 +73,7 @@ include ../../MakeVars
 all: cidl_gen
 
 cidl_gen: $(OBJS) ${LIB_FILES}
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 .PHONY:install
 
