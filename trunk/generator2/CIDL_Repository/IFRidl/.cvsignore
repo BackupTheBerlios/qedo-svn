@@ -1,2 +1,10 @@
+CIDL_Extension.h
+CIDL_Extension.cpp
+CIDL_Extension_skel.h
+CIDL_Extension_skel.cpp
+IFR_skel.h
+IFR_skel.cpp
+IFR.h
+IFR.cpp
 Debug_*
 Release_*
