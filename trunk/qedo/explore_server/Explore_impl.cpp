@@ -45,18 +45,18 @@ using namespace std;
 string get_short_name(char *full_scope_name) {
 // Liefer den short_name von der RepID zurück
 
-	
+
 	int len = strlen(full_scope_name); // Die Länge des Strings ermitteln
 	int ende, start; // Start und Ende Position in der RepID
-	
+
 	const char* short_name="" ; // Rückgabe wert
-	
-	// Start und Ende Position finden 
+
+	// Start und Ende Position finden
 	// Trennzeichen sind : für Ende
 	// "/" für start Position
 
 	for (int i=len; i>0; i--) {
-		
+
 		if (full_scope_name[i]==':') {
 			ende=i;
 		}
@@ -90,12 +90,12 @@ string get_short_name(char *full_scope_name) {
 	gethostname (hostname, 256);
 	if (gethostname (hostname, 256))
 	{
-		std::cout<< "No hostname found"<<endl;
+		DEBUG_OUT ("No hostname found");
 		e_orb -> destroy();
 		exit(1);
 	}
-	
-	
+
+
 	CosNaming::Name cname;
 	cname.length(2);
 	cname[0].id=CORBA::string_dup("Qedo");
@@ -136,7 +136,7 @@ string get_short_name(char *full_scope_name) {
 		name[2].kind=CORBA::string_dup("");
 
 		try {
-			std::cout<< "ServerActivator: " << b.binding_name[0].id << endl;
+			DEBUG_OUT2("ServerActivator: ", b.binding_name[0].id);
 			server_activator_obj=nc->resolve(name);
 
 		}
@@ -149,7 +149,7 @@ string get_short_name(char *full_scope_name) {
 			continue;
 		}
 		catch (CosNaming::NamingContext::InvalidName_catch &exec) {
-			std::cout << "InvalidName exception"<<endl;
+			DEBUG_OUT("InvalidName exception");
 			continue;
 		}
 	
@@ -159,7 +159,7 @@ string get_short_name(char *full_scope_name) {
 		} 
 		catch (CORBA::SystemException&) 
 		{
-			std::cout<<"Cannon narrow"<<endl;
+			DEBUG_OUT("Cannon narrow");
 			e_orb -> destroy();
 			continue;
 		}

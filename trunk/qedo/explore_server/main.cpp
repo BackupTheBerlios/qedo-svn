@@ -25,7 +25,8 @@
 #include "string"
 #include "coss/CosNaming.h"
 #include "Explore_impl.h"
-
+#include "Output.h"
+#include "ConfigurationReader.h"
 
 using namespace std;
 
@@ -34,6 +35,23 @@ using namespace std;
 int main (int argc, char** argv)
 
 {
+	Qedo::debug_output = false;
+	//
+	// Resolve config values from config file
+	//
+	if ( Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/VerboseOutput") == "true")
+	{
+		Qedo::debug_output = true;
+	}
+
+	for (int i = 1; i < argc; i++)
+	{
+		if (! strcmp (argv[i], "--verbose"))
+		{
+			Qedo::debug_output = true;
+		}
+	}
+
 	try{
 
 
@@ -46,7 +64,7 @@ int main (int argc, char** argv)
 
 		//Activate POA Manager
 		PortableServer::POAManager_var mgr=poa->the_POAManager();
-		
+
 		//Create an Object
 		Explore_impl *impl = new Explore_impl;
 		impl->e_argc=argc;
@@ -62,11 +80,11 @@ int main (int argc, char** argv)
 			std::cerr << "Cannot resolve NameService" << endl;
 			exit(1);
 		}
-		
+
 		//narrow the root naming context
 		CosNaming::NamingContext_var nc=CosNaming::NamingContext::_narrow(nsobj);
 
-	    CosNaming::NamingContext_var context; 
+	    CosNaming::NamingContext_var context;
 		CosNaming::Name contextName;
 		contextName.length(1);
 		contextName[0].id = CORBA::string_dup("Qedo");
