@@ -19,6 +19,7 @@
 
 // BEGIN USER INSERT SECTION file_post
 #include "ContainerInterceptor.h"
+#include "Extension.h"
 // END USER INSERT SECTION file_post
 
 
@@ -35,6 +36,7 @@ namespace container_service
         , public virtual Qedo::RefCountLocalObject
 #endif
 // BEGIN USER INSERT SECTION INHERITANCE_MonExec
+, public virtual Qedo::ExtensionBase
 // END USER INSERT SECTION INHERITANCE_MonExec
     {
     
@@ -58,8 +60,6 @@ namespace container_service
         
     
 // BEGIN USER INSERT SECTION MonExec
-	private:
-		Qedo::ContainerInterceptor* interceptor_;
 // END USER INSERT SECTION MonExec
 
     };
@@ -75,6 +75,7 @@ namespace container_service
         , public virtual Qedo::RefCountLocalObject
 #endif
 // BEGIN USER INSERT SECTION INHERITANCE_MonImpl
+, public virtual Qedo::ExtensionBase
 // END USER INSERT SECTION INHERITANCE_MonImpl
     {
     
@@ -83,7 +84,6 @@ namespace container_service
         ::container_service::CCM_monitor_Context_var context_;
         
         MonExec* component_;
-
         
     public:
     
@@ -110,7 +110,7 @@ namespace container_service
         	throw(CORBA::SystemException, ::Components::InvalidConfiguration);
         
         //
-        // IDL:Components/SessionComponent/set_extension_context:1.0
+        // IDL:Components/SessionComponent/set_session_context:1.0
         //
         virtual void set_extension_context(Components::ExtensionContext_ptr ctx)
         	throw(CORBA::SystemException, ::Components::CCMException);
@@ -133,7 +133,6 @@ namespace container_service
         virtual void ccm_remove()
         	throw(CORBA::SystemException, ::Components::CCMException);
     
-
 // BEGIN USER INSERT SECTION MonImpl
 // END USER INSERT SECTION MonImpl
 

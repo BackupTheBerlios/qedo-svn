@@ -80,7 +80,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  mico2310.lib"
+				AdditionalDependencies="Extension.lib ComponentIDL.lib ComponentContainer.lib  mico2310.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/container_service_MonImpl.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)\lib;$(MICO)\win32-bin\lib"
@@ -157,9 +157,6 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="ContainerInterceptor.cpp">
-			</File>
-			<File
 				RelativePath="container_service_MonImpl.cpp">
 			</File>
 			<File
@@ -178,9 +175,6 @@
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
-			<File
-				RelativePath="ContainerInterceptor.h">
-			</File>
 			<File
 				RelativePath="container_service_MonImpl.h">
 			</File>

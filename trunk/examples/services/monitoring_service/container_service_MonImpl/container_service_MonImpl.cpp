@@ -5,7 +5,6 @@
 #include "container_service_MonImpl.h"
 
 
-
 // BEGIN USER INSERT SECTION file
 // END USER INSERT SECTION file
 
@@ -49,6 +48,7 @@ MonExec::configuration_complete()
 	Components::Extension::ServerInterceptorRegistration_ptr server_reg = context_->get_server_interceptor_dispatcher_registration();
 	this->interceptor_ = new Qedo::ContainerInterceptor();
 	server_reg->register_server_interceptor(interceptor_);
+
 
 // END USER INSERT SECTION MonExec::configuration_complete
 }
@@ -111,6 +111,7 @@ MonImpl::configuration_complete()
     component_->configuration_complete();
 
 // BEGIN USER INSERT SECTION MonImpl::configuration_complete
+	register_container_interceptors(context_);
 // END USER INSERT SECTION MonImpl::configuration_complete
 }
 

@@ -1,5 +1,5 @@
 
-static char rcsid[] = "$Id: main.cpp,v 1.1 2003/09/08 10:52:34 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.2 2003/09/09 13:05:13 tom Exp $";
 
 #include <CORBA.h>
 
@@ -9,7 +9,7 @@ static char rcsid[] = "$Id: main.cpp,v 1.1 2003/09/08 10:52:34 tom Exp $";
 #endif
 #include <coss/CosNaming.h>
 #else
-#include <CosNaming.h>
+#include <coss/CosNaming.h>
 #endif
 
 #include "Components.h"
@@ -116,8 +116,8 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	MonImpl_exec.append("/../../container_service_MonImpl/Debug_orbacus/container_service_MonImpl.dll");
 #endif
 #ifdef MICO_ORB
-	MonImpl_servant.append("/HelloWorld_CalleeImpl_SERVANT.dll");
-	MonImpl_exec.append("/HelloWorld_CalleeImpl.dll");
+	MonImpl_servant.append("/../../container_service_MonImpl_SERVANT/Debug_mico/container_service_MonImpl_SERVANT.dll");
+	MonImpl_exec.append("/../../container_service_MonImpl/Debug_mico/container_service_MonImpl.dll");
 #endif
 #else
 #ifdef ORBACUS_ORB

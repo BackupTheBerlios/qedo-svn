@@ -1,5 +1,5 @@
 
-static char rcsid[] = "$Id: main.cpp,v 1.1 2003/08/10 15:19:11 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.2 2003/09/09 13:05:13 tom Exp $";
 
 #include <CORBA.h>
 
@@ -223,15 +223,27 @@ main (int argc, char** argv)
 	Components::ConfigValues home_config;
 	Components::Deployment::ComponentServer_var component_server;
 
-	try
+	//
+	// first try to use an existing component server
+	// create a new one otherwise
+	//
+
+	Components::Deployment::ComponentServers_var component_servers = server_activator->get_component_servers();
+	if (component_servers->length() > 0)
 	{
-		component_server = 	server_activator->create_component_server (config);
-	}
-	catch (CORBA::Exception&)
+		component_server = component_servers.in()[0];
+	} else
 	{
-		std::cerr << "Exception during test run" << std::endl;
-		orb->destroy();
-		exit (1);
+		try
+		{
+			component_server = 	server_activator->create_component_server (config);
+		}
+		catch (CORBA::Exception&)
+		{
+			std::cerr << "Exception during test run" << std::endl;
+			orb->destroy();
+			exit (1);
+		}
 	}
 
 	if (CORBA::is_nil (component_server))
