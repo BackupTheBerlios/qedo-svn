@@ -70,8 +70,9 @@ typedef std::vector < ContainerEntry > ContainerVector;
 /**
  * the server for containers
  */
-class ComponentServerImpl : public POA_Components::Deployment::ComponentServer,
-							public PortableServer::RefCountServantBase
+class ComponentServerImpl : public virtual POA_Components::Deployment::ComponentServer,
+							public virtual PortableServer::RefCountServantBase,
+							public virtual CreateDestructCORBAObjectCounter
 {
 private:
 	/** the stringified object reference of the server activator */

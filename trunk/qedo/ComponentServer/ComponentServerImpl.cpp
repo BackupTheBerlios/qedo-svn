@@ -24,7 +24,7 @@
 #include "Output.h"
 #include "Valuetypes.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.12 2003/08/01 14:57:26 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.13 2003/08/06 12:24:29 stoinski Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -87,27 +87,6 @@ ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb,
 ComponentServerImpl::~ComponentServerImpl()
 {
 	DEBUG_OUT ("ComponentServerImpl: Destructor called");
-
-	DEBUG_OUT  ("ComponentServerImpl: #######################################################");
-	if (GlobalObjectManagement::native_object_count_ || GlobalObjectManagement::CORBA_local_object_count_)
-	{
-		DEBUG_OUT  ("ComponentServerImpl: # MEMORY LEAKS DETECTED!!!");
-		if (GlobalObjectManagement::native_object_count_)
-		{
-			DEBUG_OUT2 ("ComponentServerImpl: # Number of still running native objects      : ", GlobalObjectManagement::native_object_count_ );
-		}
-		else
-		{
-			DEBUG_OUT2 ("ComponentServerImpl: # Number of still running CORBA local objects : ", GlobalObjectManagement::CORBA_local_object_count_ );
-		}
-	}
-	else
-	{
-		DEBUG_OUT  ("ComponentServerImpl: # All objects destroyed");
-	}
-	DEBUG_OUT2 ("ComponentServerImpl: # Number of constructed native objects        : ", GlobalObjectManagement::native_object_instantiation_count_ );
-	DEBUG_OUT2 ("ComponentServerImpl: # Number of constructed CORBA local objects   : ", GlobalObjectManagement::CORBA_local_object_instantiation_count_ );
-	DEBUG_OUT  ("ComponentServerImpl: #######################################################");
 }
 
 
@@ -410,6 +389,12 @@ ComponentServerImpl::remove()
 throw (Components::RemoveFailure, CORBA::SystemException)
 {
 	DEBUG_OUT ("ComponentServerImpl: remove() called");
+
+	for (unsigned int i = 0; i < containers_.size(); i++)
+	{
+		Components::Deployment::Container_var container = containers_[i].container_->_this();
+        this->remove_container (container.in());
+	}
 
 	root_poa_manager_->deactivate (false /*no etherealize objects*/, false /*no wait for completion*/);
 
