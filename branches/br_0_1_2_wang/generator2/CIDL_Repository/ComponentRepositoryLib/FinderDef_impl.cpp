@@ -36,7 +36,7 @@ FinderDef_impl::FinderDef_impl
   Contained_impl ( container, repository ),
   OperationDef_impl ( container, repository )
 {
-	DEBUG_OUTLINE ( "FinderDef_impl::FinderDef_impl() called" );
+	DEBUG_OUTLINE ( "FinderDef_impl::FinderDef_impl() with component called" );
 
 	OperationDef_impl::result_def ( component -> _this() );
 	OperationDef_impl::mode ( IR__::OP_NORMAL );

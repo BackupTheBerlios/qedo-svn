@@ -24,7 +24,7 @@
 /*****************************************************************************/
 
 #include "StorageHomeDef_impl.h"
-#include "PSSFactoryDef_impl.h"
+#include "FactoryDef_impl.h"
 #include "PSSFinderDef_impl.h"
 #include "PSSPrimaryKeyDef_impl.h"
 #include "Debug.h"
@@ -129,7 +129,7 @@ throw(CORBA::SystemException)
 	storage_home_desc -> primary_key_def = IR__::PSSPrimaryKeyDef::_nil();
 
 	// Factories
-	IR__::PSSFactoryDefSeq_var factories = this -> factories();
+	IR__::FactoryDefSeq_var factories = this -> factories();
 	storage_home_desc -> factories.length (  factories -> length() );
 	for ( i = 0; i < factories -> length(); i++ )
 		storage_home_desc -> factories[i] = factories.inout()[i];
@@ -328,14 +328,14 @@ throw(CORBA::SystemException)
 	return IR__::PSSPrimaryKeyDef::_nil();
 }
 
-IR__::PSSFactoryDefSeq*
+IR__::FactoryDefSeq*
 StorageHomeDef_impl::factories
 ()
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "StorageHomeDef_impl::factories() called" );
 
-	IR__::PSSFactoryDefSeq_var factory_seq = new IR__::PSSFactoryDefSeq;
+	IR__::FactoryDefSeq_var factory_seq = new IR__::FactoryDefSeq;
 
 	list < Contained_impl* >::const_iterator contained_iter;
 	for ( contained_iter = contained_.begin();
@@ -344,12 +344,12 @@ throw(CORBA::SystemException)
 	{
 		if ( (*contained_iter) -> def_kind() == CORBA__::dk_Factory )
 		{
-			PSSFactoryDef_impl *impl;
-			impl = dynamic_cast < PSSFactoryDef_impl* > ( *contained_iter );
+			FactoryDef_impl *impl;
+			impl = dynamic_cast < FactoryDef_impl* > ( *contained_iter );
 			if ( !impl )
 			{
 				// This cannot be, what to do?
-				DEBUG_ERRLINE ( "Fatal error: Contained with kind 'dk_Factory' cannot be casted to PSSFactoryDef_impl" );
+				DEBUG_ERRLINE ( "Fatal error: Contained with kind 'dk_Factory' cannot be casted to FactoryDef_impl" );
 				continue;
 			}
 			factory_seq -> length ( factory_seq -> length() + 1 );
@@ -439,7 +439,7 @@ throw(CORBA::SystemException)
 	return new_primary_key -> _this();
 }
 
-IR__::PSSFactoryDef_ptr
+IR__::FactoryDef_ptr
 StorageHomeDef_impl::create_factory
 (const char* id,
  const char* name,
@@ -455,8 +455,8 @@ throw(CORBA::SystemException)
 	if ( check_for_name ( name ) )
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
-	PSSFactoryDef_impl *new_factory = 
-		new PSSFactoryDef_impl ( this, repository_, managed_storage_type_impl_ );
+	FactoryDef_impl *new_factory = 
+		new FactoryDef_impl ( this, repository_, managed_storage_type_impl_ );
 	new_factory -> id ( id );
 	new_factory -> name ( name );
 	new_factory -> version ( version );

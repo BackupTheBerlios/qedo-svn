@@ -97,7 +97,7 @@ public:
     //
     // IDL:omg.org/IR__/StorageHomeDef/factories:1.0
     //
-    virtual IR__::PSSFactoryDefSeq* factories();
+    virtual IR__::FactoryDefSeq* factories();
 
     //
     // IDL:omg.org/IR__/StorageHomeDef/finders:1.0
@@ -115,7 +115,7 @@ public:
     //
     // IDL:omg.org/IR__/StorageHomeDef/create_factory:1.0
     //
-    virtual IR__::PSSFactoryDef_ptr create_factory(const char* id,
+    virtual IR__::FactoryDef_ptr create_factory(const char* id,
                                                 const char* name,
                                                 const char* version,
                                                 const IR__::ParDescriptionSeq& params,

@@ -61,7 +61,8 @@ module CORBA__ {
 		// The following extensions are for PSDL
 		, dk_Catalog, dk_AbstractStorageHome, dk_StorageHome
 		, dk_AbstractStorageType, dk_StorageType
-		, dk_PSSFactory, dk_PSSFinder, dk_PSSPrimaryKey
+		//, dk_PSSFactory
+		, dk_PSSFinder, dk_PSSPrimaryKey
 
 	};
 
@@ -157,8 +158,8 @@ module IR__ {
 	typedef sequence <FactoryDef> FactoryDefSeq;
 	interface FinderDef;
 	typedef sequence <FinderDef> FinderDefSeq;
-	interface PSSFactoryDef;
-	typedef sequence <PSSFactoryDef> PSSFactoryDefSeq;
+	//interface PSSFactoryDef;
+	//typedef sequence <PSSFactoryDef> PSSFactoryDefSeq;
 	interface PSSFinderDef;
 	typedef sequence <PSSFinderDef> PSSFinderDefSeq;
 	interface PrimaryKeyDef;
@@ -909,8 +910,8 @@ module IR__ {
 		IDLType primary_key;
 	};
 
-	interface PSSFactoryDef : OperationDef { // only PARAM_IN parameters
-	};
+	//interface PSSFactoryDef : OperationDef { // only PARAM_IN parameters
+	//};
 	
 	interface PSSFinderDef : OperationDef { // only PARAM_IN parameters
 	};
@@ -1005,10 +1006,10 @@ module IR__ {
 		// can be derived from more than one abstract storage homes
 		//attribute InterfaceDefSeq base_storage_homes;
 		attribute AbsStorageHomeDefSeq base_abstract_storage_homes;
-		readonly attribute PSSFactoryDefSeq factories;
+		readonly attribute FactoryDefSeq factories;
 		readonly attribute PSSFinderDefSeq finders;
 		// write interfaces
-		PSSFactoryDef create_factory (
+		FactoryDef create_factory (
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
@@ -1031,7 +1032,7 @@ module IR__ {
 		VersionSpec version;
 		RepositoryId managed_abstract_storage_type;
 		RepositoryIdSeq base_abstract_storage_homes;
-		PSSFactoryDefSeq factories;
+		FactoryDefSeq factories;
 		PSSFinderDefSeq finders;
 		AttrDescriptionSeq attributes;
 		OpDescriptionSeq operations;
@@ -1043,7 +1044,7 @@ module IR__ {
 		readonly attribute StorageTypeDef managed_storage_type;
 		attribute InterfaceDefSeq supported_interfaces;
 		readonly attribute PSSPrimaryKeyDef primary_key;
-		readonly attribute PSSFactoryDefSeq factories;
+		readonly attribute FactoryDefSeq factories;
 		readonly attribute PSSFinderDefSeq finders;
 		// write interfaces
 		PSSPrimaryKeyDef create_primary_key (
@@ -1052,7 +1053,7 @@ module IR__ {
 			in VersionSpec version,
 			in IDLType primary_key
 		);
-		PSSFactoryDef create_factory (
+		FactoryDef create_factory (
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
@@ -1077,7 +1078,7 @@ module IR__ {
 		RepositoryId managed_storage_type;
 		RepositoryIdSeq supports_interfaces;
 		PSSPrimaryKeyDef primary_key_def;
-		PSSFactoryDefSeq factories;
+		FactoryDefSeq factories;
 		PSSFinderDefSeq finders;
 		AttrDescriptionSeq attributes;
 		OpDescriptionSeq operations;

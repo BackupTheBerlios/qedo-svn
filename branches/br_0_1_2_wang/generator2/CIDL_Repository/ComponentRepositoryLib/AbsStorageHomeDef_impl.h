@@ -85,7 +85,7 @@ public:
     //
     // IDL:omg.org/IR__/AbstractStorageHomeDef/factories:1.0
     //
-    virtual IR__::PSSFactoryDefSeq* factories()
+    virtual IR__::FactoryDefSeq* factories()
         throw(CORBA::SystemException);
 
     //
@@ -97,7 +97,7 @@ public:
     //
     // IDL:omg.org/IR__/AbstractStorageHomeDef/create_factory:1.0
     //
-    virtual IR__::PSSFactoryDef_ptr create_factory(const char* id,
+    virtual IR__::FactoryDef_ptr create_factory(const char* id,
                                                    const char* name,
                                                    const char* version,
                                                    const IR__::ParDescriptionSeq& params,

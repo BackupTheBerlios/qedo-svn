@@ -1528,38 +1528,34 @@ FactoryDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
     { my_build.pos = 0; }
 
 	{
-	    IR__::HomeDef_ptr home_ptr;
+	    // factory for component home
+		IR__::HomeDef_ptr home_ptr;
 		home_ptr= IR__::HomeDef::_narrow(kc_current_view.container);
-		home_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-            "1.0",my_build.paradescseq,my_build.excdefseq);
+		if(!CORBA::is_nil(home_ptr))
+		{
+			home_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+				"1.0",my_build.paradescseq,my_build.excdefseq);
+		}
+
+		// factory for storage home
+		IR__::StorageHomeDef_ptr storagehome_ptr; 
+		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
+		if(!CORBA::is_nil(storagehome_ptr))
+		{
+			storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+				"1.0",my_build.paradescseq,my_build.excdefseq);
+		}
+
+		// factory for abstract storage home
+		IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
+		abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
+		if(!CORBA::is_nil(abs_storagehome_ptr))
+		{
+			abs_storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+				"1.0",my_build.paradescseq,my_build.excdefseq);
+		}
 	}
-
   ];
-
-// ======================== PSSFactory ================================
-/*
-def_v=
-PSSFactoryDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
-->[ feed:
-	%uviewvar build my_build;
-    // parameters
-    { my_build.pos = 0; my_build.paradescseq.length(parameter_dcls_v->length()); }
-    parameter_dcls_v : my_build
-    // exceptions
-    { my_build.pos = 0; }
-    attr_raises_expr_v : my_build
-    // context
-    { my_build.pos = 0; }
-
-	{
-	    IR__::StorageHomeDef_ptr home_ptr; //???
-		home_ptr= IR__::HomeDef::_narrow(kc_current_view.container);
-		home_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-            "1.0",my_build.paradescseq,my_build.excdefseq);
-	}
-
-  ];
-*/
 
 // ======================== Finder ==================================
 def_v=
@@ -1583,10 +1579,10 @@ FinderDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 	}
   ];
 
-// ======================== PSSFinder ==================================
-/*
+// ====================== PSSFinder -- KeyDcl =============================
+
 def_v=
-FinderDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
+KeyDcl(idl_name_v, parameter_dcls_v)
 ->[ feed:
 	%uviewvar build my_build;
     // parameters
@@ -1594,18 +1590,33 @@ FinderDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
     parameter_dcls_v : my_build
     // exceptions
     { my_build.pos = 0; }
-    attr_raises_expr_v : my_build
+    // attr_raises_expr_v : my_build
     // context
     { my_build.pos = 0; }
 
 	{
-	    IR__::HomeDef_ptr home_ptr;
-		home_ptr= IR__::HomeDef::_narrow(kc_current_view.container);
-		home_ptr->create_finder(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-            "1.0",my_build.paradescseq,my_build.excdefseq);
+	    IR__::StorageHomeDef_ptr storagehome_ptr; 
+		storagehome_ptr = IR__::StorageHomeDef::_narrow(kc_current_view.container);
+		
+		if(!CORBA::is_nil(storagehome_ptr))
+		{
+			storagehome_ptr->create_finder(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+				"1.0",my_build.paradescseq,my_build.excdefseq);
+		}
+		else
+		{
+			IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
+			abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
+			
+			if(!CORBA::is_nil(abs_storagehome_ptr))
+			{
+				abs_storagehome_ptr->create_finder(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+					"1.0",my_build.paradescseq,my_build.excdefseq);
+			}
+		}
 	}
   ];
-*/
+
 // ======================== Operation ===============================
 
 def_v=

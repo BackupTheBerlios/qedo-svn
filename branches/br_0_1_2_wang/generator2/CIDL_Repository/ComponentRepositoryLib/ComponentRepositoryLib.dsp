@@ -257,10 +257,6 @@ SOURCE=.\ProvidesDef_impl.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\PSSFactoryDef_impl.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\PSSFinderDef_impl.cpp
 # End Source File
 # Begin Source File
@@ -450,10 +446,6 @@ SOURCE=.\PrimitiveDef_impl.h
 # Begin Source File
 
 SOURCE=.\ProvidesDef_impl.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\PSSFactoryDef_impl.h
 # End Source File
 # Begin Source File
 
