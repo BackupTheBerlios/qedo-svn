@@ -63,7 +63,7 @@ private:
 	/** the component installation */
 	ComponentImplementationDataVector*			data_;
 	/** the parser */
-	//DOMXMLParser								parser_;
+	DOMXMLParser								parser_;
     /** the parsed document */
 	DOMDocument*								document_;
     

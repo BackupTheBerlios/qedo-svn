@@ -28,7 +28,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: InstallationReader.cpp,v 1.4 2003/10/24 11:19:35 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: InstallationReader.cpp,v 1.5 2003/11/05 14:37:55 neubauer Exp $";
 
 
 namespace Qedo {
@@ -159,7 +159,6 @@ throw(InstallationReadException)
 	//
 	// parse the descriptor file
     //
-	DOMXMLParser parser_;
 	char* xmlfile = strdup(file.c_str());
     if( parser_.parse( xmlfile ) != 0 ) 
 	{
@@ -179,7 +178,6 @@ throw(InstallationReadException)
 	//
 	// parse the descriptor file
     //
-	DOMXMLParser parser_;
 	char* xmlfile = strdup(file.c_str());
     if( parser_.parse( xmlfile ) != 0 ) 
 	{
@@ -284,7 +282,6 @@ throw(InstallationReadException)
 	//
 	// parse the descriptor file
     //
-	DOMXMLParser parser_;
 	char* xmlfile = strdup(file.c_str());
     if( parser_.parse( xmlfile ) != 0 ) 
 	{
