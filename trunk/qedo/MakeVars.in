@@ -29,6 +29,10 @@ Debug = yes
 #XERCES = /home/tri/devel/xerces-c-src2_1_0
 XERCESDIR = @XERCESDIR@
 
+# modes for install files
+EXE_MOD=755
+FILE_MODE=644
+
 # ZLib - Zip File handling
 ZLIB = /home/tri/devel/zlib-1.1.4
 
@@ -52,9 +56,10 @@ ifeq "MICO_ORB" "${ORB}"
 %.h %.cpp %_skel.h %_skel.cpp: %.idl
 	$(MICO)/bin/idl ${IDL_FLAGS} -I. -I$(MICO)/include -I$(MICO)/include/mico -DMICO_ORB --any --c++-suffix cpp --c++-skel $< \
 	&&  cp $*.h $*_skel.h
-MICO_CXXFLAGS := $(shell mico-config --cxxflags)
-CXXFLAGS += -DMICO_ORB $(MICO_CXXFLAGS) 
-LIBS += $(shell mico-config --libs)
+MICO_CXXFLAGS := -DMICO_ORB $(shell mico-config --cxxflags)
+CXXFLAGS+=$(IDLCXXFLAGS) $(MICO_CXXFLAGS)
+MICO_LIBS := $(shell mico-config --libs)
+LIBS+=$(MICO_LIBS)
 endif
 
 all:
@@ -62,19 +67,19 @@ all:
 install: all
 
 install-prog:
-	${INSTALL} $^ @bindir@ 
+	${INSTALL} -m $(EXE_MOD) $^ @bindir@ 
 
 install-lib:
-	${INSTALL} $^ $(exec_prefix)/lib 
+	${INSTALL} -m $(EXE_MOD) $^ $(exec_prefix)/lib 
 
 install-include:
-	${INSTALL} $^ $(exec_prefix)/include 
+	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/include 
 
 install-idl:
-	${INSTALL} $^ $(exec_prefix)/idl 
+	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/idl 
 
 install-etc:
-	${INSTALL} $^ $(exec_prefix)/etc 
+	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/etc 
 
 clean:
 	-rm -rf $(CLEAN_FILES)
