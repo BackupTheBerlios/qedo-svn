@@ -326,9 +326,6 @@ throw( Components::CreateFailure )
 	}
 	catch(Components::Deployment::InvalidLocation&)
 	{
-		//
-		// upload first
-		//
 		DEBUG_OUT( ".......... upload required " );
 		CORBA::OctetSeq_var octSeq = new CORBA::OctetSeq();
 		struct stat statbuff;
@@ -340,13 +337,19 @@ throw( Components::CreateFailure )
 		package_stream.read((char*)octSeq->get_buffer(), size);
 		package_stream.close();
         
-		componentInstallation->upload(getFileName(package_file).c_str(), octSeq);
-
 		//
-		// install afterwards
+		// upload first and install afterwards
 		//
-		DEBUG_OUT( ".......... upload done, install now " );
-		componentInstallation->install(impl_id.c_str(), location.c_str());
+		try
+		{
+			location = componentInstallation->upload(impl_id.c_str(), octSeq);
+			DEBUG_OUT( ".......... upload done, install now " );
+			componentInstallation->install(impl_id.c_str(), location.c_str());
+		}
+		catch(Components::Deployment::InstallationFailure&)
+		{
+			throw Components::CreateFailure();
+		}
 	}
 	catch ( CORBA::SystemException& )
 	{
@@ -485,13 +488,13 @@ throw(Components::CreateFailure)
 		}
 		catch (CORBA::SystemException&)
 		{
-			std::cerr << ".......... CORBA system exception during install_home()" << std::endl;
+			std::cerr << "!!!!! CORBA system exception during install_home()" << std::endl;
 			throw Components::CreateFailure();
 		}
 
 		if (CORBA::is_nil(home))
 		{
-			std::cerr << ".......... Component Home is NIL" << std::endl;
+			std::cerr << "!!!!! Component Home is NIL" << std::endl;
 			throw Components::CreateFailure();
 		}
 
