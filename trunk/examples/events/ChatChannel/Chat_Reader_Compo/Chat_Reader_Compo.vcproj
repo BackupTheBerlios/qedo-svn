@@ -194,6 +194,9 @@ $(cygwin)\zip ../Chat_Reader_Compo.zip meta-inf/Chat_Reader_Compo.ccd meta-inf/C
 			<File
 				RelativePath="Chat_Reader_Compo_LOCAL.cpp">
 			</File>
+			<File
+				RelativePath=".\component_valuetypes.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
