@@ -229,6 +229,14 @@ GeneratorValuetypesC::doValue(IR__::ValueDef_ptr value)
 	out.unindent();
 	out << "}\n\n\n";
 
+	out << value->name() << "FactoryImpl::~" << value->name() << "FactoryImpl()\n{\n";
+	out.indent();
+	out << "int dummy = 0;\n";
+	out << "CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);\n";
+	out << "orb->unregister_value_factory (\"" << value->id() << "\");\n";
+	out.unindent();
+	out << "}\n\n\n";
+
 	//
 	// initializers
 	//
@@ -259,11 +267,7 @@ GeneratorValuetypesC::doValueMember(IR__::ValueMemberDef_ptr member)
 {
 	IR__::IDLType_ptr type = member->type_def();
 	std::string member_name = mapName(member);
-
-	switch (type->type()->kind()) {
-	default:
-		out << member_name << "( v." << member_name << "() );\n";
-	}
+	out << member_name << "( v." << member_name << "() );\n";
 }
 
 
