@@ -46,7 +46,7 @@ SOURCES = ComponentServerImpl.cpp \
 			 ClientInterceptorDispatcher.cpp \
 			 ServerInterceptorDispatcher.cpp \
 			 ORBInitializerImpl.cpp \
-          qcs.cpp 
+          qcs.cpp
 
 CLEAN_FILES = $(SOURCES:.cpp=.o) qcs
 
@@ -61,7 +61,11 @@ qcs: $(SOURCES:.cpp=.o)
 
 .PHONY:install
 
-install: install-prog
+install: install-include install-prog
+
+.PHONY:install-include
+
+install-include: ClientInterceptorDispatcher.h ServerInterceptorDispatcher.h
 
 .PHONY:install-prog
 
