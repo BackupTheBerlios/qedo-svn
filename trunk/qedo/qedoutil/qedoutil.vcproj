@@ -228,10 +228,16 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="CatalogResolver.cpp">
 			</File>
 			<File
+				RelativePath="ComponentDeployment.cpp">
+			</File>
+			<File
 				RelativePath="DOMTreeErrorReporter.cpp">
 			</File>
 			<File
 				RelativePath="DOMXMLParser.cpp">
+			</File>
+			<File
+				RelativePath="InstallationReader.cpp">
 			</File>
 			<File
 				RelativePath="NameServiceBase.cpp">
@@ -247,6 +253,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="libunzip.cpp">
+			</File>
+			<File
+				RelativePath="qedoutil.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -271,6 +280,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="CatalogResolver.h">
 			</File>
 			<File
+				RelativePath="ComponentDeployment.h">
+			</File>
+			<File
 				RelativePath="ComponentImplementationData.h">
 			</File>
 			<File
@@ -278,6 +290,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="DOMXMLParser.h">
+			</File>
+			<File
+				RelativePath="InstallationReader.h">
 			</File>
 			<File
 				RelativePath="NameServiceBase.h">
