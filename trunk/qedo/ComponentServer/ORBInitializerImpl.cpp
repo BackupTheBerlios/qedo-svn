@@ -25,7 +25,7 @@
 #include "ConfigurationReader.h"
 #include "ServerInterceptorDispatcher.h"
 
-static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.7 2003/10/29 00:57:58 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.8 2003/10/29 17:22:49 tom Exp $";
 
 
 namespace Qedo {
@@ -72,68 +72,62 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	try
 	{
 		obj = info->resolve_initial_references( "NameService" );
+		if (CORBA::is_nil(obj.in()))
+		{
+			DEBUG_OUT( "ORBInitializerImpl: NameService is a nil object reference" );
+		}
+		nameService_ = CosNaming::NamingContext::_narrow(obj.in());
+
 	}
 	catch (const CORBA::ORB::InvalidName&)
 	{
-		std::cerr << "ORBInitializerImpl: Can't resolve NameService" << std::endl;
-		return;
-    }
-
-    if (CORBA::is_nil(obj.in()))
-    {
-		std::cerr << "ORBInitializerImpl: NameService is a nil object reference" << std::endl;
-		return;
-    }
-
-	try
-	{
-		nameService_ = CosNaming::NamingContext::_narrow(obj.in());
+		DEBUG_OUT( "ORBInitializerImpl: Can't resolve NameService");
 	}
 	catch (const CORBA::Exception&)
 	{
-		std::cerr << "ORBInitializerImpl: NameService is not running" << std::endl;
+		DEBUG_OUT( "ORBInitializerImpl: NameService is not running") ;
 		return;
 	}
 
-    if (CORBA::is_nil(nameService_.in()))
-    {
-		std::cerr << "ORBInitializerImpl: NameService is not a NamingContext object reference" << std::endl;
-		return;
-    }
+	if (!CORBA::is_nil(nameService_.in()))
+	{
+		//
+		// Resolve the HomeFinder
+		//
+		Qedo_Components::HomeFinder_var home_finder;
+		obj = resolveName("Qedo/HomeFinder");
 
-    //
-	// Resolve the HomeFinder
-	//
-	Qedo_Components::HomeFinder_var home_finder;
-	obj = resolveName("Qedo/HomeFinder");
+		if (CORBA::is_nil(obj.in()))
+		{
+			DEBUG_OUT( "ORBInitializerImpl: HomeFinder not found");
+			return;
+		}
 
-	if (CORBA::is_nil(obj.in()))
-    {
-		std::cerr << "ORBInitializerImpl: HomeFinder not found" << std::endl;
-		return;
-    }
+		try
+		{
+			home_finder = Qedo_Components::HomeFinder::_narrow(obj);
+		}
+		catch (CORBA::SystemException&)
+		{
+			DEBUG_OUT( "ORBInitializerImpl: HomeFinder is not running");
+		}
 
-    try
-    {
-        home_finder = Qedo_Components::HomeFinder::_narrow(obj);
-    }
-    catch (CORBA::SystemException&)
-    {
-        std::cerr << "ORBInitializerImpl: HomeFinder is not running" << std::endl;
-		return;
-    }
+		if (CORBA::is_nil(home_finder.in()))
+		{
+			DEBUG_OUT ("ORBInitializerImpl: HomeFinder is not running" );
+		}
 
-	if (CORBA::is_nil(home_finder.in()))
-    {
-		std::cerr << "ORBInitializerImpl: HomeFinder is not running" << std::endl;
-		return;
-    }
+		//
+		// register HomeFinder
+		//
+		info->register_initial_reference ("ComponentHomeFinder", home_finder);
 
-	//
-	// register HomeFinder
-	//
-	info->register_initial_reference ("ComponentHomeFinder", home_finder);
 
+	}
+	else
+	{
+		DEBUG_OUT ("ORBInitializerImpl: NameService is not a NamingContext object reference");
+	}
 	//
 	// Allocate a slot id to communicate data towards our components
 	//

@@ -45,7 +45,7 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.18 2003/10/29 00:57:58 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.19 2003/10/29 17:22:49 tom Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -163,7 +163,7 @@ void
 handle_sigchld
 ( int sig )
 {
-	std::cout << "\nGot SIGCHLD" << std::endl;
+	DEBUG_OUT( "\nGot SIGCHLD");
 	int status, child_val;
 	pid_t pid;
 
@@ -187,10 +187,11 @@ handle_sigchld
     if (WIFEXITED(status))                /* did child exit normally? */
     {
         child_val = WEXITSTATUS(status); /* get child's exit status */
-		  std::cout << "child's exited normally with status " << child_val << std::endl;
+
+    std::cout << "child's exited normally with status " << child_val << std::endl;
     }
 
-	 std::cout << "Got signal child from " << pid << std::endl;
+	 DEBUG_OUT2("Got signal child from " ,pid);
 
 	 assert(server_activator);
 

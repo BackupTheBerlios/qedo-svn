@@ -33,7 +33,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.46 2003/10/29 16:05:07 boehme Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.47 2003/10/29 17:22:49 tom Exp $";
 
 
 namespace Qedo {
@@ -248,7 +248,7 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
     {
 
         DEBUG_OUT("ContainerInterfaceImpl: No HomeFinder");
-		// Since problem with MICO Initializer a new try directly over the name service  
+		// Since problem with MICO Initializer a new try directly over the name service
 		//return;
 
 		CosNaming::NamingContext_var nameService;

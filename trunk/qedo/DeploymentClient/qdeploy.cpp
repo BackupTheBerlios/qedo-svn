@@ -30,7 +30,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qdeploy.cpp,v 1.13 2003/10/23 09:51:25 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qdeploy.cpp,v 1.14 2003/10/29 17:22:49 tom Exp $";
 
 
 /**
@@ -149,9 +149,10 @@ main (int argc, char** argv)
 	//
 	// wait
 	//
+ /** wait is temporarily removed
     std::cout << "..... please press any key to destroy and undeploy the Assembly ..." << std::endl;
     getchar();
-
+ */
 	//
 	// undeploy the assembly
 	//
