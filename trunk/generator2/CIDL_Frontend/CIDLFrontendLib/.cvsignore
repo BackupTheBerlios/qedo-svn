@@ -40,5 +40,6 @@ cidl.cpp
 cidl.h
 cidl.output
 lexana.h
+lexana.cpp
 Debug_*
 Release_*
