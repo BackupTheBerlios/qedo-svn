@@ -267,9 +267,7 @@ ParseCommandLineOptions (int argc,char** argv)
                       break;
             case 'i': print_info(prog_name);
                       break;
-            case 'I': options.include_dirs = Considl_name_list(
-                                               Name(mkcasestring(optarg)),
-                                               options.include_dirs);
+            case 'I': options.include_dirs->append(Name(mkcasestring(optarg)));
                       break;
             case 'S': options.statistics = true;
                       break;
