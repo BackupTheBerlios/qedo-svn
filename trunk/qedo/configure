@@ -848,6 +848,12 @@ if test -n "$ac_init_help"; then
    esac
   cat <<\_ACEOF
 
+Optional Features:
+  --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
+  --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --disable-optimize      do not use -O2 to compile
+  --enable-debug          use -g to compile
+
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
@@ -1295,6 +1301,22 @@ else
   XERCESDIR=""
 fi;
 
+
+# Check whether --enable-optimize or --disable-optimize was given.
+if test "${enable_optimize+set}" = set; then
+  enableval="$enable_optimize"
+  use_opt=$enableval
+else
+  use_opt=yes
+fi;
+
+# Check whether --enable-debug or --disable-debug was given.
+if test "${enable_debug+set}" = set; then
+  enableval="$enable_debug"
+  use_debug=$enableval
+else
+  use_debug=no
+fi;
 
 # Checks for programs.
 ac_ext=cc
@@ -3073,6 +3095,24 @@ fi
 
 
 
+
+
+# do enable debug
+CONF_OPT_FLAGS="-O2"
+CONF_DEBUG_FLAGS="-g"
+
+
+CXXFLAGS=`echo " $CXXFLAGS " | sed -e 's/ -g / /g' -e 's/ -O[0-9]* / /g'`
+CFLAGS=`echo " $CFLAGS " | sed -e 's/ -g / /g' -e 's/ -O[0-9]* / /g'`
+
+if test X"$use_opt" != Xno; then
+  CXXFLAGS="$CONF_OPT_FLAGS $CXXFLAGS"
+  CFLAGS="$CONF_OPT_FLAGS $CFLAGS"
+fi
+if test X"$use_debug" != Xno; then
+  CXXFLAGS="$CONF_DEBUG_FLAGS $CXXFLAGS"
+  CFLAGS="$CONF_DEBUG_FLAGS $CFLAGS"
+fi
 
 
 # Checks for header files.
