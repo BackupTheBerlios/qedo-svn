@@ -3,10 +3,10 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.7 2002/11/08 10:04:16 neubauer Exp $
+// $Id: main.cpp,v 1.8 2003/01/10 13:09:29 neubauer Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.7 2002/11/08 10:04:16 neubauer Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.8 2003/01/10 13:09:29 neubauer Exp $";
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
@@ -14,7 +14,7 @@ static char rcsid[] = "$Id: main.cpp,v 1.7 2002/11/08 10:04:16 neubauer Exp $";
 
 #include "ClientValuetypes.h"
 
-#include "DiningPhilosophers_EQUIVALENT.h"
+#include "dinner_EQUIVALENT.h"
 
 #include <iostream>
 

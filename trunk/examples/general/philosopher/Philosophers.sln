@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IDL", "IDL\IDL.vcproj", "{3
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestClient", "TestClient\TestClient.vcproj", "{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Assembly", "Assembly\Assembly.vcproj", "{F8A40459-5956-49BE-8644-ECF79CC7DC10}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -16,6 +18,7 @@ Global
 		{7F4A7EB3-0C49-49DA-99A2-3088BE6DC0F3}.0 = {397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}
 		{076BAC7F-8381-445E-A348-F9075C773370}.0 = {397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.0 = {397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}
+		{F8A40459-5956-49BE-8644-ECF79CC7DC10}.0 = {076BAC7F-8381-445E-A348-F9075C773370}
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{7F4A7EB3-0C49-49DA-99A2-3088BE6DC0F3}.Debug.ActiveCfg = Debug|Win32
@@ -34,6 +37,10 @@ Global
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Debug.Build.0 = Debug|Win32
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Release.ActiveCfg = Release|Win32
 		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Release.Build.0 = Release|Win32
+		{F8A40459-5956-49BE-8644-ECF79CC7DC10}.Debug.ActiveCfg = Debug|Win32
+		{F8A40459-5956-49BE-8644-ECF79CC7DC10}.Debug.Build.0 = Debug|Win32
+		{F8A40459-5956-49BE-8644-ECF79CC7DC10}.Release.ActiveCfg = Release|Win32
+		{F8A40459-5956-49BE-8644-ECF79CC7DC10}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

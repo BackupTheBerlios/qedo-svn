@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="Assembly"
+	ProjectGUID="{F8A40459-5956-49BE-8644-ECF79CC7DC10}"
+	SccProjectName=""
+	SccLocalPath=""
+	Keyword="MakeFileProj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\Release"
+			IntermediateDirectory=".\Release"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="NMAKE /f Assembly.mak"
+				ReBuildCommandLine="NMAKE /f Assembly.mak /a"
+				Output="Assembly.exe"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\Debug"
+			IntermediateDirectory=".\Debug"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="wzzip.exe &quot;%QEDO%\..\runtime\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
+				Output="must_be_here_to_force_generation"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<File
+			RelativePath=".\atze.cpf">
+		</File>
+		<File
+			RelativePath=".\bob.cpf">
+		</File>
+		<File
+			RelativePath=".\charly.cpf">
+		</File>
+		<File
+			RelativePath=".\philosophers.cad">
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

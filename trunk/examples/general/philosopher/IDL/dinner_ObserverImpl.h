@@ -12,11 +12,11 @@
 
 #include <OB/CORBA.h>
 #include "dinner_BUSINESS.h"
-#include "RefCountLocalObject.h"
 #include <string>
 
 
 // BEGIN USER INSERT SECTION file_post
+#include "RefCountLocalObject.h"
 // END USER INSERT SECTION file_post
 
 
