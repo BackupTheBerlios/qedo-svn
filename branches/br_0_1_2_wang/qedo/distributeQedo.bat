@@ -31,6 +31,7 @@ echo *** Create %actdir%...
 mkdir %actdir%
 copy ComponentIDL\*.h %actdir%
 copy ComponentContainer\*.h %actdir%
+copy PersistentStateService\*.h %actdir%
 
 set actdir=%qedo%\idl
 echo *** Create %actdir%...
