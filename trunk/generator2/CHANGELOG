@@ -1,3 +1,5 @@
+- event inheritance enabled
+- abstract events enabled
 - "home supports interfaces" is enabled
 - vc7 project generator create subdirs for each project
 - new backend for CSD
