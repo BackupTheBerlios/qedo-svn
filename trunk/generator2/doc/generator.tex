@@ -20,7 +20,19 @@
 The Qedo Code generation Tool (code generator) is used to read model information and to produce files that are needed to create CORBA components on top of Qedo.
 
 ...
+\section{Installation}
+\label{sec:Installation}
+For the Installation of the run-time consult the Installation Guide.
 
+
+\section{Contact}
+\label{sec:Contact}
+
+If you have any problem or if you have any comments do not hesitate to contact the other Qedo users by using the qedo-devel mailing list. You can reach it at qedo-devel@lists.berlios.de. You can also use the bug tracking system provided by the Qedo project. You can reach it at http://qedo.berlios.de. this site has all relevant information about the Qedo project. In any case you can also contact the authors directly. The email addresses are listed on the Qedo web page as well.
+
+
+
+	 
 \chapter{Architecture}
 \label{sec:Architecture}
 The Code generator is divided into 3 parts. It is the front-end, the middle-end, and the back-end.
@@ -48,5 +60,59 @@ The back-end produces the code.
 \chapter{Usage}
 \label{sec:Usage}
 This section explain the options. ...
+
+
+\section{VC7 Project Generator}
+\label{sec:VC7ProjectGenerator}
+
+Short instructions to use the code generator
+
+The Qedo code generator is able to generate complete workspace files for the Visual Studio .Net. Since it is not easy to write those files by hand it is strongly recommended to use this feature. After Installing the Qedo runtime, the following steps needs to be done if you start to develop you own CORBA components.
+
+\begin{itemize}
+	\item Create a \verb <your_name>.idl  file. 
+	In this file you need to define your plain CORBA interfaces as well as the CORBA components. Start the file with an \verb #include \verb "Components.idl"  statement.
+
+	\item Create a \verb <your_name>.cidl  file.
+	In this file you need to specify the compositions that should implement your components. Start the file with a \verb #include \verb <your_name.idl>  .
+
+	\item Open a command line tool. 
+	In this command line tool you need to execute the following command.
+For MICO you should use a command similar to this
+
+\small
+\begin{verbatim} 
+
+	%QEDO%\bin\cidl_gen -I%QEDO%\idl -I%MICO%\include  
+		-I%MICO%\include\mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN 
+		--vc7 --target CallerImpl hello.cidl}
+\end{verbatim}
+\normalsize
+
+FOR Orbacus you can use a command similar tho this.
+\small
+\begin{verbatim} 
+	%QEDO%\bin\cidl_gen -I%QEDO%\idl -I%ORBACUS%\idl\OB  
+		-I%ORBACUS%\idl -DWIN32 -DORBACUS_ORB 
+		--vc7 --target CallerImpl hello.cidl
+\end{verbatim}
+\normalsize
+
+The target could be a composition name or a module name. Depending on the target the code generator will create new directories and within them new project files. for each composition there is a servant and an executor module.
+
+	\item Create a solution. Now you can create new (empty) solution with the Visual Studio. Now you can add the needed projects. 
+
+	\item Configuration. Choose the configuration you want to build. This has to correspond to the version of the installed Qedo runtime.
+
+	\item Pre-built.
+	To allow the generation of all needed files you will have to build all projects. Depending on your IDL this could cause errors in the executor project. Those errors can be ignored at this stage.
+
+	\item Implement the executors. 
+	In the executor project you will now find executor files. The names of these files correspond to the composition description you gave in the \verb <your_name>.cidl  file. Within these files you can see user sections. Do only write your code between an opening and a closing user section statements. All other code is removed at next call of the code generator. If you modify the \verb <your_name>.idl  file you have to re-build the projects. But your code will remain in the implementation files.
+
+	\item Build. Just build all and you will get your components as dlls.
+
+\end{itemize}
+
 \end{document}
 
