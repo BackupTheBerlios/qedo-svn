@@ -664,10 +664,10 @@ cp cidl.hpp cidl.h
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y 
+						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
 cp cidl.hpp cidl.h
 "
-						Outputs="cidl.cpp"/>
+						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
