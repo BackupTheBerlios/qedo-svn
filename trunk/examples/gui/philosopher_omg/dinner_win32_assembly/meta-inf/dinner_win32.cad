@@ -36,7 +36,6 @@
 						</componentinstantiation>
   			      		<componentinstantiation id="Cutlery2">
 						</componentinstantiation>
-					<destination></destination>
 			</homeplacement>
 		</processcollocation>
 		
@@ -46,7 +45,6 @@
 					<componentimplref idref="UUID-5BE5DBAF-6667-4FF7-A579-0C7EFBDBF104"/>
   			      		<componentinstantiation id="Observer1">
 						</componentinstantiation>
-					<destination></destination>
 			</homeplacement>
 		</processcollocation>
 
@@ -56,7 +54,6 @@
 					<componentimplref idref="UUID-54CA2428-8A31-4E76-A7F8-8B17DA1F87AB"/>
   			      		<componentinstantiation id="Philosopher1">
 						</componentinstantiation>
-					<destination></destination>
 			</homeplacement>
 		</processcollocation>
 		
