@@ -24,7 +24,7 @@
 #include "Valuetypes.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeFinderImpl.cpp,v 1.6 2004/01/23 13:19:50 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: HomeFinderImpl.cpp,v 1.7 2004/04/01 15:13:51 tom Exp $";
 
 
 namespace Qedo {
@@ -85,7 +85,7 @@ HomeFinderImpl::initialize()
 }
 
 
-Components::Cookie* 
+Components::Cookie*
 HomeFinderImpl::register_home(Components::CCMHome_ptr ahome, const char* comp_repid, const char* home_repid, const char* home_name)
 throw(CORBA::SystemException)
 {
@@ -106,7 +106,7 @@ throw(CORBA::SystemException)
 }
 
 
-void 
+void
 HomeFinderImpl::unregister_home(Components::Cookie* c)
 throw(CORBA::SystemException)
 {
@@ -137,7 +137,7 @@ throw(CORBA::SystemException)
 }
 
 
-Components::CCMHome_ptr 
+Components::CCMHome_ptr
 HomeFinderImpl::find_home_by_component_type(const char* comp_repid)
 throw(Components::HomeNotFound, CORBA::SystemException)
 {
@@ -159,7 +159,7 @@ throw(Components::HomeNotFound, CORBA::SystemException)
 }
 
 
-Components::CCMHome_ptr 
+Components::CCMHome_ptr
 HomeFinderImpl::find_home_by_home_type(const char* home_repid)
 throw(Components::HomeNotFound, CORBA::SystemException)
 {

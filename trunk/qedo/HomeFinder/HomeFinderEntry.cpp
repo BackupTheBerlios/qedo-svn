@@ -22,7 +22,7 @@
 
 #include "HomeFinderEntry.h"
 
-static char rcsid[] UNUSED = "$Id: HomeFinderEntry.cpp,v 1.5 2004/03/05 16:50:25 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: HomeFinderEntry.cpp,v 1.6 2004/04/01 15:13:51 tom Exp $";
 
 
 namespace Qedo {
@@ -49,23 +49,26 @@ HomeFinderEntry::HomeFinderEntry (const HomeFinderEntry& entry)
 }
 
 
-HomeFinderEntry& 
+HomeFinderEntry&
 HomeFinderEntry::operator= (const HomeFinderEntry& entry)
 {
+	if (&entry == this)
+	{
+		return *this;
+	}
+
 	home_repid_ = entry.home_repid_;
 	comp_repid_ = entry.comp_repid_;
 	name_ = entry.name_;
 
-	if( !CORBA::is_nil(home_) )
-		CORBA::release(home_);
-
 	home_ = Components::CCMHome::_duplicate(const_cast<HomeFinderEntry&>(entry).home_);
 
-	if (cookie_)
-		cookie_->_remove_ref();
+	entry.cookie_ -> _add_ref();
+
+	assert (cookie_);
+	cookie_->_remove_ref();
 
 	cookie_ = entry.cookie_;
-	cookie_->_add_ref();
 
 	return *this;
 }
