@@ -35,7 +35,7 @@
 #include "Synchronisation.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.9 2004/01/23 13:19:50 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.10 2004/03/22 11:17:28 tom Exp $";
 
 
 /**
@@ -90,7 +90,7 @@ handle_sigint
 	{
 		std::cerr << "..... error in signal handler" << std::endl;
 	}
-	
+
 	orb->shutdown(false);
 }
 
@@ -130,8 +130,12 @@ signal_handler_thread(void *p)
 int
 main (int argc, char** argv)
 {
+	std::cout << "Qedo Home Finder " << QEDO_VERSION << std::endl;
+
+	orb = CORBA::ORB_init (argc, argv);
+
 #ifdef HAVE_LIBPTHREAD
-	// block SIGINT 
+	// block SIGINT
 	// Only the signal thread will handle this signal
 	sigset_t sigs;
 	sigset_t osigs;
@@ -155,11 +159,11 @@ main (int argc, char** argv)
     sigemptyset(&act.sa_mask);
 
     /*
-     * Make these values effective. If we were writing a real 
-     * application, we would probably save the old value instead of 
+     * Make these values effective. If we were writing a real
+     * application, we would probably save the old value instead of
      * passing NULL.
      */
-    if (sigaction(SIGINT, &act, NULL) < 0) 
+    if (sigaction(SIGINT, &act, NULL) < 0)
     {
 		 std::cerr << "sigaction failed" << std::endl;
         return 1;
@@ -169,9 +173,6 @@ main (int argc, char** argv)
 #endif // HAVE_SIGACTION
 #endif // HAVE_LIBPTHREAD
 
-	std::cout << "Qedo Home Finder " << QEDO_VERSION << std::endl;
-
-	orb = CORBA::ORB_init (argc, argv);
 
 	//
 	// register valuetype factories
