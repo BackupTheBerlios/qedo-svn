@@ -15,7 +15,7 @@
 	<CONFIGVALUE name="ComponentServerKillDelay" value="50000"/>
 
 	<SECTION name ="ComponentServer">
-		<CONFIGVALUE name="command_line" value=""/>
+		<CONFIGVALUE name="CommandLine" value=""/>
 	</SECTION>	
 	<SECTION name="Debug">
 		<CONFIGVALUE name="DebugMode" value="false"/>

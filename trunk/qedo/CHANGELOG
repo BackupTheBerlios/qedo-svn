@@ -1,3 +1,5 @@
+- command line option for ComponentServer
+- NoResolve option for IOR creation
 - removed old vc6 files
 - first version of Stub interceptor
 - improvments of the controller (size)
