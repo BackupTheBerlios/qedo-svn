@@ -94,3 +94,6 @@ install-etc:
 
 clean:
 	-rm -rf $(CLEAN_FILES)
+
+full_clean: clean
+	-rm -rf $(FULL_CLEAN_FILES)

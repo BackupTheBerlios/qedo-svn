@@ -44,12 +44,13 @@ SOURCES = cidl.cpp \
 			getopt1.cpp 
 
 
-CLEAN_FILES = $(KIMWITU_HEADER_FILES) $(KIMWITU_CPP_FILES) \
-              $(KIMWITU_OBJECT_FILES) $(SOURCES:%.cpp=%.o) \
-              cidl.cpp cidl.h cidl.output lexana.cpp \
-              errmsg.cpp errmsg.h \
-				  lexana.cpp \
-              .kc_timestamp \
+FULL_CLEAN_FILES = $(KIMWITU_HEADER_FILES) $(KIMWITU_CPP_FILES) \
+                   cidl.cpp cidl.h cidl.output lexana.cpp \
+                   errmsg.cpp errmsg.h \
+				       lexana.cpp \
+                   .kc_timestamp 
+
+CLEAN_FILES = $(KIMWITU_OBJECT_FILES) $(SOURCES:%.cpp=%.o) \
 				  libComponentIDL.a
 
 include ../../MakeVars
