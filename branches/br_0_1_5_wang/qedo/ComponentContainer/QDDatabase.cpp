@@ -190,9 +190,15 @@ QDDatabase::ExecuteSQL(const char* szSqlStr)
 	iRecordsAffected_ = nRowCount;
 	
 	if( ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO )
+	{
         std::cout << "ExecuteSQL return true.\n";
+		//std::cout << szSqlStr << "\n\n";
+	}
 	else
+	{
 		std::cout << "ExecuteSQL return false!\n";
+		std::cout << szSqlStr << "\n\n";
+	}
 
 	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 }
