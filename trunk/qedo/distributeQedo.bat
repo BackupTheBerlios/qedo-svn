@@ -35,6 +35,7 @@ copy ComponentContainer\*.h %actdir%
 copy qedoutil\*.h %actdir%
 copy ComponentServer\ClientInterceptorDispatcher.h %actdir%
 copy ComponentServer\ServerInterceptorDispatcher.h %actdir%
+copy ComponentServer\ComponentServerImpl.h %actdir%
 
 set actdir=%qedo%\idl
 echo *** Create %actdir%...
