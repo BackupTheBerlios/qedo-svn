@@ -7,6 +7,10 @@ AC_CONFIG_SRCDIR([gendef/gendef.cc])
 AC_CONFIG_HEADER([ComponentIDL/config.h])
 
 
+AC_ARG_WITH(uuid,
+ [  --with-uuid=uuiddir         use UUID library installed in uuiddir],
+ UUIDDIR=$withval, UUIDDIR="")
+
 AC_ARG_WITH(xerces,
  [  --with-xerces-c=xercesdir         use Xerces installed in xercesdir],
  XERCESDIR=$withval, XERCESDIR="")
@@ -55,6 +59,10 @@ fi
 AC_SUBST(HAVE_MICO_CONFIG)
 
 AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
+
+if test X"$UUIDDIR" != X ; then
+	LIBS="$LIBS -L$UUIDDIR"
+fi
 
 # Checks for libraries.
 AC_CHECK_LIB([dl], [dlopen])

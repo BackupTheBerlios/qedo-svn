@@ -864,6 +864,7 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-uuid=uuiddir         use UUID library installed in uuiddir
   --with-xerces-c=xercesdir         use Xerces installed in xercesdir
   --with-mico=micodir         use Mico installed in xercesdir
 
@@ -1329,6 +1330,15 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
           ac_config_headers="$ac_config_headers ComponentIDL/config.h"
 
 
+
+
+# Check whether --with-uuid or --without-uuid was given.
+if test "${with_uuid+set}" = set; then
+  withval="$with_uuid"
+  UUIDDIR=$withval
+else
+  UUIDDIR=""
+fi;
 
 
 # Check whether --with-xerces or --without-xerces was given.
@@ -2287,6 +2297,10 @@ else
 echo "${ECHO_T}no" >&6
 fi
 
+
+if test X"$UUIDDIR" != X ; then
+	LIBS="$LIBS -L$UUIDDIR"
+fi
 
 # Checks for libraries.
 ac_ext=c
