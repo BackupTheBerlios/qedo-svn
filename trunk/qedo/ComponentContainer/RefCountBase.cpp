@@ -24,14 +24,14 @@
 #include "RefCountBase.h"
 #include <iostream>
 #include <cassert>
-#ifdef _DEBUG
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+#ifdef _DEBUG
 #include <set>
 #endif
 
-static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.17 2003/09/19 07:37:28 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.18 2003/10/05 16:48:22 tom Exp $";
 
 
 namespace Qedo {
