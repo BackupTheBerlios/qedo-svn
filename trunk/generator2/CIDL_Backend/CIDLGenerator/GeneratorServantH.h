@@ -17,10 +17,11 @@ namespace QEDO_CIDL_Generator {
 class GeneratorServantH : public CPPBase 
 {
 
-	string filename_;
-	Printer out;
-	string target_;
-	CIDL::CompositionDef_var composition_;
+	std::string					filename_;
+	Printer						out;
+	CIDL::CompositionDef_var	composition_;
+	IR__::ComponentDef_var		component_;
+	map < string, bool >		already_done_;
 
 	void doModule(IR__::ModuleDef_ptr module);
 	void doAttribute(IR__::AttributeDef_ptr attribute);
@@ -53,7 +54,7 @@ public:
 	GeneratorServantH(QEDO_ComponentRepository::CIDLRepository_impl *repository);
 	~GeneratorServantH();
 
-	void generate(string target);
+	void generate(std::string target, std::string fileprefix);
 
 };
 

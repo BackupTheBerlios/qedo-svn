@@ -25,7 +25,7 @@ public:
 	GeneratorCCD(QEDO_ComponentRepository::CIDLRepository_impl *repository);
 	~GeneratorCCD();
 
-	void generate(std::string target);
+	void generate(std::string target, std::string fileprefix);
 
 };
 

@@ -22,10 +22,10 @@ GeneratorBusinessH::~GeneratorBusinessH
 
 
 void
-GeneratorBusinessH::generate(string target)
+GeneratorBusinessH::generate(std::string target, std::string fileprefix)
 {
-	target_ = target;
-	doGenerate(target);
+	initialize(target, fileprefix);
+	doGenerate();
 }
 	
 
@@ -416,7 +416,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "#define _" << header_name << "_H_\n\n\n"; 
 	out.insertUserSection("file_pre", 2);
 	out << "#include <OB/CORBA.h>\n";
-	out << "#include \"" << target_ << "_BUSINESS.h\"\n";
+	out << "#include \"" << file_prefix_ << "_BUSINESS.h\"\n";
 	out << "#include \"RefCountLocalObject.h\"\n";
 	out << "#include <string>\n\n\n";
 	out.insertUserSection("file_post", 2);

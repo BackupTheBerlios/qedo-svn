@@ -81,8 +81,6 @@ public:
 
 	CPPBase(QEDO_ComponentRepository::CIDLRepository_impl *repository);
 	virtual ~CPPBase();
-
-	virtual void generate(std::string target) = 0;
 };
 
 

@@ -416,17 +416,19 @@ GeneratorLIDL::close_module(IR__::Contained* cur_cont)
 
 
 void
-GeneratorLIDL::generate(string target)
+GeneratorLIDL::generate(std::string target, std::string fileprefix)
 {
-	filename_ = target + "_LOCAL.idl";
+	initialize(target, fileprefix);
+
+	filename_ = file_prefix_ + "_LOCAL.idl";
 	
 	out.open(filename_.c_str());
-	out << "#ifndef __" << target << "_LOCAL_IDL\n";
-	out << "#define __" << target << "_LOCAL_IDL\n";
-	out << "\n#include \"" << target << "_EQUIVALENT.idl\"\n\n\n";
+	out << "#ifndef __" << file_prefix_ << "_LOCAL_IDL\n";
+	out << "#define __" << file_prefix_ << "_LOCAL_IDL\n";
+	out << "\n#include \"" << file_prefix_ << "_EQUIVALENT.idl\"\n\n\n";
 	out << "// local interfaces\n\n";
 
-	doGenerate(target);
+	doGenerate();
 
 	out << "\n#endif\n";
 	out.close();

@@ -20,7 +20,6 @@ class GeneratorBusinessC : public virtual CPPBase
 	string filename_;
 	string class_name_;
 	Printer out;
-	string target_;
 	bool need_push_;
 	CIDL::CompositionDef_var composition_;
 
@@ -42,7 +41,7 @@ public:
 	GeneratorBusinessC(QEDO_ComponentRepository::CIDLRepository_impl *repository);
 	~GeneratorBusinessC();
 
-	void generate(string target);
+	void generate(std::string target, std::string fileprefix);
 
 };
 

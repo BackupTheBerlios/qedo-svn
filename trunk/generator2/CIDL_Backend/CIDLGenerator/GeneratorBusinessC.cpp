@@ -22,10 +22,10 @@ GeneratorBusinessC::~GeneratorBusinessC
 
 
 void
-GeneratorBusinessC::generate(string target)
+GeneratorBusinessC::generate(std::string target, std::string fileprefix)
 {
-	target_ = target;
-	doGenerate(target);
+	initialize(target, fileprefix);
+	doGenerate();
 }
 	
 

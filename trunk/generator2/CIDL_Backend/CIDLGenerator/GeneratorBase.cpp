@@ -9,8 +9,10 @@ GeneratorBase::GeneratorBase
 {
 	repository_ = repository;
 	repository_ -> _add_ref();
-	target_id_ = "";
+	file_prefix_ = "";
 	target_scope_id_ = "";
+	target_id_ = "";
+	target_ = IR__::Contained::_nil();
 }
 
 
@@ -29,61 +31,124 @@ GeneratorBase::destroy
 }
 
 
-//
-// start generation
-//
-void
-GeneratorBase::doGenerate(string target)
+/*
+ * make a name from an RepId by replacing / with _
+ */
+std::string
+GeneratorBase::getName(std::string id)
 {
-	// lookup the target
-	IR__::Contained_var contained =	repository_->lookup_id(target.c_str());
-	if(CORBA::is_nil(contained))
+	std::string name = id;
+
+	// remove "IDL:"
+	name.replace(0, 4, "");
+
+	// remove ":1.0"
+	name.replace(name.length() - 4, std::string::npos, "");
+
+	// replace "/" by "_"
+	std::string::size_type pos = name.find("/");
+	if (pos != std::string::npos)
 	{
-		contained =	repository_->lookup(target.c_str());
+		name.replace(pos, 1 , "_");
+		pos = name.find("/");
 	}
-	if(CORBA::is_nil(contained))
+
+	return name;
+}
+
+
+void
+GeneratorBase::initialize(std::string target, std::string fileprefix)
+{
+	//
+	// lookup the target
+	//
+	target_ = repository_->lookup_id(target.c_str());
+	if(CORBA::is_nil(target_))
+	{
+		target_ =	repository_->lookup(target.c_str());
+	}
+	if(CORBA::is_nil(target_))
 	{
 		std::cerr << "--- fatal internal error - not found " << target << std::endl;
 		return;
 	}
-	target_id_ = contained->id();
+	target_id_ = target_->id();
+	target_scope_id_ = target_id_;
+	file_prefix_ = getName(target_scope_id_);
 
-	switch(contained->def_kind())
+	switch(target_->def_kind())
 	{
 		case CORBA__::dk_Home : {
 			// process the module where the home is defined in
-			IR__::HomeDef_var home = IR__::HomeDef::_narrow(contained);
+			IR__::HomeDef_var home = IR__::HomeDef::_narrow(target_);
 			IR__::ModuleDef_var module = IR__::ModuleDef::_narrow(home->defined_in());
 			if(CORBA::is_nil(module))
 			{
 				std::cerr << "--- error - home " << target << " not defined in module " << std::endl;
 				return;
 			}
+			target_ = IR__::Contained::_duplicate(module);
 			target_scope_id_ = module->id();
-			doModule(module);
+			file_prefix_ = getName(target_scope_id_);
 			break;
 		}
 		case CORBA__::dk_Module : {
+			break;
+		}
+		case CORBA__::dk_Composition : {
+			// process the composition
+			std::string::size_type pos = target_scope_id_.rfind("/");
+			if(pos != std::string::npos)
+			{
+				target_scope_id_.replace(pos, std::string::npos, ":1.0");
+				file_prefix_ = getName(target_scope_id_);
+			}
+			else
+			{
+				std::cerr << "--- error - composition " << target << " not defined in module" << std::endl;
+				return;
+			}
+			break;
+		}
+		default : {
+			// no other targets supported
+			std::cerr << "--- error - kind for " << target << " not supported" << std::endl;
+			return;
+		}
+	}
+
+	if (fileprefix != "")
+	{
+		file_prefix_ = fileprefix;
+	}
+}
+
+
+//
+// start generation
+//
+void
+GeneratorBase::doGenerate()
+{
+	if (CORBA::is_nil(target_))
+	{
+		std::cerr << "--- error - not initialized" << std::endl;
+		return;
+	}
+
+	switch(target_->def_kind())
+	{
+		case CORBA__::dk_Home :
+		case CORBA__::dk_Module : {
 			// process the module
-			IR__::ModuleDef_var module = IR__::ModuleDef::_narrow(contained);
-			target_scope_id_ = target_id_;
+			IR__::ModuleDef_var module = IR__::ModuleDef::_narrow(target_);
 			doModule(module);
 			break;
 		}
 		case CORBA__::dk_Composition : {
 			// process the composition
-			CIDL::CompositionDef_var composition = CIDL::CompositionDef::_narrow(contained);
-			std::string id = composition->id();
-			std::string::size_type pos = id.rfind("/");
-			if(pos != std::string::npos)
-			{
-				id.replace(pos, std::string::npos, ":1.0");
-				target_scope_id_ = id;
-			}
-			else
-			{
-				target_scope_id_ = "";
-			}
+			CIDL::CompositionDef_var composition = CIDL::CompositionDef::_narrow(target_);
 			doComposition(composition);
 			break;
 		}
@@ -315,6 +380,18 @@ GeneratorBase::doTypedef(IR__::TypedefDef_ptr tdef)
 //
 // home
 //
+void 
+GeneratorBase::handleHome(IR__::Container_ptr cont)
+{
+	IR__::ContainedSeq_var contained_seq = cont->contents(CORBA__::dk_Home, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++) {
+		IR__::HomeDef_var a_home = IR__::HomeDef::_narrow(((*contained_seq)[i]));
+		doHome(a_home);
+	}
+}
+
+
 void
 GeneratorBase::doHome(IR__::HomeDef_ptr home)
 {

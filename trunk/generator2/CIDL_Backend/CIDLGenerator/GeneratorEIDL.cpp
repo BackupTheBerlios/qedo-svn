@@ -46,7 +46,7 @@ GeneratorEIDL::checkForInclude(CORBA::TypeCode_ptr type)
 		{
 			// compare the id of the type with that of the target
 			std::string id = type->id();
-			std::string::size_type len = target_scope_id_.size() -4;
+			std::string::size_type len = target_scope_id_.size() - 4;
 			if(! id.compare(0, len, target_scope_id_, 0, len))
 			{
 				// type is from another module than target
@@ -745,15 +745,17 @@ GeneratorEIDL::doComposition(CIDL::CompositionDef_ptr composition)
 
 
 void
-GeneratorEIDL::generate(string target)
+GeneratorEIDL::generate(std::string target, std::string fileprefix)
 {
+	initialize(target, fileprefix);
+
 	//
 	// write temp file without includes
 	//
-	filename_ = target + "_EQUIVALENT.idl";
+	filename_ = file_prefix_ + "_EQUIVALENT.idl";
 	string temp_filename = filename_ + ".temp";
 	out.open(temp_filename.c_str());
-	doGenerate(target);
+	doGenerate();
 	out.close();
 
 
@@ -763,8 +765,8 @@ GeneratorEIDL::generate(string target)
 	std::ifstream temp_file;
 	temp_file.open(temp_filename.c_str());
 	out.open(filename_.c_str());
-	out << "#ifndef __" << target << "_EQUIVALENT_IDL\n";
-	out << "#define __" << target << "_EQUIVALENT_IDL\n\n";
+	out << "#ifndef __" << file_prefix_ << "_EQUIVALENT_IDL\n";
+	out << "#define __" << file_prefix_ << "_EQUIVALENT_IDL\n\n";
 	out << "#include \"Components.idl\"\n";
 	
 	std::map < std::string, bool > ::iterator it;

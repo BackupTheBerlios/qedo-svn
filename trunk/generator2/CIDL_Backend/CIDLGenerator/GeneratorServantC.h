@@ -20,14 +20,14 @@ class GeneratorServantC : public virtual CPPBase
 
 private:
 
-	std::string filename_;
-	std::string class_name_;
-	std::string executor_name_;
-	std::string interface_name_;
-	Printer out;
-	std::string target_;
-	CIDL::CompositionDef_var composition_;
-	IR__::HomeDef_var home_;
+	std::string					filename_;
+	std::string					class_name_;
+	std::string					executor_name_;
+	std::string					interface_name_;
+	Printer						out;
+	IR__::ComponentDef_var		component_;
+	IR__::HomeDef_var			home_;
+	map < string, bool >		already_done_;
 
 	void doModule(IR__::ModuleDef_ptr module);
 	void doAttribute(IR__::AttributeDef_ptr attribute);
@@ -64,7 +64,7 @@ public:
 	GeneratorServantC(QEDO_ComponentRepository::CIDLRepository_impl *repository);
 	~GeneratorServantC();
 
-	void generate(std::string target);
+	void generate(std::string target, std::string fileprefix);
 
 };
 

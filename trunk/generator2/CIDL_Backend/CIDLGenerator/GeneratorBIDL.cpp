@@ -50,17 +50,19 @@ GeneratorBIDL::close_module(IR__::Contained* cur_cont)
 
 
 void
-GeneratorBIDL::generate(string target)
+GeneratorBIDL::generate(std::string target, std::string fileprefix)
 {
-	filename_ = target + "_BUSINESS.idl";
+	initialize(target, fileprefix);
+
+	filename_ = file_prefix_ + "_BUSINESS.idl";
 	
 	out.open(filename_.c_str());
-	out << "#ifndef __" << target << "_BUSINESS_IDL\n";
-	out << "#define __" << target << "_BUSINESS_IDL\n";
-	out << "\n#include \"" << target << "_LOCAL.idl\"\n\n\n";
+	out << "#ifndef __" << file_prefix_ << "_BUSINESS_IDL\n";
+	out << "#define __" << file_prefix_ << "_BUSINESS_IDL\n\n";
+	out << "#include \"" << file_prefix_ << "_LOCAL.idl\"\n\n\n";
 	out << "// local interfaces for each executor or segment\n\n";
 
-	doGenerate(target);
+	doGenerate();
 
 	out << "\n#endif\n";
 	out.close();

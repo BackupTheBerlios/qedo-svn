@@ -29,7 +29,7 @@ public:
 	GeneratorBIDL(QEDO_ComponentRepository::CIDLRepository_impl *repository);
 	~GeneratorBIDL();
 
-	void generate(string target);
+	void generate(std::string target, std::string fileprefix);
 
 };
 

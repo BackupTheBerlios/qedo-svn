@@ -16,12 +16,17 @@ class GeneratorBase
 
 protected:
 
+	std::string										file_prefix_;
 	std::string										target_id_;
 	std::string										target_scope_id_;
 	QEDO_ComponentRepository::CIDLRepository_impl	*repository_;
+	IR__::Contained_var								target_;
+
+	std::string getName(std::string id);
+	void initialize(std::string target, std::string fileprefix);
 
 	// start generation
-	void doGenerate(std::string target);
+	void doGenerate();
 
 	// module
 	virtual void doModule(IR__::ModuleDef_ptr module);
@@ -37,6 +42,7 @@ protected:
 	virtual void doComponent(IR__::ComponentDef_ptr component);
 
 	// home
+	void handleHome(IR__::Container_ptr cont);
 	virtual void doHome(IR__::HomeDef_ptr home);
 
 	// composition
@@ -113,7 +119,7 @@ public:
 	GeneratorBase(QEDO_ComponentRepository::CIDLRepository_impl *repository);
 	virtual ~GeneratorBase();
 
-	virtual void generate(std::string target) = 0;
+	virtual void generate(std::string target, std::string fileprefix) = 0;
 
 	void destroy();
 };

@@ -44,7 +44,7 @@ public:
 	GeneratorLIDL(QEDO_ComponentRepository::CIDLRepository_impl *repository);
 	~GeneratorLIDL();
 
-	void generate(string target);
+	void generate(std::string target, std::string fileprefix);
 
 };
 

@@ -24,9 +24,10 @@ GeneratorCCD::~GeneratorCCD
 
 
 void
-GeneratorCCD::generate(string target)
+GeneratorCCD::generate(std::string target, std::string fileprefix)
 {
-	doGenerate(target);
+	initialize(target, fileprefix);
+	doGenerate();
 }
 
 

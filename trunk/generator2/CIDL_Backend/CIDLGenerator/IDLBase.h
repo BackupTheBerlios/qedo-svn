@@ -54,8 +54,6 @@ public:
 
 	IDLBase(QEDO_ComponentRepository::CIDLRepository_impl *repository);
 	virtual ~IDLBase();
-
-	virtual void generate(std::string target) = 0;
 };
 
 
