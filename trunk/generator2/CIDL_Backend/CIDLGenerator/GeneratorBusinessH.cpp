@@ -450,7 +450,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection("file_pre", 2);
 	out << "#include <CORBA.h>\n";
 	out << "#include \"" << file_prefix_ << "_BUSINESS.h\"\n";
-	out << "#include \"Synchronisation.h\"\n";
+	out << "#include \"RefCountBase.h\"\n";
 	out << "#include <string>\n\n\n";
 	out.insertUserSection("file_post", 2);
 
@@ -477,12 +477,18 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << ": public virtual CORBA::LocalObject\n";
 	out << ", public virtual " << mapScopeName(composition) << "::CCM_" << executor_name << "\n";
+	out.unindent(); out.unindent();
+	out << "#ifndef MICO_ORB\n";
+	out.indent(); out.indent();
+	out << ", public virtual Qedo::RefCountLocalObject\n";
+	out.unindent(); out.unindent();
+	out << "#endif\n";
+	out.indent(); out.indent();
 	out.insertUserSection(string("INHERITANCE_") + executor_name, 0);
 	out.unindent();
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
-	out << "CORBA::Long ref_count_;\n\n";
 	out << "Qedo::qedo_mutex mutex_;\n\n";
     out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
 	out.unindent();
@@ -490,9 +496,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << executor_class_name << "();\n";
 	out << "virtual ~" << executor_class_name << "();\n\n";
-	out << "void _add_ref();\n";
-	out << "void _remove_ref();\n";
-	out << "unsigned long _get_refcount();\n\n";
 	out << "void set_context(" << mapFullNameLocal(composition->ccm_component()) << "_Context_ptr context)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
     out << "void configuration_complete()\n";
@@ -526,12 +529,18 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 		out.indent();
 		out << ": public virtual CORBA::LocalObject\n";
 		out << ", public virtual " << mapScopeName(composition) << "::CCM_" << segment_name << "\n";
+		out.unindent(); out.unindent();
+		out << "#ifndef MICO_ORB\n";
+		out.indent(); out.indent();
+		out << ", public virtual Qedo::RefCountLocalObject\n";
+		out.unindent(); out.unindent();
+		out << "#endif\n";
+		out.indent(); out.indent();
 		out.insertUserSection(string("INHERITANCE_") + segment_name, 0);
 		out.unindent();
 		out << "{\n\n";
 		out << "private:\n\n";
 		out.indent();
-		out << "CORBA::Long ref_count_;\n\n";
 		out << "Qedo::qedo_mutex mutex_;\n\n";
 		out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
 		out.unindent();
@@ -539,9 +548,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 		out.indent();
 		out << segment_class_name << "();\n";
 		out << "virtual ~" << segment_class_name << "();\n\n";
-		out << "void _add_ref();\n";
-		out << "void _remove_ref();\n";
-		out << "unsigned long _get_refcount();\n\n";
 		out << "void set_context(" << mapFullNameLocal(composition->ccm_component()) << "_Context_ptr context)\n";
 		out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
 		out << "void configuration_complete()\n";
@@ -575,12 +581,19 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	{
 		out << ", public virtual Components::SessionExecutorLocator\n";
 	}
+	out.unindent(); out.unindent();
+	out << "#ifndef MICO_ORB\n";
+	out.indent(); out.indent();
+	out << ", public virtual Qedo::RefCountLocalObject\n";
+	out.unindent(); out.unindent();
+	out << "#endif\n";
+	out.indent(); out.indent();
+
 	out.insertUserSection(string("INHERITANCE_") + executor_locator_name, 0);
 	out.unindent();
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
-	out << "CORBA::Long ref_count_;\n\n";
 	out << "Qedo::qedo_mutex mutex_;\n\n";
     out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
 	out << mapName(composition->executor_def()) << "* component_;\n\n";
@@ -592,9 +605,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
     out << executor_locator_class_name << "();\n";
     out << "virtual ~" << executor_locator_class_name << "();\n\n";
-	out << "void _add_ref();\n";
-	out << "void _remove_ref();\n";
-	out << "unsigned long _get_refcount();\n\n";
 	IR__::InterfaceDef_ptr executor_locator;
 	// for service extension
 	if(composition->lifecycle() == 0)
@@ -619,12 +629,18 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << ": public virtual CORBA::LocalObject\n";
 	out << ", public virtual " << getLocalName(composition->ccm_home()) << "\n";
+	out.unindent(); out.unindent();
+	out << "#ifndef MICO_ORB\n";
+	out.indent(); out.indent();
+	out << ", public virtual Qedo::RefCountLocalObject\n";
+	out.unindent(); out.unindent();
+	out << "#endif\n";
+	out.indent(); out.indent();
 	out.insertUserSection(std::string("INHERITANCE_") + home_name, 0);
 	out.unindent();
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
-	out << "CORBA::Long ref_count_;\n\n";
 	out << "Qedo::qedo_mutex mutex_;\n\n";
     out << "Components::CCMContext_var context_;\n\n";
 	out.unindent();
@@ -632,9 +648,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
     out << home_class_name << "();\n";
     out << "virtual ~" << home_class_name << "();\n\n";
-	out << "void _add_ref();\n";
-	out << "void _remove_ref();\n";
-	out << "unsigned long _get_refcount();\n\n";
 	out << "//\n// IDL:Components/HomeExecutorBase/set_context:1.0\n//\n";
 	out << "virtual void set_context (Components::CCMContext_ptr ctx)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";

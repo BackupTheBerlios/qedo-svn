@@ -48,8 +48,6 @@ private:
 	CIDL::CompositionDef_var composition_;
 	std::set < std::string > handled_interfaces_;
 
-	void genReferenceCounting(std::string class_name);
-
 	void doException(IR__::ExceptionDef_ptr except);
 	void doModule(IR__::ModuleDef_ptr module);
 	void doAttribute(IR__::AttributeDef_ptr attribute);

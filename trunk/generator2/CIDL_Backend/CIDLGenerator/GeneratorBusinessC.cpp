@@ -449,21 +449,15 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// constructor
 	out << class_name_ << "::" << class_name_ << "()\n";
-	out << ": ref_count_ (1)\n{\n";
+	out << "{\n";
 	out.insertUserSection(class_name_ + "::" + class_name_, 0);
 	out << "}\n\n\n";
 
 	// destructor
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
 	out.insertUserSection(class_name_ + "::~" + class_name_, 1);
-	out.indent();
-	out << "assert (ref_count_ == 0);\n";
-	out.unindent();
 	out << "}\n\n\n";
 
-	// reference counting
-	genReferenceCounting(class_name_);
-	
 	// set_context
 	out << "void\n";
 	out << class_name_ << "::set_context(" << context_name << "_ptr context)\n";
@@ -518,21 +512,15 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 		// constructor
 		out << class_name_ << "::" << class_name_ << "()\n";
-		out << ": ref_count_ (1)\n{\n";
+		out << "{\n";
 		out.insertUserSection(class_name_ + "::" + class_name_, 0);
 		out << "}\n\n\n";
 
 		// destructor
 		out << class_name_ << "::~" << class_name_ << "()\n{\n";
 		out.insertUserSection(class_name_ + "::~" + class_name_, 1);
-		out.indent();
-		out << "assert (ref_count_ == 0);\n";
-		out.unindent();
 		out << "}\n\n\n";
 
-		// reference counting
-		genReferenceCounting(class_name_);
-		
 		// set context
 		out << "void\n";
 		out << class_name_ << "::set_context(" << context_name << "_ptr context)\n";
@@ -566,8 +554,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// constructor
 	out << class_name_ << "::" << class_name_ << "()\n";
-	out << ": ref_count_ (1)\n";
-	out << ", component_(new " << mapName(composition->executor_def()) << "())\n";
+	out << ":component_(new " << mapName(composition->executor_def()) << "())\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
 		out << ", " << segment_seq[i]->name() << "_(new " << mapName(segment_seq[i]) << "())\n";
 	}
@@ -583,13 +570,9 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	for (i = 0; i < segment_seq->length(); i++)	{
 		out << segment_seq[i]->name() << "_->_remove_ref();\n";
 	}
-	out << "assert (ref_count_ == 0);\n";
 	out.unindent();
 	out << "}\n\n\n";
 
-	// reference counting
-	genReferenceCounting(class_name_);
-	
 	// obtain executor
 	out << "::CORBA::Object*\n";
 	out << class_name_ << "::obtain_executor(const char* name)\n";
@@ -725,21 +708,15 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// constructor
 	out << class_name_ << "::" << class_name_ << "()\n";
-	out << ": ref_count_ (1)\n{\n";
+	out << "{\n";
 	out.insertUserSection(class_name_ + "::" + class_name_, 0);
 	out << "}\n\n\n";
 
 	// destructor
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
 	out.insertUserSection(class_name_ + "::~" + class_name_, 1);
-	out.indent();
-	out << "assert (ref_count_ == 0);\n";
-	out.unindent();
 	out << "}\n\n\n";
 
-	// reference counting
-	genReferenceCounting(class_name_);
-	
 	// set context
 	out << "void\n";
 	out << class_name_ << "::set_context(Components::CCMContext_ptr ctx)\n";
@@ -786,47 +763,6 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.close();
 }
 
-
-void
-GeneratorBusinessC::genReferenceCounting(std::string class_name)
-{
-	// _add_ref
-	out << "void\n";
-	out << class_name << "::_add_ref()\n{\n";
-	out.indent();
-	out << "Qedo::qedo_lock lock(&mutex_);\n";
-	out << "++ref_count_;\n";
-	out.unindent();
-	out << "}\n\n\n";
-
-	// _remove_ref
-	out << "void\n";
-	out << class_name << "::_remove_ref()\n{\n";
-	out.indent();
-	out << "bool remove = false;\n";
-	out << "{\n";
-	out.indent();
-	out << "Qedo::qedo_lock lock(&mutex_);\n";
-	out << "if (--ref_count_ == 0)\n";
-	out.indent();
-	out << "remove = true; \n";
-	out.unindent();
-	out.unindent();
-	out << "}\n";
-	out << "if(remove)\n";
-	out.indent();
-	out << "delete this;\n";
-	out.unindent();
-	out << "}\n\n\n";
-
-	// _get_refcount
-	out << "unsigned long\n";
-	out << class_name << "::_get_refcount()\n{\n";
-	out.indent();
-	out << "return ref_count_;\n";
-	out.unindent();
-	out << "}\n\n\n";
-}
 
 
 } //
