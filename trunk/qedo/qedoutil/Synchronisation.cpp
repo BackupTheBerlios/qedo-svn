@@ -34,7 +34,7 @@
 #include <sys/time.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.21 2003/10/09 12:39:35 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.22 2003/10/09 15:59:24 boehme Exp $";
 
 
 namespace Qedo {
@@ -198,19 +198,19 @@ QedoCond::wait(const QedoMutex* m)
 }
 
 bool
-QedoCond::wait_timed (const QedoMutex& m, unsigned long time) 
+QedoCond::wait_timed (const QedoMutex& m, unsigned long timeout) 
 {
-	return wait_timed(&m,time);
+	return wait_timed(&m,timeout);
 }
 
 bool
-QedoCond::wait_timed(const QedoMutex* m, unsigned long time) 
+QedoCond::wait_timed(const QedoMutex* m, unsigned long timeout) 
 {
 	bool ret = true;
 #ifdef QEDO_WINTHREAD
  	const_cast<QedoMutex* const>(m)->unlock_object();
 	long x;
-	x = WaitForMultipleObjects(1, &(delegate_->event_handle_), TRUE, time);
+	x = WaitForMultipleObjects(1, &(delegate_->event_handle_), TRUE, timeout);
 
 	switch (x)
  	{
@@ -231,28 +231,28 @@ QedoCond::wait_timed(const QedoMutex* m, unsigned long time)
 	struct _timeb tb;
 
 	_ftime(&tb);
-	abstime.tv_sec = tb.time + time / 1000;
-	time = time % 1000;
-	time += tb.millitm;
-	if(time > 1000)
+	abstime.tv_sec = tb.time + timeout / 1000;
+	timeout = timeout % 1000;
+	timeout += tb.millitm;
+	if(timeout > 1000)
 	{
 		abstime.tv_sec = abstime.tv_sec + 1;
-		time -= 1000;
+		timeout -= 1000;
 	}
-	abstime.tv_nsec = time * 1000;
+	abstime.tv_nsec = timeout * 1000;
 #else
 	struct timeval tp;
 
 	gettimeofday(&tp,0);
-	abstime.tv_sec = tp.tv_sec + time / 1000;
-	time = time % 1000;
-	time += tp.tv_usec;
-	if(time > 1000)
+	abstime.tv_sec = tp.tv_sec + timeout / 1000;
+	timeout = timeout % 1000;
+	timeout += tp.tv_usec;
+	if(timeout > 1000)
 	{
 		abstime.tv_sec = abstime.tv_sec + 1;
-		time -= 1000;
+		timeout -= 1000;
 	}
-	abstime.tv_nsec = time * 1000;
+	abstime.tv_nsec = timeout * 1000;
 #endif
 	x = pthread_cond_timedwait (&(delegate_->cond_),&(m->delegate_->mutex_), &abstime);
 
@@ -268,7 +268,6 @@ QedoCond::wait_timed(const QedoMutex* m, unsigned long time)
 			assert (0);
 			break;
 	};
-	pthread_cond_wait (&(delegate_->cond_),&(m->delegate_->mutex_));
 #endif
 	return ret;
 }
