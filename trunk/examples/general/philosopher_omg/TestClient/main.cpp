@@ -3,10 +3,10 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.4 2002/11/05 07:34:16 boehme Exp $
+// $Id: main.cpp,v 1.5 2002/11/05 11:01:45 tom Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.4 2002/11/05 07:34:16 boehme Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.5 2002/11/05 11:01:45 tom Exp $";
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
@@ -303,11 +303,11 @@ main (int argc, char** argv)
 
 	try
 	{
-		phil1->remove();
-		phil2->remove();
-		phil3->remove();
-		c_home->remove_component (cut1);
-		c_home->remove_component (cut2);
+//		phil1->remove();
+//		phil2->remove();
+//		phil3->remove();
+//		c_home->remove_component (cut1);
+//		c_home->remove_component (cut2);
 	}
 	catch (Components::RemoveFailure&)
 	{
@@ -321,8 +321,8 @@ main (int argc, char** argv)
 
 	try
 	{
-		container->remove_home (c_home);
-		container->remove_home (p_home);
+//		container->remove_home (c_home);
+//		container->remove_home (p_home);
 	}
 	catch (Components::RemoveFailure&)
 	{

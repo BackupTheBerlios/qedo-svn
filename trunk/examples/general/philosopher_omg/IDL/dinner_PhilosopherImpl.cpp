@@ -799,8 +799,12 @@ return 0;
 create_PhilosopherHomeE(void)
 {
 // BEGIN USER INSERT SECTION create_PhilosopherHome
-// END USER INSERT SECTION create_PhilosopherHome
+	int argc;
+	CORBA::ORB_ptr orb = CORBA::ORB_init (argc,0);
 
+    orb->register_value_factory ("IDL:DiningPhilosophers/StatusInfo:1.0", new PhilosopherStateFactory_impl());
+
+// END USER INSERT SECTION create_PhilosopherHome
     return new ::dinner::PhilosopherHomeImpl();
 }
 

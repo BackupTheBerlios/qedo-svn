@@ -131,6 +131,11 @@ void
 ObserverSessionImpl::push_event (Components::EventBase* ev)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::push_event
+    ::DiningPhilosophers::StatusInfo* e = ::DiningPhilosophers::StatusInfo::_downcast(ev);
+    if(!e) {
+        WITH_PID_ERR ( "ObserverSessionImpl: Cannot push event in push_event()" );
+    }
+    push_StatusInfo(e);
 // END USER INSERT SECTION ObserverSessionImpl::push_event
 }
 
@@ -139,6 +144,55 @@ void
 ObserverSessionImpl::push_StatusInfo(::DiningPhilosophers::StatusInfo* ev)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::push_StatusInfo
+   std::stringstream message;
+    message << ev->name();
+
+	switch (ev->state())
+	{
+	case DiningPhilosophers::EATING:
+		message << " is eating for " << ev->ticks_since_last_meal() << " ticks";
+        message << "; left fork(" << ev->has_left_fork() << "), right fork(" << ev->has_right_fork() << ");";
+		break;
+	case DiningPhilosophers::THINKING:
+		message << " is thinking for " << ev->ticks_since_last_meal() << " ticks";
+        message << "; left fork(" << ev->has_left_fork() << "), right fork(" << ev->has_right_fork() << ");";
+		break;
+	case DiningPhilosophers::HUNGRY:
+		message << " is hungry for " << (ev->ticks_since_last_meal() - 3) << " ticks";
+        message << "; left fork(" << ev->has_left_fork() << "), right fork(" << ev->has_right_fork() << ");";
+		break;
+	case DiningPhilosophers::STARVING:
+		message << " is starving for " << (ev->ticks_since_last_meal() - 10) << " ticks";
+        message << "; left fork(" << ev->has_left_fork() << "), right fork(" << ev->has_right_fork() << ");";
+		break;
+	case DiningPhilosophers::DEAD:
+		message << " is dead";
+        message << "; left fork(" << ev->has_left_fork() << "), right fork(" << ev->has_right_fork() << ");";
+		break;
+	}
+
+    string philoName = ev->name();
+    vector < string > ::const_iterator iter;
+    int index = 0;
+	for (iter = philoNames_.begin(); iter != philoNames_.end(); iter++ )
+	{
+		if ((*iter) == philoName)
+		{
+			break;
+		}
+        index++;
+	}
+    if (index == philoNames_.size())
+    {
+        philoNames_.push_back(philoName);
+    }
+
+#ifdef WIN32
+	gui_->m_list.DeleteString(index);
+    gui_->m_list.InsertString(index, message.str().c_str());
+	gui_->m_list.SetCurSel(index);
+#endif
+
 // END USER INSERT SECTION ObserverSessionImpl::push_StatusInfo
 }
 

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.1 2002/10/07 07:17:02 tom Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.2 2002/11/05 11:02:04 tom Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -114,9 +114,10 @@ HomeServantBase::incarnate_component (const char* rep_id,
 	CORBA::Object_var component_ref = this->create_primary_object_reference (rep_id);
 
 	// Now do all the other stuff
-	PortableServer::ObjectId_var object_id = this->reference_to_oid (component_ref);
+	PortableServer::ObjectId* object_id = new PortableServer::ObjectId();
+	*object_id = *(this->reference_to_oid (component_ref));
 
-	ComponentInstance new_component (object_id, component_ref, executor_locator, ccm_context, this);
+	ComponentInstance new_component (*object_id, component_ref, executor_locator, ccm_context, this);
 	
 	component_instances_.push_back (new_component);
 
@@ -126,7 +127,7 @@ HomeServantBase::incarnate_component (const char* rep_id,
 		 components_iter != component_instances_.end(); 
 		 components_iter++)
 	{
-		if (Qedo::compare_object_ids ((*components_iter).object_id_, object_id))
+		if (Qedo::compare_object_ids ((*components_iter).object_id_, *object_id))
 		{
 			break;
 		}
