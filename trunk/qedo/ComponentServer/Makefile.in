@@ -46,19 +46,19 @@ SOURCES = ComponentServerImpl.cpp \
 			 ClientInterceptorDispatcher.cpp \
 			 ServerInterceptorDispatcher.cpp \
 			 ORBInitializerImpl.cpp \
-          cs.cpp \
-			 ../ComponentInstaller/NameServiceBase.cpp
+          cs.cpp 
 
-OBJS = ${SOURCES:.cpp=.o}
+SOURCES_EXTERN = ../ComponentInstaller/NameServiceBase.cpp
+
+
+CLEAN_FILES = $(SOURCES:.cpp=.o) cs
 
 .PHONY:all
 
 all: cs
 
-#cs.cpp : main.cpp
-#	@LN_S@ $^ $@
 
-cs: $(OBJS)
+cs: $(SOURCES:.cpp=.o) $(SOURCES_EXTERN:.cpp=.o)
 
 .PHONY:install
 
@@ -67,3 +67,4 @@ install: install-prog
 .PHONY:install-prog
 
 install-prog: cs
+

@@ -37,15 +37,15 @@ LDLIBS = ${LIBS}
 SOURCES =  ServerActivatorImpl.cpp \
            csa.cpp
 
-OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
+OBJS = ${SOURCES:.cpp=.o}
 
+
+CLEAN_FILES = $(OBJS) csa
 
 .PHONY:all
 
 all: csa
 
-#csa.cpp : main.cpp
-#	@LN_S@ $^ $@
 
 csa: $(OBJS)
 

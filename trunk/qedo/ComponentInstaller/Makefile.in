@@ -39,8 +39,6 @@ LIBS += -L../ComponentIDL -lComponent\
 
 LDLIBS = ${LIBS}
 
-#SOURCE_C = libunzip.c
-
 SOURCES = CatalogResolver.cpp \
           ComponentImplementation.cpp \
 			 ComponentInstallationImpl.cpp \
@@ -53,14 +51,13 @@ SOURCES = CatalogResolver.cpp \
 			 libunzip.cpp \
 			 ci.cpp 
 
-OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
+OBJS = ${SOURCES:.cpp=.o}
+
+CLEAN_FILES = $(OBJS) ci
 
 .PHONY:all
 
 all: ci
-
-#ci.cpp : main.cpp
-#	@LN_S@ $^ $@
 
 ci: $(OBJS)
 

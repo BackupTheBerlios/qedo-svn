@@ -57,3 +57,6 @@ install: install-dir $(SUBDIRS:%=%-install)
 
 %-install: %
 	make -C $< install
+
+%-clean: %
+	make -C $< clean

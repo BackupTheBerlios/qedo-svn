@@ -70,6 +70,8 @@ HEADER = ${SOURCES:.cpp=.h} \
 
 OBJS = ${SOURCES:.cpp=.o}
 
+CLEAN_FILES = $(OBJS) libComponentContainer.so
+
 .PHONY: all
 
 all: libComponentContainer.so

@@ -59,6 +59,8 @@ endif
 
 all:
 
+install: all
+
 install-prog:
 	${INSTALL} $^ @bindir@ 
 
@@ -74,3 +76,5 @@ install-idl:
 install-etc:
 	${INSTALL} $^ $(exec_prefix)/etc 
 
+clean:
+	-rm -rf $(CLEAN_FILES)

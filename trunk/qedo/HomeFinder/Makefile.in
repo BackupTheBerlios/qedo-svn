@@ -36,18 +36,17 @@ LDLIBS = ${LIBS}
 
 SOURCES =  HomeFinderEntry.cpp \
 			  HomeFinderImpl.cpp \
-			  ../ComponentInstaller/NameServiceBase.cpp \
            HomeFinder.cpp
+SOURCES_EXTERN = ../ComponentInstaller/NameServiceBase.cpp 
 
-OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
+OBJS = ${SOURCES:.cpp=.o} ${SOURCES_EXTERN:.cpp=.o}
+
+CLEAN_FILES = ${SOURCES:.cpp=.o}
 
 
 .PHONY:all
 
 all: HomeFinder
-
-#HomeFinder.cpp : main.cpp
-#	@LN_S@ $^ $@
 
 HomeFinder: $(OBJS)
 

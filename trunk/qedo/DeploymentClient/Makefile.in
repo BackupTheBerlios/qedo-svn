@@ -35,18 +35,17 @@ LIBS += -L../ComponentIDL -lComponent\
 LDLIBS = ${LIBS}
 
 SOURCES =  DeploymentClient.cpp \
-           ../ComponentInstaller/NameServiceBase.cpp \
            deploy.cpp
+SOURCES_EXTERN = ../ComponentInstaller/NameServiceBase.cpp 
 
-OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
+OBJS = ${SOURCES:.cpp=.o} ${SOURCES_EXTERN:.cpp=.o}
 
+
+CLEAN_FILES = ${SOURCES:.cpp=.o} deploy
 
 .PHONY:all
 
 all: deploy
-
-#deploy.cpp : main.cpp
-#	@LN_S@ $^ $@
 
 deploy: $(OBJS)
 
