@@ -36,7 +36,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.12 2003/08/28 09:22:05 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.13 2003/08/28 13:11:29 neubauer Exp $";
 
 
 namespace Qedo {
@@ -112,6 +112,18 @@ AssemblyFactoryImpl::create_assembly (const char* assembly_loc)
 throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 {
 	std::cout << "..... creating new assembly for " << assembly_loc << std::endl;
+
+	//
+	// xerces chrashes when assembly_loc is no valid uri
+	// to be fixed later
+	//
+	std::string loc = assembly_loc;
+	if ( loc.compare(0, 7, "file://") && loc.compare(0, 7, "http://") )
+    {
+		std::cout << ".......... invalid assembly location" << std::endl;
+		std::cout << ".......... file:// or http:// prefix required" << std::endl;
+		throw Components::Deployment::InvalidLocation();
+    }
 
 	XMLURL uri(assembly_loc);
     std::string name = XMLString::transcode(uri.getPath());

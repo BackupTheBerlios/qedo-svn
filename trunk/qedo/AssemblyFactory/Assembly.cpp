@@ -108,6 +108,7 @@ throw( Components::CreateFailure )
 	catch ( CORBA::SystemException& )
 	{
 		std::cerr << ".......... CORBA system exception during create_component_server()" << std::endl;
+		std::cerr << ".......... is ServerActivator running?" << std::endl;
 		throw Components::CreateFailure();
 	}
 	if (CORBA::is_nil(component_server))
@@ -344,6 +345,12 @@ throw( Components::CreateFailure )
 		//
 		DEBUG_OUT( ".......... upload done, install now " );
 		componentInstallation->install(impl_id.c_str(), location.c_str());
+	}
+	catch ( CORBA::SystemException& )
+	{
+		std::cerr << ".......... CORBA system exception during install()" << std::endl;
+		std::cerr << ".......... is ComponentInstallation running?" << std::endl;
+		throw Components::CreateFailure();
 	}
 }
 
