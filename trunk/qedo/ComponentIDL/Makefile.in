@@ -35,9 +35,9 @@ IDL_GEN_CXX = $(IDL_FILES:.idl=.cpp) $(IDL_FILES:.idl=_skel.cpp)
 
 .PHONY:all
 
-all: libComponent.so
+all: libComponentIDL.so
 
-libComponent.so : $(IDL_GEN_CXX:.cpp=.o)
+libComponentIDL.so : $(IDL_GEN_CXX:.cpp=.o)
 
 .PHONY:install
 
@@ -45,7 +45,7 @@ install: install-lib install-include install-idl
 
 .PHONY:install-lib
 
-install-lib: libComponent.so
+install-lib: libComponentIDL.so
 
 .PHONY:install-idl
 

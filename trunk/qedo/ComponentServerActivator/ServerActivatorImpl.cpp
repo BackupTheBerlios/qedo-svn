@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.14 2003/07/25 13:57:12 tom Exp $";
+static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.15 2003/07/29 14:27:56 tom Exp $";
 
 #include <iostream>
 #include "fstream"
@@ -253,7 +253,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 		case 0 : /* child process */
 			if (debug_mode_)
 			{
-				long err = execlp ("cs", "cs", "--csa_ref", my_string_ref.in(), "--debug", 0);
+				long err = execlp ("./cs", "./cs", "--csa_ref", my_string_ref.in(), "--debug", 0);
 			    if (err == -1) 
 				{
 					std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;
@@ -263,7 +263,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 			}
 			else
 			{
-				long err = execlp ("cs", "cs", "--csa_ref", my_string_ref.in(), 0);
+				long err = execlp ("./cs", "./cs", "--csa_ref", my_string_ref.in(), 0);
 			    if (err == -1) 
 				{
 					std::cerr << "ServerActivatorImpl: execlp() for component server failed" << std::endl;

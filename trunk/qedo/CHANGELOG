@@ -1,6 +1,13 @@
-- create_assembly issue #5577
-version 0.1.1
 
+
+
+version 0.2.0
+- MICO integration
+- unix configure / make
+- create_assembly issue #5577
+
+
+version 0.1.1
 - doxygen documentation
 
 version 0.1.0
