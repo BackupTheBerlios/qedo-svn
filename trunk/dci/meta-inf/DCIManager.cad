@@ -47,7 +47,6 @@
 				</registercomponent>
 -->
 	        </componentinstantiation>
-	        <destination></destination>
 	    </homeplacement>
 
         <homeplacement id="DCIManagerHome">
@@ -80,14 +79,12 @@
 				</registercomponent>
 -->
 	        </componentinstantiation>
-	        <destination></destination>
 	    </homeplacement>
 
          <homeplacement id="RepAssemblyManagerHome">
 	        <componentfileref idref="DCI_RepAssemblyManagerImpl_file"/>
 			<componentimplref idref="UUID-EAE715D8-A6FE-44B5-B9CF-A6BD3287511A"/>
 			<registerwithnaming name="DCI/RepAssemblyManagerHome"/>
-	        <destination></destination>
 	    </homeplacement>
 
 	</processcollocation>
