@@ -318,46 +318,46 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="IDL compiler compiles $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix .cpp   CIDL_Extension.idl
-"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix .cpp   CIDL_Extension.idl"
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32">
 					<Tool
-						Name="VCCustomBuildTool"/>
+						Name="VCCustomBuildTool"
+						Description="IDL compiler compiles $(InputPath)"
+						CommandLine=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(TAO)\bin\tao_idl  -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp -DTAO_ORB    CIDL_Extension.idl
-"
+						Description="IDL compiler compiles $(InputPath)"
+						CommandLine=""
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)\win32-bin\idl --any -I. --c++-suffix cpp --c++-skel  CIDL_Extension.idl
-copy CIDL_Extension.h CIDL_Extension_skel.h
-"
+						Description="IDL compiler compiles $(InputPath)"
+						CommandLine=""
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB CIDL_Extension.idl
-"
+						Description="IDL compiler compiles $(InputPath)"
+						CommandLine=""
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix .cpp   CIDL_Extension.idl
-"
+						Description="IDL compiler compiles $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix .cpp   CIDL_Extension.idl"
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
 			</File>
@@ -373,9 +373,16 @@ copy CIDL_Extension.h CIDL_Extension_skel.h
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="IDL compiler compiles $(InputPath)"/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="IDL compiler compiles $(InputPath)"
 						CommandLine="$(TAO)\bin\tao_idl -Sc -ss _skel.cpp -hs _skel.h -hc .h -cs .cpp  -DTAO_ORB  IFR.idl
 "
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
@@ -384,7 +391,7 @@ copy CIDL_Extension.h CIDL_Extension_skel.h
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description=""
+						Description="IDL compiler compiles $(InputPath)"
 						CommandLine="$(MICO)\win32-bin\idl --any --c++-suffix cpp --c++-skel IFR.idl
 copy IFR.h IFR_skel.h
 "
@@ -394,6 +401,7 @@ copy IFR.h IFR_skel.h
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="IDL compiler compiles $(InputPath)"
 						CommandLine="$(ORBACUS)\bin\idl -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB IFR.idl
 "
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
@@ -402,6 +410,7 @@ copy IFR.h IFR_skel.h
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="IDL compiler compiles $(InputPath)"
 						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix  .cpp   IFR.idl
 "
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
