@@ -34,6 +34,7 @@
      | process
      | entity
      | unclassified
+     | containerextension
      ) >
 
 <!ELEMENT componentproperties
