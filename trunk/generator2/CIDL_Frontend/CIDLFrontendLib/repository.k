@@ -695,8 +695,7 @@ ValueTypeFwdDcl(name)
 ->[ feed feed_container: ];
 
 AbstractValueType(ValueHeader(flag_v, name, inh), def_list),
-ValueType(ValueHeader(flag_v, name, inh), def_list),
-EventType(EventTypeHeader(flag_v, name, inh), def_list)
+ValueType(ValueHeader(flag_v, name, inh), def_list)
 ->[ feed:
     %uviewvar feed my_feed;
 	%uviewvar build my_build;
@@ -751,6 +750,63 @@ EventType(EventTypeHeader(flag_v, name, inh), def_list)
       }
       irobj = value;
       name->symtab_entry->irobj = value;
+    }
+  ];
+
+EventType(EventTypeHeader(flag_v, name, inh), def_list)
+->[ feed:
+    %uviewvar feed my_feed;
+	%uviewvar build my_build;
+    { my_feed.container = irobj;
+	  int i = 0;
+      foreach($def; definition_list def_list) {
+        FactoryDcl : { i++; }
+        default : { def->unparse(kc_printer, my_feed); }
+      }
+      my_build.iniseq.length(i);
+      foreach($def; definition_list def_list) {
+        FactoryDcl : { def->unparse(kc_printer, my_build); }
+        default : {}
+      }
+      IR__::EventDef_ptr eventdef;
+      eventdef = IR__::EventDef::_narrow (irobj);
+      NOT_NIL(eventdef);
+      // insert proper initializer seq
+      eventdef->initializers (my_build.iniseq);
+    }
+  ]
+  [ feed_container:
+    %uviewvar build my_build;
+    inh : my_build
+    {  
+      IR__::Container_ptr container;
+      container = IR__::Container::_narrow(kc_current_view.container);
+      NOT_NIL(container);
+      // initializer seq priliminarily empty (no types resolves so far)
+      IR__::InitializerSeq iniseq;
+      // determine custom marshal
+      bool cust;
+      with(flag_v) {
+        CustomFlag : { cust = true; }
+        default : { cust = false; }
+      }
+      // determine abstract
+      bool abstr;
+      with(this) {
+        EventType : { abstr = false; }
+      }
+      // create EventDef
+      IR__::EventDef_ptr event;
+      try {
+        event = container->create_event(get_repid(name), name->get_name(),
+          "1.0", cust, abstr, my_build.valuetype, my_build.flag,
+          my_build.valdefseq, my_build.intdefseq, iniseq);
+      }
+      catch (...) {
+        Error("Exception in creating value %k\n", name, name);
+      }
+      irobj = event;
+      name->symtab_entry->irobj = event;
     }
   ];
 
@@ -1055,14 +1111,14 @@ EmitsDcl(ident, name)
     { IR__::ComponentDef_ptr component_ptr;
       component_ptr = IR__::ComponentDef::_narrow(kc_current_view.container);
       NOT_NIL(component_ptr);
-      IR__::ValueDef_ptr value;
-      value = IR__::ValueDef::_narrow(ident->symtab_entry->irobj);
-      NOT_NIL(value);
+      IR__::EventDef_ptr event;
+      event = IR__::EventDef::_narrow(ident->symtab_entry->irobj);
+      NOT_NIL(event);
       IR__::EmitsDef_ptr emits;
       // create EmitsDef
       try {
         emits = component_ptr->create_emits(get_repid(name),
-          name->get_name(), "1.0", value);
+          name->get_name(), "1.0", event);
       }
       catch (...) {
         Error("Exception in creating emits %k\n", name, name);
@@ -1076,14 +1132,14 @@ PublishesDcl(ident, name)
     { IR__::ComponentDef_ptr component_ptr;
       component_ptr = IR__::ComponentDef::_narrow(kc_current_view.container);
       NOT_NIL(component_ptr);
-      IR__::ValueDef_ptr value;
-      value = IR__::ValueDef::_narrow(ident->symtab_entry->irobj);
-      NOT_NIL(value);
+      IR__::EventDef_ptr event;
+      event = IR__::EventDef::_narrow(ident->symtab_entry->irobj);
+      NOT_NIL(event);
       IR__::PublishesDef_ptr publishes;
       // create PublishesDef
       try {
         publishes = component_ptr->create_publishes(get_repid(name),
-          name->get_name(), "1.0", value);
+          name->get_name(), "1.0", event);
       }
       catch (...) {
         Error("Exception in creating publishes %k\n", name, name);
@@ -1097,14 +1153,14 @@ ConsumesDcl(ident, name)
     { IR__::ComponentDef_ptr component_ptr;
       component_ptr = IR__::ComponentDef::_narrow(kc_current_view.container);
       NOT_NIL(component_ptr);
-      IR__::ValueDef_ptr value;
-      value = IR__::ValueDef::_narrow(ident->symtab_entry->irobj);
-      NOT_NIL(value);
+      IR__::EventDef_ptr event;
+      event = IR__::EventDef::_narrow(ident->symtab_entry->irobj);
+      NOT_NIL(event);
       IR__::ConsumesDef_ptr consumes;
       // create ConsumesDef
       try {
         consumes = component_ptr->create_consumes(get_repid(name),
-          name->get_name(), "1.0", value);
+          name->get_name(), "1.0", event);
       }
       catch (...) {
         Error("Exception in creating consumes %k\n", name, name);

@@ -51,12 +51,16 @@ GeneratorLIDL::doInterface(IR__::InterfaceDef_ptr intface)
 void
 GeneratorLIDL::doValue(IR__::ValueDef_ptr value)
 {
+}
+
+void
+GeneratorLIDL::doEvent(IR__::ValueDef_ptr value)
+{
 	out << "//\n// " << value->id() << "\n//\n";
 	out << "local interface CCM_" << value->name() << "Consumer : ";
 	out << map_absolute_name(value) << "Consumer, ::Components::EnterpriseComponent\n{\n";
 	out << "};\n\n";
 }
-
 
 void
 GeneratorLIDL::doAttribute(IR__::AttributeDef_ptr attribute)

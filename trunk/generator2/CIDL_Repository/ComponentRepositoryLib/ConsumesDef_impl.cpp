@@ -31,10 +31,10 @@ namespace QEDO_ComponentRepository {
 ConsumesDef_impl::ConsumesDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
-  ValueDef_impl *event_type_impl )
+  EventDef_impl *event_type_impl )
 : IRObject_impl ( repository ),
   Contained_impl ( container, repository ),
-  EventDef_impl ( container, repository, event_type_impl )
+  EventPortDef_impl ( container, repository, event_type_impl )
 {
 	DEBUG_OUTLINE ( "ConsumesDef_impl::ConsumesDef_impl() called" );
 }
@@ -52,7 +52,7 @@ throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "ConsumesDef_impl::destroy() called" );
 
-	EventDef_impl::destroy();
+	EventPortDef_impl::destroy();
 }
 
 } // namespace QEDO_ComponentRepository

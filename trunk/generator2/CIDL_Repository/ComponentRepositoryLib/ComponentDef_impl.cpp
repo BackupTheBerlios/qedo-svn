@@ -724,7 +724,7 @@ ComponentDef_impl::create_emits
 (const char* id,
  const char* name,
  const char* version,
- IR__::ValueDef_ptr event_value )
+ IR__::EventDef_ptr event_value )
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "ComponentDef_impl::create_emits() called" );
@@ -739,12 +739,12 @@ throw(CORBA::SystemException)
 
 	// TODO: Check: event_value must be derived from EventBase
 
-    ValueDef_impl* impl = 0;
+    EventDef_impl* impl = 0;
     try
     {
 		PortableServer::ServantBase_var servant =
 			repository_ -> poa() -> reference_to_servant ( event_value );
-        impl = dynamic_cast<ValueDef_impl*>(servant.in());
+        impl = dynamic_cast<EventDef_impl*>(servant.in());
     }
     catch(...)
     {
@@ -771,7 +771,7 @@ ComponentDef_impl::create_publishes
 (const char* id,
  const char* name,
  const char* version,
- IR__::ValueDef_ptr event_value)
+ IR__::EventDef_ptr event_value)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "ComponentDef_impl::create_publishes() called" );
@@ -786,12 +786,12 @@ throw(CORBA::SystemException)
 
 	// TODO: Check: event_value must be derived from EventBase
 
-    ValueDef_impl* impl = 0;
+    EventDef_impl* impl = 0;
     try
     {
 		PortableServer::ServantBase_var servant =
 			repository_ -> poa() -> reference_to_servant ( event_value );
-        impl = dynamic_cast<ValueDef_impl*>(servant.in());
+        impl = dynamic_cast<EventDef_impl*>(servant.in());
     }
     catch(...)
     {
@@ -818,7 +818,7 @@ ComponentDef_impl::create_consumes
 (const char* id,
  const char* name,
  const char* version,
- IR__::ValueDef_ptr event_value)
+ IR__::EventDef_ptr event_value)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "ComponentDef_impl::create_consumes() called" );
@@ -833,12 +833,12 @@ throw(CORBA::SystemException)
 
 	// TODO: Check: event_value must be derived from EventBase
 
-    ValueDef_impl* impl = 0;
+    EventDef_impl* impl = 0;
     try
     {
 		PortableServer::ServantBase_var servant =
 			repository_ -> poa() -> reference_to_servant ( event_value );
-        impl = dynamic_cast<ValueDef_impl*>(servant.in());
+        impl = dynamic_cast<EventDef_impl*>(servant.in());
     }
     catch(...)
     {

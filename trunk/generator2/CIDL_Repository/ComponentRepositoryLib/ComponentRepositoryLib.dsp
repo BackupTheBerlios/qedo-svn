@@ -215,6 +215,10 @@ SOURCE=.\EventDef_impl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\EventPortDef_impl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ExceptionDef_impl.cpp
 # End Source File
 # Begin Source File
@@ -372,6 +376,10 @@ SOURCE=.\EnumDef_impl.h
 # Begin Source File
 
 SOURCE=.\EventDef_impl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\EventPortDef_impl.h
 # End Source File
 # Begin Source File
 

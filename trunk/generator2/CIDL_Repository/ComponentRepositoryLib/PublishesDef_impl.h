@@ -28,17 +28,17 @@
 
 #include <CORBA.h>
 #include "IFR_skel.h"
-#include "EventDef_impl.h"
+#include "EventPortDef_impl.h"
 
 namespace QEDO_ComponentRepository {
 
 class PublishesDef_impl : public virtual POA_IR__::PublishesDef,
-						  public virtual EventDef_impl
+						  public virtual EventPortDef_impl
 {
 public:
 	PublishesDef_impl ( Container_impl *container,
 		            Repository_impl *repository,
-					ValueDef_impl *event_type_impl );
+					EventDef_impl *event_type_impl );
 
 	~PublishesDef_impl();
 

@@ -418,10 +418,10 @@ ENOL                    (\n|\n)
 <stream,cidl_psdl,psdl>"storagetype"	{ return TOK_storagetype; }
 <stream,cidl_psdl,psdl>"strong"	{ return TOK_strong; }
 <stream,cidl_psdl,psdl>"state"	{ return TOK_state; }
-<stream>"sink" { return TOK_sink; }
-<stream>"source" { return TOK_source; }
-<stream>"siso" { return TOK_siso; }
-<stream>"streamtype" { return TOK_streamtype; }
+"sink" { return TOK_sink; }
+"source" { return TOK_source; }
+"siso" { return TOK_siso; }
+"streamtype" { return TOK_streamtype; }
 
 {L1}({L2}|{D})*  {yylval.yt_idl_name = MkIdentifier(); return TOK_identifier; }
 _{L1}({L2}|{D})*  {yylval.yt_idl_name = MkEscapedIdentifier(); return TOK_identifier; }

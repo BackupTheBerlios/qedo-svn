@@ -132,6 +132,7 @@ module IR__ {
 	typedef sequence <UsesDef> UsesDefSeq;
 	interface HomeDef;
 	typedef sequence <HomeDef> HomeDefSeq;
+	interface EventPortDef;
 	interface EventDef;
 	interface EmitsDef;
 	typedef sequence <EmitsDef> EmitsDefSeq;
@@ -263,6 +264,19 @@ module IR__ {
 			in InterfaceDefSeq supported_interfaces,
 			in InitializerSeq initializers
 		);
+		EventDef create_event(
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in boolean is_custom,
+			in boolean is_abstract,
+			in ValueDef base_value,
+			in boolean is_truncatable,
+			in ValueDefSeq abstract_base_values,
+			in InterfaceDefSeq supported_interfaces,
+			in InitializerSeq initializers
+		);
+
 		StreamTypeDef create_stream_type(
 			in RepositoryId id,
 			in Identifier name,
@@ -596,7 +610,7 @@ module IR__ {
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in IDLType type,
+			in IDLType type	,
 			in CORBA__::Visibility access
 		);
 		AttributeDef create_attribute(
@@ -673,12 +687,15 @@ module IR__ {
 	typedef sequence <ProvidesDescription> ProvidesDescSeq;
 	typedef sequence <UsesDescription> UsesDescSeq;
 	
-	interface EventDef : Contained { // abstract - never instantiated
+	interface EventPortDef : Contained { // abstract - never instantiated
 		// read interface
 		boolean is_a (in RepositoryId event_id);
-		readonly attribute ValueDef event;
+		readonly attribute EventDef event;
 	};
 	
+	interface EventDef : ValueDef {
+	};
+
 	struct EventDescription {
 		Identifier name;
 		RepositoryId id;
@@ -687,13 +704,13 @@ module IR__ {
 		ValueDef value;
 	};
 	
-	interface EmitsDef : EventDef {
+	interface EmitsDef : EventPortDef {
 	};
 	
-	interface PublishesDef : EventDef {
+	interface PublishesDef : EventPortDef {
 	};
 	
-	interface ConsumesDef : EventDef {
+	interface ConsumesDef : EventPortDef {
 	};
 	
 	interface StreamPortDef : Contained {
@@ -758,19 +775,19 @@ module IR__ {
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in ValueDef value
+			in EventDef value
 		);
 		PublishesDef create_publishes (
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in ValueDef value
+			in EventDef value
 		);
 		ConsumesDef create_consumes (
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in ValueDef value
+			in EventDef value
 		);
 		SinkDef create_sink (
 			in RepositoryId id,

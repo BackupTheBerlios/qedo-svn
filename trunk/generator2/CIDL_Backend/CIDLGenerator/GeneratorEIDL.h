@@ -7,7 +7,7 @@
 #include <fstream>
 #include <iostream>
 
-
+#include <set>
 using namespace std;
 
 
@@ -16,6 +16,14 @@ namespace QEDO_CIDL_Generator {
 
 class GeneratorEIDL : public virtual IDLBase
 {
+
+		// internal list for items to generate
+	IR__::ContainedSeq_var m_to_generate_seq;
+	std::set<std::string> m_recursion_stack;
+	bool already_included (IR__::Contained_ptr item);
+	void insert_to_generate(IR__::Contained_ptr item);
+	void check_for_generation ( IR__::Contained_ptr item );
+	void generate_the_item ( IR__::Contained_ptr item ) ;
 
 	string filename_;
 	Printer out;
@@ -27,6 +35,7 @@ class GeneratorEIDL : public virtual IDLBase
 	void open_module(IR__::Contained* cont);
 	void close_module(IR__::Contained* cont);
 
+	void doModule(IR__::ModuleDef_ptr module);
 	void beginModule(IR__::ModuleDef_ptr module);
 	void endModule(IR__::ModuleDef_ptr module);
 	void beginInterface(IR__::InterfaceDef_ptr intface);
@@ -35,6 +44,9 @@ class GeneratorEIDL : public virtual IDLBase
 	void doEnum(IR__::EnumDef_ptr enumeration);
 	void beginValue(IR__::ValueDef_ptr value);
 	void endValue(IR__::ValueDef_ptr value);
+	// event type
+	void beginEvent(IR__::ValueDef_ptr value);
+	void endEvent(IR__::ValueDef_ptr value);
 	void doValueMember(IR__::ValueMemberDef_ptr member);
 	void doAttribute(IR__::AttributeDef_ptr attribute);
 	void doOperation(IR__::OperationDef_ptr operation);

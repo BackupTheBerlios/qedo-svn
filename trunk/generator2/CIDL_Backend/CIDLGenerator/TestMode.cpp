@@ -116,8 +116,8 @@ frontend_replacement_feed
 	notice_abstract_base_values.length ( 1 );
 	notice_abstract_base_values[0] = event_base;
 
-	IR__::ValueDef_var notice =
-		root_module -> create_value (
+	IR__::EventDef_var notice =
+		root_module -> create_event (
 			"IDL:LooneyToons/Notice:1.0", "Notice", "1.0",
 			false, false, IR__::ValueDef::_nil(),
 			false, notice_abstract_base_values, IR__::InterfaceDefSeq(0),

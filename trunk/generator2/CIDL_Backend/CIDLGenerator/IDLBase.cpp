@@ -14,6 +14,7 @@ IDLBase::IDLBase
 IDLBase::~IDLBase
 ()
 {
+
 }
 
 
@@ -34,6 +35,7 @@ IDLBase::doModule(IR__::ModuleDef_ptr module)
 	IR__::StructDef_var act_struct;
 	IR__::ExceptionDef_var act_exception;
 	IR__::ValueDef_var act_value;
+	IR__::EventDef_var act_event;
 	IR__::InterfaceDef_var act_interface;
 	IR__::ComponentDef_var act_component;
 	IR__::HomeDef_var act_home;
@@ -77,8 +79,13 @@ IDLBase::doModule(IR__::ModuleDef_ptr module)
 			doException(act_exception);
 			break;
 		case CORBA__::dk_Value:
-			act_value = IR__::ValueDef::_narrow(((*contained_seq)[i]));
-			doValue(act_value);
+			act_event = IR__::EventDef::_narrow(((*contained_seq)[i]));
+			if (!(CORBA::is_nil(act_event))) {
+				doEvent(act_event);
+			} else {
+				act_value = IR__::ValueDef::_narrow(((*contained_seq)[i]));
+				doValue(act_value);
+			}
 			break;
 		default:;
 
@@ -333,6 +340,41 @@ IDLBase::beginValue(IR__::ValueDef_ptr value)
 
 void
 IDLBase::endValue(IR__::ValueDef_ptr value)
+{
+}
+
+//
+// event type
+//
+void
+IDLBase::doEvent(IR__::ValueDef_ptr value)
+{
+	beginEvent(value);
+
+	IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_all, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		// contained members
+		if (((*contained_seq)[i])->def_kind() == CORBA__::dk_ValueMember)
+		{
+			IR__::ValueMemberDef_var act_member = IR__::ValueMemberDef::_narrow(((*contained_seq)[i]));
+			doValueMember(act_member);
+		}
+	}
+
+	endEvent(value);
+}
+
+
+void
+IDLBase::beginEvent(IR__::ValueDef_ptr value)
+{
+}
+
+
+void
+IDLBase::endEvent(IR__::ValueDef_ptr value)
 {
 }
 

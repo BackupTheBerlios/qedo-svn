@@ -611,6 +611,45 @@ throw(CORBA::SystemException)
 	return new_value -> _this();
 }
 
+IR__::EventDef_ptr
+Container_impl::create_event
+(const char* id,
+ const char* name,
+ const char* version,
+ CORBA::Boolean is_custom,
+ CORBA::Boolean is_abstract,
+ IR__::ValueDef_ptr base_value,
+ CORBA::Boolean is_truncatable,
+ const IR__::ValueDefSeq& abstract_base_values,
+ const IR__::InterfaceDefSeq& supported_interfaces,
+ const IR__::InitializerSeq& initializers)
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "Container_impl::create_value() called" );
+
+	if ( repository_ -> check_for_id ( id ) )
+		throw CORBA::BAD_PARAM ( 2, CORBA::COMPLETED_NO );
+	if ( check_for_name ( name ) )
+		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
+
+	EventDef_impl *new_event = new EventDef_impl ( this, repository_ );
+	new_event -> id ( id );
+	new_event -> name ( name );
+	new_event -> version ( version );
+	new_event -> is_custom ( is_custom );
+	new_event -> is_abstract ( is_abstract );
+	new_event -> base_value ( base_value );
+	new_event -> is_truncatable ( is_truncatable );
+	new_event -> abstract_base_values ( abstract_base_values );
+	new_event -> supported_interfaces ( supported_interfaces );
+	new_event -> initializers ( initializers );
+
+	repository_ -> _add_ref();
+	this -> _add_ref();
+
+	return new_event -> _this();
+}
+
 IR__::StreamTypeDef_ptr
 Container_impl::create_stream_type
 (const char* id,

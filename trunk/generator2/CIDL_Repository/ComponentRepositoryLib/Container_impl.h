@@ -183,6 +183,21 @@ public:
         throw(CORBA::SystemException);
 
     //
+    // IDL:omg.org/IR__/Container/create_event:1.0
+    //
+    virtual IR__::EventDef_ptr create_event(const char* id,
+                                            const char* name,
+                                            const char* version,
+                                            CORBA::Boolean is_custom,
+                                            CORBA::Boolean is_abstract,
+                                            IR__::ValueDef_ptr base_value,
+                                            CORBA::Boolean is_truncatable,
+                                            const IR__::ValueDefSeq& abstract_base_values,
+                                            const IR__::InterfaceDefSeq& supported_interfaces,
+                                            const IR__::InitializerSeq& initializers)
+        throw(CORBA::SystemException);
+
+    //
     // IDL:omg.org/IR__/Container/create_stream_type:1.0
     //
     virtual IR__::StreamTypeDef_ptr create_stream_type(const char* id,

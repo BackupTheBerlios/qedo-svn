@@ -30,6 +30,11 @@ protected:
 	virtual void beginValue(IR__::ValueDef_ptr value);
 	virtual void endValue(IR__::ValueDef_ptr value);
 
+	// event type
+	virtual void doEvent(IR__::ValueDef_ptr value);
+	virtual void beginEvent(IR__::ValueDef_ptr value);
+	virtual void endEvent(IR__::ValueDef_ptr value);
+
 	// component
 	virtual void doComponent(IR__::ComponentDef_ptr component);
 	virtual void beginComponent(IR__::ComponentDef_ptr component);

@@ -170,7 +170,7 @@ public:
     virtual IR__::EmitsDef_ptr create_emits(const char* id,
                                     const char* name,
                                     const char* version,
-                                    IR__::ValueDef_ptr value)
+                                    IR__::EventDef_ptr value)
         throw(CORBA::SystemException);
 
     //
@@ -179,7 +179,7 @@ public:
     virtual IR__::PublishesDef_ptr create_publishes(const char* id,
                                             const char* name,
                                             const char* version,
-                                            IR__::ValueDef_ptr value)
+                                            IR__::EventDef_ptr value)
         throw(CORBA::SystemException);
 
     //
@@ -188,7 +188,7 @@ public:
     virtual IR__::ConsumesDef_ptr create_consumes(const char* id,
                                           const char* name,
                                           const char* version,
-                                          IR__::ValueDef_ptr value)
+                                          IR__::EventDef_ptr value)
         throw(CORBA::SystemException);
 
     //

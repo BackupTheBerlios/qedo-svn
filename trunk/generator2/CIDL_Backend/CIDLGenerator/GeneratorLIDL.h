@@ -29,6 +29,7 @@ class GeneratorLIDL : public virtual IDLBase
 	void endModule(IR__::ModuleDef_ptr module);
 	void doInterface(IR__::InterfaceDef_ptr intface);
 	void doValue(IR__::ValueDef_ptr value);
+	void doEvent(IR__::ValueDef_ptr value);
 	void doAttribute(IR__::AttributeDef_ptr attribute);
 	void doOperation(IR__::OperationDef_ptr operation);
 	void doFactory(IR__::FactoryDef_ptr factory);

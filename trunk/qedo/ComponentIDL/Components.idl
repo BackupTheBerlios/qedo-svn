@@ -669,6 +669,13 @@ module Components {
 		};
 	}; // end of module deployment
 
+	module QedoStreams {
+		interface StreamConnection {};
+
+		interface H323Streamconnection : StreamConnection {
+			string get_id();
+		};
+	};
 
 	/*
 	local interface ExecutorContext : CCMContext
