@@ -338,6 +338,7 @@ RepAssemblyManagerSessionImpl::instantiateComponent (MDE::Deployment::HomeInstan
 				//TODO
 				break;
 		}
+		rci_set_idx++;
 	}	
 	
 	//// TODO! check with above ?!
@@ -792,11 +793,39 @@ throw(Components::CreateFailure)
 			}
 		}
 	}
+
+////=========================================================================================
+//
+//	//
+//	// für jede rule der componente
+//	//
+//
+//	for ( instanceMapIterator = instanceMap.begin( ) ; instanceMapIterator!= instanceMap.end( ) ; instanceMapIterator++ ) {
+//		Components::CCMObject_var comp = Components::CCMObject::_narrow(::RepUtils::convert_strRef(instanceMapIterator->second->ref()));
+//		if( comp )
+//		{
+//			MDE::Deployment::RuleSet* rule_set = comp->the_rule();
+//			for ( unsigned long rule_set_idx = 0; rule_set_idx < rule_set->length(); rule_set_idx++) {
+//				MDE::Deployment::Rule* rule = (*rule_set)[rule_set_idx];
+//			}
+//		}
+//	}
+//	
+//
+////=========================================================================================
+
 	instanceMap.clear();
 
 	// set assembly state to active
 	state_ = Components::Deployment::INSERVICE;
 }
+
+//void
+//RepAssemblyManagerSessionImpl::startRules()
+//throw(Components::CreateFailure)
+//{
+//}
+
 
 // END USER INSERT SECTION RepAssemblyManagerSessionImpl
 

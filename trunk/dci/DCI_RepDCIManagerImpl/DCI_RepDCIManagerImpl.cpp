@@ -163,17 +163,17 @@ RepDCIManagerSessionImpl::install(MDE::Deployment::Assembly_var ass){
 				}
 				catch (::Components::Deployment::InstallationFailure&)
 				{
-					NORMAL_ERR2("RepDCIManagerSessionImpl::install_with_archive(): InstallationFailure on node", destination);
+					NORMAL_ERR2("RepDCIManagerSessionImpl::install_with_archive(): InstallationFailure on node ", destination);
 					throw (Components::Deployment::InstallationFailure());
 				}
 				catch (::Components::Deployment::InvalidLocation&)
 				{
-					NORMAL_ERR2("RepDCIManagerSessionImpl::install_with_archive(): InvalidLocation on node", destination);
+					NORMAL_ERR2("RepDCIManagerSessionImpl::install_with_archive(): InvalidLocation on node ", destination);
 					throw (Components::Deployment::InvalidLocation());
 				}
 				catch (...)
 				{
-					NORMAL_ERR2("RepDCIManagerSessionImpl::install_with_archive(): ERROR on node", destination);
+					NORMAL_ERR2("RepDCIManagerSessionImpl::install_with_archive(): ERROR on node ", destination);
 					throw;
 				}
 		}

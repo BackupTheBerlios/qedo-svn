@@ -40,6 +40,7 @@ runtime requirements
 * the following environment variables are used:
 
 	MDA_ETC				path for reading/writing iors
+	DCI_HOME			directory for installation of components by DCINodemanager
 	
 * file-i/o
 	$(MDA_ETC)\repo-files\	directory for storing files referenced from repository

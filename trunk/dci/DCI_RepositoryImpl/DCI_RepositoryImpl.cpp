@@ -45,6 +45,29 @@ RepositorySessionImpl::add_def_props(MDE::Deployment::HomeInstantiation_ptr home
 	home->add_comp_default_prop(this->convert_prop((*config)[idx])); 
 }
 
+void
+RepositorySessionImpl::add_comp_rule(MDE::Deployment::ComponentInstantiation_ptr comp, Qedo::RuleData rule){
+	DEBUG_OUT2("RepositorySessionImpl::add_conf_rule() name=", rule.name);
+	DEBUG_OUT3(rule.condition.language, " <-lang condition code-> ", rule.condition.code);
+	DEBUG_OUT3(rule.action.language, " <-lang action code-> ", rule.action.code);
+	DEBUG_OUT2("interval=", rule.interval);
+	//create rule 
+	MDE::Deployment::Rule_var rep_rule= 
+		_rule_ref->create_rule(rule.name.c_str(), rule.condition.code.c_str(), rule.condition.language.c_str(), rule.action.code.c_str(), rule.action.language.c_str(), rule.interval);
+	//add to componentInstantiation
+	comp->add_the_rule(rep_rule);
+}
+
+void
+RepositorySessionImpl::add_comp_reg(MDE::Deployment::ComponentInstantiation_ptr comp, const string regname){
+	DEBUG_OUT2("	add registration to nameservice under ", regname);
+	//create rule 
+	MDE::Deployment::RegisterComponentInstance_var rep_reg= 
+		_registerComponentInstance_ref->create_register_component_instance(MDE::Deployment::NAMING, regname.c_str());
+	//add to componentInstantiation
+	comp->add_registration(rep_reg);
+}
+
 //##########################################################
 //##########################################################
 MDE::Deployment::ContainedFile_ptr 
@@ -387,10 +410,12 @@ RepositorySessionImpl::initialize()
 	_homeInstantiation_ref = _deployment_pkg_ref->home_instantiation_ref();
 	_connection_ref = _deployment_pkg_ref->connection_ref();
 	_componentInstantiation_ref = _deployment_pkg_ref->component_instantiation_ref();
+	_registerComponentInstance_ref = _deployment_pkg_ref->register_component_instance_ref();
 	_connectionEnd_ref = _deployment_pkg_ref->connection_end_ref();
 	_externalInstance_ref = _deployment_pkg_ref->external_instance_ref();
 	_finderService_ref = _deployment_pkg_ref->finder_service_ref();
 	_property_ref = _deployment_pkg_ref->property_ref();
+	_rule_ref = _deployment_pkg_ref->rule_ref();
 
 /*	_providesDef_ref = componentIDL_pkg_ref_->provides_def_ref();
 	_usesDef_ref = componentIDL_pkg_ref_->uses_def_ref();
@@ -683,10 +708,67 @@ RepositorySessionImpl::feed_assembly(const DCI::AssemblyArchive& archive)
 							this->add_conf_props(rep_ComponentInstantiation, config);
 						}
 
-						//component registration
-						std::vector < Qedo::NamingRegistrationData > ::iterator it_nreg;
-						for ( it_nreg = (*it_comp).naming_registrations.begin( ) ; it_nreg != (*it_comp).naming_registrations.end( ) ; it_nreg++ ) {
-								//TODO register
+						//component rules
+						std::vector< Qedo::RuleData >	::iterator it_rule;
+						for ( it_rule = (*it_comp).rules.begin( ) ; it_rule != (*it_comp).rules.end( ) ; it_rule++ ) {
+							this->add_comp_rule(rep_ComponentInstantiation, *it_rule);
+						} //end for it_rule
+
+						////component registration
+						//std::vector < Qedo::NamingRegistrationData > ::iterator it_nreg;
+						//for ( it_nreg = (*it_comp).naming_registrations.begin( ) ; 
+						//	  it_nreg != (*it_comp).naming_registrations.end( ) ; 
+						//	  it_nreg++ ) 
+						//{
+						//
+						// register in nameservice
+						//
+						std::vector < Qedo::NamingRegistrationData > ::const_iterator naming_iter;
+						for(naming_iter = (*it_comp).naming_registrations.begin();
+							naming_iter != (*it_comp).naming_registrations.end();
+							naming_iter++)
+						{
+							//
+							// register facet
+							//
+							if( (*naming_iter).port_kind == Qedo::FACET_PORT )
+							{
+								NORMAL_ERR2( "cannot register facet for component ", (*it_comp).id );
+								//TODO !! change model in repository!!
+
+								//CORBA::Object_var facet;
+
+								//try
+								//{
+								//	facet = comp->provide_facet( (*naming_iter).port.c_str() );
+								//}
+								//catch( Components::InvalidName& )
+								//{
+								//	NORMAL_ERR2( "AssemblyImpl: no facet ", (*naming_iter).port );
+								//	NORMAL_ERR2( "AssemblyImpl: cannot register facet for component", (*iter).id );
+								//	break;
+								//}
+
+								//if( !registerName( (*naming_iter).name, facet, true ) )
+								//{
+								//	NORMAL_ERR2( "AssemblyImpl: cannot register facet for component", (*iter).id );
+								//}
+
+								continue;
+							}
+
+							//
+							// register event
+							//
+							// todo
+							
+							//
+							// register component
+							//
+							if( (*naming_iter).port_kind == Qedo::COMPONENT_PORT )
+							{
+								this->add_comp_reg(rep_ComponentInstantiation, (*naming_iter).name);
+							}
 						} //end for it_nreg
 					} // end for it_comp
 				}; //end if cardinality > 0

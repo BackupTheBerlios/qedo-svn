@@ -127,6 +127,7 @@ private:
 		MDE::Deployment::HomeInstantiationClass_var			_homeInstantiation_ref;
 		MDE::Deployment::ConnectionClass_var				_connection_ref;
 		MDE::Deployment::ComponentInstantiationClass_var	_componentInstantiation_ref;
+		MDE::Deployment::RegisterComponentInstanceClass_var	_registerComponentInstance_ref;
 		MDE::Deployment::ConnectionEndClass_var				_connectionEnd_ref;
 		MDE::Deployment::ExternalInstanceClass_var			_externalInstance_ref;
 		MDE::Deployment::FinderServiceClass_var				_finderService_ref;
@@ -139,6 +140,7 @@ private:
 */
 		
 		MDE::Deployment::PropertyClass_var					_property_ref;
+		MDE::Deployment::RuleClass_var						_rule_ref;
 		MDE::Deployment::DeploymentPackage_var				_deployment_pkg_ref;
 
 //M2C::MOFRepository::RepositoryRoot_var				_repositoryRoot_ref;
@@ -158,6 +160,12 @@ private:
 
 		void
 		add_def_props(MDE::Deployment::HomeInstantiation_ptr, Components::ConfigValues_var);
+
+		void
+		add_comp_rule(MDE::Deployment::ComponentInstantiation_ptr comp, Qedo::RuleData rule);
+
+		void
+		add_comp_reg(MDE::Deployment::ComponentInstantiation_ptr comp, const string regname);
 
 		MDE::Deployment::ContainedFile_ptr 
 		create_containedFile(const char* filepath, const char* codetype, const char* entrypoint, const char* entrypointusage);
