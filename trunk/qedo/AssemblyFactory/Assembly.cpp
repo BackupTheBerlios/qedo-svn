@@ -1531,6 +1531,7 @@ throw( Components::RemoveFailure )
  */
 Components::Deployment::AssemblyState 
 AssemblyImpl::get_state ()
+throw(CORBA::SystemException)
 {
 	return state_;
 }

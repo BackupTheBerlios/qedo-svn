@@ -23,6 +23,9 @@
 
 #include "DeploymentClient.h"
 
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
 namespace Qedo {
 
@@ -49,6 +52,7 @@ DeploymentClient::~DeploymentClient ()
  */
 void
 DeploymentClient::initialize()
+throw (CannotInitialize)
 {
     // get NameService
     if (! initNameService(orb_))
@@ -167,3 +171,4 @@ DeploymentClient::create(std::string packageName)
 
 
 }
+

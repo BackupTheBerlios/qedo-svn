@@ -31,6 +31,8 @@
 #include "PortableServer.idl"
 #endif
 
+#pragma prefix "omg.org"
+
 module CosPersistentState {
 
   typedef string PTypeId;

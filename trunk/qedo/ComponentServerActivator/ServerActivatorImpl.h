@@ -25,9 +25,6 @@
 
 #include <vector>
 
-#ifndef _WIN32
-#include "Qedo_Container.h"
-#endif
 #include <CORBA.h>
 #include "QedoComponents_skel.h"
 #ifdef HAVE_JTC

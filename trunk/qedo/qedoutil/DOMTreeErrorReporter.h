@@ -166,3 +166,4 @@ inline std::ostream& operator<<(std::ostream& target, const StrX& toDump)
 
 
 #endif
+

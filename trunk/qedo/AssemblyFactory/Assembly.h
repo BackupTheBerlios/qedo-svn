@@ -220,10 +220,12 @@ public:
     //
     // IDL:omg.org/Components/Deployment/Assembly/get_state:1.0
     //
-    Components::Deployment::AssemblyState get_state();
+    Components::Deployment::AssemblyState get_state()
+		throw( CORBA::SystemException );
 };
 
 
 }
 
 #endif
+

@@ -654,7 +654,9 @@ throw(Components::CreateFailure)
     mMakeFile.append(lpszSystemInfo);
 	mMakeFile.append("\\etc\\makefile");
 #else
-	TODO
+	char *e = getenv("QEDO");
+	if(e) mMakeFile.append(e);
+	mMakeFile.append("/etc/makefile");
 #endif
 
 	if ( !checkExistence(mMakeFile, IS_FILE)) 
@@ -735,7 +737,7 @@ throw(Components::CreateFailure)
 	}
 #else
 	std::string command = "cd " + mBuildPath + ";make -f " + mMakeFile + " SOURCE=" + mIdlFile + " TARGET=" + servant_module_;
-	DEBUG_OUT( command );
+	std::cout << command << std::endl;
 	int ret=system(command.c_str());
 	if(!WIFEXITED(ret))
 	{
@@ -781,3 +783,4 @@ ComponentImplementation::get_counter()
 
 
 }
+

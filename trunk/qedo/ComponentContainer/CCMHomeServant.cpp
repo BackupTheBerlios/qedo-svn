@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMHomeServant.cpp,v 1.5 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: CCMHomeServant.cpp,v 1.6 2003/01/27 18:51:07 boehme Exp $";
 
 #include "CCMHomeServant.h"
 #include "Output.h"
@@ -81,6 +81,7 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 
 Components::CCMObjects* 
 CCMHomeServant::get_instances()
+throw (CORBA::SystemException)
 {
 	DEBUG_OUT ("CCMHomeServant:: get_instances() called");
 

@@ -90,6 +90,7 @@ throw( Components::WrongComponentType )
  */
 void 
 StandardConfiguratorImpl::set_configuration(const ::Components::ConfigValues& descr)
+throw (CORBA::SystemException)
 {
 	config_ = descr;
 }

@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.5 2003/01/21 10:52:28 neubauer Exp $";
+static char rcsid[] = "$Id: ComponentInstallationImpl.cpp,v 1.6 2003/01/27 18:51:07 boehme Exp $";
 
 #include "ComponentInstallationImpl.h"
 
@@ -446,7 +446,11 @@ throw (Components::Deployment::InstallationFailure)
 	//
 	// ensure the file is stored
 	//
+#ifdef _WIN32
 	Sleep(1000);
+#else
+  sleep(1);
+#endif
   
     return CORBA::string_dup(theName.c_str());
 }

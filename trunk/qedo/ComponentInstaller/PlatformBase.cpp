@@ -20,14 +20,14 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: PlatformBase.cpp,v 1.3 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: PlatformBase.cpp,v 1.4 2003/01/27 18:51:07 boehme Exp $";
 
 
 #include "PlatformBase.h"
 
 #ifndef _WIN32
 #include <time.h>
-#include <Shellapi.h>
+//#include <Shellapi.h>
 #else 
 //#include <process.h>
 #endif
@@ -104,7 +104,7 @@ PlatformBase::makeDir (std::string dir)
 		return 2;
 	}
 #else
-	int err = mkdir(dir.c_str(), 0755);
+	err = mkdir(dir.c_str(), 0755);
 	if(err)
 	{
 		std::cerr << "Problem creating the directory " << dir << std::endl;
@@ -244,3 +244,4 @@ PlatformBase::getPath(std::string path)
 }
 
 }
+

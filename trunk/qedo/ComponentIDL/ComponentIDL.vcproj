@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="jtcd.lib obd.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="JTC.lib OB.lib odbc32.lib odbccp32.lib"
 				OutputFile="../../Runtime/ComponentIDL.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -189,6 +189,18 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="QedoComponents.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 QedoComponents.idl
+"
+						Outputs="QedoComponents.h;QedoComponents.cpp;QedoComponents_skel.h;QedoComponents_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\Components.idl">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -204,18 +216,6 @@
 					<Tool
 						Name="VCMIDLTool"
 						TargetEnvironment="1"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="QedoComponents.idl">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 QedoComponents.idl
-"
-						Outputs="QedoComponents.h;QedoComponents.cpp;QedoComponents_skel.h;QedoComponents_skel.cpp"/>
 				</FileConfiguration>
 			</File>
 		</Filter>

@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="CosNamingd.lib obd.lib"
+				AdditionalDependencies="CosNamingd.lib OBD.lib"
 				OutputFile="../../Runtime/deploy.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"

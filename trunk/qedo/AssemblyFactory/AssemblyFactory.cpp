@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.5 2003/01/21 10:52:28 neubauer Exp $";
+static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.6 2003/01/27 18:51:06 boehme Exp $";
 
 
 #include "AssemblyFactory.h"
@@ -211,3 +211,4 @@ throw (Components::Deployment::InvalidAssembly, Components::RemoveFailure)
 
 
 }
+

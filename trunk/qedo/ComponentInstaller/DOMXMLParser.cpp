@@ -98,7 +98,11 @@ DOMXMLParser::DOMXMLParser()
         f = uri.find_first_of("\\");
     }
 #else
-	TODO
+	char* e = getenv("QEDO");
+   if(e)
+	{
+		uri.append(e);
+	}
 #endif
     uri.append("/etc/catalog.xml");
     mXMLCatalog = new XMLCatalog(*parser_, uri, true);
@@ -169,3 +173,4 @@ DOMXMLParser::getDocument()
 
 
 }
+

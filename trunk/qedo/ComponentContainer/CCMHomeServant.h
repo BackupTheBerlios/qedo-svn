@@ -61,7 +61,8 @@ public:
 	//
     // IDL:omg.org/Qedo_Components/CCMHome/get_instances:1.0
     //
-	Components::CCMObjects* get_instances();
+	Components::CCMObjects* get_instances()
+		throw	(CORBA::SystemException);
 };
 
 } //namespace Qedo

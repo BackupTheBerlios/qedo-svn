@@ -54,10 +54,12 @@ public:
 	//
     // IDL:omg.org/Components/StandardConfigurator/set_configuration:1.0
     //
-    void set_configuration( const ::Components::ConfigValues& descr );
+    void set_configuration( const ::Components::ConfigValues& descr )
+	   throw (CORBA::SystemException);
 };
 
 
 }
 
 #endif
+
