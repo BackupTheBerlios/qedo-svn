@@ -102,7 +102,7 @@ void MainFrame::onHelp()
 	wxHtmlHelpController *help=new wxHtmlHelpController(wxHF_DEFAULT_STYLE);
 	
 	std::string qedo_doc = Qedo::getEnvironment ("QEDO");
-	qedo_doc.append("qedodoc/controllerdoc.hhp");
+	qedo_doc.append("/qedodoc/controllerdoc.hhp");
 
 	help->AddBook(qedo_doc.c_str(),true);
 	help->Display("Contents");

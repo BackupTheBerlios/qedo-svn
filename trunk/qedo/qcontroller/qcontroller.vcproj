@@ -50,7 +50,10 @@ copy $(TargetPath) $(QEDO)\bin
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy qedodoc $(QEDO)\qedodoc"/>
+				CommandLine="mkdir $(QEDO)\qedodoc
+copy qedodoc $(QEDO)\qedodoc
+mkdir $(QEDO)\qedodoc\images
+copy qedodoc\images $(QEDO)\qedodoc\images"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
