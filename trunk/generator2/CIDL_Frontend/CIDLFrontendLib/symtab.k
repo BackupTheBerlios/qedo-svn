@@ -29,6 +29,7 @@
 #include "printer.h"
 #include "error.h"
 #include "util.h"
+#include "global.h"
 #include <stack>
 
 static node_flag node_flag_filter_flag=0;
@@ -2078,4 +2079,37 @@ find_ident(idl_identifier $ident_v, node_flag nflag_v, bool warnings=false)
   LocalName : {
     Error("find_ident called with LocalName '%k'\n",ident_v,ident_v);
   }
+}
+
+
+void
+add_type_prefix(idl_identifier def_name_v,const_expression $prefix)
+{
+	StringLiteral(prefix_string_v) : {
+		node_flag node_flags_v[4];
+		node_flags_v[0] = the_ModuleN;
+		node_flags_v[1] = the_InterfaceN;
+		node_flags_v[2] = the_ValueTypeN;
+		node_flags_v[3] = the_EventTypeN;
+		with(def_name_v) {
+			GlobalName(Nilidl_name_list()) : {
+				/* prefix for "::" */
+				global_prefix = prefix_string_v;
+				return;
+			}
+			default : {}
+		}
+		table_item_list defs_v = lookup_identifier_n(def_name_v,node_flags_v,4);
+		with(defs_v) {
+			Constable_item_list(item_v,Niltable_item_list()) : {
+				item_v->def_v->prefix = prefix_string_v;
+			}
+			Niltable_item_list() : {
+				Error("no definition for scoped name %t in typeprefix\n",def_name_v,def_name_v);
+			}
+			default : {
+				Error("multiple definitions for scoped name %t in typeprefix\n",def_name_v,def_name_v);
+			}
+		}
+	}
 }

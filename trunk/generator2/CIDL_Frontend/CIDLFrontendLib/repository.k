@@ -111,6 +111,13 @@ CIDLSpecification(impo_list, def_list)
     def_list : my_feed_container
     %uviewvar feed my_feed (kc_current_view.container);
     def_list : my_feed
+
+	 {
+		 if ( global_prefix ) {
+			 // XXX HB may be a memory leak
+			 g_repository->prefix(CORBA::string_dup(global_prefix->name));
+		 }
+	 }
   ];
 
 //
@@ -156,6 +163,15 @@ Module(name_v,list_v)
   [ feed:
     %uviewvar feed my_feed(irobj);
     list_v : my_feed
+
+	 {
+		 if ( prefix ) {
+			 // XXX HB may be a memory leak
+			 IR__::ModuleDef_ptr module;
+			 module = IR__::ModuleDef::_narrow (name_v->symtab_entry->irobj);
+			 module->prefix(CORBA::string_dup(prefix->name));
+		 }
+	 }
   ];
 
 // =========================== types ======================================
@@ -728,6 +744,11 @@ ValueType(ValueHeader(flag_v, name, inh), def_list)
       NOT_NIL(valdef);
       // insert proper initializer seq
       valdef->initializers (my_build.iniseq);
+
+		 if ( prefix ) {
+			 // XXX HB may be a memory leak
+			 valdef->prefix(CORBA::string_dup(prefix->name));
+		 }
     }
   ]
   [ feed_container:
@@ -957,6 +978,11 @@ EventType(EventTypeHeader(flag_v, name, inh), def_list)
       NOT_NIL(eventdef);
       // insert proper initializer seq
       eventdef->initializers (my_build.iniseq);
+
+		 if ( prefix ) {
+			 // XXX HB may be a memory leak
+			 eventdef->prefix(CORBA::string_dup(prefix->name));
+		 }
     }
   ]
   [ feed_container:

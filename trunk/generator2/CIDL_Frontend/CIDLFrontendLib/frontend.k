@@ -157,6 +157,9 @@ frontend_feed (
 
   g_repository = repository;
 
+  // propagate the prefixes
+  Spec->set_prefix(global_prefix);
+
   //
   // feed into repository
   //

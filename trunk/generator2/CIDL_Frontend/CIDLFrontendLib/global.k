@@ -57,6 +57,7 @@
 
 extern CIDL::CIDLRepository_ptr g_repository;
 extern CORBA::ORB_ptr g_orb;
+extern casestring global_prefix;
 %}
 
 %{
@@ -79,7 +80,7 @@ extern CORBA::ORB_ptr g_orb;
 
 struct prettyprint_S prettyprint;
 cidl_specification Spec;
-const string& current_prefix() { return string("");};
+casestring global_prefix=0;
 CIDL::CIDLRepository_ptr g_repository;
 CORBA::ORB_ptr g_orb;
 

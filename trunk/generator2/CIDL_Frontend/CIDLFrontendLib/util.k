@@ -4,8 +4,8 @@
 *   Author  : Harald Böhme
 *   e-mail  : boehme@informatik.hu-berlin.de
 *   Remark  : 
-*   $Date: 2003/11/10 15:00:38 $
-*   $Revision: 1.5 $
+*   $Date: 2004/03/31 15:42:07 $
+*   $Revision: 1.6 $
 *   
 *******************************************************************************/
 
@@ -25,7 +25,7 @@
 %}
 
 %{
-static char id[] UNUSED = "$Id: util.k,v 1.5 2003/11/10 15:00:38 stoinski Exp $";
+static char id[] UNUSED = "$Id: util.k,v 1.6 2004/03/31 15:42:07 boehme Exp $";
 %}
 
 /****************** generic parent, printing *************************/
@@ -64,6 +64,33 @@ abstract_phylum abstract_phylum::get_parent_node()
 abstract_phylum get_parent_node(abstract_phylum c)
 {
   return c->get_parent_node();
+}
+
+void abstract_phylum::set_prefix(casestring prefix)
+{
+  abstract_phylum child;
+  for(int i=0;(child= subphylum(i));i++)
+    switch(child->phylum()) {
+      case phylum_definition : 
+        {
+          definition def_v = phylum_cast<definition>(child);
+          assert(def_v);
+          if ( def_v->prefix ) {
+            def_v->_prefix =  def_v->prefix;
+            def_v->set_prefix(def_v->prefix);
+          }
+          else {
+            if ( prefix ) {
+              def_v->_prefix = prefix;
+            }
+            def_v->set_prefix(prefix);
+          }
+        }
+        break;
+      default:
+        child->set_prefix(prefix);
+        break;
+    }
 }
 
 /* generic print for gdb */
@@ -224,6 +251,11 @@ get_repid(idl_name name_v)
 {
   static char buff[1024] ;
   strcpy(buff,"IDL:");
+  assert(name_v->symtab_entry);
+  assert(name_v->symtab_entry->def_v);
+  if(name_v->symtab_entry->def_v->_prefix) {
+    strcat(buff,name_v->symtab_entry->def_v->_prefix->name);
+  }
   if(name_v->symtab_entry->scope)
     scope_of(name_v->symtab_entry->scope,buff);
   with(name_v) {
@@ -241,9 +273,8 @@ get_repid(definition def_v,idl_name name_v)
 {
   static char buff[1024] ;
   strcpy(buff,"IDL:");
-  if(def_v && def_v->prefix.c_str()[0]) {
-    strcat(buff,def_v->prefix.c_str());
-    strcat(buff,"/");
+  if(def_v->prefix) {
+    strcat(buff,def_v->_prefix->name);
   }
   if(name_v->symtab_entry->scope)
     scope_of(name_v->symtab_entry->scope,buff);
@@ -262,6 +293,11 @@ get_repid_suffix(idl_name name_v, char* suffix)
 {
   static char buff[1024] ;
   strcpy(buff,"IDL:");
+  assert(name_v->symtab_entry);
+  assert(name_v->symtab_entry->def_v);
+  if(name_v->symtab_entry->def_v->_prefix) {
+    strcat(buff,name_v->symtab_entry->def_v->_prefix->name);
+  }
   if(name_v->symtab_entry->scope)
     scope_of(name_v->symtab_entry->scope,buff);
   with(name_v) {

@@ -76,7 +76,7 @@ extern table_item_set_printer table_item_set_printer;
 %}
 
 %{
-static char id[] UNUSED = "$Id: attributes.k,v 1.7 2003/11/10 15:00:38 stoinski Exp $";
+static char id[] UNUSED = "$Id: attributes.k,v 1.8 2004/03/31 15:42:06 boehme Exp $";
 %}
 
 /*********************  Symbol table *********************/
@@ -192,15 +192,10 @@ definition : {
   definition_set direct_implements;
   /* contains all derived types */
   definition_set derived;
-  /* contains the prefix for the definition */
-  my_kc_string prefix;
+  /* contains the typeprefix for the definition */
+  casestring prefix=0;
+  casestring _prefix=0;
 };
-
-%ctor definition ()
-{
-  //prefix = current_prefix();
-  prefix = "";
-}
 
 /* contains all provides */
 %member table_item_set NComponent::realized;

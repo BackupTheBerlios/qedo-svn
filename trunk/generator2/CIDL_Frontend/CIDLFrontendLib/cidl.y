@@ -503,7 +503,9 @@ type_id_dcl :
 
 type_prefix_dcl :
 	  TOK_typePrefix scoped_name string_literal
-	  { $$ = TypePrefixDcl($2,$3); }
+	  { $$ = TypePrefixDcl($2,$3); 
+                add_type_prefix($2,$3);
+	  }
 	;
 
 component :
@@ -705,6 +707,8 @@ scoped_name :
 	  { $$ = LocalName($1); }
    | TOK__colon__colon_  scoped_id_list
 	  { $$ = GlobalName($2); }
+   | TOK__colon__colon_ 
+	  { $$ = GlobalName(Nilidl_name_list()); }
 	;
 
 scoped_id_list :
