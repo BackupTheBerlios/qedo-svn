@@ -943,11 +943,11 @@ AbstractStorageType( AbstractStorageTypeHeader(name, inh_v), def_list )
       NOT_NIL(container);
 
       int i = inh_v->length();
-	  IR__::AbsStorageTypeDefSeq initseq;
+	  IR__::InterfaceDefSeq initseq;
 	  initseq.length(i);
 	  i=0;
 	  foreach(ident_v; idl_identifier_list inh_v) {
-	    initseq[i] = IR__::AbstractStorageTypeDef::_narrow(ident_v->symtab_entry->irobj);
+	    initseq[i] = IR__::InterfaceDef::_narrow(ident_v->symtab_entry->irobj);
 	    NOT_NIL(initseq[i]);
 		i++;
 	  };
@@ -1015,7 +1015,7 @@ StorageType( StorageTypeHeader(name, base_v, impl_v), def_list )
 def_v=
 AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
 ->[ feed_container:
-    { IR__::AbsStorageHomeDefSeq inherited;
+    { IR__::InterfaceDefSeq inherited;
       inherited.length(inh_v->length());
       int i = 0;
       IR__::AbstractStorageHomeDef_ptr abstract_storagehome_ptr;
@@ -1099,9 +1099,6 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
       irobj = storagehome;
     }
   ];
-
-// ======================== Store ================================
-//StoreDirective( decl psdl_concrete_state_type ident )
 
 // ======================== RefRep ================================
 //RefRepDirective( decls )
@@ -1549,14 +1546,16 @@ FactoryDcl(idl_name_v, parameter_dcls_v, attr_raises_expr_v)
 			storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
 				"1.0",my_build.paradescseq,my_build.excdefseq);
 		}
-
-		// factory for abstract storage home
-		IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
-		abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
-		if(!CORBA::is_nil(abs_storagehome_ptr))
+		else
 		{
-			abs_storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-				"1.0",my_build.paradescseq,my_build.excdefseq);
+			// factory for abstract storage home
+			IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
+			abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
+			if(!CORBA::is_nil(abs_storagehome_ptr))
+			{
+				abs_storagehome_ptr->create_factory(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+					"1.0",my_build.paradescseq,my_build.excdefseq);
+			}
 		}
 	}
   ];
@@ -1627,14 +1626,16 @@ KeyDcl(idl_name_v, dcls_v)
 			storagehome_ptr->create_key(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
 				"1.0",my_build.paradescseq);
 		}
-
-		// key for abstract storage home
-		IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
-		abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
-		if(!CORBA::is_nil(abs_storagehome_ptr))
+		else
 		{
-			abs_storagehome_ptr->create_key(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
-					"1.0",my_build.paradescseq);
+			// key for abstract storage home
+			IR__::AbstractStorageHomeDef_ptr abs_storagehome_ptr; 
+			abs_storagehome_ptr = IR__::AbstractStorageHomeDef::_narrow(kc_current_view.container);
+			if(!CORBA::is_nil(abs_storagehome_ptr))
+			{
+				abs_storagehome_ptr->create_key(get_repid(def_v,idl_name_v), idl_name_v->get_name(),
+						"1.0",my_build.paradescseq);
+			}
 		}
 	}
   ];
@@ -2058,9 +2059,8 @@ Composition(name, flag_v, compo_body)
   ]
   [ feed_container : ];
 
-CompositionBody(catalogs, homex_def, proxy_home)
+CompositionBody(homex_def, proxy_home)
 ->[ build feed :
-    /* catalogs */
     homex_def
     /* proxy_home */
   ];
@@ -2081,7 +2081,7 @@ HomeExecutorDef(name, homex_body)
       // create HomeExecutorDef
       try {
         homeexec = container-> create_home_executor (get_repid(def_v,name),
-          name->get_name(), "1.0");
+          name->get_name(), "1.0", my_build.abs_storage_home);
       }
       catch (...) {
         Error("Exception in creating home executor %k\n", name, name);
@@ -2103,8 +2103,9 @@ HomeExecutorDef(name, homex_body)
     homex_body
   ]
   [ feed_container : ];
+  
 
-HomeExecutorBody(HomeImplDcl(ident), *, *, exec, *, *, def)
+HomeExecutorBody(HomeImplDcl(ident), AbstractStorageHomeBinding(AbstractStorageHomeName(ash_name)), *, exec, *, *, def)
 ->[ build :
     { kc_current_view.home = IR__::HomeDef::_narrow (
         ident->symtab_entry->irobj);
@@ -2113,6 +2114,14 @@ HomeExecutorBody(HomeImplDcl(ident), *, *, exec, *, *, def)
           g_repository->lookup_id (get_repid_ident (ident)));
       }
       NOT_NIL(kc_current_view.home);
+      
+      kc_current_view.abs_storage_home = IR__::AbstractStorageHomeDef::_narrow (
+        ash_name->symtab_entry->irobj);
+      if(CORBA::is_nil(kc_current_view.abs_storage_home)) { 
+        kc_current_view.abs_storage_home = IR__::AbstractStorageHomeDef::_narrow (
+          g_repository->lookup_id (get_repid(ash_name)));
+      }
+      NOT_NIL(kc_current_view.abs_storage_home);
     }
   ]
   [ feed :
@@ -2186,7 +2195,7 @@ SegmentDef(name, def_list)
       // create SegmentDef
       try {
         seg = container-> create_segment (get_repid(def_v,name),
-          name->get_name(), "1.0", my_build.provseq);
+          name->get_name(), "1.0", my_build.provseq, my_build.abs_storage_home);
       }
       catch (...) {
         Error("Exception in creating segment %k\n", name, name);
@@ -2200,7 +2209,15 @@ SegmentDef(name, def_list)
 
 SegmentPersistenceDcl(ash_name)
 ->[ build :
-    /* TODO */
+    /*
+    kc_current_view.ahs_home = IR__::AbstractStorageHomeDef::_narrow (
+        ash_name->symtab_entry->irobj);
+      if(CORBA::is_nil(kc_current_view.ahs_home)) { 
+        kc_current_view.ahs_home = IR__::AbstractStorageHomeDef::_narrow (
+          g_repository->lookup_id (get_repid_ident (ash_name)));
+      }
+      NOT_NIL(kc_current_view.ahs_home);
+    */
   ];
 
 FacetDcl(name_list)

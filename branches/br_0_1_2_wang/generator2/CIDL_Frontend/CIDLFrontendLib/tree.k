@@ -213,7 +213,7 @@ const_expression_list: list const_expression
     ;
 
 composition_body:
-      CompositionBody( definition_list /*catalog_use_dcl_list*/ definition proxy_home_def )
+      CompositionBody( definition proxy_home_def )
     | NilCompositionBody()
     ;
 
@@ -240,7 +240,7 @@ abstract_storage_home_binding:
     ;
 
 abstract_storage_home_name:
-      AbstractStorageHomeName( idl_name idl_name )
+      AbstractStorageHomeName( idl_name )
     ;
 
 home_persistence_dcl:

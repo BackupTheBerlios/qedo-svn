@@ -28,12 +28,9 @@
 #ifndef __IFR_IDL__
 #define __IFR_IDL__
 
-
 #include "orb.idl"
 
-
 #pragma prefix "omg.org"
-
 
 module CORBA__ {
 	typedef string RepositoryId, ScopedName, Identifier, VersionSpec;
@@ -162,9 +159,7 @@ module IR__ {
 	interface PrimaryKeyDef;
 	typedef sequence <Contained> ContainedSeq;
 	interface AbstractStorageTypeDef;
-	typedef sequence <AbstractStorageTypeDef> AbsStorageTypeDefSeq;
 	interface AbstractStorageHomeDef;
-	typedef sequence <AbstractStorageHomeDef> AbsStorageHomeDefSeq;
 	interface StorageTypeDef;
 	interface StorageHomeDef;
 		
@@ -332,7 +327,7 @@ module IR__ {
 			in RepositoryId id,
 			in Identifier name,
 			in VersionSpec version,
-			in AbsStorageTypeDefSeq base_abstract_storage_types
+			in InterfaceDefSeq base_abstract_storage_types
 		);
 		StorageTypeDef create_storage_type(
 			in RepositoryId id,
@@ -346,7 +341,7 @@ module IR__ {
 			in Identifier name,
 			in VersionSpec version,
 			in AbstractStorageTypeDef managed_abstract_storage_type,
-			in AbsStorageHomeDefSeq base_abstract_storage_homes
+			in InterfaceDefSeq base_abstract_storage_homes
 		);
 		StorageHomeDef create_storage_home(
 			in RepositoryId id,
@@ -901,6 +896,7 @@ module IR__ {
 		IDLType primary_key;
 	};
 
+	// similar to FinderDef
 	interface PSSKeyDef : OperationDef { // only PARAM_IN parameters
 	};
 	
@@ -955,8 +951,7 @@ module IR__ {
 	interface AbstractStorageTypeDef : InterfaceDef {
 		// read/write interface
 		// can be derived from more than one abstract storage types
-		// attribute InterfaceDefSeq base_abstract_storage_types;
-		attribute AbsStorageTypeDefSeq base_abstract_storage_types;
+		attribute InterfaceDefSeq base_abstract_storage_types;
 	};
 	
 	struct AbstractStorageTypeDescription {
@@ -970,11 +965,10 @@ module IR__ {
 	};
 
 	interface StorageTypeDef : InterfaceDef {
-		// read/write interface
-		attribute InterfaceDefSeq supported_interfaces;
 		// read interface
 		readonly attribute StorageTypeDef base_storage_type;
-		// write interface
+		// read/write interface
+		attribute InterfaceDefSeq supported_interfaces;
 	};
 	
 	struct StorageTypeDescription {
@@ -992,8 +986,7 @@ module IR__ {
 		// read operations
 		readonly attribute AbstractStorageTypeDef managed_abstract_storage_type;
 		// can be derived from more than one abstract storage homes
-		// attribute InterfaceDefSeq base_storage_homes;
-		attribute AbsStorageHomeDefSeq base_abstract_storage_homes;
+		attribute InterfaceDefSeq base_abstract_storage_homes;
 		readonly attribute FactoryDefSeq factories;
 		readonly attribute PSSKeyDefSeq keys;
 		// write interfaces

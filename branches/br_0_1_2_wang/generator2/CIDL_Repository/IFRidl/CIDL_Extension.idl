@@ -90,7 +90,7 @@ module CIDL {
 	interface SegmentDef : IR__::Contained
 	{
 		readonly attribute IR__::ProvidesDefSeq provided_facets;
-		readonly attribute IR__::AbstractStorageHomeDef abs_storage_home;
+		readonly attribute IR__::AbstractStorageHomeDef stored_on;
 	};
 	typedef sequence < SegmentDef > SegmentDefSeq;
 
@@ -100,7 +100,7 @@ module CIDL {
 		IR__::RepositoryId defined_in;
 		IR__::VersionSpec version;
 		IR__::ProvidesDefSeq provided_facets;
-		IR__::AbstractStorageHomeDef abs_storage_home;
+		IR__::AbstractStorageHomeDef stored_on;
 	};
 
 	struct Delegation
@@ -118,16 +118,9 @@ module CIDL {
 	};
 	typedef sequence < AbsStorageHomeDelegation > AbsStorageHomeDelegationSeq;
 
-	struct Binding {
-		ExecutorDef executor;
-		HomeExecutorDef home_executor;
-		IR__::AbstractStorageTypeDef abs_storage_type;
-		IR__::AbstractStorageHomeDef abs_storage_home;
-	};
-
 	interface HomeExecutorDef : IR__::Contained
 	{
-		attribute Binding binds_to;
+		attribute IR__::AbstractStorageHomeDef binds_to;
 		attribute DelegationSeq delegations;
 		attribute AbsStorageHomeDelegationSeq abs_storage_home_delegations;
 	};
@@ -137,7 +130,7 @@ module CIDL {
 		IR__::RepositoryId id;
 		IR__::RepositoryId defined_in;
 		IR__::VersionSpec version;
-		Binding binds_to;
+		IR__::AbstractStorageHomeDef binds_to;
 		DelegationSeq delegations;
 		AbsStorageHomeDelegationSeq abs_storage_home_delegations;
 	};

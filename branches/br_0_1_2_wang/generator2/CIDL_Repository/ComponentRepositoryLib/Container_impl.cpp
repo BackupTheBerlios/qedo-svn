@@ -893,7 +893,7 @@ Container_impl::create_abstract_storage_type
 (const char* id,
  const char* name,
  const char* version,
- const IR__::AbsStorageTypeDefSeq& base_abstract_storage_types)
+ const IR__::InterfaceDefSeq& base_abstract_storage_types)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "Container_impl::create_abstract_storage_type() called" );
@@ -972,7 +972,7 @@ Container_impl::create_abstract_storage_home
  const char* name,
  const char* version,
  IR__::AbstractStorageTypeDef_ptr managed_abstract_storage_type,
- const IR__::AbsStorageHomeDefSeq& base_abstract_storage_homes)
+ const IR__::InterfaceDefSeq& base_abstract_storage_homes)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "Container_impl::create_abstract_storage_home() called" );

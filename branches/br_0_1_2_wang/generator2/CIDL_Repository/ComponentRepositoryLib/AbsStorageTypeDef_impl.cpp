@@ -146,14 +146,14 @@ throw(CORBA::SystemException)
 	return desc._retn();
 }
 
-IR__::AbsStorageTypeDefSeq* 
+IR__::InterfaceDefSeq* 
 AbstractStorageTypeDef_impl::base_abstract_storage_types
 ()
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "AbstractStorageTypeDef_impl::base_abstract_storage_types() called" );
 	
-	IR__::AbsStorageTypeDefSeq_var inherited_seq = new IR__::AbsStorageTypeDefSeq;
+	IR__::InterfaceDefSeq_var inherited_seq = new IR__::InterfaceDefSeq;
 
 	inherited_seq -> length ( base_abs_storage_type_impls_.size() );
 
@@ -165,7 +165,7 @@ throw(CORBA::SystemException)
 
 void 
 AbstractStorageTypeDef_impl::base_abstract_storage_types
-(const IR__::AbsStorageTypeDefSeq& seq)
+(const IR__::InterfaceDefSeq& seq)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "AbstractStorageTypeDef_impl::base_abstract_storage_types(...) called" );

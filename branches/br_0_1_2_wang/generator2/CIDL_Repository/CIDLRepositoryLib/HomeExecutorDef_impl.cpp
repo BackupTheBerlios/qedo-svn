@@ -30,11 +30,13 @@ namespace QEDO_ComponentRepository {
 
 HomeExecutorDef_impl::HomeExecutorDef_impl
 ( Container_impl *container,
-  Repository_impl *repository)
+  Repository_impl *repository,
+  IR__::AbstractStorageHomeDef_ptr binds_to)
 : Contained_impl ( container, repository ),
   IRObject_impl ( repository )
 {
 	DEBUG_OUTLINE ( "HomeExecutorDef_impl::HomeExecutorDef_impl() called" );
+	binds_to_ = binds_to;
 }
 
 HomeExecutorDef_impl::~HomeExecutorDef_impl
@@ -70,7 +72,7 @@ throw(CORBA::SystemException)
 	else
 		home_executor_desc -> defined_in = CORBA::string_dup ( "" );
 
-	home_executor_desc -> binds_to = *(this -> binds_to());
+	home_executor_desc -> binds_to = this -> binds_to();
 	home_executor_desc -> delegations = *(this->delegations());
 	home_executor_desc -> abs_storage_home_delegations = *(this->abs_storage_home_delegations());
 
@@ -123,22 +125,22 @@ throw(CORBA::SystemException)
 	abs_storage_home_delegations_ = seq;
 }
 
-CIDL::Binding* 
+IR__::AbstractStorageHomeDef_ptr
 HomeExecutorDef_impl::binds_to
 ()
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "HomeExecutorDef_impl::binds_to() called" );
-	return new CIDL::Binding ( *binding_ );
+	return binds_to_;
 }
 
 void 
 HomeExecutorDef_impl::binds_to
-(const CIDL::Binding& binding)
+(IR__::AbstractStorageHomeDef_ptr binds_to)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "HomeExecutorDef_impl::binds_to(...) called" );
-	*binding_ = binding;
+	binds_to_ = binds_to;
 }
 
 } // namespace QEDO_ComponentRepository

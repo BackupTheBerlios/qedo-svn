@@ -30,19 +30,21 @@
 #include "CIDL_Extension_skel.h"
 #include "Contained_impl.h"
 #include "Repository_impl.h"
+#include "AbsStorageHomeDef_impl.h"
 
 namespace QEDO_ComponentRepository {
 
 class HomeExecutorDef_impl : public virtual POA_CIDL::HomeExecutorDef,
 							 public virtual Contained_impl
 {
-	CIDL::Binding* binding_;
+	IR__::AbstractStorageHomeDef_ptr binds_to_;
 	CIDL::DelegationSeq delegations_;
 	CIDL::AbsStorageHomeDelegationSeq abs_storage_home_delegations_;
 
 public:
 	HomeExecutorDef_impl ( Container_impl *container,
-							Repository_impl *repository);
+							Repository_impl *repository,
+							IR__::AbstractStorageHomeDef_ptr binds_to);
 
 	~HomeExecutorDef_impl();
 
@@ -86,13 +88,12 @@ public:
     //
     // IDL:omg.org/CIDL/HomeExecutorDef/binds_to:1.0
     //
-    virtual CIDL::Binding* binds_to()
-		throw(CORBA::SystemException);
-    virtual void binds_to(const CIDL::Binding&)
-		throw(CORBA::SystemException);
+    virtual IR__::AbstractStorageHomeDef_ptr binds_to()
+        throw(CORBA::SystemException);
+    virtual void binds_to(IR__::AbstractStorageHomeDef_ptr)
+        throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository
 
 #endif
-

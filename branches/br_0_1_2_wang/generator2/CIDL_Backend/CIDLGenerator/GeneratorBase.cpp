@@ -338,6 +338,17 @@ GeneratorBase::handleSupportedInterface(IR__::ComponentDef_ptr component)
 }
 
 
+void 
+GeneratorBase::handleSupportedInterface(IR__::StorageTypeDef_ptr storage_type)
+{
+	IR__::InterfaceDefSeq_var supported_seq = storage_type->supported_interfaces();
+	CORBA::ULong len = supported_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++) {
+		doInterface((*supported_seq)[i]);
+	}
+}
+
+
 void
 GeneratorBase::doInterface(IR__::InterfaceDef_ptr intface)
 {
@@ -431,6 +442,60 @@ GeneratorBase::doFinder(IR__::FinderDef_ptr finder)
 {
 }
 
+// factory (for PSS)
+void 
+GeneratorBase::handleFactory(IR__::AbstractStorageHomeDef_ptr abs_storage_home)
+{
+	IR__::ContainedSeq_var contained_seq = abs_storage_home->contents(CORBA__::dk_Factory, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
+		doFactory(a_factory);
+	}
+}
+
+void 
+GeneratorBase::handleFactory(IR__::StorageHomeDef_ptr storage_home)
+{
+	IR__::ContainedSeq_var contained_seq = storage_home->contents(CORBA__::dk_Factory, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
+		doFactory(a_factory);
+	}
+}
+
+// PSSKey
+void 
+GeneratorBase::handlePSSKey(IR__::AbstractStorageHomeDef_ptr abs_storage_home)
+{
+	IR__::ContainedSeq_var contained_seq = abs_storage_home->contents(CORBA__::dk_PSSKey, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::PSSKeyDef_var a_psskey = IR__::PSSKeyDef::_narrow(((*contained_seq)[i]));
+		doPSSKey(a_psskey);
+	}
+}
+
+void 
+GeneratorBase::handlePSSKey(IR__::StorageHomeDef_ptr storage_home)
+{
+	IR__::ContainedSeq_var contained_seq = storage_home->contents(CORBA__::dk_PSSKey, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::PSSKeyDef_var a_psskey = IR__::PSSKeyDef::_narrow(((*contained_seq)[i]));
+		doPSSKey(a_psskey);
+	}
+}
+
+void 
+GeneratorBase::doPSSKey(IR__::PSSKeyDef_ptr psskey)
+{
+}
 
 //
 // event type

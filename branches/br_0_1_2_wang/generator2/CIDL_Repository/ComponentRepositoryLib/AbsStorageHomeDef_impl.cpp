@@ -180,14 +180,14 @@ throw(CORBA::SystemException)
 		return IR__::AbstractStorageTypeDef::_nil();
 }
 
-IR__::AbsStorageHomeDefSeq* 
+IR__::InterfaceDefSeq* 
 AbstractStorageHomeDef_impl::base_abstract_storage_homes
 ()
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "AbstractStorageHomeDef_impl::base_abstract_storage_homes() called" );
 
-	IR__::AbsStorageHomeDefSeq_var inherited_seq = new IR__::AbsStorageHomeDefSeq;
+	IR__::InterfaceDefSeq_var inherited_seq = new IR__::InterfaceDefSeq;
 
 	inherited_seq -> length ( base_abstract_storage_home_impls_.size() );
 
@@ -199,7 +199,7 @@ throw(CORBA::SystemException)
  
 void 
 AbstractStorageHomeDef_impl::base_abstract_storage_homes
-(const IR__::AbsStorageHomeDefSeq& seq)
+(const IR__::InterfaceDefSeq& seq)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "AbstractStorageHomeDef_impl::base_abstract_storage_homes() called" );

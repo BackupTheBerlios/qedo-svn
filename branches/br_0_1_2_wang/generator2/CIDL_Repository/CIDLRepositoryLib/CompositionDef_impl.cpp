@@ -166,7 +166,7 @@ throw(CORBA::SystemException)
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
 	HomeExecutorDef_impl *new_home_executor =
-		new HomeExecutorDef_impl ( this, repository_ );
+		new HomeExecutorDef_impl ( this, repository_, abs_storage_home );
 	new_home_executor -> id ( id );
 	new_home_executor -> name ( name );
 	new_home_executor -> version ( version );

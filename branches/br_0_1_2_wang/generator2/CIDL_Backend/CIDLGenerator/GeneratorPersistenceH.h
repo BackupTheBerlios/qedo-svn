@@ -1,7 +1,7 @@
 /*****************************************************************************/
-/* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
+/* Qedo - Quality of Service Enabled Distributed Objects                     */
 /*                                                                           */
-/* Copyright (c) 2002 by the Qedo Team                                       */
+/* Copyright (c) 2002/2003 by the Qedo Team                                  */
 /*                                                                           */
 /* http://qedo.berlios.de                                                    */
 /*                                                                           */
@@ -11,7 +11,7 @@
 /* it under the terms of the GNU General Public License as published by      */
 /* the Free Software Foundation; either version 2 of the License, or         */
 /* (at your option) any later version.                                       */
-/*                                                                           */ 
+/*                                                                           */
 /* Qedo Generator is distributed in the hope that it will be useful,         */
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of            */
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
@@ -23,60 +23,49 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#ifndef __ABS_STORAGETYPE_DEF_IMPL_H__
-#define __ABS_STORAGETYPE_DEF_IMPL_H__
+#ifndef __GENERATOR_PERSISTENCEH_H__
+#define __GENERATOR_PERSISTENCEH_H__
 
-#include <CORBA.h>
-#include "IFR_skel.h"
-#include "InterfaceDef_impl.h"
+#include "CPPBase.h"
+#include "Printer.h"
+#include <iostream>
 
-#include <vector>
 
-using namespace std;
+namespace QEDO_CIDL_Generator {
 
-namespace QEDO_ComponentRepository {
 
-class AbstractStorageTypeDef_impl : public virtual POA_IR__::AbstractStorageTypeDef,
-							public virtual InterfaceDef_impl
+class GeneratorPersistenceH : public virtual CPPBase
 {
-	vector < AbstractStorageTypeDef_impl* > base_abs_storage_type_impls_;
 
+private:
+
+	std::string filename_;
+	Printer out;
+	std::string target_;
+	//bool need_push_;
+	//CIDL::CompositionDef_var composition_;
+
+	void doAttribute(IR__::AttributeDef_ptr attribute);
+	void doOperation(IR__::OperationDef_ptr operation);
+	void doException(IR__::ExceptionDef_ptr except);
+	void doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
+	void doAbstractStorageType(IR__::AbstractStorageTypeDef_ptr abs_storage_type);
+	void doStorageHome(IR__::StorageHomeDef_ptr storage_home);
+	void doStorageType(IR__::StorageTypeDef_ptr storage_type);
+	void doPSSKey(IR__::PSSKeyDef_ptr psskey);
+	void doFactory(IR__::FactoryDef_ptr factory);
+	
 public:
-	AbstractStorageTypeDef_impl ( Container_impl *container,
-									Repository_impl *repository);
 
-	~AbstractStorageTypeDef_impl();
+	GeneratorPersistenceH(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	~GeneratorPersistenceH();
 
-    //
-    // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
-    //
-	virtual CORBA__::DefinitionKind def_kind()
-        throw(CORBA::SystemException)
-    {
-        return CORBA__::dk_AbstractStorageType;
-    }
+	void generate(std::string target, std::string fileprefix);
 
-    //
-    // IDL:omg.org/CORBA__/IRObject/destroy:1.0
-    //
-    virtual void destroy()
-        throw(CORBA::SystemException);
-
-    //
-    // IDL:omg.org/IR__/Contained/describe:1.0
-    //
-    virtual IR__::Contained::Description* describe()
-        throw(CORBA::SystemException);
-
-	//
-    // IDL:omg.org/IR__/AbstractStorageTypeDef/base_abstract_storage_types:1.0
-    //
-    virtual IR__::InterfaceDefSeq* base_abstract_storage_types()
-        throw(CORBA::SystemException);
-    virtual void base_abstract_storage_types(const IR__::InterfaceDefSeq& seq)
-        throw(CORBA::SystemException);
 };
 
-} // namespace QEDO_ComponentRepository
+
+} // namespace
+
 
 #endif

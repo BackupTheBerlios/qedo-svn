@@ -152,7 +152,7 @@ throw(CORBA::SystemException)
 	if ( check_for_name ( name ) )
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
-	SegmentDef_impl *new_segment = new SegmentDef_impl ( this, repository_, provided_facets );
+	SegmentDef_impl *new_segment = new SegmentDef_impl ( this, repository_, provided_facets, abs_storage_home );
 	new_segment -> id ( id );
 	new_segment -> name ( name );
 	new_segment -> version ( version );

@@ -77,9 +77,9 @@ public:
     //
     // IDL:omg.org/IR__/AbstractStorageHomeDef/base_abstract_storage_homes:1.0
     //
-    virtual IR__::AbsStorageHomeDefSeq* base_abstract_storage_homes()
+    virtual IR__::InterfaceDefSeq* base_abstract_storage_homes()
         throw(CORBA::SystemException);
-    virtual void base_abstract_storage_homes(const IR__::AbsStorageHomeDefSeq& seq)
+    virtual void base_abstract_storage_homes(const IR__::InterfaceDefSeq& seq)
         throw(CORBA::SystemException);
 
     //
