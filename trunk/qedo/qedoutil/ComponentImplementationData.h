@@ -105,6 +105,8 @@ struct ComponentImplementationData
 	std::vector < std::string >					artifacts;
 	/** list of required valuetype factories */
 	std::vector < ValuetypeData >				valuetypes;
+	/** list of implementation UUIDs this implementation depends on */
+	std::vector < std::string >					softpkg_dependencies;
 	/** in case the component is a composition */
 	AssemblyData								assembly;
 	/** the csd file */

@@ -29,7 +29,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.14 2003/11/26 16:19:43 tom Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.15 2004/03/23 09:53:59 neubauer Exp $";
 
 
 namespace Qedo {
@@ -245,7 +245,7 @@ throw(CSDReadException)
 			//
 			if (element_name == "softpkgref")
 			{
-				// TODO
+				softpkgref( (DOMElement*)child );
 			}
 
 			//
@@ -253,7 +253,8 @@ throw(CSDReadException)
 			//
 			else if (element_name == "codebase")
 			{
-				// todo
+				NORMAL_ERR( "CSDReader: need dependency codebase" );
+				throw CSDReadException();
 			}
 
 			//
@@ -261,7 +262,7 @@ throw(CSDReadException)
 			//
 			else if (element_name == "fileinarchive")
 			{
-				fileinarchive((DOMElement*)child);
+				fileinarchive( (DOMElement*)child );
 			}
 
 			//
@@ -269,7 +270,10 @@ throw(CSDReadException)
 			//
 			else if (element_name == "localfile")
 			{
-				// todo
+				std::string file_name = Qedo::transcode(((DOMElement*)child)->getAttribute(X("name")));
+
+				NORMAL_ERR2( "CSDReader: need dependency ", file_name );
+				throw CSDReadException(); 
 			}
 
 			//
@@ -277,7 +281,10 @@ throw(CSDReadException)
 			//
 			else if (element_name == "name")
 			{
-				name((DOMElement*)child);
+				std::string file_name = name((DOMElement*)child);
+
+				NORMAL_ERR2( "CSDReader: need dependency ", file_name );
+				throw CSDReadException(); 
 			}
 
 			//
@@ -285,7 +292,7 @@ throw(CSDReadException)
 			//
 			else if (element_name == "valuetypefactory")
 			{
-				valuetypefactory((DOMElement*)child);
+				valuetypefactory( (DOMElement*)child );
 			}
 		}
 
@@ -486,6 +493,14 @@ throw(CSDReadException)
     }
 
 	// more todo
+}
+
+
+std::string 
+CSDReader::implref (DOMElement* element)
+throw(CSDReadException)
+{
+	return Qedo::transcode(element->getAttribute(X("idref")));
 }
 
 
@@ -782,6 +797,54 @@ throw(CSDReadException)
     //
 	CCDReader reader( path_ + ccd_file_, path_ );
 	reader.readCCD( &(data_->component), package_ );
+}
+
+
+void
+CSDReader::softpkgref (DOMElement* element)
+throw(CSDReadException)
+{
+	std::string element_name;
+	std::string idref;
+    DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// fileinarchive
+			//
+			if (element_name == "fileinarchive")
+			{
+				// todo
+				//fileinarchive( (DOMElement*)child );
+			}
+
+			//
+			// link
+			//
+			else if (element_name == "link")
+			{
+				// todo
+				//link( (DOMElement*)child );
+			}
+
+			//
+			// implref
+			//
+			else if (element_name == "implref")
+			{
+				idref = implref( (DOMElement*)child );
+			}
+		}
+
+		// get next child
+		child = child->getNextSibling();
+    }
+
+	data_->softpkg_dependencies.push_back( idref );
 }
 
 

@@ -139,6 +139,12 @@ private:
     void implementation (DOMElement*)
         throw(CSDReadException);
 
+	/**
+	 * implref
+	 */
+    std::string implref (DOMElement*)
+        throw(CSDReadException);
+
     /**
 	 * license
 	 */
@@ -179,6 +185,12 @@ private:
 	 * softpkg
 	 */
     void softpkg (DOMElement*)
+        throw(CSDReadException);
+
+	/**
+	 * softpkgref
+	 */
+    void softpkgref (DOMElement*)
         throw(CSDReadException);
 
     /**
