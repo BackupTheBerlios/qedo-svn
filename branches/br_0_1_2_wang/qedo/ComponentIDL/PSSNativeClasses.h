@@ -2,6 +2,7 @@
 #define __PSSNATIVECLASSES_H__
 
 #include <CORBA.h>
+#include "CORBADepends.h"
 
 namespace CosPersistentState
 {

@@ -278,10 +278,6 @@ SOURCE=.\CORBADepends_skel.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\PSSNativeClasses.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\QedoComponents.h
 # End Source File
 # Begin Source File

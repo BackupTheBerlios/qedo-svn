@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.15 2003/05/26 13:37:05 stoinski Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.15.2.1 2003/07/04 13:03:05 hao Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -149,6 +149,11 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
         DEBUG_OUT("no HomeFinder");
 		return;
     }
+
+	//
+	// create connector
+	//
+
 }
 
 
