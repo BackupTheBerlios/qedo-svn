@@ -31,7 +31,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.38 2004/02/04 13:02:49 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.39 2004/04/26 13:30:58 neubauer Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -305,12 +305,18 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 #ifdef _WIN32
 	int component_server_pid;
 	char *args[17];
-	const char* prog;
+	//const char* prog;
+	std::string prog;
 	int args_nr=0;
 
 	if (enable_terminal_)
 	{
-		prog = "c:/winnt/system32/cmd.exe";
+		#define INFO_BUFFER_SIZE MAX_PATH+4
+		TCHAR infoBuf[INFO_BUFFER_SIZE];
+		DWORD bufCharCount = INFO_BUFFER_SIZE;
+		GetWindowsDirectory( infoBuf, INFO_BUFFER_SIZE );
+		prog = std::string( infoBuf ) + "/system32/cmd.exe";
+		//prog = "c:/windows/system32/cmd.exe";
 		args[args_nr++] = "cmd";
 		args[args_nr++] = "/c";
 		args[args_nr++] = "start";
@@ -337,7 +343,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 	args[args_nr] = 0;
 
-	component_server_pid = _spawnv(_P_NOWAIT, prog, args);
+	component_server_pid = _spawnv(_P_NOWAIT, prog.c_str(), args);
 
 	if (component_server_pid < 0)
 	{
