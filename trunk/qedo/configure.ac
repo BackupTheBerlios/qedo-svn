@@ -19,12 +19,17 @@ AC_PROG_RANLIB
 AC_PROG_LN_S
 AC_PROG_INSTALL
 AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no)
+AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
 AC_SUBST(HAVE_MICO_CONFIG)
 
 # Checks for libraries.
 AC_CHECK_LIB([dl], [dlopen])
 AC_CHECK_LIB([z], [deflate])
 AC_CHECK_LIB([uuid], [uuid_generate])
+
+if test X"$HAVE_MKDIR_PROG" != Xyes; then
+  AC_MSG_ERROR([cannot mkdir program])
+fi
 
 qedo_save_LIBS=$LIBS
 qedo_save_CPPFLAGS=$CPPFLAGS
