@@ -465,7 +465,7 @@ add_emits_dcl(
   definition def_v,
   idl_identifier ident)
 {
-  resolve_name(ident,the_EventTypeN);
+  _resolve_name(true,ident,the_EventTypeN);
   add_name(false,EmitsDclN(),name,def_v,0);
 }
 
@@ -514,7 +514,7 @@ add_publishes_dcl(
   definition def_v,
   idl_identifier ident)
 {
-  resolve_name(ident,the_EventTypeN);
+  _resolve_name(true,ident,the_EventTypeN);
   add_name(false,PublishesDclN(),name,def_v,0);
 }
 
@@ -524,7 +524,7 @@ add_consumes_dcl(
   definition def_v,
   idl_identifier ident)
 {
-  resolve_name(ident,the_EventTypeN);
+  _resolve_name(true,ident,the_EventTypeN);
   add_name(false,ConsumesDclN(),name,def_v,0);
 }
 

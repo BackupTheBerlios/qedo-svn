@@ -953,8 +953,7 @@ EventType(EventTypeHeader(flag_v, name, inh), def_list)
         FactoryDcl : { def->unparse(kc_printer, my_build); }
         default : {}
       }
-      IR__::EventDef_ptr eventdef;
-      eventdef = IR__::EventDef::_narrow (irobj);
+      IR__::EventDef_ptr eventdef = IR__::EventDef::_narrow (irobj);
       NOT_NIL(eventdef);
       // insert proper initializer seq
       eventdef->initializers (my_build.iniseq);
@@ -991,6 +990,7 @@ EventType(EventTypeHeader(flag_v, name, inh), def_list)
       catch (...) {
         Error("Exception in creating event %k\n", name, name);
       }
+      NOT_NIL(event);
       irobj = event;
       name->symtab_entry->irobj = event;
     }
@@ -1088,7 +1088,7 @@ NComponent(ComponentHeader(name, ident, ident_list), def_list)
           name->get_name(), "1.0", basecomp, supports);
       }
       catch (CORBA::Exception& ex) {
-        Error("Exception %s in creating valuemember %k\n", name, name);
+        Error("Exception %s in creating component %k\n", name, name);
       }
       irobj = component_ptr;
       name->symtab_entry->irobj = component_ptr;
