@@ -29,7 +29,7 @@
 #include "ClientInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.12 2004/02/16 07:42:13 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ORBInitializerImpl.cpp,v 1.13 2004/04/06 14:29:19 tom Exp $";
 
 
 namespace Qedo {
@@ -62,6 +62,10 @@ ORBInitializerImpl::~ORBInitializerImpl()
 void
 ORBInitializerImpl::pre_init (PortableInterceptor::ORBInitInfo_ptr info)
 {
+	//
+	// Allocate a slot id to communicate data towards our components
+	//
+	slot_id_ = info->allocate_slot_id();
 }
 
 
@@ -90,7 +94,7 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	catch (const CORBA::Exception&)
 	{
 		DEBUG_OUT( "ORBInitializerImpl: NameService is not running") ;
-		return;
+		//return;
 	}
 
 	if (!CORBA::is_nil(nameService_.in()))
@@ -104,38 +108,35 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 		if (CORBA::is_nil(obj.in()))
 		{
 			DEBUG_OUT( "ORBInitializerImpl: HomeFinder not found");
-			return;
-		}
-
-		try
+			//return;
+		} else
 		{
-			home_finder = Qedo_Components::HomeFinder::_narrow(obj);
+
+			try
+			{
+				home_finder = Qedo_Components::HomeFinder::_narrow(obj);
+			}
+			catch (CORBA::SystemException&)
+			{
+				DEBUG_OUT( "ORBInitializerImpl: HomeFinder is not running");
+			}
+
+			if (CORBA::is_nil(home_finder.in()))
+			{
+				DEBUG_OUT ("ORBInitializerImpl: HomeFinder is not running" );
+			}
+
+			//
+			// register HomeFinder
+			//
+			info->register_initial_reference ("ComponentHomeFinder", home_finder);
+
 		}
-		catch (CORBA::SystemException&)
-		{
-			DEBUG_OUT( "ORBInitializerImpl: HomeFinder is not running");
-		}
-
-		if (CORBA::is_nil(home_finder.in()))
-		{
-			DEBUG_OUT ("ORBInitializerImpl: HomeFinder is not running" );
-		}
-
-		//
-		// register HomeFinder
-		//
-		info->register_initial_reference ("ComponentHomeFinder", home_finder);
-
-
 	}
 	else
 	{
 		DEBUG_OUT ("ORBInitializerImpl: NameService is not a NamingContext object reference");
 	}
-	//
-	// Allocate a slot id to communicate data towards our components
-	//
-	slot_id_ = info->allocate_slot_id();
 
 #ifndef _QEDO_NO_QOS
 	//
