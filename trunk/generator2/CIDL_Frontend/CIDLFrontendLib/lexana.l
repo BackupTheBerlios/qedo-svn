@@ -139,7 +139,7 @@ MkIdentifier()
 	nocasestring nc = mknocasestring(yytext);
 	key_word k=KeyWord(nc);
 	if(k->foo) {
-		sprintf(my_buff,"found identifier which differs only in captation from keyword ('%s')"
+		sprintf(my_buff,"found identifier which differs only in capitalization from keyword ('%s')"
 		,yytext);
 		yyerror_1(my_buff);
 		exit(1);
