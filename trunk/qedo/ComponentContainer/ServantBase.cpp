@@ -25,7 +25,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.9 2003/09/05 12:56:42 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.10 2003/09/05 14:02:06 boehme Exp $";
 
 namespace Qedo {
 
@@ -77,7 +77,7 @@ ServantBase::current_executor (CORBA::Object_ptr cur_exec)
 
 
 void 
-ServantBase::set_instance (const Qedo::ComponentInstance& instance)
+ServantBase::set_instance (Qedo::ComponentInstance& instance)
 {
 	executor_locator_ = Components::ExecutorLocator::_duplicate (instance.executor_locator_);
 	ccm_object_executor_ = instance.ccm_object_executor_;

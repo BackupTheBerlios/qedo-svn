@@ -92,7 +92,7 @@ public:
 	 * set the component instance
 	 * \param instance The component instance.
 	 */
-	void set_instance (const Qedo::ComponentInstance& instance);
+	void set_instance (Qedo::ComponentInstance& instance);
 };
 
 

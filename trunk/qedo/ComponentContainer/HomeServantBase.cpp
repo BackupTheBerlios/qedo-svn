@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.20 2003/08/06 12:22:56 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.21 2003/09/05 14:02:06 boehme Exp $";
 
 
 namespace Qedo {
@@ -153,7 +153,7 @@ HomeServantBase::finalize_component_incarnation (const PortableServer::ObjectId&
 {
 	// Check whether a static servant was registered for this object id and set
 	// the executor context, executor locator and ccm object executor
-	std::vector <ComponentInstance>::const_iterator components_iter;
+	std::vector <ComponentInstance>::iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
@@ -301,7 +301,7 @@ HomeServantBase::lookup_component (const PortableServer::ObjectId& object_id)
 	CORBA::OctetSeq_var foreign_key_seq = Key::key_value_from_object_id (object_id);
 	CORBA::OctetSeq_var our_key_seq;
 
-	std::vector <ComponentInstance>::const_iterator components_iter;
+	std::vector <ComponentInstance>::iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
@@ -339,7 +339,7 @@ HomeServantBase::lookup_servant (const PortableServer::ObjectId& object_id)
 	CORBA::OctetSeq_var foreign_key_seq = Key::key_value_from_object_id (object_id);
 	CORBA::OctetSeq_var our_key_seq;
 
-	std::vector <Qedo::ComponentInstance>::const_iterator components_iter;
+	std::vector <Qedo::ComponentInstance>::iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
