@@ -278,7 +278,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	{
 		try {
 
-			all_server_interceptors_[i].interceptor->receive_request( container_info.in() );
+			all_server_interceptors_[i].interceptor_ -> receive_request( container_info.in() );
 		} catch (CORBA::SystemException e)
 		{
 			throw e;
@@ -288,6 +288,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 		}
 	}
 
+/*
 	// call COPIS registered for id
 
 	Qedo::QedoLock l_component(for_component_id_server_interceptors_mutex_);
@@ -308,7 +309,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 			}
 		}
 	}
-
+*/
 
 }
 
@@ -342,7 +343,7 @@ throw(CORBA::SystemException)
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
 		try{
-            all_server_interceptors_[i].interceptor->send_reply( container_info.in() );
+            all_server_interceptors_[i].interceptor_ -> send_reply( container_info.in() );
 		} catch ( ... )
 			// catch of user exceptions is probably missing
 		{
@@ -380,7 +381,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
 		try{
-            all_server_interceptors_[i].interceptor->send_user_exception( container_info.in() );
+            all_server_interceptors_[i].interceptor_ -> send_exception( container_info.in() );
 		} catch ( ... )
 			// catch of user exceptions is probably missing
 		{
@@ -398,10 +399,70 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 }
 
+
+Components::Cookie* 
+ServerInterceptorDispatcher::register_server_interceptor( Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr si )
+{
+	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI registered for all components");
+
+    // Create cookie
+	Cookie_impl* new_cookie = new Cookie_impl();
+
+
+	ServerInterceptorEntry e;
+	e.interceptor_ = Components::ContainerPortableInterceptor::ServerContainerInterceptor::_duplicate( si );
+	e.ck_ = new_cookie;
+
+	Qedo::QedoLock l(all_server_interceptors_mutex_);
+
+	all_server_interceptors_.push_back(e);
+
+	new_cookie -> _add_ref();
+	return new_cookie;
+
+}
+
+
+Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr 
+ServerInterceptorDispatcher::unregister_server_interceptor( Components::Cookie* ck )
+{
+	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI unregister_for_all called");
+
+	std::vector <ServerInterceptorEntry>::iterator interceptor_iter;
+
+	for (interceptor_iter = all_server_interceptors_.begin(); interceptor_iter != all_server_interceptors_.end(); interceptor_iter++)
+	{
+
+		if ((*interceptor_iter).ck_->equal(ck))
+		{
+			DEBUG_OUT ("ServerInterceptorDispatcher: unregister_interceptor_for_all(): interceptor found");
+			Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr ret_inter =
+				Components::ContainerPortableInterceptor::ServerContainerInterceptor::_duplicate((*interceptor_iter).interceptor_);
+
+			all_server_interceptors_.erase (interceptor_iter);
+			return ret_inter;			
+
+			break;
+		}
+	}
+
+	if (interceptor_iter == all_server_interceptors_.end())
+	{
+		DEBUG_OUT ("ServerinterceptorDispatcher: Unknown interceptor");
+	}
+
+	return 0;
+}
+
+/*
 void
 ServerInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor)
 {
 	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI registered for all components");
+
+    // Create cookie
+	Cookie_impl* new_cookie = new Cookie_impl();
+
 
 	ServerInterceptorEntry e;
 	e.interceptor = Components::ContainerPortableInterceptor::ServerContainerInterceptor::_duplicate( interceptor );
@@ -478,6 +539,8 @@ ServerInterceptorDispatcher::unregister_interceptor_for_component(Components::Co
 	}
 
 }
+*/
+
 
 void
 ServerInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* component_server)

@@ -87,13 +87,13 @@ ExtensionHomeServant::do_finalize_component_incarnation (Components::ExecutorLoc
 
 
 void
-ExtensionHomeServant::set_server_interceptor_dispatcher(Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_dispatcher)
+ExtensionHomeServant::set_server_interceptor_dispatcher(Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_dispatcher)
 {
 	server_dispatcher_ = server_dispatcher;
 }
 
 void
-ExtensionHomeServant::set_client_interceptor_dispatcher(Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr client_dispatcher)
+ExtensionHomeServant::set_client_interceptor_dispatcher(Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr client_dispatcher)
 {
 	client_dispatcher_ = client_dispatcher;
 }

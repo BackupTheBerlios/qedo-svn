@@ -45,8 +45,8 @@ class CONTAINERDLL_API ExtensionContext : public virtual Components::ExtensionCo
 										public virtual CCMContext
 {
 private:
-	Components::ContainerPortableInterceptor::ServerInterceptorRegistration_var server_registration_;
-	Components::ContainerPortableInterceptor::ClientInterceptorRegistration_var client_registration_;
+	Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_var server_registration_;
+	Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_var client_registration_;
 	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_var servant_registration_;
 	Components::ContainerPortableInterceptor::StubInterceptorRegistration_var stub_registration_;
 
@@ -70,13 +70,13 @@ public:
 	 * set_server_intercpetor_registration
 	 */
 	 virtual void
-	 set_server_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr registration);
+	 set_server_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr registration);
 
 	/**
 	 * set_client_intercpetor_registration
 	 */
 	 virtual void
-	 set_client_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr registration);
+	 set_client_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr registration);
 
 	/**
 	 * set_servant_intercpetor_registration
@@ -93,14 +93,14 @@ public:
 	 /**
 	 * get_server_intercpetor_registration
 	 */
-	 virtual Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr
+	 virtual Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr
 	 get_server_interceptor_dispatcher_registration();
 
 
 	/**
 	 * get_client_intercpetor_registration
 	 */
-	 virtual Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr
+	 virtual Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr
 	 get_client_interceptor_dispatcher_registration();
 
 	 /**

@@ -73,6 +73,17 @@ module Qedo_Components {
 
 	};
 
+	local interface ServerInterceptorDispatcher 
+		: PortableInterceptor::ServerRequestInterceptor, 
+		Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration
+	{
+	};
+
+	local interface ClientInterceptorDispatcher 
+		: PortableInterceptor::ClientRequestInterceptor, 
+		Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration
+	{
+	};
 };
 
 #endif

@@ -145,9 +145,9 @@ private:
 #ifndef _QEDO_NO_QOS
 
 	/** interceptor dispatcher for the server side */
-	Components::ContainerPortableInterceptor::ServerInterceptorRegistration_var server_dispatcher_;
+	Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_var server_dispatcher_;
 	/** interceptor dispatcher for the client side */
-	Components::ContainerPortableInterceptor::ClientInterceptorRegistration_var client_dispatcher_;
+	Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_var client_dispatcher_;
 	/** interceptor dispatcher for the servants */
 	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_var servant_dispatcher_;
 	/** interceptor dispatcher for the stubs */
@@ -233,14 +233,14 @@ public:
 	 * set_server_dispatcher
 	 */
 	virtual void
-	set_server_dispatcher ( Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_dispatcher);
+	set_server_dispatcher ( Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_dispatcher);
 
 
  	/**
 	 * set_client_dispatcher
 	 */
 	virtual void
-	set_client_dispatcher ( Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr client_dispatcher);
+	set_client_dispatcher ( Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr client_dispatcher);
 
 	/**
 	 * set_servant_dispatcher
@@ -257,13 +257,13 @@ public:
 	/**
 	 * get_server_dispatcher
 	 */
-	virtual Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr
+	virtual Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr
 	get_server_dispatcher (  );
 
 	/**
 	 * get_client_dispatcher
 	 */
-	virtual Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr
+	virtual Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr
 	get_client_dispatcher (  );
 
 

@@ -600,13 +600,13 @@ ComponentServerImpl::slot_id()
 
 
 void
-ComponentServerImpl::set_server_dispatcher ( Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_dispatcher)
+ComponentServerImpl::set_server_dispatcher ( Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_dispatcher)
 {
 	server_dispatcher_ = server_dispatcher;
 }
 
 void
-ComponentServerImpl::set_client_dispatcher ( Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr client_dispatcher)
+ComponentServerImpl::set_client_dispatcher ( Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr client_dispatcher)
 {
 	client_dispatcher_ = client_dispatcher;
 }
@@ -623,16 +623,16 @@ ComponentServerImpl::set_stub_dispatcher ( Components::ContainerPortableIntercep
 	stub_dispatcher_ = stub_dispatcher;
 }
 
-Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr
 ComponentServerImpl::get_server_dispatcher (  )
 {
-	return Components::ContainerPortableInterceptor::ServerInterceptorRegistration::_duplicate (server_dispatcher_);
+	return Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration::_duplicate (server_dispatcher_);
 }
 
-Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr
 ComponentServerImpl::get_client_dispatcher (  )
 {
-	return Components::ContainerPortableInterceptor::ClientInterceptorRegistration::_duplicate (client_dispatcher_);
+	return Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration::_duplicate (client_dispatcher_);
 }
 
 Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr

@@ -43,7 +43,7 @@ ExtensionContext::~ExtensionContext()
 }
 
 void
-ExtensionContext::set_server_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr registration)
+ExtensionContext::set_server_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_server_interceptor_dispatcher_registration called");
 	server_registration_ = registration;
@@ -51,7 +51,7 @@ ExtensionContext::set_server_interceptor_dispatcher_registration(Components::Con
 
 
 void
-ExtensionContext::set_client_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr registration)
+ExtensionContext::set_client_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_client_interceptor_dispatcher_registration called");
 	client_registration_ = registration;
@@ -71,19 +71,19 @@ ExtensionContext::set_stub_interceptor_dispatcher_registration(Components::Conta
 	stub_registration_ = registration;
 };
 
-Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr
 ExtensionContext::get_server_interceptor_dispatcher_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_server_interceptor_dispatcher_registration called");
-	return Components::ContainerPortableInterceptor::ServerInterceptorRegistration::_duplicate(server_registration_);
+	return Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration::_duplicate(server_registration_);
 
 }
 
-Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr
 ExtensionContext::get_client_interceptor_dispatcher_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_client_interceptor_dispatcher_registration called");
-	return Components::ContainerPortableInterceptor::ClientInterceptorRegistration::_duplicate(client_registration_);
+	return Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration::_duplicate(client_registration_);
 
 }
 

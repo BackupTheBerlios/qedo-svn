@@ -489,12 +489,25 @@ module Components {
 
 		local interface ServerContainerInterceptor : ContainerInterceptor
 		{
-			void receive_request ( in ContainerPortableInterceptor::ContainerServerRequestInfo info );
-			void send_reply ( in ContainerPortableInterceptor::ContainerServerRequestInfo info );
-			void send_system_exception ( in ContainerPortableInterceptor::ContainerServerRequestInfo info );
-			void send_user_exception ( in ContainerPortableInterceptor::ContainerServerRequestInfo info );
 
-//			void rec_request_from_servant_locator(in string operation);
+			void 
+			receive_request_service_contexts ( in ContainerPortableInterceptor::ContainerServerRequestInfo csi )
+			raises (PortableInterceptor::ForwardRequest);
+
+			void 
+			receive_request ( in ContainerPortableInterceptor::ContainerServerRequestInfo info )
+			raises (PortableInterceptor::ForwardRequest);
+
+			void 
+			send_reply ( in ContainerPortableInterceptor::ContainerServerRequestInfo info );
+			
+			void
+			send_exception ( in ContainerPortableInterceptor::ContainerServerRequestInfo info )
+			raises (PortableInterceptor::ForwardRequest);
+
+			void send_other ( in ContainerPortableInterceptor::ContainerServerRequestInfo info )
+			raises (PortableInterceptor::ForwardRequest);
+
 		};
 
 		local interface ServerContainerInterceptorExt : ServerContainerInterceptor {
@@ -519,10 +532,23 @@ module Components {
 
 		local interface ClientContainerInterceptor : ContainerInterceptor
 		{
-			void send_request ( in ContainerPortableInterceptor::ContainerClientRequestInfo info );
-			void receive_reply ( in ContainerPortableInterceptor::ContainerClientRequestInfo info );
-			void receive_system_exception ( in ContainerPortableInterceptor::ContainerClientRequestInfo info );
-			void receive_user_exception ( in ContainerPortableInterceptor::ContainerClientRequestInfo info );
+			void 
+			send_request ( in ContainerPortableInterceptor::ContainerClientRequestInfo cci )
+			raises (PortableInterceptor::ForwardRequest);
+
+			void 
+			send_poll ( in ContainerPortableInterceptor::ContainerClientRequestInfo cci );
+
+			void
+			receive_reply ( in ContainerPortableInterceptor::ContainerClientRequestInfo cci);
+
+			void 
+			receive_exception ( in ContainerPortableInterceptor::ContainerClientRequestInfo cci)
+			raises (PortableInterceptor::ForwardRequest);
+
+			void 
+			receive_other ( in ContainerPortableInterceptor::ContainerClientRequestInfo cci )
+			raises (PortableInterceptor::ForwardRequest);
 
 		};
 
@@ -545,6 +571,43 @@ module Components {
 
 		};
 
+		local interface ClientContainerInterceptorRegistration
+		{
+			Components::Cookie
+			register_client_interceptor ( in ClientContainerInterceptor ci);
+
+			ClientContainerInterceptor
+			unregister_client_interceptor ( in Components::Cookie ck);
+		};
+
+		local interface ServerContainerInterceptorRegistration
+		{
+			Components::Cookie
+			register_server_interceptor ( in ServerContainerInterceptor si);
+
+			ServerContainerInterceptor
+			unregister_server_interceptor (in Components::Cookie ck);
+		};
+
+		local interface ClientContainerInterceptorRegistrationExt : ClientContainerInterceptorRegistration {
+			
+			Components::Cookie
+			register_ext_client_interceptor ( in ClientContainerInterceptorExt ci);
+
+			ClientContainerInterceptorExt
+			unregister_ext_client_interceptor ( in Components::Cookie ck);
+		};
+
+		local interface ServerContainerInterceptorRegistrationExt : ServerContainerInterceptorRegistration {
+			
+			Components::Cookie
+			register_ext_server_interceptor ( in ServerContainerInterceptorExt si);
+
+			ServerContainerInterceptorExt
+			unregister_ext_server_interceptor ( in Components::Cookie ck);
+		};
+
+/*
 		local interface ServerInterceptorRegistration : PortableInterceptor::ServerRequestInterceptor
 		{
 			void register_interceptor_for_all (in ServerContainerInterceptor server_interceptor);
@@ -559,6 +622,8 @@ module Components {
 			void register_interceptor_for_all ( in ClientContainerInterceptor client_interceptor);
 			void unregister_interceptor_for_all ( in ClientContainerInterceptor client_interceptor);
 		};
+
+*/
 
 		local interface ServantInterceptorRegistration
 		{
@@ -622,10 +687,10 @@ module Components {
 	local interface ExtensionContext : CCMContext
 	{
 		void set_server_interceptor_dispatcher_registration (
-			in Components::ContainerPortableInterceptor::ServerInterceptorRegistration registration);
+			in Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration registration);
 
 		void set_client_interceptor_dispatcher_registration (
-			in Components::ContainerPortableInterceptor::ClientInterceptorRegistration registration );
+			in Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration registration );
 
 		void set_servant_interceptor_dispatcher_registration (
 			in Components::ContainerPortableInterceptor::ServantInterceptorRegistration registration );
@@ -633,10 +698,10 @@ module Components {
 		void set_stub_interceptor_dispatcher_registration (
 			in Components::ContainerPortableInterceptor::StubInterceptorRegistration registration );
 
-		Components::ContainerPortableInterceptor::ServerInterceptorRegistration
+		Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration
 			get_server_interceptor_dispatcher_registration ();
 
-		Components::ContainerPortableInterceptor::ClientInterceptorRegistration
+		Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration
 			get_client_interceptor_dispatcher_registration ();
 
 		Components::ContainerPortableInterceptor::ServantInterceptorRegistration
@@ -645,7 +710,7 @@ module Components {
 		Components::ContainerPortableInterceptor::StubInterceptorRegistration
 			get_stub_interceptor_dispatcher_registration();
 
-		void register_servant_locator_for_all (in Components::ContainerPortableInterceptor::ServerContainerInterceptor server_interceptor);
+//		void register_servant_locator_for_all (in Components::ContainerPortableInterceptor::ServerContainerInterceptor server_interceptor);
 
 		Components::ConfigValues
 		get_contract_data ();

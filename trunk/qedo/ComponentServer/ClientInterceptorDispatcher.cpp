@@ -110,7 +110,7 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
 		try {
-			all_client_interceptors_[i].interceptor->send_request( container_info.in() );
+			all_client_interceptors_[i].interceptor_->send_request( container_info.in() );
 		} catch (CORBA::SystemException e)
 		{
 			throw e;
@@ -163,7 +163,7 @@ ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestIn
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
 		try {
-			all_client_interceptors_[i].interceptor->receive_reply( container_info.in() );
+			all_client_interceptors_[i].interceptor_->receive_reply( container_info.in() );
 		} catch (CORBA::SystemException e)
 		{
 			throw e;
@@ -195,7 +195,7 @@ ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientReque
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
 		try {
-			all_client_interceptors_[i].interceptor->receive_user_exception( container_info.in() );
+			all_client_interceptors_[i].interceptor_->receive_exception( container_info.in() );
 		} catch (CORBA::SystemException e)
 		{
 			throw e;
@@ -214,6 +214,68 @@ ClientInterceptorDispatcher::receive_other( PortableInterceptor::ClientRequestIn
 
 }
 
+
+Components::Cookie* 
+ClientInterceptorDispatcher::register_client_interceptor( Components::ContainerPortableInterceptor::ClientContainerInterceptor_ptr ci )
+{
+	#ifdef _DEBUG
+	DEBUG_OUT("ClientInterceptorDispatcher: Client COPI registered for all components");
+#endif
+
+    // Create cookie
+	Cookie_impl* new_cookie = new Cookie_impl();
+
+	ClientInterceptorEntry e;
+	e.interceptor_ = Components::ContainerPortableInterceptor::ClientContainerInterceptor::_duplicate( ci );
+	e.ck_ = new_cookie;
+	e.interceptor_ -> set_slot_id(component_server_->slot_id_);
+	//Qedo::QedoLock l(all_client_interceptors_mutex_);
+	//all_client_interceptors_mutex_.write_lock_object();
+	all_client_interceptors_.push_back(e);
+	//all_client_interceptors_mutex_.unlock_object();
+	new_cookie -> _add_ref();
+	return new_cookie;
+}
+
+
+Components::ContainerPortableInterceptor::ClientContainerInterceptor_ptr 
+ClientInterceptorDispatcher::unregister_client_interceptor( Components::Cookie* ck )
+{
+#ifdef _DEBUG
+	DEBUG_OUT("ClientInterceptorDispatcher: Client COPI unregister_for_all called");
+#endif
+	std::vector <ClientInterceptorEntry>::iterator interceptor_iter;
+
+	for (interceptor_iter = all_client_interceptors_.begin(); interceptor_iter != all_client_interceptors_.end(); interceptor_iter++)
+	{
+
+		if ((*interceptor_iter).ck_->equal(ck))
+		{
+#ifdef _DEBUG
+			DEBUG_OUT ("ClientInterceptorDispatcher: unregister_interceptor(): interceptor found");
+#endif
+			Components::ContainerPortableInterceptor::ClientContainerInterceptor_ptr ret_inter =
+				Components::ContainerPortableInterceptor::ClientContainerInterceptor::_duplicate((*interceptor_iter).interceptor_);
+
+			all_client_interceptors_.erase (interceptor_iter);
+			return ret_inter;			
+			break;
+		}
+	}
+
+	if (interceptor_iter == all_client_interceptors_.end())
+	{
+#ifdef _DEBUG
+		DEBUG_OUT ("ClientInterceptorDispatcher: Unknown interceptor");
+#endif
+	}
+
+return 0; 
+
+}
+
+
+/*
 void
 ClientInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptor_ptr interceptor)
 {
@@ -222,7 +284,7 @@ ClientInterceptorDispatcher::register_interceptor_for_all(Components::ContainerP
 #endif
 
 	ClientInterceptorEntry e;
-	e.interceptor = Components::ContainerPortableInterceptor::ClientContainerInterceptor::_duplicate( interceptor );
+	e.interceptor_ = Components::ContainerPortableInterceptor::ClientContainerInterceptor::_duplicate( interceptor );
 
 	interceptor->set_slot_id(component_server_->slot_id_);
 	//Qedo::QedoLock l(all_client_interceptors_mutex_);
@@ -261,7 +323,7 @@ ClientInterceptorDispatcher::unregister_interceptor_for_all(Components::Containe
 	}
 
 }
-
+*/
 void
 ClientInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* component_server)
 {
