@@ -23,6 +23,7 @@ namespace dinner {
 
 
 ObserverSessionImpl::ObserverSessionImpl()
+: ref_count_ (1)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::ObserverSessionImpl
 // END USER INSERT SECTION ObserverSessionImpl::ObserverSessionImpl
@@ -34,6 +35,31 @@ ObserverSessionImpl::~ObserverSessionImpl()
 // BEGIN USER INSERT SECTION ObserverSessionImpl::~ObserverSessionImpl
 	cout << "ObserverSessionImpl: Destructor called" << endl;
 // END USER INSERT SECTION ObserverSessionImpl::~ObserverSessionImpl
+assert (ref_count_ == 0);
+}
+
+
+void
+ObserverSessionImpl::_add_ref()
+{
+    ++ref_count_;
+}
+
+
+void
+ObserverSessionImpl::_remove_ref()
+{
+    if (--ref_count_ == 0)
+    {
+        delete this;
+    }
+}
+
+
+unsigned long
+ObserverSessionImpl::_get_refcount()
+{
+    return ref_count_;
 }
 
 
@@ -116,7 +142,8 @@ ObserverSessionImpl::push_PhilosopherState(::dinner::PhilosopherState* ev)
 
 
 ObserverImpl::ObserverImpl()
-    : component_(new ObserverSessionImpl())
+: ref_count_ (1)
+, component_(new ObserverSessionImpl())
 {
 // BEGIN USER INSERT SECTION ObserverImpl::ObserverImpl
 // END USER INSERT SECTION ObserverImpl::ObserverImpl
@@ -130,6 +157,31 @@ ObserverImpl::~ObserverImpl()
 // BEGIN USER INSERT SECTION ObserverImpl::~ObserverImpl
 	cout << "ObserverImpl: Destructor called" << endl;
 // END USER INSERT SECTION ObserverImpl::~ObserverImpl
+assert (ref_count_ == 0);
+}
+
+
+void
+ObserverImpl::_add_ref()
+{
+    ++ref_count_;
+}
+
+
+void
+ObserverImpl::_remove_ref()
+{
+    if (--ref_count_ == 0)
+    {
+        delete this;
+    }
+}
+
+
+unsigned long
+ObserverImpl::_get_refcount()
+{
+    return ref_count_;
 }
 
 
@@ -209,6 +261,7 @@ ObserverImpl::ccm_remove()
 
 
 ObserverHomeImpl::ObserverHomeImpl()
+: ref_count_ (1)
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::ObserverHomeImpl
 // END USER INSERT SECTION ObserverHomeImpl::ObserverHomeImpl
@@ -220,6 +273,31 @@ ObserverHomeImpl::~ObserverHomeImpl()
 // BEGIN USER INSERT SECTION ObserverHomeImpl::~ObserverHomeImpl
 	cout << "ObserverHomeImpl: Destructor called" << endl;
 // END USER INSERT SECTION ObserverHomeImpl::~ObserverHomeImpl
+assert (ref_count_ == 0);
+}
+
+
+void
+ObserverHomeImpl::_add_ref()
+{
+    ++ref_count_;
+}
+
+
+void
+ObserverHomeImpl::_remove_ref()
+{
+    if (--ref_count_ == 0)
+    {
+        delete this;
+    }
+}
+
+
+unsigned long
+ObserverHomeImpl::_get_refcount()
+{
+    return ref_count_;
 }
 
 
@@ -227,7 +305,7 @@ void
 ObserverHomeImpl::set_context(Components::CCMContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::dinner::CCM_Observer_Context::_narrow(ctx);
+    context_ = Components::CCMContext::_duplicate(ctx);
 }
 
 

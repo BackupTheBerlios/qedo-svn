@@ -423,13 +423,45 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection(class_name_, 2);
 
 	// constructor
-	out << class_name_ << "::" << class_name_ << "()\n{\n";
+	out << class_name_ << "::" << class_name_ << "()\n";
+	out << ": ref_count_ (1)\n{\n";
 	out.insertUserSection(class_name_ + "::" + class_name_, 0);
 	out << "}\n\n\n";
 
 	// destructor
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
-	out.insertUserSection(class_name_ + "::~" + class_name_, 0);
+	out.insertUserSection(class_name_ + "::~" + class_name_, 1);
+	out.indent();
+	out << "assert (ref_count_ == 0);\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// _add_ref
+	out << "void\n";
+	out << class_name_ << "::_add_ref()\n{\n";
+	out.indent();
+	out << "++ref_count_;\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// _remove_ref
+	out << "void\n";
+	out << class_name_ << "::_remove_ref()\n{\n";
+	out.indent();
+	out << "if (--ref_count_ == 0)\n{\n";
+	out.indent();
+	out << "delete this;\n";
+	out.unindent();
+	out << "}\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// _get_refcount
+	out << "unsigned long\n";
+	out << class_name_ << "::_get_refcount()\n{\n";
+	out.indent();
+	out << "return ref_count_;\n";
+	out.unindent();
 	out << "}\n\n\n";
 	
 	// set_context
@@ -485,13 +517,45 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		out.insertUserSection(class_name_, 2);
 
 		// constructor
-		out << class_name_ << "::" << class_name_ << "()\n{\n";
+		out << class_name_ << "::" << class_name_ << "()\n";
+		out << ": ref_count_ (1)\n{\n";
 		out.insertUserSection(class_name_ + "::" + class_name_, 0);
 		out << "}\n\n\n";
 
 		// destructor
 		out << class_name_ << "::~" << class_name_ << "()\n{\n";
-		out.insertUserSection(class_name_ + "::~" + class_name_, 0);
+		out.insertUserSection(class_name_ + "::~" + class_name_, 1);
+		out.indent();
+		out << "assert (ref_count_ == 0);\n";
+		out.unindent();
+		out << "}\n\n\n";
+
+		// _add_ref
+		out << "void\n";
+		out << class_name_ << "::_add_ref()\n{\n";
+		out.indent();
+		out << "++ref_count_;\n";
+		out.unindent();
+		out << "}\n\n\n";
+
+		// _remove_ref
+		out << "void\n";
+		out << class_name_ << "::_remove_ref()\n{\n";
+		out.indent();
+		out << "if (--ref_count_ == 0)\n{\n";
+		out.indent();
+		out << "delete this;\n";
+		out.unindent();
+		out << "}\n";
+		out.unindent();
+		out << "}\n\n\n";
+
+		// _get_refcount
+		out << "unsigned long\n";
+		out << class_name_ << "::_get_refcount()\n{\n";
+		out.indent();
+		out << "return ref_count_;\n";
+		out.unindent();
 		out << "}\n\n\n";
 
 		// set context
@@ -526,26 +590,53 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// constructor
 	out << class_name_ << "::" << class_name_ << "()\n";
-	out.indent();
-	out << ": component_(new " << mapName(composition->executor_def()) << "())\n";
+	out << ": ref_count_ (1)\n";
+	out << ", component_(new " << mapName(composition->executor_def()) << "())\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
 		out << ", " << segment_seq[i]->name() << "_(new " << mapName(segment_seq[i]) << "())\n";
 	}
-	out.unindent();
 	out << "{\n";
 	out.insertUserSection(class_name_ + "::" + class_name_, 0);
 	out << "}\n\n\n";
 
 	// destructor
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
+	out.insertUserSection(class_name_ + "::~" + class_name_, 1);
 	out.indent();
 	out << "component_->_remove_ref();\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
 		out << segment_seq[i]->name() << "_->_remove_ref();\n";
 	}
+	out << "assert (ref_count_ == 0);\n";
 	out.unindent();
-	out << "\n";
-	out.insertUserSection(class_name_ + "::~" + class_name_, 0);
+	out << "}\n\n\n";
+
+	// _add_ref
+	out << "void\n";
+	out << class_name_ << "::_add_ref()\n{\n";
+	out.indent();
+	out << "++ref_count_;\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// _remove_ref
+	out << "void\n";
+	out << class_name_ << "::_remove_ref()\n{\n";
+	out.indent();
+	out << "if (--ref_count_ == 0)\n{\n";
+	out.indent();
+	out << "delete this;\n";
+	out.unindent();
+	out << "}\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// _get_refcount
+	out << "unsigned long\n";
+	out << class_name_ << "::_get_refcount()\n{\n";
+	out.indent();
+	out << "return ref_count_;\n";
+	out.unindent();
 	out << "}\n\n\n";
 
 	// obtain executor
@@ -673,13 +764,45 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection(class_name_, 2);
 
 	// constructor
-	out << class_name_ << "::" << class_name_ << "()\n{\n";
+	out << class_name_ << "::" << class_name_ << "()\n";
+	out << ": ref_count_ (1)\n{\n";
 	out.insertUserSection(class_name_ + "::" + class_name_, 0);
 	out << "}\n\n\n";
 
 	// destructor
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
-	out.insertUserSection(class_name_ + "::~" + class_name_, 0);
+	out.insertUserSection(class_name_ + "::~" + class_name_, 1);
+	out.indent();
+	out << "assert (ref_count_ == 0);\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// _add_ref
+	out << "void\n";
+	out << class_name_ << "::_add_ref()\n{\n";
+	out.indent();
+	out << "++ref_count_;\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// _remove_ref
+	out << "void\n";
+	out << class_name_ << "::_remove_ref()\n{\n";
+	out.indent();
+	out << "if (--ref_count_ == 0)\n{\n";
+	out.indent();
+	out << "delete this;\n";
+	out.unindent();
+	out << "}\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// _get_refcount
+	out << "unsigned long\n";
+	out << class_name_ << "::_get_refcount()\n{\n";
+	out.indent();
+	out << "return ref_count_;\n";
+	out.unindent();
 	out << "}\n\n\n";
 
 	// set context

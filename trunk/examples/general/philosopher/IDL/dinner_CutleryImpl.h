@@ -16,7 +16,6 @@
 
 
 // BEGIN USER INSERT SECTION file_post
-#include "RefCountLocalObject.h"
 using namespace std;
 // END USER INSERT SECTION file_post
 
@@ -31,18 +30,23 @@ namespace dinner
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_CutlerySessionImpl
 // BEGIN USER INSERT SECTION INHERITANCE_CutlerySessionImpl
-		, public RefCountLocalObject
 // END USER INSERT SECTION INHERITANCE_CutlerySessionImpl
     {
     
     private:
     
+        unsigned long ref_count_;
+        
         ::dinner::CCM_Cutlery_Context_var context_;
         
     public:
     
         CutlerySessionImpl();
-        ~CutlerySessionImpl();
+        virtual ~CutlerySessionImpl();
+        
+        void _add_ref();
+        void _remove_ref();
+        unsigned long _get_refcount();
         
         void set_context(::dinner::CCM_Cutlery_Context_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
@@ -77,18 +81,23 @@ namespace dinner
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_Seg
 // BEGIN USER INSERT SECTION INHERITANCE_Seg
-		, public RefCountLocalObject
 // END USER INSERT SECTION INHERITANCE_Seg
     {
     
     private:
     
+        unsigned long ref_count_;
+        
         ::dinner::CCM_Cutlery_Context_var context_;
         
     public:
     
         Seg();
-        ~Seg();
+        virtual ~Seg();
+        
+        void _add_ref();
+        void _remove_ref();
+        unsigned long _get_refcount();
         
         void set_context(::dinner::CCM_Cutlery_Context_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
@@ -124,12 +133,13 @@ namespace dinner
         : public virtual CORBA::LocalObject
         , public virtual Components::SessionExecutorLocator
 // BEGIN USER INSERT SECTION INHERITANCE_CutleryImpl
-		, public RefCountLocalObject
 // END USER INSERT SECTION INHERITANCE_CutleryImpl
     {
     
     private:
     
+        unsigned long ref_count_;
+        
         ::dinner::CCM_Cutlery_Context_var context_;
         
         CutlerySessionImpl* component_;
@@ -139,7 +149,12 @@ namespace dinner
     public:
     
         CutleryImpl();
-        ~CutleryImpl();
+        virtual ~CutleryImpl();
+        
+        void _add_ref();
+        void _remove_ref();
+        unsigned long _get_refcount();
+        
         
         //
         // IDL:Components/ExecutorLocator/obtain_executor:1.0
@@ -196,17 +211,22 @@ namespace dinner
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_CutleryHome
 // BEGIN USER INSERT SECTION INHERITANCE_CutleryHomeImpl
-		, public RefCountLocalObject
 // END USER INSERT SECTION INHERITANCE_CutleryHomeImpl
     {
     
     private:
     
-        Components::CCMContext_ptr context_;
+        unsigned long ref_count_;
+        
+        Components::CCMContext_var context_;
         
     public:
         CutleryHomeImpl();
-        ~CutleryHomeImpl();
+        virtual ~CutleryHomeImpl();
+        
+        void _add_ref();
+        void _remove_ref();
+        unsigned long _get_refcount();
         
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0

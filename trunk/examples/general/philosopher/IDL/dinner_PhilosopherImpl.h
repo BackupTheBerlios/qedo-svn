@@ -16,7 +16,6 @@
 
 
 // BEGIN USER INSERT SECTION file_post
-#include "RefCountLocalObject.h"
 #include "ExecutorValuetypes.h"
 
 using namespace std;
@@ -48,19 +47,24 @@ namespace dinner
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_PhilosopherSessionImpl
 // BEGIN USER INSERT SECTION INHERITANCE_PhilosopherSessionImpl
-		, public RefCountLocalObject
 		, JTCThreadWithTimer
 // END USER INSERT SECTION INHERITANCE_PhilosopherSessionImpl
     {
     
     private:
     
+        unsigned long ref_count_;
+        
         ::dinner::CCM_Philosopher_Context_var context_;
         
     public:
     
         PhilosopherSessionImpl();
-        ~PhilosopherSessionImpl();
+        virtual ~PhilosopherSessionImpl();
+        
+        void _add_ref();
+        void _remove_ref();
+        unsigned long _get_refcount();
         
         void set_context(::dinner::CCM_Philosopher_Context_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
@@ -126,12 +130,13 @@ namespace dinner
         : public virtual CORBA::LocalObject
         , public virtual Components::SessionExecutorLocator
 // BEGIN USER INSERT SECTION INHERITANCE_PhilosopherImpl
-		, public RefCountLocalObject
 // END USER INSERT SECTION INHERITANCE_PhilosopherImpl
     {
     
     private:
     
+        unsigned long ref_count_;
+        
         ::dinner::CCM_Philosopher_Context_var context_;
         
         PhilosopherSessionImpl* component_;
@@ -139,7 +144,12 @@ namespace dinner
     public:
     
         PhilosopherImpl();
-        ~PhilosopherImpl();
+        virtual ~PhilosopherImpl();
+        
+        void _add_ref();
+        void _remove_ref();
+        unsigned long _get_refcount();
+        
         
         //
         // IDL:Components/ExecutorLocator/obtain_executor:1.0
@@ -196,17 +206,22 @@ namespace dinner
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_PhilosopherHome
 // BEGIN USER INSERT SECTION INHERITANCE_PhilosopherHomeImpl
-		, public RefCountLocalObject
 // END USER INSERT SECTION INHERITANCE_PhilosopherHomeImpl
     {
     
     private:
     
-        Components::CCMContext_ptr context_;
+        unsigned long ref_count_;
+        
+        Components::CCMContext_var context_;
         
     public:
         PhilosopherHomeImpl();
-        ~PhilosopherHomeImpl();
+        virtual ~PhilosopherHomeImpl();
+        
+        void _add_ref();
+        void _remove_ref();
+        unsigned long _get_refcount();
         
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0

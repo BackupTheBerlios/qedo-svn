@@ -244,6 +244,7 @@ PhilosopherSessionImpl::run()
 
 
 PhilosopherSessionImpl::PhilosopherSessionImpl()
+: ref_count_ (1)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::PhilosopherSessionImpl
 	my_thread_handle_ = this;
@@ -257,6 +258,31 @@ PhilosopherSessionImpl::~PhilosopherSessionImpl()
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::~PhilosopherSessionImpl
 	cout << "PhilosopherSessionImpl: Destructor called" << endl;
 // END USER INSERT SECTION PhilosopherSessionImpl::~PhilosopherSessionImpl
+assert (ref_count_ == 0);
+}
+
+
+void
+PhilosopherSessionImpl::_add_ref()
+{
+    ++ref_count_;
+}
+
+
+void
+PhilosopherSessionImpl::_remove_ref()
+{
+    if (--ref_count_ == 0)
+    {
+        delete this;
+    }
+}
+
+
+unsigned long
+PhilosopherSessionImpl::_get_refcount()
+{
+    return ref_count_;
 }
 
 
@@ -368,7 +394,8 @@ PhilosopherSessionImpl::name()
 
 
 PhilosopherImpl::PhilosopherImpl()
-    : component_(new PhilosopherSessionImpl())
+: ref_count_ (1)
+, component_(new PhilosopherSessionImpl())
 {
 // BEGIN USER INSERT SECTION PhilosopherImpl::PhilosopherImpl
 // END USER INSERT SECTION PhilosopherImpl::PhilosopherImpl
@@ -382,6 +409,31 @@ PhilosopherImpl::~PhilosopherImpl()
 // BEGIN USER INSERT SECTION PhilosopherImpl::~PhilosopherImpl
 	cout << "PhilosopherImpl: Destructor called" << endl;
 // END USER INSERT SECTION PhilosopherImpl::~PhilosopherImpl
+assert (ref_count_ == 0);
+}
+
+
+void
+PhilosopherImpl::_add_ref()
+{
+    ++ref_count_;
+}
+
+
+void
+PhilosopherImpl::_remove_ref()
+{
+    if (--ref_count_ == 0)
+    {
+        delete this;
+    }
+}
+
+
+unsigned long
+PhilosopherImpl::_get_refcount()
+{
+    return ref_count_;
 }
 
 
@@ -461,6 +513,7 @@ PhilosopherImpl::ccm_remove()
 
 
 PhilosopherHomeImpl::PhilosopherHomeImpl()
+: ref_count_ (1)
 {
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl::PhilosopherHomeImpl
 // END USER INSERT SECTION PhilosopherHomeImpl::PhilosopherHomeImpl
@@ -472,6 +525,31 @@ PhilosopherHomeImpl::~PhilosopherHomeImpl()
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl::~PhilosopherHomeImpl
 	cout << "PhilosopherHomeImpl: Destructor called" << endl;
 // END USER INSERT SECTION PhilosopherHomeImpl::~PhilosopherHomeImpl
+assert (ref_count_ == 0);
+}
+
+
+void
+PhilosopherHomeImpl::_add_ref()
+{
+    ++ref_count_;
+}
+
+
+void
+PhilosopherHomeImpl::_remove_ref()
+{
+    if (--ref_count_ == 0)
+    {
+        delete this;
+    }
+}
+
+
+unsigned long
+PhilosopherHomeImpl::_get_refcount()
+{
+    return ref_count_;
 }
 
 
@@ -479,7 +557,7 @@ void
 PhilosopherHomeImpl::set_context(Components::CCMContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::dinner::CCM_Philosopher_Context::_narrow(ctx);
+    context_ = Components::CCMContext::_duplicate(ctx);
 }
 
 

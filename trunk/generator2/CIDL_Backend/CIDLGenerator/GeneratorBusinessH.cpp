@@ -471,12 +471,16 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
+	out << "unsigned long ref_count_;\n\n";
     out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
 	out.unindent();
 	out << "public:\n\n";
 	out.indent();
 	out << executor_class_name << "();\n";
-	out << "~" << executor_class_name << "();\n\n";
+	out << "virtual ~" << executor_class_name << "();\n\n";
+	out << "void _add_ref();\n";
+	out << "void _remove_ref();\n";
+	out << "unsigned long _get_refcount();\n\n";
 	out << "void set_context(" << mapFullNameLocal(composition->ccm_component()) << "_Context_ptr context)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
     out << "void configuration_complete()\n";
@@ -515,12 +519,16 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 		out << "{\n\n";
 		out << "private:\n\n";
 		out.indent();
+		out << "unsigned long ref_count_;\n\n";
 		out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
 		out.unindent();
 		out << "public:\n\n";
 		out.indent();
 		out << segment_class_name << "();\n";
-		out << "~" << segment_class_name << "();\n\n";
+		out << "virtual ~" << segment_class_name << "();\n\n";
+		out << "void _add_ref();\n";
+		out << "void _remove_ref();\n";
+		out << "unsigned long _get_refcount();\n\n";
 		out << "void set_context(" << mapFullNameLocal(composition->ccm_component()) << "_Context_ptr context)\n";
 		out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
 		out << "void configuration_complete()\n";
@@ -558,6 +566,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
+	out << "unsigned long ref_count_;\n\n";
     out << mapFullNameLocal(composition->ccm_component()) << "_Context_var context_;\n\n";
 	out << mapName(composition->executor_def()) << "* component_;\n\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
@@ -567,7 +576,10 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "public:\n\n";
 	out.indent();
     out << executor_locator_class_name << "();\n";
-    out << "~" << executor_locator_class_name << "();\n";
+    out << "virtual ~" << executor_locator_class_name << "();\n\n";
+	out << "void _add_ref();\n";
+	out << "void _remove_ref();\n";
+	out << "unsigned long _get_refcount();\n\n";
 	IR__::InterfaceDef_ptr executor_locator;
 	// for service extension
 	if(composition->lifecycle() == 0)
@@ -597,12 +609,16 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "{\n\n";
 	out << "private:\n\n";
 	out.indent();
+	out << "unsigned long ref_count_;\n\n";
     out << "Components::CCMContext_var context_;\n\n";
 	out.unindent();
 	out << "public:\n";
 	out.indent();
     out << home_class_name << "();\n";
-    out << "~" << home_class_name << "();\n\n";
+    out << "virtual ~" << home_class_name << "();\n\n";
+	out << "void _add_ref();\n";
+	out << "void _remove_ref();\n";
+	out << "unsigned long _get_refcount();\n\n";
 	out << "//\n// IDL:Components/HomeExecutorBase/set_context:1.0\n//\n";
 	out << "virtual void set_context (Components::CCMContext_ptr ctx)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";

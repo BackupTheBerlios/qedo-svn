@@ -219,9 +219,6 @@ copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
 				RelativePath="ExecutorValuetypes.cpp">
 			</File>
 			<File
-				RelativePath="RefCountLocalObject.cpp">
-			</File>
-			<File
 				RelativePath="..\IDL\dinner_CutleryImpl.cpp">
 			</File>
 			<File
@@ -236,9 +233,6 @@ copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
 				RelativePath="ExecutorValuetypes.h">
-			</File>
-			<File
-				RelativePath="RefCountLocalObject.h">
 			</File>
 			<File
 				RelativePath="..\IDL\dinner_CutleryImpl.h">

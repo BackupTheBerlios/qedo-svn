@@ -16,7 +16,6 @@
 
 
 // BEGIN USER INSERT SECTION file_post
-#include "RefCountLocalObject.h"
 // END USER INSERT SECTION file_post
 
 
@@ -30,18 +29,23 @@ namespace dinner
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_ObserverSessionImpl
 // BEGIN USER INSERT SECTION INHERITANCE_ObserverSessionImpl
-		, public RefCountLocalObject
 // END USER INSERT SECTION INHERITANCE_ObserverSessionImpl
     {
     
     private:
     
+        unsigned long ref_count_;
+        
         ::dinner::CCM_Observer_Context_var context_;
         
     public:
     
         ObserverSessionImpl();
-        ~ObserverSessionImpl();
+        virtual ~ObserverSessionImpl();
+        
+        void _add_ref();
+        void _remove_ref();
+        unsigned long _get_refcount();
         
         void set_context(::dinner::CCM_Observer_Context_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
@@ -80,12 +84,13 @@ namespace dinner
         : public virtual CORBA::LocalObject
         , public virtual Components::SessionExecutorLocator
 // BEGIN USER INSERT SECTION INHERITANCE_ObserverImpl
-		, public RefCountLocalObject
 // END USER INSERT SECTION INHERITANCE_ObserverImpl
     {
     
     private:
     
+        unsigned long ref_count_;
+        
         ::dinner::CCM_Observer_Context_var context_;
         
         ObserverSessionImpl* component_;
@@ -93,7 +98,12 @@ namespace dinner
     public:
     
         ObserverImpl();
-        ~ObserverImpl();
+        virtual ~ObserverImpl();
+        
+        void _add_ref();
+        void _remove_ref();
+        unsigned long _get_refcount();
+        
         
         //
         // IDL:Components/ExecutorLocator/obtain_executor:1.0
@@ -150,17 +160,22 @@ namespace dinner
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_ObserverHome
 // BEGIN USER INSERT SECTION INHERITANCE_ObserverHomeImpl
-		, public RefCountLocalObject
 // END USER INSERT SECTION INHERITANCE_ObserverHomeImpl
     {
     
     private:
     
-        Components::CCMContext_ptr context_;
+        unsigned long ref_count_;
+        
+        Components::CCMContext_var context_;
         
     public:
         ObserverHomeImpl();
-        ~ObserverHomeImpl();
+        virtual ~ObserverHomeImpl();
+        
+        void _add_ref();
+        void _remove_ref();
+        unsigned long _get_refcount();
         
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0
