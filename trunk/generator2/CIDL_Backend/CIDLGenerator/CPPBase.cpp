@@ -115,6 +115,29 @@ CPPBase::mapFullName(IR__::Contained_ptr obj)
 
 
 std::string
+CPPBase::mapFullNameWithPrefix(IR__::Contained_ptr obj, std::string prefix)
+{
+	std::string name;
+	name = mapFullName(obj);
+
+	std::string::size_type pos;
+	pos = name.find("::");
+	if(pos == 0)
+	{
+		pos += 2;
+	}
+	else
+	{
+		pos = 0;
+	}
+
+	name.insert(pos, prefix);
+
+	return name;
+}
+
+
+std::string
 CPPBase::mapFullNameLocal(IR__::Contained_ptr obj)
 {
 	std::string name;

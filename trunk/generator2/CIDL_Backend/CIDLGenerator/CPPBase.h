@@ -53,6 +53,7 @@ protected:
 	std::string mapName(std::string name);
 	std::string mapName(IR__::Contained_ptr obj);
 	std::string mapFullName(IR__::Contained_ptr obj);
+	std::string mapFullNameWithPrefix(IR__::Contained_ptr obj, std::string prefix);
 	std::string mapFullNameLocal(IR__::Contained_ptr obj);
 	std::string mapFullNameServant(IR__::Contained_ptr obj);
 	std::string mapFullNamePOA(IR__::Contained_ptr obj);
