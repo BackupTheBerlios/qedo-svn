@@ -66,7 +66,7 @@
 
 char *  global_input_file_name;
 
-#if WIN32
+#if _WIN32
 #define popen _popen
 #endif
 %}
@@ -98,7 +98,6 @@ frontend_feed (
   ParseCommandLineOptions(argc,argv);
 
   filename = options.filename;
-    filename = options.filename;
 	global_len= strlen(filename);
 	global_input_file_name = new char[global_len];
 	strcpy(global_input_file_name,options.filename);
@@ -124,7 +123,7 @@ frontend_feed (
   }
   strcat(buf,filename);
 
-  fprintf(stderr,"%s\n",buf);
+  std::cout << "precompiling : " << buf << std::endl;
   if ( !(yyin = popen( buf, "r")) ) {
     fprintf( stderr, "can not open input file <%s>\n", filename);
     return (2);
