@@ -1548,6 +1548,18 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out.unindent();
 	out << "}\n";
 	out << "catch (CORBA::SystemException&)\n{\n";
+	switch (lc) {
+	case (CIDL::lc_Session):
+        out << class_name_ << "::create()\n";
+		out << "throw(CORBA::SystemException, Components::CreateFailure)\n{\n";
+		break;
+	case (CIDL::lc_Entity):
+        out << class_name_ << "::create(" << mapFullNamePK(home->primary_key()) << "* pkey)\n";
+		out << "throw(CORBA::SystemException, Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey)\n{\n";
+		break;
+	default:
+		out << "// not supported lifecycle\n";
+	}
 	out.indent();
 	out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
 	out << "throw Components::CreateFailure();\n";
@@ -1585,6 +1597,17 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
 	out << mapFullNameServant(home->managed_component()) << "::cleaner_.factory_);\n\n";
 	out << "// Extract our Key out of the object reference\n";
+	switch (lc) {
+	case (CIDL::lc_Session):
+        out << "DEBUG_OUT (\"Home_servant: create() called\");\n\n";
+		break;
+	case (CIDL::lc_Entity):
+        out << "DEBUG_OUT (\"Home_servant: create(" << mapFullNamePK(home->primary_key()) << "*" << ") called\");\n\n";
+		break;
+	default:
+		out << "// not supported lifecycle\n";
+	}
+
 	out << "#ifdef TAO_ORB\n";
 	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
 	out << "#else\n";
@@ -1639,7 +1662,16 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "Components::EnterpriseComponent_var enterprise_component;\n\n";
 	out << "try\n{\n";
 	out.indent();
-	out << "enterprise_component = home_executor->create();\n";
+	switch (lc) {
+	case (CIDL::lc_Session):
+        out << "enterprise_component = home_executor->create();\n";
+		break;
+	case (CIDL::lc_Entity):
+        out << "enterprise_component = home_executor->create(pkey);\n";
+		break;
+	default:
+		out << "// not supported lifecycle\n";
+	}
 	out.unindent();
 	out << "}\n";
 	out << "catch (Components::CCMException&)\n{\n";
@@ -1660,44 +1692,54 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out.unindent();
 	out << "}\n\n";
 	switch (lc) {
-		case (CIDL::lc_Session):
+	case (CIDL::lc_Session):
 		{
             out << "Components::SessionComponent_var session_component;\n\n";
-			break;
-		}
-		case (CIDL::lc_Extension) :
-		{
-			out << "Components::ExtensionComponent_var extension_component;\n\n";
-			break;
-		}
-		default:
-		{
-			// not supported lifecycle
-		}
+		    break;
+        }
+	case (CIDL::lc_Entity):
+        {
+            out << "Components::EntityComponent_var entity_component;\n\n";
+		    break;
+        }
+	case (CIDL::lc_Extension) :
+        {
+		    out << "Components::ExtensionComponent_var extension_component;\n\n";
+		    break;
+        }
+	default:
+        {
+		    out << "// not supported lifecycle\n";
+        }
 	}
 	out << "try\n{\n";
 	out.indent();
 	switch (lc) {
-		case (CIDL::lc_Session):
-		{
-			out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
-			break;
-		}
-		case (CIDL::lc_Extension) :
-		{
-			out << "extension_component = Components::ExtensionComponent::_narrow (enterprise_component);\n";
-			break;
-		}
-		default:
-		{
-			// not supported lifecycle
-		}
+	    case (CIDL::lc_Session):
+        {
+		    out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
+		    break;
+        }
+	    case (CIDL::lc_Entity):
+        {
+		    out << "entity_component = Components::EntityComponent::_narrow (enterprise_component);\n";
+		    break;
+        }
+	    case (CIDL::lc_Extension) :
+        {
+		    out << "extension_component = Components::ExtensionComponent::_narrow (enterprise_component);\n";
+		    break;
+        }
+	    default:
+        {
+		    out << "// not supported lifecycle\n";
+        }
 	}
 	out.unindent();
 	out << "}\n";
 	out << "catch (CORBA::SystemException&)\n{\n";
 	out.indent();
-	out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
+	//out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
@@ -1711,20 +1753,25 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
    	};	
 	out << "// Set context on component\n";
 	switch (lc) {
-		case (CIDL::lc_Session):
+	case (CIDL::lc_Session):
 		{
-			out << "session_component->set_session_context (new_context.in());\n\n";
-			break;
-		}
-		case (CIDL::lc_Extension) :
+		    out << "session_component->set_session_context (new_context.in());\n\n";
+		    break;
+        }
+	case (CIDL::lc_Entity):
+        {
+		    out << "entity_component->set_entity_context (new_context.in());\n\n";
+		    break;
+        }
+	case (CIDL::lc_Extension) :
 		{
-			out << "extension_component->set_extension_context (new_context.in());\n\n";
-			break;
+		    out << "extension_component->set_extension_context (new_context.in());\n\n";
+		    break;
 		}
-		default:
-		{
-			// not supported lifecycle
-		}
+	default:
+        {
+		    out << "// not supported lifecycle\n";
+        }
 	}
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
@@ -1754,6 +1801,46 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
+	
+	switch (lc) {
+	case (CIDL::lc_Session):
+        // create_component
+		out << "Components::CCMObject_ptr\n";
+		out << class_name_ << "::create_component()\n";
+		out << "throw(CORBA::SystemException,Components::CreateFailure)\n{\n";
+		out.indent();
+		out << "return this->create();\n";
+		out.unindent();
+		out << "}\n\n\n";
+		break;
+	case (CIDL::lc_Entity):
+        out << mapFullName(component_) << "_ptr\n";
+		out << class_name_ << "::find_by_primary_key(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
+		out << "throw(CORBA::SystemException, Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey)\n";
+		out << "{\n";
+		out.indent();
+		out << "return 0;\n";
+		out.unindent();
+		out << "}\n\n";
+
+		out << "void\n";
+		out << class_name_ << "::remove(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
+		out << "throw(CORBA::SystemException, Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey)\n";
+		out << "{\n";
+		out << "}\n\n";
+
+		out << mapFullNamePK(home->primary_key()) << "*\n";
+		out << class_name_ << "::get_primary_key(" << mapFullName(component_) << "_ptr comp)\n";
+        out << "throw(CORBA::SystemException)\n";
+		out << "{\n";
+		out.indent();
+		out << "return 0;\n";
+		out.unindent();
+		out << "}\n\n";
+		break;
+	default:
+		out << "// not supported lifecycle\n";
+	}
 }
 
 

@@ -58,6 +58,7 @@ protected:
 	std::string mapFullNameLocal(IR__::Contained_ptr obj);
 	std::string mapFullNameServant(IR__::Contained_ptr obj);
 	std::string mapFullNamePOA(IR__::Contained_ptr obj);
+	std::string mapFullNamePK(IR__::Contained_ptr obj);
 
 	char* getAbsoluteName (IR__::Contained_ptr contained, std::string delim = "::")
 		throw ( CannotMapAbsoluteName );

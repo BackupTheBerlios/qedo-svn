@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.26 2003/12/09 07:58:10 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.26.2.1 2003/12/19 14:09:24 hao Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -324,7 +324,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	}
 	else if (! strcmp (container_type_string, "PROCESS"))
 	{
-			container_type = CT_PROCESS;
+		container_type = CT_PROCESS;
 	}
 	else if (! strcmp (container_type_string, "ENTITY"))
 	{

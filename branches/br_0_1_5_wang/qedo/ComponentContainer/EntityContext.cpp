@@ -20,67 +20,36 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __ENTITY_HOME_SERVANT_H__
-#define __ENTITY_HOME_SERVANT_H__
+#include "EntityContext.h"
+#include "Output.h"
 
-//#include "HomeServantBase.h"
-#include "CCMHomeServant.h"
-#include "Util.h"
+static char rcsid[] UNUSED = "$Id: EntityContext.cpp,v 1.1.4.1 2003/12/19 14:09:24 hao Exp $";
 
 
 namespace Qedo {
+	
 
-
-/**
- * @addtogroup ComponentContainer
- * @{
- */
-
-
-/**
- * home servant for entity components
- */
-class CONTAINERDLL_API EntityHomeServant : public CCMHomeServant
-	//:public HomeServantBase
+EntityContext::EntityContext()
 {
-private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr exec_loc);
+}
 
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
 
-public:
-	/**
-	 * constructor
-	 */
-	EntityHomeServant();
+EntityContext::~EntityContext()
+{
+	DEBUG_OUT ( "EntityContext: Destructor called" );
+}
 
-	/**
-	 * copy constructor
-	 */
-	EntityHomeServant (const EntityHomeServant&);
 
-	/**
-	 * assignment operator
-	 */
-	EntityHomeServant& operator= (const EntityHomeServant&);
+CORBA::Object_ptr 
+EntityContext::get_CCM_object()
+{
+	return ccm_object_executor_->get_component();
+}
 
-	/**
-	 * destructor
-	 */
-	~EntityHomeServant();
-};
+Components::PrimaryKeyBase* 
+EntityContext::get_primary_key()
+{
+	return 0;
+}
 
-/** @} */
-
-} // namespace Qedo
-
-#endif
-
+} // namepscae Qedo

@@ -41,6 +41,7 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "#include <CORBA.h>\n";
 	out << "#include \"" << file_prefix_ << "_LOCAL_skel.h\"\n";
 	out << "#include \"SessionContext.h\"\n";
+	out << "#include \"EntityContext.h\"\n";
 	out << "#include \"ExtensionContext.h\"\n";
 	out << "#include \"ServantBase.h\"\n";
 	out << "#ifndef _QEDO_NO_STREAMS\n";
@@ -50,7 +51,8 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "#ifndef _QEDO_NO_QOS\n";
 	out << "#include \"ExtensionHomeServant.h\"\n\n\n";
 	out << "#endif\n";
-	out << "#include \"SessionHomeServant.h\"\n\n\n";
+	out << "#include \"SessionHomeServant.h\"\n";
+	out << "#include \"EntityHomeServant.h\"\n\n\n";
 
 	//
 	// dynamic library identifier
@@ -783,20 +785,25 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component, CIDL::Lif
 	out.indent();
 	out << ": public " << mapFullNameLocal(component) << "_ContextImpl\n";
 	switch (lc) {
-		case (CIDL::lc_Session) :
+	case (CIDL::lc_Session) :
 		{
             out << ", public Qedo::SessionContext\n";
-			break;
-		}
-		case (CIDL::lc_Extension) :
-		{
-			out << ", public Qedo::ExtensionContext\n";
-			break;
-		}
-		default :
-		{
-			// not supported lifecycle
-		}
+		    break;
+        }
+	case (CIDL::lc_Entity) :
+        {
+            out << ", public Qedo::EntityContext\n";
+		    break;
+        }
+	case (CIDL::lc_Extension) :
+        {
+		    out << ", public Qedo::ExtensionContext\n";
+		    break;
+        }
+	default :
+        {
+		    out << "// not supported lifecycle\n";
+        }
 	}
 
 	out.unindent();
@@ -906,20 +913,25 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out.indent();
 	out << ": public " << mapFullNamePOA(home) << "\n";
 	switch (lc) {
-		case (CIDL::lc_Session) :
+	case (CIDL::lc_Session) :
 		{
-			out << ", public Qedo::SessionHomeServant\n";
-			break;
-		}
-		case (CIDL::lc_Extension) :
-		{
-			out << ",public Qedo::ExtensionHomeServant\n";
-			break;
-		}
-		default:
-		{
-			// not supported lifecycle
-		}
+		    out << ", public Qedo::SessionHomeServant\n";
+		    break;
+        }
+	case (CIDL::lc_Entity) :
+        {
+		    out << ", public Qedo::EntityHomeServant\n";
+		    break;
+        }
+	case (CIDL::lc_Extension) :
+        {
+		    out << ",public Qedo::ExtensionHomeServant\n";
+		    break;
+        }
+	default:
+        {
+		    out << "// not supported lifecycle\n";
+        }
 	}
 
 	out.unindent();
@@ -935,6 +947,32 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "// COACH extension\n";
 	out << "Components::CCMObject_ptr create_component_with_config(const Components::ConfigValues& config)\n";
 	out << "	throw(CORBA::SystemException, Components::CreateFailure);\n";
+	switch (lc) {
+	case (CIDL::lc_Session) :
+		out << mapFullName(component_) << "_ptr create()\n"; 
+		out << "	throw(CORBA::SystemException, Components::CreateFailure);\n\n";
+		out << "Components::CCMObject_ptr create_component()\n";
+		out << "	throw(CORBA::SystemException,Components::CreateFailure);\n";
+		break;
+	case (CIDL::lc_Entity) :
+		out << mapFullName(component_) << "_ptr create(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
+		out << "	throw(CORBA::SystemException, Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey);\n\n";
+
+		out << mapFullName(component_) << "_ptr find_by_primary_key(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
+		out << "	throw(CORBA::SystemException, Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
+
+		out << "void remove(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
+		out << "	throw(CORBA::SystemException, Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
+
+		out << mapFullNamePK(home->primary_key()) << "* get_primary_key(" << mapFullName(component_) << "_ptr comp)\n"; 
+		out << "	throw(CORBA::SystemException);\n\n";
+		break;
+	case (CIDL::lc_Extension) :
+		out << ",public Qedo::ExtensionHomeServant\n";
+		break;
+	default:
+		out << "// not supported lifecycle\n";
+	}	
 }
 
 

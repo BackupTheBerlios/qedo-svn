@@ -401,8 +401,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "    throw (CORBA::SystemException, Components::InvalidConfiguration);\n\n";
     out << "void remove()\n";
 	out << "    throw (CORBA::SystemException);\n\n";
-	// for service extension
-	if(composition->lifecycle() == 0)
+	if(composition->lifecycle() == CIDL::lc_Service)
 	{
 		out << "void preinvoke(const char* comp_id, const char* operation)\n";
 		out << "    throw (CORBA::SystemException);\n\n";
@@ -493,6 +492,11 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 				out << ", public virtual Components::SessionExecutorLocator\n";
 				break;
 			}
+        case (CIDL::lc_Entity) :
+            {
+		        out << ", public virtual Components::EntityExecutorLocator\n";
+		        break;
+            }
 		case (CIDL::lc_Extension) :
 			{
 				out << ", public virtual Components::ExtensionExecutorLocator\n";
@@ -539,6 +543,11 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 			{
 				executor_locator = IR__::InterfaceDef::_narrow(repository_->lookup_id("IDL:Components/SessionExecutorLocator:1.0"));
 				break;
+			}
+        case (CIDL::lc_Entity) : 
+			{
+				executor_locator = IR__::InterfaceDef::_narrow(repository_->lookup_id("IDL:Components/EntityExecutorLocator:1.0"));
+		        break;
 			}
 		case (CIDL::lc_Extension) :
 			{
@@ -587,8 +596,28 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "virtual void set_context (Components::HomeContext_ptr ctx)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
     out << "//\n// IDL:.../create:1.0\n//\n";
-    out << "virtual ::Components::EnterpriseComponent_ptr create()\n";
-	out << "    throw (CORBA::SystemException, Components::CreateFailure);\n";
+	switch(composition->lifecycle())
+	{
+	case CIDL::lc_Session :
+		out << "virtual ::Components::EnterpriseComponent_ptr create()\n";
+		out << "    throw (CORBA::SystemException, Components::CreateFailure);\n";
+		break;
+	case CIDL::lc_Entity :
+		out << "virtual ::Components::EnterpriseComponent_ptr create(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey" << ")\n";
+		out << "    throw(CORBA::SystemException, Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey);\n\n";
+
+		out << "virtual ::Components::EnterpriseComponent_ptr find_by_primary_key(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n"; 
+		out << "	throw(CORBA::SystemException, Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
+
+		out << "void remove(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n"; 
+		out << "	throw(CORBA::SystemException, Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
+
+		//get_primary_key(...)???
+
+		break;
+	default :
+		out << "// not supported lifecycle\n";
+	}
 	doHome(composition->ccm_home());
 	out.unindent();
 	out << "\n";

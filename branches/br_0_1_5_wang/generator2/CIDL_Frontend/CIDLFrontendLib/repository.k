@@ -1026,6 +1026,8 @@ HomeDcl(home_head=HomeHeader(name, base, ident_list, comp, key), def_list)
       IR__::ComponentDef_ptr component_ptr;
       component_ptr = IR__::ComponentDef::_narrow(comp->symtab_entry->irobj);
       NOT_NIL(component_ptr);
+      
+      //primary key
       IR__::ValueDef_ptr value;
       with(key) {
         NilIdentifier() : { value = IR__::ValueDef::_nil(); }
@@ -1034,6 +1036,7 @@ HomeDcl(home_head=HomeHeader(name, base, ident_list, comp, key), def_list)
           NOT_NIL(value);
         }
       }
+      
       // create HomeDef
       IR__::HomeDef_ptr home;
       IR__::Container_ptr container;
@@ -1041,6 +1044,14 @@ HomeDcl(home_head=HomeHeader(name, base, ident_list, comp, key), def_list)
       try {
         home = container->create_home(get_repid(def_v,name), name->get_name(),
           "1.0", basehome, component_ptr, supports, value);
+        if(!CORBA::is_nil(value))
+        {
+			string strTemp = "";
+			strTemp.append(get_repid_ident(key));
+			int iPos = strTemp.rfind("/");
+			strTemp.insert(iPos+1, "pk_");
+			home->create_primary_key(strTemp.c_str(), key->get_name(), "1.0", value);
+		}
       }
       catch (...) {
         Error("Exception in creating home %k\n", name, name);
