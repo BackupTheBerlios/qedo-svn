@@ -93,7 +93,7 @@ main
 	//
 	string target;
 	repository = new QEDO_ComponentRepository::CIDLRepository_impl ( orb, root_poa );
-	if ( !strcmp ( argv[1], "--testmode" ) ) {
+	if ( argc >= 2 && !strcmp ( argv[1], "--testmode" ) ) {
 		frontend_replacement_feed ( repository );
 	}
 	else {
