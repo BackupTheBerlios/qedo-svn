@@ -3,13 +3,19 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.6 2003/08/08 08:32:10 stoinski Exp $
+// $Id: main.cpp,v 1.7 2003/09/11 11:52:41 boehme Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.6 2003/08/08 08:32:10 stoinski Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.7 2003/09/11 11:52:41 boehme Exp $";
 
+#ifdef ORBACUS_ORB
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
+#else
+#include <CORBA.h>
+#include <CosNaming.h>
+#endif
+
 #include "Components.h"
 
 #include "ClientValuetypes.h"
@@ -18,6 +24,11 @@ static char rcsid[] = "$Id: main.cpp,v 1.6 2003/08/08 08:32:10 stoinski Exp $";
 
 #include <iostream>
 
+#ifdef _WIN32
+#define sleep(x)  Sleep(x*1000)
+#else
+#include <unistd.h>
+#endif
 using namespace std;
 
 Components::Deployment::ServerActivator_ptr
@@ -116,9 +127,9 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 
 	try
 	{
-		component_installer->install ("PHILOSOPHER/1.0", "philosopherS.dll;create_PhilosopherHomeS;philosopherE.dll;create_PhilosopherHomeE");
-		component_installer->install ("CUTLERY/1.0", "philosopherS.dll;create_CutleryHomeS;philosopherE.dll;create_CutleryHomeE");
-		component_installer->install ("OBSERVER/1.0", "philosopherS.dll;create_ObserverHomeS;philosopherE.dll;create_ObserverHomeE");
+		component_installer->install ("PHILOSOPHER/1.0", "libphilosopherS.so;create_PhilosopherHomeS;libphilosopherE.so;create_PhilosopherHomeE");
+		component_installer->install ("CUTLERY/1.0", "libphilosopherS.so;create_CutleryHomeS;libphilosopherE.so;create_CutleryHomeE");
+		component_installer->install ("OBSERVER/1.0", "libphilosopherS.so;create_ObserverHomeS;libphilosopherE.so;create_ObserverHomeE");
 	}
 	catch (Components::Deployment::InvalidLocation&)
 	{
@@ -144,6 +155,7 @@ main (int argc, char** argv)
     orb->register_value_factory ("IDL:omg.org/Components/EmitterDescription:1.0", new EmitterDescriptionFactory_impl());
     orb->register_value_factory ("IDL:omg.org/Components/ConsumerDescription:1.0", new ConsumerDescriptionFactory_impl());
     orb->register_value_factory ("IDL:omg.org/Components/ComponentPortDescription:1.0", new ComponentPortDescriptionFactory_impl());
+    orb->register_value_factory ("IDL:omg.org/Components/Cookie:1.0", new CookieFactory_impl());
 
 	CosNaming::NamingContext_var ns;
 
@@ -193,11 +205,14 @@ main (int argc, char** argv)
 
 	// Create Component Server
 	Components::ConfigValues config;
+	Components::ConfigValues config1;
 	Components::Deployment::ComponentServer_var component_server;
+	Components::Deployment::ComponentServer_var component_server1;
+	Components::Deployment::ComponentServer_var component_server2;
 
 	try
 	{
-		component_server = 	server_activator->create_component_server (config);
+		component_server = 	server_activator->create_component_server (config1);
 	}
 	catch (CORBA::Exception&)
 	{
@@ -212,9 +227,47 @@ main (int argc, char** argv)
 		orb->destroy();
 		exit (1);
 	}
+#if 0
+	try
+	{
+		component_server1 = 	server_activator->create_component_server (config1);
+	}
+	catch (CORBA::Exception&)
+	{
+		cerr << "Exception during test run" << endl;
+		orb->destroy();
+		exit (1);
+	}
 
+	if (CORBA::is_nil (component_server1))
+	{
+		cerr << "I got a nil reference for the created Component Server" << endl;
+		orb->destroy();
+		exit (1);
+	}
+
+	try
+	{
+		component_server2 = 	server_activator->create_component_server (config1);
+	}
+	catch (CORBA::Exception&)
+	{
+		cerr << "Exception during test run" << endl;
+		orb->destroy();
+		exit (1);
+	}
+
+	if (CORBA::is_nil (component_server2))
+	{
+		cerr << "I got a nil reference for the created Component Server" << endl;
+		orb->destroy();
+		exit (1);
+	}
+#endif
 	// Create Container
 	Components::Deployment::Container_var container;
+	Components::Deployment::Container_var container1;
+	Components::Deployment::Container_var container2;
 	config.length (1);
 	CORBA::Any any;
 	any <<= "SESSION";
@@ -231,25 +284,56 @@ main (int argc, char** argv)
 		exit (1);
 	}
 
-	config.length(0);
+#if 0
+	try
+	{
+		container1 = component_server1->create_container (config);
+	}
+	catch (CORBA::SystemException& ex)
+	{
+		cerr << "CORBA system exception during creating container : " << ex << endl;
+		orb->destroy();
+		exit (1);
+	}
+
+	try
+	{
+		container2 = component_server2->create_container (config);
+	}
+	catch (CORBA::SystemException& ex)
+	{
+		cerr << "CORBA system exception during creating container : " << ex << endl;
+		orb->destroy();
+		exit (1);
+	}
+#endif
+	//config.length(0);
 
 	Components::CCMHome_var home;
 
-	home = container->install_home ("PHILOSOPHER/1.0", "", config);
+	home = container->install_home ("PHILOSOPHER/1.0", "", config1);
 	dinner::PhilosopherHome_var p_home = dinner::PhilosopherHome::_narrow (home);
 
-	home = container->install_home ("CUTLERY/1.0", "", config);
+#if 0
+	home = container1->install_home ("CUTLERY/1.0", "", config1);
 	dinner::CutleryHome_var c_home = dinner::CutleryHome::_narrow (home);
 
-	home = container->install_home ("OBSERVER/1.0", "", config);
+	home = container2->install_home ("OBSERVER/1.0", "", config1);
 	dinner::ObserverHome_var o_home = dinner::ObserverHome::_narrow (home);
+#else
+	home = container->install_home ("CUTLERY/1.0", "", config1);
+	dinner::CutleryHome_var c_home = dinner::CutleryHome::_narrow (home);
 
+	home = container->install_home ("OBSERVER/1.0", "", config1);
+	dinner::ObserverHome_var o_home = dinner::ObserverHome::_narrow (home);
+#endif
 	dinner::Philosopher_var phil1;
 	dinner::Philosopher_var phil2;
 	dinner::Philosopher_var phil3;
 	dinner::Cutlery_var cut1;
 	dinner::Cutlery_var cut2;
 	dinner::Observer_var obs;
+	dinner::Observer_var obs1;
 
 	try 
 	{
@@ -259,6 +343,7 @@ main (int argc, char** argv)
 		cut1 = c_home->create();
 		cut2 = c_home->create();
 		obs = o_home->create();
+		obs1 = o_home->create();
 	}
 	catch (Components::CreateFailure&)
 	{
@@ -292,23 +377,29 @@ main (int argc, char** argv)
 		phil1->connect_right_hand (a_fork);
 		phil2->connect_right_hand (a_fork);
 		phil3->connect_right_hand (a_fork);
+		Components::Cookie* ck;
 		dinner::PhilosopherStateConsumer_var consumer = obs->get_consumer_philosopher_state();
-		phil1->connect_philosopher_state (consumer);
-		phil2->connect_philosopher_state (consumer);
-		phil3->connect_philosopher_state (consumer);
+		ck = phil1->subscribe_philosopher_state (consumer);
+		ck = phil2->subscribe_philosopher_state (consumer);
+		ck = phil3->subscribe_philosopher_state (consumer);
+		consumer = obs1->get_consumer_philosopher_state();
+		ck = phil1->subscribe_philosopher_state (consumer);
+		ck = phil2->subscribe_philosopher_state (consumer);
+		ck = phil3->subscribe_philosopher_state (consumer);
 		phil1->configuration_complete(); 
 		phil2->configuration_complete(); 
 		phil3->configuration_complete();
 		cut1->configuration_complete();
 		cut2->configuration_complete();
 		obs->configuration_complete();
+		obs1->configuration_complete();
 	}
 	catch (CORBA::SystemException& ex)
 	{
 		cerr << ex << endl;
 	}
 
-	Sleep (10000);
+	sleep (30);
 
 	try
 	{
@@ -317,6 +408,8 @@ main (int argc, char** argv)
 		phil3->remove();
 		c_home->remove_component (cut1);
 		c_home->remove_component (cut2);
+		obs->remove();
+		obs1->remove();
 	}
 	catch (Components::RemoveFailure&)
 	{
@@ -331,8 +424,13 @@ main (int argc, char** argv)
 	try
 	{
 		container->remove_home (p_home);
+#if 0
+		container1->remove_home (c_home);
+		container2->remove_home (o_home);
+#else
 		container->remove_home (c_home);
 		container->remove_home (o_home);
+#endif
 	}
 	catch (Components::RemoveFailure&)
 	{
@@ -357,6 +455,12 @@ main (int argc, char** argv)
 	try
 	{
 		component_server->remove();
+#if 0
+		getchar();
+		component_server1->remove();
+		getchar();
+		component_server2->remove();
+#endif
 	}
 	catch (Components::RemoveFailure&)
 	{

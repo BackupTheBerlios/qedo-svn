@@ -3,13 +3,17 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: ClientValuetypes.h,v 1.1 2002/10/13 12:08:44 tom Exp $
+// $Id: ClientValuetypes.h,v 1.2 2003/09/11 11:52:41 boehme Exp $
 //
 
 #ifndef __VALUE_TYPES_H__
 #define __VALUE_TYPES_H__
 
+#ifdef ORBACUS_ORB
 #include <OB/CORBA.h>
+#else
+#include <CORBA.h>
+#endif
 
 #include "Components.h"
 
@@ -253,7 +257,7 @@ public:
 };
 
 
-class ConfigValueFactory_impl : public virtual Components::ConfigValue_init
+class ConfigValueFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	virtual CORBA::ValueBase* create_for_unmarshal();

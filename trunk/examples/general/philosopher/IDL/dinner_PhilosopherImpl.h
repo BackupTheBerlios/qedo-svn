@@ -22,6 +22,7 @@ using namespace std;
 
 namespace dinner {
 
+#ifdef ORBACUS_ORB
 class JTCThreadWithTimer : public virtual JTCThread, public virtual JTCMonitor
 {
 protected:
@@ -32,7 +33,6 @@ public:
 	~JTCThreadWithTimer();
 	void wake_up ();
 };
-
 
 class PhilosopherSessionImpl;
 
@@ -51,6 +51,7 @@ public:
 	void stop();
 };
 
+#endif
 
 }
 // END USER INSERT SECTION file_post
@@ -124,18 +125,24 @@ namespace dinner
         	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl
+#ifdef ORBACUS_ORB
 		friend class PhilosopherThread;
+#endif
 
 	private:
 		string id_;
 		long tsec_, esec_, ssec_;
 		bool stopped_;
 
+#ifdef ORBACUS_ORB
 		PhilosopherThread* phil_thread_;
+#else
+		Components::Thread_ptr phil_thread_;
+#endif
 
 	public:
 		// This is the run function that the PhilosopherThread will enter
-		void run();
+		static void* void run(void*);
 		void stop();
 // END USER INSERT SECTION PhilosopherSessionImpl
 

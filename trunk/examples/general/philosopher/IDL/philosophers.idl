@@ -3,7 +3,7 @@
 // Example 1 for Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: philosophers.idl,v 1.1 2002/10/13 12:08:44 tom Exp $
+// $Id: philosophers.idl,v 1.2 2003/09/11 11:52:41 boehme Exp $
 //
 #include "Components.idl"
 
@@ -144,7 +144,7 @@ module dinner
         /**
          **  A philosopher send events to signal its current state.
          **/
-        emits PhilosopherState philosopher_state;
+        publishes PhilosopherState philosopher_state;
     };
 
     /**

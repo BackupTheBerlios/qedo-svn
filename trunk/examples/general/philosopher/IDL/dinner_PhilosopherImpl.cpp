@@ -10,8 +10,14 @@
 
 using namespace std;
 
+#ifdef _WIN32
+#define sleep(X) Sleep(X*1000)
+#endif
+
+
 namespace dinner {
 
+#ifdef ORBACUS_ORB
 JTCThreadWithTimer::JTCThreadWithTimer()
 {
 }
@@ -51,7 +57,7 @@ JTCThreadWithTimer::wake_up()
 
 	this->notify();
 }
-
+#endif
 
 PhilosopherThread::PhilosopherThread (PhilosopherSessionImpl* phil)
 : phil_ (phil)
@@ -106,77 +112,90 @@ namespace dinner {
 
 
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl
+#ifdef ORBACUS_ORB
 void
 PhilosopherSessionImpl::run()
+#else
+void
+PhilosopherSessionImpl::run(void *p)
+#endif
 {
+	PhilosopherSessionImpl* impl;
+#ifndef MICO_ORB
+	impl = this;
+#else
+	impl = static_cast<PhilosopherSessionImpl*>(p);
+#endif
 	bool have_left = false, have_right = false;
 	Components::Cookie_var leftcook = 0;
 	Components::Cookie_var rightcook = 0;
 	
-	dinner::Fork_var left_hand = context_->get_connection_left_hand();
-	dinner::Fork_var right_hand = context_->get_connection_right_hand();
+	dinner::Fork_var left_hand = impl->context_->get_connection_left_hand();
+	dinner::Fork_var right_hand = impl->context_->get_connection_right_hand();
 	dinner::PhilosopherStatus status;
 	dinner::PhilosopherState_var report;
 	unsigned short dead_counter;
 
-	while (! stopped_)
+	while (! impl->stopped_)
 	{
 		status = dinner::THINKING;
-		cout << "PhilosopherSessionImpl: Philosopher is thinking -> " << id_ << endl;
-		report = new PhilosopherStateImpl (status, id_.c_str(),
-			dinner::Philosopher::_narrow (context_->get_CCM_object()));
-		context_->push_philosopher_state (report);
-		phil_thread_->timer_sleep (tsec_ *1000);
+		cout << "PhilosopherSessionImpl: Philosopher is thinking -> " << impl->id_ << endl;
+		report = new PhilosopherStateImpl (status, impl->id_.c_str(),
+			dinner::Philosopher::_narrow (impl->context_->get_CCM_object()));
+		impl->context_->push_philosopher_state (report);
+		sleep (impl->tsec_);
 	
-		if (stopped_)
+		if (impl->stopped_)
 			break;
 
 		status = dinner::HUNGRY;
-		cout << "PhilosopherSessionImpl: Philosopher is hungry -> " << id_ << endl;
-		report = new PhilosopherStateImpl (status, id_.c_str(),
-			dinner::Philosopher::_narrow (context_->get_CCM_object()));
-		context_->push_philosopher_state (report);
+		cout << "PhilosopherSessionImpl: Philosopher is hungry -> " << impl->id_ << endl;
+		report = new PhilosopherStateImpl (status, impl->id_.c_str(),
+			dinner::Philosopher::_narrow (impl->context_->get_CCM_object()));
+		impl->context_->push_philosopher_state (report);
 		dead_counter = 4;
 
-		while ( status == dinner::HUNGRY && ! stopped_)
+		while ( status == dinner::HUNGRY && ! impl->stopped_)
 		{
-			phil_thread_->timer_sleep (2000);
+			sleep (2);
 
 			if (--dead_counter == 0)
 			{
-				cout << "PhilosopherSessionImpl: Philosopher is dead... aaaaaahhhhhhhhhhhhhh... -> " << id_ << endl;
+				cout << "PhilosopherSessionImpl: Philosopher is dead... aaaaaahhhhhhhhhhhhhh...  -> " << impl->id_ << endl;
 				status = dinner::DEAD;
-				report = new PhilosopherStateImpl (status, id_.c_str(),
-					dinner::Philosopher::_narrow (context_->get_CCM_object()));
-				context_->push_philosopher_state (report);
+				report = new PhilosopherStateImpl (status, impl->id_.c_str(),
+					dinner::Philosopher::_narrow (impl->context_->get_CCM_object()));
+				impl->context_->push_philosopher_state (report);
 
-				while (! stopped_)
+#ifdef ORBACUS_ORB
+				while (! impl->stopped_)
 				{
 					JTCSynchronized synchronized (*phil_thread_);
 					phil_thread_->wait();
 				}
+#endif
 			}
 			try
 			{
 				// Philosophers with even eating seconds first try to get the left fork, the others the right fork
-				if (esec_ % 2)
+				if (impl->esec_ % 2)
 				{
 					rightcook = right_hand->obtain_fork();
 					have_right = true;
 
-					cout << "PhilosopherSessionImpl: Got right fork -> " << id_ << endl;
+					cout << "PhilosopherSessionImpl: Got right fork -> " << impl->id_ << endl;
 				}
 				else
 				{
 					leftcook = left_hand->obtain_fork();
 					have_left = true;
 
-					cout << "PhilosopherSessionImpl: Got left fork -> " << id_ << endl;
+					cout << "PhilosopherSessionImpl: Got left fork -> " << impl->id_ << endl;
 				}
 			}
 			catch (dinner::ForkNotAvailable&)
 			{
-				cout << "PhilosopherSessionImpl: Fork in use -> " << id_ << endl;
+				cout << "PhilosopherSessionImpl: Fork in use -> " << impl->id_ << endl;
 				continue;
 			}
 			catch (CORBA::SystemException& ex)
@@ -189,26 +208,26 @@ PhilosopherSessionImpl::run()
 			try
 			{
 				// Philosophers with even eating seconds second try to get the right fork, the others the left fork
-				if (esec_ % 2)
+				if (impl->esec_ % 2)
 				{
 					leftcook = left_hand->obtain_fork();
 					have_left = true;
 
-					cout << "PhilosopherSessionImpl: Got left fork -> " << id_ << endl;
+					cout << "PhilosopherSessionImpl: Got left fork -> " << impl->id_ << endl;
 				}
 				else
 				{
 					rightcook = right_hand->obtain_fork();
 					have_right = true;
 
-					cout << "PhilosopherSessionImpl: Got right fork -> " << id_ << endl;
+					cout << "PhilosopherSessionImpl: Got right fork -> " << impl->id_ << endl;
 				}
 			}
 			catch (dinner::ForkNotAvailable&)
 			{
-				cout << "PhilosopherSessionImpl: Fork in use -> " << id_ << endl;
+				cout << "PhilosopherSessionImpl: Fork in use -> " << impl->id_ << endl;
 
-				if (esec_ % 2)
+				if (impl->esec_ % 2)
 				{
 					right_hand->release_fork (rightcook);
 					have_right = false;
@@ -230,17 +249,17 @@ PhilosopherSessionImpl::run()
 			break;
 		}
 
-		if (stopped_)
+		if (impl->stopped_)
 			break;
 
 		status = dinner::EATING;
-		cout << "PhilosopherSessionImpl: Philosopher is eating -> " << id_ << endl;
-		report = new PhilosopherStateImpl (status, id_.c_str(),
-			dinner::Philosopher::_narrow (context_->get_CCM_object()));
-		context_->push_philosopher_state (report);
-		phil_thread_->timer_sleep (esec_*1000);
+		cout << "PhilosopherSessionImpl: Philosopher is eating -> " << impl->id_ << endl;
+		report = new PhilosopherStateImpl (status, impl->id_.c_str(),
+			dinner::Philosopher::_narrow (impl->context_->get_CCM_object()));
+		impl->context_->push_philosopher_state (report);
+		sleep (impl->esec_);
 
-		if (stopped_)
+		if (impl->stopped_)
 			break;
 
 		try
@@ -253,23 +272,23 @@ PhilosopherSessionImpl::run()
 		}
 		catch (dinner::NotTheEater&)
 		{
-			cout << "PhilosopherSessionImpl: Unexpected dinner::NotTheEater exception. I'm in hell, aborting... -> " << id_ << endl;
+			cout << "PhilosopherSessionImpl: Unexpected dinner::NotTheEater exception. I'm in hell, aborting... -> " << impl->id_ << endl;
 			abort();
 		}
 		catch (CORBA::SystemException&)
 		{
-			cout << "PhilosopherSessionImpl: CORBA system exception during release_fork(). I'm in hell, aborting... -> " << id_ << endl;
+			cout << "PhilosopherSessionImpl: CORBA system exception during release_fork(). I'm in hell, aborting... -> " << impl->id_ << endl;
 			abort();
 		}
 
 		status = dinner::SLEEPING;
-		cout << "PhilosopherSessionImpl: Philosopher is sleeping -> " << id_ << endl;
-		report = new PhilosopherStateImpl (status, id_.c_str(),
-			dinner::Philosopher::_narrow (context_->get_CCM_object()));
-			context_->push_philosopher_state (report);
-		phil_thread_->timer_sleep (ssec_ * 1000);
+		cout << "PhilosopherSessionImpl: Philosopher is sleeping -> " << impl->id_ << endl;
+		report = new PhilosopherStateImpl (status, impl->id_.c_str(),
+			dinner::Philosopher::_narrow (impl->context_->get_CCM_object()));
+			impl->context_->push_philosopher_state (report);
+		sleep (impl->ssec_);
 
-		if (stopped_)
+		if (impl->stopped_)
 			break;
 	}
 }
@@ -289,7 +308,9 @@ PhilosopherSessionImpl::PhilosopherSessionImpl()
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::PhilosopherSessionImpl
 	stopped_ = false;
 
+#ifdef ORBACUS_ORB
 	phil_thread_ = new PhilosopherThread (this);
+#endif
 // END USER INSERT SECTION PhilosopherSessionImpl::PhilosopherSessionImpl
 }
 
@@ -316,7 +337,11 @@ PhilosopherSessionImpl::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::configuration_complete
+#ifdef ORBACUS_ORB
 	phil_thread_->start();
+#else
+	phil_thread_ = context_->start_thread(run,this);
+#endif
 // END USER INSERT SECTION PhilosopherSessionImpl::configuration_complete
 }
 

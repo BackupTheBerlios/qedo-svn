@@ -1,5 +1,5 @@
 
-static char rcsid[] = "$Id: ClientValuetypes.cpp,v 1.3 2002/10/28 23:02:07 tom Exp $";
+static char rcsid[] = "$Id: ClientValuetypes.cpp,v 1.4 2003/09/11 11:52:41 boehme Exp $";
 
 
 #include "ClientValuetypes.h"
@@ -96,10 +96,10 @@ PortDescriptionFactory_impl::create_for_unmarshal
 FacetDescription_impl::FacetDescription_impl (const char* name, 
 											  const char* type_id, 
 											  CORBA::Object_ptr ref)
-#ifndef VC6
-: FacetDescription (name, type_id, ref)
-#endif
 {
+	this->name(name);
+	this->type_id(type_id);
+	this->ref(ref);
 }
 
 
@@ -124,10 +124,9 @@ FacetDescriptionFactory_impl::create_for_unmarshal()
 // ConnectionDescription
 //
 ConnectionDescription_impl::ConnectionDescription_impl (Components::Cookie* ck, CORBA::Object_ptr objref)
-#ifndef VC6
-: ConnectionDescription (ck, objref)
-#endif
 {
+	this->ck(ck);
+	this->objref(objref);
 }
 
 
@@ -157,10 +156,11 @@ ReceptacleDescription_impl::ReceptacleDescription_impl (const char* name,
 														const char* type_id, 
 														CORBA::Boolean is_multiple, 
 														const Components::ConnectedDescriptions& connections)
-#ifndef VC6
-: ReceptacleDescription (name, type_id, is_multiple, connections)
-#endif
 {
+	this->name(name);
+	this->type_id(type_id);
+	this->is_multiplex(is_multiple);
+	this->connections(connections);
 }
 
 
@@ -187,10 +187,10 @@ ReceptacleDescriptionFactory_impl::create_for_unmarshal()
 ConsumerDescription_impl::ConsumerDescription_impl (const char* name, 
 													const char* type_id, 
 													Components::EventConsumerBase_ptr consumer)
-#ifndef VC6
-: ConsumerDescription (name, type_id, consumer)
-#endif
 {
+	this->name(name);
+	this->type_id(type_id);
+	this->consumer(consumer);
 }
 
 
@@ -217,10 +217,10 @@ ConsumerDescriptionFactory_impl::create_for_unmarshal()
 EmitterDescription_impl::EmitterDescription_impl (const char* name, 
 												  const char* type_id, 
 												  Components::EventConsumerBase_ptr consumer)
-#ifndef VC6
-: EmitterDescription (name, type_id, consumer)
-#endif
 {
+	this->name(name);
+	this->type_id(type_id);
+	this->consumer(consumer);
 }
 
 
@@ -253,10 +253,11 @@ SubscriberDescription_impl::SubscriberDescription_impl (const char* name,
 						   const char* type_id, 
 						   Components::Cookie* ck, 
 						   Components::EventConsumerBase_ptr consumer)
-#ifndef VC6
-: SubscriberDescription (name, type_id, ck, consumer)
-#endif
 {
+	this->name(name);
+	this->type_id(type_id);
+	this->ck(ck);
+	this->consumer(consumer);
 }
 
 
@@ -285,10 +286,12 @@ ComponentPortDescription_impl::ComponentPortDescription_impl (const Components::
 															  const Components::ConsumerDescriptions& consumers,
 															  const Components::EmitterDescriptions& emitters,
 															  const Components::SubscriberDescriptions& publishers)
-#ifndef VC6
-: ComponentPortDescription (facets, receptacles, consumers, emitters, publishers)
-#endif
 {
+	this->facets(facets);
+	this->receptacles(receptacles);
+	this->consumers(consumers);
+	this->emitters(emitters);
+	this->publishers(publishers);
 }
 
 
@@ -313,14 +316,9 @@ ComponentPortDescriptionFactory_impl::create_for_unmarshal()
 // ConfigValue
 //
 ConfigValue_impl::ConfigValue_impl (const char* name, const CORBA::Any& value)
-#ifndef VC6
-: ConfigValue (name, value)
-#endif
 {
-#if _MSC_VER < 1300
 	this->name(name);
 	this->value(value);
-#endif
 }
 
 
