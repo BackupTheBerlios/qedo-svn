@@ -153,7 +153,8 @@ copy cidl_gen.exe $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib mico237.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib mico239.lib odbc32.lib odbccp32.lib"
+				OutputFile="cidl_gend.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
@@ -167,7 +168,7 @@ copy cidl_gen.exe $(QEDO)\bin
 				Name="VCPostBuildEventTool"
 				Description="Copying CIDL generator executable"
 				CommandLine="md $(QEDO)\bin
-copy cidl_gen.exe $(QEDO)\bin
+copy cidl_gend.exe $(QEDO)\bin
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>

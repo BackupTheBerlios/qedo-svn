@@ -166,7 +166,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib  mico238.lib"
+				AdditionalDependencies="CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib  mico239.lib"
 				OutputFile="$(OutDir)/RepositoryStandAlone.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
