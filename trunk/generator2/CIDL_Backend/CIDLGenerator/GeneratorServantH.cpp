@@ -664,7 +664,7 @@ GeneratorServantH::genSinkServants(IR__::ComponentDef_ptr component)
 		out << "void begin_stream (const char*, const Components::ConfigValues&);\n";
 		out << "void end_stream();\n";
 		out << "void failed_stream();\n";
-		out << "void receive_stream (Qedo::MarshalBuffer*);\n";
+		out << "void receive_stream (Qedo::UnmarshalBuffer*);\n";
 	
 		out.unindent();
 		out << "};\n\n";

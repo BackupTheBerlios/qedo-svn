@@ -214,44 +214,43 @@ GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::str
 			switch (prim->kind())
 			{
 			case IR__::pk_char:
-				out << "Qedo::CDRTransportCoDec::unmarshal_char (marshal_buffer, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_char (unmarshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_octet:
-				out << "Qedo::CDRTransportCoDec::unmarshal_octet (marshal_buffer, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_octet (unmarshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_boolean:
-				out << "Qedo::CDRTransportCoDec::unmarshal_boolean (marshal_buffer, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_boolean (unmarshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_short:
-				out << "Qedo::CDRTransportCoDec::unmarshal_short (marshal_buffer, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_short (unmarshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_ushort:
-				out << "Qedo::CDRTransportCoDec::unmarshal_ushort (marshal_buffer, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_ushort (unmarshal_buffer, " << parameter_name << ");\n";
 				return;;
 			case IR__::pk_long:
-				out << "Qedo::CDRTransportCoDec::unmarshal_long (marshal_buffer, " << parameter_name << ");\n";
-				assert (0);
+				out << "Qedo::CDRTransportCoDec::unmarshal_long (unmarshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_ulong:
-				out << "Qedo::CDRTransportCoDec::unmarshal_ulong (marshal_buffer, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_ulong (unmarshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_float:
-				out << "Qedo::CDRTransportCoDec::unmarshal_float (marshal_buffer, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_float (unmarshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_longlong:
-				out << "Qedo::CDRTransportCoDec::unmarshal_longlong (marshal_buffer, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_longlong (unmarshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_ulonglong:
-				out << "Qedo::CDRTransportCoDec::unmarshal_ulonglong (marshal_buffer, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_ulonglong (unmarshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_double:
-				out << "Qedo::CDRTransportCoDec::unmarshal_double (marshal_buffer, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_double (unmarshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_longdouble:
-				out << "Qedo::CDRTransportCoDec::unmarshal_longdouble (marshal_buffer, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_longdouble (unmarshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_string:
-				out << "Qedo::CDRTransportCoDec::unmarshal_string (marshal_buffer, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_string (unmarshal_buffer, " << parameter_name << ");\n";
 				return;
 			default:
 				// Should be never reached
@@ -286,7 +285,7 @@ GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::str
 
 			out << "CORBA::ULong seq_len" << rec_depth << ";\n";
 
-			out << "Qedo::CDRTransportCoDec::unmarshal_ulong (marshal_buffer, seq_len" << rec_depth << ");\n\n";
+			out << "Qedo::CDRTransportCoDec::unmarshal_ulong (unmarshal_buffer, seq_len" << rec_depth << ");\n\n";
 			
 			if (hasVariableLength (seq_idl_type))
 				out << parameter_name << "->length (seq_len" << rec_depth << ");\n\n";
@@ -1176,7 +1175,7 @@ GeneratorServantC::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr compone
 
 	// sink port dispatchers receive_stream
 	out << "void\n";
-	out << comp_name << "::" << sink_name << "_dispatcher::receive_stream (Qedo::MarshalBuffer* marshal_buffer)\n";
+	out << comp_name << "::" << sink_name << "_dispatcher::receive_stream (Qedo::UnmarshalBuffer* unmarshal_buffer)\n";
 	out << "{\n"; out.indent();
 
 	IR__::StreamTypeDef_var stream_type = sink->stream_type();
@@ -1184,7 +1183,7 @@ GeneratorServantC::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr compone
 
 	if (CORBA::is_nil (transported_type))
 	{
-		out << "the_sink_->receive_stream_" << sink_name << " (buffer);\n";
+		out << "the_sink_->receive_stream_" << sink_name << " (unmarshal_buffer);\n";
 	}
 	else
 	{

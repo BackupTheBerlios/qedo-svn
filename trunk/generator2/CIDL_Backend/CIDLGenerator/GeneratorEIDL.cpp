@@ -293,8 +293,8 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 		for(i = 0; i < len; i++) {
 			IR__::StreamTypeDef_var stream_type = (*sink_seq)[i]->stream_type();
 			IR__::Contained_var transported_type = IR__::Contained::_narrow (stream_type->transported_type());
-			assert (!CORBA::is_nil (transported_type));
-			this->check_for_generation (transported_type);
+			if (!CORBA::is_nil (transported_type))
+				this->check_for_generation (transported_type);
 		};
 
 		// sources
@@ -303,8 +303,8 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 		for(i = 0; i < len; i++) {
 			IR__::StreamTypeDef_var stream_type = (*source_seq)[i]->stream_type();
 			IR__::Contained_var transported_type = IR__::Contained::_narrow (stream_type->transported_type());
-			assert (!CORBA::is_nil (transported_type));
-			this->check_for_generation (transported_type);
+			if (!CORBA::is_nil (transported_type))
+				this->check_for_generation (transported_type);
 		};
 
 		break; }
