@@ -140,7 +140,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "Name=\"VCCLCompilerTool\"\n";
 	out << "Optimization=\"0\"\n";
 	out << "AdditionalIncludeDirectories=\".;$(QEDO)/include;$(ORBACUS)/include;$(ORBACUS)/include/OB;\"\n";
-	out << "PreprocessorDefinitions=\"ORBACUS_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS\"\n";
+	out << "PreprocessorDefinitions=\"ORBACUS_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS;_QEDO_NO_QOS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
 	out << "BasicRuntimeChecks=\"3\"\n";
 	out << "RuntimeLibrary=\"3\"\n";
@@ -214,7 +214,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "Optimization=\"0\"\n";
 	out << "AdditionalIncludeDirectories=\".;$(QEDO)/include;$(MICO)/include;\"\n";
 	out << "PreprocessorDefinitions=\"";
-	out << "BUILD_" << export_prefix_ << "_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400\"\n";
+	out << "BUILD_" << export_prefix_ << "_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400;_QEDO_NO_QOS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
 	out << "BasicRuntimeChecks=\"3\"\n";
 	out << "RuntimeLibrary=\"3\"\n";
@@ -296,7 +296,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "Name=\"VCCLCompilerTool\"\n";
 	out << "Optimization=\"0\"\n";
 	out << "AdditionalIncludeDirectories=\".;$(QEDO)/include;$(MICO)/include;\"\n";
-	out << "PreprocessorDefinitions=\"MICO_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS\"\n";
+	out << "PreprocessorDefinitions=\"MICO_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS;_QEDO_NO_QOS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
 	out << "BasicRuntimeChecks=\"3\"\n";
 	out << "RuntimeLibrary=\"3\"\n";
@@ -815,7 +815,7 @@ GeneratorVC7::generateServant()
 	out << "Name=\"VCCLCompilerTool\"\n";
 	out << "Optimization=\"0\"\n";
 	out << "AdditionalIncludeDirectories=\".;$(QEDO)/include;$(ORBACUS)/include;$(ORBACUS)/include/OB;\"\n";
-	out << "PreprocessorDefinitions=\"_DEBUG;_USRDLL;SERVANTMODULE_EXPORTS\"\n";
+	out << "PreprocessorDefinitions=\"_DEBUG;_USRDLL;SERVANTMODULE_EXPORTS;_QEDO_NO_QOS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
 	out << "BasicRuntimeChecks=\"3\"\n";
 	out << "RuntimeLibrary=\"3\"\n";
@@ -889,7 +889,7 @@ GeneratorVC7::generateServant()
 	out << "Optimization=\"0\"\n";
 	out << "AdditionalIncludeDirectories=\".;$(QEDO)/include;$(MICO)/include;$(MICO)/include/windows;\"\n";
 	out << "PreprocessorDefinitions=\"";
-	out << "BUILD_" << export_prefix_ << "_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400\"\n";
+	out << "BUILD_" << export_prefix_ << "_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400;_QEDO_NO_QOS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
 	out << "BasicRuntimeChecks=\"3\"\n";
 	out << "RuntimeLibrary=\"3\"\n";
@@ -962,7 +962,7 @@ GeneratorVC7::generateServant()
 	out << "Name=\"VCCLCompilerTool\"\n";
 	out << "Optimization=\"0\"\n";
 	out << "AdditionalIncludeDirectories=\".;$(QEDO)/include;$(TAO)\"\n";
-	out << "PreprocessorDefinitions=\"WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS\"\n";
+	out << "PreprocessorDefinitions=\"WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS;_QEDO_NO_QOS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
 	out << "BasicRuntimeChecks=\"3\"\n";
 	out << "RuntimeLibrary=\"3\"\n";
