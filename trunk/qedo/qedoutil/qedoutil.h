@@ -168,6 +168,15 @@ int
 removeDir(std::string name);
 
 
+/**
+ * create UUID
+ * \return The created UUID.
+ */
+QEDOUTIL_API
+std::string
+createUUID();
+
+
 }
 
 /** @} */
