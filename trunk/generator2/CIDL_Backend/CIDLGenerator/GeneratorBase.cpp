@@ -142,7 +142,7 @@ GeneratorBase::initialize(std::string target, std::string fileprefix)
 	//
 	// determine the file prefix
 	//
-	if (fileprefix != "")
+	if (fileprefix.length())
 	{
 		file_prefix_ = fileprefix;
 	}
