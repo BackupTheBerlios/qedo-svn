@@ -59,12 +59,18 @@ Launcher::Launcher(wxWindow *parent, const wxWindowID id,
 	NSDStartBtn = new wxButton(this, NSD, _T("Start"));
 	NSDStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 	h_NSD_sizer-> Add(NSDStartBtn, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+/*
+	wxStaticText* hostname_text = new wxStaticText( this, wxID_STATIC, _T("on Hostname or IP:"), wxDefaultPosition, wxDefaultSize, 0 );
+    h_NSD_sizer->Add(hostname_text , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+	
+	host_name_nsd_ = new wxTextCtrl( this, ID_HOSTNAME_NSD, _T("localhost"), wxDefaultPosition, wxDefaultSize, 0 );
+	h_NSD_sizer->Add(host_name_nsd_, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
     wxStaticText* port_text = new wxStaticText( this, wxID_STATIC, _T("Port Number:"), wxDefaultPosition, wxDefaultSize, 0 );
     h_NSD_sizer->Add(port_text , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
-
+	*/
 	port_number_ = new wxTextCtrl( this, ID_PORTNUMBER, _T("12356"), wxDefaultPosition, wxDefaultSize, 0 );
-	h_NSD_sizer->Add(port_number_, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	h_NSD_sizer->Add(port_number_, 0, wxALIGN_CENTER_VERTICAL|wxALL,5);
 
 	// HomeFinder
 	wxStaticBox *hfbox = new wxStaticBox(this, -1, _T("&Home Finder"));
@@ -127,7 +133,7 @@ void Launcher::OnNSDStartButton(wxCommandEvent& WXUNUSED(event))
 	{
 		wxString port_nr = port_number_->GetValue(); 
 		
-		wxString host_name = wxGetHostName();
+		wxString host_name = "localhost" ;//host_name_nsd_->GetValue();
 		// get the computers name first 
 
 		wxString cmd = "nsd -ORBIIOPAddr inet:";
@@ -232,8 +238,7 @@ void Launcher::OnSAStartButton(wxCommandEvent& WXUNUSED(event))
 	{
 		wxProcess *process = new wxProcess (this);
 	//	process->Redirect();
-		sa_pid_ = wxExecute( "qcsa", wxEXEC_ASYNC, process);
-		//sa_pid_ = wxExecute( "qcsa --terminal", wxEXEC_ASYNC, process);
+		sa_pid_ = wxExecute("qcsa --terminal", wxEXEC_ASYNC, process);
 		if ( !sa_pid_ )
 		{
 			wxLogError( _T("Execution of '%s' failed."), "qcsa" );

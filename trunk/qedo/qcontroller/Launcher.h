@@ -17,6 +17,7 @@ public:
 	void OnASSFStartButton(wxCommandEvent& WXUNUSED(event));
 	void OnSAStartButton(wxCommandEvent& WXUNUSED(event));
 	void OnCIStartButton(wxCommandEvent& WXUNUSED(event));
+	//wxTextCtrl* port_number_;
 
 private:
 	long nsd_pid_; 
@@ -35,8 +36,12 @@ private:
 	wxButton *ASSFStartBtn;
 	wxButton *SAStartBtn;
 	wxButton *CIStartBtn;
-
+	//wxTextCtrl* host_name_nsd_;
 	wxTextCtrl* port_number_;
+	
+	
+	
+	
     DECLARE_EVENT_TABLE()
 };
 
