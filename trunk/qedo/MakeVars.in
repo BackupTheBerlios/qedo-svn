@@ -1,8 +1,3 @@
-##### Qedo Target Dir #####
-# The target dir of Qedo. After building Qedo it will be installed
-# into this directory 
-
-
 # operating system
 OS=@OS@
 
@@ -12,7 +7,6 @@ ORB = MICO_ORB
 
 HAVE_MICO_CONFIG=@HAVE_MICO_CONFIG@
 # MICO
-#MICO = /opt/mico/
 MICO = $(shell mico-config --prefix)
 MICO_VERSION = $(shell mico-config --version)
 
@@ -26,15 +20,11 @@ Debug = yes
 
 # Xerces - XML handling
 # 
-#XERCES = /home/tri/devel/xerces-c-src2_1_0
 XERCESDIR = @XERCESDIR@
 
 # modes for install files
 EXE_MOD=755
 FILE_MODE=644
-
-# ZLib - Zip File handling
-ZLIB = /home/tri/devel/zlib-1.1.4
 
 # add extention for shared libraries
 SUFFIXES += .so
