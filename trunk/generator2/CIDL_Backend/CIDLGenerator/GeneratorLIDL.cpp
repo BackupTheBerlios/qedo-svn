@@ -232,7 +232,7 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// detemine the component
 	//
-	IR__::ComponentDef_var component = composition->ccm_component();
+	component_ = composition->ccm_component();
 
 	//
 	// generate
@@ -240,12 +240,12 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// executor
 	//
-	open_module(component);
-	out << "//\n// executor for " << component->id() << "\n//\n";
-	out << "local interface CCM_" << component->name() << "_Executor : ";
+	open_module(component_);
+	out << "//\n// executor for " << component_->id() << "\n//\n";
+	out << "local interface CCM_" << component_->name() << "_Executor : ";
 	
 	// base component
-	IR__::ComponentDef_var base = component->base_component();
+	IR__::ComponentDef_var base = component_->base_component();
 	if(!CORBA::is_nil(base))
 	{
 		out << getLocalName(base) << "_Executor";
@@ -256,7 +256,7 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	}
 
 	// supported interfaces
-	IR__::InterfaceDefSeq_var supported_seq = component->supported_interfaces();
+	IR__::InterfaceDefSeq_var supported_seq = component_->supported_interfaces();
 	CORBA::ULong len = supported_seq->length();
 	if(len)
 	{
@@ -269,7 +269,7 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "\n{\n";
 	out.indent();
 
-	handleAttribute(component);
+	handleAttribute(component_);
 
 	out.unindent();
 	out << "};\n\n";
@@ -277,8 +277,8 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// context
 	//
-	out << "//\n// context for " << component->id() << "\n//\n";
-	out << "local interface CCM_" << component->name() << "_Context : ";
+	out << "//\n// context for " << component_->id() << "\n//\n";
+	out << "local interface CCM_" << component_->name() << "_Context : ";
 	
 	// base component
 	if(!CORBA::is_nil(base))
@@ -307,13 +307,13 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "\n{\n";
 	out.indent();
 
-	handleUses(component);
-	handleEmits(component);
-	handlePublishes(component);
+	handleUses(component_);
+	handleEmits(component_);
+	handlePublishes(component_);
 
 	out.unindent();
 	out << "};\n\n";
-	close_module(component);
+	close_module(component_);
 }
 
 void
