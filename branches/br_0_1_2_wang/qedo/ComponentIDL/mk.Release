@@ -1,0 +1,51 @@
+# Configuration Release
+ProjectName=ComponentIDL
+OutDir=./Release
+IntDir=./Release
+Name=Release
+CFLAGS=-I -O1
+CXXFLAGS=-I -O1
+LIBS=-L
+
+$(IntDir)/%.o:%.cpp
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+# produce SharedObject
+LDLIBS+=$(LIBS)
+
+CC=$(CXX)
+
+all:  idl ./Release/libComponentIDL.so
+
+./Release/libComponentIDL.so : $(IntDir)/Components.o $(IntDir)/Components_skel.o $(IntDir)/QedoComponents.o $(IntDir)/QedoComponents_skel.o 
+	$(LINK.o)  --shared $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+$(IntDir)/Components.o:	./Components.cpp
+$(IntDir)/Components_skel.o:	./Components_skel.cpp
+$(IntDir)/QedoComponents.o:	QedoComponents.cpp
+$(IntDir)/QedoComponents_skel.o:	QedoComponents_skel.cpp
+cidl:  
+idl:  CORBADepends.h CORBADepends.cpp CORBADepends_skel.h CORBADepends_skel.cpp Components.h Components.cpp Components_skel.h Components_skel.cpp cidl
+
+# CIDL files
+
+# IDL files
+CORBADepends.h CORBADepends.cpp CORBADepends_skel.h CORBADepends_skel.cpp:./CORBADepends.idl
+	$(ORBACUS)/bin/idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 CORBADepends.idl 
+Components.h Components.cpp Components_skel.h Components_skel.cpp:./Components.idl
+	$(ORBACUS)/bin/idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 Components.idl 
+
+lex:  
+
+# LEX files
+
+yacc:  
+
+# YACC files
+
+
+# Kimwitu files
+
+
+Kimwitu:  
+

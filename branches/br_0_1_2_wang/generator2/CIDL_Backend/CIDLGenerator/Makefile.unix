@@ -1,0 +1,28 @@
+include ../config/Makefile.conf
+
+all : cidl_gen
+
+cidl_gen : 	CIDLGeneratorBase.o ExampleGenerator.o GenerateAll.o \
+		GenerateFacetServants.o GenerateSegmentClasses.o \
+		GenerateCCMOperations.o MapInParameterType.o \
+		MapInoutParameterType.o \
+		MapOutParameterType.o MapReturnType.o main.o
+	g++ $(DEBUG) -o $@ $? -L$(ORBACUS_INSTALL_DIR)/lib \
+		-L../../CIDL_Repository/CIDLRepositoryLib \
+		-L../../CIDL_Repository/ComponentRepositoryLib \
+		-L../../CIDL_Repository/IFRidl \
+		-L../../CIDL_Frontend/CIDLFrontendLib \
+		-lCIDLRepository -lComponentRepository -lIFRidl \
+		-lCIDLFrontend \
+		-lOB -lJTC -lpthread -lposix4 -lnsl -lsocket
+
+%.o : %.cpp
+	g++ $(DEBUG) -c $< -I$(ORBACUS_INSTALL_DIR)/include -I. \
+		-I../../CIDL_Repository/CIDLRepositoryLib \
+		-I../../CIDL_Repository/ComponentRepositoryLib \
+		-I../../CIDL_Repository/IFRidl \
+		-I../../CIDL_Frontend/CIDLFrontendLib
+
+clean:
+	-rm cidl_gen
+	-rm *.o
