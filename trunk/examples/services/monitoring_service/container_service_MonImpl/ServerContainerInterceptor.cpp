@@ -15,6 +15,8 @@ void
 ServerContainerInterceptor::receive_request (::PortableInterceptor::ServerRequestInfo_ptr info)
 {
 	std::cout << "COPI: recieve_request" << std::endl;
+	// write something ino the current slot
+
 }
 
 void
@@ -35,6 +37,12 @@ void
 ServerContainerInterceptor::send_user_exception (::PortableInterceptor::ServerRequestInfo_ptr info) {
 	std::cout << "COPI: send_user_exception" << std::endl;
 
+}
+
+void
+ServerContainerInterceptor::rec_request_from_servant_locator()
+{
+	std::cout << "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD" << std::endl;
 }
 
 }; // namespace Qedo
