@@ -145,8 +145,8 @@ GeneratorServantC::generate_marshal_code (IR__::IDLType_ptr idl_type, std::strin
 
 			for (unsigned int i = 0; i < members->length(); i++)
 			{
-				new_parameter_name = "(" + parameter_name + "." + members[i].name.in() + ")";
-				this->generate_marshal_code (members[i].type_def, new_parameter_name, rec_depth);
+				new_parameter_name = "(" + parameter_name + "." + members.in()[i].name.in() + ")";
+				this->generate_marshal_code (members.in()[i].type_def, new_parameter_name, rec_depth);
 			}
 			return;
 		}
@@ -269,8 +269,8 @@ GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::str
 
 			for (unsigned int i = 0; i < members->length(); i++)
 			{
-				new_parameter_name = "(" + parameter_name + "." + members[i].name.in() + ")";
-				generate_unmarshal_code (members[i].type_def, new_parameter_name, rec_depth);
+				new_parameter_name = "(" + parameter_name + "." + members.in()[i].name.in() + ")";
+				generate_unmarshal_code (members.in()[i].type_def, new_parameter_name, rec_depth);
 			}
 			return;
 		}
