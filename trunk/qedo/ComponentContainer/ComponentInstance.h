@@ -118,7 +118,7 @@ public:
 
     ComponentInstance_var& operator=(ComponentInstance* p)
 	{
-		ptr_ ? ptr_->_remove_ref() : 0;
+		ptr_ ? ptr_->_remove_ref() : (void)0;
         ptr_ = p;
         return *this;
     }
@@ -127,7 +127,7 @@ public:
 	{
         if(r.ptr_ != ptr_)
         {
-            ptr_ ? ptr_->_remove_ref() : 0;
+            ptr_ ? ptr_->_remove_ref() : (void)0;
             ptr_ = r.ptr_;
             ptr_->_add_ref();
         }

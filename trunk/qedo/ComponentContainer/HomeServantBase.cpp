@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.11 2003/04/15 07:26:07 neubauer Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.12 2003/04/24 10:05:36 tom Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -173,7 +173,7 @@ HomeServantBase::finalize_component_incarnation (const PortableServer::ObjectId&
 
 	servant_registry_->set_variables_static_servant (*components_iter);
 
-	this->do_finalize_component_incarnation ((*components_iter)->executor_locator_);
+	this->do_finalize_component_incarnation ((*components_iter)->executor_locator_.in());
 }
 
 
