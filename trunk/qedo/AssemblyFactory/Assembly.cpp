@@ -160,11 +160,11 @@ throw( Components::CreateFailure )
 }
 
 
-Qedo_Components::Deployment::ComponentInstallation_ptr
+Components::Deployment::ExtComponentInstallation_ptr
 AssemblyImpl::getComponentInstallation(std::string host)
 throw( Components::CreateFailure )
 {
-	Qedo_Components::Deployment::ComponentInstallation_var componentInstallation;
+	Components::Deployment::ExtComponentInstallation_var componentInstallation;
 	CORBA::Object_var obj;
 
 	//
@@ -177,7 +177,7 @@ throw( Components::CreateFailure )
 		throw Components::CreateFailure();
 	}
     
-	componentInstallation = Qedo_Components::Deployment::ComponentInstallation::_narrow(obj.in());
+	componentInstallation = Components::Deployment::ExtComponentInstallation::_narrow(obj.in());
 	if ( CORBA::is_nil(componentInstallation.in()))
 	{
 		NORMAL_ERR2( "AssemblyImpl: no ComponentInstallation for ", host );
@@ -267,7 +267,7 @@ void
 AssemblyImpl::uninstall ()
 throw( Components::CreateFailure )
 {
-	Qedo_Components::Deployment::ComponentInstallation_var componentInstallation;
+	Components::Deployment::ExtComponentInstallation_var componentInstallation;
 
 	//
 	// for each hostcollocation
@@ -329,7 +329,7 @@ void
 AssemblyImpl::install ()
 throw( Components::CreateFailure )
 {
-	Qedo_Components::Deployment::ComponentInstallation_var componentInstallation;
+	Components::Deployment::ExtComponentInstallation_var componentInstallation;
 	std::string destination;
 
 	//
@@ -384,7 +384,7 @@ throw( Components::CreateFailure )
 
 void
 AssemblyImpl::installComponent 
-(Qedo_Components::Deployment::ComponentInstallation_ptr componentInstallation, HomeInstanceData data)
+(Components::Deployment::ExtComponentInstallation_ptr componentInstallation, HomeInstanceData data)
 throw( Components::CreateFailure )
 {
 	std::string package_file = data.file;

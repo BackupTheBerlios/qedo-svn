@@ -51,7 +51,7 @@ class CADReadException
 /**
  * read component assembly descriptor
  */
-class QEDOUTIL_API CADReader : public virtual PlatformBase
+class QEDOUTIL_API CADReader
 {
 
 private:

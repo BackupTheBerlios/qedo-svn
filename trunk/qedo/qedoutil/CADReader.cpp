@@ -1774,7 +1774,7 @@ throw(CADReadException)
 	componentassembly(cad_document_->getDocumentElement());
 
 	// remove assembly descriptor and package
-    removeFileOrDirectory(cadfile);
+    removeFile( cadfile );
 	delete package_;
 }
 

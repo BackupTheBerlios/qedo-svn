@@ -38,7 +38,7 @@
 #include "config.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.36 2004/02/25 10:39:37 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.37 2004/03/11 16:22:40 neubauer Exp $";
 
 
 namespace Qedo {
@@ -239,6 +239,7 @@ QedoMutex::unlock_object()
 QedoRecursivMutex::QedoRecursivMutex() 
 {
 #ifdef QEDO_WINTHREAD
+	rdelegate_ = 0;
 #else
     rdelegate_ = new RecursivMutexDelegate();
 	rdelegate_->count = 0;

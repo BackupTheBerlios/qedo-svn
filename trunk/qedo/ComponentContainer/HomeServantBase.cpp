@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.27 2004/03/08 11:12:23 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.28 2004/03/11 16:22:40 neubauer Exp $";
 
 
 namespace Qedo {
@@ -345,7 +345,10 @@ HomeServantBase::lookup_component (const PortableServer::ObjectId& object_id)
 
 
 	{
+		//
 		// Do not keep this lock for a long time, it will block other operations
+		// (do not wait for narrow below)
+		//
 		QedoLock lock (component_instances_mutex_);
 
 		std::vector <ComponentInstance>::iterator components_iter;
@@ -368,7 +371,7 @@ HomeServantBase::lookup_component (const PortableServer::ObjectId& object_id)
 			throw CORBA::OBJECT_NOT_EXIST();
 		}
 
-		obj = (*components_iter).component_ref_;
+		obj = (*components_iter).component_ref_.in();
 	}
 
 	return Components::CCMObject::_narrow(obj);
