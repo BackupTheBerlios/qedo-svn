@@ -200,7 +200,7 @@
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)/bin/cidl_gen -DWIN32 -DORBACUS_ORB -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --servant --target IDL:DCI_Basics/NodeManagerImpl:1.0 ../deployment.cidl
+						CommandLine="$(QEDO)/bin/cidl_gen -DWIN32 -DORBACUS_ORB -I$(QEDO)/include -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --servant --target IDL:DCI_Basics/NodeManagerImpl:1.0 ../deployment.cidl
 "
 						Outputs="DCI_Basics_NodeManagerImpl_LOCAL.idl;DCI_Basics_NodeManagerImpl_EQUIVALENT.idl;"/>
 				</FileConfiguration>
@@ -227,7 +227,7 @@
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -DORBACUS_ORB -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB DCI_Basics_NodeManagerImpl_EQUIVALENT.idl
+						CommandLine="$(ORBACUS)\bin\idl -DORBACUS_ORB -DWIN32 -I$(QEDO)\include -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB DCI_Basics_NodeManagerImpl_EQUIVALENT.idl
 "
 						Outputs="DCI_Basics_NodeManagerImpl_EQUIVALENT.h;DCI_Basics_NodeManagerImpl_EQUIVALENT.cpp;DCI_Basics_NodeManagerImpl_EQUIVALENT_skel.h;DCI_Basics_NodeManagerImpl_EQUIVALENT_skel.cpp"/>
 				</FileConfiguration>
@@ -254,7 +254,7 @@
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -DORBACUS_ORB -DWIN32 -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB DCI_Basics_NodeManagerImpl_LOCAL.idl
+						CommandLine="$(ORBACUS)\bin\idl -DORBACUS_ORB -DWIN32 -I$(QEDO)\include -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB DCI_Basics_NodeManagerImpl_LOCAL.idl
 "
 						Outputs="DCI_Basics_NodeManagerImpl_LOCAL.h;DCI_Basics_NodeManagerImpl_LOCAL.cpp;DCI_Basics_NodeManagerImpl_LOCAL_skel.h;DCI_Basics_NodeManagerImpl_LOCAL_skel.cpp"/>
 				</FileConfiguration>

@@ -7,7 +7,7 @@
 
 // BEGIN USER INSERT SECTION file
 #include "../Utils/NamingUtils.h"
-#include "../Utils/Utility_class.h"
+#include "Utility_class.h"
 #include "../Unzip/Unzip.h"
 #include "../SAXParser/InstallationParser.h"
 // END USER INSERT SECTION file
@@ -326,6 +326,7 @@ NodeManagerSessionImpl::install(const char* implUUID, const char* component_loc)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::install
+	context_->get_connection_orig_component_installation()->install(implUUID, component_loc);
 // END USER INSERT SECTION NodeManagerSessionImpl::install
 }
 
@@ -335,6 +336,7 @@ NodeManagerSessionImpl::replace(const char* implUUID, const char* component_loc)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::replace
+	context_->get_connection_orig_component_installation()->replace(implUUID, component_loc);
 // END USER INSERT SECTION NodeManagerSessionImpl::replace
 }
 
@@ -344,6 +346,7 @@ NodeManagerSessionImpl::remove(const char* implUUID)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::remove
+	context_->get_connection_orig_component_installation()->remove(implUUID);
 // END USER INSERT SECTION NodeManagerSessionImpl::remove
 }
 
@@ -473,6 +476,7 @@ NodeManagerSessionImpl::remove_component_server(Components::Deployment::Componen
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::remove_component_server
+	context_->get_connection_orig_server_activator()->remove_component_server(server);
 // END USER INSERT SECTION NodeManagerSessionImpl::remove_component_server
 }
 
@@ -482,7 +486,7 @@ NodeManagerSessionImpl::get_component_servers()
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::get_component_servers
-return context_->get_connection_orig_server_activator()->get_component_servers();
+	return context_->get_connection_orig_server_activator()->get_component_servers();
 // END USER INSERT SECTION NodeManagerSessionImpl::get_component_servers
 }
 
@@ -492,6 +496,7 @@ NodeManagerSessionImpl::define_property(const char* property_name, const CORBA::
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::define_property
+	definition (property_name, property_value, DCI_Basics::normal);
 // END USER INSERT SECTION NodeManagerSessionImpl::define_property
 }
 
@@ -501,6 +506,7 @@ NodeManagerSessionImpl::define_properties(const CosPropertyService::Properties& 
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::define_properties
+	definitions (nproperties, DCI_Basics::normal);
 // END USER INSERT SECTION NodeManagerSessionImpl::define_properties
 }
 
@@ -520,6 +526,7 @@ NodeManagerSessionImpl::get_all_property_names(CORBA::ULong how_many, CosPropert
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::get_all_property_names
+
 // END USER INSERT SECTION NodeManagerSessionImpl::get_all_property_names
 }
 
@@ -572,6 +579,23 @@ NodeManagerSessionImpl::delete_property(const char* property_name)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::delete_property
+	if (! is_property_name_valid (property_name))
+		throw (CosPropertyService::InvalidPropertyName ());
+
+	CORBA::ULong ind;
+	CORBA::Boolean successful = get_index (property_name, &ind);
+
+	if (successful)
+	{
+		if (is_property_fixed (ind))
+			throw (CosPropertyService::FixedProperty ());
+
+		properties_vector->erase(properties_vector->begin() + ind);
+	}
+	else
+	{
+		throw (CosPropertyService::PropertyNotFound ());
+	}
 // END USER INSERT SECTION NodeManagerSessionImpl::delete_property
 }
 
@@ -581,6 +605,7 @@ NodeManagerSessionImpl::delete_properties(const CosPropertyService::PropertyName
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::delete_properties
+
 // END USER INSERT SECTION NodeManagerSessionImpl::delete_properties
 }
 
@@ -632,6 +657,17 @@ NodeManagerSessionImpl::define_property_with_mode(const char* property_name, con
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::define_property_with_mode
+	if (ReadOnly)
+	{
+		throw(CosPropertyService::ReadOnlyProperty());
+	}	
+	else
+	{
+		if (property_mode == DCI_Basics::undefined)
+			throw(CosPropertyService::UnsupportedMode()); // The mode must be different from "undefined".
+	
+		definition(property_name,property_value,property_mode);
+	}
 // END USER INSERT SECTION NodeManagerSessionImpl::define_property_with_mode
 }
 
@@ -660,6 +696,29 @@ NodeManagerSessionImpl::set_property_mode(const char* property_name, DCI_Basics:
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::set_property_mode
+	if (ReadOnly)
+	{
+		throw(CosPropertyService::ReadOnlyProperty());
+	}	
+	else
+	{
+		if (! is_property_name_valid (property_name))
+			throw(CosPropertyService::InvalidPropertyName()); // The name is not valid.
+
+		if (property_mode == DCI_Basics::undefined)
+			throw(CosPropertyService::UnsupportedMode());  // The new mode must be different from "undefined".
+
+		CORBA::ULong ind;
+		CORBA::Boolean success = get_index (property_name,&ind);
+
+		if (success == false)
+			throw(CosPropertyService::PropertyNotFound()); // The property is not defined.
+
+		if (! is_property_allowed(property_name, *get_value (ind), property_mode))
+			throw (CosPropertyService::UnsupportedMode()); // The mode is not conformed to .
+
+		(*properties_vector)[ind]->property_mode = property_mode;
+	}
 // END USER INSERT SECTION NodeManagerSessionImpl::set_property_mode
 }
 

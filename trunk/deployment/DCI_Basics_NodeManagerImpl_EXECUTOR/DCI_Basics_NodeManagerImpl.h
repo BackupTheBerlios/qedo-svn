@@ -271,6 +271,8 @@ namespace DCI_Basics
 		// hide extensive output if true
 		bool _quiet_mode;
 
+		CORBA::Boolean ReadOnly;
+
 #ifdef _WINDOWS
 		bool _is_NT;
 #endif
