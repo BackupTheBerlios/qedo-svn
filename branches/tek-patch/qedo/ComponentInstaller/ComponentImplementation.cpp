@@ -29,7 +29,7 @@
 #include <fstream>
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.16.2.1 2003/09/28 22:29:24 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.16.2.2 2003/09/28 22:38:47 tom Exp $";
 
 
 namespace Qedo {
@@ -409,9 +409,9 @@ throw(Components::CreateFailure)
 	data_.servant_entry_point = "create_" + data_.home_name + "S";
 
 #ifdef _WIN32
-	makefile_ = g_qedo_dir + "\\etc\\makefile";
+	makefile_ = g_qedo_dir + "\\etc\\Makefile.servants.win32";
 #else
-	makefile_ = g_qedo_dir + "/etc/makefile";
+	makefile_ = g_qedo_dir + "/etc/Makefile.servants";
 #endif
 
 	if ( !checkExistence(makefile_, IS_FILE)) 
