@@ -57,6 +57,7 @@ private:
 	wxPanel * qcexplorer_panel;
 	QCexplorerTreeCtrl *qcexplorer_;
 	wxPanel * explorer_panel;
+	wxButton *quit;
 
 	    DECLARE_EVENT_TABLE()
 

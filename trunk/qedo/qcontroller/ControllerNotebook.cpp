@@ -70,6 +70,8 @@ void ControllerNotebook::CreateControllerPages(wxBoxSizer * sizerFrame)
 	 explorer_panel=new QedoExplorer(this, QEDOEXPLORER_ID, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE );
 	 AddPage(explorer_panel,wxT("Explorer"), FALSE,0);
 
+	 
+
 
     SetSelection(0);
 
