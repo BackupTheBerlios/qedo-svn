@@ -188,6 +188,77 @@ public:
 	void ccm_object_executor (CCMObjectExecutor* ccm_object_exec);
 };
 
+
+/**
+ * context for an home executor
+ */
+class CONTAINERDLL_API HomeExecutorContext : public virtual Components::CCMContext,
+											 public virtual Qedo::RefCountLocalObject
+{
+private:
+	HomeServantBase* my_home_servant_;
+
+public:
+	/**
+	 * constructor
+	 */
+	HomeExecutorContext (HomeServantBase*);
+
+	/**
+	 * destructor
+	 */
+	~HomeExecutorContext();
+
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/get_caller_principal:1.0
+	 * (not implemented yet)
+	 * \return The caller principal.
+	 */
+	Components::Principal get_caller_principal();
+
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/get_CCM_home:1.0
+	 * provide the home of the component
+	 * \return The object reference of the component home. 
+	 */
+	Components::CCMHome_ptr get_CCM_home();
+
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/get_rollback_only:1.0
+	 * (not implemented yet)
+	 */
+    CORBA::Boolean get_rollback_only()
+		throw (Components::IllegalState);
+
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/get_user_transaction:1.0
+	 * (not implemented yet)
+	 */
+    Components::Transaction::UserTransaction_ptr get_user_transaction()
+		throw (Components::IllegalState);
+
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/is_caller_in_role:1.0
+	 * (not implemented yet)
+	 */
+    CORBA::Boolean is_caller_in_role (const char* role);
+
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/set_rollback_only:1.0
+	 * (not implemented yet)
+	 */
+    void set_rollback_only()
+		throw (Components::IllegalState);
+
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/resolve_service_reference:1.0
+     * Qedo CCM extension to allow generic handling of service integration
+	 */
+    CORBA::Object_ptr resolve_service_reference(const char* service_id)
+		throw (Components::CCMException);
+};
+
+
 /** @} */
 
 } // namespace Qedo

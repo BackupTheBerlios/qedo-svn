@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.12 2003/04/15 07:26:07 neubauer Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.13 2003/05/07 13:43:01 stoinski Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -428,6 +428,12 @@ throw (Components::Deployment::UnknownImplId,
 	//
 	qedo_home_servant->container(this);
 	qedo_home_servant->initialize (root_poa_, home_executor);
+
+	// SessionHomeContext ctx = new SessionHomeContext (qedo_home_servant);
+	// home_executor->set_context (ctx);
+	home_executor->set_context (new HomeExecutorContext (qedo_home_servant));	// Qedo extension (hack)
+																				// Standard home executor has no context!
+
 	if(service_name)
 	{
 		DEBUG_OUT2("..... home for CCMService installed: ", service_name);

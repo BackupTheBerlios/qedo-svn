@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMContext.cpp,v 1.5 2003/04/08 07:27:16 neubauer Exp $";
+static char rcsid[] = "$Id: CCMContext.cpp,v 1.6 2003/05/07 13:43:01 stoinski Exp $";
 
 #include "CCMContext.h"
 #include "Output.h"
@@ -118,6 +118,75 @@ ExecutorContext::ccm_object_executor (CCMObjectExecutor* ccm_object_exec)
 	ccm_object_executor_ = ccm_object_exec;
 	ccm_object_executor_->_add_ref();
 }
+
+
+HomeExecutorContext::HomeExecutorContext (HomeServantBase* my_home_servant)
+: my_home_servant_ (my_home_servant)
+{
+	my_home_servant_->_add_ref();
+}
+
+
+HomeExecutorContext::~HomeExecutorContext()
+{
+	DEBUG_OUT ( "CCMContext: Destructor called" );
+
+	my_home_servant_->_remove_ref();
+}
+
+
+Components::Principal 
+HomeExecutorContext::get_caller_principal()
+{
+	throw CORBA::NO_IMPLEMENT();
+}
+
+
+Components::CCMHome_ptr 
+HomeExecutorContext::get_CCM_home()
+{
+	return my_home_servant_->ref();
+}
+
+
+CORBA::Boolean 
+HomeExecutorContext::get_rollback_only()
+throw (Components::IllegalState)
+{
+	throw CORBA::NO_IMPLEMENT();
+}
+
+
+Components::Transaction::UserTransaction_ptr 
+HomeExecutorContext::get_user_transaction()
+throw (Components::IllegalState)
+{
+	throw CORBA::NO_IMPLEMENT();
+}
+
+
+CORBA::Boolean 
+HomeExecutorContext::is_caller_in_role (const char* role)
+{
+	throw CORBA::NO_IMPLEMENT();
+}
+
+
+void 
+HomeExecutorContext::set_rollback_only()
+throw (Components::IllegalState)
+{
+	throw CORBA::NO_IMPLEMENT();
+}
+
+
+CORBA::Object_ptr 
+HomeExecutorContext::resolve_service_reference(const char* service_id)
+throw (Components::CCMException)
+{
+	throw CORBA::NO_IMPLEMENT();
+}
+
 
 } // namespace Qedo
 
