@@ -441,6 +441,9 @@ copy cidl_gend.exe &quot;%QEDO%\bin&quot;
 			<File
 				RelativePath=".\TestMode.h">
 			</File>
+			<File
+				RelativePath="version.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

@@ -9,6 +9,7 @@
 #include "GeneratorServantC.h"
 #include "GeneratorVC7.h"
 #include "TestMode.h"
+#include "version.h"
 #include <frontend.h>
 
 #include <signal.h>
@@ -46,7 +47,7 @@ int
 main
 ( int argc, char **argv )
 {
-	std::cout << "CIDL Generator Version 0.x" << std::endl;
+	std::cout << "CIDL Generator Version " << GENERATOR_VERSION << std::endl;
 	std::cout << "Qedo Team" << std::endl;
 
 
