@@ -31,20 +31,30 @@
 namespace Qedo {
 
 
-class CONTAINERDLL_API GlobalObjectManagement 
-{
-public:
-	static CORBA::Long native_object_instantiation_count_;
-	static CORBA::Long CORBA_object_instantiation_count_;
-	static CORBA::Long CORBA_local_object_instantiation_count_;
-	static void report();
-};
-
-
 /**
  * @addtogroup ComponentContainer
  * @{
  */
+
+
+/**
+ * used to keep track of created objects
+ */
+class CONTAINERDLL_API GlobalObjectManagement 
+{
+public:
+	/** number of created native objects */
+	static CORBA::Long native_object_instantiation_count_;
+	/** number of created CORBA objects */
+	static CORBA::Long CORBA_object_instantiation_count_;
+	/** number of created CORBA local objects */
+	static CORBA::Long CORBA_local_object_instantiation_count_;
+
+	/**
+	 * prints report about number of created objects and number of still running objects 
+	 */
+	static void report();
+};
 
 
 /**

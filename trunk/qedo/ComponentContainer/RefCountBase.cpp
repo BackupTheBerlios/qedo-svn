@@ -31,20 +31,20 @@
 #include <set>
 #endif
 
-static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.14 2003/09/09 17:43:33 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.15 2003/09/10 12:19:00 neubauer Exp $";
 
 
 namespace Qedo {
 
 
 #ifdef _DEBUG
-std::set<RefCountLocalObject*> CORBA_local_object_set;
-std::set<RefCountBase*> native_object_set;
-std::set<CreateDestructCORBAObjectCounter*> CORBA_object_set;
+static std::set<RefCountLocalObject*> CORBA_local_object_set;
+static std::set<RefCountBase*> native_object_set;
+static std::set<CreateDestructCORBAObjectCounter*> CORBA_object_set;
 #else
-CORBA::Long native_object_count_ = 0;
-CORBA::Long CORBA_local_object_count_ = 0;
-CORBA::Long CORBA_object_count_ = 0;
+static CORBA::Long native_object_count_ = 0;
+static CORBA::Long CORBA_local_object_count_ = 0;
+static CORBA::Long CORBA_object_count_ = 0;
 #endif
 
 CORBA::Long GlobalObjectManagement::native_object_instantiation_count_ = 0;
@@ -197,7 +197,7 @@ namespace __cxxabiv1 {
 	class __class_type_info;
 };
 #include <cxxabi.h>
-static const char *
+static void
 demangle(const char* name)
 {
 	int status=0;
@@ -214,7 +214,7 @@ demangle(const char* name)
 	}
 }
 #else
-static const char *
+static void
 demangle(const char* name)
 {
 	DEBUG_OUT(name);
