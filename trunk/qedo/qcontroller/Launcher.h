@@ -36,7 +36,7 @@ private:
 	wxButton *ASSFStartBtn;
 	wxButton *SAStartBtn;
 	wxButton *CIStartBtn;
-	//wxTextCtrl* host_name_nsd_;
+	wxTextCtrl* host_name_nsd_;
 	wxTextCtrl* port_number_;
 	
 	

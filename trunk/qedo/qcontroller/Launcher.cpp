@@ -139,12 +139,9 @@ void Launcher::OnNSDStartButton(wxCommandEvent& WXUNUSED(event))
 	{
 		wxString port_nr = port_number_->GetValue(); 
 		
-<<<<<<< Launcher.cpp
+
 		wxString host_name = host_name_nsd_->GetValue();
-		
-=======
-		wxString host_name = "localhost" ;//host_name_nsd_->GetValue();
->>>>>>> 1.6
+
 		// get the computers name first 
 
 		wxString cmd = "nsd -ORBIIOPAddr inet:";
