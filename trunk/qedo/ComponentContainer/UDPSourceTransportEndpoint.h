@@ -28,6 +28,10 @@
 
 #include "TransportEndpoint.h"
 
+#ifndef _WIN32
+#include <netinet/in.h>
+#endif
+
 
 namespace Qedo {
 

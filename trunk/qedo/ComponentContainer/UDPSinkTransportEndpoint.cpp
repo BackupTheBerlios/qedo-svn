@@ -47,7 +47,7 @@
 
 #define MAX_DGRAM_SIZE 32768
 
-static char rcsid[] UNUSED = "$Id: UDPSinkTransportEndpoint.cpp,v 1.1 2003/12/16 13:37:55 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: UDPSinkTransportEndpoint.cpp,v 1.2 2003/12/17 13:14:33 stoinski Exp $";
 
 
 namespace Qedo {
@@ -102,7 +102,14 @@ UDPSinkTransportEndpoint::do_recv()
 	// Pakete mit Nummer ungleich meiner aktuellen werden verworfen
 
 	struct sockaddr_in sender_address;
-	int sender_address_size = sizeof(sender_address);
+
+#ifdef _WIN32
+	int sender_address_size;
+#else
+	socklen_t sender_address_size;
+#endif
+
+	sender_address_size = sizeof(sender_address);
 
 	//StreamComponents::UDPProfileHeader header;
 	char datagram[MAX_DGRAM_SIZE];
@@ -112,7 +119,7 @@ UDPSinkTransportEndpoint::do_recv()
 #ifdef _WIN32
 		if (recvfrom (socket_, datagram, MAX_DGRAM_SIZE, 0, (struct sockaddr*)&sender_address, &sender_address_size) == SOCKET_ERROR)
 #else
-		if (recvfrom (socket_, datagram, MAX_DGRAM_SIZE, 0, &sender_address, &sender_address_size) == -1)
+		if (recvfrom (socket_, datagram, MAX_DGRAM_SIZE, 0, (struct sockaddr*)&sender_address, &sender_address_size) == -1)
 #endif
 		{
 			DEBUG_OUT ("UDPSinkTransportEndpoint: do_recv(): Cannot read datagram");
@@ -185,7 +192,7 @@ throw (StreamComponents::TransportFailure)
 #ifdef _WIN32
 	if ((socket_ = socket (AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET)
 #else
-	if ((listen_socket_ = socket (AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+	if ((socket_ = socket (AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
 #endif
 	{
 		DEBUG_OUT ("UDPSinkTransportEndpoint: setup_connection(): socket() call failed");

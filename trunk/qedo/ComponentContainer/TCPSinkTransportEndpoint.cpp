@@ -45,7 +45,7 @@
 #include <cstdio>
 #include <cerrno>
 
-static char rcsid[] UNUSED = "$Id: TCPSinkTransportEndpoint.cpp,v 1.5 2003/12/16 13:37:32 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: TCPSinkTransportEndpoint.cpp,v 1.6 2003/12/17 13:14:33 stoinski Exp $";
 
 
 namespace Qedo {
@@ -60,9 +60,9 @@ TCPSinkTransportEndpoint::TCPSinkTransportEndpoint (SinkPort* my_sink, StreamDat
   end_stream_tag_ (false),
   pause_stream_cond_ ("TCP_SINK_TEP_PAUSE"),
   pause_stream_tag_ (false),
-  acceptor_thread_stopped_ (false),
   active_stream_ (false),
-  acceptor_thread_handle_ (0)
+  acceptor_thread_handle_ (0),
+  acceptor_thread_stopped_ (false)
 {
 }
 

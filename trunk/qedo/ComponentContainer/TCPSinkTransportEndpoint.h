@@ -58,6 +58,9 @@ private:
 
 	bool active_stream_;
 
+	QedoThread* acceptor_thread_handle_;
+	bool acceptor_thread_stopped_;
+
 #ifdef _WIN32
 	SOCKET listen_socket_;
 	SOCKET accept_socket_;
@@ -74,10 +77,6 @@ private:
 
 	void check_wait_or_signal_end_stream();
 	void check_wait_or_signal_pause_stream();
-
-	QedoThread* acceptor_thread_handle_;
-
-	bool acceptor_thread_stopped_;
 
 	static void* acceptor_thread (void*);
 	void do_read();

@@ -35,7 +35,6 @@ class QEDOUTIL_API ConfigurationReader
 {
 private:
 	ConfigurationReader();
-	~ConfigurationReader();
 	void init();
 
 	DOMElement* config_top_;
@@ -43,6 +42,8 @@ private:
 	bool broken_config_file_;
 
 public:
+	~ConfigurationReader();
+
 	std::string lookup_config_value (const std::string&  name);
 	std::string lookup_config_value (const char* name);
 	static ConfigurationReader* instance();
