@@ -285,7 +285,7 @@ RepositorySessionImpl::initialize()
 	in.open ( myRef.c_str() );
 	if ( ! ( in.is_open () ) ) 
 	{
-		NORMAL_ERR3("RepositorySessionImpl::initialize(): ", myRef, "repository reference is not found!");
+		NORMAL_ERR3("RepositorySessionImpl::initialize(): ", myRef, " repository reference is not found!");
 		throw CORBA::SystemException();
 	}
 
@@ -566,9 +566,9 @@ RepositorySessionImpl::feed_assembly(const DCI::AssemblyArchive& archive)
 		for ( it_proc = (*it_hosts).processes.begin( ) ; it_proc != (*it_hosts).processes.end( ) ; it_proc++ ) {
 
 			//create ProcessCollocation
-			std::cout << "   create ProcessCollocation: "<< (*it_proc).id << " host:" << (*it_proc).host << "\n";
+			std::cout << "   create ProcessCollocation: "<< (*it_proc).id << " host:" << (*it_proc).dest.node << "\n";
 			MDE::Deployment::ProcessCollocation_ptr	rep_ProcessCollocation = 
-				_processCollocation_ref->create_process_collocation((*it_proc).host.c_str(),	//destination
+				_processCollocation_ref->create_process_collocation((*it_proc).dest.node.c_str(),	//destination
 																	(CORBA::ULong) 1); 			//cardinality
 
 			//set collocated_instances for Configuration
@@ -586,22 +586,22 @@ RepositorySessionImpl::feed_assembly(const DCI::AssemblyArchive& archive)
 				if ( it_map == impl_map.end( ) ) {
 					CorbaIdlTypes::StringSet s;
 					s.length(1); 
-					s[0] = CORBA::string_dup(((*it_homes).dest).c_str());
-					std::cout << "add entry to impl_map: ("<< (*it_homes).impl_id << "," << (*it_homes).dest << ")..." << std::endl;
+					s[0] = CORBA::string_dup(((*it_homes).dest.node).c_str());
+					std::cout << "add entry to impl_map: ("<< (*it_homes).impl_id << "," << (*it_homes).dest.node << ")..." << std::endl;
 					impl_map[((*it_homes).impl_id).c_str()] = s;
 				}
 				else {
 					//if destination not exist, add destination
 					unsigned long sidx=0; //boolean found = false;
 					for ( ; sidx < (*it_map).second.length(); sidx++ )
-						if(strcmp((*it_map).second[sidx], (*it_homes).dest.c_str()) == 0){
-							std::cout << "dest: " << (*it_homes).dest << " already in entry in impl_map..." << std::endl;
+						if(strcmp((*it_map).second[sidx], (*it_homes).dest.node.c_str()) == 0){
+							std::cout << "dest: " << (*it_homes).dest.node << " already in entry in impl_map..." << std::endl;
 							break;
 						}
 					if(sidx==(*it_map).second.length()) { //destination not found
 						(*it_map).second.length(sidx); 
-						(*it_map).second[sidx-1] = CORBA::string_dup(((*it_homes).dest).c_str());
-						std::cout << "add dest: " << (*it_homes).dest << " to entry: "<< (*it_homes).impl_id << " in impl_map..." << std::endl;
+						(*it_map).second[sidx-1] = CORBA::string_dup(((*it_homes).dest.node).c_str());
+						std::cout << "add dest: " << (*it_homes).dest.node << " to entry: "<< (*it_homes).impl_id << " in impl_map..." << std::endl;
 					}
 				}
 				// ------------------------------------------------------------------------------------------
@@ -615,7 +615,7 @@ RepositorySessionImpl::feed_assembly(const DCI::AssemblyArchive& archive)
 					MDE::Deployment::FinderServiceBag rep_FinderServiceBag;
 					MDE::Deployment::HomeInstantiation_ptr	rep_HomeInstantiation = 
 						_homeInstantiation_ref->create_home_instantiation((*it_homes).id.c_str(),	//name
-																		(*it_homes).dest.c_str(),	//destination
+																		(*it_homes).dest.node.c_str(),	//destination
 																		(*it_homes).cardinality,	//cardinality
 																		MDE::Deployment::FinderServiceBag());	//registerwith
 					//default component properties
