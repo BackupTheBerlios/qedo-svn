@@ -28,7 +28,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: Util.cpp,v 1.3 2003/10/17 09:11:41 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: Util.cpp,v 1.4 2003/10/30 16:20:16 boehme Exp $";
 
 
 namespace Qedo {
@@ -88,6 +88,7 @@ load_shared_library (const char* name, const char* dir)
 
 	if (!b || !strcmp (b, ""))
 	{
+		DEBUG_OUT("load_shared_library got no dir");
 		b = strrchr(name,'/');
 		if(!b) changed_cwd=false;
 		else
@@ -107,11 +108,15 @@ load_shared_library (const char* name, const char* dir)
 
 	if (changed_cwd) 
 	{
+		DEBUG_OUT2("load_shared_library go from", cwd);
+		DEBUG_OUT2("load_shared_library go to", b);
 		if(chdir(b)== -1)
 		{
+			DEBUG_OUT("load_shared_library error while chdir");
 			perror("chdir");
 		}
 		
+		DEBUG_OUT2("load_shared_library original name was ", name);
 		local_name = strrchr(name,'/');
 		if(local_name) local_name++;
 	}
@@ -119,6 +124,8 @@ load_shared_library (const char* name, const char* dir)
 	{
 		local_name = name;
 	}
+
+	DEBUG_OUT2("load_shared_library name is ", local_name);
 
 	
 	handle_lib = dlopen( local_name ,RTLD_GLOBAL|RTLD_LAZY);
@@ -136,7 +143,7 @@ load_shared_library (const char* name, const char* dir)
 		if (chdir(cwd) == -1)
 		{
 			perror("chdir");
-			std::cerr << "Can't change back to working directory" << std::endl;
+			NORMAL_ERR2("load_shared_library can't change back to working directory ", cwd);
 		}
 	}
 
