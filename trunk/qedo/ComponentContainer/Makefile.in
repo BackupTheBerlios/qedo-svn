@@ -42,6 +42,7 @@ SOURCES = Key.cpp \
 		ContainerClientRequestInfo.cpp \
 		ContainerServerRequestInfo.cpp \
 		EmitterPort.cpp \
+		EntityContext.cpp \
 		EntityHomeServant.cpp \
 		FacetPort.cpp \
 		GlobalHelpers.cpp \
