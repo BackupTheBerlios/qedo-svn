@@ -323,6 +323,16 @@ module Components {
 	exception CCMException { CCMExceptionReason reason; };
 	exception IllegalState { };
 
+		/** extension */
+   native Function;
+   native FunctionData;
+
+	local interface Thread {
+		void stop();
+		void join();
+	};
+		/** end extension */
+
 	local interface CCMContext {
 		Principal get_caller_principal();
 		CCMHome get_CCM_home();
@@ -335,6 +345,8 @@ module Components {
 			raises (IllegalState);
 		/** extension */
 		Object resolve_service_reference(in string service_id)
+			raises(CCMException);
+		Thread start_thread(in Function function,in FunctionData data)
 			raises(CCMException);
 	};
 		
