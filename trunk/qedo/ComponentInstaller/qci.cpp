@@ -35,7 +35,7 @@
 #include <signal.h>
 
 
-static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.20 2003/09/30 16:39:00 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.21 2003/10/05 18:50:01 tom Exp $";
 
 
 /**
@@ -123,7 +123,7 @@ main (int argc, char** argv)
 	// get the qedo dir
 	//
 	Qedo::g_qedo_dir = Qedo::getEnvironment( "QEDO" );
-	if(Qedo::g_qedo_dir == "")
+	if(Qedo::g_qedo_dir.empty())
 	{
 	    std::cout << "Missing Environment Variable QEDO" << std::endl;
 	    std::cout << "Assuming current dir as local deployment dir" << std::endl; 

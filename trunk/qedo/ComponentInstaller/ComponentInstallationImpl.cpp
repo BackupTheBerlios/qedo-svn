@@ -31,7 +31,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.18 2003/09/26 08:25:53 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.19 2003/10/05 18:48:38 tom Exp $";
 
 
 namespace Qedo {
@@ -43,7 +43,7 @@ std::string	ComponentInstallationImpl::inst_file_;
 ComponentInstallationImpl::ComponentInstallationImpl (CORBA::ORB_ptr orb)
 : orb_ (CORBA::ORB::_duplicate (orb))
 {
-	if (inst_file_ == "")
+	if (inst_file_.empty())
 	{
 		inst_file_ = g_qedo_dir + "/deployment/installedComponentImplementations.xml";
 	}

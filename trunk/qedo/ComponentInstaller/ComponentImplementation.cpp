@@ -26,7 +26,7 @@
 #include <fstream>
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.17 2003/09/29 14:50:11 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.18 2003/10/05 18:45:21 tom Exp $";
 
 
 namespace Qedo {
@@ -315,14 +315,14 @@ throw(Components::CreateFailure)
 	//
 	// install subcomponents (if existing)
 	//
-	if(data_.assembly.cad != "")
+	if(data_.assembly.cad.length())
 	{
 		installAssembly();
 		name = data_.assembly.cad;
 		copyFile( build_path_ + name, installation_path_ + name );
 	}
 
-	if(data_.csd == "")
+	if(data_.csd.empty())
 	{
 		return;
 	}
@@ -364,7 +364,7 @@ throw(Components::CreateFailure)
 	//
 	// install implementation code
 	//
-	if(data_.executor_module != "")
+	if(data_.executor_module.length())
 	{
 		//
 		// install business code files
@@ -379,7 +379,7 @@ throw(Components::CreateFailure)
 		//
 		// servant code files have to be extracted from the archive or to be build
 		//
-		if ((data_.servant_module != "") && (data_.servant_entry_point != ""))
+		if ((data_.servant_module.length()) && (data_.servant_entry_point.length()))
 		{
 			name = data_.servant_module;
 			if (copyFile( build_path_ + name, installation_path_ + name ) == 0) 
