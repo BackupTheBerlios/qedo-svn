@@ -28,7 +28,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: Util.cpp,v 1.4 2003/10/30 16:20:16 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Util.cpp,v 1.5 2003/12/10 14:17:20 neubauer Exp $";
 
 
 namespace Qedo {
@@ -41,7 +41,7 @@ load_shared_library (const char* name, const char* dir)
 {
 	HINSTANCE handle_lib;
 
-	handle_lib = LoadLibrary (name);
+	handle_lib = LoadLibraryEx (name, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
 
 	if (handle_lib < (HINSTANCE)HINSTANCE_ERROR)
 	{
