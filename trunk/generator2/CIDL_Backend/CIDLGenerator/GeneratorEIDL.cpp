@@ -887,36 +887,35 @@ GeneratorEIDL::doValue(IR__::ValueDef_ptr value)
 // event
 //
 void
-GeneratorEIDL::doEvent(IR__::ValueDef_ptr value)
+GeneratorEIDL::doEvent(IR__::EventDef_ptr event)
 {
-	out << "//\n// " << value->id() << "\n//\n";
+	out << "//\n// " << event->id() << "\n//\n";
 	
-	if(value->is_abstract())
+	if(event->is_abstract())
 	{
 		out << "abstract ";
 	}
 	
-	if(value->is_custom())
+	if(event->is_custom())
 	{
 		out << "custom ";
 	}
 	
-	if(value->is_truncatable())
+	if(event->is_truncatable())
 	{
 		out << "truncatable ";
 	}
 	
-	out << "valuetype " << value->name();
-	// ACHTUNG HACK fuer event type
+	out << "valuetype " << event->name();
 	out << " : Components::EventBase\n";
 	out << "{\n";
 	out.indent();
 
 	// contents
-	handleValueMember(value);
+	handleValueMember(event);
 
 	// initializers
-	IR__::InitializerSeq_var initializers = value->initializers();
+	IR__::InitializerSeq_var initializers = event->initializers();
 	for(CORBA::ULong i = 0; i < initializers->length(); i++)
 	{
 		out << "\nfactory " << string((*initializers)[i].name) << "(";
@@ -940,9 +939,9 @@ GeneratorEIDL::doEvent(IR__::ValueDef_ptr value)
 	//
 	// event interface
 	//
-	out << "interface " << value->name() << "Consumer : Components::EventConsumerBase\n{\n";
+	out << "interface " << event->name() << "Consumer : Components::EventConsumerBase\n{\n";
 	out.indent();
-	out << "void " << "push_" << value->name() << "(in " << value->name() << " ev);\n";
+	out << "void " << "push_" << event->name() << "(in " << event->name() << " ev);\n";
 	out.unindent();
 	out << "};\n\n";
 };

@@ -434,9 +434,9 @@ GeneratorBase::doFinder(IR__::FinderDef_ptr finder)
 // event type
 //
 void
-GeneratorBase::doEvent(IR__::ValueDef_ptr value)
+GeneratorBase::doEvent(IR__::EventDef_ptr event)
 {
-	IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_all, false);
+	IR__::ContainedSeq_var contained_seq = event->contents(CORBA__::dk_all, false);
 	CORBA::ULong len = contained_seq->length();
 	for(CORBA::ULong i = 0; i < len; i++)
 	{
@@ -456,6 +456,17 @@ GeneratorBase::doEvent(IR__::ValueDef_ptr value)
 void
 GeneratorBase::doValue(IR__::ValueDef_ptr value)
 {
+	IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_all, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		// contained members
+		if (((*contained_seq)[i])->def_kind() == CORBA__::dk_ValueMember)
+		{
+			IR__::ValueMemberDef_var act_member = IR__::ValueMemberDef::_narrow(((*contained_seq)[i]));
+			doValueMember(act_member);
+		}
+	}
 }
 
 

@@ -44,6 +44,7 @@ class ValueDef_impl : public virtual POA_IR__::ValueDef,
 						public virtual Contained_impl,
 						public virtual IDLType_impl
 {
+protected:
 	ValueDef_impl *base_value_impl_;
 	IR__::InitializerSeq initializers_;
 	vector < InterfaceDef_impl* > supported_interface_impls_;
@@ -55,7 +56,7 @@ class ValueDef_impl : public virtual POA_IR__::ValueDef,
 public:
 	ValueDef_impl ( Container_impl *container, Repository_impl *repository );
 
-	~ValueDef_impl();
+	virtual ~ValueDef_impl();
 
 	CORBA::TypeCode_ptr build_recursive_type_code ( vector < Contained_impl* >& seq );
 

@@ -30,7 +30,7 @@ class GeneratorEIDL : public virtual IDLBase
 	void doException(IR__::ExceptionDef_ptr except);
 	void doEnum(IR__::EnumDef_ptr enumeration);
 	void doValue(IR__::ValueDef_ptr value);
-	void doEvent(IR__::ValueDef_ptr value);
+	void doEvent(IR__::EventDef_ptr event);
 	void doValueMember(IR__::ValueMemberDef_ptr member);
 	void doAttribute(IR__::AttributeDef_ptr attribute);
 	void doOperation(IR__::OperationDef_ptr operation);

@@ -76,7 +76,7 @@ extern table_item_set_printer table_item_set_printer;
 %}
 
 %{
-static char id[] UNUSED = "$Id: attributes.k,v 1.4 2003/05/15 14:21:53 boehme Exp $";
+static char id[] UNUSED = "$Id: attributes.k,v 1.5 2003/05/16 12:30:50 neubauer Exp $";
 %}
 
 /*********************  Symbol table *********************/
@@ -198,7 +198,8 @@ definition : {
 
 %ctor definition ()
 {
-  prefix = current_prefix();
+  //prefix = current_prefix();
+  prefix = "";
 }
 
 /* contains all provides */

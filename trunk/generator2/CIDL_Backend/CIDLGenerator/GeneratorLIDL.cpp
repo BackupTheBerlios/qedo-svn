@@ -206,11 +206,11 @@ GeneratorLIDL::doValue(IR__::ValueDef_ptr value)
 }
 
 void
-GeneratorLIDL::doEvent(IR__::ValueDef_ptr value)
+GeneratorLIDL::doEvent(IR__::EventDef_ptr event)
 {
-	out << "//\n// " << value->id() << "\n//\n";
-	out << "local interface CCM_" << value->name() << "Consumer : ";
-	out << map_absolute_name(value) << "Consumer, ::Components::EnterpriseComponent\n{\n";
+	out << "//\n// " << event->id() << "\n//\n";
+	out << "local interface CCM_" << event->name() << "Consumer : ";
+	out << map_absolute_name(event) << "Consumer, ::Components::EnterpriseComponent\n{\n";
 	out << "};\n\n";
 }
 

@@ -286,7 +286,7 @@ ENOL                    (\n|\n)
                 }
               }
             }
-{S}*"#"{S}*"pragma"[^\n]*   { ECHO; }
+{S}*"#"{S}*"pragma"[^\n]*   {}
 "#"{S}*{D}+{S}*\n { fprintf(stderr,">>%s<<\n",yytext); yylineno++;}
 "#"{S}*{D}+{S}+\n { fprintf(stderr,">>%s<<\n",yytext); yylineno++;}
 "#"{S}*"line"{S}+{D}+{S}*\n { fprintf(stderr,">>%s<<\n",yytext); yylineno++;}

@@ -41,18 +41,8 @@ using namespace std;
 namespace QEDO_ComponentRepository {
 
 class EventDef_impl : public virtual POA_IR__::EventDef,
-						public virtual Container_impl,
-						public virtual Contained_impl,
-						public virtual IDLType_impl
+						public virtual ValueDef_impl
 {
-	ValueDef_impl *base_value_impl_;
-	IR__::InitializerSeq initializers_;
-	vector < InterfaceDef_impl* > supported_interface_impls_;
-	vector < vector < IDLType_impl* > > initializers_member_impls_;
-	vector < ValueDef_impl* > abstract_base_value_impls_;
-	CORBA::Boolean is_abstract_;
-	CORBA::Boolean is_custom_;
-	CORBA::Boolean is_truncatable_;
 public:
 	EventDef_impl ( Container_impl *container, Repository_impl *repository );
 

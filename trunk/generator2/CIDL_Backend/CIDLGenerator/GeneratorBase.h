@@ -59,7 +59,7 @@ protected:
 	virtual void doValue(IR__::ValueDef_ptr value);
 
 	// event type
-	virtual void doEvent(IR__::ValueDef_ptr value);
+	virtual void doEvent(IR__::EventDef_ptr event);
 
 	// component
 	virtual void doComponent(IR__::ComponentDef_ptr component);

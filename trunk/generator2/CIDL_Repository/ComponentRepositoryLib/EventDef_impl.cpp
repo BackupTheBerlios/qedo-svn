@@ -34,7 +34,8 @@ namespace QEDO_ComponentRepository {
 
 EventDef_impl::EventDef_impl
 ( Container_impl *container, Repository_impl *repository )
-: IRObject_impl ( repository ),
+: ValueDef_impl ( container, repository ),
+  IRObject_impl ( repository ),
   IDLType_impl ( repository ),
   Container_impl ( repository ),
   Contained_impl ( container, repository )

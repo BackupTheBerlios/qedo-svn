@@ -750,7 +750,7 @@ ValueType(ValueHeader(flag_v, name, inh), def_list)
       bool abstr;
       with(this) {
         AbstractValueType : { abstr = true; }
-        ValueType, EventType : { abstr = false; }
+        ValueType : { abstr = false; }
       }
       // create ValueDef
       IR__::ValueDef_ptr value;
@@ -764,64 +764,6 @@ ValueType(ValueHeader(flag_v, name, inh), def_list)
       }
       irobj = value;
       name->symtab_entry->irobj = value;
-    }
-  ];
-
-def_v=
-EventType(EventTypeHeader(flag_v, name, inh), def_list)
-->[ feed:
-    %uviewvar feed my_feed;
-	%uviewvar build my_build;
-    { my_feed.container = irobj;
-	  int i = 0;
-      foreach($def; definition_list def_list) {
-        FactoryDcl : { i++; }
-        default : { def->unparse(kc_printer, my_feed); }
-      }
-      my_build.iniseq.length(i);
-      foreach($def; definition_list def_list) {
-        FactoryDcl : { def->unparse(kc_printer, my_build); }
-        default : {}
-      }
-      IR__::EventDef_ptr eventdef;
-      eventdef = IR__::EventDef::_narrow (irobj);
-      NOT_NIL(eventdef);
-      // insert proper initializer seq
-      eventdef->initializers (my_build.iniseq);
-    }
-  ]
-  [ feed_container:
-    %uviewvar build my_build;
-    inh : my_build
-    {  
-      IR__::Container_ptr container;
-      container = IR__::Container::_narrow(kc_current_view.container);
-      NOT_NIL(container);
-      // initializer seq priliminarily empty (no types resolves so far)
-      IR__::InitializerSeq iniseq;
-      // determine custom marshal
-      bool cust;
-      with(flag_v) {
-        CustomFlag : { cust = true; }
-        default : { cust = false; }
-      }
-      // determine abstract
-      bool abstr;
-      with(this) {
-        EventType : { abstr = false; }
-      }
-      // create EventDef
-      IR__::EventDef_ptr event;
-      try {
-        event = container->create_event(get_repid(def_v,name), name->get_name(),
-          "1.0", cust, abstr, my_build.valuetype, my_build.flag,
-          my_build.valdefseq, my_build.intdefseq, iniseq);
-      }
-      catch (...) {
-        Error("Exception in creating value %k\n", name, name);
-      }
-      irobj = event;
-      name->symtab_entry->irobj = event;
     }
   ];
 
@@ -851,6 +793,20 @@ ValueInheritanceSpec(trunc, ident_list, ident_list2)
               kc_current_view.valuetype = IR__::ValueDef::_nil();
               kc_current_view.valdefseq.length(ident_list->length());
               val = IR__::ValueDef::_narrow(ident->symtab_entry->irobj);
+              NOT_NIL(val);
+              kc_current_view.valdefseq[0] = val;
+            }
+            EventType : {
+              val = IR__::EventDef::_narrow(ident->symtab_entry->irobj);
+              NOT_NIL(val);
+              kc_current_view.valuetype = val;
+              kc_current_view.valdefseq.length(ident_list->length()-1);
+			  j = 1;
+            }
+            AbstractEventType : {
+              kc_current_view.valuetype = IR__::ValueDef::_nil();
+              kc_current_view.valdefseq.length(ident_list->length());
+              val = IR__::EventDef::_narrow(ident->symtab_entry->irobj);
               NOT_NIL(val);
               kc_current_view.valdefseq[0] = val;
             }
@@ -924,11 +880,11 @@ ValueBox(name,type_v)
   ];
 
 def_v=
-StateMember(flag_v, def_v, dcls)
+StateMember(flag_v, def_1, dcls)
 ->[ feed:
     %uviewvar build my_build;
     %uviewvar feed my_feed;
-    def_v : my_feed
+    def_1 : my_feed
     { IR__::ValueDef_ptr container;
       container = IR__::ValueDef::_narrow(kc_current_view.container);
       NOT_NIL(container);
@@ -940,7 +896,7 @@ StateMember(flag_v, def_v, dcls)
         default : { assert(0); }
       }
       IR__::IDLType_ptr type_def;
-      type_def = IR__::IDLType::_narrow(def_v->irobj);
+      type_def = IR__::IDLType::_narrow(def_1->irobj);
       NOT_NIL(type_def);
       IR__::ValueMemberDef_ptr valmem;
       foreach($decl_v; declarators dcls) {
@@ -974,6 +930,73 @@ StateMember(flag_v, def_v, dcls)
   [ build :
   ];
 
+// ======================== Event Type ================================
+
+AbstractEventTypeFwdDcl(name)
+->[ feed feed_container: ];
+
+EventTypeFwdDcl(name)
+->[ feed feed_container: ];
+
+AbstractEventType(EventTypeHeader(flag_v, name, inh), def_list),
+EventType(EventTypeHeader(flag_v, name, inh), def_list)
+->[ feed:
+    %uviewvar feed my_feed;
+	%uviewvar build my_build;
+    { my_feed.container = irobj;
+	  int i = 0;
+      foreach($def; definition_list def_list) {
+        FactoryDcl : { i++; }
+        default : { def->unparse(kc_printer, my_feed); }
+      }
+      my_build.iniseq.length(i);
+      foreach($def; definition_list def_list) {
+        FactoryDcl : { def->unparse(kc_printer, my_build); }
+        default : {}
+      }
+      IR__::EventDef_ptr eventdef;
+      eventdef = IR__::EventDef::_narrow (irobj);
+      NOT_NIL(eventdef);
+      // insert proper initializer seq
+      eventdef->initializers (my_build.iniseq);
+    }
+  ]
+  [ feed_container:
+    %uviewvar build my_build;
+    inh : my_build
+    {  
+      IR__::Container_ptr container;
+      container = IR__::Container::_narrow(kc_current_view.container);
+      NOT_NIL(container);
+      // initializer seq priliminarily empty (no types resolves so far)
+      IR__::InitializerSeq iniseq;
+      // determine custom marshal
+      bool cust;
+      with(flag_v) {
+        CustomFlag : { cust = true; }
+        default : { cust = false; }
+      }
+      // determine abstract
+      bool abstr;
+      with(this) {
+		AbstractEventType : { abstr = true; }
+        EventType : { abstr = false; }
+      }
+      // create EventDef
+      IR__::EventDef_ptr event = 0;
+      try {
+        event = container->create_event(get_repid(name), name->get_name(),
+          "1.0", cust, abstr, my_build.valuetype, my_build.flag,
+          my_build.valdefseq, my_build.intdefseq, iniseq);
+      }
+      catch (...) {
+        Error("Exception in creating event %k\n", name, name);
+      }
+      irobj = event;
+      name->symtab_entry->irobj = event;
+    }
+  ];
+  
 // ================================ Home ===============================
 
 def_v=
