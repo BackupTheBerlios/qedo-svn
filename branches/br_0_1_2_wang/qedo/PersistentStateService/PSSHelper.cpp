@@ -19,30 +19,92 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-#ifndef __PSSUTIL_H__
-#define __PSSUTIL_H__
 
-#include <CORBA.h>
+#include "PSSHelper.h"
 
+namespace Qedo
+{
 
-#ifdef WIN32
-	#ifdef PSSDLL_EXPORTS
-		#define PSSDLL_API __declspec(dllexport)
-		#define PSSDLL_EXTERN
-	#else
-		#define PSSDLL_API __declspec(dllimport)
-		#define PSSDLL_EXTERN extern
-	#endif
-#else
-	#define PSSDLL_API 
-	#define PSSDLL_EXTERN
-#endif
+string 
+PSSHelper::convertPidToString( const Pid& rPid )
+{
+	string strPid;
+	int iLength = rPid.length();
 
+    for(int i=0; i<iLength; i++)
+		strPid.push_back(rPid[i]);
 
-// VC++ warnings 
-#pragma warning (disable : 4251) // class OB::ObjVar<*> needs to have dll-interface to be used by clients of class ...
-#pragma warning (disable : 4275) // non dll-interface class ... used as base class for dll-interface class ...
-#pragma warning (disable : 4290) // exception specification ignaored
+	return strPid;
+}
 
-#endif
+string 
+PSSHelper::convertSpidToString( const ShortPid& rSpid )
+{
+	string strSpid;
+	int iLength = rSpid.length();
 
+    for(int i=0; i<iLength; i++)
+		strSpid.push_back(rSpid[i]);
+
+	return strSpid;
+}
+
+string 
+PSSHelper::convertPidToString( const Pid* rPid )
+{
+	string strPid;
+	int iLength = rPid->length();
+
+    for(int i=0; i<iLength; i++)
+		strPid.push_back((*rPid)[i]);
+
+	return strPid;
+}
+
+string 
+PSSHelper::convertSpidToString( const ShortPid* rSpid )
+{
+	string strSpid;
+	int iLength = rSpid->length();
+
+    for(int i=0; i<iLength; i++)
+		strSpid.push_back((*rSpid)[i]);
+
+	return strSpid;
+}
+
+void
+PSSHelper::convertStringToSpid( const char* szSpid, ShortPid& rSpid )
+{
+	int iLength = strlen(szSpid);
+	rSpid.length(iLength);
+	
+	for(int i=0; i<iLength; i++)
+		rSpid[i] = szSpid[i];
+}
+
+bool 
+PSSHelper::comparePid(const Pid& rSrc, const Pid& rDest)
+{
+	string strSrc = convertPidToString(rSrc);
+	string strDest = convertPidToString(rDest);
+
+	if(strSrc.compare(strDest)==0)
+        return TRUE;
+	else
+		return FALSE;
+}
+
+bool 
+PSSHelper::compareShortPid(const ShortPid& rSrc, const ShortPid& rDest)
+{
+	string strSrc = convertSpidToString(rSrc);
+	string strDest = convertSpidToString(rDest);
+
+	if(strSrc.compare(strDest)==0)
+        return TRUE;
+	else
+		return FALSE;
+}
+
+}

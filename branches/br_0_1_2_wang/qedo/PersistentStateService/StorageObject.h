@@ -1,9 +1,32 @@
+/***************************************************************************/
+/* Qedo - Quality of Service Enabled Distributed Objects                   */
+/*                                                                         */
+/* http://qedo.berlios.de/                                                 */
+/*                                                                         */
+/* Copyright (C) 2002 by the Qedo Team                                     */
+/*                                                                         */
+/* This library is free software; you can redistribute it and/or           */
+/* modify it under the terms of the GNU Lesser General Public              */
+/* License as published by the Free Software Foundation; either            */
+/* version 2.1 of the License, or (at your option) any later version.      */
+/*                                                                         */
+/* This library is distributed in the hope that it will be useful,         */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of          */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU        */
+/* Lesser General Public License for more details.                         */
+/*                                                                         */
+/* You should have received a copy of the GNU Lesser General Public        */
+/* License along with this library; if not, write to the Free Software     */
+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
+/***************************************************************************/
 #ifndef __CONNECTOR_H__
 #define __CONNECTOR_H__
 
+#include <map>
 #include <string>
 #include "PSSUtil.h"
 #include "RefCountBase.h"
+#include "PSSHelper.h"
 #include "PSSStorageObject.h"
 
 using namespace std;
@@ -27,7 +50,13 @@ class StorageObjectImpl : public virtual CosPersistentState::StorageObject,
 
 		void setModified(bool bModified);
 
+		virtual void setValue(map<string, CORBA::Any> valueMap) {};
+
 		// normal mapping of PSDL operations
+		void _add_ref() {RefCountLocalObject::_add_ref();};
+		
+		void _remove_ref() {RefCountLocalObject::_remove_ref();};
+
 		void destroy_object() 
 			throw (CORBA::SystemException);
 		
@@ -42,13 +71,14 @@ class StorageObjectImpl : public virtual CosPersistentState::StorageObject,
 		
 		CosPersistentState::StorageHomeBase_ptr get_storage_home()
 			throw (CORBA::SystemException);		
-	
+
 	protected:
 		
 		~StorageObjectImpl() {};
 
 	private:
-
+		Pid* m_pid;
+		ShortPid* m_shortPid;
 		StorageHomeBase* m_storageHomeBase;
 		bool m_bModified;
 		string m_strUpdate;

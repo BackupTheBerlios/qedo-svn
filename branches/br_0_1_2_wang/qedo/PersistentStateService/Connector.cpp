@@ -122,7 +122,6 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 										strConn.c_str(), 
 										(dynamic_cast <Connector*> (this)));
 
-
 	if( pSession->Init()==FALSE ||
 		pSession->DriverConnect(strConn.c_str())==FALSE )
 		throw CORBA::PERSIST_STORE();
@@ -183,18 +182,17 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 ////////////////////////////////////////////////////////////////////////////////
 //returns the storage object factory previously registered with the given name
 //; return NULL when there is no previously registered factory
+//To invoke this method, a new instance of StorageObjectFactory and its 
+//storage_type_name are necessary. When the factory is not found, we register 
+//it in the map and return NULL; Otherwise the registert factory will be returned. 
+//That means, to retrive a factory this method can be perhaps twice invoked.
 ////////////////////////////////////////////////////////////////////////////////
 StorageObjectFactory
 ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
 												StorageObjectFactory factory)
 {
-	//To invoke this method, a new instance of StorageObjectFactory and its 
-	//storage_type_name are necessary. When the factory is not found, we 
-	//register it in the map and return NULL; Otherwise the registert factory 
-	//will be returned. That means, to retrive a factory this method can be 
-	//perhaps twice invoked.
-	map<char*, StorageObjectFactory>::iterator sof_iter;
-	sof_iter = m_SOFMap.find((char*)storage_type_name);
+	map<const char*, StorageObjectFactory>::iterator sof_iter;
+	sof_iter = m_SOFMap.find(storage_type_name);
 
 	if(sof_iter != m_SOFMap.end())
 	{
@@ -202,8 +200,8 @@ ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
 	}
 	else
 	{
-		typedef pair <char*, StorageObjectFactory> Factory_Pair;
-		m_SOFMap.insert( Factory_Pair((char*)storage_type_name, factory) );
+		typedef pair <const char*, StorageObjectFactory> Factory_Pair;
+		m_SOFMap.insert( Factory_Pair(storage_type_name, factory) );
 		return NULL;
 	}
 }
@@ -211,18 +209,18 @@ ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
 ////////////////////////////////////////////////////////////////////////////////
 //returns the storage home factory previously registered with the given name
 //; return NULL when there is no previously registered factory
+//To invoke this method, a new instance of StorageHomeFactory and its 
+//storage_home_type_name are necessary. When the factory is not found, we 
+//register it in the map and return NULL; Otherwise the registert factory will 
+//be returned. That means, to retrive a factory this method can be perhaps 
+//twice invoked.
 ////////////////////////////////////////////////////////////////////////////////
 StorageHomeFactory
 ConnectorImpl::register_storage_home_factory(const char* storage_home_type_name,
 											StorageHomeFactory factory)
 {
-	//To invoke this method, a new instance of StorageHomeFactory and its 
-	//storage_home_type_name are necessary. When the factory is not found, we 
-	//register it in the map and return NULL; Otherwise the registert factory 
-	//will be returned. That means, to retrive a factory this method can be 
-	//perhaps twice invoked.
-	map<char*, StorageHomeFactory>::iterator shf_iter;
-	shf_iter = m_SHFMap.find((char*)storage_home_type_name);
+	map<const char*, StorageHomeFactory>::iterator shf_iter;
+	shf_iter = m_SHFMap.find(storage_home_type_name);
 
 	if(shf_iter != m_SHFMap.end())
 	{
@@ -230,8 +228,8 @@ ConnectorImpl::register_storage_home_factory(const char* storage_home_type_name,
 	}
 	else
 	{
-		typedef pair <char*, StorageHomeFactory> Factory_Pair;
-		m_SHFMap.insert( Factory_Pair((char*)storage_home_type_name, factory) );
+		typedef pair <const char*, StorageHomeFactory> Factory_Pair;
+		m_SHFMap.insert( Factory_Pair(storage_home_type_name, factory) );
 		return NULL;
 	}
 }

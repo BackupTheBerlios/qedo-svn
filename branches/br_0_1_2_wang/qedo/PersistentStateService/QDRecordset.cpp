@@ -22,7 +22,6 @@
 
 #include "QDRecordset.h"
 
-
 namespace Qedo
 {
 

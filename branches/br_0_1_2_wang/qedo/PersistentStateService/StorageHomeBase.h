@@ -19,16 +19,17 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-
 #ifndef __STORAGEHOMEBASE_H__
 #define __STORAGEHOMEBASE_H__
 
 #include <list>
+#include <vector>
 #include <string>
 #include "PSSUtil.h"
 #include "CORBADepends.h"
 #include "RefCountBase.h"
 #include "QDRecordset.h"
+#include "PSSHelper.h"
 #include "StorageObject.h"
 #include "PSSStorageObject.h"
 
@@ -52,10 +53,18 @@ class  StorageHomeBaseImpl : public virtual CosPersistentState::StorageHomeBase,
 
 		string getFlush();
 
-		string getRefresh();
+		string getFlushByPid(std::vector<Pid> lPidList);
 
 		void setBatchUnModified();
-		
+
+		void Refresh();
+
+		void RefreshByPid(std::vector<Pid> lPidList);
+
+		void FreeAllStorageObjects();
+
+		char* getStorageHomeName();
+
 		//
 		// IDL:omg.org/CosPersistentState/StorageHomeBase/find_by_short_pid:1.0
 		//
@@ -66,7 +75,9 @@ class  StorageHomeBaseImpl : public virtual CosPersistentState::StorageHomeBase,
 		//
 		CatalogBase_ptr get_catalog();
 
-		char* getStorageHomeName();
+	private:
+
+		void ValuePaser( map<string, CORBA::Any>& value_map );
 
 	protected:
 		

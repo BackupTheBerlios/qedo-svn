@@ -202,6 +202,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\Connector.cpp">
 			</File>
 			<File
+				RelativePath="PSSHelper.cpp">
+			</File>
+			<File
 				RelativePath="QDDatabase.cpp">
 			</File>
 			<File
@@ -222,6 +225,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\Connector.h">
+			</File>
+			<File
+				RelativePath="PSSHelper.h">
 			</File>
 			<File
 				RelativePath=".\PSSUtil.h">

@@ -42,7 +42,7 @@ CatalogBaseImpl::~CatalogBaseImpl()
 		 storageHomeBase_iter != m_lStorageHomeBases.end();
 		 storageHomeBase_iter++)
 	{
-		delete (*storageHomeBase_iter);
+		(*storageHomeBase_iter)->_remove_ref();
 	}
 
 	m_lStorageHomeBases.clear();
@@ -144,10 +144,7 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 	}
 	
 	//check it whether in the database
-	if(!IsConnected())
-		return NULL;
-
-	if(!IsTableExist(storage_home_id))
+	if( IsConnected()==FALSE || IsTableExist(storage_home_id)==FALSE )
 		throw CosPersistentState::NotFound();
 
 	//if not in the list, new one.
@@ -171,13 +168,7 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 StorageObjectBase 
 CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 {
-	int iLength = the_pid.length();
-	unsigned char* sz_Pid = new unsigned char[iLength];
-	
-	for(int i=0; i<iLength; i++)
-	{
-		sz_Pid[i] = the_pid[i];
-	}
+	string strPid = PSSHelper::convertPidToString(the_pid);
 
 	// fetch the table name where pid can be found
 	string strToExecute;
@@ -188,7 +179,7 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 	prs.Init(&m_hDbc);
 
 	strToExecute = "select ownhome from pid_content where pid like ";
-	strToExecute.append((const char*)sz_Pid);
+	strToExecute += strPid;
 	strToExecute += ";";
 
 	if(prs.Open(strToExecute.c_str()))
@@ -201,7 +192,7 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 	strToExecute = "select spid from ";
 	strToExecute.append((const char*)szStorageHome);
 	strToExecute += " where pid like ";
-	strToExecute.append((const char*)sz_Pid);
+	strToExecute += strPid;
 	strToExecute += ";";
 
 	if(prs.Open(strToExecute.c_str()))
@@ -212,16 +203,11 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 		prs.Destroy();
 	}
 
-	//convert char* to ShortPid
-	ShortPid spid;
-	spid.length(8);
-	for(i=0; i<iLength; i++)
-	{
-		spid[i] = sz_Pid[i];
-	}
-
+	ShortPid rSpid;
+	PSSHelper::convertStringToSpid((const char*)szSpid, rSpid);
+	
 	StorageHomeBase_ptr p_sHomeBase = find_storage_home((const char*)szStorageHome);
-	return (p_sHomeBase->find_by_short_pid(spid));
+	return (p_sHomeBase->find_by_short_pid(rSpid));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -232,7 +218,6 @@ void
 CatalogBaseImpl::flush()
 {
 	string strFlush = "";
-
 	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
 	
 	for( storageHomeBase_iter = m_lStorageHomeBases.begin();
@@ -270,10 +255,14 @@ CatalogBaseImpl::flush()
 void 
 CatalogBaseImpl::refresh()
 {
-	// 1. add a static map<pid, storageobject*> in storage object 
-	//    (or fetch storage objects from every storage home in catalogBase? )
-	// 2. here get any one instance of storage object
-	// 3. select * from ...
+	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
+	
+	for( storageHomeBase_iter = m_lStorageHomeBases.begin();
+		 storageHomeBase_iter != m_lStorageHomeBases.end();
+		 storageHomeBase_iter++ )
+	{
+		(*storageHomeBase_iter)->Refresh();
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -283,7 +272,14 @@ CatalogBaseImpl::refresh()
 void 
 CatalogBaseImpl::free_all()
 {
-
+	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
+	
+	for( storageHomeBase_iter = m_lStorageHomeBases.begin();
+		 storageHomeBase_iter != m_lStorageHomeBases.end();
+		 storageHomeBase_iter++ )
+	{
+		(*storageHomeBase_iter)->FreeAllStorageObjects();
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -366,12 +362,42 @@ SessionPoolImpl::Init()
 void 
 SessionPoolImpl::flush_by_pids(const PidList& pids)
 {
-	PidList temp_pids = pids;
+	string strFlush = "";
+	std::vector <Pid> vPidList; 
 
-	
+	//there is no function for deleting Pid from PidList, so the PidList should 
+	//be first converted in a list of Pid
 	for(unsigned int i=0; i<pids.length(); i++)
 	{
-		//pids[i];
+		vPidList.push_back(pids[i]);
+	}
+
+	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
+	for( storageHomeBase_iter = m_lStorageHomeBases.begin();
+		 storageHomeBase_iter != m_lStorageHomeBases.end();
+		 storageHomeBase_iter++ )
+	{
+		strFlush += (*storageHomeBase_iter)->getFlushByPid(vPidList);
+	}
+
+	if(CanTransact()==TRUE && access_mode!=READ_ONLY)
+	{
+		if(ExecuteSQL(strFlush.c_str()))
+		{
+			SQLRETURN ret;
+			ret = SQLEndTran(SQL_HANDLE_DBC, m_hDbc, SQL_COMMIT);
+			if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
+			{
+				for( storageHomeBase_iter = m_lStorageHomeBases.begin();
+					 storageHomeBase_iter != m_lStorageHomeBases.end();
+					 storageHomeBase_iter++ )
+				{
+					// the flush is successfull, we set the modified-value of each
+					// storage object back to FALSE
+					(*storageHomeBase_iter)->setBatchUnModified();
+				}
+			}
+		}
 	}
 }
 
@@ -392,7 +418,22 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 void 
 SessionPoolImpl::refresh_by_pids(const PidList& pids)
 {
+	std::vector <Pid> vPidList; 
 
+	//there is no function for deleting Pid from PidList, so the PidList should 
+	//be first converted in a list of Pid
+	for(unsigned int i=0; i<pids.length(); i++)
+	{
+		vPidList.push_back(pids[i]);
+	}
+
+	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
+	for( storageHomeBase_iter = m_lStorageHomeBases.begin();
+		 storageHomeBase_iter != m_lStorageHomeBases.end();
+		 storageHomeBase_iter++ )
+	{
+		(*storageHomeBase_iter)->RefreshByPid(vPidList);
+	}
 }
 
 TransactionPolicy 

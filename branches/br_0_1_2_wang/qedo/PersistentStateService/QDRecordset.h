@@ -19,7 +19,6 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-
 #ifndef __QDRECORDSET_H__
 #define __QDRECORDSET_H__
 
@@ -67,39 +66,48 @@ class QDRecordset
 		// give the field number, get the field name, type and length
 		bool GetFieldAttributes(const int nField, unsigned char* szFieldName, int& nType, int& nLength);
 
-		// for SQL_C_CHAR, SQL_C_BINARY and SQL_C_VARBOOKMARK
+		// from SQL_CHAR          to SQL_C_CHAR
+		// from SQL_VARCHAR          ...
+		// from SQL_LONGVARCHAR      ...
+		// from SQL_BINARY        to SQL_C_BINARY
+		// from SQL_VARNINARY        ...
+		// from SQL_LONGVARNINARY    ...
+		// from SQL_BINARY        to SQL_C_VARBOOKMARK
 		bool GetFieldValue(const int nField, unsigned char* szData);
 		bool GetFieldValue(const char* szFieldName, unsigned char *szData);
 
-		// for SQL_C_BIT
+		// from SQL_BIT to SQL_C_BIT
 		bool GetFieldValue(const int nField, unsigned char& cData);
 		bool GetFieldValue(const char* szFieldName, unsigned char& cData);
 
-		// for SQL_C_NUMERIC
+		// from SQL_NUMERIC to SQL_C_NUMERIC
+		// from SQL_DECIMAL to ... ???
 		//bool GetFieldValue(const int nField, float& fltData);
 		//bool GetFieldValue(const char* szFieldName, float& fltData);
 
-		// for SQL_C_TINYINT
+		// from SQL_TINYINT to SQL_C_TINYINT
 		bool GetFieldValue(const int nField, char& cData);
 		bool GetFieldValue(const char* szFieldName, char& cData);
 
-		// for SQL_C_SHORT
+		// from SQL_SMALLINT to SQL_C_SHORT
 		bool GetFieldValue(const int nField, short* sData);
 		bool GetFieldValue(const char* szFieldName, short* sData);
 
-		// for SQL_C_LONG
+		// from SQL_INTEGER to SQL_C_LONG
 		bool GetFieldValue(const int nField, long* lData);
 		bool GetFieldValue(const char* szFieldName, long* lData);
 
-		// for SQL_C_FLOAT
+		// from SQL_REAL to SQL_C_FLOAT
 		bool GetFieldValue(const int nField, float* fltData);
 		bool GetFieldValue(const char* szFieldName, float* fltData);
 
-		// for SQL_C_DOUBLE
+		// from SQL_DOUBLE to SQL_C_DOUBLE
+		// from SQL_FLOAT  to ...
 		bool GetFieldValue(const int nField, double* dblData);
 		bool GetFieldValue(const char* szFieldName, double* dblData);
 
-		// for SQL_C_TYPE_TIMESTAMP(3.x) and SQL_C_TIMESTAMP(2.x)
+		// from SQL_TYPE_TIMESTAMP to SQL_C_TYPE_TIMESTAMP(3.x)
+		// from SQL_TIMESTAMP      to SQL_C_TIMESTAMP(2.x)
 		bool GetFieldValue(const int nField, struct tm* time);
 		bool GetFieldValue(const char* szFieldName, struct tm* time);
 

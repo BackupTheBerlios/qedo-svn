@@ -19,30 +19,40 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-#ifndef __PSSUTIL_H__
-#define __PSSUTIL_H__
+#ifndef __PSSHELPER_H__
+#define __PSSHELPER_H__
 
-#include <CORBA.h>
+#include <string>
+#include "PSSUtil.h"
+#include "CORBADepends.h"
+
+using namespace std;
+using namespace CosPersistentState;
 
 
-#ifdef WIN32
-	#ifdef PSSDLL_EXPORTS
-		#define PSSDLL_API __declspec(dllexport)
-		#define PSSDLL_EXTERN
-	#else
-		#define PSSDLL_API __declspec(dllimport)
-		#define PSSDLL_EXTERN extern
-	#endif
-#else
-	#define PSSDLL_API 
-	#define PSSDLL_EXTERN
+namespace Qedo
+{
+
+class PSSDLL_API PSSHelper
+{
+	public:
+
+		static string convertPidToString( const Pid& rPid );
+
+		static string convertSpidToString( const ShortPid& rSpid );
+
+		static string convertPidToString( const Pid* rPid );
+
+		static string convertSpidToString( const ShortPid* rSpid );
+
+		static void convertStringToSpid( const char* szSpid, ShortPid& rSpid );
+		
+		static bool comparePid(const Pid& rSrc, const Pid& rDest);
+
+		static bool compareShortPid(const ShortPid& rSrc, const ShortPid& rDest);
+
+};
+
+}; // namespace Qedo
+
 #endif
-
-
-// VC++ warnings 
-#pragma warning (disable : 4251) // class OB::ObjVar<*> needs to have dll-interface to be used by clients of class ...
-#pragma warning (disable : 4275) // non dll-interface class ... used as base class for dll-interface class ...
-#pragma warning (disable : 4290) // exception specification ignaored
-
-#endif
-

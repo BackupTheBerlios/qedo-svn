@@ -19,11 +19,11 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-
 #ifndef __CATALOG_H__
 #define __CATALOG_H__
 
 #include <list>
+#include <vector>
 #include "PSSUtil.h"
 #include "CORBADepends.h"
 #include "RefCountBase.h"
@@ -48,9 +48,11 @@ class CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
 
 		~CatalogBaseImpl();
 
-		virtual bool Init();
+		bool Init();
 
 		bool DriverConnect(const char* szConnStr, char* szConnStrOut = NULL, HWND hWnd = NULL, const int nDrvConn = SQL_DRIVER_NOPROMPT);
+
+		Connector* getConnector() {return m_connector;};
 
 		//
 		// IDL:omg.org/CosPersistentState/CatalogBase/access_mode:1.0
@@ -90,11 +92,11 @@ class CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
 	protected:
 
 		Connector* m_connector;
+		std::list <StorageHomeBaseImpl*> m_lStorageHomeBases;
 
 	private:
 
 		AccessMode m_eAM;
-		std::list <StorageHomeBaseImpl*> m_lStorageHomeBases;
 };
 
 

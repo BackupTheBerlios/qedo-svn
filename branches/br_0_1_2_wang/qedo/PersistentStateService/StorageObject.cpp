@@ -21,11 +21,14 @@
 /***************************************************************************/
 
 #include "StorageObject.h"
+#include "StorageHomeBase.h"
 
 namespace Qedo
 {
 
 StorageObjectImpl::StorageObjectImpl() :
+	m_pid(NULL),
+	m_shortPid(NULL),
 	m_bModified(FALSE),
 	m_strUpdate(""),
 	m_strSelect("")
@@ -37,13 +40,29 @@ StorageObjectImpl::StorageObjectImpl() :
 //associated storage object (but does not destroy any of its incarnation)
 //The standard exception PERSISTENT_STORE is raised when this operation is called
 //on the instance of an embedded storage object
-//MEMO: incarnation is a member variable m_xx, storage object is xx;
+//MEMO: delete corresponding record in database;
 ////////////////////////////////////////////////////////////////////////////////
 void 
 StorageObjectImpl::destroy_object() 
 	throw (CORBA::SystemException)
 {
-	
+	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (get_storage_home());
+	char* homename = homeimpl->getStorageHomeName();
+	string my_pid = PSSHelper::convertPidToString(get_pid());
+
+	string strSqlDel;
+	strSqlDel = "delete from ";
+	strSqlDel.append((const char*)homename);
+	strSqlDel += " where PID like ";
+	strSqlDel += my_pid;
+    
+	homeimpl->Open(strSqlDel.c_str());
+	homeimpl->Close();
+
+	strSqlDel = "delete from PID_CONTENT where PID like ";
+	strSqlDel += my_pid;
+	homeimpl->Open(strSqlDel.c_str());
+	homeimpl->Close();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -54,9 +73,29 @@ CORBA::Boolean
 StorageObjectImpl::object_exists() 
 	throw (CORBA::SystemException)
 {
-	return TRUE;
+	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (get_storage_home());
+	char* homename = homeimpl->getStorageHomeName();
+	string my_pid = PSSHelper::convertPidToString(get_pid());
+
+	string strSqlSel;
+	strSqlSel = "select count(*) from ";
+	strSqlSel.append((const char*)homename);
+	strSqlSel += "where PID like ";
+	strSqlSel += my_pid;
+    
+	if(homeimpl->Open(strSqlSel.c_str()))
+	{
+		long nID = -1;
+		homeimpl->GetFieldValue(0, &nID);
+		if(nID==1)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	else
+		return FALSE;
 }
-		
+
 ////////////////////////////////////////////////////////////////////////////////
 //When called on an incarnation, the get_pid operation returns pid of the 
 //associated storage object
@@ -67,7 +106,7 @@ Pid*
 StorageObjectImpl::get_pid()
 	throw (CORBA::SystemException)
 {
-	return NULL;
+	return m_pid;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +119,7 @@ ShortPid*
 StorageObjectImpl::get_short_pid()
 	throw (CORBA::SystemException)
 {
-	return NULL;
+	return m_shortPid;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,13 +130,10 @@ StorageHomeBase_ptr
 StorageObjectImpl::get_storage_home()
 	throw (CORBA::SystemException)
 {
-	if(m_storageHomeBase)
-		return (dynamic_cast <StorageHomeBase_ptr> (m_storageHomeBase));
-	return
-		NULL;
+	return m_storageHomeBase;
 }
 
-void 
+void
 StorageObjectImpl::setModified(bool bModified)
 {
 	m_bModified = bModified;
@@ -128,7 +164,8 @@ StorageObjectImpl::getSelect()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//------------------------------------------------------------------------------
+//##############################################################################
+//##############################################################################
 ////////////////////////////////////////////////////////////////////////////////
 //a public default constructor that creates a null reference
 ////////////////////////////////////////////////////////////////////////////////

@@ -30,12 +30,10 @@
 #include "Catalog.h"
 #include "PSSStorageObject.h"
 
-
-#define DEFAULT_PROCESSOR_ACCOUNT 1;
-
 using namespace std;
 using namespace CosPersistentState;
 
+#define DEFAULT_PROCESSOR_ACCOUNT 1;
 
 namespace Qedo
 {
@@ -110,8 +108,8 @@ class PSSDLL_API ConnectorImpl : public virtual CosPersistentState::Connector,
 		char* m_szImplID;
 		SessionPoolImpl* m_pSessionPool;
 		std::list <SessioImpl*> m_lSessions;
-		map<char*, StorageObjectFactory> m_SOFMap;
-		map<char*, StorageHomeFactory> m_SHFMap;
+		map<const char*, StorageObjectFactory> m_SOFMap;
+		map<const char*, StorageHomeFactory> m_SHFMap;
 };
 
 }; // namespace Qedo
