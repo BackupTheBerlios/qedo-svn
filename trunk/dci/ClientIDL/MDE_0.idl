@@ -189,6 +189,327 @@ class proxy::MDE::Deployment::DCIManager
 		{
 		};
 
+		interface AssemblyInstance;
+		interface ProcessCollocationInstance;
+		struct RunningCollocatedInstanciesLink
+		{
+			AssemblyInstance ass_end;
+			ProcessCollocationInstance colloc_end;
+		};
+
+		typedef sequence < RunningCollocatedInstanciesLink >  RunningCollocatedInstanciesLinkSet;
+		
+		typedef sequence < ProcessCollocationInstance >  ProcessCollocationInstanceSet;
+		
+
+/* 
+::MDE::Deployment::running_collocated_instancies
+*/
+		interface RunningCollocatedInstancies
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::RunningCollocatedInstanciesLinkSet all_running_collocated_instancies_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::AssemblyInstance ass,
+				in MDE::Deployment::ProcessCollocationInstance colloc) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::ProcessCollocationInstanceSet colloc ( 
+				in MDE::Deployment::AssemblyInstance ass) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::AssemblyInstance ass,
+				in MDE::Deployment::ProcessCollocationInstance colloc) raises ( 
+					Reflective::MofError);
+			void modify_colloc ( 
+				in MDE::Deployment::AssemblyInstance ass,
+				in MDE::Deployment::ProcessCollocationInstance colloc,
+				in MDE::Deployment::ProcessCollocationInstance new_colloc) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::AssemblyInstance ass,
+				in MDE::Deployment::ProcessCollocationInstance colloc) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface HomeInstance;
+		struct RunningHomeInstancesLink
+		{
+			HomeInstance thehome_end;
+			ProcessCollocationInstance colloc_end;
+		};
+
+		typedef sequence < RunningHomeInstancesLink >  RunningHomeInstancesLinkSet;
+		
+		typedef sequence < HomeInstance >  HomeInstanceSet;
+		
+
+/* 
+::MDE::Deployment::running_home_instances
+*/
+		interface RunningHomeInstances
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::RunningHomeInstancesLinkSet all_running_home_instances_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::HomeInstance thehome,
+				in MDE::Deployment::ProcessCollocationInstance colloc) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::HomeInstanceSet thehome ( 
+				in MDE::Deployment::ProcessCollocationInstance colloc) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::HomeInstance thehome,
+				in MDE::Deployment::ProcessCollocationInstance colloc) raises ( 
+					Reflective::MofError);
+			void modify_thehome ( 
+				in MDE::Deployment::HomeInstance thehome,
+				in MDE::Deployment::ProcessCollocationInstance colloc,
+				in MDE::Deployment::HomeInstance new_thehome) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::HomeInstance thehome,
+				in MDE::Deployment::ProcessCollocationInstance colloc) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface ComponentInstance;
+		struct RunningCompInstancesLink
+		{
+			ComponentInstance comp_end;
+			HomeInstance thehome_end;
+		};
+
+		typedef sequence < RunningCompInstancesLink >  RunningCompInstancesLinkSet;
+		
+		typedef sequence < ComponentInstance >  ComponentInstanceSet;
+		
+
+/* 
+::MDE::Deployment::running_comp_instances
+*/
+		interface RunningCompInstances
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::RunningCompInstancesLinkSet all_running_comp_instances_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::ComponentInstance comp,
+				in MDE::Deployment::HomeInstance thehome) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::ComponentInstanceSet comp ( 
+				in MDE::Deployment::HomeInstance thehome) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::ComponentInstance comp,
+				in MDE::Deployment::HomeInstance thehome) raises ( 
+					Reflective::MofError);
+			void modify_comp ( 
+				in MDE::Deployment::ComponentInstance comp,
+				in MDE::Deployment::HomeInstance thehome,
+				in MDE::Deployment::ComponentInstance new_comp) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::ComponentInstance comp,
+				in MDE::Deployment::HomeInstance thehome) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface RuleInstance;
+		struct RunningRulesLink
+		{
+			ComponentInstance comp_end;
+			RuleInstance rule_end;
+		};
+
+		typedef sequence < RunningRulesLink >  RunningRulesLinkSet;
+		
+		typedef sequence < RuleInstance >  RuleInstanceSet;
+		
+
+/* 
+::MDE::Deployment::running_rules
+*/
+		interface RunningRules
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::RunningRulesLinkSet all_running_rules_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::ComponentInstance comp,
+				in MDE::Deployment::RuleInstance rule) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::RuleInstanceSet rule ( 
+				in MDE::Deployment::ComponentInstance comp) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::ComponentInstance comp,
+				in MDE::Deployment::RuleInstance rule) raises ( 
+					Reflective::MofError);
+			void modify_rule ( 
+				in MDE::Deployment::ComponentInstance comp,
+				in MDE::Deployment::RuleInstance rule,
+				in MDE::Deployment::RuleInstance new_rule) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::ComponentInstance comp,
+				in MDE::Deployment::RuleInstance rule) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface Rule;
+		struct RuleInstantiationLink
+		{
+			Rule instantiation_end;
+			RuleInstance rule_end;
+		};
+
+		typedef sequence < RuleInstantiationLink >  RuleInstantiationLinkSet;
+		
+
+/* 
+::MDE::Deployment::rule_instantiation
+*/
+		interface RuleInstantiation
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::RuleInstantiationLinkSet all_rule_instantiation_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::Rule instantiation,
+				in MDE::Deployment::RuleInstance rule) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::Rule instantiation ( 
+				in MDE::Deployment::RuleInstance rule) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::Rule instantiation,
+				in MDE::Deployment::RuleInstance rule) raises ( 
+					Reflective::MofError);
+			void modify_instantiation ( 
+				in MDE::Deployment::Rule instantiation,
+				in MDE::Deployment::RuleInstance rule,
+				in MDE::Deployment::Rule new_instantiation) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::Rule instantiation,
+				in MDE::Deployment::RuleInstance rule) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface RuleInstanceClass;
+		typedef sequence < RuleInstanceClass >  RuleInstanceClassUList;
+		
+		typedef sequence < RuleInstanceClass >  RuleInstanceClassList;
+		
+		typedef sequence < RuleInstanceClass >  RuleInstanceClassBag;
+		
+		typedef sequence < RuleInstanceClass >  RuleInstanceClassSet;
+		
+		typedef sequence < RuleInstance >  RuleInstanceUList;
+		
+		typedef sequence < RuleInstance >  RuleInstanceList;
+		
+		typedef sequence < RuleInstance >  RuleInstanceBag;
+		
+
+/* 
+class proxy::MDE::Deployment::RuleInstance
+*/
+		interface RuleInstanceClass
+			: RunningInstanceClass
+		{
+			readonly attribute MDE::Deployment::RuleInstanceSet all_of_type_rule_instance;
+			readonly attribute MDE::Deployment::RuleInstanceSet all_of_class_rule_instance;
+			MDE::Deployment::RuleInstance create_rule_instance ( 
+				in string ref,
+				in string id,
+				in string conditionref,
+				in string actionref) raises ( 
+					Reflective::MofError);
+		};
+
+
+/* 
+::MDE::Deployment::RuleInstance
+*/
+		interface RuleInstance
+			: RuleInstanceClass,
+			  RunningInstance
+		{
+			string conditionref ( ) raises ( 
+					Reflective::MofError);
+			void set_conditionref ( 
+				in string new_value) raises ( 
+					Reflective::MofError);
+			string actionref ( ) raises ( 
+					Reflective::MofError);
+			void set_actionref ( 
+				in string new_value) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::Rule instantiation ( ) raises ( 
+					Reflective::NotSet,
+					Reflective::MofError);
+			void set_instantiation ( 
+				in MDE::Deployment::Rule new_value) raises ( 
+					Reflective::MofError);
+			void unset_instantiation ( ) raises ( 
+					Reflective::MofError);
+		};
+
+		interface ComponentInstantiation;
+		struct InitialComponentInstantiationLink
+		{
+			ComponentInstantiation instantiation_end;
+			ComponentInstance initial_comp_end;
+		};
+
+		typedef sequence < InitialComponentInstantiationLink >  InitialComponentInstantiationLinkSet;
+		
+
+/* 
+::MDE::Deployment::initial_component_instantiation
+*/
+		interface InitialComponentInstantiation
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::InitialComponentInstantiationLinkSet all_initial_component_instantiation_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::ComponentInstantiation instantiation,
+				in MDE::Deployment::ComponentInstance initial_comp) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::ComponentInstantiation instantiation ( 
+				in MDE::Deployment::ComponentInstance initial_comp) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::ComponentInstantiation instantiation,
+				in MDE::Deployment::ComponentInstance initial_comp) raises ( 
+					Reflective::MofError);
+			void modify_instantiation ( 
+				in MDE::Deployment::ComponentInstantiation instantiation,
+				in MDE::Deployment::ComponentInstance initial_comp,
+				in MDE::Deployment::ComponentInstantiation new_instantiation) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::ComponentInstantiation instantiation,
+				in MDE::Deployment::ComponentInstance initial_comp) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 		interface ComponentInstanceClass;
 		typedef sequence < ComponentInstanceClass >  ComponentInstanceClassUList;
 		
@@ -198,16 +519,12 @@ class proxy::MDE::Deployment::DCIManager
 		
 		typedef sequence < ComponentInstanceClass >  ComponentInstanceClassSet;
 		
-		interface ComponentInstance;
 		typedef sequence < ComponentInstance >  ComponentInstanceUList;
 		
 		typedef sequence < ComponentInstance >  ComponentInstanceList;
 		
 		typedef sequence < ComponentInstance >  ComponentInstanceBag;
 		
-		typedef sequence < ComponentInstance >  ComponentInstanceSet;
-		
-		interface ComponentInstantiation;
 
 /* 
 class proxy::MDE::Deployment::ComponentInstance
@@ -239,6 +556,65 @@ class proxy::MDE::Deployment::ComponentInstance
 					Reflective::MofError);
 			void unset_instantiation ( ) raises ( 
 					Reflective::MofError);
+			MDE::Deployment::RuleInstanceSet rule ( ) raises ( 
+					Reflective::MofError);
+			void set_rule ( 
+				in MDE::Deployment::RuleInstanceSet new_value) raises ( 
+					Reflective::MofError);
+			void add_rule ( 
+				in MDE::Deployment::RuleInstance new_element) raises ( 
+					Reflective::MofError);
+			void modify_rule ( 
+				in MDE::Deployment::RuleInstance old_element,
+				in MDE::Deployment::RuleInstance new_element) raises ( 
+					Reflective::NotFound,
+					Reflective::MofError);
+			void remove_rule ( 
+				in MDE::Deployment::RuleInstance old_element) raises ( 
+					Reflective::NotFound,
+					Reflective::MofError);
+		};
+
+		interface HomeInstantiation;
+		struct InitialHomeInstantiationLink
+		{
+			HomeInstantiation instantiation_end;
+			HomeInstance initial_home_end;
+		};
+
+		typedef sequence < InitialHomeInstantiationLink >  InitialHomeInstantiationLinkSet;
+		
+
+/* 
+::MDE::Deployment::initial_home_instantiation
+*/
+		interface InitialHomeInstantiation
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::InitialHomeInstantiationLinkSet all_initial_home_instantiation_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::HomeInstantiation instantiation,
+				in MDE::Deployment::HomeInstance initial_home) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::HomeInstantiation instantiation ( 
+				in MDE::Deployment::HomeInstance initial_home) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::HomeInstantiation instantiation,
+				in MDE::Deployment::HomeInstance initial_home) raises ( 
+					Reflective::MofError);
+			void modify_instantiation ( 
+				in MDE::Deployment::HomeInstantiation instantiation,
+				in MDE::Deployment::HomeInstance initial_home,
+				in MDE::Deployment::HomeInstantiation new_instantiation) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::HomeInstantiation instantiation,
+				in MDE::Deployment::HomeInstance initial_home) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
 		};
 
 		interface HomeInstanceClass;
@@ -250,16 +626,12 @@ class proxy::MDE::Deployment::ComponentInstance
 		
 		typedef sequence < HomeInstanceClass >  HomeInstanceClassSet;
 		
-		interface HomeInstance;
 		typedef sequence < HomeInstance >  HomeInstanceUList;
 		
 		typedef sequence < HomeInstance >  HomeInstanceList;
 		
 		typedef sequence < HomeInstance >  HomeInstanceBag;
 		
-		typedef sequence < HomeInstance >  HomeInstanceSet;
-		
-		interface HomeInstantiation;
 
 /* 
 class proxy::MDE::Deployment::HomeInstance
@@ -325,14 +697,11 @@ class proxy::MDE::Deployment::HomeInstance
 		
 		typedef sequence < ProcessCollocationInstanceClass >  ProcessCollocationInstanceClassSet;
 		
-		interface ProcessCollocationInstance;
 		typedef sequence < ProcessCollocationInstance >  ProcessCollocationInstanceUList;
 		
 		typedef sequence < ProcessCollocationInstance >  ProcessCollocationInstanceList;
 		
 		typedef sequence < ProcessCollocationInstance >  ProcessCollocationInstanceBag;
-		
-		typedef sequence < ProcessCollocationInstance >  ProcessCollocationInstanceSet;
 		
 
 /* 
@@ -379,6 +748,59 @@ class proxy::MDE::Deployment::ProcessCollocationInstance
 					Reflective::MofError);
 		};
 
+		interface Assembly;
+		struct RunningAssemblyInstancesLink
+		{
+			Assembly ass_end;
+			AssemblyInstance ass_inst_end;
+		};
+
+		typedef sequence < RunningAssemblyInstancesLink >  RunningAssemblyInstancesLinkSet;
+		
+		typedef sequence < AssemblyInstance >  AssemblyInstanceSet;
+		
+
+/* 
+::MDE::Deployment::running_assembly_instances
+*/
+		interface RunningAssemblyInstances
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::RunningAssemblyInstancesLinkSet all_running_assembly_instances_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::Assembly ass,
+				in MDE::Deployment::AssemblyInstance ass_inst) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::Assembly ass ( 
+				in MDE::Deployment::AssemblyInstance ass_inst) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::AssemblyInstanceSet ass_inst ( 
+				in MDE::Deployment::Assembly ass) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::Assembly ass,
+				in MDE::Deployment::AssemblyInstance ass_inst) raises ( 
+					Reflective::MofError);
+			void modify_ass ( 
+				in MDE::Deployment::Assembly ass,
+				in MDE::Deployment::AssemblyInstance ass_inst,
+				in MDE::Deployment::Assembly new_ass) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void modify_ass_inst ( 
+				in MDE::Deployment::Assembly ass,
+				in MDE::Deployment::AssemblyInstance ass_inst,
+				in MDE::Deployment::AssemblyInstance new_ass_inst) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::Assembly ass,
+				in MDE::Deployment::AssemblyInstance ass_inst) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 		interface AssemblyInstanceClass;
 		typedef sequence < AssemblyInstanceClass >  AssemblyInstanceClassUList;
 		
@@ -388,16 +810,12 @@ class proxy::MDE::Deployment::ProcessCollocationInstance
 		
 		typedef sequence < AssemblyInstanceClass >  AssemblyInstanceClassSet;
 		
-		interface AssemblyInstance;
 		typedef sequence < AssemblyInstance >  AssemblyInstanceUList;
 		
 		typedef sequence < AssemblyInstance >  AssemblyInstanceList;
 		
 		typedef sequence < AssemblyInstance >  AssemblyInstanceBag;
 		
-		typedef sequence < AssemblyInstance >  AssemblyInstanceSet;
-		
-		interface Assembly;
 
 /* 
 class proxy::MDE::Deployment::AssemblyInstance
@@ -480,6 +898,178 @@ class proxy::MDE::Deployment::AssemblyInstance
 		
 		typedef sequence < RunningInstance >  RunningInstanceBag;
 		
+		struct AssemblyRuleLink
+		{
+			Assembly assembly_end;
+			Rule rule_end;
+		};
+
+		typedef sequence < AssemblyRuleLink >  AssemblyRuleLinkSet;
+		
+		typedef sequence < Rule >  RuleSet;
+		
+
+/* 
+::MDE::Deployment::assembly_rule
+*/
+		interface AssemblyRule
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::AssemblyRuleLinkSet all_assembly_rule_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::Assembly assembly,
+				in MDE::Deployment::Rule rule) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::RuleSet rule ( 
+				in MDE::Deployment::Assembly assembly) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::Assembly assembly,
+				in MDE::Deployment::Rule rule) raises ( 
+					Reflective::MofError);
+			void modify_rule ( 
+				in MDE::Deployment::Assembly assembly,
+				in MDE::Deployment::Rule rule,
+				in MDE::Deployment::Rule new_rule) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::Assembly assembly,
+				in MDE::Deployment::Rule rule) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface Configuration;
+		struct AssConfigurationLink
+		{
+			Assembly ass_end;
+			Configuration config_end;
+		};
+
+		typedef sequence < AssConfigurationLink >  AssConfigurationLinkSet;
+		
+
+/* 
+::MDE::Deployment::ass_configuration
+*/
+		interface AssConfiguration
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::AssConfigurationLinkSet all_ass_configuration_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::Assembly ass,
+				in MDE::Deployment::Configuration config) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::Configuration config ( 
+				in MDE::Deployment::Assembly ass) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::Assembly ass,
+				in MDE::Deployment::Configuration config) raises ( 
+					Reflective::MofError);
+			void modify_config ( 
+				in MDE::Deployment::Assembly ass,
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::Configuration new_config) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::Assembly ass,
+				in MDE::Deployment::Configuration config) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface ProcessCollocation;
+		struct CollocatedInstancesLink
+		{
+			Configuration config_end;
+			ProcessCollocation colloc_end;
+		};
+
+		typedef sequence < CollocatedInstancesLink >  CollocatedInstancesLinkSet;
+		
+		typedef sequence < ProcessCollocation >  ProcessCollocationSet;
+		
+
+/* 
+::MDE::Deployment::collocated_instances
+*/
+		interface CollocatedInstances
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::CollocatedInstancesLinkSet all_collocated_instances_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::ProcessCollocation colloc) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::ProcessCollocationSet colloc ( 
+				in MDE::Deployment::Configuration config) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::ProcessCollocation colloc) raises ( 
+					Reflective::MofError);
+			void modify_colloc ( 
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::ProcessCollocation colloc,
+				in MDE::Deployment::ProcessCollocation new_colloc) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::ProcessCollocation colloc) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		struct HomeInstancesLink
+		{
+			HomeInstantiation thehome_end;
+			ProcessCollocation config_end;
+		};
+
+		typedef sequence < HomeInstancesLink >  HomeInstancesLinkSet;
+		
+		typedef sequence < HomeInstantiation >  HomeInstantiationSet;
+		
+
+/* 
+::MDE::Deployment::home_instances
+*/
+		interface HomeInstances
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::HomeInstancesLinkSet all_home_instances_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::HomeInstantiation thehome,
+				in MDE::Deployment::ProcessCollocation config) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::HomeInstantiationSet thehome ( 
+				in MDE::Deployment::ProcessCollocation config) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::HomeInstantiation thehome,
+				in MDE::Deployment::ProcessCollocation config) raises ( 
+					Reflective::MofError);
+			void modify_thehome ( 
+				in MDE::Deployment::HomeInstantiation thehome,
+				in MDE::Deployment::ProcessCollocation config,
+				in MDE::Deployment::HomeInstantiation new_thehome) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::HomeInstantiation thehome,
+				in MDE::Deployment::ProcessCollocation config) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 		interface ProcessCollocationClass;
 		typedef sequence < ProcessCollocationClass >  ProcessCollocationClassUList;
 		
@@ -489,16 +1079,11 @@ class proxy::MDE::Deployment::AssemblyInstance
 		
 		typedef sequence < ProcessCollocationClass >  ProcessCollocationClassSet;
 		
-		interface ProcessCollocation;
 		typedef sequence < ProcessCollocation >  ProcessCollocationUList;
 		
 		typedef sequence < ProcessCollocation >  ProcessCollocationList;
 		
 		typedef sequence < ProcessCollocation >  ProcessCollocationBag;
-		
-		typedef sequence < ProcessCollocation >  ProcessCollocationSet;
-		
-		typedef sequence < HomeInstantiation >  HomeInstantiationSet;
 		
 
 /* 
@@ -551,6 +1136,92 @@ class proxy::MDE::Deployment::ProcessCollocation
 					Reflective::MofError);
 		};
 
+		interface Installation;
+		struct InstallationsLink
+		{
+			Configuration config_end;
+			Installation install_dest_end;
+		};
+
+		typedef sequence < InstallationsLink >  InstallationsLinkSet;
+		
+		typedef sequence < Installation >  InstallationSet;
+		
+
+/* 
+::MDE::Deployment::installations
+*/
+		interface Installations
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::InstallationsLinkSet all_installations_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::Installation install_dest) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::InstallationSet install_dest ( 
+				in MDE::Deployment::Configuration config) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::Installation install_dest) raises ( 
+					Reflective::MofError);
+			void modify_install_dest ( 
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::Installation install_dest,
+				in MDE::Deployment::Installation new_install_dest) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::Installation install_dest) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface DeploymentUnit;
+		struct InstallUnitLink
+		{
+			DeploymentUnit impl_end;
+			Installation install_end;
+		};
+
+		typedef sequence < InstallUnitLink >  InstallUnitLinkSet;
+		
+
+/* 
+::MDE::Deployment::install_unit
+*/
+		interface InstallUnit
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::InstallUnitLinkSet all_install_unit_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::DeploymentUnit impl,
+				in MDE::Deployment::Installation install) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::DeploymentUnit impl ( 
+				in MDE::Deployment::Installation install) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::DeploymentUnit impl,
+				in MDE::Deployment::Installation install) raises ( 
+					Reflective::MofError);
+			void modify_impl ( 
+				in MDE::Deployment::DeploymentUnit impl,
+				in MDE::Deployment::Installation install,
+				in MDE::Deployment::DeploymentUnit new_impl) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::DeploymentUnit impl,
+				in MDE::Deployment::Installation install) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 		interface InstallationClass;
 		typedef sequence < InstallationClass >  InstallationClassUList;
 		
@@ -560,16 +1231,12 @@ class proxy::MDE::Deployment::ProcessCollocation
 		
 		typedef sequence < InstallationClass >  InstallationClassSet;
 		
-		interface Installation;
 		typedef sequence < Installation >  InstallationUList;
 		
 		typedef sequence < Installation >  InstallationList;
 		
 		typedef sequence < Installation >  InstallationBag;
 		
-		typedef sequence < Installation >  InstallationSet;
-		
-		interface DeploymentUnit;
 
 /* 
 class proxy::MDE::Deployment::Installation
@@ -615,6 +1282,216 @@ class proxy::MDE::Deployment::Installation
 					Reflective::MofError);
 		};
 
+		interface Connection;
+		struct ConnectionsLink
+		{
+			Configuration config_end;
+			Connection conn_end;
+		};
+
+		typedef sequence < ConnectionsLink >  ConnectionsLinkSet;
+		
+		typedef sequence < Connection >  ConnectionSet;
+		
+
+/* 
+::MDE::Deployment::connections
+*/
+		interface Connections
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::ConnectionsLinkSet all_connections_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::Connection conn) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::ConnectionSet conn ( 
+				in MDE::Deployment::Configuration config) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::Connection conn) raises ( 
+					Reflective::MofError);
+			void modify_conn ( 
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::Connection conn,
+				in MDE::Deployment::Connection new_conn) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::Configuration config,
+				in MDE::Deployment::Connection conn) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface ConnectionEnd;
+		struct ConnectionEnd1Link
+		{
+			Connection conn_end;
+			ConnectionEnd source_end_end;
+		};
+
+		typedef sequence < ConnectionEnd1Link >  ConnectionEnd1LinkSet;
+		
+
+/* 
+::MDE::Deployment::connection_end1
+*/
+		interface ConnectionEnd1
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::ConnectionEnd1LinkSet all_connection_end1_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::Connection conn,
+				in MDE::Deployment::ConnectionEnd source_end) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::ConnectionEnd source_end ( 
+				in MDE::Deployment::Connection conn) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::Connection conn,
+				in MDE::Deployment::ConnectionEnd source_end) raises ( 
+					Reflective::MofError);
+			void modify_source_end ( 
+				in MDE::Deployment::Connection conn,
+				in MDE::Deployment::ConnectionEnd source_end,
+				in MDE::Deployment::ConnectionEnd new_source_end) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::Connection conn,
+				in MDE::Deployment::ConnectionEnd source_end) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		struct ConnectionEnd2Link
+		{
+			Connection conn_end;
+			ConnectionEnd target_end_end;
+		};
+
+		typedef sequence < ConnectionEnd2Link >  ConnectionEnd2LinkSet;
+		
+
+/* 
+::MDE::Deployment::connection_end2
+*/
+		interface ConnectionEnd2
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::ConnectionEnd2LinkSet all_connection_end2_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::Connection conn,
+				in MDE::Deployment::ConnectionEnd target_end) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::ConnectionEnd target_end ( 
+				in MDE::Deployment::Connection conn) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::Connection conn,
+				in MDE::Deployment::ConnectionEnd target_end) raises ( 
+					Reflective::MofError);
+			void modify_target_end ( 
+				in MDE::Deployment::Connection conn,
+				in MDE::Deployment::ConnectionEnd target_end,
+				in MDE::Deployment::ConnectionEnd new_target_end) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::Connection conn,
+				in MDE::Deployment::ConnectionEnd target_end) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		struct ConnectedHomeInstanceLink
+		{
+			ConnectionEnd home_end_end;
+			HomeInstantiation int_home_inst_end;
+		};
+
+		typedef sequence < ConnectedHomeInstanceLink >  ConnectedHomeInstanceLinkSet;
+		
+
+/* 
+::MDE::Deployment::connected_home_instance
+*/
+		interface ConnectedHomeInstance
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::ConnectedHomeInstanceLinkSet all_connected_home_instance_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::ConnectionEnd home_end,
+				in MDE::Deployment::HomeInstantiation int_home_inst) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::HomeInstantiation int_home_inst ( 
+				in MDE::Deployment::ConnectionEnd home_end) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::ConnectionEnd home_end,
+				in MDE::Deployment::HomeInstantiation int_home_inst) raises ( 
+					Reflective::MofError);
+			void modify_int_home_inst ( 
+				in MDE::Deployment::ConnectionEnd home_end,
+				in MDE::Deployment::HomeInstantiation int_home_inst,
+				in MDE::Deployment::HomeInstantiation new_int_home_inst) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::ConnectionEnd home_end,
+				in MDE::Deployment::HomeInstantiation int_home_inst) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface ExternalInstance;
+		struct ConnectedExtInstanceLink
+		{
+			ConnectionEnd ext_end_end;
+			ExternalInstance ext_inst_end;
+		};
+
+		typedef sequence < ConnectedExtInstanceLink >  ConnectedExtInstanceLinkSet;
+		
+
+/* 
+::MDE::Deployment::connected_ext_instance
+*/
+		interface ConnectedExtInstance
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::ConnectedExtInstanceLinkSet all_connected_ext_instance_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::ConnectionEnd ext_end,
+				in MDE::Deployment::ExternalInstance ext_inst) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::ExternalInstance ext_inst ( 
+				in MDE::Deployment::ConnectionEnd ext_end) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::ConnectionEnd ext_end,
+				in MDE::Deployment::ExternalInstance ext_inst) raises ( 
+					Reflective::MofError);
+			void modify_ext_inst ( 
+				in MDE::Deployment::ConnectionEnd ext_end,
+				in MDE::Deployment::ExternalInstance ext_inst,
+				in MDE::Deployment::ExternalInstance new_ext_inst) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::ConnectionEnd ext_end,
+				in MDE::Deployment::ExternalInstance ext_inst) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 		interface ExternalInstanceClass;
 		typedef sequence < ExternalInstanceClass >  ExternalInstanceClassUList;
 		
@@ -624,7 +1501,6 @@ class proxy::MDE::Deployment::Installation
 		
 		typedef sequence < ExternalInstanceClass >  ExternalInstanceClassSet;
 		
-		interface ExternalInstance;
 		typedef sequence < ExternalInstance >  ExternalInstanceUList;
 		
 		typedef sequence < ExternalInstance >  ExternalInstanceList;
@@ -674,6 +1550,47 @@ class proxy::MDE::Deployment::ExternalInstance
 					Reflective::MofError);
 		};
 
+		struct ConnectedInstanceLink
+		{
+			ComponentInstantiation int_comp_inst_end;
+			ConnectionEnd comp_end_end;
+		};
+
+		typedef sequence < ConnectedInstanceLink >  ConnectedInstanceLinkSet;
+		
+
+/* 
+::MDE::Deployment::connected_instance
+*/
+		interface ConnectedInstance
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::ConnectedInstanceLinkSet all_connected_instance_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::ComponentInstantiation int_comp_inst,
+				in MDE::Deployment::ConnectionEnd comp_end) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::ComponentInstantiation int_comp_inst ( 
+				in MDE::Deployment::ConnectionEnd comp_end) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::ComponentInstantiation int_comp_inst,
+				in MDE::Deployment::ConnectionEnd comp_end) raises ( 
+					Reflective::MofError);
+			void modify_int_comp_inst ( 
+				in MDE::Deployment::ComponentInstantiation int_comp_inst,
+				in MDE::Deployment::ConnectionEnd comp_end,
+				in MDE::Deployment::ComponentInstantiation new_int_comp_inst) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::ComponentInstantiation int_comp_inst,
+				in MDE::Deployment::ConnectionEnd comp_end) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 
 /* 
 ::MDE::Deployment::ConnectionEndKind
@@ -704,7 +1621,6 @@ class proxy::MDE::Deployment::ExternalInstance
 		
 		typedef sequence < ConnectionEndClass >  ConnectionEndClassSet;
 		
-		interface ConnectionEnd;
 		typedef sequence < ConnectionEnd >  ConnectionEndUList;
 		
 		typedef sequence < ConnectionEnd >  ConnectionEndList;
@@ -780,14 +1696,11 @@ class proxy::MDE::Deployment::ConnectionEnd
 		
 		typedef sequence < ConnectionClass >  ConnectionClassSet;
 		
-		interface Connection;
 		typedef sequence < Connection >  ConnectionUList;
 		
 		typedef sequence < Connection >  ConnectionList;
 		
 		typedef sequence < Connection >  ConnectionBag;
-		
-		typedef sequence < Connection >  ConnectionSet;
 		
 
 /* 
@@ -836,7 +1749,6 @@ class proxy::MDE::Deployment::Connection
 		
 		typedef sequence < ConfigurationClass >  ConfigurationClassSet;
 		
-		interface Configuration;
 		typedef sequence < Configuration >  ConfigurationUList;
 		
 		typedef sequence < Configuration >  ConfigurationList;
@@ -918,6 +1830,177 @@ class proxy::MDE::Deployment::Configuration
 					Reflective::MofError);
 		};
 
+		struct ContainedUnitsLink
+		{
+			DeploymentUnit impl_end;
+			Assembly ass_end;
+		};
+
+		typedef sequence < ContainedUnitsLink >  ContainedUnitsLinkSet;
+		
+		typedef sequence < DeploymentUnit >  DeploymentUnitSet;
+		
+
+/* 
+::MDE::Deployment::contained_units
+*/
+		interface ContainedUnits
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::ContainedUnitsLinkSet all_contained_units_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::DeploymentUnit impl,
+				in MDE::Deployment::Assembly ass) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::DeploymentUnitSet impl ( 
+				in MDE::Deployment::Assembly ass) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::DeploymentUnit impl,
+				in MDE::Deployment::Assembly ass) raises ( 
+					Reflective::MofError);
+			void modify_impl ( 
+				in MDE::Deployment::DeploymentUnit impl,
+				in MDE::Deployment::Assembly ass,
+				in MDE::Deployment::DeploymentUnit new_impl) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::DeploymentUnit impl,
+				in MDE::Deployment::Assembly ass) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface Property;
+		struct DefaultPropForCompInstancesLink
+		{
+			Property comp_default_prop_end;
+			HomeInstantiation comp_default_prop_owner_end;
+		};
+
+		typedef sequence < DefaultPropForCompInstancesLink >  DefaultPropForCompInstancesLinkSet;
+		
+		typedef sequence < Property >  PropertySet;
+		
+
+/* 
+::MDE::Deployment::default_prop_for_comp_instances
+*/
+		interface DefaultPropForCompInstances
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::DefaultPropForCompInstancesLinkSet all_default_prop_for_comp_instances_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::Property comp_default_prop,
+				in MDE::Deployment::HomeInstantiation comp_default_prop_owner) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::PropertySet comp_default_prop ( 
+				in MDE::Deployment::HomeInstantiation comp_default_prop_owner) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::Property comp_default_prop,
+				in MDE::Deployment::HomeInstantiation comp_default_prop_owner) raises ( 
+					Reflective::MofError);
+			void modify_comp_default_prop ( 
+				in MDE::Deployment::Property comp_default_prop,
+				in MDE::Deployment::HomeInstantiation comp_default_prop_owner,
+				in MDE::Deployment::Property new_comp_default_prop) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::Property comp_default_prop,
+				in MDE::Deployment::HomeInstantiation comp_default_prop_owner) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		struct CreatedByLink
+		{
+			ComponentInstantiation comp_end;
+			HomeInstantiation thehome_end;
+		};
+
+		typedef sequence < CreatedByLink >  CreatedByLinkSet;
+		
+		typedef sequence < ComponentInstantiation >  ComponentInstantiationSet;
+		
+
+/* 
+::MDE::Deployment::created_by
+*/
+		interface CreatedBy
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::CreatedByLinkSet all_created_by_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::ComponentInstantiation comp,
+				in MDE::Deployment::HomeInstantiation thehome) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::ComponentInstantiationSet comp ( 
+				in MDE::Deployment::HomeInstantiation thehome) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::ComponentInstantiation comp,
+				in MDE::Deployment::HomeInstantiation thehome) raises ( 
+					Reflective::MofError);
+			void modify_comp ( 
+				in MDE::Deployment::ComponentInstantiation comp,
+				in MDE::Deployment::HomeInstantiation thehome,
+				in MDE::Deployment::ComponentInstantiation new_comp) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::ComponentInstantiation comp,
+				in MDE::Deployment::HomeInstantiation thehome) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		struct ImplementedByLink
+		{
+			DeploymentUnit unit_end;
+			HomeInstantiation home_instance_end;
+		};
+
+		typedef sequence < ImplementedByLink >  ImplementedByLinkSet;
+		
+
+/* 
+::MDE::Deployment::implemented_by
+*/
+		interface ImplementedBy
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::ImplementedByLinkSet all_implemented_by_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::HomeInstantiation home_instance) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::DeploymentUnit unit ( 
+				in MDE::Deployment::HomeInstantiation home_instance) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::HomeInstantiation home_instance) raises ( 
+					Reflective::MofError);
+			void modify_unit ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::HomeInstantiation home_instance,
+				in MDE::Deployment::DeploymentUnit new_unit) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::HomeInstantiation home_instance) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 		interface FinderServiceClass;
 		typedef sequence < FinderServiceClass >  FinderServiceClassUList;
 		
@@ -994,11 +2077,6 @@ class proxy::MDE::Deployment::FinderService
 		
 		typedef sequence < HomeInstantiation >  HomeInstantiationBag;
 		
-		typedef sequence < ComponentInstantiation >  ComponentInstantiationSet;
-		
-		interface Property;
-		typedef sequence < Property >  PropertySet;
-		
 		interface PropOwner;
 		typedef sequence < PropOwner >  PropOwnerSet;
 		
@@ -1072,9 +2150,6 @@ class proxy::MDE::Deployment::HomeInstantiation
 					Reflective::MofError);
 		};
 
-		interface Rule;
-		typedef sequence < Rule >  RuleSet;
-		
 
 /* 
 ::MDE::Deployment::RuleOwner
@@ -1183,6 +2258,91 @@ class proxy::MDE::Deployment::HomeInstantiation
 					Reflective::MofError);
 		};
 
+		struct ConfPropForCompInstanceLink
+		{
+			ComponentInstantiation conf_prop_owner_end;
+			Property conf_prop_end;
+		};
+
+		typedef sequence < ConfPropForCompInstanceLink >  ConfPropForCompInstanceLinkSet;
+		
+
+/* 
+::MDE::Deployment::conf_prop_for_comp_instance
+*/
+		interface ConfPropForCompInstance
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::ConfPropForCompInstanceLinkSet all_conf_prop_for_comp_instance_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::ComponentInstantiation conf_prop_owner,
+				in MDE::Deployment::Property conf_prop) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::PropertySet conf_prop ( 
+				in MDE::Deployment::ComponentInstantiation conf_prop_owner) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::ComponentInstantiation conf_prop_owner,
+				in MDE::Deployment::Property conf_prop) raises ( 
+					Reflective::MofError);
+			void modify_conf_prop ( 
+				in MDE::Deployment::ComponentInstantiation conf_prop_owner,
+				in MDE::Deployment::Property conf_prop,
+				in MDE::Deployment::Property new_conf_prop) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::ComponentInstantiation conf_prop_owner,
+				in MDE::Deployment::Property conf_prop) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface RegisterComponentInstance;
+		struct CompRegistrationLink
+		{
+			ComponentInstantiation comp_inst_end;
+			RegisterComponentInstance registration_end;
+		};
+
+		typedef sequence < CompRegistrationLink >  CompRegistrationLinkSet;
+		
+		typedef sequence < RegisterComponentInstance >  RegisterComponentInstanceSet;
+		
+
+/* 
+::MDE::Deployment::comp_registration
+*/
+		interface CompRegistration
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::CompRegistrationLinkSet all_comp_registration_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::ComponentInstantiation comp_inst,
+				in MDE::Deployment::RegisterComponentInstance registration) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::RegisterComponentInstanceSet registration ( 
+				in MDE::Deployment::ComponentInstantiation comp_inst) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::ComponentInstantiation comp_inst,
+				in MDE::Deployment::RegisterComponentInstance registration) raises ( 
+					Reflective::MofError);
+			void modify_registration ( 
+				in MDE::Deployment::ComponentInstantiation comp_inst,
+				in MDE::Deployment::RegisterComponentInstance registration,
+				in MDE::Deployment::RegisterComponentInstance new_registration) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::ComponentInstantiation comp_inst,
+				in MDE::Deployment::RegisterComponentInstance registration) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 		typedef sequence < FinderServiceKind >  FinderServiceKindUList;
 		
 		typedef sequence < FinderServiceKind >  FinderServiceKindList;
@@ -1200,14 +2360,11 @@ class proxy::MDE::Deployment::HomeInstantiation
 		
 		typedef sequence < RegisterComponentInstanceClass >  RegisterComponentInstanceClassSet;
 		
-		interface RegisterComponentInstance;
 		typedef sequence < RegisterComponentInstance >  RegisterComponentInstanceUList;
 		
 		typedef sequence < RegisterComponentInstance >  RegisterComponentInstanceList;
 		
 		typedef sequence < RegisterComponentInstance >  RegisterComponentInstanceBag;
-		
-		typedef sequence < RegisterComponentInstance >  RegisterComponentInstanceSet;
 		
 
 /* 
@@ -1352,8 +2509,6 @@ class proxy::MDE::Deployment::ComponentInstantiation
 		
 		typedef sequence < Assembly >  AssemblySet;
 		
-		typedef sequence < DeploymentUnit >  DeploymentUnitSet;
-		
 
 /* 
 class proxy::MDE::Deployment::Assembly
@@ -1481,6 +2636,47 @@ class proxy::MDE::Deployment::Assembly
 					Reflective::MofError);
 		};
 
+		struct ReconfigurationRuleLink
+		{
+			Rule the_rule_end;
+			RuleOwner owner_end;
+		};
+
+		typedef sequence < ReconfigurationRuleLink >  ReconfigurationRuleLinkSet;
+		
+
+/* 
+::MDE::Deployment::reconfiguration_rule
+*/
+		interface ReconfigurationRule
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::ReconfigurationRuleLinkSet all_reconfiguration_rule_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::Rule the_rule,
+				in MDE::Deployment::RuleOwner owner) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::RuleSet the_rule ( 
+				in MDE::Deployment::RuleOwner owner) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::Rule the_rule,
+				in MDE::Deployment::RuleOwner owner) raises ( 
+					Reflective::MofError);
+			void modify_the_rule ( 
+				in MDE::Deployment::Rule the_rule,
+				in MDE::Deployment::RuleOwner owner,
+				in MDE::Deployment::Rule new_the_rule) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::Rule the_rule,
+				in MDE::Deployment::RuleOwner owner) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 		interface RuleClass;
 		typedef sequence < RuleClass >  RuleClassUList;
 		
@@ -1508,8 +2704,10 @@ class proxy::MDE::Deployment::Rule
 			MDE::Deployment::Rule create_rule ( 
 				in string name,
 				in string condition,
-				in string language,
-				in string action) raises ( 
+				in string conditionlanguage,
+				in string action,
+				in string actionlanguage,
+				in unsigned long interval) raises ( 
 					Reflective::MofError);
 		};
 
@@ -1530,15 +2728,25 @@ class proxy::MDE::Deployment::Rule
 			void set_condition ( 
 				in string new_value) raises ( 
 					Reflective::MofError);
-			string language ( ) raises ( 
+			string conditionlanguage ( ) raises ( 
 					Reflective::MofError);
-			void set_language ( 
+			void set_conditionlanguage ( 
 				in string new_value) raises ( 
 					Reflective::MofError);
 			string action ( ) raises ( 
 					Reflective::MofError);
 			void set_action ( 
 				in string new_value) raises ( 
+					Reflective::MofError);
+			string actionlanguage ( ) raises ( 
+					Reflective::MofError);
+			void set_actionlanguage ( 
+				in string new_value) raises ( 
+					Reflective::MofError);
+			unsigned long interval ( ) raises ( 
+					Reflective::MofError);
+			void set_interval ( 
+				in unsigned long new_value) raises ( 
 					Reflective::MofError);
 		};
 
@@ -1556,6 +2764,91 @@ class proxy::MDE::Deployment::Rule
 		
 		typedef sequence < RuleOwner >  RuleOwnerBag;
 		
+		struct DependsOnUnitLink
+		{
+			DeploymentUnit dependent_unit_end;
+			DeploymentUnit unit_end;
+		};
+
+		typedef sequence < DependsOnUnitLink >  DependsOnUnitLinkSet;
+		
+
+/* 
+::MDE::Deployment::depends_on_unit
+*/
+		interface DependsOnUnit
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::DependsOnUnitLinkSet all_depends_on_unit_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::DeploymentUnit dependent_unit,
+				in MDE::Deployment::DeploymentUnit unit) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::DeploymentUnitSet dependent_unit ( 
+				in MDE::Deployment::DeploymentUnit unit) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::DeploymentUnit dependent_unit,
+				in MDE::Deployment::DeploymentUnit unit) raises ( 
+					Reflective::MofError);
+			void modify_dependent_unit ( 
+				in MDE::Deployment::DeploymentUnit dependent_unit,
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::DeploymentUnit new_dependent_unit) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::DeploymentUnit dependent_unit,
+				in MDE::Deployment::DeploymentUnit unit) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
+		interface ContainedFile;
+		struct ContainsFileLink
+		{
+			DeploymentUnit unit_end;
+			ContainedFile contained_file_end;
+		};
+
+		typedef sequence < ContainsFileLink >  ContainsFileLinkSet;
+		
+		typedef sequence < ContainedFile >  ContainedFileSet;
+		
+
+/* 
+::MDE::Deployment::contains_file
+*/
+		interface ContainsFile
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::ContainsFileLinkSet all_contains_file_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::ContainedFile contained_file) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::ContainedFileSet contained_file ( 
+				in MDE::Deployment::DeploymentUnit unit) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::ContainedFile contained_file) raises ( 
+					Reflective::MofError);
+			void modify_contained_file ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::ContainedFile contained_file,
+				in MDE::Deployment::ContainedFile new_contained_file) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::ContainedFile contained_file) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 		interface ContainedFileClass;
 		typedef sequence < ContainedFileClass >  ContainedFileClassUList;
 		
@@ -1565,14 +2858,11 @@ class proxy::MDE::Deployment::Rule
 		
 		typedef sequence < ContainedFileClass >  ContainedFileClassSet;
 		
-		interface ContainedFile;
 		typedef sequence < ContainedFile >  ContainedFileUList;
 		
 		typedef sequence < ContainedFile >  ContainedFileList;
 		
 		typedef sequence < ContainedFile >  ContainedFileBag;
-		
-		typedef sequence < ContainedFile >  ContainedFileSet;
 		
 		interface File;
 		typedef sequence < File >  FileSet;
@@ -1678,6 +2968,50 @@ class proxy::MDE::Deployment::ContainedFile
 					Reflective::MofError);
 		};
 
+		interface DeploymentRequirement;
+		struct RequiresOnLink
+		{
+			DeploymentUnit unit_end;
+			DeploymentRequirement req_end;
+		};
+
+		typedef sequence < RequiresOnLink >  RequiresOnLinkSet;
+		
+		typedef sequence < DeploymentRequirement >  DeploymentRequirementSet;
+		
+
+/* 
+::MDE::Deployment::requires_on
+*/
+		interface RequiresOn
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::RequiresOnLinkSet all_requires_on_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::DeploymentRequirement req) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::DeploymentRequirementSet req ( 
+				in MDE::Deployment::DeploymentUnit unit) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::DeploymentRequirement req) raises ( 
+					Reflective::MofError);
+			void modify_req ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::DeploymentRequirement req,
+				in MDE::Deployment::DeploymentRequirement new_req) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::DeploymentRequirement req) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 		interface DeploymentRequirementClass;
 		typedef sequence < DeploymentRequirementClass >  DeploymentRequirementClassUList;
 		
@@ -1687,14 +3021,11 @@ class proxy::MDE::Deployment::ContainedFile
 		
 		typedef sequence < DeploymentRequirementClass >  DeploymentRequirementClassSet;
 		
-		interface DeploymentRequirement;
 		typedef sequence < DeploymentRequirement >  DeploymentRequirementUList;
 		
 		typedef sequence < DeploymentRequirement >  DeploymentRequirementList;
 		
 		typedef sequence < DeploymentRequirement >  DeploymentRequirementBag;
-		
-		typedef sequence < DeploymentRequirement >  DeploymentRequirementSet;
 		
 
 /* 
@@ -1736,6 +3067,50 @@ class proxy::MDE::Deployment::DeploymentRequirement
 					Reflective::MofError);
 		};
 
+		interface DependentFile;
+		struct DependsOnLink
+		{
+			DeploymentUnit unit_end;
+			DependentFile dependent_file_end;
+		};
+
+		typedef sequence < DependsOnLink >  DependsOnLinkSet;
+		
+		typedef sequence < DependentFile >  DependentFileSet;
+		
+
+/* 
+::MDE::Deployment::depends_on
+*/
+		interface DependsOn
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::DependsOnLinkSet all_depends_on_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::DependentFile dependent_file) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::DependentFileSet dependent_file ( 
+				in MDE::Deployment::DeploymentUnit unit) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::DependentFile dependent_file) raises ( 
+					Reflective::MofError);
+			void modify_dependent_file ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::DependentFile dependent_file,
+				in MDE::Deployment::DependentFile new_dependent_file) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::DeploymentUnit unit,
+				in MDE::Deployment::DependentFile dependent_file) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 
 /* 
 ::MDE::Deployment::ActionKind
@@ -1762,14 +3137,11 @@ class proxy::MDE::Deployment::DeploymentRequirement
 		
 		typedef sequence < DependentFileClass >  DependentFileClassSet;
 		
-		interface DependentFile;
 		typedef sequence < DependentFile >  DependentFileUList;
 		
 		typedef sequence < DependentFile >  DependentFileList;
 		
 		typedef sequence < DependentFile >  DependentFileBag;
-		
-		typedef sequence < DependentFile >  DependentFileSet;
 		
 
 /* 
@@ -1978,6 +3350,47 @@ class proxy::MDE::Deployment::DeploymentUnit
 		
 		typedef sequence < Validation >  ValidationBag;
 		
+		struct PropertyOwnerLink
+		{
+			Property prop_end;
+			PropOwner owner_end;
+		};
+
+		typedef sequence < PropertyOwnerLink >  PropertyOwnerLinkSet;
+		
+
+/* 
+::MDE::Deployment::property_owner
+*/
+		interface PropertyOwner
+			: Reflective::RefAssociation
+		{
+			MDE::Deployment::PropertyOwnerLinkSet all_property_owner_links ( ) raises ( 
+					Reflective::MofError);
+			boolean exists ( 
+				in MDE::Deployment::Property prop,
+				in MDE::Deployment::PropOwner owner) raises ( 
+					Reflective::MofError);
+			MDE::Deployment::PropertySet prop ( 
+				in MDE::Deployment::PropOwner owner) raises ( 
+					Reflective::MofError);
+			void add ( 
+				in MDE::Deployment::Property prop,
+				in MDE::Deployment::PropOwner owner) raises ( 
+					Reflective::MofError);
+			void modify_prop ( 
+				in MDE::Deployment::Property prop,
+				in MDE::Deployment::PropOwner owner,
+				in MDE::Deployment::Property new_prop) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+			void remove ( 
+				in MDE::Deployment::Property prop,
+				in MDE::Deployment::PropOwner owner) raises ( 
+					Reflective::MofError,
+					Reflective::NotFound);
+		};
+
 		interface PropertyClass;
 		typedef sequence < PropertyClass >  PropertyClassUList;
 		
@@ -2052,30 +3465,63 @@ class proxy::MDE::Deployment::Property
 		{
 			readonly attribute MDE::Deployment::PropOwnerClass prop_owner_ref;
 			readonly attribute MDE::Deployment::PropertyClass property_ref;
+			readonly attribute MDE::Deployment::PropertyOwner property_owner_ref;
 			readonly attribute MDE::Deployment::ValidationClass validation_ref;
 			readonly attribute MDE::Deployment::DeploymentUnitClass deployment_unit_ref;
 			readonly attribute MDE::Deployment::FileClass file_ref;
 			readonly attribute MDE::Deployment::DependentFileClass dependent_file_ref;
+			readonly attribute MDE::Deployment::DependsOn depends_on_ref;
 			readonly attribute MDE::Deployment::DeploymentRequirementClass deployment_requirement_ref;
+			readonly attribute MDE::Deployment::RequiresOn requires_on_ref;
 			readonly attribute MDE::Deployment::ContainedFileClass contained_file_ref;
+			readonly attribute MDE::Deployment::ContainsFile contains_file_ref;
+			readonly attribute MDE::Deployment::DependsOnUnit depends_on_unit_ref;
 			readonly attribute MDE::Deployment::RuleOwnerClass rule_owner_ref;
 			readonly attribute MDE::Deployment::RuleClass rule_ref;
+			readonly attribute MDE::Deployment::ReconfigurationRule reconfiguration_rule_ref;
 			readonly attribute MDE::Deployment::AssemblyClass assembly_ref;
 			readonly attribute MDE::Deployment::ComponentInstantiationClass component_instantiation_ref;
 			readonly attribute MDE::Deployment::RegisterComponentInstanceClass register_component_instance_ref;
+			readonly attribute MDE::Deployment::CompRegistration comp_registration_ref;
+			readonly attribute MDE::Deployment::ConfPropForCompInstance conf_prop_for_comp_instance_ref;
 			readonly attribute MDE::Deployment::HomeInstantiationClass home_instantiation_ref;
 			readonly attribute MDE::Deployment::FinderServiceClass finder_service_ref;
+			readonly attribute MDE::Deployment::ImplementedBy implemented_by_ref;
+			readonly attribute MDE::Deployment::CreatedBy created_by_ref;
+			readonly attribute MDE::Deployment::DefaultPropForCompInstances default_prop_for_comp_instances_ref;
+			readonly attribute MDE::Deployment::ContainedUnits contained_units_ref;
 			readonly attribute MDE::Deployment::ConfigurationClass configuration_ref;
 			readonly attribute MDE::Deployment::ConnectionClass connection_ref;
 			readonly attribute MDE::Deployment::ConnectionEndClass connection_end_ref;
+			readonly attribute MDE::Deployment::ConnectedInstance connected_instance_ref;
 			readonly attribute MDE::Deployment::ExternalInstanceClass external_instance_ref;
+			readonly attribute MDE::Deployment::ConnectedExtInstance connected_ext_instance_ref;
+			readonly attribute MDE::Deployment::ConnectedHomeInstance connected_home_instance_ref;
+			readonly attribute MDE::Deployment::ConnectionEnd2 connection_end2_ref;
+			readonly attribute MDE::Deployment::ConnectionEnd1 connection_end1_ref;
+			readonly attribute MDE::Deployment::Connections connections_ref;
 			readonly attribute MDE::Deployment::InstallationClass installation_ref;
+			readonly attribute MDE::Deployment::InstallUnit install_unit_ref;
+			readonly attribute MDE::Deployment::Installations installations_ref;
 			readonly attribute MDE::Deployment::ProcessCollocationClass process_collocation_ref;
+			readonly attribute MDE::Deployment::HomeInstances home_instances_ref;
+			readonly attribute MDE::Deployment::CollocatedInstances collocated_instances_ref;
+			readonly attribute MDE::Deployment::AssConfiguration ass_configuration_ref;
+			readonly attribute MDE::Deployment::AssemblyRule assembly_rule_ref;
 			readonly attribute MDE::Deployment::RunningInstanceClass running_instance_ref;
 			readonly attribute MDE::Deployment::AssemblyInstanceClass assembly_instance_ref;
+			readonly attribute MDE::Deployment::RunningAssemblyInstances running_assembly_instances_ref;
 			readonly attribute MDE::Deployment::ProcessCollocationInstanceClass process_collocation_instance_ref;
 			readonly attribute MDE::Deployment::HomeInstanceClass home_instance_ref;
+			readonly attribute MDE::Deployment::InitialHomeInstantiation initial_home_instantiation_ref;
 			readonly attribute MDE::Deployment::ComponentInstanceClass component_instance_ref;
+			readonly attribute MDE::Deployment::InitialComponentInstantiation initial_component_instantiation_ref;
+			readonly attribute MDE::Deployment::RuleInstanceClass rule_instance_ref;
+			readonly attribute MDE::Deployment::RuleInstantiation rule_instantiation_ref;
+			readonly attribute MDE::Deployment::RunningRules running_rules_ref;
+			readonly attribute MDE::Deployment::RunningCompInstances running_comp_instances_ref;
+			readonly attribute MDE::Deployment::RunningHomeInstances running_home_instances_ref;
+			readonly attribute MDE::Deployment::RunningCollocatedInstancies running_collocated_instancies_ref;
 			readonly attribute MDE::Deployment::DCIManagerClass dcimanager_ref;
 			readonly attribute MDE::Deployment::NodeManagerClass node_manager_ref;
 		};
