@@ -1,0 +1,59 @@
+include ../../MakeVars
+
+CXX = @CXX@
+CPPFLAGS+=-I. -I../IFRidl @CPPFLAGS@ 
+CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+CXXCOMPILE=@CXX@ $(CXXFLAGS)
+LIBS=@LIBS@
+
+@SET_MAKE@
+
+CXXFLAGS +=  $(IDLCXXFLAGS) $(INCLUDES)
+
+
+SOURCES = AliasDef_impl.cpp \
+			Anonymous.cpp \
+			AttributeDef_impl.cpp \
+			ComponentDef_impl.cpp \
+			ComponentRepository_impl.cpp \
+			ConstantDef_impl.cpp \
+			ConsumesDef_impl.cpp \
+			Contained_impl.cpp \
+			Container_impl.cpp \
+			EmitsDef_impl.cpp \
+			EnumDef_impl.cpp \
+			EventDef_impl.cpp \
+			EventPortDef_impl.cpp \
+			ExceptionDef_impl.cpp \
+			FactoryDef_impl.cpp \
+			FinderDef_impl.cpp \
+			HomeDef_impl.cpp \
+			IDLType_impl.cpp \
+			InterfaceDef_impl.cpp \
+			IRObject_impl.cpp \
+			ModuleDef_impl.cpp \
+			NativeDef_impl.cpp \
+			OperationDef_impl.cpp \
+			PrimaryKeyDef_impl.cpp \
+			PrimitiveDef_impl.cpp \
+			ProvidesDef_impl.cpp \
+			PublishesDef_impl.cpp \
+			Repository_impl.cpp \
+			Sink.cpp \
+			SiSoDef_impl.cpp \
+			SourceDef_impl.cpp \
+			StreamPortDef_impl.cpp \
+			StreamTypeDef_impl.cpp \
+			StructDef_impl.cpp \
+			TypedefDef_impl.cpp \
+			UnionDef_impl.cpp \
+			UsesDef_impl.cpp \
+			ValueDef_impl.cpp \
+			ValueMemberDef_impl.cpp 
+
+.PHONY:all
+
+all: libComponentRepositoryLib.a
+
+libComponentRepositoryLib.a : $(SOURCES:.cpp=.o)
+

@@ -6,5 +6,4 @@ IFR_skel.h
 IFR_skel.cpp
 IFR.h
 IFR.cpp
-Debug_*
-Release_*
+
