@@ -22,6 +22,7 @@
 
 
 #include "AssemblyFactory.h"
+#include "qedoutil.h"
 #include "DOMXMLParser.h"
 #include <fstream>
 #include <xercesc/util/XMLURL.hpp>
@@ -37,7 +38,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.16 2003/09/29 09:34:50 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.17 2003/10/23 09:44:47 neubauer Exp $";
 
 
 namespace Qedo {
@@ -66,12 +67,12 @@ AssemblyFactoryImpl::initialize()
 	}
 	catch (CORBA::ORB::InvalidName&)
 	{
-		std::cerr << "..... Fatal error - no root POA available." << std::endl << std::endl;
+		NORMAL_ERR( "AssemblyFactoryImpl: no root POA available" );
 		throw CannotInitialize();
 	}
 	catch (CORBA::SystemException&)
 	{
-		std::cerr << "..... Fatal error - cannot narrow root POA." << std::endl << std::endl;
+		NORMAL_ERR( "AssemblyFactoryImpl: cannot narrow root POA" );
 		throw CannotInitialize();
 	}
 
@@ -96,13 +97,13 @@ AssemblyFactoryImpl::initialize()
         throw CannotInitialize();
     }
 
-	std::cout << "..... bound under " << name << std::endl << std::endl;
+	DEBUG_OUT2( "AssemblyFactoryImpl: bound under ", name );;
 
 	// directory to put the packages
 	packageDirectory_ = g_qedo_dir + "/deployment/assemblies";
 	if (makeDir(packageDirectory_))
 	{
-		std::cerr << "..... directory " << packageDirectory_ << " can not be created" << std::endl;
+		NORMAL_ERR3( "AssemblyFactoryImpl: directory ", packageDirectory_, " can not be created");
 		throw CannotInitialize();
 	}
 }
@@ -112,7 +113,12 @@ Components::Cookie*
 AssemblyFactoryImpl::create_assembly (const char* assembly_loc)
 throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 {
-	std::cout << "..... creating new assembly for " << assembly_loc << std::endl;
+	DEBUG_OUT2( "AssemblyFactoryImpl: creating new assembly for ", assembly_loc );
+
+	//
+	// exclusive
+	//
+	QedoLock lock(&mutex_);
 
 	//
 	// get path
@@ -121,7 +127,7 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 	const XMLCh* p = uri.getPath();
 	if(!p)
 	{
-		std::cout << "!!!!! invalid assembly location" << std::endl;
+		NORMAL_ERR( "AssemblyFactoryImpl: invalid assembly location" );
 		throw Components::Deployment::InvalidLocation();
 	}
 	std::string name = XMLString::transcode(p);
@@ -130,11 +136,11 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
     {
         name.erase(0, pos + 1);
     }
-    
-    //
-	// copy the package in the local package directory
+
 	//
-    URLInputSource inputSource(uri);
+	// make input stream
+	//
+	URLInputSource inputSource(uri);
 	BinInputStream* inputStream;
 	try
 	{
@@ -142,20 +148,36 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 	}
 	catch(...)
 	{
-		std::cout << "!!!!! invalid assembly location" << std::endl;
+		NORMAL_ERR( "AssemblyFactoryImpl: invalid assembly location" );
 		throw Components::Deployment::InvalidLocation();
 	}
     if (!inputStream)
     {
-		std::cout << "!!!!! invalid assembly location" << std::endl;
+		NORMAL_ERR( "AssemblyFactoryImpl: invalid assembly location" );
 		throw Components::Deployment::InvalidLocation();
     }
 
-	std::string package_name = packageDirectory_ + "/" + name;
+	//
+	// create new cookie
+	//
+	Cookie_impl* new_cookie = new Cookie_impl();
+	std::string uuid = new_cookie->to_string();
+
+	//
+	// store the package
+	//
+	std::string dir = getPath( packageDirectory_ ) + uuid;
+	if( makeDir(dir) )
+	{
+		NORMAL_ERR3( "AssemblyFactoryImpl: directory ", dir, " can not be created");
+		throw Components::CreateFailure();
+	}
+
+	std::string package_name = getPath( dir ) + name;
 	std::ofstream packageFile(package_name.c_str(), std::ios::binary|std::ios::app);
 	if ( ! packageFile)
 	{
-		std::cerr << "!!!!! Cannot open file " << package_name << std::endl;
+		NORMAL_ERR2( "AssemblyFactoryImpl: cannot open file ", package_name );
 		throw Components::CreateFailure();
 	}
     unsigned char* buf = new unsigned char[4096];
@@ -172,13 +194,11 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 	//
 	// create new assembly
 	//
-	Cookie_impl* new_cookie = new Cookie_impl();
 	AssemblyImpl* ass = new AssemblyImpl(package_name, new_cookie, nameService_);
 	assemblies_.push_back(ass);
 
-	std::cout << "..... done" << std::endl << std::endl;
+	DEBUG_OUT( "..... done" );
 
-	new_cookie->_add_ref();
 	return new_cookie;
 }
 
@@ -187,15 +207,21 @@ Components::Deployment::Assembly_ptr
 AssemblyFactoryImpl::lookup (Components::Cookie* c)
 throw (Components::Deployment::InvalidAssembly)
 {
-    // check whether cookie is ok
-	std::list < AssemblyImpl* > ::iterator assemblies_iter;
-	for (assemblies_iter = assemblies_.begin();
-		 assemblies_iter != assemblies_.end();
-		 assemblies_iter++)
+	//
+	// exclusive
+	//
+	QedoLock lock(&mutex_);
+
+	AssemblyImpl* ass;
+	std::list < AssemblyImpl* > ::iterator iter;
+	for(iter = assemblies_.begin();
+		iter != assemblies_.end();
+		iter++)
 	{
-		if ((**assemblies_iter) == c)
+		ass = (*iter);
+		if( *ass == c )
 		{
-			return (*assemblies_iter)->_this();
+			return ass->_this();
 		}
 	}
 
@@ -207,7 +233,34 @@ void
 AssemblyFactoryImpl::destroy (Components::Cookie* c)
 throw (Components::Deployment::InvalidAssembly, Components::RemoveFailure)
 {
-	throw Components::RemoveFailure();
+	//
+	// exclusive
+	//
+	QedoLock lock(&mutex_);
+
+	AssemblyImpl* ass;
+	std::list < AssemblyImpl* > ::iterator iter;
+	for(iter = assemblies_.begin();
+		iter != assemblies_.end();
+		iter++)
+	{
+		ass = (*iter);
+		if( *ass == c)
+		{
+			root_poa_->deactivate_object( *(root_poa_->servant_to_id(ass)) );
+
+			std::string dir = getPath( packageDirectory_ ) + ass->get_uuid();
+			if( removeDir(dir) )
+			{
+				NORMAL_ERR2( "AssemblyFactoryImpl: could not remove directory ", dir );
+			}
+			ass->_remove_ref();
+			assemblies_.erase( iter );
+			return;
+		}
+	}
+
+	throw Components::Deployment::InvalidAssembly();
 }
 
 

@@ -26,9 +26,9 @@
 
 #include <CORBA.h>
 #include "QedoComponents_skel.h"
+#include "Synchronisation.h"
 #include "Assembly.h"
 #include "NameServiceBase.h"
-#include "PlatformBase.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <list>
@@ -55,21 +55,21 @@ extern std::string g_qedo_dir;
  */
 class AssemblyFactoryImpl : public virtual POA_Components::Deployment::AssemblyFactory,
 							public virtual PortableServer::RefCountServantBase,
-                            public virtual NameServiceBase,
-                            public virtual PlatformBase
+                            public virtual NameServiceBase
 {
 private:
 	/** the orb */
-    CORBA::ORB_var					orb_;
+    CORBA::ORB_var							orb_;
 	/** the root poa */
-    PortableServer::POA_var			root_poa_;
+    PortableServer::POA_var					root_poa_;
 	/** the root poa manager */
-	PortableServer::POAManager_var	root_poa_manager_;
-
+	PortableServer::POAManager_var			root_poa_manager_;
 	/** the list of created assemblies */
-	std::list < AssemblyImpl* >		assemblies_;
+	std::list < AssemblyImpl* >				assemblies_;
 	/** the package directory */
-	std::string						packageDirectory_;
+	std::string								packageDirectory_;
+	/** mutex for synchronisation */
+	QedoMutex								mutex_;
 
 	/**
 	 * constructor
