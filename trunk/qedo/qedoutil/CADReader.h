@@ -201,7 +201,7 @@ private:
 	/**
 	 * fileinarchive
 	 */
-	std::string fileinarchive (DOMElement*)
+	FileData fileinarchive (DOMElement*)
         throw(CADReadException);
 
     /**

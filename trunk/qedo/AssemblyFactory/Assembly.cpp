@@ -366,16 +366,18 @@ throw( Components::CreateFailure )
 		}
 	}
 
-    //
+    /*
+	//
     // remove extracted packages
     //
-	std::map < std::string, std::string > ::iterator iter2;
+	std::map < std::string, FileData > ::iterator iter2;
 	for(iter2 = data_.implementationMap_.begin();
 		iter2 != data_.implementationMap_.end();
 		iter2++)
 	{
-        removeFileOrDirectory((*iter2).second);
+        removeFileOrDirectory((*iter2).second.archiv);
     }
+	*/
 }
 
 

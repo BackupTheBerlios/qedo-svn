@@ -203,14 +203,26 @@ struct EventConnectionData
 
 
 /**
+ * file data
+ */
+struct FileData
+{
+	/** the file */
+	std::string									name;
+	/** the archiv */
+	std::string									archiv;
+};
+
+
+/**
  * the assembly data
  */
 struct AssemblyData
 {
 	/** the uuid of the assembly */
 	std::string									uuid_;
-    /** the mapping of component implementation ids to softpackages */
-	std::map < std::string, std::string >		implementationMap_;
+    /** the mapping of ids to component implementations */
+	std::map < std::string, FileData >			implementationMap_;
     /** start order of the instances */
 	std::vector < std::string >					start_order_;
 	/** list of existing homes */

@@ -24,7 +24,7 @@
 #include "Output.h"
 #include "DOMXMLParser.h"
 
-static char rcsid[] UNUSED = "$Id: ConfigurationReader.cpp,v 1.11 2003/11/27 13:53:43 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ConfigurationReader.cpp,v 1.12 2004/02/12 15:05:38 neubauer Exp $";
 
 
 namespace Qedo {
@@ -212,6 +212,7 @@ ConfigurationReader::lookup_config_value (const std::string& name)
 	}
 
 	assert(0);
+	return "";
 }
 
 std::string

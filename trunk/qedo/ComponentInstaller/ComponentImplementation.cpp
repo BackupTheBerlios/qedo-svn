@@ -27,7 +27,7 @@
 #include <fstream>
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.19 2003/10/23 09:50:36 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.20 2004/02/12 15:05:38 neubauer Exp $";
 
 
 namespace Qedo {
@@ -235,7 +235,7 @@ throw( Components::CreateFailure )
 			{
 				HomeInstanceData data = *iter;
 				std::string package_file_ref = data.file;
-				std::string package_file = data_.assembly.implementationMap_[package_file_ref];
+				std::string package_file = data_.assembly.implementationMap_[package_file_ref].archiv;
 				std::string impl_id = data.impl_id;
 
 				std::cout << "..... install implementation " << std::endl;

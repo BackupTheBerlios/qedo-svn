@@ -107,7 +107,7 @@ CADReader::componentfile (DOMElement* element)
 throw(CADReadException)
 {
 	std::string element_name;
-	std::string file_name;
+	FileData file;
 	DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
@@ -120,7 +120,7 @@ throw(CADReadException)
 			//
 			if (element_name == "fileinarchive")
 			{
-				file_name = fileinarchive((DOMElement*)child);
+				file = fileinarchive((DOMElement*)child);
 			}
 
 			//
@@ -136,7 +136,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "link")
 			{
-				file_name = link((DOMElement*)child);
+				file.name = link((DOMElement*)child);
 			}
 		}
 
@@ -145,8 +145,8 @@ throw(CADReadException)
 	}
 
 	std::string id = Qedo::transcode(element->getAttribute(X("id")));
-	DEBUG_OUT2( "CADReader: <componentfile> ", file_name );
-	data_->implementationMap_[id] = file_name;
+	DEBUG_OUT( "CADReader: <componentfile>" );
+	data_->implementationMap_[id] = file;
 }
 
 
@@ -263,7 +263,7 @@ CADReader::componentproperties (DOMElement* element)
 throw(CADReadException)
 {
 	std::string element_name;
-	std::string file;
+	FileData file;
 	DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
@@ -276,7 +276,7 @@ throw(CADReadException)
 			//
 			if (element_name == "fileinarchive")
 			{
-				file = fileinarchive((DOMElement*)(child));
+				file = fileinarchive((DOMElement*)child);
 			}
 
 			//
@@ -292,7 +292,7 @@ throw(CADReadException)
 	    child = child->getNextSibling();
 	}
 
-	return file;
+	return file.name;
 }
 
 
@@ -719,23 +719,64 @@ throw(CADReadException)
 }
 
 
-std::string
+FileData
 CADReader::fileinarchive(DOMElement* element)
 throw(CADReadException)
 {
-	std::string file_name = Qedo::transcode(element->getAttribute(X("name")));
-	std::string file = path_ + getFileName( file_name );
+	std::string file = Qedo::transcode(element->getAttribute(X("name")));
+
+	FileData file_data;
+	file_data.name = path_ + getFileName( file );
+
+	std::string element_name;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+		
+			//
+			// link
+			//
+			if (element_name == "link")
+			{
+				file_data.archiv = link((DOMElement*)child);
+			}
+		}
+
+		// get next child
+		child = child->getNextSibling();
+    }
 
 	//
 	// extract the file
 	//
-	if (package_->extractFile(file_name, file) != 0)
+	if( file_data.archiv.empty() )
 	{
-		NORMAL_ERR2( "CADReader: error during extracting file ", file_name );
-		throw CADReadException();
+		//
+		// same archiv
+		//
+		if (package_->extractFile(file, file_data.name) != 0)
+		{
+			NORMAL_ERR2( "CADReader: error during extracting file ", file );
+			throw CADReadException();
+		}
+	}
+	else
+	{
+		//
+		// other archiv
+		//		
+		Package new_package( file_data.archiv );
+		if (new_package.extractFile(file, file_data.name) != 0)
+		{
+			NORMAL_ERR2( "CADReader: error during extracting file ", file );
+			throw CADReadException();
+		}
 	}
 
-	return file;
+	return file_data;
 }
 
 
@@ -758,7 +799,7 @@ throw(CADReadException)
 			if (element_name == "namingservice")
 			{
 				data.kind = NAMING;
-				data.name = namingservice((DOMElement*)(child));
+				data.name = namingservice((DOMElement*)child);
 			}
 
 			//
@@ -767,7 +808,7 @@ throw(CADReadException)
 			if (element_name == "stringifiedobjectref")
 			{
 				data.kind = OBJECTREF;
-				data.name = stringifiedobjectref((DOMElement*)(child));
+				data.name = stringifiedobjectref((DOMElement*)child);
 			}
 
 			//
@@ -776,7 +817,7 @@ throw(CADReadException)
 			if (element_name == "traderquery")
 			{
 				data.kind = TRADER;
-				traderquery((DOMElement*)(child));
+				traderquery((DOMElement*)child);
 			}
 
 			//
@@ -785,7 +826,7 @@ throw(CADReadException)
 			if (element_name == "homefinder")
 			{
 				data.kind = FINDER;
-				data.name = homefinder((DOMElement*)(child));
+				data.name = homefinder((DOMElement*)child);
 			}
 
 			//
@@ -793,7 +834,7 @@ throw(CADReadException)
 			//
 			if (element_name == "extension")
 			{
-				extension((DOMElement*)(child));
+				extension((DOMElement*)child);
 			}
 		}
 
@@ -893,7 +934,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "componentfileref")
 			{
-				data.file = data_->implementationMap_[componentfileref((DOMElement*)child)];
+				data.file = data_->implementationMap_[componentfileref((DOMElement*)child)].archiv;
 			}
 
 			//
@@ -1038,7 +1079,7 @@ CADReader::homeproperties (DOMElement* element)
 throw(CADReadException)
 {
 	std::string element_name;
-	std::string file;
+	FileData file;
 	DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
@@ -1067,7 +1108,7 @@ throw(CADReadException)
 	    child = child->getNextSibling();
 	}
 
-	return file;
+	return file.name;
 }
 
 
@@ -1162,12 +1203,32 @@ throw(CADReadException)
     XMLURL uri(element->getAttribute(X("href")));
     std::string name = Qedo::transcode(uri.getPath());
     std::string::size_type pos = name.find_last_of("/");
+	std::string fileName;
+
     if (pos != std::string::npos)
     {
         name.erase(0, pos + 1);
+		fileName = path_ + name;
     }
+	else
+	{
+		fileName = path_ + name;
     
-    std::string fileName = path_ + name;
+		//
+		// local uri (!!! without "/" !!!) is interpreted as link in archiv
+		//
+		if (package_->extractFile(name, fileName) != 0)
+		{
+			NORMAL_ERR2( "CADReader: error during extracting from archiv ", name );
+			throw CADReadException();
+		}
+
+		return fileName;
+	}
+
+	//
+	// get file from uri
+	//
     URLInputSource inputSource(uri);
     BinInputStream* inputStream = inputSource.makeStream();
     if (!inputStream)
@@ -1192,7 +1253,7 @@ throw(CADReadException)
     free(buf);
 	aFile.close();
 
-    return name;
+    return fileName;
 }
 
 
