@@ -25,15 +25,15 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.8 2003/08/01 14:57:26 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServantBase.cpp,v 1.9 2003/09/05 12:56:42 boehme Exp $";
 
 namespace Qedo {
 
 
 ServantBase::ServantBase()
-: current_executor_ (CORBA::Object::_nil()),
-  executor_locator_ (Components::ExecutorLocator::_nil()),
-  ccm_object_executor_ (0)
+: executor_locator_ (Components::ExecutorLocator::_nil()),
+  ccm_object_executor_ (0),
+  current_executor_ (CORBA::Object::_nil())
 {
 }
 
