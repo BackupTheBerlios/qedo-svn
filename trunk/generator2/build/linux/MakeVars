@@ -1,7 +1,7 @@
 ##### Qedo Target Dir #####
 # The target dir of Qedo. After building Qedo it will be installed
 # into this directory 
-QEDO = /home/ritter/test/qedo
+QEDO = /home/tri/test/qedo
 
 ##### ORB #####
 # choose one out of MICO_ORB TAO_ORB ORBACUS_ORB
@@ -31,7 +31,7 @@ YACC = bison
 # kimwitu
 # set the executable kimwitu++ compiler
 # e.g. KC = /opt/kimwitu++-2.3.4/kc++
-KC = /home/ritter/devel/kimwitu++-2.3.4/kc++
+KC = /home/tri/devel/kimwitu++-2.3.4/kc++
 
 # python
 # set the python
