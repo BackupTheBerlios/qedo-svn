@@ -212,7 +212,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << "Name=\"VCCLCompilerTool\"\n";
 	out << "Optimization=\"0\"\n";
-	out << "AdditionalIncludeDirectories=\".;$(QEDO)/include;$(MICO)/include;\"\n";
+	out << "AdditionalIncludeDirectories=\".;$(QEDO)/include;$(MICO)/include;../" << project_name << "_SERVANT\"\n";
 	out << "PreprocessorDefinitions=\"";
 	out << "BUILD_" << export_prefix_ << "_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400;_QEDO_NO_QOS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
@@ -251,7 +251,13 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 
 	out << "<Tool\n";
 	out.indent();
-	out << "Name=\"VCPostBuildEventTool\"/>\n";
+	out << "Name=\"VCPostBuildEventTool\"\n";
+	out << "CommandLine=\"zip ../" <<	project_name << ".zip -j Debug_mico/";
+	out << project_name << ".dll ../" << project_name << "_SERVANT/Debug_mico/";
+	out << project_name << "_SERVANT.dll ../" << target_file_name_ << "\n";
+	out << "zip ../" <<	project_name << ".zip meta-inf/";
+	out << project_name << ".ccd meta-inf/" << project_name << ".csd";
+	out << "\"/>\n";
 	out.unindent();
 
 	out << "<Tool\n";
@@ -458,7 +464,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "Name=\"VCCustomBuildTool\"\n";
 	out << "Description=\"..... compiling CIDL\"\n";
 	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl ";
-	out << "-I$(ORBACUS)/idl/OB --business -d --target " << composition->id() << " ../" << target_file_name_ << "\"\n";
+	out << "-I$(ORBACUS)/idl/OB --business --target " << composition->id() << " ../" << target_file_name_ << "\"\n";
 	out << "Outputs=\"" << project_name << "_LOCAL.idl;" << project_name << "_EQUIVALENT.idl;";
 	out << project_name << "_BUSINESS.idl\"/>\n";
 	out.unindent();
@@ -473,7 +479,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "Name=\"VCCustomBuildTool\"\n";
 	out << "Description=\"..... compiling CIDL\"\n";
 	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32";
-	out << " -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --business -d --target ";
+	out << " -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --business --target ";
 	out << composition->id() << " ../" << target_file_name_ << "\"\n";
 	out << "Outputs=\"" << project_name << "_LOCAL.idl;" << project_name << "_EQUIVALENT.idl;";
 	out << project_name << "_BUSINESS.idl\"/>\n";
@@ -670,16 +676,16 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	out << "<Filter\n";
 	out.indent();
-	out << "Name=\"xml\"\n";
+	out << "Name=\"meta-inf\"\n";
 	out << "Filter=\"ccd;csd\">\n";
 	out << "<File\n";
 	out.indent();
-	out << "RelativePath=\"" << composition_name << ".ccd\">\n";
+	out << "RelativePath=\"meta-inf\\" << composition_name << ".ccd\">\n";
 	out.unindent();
 	out << "</File>\n";
 	out << "<File\n";
 	out.indent();
-	out << "RelativePath=\"" << composition_name << ".csd\">\n";
+	out << "RelativePath=\"meta-inf\\" << composition_name << ".csd\">\n";
 	out.unindent();
 	// orbacus
 	out << "<FileConfiguration\n";
