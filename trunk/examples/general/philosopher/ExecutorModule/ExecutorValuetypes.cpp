@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ExecutorValuetypes.cpp,v 1.2 2002/10/13 12:37:01 tom Exp $";
+static char rcsid[] = "$Id: ExecutorValuetypes.cpp,v 1.3 2002/10/16 09:37:40 tom Exp $";
 
 #include "ExecutorValuetypes.h"
 
@@ -85,8 +85,15 @@ CookieFactory_impl::create_for_unmarshal()
 PhilosopherState_impl::PhilosopherState_impl (dinner::PhilosopherStatus stat,
 											  const char* name,
 											  dinner::Philosopher_ptr phil) 
+#ifndef VC6
 : PhilosopherState (stat, name, phil)
+#endif
 {
+#ifdef VC6
+this->status(stat);
+this->name(name);
+this->ref(phil);
+#endif
 }
 
 
