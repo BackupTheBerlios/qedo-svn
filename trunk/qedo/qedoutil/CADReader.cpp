@@ -858,7 +858,11 @@ throw(CADReadException)
 {
 	std::string element_name;
 	HomeInstanceData data;
+
+	// attribute id
 	data.id = Qedo::transcode(element->getAttribute(X("id")));
+
+	// attribute cardinality
 	std::string cardinality = Qedo::transcode(element->getAttribute(X("cardinality")));
 	if( !cardinality.empty() )
 	{
@@ -1047,7 +1051,7 @@ throw(CADReadException)
 			//
 			if (element_name == "fileinarchive")
 			{
-				file = fileinarchive((DOMElement*)(child));
+				file = fileinarchive((DOMElement*)child);
 			}
 
 			//
@@ -1085,7 +1089,7 @@ throw(CADReadException)
 			//
 			if (element_name == "usagename")
 			{
-				data.usage_name = usagename((DOMElement*)(child));
+				data.usage_name = usagename((DOMElement*)child);
 			}
 
 			//
@@ -1101,7 +1105,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "homeplacement")
 			{
-				HomeInstanceData home_instance = homeplacement((DOMElement*)(child));
+				HomeInstanceData home_instance = homeplacement((DOMElement*)child);
 				ProcessData process;
 				process.host = home_instance.dest;
 				process.homes.push_back(home_instance);
@@ -1113,7 +1117,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "executableplacement")
 			{
-				executableplacement((DOMElement*)(child));
+				executableplacement((DOMElement*)child);
 			}
 
 			//
@@ -1121,7 +1125,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "processcollocation")
 			{
-				ProcessData process = processcollocation((DOMElement*)(child));
+				ProcessData process = processcollocation((DOMElement*)child);
 				data.host = process.host;
 				data.processes.push_back(process);
 			}
@@ -1131,7 +1135,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "extension")
 			{
-				extension((DOMElement*)(child));
+				extension((DOMElement*)child);
 			}
 
 			//
@@ -1139,7 +1143,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "destination")
 			{
-				data.host = destination((DOMElement*)(child));
+				data.host = destination((DOMElement*)child);
 			}
 		}
 
@@ -1296,7 +1300,7 @@ throw(CADReadException)
 			//
 			if (element_name == "usagename")
 			{
-				data.usage_name = usagename((DOMElement*)(child));
+				data.usage_name = usagename((DOMElement*)child);
 			}
 
 			//
@@ -1312,7 +1316,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "homeplacement")
 			{
-				HomeInstanceData home_instance = homeplacement((DOMElement*)(child));
+				HomeInstanceData home_instance = homeplacement((DOMElement*)child);
 				data.host = home_instance.dest;
 				data.homes.push_back(home_instance);
 			}
@@ -1322,7 +1326,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "extension")
 			{
-				extension((DOMElement*)(child));
+				extension((DOMElement*)child);
 			}
 
 			//
@@ -1330,7 +1334,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "destination")
 			{
-				data.host = destination((DOMElement*)(child));
+				data.host = destination((DOMElement*)child);
 			}
 		}
 

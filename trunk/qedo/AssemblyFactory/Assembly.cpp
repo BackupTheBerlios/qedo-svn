@@ -329,33 +329,38 @@ AssemblyImpl::install ()
 throw( Components::CreateFailure )
 {
 	Qedo_Components::Deployment::ComponentInstallation_var componentInstallation;
+	std::string destination;
 
 	//
 	// for each hostcollocation
 	//
-	std::vector < HostData > ::const_iterator host_iter;
+	std::vector < HostData > ::iterator host_iter;
 	for(host_iter = data_.hosts_.begin(); 
 		host_iter != data_.hosts_.end(); 
 		host_iter++)
 	{
-		componentInstallation = getComponentInstallation((*host_iter).host);
+		destination = (*host_iter).host;
+		componentInstallation = getComponentInstallation(destination);
 
 		//
 		// for each processcollocation
 		//
-		std::vector < ProcessData > ::const_iterator process_iter;
+		std::vector < ProcessData > ::iterator process_iter;
 		for(process_iter = (*host_iter).processes.begin(); 
 			process_iter != (*host_iter).processes.end();
 			process_iter++)
 		{
+			(*process_iter).host = destination;
+
 			//
 			// for each homeplacement
 			//
-			std::vector < HomeInstanceData > ::const_iterator iter;
+			std::vector < HomeInstanceData > ::iterator iter;
 			for(iter = (*process_iter).homes.begin();
 				iter != (*process_iter).homes.end(); 
 				iter++)
 			{
+				(*iter).dest = destination;
 				installComponent( componentInstallation, (*iter) );
 			}
 		}
@@ -656,9 +661,21 @@ throw(Components::CreateFailure)
 		// create home
 		//
 		DEBUG_OUT2( "AssemblyImpl: create new home ", data.id );
+		Components::ConfigValues_var config = new Components::ConfigValues();
+
+		//
+		// registerwithhomefinder
+		//
+		if( !data.finder.empty() )
+		{
+			config->length(1);
+			CORBA::Any any;
+			any <<= data.finder.c_str();
+			config.inout()[0] = new ConfigValue_impl( "HOMEFINDERNAME", any );
+		}
+
 		try
 		{
-			Components::ConfigValues_var config = new Components::ConfigValues();
 			home = container->install_home(data.impl_id.c_str(), "", config);
 		}
 		catch (Components::Deployment::UnknownImplId&)
@@ -706,11 +723,6 @@ throw(Components::CreateFailure)
 		DEBUG_OUT2( "AssemblyImpl: resolve home ", data.impl_id );
         home = Components::CCMHome::_narrow( resolveName(data.impl_id) );
 	}
-
-	//
-	// registerwithhomefinder
-	//
-	// todo
 
 	//
 	// registerwithnaming

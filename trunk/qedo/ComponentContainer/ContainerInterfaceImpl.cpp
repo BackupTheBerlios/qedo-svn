@@ -36,7 +36,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.53 2004/01/14 08:36:40 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.54 2004/01/23 13:19:50 neubauer Exp $";
 
 
 namespace Qedo {
@@ -468,7 +468,7 @@ throw (Components::Deployment::UnknownImplId,
 	// analyse the configuration values
 	//
 	Components::ConfigValue* value;
-	const char* homefinder_name = 0;
+	const char* homefinder_name = "";
 	const char* service_name = 0;
 
 	for (CORBA::ULong i = 0; i < config.length(); i++)
@@ -744,17 +744,12 @@ throw (Components::Deployment::UnknownImplId,
 	// register home in HomeFinder
 	//
 	Components::Cookie_var cookie;
-	if (!CORBA::is_nil(home_finder_.in())) {
+	if (!CORBA::is_nil(home_finder_.in()))
+	{
         try
 		{
-			if (!homefinder_name)
-			{
-				DEBUG_OUT("..... ContrainerInterface: Name for HomeFinder registration not set");
-			} else
-			{
-				cookie = home_finder_->register_home(home_ref, qedo_home_servant->get_component_repid(), 
+			cookie = home_finder_->register_home(home_ref, qedo_home_servant->get_component_repid(), 
 												 qedo_home_servant->get_home_repid(), homefinder_name);
-			}
 		}
 		catch(...)
 		{
@@ -780,7 +775,9 @@ void
 ContainerInterfaceImpl::remove_home (Components::CCMHome_ptr href)
 throw (Components::RemoveFailure, CORBA::SystemException)
 {
+	//
 	// Find the home in our list of installed homes
+	//
 	std::vector <HomeEntry>::iterator homes_iter;
 
 	for (homes_iter = installed_homes_.begin(); homes_iter != installed_homes_.end(); homes_iter++)
@@ -804,13 +801,17 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	// unregister home in HomeFinder
 	//
 	Components::Cookie* cookie = (*homes_iter).home_cookie_;
-	if (!CORBA::is_nil(home_finder_.in()) && cookie) {
-        try
+	if (!CORBA::is_nil(home_finder_.in()) && cookie)
+	{
+        DEBUG_OUT ("ContainerInterfaceImpl: unregister home");
+
+		try
 		{
-			home_finder_->unregister_home(cookie);
+			home_finder_->unregister_home( cookie );
 		}
-		catch(...)
+		catch (CORBA::SystemException& ex)
 		{
+			DEBUG_OUT2 ("ContainerInterfaceImpl: CORBA system exception during unregister_home() ", ex);
 		}
     }
 

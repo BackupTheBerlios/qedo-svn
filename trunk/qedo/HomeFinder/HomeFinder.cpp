@@ -35,7 +35,7 @@
 #include "Synchronisation.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.8 2003/11/12 14:49:35 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.9 2004/01/23 13:19:50 neubauer Exp $";
 
 
 /**
@@ -63,7 +63,34 @@ handle_sigint
 	signal(sig, SIG_IGN);
 #endif
 	std::cout << "\nGot Crtl-C" << std::endl;
+	std::cerr << "..... unbind in NameService" << std::endl;
 
+	//
+	// unbind in naming service
+	//
+    CORBA::Object_var obj;
+	CosNaming::NamingContext_var nameService;
+	CosNaming::Name name;
+    name.length(2);
+    name[0].id = CORBA::string_dup("Qedo");
+    name[0].kind = CORBA::string_dup("");
+	name[1].id = CORBA::string_dup("HomeFinder");
+    name[1].kind = CORBA::string_dup("");
+    try
+    {
+        obj = orb->resolve_initial_references("NameService");
+		nameService = CosNaming::NamingContext::_narrow(obj.in());
+		nameService->unbind(name);
+    }
+	catch (const CORBA::Exception&)
+	{
+		std::cerr << "..... could not unbind" << std::endl;
+	}
+	catch(...)
+	{
+		std::cerr << "..... error in signal handler" << std::endl;
+	}
+	
 	orb->shutdown(false);
 }
 

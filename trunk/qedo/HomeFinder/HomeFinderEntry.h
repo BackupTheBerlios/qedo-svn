@@ -55,6 +55,9 @@ namespace Qedo {
  */
 class HomeFinderEntry
 {
+private:
+	/** the cookie to identify this registration entry */
+	Qedo::Cookie_impl*			cookie_;
 
 public:
 	/** interface repository id for the home */
@@ -69,9 +72,6 @@ public:
 	/** the home IOR */
 	Components::CCMHome_var		home_;
 
-	/** the cookie to identify this registration entry */
-	Qedo::Cookie_impl*			cookie_;
-
 	/**
 	 * constructor
 	 * \param home_repid The interface repository id of the home.
@@ -80,6 +80,16 @@ public:
 	 * \param home The home.
 	 */
     HomeFinderEntry(const char* home_repid, const char* comp_repid, const char* name, Components::CCMHome_ptr home);
+
+	/**
+	 * copy constructor
+	 */
+	HomeFinderEntry (const HomeFinderEntry& entry);
+
+	/**
+	 * assignment operator
+	 */
+	HomeFinderEntry& operator= (const HomeFinderEntry& entry);
 
 	/**
 	 * destructor
@@ -95,6 +105,11 @@ public:
 	 * comparison
 	 */
 	bool operator == (const HomeFinderEntry&) const {return true;}
+
+	/**
+	 * get cookie
+	 */
+	Qedo::Cookie_impl* cookie() { cookie_->_add_ref(); return cookie_; }
 };
 
 typedef std::vector < HomeFinderEntry > HomeFinderEntryVector;

@@ -24,7 +24,7 @@
 #include "Valuetypes.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeFinderImpl.cpp,v 1.5 2003/10/30 17:24:14 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: HomeFinderImpl.cpp,v 1.6 2004/01/23 13:19:50 neubauer Exp $";
 
 
 namespace Qedo {
@@ -89,18 +89,20 @@ Components::Cookie*
 HomeFinderImpl::register_home(Components::CCMHome_ptr ahome, const char* comp_repid, const char* home_repid, const char* home_name)
 throw(CORBA::SystemException)
 {
+	std::cout << "register home" << std::endl;
+
 	HomeFinderEntry entry = HomeFinderEntry(home_repid, comp_repid, home_name, ahome);
 
 	QedoLock lock (entries_mutex_);
 
 	entries_.push_back(entry);
 
-	std::cout << "home registered" << std::endl;
 	std::cout << "..... home id: " << home_repid << std::endl;
 	std::cout << "..... component id: " << comp_repid << std::endl;
-	std::cout << "..... name: " << home_name << std::endl << std::endl;
+	std::cout << "..... name: " << home_name << std::endl;
+	std::cout << "home registered" << std::endl << std::endl;
 
-	return entry.cookie_;
+	return entry.cookie();
 }
 
 
@@ -108,21 +110,29 @@ void
 HomeFinderImpl::unregister_home(Components::Cookie* c)
 throw(CORBA::SystemException)
 {
-	HomeFinderEntryVector::iterator iter;
+	std::cout << "unregister home" << std::endl;
 
 	QedoLock lock (entries_mutex_);
 
-	for (iter = entries_.begin(); iter != entries_.end(); iter++)
+	Cookie_impl* cookie;
+	HomeFinderEntryVector::iterator iter;
+	for(iter = entries_.begin();
+		iter != entries_.end();
+		iter++)
 	{
-		if ((*iter).cookie_->equal(c))
+		cookie = (*iter).cookie();
+		if (cookie->equal(c))
 		{
-			std::cout << "home unregistered" << std::endl;
 			std::cout << "..... home id: " << (*iter).home_repid_ << std::endl;
 			std::cout << "..... component id: " << (*iter).comp_repid_ << std::endl;
-			std::cout << "..... name: " << (*iter).name_ << std::endl << std::endl;
+			std::cout << "..... name: " << (*iter).name_ << std::endl;
+			std::cout << "home unregistered" << std::endl << std::endl;
 			entries_.erase(iter);
+			cookie->_remove_ref();
 			return;
 		}
+
+		cookie->_remove_ref();
 	}
 }
 
@@ -179,7 +189,9 @@ throw(Components::HomeNotFound, CORBA::SystemException)
 
 	QedoLock lock (entries_mutex_);
 
-	for (iter = entries_.begin(); iter != entries_.end(); iter++)
+	for(iter = entries_.begin();
+		iter != entries_.end();
+		iter++)
 	{
 		if (!(*iter).name_.compare(home_name))
 		{
