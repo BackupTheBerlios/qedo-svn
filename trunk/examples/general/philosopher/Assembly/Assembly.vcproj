@@ -63,19 +63,44 @@
 				ReBuildCommandLine="wzzip.exe &quot;%QEDO%\..\runtime\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
 				Output="must_be_here_to_force_generation"/>
 		</Configuration>
+		<Configuration
+			Name="Debug_mico|Win32"
+			OutputDirectory="Debug_mico"
+			IntermediateDirectory="Debug_mico"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="wzzip.exe &quot;%QEDO%\bin\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
+				ReBuildCommandLine="wzzip.exe &quot;%QEDO%\bin\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
+				Output="must_be_here_to_force_generation"/>
+		</Configuration>
 	</Configurations>
 	<Files>
 		<File
 			RelativePath=".\atze.cpf">
+			<FileConfiguration
+				Name="Debug_mico|Win32">
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\bob.cpf">
+			<FileConfiguration
+				Name="Debug_mico|Win32">
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\charly.cpf">
+			<FileConfiguration
+				Name="Debug_mico|Win32">
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath=".\philosophers.cad">
+			<FileConfiguration
+				Name="Debug_mico|Win32">
+			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>
