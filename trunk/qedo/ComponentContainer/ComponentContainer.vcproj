@@ -149,7 +149,11 @@
 				DebugInformationFormat="4"
 				CompileAs="0"/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="..\distributeQedo.bat $(OutDir)
+"
+				Outputs="$(QEDO\lib\ComponentContainer.lib"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
@@ -169,13 +173,7 @@
 				TargetEnvironment="1"
 				TypeLibraryName=".\Debug/ComponentContainer.tlb"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Distribution"
-				CommandLine="mkdir $(QEDO)\include
-copy *.h $(QEDO)\include
-mkdir $(QEDO)\lib
-copy $(OutDir)\$(TargetName).lib $(QEDO)\lib
-"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -214,7 +212,11 @@ copy $(OutDir)\$(TargetName).lib $(QEDO)\lib
 				DebugInformationFormat="4"
 				CompileAs="0"/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="..\distributeQedo.bat $(OutDir)
+"
+				Outputs="$(QEDO\lib\ComponentContainer.lib"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
@@ -234,11 +236,7 @@ copy $(OutDir)\$(TargetName).lib $(QEDO)\lib
 				TargetEnvironment="1"
 				TypeLibraryName=".\Debug/ComponentContainer.tlb"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Distribution"
-				CommandLine="mkdir $(QEDO)\lib
-copy $(OutDir)\$(TargetName).lib $(QEDO)\lib
-"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
