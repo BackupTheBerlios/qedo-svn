@@ -138,7 +138,7 @@ Seg::obtain_fork()
 	
 	// Normally we should store a cookie somewhere to check later, whether the caller
 	// is allowed to relase the fork
-	return new Cookie_impl();
+	return new Qedo::Cookie_impl();
 // END USER INSERT SECTION Seg::obtain_fork
 }
 
