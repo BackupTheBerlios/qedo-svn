@@ -76,33 +76,40 @@ public:
     //
     // IDL:omg.org/IR__/StorageHomeDef/base_storage_home:1.0
     //
-    virtual IR__::StorageHomeDef_ptr base_storage_home();
+    virtual IR__::StorageHomeDef_ptr base_storage_home()
+		throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/StorageHomeDef/managed_storage_type:1.0
     //
-    virtual IR__::StorageTypeDef_ptr managed_storage_type();
+    virtual IR__::StorageTypeDef_ptr managed_storage_type()
+		throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/StorageHomeDef/supported_interfaces:1.0
     //
-    virtual IR__::InterfaceDefSeq* supported_interfaces();
-    virtual void supported_interfaces(const IR__::InterfaceDefSeq&);
+    virtual IR__::InterfaceDefSeq* supported_interfaces()
+		throw(CORBA::SystemException);
+    virtual void supported_interfaces(const IR__::InterfaceDefSeq&)
+		throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/StorageHomeDef/primary_key:1.0
     //
-    virtual IR__::PSSPrimaryKeyDef_ptr primary_key();
+    virtual IR__::PSSPrimaryKeyDef_ptr primary_key()
+		throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/StorageHomeDef/factories:1.0
     //
-    virtual IR__::FactoryDefSeq* factories();
+    virtual IR__::FactoryDefSeq* factories()
+		throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/StorageHomeDef/keys:1.0
     //
-    virtual IR__::KeyDefSeq* keys();
+    virtual IR__::KeyDefSeq* keys()
+		throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/StorageHomeDef/create_primary_key:1.0
@@ -110,7 +117,8 @@ public:
     virtual IR__::PSSPrimaryKeyDef_ptr create_primary_key(const char* id,
                                                        const char* name,
                                                        const char* version,
-                                                       IR__::IDLType_ptr primary_key);
+                                                       IR__::IDLType_ptr primary_key)
+	   throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/StorageHomeDef/create_factory:1.0
@@ -119,7 +127,8 @@ public:
                                                 const char* name,
                                                 const char* version,
                                                 const IR__::ParDescriptionSeq& params,
-                                                const IR__::ExceptionDefSeq& exceptions);
+                                                const IR__::ExceptionDefSeq& exceptions)
+		throw(CORBA::SystemException);
 
     //
     // IDL:omg.org/IR__/StorageHomeDef/create_key:1.0
@@ -127,7 +136,8 @@ public:
     virtual IR__::KeyDef_ptr create_key(const char* id,
                                         const char* name,
                                         const char* version,
-                                        const IR__::ParDescriptionSeq& params);
+                                        const IR__::ParDescriptionSeq& params)
+		throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository

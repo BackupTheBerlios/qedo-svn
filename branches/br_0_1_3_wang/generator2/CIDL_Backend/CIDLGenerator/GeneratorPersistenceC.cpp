@@ -141,35 +141,116 @@ GeneratorPersistenceC::doAttribute(IR__::AttributeDef_ptr attribute)
 	// read only
 	out << map_psdl_return_type(attribute->type_def(), true) << "\n";
 	out << class_name_ << "::" << attribute_name << "() const\n";
-	out << "{\n}\n\n";
+	out << "{\n";
+	out.indent();
+	out << "return m_" << attribute_name << ";\n";
+	out.unindent();
+	out << "}\n\n";
 
 	// not read only
 	if(attribute->mode() == IR__::ATTR_NORMAL)
 	{
-		out << map_psdl_return_type(attribute->type_def(), false) << "\n";
-		out << class_name_ << "::" << attribute_name << "(";
-		out << map_psdl_parameter_type(attribute->type_def(), false) << " param)\n";
-		out << "{\n}\n\n";
-
-		out << "void\n";
-		out << class_name_ << "::" << attribute_name << "(";
-		out << map_psdl_parameter_type(attribute->type_def(), true) << " param)\n";
-		out << "{\n}\n\n";
-
-		// the fourth operation only for string and wstring
-		if(attribute->type_def()->type()->kind()==CORBA::tk_string)
+		CORBA::TCKind att_type_kind = attribute->type_def()->type()->kind();
+		switch ( att_type_kind )
 		{
-			out << "void\n";
-			out << class_name_ << "::" << attribute_name << "(CORBA::String_var& param)\n";
-			out << "{\n}\n\n";
-		}
-		else if(attribute->type_def()->type()->kind()==CORBA::tk_wstring)
-		{
-			out << "void\n";
-			out << class_name_ << "::" << attribute_name << "(CORBA::WString_var& param)\n";
-			out << "{\n}\n\n";
+			case CORBA::tk_short:
+			case CORBA::tk_long:
+			case CORBA::tk_longlong:
+			case CORBA::tk_ushort:
+			case CORBA::tk_ulong:
+			case CORBA::tk_ulonglong:
+			case CORBA::tk_float:
+			case CORBA::tk_double:
+			case CORBA::tk_longdouble:
+			case CORBA::tk_boolean:
+			case CORBA::tk_char:
+			case CORBA::tk_wchar:
+			case CORBA::tk_string:
+			case CORBA::tk_wstring:
+				genAttributeWithNomalType(attribute, att_type_kind);
+				break;
+			default:
+				genAttributeWithOtherType(attribute, att_type_kind);
 		}
 	}
+}
+
+void
+GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind)
+{
+	std::string attribute_name = mapName(attribute);
+	out << map_psdl_return_type(attribute->type_def(), false) << "\n";
+	out << class_name_ << "::" << attribute_name << "(";
+	out << map_psdl_parameter_type(attribute->type_def(), false) << " param)\n";
+	out << "{\n";
+	out.indent();
+	out << "m_" << attribute_name << " = param;\n";
+	out.unindent();
+	out << "}\n\n";
+
+	out << "void\n";
+	out << class_name_ << "::" << attribute_name << "(";
+	out << map_psdl_parameter_type(attribute->type_def(), true) << " param)\n";
+	out << "{\n";
+	out.indent();
+	switch ( att_type_kind )
+	{
+		case CORBA::tk_string:
+			out << "strcpy( m_" << attribute_name << ", param );\n";
+			break;
+		case CORBA::tk_wstring:
+			out << "wcscpy( m_" << attribute_name << ", param );\n";
+			break;
+		default:
+			out << "m_" << attribute_name << " = param;\n";
+	}
+	out.unindent();
+	out << "}\n\n";
+
+	// the fourth operation only for string and wstring
+	if(attribute->type_def()->type()->kind()==CORBA::tk_string)
+	{
+		out << "void\n";
+		out << class_name_ << "::" << attribute_name << "(CORBA::String_var& param)\n";
+		out << "{\n";
+		out.indent();
+		out << "m_" << attribute_name << " = param;\n";
+		out.unindent();
+		out << "}\n\n";
+	}
+	else if(attribute->type_def()->type()->kind()==CORBA::tk_wstring)
+	{
+		out << "void\n";
+		out << class_name_ << "::" << attribute_name << "(CORBA::WString_var& param)\n";
+		out << "{\n";
+		out.indent();
+		out << "m_" << attribute_name << " = param;\n";
+		out.unindent();
+		out << "}\n\n";
+	}
+}
+
+void
+GeneratorPersistenceC::genAttributeWithOtherType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind)
+{
+	std::string attribute_name = mapName(attribute);
+	out << map_psdl_return_type(attribute->type_def(), false) << "\n";
+	out << class_name_ << "::" << attribute_name << "(";
+	out << map_psdl_parameter_type(attribute->type_def(), false) << " param)\n";
+	out << "{\n";
+	out.indent();
+	out << "return m_" << attribute_name << ";\n";
+	out.unindent();
+	out << "}\n\n";
+
+	out << "void\n";
+	out << class_name_ << "::" << attribute_name << "(";
+	out << map_psdl_parameter_type(attribute->type_def(), true) << " param)\n";
+	out << "{\n";
+	out.indent();
+	out << "m_" << attribute_name << " = param;\n";
+	out.unindent();
+	out << "}\n\n";
 }
 
 void
@@ -242,7 +323,7 @@ GeneratorPersistenceC::doStorageType(IR__::StorageTypeDef_ptr storage_type)
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";	
 	open_module(out, storage_type, "");
-	out.unindent();
+	//out.unindent();
 	out << "\n\n";
 	
 	class_name_ = string(storage_type->name());
@@ -283,7 +364,7 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storage_home)
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
 	out << "\n\n";
 	open_module(out, storagetype_, "");
-	out.unindent();
+	//out.unindent();
 	out << "\n\n";
 
 	class_name_ = string(storage_home->name());

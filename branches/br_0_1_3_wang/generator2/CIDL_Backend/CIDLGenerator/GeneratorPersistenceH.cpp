@@ -338,7 +338,9 @@ GeneratorPersistenceH::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr ab
 	handleKey(abs_storage_home);
 
 	out.unindent();
-	out << "};\n";
+	out << "};\n\n";
+	out << "typedef OB::ObjVar< " << class_name << " > " << class_name << "_var;\n";
+	out << "typedef OB::ObjVar< " << class_name << " > " << class_name << "_out;\n";
 	out << "\n\n";
 
 	close_module(out, abs_storagetype_);
@@ -541,7 +543,18 @@ GeneratorPersistenceH::genAbstractStorageTypeBody(IR__::AbstractStorageTypeDef_p
 	handleOperation(abs_storage_type);
 
 	out.unindent();
-	out << "};\n";
+	out << "};\n\n";
+
+	out << "typedef OB::ObjVar< " << class_name;
+	if(isRef) out << "Ref";
+	out	<< " > " << class_name;
+	if(isRef) out << "Ref"; 
+	out << "_var;\n";
+	out << "typedef OB::ObjVar< " << class_name;
+	if(isRef) out << "Ref";
+	out << " > " << class_name;
+	if(isRef) out << "Ref";
+	out << "_out;\n";
 	out << "\n\n";
 }
 
@@ -656,29 +669,23 @@ GeneratorPersistenceH::genCreateOperation(IR__::StorageHomeDef_ptr storage_home,
 }
 
 void
-GeneratorPersistenceH::genAttribute(IR__::InterfaceDef_ptr infDef)
+GeneratorPersistenceH::genAttribute(IR__::StorageTypeDef_ptr storagetype)
 {
-	IR__::StorageTypeDef_var storagetype = IR__::StorageTypeDef::_narrow(infDef);
-	if(!CORBA::is_nil(storagetype))
-	{
-		IR__::AttributeDefSeq state_members;
-		storagetype->get_StateMembers(state_members, CORBA__::dk_Variable);
-		CORBA::ULong len = state_members.length();
-		
-		out << "private:\n\n";
-		out.indent();
+	IR__::AttributeDefSeq state_members;
+	storagetype->get_StateMembers(state_members, CORBA__::dk_Variable);
+	CORBA::ULong len = state_members.length();
+	
+	out << "private:\n\n";
+	out.indent();
 
-		for(CORBA::ULong i = 0; i < len; i++)
-		{
-			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
-			std::string attribute_name = mapName(a_attribute);
-			out << map_psdl_return_type(a_attribute->type_def(), false) << " " << attribute_name << ";\n";
-		}
-		
-		out.unindent();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		std::string attribute_name = mapName(a_attribute);
+		out << map_attribute_type(a_attribute->type_def()) << " m_" << attribute_name << ";\n";
 	}
 	
-	
+	out.unindent();
 }
 
 } // namespace

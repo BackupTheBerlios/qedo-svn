@@ -57,6 +57,8 @@ private:
 	void doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_def);
 	void doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDef_ptr inf_def);
 
+	void genAttributeWithNomalType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
+	void genAttributeWithOtherType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
 	void genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool isRef);
 	void genCreateOperation(IR__::StorageHomeDef_ptr storage_home, bool isRef);
