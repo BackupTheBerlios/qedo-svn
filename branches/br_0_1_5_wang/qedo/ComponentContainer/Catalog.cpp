@@ -255,7 +255,7 @@ CatalogBaseImpl::flush()
 	if( !CanTransact() )
 		NORMAL_OUT( "CatalogBaseImpl::flush() - Database do not support transaction, flush is errorprone!" );
 
-	if( access_mode==READ_ONLY )
+	if( access_mode()==READ_ONLY )
 	{	
 		NORMAL_ERR( "CatalogBaseImpl::flush() - Session is read-only!" );
 		return;
@@ -421,7 +421,7 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 	if( !CanTransact() )
 		NORMAL_OUT( "CatalogBaseImpl::flush_by_pids() - Database do not support transaction, flush is errorprone!" );
 
-	if( access_mode==READ_ONLY )
+	if( access_mode()==READ_ONLY )
 	{	
 		NORMAL_ERR( "CatalogBaseImpl::flush_by_pids() - Session pool is read-only!" );
 		return;

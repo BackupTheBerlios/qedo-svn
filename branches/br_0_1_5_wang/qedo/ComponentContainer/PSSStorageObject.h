@@ -75,24 +75,24 @@ class CONTAINERDLL_API StorageObjectRef
 
 		typedef StorageObject _target_type;
 
-		StorageObjectRef() throw ();
-		StorageObjectRef(StorageObject* obj) throw();
-		StorageObjectRef(const StorageObjectRef& ref) throw();
-		virtual ~StorageObjectRef() throw();
+		StorageObjectRef();
+		StorageObjectRef(StorageObject* obj);
+		StorageObjectRef(const StorageObjectRef& ref);
+		virtual ~StorageObjectRef();
 
-		StorageObjectRef& operator=(const StorageObjectRef& ref) throw();
-		StorageObjectRef& operator=(StorageObject* obj) throw();
+		StorageObjectRef& operator=(const StorageObjectRef& ref);
+		StorageObjectRef& operator=(StorageObject* obj);
 
 		StorageObject* deref() const throw(CORBA::SystemException);
 		StorageObject* operator->() const throw(CORBA::SystemException);
 
-		void release() throw();
+		void release();
 		void destroy_object() throw(CORBA::SystemException);
 
 		Pid* get_pid() const throw(CORBA::SystemException);
 		ShortPid* get_short_pid() const throw(CORBA::SystemException);
 
-		CORBA::Boolean is_null() const throw();
+		CORBA::Boolean is_null() const;
 
 		StorageHomeBase_ptr get_storage_home() const throw(CORBA::SystemException);
 

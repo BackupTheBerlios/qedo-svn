@@ -186,15 +186,20 @@ GeneratorValuetypesC::doValue(IR__::ValueDef_ptr value)
 	out.unindent();
 	out << "}\n\n\n";
 
-	out << class_name_ << "::" << class_name_ << "(";
-	generateMemberParam( value, false );
-	out << ")\n: " << mapFullNameWithPrefix(value, "OBV_") << "(";
-	generateMemberInit( value, false );
-	out << ")\n{\n";
-	out.indent();
-	out.insertUserSection(class_name_ + "::" + class_name_ + "2", 0);
-	out.unindent();
-	out << "}\n\n\n";
+	// check whether this value(eventtype) has members.
+	IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, false);
+	if( contained_seq->length() > 0 ) // if has some, generate the constructor with parameters
+	{
+		out << class_name_ << "::" << class_name_ << "(";
+		generateMemberParam( value, false );
+		out << ")\n: " << mapFullNameWithPrefix(value, "OBV_") << "(";
+		generateMemberInit( value, false );
+		out << ")\n{\n";
+		out.indent();
+		out.insertUserSection(class_name_ + "::" + class_name_ + "2", 0);
+		out.unindent();
+		out << "}\n\n\n";
+	}
 
 	out << class_name_ << "::" << class_name_ << "()\n{\n";
 	out.indent();
