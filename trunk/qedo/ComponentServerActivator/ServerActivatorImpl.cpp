@@ -31,7 +31,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.33 2003/10/29 00:57:58 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.34 2003/10/29 15:26:50 tom Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -113,11 +113,11 @@ ServerActivatorImpl::initialize()
 		}
 		catch(...)
 		{
-			std::cerr << "NameServiceBase: can't resolve NameService " << ns << std::endl;
+			std::cerr << "ServerActivatorImpl: can't resolve NameService " << ns << std::endl;
 			throw CannotInitialize();
 		}
 
-		std::cout <<  "NameServiceBase: NameService is " <<  ns << std::endl;
+		std::cout <<  "ServerActivatorImpl: NameService is " <<  ns << std::endl;
 	}
 	//
 	// try to get naming service from orb
@@ -130,13 +130,13 @@ ServerActivatorImpl::initialize()
 		}
 		catch (const CORBA::ORB::InvalidName&)
 		{
-			std::cerr << "NameServiceBase: can't resolve NameService" << std::endl;
+			std::cerr << "ServerActivatorImpl: can't resolve NameService" << std::endl;
 			throw CannotInitialize();
 		}
 
 		if (CORBA::is_nil(obj.in()))
 		{
-			std::cerr << "NameServiceBase: NameService is a nil object reference" << std::endl;
+			std::cerr << "ServerActivatorImpl: NameService is a nil object reference" << std::endl;
 			throw CannotInitialize();
 		}
 	}
@@ -147,7 +147,7 @@ ServerActivatorImpl::initialize()
 	}
 	catch (const CORBA::Exception&)
 	{
-		std::cerr << "NameServiceBase: NameService is not running" << std::endl;
+		std::cerr << "ServerActivatorImpl: NameService is not running" << std::endl;
 		throw CannotInitialize();
 	}
 
