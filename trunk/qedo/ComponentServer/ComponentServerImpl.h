@@ -24,10 +24,17 @@
 #define __COMPONENT_SERVER_IMPL_H__
 
 #include <CORBA.h>
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "QedoComponents_skel.h"
 #include "ContainerInterfaceImpl.h"
 
+#ifndef _QEDO_NO_DB
 #include "Connector.h"
+#endif
 
 #include "Util.h"
 #include <vector>
@@ -108,7 +115,7 @@ private:
 	CORBA::ULong							process_id_;
 	/** the object reference of the component installer */
 	Components::Deployment::ComponentInstallation_var		component_installer_;
-	
+
 	/** the orb */
 	CORBA::ORB_var							orb_;
 	/** the root poa */
@@ -126,14 +133,17 @@ private:
 
 	/** Name service referenz */
 	CosNaming::NamingContext_var nameService_;
+
+#ifndef _QEDO_NO_DB
 	/** the object reference of the connector */
 	ConnectorImpl*                      pConn_;
+#endif
 
 #ifndef _QEDO_NO_QOS
 	/** the list of service references */
-	std::vector <ServiceReferenceEntry>						service_references_;
+	std::vector <ServiceReferenceEntry>				service_references_;
 	/** the mutex for service_references_ */
-	QedoMutex												service_references_mutex_;
+	QedoMutex							service_references_mutex_;
 
 	/** interceptor dispatcher for the server side */
 	Components::Extension::ServerInterceptorRegistration_var server_dispatcher_;
@@ -201,7 +211,10 @@ public:
 	 */
 	void loadValuetypeFactory(const char* repid, const char* loc)
 		throw (CORBA::SystemException);
+
+#ifndef _QEDO_NO_DB
 	virtual const Connector_ptr getConnector();
+#endif
 
 #ifndef _QEDO_NO_QOS
 	/**

@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.33 2004/06/11 12:57:24 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.34 2004/06/24 10:28:37 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -96,6 +96,7 @@ ComponentServerImpl::~ComponentServerImpl()
 #endif
 
 	std::cout << "ComponentServerImpl::~ComponentServerImpl()\n";
+#ifndef _QEDO_NO_DB
 	std::cout << "delete connector 1\n";
 	if(pConn_!=NULL)
 	{
@@ -108,6 +109,7 @@ ComponentServerImpl::~ComponentServerImpl()
 		//	std::cout << "pConn_ is realy null\n";
 	}
 	std::cout << "delete connector 4\n";
+#endif // _QEDO_NO_DB
 }
 
 
@@ -187,7 +189,7 @@ ComponentServerImpl::initialize()
 		{
 			obj = orb_->resolve_initial_references( "NameService" );
 		}
-		
+
 		try
 		{
 			nameService_ = CosNaming::NamingContext::_narrow( obj.in() );
@@ -288,15 +290,20 @@ ComponentServerImpl::initialize()
 	Qedo_Components::Deployment::ComponentServer_var component_server = this->_this();
 	csa_ref_->notify_component_server_create (component_server.in());
 
+#ifndef _QEDO_NO_DB
 	// create a handle of connector
 	pConn_ = new ConnectorImpl("");
+#endif // _QEDO_NO_DB
 }
 
+
+#ifndef _QEDO_NO_DB
 const Connector_ptr
 ComponentServerImpl::getConnector()
 {
 	return pConn_;
 }
+#endif // _QEDO_NO_DB
 
 ::Components::ConfigValues*
 ComponentServerImpl::configuration()

@@ -26,6 +26,7 @@
 #include <CORBA.h>
 #include "CORBADepends.h"
 #include "Key.h"
+#include "config.h"
 
 
 namespace Qedo {
@@ -60,6 +61,7 @@ CONTAINERDLL_API bool compare_object_ids (const PortableServer::ObjectId&, const
  */
 CONTAINERDLL_API char* ObjectId_to_string (const PortableServer::ObjectId&);
 
+#ifndef _QEDO_NO_DB
 CONTAINERDLL_API std::string convertPidToString( const CosPersistentState::Pid& rPid );
 CONTAINERDLL_API std::string convertPidToString( const CosPersistentState::Pid* rPid );
 
@@ -68,10 +70,10 @@ CONTAINERDLL_API std::string convertSpidToString( const CosPersistentState::Shor
 
 CONTAINERDLL_API void convertStringToPid( const char* szPid, CosPersistentState::Pid& rPid );
 CONTAINERDLL_API void convertStringToSpid( const char* szSpid, CosPersistentState::ShortPid& rSpid );
-		
+
 CONTAINERDLL_API bool comparePid(const CosPersistentState::Pid& rSrc, const CosPersistentState::Pid& rDest);
 CONTAINERDLL_API bool compareShortPid(const CosPersistentState::ShortPid& rSrc, const CosPersistentState::ShortPid& rDest);
-
+#endif
 CONTAINERDLL_API std::string convertBool2String(bool bc);
 CONTAINERDLL_API std::string convert2Lowercase(std::string strIn);
 

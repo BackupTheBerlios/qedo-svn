@@ -20,10 +20,14 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#ifndef _QEDO_NO_DB
 #include "EntityHomeServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: EntityHomeServant.cpp,v 1.6 2004/05/13 13:01:57 hao Exp $";
+static char rcsid[] UNUSED = "$Id: EntityHomeServant.cpp,v 1.7 2004/06/24 10:27:38 tom Exp $";
 
 
 namespace Qedo {
@@ -81,3 +85,5 @@ EntityHomeServant::do_finalize_component_incarnation (Components::ExecutorLocato
 }
 
 } // namespace Qedo
+
+#endif // _QEDO_NO_DB

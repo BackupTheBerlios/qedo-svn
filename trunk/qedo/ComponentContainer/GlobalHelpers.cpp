@@ -27,7 +27,7 @@
 #include <unistd.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: GlobalHelpers.cpp,v 1.8 2004/05/13 13:01:57 hao Exp $";
+static char rcsid[] UNUSED = "$Id: GlobalHelpers.cpp,v 1.9 2004/06/24 10:27:38 tom Exp $";
 
 
 namespace Qedo {
@@ -71,7 +71,7 @@ create_object_id (const CORBA::OctetSeq* octet_key, const char* variable_info)
 }
 
 
-bool 
+bool
 compare_OctetSeqs (const CORBA::OctetSeq& seq1, const CORBA::OctetSeq& seq2)
 {
 	if (seq1.length() != seq2.length())
@@ -91,7 +91,7 @@ compare_OctetSeqs (const CORBA::OctetSeq& seq1, const CORBA::OctetSeq& seq2)
 }
 
 
-bool 
+bool
 compare_object_ids (const PortableServer::ObjectId& id1, const PortableServer::ObjectId& id2)
 {
 	if (id1.length() != id2.length())
@@ -111,7 +111,7 @@ compare_object_ids (const PortableServer::ObjectId& id1, const PortableServer::O
 }
 
 
-char* 
+char*
 ObjectId_to_string (const PortableServer::ObjectId& object_id)
 {
 	CORBA::ULong object_id_len = object_id.length();
@@ -140,6 +140,7 @@ ObjectId_to_string (const PortableServer::ObjectId& object_id)
 	return string_buffer._retn();
 }
 
+#ifndef _QEDO_NO_DB
 std::string
 convertPidToString( const CosPersistentState::Pid& rPid )
 {
@@ -193,7 +194,7 @@ convertStringToPid( const char* szPid, CosPersistentState::Pid& rPid )
 {
 	int iLength = strlen(szPid);
 	rPid.length(iLength);
-	
+
 	for(int i=0; i<iLength; i++)
 		rPid[i] = szPid[i];
 }
@@ -203,23 +204,24 @@ convertStringToSpid( const char* szSpid, CosPersistentState::ShortPid& rSpid )
 {
 	int iLength = strlen(szSpid);
 	rSpid.length(iLength);
-	
+
 	for(int i=0; i<iLength; i++)
 		rSpid[i] = szSpid[i];
 }
 
-bool 
+bool
 comparePid(const CosPersistentState::Pid& rSrc, const CosPersistentState::Pid& rDest)
 {
 	return Qedo::compare_OctetSeqs(rSrc, rDest);
 }
 
-bool 
+bool
 compareShortPid(const CosPersistentState::ShortPid& rSrc, const CosPersistentState::ShortPid& rDest)
 {
 	return Qedo::compare_OctetSeqs(rSrc, rDest);
 }
 
+#endif // _QEDO_NO_DB
 std::string
 convertBool2String(bool bc)
 {

@@ -19,6 +19,12 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#ifndef _QEDO_NO_DB
+
 #include "StorageHomeBase.h"
 #include "Catalog.h"
 
@@ -405,3 +411,4 @@ StorageHomeBaseImpl::FreeAllStorageObjects()
 }
 
 } // namespace Qedo
+#endif //_QEDO_NO_DB

@@ -19,6 +19,12 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#ifndef _QEDO_NO_DB
+
 #include "StorageObject.h"
 
 
@@ -141,7 +147,7 @@ StorageObjectImpl::destroy_object()
 //When called on an incarnation, the object_exist operation returns TRUE if the 
 //target incarnation represents an actual storage object, FALSE if it does not
 ////////////////////////////////////////////////////////////////////////////////
-CORBA::Boolean 
+CORBA::Boolean
 StorageObjectImpl::object_exists() 
 	throw (CORBA::SystemException)
 {
@@ -414,3 +420,5 @@ StorageObjectRef::_downcast( const StorageObjectRef ref )
 }
 
 }
+
+#endif //_QEDO_NO_DB

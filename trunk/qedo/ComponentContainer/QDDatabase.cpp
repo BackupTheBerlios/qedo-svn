@@ -19,8 +19,13 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-#include "QDDatabase.h"
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#ifndef _QEDO_NO_DB
+
+#include "QDDatabase.h"
 
 namespace Qedo
 {
@@ -114,7 +119,7 @@ QDDatabase::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND hWnd, 
 	SQLSetConnectAttr(hDbc_, SQL_ATTR_CONNECTION_TIMEOUT, (SQLPOINTER)lQueryTimeout_, 0);
 	
 	ret = SQLDriverConnect(hDbc_, 
-							hWnd, 
+							hWnd,
 							(SQLCHAR*)szConnStr, 
 							SQL_NTS, 
 							(SQLCHAR*)szConnStrOut,
@@ -277,3 +282,5 @@ QDDatabase::getHDBC()
 }
 
 } // namespace Qedo
+
+#endif // _QEDO_NO_DB

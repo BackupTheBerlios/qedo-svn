@@ -23,8 +23,12 @@
 #include "ContainerInterfaceImpl.h"
 #include "ComponentServerImpl.h"
 #include "ConfigurationReader.h"
+
+#ifndef _QEDO_NO_DB
 #include "DTMReader.h"
 #include "EntityHomeServant.h"
+#endif
+
 #include "SessionHomeServant.h"
 #ifndef _QEDO_NO_QOS
 #include "ExtensionHomeServant.h"
@@ -37,7 +41,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.58 2004/06/11 12:57:24 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.59 2004/06/24 10:27:38 tom Exp $";
 
 
 namespace Qedo {
@@ -648,6 +652,7 @@ throw (Components::Deployment::UnknownImplId,
 	case CT_PROCESS:
 	case CT_ENTITY:
 	{
+#ifndef _QEDO_NO_DB
 		Qedo::EntityHomeServant* entity_home;
 
 		entity_home = dynamic_cast <Qedo::EntityHomeServant*> (qedo_home_servant);
@@ -742,6 +747,7 @@ throw (Components::Deployment::UnknownImplId,
 		//register storage object/home factory
 		entity_home->init_datastore( pConn.in(), pSession.in() );
 		break;
+#endif // _QEDO_NO_DB
 	}
 	case CT_EXTENSION:
 #ifndef _QEDO_NO_QOS

@@ -19,6 +19,12 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+#ifndef _QEDO_NO_DB
+
 #include "Catalog.h"
 
 
@@ -247,7 +253,7 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 //write to disk any cached modifications of storage object incarnations managed 
 //by this catalog.
 ////////////////////////////////////////////////////////////////////////////////
-void 
+void
 CatalogBaseImpl::flush()
 {
 	DEBUG_OUT("CatalogBaseImpl::flush() is called");
@@ -302,7 +308,7 @@ CatalogBaseImpl::refresh()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//The operation free_all instructs the catalog implementation to set the 
+//The operation free_all instructs the catalog implementation to set the
 //reference count of all its PSDL storage object instances to 0
 ////////////////////////////////////////////////////////////////////////////////
 void 
@@ -357,7 +363,7 @@ SessionPoolImpl::SessionPoolImpl() :
 
 SessionPoolImpl::SessionPoolImpl(AccessMode eAM, 
 								 TransactionPolicy tx_policy, 
-								 const char* szConnString, 
+								 const char* szConnString,
 								 Connector_ptr connector) :
 	CatalogBaseImpl(eAM, szConnString, connector),
 	tx_policy_(tx_policy)
@@ -500,3 +506,5 @@ SessionPoolImpl::transaction_policy()
 }
 
 } // namespace Qedo
+
+#endif // _QEDO_NO_DB
