@@ -187,10 +187,10 @@ throw(CORBA::SystemException)
     unsigned int i;
 
 	// Check: Derived storage types may not directly support an interface
-	if ( base_storagetype_impl_ && seq.length() > 0 )
-	{
-		throw CORBA::BAD_PARAM();
-	}
+	//if ( base_storagetype_impl_ && seq.length() > 0 )
+	//{
+	//	throw CORBA::BAD_PARAM();
+	//}
 
 	// Check for name clash for each supported interface
 	for ( i = 0; i < seq.length(); i++ )
@@ -275,20 +275,12 @@ throw(CORBA::SystemException)
 	CORBA::ULong i = 0;
 	if(style==CORBA__::dk_Create)
 	{
-		//**********************************************************
-		//we don't create relational table for concrete storagetype,
-		//so we don't need state members in concrete storagetype as
-		//parameters in concrete storagehome's _create() operator.
-		//**********************************************************
-
 		//collect state members for storagehome's _create operation
 		//++ begin with the base type of the storage type
-		/*
 		IR__::StorageTypeDef_var storagetype = base_storagetype();
 		if(!CORBA::is_nil(storagetype))
 			storagetype->get_state_members(state_members, style);
-		*/
-
+		
 		//++ proceed with the leftmost implemented abstract storage type
 		IR__::InterfaceDefSeq_var supported_seq = supported_interfaces();
 		for(i=0; i<supported_seq->length(); i++)
@@ -297,13 +289,7 @@ throw(CORBA::SystemException)
 			abs_storagetype->get_state_members(state_members, style);
 		}
 
-		//**********************************************************
-		//we don't create relational table for concrete storagetype,
-		//so we don't need state members in concrete storagetype as
-		//parameters in concrete storagehome's _create() operator.
-		//**********************************************************
 		//++ end with the state members defined in the storage type itself
-		/*
 		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
 		CORBA::ULong len = contained_seq->length();
 		CORBA::ULong ulPre = state_members.length();
@@ -313,7 +299,17 @@ throw(CORBA::SystemException)
 			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
 			state_members[i+ulPre] = (a_attribute);
 		}
-		*/
+	}
+	else if(style == CORBA__::dk_Self)
+	{
+		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
+		CORBA::ULong len = contained_seq->length();
+		state_members.length(len);
+		for(i=0; i<len; i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+			state_members[i] = a_attribute;
+		}
 	}
 	else if(style==CORBA__::dk_Variable)
 	{
@@ -340,12 +336,9 @@ throw(CORBA::SystemException)
 	{
 		//********************************************************************
 		//This default case is to collect state members for comparation with 
-		//the parameters defined in KEY or FACTORY, since concrete storagetype
-		//has no appropriate relational table now, its state members are here
-		//also unnecessary.
+		//the parameters defined in KEY or FACTORY
 		//********************************************************************
 		//collect state members for storagehome's key operation
-		/*
 		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
 		CORBA::ULong len = contained_seq->length();
 		CORBA::ULong ulPre = state_members.length();
@@ -359,7 +352,6 @@ throw(CORBA::SystemException)
 		IR__::StorageTypeDef_var storagetype = base_storagetype();
 		if(!CORBA::is_nil(storagetype))
 			storagetype->get_state_members(state_members, style);
-		*/
 	}	
 }
 

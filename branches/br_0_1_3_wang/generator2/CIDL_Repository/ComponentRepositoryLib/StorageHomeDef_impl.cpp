@@ -247,10 +247,10 @@ throw(CORBA::SystemException)
     unsigned int i;
 
 	// Check: Derived storage homes may not directly support an interface
-	if ( base_storagehome_impl_ && seq.length() > 0 )
-	{
-		throw CORBA::BAD_PARAM();
-	}
+	//if ( base_storagehome_impl_ && seq.length() > 0 )
+	//{
+	//	throw CORBA::BAD_PARAM();
+	//}
 
 	// Check for name clash for each supported interface
 	for ( i = 0; i < seq.length(); i++ )

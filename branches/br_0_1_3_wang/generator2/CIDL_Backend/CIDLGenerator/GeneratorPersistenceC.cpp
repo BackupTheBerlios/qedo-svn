@@ -344,20 +344,32 @@ GeneratorPersistenceC::doOperation(IR__::OperationDef_ptr operation)
 void
 GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::InterfaceDef_ptr inf_type, IR__::InterfaceDef_ptr inf_home )
 {
+	int iLength = 0;	
 	bool bFound = false;
 	string strTemp = "";
+	string strDummy = "";
+	stringstream strDisplay;
 	IR__::AttributeDef_var attribute = 0;
 
 	out << "\n//\n// " << operation->id() << "\n//\n";
 	IR__::IDLType_var ret_type = IR__::IDLType::_narrow(inf_type);
 
 	out << map_psdl_return_type(ret_type, false) << "\n";
-	out << m_class_name << "::" << mapName(operation) << "(";
+	strDisplay << m_class_name << "::" << mapName(operation) << "(";
+	out << strDisplay.str();
+
+	iLength = strDisplay.str().length();
+	strDummy.append(iLength, ' ');
+	
+	out << "Pid* pid,\n";
+	out << strDummy.c_str();
+	out << "ShortPid* shortPid,\n";
 
 	// parameters
 	IR__::ParDescriptionSeq_var pards = operation->params();
 	for( CORBA::ULong i=0; i<pards->length(); i++)
 	{
+		out << strDummy.c_str();
 		IR__::ParameterDescription pardescr = (*pards)[i];
 		if (pardescr.mode == IR__::PARAM_IN) {
 			out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
@@ -368,7 +380,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 		if (pardescr.mode == IR__::PARAM_INOUT) {
 			out << map_inout_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
 		};
-		if((i+1)!=pards->length()) { out << ", "; }
+		if((i+1)!=pards->length()) { out << ",\n"; }
 	};
 
 	out << ")\n";
@@ -378,7 +390,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	//++++++++++++++++++++++++++++++++++++++++
 	// INSERT sentence for FACTORY
 	//++++++++++++++++++++++++++++++++++++++++
-	IR__::AttributeDefSeq state_members = collectStateMembers(inf_type, CORBA__::dk_default);
+	IR__::AttributeDefSeq state_members = collectStateMembers(inf_type, CORBA__::dk_Create);
 	out << "char* szTemp = new char[64];\n";
 	out << "string strFactory = \"\";\n\n";
 	out << "CatalogBase_ptr pCatalogBase = get_catalog();\n";
@@ -388,7 +400,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	out << m_strName << " = \"INSERT INTO pid_content (pid, ownhome) VALUES ( \";\n";
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, false, false);
-	m_strContent = "PSSHelper::convertPidToString(m_pid)";
+	m_strContent = "PSSHelper::convertPidToString(pid)";
 	out << genSQLLine(m_strName, m_strContent, false, false, false, true);
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, true, true);
@@ -437,13 +449,13 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	out << genSQLLine(m_strName, m_strContent, false, false, true);
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, false, false);
-	m_strContent = "PSSHelper::convertPidToString(m_pid)";
+	m_strContent = "PSSHelper::convertPidToString(pid)";
 	out << genSQLLine(m_strName, m_strContent, false, false, false, true);
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, true, true);
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, false, false);
-	m_strContent = "PSSHelper::convertSpidToString(m_shortPid)";
+	m_strContent = "PSSHelper::convertSpidToString(shortPid)";
 	out << genSQLLine(m_strName, m_strContent, false, false, false, true);
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, true, true);
@@ -684,20 +696,23 @@ void
 GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceDef_ptr inf_type, IR__::InterfaceDef_ptr inf_home, bool isRef)
 {
 	IR__::IDLType_var ret_type = IR__::IDLType::_narrow(inf_type);
+	
+	if(isRef)
+		out << "/*\n";
 
 	if(!isRef)
 		out << "\n//\n// " << operation->id() << "\n//\n";
 	char* szReturnType = map_psdl_return_type(ret_type, false);
 
 	//since the definition of a abstract stoage type is not yet supported, 
-	//we have to replcace the "_ptr" with "&" for operation find_by_ref_... 
+	//we have to replcace the "*" with "Ref" for operation find_by_ref_... 
 	if(isRef)
 	{
 		char* pdest = strstr( szReturnType, "*" );
 		if( pdest != NULL )
 		{
-			memset(pdest, '\0', 4);
-			memset(pdest, '&', 1);
+			memset(pdest, '\0', 1);
+			strcat(szReturnType, "Ref");
 		}
 	}
 	
@@ -741,11 +756,12 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	//++++++++++++++++++++++++++++++++++++++++
 	// SELECT sentence for KEY
 	//++++++++++++++++++++++++++++++++++++++++
-	out << szReturnType << " tmp_ptr = 0;\n";
+	out << szReturnType << " tmp_ptr";
+	(isRef) ? out << ";\n" : out <<  "= 0;\n";
 	out << "char* szTemp = new char[64];\n";
 	out << "string strKey = \"\";\n\n";
 	m_strName = "strKey";
-	m_strContent = "SELECT pid FROM ONLY ";
+	m_strContent = "SELECT pid FROM ";
 	m_strContent += inf_home->name();
 	out << genSQLLine(m_strName, m_strContent, true, false, true);
 	m_strContent = "WHERE";
@@ -919,7 +935,8 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	out << "string strPid = \"\";\n";
 	out << "strPid.append((const char*)szPid);\n";
 	out << "StorageObjectBase sob = find_by_pid(strPid);\n";
-	out << "tmp_ptr = dynamic_cast <" << szReturnType << "> (sob);\n";
+	if(!isRef)
+		out << "tmp_ptr = dynamic_cast <" << szReturnType << "> (sob);\n";
 	out.unindent();
 	out << "}\n\n";
 	out << "return tmp_ptr;\n";
@@ -931,6 +948,9 @@ GeneratorPersistenceC::genKey(IR__::OperationDef_ptr operation, IR__::InterfaceD
 	out << "// END USER INSERT SECTION " << m_class_name;
 	isRef ? out << "::find_ref_by_" : out << "::find_by_";
 	out << mapName(operation) << "()\n}\n\n";
+	
+	if(isRef)
+		out << "*/\n";
 }
 
 void
@@ -950,9 +970,6 @@ GeneratorPersistenceC::doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_de
 	}
 	else
 	{
-		//??????????????????????????????????????????????????????????????????????
-		//still necessary if the concrete storage home has no relational table??
-		//??????????????????????????????????????????????????????????????????????
 		IR__::StorageTypeDef_var storagetype;
 		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(inf_def);
 		if(!CORBA::is_nil(storagehome))
@@ -992,14 +1009,12 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	m_class_name = string(storagetype->name());
 
 	IR__::InterfaceDefSeq_var supported_infs = storagetype->supported_interfaces();
-	if(supported_infs->length()>1)
-		throw CORBA::BAD_PARAM(); // is this exception appropriate?
-
+	/*
 	IR__::AbstractStorageTypeDef_var abs_storagetype = 
 		IR__::AbstractStorageTypeDef::_narrow((*supported_infs)[0]);
-
-	m_SthIter = m_SthMap.find(abs_storagetype->name());
-	string strAbsStoragehomeName = m_SthIter->second;
+	*/
+	m_SthIter = m_SthMap.find(storagetype->name());
+	string strStoragehomeName = m_SthIter->second;
 
 	out << "// BEGIN USER INSERT SECTION " << m_class_name;
 	isRef ? out << "Ref\n" : out << "\n";
@@ -1019,8 +1034,8 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	out << "char* szTemp = new char[64];\n\n";
 	out << "// for CatalogBase::refresh()\n";
 	m_strName = "m_strSelect";
-	m_strContent = "SELECT * FROM ONLY ";
-	m_strContent += strAbsStoragehomeName;
+	m_strContent = "SELECT * FROM ";
+	m_strContent += strStoragehomeName;
 	out << genSQLLine(m_strName, m_strContent, true, false, true);
 	m_strContent = "WHERE pid LIKE \\'";
 	out << genSQLLine(m_strName, m_strContent, false, false, false);
@@ -1042,7 +1057,7 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	out << "// for CatalogBase::flush()\n";
 	m_strName = "m_strUpdate";
 	m_strContent = "UPDATE ";
-	m_strContent += strAbsStoragehomeName;
+	m_strContent += strStoragehomeName;
 	m_strContent += " SET";
 	out << genSQLLine(m_strName, m_strContent, true, false, true);
 
@@ -1118,7 +1133,7 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 			switch(psdl_check_type(attribute->type_def()))
 			{
 			case CPPBase::_SHORT:
-				
+				out << genSQLLine(m_strName, m_strContent, false, false, false);
 				out << "memset(szTemp, \'\\0\', 64);\n";
 				out << "sprintf(szTemp, \"%hd\", m_" << mapName(attribute) << ");\n";
 				if((i+1)!=ulLen)
@@ -1228,17 +1243,14 @@ GeneratorPersistenceC::genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, 
 	if(isRef) out << "Ref";
 	out << "()\n}\n\n";
 
-	/*
+	m_isRef = isRef;
+	//genAbstractObjsForConcreteType(abs_storagetype);
 	for(CORBA::ULong i = 0; i < supported_infs->length(); i++) 
 	{
 		IR__::AbstractStorageTypeDef_var abs_storage_type_inh;
 		abs_storage_type_inh = IR__::AbstractStorageTypeDef::_narrow((*supported_infs)[i]);
 		genAbstractObjsForConcreteType(abs_storage_type_inh);
 	};
-	*/
-
-	m_isRef = isRef;
-	genAbstractObjsForConcreteType(abs_storagetype);
 	handleAttribute(storagetype);
 	handleOperation(storagetype);
 
@@ -1363,17 +1375,15 @@ void
 GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, bool isRef)
 {
 	IR__::InterfaceDefSeq_var supported_infs = storagehome->supported_interfaces();
-	if(supported_infs->length()>1)
-		throw CORBA::BAD_PARAM(); // is this exception appropriate?
-	
-	IR__::AbstractStorageHomeDef_var abs_storagehome = 
-		IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[0]);
+		
+	//IR__::AbstractStorageHomeDef_var abs_storagehome = 
+	//	IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[0]);
 
 	string strDummy = "";
 	int iLength = m_class_name.length() + 10;
 	char* szRetType = map_psdl_return_type(storagehome->managed_storagetype(), false);
 	IR__::AttributeDef_var attribute = 0;
-		
+	
 	if(isRef)
 	{
 		char* pdest = strstr( szRetType, "*" );
@@ -1434,13 +1444,13 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out << genSQLLine(m_strName, m_strContent, false, false, false, true);
 	m_strContent = "\\'";
 	out << genSQLLine(m_strName, m_strContent, false, true, true);
-	out << m_strName << " += \"\\\'" << abs_storagehome->name() << "\\\' );\";\n\n";
+	out << m_strName << " += \"\\\'" << storagehome->name() << "\\\' );\";\n\n";
 	out << "if(!pCBImpl->ExecuteSQL(" << m_strName << ".c_str()))\n";
 	out.indent();
 	out << "throw CORBA::BAD_PARAM();\n\n";
 	out.unindent();
 
-	out << m_strName << " = \"INSERT INTO " << abs_storagehome->name() << " ( pid, spid, ";
+	out << m_strName << " = \"INSERT INTO " << storagehome->name() << " ( pid, spid, ";
 	
 	for(i=0; i<ulLen; i++)
 	{
@@ -1668,21 +1678,28 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 {
 	m_class_name = string(storagehome->name());
 
+	IR__::StorageHomeDef_var base_storagehome = storagehome->base_storagehome();
 	IR__::InterfaceDefSeq_var supported_infs = storagehome->supported_interfaces();
-	if(supported_infs->length()>1)
-		throw CORBA::BAD_PARAM(); // is this exception appropriate?
-
 	IR__::StorageTypeDef_var storagetype = storagehome->managed_storagetype();
-	IR__::AbstractStorageHomeDef_var abs_storagehome = 
-		IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[0]);
-	IR__::AbstractStorageTypeDef_var abs_storagetype = 
-		abs_storagehome->managed_abstract_storagetype();
-	m_SthMap.insert( Sth_Pair(abs_storagetype->name(), abs_storagehome->name()) );
-	IR__::AttributeDefSeq state_members = collectStateMembers(abs_storagetype, CORBA__::dk_Self);
-	IR__::InterfaceDefSeq_var base_abs_storagehomes = abs_storagehome->base_abstract_storagehomes();
+	
+	CORBA::ULong ulLenSupportedInf = supported_infs->length();
+/*
+	for(CORBA::ULong i = 0; i < ulLenSupportedInf; i++)
+	{
+		IR__::AbstractStorageHomeDef_var abs_storagehome = 
+			IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
+		IR__::AbstractStorageTypeDef_var abs_storagetype = 
+			abs_storagehome->managed_abstract_storagetype();
+		m_SthMap.insert( Sth_Pair(abs_storagetype->name(), abs_storagehome->name()) );
+	}
+*/
+	m_SthMap.insert( Sth_Pair(storagetype->name(), storagehome->name()) );
+
+	IR__::AttributeDefSeq state_members = collectStateMembers(storagetype, CORBA__::dk_Self);
+	//IR__::InterfaceDefSeq_var base_abs_storagehomes = abs_storagehome->base_abstract_storagehomes();
 
 	CORBA::ULong ulLen = state_members.length();
-	CORBA::ULong ulLenBaseAbsHomes = base_abs_storagehomes->length();
+	//CORBA::ULong ulLenBaseAbsHomes = base_abs_storagehomes->length();
 	IR__::AttributeDef_var attribute = 0;
 
 	// achtung: wenn kein modul, sollte vielleicht PSS_ der prefix für alle pss sein?
@@ -1701,11 +1718,11 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	//++++++++++++++++++++++++++++++++++++++++
 	m_strName = "strCreateTable";
 	m_strContent = "CREATE TABLE ";
-	m_strContent += abs_storagehome->name();
+	m_strContent += m_class_name;
 	m_strContent += " (";
 	out << genSQLLine(m_strName, m_strContent, true, false, true);
 
-	if(ulLenBaseAbsHomes==0)
+	if(ulLenSupportedInf==0 && CORBA::is_nil(base_storagehome))
 	{
 		m_strContent = "pid  VARCHAR(254)  NOT NULL  REFERENCES PID_CONTENT";
 		out << genSQLLine(m_strName, m_strContent, false, true, true);
@@ -1713,7 +1730,7 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 		out << genSQLLine(m_strName, m_strContent, false, true, true);
 	}
 
-	for(CORBA::ULong i=0; i<ulLen; i++)
+	for( CORBA::ULong i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
@@ -1735,7 +1752,7 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 						m_strContent += mapName(vMember);
 						m_strContent += "  ";
 						m_strContent.append( map_psdl2sql_type(vMember->type_def()) );
-						bool isComma = ((j+1)!=ulLen) || (ulLenBaseAbsHomes==0);
+						bool isComma = ((j+1)!=ulLen) || (ulLenSupportedInf==0);
 						out << genSQLLine(m_strName, m_strContent, false, isComma, true);
 					}
 					break;
@@ -1747,26 +1764,34 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 			m_strContent = mapName(attribute);
 			m_strContent += "  ";
 			m_strContent.append( map_psdl2sql_type(attribute->type_def()) );
-			bool isComma = ((i+1)!=ulLen) || (ulLenBaseAbsHomes==0);
+			bool isComma = ((i+1)!=ulLen) || (ulLenSupportedInf==0);
 			out << genSQLLine(m_strName, m_strContent, false, isComma, true);	
 		}
 	}
 	
-	if(ulLenBaseAbsHomes>0)
+	if( !CORBA::is_nil(base_storagehome) || ulLenSupportedInf>0 )
 	{
 		m_strContent = ") INHERITS ( ";
-
-		for(CORBA::ULong j=0; j<ulLenBaseAbsHomes; j++)
+		if(!CORBA::is_nil(base_storagehome))
 		{
-			m_strContent.append(((*base_abs_storagehomes)[j])->name());
-			((j+1)!=ulLenBaseAbsHomes) ? m_strContent += ", " : m_strContent += " );";
+			m_strContent.append(base_storagehome->name());
+			(ulLenSupportedInf>0) ? m_strContent += ", " : m_strContent += " );";
 			out << genSQLLine(m_strName, m_strContent, false, false, false);
+			m_strContent = "";
+		}
+		
+		for(CORBA::ULong j=0; j<ulLenSupportedInf; j++)
+		{
+			m_strContent.append(((*supported_infs)[j])->name());
+			((j+1)!=ulLenSupportedInf) ? m_strContent += ", " : m_strContent += " );";
+			out << genSQLLine(m_strName, m_strContent, false, false, false);
+			m_strContent = "";
 		}
 	}
 	else
 	{
 		m_strContent = "CONSTRAINT PK_";
-		m_strContent += abs_storagehome->name();
+		m_strContent += m_class_name;
 		m_strContent += " PRIMARY KEY (pid)";
 		out << genSQLLine(m_strName, m_strContent, false, false, true);
 		m_strContent = ");";
@@ -1788,15 +1813,13 @@ GeneratorPersistenceC::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	genCreateOperation(storagehome, false);
 	genCreateOperation(storagehome, true);
 
-	/*
-	for(CORBA::ULong i = 0; i < supported_infs->length(); i++)
+	m_isRef = false;
+	for( i = 0; i < ulLenSupportedInf; i++)
 	{
 		IR__::AbstractStorageHomeDef_var abs_storagehome;
 		abs_storagehome = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
 		genAbstractObjsForConcreteHome(abs_storagehome);
 	};
-	*/
-	genAbstractObjsForConcreteHome(abs_storagehome);
 
 	m_isAbstract = false;
 	handleAttribute(storagehome);

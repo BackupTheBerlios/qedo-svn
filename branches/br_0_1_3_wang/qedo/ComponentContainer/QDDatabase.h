@@ -29,6 +29,7 @@
 #include <sys/types.h>
 #endif
 #include <sqlext.h>
+#include "Util.h"
 
 #define DEFAULT_TIMEOUT 15
 #define MAX_INFO_LEN 64
@@ -38,7 +39,7 @@
 namespace Qedo
 {
 
-class QDDatabase
+class CONTAINERDLL_API QDDatabase
 {
 	public:
 

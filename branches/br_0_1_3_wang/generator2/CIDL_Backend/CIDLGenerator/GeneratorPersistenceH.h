@@ -28,6 +28,7 @@
 #include "CPPBase.h"
 #include "Printer.h"
 #include "Debug.h"
+#include <sstream>
 #include <map>
 
 using namespace std;
@@ -65,6 +66,7 @@ private:
 	//void genAttributeWithAbsStorageTypeRef(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	void genAttributeWithOtherType(IR__::AttributeDef_ptr attribute, CORBA::TCKind att_type_kind);
 	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
+	void genFactory(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
 	void genKey(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type, bool isRef);
 	void genAbstractStorageTypeBody(IR__::AbstractStorageTypeDef_ptr abs_storagetype, bool isRef);
 	void genStorageTypeBody(IR__::StorageTypeDef_ptr storagetype, bool isRef);

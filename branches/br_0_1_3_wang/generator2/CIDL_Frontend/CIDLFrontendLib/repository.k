@@ -1054,6 +1054,8 @@ AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
       
       // check whether inheritence of abstract storagetype and abstract storagehome
       // appears in pairs
+      // 1. check whether the number of derived abstract storagetypes is equal to 
+      // the number of derived abstract storagehomes
       IR__::InterfaceDefSeq_var inh_abs_storagetypes;
       inh_abs_storagetypes = managed_abs_storagetype->base_abstract_storagetypes();
       int iLenAbsStorageTypes = inh_abs_storagetypes->length();
@@ -1064,6 +1066,8 @@ AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
         throw "Exception in creating abstract storage home!";
 	  }
       
+      // 2. check whether each derived abstract storagetype is managed by 
+      // one derived abstract storagehome
       bool isEqual = false;
       for( i=0; i<iLenAbsStorageHomes; i++ )
       {
@@ -1133,6 +1137,7 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
       // get inherited storagetype of this managed storagetype above
       IR__::StorageTypeDef_ptr base_storagetype;
       base_storagetype = managed_storagetype->base_storagetype();
+      //NOT_NIL(base_storagetype);
       
       // check whether the inherited storagetype is managed by the inherited storagehome
       if( (base_storagetype!=0) && (base_storagehome!=0) )
@@ -1165,6 +1170,8 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
       
       // check whether implementation of abstract storagetype and abstract storagehome
       // appears in pairs
+      // 1. check whether the number of derived abstract storagetypes is equal to 
+      // the number of derived abstract storagehomes
       if(iLenAbsStorageTypes != iLenAbsStorageHomes)
       {
         std::cout << "Error in creating storage home:" << std::endl;
@@ -1172,17 +1179,8 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
         throw "Exception in creating storage home!";
       }
       
-      // new constraint added: storagehome and its managed storagetype can implement only
-      // one abstract storagehome and one abstract storagetype, otherwise we do not know, in 
-      // Operator _create() of storagehome, in which abstract storagehome should one abstract
-      // storagetype be added. This constraint is not yet open.
-      if( (iLenAbsStorageTypes!=1) && (iLenAbsStorageHomes!=1) )
-      {
-        std::cout << "Error in creating storage home:" << std::endl;
-        std::cout << "Storagehome and its managed storagetype can implement only one abstract storagehome and one abstract storagetype." << std::endl;
-        throw "Exception in creating storage home!";
-      }
-      
+      // 2. check whether each derived abstract storagetype is managed by 
+      // one derived abstract storagehome
       bool isEqual = false;
       for( i=0; i<iLenAbsStorageHomes; i++ )
       {

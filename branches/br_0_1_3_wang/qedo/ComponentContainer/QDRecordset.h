@@ -31,6 +31,7 @@
 #include <sqlext.h>
 //#include <time.h>
 #include <string>
+#include "Util.h"
 
 #define MAX_COL_NAME_LEN 512
 
@@ -39,7 +40,7 @@ using namespace std;
 namespace Qedo
 {
 
-class QDRecordset
+class CONTAINERDLL_API QDRecordset
 {
 	public:
 

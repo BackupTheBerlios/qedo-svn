@@ -28,6 +28,7 @@
 #include "CPPBase.h"
 #include "Printer.h"
 #include "Debug.h"
+#include <sstream>
 #include <iostream>
 #include <map>
 
