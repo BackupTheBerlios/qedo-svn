@@ -24,8 +24,8 @@ OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
 
 all: csa
 
-csa.cpp : main.cpp
-	@LN_S@ $^ $@
+#csa.cpp : main.cpp
+#	@LN_S@ $^ $@
 
 csa: $(OBJS)
 

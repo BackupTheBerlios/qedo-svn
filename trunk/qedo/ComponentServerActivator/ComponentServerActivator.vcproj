@@ -304,7 +304,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="ServerActivatorImpl.cpp">
 			</File>
 			<File
-				RelativePath="main.cpp">
+				RelativePath="csa.cpp">
 			</File>
 		</Filter>
 		<Filter
