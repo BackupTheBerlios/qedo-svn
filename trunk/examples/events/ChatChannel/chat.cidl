@@ -3,26 +3,33 @@
 module Chat {
 
 
-composition session Writer_Compo {
-	home executor WriterHomeSessionImpl {
+composition session Writer_Compo
+{
+	home executor WriterHomeSessionImpl
+	{
 		implements ChatWriterHome;
 		manages ChatWriterSessionImpl;
 	};
 };
 
-composition session Channel_Compo {
-	home executor ChatChannelHomeSessionImpl {
+composition session Channel_Compo
+{
+	home executor ChatChannelHomeSessionImpl
+	{
 		implements ChatChannelHome;
 		manages ChatChannelSessionImpl;
 	};
 };
 
-composition session Reader_Compo {
-	home executor ChatReaderHomeSessionImpl {
+composition session Reader_Compo
+{
+	home executor ChatReaderHomeSessionImpl
+	{
 		implements ChatReaderHome;
 		manages ChatReaderSessionImpl;
 	};
 };
-	
+
 
 }; // Chat
+

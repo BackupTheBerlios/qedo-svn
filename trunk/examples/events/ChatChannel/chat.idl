@@ -58,3 +58,4 @@ module Chat {
 	home ChatReaderHome manages ChatReader {};
 	
 }; // Chat
+

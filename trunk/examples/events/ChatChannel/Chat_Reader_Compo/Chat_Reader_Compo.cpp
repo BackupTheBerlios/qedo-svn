@@ -32,10 +32,10 @@ ChatReaderSessionImpl::~ChatReaderSessionImpl()
 
 
 void
-ChatReaderSessionImpl::set_context(::Chat::CCM_ChatReader_Context_ptr context)
+ChatReaderSessionImpl::set_context(::Chat::CCM_ChatReader_ContextImpl_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::Chat::CCM_ChatReader_Context::_duplicate(context);
+    context_ = ::Chat::CCM_ChatReader_ContextImpl::_duplicate(context);
 }
 
 
@@ -136,15 +136,15 @@ Reader_Compo::set_session_context(::Components::SessionContext_ptr context)
     #ifdef TAO_ORB
     ::Chat::CCM_ChatReader_Context_ptr tmp_context;
     
-    tmp_context = dynamic_cast<::Chat::CCM_ChatReader_Context*>(context);
+    tmp_context = dynamic_cast<::Chat::CCM_ChatReader_ContextImpl*>(context);
     
     if (tmp_context)
-        context_ = ::Chat::CCM_ChatReader_Context::_duplicate(tmp_context);
+        context_ = ::Chat::CCM_ChatReader_ContextImpl::_duplicate(tmp_context);
     else
-        context_ = ::Chat::CCM_ChatReader_Context::_nil();
+        context_ = ::Chat::CCM_ChatReader_ContextImpl::_nil();
         
     #else
-    context_ = ::Chat::CCM_ChatReader_Context::_narrow(context);
+    context_ = ::Chat::CCM_ChatReader_ContextImpl::_narrow(context);
     
     #endif
     component_->set_context(context_);
@@ -198,10 +198,10 @@ ChatReaderHomeSessionImpl::~ChatReaderHomeSessionImpl()
 
 
 void
-ChatReaderHomeSessionImpl::set_context(Components::CCMContext_ptr ctx)
+ChatReaderHomeSessionImpl::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = Components::CCMContext::_duplicate(ctx);
+    context_ = Components::HomeContext::_duplicate(ctx);
 }
 
 

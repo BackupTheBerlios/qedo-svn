@@ -39,14 +39,14 @@ namespace Chat
     
     private:
     
-        ::Chat::CCM_ChatChannel_Context_var context_;
+        ::Chat::CCM_ChatChannel_ContextImpl_var context_;
         
     public:
     
         ChatChannelSessionImpl();
         virtual ~ChatChannelSessionImpl();
         
-        void set_context(::Chat::CCM_ChatChannel_Context_ptr context)
+        void set_context(::Chat::CCM_ChatChannel_ContextImpl_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
         
         void configuration_complete()
@@ -91,7 +91,7 @@ namespace Chat
     
     private:
     
-        ::Chat::CCM_ChatChannel_Context_var context_;
+        ::Chat::CCM_ChatChannel_ContextImpl_var context_;
         
         ChatChannelSessionImpl* component_;
         
@@ -164,7 +164,7 @@ namespace Chat
     
     private:
     
-        Components::CCMContext_var context_;
+        Components::HomeContext_var context_;
         
     public:
         ChatChannelHomeSessionImpl();
@@ -173,7 +173,7 @@ namespace Chat
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0
         //
-        virtual void set_context (Components::CCMContext_ptr ctx)
+        virtual void set_context (Components::HomeContext_ptr ctx)
             throw (CORBA::SystemException, Components::CCMException);
         
         //

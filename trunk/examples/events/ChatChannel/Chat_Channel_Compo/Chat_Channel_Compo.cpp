@@ -32,10 +32,10 @@ ChatChannelSessionImpl::~ChatChannelSessionImpl()
 
 
 void
-ChatChannelSessionImpl::set_context(::Chat::CCM_ChatChannel_Context_ptr context)
+ChatChannelSessionImpl::set_context(::Chat::CCM_ChatChannel_ContextImpl_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::Chat::CCM_ChatChannel_Context::_duplicate(context);
+    context_ = ::Chat::CCM_ChatChannel_ContextImpl::_duplicate(context);
 }
 
 
@@ -138,15 +138,15 @@ Channel_Compo::set_session_context(::Components::SessionContext_ptr context)
     #ifdef TAO_ORB
     ::Chat::CCM_ChatChannel_Context_ptr tmp_context;
     
-    tmp_context = dynamic_cast<::Chat::CCM_ChatChannel_Context*>(context);
+    tmp_context = dynamic_cast<::Chat::CCM_ChatChannel_ContextImpl*>(context);
     
     if (tmp_context)
-        context_ = ::Chat::CCM_ChatChannel_Context::_duplicate(tmp_context);
+        context_ = ::Chat::CCM_ChatChannel_ContextImpl::_duplicate(tmp_context);
     else
-        context_ = ::Chat::CCM_ChatChannel_Context::_nil();
+        context_ = ::Chat::CCM_ChatChannel_ContextImpl::_nil();
         
     #else
-    context_ = ::Chat::CCM_ChatChannel_Context::_narrow(context);
+    context_ = ::Chat::CCM_ChatChannel_ContextImpl::_narrow(context);
     
     #endif
     component_->set_context(context_);
@@ -200,10 +200,10 @@ ChatChannelHomeSessionImpl::~ChatChannelHomeSessionImpl()
 
 
 void
-ChatChannelHomeSessionImpl::set_context(Components::CCMContext_ptr ctx)
+ChatChannelHomeSessionImpl::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = Components::CCMContext::_duplicate(ctx);
+    context_ = Components::HomeContext::_duplicate(ctx);
 }
 
 
