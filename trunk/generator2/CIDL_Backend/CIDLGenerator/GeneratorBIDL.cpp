@@ -132,6 +132,9 @@ GeneratorBIDL::generate(std::string target, std::string fileprefix)
 }
 	
 
+//
+// composition
+//
 void
 GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 {
@@ -208,11 +211,10 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 			if(facet_types.find(facet_type) == facet_types.end())
 			{
 				facet_types[facet_type] = true;
-				if(!facet_types.empty())
-				{
+				if(!facet_types.empty()) {
 					out << ", ";
 				}
-				out << map_absolute_name(provides_seq[i]->interface_type());
+				out << mapLocalName(provides_seq[i]->interface_type());
 			}
 		}
 	}
