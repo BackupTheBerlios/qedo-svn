@@ -60,5 +60,13 @@
              <PARAM NAME="Name" VALUE="Contact">
              <PARAM NAME="Local" VALUE="contact.htm">
          </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="IOR of NameService entries">
+             <PARAM NAME="Local" VALUE="nsbrowser.htm">
+         </OBJECT>
+    <LI> <OBJECT TYPE="text/sitemap">
+             <PARAM NAME="Name" VALUE="delete NameService entry">
+             <PARAM NAME="Local" VALUE="nsbrowser.htm">
+         </OBJECT>
 </UL>
 </BODY></HTML>

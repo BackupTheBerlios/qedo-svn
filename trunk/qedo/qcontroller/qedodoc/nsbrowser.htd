@@ -1,4 +1,12 @@
 <H2>Name Service Browser</H2>
 <IMG SRC="images/nsbrowser_01.gif" BORDER="0">
 <p></p>
-The NSBrowser (short for Name Service Browser) is a small tool to observe the Name Service. The browser connects to the Name Service which is started in the <I><B><A HREF="launcher.htm">Launcher</A> </B>panel.</I> The NSBrowser is updated by the <I>Refresh</I>-Button right beside. 
+The NSBrowser (short for Name Service Browser) is a small tool to observe the Name Service. The NSBrowser includes a delete operation and a function to get the IOR (interoperable object reference) of an entry. At first time the browser connects to the NameSerivce which is started by parameter of the qedo.conf file. These parameters are shown below the <I>Refresh</I> button.
+<H3>Browse another NameService</H3>
+If you want to browse another NameSerive change the parameter <I>hostname</I> and <I>port</I>. After that press the <I>Refresh</I> button.
+<H3>Delete an entry of the NameService</H3>
+If you want to delete an entry of the NameSerivce a menu will be shown by clicking right mouse button on this entry. In this menu select <I>delete</I> and the entry will be deleted. 
+<H3>Get the IOR of a NameService entry</H3>
+The interoperable object reference of an entry will be shown by using the right mouse button. After the click the user will be seen a menu. Select <I>Show IOR</I> to get the IOR of the choosen entry. The IOR will be displayed in the message box, which is aligned below the NameService tree control.
+
+ 

@@ -46,8 +46,8 @@
 BEGIN_EVENT_TABLE(NSBrowserTreeCtrl, wxTreeCtrl)
     EVT_BUTTON(NSD_TREE_REFRESH, NSBrowserTreeCtrl::OnNSDRefresh)
 	EVT_RIGHT_DOWN(NSBrowserTreeCtrl::OnItem)
-	EVT_MENU(0,NSBrowserTreeCtrl::onior)
-	EVT_MENU(2,NSBrowserTreeCtrl::ondelete)
+	EVT_MENU(ID_MENU_IOR,NSBrowserTreeCtrl::onior)
+	EVT_MENU(ID_MENU_DELETE,NSBrowserTreeCtrl::ondelete)
 
 END_EVENT_TABLE()
 
@@ -284,20 +284,18 @@ void NSBrowserTreeCtrl::OnItem(wxMouseEvent& event)
 {
 	if (!(this->GetItemText(this->GetSelection()).empty())) 
 	{
-	wxMenu *test = new wxMenu("",0);
-	test->Append(0,"Show IOR","shows the IOR in the message box",TRUE);
-	test->Append(1,"Show repoid","shows the Repository ID in the message box",TRUE);
-	test->Enable(1,FALSE);
-	test->AppendSeparator();
-	wxString mes="delete ";
-	mes.Append(this->GetItemText(this->GetSelection()));
+		if (this->GetSelection()!=this->GetRootItem())
+		{
+			wxMenu *test = new wxMenu("",0);
+			test->Append(ID_MENU_IOR,"Show IOR","shows the IOR in the message box",TRUE);
+			test->AppendSeparator();
+			wxString mes="delete ";
+			mes.Append(this->GetItemText(this->GetSelection()));
 
-	test->Append(2,mes.c_str(),"delete this entry",TRUE);
+			test->Append(ID_MENU_DELETE,mes.c_str(),"delete this entry",TRUE);
 	
-	
-	
-	//this->message_nsbrowser->SetValue(t);
-	this->PopupMenu(test,event.GetPosition());
+			this->PopupMenu(test,event.GetPosition());
+		}
 	}
 
 }
