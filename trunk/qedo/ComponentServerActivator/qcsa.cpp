@@ -55,7 +55,7 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.25 2004/01/20 12:56:23 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.26 2004/01/21 14:50:34 neubauer Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -71,6 +71,7 @@ void
 printUsage()
 {
 	std::cerr << "usage : qcsa [options]" << std::endl;
+	std::cerr << "        --help : print this" << std::endl;
 	std::cerr << "        --debug : debug mode" << std::endl;
 	std::cerr << "        --verbose : verbose mode" << std::endl;
 	std::cerr << "        --enable-qos : enable qos" << std::endl;
@@ -341,12 +342,6 @@ main (int argc, char** argv)
 	//
 	// process arguments
 	//
-	if(argc < 2)
-	{
-		printUsage();
-		exit ( 1 );
-	}
-
 	bool debug_mode = false;
 	bool verbose_mode = false;
 	bool qos_enabled = false;
@@ -374,6 +369,11 @@ main (int argc, char** argv)
 		if (! strcmp(argv[i], "--no-registration"))
 		{
 			g_registration = false;
+		}
+		if (! strcmp(argv[i], "--help"))
+		{
+			printUsage();
+			exit ( 1 );
 		}
 	}
 

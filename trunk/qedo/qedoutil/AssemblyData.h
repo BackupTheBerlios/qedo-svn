@@ -79,6 +79,8 @@ struct ComponentInstanceData
  */
 struct HomeInstanceData
 {
+	/** cardinality */
+	unsigned int								cardinality;
 	/** name */
 	std::string									usage_name;
 	/** id */

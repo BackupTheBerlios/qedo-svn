@@ -859,6 +859,16 @@ throw(CADReadException)
 	std::string element_name;
 	HomeInstanceData data;
 	data.id = Qedo::transcode(element->getAttribute(X("id")));
+	std::string cardinality = Qedo::transcode(element->getAttribute(X("cardinality")));
+	if( !cardinality.empty() )
+	{
+		data.cardinality = atoi( cardinality.c_str() );
+	}
+	else
+	{
+		data.cardinality = 1;
+	}
+
 	DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{

@@ -460,8 +460,21 @@ throw(Components::CreateFailure)
 			process_iter != (*host_iter).processes.end();
 			process_iter++)
 		{
-			component_server = createComponentServer((*host_iter).host);
-			(*process_iter).server = Components::Deployment::ComponentServer::_duplicate(component_server);
+			//
+			// componentserver is needed if at least one home has to be instantiated
+			//
+			(*process_iter).server = Components::Deployment::ComponentServer::_nil();
+			for(iter = (*process_iter).homes.begin(); 
+				iter != (*process_iter).homes.end(); 
+				iter++)
+			{
+				if( (*iter).cardinality > 0 )
+				{
+					component_server = createComponentServer((*host_iter).host);
+					(*process_iter).server = Components::Deployment::ComponentServer::_duplicate(component_server);
+					break;
+				}
+			}
 
 			//
 			// for each homeplacement
@@ -470,20 +483,23 @@ throw(Components::CreateFailure)
 				iter != (*process_iter).homes.end(); 
 				iter++)
 			{
-				//
-				// get config values (e.g. container kind)
-				//
-				Components::ConfigValues_var config = new Components::ConfigValues();
-				config->length(1);
-				CORBA::Any any;
-				any <<= ((*iter).component.kind.c_str());
-				config.inout()[0] = new ConfigValue_impl("CONTAINER_TYPE", any);
+				if( (*iter).cardinality > 0 )
+				{
+					//
+					// get config values (e.g. container kind)
+					//
+					Components::ConfigValues_var config = new Components::ConfigValues();
+					config->length(1);
+					CORBA::Any any;
+					any <<= ((*iter).component.kind.c_str());
+					config.inout()[0] = new ConfigValue_impl("CONTAINER_TYPE", any);
 
-				container = createContainer( component_server, config );
-				(*iter).container = Components::Deployment::Container::_duplicate(container);
+					container = createContainer( component_server, config );
+					(*iter).container = Components::Deployment::Container::_duplicate(container);
 
-				home = instantiateHome( container, (*iter) );
-				instantiateComponents( home, (*iter) );
+					home = instantiateHome( container, (*iter) );
+					instantiateComponents( home, (*iter) );
+				}
 			}
 		}
 	}
@@ -1122,39 +1138,72 @@ throw( Components::RemoveFailure )
 			process_iter != (*host_iter).processes.end();
 			process_iter++)
 		{
+			//
 			// for each homeplacement
+			//
 			for(home_iter = (*process_iter).homes.begin();
 				home_iter != (*process_iter).homes.end();
 				home_iter++)
 			{
-				// remove home
-				try
+				if( (*home_iter).cardinality > 0 )
 				{
-					DEBUG_OUT2( "..... remove home ", (*home_iter).id );
-					(*home_iter).container->remove_home(getHomeInstance((*home_iter).id));
-				}
-				catch (Components::RemoveFailure)
-				{
-					NORMAL_ERR2( "AssemblyImpl: remove home failure for ", (*home_iter).id );
-				}
-				catch (CORBA::Exception& e)
-				{
-					NORMAL_ERR2( "AssemblyImpl: EXCEPTION during removal of home ", (*home_iter).id );
+					//
+					// remove home
+					//
+					try
+					{
+						DEBUG_OUT2( "..... remove home ", (*home_iter).id );
+						(*home_iter).container->remove_home(getHomeInstance((*home_iter).id));
+					}
+					catch (Components::RemoveFailure)
+					{
+						NORMAL_ERR2( "AssemblyImpl: remove home failure for ", (*home_iter).id );
+					}
+					catch (CORBA::Exception& e)
+					{
+						NORMAL_ERR2( "AssemblyImpl: EXCEPTION during removal of home ", (*home_iter).id );
 #ifdef MICO_ORB
-					e._print (std::cerr);
-					std::cerr << std::endl;
+						e._print (std::cerr);
+						std::cerr << std::endl;
 #endif
-				}
+					}
 
-				// remove container
+					//
+					// remove container
+					//
+					try
+					{
+						DEBUG_OUT( "..... remove container" );
+						(*home_iter).container->remove();
+					}
+					catch (Components::RemoveFailure)
+					{
+						NORMAL_ERR( "AssemblyImpl: remove container failure" );
+					}
+					catch (CORBA::Exception& e)
+					{
+						NORMAL_ERR( "AssemblyImpl: EXCEPTION during removal of container" );
+#ifdef MICO_ORB
+						e._print (std::cerr);
+						std::cerr << std::endl;
+#endif
+					}
+				}
+			}
+
+			if( !CORBA::is_nil( (*process_iter).server ) )
+			{
+				//
+				// remove component server
+				//
 				try
 				{
-					DEBUG_OUT( "..... remove container" );
-					(*home_iter).container->remove();
+					DEBUG_OUT( "..... remove component server" );
+					(*process_iter).server->remove();
 				}
 				catch (Components::RemoveFailure)
 				{
-					NORMAL_ERR( "AssemblyImpl: remove container failure" );
+					NORMAL_ERR( "AssemblyImpl: remove component server failure");
 				}
 				catch (CORBA::Exception& e)
 				{
@@ -1164,25 +1213,6 @@ throw( Components::RemoveFailure )
 					std::cerr << std::endl;
 #endif
 				}
-			}
-
-			// remove component server
-			try
-			{
-				DEBUG_OUT( "..... remove component server" );
-				(*process_iter).server->remove();
-			}
-			catch (Components::RemoveFailure)
-			{
-				NORMAL_ERR( "AssemblyImpl: remove component server failure");
-			}
-			catch (CORBA::Exception& e)
-			{
-				NORMAL_ERR( "AssemblyImpl: EXCEPTION during removal of container" );
-#ifdef MICO_ORB
-				e._print (std::cerr);
-				std::cerr << std::endl;
-#endif
 			}
 		}
 	}
