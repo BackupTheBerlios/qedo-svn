@@ -29,7 +29,11 @@ AC_SUBST(HAVE_MICO_CONFIG)
 
 # Checks for libraries.
 
-AC_CHECK_LIB([uuid], [uuid_generate])
+AC_CHECK_LIB([uuiid], [uuid_generate],,[uuid=no])
+
+if test X"$uuid" == Xno; then
+  AC_MSG_ERROR([cannot find library uuid])
+fi
 
 if test X"$HAVE_MKDIR_PROG" != Xyes; then
   AC_MSG_ERROR([cannot find mkdir program])
