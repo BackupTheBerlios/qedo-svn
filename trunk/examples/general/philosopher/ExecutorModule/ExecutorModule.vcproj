@@ -34,7 +34,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib"
-				OutputFile="../../../../Runtime/philosopherE.dll"
+				OutputFile="$(OutDir)\philosopherE.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)\ComponentIDL\Debug;$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -45,7 +45,11 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="wzzip.exe philosopher.zip $(TargetPath) ..\idl\philosophers.idl philosopher.csd ..\idl\dinner_PhilosopherImpl.ccd
+wzzip.exe cutlery.zip $(TargetPath) ..\idl\philosophers.idl cutlery.csd ..\idl\dinner_CutleryImpl.ccd
+wzzip.exe observer.zip $(TargetPath) ..\idl\philosophers.idl observer.csd ..\idl\dinner_ObserverImpl.ccd
+copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -146,6 +150,28 @@
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+		<Filter
+			Name="xml"
+			Filter="">
+			<File
+				RelativePath="cutlery.csd">
+			</File>
+			<File
+				RelativePath="..\IDL\dinner_CutleryImpl.ccd">
+			</File>
+			<File
+				RelativePath="..\IDL\dinner_ObserverImpl.ccd">
+			</File>
+			<File
+				RelativePath="..\IDL\dinner_PhilosopherImpl.ccd">
+			</File>
+			<File
+				RelativePath="observer.csd">
+			</File>
+			<File
+				RelativePath="philosopher.csd">
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
