@@ -83,6 +83,9 @@
 Revision history:
 
 $Log: Uri.h,v $
+Revision 1.7  2003/11/18 18:15:51  boehme
+more memory fixes
+
 Revision 1.6  2003/11/18 11:48:54  boehme
 memory leak fixes for qassf
 
@@ -128,7 +131,6 @@ Initial revision.
 
 #include <string>    // for template instantiation
 #include <cassert>
-
 
 
 
@@ -304,8 +306,6 @@ private:
     class Rep {
 
     public:
-		 int nr;
-		 static int cnt;
         Rep( const char * aText, bool aAdoptBuffer );
 
         // "operators"
@@ -332,16 +332,6 @@ private:
         char * mQuery;  unsigned mQueryLen;
         char * mFrag;   unsigned mFragLen;
         SchemeT mSchemeT;
-
-        // helper functions
-        static unsigned strLen( const char * const aString ) ;
-        static void strCopy( char * const aDst, const char * const aSrc, const unsigned aNumChars ) ;
-        static void strCopy( char * const aDst, const char * const aSrc ) ;
-        static char * strDup( const char * const aSrc ) ;
-
-        // if different, returns index of first diff, -1 else
-        static int strCmp( const char * aFirst, const char * aSecond, const unsigned aNumChars ) ;
-        static int strCmp( const char * aFirst, const char * aSecond ) ;
 
         static bool isOneOf( const char aChar, const char* const aCharSet ) ;
 

@@ -79,6 +79,9 @@
 Revision history:
 
 $Log: Uri.cpp,v $
+Revision 1.2  2003/11/18 18:15:51  boehme
+more memory fixes
+
 Revision 1.1  2003/11/18 11:48:54  boehme
 memory leak fixes for qassf
 
@@ -256,6 +259,7 @@ void URI::operator=( const std::string & aText ) {
 
 void URI::operator=( const URI & aOther ) {
   if ( this == &aOther) return;
+  if ( mRep == aOther.mRep ) return;
   mRep->release();
   mRep = aOther.mRep;
   mRep->acquire();
@@ -626,7 +630,7 @@ URI::Rep * URI::Rep::makeRelative( const Rep * bRep ) const
 
 	// create new Rep with big enough mText
 	unsigned thisSize = strlen( thisPos ) + 1;
-	char * newText = new char[ numBaseSlashes * 3 + thisSize ];
+	char * newText = (char*) std::malloc(numBaseSlashes * 3 + thisSize);
 
 	Rep * const rRep = new Rep( newText, true );
 
@@ -726,7 +730,7 @@ URI::Rep * URI::Rep::makeAbsolute( const Rep * bRep ) const
 	int      newQFOffset = baseSize - ( firstThisPos - mText );
 
 	// create new Rep with big enough mText
-	char * const rText = new char[ baseSize + thisSize + 1 ];
+	char * const rText = (char*) std::malloc(baseSize + thisSize + 1) ;
 	Rep * const rRep = new Rep( rText, true );
 
 	// concatenate base and this into a new buffer;
@@ -766,5 +770,5 @@ bool URI::Rep::isOneOf( const char aChar, const char* const aCharSet )
 
 URI::Rep::~Rep()
 {
-	delete [] mText;
+	std::free(mText);
 };
