@@ -180,6 +180,39 @@ GeneratorServantH::doUses(IR__::UsesDef_ptr uses)
 	}
 }
 
+void 
+GeneratorServantH::doSink(IR__::SinkDef_ptr sink)
+{
+	out << "\n//\n// " << sink->id() << "\n//\n";
+	std::string stream_type_name = mapFullName(sink->stream_type());
+	std::string stream_interface_name;
+	if (stream_type_name == "::QedoStream::h323_stream") {
+		stream_interface_name = "Components::QedoStreams::H323Streamconnection"; 
+	} else {
+		stream_interface_name = "error";
+	};
+	out << stream_interface_name << "_ptr get_connection_" << sink->name() << "()\n";
+	out << "	throw (CORBA::SystemException);\n";
+
+	// disconnect_...
+	out << stream_interface_name << "_ptr disconnect_" << sink->name() << "()\n";
+	out << "	throw (Components::NoConnection, CORBA::SystemException);\n";
+
+	// connect_...
+	out << "void connect_" << sink->name() << "(";
+	out << stream_interface_name << "_ptr conxn)\n";
+	out << "	throw (Components::AlreadyConnected, Components::InvalidConnection, CORBA::SystemException);\n";
+};
+
+void 
+GeneratorServantH::doSource(IR__::SourceDef_ptr uses)
+{
+};
+
+void 
+GeneratorServantH::doSiSo(IR__::SiSoDef_ptr uses)
+{
+};
 
 void 
 GeneratorServantH::doEmits(IR__::EmitsDef_ptr emits)
@@ -439,6 +472,9 @@ GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component)
 		out << "virtual void push_event (Components::EventBase* ev) throw (CORBA::SystemException);\n";
 		handleConsumes(component);
 	}
+	handleSink(component);
+	handleSource(component);
+	handleSiSo(component);
 }
 
 

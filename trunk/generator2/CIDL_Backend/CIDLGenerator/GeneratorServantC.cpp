@@ -528,6 +528,63 @@ GeneratorServantC::doUses(IR__::UsesDef_ptr uses)
 	}
 }
 
+void 
+GeneratorServantC::doSink(IR__::SinkDef_ptr sink)
+{
+	out << "\n//\n// " << sink->id() << "\n//\n";
+	std::string stream_type_name = mapFullName(sink->stream_type());
+	std::string stream_interface_name;
+	if (stream_type_name == "::QedoStream::h323_stream") {
+		stream_interface_name = "Components::QedoStreams::H323Streamconnection"; 
+	} else {
+		stream_interface_name = "error";
+	};
+	// get_connection_...
+	out << stream_interface_name << "_ptr\n";
+	out << class_name_ << "::get_connection_" << sink->name() << "()\n";
+	out << "throw (CORBA::SystemException)\n{\n";
+	out.indent();
+	out << "Components::ConnectedDescriptions* connections = ccm_object_executor_->get_connections(\"";
+	out << sink->name() << "\");\n\n";
+	out << stream_interface_name << "_var use = ";
+	out << stream_interface_name << "::_narrow ((*connections)[0]->objref());\n\n";
+	out << "return " << stream_interface_name << "::_duplicate(use);\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// disconnect_...
+	out << stream_interface_name << "_ptr\n";
+	out << class_name_ << "::disconnect_" << sink->name() << "()\n";
+	out << "throw(Components::NoConnection, CORBA::SystemException)\n{\n";
+	out.indent();
+	out << stream_interface_name << "_var use = get_connection_" << sink->name() << "();\n\n";
+	out << "ccm_object_executor_->disconnect(\"" << sink->name() << "\", (Components::Cookie*)0);\n\n";
+	out << "return use._retn();\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// connect_...
+	out << "void\n";
+	out << class_name_ << "::connect_" << sink->name() << "(";
+	out << stream_interface_name << "_ptr conxn)\n";
+	out << "throw (Components::AlreadyConnected, Components::InvalidConnection, CORBA::SystemException)\n{\n";
+	out.indent();
+	out << "ccm_object_executor_->connect(\"" << sink->name() << "\", conxn);\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+};
+
+void 
+GeneratorServantC::doSource(IR__::SourceDef_ptr source)
+{
+
+}
+
+void 
+GeneratorServantC::doSiSo(IR__::SiSoDef_ptr siso)
+{
+}
 
 void 
 GeneratorServantC::doEmits(IR__::EmitsDef_ptr emits)
@@ -899,6 +956,9 @@ GeneratorServantC::genComponentServant(IR__::ComponentDef_ptr component)
 
 		handleConsumes(component);
 	}
+	handleSink(component);
+	handleSource(component);
+	handleSiSo(component);
 }
 
 

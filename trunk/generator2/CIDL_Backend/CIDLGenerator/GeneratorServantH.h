@@ -31,6 +31,9 @@ class GeneratorServantH : public CPPBase
 	void doComponent(IR__::ComponentDef_ptr component);
 	void doProvides(IR__::ProvidesDef_ptr provides);
 	void doUses(IR__::UsesDef_ptr uses);
+	void doSink(IR__::SinkDef_ptr sink);
+	void doSource(IR__::SourceDef_ptr source);
+	void doSiSo(IR__::SiSoDef_ptr siso);
 	void doEmits(IR__::EmitsDef_ptr emits);
 	void doPublishes(IR__::PublishesDef_ptr publishes);
 	void doConsumes(IR__::ConsumesDef_ptr consumes);

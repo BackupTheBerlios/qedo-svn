@@ -477,7 +477,7 @@ GeneratorEIDL::doValueMember(IR__::ValueMemberDef_ptr member)
 {
 	if(member->access() == CORBA__::PRIVATE_MEMBER)
 	{
-		out << "privat ";
+		out << "private ";
 	}
 	else
 	{
@@ -717,11 +717,11 @@ GeneratorEIDL::doSink(IR__::SinkDef_ptr sink)
 	IR__::Contained::Description* c_descr = st_def->describe(); 
 	const IR__::StreamTypeDescription* st_descr;
 	(c_descr->value) >>= st_descr;
-	if (!strcmp("simple::h323_stream", map_absolute_name(st_def)))
+	if (!strcmp("QedoStream::h323_stream", map_absolute_name(st_def)))
 	{
-		out << "void " << "connect_" << sink->name() << "(in CCMStream::h323Stream str);\n";
+		out << "void " << "connect_" << sink->name() << "(in Components::QedoStreams::H323Streamconnection str);\n";
 
-		out << "CCMStream::h323Stream " << "disconnect_" << sink->name() << "();\n";
+		out << "Components::QedoStreams::H323Streamconnection " << "disconnect_" << sink->name() << "();\n";
 
 	}
 	if (!strcmp("Components::CCMStream::QoSRealStream", map_absolute_name(st_def)))
@@ -740,9 +740,9 @@ GeneratorEIDL::doSource(IR__::SourceDef_ptr source)
 	IR__::Contained::Description* c_descr = st_def->describe(); 
 	const IR__::StreamTypeDescription* st_descr;
 	(c_descr->value) >>= st_descr;
-	if (!strcmp("simple::h323_stream", map_absolute_name(st_def)))
+	if (!strcmp("QedoStream::h323_stream", map_absolute_name(st_def)))
 	{
-		out << "CCMStream::h323Stream" << " provide_" << source->name() << "();\n";
+		out << "Components::QedoStreams::H323Streamconnection" << " provide_" << source->name() << "();\n";
 	}
 	if (!strcmp("Components::CCMStream::QoSRealStream", map_absolute_name(st_def)))
 	{
