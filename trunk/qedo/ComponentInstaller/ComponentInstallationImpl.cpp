@@ -22,7 +22,7 @@
 
 #include "ComponentInstallationImpl.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.13 2003/08/01 12:25:30 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.14 2003/08/27 06:48:34 neubauer Exp $";
 
 #include <iostream>
 #include <fstream>
@@ -170,48 +170,80 @@ ComponentInstallationImpl::readInstalledComponents ()
 	//
 	// parse the descriptor file
     //
-	DOMXMLParser* parser = new DOMXMLParser();
-    if (parser->parse(strdup(inst_file_.c_str())) != 0) 
+	DOMXMLParser parser;
+    if (parser.parse(strdup(inst_file_.c_str())) != 0) 
     {
 		std::cerr << "Error during parsing " << inst_file_ << std::endl;
         return false;
     }
 
-	DOMDocument* doc = parser->getDocument();
+	DOMDocument* doc = parser.getDocument();
 	DOMElement* root = doc->getDocumentElement();
 	DOMNodeList* aNodeList = root->getElementsByTagName(X("implementation"));
 	for (unsigned int i = 0; i < aNodeList->getLength(); i++)
 	{
-		DOMElement* iElement = (DOMElement*) aNodeList->item(i);
-		DOMElement* sElement = (DOMElement*) (iElement->getElementsByTagName(X("servants"))->item(0));
-		DOMElement* bElement = (DOMElement*) (iElement->getElementsByTagName(X("business"))->item(0));
-		
-        //
-        // extract descriptions
-		//
-		std::string uu_id = XMLString::transcode(iElement->getAttribute(X("id")));
-		std::string servants_DLL_name = XMLString::transcode(sElement->getAttribute(X("code")));
-		std::string servants_DLL_entry_point_function = XMLString::transcode(sElement->getAttribute(X("entry")));
-		std::string executors_DLL_name = XMLString::transcode(bElement->getAttribute(X("code")));
-		std::string executors_DLL_entry_point_function = XMLString::transcode(bElement->getAttribute(X("entry")));
+		std::string element_name;
+		DOMElement* element = (DOMElement*)aNodeList->item(i);
+		ComponentImplementation impl(XMLString::transcode(element->getAttribute(X("id"))));
+		std::string s_code;
+		std::string s_entry;
+		std::string e_code;
+		std::string e_entry;
+		DOMElement* child_element;
+		DOMNode* child = element->getFirstChild();
+		while (child != 0)
+		{
+			if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+			{
+				element_name = XMLString::transcode(child->getNodeName());
+				child_element = (DOMElement*)child;
+
+				//
+				// servants
+				//
+				if (element_name == "servants")
+				{
+					impl.servant_module_ = XMLString::transcode(child_element->getAttribute(X("code")));
+					impl.servant_entry_point_ = XMLString::transcode(child_element->getAttribute(X("entry")));
+				}
+
+				//
+				// business
+				//
+				else if (element_name == "business")
+				{
+					impl.executor_module_ = XMLString::transcode(child_element->getAttribute(X("code")));
+					impl.executor_entry_point_ = XMLString::transcode(child_element->getAttribute(X("entry")));
+				}
+
+				//
+				// valuetype
+				//
+				else if (element_name == "valuetype")
+				{
+					ValuetypeData data;
+					data.repid = XMLString::transcode(child_element->getAttribute(X("repid")));
+					data.file_name = XMLString::transcode(child_element->getAttribute(X("code")));
+					impl.valuetypes_.push_back(data);
+				}
+			}
+
+			// get next child
+			child = child->getNextSibling();
+		}
 		
 		//
 		// create new ComponentImplementation
 		//
-		ComponentImplementation newImplementation(uu_id, servants_DLL_name, servants_DLL_entry_point_function,
-			                                      executors_DLL_name, executors_DLL_entry_point_function);
-		installed_components_.push_back(newImplementation);
+		installed_components_.push_back(impl);
 	}
-
-	// delete parser
-    delete parser;
 
 	return true;
 }
 
 
 bool
-ComponentInstallationImpl::addInstalledComponent (ComponentImplementation* aComponentImplementation)
+ComponentInstallationImpl::addInstalledComponent (ComponentImplementation* c_impl)
 {
 	//
 	// parse the descriptor file
@@ -230,24 +262,36 @@ ComponentInstallationImpl::addInstalledComponent (ComponentImplementation* aComp
 	DOMElement* root = doc->getDocumentElement();
 	root->appendChild(doc->createTextNode(X("\n    ")));
 
+	DOMElement* implem = doc->createElement(X("implementation"));
+	implem->setAttribute(X("id"), X(c_impl->uuid_.c_str()));
+	
+	implem->appendChild (doc->createTextNode(X("\n        ")));
 	DOMElement* servants = doc->createElement(X("servants"));
 	servants->appendChild(doc->createTextNode(X("\n        ")));
-	servants->setAttribute(X("code"), X(aComponentImplementation->servant_module_.c_str()));
-	servants->setAttribute(X("entry"), X(aComponentImplementation->servant_entry_point_.c_str()));
-
+	servants->setAttribute(X("code"), X(c_impl->servant_module_.c_str()));
+	servants->setAttribute(X("entry"), X(c_impl->servant_entry_point_.c_str()));
+	implem->appendChild (servants);
+	
+	implem->appendChild (doc->createTextNode(X("\n        ")));
 	DOMElement* business = doc->createElement(X("business"));
 	business->appendChild(doc->createTextNode(X("\n        ")));
-	business->setAttribute(X("code"), X(aComponentImplementation->executor_module_.c_str()));
-	business->setAttribute(X("entry"), X(aComponentImplementation->executor_entry_point_.c_str()));
+	business->setAttribute(X("code"), X(c_impl->executor_module_.c_str()));
+	business->setAttribute(X("entry"), X(c_impl->executor_entry_point_.c_str()));
+	implem->appendChild (business);
 
-	DOMElement* impl = doc->createElement(X("implementation"));
-	impl->setAttribute(X("id"), X(aComponentImplementation->uuid_.c_str()));
-	impl->appendChild (doc->createTextNode(X("\n        ")));
-	impl->appendChild (servants);
-	impl->appendChild (doc->createTextNode(X("\n        ")));
-	impl->appendChild (business);
-	impl->appendChild (doc->createTextNode(X("\n    ")));
-	root->appendChild (impl);
+	std::vector < ValuetypeData > ::const_iterator iter;
+	for(iter = c_impl->valuetypes_.begin(); iter != c_impl->valuetypes_.end(); iter++)
+	{
+		implem->appendChild (doc->createTextNode(X("\n        ")));
+		DOMElement* valuetype = doc->createElement(X("valuetype"));
+		valuetype->appendChild(doc->createTextNode(X("\n        ")));
+		valuetype->setAttribute(X("repid"), X(((*iter).repid).c_str()));
+		valuetype->setAttribute(X("code"), X(((*iter).file_name).c_str()));
+		implem->appendChild (valuetype);
+	}
+
+	implem->appendChild (doc->createTextNode(X("\n    ")));
+	root->appendChild (implem);
 	root->appendChild (doc->createTextNode(X("\n")));
 
 	//
@@ -343,7 +387,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		
 		if (ok)
 		{
-			installed_components_.push_back(newComponentImplementation);
+			installed_components_.push_back(newComponentImplementation); // todo move to addInst...
 			addInstalledComponent(&newComponentImplementation);
 		}
 		else
@@ -401,6 +445,7 @@ void
 ComponentInstallationImpl::replace (const char* implUUID, const char* component_loc)
 throw (Components::Deployment::InvalidLocation, Components::Deployment::InstallationFailure)
 {
+	// todo
 }
 
 
@@ -408,14 +453,42 @@ void
 ComponentInstallationImpl::remove (const char* implUUID)
 throw (Components::Deployment::UnknownImplId, Components::RemoveFailure)
 {
+	std::cout << "..... remove Component type with UUID: " << implUUID << std::endl;
+	ComponentImplementation* impl = 0;
+
+	//
+	// first test for UUID
+	//
+	std::vector < ComponentImplementation >::iterator iter;
+	for (iter = installed_components_.begin(); iter != installed_components_.end(); iter++)
+	{
+		if ((*iter).uuid_ == implUUID)
+		{
+			impl = &(*iter);
+			break;
+		}
+	}
+	if(! impl)
+	{
+		std::cout << ".......... " << implUUID << " not installed !" << std::endl;
+		throw Components::Deployment::UnknownImplId();
+	}
+
+	//
+	// uninstall
+	//
+	if(! impl->uninstall())
+	{
+		throw Components::RemoveFailure();
+	}
 }
 
 
-Components::Deployment::Location 
-ComponentInstallationImpl::get_implementation( const char* implUUID)
+Components::Deployment::Location
+ComponentInstallationImpl::get_implementation(const char* implUUID)
 throw (Components::Deployment::UnknownImplId, Components::Deployment::InstallationFailure)
 {
-    std::cout << "get_implementation " << implUUID << std::endl;
+    std::cout << "..... get_implementation for " << implUUID << std::endl;
 	// Scan through the installed components
 	std::vector < ComponentImplementation >::const_iterator inst_iter;
 
@@ -427,7 +500,16 @@ throw (Components::Deployment::UnknownImplId, Components::Deployment::Installati
 			std::string description = (*inst_iter).servant_module_ + ";";
 			description += (*inst_iter).servant_entry_point_ + ";";
 			description += (*inst_iter).executor_module_ + ";";
-			description += (*inst_iter).executor_entry_point_;
+			description += (*inst_iter).executor_entry_point_ + ";";
+
+			// valuetypes
+			std::vector < ValuetypeData > ::const_iterator iter;
+			for(iter = (*inst_iter).valuetypes_.begin();
+				iter != (*inst_iter).valuetypes_.end();
+				iter++)
+			{
+				description += (*iter).repid + ";" + (*iter).file_name + ";";
+			}
 
 			return CORBA::string_dup (description.c_str());
 		}
@@ -441,6 +523,8 @@ char*
 ComponentInstallationImpl::upload (const char* implUUID, const ::CORBA::OctetSeq& package)
 throw (Components::Deployment::InstallationFailure)
 {
+	std::cout << "..... uploading package for UUID " << implUUID << std::endl;
+
 	std::string theName(implUUID);
 	std::string theFile = packageDirectory_ + "/" + theName;
 
@@ -476,5 +560,6 @@ throw (Components::Deployment::InstallationFailure)
   
     return CORBA::string_dup(theName.c_str());
 }
+
 
 } // namespace Qedo

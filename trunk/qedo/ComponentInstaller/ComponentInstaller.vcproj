@@ -301,6 +301,12 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
+				RelativePath="CCDReader.cpp">
+			</File>
+			<File
+				RelativePath="CSDReader.cpp">
+			</File>
+			<File
 				RelativePath="CatalogResolver.cpp">
 			</File>
 			<File
@@ -337,6 +343,12 @@ copy $(TargetPath) $(QEDO)\bin
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="CCDReader.h">
+			</File>
+			<File
+				RelativePath="CSDReader.h">
+			</File>
 			<File
 				RelativePath="CatalogResolver.h">
 			</File>

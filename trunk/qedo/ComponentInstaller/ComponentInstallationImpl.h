@@ -78,7 +78,7 @@ private:
 	/**
 	 * add a new installation to the DeployedComponents.xml file
 	 */
-	bool addInstalledComponent (ComponentImplementation* aComponentImplementation);
+	bool addInstalledComponent (ComponentImplementation* impl);
 
 public:
 	/**
@@ -121,7 +121,7 @@ public:
         throw (Components::Deployment::UnknownImplId, Components::Deployment::InstallationFailure);
 
     /**
-     * implements IDL:omg.org/Components/Deployment/ComponentInstallation/upload:1.0
+     * implements IDL:Qedo_Components/Deployment/ComponentInstallation/upload:1.0
      */
     char* upload (const char* implUUID, const ::CORBA::OctetSeq& package)
         throw (Components::Deployment::InstallationFailure);

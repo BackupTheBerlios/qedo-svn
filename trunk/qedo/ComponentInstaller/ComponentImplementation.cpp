@@ -21,10 +21,10 @@
 /***************************************************************************/
 
 #include "ComponentImplementation.h"
-#include <fstream>
-#include <xercesc/util/XMLURL.hpp>
-#include <xercesc/framework/URLInputSource.hpp>
-#include <xercesc/util/BinInputStream.hpp>
+#include "CSDReader.h"
+
+
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.10 2003/08/27 06:48:34 neubauer Exp $";
 
 
 namespace Qedo {
@@ -33,11 +33,12 @@ namespace Qedo {
 ComponentImplementation::ComponentImplementation (const char* uuid, std::string installationDirectory, std::string package)
 : uuid_ (uuid)
 {
-    mCounter = 0;
-    mPackage = new Package(package);
-    mPath = getPath(installationDirectory) + uuid_;
-    mBuildPath = getPath(mPath) + "build";
-    mComponentDescriptor = 0;
+    installation_count_ = 0;
+    package_ = new Package(package);
+	installation_dir_ = getPath(installationDirectory) + uuid_;
+    installation_path_ = getPath(installation_dir_);
+	build_dir_ = installation_path_ + "build";
+    build_path_ = getPath(build_dir_);
 }
 
 
@@ -45,17 +46,17 @@ ComponentImplementation::ComponentImplementation (std::string uuid, std::string 
 												  std::string servant_entry_point, std::string executor_module,
 												  std::string executor_entry_point)
 : uuid_ (uuid), servant_module_ (servant_module), servant_entry_point_ (servant_entry_point),
-  executor_module_ (executor_module), executor_entry_point_ (executor_entry_point)
+  executor_module_ (executor_module), executor_entry_point_ (executor_entry_point), installation_count_(1),
+  installation_dir_(""), installation_path_(""), build_dir_(""), build_path_(""), package_(0)
 {
-	description_ = servant_module_; description_ += ":";
-	description_ += servant_entry_point; description_ += ":";
-	description_ += executor_module_; description_ += ":";
-	description_ += executor_entry_point_;
+}
 
-	mCounter = 1;
-    mPackage = 0;
-    mPath = "";
-    mBuildPath = "";
+
+ComponentImplementation::ComponentImplementation (std::string uuid) 
+: uuid_ (uuid), servant_module_ (""), servant_entry_point_ (""),
+  executor_module_ (""), executor_entry_point_ (""), installation_count_(1),
+  installation_dir_(""), installation_path_(""), build_dir_(""), build_path_(""), package_(0)
+{
 }
 
 
@@ -78,577 +79,77 @@ ComponentImplementation::operator ==
 }
 
 
-void
-ComponentImplementation::author (DOMElement* element)
-throw(Components::CreateFailure)
-{
-    DOMNodeList* nodeList = element->getElementsByTagName(X("author"));
-    if (nodeList->getLength() > 0)
-    {
-        // TODO
-    }
-}
-
-
-void
-ComponentImplementation::code (DOMElement* element)
-throw(Components::CreateFailure)
-{
-    DOMNodeList* nodeList = element->getElementsByTagName(X("code"));
-	if (nodeList->getLength() == 0)
-    {
-		std::cerr << "Missing implementation for " << uuid_ << std::endl;
-		throw Components::CreateFailure();
-	}
-
-	//
-	// for each code element
-	//
-    for (unsigned int i = 0; i < nodeList->getLength(); ++i)
-    {
-        DOMElement* code_element = (DOMElement*)(nodeList->item(i));
-		std::string type = XMLString::transcode(code_element->getAttribute(X("type")));
-		std::string name;
-		std::string element_name;
-		std::string entry;
-		std::string use;
-
-		DOMNode* child = code_element->getFirstChild();
-	    while (child != 0)
-	    {
-			if (child->getNodeType() == DOMNode::ELEMENT_NODE)
-			{
-				element_name = XMLString::transcode(child->getNodeName());
-
-				// codebase
-				if (element_name == "codebase")
-				{
-					// TODO
-				}
-
-				// fileinarchive
-				else if (element_name == "fileinarchive")
-				{
-					name = fileinarchive((DOMElement*)(child));
-				}
-
-				// link
-				else if (element_name == "link")
-				{
-					name = link((DOMElement*)(child));
-				}
-
-				// entrypoint
-				else if (element_name == "entrypoint")
-				{
-					entry = entrypoint((DOMElement*)(child));
-				}
-
-				// usage
-				else if (element_name == "usage")
-				{
-					use = usage((DOMElement*)(child));
-				}
-			}
-
-            // get next child
-		    child = child->getNextSibling();
-        }
-
-		//
-		// dynamic library
-		//
-		if (type == "DLL")
-		{
-			if (use == "servant") {
-				servant_module_ = name;
-				servant_entry_point_ = entry;
-			}
-			else {
-				executor_module_ = name;
-				executor_entry_point_ = entry;
-			}
-		}
-    }
-}
-
-
-std::string
-ComponentImplementation::usage (DOMElement* element)
-throw(Components::CreateFailure)
-{
-	std::string content = XMLString::transcode(element->getFirstChild()->getNodeValue());
-	return content;
-}
-
-
-std::string
-ComponentImplementation::entrypoint (DOMElement* element)
-throw(Components::CreateFailure)
-{
-	std::string content = XMLString::transcode(element->getFirstChild()->getNodeValue());
-	return content;
-}
-
-
-void
-ComponentImplementation::corbacomponent (DOMDocument* document)
-throw(Components::CreateFailure)
-{
-    std::string repid_of_home;
-	DOMNode* xxx = document->getDocumentElement();
-    DOMNode* child = document->getDocumentElement()->getFirstChild();
-	while (child != 0)
-	{
-		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
-		{
-			//
-			// homerepid
-			//
-			if (!XMLString::compareString(child->getNodeName(), X("homerepid")))
-			{
-				repid_of_home = XMLString::transcode(((DOMElement*)child)->getAttribute(X("repid")));
-			}
-
-			//
-			// homefeatures
-			//
-			else if (!XMLString::compareString(child->getNodeName(), X("homefeatures")))
-			{
-				if (repid_of_home == XMLString::transcode(((DOMElement*)child)->getAttribute(X("repid"))))
-				{
-					mHomeName = XMLString::transcode(((DOMElement*)child)->getAttribute(X("name")));
-				}
-			}
-		}
-
-        // get next child
-		child = child->getNextSibling();
-    }
-}
-
-
-void
-ComponentImplementation::dependency (DOMElement* element)
-throw(Components::CreateFailure)
-{
-    std::string orb;
-    DOMNodeList* nodeList = element->getElementsByTagName(X("dependency"));
-    for (unsigned int i = 0; i < nodeList->getLength(); ++i)
-    {
-        DOMElement* dependencyEl = (DOMElement*)(nodeList->item(i));
-		std::string type = XMLString::transcode(dependencyEl->getAttribute(X("type")));
-
-        //
-    	// ORB
-		//
-		if (type == "ORB")
-		{
-		    DOMNodeList* aNodeList = dependencyEl->getElementsByTagName(X("name"));
-			DOMElement* orbname = (DOMElement*)(aNodeList->item(0));
-			orb = XMLString::transcode(orbname->getFirstChild()->getNodeValue());
-	    }
-    }
-}
-
-
-void
-ComponentImplementation::description (DOMElement* element)
-throw(Components::CreateFailure)
-{
-    DOMNodeList* nodeList = element->getElementsByTagName(X("description"));
-    if (nodeList->getLength() > 0)
-    {
-        // TODO
-    }
-}
-
-
-DOMDocument* 
-ComponentImplementation::descriptor (DOMElement* element)
-throw(Components::CreateFailure)
-{
-    DOMDocument* document;
-    DOMNodeList* nodeList = element->getElementsByTagName(X("descriptor"));
-    if (nodeList->getLength() > 0)
-    {
-        std::string cfile;
-        DOMNode* child = nodeList->item(0)->getFirstChild();
-	    while (child != 0)
-	    {
-			if (child->getNodeType() == DOMNode::ELEMENT_NODE)
-			{
-				//
-				// link
-				//
-				if (!XMLString::compareString(child->getNodeName(), X("link")))
-				{
-					cfile = link((DOMElement*)(child));
-				}
-
-				//
-				// fileinarchive
-				//
-				else if (!XMLString::compareString(child->getNodeName(), X("fileinarchive")))
-				{
-					cfile = fileinarchive((DOMElement*)(child));
-					
-					//
-					// extract the file
-					//
-					if (mPackage->extractFile(cfile, getPath(mBuildPath) + cfile) != 0)
-					{
-						std::cerr << "Error during extracting file" << std::endl;
-						throw Components::CreateFailure();
-					}
-				}
-			}
-
-            // get next child
-		    child = child->getNextSibling();
-        }
-
-        //
-        // parse file
-        //
-        static DOMXMLParser* parser = new DOMXMLParser;
-        char* xmlfile = strdup((getPath(mBuildPath) + cfile).c_str());
-        if (parser->parse(xmlfile) != 0) 
-        {
-			std::cerr << "Error during XML parsing" << std::endl;
-            delete(xmlfile);
-            throw Components::CreateFailure();
-	    }
-	    document = parser->getDocument();
-    }
-
-    return document;
-}
-
-
-void
-ComponentImplementation::extension(DOMElement* element)
-throw(Components::CreateFailure)
-{
-    DOMNodeList* nodeList = element->getElementsByTagName(X("extension"));
-    for (unsigned int i = 0; i < nodeList->getLength(); ++i)
-    {
-        // TODO
-    }
-}
-
-
-std::string
-ComponentImplementation::fileinarchive(DOMElement* element)
-throw(Components::CreateFailure)
-{
-	std::string fileName = XMLString::transcode(element->getAttribute(X("name")));
-    return fileName;
-}
-
-
-void
-ComponentImplementation::idl (DOMElement* element)
-throw(Components::CreateFailure)
-{
-    DOMNodeList* nodeList = element->getElementsByTagName(X("idl"));
-    if (nodeList->getLength() > 0)
-    {
-		DOMElement* idl_element = (DOMElement*)(nodeList->item(0));
-		// TODO the attribute id refers to the home instead to the component !!!
-		mIdlTarget = XMLString::transcode(idl_element->getAttribute(X("id")));
-        DOMNode* child = idl_element->getFirstChild();
-	    while (child != 0)
-	    {
-			if (child->getNodeType() == DOMNode::ELEMENT_NODE)
-			{
-				//
-				// link
-				//
-				if (!XMLString::compareString(child->getNodeName(), X("link")))
-				{
-					mIdlFile = link((DOMElement*)(child));
-				}
-
-				//
-				// fileinarchive
-				//
-				if (!XMLString::compareString(child->getNodeName(), X("fileinarchive")))
-				{
-					mIdlFile = fileinarchive((DOMElement*)(child));
-					
-					//
-					// extract the file
-					//
-					if (mPackage->extractFile(mIdlFile, getPath(mBuildPath) + mIdlFile) != 0)
-					{
-						std::cerr << "Error during extracting file" << std::endl;
-						throw Components::CreateFailure();
-					}
-				}
-
-				//
-				// repository
-				//
-				if (!XMLString::compareString(child->getNodeName(), X("repository")))
-				{
-					// TODO
-				}
-			}
-
-			// get next child
-		    child = child->getNextSibling();
-        }
-    }
-    else
-    {
-		std::cerr << "ComponentImplementation : missing exactly one idl element!" << std::endl;
-        throw Components::CreateFailure();
-    }
-}
-
-
-void
-ComponentImplementation::implementation (DOMElement* element)
-throw(Components::CreateFailure)
-{
-	bool found_implementation = false;
-    DOMNode* child = element->getFirstChild();
-	DOMElement* child_element = 0;
-	while (child != 0)
-	{
-		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
-		{
-			child_element = (DOMElement*)(child);
-
-			//
-			// get the right implementation
-			//
-			if ((!XMLString::compareString(child->getNodeName(), X("implementation"))) &&
-				(!XMLString::compareString(child_element->getAttribute(X("id")), X(uuid_.c_str()))))
-			{
-				// handle dependencies
-				dependency(child_element);
-
-				// handle descriptor
-				mComponentDescriptor = descriptor(child_element);
-
-				// handle code
-				code(child_element);
-
-				// handle os
-				os(child_element);
-
-				found_implementation = true;
-				break;
-			}
-		}
-
-        // next child
-		child = child->getNextSibling();
-	}
-
-	if (!found_implementation)
-	{
-		std::cerr << "Implementation for " << uuid_ << " missing!" << std::endl;
-		throw Components::CreateFailure();
-	}
-}
-
-
-void
-ComponentImplementation::license (DOMElement* element)
-throw(Components::CreateFailure)
-{
-    DOMNodeList* nodeList = element->getElementsByTagName(X("license"));
-    if (nodeList->getLength() > 0)
-    {
-        // TODO
-    }
-}
-
-
-std::string
-ComponentImplementation::link (DOMElement* element)
-throw(Components::CreateFailure)
-{
-    XMLURL uri(element->getAttribute(X("href")));
-    std::string name = XMLString::transcode(uri.getPath());
-    std::string::size_type pos = name.find_last_of("/");
-    if (pos != std::string::npos)
-    {
-        name.erase(0, pos + 1);
-    }
-    
-    std::string fileName = getPath(mBuildPath) + name;
-    URLInputSource inputSource(uri);
-    BinInputStream* inputStream = inputSource.makeStream();
-    if (!inputStream)
-    {
-        throw Components::CreateFailure();
-    }
-        
-	std::ofstream aFile;
-	aFile.open(fileName.c_str(), std::ios::binary|std::ios::app);
-	if (!aFile)
-	{
-		std::cerr << "Cannot open file " << fileName << std::endl;
-		throw Components::CreateFailure();
-	}
-    unsigned char* buf = (unsigned char*)malloc(4096);
-    unsigned int len = inputStream->readBytes(buf, 4096);
-    while (len)
-    {
-        aFile.write((const char*)buf, len);
-        len = inputStream->readBytes(buf, 4096);
-    }
-    free(buf);
-	aFile.close();
-
-    return name;
-}
-
-
-void
-ComponentImplementation::os (DOMElement* element)
-throw(Components::CreateFailure)
-{
-    std::string os;
-    DOMNodeList* nodeList = element->getElementsByTagName(X("os"));
-    if (nodeList->getLength() > 0)
-    {
-		os = XMLString::transcode(((DOMElement*)nodeList->item(0))->getAttribute(X("name")));
-    }
-}
-
-
-void
-ComponentImplementation::pkgtype (DOMElement* element)
-throw(Components::CreateFailure)
-{
-    DOMNodeList* nodeList = element->getElementsByTagName(X("pkgtype"));
-    if (nodeList->getLength() > 0)
-    {
-        // TODO
-    }
-}
-
-
-void
-ComponentImplementation::propertyfile (DOMElement* element)
-throw(Components::CreateFailure)
-{
-    DOMNodeList* nodeList = element->getElementsByTagName(X("propertyfile"));
-    if (nodeList->getLength() > 0)
-    {
-        // TODO
-    }
-}
-
-
-void
-ComponentImplementation::title (DOMElement* element)
-throw(Components::CreateFailure)
-{
-    DOMNodeList* nodeList = element->getElementsByTagName(X("title"));
-    if (nodeList->getLength() > 0)
-    {
-        // TODO
-    }
-}
-
-
 bool
 ComponentImplementation::install ()
 {
     //
 	// if already installed increment counter only
 	//
-	if (mCounter)
+	if (installation_count_)
 	{
-		mCounter++;
+		installation_count_++;
 		return true;
 	}
 
+	//
 	// create directories for the component implementation
-	makeDir(mPath);
-    makeDir(mBuildPath);
+	//
+	makeDir(installation_dir_);
+    makeDir(build_dir_);
 	
     //
 	// find and extract the software package descriptor
 	//
-    std::string csdfile = mPackage->getFileNameWithSuffix( ".csd" );
+    std::string csdfile = package_->getFileNameWithSuffix( ".csd" );
     if ( csdfile == std::string( "" ) )
 	{
-		std::cerr << "Missing a csd file!" << std::endl;
+		std::cerr << "..... Missing a csd file!" << std::endl;
+		removeFileOrDirectory(installation_dir_);
+		removeFileOrDirectory(build_dir_);
         return false;
 	}
-    if (mPackage->extractFile(csdfile, getPath(mBuildPath) + csdfile) != 0)
+    if (package_->extractFile(csdfile, build_path_ + csdfile) != 0)
 	{
-		std::cerr << "Error during extracting the descriptor file" << std::endl;
+		std::cerr << "..... Error during extracting the descriptor file" << std::endl;
+		removeFileOrDirectory(installation_dir_);
+		removeFileOrDirectory(build_dir_);
         return false;
 	}
 
 	//
 	// parse the software package descriptor file
     //
-	mParser = new DOMXMLParser();
-	char* xmlfile = strdup((getPath(mBuildPath) + csdfile).c_str());
-    if ( mParser->parse( xmlfile ) != 0 ) 
-	{
-		std::cerr << "Error during XML parsing" << std::endl;
+	CSDReader reader;
+	reader.readCSD( build_path_ + csdfile, this );
+
+    // install code for servants and executors
+    try	{
+		installCode();
+	}
+	catch( Components::CreateFailure ) {
+		removeFileOrDirectory(installation_dir_);
+		removeFileOrDirectory(build_dir_);
         return false;
 	}
-	mDocument = mParser->getDocument();
-    DOMElement* rootElement = mDocument->getDocumentElement();
-
-    // handle title
-    title(rootElement);
-
-    // handle package type
-    pkgtype(rootElement);
-
-    // handle author
-    author(rootElement);
-
-    // handle description
-    description(rootElement);
-
-    // handle license
-    license(rootElement);
-
-    // handle idl
-    idl(rootElement);
-
-    // handle propertyfile
-    propertyfile(rootElement);
-
-    // handle dependency
-    dependency(rootElement);
-
-    // handle implementation
-	implementation(rootElement);
-
-    // handle descriptor
-    if (mComponentDescriptor == 0)
-    {
-        mComponentDescriptor = descriptor(rootElement);
-        if (mComponentDescriptor == 0)
-        {
-			std::cerr << "ComponentImplementation : missing component descriptor for " << uuid_ << std::endl;
-	        throw Components::CreateFailure();
-        }
-    }
-    corbacomponent(mComponentDescriptor);
-
-    // handle extension
-    extension(rootElement);
-
-    // install code
-    installCode();
 
 	// increment installation counter ( to 1 )
-	mCounter++;
+	installation_count_++;
+
+	return true;
+}
+
+
+bool 
+ComponentImplementation::uninstall()
+{
+    installation_count_--;
+
+	if (installation_count_ == 0) 
+	{
+		//
+		// remove installed code
+		//
+	}
 
 	return true;
 }
@@ -659,54 +160,105 @@ ComponentImplementation::installCode()
 throw(Components::CreateFailure)
 {
 	//
-	// business code files have to be extracted from the archive
-    //
-    if (mPackage->extractFile(executor_module_, getPath(mPath) + executor_module_) != 0) 
+	// install valuetype factories
+	//
+	std::string code;
+	std::string installation;
+	std::vector < ValuetypeData >::iterator value_iter;
+	for(value_iter = valuetypes_.begin();
+		value_iter != valuetypes_.end();
+		value_iter++)
 	{
-		std::cerr << "Error during extracting executor code " << executor_module_ << std::endl;
+		code = (*value_iter).file_name;
+		installation = installation_path_ + getFileName(code);
+		if (copyFile(code, installation) == 0) 
+		{
+			std::cerr << "Error during installing valuetype factory " << code << std::endl;
+			throw Components::CreateFailure();
+		}
+		(*value_iter).file_name = installation;
+	}
+
+	//
+	// install artifacts
+	//
+	std::vector < std::string >::iterator iter;
+	for (iter = artifacts_.begin(); iter != artifacts_.end(); iter++)
+	{
+		code = *iter;
+		installation = installation_path_ + getFileName(code);
+		if (copyFile(code, installation) == 0) 
+		{
+			std::cerr << "Error during installing artifact " << code << std::endl;
+			throw Components::CreateFailure();
+		}
+		*iter = installation;
+	}
+
+	//
+	// install business code files
+    //
+	installation = installation_path_ + getFileName(executor_module_);
+    if (copyFile(executor_module_, installation) == 0) 
+	{
+		std::cerr << "Error during installing executor code " << executor_module_ << std::endl;
         throw Components::CreateFailure();
 	}
-	executor_module_ = getPath(mPath) + executor_module_;
+	executor_module_ = installation;
 
 	//
 	// servant code files have to be extracted from the archive or to be build
     //
-	if ((servant_module_ != "") && (servant_entry_point_ != "")) {
-		if (mPackage->extractFile(servant_module_, getPath(mPath) + servant_module_) != 0) 
+	if ((servant_module_ != "") && (servant_entry_point_ != ""))
+	{
+		installation = installation_path_ + getFileName(servant_module_);
+		if (copyFile(servant_module_, installation) == 0) 
 		{
-			std::cerr << "Error during extracting servant code " << servant_module_ << "; try to generate" << std::endl;
+			std::cerr << "Error during installing servant code " << servant_module_ << "; try to generate" << std::endl;
 		}
-		else {
-			servant_module_ = getPath(mPath) + servant_module_;
+		else 
+		{
+			servant_module_ = installation;
 			return;
 		}
 	}
 
-	servant_module_ = getPath(mPath) + uuid_ + "_servants." + DLL_EXT;
-	servant_entry_point_ = "create_" + mHomeName + "S";
+	//
+	// build servant code
+	//
+	buildServants();
+}
+
+
+void
+ComponentImplementation::buildServants()
+throw(Components::CreateFailure)
+{
+	servant_module_ = installation_path_ + uuid_ + "_servants." + DLL_EXT;
+	servant_entry_point_ = "create_" + home_name_ + "S";
 
 #ifdef _WIN32
-	mMakeFile = g_qedo_dir + "\\etc\\makefile";
+	makefile_ = g_qedo_dir + "\\etc\\makefile";
 #else
-	mMakeFile = g_qedo_dir + "/etc/makefile";
+	makefile_ = g_qedo_dir + "/etc/makefile";
 #endif
 
-	if ( !checkExistence(mMakeFile, IS_FILE)) 
+	if ( !checkExistence(makefile_, IS_FILE)) 
 	{
-		std::cerr << "missing makefile : " << mMakeFile << std::endl;
+		std::cerr << "missing makefile : " << makefile_ << std::endl;
 		throw Components::CreateFailure();
 	}
 
 #ifdef _WIN32
-	std::string command = "nmake /f " + mMakeFile;
-	command += " SOURCE=" + mIdlFile;
-	command += " TARGET=" + mIdlTarget;
+	std::string command = "nmake /f " + makefile_;
+	command += " SOURCE=" + idl_file_;
+	command += " TARGET=" + home_repid_;
 	command += " DLL=" + servant_module_;
 	std::cout << command << std::endl;
 
 	{
 	char* command_line = strdup(command.c_str());
-	char* command_dir = strdup(mBuildPath.c_str());
+	char* command_dir = strdup(build_path_.c_str());
 
 	STARTUPINFO si;
     PROCESS_INFORMATION pi;
@@ -768,7 +320,7 @@ throw(Components::CreateFailure)
 	delete command_dir;
 	}
 #else
-	std::string command = "cd " + mBuildPath + ";make -f " + mMakeFile + " SOURCE=" + mIdlFile + " TARGET=" + servant_module_;
+	std::string command = "cd " + build_dir_ + ";make -f " + makefile_ + " SOURCE=" + idl_file_ + " TARGET=" + servant_module_;
 	std::cout << command << std::endl;
 	int ret=system(command.c_str());
 	if(!WIFEXITED(ret))
@@ -777,34 +329,6 @@ throw(Components::CreateFailure)
         throw Components::CreateFailure();
 	}
 #endif
-
-	// remove temporary directory
-	if (removeFileOrDirectory(mBuildPath))
-    {
-		std::cout << "removal of build directory failed! : " << mBuildPath << std::endl;
-    }
-}
-
-
-void 
-ComponentImplementation::uninstall()
-{
-    mCounter--;
-
-	//
-    // remove installed code
-	//
-    if (mCounter == 0) 
-	{
-        //TODO
-	}
-}
-
-
-int 
-ComponentImplementation::get_counter()
-{
-    return mCounter;
 }
 
 

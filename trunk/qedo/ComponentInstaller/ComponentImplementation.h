@@ -27,8 +27,8 @@
 #include <CORBA.h>
 #include "Components.h"
 #include "Package.h"
-#include "DOMXMLParser.h"
 #include "PlatformBase.h"
+//#include "RefCountBase.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -69,174 +69,74 @@ namespace Qedo {
 extern std::string g_qedo_dir;
 
 
+struct ValuetypeData
+{
+	std::string								repid;
+	std::string								file_name;
+};
+
+
 /**
  * represents a component implementation
  */
 class ComponentImplementation : public virtual PlatformBase
+//							  , public virtual RefCountBase	
 {
 	/** makes use of this */
 	friend class ComponentInstallationImpl;
+	friend class CSDReader;
+	friend class CCDReader;
 
 private:
-	/** description */
-	std::string description_;
-	/** the uuid of the component implementation*/
-	std::string uuid_;
+
+	/** the uuid of the component implementation */
+	std::string							uuid_;
 	/** the servant module */
-	std::string servant_module_;
+	std::string							servant_module_;
 	/** the entry point for the servant module */
-	std::string servant_entry_point_;
+	std::string							servant_entry_point_;
 	/** the executor module */
-	std::string executor_module_;
+	std::string							executor_module_;
 	/** the entry point for the executor module */
-	std::string executor_entry_point_;
-
+	std::string							executor_entry_point_;
     /** the path of the idl file */
-	std::string mIdlFile;
-
+	std::string							idl_file_;
 	/** the RepId of the home */
-	std::string mIdlTarget;
+	std::string							home_repid_;
+	/** the name of the home */
+	std::string							home_name_;
+	/** list of installed artifacts */
+	std::vector < std::string >			artifacts_;
+	/** list of required valuetype factories */
+	std::vector < ValuetypeData >		valuetypes_;
     
-    /** path of component implementations */
-	std::string mBuildPath;
-    
-    /** path of the components implementation */
-	std::string mPath;
-	
-    /** the name of the components home */
-	std::string mHomeName;
-    
+	/** build dir of the component implementation */
+	std::string							build_dir_;
+    /** build path of the component implementation */
+	std::string							build_path_;
+	/** dir of the component implementation */
+	std::string							installation_dir_;
+    /** path of the component implementation */
+	std::string							installation_path_;
     /** the path of the make file */
-	std::string mMakeFile;
-    
-    /** the parser */
-	DOMXMLParser* mParser;
-    
-    /** the parsed software package descriptor */
-	DOMDocument* mDocument;
-	/** the parsed CORBA component descriptor */
-    DOMDocument* mComponentDescriptor;
+	std::string							makefile_;
     
     /** the package */
-	Package* mPackage;
+	Package*							package_;
+	/** the installation counter */
+    int									installation_count_;
 	
-    /** the installation counter */
-    int mCounter;
-
     /**
-	 * handle author
-	 */
-    void author (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle code
-	 * handle code elements being children of the given element
-	 */
-    void code (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle corbacomponent
-	 */
-    void corbacomponent (DOMDocument*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle dependency
-	 */
-    void dependency (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle description
-	 */
-    void description (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle descriptor
-	 */
-    DOMDocument* descriptor (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle extension
-	 */
-    void extension (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle fileinarchive
-	 */
-	std::string fileinarchive (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle idl element
-	 */
-    void idl (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle implementation elements
-	 */
-    void implementation (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle license
-	 */
-    void license (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle link
-	 */
-	std::string link (DOMElement*)
-        throw(Components::CreateFailure);
-
-	/**
-	 * handle usage element
-	 */
-	std::string usage (DOMElement*)
-        throw(Components::CreateFailure);
-
-	/**
-	 * handle entrypoint element
-	 */
-	std::string entrypoint (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle os
-	 */
-    void os (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle package type
-	 */
-    void pkgtype (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle propertyfile
-	 */
-    void propertyfile (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * handle title
-	 */
-    void title (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * build the servant code for the component
+	 * install code (for servants, executor, artifacts)
 	 */
     void installCode()
         throw(Components::CreateFailure);
+
+	/**
+	 * build servant code
+	 */
+	void buildServants()
+		throw(Components::CreateFailure);
 
 public:
 	/**
@@ -261,6 +161,13 @@ public:
 		                     std::string executor_module, std::string executor_entry_point);
 
 	/**
+	 * constructor
+	 * constructs an implementation read from DeployedComponents file
+	 * \param uuid The uuid of the implementation.
+	 */
+	ComponentImplementation (std::string uuid);
+
+	/**
 	 * destructor
 	 */
 	~ComponentImplementation();
@@ -271,11 +178,6 @@ public:
     bool operator == (ComponentImplementation);
 
 	/**
-	 * provide the installation counter
-	 */
-    int get_counter();
-
-	/**
 	 * install a component implementation
 	 */
 	bool install();
@@ -283,7 +185,7 @@ public:
 	/**
 	 * uninstall a component implementation
 	 */
-    void uninstall();
+    bool uninstall();
 };
 
 /** @} */

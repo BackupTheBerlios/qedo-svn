@@ -44,6 +44,8 @@ SOURCES = CatalogResolver.cpp \
 			 ComponentInstallationImpl.cpp \
 			 DOMTreeErrorReporter.cpp \
 			 DOMXMLParser.cpp \
+			 CSDReader.cpp \
+			 CCDReader.cpp \
           NameServiceBase.cpp \
 			 Package.cpp \
 			 PlatformBase.cpp \
