@@ -20,9 +20,10 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: cs.cpp,v 1.5 2003/01/22 08:39:15 neubauer Exp $";
+static char rcsid[] = "$Id: cs.cpp,v 1.6 2003/02/07 11:30:51 neubauer Exp $";
 
 #include "ComponentServerImpl.h"
+#include "ORBInitializerImpl.h"
 #include "Output.h"
 #include <cstring>
 #include <string>
@@ -78,16 +79,20 @@ main (int argc, char** argv)
 		exit (1);
 	}
 
-	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
-
-	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref);
-
 	if (debug_mode)
 	{
 		DEBUG_OUT ( "ComponentServer: Running in debug mode");
 		DEBUG_OUT ( "ComponentServer: Please press a key when attached to process and breakpoints are set" );
 		getchar();
 	}
+
+	//
+	// initialize ORB
+	//
+	Qedo::ORBInitializerImpl initializer;
+	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
+
+	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref);
 
 	try
 	{

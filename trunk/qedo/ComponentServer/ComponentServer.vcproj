@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../ComponentValuetypes;../ComponentContainer;$(ORBACUS)\include"
+				AdditionalIncludeDirectories="../ComponentIDL;../ComponentValuetypes;../ComponentContainer;../ComponentInstaller;&quot;$(ORBACUS)\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="CosNaming.lib jtcd.lib obd.lib"
+				AdditionalDependencies="CosNamingD.lib jtcd.lib obd.lib"
 				OutputFile="../../Runtime/cs.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
@@ -110,6 +110,12 @@
 				RelativePath="ComponentServerImpl.cpp">
 			</File>
 			<File
+				RelativePath="..\ComponentInstaller\NameServiceBase.cpp">
+			</File>
+			<File
+				RelativePath="ORBInitializerImpl.cpp">
+			</File>
+			<File
 				RelativePath="main.cpp">
 			</File>
 		</Filter>
@@ -118,6 +124,12 @@
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
 				RelativePath="ComponentServerImpl.h">
+			</File>
+			<File
+				RelativePath="..\ComponentInstaller\NameServiceBase.h">
+			</File>
+			<File
+				RelativePath="ORBInitializerImpl.h">
 			</File>
 		</Filter>
 		<Filter
