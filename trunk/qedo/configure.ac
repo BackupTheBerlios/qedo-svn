@@ -106,9 +106,9 @@ AC_CHECK_LIB([pthread], [pthread_sigmask])
 
 
 if test X"$use_debug" = Xno ; then
-	AC_CHECK_LIB([wx_gtk-2.4], [wxTheApp], [HAVE_WXGTK_LIB=yes], [HAVE_WXGTK_LIB=yes], [-L$WXGTKDIR/lib/])
+	AC_CHECK_LIB([wx_gtk-2.4], [wxTheApp], [HAVE_WXGTK_LIB=yes], [HAVE_WXGTK_LIB=no], [-L$WXGTKDIR/lib/])
 else
-	AC_CHECK_LIB([wx_gtkd-2.4], [wxTheApp], [HAVE_WXGTK_LIB=yes], [HAVE_WXGTK_LIB=yes], [-L$WXGTKDIR/lib/])
+	AC_CHECK_LIB([wx_gtkd-2.4], [wxTheApp], [HAVE_WXGTK_LIB=yes], [HAVE_WXGTK_LIB=no], [-L$WXGTKDIR/lib/])
 
 fi
 AC_SUBST(HAVE_WXGTK_LIB)

@@ -3276,7 +3276,7 @@ echo "${ECHO_T}$ac_cv_lib_wx_gtk_2_4_wxTheApp" >&6
 if test $ac_cv_lib_wx_gtk_2_4_wxTheApp = yes; then
   HAVE_WXGTK_LIB=yes
 else
-  HAVE_WXGTK_LIB=yes
+  HAVE_WXGTK_LIB=no
 fi
 
 else
@@ -3337,7 +3337,7 @@ echo "${ECHO_T}$ac_cv_lib_wx_gtkd_2_4_wxTheApp" >&6
 if test $ac_cv_lib_wx_gtkd_2_4_wxTheApp = yes; then
   HAVE_WXGTK_LIB=yes
 else
-  HAVE_WXGTK_LIB=yes
+  HAVE_WXGTK_LIB=no
 fi
 
 
