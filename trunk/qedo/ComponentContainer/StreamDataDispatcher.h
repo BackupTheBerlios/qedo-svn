@@ -47,7 +47,7 @@ public:
 	virtual void begin_stream (const char*, const Components::ConfigValues&) = 0;
 	virtual void end_stream() = 0;
 	virtual void failed_stream() = 0;
-	virtual void receive_stream_data (StreamComponents::StreamingBuffer_ptr) = 0;
+	virtual void receive_stream (StreamComponents::StreamingBuffer_ptr) = 0;
 };
 
 
