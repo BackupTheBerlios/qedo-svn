@@ -454,29 +454,34 @@ GeneratorBase::handleException(IR__::Contained_ptr contained)
 
 	switch(contained->def_kind())
 	{
-	case CORBA__::dk_Attribute :
+	case CORBA__::dk_Attribute : {
+		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(contained);
+		exception_seq = a_attribute->get_exceptions();
+		len = exception_seq->length();
+		for(i = 0; i < len; i++)
 		{
-			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(contained);
-			exception_seq = a_attribute->get_exceptions();
-			len = exception_seq->length();
-			for(i = 0; i < len; i++)
-			{
-				doException(exception_seq[i]);
-			}
-			break;
+			doException(exception_seq[i]);
 		}
-	case CORBA__::dk_Operation :
+		break; }
+	case CORBA__::dk_Operation : {
+		IR__::OperationDef_var a_operation = IR__::OperationDef::_narrow(contained);
+		exception_seq = a_operation->exceptions();
+		len = exception_seq->length();
+		for(i = 0; i < len; i++)
 		{
-			IR__::OperationDef_var a_operation = IR__::OperationDef::_narrow(contained);
-			exception_seq = a_operation->exceptions();
-			len = exception_seq->length();
-			for(i = 0; i < len; i++)
-			{
-				doException(exception_seq[i]);
-			}
-			break;
+			doException(exception_seq[i]);
 		}
-	default : {}
+		break; }
+	default : {
+		IR__::Container_var a_container = IR__::Container::_narrow(contained);
+		IR__::ContainedSeq_var contained_seq = a_container->contents(CORBA__::dk_Exception, false);
+		len = contained_seq->length();
+		for(i = 0; i < len; i++)
+		{
+			IR__::ExceptionDef_var a_exception = IR__::ExceptionDef::_narrow(((*contained_seq)[i]));
+			doException(a_exception);
+		}
+		break; }
 	}
 }
 
