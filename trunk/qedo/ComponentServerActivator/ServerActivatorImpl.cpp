@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.28 2003/10/17 13:22:52 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.29 2003/10/20 12:12:17 stoinski Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -344,8 +344,6 @@ void
 ServerActivatorImpl::remove_component_server (::Components::Deployment::ComponentServer_ptr server)
 throw (Components::RemoveFailure, CORBA::SystemException)
 {
-	std::cout << "ServerActivatorImpl: remove_component_server() called" << std::endl;
-
 	// Test whether this component server is known to us
 	ComponentServerVector::iterator cs_iter;
 
@@ -378,7 +376,7 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 	{
 		(*cs_iter).server->remove();
 	}
-	catch (...)
+	catch (CORBA::SystemException&)
 	{
 	}
 
@@ -502,9 +500,14 @@ ServerActivatorImpl::timer_thread(void *data)
 	if( !s->cond.wait_timed(s->mutex,5000) )
 	{
 		// got timeout
+		std::cout << "ServerActivatorImpl: Component Server not responding, killing it..." << std::endl;
 
 #ifdef _WIN32
-		// XXX this has also to be implemented for Windows
+		if (! TerminateProcess ((HANDLE)s->entry.pid, 0))
+		{
+			std::cerr << "ServerActivatorImpl: Cannot terminate Component Server process" << std::endl;
+			std::cerr << "ServerActivatorImpl: Error was: " << GetLastError() << std::endl;
+		}
 #else
 		if ( kill(s->entry.pid,SIGKILL) == -1 )
 		{

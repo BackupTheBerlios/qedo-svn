@@ -210,7 +210,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;&quot;$(MICO)\include\&quot;;&quot;$(MICO)\include\win32&quot;"
+				AdditionalIncludeDirectories=".;&quot;$(MICO)/include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;BUILD_QEDODLL_DLL;;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -234,7 +234,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib mico2311.lib pthreadVC.lib"
+				AdditionalDependencies="mico2311.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/ComponentIDL.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -402,6 +402,12 @@ copy $(TargetPath) $(QEDO)\bin
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
 				RelativePath="CORBADepends.cpp">
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						GeneratePreprocessedFile="0"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="CORBADepends_skel.cpp">
