@@ -10,6 +10,8 @@ endif
 
 all: IFRidl ComponentRepositoryLib CIDLRepositoryLib CIDLFrontendLib CIDLGenerator
 
+install: all
+	mkdir -p $(QEDO)/bin ; cp ../../CIDL_Backend/CIDLGenerator/cidl_gen $(QEDO)/bin
 ComponentRepositoryLib: IFRidl
 	mkdir -p ../../CIDL_Repository/ComponentRepositoryLib/$(TARGET); make -C ../../CIDL_Repository/ComponentRepositoryLib $(TARGET)
 
