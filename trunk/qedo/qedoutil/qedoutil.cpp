@@ -41,7 +41,7 @@
 #include "uuid/uuid.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qedoutil.cpp,v 1.10 2003/11/14 16:48:16 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qedoutil.cpp,v 1.11 2003/12/04 08:05:53 neubauer Exp $";
 
 
 namespace Qedo {
@@ -448,16 +448,6 @@ createUUID()
 #endif
 
 	return id;
-}
-
-
-std::string
-transcode(const XMLCh * const string)
-{
-	char *s = XMLString::transcode(string);
-	std::string x = s;
-	delete [] s;
-	return x;
 }
 
 }

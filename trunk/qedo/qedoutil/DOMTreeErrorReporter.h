@@ -24,9 +24,25 @@
 #define __DOM_TREE_ERROR_REPORTER_H__
 
 
+#include "qedoutil.h"
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
+#include <xercesc/util/XMLString.hpp>
 #include <iostream>
+
+
+namespace Qedo
+{
+
+/**
+ * own transcode adapter for memory handling
+ * \return the transcoded string from Xerces as std::string
+ */
+QEDOUTIL_API
+std::string
+transcode(const XMLCh * const);
+
+};
 
 
 // ---------------------------------------------------------------------------

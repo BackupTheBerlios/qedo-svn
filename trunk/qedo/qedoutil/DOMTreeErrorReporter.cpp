@@ -1,5 +1,8 @@
 /*
  * $Log: DOMTreeErrorReporter.cpp,v $
+ * Revision 1.4  2003/12/04 08:05:53  neubauer
+ * moved transcode function from qedoutil.h/cpp in order to get rid of dependency on xerces include;
+ *
  * Revision 1.3  2003/09/09 11:57:49  neubauer
  * qedoutil library for code reusage;
  *
@@ -62,6 +65,21 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
+
+
+namespace Qedo
+{
+
+std::string
+transcode(const XMLCh * const string)
+{
+	char *s = XMLString::transcode(string);
+	std::string x = s;
+	delete [] s;
+	return x;
+}
+
+};
 
 
 void DOMTreeErrorReporter::warning(const SAXParseException&)
