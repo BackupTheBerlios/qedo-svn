@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.1 2002/10/07 07:17:02 tom Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.2 2002/11/08 10:35:08 neubauer Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -103,7 +103,14 @@ ContainerInterfaceImpl::load_shared_library (const char* name)
 	if (handle_lib < (HINSTANCE)HINSTANCE_ERROR)
 	{
 		// Unable to load DLL
-		NORMAL_ERR2 ("ContainerInterfaceImpl: Cannot load dynamic library, error code was ", GetLastError());
+		LPVOID lpMsgBuf;
+        FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+			(LPTSTR) &lpMsgBuf, 0, NULL);
+		NORMAL_ERR2 ("ContainerInterfaceImpl: Cannot load dynamic library: ", (LPCTSTR)lpMsgBuf);
+		
+		// Free the buffer.
+		LocalFree( lpMsgBuf );
 		handle_lib = 0;
 	}
 
@@ -173,11 +180,13 @@ throw (Components::Deployment::UnknownImplId,
 		throw;
 	}
 
+	//
 	// Now extract relevant information out of the description
+	//
 	std::string::size_type pos;
 	std::string desc = (const char*)description;
 
-	pos = desc.find (":");
+	pos = desc.find (";");
 	if (pos == std::string::npos)
 	{
 		std::cerr << "ContainerInterfaceImpl: Cannot extract servant module name" << std::endl;
@@ -187,7 +196,7 @@ throw (Components::Deployment::UnknownImplId,
 
 	desc = desc.substr (pos + 1);
 
-	pos = desc.find (":");
+	pos = desc.find (";");
 	if (pos == std::string::npos)
 	{
 		std::cerr << "ContainerInterfaceImpl: Cannot extract servant entry point" << std::endl;
@@ -197,7 +206,7 @@ throw (Components::Deployment::UnknownImplId,
 
 	desc = desc.substr (pos + 1);
 
-	pos = desc.find (":");
+	pos = desc.find (";");
 	if (pos == std::string::npos)
 	{
 		std::cerr << "ContainerInterfaceImpl: Cannot extract executor module name" << std::endl;
