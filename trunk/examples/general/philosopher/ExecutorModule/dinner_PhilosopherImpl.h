@@ -137,7 +137,7 @@ namespace dinner
 #ifdef ORBACUS_ORB
 		PhilosopherThread* phil_thread_;
 #else
-		Components::Thread_ptr phil_thread_;
+		Components::Thread_var phil_thread_;
 #endif
 
 	public:
