@@ -79,6 +79,10 @@ install/compile:
 		DynamicAny
 		DynamicInterface
 		NameService
+		IFR_Client
+	add the following to the path variable
+		%ACE_ROOT%\bin
+		
 
 The Qedo Runtime worspace supports configurations for 3 ORBs (ORBACUS, MICO, TAO). Each of these ORBs has specific characteristics (e.g the names of the skeleton files). These different characteristics make it really difficult to integrate the configurations into a single workspace. There are some serious problems with TAO. To overcome these problems you have to do the following things.
 
@@ -154,7 +158,9 @@ obtain software:
 	Version: 1.1.4
 	get from: http://www.gzip.org/zlib/
 set environment
-ZLIB=C:\opt\zlib114dll
+	ZLIB=C:\opt\zlib114dll
+add the follwing to the path variable
+	%ZLIB%\dll32
 
 
 3. Compiling Windows
