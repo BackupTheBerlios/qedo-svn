@@ -52,30 +52,82 @@ GeneratorEIDL::checkForInclude(IR__::Contained_ptr item)
 
 
 void
-GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed)
+GeneratorEIDL::planInterfaceContent(IR__::Contained_ptr item)
+{
+	IR__::Contained_var scope = IR__::Contained::_narrow(item->defined_in());
+	if(CORBA::is_nil(scope)) {
+		return;
+	}
+
+	std::string id = scope->id();
+	if(interface_def_map_.find(id) == interface_def_map_.end())
+	{
+		IR__::ContainedSeq* def_seq = new IR__::ContainedSeq();
+		def_seq->length(1);
+		(*def_seq)[0] = IR__::Contained::_duplicate(item);
+		interface_def_map_[id] = def_seq;
+	}
+	else
+	{
+		IR__::ContainedSeq* seq = interface_def_map_[id];
+		CORBA::ULong len = seq->length();
+		bool already_contained = false;
+		for (CORBA::ULong i = 0 ; i < len ; i++) {
+			if (!strcmp((*seq)[i]->id(), item->id())) {
+				already_contained = true;
+				continue;
+			}
+		}
+
+		if(!already_contained) {
+			seq->length(len + 1);
+			(*seq)[len] = IR__::Contained::_duplicate(item);
+		}
+	}
+}
+
+
+void
+GeneratorEIDL::doInterfaceContent(IR__::InterfaceDef_ptr item)
+{
+	std::string id = item->id();
+	if(interface_def_map_.find(id) != interface_def_map_.end())
+	{
+		IR__::ContainedSeq_var seq = interface_def_map_[id];
+		CORBA::ULong len = seq->length();
+		for (CORBA::ULong i = 0 ; i < len ; i++) {
+			generate_the_item((*seq)[i]);
+		}
+	}
+}
+
+
+void
+GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 {
 	//
 	// check if item is already known
 	//
 	IR__::Contained_var restricted_contained = IR__::Contained::_narrow(item->defined_in());
 	if (!CORBA::is_nil(restricted_contained )) {
+		std::string id = restricted_contained ->id();
 
-		if (!strcmp(restricted_contained ->id(), "IDL:Deployment:1.0")) {
+		if (!id.compare("IDL:Deployment:1.0")) {
 			return;
 		};
-		if (!strcmp(restricted_contained ->id(), "IDL:omg.org/Components:1.0")) {
+		if (!id.compare("IDL:omg.org/Components:1.0")) {
 			return;
 		};
-		if (!strcmp(restricted_contained ->id(), "IDL:Components:1.0")) {
+		if (!id.compare("IDL:Components:1.0")) {
 			return;
 		}
-		if (!strcmp(restricted_contained ->id(), "IDL:omg.org/CORBA:1.0")) {
+		if (!id.compare("IDL:omg.org/CORBA:1.0")) {
 			return;
 		};
-		if (!strcmp(restricted_contained ->id(), "IDL:CORBA:1.0")) {
+		if (!id.compare("IDL:CORBA:1.0")) {
 			return;
 		}
-		if (!strcmp(restricted_contained ->id(), "IDL:omg.org/CosPropertyService:1.0")) {
+		if (!id.compare("IDL:omg.org/CosPropertyService:1.0")) {
 			return;
 		};
 	}
@@ -93,11 +145,11 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 	//
 	// check for include
 	//
-	checkForInclude(item);
+	//checkForInclude(item);
 
 	CORBA::ULong len;
 	CORBA::ULong i;
-	switch (item->describe()->kind) {
+	switch (item->def_kind()) {
 	case CORBA__::dk_Module : {
 		IR__::ModuleDef_var a_module = IR__::ModuleDef::_narrow(item);
 
@@ -124,14 +176,6 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 		for(i = 0; i < len; i++)
 		{
 			a_composition = CIDL::CompositionDef::_narrow((*contained_seq)[i]);
-			/*IR__::ModuleDef_var other_module = IR__::ModuleDef::_narrow(a_composition->defined_in());
-			if (!CORBA::is_nil(other_module))
-			{
-				if(!strcmp(act_module->id(), other_module->id()))
-				{
-					check_for_generation(a_composition);
-				}
-			}*/
 			std::string id = a_composition->id();
 			std::string::size_type pos = id.find_last_of("/");
 			if(pos != std::string::npos) 
@@ -168,32 +212,11 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 			this->check_for_generation((*interf_seq)[i]);
 		}
 
-		// operations
-		IR__::ContainedSeq_var contained_seq = a_home->contents(CORBA__::dk_Operation, true);
-		len = contained_seq->length();
-		for(i = 0; i < len; i++)
-		{
-			check_for_generation((*contained_seq)[i]);
-		}
+		// insert this interface in generation list
+		this->insert_to_generate(item);
 
-		// factories
-		contained_seq = a_home->contents(CORBA__::dk_Factory, true);
-		len = contained_seq->length();
-		for(i = 0; i < len; i++)
-		{
-			//check_for_generation((*contained_seq)[i]);
-		}
-
-		// finders
-		contained_seq = a_home->contents(CORBA__::dk_Finder, true);
-		len = contained_seq->length();
-		for(i = 0; i < len; i++)
-		{
-			//check_for_generation((*contained_seq)[i]);
-		}
-
-		// attributes
-		contained_seq = a_home->contents(CORBA__::dk_Attribute, true);
+		// content
+		IR__::ContainedSeq_var contained_seq = a_home->contents(CORBA__::dk_all, true);
 		len = contained_seq->length();
 		for(i = 0; i < len; i++)
 		{
@@ -204,7 +227,6 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 		IR__::ComponentDef_var a_component = a_home->managed_component();
 		this->check_for_generation(a_component);
 
-		insert_to_generate(item);
 		break; }
 	case CORBA__::dk_Component : {
 		IR__::ComponentDef_var a_component = IR__::ComponentDef::_narrow(item);
@@ -221,6 +243,9 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 		for(i = 0; i < len; i++) {
 			this->check_for_generation((*interf_seq)[i]);
 		}
+
+		// insert this interface in generation list
+		this->insert_to_generate(item);
 
 		// attributes
 		IR__::ContainedSeq_var contained_seq = a_component->contents(CORBA__::dk_Attribute, true);
@@ -271,7 +296,6 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 
 		// sisos
 
-		this->insert_to_generate ( item );
 		break; }
 	case CORBA__::dk_Interface : {
 		IR__::InterfaceDef_var act_interface = IR__::InterfaceDef::_narrow(item);
@@ -282,24 +306,12 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 		for(i = 0; i < len; i++) {
 			this->check_for_generation((*interf_seq)[i]);
 		}
+
+		// insert this interface in generation list
 		this->insert_to_generate(item);
 
-		// struct ...
-		// exceptions
-		// alias
-		// enum
-		// TODO
-
-		// attributes
-		IR__::ContainedSeq_var contained_seq = act_interface->contents(CORBA__::dk_Attribute, true);
-		len = contained_seq->length();
-		for(i = 0; i < len; i++)
-		{
-			check_for_generation((*contained_seq)[i]);
-		}
-
-		// operations
-		contained_seq = act_interface->contents(CORBA__::dk_Operation, true);
+		// content
+		IR__::ContainedSeq_var contained_seq = act_interface->contents(CORBA__::dk_all, true);
 		len = contained_seq->length();
 		for(i = 0; i < len; i++)
 		{
@@ -341,38 +353,16 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 
 		}
 
-		this->insert_to_generate ( act_value );
+		this->insert_to_generate(act_value);
 		break; }
-	case CORBA__::dk_Struct : {
-		IR__::StructDef_var act_struct = IR__::StructDef::_narrow(item);
-
-		// members
-		IR__::StructMemberSeq_var act_struct_members = act_struct->members();
-		len = act_struct_members->length();
-		IR__::IDLType_var act_idl_type;
-		IR__::Contained_var contained_type;
-		for(i = 0; i < len; i++)
-		{
-			act_idl_type = (*act_struct_members)[i].type_def;
-			contained_type = IR__::Contained::_narrow(act_idl_type);
-			if (!CORBA::is_nil(contained_type)) {
-				this->check_for_generation (contained_type );
-			};
-		};
-
-		this->insert_to_generate(item);
-		break; }
-	case CORBA__::dk_Operation :
-	case CORBA__::dk_Factory :
-	case CORBA__::dk_Finder : {
+	case CORBA__::dk_Operation : {
 		IR__::OperationDef_var act_operation = IR__::OperationDef::_narrow(item);
 
 		// return value
 		IR__::IDLType_var act_idl_type = act_operation->result_def();
 		IR__::Contained_var return_contained = IR__::Contained::_narrow(act_idl_type);
-		if (!CORBA::is_nil(return_contained) && !definedInTheSame(return_contained, act_operation)) {
-			// check whether the type was defined in the interface as the operation
-			this->check_for_generation (return_contained );
+		if (!CORBA::is_nil(return_contained)) {
+			this->check_for_generation(return_contained);
 		}		
 
 		// parameters
@@ -383,8 +373,7 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 		{
 			act_idl_type = (*act_params)[i].type_def;
 			contained_type = IR__::Contained::_narrow(act_idl_type);
-			if (!CORBA::is_nil(contained_type) && !definedInTheSame(contained_type, act_operation)) {
-				// check whether the type was defined in the interface as the operation
+			if (!CORBA::is_nil(contained_type)) {
 				this->check_for_generation(contained_type);
 			};
 		};
@@ -393,10 +382,56 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 		IR__::ExceptionDefSeq_var act_exceptions = act_operation->exceptions();
 		len = act_exceptions->length();
 		for(i = 0; i < len; i++) {
-			// check whether the type was defined in the interface as the operation
-			if (!definedInTheSame((*act_exceptions)[i], act_operation)) {
-				this->check_for_generation((*act_exceptions)[i]);
-			}
+			this->check_for_generation((*act_exceptions)[i]);
+		};
+
+		break; }
+	case CORBA__::dk_Factory :
+	case CORBA__::dk_Finder : {
+		IR__::OperationDef_var act_operation = IR__::OperationDef::_narrow(item);
+
+		// parameters
+		IR__::IDLType_var act_idl_type;
+		IR__::ParDescriptionSeq_var act_params = act_operation -> params();
+		len = act_params->length();
+		IR__::Contained_var contained_type;
+		for(i = 0; i < len; i++)
+		{
+			act_idl_type = (*act_params)[i].type_def;
+			contained_type = IR__::Contained::_narrow(act_idl_type);
+			if (!CORBA::is_nil(contained_type)) {
+				this->check_for_generation(contained_type);
+			};
+		};
+
+		// exceptions
+		IR__::ExceptionDefSeq_var act_exceptions = act_operation->exceptions();
+		len = act_exceptions->length();
+		for(i = 0; i < len; i++) {
+			this->check_for_generation((*act_exceptions)[i]);
+		};
+
+		break; }
+	case CORBA__::dk_Attribute : {
+		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(item);
+		
+		// type
+		IR__::IDLType_var a_idl_type = a_attribute->type_def();
+		IR__::Contained_var a_contained = IR__::Contained::_narrow(a_idl_type);
+		if (!CORBA::is_nil(a_contained)) {
+			this->check_for_generation(a_contained);
+		};
+
+		// exceptions
+		IR__::ExceptionDefSeq_var act_exceptions = a_attribute->get_exceptions();
+		len = act_exceptions->length();
+		for(i = 0; i < len; i++) {
+			this->check_for_generation((*act_exceptions)[i]);
+		};
+		act_exceptions = a_attribute->put_exceptions();
+		len = act_exceptions->length();
+		for(i = 0; i < len; i++) {
+			this->check_for_generation((*act_exceptions)[i]);
 		};
 
 		break; }
@@ -413,34 +448,46 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 			a_idl_type = (*act_struct_members)[i].type_def;
 			contained_type = IR__::Contained::_narrow(a_idl_type);
 			if (!CORBA::is_nil(contained_type)) {
-				this->check_for_generation (contained_type );
+				this->check_for_generation(contained_type);
 			};
 		};
 		
-		if(insertAllowed) {
+		if(!definedInInterface(a_exception)) {
 			this->insert_to_generate(item);
 		}
 		break; }
-	case CORBA__::dk_Attribute : {
-		IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(item);
-		
-		// type
-		IR__::IDLType_var a_idl_type = a_attribute->type_def();
-		IR__::Contained_var a_contained = IR__::Contained::_narrow(a_idl_type);
-		if (!CORBA::is_nil(a_contained) && !definedInTheSame(a_contained, a_attribute)) {
-			// check whether the type was defined in the interface as the attribute
-			this->check_for_generation(a_contained);
+	case CORBA__::dk_Struct : {
+		IR__::StructDef_var act_struct = IR__::StructDef::_narrow(item);
+
+		// members
+		IR__::StructMemberSeq_var act_struct_members = act_struct->members();
+		len = act_struct_members->length();
+		IR__::IDLType_var act_idl_type;
+		IR__::Contained_var contained_type;
+		for(i = 0; i < len; i++)
+		{
+			act_idl_type = (*act_struct_members)[i].type_def;
+			contained_type = IR__::Contained::_narrow(act_idl_type);
+			if (!CORBA::is_nil(contained_type)) {
+				this->check_for_generation(contained_type);
+			};
 		};
-
-		// exceptions
-		// TODO
-
-		break; }
-	case CORBA__::dk_Enum :
-		if(insertAllowed) {
+		std::string id = item->id();
+		if(!definedInInterface(item)) {
 			this->insert_to_generate(item);
 		}
-		break;
+		else {
+			planInterfaceContent(item);
+		}
+		break; }
+	case CORBA__::dk_Enum : {
+		if(!definedInInterface(item)) {
+			this->insert_to_generate(item);
+		}
+		else {
+			planInterfaceContent(item);
+		}
+		break; }
 	case CORBA__::dk_Alias : {
 		IR__::AliasDef_var a_alias = IR__::AliasDef::_narrow(item);
 
@@ -449,8 +496,9 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 		if (!CORBA::is_nil(a_contained)) {
 			this->check_for_generation(a_contained);
 		}
+
 		// sequence
-		if(a_alias->original_type_def()->def_kind() == CORBA__::dk_Sequence) {
+		else if(a_alias->original_type_def()->def_kind() == CORBA__::dk_Sequence) {
 			IR__::SequenceDef_var a_seq = IR__::SequenceDef::_narrow(a_alias->original_type_def());
 			a_contained = IR__::Contained::_narrow(a_seq->element_type_def());
 			if (!CORBA::is_nil(a_contained)) {
@@ -458,10 +506,12 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed
 			}
 		}
 
-		if(insertAllowed) {
+		if(!definedInInterface(item)) {
 			this->insert_to_generate(item);
 		}
-
+		else {
+			planInterfaceContent(item);
+		}
 		break; }
 	default:
 		break;
@@ -509,12 +559,10 @@ GeneratorEIDL::doInterface(IR__::InterfaceDef_ptr intface)
 	out << "\n{\n";
 	out.indent();
 
-	// containments
-	handleConstant(intface);
-	handleStruct(intface);
-	handleUnion(intface);
-	handleEnum(intface);
-	handleAlias(intface);
+	// content with potential order problems
+	doInterfaceContent(intface);
+
+	// content without order problems
 	handleException(intface);
 	handleAttribute(intface);
 	handleOperation(intface);
@@ -559,12 +607,10 @@ GeneratorEIDL::doHome(IR__::HomeDef_ptr home)
 
 	managed_component_ = map_absolute_name(home->managed_component());
 
-	// containments
-	handleConstant(home);
-	handleStruct(home);
-	handleUnion(home);
-	handleEnum(home);
-	handleAlias(home);
+	// content with potential order problems
+	doInterfaceContent(home);
+
+	// content without order problems
 	handleException(home);
 	handleAttribute(home);
 	handleOperation(home);
@@ -970,6 +1016,7 @@ GeneratorEIDL::doTypedef(IR__::TypedefDef_ptr tdef)
 void
 GeneratorEIDL::doAlias(IR__::AliasDef_ptr adef)
 {
+	out << "//\n// " << adef->id() << "\n//\n";
 	switch(adef->original_type_def()->def_kind())
 	{
 	case CORBA__::dk_Alias :  {
@@ -996,6 +1043,7 @@ GeneratorEIDL::doAlias(IR__::AliasDef_ptr adef)
 void
 GeneratorEIDL::doStruct(IR__::StructDef_ptr sdef)
 {
+	out << "//\n// " << sdef->id() << "\n//\n";
 	out << "struct " << sdef -> name () << "{\n";
 	IR__::StructMemberSeq_var str_seq = sdef->members();
 	CORBA::ULong len = str_seq->length();
@@ -1034,7 +1082,7 @@ GeneratorEIDL::doComponent(IR__::ComponentDef_ptr component)
 	out << "\n{\n";
 	out.indent();
 
-	// contents
+	// content
 	handleAttribute(component);
 	handleProvides(component);
 	handleUses(component);

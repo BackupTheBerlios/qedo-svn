@@ -35,7 +35,7 @@ protected:
 	void initialize(std::string target, std::string fileprefix);
 	bool already_included (IR__::Contained_ptr item);
 	void insert_to_generate(IR__::Contained_ptr item);
-	virtual void check_for_generation(IR__::Contained_ptr item, bool insertAllowed = true);
+	virtual void check_for_generation(IR__::Contained_ptr item);
 
 	// start generation
 	void doGenerate();

@@ -22,7 +22,8 @@ IDLBase::~IDLBase
 // start generation
 //
 void
-IDLBase::generate_the_item ( IR__::Contained_ptr item ) {
+IDLBase::generate_the_item(IR__::Contained_ptr item)
+{
 	IR__::HomeDef_var act_home;
 	IR__::ComponentDef_var act_component;
 	IR__::InterfaceDef_var act_interface;
@@ -35,7 +36,10 @@ IDLBase::generate_the_item ( IR__::Contained_ptr item ) {
 	IR__::StructDef_var act_struct;
 
 	std::cout << "Debug: item to generate: " << item->id() << std::endl;
-	this->open_module(item);
+	if(!definedInInterface(item)) {
+		this->open_module(item);
+	}
+
 	switch (item->describe()->kind) {
 	case CORBA__::dk_Module:
 		act_module = IR__::ModuleDef::_narrow(item);
@@ -86,26 +90,28 @@ IDLBase::generate_the_item ( IR__::Contained_ptr item ) {
 		break;
 	};
 
-	this->close_module(item);
+	if(!definedInInterface(item)) {
+		this->close_module(item);
+	}
 }
 
 
 //
-// check whether the contained are defined in the same scope
+// check whether the contained is defined in an interface
 //
 bool 
-IDLBase::definedInTheSame(IR__::Contained_ptr cont1, IR__::Contained_ptr cont2)
+IDLBase::definedInInterface(IR__::Contained_ptr contained)
 {
-	IR__::Contained_ptr c1 = IR__::Contained::_narrow(cont1->defined_in());
-	IR__::Contained_ptr c2 = IR__::Contained::_narrow(cont2->defined_in());
-	
-	if(c1 && c2) {
-		if(!strcmp(c1->id(), c2->id())) {
-			return true;
-		}
+	switch(contained->defined_in()->def_kind()) {
+	case CORBA__::dk_Interface :
+	case CORBA__::dk_Home :
+	case CORBA__::dk_Component :
+		return true;
+		break;
+	default :
+		return false;
+		break;
 	}
-
-	return false;
 }
 
 

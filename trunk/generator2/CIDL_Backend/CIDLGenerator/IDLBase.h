@@ -20,8 +20,8 @@ protected:
 
 	void generate_the_item(IR__::Contained_ptr item);
 	
-	// check whether the contained are defined in the same scope
-	bool definedInTheSame(IR__::Contained_ptr cont1, IR__::Contained_ptr cont2);
+	// check whether the contained is defined in an interface
+	bool definedInInterface(IR__::Contained_ptr contained);
 
 	// module
 	void open_module(IR__::Contained_ptr cont);

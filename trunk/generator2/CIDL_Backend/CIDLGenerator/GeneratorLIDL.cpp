@@ -22,7 +22,7 @@ GeneratorLIDL::~GeneratorLIDL
 
 
 void
-GeneratorLIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed)
+GeneratorLIDL::check_for_generation(IR__::Contained_ptr item)
 {
 	//
 	// check if item is already known

@@ -121,7 +121,7 @@ GeneratorBase::already_included (IR__::Contained_ptr item)
 	CORBA::ULong i;
 	CORBA::ULong len;
 
-	switch(item->describe()->kind) {
+	switch(item->def_kind()) {
 	case CORBA__::dk_Interface :
 	case CORBA__::dk_Home :
 	case CORBA__::dk_Component :
@@ -166,7 +166,7 @@ GeneratorBase::insert_to_generate(IR__::Contained_ptr item)
 
 
 void
-GeneratorBase::check_for_generation(IR__::Contained_ptr item, bool insertAllowed) 
+GeneratorBase::check_for_generation(IR__::Contained_ptr item) 
 {
 	insert_to_generate(item);
 }

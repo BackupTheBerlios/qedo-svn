@@ -26,7 +26,7 @@ private:
 
 protected:
 
-	void check_for_generation(IR__::Contained_ptr item, bool insertAllowed = true);
+	void check_for_generation(IR__::Contained_ptr item);
 
 public:
 

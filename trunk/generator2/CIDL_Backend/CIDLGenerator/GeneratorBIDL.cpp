@@ -20,7 +20,7 @@ GeneratorBIDL::~GeneratorBIDL
 
 
 void
-GeneratorBIDL::check_for_generation(IR__::Contained_ptr item, bool insertAllowed)
+GeneratorBIDL::check_for_generation(IR__::Contained_ptr item)
 {
 	//
 	// check if item is already known
