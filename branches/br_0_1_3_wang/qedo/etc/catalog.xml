@@ -36,6 +36,11 @@
 
   <!-- local config file lookups -->
   <Map
+    Publicsystem-identifier="QedoConfig.dtd"
+    HRef="QedoConfig.dtd"
+  />
+    
+  <Map
     Publicsystem-identifier="-//OMG//DTD CORBA Component Descriptor"
     HRef="corbacomponent.dtd"
   />
