@@ -27,14 +27,29 @@ namespace Qedo {
 
 		~ServerContainerInterceptor();
 
-		virtual char* name() ;
-		virtual void destroy();
-		virtual void set_slot_id(PortableInterceptor::SlotId slot_id);
-		virtual void receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_system_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_user_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
-//		virtual void rec_request_from_servant_locator(const char* operation);
+		virtual char* 
+		name() ;
+		
+		virtual void 
+		destroy();
+		
+		virtual void 
+		set_slot_id(PortableInterceptor::SlotId slot_id);
+		
+		virtual void 
+		receive_request_service_contexts (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi) ;
+
+		virtual void 
+		receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi) ;
+		
+		virtual void 
+		send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi) ;
+		
+		virtual void 
+		send_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi) ;
+		
+		virtual void 
+		send_other (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi) ;
 
 
 /*

@@ -96,19 +96,19 @@ MonExec::configuration_complete()
 // BEGIN USER INSERT SECTION MonExec::configuration_complete
 	std::cout << "Monitorung Serivce: configuration_complete" << std::endl;
 
-	Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_reg =
+	Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_reg =
 		context_->get_server_interceptor_dispatcher_registration();
 
 	server_interceptor_ = new Qedo::ServerContainerInterceptor(context_,this);
 
-	server_reg->register_interceptor_for_all(server_interceptor_);
+	server_cookie_ = server_reg->register_server_interceptor(server_interceptor_);
 
-	Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr client_reg =
+	Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr client_reg =
 		context_->get_client_interceptor_dispatcher_registration();
 
 	client_interceptor_ = new Qedo::ClientContainerInterceptor(context_,this);
 
-	client_reg->register_interceptor_for_all(client_interceptor_);
+	client_reg->register_client_interceptor(client_interceptor_);
 	
 //	std::string component_id = "";
 //	server_reg->register_interceptor_for_component(server_interceptor_, component_id.c_str());
@@ -123,10 +123,16 @@ MonExec::remove()
     throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION MonExec::remove
-	Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_reg =
+	Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_reg =
 	context_->get_server_interceptor_dispatcher_registration();
 
-	server_reg->unregister_interceptor_for_all(server_interceptor_);
+	server_reg->unregister_server_interceptor(server_cookie_);
+
+	Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr client_reg =
+	context_->get_client_interceptor_dispatcher_registration();
+
+	client_reg->unregister_client_interceptor(client_cookie_);
+
 // END USER INSERT SECTION MonExec::remove
 }
 

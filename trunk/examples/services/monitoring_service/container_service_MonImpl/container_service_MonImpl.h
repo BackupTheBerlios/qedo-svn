@@ -65,6 +65,10 @@ namespace container_service
 	public:
 	Qedo::ServerContainerInterceptor* server_interceptor_;
 	Qedo::ClientContainerInterceptor* client_interceptor_;
+
+	Components::Cookie_var server_cookie_;
+	Components::Cookie_var client_cookie_;
+
 	unsigned long counter;
 	Qedo::QedoMutex counter_mutex;
 	IOP::Codec_var m_cdrCodec;

@@ -27,14 +27,31 @@ namespace Qedo {
 
 		~ClientContainerInterceptor();
 
-	    virtual char* name() ;
-		virtual void destroy();
-		virtual void set_slot_id(PortableInterceptor::SlotId slot_id);
-		virtual void send_request (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info) ;
-		virtual void receive_reply (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info) ;
-		virtual void receive_system_exception (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info) ;
-		virtual void receive_user_exception (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info) ;
-//		virtual void rec_request_from_servant_locator(const char* operation);
+	    virtual char* 
+		name() ;
+		
+		virtual void 
+		destroy();
+		
+		virtual void 
+		set_slot_id(PortableInterceptor::SlotId slot_id);
+		
+		virtual void 
+		send_request (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci) ;
+		
+		virtual void 
+		send_poll (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci) ;
+
+		virtual void 
+		receive_reply (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci) ;
+		
+		virtual void 
+		receive_exception (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci) ;
+		
+		virtual void 
+		receive_other (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci) ;
+
+		
 /*
 		virtual Components::Cookie* connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con ) ;
 		virtual CORBA::Object_ptr provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con ) ;

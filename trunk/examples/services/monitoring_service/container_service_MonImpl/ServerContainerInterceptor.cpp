@@ -51,7 +51,13 @@ ServerContainerInterceptor::~ServerContainerInterceptor ()
 }
 
 void
-ServerContainerInterceptor::receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
+ServerContainerInterceptor::receive_request_service_contexts (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
+{
+
+}
+
+void
+ServerContainerInterceptor::receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
 
 		/* 
@@ -68,7 +74,7 @@ ServerContainerInterceptor::receive_request (Components::ContainerPortableInterc
 		CORBA::Any_var any = new CORBA::Any;
 
 		try {
-			sc = info->request_info()->get_request_service_context(101);	
+			sc = csi->request_info()->get_request_service_context(101);	
 			
 		    CORBA::OctetSeq data;
 
@@ -114,10 +120,10 @@ ServerContainerInterceptor::receive_request (Components::ContainerPortableInterc
 		event->trail_id	= CORBA::string_dup ("");
 		
 		event->event_counter  = event_number;
-		event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
-		event->identity.object_instance_id		= CORBA::string_dup (info->name());
-		event->identity.object_repository_id	= CORBA::string_dup (info->request_info()->target_most_derived_interface());
-		event->identity.cmp_name				= CORBA::string_dup (info->component_id());
+		event->op_name = CORBA::string_dup (CORBA::string_dup(csi->request_info()->operation()));
+		event->identity.object_instance_id		= CORBA::string_dup (csi->name());
+		event->identity.object_repository_id	= CORBA::string_dup (csi->request_info()->target_most_derived_interface());
+		event->identity.cmp_name				= CORBA::string_dup (csi->component_id());
 		event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 		event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
 		event->identity.cnt_type				= CORBA::string_dup ("UNKONWN_CONTAINER_TYPE");
@@ -137,7 +143,7 @@ ServerContainerInterceptor::receive_request (Components::ContainerPortableInterc
 }
 
 void
-ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
+ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
 
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
@@ -165,10 +171,10 @@ ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor
 	event->trail_id	= CORBA::string_dup (messageid.c_str());
 	
 	event->event_counter  = event_number;
-	event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
-	event->identity.object_instance_id		= CORBA::string_dup (info->name());
+	event->op_name = CORBA::string_dup (CORBA::string_dup(csi->request_info()->operation()));
+	event->identity.object_instance_id		= CORBA::string_dup (csi->name());
 	event->identity.object_repository_id	= CORBA::string_dup ("TE");
-	event->identity.cmp_name				= CORBA::string_dup (info->component_id());
+	event->identity.cmp_name				= CORBA::string_dup (csi->component_id());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 	event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
 	event->identity.cnt_type				= CORBA::string_dup ("UNKONWN_CONTAINER_TYPE");
@@ -198,15 +204,15 @@ ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor
 
 	memcpy(out_sc.context_data.get_buffer(), data->get_buffer(), data->length());
 
-	info->request_info()->add_reply_service_context(out_sc, true);
+	csi->request_info()->add_reply_service_context(out_sc, true);
 
 
 }
 
 void
-ServerContainerInterceptor::send_system_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
+ServerContainerInterceptor::send_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
-	std::cout << "COPI: send_system_exception: " << info->request_info()->operation() << "for id: " << std::endl;
+	std::cout << "COPI: send_system_exception: " << csi->request_info()->operation() << "for id: " << std::endl;
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
 
 	// set time_stamp
@@ -232,10 +238,10 @@ ServerContainerInterceptor::send_system_exception (Components::ContainerPortable
 	event->trail_id	= CORBA::string_dup (messageid.c_str());
 	
 	event->event_counter  = event_number;
-	event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
-	event->identity.object_instance_id		= CORBA::string_dup (info->name());
+	event->op_name = CORBA::string_dup (CORBA::string_dup(csi->request_info()->operation()));
+	event->identity.object_instance_id		= CORBA::string_dup (csi->name());
 	event->identity.object_repository_id	= CORBA::string_dup ("TE");
-	event->identity.cmp_name				= CORBA::string_dup (info->component_id());
+	event->identity.cmp_name				= CORBA::string_dup (csi->component_id());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 	event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
 	event->identity.cnt_type				= CORBA::string_dup ("UNKONWN_CONTAINER_TYPE");
@@ -265,15 +271,14 @@ ServerContainerInterceptor::send_system_exception (Components::ContainerPortable
 
 	memcpy(out_sc.context_data.get_buffer(), data->get_buffer(), data->length());
 
-	info->request_info()->add_reply_service_context(out_sc, true);
+	csi->request_info()->add_reply_service_context(out_sc, true);
 
 
 }
 
 void
-ServerContainerInterceptor::send_user_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) {
-	std::cout << "COPI: send_user_exception: " << info->request_info()->operation() << "for id:" << std::endl;
-	std::cout << "COPI: send_system_exception: " << info->request_info()->operation() << "for id: " << std::endl;
+ServerContainerInterceptor::send_other (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi) {
+	std::cout << "COPI: send_other: " << csi->request_info()->operation() << "for id: " << std::endl;
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
 
 	// set time_stamp
@@ -299,10 +304,10 @@ ServerContainerInterceptor::send_user_exception (Components::ContainerPortableIn
 	event->trail_id	= CORBA::string_dup (messageid.c_str());
 	
 	event->event_counter  = event_number;
-	event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
-	event->identity.object_instance_id		= CORBA::string_dup (info->name());
+	event->op_name = CORBA::string_dup (CORBA::string_dup(csi->request_info()->operation()));
+	event->identity.object_instance_id		= CORBA::string_dup (csi->name());
 	event->identity.object_repository_id	= CORBA::string_dup ("TE");
-	event->identity.cmp_name				= CORBA::string_dup (info->component_id());
+	event->identity.cmp_name				= CORBA::string_dup (csi->component_id());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 	event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
 	event->identity.cnt_type				= CORBA::string_dup ("UNKONWN_CONTAINER_TYPE");
@@ -332,7 +337,7 @@ ServerContainerInterceptor::send_user_exception (Components::ContainerPortableIn
 
 	memcpy(out_sc.context_data.get_buffer(), data->get_buffer(), data->length());
 
-	info->request_info()->add_reply_service_context(out_sc, true);
+	csi->request_info()->add_reply_service_context(out_sc, true);
 
 
 }

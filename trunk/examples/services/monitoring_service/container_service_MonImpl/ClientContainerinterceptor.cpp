@@ -46,11 +46,11 @@ ClientContainerInterceptor::~ClientContainerInterceptor ()
 }
 
 void
-ClientContainerInterceptor::send_request (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info)
+ClientContainerInterceptor::send_request (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci)
 {
 
-	std::cout << "COPI: send_request: " << info->request_info()->operation() << std::endl;
-		if ( 0 == strcmp (info->request_info()->operation(), "receiveEvent") )
+	std::cout << "COPI: send_request: " << cci->request_info()->operation() << std::endl;
+		if ( 0 == strcmp (cci->request_info()->operation(), "receiveEvent") )
 	{
 		/*
 		 * Suppress interception of handling for events to Trace server
@@ -91,12 +91,12 @@ ClientContainerInterceptor::send_request (Components::ContainerPortableIntercept
 		event->trail_id	= CORBA::string_dup (messageid.c_str());
 		
 		event->event_counter  = event_number;
-		event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
+		event->op_name = CORBA::string_dup (CORBA::string_dup(cci->request_info()->operation()));
 
-		event->identity.object_instance_id		= CORBA::string_dup (info->name());
+		event->identity.object_instance_id		= CORBA::string_dup (cci->name());
 		event->identity.object_repository_id	= CORBA::string_dup ("UNKNOWN");
 
-		event->identity.cmp_name				= CORBA::string_dup (info->component_id());
+		event->identity.cmp_name				= CORBA::string_dup (cci->component_id());
 		event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 		event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
 		event->identity.cnt_type				= CORBA::string_dup ("UNKONWN_CONTAINER_TYPE");
@@ -127,16 +127,22 @@ ClientContainerInterceptor::send_request (Components::ContainerPortableIntercept
 
 		memcpy(sc.context_data.get_buffer(), data->get_buffer(), data->length());
 
-		info->request_info()->add_request_service_context(sc, true);
+		cci->request_info()->add_request_service_context(sc, true);
 		
 }
 
 void
-ClientContainerInterceptor::receive_reply (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info)
+ClientContainerInterceptor::send_poll (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci)
+{
+
+}
+
+void
+ClientContainerInterceptor::receive_reply (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci)
 {
 	
-	std::cout << "COPI: receive_reply: " << info->request_info()->operation() << "for id: " << std::endl;
-	if ( 0 == strcmp (info->request_info()->operation(), "receiveEvent") )
+	std::cout << "COPI: receive_reply: " << cci->request_info()->operation() << "for id: " << std::endl;
+	if ( 0 == strcmp (cci->request_info()->operation(), "receiveEvent") )
 	{
 		/*
 		 * Suppress PI handling for events to Trace server
@@ -153,7 +159,7 @@ ClientContainerInterceptor::receive_reply (Components::ContainerPortableIntercep
 	char *message_data;
 	CORBA::Any_var any = new CORBA::Any;
 	try {
-		sc = info->request_info()->get_reply_service_context(101);	
+		sc = cci->request_info()->get_reply_service_context(101);	
 		
 		CORBA::OctetSeq data;
 
@@ -192,10 +198,10 @@ ClientContainerInterceptor::receive_reply (Components::ContainerPortableIntercep
 	event->thread_id = CORBA::string_dup ("");
 	event->trail_id	= CORBA::string_dup (message_data);
 	event->event_counter  = event_number;
-	event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
-	event->identity.object_instance_id		= CORBA::string_dup (info->name());
+	event->op_name = CORBA::string_dup (CORBA::string_dup(cci->request_info()->operation()));
+	event->identity.object_instance_id		= CORBA::string_dup (cci->name());
 	event->identity.object_repository_id	= CORBA::string_dup ("UNKNOWN");
-	event->identity.cmp_name				= CORBA::string_dup (info->component_id());
+	event->identity.cmp_name				= CORBA::string_dup (cci->component_id());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 	event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
 	event->identity.cnt_type				= CORBA::string_dup ("UNKONWN_CONTAINER_TYPE");
@@ -216,10 +222,10 @@ ClientContainerInterceptor::receive_reply (Components::ContainerPortableIntercep
 }
 
 void
-ClientContainerInterceptor::receive_system_exception (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info)
+ClientContainerInterceptor::receive_exception (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci)
 {
-	std::cout << "COPI: receive_system_exception: " << info->request_info()->operation() << "for id: " << std::endl;
-	if ( 0 == strcmp (info->request_info()->operation(), "receiveEvent") )
+	std::cout << "COPI: receive_system_exception: " << cci->request_info()->operation() << "for id: " << std::endl;
+	if ( 0 == strcmp (cci->request_info()->operation(), "receiveEvent") )
 	{
 		/*
 		 * Suppress PI handling for events to Trace server
@@ -236,7 +242,7 @@ ClientContainerInterceptor::receive_system_exception (Components::ContainerPorta
 	char *message_data;
 	CORBA::Any_var any = new CORBA::Any;
 	try {
-		sc = info->request_info()->get_reply_service_context(100);	
+		sc = cci->request_info()->get_reply_service_context(100);	
 		
 		CORBA::OctetSeq data;
 
@@ -275,10 +281,10 @@ ClientContainerInterceptor::receive_system_exception (Components::ContainerPorta
 	event->thread_id = CORBA::string_dup ("");
 	event->trail_id	= CORBA::string_dup (message_data);
 	event->event_counter  = event_number;
-	event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
-	event->identity.object_instance_id		= CORBA::string_dup (info->name());
+	event->op_name = CORBA::string_dup (CORBA::string_dup(cci->request_info()->operation()));
+	event->identity.object_instance_id		= CORBA::string_dup (cci->name());
 	event->identity.object_repository_id	= CORBA::string_dup ("UNKNOWN");
-	event->identity.cmp_name				= CORBA::string_dup (info->component_id());
+	event->identity.cmp_name				= CORBA::string_dup (cci->component_id());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 	event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
 	event->identity.cnt_type				= CORBA::string_dup ("UNKONWN_CONTAINER_TYPE");
@@ -299,9 +305,9 @@ ClientContainerInterceptor::receive_system_exception (Components::ContainerPorta
 }
 
 void
-ClientContainerInterceptor::receive_user_exception (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info) {
-	std::cout << "COPI: receive_user_exception: " << info->request_info()->operation() << "for id:" << std::endl;
-	if ( 0 == strcmp (info->request_info()->operation(), "receiveEvent") )
+ClientContainerInterceptor::receive_other (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci) {
+	std::cout << "COPI: receive_user_exception: " << cci->request_info()->operation() << "for id:" << std::endl;
+	if ( 0 == strcmp (cci->request_info()->operation(), "receiveEvent") )
 	{
 		/*
 		 * Suppress PI handling for events to Trace server
@@ -318,7 +324,7 @@ ClientContainerInterceptor::receive_user_exception (Components::ContainerPortabl
 	char *message_data;
 	CORBA::Any_var any = new CORBA::Any;
 	try {
-		sc = info->request_info()->get_reply_service_context(100);	
+		sc = cci->request_info()->get_reply_service_context(100);	
 		
 		CORBA::OctetSeq data;
 
@@ -357,10 +363,10 @@ ClientContainerInterceptor::receive_user_exception (Components::ContainerPortabl
 	event->thread_id = CORBA::string_dup ("");
 	event->trail_id	= CORBA::string_dup (message_data);
 	event->event_counter  = event_number;
-	event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
-	event->identity.object_instance_id		= CORBA::string_dup (info->name());
+	event->op_name = CORBA::string_dup (CORBA::string_dup(cci->request_info()->operation()));
+	event->identity.object_instance_id		= CORBA::string_dup (cci->name());
 	event->identity.object_repository_id	= CORBA::string_dup ("UNKNOWN");
-	event->identity.cmp_name				= CORBA::string_dup (info->component_id());
+	event->identity.cmp_name				= CORBA::string_dup (cci->component_id());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 	event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
 	event->identity.cnt_type				= CORBA::string_dup ("UNKONWN_CONTAINER_TYPE");
