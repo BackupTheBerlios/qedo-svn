@@ -80,7 +80,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC.lib"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  qedoutil.lib mico2311.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/Chat_Writer_Compo.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)\lib;$(MICO)\win32-bin\lib"
@@ -92,7 +92,10 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="zip ../Chat_Writer_Compo.zip -j  Debug_mico/Chat_Writer_Compo.dll ../Chat_Writer_Compo_SERVANT/Debug_mico/Chat_Writer_Compo_SERVANT.dll ../chat.idl 
+zip ../Chat_Writer_Compo.zip meta-inf/Chat_Writer_Compo.ccd meta-inf/Chat_Writer_Compo.csd
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -315,40 +318,6 @@ copy Chat_Writer_Compo_LOCAL.h Chat_Writer_Compo_LOCAL_skel.h
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
-		</Filter>
-		<Filter
-			Name="xml"
-			Filter="ccd;csd">
-			<File
-				RelativePath="Chat_Writer_Compo.ccd">
-			</File>
-			<File
-				RelativePath="Chat_Writer_Compo.csd">
-				<FileConfiguration
-					Name="Debug_orbacus|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../Chat_Writer_Compo.zip Debug_orbacus/Chat_Writer_Compo.dll ../Chat_Writer_Compo_SERVANT/Debug_orbacus/Chat_Writer_Compo_SERVANT.dll Chat_Writer_Compo.idl Chat_Writer_Compo.ccd Chat_Writer_Compo.csd
-"
-						Outputs="Chat_Writer_Compo.zip"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../Chat_Writer_Compo.zip Debug_mico/Chat_Writer_Compo.dll ../Chat_Writer_Compo_SERVANT/Debug_mico/Chat_Writer_Compo_SERVANT.dll Chat_Writer_Compo.idl Chat_Writer_Compo.ccd Chat_Writer_Compo.csd
-"
-						Outputs="Chat_Writer_Compo.zip"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_tao|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../Chat_Writer_Compo.zip Debug_orbacus/Chat_Writer_Compo.dll ../Chat_Writer_Compo_SERVANT/Debug_orbacus/Chat_Writer_Compo_SERVANT.dll Chat_Writer_Compo.idl Chat_Writer_Compo.ccd Chat_Writer_Compo.csd
-"
-						Outputs="Chat_Writer_Compo.zip"/>
-				</FileConfiguration>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

@@ -9,7 +9,7 @@
     <description></description>
     <license href="" />
     <idl id="IDL:Chat/ChatWriterHome:1.0">
-        <fileinarchive name="chat.cidl"/>
+        <fileinarchive name="chat.idl"/>
     </idl>
 
     <implementation id="UUID-0ef50e60-f613-4e3e-91da-37c71d21c6c9">
@@ -31,4 +31,25 @@
             <usage>servant</usage>
         </code>
     </implementation>
+    
+    <implementation id="UUID-FB1660B4-755D-4F58-ADE8-B7BF8FAAA497">
+        <os name="WIN" />
+        <processor name="x86" />
+        <compiler name="VC++" version="7,0" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/Chat_Writer_Compo.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="Chat_Writer_Compo.dll"/>
+            <entrypoint>create_ChatWriterHomeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="Chat_Writer_Compo_SERVANT.dll"/>
+            <entrypoint>create_ChatWriterHomeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>
+
 </softpkg>

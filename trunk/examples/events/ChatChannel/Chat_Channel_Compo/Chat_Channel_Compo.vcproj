@@ -92,7 +92,10 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="zip ../Chat_Channel_Compo.zip -j  Debug_mico/Chat_Channel_Compo.dll ../Chat_Channel_Compo_SERVANT/Debug_mico/Chat_Channel_Compo_SERVANT.dll ../chat.idl 
+zip ../Chat_Channel_Compo.zip meta-inf/Chat_Channel_Compo.ccd meta-inf/Chat_Channel_Compo.csd
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -171,6 +174,9 @@
 			<File
 				RelativePath="Chat_Channel_Compo_LOCAL.cpp">
 			</File>
+			<File
+				RelativePath="valuetypes.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -189,6 +195,9 @@
 			</File>
 			<File
 				RelativePath="Chat_Channel_Compo_LOCAL.h">
+			</File>
+			<File
+				RelativePath="valuetypes.h">
 			</File>
 		</Filter>
 		<Filter
@@ -309,40 +318,6 @@ copy Chat_Channel_Compo_LOCAL.h Chat_Channel_Compo_LOCAL_skel.h
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
-		</Filter>
-		<Filter
-			Name="xml"
-			Filter="ccd;csd">
-			<File
-				RelativePath="Chat_Channel_Compo.ccd">
-			</File>
-			<File
-				RelativePath="Chat_Channel_Compo.csd">
-				<FileConfiguration
-					Name="Debug_orbacus|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../Chat_Channel_Compo.zip Debug_orbacus/Chat_Channel_Compo.dll ../Chat_Channel_Compo_SERVANT/Debug_orbacus/Chat_Channel_Compo_SERVANT.dll Chat_Channel_Compo.idl Chat_Channel_Compo.ccd Chat_Channel_Compo.csd
-"
-						Outputs="Chat_Channel_Compo.zip"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_mico|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../Chat_Channel_Compo.zip Debug_mico/Chat_Channel_Compo.dll ../Chat_Channel_Compo_SERVANT/Debug_mico/Chat_Channel_Compo_SERVANT.dll Chat_Channel_Compo.idl Chat_Channel_Compo.ccd Chat_Channel_Compo.csd
-"
-						Outputs="Chat_Channel_Compo.zip"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_tao|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../Chat_Channel_Compo.zip Debug_orbacus/Chat_Channel_Compo.dll ../Chat_Channel_Compo_SERVANT/Debug_orbacus/Chat_Channel_Compo_SERVANT.dll Chat_Channel_Compo.idl Chat_Channel_Compo.ccd Chat_Channel_Compo.csd
-"
-						Outputs="Chat_Channel_Compo.zip"/>
-				</FileConfiguration>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Chat_Reader_Compo_SERVANT",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Chat_TestClient", "Chat_TestClient\Chat_TestClient.vcproj", "{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "chat_win32_assembly", "chat_win32_assembly\chat_win32_assembly.vcproj", "{B91C0A16-12A5-49A0-9C70-7DC6D0F2BD4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		ConfigName.0 = Debug
@@ -94,6 +96,16 @@ Global
 		{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}.Debug_tao.Build.0 = Debug|Win32
 		{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}.Release.ActiveCfg = Release|Win32
 		{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}.Release.Build.0 = Release|Win32
+		{B91C0A16-12A5-49A0-9C70-7DC6D0F2BD4A}.Debug.ActiveCfg = Debug|Win32
+		{B91C0A16-12A5-49A0-9C70-7DC6D0F2BD4A}.Debug.Build.0 = Debug|Win32
+		{B91C0A16-12A5-49A0-9C70-7DC6D0F2BD4A}.Debug_mico.ActiveCfg = Debug|Win32
+		{B91C0A16-12A5-49A0-9C70-7DC6D0F2BD4A}.Debug_mico.Build.0 = Debug|Win32
+		{B91C0A16-12A5-49A0-9C70-7DC6D0F2BD4A}.Debug_orbacus.ActiveCfg = Debug|Win32
+		{B91C0A16-12A5-49A0-9C70-7DC6D0F2BD4A}.Debug_orbacus.Build.0 = Debug|Win32
+		{B91C0A16-12A5-49A0-9C70-7DC6D0F2BD4A}.Debug_tao.ActiveCfg = Debug|Win32
+		{B91C0A16-12A5-49A0-9C70-7DC6D0F2BD4A}.Debug_tao.Build.0 = Debug|Win32
+		{B91C0A16-12A5-49A0-9C70-7DC6D0F2BD4A}.Release.ActiveCfg = Release|Win32
+		{B91C0A16-12A5-49A0-9C70-7DC6D0F2BD4A}.Release.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection
