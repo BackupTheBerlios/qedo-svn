@@ -28,7 +28,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.1 2003/08/27 06:47:43 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.2 2003/08/28 09:23:12 neubauer Exp $";
 
 
 namespace Qedo {
@@ -79,7 +79,7 @@ throw(CSDReadException)
         text.append(webpage((DOMElement*)(nodeList->item(i))));
     }
 
-	std::cerr << "<author> " << text << std::endl;
+	std::cerr << ".......... <author> " << text << std::endl;
 }
 
 
@@ -299,7 +299,7 @@ throw(CSDReadException)
 	{
 		text = XMLString::transcode(node->getNodeValue());
 	}
-	std::cerr << "<description> " << text << std::endl;
+	std::cerr << ".......... <description> " << text << std::endl;
     return text;
 }
 
@@ -397,7 +397,7 @@ throw(CSDReadException)
 				component_implementation_->idl_file_ = fileinarchive((DOMElement*)(child));
 				if(component_implementation_->idl_file_ == "")
 				{
-					std::cerr << "Missing idl file name for " << component_implementation_->uuid_ << std::endl;
+					std::cerr << "missing idl file name for " << component_implementation_->uuid_ << std::endl;
 					throw CSDReadException();
 				}
 			}
@@ -446,7 +446,7 @@ throw(CSDReadException)
     }
 	else if(len > 1)
 	{
-		std::cerr << "..... multiple descriptors" << std::endl;
+		std::cerr << ".......... multiple descriptors" << std::endl;
 	}
 
 	//
@@ -456,7 +456,7 @@ throw(CSDReadException)
 	len = nodeList->getLength();
 	if(len == 0)
 	{
-		std::cerr << "Missing code for " << component_implementation_->uuid_ << std::endl;
+		std::cerr << "missing code for " << component_implementation_->uuid_ << std::endl;
 		throw CSDReadException();
 	}
     for (i = 0; i < len; ++i)
@@ -489,13 +489,18 @@ throw(CSDReadException)
 		text = XMLString::transcode(node->getNodeValue());
 	}
 
-	if(text == "")
+	std::string ref = XMLString::transcode(element->getAttribute(X("href")));
+	if(ref != "")
 	{
-		text = "for license see: ";
-		text.append(XMLString::transcode(element->getAttribute(X("href"))));
+		if(text != "")
+		{
+			text.append("\n");
+		}
+		text.append("for license see : ");
+		text.append(ref);
 	}
 
-	std::cerr << "<license> " << text << std::endl;
+	std::cerr << ".......... <license> " << text << std::endl;
 	return text;
 }
 
@@ -597,7 +602,7 @@ throw(CSDReadException)
 	{
 		text = XMLString::transcode(node->getNodeValue());
 	}
-	std::cerr << "<title> " << text << std::endl;
+	std::cerr << ".......... <title> " << text << std::endl;
     return text;
 }
 
@@ -817,7 +822,7 @@ throw(CSDReadException)
 		child = child->getNextSibling();
     }
 
-	std::cerr << "<valuetypefactory> " << data.repid << std::endl;
+	std::cerr << ".......... <valuetypefactory> " << data.repid << std::endl;
 	component_implementation_->valuetypes_.push_back(data);
 }
 

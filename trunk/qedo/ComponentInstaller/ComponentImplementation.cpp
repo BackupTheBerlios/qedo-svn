@@ -24,7 +24,7 @@
 #include "CSDReader.h"
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.10 2003/08/27 06:48:34 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.11 2003/08/28 09:23:12 neubauer Exp $";
 
 
 namespace Qedo {
@@ -103,14 +103,14 @@ ComponentImplementation::install ()
     std::string csdfile = package_->getFileNameWithSuffix( ".csd" );
     if ( csdfile == std::string( "" ) )
 	{
-		std::cerr << "..... Missing a csd file!" << std::endl;
+		std::cerr << ".......... missing a csd file!" << std::endl;
 		removeFileOrDirectory(installation_dir_);
 		removeFileOrDirectory(build_dir_);
         return false;
 	}
     if (package_->extractFile(csdfile, build_path_ + csdfile) != 0)
 	{
-		std::cerr << "..... Error during extracting the descriptor file" << std::endl;
+		std::cerr << ".......... error during extracting the descriptor file" << std::endl;
 		removeFileOrDirectory(installation_dir_);
 		removeFileOrDirectory(build_dir_);
         return false;

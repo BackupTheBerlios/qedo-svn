@@ -22,7 +22,7 @@
 
 #include "ComponentInstallationImpl.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.14 2003/08/27 06:48:34 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.15 2003/08/28 09:23:12 neubauer Exp $";
 
 #include <iostream>
 #include <fstream>
@@ -372,8 +372,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		std::string comp_loc = packageDirectory_ + "/" + desc.substr(8);
 		if (!checkExistence(comp_loc, IS_FILE))
 		{
-			std::cerr << ".......... missing package " << comp_loc << std::endl;
-			std::cerr << ".......... upload before installing" << std::endl;
+			std::cerr << ".......... package " << comp_loc << " has to be uploaded" << std::endl;
 			throw Components::Deployment::InvalidLocation();
 		}
 
