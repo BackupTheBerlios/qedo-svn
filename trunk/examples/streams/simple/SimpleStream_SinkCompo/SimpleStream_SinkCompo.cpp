@@ -59,7 +59,6 @@ SinkImpl::remove()
 
 void
 SinkImpl::begin_stream_input (const char* repos_id, const ::Components::ConfigValues& meta_data)
-throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION SinkImpl::begin_stream_input
 // END USER INSERT SECTION SinkImpl::begin_stream_input
@@ -68,7 +67,6 @@ throw (CORBA::SystemException)
 
 void
 SinkImpl::end_stream_input()
-throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION SinkImpl::end_stream_input
 // END USER INSERT SECTION SinkImpl::end_stream_input
@@ -77,7 +75,6 @@ throw (CORBA::SystemException)
 
 void
 SinkImpl::failed_stream_input()
-throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION SinkImpl::failed_stream_input
 // END USER INSERT SECTION SinkImpl::failed_stream_input
@@ -86,7 +83,6 @@ throw (CORBA::SystemException)
 
 void
 SinkImpl::receive_stream_input (StreamComponents::StreamingBuffer_ptr buffer)
-throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION SinkImpl::receive_stream_input
 		std::cout << (char*) buffer->get_buffer() << std::endl;

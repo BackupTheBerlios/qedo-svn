@@ -11,7 +11,7 @@
     <idl id="IDL:SimpleStream/StreamSinkHome:1.0">
         <fileinarchive name="simple_stream.cidl"/>
     </idl>
-    
+
     <implementation id="UUID-C77B2B02-DC72-48B0-BB12-C377B119798B">
         <os name="WIN" />
         <processor name="x86" />
@@ -27,6 +27,26 @@
         </code>
         <code type="DLL">
             <fileinarchive name="SimpleStream_SinkCompo_SERVANT.dll"/>
+            <entrypoint>create_StreamSinkHomeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>
+
+    <implementation id="UUID-b34081fe-9268-41a2-85f7-0167ef88c830">
+        <os name="linux" />
+        <processor name="" />
+        <compiler name="" version="" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/SimpleStream_SinkCompo.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="libSimpleStream_SinkCompo.so"/>
+            <entrypoint>create_StreamSinkHomeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="libSimpleStream_SinkCompo_SERVANT.so"/>
             <entrypoint>create_StreamSinkHomeS</entrypoint>
             <usage>servant</usage>
         </code>

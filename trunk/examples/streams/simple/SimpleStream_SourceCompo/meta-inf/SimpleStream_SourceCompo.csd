@@ -11,7 +11,7 @@
     <idl id="IDL:SimpleStream/StreamSourceHome:1.0">
         <fileinarchive name="simple_stream.cidl"/>
     </idl>
-    
+
     <implementation id="UUID-F43174FD-986A-4BA5-9656-3D82F61C95FB">
         <os name="WIN" />
         <processor name="x86" />
@@ -27,6 +27,26 @@
         </code>
         <code type="DLL">
             <fileinarchive name="SimpleStream_SourceCompo_SERVANT.dll"/>
+            <entrypoint>create_StreamSourceHomeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>
+
+    <implementation id="UUID-47b69c07-26b0-4775-9d55-73311206e0d7">
+        <os name="linux" />
+        <processor name="" />
+        <compiler name="" version="" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/SimpleStream_SourceCompo.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="libSimpleStream_SourceCompo.so"/>
+            <entrypoint>create_StreamSourceHomeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="libSimpleStream_SourceCompo_SERVANT.so"/>
             <entrypoint>create_StreamSourceHomeS</entrypoint>
             <usage>servant</usage>
         </code>
