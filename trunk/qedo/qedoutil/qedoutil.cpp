@@ -29,10 +29,11 @@
 #else
 #include <unistd.h>
 #include <utime.h>
+#include <fcntl.h>
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: qedoutil.cpp,v 1.5 2003/10/24 11:19:35 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qedoutil.cpp,v 1.6 2003/10/24 21:37:59 tom Exp $";
 
 
 namespace Qedo {
@@ -105,7 +106,7 @@ copyFile(std::string src, std::string dst)
 		return 0;
 	}
 	dest = creat(dst.c_str(), 0700);   /* stat first to prevent overwriting existing */
-	if(dest == -1) 
+	if(dest == -1)
 	{
 		perror("creat");
 		close(source);
@@ -240,7 +241,7 @@ makeDir(std::string dir)
 }
 
 
-bool 
+bool
 isFile(std::string name)
 {
 #ifdef _WIN32
@@ -255,35 +256,35 @@ isFile(std::string name)
 	if ((strlen(object_name)) && (object_name[strlen(object_name) - 1] == '\\'))
 #else
 	// if the last symbol is a delimiter, remove it
-	char* object_name = strdup(object.c_str());
+	char* object_name = strdup(name.c_str());
 	if ((strlen(object_name)) && (object_name[strlen(object_name) - 1] == '/' ))
 #endif
 	{
 		object_name[strlen(object_name) - 1] = '\0';
 	}
-	
+
 	struct stat statbuff;
 	int rt = stat(object_name, &statbuff);
 	free(object_name);
 
 	if  (rt < 0)
 	{
-		return false; 
+		return false;
 	}
-		
+
 	if( (statbuff.st_mode & S_IFMT) == S_IFREG )
 	{
-		return true; 
+		return true;
 	}
-    
+
 	return false;
 }
 
 
-int 
-removeFile(std::string name) 
+int
+removeFile(std::string name)
 {
-    if( isFile(name) ) 
+    if( isFile(name) )
 	{
 #ifdef _WIN32
         char dummy[256];
@@ -312,7 +313,7 @@ removeFile(std::string name)
 }
 
 
-bool 
+bool
 isDir(std::string name)
 {
 #ifdef _WIN32
@@ -327,20 +328,20 @@ isDir(std::string name)
 	if ((strlen(object_name)) && (object_name[strlen(object_name) - 1] == '\\'))
 #else
 	// if the last symbol is a delimiter, remove it
-	char* object_name = strdup(object.c_str());
+	char* object_name = strdup(name.c_str());
 	if ((strlen(object_name)) && (object_name[strlen(object_name) - 1] == '/' ))
 #endif
 	{
 		object_name[strlen(object_name) - 1] = '\0';
 	}
-	
+
 	struct stat statbuff;
 	int rt = stat(object_name, &statbuff);
 	free(object_name);
 
 	if  (rt < 0)
 	{
-		return false; 
+		return false;
 	}
 		
 	if( (statbuff.st_mode & S_IFMT) == S_IFDIR )

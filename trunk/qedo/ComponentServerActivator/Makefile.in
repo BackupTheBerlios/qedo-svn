@@ -20,10 +20,11 @@
 
 CXX = @CXX@
 INCLUDES+=-I. -I../ComponentIDL \
-	  -I../StreamComponentIDL \
-          -I../ComponentContainer \
-	  -I../qedoutil \
-	 $(NAMING_INCLUDES)
+	-I../StreamComponentIDL \
+	-I../ComponentContainer \
+	-I../qedoutil \
+	@XERCES_INCLUDES@ \
+	$(NAMING_INCLUDES)
 
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
