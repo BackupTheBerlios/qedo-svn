@@ -573,7 +573,7 @@ d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yysty
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
+						Description="Processing lex file $(InputPath): Tool is $(LEX)"
 						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
 "
 						Outputs="lexana.cpp"/>
@@ -629,7 +629,7 @@ d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yysty
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
+						Description="Processing $(InputPath): Tool is $(PYTHON)"
 						CommandLine="$(PYTHON) errmsg.py &lt; cidl.output &gt; errmsg.cpp
 "
 						Outputs="errmsg.cpp"/>
@@ -685,7 +685,7 @@ cp cidl.hpp cidl.h
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
+						Description="Processing grammar file $(InputPath): Tool is $(YACC)"
 						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
 cp cidl.hpp cidl.h
 "

@@ -355,7 +355,7 @@ copy CIDL_Extension.h CIDL_Extension_skel.h
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
+						Description="IDL compiling file $(InputPath)"
 						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix .cpp   CIDL_Extension.idl
 "
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
@@ -400,7 +400,7 @@ copy IFR.h IFR_skel.h
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Performing Custom Build Step on $(InputPath)"
+						Description="IDL compiling file $(InputPath)"
 						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix  .cpp   IFR.idl
 "
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
