@@ -118,7 +118,7 @@ throw(CADReadException)
 			//
 			if (element_name == "fileinarchive")
 			{
-				file_name = fileinarchive((DOMElement*)(child));
+				file_name = fileinarchive((DOMElement*)child);
 			}
 
 			//
@@ -134,7 +134,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "link")
 			{
-				file_name = link((DOMElement*)(child));
+				file_name = link((DOMElement*)child);
 			}
 		}
 
@@ -867,7 +867,7 @@ throw(CADReadException)
 			//
 			if (element_name == "usagename")
 			{
-				data.usage_name = usagename((DOMElement*)(child));
+				data.usage_name = usagename((DOMElement*)child);
 			}
 
 			//
@@ -875,7 +875,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "componentfileref")
 			{
-				data.file = componentfileref((DOMElement*)(child));
+				data.file = data_->implementationMap_[componentfileref((DOMElement*)child)];
 			}
 
 			//
@@ -883,7 +883,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "componentimplref")
 			{
-				data.impl_id = componentimplref((DOMElement*)(child));
+				data.impl_id = componentimplref((DOMElement*)child);
 			}
 
 			//
@@ -891,7 +891,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "homeproperties")
 			{
-				data.home_prop = homeproperties((DOMElement*)(child));
+				data.home_prop = homeproperties((DOMElement*)child);
 			}
 
 			//
@@ -899,7 +899,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "componentproperties")
 			{
-				data.comp_prop = componentproperties((DOMElement*)(child));
+				data.comp_prop = componentproperties((DOMElement*)child);
 			}
 
 			//
@@ -907,7 +907,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "registerwithhomefinder")
 			{
-				data.finder = registerwithhomefinder((DOMElement*)(child));
+				data.finder = registerwithhomefinder((DOMElement*)child);
 			}
 
 			//
@@ -915,7 +915,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "registerwithnaming")
 			{
-				data.naming = registerwithnaming((DOMElement*)(child));
+				data.naming = registerwithnaming((DOMElement*)child);
 			}
 
 			//
@@ -923,7 +923,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "registerwithtrader")
 			{
-				data.trader = registerwithtrader((DOMElement*)(child));
+				data.trader = registerwithtrader((DOMElement*)child);
 			}
 
 			//
@@ -931,7 +931,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "componentinstantiation")
 			{
-				data.instances.push_back(componentinstantiation((DOMElement*)(child)));
+				data.instances.push_back(componentinstantiation((DOMElement*)child));
 			}
 
 			//
@@ -939,7 +939,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "destination")
 			{
-				data.dest = destination((DOMElement*)(child));
+				data.dest = destination((DOMElement*)child);
 			}
 
 			//
@@ -947,7 +947,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "extension")
 			{
-				extension((DOMElement*)(child));
+				extension((DOMElement*)child);
 			}
 		}
 

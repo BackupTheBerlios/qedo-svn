@@ -131,7 +131,7 @@ Components::Deployment::Container_ptr
 AssemblyImpl::createContainer (Components::Deployment::ComponentServer_ptr component_server)
 throw( Components::CreateFailure )
 {
-	DEBUG_OUT("..... create new container");
+	DEBUG_OUT( "AssemblyImpl: create new container" );
 
     //
 	// create new Container
@@ -149,12 +149,12 @@ throw( Components::CreateFailure )
 	}
 	catch (Components::CreateFailure&)
 	{
-		std::cerr << ".......... This Component Server cannot create a container of the requested type" << std::endl;
+		NORMAL_ERR( "AssemblyImpl: This Component Server cannot create a container of the requested type" );
 		throw Components::CreateFailure();
 	}
 	catch (CORBA::SystemException& ex)
 	{
-		std::cerr << ".......... CORBA::SystemException during create_container() : " << ex << std::endl;
+		NORMAL_ERR2( "AssemblyImpl: CORBA::SystemException during create_container() : ", ex );
 		throw Components::CreateFailure();
 	}
 
@@ -175,14 +175,14 @@ throw( Components::CreateFailure )
 	obj = resolveName(COMPONENT_INSTALLATION_CONTEXT + host);
 	if ( CORBA::is_nil(obj))
 	{
-		DEBUG_OUT2("..... no Object for ", host);
+		NORMAL_ERR2( "AssemblyImpl: no Object for ", host );
 		throw Components::CreateFailure();
 	}
     
 	componentInstallation = Qedo_Components::Deployment::ComponentInstallation::_narrow(obj.in());
 	if ( CORBA::is_nil(componentInstallation.in()))
 	{
-		DEBUG_OUT2("..... no ComponentInstallation for ", host);
+		NORMAL_ERR2( "AssemblyImpl: no ComponentInstallation for ", host );
 		throw Components::CreateFailure();
 	}
 
@@ -332,7 +332,9 @@ throw( Components::CreateFailure )
 {
 	Qedo_Components::Deployment::ComponentInstallation_var componentInstallation;
 
+	//
 	// for each hostcollocation
+	//
 	std::vector < HostData > ::const_iterator host_iter;
 	for(host_iter = data_.hosts_.begin(); 
 		host_iter != data_.hosts_.end(); 
@@ -340,13 +342,17 @@ throw( Components::CreateFailure )
 	{
 		componentInstallation = getComponentInstallation((*host_iter).host);
 
+		//
 		// for each processcollocation
+		//
 		std::vector < ProcessData > ::const_iterator process_iter;
 		for(process_iter = (*host_iter).processes.begin(); 
 			process_iter != (*host_iter).processes.end();
 			process_iter++)
 		{
+			//
 			// for each homeplacement
+			//
 			std::vector < HomeInstanceData > ::const_iterator iter;
 			for(iter = (*process_iter).homes.begin();
 				iter != (*process_iter).homes.end(); 
@@ -375,8 +381,7 @@ AssemblyImpl::installComponent
 (Qedo_Components::Deployment::ComponentInstallation_ptr componentInstallation, HomeInstanceData data)
 throw( Components::CreateFailure )
 {
-	std::string package_file_ref = data.file;
-	std::string package_file = data_.implementationMap_[package_file_ref];
+	std::string package_file = data.file;
 	std::string impl_id = data.impl_id;
 	std::string location = std::string("PACKAGE=") + getFileName(package_file);
 
@@ -441,13 +446,17 @@ throw(Components::CreateFailure)
 	Components::Deployment::ComponentServer_var component_server;
 	std::vector < HomeInstanceData > ::iterator iter;
 	
+	//
 	// for each hostcollocation
+	//
 	std::vector < HostData > ::iterator host_iter;
 	for(host_iter = data_.hosts_.begin(); 
 		host_iter != data_.hosts_.end(); 
 		host_iter++)
 	{
+		//
 		// for each processcollocation
+		//
 		std::vector < ProcessData > ::iterator process_iter;
 		for(process_iter = (*host_iter).processes.begin(); 
 			process_iter != (*host_iter).processes.end();
@@ -456,7 +465,9 @@ throw(Components::CreateFailure)
 			component_server = createComponentServer((*host_iter).host);
 			(*process_iter).server = Components::Deployment::ComponentServer::_duplicate(component_server);
 
+			//
 			// for each homeplacement
+			//
 			for(iter = (*process_iter).homes.begin(); 
 				iter != (*process_iter).homes.end(); 
 				iter++)
@@ -469,7 +480,9 @@ throw(Components::CreateFailure)
 		}
 	}
 
+	//
 	// for each existing home
+	//
 	for(iter = data_.existing_homes_.begin();
 		iter != data_.existing_homes_.end();
 		iter++)

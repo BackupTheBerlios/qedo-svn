@@ -85,6 +85,8 @@ struct ComponentImplementationData
 {
 	/** the uuid of the component implementation */
 	std::string									uuid;
+	/** the component kind */
+	std::string									kind;
 	/** the location of the idl spec */
 	IDLData										idl;
 	/** the RepId of the component */

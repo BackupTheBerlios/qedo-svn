@@ -73,8 +73,14 @@ private:
 	/** the path to drop files */
 	std::string								path_;
     
+	/**
+	 * componentkind
+	 */
+    void componentkind (DOMElement*)
+        throw(CCDReadException);
+
     /**
-	 * handle corbacomponent
+	 * corbacomponent
 	 */
     void corbacomponent (DOMElement*)
         throw(CCDReadException);
@@ -89,6 +95,12 @@ private:
 	 * handle descriptor
 	 */
 	std::string descriptor (DOMElement*)
+        throw(CCDReadException);
+
+	/**
+	 * entity
+	 */
+    void entity (DOMElement*)
         throw(CCDReadException);
 
     /**
@@ -119,6 +131,30 @@ private:
 	 * handle link
 	 */
 	std::string link (DOMElement*)
+        throw(CCDReadException);
+
+	/**
+	 * process
+	 */
+    void process (DOMElement*)
+        throw(CCDReadException);
+
+	/**
+	 * service
+	 */
+    void service (DOMElement*)
+        throw(CCDReadException);
+
+	/**
+	 * session
+	 */
+    void session (DOMElement*)
+        throw(CCDReadException);
+
+	/**
+	 * unclassified
+	 */
+    void unclassified (DOMElement*)
         throw(CCDReadException);
 
 public:

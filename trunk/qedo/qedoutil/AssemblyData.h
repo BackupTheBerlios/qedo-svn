@@ -68,6 +68,8 @@ struct HomeInstanceData
 	std::string									file;
 	/** implementation id */
 	std::string									impl_id;
+	/** component kind */
+	std::string									kind;
 	/** destination */
 	std::string									dest;
 	/** registration with homefinder */

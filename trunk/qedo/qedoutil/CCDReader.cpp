@@ -27,7 +27,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.4 2003/09/26 08:34:40 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.5 2003/11/04 15:23:27 neubauer Exp $";
 
 
 namespace Qedo {
@@ -40,6 +40,62 @@ CCDReader::CCDReader()
 
 CCDReader::~CCDReader()
 {
+}
+
+
+void
+CCDReader::componentkind (DOMElement* element)
+throw(CCDReadException)
+{
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			//
+			// service
+			//
+			if (!XMLString::compareString(child->getNodeName(), X("service")))
+			{
+				service((DOMElement*)child);
+			}
+
+			//
+			// session
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("session")))
+			{
+				session((DOMElement*)child);
+			}
+
+			//
+			// process
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("process")))
+			{
+				process( (DOMElement*)child );
+			}
+
+			//
+			// entity
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("entity")))
+			{
+				entity( (DOMElement*)child );
+			}
+
+			//
+			// unclassified
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("unclassified")))
+			{
+				unclassified( (DOMElement*)child );
+			}
+		}
+
+        // get next child
+		child = child->getNextSibling();
+    }
 }
 
 
@@ -67,6 +123,14 @@ throw(CCDReadException)
 			else if (!XMLString::compareString(child->getNodeName(), X("homefeatures")))
 			{
 				
+			}
+
+			//
+			// componentkind
+			//
+			else if (!XMLString::compareString(child->getNodeName(), X("componentkind")))
+			{
+				componentkind( (DOMElement*)child );
 			}
 		}
 
@@ -202,6 +266,46 @@ throw(CCDReadException)
 	aFile.close();
 
     return name;
+}
+
+
+void 
+CCDReader::service (DOMElement* element)
+throw(CCDReadException)
+{
+	data_->kind = "SERVICE";
+}
+
+
+void 
+CCDReader::session (DOMElement* element)
+throw(CCDReadException)
+{
+	data_->kind = "SESSION";
+}
+
+
+void 
+CCDReader::process (DOMElement* element)
+throw(CCDReadException)
+{
+	data_->kind = "PROCESS";
+}
+
+
+void 
+CCDReader::entity (DOMElement* element)
+throw(CCDReadException)
+{
+	data_->kind = "ENTITY";
+}
+
+
+void 
+CCDReader::unclassified (DOMElement* element)
+throw(CCDReadException)
+{
+	data_->kind = "UNCLASSIFIED";
 }
 
 
