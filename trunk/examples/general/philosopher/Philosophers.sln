@@ -1,0 +1,42 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServantModule", "ServantModule\ServantModule.vcproj", "{7F4A7EB3-0C49-49DA-99A2-3088BE6DC0F3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExecutorModule", "ExecutorModule\ExecutorModule.vcproj", "{076BAC7F-8381-445E-A348-F9075C773370}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IDL", "IDL\IDL.vcproj", "{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestClient", "TestClient\TestClient.vcproj", "{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+		{7F4A7EB3-0C49-49DA-99A2-3088BE6DC0F3}.0 = {397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}
+		{076BAC7F-8381-445E-A348-F9075C773370}.0 = {397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}
+		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.0 = {397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{7F4A7EB3-0C49-49DA-99A2-3088BE6DC0F3}.Debug.ActiveCfg = Debug|Win32
+		{7F4A7EB3-0C49-49DA-99A2-3088BE6DC0F3}.Debug.Build.0 = Debug|Win32
+		{7F4A7EB3-0C49-49DA-99A2-3088BE6DC0F3}.Release.ActiveCfg = Release|Win32
+		{7F4A7EB3-0C49-49DA-99A2-3088BE6DC0F3}.Release.Build.0 = Release|Win32
+		{076BAC7F-8381-445E-A348-F9075C773370}.Debug.ActiveCfg = Debug|Win32
+		{076BAC7F-8381-445E-A348-F9075C773370}.Debug.Build.0 = Debug|Win32
+		{076BAC7F-8381-445E-A348-F9075C773370}.Release.ActiveCfg = Release|Win32
+		{076BAC7F-8381-445E-A348-F9075C773370}.Release.Build.0 = Release|Win32
+		{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}.Debug.ActiveCfg = Debug|Win32
+		{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}.Debug.Build.0 = Debug|Win32
+		{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}.Release.ActiveCfg = Release|Win32
+		{397AE30F-7FBD-4E6D-BEC0-48E8F27C09CE}.Release.Build.0 = Release|Win32
+		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Debug.ActiveCfg = Debug|Win32
+		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Debug.Build.0 = Debug|Win32
+		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Release.ActiveCfg = Release|Win32
+		{45A9508F-EA26-467D-8A8B-2B5EDF1ED55E}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal
