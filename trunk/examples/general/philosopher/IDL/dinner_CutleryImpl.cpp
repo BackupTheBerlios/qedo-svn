@@ -6,8 +6,6 @@
 
 
 // BEGIN USER INSERT SECTION file
-#include "ExecutorValuetypes.h"
-
 #include <iostream>
 
 using namespace std;
@@ -237,7 +235,6 @@ CutleryImpl::set_session_context(::Components::SessionContext_ptr context)
     context_ = ::dinner::CCM_Cutlery_Context::_narrow(context);
     
     #endif
-    
     component_->set_context(context_);
     Seg_->set_context(context_);
 }

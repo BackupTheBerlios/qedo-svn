@@ -12,6 +12,7 @@
 
 #include <CORBA.h>
 #include "dinner_BUSINESS.h"
+#include "valuetypes.h"
 #include "RefCountBase.h"
 #include <string>
 
@@ -38,6 +39,7 @@ namespace dinner
     {
     
     private:
+    
         ::dinner::CCM_Cutlery_Context_var context_;
         
     public:
@@ -85,6 +87,7 @@ namespace dinner
     {
     
     private:
+    
         ::dinner::CCM_Cutlery_Context_var context_;
         
     public:
@@ -133,6 +136,7 @@ namespace dinner
     {
     
     private:
+    
         ::dinner::CCM_Cutlery_Context_var context_;
         
         CutlerySessionImpl* component_;
@@ -207,6 +211,7 @@ namespace dinner
     {
     
     private:
+    
         Components::CCMContext_var context_;
         
     public:

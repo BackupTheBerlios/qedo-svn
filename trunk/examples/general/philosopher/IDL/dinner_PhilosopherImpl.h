@@ -12,13 +12,12 @@
 
 #include <CORBA.h>
 #include "dinner_BUSINESS.h"
+#include "valuetypes.h"
 #include "RefCountBase.h"
 #include <string>
 
 
 // BEGIN USER INSERT SECTION file_post
-#include "ExecutorValuetypes.h"
-
 using namespace std;
 
 namespace dinner {
@@ -48,7 +47,7 @@ namespace dinner
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_PhilosopherSessionImpl
 #ifndef MICO_ORB
-  //      , public virtual Qedo::RefCountLocalObject
+        , public virtual Qedo::RefCountLocalObject
 #endif
 // BEGIN USER INSERT SECTION INHERITANCE_PhilosopherSessionImpl
 		, JTCThreadWithTimer
@@ -56,6 +55,7 @@ namespace dinner
     {
     
     private:
+    
         ::dinner::CCM_Philosopher_Context_var context_;
         
     public:
@@ -134,6 +134,7 @@ namespace dinner
     {
     
     private:
+    
         ::dinner::CCM_Philosopher_Context_var context_;
         
         PhilosopherSessionImpl* component_;
@@ -206,6 +207,7 @@ namespace dinner
     {
     
     private:
+    
         Components::CCMContext_var context_;
         
     public:

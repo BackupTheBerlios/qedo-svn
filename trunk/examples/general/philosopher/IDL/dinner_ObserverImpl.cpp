@@ -6,8 +6,6 @@
 
 
 // BEGIN USER INSERT SECTION file
-#include "ExecutorValuetypes.h"
-
 #include <iostream>
 #include "Output.h"
 
@@ -183,7 +181,6 @@ ObserverImpl::set_session_context(::Components::SessionContext_ptr context)
     context_ = ::dinner::CCM_Observer_Context::_narrow(context);
     
     #endif
-    
     component_->set_context(context_);
 }
 
@@ -316,7 +313,7 @@ create_ObserverHomeE(void)
 	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
 
 	CORBA::ValueFactoryBase_var oldFact;
-	oldFact = orb->register_value_factory ("IDL:dinner/PhilosopherState:1.0", new dinner::PhilosopherStateFactory_impl() );
+	oldFact = orb->register_value_factory ("IDL:dinner/PhilosopherState:1.0", new dinner::PhilosopherStateFactoryImpl() );
 // END USER INSERT SECTION create_ObserverHome
 
     return new ::dinner::ObserverHomeImpl();

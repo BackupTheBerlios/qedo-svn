@@ -263,9 +263,6 @@ copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="ExecutorValuetypes.cpp">
-			</File>
-			<File
 				RelativePath="..\IDL\dinner_CutleryImpl.cpp">
 			</File>
 			<File
@@ -274,13 +271,13 @@ copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
 			<File
 				RelativePath="..\IDL\dinner_PhilosopherImpl.cpp">
 			</File>
+			<File
+				RelativePath="..\IDL\valuetypes.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
-			<File
-				RelativePath="ExecutorValuetypes.h">
-			</File>
 			<File
 				RelativePath="..\IDL\dinner_CutleryImpl.h">
 			</File>
@@ -289,6 +286,9 @@ copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
 			</File>
 			<File
 				RelativePath="..\IDL\dinner_PhilosopherImpl.h">
+			</File>
+			<File
+				RelativePath="..\IDL\valuetypes.h">
 			</File>
 		</Filter>
 		<Filter

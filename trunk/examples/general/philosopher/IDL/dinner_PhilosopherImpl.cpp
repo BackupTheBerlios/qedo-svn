@@ -77,7 +77,7 @@ PhilosopherSessionImpl::run()
 	{
 		status = dinner::THINKING;
 		cout << "PhilosopherSessionImpl: Philosopher is thinking -> " << id_ << endl;
-		report = new PhilosopherState_impl (status, id_.c_str(),
+		report = new PhilosopherStateImpl (status, id_.c_str(),
 			dinner::Philosopher::_narrow (context_->get_CCM_object()));
 		context_->push_philosopher_state (report);
 		this->timer_sleep (tsec_ *1000);
@@ -87,7 +87,7 @@ PhilosopherSessionImpl::run()
 
 		status = dinner::HUNGRY;
 		cout << "PhilosopherSessionImpl: Philosopher is hungry -> " << id_ << endl;
-		report = new PhilosopherState_impl (status, id_.c_str(),
+		report = new PhilosopherStateImpl (status, id_.c_str(),
 			dinner::Philosopher::_narrow (context_->get_CCM_object()));
 		context_->push_philosopher_state (report);
 		dead_counter = 4;
@@ -100,7 +100,7 @@ PhilosopherSessionImpl::run()
 			{
 				cout << "PhilosopherSessionImpl: Philosopher is dead... aaaaaahhhhhhhhhhhhhh... -> " << id_ << endl;
 				status = dinner::DEAD;
-				report = new PhilosopherState_impl (status, id_.c_str(),
+				report = new PhilosopherStateImpl (status, id_.c_str(),
 					dinner::Philosopher::_narrow (context_->get_CCM_object()));
 				context_->push_philosopher_state (report);
 
@@ -189,7 +189,7 @@ PhilosopherSessionImpl::run()
 
 		status = dinner::EATING;
 		cout << "PhilosopherSessionImpl: Philosopher is eating -> " << id_ << endl;
-		report = new PhilosopherState_impl (status, id_.c_str(),
+		report = new PhilosopherStateImpl (status, id_.c_str(),
 			dinner::Philosopher::_narrow (context_->get_CCM_object()));
 		context_->push_philosopher_state (report);
 		this->timer_sleep (esec_*1000);
@@ -218,7 +218,7 @@ PhilosopherSessionImpl::run()
 
 		status = dinner::SLEEPING;
 		cout << "PhilosopherSessionImpl: Philosopher is sleeping -> " << id_ << endl;
-		report = new PhilosopherState_impl (status, id_.c_str(),
+		report = new PhilosopherStateImpl (status, id_.c_str(),
 			dinner::Philosopher::_narrow (context_->get_CCM_object()));
 			context_->push_philosopher_state (report);
 		this->timer_sleep (ssec_ * 1000);
@@ -401,7 +401,7 @@ PhilosopherImpl::~PhilosopherImpl()
 	cout << "PhilosopherImpl: Destructor called" << endl;
 // END USER INSERT SECTION PhilosopherImpl::~PhilosopherImpl
 
- //   component_->_remove_ref();
+    component_->_remove_ref();
 }
 
 
@@ -452,8 +452,8 @@ PhilosopherImpl::set_session_context(::Components::SessionContext_ptr context)
         
     #else
     context_ = ::dinner::CCM_Philosopher_Context::_narrow(context);
-    #endif
     
+    #endif
     component_->set_context(context_);
 }
 
