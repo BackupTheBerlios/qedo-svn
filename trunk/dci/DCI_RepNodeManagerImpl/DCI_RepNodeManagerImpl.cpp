@@ -440,6 +440,7 @@ RepNodeManagerSessionImpl::RepNodeManagerSessionImpl()
     WORD wVersionRequested;
     WSADATA wsaData;
     int err;
+    char _hostname [256];
       
     wVersionRequested = MAKEWORD( 1, 0 );
   
@@ -449,9 +450,10 @@ RepNodeManagerSessionImpl::RepNodeManagerSessionImpl()
       /* WinSock DLL.                                  */
       return ;
     }
+#else
+    char _hostname[MAXHOSTNAMELEN];
 #endif
     
-    char _hostname [32];
     if(gethostname(_hostname, sizeof(_hostname)) != 0)
       {
     
@@ -486,7 +488,7 @@ RepNodeManagerSessionImpl::RepNodeManagerSessionImpl()
 
     std::string hostStr(_hostname);
     nodenameStr = hostStr;
-    strncpy(nodename, _hostname,strlen(_hostname));
+    strncpy(nodename, _hostname,sizeof(nodename));
   
     qcsaIsRegistered = false;
     qcsaIsStarted_ = false;

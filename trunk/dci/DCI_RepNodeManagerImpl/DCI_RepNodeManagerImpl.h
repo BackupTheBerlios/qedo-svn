@@ -165,12 +165,14 @@ namespace DCI
         	throw(CORBA::SystemException, ::Components::InvalidName);
     
 // BEGIN USER INSERT SECTION RepNodeManagerSessionImpl
-    char nodename[32];
+    
     std::string nodenameStr;
     #ifdef WIN32
     int qcsaProcHdle;
+    char nodename[256];
     #else
     pid_t qcsaProcHdle;
+    char nodename[MAXHOSTNAMELEN];    
     #endif
 
     //Buffer for storing the primary working directory
