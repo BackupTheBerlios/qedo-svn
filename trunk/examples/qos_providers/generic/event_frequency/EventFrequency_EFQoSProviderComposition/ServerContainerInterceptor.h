@@ -10,16 +10,18 @@ namespace Qedo {
 		unsigned long count;
 		long frequency_;
 		time_t stamp;
+		PortableInterceptor::SlotId slot_id_;
 	public:
 		EFServerContainerInterceptor();
 		EFServerContainerInterceptor(long freq);
 
 		~EFServerContainerInterceptor();
 
-		virtual void receive_request (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id) ;
-		virtual void send_reply (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id) ;
-		virtual void send_system_exception (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id) ;
-		virtual void send_user_exception (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id) ;
+		virtual void set_slot_id(PortableInterceptor::SlotId id);
+		virtual void receive_request (::Components::Extension::ContainerServerRequestInfo_ptr info) ;
+		virtual void send_reply (::Components::Extension::ContainerServerRequestInfo_ptr info) ;
+		virtual void send_system_exception (::Components::Extension::ContainerServerRequestInfo_ptr info) ;
+		virtual void send_user_exception (::Components::Extension::ContainerServerRequestInfo_ptr info) ;
 		virtual void rec_request_from_servant_locator(const char* operation);
 
 	};

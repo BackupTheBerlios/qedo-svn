@@ -7,19 +7,27 @@
 
     <componentfiles>
         <componentfile id="Reader_file">
-            <fileinarchive name="Chat_Reader_Compo.zip"/>
-        </componentfile>
-
-        <componentfile id="Writer_file">
-            <fileinarchive name="Chat_Writer_Compo.zip"/>
+            <fileinarchive name="meta-inf/Chat_Reader_Compo.csd">
+			<link href="Chat_Reader_Compo.zip"/>
+		</fileinarchive>
         </componentfile>
 
         <componentfile id="Channel_file">
-            <fileinarchive name="Chat_Channel_Compo.zip"/>
+            <fileinarchive name="meta-inf/Chat_Channel_Compo.csd">
+			<link href="Chat_Channel_Compo.zip"/>
+		</fileinarchive>
+        </componentfile>
+
+        <componentfile id="Writer_file">
+            <fileinarchive name="meta-inf/Chat_Writer_Compo.csd">
+			<link href="Chat_Writer_Compo.zip"/>
+		</fileinarchive>
         </componentfile>
 
         <componentfile id="EFQosProvider_file">
-            <fileinarchive name="EventFrequency_EFQoSProviderComposition.zip"/>
+            <fileinarchive name="meta-inf/EventFrequency_EFQoSProviderComposition.csd">
+			<link href="EventFrequency_EFQoSProviderComposition.zip"/>
+		</fileinarchive>
         </componentfile>
 
     </componentfiles>
@@ -30,6 +38,9 @@
 	        	<componentfileref idref="EFQosProvider_file"/>
 				<componentimplref idref="UUID-01e7eb19-b096-4f41-b207-0f35c11ff6c8"/>
   	        	<componentinstantiation id="EFQoSProvider">
+                               <componentproperties>
+                                        <fileinarchive name="meta-inf/reader_assignment.cpf" />
+                                </componentproperties>
 			</componentinstantiation>
 
 		        <destination></destination>

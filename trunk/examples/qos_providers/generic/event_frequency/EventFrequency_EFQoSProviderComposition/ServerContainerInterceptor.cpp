@@ -18,10 +18,19 @@ EFServerContainerInterceptor::~EFServerContainerInterceptor ()
 {
 }
 
+
 void
-EFServerContainerInterceptor::receive_request (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id)
+EFServerContainerInterceptor::set_slot_id(PortableInterceptor::SlotId id)
 {
-	if(!strcmp(info->operation(), "push_event"))
+	slot_id_ = id;
+}
+
+
+void
+EFServerContainerInterceptor::receive_request (::Components::Extension::ContainerServerRequestInfo_ptr info)
+{
+
+	if(!strcmp(info->request_info()->operation(), "push_event"))
 	{
 		time_t temp_stamp;
 		time (&temp_stamp);
@@ -36,24 +45,25 @@ EFServerContainerInterceptor::receive_request (::PortableInterceptor::ServerRequ
 			time(&stamp);
 		}
 	}
+
 }
 
 void
-EFServerContainerInterceptor::send_reply (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id)
+EFServerContainerInterceptor::send_reply (::Components::Extension::ContainerServerRequestInfo_ptr info)
 {
 //	std::cout << "COPI: send_reply: " << info->operation() << "for id: " << std::endl;
 
 }
 
 void
-EFServerContainerInterceptor::send_system_exception (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id)
+EFServerContainerInterceptor::send_system_exception (::Components::Extension::ContainerServerRequestInfo_ptr info)
 {
 //	std::cout << "COPI: send_system_exception: " << info->operation() << "for id: " << std::endl;
 
 }
 
 void
-EFServerContainerInterceptor::send_user_exception (::PortableInterceptor::ServerRequestInfo_ptr info, const char* id) {
+EFServerContainerInterceptor::send_user_exception (::Components::Extension::ContainerServerRequestInfo_ptr info) {
 //	std::cout << "COPI: send_user_exception: " << info->operation() << "for id:" << std::endl;
 
 }

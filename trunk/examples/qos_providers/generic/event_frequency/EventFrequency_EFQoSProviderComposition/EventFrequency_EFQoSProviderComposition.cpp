@@ -50,7 +50,7 @@ Components::Extension::ServerInterceptorRegistration_var server_reg =
 	context_ -> get_server_interceptor_dispatcher_registration();
 
 // check for contract assignments
-Components::ConfigValues_var contract_info = 
+Components::ConfigValues_var contract_info =
 	context_ -> get_contract_data();
 
 //for (CORBA::ULong counter = 0; counter < contract_info -> length(), counter++ )
@@ -70,9 +70,6 @@ server_reg -> register_interceptor_for_component(server_interceptor_, component_
 // register interceptor for all
 //server_reg -> register_interceptor_for_all(server_interceptor_);
 // END USER INSERT SECTION EFQoSProviderExec::configuration_complete
-
-
-
 }
 
 
