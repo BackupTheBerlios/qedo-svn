@@ -19,43 +19,68 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
+
 #include "Connector.h"
 
 namespace Qedo
 {
 
-Connector::Connector()
+ConnectorImpl::ConnectorImpl()
 {
-
 }
 
-Connector::~Connector()
+ConnectorImpl::ConnectorImpl(char* szImplID)
 {
-
+	strcpy(m_szImplID, szImplID);
 }
 
+ConnectorImpl::~ConnectorImpl()
+{	
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//return the ID of this implementation
+////////////////////////////////////////////////////////////////////////////////
 char* 
-Connector::implementation_id()
+ConnectorImpl::implementation_id()
 {
-	return NULL;
+	return m_szImplID;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//return the pid of the given storage object
+////////////////////////////////////////////////////////////////////////////////
 Pid* 
-Connector::get_pid(StorageObjectBase_ptr obj)
+ConnectorImpl::get_pid(StorageObjectBase_ptr obj)
 {
-	return NULL;
+	if(obj==NULL)
+		return NULL;
+
+	return ((dynamic_cast <StorageObject*> (obj))->get_pid());
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//return the short pid of the given storage object
+////////////////////////////////////////////////////////////////////////////////
 ShortPid* 
-Connector::get_short_pid(StorageObjectBase_ptr obj)
+ConnectorImpl::get_short_pid(StorageObjectBase_ptr obj)
 {
-	return NULL;
+	if(obj==NULL)
+		return NULL;
+
+	return ((dynamic_cast <StorageObject*> (obj))->get_short_pid());
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//creates a basic, non-transactional session. Typically the additional parameters
+//will contain information such as file name, database name, or authentication
+//information. If the implementation cannot provide a session with the desired
+//access mode (or higher) it raises the standard exception PERSIST_STORE
+////////////////////////////////////////////////////////////////////////////////
 Sessio_ptr 
-Connector::create_basic_session(AccessMode access_mode,
-                                const char* catalog_type_name,
-                                const ParameterList& additional_parameters)
+ConnectorImpl::create_basic_session(AccessMode access_mode,
+									const char* catalog_type_name,
+									const ParameterList& additional_parameters)
 {
 	if(additional_parameters.length()==0)
 		return NULL;
@@ -73,7 +98,7 @@ Connector::create_basic_session(AccessMode access_mode,
 		strConn += ";";
 	}
 	
-	Qedo::CatalogBase* pSession = new Qedo::CatalogBase(access_mode, strConn.c_str());
+	SessioImpl* pSession = new SessioImpl(access_mode, strConn.c_str());
 	
 	if(!pSession->Init())
 		throw CORBA::PERSIST_STORE();
@@ -81,38 +106,78 @@ Connector::create_basic_session(AccessMode access_mode,
 	return (dynamic_cast <Sessio_ptr> (pSession));
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//creates a new session pool
+////////////////////////////////////////////////////////////////////////////////
 SessionPool_ptr 
-Connector::create_session_pool(AccessMode access_mode,
-                               TransactionPolicy tx_policy,
-                               const char* catalog_type_name,
-                               const ParameterList& additional_parameters)
+ConnectorImpl::create_session_pool(AccessMode access_mode,
+									TransactionPolicy tx_policy,
+									const char* catalog_type_name,
+									const ParameterList& additional_parameters)
 {
-	return NULL;
+	if(additional_parameters.length()==0)
+		return NULL;
+
+	string strConn = "";
+	const char* szVal;
+
+	//DSN=myodbc3-test;SERVER=haw;UID=root;PWD=;DATABASE=test;
+	for(int i=0; i<additional_parameters.length(); i++)
+	{
+		strConn += additional_parameters[i].name;
+		strConn += "=";
+		additional_parameters[i].val >>= szVal;
+		strConn += szVal;
+		strConn += ";";
+	}
+	
+	SessionPoolImpl* pSessionPool = new SessionPoolImpl(access_mode, tx_policy, strConn.c_str());
+	
+	if(!pSessionPool->Init())
+		throw CORBA::PERSIST_STORE();
+
+	return (dynamic_cast <SessionPool_ptr> (pSessionPool));
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//returns the storage object factory previously registered with the given name
+//; return NULL when there is no previously registered factory
+////////////////////////////////////////////////////////////////////////////////
 StorageObjectFactory_ptr 
-Connector::register_storage_object_factory(const char* storage_type_name,
+ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
                                            StorageObjectFactory_ptr factory)
 {
 	return NULL;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//returns the storage home factory previously registered with the given name
+//; return NULL when there is no previously registered factory
+////////////////////////////////////////////////////////////////////////////////
 StorageHomeFactory_ptr 
-Connector::register_storage_home_factory(const char* storage_home_type_name,
+ConnectorImpl::register_storage_home_factory(const char* storage_home_type_name,
                                          StorageHomeFactory_ptr factory)
 {
 	return NULL;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//returns the session factory previously registered with the given name
+//; return NULL when there is no previously registered factory
+////////////////////////////////////////////////////////////////////////////////
 SessionFactory_ptr 
-Connector::register_session_factory(const char* catalog_type_name,
+ConnectorImpl::register_session_factory(const char* catalog_type_name,
                                     SessionFactory_ptr factory)
 {
 	return NULL;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//returns the session pool factory previously registered with the given name
+//; return NULL when there is no previously registered factory
+////////////////////////////////////////////////////////////////////////////////
 SessionPoolFactory_ptr 
-Connector::register_session_pool_factory(const char* catalog_type_name,
+ConnectorImpl::register_session_pool_factory(const char* catalog_type_name,
                                          SessionPoolFactory_ptr factory)
 {
 	return NULL;

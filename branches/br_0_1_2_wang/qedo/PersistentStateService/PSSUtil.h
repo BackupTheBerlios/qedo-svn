@@ -20,55 +20,30 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __STORAGEHOMEBASE_H__
-#define __STORAGEHOMEBASE_H__
+#ifndef __PSSUTIL_H__
+#define __PSSUTIL_H__
 
-#include "PSSUtil.h"
-#include "CORBADepends.h"
-#include "RefCountBase.h"
-#include "QDRecordset.h"
+#include <CORBA.h>
 
 
-using namespace CosPersistentState;
+#ifdef WIN32
+	#ifdef PSSDLL_EXPORTS
+		#define PSSDLL_API __declspec(dllexport)
+		#define PSSDLL_EXTERN
+	#else
+		#define PSSDLL_API __declspec(dllimport)
+		#define PSSDLL_EXTERN extern
+	#endif
+#else
+	#define PSSDLL_API 
+	#define PSSDLL_EXTERN
+#endif
 
 
-namespace Qedo
-{
-
-class  StorageHomeBaseImpl : public virtual CosPersistentState::StorageHomeBase,
-							 public virtual RefCountLocalObject,
-							 public virtual QDRecordset
-{
-	public:
-
-		StorageHomeBaseImpl() {};
-
-		StorageHomeBaseImpl(Sessio_ptr pSession, const char* szOwnStorageHomeName);
-
-		~StorageHomeBaseImpl();
-		
-		//
-		// IDL:omg.org/CosPersistentState/StorageHomeBase/find_by_short_pid:1.0
-		//
-		StorageObjectBase_ptr find_by_short_pid(const ShortPid& short_pid);
-
-		//
-		// IDL:omg.org/CosPersistentState/StorageHomeBase/get_catalog:1.0
-		//
-		CatalogBase_ptr get_catalog();
-
-		char* getOwnStorageHomeName();
-
-	protected:
-		
-		char* m_szOwnStorageHomeName;
-
-	private:
-		
-		CatalogBase_ptr m_pCatalogBase;
-		char* m_szBaseStorageHomeName;
-};
-
-}; // namespace Qedo
+// VC++ warnings 
+#pragma warning (disable : 4251) // class OB::ObjVar<*> needs to have dll-interface to be used by clients of class ...
+#pragma warning (disable : 4275) // non dll-interface class ... used as base class for dll-interface class ...
+#pragma warning (disable : 4290) // exception specification ignaored
 
 #endif
+

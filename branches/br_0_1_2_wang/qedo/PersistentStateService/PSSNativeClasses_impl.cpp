@@ -32,18 +32,18 @@ namespace Qedo
 //on the instance of an embedded storage object
 ////////////////////////////////////////////////////////////////////////////////
 void 
-StorageObject::destroy_object() 
+StorageObjectImpl::destroy_object() 
 	throw (CORBA::SystemException)
 {
-
+	
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //When called on an incarnation, the object_exist operation returns TRUE if the 
-//target incarnation represents an actual storage object, FLASE if it does not
+//target incarnation represents an actual storage object, FALSE if it does not
 ////////////////////////////////////////////////////////////////////////////////
 CORBA::Boolean 
-StorageObject::object_exists() 
+StorageObjectImpl::object_exists() 
 	throw (CORBA::SystemException)
 {
 	return TRUE;
@@ -56,7 +56,7 @@ StorageObject::object_exists()
 //on the instance of an embedded storage object
 ////////////////////////////////////////////////////////////////////////////////
 Pid* 
-StorageObject::get_pid()
+StorageObjectImpl::get_pid()
 	throw (CORBA::SystemException)
 {
 	return NULL;
@@ -69,7 +69,7 @@ StorageObject::get_pid()
 //on the instance of an embedded storage object
 ////////////////////////////////////////////////////////////////////////////////
 ShortPid* 
-StorageObject::get_short_pid()
+StorageObjectImpl::get_short_pid()
 	throw (CORBA::SystemException)
 {
 	return NULL;
@@ -80,13 +80,114 @@ StorageObject::get_short_pid()
 //instance
 ////////////////////////////////////////////////////////////////////////////////
 StorageHomeBase_ptr 
-StorageObject::get_storage_home()
+StorageObjectImpl::get_storage_home()
 	throw (CORBA::SystemException)
 {
 	if(m_storageHomeBase)
 		return (dynamic_cast <StorageHomeBase_ptr> (m_storageHomeBase));
 	return
 		NULL;
+}
+
+
+StorageObjectRefImpl::StorageObjectRefImpl(StorageObject* obj) 
+	throw()
+{
+
+}
+
+StorageObjectRefImpl::StorageObjectRefImpl(const StorageObjectRef& ref)
+	throw()
+{
+
+}
+
+StorageObjectRefImpl::~StorageObjectRefImpl()
+{
+
+}
+
+StorageObjectRef& 
+StorageObjectRefImpl::operator=(const StorageObjectRef& ref) 
+	throw()
+{
+	CosPersistentState::StorageObjectRef aaa;
+	return aaa;
+}
+
+StorageObjectRef& 
+StorageObjectRefImpl::operator=(StorageObject* obj) 
+	throw()
+{
+	CosPersistentState::StorageObjectRef aaa;
+	return aaa;
+}
+
+void 
+StorageObjectRefImpl::release() 
+	throw()
+{
+
+}
+
+StorageObject* 
+StorageObjectRefImpl::deref() 
+	throw(CORBA::SystemException)
+{
+	return NULL;
+}
+
+StorageObject* 
+StorageObjectRefImpl::operator->() 
+	throw(CORBA::SystemException)
+{
+	return NULL;
+}
+
+void 
+StorageObjectRefImpl::destroy_object() 
+	throw(CORBA::SystemException)
+{
+
+}
+
+Pid* 
+StorageObjectRefImpl::get_pid() const 
+	throw(CORBA::SystemException)
+{
+	return NULL;
+}
+
+ShortPid* 
+StorageObjectRefImpl::get_short_pid() const 
+	throw(CORBA::SystemException)
+{
+	return NULL;
+}
+
+CORBA::Boolean 
+StorageObjectRefImpl::is_null() const 
+	throw()
+{
+	return TRUE;
+}
+
+StorageHomeBase_ptr 
+StorageObjectRefImpl::get_storage_home() const
+	throw(CORBA::SystemException)
+{
+	return NULL;
+}
+
+}
+
+namespace CosPersistentState
+{
+template <class T>
+T* 
+Factory<T>::create()
+{
+	return (new Qedo::T());
 }
 
 }

@@ -22,29 +22,33 @@
 #ifndef __CONNECTOR_H__
 #define __CONNECTOR_H__
 
-#include <CORBA.h>
+#include "PSSUtil.h"
 #include <string>
-#include "Util.h"
-#include "RefCountBase.h"
 #include "CORBADepends.h"
+#include "RefCountBase.h"
 #include "Catalog.h"
+#include "PSSNativeClasses.h"
 
 
-#define DEFAULT_PROCESSOR_ACCOUNT 0;
+#define DEFAULT_PROCESSOR_ACCOUNT 1;
 
-using namespace CosPersistentState;
 using namespace std;
+using namespace CosPersistentState;
+
 
 namespace Qedo
 {
 
-class  Connector : public virtual CosPersistentState::Connector,
-					public virtual Qedo::RefCountLocalObject
+class PSSDLL_API ConnectorImpl : public virtual CosPersistentState::Connector,
+					   public virtual RefCountLocalObject
 {
 	public:
 
-		Connector();
-		~Connector();
+		ConnectorImpl();
+
+		ConnectorImpl(char* szImplID);
+		
+		~ConnectorImpl();
 
 		//
 		// IDL:omg.org/CosPersistentState/Connector/implementation_id:1.0
@@ -99,6 +103,10 @@ class  Connector : public virtual CosPersistentState::Connector,
 		//
 		SessionPoolFactory_ptr register_session_pool_factory(const char* catalog_type_name,
 															 SessionPoolFactory_ptr factory);
+
+	private:
+
+		char* m_szImplID;
 };
 
 }; // namespace Qedo

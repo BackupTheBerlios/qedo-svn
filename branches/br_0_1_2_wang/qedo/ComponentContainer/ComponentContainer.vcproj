@@ -135,7 +135,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentValuetypes;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentValuetypes;../PersistentStateService;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="ORBACUS_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -159,11 +159,11 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="jtcd.lib obd.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="jtcd.lib obd.lib odbc32.lib odbccp32.lib PersistentStateService.lib"
 				OutputFile="$(OutDir)/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="$(ORBACUS)\lib"
+				AdditionalLibraryDirectories="&quot;$(ORBACUS)\lib&quot;;&quot;$(QEDO)\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug_orbacus/ComponentContainer.pdb"
 				ImportLibrary=".\Debug_orbacus/ComponentContainer.lib"/>

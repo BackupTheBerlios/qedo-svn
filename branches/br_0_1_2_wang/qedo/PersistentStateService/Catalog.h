@@ -23,32 +23,35 @@
 #ifndef __CATALOG_H__
 #define __CATALOG_H__
 
-#include <CORBA.h>
+#include "PSSUtil.h"
 #include <sqlext.h>
-#include "Util.h"
-#include "RefCountBase.h"
+#include <list>
 #include "CORBADepends.h"
-
+#include "RefCountBase.h"
+#include "StorageHomeBase.h"
 
 #define DEFAULT_TIMEOUT 15
 #define MAX_INFO_LEN 64
+#define MAX_COL_SIZE 256
 #define MAX_CONNSTR_LEN 1024
 
+using namespace std;
 using namespace CosPersistentState;
+
 
 namespace Qedo
 {
 
-class CatalogBase : public virtual CosPersistentState::CatalogBase,
-                    public virtual Qedo::RefCountLocalObject
+class CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
+                        public virtual RefCountLocalObject
 {
 	public:
 
-		CatalogBase() {};
+		CatalogBaseImpl() {};
 
-		CatalogBase(const AccessMode eAM, const char* szConnString);
+		CatalogBaseImpl(const AccessMode eAM, const char* szConnString);
 
-		~CatalogBase();
+		~CatalogBaseImpl();
 
 		virtual bool Init();
 
@@ -86,6 +89,8 @@ class CatalogBase : public virtual CosPersistentState::CatalogBase,
 		// IDL:omg.org/CosPersistentState/CatalogBase/close:1.0
 		//
 		void close();
+
+		SQLHDBC getHDBC();
 
 	protected:
 		
@@ -125,32 +130,33 @@ class CatalogBase : public virtual CosPersistentState::CatalogBase,
 		bool m_bIsConnected;
 		char* m_szODBCVersion;
 		AccessMode m_eAM;
+		std::list <StorageHomeBaseImpl*> m_lStorageHomeBases;
 };
 
 
-class  Sessio : public virtual CosPersistentState::Sessio,
-                          public CatalogBase
+class  SessioImpl : public virtual CosPersistentState::Sessio,
+                    public CatalogBaseImpl
 {
 	public:
 
-		Sessio() {};
+		SessioImpl() {};
 
-		Sessio(AccessMode eAM, const char* szConnString) {};
+		SessioImpl(AccessMode eAM, const char* szConnString) {};
 
-		~Sessio() {};
+		~SessioImpl() {};
 };
 
 
-class  SessionPool : public virtual CosPersistentState::SessionPool,
-                               public CatalogBase
+class  SessionPoolImpl : public virtual CosPersistentState::SessionPool,
+                         public CatalogBaseImpl
 {
 	public:
 
-		SessionPool() {};
+		SessionPoolImpl() {};
 
-		SessionPool(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString);
+		SessionPoolImpl(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString);
 
-		~SessionPool();
+		~SessionPoolImpl();
 
 		bool Init();
 
@@ -173,6 +179,7 @@ class  SessionPool : public virtual CosPersistentState::SessionPool,
 
 		TransactionPolicy m_tx_policy;
 };
+
 }; // namespace Qedo
 
 #endif

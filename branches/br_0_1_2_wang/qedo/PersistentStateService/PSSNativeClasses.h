@@ -75,12 +75,12 @@ class StorageObjectRef
 	public:
 		
 		StorageObjectRef(StorageObject* obj=0) 
-			throw();
+			throw() {};
 		
 		StorageObjectRef(const StorageObjectRef& ref) // copy constructure
-			throw();
+			throw() {};
 
-		~StorageObjectRef();
+		~StorageObjectRef() {};
 
 		StorageObjectRef& operator=(const StorageObjectRef& ref) 
 			throw();

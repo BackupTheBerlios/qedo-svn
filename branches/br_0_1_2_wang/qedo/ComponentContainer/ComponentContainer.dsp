@@ -72,7 +72,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "$(ORBACUS)\include" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "VC6" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "../PersistentStateService" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "ORBACUS_ORB" /D "PSSDLL_API" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "../PersistentStateService" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "ORBACUS_ORB" /YX /FD /GZ /c
 # SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
@@ -83,7 +83,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib ole32.lib /nologo /dll /pdb:none /debug /machine:I386 /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib ole32.lib PersistentStateService.lib /nologo /dll /pdb:none /debug /machine:I386 /libpath:"$(ORBACUS)\lib" /libpath:"$(QEDO)\lib"
 # Begin Special Build Tool
 OutDir=.\Debug_orbacus_vc6
 TargetPath=.\Debug_orbacus_vc6\ComponentContainer.dll

@@ -121,7 +121,7 @@ module CosPersistentState {
 
     const IsolationLevel READ_UNCOMMITTED = 0;
     const IsolationLevel READ_COMMITTED = 1;
-    const IsolationLevel REPEATABLE_READ = 2;
+    const IsolationLevel REPEATABLE_READ = 2; // reserved for future use
     const IsolationLevel SERIALIZABLE = 3;
 
     typedef short TransactionPolicy;

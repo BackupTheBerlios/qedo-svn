@@ -25,7 +25,7 @@
 namespace Qedo
 {
 
-CatalogBase::CatalogBase(const AccessMode eAM, const char* szConnString) :
+CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM, const char* szConnString) :
 	m_hEnv(SQL_NULL_HENV),
 	m_hDbc(SQL_NULL_HDBC),
 	m_lLoginTimeout(DEFAULT_TIMEOUT),
@@ -41,7 +41,7 @@ CatalogBase::CatalogBase(const AccessMode eAM, const char* szConnString) :
 	strcpy(m_szConnString, szConnString);
 }
 
-CatalogBase::~CatalogBase()
+CatalogBaseImpl::~CatalogBaseImpl()
 {
 	Destroy();
 
@@ -57,7 +57,7 @@ CatalogBase::~CatalogBase()
 }
 
 bool 
-CatalogBase::Init()
+CatalogBaseImpl::Init()
 {
 	SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HENV, &m_hEnv);
 	SQLSetEnvAttr(m_hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0); 
@@ -67,7 +67,7 @@ CatalogBase::Init()
 }
 
 void 
-CatalogBase::Destroy()
+CatalogBaseImpl::Destroy()
 {
 	SQLFreeHandle(SQL_HANDLE_DBC, m_hDbc);
 	SQLFreeHandle(SQL_HANDLE_ENV, m_hEnv);
@@ -77,7 +77,7 @@ CatalogBase::Destroy()
 }
 
 bool 
-CatalogBase::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND hWnd, const int nDrvConn)
+CatalogBaseImpl::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND hWnd, const int nDrvConn)
 {
 	SQLRETURN ret;
 	SQLSMALLINT pcbConnStrOut;
@@ -108,26 +108,29 @@ CatalogBase::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND hWnd,
 }
 
 void 
-CatalogBase::SetLoginTimeout(const long nSeconds)
+CatalogBaseImpl::SetLoginTimeout(const long nSeconds)
 {
 	m_lLoginTimeout = nSeconds;
 }
 
 void 
-CatalogBase::SetQueryTimeout(const long nSeconds)
+CatalogBaseImpl::SetQueryTimeout(const long nSeconds)
 {
 	m_lQueryTimeout = nSeconds;
 }
 
 int 
-CatalogBase::GetRecordsAffected()
+CatalogBaseImpl::GetRecordsAffected()
 {
 	return m_nRecordsAffected;
 }
 
 char* 
-CatalogBase::GetODBCVersion()
+CatalogBaseImpl::GetODBCVersion()
 {
+	if(!IsConnected())
+		return NULL;
+
 	SQLRETURN ret;
 	
 	ret = SQLGetInfo(m_hDbc, SQL_ODBC_VER, m_szODBCVersion, MAX_INFO_LEN, NULL);
@@ -139,8 +142,11 @@ CatalogBase::GetODBCVersion()
 }
 
 bool 
-CatalogBase::ExecuteSQL(const char* szSqlStr)
+CatalogBaseImpl::ExecuteSQL(const char* szSqlStr)
 {
+	if(!IsConnected())
+		return FALSE;
+
 	SQLRETURN ret;
 	SQLHSTMT hStmt = NULL;
 	SQLINTEGER nRowCount;
@@ -158,8 +164,11 @@ CatalogBase::ExecuteSQL(const char* szSqlStr)
 }
 
 bool 
-CatalogBase::CanTransact()
+CatalogBaseImpl::CanTransact()
 {
+	if(!IsConnected())
+		return FALSE;
+
 	SQLUSMALLINT nTxn;
 
 	SQLGetInfo(m_hDbc, SQL_TXN_CAPABLE, (SQLPOINTER)&nTxn, sizeof(nTxn), NULL);
@@ -171,8 +180,11 @@ CatalogBase::CanTransact()
 }
 
 bool 
-CatalogBase::CanUpdate()
+CatalogBaseImpl::CanUpdate()
 {
+	if(!IsConnected())
+		return FALSE;
+
 	SQLUINTEGER nTxn;
 
 	SQLGetConnectAttr(m_hDbc, SQL_ATTR_ACCESS_MODE, (SQLPOINTER)&nTxn, NULL, 0);
@@ -184,14 +196,17 @@ CatalogBase::CanUpdate()
 }
 
 bool 
-CatalogBase::IsConnected()
+CatalogBaseImpl::IsConnected()
 {
 	return m_bIsConnected;
 }
 
 bool 
-CatalogBase::IsTableExist(const char* szTableName)
+CatalogBaseImpl::IsTableExist(const char* szTableName)
 {
+	if(!IsConnected())
+		return FALSE;
+
 	SQLRETURN ret;
 	SQLHSTMT hStmt = NULL;
 	SQLSMALLINT nFieldCount = 0;
@@ -221,9 +236,21 @@ CatalogBase::IsTableExist(const char* szTableName)
 	return FALSE;
 }
 
-AccessMode 
-CatalogBase::access_mode()
+SQLHDBC 
+CatalogBaseImpl::getHDBC()
 {
+	return m_hDbc;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//returns the accsss mode of this catalog
+////////////////////////////////////////////////////////////////////////////////
+AccessMode 
+CatalogBaseImpl::access_mode()
+{
+	if(!IsConnected())
+		return 0;
+	
 	int nAccessMode;
 
 	SQLGetConnectAttr(m_hDbc, SQL_ATTR_ACCESS_MODE, &nAccessMode, SQL_IS_INTEGER, NULL);
@@ -234,21 +261,95 @@ CatalogBase::access_mode()
 		return READ_WRITE;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//to obtain a storage home instance, it raises NotFound if it cannot find a 
+//storage home that matches the given storage_home_id
+////////////////////////////////////////////////////////////////////////////////
 StorageHomeBase_ptr 
-CatalogBase::find_storage_home(const char* storage_home_id)
+CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 {
-	if(IsTableExist(storage_home_id))
+	if(!IsConnected())
+		return NULL;
+
+	if(!IsTableExist(storage_home_id))
+		throw CosPersistentState::NotFound();
+
+	list <StorageHomeBaseImpl*> ::iterator storageHomeBase_iter;
+	
+	for (storageHomeBase_iter = m_lStorageHomeBases.begin();
+		 storageHomeBase_iter != m_lStorageHomeBases.end();
+		 storageHomeBase_iter++)
 	{
-		return NULL;
+		const char* szName = (*storageHomeBase_iter)->getOwnStorageHomeName();
+		
+		if(strcmp(szName, storage_home_id)==0)
+			return *storageHomeBase_iter;
 	}
-	else
-		return NULL;
+
+	StorageHomeBaseImpl* pStorageHomeBase = 
+		new StorageHomeBaseImpl((dynamic_cast <Sessio_ptr> (this)), storage_home_id);
+
+	//return (CosPersistentState::StorageHomeBase::_narrow(pStorageHomeBase));
+	return (dynamic_cast <StorageHomeBase_ptr> (pStorageHomeBase));
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//to locate a storage object with the given PID in the storage homes provided by
+//the target catalog. It raises NotFound if it cannot find a storage object with
+//this pid; otherwise, it returns an incarnation of this storage object
+////////////////////////////////////////////////////////////////////////////////
 StorageObjectBase_ptr 
-CatalogBase::find_by_pid(const Pid& the_pid)
+CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 {
-	return NULL;
+	int iLength = the_pid.length();
+
+	unsigned char* sz_Pid = new unsigned char[iLength];
+	
+	for(int i=0; i<iLength; i++)
+	{
+		sz_Pid[i] = the_pid[i];
+	}
+
+	// fetch the table name where pid can be found
+	string strToExecute;
+	unsigned char szBaseHome[MAX_COL_SIZE];
+	unsigned char szOwnHome[MAX_COL_SIZE];
+	unsigned char szSpid[MAX_COL_SIZE];
+
+	QDRecordset prs = QDRecordset(&m_hDbc);
+
+	strToExecute = "select basehome, ownhome from pid_content where pid like ";
+	strToExecute.append((const char*)sz_Pid);
+	strToExecute += ";";
+
+	if(prs.Open(strToExecute.c_str()))
+	{
+		memset(szBaseHome, '\0', MAX_COL_SIZE);
+		memset(szOwnHome, '\0', MAX_COL_SIZE);
+
+		prs.GetFieldValue("BASEHOME", szBaseHome);
+		prs.GetFieldValue("OWNHOME", szOwnHome);
+
+		prs.Close();
+	}
+
+	strToExecute = "select spid from ";
+	strToExecute.append((const char*)szBaseHome);
+	strToExecute += " where pid like ";
+	strToExecute.append((const char*)sz_Pid);
+	strToExecute += ";";
+
+	if(prs.Open(strToExecute.c_str()))
+	{
+		memset(szSpid, '\0', MAX_COL_SIZE);
+		prs.GetFieldValue("SPID", szSpid);
+		prs.Close();
+		prs.Destroy();
+	}
+
+	StorageHomeBase_ptr p_sHomeBase = find_storage_home((const char*)szOwnHome);
+
+	return (p_sHomeBase->find_by_short_pid(NULL));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -256,9 +357,9 @@ CatalogBase::find_by_pid(const Pid& the_pid)
 //cached modifications of storage object incarnations managed by this catalog.
 ////////////////////////////////////////////////////////////////////////////////
 void 
-CatalogBase::flush()
+CatalogBaseImpl::flush()
 {
-	if(CanTransact())
+	if(CanTransact()==TRUE && access_mode!=READ_ONLY)
 		SQLEndTran(SQL_HANDLE_DBC, m_hDbc, SQL_COMMIT);
 }
 
@@ -266,7 +367,7 @@ CatalogBase::flush()
 //Calling refresh is unusual: most applications will never use this operation
 ////////////////////////////////////////////////////////////////////////////////
 void 
-CatalogBase::refresh()
+CatalogBaseImpl::refresh()
 {
 }
 
@@ -275,7 +376,7 @@ CatalogBase::refresh()
 //reference count of all its PSDL storage object instances to 0
 ////////////////////////////////////////////////////////////////////////////////
 void 
-CatalogBase::free_all()
+CatalogBaseImpl::free_all()
 {
 
 }
@@ -286,7 +387,7 @@ CatalogBase::free_all()
 //is called, these transactions are marked roll-back only.
 ////////////////////////////////////////////////////////////////////////////////
 void 
-CatalogBase::close()
+CatalogBaseImpl::close()
 {
 	if(IsConnected())
 	{
@@ -301,18 +402,18 @@ CatalogBase::close()
 	}
 }
 
-SessionPool::SessionPool(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString)
+SessionPoolImpl::SessionPoolImpl(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString)
 {
-	CatalogBase::CatalogBase(eAM, szConnString);
+	CatalogBaseImpl::CatalogBaseImpl(eAM, szConnString);
 	m_tx_policy = tx_policy;
 }
 
-SessionPool::~SessionPool()
+SessionPoolImpl::~SessionPoolImpl()
 {
 }
 
 bool 
-SessionPool::Init()
+SessionPoolImpl::Init()
 {
 	SQLSetEnvAttr( SQL_NULL_HENV, SQL_ATTR_CONNECTION_POOLING, (SQLPOINTER)SQL_CP_ONE_PER_DRIVER, 0 );
     SQLAllocHandle( SQL_HANDLE_ENV, SQL_NULL_HENV, &m_hEnv );
@@ -322,20 +423,47 @@ SessionPool::Init()
 	return DriverConnect(m_szConnString);
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//with NON_TRANSACTIONAL, it makes durable all of the modifications to active
+//incarnations whose PIDs are contained in the pids parameter, regardless of the
+//transactional context of the calling thread
+//with TRANSACTIONAL, it behaves as follows:
+//$$ if the invoking thread is accociated with a transcation context, it makes
+//   durable all state modifications made in the current transactional scope for
+//   incarnations whose PIDs are contained in the pids parameter, flushing them
+//   to the underying datastore.
+//$$ if the invoking thread is not associated with a transactional context, the 
+//   standard exception TRANSACTION_REQUIRED is raised.
+//if the session pool implementation is unable to reconcile the changes and make
+//them durable, then the PERSISTENT_STORE standard exception is raised 
+////////////////////////////////////////////////////////////////////////////////
 void 
-SessionPool::flush_by_pids(const PidList& pids)
+SessionPoolImpl::flush_by_pids(const PidList& pids)
 {
 
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//with NON_TRANSACTIONAL and the invoking thread is associated with a transcatinal
+//context, it causes the following behavior:
+//$$ All incarnations involved in the current transaction context, and associated 
+//   with given pids, are refreshed.
+//$$ If any of the given PIDs are associated with incarnations which are themselves
+//   not associated with the current transaction, the INVALID_TRANSACTION standard
+//   exception is raised
+//with TRANSACTIONAL and the invoking thread is not associated with a transaction
+//context, the standard exception TRANSACTION_REQUIRED is raised.
+//if the session pool implementatin is unable to refresh the appropriate incarnations,
+//the PERSIST_STORE standard exception is raised
+////////////////////////////////////////////////////////////////////////////////
 void 
-SessionPool::refresh_by_pids(const PidList& pids)
+SessionPoolImpl::refresh_by_pids(const PidList& pids)
 {
 
 }
 
 TransactionPolicy 
-SessionPool::transaction_policy()
+SessionPoolImpl::transaction_policy()
 {
 	return m_tx_policy;
 }

@@ -110,7 +110,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(ORBACUS)\include\OB&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../PersistentStateService;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -124,7 +124,8 @@
 				Name="VCCustomBuildTool"
 				Description="Distribution:"
 				CommandLine="mkdir $(QEDO)\bin
-copy $(TargetPath) $(QEDO)\bin"
+copy $(TargetPath) $(QEDO)\bin
+"
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"

@@ -96,7 +96,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "PERSISTENTSTATESERVICE_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\ob" /I "../ComponentIDL" /I "../ComponentContainer" /I "../ComponentValuetypes" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ORBACUS_ORB" /D "CONTAINERDLL_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\ob" /I "../ComponentIDL" /I "../ComponentContainer" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ORBACUS_ORB" /D "PSSDLL_EXPORTS" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -139,6 +139,10 @@ SOURCE=.\PSSNativeClasses_impl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\QDRecordset.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\StorageHomeBase.cpp
 # End Source File
 # End Group
@@ -160,6 +164,14 @@ SOURCE=.\PSSNativeClasses.h
 # Begin Source File
 
 SOURCE=.\PSSNativeClasses_impl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PSSUtil.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\QDRecordset.h
 # End Source File
 # Begin Source File
 
