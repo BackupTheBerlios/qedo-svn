@@ -1566,8 +1566,11 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	genEmitterRegistration(home);
 	genPublisherRegistration(home);
 	genConsumerRegistration(home);
+
+	out << "CORBA::RepositoryIdSeq streamtypes;\n\n";
 	genSinkRegistration(home);
 	genSourceRegistration(home);
+
 	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
 	out << mapFullName(home->managed_component()) << "_var servant = ";
 	out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
@@ -1711,6 +1714,8 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	genEmitterRegistration(home);
 	genPublisherRegistration(home);
 	genConsumerRegistration(home);
+
+	out << "CORBA::RepositoryIdSeq streamtypes;\n\n";
 	genSinkRegistration(home);
 	genSourceRegistration(home);
 	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
@@ -1882,7 +1887,6 @@ GeneratorServantC::genSinkRegistration(IR__::HomeDef_ptr home)
 		out << "StreamComponents::SinkStreamPort_var " << sink_name << " = StreamComponents::SinkStreamPort::_narrow (" << sink_name << "_ref);\n\n";
 
 		// Resolve atomic stream types from logical stream type and generate code for it
-		out << "CORBA::RepositoryIdSeq streamtypes;\n";
 		IR__::StreamTypeDefSeq atomic_types;
 		atomic_types.length(0);
 		resolve_atomic_streamtypes (sinks[i]->stream_type(), atomic_types);
@@ -1921,7 +1925,6 @@ GeneratorServantC::genSourceRegistration(IR__::HomeDef_ptr home)
 	for( i= 0; i < len; i++)
 	{
 		// Resolve atomic stream types from logical stream type and generate code for it
-		out << "CORBA::RepositoryIdSeq streamtypes;\n";
 		IR__::StreamTypeDefSeq atomic_types;
 		atomic_types.length(0);
 		resolve_atomic_streamtypes (sources[i]->stream_type(), atomic_types);
