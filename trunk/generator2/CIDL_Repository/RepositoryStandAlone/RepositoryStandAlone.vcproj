@@ -152,20 +152,24 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="..\..\CIDL_Backend\CIDLGenerator;..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;&quot;$(MICO)\include&quot;;&quot;$(MICO)\include\windows&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_WINDOWS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="5"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib  mico238.lib"
 				OutputFile="$(OutDir)/RepositoryStandAlone.exe"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/RepositoryStandAlone.pdb"
 				SubSystem="1"
