@@ -196,7 +196,7 @@ SOURCE=..\ComponentInstaller\DOMXMLParser.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\main.cpp
+SOURCE=.\assf.cpp
 # End Source File
 # Begin Source File
 

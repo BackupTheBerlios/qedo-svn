@@ -337,7 +337,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="..\ComponentInstaller\libunzip.cpp">
 			</File>
 			<File
-				RelativePath="main.cpp">
+				RelativePath="assf.cpp">
 			</File>
 		</Filter>
 		<Filter
