@@ -1,6 +1,10 @@
+echo Starting mico Nameservice on 3003
+start nsd -ORBIIOPAddr inet:tri:3003
 echo Starting Component Installer
-start bin\ci
+start ci
 echo Starting Assembly Manager Factory
-start bin\assf.exe
+start assf.exe
 echo Starting Component Server Activator
-start bin\csa.exe
+start csa.exe
+echo starting HomeFinder
+start homefinder.exe

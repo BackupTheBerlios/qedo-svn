@@ -20,6 +20,7 @@ mkdir %actdir%
 set actdir=%qedo%\bin
 echo *** Create %actdir%...
 mkdir %actdir%
+copy qedo.bat %actdir%
 
 set actdir=%qedo%\etc
 echo *** Create %actdir%...
