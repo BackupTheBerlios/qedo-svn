@@ -8,7 +8,7 @@
 // BEGIN USER INSERT SECTION file
 #include <iostream>
 #include "component_valuetypes.h"
-  
+
 using namespace std;
 // END USER INSERT SECTION file
 
