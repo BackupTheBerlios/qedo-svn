@@ -506,6 +506,8 @@ void Deployment::undeploy_assembly(r_assemblies assemblie)
 {
 	try
 	{
+		wxBusyCursor wait_for_undeployment;
+
 		std::vector<instanceinfo>::iterator i_iter;
 		i_iter=assemblie.instanceinfo_list.begin();
 		instanceinfo i = (*i_iter);
