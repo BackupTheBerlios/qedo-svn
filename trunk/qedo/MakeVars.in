@@ -19,7 +19,7 @@ ORBACUS = /opt/OOC
 Debug = yes
 
 # Xerces - XML handling
-# 
+#
 XERCESDIR = @XERCESDIR@
 
 # modes for install files
@@ -31,16 +31,16 @@ SUFFIXES += .so
 
 # rule for shared libraries
 
-ifeq "${CXX}" "g++"
 %.so:
-	${CXX} -shared ${LD_SHRAED_FLAGS} -o $@ $^ $(LIBS)
+	${CXX} -shared ${LD_SHARED_FLAGS} -o $@ $^ $(LIBS)
 
-CXXFLAGS += 
-endif
+CXXFLAGS +=
 
 INSTALL = @INSTALL@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+bindir=@bindir@
+
 
 ifeq "MICO_ORB" "${ORB}"
 %.h %.cpp %_skel.h %_skel.cpp: %.idl
@@ -59,19 +59,19 @@ all:
 install: all
 
 install-prog:
-	${INSTALL} -m $(EXE_MOD) $^ @bindir@ 
+	${INSTALL} -m $(EXE_MOD) $^ $(bindir)
 
 install-lib:
-	${INSTALL} -m $(EXE_MOD) $^ $(exec_prefix)/lib 
+	${INSTALL} -m $(EXE_MOD) $^ $(exec_prefix)/lib
 
 install-include:
-	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/include 
+	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/include
 
 install-idl:
-	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/idl 
+	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/idl
 
 install-etc:
-	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/etc 
+	${INSTALL} -m $(FILE_MODE) $^ $(exec_prefix)/etc
 
 clean:
 	-rm -rf $(CLEAN_FILES)
