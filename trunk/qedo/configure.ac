@@ -11,7 +11,7 @@ AC_ARG_WITH(uuid,
  [  --with-uuid=dir         use UUID library installed in dir],
  UUIDDIR=$withval, UUIDDIR="")
 
-AC_ARG_WITH(xerces,
+AC_ARG_WITH(xerces-c,
  [  --with-xerces-c=dir     use Xerces installed in dir],
  XERCESDIR=$withval, XERCESDIR="")
 AC_SUBST(XERCESDIR)
@@ -123,10 +123,7 @@ fi
 
 qedo_save_LIBS=$LIBS
 qedo_save_CPPFLAGS=$CPPFLAGS
-XERCESDIR=""
-if test X"$with_xerces" != X ;then
-	XERCESDIR="$with_xerces"
-fi
+
 AC_CACHE_CHECK([for Apache's Xerces-C XML library],
     [HAVE_XERCES],
     [AC_LANG_SAVE

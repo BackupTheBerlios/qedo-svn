@@ -1314,9 +1314,9 @@ else
 fi;
 
 
-# Check whether --with-xerces or --without-xerces was given.
-if test "${with_xerces+set}" = set; then
-  withval="$with_xerces"
+# Check whether --with-xerces-c or --without-xerces-c was given.
+if test "${with_xerces_c+set}" = set; then
+  withval="$with_xerces_c"
   XERCESDIR=$withval
 else
   XERCESDIR=""
@@ -3358,10 +3358,7 @@ fi
 
 qedo_save_LIBS=$LIBS
 qedo_save_CPPFLAGS=$CPPFLAGS
-XERCESDIR=""
-if test X"$with_xerces" != X ;then
-	XERCESDIR="$with_xerces"
-fi
+
 
 echo "$as_me:$LINENO: checking for Apache's Xerces-C XML library" >&5
 echo $ECHO_N "checking for Apache's Xerces-C XML library... $ECHO_C" >&6
