@@ -56,6 +56,7 @@ namespace Qedo {
 
 
 class qedo_lock;
+
 struct mutex_delegate;
 
 /**
