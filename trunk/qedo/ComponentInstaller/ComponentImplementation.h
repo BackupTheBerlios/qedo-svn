@@ -125,7 +125,7 @@ private:
         throw(Components::CreateFailure);
 
     // handle fileinarchive
-	std::string fileinarchive (DOMElement*, std::string)
+	std::string fileinarchive (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle idl element
@@ -141,7 +141,15 @@ private:
         throw(Components::CreateFailure);
 
     // handle link
-	std::string link (DOMElement*, std::string)
+	std::string link (DOMElement*)
+        throw(Components::CreateFailure);
+
+	// handle usage
+	std::string usage (DOMElement*)
+        throw(Components::CreateFailure);
+
+	// handle entrypoint
+	std::string entrypoint (DOMElement*)
         throw(Components::CreateFailure);
 
     // handle os
@@ -161,7 +169,7 @@ private:
         throw(Components::CreateFailure);
 
     // buildServantCode
-    void buildServantCode()
+    void installCode()
         throw(Components::CreateFailure);
 
 public:
