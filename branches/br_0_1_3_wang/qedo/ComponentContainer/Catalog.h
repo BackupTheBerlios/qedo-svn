@@ -44,7 +44,7 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 
 		CatalogBaseImpl() {};
 
-		CatalogBaseImpl(const AccessMode eAM, const char* szConnString, Connector* connector);
+		CatalogBaseImpl(const AccessMode eAM, const char* szConnString, Connector_ptr connector);
 
 		~CatalogBaseImpl();
 
@@ -52,7 +52,7 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 
 		bool DriverConnect(const char* szConnStr, char* szConnStrOut = NULL, HWND hWnd = NULL, const int nDrvConn = SQL_DRIVER_NOPROMPT);
 
-		Connector* getConnector() {return m_connector;};
+		Connector_ptr getConnector() {return m_connector;};
 
 		//
 		// IDL:omg.org/CosPersistentState/CatalogBase/access_mode:1.0
@@ -107,7 +107,7 @@ class  SessioImpl : public virtual CosPersistentState::Sessio,
 
 		SessioImpl() {};
 
-		SessioImpl(AccessMode eAM, const char* szConnString, Connector* connector) {};
+		SessioImpl(AccessMode eAM, const char* szConnString, Connector_ptr connector) {};
 
 		~SessioImpl() {};
 };
@@ -120,7 +120,7 @@ class  SessionPoolImpl : public virtual CosPersistentState::SessionPool,
 
 		SessionPoolImpl() {};
 
-		SessionPoolImpl(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString, Connector* connector);
+		SessionPoolImpl(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString, Connector_ptr connector);
 
 		~SessionPoolImpl();
 

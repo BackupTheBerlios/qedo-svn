@@ -104,9 +104,9 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 
 	string strConn = "";
 	const char* szVal;
-
+	
 	//DSN=myodbc3-test;SERVER=haw;UID=root;PWD=;DATABASE=test;
-	for(unsigned int i=0; i<additional_parameters.length(); i++)
+	for(CORBA::ULong i=0; i<additional_parameters.length(); i++)
 	{
 		strConn += additional_parameters[i].name;
 		strConn += "=";
@@ -117,10 +117,9 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 	
 	SessioImpl* pSession = new SessioImpl(access_mode, 
 										strConn.c_str(), 
-										(dynamic_cast <Connector*> (this)));
+										(dynamic_cast <Connector_ptr> (this)));
 
-	if( pSession->Init()==FALSE ||
-		pSession->DriverConnect(strConn.c_str())==FALSE )
+	if( pSession->Init()==FALSE || pSession->DriverConnect(strConn.c_str())==FALSE )
 		throw CORBA::PERSIST_STORE();
 
 	m_lSessions.push_back(pSession);
@@ -144,7 +143,7 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 	const char* szVal;
 
 	//DSN=myodbc3-test;SERVER=haw;UID=root;PWD=;DATABASE=test;
-	for(unsigned int i=0; i<additional_parameters.length(); i++)
+	for(CORBA::ULong i=0; i<additional_parameters.length(); i++)
 	{
 		strConn += additional_parameters[i].name;
 		strConn += "=";
@@ -158,7 +157,7 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 		m_pSessionPool = new SessionPoolImpl( access_mode, 
 											  tx_policy, 
 											  strConn.c_str(), 
-											  (dynamic_cast <Connector*> (this)) );
+											  (dynamic_cast <Connector_ptr> (this)) );
 
 		if( m_pSessionPool->Init()==FALSE ||
 			m_pSessionPool->DriverConnect(strConn.c_str())==FALSE )

@@ -27,7 +27,7 @@ namespace Qedo
 
 CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM, 
 								 const char* szConnString, 
-								 Connector* connector) :
+								 Connector_ptr connector) :
 	m_eAM(eAM),
 	m_connector(connector)
 {
@@ -300,7 +300,7 @@ CatalogBaseImpl::close()
 SessionPoolImpl::SessionPoolImpl(AccessMode eAM, 
 								 TransactionPolicy tx_policy, 
 								 const char* szConnString, 
-								 Connector* connector) :
+								 Connector_ptr connector) :
 	m_tx_policy(tx_policy)
 {
 	CatalogBaseImpl::CatalogBaseImpl(eAM, szConnString, connector);
@@ -364,7 +364,7 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 
 	//there is no function for deleting Pid from PidList, so the PidList should 
 	//be first converted in a list of Pid
-	for(unsigned int i=0; i<pids.length(); i++)
+	for(CORBA::ULong i=0; i<pids.length(); i++)
 	{
 		vPidList.push_back(pids[i]);
 	}
@@ -419,7 +419,7 @@ SessionPoolImpl::refresh_by_pids(const PidList& pids)
 
 	//there is no function for deleting Pid from PidList, so the PidList should 
 	//be first converted in a list of Pid
-	for(unsigned int i=0; i<pids.length(); i++)
+	for(CORBA::ULong i=0; i<pids.length(); i++)
 	{
 		vPidList.push_back(pids[i]);
 	}

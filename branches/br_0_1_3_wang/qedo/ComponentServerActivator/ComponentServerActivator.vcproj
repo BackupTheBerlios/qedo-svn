@@ -129,7 +129,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="obd.lib CosNamingd.lib qedoutil.lib"
+				AdditionalDependencies="obd.lib CosNamingd.lib"
 				OutputFile="$(OutDir)/qcsa.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(ORBACUS)\lib&quot;;&quot;$(QEDO)\lib&quot;"

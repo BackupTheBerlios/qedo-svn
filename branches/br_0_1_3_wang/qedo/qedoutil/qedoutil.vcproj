@@ -124,9 +124,8 @@
 				Description="Distribution:"
 				CommandLine="mkdir $(QEDO)\bin
 copy $(TargetPath) $(QEDO)\bin
-copy $(OutDir)\qedoutil.lib $(QEDO)\lib
 "
-				Outputs="$(QEDO)\bin\$(TargetFileName);$(QEDO)\lib\qedoutil.lib"/>
+				Outputs="$(QEDO)\bin\$(TargetFileName);"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="xerces-c_2D.lib zlib.lib CosNamingd.lib jtcd.lib obd.lib"

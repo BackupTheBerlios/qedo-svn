@@ -107,7 +107,7 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 		 storageObject_iter != m_lStorageObjectes.end();
 		 storageObject_iter++)
 	{
-		ShortPid* cur_spid = (*storageObject_iter)->get_short_pid();
+		ShortPid_var cur_spid = (*storageObject_iter)->get_short_pid();
 		if(PSSHelper::compareShortPid(*cur_spid, short_pid))
 			return (dynamic_cast <StorageObjectBase> (*storageObject_iter));
 	}
