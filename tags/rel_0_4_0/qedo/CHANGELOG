@@ -1,0 +1,20 @@
+version 0.4.0
+- add thread interface in context
+- rename most executables with a staring 'q'
+
+version 0.3.0
+- improved remove semantic
+- improved ref-counting
+- improved event handling in the container
+- version statement at start up of each server
+
+version 0.2.0
+- MICO integration
+- unix configure / make
+- create_assembly issue #5577
+
+
+version 0.1.1
+- doxygen documentation
+
+version 0.1.0

@@ -1,0 +1,84 @@
+# Qedo - Quality of Service Enabled Distributed Objects 
+#                                                     
+# http://qedo.berlios.de/                            
+#                                                   
+# Copyright (C) 2002-2003 by the Qedo Team         
+#                                                 
+# This library is free software; you can redistribute it and/or 
+# modify it under the terms of the GNU Lesser General Public   
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#                                                                  
+# This library is distributed in the hope that it will be useful, 
+# but WITHOUT ANY WARRANTY; without even the implied warranty of 
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+# Lesser General Public License for more details.                 
+#                                                                
+# You should have received a copy of the GNU Lesser General Public 
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+
+CXX = @CXX@
+INCLUDES+=-I. \
+          -I../../CIDL_Repository/IFRidl \
+			 -I../../CIDL_Repository/ComponentRepositoryLib \
+			 -I../../CIDL_Repository/CIDLRepositoryLib \
+			 -I../../CIDL_Frontend/CIDLFrontendLib \
+			 @CPPFLAGS@ 
+
+CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
+CXXCOMPILE=@CXX@ $(CXXFLAGS)
+LIBS+=@LIBS@
+CC=$(CXX)
+
+
+@SET_MAKE@
+
+LIB_FILES = ../../CIDL_Repository/IFRidl/libIFRidl.a \
+            ../../CIDL_Repository/CIDLRepositoryLib/libCIDLRepositoryLib.a \
+				../../CIDL_Repository/ComponentRepositoryLib/libComponentRepositoryLib.a \
+				../../CIDL_Frontend/CIDLFrontendLib/libCIDLFrontendLib.a
+LIBS += ${LIB_FILES}
+
+LDLIBS = ${LIBS}
+
+
+SOURCES = cidl_gen.cpp \
+			CPPBase.cpp \
+			GeneratorBase.cpp \
+			GeneratorBIDL.cpp \
+			GeneratorBusinessC.cpp \
+			GeneratorBusinessH.cpp \
+			GeneratorCCD.cpp \
+			GeneratorCSD.cpp \
+			GeneratorEIDL.cpp \
+			GeneratorLIDL.cpp \
+			GeneratorServantC.cpp \
+			GeneratorServantH.cpp \
+			GeneratorVC7.cpp \
+			GeneratorValuetypesC.cpp \
+			GeneratorValuetypesH.cpp \
+			IDLBase.cpp \
+			Printer.cpp \
+			TestMode.cpp
+
+OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
+
+CLEAN_FILES = $(OBJS) cidl_gen
+
+include ../../MakeVars
+
+.PHONY:all
+
+all: cidl_gen
+
+cidl_gen: $(OBJS) ${LIB_FILES}
+
+.PHONY:install
+
+install: install-prog
+
+.PHONY:install-prog
+
+install-prog: cidl_gen
+
