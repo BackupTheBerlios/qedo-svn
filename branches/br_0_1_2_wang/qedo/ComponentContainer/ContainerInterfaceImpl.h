@@ -159,7 +159,7 @@ private:
 	/** the list of service components for postinvoke*/
 	std::vector <Qedo::ComponentInstance_var>				services_postinvoke_;
 
-	//Connector_var											connector_;
+	Qedo::Connector*										connector_;
 
 	/**
 	 * loads a shared library

@@ -73,13 +73,12 @@ Connector::create_basic_session(AccessMode access_mode,
 		strConn += ";";
 	}
 	
+	Qedo::CatalogBase* pSession = new Qedo::CatalogBase(access_mode, strConn.c_str());
 	
-	//Sessio pSession;
-	//Qedo::CatalogBase pSession = new Qedo::CatalogBase(access_mode, strConn.c_str());
-	//pSession->Init();
-	//return pSession;
+	if(!pSession->Init())
+		throw CORBA::PERSIST_STORE();
 
-	return NULL;
+	return (dynamic_cast <Sessio_ptr> (pSession));
 }
 
 SessionPool_ptr 

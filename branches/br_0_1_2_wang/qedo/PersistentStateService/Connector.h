@@ -25,6 +25,7 @@
 #include <CORBA.h>
 #include <string>
 #include "Util.h"
+#include "RefCountBase.h"
 #include "CORBADepends.h"
 #include "Catalog.h"
 
@@ -37,7 +38,8 @@ using namespace std;
 namespace Qedo
 {
 
-class PSSDLL_API Connector : public virtual CosPersistentState::Connector
+class  Connector : public virtual CosPersistentState::Connector,
+					public virtual Qedo::RefCountLocalObject
 {
 	public:
 

@@ -39,6 +39,18 @@
 #define CONTAINERDLL_EXTERN
 #endif
 
+#ifdef WIN32
+#ifdef PSSDLL_EXPORTS
+#define PSSDLL_API __declspec(dllexport)
+#define PSSDLL_EXTERN
+#else
+#define PSSDLL_API __declspec(dllimport)
+#define PSSDLL_EXTERN extern
+#endif
+#else
+#define PSSDLL_API 
+#define PSSDLL_EXTERN
+#endif
 
 // VC++ warnings 
 #pragma warning (disable : 4251) // class OB::ObjVar<*> needs to have dll-interface to be used by clients of class ...

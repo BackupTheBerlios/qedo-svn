@@ -26,7 +26,7 @@
 #include <CORBA.h>
 #include <sqlext.h>
 #include "Util.h"
-//#include "RefCountBase.h"
+#include "RefCountBase.h"
 #include "CORBADepends.h"
 
 
@@ -39,8 +39,8 @@ using namespace CosPersistentState;
 namespace Qedo
 {
 
-class PSSDLL_API CatalogBase : public virtual CosPersistentState::CatalogBase//,
-                               //public virtual Qedo::RefCountLocalObject
+class CatalogBase : public virtual CosPersistentState::CatalogBase,
+                    public virtual Qedo::RefCountLocalObject
 {
 	public:
 
@@ -50,7 +50,7 @@ class PSSDLL_API CatalogBase : public virtual CosPersistentState::CatalogBase//,
 
 		~CatalogBase();
 
-		virtual void Init();
+		virtual bool Init();
 
 		//
 		// IDL:omg.org/CosPersistentState/CatalogBase/access_mode:1.0
@@ -115,6 +115,7 @@ class PSSDLL_API CatalogBase : public virtual CosPersistentState::CatalogBase//,
 		
 		SQLHDBC m_hDbc;
 		SQLHENV m_hEnv;
+		char* m_szConnString;
 
 	private:
 
@@ -123,12 +124,11 @@ class PSSDLL_API CatalogBase : public virtual CosPersistentState::CatalogBase//,
 		long m_lQueryTimeout;
 		bool m_bIsConnected;
 		char* m_szODBCVersion;
-		char* m_szConnString;
 		AccessMode m_eAM;
 };
 
 
-class PSSDLL_API Sessio : public virtual CosPersistentState::Sessio,
+class  Sessio : public virtual CosPersistentState::Sessio,
                           public CatalogBase
 {
 	public:
@@ -141,18 +141,18 @@ class PSSDLL_API Sessio : public virtual CosPersistentState::Sessio,
 };
 
 
-class PSSDLL_API SessionPool : public virtual CosPersistentState::SessionPool,
+class  SessionPool : public virtual CosPersistentState::SessionPool,
                                public CatalogBase
 {
 	public:
 
 		SessionPool() {};
 
-		SessionPool(AccessMode eAM, const char* szConnString);
+		SessionPool(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString);
 
 		~SessionPool();
 
-		void Init();
+		bool Init();
 
 		//
 		// IDL:omg.org/CosPersistentState/SessionPool/flush_by_pids:1.0
@@ -168,6 +168,10 @@ class PSSDLL_API SessionPool : public virtual CosPersistentState::SessionPool,
 		// IDL:omg.org/CosPersistentState/SessionPool/transaction_policy:1.0
 		//
 		TransactionPolicy transaction_policy();
+
+	private:
+
+		TransactionPolicy m_tx_policy;
 };
 }; // namespace Qedo
 

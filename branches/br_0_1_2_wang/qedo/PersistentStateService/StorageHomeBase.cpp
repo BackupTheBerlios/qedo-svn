@@ -21,6 +21,10 @@
 /***************************************************************************/
 
 #include "StorageHomeBase.h"
+#include <conio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
 
 namespace Qedo
 {
@@ -161,6 +165,60 @@ bool
 StorageHomeBase::GetFieldValue(const char* szFieldName, unsigned char& cData)
 {
 	return GetFieldValue(GetFieldIndex(szFieldName), cData);	
+}
+
+// for SQL_C_NUMERIC
+bool 
+StorageHomeBase::GetFieldValue(const int nField, float& fltData)
+{
+	SQLRETURN ret;
+	SQLINTEGER cbValue;
+	SQLHDESC hDesc = NULL;
+	SQL_NUMERIC_STRUCT NumStr;
+	char szTmp[16];
+	int i=0, iSign=1;
+	int nLength = GetFieldLength(nField) + 1;
+	long temp_val=0, divisor=1;
+
+	SQLGetStmtAttr(m_hStmt, SQL_ATTR_APP_ROW_DESC, &hDesc, 0, NULL); // wozu?
+
+	SQLSetDescField (hDesc, 1, SQL_DESC_TYPE, (VOID*)SQL_C_NUMERIC, 0); // 1->column account
+    SQLSetDescField (hDesc, 1, SQL_DESC_PRECISION, (VOID*)5, 0);
+    SQLSetDescField (hDesc, 1, SQL_DESC_SCALE, (VOID*)3, 0);
+
+	memset(NumStr.val, 0, 16);
+	ret = SQLGetData(m_hStmt, (SQLUSMALLINT)nField + 1, SQL_ARD_TYPE, &NumStr, nLength, &cbValue) == SQL_SUCCESS;
+
+	//Call to convert the little endian mode data into numeric data.
+	for(i=0; i<16; i++)
+	{
+		szTmp[i] = NumStr.val[i];
+	}
+
+	//temp_val = atol(szTmp);
+	
+	if( NumStr.scale>0 )
+	{
+		for( i=0; i<NumStr.scale; i++ )	
+			divisor *= 10;
+	}
+
+	fltData = (float)temp_val / (float)divisor;
+
+	if(!NumStr.sign) 
+		iSign = -1;
+	else 
+		iSign = 1;
+
+	fltData *= iSign;
+
+	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
+}
+
+bool 
+StorageHomeBase::GetFieldValue(const char* szFieldName, float& fltData)
+{
+	return GetFieldValue(GetFieldIndex(szFieldName), fltData);	
 }
 
 // for SQL_C_TINYINT

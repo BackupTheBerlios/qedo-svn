@@ -56,12 +56,14 @@ CatalogBase::~CatalogBase()
 	m_szConnString = NULL;
 }
 
-void 
+bool 
 CatalogBase::Init()
 {
 	SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HENV, &m_hEnv);
 	SQLSetEnvAttr(m_hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, 0); 
 	SQLAllocHandle(SQL_HANDLE_DBC, m_hEnv, &m_hDbc);
+
+	return DriverConnect(m_szConnString);
 }
 
 void 
@@ -256,7 +258,8 @@ CatalogBase::find_by_pid(const Pid& the_pid)
 void 
 CatalogBase::flush()
 {
-	// call the execute() for update
+	if(CanTransact())
+		SQLEndTran(SQL_HANDLE_DBC, m_hDbc, SQL_COMMIT);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -265,7 +268,6 @@ CatalogBase::flush()
 void 
 CatalogBase::refresh()
 {
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -299,18 +301,25 @@ CatalogBase::close()
 	}
 }
 
-SessionPool::~SessionPool()
+SessionPool::SessionPool(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString)
 {
-
+	CatalogBase::CatalogBase(eAM, szConnString);
+	m_tx_policy = tx_policy;
 }
 
-void 
+SessionPool::~SessionPool()
+{
+}
+
+bool 
 SessionPool::Init()
 {
 	SQLSetEnvAttr( SQL_NULL_HENV, SQL_ATTR_CONNECTION_POOLING, (SQLPOINTER)SQL_CP_ONE_PER_DRIVER, 0 );
     SQLAllocHandle( SQL_HANDLE_ENV, SQL_NULL_HENV, &m_hEnv );
 	SQLSetEnvAttr( m_hEnv, SQL_ATTR_ODBC_VERSION, (SQLPOINTER)SQL_OV_ODBC3, SQL_IS_INTEGER );
 	SQLAllocHandle ( SQL_HANDLE_DBC, m_hEnv, &m_hDbc );
+
+	return DriverConnect(m_szConnString);
 }
 
 void 
@@ -328,7 +337,7 @@ SessionPool::refresh_by_pids(const PidList& pids)
 TransactionPolicy 
 SessionPool::transaction_policy()
 {
-	return 0;
+	return m_tx_policy;
 }
 
 } // namespace Qedo

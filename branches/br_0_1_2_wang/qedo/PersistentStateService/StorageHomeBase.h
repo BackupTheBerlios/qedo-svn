@@ -38,7 +38,7 @@ using namespace std;
 namespace Qedo
 {
 
-class PSSDLL_API StorageHomeBase : public virtual CosPersistentState::StorageHomeBase
+class  StorageHomeBase : public virtual CosPersistentState::StorageHomeBase
 {
 	public:
 
@@ -86,6 +86,8 @@ class PSSDLL_API StorageHomeBase : public virtual CosPersistentState::StorageHom
 		bool GetFieldValue(const char* szFieldName, unsigned char& cData);
 
 		// for SQL_C_NUMERIC
+		bool GetFieldValue(const int nField, float& fltData);
+		bool GetFieldValue(const char* szFieldName, float& fltData);
 
 		// for SQL_C_TINYINT
 		bool GetFieldValue(const int nField, char& cData);
