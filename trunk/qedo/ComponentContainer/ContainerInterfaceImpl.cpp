@@ -36,7 +36,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.49 2003/11/04 10:12:50 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.50 2003/11/10 16:46:24 tom Exp $";
 
 
 namespace Qedo {
@@ -624,6 +624,10 @@ throw (Components::Deployment::UnknownImplId,
 	// Validate the created home servant
 	// Service or session container only accept Qedo::SessionHomeServants and process and entity containers
 	// only accept Qedo::EntityHomeServants
+#ifndef _QEDO_NO_QOS
+	Components::Extension::ServerInterceptorRegistration_var server_reg;
+	Components::Extension::ClientInterceptorRegistration_var client_reg;
+#endif
 	switch (container_type_)
 	{
 	case CT_SERVICE:
@@ -654,12 +658,24 @@ throw (Components::Deployment::UnknownImplId,
 		Qedo::ExtensionHomeServant* extension_home;
 
 		extension_home = dynamic_cast <Qedo::ExtensionHomeServant*> (qedo_home_servant);
-
 		if (! extension_home)
 		{
 			NORMAL_ERR ("ContainerInterfaceImpl: Container type is incompatible. Loaded home servant is not a Qedo::ExtensionHomeServant");
 			throw Components::Deployment::InstallationFailure();
 		}
+#ifndef _QEDO_NO_QOS
+		//
+		// set interceptor_dispatchers
+		//
+
+		server_reg = component_server_ -> get_server_dispatcher ();
+		extension_home -> set_server_interceptor_dispatcher (server_reg);
+		DEBUG_OUT("ContainerInterfaceImpl: server dispatcher set at home");
+
+		client_reg = component_server_ -> get_client_dispatcher ();
+		extension_home -> set_client_interceptor_dispatcher (client_reg);
+		DEBUG_OUT("ContainerInterfaceImpl: client dispatcher set at home");
+#endif
 		break;
 
 	default:
