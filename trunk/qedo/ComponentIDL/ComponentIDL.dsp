@@ -18,7 +18,6 @@ CFG=ComponentIDL - Win32 Release_orbacus
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "ComponentIDL - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ComponentIDL - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "ComponentIDL - Win32 Debug_orbacus" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "ComponentIDL - Win32 Debug_tao" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "ComponentIDL - Win32 Release_orbacus" (based on "Win32 (x86) Dynamic-Link Library")
@@ -56,38 +55,6 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-
-!ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "ComponentIDL___Win32_Debug"
-# PROP BASE Intermediate_Dir "ComponentIDL___Win32_Debug"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 1
-# PROP Output_Dir "ComponentIDL___Win32_Debug_vc6"
-# PROP Intermediate_Dir "ComponentIDL___Win32_Debug_vc6"
-# PROP Ignore_Export_Lib 0
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMPONENTIDL_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMPONENTIDL_EXPORTS" /YX /FD /GZ /c
-# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x407 /d "_DEBUG"
-# ADD RSC /l 0x407 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentIDL.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# SUBTRACT LINK32 /profile /map
-# Begin Special Build Tool
-SOURCE="$(InputPath)"
-PreLink_Desc=Creating DEF file for ComponentIDL.dll
-PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll ComponentIDL___Win32_Debug_vc6/*.obj
-# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug_orbacus"
 
@@ -196,7 +163,6 @@ PreLink_Cmds=perl  makedef.pl ComponentIDL.def Release/ComponentIDL.dll Release_
 # Begin Target
 
 # Name "ComponentIDL - Win32 Release"
-# Name "ComponentIDL - Win32 Debug"
 # Name "ComponentIDL - Win32 Debug_orbacus"
 # Name "ComponentIDL - Win32 Debug_tao"
 # Name "ComponentIDL - Win32 Release_orbacus"
@@ -272,28 +238,6 @@ SOURCE=.\QedoComponents_skel.h
 SOURCE=.\Components.idl
 
 !IF  "$(CFG)" == "ComponentIDL - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build
-InputPath=.\Components.idl
-
-BuildCmds= \
-	$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 Components.idl
-
-"Components.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"Components.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"Components_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"Components_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
 
 !ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug_orbacus"
 
@@ -373,28 +317,6 @@ SOURCE=.\CORBADepends.idl
 
 !IF  "$(CFG)" == "ComponentIDL - Win32 Release"
 
-!ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build
-InputPath=.\CORBADepends.idl
-
-BuildCmds= \
-	$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 CORBADepends.idl
-
-"CORBADepends.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"CORBADepends.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"CORBADepends_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"CORBADepends_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
-
 !ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug_orbacus"
 
 # PROP BASE Ignore_Default_Tool 1
@@ -472,28 +394,6 @@ BuildCmds= \
 SOURCE=.\QedoComponents.idl
 
 !IF  "$(CFG)" == "ComponentIDL - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build
-InputPath=.\QedoComponents.idl
-
-BuildCmds= \
-	$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 QedoComponents.idl
-
-"QedoComponents.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"QedoComponents.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"QedoComponents_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"QedoComponents_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
 
 !ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Debug_orbacus"
 

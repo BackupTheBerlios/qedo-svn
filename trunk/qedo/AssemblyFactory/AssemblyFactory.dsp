@@ -18,7 +18,6 @@ CFG=AssemblyFactory - Win32 Release_orbacus
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "AssemblyFactory - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "AssemblyFactory - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE "AssemblyFactory - Win32 Debug_orbacus" (based on "Win32 (x86) Console Application")
 !MESSAGE "AssemblyFactory - Win32 Debug_tao" (based on "Win32 (x86) Console Application")
 !MESSAGE "AssemblyFactory - Win32 Release_orbacus" (based on "Win32 (x86) Console Application")
@@ -53,30 +52,6 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-
-!ELSEIF  "$(CFG)" == "AssemblyFactory - Win32 Debug"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug"
-# PROP BASE Intermediate_Dir "Debug"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
-# PROP Intermediate_Dir "Debug"
-# PROP Ignore_Export_Lib 0
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD BASE RSC /l 0x407 /d "_DEBUG"
-# ADD RSC /l 0x407 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/assf.exe" /pdbtype:sept
 
 !ELSEIF  "$(CFG)" == "AssemblyFactory - Win32 Debug_orbacus"
 
@@ -155,7 +130,6 @@ LINK32=link.exe
 # Begin Target
 
 # Name "AssemblyFactory - Win32 Release"
-# Name "AssemblyFactory - Win32 Debug"
 # Name "AssemblyFactory - Win32 Debug_orbacus"
 # Name "AssemblyFactory - Win32 Debug_tao"
 # Name "AssemblyFactory - Win32 Release_orbacus"

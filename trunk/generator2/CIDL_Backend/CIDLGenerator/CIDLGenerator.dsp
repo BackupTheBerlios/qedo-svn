@@ -18,7 +18,6 @@ CFG=CIDLGenerator - Win32 Debug_tao
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "CIDLGenerator - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "CIDLGenerator - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE "CIDLGenerator - Win32 Debug_mico" (based on "Win32 (x86) Console Application")
 !MESSAGE "CIDLGenerator - Win32 Debug_orbacus" (based on "Win32 (x86) Console Application")
 !MESSAGE "CIDLGenerator - Win32 Debug_tao" (based on "Win32 (x86) Console Application")
@@ -53,30 +52,6 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-
-!ELSEIF  "$(CFG)" == "CIDLGenerator - Win32 Debug"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug"
-# PROP BASE Intermediate_Dir "Debug"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
-# PROP Intermediate_Dir "Debug"
-# PROP Ignore_Export_Lib 0
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /I "..\..\CIDL_Frontend\CIDLFrontendLib" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "__DEBUG__" /FD /GZ /Zm500 /c
-# ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib OBD.lib JTCD.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"$(enagoCCM)\bin\cidl_gen.exe" /pdbtype:sept /libpath:"..\..\CIDL_Frontend\CIDLFrontendLib" /libpath:"..\..\CIDL_Repository\IFRidl" /libpath:"..\..\CIDL_Repository\ComponentRepositoryLib" /libpath:"..\..\CIDL_Repository\CIDLRepositoryLib"
 
 !ELSEIF  "$(CFG)" == "CIDLGenerator - Win32 Debug_mico"
 
@@ -136,7 +111,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=distribution
-PostBuild_Cmds=md      ..\..\..\qedo_dist_orbacus_d     	md      ..\..\..\qedo_dist_orbacus_d\bin     	copy      cidl_gen.exe      ..\..\..\qedo_dist_orbacus_d\bin     	mkdir      $(QEDO)\bin     	copy      cidl_gen.exe      $(QEDO)\bin\ 
+PostBuild_Cmds=md       ..\..\..\qedo_dist_orbacus_d      	md       ..\..\..\qedo_dist_orbacus_d\bin      	copy       cidl_gen.exe       ..\..\..\qedo_dist_orbacus_d\bin      	mkdir       $(QEDO)\bin      	copy       cidl_gen.exe       $(QEDO)\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "CIDLGenerator - Win32 Debug_tao"
@@ -176,7 +151,6 @@ PostBuild_Cmds=md ..\..\..\qedo_dist_tao_d	md ..\..\..\qedo_dist_tao_d\bin	copy 
 # Begin Target
 
 # Name "CIDLGenerator - Win32 Release"
-# Name "CIDLGenerator - Win32 Debug"
 # Name "CIDLGenerator - Win32 Debug_mico"
 # Name "CIDLGenerator - Win32 Debug_orbacus"
 # Name "CIDLGenerator - Win32 Debug_tao"

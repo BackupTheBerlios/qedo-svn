@@ -18,7 +18,6 @@ CFG=IFRidl - Win32 Debug_tao
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "IFRidl - Win32 Release" (based on "Win32 (x86) Static Library")
-!MESSAGE "IFRidl - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "IFRidl - Win32 Debug_mico" (based on "Win32 (x86) Static Library")
 !MESSAGE "IFRidl - Win32 Debug_orbacus" (based on "Win32 (x86) Static Library")
 !MESSAGE "IFRidl - Win32 Debug_tao" (based on "Win32 (x86) Static Library")
@@ -53,30 +52,6 @@ BSC32=bscmake.exe
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo
-
-!ELSEIF  "$(CFG)" == "IFRidl - Win32 Debug"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug"
-# PROP BASE Intermediate_Dir "Debug"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
-# PROP Intermediate_Dir "Debug"
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MD /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /D "_LIB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /FD /GZ /c
-# SUBTRACT CPP /YX
-# ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"IFRidl.lib"
 
 !ELSEIF  "$(CFG)" == "IFRidl - Win32 Debug_mico"
 
@@ -157,7 +132,6 @@ LIB32=link.exe -lib
 # Begin Target
 
 # Name "IFRidl - Win32 Release"
-# Name "IFRidl - Win32 Debug"
 # Name "IFRidl - Win32 Debug_mico"
 # Name "IFRidl - Win32 Debug_orbacus"
 # Name "IFRidl - Win32 Debug_tao"
@@ -209,28 +183,6 @@ SOURCE=.\IFR_skel.h
 SOURCE=.\CIDL_Extension.idl
 
 !IF  "$(CFG)" == "IFRidl - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "IFRidl - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build
-InputPath=.\CIDL_Extension.idl
-
-BuildCmds= \
-	$(ORBACUS)\bin\idl -I. CIDL_Extension.idl
-
-"CIDL_Extension.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"CIDL_Extension.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"CIDL_Extension_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"CIDL_Extension_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
 
 !ELSEIF  "$(CFG)" == "IFRidl - Win32 Debug_mico"
 
@@ -311,28 +263,6 @@ BuildCmds= \
 SOURCE=.\IFR.idl
 
 !IF  "$(CFG)" == "IFRidl - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "IFRidl - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build
-InputPath=.\IFR.idl
-
-BuildCmds= \
-	$(ORBACUS)\bin\idl IFR.idl
-
-"IFR.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"IFR.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"IFR_skel.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"IFR_skel.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
 
 !ELSEIF  "$(CFG)" == "IFRidl - Win32 Debug_mico"
 

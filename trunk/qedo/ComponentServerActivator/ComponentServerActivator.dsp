@@ -18,7 +18,6 @@ CFG=ComponentServerActivator - Win32 Release_orbacus
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "ComponentServerActivator - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "ComponentServerActivator - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE "ComponentServerActivator - Win32 Debug_orbacus" (based on "Win32 (x86) Console Application")
 !MESSAGE "ComponentServerActivator - Win32 Debug_tao" (based on "Win32 (x86) Console Application")
 !MESSAGE "ComponentServerActivator - Win32 Release_orbacus" (based on "Win32 (x86) Console Application")
@@ -53,30 +52,6 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-
-!ELSEIF  "$(CFG)" == "ComponentServerActivator - Win32 Debug"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "ComponentServerActivator___Win32_Debug"
-# PROP BASE Intermediate_Dir "ComponentServerActivator___Win32_Debug"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 1
-# PROP Output_Dir "ComponentServerActivator___Win32_Debug_vc6"
-# PROP Intermediate_Dir "ComponentServerActivator___Win32_Debug_vc6"
-# PROP Ignore_Export_Lib 0
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../ComponentIDL" /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD BASE RSC /l 0x407 /d "_DEBUG"
-# ADD RSC /l 0x407 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 CosNamingd.lib obd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/csa.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 
 !ELSEIF  "$(CFG)" == "ComponentServerActivator - Win32 Debug_orbacus"
 
@@ -158,7 +133,6 @@ LINK32=link.exe
 # Begin Target
 
 # Name "ComponentServerActivator - Win32 Release"
-# Name "ComponentServerActivator - Win32 Debug"
 # Name "ComponentServerActivator - Win32 Debug_orbacus"
 # Name "ComponentServerActivator - Win32 Debug_tao"
 # Name "ComponentServerActivator - Win32 Release_orbacus"

@@ -18,7 +18,6 @@ CFG=CIDLFrontendLib - Win32 Debug_tao
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "CIDLFrontendLib - Win32 Release" (based on "Win32 (x86) Static Library")
-!MESSAGE "CIDLFrontendLib - Win32 Debug" (based on "Win32 (x86) Static Library")
 !MESSAGE "CIDLFrontendLib - Win32 Debug_mico" (based on "Win32 (x86) Static Library")
 !MESSAGE "CIDLFrontendLib - Win32 Debug_orbacus" (based on "Win32 (x86) Static Library")
 !MESSAGE "CIDLFrontendLib - Win32 Debug_tao" (based on "Win32 (x86) Static Library")
@@ -53,29 +52,6 @@ BSC32=bscmake.exe
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
 # ADD LIB32 /nologo
-
-!ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug"
-# PROP BASE Intermediate_Dir "Debug"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 1
-# PROP Output_Dir "Debug"
-# PROP Intermediate_Dir "Debug"
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MD /W3 /Gm /GR /GX /ZI /Od /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /D "__STDC__" /YX /FD /GZ /c
-# ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"CIDLFrontendLib.lib"
 
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_mico"
 
@@ -151,7 +127,6 @@ LIB32=link.exe -lib
 # Begin Target
 
 # Name "CIDLFrontendLib - Win32 Release"
-# Name "CIDLFrontendLib - Win32 Debug"
 # Name "CIDLFrontendLib - Win32 Debug_mico"
 # Name "CIDLFrontendLib - Win32 Debug_orbacus"
 # Name "CIDLFrontendLib - Win32 Debug_tao"
@@ -376,8 +351,6 @@ SOURCE=.\frontend.k
 
 !IF  "$(CFG)" == "CIDLFrontendLib - Win32 Release"
 
-!ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug"
-
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_mico"
 
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_orbacus"
@@ -426,31 +399,6 @@ SOURCE=.\symtab.k
 SOURCE=.\tree.k
 
 !IF  "$(CFG)" == "CIDLFrontendLib - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug"
-
-# Begin Custom Build
-InputPath=.\tree.k
-
-BuildCmds= \
-	c:\opt\cygwin\bin\touch k.h \
-	c:\opt\cygwin\bin\touch unpk.h \
-	d:/generatoren/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl -I..\..\CIDL_Repository\CIDLRepositoryLib -I..\..\CIDL_Repository\ComponentRepositoryLib -I%MICO%\include -I%MICO%\include\windows -D_WINDOWS attributes.k > attributes \
-	d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp tree.k frontend.k symtab.k error.k printer.k options.k resolve_symtab.k cg_io.k debug.k util.k global.k attributes pretty.k repository.k \
-	
-
-"k.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"k.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"unpk.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-
-"unpk.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-   $(BuildCmds)
-# End Custom Build
 
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_mico"
 
@@ -820,16 +768,6 @@ SOURCE=.\lexana.l
 
 !IF  "$(CFG)" == "CIDLFrontendLib - Win32 Release"
 
-!ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug"
-
-# Begin Custom Build
-InputPath=.\lexana.l
-
-"lexana.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	c:\opt\cygwin\bin\flex -Sflex.skel -tw lexana.l  > lexana.cpp
-
-# End Custom Build
-
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_mico"
 
 # Begin Custom Build
@@ -872,8 +810,6 @@ InputPath=.\lexana.l
 SOURCE=.\cidl.output
 
 !IF  "$(CFG)" == "CIDLFrontendLib - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug"
 
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_mico"
 
@@ -934,18 +870,6 @@ BuildCmds= \
 SOURCE=.\cidl.y
 
 !IF  "$(CFG)" == "CIDLFrontendLib - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug"
-
-# Begin Custom Build
-InputPath=.\cidl.y
-
-"cidl.cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	C:\opt\cygwin\bin\bison -y -v -d cidl.y 
-	copy y.tab.c cidl.cpp 
-	copy y.tab.h cidl.h 
-	
-# End Custom Build
 
 !ELSEIF  "$(CFG)" == "CIDLFrontendLib - Win32 Debug_mico"
 

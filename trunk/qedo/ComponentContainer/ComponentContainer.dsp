@@ -18,7 +18,6 @@ CFG=ComponentContainer - Win32 Release_orbacus
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "ComponentContainer - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "ComponentContainer - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "ComponentContainer - Win32 Debug_orbacus" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "ComponentContainer - Win32 Debug_tao" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "ComponentContainer - Win32 Release_orbacus" (based on "Win32 (x86) Dynamic-Link Library")
@@ -56,32 +55,6 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-
-!ELSEIF  "$(CFG)" == "ComponentContainer - Win32 Debug"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "ComponentContainer___Win32_Debug"
-# PROP BASE Intermediate_Dir "ComponentContainer___Win32_Debug"
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 1
-# PROP Output_Dir "ComponentContainer___Win32_Debug_vc6"
-# PROP Intermediate_Dir "ComponentContainer___Win32_Debug_vc6"
-# PROP Ignore_Export_Lib 0
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "$(ORBACUS)\include" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "VC6" /FR /YX /FD /GZ /c
-# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
-# ADD BASE RSC /l 0x407 /d "_DEBUG"
-# ADD RSC /l 0x407 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 
 !ELSEIF  "$(CFG)" == "ComponentContainer - Win32 Debug_orbacus"
 
@@ -170,7 +143,6 @@ LINK32=link.exe
 # Begin Target
 
 # Name "ComponentContainer - Win32 Release"
-# Name "ComponentContainer - Win32 Debug"
 # Name "ComponentContainer - Win32 Debug_orbacus"
 # Name "ComponentContainer - Win32 Debug_tao"
 # Name "ComponentContainer - Win32 Release_orbacus"
