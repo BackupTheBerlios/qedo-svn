@@ -1,10 +1,10 @@
 %{
 /*****************************************************************************/
-/* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
+/* Qedo - Quality of Service Enabled Distributed Objects                     */
 /*                                                                           */
-/* Copyright (c) 2002 by the Qedo Team                                       */
+/* Copyright (c) 2002/2003 by the Qedo Team                                  */
 /*                                                                           */
-/* http://qedo.berlios.de                                                   */
+/* http://qedo.berlios.de                                                    */
 /*                                                                           */
 /* This file is part of Qedo Generator                                       */
 /*                                                                           */
@@ -12,7 +12,7 @@
 /* it under the terms of the GNU General Public License as published by      */
 /* the Free Software Foundation; either version 2 of the License, or         */
 /* (at your option) any later version.                                       */
-/*                                                                           */ 
+/*                                                                           */
 /* Qedo Generator is distributed in the hope that it will be useful,         */
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of            */
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
