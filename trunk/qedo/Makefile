@@ -67,7 +67,7 @@ DeploymentClient.Debug_mico_linux: AssemblyFactory.Debug_mico_linux ComponentCon
 
 
 ComponentContainer.Debug_mico_linux: ComponentIDL.Debug_mico_linux
-	 mkdir -p ComponentContainer/Debug_mico_linux ;make -C ComponentContainer Debug_orbacus_mico
+	 mkdir -p ComponentContainer/Debug_mico_linux ;make -C ComponentContainer Debug_mico_linux
 
 
 ComponentInstaller.Debug_mico_linux: ComponentIDL.Debug_mico_linux
