@@ -1,3 +1,8 @@
+
+version 0.2.0
+
+- unix mico support
+- unix configur support
 - reference counting for generated executors
 
 version 0.1.1
