@@ -38,8 +38,7 @@ LIBS += -L../ComponentIDL -lComponentIDL\
 
 LDLIBS = ${LIBS}
 
-SOURCES =  DeploymentClient.cpp \
-           qdeploy.cpp
+SOURCES = qdeploy.cpp
 
 OBJS = ${SOURCES:.cpp=.o}
 
