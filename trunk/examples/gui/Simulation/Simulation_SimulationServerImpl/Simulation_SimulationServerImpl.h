@@ -66,7 +66,7 @@ namespace Simulation
         //
         // IDL:Simulation/RetrieveRadarData/get_data:1.0
         //
-        virtual Simulation::RadarData* get_data(const Simulation::Position& radar_position)
+        virtual Simulation::RadarData* get_data(const Simulation::Position& radar_position, CORBA::Double radius)
         	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION SimulationServerSessionImpl

@@ -54,7 +54,7 @@ SimulationServerSessionImpl::remove()
     throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION SimulationServerSessionImpl::remove
-		list_mutex_ -> destroy();
+	//	list_mutex_ -> destroy();
 
 // END USER INSERT SECTION SimulationServerSessionImpl::remove
 }
@@ -68,7 +68,8 @@ SimulationServerSessionImpl::set_position(const char* identifier, const Simulati
 	list_mutex_->lock();
 
 	// debug
-	std::cout << "got position: id:" << identifier << " " << current_position.longitude << std::endl;
+	std::cout << "got position: id:" << identifier << " " << current_position.longitude 
+		<< " lat:" << current_position.latitude << " alt: " << current_position.altitude << std::endl;
 	try {
 		std::string temp_str = identifier;
 
@@ -93,7 +94,7 @@ SimulationServerSessionImpl::set_position(const char* identifier, const Simulati
 
 
 Simulation::RadarData*
-SimulationServerSessionImpl::get_data(const Simulation::Position& radar_position)
+SimulationServerSessionImpl::get_data(const Simulation::Position& radar_position, CORBA::Double radius)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION SimulationServerSessionImpl::get_data
@@ -116,7 +117,7 @@ SimulationServerSessionImpl::get_data(const Simulation::Position& radar_position
 		b = radar_position.latitude - (*plane_itr).second.latitude;
 
 		c = sqrt((a * a) + ((b * b) ));
-		if (c < 85)
+		if (c < radius)
 		{
 			ret_list->length(ret_list->length()+1);
 
