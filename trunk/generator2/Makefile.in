@@ -30,3 +30,16 @@ all: $(SUBDIRS:%=%-all)
 
 %-all: %
 	make -C $< all
+
+.PHONY: install-dir
+
+@bindir@:
+	mkdir -p $@
+
+install-dir: @bindir@
+
+install: install-dir $(SUBDIRS:%=%-install)
+
+%-install: %
+	make -C $< install
+
