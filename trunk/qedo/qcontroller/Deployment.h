@@ -53,7 +53,7 @@ private:
 	running_assemblies_ running_assemblies;
 	long assemblies_counter_;
 	
-	CORBA::ORB_var orb; 
+	CORBA::ORB_var orb;
 	wxTextCtrl* assembly_name_;
 	wxButton* file_choice_btn;
 	wxButton* deploy_btn;

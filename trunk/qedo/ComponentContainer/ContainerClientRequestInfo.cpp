@@ -20,11 +20,15 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "ContainerClientRequestInfo.h"
 #include "Util.h"
 
 
-static char rcsid[] UNUSED = "$Id: ContainerClientRequestInfo.cpp,v 1.2 2004/02/25 10:39:14 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ContainerClientRequestInfo.cpp,v 1.3 2004/06/24 13:11:03 tom Exp $";
 
 
 namespace Qedo {

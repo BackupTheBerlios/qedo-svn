@@ -30,7 +30,7 @@
 #include <cstring>
 
 
-static char rcsid[] UNUSED = "$Id: CDRTransportCoDec.cpp,v 1.1 2004/01/22 12:22:42 tom Exp $";
+static char rcsid[] UNUSED = "$Id: CDRTransportCoDec.cpp,v 1.2 2004/06/24 13:11:03 tom Exp $";
 
 namespace Qedo {
 
@@ -273,7 +273,7 @@ CDRTransportCoDec::unmarshal_octet (UnmarshalBuffer* buf, CORBA::Octet& val)
 	buf->unmarshal_data ((char*)&val, 1);
 }
 
-void 
+void
 CDRTransportCoDec::unmarshal_short (UnmarshalBuffer* buf, CORBA::Short& val)
 {
 	buf->do_align (2);

@@ -139,11 +139,12 @@ private:
 	ConnectorImpl*                      pConn_;
 #endif
 
-#ifndef _QEDO_NO_QOS
 	/** the list of service references */
 	std::vector <ServiceReferenceEntry>				service_references_;
 	/** the mutex for service_references_ */
 	QedoMutex							service_references_mutex_;
+
+#ifndef _QEDO_NO_QOS
 
 	/** interceptor dispatcher for the server side */
 	Components::Extension::ServerInterceptorRegistration_var server_dispatcher_;
@@ -248,8 +249,11 @@ public:
 	virtual Components::Extension::ClientInterceptorRegistration_ptr
 	get_client_dispatcher (  );
 
+
 	virtual ContainerList*
 	get_all_containers();
+
+#endif
 
 	/**
 	 * provide the initial service reference of the specified service
@@ -269,7 +273,6 @@ public:
     virtual void install_service_reference(const char* id, CORBA::Object_ptr ref)
 		throw (Components::CCMException, CORBA::SystemException);
 
-#endif
 
 	//
 	// Exceptions

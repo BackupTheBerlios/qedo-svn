@@ -20,13 +20,16 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #ifndef _QEDO_NO_QOS
 
 #include "ExtensionHomeServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: ExtensionHomeServant.cpp,v 1.4 2004/01/22 10:57:45 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ExtensionHomeServant.cpp,v 1.5 2004/06/24 13:11:03 tom Exp $";
 
 
 namespace Qedo {
@@ -97,4 +100,4 @@ ExtensionHomeServant::set_client_interceptor_dispatcher(Components::Extension::C
 
 } // namespace Qedo
 
-#endif
+#endif //_QEDO_NO_QOS

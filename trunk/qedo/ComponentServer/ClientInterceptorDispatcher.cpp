@@ -20,6 +20,10 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #ifndef _QEDO_NO_QOS
 
 
@@ -28,7 +32,7 @@
 #include <fstream>
 #include "ContainerClientRequestInfo.h"
 
-static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.11 2004/04/15 07:47:36 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.12 2004/06/24 13:11:03 tom Exp $";
 
 namespace Qedo {
 

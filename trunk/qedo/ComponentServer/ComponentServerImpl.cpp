@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.34 2004/06/24 10:28:37 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.35 2004/06/24 13:11:03 tom Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -636,7 +636,9 @@ ComponentServerImpl::get_all_containers()
 	return list;
 }
 
-void 
+#endif //_QEDO_NO_QOS
+
+void
 ComponentServerImpl::install_service_reference(const char* id, CORBA::Object_ptr ref)
 throw (Components::CCMException, CORBA::SystemException)
 {
@@ -666,7 +668,7 @@ throw (Components::CCMException, CORBA::SystemException)
 }
 
 
-CORBA::Object_ptr 
+CORBA::Object_ptr
 ComponentServerImpl::resolve_service_reference(const char* service_id)
 throw (Components::CCMException)
 {
@@ -688,7 +690,6 @@ throw (Components::CCMException)
 }
 
 
-#endif
 
 
 } // namespace Qedo
