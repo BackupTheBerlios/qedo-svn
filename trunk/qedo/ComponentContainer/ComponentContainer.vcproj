@@ -397,7 +397,7 @@ copy $(TargetPath) $(QEDO)\bin
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
-						GeneratePreprocessedFile="1"/>
+						GeneratePreprocessedFile="0"/>
 				</FileConfiguration>
 			</File>
 			<File

@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.24 2003/08/06 12:17:25 stoinski Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.25 2003/08/06 14:32:14 stoinski Exp $";
 
 
 namespace Qedo {
@@ -149,7 +149,9 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
         DEBUG_OUT("ContainerInterfaceImpl: No HomeFinder");
 		/* Since problem with MICO Initializer a new try directly over the name service*/
 		//return;
-	CosNaming::NamingContext_var nameService;
+	
+		CosNaming::NamingContext_var nameService;
+		
 		try
 		{
 			obj = orb->resolve_initial_references("NameService");
@@ -185,8 +187,6 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 		aName[0].kind = CORBA::string_dup("");
 		aName[1].id = CORBA::string_dup("HomeFinder");
 		aName[1].kind = CORBA::string_dup("");
-
-		obj = nameService->resolve(aName);
 
 		try
 		{

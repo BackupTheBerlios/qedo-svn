@@ -28,7 +28,7 @@
 #include <string>
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.15 2003/08/06 12:24:59 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.16 2003/08/06 14:32:14 stoinski Exp $";
 
 
 /**
@@ -143,7 +143,7 @@ main (int argc, char** argv)
 		}
 		if (Qedo::GlobalObjectManagement::CORBA_object_count_)
 		{
-			DEBUG_OUT2 ("# Number of stil running CORBA objects        : ", Qedo::GlobalObjectManagement::CORBA_object_count_);
+			DEBUG_OUT2 ("# Number of still running CORBA objects        : ", Qedo::GlobalObjectManagement::CORBA_object_count_);
 		}
 		if (Qedo::GlobalObjectManagement::CORBA_local_object_count_)
 		{
