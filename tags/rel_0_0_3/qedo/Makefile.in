@@ -1,0 +1,10 @@
+SUBDIRS = ComponentIDL \
+	  ComponentContainer \
+	  ComponentServer \
+	  ComponentServerActivator \
+	  ComponentInstaller
+
+all: $(SUBDIRS:%=%-all)
+
+%-all: %
+	make -C $<

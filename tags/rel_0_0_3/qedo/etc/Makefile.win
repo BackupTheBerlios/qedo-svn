@@ -1,0 +1,46 @@
+CPP=cl.exe
+LINK32=link.exe
+
+IDL_EXE=$(ORBACUS)\bin\idl.exe
+IDL_IDL=$(ORBACUS)\idl
+IDL_INCLUDE=$(ORBACUS)\include
+IDL_LIB=$(ORBACUS)\lib
+
+
+CPP_INCLUDE= /I "." /I "$(QEDO)\ComponentIDL" /I "$(QEDO)\ComponentContainer" /I $(IDL_INCLUDE)
+CPP_PROJ=$(CPP_INCLUDE) /nologo /MDd /W3 /Gm /GR /GX /Zi /Od  /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /FD /GZ /c 
+	
+
+LINK_PATH=/LIBPATH:$(IDL_LIB) /LIBPATH:$(QEDO)"\ComponentIDL\Debug" /LIBPATH:$(QEDO)"\ComponentContainer\Debug"
+LINK_LIBS=ComponentIDL.lib ComponentContainer.lib jtcd.lib obd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
+LINK32_FLAGS=$(LINK_PATH) $(LINK_LIBS) /nologo /dll /incremental:no /pdb:"foo.pdb" /debug /machine:I386 /implib:"foo.lib"
+
+
+ALL :
+	"$(QEDO)\bin\cidl_gen" -DWIN32 -I"$(QEDO)\ComponentIDL" -I$(IDL_IDL) -I$(IDL_IDL)/OB --deploy --target dinner $(SOURCE)
+	$(IDL_EXE) -DWIN32 -I"$(QEDO)\ComponentIDL" -I$(IDL_IDL) -I$(IDL_IDL)/OB $(SOURCE:.idl=_EQUIVALENT.idl)
+	$(IDL_EXE) -DWIN32 -I"$(QEDO)\ComponentIDL" -I$(IDL_IDL) -I$(IDL_IDL)/OB $(SOURCE:.idl=_LOCAL.idl)
+	$(IDL_EXE) -DWIN32 -I"$(QEDO)\ComponentIDL" -I$(IDL_IDL) -I$(IDL_IDL)/OB $(SOURCE:.idl=_BUSINESS.idl)
+	$(CPP) $(CPP_PROJ) *.cpp
+	$(LINK32) $(LINK32_FLAGS) *.obj /out:$(TARGET)
+
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<

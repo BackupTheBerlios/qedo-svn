@@ -1,0 +1,46 @@
+CXX = @CXX@
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+VPATH=@srcdir@
+
+INCLUDES = -I../ComponentIDL -I@srcdir@ \
+           -I@top_srcdir@/ComponentValuetypes  @CPPFLAGS@
+
+
+CXXFLAGS +=  $(IDLCXXFLAGS) $(INCLUDES) -MMD -g -fPIC
+
+LDFLAGS += -L../ComponentIDL -lComponent
+
+SOURCES = Key.cpp \
+          	ServantBase.cpp \
+          	ServantLocator.cpp \
+		Output.cpp \
+		HomeServantBase.cpp \
+		CCMObjectExecutor.cpp \
+		CCMContext.cpp \
+		ComponentInstance.cpp \
+		ConsumerPort.cpp \
+		ContainerInterfaceImpl.cpp \
+		EmitterPort.cpp \
+		EntityHomeServant.cpp \
+		FacetPort.cpp \
+		GlobalHelpers.cpp \
+		PortBase.cpp \
+		PublisherPort.cpp \
+		ReceptaclePort.cpp \
+		RefCountBase.cpp \
+		ServantRegistry.cpp \
+		SessionContext.cpp \
+		SessionHomeServant.cpp \
+		Valuetypes.cpp \
+		CCMHomeServant.cpp
+
+
+OBJS = ${SOURCES:.cpp=.o}
+
+all: libComponentContainer.so
+
+libComponentContainer.so : $(OBJS)
+	@CXX@ @LD_CREATE_FLAGS@ $@ $(OBJS) $(LDFLAGS) @LIBS@
+
+-include ${SOURCES:.cpp=.d}

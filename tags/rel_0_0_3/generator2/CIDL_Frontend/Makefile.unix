@@ -1,0 +1,8 @@
+all :
+	( cd CIDLFrontendLib; make -f Makefile.unix )
+
+source_distribution:
+	( cd CIDLFrontendLib; make -f Makefile.unix source_distribution )
+
+clean :
+	( cd CIDLFrontendLib; make -f Makefile.unix clean )

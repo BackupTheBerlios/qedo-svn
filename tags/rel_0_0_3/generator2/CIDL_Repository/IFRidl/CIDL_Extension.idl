@@ -1,0 +1,144 @@
+/*****************************************************************************/
+/* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
+/*                                                                           */
+/* Copyright (c) 2002 by the Qedo Team                                       */
+/*                                                                           */
+/* http://qedo.berlios.de                                                    */
+/*                                                                           */
+/* This file is part of Qedo Generator                                       */
+/*                                                                           */
+/* Qedo Generator is free software; you can redistribute it and/or modify    */
+/* it under the terms of the GNU General Public License as published by      */
+/* the Free Software Foundation; either version 2 of the License, or         */
+/* (at your option) any later version.                                       */
+/*                                                                           */
+/* Qedo Generator is distributed in the hope that it will be useful,         */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of            */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
+/* GNU General Public License for more details.                              */
+/*                                                                           */
+/* You should have received a copy of the GNU General Public License         */
+/* along with Foobar; if not, write to the Free Software                     */
+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
+/*                                                                           */
+/*****************************************************************************/
+
+// IDL file for CIDL Extension to the Component Repository
+
+#ifndef __CIDL_IDL__
+#define __CIDL_IDL__
+
+#include "IFR.idl"
+
+#pragma prefix "omg.org"
+
+module CIDL {
+
+	interface CompositionDef;
+	interface SegmentDef;
+	interface HomeExecutorDef;
+	interface ExecutorDef;
+
+	typedef unsigned long LifecycleCategory;
+	const LifecycleCategory lc_Service = 0;
+	const LifecycleCategory lc_Session = 1;
+	const LifecycleCategory lc_Process = 2;
+	const LifecycleCategory lc_Entity = 3;
+
+	interface CIDLRepository : IR__::ComponentRepository
+	{
+		CompositionDef create_composition (
+			in IR__::RepositoryId id,
+			in IR__::Identifier name,
+			in IR__::VersionSpec version,
+			in LifecycleCategory lifecycle,
+			in IR__::HomeDef _home
+		);
+	};
+
+	interface CompositionDef : IR__::Contained, IR__::Container
+	{
+		readonly attribute IR__::HomeDef ccm_home;
+		readonly attribute IR__::ComponentDef ccm_component;
+		readonly attribute LifecycleCategory lifecycle;
+		readonly attribute HomeExecutorDef home_executor;
+		readonly attribute ExecutorDef executor;
+
+		HomeExecutorDef create_home_executor (
+			in IR__::RepositoryId id,
+			in IR__::Identifier name,
+			in IR__::VersionSpec version
+		);
+		ExecutorDef create_executor (
+			in IR__::RepositoryId id,
+			in IR__::Identifier name,
+			in IR__::VersionSpec version
+		);
+	};
+
+	struct CompositionDescription {
+		IR__::Identifier name;
+		IR__::RepositoryId id;
+		IR__::RepositoryId defined_in;
+		IR__::VersionSpec version;
+		LifecycleCategory lifecycle;
+		HomeExecutorDef home_executor;
+		ExecutorDef executor;
+	};
+
+	interface SegmentDef : IR__::Contained
+	{
+		readonly attribute IR__::ProvidesDefSeq provided_facets;
+	};
+	typedef sequence < SegmentDef > SegmentDefSeq;
+
+	struct SegmentDescription {
+		IR__::Identifier name;
+		IR__::RepositoryId id;
+		IR__::RepositoryId defined_in;
+		IR__::VersionSpec version;
+		IR__::ProvidesDefSeq provided_facets;
+	};
+
+	struct Delegation
+	{
+		IR__::OperationDef delegated_operation;
+		IR__::Identifier executor_operation_name;
+	};
+	typedef sequence < Delegation > DelegationSeq;
+
+	interface HomeExecutorDef : IR__::Contained
+	{
+		attribute DelegationSeq delegations;
+	};
+
+	struct HomeExecutorDescription {
+		IR__::Identifier name;
+		IR__::RepositoryId id;
+		IR__::RepositoryId defined_in;
+		IR__::VersionSpec version;
+		DelegationSeq delegations;
+	};
+
+	interface ExecutorDef : IR__::Contained, IR__::Container
+	{
+		readonly attribute SegmentDefSeq segments;
+
+		SegmentDef create_segment (
+			in IR__::RepositoryId id,
+			in IR__::Identifier name,
+			in IR__::VersionSpec version,
+			in IR__::ProvidesDefSeq provided_facets
+		);
+	};
+
+	struct ExecutorDescription {
+		IR__::Identifier name;
+		IR__::RepositoryId id;
+		IR__::RepositoryId defined_in;
+		IR__::VersionSpec version;
+		SegmentDefSeq segments;
+	};
+};
+
+#endif
