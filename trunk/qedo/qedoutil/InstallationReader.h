@@ -102,6 +102,12 @@ public:
 	 */
 	void add( std::string file, ComponentImplementationData* data )
 		throw(InstallationReadException);
+
+	/**
+	 * remove an implementation
+	 */
+	void remove( std::string file, const char* uuid )
+		throw(InstallationReadException);
 };
 
 

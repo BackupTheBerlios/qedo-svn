@@ -27,7 +27,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: InstallationReader.cpp,v 1.2 2003/10/05 19:26:40 tom Exp $";
+static char rcsid[] UNUSED = "$Id: InstallationReader.cpp,v 1.3 2003/10/23 09:55:01 neubauer Exp $";
 
 
 namespace Qedo {
@@ -263,6 +263,91 @@ throw(InstallationReadException)
 		// do the serialization through DOMWriter::writeNode();
 		//
 		theSerializer->writeNode(myFormTarget, *doc);
+
+		delete theSerializer;
+		delete myFormTarget;
+	}
+    catch (XMLException& e)
+	{
+		std::cerr << "An error occurred during creation of output transcoder. Msg is:" << std::endl;
+		std::cerr << StrX(e.getMessage()) << std::endl;
+    }
+}
+
+
+void 
+InstallationReader::remove( std::string file, const char* uuid )
+throw(InstallationReadException)
+{
+	//
+	// parse the descriptor file
+    //
+	DOMXMLParser parser;
+	char* xmlfile = strdup(file.c_str());
+    if ( parser.parse( xmlfile ) != 0 ) 
+	{
+		std::cerr << "Error during XML parsing" << std::endl;
+        throw InstallationReadException();
+	}
+
+	//
+	// remove implementation
+	//
+	document_ = parser.getDocument();
+	DOMElement* root = document_->getDocumentElement();
+	std::string element_name;
+    DOMNode* child = root->getFirstChild();
+	DOMNode* text_child;
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = XMLString::transcode(child->getNodeName());
+
+			//
+			// implementation
+			//
+			if (element_name == "implementation")
+			{
+				if( !strcmp(XMLString::transcode(((DOMElement*)child)->getAttribute(X("id"))), uuid) )
+				{
+					root->removeChild( text_child );
+					root->removeChild( child );
+				}
+
+				break;
+			}
+		}
+
+		// get next child
+		text_child = child;
+		child = child->getNextSibling();
+    }
+
+	//
+	// write the new list
+	//
+	try
+    {
+		//
+		// get a serializer, an instance of DOMWriter
+		//
+		XMLCh tempStr[100];
+		XMLString::transcode("LS", tempStr, 99);
+		DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation(tempStr);
+		DOMWriter *theSerializer = ((DOMImplementationLS*)impl)->createDOMWriter();
+
+		if (theSerializer->canSetFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true))
+		{
+			theSerializer->setFeature(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+		}
+
+		XMLFormatTarget *myFormTarget = new LocalFileFormatTarget(file.c_str());
+
+		//
+		// do the serialization through DOMWriter::writeNode();
+		//
+		theSerializer->writeNode(myFormTarget, *document_);
 
 		delete theSerializer;
 		delete myFormTarget;
