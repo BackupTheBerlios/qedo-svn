@@ -4,27 +4,27 @@ CIDL_FILES = ../simple_stream.cidl
 
 IDL_FILES = SimpleStream_SinkCompo_LOCAL.idl \
 	SimpleStream_SinkCompo_EQUIVALENT.idl \
-	SimpleStream_SinkCompo_BUSINESS.idl 
+	SimpleStream_SinkCompo_BUSINESS.idl
 
 CPP_FILES = SimpleStream_SinkCompo_BUSINESS.cpp \
 	SimpleStream_SinkCompo.cpp \
-	valuetypes.cpp 
+	component_valuetypes.cpp
 
-OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
+OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
 
 CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} libSimpleStream_SinkCompo.so SimpleStream_SinkCompo.zip
 
-LIBS += -L../SimpleStream_SinkCompo_SERVANT -lSimpleStream_SinkCompo_SERVANT 
+LIBS += -L../SimpleStream_SinkCompo_SERVANT -lSimpleStream_SinkCompo_SERVANT
 
 CXXFLAGS += -I. -g
 
 include ../MakeComponentVars
 
-all: libSimpleStream_SinkCompo.so 
+all: libSimpleStream_SinkCompo.so
 
-libSimpleStream_SinkCompo.so: ${OBJ_FILES} 
+libSimpleStream_SinkCompo.so: ${OBJ_FILES}
 
-${IDL_FILES} valuetypes.cpp : ${CIDL_FILES} 
+${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} 
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target "IDL:SimpleStream/SinkCompo:1.0" $< 
 

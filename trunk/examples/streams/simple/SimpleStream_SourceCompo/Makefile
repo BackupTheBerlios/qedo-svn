@@ -4,27 +4,27 @@ CIDL_FILES = ../simple_stream.cidl
 
 IDL_FILES = SimpleStream_SourceCompo_LOCAL.idl \
 	SimpleStream_SourceCompo_EQUIVALENT.idl \
-	SimpleStream_SourceCompo_BUSINESS.idl 
+	SimpleStream_SourceCompo_BUSINESS.idl
 
 CPP_FILES = SimpleStream_SourceCompo_BUSINESS.cpp \
 	SimpleStream_SourceCompo.cpp \
-	valuetypes.cpp 
+	component_valuetypes.cpp
 
-OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
+OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
 
 CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} libSimpleStream_SourceCompo.so SimpleStream_SourceCompo.zip
 
-LIBS += -L../SimpleStream_SourceCompo_SERVANT -lSimpleStream_SourceCompo_SERVANT 
+LIBS += -L../SimpleStream_SourceCompo_SERVANT -lSimpleStream_SourceCompo_SERVANT
 
 CXXFLAGS += -I. -g
 
 include ../MakeComponentVars
 
-all: libSimpleStream_SourceCompo.so 
+all: libSimpleStream_SourceCompo.so
 
-libSimpleStream_SourceCompo.so: ${OBJ_FILES} 
+libSimpleStream_SourceCompo.so: ${OBJ_FILES}
 
-${IDL_FILES} valuetypes.cpp : ${CIDL_FILES} 
+${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} 
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target "IDL:SimpleStream/SourceCompo:1.0" $< 
 
