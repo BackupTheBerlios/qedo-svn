@@ -345,7 +345,8 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 {
 	std::string factory_name = mapName(factory);
 	std::string home_name = mapFullNameLocal(home_);
-	std::string component_name = mapFullName(home_->managed_component());
+	IR__::ComponentDef_var comp = home_->managed_component();
+	std::string component_name = mapFullName(comp);
 
 	out << map_return_type(component_) << "\n";
 	out << class_name_ << "::" << factory_name << "(";
@@ -425,8 +426,8 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out.unindent();
 	out << "}\n\n";
 	out << "// Create a new context\n";
-	out << mapFullNameLocal(home_->managed_component()) << "_ContextImpl_var new_context = new ";
-	out << home_->managed_component()->name() << "_Context_callback();\n\n";
+	out << mapFullNameLocal(comp) << "_ContextImpl_var new_context = new ";
+	out << comp->name() << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
 	out << "session_component->set_session_context (new_context.in());\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
@@ -434,7 +435,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
 	out << "// use of servant factories\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
-	out << mapFullNameServant(home_->managed_component()) << "::cleaner_.factory_);\n\n";
+	out << mapFullNameServant(comp) << "::cleaner_.factory_);\n\n";
 	out << "// Extract our Key out of the object reference\n";
 	out << "#ifdef TAO_ORB\n";
 	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
@@ -442,11 +443,11 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
 	out << "#endif\n";
 	out << "// register all ports\n";
-	genFacetRegistration(home_);
-	genReceptacleRegistration(home_);
-	genEmitterRegistration(home_);
-	genPublisherRegistration(home_);
-	genConsumerRegistration(home_);
+	genFacetRegistration(comp);
+	genReceptacleRegistration(comp);
+	genEmitterRegistration(comp);
+	genPublisherRegistration(comp);
+	genConsumerRegistration(comp);
 	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
 	out << component_name << "_var servant = ";
 	out << component_name << "::_narrow (component_instance.component_ref());\n\n";
@@ -461,7 +462,8 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 {
 	std::string finder_name = mapName(finder);
 	std::string home_name = mapFullNameLocal(home_);
-	std::string component_name = mapFullName(home_->managed_component());
+	IR__::ComponentDef_var comp = home_->managed_component();
+	std::string component_name = mapFullName(comp);
 
 	out << map_return_type(component_) << "\n";
 	out << class_name_ << "::" << finder_name << "(";
@@ -541,8 +543,8 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out.unindent();
 	out << "}\n\n";
 	out << "// Create a new context\n";
-	out << mapFullNameLocal(home_->managed_component()) << "_ContextImpl_var new_context = new ";
-	out << home_->managed_component()->name() << "_Context_callback();\n\n";
+	out << mapFullNameLocal(comp) << "_ContextImpl_var new_context = new ";
+	out << comp->name() << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
 	out << "session_component->set_session_context (new_context.in());\n\n";
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
@@ -550,7 +552,7 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
 	out << "// use of servant factories\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
-	out << mapFullNameServant(home_->managed_component()) << "::cleaner_.factory_);\n\n";
+	out << mapFullNameServant(comp) << "::cleaner_.factory_);\n\n";
 	out << "// Extract our Key out of the object reference\n";
 	out << "#ifdef TAO_ORB\n";
 	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
@@ -558,11 +560,11 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
 	out << "#endif\n";
 	out << "// register all ports\n";
-	genFacetRegistration(home_);
-	genReceptacleRegistration(home_);
-	genEmitterRegistration(home_);
-	genPublisherRegistration(home_);
-	genConsumerRegistration(home_);
+	genFacetRegistration(comp);
+	genReceptacleRegistration(comp);
+	genEmitterRegistration(comp);
+	genPublisherRegistration(comp);
+	genConsumerRegistration(comp);
 	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
 	out << component_name << "_var servant = ";
 	out << component_name << "::_narrow (component_instance.component_ref());\n\n";
@@ -1482,6 +1484,7 @@ void
 GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc)
 {
 	class_name_ = string(home->name()) + "_servant";
+	IR__::ComponentDef_var comp = home->managed_component();
 
 	// header
 	out << "// ================================================\n";
@@ -1490,7 +1493,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 
 	// constructor
 	out << class_name_ << "::" << class_name_ << "()\n";
-	out << ": HomeServantBase(\"" << home->id() << "\", \"" << home->managed_component()->id() << "\")\n{\n";
+	out << ": HomeServantBase(\"" << home->id() << "\", \"" << comp->id() << "\")\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (home servant) : Constructor called\");\n";
 	out.unindent();
@@ -1589,8 +1592,8 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out.unindent();
 	out << "}\n\n";
 	out << "// Create a new context\n";
-	out << mapFullNameLocal(home->managed_component()) << "_ContextImpl_var new_context = new ";
-	out << mapFullNameServant(home->managed_component()) << "_Context_callback();\n\n";
+	out << mapFullNameLocal(comp) << "_ContextImpl_var new_context = new ";
+	out << mapFullNameServant(comp) << "_Context_callback();\n\n";
 	if (lc==CIDL::lc_Extension) {
 		out << "// Set container interceptor registration on context\n";
 		out << "new_context -> set_server_interceptor_dispatcher_registration(server_dispatcher_.in());\n";
@@ -1618,7 +1621,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
 	out << "// register servant factory\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
-	out << mapFullNameServant(home->managed_component()) << "::cleaner_.factory_);\n\n";
+	out << mapFullNameServant(comp) << "::cleaner_.factory_);\n\n";
 	out << "// Extract our Key out of the object reference\n";
 	out << "#ifdef TAO_ORB\n";
 	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
@@ -1626,19 +1629,19 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
 	out << "#endif\n";
 	out << "// register all ports\n";
-	genFacetRegistration(home);
-	genReceptacleRegistration(home);
-	genEmitterRegistration(home);
-	genPublisherRegistration(home);
-	genConsumerRegistration(home);
+	genFacetRegistration(comp);
+	genReceptacleRegistration(comp);
+	genEmitterRegistration(comp);
+	genPublisherRegistration(comp);
+	genConsumerRegistration(comp);
 
 	out << "CORBA::RepositoryIdSeq streamtypes;\n\n";
-	genSinkRegistration(home);
-	genSourceRegistration(home);
+	genSinkRegistration(comp);
+	genSourceRegistration(comp);
 
 	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
-	out << mapFullName(home->managed_component()) << "_var servant = ";
-	out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
+	out << mapFullName(comp) << "_var servant = ";
+	out << mapFullName(comp) << "::_narrow (component_instance.component_ref());\n\n";
 	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
@@ -1737,8 +1740,8 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out.unindent();
 	out << "}\n\n";
 	out << "// Create a new context\n";
-	out << mapFullNameLocal(home->managed_component()) << "_ContextImpl_var new_context = new ";
-	out << mapFullNameServant(home->managed_component()) << "_Context_callback();\n\n";
+	out << mapFullNameLocal(comp) << "_ContextImpl_var new_context = new ";
+	out << mapFullNameServant(comp) << "_Context_callback();\n\n";
 	if (lc==CIDL::lc_Extension) {
 		out << "// Set container interceptor registration on context\n";
 		out << "new_context -> set_server_interceptor_dispatcher_registration(server_dispatcher_.in());\n";
@@ -1766,7 +1769,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()), config);\n\n";
 	out << "// register servant factory\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
-	out << mapFullNameServant(home->managed_component()) << "::cleaner_.factory_);\n\n";
+	out << mapFullNameServant(comp) << "::cleaner_.factory_);\n\n";
 	out << "// Extract our Key out of the object reference\n";
 	out << "#ifdef TAO_ORB\n";
 	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
@@ -1774,18 +1777,18 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
 	out << "#endif\n";
 	out << "// register all ports\n";
-	genFacetRegistration(home);
-	genReceptacleRegistration(home);
-	genEmitterRegistration(home);
-	genPublisherRegistration(home);
-	genConsumerRegistration(home);
+	genFacetRegistration(comp);
+	genReceptacleRegistration(comp);
+	genEmitterRegistration(comp);
+	genPublisherRegistration(comp);
+	genConsumerRegistration(comp);
 
 	out << "CORBA::RepositoryIdSeq streamtypes;\n\n";
-	genSinkRegistration(home);
-	genSourceRegistration(home);
+	genSinkRegistration(comp);
+	genSourceRegistration(comp);
 	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
-	out << mapFullName(home->managed_component()) << "_var servant = ";
-	out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
+	out << mapFullName(comp) << "_var servant = ";
+	out << mapFullName(comp) << "::_narrow (component_instance.component_ref());\n\n";
 	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
@@ -1793,16 +1796,16 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 
 
 void
-GeneratorServantC::genFacetRegistration(IR__::HomeDef_ptr home)
+GeneratorServantC::genFacetRegistration(IR__::ComponentDef_ptr comp)
 {
-	// handle base home
-	IR__::HomeDef_var base = home->base_home();
+	// handle base component
+	IR__::ComponentDef_var base = comp->base_component();
 	if(base)
 	{ 
 		genFacetRegistration(base);
 	}
 
-	IR__::ProvidesDefSeq_var facets = home->managed_component()->provides_interfaces();
+	IR__::ProvidesDefSeq_var facets = comp->provides_interfaces();
 	CORBA::ULong len = facets->length();
 	CORBA::ULong i;
 	std::string rep_id;
@@ -1832,16 +1835,16 @@ GeneratorServantC::genFacetRegistration(IR__::HomeDef_ptr home)
 
 
 void
-GeneratorServantC::genReceptacleRegistration(IR__::HomeDef_ptr home)
+GeneratorServantC::genReceptacleRegistration(IR__::ComponentDef_ptr comp)
 {
-	// handle base home
-	IR__::HomeDef_var base = home->base_home();
+	// handle base component
+	IR__::ComponentDef_var base = comp->base_component();
 	if(base)
 	{ 
 		genReceptacleRegistration(base);
 	}
 
-	IR__::UsesDefSeq_var receptacles = home->managed_component()->uses_interfaces();
+	IR__::UsesDefSeq_var receptacles = comp->uses_interfaces();
 	CORBA::ULong len = receptacles->length();
 	CORBA::ULong i;
 	std::string rep_id;
@@ -1870,16 +1873,16 @@ GeneratorServantC::genReceptacleRegistration(IR__::HomeDef_ptr home)
 
 
 void
-GeneratorServantC::genEmitterRegistration(IR__::HomeDef_ptr home)
+GeneratorServantC::genEmitterRegistration(IR__::ComponentDef_ptr comp)
 {
-	// handle base home
-	IR__::HomeDef_var base = home->base_home();
+	// handle base component
+	IR__::ComponentDef_var base = comp->base_component();
 	if(base)
 	{ 
 		genEmitterRegistration(base);
 	}
 
-	IR__::EmitsDefSeq_var emits = home->managed_component()->emits_events();
+	IR__::EmitsDefSeq_var emits = comp->emits_events();
 	CORBA::ULong len = emits->length();
 	CORBA::ULong i;
 	for( i= 0; i < len; i++)
@@ -1894,16 +1897,16 @@ GeneratorServantC::genEmitterRegistration(IR__::HomeDef_ptr home)
 
 
 void
-GeneratorServantC::genPublisherRegistration(IR__::HomeDef_ptr home)
+GeneratorServantC::genPublisherRegistration(IR__::ComponentDef_ptr comp)
 {
-	// handle base home
-	IR__::HomeDef_var base = home->base_home();
+	// handle base component
+	IR__::ComponentDef_var base = comp->base_component();
 	if(base)
 	{ 
 		genPublisherRegistration(base);
 	}
 
-	IR__::PublishesDefSeq_var publishes = home->managed_component()->publishes_events();
+	IR__::PublishesDefSeq_var publishes = comp->publishes_events();
 	CORBA::ULong len = publishes->length();
 	CORBA::ULong i;
 	for( i= 0; i < len; i++)
@@ -1918,16 +1921,16 @@ GeneratorServantC::genPublisherRegistration(IR__::HomeDef_ptr home)
 
 
 void
-GeneratorServantC::genConsumerRegistration(IR__::HomeDef_ptr home)
+GeneratorServantC::genConsumerRegistration(IR__::ComponentDef_ptr comp)
 {
-	// handle base home
-	IR__::HomeDef_var base = home->base_home();
+	// handle base component
+	IR__::ComponentDef_var base = comp->base_component();
 	if(base)
 	{ 
 		genConsumerRegistration(base);
 	}
 
-	IR__::ConsumesDefSeq_var consumes = home->managed_component()->consumes_events();
+	IR__::ConsumesDefSeq_var consumes = comp->consumes_events();
 	CORBA::ULong len = consumes->length();
 	CORBA::ULong i;
 	for( i= 0; i < len; i++)
@@ -1949,16 +1952,16 @@ GeneratorServantC::genConsumerRegistration(IR__::HomeDef_ptr home)
 
 
 void
-GeneratorServantC::genSinkRegistration(IR__::HomeDef_ptr home)
+GeneratorServantC::genSinkRegistration(IR__::ComponentDef_ptr comp)
 {
-	// handle base home
-	IR__::HomeDef_var base = home->base_home();
+	// handle base component
+	IR__::ComponentDef_var base = comp->base_component();
 	if(base)
 	{ 
 		genSinkRegistration(base);
 	}
 
-	IR__::SinkDefSeq_var sinks = home->managed_component()->sinks();
+	IR__::SinkDefSeq_var sinks = comp->sinks();
 	CORBA::ULong len = sinks->length();
 	CORBA::ULong i;
 	for( i= 0; i < len; i++)
@@ -1996,16 +1999,16 @@ GeneratorServantC::genSinkRegistration(IR__::HomeDef_ptr home)
 }
 
 void
-GeneratorServantC::genSourceRegistration(IR__::HomeDef_ptr home)
+GeneratorServantC::genSourceRegistration(IR__::ComponentDef_ptr comp)
 {
-	// handle base home
-	IR__::HomeDef_var base = home->base_home();
+	// handle base component
+	IR__::ComponentDef_var base = comp->base_component();
 	if(base)
 	{ 
 		genSourceRegistration(base);
 	}
 
-	IR__::SourceDefSeq_var sources = home->managed_component()->sources();
+	IR__::SourceDefSeq_var sources = comp->sources();
 	CORBA::ULong len = sources->length();
 	CORBA::ULong i;
 	for( i= 0; i < len; i++)

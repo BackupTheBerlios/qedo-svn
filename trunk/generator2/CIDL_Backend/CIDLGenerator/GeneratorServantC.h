@@ -81,13 +81,13 @@ private:
 	void genComponentServant(IR__::ComponentDef_ptr component);
 	void genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
 	void genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
-	void genFacetRegistration(IR__::HomeDef_ptr home);
-	void genReceptacleRegistration(IR__::HomeDef_ptr home);
-	void genEmitterRegistration(IR__::HomeDef_ptr home);
-	void genPublisherRegistration(IR__::HomeDef_ptr home);
-	void genConsumerRegistration(IR__::HomeDef_ptr home);
-	void genSinkRegistration(IR__::HomeDef_ptr home);
-	void genSourceRegistration(IR__::HomeDef_ptr home);
+	void genFacetRegistration(IR__::ComponentDef_ptr comp);
+	void genReceptacleRegistration(IR__::ComponentDef_ptr comp);
+	void genEmitterRegistration(IR__::ComponentDef_ptr comp);
+	void genPublisherRegistration(IR__::ComponentDef_ptr comp);
+	void genConsumerRegistration(IR__::ComponentDef_ptr comp);
+	void genSinkRegistration(IR__::ComponentDef_ptr comp);
+	void genSourceRegistration(IR__::ComponentDef_ptr comp);
 
 public:
 
