@@ -1,5 +1,5 @@
 
-static char rcsid[] = "$Id: main.cpp,v 1.1 2003/08/29 10:55:30 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.2 2003/09/14 16:46:46 tom Exp $";
 
 #include <CORBA.h>
 
@@ -124,10 +124,12 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	reader_exec.append("/../../Chat_Reader_Compo/Debug_orbacus/Chat_Reader_Compo.dll");
 #endif
 #ifdef MICO_ORB
-	callee_servant.append("/HelloWorld_CalleeImpl_SERVANT.dll");
-	callee_exec.append("/HelloWorld_CalleeImpl.dll");
-	caller_servant.append("/HelloWorld_CallerImpl_SERVANT.dll");
-	caller_exec.append("/HelloWorld_CallerImpl.dll");
+	writer_servant.append("/../../Chat_Writer_Compo_SERVANT/Debug_mico/Chat_Writer_Compo_SERVANT.dll");
+	writer_exec.append("/../../Chat_Writer_Compo/Debug_mico/Chat_Writer_Compo.dll");
+	channel_servant.append("/../../Chat_Channel_Compo_SERVANT/Debug_mico/Chat_Channel_Compo_SERVANT.dll");
+	channel_exec.append("/../../Chat_Channel_Compo/Debug_mico/Chat_Channel_Compo.dll");
+	reader_servant.append("/../../Chat_Reader_Compo_SERVANT/Debug_mico/Chat_Reader_Compo_SERVANT.dll");
+	reader_exec.append("/../../Chat_Reader_Compo/Debug_mico/Chat_Reader_Compo.dll");
 #endif
 #else
 #ifdef ORBACUS_ORB

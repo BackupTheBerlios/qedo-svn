@@ -86,8 +86,8 @@ Global
 		{85E3CC85-1E66-40CD-BC10-5F2C0786554E}.Release.Build.0 = Debug_tao|Win32
 		{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}.Debug.ActiveCfg = Debug|Win32
 		{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}.Debug.Build.0 = Debug|Win32
-		{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}.Debug_mico.ActiveCfg = Debug|Win32
-		{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}.Debug_mico.Build.0 = Debug|Win32
+		{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}.Debug_mico.ActiveCfg = Debug_mico|Win32
+		{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}.Debug_mico.Build.0 = Debug_mico|Win32
 		{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}.Debug_orbacus.ActiveCfg = Debug_orbacus|Win32
 		{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}.Debug_orbacus.Build.0 = Debug_orbacus|Win32
 		{BFDAD628-E21F-49F6-84C8-E5EFD8221FD3}.Debug_tao.ActiveCfg = Debug|Win32
