@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.25 2003/08/06 14:32:14 stoinski Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.26 2003/08/07 14:24:13 stoinski Exp $";
 
 
 namespace Qedo {
@@ -121,16 +121,76 @@ ServiceReferenceEntry::~ServiceReferenceEntry()
 }
 
 
+ContainerInterfaceImpl::EventEntry::EventEntry (Components::EventConsumerBase_ptr c, Components::EventBase* e)
+: consumer_ (Components::EventConsumerBase::_duplicate(c))
+, event_ (e)
+{
+	CORBA::add_ref (event_);
+}
+
+ContainerInterfaceImpl::EventEntry::EventEntry (const EventEntry& e)
+: consumer_ (Components::EventConsumerBase::_duplicate(e.consumer_))
+, event_ (e.event_)
+{
+	CORBA::add_ref(event_);
+}
+
+ContainerInterfaceImpl::EventEntry::~EventEntry()
+{
+	CORBA::remove_ref (event_);
+}
+
+
+void*
+ContainerInterfaceImpl::event_dispatcher_thread (void* data)
+{
+	DEBUG_OUT ("ContainerInterfaceImpl: Event Dispatcher Thread started");
+
+	ContainerInterfaceImpl* this_ptr = (ContainerInterfaceImpl*)data;
+
+	this_ptr->event_queue_mutex.qedo_lock_object();
+
+	do
+	{
+			while(!this_ptr->event_list.empty()) {
+			EventEntry e = this_ptr->event_list.front();
+			this_ptr->event_list.erase (this_ptr->event_list.begin());
+			this_ptr->event_queue_mutex.qedo_unlock_object();
+
+			try {
+				e.consumer_->push_event(e.event_);
+			}
+			catch(const CORBA::Exception&)
+			{
+			   DEBUG_OUT("event_delivering: got CORBA exception");
+			}
+			catch(...)
+			{
+			   DEBUG_OUT("event_delivering: exception");
+			}
+			this_ptr->event_queue_mutex.qedo_lock_object();
+
+		}
+
+		this_ptr->event_queue_cond.qedo_wait(this_ptr->event_queue_mutex);
+	} while(true);
+	// here hast to be checked for finalize of the thread
+	return 0;
+}
+
+
 ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb, 
 												PortableServer::POA_ptr root_poa, 
 												ContainerType container_type,
 												ComponentServerImpl* component_server,
-												Components::Deployment::ComponentInstallation_ptr component_installer)
+												Components::Deployment::ComponentInstallation_ptr component_installer,
+												EventCommunicationMode ev_comm_mode)
 : orb_ (CORBA::ORB::_duplicate (orb)),
   root_poa_ (PortableServer::POA::_duplicate (root_poa)),
   container_type_ (container_type),
   component_server_ (component_server),
-  component_installer_ (Components::Deployment::ComponentInstallation::_duplicate (component_installer))
+  component_installer_ (Components::Deployment::ComponentInstallation::_duplicate (component_installer)),
+  event_communication_mode_ (ev_comm_mode)
 {
 	component_server_->_add_ref();
 
@@ -159,13 +219,11 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 		catch (const CORBA::ORB::InvalidName&)
 		{
 			std::cerr << "ContainerInterfaceImpl: Can't resolve NameService" << std::endl;
-			return;
 		}
 
 		if (CORBA::is_nil(obj.in()))
 		{
 			std::cerr << "ContainerInterfaceImpl: NameService is a nil object reference" << std::endl;
-			return;
 		}
 
 		try
@@ -175,7 +233,6 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 		catch (CORBA::SystemException&)
 		{
 			std::cerr << "ContainerInterfaceImpl: ORB knows NameService, but I cannot contact it" << std::endl;
-			return;
 		}
 
 		//
@@ -207,7 +264,6 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
     }
     if (CORBA::is_nil(obj.in())) {
         DEBUG_OUT("ContainerInterfaceImpl: No HomeFinder");
-		return;
     }
 
 	try
@@ -217,12 +273,14 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 	catch (const CORBA::SystemException&)
 	{
 		DEBUG_OUT("ContainerInterfaceImpl: No HomeFinder");
-		return;
 	}
     if (CORBA::is_nil(home_finder_.in())) {
         DEBUG_OUT("ContainerInterfaceImpl: No HomeFinder");
-		return;
     }
+
+	// Start global event dispatcher thread
+	if (event_communication_mode_ == EVENT_COMMUNICATION_ASYNCHRONOUS)
+		qedo_startDetachedThread (event_dispatcher_thread, this);
 }
 
 
@@ -305,6 +363,77 @@ ContainerInterfaceImpl::unload_shared_library (void* handle)
 }
 
 #endif
+
+
+void
+ContainerInterfaceImpl::prepare_remove()
+{
+	DEBUG_OUT ("ContainerInterfaceImpl: prepare_remove() called");
+
+	// Here we must remove all home instances that are still running
+	if (installed_homes_.size() > 0)
+	{
+		DEBUG_OUT ("ContainerInterfaceImpl: Warning: There are still home instances around");
+
+		// We cannot use an iterator to iterate through the list, since this list will be
+		// manipulated by the remove actions
+		while (installed_homes_.size())
+		{
+			this->remove_home (installed_homes_[0].home_servant_->ref());
+		}
+	}
+}
+
+
+void 
+ContainerInterfaceImpl::queue_event
+(Components::EventConsumerBase_ptr consumer, Components::EventBase* ev)
+{
+	if (event_communication_mode_ == EVENT_COMMUNICATION_ASYNCHRONOUS)
+	{
+		qedo_lock lock(event_queue_mutex);
+		Components::EventBase* e = Components::EventBase::_downcast(ev->_copy_value());
+		EventEntry entry(consumer,e);
+		event_list.push_back(entry);
+
+		CORBA::remove_ref (e);
+
+		event_queue_cond.qedo_signal();
+	}
+	else
+	{
+		consumer->push_event (ev);
+	}
+}
+
+void 
+ContainerInterfaceImpl::queue_event
+(SubscribedConsumerVector& consumers, Components::EventBase* ev)
+{
+	SubscribedConsumerVector::iterator iter;
+
+	if (event_communication_mode_ == EVENT_COMMUNICATION_ASYNCHRONOUS)
+	{
+		qedo_lock lock(event_queue_mutex);
+
+		Components::EventBase* e = Components::EventBase::_downcast(ev->_copy_value());
+
+		for(iter = consumers.begin();iter != consumers.end();iter++) {
+			EventEntry entry(iter->consumer(),e);
+			event_list.push_back(entry);
+		}
+
+		CORBA::remove_ref (e);
+
+		event_queue_cond.qedo_signal();
+	}
+	else
+	{
+		for(iter = consumers.begin();iter != consumers.end();iter++) {
+			iter->consumer()->push_event (ev);
+		}
+	}
+}
 
 
 Components::ConfigValues*
@@ -709,124 +838,6 @@ throw (Components::CCMException)
 	throw Components::CCMException();
 }
 
-static qedo_mutex event_queue_mutex;
-static qedo_cond event_queue_cond;
-
-struct event_entry 
-{
-	event_entry(Components::EventConsumerBase_ptr c, Components::EventBase* e);
-	event_entry(const event_entry& e);
-	~event_entry();
-	Components::EventConsumerBase_var consumer;
-	Components::EventBase* event;
-};
-
-event_entry::event_entry(Components::EventConsumerBase_ptr c, Components::EventBase* e)
-: consumer(Components::EventConsumerBase::_duplicate(c))
-, event(e)
-{
-	CORBA::add_ref(event);
-}
-
-event_entry::event_entry(const event_entry& e)
-: consumer(Components::EventConsumerBase::_duplicate(e.consumer))
-, event(e.event)
-{
-	CORBA::add_ref(event);
-}
-
-event_entry::~event_entry()
-{
-	CORBA::remove_ref(event);
-}
-
-static std::vector<event_entry> event_list;
-
-static void*
-deliverer(void*)
-{
-	qedo_cond cond;
-	do
-	{
-		event_queue_mutex.qedo_lock_object();
-		while(!event_list.empty()) {
-			event_entry e = event_list.front();
-			event_list.erase(event_list.begin());
-			event_queue_mutex.qedo_unlock_object();
-			try {
-				e.consumer->push_event(e.event);
-			}
-			catch(const CORBA::Exception&)
-			{
-			   DEBUG_OUT("event_delivering: got CORBA exception");
-			}
-			catch(...)
-			{
-			   DEBUG_OUT("event_delivering: exception");
-			}
-			event_queue_mutex.qedo_lock_object();
-		}
-		cond.qedo_wait(event_queue_mutex);
-	} while(true);
-	// here hast to be checked for finalize of the thread
-	return 0;
-}
-
-struct dummy {
-	int a;
-	dummy();
-};
-
-dummy::dummy()
-{
-	a=1;
-   qedo_startDetachedThread(deliverer,0);
-}
-
-static dummy d;
-
-void 
-ContainerInterfaceImpl::queue_event
-(Components::EventConsumerBase_ptr consumer, Components::EventBase* ev)
-{
-	qedo_lock lock(event_queue_mutex);
-	event_entry entry(consumer,Components::EventBase::_downcast(ev->_copy_value()));
-	event_list.push_back(entry);
-	event_queue_cond.qedo_signal();
-}
-
-void 
-ContainerInterfaceImpl::queue_event
-(SubscribedConsumerVector& consumers, Components::EventBase* ev)
-{
-	qedo_lock lock(event_queue_mutex);
-	SubscribedConsumerVector::iterator iter;
-	Components::EventBase* e = Components::EventBase::_downcast(ev->_copy_value());
-	for(iter = consumers.begin();iter != consumers.end();iter++) {
-		event_entry entry(iter->consumer(),e);
-		event_list.push_back(entry);
-	}
-	event_queue_cond.qedo_signal();
-}
-
-void
-ContainerInterfaceImpl::prepare_remove()
-{
-	DEBUG_OUT ("ContainerInterfaceImpl: prepare_remove() called");
-
-	// Here we must remove all home instances that are still running
-	if (installed_homes_.size() > 0)
-	{
-		DEBUG_OUT ("ContainerInterfaceImpl: Warning: There are still home instances around");
-
-		// We cannot use an iterator to iterate through the list, since this list will be
-		// manipulated by the remove actions
-		while (installed_homes_.size())
-		{
-			this->remove_home (installed_homes_[0].home_servant_->ref());
-		}
-	}
-}
 
 } // namespace Qedo
 

@@ -154,6 +154,16 @@ class CONTAINERDLL_API ContainerInterfaceImpl : public virtual POA_Components::D
 												public virtual PortableServer::RefCountServantBase,
 												public virtual CreateDestructCORBAObjectCounter
 {
+	class EventEntry 
+	{
+	public:
+		EventEntry (Components::EventConsumerBase_ptr c, Components::EventBase* e);
+		EventEntry (const EventEntry& e);
+		~EventEntry();
+		Components::EventConsumerBase_var consumer_;
+		Components::EventBase* event_;
+	};
+
 	/** to add services */
 	friend class PrimaryServant;
 	/** to access services */
@@ -183,17 +193,35 @@ private:
 	/** the list of service components for postinvoke*/
 	std::vector <Qedo::ComponentInstance>					services_postinvoke_;
 	
+	/** the list of pending events to be dispatched*/
+	std::vector<EventEntry>									event_list;
+
+	/** the mutex for accessing the event_list member*/
+	qedo_mutex event_queue_mutex;
+
+	/** this condition is signaled when a new entry is added to the event_list member*/
+	qedo_cond event_queue_cond;
+
+	/** Configuration values */
+	enum EventCommunicationMode {EVENT_COMMUNICATION_ASYNCHRONOUS, EVENT_COMMUNICATION_SYNCHRONOUS};
+	EventCommunicationMode									event_communication_mode_;
+
 	/**
 	 * loads a shared library
 	 * \param name The path of the shared library.
 	 */
 #ifdef _WIN32
-	HINSTANCE load_shared_library (const char* name);
-	void unload_shared_library (HINSTANCE handle);
+	HINSTANCE load_shared_library (const char*);
+	void unload_shared_library (HINSTANCE);
 #else
-	void* load_shared_library (const char* name);
-	void unload_shared_library (void* handle);
+	void* load_shared_library (const char*);
+	void unload_shared_library (void*);
 #endif
+
+	/**
+	 * The event dispatcher thread
+	 */
+	static void* event_dispatcher_thread (void*);
 
 public:
 	/**
@@ -203,7 +231,8 @@ public:
 							PortableServer::POA_ptr, 
 							ContainerType,
 							ComponentServerImpl*,
-							Components::Deployment::ComponentInstallation_ptr);
+							Components::Deployment::ComponentInstallation_ptr,
+							EventCommunicationMode = EVENT_COMMUNICATION_ASYNCHRONOUS);
 
 	/**
 	 * destructor
@@ -222,6 +251,20 @@ public:
 	 * removes any homes that are still running
 	 * */
 	void prepare_remove();
+
+	/**
+	 * qeue events for delivering
+	 * \param consumer The consumer is the receiver of the event.
+	 * \param ev The ev is the event to be deliver.
+	 */
+	void queue_event(Components::EventConsumerBase_ptr consumer, Components::EventBase* ev);
+
+	/**
+	 * qeue events for delivering
+	 * \param consumers The consumers are the receivers of the event.
+	 * \param ev The ev is the event to be deliver.
+	 */
+	void queue_event(SubscribedConsumerVector& consumers, Components::EventBase* ev);
 
 	/**
 	 * implements IDL:omg.org/Components/Deployment/Container/configuration:1.0
@@ -290,20 +333,6 @@ public:
 	 */
     virtual void install_service_reference(const char* id, CORBA::Object_ptr ref)
 		throw (Components::CCMException, CORBA::SystemException);
-
-	/**
-	 * qeue events for delivering
-	 * \param consumer The consumer is the receiver of the event.
-	 * \param ev The ev is the event to be deliver.
-	 */
-	void queue_event(Components::EventConsumerBase_ptr consumer, Components::EventBase* ev);
-
-	/**
-	 * qeue events for delivering
-	 * \param consumers The consumers are the receivers of the event.
-	 * \param ev The ev is the event to be deliver.
-	 */
-	void queue_event(SubscribedConsumerVector& consumers, Components::EventBase* ev);
 };
 
 /** @} */
