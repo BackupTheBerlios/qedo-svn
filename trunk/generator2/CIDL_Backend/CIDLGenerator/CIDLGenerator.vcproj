@@ -283,9 +283,8 @@ copy cidl_gen.exe ..\..\..\qedo_dist_tao_d\bin
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="distribution"
-				CommandLine="md ..\..\..\qedo_dist_orbacus_d
-md ..\..\..\qedo_dist_orbacus_d\bin
-copy cidl_gen.exe ..\..\..\qedo_dist_orbacus_d\bin
+				CommandLine="md &quot;%QEDO%\bin&quot;
+copy cidl_gen.exe &quot;%QEDO%\bin&quot;
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
