@@ -71,10 +71,10 @@ The Qedo code generator is able to generate complete workspace files for the Vis
 
 \begin{itemize}
 	\item Create a \verb <your_name>.idl  file. 
-	In this file you need to define your plain CORBA interfaces as well as the CORBA components. Start the file with an \verb #include \verb "Components.idl"  statement.
+	In this file you need to define your plain CORBA interfaces as well as the CORBA components. Start the file with an \verb #include \verb  "Components.idl"  statement.
 
 	\item Create a \verb <your_name>.cidl  file.
-	In this file you need to specify the compositions that should implement your components. Start the file with a \verb #include \verb <your_name.idl>  .
+	In this file you need to specify the compositions that should implement your components. Start the file with a \verb #include  \verb <your_name.idl>  .
 
 	\item Open a command line tool. 
 	In this command line tool you need to execute the following command.
@@ -98,7 +98,9 @@ FOR Orbacus you can use a command similar tho this.
 \end{verbatim}
 \normalsize
 
-The target could be a composition name or a module name. Depending on the target the code generator will create new directories and within them new project files. for each composition there is a servant and an executor module.
+The target could be a composition name or a module name. Depending on the target the code generator will create new directories and within them new project files. For each composition there is a servant and an executor module. The project file for the executor module is depending on the servant module. For this reason it is strongly recommended to keep both project in one solution file.
+
+Furthermore the project file for the executor module contains a post-build step which tries to zip the servant dll and the executor dll into one archive. This post-build step requires a meta-inf directory and two descriptors, namely CORBA Component Descriptor and a Software Package Descriptor. A skeleton version of those descriptors can be created by using the -d option of the generation tool. These files need be copied to the met-inf directory otherwise the post-build step will fail.
 
 	\item Create a solution. Now you can create new (empty) solution with the Visual Studio. Now you can add the needed projects. 
 
@@ -127,7 +129,7 @@ After Installing the Qedo runtime, the following steps needs to be done if you s
 	In this file you need to define your plain CORBA interfaces as well as the CORBA components. Start the file with an \verb #include \verb "Components.idl"  statement.
 
 	\item Create a \verb <your_name>.cidl  file.
-	In this file you need to specify the compositions that should implement your components. Start the file with a \verb #include \verb <your_name.idl>  .
+	In this file you need to specify the compositions that should implement your components. Start the file with a \verb #include  \verb <your_name.idl>  .
 
 	\item Open a shell. 
 	In this shell you need to execute the following command.
