@@ -1,0 +1,29 @@
+version 0.4.2
+- first version of make file generator
+- MICO 2.3.11 adaptations
+
+version 0.4.1
+- changed the backend to start from compositionDef not from ComponentDef
+- added extension lifecycle category
+- support generation of extension servants
+
+version 0.4.0
+
+
+version 0.3.0
+- support for generation of event type skeletons
+- improved vc7 project generator
+
+version 0.2.0
+- unix mico support
+- unix configur support
+- reference counting for generated executors
+
+version 0.1.1
+- event inheritance enabled
+- abstract events enabled
+- "home supports interfaces" is enabled
+- vc7 project generator create subdirs for each project
+- new backend for CSD
+
+version 0.1.0
