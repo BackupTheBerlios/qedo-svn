@@ -41,7 +41,10 @@
 #include "uuid/uuid.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qedoutil.cpp,v 1.11 2003/12/04 08:05:53 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qedoutil.cpp,v 1.12 2004/04/15 07:46:54 neubauer Exp $";
+
+
+#define INFO_BUFFER_SIZE MAX_PATH+4
 
 
 namespace Qedo {
@@ -51,10 +54,35 @@ getEnvironment(std::string name)
 {
 	std::string val;
 #ifdef _WIN32
-	TCHAR tchBuffer[256];
+	TCHAR  infoBuf[INFO_BUFFER_SIZE];
+	DWORD  bufCharCount = INFO_BUFFER_SIZE;
+	std::string var = std::string("%") + name + "%";
+
+	bufCharCount = ExpandEnvironmentStrings( var.c_str(), infoBuf, INFO_BUFFER_SIZE );
+	if( bufCharCount > INFO_BUFFER_SIZE )
+	{
+		NORMAL_ERR2( "buffer too small to expand: ", var );
+	}
+    else if( !bufCharCount )
+	{
+		NORMAL_ERR( "error in ExpandEnvironmentStrings" );
+	}
+	else
+	{
+		if( !var.compare(infoBuf) )
+		{
+			NORMAL_ERR2( "environment variable missing: ", name );
+		}
+		else
+		{
+			val.append( infoBuf );
+		}
+	}
+
+	/*TCHAR tchBuffer[256];
 	LPTSTR lpszSystemInfo = tchBuffer;
 	DWORD dwResult = ExpandEnvironmentStrings( (std::string("%") + name + "%").c_str(), lpszSystemInfo, 256 );
-	val.append(lpszSystemInfo);
+	val.append(lpszSystemInfo);*/
 #else
 	char *e = getenv( name.c_str() );
 	if(e)
