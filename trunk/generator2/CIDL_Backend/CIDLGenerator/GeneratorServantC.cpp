@@ -842,7 +842,7 @@ GeneratorServantC::genSourceServants(IR__::ComponentDef_ptr component)
 		out << "char*\n";
 		out << class_name_ << "::get_id() {\n";
 		out << "//to be implemeted\n";
-		out << "rerutn 0;\n";
+		out << "return 0;\n";
 		out << "};\n";
 		
 		//
