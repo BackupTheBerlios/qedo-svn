@@ -554,9 +554,12 @@ module Components {
 		WRONG_CONTAINER
 	};
 
+#ifndef _QEDO_NO_DB
 	typedef CosPersistentState::CatalogBase CatalogBase;
 	typedef CosPersistentState::PTypeId PTypeId;
 	typedef CosPersistentState::Pid PersistentId;
+#endif
+
 	typedef short SegmentId;
 	const SegmentId COMPONENT_SEGMENT = 0;
 	typedef short FacetId;
@@ -580,9 +583,13 @@ module Components {
 		HomeRegistration get_home_registration ();
 		void req_passivate ()
 			raises (PolicyMismatch);
+#ifndef _QEDO_NO_DB
 		CatalogBase get_persistence (
 			in PTypeId catalog_type_id)
 			raises (PersistenceNotAvailable);
+#else
+		void get_persistence();
+#endif
 	};
 
 	local interface HomeRegistration {
@@ -620,6 +627,7 @@ module Components {
 			raises (InvalidStateIdData);
 	};
 
+#ifndef _QEDO_NO_DB
 	valuetype PersistentIdValue : StateIdValue {
 		private PersistentId pid;
 		PersistentId get_pid();
@@ -629,6 +637,7 @@ module Components {
 		factory init(in PersistentId pid);
 #endif
 	};
+#endif
 	valuetype SegmentDescr {
 		private StateIdValue sid;
 		private SegmentId seg;

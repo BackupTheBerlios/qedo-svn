@@ -31,7 +31,6 @@ module CORBA {
 #endif
 
 #include <orb.idl>
-#include "PSSNativeClasses.idl"
 
 #ifdef TAO_ORB
 #include "PortableServer.pidl"
@@ -84,6 +83,9 @@ module PortableServer {
 #endif
 
 #pragma prefix "omg.org"
+
+#ifndef _QEDO_NO_DB
+#include "PSSNativeClasses.idl"
 
 module CosPersistentState {
 
@@ -305,6 +307,7 @@ module CosPersistentState {
     };
 
 };
+#endif /* _QEDO_NO_DB */
 
 
 #pragma prefix ""
