@@ -256,7 +256,7 @@ void DescriptorFrame::addHometoServer(Qedo::HomeInstanceData home,wxTreeItemId i
 					}
 				}
 		}
-		
+
 		tmp_string.append("(");
 		tmp_string.append(home.id.c_str());
 		tmp_string.append(")");
@@ -669,7 +669,7 @@ void DescriptorFrame::OnComponents_to_Server(wxCommandEvent& WXUNUSED(event))
 	wxArrayTreeItemIds server_selected_;
 	int s_s = server_ctrl_->GetSelections(server_selected_);
 
-	if ( s_s>0) 
+	if ( s_s>0)
 	{
 		wxTreeItemId item =server_selected_[0];
 
@@ -680,13 +680,13 @@ void DescriptorFrame::OnComponents_to_Server(wxCommandEvent& WXUNUSED(event))
 
 		// check selections
 		if (checkselections(item,t)) {
-		
+
 			warningserver(server_string);
 
 			for (int i=0;i<t;i++) {
 
 				wxString tmp_string=component_list_->GetItemText(selected[i]);
-				if (!(tmp_string=="Process or homeplacements without destination")) 
+				if (!(tmp_string=="Process or homeplacements without destination"))
 				{
 					if (!(selected[i]==rootId2))
 					{
@@ -698,7 +698,7 @@ void DescriptorFrame::OnComponents_to_Server(wxCommandEvent& WXUNUSED(event))
 
 
 					} else {
-					
+
 						wxString message;
 						message=tmp_string;
 						message.append(" is bound on ");
@@ -720,12 +720,12 @@ void DescriptorFrame::OnComponents_to_Server(wxCommandEvent& WXUNUSED(event))
 				}
 
 			}
-			
+
 		}
-		
-		wxString tmp_string=component_list_->GetItemText(selected[0]);
+
+		//wxString tmp_string=component_list_->GetItemText(selected[0]);
 	}
-	
+
 	}
 }
 
@@ -735,18 +735,18 @@ void DescriptorFrame::add_component_to_components(DestinationInfo DestInfo)
 	{
 		std::vector <Qedo::HomeInstanceData> ::iterator home_iter;
 		int itercounter=0;
-		for(home_iter = homedatas.begin(); 
+		for(home_iter = homedatas.begin();
 				home_iter != homedatas.end();
 				home_iter++)
-				{	
+				{
 					if (itercounter==DestInfo.iter) {
 						addHometoComponent(*home_iter,rootId2,itercounter);
 						server_ctrl_->Delete(DestInfo.itemid);
-						
+
 					}
 					itercounter++;
-					
-				}		
+
+				}
 	}
 
 	if (DestInfo.typ==processcollocation)
