@@ -7,7 +7,7 @@ IDL_INCLUDE=$(ORBACUS)\include
 IDL_LIB=$(ORBACUS)\lib
 
 
-CPP_INCLUDE= /I "." /I "$(QEDO)\ComponentIDL" /I "$(QEDO)\ComponentContainer" /I $(IDL_INCLUDE)
+CPP_INCLUDE= /I "." /I "$(QEDO)\ComponentIDL" /I "$(QEDO)\ComponentContainer" /I $(IDL_INCLUDE) /I $(IDL_INCLUDE)/OB
 CPP_PROJ=$(CPP_INCLUDE) /nologo /MDd /W3 /Gm /GR /GX /Zi /Od  /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /FD /GZ /c 
 	
 

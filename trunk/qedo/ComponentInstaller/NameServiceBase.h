@@ -46,8 +46,6 @@ protected:
 
 	NameServiceBase();
 
-protected:
-
 	CosNaming::NamingContext_var nameService_;
 
 public:
