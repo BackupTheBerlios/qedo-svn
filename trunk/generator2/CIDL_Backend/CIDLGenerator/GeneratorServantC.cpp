@@ -175,7 +175,7 @@ GeneratorServantC::resolve_atomic_streamtypes(IR__::StreamTypeDef_ptr streamtype
 
 	for (unsigned int i = 0; i < grouped_types->length(); i++)
 	{
-		resolve_atomic_streamtypes (grouped_types[i], atomic_streamtypes);
+		resolve_atomic_streamtypes (grouped_types.inout()[i], atomic_streamtypes);
 	}
 }
 
