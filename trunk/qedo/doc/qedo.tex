@@ -242,6 +242,30 @@ The ComponentInstallation server is an implementation of the ComponentInstallati
 \end{verbatim}
 \normalsize
 
+. There has to be exactly one ComponentInstallation server running on each host of the Qedo platform. All installation related information and implementation code for this host is put into a directory structure. The location of this directory structure can be configured in the Qedo.conf file by setting the value of "General/Deployment/BaseDir". If this value is not set, the default location is the value of the QEDO environment variable plus "/deployment". The XML file "installedComponentImplementations.xml" contains information about all installed component implementations and is used to keep those information persistent. The subdirectory "packages" contains the softpackages for component implementations. The subdirectory "components" contains all unpacked component implementations. During installation of a component within this directory a new directory is created with the name of the UUID of the component implementation to be installed. Then all implementation code, including executor module, servant module, modules for valuetype implementations and other arbitrary code artifacts, is put into this new directory.
+
+\subsubsection{Installation of arbitrary files}
+\label{sec:Installation of arbitrary code}
+
+To install arbitrary files, like executables, together with a component, the files have to be put into the according Component Software Package zip file. Furthermore within the Software Package descriptor, to be found in the "meta-inf" directory, an aditional code element has to be inserted, refering to this file. It may look like
+
+<code type="Executable">
+    <fileinarchive name="NOTEPAD.EXE"/>
+</code>
+
+. As a result, after the component installation, the file is to be found in the component implementation specific subdirectory of the "components" directory for installation. To have access to these files, it is necessary to know about the installation directory path. This information can be obtained in the components executor code in Qedo the following way
+
+CORBA::Object_ptr obj = context_->resolve_service_reference("ConfigurationService");
+ConfigurationService::InternalConfiguration_var cfg = ConfigurationService::InternalConfiguration::_narrow(obj);
+char* s = cfg->get_value("INSTALLATION_DIR");
+std::cerr << "########## observer install dir is " << s << std::endl;
+std::string exe = s;
+exe.append("\\");
+exe.append("notepad.exe");
+std::cerr << "########## executing " << exe << std::endl;
+int component_server_pid = _spawnl(_P_NOWAIT, exe.c_str(), exe.c_str(), NULL);
+delete s;
+
 \subsection{Component Server Activator}
 \label{sec:ComponentServerActivator}
 
@@ -268,6 +292,8 @@ This server implements the assembly factory and assembly interface defined be CC
 \end{verbatim}
 \normalsize
 
+.
+
 \subsection{Component Server}
 \label{sec:ComponentServer}
 
@@ -276,10 +302,11 @@ The ComponentServer is started by the ComponentServerActivator automatically.
 
 \chapter{Deployment}
 \label{sec:Deployment}
-The subdirectory Deployment of the Qedo installation directory contains all deployment related stuff. The XML file DeployedComponents.xml contains information about all installed component implementations and is used to keep those information persistent. The subdirectory ComponentPackages contains the softpackages for component implementations and assemblies. Currently for each assembly or component intended to be installed, the package has to be put there before manually. During component installation each component softpackage is unpacked into a temporary directory named by the UUID of the installed component implementation. These directories are created in the Runtime/ComponentImplementations subdirectory. Subsequently all generated servant code is also put into the Runtime/ComponentImplementations directory. The makefiles in this directory are used to generate servant code for the components. For each ORB implementation and architecture an own makefile
-has to be provided. In future it will be determined by the software package descriptor elements 'os' and 'dependency'.
 
-In order to deploy an assembly, a zip file has to be created by the assembly developer, containing an assembly descriptor, zip files for each component  and probably property file descriptors for component instances. The component zip files in turn contain a software package descriptor, the dynamic library for the components business logic and the idl file for the servant code generation.
+In order to deploy a component or an assembly of components, an assembly package has to be created by the assembly developer. This package is a zip file, containing an XML CORBA Component Assembly descriptor file (.cad), optional XML Component Property File descriptor files for component instances (.cpf) and Component Software Packages (zip files) for the implementation of each component. All XML descriptor files have to be put in a "meta-inf" subdirectory.
+The CORBA Component Packages as zip files in turn contain an XML Software Package descriptor (.csd), an XML CORBA Component decsriptor (.ccd) and the dynamic libraries for the components business logic and servant code. Furthermore the idl definition of the component is contained and can be used for automatic generation of servant code in future.
+
+Once the assembly package is created, it can be deployed with the Qedo deployment infrastructure. The first step therefore is to determine the target location of each component of the assembly. The target location of a component has to fullfill the requirements of at least one implementation version contained in the components Component Software Package. This information then has to be put into the CORBA Component Assembly descriptor file. Provided that all servers of the Qedo platform are running, the assembly can be deployed afterwards. There are two possibilities doing that with Qedo, the "qdeploy" tool or the implementation class "ComponentDeployment" from qedoutil for deployment integration into other software. The "qdeploy" tool is also based on the implementation class. Both versions require a running infrastructure comprising a NameService and an AssemblyFactory.  
 
 \chapter{API Reference}
 \label{sec:APIReference}
