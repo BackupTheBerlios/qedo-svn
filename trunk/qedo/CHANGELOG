@@ -1,3 +1,7 @@
+- improved servant interceptors
+- controller help files
+- content of StreamComponents.idl moved to Components.idl
+
 version 0.7.1
 - improvements of the configuration
 - improvements of controller
