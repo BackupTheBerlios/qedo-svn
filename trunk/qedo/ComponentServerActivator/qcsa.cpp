@@ -45,7 +45,7 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.19 2003/10/29 17:22:49 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.20 2003/11/11 08:55:23 tom Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -144,7 +144,10 @@ handle_sigint
         		NORMAL_ERR( "NameService is not a NamingContext object reference" );
 		}
 
- 		nameService->unbind(name);
+		if (!CORBA::is_nil(nameService.in()))
+		{
+ 			nameService->unbind(name);
+		}
 	}
 	catch (const CORBA::Exception&)
 	{
