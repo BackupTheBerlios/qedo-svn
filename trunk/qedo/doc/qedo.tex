@@ -20,6 +20,10 @@
 The Qedo Run-Time.
 
 ...
+\section{Installation}
+\label{sec:Installation}
+For the Installation of the run-time consult the Installation Guide.
+
 
 \section{Contact}
 \label{sec:Contact}
@@ -27,217 +31,7 @@ The Qedo Run-Time.
 If you have any problem or if you have any comments do not hesitate to contact the other Qedo users by using the qedo-devel mailing list. You can reach it at qedo-devel@lists.berlios.de. You can also use the bug tracking system provided by the Qedo project. You can reach it at http://qedo.berlios.de. this site has all relevant information about the Qedo project. In any case you can also contact the authors directly. The email addresses are listed on the Qedo web page as well.
 
 
-\chapter{Installation}
-\label{sec:Installation}
 
-
-This section describes the process of installing the Qedo run-time. Because the run-time is a complex software it needs many other software products. You have to install all of them before you can compile the run-time. This will take you some time and experiences with installing such software would be very helpful. Nevertheless, we hope that this little description will give enough information to accomplish all needed steps. 
-The Qedo run-tim can be compiled by using the MS Visual Studio 6 (deprecated, no longer supported), MS Visual Studio.Net 2002 (VC7.0), Solaris gcc, or Linux gcc.
-
-It might be a good idea to remove older versions of Qedo befor installing a new one. The installation into the same directory may cause problems.
-
-
-\section{ORB}
-\label{sec:ORB}
-The Qedo project is designed to work with arbitrary ORB implementations which support at least a basic set of features. This set comprises OBV, Portable Interceptors, ... 
-
-Anyway, for each ORB implementation some minimal changes have to be done. Currently ORBacus 4.1 and MICO are supported by deafault. The TAO support is deprecated. In order to install Qedo a supported ORB implementation has to be installed on the target host. Pay attention that it has to be dynamically linked and the linker can find the according libraries. At the moment Qedo generator supports 3 ORBs Mico, TAO and ORBacus. For using one of the ORBs you need to install the ORB and to set an apropriate environment variable. Follow the instructions coming with each ORB to install it properly. We will only point out some important details.
-
-\subsection{ORBacus}
-\label{sec:ORBacus}
-To install ORBACUS you have to do at least the following steps.
-
-\begin{itemize}
-	\item Obtain the ORBacus Software (version 4.1.1) from \\ 
-	\small	
-	\verb http://www.iona.com/products/orbacus_home.htm .
-	\normalsize
-	
-	\item Configure ORBacus by editing the file \\ \verb /config/Makefile.rules.mak  set the prefix and use \verb DEBUG=yes  and \verb DLL=yes . 
-
-	\item compile ORBacus by calling
-	\begin{verbatim} nmake -f Makefile.mak install_min} 
-	\end{verbatim}
-
-	\item set the environment by defining the following vars.	
-	\begin{verbatim}
-	ORBACUS = (e.g. C:\OOC)
-	ORBACUS_CONFIG= %ORBACUS%\ooc\ini\orbacus.ini
-	\end{verbatim}
-
-	\item Create an ini directory somewhere in your filesystem, preferably in your home directory or in the ORBACUS installation. Create an ini file in this directory. The path to this ini file must correspond to the \verb ORBACUS_CONFIG  var. This ini file must contain lines similar to this:
-	\small
-	\begin{verbatim}
-			ooc.orb.service.NameService = corbaloc:iiop:127.0.0.1:3000/NameService
-			ooc.naming.endpoint=iiop --port 3000
-	\end{verbatim}
-	\normalsize
-	
-	\item add the following directories to your path and to the setting of you visual studio (executable files)
-	\begin{verbatim}
-	%ORBACUS%\lib 
-	%ORBACUS%\bin
-	\end{verbatim}
-	
-\end{itemize}
-
-
-\subsection{MICO}
-\label{sec:MICO}
-The currently supported version of MICO is 2.3.10 (latest snapshot). You need to install the latest snapshot in order to get Qedo configured correctly.
-
-To install MICO you have to to at least the following steps.
-\begin{itemize}
-	\item Obtain the software from \verb http://www.mico.org/ .
-	
-	\item Install the software by following the installation steps provided by MICO. You need to install a multi-threaded version.
-	
-	\item Add the following directory to your path and to the settings of your visual studio
-	\begin{verbatim}
-	%MICO%\win32-bin 
-	%MIOC%\bin 
-	\end{verbatim}
-	
-	\item After compiling and installing MICO, you need to create a .micorc file. This file needs to be in the home directory or in the current working directory or you can use an environment setting pointing to this file (MICORC). Consult the MICO documentation for details.
-
-\end{itemize}
-
-\subsection{TAO (deprecated)}
-\label{sec:TAODeprecated}
-
-TAO comes with the ACE Framework (Version 5.3). 
-To install TAO you have to do at least the following steps.
-
-\begin{verbatim}
-obtain software:
-	Version TAO 1.3 ACE 5.3
-	get from: http://www.cs.wustl.edu/~schmidt/TAO.html
-install/compile:
-	ACE_ROOT = C:\ACE_WRAPPERS
-	TAO_ROOT = C:\ACE_WRAPPERS\TAO
-	TAO      = C:\ACE_WRAPPERS
-	create a config.h in %ACE_WRAPPERS%\ace:
-		#define ACE_HAS_STANDARD_CPP_LIBRARY 1
-		#include "ace/config-win32.h"
-	use the TAO workspace provided at %ACE_ROOT%\tao to compile TAO
-	there are a lot of project you need at least to compile these ones:
-		TAO_IDL
-		PortableServer
-		DynamicAny
-		DynamicInterface
-		NameService
-		IFR_Client
-	add the following to the path variable
-		%ACE_ROOT%\bin
-		
-
-The Qedo Runtime worspace supports configurations for 3 ORBs (ORBACUS, MICO, TAO). Each of these ORBs has specific characteristics (e.g the names of the skeleton files). These different characteristics make it really difficult to integrate the configurations into a single workspace. There are some serious problems with TAO. To overcome these problems you have to do the following things.
-
-copy %ACE_ROOT%\TAO\tao\IFR_Client\IFR_BasicC.h  %Qedo%\ComponentIDL\IFR_Basic.h
-copy %ACE_ROOT%\TAO\tao\IFR_Client\IFR_BasicC.h  %Qedo%\ComponentIDL\IFR_Basic_skel.h
-
-copy %ACE_ROOT%\TAO\tao\PortableServer\PortableServerC.h  %Qedo%\ComponentIDL\PortableServer.h
-copy %ACE_ROOT%\TAO\tao\PortableServer\PortableServerC.h  %Qedo%\ComponentIDL\PortableServer_skel.h
-
-copy %ACE_ROOT%\TAO\orbsvcs\orbsvcs\CosNamingC.h  %Qedo%\ComponentIDL\CosNaming.h
-copy %ACE_ROOT%\TAO\orbsvcs\orbsvcs\CosNamingC.h  %Qedo%\ComponentIDL\CosNaming_skel.h
-
-modify the file: %ACE_ROOT%\TAO\tao\Current.pidl
-
-add at beginning of the file:
-#ifndef _CURRENT_PIDL_
-#define _CURRENT_PIDL_
-
-add at the end of the file
-
-#endif
-
-\end{verbatim}
-
-
-\subsection{XERCES-C}
-\label{sec:XERCESC}
-
-\begin{verbatim}
-The Qedo project furthermore requires the xerces-c2_1 XML library to
-handle the deployment XML descriptors.
-
-	Xerces-c      ---> available at xml.apache.org/dist/xerces-c
-	All the instructions for compiling under Windows and Linux/Unix are
-	given in the Xerces-c package.
-	
-obtain software:
-	Version: 2.1
-	get from: http://xml.apache.org/dist/xerces-c/stable/
-set environment
-XERCES=C:\opt\xerces-c2_1_0-win32
-
-
-\end{verbatim}
-
-\subsection{ZLib}
-\label{sec:ZLib}
-
-\begin{verbatim}
-According to the CCM specification the Qedo project makes use of software
-packaging. In order to install Qedo the zlib 1.1.4 or a later version has
-to be installed on the target host.
-
-	Zlib          ---> available at http://www.gzip.org/zlib/
-	All the instructions for compiling under Linux/Unix are given in the
-	Zlib package.
-
-obtain software:
-	Version: 1.1.4
-	get from: http://www.gzip.org/zlib/
-set environment
-	ZLIB=C:\opt\zlib114dll
-add the follwing to the path variable
-	%ZLIB%\dll32
-
-Automatic packaging under Windows requires the command line version of winzip,
-to be downloaded from www.winzip.com. Make sure, it is in your path.
-\end{verbatim}
-
-
-\subsection{Compiling Windows}
-\label{sec:CompilingWindows}
-
-\begin{verbatim}
-If you use the MS Visual Studio 6 you have to open the workspace :
-Qedo.dsw 
-
-If you use the MS Visual Studio .NET you have to open the solution: 
-StreamContainer.sln
-
-
-Then you will have to set the active configuration. 
-mico    ->   CIDLGenerator - Win32 Debug_mico
-tao     ->   CIDLGenerator - Win32 Debug_tao
-orbacus ->   CIDLGenerator - Win32 Debug_orbacus
-\end{verbatim}
-
-\subsection{compiling Unix}
-\label{sec:compilingUnix}
-
-\begin{verbatim}
-For Unix based system Qedo support the configure make pattern. 
-In the Qedo directory you can call configure. configure supports currently two options. The first one is
-
---prefix=QEDOINSTALLDIR
-
-the second option is for the xerces packes if it is not included in the standard paths.
-
---with-xerces-c=XERCES-CROOTDIR
-
-After configuring you only need to call:
-
-make install
-
-to build and install the Qedo run-time.
-
- \end{verbatim}
- 
 
 \chapter{Architecture}
 \label{sec:Architecture}
@@ -274,7 +68,7 @@ To start the tun-time environment of Qedo you need to start a number of processe
 \subsection{Name Service}
 \label{sec:NameService}
 
-The first of all is a name service. This name service needs to be started once for a Qedo deployment domain. Such a domain consist of a number of computers where distributed systems can be installed. How to start a name service depends on the used nameservice implementation. But you need to be sure to know the host where the name service is runnning and on what port the name service is listening. This information is needed for the other servers. Currently we use orb depend mechanism to promote the name service information to the other Qedo servers. E.g. if you ar using MICO you need to create a .micorc file. this file need to contain the following line:
+The first of all is a name service. This name service needs to be started once for a Qedo deployment domain. Such a domain consist of a number of computers where distributed systems can be installed. How to start a name service depends on the used Name Service implementation. But you need to be sure to know the host where the name service is running and on what port the name service is listening. This information is needed for the other servers. Currently we use orb depend mechanism to promote the name service information to the other Qedo servers. E.g. if you are using MICO you need to create a .micorc file. this file need to contain the following line:
 \small
 \begin{verbatim}
 
