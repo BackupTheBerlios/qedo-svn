@@ -26,6 +26,7 @@ WXWINDOWSLIBS = $(shell @WXGTKDIR@/bin/wx-config --libs)
 CXX = @CXX@
 INCLUDES+=-I. \
 	-I../qedoutil \
+	-I../ComponentIDL \
 	$(NAMING_INCLUDES) \
 	@XERCES_INCLUDES@
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@ $(WXWINDOWSCXXFLAGS)
@@ -48,6 +49,8 @@ LDLIBS = ${LIBS}
 SOURCES = 	 ControllerNotebook.cpp \
 		 MainFrame.cpp \
 		 NSBrowser.cpp \
+		 Launcher.cpp \
+		 Deployment.cpp \
 		 qcontroller.cpp
 
 CLEAN_FILES = $(SOURCES:.cpp=.o) qcontroller
