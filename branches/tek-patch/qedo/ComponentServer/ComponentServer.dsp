@@ -76,10 +76,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/cs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"Debug_orbacus_vc6/cs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD BASE LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/qcs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"Debug_orbacus_vc6/qcs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 # Begin Special Build Tool
-TargetPath=.\Debug_orbacus_vc6\cs.exe
+TargetPath=.\Debug_orbacus_vc6\qcs.exe
 SOURCE="$(InputPath)"
 PostBuild_Desc=Distribution:
 PostBuild_Cmds=mkdir $(QEDO)\bin	copy $(TargetPath) $(QEDO)\bin
@@ -107,10 +107,10 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/cs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib /nologo /subsystem:console /debug /machine:I386 /out:"Debug_tao/cs.exe" /pdbtype:sept /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client"
+# ADD BASE LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/qcs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib /nologo /subsystem:console /debug /machine:I386 /out:"Debug_tao/qcs.exe" /pdbtype:sept /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client"
 # Begin Special Build Tool
-TargetPath=.\Debug_tao\cs.exe
+TargetPath=.\Debug_tao\qcs.exe
 SOURCE="$(InputPath)"
 PostBuild_Desc=Distribution:
 PostBuild_Cmds=mkdir $(QEDO)\bin	copy $(TargetPath) $(QEDO)\bin
@@ -138,8 +138,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/cs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 CosNaming.lib ob.lib jtc.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/cs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD BASE LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/qcs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 CosNaming.lib ob.lib jtc.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/qcs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 
 !ELSEIF  "$(CFG)" == "ComponentServer - Win32 Debug_mico"
 
@@ -163,8 +163,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/cs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/cs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD BASE LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/qcs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 CosNamingd.lib obd.lib jtcd.lib /nologo /subsystem:console /debug /machine:I386 /out:"../../Runtime/qcs.exe" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
 
 !ENDIF 
 
