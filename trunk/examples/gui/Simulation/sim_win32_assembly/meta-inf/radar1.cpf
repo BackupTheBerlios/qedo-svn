@@ -16,7 +16,7 @@
             <value>0.01</value>
     </simple>
     <simple name="pixel_radius" type="double">
-            <value>400</value>
+            <value>200</value>
     </simple>
 
 </properties>

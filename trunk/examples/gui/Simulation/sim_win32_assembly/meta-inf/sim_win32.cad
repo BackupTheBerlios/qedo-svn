@@ -42,7 +42,30 @@
   			      		<componentinstantiation id="SimulationServer">
 						    <registercomponent><registerwithnaming name="SimServer"/></registercomponent>      		
 						</componentinstantiation>
-					<destination></destination>
+			</homeplacement>
+		</processcollocation>
+		<processcollocation>
+			<homeplacement id="PlaneHome1">
+	        		<componentfileref idref="Plane_file"/>
+					<componentimplref idref="UUID-A69A6DFA-9C18-402D-9195-163CA169C8DB"/>
+  			      		<componentinstantiation id="Plane1">
+						<componentproperties>
+							<fileinarchive name="meta-inf/plane1.cpf"/>
+						</componentproperties>
+					</componentinstantiation>
+			</homeplacement>
+		</processcollocation>
+
+		<processcollocation>
+			<homeplacement id="PlaneHome2">
+	        		<componentfileref idref="Plane_file"/>
+					<componentimplref idref="UUID-A69A6DFA-9C18-402D-9195-163CA169C8DB"/>
+  			      		<componentinstantiation id="Plane2">
+	   						<componentproperties>
+								<fileinarchive name="meta-inf/plane2.cpf"/>
+							</componentproperties>
+						</componentinstantiation>
+
 			</homeplacement>
 		</processcollocation>
 		
@@ -55,7 +78,6 @@
 								<fileinarchive name="meta-inf/radar1.cpf"/>
 							</componentproperties>
 						</componentinstantiation>
-					<destination></destination>
 			</homeplacement>
 		</processcollocation>
 
@@ -68,7 +90,6 @@
 								<fileinarchive name="meta-inf/radar2.cpf"/>
 							</componentproperties>
 						</componentinstantiation>
-					<destination>sbo</destination>
 			</homeplacement>
 		</processcollocation>
 
@@ -81,12 +102,35 @@
 								<fileinarchive name="meta-inf/tapdisplay1.cpf"/>
 							</componentproperties>  			      		
 						</componentinstantiation>
-					<destination></destination>
 			</homeplacement>
 		</processcollocation>
 		
     </partitioning>
     <connections>
+		<connectinterface>
+			<usesport>
+			<usesidentifier>sim_server</usesidentifier>
+			<componentinstantiationref idref="Plane1"/>
+			</usesport>
+
+			<providesport>
+			<providesidentifier>the_input</providesidentifier>
+			<componentinstantiationref idref="SimulationServer"/>
+			</providesport>
+		</connectinterface>
+
+		<connectinterface>
+			<usesport>
+			<usesidentifier>sim_server</usesidentifier>
+			<componentinstantiationref idref="Plane2"/>
+			</usesport>
+
+			<providesport>
+			<providesidentifier>the_input</providesidentifier>
+			<componentinstantiationref idref="SimulationServer"/>
+			</providesport>
+		</connectinterface>
+    
 		<connectinterface>
 			<usesport>
 			<usesidentifier>sim_server</usesidentifier>

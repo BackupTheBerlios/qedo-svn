@@ -134,8 +134,8 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="zip ../sim_win32_assembly.zip -j ../Simulation_PlaneImpl.zip ../Simulation_SimulationServerImpl.zip ../Simulation_RadarImpl.zip ../Simulation_TAPDisplayImpl.zip
-zip ../sim_win32_assembly.zip meta-inf/sim_win32.cad meta-inf/plane1.cpf meta-inf/plane2.cpf meta-inf/radar1.cpf meta-inf/radar2.cpf meta-inf/tapdisplay1.cpf
+						CommandLine="$(cygwin)\zip ../sim_win32_assembly.zip -j ../Simulation_PlaneImpl.zip ../Simulation_SimulationServerImpl.zip ../Simulation_RadarImpl.zip ../Simulation_TAPDisplayImpl.zip
+$(cygwin)\zip ../sim_win32_assembly.zip meta-inf/sim_win32.cad meta-inf/plane1.cpf meta-inf/plane2.cpf meta-inf/radar1.cpf meta-inf/radar2.cpf meta-inf/tapdisplay1.cpf
 "
 						Outputs="sim_win32_assembly.zip"/>
 				</FileConfiguration>
