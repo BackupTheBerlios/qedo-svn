@@ -72,6 +72,8 @@ main
 
 	ior_file << rep_ior.c_str();
 
+	ior_file.close();
+
 	orb->run();
 
 	return 0;
