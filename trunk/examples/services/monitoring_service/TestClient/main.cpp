@@ -1,5 +1,5 @@
 
-static char rcsid[] = "$Id: main.cpp,v 1.3 2003/11/10 16:39:38 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.4 2003/11/11 09:03:07 tom Exp $";
 
 #include <CORBA.h>
 
@@ -257,7 +257,7 @@ main (int argc, char** argv)
 
 	std::cout << "install home Monitoring Service" << std::endl;
 	config.length(0);
-	home = container->install_home ("MONITORINGSERVICE/1.0", "", config);
+	home = container->install_home ("MONITORINGSERVICE", "", config);
 	container_service::monitor_home_var monitor_home = container_service::monitor_home::_narrow (home);
 
 

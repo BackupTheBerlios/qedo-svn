@@ -1,0 +1,54 @@
+Microsoft Visual Studio Solution File, Format Version 7.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "container_service_MonImpl", "container_service_MonImpl\container_service_MonImpl.vcproj", "{562A99B9-A003-4CA8-9865-7FA880878373}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "container_service_MonImpl_SERVANT", "container_service_MonImpl_SERVANT\container_service_MonImpl_SERVANT.vcproj", "{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestClient", "TestClient\TestClient.vcproj", "{A388A8EA-BE9D-43A4-8194-5181040BCCAC}"
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		ConfigName.0 = Debug
+		ConfigName.1 = Debug_mico
+		ConfigName.2 = Debug_orbacus
+		ConfigName.3 = Debug_tao
+		ConfigName.4 = Release
+	EndGlobalSection
+	GlobalSection(ProjectDependencies) = postSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{562A99B9-A003-4CA8-9865-7FA880878373}.Debug.ActiveCfg = Debug_tao|Win32
+		{562A99B9-A003-4CA8-9865-7FA880878373}.Debug.Build.0 = Debug_tao|Win32
+		{562A99B9-A003-4CA8-9865-7FA880878373}.Debug_mico.ActiveCfg = Debug_mico|Win32
+		{562A99B9-A003-4CA8-9865-7FA880878373}.Debug_mico.Build.0 = Debug_mico|Win32
+		{562A99B9-A003-4CA8-9865-7FA880878373}.Debug_orbacus.ActiveCfg = Debug_orbacus|Win32
+		{562A99B9-A003-4CA8-9865-7FA880878373}.Debug_orbacus.Build.0 = Debug_orbacus|Win32
+		{562A99B9-A003-4CA8-9865-7FA880878373}.Debug_tao.ActiveCfg = Debug_tao|Win32
+		{562A99B9-A003-4CA8-9865-7FA880878373}.Debug_tao.Build.0 = Debug_tao|Win32
+		{562A99B9-A003-4CA8-9865-7FA880878373}.Release.ActiveCfg = Debug_tao|Win32
+		{562A99B9-A003-4CA8-9865-7FA880878373}.Release.Build.0 = Debug_tao|Win32
+		{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}.Debug.ActiveCfg = Debug_tao|Win32
+		{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}.Debug.Build.0 = Debug_tao|Win32
+		{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}.Debug_mico.ActiveCfg = Debug_mico|Win32
+		{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}.Debug_mico.Build.0 = Debug_mico|Win32
+		{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}.Debug_orbacus.ActiveCfg = Debug_orbacus|Win32
+		{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}.Debug_orbacus.Build.0 = Debug_orbacus|Win32
+		{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}.Debug_tao.ActiveCfg = Debug_tao|Win32
+		{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}.Debug_tao.Build.0 = Debug_tao|Win32
+		{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}.Release.ActiveCfg = Debug_tao|Win32
+		{E3D0B4D3-4CEE-4592-BB71-E19A336DA4C8}.Release.Build.0 = Debug_tao|Win32
+		{A388A8EA-BE9D-43A4-8194-5181040BCCAC}.Debug.ActiveCfg = Debug|Win32
+		{A388A8EA-BE9D-43A4-8194-5181040BCCAC}.Debug.Build.0 = Debug|Win32
+		{A388A8EA-BE9D-43A4-8194-5181040BCCAC}.Debug_mico.ActiveCfg = Debug_mico|Win32
+		{A388A8EA-BE9D-43A4-8194-5181040BCCAC}.Debug_mico.Build.0 = Debug_mico|Win32
+		{A388A8EA-BE9D-43A4-8194-5181040BCCAC}.Debug_orbacus.ActiveCfg = Debug_mico|Win32
+		{A388A8EA-BE9D-43A4-8194-5181040BCCAC}.Debug_orbacus.Build.0 = Debug_mico|Win32
+		{A388A8EA-BE9D-43A4-8194-5181040BCCAC}.Debug_tao.ActiveCfg = Debug_mico|Win32
+		{A388A8EA-BE9D-43A4-8194-5181040BCCAC}.Debug_tao.Build.0 = Debug_mico|Win32
+		{A388A8EA-BE9D-43A4-8194-5181040BCCAC}.Release.ActiveCfg = Release|Win32
+		{A388A8EA-BE9D-43A4-8194-5181040BCCAC}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

@@ -70,7 +70,7 @@ namespace container_service
     //
     class MonImpl
         : public virtual CORBA::LocalObject
-        , public virtual Components::SessionExecutorLocator
+        , public virtual Components::ExtensionExecutorLocator
 #ifndef MICO_ORB
         , public virtual Qedo::RefCountLocalObject
 #endif
@@ -109,25 +109,25 @@ namespace container_service
         	throw(CORBA::SystemException, ::Components::InvalidConfiguration);
         
         //
-        // IDL:Components/SessionComponent/set_session_context:1.0
+        // IDL:Components/ExtensionComponent/set_extension_context:1.0
         //
-        virtual void set_session_context(Components::SessionContext_ptr ctx)
+        virtual void set_extension_context(Components::ExtensionContext_ptr ctx)
         	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
-        // IDL:Components/SessionComponent/ccm_activate:1.0
+        // IDL:Components/ExtensionComponent/ccm_activate:1.0
         //
         virtual void ccm_activate()
         	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
-        // IDL:Components/SessionComponent/ccm_passivate:1.0
+        // IDL:Components/ExtensionComponent/ccm_passivate:1.0
         //
         virtual void ccm_passivate()
         	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
-        // IDL:Components/SessionComponent/ccm_remove:1.0
+        // IDL:Components/ExtensionComponent/ccm_remove:1.0
         //
         virtual void ccm_remove()
         	throw(CORBA::SystemException, ::Components::CCMException);

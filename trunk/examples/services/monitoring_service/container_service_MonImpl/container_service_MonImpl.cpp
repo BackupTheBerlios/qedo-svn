@@ -26,7 +26,7 @@ MonExec::MonExec()
 MonExec::~MonExec()
 {
 // BEGIN USER INSERT SECTION MonExec::~MonExec
-		server_interceptor_ ->_remove_ref();
+//		server_interceptor_ ->_remove_ref();
 // END USER INSERT SECTION MonExec::~MonExec
 
 }
@@ -45,13 +45,14 @@ MonExec::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION MonExec::configuration_complete
+	/*
 	Components::Extension::ServerInterceptorRegistration_ptr server_reg =
 		context_->get_server_interceptor_dispatcher_registration();
 
 	server_interceptor_ = new Qedo::ServerContainerInterceptor();
 
 	server_reg->register_server_interceptor(server_interceptor_);
-
+*/
 
 // END USER INSERT SECTION MonExec::configuration_complete
 }
@@ -120,7 +121,7 @@ MonImpl::configuration_complete()
 
 
 void
-MonImpl::set_session_context(::Components::SessionContext_ptr context)
+MonImpl::set_extension_context(::Components::ExtensionContext_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
     #ifdef TAO_ORB

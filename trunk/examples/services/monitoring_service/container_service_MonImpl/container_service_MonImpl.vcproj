@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.00"
 	Name="container_service_MonImpl"
-	ProjectGUID="{A44D3F6B-284D-427A-9B68-11E00C6712D0}"
+	ProjectGUID="{562A99B9-A003-4CA8-9865-7FA880878373}"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)\include;$(ORBACUS)\include;$(ORBACUS)\include\OB;"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(ORBACUS)/include;$(ORBACUS)/include/OB;"
 				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -33,10 +33,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib ComponentContainer.lib"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib obd.lib jtcd.lib"
 				OutputFile="$(OutDir)/container_service_MonImpl.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(QEDO)\lib;$(ORBACUS)\lib"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(ORBACUS)/lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/container_service_MonImpl.pdb"
 				SubSystem="2"
@@ -66,8 +66,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)\include;$(MICO)\include;"
-				PreprocessorDefinitions="BUILD_CONTAINER_SERVICE_MONIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;"
+				PreprocessorDefinitions="BUILD_CONTAINER_SERVICE_MONIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -80,10 +80,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Extension.lib ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC.lib"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC.lib"
 				OutputFile="$(OutDir)/container_service_MonImpl.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(QEDO)\lib;$(MICO)\win32-bin\lib"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/container_service_MonImpl.pdb"
 				SubSystem="2"
@@ -113,7 +113,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)\include;$(MICO)\include;"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -130,7 +130,7 @@
 				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib mico2311.lib"
 				OutputFile="$(OutDir)/container_service_MonImpl.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(QEDO)\lib;$(MICO)\win32-bin\lib"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/container_service_MonImpl.pdb"
 				SubSystem="2"
@@ -157,6 +157,9 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
+				RelativePath="ServerContainerInterceptor.cpp">
+			</File>
+			<File
 				RelativePath="container_service_MonImpl.cpp">
 			</File>
 			<File
@@ -171,10 +174,16 @@
 			<File
 				RelativePath="container_service_MonImpl_LOCAL.cpp">
 			</File>
+			<File
+				RelativePath="valuetypes.cpp">
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="ServerContainerInterceptor.h">
+			</File>
 			<File
 				RelativePath="container_service_MonImpl.h">
 			</File>
@@ -190,6 +199,9 @@
 			<File
 				RelativePath="container_service_MonImpl_LOCAL.h">
 			</File>
+			<File
+				RelativePath="valuetypes.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="idl"
@@ -200,7 +212,8 @@
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)/bin/cidl_gen -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --business --target IDL:container_service/MonImpl:1.0 ../monitoring_service.cidl
+						Description="..... compiling CIDL"
+						CommandLine="$(QEDO)/bin/cidl_gen -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --business -d --target IDL:container_service/MonImpl:1.0 ../monitoring_service.cidl
 "
 						Outputs="container_service_MonImpl_LOCAL.idl;container_service_MonImpl_EQUIVALENT.idl;container_service_MonImpl_BUSINESS.idl"/>
 				</FileConfiguration>
@@ -208,7 +221,8 @@
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --business --servant --target IDL:container_service/MonImpl:1.0 ../monitoring_service.cidl
+						Description="..... compiling CIDL"
+						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico --business -d --target IDL:container_service/MonImpl:1.0 ../monitoring_service.cidl
 "
 						Outputs="container_service_MonImpl_LOCAL.idl;container_service_MonImpl_EQUIVALENT.idl;container_service_MonImpl_BUSINESS.idl"/>
 				</FileConfiguration>
@@ -216,7 +230,7 @@
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_LOCAL.idl
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_LOCAL.idl
 "
 						Outputs="container_service_MonImpl_LOCAL.h;container_service_MonImpl_LOCAL.cpp;container_service_MonImpl_LOCAL_skel.h;container_service_MonImpl_LOCAL_skel.cpp"/>
 				</FileConfiguration>
@@ -227,6 +241,7 @@
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="..... compiling business IDL"
 						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_BUSINESS.idl
 "
 						Outputs="container_service_MonImpl_BUSINESS.h;container_service_MonImpl_BUSINESS.cpp;container_service_MonImpl_BUSINESS_skel.h;container_service_MonImpl_BUSINESS_skel.cpp"/>
@@ -235,7 +250,8 @@
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)/win32-bin/idl -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll container_service_MonImpl container_service_MonImpl_BUSINESS.idl
+						Description="..... compiling business IDL"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll container_service_MonImpl container_service_MonImpl_BUSINESS.idl
 copy container_service_MonImpl_BUSINESS.h container_service_MonImpl_BUSINESS_skel.h
 "
 						Outputs="container_service_MonImpl_BUSINESS.h;container_service_MonImpl_BUSINESS.cpp;container_service_MonImpl_BUSINESS_skel.h;container_service_MonImpl_BUSINESS_skel.cpp"/>
@@ -244,7 +260,7 @@ copy container_service_MonImpl_BUSINESS.h container_service_MonImpl_BUSINESS_ske
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_LOCAL.idl
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_LOCAL.idl
 "
 						Outputs="container_service_MonImpl_LOCAL.h;container_service_MonImpl_LOCAL.cpp;container_service_MonImpl_LOCAL_skel.h;container_service_MonImpl_LOCAL_skel.cpp"/>
 				</FileConfiguration>
@@ -255,6 +271,7 @@ copy container_service_MonImpl_BUSINESS.h container_service_MonImpl_BUSINESS_ske
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="..... compiling equivalent IDL"
 						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_EQUIVALENT.idl
 "
 						Outputs="container_service_MonImpl_EQUIVALENT.h;container_service_MonImpl_EQUIVALENT.cpp;container_service_MonImpl_EQUIVALENT_skel.h;container_service_MonImpl_EQUIVALENT_skel.cpp"/>
@@ -263,7 +280,8 @@ copy container_service_MonImpl_BUSINESS.h container_service_MonImpl_BUSINESS_ske
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)/win32-bin/idl -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl  -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll container_service_MonImpl container_service_MonImpl_EQUIVALENT.idl
+						Description="..... compiling equivalent IDL"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll container_service_MonImpl container_service_MonImpl_EQUIVALENT.idl
 copy container_service_MonImpl_EQUIVALENT.h container_service_MonImpl_EQUIVALENT_skel.h
 "
 						Outputs="container_service_MonImpl_EQUIVALENT.h;container_service_MonImpl_EQUIVALENT.cpp;container_service_MonImpl_EQUIVALENT_skel.h;container_service_MonImpl_EQUIVALENT_skel.cpp"/>
@@ -272,7 +290,7 @@ copy container_service_MonImpl_EQUIVALENT.h container_service_MonImpl_EQUIVALENT
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_LOCAL.idl
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_LOCAL.idl
 "
 						Outputs="container_service_MonImpl_LOCAL.h;container_service_MonImpl_LOCAL.cpp;container_service_MonImpl_LOCAL_skel.h;container_service_MonImpl_LOCAL_skel.cpp"/>
 				</FileConfiguration>
@@ -283,6 +301,7 @@ copy container_service_MonImpl_EQUIVALENT.h container_service_MonImpl_EQUIVALENT
 					Name="Debug_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="..... compiling local IDL"
 						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_LOCAL.idl
 "
 						Outputs="container_service_MonImpl_LOCAL.h;container_service_MonImpl_LOCAL.cpp;container_service_MonImpl_LOCAL_skel.h;container_service_MonImpl_LOCAL_skel.cpp"/>
@@ -291,7 +310,8 @@ copy container_service_MonImpl_EQUIVALENT.h container_service_MonImpl_EQUIVALENT
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)/win32-bin/idl -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll container_service_MonImpl container_service_MonImpl_LOCAL.idl
+						Description="..... compiling local IDL"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll container_service_MonImpl container_service_MonImpl_LOCAL.idl
 copy container_service_MonImpl_LOCAL.h container_service_MonImpl_LOCAL_skel.h
 "
 						Outputs="container_service_MonImpl_LOCAL.h;container_service_MonImpl_LOCAL.cpp;container_service_MonImpl_LOCAL_skel.h;container_service_MonImpl_LOCAL_skel.cpp"/>
@@ -300,7 +320,7 @@ copy container_service_MonImpl_LOCAL.h container_service_MonImpl_LOCAL_skel.h
 					Name="Debug_tao|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_LOCAL.idl
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_LOCAL.idl
 "
 						Outputs="container_service_MonImpl_LOCAL.h;container_service_MonImpl_LOCAL.cpp;container_service_MonImpl_LOCAL_skel.h;container_service_MonImpl_LOCAL_skel.cpp"/>
 				</FileConfiguration>
@@ -321,26 +341,17 @@ copy container_service_MonImpl_LOCAL.h container_service_MonImpl_LOCAL_skel.h
 				<FileConfiguration
 					Name="Debug_orbacus|Win32">
 					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../container_service_MonImpl.zip Debug_orbacus/container_service_MonImpl.dll ../container_service_MonImpl_SERVANT/Debug_orbacus/container_service_MonImpl_SERVANT.dll container_service_MonImpl.idl container_service_MonImpl.ccd container_service_MonImpl.csd
-"
-						Outputs="container_service_MonImpl.zip"/>
+						Name="VCCustomBuildTool"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
 					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../container_service_MonImpl.zip Debug_mico/container_service_MonImpl.dll ../container_service_MonImpl_SERVANT/Debug_mico/container_service_MonImpl_SERVANT.dll container_service_MonImpl.idl container_service_MonImpl.ccd container_service_MonImpl.csd
-"
-						Outputs="container_service_MonImpl.zip"/>
+						Name="VCCustomBuildTool"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_tao|Win32">
 					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="wzzip.exe ../container_service_MonImpl.zip Debug_orbacus/container_service_MonImpl.dll ../container_service_MonImpl_SERVANT/Debug_orbacus/container_service_MonImpl_SERVANT.dll container_service_MonImpl.idl container_service_MonImpl.ccd container_service_MonImpl.csd
-"
-						Outputs="container_service_MonImpl.zip"/>
+						Name="VCCustomBuildTool"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
