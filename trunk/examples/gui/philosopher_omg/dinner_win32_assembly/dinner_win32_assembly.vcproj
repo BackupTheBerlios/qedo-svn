@@ -122,8 +122,8 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="zip ../dinner_win32.zip -j ../dinner_CutleryImpl.zip ../dinner_ObserverImpl.zip ../dinner_PhilosopherImpl.zip
-zip ../dinner_win32.zip meta-inf/dinner_win32.cad
+						CommandLine="$(cygwin)\zip ../dinner_win32.zip -j ../dinner_CutleryImpl.zip ../dinner_ObserverImpl.zip ../dinner_PhilosopherImpl.zip
+$(cygwin)\zip ../dinner_win32.zip meta-inf/dinner_win32.cad
 "
 						Outputs="the_output"/>
 				</FileConfiguration>

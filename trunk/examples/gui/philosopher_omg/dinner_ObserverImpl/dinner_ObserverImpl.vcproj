@@ -99,8 +99,8 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="zip ../dinner_ObserverImpl.zip -j  Debug_mico/libdinner_ObserverImpl.so Debug_mico/dinner_ObserverImpl.dll ../dinner_ObserverImpl_SERVANT/Debug_mico/libdinner_ObserverImpl_SERVANT.so ../dinner_ObserverImpl_SERVANT/Debug_mico/dinner_ObserverImpl_SERVANT.dll ../dinner.cidl
-zip ../dinner_ObserverImpl.zip meta-inf/dinner_ObserverImpl.ccd meta-inf/dinner_ObserverImpl.csd
+				CommandLine="$(cygwin)\zip ../dinner_ObserverImpl.zip -j  Debug_mico/libdinner_ObserverImpl.so Debug_mico/dinner_ObserverImpl.dll ../dinner_ObserverImpl_SERVANT/Debug_mico/libdinner_ObserverImpl_SERVANT.so ../dinner_ObserverImpl_SERVANT/Debug_mico/dinner_ObserverImpl_SERVANT.dll ../dinner.cidl
+$(cygwin)\zip ../dinner_ObserverImpl.zip meta-inf/dinner_ObserverImpl.ccd meta-inf/dinner_ObserverImpl.csd
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
@@ -180,6 +180,9 @@ zip ../dinner_ObserverImpl.zip meta-inf/dinner_ObserverImpl.ccd meta-inf/dinner_
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
+				RelativePath=".\component_valuetypes.cpp">
+			</File>
+			<File
 				RelativePath="dinner_ObserverImpl.cpp">
 			</File>
 			<File
@@ -194,13 +197,13 @@ zip ../dinner_ObserverImpl.zip meta-inf/dinner_ObserverImpl.ccd meta-inf/dinner_
 			<File
 				RelativePath="dinner_ObserverImpl_LOCAL.cpp">
 			</File>
-			<File
-				RelativePath="valuetypes.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath=".\component_valuetypes.h">
+			</File>
 			<File
 				RelativePath="dinner_ObserverImpl.h">
 			</File>
@@ -215,9 +218,6 @@ zip ../dinner_ObserverImpl.zip meta-inf/dinner_ObserverImpl.ccd meta-inf/dinner_
 			</File>
 			<File
 				RelativePath="dinner_ObserverImpl_LOCAL.h">
-			</File>
-			<File
-				RelativePath="valuetypes.h">
 			</File>
 		</Filter>
 		<Filter
