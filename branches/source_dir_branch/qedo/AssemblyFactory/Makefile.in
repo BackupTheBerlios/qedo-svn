@@ -1,0 +1,55 @@
+include ../MakeVars
+
+CXX = @CXX@
+CPPFLAGS+=-I. -I../ComponentIDL \
+          -I../ComponentContainer \
+			 -I../ComponentInstaller \
+			 @XERCES_INCLUDE@ \
+			 @CPPFLAGS@ 
+CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+CXXCOMPILE=@CXX@ $(CXXFLAGS)
+LIBS+=@LIBS@
+CC=$(CXX)
+
+@SET_MAKE@
+
+LIBS += -L../ComponentIDL -lComponent\
+        -L../ComponentContainer -lComponentContainer \
+		  @XERCES_LIBS@
+
+LDLIBS = ${LIBS}
+
+SOURCES =   Assembly.cpp \
+				AssemblyFactory.cpp \
+				Properties.cpp \
+				StandardConfigurator.cpp \
+				assf.cpp \
+				../ComponentInstaller/XMLCatalog.cpp \
+				../ComponentInstaller/libunzip.cpp \
+				../ComponentInstaller/CatalogResolver.cpp \
+				../ComponentInstaller/DOMTreeErrorReporter.cpp \
+				../ComponentInstaller/DOMXMLParser.cpp \
+				../ComponentInstaller/NameServiceBase.cpp \
+				../ComponentInstaller/Package.cpp \
+				../ComponentInstaller/PlatformBase.cpp 
+
+OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
+
+
+.PHONY:all
+
+all: assf
+
+#assf.cpp : main.cpp
+#	@LN_S@ $^ $@
+
+assf: $(OBJS)
+
+.PHONY:install
+
+install: install-prog
+
+.PHONY:install-prog
+
+install-prog: assf
+

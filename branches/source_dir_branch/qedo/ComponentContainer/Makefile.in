@@ -1,0 +1,90 @@
+# Qedo - Quality of Service Enabled Distributed Objects 
+#                                                     
+# http://qedo.berlios.de/                            
+#                                                   
+# Copyright (C) 2002-2003 by the Qedo Team         
+#                                                 
+# This library is free software; you can redistribute it and/or 
+# modify it under the terms of the GNU Lesser General Public   
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#                                                                  
+# This library is distributed in the hope that it will be useful, 
+# but WITHOUT ANY WARRANTY; without even the implied warranty of 
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+# Lesser General Public License for more details.                 
+#                                                                
+# You should have received a copy of the GNU Lesser General Public 
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
+
+include ../MakeVars
+
+CXX = @CXX@
+CPPFLAGS+=-I. -I../ComponentIDL @CPPFLAGS@ 
+CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+CXXCOMPILE=@CXX@ $(CXXFLAGS)
+LIBS=@LIBS@
+
+@SET_MAKE@
+
+CXXFLAGS +=  $(IDLCXXFLAGS) $(INCLUDES)
+
+LIBS += -L../ComponentIDL -lComponent -luuid
+
+ifeq "${ORB}" "MICO_ORB"
+LIBS += $(shell mico-config --cosslibs)
+CPPFLAGS += -I$(shell mico-config --prefix)/include/coss
+endif
+
+SOURCES = Key.cpp \
+     	ServantBase.cpp \
+     	ServantLocator.cpp \
+		Output.cpp \
+		HomeServantBase.cpp \
+		CCMObjectExecutor.cpp \
+		CCMContext.cpp \
+		ComponentInstance.cpp \
+		ConsumerPort.cpp \
+		ContainerInterfaceImpl.cpp \
+		EmitterPort.cpp \
+		EntityHomeServant.cpp \
+		FacetPort.cpp \
+		GlobalHelpers.cpp \
+		PortBase.cpp \
+		PublisherPort.cpp \
+		ReceptaclePort.cpp \
+		RefCountBase.cpp \
+		ServantRegistry.cpp \
+		SessionContext.cpp \
+		SessionHomeServant.cpp \
+		GetComponentHelperServant.cpp \
+		Synchronisation.cpp \
+		Valuetypes.cpp \
+		CCMHomeServant.cpp
+
+HEADER = ${SOURCES:.cpp=.h} \
+          Util.h \
+			 PortEntry.h
+
+
+OBJS = ${SOURCES:.cpp=.o}
+
+.PHONY: all
+
+all: libComponentContainer.so
+
+libComponentContainer.so : $(OBJS)
+
+.PHONY: install
+
+install: install-lib install-include
+
+.PHONY: install-lib
+
+install-lib: libComponentContainer.so
+
+.PHONY: install-include
+
+install-include: $(HEADER)
+
