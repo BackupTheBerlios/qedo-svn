@@ -596,6 +596,8 @@ GeneratorServantC::genConsumerServants(IR__::ComponentDef_ptr component)
 		//
 		IR__::ConsumesDef_var consumes = IR__::ConsumesDef::_narrow(((*contained_seq)[i]));
 		class_name_ = string(consumes->name()) + "_servant";
+		std::string event_consumer = mapFullNameLocal(consumes->event()) + "Consumer";
+		std::string event_name = mapFullName(consumes->event());
 
 		// header
 		out << "// ================================================\n";
@@ -612,21 +614,46 @@ GeneratorServantC::genConsumerServants(IR__::ComponentDef_ptr component)
 		out << "void\n";
 		out << class_name_ << "::push_event (Components::EventBase* ev) throw (CORBA::SystemException)\n{\n";
 		out.indent();
-		out << "// not implemented yet, please report : 432553\n";
-		out << "abort();\n";
+		out << event_name << "* event = " << event_name << "::_downcast (ev);\n\n";
+		out << "if (!event)\n{\n";
+		out.indent();
+        out << "// handle error\n";
+        out << "throw ::CORBA::INTERNAL(42,::CORBA::COMPLETED_NO);\n";
+		out.unindent();
+		out << "}\n\n";
+		out << "push_" << consumes->event()->name() << "(event);\n";
 		out.unindent();
 		out << "}\n\n\n";
 
 		// push_...
 		out << "void\n";
-		out << class_name_ << "::push_" << consumes->event()->name() << "(" << mapFullName(consumes->event());
+		out << class_name_ << "::push_" << consumes->event()->name() << "(" << event_name;
 		out << "* ev)\n{\n";
 		out.indent();
-		out << "// not implemented yet, please report : 9836797\n";
-		out << "abort();\n";
+		out << "try\n{\n";
+		out.indent();
+        out << "current_executor_ = executor_locator_->obtain_executor(\"component\");\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (...)\n{\n";
+		out.indent();
+        out << "// handle error\n";
+		out << "DEBUG_OUT (\"servantContext: can not obtain executor\");\n";
+        out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
+		out.unindent();
+		out << "}\n\n";
+		out << event_consumer << "_ptr consumer_ptr = ";
+		out << "dynamic_cast <" << event_consumer << "_ptr>(current_executor_);\n\n";
+		out << "if (CORBA::is_nil (consumer_ptr))\n{\n";
+		out.indent();
+        out << "// handle error\n";
+		out << "DEBUG_OUT (\"servantContext: can not cast consumer\");\n";
+        out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
+		out.unindent();	
+		out << "}\n\n";
+	    out << "return consumer_ptr->push_" << consumes->event()->name() << "(ev);\n";
 		out.unindent();
 		out << "}\n\n\n";
-
 
 		//
 		// consumer servant factory
@@ -715,7 +742,7 @@ GeneratorServantC::genComponentServant(IR__::ComponentDef_ptr component)
 		out << class_name_ << "::push_event (Components::EventBase* ev) throw (CORBA::SystemException)\n{\n";
 		out.indent();
 		out << "// not implemented yet, please report : 274772\n";
-		out << "abort();\n";
+		out << "throw CORBA::NO_IMPLEMENT();\n";
 		out.unindent();
 		out << "}\n\n\n";
 
@@ -811,7 +838,7 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 		out << "}\n";
 		out << "catch (CORBA::SystemException& ex)\n{\n";
 		out.indent();
-		out << "std::cerr << ex << std::endl;\n";
+		out << "std::cerr << \"exception when pushing event : \" << ex << std::endl;\n";
 		out.unindent();
 		out << "}\n";
 		out.unindent();
