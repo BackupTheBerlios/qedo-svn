@@ -39,7 +39,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.20 2003/11/14 16:48:16 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.21 2003/11/14 18:08:34 boehme Exp $";
 
 
 namespace Qedo {
@@ -172,7 +172,9 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 	// create new cookie
 	//
 	Cookie_impl* new_cookie = new Cookie_impl();
-	std::string uuid = new_cookie->to_string();
+	const char * s =  new_cookie->to_string();
+	std::string uuid = s;
+	CORBA::string_free(const_cast<char*>(s));
 
 	//
 	// store the package

@@ -83,6 +83,9 @@
 Revision history:
 
 $Log: Uri.h,v $
+Revision 1.5  2003/11/14 18:08:34  boehme
+fix more memory leaks
+
 Revision 1.4  2003/10/22 06:13:33  tom
 fix of the fix
 
@@ -976,6 +979,7 @@ void URI_< charT, stringT >::operator=( const stringT & aText ) {
 
 template< class charT, class stringT >
 void URI_< charT, stringT >::operator=( const URI_ & aOther ) {
+  if ( this == &aOther) return;
   mRep->release();
   mRep = aOther.mRep;
   mRep->acquire();
@@ -1024,7 +1028,9 @@ URI_< charT, stringT >::makeAbsolute( const URI_ & aBase ) const
       std::cerr <<  "Base URI supplied to URI::makeAbsolute() must be absolute" << std::endl;
   }
 
-  return URI_( mRep->makeAbsolute( aBase.mRep ) );
+  Rep * newRep = mRep->makeAbsolute( aBase.mRep );
+  URI result = URI_( newRep );
+  return result;
 }
 
 

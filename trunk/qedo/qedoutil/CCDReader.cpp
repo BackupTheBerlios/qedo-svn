@@ -28,7 +28,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.7 2003/11/14 16:48:16 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: CCDReader.cpp,v 1.8 2003/11/14 18:08:34 boehme Exp $";
 
 
 namespace Qedo {
@@ -339,8 +339,7 @@ throw(CCDReadException)
 	// parse the corba component descriptor file
     //
 	DOMXMLParser parser;
-	char* xmlfile = strdup(descriptor_.c_str());
-    if ( parser.parse( xmlfile ) != 0 ) 
+    if ( parser.parse( const_cast<char*>(descriptor_.c_str()) ) != 0 ) 
 	{
 		NORMAL_ERR( "CCDReader: error during XML parsing" );
         throw CCDReadException();

@@ -112,6 +112,7 @@ DOMXMLParser::~DOMXMLParser()
     delete errReporter_;
     delete parser_;
 	 delete mCatalogResolver;
+	 delete mXMLCatalog;
 }
 
 

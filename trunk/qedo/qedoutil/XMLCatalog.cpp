@@ -76,9 +76,9 @@ XMLCatalog::XMLCatalog (XercesDOMParser & aParser, const URI & aCatalog, bool aM
         u = Qedo::transcode(e->getAttribute(X("HRef")));
         if( mMakeAbsolute && u.isRelative() )
         {
-            u = u.makeAbsolute( mBaseHref );
+            v = u.makeAbsolute( mBaseHref );
         }
-        mEntryList.push_back( new MapEntry( s, u ) );
+        mEntryList.push_back( new MapEntry( s, v ) );
     }
 
     // add Delegate entries to 'map' list

@@ -1665,8 +1665,7 @@ throw(CADReadException)
 	// parse the component assembly descriptor
     //
 	DOMXMLParser parser;
-	char* xmlfile = strdup(cadfile.c_str());
-    if ( parser.parse( xmlfile ) != 0 ) 
+    if ( parser.parse( const_cast<char*>(cadfile.c_str()) ) != 0 ) 
 	{
 		NORMAL_ERR2( "CADReader: error during parsing ", cadfile );
         throw CADReadException();

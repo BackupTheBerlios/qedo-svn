@@ -24,7 +24,7 @@
 #include "Output.h"
 #include "DOMXMLParser.h"
 
-static char rcsid[] UNUSED = "$Id: ConfigurationReader.cpp,v 1.5 2003/11/14 15:24:26 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ConfigurationReader.cpp,v 1.6 2003/11/14 18:08:34 boehme Exp $";
 
 
 namespace Qedo {
@@ -118,35 +118,31 @@ ConfigurationReader::lookup_config_value (const std::string& name)
 
 			// Resolve config value in the current section
 			DOMNodeList* value_list = current_element->getChildNodes();
-			char * s;
+			std::string s;
 
 			for (unsigned int i = 0; i < value_list->getLength(); i++)
 			{
 				DOMNode* the_item = value_list->item (i);
 
 				// Test whether we have a CONFIGVALUE element, if not go to next element
-				s = XMLString::transcode (the_item->getNodeName());
-				if (strcmp (s, "CONFIGVALUE"))
+				s = Qedo::transcode (the_item->getNodeName());
+				if ( s != "CONFIGVALUE")
 				{
-					delete [] s;
 					continue;
 				}
-				delete [] s;
 
 				DOMElement* the_element = (DOMElement*)the_item;
 
-				s = XMLString::transcode (the_element->getAttribute(X("name")));
+				s = Qedo::transcode (the_element->getAttribute(X("name")));
 
 				if (tmp_name == s)
 				{
 					current_element = the_element;
-					delete [] s;
 					break;
 				}
 				else
 				{
 					current_element = 0;
-					delete [] s;
 					continue;
 				}
 			}
@@ -154,11 +150,9 @@ ConfigurationReader::lookup_config_value (const std::string& name)
 			if (! current_element)
 				return "";
 
-			s = XMLString::transcode (current_element->getAttribute(X("value")));
-			std::string x = s;
-			delete [] s;
+			s = Qedo::transcode (current_element->getAttribute(X("value")));
 
-			return x;
+			return s;
 		}
 		else
 		{
@@ -173,28 +167,25 @@ ConfigurationReader::lookup_config_value (const std::string& name)
 				DOMNode* the_item = section_list->item (i);
 
 				// Test whether we have a SECTION element, if not go to next element
-				char * s = XMLString::transcode (the_item->getNodeName());
+				std::string s = Qedo::transcode (the_item->getNodeName());
 
-				if (strcmp (s, "SECTION"))
+				if ( s != "SECTION")
 				{
-					delete [] s;
 					continue;
 				}
 
 				DOMElement* the_element = (DOMElement*)the_item;
 
-				s = XMLString::transcode (the_element->getAttribute(X("name")));
+				s = Qedo::transcode (the_element->getAttribute(X("name")));
 
 				if ( tmp_name == s )
 				{
 					current_element = the_element;
-					delete [] s;
 					break;
 				}
 				else
 				{
 					current_element = 0;
-					delete [] s;
 					continue;
 				}
 			}
