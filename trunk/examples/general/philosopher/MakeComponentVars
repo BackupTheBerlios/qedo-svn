@@ -1,6 +1,6 @@
 ##### Qedo Target Dir #####
 # The target dir of Qedo. After building Qedo it will be installed
-# into this directory 
+# into this directory
 QEDO = /home/boehme
 
 # operating system
@@ -21,7 +21,7 @@ SUFFIXES += .so
 # rule for shared libraries
 
 %.so:
-	${CXX} -shared ${LD_SHRAED_FLAGS} -o $@ $^ $(LIBS)
+	${CXX} -shared ${LD_SHARED_FLAGS} -o $@ $^ $(LIBS)
 
 CXXFLAGS += -I${QEDO}/include
 
