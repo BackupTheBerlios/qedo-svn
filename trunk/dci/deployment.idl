@@ -1106,6 +1106,72 @@ module DCI
 
 //===============================================
 
+	// Scripting
+
+  exception EvalError {};
+  exception ExecError {};
+  exception StopRule {};
+  exception InvalidLanguage {};
+
+  interface Script
+  {
+    readonly attribute string language;
+
+    attribute string code;
+    
+    boolean eval() raises (EvalError);
+    
+    void exec() raises (ExecError);
+    
+    void destroy();
+  };
+  
+  interface ScriptProcessor
+  {
+    readonly attribute string language;
+    
+    Script create_script(in string code, in CosNaming::NamingContext ctx);
+			 
+    boolean eval(in string code, in CosNaming::NamingContext ctx)
+      raises (EvalError);
+
+    void exec(in string code, in CosNaming::NamingContext ctx)
+      raises (ExecError);
+  };
+  
+  typedef sequence<string> languages;
+  
+  interface ScriptProcessorRegistry
+  {
+    ScriptProcessor get_processor(in string language) raises (InvalidLanguage);
+
+    void register_processor(in string language, in ScriptProcessor proc);
+
+    languages get_languages();
+  };
+
+  interface Rule
+  {
+    readonly attribute boolean active;
+    
+    void eval() raises (StopRule);
+  
+    void start();
+    
+    void stop();
+    
+    void destroy();
+  };
+  
+  interface RuleProcessor
+  {
+    Rule create_rule(in Script condition,
+                     in Script action,
+		     in long frequency);
+  };
+
+//===============================================
+
 	interface RepFeeder
     {
     	//to be used by DCIManager (install_with_archive() ...)
