@@ -27,6 +27,8 @@
 #include "wx/statbmp.h"
 #include "HelpFrame.h"
 #include "qedologo.xpm"
+#include "qedoicon.xpm"
+
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 	EVT_BUTTON(ID_HELP_BUTTON, MainFrame::onHelp)
@@ -37,6 +39,9 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
                  long style)
     : wxFrame((wxWindow *) NULL, -1, title, pos, size, style)
 {
+
+	// set icon
+	SetIcon(wxIcon(qedoicon_xpm));
 
 	panel_ = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize,
         wxTAB_TRAVERSAL | wxCLIP_CHILDREN | wxNO_BORDER);
