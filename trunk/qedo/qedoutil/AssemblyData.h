@@ -42,6 +42,34 @@ namespace Qedo {
  */
 
 
+/*
+ * data for a script
+ */
+struct ScriptData
+{
+	/** language */
+	std::string									language;
+	/** code */
+	std::string									code;
+};
+
+
+/*
+ * data for a dynamic reconfiguration rule
+ */
+struct RuleData
+{
+	/** name */
+	std::string									name;
+	/** interval */
+	long										interval;
+	/** naming service */
+	ScriptData									condition;
+	/** naming service */
+	ScriptData									action;
+};
+
+
 /**
  * kind of port
  */
@@ -75,6 +103,8 @@ struct ComponentInstanceData
 	std::string									comp_prop;
 	/** list of registrations */
 	std::vector< NamingRegistrationData >		naming_registrations;
+	/** list of rules */
+	std::vector< RuleData >						rules;
 };
 
 
@@ -111,6 +141,8 @@ struct HomeInstanceData
 	Components::Deployment::Container_var		container;
 	/** component data */
 	CompositionData								component;
+	/** list of rules */
+	std::vector< RuleData >						rules;
 };
 
 

@@ -47,12 +47,13 @@
 <!ELEMENT componentimplref EMPTY >
 <!ATTLIST componentimplref
      idref CDATA #REQUIRED >
-
+     
 <!ELEMENT componentinstantiation
      ( usagename?
      , componentproperties?
      , registercomponent*
      , extension*
+     , rule*
      ) >
 <!ATTLIST componentinstantiation
      id ID #REQUIRED >
@@ -194,6 +195,7 @@
      , componentinstantiation*
      , destination?
      , extension*
+     , rule*
      ) >
 <!ATTLIST homeplacement
      id          ID    #REQUIRED
@@ -361,3 +363,31 @@
        | findby
        )
      ) >
+
+<!-- EXTENSION FOR COACH -->
+<!ELEMENT scriptcode (#PCDATA) >
+     
+<!-- EXTENSION FOR COACH -->
+<!ELEMENT action
+     ( fileinarchive
+     | scriptcode
+     ) >
+<!ATTLIST action
+     language CDATA #REQUIRED >
+     
+<!-- EXTENSION FOR COACH -->
+<!ELEMENT condition
+     ( fileinarchive
+     | scriptcode
+     ) >
+<!ATTLIST condition
+     language CDATA #REQUIRED >
+     
+<!-- EXTENSION FOR COACH -->
+<!ELEMENT rule
+     ( condition?
+     , action
+     ) >
+<!ATTLIST rule
+     name CDATA #REQUIRED
+     interval CDATA #IMPLIED >

@@ -43,6 +43,56 @@ CADReader::~CADReader()
 }
 
 
+ScriptData 
+CADReader::action (DOMElement* element)
+throw(CADReadException)
+{
+	ScriptData data;
+	data.language = Qedo::transcode(element->getAttribute(X("language")));
+
+	std::string element_name;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// fileinarchive
+			//
+			if (element_name == "fileinarchive")
+			{
+				FileData file_data = fileinarchive( (DOMElement*)child );
+				std::ifstream file;
+				file.open( file_data.name.c_str() );
+				if (!file)
+				{
+					NORMAL_ERR2( "CADReader: cannot open file ", file_data.name );
+					throw CADReadException();
+				}
+				file >> data.code;
+				file.close();
+				// todo what to do with the extracted file?
+			}
+
+			//
+			// scriptcode
+			//
+			else if (element_name == "scriptcode")
+			{
+				data.code = scriptcode( (DOMElement*)child );
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	return data;
+}
+
+
 void
 CADReader::componentassembly (DOMElement* element)
 throw(CADReadException)
@@ -245,6 +295,14 @@ throw(CADReadException)
 			{
 				extension(elem);
 			}
+
+			//
+			// rule
+			//
+			else if (element_name == "rule")
+			{
+				data.rules.push_back( rule(elem) );
+			}
 		}
 
         // get next child
@@ -329,6 +387,56 @@ throw(CADReadException)
 			else if (element_name == "findby")
 			{
 				data = findby((DOMElement*)(child));
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	return data;
+}
+
+
+ScriptData 
+CADReader::condition (DOMElement* element)
+throw(CADReadException)
+{
+	ScriptData data;
+	data.language = Qedo::transcode(element->getAttribute(X("language")));
+
+	std::string element_name;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// fileinarchive
+			//
+			if (element_name == "fileinarchive")
+			{
+				FileData file_data = fileinarchive( (DOMElement*)child );
+				std::ifstream file;
+				file.open( file_data.name.c_str() );
+				if (!file)
+				{
+					NORMAL_ERR2( "CADReader: cannot open file ", file_data.name );
+					throw CADReadException();
+				}
+				file >> data.code;
+				file.close();
+				// todo what to do with the extracted file?
+			}
+
+			//
+			// scriptcode
+			//
+			else if (element_name == "scriptcode")
+			{
+				data.code = scriptcode( (DOMElement*)child );
 			}
 		}
 
@@ -1013,6 +1121,14 @@ throw(CADReadException)
 			{
 				extension((DOMElement*)child);
 			}
+
+			//
+			// rule
+			//
+			else if (element_name == "rule")
+			{
+				data.rules.push_back( rule((DOMElement*)child) );
+			}
 		}
 
         // get next child
@@ -1635,6 +1751,61 @@ throw(CADReadException)
 {
 	// todo more
 	return Qedo::transcode(element->getAttribute(X("tradername")));
+}
+
+
+RuleData 
+CADReader::rule (DOMElement* element)
+throw(CADReadException)
+{
+	RuleData data;
+	data.name = Qedo::transcode(element->getAttribute(X("name")));
+	data.interval = atol(Qedo::transcode(element->getAttribute(X("interval"))).c_str());
+
+	std::string element_name;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// condition
+			//
+			if (element_name == "condition")
+			{
+				data.condition = condition( (DOMElement*)child );
+			}
+
+			//
+			// action
+			//
+			else if (element_name == "action")
+			{
+				data.action = action( (DOMElement*)child );
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	return data;
+}
+
+
+std::string 
+CADReader::scriptcode (DOMElement* element)
+throw(CADReadException)
+{
+	std::string text = "";
+	DOMNode* node = element->getFirstChild();
+	if(node)
+	{
+		text = Qedo::transcode(node->getNodeValue());
+	}
+    return text;
 }
 
 

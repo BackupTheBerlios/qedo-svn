@@ -66,6 +66,12 @@ private:
 	std::string									path_;
 
 	/**
+	 * action
+	 */
+	ScriptData action (DOMElement*)
+		throw(CADReadException);
+
+	/**
 	 * componentassembly
 	 */
 	void componentassembly (DOMElement*)
@@ -117,6 +123,12 @@ private:
 	 * componentsupportedinterface
 	 */
 	ReferenceData componentsupportedinterface (DOMElement*)
+		throw(CADReadException);
+
+	/**
+	 * condition
+	 */
+	ScriptData condition (DOMElement*)
 		throw(CADReadException);
 
 	/**
@@ -316,6 +328,18 @@ private:
 	 * registerwithtrader
 	 */
 	std::string registerwithtrader (DOMElement*)
+        throw(CADReadException);
+
+	/**
+	 * rule
+	 */
+	RuleData rule (DOMElement*)
+        throw(CADReadException);
+
+	/**
+	 * scriptcode
+	 */
+	std::string scriptcode (DOMElement*)
         throw(CADReadException);
 
 	/**
