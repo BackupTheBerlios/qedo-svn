@@ -11,7 +11,8 @@ The package dining_philosophers_win_ob.zip deploys the example on win32 and ORBa
 Package content
 ======================================
 The assembly package is a zip file according to the CCM specification. It contains
-implementations of the dining philosopher components, as defined in the examples/general/philosopher example, plus a cad file for the definition of the component
+implementations of the dining philosopher components, as defined in the 
+examples/general/philosopher example, plus a cad file for the definition of the component
 assembly and cpf files for configuration of the CORBA component instances. The 
 implementation for each component, i.e. philosopher, cutlery and observer, is a zip
 package in turn, containing the implementation code as WIN32 dlls, a ccd file and
@@ -30,10 +31,10 @@ In order to deploy the assembly, the Qedo runtime has to be started on the local
 host, including
 
 1. name service
-2. ComponentServerActivator (csa)
-3. ComponentInstaller (ci)
-4. AssemblyFactory (assf).
+2. ComponentServerActivator (qcsa)
+3. ComponentInstaller (qci)
+4. AssemblyFactory (qassf).
 
 Afterwards the assembly can be deployed using the generic deployment client. The
-command "deploy -f dining_philosophers_win_xxx.zip" installs, starts and stops the dining 
-philosophers assembly.
+command "qdeploy -f dining_philosophers_win_xxx.zip" installs, starts and
+stops the dining philosophers assembly.
