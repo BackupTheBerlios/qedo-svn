@@ -32,8 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.25.2.3 2003/08/26 11:38:38 boehme Exp $";
-
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.25.2.4 2003/09/04 12:22:59 boehme Exp $";
 
 namespace Qedo {
 
@@ -77,18 +76,20 @@ HomeEntry::HomeEntry (const HomeEntry& home_entry)
 HomeEntry& 
 HomeEntry::operator= (const HomeEntry& home_entry)
 {
-	if (home_servant_)
-		home_servant_->_remove_ref();
+	if( &home_entry != this ) {
+		if (home_servant_)
+			home_servant_->_remove_ref();
 
-	home_servant_ = home_entry.home_servant_;
-	home_servant_->_add_ref();
+		home_servant_ = home_entry.home_servant_;
+		home_servant_->_add_ref();
 
-	if (home_cookie_) { home_cookie_->_remove_ref(); }
-	home_cookie_ = home_entry.home_cookie_;
-	if (home_cookie_) { home_cookie_->_add_ref(); }
+		if (home_cookie_) { home_cookie_->_remove_ref(); }
+		home_cookie_ = home_entry.home_cookie_;
+		if (home_cookie_) { home_cookie_->_add_ref(); }
 
-	servant_module_ = home_entry.servant_module_;
-	executor_module_ = home_entry.executor_module_;
+		servant_module_ = home_entry.servant_module_;
+		executor_module_ = home_entry.executor_module_;
+	}
 
 	return *this;
 }
@@ -141,6 +142,19 @@ ContainerInterfaceImpl::EventEntry::~EventEntry()
 }
 
 
+ContainerInterfaceImpl::EventEntry&
+ContainerInterfaceImpl::EventEntry::operator= (const ContainerInterfaceImpl::EventEntry& e)
+{
+	if( &e != this) {
+		CORBA::remove_ref (event_);
+		consumer_ = Components::EventConsumerBase::_duplicate(e.consumer_);
+		event_ = e.event_;
+		CORBA::add_ref(event_);
+	}
+
+	return *this;
+}
+
 void*
 ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 {
@@ -160,9 +174,12 @@ ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 			try {
 				e.consumer_->push_event(e.event_);
 			}
-			catch(const CORBA::Exception&)
+			catch(const CORBA::Exception& e)
 			{
 			   DEBUG_OUT("event_delivering: got CORBA exception");
+#ifdef MICO_ORB
+				e._print(std::cerr);
+#endif
 			}
 			catch(...)
 			{
@@ -175,6 +192,9 @@ ContainerInterfaceImpl::event_dispatcher_thread (void* data)
 		this_ptr->event_queue_cond_.wait(this_ptr->event_queue_mutex_);
 	} while(true);
 	// here hast to be checked for finalize of the thread
+
+	this_ptr->event_queue_mutex_.unlock_object();
+
 	return 0;
 }
 
@@ -279,8 +299,9 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
     }
 
 	// Start global event dispatcher thread
-	if (event_communication_mode_ == EVENT_COMMUNICATION_ASYNCHRONOUS)
+	if (event_communication_mode_ == EVENT_COMMUNICATION_ASYNCHRONOUS) {
 		qedo_startDetachedThread (event_dispatcher_thread, this);
+	}
 }
 
 
@@ -396,7 +417,7 @@ ContainerInterfaceImpl::queue_event
 		EventEntry entry(consumer,e);
 		event_list.push_back(entry);
 
-		//CORBA::remove_ref (e);
+		CORBA::remove_ref (e);
 
 		event_queue_cond_.signal();
 	}
@@ -423,7 +444,8 @@ ContainerInterfaceImpl::queue_event
 			event_list.push_back(entry);
 		}
 
-		//CORBA::remove_ref (e);
+
+		CORBA::remove_ref (e);
 
 		event_queue_cond_.signal();
 	}
