@@ -3,8 +3,8 @@ ProjectName=ComponentServer
 OutDir=Debug_orbacus_linux
 IntDir=Debug_orbacus_linux
 Name=Debug_orbacus_linux
-CFLAGS=-I../ComponentIDL -I../ComponentValuetypes -I../ComponentContainer -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -g
-CXXFLAGS=-I../ComponentIDL -I../ComponentValuetypes -I../ComponentContainer -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -g
+CFLAGS=-I../ComponentIDL -I../ComponentValuetypes -I../ComponentContainer -I../ComponentInstaller -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -g
+CXXFLAGS=-I../ComponentIDL -I../ComponentValuetypes -I../ComponentContainer -I../ComponentInstaller -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -g
 LIBS=-L$(ORBACUS)/lib -L../ComponentContainer/../../Runtime -L../ComponentIDL/../../Runtime -lCosNaming -lOB -ldl -lpthread -lComponentContainer -lComponentIDL
 
 $(IntDir)/%.o:%.cpp
@@ -17,11 +17,12 @@ CC=$(CXX)
 
 all:  ../../Runtime/cs 
 
-../../Runtime/cs : $(IntDir)/ComponentServerImpl.o $(IntDir)/NameServiceBase.o $(IntDir)/main.o 
+../../Runtime/cs : $(IntDir)/ComponentServerImpl.o $(IntDir)/../../ComponentInstaller/$(IntDir)/NameServiceBase.o $(IntDir)/ORBInitializerImpl.o $(IntDir)/main.o 
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 $(IntDir)/ComponentServerImpl.o:	ComponentServerImpl.cpp
-$(IntDir)/NameServiceBase.o:		../ComponentInstaller/NameServiceBase.cpp
+$(IntDir)/../../ComponentInstaller/NameServiceBase.o:		$(IntDir)/../../ComponentInstaller/NameServiceBase.cpp
+$(IntDir)/ORBInitializerImpl.o:					ORBInitializerImpl.cpp
 $(IntDir)/main.o:	main.cpp
 cidl:  
 idl:  cidl
