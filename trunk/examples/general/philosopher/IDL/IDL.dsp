@@ -60,11 +60,11 @@ LIB32=link.exe -lib
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "IDL___Win32_Debug"
-# PROP Intermediate_Dir "IDL___Win32_Debug"
+# PROP Output_Dir "IDL___Win32_Debug_vc6"
+# PROP Intermediate_Dir "IDL___Win32_Debug_vc6"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(QEDO)\ComponentIDL" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ  /c
+# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(QEDO)\ComponentIDL" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
 # ADD RSC /l 0x407 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -151,7 +151,7 @@ SOURCE=.\philosophers.cidl
 InputPath=.\philosophers.cidl
 
 "last_build_time;dinner_LOCAL.idl;dinner_EQUIVALENT.idl;dinner_BUSINESS.idl" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	$(QEDO)\bin\cidl_gen philosophers.cidl dinner 
+	$(QEDO)\bin\cidl_gen --target dinner philosophers.cidl 
 	time /T > last_build_time 
 	
 # End Custom Build
