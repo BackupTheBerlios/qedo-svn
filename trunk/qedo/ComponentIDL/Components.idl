@@ -603,7 +603,7 @@ module Components {
 		
 		interface AssemblyFactory
 		{
-			Cookie create(in Location assembly_loc)
+			Cookie create_assembly(in Location assembly_loc)
 				raises (InvalidLocation, CreateFailure);
 
 			Assembly lookup(in Cookie c)

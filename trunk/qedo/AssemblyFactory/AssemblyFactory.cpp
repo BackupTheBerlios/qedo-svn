@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.8 2003/05/09 10:42:40 neubauer Exp $";
+static char rcsid[] = "$Id: AssemblyFactory.cpp,v 1.9 2003/05/20 04:13:36 tom Exp $";
 
 
 #include "AssemblyFactory.h"
@@ -107,7 +107,7 @@ AssemblyFactoryImpl::initialize()
 
 
 Components::Cookie* 
-AssemblyFactoryImpl::create (const char* assembly_loc)
+AssemblyFactoryImpl::create_assembly (const char* assembly_loc)
 throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 {
 	std::cout << "..... creating new assembly for " << assembly_loc << std::endl;

@@ -95,7 +95,7 @@ public:
 	/**
      * implements IDL:omg.org/Components/Deployment/AssemblyFactory/create:1.0
      */
-    Components::Cookie* create(const char* assembly_loc)
+    Components::Cookie* create_assembly(const char* assembly_loc)
 		throw ( Components::Deployment::InvalidLocation, Components::CreateFailure );
 
     /**

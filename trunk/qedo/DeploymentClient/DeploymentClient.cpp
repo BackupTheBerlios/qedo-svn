@@ -88,7 +88,7 @@ DeploymentClient::create(std::string packageName)
 
 	try
 	{
-		cookie = assemblyFactory_->create(uri.c_str());
+		cookie = assemblyFactory_->create_assembly(uri.c_str());
 		assembly = assemblyFactory_->lookup(cookie);
 	}
 	catch( Components::Deployment::InvalidLocation& )
