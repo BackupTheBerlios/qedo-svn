@@ -53,6 +53,7 @@ SOURCES = cidl_gen.cpp \
 			GeneratorCSD.cpp \
 			GeneratorEIDL.cpp \
 			GeneratorLIDL.cpp \
+			GeneratorMakefile.cpp \
 			GeneratorServantC.cpp \
 			GeneratorServantH.cpp \
 			GeneratorVC7.cpp \

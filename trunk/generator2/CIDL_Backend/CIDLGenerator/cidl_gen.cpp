@@ -9,6 +9,7 @@
 #include "GeneratorServantH.h"
 #include "GeneratorServantC.h"
 #include "GeneratorVC7.h"
+#include "GeneratorMakefile.h"
 #include "GeneratorValuetypesH.h"
 #include "GeneratorValuetypesC.h"
 #include "TestMode.h"
@@ -44,6 +45,7 @@ printUsage()
 	std::cerr << "        [--servant|-s] : generate servant code" << std::endl;
 	std::cerr << "        --out <fileprefix> : idl files will be prefixed with fileprefix" << std::endl;
 	std::cerr << "        --vc7 : generate VC7 projects" << std::endl;
+	std::cerr << "        --mkfile : generate Makefiles" << std::endl;
 	std::cerr << "        -d : generate XML Descriptor skeletons" << std::endl;
 	std::cerr << "		  [--help|-h] : print this" << std::endl;
 }
@@ -127,6 +129,7 @@ main
 	bool generateBusiness = false;
 	bool generateServant = false;
 	bool generatevc7 = false;
+	bool generateMake = false;
 	bool generateDescriptors = false;
 	std::string target;
 	std::string fileprefix = "";
@@ -180,6 +183,15 @@ main
 		else if(strcmp(option, "--vc7") == 0)
 		{
 			generatevc7 = true;
+            
+            for(int j = i ; j + 1 < argc ; j++)
+                argv[j] = argv[j + 1];
+            
+            argc--;
+		}
+		else if(strcmp(option, "--mkfile") == 0)
+		{
+			generateMake = true;
             
             for(int j = i ; j + 1 < argc ; j++)
                 argv[j] = argv[j + 1];
@@ -345,6 +357,18 @@ main
 		vc7_generator->generate(target, fileprefix);
 		vc7_generator->destroy();
 	}
+
+	if(generateMake)
+	{
+		// generate Makefiles
+		std::cout << "Generating Makefiles for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorMakefile *makefile_generator =
+			new QEDO_CIDL_Generator::GeneratorMakefile(repository);
+		makefile_generator->target_file_name_ = target_file_name;
+		makefile_generator->generate(target, fileprefix);
+		makefile_generator->destroy();
+	}
+
 
 	signal ( SIGINT, SIG_DFL );
 
