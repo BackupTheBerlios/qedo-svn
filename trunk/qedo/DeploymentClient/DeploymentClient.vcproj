@@ -255,18 +255,12 @@ copy $(TargetPath) $(QEDO)\bin
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="DeploymentClient.cpp">
-			</File>
-			<File
 				RelativePath="qdeploy.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
-			<File
-				RelativePath="DeploymentClient.h">
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
