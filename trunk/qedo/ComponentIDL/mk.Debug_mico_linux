@@ -7,7 +7,7 @@ IntDir=./Debug_mico_linux
 Name=Debug_mico_linux
 CFLAGS=-I. -I$(MICO)/include -g
 CXXFLAGS=-I. -I$(MICO)/include -g
-LIBS=-L$(MICO)/lib -lpthread -lmico2.3.9 
+LIBS=-L$(MICO)/lib -lpthread -lmico$(MICO_VERSION) 
 
 $(IntDir)/%.o:%.cpp
 	$(COMPILE.cc) $(OUTPUT_OPTION) $<

@@ -38,7 +38,7 @@ namespace Qedo {
 
 	class ServerInterceptorDispatcher : 
 		public PortableInterceptor::ServerRequestInterceptor,
-		public CORBA::LocalObject
+		public virtual CORBA::LocalObject
 	{
 
 	public:

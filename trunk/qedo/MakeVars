@@ -9,6 +9,7 @@ ORB = MICO_ORB
 
 # MICO
 MICO = /opt/mico/
+MICO_VERSION = 2.3.10
 
 # ORBACUS
 ORBACUS = /opt/OOC
@@ -20,7 +21,7 @@ Debug = yes
 
 # Xerces - XML handling
 # 
-XERCES = /home/ritter/Documents/xerces-c-src2_1_0
+XERCES = /home/tri/devel/xerces-c-src2_1_0
 
 # ZLib - Zip File handling
 ZLIB = /home/tri/devel/zlib-1.1.4

@@ -7,7 +7,7 @@ IntDir=./Debug_mico_linux
 Name=Debug_mico_linux
 CFLAGS=- -I. -I../ComponentIDL -I../ComponentValuetypes -I$(MICO)/include -I$(MICO)/include/coss -g -DMICO_ORB
 CXXFLAGS= -I. -I../ComponentIDL -I../ComponentValuetypes -I$(MICO)/include -I$(MICO)/include/coss -g -DMICO_ORB
-LIBS=-L$(MICO)/lib -L../ComponentIDL  -lpthread -lmico2.3.9 -lComponentIDL -luuid 
+LIBS=-L$(MICO)/lib -L../ComponentIDL  -lpthread -lmico$(MICO_VERSION) -lComponentIDL -luuid 
 
 $(IntDir)/%.o:%.cpp
 	$(COMPILE.cc) $(OUTPUT_OPTION) $<

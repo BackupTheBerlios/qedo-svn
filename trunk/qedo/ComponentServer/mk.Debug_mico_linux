@@ -19,7 +19,7 @@ CC=$(CXX)
 
 all:  cs 
 
-cs : $(IntDir)/ComponentServerImpl.o $(IntDir)/../../ComponentInstaller/$(IntDir)/NameServiceBase.o $(IntDir)/ORBInitializerImpl.o $(IntDir)/ServerInterceptorDispatcher.o $(IntDir)/ClientInterceptorDispatcher $(IntDir)/main.o 
+cs : $(IntDir)/ComponentServerImpl.o $(IntDir)/../../ComponentInstaller/$(IntDir)/NameServiceBase.o $(IntDir)/ORBInitializerImpl.o $(IntDir)/ServerInterceptorDispatcher.o $(IntDir)/ClientInterceptorDispatcher.o $(IntDir)/main.o 
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 $(IntDir)/ComponentServerImpl.o:	ComponentServerImpl.cpp
