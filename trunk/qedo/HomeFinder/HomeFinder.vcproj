@@ -125,7 +125,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="obd.lib jtcd.lib CosNamingd.lib"
-				OutputFile="../../Runtime/HomeFinder.exe"
+				OutputFile="$(QEDO)/bin/HomeFinder.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
@@ -171,7 +171,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="mico239.lib micocoss239.lib wsock32.lib"
-				OutputFile="../../Runtime/HomeFinder.exe"
+				OutputFile="$(QEDO)/bin/HomeFinder.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib;$(MICO)/coss"
 				GenerateDebugInformation="TRUE"

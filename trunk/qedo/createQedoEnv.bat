@@ -4,6 +4,10 @@ if not "%qedo%" == "" goto START
 echo ************ Please set first the QEDO Environment variable to the target path!
 goto ENDSETUP
 :START
+rem Goto rootdir
+%~d0
+cd %~p0
+
 echo ************ Start Setup.
 set actdir=%qedo%
 echo ************ Create QEDO Root-Directory at %actdir%...

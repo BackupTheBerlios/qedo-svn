@@ -161,7 +161,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="obd.lib odbc32.lib odbccp32.lib"
-				OutputFile="../../Runtime/ComponentIDL.dll"
+				OutputFile="$(QEDO)/bin/ComponentIDL.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib"
@@ -177,7 +177,13 @@
 				TargetEnvironment="1"
 				TypeLibraryName=".\Debug/ComponentIDL.tlb"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Distribution"
+				CommandLine="mkdir $(QEDO)\include
+copy *.h $(QEDO)\include
+copy *.def $(QEDO)\include
+mkdir $(QEDO)\lib
+copy $(OutDir)\$(TargetName).lib $(QEDO)\lib"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -224,7 +230,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib mico239.lib"
-				OutputFile="../../Runtime/ComponentIDL.dll"
+				OutputFile="$(QEDO)/bin/ComponentIDL.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(MICO)\win32-bin\lib"
@@ -240,7 +246,13 @@
 				TargetEnvironment="1"
 				TypeLibraryName=".\Debug/ComponentIDL.tlb"/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				Description="Distribution"
+				CommandLine="mkdir $(QEDO)\include
+copy *.h $(QEDO)\include
+copy *.def $(QEDO)\include
+mkdir $(QEDO)\lib
+copy $(OutDir)\$(TargetName).lib $(QEDO)\lib"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

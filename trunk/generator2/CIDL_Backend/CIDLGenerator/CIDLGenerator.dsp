@@ -109,9 +109,10 @@ LINK32=link.exe
 # ADD BASE LINK32 CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib mico236.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"$(enagoCCM)\bin\cidl_gen.exe" /pdbtype:sept /libpath:"..\..\CIDL_Frontend\CIDLFrontendLib" /libpath:"..\..\CIDL_Repository\IFRidl" /libpath:"..\..\CIDL_Repository\ComponentRepositoryLib" /libpath:"..\..\CIDL_Repository\CIDLRepositoryLib" /libpath:"$(MICO)\win32-bin\lib"
 # ADD LINK32 CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib obd.lib jtcd.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"cidl_gen.exe" /pdbtype:sept /libpath:"..\..\CIDL_Frontend\CIDLFrontendLib" /libpath:"..\..\CIDL_Repository\IFRidl" /libpath:"..\..\CIDL_Repository\ComponentRepositoryLib" /libpath:"..\..\CIDL_Repository\CIDLRepositoryLib" /libpath:"$(ORBACUS)\lib"
 # Begin Special Build Tool
+OutDir=.\CIDLGenerator___Win32_Debug_orbacus_vc6
 SOURCE="$(InputPath)"
 PostBuild_Desc=Distribution
-PostBuild_Cmds=mkdir            $(QEDO)\bin           	copy            cidl_gen.exe            $(QEDO)\bin\ 
+PostBuild_Cmds=mkdir $(QEDO)\bin           	copy $(OutDir)\$(TargetFileName) $(QEDO)\bin
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "CIDLGenerator - Win32 Debug_tao"
@@ -141,9 +142,10 @@ LINK32=link.exe
 # ADD LINK32 CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_TypeCodeFactoryd.lib /nologo /subsystem:console /debug /machine:I386 /out:"cidl_gen.exe" /pdbtype:sept /libpath:"..\..\CIDL_Frontend\CIDLFrontendLib" /libpath:"..\..\CIDL_Repository\IFRidl" /libpath:"..\..\CIDL_Repository\ComponentRepositoryLib" /libpath:"..\..\CIDL_Repository\CIDLRepositoryLib" /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\Tao\tao\TypeCodeFactory"
 # SUBTRACT LINK32 /nodefaultlib
 # Begin Special Build Tool
+OutDir=.\CIDLGenerator___Win32_Debug_tao
 SOURCE="$(InputPath)"
 PostBuild_Desc=Distribution
-PostBuild_Cmds=mkdir $(QEDO)\bin    	copy cidl_gen.exe $(QEDO)\bin    
+PostBuild_Cmds=mkdir $(QEDO)\bin    	copy $(OutDir)\$(TargetFileName) $(QEDO)\bin
 # End Special Build Tool
 
 !ENDIF 
