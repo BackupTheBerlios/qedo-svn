@@ -28,6 +28,16 @@
 
 module Qedo_Components {
 
+	interface HomeFinder : Components::HomeFinder
+	{
+		Components::Cookie register_home(in Components::CCMHome ahome, 
+										 in CORBA::RepositoryId comp_repid, 
+										 in CORBA::RepositoryId home_repid, 
+										 in string home_name);
+
+		void unregister_home(in Components::Cookie ahome);
+	};
+
 	module Deployment {
 
 		interface ServerActivator : Components::Deployment::ServerActivator
