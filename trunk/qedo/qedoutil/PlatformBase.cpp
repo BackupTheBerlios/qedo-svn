@@ -29,7 +29,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.12 2003/09/21 07:37:52 tom Exp $";
+static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.13 2003/09/26 08:28:41 neubauer Exp $";
 
 
 namespace Qedo {
@@ -48,26 +48,6 @@ PlatformBase::PlatformBase ()
  */
 PlatformBase::~PlatformBase ()
 {
-}
-
-
-/**
- *
- */
-std::string 
-PlatformBase::getCurrentDirectory () 
-{
-    char path[1024];
-#ifdef _WIN32
-    GetCurrentDirectory(1024, path);
-#else
-    if(!getcwd(path,1023))
-    {
-        perror("css");
-        assert(0);
-    }
-#endif
-    return std::string(path);
 }
 
 
@@ -175,51 +155,6 @@ PlatformBase::removeFileOrDirectory(std::string object)
 }
 
 
-int 
-PlatformBase::copyFile(std::string src, std::string dst)
-{
-#ifdef _WIN32
-	return CopyFile(src.c_str(), dst.c_str(), false);
-#else
-	int buf[1024];
-	size_t bytes_read;
-	int source, dest;
-
-	source = open(src.c_str(), O_RDONLY, 0);
-	dest = creat(dst.c_str(), 0700);   /* stat first to prevent overwriting existing */
-
-	while((bytes_read= read(source, buf, 1024)) > 0)
-		write(dest, buf, bytes_read);
-
-	close(dest);
-	close(source);
-	return 0;
-#endif
-}
-
-
-int 
-PlatformBase::moveFile(std::string source, std::string dest)
-{
-	return rename( source.c_str(), dest.c_str() );
-}
-
-
-std::string 
-PlatformBase::getFileName(std::string source)
-{
-	std::string::size_type pos = source.find_last_of("/\\:");
-	if(pos != std::string::npos)
-	{
-		return source.substr(pos + 1, std::string::npos);
-	}
-	else
-	{
-		return source;
-	}
-}
-
-
 /**
  *
  */
@@ -271,31 +206,6 @@ PlatformBase::checkExistence(std::string object, int type)
 	}
     
 	return false;
-}
-
-
-/**
- *
- */
-std::string
-PlatformBase::getPath(std::string path)
-{
-    std::string new_path = path;
-
-    // insert delimiter
-#ifdef _WIN32
-	if (new_path[new_path.length() - 1] != '\\')
-	{
-		return new_path.append("\\");
-	}
-#else
-	if (new_path[new_path.length() - 1] != '/')
-	{
-		return new_path.append("/");
-	}
-#endif
-
-	return path;
 }
 
 }

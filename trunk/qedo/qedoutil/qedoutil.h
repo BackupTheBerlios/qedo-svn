@@ -25,6 +25,10 @@
 
 
 #include <CORBA.h>
+#include <string>
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 
 #ifdef _WIN32
@@ -60,6 +64,58 @@
  * @{
  */
 
+
+namespace Qedo {
+
+/**
+ * get the value of the environment variable
+ * \param name The environment variable.
+ */
+QEDOUTIL_API
+std::string
+getEnvironment(std::string name);
+
+
+/**
+ * get the current directory
+ */
+QEDOUTIL_API
+std::string 
+getCurrentDirectory();
+
+
+/**
+ * copy file
+ */
+QEDOUTIL_API
+int 
+copyFile(std::string src, std::string dst);
+
+
+/**
+ * move file
+ */
+QEDOUTIL_API
+int
+moveFile(std::string source, std::string dest);
+
+
+/**
+ * get the name of the file without path
+ */
+QEDOUTIL_API
+std::string 
+getFileName(std::string source);
+
+
+/**
+ * appends the right path delimiter
+ */
+QEDOUTIL_API
+std::string 
+getPath(std::string source);
+
+}
 
 /** @} */
 

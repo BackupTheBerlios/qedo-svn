@@ -59,9 +59,6 @@ class QEDOUTIL_API PlatformBase
 protected:
 	PlatformBase();
 
-	// Returns the string corresponding to the current directory.
-	std::string getCurrentDirectory (); 
-	
 	// Makes the directory whose pathname is specified by the string parameter.
 	// The return value is 1 if the object already exists, 2 if there is a problem creating it and 0 else.
 	int makeDir (std::string); 
@@ -72,16 +69,6 @@ protected:
 	// This function removes the object whose pathname is specified by the string parameter.
 	// The returned value is 0 if the object to destroy exists, 1 else.
 	int removeFileOrDirectory (std::string);
-
-	int copyFile(std::string, std::string);
-
-	int moveFile(std::string, std::string);
-
-    // appends the right path delimiter
-	std::string getPath (std::string);
-
-	// get the name of the file without path
-	std::string getFileName(std::string);
 
 public:
     virtual ~PlatformBase();
