@@ -55,7 +55,7 @@
 
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.23 2003/11/28 14:11:50 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.24 2003/12/16 13:40:22 stoinski Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -376,7 +376,8 @@ main (int argc, char** argv)
 	delete signal_thread;
 #endif // HAVE_LIBPTHREAD
 
-	delete server_activator;
+	server_activator->_remove_ref();
+
 	return 0;
 }
 
