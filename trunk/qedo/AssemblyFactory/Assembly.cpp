@@ -954,6 +954,14 @@ throw( Components::RemoveFailure )
 				{
 					DEBUG_OUT(".......... remove failure");
 				}
+				catch (CORBA::Exception& e)
+				{
+					DEBUG_OUT2(".......... EXCEPTION DURING removal of home ", (*home_iter).id);
+#ifdef MICO_ORB
+					e._print (std::cerr);
+					std::cerr << std::endl;
+#endif
+				}
 
 				// remove container
 				DEBUG_OUT( "..... remove container" );
@@ -964,6 +972,14 @@ throw( Components::RemoveFailure )
 				catch (Components::RemoveFailure)
 				{
 					DEBUG_OUT(".......... remove failure");
+				}
+				catch (CORBA::Exception& e)
+				{
+					DEBUG_OUT(".......... EXCEPTION DURING removal of container");
+#ifdef MICO_ORB
+					e._print (std::cerr);
+					std::cerr << std::endl;
+#endif
 				}
 			}
 
@@ -976,6 +992,14 @@ throw( Components::RemoveFailure )
 			catch (Components::RemoveFailure)
 			{
 				DEBUG_OUT(".......... remove failure");
+			}
+			catch (CORBA::Exception& e)
+			{
+				DEBUG_OUT(".......... EXCEPTION DURING removal of container");
+#ifdef MICO_ORB
+				e._print (std::cerr);
+				std::cerr << std::endl;
+#endif
 			}
 		}
 	}
