@@ -588,9 +588,29 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection(class_name_ + "::configuration_complete", 0);
 	out << "}\n\n\n";
 
-	// set session context
+	// set context
 	out << "void\n";
-	out << class_name_ << "::set_session_context(::Components::SessionContext_ptr context)\n";
+	//
+	// determin the lifecycle
+	//
+	CIDL::LifecycleCategory lc = composition->lifecycle();
+	switch(lc) {
+		case (CIDL::lc_Session) : 
+			{
+				out << class_name_ << "::set_session_context(::Components::SessionContext_ptr context)\n";
+				break;
+			}
+		case (CIDL::lc_Extension) :
+			{
+				out << class_name_ << "::set_extension_context(::Components::ExtensionContext_ptr context)\n";
+				break;
+			}
+		default:
+			{
+				//unsupported lifecycle category
+			}
+	}
+
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.indent();
 	out << "#ifdef TAO_ORB\n";

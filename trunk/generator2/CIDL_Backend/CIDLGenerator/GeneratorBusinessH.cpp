@@ -464,15 +464,33 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "class " << executor_locator_class_name << "\n";
 	out.indent();
 	out << ": public virtual CORBA::LocalObject\n";
-	// for service extension
-	if(composition->lifecycle() == 0)
-	{
-		out << ", public virtual Components::CCMService\n";
-	}
-	else
-	{
-		out << ", public virtual Components::SessionExecutorLocator\n";
-	}
+	//
+	// determin the lifecycle
+	//
+	CIDL::LifecycleCategory lc = composition->lifecycle();
+	switch(lc) {
+		case (CIDL::lc_Service) :
+			{
+				// this is a prelimenary version of container service
+				out << ", public virtual Components::CCMService\n";
+
+			}
+		case (CIDL::lc_Session) : 
+			{
+				out << ", public virtual Components::SessionExecutorLocator\n";
+				break;
+			}
+		case (CIDL::lc_Extension) :
+			{
+				out << ", public virtual Components::ExtensionExecutorLocator\n";
+				break;
+			}
+		default:
+			{
+				//unsupported lifecycle category
+			}
+		}
+
 	out.unindent(); out.unindent();
 	out << "#ifndef MICO_ORB\n";
 	out.indent(); out.indent();
@@ -497,15 +515,29 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
     out << executor_locator_class_name << "();\n";
     out << "virtual ~" << executor_locator_class_name << "();\n\n";
 	IR__::InterfaceDef_ptr executor_locator;
-	// for service extension
-	if(composition->lifecycle() == 0)
-	{
-		executor_locator = IR__::InterfaceDef::_narrow(repository_->lookup_id("IDL:Components/CCMService:1.0"));
+	switch(lc) {
+		case (CIDL::lc_Service) :
+			{
+				//prelimenary version of container services
+				executor_locator = IR__::InterfaceDef::_narrow(repository_->lookup_id("IDL:Components/CCMService:1.0"));
+				break;
+			}
+		case (CIDL::lc_Session) : 
+			{
+				executor_locator = IR__::InterfaceDef::_narrow(repository_->lookup_id("IDL:Components/SessionExecutorLocator:1.0"));
+				break;
+			}
+		case (CIDL::lc_Extension) :
+			{
+				executor_locator = IR__::InterfaceDef::_narrow(repository_->lookup_id("IDL:Components/ExtensionExecutorLocator:1.0"));
+				break;
+			}
+		default:
+			{
+				//unsupported lifecycle category
+			}
 	}
-	else
-	{
-		executor_locator = IR__::InterfaceDef::_narrow(repository_->lookup_id("IDL:Components/SessionExecutorLocator:1.0"));
-	}
+
 	doInterface(executor_locator);
 	out.unindent();
 	out << "\n";
