@@ -244,7 +244,6 @@ PhilosopherSessionImpl::run()
 
 
 PhilosopherSessionImpl::PhilosopherSessionImpl()
-: ref_count_ (1)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::PhilosopherSessionImpl
 	my_thread_handle_ = this;
@@ -258,31 +257,7 @@ PhilosopherSessionImpl::~PhilosopherSessionImpl()
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::~PhilosopherSessionImpl
 	cout << "PhilosopherSessionImpl: Destructor called" << endl;
 // END USER INSERT SECTION PhilosopherSessionImpl::~PhilosopherSessionImpl
-assert (ref_count_ == 0);
-}
 
-
-void
-PhilosopherSessionImpl::_add_ref()
-{
-    ++ref_count_;
-}
-
-
-void
-PhilosopherSessionImpl::_remove_ref()
-{
-    if (--ref_count_ == 0)
-    {
-        delete this;
-    }
-}
-
-
-unsigned long
-PhilosopherSessionImpl::_get_refcount()
-{
-    return ref_count_;
 }
 
 
@@ -315,6 +290,7 @@ PhilosopherSessionImpl::remove()
 
 void
 PhilosopherSessionImpl::thinking_seconds(CORBA::ULong param)
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::_thinking_seconds
 	tsec_ = param;
@@ -324,6 +300,7 @@ PhilosopherSessionImpl::thinking_seconds(CORBA::ULong param)
 
 CORBA::ULong
 PhilosopherSessionImpl::thinking_seconds()
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::thinking_seconds
 	return tsec_;
@@ -333,6 +310,7 @@ PhilosopherSessionImpl::thinking_seconds()
 
 void
 PhilosopherSessionImpl::eating_seconds(CORBA::ULong param)
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::_eating_seconds
 	esec_ = param;
@@ -342,6 +320,7 @@ PhilosopherSessionImpl::eating_seconds(CORBA::ULong param)
 
 CORBA::ULong
 PhilosopherSessionImpl::eating_seconds()
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::eating_seconds
 	return esec_;
@@ -351,6 +330,7 @@ PhilosopherSessionImpl::eating_seconds()
 
 void
 PhilosopherSessionImpl::sleeping_seconds(CORBA::ULong param)
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::_sleeping_seconds
 	ssec_ = param;
@@ -360,6 +340,7 @@ PhilosopherSessionImpl::sleeping_seconds(CORBA::ULong param)
 
 CORBA::ULong
 PhilosopherSessionImpl::sleeping_seconds()
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::sleeping_seconds
 	return ssec_;
@@ -369,6 +350,7 @@ PhilosopherSessionImpl::sleeping_seconds()
 
 void
 PhilosopherSessionImpl::name(const char* param)
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::_name
 	cout << "PhilosopherSessionImpl: Name set to " << param << endl;
@@ -380,6 +362,7 @@ PhilosopherSessionImpl::name(const char* param)
 
 char*
 PhilosopherSessionImpl::name()
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::name
 	cout << "PhilosopherSessionImpl: Name is " << id_.c_str() << endl;
@@ -394,8 +377,7 @@ PhilosopherSessionImpl::name()
 
 
 PhilosopherImpl::PhilosopherImpl()
-: ref_count_ (1)
-, component_(new PhilosopherSessionImpl())
+:component_(new PhilosopherSessionImpl())
 {
 // BEGIN USER INSERT SECTION PhilosopherImpl::PhilosopherImpl
 // END USER INSERT SECTION PhilosopherImpl::PhilosopherImpl
@@ -404,36 +386,11 @@ PhilosopherImpl::PhilosopherImpl()
 
 PhilosopherImpl::~PhilosopherImpl()
 {
-    component_->_remove_ref();
-
 // BEGIN USER INSERT SECTION PhilosopherImpl::~PhilosopherImpl
 	cout << "PhilosopherImpl: Destructor called" << endl;
 // END USER INSERT SECTION PhilosopherImpl::~PhilosopherImpl
-assert (ref_count_ == 0);
-}
 
-
-void
-PhilosopherImpl::_add_ref()
-{
-    ++ref_count_;
-}
-
-
-void
-PhilosopherImpl::_remove_ref()
-{
-    if (--ref_count_ == 0)
-    {
-        delete this;
-    }
-}
-
-
-unsigned long
-PhilosopherImpl::_get_refcount()
-{
-    return ref_count_;
+    component_->_remove_ref();
 }
 
 
@@ -472,8 +429,20 @@ void
 PhilosopherImpl::set_session_context(::Components::SessionContext_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = dynamic_cast<::dinner::CCM_Philosopher_Context*>(context);
+    #ifdef TAO_ORB
+    ::dinner::CCM_Philosopher_Context_ptr tmp_context;
     
+    tmp_context = dynamic_cast<::dinner::CCM_Philosopher_Context*>(context);
+    
+    if (tmp_context)
+        context_ = ::dinner::CCM_Philosopher_Context::_duplicate(tmp_context);
+    else
+        context_ = ::dinner::CCM_Philosopher_Context::_nil();
+        
+    #else
+    context_ = ::dinner::CCM_Philosopher_Context::_duplicate(::dinner::CCM_Philosopher_Context::_narrow(context));
+    
+    #endif
     component_->set_context(context_);
 }
 
@@ -513,7 +482,6 @@ PhilosopherImpl::ccm_remove()
 
 
 PhilosopherHomeImpl::PhilosopherHomeImpl()
-: ref_count_ (1)
 {
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl::PhilosopherHomeImpl
 // END USER INSERT SECTION PhilosopherHomeImpl::PhilosopherHomeImpl
@@ -525,31 +493,7 @@ PhilosopherHomeImpl::~PhilosopherHomeImpl()
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl::~PhilosopherHomeImpl
 	cout << "PhilosopherHomeImpl: Destructor called" << endl;
 // END USER INSERT SECTION PhilosopherHomeImpl::~PhilosopherHomeImpl
-assert (ref_count_ == 0);
-}
 
-
-void
-PhilosopherHomeImpl::_add_ref()
-{
-    ++ref_count_;
-}
-
-
-void
-PhilosopherHomeImpl::_remove_ref()
-{
-    if (--ref_count_ == 0)
-    {
-        delete this;
-    }
-}
-
-
-unsigned long
-PhilosopherHomeImpl::_get_refcount()
-{
-    return ref_count_;
 }
 
 

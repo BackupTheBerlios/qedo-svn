@@ -46,8 +46,8 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="wzzip.exe &quot;%QEDO%\..\runtime\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
-				ReBuildCommandLine="wzzip.exe &quot;%QEDO%\..\runtime\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
+				BuildCommandLine="wzzip.exe &quot;%QEDO%\bin\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
+				ReBuildCommandLine="wzzip.exe &quot;%QEDO%\bin\dinner.zip&quot; ..\ExecutorModule\philosopher.zip ..\ExecutorModule\cutlery.zip ..\ExecutorModule\observer.zip philosophers.cad atze.cpf bob.cpf charly.cpf"
 				Output="must_be_here_to_force_generation"/>
 		</Configuration>
 		<Configuration

@@ -21,7 +21,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".,$(QEDO)/ComponentIDL,$(ORBACUS)\include,$(ORBACUS)\include\OB,../IDL"
+				AdditionalIncludeDirectories=".,$(QEDO)/include,$(ORBACUS)\include,$(ORBACUS)\include\OB,../IDL"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;_USRDLL;EXECUTORMODULE_EXPORTS;VC6;OBSERVER_WITH_GUI;HAVE_JTC"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -40,11 +40,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib"
-				OutputFile="../../../../Runtime/philosopher_omgE.dll"
+				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib ComponentContainer.lib"
+				OutputFile="$(QEDO)\bin\philosopher_omgE.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(QEDO)/ComponentIDL/Debug&quot;;&quot;$(ORBACUS)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(QEDO)/lib&quot;;&quot;$(ORBACUS)\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\ExecutorModule___Win32_Debug_vc6/philosopher_omgE.pdb"
 				ImportLibrary=".\ExecutorModule___Win32_Debug_vc6/philosopher_omgE.lib"/>

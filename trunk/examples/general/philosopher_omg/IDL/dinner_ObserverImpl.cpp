@@ -90,6 +90,7 @@ ObserverSessionImpl::~ObserverSessionImpl()
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::~ObserverSessionImpl
 // END USER INSERT SECTION ObserverSessionImpl::~ObserverSessionImpl
+
 }
 
 
@@ -199,7 +200,7 @@ ObserverSessionImpl::push_StatusInfo(::DiningPhilosophers::StatusInfo* ev)
 
 
 ObserverImpl::ObserverImpl()
-    : component_(new ObserverSessionImpl())
+:component_(new ObserverSessionImpl())
 {
 // BEGIN USER INSERT SECTION ObserverImpl::ObserverImpl
     component_executor_ = 0;
@@ -209,10 +210,10 @@ ObserverImpl::ObserverImpl()
 
 ObserverImpl::~ObserverImpl()
 {
-    component_->_remove_ref();
-
 // BEGIN USER INSERT SECTION ObserverImpl::~ObserverImpl
 // END USER INSERT SECTION ObserverImpl::~ObserverImpl
+
+    component_->_remove_ref();
 }
 
 
@@ -253,8 +254,20 @@ void
 ObserverImpl::set_session_context(::Components::SessionContext_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::DiningPhilosophers::CCM_Observer_Context::_narrow(context);
+    #ifdef TAO_ORB
+    ::DiningPhilosophers::CCM_Observer_Context_ptr tmp_context;
     
+    tmp_context = dynamic_cast<::DiningPhilosophers::CCM_Observer_Context*>(context);
+    
+    if (tmp_context)
+        context_ = ::DiningPhilosophers::CCM_Observer_Context::_duplicate(tmp_context);
+    else
+        context_ = ::DiningPhilosophers::CCM_Observer_Context::_nil();
+        
+    #else
+    context_ = ::DiningPhilosophers::CCM_Observer_Context::_duplicate(::DiningPhilosophers::CCM_Observer_Context::_narrow(context));
+    
+    #endif
     component_->set_context(context_);
 }
 
@@ -301,6 +314,7 @@ ObserverHomeImpl::~ObserverHomeImpl()
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::~ObserverHomeImpl
 // END USER INSERT SECTION ObserverHomeImpl::~ObserverHomeImpl
+
 }
 
 
@@ -308,7 +322,7 @@ void
 ObserverHomeImpl::set_context(Components::CCMContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::DiningPhilosophers::CCM_Observer_Context::_narrow(ctx);
+    context_ = Components::CCMContext::_duplicate(ctx);
 }
 
 

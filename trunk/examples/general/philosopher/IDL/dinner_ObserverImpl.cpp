@@ -23,7 +23,6 @@ namespace dinner {
 
 
 ObserverSessionImpl::ObserverSessionImpl()
-: ref_count_ (1)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::ObserverSessionImpl
 // END USER INSERT SECTION ObserverSessionImpl::ObserverSessionImpl
@@ -35,31 +34,7 @@ ObserverSessionImpl::~ObserverSessionImpl()
 // BEGIN USER INSERT SECTION ObserverSessionImpl::~ObserverSessionImpl
 	cout << "ObserverSessionImpl: Destructor called" << endl;
 // END USER INSERT SECTION ObserverSessionImpl::~ObserverSessionImpl
-assert (ref_count_ == 0);
-}
 
-
-void
-ObserverSessionImpl::_add_ref()
-{
-    ++ref_count_;
-}
-
-
-void
-ObserverSessionImpl::_remove_ref()
-{
-    if (--ref_count_ == 0)
-    {
-        delete this;
-    }
-}
-
-
-unsigned long
-ObserverSessionImpl::_get_refcount()
-{
-    return ref_count_;
 }
 
 
@@ -142,8 +117,7 @@ ObserverSessionImpl::push_PhilosopherState(::dinner::PhilosopherState* ev)
 
 
 ObserverImpl::ObserverImpl()
-: ref_count_ (1)
-, component_(new ObserverSessionImpl())
+:component_(new ObserverSessionImpl())
 {
 // BEGIN USER INSERT SECTION ObserverImpl::ObserverImpl
 // END USER INSERT SECTION ObserverImpl::ObserverImpl
@@ -152,36 +126,11 @@ ObserverImpl::ObserverImpl()
 
 ObserverImpl::~ObserverImpl()
 {
-    component_->_remove_ref();
-
 // BEGIN USER INSERT SECTION ObserverImpl::~ObserverImpl
 	cout << "ObserverImpl: Destructor called" << endl;
 // END USER INSERT SECTION ObserverImpl::~ObserverImpl
-assert (ref_count_ == 0);
-}
 
-
-void
-ObserverImpl::_add_ref()
-{
-    ++ref_count_;
-}
-
-
-void
-ObserverImpl::_remove_ref()
-{
-    if (--ref_count_ == 0)
-    {
-        delete this;
-    }
-}
-
-
-unsigned long
-ObserverImpl::_get_refcount()
-{
-    return ref_count_;
+    component_->_remove_ref();
 }
 
 
@@ -220,8 +169,20 @@ void
 ObserverImpl::set_session_context(::Components::SessionContext_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = dynamic_cast<::dinner::CCM_Observer_Context*>(context);
+    #ifdef TAO_ORB
+    ::dinner::CCM_Observer_Context_ptr tmp_context;
     
+    tmp_context = dynamic_cast<::dinner::CCM_Observer_Context*>(context);
+    
+    if (tmp_context)
+        context_ = ::dinner::CCM_Observer_Context::_duplicate(tmp_context);
+    else
+        context_ = ::dinner::CCM_Observer_Context::_nil();
+        
+    #else
+    context_ = ::dinner::CCM_Observer_Context::_duplicate(::dinner::CCM_Observer_Context::_narrow(context));
+    
+    #endif
     component_->set_context(context_);
 }
 
@@ -261,7 +222,6 @@ ObserverImpl::ccm_remove()
 
 
 ObserverHomeImpl::ObserverHomeImpl()
-: ref_count_ (1)
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::ObserverHomeImpl
 // END USER INSERT SECTION ObserverHomeImpl::ObserverHomeImpl
@@ -273,31 +233,7 @@ ObserverHomeImpl::~ObserverHomeImpl()
 // BEGIN USER INSERT SECTION ObserverHomeImpl::~ObserverHomeImpl
 	cout << "ObserverHomeImpl: Destructor called" << endl;
 // END USER INSERT SECTION ObserverHomeImpl::~ObserverHomeImpl
-assert (ref_count_ == 0);
-}
 
-
-void
-ObserverHomeImpl::_add_ref()
-{
-    ++ref_count_;
-}
-
-
-void
-ObserverHomeImpl::_remove_ref()
-{
-    if (--ref_count_ == 0)
-    {
-        delete this;
-    }
-}
-
-
-unsigned long
-ObserverHomeImpl::_get_refcount()
-{
-    return ref_count_;
 }
 
 
@@ -322,6 +258,7 @@ ObserverHomeImpl::create ()
 
 dinner::PhilosopherState*
 ObserverHomeImpl::my_name()
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::my_name
 	return 0;
@@ -340,7 +277,7 @@ ObserverHomeImpl::muell(CORBA::Long l)
 
 ::Components::EnterpriseComponent_ptr
 ObserverHomeImpl::do_it(const char* name, dinner::PhilosopherState* state)
-	throw(CORBA::SystemException)
+	throw(CORBA::SystemException, ::dinner::NotTheEater)
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::do_it
 	return 0;

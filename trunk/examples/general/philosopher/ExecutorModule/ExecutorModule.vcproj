@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;&quot;$(QEDO)/ComponentIDL&quot;;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;../IDL;&quot;$(QEDO)/ComponentContainer&quot;"
+				AdditionalIncludeDirectories=".;&quot;$(QEDO)/include&quot;;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;../IDL;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -36,7 +36,7 @@
 				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib"
 				OutputFile="$(OutDir)\philosopherE.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(QEDO)\ComponentIDL\Debug;$(ORBACUS)\lib"
+				AdditionalLibraryDirectories="$(QEDO)\lib;$(ORBACUS)\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/ExecutorModule.pdb"
 				SubSystem="2"
@@ -117,7 +117,7 @@ copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;&quot;$(QEDO)/ComponentIDL&quot;;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;../IDL;&quot;$(QEDO)/ComponentContainer&quot;"
+				AdditionalIncludeDirectories=".;&quot;$(QEDO)/include&quot;;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;../IDL;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -131,10 +131,10 @@ copy $(TargetPath) &quot;$(QEDO)\..\runtime&quot;
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib"
+				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib ComponentContainer.lib"
 				OutputFile="../../../../Runtime/philosopherE.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(QEDO)\ComponentIDL\Debug_orbacus&quot;;&quot;$(ORBACUS)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(QEDO)\lib&quot;;&quot;$(ORBACUS)\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/ExecutorModule.pdb"
 				SubSystem="2"

@@ -24,6 +24,7 @@
 
 #include <CORBA.h>
 #include "dinner_BUSINESS.h"
+#include "RefCountBase.h"
 #include <string>
 
 
@@ -49,18 +50,23 @@ namespace dinner
     class CutlerySessionImpl
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_CutlerySessionImpl
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_CutlerySessionImpl
 // END USER INSERT SECTION INHERITANCE_CutlerySessionImpl
     {
     
     private:
     
+        Qedo::qedo_mutex mutex_;
+        
         ::DiningPhilosophers::CCM_ForkManager_Context_var context_;
         
     public:
     
         CutlerySessionImpl();
-        ~CutlerySessionImpl();
+        virtual ~CutlerySessionImpl();
         
         void set_context(::DiningPhilosophers::CCM_ForkManager_Context_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
@@ -86,6 +92,9 @@ private:
     class Seg
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_Seg
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_Seg
 #ifdef WIN32
 , public JTCThread
@@ -96,12 +105,14 @@ private:
     
     private:
     
+        Qedo::qedo_mutex mutex_;
+        
         ::DiningPhilosophers::CCM_ForkManager_Context_var context_;
         
     public:
     
         Seg();
-        ~Seg();
+        virtual ~Seg();
         
         void set_context(::DiningPhilosophers::CCM_ForkManager_Context_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
@@ -153,12 +164,17 @@ public:
     class CutleryImpl
         : public virtual CORBA::LocalObject
         , public virtual Components::SessionExecutorLocator
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_CutleryImpl
 // END USER INSERT SECTION INHERITANCE_CutleryImpl
     {
     
     private:
     
+        Qedo::qedo_mutex mutex_;
+        
         ::DiningPhilosophers::CCM_ForkManager_Context_var context_;
         
         CutlerySessionImpl* component_;
@@ -168,7 +184,8 @@ public:
     public:
     
         CutleryImpl();
-        ~CutleryImpl();
+        virtual ~CutleryImpl();
+        
         
         //
         // IDL:Components/ExecutorLocator/obtain_executor:1.0
@@ -229,17 +246,22 @@ private:
     class CutleryHomeImpl
         : public virtual CORBA::LocalObject
         , public virtual ::DiningPhilosophers::CCM_ForkHome
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_CutleryHomeImpl
 // END USER INSERT SECTION INHERITANCE_CutleryHomeImpl
     {
     
     private:
     
-        Components::CCMContext_ptr context_;
+        Qedo::qedo_mutex mutex_;
+        
+        Components::CCMContext_var context_;
         
     public:
         CutleryHomeImpl();
-        ~CutleryHomeImpl();
+        virtual ~CutleryHomeImpl();
         
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0

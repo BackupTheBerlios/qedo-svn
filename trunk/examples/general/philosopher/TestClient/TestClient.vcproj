@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../IDL;$(QEDO)/ComponentIDL;$(ORBACUS)\include"
+				AdditionalIncludeDirectories="../IDL;$(QEDO)/include;$(ORBACUS)\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -110,7 +110,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../IDL;$(QEDO)/ComponentIDL;$(ORBACUS)\include"
+				AdditionalIncludeDirectories="../IDL;$(QEDO)/include;$(ORBACUS)\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -124,10 +124,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(QEDO)/ComponentIDL/Debug_orbacus/ComponentIDL.lib CosNamingd.lib obd.lib"
+				AdditionalDependencies="ComponentIDL.lib CosNamingd.lib obd.lib"
 				OutputFile="../../../../Runtime/tc.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(ORBACUS)\lib"
+				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(QEDO)\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/TestClient.pdb"
 				SubSystem="1"

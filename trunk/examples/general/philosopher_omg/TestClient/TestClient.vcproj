@@ -72,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../IDL,$(QEDO)/ComponentIDL,$(ORBACUS)\include"
+				AdditionalIncludeDirectories="../IDL,$(QEDO)/include,$(ORBACUS)\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -92,10 +92,10 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="ComponentIDL.lib CosNamingd.lib obd.lib"
-				OutputFile="../../../../Runtime/tc_omg.exe"
+				OutputFile="$(QEDO)\bin\tc_omg.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(ORBACUS)\lib&quot;;&quot;$(QEDO)/ComponentIDL/Debug&quot;"
+				AdditionalLibraryDirectories="&quot;$(ORBACUS)\lib&quot;;&quot;$(QEDO)/lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\TestClient___Win32_Debug_vc6/tc_omg.pdb"
 				SubSystem="1"/>

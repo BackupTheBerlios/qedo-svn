@@ -12,6 +12,7 @@
 
 #include <CORBA.h>
 #include "dinner_BUSINESS.h"
+#include "RefCountBase.h"
 #include <string>
 
 
@@ -29,13 +30,16 @@ namespace dinner
     class CutlerySessionImpl
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_CutlerySessionImpl
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_CutlerySessionImpl
 // END USER INSERT SECTION INHERITANCE_CutlerySessionImpl
     {
     
     private:
     
-        unsigned long ref_count_;
+        Qedo::qedo_mutex mutex_;
         
         ::dinner::CCM_Cutlery_Context_var context_;
         
@@ -43,10 +47,6 @@ namespace dinner
     
         CutlerySessionImpl();
         virtual ~CutlerySessionImpl();
-        
-        void _add_ref();
-        void _remove_ref();
-        unsigned long _get_refcount();
         
         void set_context(::dinner::CCM_Cutlery_Context_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
@@ -80,13 +80,16 @@ namespace dinner
     class Seg
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_Seg
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_Seg
 // END USER INSERT SECTION INHERITANCE_Seg
     {
     
     private:
     
-        unsigned long ref_count_;
+        Qedo::qedo_mutex mutex_;
         
         ::dinner::CCM_Cutlery_Context_var context_;
         
@@ -94,10 +97,6 @@ namespace dinner
     
         Seg();
         virtual ~Seg();
-        
-        void _add_ref();
-        void _remove_ref();
-        unsigned long _get_refcount();
         
         void set_context(::dinner::CCM_Cutlery_Context_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
@@ -132,13 +131,16 @@ namespace dinner
     class CutleryImpl
         : public virtual CORBA::LocalObject
         , public virtual Components::SessionExecutorLocator
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_CutleryImpl
 // END USER INSERT SECTION INHERITANCE_CutleryImpl
     {
     
     private:
     
-        unsigned long ref_count_;
+        Qedo::qedo_mutex mutex_;
         
         ::dinner::CCM_Cutlery_Context_var context_;
         
@@ -150,10 +152,6 @@ namespace dinner
     
         CutleryImpl();
         virtual ~CutleryImpl();
-        
-        void _add_ref();
-        void _remove_ref();
-        unsigned long _get_refcount();
         
         
         //
@@ -210,23 +208,22 @@ namespace dinner
     class CutleryHomeImpl
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_CutleryHome
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_CutleryHomeImpl
 // END USER INSERT SECTION INHERITANCE_CutleryHomeImpl
     {
     
     private:
     
-        unsigned long ref_count_;
+        Qedo::qedo_mutex mutex_;
         
         Components::CCMContext_var context_;
         
     public:
         CutleryHomeImpl();
         virtual ~CutleryHomeImpl();
-        
-        void _add_ref();
-        void _remove_ref();
-        unsigned long _get_refcount();
         
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0

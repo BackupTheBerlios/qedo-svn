@@ -22,6 +22,7 @@ namespace dinner {
 
 #include <CORBA.h>
 #include "dinner_BUSINESS.h"
+#include "RefCountBase.h"
 #include <string>
 
 
@@ -99,6 +100,9 @@ namespace dinner
     class PhilosopherSessionImpl
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_PhilosopherSessionImpl
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_PhilosopherSessionImpl
 , public virtual ThreadWithTimer
 // END USER INSERT SECTION INHERITANCE_PhilosopherSessionImpl
@@ -106,12 +110,14 @@ namespace dinner
     
     private:
     
+        Qedo::qedo_mutex mutex_;
+        
         ::DiningPhilosophers::CCM_Philosopher_Context_var context_;
         
     public:
     
         PhilosopherSessionImpl();
-        ~PhilosopherSessionImpl();
+        virtual ~PhilosopherSessionImpl();
         
         void set_context(::DiningPhilosophers::CCM_Philosopher_Context_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
@@ -160,12 +166,17 @@ public:
     class PhilosopherImpl
         : public virtual CORBA::LocalObject
         , public virtual Components::SessionExecutorLocator
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_PhilosopherImpl
 // END USER INSERT SECTION INHERITANCE_PhilosopherImpl
     {
     
     private:
     
+        Qedo::qedo_mutex mutex_;
+        
         ::DiningPhilosophers::CCM_Philosopher_Context_var context_;
         
         PhilosopherSessionImpl* component_;
@@ -173,7 +184,8 @@ public:
     public:
     
         PhilosopherImpl();
-        ~PhilosopherImpl();
+        virtual ~PhilosopherImpl();
+        
         
         //
         // IDL:Components/ExecutorLocator/obtain_executor:1.0
@@ -239,17 +251,22 @@ public:
     class PhilosopherHomeImpl
         : public virtual CORBA::LocalObject
         , public virtual ::DiningPhilosophers::CCM_PhilosopherHome
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_PhilosopherHomeImpl
 // END USER INSERT SECTION INHERITANCE_PhilosopherHomeImpl
     {
     
     private:
     
-        Components::CCMContext_ptr context_;
+        Qedo::qedo_mutex mutex_;
+        
+        Components::CCMContext_var context_;
         
     public:
         PhilosopherHomeImpl();
-        ~PhilosopherHomeImpl();
+        virtual ~PhilosopherHomeImpl();
         
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0

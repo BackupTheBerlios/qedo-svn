@@ -31,6 +31,7 @@ CutlerySessionImpl::~CutlerySessionImpl()
 {
 // BEGIN USER INSERT SECTION CutlerySessionImpl::~CutlerySessionImpl
 // END USER INSERT SECTION CutlerySessionImpl::~CutlerySessionImpl
+
 }
 
 
@@ -155,6 +156,7 @@ Seg::~Seg()
 {
 // BEGIN USER INSERT SECTION Seg::~Seg
 // END USER INSERT SECTION Seg::~Seg
+
 }
 
 
@@ -177,7 +179,7 @@ Seg::configuration_complete()
 
 void
 Seg::get()
-	throw(CORBA::SystemException)
+	throw(CORBA::SystemException, ::DiningPhilosophers::InUse)
 {
 // BEGIN USER INSERT SECTION Seg::get
     JTCSynchronized sync1(*this);
@@ -227,8 +229,8 @@ Seg::release()
 
 
 CutleryImpl::CutleryImpl()
-    : component_(new CutlerySessionImpl())
-    , Seg_(new Seg())
+:component_(new CutlerySessionImpl())
+, Seg_(new Seg())
 {
 // BEGIN USER INSERT SECTION CutleryImpl::CutleryImpl
 // END USER INSERT SECTION CutleryImpl::CutleryImpl
@@ -237,11 +239,11 @@ CutleryImpl::CutleryImpl()
 
 CutleryImpl::~CutleryImpl()
 {
-    component_->_remove_ref();
-    Seg_->_remove_ref();
-
 // BEGIN USER INSERT SECTION CutleryImpl::~CutleryImpl
 // END USER INSERT SECTION CutleryImpl::~CutleryImpl
+
+    component_->_remove_ref();
+    Seg_->_remove_ref();
 }
 
 
@@ -285,8 +287,20 @@ void
 CutleryImpl::set_session_context(::Components::SessionContext_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::DiningPhilosophers::CCM_ForkManager_Context::_narrow(context);
+    #ifdef TAO_ORB
+    ::DiningPhilosophers::CCM_ForkManager_Context_ptr tmp_context;
     
+    tmp_context = dynamic_cast<::DiningPhilosophers::CCM_ForkManager_Context*>(context);
+    
+    if (tmp_context)
+        context_ = ::DiningPhilosophers::CCM_ForkManager_Context::_duplicate(tmp_context);
+    else
+        context_ = ::DiningPhilosophers::CCM_ForkManager_Context::_nil();
+        
+    #else
+    context_ = ::DiningPhilosophers::CCM_ForkManager_Context::_duplicate(::DiningPhilosophers::CCM_ForkManager_Context::_narrow(context));
+    
+    #endif
     component_->set_context(context_);
     Seg_->set_context(context_);
 }
@@ -334,6 +348,7 @@ CutleryHomeImpl::~CutleryHomeImpl()
 {
 // BEGIN USER INSERT SECTION CutleryHomeImpl::~CutleryHomeImpl
 // END USER INSERT SECTION CutleryHomeImpl::~CutleryHomeImpl
+
 }
 
 
@@ -341,7 +356,7 @@ void
 CutleryHomeImpl::set_context(Components::CCMContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::DiningPhilosophers::CCM_ForkManager_Context::_narrow(ctx);
+    context_ = Components::CCMContext::_duplicate(ctx);
 }
 
 

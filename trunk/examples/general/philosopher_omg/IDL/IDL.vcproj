@@ -21,7 +21,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".,$(QEDO)\ComponentIDL,$(ORBACUS)\include,$(ORBACUS)\include\OB"
+				AdditionalIncludeDirectories=".,$(QEDO)\include,$(ORBACUS)\include,$(ORBACUS)\include\OB"
 				PreprocessorDefinitions="WIN32,_DEBUG,_LIB"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -154,7 +154,7 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)\bin\cidl_gen -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\ob  -I%ORBACUS%\idl -DWIN32  -DORBACUS_ORB --business --servant --target dinner dinner.cidl
+						CommandLine="$(QEDO)\bin\cidl_gen -I$(QEDO)\idl -I$(ORBACUS)\idl\OB  -I$(ORBACUS)\idl -DWIN32 -DORBACUS_ORB --business --servant --target dinner dinner.cidl
 time /T &gt; last_build_time
 "
 						Outputs="last_build_time;dinner_LOCAL.idl;dinner_EQUIVALENT.idl;dinner_BUSINESS.idl"/>
@@ -170,7 +170,7 @@ time /T &gt; last_build_time
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -DORBACUS_ORB -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_BUSINESS.idl
+						CommandLine="$(ORBACUS)\bin\idl -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB  dinner_BUSINESS.idl
 "
 						Outputs="dinner_BUSINESS.h;dinner_BUSINESS.cpp;dinner_BUSINESS_skel.h;dinner_BUSINESS_skel.cpp"/>
 				</FileConfiguration>
@@ -181,7 +181,7 @@ time /T &gt; last_build_time
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -DORBACUS_ORB -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_EQUIVALENT.idl
+						CommandLine="$(ORBACUS)\bin\idl -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB  dinner_EQUIVALENT.idl
 "
 						Outputs="dinner_EQUIVALENT.h;dinner_EQUIVALENT.cpp;dinner_EQUIVALENT_skel.h;dinner_EQUIVALENT_skel.cpp"/>
 				</FileConfiguration>
@@ -192,7 +192,7 @@ time /T &gt; last_build_time
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(ORBACUS)\bin\idl -DWIN32 -DORBACUS_ORB -I$(QEDO)\ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dinner_LOCAL.idl
+						CommandLine="$(ORBACUS)\bin\idl -I$(QEDO)\idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB  dinner_LOCAL.idl
 "
 						Outputs="dinner_LOCAL.h;dinner_LOCAL.cpp;dinner_LOCAL_skel.h;dinner_LOCAL_skel.cpp"/>
 				</FileConfiguration>

@@ -12,6 +12,7 @@
 
 #include <CORBA.h>
 #include "dinner_BUSINESS.h"
+#include "RefCountBase.h"
 #include <string>
 
 
@@ -28,13 +29,16 @@ namespace dinner
     class ObserverSessionImpl
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_ObserverSessionImpl
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_ObserverSessionImpl
 // END USER INSERT SECTION INHERITANCE_ObserverSessionImpl
     {
     
     private:
     
-        unsigned long ref_count_;
+        Qedo::qedo_mutex mutex_;
         
         ::dinner::CCM_Observer_Context_var context_;
         
@@ -42,10 +46,6 @@ namespace dinner
     
         ObserverSessionImpl();
         virtual ~ObserverSessionImpl();
-        
-        void _add_ref();
-        void _remove_ref();
-        unsigned long _get_refcount();
         
         void set_context(::dinner::CCM_Observer_Context_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
@@ -83,13 +83,16 @@ namespace dinner
     class ObserverImpl
         : public virtual CORBA::LocalObject
         , public virtual Components::SessionExecutorLocator
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_ObserverImpl
 // END USER INSERT SECTION INHERITANCE_ObserverImpl
     {
     
     private:
     
-        unsigned long ref_count_;
+        Qedo::qedo_mutex mutex_;
         
         ::dinner::CCM_Observer_Context_var context_;
         
@@ -99,10 +102,6 @@ namespace dinner
     
         ObserverImpl();
         virtual ~ObserverImpl();
-        
-        void _add_ref();
-        void _remove_ref();
-        unsigned long _get_refcount();
         
         
         //
@@ -159,23 +158,22 @@ namespace dinner
     class ObserverHomeImpl
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_ObserverHome
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_ObserverHomeImpl
 // END USER INSERT SECTION INHERITANCE_ObserverHomeImpl
     {
     
     private:
     
-        unsigned long ref_count_;
+        Qedo::qedo_mutex mutex_;
         
         Components::CCMContext_var context_;
         
     public:
         ObserverHomeImpl();
         virtual ~ObserverHomeImpl();
-        
-        void _add_ref();
-        void _remove_ref();
-        unsigned long _get_refcount();
         
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0

@@ -540,6 +540,7 @@ PhilosopherSessionImpl::~PhilosopherSessionImpl()
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::~PhilosopherSessionImpl
 // END USER INSERT SECTION PhilosopherSessionImpl::~PhilosopherSessionImpl
+
 }
 
 
@@ -620,6 +621,7 @@ PhilosopherSessionImpl::remove()
 
 void
 PhilosopherSessionImpl::name(const char* param)
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::_name
 id_ = CORBA::string_dup(param);	//@@@ (_name);
@@ -629,6 +631,7 @@ id_ = CORBA::string_dup(param);	//@@@ (_name);
 
 char*
 PhilosopherSessionImpl::name()
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::name
     return CORBA::string_dup(id_.c_str());
@@ -647,7 +650,7 @@ PhilosopherImpl::PhilosopherImpl (const char* my_name, int tick, bool right_hand
 
 
 PhilosopherImpl::PhilosopherImpl()
-    : component_(new PhilosopherSessionImpl())
+:component_(new PhilosopherSessionImpl())
 {
 // BEGIN USER INSERT SECTION PhilosopherImpl::PhilosopherImpl
 // END USER INSERT SECTION PhilosopherImpl::PhilosopherImpl
@@ -656,10 +659,10 @@ PhilosopherImpl::PhilosopherImpl()
 
 PhilosopherImpl::~PhilosopherImpl()
 {
-    component_->_remove_ref();
-
 // BEGIN USER INSERT SECTION PhilosopherImpl::~PhilosopherImpl
 // END USER INSERT SECTION PhilosopherImpl::~PhilosopherImpl
+
+    component_->_remove_ref();
 }
 
 
@@ -700,8 +703,20 @@ void
 PhilosopherImpl::set_session_context(::Components::SessionContext_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::DiningPhilosophers::CCM_Philosopher_Context::_narrow(context);
+    #ifdef TAO_ORB
+    ::DiningPhilosophers::CCM_Philosopher_Context_ptr tmp_context;
     
+    tmp_context = dynamic_cast<::DiningPhilosophers::CCM_Philosopher_Context*>(context);
+    
+    if (tmp_context)
+        context_ = ::DiningPhilosophers::CCM_Philosopher_Context::_duplicate(tmp_context);
+    else
+        context_ = ::DiningPhilosophers::CCM_Philosopher_Context::_nil();
+        
+    #else
+    context_ = ::DiningPhilosophers::CCM_Philosopher_Context::_duplicate(::DiningPhilosophers::CCM_Philosopher_Context::_narrow(context));
+    
+    #endif
     component_->set_context(context_);
 }
 
@@ -749,6 +764,7 @@ PhilosopherHomeImpl::~PhilosopherHomeImpl()
 {
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl::~PhilosopherHomeImpl
 // END USER INSERT SECTION PhilosopherHomeImpl::~PhilosopherHomeImpl
+
 }
 
 
@@ -756,7 +772,7 @@ void
 PhilosopherHomeImpl::set_context(Components::CCMContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::DiningPhilosophers::CCM_Philosopher_Context::_narrow(ctx);
+    context_ = Components::CCMContext::_duplicate(ctx);
 }
 
 

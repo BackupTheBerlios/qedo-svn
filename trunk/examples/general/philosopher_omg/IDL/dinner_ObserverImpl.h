@@ -18,6 +18,7 @@
 
 #include <CORBA.h>
 #include "dinner_BUSINESS.h"
+#include "RefCountBase.h"
 #include <string>
 
 
@@ -42,6 +43,9 @@ namespace dinner
     class ObserverSessionImpl
         : public virtual CORBA::LocalObject
         , public virtual ::dinner::CCM_ObserverSessionImpl
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_ObserverSessionImpl
 #ifdef OBSERVER_WITH_GUI
 , public JTCThread
@@ -52,12 +56,14 @@ namespace dinner
     
     private:
     
+        Qedo::qedo_mutex mutex_;
+        
         ::DiningPhilosophers::CCM_Observer_Context_var context_;
         
     public:
     
         ObserverSessionImpl();
-        ~ObserverSessionImpl();
+        virtual ~ObserverSessionImpl();
         
         void set_context(::DiningPhilosophers::CCM_Observer_Context_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
@@ -109,12 +115,17 @@ public:
     class ObserverImpl
         : public virtual CORBA::LocalObject
         , public virtual Components::SessionExecutorLocator
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_ObserverImpl
 // END USER INSERT SECTION INHERITANCE_ObserverImpl
     {
     
     private:
     
+        Qedo::qedo_mutex mutex_;
+        
         ::DiningPhilosophers::CCM_Observer_Context_var context_;
         
         ObserverSessionImpl* component_;
@@ -122,7 +133,8 @@ public:
     public:
     
         ObserverImpl();
-        ~ObserverImpl();
+        virtual ~ObserverImpl();
+        
         
         //
         // IDL:Components/ExecutorLocator/obtain_executor:1.0
@@ -182,17 +194,22 @@ private:
     class ObserverHomeImpl
         : public virtual CORBA::LocalObject
         , public virtual ::DiningPhilosophers::CCM_ObserverHome
+#ifndef MICO_ORB
+        , public virtual Qedo::RefCountLocalObject
+#endif
 // BEGIN USER INSERT SECTION INHERITANCE_ObserverHomeImpl
 // END USER INSERT SECTION INHERITANCE_ObserverHomeImpl
     {
     
     private:
     
-        Components::CCMContext_ptr context_;
+        Qedo::qedo_mutex mutex_;
+        
+        Components::CCMContext_var context_;
         
     public:
         ObserverHomeImpl();
-        ~ObserverHomeImpl();
+        virtual ~ObserverHomeImpl();
         
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0
