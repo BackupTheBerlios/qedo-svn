@@ -444,6 +444,21 @@ throw(CPFReadException)
 			}
 		}
 
+		//
+		// extensionspecification
+		//
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("extensionspecification")) ) )
+		{
+			// new config entry
+			Components::ConfigValue* cf = extensionspecification((DOMElement*)(child));
+			if(cf)
+			{
+				config->length( ++len );
+				( *config )[len - 1] = cf;
+			}
+		}
+
 		// next element
 		child = child->getNextSibling();
 	}
@@ -451,6 +466,244 @@ throw(CPFReadException)
 	return config;
 }
 
+Components::ConfigValue* 
+CPFReader::extensionspecification (DOMElement* element)
+throw(CPFReadException)
+{
+	CORBA::ULong len = 0;
+	Components::ConfigValues *content = new Components::ConfigValues();
+	DOMNode* child = element->getFirstChild();
+    while( child != 0)
+    {
+		//
+		// binding
+		//
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("binding")) ) )
+		{
+			// new config entry
+			Components::ConfigValue* cf = binding((DOMElement*)(child));
+			if(cf)
+			{
+				content->length( ++len );
+				( *content )[len - 1] = cf;
+			}
+
+		}
+
+		//
+		// constraint
+		//
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("constraint")) ) )
+		{
+			// new config entry
+			Components::ConfigValue* cf = constraint((DOMElement*)(child));
+			if(cf)
+			{
+				content->length( ++len );
+				( *content )[len - 1] = cf;
+			}
+		}
+		// next element
+		child = child->getNextSibling();
+	}
+
+	CORBA::Any content_any;
+	content_any <<= content;
+	return new ConfigValue_impl( CORBA::string_dup( "extensionspecification" ), content_any );
+
+}
+
+Components::ConfigValue* 
+CPFReader::binding (DOMElement* element)
+throw(CPFReadException)
+{
+	CORBA::ULong len = 0;
+	CORBA::Any any;
+	std::string val;
+	Components::ConfigValues *content = new Components::ConfigValues();
+	DOMNode* child = element->getFirstChild();
+    while( child != 0)
+    {
+		//
+		// componentid
+		//
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("componentid")) ) )
+		{
+			val = value((DOMElement*)(child));
+			any <<= val.c_str();
+			Components::ConfigValue* cf = new ConfigValue_impl( CORBA::string_dup( "componentid"), any );
+			content->length( ++len );
+			( *content )[len - 1] = cf;
+
+		}
+
+		//
+		// restriction
+		//
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("restriction")) ) )
+		{
+			val = value((DOMElement*)(child));
+			any <<= val.c_str();
+			Components::ConfigValue* cf = new ConfigValue_impl( CORBA::string_dup( "restriction" ), any );
+			content->length( ++len );
+			( *content )[len - 1] = cf;
+
+		}
+		
+		// next element
+		child = child->getNextSibling();
+	}
+
+	CORBA::Any content_any;
+	content_any <<= content;
+	return new ConfigValue_impl( CORBA::string_dup( "binding" ), content_any );
+
+}
+
+Components::ConfigValue* 
+CPFReader::constraint(DOMElement* element)
+throw(CPFReadException)
+{
+	CORBA::ULong len = 0;
+	Components::ConfigValues *content = new Components::ConfigValues();
+	DOMNode* child = element->getFirstChild();
+    while( child != 0)
+    {
+		//
+		// characteristic
+		//
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("characteristic")) ) )
+		{
+			// new config entry
+			Components::ConfigValue* cf = characteristic ((DOMElement*)(child));
+			if(cf)
+			{
+				content->length( ++len );
+				( *content )[len - 1] = cf;
+			}
+		}
+		// next element
+		child = child->getNextSibling();
+	}
+
+	CORBA::Any content_any;
+	content_any <<= content;
+	return new ConfigValue_impl( CORBA::string_dup( "constraint" ), content_any );
+
+}
+
+Components::ConfigValue* 
+CPFReader::characteristic (DOMElement* element)
+throw(CPFReadException)
+{
+	CORBA::ULong len = 0;
+	Components::ConfigValues *content = new Components::ConfigValues();
+
+	//
+	// name
+	//
+	std::string name = Qedo::transcode(element->getAttribute(X("name")));
+	CORBA::Any name_any;
+	name_any <<= name.c_str();
+	Components::ConfigValue* name_config = new ConfigValue_impl(CORBA::string_dup("name"), name_any);
+	content->length( ++len );
+	( *content )[len - 1] = name_config;
+
+	DOMNode* child = element->getFirstChild();
+    while( child != 0)
+    {
+		//
+		// characteristic
+		//
+		if( ( child->getNodeType() == DOMNode::ELEMENT_NODE ) &&
+			( !XMLString::compareString(child->getNodeName(), X("dimension")) ) )
+		{
+			// new config entry
+			Components::ConfigValue* cf = dimension ((DOMElement*)(child));
+			if(cf)
+			{
+				content->length( ++len );
+				( *content )[len - 1] = cf;
+			} 
+		}
+		// next element
+		child = child->getNextSibling();
+	}
+
+	CORBA::Any content_any;
+	content_any <<= content;
+	return new ConfigValue_impl( CORBA::string_dup( "characteristic" ), content_any );
+
+}
+
+Components::ConfigValue* 
+CPFReader::dimension (DOMElement* element)
+throw(CPFReadException)
+{
+	CORBA::ULong len = 0;
+	Components::ConfigValues *content = new Components::ConfigValues();
+
+	//
+	// name
+	//
+	std::string name = Qedo::transcode(element->getAttribute(X("name")));
+	CORBA::Any name_any;
+	name_any <<= name.c_str();
+	Components::ConfigValue* name_config = new ConfigValue_impl(CORBA::string_dup("name"), name_any);
+	content->length( ++len );
+	( *content )[len - 1] = name_config;
+
+	//
+	// statistical
+	//
+	std::string statistical = Qedo::transcode(element->getAttribute(X("statistical")));
+	CORBA::Any statistical_any;
+	statistical_any <<= statistical.c_str();
+	Components::ConfigValue* statistical_config = new ConfigValue_impl(CORBA::string_dup("statistical"), statistical_any);
+	content->length( ++len );
+	( *content )[len - 1] = statistical_config;
+	
+	//
+	// direction
+	//
+	std::string direction = Qedo::transcode(element->getAttribute(X("direction")));
+	CORBA::Any direction_any;
+	direction_any <<= direction.c_str();
+	Components::ConfigValue* direction_config = new ConfigValue_impl(CORBA::string_dup("direction"), direction_any);
+	content->length( ++len );
+	( *content )[len - 1] = direction_config;
+
+	//
+	// unit
+	//
+	std::string unit = Qedo::transcode(element->getAttribute(X("unit")));
+	CORBA::Any unit_any;
+	unit_any <<= unit.c_str();
+	Components::ConfigValue* unit_config = new ConfigValue_impl(CORBA::string_dup("unit"), unit_any);
+	content->length( ++len );
+	( *content )[len - 1] = unit_config;
+
+
+	//
+	// value
+	//
+	std::string val = value(element);
+	CORBA::Any val_any;
+	val_any <<= val.c_str();
+	Components::ConfigValue* val_config = new ConfigValue_impl( CORBA::string_dup( "value"), val_any );
+	content->length( ++len );
+	( *content )[len - 1] = val_config;
+
+	CORBA::Any content_any;
+	content_any <<= content;
+	return new ConfigValue_impl( CORBA::string_dup( "dimension" ), content_any );
+
+}
 
 }
 

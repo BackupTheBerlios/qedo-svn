@@ -129,7 +129,7 @@ Deployment::Deployment(wxWindow *parent, const wxWindowID id,
 
 void Deployment::OnFileChoiseButton(wxCommandEvent& WXUNUSED(event))
 {
-	wxFileDialog* file_dialog=new wxFileDialog(this,"Choose a file","","","Package files (*.zip)|*.zip|CAR files (*.car)|*.car|All files|*.*",0,wxDefaultPosition);
+	wxFileDialog* file_dialog=new wxFileDialog(this,"Choose a file","","","Package files (*.zip)|*.zip|AAR files (*.aar)|*.aar|All files|*.*",0,wxDefaultPosition);
 	int t=file_dialog->ShowModal();
 	if (t==wxID_OK) {
 		assembly_name_->Clear();

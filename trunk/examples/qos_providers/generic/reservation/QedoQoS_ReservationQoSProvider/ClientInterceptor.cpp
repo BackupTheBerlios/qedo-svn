@@ -21,6 +21,7 @@ ClientContainerInterceptor::~ClientContainerInterceptor ()
 {
 }
 
+
 void
 ClientContainerInterceptor::send_request (Components::Extension::ContainerClientRequestInfo_ptr info)
 {

@@ -23,6 +23,7 @@ namespace QedoQoS_Reservation {
 		PortableInterceptor::SlotId slot_id_;
 		std::string		m_uid;
 		QedoQoS::ReservationQoSproviderImpl* executor_;
+
 	public:
 		ClientContainerInterceptor(QedoQoS::CCM_Reservation_ContextImpl* context, QedoQoS::ReservationQoSproviderImpl* executor);
 

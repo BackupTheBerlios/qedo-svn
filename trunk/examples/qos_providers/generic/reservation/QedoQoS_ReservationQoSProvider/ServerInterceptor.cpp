@@ -27,6 +27,81 @@ ServerContainerInterceptor::~ServerContainerInterceptor ()
 }
 
 void
+ServerContainerInterceptor::register_requirement(char * req_component_id, char * req_operation_name, Components::ConfigValues* req)
+{
+	std::cout << "WWWWWWWWW" << std::endl;
+	// store information
+	comp_origin_id = strdup(req_component_id);
+	operation_id = strdup(req_operation_name);
+	data = req;
+
+}
+
+void 
+ServerContainerInterceptor::add_contract(const char *component_id, Components::ConfigValues val)
+{
+	std::cout << "RRRR" << std::endl;
+	// store information
+	server_origin= strdup(component_id);
+	server_operation = "compute";
+	server_data = &val;
+	// extract values;
+	CORBA::ULong server_data_len = server_data ->length();
+	for (server_data_len = 0; server_data_len < server_data->length(); server_data_len++)
+	{
+		// search for dimension
+		if ( !strcmp((*server_data)[server_data_len]->name(), "dimension"))
+		{
+			Components::ConfigValues *dim_content;
+			CORBA::Any dim_any;
+			dim_any=((*server_data)[server_data_len]-> value());
+			dim_any >>= dim_content ;
+//			CORBA::ULong dim_len;
+//			for (dim_len = 0; dim_len < dim_content->length(); dim_len++)
+//			{
+	//				std::cout << "XXXX: " << ((*dim_content)[dim_len] -> name()) << std::endl;
+	//			if (!strcmp((*dim_content)[dim_len] -> name(),"name")
+	//			{
+			char* dim_name;
+			CORBA::Any dim_name_any;
+			dim_name_any = ((*dim_content)[0] -> value());
+			dim_name_any >>= dim_name;
+			std::cout << "found dim: " << dim_name << std::endl;
+			if (!strcmp(dim_name,"calls"))
+			{
+				// take val
+				char* dim_val;
+				CORBA::Any dim_val_any;
+				dim_val_any = ((*dim_content)[4] -> value());
+				dim_val_any >>= dim_val;
+				std::cout << "found dim val: " << dim_val << std::endl;
+				// transform to long
+				number_of_calls_ = atol( dim_val); 
+			}
+			if (!strcmp(dim_name,"interval"))
+			{
+				// take val
+				char* dim_val;
+				CORBA::Any dim_val_any;
+				dim_val_any = ((*dim_content)[4] -> value());
+				dim_val_any >>= dim_val;
+				std::cout << "found dim val: " << dim_val << std::endl;
+				// transform to long
+				intervall_ = atol( dim_val);
+			}
+
+//			} // end dimension fo
+			
+		} // end if dimension
+
+	// calls
+	}
+	//data -> _add_ref();
+	
+}
+
+
+void
 ServerContainerInterceptor::receive_request (Components::Extension::ContainerServerRequestInfo_ptr info)
 {
 //	std::cout << "ServerCOPI: receive_request: " << info->request_info()->operation() << "for id: " << info -> component_id() << std::endl;
@@ -120,12 +195,14 @@ ServerContainerInterceptor::call( const char* comp_id, const char* origin, const
 {
 	// test implementaiton
 	// set time_stamp
-	if (!strcmp(operation,"compute"))
+	con = true;
+//	if (!strcmp(operation,"compute"/*server_operation.c_str()*/))
+	if (!server_operation.compare(operation))
 	{
 
 		__time64_t current_time;
 		_time64( &current_time);
-		if ((current_time - time_stamp) > 2)
+		if ((current_time - time_stamp) > intervall_)
 		{
 			// reset time-stamp
 			_time64( &time_stamp);
@@ -135,10 +212,11 @@ ServerContainerInterceptor::call( const char* comp_id, const char* origin, const
 		}
 
 		con = true;
-		if (number_of_calls < 15)
+		if (number_of_calls < number_of_calls_)
 		{
 			//client has not used all of its reservations
-			if (strcmp(origin,"client"))
+			//if (strcmp(origin,"client"))
+			if(server_origin.compare(origin))
 			{
 				con = false;
 				return;
@@ -160,48 +238,55 @@ ServerContainerInterceptor::rec_request_from_servant_locator(const char * operat
 Components::Cookie* 
 ServerContainerInterceptor::connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con ) 
 {
-//	std::cout << "COPI Server: connect called" << std::endl;
+	std::cout << "QQQQQQQQQQ COPI Server: connect called" << std::endl;
 
 		con = true;
 	// get the id from the contract data
-	if (!strcmp(comp_id, "client"))
+	if (!strcmp(comp_id, comp_origin_id.c_str()))
 	{
 		CORBA::Object_var temp_obj = connection -> _get_component();
 		Components::CCMObject_var temp_comp = Components::CCMObject::_narrow(temp_obj);
 		CORBA::Object_var nego_obj = temp_comp -> provide_facet("_qos_negotiation_external");
 		Components::Extension::Negotiation_var nego = Components::Extension::Negotiation::_narrow(nego_obj);
 		
-//		std::cout << "req_offer" << std::endl;
+		std::cout << "req_offer" << std::endl;
 		
 		//create a ContractDescription from contract Data
-//		Components::ConfigValues dimensions;
 
 		CORBA::Any an_any;
 		CORBA::ULong freq = 5;
 		an_any <<= freq;
 
 		Components::Extension::ContractDescription requirements;
-		requirements.dimensions.length(1);
+		requirements.dimensions.length(2);
 
 		requirements.contract_type = CORBA::string_dup("Reservation");
-		requirements.dimensions[0] = new Qedo::ConfigValue_impl();
-		requirements.dimensions[0]->name(CORBA::string_dup("freq"));
-		requirements.dimensions[0]->value(an_any);
 
-		Components::Extension::ContractDescription *offer = nego -> req_offer(requirements);
-		
+		// start with 1 because the first one is the already checked name= Reservation
+
+		Components::ConfigValues dims;
+		CORBA::Any content_any;
+		//(data->value()) >>= content_any;
+		//content_any = (data->value());
+		//content_any >>= dims;
+		requirements.dimensions[0] = 
+			(*data)[1];
+		requirements.dimensions[1] = (*data)[2];
+
+		Components::Extension::ContractDescription *offer = nego -> req_offer(requirements, comp_id);
+		std::cout << "got answer" << std::endl;
 		// check offer
 
 		// does it fit the needs
 
 		// accept
-		if (nego -> accept(*offer))
+		if (nego -> accept(*offer, comp_id))
 		{
 			// store information
 			
 //			std::cout << "contract established" << std::endl;
 		}
-	}
+	}	
 
 		return 0;
 }

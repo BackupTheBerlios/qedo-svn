@@ -106,7 +106,7 @@
 				RelativePath="meta-inf\client.cpf">
 			</File>
 			<File
-				RelativePath="meta-inf\client_reqiurements.cpf">
+				RelativePath="meta-inf\client_requirements.cpf">
 			</File>
 			<File
 				RelativePath="meta-inf\compute_with_reservation_win32.cad">

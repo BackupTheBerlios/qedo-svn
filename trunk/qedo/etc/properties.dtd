@@ -19,6 +19,8 @@
        | struct
        | valuetype
        | configuration
+       | extensionspecification
+
        )*
      ) >
 
@@ -83,8 +85,40 @@
      type CDATA #REQUIRED
      primarykey (true | false) "false" >
 
-<!-- COACH extension -->
+<!-- QEDO extension -->
 
 <!ELEMENT configuration
      ( simple
-     ) >
+     )* >
+
+<!ELEMENT extensionspecification
+    ( binding
+    , constraint
+    ) >
+    
+<!ELEMENT binding
+    ( componentid
+    , restriction
+    ) >
+    
+<!ELEMENT componentid (#PCDATA) >
+    
+<!ELEMENT restriction (#PCDATA) >
+
+<!ELEMENT constraint
+    ( characteristic )* >
+    
+<!ELEMENT characteristic
+    ( dimension )* >
+ 
+<!ATTLIST characteristic
+    name CDATA #REQUIRED >
+
+<!ELEMENT dimension (#PCDATA) > 
+   
+<!ATTLIST dimension
+    name CDATA #REQUIRED
+    statistical CDATA #IMPLIED
+    direction CDATA #IMPLIED
+    unit CDATA #REQUIRED >
+    

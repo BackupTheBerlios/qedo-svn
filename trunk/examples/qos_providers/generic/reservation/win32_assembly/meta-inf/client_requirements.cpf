@@ -3,18 +3,21 @@
 
 <properties>
     <configuration>
-        <simple name="assignement" type="string">
-            <value>reader</value>
+        <simple name="requirement" type="string">
+            <value>client_qos</value>
         </simple>
-    </configuration>        
-    <configuration>
-        <simple name="contract" type="string">
-            <value>EventFrequency</value>
-        </simple>
-    </configuration>
-    <configuration>
-        <simple name="frequency" type="long">
-            <value>1</value>
-        </simple>
-    </configuration>
+    </configuration> 
+    
+    <extensionspecification>
+		<binding>
+			<componentid>client</componentid>
+			<restriction>compute</restriction>
+		</binding>
+		<constraint>
+			<characteristic name="Reservation">
+				<dimension name="calls" unit="calls">25</dimension>
+				<dimension name="interval" unit="seconds">2</dimension>
+			</characteristic>
+		</constraint>	
+    </extensionspecification>       
 </properties>

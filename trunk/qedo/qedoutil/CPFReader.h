@@ -69,7 +69,7 @@ private:
         throw(CPFReadException);
 
 	/**
-	 * handle configuration (COACH extension)
+	 * handle configuration (QEDO extension)
 	 */
     Components::ConfigValue* configuration (DOMElement*)
         throw(CPFReadException);
@@ -126,6 +126,36 @@ private:
 	 * handle valuetype
 	 */
 	void valuetype (DOMElement*)
+        throw(CPFReadException);
+
+	/**
+	 * handle extensionspecification (QEDO extension)
+	 */
+    Components::ConfigValue* extensionspecification (DOMElement*)
+        throw(CPFReadException);
+
+	/**
+	 * handle binding (QEDO extension)
+	 */
+    Components::ConfigValue* binding (DOMElement*)
+        throw(CPFReadException);
+
+	/**
+	 * handle constraint (QEDO extension)
+	 */
+    Components::ConfigValue* constraint (DOMElement*)
+        throw(CPFReadException);
+
+	/**
+	 * handle characteristic (QEDO extension)
+	 */
+    Components::ConfigValue* characteristic (DOMElement*)
+        throw(CPFReadException);
+
+	/**
+	 * handle dimanesion (QEDO extension)
+	 */
+    Components::ConfigValue* dimension (DOMElement*)
         throw(CPFReadException);
 
 public:

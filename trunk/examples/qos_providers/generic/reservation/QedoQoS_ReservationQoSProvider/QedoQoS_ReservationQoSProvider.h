@@ -70,13 +70,13 @@ namespace QedoQoS
         //
         // IDL:Components/Extension/Negotiation/req_offer:1.0
         //
-        virtual Components::Extension::ContractDescription* req_offer(const Components::Extension::ContractDescription& requirements)
+        virtual Components::Extension::ContractDescription* req_offer(const Components::Extension::ContractDescription& requirements, const char* client_id)
         	throw(CORBA::SystemException);
         
         //
         // IDL:Components/Extension/Negotiation/accept:1.0
         //
-        virtual CORBA::Boolean accept(const Components::Extension::ContractDescription& requirements)
+        virtual CORBA::Boolean accept(const Components::Extension::ContractDescription& requirements, const char* client_id)
         	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION ReservationQoSproviderImpl
@@ -86,9 +86,12 @@ namespace QedoQoS
 	public:
 		void
 		register_copis();
+
 		void
 		unregister_copis();
 
+		void 
+		init_copis (Components::ConfigValues*);
 // END USER INSERT SECTION ReservationQoSproviderImpl
 
     };

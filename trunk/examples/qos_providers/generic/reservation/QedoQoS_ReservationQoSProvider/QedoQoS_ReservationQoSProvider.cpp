@@ -68,6 +68,93 @@ ReservationQoSproviderImpl::unregister_copis()
 	stub_reg -> unregister_interceptor_for_all(client_interceptor_);
 }
 
+void
+ReservationQoSproviderImpl::init_copis(Components::ConfigValues* config) 
+{
+	CORBA::Any test_any;
+
+	std::cout << "length of config values: " << config->length() << std::endl;
+	char* req_component_id;
+	char* req_operation_name;
+	Components::ConfigValues* data;
+	// search for extensionspecification
+	CORBA::ULong len;
+	for (len = 0; len < config->length(); len++)
+	{
+		if (!strcmp((*config)[len]->name(),"extensionspecification"))
+		{
+			Components::ConfigValues *extension_content;
+			Components::ConfigValue *extension_content_test;
+			CORBA::Any test_any;
+			test_any = ((*config)[len]-> value()) ;
+			// ((*config)[len]-> value()) >>= test_any;
+			test_any >>= extension_content;
+			CORBA::ULong ext_len;
+			for (ext_len = 0; ext_len < extension_content->length(); ext_len++)
+			{
+				// search for binding
+				if ( !strcmp((*extension_content)[ext_len]->name(), "binding"))
+				{
+					Components::ConfigValues *binding_content;
+					((*extension_content)[ext_len]-> value()) >>= binding_content ;
+					CORBA::ULong binding_len;
+					for (binding_len = 0; binding_len < binding_content->length(); binding_len++)
+					{
+						// search for component_id
+						if (!strcmp((*binding_content)[binding_len]->name(), "componentid"))
+						{
+							((*binding_content)[binding_len]-> value()) >>= req_component_id;
+						} // end of component_id
+
+						// search for restriction
+						if (!strcmp((*binding_content)[binding_len]->name(), "restriction"))
+						{
+							((*binding_content)[binding_len]-> value()) >>= req_operation_name;
+						} // end of restriction
+					} // end of binding search
+				} // end serach for binding
+
+				//search for constraint
+				if ( !strcmp((*extension_content)[ext_len]->name(), "constraint"))
+				{
+					Components::ConfigValues *constraint_content;
+					Components::ConfigValue *test;
+					((*extension_content)[ext_len]-> value()) >>= constraint_content ;
+					CORBA::ULong constraint_len;
+					for (constraint_len = 0; constraint_len < constraint_content->length(); constraint_len++)
+					{
+						// search for charakteristic
+						if ( !strcmp((*constraint_content)[constraint_len]->name(), "characteristic"))
+						{
+							// only search for reservation
+							// first element of content needs to be a name=Reservation
+							Components::ConfigValues *characteristic_content;
+
+							//((*constraint_content)[constraint_len]-> value()) >>= characteristic_content ;
+							CORBA::Any *test2_any = new CORBA::Any((*constraint_content)[constraint_len] -> value()) ;
+							*test2_any >>= data;//constraint_content;
+
+							char* char_name;
+								if ( !strcmp((*data)[0]->name(), "name"))
+								{
+									((*data)[0]-> value()) >>= char_name;
+									if (!strcmp(char_name,"Reservation"))
+									{
+									//	((*constraint_content)[constraint_len]-> value()) >>= data;
+										//data = characteristic_content;
+										
+									} // end if Reservation
+		
+								} // end name
+						} // end of if characteristic
+					}
+				}
+			} // end of for extension_content
+				server_interceptor_ -> register_requirement(req_component_id, req_operation_name, data);
+		} // end of if extensionspecification
+	} // end of extensionspecification search
+}
+
 // END USER INSERT SECTION ReservationQoSproviderImpl
 
 
@@ -126,7 +213,7 @@ ReservationQoSproviderImpl::trigger_negotiation()
 
 
 Components::Extension::ContractDescription*
-ReservationQoSproviderImpl::req_offer(const Components::Extension::ContractDescription& requirements)
+ReservationQoSproviderImpl::req_offer(const Components::Extension::ContractDescription& requirements, const char* client_id)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ReservationQoSproviderImpl::req_offer
@@ -144,16 +231,18 @@ ReservationQoSproviderImpl::req_offer(const Components::Extension::ContractDescr
 
 
 CORBA::Boolean
-ReservationQoSproviderImpl::accept(const Components::Extension::ContractDescription& requirements)
+ReservationQoSproviderImpl::accept(const Components::Extension::ContractDescription& requirements, const char* client_id)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ReservationQoSproviderImpl::accept
+	std::cout << "@@@@@@@@ got accept" << std::endl;
 
 	// check for offer reservation
 
 	// use ressources
 
 	// store contract info
+	server_interceptor_ -> add_contract(client_id, requirements.dimensions);
 
 	// return an identfier
 	// true meanwhile
@@ -247,6 +336,7 @@ ReservationQoSProvider::ccm_activate()
 // BEGIN USER INSERT SECTION ReservationQoSProvider::ccm_activate
 
 	component_ -> register_copis();
+	component_ -> init_copis(context_ -> get_contract_data());
 
 // END USER INSERT SECTION ReservationQoSProvider::ccm_activate
 }

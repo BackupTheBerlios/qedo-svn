@@ -29,10 +29,28 @@ namespace QedoQoS_Reservation {
 		CORBA::ULong number_of_calls;
 		__time64_t time_stamp;
 
+		// store information for contract negotiation
+		// using better data structure later
+		std::string comp_origin_id;
+		std::string operation_id;
+		Components::ConfigValues* data;
+
+		std::string server_origin;
+		std::string server_operation;
+		Components::ConfigValues* server_data;
+
+		CORBA::ULong number_of_calls_;
+		CORBA::ULong intervall_;
+
 	public:
 		ServerContainerInterceptor(QedoQoS::CCM_Reservation_ContextImpl* context, QedoQoS::ReservationQoSproviderImpl* executor);
 
 		~ServerContainerInterceptor();
+
+
+		virtual void register_requirement(char * component_id, char * receptacle_name, Components::ConfigValues* req);
+
+		virtual void add_contract(const char *component_id, Components::ConfigValues);
 
 		virtual void set_slot_id(PortableInterceptor::SlotId slot_id);
 		virtual void receive_request (Components::Extension::ContainerServerRequestInfo_ptr info) ;

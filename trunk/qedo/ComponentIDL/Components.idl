@@ -1174,9 +1174,9 @@ module Components {
 				*/
 			void trigger_negotiation();
 
-			ContractDescription req_offer(in ContractDescription requirements);
+			ContractDescription req_offer(in ContractDescription requirements, in string client_id);
 
-			boolean accept(in ContractDescription requirements);
+			boolean accept(in ContractDescription requirements, in string client_id);
 		};
 	};
 };
