@@ -235,7 +235,7 @@ void CCDBackendSessionImpl::_generate_component_consumes
 			out << "consumesname=\"" << consumes[i]->identifier() << "\"";
 			HelpFunctions::new_line ( out, indent_level );
 			MDE::ComponentIDL::EventDef_var consumes_type_ = consumes[i]->type ();
-			out << "repid=\"" << HelpFunctions::convert_uml_string_in_path( consumes_type_->repository_id() ) << "\">";
+			out << "eventtype=\"" << consumes_type_->identifier() << "\">";
 			HelpFunctions::new_line ( out, indent_level );
 			out << "<eventpolicy policy=\"normal\"/>";
 			HelpFunctions::dec_indent_level ( indent_level );
@@ -256,7 +256,7 @@ void CCDBackendSessionImpl::_generate_component_emits
 			out << "emitsname=\"" << emits[i]->identifier() << "\"";
 			HelpFunctions::new_line ( out, indent_level );
 			MDE::ComponentIDL::EventDef_var emits_type_ = emits[i]->type ();
-			out << "repid=\"" << HelpFunctions::convert_uml_string_in_path( emits_type_->repository_id() ) << "\">";
+			out << "eventtype=\"" << emits_type_->identifier() << "\">";
 			HelpFunctions::new_line ( out, indent_level );
 			out << "<eventpolicy policy=\"normal\"/>";
 			HelpFunctions::dec_indent_level ( indent_level );
@@ -276,7 +276,7 @@ void CCDBackendSessionImpl::_generate_component_publishes
 			out << "publishesname=\"" << publishes[i]->identifier() << "\"";
 			HelpFunctions::new_line ( out, indent_level );
 			MDE::ComponentIDL::EventDef_var publishes_type_ = publishes[i]->type ();
-			out << "repid=\"" << HelpFunctions::convert_uml_string_in_path( publishes_type_->repository_id() ) << "\">";
+			out << "eventtype=\"" << publishes_type_->identifier() << "\">";
 			HelpFunctions::new_line ( out, indent_level );
 			out << "<eventpolicy policy=\"normal\"/>";
 			HelpFunctions::dec_indent_level ( indent_level );
