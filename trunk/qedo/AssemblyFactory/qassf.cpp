@@ -26,7 +26,7 @@
 #include <signal.h>
 
 
-static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.12 2003/09/09 12:01:33 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.13 2003/09/26 08:17:21 neubauer Exp $";
 
 /**
  * @addtogroup Assembly
@@ -92,17 +92,20 @@ main (int argc, char** argv)
 {
 	std::cout << "Qedo Assembly Factory " << QEDO_VERSION << std::endl;
 
+	//
 	// get the qedo dir
-#ifdef _WIN32
-	TCHAR tchBuffer[256];
-	LPTSTR lpszSystemInfo = tchBuffer;
-	DWORD dwResult = ExpandEnvironmentStrings("%QEDO%", lpszSystemInfo, 256); 
-	Qedo::g_qedo_dir.append(lpszSystemInfo);
-#else
-	char *e = getenv("QEDO");
-	if(e) Qedo::g_qedo_dir.append(e);
-#endif
+	//
+	Qedo::g_qedo_dir = Qedo::getEnvironment( "QEDO" );
+	if(Qedo::g_qedo_dir == "")
+	{
+	    std::cout << "Missing Environment Variable QEDO" << std::endl;
+	    Qedo::g_qedo_dir.append("./");
+	}
+	std::cout << "..... Qedo directory is " << Qedo::g_qedo_dir << std::endl;
 
+	//
+	// init ORB
+	//
 	orb = CORBA::ORB_init (argc, argv);
 
 	//
