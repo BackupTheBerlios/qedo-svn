@@ -1,34 +1,53 @@
-CXX = @CXX@
-PACKAGE = @PACKAGE@
-VERSION = @VERSION@
-VPATH = @srcdir@
+include ../MakeVars
 
-LD=@LD@
-LDFLAGS=@LDFLAGS@
-LIBS=@ORB_COSNAMING_LIB@ @LIBS@ -lxerces-c1_6_0 -lz
-LDFLAGS += -L../ComponentIDL -lComponent\
-           -L../ComponentContainer -lComponentContainer \
-           $(LIBS)
+CXX = @CXX@
+CPPFLAGS+=-I. -I../ComponentIDL -I../ComponentContainer @CPPFLAGS@ 
+CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+CXXCOMPILE=@CXX@ $(CXXFLAGS)
+LIBS+=@LIBS@
+CC=$(CXX)
+
+
+@SET_MAKE@
+
+LIBS += -L../ComponentIDL -lComponent\
+           -L../ComponentContainer -lComponentContainer 
+
+ifeq "${XERCESDIR}" ""
+error "No xerces"
+else
+CPPFLAGS += -I${XERCESDIR}/include
+LIBS += -L${XERCESDIR}/lib -lxerces-c
+endif
+
+LDLIBS = ${LIBS}
 
 #SOURCE_C = libunzip.c
 
-SOURCES =  ComponentInstallationImpl.cpp \
-           InstalledComponent.cpp \
-           main.cpp
+SOURCES = CatalogResolver.cpp \
+          ComponentImplementation.cpp \
+			 ComponentInstallationImpl.cpp \
+			 DOMTreeErrorReporter.cpp \
+			 DOMXMLParser.cpp \
+          NameServiceBase.cpp \
+			 Package.cpp \
+			 PlatformBase.cpp \
+			 XMLCatalog.cpp \
+			 libunzip.cpp \
+			 ci.cpp 
 
 OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
 
-INCLUDES = -I@srcdir@ -I../ComponentIDL\
-           -I@top_srcdir@/ComponentContainer \
-			  -I/usr/local/include/xercesc
-
-CXXFLAGS += $(INCLUDES) @CPPFLAGS@ -MMD -g
-
-CFLAGS   += $(INCLUDES) @CPPFLAGS@ -MMD -g
+.PHONY:all
 
 all: ci
 
-ci: $(OBJS)
-	${CXX} -o $@ $^ ${LDFLAGS}
+ci.cpp : main.cpp
+	@LN_S@ $^ $@
 
--include ${SOURCES:.cpp=.d}
+ci: $(OBJS)
+
+.PHONY:install
+
+install: ci
+

@@ -1,0 +1,18 @@
+SUBDIRS = ComponentIDL \
+	  ComponentContainer \
+	  ComponentInstaller \
+	  ComponentServer \
+	  ComponentServerActivator \
+	  AssemblyFactory \
+	  HomeFinder \
+	  DeploymentClient
+
+all: $(SUBDIRS:%=%-all)
+
+install: $(SUBDIRS:%=%-install)
+
+%-all: %
+	make -C $< all
+
+%-install: %
+	make -C $< install

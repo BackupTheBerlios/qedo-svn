@@ -1,0 +1,62 @@
+##### Qedo Target Dir #####
+# The target dir of Qedo. After building Qedo it will be installed
+# into this directory 
+#QEDO = /home/tri/test/qedo
+
+# operating system
+OS=@OS@
+
+##### ORB #####
+# choose one out of MICO_ORB TAO_ORB ORBACUS_ORB
+ORB = MICO_ORB
+
+HAVE_MICO_CONFIG=@HAVE_MICO_CONFIG@
+# MICO
+#MICO = /opt/mico/
+MICO = $(shell mico-config --prefix)
+MICO_VERSION = $(shell mico-config --version)
+
+# ORBACUS
+ORBACUS = /opt/OOC
+
+
+##### DEBUG #####
+# set Debug = yes to enable Debug compilation
+Debug = yes
+
+# Xerces - XML handling
+# 
+#XERCES = /home/tri/devel/xerces-c-src2_1_0
+XERCESDIR = @XERCESDIR@
+
+# ZLib - Zip File handling
+ZLIB = /home/tri/devel/zlib-1.1.4
+
+# add extention for shared libraries
+SUFFIXES += .so
+
+# rule for shared libraries
+
+ifeq "${CXX}" "g++"
+%.so:
+	${CXX} -shared ${LD_SHRAED_FLAGS} -o $@ $^ $(LIBS)
+
+CXXFLAGS += 
+endif
+
+INSTALL = @INSTALL@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+
+ifeq "MICO_ORB" "${ORB}"
+%.h %.cpp %_skel.h %_skel.cpp: %.idl
+	$(MICO)/bin/idl ${IDL_FLAGS} -I. -I$(MICO)/include -I$(MICO)/include/mico -DMICO_ORB --any --c++-suffix cpp --c++-skel $< \
+	&&  cp $*.h $*_skel.h
+MICO_CXXFLAGS := $(shell mico-config --cxxflags)
+CXXFLAGS += -DMICO_ORB $(MICO_CXXFLAGS) 
+LIBS += $(shell mico-config --libs)
+endif
+
+install:
+	${INSTALL} $^ @bindir@ 
+

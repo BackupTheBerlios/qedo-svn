@@ -1,29 +1,45 @@
+include ../MakeVars
+
 CXX = @CXX@
-PACKAGE = @PACKAGE@
-VERSION = @VERSION@
-VPATH = @srcdir@
 
-LD=@LD@
-LDFLAGS=@LDFLAGS@
-LIBS=@LIBS@
-LDFLAGS += -L../ComponentIDL -lComponent \
-           -L../ComponentContainer -lComponentContainer \
-	   @ORB_COSNAMING_LIB@ \
-           $(LIBS) -ldl
+CPPFLAGS+=-I. -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller @CPPFLAGS@ 
+CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+CXXCOMPILE=@CXX@ $(CXXFLAGS)
+LIBS+=@LIBS@
+CC=$(CXX)
 
-SOURCES = ComponentServerImpl.cpp main.cpp
+@SET_MAKE@
+
+
+LIBS += -L../ComponentIDL -lComponent -luuid
+
+ifeq "${ORB}" "MICO_ORB"
+LIBS += $(shell mico-config --cosslibs)
+CPPFLAGS += -I$(shell mico-config --prefix)/include/coss
+endif
+LIBS += -L../ComponentIDL -lComponent \
+           -L../ComponentContainer -lComponentContainer 
+
+LDLIBS = ${LIBS}
+
+SOURCES = ComponentServerImpl.cpp \
+			 ClientInterceptorDispatcher.cpp \
+			 ServerInterceptorDispatcher.cpp \
+			 ORBInitializerImpl.cpp \
+          cs.cpp \
+			 ../ComponentInstaller/NameServiceBase.cpp
 
 OBJS = ${SOURCES:.cpp=.o}
 
-INCLUDES = -I@srcdir@ \
-           -I../ComponentIDL \
-           -I@top_srcdir@/ComponentContainer 
-
-CXXFLAGS += $(INCLUDES) @CPPFLAGS@ -MMD -g
+.PHONY:all
 
 all: cs
 
-cs: $(OBJS)
-	${CXX} -o $@ $^ ${LDFLAGS}
+cs.cpp : main.cpp
+	@LN_S@ $^ $@
 
--include ${SOURCES:.cpp=.d}
+cs: $(OBJS)
+
+.PHONY:install
+
+install: cs

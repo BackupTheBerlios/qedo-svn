@@ -1,7 +1,7 @@
 include ../MakeVars
 
 CXX = @CXX@
-CPPFLAGS+=-I. -I../ComponentIDL -I../ComponentContainer @CPPFLAGS@ 
+CPPFLAGS+=-I. -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller @CPPFLAGS@ 
 CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS+=@LIBS@
@@ -14,22 +14,24 @@ LIBS += -L../ComponentIDL -lComponent\
 
 LDLIBS = ${LIBS}
 
-SOURCES =  ServerActivatorImpl.cpp \
-           csa.cpp
+SOURCES =  HomeFinderEntry.cpp \
+			  HomeFinderImpl.cpp \
+			  ../ComponentInstaller/NameServiceBase.cpp \
+           HomeFinder.cpp
 
 OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
 
 
 .PHONY:all
 
-all: csa
+all: HomeFinder
 
-csa.cpp : main.cpp
+HomeFinder.cpp : main.cpp
 	@LN_S@ $^ $@
 
-csa: $(OBJS)
+HomeFinder: $(OBJS)
 
 .PHONY:install
 
-install: csa
+install: HomeFinder
 
