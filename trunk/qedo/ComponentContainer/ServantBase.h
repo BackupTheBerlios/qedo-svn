@@ -45,12 +45,12 @@ class CONTAINERDLL_API ServantBase : public virtual PortableServer::RefCountServ
 {
 protected:
 	/** the executor locator of the component instance */
-	Components::ExecutorLocator_var executor_locator_;
+	Components::ExecutorLocator_var		executor_locator_;
 
-	/** the object executor of the component instance */
-	CCMObjectExecutor* ccm_object_executor_;
+	/** the generic ccm object executor for the component instance */
+	CCMObjectExecutor*					ccm_object_executor_;
 
-	/** the */
+	/** the current executor*/
 	CORBA::Object_ptr current_executor_;
 
 public:

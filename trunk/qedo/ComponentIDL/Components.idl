@@ -333,6 +333,9 @@ module Components {
 		boolean is_caller_in_role (in string role);
 		void set_rollback_only()
 			raises (IllegalState);
+		/** extension */
+		Object resolve_service_reference(in string service_id)
+			raises(CCMException);
 	};
 		
 	local interface EnterpriseComponent {
@@ -671,6 +674,9 @@ module Components {
 			CCMHomes get_homes();
 
 			void remove() raises (RemoveFailure);
+
+			/** extension */
+			void install_service_reference(in string id, in Object ref) raises (CCMException);
 		};
 	}; // end of module deployment
 

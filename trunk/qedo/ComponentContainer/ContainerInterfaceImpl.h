@@ -33,6 +33,7 @@
 #include "HomeServantBase.h"
 #include "Util.h"
 #include <vector>
+#include <string>
 
 
 namespace Qedo {
@@ -83,6 +84,38 @@ public:
 };
 
 
+/**
+ * entry in a list of services
+ * the entry is part of the list of services in the container interface class
+ */
+class ServiceReferenceEntry
+{
+public:
+	/** the service id */
+	std::string				_service_id;
+
+	/** the initial service reference */
+	CORBA::Object_var		_service_ref;
+
+	/**
+	 * constructor
+	 * \param service_id The service id.
+	 * \param service_ref The initial reference of the service.
+	 */
+	ServiceReferenceEntry(const char* service_id, CORBA::Object_ptr service_ref);
+
+	/**
+	 * copy constructor
+	 */
+	ServiceReferenceEntry (const ServiceReferenceEntry&);
+
+	/**
+	 * destructor
+	 */
+	~ServiceReferenceEntry();
+};
+
+
 enum ContainerType {CT_EMPTY, CT_SERVICE, CT_SESSION, CT_PROCESS, CT_ENTITY};
 
 
@@ -105,6 +138,8 @@ private:
 	Qedo_Components::HomeFinder_var							home_finder_;
 	/** the list of installed homes */
 	std::vector <HomeEntry>									installed_homes_;
+	/** the list of services */
+	std::vector <ServiceReferenceEntry>						service_references_;
 
 	/**
 	 * loads a shared library
@@ -131,6 +166,14 @@ public:
 	~ContainerInterfaceImpl();
 
 	/**
+	 * provide the initial service reference of the specified service
+	 * \param service_id The service id.
+	 * \return The initial reference of the service.
+	 */
+	CORBA::Object_ptr resolve_service_reference(const char* service_id)
+		throw (Components::CCMException);
+
+	/**
 	 * implements IDL:omg.org/Components/Deployment/Container/configuration:1.0
 	 * not implemented yet
 	 */
@@ -149,6 +192,8 @@ public:
 	 * The ConfigValue named "HOMEFINDERNAME" is used to provide a name for home registration in a HomeFinder,
 	 * if available. Currently each home is registered automatically anyway by repository ids of home and
 	 * managed component.
+	 * The ConfigValue named "SERVICEHOME" could be used to indicate that a component of this home is a container
+	 * service. This is still under development!
 	 * \param id The interface repository id of the home.
 	 * \param entrypt The name of the entry point.
 	 * \param config The list of config values.
@@ -185,6 +230,16 @@ public:
 	 */
     virtual void remove()
         throw (Components::RemoveFailure, CORBA::SystemException);
+
+	/**
+     * implements IDL:omg.org/Components/Deployment/Container/install_service_reference:1.0
+     * Qedo extension!
+	 * register an initial reference of a service
+	 * \param id The id of the service.
+	 * \param ref The reference of the service.
+	 */
+    virtual void install_service_reference(const char* id, CORBA::Object_ptr ref)
+		throw (Components::CCMException, CORBA::SystemException);
 };
 
 /** @} */

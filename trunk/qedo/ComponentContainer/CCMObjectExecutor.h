@@ -52,6 +52,9 @@ class HomeServantBase;
  */
 class CONTAINERDLL_API CCMObjectExecutor : public RefCountBase
 {
+	/** need access to home_servant_ */
+	friend class PrimaryServant;
+
 private:
 	/** list of facets */
 	FacetVector						facets_;
@@ -74,10 +77,14 @@ private:
 	/** the identity of this component */
 	std::string						uuid_;
 
-	/** copy constructor shall not be called */
+	/**
+	 * copy constructor shall not be called
+	 */
 	CCMObjectExecutor (const CCMObjectExecutor&);
 
-	/** assignment operator shall not be called */
+	/**
+	 * assignment operator shall not be called
+	 */
 	CCMObjectExecutor& operator= (const CCMObjectExecutor&);
 
 public:
@@ -104,6 +111,11 @@ public:
 	 * provides the object reference for the component CCMObject interface
 	 */
 	const CORBA::Object_ptr get_component();
+
+	/**
+	 * provides the object reference for the home interface
+	 */
+	const Components::CCMHome_ptr get_home();
 
 	/**
 	 * provides a list of consumers for the given publisher name

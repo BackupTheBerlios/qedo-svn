@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.8 2003/04/03 09:08:08 tom Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.9 2003/04/08 07:27:16 neubauer Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -74,6 +74,13 @@ const CORBA::Object_ptr
 CCMObjectExecutor::get_component()
 {
 	return CORBA::Object::_duplicate (component_primary_ref_);
+}
+
+
+const Components::CCMHome_ptr 
+CCMObjectExecutor::get_home()
+{
+	return home_servant_->ref();
 }
 
 

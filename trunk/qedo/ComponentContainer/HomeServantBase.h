@@ -43,6 +43,7 @@ namespace Qedo {
  */
 
 
+class ExecutorContext;
 class ComponentInstance;
 class ContainerInterfaceImpl;
 
@@ -54,6 +55,7 @@ class CONTAINERDLL_API HomeServantBase : public PortableServer::RefCountServantB
 {
 	/** makes use of this */
 	friend class ContainerInterfaceImpl;
+	friend class PrimaryServant;
 
 private:
 	/** poa manager */
@@ -70,7 +72,13 @@ private:
 	/** repository id of the component */
 	CORBA::String_var				comp_repository_id_;
 
-	/** the servant locator */
+	/** the container interface where the home is installed in */
+	ContainerInterfaceImpl*			container_;
+
+	/** the name of the service if the homes components implement a container service */
+	std::string						service_name_;
+
+	/** the servant locator for the homes components */
 	ServantLocator*					servant_locator_;
 	
 	/** This counter will be part of any object reference created by this home */
@@ -98,6 +106,19 @@ private:
 	 */
 	virtual void do_finalize_component_incarnation (Components::ExecutorLocator_ptr) = 0;
 
+	/**
+	 * set the container this home is installed in
+	 * \param container The container the home is installed in.
+	 */
+	void container(ContainerInterfaceImpl* container);
+
+	/**
+	 * set the name of the service the components implement (only if installed as service home)
+	 * \param name The name of the service.
+	 */
+	void service(const char* name);
+
+
 protected:
 	/** poa */
 	PortableServer::POA_var					home_poa_;
@@ -119,13 +140,11 @@ protected:
 
 	/**
 	 * start component incarnation
-	 * \param rep_id The repository id of the component.
 	 * \param executor_locator The executor locator of the component instance.
 	 * \param ccm_context The context of the component instance
 	 * \return The component instance.
 	 */
-	ComponentInstance& incarnate_component (const char* rep_id, 
-		                                    Components::ExecutorLocator_ptr executor_locator, 
+	ComponentInstance& incarnate_component (Components::ExecutorLocator_ptr executor_locator, 
 											ExecutorContext* ccm_context);
 	
 	/**

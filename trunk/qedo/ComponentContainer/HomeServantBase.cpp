@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.8 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.9 2003/04/08 07:27:16 neubauer Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -78,6 +78,20 @@ HomeServantBase::~HomeServantBase()
 }
 
 
+void 
+HomeServantBase::container(ContainerInterfaceImpl* container)
+{
+	container_ = container;
+}
+
+
+void 
+HomeServantBase::service(const char* name)
+{
+	service_name_ = name;
+}
+
+
 CORBA::Object_ptr
 HomeServantBase::create_object_reference (const CORBA::OctetSeq* qedo_key, const char* rep_id)
 {
@@ -114,39 +128,22 @@ HomeServantBase::reference_to_oid (const CORBA::Object_ptr obj)
 
 
 ComponentInstance& 
-HomeServantBase::incarnate_component (const char* rep_id, 
-									  Components::ExecutorLocator_ptr executor_locator,
-									  ExecutorContext* ccm_context)
+HomeServantBase::incarnate_component (Components::ExecutorLocator_ptr executor_locator, ExecutorContext* ccm_context)
 {
-	CORBA::Object_var component_ref = this->create_primary_object_reference (rep_id);
+	// set the container where the home is installed in to the context
+	ccm_context->container (this->container_);
 
-	// Now do all the other stuff
-	PortableServer::ObjectId* object_id = new PortableServer::ObjectId();
-	*object_id = *(this->reference_to_oid (component_ref));
+	// create object reference
+	CORBA::Object_var component_ref = this->create_primary_object_reference (this->comp_repository_id_);
 
-	ComponentInstance new_component (*object_id, component_ref, executor_locator, ccm_context, this);
-	
+	// create object id
+	PortableServer::ObjectId_var object_id = this->reference_to_oid (component_ref);
+
+	// create component instance and register it
+	ComponentInstance new_component (object_id, component_ref, executor_locator, ccm_context, this);
 	component_instances_.push_back (new_component);
-
-	std::vector <ComponentInstance>::iterator components_iter;
-
-	for (components_iter = component_instances_.begin(); 
-		 components_iter != component_instances_.end(); 
-		 components_iter++)
-	{
-		if (Qedo::compare_object_ids ((*components_iter).object_id_, *object_id))
-		{
-			break;
-		}
-	}
-
-	if (components_iter == component_instances_.end())
-	{
-		NORMAL_ERR ("HomeServantBase: Fatal internal error in incarnate component(): Instance list corrupted");
-		assert (0);
-	}
-
-	return *components_iter;
+	
+	return component_instances_.back ();
 }
 
 

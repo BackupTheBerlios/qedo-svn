@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMContext.cpp,v 1.4 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: CCMContext.cpp,v 1.5 2003/04/08 07:27:16 neubauer Exp $";
 
 #include "CCMContext.h"
 #include "Output.h"
@@ -40,6 +40,13 @@ CCMContext::~CCMContext()
 }
 
 
+void 
+CCMContext::container(ContainerInterfaceImpl* container)
+{
+	container_ = container;
+}
+
+
 Components::Principal 
 CCMContext::get_caller_principal()
 {
@@ -50,7 +57,7 @@ CCMContext::get_caller_principal()
 Components::CCMHome_ptr 
 CCMContext::get_CCM_home()
 {
-	return Components::CCMHome::_nil();
+	return ccm_object_executor_->get_home();
 }
 
 
@@ -81,6 +88,14 @@ void
 CCMContext::set_rollback_only()
 throw (Components::IllegalState)
 {
+}
+
+
+CORBA::Object_ptr 
+CCMContext::resolve_service_reference(const char* service_id)
+throw (Components::CCMException)
+{
+	return container_->resolve_service_reference(service_id);
 }
 
 

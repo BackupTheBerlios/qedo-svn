@@ -20,9 +20,10 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServantBase.cpp,v 1.4 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: ServantBase.cpp,v 1.5 2003/04/08 07:27:16 neubauer Exp $";
 
 #include "ServantBase.h"
+#include "HomeServantBase.h"
 #include "Output.h"
 
 
@@ -294,6 +295,27 @@ PrimaryServant::configuration_complete()
 throw (Components::InvalidConfiguration, CORBA::SystemException)
 {
     executor_locator_->configuration_complete();
+
+	//
+	// check whether the components home is for container services
+	//
+	if(ccm_object_executor_->home_servant_->service_name_ != "")
+	{
+		std::string name = ccm_object_executor_->home_servant_->service_name_;
+		
+		try
+		{
+			ccm_object_executor_->home_servant_->container_->install_service_reference(name.c_str(), 
+				ccm_object_executor_->component_primary_ref_);
+		}
+		catch(Components::CCMException)
+		{
+			NORMAL_ERR("ERROR: a component shall implement a service which is already implemented in the container");
+		}
+
+		//container->set_service_executor(executor_locator_->obtain_executor("component"));
+		//servant_locator->set_service_executor(executor_locator_->obtain_executor("component"));
+	}
 }
 
 

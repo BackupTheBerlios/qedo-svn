@@ -29,6 +29,7 @@
 #include "CCMObjectExecutor.h"
 #include "RefCountBase.h"
 #include "Util.h"
+#include "ContainerInterfaceImpl.h"
 
 
 namespace Qedo {
@@ -81,12 +82,22 @@ namespace Qedo {
  */
 
 
+class ContainerInterfaceImpl;
+
+
 /**
  * implementation of IDL:omg.org/Components/CCMContext:1.0
  */
 class CONTAINERDLL_API CCMContext : public virtual Components::CCMContext,
 									public virtual Qedo::RefCountLocalObject
 {
+protected:
+	/** the object executor for the component */
+	CCMObjectExecutor*				ccm_object_executor_;
+
+	/** the container interface where the components home is installed in */
+	ContainerInterfaceImpl*			container_;
+
 public:
 	/**
 	 * constructor
@@ -99,6 +110,12 @@ public:
 	~CCMContext();
 
 	/**
+	 * sets the container where the home of the component is installed in
+	 * \param container The container where the home of the component is installed in.
+	 */
+	void container(ContainerInterfaceImpl* container);
+
+	/**
 	 * implements IDL:omg.org/Components/CCMContext/get_caller_principal:1.0
 	 * (not implemented yet)
 	 * \return The caller principal.
@@ -107,8 +124,8 @@ public:
 
 	/**
 	 * implements IDL:omg.org/Components/CCMContext/get_CCM_home:1.0
-	 * (not implemented yet)
-	 * \return The CCMHome. 
+	 * provide the home of the component
+	 * \return The object reference of the component home. 
 	 */
 	Components::CCMHome_ptr get_CCM_home();
 
@@ -138,6 +155,13 @@ public:
 	 */
     void set_rollback_only()
 		throw (Components::IllegalState);
+
+	/**
+	 * implements IDL:omg.org/Components/CCMContext/resolve_service_reference:1.0
+     * Qedo CCM extension to allow generic handling of service integration
+	 */
+    CORBA::Object_ptr resolve_service_reference(const char* service_id)
+		throw (Components::CCMException);
 };
 
 
@@ -146,10 +170,6 @@ public:
  */
 class CONTAINERDLL_API ExecutorContext : public virtual CCMContext
 {
-protected:
-	/** the object executor for the component */
-	CCMObjectExecutor* ccm_object_executor_;
-
 public:
 	/**
 	 * constructor

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.9 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.10 2003/04/08 07:27:16 neubauer Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -84,6 +84,26 @@ HomeEntry::~HomeEntry()
 	DEBUG_OUT2("HomeEntry: Destructor called for ", this);
 	home_servant_->_remove_ref();
 	if (home_cookie_) { home_cookie_->_remove_ref(); }
+}
+
+
+ServiceReferenceEntry::ServiceReferenceEntry (const char* service_id, CORBA::Object_ptr service_ref)
+: _service_id(service_id)
+, _service_ref(CORBA::Object::_duplicate(service_ref))
+{
+	DEBUG_OUT2("ServiceReferenceEntry: new entry for ", service_id);
+}
+
+
+ServiceReferenceEntry::ServiceReferenceEntry (const ServiceReferenceEntry& service_entry)
+: _service_id(service_entry._service_id)
+, _service_ref(CORBA::Object::_duplicate(service_entry._service_ref))
+{
+}
+
+
+ServiceReferenceEntry::~ServiceReferenceEntry()
+{
 }
 
 
@@ -212,6 +232,30 @@ throw (Components::Deployment::UnknownImplId,
 	DEBUG_OUT2("ContainerInterfaceImpl: install_home() called for ", id);
 
 	//
+	// analyse the configuration values
+	//
+	Components::ConfigValue* value;
+	const char* homefinder_name = "";
+	const char* service_name = 0;
+
+	for (CORBA::ULong i = 0; i < config.length(); i++)
+	{
+		value = (Components::ConfigValue*)config[i];
+
+		if (! strcmp (config[i]->name(), "HOMEFINDERNAME"))
+		{
+			config[i]->value() >>= homefinder_name;
+			break;
+		}
+
+		if (! strcmp (config[i]->name(), "SERVICEHOME"))
+		{
+			config[i]->value() >>= service_name;
+			break;
+		}
+	}
+
+	//
 	// Retrieve implementation description from the Component Installer
 	//
 	CORBA::String_var description;
@@ -298,7 +342,6 @@ throw (Components::Deployment::UnknownImplId,
 	}
 	
 	Qedo::HomeServantBase* qedo_home_servant;
-
 	qedo_home_servant = (*servant_entry_proc)();
 
 	if (! qedo_home_servant)
@@ -337,7 +380,7 @@ throw (Components::Deployment::UnknownImplId,
 		}
 		break;
 	}
-	
+
 	//
 	// Load the executor module
 	//
@@ -350,7 +393,7 @@ throw (Components::Deployment::UnknownImplId,
 	}
 
 	//
-	// Find the entry point function
+	// Find the entry point function for the executor module
 	//
 	Components::HomeExecutorBase_ptr (*executor_entry_proc)();
 
@@ -370,7 +413,6 @@ throw (Components::Deployment::UnknownImplId,
 	}
 	
 	Components::HomeExecutorBase_ptr home_executor;
-		
 	home_executor = (*executor_entry_proc)();
 
 	if (! home_executor)
@@ -379,33 +421,26 @@ throw (Components::Deployment::UnknownImplId,
 		throw Components::Deployment::InstallationFailure();
 	}
 
+	//
 	// Initialize home servant
+	//
 	qedo_home_servant->initialize (root_poa_, home_executor);
-
+	qedo_home_servant->container(this);
+	if(service_name) {
+		qedo_home_servant->service (service_name);
+	}
+	
 	Components::CCMHome_var home_ref = qedo_home_servant->ref();
 
 	//
 	// register home in HomeFinder
 	//
-	Components::ConfigValue* value;
-	const char* name_forHF = "";
 	Components::Cookie_var cookie;
-
-	for (CORBA::ULong i = 0; i < config.length(); i++)
-	{
-		value = (Components::ConfigValue*)config[i];
-		if (! strcmp (config[i]->name(), "HOMEFINDERNAME"))
-		{
-			config[i]->value() >>= name_forHF;
-			break;
-		}
-	}
-
 	if (!CORBA::is_nil(home_finder_.in())) {
         try
 		{
 			cookie = home_finder_->register_home(home_ref, qedo_home_servant->get_component_repid(), 
-												 qedo_home_servant->get_home_repid(), name_forHF);
+												 qedo_home_servant->get_home_repid(), homefinder_name);
 		}
 		catch(...)
 		{
@@ -413,7 +448,7 @@ throw (Components::Deployment::UnknownImplId,
     }
 
 	//
-	// register home
+	// register home in container
 	//
 	HomeEntry new_entry(qedo_home_servant, cookie);
 	installed_homes_.push_back (new_entry);
@@ -494,6 +529,53 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 {
 	throw Components::RemoveFailure();
 }
+
+
+void 
+ContainerInterfaceImpl::install_service_reference(const char* id, CORBA::Object_ptr ref)
+throw (Components::CCMException, CORBA::SystemException)
+{
+	//
+	// check whether a service for this id is already in our list of services
+	//
+	std::vector <ServiceReferenceEntry>::iterator iter;
+
+	for (iter = service_references_.begin(); iter != service_references_.end(); iter++)
+	{
+		if(!iter->_service_id.compare(id)) {
+			// throw an exception
+			// this policy could be configured by ConfigValue (e.g. replace the old service by the new one)
+			throw Components::CCMException();
+		}
+	}
+
+	//
+	// register service
+	//
+	ServiceReferenceEntry new_entry(id, ref);
+	service_references_.push_back (new_entry);
+
+	DEBUG_OUT2("..... service registered for ", id);
+}
+
+
+CORBA::Object_ptr 
+ContainerInterfaceImpl::resolve_service_reference(const char* service_id)
+throw (Components::CCMException)
+{
+	// find the service in our list of services
+	std::vector <ServiceReferenceEntry>::iterator iter;
+
+	for (iter = service_references_.begin(); iter != service_references_.end(); iter++)
+	{
+		if(!iter->_service_id.compare(service_id)) {
+			return CORBA::Object::_duplicate(iter->_service_ref);
+		}
+	}
+
+	throw Components::CCMException();
+}
+
 
 } // namespace Qedo
 

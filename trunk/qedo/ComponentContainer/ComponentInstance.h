@@ -39,6 +39,9 @@ namespace Qedo {
  */
 
 
+class ExecutorContext;
+
+
 /**
  * a component instance
  */
@@ -56,12 +59,17 @@ public:
 
 	/**
 	 * constructor
+	 * \param object_id
+	 * \param component_ref
+	 * \param executor_locator
+	 * \param executor_context
+	 * \param home_servant
 	 */
-	ComponentInstance (const PortableServer::ObjectId&, 
-					   CORBA::Object_ptr, 
-					   Components::ExecutorLocator_ptr,
-					   ExecutorContext*,
-					   HomeServantBase*);
+	ComponentInstance (const PortableServer::ObjectId& object_id, 
+					   CORBA::Object_ptr component_ref, 
+					   Components::ExecutorLocator_ptr executor_locator,
+					   ExecutorContext* executor_context,
+					   HomeServantBase* home_servant);
 
 	/**
 	 * constructor

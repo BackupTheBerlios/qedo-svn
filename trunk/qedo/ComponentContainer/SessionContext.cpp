@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: SessionContext.cpp,v 1.5 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: SessionContext.cpp,v 1.6 2003/04/08 07:27:16 neubauer Exp $";
 
 #include "SessionContext.h"
 #include "Output.h"
@@ -46,49 +46,5 @@ SessionContext::get_CCM_object()
 	return ccm_object_executor_->get_component();
 }
 
-
-Components::Principal 
-SessionContext::get_caller_principal()
-{
-	return 0;
-}
-
-
-Components::CCMHome_ptr 
-SessionContext::get_CCM_home()
-{
-	DEBUG_OUT ("SessionContext: get_CCM_Home() called");
-	return Components::CCMHome::_nil();
-}
-
-
-CORBA::Boolean 
-SessionContext::get_rollback_only()
-throw (Components::IllegalState)
-{
-	return 0;
-}
-
-
-Components::Transaction::UserTransaction_ptr 
-SessionContext::get_user_transaction()
-throw (Components::IllegalState)
-{
-	return 0;
-}
-
-
-CORBA::Boolean 
-SessionContext::is_caller_in_role (const char* role)
-{
-	return 0;
-}
-
-
-void 
-SessionContext::set_rollback_only()
-throw (Components::IllegalState)
-{
-}
 
 } // namepscae Qedo
