@@ -23,10 +23,12 @@
 /*                                                                           */
 /*****************************************************************************/
 
-This File decribes the process of installing the Qedo code generator. Because the code generator is a complex software it need many other software products. You have to install all of them before you can compile the code generator. This will take you an amount of time and some expiriences with installing such software qould be very helpfull. Nevertheless, we hopte that this little discription will give enough information to acomplish all needed steps. 
-The Qedo code generator can be compiled by using the MS Visual Studio 6 oder MS Visual Studio.Net.
+Version 0.0.1
 
-If yuo have any problem or if you have any comments do not hesitate to contact the other Qedo users by using the qedo-devel mailing list. You can reach it at qedo-devel@lists.berlios.de. You can also use the bug tracking system provided by the Qedo project. You can reach it at http://qedo.berlios.de. this site has all relevant information about the Qedo project. In any case you can also contact the authors directly. The email addresses are listed on the Qedo web page as well.
+This File describes the process of installing the Qedo code generator. Because the code generator is a complex software it need many other software products. You have to install all of them before you can compile the code generator. This will take you some time and experiences with installing such software would be very helpful. Nevertheless, we hope that this little description will give enough information to acomplish all needed steps. 
+The Qedo code generator can be compiled by using the MS Visual Studio 6, MS Visual Studio.Net, Solaris gcc, or Linux gcc.
+
+If you have any problem or if you have any comments do not hesitate to contact the other Qedo users by using the qedo-devel mailing list. You can reach it at qedo-devel@lists.berlios.de. You can also use the bug tracking system provided by the Qedo project. You can reach it at http://qedo.berlios.de. this site has all relevant information about the Qedo project. In any case you can also contact the authors directly. The email addresses are listed on the Qedo web page as well.
 
 The Qedo team.
 
@@ -115,27 +117,18 @@ set environment:
 kimwitu++
 ------------------------------------------------------------------------------
 obtain software:
-	Version: 2.3.1
-	get from: http://site.informatik.hu-berlin.de/kimwitu++/download.html -> precompiled version (kc++-2.3.1.exe)
+	Version: 2.3.4
+	get from: http://site.informatik.hu-berlin.de/kimwitu++/download.html -> precompiled version (kc++-2.3.4.exe)
 install/compile:
 set environment:
-	 KC++ = kimwitu++\kc++-2.3.1.exe
+	 KC++ = kimwitu++\kc++-2.3.4.exe
 
 ------------------------------------------------------------------------------
 
-ORB
----
 
 
-For Mico you have to set the MICO environment variable to the root of your mico installation. (e.g. C:\opt\MICO) But pay attention you have to add the path 'Mico install directory' + '\win32_bin' to the Visual Studio settings. Otherwise mico will not find its own preprocessor mico-cpp.exe
-
-For TAO you will have to set the TAO environment variable. (e.g. C:\opt\ACE_wrappers)
-
-For ORBacus you will have to set the ORBACUS environment varibale. (e.g. C:\opt\OOC)
-
-
-Compiling
----------
+3. Compiling Windows
+====================
 
 If you use the MS Visual Studio 6 you have to open the workspace :
 generator2\build\win32\VC6\generator.dsw 
@@ -149,3 +142,10 @@ mico    ->   CIDLGenerator - Win32 Debug_mico
 tao     ->   CIDLGenerator - Win32 Debug_tao
 orbacus ->   CIDLGenerator - Win32 Debug_orbacus
 
+4. Compiling Unix
+=================
+
+
+Change to the directory build/linux. 
+
+Call make Debug_orbacus_linux.
