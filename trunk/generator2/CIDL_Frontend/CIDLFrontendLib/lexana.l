@@ -11,7 +11,7 @@
 using namespace std;
 
 static int state_before_coment = YYSTATE;
-static int yylineno = 1;
+static int yylinenumber = 1;
 static char filename[1024];
 static char first_filename[1024]={0,};
 char* input_basename = 0; /* base name of the input file */
@@ -144,7 +144,7 @@ MkIdentifier()
 	}
 	name = Name(mkcasestring(yytext));
 	name->filename=mkcasestring(filename);
-	name->line=mkinteger(yylineno);
+	name->line=mkinteger(yylinenumber);
 	name->nc = nc;
 	if(!strcmp(filename,first_filename)) name->code=true;
 	return name;
@@ -157,7 +157,7 @@ MkEscapedIdentifier()
 	nocasestring nc = mknocasestring(yytext+1);
 	name = EscapedName(mkcasestring(yytext+1));
 	name->filename=mkcasestring(filename);
-	name->line=mkinteger(yylineno);
+	name->line=mkinteger(yylinenumber);
 	name->nc = nc;
 	if(!strcmp(filename,first_filename)) name->code=true;
 	return name;
@@ -246,7 +246,8 @@ ENOL                    (\n|\n)
                section = string(yytext+29,yyleng-30);
                (*user_sections)[section]=string("");
             }
-<sections>"// BEGIN USER INSERT SECTION "[a-zA-Z_:~]*"\n" {
+<sections>"// BEGIN USER INSERT SECTION "[a-zA-Z_:~]*
+"\n" {
                BEGIN(userinput);
                section = string(yytext+29,yyleng-31);
                (*user_sections)[section]=string("");
@@ -263,11 +264,11 @@ ENOL                    (\n|\n)
 "/*"			{ state_before_coment = YYSTATE; BEGIN(comment); }
 <comment>"*/"		{ BEGIN(state_before_coment); }
 <comment>[^\n]		{}
-<comment>\n		{ yylineno++; }
+<comment>\n		{ yylinenumber++; }
 
 "#"{S}*"include"{S}*[<\"][a-zA-Z\/\._]+[>\"]{S}*\n  {
                     yylval.yt_definition = PreDirect(mkcasestring(yytext)); 
-                    yylineno++;
+                    yylinenumber++;
                     return PREDIRECT;
                   } 
 {S}*"#"{S}*"ifndef"[^\n]*   {}
@@ -285,11 +286,11 @@ ENOL                    (\n|\n)
               }
             }
 {S}*"#"{S}*"pragma"[^\n]*   {}
-"#"{S}*{D}+{S}*\n { fprintf(stderr,">>%s<<\n",yytext); yylineno++;}
-"#"{S}*{D}+{S}+\n { fprintf(stderr,">>%s<<\n",yytext); yylineno++;}
-"#"{S}*"line"{S}+{D}+{S}*\n { fprintf(stderr,">>%s<<\n",yytext); yylineno++;}
+"#"{S}*{D}+{S}*\n { fprintf(stderr,">>%s<<\n",yytext); yylinenumber++;}
+"#"{S}*{D}+{S}+\n { fprintf(stderr,">>%s<<\n",yytext); yylinenumber++;}
+"#"{S}*"line"{S}+{D}+{S}*\n { fprintf(stderr,">>%s<<\n",yytext); yylinenumber++;}
 "#"{S}*"line"{S}+{D}+{S}+"\""[^\"]*"\"".*\n {  /* for VC++ as cpp */
-              if(sscanf(yytext,"#line %d \"%s\"",&yylineno,filename)!=2)
+              if(sscanf(yytext,"#line %d \"%s\"",&yylinenumber,filename)!=2)
                 fprintf(stderr,"Ooops in scanning %s",yytext);
               else if(!input_basename) {
                 char *slash=0,*dot=0;
@@ -313,7 +314,7 @@ ENOL                    (\n|\n)
 
 
 "#"{S}+{D}+{S}+"\""[^\"]*"\"".*\n { 
-              if(sscanf(yytext,"# %d \"%s\"",&yylineno,filename)!=2)
+              if(sscanf(yytext,"# %d \"%s\"",&yylinenumber,filename)!=2)
                 fprintf(stderr,"Ooops in scanning %s",yytext);
               else if(!input_basename) {
                 char *slash=0,*dot=0;
@@ -459,7 +460,7 @@ L"'"."'" { return wide_character_literal; }
 
 \"[^\n"]*\"     { yylval.yt_const_expression = MkStringLiteral(); return string_literal; }
 L\"[^\n"]*\"     { return wide_character_literal; }
-\n              { yylineno++; }
+\n              { yylinenumber++; }
 [\t \r]+          { /* ignored */ }
 .               { return yytext[0]; }
 %%
@@ -511,7 +512,7 @@ yyerror_1 (char *s, int state_no)
       && error_message[state_no]
       && error_message[state_no][0])
     s1 = error_message[state_no];
-  fprintf(stderr, "syntax error in %s at line %d: %s:\n%s\n", filename , yylineno, s, s1);
+  fprintf(stderr, "syntax error in %s at line %d: %s:\n%s\n", filename , yylinenumber, s, s1);
   exit(1);
 }
 
