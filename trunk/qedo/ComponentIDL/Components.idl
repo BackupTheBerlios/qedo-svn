@@ -324,8 +324,8 @@ module Components {
 	exception IllegalState { };
 
 		/** extension */
-   native Function;
-   native FunctionData;
+	native Function;
+	native FunctionData;
 
 	local interface Thread {
 		void stop();
@@ -346,7 +346,7 @@ module Components {
 		/** extension */
 		Object resolve_service_reference(in string service_id)
 			raises(CCMException);
-		Thread start_thread(in Function function,in FunctionData data)
+		Thread start_thread(in Function func,in FunctionData data)
 			raises(CCMException);
 	};
 		
