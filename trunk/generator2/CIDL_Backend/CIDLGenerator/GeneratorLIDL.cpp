@@ -547,7 +547,8 @@ GeneratorLIDL::doPublishes(IR__::PublishesDef_ptr publishes)
 void
 GeneratorLIDL::generate(std::string target, std::string fileprefix)
 {
-	initialize(target, fileprefix);
+	try { initialize(target, fileprefix); }
+	catch (InitializeError) { return; }
 
 	filename_ = file_prefix_ + "_LOCAL.idl";
 	

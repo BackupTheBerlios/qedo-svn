@@ -31,8 +31,12 @@ protected:
 
 	std::string getNameFromRepId(std::string id);
 
+	// exceptions
+	class InitializeError {};
+
 	// initialize the generation
-	void initialize(std::string target, std::string fileprefix);
+	void initialize(std::string target, std::string fileprefix)
+		throw(InitializeError);
 	bool already_included (IR__::Contained_ptr item);
 	void insert_to_generate(IR__::Contained_ptr item);
 	virtual void check_for_generation(IR__::Contained_ptr item);

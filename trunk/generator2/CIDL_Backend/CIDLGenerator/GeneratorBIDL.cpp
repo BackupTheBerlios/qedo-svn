@@ -115,7 +115,8 @@ GeneratorBIDL::check_for_generation(IR__::Contained_ptr item)
 void
 GeneratorBIDL::generate(std::string target, std::string fileprefix)
 {
-	initialize(target, fileprefix);
+	try { initialize(target, fileprefix); }
+	catch (InitializeError) { return; }
 
 	filename_ = file_prefix_ + "_BUSINESS.idl";
 	

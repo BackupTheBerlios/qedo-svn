@@ -370,6 +370,9 @@ copy cidl_gend.exe $(QEDO)\bin&quot;
 				RelativePath=".\GeneratorCCD.cpp">
 			</File>
 			<File
+				RelativePath="GeneratorCSD.cpp">
+			</File>
+			<File
 				RelativePath=".\GeneratorEIDL.cpp">
 			</File>
 			<File
@@ -417,6 +420,9 @@ copy cidl_gend.exe $(QEDO)\bin&quot;
 			</File>
 			<File
 				RelativePath=".\GeneratorCCD.h">
+			</File>
+			<File
+				RelativePath="GeneratorCSD.h">
 			</File>
 			<File
 				RelativePath=".\GeneratorEIDL.h">

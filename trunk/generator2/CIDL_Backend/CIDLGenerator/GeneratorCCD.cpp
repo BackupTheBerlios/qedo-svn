@@ -118,17 +118,10 @@ GeneratorCCD::check_for_generation(IR__::Contained_ptr item)
 void
 GeneratorCCD::generate(std::string target, std::string fileprefix)
 {
-	initialize(target, fileprefix);
+	try { initialize(target, fileprefix); }
+	catch (InitializeError) { return; }
+
 	doGenerate();
-}
-
-
-//
-// module
-//
-void
-GeneratorCCD::doModule(IR__::ModuleDef_ptr module)
-{
 }
 
 

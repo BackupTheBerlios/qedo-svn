@@ -67,6 +67,16 @@ void
 GeneratorBase::initialize(std::string target, std::string fileprefix)
 {
 	//
+	// check whether Components.idl is in the repository
+	//
+	if(CORBA::is_nil(repository_->lookup_id("IDL:Components:1.0")))
+	{
+		std::cerr << "----- could not find IDL:Components:1.0 in the repository" << std::endl;
+		std::cerr << "----- generation stopped !!!" << std::endl;
+		throw InitializeError();
+	}
+
+	//
 	// lookup the target
 	//
 	target_ = repository_->lookup_id(target.c_str());
@@ -76,9 +86,9 @@ GeneratorBase::initialize(std::string target, std::string fileprefix)
 	}
 	if(CORBA::is_nil(target_))
 	{
-		std::cerr << "----- could not found " << target << std::endl;
+		std::cerr << "----- could not find " << target << " in the repository" << std::endl;
 		std::cerr << "----- generation stopped !!!" << std::endl;
-		return;
+		throw InitializeError();
 	}
 	target_id_ = target_->id();
 
@@ -92,8 +102,9 @@ GeneratorBase::initialize(std::string target, std::string fileprefix)
 		break;
 	// no other targets supported
 	default :
-		std::cerr << "--- error - kind for " << target << " not supported" << std::endl;
-		return;
+		std::cerr << "----- kind for " << target << " not supported" << std::endl;
+		std::cerr << "----- generation stopped !!!" << std::endl;
+		throw InitializeError();
 	}
 
 	//

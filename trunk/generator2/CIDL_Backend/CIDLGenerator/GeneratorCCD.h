@@ -21,7 +21,6 @@ private:
 	std::string filename_;
 	Printer out;
 
-	void doModule(IR__::ModuleDef_ptr module);
 	void doComposition(CIDL::CompositionDef_ptr composition);
 
 protected:

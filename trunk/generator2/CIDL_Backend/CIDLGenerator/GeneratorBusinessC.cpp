@@ -24,7 +24,9 @@ GeneratorBusinessC::~GeneratorBusinessC
 void
 GeneratorBusinessC::generate(std::string target, std::string fileprefix)
 {
-	initialize(target, fileprefix);
+	try { initialize(target, fileprefix); }
+	catch (InitializeError) { return; }
+
 	doGenerate();
 }
 	

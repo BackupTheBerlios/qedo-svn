@@ -22,7 +22,9 @@ GeneratorVC7::~GeneratorVC7
 void
 GeneratorVC7::generate(std::string target, std::string fileprefix)
 {
-	initialize(target, fileprefix);
+	try { initialize(target, fileprefix); }
+	catch (InitializeError) { return; }
+
 	doGenerate();
 
 	//
@@ -33,7 +35,7 @@ GeneratorVC7::generate(std::string target, std::string fileprefix)
 	out.open(filename_.c_str());
 
 	//
-	// print executor project file
+	// print servant project file
 	//
 	out << "<?xml version=\"1.0\" encoding = \"Windows-1252\"?>\n";
 	out << "<VisualStudioProject\n";

@@ -22,7 +22,6 @@ class GeneratorEIDL : public virtual IDLBase
 	std::map < std::string, bool > includes_;
 	std::map < std::string, IR__::ContainedSeq_var > interface_def_map_;
 
-	void checkForInclude(IR__::Contained_ptr item);
 	void planInterfaceContent(IR__::Contained_ptr item);
 	void doInterfaceContent(IR__::InterfaceDef_ptr item);
 

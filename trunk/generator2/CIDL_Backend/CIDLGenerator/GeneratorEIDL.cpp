@@ -26,32 +26,6 @@ GeneratorEIDL::~GeneratorEIDL
 
 
 void
-GeneratorEIDL::checkForInclude(IR__::Contained_ptr item)
-{
-/*
-			// compare the id of the type with that of the target
-			std::string id = type->id();
-			std::string::size_type len = target_scope_id_.size() - 4;
-			if(! id.compare(0, len, target_scope_id_, 0, len))
-			{
-				// type is from another module than target
-				id.erase(0, 4);
-				len = id.find_first_of("/:");
-				id.erase(len, std::string::npos);
-		
-				// already included ?
-				if(id.compare("CORBA"))
-				{
-				}
-				else if(includes_.find(id) == includes_.end())
-				{
-					includes_[id + ".h"] = true;
-				}
-			}*/
-}
-
-
-void
 GeneratorEIDL::planInterfaceContent(IR__::Contained_ptr item)
 {
 	IR__::Contained_var scope = IR__::Contained::_narrow(item->defined_in());
@@ -127,7 +101,19 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 		if (!id.compare("IDL:CORBA:1.0")) {
 			return;
 		}
-		if (!id.compare("IDL:omg.org/CosPropertyService:1.0")) {
+		if (!id.compare("IDL:omg.org/CosPropertyService:1.0") ||
+			!id.compare("IDL:CosPropertyService:1.0") ) {
+			
+			return;
+		};
+		if (!id.compare("IDL:omg.org/CosNaming:1.0") ||
+			!id.compare("IDL:CosNaming:1.0") ) {
+			
+			std::string name = "CosNaming.idl";
+			if(includes_.find(name) == includes_.end())
+			{
+				includes_[name] = true;
+			}
 			return;
 		};
 	}
@@ -141,11 +127,6 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 	else {
 		m_recursion_set.insert(item->id());
 	}
-
-	//
-	// check for include
-	//
-	//checkForInclude(item);
 
 	CORBA::ULong len;
 	CORBA::ULong i;
@@ -703,7 +684,8 @@ GeneratorEIDL::doOperation(IR__::OperationDef_ptr operation)
 	for(i = 0; i < exception_seq->length(); i++)
 	{
 		if(!i) {
-			out << " raises(";
+			out.indent();
+			out << "\nraises(";
 		}
 		else {
 			out << ", ";
@@ -712,6 +694,7 @@ GeneratorEIDL::doOperation(IR__::OperationDef_ptr operation)
 		out << tcToName((*exception_seq)[i]->type());
 	}
 	if(i) {
+		out.unindent();
 		out << ")";
 	}
 
@@ -1141,11 +1124,15 @@ GeneratorEIDL::doUses(IR__::UsesDef_ptr uses)
 	{
 		out << map_absolute_name(uses->interface_type()) << " get_connection_" << uses->name() << "();\n";
 		
-		out << map_absolute_name(uses->interface_type()) << " disconnect_" << uses->name();
-		out << "() raises (::Components::NoConnection);\n";
+		out << map_absolute_name(uses->interface_type()) << " disconnect_" << uses->name() << "()\n";
+		out.indent();
+		out << "raises (::Components::NoConnection);\n";
+		out.unindent();
 		
-		out << "void connect_" << uses->name() << "(in " << map_absolute_name(uses->interface_type());
-		out << " conxn) raises (::Components::AlreadyConnected, ::Components::InvalidConnection);\n";
+		out << "void connect_" << uses->name() << "(in " << map_absolute_name(uses->interface_type()) << " conxn)\n";
+		out.indent();
+		out << "raises (::Components::AlreadyConnected, ::Components::InvalidConnection);\n";
+		out.unindent();
 	}
 }
 
@@ -1274,7 +1261,8 @@ GeneratorEIDL::doSiSo(IR__::SiSoDef_ptr siso)
 void
 GeneratorEIDL::generate(std::string target, std::string fileprefix)
 {
-	initialize(target, fileprefix);
+	try { initialize(target, fileprefix); }
+	catch (InitializeError) { return; }
 	
 	//
 	// open temp file without includes
@@ -1324,7 +1312,7 @@ GeneratorEIDL::generate(std::string target, std::string fileprefix)
 	std::map < std::string, bool > ::iterator it;
 	for(it = includes_.begin(); it != includes_.end(); it++)
 	{
-		out << "#include \"" << it->first << "\";\n";
+		out << "#include \"" << it->first << "\"\n";
 	}
 	out << "\n";
 
