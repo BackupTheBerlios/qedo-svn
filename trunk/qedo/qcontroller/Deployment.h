@@ -30,7 +30,6 @@
 #include "wx/listctrl.h"
 #include "wx/filedlg.h"
 #include "DescriptorFrame.h"
-
 #include "ComponentDeployment.h"
 
 class Deployment : public wxPanel
@@ -44,26 +43,53 @@ public:
 	void OnFileChoiseButton(wxCommandEvent& WXUNUSED(event));
 	void OnUndeployButton(wxCommandEvent& WXUNUSED(event));
 	void OnDecriptButton (wxCommandEvent& WXUNUSED(event));
+	void OnInstanceButton (wxCommandEvent& WXUNUSED(event));
 
 private:
-	struct r_assemblies{
-		int id;
+	
+	struct instanceinfo
+	{
+		wxTreeItemId itemid;
 		Qedo::ComponentDeployment* reference;
 	};
 
-	typedef std::list < r_assemblies > running_assemblies_;
+	struct r_assemblies
+	{
+		wxTreeItemId itemid;
+		std::string package;
+		std::vector < instanceinfo > instanceinfo_list;
+	};
+
+
+	typedef std::vector < r_assemblies > running_assemblies_;
 	running_assemblies_ running_assemblies;
+	
 	long assemblies_counter_;
 	
 	CORBA::ORB_var orb;
 	wxTextCtrl* assembly_name_;
 	wxButton* file_choice_btn;
 	wxButton* deploy_btn;
+	wxButton* instance_btn;
 	wxButton* descript_btn;
 	wxListCtrl* running_ass_list;
 	wxButton* undeploy_btn;
 	wxFileDialog* file_dialog;
 	DescriptorFrame* descriptor_frame;
+
+	wxTreeCtrl *assemblie_list_;
+	wxTreeItemId rootId;
+
+	r_assemblies getAssembly(wxTreeItemId itemid);
+	r_assemblies getAssembly_by_Instance(wxTreeItemId itemid);
+	
+	Qedo::ComponentDeployment *GetSelectedInstance (std::vector<instanceinfo> iinfo,wxTreeItemId itemid);
+	bool isInstance(wxTreeItemId itemid);
+	std::vector<instanceinfo> deleteItem(std::vector<instanceinfo> iinfo,wxTreeItemId itemid);
+	void delete_assemblie(wxTreeItemId itemid);
+
+	// erase function
+
 	
 
     DECLARE_EVENT_TABLE()

@@ -25,6 +25,7 @@
 #include "wx/stattext.h"
 #include "wx/statline.h"
 #include "wx/log.h"
+#include "wx/DateTime.h"
 
 //#include "MainFrame.h"
 
@@ -36,6 +37,7 @@ BEGIN_EVENT_TABLE(Deployment, wxPanel)
    EVT_BUTTON(ID_FILE_CHOICE_BUTTON, Deployment::OnFileChoiseButton)
    EVT_BUTTON(ID_UNDEPLOY_BUTTON, Deployment::OnUndeployButton)
    EVT_BUTTON(ID_DESCRIPT_BUTTON, Deployment::OnDecriptButton)
+   EVT_BUTTON(ID_INSTANCE_BUTTON, Deployment::OnInstanceButton)
  
 END_EVENT_TABLE()
 
@@ -79,19 +81,48 @@ Deployment::Deployment(wxWindow *parent, const wxWindowID id,
     wxBoxSizer* item11 = new wxBoxSizer(wxVERTICAL);
     item2->Add(item11, 0, wxALIGN_LEFT|wxALL, 5);
 
+	wxStaticText* item13 = new wxStaticText( this, wxID_STATIC, _T("Running \nAssemblies"), wxDefaultPosition, wxDefaultSize, 0 );
+    item11->Add(item13, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+
+
     wxBoxSizer* item12 = new wxBoxSizer(wxHORIZONTAL);
     item11->Add(item12, 0, wxALIGN_LEFT|wxALL, 0);
 
-    wxStaticText* item13 = new wxStaticText( this, wxID_STATIC, _T("Running \nAssemblies"), wxDefaultPosition, wxDefaultSize, 0 );
-    item12->Add(item13, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+	
 
-    running_ass_list = new wxListCtrl( this, ID_RUNNING_LISTCTRL, wxDefaultPosition, wxSize(400, 100), wxLC_LIST  );
-    item12->Add(running_ass_list, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+ //   running_ass_list = new wxListCtrl( this, ID_RUNNING_LISTCTRL, wxDefaultPosition, wxSize(400, 100), wxLC_LIST  );
+   // item12->Add(running_ass_list, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-    wxButton* undeploy_btn = new wxButton( this, ID_UNDEPLOY_BUTTON, _T("Undeploy"), wxDefaultPosition, wxDefaultSize, 0 );
-    item11->Add(undeploy_btn, 0, wxALIGN_LEFT|wxALL, 5);
+	wxBoxSizer* treectrl_sizer=new wxBoxSizer(wxVERTICAL);
+	item12->Add(treectrl_sizer,0,wxALIGN_LEFT|wxALL,0);
+
+	wxBoxSizer* button_sizer=new wxBoxSizer(wxVERTICAL);
+	item12->Add(button_sizer,0,wxALIGN_LEFT|wxALL,0);
+    
+
+	assemblie_list_= new wxTreeCtrl(this,-1,wxDefaultPosition,wxSize(320,300),wxTR_MULTIPLE |wxTR_HAS_BUTTONS ,
+								  wxDefaultValidator,_T("TreeCtrl2"));
+
+
+
+	treectrl_sizer->Add(assemblie_list_,0,wxALIGN_CENTER_VERTICAL|wxALL,5);
+
+	rootId = assemblie_list_->AddRoot(wxT("Running assemblies"),
+                                  -1 , -1 , NULL);
+
+	wxButton* instance_btn = new wxButton( this, ID_INSTANCE_BUTTON, _T("Start new instance"), wxDefaultPosition, wxSize(120,25), 0 );
+    button_sizer->Add(instance_btn, 0, wxALIGN_LEFT|wxALL, 5);
+
+	//spacer
+	button_sizer->Add(5, 15, 0, wxGROW | wxALL, 5);
+
+	wxButton* undeploy_btn = new wxButton( this, ID_UNDEPLOY_BUTTON, _T("Undeploy"), wxDefaultPosition, wxSize(120,25), 0 );
+    button_sizer->Add(undeploy_btn, 0, wxALIGN_LEFT|wxALL, 5);
+
 
 	assemblies_counter_=0;
+
+
 	
 
 }
@@ -150,18 +181,38 @@ Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
 	{
 		wxBusyCursor wait_for_deployment;
 		current_assembly->deploy();
+		
 		assembly_name_->Clear();
+		wxTreeItemId asId=assemblie_list_->AppendItem(rootId,package.c_str(), -1,-1,NULL);
+		wxString instancetext="Instance started at ";
+		// Get current time and date
+		wxDateTime *datetime = new wxDateTime();
+		wxDateTime today=datetime->Today();
+		wxDateTime time=datetime->Now();
+
+
+		instancetext.Append(time.FormatISOTime());
+		instancetext.Append(" on ");
+		instancetext.Append(today.FormatISODate());
+		wxTreeItemId inId=assemblie_list_->AppendItem(asId,instancetext,-1,-1,NULL);
 
 		// update internal List of pointers
+		instanceinfo new_instance;
+		new_instance.itemid=inId;
+		new_instance.reference=current_assembly;
+
 		r_assemblies new_r_assembly;
-		new_r_assembly.id=assemblies_counter_;
-		new_r_assembly.reference=current_assembly;
+		new_r_assembly.itemid=asId;
+		new_r_assembly.package=package;
+		new_r_assembly.instanceinfo_list.push_back(new_instance);
+		//new_r_assembly.id=assemblies_counter_;
+		//new_r_assembly.reference=current_assembly;
 
 		running_assemblies.push_back(new_r_assembly);
 
 		// update running assemblies list
-		running_ass_list->InsertItem(assemblies_counter_,package.c_str());
-		assemblies_counter_++;
+		//running_ass_list->InsertItem(assemblies_counter_,package.c_str());
+		//assemblies_counter_++;
 		
 	}
 	catch(Qedo::ComponentDeployment::DeploymentFailure&)
@@ -187,82 +238,154 @@ Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
 
 void Deployment::OnUndeployButton(wxCommandEvent& WXUNUSED(event))
 {	
-	long item=-1;
-	for(int t=0;t<=running_ass_list->GetSelectedItemCount();t++)
+	wxArrayTreeItemIds selected_;
+	int s_s = assemblie_list_->GetSelections(selected_);
+
+	if(s_s>0)
 	{
-		item=running_ass_list->GetNextItem(item,
-										   wxLIST_NEXT_ALL,
-										   wxLIST_STATE_SELECTED);
-		//wxLogMessage("%ld und %ld",item,running_ass_list->GetSelectedItemCount());
-		if (item!=-1)
-			break;
+		for (int i=0;i<s_s;i++) 
+		{
+			wxTreeItemId itemid = selected_[i];
+			r_assemblies assemblie=getAssembly(itemid);
+			if (isInstance(itemid)) {
+				std::vector <instanceinfo> iinfo=assemblie.instanceinfo_list;
+				
 
-	}
-	//wxLogMessage("%ld",item);
+				Qedo::ComponentDeployment *current_assembly=GetSelectedInstance(iinfo,itemid);
+				
+				try
+				{
+					wxBusyCursor wait_for_undeployment;
+					current_assembly->undeploy();
+					std::vector <instanceinfo> list=deleteItem(assemblie.instanceinfo_list,itemid);
+					if (list.size()==1) {
+						wxLogMessage("1");
+					}
+					if (list.size()==2) {
+						wxLogMessage("2");
+					}
+					if (list.size()==3) {
+						wxLogMessage("3");
+					}
+					assemblie.instanceinfo_list=list;
+					
+					assemblie_list_->Delete(itemid);
+					if (assemblie.instanceinfo_list.empty())
+					{
+						
+						assemblie_list_->Delete(assemblie.itemid);
+						delete_assemblie(assemblie.itemid);
+						
+					}
+						//running_ass_list->DeleteItem(item);
+				}
+				catch(Qedo::ComponentDeployment::DeploymentFailure&)
+				{
+					wxLogMessage ("Cannot undeploy ") ;
+				}
+				catch(CORBA::SystemException&)
+				{
+					wxLogMessage ("Cannot undeploy ") ;
+				}
 
-	
-	r_assemblies tmp_a;
-	std::list< r_assemblies >::iterator it = running_assemblies.begin();
-	
-	for (;it!=running_assemblies.end();it++)
-	{
-		tmp_a=(*it);
-		
-		if (tmp_a.id==item) {
-			//wxLogMessage ("%ld ",tmp_a.id) ;
-			Qedo::ComponentDeployment *current_assembly=tmp_a.reference;
-
-			try
-			{
-				wxBusyCursor wait_for_undeployment;
-				current_assembly->undeploy();
-				running_ass_list->DeleteItem(item);
-				assemblies_counter_--;
+			} else {
 
 			}
-			catch(Qedo::ComponentDeployment::DeploymentFailure&)
-			{
-				wxLogMessage ("Cannot undeploy ") ;
-	
-			}
-			catch(CORBA::SystemException&)
-			{
-				wxLogMessage ("Cannot undeploy ") ;
-	
-			}
-
 			
 		}
 
-
 	}
 
-
+			
 	
-	//wxListItem listitem = running_ass_list->GetSelection();
-
-	//running_ass_list->
-	/*
-	
-
-	try
-	{
-		current_assembly->undeploy();
-	}
-	catch(Qedo::ComponentDeployment::DeploymentFailure&)
-	{
-		std::cerr << "Cannot undeploy " << package << std::endl;
-	//	orb->destroy();
-	//	exit(1);
-	}
-	catch(CORBA::SystemException&)
-	{
-		std::cerr << "Cannot undeploy " << package << std::endl;
-	//	orb->destroy();
-	//	exit(1);
-	}
-	*/
 }
+
+bool Deployment::isInstance(wxTreeItemId itemid)
+{
+	bool retrn=true;
+	
+	if ((assemblie_list_->GetItemParent(itemid))==rootId)
+	{
+		retrn=false;
+	}
+
+	return retrn;
+}
+
+Qedo::ComponentDeployment 
+	*Deployment::GetSelectedInstance
+	(std::vector <instanceinfo> iinfo,wxTreeItemId itemid)
+{
+	Qedo::ComponentDeployment *retrn;
+	std::vector<instanceinfo>::iterator i_iter;
+	for(i_iter = iinfo.begin(); 
+		i_iter != iinfo.end();
+		i_iter++)
+		{	
+			if ((*i_iter).itemid==itemid)
+			{
+				retrn=(*i_iter).reference;
+			}
+		}
+
+	return retrn;
+}
+std::vector <Deployment::instanceinfo> Deployment::deleteItem(std::vector<Deployment::instanceinfo> iinfo,wxTreeItemId itemid)
+{
+	std::vector<instanceinfo> ::iterator i_iter;
+	std::vector<instanceinfo> ::iterator i_iter_two;
+	if (iinfo.size()==0) {
+		wxLogMessage("DI:0");
+	}
+	if (iinfo.size()==1) {
+		wxLogMessage("DI:1");
+	}
+	if (iinfo.size()==2) {
+		wxLogMessage("DI:2");
+	}
+
+	for(i_iter = iinfo.begin(); 
+		i_iter != iinfo.end();
+		i_iter++)
+		{	
+			wxLogMessage(assemblie_list_->GetItemText((*i_iter).itemid));
+			if ((*i_iter).itemid==itemid)
+			{
+				i_iter_two=i_iter;
+				break;
+			}
+		}
+		
+	iinfo.erase(i_iter_two);
+	if (iinfo.size()==0) {
+		wxLogMessage("DI:0:N");
+	}
+	if (iinfo.size()==1) {
+		wxLogMessage("DI:1:N");
+	}
+	return iinfo;
+
+}
+
+void Deployment::delete_assemblie(wxTreeItemId itemid)
+{
+	std::vector<r_assemblies>::iterator a_iter;
+	std::vector<r_assemblies>::iterator a_iter_two;
+	for(a_iter = running_assemblies.begin(); 
+		a_iter != running_assemblies.end();
+		a_iter++)
+		{	
+			if ((*a_iter).itemid==itemid)
+			{
+				a_iter_two=a_iter;
+				break;
+				
+			}
+		}
+
+		running_assemblies.erase(a_iter_two);
+}
+
 
 void Deployment::OnDecriptButton (wxCommandEvent& WXUNUSED(event)) 
 {
@@ -275,7 +398,115 @@ void Deployment::OnDecriptButton (wxCommandEvent& WXUNUSED(event))
 		if (t==wxID_OK) {
 		
 		}
-		descriptor_frame->~DescriptorFrame();
+		if (t==wxID_CANCEL) {
+			descriptor_frame->~DescriptorFrame();
+		}
 	}
 
 }
+
+void Deployment::OnInstanceButton (wxCommandEvent& WXUNUSED(event))
+{
+	wxArrayTreeItemIds selected_;
+	int s_s = assemblie_list_->GetSelections(selected_);
+
+	if (s_s >0) 
+	{
+		for (int i=0;i<s_s;i++) 
+		{
+			wxTreeItemId itemid=selected_[i];
+			r_assemblies assemblie=getAssembly(itemid);
+			
+			//
+			// init ORB
+			//
+	
+			int dummy=0;
+			orb = CORBA::ORB_init (dummy, 0);
+
+			//
+			// Register valuetype factories
+			//
+			CORBA::ValueFactoryBase* factory;
+
+			factory = new Qedo::CookieFactory_impl();
+			orb -> register_value_factory ( "IDL:omg.org/Components/Cookie:1.0", factory );
+			Qedo::ComponentDeployment *current_assembly = new Qedo::ComponentDeployment(assemblie.package);
+			try
+			{
+				wxBusyCursor wait_for_deployment;
+				current_assembly->deploy();
+		
+				wxString instancetext="Instance started at ";
+				// Get current time and date
+				wxDateTime *datetime = new wxDateTime();
+				wxDateTime today=datetime->Today();
+				wxDateTime time=datetime->Now();
+
+
+				instancetext.Append(time.FormatISOTime());
+				instancetext.Append(" on ");
+				instancetext.Append(today.FormatISODate());
+				wxTreeItemId inId=assemblie_list_->AppendItem(assemblie.itemid,instancetext,-1,-1,NULL);
+
+
+				// update internal List of pointers
+				r_assemblies new_assemblies;
+				new_assemblies.itemid=assemblie.itemid;
+				new_assemblies.package=assemblie.package;
+				new_assemblies.instanceinfo_list=assemblie.instanceinfo_list;
+				instanceinfo new_instance;
+				new_instance.itemid=inId;
+				new_instance.reference=current_assembly;
+				delete_assemblie(assemblie.itemid);
+				new_assemblies.instanceinfo_list.push_back(new_instance);
+				running_assemblies.push_back(new_assemblies);
+
+		
+		
+			}
+			catch(Qedo::ComponentDeployment::DeploymentFailure&)
+			{
+				wxLogMessage ("Cannot create new instance ");
+				//	orb->destroy();
+				//	exit(1);
+			}
+			catch(CORBA::SystemException&)
+			{
+				std::cerr << "Cannot deploy " << assemblie.package << std::endl;
+			//	orb->destroy();
+			//	exit(1);
+			}
+
+			
+		}
+
+	}
+}
+
+
+Deployment::r_assemblies Deployment::getAssembly(wxTreeItemId itemid)
+{
+	
+	std::vector <r_assemblies> ::iterator a_iter;
+	for(a_iter = running_assemblies.begin(); 
+		a_iter != running_assemblies.end();
+		a_iter++)
+		{	
+			if ((*a_iter).itemid==itemid) 
+			{
+				return (*a_iter);
+			}
+		}		
+
+	return getAssembly_by_Instance(itemid);
+	
+}
+
+Deployment::r_assemblies Deployment::getAssembly_by_Instance(wxTreeItemId itemid)
+{
+	wxTreeItemId parent = assemblie_list_->GetItemParent(itemid);
+	return getAssembly(parent);
+}
+
+
