@@ -28,7 +28,7 @@
 #include <signal.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.18 2003/08/26 12:03:48 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.19 2003/08/27 06:32:48 neubauer Exp $";
 
 
 namespace Qedo {
@@ -226,7 +226,7 @@ QedoThread::stop()
 {
 #ifdef QEDO_WINTHREAD
        DWORD exitcode;
-       if(!TerminateThread(delegate_>th_handle_,exitcode)) 
+       if(!TerminateThread(delegate_->th_handle_,exitcode)) 
                DEBUG_OUT("Error while TerminateThread");
 #else
        if(pthread_cancel(delegate_->t_)) DEBUG_OUT("Error while pthread_cancel");
