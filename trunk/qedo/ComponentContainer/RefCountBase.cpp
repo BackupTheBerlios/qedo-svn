@@ -31,7 +31,7 @@
 #include <set>
 #endif
 
-static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.16 2003/09/12 11:47:28 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.17 2003/09/19 07:37:28 boehme Exp $";
 
 
 namespace Qedo {
@@ -268,22 +268,22 @@ GlobalObjectManagement::report()
 		DEBUG_OUT  ("# All objects destroyed");
 	}
 #else
-	if (Qedo::GlobalObjectManagement::native_object_count_
-		|| Qedo::GlobalObjectManagement::CORBA_object_count_
-		|| Qedo::GlobalObjectManagement::CORBA_local_object_count_)
+	if (native_object_count_
+		|| CORBA_object_count_
+		|| CORBA_local_object_count_)
 	{
 		DEBUG_OUT  ("# MEMORY LEAKS DETECTED!!!");
-		if (Qedo::GlobalObjectManagement::native_object_count_)
+		if (native_object_count_)
 		{
-			DEBUG_OUT2 ("# Number of still running native objects      : ", Qedo::GlobalObjectManagement::native_object_count_);
+			DEBUG_OUT2 ("# Number of still running native objects      : ", native_object_count_);
 		}
-		if (Qedo::GlobalObjectManagement::CORBA_object_count_)
+		if (CORBA_object_count_)
 		{
-			DEBUG_OUT2 ("# Number of still running CORBA objects        : ", Qedo::GlobalObjectManagement::CORBA_object_count_);
+			DEBUG_OUT2 ("# Number of still running CORBA objects        : ", CORBA_object_count_);
 		}
-		if (Qedo::GlobalObjectManagement::CORBA_local_object_count_)
+		if (CORBA_local_object_count_)
 		{
-			DEBUG_OUT2 ("# Number of still running CORBA local objects : ", Qedo::GlobalObjectManagement::CORBA_local_object_count_);
+			DEBUG_OUT2 ("# Number of still running CORBA local objects : ", CORBA_local_object_count_);
 		}
 	}
 	else
