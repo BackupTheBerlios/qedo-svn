@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.34 2003/09/05 14:00:42 boehme Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.35 2003/09/21 07:37:52 tom Exp $";
 
 
 namespace Qedo {
@@ -134,7 +134,7 @@ ContainerInterfaceImpl::EventEntry::EventEntry (Components::EventConsumerBase_pt
 
 ContainerInterfaceImpl::EventEntry::EventEntry (const EventEntry& e)
 {
-	const Components::EventConsumerBase_ptr a = e.consumer_;
+	const Components::EventConsumerBase_ptr a = e.consumer_.in();
 	Components::EventConsumerBase_ptr c = const_cast<Components::EventConsumerBase_ptr>(a);
 	consumer_ = Components::EventConsumerBase::_duplicate(c);
 	event_ = e.event_;
@@ -151,7 +151,7 @@ ContainerInterfaceImpl::EventEntry::operator= (const ContainerInterfaceImpl::Eve
 {
 	if( &e != this) {
 		CORBA::remove_ref (event_);
-		consumer_ = Components::EventConsumerBase::_duplicate(e.consumer_);
+		consumer_ = Components::EventConsumerBase::_duplicate(e.consumer_.in());
 		event_ = e.event_;
 		CORBA::add_ref(event_);
 	}
