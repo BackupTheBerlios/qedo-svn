@@ -1,0 +1,34 @@
+CXX = @CXX@
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+VPATH = @srcdir@
+
+LD=@LD@
+LDFLAGS=@LDFLAGS@
+LIBS=@ORB_COSNAMING_LIB@ @LIBS@ -lxerces-c1_6_0 -lz
+LDFLAGS += -L../ComponentIDL -lComponent\
+           -L../ComponentContainer -lComponentContainer \
+           $(LIBS)
+
+#SOURCE_C = libunzip.c
+
+SOURCES =  ComponentInstallationImpl.cpp \
+           InstalledComponent.cpp \
+           main.cpp
+
+OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
+
+INCLUDES = -I@srcdir@ -I../ComponentIDL\
+           -I@top_srcdir@/ComponentContainer \
+			  -I/usr/local/include/xercesc
+
+CXXFLAGS += $(INCLUDES) @CPPFLAGS@ -MMD -g
+
+CFLAGS   += $(INCLUDES) @CPPFLAGS@ -MMD -g
+
+all: ci
+
+ci: $(OBJS)
+	${CXX} -o $@ $^ ${LDFLAGS}
+
+-include ${SOURCES:.cpp=.d}

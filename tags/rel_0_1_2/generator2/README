@@ -1,0 +1,31 @@
+
+Short instructions to use the code generator
+
+The Qedo code generator is able to generate complete workspace files for the Visual Studio .Net. Since it is not easy to write those files by hand it is strongly recommended to use this feature. After Installing the Qedo runtime, the following steps needs to be done if you start to develop you own CORBA components.
+
+1. Create a <your_name>.idl file.
+In this file you need to define your plain CORBA interfaces as well as the CORBA components. Start the file with an #include "Components.idl" statement.
+
+2. Create a <your_name>.cidl
+In this file you need to specify the compositions that should implement your components. Start the file with a #include <your_name.idl>.
+
+3. Open a command line tool
+In this command line tool you need to execute the following command.
+%QEDO%\bin\cidl_gen --vc7 -I%QEDO%\ComponentIDL -I%ORBACUS%\idl\OB  -I%ORBACUS%\idl -DWIN32 -DORBACUS_ORB --target <your_target> <your_name>.cidl
+
+The target could be a composition name or a module name. Depending on the target the code generator will create new directories and within them new project files. for each composition there is a servant and an executor module.
+
+4. Create a solution
+Now you can create new (empty) solution with the Visual Studio. Now you can add the needed projects. 
+
+5. Configuration
+Choose the configuration you want to build. This has to correspond to the version of the installed Qedo runtime.
+
+6. Pre-built.
+To allow the generation of all needed files you will have to build all projects. Depending on your IDL this could cause errors in the executor project. Those errors can be ignored at this stage.
+
+7. Implement the executors
+In the executor project you will now find executor files. The names of these files correspond to the composition description you gave in the <your_name>.cidl file. Within these files you can see user sections. Do only write your code between an opening and a closing user section statements. All other code is removed at next call of the code generator. If you modify the <your_name>.idl file you have to re-build the projects. But your code will remain in the implementation files.
+
+8. Build
+Just build all and you will get your components as dlls.

@@ -1,0 +1,66 @@
+# Configuration Debug
+ProjectName=ComponentContainer
+OutDir=./Debug
+IntDir=./Debug
+Name=Debug
+CFLAGS=-DHAVE_JTC -DHAVE_JTC -I. -I../ComponentIDL -I../ComponentValuetypes -I$(ORBACUS)/include -g
+CXXFLAGS=-DHAVE_JTC -DHAVE_JTC -I. -I../ComponentIDL -I../ComponentValuetypes -I$(ORBACUS)/include -g
+LIBS=-L$(ORBACUS)/lib -L../ComponentIDL/../../Runtime -lJTC -lposix4 -lpthread -lOB -lsocket -lComponentIDL
+
+$(IntDir)/%.o:%.cpp
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+# produce SharedObject
+LDLIBS+=$(LIBS)
+
+CC=$(CXX)
+
+all:  ../../Runtime/libComponentContainer.so
+
+../../Runtime/libComponentContainer.so : $(IntDir)/CCMContext.o $(IntDir)/CCMHomeServant.o $(IntDir)/CCMObjectExecutor.o $(IntDir)/ComponentInstance.o $(IntDir)/ConsumerPort.o $(IntDir)/ContainerInterfaceImpl.o $(IntDir)/EmitterPort.o $(IntDir)/EntityHomeServant.o $(IntDir)/FacetPort.o $(IntDir)/GlobalHelpers.o $(IntDir)/HomeServantBase.o $(IntDir)/Key.o $(IntDir)/Output.o $(IntDir)/PortBase.o $(IntDir)/PublisherPort.o $(IntDir)/ReceptaclePort.o $(IntDir)/RefCountBase.o $(IntDir)/ServantBase.o $(IntDir)/ServantLocator.o $(IntDir)/ServantRegistry.o $(IntDir)/SessionContext.o $(IntDir)/SessionHomeServant.o $(IntDir)/Valuetypes.o 
+	$(LINK.o)  --shared $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+$(IntDir)/CCMContext.o:	CCMContext.cpp
+$(IntDir)/CCMHomeServant.o:	CCMHomeServant.cpp
+$(IntDir)/CCMObjectExecutor.o:	./CCMObjectExecutor.cpp
+$(IntDir)/ComponentInstance.o:	ComponentInstance.cpp
+$(IntDir)/ConsumerPort.o:	./ConsumerPort.cpp
+$(IntDir)/ContainerInterfaceImpl.o:	./ContainerInterfaceImpl.cpp
+$(IntDir)/EmitterPort.o:	./EmitterPort.cpp
+$(IntDir)/EntityHomeServant.o:	EntityHomeServant.cpp
+$(IntDir)/FacetPort.o:	./FacetPort.cpp
+$(IntDir)/GlobalHelpers.o:	GlobalHelpers.cpp
+$(IntDir)/HomeServantBase.o:	HomeServantBase.cpp
+$(IntDir)/Key.o:	./Key.cpp
+$(IntDir)/Output.o:	./Output.cpp
+$(IntDir)/PortBase.o:	./PortBase.cpp
+$(IntDir)/PublisherPort.o:	./PublisherPort.cpp
+$(IntDir)/ReceptaclePort.o:	./ReceptaclePort.cpp
+$(IntDir)/RefCountBase.o:	RefCountBase.cpp
+$(IntDir)/ServantBase.o:	ServantBase.cpp
+$(IntDir)/ServantLocator.o:	ServantLocator.cpp
+$(IntDir)/ServantRegistry.o:	ServantRegistry.cpp
+$(IntDir)/SessionContext.o:	SessionContext.cpp
+$(IntDir)/SessionHomeServant.o:	SessionHomeServant.cpp
+$(IntDir)/Valuetypes.o:	Valuetypes.cpp
+cidl:  
+idl:  cidl
+
+# CIDL files
+
+# IDL files
+
+lex:  
+
+# LEX files
+
+yacc:  
+
+# YACC files
+
+
+# Kimwitu files
+
+
+Kimwitu:  
+
