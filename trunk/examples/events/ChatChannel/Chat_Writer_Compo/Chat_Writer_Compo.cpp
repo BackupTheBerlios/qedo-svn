@@ -20,7 +20,7 @@ ChatWriterSessionImpl::run(void* p)
 
 	impl = static_cast<ChatWriterSessionImpl*>(p);
 
-	while (! impl->stopped && impl->mess_count < 5000 )
+	while (! impl->stopped && impl->mess_count < 2000 )
 	{
 
 		impl->request_and_push_message();
