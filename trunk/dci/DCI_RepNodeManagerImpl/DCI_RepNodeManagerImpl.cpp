@@ -379,7 +379,7 @@ namespace DCI {
     /* Find file in current directory */
     if( (hFile = _findfirst( theFile -> filename(), &c_file )) != -1L )
       {
-	printout_(strcat("file " , c_file.name ), " has already been installed" );
+	printout_("file has already been installed: ",c_file.name);
 	_findclose( hFile );
 	return;
       }
