@@ -33,7 +33,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2D.lib zlib.lib JTCD.lib CosNamingd.lib OBD.lib"
+				AdditionalDependencies="xerces-c_2D.lib zlib.lib obd.lib CosNamingd.lib"
 				OutputFile="../../Runtime/ci.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(XERCES)\lib;$(ZLIB)\dll32"
@@ -122,9 +122,6 @@
 				RelativePath="DOMXMLParser.cpp">
 			</File>
 			<File
-				RelativePath="libunzip.cpp">
-			</File>
-			<File
 				RelativePath="NameServiceBase.cpp">
 			</File>
 			<File
@@ -135,6 +132,9 @@
 			</File>
 			<File
 				RelativePath="XMLCatalog.cpp">
+			</File>
+			<File
+				RelativePath="libunzip.cpp">
 			</File>
 			<File
 				RelativePath="main.cpp">

@@ -24,7 +24,7 @@
 				AdditionalIncludeDirectories=".,../ComponentIDL,../ComponentValuetypes;$(ORBACUS)\include"
 				PreprocessorDefinitions="CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
 				PrecompiledHeaderFile=".\Debug/ComponentContainer.pch"
 				AssemblerListingLocation=".\Debug/"
@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="JTC.lib OB.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="jtcd.lib obd.lib odbc32.lib odbccp32.lib"
 				OutputFile="../../Runtime/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
