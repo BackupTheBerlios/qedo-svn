@@ -29,7 +29,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.15 2004/03/23 09:53:59 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.16 2004/03/23 16:11:05 ogr Exp $";
 
 
 namespace Qedo {
@@ -254,7 +254,7 @@ throw(CSDReadException)
 			else if (element_name == "codebase")
 			{
 				NORMAL_ERR( "CSDReader: need dependency codebase" );
-				throw CSDReadException();
+				//throw CSDReadException();
 			}
 
 			//
@@ -273,7 +273,7 @@ throw(CSDReadException)
 				std::string file_name = Qedo::transcode(((DOMElement*)child)->getAttribute(X("name")));
 
 				NORMAL_ERR2( "CSDReader: need dependency ", file_name );
-				throw CSDReadException(); 
+				//throw CSDReadException(); 
 			}
 
 			//
@@ -284,7 +284,7 @@ throw(CSDReadException)
 				std::string file_name = name((DOMElement*)child);
 
 				NORMAL_ERR2( "CSDReader: need dependency ", file_name );
-				throw CSDReadException(); 
+				//throw CSDReadException(); 
 			}
 
 			//
