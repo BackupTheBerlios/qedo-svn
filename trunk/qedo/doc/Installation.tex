@@ -106,7 +106,7 @@ The currently supported version of MICO is 2.3.11.
 
     \item On a Unix system you need to be sure the MICO \verb bin  directory is included in the path before you can configure Qedo. The Qedo configure script will use a script of the MICO installation to obtain the options MICO is compiled with. On Unix Systems you need to add the \verb win32-bin  directory to the PATH environment setting to use MICO. For compiling Qedo with MICO in the Visual Studio you need to add this path the settings of the visual studio \verb Tools  \verb ->  \verb Options  \verb ->  \verb Projects  \verb ->  \verb VC++Dirs .
 
-    \item After compiling and installing MICO, you need to create a .micorc file. This file needs to be in the home directory or in the current working directory or you can use an environment setting pointing to this file (MICORC). Consult the MICO documentation for details. This file is used late on to configure
+    \item We do not ecourage you to use a \verb .micorc  file, since some of the configuration you can make contradicts to the ones of the Qedo.conf file. This is true in particular for the initial NameService reference. If you are sure what you are doing, you can use the \verb .micorc file for other MICO configuration issues. After compiling and installing MICO, you can create a .micorc file. This file should be in the home directory or in the current working directory or you can use an environment setting pointing to this file (MICORC). Consult the MICO documentation for details.
 
 \end{itemize}
 
