@@ -37,7 +37,7 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "//\n\n";
 	out << "#ifndef _" << header_name << "_H_\n";
 	out << "#define _" << header_name << "_H_\n\n\n"; 
-	out << "#include <OB/CORBA.h>\n";
+	out << "#include <CORBA.h>\n";
 	out << "#include \"" << file_prefix_ << "_LOCAL_skel.h\"\n";
 	out << "#include \"SessionContext.h\"\n";
 	out << "#include \"ServantBase.h\"\n";
