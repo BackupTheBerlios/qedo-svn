@@ -102,9 +102,9 @@ throw (DeploymentFailure)
 			}
 			assemblyFactory_ = Components::Deployment::AssemblyFactory::_narrow( obj.in() );
 			if( !CORBA::is_nil( assemblyFactory_.in() ) &&
-				assemblyFactory_->_non_existent() )
+				!assemblyFactory_->_non_existent() )
 			{
-				std::cerr << "..... take assembly factory of " << list[i].binding_name[0].id << std::endl;
+				std::cerr << "..... take assembly factory on " << list[i].binding_name[0].id << std::endl;
 				return;
 			}
 		}
@@ -116,7 +116,7 @@ throw (DeploymentFailure)
 	// todo
 
 
-	std::cerr << "..... no assembly factories at all" << std::endl;
+	std::cerr << "!!!!! no assembly factory found" << std::endl;
 	throw DeploymentFailure();
 }
 
