@@ -11,7 +11,7 @@ OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
 
 CXXFLAGS += -I. 
 
-include ../MakeVars
+include ../MakeComponentVars
 
 all: libdinner_SERVANT.so
 
