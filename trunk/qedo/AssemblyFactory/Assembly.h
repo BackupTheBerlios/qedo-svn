@@ -63,11 +63,10 @@ namespace Qedo {
  * the implementation of the assembly interface
  */
 class AssemblyImpl : public virtual POA_Components::Deployment::Assembly,
-					 public virtual PortableServer::RefCountServantBase,
+	                 public virtual PortableServer::RefCountServantBase,
                      public virtual NameServiceBase,
                      public virtual PlatformBase
 {
-
 private:
 
 	/** the data */
@@ -80,7 +79,6 @@ private:
 	Components::Deployment::AssemblyState				state_;
     /** the cookie of the assembly, to be used by the AssemblyFactory */
 	Cookie_impl*										cookie_;
-	
     /** the mapping of component instance ids to objects */
 	std::map < std::string, Components::CCMObject_var > instanceMap_;
     /** the mapping of home instance ids to objects */
@@ -88,11 +86,15 @@ private:
 
 private:
 
-    // create new component server
+    /**
+	 * create new component server
+	 */
     Components::Deployment::ComponentServer_ptr createComponentServer (std::string)
         throw(Components::CreateFailure);
 
-    // create new container
+    /**
+	 * create new container
+	 */
     Components::Deployment::Container_ptr createContainer (Components::Deployment::ComponentServer_ptr)
         throw(Components::CreateFailure);
 
@@ -131,6 +133,12 @@ private:
 	 */
     CORBA::Object_ptr getRef (ReferenceData)
         throw(Components::CreateFailure);
+
+	/**
+	 * uninstall all component implementations referred to in the assembly descriptor
+	 */
+	void uninstall()
+		throw(Components::CreateFailure);
 
 	/**
 	 * install all component implementations referred to in the assembly descriptor

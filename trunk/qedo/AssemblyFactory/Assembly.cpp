@@ -45,22 +45,28 @@ AssemblyImpl::AssemblyImpl (std::string package, Cookie_impl* cookie, CosNaming:
 		pathname_.replace( i + 1, pathname_.size() - i - 1, std::string( "" ) );
 	}
 
-    data_.uuid_ = "";
 	state_ = Components::Deployment::INACTIVE;
 	cookie_ = cookie;
+	cookie_->_add_ref();
     nameService_ = CosNaming::NamingContext::_duplicate(nameContext);
 }
 
 
 AssemblyImpl::~AssemblyImpl ()
 {
+	cookie_->_remove_ref();
 }
 
 
 std::string 
 AssemblyImpl::get_uuid () const
 {
-    return data_.uuid_;
+    if( data_.uuid_.empty() )
+	{
+		return cookie_->to_string();
+	}
+
+	return data_.uuid_;
 }
 
 
@@ -259,6 +265,68 @@ throw(Components::CreateFailure)
 
 
 void
+AssemblyImpl::uninstall ()
+throw( Components::CreateFailure )
+{
+	Qedo_Components::Deployment::ComponentInstallation_var componentInstallation;
+
+	//
+	// for each hostcollocation
+	//
+	std::vector < HostData > ::const_iterator host_iter;
+	for(host_iter = data_.hosts_.begin(); 
+		host_iter != data_.hosts_.end(); 
+		host_iter++)
+	{
+		componentInstallation = getComponentInstallation((*host_iter).host);
+
+		//
+		// for each processcollocation
+		//
+		std::vector < ProcessData > ::const_iterator process_iter;
+		for(process_iter = (*host_iter).processes.begin(); 
+			process_iter != (*host_iter).processes.end();
+			process_iter++)
+		{
+			//
+			// for each homeplacement
+			//
+			std::vector < HomeInstanceData > ::const_iterator iter;
+			for(iter = (*process_iter).homes.begin();
+				iter != (*process_iter).homes.end(); 
+				iter++)
+			{
+				//
+				// remove component
+				//
+				try
+				{
+					DEBUG_OUT2( "AssemblyImpl: uninstall component ", (*iter).impl_id );
+					DEBUG_OUT2( "..... host is ", (*host_iter).host );
+					componentInstallation->remove( (*iter).impl_id.c_str() );
+				}
+				catch(Components::Deployment::UnknownImplId&)
+				{
+					NORMAL_ERR3( "AssemblyImpl: component ", (*iter).impl_id, " not installed" );
+					NORMAL_ERR2( "..... host is ", (*host_iter).host );
+				}
+				catch(Components::RemoveFailure&)
+				{
+					NORMAL_ERR3( "AssemblyImpl: component ", (*iter).impl_id, " not removed" );
+					NORMAL_ERR2( "..... host is ", (*host_iter).host )
+				}
+				catch ( CORBA::SystemException& )
+				{
+					NORMAL_ERR( "AssemblyImpl: CORBA system exception during uninstall()" );
+					throw Components::CreateFailure();
+				}
+			}
+		}
+	}
+}
+
+
+void
 AssemblyImpl::install ()
 throw( Components::CreateFailure )
 {
@@ -310,18 +378,17 @@ throw( Components::CreateFailure )
 	std::string package_file_ref = data.file;
 	std::string package_file = data_.implementationMap_[package_file_ref];
 	std::string impl_id = data.impl_id;
-
-	DEBUG_OUT("..... install implementation ");
-	DEBUG_OUT2(".......... destination is ", data.dest);
-	DEBUG_OUT2(".......... implementation id is ", impl_id);
-	DEBUG_OUT2(".......... package is ", package_file);
+	std::string location = std::string("PACKAGE=") + getFileName(package_file);
 
 	//
 	// install
 	//
-	std::string location = std::string("PACKAGE=") + getFileName(package_file);
 	try
 	{
+		DEBUG_OUT("..... install implementation ");
+		DEBUG_OUT2(".......... destination is ", data.dest);
+		DEBUG_OUT2(".......... implementation id is ", impl_id);
+		DEBUG_OUT2(".......... package is ", package_file);
 		componentInstallation->install(impl_id.c_str(), location.c_str());
 	}
 	catch(Components::Deployment::InvalidLocation&)
@@ -353,13 +420,13 @@ throw( Components::CreateFailure )
 	}
 	catch(Components::Deployment::InstallationFailure&)
 	{
-		std::cerr << ".......... InstallationFailure during install()" << std::endl;
+		NORMAL_ERR( "AssemblyImpl: InstallationFailure during install()" );
 		throw Components::CreateFailure();
 	}
 	catch ( CORBA::SystemException& )
 	{
-		std::cerr << ".......... CORBA system exception during install()" << std::endl;
-		std::cerr << ".......... is ComponentInstallation running?" << std::endl;
+		NORMAL_ERR( "AssemblyImpl: CORBA system exception during install()" );
+		NORMAL_ERR( "..... is ComponentInstallation running?" );
 		throw Components::CreateFailure();
 	}
 }
@@ -423,7 +490,7 @@ throw(Components::CreateFailure)
 	std::vector < ComponentInstanceData > ::const_iterator iter;
 	for(iter = data.instances.begin(); iter != data.instances.end(); iter++)
 	{
-		DEBUG_OUT2 ("..... create new component ", (*iter).id);
+		DEBUG_OUT2( "AssemblyImpl: create new component ", (*iter).id );
 		Components::CCMObject_var comp;
 		try
 		{
@@ -431,7 +498,7 @@ throw(Components::CreateFailure)
 		}
 		catch( ... )
 		{
-			std::cerr << ".......... cannot create component" << std::endl;
+			NORMAL_ERR2( "AssemblyImpl: cannot create component ", (*iter).id );
 			throw Components::CreateFailure();
 		}
 		instanceMap_[(*iter).id] = Components::CCMObject::_duplicate(comp);
@@ -450,7 +517,7 @@ throw(Components::CreateFailure)
 			//
 			// configure with standard configurator
 			//
-			DEBUG_OUT2 ("..... configure component ", (*iter).id);
+			DEBUG_OUT2( "AssemblyImpl: configure component ", (*iter).id );
 			StandardConfiguratorImpl* configurator = new StandardConfiguratorImpl();
 			try
 			{
@@ -459,7 +526,7 @@ throw(Components::CreateFailure)
 			}
 			catch( ... )
 			{
-				std::cerr << ".......... Cannot configure Component" << std::endl;
+				NORMAL_ERR2( "AssemblyImpl: cannot configure Component", (*iter).id );
 				throw Components::CreateFailure();
 			}
 		}
@@ -485,7 +552,7 @@ throw(Components::CreateFailure)
 		//
 		// create home
 		//
-		DEBUG_OUT2( "..... create new home ", data.id );
+		DEBUG_OUT2( "AssemblyImpl: create new home ", data.id );
 		try
 		{
 			Components::ConfigValues_var config = new Components::ConfigValues();
@@ -493,33 +560,33 @@ throw(Components::CreateFailure)
 		}
 		catch (Components::Deployment::UnknownImplId&)
 		{
-			std::cerr << "!!!!! unknown impl id during install_home()" << std::endl;
+			NORMAL_ERR2( "AssemblyImpl: unknown impl id during install_home() for ", data.id );
 			throw Components::CreateFailure();
 		}
 		catch (Components::Deployment::ImplEntryPointNotFound&)
 		{
-			std::cerr << "!!!!! entry point not found during install_home()" << std::endl;
+			NORMAL_ERR2( "AssemblyImpl: entry point not found during install_home() for ", data.id );
 			throw Components::CreateFailure();
 		}
 		catch (Components::Deployment::InstallationFailure&)
 		{
-			std::cerr << "!!!!! installation failure during install_home()" << std::endl;
+			NORMAL_ERR2( "AssemblyImpl: installation failure during install_home() for ", data.id );
 			throw Components::CreateFailure();
 		}
 		catch (Components::Deployment::InvalidConfiguration&)
 		{
-			std::cerr << "!!!!! invalid configuration during install_home()" << std::endl;
+			NORMAL_ERR2( "AssemblyImpl: invalid configuration during install_home() for ", data.id );
 			throw Components::CreateFailure();
 		}
 		catch (CORBA::SystemException&)
 		{
-			std::cerr << "!!!!! CORBA system exception during install_home()" << std::endl;
+			NORMAL_ERR2( "AssemblyImpl: CORBA system exception during install_home() for ", data.id );
 			throw Components::CreateFailure();
 		}
 
 		if (CORBA::is_nil(home))
 		{
-			std::cerr << "!!!!! Component Home is NIL" << std::endl;
+			NORMAL_ERR2( "AssemblyImpl: Component Home is NIL for ", data.id );
 			throw Components::CreateFailure();
 		}
 
@@ -533,8 +600,8 @@ throw(Components::CreateFailure)
 		//
 		// extension, use referenced home
 		//
-		DEBUG_OUT2("..... resolve home ", data.impl_id);
-        home = Components::CCMHome::_narrow(resolveName(data.impl_id));
+		DEBUG_OUT2( "AssemblyImpl: resolve home ", data.impl_id );
+        home = Components::CCMHome::_narrow( resolveName(data.impl_id) );
 	}
 
 	//
@@ -547,7 +614,7 @@ throw(Components::CreateFailure)
 	//
 	if (data.naming.length())
     {
-		DEBUG_OUT2( "..... register home with naming ", data.naming );
+		DEBUG_OUT2( "AssemblyImpl: register home with naming ", data.naming );
         registerName( data.naming, home, true );
     }
 
@@ -573,33 +640,33 @@ throw(Components::CreateFailure)
 		iter != data_.interface_connections_.end();
 		iter++)
 	{
-		DEBUG_OUT("..... make interface connection");
+		DEBUG_OUT( "AssemblyImpl: make interface connection" );
 
 		//
 		// receptacle
 		//
 		receptacle = (*iter).use.name;
-		DEBUG_OUT2( ".......... user is ", (*iter).use.ref.name );
-		DEBUG_OUT2( ".......... receptacle is ", receptacle );
+		DEBUG_OUT2( "..... user is ", (*iter).use.ref.name );
+		DEBUG_OUT2( "..... receptacle is ", receptacle );
 		user = Components::CCMObject::_narrow(getRef((*iter).use.ref));
 		
 		//
 		// facet
 		//
 		facet = (*iter).provide.name;
-		DEBUG_OUT2( ".......... provider is ", (*iter).provide.ref.name );
+		DEBUG_OUT2( "..... provider is ", (*iter).provide.ref.name );
 		provider = getRef((*iter).provide.ref);
 		if(facet.length())
 		{
 			// get facet
-			DEBUG_OUT2( ".......... facet is ", facet );
+			DEBUG_OUT2( "..... facet is ", facet );
 			try
 			{
 				provider = Components::CCMObject::_narrow(provider)->provide_facet(facet.c_str());
 			}
 			catch( Components::InvalidName& )
 			{
-				DEBUG_OUT( ".......... invalid facet name" );
+				NORMAL_ERR2( "AssemblyImpl: invalid facet name ", facet );
 				throw Components::CreateFailure();
 			}
 		}
@@ -614,22 +681,22 @@ throw(Components::CreateFailure)
 		}
 		catch(Components::InvalidName&)
 		{
-	   		DEBUG_OUT( ".......... invalid receptacle name" );
+			NORMAL_ERR2( "AssemblyImpl: invalid receptacle name ", receptacle );
 			throw Components::CreateFailure();
 		}
 		catch( Components::InvalidConnection& )
 		{
-			DEBUG_OUT( ".......... invalid connection" );
+			NORMAL_ERR2( "AssemblyImpl: invalid connection for ", receptacle );
 			throw Components::CreateFailure();
 		}
 		catch( Components::AlreadyConnected& )
 		{
-			DEBUG_OUT( ".......... already connected" );
+			NORMAL_ERR2( "AssemblyImpl: already connected for ", receptacle );
 			throw Components::CreateFailure();
 		}
 		catch( Components::ExceededConnectionLimit& )
 		{
-			DEBUG_OUT( ".......... exceeded connection limit" );
+			NORMAL_ERR2( "AssemblyImpl: exceeded connection limit for ", receptacle );
 			throw Components::CreateFailure();
 		}
 	}
@@ -650,14 +717,14 @@ throw(Components::CreateFailure)
 		iter != data_.event_connections_.end();
 		iter++)
 	{
-		DEBUG_OUT( "..... make event connection" );
+		DEBUG_OUT( "AssemblyImpl: make event connection" );
 		
 		//
 		// consumer
 		//
 		consume = (*iter).consumer.name;
-		DEBUG_OUT2( ".......... consumer is ", (*iter).consumer.ref.name );
-		DEBUG_OUT2( ".......... port is ", consume );
+		DEBUG_OUT2( "..... consumer is ", (*iter).consumer.ref.name );
+		DEBUG_OUT2( "..... port is ", consume );
 		consumer = Components::CCMObject::_narrow(getRef((*iter).consumer.ref));
         
 		try
@@ -666,7 +733,7 @@ throw(Components::CreateFailure)
 	    }
 		catch(Components::InvalidName&)
 	    {
-		    DEBUG_OUT( ".......... invalid sink name" );
+			NORMAL_ERR2( "AssemblyImpl: invalid sink name ", consume );
 		    throw Components::CreateFailure();
 		}
 
@@ -677,8 +744,8 @@ throw(Components::CreateFailure)
 			//
             source = Components::CCMObject::_narrow( getRef((*iter).emitter.ref) );
             emit = (*iter).emitter.name;
-            DEBUG_OUT2( ".......... emitter is ", (*iter).emitter.ref.name );
-			DEBUG_OUT2( ".......... port is ", emit );
+            DEBUG_OUT2( "..... emitter is ", (*iter).emitter.ref.name );
+			DEBUG_OUT2( "..... port is ", emit );
                     
             //
             // connect
@@ -689,12 +756,12 @@ throw(Components::CreateFailure)
        		}
        		catch(Components::InvalidName&)
        		{
-       			DEBUG_OUT("!!!!!!!!!! invalid emits name");
+				NORMAL_ERR2( "AssemblyImpl: invalid emits name ", emit );
        			throw Components::CreateFailure();
        		}
        		catch(Components::AlreadyConnected&)
             {
-       			DEBUG_OUT("!!!!!!!!!! already connected");
+				NORMAL_ERR2( "AssemblyImpl: already connected with ", emit );
        			throw Components::CreateFailure();
        		}
         }
@@ -705,8 +772,8 @@ throw(Components::CreateFailure)
 			//
 			source = Components::CCMObject::_narrow( getRef((*iter).emitter.ref) );
             emit = (*iter).emitter.name;
-            DEBUG_OUT2( ".......... publisher is ", (*iter).emitter.ref.name );
-			DEBUG_OUT2( ".......... port is ", emit );
+            DEBUG_OUT2( "..... publisher is ", (*iter).emitter.ref.name );
+			DEBUG_OUT2( "..... port is ", emit );
 
             //
             // connect
@@ -718,7 +785,7 @@ throw(Components::CreateFailure)
 	   		}
 	   		catch( Components::InvalidName& )
 	   		{
-	   			DEBUG_OUT("!!!!!!!!!! invalid publishes name");
+				NORMAL_ERR2( "AssemblyImpl: invalid publishes name ", emit );
 	   			throw Components::CreateFailure();
 	   		}
         }
@@ -739,7 +806,7 @@ void
 AssemblyImpl::configurationComplete()
 throw(Components::CreateFailure)
 {
-	DEBUG_OUT("..... start the application");
+	DEBUG_OUT2( "AssemblyImpl: start the application for ", package_ );
 
 	//
     // call configuration complete according to startorder
@@ -753,20 +820,19 @@ throw(Components::CreateFailure)
 		Components::CCMObject_var comp = instanceMap_[id];
 		if( comp )
 		{
-			DEBUG_OUT2(".......... configuration_complete for ", id);
-
 			try
 			{
+				DEBUG_OUT2( "..... configuration_complete for ", id );
 				comp->configuration_complete();
 			}
 			catch (CORBA::Exception& ex)
 			{
-				DEBUG_OUT2( "............... EXCEPTION DURING configuration_complete : ", ex );
+				NORMAL_ERR2( "AssemblyImpl: EXCEPTION during configuration_complete: ", ex );
                 throw Components::CreateFailure();
 			}
 			catch ( ... )
 			{
-				DEBUG_OUT( "............... UNKNOWN EXCEPTION DURING configuration_complete" );
+				NORMAL_ERR( "AssemblyImpl: UNKNOWN EXCEPTION during configuration_complete" );
                 throw Components::CreateFailure();
 			}
 		}
@@ -798,20 +864,19 @@ throw(Components::CreateFailure)
 
 		if( !found )
 		{
-			DEBUG_OUT2( ".......... configuration_complete for ", instanceIter->first );
-
 			try
 			{
+				DEBUG_OUT2( "..... configuration_complete for ", instanceIter->first );
 				instanceIter->second->configuration_complete();
 			}
 			catch ( CORBA::Exception& ex )
 			{
-				DEBUG_OUT2("\n............... EXCEPTION DURING configuration_complete : ", ex );
+				NORMAL_ERR2( "AssemblyImpl EXCEPTION during configuration_complete : ", ex );
                 throw Components::CreateFailure();
 			}
 			catch ( ... )
 			{
-				DEBUG_OUT("\n............... UNKNOWN EXCEPTION DURING configuration_complete" );
+				NORMAL_ERR( "AssemblyImpl: UNKNOWN EXCEPTION during configuration_complete" );
                 throw Components::CreateFailure();
 			}
 		}
@@ -827,7 +892,7 @@ AssemblyImpl::build
 ()
 throw( Components::CreateFailure )
 {
-	DEBUG_OUT2( "\nbuild assembly for ", package_ );
+	DEBUG_OUT2( "AssemblyImpl: build assembly for ", package_ );
 
 	//
 	// get data from descriptor file
@@ -862,7 +927,7 @@ throw( Components::CreateFailure )
 	//
 	configurationComplete();
     
-	DEBUG_OUT3("assembly for ", package_, " is running");
+	DEBUG_OUT3( "AssemblyImpl: assembly for ", package_, " is running" );
 }
 
 
@@ -870,7 +935,7 @@ void
 AssemblyImpl::tear_down ()
 throw( Components::RemoveFailure )
 {
-	DEBUG_OUT( "\ntear down the application" );
+	DEBUG_OUT2( "AssemblyImpl: tear down the application for ", package_ );
 
 	//
 	// use reverse start order to remove components
@@ -885,16 +950,15 @@ throw( Components::RemoveFailure )
 		instanceIter = instanceMap_.find( *iter );
 		if( instanceIter != instanceMap_.end() )
 		{
-			DEBUG_OUT2("..... remove ", instanceIter->first );
-			comp = Components::CCMObject::_duplicate( instanceIter->second );
-
 			try
 			{
+				DEBUG_OUT2("..... remove ", instanceIter->first );
+				comp = Components::CCMObject::_duplicate( instanceIter->second );
 				comp->remove();
 			}
 			catch (CORBA::Exception&)
 			{
-				DEBUG_OUT2(".......... EXCEPTION DURING removal of ", instanceIter->first);
+				NORMAL_ERR2( "AssemblyImpl: EXCEPTION during removal of ", instanceIter->first );
 			}
 
 			instanceMap_.erase( instanceIter );
@@ -908,15 +972,14 @@ throw( Components::RemoveFailure )
 		 instanceIter != instanceMap_.end();
 		 instanceIter++ )
 	{
-		DEBUG_OUT2("..... remove ", instanceIter->first);
-
 		try
 		{
+			DEBUG_OUT2( "..... remove ", instanceIter->first );
 			instanceIter->second->remove();
 		}
 		catch (CORBA::Exception&)
 		{
-			DEBUG_OUT2(".......... EXCEPTION DURING removal of ", instanceIter->first);
+			NORMAL_ERR2( "AssemblyImpl: EXCEPTION during removal of ", instanceIter->first );
 		}
 	}
 
@@ -945,18 +1008,18 @@ throw( Components::RemoveFailure )
 				home_iter++)
 			{
 				// remove home
-				DEBUG_OUT2( "..... remove home ", (*home_iter).id );
 				try
 				{
+					DEBUG_OUT2( "..... remove home ", (*home_iter).id );
 					(*home_iter).container->remove_home(getHomeInstance((*home_iter).id));
 				}
 				catch (Components::RemoveFailure)
 				{
-					DEBUG_OUT(".......... remove failure");
+					NORMAL_ERR2( "AssemblyImpl: remove home failure for ", (*home_iter).id );
 				}
 				catch (CORBA::Exception& e)
 				{
-					DEBUG_OUT2(".......... EXCEPTION DURING removal of home ", (*home_iter).id);
+					NORMAL_ERR2( "AssemblyImpl: EXCEPTION during removal of home ", (*home_iter).id );
 #ifdef MICO_ORB
 					e._print (std::cerr);
 					std::cerr << std::endl;
@@ -964,18 +1027,18 @@ throw( Components::RemoveFailure )
 				}
 
 				// remove container
-				DEBUG_OUT( "..... remove container" );
 				try
 				{
+					DEBUG_OUT( "..... remove container" );
 					(*home_iter).container->remove();
 				}
 				catch (Components::RemoveFailure)
 				{
-					DEBUG_OUT(".......... remove failure");
+					NORMAL_ERR( "AssemblyImpl: remove container failure" );
 				}
 				catch (CORBA::Exception& e)
 				{
-					DEBUG_OUT(".......... EXCEPTION DURING removal of container");
+					NORMAL_ERR( "AssemblyImpl: EXCEPTION during removal of container" );
 #ifdef MICO_ORB
 					e._print (std::cerr);
 					std::cerr << std::endl;
@@ -984,18 +1047,18 @@ throw( Components::RemoveFailure )
 			}
 
 			// remove component server
-			DEBUG_OUT( "..... remove component server" );
 			try
 			{
+				DEBUG_OUT( "..... remove component server" );
 				(*process_iter).server->remove();
 			}
 			catch (Components::RemoveFailure)
 			{
-				DEBUG_OUT(".......... remove failure");
+				NORMAL_ERR( "AssemblyImpl: remove component server failure");
 			}
 			catch (CORBA::Exception& e)
 			{
-				DEBUG_OUT(".......... EXCEPTION DURING removal of container");
+				NORMAL_ERR( "AssemblyImpl: EXCEPTION during removal of container" );
 #ifdef MICO_ORB
 				e._print (std::cerr);
 				std::cerr << std::endl;
@@ -1006,12 +1069,12 @@ throw( Components::RemoveFailure )
 
 	homeMap_.clear();
 
-	DEBUG_OUT("application is teared down");
-
 	//
 	// uninstall
 	//
-	// todo
+	uninstall();
+
+	DEBUG_OUT3( "application for ", package_, " is teared down and uninstalled" );
 }
 
 
