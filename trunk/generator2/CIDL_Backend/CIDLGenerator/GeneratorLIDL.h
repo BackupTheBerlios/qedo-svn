@@ -57,7 +57,9 @@ class GeneratorLIDL : public virtual IDLBase
 	void doFactory(IR__::FactoryDef_ptr factory);
 	void doFinder(IR__::FinderDef_ptr finder);
 	void doHome(IR__::HomeDef_ptr home);
+	// do component needs to be replaced by do composition
 	void doComponent(IR__::ComponentDef_ptr component);
+	void doComposition(CIDL::CompositionDef_ptr coposition);
 	void doUses(IR__::UsesDef_ptr uses);
 	void doEmits(IR__::EmitsDef_ptr emits);
 	void doPublishes(IR__::PublishesDef_ptr publishes);

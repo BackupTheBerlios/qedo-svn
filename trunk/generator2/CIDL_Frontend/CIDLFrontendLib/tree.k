@@ -30,6 +30,7 @@ flag {uniq} :
     | ProcessFlag()
     | ServiceFlag()
     | SessionFlag()
+    | ExtensionFlag()
     | InFlag()
     | InOutFlag()
     | OutFlag()

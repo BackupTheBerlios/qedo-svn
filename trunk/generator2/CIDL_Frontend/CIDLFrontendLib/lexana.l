@@ -414,6 +414,7 @@ ENOL                    (\n|\n)
 <stream,cidl_psdl,cidl>"service"	{ return TOK_service; }
 <stream,cidl_psdl,cidl>"process"	{ return TOK_process; }
 <stream,cidl_psdl,cidl>"entity"	{ return TOK_entity; }
+<stream,cidl_psdl,cidl>"extension" { return TOK_extension; }
 <stream,cidl_psdl,cidl>"scope"	{ return TOK_scope; }
 <stream,cidl_psdl,cidl>"composition"	{ return TOK_composition; }
 <stream,cidl_psdl,cidl>"context"	{ return TOK_context; }

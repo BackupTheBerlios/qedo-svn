@@ -44,6 +44,7 @@ module CIDL {
 	const LifecycleCategory lc_Session = 1;
 	const LifecycleCategory lc_Process = 2;
 	const LifecycleCategory lc_Entity = 3;
+	const LifecycleCategory lc_Extension = 4;
 
 	interface CIDLRepository : IR__::ComponentRepository
 	{

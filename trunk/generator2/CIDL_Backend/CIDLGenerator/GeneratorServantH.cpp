@@ -41,8 +41,10 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "#include <CORBA.h>\n";
 	out << "#include \"" << file_prefix_ << "_LOCAL_skel.h\"\n";
 	out << "#include \"SessionContext.h\"\n";
+	out << "#include \"ExtensionContext.h\"\n";
 	out << "#include \"ServantBase.h\"\n";
-	out << "#include \"SessionHomeServant.h\"\n\n\n";
+	out << "#include \"SessionHomeServant.h\"\n";
+	out << "#include \"ExtensionHomeServant.h\"\n\n\n";
 
 	//
 	// dynamic library identifier
@@ -134,7 +136,7 @@ GeneratorServantH::check_for_generation(IR__::Contained_ptr item)
 
 		// home
 		check_for_generation(a_composition->ccm_home());
-
+		insert_to_generate(item);
 		break; }
 	case CORBA__::dk_Home : {
 		IR__::HomeDef_var a_home = IR__::HomeDef::_narrow(item);
@@ -246,10 +248,64 @@ GeneratorServantH::doInterface(IR__::InterfaceDef_ptr intf)
 	handleOperation(intf);
 }
 
+void 
+GeneratorServantH::doComposition(CIDL::CompositionDef_ptr composition)
+{
+	//
+	// determine the componentDef and HomeDef
+	//
+	component_ = composition->ccm_component();
+	IR__::HomeDef_var home = composition->ccm_home();
+
+	//
+	// determine lifecycle
+	//
+	CIDL::LifecycleCategory lc = composition->lifecycle();
+
+	//
+	// generate home
+	//
+
+	// achtung: wenn kein modul, sollte vielleicht Servant_ der prefix für alle servants sein?
+	open_module(out, component_, "SERVANT_");
+	out << "\n\n";
+
+	genHomeServantBegin(home, lc);
+	genHomeServant(home, lc);
+	out.unindent();
+	out << "};\n\n\n";
+
+	close_module(out, component_);
+
+	//
+	// entry point
+	//
+	out << "\n//\n// entry point\n//\n";
+	out << "extern \"C\" {\n";
+	out << "#ifdef _WIN32\n";
+	out << "__declspec(dllexport)\n";
+	out << "#else\n";
+	out << "#endif\n";
+	out << "Qedo::HomeServantBase* create_" << home->name() << "S(void);\n";
+	out << "}\n\n";
+
+	//
+	// generate component
+	//
+	open_module(out, component_, "SERVANT_");
+	out << "\n\n";
+
+	genContextServant(component_, lc);
+	genComponentServant(component_, lc);
+
+	close_module(out, component_);
+
+}
 
 void
 GeneratorServantH::doComponent(IR__::ComponentDef_ptr component)
 {
+	/*
 	// achtung: wenn kein modul, sollte vielleicht Servant_ der prefix für alle servants sein?
 	open_module(out, component, "SERVANT_");
 	out << "\n\n";
@@ -258,6 +314,7 @@ GeneratorServantH::doComponent(IR__::ComponentDef_ptr component)
 	genComponentServant(component);
 
 	close_module(out, component);
+	*/
 }
 
 
@@ -410,6 +467,7 @@ GeneratorServantH::doConsumes(IR__::ConsumesDef_ptr consumes)
 void
 GeneratorServantH::doHome(IR__::HomeDef_ptr home)
 {
+	/*
 	component_ = IR__::ComponentDef::_duplicate(home->managed_component());
 
 	// achtung: wenn kein modul, sollte vielleicht Servant_ der prefix für alle servants sein?
@@ -434,6 +492,7 @@ GeneratorServantH::doHome(IR__::HomeDef_ptr home)
 	out << "#endif\n";
 	out << "Qedo::HomeServantBase* create_" << home->name() << "S(void);\n";
 	out << "}\n\n";
+	*/
 }
 
 
@@ -646,7 +705,7 @@ GeneratorServantH::genConsumerServants(IR__::ComponentDef_ptr component)
 
 
 void
-GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component)
+GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc)
 {
 	// TODO if not defined in module, use prefix SERVANT_
 	std::string class_name = component->name();
@@ -681,20 +740,20 @@ GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component)
 	genFacetServants(component);
 	genSourceServants(component);
 	genConsumerServants(component);
-	genComponentServantBody(component);
+	genComponentServantBody(component,lc);
 	out.unindent();
 	out << "};\n\n\n";
 }
 
 
 void
-GeneratorServantH::genComponentServantBody(IR__::ComponentDef_ptr component)
+GeneratorServantH::genComponentServantBody(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc)
 {
 	// handle base component
 	IR__::ComponentDef_var base = component->base_component();
 	if(!CORBA::is_nil(base))
 	{ 
-		genComponentServant(base);
+		genComponentServant(base, lc);
 	}
 
 	handleAttribute(component);
@@ -716,7 +775,7 @@ GeneratorServantH::genComponentServantBody(IR__::ComponentDef_ptr component)
 
 
 void
-GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component)
+GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc)
 {
 	std::string class_name = string(component->name()) + "_Context_callback";
 
@@ -724,7 +783,23 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component)
 	out << "class " << class_name << "\n";
 	out.indent();
 	out << ": public " << mapFullNameLocal(component) << "_Context\n";
-	out << ", public Qedo::SessionContext\n";
+	switch (lc) {
+		case (CIDL::lc_Session) :
+		{
+            out << ", public Qedo::SessionContext\n";
+			break;
+		}
+		case (CIDL::lc_Extension) :
+		{
+			out << ", public Qedo::ExtensionContext\n";
+			break;
+		}
+		default :
+		{
+			// not supported lifecycle
+		}
+	}
+
 	out.unindent();
 	out << "{\n\n";
 	out << "public:\n\n";
@@ -791,7 +866,7 @@ GeneratorServantH::genContextServantBody(IR__::ComponentDef_ptr component)
 
 
 void
-GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home)
+GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc)
 {
 	std::string class_name = string(home->name()) + "_servant";
 
@@ -799,7 +874,23 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out << "class " << class_name << "\n";
 	out.indent();
 	out << ": public " << mapFullNamePOA(home) << "\n";
-	out << ", public Qedo::SessionHomeServant\n";
+	switch (lc) {
+		case (CIDL::lc_Session) :
+		{
+			out << ", public Qedo::SessionHomeServant\n";
+			break;
+		}
+		case (CIDL::lc_Extension) :
+		{
+			out << ",public Qedo::ExtensionHomeServant\n";
+			break;
+		}
+		default:
+		{
+			// not supported lifecycle
+		}
+	}
+
 	out.unindent();
 	out << "{\n\n";
 	out << "public:\n\n";
@@ -816,13 +907,13 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home)
 
 
 void
-GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home)
+GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc)
 {
 	// handle base home
 	IR__::HomeDef_var base = home->base_home();
 	if(base)
 	{ 
-		genHomeServant(base);
+		genHomeServant(base, lc);
 	}
 
 	handleAttribute(home);

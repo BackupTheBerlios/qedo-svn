@@ -56,6 +56,8 @@ private:
 	void doOperation(IR__::OperationDef_ptr operation);
 	void doException(IR__::ExceptionDef_ptr except);
 	void doInterface(IR__::InterfaceDef_ptr intface);
+	//doComponets needs to be replaced by doComposition
+	void doComposition(CIDL::CompositionDef_ptr composition);
 	void doComponent(IR__::ComponentDef_ptr component);
 	void doProvides(IR__::ProvidesDef_ptr provides);
 	void doUses(IR__::UsesDef_ptr uses);
@@ -76,8 +78,8 @@ private:
 	void genContextServant(IR__::ComponentDef_ptr component);
 	void genComponentServantBegin(IR__::ComponentDef_ptr component);
 	void genComponentServant(IR__::ComponentDef_ptr component);
-	void genHomeServantBegin(IR__::HomeDef_ptr home);
-	void genHomeServant(IR__::HomeDef_ptr home);
+	void genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
+	void genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
 	void genFacetRegistration(IR__::HomeDef_ptr home);
 	void genReceptacleRegistration(IR__::HomeDef_ptr home);
 	void genEmitterRegistration(IR__::HomeDef_ptr home);

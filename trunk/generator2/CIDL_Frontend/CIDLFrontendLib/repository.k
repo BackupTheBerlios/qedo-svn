@@ -1784,6 +1784,7 @@ Composition(name, flag_v, compo_body)
         ProcessFlag : { lifecycle = CIDL::lc_Process; }
         ServiceFlag : { lifecycle = CIDL::lc_Service; }
         SessionFlag : { lifecycle = CIDL::lc_Session; }
+        ExtensionFlag : { lifecycle = CIDL::lc_Extension; }
       }
       CIDL::CompositionDef_ptr composition;
       CIDL::CIDLRepository_ptr container = g_repository;

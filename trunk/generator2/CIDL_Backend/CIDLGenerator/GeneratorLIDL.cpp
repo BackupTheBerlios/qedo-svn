@@ -95,6 +95,7 @@ IR__::HomeDef_var base_home;
 				if(!id.compare(act_module->id())) 
 				{
 					check_for_generation(a_composition);
+
 				}
 			}
 		}
@@ -145,7 +146,7 @@ IR__::HomeDef_var base_home;
 			this->check_for_generation((*consumes_seq)[i]->event());
 		}
 
-		this->insert_to_generate(item);
+		//this->insert_to_generate(item);
 		break; }
 	case CORBA__::dk_Value:
 	case CORBA__::dk_Interface: {
@@ -153,6 +154,7 @@ IR__::HomeDef_var base_home;
 		break; }
 	case CORBA__::dk_Composition : {
 		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
+		insert_to_generate(a_composition);
 
 		// home
 		check_for_generation(a_composition->ccm_home());
@@ -219,10 +221,105 @@ GeneratorLIDL::doAttribute(IR__::AttributeDef_ptr attribute)
 	out << ";\n";
 }
 
+void
+GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
+{
+	//
+	// determin the lifecycle
+	//
+	CIDL::LifecycleCategory lc = composition->lifecycle();
+
+	//
+	// detemine the component
+	//
+	IR__::ComponentDef_var component = composition->ccm_component();
+
+	//
+	// generate
+	//
+	//
+	// executor
+	//
+	open_module(component);
+	out << "//\n// executor for " << component->id() << "\n//\n";
+	out << "local interface CCM_" << component->name() << "_Executor : ";
+	
+	// base component
+	IR__::ComponentDef_var base = component->base_component();
+	if(!CORBA::is_nil(base))
+	{
+		out << getLocalName(base) << "_Executor";
+	}
+	else
+	{
+        out << "::Components::EnterpriseComponent";
+	}
+
+	// supported interfaces
+	IR__::InterfaceDefSeq_var supported_seq = component->supported_interfaces();
+	CORBA::ULong len = supported_seq->length();
+	if(len)
+	{
+		CORBA::ULong i;
+		for( i= 0; i < len; i++)
+		{
+			out << ", " << map_absolute_name((*supported_seq)[i]);
+		}
+	}
+	out << "\n{\n";
+	out.indent();
+
+	handleAttribute(component);
+
+	out.unindent();
+	out << "};\n\n";
+
+	//
+	// context
+	//
+	out << "//\n// context for " << component->id() << "\n//\n";
+	out << "local interface CCM_" << component->name() << "_Context : ";
+	
+	// base component
+	if(!CORBA::is_nil(base))
+	{
+		out << getLocalName(base) << "_Context";
+	}
+	else
+	{
+		switch(lc) {
+		case (CIDL::lc_Session) : 
+			{
+				out << "::Components::SessionContext";
+				break;
+			}
+		case (CIDL::lc_Extension) :
+			{
+				out << "::Components::ExtensionContext";
+				break;
+			}
+		default:
+			{
+				//unsupported lifecycle category
+			}
+		}
+	}
+	out << "\n{\n";
+	out.indent();
+
+	handleUses(component);
+	handleEmits(component);
+	handlePublishes(component);
+
+	out.unindent();
+	out << "};\n\n";
+	close_module(component);
+}
 
 void
 GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 {
+	/*
 	component_ = IR__::ComponentDef::_duplicate(component);
 
 	//
@@ -285,6 +382,7 @@ GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 
 	out.unindent();
 	out << "};\n\n";
+	*/
 }
 
 

@@ -77,6 +77,7 @@
 	TOK_eventtype
 	TOK_exception
 	TOK_executor
+	TOK_extension
 	TOK_facet
 	TOK_factory
 	TOK_finder
@@ -1867,6 +1868,8 @@ category :
 	  { $$ = ServiceFlag(); }
 	| TOK_session
 	  { $$ = SessionFlag(); }
+	| TOK_extension
+	  { $$ = ExtensionFlag(); }
 	;
 
 composition_body :

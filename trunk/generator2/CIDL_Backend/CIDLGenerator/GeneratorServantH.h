@@ -52,7 +52,9 @@ private:
 	void doOperation(IR__::OperationDef_ptr operation);
 	void doException(IR__::ExceptionDef_ptr except);
 	void doInterface(IR__::InterfaceDef_ptr intface);
+	// doComponent should be relaced by doComposition
 	void doComponent(IR__::ComponentDef_ptr component);
+	void doComposition(CIDL::CompositionDef_ptr coposition);
 	void doProvides(IR__::ProvidesDef_ptr provides);
 	void doUses(IR__::UsesDef_ptr uses);
 	void doSink(IR__::SinkDef_ptr sink);
@@ -69,12 +71,12 @@ private:
 	void genFacetServants(IR__::ComponentDef_ptr component);
 	void genSourceServants(IR__::ComponentDef_ptr component);
 	void genConsumerServants(IR__::ComponentDef_ptr component);
-	void genContextServant(IR__::ComponentDef_ptr component);
+	void genContextServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
 	void genContextServantBody(IR__::ComponentDef_ptr component);
-	void genComponentServant(IR__::ComponentDef_ptr component);
-	void genComponentServantBody(IR__::ComponentDef_ptr component);
-	void genHomeServantBegin(IR__::HomeDef_ptr home);
-	void genHomeServant(IR__::HomeDef_ptr home);
+	void genComponentServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
+	void genComponentServantBody(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc);
+	void genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
+	void genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc);
 
 public:
 
