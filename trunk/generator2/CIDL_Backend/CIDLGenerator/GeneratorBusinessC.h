@@ -21,6 +21,9 @@ private:
 	bool need_push_;
 	CIDL::CompositionDef_var composition_;
 
+	void genReferenceCounting(std::string class_name);
+
+	void doException(IR__::ExceptionDef_ptr except);
 	void doModule(IR__::ModuleDef_ptr module);
 	void doAttribute(IR__::AttributeDef_ptr attribute);
 	void doOperation(IR__::OperationDef_ptr operation);

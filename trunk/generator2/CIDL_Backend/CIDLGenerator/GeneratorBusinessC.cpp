@@ -142,6 +142,13 @@ GeneratorBusinessC::doValueMember(IR__::ValueMemberDef_ptr member)
 }
 
 
+void 
+GeneratorBusinessC::doException(IR__::ExceptionDef_ptr except)
+{
+	out << ", " << mapFullName(except);
+}
+
+
 void
 GeneratorBusinessC::doAttribute(IR__::AttributeDef_ptr attribute)
 {
@@ -436,33 +443,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out << "}\n\n\n";
 
-	// _add_ref
-	out << "void\n";
-	out << class_name_ << "::_add_ref()\n{\n";
-	out.indent();
-	out << "++ref_count_;\n";
-	out.unindent();
-	out << "}\n\n\n";
-
-	// _remove_ref
-	out << "void\n";
-	out << class_name_ << "::_remove_ref()\n{\n";
-	out.indent();
-	out << "if (--ref_count_ == 0)\n{\n";
-	out.indent();
-	out << "delete this;\n";
-	out.unindent();
-	out << "}\n";
-	out.unindent();
-	out << "}\n\n\n";
-
-	// _get_refcount
-	out << "unsigned long\n";
-	out << class_name_ << "::_get_refcount()\n{\n";
-	out.indent();
-	out << "return ref_count_;\n";
-	out.unindent();
-	out << "}\n\n\n";
+	// reference counting
+	genReferenceCounting(class_name_);
 	
 	// set_context
 	out << "void\n";
@@ -530,34 +512,9 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		out.unindent();
 		out << "}\n\n\n";
 
-		// _add_ref
-		out << "void\n";
-		out << class_name_ << "::_add_ref()\n{\n";
-		out.indent();
-		out << "++ref_count_;\n";
-		out.unindent();
-		out << "}\n\n\n";
-
-		// _remove_ref
-		out << "void\n";
-		out << class_name_ << "::_remove_ref()\n{\n";
-		out.indent();
-		out << "if (--ref_count_ == 0)\n{\n";
-		out.indent();
-		out << "delete this;\n";
-		out.unindent();
-		out << "}\n";
-		out.unindent();
-		out << "}\n\n\n";
-
-		// _get_refcount
-		out << "unsigned long\n";
-		out << class_name_ << "::_get_refcount()\n{\n";
-		out.indent();
-		out << "return ref_count_;\n";
-		out.unindent();
-		out << "}\n\n\n";
-
+		// reference counting
+		genReferenceCounting(class_name_);
+		
 		// set context
 		out << "void\n";
 		out << class_name_ << "::set_context(" << context_name << "_ptr context)\n";
@@ -611,34 +568,9 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out << "}\n\n\n";
 
-	// _add_ref
-	out << "void\n";
-	out << class_name_ << "::_add_ref()\n{\n";
-	out.indent();
-	out << "++ref_count_;\n";
-	out.unindent();
-	out << "}\n\n\n";
-
-	// _remove_ref
-	out << "void\n";
-	out << class_name_ << "::_remove_ref()\n{\n";
-	out.indent();
-	out << "if (--ref_count_ == 0)\n{\n";
-	out.indent();
-	out << "delete this;\n";
-	out.unindent();
-	out << "}\n";
-	out.unindent();
-	out << "}\n\n\n";
-
-	// _get_refcount
-	out << "unsigned long\n";
-	out << class_name_ << "::_get_refcount()\n{\n";
-	out.indent();
-	out << "return ref_count_;\n";
-	out.unindent();
-	out << "}\n\n\n";
-
+	// reference counting
+	genReferenceCounting(class_name_);
+	
 	// obtain executor
 	out << "::CORBA::Object*\n";
 	out << class_name_ << "::obtain_executor(const char* name)\n";
@@ -777,34 +709,9 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out << "}\n\n\n";
 
-	// _add_ref
-	out << "void\n";
-	out << class_name_ << "::_add_ref()\n{\n";
-	out.indent();
-	out << "++ref_count_;\n";
-	out.unindent();
-	out << "}\n\n\n";
-
-	// _remove_ref
-	out << "void\n";
-	out << class_name_ << "::_remove_ref()\n{\n";
-	out.indent();
-	out << "if (--ref_count_ == 0)\n{\n";
-	out.indent();
-	out << "delete this;\n";
-	out.unindent();
-	out << "}\n";
-	out.unindent();
-	out << "}\n\n\n";
-
-	// _get_refcount
-	out << "unsigned long\n";
-	out << class_name_ << "::_get_refcount()\n{\n";
-	out.indent();
-	out << "return ref_count_;\n";
-	out.unindent();
-	out << "}\n\n\n";
-
+	// reference counting
+	genReferenceCounting(class_name_);
+	
 	// set context
 	out << "void\n";
 	out << class_name_ << "::set_context(Components::CCMContext_ptr ctx)\n";
@@ -850,5 +757,40 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	out.close();
 }
+
+
+void
+GeneratorBusinessC::genReferenceCounting(std::string class_name)
+{
+	// _add_ref
+	out << "void\n";
+	out << class_name << "::_add_ref()\n{\n";
+	out.indent();
+	out << "Qedo::qedo_lock lock(&mutex_);\n";
+	out << "++ref_count_;\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// _remove_ref
+	out << "void\n";
+	out << class_name << "::_remove_ref()\n{\n";
+	out.indent();
+	out << "Qedo::qedo_lock lock(&mutex_);\n";
+	out << "if (--ref_count_ == 0)\n";
+	out.indent();
+	out << "delete this;\n";
+	out.unindent();
+	out.unindent();
+	out << "}\n\n\n";
+
+	// _get_refcount
+	out << "unsigned long\n";
+	out << class_name << "::_get_refcount()\n{\n";
+	out.indent();
+	out << "return ref_count_;\n";
+	out.unindent();
+	out << "}\n\n\n";
+}
+
 
 } //
