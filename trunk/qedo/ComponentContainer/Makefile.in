@@ -39,6 +39,8 @@ SOURCES = Key.cpp \
 		ComponentInstance.cpp \
 		ConsumerPort.cpp \
 		ContainerInterfaceImpl.cpp \
+		ContainerClientRequestInfo.cpp \
+		ContainerServerRequestInfo.cpp \
 		EmitterPort.cpp \
 		EntityHomeServant.cpp \
 		FacetPort.cpp \

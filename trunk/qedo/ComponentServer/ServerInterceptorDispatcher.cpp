@@ -30,7 +30,7 @@
 #include "GlobalHelpers.h"
 #include "ContainerServerRequestInfo.h"
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.14 2004/02/16 07:42:13 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.15 2004/02/16 14:26:54 tom Exp $";
 
 namespace Qedo {
 
@@ -266,7 +266,7 @@ throw(CORBA::SystemException)
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 
 	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
-	char* id = 0;
+	const char* id = 0;
 	slot >>= id;
 	if (!id)
 	{
@@ -306,7 +306,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 
 	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
-	char* id = 0;
+	const char* id = 0;
 	slot >>= id;
 	if (!id)
 	{

@@ -28,7 +28,7 @@
 #include <fstream>
 #include "ContainerClientRequestInfo.h"
 
-static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.9 2004/02/16 07:42:13 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.10 2004/02/16 14:26:54 tom Exp $";
 
 namespace Qedo {
 
@@ -57,7 +57,7 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
 
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
-	char* id = 0;
+	const char* id = 0;
 	slot >>= id;
 	if (!id)
 	{
@@ -95,7 +95,7 @@ ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestIn
 	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
 
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
-	char* id = 0;
+	const char* id = 0;
 	slot >>= id;
 	if (!id)
 	{
@@ -127,7 +127,7 @@ ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientReque
 	DEBUG_OUT ("ClientInterceptorDispatcher: receive_exception");
 
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
-	char* id = 0;
+	const char* id = 0;
 	slot >>= id;
 	if (!id)
 	{

@@ -27,10 +27,10 @@
 #endif
 #include "InternalConfiguration.h"
 #ifndef _QEDO_NO_QOS
-#include "ComponentServerimpl.h"
+#include "ComponentServerImpl.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.22 2004/02/16 07:34:04 tom Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.23 2004/02/16 14:26:54 tom Exp $";
 
 
 namespace Qedo {
