@@ -100,12 +100,12 @@ PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll Debug_orba
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
-# PROP Output_Dir "ComponentIDL___Win32_Debug_tao"
-# PROP Intermediate_Dir "ComponentIDL___Win32_Debug_tao"
+# PROP Output_Dir "Win32_Debug_tao"
+# PROP Intermediate_Dir "Win32_Debug_tao"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMPONENTIDL_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "$(TAO)\TAO" /I "$(TAO)" /I "$(TAO)\tao\tao\PortableServer" /I "$(TAO)\tao\tao\IFR_Client" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMPONENTIDL_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR- /GX /ZI /Od /I "." /I "$(TAO)\TAO" /I "$(TAO)" /I "$(TAO)\tao\tao\PortableServer" /I "$(TAO)\tao\tao\IFR_Client" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "COMPONENTIDL_EXPORTS" /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
@@ -121,7 +121,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Creating DEF file for ComponentIDL.dll
-PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll ComponentIDL___Win32_Debug_tao/*.obj
+PreLink_Cmds=perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll Win32_Debug_tao/*.obj
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "ComponentIDL - Win32 Release_orbacus"

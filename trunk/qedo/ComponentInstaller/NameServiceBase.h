@@ -24,8 +24,8 @@
 #define __NAME_SERVICE_BASE_H__
 
 
-#include <OB/CORBA.h>
-#include <OB/CosNaming.h>
+#include <CORBA.h>
+#include <CosNaming.h>
 #include <stdio.h>
 #include <string>
 

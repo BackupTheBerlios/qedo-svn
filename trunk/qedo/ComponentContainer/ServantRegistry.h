@@ -23,7 +23,7 @@
 #ifndef __SERVANT_REGISTRY_H__
 #define __SERVANT_REGISTRY_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 
 #include "RefCountBase.h"
 #include "ServantBase.h"

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: Key.cpp,v 1.3 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: Key.cpp,v 1.4 2003/02/07 12:22:40 tom Exp $";
 
 #include "Key.h"
 #include "Output.h"
@@ -32,8 +32,11 @@ Key::Key
 {
 	// Keys can be generated from concurrent threads, so accessing the static
 	// key id must be synchronized
-	JTCSynchronized synchronized (*this);
-
+//	Synchronized synchronized (*this);
+	if(!Key::m_mutex) {
+		Key::m_mutex=new qedo_mutex;
+	};
+	qedo_lock l(Key::m_mutex);
 	key_value_ = new CORBA::OctetSeq();
 	key_value_->length (12);
 
@@ -69,9 +72,9 @@ Key::to_string
 ()
 {
 	CORBA::String_var key_id_buffer = CORBA::string_alloc(27);		// 2 + 2*12 + 1
-	key_id_buffer[0] = '0';
-	key_id_buffer[1] = 'x';
-	key_id_buffer[26] = 0;
+	key_id_buffer.inout()[0] = '0';
+	key_id_buffer.inout()[1] = 'x';
+	key_id_buffer.inout()[26] = 0;
 
 	for (unsigned int i = 0; i < 12; i++)
 	{
@@ -120,6 +123,7 @@ Key::key_value_from_object_id (const PortableServer::ObjectId& object_id)
 
 
 CORBA::ULongLong Key::key_id_ = 0;
+qedo_mutex* Key::m_mutex = 0;
 
 } // namespace Qedo
 

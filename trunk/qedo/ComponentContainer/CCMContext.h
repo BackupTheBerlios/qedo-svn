@@ -23,7 +23,8 @@
 #ifndef __CCM_CONTEXT_H__
 #define __CCM_CONTEXT_H__
 
-#include <OB/CORBA.h>
+
+#include <CORBA.h>
 #include <Components.h>
 
 #include "CCMObjectExecutor.h"

@@ -23,7 +23,7 @@
 #ifndef __COMPONENT_INSTALLATION_IMPL_H__
 #define __COMPONENT_INSTALLATION_IMPL_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include "QedoComponents_skel.h"
 #include "ComponentImplementation.h"
 #include "NameServiceBase.h"

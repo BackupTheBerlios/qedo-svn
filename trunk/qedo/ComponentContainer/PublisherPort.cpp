@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: PublisherPort.cpp,v 1.4 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: PublisherPort.cpp,v 1.5 2003/02/07 12:22:40 tom Exp $";
 
 #include "PublisherPort.h"
 #include "Output.h"
@@ -85,7 +85,7 @@ SubscribedConsumer::consumer() const
 }
 
 
-bool 
+CORBA::Boolean 
 SubscribedConsumer::same_consumer (Components::Cookie* cookie) const
 {
     return cookie_->equal (cookie);

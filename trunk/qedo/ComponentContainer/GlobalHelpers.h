@@ -23,7 +23,7 @@
 #ifndef __GLOBAL_HELPERS_H__
 #define __GLOBAL_HELPERS_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 
 #include "Key.h"
 

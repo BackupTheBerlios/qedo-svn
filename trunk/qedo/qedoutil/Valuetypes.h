@@ -23,7 +23,7 @@
 #ifndef __VALUE_TYPES_H__
 #define __VALUE_TYPES_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 
 #include "Components.h"
 #include "Util.h"
@@ -265,7 +265,7 @@ private:
 	ConfigValue_impl (const ConfigValue_impl&);
 
 public:
-	ConfigValue_impl (const char*, const CORBA::Any&);
+	ConfigValue_impl (const char*,  CORBA::Any&);
 	ConfigValue_impl();
 	~ConfigValue_impl ();
 };

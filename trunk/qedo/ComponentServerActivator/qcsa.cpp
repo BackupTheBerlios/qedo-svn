@@ -20,24 +20,24 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qcsa.cpp,v 1.4 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: qcsa.cpp,v 1.5 2003/02/07 12:22:40 tom Exp $";
 
 #include "ServerActivatorImpl.h"
 
 #include <iostream>
 #include <cstring>
-#ifdef HAVE_JTC
-#include <JTC/JTC.h>
-#endif
+//#ifdef HAVE_JTC
+//#include <JTC/JTC.h>
+//#endif
 using namespace std;
 
 int
 main (int argc, char** argv)
 {
-#ifdef HAVE_JTC
-	try {
-#endif
-		cout << "Qedo Component Server Activator" << endl;
+//#ifdef HAVE_JTC
+//	try {
+//#endif
+	std::cout << "Qedo Component Server Activator" << std::endl;
 
 		// Check for debug mode
 		bool debug_mode = false;
@@ -61,20 +61,20 @@ main (int argc, char** argv)
 		}
 		catch (Qedo::ServerActivatorImpl::CannotInitialize&)
 		{
-			cerr << "Cannot initialize Component Server Activator... exiting." << endl;
+			std::cerr << "Cannot initialize Component Server Activator... exiting." << std::endl;
 			orb->destroy();
 			exit (1);
 		}
 
 		orb->run();
-#ifdef HAVE_JTC
-	}
-	catch (const JTCException&e )
-	{
-		cerr << "caught JTCException" << endl;
-		cerr << e << endl;
-	}
-#endif
+//#ifdef HAVE_JTC
+//	}
+//	catch (const JTCException&e )
+//	{
+//		cerr << "caught JTCException" << endl;
+//		cerr << e << endl;
+//	}
+//#endif
 return 0;
 }
 

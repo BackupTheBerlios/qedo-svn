@@ -714,5 +714,5 @@ module Components {
 	{
 	};
 };
-
+#pragma prefix ""
 #endif

@@ -20,21 +20,22 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.4 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.5 2003/02/07 12:22:40 tom Exp $";
+
+#include <iostream>
 
 #include "ServerActivatorImpl.h"
 #include <CosNaming.h>
 
-#include <iostream>
+
 #ifdef _WIN32
-#include <strstream>
+//#include <strstream>
 #include <process.h>
 #else
 #include <unistd.h>
 #include <sstream>
 #endif
 
-using namespace std;
 
 namespace Qedo {
 
@@ -183,8 +184,7 @@ ServerActivatorImpl::initialize()
 		throw CannotInitialize();
 	}
 
-#ifdef HAVE_JTC
-#else
+
 #if _WIN32
 	// Create an event handle to be used for the notification from the created component server
 	event_handle_ = CreateEvent (NULL, TRUE /*auto-reset*/, FALSE /*initial: non-signaled*/, "QEDO_NOTIFY_EVENT");
@@ -195,7 +195,6 @@ ServerActivatorImpl::initialize()
 		throw CannotInitialize();
 	}
 #endif
-#endif
 }
 
 
@@ -205,9 +204,9 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 {
 	cout << "ServerActivatorImpl: create_component_server() called" << endl;
 
-#ifdef HAVE_JTC
-	JTCSynchronized sync(monitor);
-#endif
+//#ifdef HAVE_JTC
+//	JTCSynchronized sync(monitor);
+//#endif
 	CORBA::String_var my_string_ref;
 
 
@@ -269,14 +268,14 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 #endif
 
-#if HAVE_JTC
-	monitor.wait();
-#else
+//#if HAVE_JTC
+//	monitor.wait();
+//#else
 #ifdef _WIN32
 	// Now wait for the component server to call notify_component_server() on me
 	WaitForMultipleObjects(1, &event_handle_, TRUE, INFINITE /*wait for ever*/);
 #endif
-#endif
+//#endif
 
 	if (CORBA::is_nil (last_created_component_server_))
 	{
@@ -320,21 +319,21 @@ throw (CORBA::SystemException)
 {
 	cout << "ServerActivatorImpl: notify_component_server() called" << endl;
 
-#ifdef HAVE_JTC
-	JTCSynchronized sync(monitor);
-#endif
+//#ifdef HAVE_JTC
+//	JTCSynchronized sync(monitor);
+//#endif
 
 	last_created_component_server_ = Components::Deployment::ComponentServer::_duplicate(server);
 
 	// Signal that the callback function has been called by the Component Server,
 	// so we can return the IOR to the client
-#ifdef HAVE_JTC
-	monitor.notify();
-#else
+//#ifdef HAVE_JTC
+//	monitor.notify();
+//#else
 #ifdef _WIN32
 	SetEvent(event_handle_);
 #endif
-#endif
+//#endif
 }
 
 } // namespace Qedo

@@ -23,11 +23,13 @@
 #ifndef __KEY_H__
 #define __KEY_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include <Components.h>
 
 #include "RefCountBase.h"
 #include "Util.h"
+#include "Synchronisation.h"
+
 
 #include <string>
 
@@ -38,12 +40,14 @@
 
 namespace Qedo {
 
-class CONTAINERDLL_API Key : public RefCountBase,
-							 public JTCMonitor
+class CONTAINERDLL_API Key : public RefCountBase
+							 
+
 {
 private:
 	CORBA::OctetSeq_var key_value_;
     static CORBA::ULongLong key_id_;
+	static qedo_mutex* m_mutex;
 
 public:
 	Key();

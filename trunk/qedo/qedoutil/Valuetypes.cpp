@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: Valuetypes.cpp,v 1.6 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: Valuetypes.cpp,v 1.7 2003/02/07 12:22:40 tom Exp $";
 
 
 #include "Valuetypes.h"
@@ -40,7 +40,7 @@ Cookie_impl::Cookie_impl()
 
 	for (unsigned int i = 0; i < 8; i++)
 	{
-		(*octet_key)[i] = ((char*)(&cookie_key_))[i];
+		octet_key.inout()[i] = ((char*)(&cookie_key_))[i];
 	}
 
 	cookieValue (octet_key.in());
@@ -394,7 +394,7 @@ ComponentPortDescriptionFactory_impl::create_for_unmarshal()
 //
 // ConfigValue
 //
-ConfigValue_impl::ConfigValue_impl (const char* name, const CORBA::Any& value)
+ConfigValue_impl::ConfigValue_impl (const char* name,  CORBA::Any& value)
 #if _MSC_VER < 1300 
 : ConfigValue ()
 #else

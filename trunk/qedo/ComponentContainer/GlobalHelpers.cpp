@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: GlobalHelpers.cpp,v 1.3 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: GlobalHelpers.cpp,v 1.4 2003/02/07 12:22:40 tom Exp $";
 
 #include "GlobalHelpers.h"
 
@@ -116,8 +116,8 @@ ObjectId_to_string (const PortableServer::ObjectId& object_id)
 	CORBA::ULong object_id_len = object_id.length();
 	CORBA::String_var string_buffer = CORBA::string_alloc (object_id_len * 2 + 2 + 1);
 
-	string_buffer[0] = '0';
-	string_buffer[1] = 'x';
+	string_buffer.inout()[0] = '0';
+	string_buffer.inout()[1] = 'x';
 	string_buffer[object_id_len * 2 + 2] = 0;
 
 	for (unsigned int i = 0; i < object_id_len; i++)

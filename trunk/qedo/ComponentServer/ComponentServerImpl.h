@@ -23,7 +23,7 @@
 #ifndef __COMPONENT_SERVER_IMPL_H__
 #define __COMPONENT_SERVER_IMPL_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include "QedoComponents_skel.h"
 #include "Util.h"
 #include <vector>

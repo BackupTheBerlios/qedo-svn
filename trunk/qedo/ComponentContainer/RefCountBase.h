@@ -23,7 +23,7 @@
 #ifndef __REFCOUNT_BASE_H__
 #define __REFCOUNT_BASE_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 
 #include "Util.h"
 

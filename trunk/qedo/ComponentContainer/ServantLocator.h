@@ -23,7 +23,7 @@
 #ifndef __SERVANT_LOCATOR_H__
 #define __SERVANT_LOCATOR_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 
 #include "ServantBase.h"
 

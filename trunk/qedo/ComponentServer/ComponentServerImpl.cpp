@@ -20,12 +20,16 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.5 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.6 2003/02/07 12:22:40 tom Exp $";
 
 #include "ComponentServerImpl.h"
 #include "ContainerInterfaceImpl.h"
 #include "Output.h"
 #include "Valuetypes.h"
+
+#ifdef TAO_ORB
+//#include "corbafwd.h"
+#endif
 
 namespace Qedo {
 
@@ -182,7 +186,7 @@ ComponentServerImpl::initialize()
 	}
 
 	// Register valuetype factories
-	CORBA::ValueFactoryBase_var factory;
+	CORBA::ValueFactoryBase* factory;
 	factory = new Qedo::ConfigValueFactory_impl();
     orb_->register_value_factory ("IDL:omg.org/Components/ConfigValue:1.0", factory);
 	factory = new Qedo::CookieFactory_impl();

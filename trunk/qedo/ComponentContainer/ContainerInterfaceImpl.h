@@ -23,8 +23,8 @@
 #ifndef __CONTAINER_INTERFACE_IMPL_H__
 #define __CONTAINER_INTERFACE_IMPL_H__
 
-#include <OB/CORBA.h>
-#include <OB/CosNaming.h>
+#include <CORBA.h>
+#include <CosNaming.h>
 #include <QedoComponents_skel.h>
 
 #include "HomeServantBase.h"

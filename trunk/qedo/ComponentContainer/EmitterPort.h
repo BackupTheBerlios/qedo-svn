@@ -23,7 +23,7 @@
 #ifndef __EMITTER_PORT_H__
 #define __EMITTER_PORT_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include <Components.h>
 
 #include "PortBase.h"

@@ -23,8 +23,7 @@
 #ifndef __OUTPUT_H__
 #define __OUTPUT_H__
 
-#include <JTC/JTC.h>
-
+#include "Synchronisation.h"
 #include <Util.h>
 
 #ifdef WIN32
@@ -36,11 +35,11 @@
 #include <iostream>
 
 namespace Qedo {
-
-extern CONTAINERDLL_API JTCMonitor* container_monitor;
+	extern CONTAINERDLL_API qedo_mutex* container_mutex;
+}
 
 #define SYNC_WITH_CONTAINER  \
-	JTCSynchronized synchronized ( *Qedo::container_monitor );
+Qedo::qedo_lock output( Qedo::container_mutex );
 
 #define NORMAL_OUT(x) \
 { \
@@ -122,6 +121,6 @@ extern CONTAINERDLL_API JTCMonitor* container_monitor;
 { \
 }
 #endif
-} // namespace Qedo
+//} // namespace Qedo
  
 #endif

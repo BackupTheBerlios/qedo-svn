@@ -23,7 +23,7 @@
 #ifndef __SESSION_CONTEXT_H__
 #define __SESSION_CONTEXT_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include <Components.h>
 
 #include "CCMContext.h"

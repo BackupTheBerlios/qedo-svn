@@ -20,14 +20,14 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: Output.cpp,v 1.3 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: Output.cpp,v 1.4 2003/02/07 12:22:40 tom Exp $";
 
 #include "Output.h"
 
 
 namespace Qedo {
 
-JTCMonitor* container_monitor = new JTCMonitor();
+qedo_mutex* container_mutex = new qedo_mutex();
 
 } // namespace Qedo
 

@@ -24,7 +24,7 @@
 #define __COMPONENT_IMPLEMENTATION_H__
 
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include "Components.h"
 #include "Package.h"
 #include "DOMXMLParser.h"

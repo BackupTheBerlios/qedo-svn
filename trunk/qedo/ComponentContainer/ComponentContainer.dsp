@@ -71,7 +71,8 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "$(ORBACUS)\include" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "VC6" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "$(ORBACUS)\include" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "VC6" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "ORBACUS_ORB" /YX /FD /GZ /c
+# SUBTRACT CPP /Fr
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
@@ -81,7 +82,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /pdb:none /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /libpath:"$(ORBACUS)\lib"
 
 !ELSEIF  "$(CFG)" == "ComponentContainer - Win32 Debug_tao"
 
@@ -98,7 +99,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "$(ORBACUS)\include" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "VC6" /FR /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "$(ORBACUS)\include" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "VC6" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "." /I "../ComponentIDL" /I "../ComponentValuetypes" /I "$(TAO)\TAO" /I "$(TAO)" /I "$(TAO)\tao\tao" /I "$(TAO)\tao\tao\PortableServer" /I "$(TAO)\tao\tao\IFR_Client" /I "$(TAO)\TAO\orbsvcs\orbsvcs\Naming" /D "CONTAINERDLL_EXPORTS" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "COMPONENTCONTAINER_EXPORTS" /D "TAO_ORB" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
@@ -108,7 +109,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
-# ADD LINK32 jtcd.lib obd.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"$(ORBACUS)\lib"
+# ADD LINK32 odbc32.lib odbccp32.lib aced.lib TAOd.lib TAO_PortableServerd.lib TAO_DynamicAnyd.lib TAO_CosNamingd.lib TAO_IFR_Clientd.lib /nologo /dll /debug /machine:I386 /out:"../../Runtime/ComponentContainer.dll" /pdbtype:sept /libpath:"..\..\CIDL_Frontend\CIDLFrontendLib" /libpath:"..\..\CIDL_Repository\IFRidl" /libpath:"..\..\CIDL_Repository\ComponentRepositoryLib" /libpath:"..\..\CIDL_Repository\CIDLRepositoryLib" /libpath:"$(ACE_ROOT)\ace" /libpath:"$(TAO)\TAO\tao" /libpath:"$(TAO)\TAO\tao\PortableServer" /libpath:"$(TAO)\TAO\tao\DynamicAny" /libpath:"$(TAO)\TAO\orbsvcs\orbsvcs" /libpath:"$(TAO)\TAO\tao\IFR_Client"
 
 !ELSEIF  "$(CFG)" == "ComponentContainer - Win32 Release_orbacus"
 
@@ -172,6 +173,20 @@ SOURCE=.\ConsumerPort.cpp
 # Begin Source File
 
 SOURCE=.\ContainerInterfaceImpl.cpp
+
+!IF  "$(CFG)" == "ComponentContainer - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "ComponentContainer - Win32 Debug_orbacus"
+
+!ELSEIF  "$(CFG)" == "ComponentContainer - Win32 Debug_tao"
+
+# ADD CPP /I "$(TAO)\TAO\orbsvcs\orbsvcs"
+# SUBTRACT CPP /I "$(TAO)\TAO\orbsvcs\orbsvcs\Naming"
+
+!ELSEIF  "$(CFG)" == "ComponentContainer - Win32 Release_orbacus"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -236,6 +251,10 @@ SOURCE=.\SessionContext.cpp
 # Begin Source File
 
 SOURCE=.\SessionHomeServant.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Synchronisation.cpp
 # End Source File
 # Begin Source File
 
@@ -336,6 +355,10 @@ SOURCE=.\SessionContext.h
 # Begin Source File
 
 SOURCE=.\SessionHomeServant.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Synchronisation.h
 # End Source File
 # Begin Source File
 

@@ -43,6 +43,6 @@ module CosPersistentState {
   };
 
 };
-
+#pragma prefix ""
 
 #endif

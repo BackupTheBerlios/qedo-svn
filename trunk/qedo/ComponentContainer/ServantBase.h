@@ -23,7 +23,7 @@
 #ifndef __SERVANT_BASE_H__
 #define __SERVANT_BASE_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include "Components_skel.h"
 
 #include "CCMObjectExecutor.h"

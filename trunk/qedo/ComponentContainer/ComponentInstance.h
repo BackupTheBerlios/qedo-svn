@@ -23,7 +23,7 @@
 #ifndef __COMPONENT_INSTANCE_H__
 #define __COMPONENT_INSTANCE_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include "Components.h"
 
 #include "CCMContext.h"

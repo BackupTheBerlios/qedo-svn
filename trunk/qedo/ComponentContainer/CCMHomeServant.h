@@ -23,7 +23,7 @@
 #ifndef __CCM_HOME_SERVANT_H__
 #define __CCM_HOME_SERVANT_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include "QedoComponents_skel.h"
 
 #include "HomeServantBase.h"

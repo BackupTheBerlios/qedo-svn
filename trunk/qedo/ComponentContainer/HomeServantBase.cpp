@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.5 2003/02/07 11:33:39 neubauer Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.6 2003/02/07 12:22:40 tom Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -91,7 +91,7 @@ HomeServantBase::create_primary_object_reference (const char* rep_id)
 	Qedo::Key* key = new Qedo::Key();
 	CORBA::OctetSeq_var key_seq = key->key_value();
 
-	CORBA::Object_var obj = create_object_reference (key_seq, rep_id);
+	CORBA::Object_var obj = create_object_reference (&key_seq.in(), rep_id);
 
 	key->_remove_ref();
 

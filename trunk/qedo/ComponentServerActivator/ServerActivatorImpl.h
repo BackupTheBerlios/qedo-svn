@@ -23,13 +23,15 @@
 #ifndef __COMPONENT_SERVER_ACTIVATOR_IMPL_H__
 #define __COMPONENT_SERVER_ACTIVATOR_IMPL_H__
 
-#include <vector>
 
 #include <CORBA.h>
+
+#include <vector>
+
 #include "QedoComponents_skel.h"
-#ifdef HAVE_JTC
-#include <JTC/JTC.h>
-#endif
+//#ifdef HAVE_JTC
+//#include <JTC/JTC.h>
+//#endif
 
 namespace Qedo {
 
@@ -40,15 +42,15 @@ class ServerActivatorImpl : public POA_Qedo_Components::Deployment::ServerActiva
 {
 private:
 	bool debug_mode_;
-#ifdef HAVE_JTC
-	JTCMonitor monitor;
-#else
+//#ifdef HAVE_JTC
+//	JTCMonitor monitor;
+//#else
 #ifdef _WIN32
 	HANDLE event_handle_;
 #else
 #error Have no semaphore
 #endif
-#endif
+//#endif
 
 	CORBA::ORB_var									orb_;
 	PortableServer::POA_var							root_poa_;

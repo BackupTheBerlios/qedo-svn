@@ -23,7 +23,7 @@
 #ifndef __PORT_BASE_H__
 #define __PORT_BASE_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include <Components.h>
 
 #include "Valuetypes.h"
