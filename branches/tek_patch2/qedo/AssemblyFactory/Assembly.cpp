@@ -439,7 +439,7 @@ throw(Components::CreateFailure)
 		//
 		// property configuration
 		//
-		if( (*iter).comp_prop.length())
+		if( (*iter).comp_prop.length() )
 		{
 			CPFReader reader;
 			Components::ConfigValues_var config = reader.readCPF( (*iter).comp_prop );
