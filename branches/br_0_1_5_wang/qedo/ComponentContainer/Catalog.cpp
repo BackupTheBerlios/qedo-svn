@@ -27,7 +27,7 @@ namespace Qedo
 
 CatalogBaseImpl::CatalogBaseImpl() :
 	QDDatabase(),
-	pConnector_(NULL),
+	pConnector_(Connector::_nil()),
 	eAM_(READ_ONLY)
 {
 }
@@ -44,19 +44,15 @@ CatalogBaseImpl::CatalogBaseImpl(const AccessMode eAM,
 
 CatalogBaseImpl::~CatalogBaseImpl()
 {
-	std::cout << "destruct CatalogBaseImpl\n";
+	std::cout << "CatalogBaseImpl::~CatalogBaseImpl()\n";
 
-	if(!lHomeBases_.empty())
+	std::cout << "There are " << lHomeBases_.size() << " storage homes in the list\n";
+	for( homeBaseIter_=lHomeBases_.begin(); homeBaseIter_!=lHomeBases_.end(); homeBaseIter_++ )
 	{
-		std::cout << "begin to remove storage home base...\n";
-		for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
-		{
-			std::cout << "removing storage home base...\n";
-			(*homeBaseIter)->_remove_ref();
-			std::cout << "storage home base removed!\n";
-		}
-
-		lHomeBases_.clear();
+		std::cout << "storage home base _remove_ref...\n";
+		(*homeBaseIter_)->_remove_ref();
+		std::cout << "erase storage home base from list...\n";
+		lHomeBases_.erase(homeBaseIter_);
 	}
 }
 
@@ -132,19 +128,6 @@ CatalogBaseImpl::getCapacity()
 AccessMode 
 CatalogBaseImpl::access_mode()
 {
-	/*
-	if(!IsConnected())
-		return 0;
-	
-	int nAccessMode;
-
-	SQLGetConnectAttr(hDbc_, SQL_ATTR_ACCESS_MODE, &nAccessMode, SQL_IS_INTEGER, NULL);
-
-	if(nAccessMode == SQL_MODE_READ_ONLY)
-		return READ_ONLY;
-	else
-		return READ_WRITE;
-	*/
 	return eAM_;
 }
 
@@ -159,14 +142,13 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 	
 	//find it in the list
 	StorageHomeBase_var pHomeBase = StorageHomeBase::_nil();
-	
-	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
+	for( homeBaseIter_=lHomeBases_.begin(); homeBaseIter_!=lHomeBases_.end(); homeBaseIter_++ )
 	{
-		const char* szHomeName = (*homeBaseIter)->getStorageHomeName();
+		const char* szHomeName = (*homeBaseIter_)->getStorageHomeName();
 		
 		if(strcmp(szHomeName, storage_home_id)==0)
 		{
-			pHomeBase = (*homeBaseIter);
+			pHomeBase = StorageHomeBase::_duplicate((*homeBaseIter_));
 			return pHomeBase._retn();
 		}
 	}
@@ -191,9 +173,10 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 
 	pHomeBaseImpl->Init(this, storage_home_id);
 
-	lHomeBases_.push_back(pHomeBaseImpl); // ref-number + 1?
+	lHomeBases_.push_back(pHomeBaseImpl); // ref + 1?
+	pHomeBase = StorageHomeBase::_duplicate(pHomeBaseImpl);
 
-	return StorageHomeBaseImpl::_duplicate(pHomeBaseImpl);
+	return pHomeBase._retn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -210,31 +193,35 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 
 	// fetch the table name where pid can be found
 	std::string strToExecute;
-	unsigned char szHomeName[MAX_COL_SIZE];
+	unsigned char* szHomeName = new unsigned char [MAX_COL_SIZE];
+	unsigned char* szTypeName = new unsigned char [MAX_COL_SIZE];
+	memset(szHomeName, '\0', MAX_COL_SIZE);
+	memset(szTypeName, '\0', MAX_COL_SIZE);
 
 	QDRecordset prs;
 	prs.Init(&hDbc_);
 
-	strToExecute = "SELECT ownhome FROM pid_content WHERE pid LIKE \'";
+	strToExecute = "SELECT home, type FROM pid_content WHERE pid LIKE \'";
 	strToExecute += strPid;
 	strToExecute += "\';";
 
 	if(prs.Open(strToExecute.c_str()))
 	{
-		memset(szHomeName, '\0', MAX_COL_SIZE);
-		prs.GetFieldValue("ownhome", szHomeName);
+		prs.GetFieldValue("home", szHomeName);
+		prs.GetFieldValue("type", szTypeName);
 		prs.Close();
 		prs.Destroy();
 	}
 
+	std::string strShortPid = strPid + "@" + ((const char*)szTypeName);
+	ShortPid* pSpid = new ShortPid;
+	convertStringToSpid(strShortPid.c_str(), *pSpid);
+
 	try
 	{
 		StorageHomeBase_var pHomeBase = find_storage_home((const char*)szHomeName);
-		StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase.in());
+		StorageObjectBase pObj = pHomeBase->find_by_short_pid(*pSpid);
 
-		StorageObjectBase pObj = NULL;
-	
-		pObj = pHomeBaseImpl->find_by_pid(strPid);
 		if(!pObj)
 			throw CosPersistentState::NotFound();
 
@@ -266,8 +253,8 @@ CatalogBaseImpl::flush()
 
 	std::string strFlush = "";
 	
-	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
-		strFlush += (*homeBaseIter)->getFlush();
+	for( homeBaseIter_=lHomeBases_.begin(); homeBaseIter_!=lHomeBases_.end(); homeBaseIter_++ )
+		strFlush += (*homeBaseIter_)->getFlush();
 
 	if(ExecuteSQL(strFlush.c_str()))
 	{
@@ -275,14 +262,10 @@ CatalogBaseImpl::flush()
 		ret = SQLEndTran(SQL_HANDLE_DBC, hDbc_, SQL_COMMIT);
 		if(ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
-			for( homeBaseIter = lHomeBases_.begin();
-					homeBaseIter != lHomeBases_.end();
-					homeBaseIter++ )
-			{
-				// the flush is successfull, we set the modified-value of each
-				// storage object back to FALSE
-				(*homeBaseIter)->setBatchUnModified();
-			}
+			// the flush is successfull, we set the modified-value of each
+			// storage object back to FALSE
+			for( homeBaseIter_=lHomeBases_.begin(); homeBaseIter_!=lHomeBases_.end(); homeBaseIter_++ )
+				(*homeBaseIter_)->setBatchUnModified();
 		}
 		else
 		{
@@ -304,8 +287,8 @@ CatalogBaseImpl::refresh()
 {
 	DEBUG_OUT("CatalogBaseImpl::refresh() is called");
 
-	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
-		(*homeBaseIter)->Refresh();
+	for( homeBaseIter_=lHomeBases_.begin(); homeBaseIter_!=lHomeBases_.end(); homeBaseIter_++ )
+		(*homeBaseIter_)->Refresh();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -317,8 +300,8 @@ CatalogBaseImpl::free_all()
 {
 	DEBUG_OUT("CatalogBaseImpl::free_all() is called");
 
-	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
-		(*homeBaseIter)->FreeAllStorageObjects();
+	for( homeBaseIter_=lHomeBases_.begin(); homeBaseIter_!=lHomeBases_.end(); homeBaseIter_++ )
+		(*homeBaseIter_)->FreeAllStorageObjects();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -335,7 +318,7 @@ CatalogBaseImpl::close()
 
 		bIsConnected_ = FALSE;
 
-		if(hDbc_ == NULL)
+		if( hDbc_==NULL )
 			return;
 
 		SQLDisconnect(hDbc_);
@@ -440,12 +423,10 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 	//there is no function for deleting Pid from PidList, so the PidList should 
 	//be first converted in a list of Pid
 	for(CORBA::ULong i=0; i<pids.length(); i++)
-	{
 		vPidList.push_back(pids[i]);
-	}
 
-	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
-		strFlush += (*homeBaseIter)->getFlushByPid(vPidList);
+	for( homeBaseIter_=lHomeBases_.begin(); homeBaseIter_!=lHomeBases_.end(); homeBaseIter_++ )
+		strFlush += (*homeBaseIter_)->getFlushByPid(vPidList);
 
 	if(ExecuteSQL(strFlush.c_str()))
 	{
@@ -455,8 +436,8 @@ SessionPoolImpl::flush_by_pids(const PidList& pids)
 		{
 			// the flush is successfull, we set the modified-value of each
 			// storage object back to FALSE
-			for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
-				(*homeBaseIter)->setBatchUnModified();
+			for( homeBaseIter_=lHomeBases_.begin(); homeBaseIter_!=lHomeBases_.end(); homeBaseIter_++ )
+				(*homeBaseIter_)->setBatchUnModified();
 		}
 		else
 		{
@@ -493,12 +474,10 @@ SessionPoolImpl::refresh_by_pids(const PidList& pids)
 	//there is no function for deleting Pid from PidList, so the PidList should 
 	//be first converted in a list of Pid
 	for(CORBA::ULong i=0; i<pids.length(); i++)
-	{
 		vPidList.push_back(pids[i]);
-	}
 
-	for( homeBaseIter=lHomeBases_.begin(); homeBaseIter!=lHomeBases_.end(); homeBaseIter++ )
-		(*homeBaseIter)->RefreshByPid(vPidList);
+	for( homeBaseIter_=lHomeBases_.begin(); homeBaseIter_!=lHomeBases_.end(); homeBaseIter_++ )
+		(*homeBaseIter_)->RefreshByPid(vPidList);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

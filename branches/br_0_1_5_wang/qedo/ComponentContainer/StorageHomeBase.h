@@ -47,7 +47,7 @@ class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::
 
 		StorageHomeBaseImpl();
 
-		~StorageHomeBaseImpl();
+		virtual ~StorageHomeBaseImpl();
 
 		void Init(CatalogBase_ptr pCatalogBase, const char* szHomeName);
 
@@ -68,8 +68,6 @@ class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::
 		void destroyObject( Pid* pPid ) throw (CORBA::SystemException);
 		
 		CORBA::Boolean objectExists( Pid* pPid ) throw (CORBA::SystemException);
-
-		StorageObjectBase find_by_pid(std::string pid);
 
 		//
 		// IDL:omg.org/CosPersistentState/StorageHomeBase/find_by_short_pid:1.0

@@ -26,7 +26,6 @@
 #include <CORBA.h>
 #include "QedoComponents_skel.h"
 #include "ContainerInterfaceImpl.h"
-#include "ConnectorRegistry.h"
 #include "Connector.h"
 #include "Util.h"
 #include <vector>
@@ -107,10 +106,7 @@ private:
 	CORBA::ULong							process_id_;
 	/** the object reference of the component installer */
 	Components::Deployment::ComponentInstallation_var		component_installer_;
-	/** the object reference of the connector registry*/
-	CosPersistentState::ConnectorRegistry_var pConnReg_;
-	CosPersistentState::Connector_var	      pConn_;
-
+	
 	/** the orb */
 	CORBA::ORB_var							orb_;
 	/** the root poa */
@@ -127,6 +123,9 @@ private:
 	QedoMutex							container_mutex_;
 	/** the mutex for the valuetype implementation list */
 	QedoMutex							value_mutex_;
+
+	/** the object reference of the connector */
+	CosPersistentState::Connector_var pConn_;
 
 #ifndef _QEDO_NO_QOS
 	/** interceptor dispatcher for the server side */
@@ -193,7 +192,7 @@ public:
 	void loadValuetypeFactory(const char* repid, const char* loc)
 		throw (CORBA::SystemException);
 
-	virtual ConnectorRegistry_ptr getConnectorRegistry();
+	virtual Connector_ptr getConnector();
 
 #ifndef _QEDO_NO_QOS
 	/**

@@ -528,22 +528,22 @@ GeneratorServantH::genPersistentOperation(IR__::OperationDef_ptr operation, IR__
 	//
 	// parameters
 	//
+	strDummy = mapName(operation) + component->name();
+	int iLength = strDummy.length() + 14;
+	strDummy = "";
+	strDummy.append(iLength, ' ');
+
 	if(!isFinder)
 	{
-		strDummy = mapName(operation) + component->name();
-		int iLength = strDummy.length() + 14;
-	
-		strDummy = "";
 		out << "Pid* pid,\n";
-		strDummy.append(iLength, ' ');
-		out << strDummy.c_str();
+		out << strDummy;
 		out << "ShortPid* shortPid,\n";
+		out << strDummy;
 	}
-
+	
 	IR__::ParDescriptionSeq* pards = operation->params();
-	for( CORBA::ULong i= pards->length(); i > 0; i--)
+	for( CORBA::ULong i=pards->length(); i > 0; i--)
 	{
-		if(!isFinder) out << strDummy;
 		IR__::ParameterDescription pardescr = (*pards)[i - 1];
 		if (pardescr.mode == IR__::PARAM_IN) {
 			out << map_in_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
@@ -554,7 +554,7 @@ GeneratorServantH::genPersistentOperation(IR__::OperationDef_ptr operation, IR__
 		if (pardescr.mode == IR__::PARAM_INOUT) {
 			out << map_inout_parameter_type (pardescr.type_def) << " " << string(pardescr.name);
 		}
-		if( (i-1)!=0 ) out << ",\n";
+		if( (i-1)!=0 ) out << ",\n" << strDummy;
 	}
 
 	if(isFinder)
@@ -836,14 +836,19 @@ GeneratorServantH::genMemberVariable(IR__::ComponentDef_ptr component)
 	component->get_state_members(state_members, CORBA__::dk_Variable);
 	CORBA::ULong ulLen = state_members.length();
 	
-	out << "protected:\n\n";
+	out << "private:\n\n";
 	out.indent();
 
 	for(CORBA::ULong i=0; i<ulLen; i++)
 	{
 		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		std::string attribute_name = mapName(attribute);
-		out << map_attribute_type(attribute->type_def()) << " " << attribute_name << "_;\n";
+		
+		if( strcmp("char*", (const char*)(map_attribute_type(attribute->type_def())))==0 )
+			out << "std::string ";
+		else
+            out << map_attribute_type(attribute->type_def()) << " ";
+		out << attribute_name << "_;\n";
 	}
 
 	out.unindent();
@@ -1116,7 +1121,7 @@ GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
 	{
 		out << "\nvoid get_table_info(std::map<std::string, std::string>& mTables);\n\n";
-		out << "void init_datastore(ConnectorRegistry_ptr pConnReg, Sessio_ptr pSession);\n";
+		out << "void init_datastore(Connector_ptr pConn, Sessio_ptr pSession);\n";
 		out.unindent();
 		out << "\nprivate:\n\n";
 		out.indent();
@@ -1230,6 +1235,13 @@ GeneratorServantH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 		genPersistentOperation(a_finder, component, true);
 	}
 	
+	// generate finder for find_by_primary_key
+	out << "\n";
+	out << component->name() << "Persistence* find_by_primary_key(" << mapFullNamePK(home->primary_key()) << "* pkey)\n";
+	out.indent();
+	out << "throw(CosPersistentState::NotFound);\n";
+	out.unindent();
+
 	out.unindent();
 	out << "};\n\n";
 

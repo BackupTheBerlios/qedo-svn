@@ -398,9 +398,6 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="Connector.cpp">
 			</File>
 			<File
-				RelativePath="ConnectorRegistry.cpp">
-			</File>
-			<File
 				RelativePath=".\ConsumerPort.cpp">
 				<FileConfiguration
 					Name="Debug_mico|Win32">
@@ -553,9 +550,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="Connector.h">
-			</File>
-			<File
-				RelativePath="ConnectorRegistry.h">
 			</File>
 			<File
 				RelativePath=".\ConsumerPort.h">

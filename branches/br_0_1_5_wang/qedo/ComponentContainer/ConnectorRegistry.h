@@ -43,7 +43,7 @@ class CONTAINERDLL_API ConnectorRegistryImpl : public virtual CosPersistentState
 
 		ConnectorRegistryImpl();
 
-		~ConnectorRegistryImpl();
+		virtual ~ConnectorRegistryImpl();
 
 		//
 		// IDL:omg.org/CosPersistentState/ConnectorRegistry/find_connector:1.0
@@ -65,8 +65,8 @@ class CONTAINERDLL_API ConnectorRegistryImpl : public virtual CosPersistentState
 
 	private:
 		
-		std::map<std::string, Connector_var> connectors_;
-		std::map<std::string, Connector_var>::iterator connIter_;
+		std::map<std::string, Connector_ptr> connectors_;
+		std::map<std::string, Connector_ptr>::iterator connIter_;
 };
 
 }; // namespace Qedo

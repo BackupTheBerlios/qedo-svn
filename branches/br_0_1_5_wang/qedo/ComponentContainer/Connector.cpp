@@ -25,8 +25,8 @@
 * This connector can know how many sessions or session pools can be established
 * in a given database. It can also control how many storagehome can share one 
 * session or session pool dynamically and explicitly
-* The limitation of this connector is it can support only one database, this can
-* be improved in the future ;-)
+* The limitation of this connector is it can support only one database, but this
+* can be improved in the future ;-)
 */
 
 namespace Qedo
@@ -45,47 +45,56 @@ ConnectorImpl::ConnectorImpl(char* szImplID) :
 
 ConnectorImpl::~ConnectorImpl()
 {	
-	std::cout << "destruct ConnectorImpl\n";
+	std::cout << "ConnectorImpl::~ConnectorImpl()\n";
 
 	// delete all sessions and session pool(s)!
-	if(!lSessions_.empty())
+	std::cout << "There are " << lSessions_.size() << " sessions in the list\n";
+	for( sessionIter_=lSessions_.begin(); sessionIter_!=lSessions_.end(); sessionIter_++ )
 	{
-		std::list<Sessio_var>::iterator sessionIter;
-
-		for( sessionIter=lSessions_.begin(); sessionIter!=lSessions_.end(); sessionIter++ )
-		{
-			std::cout << "convert session to impl...\n";
-			SessionImpl* pSession = dynamic_cast <SessionImpl*> ((*sessionIter).in());
-			std::cout << "close session...\n";
-			pSession->close();
-			std::cout << "remove session's ref 2...\n";
-			lSessions_.erase(sessionIter);
-			//pSession->_remove_ref();
-			std::cout << "session's ref removed...\n";
-		}
-/*
-		std::cout << "make session list empty...\n";
-		lSessions_.clear();
-		std::cout << "end of make session list empty...\n";
-*/
+		std::cout << "close session...\n";
+		(*sessionIter_)->close();
+		std::cout << "session _remove_ref()...\n";
+		(*sessionIter_)->_remove_ref();
+		std::cout << "erase session from list...\n";
+		lSessions_.erase(sessionIter_);
 	}
 
-	if(!lSessionPools_.empty())
+	std::cout << "There are " << lSessionPools_.size() << " session pools in the list\n";
+	for( sessionPoolIter_=lSessionPools_.begin(); 
+		 sessionPoolIter_!=lSessionPools_.end(); 
+		 sessionPoolIter_++ )
 	{
-		std::list<SessionPool_var>::iterator sessionPoolIter;
-
-		for( sessionPoolIter=lSessionPools_.begin(); sessionPoolIter!=lSessionPools_.end(); sessionPoolIter++ )
-		{
-			std::cout << "convert session pool to impl...\n";
-			SessionPoolImpl* pSessionPool = dynamic_cast <SessionPoolImpl*> ((*sessionPoolIter).in());
-			std::cout << "close session pool...\n";
-			pSessionPool->close();
-			std::cout << "remove session pool's ref...\n";
-			pSessionPool->_remove_ref();
-		}
-
-		//lSessionPools_.clear();
+		std::cout << "close session pool...\n";
+		(*sessionPoolIter_)->close();
+		std::cout << "session pool _remove_ref...\n";
+		(*sessionPoolIter_)->_remove_ref();
+		std::cout << "erase session pool from list...\n";
+		lSessionPools_.erase(sessionPoolIter_);
 	}
+
+	// release factories
+	std::cout << "There are " << objFactoryMap_.size() << " object factories in the map\n";
+	for( objFactoryIter_=objFactoryMap_.begin();
+		 objFactoryIter_!=objFactoryMap_.end();
+		 objFactoryIter_++ )
+	{
+		std::cout << "release object factory...\n";
+		(objFactoryIter_->second)->_remove_ref();
+		std::cout << "erase object factory from map...\n";
+		objFactoryMap_.erase(objFactoryIter_);
+	}
+
+	std::cout << "There are " << homeFactoryMap_.size() << " home factories in the map\n";
+	for( homeFactoryIter_=homeFactoryMap_.begin();
+		 homeFactoryIter_!=homeFactoryMap_.end();
+		 homeFactoryIter_++ )
+	{
+		std::cout << "release home factory...\n";
+		(homeFactoryIter_->second)->_remove_ref();
+		std::cout << "erase home factory from map...\n";
+		homeFactoryMap_.erase(homeFactoryIter_);
+	}
+
 	std::cout << "end of destrctor of connector...\n";
 }
 
@@ -155,19 +164,16 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 {
 	DEBUG_OUT("ConnectorImpl::create_basic_session() is called");
 
-	Sessio_var _session = 0;
+	Sessio_var _session = Sessio::_nil();
 
 	if( !lSessions_.empty() )
 	{
 		//get a session
-		std::list<Sessio_var>::iterator sessionIter;
-
-		for( sessionIter=lSessions_.begin(); sessionIter!=lSessions_.end(); sessionIter++ )
+		for( sessionIter_=lSessions_.begin(); sessionIter_!=lSessions_.end(); sessionIter_++ )
 		{
-			SessionImpl* pSession = dynamic_cast <SessionImpl*> ((*sessionIter).in());
-			if( (pSession->getCapacity()) < MAX_CAPACITY )
+			if( ((*sessionIter_)->getCapacity()) < MAX_CAPACITY )
 			{
-				_session = Sessio::_narrow(pSession);
+				_session = Sessio::_duplicate((*sessionIter_));
 				return _session._retn();
 			}
 		}
@@ -204,9 +210,9 @@ ConnectorImpl::create_basic_session(AccessMode access_mode,
 	if( iMaxConnections == -100 )
 		iMaxConnections = pSession->GetMaxDriverConnections();
 
+	lSessions_.push_back(pSession);
+	
 	_session = Sessio::_duplicate(pSession);
-	lSessions_.push_back(_session);
-
 	return _session._retn();
 }
 
@@ -221,19 +227,18 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 {
 	DEBUG_OUT("ConnectorImpl::create_session_pool() is called");
 
-	SessionPool_var _sessionpool = 0;
+	SessionPool_var _sessionpool = SessionPool::_nil();
 
 	if( !lSessionPools_.empty() )
 	{
 		//get a session pool
-		std::list<SessionPool_var>::iterator sessionPoolIter;
-
-		for( sessionPoolIter=lSessionPools_.begin(); sessionPoolIter!=lSessionPools_.end(); sessionPoolIter++ )
+		for( sessionPoolIter_=lSessionPools_.begin();
+			 sessionPoolIter_!=lSessionPools_.end(); 
+			 sessionPoolIter_++ )
 		{
-			SessionPoolImpl* pSessionPool = dynamic_cast <SessionPoolImpl*> ((*sessionPoolIter).in());
-			if( (pSessionPool->getCapacity()) < MAX_CAPACITY )
+			if( ((*sessionPoolIter_)->getCapacity()) < MAX_CAPACITY )
 			{
-				_sessionpool = SessionPool::_narrow(pSessionPool);
+				_sessionpool = SessionPool::_duplicate((*sessionPoolIter_));
 				return _sessionpool._retn();
 			}
 		}
@@ -270,9 +275,9 @@ ConnectorImpl::create_session_pool(AccessMode access_mode,
 	if( iMaxConnections == -100 )
 		iMaxConnections = pSessionPool->GetMaxDriverConnections();
 	
-	_sessionpool = SessionPool::_duplicate(pSessionPool);
-	lSessionPools_.push_back(_sessionpool);
+	lSessionPools_.push_back(pSessionPool);
 
+	_sessionpool = SessionPool::_duplicate(pSessionPool);
 	return _sessionpool._retn();
 }
 
@@ -291,10 +296,9 @@ ConnectorImpl::register_storage_object_factory(const char* storage_type_name,
 	DEBUG_OUT("ConnectorImpl::register_storage_object_factory() is called");
 
 	std::string strName = storage_type_name;
-	std::map<std::string, StorageObjectFactory>::iterator objFactoryIter;
-	objFactoryIter = objFactoryMap_.find(strName);
+	objFactoryIter_ = objFactoryMap_.find(strName);
 
-	if( objFactoryIter!=objFactoryMap_.end() )
+	if( objFactoryIter_!=objFactoryMap_.end() )
 	{
 		return objFactoryMap_[strName];
 	}
@@ -321,10 +325,9 @@ ConnectorImpl::register_storage_home_factory(const char* storage_home_type_name,
 	DEBUG_OUT("ConnectorImpl::register_storage_home_factory() is called");
 
 	std::string strName = storage_home_type_name;
-	std::map<std::string, StorageHomeFactory>::iterator homeFactoryIter;
-	homeFactoryIter = homeFactoryMap_.find(strName);
+	homeFactoryIter_ = homeFactoryMap_.find(strName);
 	
-	if( homeFactoryIter!=homeFactoryMap_.end() )
+	if( homeFactoryIter_!=homeFactoryMap_.end() )
 	{
 		return homeFactoryMap_[strName];
 	}

@@ -38,7 +38,7 @@
 #endif
 
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.6 2004/02/07 13:47:26 hao Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.7 2004/02/15 22:23:20 hao Exp $";
 
 
 namespace Qedo {
@@ -679,11 +679,11 @@ throw (Components::Deployment::UnknownImplId,
 	#endif
 		}
 		
-		//get connector register
-		ConnectorRegistry_var pConnReg = component_server_->getConnectorRegistry();
-		if( ! pConnReg )
+		//get connector
+		Connector_var pConn = component_server_->getConnector();
+		if( ! pConn )
 		{
-			std::cout << "pConnReg is NULL" << std::endl;
+			std::cout << "pConn is NULL" << std::endl;
 			throw Components::Deployment::InstallationFailure();
 		}
 
@@ -701,8 +701,6 @@ throw (Components::Deployment::UnknownImplId,
 			throw Components::Deployment::InstallationFailure();
 		}
 		
-		Connector_var pConn = pConnReg->find_connector("");
-
 		std::cout << "creating session ...\n";
 		CosPersistentState::Sessio_var pSession = pConn->create_basic_session(CosPersistentState::READ_WRITE, "", params);
 		SessionImpl* pSessionImpl = dynamic_cast <SessionImpl*> (pSession.in());
@@ -717,7 +715,8 @@ throw (Components::Deployment::UnknownImplId,
 		{
 			std::stringstream strContent;
 			strContent << "create table PID_CONTENT ( PID VARCHAR(254) not null, ";
-			strContent << "OWNHOME VARCHAR(254) not null, ";
+			strContent << "HOME VARCHAR(254) not null, ";
+			strContent << "TYPE VARCHAR(254) not null, ";
 			strContent << "constraint PK_PIDCONTENT primary key (PID));";
 
 			pSessionImpl->ExecuteSQL(strContent.str().c_str());
@@ -740,7 +739,7 @@ throw (Components::Deployment::UnknownImplId,
 		}
 		
 		//register storage object/home factory
-		entity_home->init_datastore( pConnReg.in(), pSession.in() );
+		entity_home->init_datastore( pConn.in(), pSession.in() );
 		
 		break;
 	}

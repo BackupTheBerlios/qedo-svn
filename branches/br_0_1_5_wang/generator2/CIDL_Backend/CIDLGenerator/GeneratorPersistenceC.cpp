@@ -485,7 +485,7 @@ GeneratorPersistenceC::genFactory(IR__::OperationDef_ptr operation, IR__::Interf
 	out << "CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase);\n\n";
 	strName_ = "strFactory";
 
-	out << strName_ << " << \"INSERT INTO pid_content (pid, ownhome) VALUES ( \";\n";
+	out << strName_ << " << \"INSERT INTO pid_content (pid, home) VALUES ( \";\n";
 	strContent_ = "\\'";
 	out << genSQLLine(strName_, strContent_, false, false, false);
 	strContent_ = "convertPidToString(pid)";
@@ -1629,7 +1629,7 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	out << "CatalogBaseImpl* pCatalogBaseImpl = dynamic_cast <CatalogBaseImpl*> (pCatalogBase);\n\n";
 	strName_ = "strInsert";
 
-	out << strName_ << " << \"INSERT INTO pid_content (pid, ownhome) VALUES ( \";\n";
+	out << strName_ << " << \"INSERT INTO pid_content (pid, home) VALUES ( \";\n";
 	strContent_ = "\\'";
 	out << genSQLLine(strName_, strContent_, false, false, false);
 	strContent_ = "convertPidToString(pid)";

@@ -69,7 +69,10 @@ ConnectorRegistryImpl::unregister_connector(const char* implementation_id)
 	if( connIter_ == connectors_.end())
 		throw CosPersistentState::NotFound();
 	
+	ConnectorImpl* pConn = dynamic_cast <ConnectorImpl*> (connectors_[strID]);
+	pConn->_remove_ref();
 	connectors_.erase(strID);
 }
 
 } // namespace Qedo
+

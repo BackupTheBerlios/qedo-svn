@@ -47,7 +47,7 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 
 		CatalogBaseImpl(const AccessMode eAM, const char* szConnString, Connector_ptr connector);
 
-		~CatalogBaseImpl();
+		virtual ~CatalogBaseImpl();
 
 		bool Init();
 
@@ -99,7 +99,7 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 
 		Connector_var pConnector_;
 		std::list<StorageHomeBaseImpl*> lHomeBases_;
-		std::list<StorageHomeBaseImpl*>::iterator homeBaseIter;
+		std::list<StorageHomeBaseImpl*>::iterator homeBaseIter_;
 
 	private:
 
@@ -116,7 +116,7 @@ class  SessionImpl : public virtual CosPersistentState::Sessio,
 
 		SessionImpl(AccessMode eAM, const char* szConnString, Connector_ptr connector);
 
-		~SessionImpl();
+		virtual ~SessionImpl();
 };
 
 
@@ -129,7 +129,7 @@ class  SessionPoolImpl : public virtual CosPersistentState::SessionPool,
 
 		SessionPoolImpl(AccessMode eAM, TransactionPolicy tx_policy, const char* szConnString, Connector_ptr connector);
 
-		~SessionPoolImpl();
+		virtual ~SessionPoolImpl();
 
 		bool Init();
 

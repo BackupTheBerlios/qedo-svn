@@ -30,14 +30,14 @@ StorageObjectImpl::StorageObjectImpl() :
 	pShortPid_(new CosPersistentState::ShortPid),
 	strUpdate_(""),
 	strSelect_(""),
-	pHomeBaseImpl_(NULL),
+	pHomeBase_(StorageHomeBase::_nil()),
 	bModified_(FALSE)
 {
 }
 
 StorageObjectImpl::~StorageObjectImpl()
 {
-	std::cout << "destruct StorageObjectImpl\n";
+	std::cout << "StorageObjectImpl::~StorageObjectImpl()\n";
 }
 
 std::string
@@ -114,7 +114,8 @@ StorageObjectImpl::destroy_object()
 	DEBUG_OUT("StorageObjectImpl::destroy_object() is called");
 
 	Pid_var pPid = get_pid();
-	pHomeBaseImpl_->destroyObject(pPid);
+	StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase_.in());
+	pHomeBaseImpl->destroyObject(pPid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +129,8 @@ StorageObjectImpl::object_exists()
 	DEBUG_OUT("StorageObjectImpl::object_exists() is called");
 
 	Pid_var pPid = get_pid();
-	return pHomeBaseImpl_->objectExists(pPid);
+	StorageHomeBaseImpl* pHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pHomeBase_.in());
+	return pHomeBaseImpl->objectExists(pPid);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -177,8 +179,7 @@ StorageHomeBase_ptr
 StorageObjectImpl::get_storage_home()
 	throw (CORBA::SystemException)
 {
-	StorageHomeBase_var pHomeBase = pHomeBaseImpl_;
-	return pHomeBase._retn();
+	return StorageHomeBase::_duplicate(pHomeBase_.in());
 }
 
 StorageObject*
@@ -196,9 +197,9 @@ StorageObjectImpl::_downcast(StorageObject* pStorageObject)
 }
 
 void
-StorageObjectImpl::setStorageHome( StorageHomeBaseImpl* pHomeBaseImpl )
+StorageObjectImpl::setStorageHome( StorageHomeBase_ptr pHomeBase )
 {
-	pHomeBaseImpl_ = pHomeBaseImpl;
+	pHomeBase_ = StorageHomeBase::_duplicate(pHomeBase);
 }
 
 }
@@ -330,12 +331,12 @@ Pid*
 StorageObjectRef::get_pid() const 
 	throw(CORBA::SystemException)
 {
-	Pid* pPid = NULL;
+	Pid_var pPid = NULL;
 
     if( pObj_!=NULL )
         pPid = pObj_->get_pid();
 
-    return pPid;
+    return pPid._retn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -345,12 +346,12 @@ ShortPid*
 StorageObjectRef::get_short_pid() const 
 	throw(CORBA::SystemException)
 {
-	ShortPid* pSpid = NULL;
+	ShortPid_var pSpid = NULL;
 
     if( pObj_!=NULL )
         pSpid = pObj_->get_short_pid();
 
-    return pSpid;
+    return pSpid._retn();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

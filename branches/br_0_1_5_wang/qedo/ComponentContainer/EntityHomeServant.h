@@ -25,7 +25,7 @@
 
 //#include "HomeServantBase.h"
 #include "CCMHomeServant.h"
-#include "ConnectorRegistry.h"
+#include "Connector.h"
 #include "Util.h"
 
 
@@ -80,7 +80,7 @@ public:
 	
 	virtual void get_table_info(std::map<std::string, std::string>& mTables) = 0;
 
-	virtual void init_datastore(ConnectorRegistry_ptr pConnReg, Sessio_ptr pSession) = 0;
+	virtual void init_datastore(Connector_ptr pConn, Sessio_ptr pSession) = 0;
 
 };
 

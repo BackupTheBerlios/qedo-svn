@@ -48,8 +48,8 @@ QDDatabase::~QDDatabase()
 	iRecordsAffected_ = 0;
 	bIsConnected_ = FALSE;
 
-	delete szODBCVersion_;
-	delete szConnString_;
+	delete [] szODBCVersion_;
+	delete [] szConnString_;
 	szODBCVersion_ = NULL;
 	szConnString_ = NULL;
 }
@@ -189,7 +189,7 @@ QDDatabase::ExecuteSQL(const char* szSqlStr)
 	
 	iRecordsAffected_ = nRowCount;
 	
-	std::cout << "return value in ExecuteSQL is " << ret << std::endl;
+	std::cout << "ExecuteSQL return " << ret << std::endl;
 	return ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO;
 }
 

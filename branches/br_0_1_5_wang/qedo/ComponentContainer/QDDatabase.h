@@ -46,7 +46,7 @@ class CONTAINERDLL_API QDDatabase
 
 		QDDatabase() ;
 
-		~QDDatabase() ;
+		virtual ~QDDatabase() ;
 
 		virtual bool Init();
 

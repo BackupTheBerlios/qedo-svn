@@ -48,7 +48,7 @@ class CONTAINERDLL_API ConnectorImpl : public virtual CosPersistentState::Connec
 
 		ConnectorImpl(char* szImplID);
 		
-		~ConnectorImpl();
+		virtual ~ConnectorImpl();
 
 		bool checkMaxConnections();
 
@@ -111,10 +111,16 @@ class CONTAINERDLL_API ConnectorImpl : public virtual CosPersistentState::Connec
 		static const int MAX_CAPACITY = 100;
 		int iMaxConnections;
 		std::string strImplID_;
-		std::list<Sessio_var> lSessions_;
-		std::list<SessionPool_var> lSessionPools_;
+
+		std::list<SessionImpl*> lSessions_;
+		std::list<SessionImpl*>::iterator sessionIter_;
+		std::list<SessionPoolImpl*> lSessionPools_;
+		std::list<SessionPoolImpl*>::iterator sessionPoolIter_;
+		
 		std::map<std::string, StorageObjectFactory> objFactoryMap_;
+		std::map<std::string, StorageObjectFactory>::iterator objFactoryIter_;
 		std::map<std::string, StorageHomeFactory> homeFactoryMap_;
+		std::map<std::string, StorageHomeFactory>::iterator homeFactoryIter_;
 };
 
 }; // namespace Qedo

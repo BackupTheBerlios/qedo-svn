@@ -50,9 +50,11 @@ class CCMContext;
  */
 class CONTAINERDLL_API ComponentInstance
 {
+
 public:
 	/** the identity of this component */
 	std::string							uuid_;
+	//char*									uuid_;
 	/** configuration values */
 	Components::ConfigValues_var		config_;
 	/** object id of the component */
@@ -66,7 +68,22 @@ public:
 #ifndef _QEDO_NO_STREAMS
 	Qedo::StreamCCMObjectExecutor*		stream_ccm_object_executor_;
 #endif
+/*
+	std::string get_uuid()
+	{ 
+		std::string strTemp = "";
 
+		if(!uuid_)
+			std::cout << "uuid_ is null!\n";
+		else
+		{
+			std::cout << "uuid_ is " << uuid_ << "\n";
+            strTemp.append( (const char*)uuid_ );
+		}
+
+		return strTemp;
+	};
+*/
 	/**
 	 * constructor
 	 * \param object_id

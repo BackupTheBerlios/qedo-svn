@@ -45,7 +45,7 @@ class CONTAINERDLL_API QDRecordset
 
 		QDRecordset();
 
-		~QDRecordset();
+		virtual ~QDRecordset();
 
 		void Init(SQLHDBC hDbc);
 
