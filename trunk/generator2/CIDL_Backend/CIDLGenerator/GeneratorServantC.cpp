@@ -627,10 +627,10 @@ GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 	out.indent();
 	out.indent();
 
-	if(!is_void)
-	{
+//	if(!is_void)
+//	{
 		out << "return ";
-	}
+//	}
 	out << "facet->" << operation_name << "(";
 	for(i = len; i > 0; i--)
 	{
