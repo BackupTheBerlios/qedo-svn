@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(Qedo, 0.4.2, qedo@qedo.berlios.de)
+AC_INIT(Qedo, 0.5.0, qedo@qedo.berlios.de)
 AC_CONFIG_HEADER([CIDL_Frontend/CIDLFrontendLib/config.h])
 
 AC_ARG_ENABLE(optimize,
