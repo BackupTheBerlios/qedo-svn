@@ -132,11 +132,11 @@ string get_short_name(char *full_scope_name) {
 		name[0].kind=CORBA::string_dup("");
 		name[1].id=CORBA::string_dup("Activators");
 		name[1].kind=CORBA::string_dup("");
-		name[2].id=CORBA::string_dup(b.binding_name[0].id);
+		name[2].id=CORBA::string_dup(b.binding_name[as].id);
 		name[2].kind=CORBA::string_dup("");
 
 		try {
-			std::cout<< "ServerActivator: " << b.binding_name[0].id << endl;
+			std::cout<< "ServerActivator: " << b.binding_name[as].id << endl;
 			server_activator_obj=nc->resolve(name);
 
 		}
