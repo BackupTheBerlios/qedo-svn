@@ -75,6 +75,42 @@ qedo_lock::~qedo_lock() {
 }
 
 
+qedo_cond::qedo_cond() {
+#ifdef WIN32
+	m_mutex = CreateMutex(NULL,FALSE,NULL);
+#else
+	pthread_cond_init(&m_cond, NULL):
+#endif
+}
+
+qedo_cond::~qedo_cond() {
+#ifdef WIN32
+
+#else
+	pthread_cond_destroy(&m_cond);
+#endif
+}
+
+void
+qedo_cond::qedo_wait(qedo_mutex* mutex) {
+
+#ifdef WIN32
+	WaitForSingleObject(m_mutex, INFINITE);
+#else
+	pthread_cond_signal(&m_cond, &mutex->m_mutex);
+#endif
+}
+
+void
+qedo_cond::qedo_signal() {
+
+#ifdef WIN32
+	ReleaseMutex(m_mutex);
+#else
+	pthread_cond_signal(&m_cond);
+#endif
+}
+
 
 
 #ifdef WIN32

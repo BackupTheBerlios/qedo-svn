@@ -598,10 +598,15 @@ EnumType(name, name_list)
       catch ( ... ) {
 	Error("Exception in getting DynAnyFactory %k\n", name, name);
       }
-      DynamicAny::DynAny_var dyn_any =
-	factory -> create_dyn_any_from_type_code ( enu -> type() );
-      DynamicAny::DynEnum_var dyn_enum = DynamicAny::DynEnum::_narrow ( dyn_any );
-
+    DynamicAny::DynAny_var dyn_any;
+	DynamicAny::DynEnum_var dyn_enum;
+	  try {
+	    dyn_any =
+		factory -> create_dyn_any_from_type_code ( enu -> type() );
+		dyn_enum = DynamicAny::DynEnum::_narrow ( dyn_any );
+		} catch ( ... ) {
+			Error("Exception in creating typecode");
+		}
       i = 0;
       foreach(name2; idl_name_list name_list) {
         dyn_enum -> set_as_ulong ( i );

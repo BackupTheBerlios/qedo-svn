@@ -14,8 +14,9 @@
 
 #include <signal.h>
 #include <iostream>
-
-
+#ifdef TAO_ORB
+#include "tao/TypeCodeFactory/TypeCodeFactory_Adapter_impl.h"
+#endif
 using namespace std;
 
 

@@ -70,6 +70,22 @@ public:
 	~qedo_lock();
 };
 
+class CONTAINERDLL_API qedo_cond {
+
+private:
+#ifdef WIN32
+	HANDLE m_mutex;
+#else
+	pthread_cond_t m_cond;
+#endif
+public:
+	qedo_cond();
+	~qedo_cond();
+
+	void qedo_wait(qedo_mutex* mutex);
+
+	void qedo_signal();
+};
 
 
 #ifdef WIN32

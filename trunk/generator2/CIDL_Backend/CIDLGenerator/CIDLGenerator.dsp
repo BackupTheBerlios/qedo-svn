@@ -111,7 +111,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=distribution
-PostBuild_Cmds=md        ..\..\..\qedo_dist_orbacus_d       	md        ..\..\..\qedo_dist_orbacus_d\bin       	copy        cidl_gen.exe        ..\..\..\qedo_dist_orbacus_d\bin       	mkdir        $(QEDO)\bin       	copy        cidl_gen.exe        $(QEDO)\bin\ 
+PostBuild_Cmds=md         ..\..\..\qedo_dist_orbacus_d        	md         ..\..\..\qedo_dist_orbacus_d\bin        	copy         cidl_gen.exe         ..\..\..\qedo_dist_orbacus_d\bin        	mkdir         $(QEDO)\bin        	copy         cidl_gen.exe         $(QEDO)\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "CIDLGenerator - Win32 Debug_tao"
@@ -129,7 +129,7 @@ PostBuild_Cmds=md        ..\..\..\qedo_dist_orbacus_d       	md        ..\..\..\
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /I "..\..\CIDL_Frontend\CIDLFrontendLib" /I "$(MICO)\include" /I "$(MICO)\include\windows" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "__DEBUG__" /D "_WINDOWS" /FD /GZ /Zm500 /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /I "..\..\CIDL_Frontend\CIDLFrontendLib" /I "$(TAO)\TAO" /I "$(TAO)\TAO\tao" /I "$(TAO)" /I "$(TAO)\TAO\tao\DynamicAny" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "__DEBUG__" /D "_WINDOWS" /FD /GZ /Zm900 /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\CIDL_Repository\IFRidl" /I "..\..\CIDL_Repository\ComponentRepositoryLib" /I "..\..\CIDL_Repository\CIDLRepositoryLib" /I "..\..\CIDL_Frontend\CIDLFrontendLib" /I "$(TAO)\TAO" /I "$(TAO)\TAO\tao" /I "$(TAO)" /I "$(TAO)\TAO\tao\DynamicAny" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "__DEBUG__" /D "_WINDOWS" /D "TAO_ORB" /FD /GZ /Zm900 /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -143,7 +143,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=distribution
-PostBuild_Cmds=md  ..\..\..\qedo_dist_tao_d 	md  ..\..\..\qedo_dist_tao_d\bin 	copy  cidl_gen.exe  ..\..\..\qedo_dist_tao_d\bin 	copy        cidl_gen.exe        $(QEDO)\bin\ 
+PostBuild_Cmds=md   ..\..\..\qedo_dist_tao_d  	md   ..\..\..\qedo_dist_tao_d\bin  	copy   cidl_gen.exe   ..\..\..\qedo_dist_tao_d\bin  	copy         cidl_gen.exe         $(QEDO)\bin\ 
 # End Special Build Tool
 
 !ENDIF 
