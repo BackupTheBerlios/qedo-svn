@@ -26,7 +26,14 @@
 #include <orb.idl>
 #if TAO_ORB
 #include "PortableServer.pidl"
+#ifndef TAO_CIDL_GEN
 #include "IFR_Basic.pidl"
+#else
+#pragma prefix "omg.org"
+module CORBA {
+	interface IRObject {};
+};
+#endif
 #endif
 #ifdef ORBACUS_ORB
 #include "PortableServer.idl"
