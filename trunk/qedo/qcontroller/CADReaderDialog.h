@@ -7,11 +7,11 @@
 #include "wx/sizer.h"
 #include "wx/listbox.h"
 #include "qcontroller.h"
+#include "wx/button.h"
 
 #include "CADReader.h"
 #include "AssemblyData.h"
 #include "DestinationData.h"
-
 
 
 class CadReaderDialogFrame : public wxDialog
@@ -39,18 +39,18 @@ class CadReaderDialogFrame : public wxDialog
 	 Qedo::Partitioning partitioning;
 	 bool ready;
 
-	
+
 
 
 	private:
 
 		wxStaticText *d_text;
 		wxButton* ok_;
-		
-		
-	DECLARE_EVENT_TABLE()	
+
+
+	DECLARE_EVENT_TABLE()
 
 
 };
 
-#endif _CADREADERDIALOGFRAME_H
+#endif // _CADREADERDIALOGFRAME_H

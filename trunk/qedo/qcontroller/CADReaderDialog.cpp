@@ -10,7 +10,8 @@
 #include "wx/sizer.h"
 #include "wx/listctrl.h"
 #include "wx/statline.h"
-#include "package.h"
+#include "wx/log.h"
+#include "Package.h"
 
 BEGIN_EVENT_TABLE(CadReaderDialogFrame, wxDialog)
 	EVT_BUTTON(ID_OK_READING, CadReaderDialogFrame::OnOK)

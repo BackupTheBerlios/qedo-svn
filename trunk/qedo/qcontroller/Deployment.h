@@ -29,7 +29,7 @@
 #include "wx/textctrl.h"
 #include "wx/listctrl.h"
 #include "wx/filedlg.h"
-#include "descriptorframe.h"
+#include "DescriptorFrame.h"
 
 #include "ComponentDeployment.h"
 
@@ -70,3 +70,4 @@ private:
 
 };
 #endif
+

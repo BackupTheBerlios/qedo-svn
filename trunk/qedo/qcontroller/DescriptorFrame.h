@@ -5,6 +5,7 @@
 #include "wx/treectrl.h"
 #include "wx/sizer.h"
 #include "wx/listbox.h"
+#include "wx/button.h"
 #include "qcontroller.h"
 #include "ConfigurationReader.h"
 #include "AssemblyData.h"
@@ -151,7 +152,7 @@ class DescriptorFrame : public wxDialog
 		wxButton* save_;
 		wxButton* save_as_;
 		wxButton* cancel_;
-		
+
 		// Functions for cad writing
 		wxString componentproperties(wxString comp_prop);
 		wxString destination(Qedo::DestinationData dest);
@@ -164,4 +165,6 @@ class DescriptorFrame : public wxDialog
 
 };
 
-#endif _DESCRIPTORFRAME_H
+#endif // _DESCRIPTORFRAME_H
+
+

@@ -14,6 +14,11 @@
 #include "wx/statline.h"
 #include "wx/process.h"
 #include "wx/utils.h"
+#include "wx/statbox.h"
+#include "wx/msgdlg.h"
+#include "wx/filedlg.h"
+#include "wx/log.h"
+
 
 BEGIN_EVENT_TABLE(DescriptorFrame, wxDialog)
    EVT_BUTTON(ID_COMPONENTS_TO_SERVER, DescriptorFrame::OnComponents_to_Server)
@@ -24,7 +29,7 @@ BEGIN_EVENT_TABLE(DescriptorFrame, wxDialog)
    EVT_BUTTON(ID_SAVE_SETTINGS_AS, DescriptorFrame::OnSave_as)
 END_EVENT_TABLE()
 
-DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename) 
+DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 			: wxDialog(parent, -1, "Edit Destinitation", wxDefaultPosition,
 					   wxSize(650,510),wxDEFAULT_DIALOG_STYLE)
 {
@@ -37,7 +42,7 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 	//spacer
 	sizerLauncher->Add(5, 5, 0, wxGROW | wxALL, 5);
 
-	// static text 
+	// static text
 	wxStaticText *e_text = new wxStaticText( this, wxID_STATIC, _T("Change the destination of hostcollocation, processcollocation or homeplacements in:"), wxDefaultPosition, wxDefaultSize, 0 );
     sizerLauncher->Add(e_text, 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
@@ -46,7 +51,7 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 
 	wxBoxSizer *midSizer=new wxBoxSizer(wxHORIZONTAL);
 	sizerLauncher->Add(midSizer, 0, wxALIGN_CENTER_VERTICAL| wxALL, 5);
-	
+
 	// Explorer Tree Controll
 	wxStaticBox *exp_tree_ctrl_box = new wxStaticBox(this, -1, _T("&Process or homeplacements without destination"));
 	wxStaticBoxSizer *h_TC_sizer = new wxStaticBoxSizer(exp_tree_ctrl_box,wxHORIZONTAL);
@@ -58,7 +63,7 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 
 	rootId2 = component_list_->AddRoot(wxT("Placements without Destination"),
                                   -1 , -1 , NULL);
-	
+
 	//Transfer Buttons
 
 	wxBoxSizer *midmidSizer=new wxBoxSizer(wxVERTICAL);
@@ -74,7 +79,7 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 	// line
 	wxStaticLine* line = new wxStaticLine(this, -1, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL, "Node Launcher" );
 	midmidSizer->Add(line , 0, wxGROW|wxALL, 5);
-	
+
 	//spacer
 	midmidSizer->Add(5, 15, 0, wxGROW | wxALL, 5);
 
@@ -89,7 +94,7 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 	midmidSizer->Add(all_components_to_components , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
 
-	// ServerActivator 
+	// ServerActivator
 	wxStaticBox *expbox = new wxStaticBox(this, -1, _T("&ServerActivators"));
 	wxStaticBoxSizer *h_exp_sizer = new wxStaticBoxSizer(expbox,wxHORIZONTAL);
 	midSizer->Add(h_exp_sizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
@@ -107,7 +112,7 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 
 	wxStaticBox *downbox = new wxStaticBox(this, -1, _T("&Save or Cancel"));
 	wxStaticBoxSizer *h_dow_Sizer = new wxStaticBoxSizer(downbox,wxHORIZONTAL);
-	
+
 	downSizer->Add(h_dow_Sizer, 0, wxALIGN_CENTER_VERTICAL| wxALL, 5);
 
 	save_ = new wxButton(this, ID_SAVE_SETTINGS, _T("Save settings"));
@@ -126,9 +131,9 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 	h_dow_Sizer->Add(cancel_ , 0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
 
 
-	
+
 	CadReaderDialogFrame *cadreader_frame = new CadReaderDialogFrame(this,file.c_str(),false );
-	
+
 	// cadreader_frame->ShowModal():
 
 	//partitioning = cadreader_frame->partitioning;
@@ -140,7 +145,7 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 
 		cadreader_frame->~CadReaderDialogFrame();
 
-    			
+
 		addServerActivators();
 
 		addHostcollocation();
@@ -148,7 +153,7 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 		addProccesscollocation();
 
 		addHomeplacement();
-	
+
 		
 		server_ctrl_->Refresh();
 		server_ctrl_->Expand(rootId);
