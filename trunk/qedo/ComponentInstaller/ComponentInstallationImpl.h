@@ -25,6 +25,7 @@
 
 #include <CORBA.h>
 #include "QedoComponents_skel.h"
+#include "Synchronisation.h"
 #include "ComponentImplementation.h"
 #include "NameServiceBase.h"
 #include "PlatformBase.h"
@@ -70,6 +71,8 @@ private:
 	InstallationReader						reader_;
 	/** list of installed components */
 	std::vector < ComponentImplementation > installed_components_;
+	/** mutex for synchronisation */
+	QedoMutex								mutex_;
 
 public:
 	/**
@@ -89,6 +92,14 @@ public:
 
 	/**
      * implements IDL:omg.org/Components/Deployment/ComponentInstallation/install:1.0
+	 * \param implUUID The uuid of the implementation.
+	 * \param component_loc The Location of the component implementation.
+	 * There are two formats for component_loc: 
+	 * 1) "PACKAGE=<packagename>" determining the package id for an uploaded zip package
+	 * 2) "<servant_module>;<servant_entry_point>;<executor_module>;<executor_entry_point>"
+	 *    where servant_module denotes the servant library, servant_entry_point denotes
+	 *    the entry point of the servant library, executor_module denotes the executor library,
+	 *    executor_entry_point denotes the entry point for the executor library
      */
     void install (const char* implUUID, const char* component_loc)
         throw (Components::Deployment::InvalidLocation, Components::Deployment::InstallationFailure);

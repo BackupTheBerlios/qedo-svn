@@ -97,7 +97,7 @@ private:
 	std::string							installation_dir_;
     /** path of the component implementation */
 	std::string							installation_path_;
-    /** the path of the make file */
+    /** the path of the makefile */
 	std::string							makefile_;
     
     /** the package */
@@ -124,24 +124,15 @@ private:
 		throw(Components::CreateFailure);
 
 public:
-	/**
-	 * constructor
-	 * constructs a new implementation
-	 * \param data The data of the implementation.
-	 * \param installationDirectory The directory for the installation.
-	 * \param package The package of the component implementation.
-	 */
-	ComponentImplementation(ComponentImplementationData data,
-							std::string installationDirectory,
-							std::string package,
-							CosNaming::NamingContext_ptr nameContext);
 
 	/**
 	 * constructor
 	 * constructs a new implementation
 	 * \param data The data of the implementation.
+	 * \param package The package of the component implementation.
 	 */
 	ComponentImplementation(ComponentImplementationData data,
+							std::string package,
 							CosNaming::NamingContext_ptr nameContext);
 
 	/**

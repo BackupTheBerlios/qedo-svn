@@ -21,6 +21,7 @@
 /***************************************************************************/
 
 #include "ComponentInstallationImpl.h"
+#include "Output.h"
 #include <iostream>
 #include <fstream>
 #ifdef _WIN32
@@ -31,7 +32,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.19 2003/10/05 18:48:38 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.20 2003/10/23 09:50:36 neubauer Exp $";
 
 
 namespace Qedo {
@@ -65,12 +66,12 @@ ComponentInstallationImpl::initialize()
 	}
 	catch (CORBA::ORB::InvalidName&)
 	{
-		std::cerr << "ComponentInstallationImpl: Fatal error - no root POA available." << std::endl;
+		NORMAL_ERR( "ComponentInstallationImpl: no root POA available" );
 		throw CannotInitialize();
 	}
 	catch (CORBA::SystemException&)
 	{
-		std::cerr << "ComponentInstallationImpl: Fatal error - cannot narrow root POA." << std::endl;
+		NORMAL_ERR( "ComponentInstallationImpl: cannot narrow root POA" );
 		throw CannotInitialize();
 	}
 
@@ -90,7 +91,7 @@ ComponentInstallationImpl::initialize()
     char hostname[256];
 	if (gethostname (hostname, 256))
 	{
-		std::cerr << "ComponentInstallationImpl: Cannot determine my hostname" << std::endl;
+		NORMAL_ERR( "ComponentInstallationImpl: Cannot determine my hostname" );
 		throw CannotInitialize();
 	}
     name.append(hostname);
@@ -99,14 +100,14 @@ ComponentInstallationImpl::initialize()
         throw CannotInitialize();
     }
 
-	std::cout << "..... bound under " << name << std::endl;
+	DEBUG_OUT2( "ComponentInstallationImpl: bound under ", name );
 
 	//
 	// deployment directory
 	//
 	if (makeDir(g_qedo_dir + "/deployment"))
 	{
-		std::cerr << "deployment directory can not be created" << std::endl;
+		NORMAL_ERR( "ComponentInstallationImpl: deployment directory can not be created" );
 		throw CannotInitialize();
 	}
 
@@ -116,7 +117,7 @@ ComponentInstallationImpl::initialize()
 	packageDirectory_ = g_qedo_dir + "/deployment/packages";
 	if (makeDir(packageDirectory_))
 	{
-		std::cerr << "componentPackages directory can not be created" << std::endl;
+		NORMAL_ERR( "ComponentInstallationImpl: componentPackages directory can not be created" );
 		throw CannotInitialize();
 	}
 
@@ -126,7 +127,7 @@ ComponentInstallationImpl::initialize()
 	installationDirectory_ = g_qedo_dir + "/deployment/components";
 	if (makeDir(installationDirectory_))
 	{
-		std::cerr << "componentImplementations directory can not be created" << std::endl;
+		NORMAL_ERR( "ComponentInstallationImpl: componentImplementations directory can not be created" );
 		throw CannotInitialize();
 	}
 
@@ -142,7 +143,8 @@ ComponentInstallationImpl::initialize()
 			iter != data.end();
 			iter++)
 		{
-			ComponentImplementation impl( *iter, nameService_ );
+			ComponentImplementation impl( *iter, "", nameService_ );
+			impl.installation_count_ = 1;
 			installed_components_.push_back( impl );
 		}
 	}
@@ -151,45 +153,44 @@ ComponentInstallationImpl::initialize()
 		throw CannotInitialize();
 	}
 
-	std::cout << "..... number of already installed components: " << installed_components_.size() << std::endl;
-	std::cout << std::endl;
+	DEBUG_OUT2( "ComponentInstallationImpl: number of already installed components: ", installed_components_.size() );
 }
 
 
 void 
-ComponentInstallationImpl::install (const char* implUUID, const char* component_loc)
+ComponentInstallationImpl::install
+(const char* implUUID, const char* component_loc)
 throw (Components::Deployment::InvalidLocation, Components::Deployment::InstallationFailure)
 {
-	//
-	// The description may have 2 forms:
-	//
-	// 1) servant_module:servant_entry_point:executor_module:executor_entry_point
-	// 2) PACKAGE=<packagename>
-	//
-
-	std::cout << "..... installing Component type with UUID: " << implUUID << std::endl;
+	DEBUG_OUT2( "ComponentInstallationImpl: installing ", implUUID );
 
 	//
-	// test if already installed
+	// exclusive operation
 	//
-	std::vector < ComponentImplementation >::const_iterator inst_iter;
-	for (inst_iter = installed_components_.begin();
-		inst_iter != installed_components_.end();
-		inst_iter++)
+	QedoLock lock(&mutex_);
+
+	//
+	// already installed ?
+	//
+	ComponentImplementation *impl = 0;
+	std::vector < ComponentImplementation >::iterator iter;
+	for(iter = installed_components_.begin();
+		iter != installed_components_.end();
+		iter++)
 	{
-		if ((*inst_iter).data_.uuid == implUUID)
+		if ((*iter).data_.uuid == implUUID)
 		{
-			std::cout << ".......... already installed !" << std::endl;
-			return;
+			impl = &(*iter);
+			break;
 		}
 	}
 
 	//
-	// component_loc contains PACKAGE location
+	// component_loc contains PACKAGE location ?
 	//
 	std::string::size_type pos;
 	std::string desc = component_loc;
-	if( !desc.compare(0, 8, "PACKAGE="))
+	if( !impl && !desc.compare(0, 8, "PACKAGE=") )
 	{
 		//
 		// check whether the package exists
@@ -197,7 +198,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		std::string comp_loc = packageDirectory_ + "/" + desc.substr(8);
 		if (!checkExistence(comp_loc, IS_FILE))
 		{
-			std::cerr << ".......... package for " << implUUID << " has to be uploaded" << std::endl;
+			DEBUG_OUT3( "ComponentInstallationImpl: package for ", implUUID, " has to be uploaded" );
 			throw Components::Deployment::InvalidLocation();
 		}
 
@@ -206,32 +207,19 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		//
 		ComponentImplementationData data;
 		data.uuid = implUUID;
-		ComponentImplementation newComponentImplementation(data, installationDirectory_, comp_loc, nameService_);
-
-		try
-		{
-			newComponentImplementation.install();
-			data = newComponentImplementation.getData();
-		}
-		catch( Components::CreateFailure )
-		{
-			std::cerr << "!!!!! installation error" << std::endl;
-			throw Components::Deployment::InstallationFailure();
-		}
-		
-		// register component
-		installed_components_.push_back(newComponentImplementation);
-		reader_.add( inst_file_, &data );
+		data.installation_dir = getPath(installationDirectory_) + implUUID;
+		impl = new ComponentImplementation(data, comp_loc, nameService_);
 	}
+
 	//
 	// component_loc contains local code location
 	//
-	else
+	if( !impl )
 	{
 		pos = desc.find (";");
 		if (pos == std::string::npos)
 		{
-			std::cerr << "ComponentInstallationImpl: Cannot extract servant module name" << std::endl;
+			NORMAL_ERR( "ComponentInstallationImpl: cannot extract servant module name" );
 			throw Components::Deployment::InvalidLocation();
 		}
 		std::string servant_module = desc.substr (0, pos);
@@ -240,7 +228,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		pos = desc.find (";");
 		if (pos == std::string::npos)
 		{
-			std::cerr << "ComponentInstallationImpl: Cannot extract servant entry point" << std::endl;
+			NORMAL_ERR( "ComponentInstallationImpl: cannot extract servant entry point" );
 			throw Components::Deployment::InvalidLocation();
 		}
 		std::string servant_entry_point = desc.substr (0, pos);
@@ -249,7 +237,7 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		pos = desc.find (";");
 		if (pos == std::string::npos)
 		{
-			std::cerr << "ComponentInstallationImpl: Cannot extract executor module name" << std::endl;
+			NORMAL_ERR( "ComponentInstallationImpl: cannot extract executor module name" );
 			throw Components::Deployment::InvalidLocation();
 		}
 		std::string executor_module = desc.substr (0, pos);
@@ -262,16 +250,50 @@ throw (Components::Deployment::InvalidLocation, Components::Deployment::Installa
 		//
 		ComponentImplementationData data;
 		data.uuid = implUUID;
+		data.installation_dir = getPath(installationDirectory_) + implUUID;
 		data.servant_module = servant_module;
 		data.servant_entry_point = servant_entry_point;
 		data.executor_module = executor_module;
 		data.executor_entry_point = executor_entry_point;
-		ComponentImplementation newComponentImplementation( data, nameService_ );
-		installed_components_.push_back ( newComponentImplementation );
-		reader_.add( inst_file_, &data );
+		impl = new ComponentImplementation( data, "", nameService_ );
+
+		//
+		// create directory for the component implementation
+		//
+		makeDir( data.installation_dir );
+		copyFile( servant_module, getPath(data.installation_dir) + servant_module );
+		copyFile( executor_module, getPath(data.installation_dir) + executor_module );
 	}
 
-	std::cout << "..... done (" << implUUID << ")" << std::endl;
+	if( !impl )
+	{
+		throw Components::Deployment::InstallationFailure();
+	}
+
+	//
+	// install
+	//
+	try
+	{
+		impl->install();
+	}
+	catch( Components::CreateFailure )
+	{
+		NORMAL_ERR( "ComponentInstallationImpl: installation error" );
+		throw Components::Deployment::InstallationFailure();
+	}
+
+	//
+	// register
+	//
+	if( impl->installation_count_ == 1 )
+	{
+		installed_components_.push_back( *impl );
+		reader_.add( inst_file_, &(impl->getData()) );
+		delete impl;
+	}
+
+	DEBUG_OUT3( "ComponentInstallationImpl: ", implUUID, "installed" );
 }
 
 
@@ -279,8 +301,12 @@ void
 ComponentInstallationImpl::replace (const char* implUUID, const char* component_loc)
 throw (Components::Deployment::InvalidLocation, Components::Deployment::InstallationFailure)
 {
-	std::cout << "..... replace Component type with UUID: " << implUUID << std::endl;
-	// todo
+	DEBUG_OUT2( "ComponentInstallationImpl: replace ", implUUID );
+	
+	//
+	// exclusive operation
+	//
+	QedoLock lock(&mutex_);
 
 	throw Components::Deployment::InstallationFailure();
 }
@@ -290,40 +316,45 @@ void
 ComponentInstallationImpl::remove (const char* implUUID)
 throw (Components::Deployment::UnknownImplId, Components::RemoveFailure)
 {
-	std::cout << "..... remove Component type with UUID: " << implUUID << std::endl;
-	ComponentImplementation* impl = 0;
+	DEBUG_OUT2( "ComponentInstallationImpl: remove ", implUUID );
 
 	//
-	// first test for UUID
+	// exclusive operation
 	//
+	QedoLock lock(&mutex_);
+
 	std::vector < ComponentImplementation >::iterator iter;
-	for (iter = installed_components_.begin();
+	for(iter = installed_components_.begin();
 		iter != installed_components_.end();
 		iter++)
 	{
 		if ((*iter).data_.uuid == implUUID)
 		{
-			impl = &(*iter);
-			break;
+			//
+			// uninstall
+			//
+			try 
+			{ 
+				(*iter).uninstall();
+				
+				if( (*iter).installation_count_ == 0 )
+				{
+					installed_components_.erase( iter );
+					reader_.remove( inst_file_, implUUID );
+				}
+			}
+			catch( Components::RemoveFailure ) 
+			{ 
+				NORMAL_ERR2( "ComponentInstallationImpl: remove failure for ", implUUID );
+				throw Components::RemoveFailure(); 
+			}
+
+			return;
 		}
 	}
-	if(! impl)
-	{
-		std::cout << ".......... " << implUUID << " not installed !" << std::endl;
-		throw Components::Deployment::UnknownImplId();
-	}
 
-	//
-	// uninstall
-	//
-	try
-	{
-		impl->uninstall();
-	}
-	catch( Components::RemoveFailure )
-	{
-        throw Components::RemoveFailure();
-	}
+	NORMAL_ERR3( "ComponentInstallationImpl: ", implUUID, " not installed" );
+	throw Components::Deployment::UnknownImplId();
 }
 
 
@@ -331,8 +362,13 @@ Components::Deployment::Location
 ComponentInstallationImpl::get_implementation(const char* implUUID)
 throw (Components::Deployment::UnknownImplId, Components::Deployment::InstallationFailure)
 {
-    std::cout << "..... get_implementation for " << implUUID << std::endl;
+	DEBUG_OUT2( "ComponentInstallationImpl: get_implementation for ", implUUID );
 	
+	//
+	// exclusive operation
+	//
+	QedoLock lock(&mutex_);
+
 	//
 	// Scan through the installed components
 	//
@@ -373,7 +409,12 @@ char*
 ComponentInstallationImpl::upload (const char* implUUID, const ::CORBA::OctetSeq& package)
 throw (Components::Deployment::InstallationFailure)
 {
-	std::cout << "..... uploading package for UUID " << implUUID << std::endl;
+	DEBUG_OUT2( "ComponentInstallationImpl: uploading package for ", implUUID );
+
+	//
+	// exclusive operation
+	//
+	QedoLock lock(&mutex_);
 
 	std::string name(implUUID);
 	std::string file = packageDirectory_ + "/" + name + ".zip";
@@ -384,7 +425,7 @@ throw (Components::Deployment::InstallationFailure)
 	std::ofstream ofs(file.c_str(), std::ios::binary|std::ios::out);
     if (!ofs)
     {
-		std::cerr << "Package for " << name << " can not be locally saved !!!" << std::endl;
+		NORMAL_ERR3( "ComponentInstallationImpl: package for ", name, " can not be locally saved" );
         throw Components::Deployment::InstallationFailure();
     }
     const CORBA::Octet* it = package.get_buffer();
@@ -397,7 +438,7 @@ throw (Components::Deployment::InstallationFailure)
 #ifdef _WIN32
 	Sleep(1000);
 #else
-  sleep(1);
+	sleep(1);
 #endif
 
 	std::string loc = std::string("PACKAGE=") + name + ".zip";

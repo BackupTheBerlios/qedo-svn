@@ -23,10 +23,11 @@
 #include "ComponentImplementation.h"
 #include "CSDReader.h"
 #include "CADReader.h"
+#include "Output.h"
 #include <fstream>
 
 
-static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.18 2003/10/05 18:45:21 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.19 2003/10/23 09:50:36 neubauer Exp $";
 
 
 namespace Qedo {
@@ -34,29 +35,15 @@ namespace Qedo {
 
 ComponentImplementation::ComponentImplementation
 ( ComponentImplementationData data 
-, std::string installationDirectory 
 , std::string package
 , CosNaming::NamingContext_ptr nameContext)
 {
 	data_ = data;
-	data_.installation_dir = getPath(installationDirectory) + data.uuid;
 	installation_path_ = getPath(data_.installation_dir);
 	build_dir_ = installation_path_ + "build";
 	build_path_ = getPath(build_dir_);
 	package_ = package;
 	installation_count_ = 0;
-
-	nameService_ = CosNaming::NamingContext::_duplicate(nameContext);
-}
-
-
-ComponentImplementation::ComponentImplementation
-( ComponentImplementationData data
-, CosNaming::NamingContext_ptr nameContext)
-{
-	data_=data;
-	installation_count_=1;
-
 	nameService_ = CosNaming::NamingContext::_duplicate(nameContext);
 }
 
@@ -88,6 +75,16 @@ throw(Components::CreateFailure)
 	// if already installed increment counter only
 	//
 	if (installation_count_)
+	{
+		installation_count_++;
+		DEBUG_OUT3( "..... already installed (", installation_count_, ")" );
+		return;
+	}
+
+	//
+	// if without package increment counter only
+	//
+	if (package_.empty())
 	{
 		installation_count_++;
 		return;
