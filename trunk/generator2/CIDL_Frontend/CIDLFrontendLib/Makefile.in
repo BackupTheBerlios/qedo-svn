@@ -47,4 +47,4 @@ cidl.cpp cidl.h y.output : k.h cidl.y
 
 errmsg.cpp errmsg.h: cidl.output errmsg.py
 	echo "extern char *error_message[];" > errmsg.h
-	python errmsg.py < cidl.output > errmsg.cpp
+	$(PYTHON) errmsg.py < cidl.output > errmsg.cpp
