@@ -34,12 +34,10 @@ namespace Qedo {
 class CONTAINERDLL_API GlobalObjectManagement 
 {
 public:
-	static CORBA::Long native_object_count_;
-	static CORBA::Long CORBA_object_count_;
-	static CORBA::Long CORBA_local_object_count_;
 	static CORBA::Long native_object_instantiation_count_;
 	static CORBA::Long CORBA_object_instantiation_count_;
 	static CORBA::Long CORBA_local_object_instantiation_count_;
+	static void report();
 };
 
 
