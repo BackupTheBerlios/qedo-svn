@@ -22,7 +22,8 @@
 
 #include "FacetPort.h"
 
-static char rcsid[] UNUSED = "$Id: FacetPort.cpp,v 1.6 2003/07/24 13:14:54 boehme Exp $";
+
+static char rcsid[] UNUSED = "$Id: FacetPort.cpp,v 1.6.6.1 2003/09/26 14:31:24 stoinski Exp $";
 
 
 namespace Qedo {

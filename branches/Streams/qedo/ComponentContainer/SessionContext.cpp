@@ -23,7 +23,8 @@
 #include "SessionContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: SessionContext.cpp,v 1.7 2003/07/24 13:14:54 boehme Exp $";
+
+static char rcsid[] UNUSED = "$Id: SessionContext.cpp,v 1.7.6.1 2003/09/26 14:32:03 stoinski Exp $";
 
 
 namespace Qedo {

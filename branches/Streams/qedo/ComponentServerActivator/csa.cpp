@@ -25,7 +25,8 @@
 #include <cstring>
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: csa.cpp,v 1.10 2003/08/01 12:25:30 boehme Exp $";
+
+static char rcsid[] UNUSED = "$Id: csa.cpp,v 1.10.4.1 2003/09/26 14:32:31 stoinski Exp $";
 
 /**
  * addtogroup ServerActivator

@@ -27,7 +27,8 @@
 #include <unistd.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: GlobalHelpers.cpp,v 1.7 2003/07/24 13:14:54 boehme Exp $";
+
+static char rcsid[] UNUSED = "$Id: GlobalHelpers.cpp,v 1.7.6.1 2003/09/26 14:31:42 stoinski Exp $";
 
 
 namespace Qedo {
