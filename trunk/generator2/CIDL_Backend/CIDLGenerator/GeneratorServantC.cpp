@@ -821,7 +821,7 @@ GeneratorServantC::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr compone
 	// sink port dispatcher destructor
 	out << comp_name << "::" << sink_name << "_dispatcher::~" << sink_name << "_dispatcher()\n";
 	out << "{\n"; out.indent();
-	out << "NORMAL_ERR (\"" << comp_name << "::" << sink_name << "_dispatcher: Cannot narrow sink port executor\");\n"; out.unindent();
+	out << "DEBUG_OUT (\"" << comp_name << sink_name << "_dispatcher: Destructor called\");\n";
 	out << "}\n\n\n";
 
 	// sink port dispatchers begin_stream
