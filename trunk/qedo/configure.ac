@@ -123,6 +123,11 @@ fi
 AC_HEADER_STDC
 AC_HEADER_SYS_WAIT
 AC_CHECK_HEADERS([fcntl.h stddef.h stdlib.h string.h unistd.h utime.h])
+AC_LANG_SAVE
+AC_LANG_CPLUSPLUS
+AC_CHECK_HEADERS([cxxabi.h])
+AC_CHECK_FUNCS([__cxa_demangle])
+AC_LANG_RESTORE
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -145,7 +150,7 @@ AC_CONFIG_FILES([Makefile
                  MakeVars
                  ComponentIDL/Makefile
                  ComponentContainer/Makefile
-		 qedoutil/Makefile
+                 qedoutil/Makefile
                  ComponentInstaller/Makefile
                  ComponentServer/Makefile
                  ComponentServerActivator/Makefile
