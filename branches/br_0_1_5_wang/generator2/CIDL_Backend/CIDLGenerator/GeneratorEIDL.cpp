@@ -624,6 +624,7 @@ GeneratorEIDL::doHome(IR__::HomeDef_ptr home)
 		//At the moment this is the better way to handle with it, however, 
 		//it should be improved, for it is possible, that one primary key is
 		//used by several different homes.
+		/*
 		out << "//\n// valuetype for primary key\n//\n";
 		IR__::ValueDef_var act_value = pk->primary_key();
 		out << "valuetype " << act_value->name() << "\n";
@@ -657,7 +658,7 @@ GeneratorEIDL::doHome(IR__::HomeDef_ptr home)
 		}
 		out.unindent();
 		out << "};\n\n";
-
+		*/
 		out << "//\n// implicit home for " << home->id() << "\n//\n";
 		out << "interface " << home->name() << "Implicit\n";
 		out << "{\n";
@@ -972,8 +973,25 @@ GeneratorEIDL::doValue(IR__::ValueDef_ptr value)
 		out << "truncatable ";
 	}
 	
-	out << "valuetype " << value->name();
-	//supports operations ???
+	out << "valuetype " << value->name() << "\n";
+
+	//handle supported interfaces
+	IR__::ValueDefSeq_var support_seq = value->abstract_base_values();
+	CORBA::ULong len = support_seq->length();
+	out.indent();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		char* szTemp = ((*support_seq)[i])->name();
+		
+		(i==0) ? out << ": " : out << ", ";
+
+		if(strcmp(szTemp, "PrimaryKeyBase")==0)
+			out << "Components::PrimaryKeyBase";
+
+		out << "\n";
+	}
+	out.unindent();
+
 	out << " {\n";
 	out.indent();
 

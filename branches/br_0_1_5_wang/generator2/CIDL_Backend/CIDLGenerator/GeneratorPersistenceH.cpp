@@ -58,6 +58,7 @@ GeneratorPersistenceH::generate(std::string target, std::string fileprefix)
 	out << "// END USER INSERT SECTION file_pre\n\n";
 	out << "#include <CORBA.h>\n";
 	out << "#include \"CORBADepends.h\"\n";
+	out << "#include \"" << file_prefix_ << "_EQUIVALENT.h\"\n";
 	out << "#include \"StorageObject.h\"\n";
 	out << "#include \"StorageHomeBase.h\"\n";
 	out << "#include \"Catalog.h\"\n";
