@@ -46,8 +46,10 @@ module CORBA {
 
 #ifdef ORBACUS_ORB
 #include "PortableServer.idl"
+#ifndef _QEDO_NO_QOS
 #include "PIClient.idl"
 #include "PIServer.idl"
+#endif
 #include "qedo_orbacus.idl"
 #endif
 

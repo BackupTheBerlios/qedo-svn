@@ -109,7 +109,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentContainer;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;"
-				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;QEDOUTIL_EXPORTS"
+				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;QEDOUTIL_EXPORTS;_QEDO_NO_QOS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -261,6 +261,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="Synchronisation.cpp">
 			</File>
 			<File
+				RelativePath="Uri.cpp">
+			</File>
+			<File
 				RelativePath="Valuetypes.cpp">
 			</File>
 			<File
@@ -271,9 +274,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="qedoutil.cpp">
-			</File>
-			<File
-				RelativePath="Uri.cpp">
 			</File>
 		</Filter>
 		<Filter

@@ -142,7 +142,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;$(ORBACUS)\include;$(ORBACUS)\include\OB"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_QEDO_NO_QOS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
@@ -490,7 +490,7 @@ copy $(TargetPath) $(QEDO)\bin
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB CORBADepends.idl
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -D_QEDO_NO_QOS -DWIN32 -DORBACUS_ORB CORBADepends.idl
 "
 						Outputs="CORBADepends.h;CORBADepends.cpp;CORBADepends_skel.h;CORBADepends_skel.cpp"/>
 				</FileConfiguration>
@@ -536,7 +536,7 @@ copy CORBADepends.h CORBADepends_skel.h
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB Components.idl
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -D_QEDO_NO_QOS -DWIN32 -DORBACUS_ORB Components.idl
 "
 						Outputs="Components.h;Components.cpp;Components_skel.h;Components_skel.cpp"/>
 				</FileConfiguration>
@@ -576,7 +576,7 @@ copy Components.h Components_skel.h
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB QedoComponents.idl
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -D_QEDO_NO_QOS -DWIN32 -DORBACUS_ORB QedoComponents.idl
 "
 						Outputs="QedoComponents.h;QedoComponents.cpp;QedoComponents_skel.h;QedoComponents_skel.cpp"/>
 				</FileConfiguration>
@@ -607,7 +607,7 @@ copy QedoComponents.h QedoComponents_skel.h
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB StreamComponents.idl
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -D_QEDO_NO_QOS -DWIN32 -DORBACUS_ORB StreamComponents.idl
 "
 						Outputs="StreamComponents.h;StreamComponents.cpp;StreamComponents_skel.h;StreamComponents_skel.cpp"/>
 				</FileConfiguration>

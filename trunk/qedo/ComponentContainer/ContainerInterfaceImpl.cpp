@@ -36,7 +36,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.51 2003/11/14 15:24:26 boehme Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52 2003/11/24 10:27:45 tom Exp $";
 
 
 namespace Qedo {
@@ -655,6 +655,7 @@ throw (Components::Deployment::UnknownImplId,
 		}
 		break;
 	case CT_EXTENSION:
+#ifndef _QEDO_NO_QOS
 		Qedo::ExtensionHomeServant* extension_home;
 
 		extension_home = dynamic_cast <Qedo::ExtensionHomeServant*> (qedo_home_servant);
@@ -663,7 +664,7 @@ throw (Components::Deployment::UnknownImplId,
 			NORMAL_ERR ("ContainerInterfaceImpl: Container type is incompatible. Loaded home servant is not a Qedo::ExtensionHomeServant");
 			throw Components::Deployment::InstallationFailure();
 		}
-#ifndef _QEDO_NO_QOS
+
 		//
 		// set interceptor_dispatchers
 		//

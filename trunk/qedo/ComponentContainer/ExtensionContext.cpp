@@ -23,11 +23,11 @@
 #include "ExtensionContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.3 2003/11/03 15:34:26 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ExtensionContext.cpp,v 1.4 2003/11/24 10:27:45 tom Exp $";
 
 
 namespace Qedo {
-
+#ifndef _QEDO_NO_QOS
 
 ExtensionContext::ExtensionContext()
 {
@@ -65,6 +65,6 @@ ExtensionContext::get_client_interceptor_dispatcher_registration()
 	return Components::Extension::ClientInterceptorRegistration::_duplicate(client_registration_);
 
 }
-
+#endif
 } // namepscae Qedo
 

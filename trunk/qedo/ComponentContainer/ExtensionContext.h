@@ -37,7 +37,7 @@ namespace Qedo {
  * @{
  */
 
-
+#ifndef _QEDO_NO_QOS
 /**
  * the extension context
  */
@@ -87,7 +87,7 @@ public:
 };
 
 /** @} */
-
+#endif
 } // namespace Qedo
 
 #endif
