@@ -32,7 +32,7 @@
 #include <fstream>
 #include "ContainerClientRequestInfo.h"
 
-static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.12 2004/06/24 13:11:03 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.13 2004/08/27 08:37:43 tom Exp $";
 
 namespace Qedo {
 
@@ -41,6 +41,40 @@ ClientInterceptorDispatcher::ClientInterceptorDispatcher() {
 }
 
 ClientInterceptorDispatcher::~ClientInterceptorDispatcher() {
+
+}
+
+void
+ClientInterceptorDispatcher::init_cdr ()
+{
+	CORBA::Object_var obj = component_server_ -> orb_ ->resolve_initial_references ("CodecFactory");
+
+	IOP::CodecFactory_var factory = IOP::CodecFactory::_narrow(obj);
+
+    if ( CORBA::is_nil(factory) )
+	{
+		std::cout << "no CDR" << std::endl;
+    	return;
+	}
+
+    /* 
+	 * Create codec
+	 */
+
+    IOP::Encoding how;
+
+    how.major_version = 1;
+    how.minor_version = 0;
+    how.format		  =	IOP::ENCODING_CDR_ENCAPS;
+
+    try
+    {
+		m_cdrCodec = factory->create_codec(how);
+    }
+    catch(const IOP::CodecFactory::UnknownEncoding& _ex)
+    {
+		std::cout << "no CDR" << std::endl;
+    }
 
 }
 
@@ -61,15 +95,15 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
 
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
-	const char* id = 0;
-	slot >>= id;
-	if (!id)
-	{
-		id = "UNKNOWN_COMP_ID";
-	}
+	Components::Extension::SlotInfo slot_info;
+	slot >>= slot_info;
+//	if (!slot_info.target_id)
+//	{
+//		id = "UNKNOWN_COMP_ID";
+//	}
 
 //	all_client_interceptors_mutex_.read_lock_object();
-	Components::Extension::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,id,id,id);
+	Components::Extension::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
@@ -85,6 +119,21 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 	}
 //	all_client_interceptors_mutex_.unlock_object();
 
+	// set service context to transmit the caller identity to callee
+		CORBA::Any context_any;
+		context_any <<= slot_info.target_id;
+		CORBA::OctetSeq_var data = m_cdrCodec -> encode_value(context_any);
+
+		IOP::ServiceContext sc;
+
+		sc.context_id = 100;
+
+		sc.context_data.length(data->length());
+
+		memcpy(sc.context_data.get_buffer(), data->get_buffer(), data->length());
+
+		info -> add_request_service_context(sc, true);
+
 }
 
 void
@@ -99,15 +148,15 @@ ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestIn
 	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
 
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
-	const char* id = 0;
-	slot >>= id;
-	if (!id)
-	{
-		id = "UNKNOWN_COMP_ID";
-	}
+	Components::Extension::SlotInfo slot_info;
+	slot >>= slot_info;
+//	if (!slot_info.target_id)
+//	{
+//		id = "UNKNOWN_COMP_ID";
+//	}
 
 //	all_client_interceptors_mutex_.read_lock_object();
-	Components::Extension::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,id,id,id);
+	Components::Extension::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
@@ -131,15 +180,15 @@ ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientReque
 	DEBUG_OUT ("ClientInterceptorDispatcher: receive_exception");
 
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
-	const char* id = 0;
-	slot >>= id;
-	if (!id)
-	{
-		id = "UNKNOWN_COMP_ID";
-	}
+	Components::Extension::SlotInfo slot_info;
+	slot >>= slot_info;
+//	if (!slot_info.target_id)
+//	{
+//		id = "UNKNOWN_COMP_ID";
+//	}
 
 //	all_client_interceptors_mutex_.read_lock_object();
-	Components::Extension::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,id,id,id);
+	Components::Extension::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
@@ -178,6 +227,31 @@ ClientInterceptorDispatcher::register_interceptor_for_all(Components::Extension:
 	//all_client_interceptors_mutex_.unlock_object();
 
 }
+void
+ClientInterceptorDispatcher::unregister_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor)
+{
+	DEBUG_OUT("ClientInterceptorDispatcher: Client COPI unregister_for_all called");
+
+	std::vector <ClientInterceptorEntry>::iterator interceptor_iter;
+
+	for (interceptor_iter = all_client_interceptors_.begin(); interceptor_iter != all_client_interceptors_.end(); interceptor_iter++)
+	{
+
+		if ((*interceptor_iter).interceptor == interceptor)
+		{
+			DEBUG_OUT ("ClientInterceptorDispatcher: unregister_interceptor_for_all(): interceptor found");
+			all_client_interceptors_.erase (interceptor_iter);
+
+			break;
+		}
+	}
+
+	if (interceptor_iter == all_client_interceptors_.end())
+	{
+		DEBUG_OUT ("ClientInterceptorDispatcher: Unknown interceptor");
+	}
+
+}
 
 void
 ClientInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* component_server)
@@ -185,6 +259,7 @@ ClientInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* com
 	component_server_ = component_server;
 
 }
+
 
 
 }  //namespace Qedo

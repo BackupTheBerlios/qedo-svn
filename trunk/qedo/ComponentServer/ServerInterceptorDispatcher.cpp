@@ -34,7 +34,7 @@
 #include "GlobalHelpers.h"
 #include "ContainerServerRequestInfo.h"
 
-static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.18 2004/06/24 13:11:03 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.19 2004/08/27 08:37:43 tom Exp $";
 
 namespace Qedo {
 
@@ -45,6 +45,40 @@ ServerInterceptorDispatcher::ServerInterceptorDispatcher()
 
 ServerInterceptorDispatcher::~ServerInterceptorDispatcher()
 {
+
+}
+
+void
+ServerInterceptorDispatcher::init_cdr ()
+{
+	CORBA::Object_var obj = component_server_ -> orb_ ->resolve_initial_references ("CodecFactory");
+
+	IOP::CodecFactory_var factory = IOP::CodecFactory::_narrow(obj);
+
+    if ( CORBA::is_nil(factory) )
+	{
+		std::cout << "no CDR" << std::endl;
+    	return;
+	}
+
+    /* 
+	 * Create codec
+	 */
+
+    IOP::Encoding how;
+
+    how.major_version = 1;
+    how.minor_version = 0;
+    how.format		  =	IOP::ENCODING_CDR_ENCAPS;
+
+    try
+    {
+		m_cdrCodec = factory->create_codec(how);
+    }
+    catch(const IOP::CodecFactory::UnknownEncoding& _ex)
+    {
+		std::cout << "no CDR" << std::endl;
+    }
 
 }
 
@@ -191,30 +225,55 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	// call the COPIs
 	if (!id)
 	{
-		id="__QEDO__NOT_COMPONENT_ID__";
+		id="__QEDO__NOT_COMPONENT_ID__!!";
 	}
 	if (!port_id)
 	{
 		port_id="QEOD_UNKNOWN_PORT_ID";
 	}
-	// set identity in the slot
-	int dummy = 0;
-	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
 
-	CORBA::Object_var obj = orb->resolve_initial_references ("PICurrent");
+	// extract origin_id from service context
+	IOP::ServiceContext_var sc = 0;
+	CORBA::Any_var context_any = new CORBA::Any();
+	CORBA::Any slot ;
+	Components::Extension::SlotInfo slot_info;
+	try {
+		sc = info -> get_request_service_context(100);	
+		
+		CORBA::OctetSeq data;
+
+		data.length(sc->context_data.length());
+		memcpy(data.get_buffer(), sc->context_data.get_buffer(), sc->context_data.length());
+		context_any = m_cdrCodec -> decode_value(data, CORBA::_tc_string);
+
+		const char* temp_id;
+		context_any >>= temp_id;
+		slot_info.origin_id = CORBA::string_dup(temp_id);
+		
+	} catch (CORBA::BAD_PARAM&)
+	{
+		//no service context for tracing
+		slot_info.origin_id = CORBA::string_dup("NO_ORIGIN");
+	} catch (...)
+	{
+		//return;
+	}
+	// set identity in the slot
+
+	CORBA::Object_var obj = component_server_ -> orb_ -> resolve_initial_references ("PICurrent");
 
 	if ( CORBA::is_nil (obj) )
 		return;
 
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 
-	CORBA::Any slot ;
-	slot <<= id;
+	slot_info.target_id = CORBA::string_dup(id);
+	slot <<= slot_info;
 	piCurrent -> set_slot(component_server_ -> slot_id_, slot);
 
 	Qedo::QedoLock l_all(all_server_interceptors_mutex_);
 
-	Components::Extension::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,id,id,port_id);
+	Components::Extension::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,slot_info.target_id,port_id);
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
 		try {
@@ -270,15 +329,15 @@ throw(CORBA::SystemException)
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 
 	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
-	const char* id = 0;
-	slot >>= id;
-	if (!id)
-	{
-		id = "UNKNOWN_COMP_ID";
-	}
+	Components::Extension::SlotInfo slot_info;
+	slot >>= slot_info;
+//	if (!slot_info.target_id)
+//	{
+//		id = "UNKNOWN_COMP_ID";
+//	}
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
-	Components::Extension::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,id,id,id);
+	Components::Extension::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
@@ -299,10 +358,8 @@ ServerInterceptorDispatcher::send_exception(PortableInterceptor::ServerRequestIn
 throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 {
 	DEBUG_OUT ("ServerInterceptorDispatcher: send_exception");
-	int dummy = 0;
-	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
 
-	CORBA::Object_var obj = orb->resolve_initial_references ("PICurrent");
+	CORBA::Object_var obj = component_server_ -> orb_ -> resolve_initial_references ("PICurrent");
 
 	if ( CORBA::is_nil (obj) )
 		return;
@@ -310,15 +367,15 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 
 	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
-	const char* id = 0;
-	slot >>= id;
-	if (!id)
-	{
-		id = "UNKNOWN_COMP_ID";
-	}
+	Components::Extension::SlotInfo slot_info;
+	slot >>= slot_info;
+//	if (!slot_info.target_id)
+//	{
+//		id = "UNKNOWN_COMP_ID";
+//	}
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
-	Components::Extension::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,id,id,id);
+	Components::Extension::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{

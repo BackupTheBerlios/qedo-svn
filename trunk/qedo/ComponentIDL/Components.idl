@@ -494,6 +494,8 @@ module Components {
 
 			void rec_request_from_servant_locator(in string operation);
 
+			void call (in string comp_id, in string origin, in string operation, out boolean con );
+
 			Cookie connect (in string comp_id, in FeatureName name,	in Object connection, out boolean con )
 				raises (InvalidName, InvalidConnection, AlreadyConnected, ExceededConnectionLimit);
 
@@ -548,11 +550,14 @@ module Components {
 		local interface ClientInterceptorRegistration : PortableInterceptor::ClientRequestInterceptor
 		{
 			void register_interceptor_for_all ( in ClientContainerInterceptor client_interceptor);
+			void unregister_interceptor_for_all ( in ClientContainerInterceptor client_interceptor);
 		};
 
 		local interface ServantInterceptorRegistration
 		{
 			void register_interceptor_for_all ( in ServerContainerInterceptor server_interceptor);
+			void unregister_interceptor_for_all ( in ServerContainerInterceptor server_interceptor);
+
 			boolean call(in string oper);
 			// CCMObject
 			Cookie connect (in string comp_id, in FeatureName name,	in Object connection, out boolean con )
@@ -577,6 +582,7 @@ module Components {
 		local interface StubInterceptorRegistration
 		{
 			void register_interceptor_for_all ( in ClientContainerInterceptor server_interceptor);
+			void unregister_interceptor_for_all ( in ClientContainerInterceptor server_interceptor);
 			boolean call(in string oper);
 			// CCMObject
 			Cookie connect (in string comp_id, in FeatureName name,	in Object connection, out boolean con )
@@ -596,6 +602,12 @@ module Components {
 			Object provide_sink_stream_port (in string comp_id, inout Components::FeatureName name, out boolean con)
 				raises (Components::InvalidName);
 #endif
+		};
+
+		struct SlotInfo
+		{
+			string origin_id;
+			string target_id;
 		};
 
 	}; // Extension
@@ -1147,6 +1159,29 @@ interface StreamCCMObject : Streams, Components::CCMObject
 
 };
 #endif
+
+#ifndef _QEDO_NO_QOS
+module Components {
+	module Extension {
+		struct ContractDescription {
+			string contract_type;
+			Components::ConfigValues dimensions;
+		};
+
+		interface Negotiation {
+			/** this operation is need for streaming connections
+				* to trigger the request of offers
+				*/
+			void trigger_negotiation();
+
+			ContractDescription req_offer(in ContractDescription requirements);
+
+			boolean accept(in ContractDescription requirements);
+		};
+	};
+};
+#endif
+
 #pragma prefix ""
 
 

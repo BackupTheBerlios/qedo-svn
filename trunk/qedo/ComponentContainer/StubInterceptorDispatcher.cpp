@@ -30,7 +30,7 @@
 #include "Output.h"
 #include <fstream>
 
-static char rcsid[] UNUSED = "$Id: StubInterceptorDispatcher.cpp,v 1.1 2004/08/20 10:52:37 tom Exp $";
+static char rcsid[] UNUSED = "$Id: StubInterceptorDispatcher.cpp,v 1.2 2004/08/27 08:37:43 tom Exp $";
 
 namespace Qedo {
 
@@ -45,6 +45,13 @@ StubInterceptorDispatcher::~StubInterceptorDispatcher()
 }
 
 void
+StubInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* component_server)
+{
+	component_server_ = component_server;
+
+}
+
+void
 StubInterceptorDispatcher::register_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor)
 {
 	DEBUG_OUT("StubInterceptorDispatcher: Client COPI registered for all components");
@@ -55,6 +62,32 @@ StubInterceptorDispatcher::register_interceptor_for_all(Components::Extension::C
 	Qedo::QedoLock l(all_stub_interceptors_mutex_);
 
 	all_stub_interceptors_.push_back(e);
+
+}
+
+void
+StubInterceptorDispatcher::unregister_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor)
+{
+DEBUG_OUT("ServerInterceptorDispatcher: Stub interceptor Dispatcher unregister_for_all called");
+
+	std::vector <StubInterceptorEntry>::iterator interceptor_iter;
+
+	for (interceptor_iter = all_stub_interceptors_.begin(); interceptor_iter != all_stub_interceptors_.end(); interceptor_iter++)
+	{
+
+		if ((*interceptor_iter).interceptor == interceptor)
+		{
+			DEBUG_OUT ("StubInterceptorDispatcher: unregister_interceptor_for_all(): interceptor found");
+			all_stub_interceptors_.erase (interceptor_iter);
+
+			break;
+		}
+	}
+
+	if (interceptor_iter == all_stub_interceptors_.end())
+	{
+		DEBUG_OUT ("ServerinterceptorDispatcher: Unknown interceptor");
+	}
 
 }
 

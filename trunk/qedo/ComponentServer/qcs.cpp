@@ -42,7 +42,7 @@
 #include "StubInterceptorDispatcher.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.35 2004/08/23 09:14:15 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.36 2004/08/27 08:37:43 tom Exp $";
 
 
 /**
@@ -220,7 +220,13 @@ main (int argc, char** argv)
 
 		server_dispatcher -> set_component_server ( component_server );
 		client_dispatcher -> set_component_server ( component_server );
-		
+
+		servant_dispatcher -> set_component_server ( component_server );
+		stub_dispatcher -> set_component_server ( component_server );
+
+		// set cdr
+		server_dispatcher -> init_cdr ();
+		client_dispatcher -> init_cdr();
 	}
 #endif
 	try

@@ -29,7 +29,7 @@
 #include "Components.h"
 #include "Synchronisation.h"
 #include "Util.h"
-
+#include "ComponentServerImpl.h"
 
 namespace Qedo {
 
@@ -58,22 +58,38 @@ namespace Qedo {
 		QedoMutex for_component_id_servant_interceptors_mutex_;
 
 		/** reference to the component server */
-	//	Qedo::ComponentServerImpl* component_server_;
+		Qedo::ComponentServerImpl* component_server_;
+
+		/** reference to the orb */
+		CORBA::ORB_var orb_;
+		
 
 	public:
 		ServantInterceptorDispatcher();
 
 		~ServantInterceptorDispatcher();
 
+		void
+		set_component_server(Qedo::ComponentServerImpl* component_server);
+
+		// helper functions
+		virtual char*
+		get_target_id();
+
+		virtual char*
+		get_origin_id();
 
 		virtual void
 		register_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor);
 
-	    virtual CORBA::Boolean 
+		virtual void
+		unregister_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor);
+
+		virtual CORBA::Boolean 
 		call( const char* oper ) ;
 //CCMObject
 		virtual Components::Cookie* connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con ) ;
-    virtual CORBA::Object_ptr provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con );
+	    virtual CORBA::Object_ptr provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con );
 
 #ifndef _QEDO_NO_STREAMS
 

@@ -30,7 +30,7 @@
 #include "Output.h"
 #include <fstream>
 
-static char rcsid[] UNUSED = "$Id: ServantInterceptorDispatcher.cpp,v 1.4 2004/08/16 10:13:52 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServantInterceptorDispatcher.cpp,v 1.5 2004/08/27 08:37:43 tom Exp $";
 
 namespace Qedo {
 
@@ -41,6 +41,58 @@ ServantInterceptorDispatcher::ServantInterceptorDispatcher()
 
 ServantInterceptorDispatcher::~ServantInterceptorDispatcher()
 {
+
+}
+
+void
+ServantInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* component_server)
+{
+	component_server_ = component_server;
+
+}
+
+
+char*
+ServantInterceptorDispatcher::get_target_id()
+{
+
+	CORBA::Object_var obj = component_server_ -> orb_ -> resolve_initial_references ("PICurrent");
+
+	if ( CORBA::is_nil (obj) )
+		return "UNKNOWN_COMP_ID";
+
+	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
+
+	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
+	Components::Extension::SlotInfo slot_info;
+	slot >>= slot_info;
+	if (!slot_info.target_id)
+	{
+		return "UNKNOWN_COMP_ID";
+	}
+	return strdup(slot_info.target_id);
+
+}
+
+char*
+ServantInterceptorDispatcher::get_origin_id()
+{
+
+	CORBA::Object_var obj = component_server_ -> orb_ -> resolve_initial_references ("PICurrent");
+
+	if ( CORBA::is_nil (obj) )
+		return "UNKNOWN_COMP_ID";
+
+	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
+
+	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
+	Components::Extension::SlotInfo slot_info;
+	slot >>= slot_info;
+	if (!slot_info.origin_id)
+	{
+		return "UNKNOWN_COMP_ID";
+	}
+	return strdup(slot_info.origin_id);
 
 }
 
@@ -58,20 +110,68 @@ ServantInterceptorDispatcher::register_interceptor_for_all(Components::Extension
 
 }
 
+void
+ServantInterceptorDispatcher::unregister_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor)
+{
+	DEBUG_OUT("ServantInterceptorDispatcher: Server COPI unregister_for_all called");
+
+	std::vector <ServantInterceptorEntry>::iterator interceptor_iter;
+
+	for (interceptor_iter = all_servant_interceptors_.begin(); interceptor_iter != all_servant_interceptors_.end(); interceptor_iter++)
+	{
+
+		if ((*interceptor_iter).interceptor == interceptor)
+		{
+			DEBUG_OUT ("ServantInterceptorDispatcher: unregister_interceptor_for_all(): interceptor found");
+			all_servant_interceptors_.erase (interceptor_iter);
+
+			break;
+		}
+	}
+
+	if (interceptor_iter == all_servant_interceptors_.end())
+	{
+		DEBUG_OUT ("ServantInterceptorDispatcher: Unknown interceptor");
+	}
+}	
+
 CORBA::Boolean 
 ServantInterceptorDispatcher::call( const char* oper ) 
 {
+	DEBUG_OUT("ServantInterceptorDispatcher: get call");
+
 	// call registered interceptors
+	CORBA::Boolean con = true;
+	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
+	{
+		try {
+
+			all_servant_interceptors_[i].interceptor->call( get_target_id(), get_origin_id(), oper, con);
+
+			if (!con)
+			{
+				return false;
+				break;
+			};
+		} catch (CORBA::SystemException e)
+		{
+			throw e;
+		} catch ( ... )
+			// catch of user exception is probably missing
+		{
+		}
+	}
+	con = true;
+	return true ;
 
 	// return true if the execution shall continue
 	// an out parameter of type any is needed to return a possible return type
-	DEBUG_OUT("ServantInterceptorDispatcher: get call");
-	return true;
 }
 
 Components::Cookie* 
 ServantInterceptorDispatcher::connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con )
 {
+	std::cout << "ServantInterceptor: get connect()" << std::endl;
 	Components::Cookie* temp_ck;
 	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
 	{

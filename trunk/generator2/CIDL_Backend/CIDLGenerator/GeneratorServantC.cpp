@@ -607,6 +607,26 @@ GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 	out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
 	out.unindent();
 	out << "}\n\n";
+
+	// calling stub interceptor dispatcher
+	out.unindent();
+	out.unindent();
+	out << "#ifndef _QEDO_NO_QOS\n";
+	out.indent();
+	out.indent();
+	out << "// call interceptors\n";
+	out << "CORBA::Boolean con;\n";
+	out << "con = servant_interceptor_registry_ -> call (\"";
+	out << operation_name;
+	out << "\");\n";
+	out << "if (con)\n";
+	out << "{\n";
+	out.unindent();
+	out.unindent();
+	out << "#endif\n";
+	out.indent();
+	out.indent();
+
 	if(!is_void)
 	{
 		out << "return ";
@@ -622,6 +642,21 @@ GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 		out << mapName(string(pardescr.name));
 	}
 	out << ");\n";
+
+	out.unindent();
+	out.unindent();
+	out << "#ifndef _QEDO_NO_QOS\n";
+	out.indent();
+	out.indent();
+
+	out << "}\n";
+	out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
+	out.unindent();
+	out.unindent();
+	out << "#endif\n";
+	out.indent();
+	out.indent();
+
 	out.unindent();
 	out << "}\n\n\n";
 }

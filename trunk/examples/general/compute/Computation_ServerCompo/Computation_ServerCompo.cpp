@@ -62,7 +62,9 @@ ServerExec::compute(CORBA::Long argument_of_function)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ServerExec::compute
-	return 9;
+	// take some time
+	for (int n = 0; n < 100; n++);
+	return 9 ;
 // END USER INSERT SECTION ServerExec::compute
 }
 

@@ -116,8 +116,6 @@ private:
 	/** the object reference of the component installer */
 	Components::Deployment::ComponentInstallation_var		component_installer_;
 
-	/** the orb */
-	CORBA::ORB_var							orb_;
 	/** the root poa */
 	PortableServer::POA_var						root_poa_;
 	/** the root poa manager */
@@ -156,6 +154,9 @@ private:
 	Components::Extension::StubInterceptorRegistration_var stub_dispatcher_;
 #endif
 public:
+	/** the orb */
+	CORBA::ORB_var							orb_;
+
 	/** the slot id where our interceptor stores information to be used by container services */
 	PortableInterceptor::SlotId					slot_id_;
 

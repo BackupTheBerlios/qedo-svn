@@ -65,6 +65,9 @@ namespace Qedo {
 		/** reference to the component server */
 		Qedo::ComponentServerImpl* component_server_;
 
+		/** reference to the CDR codec to code the service context data */
+		IOP::Codec_var m_cdrCodec;
+
 	public:
 		ClientInterceptorDispatcher();
 
@@ -95,8 +98,14 @@ namespace Qedo {
 		virtual void
 		register_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor);
 
+		virtual void
+		unregister_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor);
+
 		void
 		set_component_server(Qedo::ComponentServerImpl* component_server);
+
+		void
+		init_cdr();
 
 	};
 }

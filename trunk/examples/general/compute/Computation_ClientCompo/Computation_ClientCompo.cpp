@@ -38,12 +38,26 @@ ClientExec::client_thread()
 	}
 
 	CORBA::ULong calls = 0;
+	CORBA::ULong un_calls = 0;
 	CORBA::ULong n = 0;
 
 	_time64( &ltime_start );
+	__time64_t time_stamp;
+	_time64( &time_stamp);
+	__time64_t current_time;
+	_time64( &current_time);
 
-	for (n = 0; n < 5000; n++)
+	while (true)
+//	for (n = 0; n < 500 ; n++)
 	{
+		_time64( &current_time);
+		if ((current_time - time_stamp ) > 5)
+		{
+			_time64( &time_stamp);
+			std::cout << "successful calls so far: " << calls << std::endl;
+			std::cout << "unsuccessful calls so far: " << un_calls << std::endl;
+		}
+
 		if (stopped_) 
 		{
 			break;
@@ -53,13 +67,17 @@ ClientExec::client_thread()
 			calls++;
 		} catch (...)
 		{
+			un_calls++;
 		}
+		if (calls > 500)
+		{ break;}
 	}
 
 	_time64( &ltime_end );
 
 	std::cout << "@@@ calling compute ended after " << ltime_end - ltime_start << " seconds" << std::endl;
 	std::cout << "successful calls: " << calls << std::endl;
+	std::cout << "unsuccessful calls: " << un_calls << std::endl;
 }
 // END USER INSERT SECTION ClientExec
 
