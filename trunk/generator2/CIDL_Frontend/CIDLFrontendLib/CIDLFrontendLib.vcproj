@@ -514,6 +514,7 @@ d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yysty
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
 						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
 "
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
@@ -572,6 +573,7 @@ d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yysty
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
 						CommandLine="$(LEX) -tw -Sflex.skel lexana.l  &gt; lexana.cpp
 "
 						Outputs="lexana.cpp"/>
@@ -627,7 +629,8 @@ d:/generatoren\kc++ --no-rewrite --no-csgio --no-printdot --covariant=no --yysty
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="&quot;$(PYTHON)&quot; errmsg.py &lt; cidl.output &gt; errmsg.cpp
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(PYTHON) errmsg.py &lt; cidl.output &gt; errmsg.cpp
 "
 						Outputs="errmsg.cpp"/>
 				</FileConfiguration>
@@ -682,6 +685,7 @@ cp cidl.hpp cidl.h
 					Name="Release_orbacus|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
 						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y ;
 cp cidl.hpp cidl.h
 "

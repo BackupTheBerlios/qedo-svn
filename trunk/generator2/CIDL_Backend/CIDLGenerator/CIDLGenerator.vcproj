@@ -331,10 +331,7 @@ copy cidl_gen.exe &quot;%QEDO%\bin&quot;
 				TypeLibraryName=".\Debug_orbacus/CIDLGenerator.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Copying CIDL generator executable"
-				CommandLine="md &quot;%QEDO%\bin&quot;
-copy cidl_gen.exe &quot;%QEDO%\bin&quot;
-"/>
+				Description="Copying CIDL generator executable"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
