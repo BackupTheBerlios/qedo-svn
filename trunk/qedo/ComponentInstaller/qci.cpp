@@ -20,6 +20,10 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "ComponentInstallationImpl.h"
 #ifdef MICO_ORB
 #include <coss/CosNaming.h>
@@ -31,7 +35,7 @@
 #include <signal.h>
 
 
-static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.19 2003/09/26 08:24:44 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.20 2003/09/30 16:39:00 boehme Exp $";
 
 
 /**
@@ -57,7 +61,19 @@ void
 handle_sigint
 ( int sig )
 {
+#ifdef HAVE_SIGACTION
+	 struct sigaction act;
+
+    /* Assign sig_chld as our SIGINT handler */
+    act.sa_handler = SIG_IGN;
+
+    /* We don't want to block any other signals in this example */
+    sigemptyset(&act.sa_mask);
+
+	 sigaction(SIGINT,&act,0);
+#else
 	signal(sig, SIG_IGN);
+#endif
 	std::cout << "\nGot Crtl-C" << std::endl;
 	std::cerr << "..... unbind in NameService" << std::endl;
 
@@ -132,8 +148,31 @@ main (int argc, char** argv)
 		orb->destroy();
 		exit (1);
 	}
+
+#ifdef HAVE_SIGACTION
+	 struct sigaction act;
+
+    /* Assign sig_chld as our SIGINT handler */
+    act.sa_handler = handle_sigint;
+
+    /* We don't want to block any other signals in this example */
+    sigemptyset(&act.sa_mask);
+
+    /*
+     * Make these values effective. If we were writing a real 
+     * application, we would probably save the old value instead of 
+     * passing NULL.
+     */
+    if (sigaction(SIGINT, &act, NULL) < 0) 
+    {
+		 std::cerr << "sigaction failed" << std::endl;
+        return 1;
+    }
+#else
+	 signal ( SIGINT, handle_sigint );
+#endif
+
 	std::cout << "Qedo Component Installer is up and running ...\n";
-	signal ( SIGINT, handle_sigint );
 	orb->run();
 	return 0;
 }

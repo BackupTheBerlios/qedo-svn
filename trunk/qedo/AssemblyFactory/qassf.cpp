@@ -20,13 +20,17 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "AssemblyFactory.h"
 #include "Output.h"
 #include "version.h"
 #include <signal.h>
 
 
-static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.14 2003/09/29 14:42:25 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.15 2003/09/30 16:39:00 boehme Exp $";
 
 /**
  * @addtogroup Assembly
@@ -51,7 +55,19 @@ void
 handle_sigint
 ( int sig )
 {
+#ifdef HAVE_SIGACTION
+	 struct sigaction act;
+
+    /* Assign sig_chld as our SIGINT handler */
+    act.sa_handler = SIG_IGN;
+
+    /* We don't want to block any other signals in this example */
+    sigemptyset(&act.sa_mask);
+
+	 sigaction(SIGINT,&act,0);
+#else
 	signal(sig, SIG_IGN);
+#endif
 	std::cout << "\nGot Crtl-C" << std::endl;
 	std::cerr << "..... unbind in NameService" << std::endl;
 
@@ -130,8 +146,31 @@ main (int argc, char** argv)
 		orb->destroy();
 		exit (1);
 	}
-	std::cout << "Qedo Assembly Factory Server is up and running ...\n";
+
+#ifdef HAVE_SIGACTION
+	 struct sigaction act;
+
+    /* Assign sig_chld as our SIGINT handler */
+    act.sa_handler = handle_sigint;
+
+    /* We don't want to block any other signals in this example */
+    sigemptyset(&act.sa_mask);
+
+    /*
+     * Make these values effective. If we were writing a real 
+     * application, we would probably save the old value instead of 
+     * passing NULL.
+     */
+    if (sigaction(SIGINT, &act, NULL) < 0) 
+    {
+		 std::cerr << "sigaction failed" << std::endl;
+        return 1;
+    }
+#else
 	signal ( SIGINT, handle_sigint );
+#endif
+
+	std::cout << "Qedo Assembly Factory Server is up and running ...\n";
 	orb->run();
 	return 0;
 }
