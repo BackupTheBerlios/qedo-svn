@@ -199,7 +199,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Optimization="2"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;..\..\CIDL_Frontend\CIDLFrontendLib;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
-				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE,__DEBUG__,_WINDOWS"
+				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE,_WINDOWS"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="TRUE"
 				PrecompiledHeaderFile=".\Debug_orbacus/CIDLGenerator.pch"
