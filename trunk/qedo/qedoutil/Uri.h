@@ -83,6 +83,9 @@
 Revision history:
 
 $Log: Uri.h,v $
+Revision 1.8  2003/11/24 13:42:33  neubauer
+fixed a fix;
+
 Revision 1.7  2003/11/18 18:15:51  boehme
 more memory fixes
 
@@ -336,7 +339,7 @@ private:
         static bool isOneOf( const char aChar, const char* const aCharSet ) ;
 
     private:
-        Rep()
+		Rep() : mText( 0 )
         { 
             assert( 0 ); 
         }

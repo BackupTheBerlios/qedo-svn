@@ -182,7 +182,7 @@ createUUID();
  * own transcode adapter for memory handling
  * \return the transcoded string from Xerces as std::string
  */
-
+QEDOUTIL_API
 std::string
 transcode(const XMLCh * const);
 
