@@ -407,6 +407,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\EmitterPort.cpp">
 			</File>
 			<File
+				RelativePath="EntityContext.cpp">
+			</File>
+			<File
 				RelativePath="EntityHomeServant.cpp">
 			</File>
 			<File
@@ -517,6 +520,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\EmitterPort.h">
+			</File>
+			<File
+				RelativePath="EntityContext.h">
 			</File>
 			<File
 				RelativePath="EntityHomeServant.h">

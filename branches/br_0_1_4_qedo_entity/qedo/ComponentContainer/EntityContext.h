@@ -20,11 +20,12 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#ifndef __ENTITY_HOME_SERVANT_H__
-#define __ENTITY_HOME_SERVANT_H__
+#ifndef __ENTITY_CONTEXT_H__
+#define __ENTITY_CONTEXT_H__
 
-//#include "HomeServantBase.h"
-#include "CCMHomeServant.h"
+#include <CORBA.h>
+#include <Components.h>
+#include "CCMContext.h"
 #include "Util.h"
 
 
@@ -38,44 +39,34 @@ namespace Qedo {
 
 
 /**
- * home servant for entity components
+ * the entity context
  */
-class CONTAINERDLL_API EntityHomeServant : public CCMHomeServant
-	//:public HomeServantBase
+class CONTAINERDLL_API EntityContext : public virtual Components::EntityContext,
+										public virtual CCMContext
 {
-private:
-	/**
-	 * indicate removal
-	 * \param executor_locator The executor locator of the component instance to be removed.
-	 */
-	void before_remove_component (Components::ExecutorLocator_ptr exec_loc);
-
-	/**
-	 * finalize the component incarnation
-	 * \param exec_loc The executor locator of the component instance to be incarnated.
-	 */
-	void do_finalize_component_incarnation (Components::ExecutorLocator_ptr exec_loc);
-
 public:
 	/**
 	 * constructor
 	 */
-	EntityHomeServant();
-
-	/**
-	 * copy constructor
-	 */
-	EntityHomeServant (const EntityHomeServant&);
-
-	/**
-	 * assignment operator
-	 */
-	EntityHomeServant& operator= (const EntityHomeServant&);
+	EntityContext();
 
 	/**
 	 * destructor
 	 */
-	~EntityHomeServant();
+	~EntityContext();
+
+    /**
+	 * implements IDL:omg.org/Components/EntityContext/get_CCM_object:1.0
+	 * provide the reference to the CCMObject of the component
+	 * delegated to the object executor
+	 * \return The object reference of the component.
+	 */
+    CORBA::Object_ptr get_CCM_object();
+
+	//
+    // IDL:omg.org/Components/EntityContext/get_primary_key:1.0
+    //
+    Components::PrimaryKeyBase* get_primary_key();
 };
 
 /** @} */

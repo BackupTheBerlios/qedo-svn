@@ -253,6 +253,12 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 			out << "::Components::SessionContext";
 			break;
 		}
+	case (CIDL::lc_Entity) :
+	case (CIDL::lc_Process) :
+		{
+			out << "::Components::EntityContext";
+			break;
+		}
 	case (CIDL::lc_Extension) :
 		{
 			out << "::Components::ExtensionContext";
@@ -348,14 +354,43 @@ GeneratorLIDL::doHome(IR__::HomeDef_ptr home)
 	//
 	// implicit home
 	//
-	out << "//\n// implicit home for " << home->id() << "\n//\n";
-	out << "local interface CCM_" << home->name() << "Implicit\n";
-	out << "{\n";
-	out.indent();
-	out << "::Components::EnterpriseComponent create() raises (Components::CreateFailure);\n";
-	out.unindent();
-	out << "};\n\n";
+	IR__::PrimaryKeyDef_ptr pk = home->primary_key();
 
+	if(!CORBA::is_nil(pk))
+	{
+		out << "//\n// implicit home for " << home->id() << "\n//\n";
+		out << "local interface CCM_" << home->name() << "Implicit\n";
+		out << "{\n";
+		out.indent();
+
+		out << "::Components::EnterpriseComponent create(in " << pk->name() << " key)\n";
+		out.indent();
+		out << "raises (Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey);\n\n";
+		out.unindent();
+
+		out << "::Components::EnterpriseComponent find_by_primary_key(in " << pk->name() << " key)\n";
+		out.indent();
+		out << "raises (Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
+		out.unindent();
+
+		out << "void remove(in " << pk->name() << " key)\n";
+		out.indent();
+		out << "raises (Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
+		out.unindent();
+		
+		out.unindent();
+		out << "};\n\n";
+	}
+	else
+	{
+		out << "//\n// implicit home for " << home->id() << "\n//\n";
+		out << "local interface CCM_" << home->name() << "Implicit\n";
+		out << "{\n";
+		out.indent();
+		out << "::Components::EnterpriseComponent create() raises (Components::CreateFailure);\n";
+		out.unindent();
+		out << "};\n\n";
+	}
 
 	//
 	// explicit home

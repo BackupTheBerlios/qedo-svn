@@ -385,8 +385,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection(class_name_ + "::remove", 0);	
 	out << "}\n\n\n";
 
-	// for service extension
-	if(composition->lifecycle() == 0)
+	if(composition->lifecycle() == CIDL::lc_Service)
 	{
 		// preinvoke
 		out << "void\n";
@@ -535,9 +534,19 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection(class_name_ + "::configuration_complete", 0);
 	out << "}\n\n\n";
 
-	// set session context
+	// set session/entity context
 	out << "void\n";
-	out << class_name_ << "::set_session_context(::Components::SessionContext_ptr context)\n";
+	switch(composition->lifecycle())
+	{
+		case CIDL::lc_Session :
+			out << class_name_ << "::set_session_context(::Components::SessionContext_ptr context)\n";
+			break;
+		case CIDL::lc_Entity :
+			out << class_name_ << "::set_entity_context(::Components::EntityContext_ptr context)\n";
+			break;
+		default :
+			out << "//not supported lifecycle used!\n";
+	}
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.indent();
 	out << "#ifdef TAO_ORB\n";
@@ -561,12 +570,38 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out << "}\n\n\n";
 
+	// unset_entity_context for entity component
+	if(composition->lifecycle()==CIDL::lc_Entity)
+	{
+		out << "void\n";
+		out << class_name_ << "::unset_entity_context()\n";
+		out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
+		out.insertUserSection(class_name_ + "::unset_entity_context", 0);
+		out << "}\n\n\n";
+	}
+
 	// ccm_activate
 	out << "void\n";
 	out << class_name_ << "::ccm_activate()\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.insertUserSection(class_name_ + "::ccm_activate", 0);
 	out << "}\n\n\n";
+
+	// ccm_load and ccm_store for entity component
+	if(composition->lifecycle()==CIDL::lc_Entity)
+	{
+		out << "void\n";
+		out << class_name_ << "::ccm_load()\n";
+		out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
+		out.insertUserSection(class_name_ + "::ccm_load", 0);
+		out << "}\n\n\n";
+
+		out << "void\n";
+		out << class_name_ << "::ccm_store()\n";
+		out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
+		out.insertUserSection(class_name_ + "::ccm_store", 0);
+		out << "}\n\n\n";
+	}
 
 	// ccm_passivate
 	out << "void\n";
@@ -582,8 +617,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection(class_name_ + "::ccm_remove", 0);
 	out << "}\n\n\n";
 
-	// for service extension
-	if(composition->lifecycle() == 0)
+	if(composition->lifecycle() == CIDL::lc_Service)
 	{
 		// preinvoke
 		out << "void\n";
@@ -630,16 +664,51 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "context_ = Components::HomeContext::_duplicate(ctx);\n";
 	out.unindent();
 	out << "}\n\n\n";
+	
+	//operations derived from implicit home
+	switch(composition->lifecycle())
+	{
+	case CIDL::lc_Session :
+		out << "::Components::EnterpriseComponent_ptr\n";
+		out << class_name_ << "::create ()\n";
+		out << "    throw (CORBA::SystemException, Components::CreateFailure)\n{\n";
+		out.indent();
+		out.insertUserSection(class_name_ + "::create", 0);
+		out << "return new " << mapName(composition) << "();\n";
+		out.unindent();
+		out << "}\n\n\n";
+		break;
+	case CIDL::lc_Entity :
+		out << "::Components::EnterpriseComponent_ptr\n";
+		out << class_name_ << "::create(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey" << ")\n";
+		out << "    throw(CORBA::SystemException, Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey)\n{\n";
+		out.indent();
+		out.insertUserSection(class_name_ + "create", 0);
+		out << "return 0;\n";
+		out.unindent();
+		out << "}\n\n\n";
 
-	// create
-	out << "::Components::EnterpriseComponent_ptr\n";
-	out << class_name_ << "::create ()\n";
-	out << "    throw (CORBA::SystemException, Components::CreateFailure)\n{\n";
-	out.indent();
-	out.insertUserSection(class_name_ + "::create", 0);
-	out << "return new " << mapName(composition) << "();\n";
-	out.unindent();
-	out << "}\n\n\n";
+		out << "::Components::EnterpriseComponent_ptr\n";
+		out << class_name_ << "::find_by_primary_key(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n"; 
+		out << "	throw(CORBA::SystemException, Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey)\n{\n";
+		out.indent();
+		out.insertUserSection(class_name_ + "find_by_primary_key", 0);
+		out << "return 0;\n";
+		out.unindent();
+		out << "}\n\n\n";
+
+		out << "void\n";
+		out << class_name_ << "::remove(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n"; 
+		out << "	throw(CORBA::SystemException, Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey)\n{\n";
+		out.indent();
+		out.insertUserSection(class_name_ + "remove", 0);
+		out.unindent();
+		out << "}\n\n\n";
+
+		break;
+	default :
+		out << "// not supported lifecycle\n";
+	}
 
 	doHome(composition->ccm_home());
 

@@ -1,13 +1,24 @@
 #ifndef YYSTYPE_HEADER
 #define YYSTYPE_HEADER
-union KC_YYSTYPE {
+union YYSTYPE {
     kc::nocasestring yt_nocasestring;
     kc::casestring yt_casestring;
     kc::real yt_real;
     kc::integer yt_integer;
     kc::voidptr yt_voidptr;
+    kc::name_scope yt_name_scope;
+    kc::table_item yt_table_item;
+    kc::table_item_list yt_table_item_list;
+    kc::table_item_lists yt_table_item_lists;
+    kc::node_flag yt_node_flag;
     kc::idl_name yt_idl_name;
     kc::idl_identifier yt_idl_identifier;
+    kc::definition yt_definition;
+    kc::output_file yt_output_file;
+    kc::file_stack yt_file_stack;
+    kc::const_expression yt_const_expression;
+    kc::check_item yt_check_item;
+    kc::key_word yt_key_word;
     kc::flag yt_flag;
     kc::idl_name_list yt_idl_name_list;
     kc::idl_identifier_list yt_idl_identifier_list;
@@ -15,12 +26,10 @@ union KC_YYSTYPE {
     kc::import_list yt_import_list;
     kc::import yt_import;
     kc::definition_list yt_definition_list;
-    kc::definition yt_definition;
     kc::declarators yt_declarators;
     kc::declarator yt_declarator;
     kc::fixed_array_sizes yt_fixed_array_sizes;
     kc::fixed_array_size yt_fixed_array_size;
-    kc::const_expression yt_const_expression;
     kc::const_expression_list yt_const_expression_list;
     kc::composition_body yt_composition_body;
     kc::proxy_home_def yt_proxy_home_def;
@@ -51,15 +60,5 @@ union KC_YYSTYPE {
     kc::value_inheritance_spec yt_value_inheritance_spec;
     kc::interface_header yt_interface_header;
     kc::component_header yt_component_header;
-    kc::check_item yt_check_item;
-    kc::key_word yt_key_word;
-    kc::output_file yt_output_file;
-    kc::file_stack yt_file_stack;
-    kc::name_scope yt_name_scope;
-    kc::table_item yt_table_item;
-    kc::table_item_list yt_table_item_list;
-    kc::table_item_lists yt_table_item_lists;
-    kc::node_flag yt_node_flag;
 };
-#define YYSTYPE KC_YYSTYPE
 #endif // YYSTYPE_HEADER

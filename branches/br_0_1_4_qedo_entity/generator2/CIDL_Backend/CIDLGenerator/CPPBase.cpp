@@ -173,6 +173,29 @@ CPPBase::mapFullNamePOA(IR__::Contained_ptr obj)
 	return mapFullNameWithPrefix(obj, "POA_");
 }
 
+/*
+ * erease the home name in PK's absolute name
+ */
+std::string
+CPPBase::mapFullNamePK(IR__::Contained_ptr obj)
+{
+	std::string name;
+	name = obj->absolute_name();
+
+	std::string::size_type pos = 0;
+	std::string::size_type begin;
+	std::string::size_type end;
+
+	pos = name.rfind("::", name.length());
+	end = pos;
+	pos -= 2;
+	pos = name.rfind("::", pos);
+	begin = pos + 1;
+
+	name.erase(begin, end-begin+1);
+
+	return name;
+}
 
 std::string 
 CPPBase::mapScopeName
