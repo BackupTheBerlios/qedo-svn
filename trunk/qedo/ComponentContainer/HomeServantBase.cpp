@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.22 2003/09/26 08:22:02 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.23 2003/09/29 14:25:41 stoinski Exp $";
 
 
 namespace Qedo {
@@ -392,7 +392,7 @@ HomeServantBase::prepare_remove()
 	// Here we must remove all component instances that are still running
 	if (component_instances_.size() > 0)
 	{
-		DEBUG_OUT ("HomeServantBase: Warning: There are still component instances around");
+		DEBUG_OUT ("HomeServantBase: Warning: There are still component instances around, going to remove them...");
 
 		// We cannot use an iterator to iterate through the list, since this list will be
 		// manipulated by remove_component_with_oid()
