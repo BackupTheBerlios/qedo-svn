@@ -393,6 +393,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\ConsumerPort.cpp">
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						GeneratePreprocessedFile="1"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\ContainerInterfaceImpl.cpp">

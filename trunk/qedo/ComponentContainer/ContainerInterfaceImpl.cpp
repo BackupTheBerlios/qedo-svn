@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.21 2003/08/05 14:40:02 boehme Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.22 2003/08/05 14:50:12 neubauer Exp $";
 
 
 namespace Qedo {
@@ -137,7 +137,8 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 	//
 	// get home finder
 	//
-	CORBA::Object_var obj = Qedo_Components::HomeFinder::_nil();
+	home_finder_ = Qedo_Components::HomeFinder::_nil();
+	CORBA::Object_var obj;
 
     try
     {
