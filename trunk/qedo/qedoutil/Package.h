@@ -112,6 +112,7 @@ public:
 	 * \return The file name.
 	 */
 	std::string getName();
+
 };
 
 /** @} */

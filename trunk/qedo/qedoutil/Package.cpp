@@ -308,5 +308,4 @@ Package::getName
 	return zipfilename;
 }
 
-
 } // namespace

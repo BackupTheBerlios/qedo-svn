@@ -29,18 +29,20 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.12 2003/11/18 11:48:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.13 2003/11/25 16:03:30 boehme Exp $";
 
 
 namespace Qedo {
 
 
 CSDReader::CSDReader()
+: data_(0), csd_document_(0), package_(0)
 {
 }
 
 
 CSDReader::CSDReader( std::string package, std::string path )
+: data_(0), csd_document_(0)
 {
 	package_ = new Package(package);
 	path_ = path;
@@ -357,6 +359,7 @@ LocationData
 CSDReader::fileinarchive(DOMElement* element)
 throw(CSDReadException)
 {
+	if ( !package_ ) abort();
 	LocationData data;
 	data.uri = "file://";
 	std::string file_name = Qedo::transcode(element->getAttribute(X("name")));
@@ -627,6 +630,7 @@ void
 CSDReader::softpkg (DOMElement* element)
 throw(CSDReadException)
 {
+	if ( !package_ ) abort();
 	std::string element_name;
     DOMNode* child = element->getFirstChild();
 	while (child != 0)
@@ -863,6 +867,7 @@ throw(CSDReadException)
 {
 	data_ = data;
 	path_ = path;
+	delete package_;
 	package_ = new Package(package);
 
 	//
@@ -895,8 +900,6 @@ throw(CSDReadException)
 	// handle softpkg
 	softpkg(csd_document_->getDocumentElement());
 
-	// remove package
-	delete package_;
 }
 
 
@@ -904,6 +907,7 @@ std::string
 CSDReader::getCCD(std::string id)
 throw(CSDReadException)
 {
+	if (!package_) abort();
 	//
 	// find and extract the software package descriptor
 	//
