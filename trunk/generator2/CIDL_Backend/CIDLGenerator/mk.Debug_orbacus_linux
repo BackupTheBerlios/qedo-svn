@@ -4,7 +4,7 @@ OutDir=./Debug_orbacus_linux
 IntDir=./Debug_orbacus_linux
 Name=Debug_orbacus_linux
 CFLAGS=-DHAVE_JTC -DHAVE_JTC -I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I../../CIDL_Frontend/CIDLFrontendLib -I"$(ORBACUS)/include" -I"$(ORBACUS)/include/OB" -g
-CXXFLAGS=-DHAVE_JTC -DHAVE_JTC -I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I../../CIDL_Frontend/CIDLFrontendLib -I"$(ORBACUS)/include" -I"$(ORBACUS)/include/OB" -g
+CXXFLAGS=-DHAVE_JTC -DHAVE_JTC -I../../CIDL_Repository/IFRidl -I../../CIDL_Repository/ComponentRepositoryLib -I../../CIDL_Repository/CIDLRepositoryLib -I../../CIDL_Frontend/CIDLFrontendLib -I"$(ORBACUS)/include" -I"$(ORBACUS)/include/OB" -I/usr/include -g
 LIBS=-L../../..//CIDL_Repository/ComponentRepositoryLib/./Debug_orbacus -L../../..//CIDL_Frontend/CIDLFrontendLib/./Debug_orbacus -L../../..//CIDL_Repository/CIDLRepositoryLib/./Debug_orbacus -L../../CIDL_Frontend/CIDLFrontendLib/$(IntDir) -L../../CIDL_Repository/IFRidl/$(IntDir) -L../../CIDL_Repository/ComponentRepositoryLib/$(IntDir) -L../../CIDL_Repository/CIDLRepositoryLib/$(IntDir) -L$(ORBACUS)/lib -lCIDLFrontendLib -lCIDLRepositoryLib -lComponentRepositoryLib -lIFRidl -lOB -ldl -lJTC -lpthread -lCIDLRepositoryLib -lCIDLFrontendLib -lComponentRepositoryLib
 
 $(IntDir)/%.o:%.cpp

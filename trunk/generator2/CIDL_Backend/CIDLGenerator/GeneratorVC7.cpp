@@ -1,11 +1,15 @@
 #include "GeneratorVC7.h"
 #include "Debug.h"
 #include <string>
-#include <direct.h>
+
+
 
 #ifdef _WIN32
+#include <direct.h>
 #include <Windows.h>
 #include <objbase.h>
+#else
+#include "sys/stat.h"
 #endif
 
 
@@ -76,8 +80,11 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	project_name = composition_name + "_EXECUTOR";
 	servant_project_name = composition_name + "_SERVANT";
 
+#ifdef WIN32
 	_mkdir(project_name.c_str());
-
+#else
+	mkdir(project_name.c_str(), 0);
+#endif
 	filename_ = project_name + "/";
 	filename_ = filename_ + project_name;
 	filename_ = filename_ + ".vcproj";
@@ -416,7 +423,11 @@ GeneratorVC7::generateServant()
 	//
 	std::string project_name = file_prefix_ + "_SERVANT";
 
+#ifdef WIN32
 	_mkdir(project_name.c_str());
+#else
+	mkdir(project_name.c_str(), 0);
+#endif
 
 	filename_ = project_name + "/";
 	filename_ = filename_ + project_name;
