@@ -51,6 +51,8 @@ class CCMContext;
 class CONTAINERDLL_API ComponentInstance
 {
 public:
+	/** the identity of this component */
+	std::string							uuid_;
 	/** object id of the component */
 	PortableServer::ObjectId_var		object_id_;
 	/** object reference of the component */
@@ -60,7 +62,7 @@ public:
 	/** generic executor */
 	Qedo::CCMObjectExecutor*			ccm_object_executor_;
 #ifndef _QEDO_NO_STREAMS
-        Qedo::StreamCCMObjectExecutor*          stream_ccm_object_executor_;
+	Qedo::StreamCCMObjectExecutor*		stream_ccm_object_executor_;
 #endif
 
 	/**
@@ -70,12 +72,14 @@ public:
 	 * \param executor_locator
 	 * \param executor_context
 	 * \param home_servant
+	 * \param cfg
 	 */
 	ComponentInstance (const PortableServer::ObjectId& object_id, 
 					   CORBA::Object_ptr component_ref, 
 					   Components::ExecutorLocator_ptr executor_locator,
 					   CCMContext* executor_context,
-					   HomeServantBase* home_servant);
+					   HomeServantBase* home_servant,
+					   const Components::ConfigValues& config);
 
 	/**
 	 * constructor

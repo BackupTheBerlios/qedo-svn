@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.24 2003/10/17 09:11:40 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.24.4.1 2003/10/28 14:53:59 neubauer Exp $";
 
 
 namespace Qedo {
@@ -121,7 +121,10 @@ HomeServantBase::reference_to_oid (const CORBA::Object_ptr obj)
 
 
 ComponentInstance& 
-HomeServantBase::incarnate_component (Components::ExecutorLocator_ptr executor_locator, CCMContext* ccm_context)
+HomeServantBase::incarnate_component
+( Components::ExecutorLocator_ptr executor_locator
+, CCMContext* ccm_context
+, const Components::ConfigValues& config)
 {
 	ccm_context->container (this->container_);
 
@@ -132,7 +135,7 @@ HomeServantBase::incarnate_component (Components::ExecutorLocator_ptr executor_l
 	PortableServer::ObjectId_var object_id = this->reference_to_oid (component_ref);
 
 	// create component instance and register it
-	ComponentInstance new_component (object_id, component_ref, executor_locator, ccm_context, this);
+	ComponentInstance new_component (object_id, component_ref, executor_locator, ccm_context, this, config);
 	component_instances_.push_back (new_component);
 	
 	return component_instances_.back ();
