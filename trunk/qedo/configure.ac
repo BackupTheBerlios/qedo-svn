@@ -12,6 +12,11 @@ AC_ARG_WITH(xerces,
  XERCESDIR=$withval, XERCESDIR="")
 AC_SUBST(XERCESDIR)
 
+AC_ARG_WITH(mico,
+ [  --with-mico=micodir         use Mico installed in xercesdir],
+ MICODIR=$withval, MICODIR="")
+AC_SUBST(MICODIR)
+
 AC_ARG_ENABLE(optimize,
  [  --disable-optimize      do not use -O2 to compile],
  use_opt=$enableval, use_opt=yes)
@@ -26,9 +31,22 @@ AC_PROG_MAKE_SET
 AC_PROG_RANLIB
 AC_PROG_LN_S
 AC_PROG_INSTALL
+
+MICODIR=""
+if test X"$with_mico" != X ;then
+	MICODIR="$with_mico"
+AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no,[$MICODIR/bin])
+   AC_MSG_NOTICE([please make sure, that $MICODIR/bin/idl will run])
+else
 AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no)
-AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
+fi
+if test "$HAVE_MICO_CONFIG" != "yes"; then
+  AC_MSG_ERROR([support until now only Mico, found no mico-config])
+fi
+
 AC_SUBST(HAVE_MICO_CONFIG)
+
+AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
 
 # Checks for libraries.
 AC_CHECK_LIB([dl], [dlopen])
