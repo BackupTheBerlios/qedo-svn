@@ -239,7 +239,7 @@ StorageHomeBaseImpl::ValuePaser( map<string, CORBA::Any>& valueMap )
 	long lData; // SQL_INTEGER -> SQL_C_LONG				
 	float fData; // SQL_REAL -> SQL_C_FLOAT
 	double dData; // SQL_DOUBLE or SQL_FLOAT -> SQL_C_DOUBLE
-	struct tm* strctData = new struct tm(); // SQL_TYPE_TIMESTAMP -> SQL_C_TYPE_TIMESTAMP(3.x); SQL_TIMESTAMP -> SQL_C_TIMESTAMP(2.x)
+	//struct tm* strctData = new struct tm(); // SQL_TYPE_TIMESTAMP -> SQL_C_TYPE_TIMESTAMP(3.x); SQL_TIMESTAMP -> SQL_C_TIMESTAMP(2.x)
 	
 	for(int iCol=0; iCol<GetFieldCount(); iCol++)
 	{
@@ -284,15 +284,15 @@ StorageHomeBaseImpl::ValuePaser( map<string, CORBA::Any>& valueMap )
 				GetFieldValue(iCol, &dData);
 				anyData <<= (CORBA::Double)dData;
 				break;
-			case SQL_TYPE_TIMESTAMP:
-			case SQL_TIMESTAMP:
-				GetFieldValue(iCol, strctData);
-				//anyData <<= (void*)strctData;
-				break;
-			case SQL_NUMERIC:
-			case SQL_DECIMAL:
+			//case SQL_TYPE_TIMESTAMP:
+			//case SQL_TIMESTAMP:
+			//	GetFieldValue(iCol, strctData);
+			//	anyData <<= (CORBA::StructDef)strctData;
+			//	break;
+			//case SQL_NUMERIC:
+			//case SQL_DECIMAL:
 			//	GetFieldValue(iCol, fltIncome);
-				break;
+			//	break;
 			default:
 				assert("This data type is unknown!");
 				break;
@@ -360,6 +360,14 @@ StorageHomeBaseImpl::RefreshByPid(std::vector<Pid> lPidList)
 void 
 StorageHomeBaseImpl::FreeAllStorageObjects()
 {
+	list <StorageObjectImpl*> ::iterator storageObject_iter;
 
+	for (storageObject_iter = m_lStorageObjectes.begin();
+		 storageObject_iter != m_lStorageObjectes.end();
+		 storageObject_iter++)
+	{
+		if((*storageObject_iter)->_get_refcount()>0)
+			(*storageObject_iter)->_remove_ref();
+	}
 }
 } // namespace Qedo

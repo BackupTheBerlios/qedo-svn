@@ -29,7 +29,7 @@
 #include <sys/types.h>
 #endif
 #include <sqlext.h>
-#include <time.h>
+//#include <time.h>
 #include <string>
 
 #define MAX_COL_NAME_LEN 512
@@ -108,8 +108,8 @@ class QDRecordset
 
 		// from SQL_TYPE_TIMESTAMP to SQL_C_TYPE_TIMESTAMP(3.x)
 		// from SQL_TIMESTAMP      to SQL_C_TIMESTAMP(2.x)
-		bool GetFieldValue(const int nField, struct tm* time);
-		bool GetFieldValue(const char* szFieldName, struct tm* time);
+		//bool GetFieldValue(const int nField, struct tm* time);
+		//bool GetFieldValue(const char* szFieldName, struct tm* time);
 
 	private:
 		

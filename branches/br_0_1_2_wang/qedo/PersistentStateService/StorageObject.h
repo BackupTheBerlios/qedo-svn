@@ -81,7 +81,10 @@ class PSSDLL_API StorageObjectImpl : public virtual CosPersistentState::StorageO
 
 		static StorageObject* _downcast(StorageObject* pStorageObject)
 		{
-			return pStorageObject;
+			if(pStorageObject)
+				return dynamic_cast <StorageObjectImpl*> (pStorageObject);
+			else
+				return NULL;
 		};
 
 	protected:
@@ -100,43 +103,66 @@ class PSSDLL_API StorageObjectImpl : public virtual CosPersistentState::StorageO
 class PSSDLL_API StorageObjectRefImpl : public virtual CosPersistentState::StorageObjectRef,
 						                public virtual RefCountLocalObject
 {
-	StorageObjectRefImpl(StorageObject* obj=0) 
-		throw();
+	public:
 
-	StorageObjectRefImpl(const StorageObjectRef& ref) // copy constructure
-		throw();
+		//StorageObjectRefImpl() 
+		//	throw();
 
-	~StorageObjectRefImpl();
-
-	StorageObjectRef& operator=(const StorageObjectRef& ref) 
+		StorageObjectRefImpl(StorageObject* obj=0) 
 			throw();
 
-	StorageObjectRef& operator=(StorageObject* obj) 
-		throw();
+		StorageObjectRefImpl(const StorageObjectRef& ref) // copy constructure
+			throw();
 
-	void release() 
-		throw();
+		~StorageObjectRefImpl();
 
-	StorageObject* deref() 
-		throw(CORBA::SystemException);
+		StorageObjectRef& operator=(const StorageObjectRef& ref) 
+				throw();
 
-	StorageObject* operator->() 
-		throw(CORBA::SystemException); // not const!
+		StorageObjectRef& operator=(StorageObject* obj) 
+			throw();
 
-	void destroy_object() 
-		throw(CORBA::SystemException);
+		void release() 
+			throw();
 
-	Pid* get_pid() const 
-		throw(CORBA::SystemException);
+		StorageObject* deref() 
+			throw(CORBA::SystemException);
 
-	ShortPid* get_short_pid() const 
-		throw(CORBA::SystemException);
+		StorageObject* operator->() 
+			throw(CORBA::SystemException); // not const!
 
-	CORBA::Boolean is_null() const 
-		throw();
+		void destroy_object() 
+			throw(CORBA::SystemException);
 
-	StorageHomeBase_ptr get_storage_home() const
-		throw(CORBA::SystemException);
+		Pid* get_pid() const 
+			throw(CORBA::SystemException);
+
+		ShortPid* get_short_pid() const 
+			throw(CORBA::SystemException);
+
+		CORBA::Boolean is_null() const 
+			throw();
+
+		StorageHomeBase_ptr get_storage_home() const
+			throw(CORBA::SystemException);
+
+		static StorageObjectRef _duplicate(StorageObjectRef ref)
+		{
+			//if(ref)
+				//ref._add_ref();
+			return ref;
+		}
+
+		static StorageObjectRef _downcast(StorageObjectRef ref)
+		{
+			return ref;
+		}
+
+	private:
+
+		Pid* m_pid;
+		ShortPid* m_shortPid;
+		StorageHomeBase* m_storageHomeBase;
 };
 
 }; // namespace Qedo

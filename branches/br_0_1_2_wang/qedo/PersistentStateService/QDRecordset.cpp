@@ -277,6 +277,7 @@ QDRecordset::GetFieldValue(const char* szFieldName, double* dblData)
 }
 
 // for SQL_C_TYPE_TIMESTAMP(3.x) and SQL_C_TIMESTAMP(2.x)
+/*
 bool 
 QDRecordset::GetFieldValue(const int nField, struct tm* time)
 {
@@ -310,6 +311,7 @@ QDRecordset::GetFieldValue(const char* szFieldName, struct tm* time)
 {
 	return GetFieldValue(GetFieldIndex(szFieldName), time);	
 }
+*/
 //********** end of GetFieldValue **********//
 
 int 

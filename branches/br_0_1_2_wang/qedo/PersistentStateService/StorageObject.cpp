@@ -170,17 +170,30 @@ StorageObjectImpl::getSelect()
 ////////////////////////////////////////////////////////////////////////////////
 //a public default constructor that creates a null reference
 ////////////////////////////////////////////////////////////////////////////////
-StorageObjectRefImpl::StorageObjectRefImpl(StorageObject* obj) 
+/*StorageObjectRefImpl::StorageObjectRefImpl() 
 	throw()
 {
 
-}
+}*/
 
+////////////////////////////////////////////////////////////////////////////////
+//a non-explicit constructor which takes an incarnation of the target storage
+//type
+////////////////////////////////////////////////////////////////////////////////
+StorageObjectRefImpl::StorageObjectRefImpl(StorageObject* obj)  :
+	m_pid(NULL),
+	m_shortPid(NULL),
+	m_storageHomeBase(NULL)
+{
+
+}
 ////////////////////////////////////////////////////////////////////////////////
 //a public copy constructor
 ////////////////////////////////////////////////////////////////////////////////
-StorageObjectRefImpl::StorageObjectRefImpl(const StorageObjectRef& ref)
-	throw()
+StorageObjectRefImpl::StorageObjectRefImpl(const StorageObjectRef& ref) :
+	m_pid(NULL),
+	m_shortPid(NULL),
+	m_storageHomeBase(NULL)
 {
 
 }
@@ -227,21 +240,21 @@ StorageObjectRefImpl::release()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//behaves like operator->()
+//dereferences this reference and returns the target object. 
+//The caller is not supposed to release this incarnation
 ////////////////////////////////////////////////////////////////////////////////
 StorageObject* 
-StorageObjectRefImpl::deref() 
+StorageObjectRefImpl::operator->() 
 	throw(CORBA::SystemException)
 {
 	return NULL;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-//dereferences this reference and returns the target object. 
-//The caller is not supposed to release this incarnation
+//behaves like operator->()
 ////////////////////////////////////////////////////////////////////////////////
 StorageObject* 
-StorageObjectRefImpl::operator->() 
+StorageObjectRefImpl::deref() 
 	throw(CORBA::SystemException)
 {
 	return NULL;
@@ -264,7 +277,7 @@ Pid*
 StorageObjectRefImpl::get_pid() const 
 	throw(CORBA::SystemException)
 {
-	return NULL;
+	return m_pid;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -274,7 +287,7 @@ ShortPid*
 StorageObjectRefImpl::get_short_pid() const 
 	throw(CORBA::SystemException)
 {
-	return NULL;
+	return m_shortPid;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -295,7 +308,7 @@ StorageHomeBase_ptr
 StorageObjectRefImpl::get_storage_home() const
 	throw(CORBA::SystemException)
 {
-	return NULL;
+	return m_storageHomeBase;
 }
 
 }
