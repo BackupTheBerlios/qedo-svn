@@ -854,6 +854,11 @@ Optional Features:
   --disable-optimize      do not use -O2 to compile
   --enable-debug          use -g to compile
 
+Optional Packages:
+  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
+  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-uuid=uuiddir         use UUID library installed in uuiddir
+
 Some influential environment variables:
   CXX         C++ compiler command
   CXXFLAGS    C++ compiler flags
@@ -1313,6 +1318,15 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
           ac_config_headers="$ac_config_headers CIDL_Frontend/CIDLFrontendLib/config.h"
 
+
+
+# Check whether --with-uuid or --without-uuid was given.
+if test "${with_uuid+set}" = set; then
+  withval="$with_uuid"
+  UUIDDIR=$withval
+else
+  UUIDDIR=""
+fi;
 
 # Check whether --enable-optimize or --disable-optimize was given.
 if test "${enable_optimize+set}" = set; then
@@ -2318,6 +2332,10 @@ echo "${ECHO_T}no" >&6
 fi
 
 
+
+if test X"$UUIDDIR" != X ; then
+	LIBS="$LIBS -L$UUIDDIR"
+fi
 
 # Checks for libraries.
 

@@ -5,6 +5,10 @@ AC_PREREQ(2.57)
 AC_INIT(Qedo, 0.5.0, qedo@qedo.berlios.de)
 AC_CONFIG_HEADER([CIDL_Frontend/CIDLFrontendLib/config.h])
 
+AC_ARG_WITH(uuid,
+ [  --with-uuid=uuiddir         use UUID library installed in uuiddir],
+ UUIDDIR=$withval, UUIDDIR="")
+
 AC_ARG_ENABLE(optimize,
  [  --disable-optimize      do not use -O2 to compile],
  use_opt=$enableval, use_opt=yes)
@@ -26,6 +30,10 @@ AC_CHECK_PROG(HAVE_FLEX,flex,yes,no)
 AC_CHECK_PROG(HAVE_PYTHON,python,yes,no)
 AC_CHECK_PROG(HAVE_KC_PP,[kc++],yes,no)
 AC_SUBST(HAVE_MICO_CONFIG)
+
+if test X"$UUIDDIR" != X ; then
+	LIBS="$LIBS -L$UUIDDIR"
+fi
 
 # Checks for libraries.
 
