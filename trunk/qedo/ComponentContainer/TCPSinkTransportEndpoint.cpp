@@ -37,7 +37,7 @@
 #include "TCPSinkTransportEndpoint.h"
 #include "SinkPort.h"
 #include "Output.h"
-#include "StreamingBuffer.h"
+#include "MarshalBuffer.h"
 #include "Valuetypes.h"
 
 #include <cstdlib>
@@ -45,7 +45,7 @@
 #include <cstdio>
 #include <cerrno>
 
-static char rcsid[] UNUSED = "$Id: TCPSinkTransportEndpoint.cpp,v 1.6 2003/12/17 13:14:33 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: TCPSinkTransportEndpoint.cpp,v 1.7 2004/01/19 13:07:55 stoinski Exp $";
 
 
 namespace Qedo {
@@ -214,18 +214,23 @@ TCPSinkTransportEndpoint::do_read()
 		// DEBUG_OUT2 ("TCPSinkTransportEndpoint: Received a packet with stream number: ", (int)stream_number);
 
 		// Read and dispatch data
-		StreamComponents::StreamingBuffer_var buffer;
-		buffer = new StreamingBuffer (seq_length);
+		MarshalBuffer* buffer;
+		buffer = new MarshalBuffer (seq_length);
 
 		if (! recv_complete (accept_socket_, (char*)buffer->get_buffer(), seq_length))
 		{
 			DEBUG_OUT ("TCPSinkTransportEndpoint: do_read(): Cannot read payload");
+
 			if (active_stream_)
 				dispatcher_->failed_stream();
+
+			buffer->_remove_ref();
 			return;		// End thread
 		}
 
 		dispatcher_->receive_stream (buffer);
+
+		buffer->_remove_ref();
 	}
 }
 

@@ -37,7 +37,7 @@
 #include "UDPSinkTransportEndpoint.h"
 #include "SinkPort.h"
 #include "Output.h"
-#include "StreamingBuffer.h"
+#include "MarshalBuffer.h"
 #include "Valuetypes.h"
 
 #include <cstdlib>
@@ -47,7 +47,7 @@
 
 #define MAX_DGRAM_SIZE 32768
 
-static char rcsid[] UNUSED = "$Id: UDPSinkTransportEndpoint.cpp,v 1.2 2003/12/17 13:14:33 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: UDPSinkTransportEndpoint.cpp,v 1.3 2004/01/19 13:07:55 stoinski Exp $";
 
 
 namespace Qedo {
@@ -147,13 +147,16 @@ UDPSinkTransportEndpoint::do_recv()
 		CORBA::UShort stream_number = ntohs (header->stream_number);
 		CORBA::ULong seq_length = ntohl (header->seq_length);
 
-		StreamComponents::StreamingBuffer_var buffer;
-		buffer = new StreamingBuffer  (seq_length);
+		MarshalBuffer* buffer;
+		buffer = new MarshalBuffer (seq_length);
 		memcpy (buffer->get_buffer(), datagram + sizeof (StreamComponents::UDPProfileHeader), seq_length);
 
 		QedoLock lock (stream_mutex_);
+
 		if (active_stream_)
 			dispatcher_->receive_stream (buffer);
+
+		buffer->_remove_ref();
 	}
 }
 

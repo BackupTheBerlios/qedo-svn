@@ -38,7 +38,7 @@ namespace Qedo {
 class CONTAINERDLL_API StreamingBuffer : public virtual StreamComponents::StreamingBuffer,
 										 public virtual RefCountLocalObject
 {
-private:
+protected:
 	void* buffer_;
 	CORBA::ULong size_;
 	CORBA::ULong bytes_used_;
@@ -47,7 +47,7 @@ private:
 public:
 	StreamingBuffer (CORBA::ULong);
 	StreamingBuffer (void*, CORBA::ULong, bool);
-	~StreamingBuffer();
+	virtual ~StreamingBuffer();
 
 	//
     // IDL:omg.org/StreamComponents/StreamingBuffer/get_buffer:1.0

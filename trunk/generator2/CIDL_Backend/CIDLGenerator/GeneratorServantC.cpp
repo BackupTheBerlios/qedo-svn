@@ -38,7 +38,9 @@ GeneratorServantC::generate(std::string target, std::string fileprefix)
 	out << "//\n\n";
 	out << "#include \"" << header_name << ".h\"\n";
 	out << "#include \"CDRTransportCoDec.h\"\n";
-	out << "#include \"Output.h\"\n\n\n";
+	out << "#include \"MarshalBuffer.h\"\n";
+	out << "#include \"Output.h\"\n\n";
+	out << "#include \"cstring\"\n\n\n";
 
 	//
 	// dynamic library identifier
@@ -77,7 +79,7 @@ GeneratorServantC::calculate_align (CORBA::ULong cur_len, CORBA::ULong align_val
 
 
 void 
-GeneratorServantC::calculate_marshal_buffer_size (IR__::IDLType_ptr idl_type, CORBA::ULong& cur_len)
+GeneratorServantC::generate_marshal_code (IR__::IDLType_ptr idl_type, std::string& parameter_name, CORBA::ULong rec_depth)
 {
 	switch (idl_type->def_kind())
 	{
@@ -88,101 +90,43 @@ GeneratorServantC::calculate_marshal_buffer_size (IR__::IDLType_ptr idl_type, CO
 			switch (prim->kind())
 			{
 			case IR__::pk_char:
-			case IR__::pk_octet:
-			case IR__::pk_boolean:
-				cur_len += 1;
-				return;
-			case IR__::pk_short:
-			case IR__::pk_ushort:
-				cur_len += calculate_align (cur_len, 2) + 2;
-				return;
-			case IR__::pk_long:
-			case IR__::pk_ulong:
-			case IR__::pk_float:
-				cur_len += calculate_align (cur_len, 4) + 4;
-				return;
-			case IR__::pk_longlong:
-			case IR__::pk_ulonglong:
-			case IR__::pk_double:
-			case IR__::pk_longdouble /* is 16 byte long, but according to spec 8-byte aligned (?) */:
-				cur_len += calculate_align (cur_len, 8) + 8;
-				return;
-			default:
-				// Should be never reached
-				assert (0);
-				break;
-			}
-		}
-	case CORBA__::dk_Struct:
-		{
-			IR__::StructDef_var struct_def = IR__::StructDef::_narrow (idl_type);
-			assert (!CORBA::is_nil (struct_def));
-
-			IR__::StructMemberSeq_var members = struct_def->members();
-
-			for (unsigned int i = 0; i < members->length(); i++)
-			{
-				calculate_marshal_buffer_size (members.in()[i].type_def, cur_len);
-			}
-			return;
-		}
-	case CORBA__::dk_Enum:
-		cur_len += calculate_align (cur_len, 4) + 4;
-		return;
-	default:
-		// Not implemented
-		assert (0);
-		return;
-	}
-}
-
-
-void 
-GeneratorServantC::generate_marshal_code (IR__::IDLType_ptr idl_type, std::string& parameter_name)
-{
-	switch (idl_type->def_kind())
-	{
-	case CORBA__::dk_Primitive:
-		{
-			IR__::PrimitiveDef_var prim = IR__::PrimitiveDef::_narrow (idl_type);
-			assert (!CORBA::is_nil (prim));
-			switch (prim->kind())
-			{
-			case IR__::pk_char:
-				out << "Qedo::CDRTransportCoDec::marshal_char (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::marshal_char (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_octet:
-				out << "Qedo::CDRTransportCoDec::marshal_octet (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::marshal_octet (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_boolean:
-				out << "Qedo::CDRTransportCoDec::marshal_boolean (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::marshal_boolean (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_short:
-				out << "Qedo::CDRTransportCoDec::marshal_short (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::marshal_short (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_ushort:
-				out << "Qedo::CDRTransportCoDec::marshal_ushort (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::marshal_ushort (marshal_buffer, " << parameter_name << ");\n";
 				return;;
 			case IR__::pk_long:
-				out << "Qedo::CDRTransportCoDec::marshal_long (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::marshal_long (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_ulong:
-				out << "Qedo::CDRTransportCoDec::marshal_ulong (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::marshal_ulong (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_float:
-				out << "Qedo::CDRTransportCoDec::marshal_float (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::marshal_float (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_longlong:
-				out << "Qedo::CDRTransportCoDec::marshal_longlong (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::marshal_longlong (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_ulonglong:
-				out << "Qedo::CDRTransportCoDec::marshal_ulonglong (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::marshal_ulonglong (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_double:
-				out << "Qedo::CDRTransportCoDec::marshal_double (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::marshal_double (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_longdouble:
-				out << "Qedo::CDRTransportCoDec::marshal_longdouble (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::marshal_longdouble (marshal_buffer, " << parameter_name << ");\n";
+				return;
+			case IR__::pk_string:
+				out << "Qedo::CDRTransportCoDec::marshal_string (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			default:
 				// Should be never reached
@@ -201,16 +145,55 @@ GeneratorServantC::generate_marshal_code (IR__::IDLType_ptr idl_type, std::strin
 
 			for (unsigned int i = 0; i < members->length(); i++)
 			{
-				new_parameter_name = parameter_name;
-				new_parameter_name = new_parameter_name + ".";
-				new_parameter_name = new_parameter_name +  members.in()[i].name.in();
-				generate_marshal_code (members.in()[i].type_def, new_parameter_name);
+				new_parameter_name = "(" + parameter_name + "." + members[i].name.in() + ")";
+				this->generate_marshal_code (members[i].type_def, new_parameter_name, rec_depth);
 			}
 			return;
 		}
-	case CORBA__::dk_Enum:
-		assert (0);
-		return;
+	case CORBA__::dk_Sequence:
+		{
+			++rec_depth;
+
+			IR__::SequenceDef_var sequence_def = IR__::SequenceDef::_narrow (idl_type);
+			assert (!CORBA::is_nil (sequence_def));
+
+			IR__::IDLType_var idl_type = sequence_def->element_type_def();
+
+			std::string new_parameter_name;
+			char rec_depth_str[33];
+			itoa (rec_depth, rec_depth_str, 10);
+
+			new_parameter_name = "(" + parameter_name + "[seq_count" + rec_depth_str + "])";
+
+			out << "CORBA::ULong seq_len" << rec_depth << " = " << parameter_name;
+			if (hasVariableLength (idl_type))
+				out << "->length();\n";
+			else
+				out << ".length();\n";
+
+			out << "Qedo::CDRTransportCoDec::marshal_ulong (marshal_buffer, seq_len" << rec_depth << ");\n\n";
+
+			out << "for (unsigned int seq_count" << rec_depth << " = 0; ";
+			out << "seq_count" << rec_depth << " < seq_len" << rec_depth;
+			out << "; seq_count" << rec_depth << "++)\n"; 
+			out << "{\n", out.indent();
+
+			generate_marshal_code (idl_type, new_parameter_name, rec_depth); out.unindent();
+			out << "}\n";
+
+			return;
+		}
+	case CORBA__::dk_Alias:
+		{
+			IR__::AliasDef_var alias_def = IR__::AliasDef::_narrow (idl_type);
+			assert (!CORBA::is_nil (alias_def));
+
+			IR__::IDLType_var idl_type = alias_def->original_type_def();
+
+			generate_marshal_code (idl_type, parameter_name, rec_depth);
+
+			return;
+		}
 	default:
 		// Not implemented
 		assert (0);
@@ -220,7 +203,7 @@ GeneratorServantC::generate_marshal_code (IR__::IDLType_ptr idl_type, std::strin
 
 
 void 
-GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::string& parameter_name)
+GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::string& parameter_name, CORBA::ULong rec_depth)
 {
 	switch (idl_type->def_kind())
 	{
@@ -231,41 +214,44 @@ GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::str
 			switch (prim->kind())
 			{
 			case IR__::pk_char:
-				out << "Qedo::CDRTransportCoDec::unmarshal_char (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_char (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_octet:
-				out << "Qedo::CDRTransportCoDec::unmarshal_octet (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_octet (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_boolean:
-				out << "Qedo::CDRTransportCoDec::unmarshal_boolean (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_boolean (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_short:
-				out << "Qedo::CDRTransportCoDec::unmarshal_short (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_short (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_ushort:
-				out << "Qedo::CDRTransportCoDec::unmarshal_ushort (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_ushort (marshal_buffer, " << parameter_name << ");\n";
 				return;;
 			case IR__::pk_long:
-				out << "Qedo::CDRTransportCoDec::unmarshal_long (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_long (marshal_buffer, " << parameter_name << ");\n";
 				assert (0);
 				return;
 			case IR__::pk_ulong:
-				out << "Qedo::CDRTransportCoDec::unmarshal_ulong (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_ulong (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_float:
-				out << "Qedo::CDRTransportCoDec::unmarshal_float (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_float (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_longlong:
-				out << "Qedo::CDRTransportCoDec::unmarshal_longlong (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_longlong (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_ulonglong:
-				out << "Qedo::CDRTransportCoDec::unmarshal_ulonglong (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_ulonglong (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_double:
-				out << "Qedo::CDRTransportCoDec::unmarshal_double (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_double (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			case IR__::pk_longdouble:
-				out << "Qedo::CDRTransportCoDec::unmarshal_longdouble (marshal_buffer, marshal_start, " << parameter_name << ");\n";
+				out << "Qedo::CDRTransportCoDec::unmarshal_longdouble (marshal_buffer, " << parameter_name << ");\n";
+				return;
+			case IR__::pk_string:
+				out << "Qedo::CDRTransportCoDec::unmarshal_string (marshal_buffer, " << parameter_name << ");\n";
 				return;
 			default:
 				// Should be never reached
@@ -284,16 +270,55 @@ GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::str
 
 			for (unsigned int i = 0; i < members->length(); i++)
 			{
-				new_parameter_name = parameter_name;
-				new_parameter_name = new_parameter_name + ".";
-				new_parameter_name = new_parameter_name +  members.in()[i].name.in();
-				generate_unmarshal_code (members.in()[i].type_def, new_parameter_name);
+				new_parameter_name = "(" + parameter_name + "." + members[i].name.in() + ")";
+				generate_unmarshal_code (members[i].type_def, new_parameter_name, rec_depth);
 			}
 			return;
 		}
-	case CORBA__::dk_Enum:
-		assert (0);
-		return;
+	case CORBA__::dk_Sequence:
+		{
+			++rec_depth;
+
+			IR__::SequenceDef_var seq_def = IR__::SequenceDef::_narrow (idl_type);
+			assert (!CORBA::is_nil (seq_def));
+
+			IR__::IDLType_var seq_idl_type = seq_def->element_type_def();
+
+			out << "CORBA::ULong seq_len" << rec_depth << ";\n";
+
+			out << "Qedo::CDRTransportCoDec::unmarshal_ulong (marshal_buffer, seq_len" << rec_depth << ");\n\n";
+			
+			if (hasVariableLength (seq_idl_type))
+				out << parameter_name << "->length (seq_len" << rec_depth << ");\n\n";
+			else
+				out << parameter_name << ".length (seq_len" << rec_depth << ");\n\n";
+
+			std::string new_parameter_name;
+			char rec_depth_str[33];
+			itoa (rec_depth, rec_depth_str, 10);
+
+			new_parameter_name = "(" + parameter_name + "[seq_count" + rec_depth_str + "])";
+
+			out << "for (unsigned int seq_count" << rec_depth << " = 0; ";
+			out << "seq_count" << rec_depth << " < seq_len" << rec_depth << "; ";
+			out << "seq_count" << rec_depth << "++)\n";
+			out << "{\n"; out.indent();
+			generate_unmarshal_code (seq_idl_type, new_parameter_name, rec_depth); out.unindent();
+			out << "}\n";
+
+			return;
+		}
+	case CORBA__::dk_Alias:
+		{
+			IR__::AliasDef_var alias_def = IR__::AliasDef::_narrow (idl_type);
+			assert (!CORBA::is_nil (alias_def));
+
+			IR__::IDLType_var original_idl_type = alias_def->original_type_def();
+
+			generate_unmarshal_code (original_idl_type, parameter_name, rec_depth);
+
+			return;
+		}
 	default:
 		// Not implemented
 		assert (0);
@@ -1151,7 +1176,7 @@ GeneratorServantC::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr compone
 
 	// sink port dispatchers receive_stream
 	out << "void\n";
-	out << comp_name << "::" << sink_name << "_dispatcher::receive_stream (StreamComponents::StreamingBuffer_ptr buffer)\n";
+	out << comp_name << "::" << sink_name << "_dispatcher::receive_stream (Qedo::MarshalBuffer* marshal_buffer)\n";
 	out << "{\n"; out.indent();
 
 	IR__::StreamTypeDef_var stream_type = sink->stream_type();
@@ -1165,12 +1190,9 @@ GeneratorServantC::doSink(IR__::SinkDef_ptr sink, IR__::ComponentDef_ptr compone
 	{
 		out << map_idl_type (transported_type) << " data;\n\n";
 
-		out << "char* marshal_buffer = (char*)buffer->get_buffer();\n";
-		out << "const char* marshal_start = marshal_buffer;\n\n";
-
 		std::string parameter_name = "data";
 
-		generate_unmarshal_code (transported_type, parameter_name);
+		generate_unmarshal_code (transported_type, parameter_name, 0);
 
 		out << "\nthe_sink_->receive_stream_" << sink_name << " (data);\n";
 	}
@@ -1744,19 +1766,15 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 		}
 		else
 		{
-			CORBA::ULong marshal_size = 0;
-			calculate_marshal_buffer_size (transported_type, marshal_size);
-
-			out << "StreamComponents::StreamingBuffer_var buffer = this->get_streaming_buffer (" << marshal_size << ");\n";
-
-			out << "char* marshal_buffer = (char*)buffer->get_buffer();\n";
-			out << "const char* marshal_start = marshal_buffer;\n\n";
+			out << "Qedo::MarshalBuffer* marshal_buffer = new Qedo::MarshalBuffer (100);\n";
 
 			std::string parameter_name = "data";
 
-			generate_marshal_code (transported_type, parameter_name);
+			generate_marshal_code (transported_type, parameter_name, 0);
 
-			out << "\nthis->send_buffer (\"" << a_source->name() << "\", buffer);\n";
+			out << "\nthis->send_buffer (\"" << a_source->name() << "\", marshal_buffer);\n\n";
+
+			out << "marshal_buffer->_remove_ref();\n";
 		}
 
 		out.unindent();

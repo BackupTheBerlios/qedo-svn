@@ -653,6 +653,19 @@ throw ( CannotMapType )
 		ret_string = getAbsoluteName (contained);
 	//	ret_string = ret_string + "&";
 		break;
+	case CORBA::tk_sequence:
+		ret_string = getAbsoluteName (contained);
+		break;
+	case CORBA::tk_alias:
+		{
+			/*
+			IR__::AliasDef_var alias_def = IR__::AliasDef::_narrow (type);
+			assert (!CORBA::is_nil (alias_def));
+			IR__::IDLType_var idl_type = alias_def->original_type_def();
+			ret_string = map_idl_type (idl_type);*/
+			ret_string = getAbsoluteName (contained);
+			break;
+		}
 	default:
 		throw CannotMapType();
 	}

@@ -389,7 +389,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\CCMObjectExecutor.cpp">
 			</File>
 			<File
-				RelativePath="CDRTransportCodec.cpp">
+				RelativePath="CDRTransportCoDec.cpp">
 			</File>
 			<File
 				RelativePath="ComponentInstance.cpp">
@@ -435,6 +435,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\Key.cpp">
+			</File>
+			<File
+				RelativePath="MarshalBuffer.cpp">
 			</File>
 			<File
 				RelativePath=".\PortBase.cpp">
@@ -565,6 +568,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\Key.h">
+			</File>
+			<File
+				RelativePath="MarshalBuffer.h">
 			</File>
 			<File
 				RelativePath=".\PortBase.h">

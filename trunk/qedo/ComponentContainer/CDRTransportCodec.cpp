@@ -25,9 +25,12 @@
 
 
 #include "CDRTransportCoDec.h"
+#include "Output.h"
+
+#include <cstring>
 
 
-static char rcsid[] UNUSED = "$Id: CDRTransportCodec.cpp,v 1.1 2004/01/15 10:45:00 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: CDRTransportCodec.cpp,v 1.2 2004/01/19 13:07:55 stoinski Exp $";
 
 namespace Qedo {
 
@@ -43,211 +46,209 @@ CDRTransportCoDec::determine_endianess()
 }
 
 
-CORBA::ULong
-CDRTransportCoDec::calculate_align (const char* data, const char* data_start, CORBA::ULong align_val)
-{
-	CORBA::ULong modulo = static_cast <CORBA::ULong> (data - data_start) % align_val;
-	if (modulo)
-		return align_val - modulo;
-	else
-		return 0;
-}
-
-void 
-CDRTransportCoDec::do_align (char*& data, const char* data_start, CORBA::ULong align_val)
-{
-	data += calculate_align (data, data_start, align_val);
-}
-
-
 //
 // Marshal functions
 //
 void 
-CDRTransportCoDec::marshal_char (char*& data, const char* data_start, const CORBA::Char val)
+CDRTransportCoDec::marshal_char (MarshalBuffer* buf, const CORBA::Char val)
 {
-	*data++ = (char) val;
+	buf->marshal_data ((char*)&val, 1);
 }
 
 void 
-CDRTransportCoDec::marshal_wchar (char*& data, const char* data_start, const CORBA::WChar)
+CDRTransportCoDec::marshal_wchar (MarshalBuffer* buf, const CORBA::WChar)
 {
 	assert (0);
 }
 
 void 
-CDRTransportCoDec::marshal_octet (char*& data, const char* data_start, const CORBA::Octet val)
+CDRTransportCoDec::marshal_octet (MarshalBuffer* buf, const CORBA::Octet val)
 {
-	*data++ = (char) val;
+	buf->marshal_data ((char*)&val, 1);
 }
 
 void 
-CDRTransportCoDec::marshal_short (char*& data, const char* data_start, const CORBA::Short val)
+CDRTransportCoDec::marshal_short (MarshalBuffer* buf, const CORBA::Short val)
 {
-	do_align (data, data_start, 2);
+	buf->do_align (2);
 
 	if (determine_endianess())
 	{
 		// Little-endian
 		const char* tmp_data = reinterpret_cast <const char*> (&val);
-		data[0] = tmp_data[1];
-		data[1] = tmp_data[0];
+		char new_val[2];
+		new_val[0] = tmp_data[1];
+		new_val[1] = tmp_data[0];
+		buf->marshal_data ((char*)&new_val, 2);
 	}
 	else
 	{
 		// Big endian
-		memcpy (data, &val, 2);
+		buf->marshal_data ((char*)&val, 2);
 	}
-
-	data += 2;
 }
 
 void 
-CDRTransportCoDec::marshal_ushort (char*& data, const char* data_start, const CORBA::UShort val)
+CDRTransportCoDec::marshal_ushort (MarshalBuffer* buf, const CORBA::UShort val)
 {
-	do_align (data, data_start, 2);
+	buf->do_align (2);
 
 	if (determine_endianess())
 	{
 		// Little-endian
 		const char* tmp_data = reinterpret_cast <const char*> (&val);
-		data[0] = tmp_data[1];
-		data[1] = tmp_data[0];
+		char new_val[2];
+		new_val[0] = tmp_data[1];
+		new_val[1] = tmp_data[0];
+		buf->marshal_data ((char*)&new_val, 2);
 	}
 	else
 	{
 		// Big endian
-		memcpy (data, &val, 2);
+		buf->marshal_data ((char*)&val, 2);
 	}
-
-	data += 2;
 }
 
 void 
-CDRTransportCoDec::marshal_long (char*& data, const char* data_start, const CORBA::Long val)
+CDRTransportCoDec::marshal_long (MarshalBuffer* buf, const CORBA::Long val)
 {
-	do_align (data, data_start, 4);
+	buf->do_align (4);
 
 	if (determine_endianess())
 	{
 		// Little-endian
 		const char* tmp_data = reinterpret_cast <const char*> (&val);
-		data[0] = tmp_data[3];
-		data[1] = tmp_data[2];
-		data[2] = tmp_data[1];
-		data[3] = tmp_data[0];
+		char new_val[4];
+		new_val[0] = tmp_data[3];
+		new_val[1] = tmp_data[2];
+		new_val[2] = tmp_data[1];
+		new_val[3] = tmp_data[0];
+		buf->marshal_data ((char*)&new_val, 4);
 	}
 	else
 	{
 		// Big endian
-		memcpy (data, &val, 4);
+		buf->marshal_data ((char*)&val, 4);
 	}
-
-	data += 4;
 }
 
 void 
-CDRTransportCoDec::marshal_ulong (char*& data, const char* data_start, const CORBA::ULong val)
+CDRTransportCoDec::marshal_ulong (MarshalBuffer* buf, const CORBA::ULong val)
 {
-	do_align (data, data_start, 4);
+	buf->do_align (4);
 
 	if (determine_endianess())
 	{
 		// Little-endian
 		const char* tmp_data = reinterpret_cast <const char*> (&val);
-		data[0] = tmp_data[3];
-		data[1] = tmp_data[2];
-		data[2] = tmp_data[1];
-		data[3] = tmp_data[0];
+		char new_val[4];
+		new_val[0] = tmp_data[3];
+		new_val[1] = tmp_data[2];
+		new_val[2] = tmp_data[1];
+		new_val[3] = tmp_data[0];
+		buf->marshal_data ((char*)&new_val, 4);
 	}
 	else
 	{
 		// Big endian
-		memcpy (data, &val, 4);
+		buf->marshal_data ((char*)&val, 4);
 	}
-
-	data += 4;
 }
 
 void 
-CDRTransportCoDec::marshal_longlong (char*& data, const char* data_start, const CORBA::LongLong val)
+CDRTransportCoDec::marshal_longlong (MarshalBuffer* buf, const CORBA::LongLong val)
 {
-	do_align (data, data_start, 8);
+	buf->do_align (8);
 
 	if (determine_endianess())
 	{
 		// Little-endian
 		const char* tmp_data = reinterpret_cast <const char*> (&val);
-		data[0] = tmp_data[7];
-		data[1] = tmp_data[6];
-		data[2] = tmp_data[5];
-		data[3] = tmp_data[4];
-		data[4] = tmp_data[3];
-		data[5] = tmp_data[2];
-		data[6] = tmp_data[1];
-		data[7] = tmp_data[0];
+		char new_val[8];
+		new_val[0] = tmp_data[7];
+		new_val[1] = tmp_data[6];
+		new_val[2] = tmp_data[5];
+		new_val[3] = tmp_data[4];
+		new_val[4] = tmp_data[3];
+		new_val[5] = tmp_data[2];
+		new_val[6] = tmp_data[1];
+		new_val[7] = tmp_data[0];
+		buf->marshal_data ((char*)&new_val, 8);
 	}
 	else
 	{
 		// Big endian
-		memcpy (data, &val, 8);
+		buf->marshal_data ((char*)&val, 8);
 	}
-
-	data += 8;
 }
 
 void 
-CDRTransportCoDec::marshal_ulonglong (char*& data, const char* data_start, const CORBA::ULongLong val)
+CDRTransportCoDec::marshal_ulonglong (MarshalBuffer* buf, const CORBA::ULongLong val)
 {
-	do_align (data, data_start, 8);
+	buf->do_align (8);
 
 	if (determine_endianess())
 	{
 		// Little-endian
 		const char* tmp_data = reinterpret_cast <const char*> (&val);
-		data[0] = tmp_data[7];
-		data[1] = tmp_data[6];
-		data[2] = tmp_data[5];
-		data[3] = tmp_data[4];
-		data[4] = tmp_data[3];
-		data[5] = tmp_data[2];
-		data[6] = tmp_data[1];
-		data[7] = tmp_data[0];
+		char new_val[8];
+		new_val[0] = tmp_data[7];
+		new_val[1] = tmp_data[6];
+		new_val[2] = tmp_data[5];
+		new_val[3] = tmp_data[4];
+		new_val[4] = tmp_data[3];
+		new_val[5] = tmp_data[2];
+		new_val[6] = tmp_data[1];
+		new_val[7] = tmp_data[0];
+		buf->marshal_data ((char*)&new_val, 8);
 	}
 	else
 	{
 		// Big endian
-		memcpy (data, &val, 8);
+		buf->marshal_data ((char*)&val, 8);
 	}
-
-	data += 8;
 }
 
 void 
-CDRTransportCoDec::marshal_float (char*& data, const char* data_start, const CORBA::Float)
+CDRTransportCoDec::marshal_float (MarshalBuffer* buf, const CORBA::Float)
 {
 	assert (0);
 }
 
 void 
-CDRTransportCoDec::marshal_double (char*& data, const char* data_start, const CORBA::Double)
+CDRTransportCoDec::marshal_double (MarshalBuffer* buf, const CORBA::Double)
 {
 	assert (0);
 }
 
 void 
-CDRTransportCoDec::marshal_longdouble (char*& data, const char* data_start, const CORBA::LongDouble)
+CDRTransportCoDec::marshal_longdouble (MarshalBuffer* buf, const CORBA::LongDouble)
 {
 	assert (0);
 }
 
 void 
-CDRTransportCoDec::marshal_boolean (char*& data, const char* data_start, const CORBA::Boolean val)
+CDRTransportCoDec::marshal_boolean (MarshalBuffer* buf, const CORBA::Boolean val)
 {
-	if (val > 0)
-		*data++ = (char) 1;
-	else
-		*data++ = (char) 0;
+	bool new_val = val;
+
+	if (new_val)
+	{
+		new_val = 1;
+	}
+
+	buf->marshal_data ((char*)&val, 1);
+}
+
+
+void 
+CDRTransportCoDec::marshal_string (MarshalBuffer* buf, const char* str)
+{
+	CORBA::ULong str_len = std::strlen (str) + 1;
+
+	CDRTransportCoDec::marshal_ulong (buf, str_len);
+
+	buf->marshal_data (str, str_len);
 }
 
 
@@ -255,192 +256,192 @@ CDRTransportCoDec::marshal_boolean (char*& data, const char* data_start, const C
 // Unmarshal functions
 //
 void 
-CDRTransportCoDec::unmarshal_char (char*& data, const char* data_start, CORBA::Char& val)
+CDRTransportCoDec::unmarshal_char (MarshalBuffer* buf, CORBA::Char& val)
 {
-	val = (char) *data++;
+	buf->unmarshal_data ((char*)&val, 1);
 }
 
 void 
-CDRTransportCoDec::unmarshal_wchar (char*& data, const char* data_start, CORBA::WChar& val)
+CDRTransportCoDec::unmarshal_wchar (MarshalBuffer* buf, CORBA::WChar& val)
 {
 	assert (0);
 }
 
 void 
-CDRTransportCoDec::unmarshal_octet (char*& data, const char* data_start, CORBA::Octet& val)
+CDRTransportCoDec::unmarshal_octet (MarshalBuffer* buf, CORBA::Octet& val)
 {
-	val = (char) *data++;
+	buf->unmarshal_data ((char*)&val, 1);
 }
 
 void 
-CDRTransportCoDec::unmarshal_short (char*& data, const char* data_start, CORBA::Short& val)
+CDRTransportCoDec::unmarshal_short (MarshalBuffer* buf, CORBA::Short& val)
 {
-	do_align (data, data_start, 2);
+	buf->do_align (2);
+
+	buf->unmarshal_data ((char*)&val, 2);
 
 	if (determine_endianess())
 	{
 		// Little-endian
-		char* tmp_data = reinterpret_cast <char*> (&val);
-		tmp_data[0] = data[1];
-		tmp_data[1] = data[0];
+		char* data = reinterpret_cast <char*> (&val);
+		char new_val[2];
+		new_val[0] = data[1];
+		new_val[1] = data[0];
+		memcpy (&val, &new_val, 2);
 	}
-	else
-	{
-		// Big endian
-		memcpy (&val, data, 2);
-	}
-
-	data += 2;
 }
 
 void 
-CDRTransportCoDec::unmarshal_ushort (char*& data, const char* data_start, CORBA::UShort& val)
+CDRTransportCoDec::unmarshal_ushort (MarshalBuffer* buf, CORBA::UShort& val)
 {
-	do_align (data, data_start, 2);
+	buf->do_align (2);
+
+	buf->unmarshal_data ((char*)&val, 2);
 
 	if (determine_endianess())
 	{
 		// Little-endian
-		char* tmp_data = reinterpret_cast <char*> (&val);
-		tmp_data[0] = data[1];
-		tmp_data[1] = data[0];
+		char* data = reinterpret_cast <char*> (&val);
+		char new_val[2];
+		new_val[0] = data[1];
+		new_val[1] = data[0];
+		memcpy (&val, &new_val, 2);
 	}
-	else
-	{
-		// Big endian
-		memcpy (&val, data, 2);
-	}
-
-	data += 2;
 }
 
 void 
-CDRTransportCoDec::unmarshal_long (char*& data, const char* data_start, CORBA::Long& val)
+CDRTransportCoDec::unmarshal_long (MarshalBuffer* buf, CORBA::Long& val)
 {
-	do_align (data, data_start, 4);
+	buf->do_align (4);
+
+	buf->unmarshal_data ((char*)&val, 4);
 
 	if (determine_endianess())
 	{
 		// Little-endian
-		char* tmp_data = reinterpret_cast <char*> (&val);
-		tmp_data[0] = data[3];
-		tmp_data[1] = data[2];
-		tmp_data[2] = data[1];
-		tmp_data[3] = data[0];
+		char* data = reinterpret_cast <char*> (&val);
+		char new_val[4];
+		new_val[0] = data[3];
+		new_val[1] = data[2];
+		new_val[2] = data[1];
+		new_val[3] = data[0];
+		memcpy (&val, &new_val, 4);
 	}
-	else
-	{
-		// Big endian
-		memcpy (&val, data, 4);
-	}
-
-	data += 4;
 }
 
 void 
-CDRTransportCoDec::unmarshal_ulong (char*& data, const char* data_start, CORBA::ULong& val)
+CDRTransportCoDec::unmarshal_ulong (MarshalBuffer* buf, CORBA::ULong& val)
 {
-	do_align (data, data_start, 4);
+	buf->do_align (4);
+
+	buf->unmarshal_data ((char*)&val, 4);
 
 	if (determine_endianess())
 	{
 		// Little-endian
-		char* tmp_data = reinterpret_cast <char*> (&val);
-		tmp_data[0] = data[3];
-		tmp_data[1] = data[2];
-		tmp_data[2] = data[1];
-		tmp_data[3] = data[0];
+		char* data = reinterpret_cast <char*> (&val);
+		char new_val[4];
+		new_val[0] = data[3];
+		new_val[1] = data[2];
+		new_val[2] = data[1];
+		new_val[3] = data[0];
+		memcpy (&val, &new_val, 4);
 	}
-	else
-	{
-		// Big endian
-		memcpy (&val, data, 4);
-	}
-
-	data += 4;
 }
 
 void 
-CDRTransportCoDec::unmarshal_longlong (char*& data, const char* data_start, CORBA::LongLong& val)
+CDRTransportCoDec::unmarshal_longlong (MarshalBuffer* buf, CORBA::LongLong& val)
 {
-	do_align (data, data_start, 8);
+	buf->do_align (8);
+
+	buf->unmarshal_data ((char*)&val, 8);
 
 	if (determine_endianess())
 	{
 		// Little-endian
-		char* tmp_data = reinterpret_cast <char*> (&val);
-		tmp_data[0] = data[7];
-		tmp_data[1] = data[6];
-		tmp_data[2] = data[5];
-		tmp_data[3] = data[4];
-		tmp_data[4] = data[3];
-		tmp_data[5] = data[2];
-		tmp_data[6] = data[1];
-		tmp_data[7] = data[0];
+		char* data = reinterpret_cast <char*> (&val);
+		char new_val[8];
+		new_val[0] = data[7];
+		new_val[1] = data[6];
+		new_val[2] = data[5];
+		new_val[3] = data[4];
+		new_val[4] = data[3];
+		new_val[5] = data[2];
+		new_val[6] = data[1];
+		new_val[7] = data[0];
+		memcpy (&val, &new_val, 8);
 	}
-	else
-	{
-		// Big endian
-		memcpy (&val, data, 8);
-	}
-
-	data += 8;
 }
 
 void 
-CDRTransportCoDec::unmarshal_ulonglong (char*& data, const char* data_start, CORBA::ULongLong& val)
+CDRTransportCoDec::unmarshal_ulonglong (MarshalBuffer* buf, CORBA::ULongLong& val)
 {
-	do_align (data, data_start, 8);
+	buf->do_align (8);
+
+	buf->unmarshal_data ((char*)&val, 8);
 
 	if (determine_endianess())
 	{
 		// Little-endian
-		char* tmp_data = reinterpret_cast <char*> (&val);
-		tmp_data[0] = data[7];
-		tmp_data[1] = data[6];
-		tmp_data[2] = data[5];
-		tmp_data[3] = data[4];
-		tmp_data[4] = data[3];
-		tmp_data[5] = data[2];
-		tmp_data[6] = data[1];
-		tmp_data[7] = data[0];
+		char* data = reinterpret_cast <char*> (&val);
+		char new_val[8];
+		new_val[0] = data[7];
+		new_val[1] = data[6];
+		new_val[2] = data[5];
+		new_val[3] = data[4];
+		new_val[4] = data[3];
+		new_val[5] = data[2];
+		new_val[6] = data[1];
+		new_val[7] = data[0];
+		memcpy (&val, &new_val, 8);
 	}
-	else
-	{
-		// Big endian
-		memcpy (&val, data, 8);
-	}
-
-	data += 8;
 }
 
 void 
-CDRTransportCoDec::unmarshal_float (char*& data, const char* data_start, CORBA::Float& val)
+CDRTransportCoDec::unmarshal_float (MarshalBuffer* buf, CORBA::Float& val)
 {
 	assert (0);
 }
 
 void 
-CDRTransportCoDec::unmarshal_double (char*& data, const char* data_start, CORBA::Double& val)
+CDRTransportCoDec::unmarshal_double (MarshalBuffer* buf, CORBA::Double& val)
 {
 	assert (0);
 }
 
 void 
-CDRTransportCoDec::unmarshal_longdouble (char*& data, const char* data_start, CORBA::LongDouble& val)
+CDRTransportCoDec::unmarshal_longdouble (MarshalBuffer* buf, CORBA::LongDouble& val)
 {
 	assert (0);
 }
 
 void 
-CDRTransportCoDec::unmarshal_boolean (char*& data, const char* data_start, CORBA::Boolean& val)
+CDRTransportCoDec::unmarshal_boolean (MarshalBuffer* buf, CORBA::Boolean& val)
 {
-	if (*data++ > 0)
-		val = (char) 1;
-	else
-		val = (char) 0;
+	buf->unmarshal_data ((char*)&val, 1);
+
+	if (val)
+		val = 1;
 }
 
+
+void 
+CDRTransportCoDec::unmarshal_string (MarshalBuffer* buf, char*& str)
+{
+	CORBA::ULong str_len;
+
+	CDRTransportCoDec::unmarshal_ulong (buf, str_len);
+
+	str = CORBA::string_alloc (str_len);
+
+	if (!str)
+	{
+		NORMAL_ERR3 ("CDRTransportCoDec: Cannot allocate ", str_len, " bytes for string");
+		return;
+	}
+
+	buf->unmarshal_data (str, str_len);
+}
 
 } // namespace Qedo
 

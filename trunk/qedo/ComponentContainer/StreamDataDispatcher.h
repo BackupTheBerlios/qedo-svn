@@ -30,6 +30,7 @@
 #include <StreamComponents.h>
 
 #include "RefCountBase.h"
+#include "MarshalBuffer.h"
 #include "Output.h"
 #include "Util.h"
 
@@ -47,7 +48,7 @@ public:
 	virtual void begin_stream (const char*, const Components::ConfigValues&) = 0;
 	virtual void end_stream() = 0;
 	virtual void failed_stream() = 0;
-	virtual void receive_stream (StreamComponents::StreamingBuffer_ptr) = 0;
+	virtual void receive_stream (MarshalBuffer*) = 0;
 };
 
 
