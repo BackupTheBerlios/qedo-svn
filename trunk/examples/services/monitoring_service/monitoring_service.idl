@@ -1,8 +1,10 @@
 #include "Components.idl"
+#include "coach_tracing.idl"
 
 module container_service {
 	
 	component monitor {
+		uses org::coach::tracing::api::i_Trace to_trace_server;
 	};
 
 	home monitor_home manages monitor {};

@@ -13,12 +13,62 @@ namespace container_service {
 
 
 // BEGIN USER INSERT SECTION MonExec
+unsigned long
+MonExec::get_new_event_number()
+{
+	Qedo::QedoLock lock (counter_mutex);
+	counter++;
+	return counter;
+};
+
+IOP::Codec_ptr
+MonExec::get_cdr_codec_ptr()
+{
+	return m_cdrCodec.in();
+}
+
 // END USER INSERT SECTION MonExec
 
 
 MonExec::MonExec()
 {
 // BEGIN USER INSERT SECTION MonExec::MonExec
+	counter = 0;
+
+	//codec
+
+	int dummy = 0;
+    CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+	CORBA::Object_var obj = orb->resolve_initial_references ("CodecFactory");
+
+
+	IOP::CodecFactory_var factory = IOP::CodecFactory::_narrow(obj);
+
+    if ( CORBA::is_nil(factory) )
+	{
+		std::cout << "no CDR" << std::endl;
+    	return;
+	}
+
+    /* 
+	 * Create codec
+	 */
+
+    IOP::Encoding how;
+
+    how.major_version = 1;
+    how.minor_version = 0;
+    how.format		  =	IOP::ENCODING_CDR_ENCAPS;
+
+    try
+    {
+		m_cdrCodec = factory->create_codec(how);
+    }
+    catch(const IOP::CodecFactory::UnknownEncoding& _ex)
+    {
+		std::cout << "no CDR" << std::endl;
+    }
+
 // END USER INSERT SECTION MonExec::MonExec
 }
 
@@ -26,7 +76,6 @@ MonExec::MonExec()
 MonExec::~MonExec()
 {
 // BEGIN USER INSERT SECTION MonExec::~MonExec
-//		server_interceptor_ ->_remove_ref();
 // END USER INSERT SECTION MonExec::~MonExec
 
 }
@@ -45,16 +94,24 @@ MonExec::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION MonExec::configuration_complete
+	std::cout << "Monitorung Serivce: configuration_complete" << std::endl;
 
 	Components::Extension::ServerInterceptorRegistration_ptr server_reg =
 		context_->get_server_interceptor_dispatcher_registration();
 
-	server_interceptor_ = new Qedo::ServerContainerInterceptor();
+	server_interceptor_ = new Qedo::ServerContainerInterceptor(context_,this);
 
-//	server_reg->register_interceptor_for_all(server_interceptor_);
+	server_reg->register_interceptor_for_all(server_interceptor_);
 
-	std::string component_id = "callee";
-	server_reg->register_interceptor_for_component(server_interceptor_, component_id.c_str());
+	Components::Extension::ClientInterceptorRegistration_ptr client_reg =
+		context_->get_client_interceptor_dispatcher_registration();
+
+	client_interceptor_ = new Qedo::ClientContainerInterceptor(context_,this);
+
+	client_reg->register_interceptor_for_all(client_interceptor_);
+	
+//	std::string component_id = "";
+//	server_reg->register_interceptor_for_component(server_interceptor_, component_id.c_str());
 
 //	context_->register_servant_locator_for_all(server_interceptor_);
 // END USER INSERT SECTION MonExec::configuration_complete
@@ -66,6 +123,10 @@ MonExec::remove()
     throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION MonExec::remove
+	Components::Extension::ServerInterceptorRegistration_ptr server_reg =
+	context_->get_server_interceptor_dispatcher_registration();
+
+	server_reg->unregister_interceptor_for_all(server_interceptor_);
 // END USER INSERT SECTION MonExec::remove
 }
 

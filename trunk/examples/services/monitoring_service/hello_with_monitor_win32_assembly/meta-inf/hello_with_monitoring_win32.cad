@@ -45,6 +45,9 @@
 			<componentfileref idref="Caller_file"/>
 				<componentimplref idref="UUID-CDE9D487-2CFA-4E66-88EF-B21EA2F40E0D"/>
 			<componentinstantiation id="caller">
+ 	        	<componentproperties>
+  	        		<fileinarchive name="meta-inf/caller.cpf" />
+  	        	</componentproperties>
 			</componentinstantiation>
 
 			<destination></destination>
@@ -65,6 +68,19 @@
 			<providesidentifier>the_hello</providesidentifier>
 			<componentinstantiationref idref="callee"/>
 	    	</providesport>
+	</connectinterface>
+
+<connectinterface>
+		<usesport>
+			<usesidentifier>to_trace_server</usesidentifier>
+			<componentinstantiationref idref="monitor_service"/>
+	    	</usesport>
+
+		<existinginterface>
+			<findby>
+				<namingservice name="TracingServer"/>
+			</findby>
+	    </existinginterface>
 	</connectinterface>
 
     </connections>

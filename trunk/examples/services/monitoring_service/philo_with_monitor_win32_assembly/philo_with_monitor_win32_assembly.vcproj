@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.00"
-	Name="hello_with_monitor_win32_assembly"
-	ProjectGUID="{42CE01F9-7A50-4A95-8977-3595433CDA1B}"
+	Name="philo_with_monitor_win32_assembly"
+	ProjectGUID="{B6606686-DD24-43D7-AF95-5E4E631FE3A2}"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -31,10 +31,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/hello_with_monitor_win32_assembly.exe"
+				OutputFile="$(OutDir)/philo_with_monitor_win32_assembly.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/hello_with_monitor_win32_assembly.pdb"
+				ProgramDatabaseFile="$(OutDir)/philo_with_monitor_win32_assembly.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
@@ -75,7 +75,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/hello_with_monitor_win32_assembly.exe"
+				OutputFile="$(OutDir)/philo_with_monitor_win32_assembly.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
@@ -100,18 +100,24 @@
 	</Configurations>
 	<Files>
 		<File
-			RelativePath="meta-inf\callee.cpf">
+			RelativePath="meta-inf\atze.cpf">
 		</File>
 		<File
-			RelativePath="meta-inf\hello_with_monitoring_win32.cad">
+			RelativePath="meta-inf\bob.cpf">
+		</File>
+		<File
+			RelativePath="meta-inf\charly.cpf">
+		</File>
+		<File
+			RelativePath="meta-inf\philo_with_monitor_win32_assembly.cad">
 			<FileConfiguration
 				Name="Debug|Win32">
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="zip ../hello_with_monitoring_win32_assembly.zip -j  ../container_service_MonImpl.zip ../../../general/hello_world/HelloWorld_CalleeImpl.zip ../../../general/hello_world/HelloWorld_CallerImpl.zip
-zip ../hello_with_monitoring_win32_assembly.zip meta-inf/hello_with_monitoring_win32.cad meta-inf/callee.cpf meta-inf/caller.cpf
+					CommandLine="zip ../philo_with_monitor_win32_assembly.zip -j ../container_service_MonImpl.zip ../../../general/philosopher/dinner_CutleryImpl.zip ../../../general/philosopher/dinner_PhilosopherImpl.zip ../../../general/philosopher/dinner_ObserverImpl.zip
+zip ../philo_with_monitor_win32_assembly.zip meta-inf/philo_with_monitor_win32_assembly.cad meta-inf/atze.cpf meta-inf/bob.cpf meta-inf/charly.cpf meta-inf/fork1.cpf meta-inf/fork2.cpf meta-inf/observer.cpf
 "
-					Outputs="hello_with_monitoring_win32_assembly.zip"/>
+					Outputs="c"/>
 			</FileConfiguration>
 		</File>
 	</Files>

@@ -7,6 +7,9 @@
 
 
 // BEGIN USER INSERT SECTION file_pre
+namespace container_service {
+class MonExec;
+};
 // END USER INSERT SECTION file_pre
 
 
@@ -19,6 +22,7 @@
 
 // BEGIN USER INSERT SECTION file_post
 #include "ServerContainerInterceptor.h"
+#include "ClientContainerInterceptor.h"
 // END USER INSERT SECTION file_post
 
 
@@ -60,6 +64,17 @@ namespace container_service
 // BEGIN USER INSERT SECTION MonExec
 	public:
 	Qedo::ServerContainerInterceptor* server_interceptor_;
+	Qedo::ClientContainerInterceptor* client_interceptor_;
+	unsigned long counter;
+	Qedo::QedoMutex counter_mutex;
+	IOP::Codec_var m_cdrCodec;
+	
+	unsigned long 
+	get_new_event_number();
+
+	IOP::Codec_ptr
+	get_cdr_codec_ptr();
+
 // END USER INSERT SECTION MonExec
 
     };

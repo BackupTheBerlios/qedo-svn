@@ -1,16 +1,16 @@
-#include "ServerContainerInterceptor.h"
+#include "ClientContainerInterceptor.h"
 #include <sys/timeb.h>
 
 
 namespace Qedo {
 
 void 
-ServerContainerInterceptor::set_slot_id(PortableInterceptor::SlotId slot_id) {
+ClientContainerInterceptor::set_slot_id(PortableInterceptor::SlotId slot_id) {
 	slot_id_ = slot_id;
-
 };
 
-ServerContainerInterceptor::ServerContainerInterceptor (container_service::CCM_monitor_Context* context,container_service::MonExec* executor)
+
+ClientContainerInterceptor::ClientContainerInterceptor (container_service::CCM_monitor_Context* context,container_service::MonExec* executor)
 {
 	executor_ = executor;
 	context_ = context;
@@ -26,57 +26,28 @@ ServerContainerInterceptor::ServerContainerInterceptor (container_service::CCM_m
 	sprintf (s, "%d", pid);
 
 	process_id_ = s;
-
-
+	
+	m_uid = s;	
 
 }
 
-ServerContainerInterceptor::~ServerContainerInterceptor ()
+ClientContainerInterceptor::~ClientContainerInterceptor ()
 {
-	std::cout << "!!!!!!destructor of ServerContainerInterceptor!!!!!!!!" << std::endl;
-
 }
 
 void
-ServerContainerInterceptor::receive_request (Components::Extension::ContainerServerRequestInfo_ptr info)
+ClientContainerInterceptor::send_request (Components::Extension::ContainerClientRequestInfo_ptr info)
 {
 
-		/* 
-		 * Get encoded context information
+	std::cout << "COPI: send_request: " << info->request_info()->operation() << std::endl;
+		if ( 0 == strcmp (info->request_info()->operation(), "receiveEvent") )
+	{
+		/*
+		 * Suppress PI handling for events to Trace server
 		 */
-	
-		std::string trail_id;
-		char mess_cnt[11];
-		unsigned long event_number = executor_ -> get_new_event_number();
-		sprintf (mess_cnt, "__%08x", event_number);	
-	 
-		IOP::ServiceContext_var sc = 0;
-		char *message_data;
-		CORBA::Any_var any = new CORBA::Any;
 
-		try {
-			sc = info->request_info()->get_request_service_context(100);	
-			
-		    CORBA::OctetSeq data;
-
-			data.length(sc->context_data.length());
-			memcpy(data.get_buffer(), sc->context_data.get_buffer(), sc->context_data.length());
-			any = executor_-> get_cdr_codec_ptr() -> decode_value(data, CORBA::_tc_string);
-
-
-			any >>= message_data;
-			
-		} catch (CORBA::BAD_PARAM&)
-		{
-			//no service context for tracing
-			message_data = new char[11];
-			strcpy(message_data,mess_cnt);		
-		} catch (...)
-		{
-			return;
-		}
-		
-		trail_id = process_id_ + message_data;
+		return;
+	}
 
 		org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
 
@@ -88,21 +59,33 @@ ServerContainerInterceptor::receive_request (Components::Extension::ContainerSer
 		event->time_stamp = tm;
 
 		// set ineraction point
-		event->interaction_point = org::coach::tracing::api::POA_IN;
+		event->interaction_point = org::coach::tracing::api::STUB_OUT;
 
 
 		event->trail_label= CORBA::string_dup ("");
 
-		event->message_id = CORBA::string_dup (message_data);
+		unsigned long event_number = executor_ -> get_new_event_number();
 
-		event->thread_id = CORBA::string_dup (message_data);
+		char cnt[11];
+		sprintf (cnt, "__%08x", event_number);
+		std::string messageid = process_id_ + cnt;
 
-		event->trail_id	= CORBA::string_dup ("");
+		std::cout << "@@ message_id client" << messageid.c_str() << std::endl;
+		event->message_id = CORBA::string_dup (messageid.c_str());
+
+		event->thread_id = CORBA::string_dup ("thread");
+
+		std::string trail_id;
+		trail_id = process_id_ + cnt;
+
+		event->trail_id	= CORBA::string_dup (messageid.c_str());
 		
 		event->event_counter  = event_number;
 		event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
+
 		event->identity.object_instance_id		= CORBA::string_dup (info->port_id());
-		event->identity.object_repository_id	= CORBA::string_dup (info->request_info()->target_most_derived_interface());
+		event->identity.object_repository_id	= CORBA::string_dup ("UNKNOWN");
+
 		event->identity.cmp_name				= CORBA::string_dup (info->component_id());
 		event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 		event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
@@ -120,12 +103,67 @@ ServerContainerInterceptor::receive_request (Components::Extension::ContainerSer
 		trace->length(1);
 		(*trace)[0] = event;
 		context_-> get_connection_to_trace_server() -> receiveEvent(trace.in());
+
+
+		CORBA::Any any;
+		any <<= messageid.c_str();
+		CORBA::OctetSeq_var data = executor_ -> get_cdr_codec_ptr() -> encode_value(any);
+
+		IOP::ServiceContext sc;
+
+		sc.context_id = 100;
+
+		sc.context_data.length(data->length());
+
+		memcpy(sc.context_data.get_buffer(), data->get_buffer(), data->length());
+
+		info->request_info()->add_request_service_context(sc, true);
+		
 }
 
 void
-ServerContainerInterceptor::send_reply (Components::Extension::ContainerServerRequestInfo_ptr info)
+ClientContainerInterceptor::receive_reply (Components::Extension::ContainerClientRequestInfo_ptr info)
 {
+	
+	std::cout << "COPI: receive_reply: " << info->request_info()->operation() << "for id: " << std::endl;
+	if ( 0 == strcmp (info->request_info()->operation(), "receiveEvent") )
+	{
+		/*
+		 * Suppress PI handling for events to Trace server
+		 */
 
+		return;
+	}
+
+	char mess_cnt[11];
+	unsigned long event_number = executor_ -> get_new_event_number();
+	sprintf (mess_cnt, "__%08x", event_number);	
+
+	IOP::ServiceContext* sc = 0;
+	char *message_data;
+	CORBA::Any_var any = new CORBA::Any;
+	try {
+		sc = info->request_info()->get_reply_service_context(100);	
+		
+		CORBA::OctetSeq data;
+
+		data.length(sc->context_data.length());
+		memcpy(data.get_buffer(), sc->context_data.get_buffer(), sc->context_data.length());
+		any = executor_-> get_cdr_codec_ptr() -> decode_value(data, CORBA::_tc_string);
+
+
+		any >>= message_data;
+		
+	} catch (CORBA::BAD_PARAM&)
+	{
+		//no service context for tracing
+		message_data = new char[11];
+		strcpy(message_data,mess_cnt);		
+	} catch (...)
+	{
+		return;
+	}
+	std::cout << "@@@@@COPI after catch" << std::endl;
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
 
 	// set time_stamp
@@ -136,24 +174,17 @@ ServerContainerInterceptor::send_reply (Components::Extension::ContainerServerRe
 	event->time_stamp = tm;
 
 	// set ineraction point
-	event->interaction_point = org::coach::tracing::api::POA_OUT;
+	event->interaction_point = org::coach::tracing::api::STUB_IN;
+
+
 	event->trail_label= CORBA::string_dup ("");
-
-	unsigned long event_number = executor_ -> get_new_event_number();
-	char cnt[11];
-	sprintf (cnt, "__%08x", event_number);
-	std::string messageid = process_id_ + cnt;
-
-	event->message_id = CORBA::string_dup (messageid.c_str());
-
+	event->message_id = CORBA::string_dup (message_data);
 	event->thread_id = CORBA::string_dup ("");
-	
-	event->trail_id	= CORBA::string_dup (messageid.c_str());
-	
+	event->trail_id	= CORBA::string_dup (message_data);
 	event->event_counter  = event_number;
 	event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
 	event->identity.object_instance_id		= CORBA::string_dup (info->port_id());
-	event->identity.object_repository_id	= CORBA::string_dup ("TE");
+	event->identity.object_repository_id	= CORBA::string_dup ("UNKNOWN");
 	event->identity.cmp_name				= CORBA::string_dup (info->component_id());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 	event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
@@ -172,27 +203,50 @@ ServerContainerInterceptor::send_reply (Components::Extension::ContainerServerRe
 	(*trace)[0] = event;
 	context_-> get_connection_to_trace_server() -> receiveEvent(trace.in());
 
-	CORBA::Any out_any;
-	out_any <<= messageid.c_str();
-	CORBA::OctetSeq_var data = executor_ -> get_cdr_codec_ptr() -> encode_value(out_any);
-
-	IOP::ServiceContext out_sc;
-
-	out_sc.context_id = 100;
-
-	out_sc.context_data.length(data->length());
-
-	memcpy(out_sc.context_data.get_buffer(), data->get_buffer(), data->length());
-
-	info->request_info()->add_reply_service_context(out_sc, true);
-
-
 }
 
 void
-ServerContainerInterceptor::send_system_exception (Components::Extension::ContainerServerRequestInfo_ptr info)
+ClientContainerInterceptor::receive_system_exception (Components::Extension::ContainerClientRequestInfo_ptr info)
 {
-	std::cout << "COPI: send_system_exception: " << info->request_info()->operation() << "for id: " << std::endl;
+	std::cout << "COPI: receive_system_exception: " << info->request_info()->operation() << "for id: " << std::endl;
+	if ( 0 == strcmp (info->request_info()->operation(), "receiveEvent") )
+	{
+		/*
+		 * Suppress PI handling for events to Trace server
+		 */
+
+		return;
+	}
+
+	char mess_cnt[11];
+	unsigned long event_number = executor_ -> get_new_event_number();
+	sprintf (mess_cnt, "__%08x", event_number);	
+
+	IOP::ServiceContext* sc = 0;
+	char *message_data;
+	CORBA::Any_var any = new CORBA::Any;
+	try {
+		sc = info->request_info()->get_reply_service_context(100);	
+		
+		CORBA::OctetSeq data;
+
+		data.length(sc->context_data.length());
+		memcpy(data.get_buffer(), sc->context_data.get_buffer(), sc->context_data.length());
+		any = executor_-> get_cdr_codec_ptr() -> decode_value(data, CORBA::_tc_string);
+
+
+		any >>= message_data;
+		
+	} catch (CORBA::BAD_PARAM&)
+	{
+		//no service context for tracing
+		message_data = new char[11];
+		strcpy(message_data,mess_cnt);		
+	} catch (...)
+	{
+		return;
+	}
+	std::cout << "@@@@@COPI after catch" << std::endl;
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
 
 	// set time_stamp
@@ -203,24 +257,17 @@ ServerContainerInterceptor::send_system_exception (Components::Extension::Contai
 	event->time_stamp = tm;
 
 	// set ineraction point
-	event->interaction_point = org::coach::tracing::api::POA_OUT_EXCEPTION;
+	event->interaction_point = org::coach::tracing::api::STUB_IN_EXCEPTION;
+
+
 	event->trail_label= CORBA::string_dup ("");
-
-	unsigned long event_number = executor_ -> get_new_event_number();
-	char cnt[11];
-	sprintf (cnt, "__%08x", event_number);
-	std::string messageid = process_id_ + cnt;
-
-	event->message_id = CORBA::string_dup (messageid.c_str());
-
+	event->message_id = CORBA::string_dup (message_data);
 	event->thread_id = CORBA::string_dup ("");
-	
-	event->trail_id	= CORBA::string_dup (messageid.c_str());
-	
+	event->trail_id	= CORBA::string_dup (message_data);
 	event->event_counter  = event_number;
 	event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
 	event->identity.object_instance_id		= CORBA::string_dup (info->port_id());
-	event->identity.object_repository_id	= CORBA::string_dup ("TE");
+	event->identity.object_repository_id	= CORBA::string_dup ("UNKNOWN");
 	event->identity.cmp_name				= CORBA::string_dup (info->component_id());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 	event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
@@ -239,27 +286,49 @@ ServerContainerInterceptor::send_system_exception (Components::Extension::Contai
 	(*trace)[0] = event;
 	context_-> get_connection_to_trace_server() -> receiveEvent(trace.in());
 
-	CORBA::Any out_any;
-	out_any <<= messageid.c_str();
-	CORBA::OctetSeq_var data = executor_ -> get_cdr_codec_ptr() -> encode_value(out_any);
-
-	IOP::ServiceContext out_sc;
-
-	out_sc.context_id = 100;
-
-	out_sc.context_data.length(data->length());
-
-	memcpy(out_sc.context_data.get_buffer(), data->get_buffer(), data->length());
-
-	info->request_info()->add_reply_service_context(out_sc, true);
-
-
 }
 
 void
-ServerContainerInterceptor::send_user_exception (Components::Extension::ContainerServerRequestInfo_ptr info) {
-	std::cout << "COPI: send_user_exception: " << info->request_info()->operation() << "for id:" << std::endl;
-	std::cout << "COPI: send_system_exception: " << info->request_info()->operation() << "for id: " << std::endl;
+ClientContainerInterceptor::receive_user_exception (Components::Extension::ContainerClientRequestInfo_ptr info) {
+	std::cout << "COPI: receive_user_exception: " << info->request_info()->operation() << "for id:" << std::endl;
+	if ( 0 == strcmp (info->request_info()->operation(), "receiveEvent") )
+	{
+		/*
+		 * Suppress PI handling for events to Trace server
+		 */
+
+		return;
+	}
+
+	char mess_cnt[11];
+	unsigned long event_number = executor_ -> get_new_event_number();
+	sprintf (mess_cnt, "__%08x", event_number);	
+
+	IOP::ServiceContext* sc = 0;
+	char *message_data;
+	CORBA::Any_var any = new CORBA::Any;
+	try {
+		sc = info->request_info()->get_reply_service_context(100);	
+		
+		CORBA::OctetSeq data;
+
+		data.length(sc->context_data.length());
+		memcpy(data.get_buffer(), sc->context_data.get_buffer(), sc->context_data.length());
+		any = executor_-> get_cdr_codec_ptr() -> decode_value(data, CORBA::_tc_string);
+
+
+		any >>= message_data;
+		
+	} catch (CORBA::BAD_PARAM&)
+	{
+		//no service context for tracing
+		message_data = new char[11];
+		strcpy(message_data,mess_cnt);		
+	} catch (...)
+	{
+		return;
+	}
+	std::cout << "@@@@@COPI after catch" << std::endl;
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
 
 	// set time_stamp
@@ -270,24 +339,17 @@ ServerContainerInterceptor::send_user_exception (Components::Extension::Containe
 	event->time_stamp = tm;
 
 	// set ineraction point
-	event->interaction_point = org::coach::tracing::api::POA_OUT_EXCEPTION;
+	event->interaction_point = org::coach::tracing::api::STUB_IN_EXCEPTION;
+
+
 	event->trail_label= CORBA::string_dup ("");
-
-	unsigned long event_number = executor_ -> get_new_event_number();
-	char cnt[11];
-	sprintf (cnt, "__%08x", event_number);
-	std::string messageid = process_id_ + cnt;
-
-	event->message_id = CORBA::string_dup (messageid.c_str());
-
+	event->message_id = CORBA::string_dup (message_data);
 	event->thread_id = CORBA::string_dup ("");
-	
-	event->trail_id	= CORBA::string_dup (messageid.c_str());
-	
+	event->trail_id	= CORBA::string_dup (message_data);
 	event->event_counter  = event_number;
 	event->op_name = CORBA::string_dup (CORBA::string_dup(info->request_info()->operation()));
 	event->identity.object_instance_id		= CORBA::string_dup (info->port_id());
-	event->identity.object_repository_id	= CORBA::string_dup ("TE");
+	event->identity.object_repository_id	= CORBA::string_dup ("UNKNOWN");
 	event->identity.cmp_name				= CORBA::string_dup (info->component_id());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 	event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
@@ -306,27 +368,7 @@ ServerContainerInterceptor::send_user_exception (Components::Extension::Containe
 	(*trace)[0] = event;
 	context_-> get_connection_to_trace_server() -> receiveEvent(trace.in());
 
-	CORBA::Any out_any;
-	out_any <<= messageid.c_str();
-	CORBA::OctetSeq_var data = executor_ -> get_cdr_codec_ptr() -> encode_value(out_any);
-
-	IOP::ServiceContext out_sc;
-
-	out_sc.context_id = 100;
-
-	out_sc.context_data.length(data->length());
-
-	memcpy(out_sc.context_data.get_buffer(), data->get_buffer(), data->length());
-
-	info->request_info()->add_reply_service_context(out_sc, true);
-
-
 }
 
-void
-ServerContainerInterceptor::rec_request_from_servant_locator(const char * operation)
-{
-	std::cout << "operation: " << operation << " from servant locator" << std::endl;
-}
 
 }; // namespace Qedo
