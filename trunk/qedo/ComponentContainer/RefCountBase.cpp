@@ -31,7 +31,7 @@
 #include <set>
 #endif
 
-static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.18 2003/10/05 16:48:22 tom Exp $";
+static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.19 2003/10/08 09:34:54 neubauer Exp $";
 
 
 namespace Qedo {
@@ -206,9 +206,9 @@ static void
 demangle(const char* name)
 {
 	int status=0;
-	char * ret;
+	char * ret = __cxxabiv1::__cxa_demangle(name,0,0,&status);
 
-	if(ret = __cxxabiv1::__cxa_demangle(name,0,0,&status))
+	if(ret)
 	{
 		DEBUG_OUT(ret);
 		free(ret);
