@@ -281,7 +281,7 @@
 						Description="CIDL compiler processes $(InputPath)"
 						CommandLine="$(QEDO)\bin\cidl_gen -I$(QEDO)\idl -I$(ORBACUS)\idl\OB  -I$(ORBACUS)\idl -DWIN32 -DORBACUS_ORB --target dinner ..\philosophers.cidl
 "
-						Outputs="dinner_LOCAL.idl;dinner_EQUIVALENT.idl"/>
+						Outputs="dinner_EQUIVALENT.idl"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_mico|Win32">
@@ -290,7 +290,7 @@
 						Description="CIDL compiler processes $(InputPath)"
 						CommandLine="$(QEDO)\bin\cidl_gen -I$(QEDO)\idl -I$(MICO)\include  -I$(MICO)\include\mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --target dinner ..\philosophers.cidl
 "
-						Outputs="dinner_LOCAL.idl;dinner_EQUIVALENT.idl"/>
+						Outputs="dinner_EQUIVALENT.idl"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
