@@ -151,6 +151,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="QCexplorer.cpp">
 			</File>
 			<File
+				RelativePath="QedoEditor.cpp">
+			</File>
+			<File
 				RelativePath="QedoExplorer.cpp">
 			</File>
 			<File
@@ -201,6 +204,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="QCexplorer.h">
+			</File>
+			<File
+				RelativePath="QedoEditor.h">
 			</File>
 			<File
 				RelativePath="QedoExplorer.h">
