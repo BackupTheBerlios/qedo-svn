@@ -271,7 +271,11 @@ void Deployment::OnDecriptButton (wxCommandEvent& WXUNUSED(event))
 		DescriptorFrame *descriptor_frame = new DescriptorFrame(this,assembly_name_->GetValue());
 		//descriptor_frame->SetFile(assembly_name_->GetValue().c_str() );
 	
-		descriptor_frame->ShowModal();
+		int t=descriptor_frame->ShowModal();
+		if (t==wxID_OK) {
+		
+		}
+		descriptor_frame->~DescriptorFrame();
 	}
 
 }
