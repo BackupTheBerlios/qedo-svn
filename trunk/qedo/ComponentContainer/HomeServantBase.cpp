@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.21 2003/09/05 14:02:06 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.22 2003/09/26 08:22:02 neubauer Exp $";
 
 
 namespace Qedo {
@@ -75,15 +75,6 @@ HomeServantBase::~HomeServantBase()
 
 	if (container_)
 		container_->_remove_ref();
-}
-
-
-void 
-HomeServantBase::container(ContainerInterfaceImpl* container)
-{
-	container_ = container;
-
-	container_->_add_ref();
 }
 
 
@@ -216,11 +207,17 @@ HomeServantBase::remove_component_with_oid (const PortableServer::ObjectId& obje
 
 
 void 
-HomeServantBase::initialize (PortableServer::POA_ptr root_poa,
-							 Components::HomeExecutorBase_ptr home_executor)
+HomeServantBase::initialize
+( PortableServer::POA_ptr root_poa
+, Components::HomeExecutorBase_ptr home_executor
+, ContainerInterfaceImpl* container
+, std::string install_dir )
 throw (Components::Deployment::InstallationFailure)
 {
 	home_executor_ = Components::HomeExecutorBase::_duplicate (home_executor);
+	container_ = container;
+	container_->_add_ref();
+	install_dir_ = install_dir;
 
 	// Create a new POA for the components
 	CORBA::PolicyList policies;

@@ -228,7 +228,7 @@ private:
 	/**
 	 * register the required valuetype factories if not already done
 	 */
-	void loadValuetypeFactories(std::string)
+	void loadValuetypeFactories(std::string, std::string)
 		throw (Components::CCMException);
 
 public:
@@ -295,7 +295,7 @@ public:
 	 * managed component.
 	 * The ConfigValue named "CCMSERVICE" could be used to indicate that a component of this home is a container
 	 * service. This is still under development!
-	 * \param id The interface repository id of the home.
+	 * \param id The uuid of the home implementation.
 	 * \param entrypt The name of the entry point.
 	 * \param config The list of config values.
 	 * \return The object of the created home.

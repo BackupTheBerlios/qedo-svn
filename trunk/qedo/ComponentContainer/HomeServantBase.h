@@ -59,6 +59,8 @@ class CONTAINERDLL_API HomeServantBase : public PortableServer::RefCountServantB
 	friend class PrimaryServant;
 	/** access container */
 	friend class ServantLocator;
+	/** needs access to install_dir_ */
+	friend class InternalConfiguration;
 
 private:
 	/** poa manager */
@@ -77,6 +79,8 @@ private:
 
 	/** the container interface where the home is installed in */
 	ContainerInterfaceImpl*			container_;
+	/** the installation directory */
+	std::string						install_dir_;
 
 	/** the name of the service if the homes components implement a container service */
 	std::string						service_name_;
@@ -108,12 +112,6 @@ private:
 	 * This function is called in the final stage of finalize_component_incarnation 
 	 */
 	virtual void do_finalize_component_incarnation (Components::ExecutorLocator_ptr) = 0;
-
-	/**
-	 * set the container this home is installed in
-	 * \param container The container the home is installed in.
-	 */
-	void container(ContainerInterfaceImpl* container);
 
 	/**
 	 * set the name of the service the components implement (only if installed as service home)
@@ -188,8 +186,12 @@ public:
 	 * initialize
 	 * \param root_poa The root poa.
 	 * \param home_executor The home executor of this home.
+	 * \param container The container the home is installed in.
 	 */
-	void initialize (PortableServer::POA_ptr root_poa, Components::HomeExecutorBase_ptr home_executor)
+	void initialize (PortableServer::POA_ptr root_poa,
+		             Components::HomeExecutorBase_ptr home_executor,
+					 ContainerInterfaceImpl* container,
+					 std::string install_dir)
 		throw (Components::Deployment::InstallationFailure);
 
 	/**

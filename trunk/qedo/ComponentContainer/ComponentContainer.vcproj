@@ -422,6 +422,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="HomeServantBase.cpp">
 			</File>
 			<File
+				RelativePath="InternalConfiguration.cpp">
+			</File>
+			<File
 				RelativePath=".\Key.cpp">
 			</File>
 			<File
@@ -499,6 +502,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="HomeServantBase.h">
+			</File>
+			<File
+				RelativePath="InternalConfiguration.h">
 			</File>
 			<File
 				RelativePath=".\Key.h">

@@ -83,6 +83,8 @@ namespace Qedo {
 
 
 class ContainerInterfaceImpl;
+class ServiceReferenceEntry;
+
 
 class CONTAINERDLL_API ThreadSupport : public virtual Components::CCMContext
 {
@@ -113,12 +115,18 @@ class CONTAINERDLL_API CCMContext : public virtual Components::CCMContext,
 									public virtual RefCountLocalObject,
 									public ThreadSupport
 {
+	/** needs access to ccm_object_executor_ */
+	friend class InternalConfiguration;
+
 protected:
 	/** the object executor for the component */
-	CCMObjectExecutor*				ccm_object_executor_;
+	CCMObjectExecutor*						ccm_object_executor_;
 
 	/** the container interface where the components home is installed in */
-	ContainerInterfaceImpl*			container_;
+	ContainerInterfaceImpl*					container_;
+
+	/** the list of component instance specific service references */
+	std::vector < ServiceReferenceEntry >	service_references_;
 
 public:
 	/**

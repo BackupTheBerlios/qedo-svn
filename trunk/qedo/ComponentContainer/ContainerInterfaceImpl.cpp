@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.35 2003/09/21 07:37:52 tom Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.36 2003/09/26 08:22:02 neubauer Exp $";
 
 
 namespace Qedo {
@@ -122,6 +122,7 @@ ServiceReferenceEntry::ServiceReferenceEntry (const ServiceReferenceEntry& servi
 
 ServiceReferenceEntry::~ServiceReferenceEntry()
 {
+	//CORBA::release( _service_ref ); !!! _var
 }
 
 
@@ -310,7 +311,7 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 ContainerInterfaceImpl::~ContainerInterfaceImpl()
 {
 	DEBUG_OUT ("ContainerInterfaceImpl: Destructor called");
-
+	service_references_.clear();
 	component_server_->_remove_ref();
 }
 
@@ -533,6 +534,20 @@ throw (Components::Deployment::UnknownImplId,
 	std::string::size_type pos;
 	std::string desc = (const char*)description;
 
+	// installation dir
+	pos = desc.find (";");
+	if (pos == std::string::npos)
+	{
+		std::cerr << "ContainerInterfaceImpl: Cannot extract installation dir" << std::endl;
+		throw Components::Deployment::InstallationFailure();
+	}
+	std::string install_dir = desc.substr (0, pos);
+	if(install_dir == "")
+	{
+		install_dir = ".";
+	}
+	desc = desc.substr (pos + 1);
+
 	// servant module
 	pos = desc.find (";");
 	if (pos == std::string::npos)
@@ -540,7 +555,7 @@ throw (Components::Deployment::UnknownImplId,
 		std::cerr << "ContainerInterfaceImpl: Cannot extract servant module name" << std::endl;
 		throw Components::Deployment::InstallationFailure();
 	}
-	std::string servant_module = desc.substr (0, pos);
+	std::string servant_module = install_dir + "/" + desc.substr (0, pos);
 	desc = desc.substr (pos + 1);
 
 	// servant entry point
@@ -560,7 +575,7 @@ throw (Components::Deployment::UnknownImplId,
 		std::cerr << "ContainerInterfaceImpl: Cannot extract executor module name" << std::endl;
 		throw Components::Deployment::InstallationFailure();
 	}
-	std::string executor_module = desc.substr (0, pos);
+	std::string executor_module = install_dir + "/" + desc.substr (0, pos);
 	desc = desc.substr (pos + 1);
 
 	// executor entry point
@@ -576,9 +591,11 @@ throw (Components::Deployment::UnknownImplId,
 	//
 	// handle valuetypes
 	//
-	loadValuetypeFactories(desc);
+	loadValuetypeFactories( desc, install_dir );
 
+	//
 	// Now we have all relevant information and can go to load the dynamic code modules
+	//
 #ifdef _WIN32
 	HINSTANCE handle_servant_lib;
 	HINSTANCE handle_executor_lib;
@@ -587,15 +604,19 @@ throw (Components::Deployment::UnknownImplId,
 	void* handle_executor_lib;
 #endif
 
+	//
+	// load servant module
+	//
 	handle_servant_lib = load_shared_library (servant_module.c_str());
-
 	if (! handle_servant_lib)
 	{
 		NORMAL_ERR2 ("ContainerInterfaceImpl: Failed to load servant module ", servant_module);
 		throw Components::Deployment::InstallationFailure();
 	}
 
-	// Find the entry point function
+	//
+	// find the entry point function
+	//
 	Qedo::HomeServantBase* (*servant_entry_proc)();
 
 #ifdef _WIN32
@@ -699,15 +720,11 @@ throw (Components::Deployment::UnknownImplId,
 	//
 	// Initialize home servant
 	//
-	qedo_home_servant->container(this);
-	qedo_home_servant->initialize (root_poa_, home_executor);
-
+	qedo_home_servant->initialize( root_poa_, home_executor, this, install_dir );
 	Components::CCMHome_var home_ref = qedo_home_servant->ref();
 
 	HomeExecutorContext *home_ctx = new HomeExecutorContext (home_ref);
-
 	home_executor->set_context (home_ctx);	// Qedo extension (hack): Standard home executor has no context!
-
 	home_ctx->_remove_ref();
 
 	if(service_name)
@@ -871,13 +888,15 @@ CORBA::Object_ptr
 ContainerInterfaceImpl::resolve_service_reference(const char* service_id)
 throw (Components::CCMException)
 {
+	//
 	// find the service in our list of services
+	//
 	std::vector <ServiceReferenceEntry>::iterator iter;
 
 	for (iter = service_references_.begin(); iter != service_references_.end(); iter++)
 	{
 		if(!iter->_service_id.compare(service_id)) {
-			return CORBA::Object::_duplicate(iter->_service_ref);
+			return iter->_service_ref;
 		}
 	}
 
@@ -886,7 +905,7 @@ throw (Components::CCMException)
 
 
 void
-ContainerInterfaceImpl::loadValuetypeFactories(std::string desc)
+ContainerInterfaceImpl::loadValuetypeFactories(std::string desc, std::string install_dir)
 throw (Components::CCMException)
 {
 	std::string::size_type pos = desc.find (";");
@@ -895,7 +914,7 @@ throw (Components::CCMException)
 		std::string value_repid = desc.substr (0, pos);
 		desc = desc.substr (pos + 1);
 		pos = desc.find (";");
-		std::string value_code = desc.substr (0, pos);
+		std::string value_code = install_dir + "/" + desc.substr (0, pos);
 		desc = desc.substr (pos + 1);
 		pos = desc.find (";");
 

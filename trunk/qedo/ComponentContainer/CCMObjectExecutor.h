@@ -56,6 +56,8 @@ class CONTAINERDLL_API CCMObjectExecutor : public RefCountBase
 	friend class PrimaryServant;
 	/** need access */
 	friend class ServantLocator;
+	/** needs access to home_servant_ */
+	friend class InternalConfiguration;
 
 private:
 	/** list of facets */

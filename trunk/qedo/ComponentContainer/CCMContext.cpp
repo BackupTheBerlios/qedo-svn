@@ -22,8 +22,10 @@
 
 #include "CCMContext.h"
 #include "Output.h"
+#include "InternalConfiguration.h"
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.17 2003/09/08 08:53:11 neubauer Exp $";
+
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.18 2003/09/26 08:22:02 neubauer Exp $";
 
 
 namespace Qedo {
@@ -37,6 +39,7 @@ CCMContext::CCMContext()
 CCMContext::~CCMContext()
 {
 	DEBUG_OUT ( "CCMContext: Destructor called" );
+	service_references_.clear();
 }
 
 
@@ -95,7 +98,40 @@ CORBA::Object_ptr
 CCMContext::resolve_service_reference(const char* service_id)
 throw (Components::CCMException)
 {
-	return container_->resolve_service_reference(service_id);
+	//
+	// component specific service
+	//
+	if(!strcmp( service_id, "ConfigurationService" ))
+	{
+		//
+		// find the service instance in our list
+		//
+		std::vector < ServiceReferenceEntry >::iterator iter;
+		for(iter = service_references_.begin();
+			iter != service_references_.end();
+			iter++)
+		{
+			if(!iter->_service_id.compare(service_id))
+			{
+				return iter->_service_ref.out();
+			}
+		}
+
+		//
+		// create and register service instance
+		//
+		InternalConfiguration* ref = new InternalConfiguration( this );
+		ServiceReferenceEntry new_entry( service_id, ref );
+		service_references_.push_back (new_entry);
+		ref->_remove_ref();
+		
+		return ref;
+	}
+
+	//
+	// non component specific service
+	//
+	return container_->resolve_service_reference( service_id );
 }
 
 
