@@ -28,7 +28,7 @@
 #include <xercesc/util/BinInputStream.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.6 2003/09/29 07:32:23 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CSDReader.cpp,v 1.7 2003/10/05 19:22:00 tom Exp $";
 
 
 namespace Qedo {
@@ -489,9 +489,9 @@ throw(CSDReadException)
 	}
 
 	std::string ref = XMLString::transcode(element->getAttribute(X("href")));
-	if(ref != "")
+	if(ref.length())
 	{
-		if(text != "")
+		if(text.length())
 		{
 			text.append("\n");
 		}
@@ -745,7 +745,7 @@ throw(CSDReadException)
     //
 	// corba component descriptor
 	//
-    if (ccd_file_ == "")
+    if (ccd_file_.empty())
     {
 		nodeList = element->getElementsByTagName(X("descriptor"));
 		len = nodeList->getLength();
@@ -758,7 +758,7 @@ throw(CSDReadException)
 			std::cerr << "ComponentImplementation : multiple descriptor elements!" << std::endl;
 		}
 
-		if (ccd_file_ == "")
+		if (ccd_file_.empty())
         {
 			std::cerr << "ComponentImplementation : missing component descriptor for " << uuid << std::endl;
 	        throw CSDReadException();
