@@ -307,6 +307,12 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="AssemblyFactory.cpp">
 			</File>
 			<File
+				RelativePath="CADReader.cpp">
+			</File>
+			<File
+				RelativePath="CPFReader.cpp">
+			</File>
+			<File
 				RelativePath="..\ComponentInstaller\CatalogResolver.cpp">
 			</File>
 			<File
@@ -325,19 +331,16 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="..\ComponentInstaller\PlatformBase.cpp">
 			</File>
 			<File
-				RelativePath="Properties.cpp">
-			</File>
-			<File
 				RelativePath="StandardConfigurator.cpp">
 			</File>
 			<File
 				RelativePath="..\ComponentInstaller\XMLCatalog.cpp">
 			</File>
 			<File
-				RelativePath="..\ComponentInstaller\libunzip.cpp">
+				RelativePath="assf.cpp">
 			</File>
 			<File
-				RelativePath="assf.cpp">
+				RelativePath="..\ComponentInstaller\libunzip.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -348,6 +351,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="AssemblyFactory.h">
+			</File>
+			<File
+				RelativePath="CADReader.h">
+			</File>
+			<File
+				RelativePath="CPFReader.h">
 			</File>
 			<File
 				RelativePath="..\ComponentInstaller\CatalogResolver.h">
@@ -366,9 +375,6 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="..\ComponentInstaller\PlatformBase.h">
-			</File>
-			<File
-				RelativePath="Properties.h">
 			</File>
 			<File
 				RelativePath="StandardConfigurator.h">

@@ -40,7 +40,8 @@ LDLIBS = ${LIBS}
 
 SOURCES =   Assembly.cpp \
 				AssemblyFactory.cpp \
-				Properties.cpp \
+				CPFReader.cpp \
+				CADReader.cpp \
 				StandardConfigurator.cpp \
 				assf.cpp 
 

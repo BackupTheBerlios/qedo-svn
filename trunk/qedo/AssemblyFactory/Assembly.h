@@ -28,7 +28,6 @@
 #include "QedoComponents_skel.h"
 #include "Valuetypes.h"
 #include "Package.h"
-#include "Properties.h"
 #include "StandardConfigurator.h"
 #include "DOMXMLParser.h"
 #include "NameServiceBase.h"
@@ -62,6 +61,114 @@ namespace Qedo {
 #define SERVER_ACTIVATOR_CONTEXT "Qedo/Activators/"
 
 
+struct ComponentInstanceData
+{
+	/** name */
+	std::string									usage_name;
+	/** id */
+	std::string									id;
+	/** component properties */
+	std::string									comp_prop;
+};
+
+
+struct HomeInstanceData
+{
+	/** name */
+	std::string									usage_name;
+	/** id */
+	std::string									id;
+	/** implementation package */
+	std::string									file;
+	/** implementation id */
+	std::string									impl_id;
+	/** destination */
+	std::string									dest;
+	/** registration with homefinder */
+	std::string									finder;
+	/** registration with naming service */
+	std::string									naming;
+	/** registration with trading service */
+	std::string									trader;
+	/** home properties */
+	std::string									home_prop;
+	/** component properties */
+	std::string									comp_prop;
+	/** list of component instances */
+	std::vector < ComponentInstanceData >		instances;
+	/** container of the home */
+	Components::Deployment::Container_var		container;
+};
+
+
+struct ProcessData
+{
+	/** name */
+	std::string									usage_name;
+	/** id */
+	std::string									id;
+	/** destination host */
+	std::string									host;
+	/** list of home instances */
+	std::vector < HomeInstanceData >			homes;
+	/** component server */
+	Components::Deployment::ComponentServer_var	server;
+};
+
+
+struct HostData
+{
+	/** name */
+	std::string									usage_name;
+	/** id */
+	std::string									id;
+	/** destination host */
+	std::string									host;
+	/** list of processes */
+	std::vector < ProcessData >					processes;
+};
+
+
+enum ReferenceKind { COMPONENTID, HOMEID, NAMING, OBJECTREF, TRADER, FINDER };
+struct ReferenceData
+{
+	/** reference kind */
+	ReferenceKind								kind;
+	/** reference name */
+	std::string									name;
+};
+
+
+struct PortData
+{
+	/** port name */
+	std::string									name;
+	/** port reference */
+	ReferenceData								ref;
+};
+
+
+struct InterfaceConnectionData
+{
+	/** use port */
+	PortData									use;
+	/** provided interface */
+	PortData									provide;
+};
+
+
+enum EventConnectionKind { EMITTER, PUBLISHER };
+struct EventConnectionData
+{
+	/** consumer port */
+	PortData									consumer;
+	/** connection kind */
+	EventConnectionKind							kind;
+	/** emitter or publisher*/
+	PortData									emitter;
+};
+
+
 /**
  * the implementation of the assembly interface
  */
@@ -71,52 +178,42 @@ class AssemblyImpl : public virtual POA_Components::Deployment::Assembly,
                      public virtual PlatformBase
 {
 
+	friend class CADReader;
+
 private:
+
 	/** the uuid of the assembly */
-	std::string uuid_;
-	
+	std::string									uuid_;
     /** path name of the assembly package */
-	std::string pathname_;
-    
+	std::string									pathname_;
     /** the package object */
-    Package* package_;
-	
+    Package*									package_;
     /** the state of the assembly */
-	Components::Deployment::AssemblyState state_;
-	
+	Components::Deployment::AssemblyState		state_;
     /** the cookie of the assembly, to be used by the AssemblyFactory */
-	Cookie_impl* cookie_;
-	
-    /** the xml parser */
-	DOMXMLParser* cadParser_;
+	Cookie_impl*								cookie_;
 	
     /** the dom document of the assembly description */
 	DOMDocument* document_;
 	
     /** the mapping of component implementation ids to softpackages */
-	std::map < std::string, std::string > implementationMap_;
-	
+	std::map < std::string, std::string >				implementationMap_;
     /** the mapping of component instance ids to objects */
 	std::map < std::string, Components::CCMObject_var > instanceMap_;
-    
     /** the mapping of home instance ids to objects */
-	std::map < std::string, Components::CCMHome_var > homeMap_;
-	
+	std::map < std::string, Components::CCMHome_var >	homeMap_;
     /** start order of the instances */
-	std::list < std::string > startOrder_;
+	std::list < std::string >							start_order_;
+	/** list of existing homes */
+	std::vector < HomeInstanceData >					existing_homes_;
+	/** list of server/process/home instantiations */
+	std::vector < HostData >							hosts_;
+	/** list of interface connections */
+	std::vector < InterfaceConnectionData >				interface_connections_;
+	/** list of event connections */
+	std::vector < EventConnectionData >					event_connections_;
 
 private:
-    /**
-	 * handle extension elements
-	 */
-    void extension (DOMElement*)
-        throw(Components::CreateFailure);
-
-    /**
-	 * get the named component instance
-	 */
-    Components::CCMObject_ptr getInstance (std::string)
-        throw(Components::CreateFailure);
 
     // create new component server
     Components::Deployment::ComponentServer_ptr createComponentServer (std::string)
@@ -126,59 +223,40 @@ private:
     Components::Deployment::Container_ptr createContainer (Components::Deployment::ComponentServer_ptr)
         throw(Components::CreateFailure);
 
-    /**
-	 * create new home
+	/**
+	 * instantiate components of a home
 	 */
-    Components::CCMHome_ptr createHome (Components::Deployment::Container_ptr, std::string)
+    void instantiateComponents (Components::CCMHome_ptr, HomeInstanceData)
         throw(Components::CreateFailure);
 
     /**
-	 * return the destination for placement,
-	 * if destination is empty, return the local hostname (for convenience)
+	 * instantiate home
 	 */
-	std::string destination (DOMElement*)
+    Components::CCMHome_ptr instantiateHome (Components::Deployment::Container_ptr, HomeInstanceData)
         throw(Components::CreateFailure);
 
-    // get reference for port
-    CORBA::Object_ptr getPort (DOMElement*)
+	/**
+	 * get component installation
+	 */
+	Qedo_Components::Deployment::ComponentInstallation_ptr getComponentInstallation(std::string host)
+		throw(Components::CreateFailure);
+
+	/**
+	 * get the named component instance
+	 */
+    Components::CCMObject_ptr getInstance (std::string)
         throw(Components::CreateFailure);
 
-    // get componentfileref for home
-	std::string componentfileref (DOMElement*)
-        throw(Components::CreateFailure);
+	/**
+	 * get the named home instance
+	 */
+	Components::CCMHome_ptr getHomeInstance (std::string name)
+		throw(Components::CreateFailure);
 
-    // get componentimplref for home
-	std::string componentimplref (DOMElement*)
-        throw(Components::CreateFailure);
-
-    // get usesidentifier for port
-	std::string usesidentifier (DOMElement*)
-        throw(Components::CreateFailure);
-
-    // get providesidentifier for port
-	std::string providesidentifier (DOMElement*)
-        throw(Components::CreateFailure);
-
-    // get consumesidentifier for port
-	std::string consumesidentifier (DOMElement*)
-        throw(Components::CreateFailure);
-
-    // get emitsidentifier for port
-	std::string emitsidentifier (DOMElement*)
-        throw(Components::CreateFailure);
-
-    // get publishesidentifier for port
-	std::string publishesidentifier (DOMElement*)
-        throw(Components::CreateFailure);
-
-    // register in NS
-    void registerWithNaming (DOMElement*, CORBA::Object_ptr);
-
-    // register component
-    void registerComponent (DOMElement*, CORBA::Object_ptr);
-
-    // install a component
-    void installImplementation (DOMElement*)
+    /**
+	 * get reference
+	 */
+    CORBA::Object_ptr getRef (ReferenceData)
         throw(Components::CreateFailure);
 
 	/**
@@ -188,53 +266,46 @@ private:
 		throw(Components::CreateFailure);
 
 	/**
-	 * instantiate a component according to the xml element in the assembly descriptor
+	 * install a component implementation
 	 */
-	void instantiateComponent (DOMElement*, Components::CCMHome_ptr)
+	void
+	installComponent (Qedo_Components::Deployment::ComponentInstallation_ptr, HomeInstanceData)
 		throw(Components::CreateFailure);
-
-    // processcollocation
-    void processcollocation (DOMElement*)
-        throw(Components::CreateFailure);
-
-    // homeplacement
-    void homeplacement (DOMElement*, Components::Deployment::Container_ptr)
-        throw(Components::CreateFailure);
 
 	/**
 	 * create all component instances defined in the assembly descriptor
 	 */
-	void instantiate ()
+	void instantiate()
 		throw(Components::CreateFailure);
 
     /**
-	 * connect interfaces
+	 * make interface connections
 	 */
-    void connectinterface (DOMElement*)
+    void connectinterface()
         throw(Components::CreateFailure);
 
     /**
-	 * connect events
+	 * make event connections
 	 */
-    void connectevent (DOMElement*)
+    void connectevent()
         throw(Components::CreateFailure);
 
 	/**
-	 * connect all component instances according to the assembly descriptor
+	 * make all connections according to the assembly descriptor
 	 */
-	void connections ()
+	void connect()
 		throw(Components::CreateFailure);
 
 	/**
 	 * start all created component instances
 	 */
-	void configuration_complete ()
+	void configurationComplete()
         throw(Components::CreateFailure);
 
 
 public:
 	/**
-	 * consructor
+	 * constructor
 	 * \param package The package of the assembly.
 	 * \param cookie The cookie of the assembly (from AssemblyFactory).
 	 * \param nameContext The naming service.
