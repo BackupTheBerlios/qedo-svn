@@ -41,7 +41,7 @@ MICO_LIBS := $(shell mico-config --libs)
 LIBS+=$(MICO_LIBS)
 NAMING_LIBS := $(shell mico-config --cosslibs)
 NAMING_INCLUDES := -I$(shell mico-config --prefix)/include/coss
-ORB_IDL_INCLUDE += -I/home/boehme/include -I/home/boehme/include/mico 
+ORB_IDL_INCLUDE += -I$(MICO)/include -I$(MICO)/include/mico 
 CIDL_ORB_DEF = -DMICO_ORB -DMICO_CIDL_GEN
 IDL_FLAGS += --relative-paths
 
