@@ -20,30 +20,33 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#include "deployment.idl"
+#include "SoftpkgStructures.h"
 
+Implementation::Implementation(std::string uuid, std::string code_type, std::string file_name, std::string entry_point)
+{
+	_uuid = uuid;
+	_code_type = code_type;
+	_file_name = file_name;
+	_entry_point = entry_point;
 
-module DCI_Basics {
-		composition session DCIManagerImpl {
-			home executor DCIManagerHomeImpl {
-				implements DCI_Basics::DCIManagerHome;
-				manages DCIManagerSessionImpl;
-			};
-		};
-
-		composition session AssemblyManagerImpl {
-			home executor AssemblyManagerHomeImpl {
-				implements DCI_Basics::AssemblyManagerHome;
-				manages AssemblyManagerSessionImpl;
-			};
-		};
-		
-		composition session NodeManagerImpl {
-			home executor NodeManagerHomeImpl {
-				implements DCI_Basics::NodeManagerHome;
-				manages NodeManagerSessionImpl;
-			};
-		};
 };
 
+Implementation::~Implementation()
+{};
 
+void Implementation::get_uuid(std::string& uuid)
+{
+	uuid = _uuid;
+};
+void Implementation::get_code_type(std::string& code_type)
+{
+	code_type = _code_type;
+};
+void Implementation::get_file_name(std::string& file_name)
+{
+	file_name = _file_name;
+};
+void Implementation::get_entry_point(std::string& entry_point)
+{
+	entry_point = _entry_point;
+};

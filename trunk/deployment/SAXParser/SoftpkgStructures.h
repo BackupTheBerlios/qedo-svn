@@ -20,30 +20,33 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#include "deployment.idl"
+#ifndef SOFTPKG_DESCRIPTOR_STRUCTURES_HH
+#define SOFTPKG_DESCRIPTOR_STRUCTURES_HH
 
+#include <iostream>
+#include <string>
+#include <list>
 
-module DCI_Basics {
-		composition session DCIManagerImpl {
-			home executor DCIManagerHomeImpl {
-				implements DCI_Basics::DCIManagerHome;
-				manages DCIManagerSessionImpl;
-			};
-		};
+class Implementation // the definition of a Implementation element from the softpkg descriptors;
+{
+private:
 
-		composition session AssemblyManagerImpl {
-			home executor AssemblyManagerHomeImpl {
-				implements DCI_Basics::AssemblyManagerHome;
-				manages AssemblyManagerSessionImpl;
-			};
-		};
-		
-		composition session NodeManagerImpl {
-			home executor NodeManagerHomeImpl {
-				implements DCI_Basics::NodeManagerHome;
-				manages NodeManagerSessionImpl;
-			};
-		};
+	std::string _uuid;
+	std::string _code_type;
+	std::string _file_name;
+	std::string _entry_point;
+
+public:
+	Implementation(std::string, std::string, std::string, std::string);
+	virtual ~Implementation();
+	void get_uuid(std::string&);
+	void get_code_type(std::string&);
+	void get_file_name(std::string&);
+	void get_entry_point(std::string&);
+
 };
 
 
+typedef std::list <Implementation*> CodeList;
+
+#endif 

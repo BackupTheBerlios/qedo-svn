@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.00"
-	Name="StartNodeManager"
-	ProjectGUID="{CB6FD10C-0B19-46F0-8F43-0B596F03F121}"
+	Name="Utils"
+	ProjectGUID="{14151664-5B68-4C52-90E8-A621FFF5087A}"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -14,33 +14,26 @@
 			Name="Debug|Win32"
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
-			ConfigurationType="1"
+			ConfigurationType="4"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../DCI_Basics_NodeManagerImpl_SERVANT;$(QEDO)\ComponentIDL;$(ORBACUS)\include;$(ORBACUS)\include\OB"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				AdditionalIncludeDirectories="$(ORBACUS)\include;$(ORBACUS)\include\ob;$(Qedo)\ComponentIDL;$(xerces)\include;../DOMParser"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
+				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="obd.lib jtcd.lib ComponentIDL.lib CosNamingd.lib CosPropertyd.lib "
-				OutputFile="$(OutDir)/StartNodeManager.exe"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(QEDO)\ComponentIDL\Debug_orbacus"
-				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/StartNodeManager.pdb"
-				SubSystem="1"
-				TargetMachine="1"/>
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/Utils.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -53,21 +46,19 @@
 				Name="VCResourceCompilerTool"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
-			ConfigurationType="1"
+			ConfigurationType="4"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				StringPooling="TRUE"
 				RuntimeLibrary="4"
 				EnableFunctionLevelLinking="TRUE"
@@ -78,14 +69,8 @@
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/StartNodeManager.exe"
-				LinkIncremental="1"
-				GenerateDebugInformation="TRUE"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				TargetMachine="1"/>
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/Utils.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -98,20 +83,18 @@
 				Name="VCResourceCompilerTool"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug_orbacus|Win32"
 			OutputDirectory="Debug_orbacus"
 			IntermediateDirectory="Debug_orbacus"
-			ConfigurationType="1"
+			ConfigurationType="4"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../DCI_Basics_NodeManagerImpl_SERVANT;$(QEDO)\ComponentIDL;$(ORBACUS)\include;$(ORBACUS)\include\OB"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				AdditionalIncludeDirectories="$(ORBACUS)\include;$(ORBACUS)\include\ob;$(Qedo)\include;$(xerces)\include;../DOMParser"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -123,15 +106,8 @@
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="obd.lib jtcd.lib ComponentIDL.lib CosNamingd.lib CosPropertyd.lib "
-				OutputFile="$(OutDir)/StartNodeManager.exe"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(ORBACUS)\lib;$(QEDO)\ComponentIDL\Debug_orbacus"
-				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/StartNodeManager.pdb"
-				SubSystem="1"
-				TargetMachine="1"/>
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/Utils.lib"/>
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
@@ -144,8 +120,6 @@
 				Name="VCResourceCompilerTool"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
 		</Configuration>
 	</Configurations>
 	<Files>
@@ -153,35 +127,35 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
 			<File
-				RelativePath="ClientValuetypes.cpp">
+				RelativePath="NamingUtils.cpp">
 			</File>
 			<File
-				RelativePath="..\DCI_Basics_NodeManagerImpl_SERVANT\DCI_Basics_NodeManagerImpl_EQUIVALENT.cpp">
+				RelativePath="..\DomParser\Property.cpp">
 			</File>
 			<File
-				RelativePath="..\DCI_Basics_NodeManagerImpl_SERVANT\DCI_Basics_NodeManagerImpl_EQUIVALENT_skel.cpp">
-			</File>
-			<File
-				RelativePath="main.cpp">
+				RelativePath="PropertyUtils.cpp">
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
-				RelativePath="ClientValuetypes.h">
+				RelativePath="NamingUtils.h">
 			</File>
 			<File
-				RelativePath="..\DCI_Basics_NodeManagerImpl_SERVANT\DCI_Basics_NodeManagerImpl_EQUIVALENT.h">
+				RelativePath="..\DomParser\Property.hpp">
 			</File>
 			<File
-				RelativePath="..\DCI_Basics_NodeManagerImpl_SERVANT\DCI_Basics_NodeManagerImpl_EQUIVALENT_skel.h">
+				RelativePath="PropertyUtils.h">
 			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		</Filter>
+		<File
+			RelativePath="ReadMe.txt">
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

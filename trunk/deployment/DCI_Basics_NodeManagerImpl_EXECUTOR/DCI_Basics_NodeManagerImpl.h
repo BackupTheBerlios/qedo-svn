@@ -267,6 +267,14 @@ namespace DCI_Basics
 
 		// Vector of the allowed types.
 		PropertyTypes* allowed_types_vector;
+
+		// hide extensive output if true
+		bool _quiet_mode;
+
+#ifdef _WINDOWS
+		bool _is_NT;
+#endif
+
 // END USER INSERT SECTION NodeManagerSessionImpl
 
     };

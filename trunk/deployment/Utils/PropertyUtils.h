@@ -20,30 +20,21 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#include "deployment.idl"
+#ifndef PROPERTY_UTILS
+#define PROPERTY_UTILS
+
+#include <CORBA.h>
+//#include "DCI_Basics_LOCAL.h"
+#include "Components_skel.h"
+//#include "Deployment_dpe.hh"
+#include "Property.hpp"
 
 
-module DCI_Basics {
-		composition session DCIManagerImpl {
-			home executor DCIManagerHomeImpl {
-				implements DCI_Basics::DCIManagerHome;
-				manages DCIManagerSessionImpl;
-			};
-		};
-
-		composition session AssemblyManagerImpl {
-			home executor AssemblyManagerHomeImpl {
-				implements DCI_Basics::AssemblyManagerHome;
-				manages AssemblyManagerSessionImpl;
-			};
-		};
-		
-		composition session NodeManagerImpl {
-			home executor NodeManagerHomeImpl {
-				implements DCI_Basics::NodeManagerHome;
-				manages NodeManagerSessionImpl;
-			};
-		};
+class PropertyUtils 
+{
+public:
+	static void convert_prop_to_config_value ( XMLDOMParser::Property* prop, Components::ConfigValue** value );
+	static void parser_properties_and_convert ( const string& xmldoc, Components::ConfigValues& val);
+	
 };
-
-
+#endif

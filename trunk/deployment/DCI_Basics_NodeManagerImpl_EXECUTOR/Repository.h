@@ -1,32 +1,24 @@
-//**************************************************************
-//
-// T-Nova
-// Deutsche Telekom Innovationsgesellschaft mbH
-// Technologiezentrum Darmstadt
-//
-// Xavier Testa
-//
-// Repository.h
-//
-// Copyright (c) T-Nova Deutsche Telekom
-// Innovationsgesellschaft mbH + 2000
-//
-// "This software is copyrighted. It may only be used for the 
-// purposes stipulated in the license agreement, subject to 
-// copyright regulations, in particular to §§ 69 a ff. of the 
-// German Copyright Act. Any usage not within the scope of 
-// Copyright Act without T-Nova's consent is inadmissible and 
-// liable to prosecution.
-//
-// T-Nova has installed the copyright notice stipulated herein
-// in the computer program. In the event of a user being
-// authorized to duplicate the computer program, this
-// copyright notice always is to be included. The copyright
-// notice must neither be changed nor destroyed.
-//
-// All rights reserved. 
-// This program is globally copyrighted."
-//**************************************************************
+/***************************************************************************/
+/* Qedo - Quality of Service Enabled Distributed Objects                   */
+/*                                                                         */
+/* http://qedo.berlios.de/                                                 */
+/*                                                                         */
+/* Copyright (C) 2002 by the Qedo Team                                     */
+/*                                                                         */
+/* This library is free software; you can redistribute it and/or           */
+/* modify it under the terms of the GNU Lesser General Public              */
+/* License as published by the Free Software Foundation; either            */
+/* version 2.1 of the License, or (at your option) any later version.      */
+/*                                                                         */
+/* This library is distributed in the hope that it will be useful,         */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of          */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU        */
+/* Lesser General Public License for more details.                         */
+/*                                                                         */
+/* You should have received a copy of the GNU Lesser General Public        */
+/* License along with this library; if not, write to the Free Software     */
+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
+/***************************************************************************/
 
 #ifndef __Repository_HEAD
 #define __Repository_HEAD

@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/ComponentIDL;$(ORBACUS)\include;$(ORBACUS)\include\OB;../IDL;$(ZLIB)"
+				AdditionalIncludeDirectories=".;$(QEDO)/ComponentIDL;$(ORBACUS)\include;$(ORBACUS)\include\OB;../IDL;$(ZLIB),$(QEDO)\include;$(XERCES)\include"
 				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -33,10 +33,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib CosPropertyd.lib CosNamingd.lib"
+				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib CosPropertyd.lib CosNamingd.lib xerces-c_2D.lib zlib.lib"
 				OutputFile="$(Qedo)/../runtime/DCI_Basics_NodeManagerImpl_EXECUTOR.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(QEDO)\ComponentIDL\Debug_orbacus;$(ORBACUS)\lib"
+				AdditionalLibraryDirectories="$(QEDO)\lib;$(ORBACUS)\lib;$(XERCES)\lib;$(ZLIB)\dll32"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/DCI_Basics_NodeManagerImpl_EXECUTOR.pdb"
 				SubSystem="2"

@@ -19,7 +19,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/ComponentIDL;$(QEDO)/ComponentContainer;$(ORBACUS)/include;$(ORBACUS)/include/OB"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(ORBACUS)/include;$(ORBACUS)/include/OB"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;SERVANTMODULE_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -36,7 +36,7 @@
 				AdditionalDependencies="ComponentContainer.lib ComponentIDL.lib obd.lib jtcd.lib CosPropertyd.lib "
 				OutputFile="$(Qedo)/../runtime/DCI_Basics_NodeManagerImpl_SERVANT.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(QEDO)/ComponentContainer/Debug_orbacus;$(QEDO)/ComponentIDL/Debug_orbacus;$(ORBACUS)/lib"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(QEDO)/ComponentIDL/Debug_orbacus;$(ORBACUS)/lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/DCI_Basics_NodeManagerImpl_SERVANT.pdb"
 				SubSystem="2"

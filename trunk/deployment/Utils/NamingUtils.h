@@ -20,30 +20,29 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#include "deployment.idl"
+#ifndef NAMINGUTILS_HH
+#define NAMINGUTILS_HH
+
+#include <OB\CORBA.h>
+#include <OB\CosNaming.h>
+//#include "Deployment_dpe.hh"
 
 
-module DCI_Basics {
-		composition session DCIManagerImpl {
-			home executor DCIManagerHomeImpl {
-				implements DCI_Basics::DCIManagerHome;
-				manages DCIManagerSessionImpl;
-			};
-		};
+class NamingUtil
+{
+	static void NamingUtil::remove (const CosNaming::BindingList &bl, CosNaming::NamingContext_ptr context);
+public:
+	static void remove_context ( CosNaming::NamingContext_ptr context );
+	static CORBA::Object_ptr resolve_name (const CosNaming::Name, CosNaming::NamingContext_ptr, short);
+	static bool bind_name(const CosNaming::Name, CORBA::Object_ptr , CosNaming::NamingContext_ptr , short  );
+	static CosNaming::NamingContext_ptr  bind_new_ctxt (const CosNaming::Name name_, CosNaming::NamingContext_ptr ns, short i, bool& already_bound );
+	static void rebind_name(const CosNaming::Name, CORBA::Object_ptr obj_nm_, CosNaming::NamingContext_ptr, short );
+	static void unbind_name(const CosNaming::Name name_, CosNaming::NamingContext_ptr ns, short i );
+	static CosNaming::NamingContext_ptr rebind_ctxt (const CosNaming::Name name_, CosNaming::NamingContext_ptr ns, short i);
 
-		composition session AssemblyManagerImpl {
-			home executor AssemblyManagerHomeImpl {
-				implements DCI_Basics::AssemblyManagerHome;
-				manages AssemblyManagerSessionImpl;
-			};
-		};
-		
-		composition session NodeManagerImpl {
-			home executor NodeManagerHomeImpl {
-				implements DCI_Basics::NodeManagerHome;
-				manages NodeManagerSessionImpl;
-			};
-		};
+
+
 };
 
 
+#endif

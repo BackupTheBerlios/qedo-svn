@@ -7,7 +7,9 @@
 
 // BEGIN USER INSERT SECTION file
 #include "../Utils/NamingUtils.h"
-#include "Utility_class.h"
+#include "../Utils/Utility_class.h"
+#include "../Unzip/Unzip.h"
+#include "../SAXParser/InstallationParser.h"
 // END USER INSERT SECTION file
 
 
@@ -364,6 +366,93 @@ NodeManagerSessionImpl::upload(const DCI_Basics::ComponentArchive& archive)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION NodeManagerSessionImpl::upload
+	//_comp_install->upload(archive);
+	// to be implemented
+	std::cout << "Die Operation UPLOAD wurde aufgerufen  !!!! \n" ;
+	
+	if(!_quiet_mode) 
+		std::cout << "Code upload started ...\n";
+	
+	char *deploymentEnv_;
+	deploymentEnv_= getenv("DEPLOYMENT");
+	std::string directory(deploymentEnv_);
+	std::string pkg = directory + "\\" + "pkg";
+	//std::string pkg("pkg");
+	int err = Utility_class::makedir(pkg, _quiet_mode); // Creating "pkg" directory if necessary.
+	
+	if (err != 0) 
+	{
+		if (err == 2) 
+		{
+			if(!_quiet_mode) 
+				std::cerr << "Pkg directory can not be created\n";
+
+			throw( DCI_Basics::UploadError("Upload directory can not be created!\n")); // Upload aborted.
+		}
+
+		if ((err == 1) && (Utility_class::exists(pkg,Utility_class::FILE))) 
+		{
+			Utility_class::suppression(pkg,_is_NT);
+			err = Utility_class::makedir(pkg, _quiet_mode);
+
+			if (err != 0) 
+			{
+				if(!_quiet_mode) 
+					std::cerr << "Upload directory PKG can not be created\n";
+
+				throw( DCI_Basics::UploadError("Upload directory PKG can not be created\n")); // Upload aborted.
+			}
+		}
+	}
+
+#ifdef _WINDOWS
+	std::string pathname_ = directory + "\\" + "pkg" + "\\";
+#else
+	std::string pathname_ = directory + "/" + "pkg" +"/";
+#endif
+	
+	std::string pathname = pathname_ + "pkg_.zip";
+	Utility_class::copy_archive_to_file (archive, pathname);
+	Unzip* unzip = new Unzip(pathname);
+	
+	std::cout << "NodeManager: The path name for CSD is " << pathname << std::endl; // von Hao
+	FoundFileList softpkg_desciptor_;
+	unzip->find_files_with_end(softpkg_desciptor_, "csd");
+	int count = softpkg_desciptor_.size();
+
+	if (count>1)
+	{
+		std::cerr << "There are more then one softpkg descriptor in the component package !!!" << '\n';
+//		throw SoftpkgError ("There are more then one assembly descriptor in the package !!!\n");
+		throw ( DCI_Basics::UploadError("There are more then one softpkg descriptor in the component package !!!\n") );
+	}
+	
+	FoundFileList::iterator j_ = softpkg_desciptor_.begin();
+
+	std::string softpkg_ = (*j_);
+	int error_ = unzip->extract(softpkg_); //extract the softpkg descriptor from the ZIP Archive in the current directory
+	
+	if ( error_ != 0)
+		//throw ExtractFileError ("Can not extract the  descriptor file!!!\n ");
+		throw ( DCI_Basics::UploadError("Can not extract the descriptor file!!!\n ") );
+	
+	InstallationParser* install_parser = new InstallationParser(softpkg_); //SAXParser for the Assembly descriptor 
+	
+	int p_error_ = install_parser->parse();
+	
+	if ( p_error_!=0 )
+//		throw ParserError ("Parser error in the softpkg descriptor file!!!\n ");
+		throw ( DCI_Basics::UploadError("Parser error in the softpkg descriptor file!!!\n ") );
+	
+	std::string pkgUUID_;
+	install_parser->get_pkgUUID (pkgUUID_);
+	std::string pathname_comp_arch = pathname_ + pkgUUID_ + ".zip";
+	int rn = rename( pathname.c_str(), pathname_comp_arch.c_str());
+	Utility_class::suppression(softpkg_,_is_NT);
+	delete (unzip);
+	delete (install_parser);
+	std::cout << "Upload finished successfully !!! " << std::endl;
+
 // END USER INSERT SECTION NodeManagerSessionImpl::upload
 }
 
