@@ -161,13 +161,19 @@ GeneratorBusinessC::doAttribute(IR__::AttributeDef_ptr attribute)
 	{
 		out << "void\n";
 		out << class_name_ << "::" << attribute_name << "(";
-		out << map_in_parameter_type(attribute->type_def()) << " param)\n{\n";
+		out << map_in_parameter_type(attribute->type_def()) << " param)\n"
+		out << "	throw(CORBA::SystemException";
+		handleException(attribute);
+		out << ")\n{\n";
 		out.insertUserSection(class_name_ + "::_" + attribute->name(), 0);
 		out << "}\n\n\n";
 	}
 
 	out << map_return_type(attribute->type_def()) << "\n";
-	out << class_name_ << "::" << attribute_name << "()\n{\n";
+	out << class_name_ << "::" << attribute_name << "()\n";
+	out << "	throw(CORBA::SystemException";
+	handleException(attribute);
+	out << ")\n{\n";
 	out.insertUserSection(class_name_ + "::" + attribute->name(), 0);
 	out << "}\n\n\n";
 }
