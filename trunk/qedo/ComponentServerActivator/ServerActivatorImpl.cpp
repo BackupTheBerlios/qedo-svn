@@ -20,10 +20,10 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.7 2003/02/18 14:35:34 tom Exp $";
+static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.8 2003/02/27 14:36:47 tom Exp $";
 
 #include <iostream>
-
+#include "fstream"
 #include "ServerActivatorImpl.h"
 #include <CosNaming.h>
 
@@ -215,6 +215,10 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 	if (debug_mode_)
 	{
+		std::ofstream ior_file;
+		ior_file.open("csa_callb.ior");
+		ior_file << my_string_ref << std::endl;
+		ior_file.close();
 		component_server_pid = _spawnl(_P_NOWAIT, "cs.exe", "cs.exe", "--debug", 
 			"--csa_ref", my_string_ref, NULL);
 	}
@@ -259,6 +263,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 #endif
 
 	component_server_activation.qedo_wait();
+	component_server_activation.qedo_reset();
 
 //#endif
 

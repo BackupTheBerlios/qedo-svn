@@ -77,7 +77,7 @@ qedo_lock::~qedo_lock() {
 
 qedo_cond::qedo_cond(char * sig_name) {
 #ifdef WIN32
-		m_event_handle = CreateEvent (NULL, TRUE /*auto-reset*/, FALSE /*initial: non-signaled*/, sig_name);
+		m_event_handle = CreateEvent (NULL, TRUE /*manua-reset*/, FALSE /*initial: non-signaled*/, sig_name);
 #else
 	pthread_cond_init(&m_cond, NULL):
 #endif
@@ -110,6 +110,14 @@ qedo_cond::qedo_signal() {
 	pthread_cond_signal(&m_cond);
 #endif
 }
+
+void
+qedo_cond::qedo_reset() {
+#ifdef WIN32
+	ResetEvent(m_event_handle);
+#else
+#endif
+};
 
 
 

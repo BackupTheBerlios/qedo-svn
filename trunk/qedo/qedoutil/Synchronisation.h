@@ -87,6 +87,9 @@ public:
 	void qedo_wait();
 
 	void qedo_signal();
+
+	void qedo_reset();
+
 };
 
 
