@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: PublisherPort.cpp,v 1.1 2002/10/07 07:17:02 tom Exp $";
+static char rcsid[] = "$Id: PublisherPort.cpp,v 1.2 2002/11/05 07:35:48 boehme Exp $";
 
 #include "PublisherPort.h"
 #include "Output.h"
@@ -152,7 +152,7 @@ PublisherPort::add_consumer (Components::EventConsumerBase_ptr consumer)
 }
 
 
-void 
+Components::EventConsumerBase_ptr 
 PublisherPort::remove_consumer (Components::Cookie* cookie)
 throw (Components::InvalidConnection)
 {
@@ -164,11 +164,15 @@ throw (Components::InvalidConnection)
 	{
 		if ((*con_iter).same_consumer (cookie))
 		{
+			Components::EventConsumerBase_var ret;
+
+			ret = (*con_iter).consumer();
+
 			consumers_.erase ( con_iter );
 
 			DEBUG_OUT2 ( "PublisherPort: Publisher unsubscribed for port ", port_name_ );
 
-			return;
+			return ret;
 		}
 	}
 

@@ -127,6 +127,22 @@ ObserverSessionImpl::remove()
 }
 
 
+void
+ObserverSessionImpl::push_event (Components::EventBase* ev)
+{
+// BEGIN USER INSERT SECTION ObserverSessionImpl::push_event
+// END USER INSERT SECTION ObserverSessionImpl::push_event
+}
+
+
+void
+ObserverSessionImpl::push_StatusInfo(::DiningPhilosophers::StatusInfo* ev)
+{
+// BEGIN USER INSERT SECTION ObserverSessionImpl::push_StatusInfo
+// END USER INSERT SECTION ObserverSessionImpl::push_StatusInfo
+}
+
+
 // BEGIN USER INSERT SECTION ObserverImpl
 // END USER INSERT SECTION ObserverImpl
 
@@ -174,7 +190,7 @@ ObserverImpl::configuration_complete()
 
 // BEGIN USER INSERT SECTION ObserverImpl::configuration_complete
     ObserverSessionImpl* segment = dynamic_cast<ObserverSessionImpl*>(obtain_executor("component"));
-	segment -> configuration_complete ();
+	//segment -> configuration_complete ();
 // END USER INSERT SECTION ObserverImpl::configuration_complete
 }
 

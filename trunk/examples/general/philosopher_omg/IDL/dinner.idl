@@ -31,7 +31,7 @@ module DiningPhilosophers {
 
 module DiningPhilosophers {
   component Observer {
-//@@@    consumes StatusInfo info;
+	consumes StatusInfo info;
   };
 
   home ObserverHome manages Observer {};
@@ -42,7 +42,7 @@ module DiningPhilosophers {
     attribute string name;
     uses Fork left;
     uses Fork right;
-//@@@    publishes StatusInfo info;
+    publishes StatusInfo info;
   };
 
   home PhilosopherHome manages Philosopher {

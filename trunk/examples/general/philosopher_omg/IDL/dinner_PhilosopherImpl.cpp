@@ -217,7 +217,7 @@ PhilosopherSessionImpl::run
         report = new PhilosopherState_impl(id_.c_str(), status, tickCount, haveLeft, haveRight);
 		try
 		{
-//			context_->push_info(report);
+			context_->push_info(report);
 		}
 		catch(CORBA::SystemException& ex)
 		{
@@ -557,8 +557,7 @@ PhilosopherSessionImpl::configuration_complete()
 #ifdef WIN32
 	gui_thread = new GUIThread;
 #endif
-    run();
-    //@@@ start (); 
+    start (); 
 // END USER INSERT SECTION PhilosopherSessionImpl::configuration_complete
 }
 
@@ -694,7 +693,7 @@ PhilosopherImpl::configuration_complete()
 
 // BEGIN USER INSERT SECTION PhilosopherImpl::configuration_complete
     PhilosopherSessionImpl* segment = dynamic_cast<PhilosopherSessionImpl*>(obtain_executor("component"));
-    segment->configuration_complete ();
+    //segment->configuration_complete ();
 // END USER INSERT SECTION PhilosopherImpl::configuration_complete
 }
 
@@ -766,7 +765,7 @@ PhilosopherHomeImpl::create ()
     bool right_hander = right_hander_counter_++ % 2 ? true : false;
 
     int tick = 1000 + rand() * 2000 / RAND_MAX;
-//@@@    return new PhilosopherImpl("give me a name!", tick, right_hander);
+return new PhilosopherImpl("give me a name!", tick, right_hander);
 // END USER INSERT SECTION PhilosopherHomeImpl::create
     return new PhilosopherImpl();
 }

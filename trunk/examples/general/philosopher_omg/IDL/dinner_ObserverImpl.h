@@ -64,6 +64,16 @@ namespace dinner
         void configuration_complete();
         void stop();
         void remove();
+        
+        //
+        // IDL:Components/EventConsumerBase/push_event:1.0
+        //
+        virtual void push_event (Components::EventBase* ev);
+        
+        //
+        // IDL:DiningPhilosophers/Observer/info:1.0
+        //
+        void push_StatusInfo(::DiningPhilosophers::StatusInfo* ev);
     
 // BEGIN USER INSERT SECTION ObserverSessionImpl
 private:

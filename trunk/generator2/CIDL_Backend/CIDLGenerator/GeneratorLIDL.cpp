@@ -383,6 +383,8 @@ void
 GeneratorLIDL::doPublishes(IR__::PublishesDef_ptr publishes)
 {
 	out << "\n//\n// " << publishes->id() << "\n//\n";
+
+	out << "void push_" << publishes->name() << "(in " << map_absolute_name(publishes->event()) << " evt);\n";
 }
 
 

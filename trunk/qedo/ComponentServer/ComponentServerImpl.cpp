@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.1 2002/10/07 07:17:02 tom Exp $";
+static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.2 2002/11/05 07:35:48 boehme Exp $";
 
 #include "ComponentServerImpl.h"
 #include "ContainerInterfaceImpl.h"
@@ -185,6 +185,8 @@ ComponentServerImpl::initialize()
 	CORBA::ValueFactoryBase_var factory;
 	factory = new Qedo::ConfigValueFactory_impl();
     orb_->register_value_factory ("IDL:omg.org/Components/ConfigValue:1.0", factory);
+	factory = new Qedo::CookieFactory_impl();
+    orb_->register_value_factory ("IDL:omg.org/Components/Cookie:1.0", factory);
 
 	csa_ref_->notify_component_server (this->_this());
 }
@@ -213,10 +215,13 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	Qedo::ContainerInterfaceImpl* container_if;
 
 	// handle configuration
-	const char* container_type_string;
+	const char* container_type_string = "";
+	Qedo::ConfigValue_impl* x;
 
 	for (unsigned int i = 0; i < config.length(); i++)
 	{
+		std::cerr << "Got ConfigValue: \"" << config[i]->name() << "\"\n";
+		x = dynamic_cast<Qedo::ConfigValue_impl*>((Components::ConfigValue*)config[i]);
 		if (! strcmp (config[i]->name(), "CONTAINER_TYPE"))
 		{
 			config[i]->value() >>= container_type_string;

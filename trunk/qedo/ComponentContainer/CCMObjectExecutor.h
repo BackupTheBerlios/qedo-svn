@@ -127,7 +127,7 @@ public:
 		Components::EventConsumerBase_ptr)
 		throw (Components::InvalidName, CORBA::SystemException);
 
-	void unsubscribe (const char*, Components::Cookie*)
+	Components::EventConsumerBase_ptr unsubscribe (const char*, Components::Cookie*)
 		throw (Components::InvalidName,
 			   Components::InvalidConnection,
 			   CORBA::SystemException);

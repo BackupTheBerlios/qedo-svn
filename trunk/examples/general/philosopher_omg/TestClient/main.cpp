@@ -3,10 +3,10 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.3 2002/10/31 16:27:29 tom Exp $
+// $Id: main.cpp,v 1.4 2002/11/05 07:34:16 boehme Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.3 2002/10/31 16:27:29 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.4 2002/11/05 07:34:16 boehme Exp $";
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
@@ -143,7 +143,7 @@ main (int argc, char** argv)
     orb->register_value_factory ("IDL:omg.org/Components/SubscriberDescription:1.0", new SubscriberDescriptionFactory_impl());
     orb->register_value_factory ("IDL:omg.org/Components/EmitterDescription:1.0", new EmitterDescriptionFactory_impl());
     orb->register_value_factory ("IDL:omg.org/Components/ConsumerDescription:1.0", new ConsumerDescriptionFactory_impl());
-    orb->register_value_factory ("IDL:omg.org/Components/ComponentPortDescription:1.0", new ComponentPortDescriptionFactory_impl());
+    orb->register_value_factory ("IDL:omg.org/Components/Cookie:1.0", new CookieFactory_impl());
 
 	CosNaming::NamingContext_var ns;
 
@@ -283,10 +283,10 @@ main (int argc, char** argv)
 		phil1->connect_right (a_fork);
 		phil2->connect_right (a_fork);
 		phil3->connect_right (a_fork);
-//@@@		DiningPhilosophers::StatusInfoConsumer_var consumer = obs->get_info();
-//@@@		phil1->connect_philosopher_state (consumer);
-//@@@		phil2->connect_philosopher_state (consumer);
-//@@@		phil3->connect_philosopher_state (consumer);
+		DiningPhilosophers::StatusInfoConsumer_var consumer = obs->get_consumer_info();
+		phil1->subscribe_info (consumer);
+		phil2->subscribe_info (consumer);
+		phil3->subscribe_info (consumer);
 		phil1->configuration_complete(); 
 		phil2->configuration_complete(); 
 		phil3->configuration_complete();

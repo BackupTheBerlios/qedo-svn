@@ -558,7 +558,7 @@ GeneratorServantC::doPublishes(IR__::PublishesDef_ptr publishes)
 	out << "::Components::Cookie* ck)\n";
 	out << "throw (Components::InvalidConnection, CORBA::SystemException)\n{\n";
 	out.indent();
-	out << "return ccm_object_executor_->unsubscribe(\"" << publishes->name() << "\", ck);\n";
+	out << "return " << event_name << "Consumer::_narrow(ccm_object_executor_->unsubscribe(\"" << publishes->name() << "\", ck));\n";
 	out.unindent();
 	out << "}\n\n\n";
 }
@@ -769,7 +769,7 @@ GeneratorServantC::genConsumerServants(IR__::ComponentDef_ptr component)
         out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
 		out.unindent();	
 		out << "}\n\n";
-	    out << "return consumer_ptr->push_" << consumes->event()->name() << "(ev);\n";
+	    out << "consumer_ptr->push_" << consumes->event()->name() << "(ev);\n";
 		out.unindent();
 		out << "}\n\n\n";
 
@@ -978,7 +978,7 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component)
 		out << class_name_ << "::push_" << a_publishes->name() << "(" << mapFullName(a_publishes->event());
 		out << "* ev)\n{\n";
 		out.indent();
-		out << "const TETRA::SubscribedConsumerVector& consumers = "; 
+		out << "const Qedo::SubscribedConsumerVector& consumers = "; 
 		out << "ccm_object_executor_->get_consumers_for_publisher (\"" << a_publishes->name() << "\");\n\n";
 		out << "for (int i = consumers.size(); i; i--)\n{\n";
 		out.indent();

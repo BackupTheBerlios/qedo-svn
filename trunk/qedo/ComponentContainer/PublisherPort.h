@@ -93,7 +93,7 @@ public:
 
     Components::Cookie* add_consumer (Components::EventConsumerBase_ptr);
 
-    void remove_consumer (Components::Cookie*)
+    Components::EventConsumerBase_ptr remove_consumer (Components::Cookie*)
         throw (Components::InvalidConnection);
 };
 

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.1 2002/10/07 07:17:02 tom Exp $";
+static char rcsid[] = "$Id: CCMObjectExecutor.cpp,v 1.2 2002/11/05 07:35:48 boehme Exp $";
 
 #include "CCMObjectExecutor.h"
 #include "GlobalHelpers.h"
@@ -429,7 +429,7 @@ throw (Components::InvalidName, CORBA::SystemException)
 }
 
 
-void 
+Components::EventConsumerBase_ptr 
 CCMObjectExecutor::unsubscribe (const char* publisher_name, Components::Cookie* ck)
 throw (Components::InvalidName, Components::InvalidConnection, CORBA::SystemException)
 {
@@ -439,9 +439,7 @@ throw (Components::InvalidName, Components::InvalidConnection, CORBA::SystemExce
 	{
 		if ((*pub_iter).port_name() == publisher_name)
 		{
-            (*pub_iter).remove_consumer (ck);
-
-			return;
+            return (*pub_iter).remove_consumer (ck);
         }
 	}
 
