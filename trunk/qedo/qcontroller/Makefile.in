@@ -48,6 +48,8 @@ LIBS += -L../qedoutil -lqedoutil \
 
 LDLIBS = ${LIBS}
 
+IDL_FLAGS = -I../ComponentIDL
+
 IDL_FILES = explore.idl
 
 SOURCES =	 $(IDL_FILES:.idl=.cpp) \
