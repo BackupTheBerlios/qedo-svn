@@ -1,0 +1,33 @@
+include ../config/Makefile.conf
+
+all : libIFRidl.a
+
+libIFRidl.a : IFR.o IFR_skel.o CIDL_Extension.o CIDL_Extension_skel.o
+	ar cr libIFRidl.a IFR.o IFR_skel.o CIDL_Extension.o CIDL_Extension_skel.o
+	ranlib libIFRidl.a
+
+IFR.o : IFR.h IFR.cpp
+	g++ $(DEBUG) -I$(ORBACUS_INSTALL_DIR)/include -I. -c IFR.cpp
+
+IFR_skel.o : IFR.h IFR_skel.h IFR_skel.cpp
+	g++ $(DEBUG) -I$(ORBACUS_INSTALL_DIR)/include -I. -c IFR_skel.cpp
+
+IFR.h IFR.cpp IFR_skel.h IFR_skel.cpp : IFR.idl
+	(LD_LIBRARY_PATH=$(ORBACUS_INSTALL_DIR)/lib:/usr/local/lib; export LD_LIBRARY_PATH; \
+	 $(ORBACUS_INSTALL_DIR)/bin/idl IFR.idl)
+
+CIDL_Extension.o : CIDL_Extension.h CIDL_Extension.cpp
+	g++ $(DEBUG) -I$(ORBACUS_INSTALL_DIR)/include -I. -c CIDL_Extension.cpp
+
+CIDL_Extension_skel.o : CIDL_Extension.h CIDL_Extension_skel.h CIDL_Extension_skel.cpp
+	g++ $(DEBUG) -I$(ORBACUS_INSTALL_DIR)/include -I. -c CIDL_Extension_skel.cpp
+
+CIDL_Extension.h CIDL_Extension.cpp CIDL_Extension_skel.h CIDL_Extension_skel.cpp : CIDL_Extension.idl
+	(LD_LIBRARY_PATH=$(ORBACUS_INSTALL_DIR)/lib:/usr/local/lib; export LD_LIBRARY_PATH; \
+	 $(ORBACUS_INSTALL_DIR)/bin/idl CIDL_Extension.idl)
+
+clean:
+	-rm libIFRidl.a
+	-rm *.o
+	-rm IFR.h IFR.cpp IFR_skel.h IFR_skel.cpp
+	-rm CIDL_Extension.h CIDL_Extension.cpp CIDL_Extension_skel.h CIDL_Extension_skel.cpp
