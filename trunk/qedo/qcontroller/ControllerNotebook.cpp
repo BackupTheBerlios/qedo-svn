@@ -55,11 +55,11 @@ void ControllerNotebook::CreateControllerPages(wxBoxSizer * sizerFrame)
 	// create ns_browser page
 	ns_browser_panel = new wxPanel(this);
 	ns_browser_ = new NSBrowserTreeCtrl (ns_browser_panel, NSBrowserTree_Ctrl, wxDefaultPosition, wxSize(400,400), wxTR_DEFAULT_STYLE );
-	AddPage( ns_browser_panel, wxT("NS Browser"), FALSE, 0 );
+	AddPage( ns_browser_panel, wxT("NS Browser"), FALSE, 1 );
 
 	// create Deployment page
 	 deployment_panel_ = new Deployment(this, DEPLOYMENT_ID, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE);
-	 AddPage(deployment_panel_, wxT("Deployment"), FALSE,0);
+	 AddPage(deployment_panel_, wxT("Deployment"), FALSE,1);
 
     // create Explorer page
 	 //qcexplorer_panel = new wxPanel(this);
@@ -68,16 +68,16 @@ void ControllerNotebook::CreateControllerPages(wxBoxSizer * sizerFrame)
 
 	// create Explorer page
 	 explorer_panel=new QedoExplorer(this, QEDOEXPLORER_ID, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE );
-	 AddPage(explorer_panel,wxT("Explorer"), FALSE,0);
+	 AddPage(explorer_panel,wxT("Explorer"), FALSE,1);
 
-	 
+
 
 
     SetSelection(0);
 
 }
 
-void 
+void
 ControllerNotebook::OnNSDRefresh(wxCommandEvent& WXUNUSED(event))
 {
 //	int sel = event.GetSelection();
