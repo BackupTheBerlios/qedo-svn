@@ -70,7 +70,7 @@ main
 	std::ofstream ior_file;
 	ior_file.open("rep.ior");
 
-	ior_file << rep_ior;
+	ior_file << rep_ior.c_str();
 
 	orb->run();
 
