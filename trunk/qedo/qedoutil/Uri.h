@@ -83,6 +83,9 @@
 Revision history:
 
 $Log: Uri.h,v $
+Revision 1.3  2003/10/21 16:11:49  tom
+adaptation for confog file in MICO version
+
 Revision 1.2  2003/09/09 11:57:49  neubauer
 qedoutil library for code reusage;
 
@@ -864,7 +867,7 @@ URI_< charT, stringT >::SchemeT URI_< charT, stringT >::getSchemeT() const {
 
 template< class charT, class stringT >
 const charT * const 
-URI_< charT, stringT >::SCHEME_CONST[ URI_< charT, stringT >::SCHEME_NUM ] = {
+typename URI_< charT, stringT >::SCHEME_CONST[ URI_< charT, stringT >::SCHEME_NUM ] = {
   "file", "http", "https", "ftp"
 };
 
