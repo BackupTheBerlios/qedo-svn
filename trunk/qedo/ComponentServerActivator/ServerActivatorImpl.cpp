@@ -29,7 +29,7 @@
 #include <CosNaming.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.18 2003/08/08 10:04:31 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.19 2003/09/03 14:33:26 neubauer Exp $";
 
 #ifdef _WIN32
 //#include <strstream>
@@ -327,7 +327,7 @@ throw (CORBA::SystemException)
 
 
 void 
-ServerActivatorImpl::notify_component_server (Components::Deployment::ComponentServer_ptr server)
+ServerActivatorImpl::notify_component_server (Qedo_Components::Deployment::ComponentServer_ptr server)
 throw (CORBA::SystemException)
 {
 	QedoLock lock (component_server_mutex_);

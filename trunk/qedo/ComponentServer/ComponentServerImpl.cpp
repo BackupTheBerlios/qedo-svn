@@ -29,7 +29,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.15 2003/09/01 10:48:00 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.16 2003/09/03 14:33:26 neubauer Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -235,20 +235,20 @@ ComponentServerImpl::initialize()
 	catch (CORBA::ORB::InvalidName&)
 	{
 		NORMAL_ERR ("ComponentServerImpl: Name Service not found");
-		csa_ref_->notify_component_server (Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 	catch (CORBA::SystemException&)
 	{
 		NORMAL_ERR ("ComponentServerImpl: Cannot narrow object reference of Name Service");
-		csa_ref_->notify_component_server (Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 
 	if (CORBA::is_nil (ns))
 	{
 		NORMAL_ERR ("ComponentServerImpl: Name Service is nil");
-		csa_ref_->notify_component_server (Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 
@@ -257,7 +257,7 @@ ComponentServerImpl::initialize()
 	if (gethostname (hostname, 256))
 	{
 		NORMAL_ERR ("ComponentServerImpl: Cannot determine my hostname");
-		csa_ref_->notify_component_server (Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 
@@ -280,13 +280,13 @@ ComponentServerImpl::initialize()
 	catch (CosNaming::NamingContext::NotFound&)
 	{
 		NORMAL_ERR ("ComponentServerImpl: Component Installer not found in Name Service");
-		csa_ref_->notify_component_server (Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 	catch (CORBA::SystemException&)
 	{
 		NORMAL_ERR ("ComponentServerImpl: CORBA system exception during resolve()");
-		csa_ref_->notify_component_server (Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 		
@@ -297,14 +297,14 @@ ComponentServerImpl::initialize()
 	catch (CORBA::SystemException&)
 	{
 		NORMAL_ERR ("ComponentServerImpl: Cannot narrow Component Installer");
-		csa_ref_->notify_component_server (Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 
 	if (CORBA::is_nil (component_installer_))
 	{
 		NORMAL_ERR ("ComponentServerImpl: Component Installer is nil");
-		csa_ref_->notify_component_server (Components::Deployment::ComponentServer::_nil());
+		csa_ref_->notify_component_server (Qedo_Components::Deployment::ComponentServer::_nil());
 		throw CannotInitialize();
 	}
 
@@ -315,7 +315,7 @@ ComponentServerImpl::initialize()
 	factory = new Qedo::CookieFactory_impl();
     orb_->register_value_factory ("IDL:omg.org/Components/Cookie:1.0", factory);
 
-	Components::Deployment::ComponentServer_var component_server = this->_this();
+	Qedo_Components::Deployment::ComponentServer_var component_server = this->_this();
 	csa_ref_->notify_component_server (component_server.in());
 	
 }

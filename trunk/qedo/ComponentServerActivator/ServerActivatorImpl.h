@@ -116,7 +116,7 @@ public:
 	/**
      * implements IDL:omg.org/HU_Components/Deployment/ServerActivator/notify_component_server:1.0
      */
-    virtual void notify_component_server (Components::Deployment::ComponentServer_ptr server)
+    virtual void notify_component_server (Qedo_Components::Deployment::ComponentServer_ptr server)
         throw(CORBA::SystemException);
 
 	/**
