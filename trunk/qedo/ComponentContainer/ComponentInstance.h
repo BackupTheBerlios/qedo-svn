@@ -51,6 +51,10 @@ class CCMContext;
 class CONTAINERDLL_API ComponentInstance
 {
 public:
+	/** the identity of this component */
+	std::string							uuid_;
+	/** configuration values */
+	Components::ConfigValues_var		config_;
 	/** object id of the component */
 	PortableServer::ObjectId_var		object_id_;
 	/** object reference of the component */
@@ -60,7 +64,7 @@ public:
 	/** generic executor */
 	Qedo::CCMObjectExecutor*			ccm_object_executor_;
 #ifndef _QEDO_NO_STREAMS
-        Qedo::StreamCCMObjectExecutor*          stream_ccm_object_executor_;
+	Qedo::StreamCCMObjectExecutor*		stream_ccm_object_executor_;
 #endif
 
 	/**
@@ -80,7 +84,7 @@ public:
 	/**
 	 * constructor
 	 */
-	ComponentInstance();
+	//ComponentInstance();
 
 	/**
 	 * copy constructor
@@ -96,6 +100,12 @@ public:
 	 * destructor
 	 */
 	~ComponentInstance();
+
+	/**
+	 * configure with ConfigValues
+	 * \param config The ConfigValues for configuration.
+	 */
+	void configure( const Components::ConfigValues& config );
 
 	/**
 	 * provides the object reference of the component

@@ -152,6 +152,18 @@ module Components {
 		public SubscriberDescriptions publishers;
 	};
 
+	valuetype ConfigValue {
+		public FeatureName name;
+		public any value;
+	};
+
+#ifdef TAO_CIDL_GEN
+	typedef sequence<octet> ConfigValues;
+#else
+
+	typedef sequence<ConfigValue> ConfigValues;
+#endif
+
 	interface Navigation {
 		Object provide_facet (in FeatureName name)
 			raises (InvalidName);
@@ -226,6 +238,8 @@ module Components {
 	interface KeylessCCMHome {
 		CCMObject create_component()
 			raises (CreateFailure);
+		CCMObject create_component_with_config(in ConfigValues config) // extension !!!
+			raises (CreateFailure);
 	};
 
 	interface HomeFinder {
@@ -245,17 +259,6 @@ module Components {
 			raises (WrongComponentType);
 	};
 
-	valuetype ConfigValue {
-		public FeatureName name;
-		public any value;
-	};
-
-#ifdef TAO_CIDL_GEN
-	typedef sequence<octet> ConfigValues;
-#else
-
-	typedef sequence<ConfigValue> ConfigValues;
-#endif
 	interface StandardConfigurator : Configurator {
 		void set_configuration (in ConfigValues descr);
 	};

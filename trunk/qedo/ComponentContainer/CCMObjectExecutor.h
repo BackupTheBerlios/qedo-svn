@@ -78,9 +78,6 @@ private:
 	/** home servant */
 	HomeServantBase*				home_servant_;
 
-	/** the identity of this component */
-	std::string						uuid_;
-
 	/**
 	 * copy constructor shall not be called
 	 */

@@ -24,7 +24,7 @@
 #include "HomeServantBase.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.24 2003/10/17 09:11:40 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: HomeServantBase.cpp,v 1.25 2003/10/30 11:07:40 neubauer Exp $";
 
 
 namespace Qedo {
@@ -121,7 +121,33 @@ HomeServantBase::reference_to_oid (const CORBA::Object_ptr obj)
 
 
 ComponentInstance& 
-HomeServantBase::incarnate_component (Components::ExecutorLocator_ptr executor_locator, CCMContext* ccm_context)
+HomeServantBase::incarnate_component
+( Components::ExecutorLocator_ptr executor_locator
+, CCMContext* ccm_context )
+{
+	DEBUG_OUT ("HomeServantBase: incarnate_component() called");
+
+	ccm_context->container (this->container_);
+
+	// create object reference
+	CORBA::Object_var component_ref = this->create_primary_object_reference (this->comp_repository_id_);
+
+	// create object id
+	PortableServer::ObjectId_var object_id = this->reference_to_oid (component_ref);
+
+	// create component instance and register it
+	ComponentInstance new_component (object_id, component_ref, executor_locator, ccm_context, this);
+	component_instances_.push_back (new_component);
+	
+	return component_instances_.back ();
+}
+
+
+ComponentInstance& 
+HomeServantBase::incarnate_component
+( Components::ExecutorLocator_ptr executor_locator
+, CCMContext* ccm_context
+, const Components::ConfigValues& config)
 {
 	ccm_context->container (this->container_);
 
@@ -133,6 +159,7 @@ HomeServantBase::incarnate_component (Components::ExecutorLocator_ptr executor_l
 
 	// create component instance and register it
 	ComponentInstance new_component (object_id, component_ref, executor_locator, ccm_context, this);
+	new_component.configure( config );
 	component_instances_.push_back (new_component);
 	
 	return component_instances_.back ();

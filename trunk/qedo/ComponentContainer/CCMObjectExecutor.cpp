@@ -37,7 +37,7 @@ extern "C" {
 }
 #endif
 
-static char rcsid[] UNUSED = "$Id: CCMObjectExecutor.cpp,v 1.23 2003/08/01 14:57:24 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: CCMObjectExecutor.cpp,v 1.24 2003/10/30 11:07:40 neubauer Exp $";
 
 namespace Qedo {
 
@@ -50,45 +50,6 @@ CCMObjectExecutor::CCMObjectExecutor (const PortableServer::ObjectId& component_
   home_servant_ (home_servant)
 {
 	home_servant_->_add_ref();
-
-	// create uuid
-#ifdef _WIN32
-	GUID guid;
-	CoCreateGuid(&guid);
-	LPOLESTR lpolestr;
-	StringFromCLSID(guid, &lpolestr);
-	int i = wcstombs(NULL, lpolestr, 0);
-   char *buf = new char[i];
-    wcstombs(buf, lpolestr, i);
-	// remove { and }
-	buf[i - 1] = '\0';
-	uuid_ = buf;
-	uuid_.erase(0, 1);
-	delete [] buf;
-	CoTaskMemFree(lpolestr);
-#else /* Linux */
-	uuid_t uuid;
-	char buf[38];
-	uuid_generate(uuid);
-	sprintf(buf,"%2.2X%2.2X%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X-%2.2X%2.2X%2.2X%2.2X%2.2X%2.2X\n"
-	                ,(uint32_t)uuid[0]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*1]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*2]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*3]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*4]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*5]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*6]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*7]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*8]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*9]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*10]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*11]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*12]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*13]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*14]
-	                ,(uint8_t)uuid[sizeof(uint8_t)*15]);
-	uuid_ = buf;
-#endif
 }
 
 

@@ -23,8 +23,9 @@
 #include "HomeServantBase.h"
 #include "ComponentInstance.h"
 #include "Output.h"
+#include "qedoutil.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentInstance.cpp,v 1.12 2003/10/17 09:11:40 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstance.cpp,v 1.13 2003/10/30 11:07:40 neubauer Exp $";
 
 
 namespace Qedo {
@@ -51,17 +52,19 @@ ComponentInstance::ComponentInstance (const PortableServer::ObjectId& object_id,
 #ifndef _QEDO_NO_STREAMS
         executor_context->stream_ccm_object_executor (stream_ccm_object_executor_);
 #endif
+
+	uuid_ = createUUID();
 }
 
 
-ComponentInstance::ComponentInstance()
+/*ComponentInstance::ComponentInstance()
 {
 	ccm_object_executor_ = 0;
 
 #ifndef _QEDO_NO_STREAMS
         stream_ccm_object_executor_ = 0;
 #endif
-}
+}*/
 
 
 ComponentInstance::ComponentInstance (const ComponentInstance& component_entry)
@@ -113,6 +116,21 @@ ComponentInstance::~ComponentInstance()
 #ifndef _QEDO_NO_STREAMS
         stream_ccm_object_executor_->_remove_ref();
 #endif
+}
+
+
+void 
+ComponentInstance::configure( const Components::ConfigValues& config )
+{
+	config_ = new Components::ConfigValues( config );
+
+	//
+	// process ConfigValues
+	//
+	for (unsigned int i = 0; i < config_->length(); i++)
+	{
+		DEBUG_OUT2 ("ComponentInstance: configure ", (*config_)[i]->name() );
+	}
 }
 
 

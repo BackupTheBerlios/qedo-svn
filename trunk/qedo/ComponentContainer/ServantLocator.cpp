@@ -26,7 +26,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.9 2003/10/05 18:34:06 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.10 2003/10/30 11:07:40 neubauer Exp $";
 
 namespace Qedo {
 
@@ -75,7 +75,7 @@ throw (PortableServer::ForwardRequest, CORBA::SystemException)
 			 iter != home_servant_->container_->services_preinvoke_.end(); iter++)
 		{
  			service = dynamic_cast<Components::CCMService_ptr>((*iter).executor_locator_.in());
- 			service->preinvoke((*iter).ccm_object_executor_->uuid_.c_str(), operation);
+ 			service->preinvoke((*iter).uuid_.c_str(), operation);
 
 		}
 	}
@@ -105,7 +105,7 @@ throw (CORBA::SystemException)
 			 iter != home_servant_->container_->services_postinvoke_.end(); iter++)
 		{
  			service = dynamic_cast<Components::CCMService_ptr>((*iter).executor_locator_.in());
- 			service->postinvoke((*iter).ccm_object_executor_->uuid_.c_str(), operation);
+ 			service->postinvoke((*iter).uuid_.c_str(), operation);
 		}
 	}
 
