@@ -10,7 +10,8 @@ namespace QEDO_CIDL_Generator {
 
 GeneratorBusinessH::GeneratorBusinessH
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: CPPBase(repository)
+: CPPBase(repository),
+  ph_generator_(new GeneratorPersistenceH(repository))
 {
 }
 
@@ -28,6 +29,10 @@ GeneratorBusinessH::generate(std::string target, std::string fileprefix)
 	catch (InitializeError) { return; }
 
 	doGenerate();
+
+	// generate source code for PSS
+	ph_generator_->generate(target, fileprefix);
+	ph_generator_->destroy();
 }
 	
 
@@ -361,7 +366,8 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection("file_pre", 2);
 	out << "#include <CORBA.h>\n";
 	out << "#include \"" << file_prefix_ << "_BUSINESS.h\"\n";
-	out << "#include \"" << file_prefix_ << "_PSS.h\"\n";
+	if(composition->lifecycle()==CIDL::lc_Entity || composition->lifecycle()==CIDL::lc_Process)
+		out << "#include \"" << file_prefix_ << "_PSS.h\"\n";
 	out << "#include \"valuetypes.h\"\n";
 	out << "#include \"RefCountBase.h\"\n";
 	if(composition->lifecycle()==CIDL::lc_Entity)
