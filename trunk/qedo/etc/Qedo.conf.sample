@@ -9,7 +9,7 @@
 <SECTION name="General">
 
 	<CONFIGVALUE name="VerboseOutput" value="false"/>
-	<CONFIGVALUE name="NameService" value="corbaloc:inet:geist:3000"/>
+	<CONFIGVALUE name="NameService" value="corbaloc::geist:3000/NameService""/>
 
 	<SECTION name="Debug">
 		<CONFIGVALUE name="DebugMode" value="false"/>
