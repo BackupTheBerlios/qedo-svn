@@ -403,7 +403,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
 	out << "#else\n";
 	out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
-	out << "endif\n";
+	out << "#endif\n";
 	out << "// register all ports\n";
 	genFacetRegistration(home_);
 	genReceptacleRegistration(home_);

@@ -537,8 +537,9 @@ cp cidl.hpp cidl.h
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Processing grammar file $(InputPath): Tool is $(YACC)"
-						CommandLine="env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y 
-cp cidl.hpp cidl.h
+						CommandLine="set LC_ALL=C 
+$(YACC) -y -v -d -o cidl.cpp cidl.y
+copy cidl.hpp cidl.h
 "
 						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
 				</FileConfiguration>

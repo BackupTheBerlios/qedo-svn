@@ -11,7 +11,7 @@
 #include "GeneratorVC7.h"
 #include "TestMode.h"
 #include "version.h"
-#include <frontend.h>
+#include "frontend.h"
 
 #include <signal.h>
 #include <iostream>
