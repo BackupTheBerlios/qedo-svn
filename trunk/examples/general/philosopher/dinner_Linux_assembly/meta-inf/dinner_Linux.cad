@@ -1,0 +1,195 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://cif.sourceforge.net/componentassembly.dtd">
+
+<componentassembly id="dinner_Linux">
+
+    <description>Example assembly"</description>
+
+    <componentfiles>
+        <componentfile id="philosopher_file">
+            <fileinarchive name="dinner_PhilosopherImpl.zip"/>
+        </componentfile>
+
+        <componentfile id="cutlery_file">
+            <fileinarchive name="dinner_CutleryImpl.zip"/>
+        </componentfile>
+
+        <componentfile id="observer_file">
+            <fileinarchive name="dinner_ObserverImpl.zip"/>
+        </componentfile>
+    </componentfiles>
+
+    <partitioning>
+	<processcollocation>
+        <homeplacement id="pHome">
+	        <componentfileref idref="philosopher_file"/>
+			<componentimplref idref="UUID-3363493a-a250-4134-90ed-11be6641baa4"/>
+  	        <componentinstantiation id="atze">
+				<componentproperties>
+					<fileinarchive name="meta-inf/atze.cpf"/>
+				</componentproperties>
+	        </componentinstantiation>
+	        <componentinstantiation id="bob">
+				<componentproperties>
+					<fileinarchive name="meta-inf/bob.cpf"/>
+				</componentproperties>
+	        </componentinstantiation>
+	        <componentinstantiation id="charly">
+				<componentproperties>
+					<fileinarchive name="meta-inf/charly.cpf"/>
+				</componentproperties>
+	        </componentinstantiation>
+	        <destination></destination>
+	</homeplacement>
+	</processcollocation>
+
+	<processcollocation>
+
+
+	    <homeplacement id="cHome">
+	        <componentfileref idref="cutlery_file"/>
+			<componentimplref idref="UUID-84894022-309f-4b9c-b2e7-9e8586b97d83"/>
+	        <componentinstantiation id="fork1">
+				<registercomponent><registerwithnaming name="CCM/Components/fork1"/></registercomponent>
+			</componentinstantiation>
+	        <componentinstantiation id="fork2">
+				<registercomponent><registerwithnaming name="CCM/Components/fork2"/></registercomponent>
+			</componentinstantiation>
+	        <destination></destination>
+	    </homeplacement>
+	</processcollocation>
+
+	<processcollocation>
+
+	    <homeplacement id="oHome">
+	        <componentfileref idref="observer_file"/>
+			<componentimplref idref="UUID-fe1f9be4-d952-47c2-9e7d-c0f0b00c3a06"/>
+            <componentinstantiation id="theObserver">
+			    <registercomponent><registerwithnaming name="CCM/Components/Observer"/></registercomponent>
+			</componentinstantiation>
+	        <destination></destination>
+	    </homeplacement>
+	</processcollocation>
+    </partitioning>
+
+
+    <connections>
+	<connectinterface>
+	    <usesport>
+		<usesidentifier>left_hand</usesidentifier>
+		<componentinstantiationref idref="atze"/>
+	    </usesport>
+
+	    <providesport>
+		<providesidentifier>the_fork</providesidentifier>
+		<componentinstantiationref idref="fork1"/>
+	    </providesport>
+	</connectinterface>
+
+	<connectinterface>
+	    <usesport>
+		<usesidentifier>right_hand</usesidentifier>
+		<componentinstantiationref idref="atze"/>
+	    </usesport>
+
+	    <providesport>
+		<providesidentifier>the_fork</providesidentifier>
+		<componentinstantiationref idref="fork2"/>
+	    </providesport>
+	</connectinterface>
+
+	<connectinterface>
+	    <usesport>
+		<usesidentifier>left_hand</usesidentifier>
+		<componentinstantiationref idref="bob"/>
+	    </usesport>
+
+	    <providesport>
+		<providesidentifier>the_fork</providesidentifier>
+		<componentinstantiationref idref="fork1"/>
+	    </providesport>
+	</connectinterface>
+
+	<connectinterface>
+	    <usesport>
+		<usesidentifier>right_hand</usesidentifier>
+		<componentinstantiationref idref="bob"/>
+	    </usesport>
+
+	    <providesport>
+		<providesidentifier>the_fork</providesidentifier>
+		<componentinstantiationref idref="fork2"/>
+	    </providesport>
+	</connectinterface>
+
+	<connectinterface>
+	    <usesport>
+		<usesidentifier>left_hand</usesidentifier>
+		<componentinstantiationref idref="charly"/>
+	    </usesport>
+
+	    <providesport>
+		<providesidentifier>the_fork</providesidentifier>
+		<componentinstantiationref idref="fork1"/>
+	    </providesport>
+	</connectinterface>
+
+	<connectinterface>
+	    <usesport>
+		<usesidentifier>right_hand</usesidentifier>
+		<componentinstantiationref idref="charly"/>
+	    </usesport>
+
+	    <providesport>
+		<providesidentifier>the_fork</providesidentifier>
+		<componentinstantiationref idref="fork2"/>
+	    </providesport>
+	</connectinterface>
+
+	<connectevent>
+	    <consumesport>
+		<consumesidentifier>philosopher_state</consumesidentifier>
+		<componentinstantiationref idref="theObserver"/>
+	    </consumesport>
+
+	    <publishesport>
+		<publishesidentifier>philosopher_state</publishesidentifier>
+		<componentinstantiationref idref="atze"/>
+	    </publishesport>
+	</connectevent>
+
+	<connectevent>
+	    <consumesport>
+		<consumesidentifier>philosopher_state</consumesidentifier>
+		<componentinstantiationref idref="theObserver"/>
+	    </consumesport>
+
+	    <publishesport>
+		<publishesidentifier>philosopher_state</publishesidentifier>
+		<componentinstantiationref idref="bob"/>
+	    </publishesport>
+	</connectevent>
+
+	<connectevent>
+	    <consumesport>
+		<consumesidentifier>philosopher_state</consumesidentifier>
+		<componentinstantiationref idref="theObserver"/>
+	    </consumesport>
+
+	    <publishesport>
+		<publishesidentifier>philosopher_state</publishesidentifier>
+		<componentinstantiationref idref="charly"/>
+	    </publishesport>
+	</connectevent>
+
+    </connections>
+
+    <extension class="startorder" origin="HU">theObserver</extension>
+    <extension class="startorder" origin="HU">fork1</extension>
+    <extension class="startorder" origin="HU">fork2</extension>
+    <extension class="startorder" origin="HU">atze</extension>
+    <extension class="startorder" origin="HU">bob</extension>
+    <extension class="startorder" origin="HU">charly</extension>
+
+</componentassembly>
+
