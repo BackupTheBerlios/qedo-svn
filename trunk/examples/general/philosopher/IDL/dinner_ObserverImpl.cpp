@@ -38,6 +38,7 @@ ObserverSessionImpl::~ObserverSessionImpl()
 
 void
 ObserverSessionImpl::set_context(::dinner::CCM_Observer_Context_ptr context)
+    throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = ::dinner::CCM_Observer_Context::_duplicate(context);
 }
@@ -45,6 +46,7 @@ ObserverSessionImpl::set_context(::dinner::CCM_Observer_Context_ptr context)
 
 void
 ObserverSessionImpl::configuration_complete()
+    throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::configuration_complete
 // END USER INSERT SECTION ObserverSessionImpl::configuration_complete
@@ -52,15 +54,8 @@ ObserverSessionImpl::configuration_complete()
 
 
 void
-ObserverSessionImpl::stop()
-{
-// BEGIN USER INSERT SECTION ObserverSessionImpl::stop
-// END USER INSERT SECTION ObserverSessionImpl::stop
-}
-
-
-void
 ObserverSessionImpl::remove()
+    throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::remove
 // END USER INSERT SECTION ObserverSessionImpl::remove
@@ -69,6 +64,7 @@ ObserverSessionImpl::remove()
 
 void
 ObserverSessionImpl::push_event (Components::EventBase* ev)
+    throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::push_event
 	dinner::PhilosopherState* e = dinner::PhilosopherState::_downcast (ev);
@@ -85,6 +81,7 @@ ObserverSessionImpl::push_event (Components::EventBase* ev)
 
 void
 ObserverSessionImpl::push_PhilosopherState(::dinner::PhilosopherState* ev)
+    throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::push_PhilosopherState
 	cout << "ObserverSessionImpl: EVENT: Philosoph " << ev->name() << " is ";
@@ -137,6 +134,7 @@ ObserverImpl::~ObserverImpl()
 
 ::CORBA::Object*
 ObserverImpl::obtain_executor(const char* name)
+    throw (CORBA::SystemException)
 {
     if (! strcmp ( name, "component" ) ) {
         return Components::EnterpriseComponent::_duplicate (component_);
@@ -148,6 +146,7 @@ ObserverImpl::obtain_executor(const char* name)
 
 void
 ObserverImpl::release_executor(::CORBA::Object_ptr executor)
+    throw (CORBA::SystemException)
 {
     CORBA::release (executor);
 }
@@ -155,6 +154,7 @@ ObserverImpl::release_executor(::CORBA::Object_ptr executor)
 
 void
 ObserverImpl::configuration_complete()
+    throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
     component_->configuration_complete();
 
@@ -165,6 +165,7 @@ ObserverImpl::configuration_complete()
 
 void
 ObserverImpl::set_session_context(::Components::SessionContext_ptr context)
+    throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = ::dinner::CCM_Observer_Context::_narrow(context);
     
@@ -174,6 +175,7 @@ ObserverImpl::set_session_context(::Components::SessionContext_ptr context)
 
 void
 ObserverImpl::ccm_activate()
+    throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION ObserverImpl::ccm_activate
 	cout << "ObserverImpl: ccm_activate() called" << endl;
@@ -183,6 +185,7 @@ ObserverImpl::ccm_activate()
 
 void
 ObserverImpl::ccm_passivate()
+    throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION ObserverImpl::ccm_passivate
 	cout << "ObserverImpl: ccm_passivate() called" << endl;
@@ -192,6 +195,7 @@ ObserverImpl::ccm_passivate()
 
 void
 ObserverImpl::ccm_remove()
+    throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION ObserverImpl::ccm_remove
 	cout << "ObserverImpl: ccm_remove() called" << endl;
@@ -220,6 +224,7 @@ ObserverHomeImpl::~ObserverHomeImpl()
 
 void
 ObserverHomeImpl::set_context(Components::CCMContext_ptr ctx)
+    throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = ::dinner::CCM_Observer_Context::_narrow(ctx);
 }
@@ -227,6 +232,7 @@ ObserverHomeImpl::set_context(Components::CCMContext_ptr ctx)
 
 ::Components::EnterpriseComponent_ptr
 ObserverHomeImpl::create ()
+    throw (CORBA::SystemException, Components::CreateFailure)
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::create
 	cout << "ObserverHomeImpl: create() called" << endl;
@@ -246,6 +252,7 @@ ObserverHomeImpl::my_name()
 
 void
 ObserverHomeImpl::muell(CORBA::Long l)
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::muell
 // END USER INSERT SECTION ObserverHomeImpl::muell
@@ -254,6 +261,7 @@ ObserverHomeImpl::muell(CORBA::Long l)
 
 ::Components::EnterpriseComponent_ptr
 ObserverHomeImpl::do_it(const char* name, dinner::PhilosopherState* state)
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::do_it
 	return 0;
@@ -263,6 +271,7 @@ ObserverHomeImpl::do_it(const char* name, dinner::PhilosopherState* state)
 
 ::Components::EnterpriseComponent_ptr
 ObserverHomeImpl::find_it(const char* name)
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::find_it
 	return 0;

@@ -43,20 +43,29 @@ namespace dinner
         ObserverSessionImpl();
         ~ObserverSessionImpl();
         
-        void set_context(::dinner::CCM_Observer_Context_ptr context);
-        void configuration_complete();
-        void stop();
-        void remove();
+        void set_context(::dinner::CCM_Observer_Context_ptr context)
+            throw (CORBA::SystemException, Components::CCMException);
+        
+        void configuration_complete()
+            throw (CORBA::SystemException, Components::InvalidConfiguration);
+        
+        void remove()
+            throw (CORBA::SystemException);
+        
         
         //
         // IDL:Components/EventConsumerBase/push_event:1.0
         //
-        virtual void push_event (Components::EventBase* ev);
+        virtual void push_event (Components::EventBase* ev)
+            throw (CORBA::SystemException);
+        
         
         //
         // IDL:dinner/Observer/philosopher_state:1.0
         //
-        void push_PhilosopherState(::dinner::PhilosopherState* ev);
+        void push_PhilosopherState(::dinner::PhilosopherState* ev)
+            throw (CORBA::SystemException);
+        
     
 // BEGIN USER INSERT SECTION ObserverSessionImpl
 // END USER INSERT SECTION ObserverSessionImpl
@@ -156,12 +165,14 @@ namespace dinner
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0
         //
-        virtual void set_context (Components::CCMContext_ptr ctx);
+        virtual void set_context (Components::CCMContext_ptr ctx)
+            throw (CORBA::SystemException, Components::CCMException);
         
         //
         // IDL:.../create:1.0
         //
-        virtual ::Components::EnterpriseComponent_ptr create();
+        virtual ::Components::EnterpriseComponent_ptr create()
+            throw (CORBA::SystemException, Components::CreateFailure);
         
         //
         // IDL:dinner/ObserverHome/my_name:1.0
