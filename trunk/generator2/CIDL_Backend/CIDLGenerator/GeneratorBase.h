@@ -33,6 +33,7 @@ protected:
 	void doGenerate();
 
 	// module
+	void handleModule(IR__::ModuleDef_ptr module);
 	virtual void doModule(IR__::ModuleDef_ptr module);
 
 	// interface

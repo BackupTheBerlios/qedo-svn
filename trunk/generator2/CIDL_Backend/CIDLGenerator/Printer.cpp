@@ -5,6 +5,15 @@ namespace QEDO_CIDL_Generator {
 
 
 Printer& 
+Printer::operator<<(int text)
+{
+	stream_ << text;
+
+	return *this;
+}
+
+
+Printer& 
 Printer::operator<<(std::string text)
 {
 	if(new_line_)

@@ -136,7 +136,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=distribution
-PostBuild_Cmds=md   ..\..\..\qedo_dist_orbacus_d  	md   ..\..\..\qedo_dist_orbacus_d\bin  	copy   cidl_gen.exe   ..\..\..\qedo_dist_orbacus_d\bin  	mkdir   $(QEDO)\bin  	copy   cidl_gen.exe   $(QEDO)\bin\ 
+PostBuild_Cmds=md    ..\..\..\qedo_dist_orbacus_d   	md    ..\..\..\qedo_dist_orbacus_d\bin   	copy    cidl_gen.exe    ..\..\..\qedo_dist_orbacus_d\bin   	mkdir    $(QEDO)\bin   	copy    cidl_gen.exe    $(QEDO)\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "CIDLGenerator - Win32 Debug_tao"
@@ -225,6 +225,10 @@ SOURCE=.\GeneratorServantH.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\GeneratorVC7.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\IDLBase.cpp
 # End Source File
 # Begin Source File
@@ -282,6 +286,10 @@ SOURCE=.\GeneratorServantC.h
 # Begin Source File
 
 SOURCE=.\GeneratorServantH.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\GeneratorVC7.h
 # End Source File
 # Begin Source File
 

@@ -29,6 +29,7 @@ public:
 	Printer() : indent_(0), new_line_(true) {}
 	~Printer() {}
 
+	Printer& operator<<(int text);
 	Printer& operator<<(std::string text);
 	Printer& operator<<(std::ifstream& text);
 

@@ -7,6 +7,7 @@
 #include "GeneratorBusinessC.h"
 #include "GeneratorServantH.h"
 #include "GeneratorServantC.h"
+#include "GeneratorVC7.h"
 #include "TestMode.h"
 #include <frontend.h>
 
@@ -37,6 +38,7 @@ printUsage()
 	std::cerr << "        --business : generate business code skeletons" << std::endl;
 	std::cerr << "        --servant : generate servant code" << std::endl;
 	std::cerr << "        --out <fileprefix> : idl files will be prefixed with fileprefix" << std::endl;
+	std::cerr << "		  --vc7 : generate VC7 projects" << std::endl;
 }
 
 
@@ -101,8 +103,10 @@ main
 	repository = new QEDO_ComponentRepository::CIDLRepository_impl ( orb, root_poa );
 	bool generateBusiness = false;
 	bool generateServant = false;
+	bool generatevc7 = false;
 	std::string target;
 	std::string fileprefix = "";
+	std::string target_file_name = argv[argc - 1];
 
 	//
 	// process arguments
@@ -137,6 +141,15 @@ main
 		else if(strcmp(option, "--servant") == 0)
 		{
 			generateServant = true;
+            
+            for(int j = i ; j + 1 < argc ; j++)
+                argv[j] = argv[j + 1];
+            
+            argc--;
+		}
+		else if(strcmp(option, "--vc7") == 0)
+		{
+			generatevc7 = true;
             
             for(int j = i ; j + 1 < argc ; j++)
                 argv[j] = argv[j + 1];
@@ -251,6 +264,17 @@ main
 			new QEDO_CIDL_Generator::GeneratorServantC(repository);
 		sc_generator->generate(target, fileprefix);
 		sc_generator->destroy();
+	}
+
+	if(generatevc7)
+	{
+		// generate VC7 projects
+		std::cout << "Generating VC7 projetcs for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorVC7 *vc7_generator =
+			new QEDO_CIDL_Generator::GeneratorVC7(repository);
+		vc7_generator->target_file_name_ = target_file_name;
+		vc7_generator->generate(target, fileprefix);
+		vc7_generator->destroy();
 	}
 
 	signal ( SIGINT, SIG_DFL );

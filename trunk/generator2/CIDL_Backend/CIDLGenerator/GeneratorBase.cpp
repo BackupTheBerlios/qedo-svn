@@ -160,6 +160,19 @@ GeneratorBase::doGenerate()
 //
 // module
 //
+void 
+GeneratorBase::handleModule(IR__::ModuleDef_ptr module)
+{
+	IR__::ContainedSeq_var contained_seq = module->contents(CORBA__::dk_Module, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::ModuleDef_var a_module = IR__::ModuleDef::_narrow(((*contained_seq)[i]));
+		doModule(a_module);
+	}
+}
+
+
 void
 GeneratorBase::doModule(IR__::ModuleDef_ptr module)
 {

@@ -381,6 +381,9 @@ copy cidl_gend.exe &quot;%QEDO%\bin&quot;
 				RelativePath=".\GeneratorServantH.cpp">
 			</File>
 			<File
+				RelativePath="GeneratorVC7.cpp">
+			</File>
+			<File
 				RelativePath="IDLBase.cpp">
 			</File>
 			<File
@@ -425,6 +428,9 @@ copy cidl_gend.exe &quot;%QEDO%\bin&quot;
 			</File>
 			<File
 				RelativePath=".\GeneratorServantH.h">
+			</File>
+			<File
+				RelativePath="GeneratorVC7.h">
 			</File>
 			<File
 				RelativePath="IDLBase.h">
