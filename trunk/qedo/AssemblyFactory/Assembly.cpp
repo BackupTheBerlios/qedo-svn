@@ -23,7 +23,7 @@
 #include "Assembly.h"
 #include "CADReader.h"
 #include "CPFReader.h"
-#include "StreamComponents.h"
+#include "Components.h"
 
 
 namespace Qedo {
