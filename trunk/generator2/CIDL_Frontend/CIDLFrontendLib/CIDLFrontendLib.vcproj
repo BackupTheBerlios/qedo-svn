@@ -55,8 +55,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug_orbacus|Win32"
-			OutputDirectory=".\CIDLFrontendLib___Win32_Debug_orbacus"
-			IntermediateDirectory=".\CIDLFrontendLib___Win32_Debug_orbacus"
+			OutputDirectory=".\Win32_Debug_orbacus"
+			IntermediateDirectory=".\Win32_Debug_orbacus"
 			ConfigurationType="4"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"

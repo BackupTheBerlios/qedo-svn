@@ -10,7 +10,7 @@ namespace QEDO_CIDL_Generator {
 
 GeneratorServantH::GeneratorServantH
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: GeneratorBase(repository)
+: CPPBase(repository)
 {
 }
 
@@ -19,41 +19,6 @@ GeneratorServantH::~GeneratorServantH
 ()
 {
 }
-
-
-bool
-GeneratorServantH::open_module(IR__::Contained* cur_cont, std::string prefix)
-{
-	IR__::Container_ptr a_container = cur_cont->defined_in();
-	if(a_container->def_kind() == CORBA__::dk_Module) 
-	{
-		IR__::ModuleDef_var a_module = IR__::ModuleDef::_narrow(a_container);
-		out << "namespace ";
-		if(! this->open_module(a_module))
-		{
-			out << prefix;
-		}
-		out << mapName(a_module) << " {\n";
-		out.indent();
-		return true;
-	}
-
-	return false;
-};
-
-
-void
-GeneratorServantH::close_module(IR__::Contained* cur_cont)
-{
-	IR__::Container_ptr act_container=cur_cont->defined_in();
-	if(act_container->def_kind()==CORBA__::dk_Module) 
-	{
-		IR__::ModuleDef_var act_mod = IR__::ModuleDef::_narrow(act_container);
-		this->close_module(act_mod);
-		out.unindent();
-		out << "};\n";
-	}
-};
 
 
 void
@@ -279,13 +244,13 @@ GeneratorServantH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "#include \"SessionHomeServant.h\"\n\n\n";
 
 	// achtung: wenn kein modul, sollte vielleicht Servant_ der prefix für alle servants sein?
-	open_module(composition->ccm_component(), "Servants_");
+	open_module(out, composition->ccm_component(), "Servants_");
 	out << "\n\n";
 
 	doComponent(composition->ccm_component());
 	doHome(composition->ccm_home());
 
-	close_module(composition->ccm_component());
+	close_module(out, composition->ccm_component());
 
 
 	//

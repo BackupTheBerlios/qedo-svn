@@ -34,7 +34,8 @@ printUsage()
 {
 	std::cerr << "usage : gen_cidl [options] --target <compositionname> filename" << std::endl;
 	std::cerr << "        --target <compositionname> : the element to generate code for" << std::endl;
-	std::cerr << "        --deployment : not generate business code skeletons" << std::endl;
+	std::cerr << "        --business : generate business code skeletons" << std::endl;
+	std::cerr << "        --servant : generate servant code" << std::endl;
 }
 
 
@@ -97,7 +98,8 @@ main
 	signal ( SIGINT, handle_sigint );
 
 	repository = new QEDO_ComponentRepository::CIDLRepository_impl ( orb, root_poa );
-	bool generateBusiness = true;
+	bool generateBusiness = false;
+	bool generateServant = false;
 	std::string target;
 
 	//
@@ -121,9 +123,18 @@ main
             
             argc--;
 		}
-		else if(strcmp(option, "--deploy") == 0)
+		else if(strcmp(option, "--business") == 0)
 		{
-			generateBusiness = false;
+			generateBusiness = true;
+            
+            for(int j = i ; j + 1 < argc ; j++)
+                argv[j] = argv[j + 1];
+            
+            argc--;
+		}
+		else if(strcmp(option, "--servant") == 0)
+		{
+			generateServant = true;
             
             for(int j = i ; j + 1 < argc ; j++)
                 argv[j] = argv[j + 1];
@@ -152,7 +163,7 @@ main
 		}
 	}
 
-	if(target == "" || argc < 2)
+	if(target == "")
 	{
 		printUsage();
 		orb->destroy();
@@ -176,15 +187,15 @@ main
 	lidl_generator->generate(target);
 	lidl_generator->destroy();
 
-	// generate local business IDL
-	std::cout << "Generating local business IDL for " << target << std::endl;
-	QEDO_CIDL_Generator::GeneratorBIDL *bidl_generator =
-		new QEDO_CIDL_Generator::GeneratorBIDL(repository);
-	bidl_generator->generate(target);
-	bidl_generator->destroy();
-
 	if(generateBusiness)
 	{
+		// generate local business IDL
+		std::cout << "Generating local business IDL for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorBIDL *bidl_generator =
+			new QEDO_CIDL_Generator::GeneratorBIDL(repository);
+		bidl_generator->generate(target);
+		bidl_generator->destroy();
+
 		// generate CORBA Component Descriptor
 		std::cout << "Generating CORBA Component Descriptor for " << target << std::endl;
 		QEDO_CIDL_Generator::GeneratorCCD *ccd_generator =
@@ -207,19 +218,22 @@ main
 		bc_generator->destroy();
 	}
 
-	// generate servant header
-	std::cout << "Generating servant code header for " << target << std::endl;
-	QEDO_CIDL_Generator::GeneratorServantH *sh_generator =
-		new QEDO_CIDL_Generator::GeneratorServantH(repository);
-	sh_generator->generate(target);
-	sh_generator->destroy();
+	if(generateServant)
+	{
+		// generate servant header
+		std::cout << "Generating servant code header for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorServantH *sh_generator =
+			new QEDO_CIDL_Generator::GeneratorServantH(repository);
+		sh_generator->generate(target);
+		sh_generator->destroy();
 
-	// generate servant code
-	std::cout << "Generating servant code for " << target << std::endl;
-	QEDO_CIDL_Generator::GeneratorServantC *sc_generator =
-		new QEDO_CIDL_Generator::GeneratorServantC(repository);
-	sc_generator->generate(target);
-	sc_generator->destroy();
+		// generate servant code
+		std::cout << "Generating servant code for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorServantC *sc_generator =
+			new QEDO_CIDL_Generator::GeneratorServantC(repository);
+		sc_generator->generate(target);
+		sc_generator->destroy();
+	}
 
 	signal ( SIGINT, SIG_DFL );
 

@@ -12,7 +12,7 @@ namespace QEDO_CIDL_Generator {
 
 GeneratorCCD::GeneratorCCD
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: GeneratorBase ( repository )
+: CPPBase ( repository )
 {
 }
 

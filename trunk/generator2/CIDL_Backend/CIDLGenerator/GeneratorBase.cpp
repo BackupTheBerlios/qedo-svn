@@ -1,21 +1,31 @@
 #include "GeneratorBase.h"
 
-#include <string>
-
 
 namespace QEDO_CIDL_Generator {
 
 
 GeneratorBase::GeneratorBase
 (QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: MappingBase(repository)
 {
+	repository_ = repository;
+	repository_ -> _add_ref();
+	target_id_ = "";
+	target_scope_id_ = "";
 }
 
 
 GeneratorBase::~GeneratorBase
 ()
 {
+}
+
+
+void
+GeneratorBase::destroy
+()
+{
+	repository_ -> _remove_ref();
+	delete this;
 }
 
 
@@ -26,7 +36,11 @@ void
 GeneratorBase::doGenerate(string target)
 {
 	// lookup the target
-	IR__::Contained_var contained =	repository_->lookup(target.c_str());
+	IR__::Contained_var contained =	repository_->lookup_id(target.c_str());
+	if(CORBA::is_nil(contained))
+	{
+		contained =	repository_->lookup(target.c_str());
+	}
 	if(CORBA::is_nil(contained))
 	{
 		std::cerr << "--- fatal internal error - not found " << target << std::endl;
@@ -36,15 +50,43 @@ GeneratorBase::doGenerate(string target)
 
 	switch(contained->def_kind())
 	{
-	case CORBA__::dk_Module : {
-		IR__::ModuleDef_var module = IR__::ModuleDef::_narrow(contained);
-		doModule(module);
-		break; }
-	case CORBA__::dk_Composition : {
-		CIDL::CompositionDef_var composition = CIDL::CompositionDef::_narrow(contained);
-		doComposition(composition);
-		break; }
-	default : {}
+		case CORBA__::dk_Home : {
+			// process the module where the home is defined in
+			IR__::HomeDef_var home = IR__::HomeDef::_narrow(contained);
+			IR__::ModuleDef_var module = IR__::ModuleDef::_narrow(home->defined_in());
+			if(CORBA::is_nil(module))
+			{
+				target_scope_id_ = "";
+			}
+			target_scope_id_ = module->id();
+			doModule(module);
+			break;
+		}
+		case CORBA__::dk_Module : {
+			// process the module
+			IR__::ModuleDef_var module = IR__::ModuleDef::_narrow(contained);
+			target_scope_id_ = target_id_;
+			doModule(module);
+			break;
+		}
+		case CORBA__::dk_Composition : {
+			// process the composition
+			CIDL::CompositionDef_var composition = CIDL::CompositionDef::_narrow(contained);
+			std::string id = composition->id();
+			std::string::size_type pos = id.rfind("/");
+			if(pos != std::string::npos)
+			{
+				id.replace(pos, std::string::npos, ":1.0");
+				target_scope_id_ = id;
+			}
+			else
+			{
+				target_scope_id_ = "";
+			}
+			doComposition(composition);
+			break;
+		}
+		default : {}
 	}
 }
 
@@ -54,97 +96,6 @@ GeneratorBase::doGenerate(string target)
 //
 void
 GeneratorBase::doModule(IR__::ModuleDef_ptr module)
-{
-	beginModule(module);
-
-	IR__::ContainedSeq_var contained_seq;
-	CORBA::ULong len;
-	CORBA::ULong i;
-
-	// contained enums
-	contained_seq = module->contents(CORBA__::dk_Enum, true);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::EnumDef_var act_enum = IR__::EnumDef::_narrow(((*contained_seq)[i]));
-		doEnum(act_enum);
-	}
-
-	// contained exceptions
-	contained_seq = module->contents(CORBA__::dk_Exception, true);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::ExceptionDef_var act_exception = IR__::ExceptionDef::_narrow(((*contained_seq)[i]));
-		doException(act_exception);
-	}
-
-	// contained value types
-	contained_seq = module->contents(CORBA__::dk_Value, true);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::ValueDef_var act_value = IR__::ValueDef::_narrow(((*contained_seq)[i]));
-		doValue(act_value);
-	}
-
-	// contained interfaces
-	contained_seq = module->contents(CORBA__::dk_Interface, true);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::InterfaceDef_var act_interface = IR__::InterfaceDef::_narrow(((*contained_seq)[i]));
-		doInterface(act_interface);
-	}
-
-	// contained components
-	contained_seq = module->contents(CORBA__::dk_Component, true);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::ComponentDef_var act_component = IR__::ComponentDef::_narrow(((*contained_seq)[i]));
-		doComponent(act_component);
-	}
-
-	// contained homes
-	contained_seq = module->contents(CORBA__::dk_Home, true);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::HomeDef_var act_home = IR__::HomeDef::_narrow(((*contained_seq)[i]));
-		doHome(act_home);
-	}
-
-	// contained modules
-	contained_seq = module->contents(CORBA__::dk_Module, true);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::ModuleDef_var act_module = IR__::ModuleDef::_narrow(((*contained_seq)[i]));
-		doModule(act_module);
-	}
-
-	// contained compositions
-	contained_seq = repository_->contents(CORBA__::dk_Composition, true);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		CIDL::CompositionDef_var act_composition = CIDL::CompositionDef::_narrow(((*contained_seq)[i]));
-		doComposition(act_composition);
-	}
-
-	endModule(module);
-}
-
-
-void
-GeneratorBase::beginModule(IR__::ModuleDef_ptr module)
-{
-}
-
-
-void
-GeneratorBase::endModule(IR__::ModuleDef_ptr module)
 {
 }
 
@@ -165,58 +116,6 @@ GeneratorBase::handleSupportedInterface(IR__::ComponentDef_ptr component)
 
 void
 GeneratorBase::doInterface(IR__::InterfaceDef_ptr intface)
-{
-	beginInterface(intface);
-
-	IR__::ContainedSeq_var contained_seq;
-	CORBA::ULong len;
-	CORBA::ULong i;
-
-	// contained constants
-	contained_seq = intface->contents(CORBA__::dk_Constant, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::ConstantDef_var act_constant = IR__::ConstantDef::_narrow(((*contained_seq)[i]));
-		doConstant(act_constant);
-	}
-
-	// contained typedefs
-	contained_seq = intface->contents(CORBA__::dk_Typedef, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::TypedefDef_var act_typedef = IR__::TypedefDef::_narrow(((*contained_seq)[i]));
-		doTypedef(act_typedef);
-	}
-
-	// contained exceptions
-	contained_seq = intface->contents(CORBA__::dk_Exception, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::ExceptionDef_var act_exception = IR__::ExceptionDef::_narrow(((*contained_seq)[i]));
-		doException(act_exception);
-	}
-
-	// contained attributes
-	handleAttribute(intface);
-
-	// contained operations
-	handleOperation(intface);
-
-	endInterface(intface);
-}
-
-
-void
-GeneratorBase::beginInterface(IR__::InterfaceDef_ptr intface)
-{
-}
-
-
-void
-GeneratorBase::endInterface(IR__::InterfaceDef_ptr intface)
 {
 }
 
@@ -314,33 +213,6 @@ GeneratorBase::doFinder(IR__::FinderDef_ptr finder)
 //
 void
 GeneratorBase::doValue(IR__::ValueDef_ptr value)
-{
-	beginValue(value);
-
-	IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_all, false);
-	CORBA::ULong len = contained_seq->length();
-	for(CORBA::ULong i = 0; i < len; i++)
-	{
-		// contained members
-		if (((*contained_seq)[i])->def_kind() == CORBA__::dk_ValueMember)
-		{
-			IR__::ValueMemberDef_var act_member = IR__::ValueMemberDef::_narrow(((*contained_seq)[i]));
-			doValueMember(act_member);
-		}
-	}
-
-	endValue(value);
-}
-
-
-void
-GeneratorBase::beginValue(IR__::ValueDef_ptr value)
-{
-}
-
-
-void
-GeneratorBase::endValue(IR__::ValueDef_ptr value)
 {
 }
 
@@ -445,88 +317,6 @@ GeneratorBase::doTypedef(IR__::TypedefDef_ptr tdef)
 void
 GeneratorBase::doHome(IR__::HomeDef_ptr home)
 {
-	beginHome(home);
-
-	IR__::ContainedSeq_var contained_seq;
-	CORBA::ULong len;
-	CORBA::ULong i;
-
-	// contained constants
-	contained_seq = home->contents(CORBA__::dk_Constant, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::ConstantDef_var act_constant = IR__::ConstantDef::_narrow(((*contained_seq)[i]));
-		doConstant(act_constant);
-	}
-
-	// contained typedefs
-	contained_seq = home->contents(CORBA__::dk_Typedef, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::TypedefDef_var act_typedef = IR__::TypedefDef::_narrow(((*contained_seq)[i]));
-		doTypedef(act_typedef);
-	}
-
-	// contained exceptions
-	contained_seq = home->contents(CORBA__::dk_Exception, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::ExceptionDef_var act_exception = IR__::ExceptionDef::_narrow(((*contained_seq)[i]));
-		doException(act_exception);
-	}
-
-	// contained attributes
-	contained_seq = home->contents(CORBA__::dk_Attribute, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::AttributeDef_var act_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
-		doAttribute(act_attribute);
-	}
-
-	// contained operations
-	contained_seq = home->contents(CORBA__::dk_Operation, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::OperationDef_var act_operation = IR__::OperationDef::_narrow(((*contained_seq)[i]));
-		doOperation(act_operation);
-	}
-
-	// contained factories
-	contained_seq = home->contents(CORBA__::dk_Factory, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::FactoryDef_var act_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
-		doFactory(act_factory);
-	}
-
-	// contained finders
-	contained_seq = home->contents(CORBA__::dk_Finder, false);
-	len = contained_seq->length();
-	for(i = 0; i < len; i++)
-	{
-		IR__::FinderDef_var act_finder = IR__::FinderDef::_narrow(((*contained_seq)[i]));
-		doFinder(act_finder);
-	}
-
-	endHome(home);
-}
-
-
-void
-GeneratorBase::beginHome(IR__::HomeDef_ptr home)
-{
-}
-
-
-void
-GeneratorBase::endHome(IR__::HomeDef_ptr home)
-{
 }
 
 
@@ -535,48 +325,6 @@ GeneratorBase::endHome(IR__::HomeDef_ptr home)
 //
 void
 GeneratorBase::doComponent(IR__::ComponentDef_ptr component)
-{
-	beginComponent(component);
-
-	// contained attributes
-	handleAttribute(component);
-
-	// contained provides
-	handleProvides(component);
-
-	// contained uses
-	handleUses(component);
-
-	// contained emits
-	handleEmits(component);
-
-	// contained publishes
-	handlePublishes(component);
-
-	// contained consumes
-	handleConsumes(component);
-
-	// contained sink
-	handleSink(component);
-
-	// contained source
-	handleSource(component);
-
-	// contained siso
-	handleSiSo(component);
-
-	endComponent(component);
-}
-
-
-void
-GeneratorBase::beginComponent(IR__::ComponentDef_ptr component)
-{
-}
-
-
-void
-GeneratorBase::endComponent(IR__::ComponentDef_ptr component)
 {
 }
 
@@ -769,20 +517,6 @@ GeneratorBase::handleComposition(QEDO_ComponentRepository::CIDLRepository_impl *
 
 void
 GeneratorBase::doComposition(CIDL::CompositionDef_ptr composition)
-{
-	beginComposition(composition);
-	endComposition(composition);
-}
-
-
-void
-GeneratorBase::beginComposition(CIDL::CompositionDef_ptr composition)
-{
-}
-
-
-void
-GeneratorBase::endComposition(CIDL::CompositionDef_ptr composition)
 {
 }
 

@@ -1,11 +1,10 @@
 #ifndef __GENERATOR_SERVANTC_H__
 #define __GENERATOR_SERVANTC_H__
 
-#include "GeneratorBase.h"
+#include "CPPBase.h"
 #include "Printer.h"
 
 #include <fstream>
-#include <string>
 #include <iostream>
 
 
@@ -16,7 +15,7 @@ namespace QEDO_CIDL_Generator
 {
 
 
-class GeneratorServantC : public virtual GeneratorBase 
+class GeneratorServantC : public virtual CPPBase 
 {
 
 private:
@@ -29,9 +28,6 @@ private:
 	std::string target_;
 	CIDL::CompositionDef_var composition_;
 	IR__::HomeDef_var home_;
-
-	bool open_module(IR__::Contained* cur_cont, std::string prefix = "");
-	void close_module(IR__::Contained* cur_cont);
 
 	void doModule(IR__::ModuleDef_ptr module);
 	void doAttribute(IR__::AttributeDef_ptr attribute);

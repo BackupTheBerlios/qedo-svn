@@ -10,7 +10,7 @@ namespace QEDO_CIDL_Generator {
 
 GeneratorBusinessH::GeneratorBusinessH
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: GeneratorBase(repository)
+: CPPBase(repository)
 {
 }
 
@@ -19,32 +19,6 @@ GeneratorBusinessH::~GeneratorBusinessH
 ()
 {
 }
-
-
-void
-GeneratorBusinessH::open_module(IR__::Contained* cur_cont)
-{
-	IR__::Container_ptr act_container=cur_cont->defined_in();
-	if(act_container->def_kind()==CORBA__::dk_Module) {
-		IR__::ModuleDef_var act_mod = IR__::ModuleDef::_narrow(act_container);
-		this->open_module(act_mod);
-		out << "namespace " << mapName(act_mod) << " {\n";
-		out.indent();
-	}
-};
-
-
-void
-GeneratorBusinessH::close_module(IR__::Contained* cur_cont)
-{
-	IR__::Container_ptr act_container=cur_cont->defined_in();
-	if(act_container->def_kind()==CORBA__::dk_Module) {
-		IR__::ModuleDef_var act_mod = IR__::ModuleDef::_narrow(act_container);
-		this->close_module(act_mod);
-		out.unindent();
-		out << "};\n";
-	}
-};
 
 
 void
@@ -447,7 +421,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 
 	if(module_def)
 	{
-		open_module(module_def);
+		open_module(out, module_def);
 		out << "namespace " << mapName(module_def) << "\n{\n";
 		out.indent();
 	}
@@ -599,7 +573,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	{
 		out.unindent();
 		out << "};\n";
-		close_module(module_def);
+		close_module(out, module_def);
 	}
 
 

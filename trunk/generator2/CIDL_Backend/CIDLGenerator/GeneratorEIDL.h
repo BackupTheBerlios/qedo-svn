@@ -1,11 +1,10 @@
 #ifndef __GENERATOR_EIDL_H__
 #define __GENERATOR_EIDL_H__
 
-#include "GeneratorBase.h"
+#include "IDLBase.h"
 #include "Printer.h"
 
 #include <fstream>
-#include <string>
 #include <iostream>
 
 
@@ -15,7 +14,8 @@ using namespace std;
 namespace QEDO_CIDL_Generator {
 
 
-class GeneratorEIDL : public virtual GeneratorBase {
+class GeneratorEIDL : public virtual IDLBase
+{
 
 	string filename_;
 	Printer out;

@@ -1,41 +1,65 @@
-#include "MappingBase.h"
-#include "Debug.h"
+#include "CPPBase.h"
 
 #include <string>
-
-
-using namespace std;
 
 
 namespace QEDO_CIDL_Generator {
 
 
-
-MappingBase::MappingBase
-( QEDO_ComponentRepository::CIDLRepository_impl* repository )
+CPPBase::CPPBase
+(QEDO_ComponentRepository::CIDLRepository_impl *repository)
+: GeneratorBase(repository)
 {
-	repository_ = repository;
-	repository_ -> _add_ref();
 }
 
 
-MappingBase::~MappingBase
+CPPBase::~CPPBase
 ()
 {
 }
+
+
+bool
+CPPBase::open_module(Printer& out, IR__::Contained* cur_cont, std::string prefix)
+{
+	IR__::Container_ptr a_container = cur_cont->defined_in();
+	if(a_container->def_kind() == CORBA__::dk_Module) 
+	{
+		IR__::ModuleDef_var a_module = IR__::ModuleDef::_narrow(a_container);
+		if(! this->open_module(out, a_module))
+		{
+			// the prefix must be written first
+			out << "namespace " << prefix;
+		}
+		else
+		{
+			out << "namespace ";
+		}
+		out << mapName(a_module) << " {\n";
+		out.indent();
+		return true;
+	}
+
+	return false;
+};
 
 
 void
-MappingBase::destroy
-()
+CPPBase::close_module(Printer& out, IR__::Contained* cur_cont)
 {
-	repository_ -> _remove_ref();
-	delete this;
+	IR__::Container_ptr act_container=cur_cont->defined_in();
+	if(act_container->def_kind()==CORBA__::dk_Module) 
+	{
+		IR__::ModuleDef_var act_mod = IR__::ModuleDef::_narrow(act_container);
+		this->close_module(out, act_mod);
+		out.unindent();
+		out << "};\n";
+	}
 }
 
 
 std::string
-MappingBase::mapName(std::string name)
+CPPBase::mapName(std::string name)
 {
 	//
 	// check keywords
@@ -50,7 +74,7 @@ MappingBase::mapName(std::string name)
 
 
 std::string
-MappingBase::mapName(IR__::Contained_ptr obj)
+CPPBase::mapName(IR__::Contained_ptr obj)
 {
 	return mapName(obj->name());
 }
@@ -60,7 +84,7 @@ MappingBase::mapName(IR__::Contained_ptr obj)
  * escape each name with _cxx_ if keyword
  */
 std::string
-MappingBase::mapFullName(IR__::Contained_ptr obj)
+CPPBase::mapFullName(IR__::Contained_ptr obj)
 {
 	std::string name;
 	name = obj->absolute_name();
@@ -91,7 +115,7 @@ MappingBase::mapFullName(IR__::Contained_ptr obj)
 
 
 std::string
-MappingBase::mapFullNameLocal(IR__::Contained_ptr obj)
+CPPBase::mapFullNameLocal(IR__::Contained_ptr obj)
 {
 	std::string name;
 	name = mapFullName(obj);
@@ -114,7 +138,7 @@ MappingBase::mapFullNameLocal(IR__::Contained_ptr obj)
 
 
 std::string
-MappingBase::mapFullNameServant(IR__::Contained_ptr obj)
+CPPBase::mapFullNameServant(IR__::Contained_ptr obj)
 {
 	std::string name;
 	name = mapFullName(obj);
@@ -137,7 +161,7 @@ MappingBase::mapFullNameServant(IR__::Contained_ptr obj)
 
 
 std::string
-MappingBase::mapFullNamePOA(IR__::Contained_ptr obj)
+CPPBase::mapFullNamePOA(IR__::Contained_ptr obj)
 {
 	std::string name;
 	name = mapFullName(obj);
@@ -160,7 +184,7 @@ MappingBase::mapFullNamePOA(IR__::Contained_ptr obj)
 
 
 std::string 
-MappingBase::mapScopeName
+CPPBase::mapScopeName
 (IR__::Contained_ptr type)
 throw(CannotMapAbsoluteName)
 {
@@ -198,98 +222,8 @@ throw(CannotMapAbsoluteName)
 }
 
 
-string
-MappingBase::tcToName(CORBA::TypeCode_ptr type)
-{
-	switch(type->kind())
-    {
-	case CORBA::tk_null:
-		return "";
-		break;
-	case CORBA::tk_void:
-		return "void";
-		break;
-	case CORBA::tk_short:
-		return "short";
-		break;
-    case CORBA::tk_long:
-		return "long";
-		break;
-    case CORBA::tk_longlong:
-		return "longlong";
-		break;
-    case CORBA::tk_ushort:
-		return "unsigned short";
-		break;
-    case CORBA::tk_ulong:
-		return "unsigned long";
-		break;
-    case CORBA::tk_ulonglong:
-		return "unsigned longlong";
-		break;
-    case CORBA::tk_float:
-		return "float";
-		break;
-    case CORBA::tk_double:
-		return "double";
-		break;
-    case CORBA::tk_longdouble:
-		return "longdouble";
-		break;
-    case CORBA::tk_boolean:
-		return "boolean";
-		break;
-    case CORBA::tk_char:
-		return "char";
-		break;
-    case CORBA::tk_wchar:
-		return "wchar";
-		break;
-    case CORBA::tk_octet:
-		return "octet";
-		break;
-    case CORBA::tk_any:
-		return "any";
-		break;
-    case CORBA::tk_TypeCode:
-		return "CORBA::TypeCode";
-		break;
-    case CORBA::tk_Principal:
-        return "CORBA::Principal";
-        break;
-    case CORBA::tk_fixed:
-        break;
-    case CORBA::tk_objref:
-    case CORBA::tk_abstract_interface:
-    case CORBA::tk_local_interface:
-    case CORBA::tk_native:
-    case CORBA::tk_struct:
-    case CORBA::tk_except:
-	case CORBA::tk_union:
-	case CORBA::tk_enum:
-	case CORBA::tk_sequence:
-    case CORBA::tk_array:
-	case CORBA::tk_alias:
-    case CORBA::tk_value_box:
-	case CORBA::tk_value:
-		return map_absolute_name(repository_->lookup_id(type->id()));
-        break;
-    case CORBA::tk_string:
-		return "string";
-		break;
-    case CORBA::tk_wstring:
-		return "wstring";
-        break;
-    default:
-        assert(false);
-    }
-
-	return "";
-}
-
-
 char* 
-MappingBase::map_absolute_name
+CPPBase::map_absolute_name
 ( CORBA__::IRObject_ptr type )
 throw ( CannotMapAbsoluteName )
 {
@@ -318,7 +252,7 @@ throw ( CannotMapAbsoluteName )
 
 
 char* 
-MappingBase::mapAbsoluteName
+CPPBase::mapAbsoluteName
 ( CORBA__::IRObject_ptr type, string delim )
 throw ( CannotMapAbsoluteName )
 {
@@ -354,7 +288,7 @@ throw ( CannotMapAbsoluteName )
 
 
 char* 
-MappingBase::mapLocalName
+CPPBase::mapLocalName
 ( CORBA__::IRObject_ptr type )
 throw ( CannotMapAbsoluteName )
 {
@@ -386,7 +320,7 @@ throw ( CannotMapAbsoluteName )
 
 
 char* 
-MappingBase::map_absolute_under_name
+CPPBase::map_absolute_under_name
 ( CORBA__::IRObject_ptr type )
 throw ( CannotMapAbsoluteName )
 {
@@ -424,7 +358,7 @@ throw ( CannotMapAbsoluteName )
 
 
 char* 
-MappingBase::map_absolute_slash_name
+CPPBase::map_absolute_slash_name
 ( CORBA__::IRObject_ptr type )
 throw ( CannotMapAbsoluteName )
 {
@@ -462,7 +396,7 @@ throw ( CannotMapAbsoluteName )
 
 
 char*
-MappingBase::map_return_type
+CPPBase::map_return_type
 ( IR__::IDLType_ptr type )
 throw ( CannotMapType )
 {
@@ -571,7 +505,7 @@ throw ( CannotMapType )
 
 
 char*
-MappingBase::map_value_return_type
+CPPBase::map_value_return_type
 ( IR__::IDLType_ptr type )
 throw ( CannotMapType )
 {
@@ -663,7 +597,7 @@ throw ( CannotMapType )
 
 
 char*
-MappingBase::map_idl_type
+CPPBase::map_idl_type
 ( IR__::IDLType_ptr type )
 throw ( CannotMapType )
 {
@@ -752,7 +686,7 @@ throw ( CannotMapType )
 
 
 char*
-MappingBase::map_attribute_type
+CPPBase::map_attribute_type
 ( IR__::IDLType_ptr type )
 throw ( CannotMapType )
 {
@@ -861,7 +795,7 @@ throw ( CannotMapType )
 
 
 char*
-MappingBase::assign_attribute
+CPPBase::assign_attribute
 ( IR__::IDLType_ptr type )
 throw ( CannotMapType )
 {
@@ -953,7 +887,7 @@ throw ( CannotMapType )
 
 
 char*
-MappingBase::map_in_parameter_type
+CPPBase::map_in_parameter_type
 ( IR__::IDLType_ptr type )
 throw ( CannotMapType )
 {
@@ -1061,7 +995,7 @@ throw ( CannotMapType )
 
 
 char*
-MappingBase::map_inout_parameter_type
+CPPBase::map_inout_parameter_type
 ( IR__::IDLType_ptr type )
 throw ( CannotMapType )
 {
@@ -1151,7 +1085,7 @@ throw ( CannotMapType )
 
 
 char*
-MappingBase::map_out_parameter_type
+CPPBase::map_out_parameter_type
 ( IR__::IDLType_ptr type )
 throw ( CannotMapType )
 {
@@ -1253,5 +1187,4 @@ throw ( CannotMapType )
 	return CORBA::string_dup ( ret_string.c_str() );
 }
 
-
-} // namespace QEDO_CIDL_Generator
+} // namespace

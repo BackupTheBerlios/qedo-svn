@@ -1,8 +1,9 @@
-#ifndef __MAPPING_BASE_H__
-#define __MAPPING_BASE_H__
+#ifndef __CPPBASE_H__
+#define __CPPBASE_H__
 
+#include "GeneratorBase.h"
+#include "Printer.h"
 #include "CIDLRepository_impl.h"
-#include <string>
 
 
 namespace QEDO_CIDL_Generator {
@@ -16,15 +17,13 @@ struct CannotMapAbsoluteName {};
 //
 //
 //
-class MappingBase {
-
+class CPPBase : public GeneratorBase
+{
 
 protected:
-	
-	QEDO_ComponentRepository::CIDLRepository_impl *repository_;
 
-	//
-	string tcToName(CORBA::TypeCode_ptr type);
+	bool open_module(Printer& out, IR__::Contained* cur_cont, std::string prefix = "");
+	void close_module(Printer& out, IR__::Contained* cur_cont);
 
 	//
 	// Helper functions for C++ mapping
@@ -79,14 +78,14 @@ protected:
 		throw ( CannotMapType );
 
 public:
-	MappingBase ( QEDO_ComponentRepository::CIDLRepository_impl *repository );
-	virtual ~MappingBase ();
 
-	void destroy();
+	CPPBase(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	virtual ~CPPBase();
+
+	virtual void generate(std::string target) = 0;
 };
 
 
-} // namespace QEDO_CIDL_Generator
-
+} // namespace
 
 #endif

@@ -1,11 +1,10 @@
 #ifndef __GENERATOR_BIDL_H__
 #define __GENERATOR_BIDL_H__
 
-#include "GeneratorBase.h"
+#include "IDLBase.h"
 #include "Printer.h"
 
 #include <fstream>
-#include <string>
 #include <iostream>
 
 
@@ -15,7 +14,8 @@ using namespace std;
 namespace QEDO_CIDL_Generator {
 
 
-class GeneratorBIDL : public virtual GeneratorBase {
+class GeneratorBIDL : public virtual IDLBase
+{
 
 	string filename_;
 	Printer out;

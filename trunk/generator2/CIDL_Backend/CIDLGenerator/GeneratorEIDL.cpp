@@ -9,7 +9,7 @@ namespace QEDO_CIDL_Generator {
 
 GeneratorEIDL::GeneratorEIDL
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: GeneratorBase(repository)
+: IDLBase(repository)
 {
 }
 
@@ -40,23 +40,22 @@ GeneratorEIDL::checkForInclude(CORBA::TypeCode_ptr type)
 	case CORBA::tk_value:
 		{
 			// compare the id of the type with that of the target
-			std::string type_id = type->id();
-			string::size_type len = target_id_.size() -4;
-			if(! type_id.compare(0, len, target_id_, 0, len))
+			std::string id = type->id();
+			std::string::size_type len = target_scope_id_.size() -4;
+			if(! id.compare(0, len, target_scope_id_, 0, len))
 			{
 				// type is from another module than target
-				std::string module = type_id;
-				module.erase(0, 4);
-				len = module.find_first_of("/:");
-				module.erase(len, string::npos);
+				id.erase(0, 4);
+				len = id.find_first_of("/:");
+				id.erase(len, std::string::npos);
 		
 				// already included ?
-				if(module.compare("CORBA"))
+				if(id.compare("CORBA"))
 				{
 				}
-				else if(includes_.find(module) == includes_.end())
+				else if(includes_.find(id) == includes_.end())
 				{
-					includes_[module + ".h"] = true;
+					includes_[id + ".h"] = true;
 				}
 			}
 			break;

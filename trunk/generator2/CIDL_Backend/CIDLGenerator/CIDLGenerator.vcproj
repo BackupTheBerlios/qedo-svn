@@ -238,8 +238,8 @@ copy cidl_gen.exe ..\..\..\qedo_dist_tao_d\bin
 		</Configuration>
 		<Configuration
 			Name="Debug_orbacus|Win32"
-			OutputDirectory=".\CIDLGenerator___Win32_Debug_orbacus"
-			IntermediateDirectory=".\CIDLGenerator___Win32_Debug_orbacus"
+			OutputDirectory=".\Win32_Debug_orbacus"
+			IntermediateDirectory=".\Win32_Debug_orbacus"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -356,10 +356,13 @@ copy cidl_gen.exe &quot;%QEDO%\bin&quot;
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
+				RelativePath="CPPBase.cpp">
+			</File>
+			<File
 				RelativePath=".\GeneratorBIDL.cpp">
 			</File>
 			<File
-				RelativePath=".\GeneratorBase.cpp">
+				RelativePath="GeneratorBase.cpp">
 			</File>
 			<File
 				RelativePath=".\GeneratorBusinessC.cpp">
@@ -383,7 +386,7 @@ copy cidl_gen.exe &quot;%QEDO%\bin&quot;
 				RelativePath=".\GeneratorServantH.cpp">
 			</File>
 			<File
-				RelativePath=".\MappingBase.cpp">
+				RelativePath="IDLBase.cpp">
 			</File>
 			<File
 				RelativePath=".\Printer.cpp">
@@ -399,10 +402,13 @@ copy cidl_gen.exe &quot;%QEDO%\bin&quot;
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
 			<File
+				RelativePath="CPPBase.h">
+			</File>
+			<File
 				RelativePath=".\GeneratorBIDL.h">
 			</File>
 			<File
-				RelativePath=".\GeneratorBase.h">
+				RelativePath="GeneratorBase.h">
 			</File>
 			<File
 				RelativePath=".\GeneratorBusinessC.h">
@@ -426,7 +432,7 @@ copy cidl_gen.exe &quot;%QEDO%\bin&quot;
 				RelativePath=".\GeneratorServantH.h">
 			</File>
 			<File
-				RelativePath=".\MappingBase.h">
+				RelativePath="IDLBase.h">
 			</File>
 			<File
 				RelativePath=".\Printer.h">

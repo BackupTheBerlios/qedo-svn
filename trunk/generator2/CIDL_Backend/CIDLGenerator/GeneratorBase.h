@@ -1,10 +1,8 @@
-#ifndef __GENERATOR_BASE_H__
-#define __GENERATOR_BASE_H__
+#ifndef __GENERATORBASE_H__
+#define __GENERATORBASE_H__
 
 #include "CIDLRepository_impl.h"
-#include "MappingBase.h"
-#include <stack>
-#include <list>
+#include <string>
 
 
 namespace QEDO_CIDL_Generator {
@@ -13,47 +11,37 @@ namespace QEDO_CIDL_Generator {
 //
 //
 //
-class GeneratorBase : public MappingBase
+class GeneratorBase
 {
 
 protected:
 
-	std::string target_id_;
+	std::string										target_id_;
+	std::string										target_scope_id_;
+	QEDO_ComponentRepository::CIDLRepository_impl	*repository_;
 
 	// start generation
-	void doGenerate(string target);
+	void doGenerate(std::string target);
 
 	// module
 	virtual void doModule(IR__::ModuleDef_ptr module);
-	virtual void beginModule(IR__::ModuleDef_ptr module);
-	virtual void endModule(IR__::ModuleDef_ptr module);
 
 	// interface
 	void handleSupportedInterface(IR__::ComponentDef_ptr component);
 	virtual void doInterface(IR__::InterfaceDef_ptr intface);
-	virtual void beginInterface(IR__::InterfaceDef_ptr intface);
-	virtual void endInterface(IR__::InterfaceDef_ptr intface);
 
 	// value type
 	virtual void doValue(IR__::ValueDef_ptr value);
-	virtual void beginValue(IR__::ValueDef_ptr value);
-	virtual void endValue(IR__::ValueDef_ptr value);
 
 	// component
 	virtual void doComponent(IR__::ComponentDef_ptr component);
-	virtual void beginComponent(IR__::ComponentDef_ptr component);
-	virtual void endComponent(IR__::ComponentDef_ptr component);
 
 	// home
 	virtual void doHome(IR__::HomeDef_ptr home);
-	virtual void beginHome(IR__::HomeDef_ptr home);
-	virtual void endHome(IR__::HomeDef_ptr home);
 
 	// composition
 	void handleComposition(QEDO_ComponentRepository::CIDLRepository_impl *repository);
 	virtual void doComposition(CIDL::CompositionDef_ptr composition);
-	virtual void beginComposition(CIDL::CompositionDef_ptr composition);
-	virtual void endComposition(CIDL::CompositionDef_ptr composition);
 
 	// attribute
 	void handleAttribute(IR__::InterfaceDef_ptr intf);
@@ -125,7 +113,9 @@ public:
 	GeneratorBase(QEDO_ComponentRepository::CIDLRepository_impl *repository);
 	virtual ~GeneratorBase();
 
-	virtual void generate(string target) = 0;
+	virtual void generate(std::string target) = 0;
+
+	void destroy();
 };
 
 

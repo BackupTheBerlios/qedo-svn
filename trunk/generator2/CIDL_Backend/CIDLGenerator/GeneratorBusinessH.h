@@ -1,11 +1,8 @@
 #ifndef __GENERATOR_BUSINESSH_H__
 #define __GENERATOR_BUSINESSH_H__
 
-#include "GeneratorBase.h"
+#include "CPPBase.h"
 #include "Printer.h"
-
-//#include <fstream>
-#include <string>
 #include <iostream>
 
 
@@ -15,16 +12,14 @@ using namespace std;
 namespace QEDO_CIDL_Generator {
 
 
-class GeneratorBusinessH : public virtual GeneratorBase {
+class GeneratorBusinessH : public virtual CPPBase
+{
 
 	string filename_;
 	Printer out;
 	string target_;
 	bool need_push_;
 	CIDL::CompositionDef_var composition_;
-
-	void open_module(IR__::Contained* cur_cont);
-	void close_module(IR__::Contained* cur_cont);
 
 	void doModule(IR__::ModuleDef_ptr module);
 	void doException(IR__::ExceptionDef_ptr except);
