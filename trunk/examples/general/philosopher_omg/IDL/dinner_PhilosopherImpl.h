@@ -113,10 +113,15 @@ namespace dinner
         PhilosopherSessionImpl();
         ~PhilosopherSessionImpl();
         
-        void set_context(::DiningPhilosophers::CCM_Philosopher_Context_ptr context);
-        void configuration_complete();
-        void stop();
-        void remove();
+        void set_context(::DiningPhilosophers::CCM_Philosopher_Context_ptr context)
+            throw (CORBA::SystemException, Components::CCMException);
+        
+        void configuration_complete()
+            throw (CORBA::SystemException, Components::InvalidConfiguration);
+        
+        void remove()
+            throw (CORBA::SystemException);
+        
         
         //
         // IDL:DiningPhilosophers/Philosopher/name:1.0
@@ -249,12 +254,14 @@ public:
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0
         //
-        virtual void set_context (Components::CCMContext_ptr ctx);
+        virtual void set_context (Components::CCMContext_ptr ctx)
+            throw (CORBA::SystemException, Components::CCMException);
         
         //
         // IDL:.../create:1.0
         //
-        virtual ::Components::EnterpriseComponent_ptr create();
+        virtual ::Components::EnterpriseComponent_ptr create()
+            throw (CORBA::SystemException, Components::CreateFailure);
         
         //
         // IDL:DiningPhilosophers/PhilosopherHome/new:1.0

@@ -62,10 +62,15 @@ namespace dinner
         CutlerySessionImpl();
         ~CutlerySessionImpl();
         
-        void set_context(::DiningPhilosophers::CCM_ForkManager_Context_ptr context);
-        void configuration_complete();
-        void stop();
-        void remove();
+        void set_context(::DiningPhilosophers::CCM_ForkManager_Context_ptr context)
+            throw (CORBA::SystemException, Components::CCMException);
+        
+        void configuration_complete()
+            throw (CORBA::SystemException, Components::InvalidConfiguration);
+        
+        void remove()
+            throw (CORBA::SystemException);
+        
     
 // BEGIN USER INSERT SECTION CutlerySessionImpl
 private:
@@ -98,8 +103,11 @@ private:
         Seg();
         ~Seg();
         
-        void set_context(::DiningPhilosophers::CCM_ForkManager_Context_ptr context);
-        void configuration_complete();
+        void set_context(::DiningPhilosophers::CCM_ForkManager_Context_ptr context)
+            throw (CORBA::SystemException, Components::CCMException);
+        
+        void configuration_complete()
+            throw (CORBA::SystemException, Components::InvalidConfiguration);
         
         
         //
@@ -236,12 +244,14 @@ private:
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0
         //
-        virtual void set_context (Components::CCMContext_ptr ctx);
+        virtual void set_context (Components::CCMContext_ptr ctx)
+            throw (CORBA::SystemException, Components::CCMException);
         
         //
         // IDL:.../create:1.0
         //
-        virtual ::Components::EnterpriseComponent_ptr create();
+        virtual ::Components::EnterpriseComponent_ptr create()
+            throw (CORBA::SystemException, Components::CreateFailure);
     
 // BEGIN USER INSERT SECTION CutleryHomeImpl
 // END USER INSERT SECTION CutleryHomeImpl

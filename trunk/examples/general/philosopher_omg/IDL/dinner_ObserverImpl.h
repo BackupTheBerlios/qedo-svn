@@ -59,20 +59,29 @@ namespace dinner
         ObserverSessionImpl();
         ~ObserverSessionImpl();
         
-        void set_context(::DiningPhilosophers::CCM_Observer_Context_ptr context);
-        void configuration_complete();
-        void stop();
-        void remove();
+        void set_context(::DiningPhilosophers::CCM_Observer_Context_ptr context)
+            throw (CORBA::SystemException, Components::CCMException);
+        
+        void configuration_complete()
+            throw (CORBA::SystemException, Components::InvalidConfiguration);
+        
+        void remove()
+            throw (CORBA::SystemException);
+        
         
         //
         // IDL:Components/EventConsumerBase/push_event:1.0
         //
-        virtual void push_event (Components::EventBase* ev);
+        virtual void push_event (Components::EventBase* ev)
+            throw (CORBA::SystemException);
+        
         
         //
         // IDL:DiningPhilosophers/Observer/info:1.0
         //
-        void push_StatusInfo(::DiningPhilosophers::StatusInfo* ev);
+        void push_StatusInfo(::DiningPhilosophers::StatusInfo* ev)
+            throw (CORBA::SystemException);
+        
     
 // BEGIN USER INSERT SECTION ObserverSessionImpl
 private:
@@ -188,12 +197,14 @@ private:
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0
         //
-        virtual void set_context (Components::CCMContext_ptr ctx);
+        virtual void set_context (Components::CCMContext_ptr ctx)
+            throw (CORBA::SystemException, Components::CCMException);
         
         //
         // IDL:.../create:1.0
         //
-        virtual ::Components::EnterpriseComponent_ptr create();
+        virtual ::Components::EnterpriseComponent_ptr create()
+            throw (CORBA::SystemException, Components::CreateFailure);
     
 // BEGIN USER INSERT SECTION ObserverHomeImpl
 // END USER INSERT SECTION ObserverHomeImpl

@@ -545,6 +545,7 @@ PhilosopherSessionImpl::~PhilosopherSessionImpl()
 
 void
 PhilosopherSessionImpl::set_context(::DiningPhilosophers::CCM_Philosopher_Context_ptr context)
+    throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = ::DiningPhilosophers::CCM_Philosopher_Context::_duplicate(context);
 }
@@ -552,6 +553,7 @@ PhilosopherSessionImpl::set_context(::DiningPhilosophers::CCM_Philosopher_Contex
 
 void
 PhilosopherSessionImpl::configuration_complete()
+    throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::configuration_complete
 #ifdef WIN32
@@ -563,15 +565,8 @@ PhilosopherSessionImpl::configuration_complete()
 
 
 void
-PhilosopherSessionImpl::stop()
-{
-// BEGIN USER INSERT SECTION PhilosopherSessionImpl::stop
-// END USER INSERT SECTION PhilosopherSessionImpl::stop
-}
-
-
-void
 PhilosopherSessionImpl::remove()
+    throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PhilosopherSessionImpl::remove
     JTCThreadHandle my_handle = this;
@@ -670,6 +665,7 @@ PhilosopherImpl::~PhilosopherImpl()
 
 ::CORBA::Object*
 PhilosopherImpl::obtain_executor(const char* name)
+    throw (CORBA::SystemException)
 {
     if (! strcmp ( name, "component" ) ) {
         return Components::EnterpriseComponent::_duplicate (component_);
@@ -681,6 +677,7 @@ PhilosopherImpl::obtain_executor(const char* name)
 
 void
 PhilosopherImpl::release_executor(::CORBA::Object_ptr executor)
+    throw (CORBA::SystemException)
 {
     CORBA::release (executor);
 }
@@ -688,6 +685,7 @@ PhilosopherImpl::release_executor(::CORBA::Object_ptr executor)
 
 void
 PhilosopherImpl::configuration_complete()
+    throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
     component_->configuration_complete();
 
@@ -700,6 +698,7 @@ PhilosopherImpl::configuration_complete()
 
 void
 PhilosopherImpl::set_session_context(::Components::SessionContext_ptr context)
+    throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = ::DiningPhilosophers::CCM_Philosopher_Context::_narrow(context);
     
@@ -709,6 +708,7 @@ PhilosopherImpl::set_session_context(::Components::SessionContext_ptr context)
 
 void
 PhilosopherImpl::ccm_activate()
+    throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION PhilosopherImpl::ccm_activate
 // END USER INSERT SECTION PhilosopherImpl::ccm_activate
@@ -717,6 +717,7 @@ PhilosopherImpl::ccm_activate()
 
 void
 PhilosopherImpl::ccm_passivate()
+    throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION PhilosopherImpl::ccm_passivate
 // END USER INSERT SECTION PhilosopherImpl::ccm_passivate
@@ -725,6 +726,7 @@ PhilosopherImpl::ccm_passivate()
 
 void
 PhilosopherImpl::ccm_remove()
+    throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION PhilosopherImpl::ccm_remove
 // END USER INSERT SECTION PhilosopherImpl::ccm_remove
@@ -752,6 +754,7 @@ PhilosopherHomeImpl::~PhilosopherHomeImpl()
 
 void
 PhilosopherHomeImpl::set_context(Components::CCMContext_ptr ctx)
+    throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = ::DiningPhilosophers::CCM_Philosopher_Context::_narrow(ctx);
 }
@@ -759,6 +762,7 @@ PhilosopherHomeImpl::set_context(Components::CCMContext_ptr ctx)
 
 ::Components::EnterpriseComponent_ptr
 PhilosopherHomeImpl::create ()
+    throw (CORBA::SystemException, Components::CreateFailure)
 {
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl::create
     static int right_hander_counter_ = 0;
@@ -773,6 +777,7 @@ return new PhilosopherImpl("give me a name!", tick, right_hander);
 
 ::Components::EnterpriseComponent_ptr
 PhilosopherHomeImpl::_cxx_new(const char* name)
+	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PhilosopherHomeImpl::new
 //@@@

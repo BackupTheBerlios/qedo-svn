@@ -95,6 +95,7 @@ ObserverSessionImpl::~ObserverSessionImpl()
 
 void
 ObserverSessionImpl::set_context(::DiningPhilosophers::CCM_Observer_Context_ptr context)
+    throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = ::DiningPhilosophers::CCM_Observer_Context::_duplicate(context);
 }
@@ -102,6 +103,7 @@ ObserverSessionImpl::set_context(::DiningPhilosophers::CCM_Observer_Context_ptr 
 
 void
 ObserverSessionImpl::configuration_complete()
+    throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::configuration_complete
 // END USER INSERT SECTION ObserverSessionImpl::configuration_complete
@@ -109,15 +111,8 @@ ObserverSessionImpl::configuration_complete()
 
 
 void
-ObserverSessionImpl::stop()
-{
-// BEGIN USER INSERT SECTION ObserverSessionImpl::stop
-// END USER INSERT SECTION ObserverSessionImpl::stop
-}
-
-
-void
 ObserverSessionImpl::remove()
+    throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::remove
 #ifdef OBSERVER_WITH_GUI
@@ -129,6 +124,7 @@ ObserverSessionImpl::remove()
 
 void
 ObserverSessionImpl::push_event (Components::EventBase* ev)
+    throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::push_event
     ::DiningPhilosophers::StatusInfo* e = ::DiningPhilosophers::StatusInfo::_downcast(ev);
@@ -142,6 +138,7 @@ ObserverSessionImpl::push_event (Components::EventBase* ev)
 
 void
 ObserverSessionImpl::push_StatusInfo(::DiningPhilosophers::StatusInfo* ev)
+    throw (CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION ObserverSessionImpl::push_StatusInfo
    std::stringstream message;
@@ -221,6 +218,7 @@ ObserverImpl::~ObserverImpl()
 
 ::CORBA::Object*
 ObserverImpl::obtain_executor(const char* name)
+    throw (CORBA::SystemException)
 {
     if (! strcmp ( name, "component" ) ) {
         return Components::EnterpriseComponent::_duplicate (component_);
@@ -232,6 +230,7 @@ ObserverImpl::obtain_executor(const char* name)
 
 void
 ObserverImpl::release_executor(::CORBA::Object_ptr executor)
+    throw (CORBA::SystemException)
 {
     CORBA::release (executor);
 }
@@ -239,6 +238,7 @@ ObserverImpl::release_executor(::CORBA::Object_ptr executor)
 
 void
 ObserverImpl::configuration_complete()
+    throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
     component_->configuration_complete();
 
@@ -251,6 +251,7 @@ ObserverImpl::configuration_complete()
 
 void
 ObserverImpl::set_session_context(::Components::SessionContext_ptr context)
+    throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = ::DiningPhilosophers::CCM_Observer_Context::_narrow(context);
     
@@ -260,6 +261,7 @@ ObserverImpl::set_session_context(::Components::SessionContext_ptr context)
 
 void
 ObserverImpl::ccm_activate()
+    throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION ObserverImpl::ccm_activate
 // END USER INSERT SECTION ObserverImpl::ccm_activate
@@ -268,6 +270,7 @@ ObserverImpl::ccm_activate()
 
 void
 ObserverImpl::ccm_passivate()
+    throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION ObserverImpl::ccm_passivate
 // END USER INSERT SECTION ObserverImpl::ccm_passivate
@@ -276,6 +279,7 @@ ObserverImpl::ccm_passivate()
 
 void
 ObserverImpl::ccm_remove()
+    throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION ObserverImpl::ccm_remove
 // END USER INSERT SECTION ObserverImpl::ccm_remove
@@ -302,6 +306,7 @@ ObserverHomeImpl::~ObserverHomeImpl()
 
 void
 ObserverHomeImpl::set_context(Components::CCMContext_ptr ctx)
+    throw (CORBA::SystemException, Components::CCMException)
 {
     context_ = ::DiningPhilosophers::CCM_Observer_Context::_narrow(ctx);
 }
@@ -309,6 +314,7 @@ ObserverHomeImpl::set_context(Components::CCMContext_ptr ctx)
 
 ::Components::EnterpriseComponent_ptr
 ObserverHomeImpl::create ()
+    throw (CORBA::SystemException, Components::CreateFailure)
 {
 // BEGIN USER INSERT SECTION ObserverHomeImpl::create
     return new ObserverImpl();
