@@ -23,35 +23,67 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#ifndef __CIDL_REPOSITORY_IMPL_H__
-#define __CIDL_REPOSITORY_IMPL_H__
+#ifndef __STORAGETYPE_DEF_IMPL_H__
+#define __STORAGETYPE_DEF_IMPL_H__
 
 #include <CORBA.h>
-#include "CIDL_Extension_skel.h"
-#include "ComponentRepository_impl.h"
+#include "IFR_skel.h"
+#include "InterfaceDef_impl.h"
+
+#include <vector>
+
+using namespace std;
 
 namespace QEDO_ComponentRepository {
 
-class CIDLRepository_impl : public virtual POA_CIDL::CIDLRepository,
-								public virtual ComponentRepository_impl
+class StorageTypeDef_impl : public virtual POA_IR__::StorageTypeDef,
+							public virtual InterfaceDef_impl
 {
+	StorageTypeDef_impl *base_storage_type_impl_;
+	vector < InterfaceDef_impl* > supported_interface_impls_;
+
 public:
-	CIDLRepository_impl ( CORBA::ORB_ptr orb, PortableServer::POA_ptr poa );
-	
-	~CIDLRepository_impl ();
+	StorageTypeDef_impl ( Container_impl *container,
+					      Repository_impl *repository,
+						  StorageTypeDef_impl *base_storage_type_impl );
 
-	virtual void destroy_repository();
+	~StorageTypeDef_impl();
 
     //
-    // IDL:omg.org/CIDL/CIDLRepository/create_composition:1.0
+    // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
     //
-    virtual CIDL::CompositionDef_ptr create_composition(const char* id,
-                                                        const char* name,
-                                                        const char* version,
-                                                        CIDL::LifecycleCategory lifecycle,
-                                                        IR__::HomeDef_ptr home,
-														const IR__::CatalogDefSeq& catalogs)
+	virtual CORBA__::DefinitionKind def_kind()
+        throw(CORBA::SystemException)
+    {
+        return CORBA__::dk_StorageType;
+    }
+
+    //
+    // IDL:omg.org/CORBA__/IRObject/destroy:1.0
+    //
+    virtual void destroy()
         throw(CORBA::SystemException);
+
+    //
+    // IDL:omg.org/IR__/Contained/describe:1.0
+    //
+    virtual IR__::Contained::Description* describe()
+        throw(CORBA::SystemException);
+
+	//
+    // IDL:omg.org/IR__/StorageTypeDef/supported_interfaces:1.0
+    //
+    virtual IR__::InterfaceDefSeq* supported_interfaces()
+        throw(CORBA::SystemException);
+    virtual void supported_interfaces(const IR__::InterfaceDefSeq&)
+        throw(CORBA::SystemException);
+
+    //
+    // IDL:omg.org/IR__/StorageTypeDef/base_storage_type:1.0
+    //
+    virtual IR__::StorageTypeDef_ptr base_storage_type()
+        throw(CORBA::SystemException);
+    
 };
 
 } // namespace QEDO_ComponentRepository

@@ -23,37 +23,67 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#ifndef __CIDL_REPOSITORY_IMPL_H__
-#define __CIDL_REPOSITORY_IMPL_H__
+#ifndef __USES_CATALOG_DEF_IMPL_H__
+#define __USES_CATALOG_DEF_IMPL_H__
 
 #include <CORBA.h>
 #include "CIDL_Extension_skel.h"
-#include "ComponentRepository_impl.h"
+#include "Contained_impl.h"
+#include "Repository_impl.h"
+
 
 namespace QEDO_ComponentRepository {
 
-class CIDLRepository_impl : public virtual POA_CIDL::CIDLRepository,
-								public virtual ComponentRepository_impl
+class UsesCatalogDef_impl : public virtual POA_CIDL::UsesCatalogDef,
+							 public virtual Contained_impl
 {
+	char* str_label_;
+	IR__::CatalogDef_ptr catalog_def_;
 public:
-	CIDLRepository_impl ( CORBA::ORB_ptr orb, PortableServer::POA_ptr poa );
-	
-	~CIDLRepository_impl ();
+	UsesCatalogDef_impl ( Container_impl *container,
+							Repository_impl *repository );
 
-	virtual void destroy_repository();
+	~UsesCatalogDef_impl();
 
     //
-    // IDL:omg.org/CIDL/CIDLRepository/create_composition:1.0
+    // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
     //
-    virtual CIDL::CompositionDef_ptr create_composition(const char* id,
-                                                        const char* name,
-                                                        const char* version,
-                                                        CIDL::LifecycleCategory lifecycle,
-                                                        IR__::HomeDef_ptr home,
-														const IR__::CatalogDefSeq& catalogs)
+	virtual CORBA__::DefinitionKind def_kind()
+        throw(CORBA::SystemException)
+    {
+        return CORBA__::dk_UsesCatalog;
+    }
+
+    //
+    // IDL:omg.org/CORBA__/IRObject/destroy:1.0
+    //
+    virtual void destroy()
+        throw(CORBA::SystemException);
+
+    //
+    // IDL:omg.org/IR__/Contained/describe:1.0
+    //
+	virtual IR__::Contained::Description* describe()
+        throw(CORBA::SystemException);
+
+    //
+    // IDL:omg.org/CIDL/UsesCatalogDef/catalog_type:1.0
+    //
+    virtual IR__::CatalogDef_ptr catalog_type()
+        throw(CORBA::SystemException);
+    virtual void catalog_type(IR__::CatalogDef_ptr catalog_def)
+        throw(CORBA::SystemException);
+
+    //
+    // IDL:omg.org/CIDL/UsesCatalogDef/catalog_label:1.0
+    //
+    virtual IR__::Identifier catalog_label()
+        throw(CORBA::SystemException);
+    virtual void catalog_label(const char* str_label)
         throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository
 
 #endif
+

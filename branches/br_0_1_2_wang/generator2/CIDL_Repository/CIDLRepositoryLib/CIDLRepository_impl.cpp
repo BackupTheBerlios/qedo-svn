@@ -61,7 +61,8 @@ CIDLRepository_impl::create_composition
  const char* name,
  const char* version,
  CIDL::LifecycleCategory lifecycle,
- IR__::HomeDef_ptr home)
+ IR__::HomeDef_ptr home,
+ const IR__::CatalogDefSeq& catalogs)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "CIDLRepository_impl::create_composition() called" );
@@ -93,7 +94,7 @@ throw(CORBA::SystemException)
 	}
 
 	CompositionDef_impl *new_composition =
-		new CompositionDef_impl ( this, repository_, lifecycle, impl );
+		new CompositionDef_impl ( this, repository_, lifecycle, impl, catalogs );
 
 	new_composition -> id ( id );
 	new_composition -> name ( name );

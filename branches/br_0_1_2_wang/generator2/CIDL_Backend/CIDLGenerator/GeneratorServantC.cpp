@@ -187,13 +187,8 @@ GeneratorServantC::doAttribute(IR__::AttributeDef_ptr attribute)
 		out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
 		out.unindent();
 		out << "}\n\n";
-		out << "#ifdef TAO_ORB\n";
 		out << interface_name_ << "_ptr facet = dynamic_cast< ";
 		out << interface_name_ << "_ptr >(current_executor_);\n";
-		out << "#else\n";
-		out << interface_name_ << "_ptr facet = ";
-		out << interface_name_ << "::_narrow (current_executor_);\n";
-		out << "#endif\n";
 		out << "if (CORBA::is_nil (facet))\n{\n";
 		out.indent();
 		out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
@@ -219,13 +214,8 @@ GeneratorServantC::doAttribute(IR__::AttributeDef_ptr attribute)
 	out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "#ifdef TAO_ORB\n";
 	out << interface_name_ << "_ptr facet = dynamic_cast< ";
 	out << interface_name_ << "_ptr >(current_executor_);\n";
-	out << "#else\n";
-	out << interface_name_ << "_ptr facet =  ";
-	out << interface_name_ << "::_narrow(current_executor_);\n";
-	out << "#endif\n";
 	out << "if (CORBA::is_nil (facet))\n{\n";
 	out.indent();
 	out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
@@ -291,13 +281,8 @@ GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 	out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "#ifdef TAO_ORB\n";
 	out << interface_name_ << "_ptr facet = dynamic_cast< ";
 	out << interface_name_ << "_ptr >(current_executor_);\n";
-	out << "#else\n";
-	out << interface_name_ << "_ptr facet = ";
-	out << interface_name_ << "::_narrow(current_executor_);\n";
-	out << "#endif\n";
 	out << "if (CORBA::is_nil (facet))\n{\n";
 	out.indent();
 	out << "throw CORBA::INTERNAL (42, CORBA::COMPLETED_NO);\n";
@@ -349,13 +334,8 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	handleException(factory);
 	out << ")\n{\n";
 	out.indent();
-	out << "#ifdef TA_ORB\n";
 	out << home_name << "_ptr home_executor = dynamic_cast < ";
 	out << home_name << "_ptr > (home_executor_.in());\n";
-	out << "#else\n";
-	out << home_name << "_ptr home_executor = ";
-	out << home_name << "::_narrow(home_executor_.in());\n";
-	out << "#endif\n";
 	out << "if (! home_executor)\n{\n";
 	out.indent();
 	out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
@@ -465,13 +445,8 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	handleException(finder);
 	out << ")\n{\n";
 	out.indent();
-	out << "#ifdef TAO_ORB\n";
 	out << home_name << "_ptr home_executor = dynamic_cast < ";
 	out << home_name << "_ptr > (home_executor_.in());\n";
-	out << "#else\n";
-	out << home_name << "_ptr home_executor = ";
-	out << home_name << "::_narrow (home_executor_.in());\n";
-	out << "#endif\n";
 	out << "if (! home_executor)\n{\n";
 	out.indent();
 	out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
@@ -575,7 +550,7 @@ GeneratorServantC::doInterface(IR__::InterfaceDef_ptr intf)
 void
 GeneratorServantC::doComponent(IR__::ComponentDef_ptr component)
 {
-	/*std::string header_name = std::string(getAbsoluteName(component, "_")) + "_SERVANT";
+	/*std::string header_name = std::string(mapAbsoluteName(component, "_")) + "_SERVANT";
 	std::string filename = header_name + ".cpp";
 	out.open(filename.c_str());
 
@@ -867,7 +842,7 @@ void
 GeneratorServantC::doHome(IR__::HomeDef_ptr home)
 {
 	component_ = IR__::ComponentDef::_duplicate(home->managed_component());
-	/*std::string header_name = std::string(getAbsoluteName(home, "_")) + "_SERVANT";
+	/*std::string header_name = std::string(mapAbsoluteName(home, "_")) + "_SERVANT";
 	std::string filename = header_name + ".cpp";
 	out.open(filename.c_str());
 
@@ -1357,13 +1332,8 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out << "throw(CORBA::SystemException, Components::CreateFailure)\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"Home_servant: create() called\");\n\n";
-	out << "#ifdef TAO_ORB\n";
 	out << mapFullNameLocal(home) << "_ptr home_executor = dynamic_cast < ";
 	out << mapFullNameLocal(home) << "_ptr > (home_executor_.in());\n";
-	out << "#else\n";
-	out << mapFullNameLocal(home) << "_ptr home_executor = ";
-	out << mapFullNameLocal(home) << "::_narrow (home_executor_.in());\n";
-	out << "#endif\n";
 	out << "if (! home_executor)\n{\n";
 	out.indent();
 	out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
@@ -1685,13 +1655,8 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 			handleException(attribute);
 			out << ")\n{\n";
 			out.indent();
-			out << "#ifdef TAO_ORB\n";
 			out << home_name << "_ptr home_executor = dynamic_cast < ";
 			out << home_name << "_ptr> (home_executor_.in());\n";
-			out << "#else\n";
-			out << home_name << "_ptr home_executor = ";
-			out << home_name << "::_narrow (home_executor_.in());\n";
-			out << "#endif\n";
 			out << "if (! home_executor)\n{\n";
 			out.indent();
 			out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
@@ -1709,13 +1674,8 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 		handleException(attribute);
 		out << ")\n{\n";
 		out.indent();
-		out << "#ifdef TAO_ORB\n";
 		out << home_name << "_ptr home_executor = dynamic_cast < ";
 		out << home_name << "_ptr > (home_executor_.in());\n";
-		out << "#else\n";
-		out << home_name << "_ptr home_executor = ";
-		out << home_name << "::_narrow (home_executor_.in());\n";
-		out << "#endif\n";
 		out << "if (! home_executor)\n{\n";
 		out.indent();
 		out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
@@ -1753,13 +1713,8 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 		handleException(operation);
 		out << ")\n{\n";
 		out.indent();
-		out << "#ifdef TAO_ORB\n";
 		out << home_name << "_ptr home_executor = dynamic_cast < ";
 		out << home_name << "_ptr > (home_executor_.in());\n";
-		out << "#else\n";
-		out << home_name << "_ptr home_executor = ";
-		out << home_name << "::_narrow (home_executor_.in());\n";
-		out << "#endif\n";
 		out << "if (! home_executor)\n{\n";
 		out.indent();
 		out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
@@ -1802,13 +1757,8 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 				handleException(attribute);
 				out << ")\n{\n";
 				out.indent();
-				out << "#ifdef TAO_ORB\n";
 				out << home_name << "_ptr home_executor = dynamic_cast < ";
 				out << home_name << "_ptr> (home_executor_.in());\n";
-				out << "#else\n";
-				out << home_name << "_ptr home_executor = ";
-				out << home_name << "::_narrow (home_executor_.in());\n";
-				out << "#endif\n";
 				out << "if (! home_executor)\n{\n";
 				out.indent();
 				out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
@@ -1826,13 +1776,8 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 			handleException(attribute);
 			out << ")\n{\n";
 			out.indent();
-			out << "#ifdef TAO_ORB\n";
 			out << home_name << "_ptr home_executor = dynamic_cast < ";
 			out << home_name << "_ptr > (home_executor_.in());\n";
-			out << "#else\n";
-			out << home_name << "_ptr home_executor = ";
-			out << home_name << "::_narrow (home_executor_.in());\n";
-			out << "#endif\n";
 			out << "if (! home_executor)\n{\n";
 			out.indent();
 			out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
@@ -1870,13 +1815,8 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 			handleException(operation);
 			out << ")\n{\n";
 			out.indent();
-			out << "#ifdef TAO_ORB\n";
 			out << home_name << "_ptr home_executor = dynamic_cast < ";
 			out << home_name << "_ptr > (home_executor_.in());\n";
-			out << "#else\n";
-			out << home_name << "_ptr home_executor = ";
-			out << home_name << "::_narrow (home_executor_.in());\n";
-			out << "#endif\n";
 			out << "if (! home_executor)\n{\n";
 			out.indent();
 			out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";

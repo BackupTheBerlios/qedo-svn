@@ -1,7 +1,7 @@
 /*****************************************************************************/
-/* Qedo - Quality of Service Enabled Distributed Objects                     */
+/* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
 /*                                                                           */
-/* Copyright (c) 2002/2003 by the Qedo Team                                  */
+/* Copyright (c) 2002 by the Qedo Team                                       */
 /*                                                                           */
 /* http://qedo.berlios.de                                                    */
 /*                                                                           */
@@ -11,7 +11,7 @@
 /* it under the terms of the GNU General Public License as published by      */
 /* the Free Software Foundation; either version 2 of the License, or         */
 /* (at your option) any later version.                                       */
-/*                                                                           */
+/*                                                                           */ 
 /* Qedo Generator is distributed in the hope that it will be useful,         */
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of            */
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
@@ -55,9 +55,12 @@ module CORBA__ {
 		dk_Emits, dk_Publishes, dk_Consumes, //31
 		dk_Provides, dk_Uses //33
 		// The following extensions are for CIDL
-		, dk_Composition, dk_Segment, dk_Executor, dk_HomeExecutor //37
+		, dk_Composition, dk_Segment, dk_Executor, dk_HomeExecutor, dk_UsesCatalog //37
 		// the following is the stream extension
 		, dk_Stream, dk_Sink, dk_Source, dk_SiSo
+		// The following extensions are for PSDL
+		, dk_Catalog, dk_StorageHome, dk_StorageType, dk_PSSFactory, dk_PSSFinder
+
 	};
 
 	interface IRObject
@@ -154,6 +157,9 @@ module IR__ {
 	typedef sequence <FinderDef> FinderDefSeq;
 	interface PrimaryKeyDef;
 	typedef sequence <Contained> ContainedSeq;
+	interface StorageTypeDef;
+	interface StorageHomeDef;
+	interface CatalogDef;
 	
 	struct StructMember {
 		Identifier name;
@@ -314,6 +320,27 @@ module IR__ {
 			in ComponentDef managed_component,
 			in InterfaceDefSeq supports_interfaces,
 			in ValueDef primary_key
+		);
+		StorageTypeDef create_storage_type(
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in StorageTypeDef base_storage_type,
+			in InterfaceDefSeq supports_interfaces
+		);
+		StorageHomeDef create_storage_home(
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in StorageHomeDef base_storage_home,
+			in StorageTypeDef managed_storage_type,
+			in InterfaceDefSeq supports_interfaces,
+			in ValueDef primary_key 
+		);
+		CatalogDef create_catalog(
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version
 		);
 	};
 	
@@ -808,7 +835,6 @@ module IR__ {
 			in StreamTypeDef stream_type
 		);
 	};
-	
 
 	struct ComponentDescription {
 		Identifier name;
@@ -892,6 +918,91 @@ module IR__ {
 		OpDescriptionSeq operations;
 		AttrDescriptionSeq attributes;
 		boolean is_basic;
+	};
+
+	interface StorageTypeDef : InterfaceDef {
+		// read/write interface
+		attribute InterfaceDefSeq supported_interfaces;
+		// read interface
+		readonly attribute StorageTypeDef base_storage_type;
+		// write interface
+	};
+	
+	struct StorageTypeDescription {
+		Identifier name;
+		RepositoryId id;
+		RepositoryId defined_in;
+		VersionSpec version;
+		RepositoryId base_storage_type;
+		RepositoryIdSeq supports_interfaces;
+		AttrDescriptionSeq attributes;
+	};
+
+	interface StorageHomeDef : InterfaceDef {
+		// read operations
+		readonly attribute StorageHomeDef base_storage_home;
+		readonly attribute StorageTypeDef managed_storage_type;
+		attribute InterfaceDefSeq supported_interfaces;
+		readonly attribute PrimaryKeyDef primary_key;
+		readonly attribute FactoryDefSeq factories;
+		readonly attribute FinderDefSeq finders;
+		// write interfaces
+		PrimaryKeyDef create_primary_key (
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in ValueDef primary_key
+		);
+		FactoryDef create_factory (
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in ParDescriptionSeq params, // only PARAM_INs
+			in ExceptionDefSeq exceptions
+		);
+		FinderDef create_finder (
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in ParDescriptionSeq params, // only PARAM_INs
+			in ExceptionDefSeq exceptions
+		);
+	};
+	
+	struct StorageHomeDescription {
+		Identifier name;
+		RepositoryId id;
+		RepositoryId defined_in;
+		VersionSpec version;
+		RepositoryId base_storage_home;
+		RepositoryId managed_storage_type;
+		RepositoryIdSeq supports_interfaces;
+		PrimaryKeyDef primary_key_def;
+		FactoryDefSeq factories;
+		FinderDefSeq finders;
+		OpDescriptionSeq operations;
+		AttrDescriptionSeq attributes;
+	};
+
+	interface CatalogDef : InterfaceDef {
+		// read interface
+		readonly attribute ProvidesDefSeq provides_interfaces;
+		// write interface
+		ProvidesDef create_provides (
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in InterfaceDef interface_type
+		);
+	};
+	typedef sequence < CatalogDef > CatalogDefSeq;
+	
+	struct CatalogDescription {
+		Identifier name;
+		RepositoryId id;
+		RepositoryId defined_in;
+		VersionSpec version;
+		ProvidesDefSeq provides_interfaces;
 	};
 };
 

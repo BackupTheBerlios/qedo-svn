@@ -34,7 +34,8 @@ CompositionDef_impl::CompositionDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
   CIDL::LifecycleCategory lifecycle,
-  HomeDef_impl *home_impl )
+  HomeDef_impl *home_impl,
+  IR__::CatalogDefSeq catalogs)
 : IRObject_impl ( repository ),
   Container_impl ( repository ),
   Contained_impl ( container, repository )
@@ -43,10 +44,48 @@ CompositionDef_impl::CompositionDef_impl
 
 	home_impl_ = home_impl;
 	home_impl_ -> _add_ref();
-
+	
 	lifecycle_ = lifecycle;
 	home_executor_impl_ = NULL;
 	executor_impl_ = NULL;
+	uses_catalog_def_impl_ = NULL;
+
+
+	unsigned int i;
+
+    vector < CatalogDef_impl* > impl_seq;
+    impl_seq.resize ( catalogs.length(), NULL );
+
+    for ( i = 0; i < catalogs.length(); i++ )
+    {
+        if ( CORBA::is_nil ( catalogs[i] ) )
+            throw CORBA::BAD_PARAM(); // Is this exception correct?
+
+        impl_seq[i] = 0;
+
+        try
+        {
+			PortableServer::ServantBase_var servant =
+				repository_ -> poa() -> reference_to_servant(catalogs[i]);
+            impl_seq[i] = dynamic_cast<CatalogDef_impl*>(servant.in());
+        }
+        catch(...)
+        {
+        }
+        if(!impl_seq[i])
+        {
+            // Must be same repository
+            throw CORBA::BAD_PARAM(4, CORBA::COMPLETED_NO);
+        }
+    }
+
+    for ( i = 0; i < impl_seq.size(); i++ )
+        impl_seq[i] -> _add_ref();
+
+    for ( i = 0; i < catalogs_.size(); i++)
+        catalogs_[i] -> _remove_ref();
+
+    catalogs_ = impl_seq;
 }
 
 CompositionDef_impl::~CompositionDef_impl
@@ -63,6 +102,9 @@ throw(CORBA::SystemException)
 	DEBUG_OUTLINE ( "CompositionDef_impl::destroy() called" );
 
 	home_impl_ -> _remove_ref();
+
+	for ( unsigned int i = 0; i < catalogs_.size(); i++ )
+        catalogs_[i] -> _remove_ref();
 
 	Container_impl::destroy();
 	Contained_impl::destroy();
@@ -88,11 +130,12 @@ throw(CORBA::SystemException)
 	composition_desc -> lifecycle = this -> lifecycle();
 	composition_desc -> home_executor = this -> home_executor();
 	composition_desc -> executor_def = this -> executor_def();
+	composition_desc -> uses_catalog_def = this -> uses_catalog_def();
 
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
 	CORBA::Any any;
-	any <<= composition_desc._retn();;
+	any <<= composition_desc._retn();
 	desc -> value = any;
 
 	return desc._retn();
@@ -150,11 +193,25 @@ throw(CORBA::SystemException)
         return CIDL::ExecutorDef::_nil();
 }
 
+CIDL::UsesCatalogDef_ptr 
+CompositionDef_impl::uses_catalog_def
+()
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "CompositionDef_impl::uses_catalog_def() called" );
+
+    if ( uses_catalog_def_impl_ )
+        return uses_catalog_def_impl_ -> _this();
+    else
+        return CIDL::UsesCatalogDef::_nil();
+}
+
 CIDL::HomeExecutorDef_ptr 
 CompositionDef_impl::create_home_executor
 ( const char* id,
   const char* name,
-  const char* version )
+  const char* version,
+  IR__::CatalogDef_ptr catalog )
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "CompositionDef_impl::create_home_executor() called" );
@@ -165,7 +222,7 @@ throw(CORBA::SystemException)
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
 	HomeExecutorDef_impl *new_home_executor =
-		new HomeExecutorDef_impl ( this, repository_ );
+		new HomeExecutorDef_impl ( this, repository_, catalog );
 	new_home_executor -> id ( id );
 	new_home_executor -> name ( name );
 	new_home_executor -> version ( version );
@@ -206,5 +263,32 @@ throw(CORBA::SystemException)
 	return new_executor -> _this();
 }
 
-} // namespace QEDO_ComponentRepository
+CIDL::UsesCatalogDef_ptr 
+CompositionDef_impl::create_uses_catalog_def
+( const char* id,
+  const char* name,
+  const char* version )
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "CompositionDef_impl::create_uses_catalog_def() called" );
 
+	if ( repository_ -> check_for_id ( id ) )
+		throw CORBA::BAD_PARAM ( 2, CORBA::COMPLETED_NO );
+	if ( check_for_name ( name ) )
+		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
+
+	UsesCatalogDef_impl *new_uses_catalog_def =
+		new UsesCatalogDef_impl ( this, repository_ );
+	new_uses_catalog_def -> id ( id );
+	new_uses_catalog_def -> name ( name );
+	new_uses_catalog_def -> version ( version );
+
+	repository_ -> _add_ref();
+	this -> _add_ref();
+
+	uses_catalog_def_impl_ = new_uses_catalog_def;
+
+	return new_uses_catalog_def -> _this();
+}
+
+} // namespace QEDO_ComponentRepository

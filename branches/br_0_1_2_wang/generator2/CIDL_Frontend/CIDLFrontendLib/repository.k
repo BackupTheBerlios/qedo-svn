@@ -75,6 +75,8 @@ struct build_class : build_baseclass {
   IR__::IDLType_ptr type;
   IR__::ValueDef_ptr valuetype;
   IR__::HomeDef_ptr home;
+  IR__::CatalogDef_ptr catalog;
+  IR__::CatalogDefSeq catalogs;
   definition def;
   int pos;
   bool flag;
@@ -82,6 +84,7 @@ struct build_class : build_baseclass {
     type = IR__::IDLType::_nil();
     valuetype = IR__::ValueDef::_nil();
     home = IR__::HomeDef::_nil();
+	catalog = IR__::CatalogDef::_nil();
   }
 };
 
@@ -1791,7 +1794,7 @@ Composition(name, flag_v, compo_body)
       // create CompositionDef
       try {
         composition = container-> create_composition(get_repid(def_v,name),
-          name->get_name(), "1.0", lifecycle, my_build.home);
+          name->get_name(), "1.0", lifecycle, my_build.home, my_build.catalogs);
       }
       catch (...) {
         Error("Exception in creating composition %k\n", name, name);
@@ -1820,6 +1823,7 @@ def_v=
 HomeExecutorDef(name, homex_body)
 ->[ feed :
     %uviewvar feed my_feed; 
+	%uviewvar build my_build;
     {
       CIDL::CompositionDef_ptr container;
       container = CIDL::CompositionDef::_narrow (kc_current_view.container);
@@ -1827,7 +1831,7 @@ HomeExecutorDef(name, homex_body)
       // create HomeExecutorDef
       try {
         homeexec = container-> create_home_executor (get_repid(def_v,name),
-          name->get_name(), "1.0");
+          name->get_name(), "1.0", my_build.catalog);
       }
       catch (...) {
         Error("Exception in creating home executor %k\n", name, name);
@@ -1932,7 +1936,7 @@ SegmentDef(name, def_list)
       // create SegmentDef
       try {
         seg = container-> create_segment (get_repid(def_v,name),
-          name->get_name(), "1.0", my_build.provseq);
+          name->get_name(), "1.0", my_build.provseq, my_build.catalog);
       }
       catch (...) {
         Error("Exception in creating segment %k\n", name, name);

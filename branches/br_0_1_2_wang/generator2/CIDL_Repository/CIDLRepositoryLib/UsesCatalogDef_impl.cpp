@@ -23,124 +23,97 @@
 /*                                                                           */
 /*****************************************************************************/
 
-#include "HomeExecutorDef_impl.h"
+#include "UsesCatalogDef_impl.h"
 #include "Debug.h"
+
 
 namespace QEDO_ComponentRepository {
 
-HomeExecutorDef_impl::HomeExecutorDef_impl
+UsesCatalogDef_impl::UsesCatalogDef_impl
 ( Container_impl *container,
-  Repository_impl *repository,
-  IR__::CatalogDef *catalog)
+  Repository_impl *repository )
 : Contained_impl ( container, repository ),
   IRObject_impl ( repository )
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::HomeExecutorDef_impl() called" );
-	catalog_ = dynamic_cast<CatalogDef_impl*>(catalog);
+	DEBUG_OUTLINE ( "UsesCatalogDef_impl::UsesCatalogDef_impl() called" );
 }
 
-HomeExecutorDef_impl::~HomeExecutorDef_impl
+UsesCatalogDef_impl::~UsesCatalogDef_impl
 ()
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::~HomeExecutorDef_impl() called" );
+	DEBUG_OUTLINE ( "UsesCatalogDef_impl::~UsesCatalogDef_impl() called" );
 }
 
 void
-HomeExecutorDef_impl::destroy
+UsesCatalogDef_impl::destroy
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::destroy() called" );
+	DEBUG_OUTLINE ( "UsesCatalogDef_impl::destroy() called" );
 
 	Contained_impl::destroy();
 }
 
 IR__::Contained::Description*
-HomeExecutorDef_impl::describe
+UsesCatalogDef_impl::describe
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::describe() called" );
+	DEBUG_OUTLINE ( "UsesCatalogDef_impl::describe() called" );
 
-	CIDL::HomeExecutorDescription_var home_executor_desc = new CIDL::HomeExecutorDescription;
-	home_executor_desc -> id = this -> id();
-	home_executor_desc -> name = this -> name();
-	home_executor_desc -> version = this -> version();
+	CIDL::UsesCatalogDefDescription_var uses_catalog_def_desc = new CIDL::UsesCatalogDefDescription;
+	uses_catalog_def_desc -> id = this -> id();
+	uses_catalog_def_desc -> name = this -> name();
+	uses_catalog_def_desc -> version = this -> version();
 	Contained_impl *contained = dynamic_cast<Contained_impl*>(defined_in_);
 	if ( contained )
-		home_executor_desc -> defined_in = CORBA::string_dup ( contained -> id() );
+		uses_catalog_def_desc -> defined_in = CORBA::string_dup ( contained -> id() );
 	else
-		home_executor_desc -> defined_in = CORBA::string_dup ( "" );
-
-	home_executor_desc -> binds_to = *(this -> binds_to());
-	home_executor_desc -> delegations = *(this->delegations());
-	home_executor_desc -> abs_st_home_delegations = *(this->abs_st_home_delegations());
+		uses_catalog_def_desc -> defined_in = CORBA::string_dup ( "" );
 
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
 	CORBA::Any any;
-	any <<= home_executor_desc._retn();
+	any <<= uses_catalog_def_desc._retn();;
 	desc -> value = any;
 
 	return desc._retn();
 }
 
-CIDL::DelegationSeq*
-HomeExecutorDef_impl::delegations
+IR__::CatalogDef_ptr
+UsesCatalogDef_impl::catalog_type
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::delegations() called" );
-
-	return new CIDL::DelegationSeq ( delegations_ );
+	DEBUG_OUTLINE ( "UsesCatalogDef_impl::catalog_type() called" );
+	return IR__::CatalogDef::_duplicate(catalog_def_);
 }
 
 void
-HomeExecutorDef_impl::delegations
-(const CIDL::DelegationSeq& seq)
+UsesCatalogDef_impl::catalog_type
+(IR__::CatalogDef_ptr catalog_def)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::delegations(...) called" );
-
-	delegations_ = seq;
+	DEBUG_OUTLINE ( "UsesCatalogDef_impl::catalog_type(...) called" );
+	catalog_def_ = catalog_def;
 }
 
-CIDL::AbsStHomeDelegationSeq*
-HomeExecutorDef_impl::abs_st_home_delegations
+IR__::Identifier
+UsesCatalogDef_impl::catalog_label
 ()
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::abs_st_home_delegations() called" );
-
-	return new CIDL::AbsStHomeDelegationSeq ( abs_st_home_delegations_ );
-}
-
-void
-HomeExecutorDef_impl::abs_st_home_delegations
-(const CIDL::AbsStHomeDelegationSeq& seq)
-throw(CORBA::SystemException)
-{
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::abs_st_home_delegations(...) called" );
-
-	abs_st_home_delegations_ = seq;
-}
-
-CIDL::Binding* 
-HomeExecutorDef_impl::binds_to
-()
-throw(CORBA::SystemException)
-{
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::binds_to() called" );
-	return new CIDL::Binding ( *binding_ );
+	DEBUG_OUTLINE ( "UsesCatalogDef_impl::catalog_label() called" );
+	throw CORBA::BAD_PARAM();
 }
 
 void 
-HomeExecutorDef_impl::binds_to
-(const CIDL::Binding& binding)
+UsesCatalogDef_impl::catalog_label
+(const char* str_label)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "HomeExecutorDef_impl::binds_to(...) called" );
-	*binding_ = binding;
+	DEBUG_OUTLINE ( "UsesCatalogDef_impl::catalog_label(...) called" );
+	str_label_ = CORBA::string_dup ( str_label );
 }
 
 } // namespace QEDO_ComponentRepository

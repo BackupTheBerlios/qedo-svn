@@ -1,7 +1,7 @@
 /*****************************************************************************/
-/* Qedo - Quality of Service Enabled Distributed Objects                     */
+/* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
 /*                                                                           */
-/* Copyright (c) 2002/2003 by the Qedo Team                                  */
+/* Copyright (c) 2002 by the Qedo Team                                       */
 /*                                                                           */
 /* http://qedo.berlios.de                                                    */
 /*                                                                           */
@@ -38,12 +38,28 @@ module CIDL {
 	interface SegmentDef;
 	interface HomeExecutorDef;
 	interface ExecutorDef;
-
+	
 	typedef unsigned long LifecycleCategory;
 	const LifecycleCategory lc_Service = 0;
 	const LifecycleCategory lc_Session = 1;
 	const LifecycleCategory lc_Process = 2;
 	const LifecycleCategory lc_Entity = 3;
+
+	interface UsesCatalogDef : IR__::Contained
+	{
+		attribute IR__::CatalogDef catalog_type;
+		attribute IR__::Identifier catalog_label;
+	};
+	typedef sequence < UsesCatalogDef > UsesCatalogDefSeq;
+
+	struct UsesCatalogDefDescription {
+		IR__::Identifier name;
+		IR__::RepositoryId id;
+		IR__::RepositoryId defined_in;
+		IR__::VersionSpec version;
+		IR__::CatalogDef catalog_type;
+		IR__::Identifier catalog_label;
+	};
 
 	interface CIDLRepository : IR__::ComponentRepository
 	{
@@ -52,7 +68,8 @@ module CIDL {
 			in IR__::Identifier name,
 			in IR__::VersionSpec version,
 			in LifecycleCategory lifecycle,
-			in IR__::HomeDef _home
+			in IR__::HomeDef _home,
+			in IR__::CatalogDefSeq _catalogs
 		);
 	};
 
@@ -63,13 +80,20 @@ module CIDL {
 		readonly attribute LifecycleCategory lifecycle;
 		readonly attribute HomeExecutorDef home_executor;
 		readonly attribute ExecutorDef executor_def;
+		readonly attribute UsesCatalogDef uses_catalog_def;
 
 		HomeExecutorDef create_home_executor (
 			in IR__::RepositoryId id,
 			in IR__::Identifier name,
-			in IR__::VersionSpec version
+			in IR__::VersionSpec version,
+			in IR__::CatalogDef catalog
 		);
 		ExecutorDef create_executor (
+			in IR__::RepositoryId id,
+			in IR__::Identifier name,
+			in IR__::VersionSpec version
+		);
+		UsesCatalogDef create_uses_catalog_def (
 			in IR__::RepositoryId id,
 			in IR__::Identifier name,
 			in IR__::VersionSpec version
@@ -84,11 +108,13 @@ module CIDL {
 		LifecycleCategory lifecycle;
 		HomeExecutorDef home_executor;
 		ExecutorDef executor_def;
+		UsesCatalogDef uses_catalog_def;
 	};
 
 	interface SegmentDef : IR__::Contained
 	{
 		readonly attribute IR__::ProvidesDefSeq provided_facets;
+		readonly attribute IR__::StorageHomeDef storage_home;
 	};
 	typedef sequence < SegmentDef > SegmentDefSeq;
 
@@ -98,6 +124,7 @@ module CIDL {
 		IR__::RepositoryId defined_in;
 		IR__::VersionSpec version;
 		IR__::ProvidesDefSeq provided_facets;
+		IR__::StorageHomeDef storage_home;
 	};
 
 	struct Delegation
@@ -107,9 +134,25 @@ module CIDL {
 	};
 	typedef sequence < Delegation > DelegationSeq;
 
+	struct AbsStHomeDelegation 
+	{
+		IR__::OperationDef delegated_operation;
+		IR__::Identifier storage_home_operation_name;
+	};
+	typedef sequence < AbsStHomeDelegation > AbsStHomeDelegationSeq;
+
+	struct Binding {
+		ExecutorDef executor;
+		HomeExecutorDef home_executor;
+		IR__::StorageTypeDef storage_type;
+		IR__::StorageHomeDef storage_home;
+	};
+
 	interface HomeExecutorDef : IR__::Contained
 	{
+		attribute Binding binds_to;
 		attribute DelegationSeq delegations;
+		attribute AbsStHomeDelegationSeq abs_st_home_delegations;
 	};
 
 	struct HomeExecutorDescription {
@@ -117,7 +160,9 @@ module CIDL {
 		IR__::RepositoryId id;
 		IR__::RepositoryId defined_in;
 		IR__::VersionSpec version;
+		Binding binds_to;
 		DelegationSeq delegations;
+		AbsStHomeDelegationSeq abs_st_home_delegations;
 	};
 
 	interface ExecutorDef : IR__::Contained, IR__::Container
@@ -128,7 +173,8 @@ module CIDL {
 			in IR__::RepositoryId id,
 			in IR__::Identifier name,
 			in IR__::VersionSpec version,
-			in IR__::ProvidesDefSeq provided_facets
+			in IR__::ProvidesDefSeq provided_facets,
+			in IR__::CatalogDef catalog
 		);
 	};
 

@@ -31,7 +31,8 @@ namespace QEDO_ComponentRepository {
 SegmentDef_impl::SegmentDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
-  IR__::ProvidesDefSeq provided_facets )
+  IR__::ProvidesDefSeq provided_facets,
+  IR__::CatalogDef *catalog)
 : Contained_impl ( container, repository ),
   IRObject_impl ( repository )
 {
@@ -72,6 +73,8 @@ SegmentDef_impl::SegmentDef_impl
         provided_facet_impls_[i] -> _remove_ref();
 
     provided_facet_impls_ = impl_seq;
+
+	catalog_ = dynamic_cast<CatalogDef_impl*>(catalog);
 }
 
 SegmentDef_impl::~SegmentDef_impl
@@ -116,6 +119,8 @@ throw(CORBA::SystemException)
 		segment_desc -> provided_facets[i] = provided_facet_impls_[i] -> _this();
 	}
 
+	segment_desc -> storage_home = this -> storage_home();
+
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
 	CORBA::Any any;
@@ -141,6 +146,16 @@ throw(CORBA::SystemException)
 	}
 
 	return provided_facet_seq._retn();
+}
+
+IR__::StorageHomeDef_ptr
+SegmentDef_impl::storage_home
+()
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "SegmentDef_impl::storage_home() called" );
+
+	return IR__::StorageHomeDef::_duplicate(storage_home_);
 }
 
 } // namespace QEDO_ComponentRepository 
