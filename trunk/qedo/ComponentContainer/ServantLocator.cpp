@@ -26,7 +26,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.8 2003/08/01 14:57:26 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: ServantLocator.cpp,v 1.9 2003/10/05 18:34:06 tom Exp $";
 
 namespace Qedo {
 
@@ -65,7 +65,7 @@ throw (PortableServer::ForwardRequest, CORBA::SystemException)
 	//
 	// call services registered for preinvoke, but exclude services itself
 	//
-	if(home_servant_->service_name_ == "")
+	if(home_servant_->service_name_.empty())
 	{
 		std::vector <Qedo::ComponentInstance> ::iterator iter;
 		
@@ -95,7 +95,7 @@ throw (CORBA::SystemException)
 	//
 	// call services registered for postinvoke
 	//
-	if(home_servant_->service_name_ == "")
+	if(home_servant_->service_name_.empty())
 	{
 		std::vector <Qedo::ComponentInstance> ::iterator iter;
 		
