@@ -979,6 +979,7 @@ add_storagehome(
 			}
 		}
 	  }
+	  PrimaryKeyRef(): {}
 	  NilDefinition(): {}
   }
 }
