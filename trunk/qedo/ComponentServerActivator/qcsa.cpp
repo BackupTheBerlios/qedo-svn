@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qcsa.cpp,v 1.6 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: qcsa.cpp,v 1.7 2003/07/25 12:29:28 tom Exp $";
 
 #include "ServerActivatorImpl.h"
 #include <iostream>
@@ -42,48 +42,39 @@ static char rcsid[] = "$Id: qcsa.cpp,v 1.6 2003/04/01 07:50:10 neubauer Exp $";
 int
 main (int argc, char** argv)
 {
-//#ifdef HAVE_JTC
-//	try {
-//#endif
 	std::cout << "Qedo Component Server Activator" << std::endl;
 
-		// Check for debug mode
-		bool debug_mode = false;
+	// Check for debug mode
+	bool debug_mode = false;
 
-		for (int i = 1; i < argc; i++)
+	for (int i = 1; i < argc; i++)
+	{
+		if (! strcmp(argv[i], "--debug"))
 		{
-			if (! strcmp(argv[i], "--debug"))
-			{
-				debug_mode = true;
-				break;
-			}
+			debug_mode = true;
+			break;
 		}
+	}
 
-		CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
-	
-		Qedo::ServerActivatorImpl* server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode);
+	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
 
-		try
-		{
-			server_activator->initialize();
-		}
-		catch (Qedo::ServerActivatorImpl::CannotInitialize&)
-		{
-			std::cerr << "Cannot initialize Component Server Activator... exiting." << std::endl;
-			orb->destroy();
-			exit (1);
-		}
+	Qedo::ServerActivatorImpl* server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode);
 
-		orb->run();
-//#ifdef HAVE_JTC
-//	}
-//	catch (const JTCException&e )
-//	{
-//		cerr << "caught JTCException" << endl;
-//		cerr << e << endl;
-//	}
-//#endif
-return 0;
+	try
+	{
+		server_activator->initialize();
+	}
+	catch (Qedo::ServerActivatorImpl::CannotInitialize&)
+	{
+		std::cerr << "Cannot initialize Component Server Activator... exiting." << std::endl;
+		orb->destroy();
+		exit (1);
+	}
+
+	std::cout << "Qedo Component Server Activator is up and running ...\n";
+	orb->run();
+
+	return 0;
 }
 
 /** @} */

@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qdeploy.cpp,v 1.5 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: qdeploy.cpp,v 1.6 2003/07/25 12:29:28 tom Exp $";
 
 
 #include "DeploymentClient.h"
@@ -38,7 +38,7 @@ static char rcsid[] = "$Id: qdeploy.cpp,v 1.5 2003/04/01 07:50:10 neubauer Exp $
 int
 main (int argc, char** argv)
 {
-	std::cout << "Qedo Test Client" << std::endl;
+	std::cout << "Qedo Deployment Client" << std::endl;
 
 	std::string packageName;
     if (argc != 2)

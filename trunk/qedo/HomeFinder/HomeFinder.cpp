@@ -25,7 +25,7 @@
 #include <cstring>
 #include <string>
 
-static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.4 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.5 2003/07/25 12:29:28 tom Exp $";
 
 
 /**
@@ -64,6 +64,7 @@ main (int argc, char** argv)
 		exit (1);
 	}
 
+	NORMAL_OUT("Qedo Home Finder is up and running ...")
 	orb->run();
 	return 0;
 }

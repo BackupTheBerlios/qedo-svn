@@ -28,7 +28,7 @@
 #endif
 #include <iostream>
 
-static char rcsid[] UNUSED = "$Id: ci.cpp,v 1.13 2003/07/24 13:14:54 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ci.cpp,v 1.14 2003/07/25 12:29:28 tom Exp $";
 
 
 /**
@@ -84,7 +84,7 @@ main (int argc, char** argv)
 		orb->destroy();
 		exit (1);
 	}
-
+	std::cout << "Qedo Component Installer is up and running ...\n";
 	orb->run();
 	return 0;
 }

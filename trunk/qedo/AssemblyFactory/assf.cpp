@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: assf.cpp,v 1.7 2003/05/09 10:42:40 neubauer Exp $";
+static char rcsid[] = "$Id: assf.cpp,v 1.8 2003/07/25 12:29:28 tom Exp $";
 
 #include "AssemblyFactory.h"
 #include "Output.h"
@@ -82,7 +82,7 @@ main (int argc, char** argv)
 		orb->destroy();
 		exit (1);
 	}
-
+	std::cout << "Qedo Assembly Factory Server is up and running ...\n";
 	orb->run();
 	return 0;
 }
