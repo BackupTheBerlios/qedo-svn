@@ -2807,7 +2807,8 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		out << class_name_ << "::register_storage_factory(ConnectorRegistry_ptr pConnReg)\n";
 		out << "{\n";
 		out.indent();
-		out << "Connector_ptr pConn = pConnReg->find_connector(\"\");\n\n";
+		out << "ConnectorRegistry_var _pConnReg = ConnectorRegistry::_duplicate(pConnReg);\n";
+		out << "Connector_var pConn = _pConnReg->find_connector(\"\");\n\n";
 		out << home->name() << "PersistenceFactory* _ccmfac" << home->name()<<  " = new " << home->name() << "PersistenceFactory();\n";
 		out << "pConn->register_storage_home_factory(\"" << home->name() << "Persistence\", _ccmfac" << home->name() << ");\n";
 		IR__::ComponentDef_var component = home->managed_component();
@@ -3316,6 +3317,8 @@ GeneratorServantC::genFinder(IR__::FinderDef_ptr key, IR__::HomeDef_ptr home)
 	out << "StorageObjectBase pObject = find_by_pid(strPid);\n";
 	out << "pActObject = dynamic_cast <" << component->name() << "Persistence*> (pObject);\n\n";
 	out << "return pActObject;\n";
+	out.unindent();
+	out << "}\n\n";
 }
 
 void
@@ -3579,9 +3582,6 @@ GeneratorServantC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCat
 		IR__::FinderDef_var a_finder = IR__::FinderDef::_narrow(((*contained_seq)[i]));
 		genFinder(a_finder, home);
 	}
-	
-	out.unindent();
-	out << "};\n\n";
 }
 
 void

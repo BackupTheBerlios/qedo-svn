@@ -37,16 +37,14 @@ Connector_ptr
 ConnectorRegistryImpl::find_connector(const char* implementation_id)
     throw(CosPersistentState::NotFound, CORBA::SystemException)
 {
-	DEBUG_OUT("ConnectorRegistryImpl::find_connector() is called");
+	std::string strID = implementation_id;
 
-    Connector_var pConnector = Connector::_nil();
-
-	connIter_ = connectors_.find(implementation_id);
+	connIter_ = connectors_.find(strID);
 
 	if( connIter_==connectors_.end() )
 		throw CosPersistentState::NotFound();
-	else
-		pConnector = connectors_[implementation_id];
+	
+	Connector_var pConnector = connectors_[strID];
 
     return pConnector._retn();
 }
@@ -55,29 +53,24 @@ void
 ConnectorRegistryImpl::register_connector(Connector_ptr conn, const char* implementation_id)
     throw(CORBA::SystemException)
 {
-	DEBUG_OUT("ConnectorRegistryImpl::register_connector() is called");
-	Connector_var pConn = Connector::_duplicate(conn);
-	connectors_[implementation_id] = pConn.inout();
+	std::string strID = implementation_id;
+	connectors_[strID] = Connector::_duplicate(conn);
 }
 
 void
 ConnectorRegistryImpl::unregister_connector(const char* implementation_id)
     throw(CosPersistentState::NotFound,CORBA::SystemException)
 {
-	DEBUG_OUT("ConnectorRegistryImpl::unregister_connector() is called");
+	std::string strID = implementation_id;
 
-	connIter_ = connectors_.find(implementation_id);
+	connIter_ = connectors_.find(strID);
 
 	if( connIter_ == connectors_.end())
-	{
 		throw CosPersistentState::NotFound();
-	}
-	else
-	{	
-		ConnectorImpl* tmp = dynamic_cast <ConnectorImpl*> ((*connIter_).second);
-		tmp->_remove_ref();
-		connectors_.erase(implementation_id);
-	}
+	
+    //ConnectorImpl* tmp = dynamic_cast <ConnectorImpl*> ((*connIter_).second);
+	//tmp->_remove_ref();
+	connectors_.erase(strID);
 }
 
 } // namespace Qedo

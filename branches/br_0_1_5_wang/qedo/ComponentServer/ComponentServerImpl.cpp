@@ -25,7 +25,7 @@
 #include "qedoutil.h"
 #include "ConfigurationReader.h"
 
-static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.26.2.4 2004/02/03 22:01:13 hao Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.26.2.5 2004/02/04 14:17:37 hao Exp $";
 
 #ifdef TAO_ORB
 //#include "corbafwd.h"
@@ -88,7 +88,6 @@ ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb,
 
 ComponentServerImpl::~ComponentServerImpl()
 {
-	DEBUG_OUT ("ComponentServerImpl: Destructor called");
 	pConnReg_->unregister_connector("");
 }
 
