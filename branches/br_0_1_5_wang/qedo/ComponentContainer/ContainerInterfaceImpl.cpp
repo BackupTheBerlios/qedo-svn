@@ -23,6 +23,7 @@
 #include "ContainerInterfaceImpl.h"
 #include "ComponentServerImpl.h"
 #include "ConfigurationReader.h"
+#include "DTMReader.h"
 #include "EntityHomeServant.h"
 #include "SessionHomeServant.h"
 #ifndef _QEDO_NO_QOS
@@ -36,7 +37,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.1 2004/01/19 16:38:23 hao Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.2 2004/01/28 16:59:11 hao Exp $";
 
 
 namespace Qedo {
@@ -644,6 +645,7 @@ throw (Components::Deployment::UnknownImplId,
 		break;
 	case CT_PROCESS:
 	case CT_ENTITY:
+	{
 		Qedo::EntityHomeServant* entity_home;
 
 		entity_home = dynamic_cast <Qedo::EntityHomeServant*> (qedo_home_servant);
@@ -653,7 +655,85 @@ throw (Components::Deployment::UnknownImplId,
 			NORMAL_ERR ("ContainerInterfaceImpl: Container type is incompatible. Loaded home servant is not a Qedo::EntityHomeServant");
 			throw Components::Deployment::InstallationFailure();
 		}
+
+		//
+		//get etc path
+		//
+		std::string etc_path = Qedo::getEnvironment ("QEDO");
+
+		if (etc_path == "")
+		{
+			NORMAL_OUT ("ConfigurationReader: Warning: QEDO environment varibale not set or empty");
+	#ifdef _WIN32
+			etc_path = "C:\\etc\\";
+	#else
+			etc_path = "/etc/";
+	#endif
+			NORMAL_OUT2 ("ConfigurationReader: Using default path ", etc_path.c_str());
+		}
+		else
+		{
+	#ifdef _WIN32
+			etc_path += "\\etc\\";
+	#else
+			etc_path += "/etc/";
+	#endif
+		}
+		
+		//
+		//get database connect-string
+		//
+		DTMReader reader;
+		std::string strConn;
+		try 
+		{
+			std::cout << "file name is : " << etc_path << "database.xml" << std::endl;
+			strConn = reader.readConnection( etc_path+"database.xml" );
+		}
+		catch( DTMReadException )
+		{
+			std::cerr << "!!!!! Error during reading .database.xml" << std::endl;
+			throw Components::Deployment::InstallationFailure();
+		}
+
+		std::vector<std::string> vecTableInfo;
+		vecTableInfo = entity_home->get_table_info();
+
+		//
+		//connect database
+		//
+		QDDatabase pdb;
+		pdb.Init();
+		if(!pdb.DriverConnect(strConn.c_str()))
+		{
+			std::cout << "Failed to connect to database!" << std::endl;
+			throw Components::Deployment::InstallationFailure();
+		}
+		
+		//
+		//create table in the database
+		//
+		for(int i=0; i<vecTableInfo.size(); i++)
+		{
+			std::string strSql = vecTableInfo[i];
+			// check whether table has been already created
+			if(!pdb.IsTableExist(strSql.c_str()))
+				// if not, create it!
+				pdb.ExecuteSQL(strSql.c_str());
+
+				// postgreSQL7.3 has yet bug if foreign key is used...	
+				//if(!pdb.ExecuteSQL(strSql.c_str()))
+				//{
+				//	std::cout << "Failed to build table in database!" << std::endl;
+				//	throw Components::Deployment::InstallationFailure();
+				//}
+				
+		}
+		//close database
+		pdb.close();
+		
 		break;
+	}
 	case CT_EXTENSION:
 #ifndef _QEDO_NO_QOS
 		Qedo::ExtensionHomeServant* extension_home;

@@ -52,7 +52,7 @@ CatalogBaseImpl::~CatalogBaseImpl()
 		lHomeBases_.clear();
 	}
 
-	_remove_ref();
+	//_remove_ref();
 }
 
 

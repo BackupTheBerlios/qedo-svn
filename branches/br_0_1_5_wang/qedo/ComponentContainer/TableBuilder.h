@@ -26,8 +26,6 @@
 #include <list>
 #include "Util.h"
 
-using namespace std;
-
 
 namespace Qedo
 {
@@ -36,7 +34,7 @@ class CONTAINERDLL_API TableBuilder
 {
 	public:
 
-		bool build(string descriptor, string path);
+		bool build(std::string descriptor, std::string path);
 
 };
 

@@ -19,25 +19,25 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-
 #include "TableBuilder.h"
 #include "PSDReader.h"
 #include "QDDatabase.h"
+
 
 namespace Qedo
 {
 
 bool 
-TableBuilder::build( string descriptor, string path )
+TableBuilder::build( std::string descriptor, std::string path )
 {
 	QDDatabase pdb;
 	PSDReader psd_reader;
-	string strAll, strName, strSql, strConn;
+	std::string strAll, strName, strSql, strConn;
 	std::basic_string <char>::size_type idxBegin;
 
 	// get the sql sentences to create tables
-	list<string> lTable(psd_reader.readPSD( path+descriptor, path ));
-	list<string> ::iterator iter;
+	std::list<std::string> lTable(psd_reader.readPSD( path+descriptor, path ));
+	std::list<std::string>::iterator iter;
 	
 	// get database connection string
 	strConn = psd_reader.getDBConn();
@@ -46,7 +46,7 @@ TableBuilder::build( string descriptor, string path )
 	pdb.Init();
 	if(!pdb.DriverConnect(strConn.c_str()))
 	{
-		cout << "Failed to connect to database!" << endl;
+		std::cout << "Failed to connect to database!" << std::endl;
 		return false;
 	}
 
@@ -63,7 +63,7 @@ TableBuilder::build( string descriptor, string path )
 			// if not, create it!
 			if(!pdb.ExecuteSQL(strSql.c_str()))
 			{
-				cout << "Failed to build table in database!" << endl;
+				std::cout << "Failed to build table in database!" << std::endl;
 				return false;
 			}
 	}

@@ -28,7 +28,7 @@
 #include <xercesc/framework/URLInputSource.hpp>
 
 
-static char rcsid[] UNUSED = "$Id: PSDReader.cpp,v 1.1.4.3 2004/01/26 15:45:42 hao Exp $";
+static char rcsid[] UNUSED = "$Id: PSDReader.cpp,v 1.1.4.4 2004/01/28 16:59:11 hao Exp $";
 
 
 namespace Qedo {
@@ -69,10 +69,10 @@ throw(PSDReadException)
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
 			// handle storagehome
-			if ( XMLString::compareString(child->getNodeName(), X("storagehome")) )
+			if ( !XMLString::compareString(child->getNodeName(), X("storagehome")) )
 				storagehome((DOMElement*)child);
 			// get qedo datatype map
-			//else if ( XMLString::compareString(child->getNodeName(), X("database-info")) )
+			//else if ( !XMLString::compareString(child->getNodeName(), X("database-info")) )
 			//	database_info((DOMElement*)child);
 		}
 
@@ -91,7 +91,7 @@ throw(PSDReadException)
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
 		{
 			// handle dbname
-			if ( XMLString::compareString(child->getNodeName(), X("dbname")) )
+			if ( !XMLString::compareString(child->getNodeName(), X("dbname")) )
 			{
 				DTMReader dtm_reader;
 				dtm_reader.readDTM( path_ + "qedo-datatype-map.xml", path_, get_value((DOMElement*)child) );
@@ -99,7 +99,7 @@ throw(PSDReadException)
 				return;
 			}
 			// handle connection
-			else if ( XMLString::compareString(child->getNodeName(), X("connection")) )
+			else if ( !XMLString::compareString(child->getNodeName(), X("connection")) )
 				connection((DOMElement*)child);
 		}
 

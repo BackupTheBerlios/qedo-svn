@@ -19,15 +19,12 @@
 /* License along with this library; if not, write to the Free Software     */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
-
 #ifndef __DTM_READER_H__
 #define __DTM_READER_H__
-
 
 #ifdef _WIN32
 #pragma warning (disable : 4290) // exception specification ignored
 #endif
-
 
 #include "DOMXMLParser.h"
 #include "PlatformBase.h"
@@ -37,7 +34,6 @@
 
 
 namespace Qedo {
-
 
 /**
  * exception
@@ -57,39 +53,27 @@ private:
 
 	/** the parsed datatype map */
     DOMDocument*							dtm_document_;
-	/** the path to drop files */
-	std::string								path_;
 	/** the vector for corba type */
-	std::vector <std::string>				vCorba_;
+	std::vector<std::string>				vCorba_;
 	/** the vector for cpp type */
-	std::vector <std::string>				vCpp_;
+	std::vector<std::string>				vCpp_;
 	/** the vector for cpp native type */
-	std::vector <std::string>				vCppNative_;
+	std::vector<std::string>				vCppNative_;
 	/** the vector for sql type */
-	std::vector <std::string>				vSql_;
-    
-    /**
-	 * handle qedo-datatype-map
-	 */
-    void qedo_datatype_map (DOMElement*, std::string dbname)
-        throw(DTMReadException);
+	std::vector<std::string>				vSql_;
+    /** the database connection string */
+	std::string								strConn_;
 
-	/**
-	 * find database
+    /**
+	 * handle connection
 	 */
-	bool pre_type_mapping (DOMElement*, std::string)
+    void connection (DOMElement*)
         throw(DTMReadException);
 
     /**
 	 * handle type-mapping
 	 */
 	void type_mapping (DOMElement*)
-        throw(DTMReadException);
-
-    /**
-	 * handle name
-	 */
-	std::string name (DOMElement*)
         throw(DTMReadException);
 
     /**
@@ -117,9 +101,15 @@ public:
 	~DTMReader();
 
 	/**
+	 * read database connection information
+	 */
+	std::string readConnection(std::string descriptor)
+		throw(DTMReadException);
+
+	/**
 	 * read qedo datatype map
 	 */
-	void readDTM(std::string descriptor, std::string path, std::string dbname)
+	void readDatatype(std::string descriptor)
 		throw(DTMReadException);
 
 	/**
@@ -127,9 +117,7 @@ public:
 	 */
 	void getDatatypeMap(std::map<const char*, const char*> mType, std::string dt1, std::string dt2)
 		throw(DTMReadException);
-
 };
-
 
 }
 

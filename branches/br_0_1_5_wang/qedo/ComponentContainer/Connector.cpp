@@ -57,7 +57,7 @@ ConnectorImpl::~ConnectorImpl()
 		lSessionPools_.clear();
 	}
 
-	_remove_ref();
+	//_remove_ref();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -23,7 +23,7 @@
 #include "EntityHomeServant.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: EntityHomeServant.cpp,v 1.5.20.2 2004/01/14 16:54:42 hao Exp $";
+static char rcsid[] UNUSED = "$Id: EntityHomeServant.cpp,v 1.5.20.3 2004/01/28 16:59:11 hao Exp $";
 
 
 namespace Qedo {
@@ -51,7 +51,13 @@ EntityHomeServant::~EntityHomeServant()
 {
 	DEBUG_OUT ("EntityHomeServant: Destructor called");
 }
-
+/*
+std::vector<std::string>
+EntityHomeServant::get_table_info()
+{
+	throw CORBA::NO_IMPLEMENT();
+}
+*/
 void 
 EntityHomeServant::before_remove_component (Components::ExecutorLocator_ptr exec_loc)
 {
