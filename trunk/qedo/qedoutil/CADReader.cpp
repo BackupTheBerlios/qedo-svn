@@ -156,6 +156,7 @@ throw(CADReadException)
 		}
 
         // get next child
+		//data_->stream_connections_.push_back(stream_connection_data);
 	    child = child->getNextSibling();
 	}
 
@@ -348,7 +349,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "componentproperties")
 			{
-				data.comp_prop = componentproperties(elem);
+				data.comp_prop = componentproperties_two(elem);
 			}
 
 			//
@@ -426,6 +427,45 @@ throw(CADReadException)
 	    child = child->getNextSibling();
 	}
 
+	
+	return file.name;
+}
+
+std::string
+CADReader::componentproperties_two (DOMElement* element)
+throw(CADReadException)
+{
+	std::string element_name;
+	FileData file;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// fileinarchive
+			//
+			if (element_name == "fileinarchive")
+			{
+				file = fileinarchive_two((DOMElement*)child);
+			}
+
+			//
+			// codebase
+			//
+			else if (element_name == "codebase")
+			{
+				// todo
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	
 	return file.name;
 }
 
@@ -799,6 +839,7 @@ throw(CADReadException)
 			{
 				data.node = node( elem );
 				
+				
 				// if empty take local host
 				if( data.node.empty() )
 				{
@@ -838,6 +879,69 @@ throw(CADReadException)
 	return data;
 }
 
+DestinationData
+CADReader::destination_two (DOMElement* element)
+throw(CADReadException)
+{
+	DestinationData data;
+
+	std::string element_name;
+	DOMNode* child = element->getFirstChild();
+	DOMElement* elem;
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+			elem = (DOMElement*)child;
+
+			//
+			// node
+			//
+			if (element_name == "node")
+			{
+				data.node = node( elem );
+				
+				/*
+				// if empty take local host
+				if( data.node.empty() )
+				{
+					char hostname[256];
+					gethostname(hostname, 256);
+					data.node = hostname;
+					DEBUG_OUT2( "CADReader: unspecified node, take ", hostname );
+				}
+				*/
+			}
+
+			//
+			// installation
+			//
+			else if (element_name == "installation")
+			{
+				// get type of installation
+				data.installation_type = Qedo::transcode( elem->getAttribute(X("type")) );
+				data.installation_ref = installation( elem );
+			}
+
+			//
+			// activation
+			//
+			else if (element_name == "activation")
+			{
+				// get type of activation
+				data.activation_type = Qedo::transcode( elem->getAttribute(X("type")) );
+				data.activation_ref = activation( elem );
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	data.specified = true;
+	return data;
+}
 
 std::string
 CADReader::emitsidentifier (DOMElement* element)
@@ -955,6 +1059,26 @@ throw(CADReadException)
 	}
 }
 
+Extension 
+CADReader::extension_two(DOMElement* element)
+throw(CADReadException)
+{
+	Extension extension;
+	std::string class_attr = Qedo::transcode(element->getAttribute(X("class")));
+	
+    //
+    // startorder
+    //
+    if( class_attr == "startorder" )
+	{
+		std::string id = Qedo::transcode(element->getFirstChild()->getNodeValue());
+		//extension.start_order_=id;
+		//data_->start_order_.push_back( id );
+	}
+
+	return extension;
+}
+
 
 FileData
 CADReader::fileinarchive(DOMElement* element)
@@ -1014,6 +1138,40 @@ throw(CADReadException)
 		}
 	}
 
+	return file_data;
+}
+
+FileData
+CADReader::fileinarchive_two(DOMElement* element)
+throw(CADReadException)
+{
+	std::string file = Qedo::transcode(element->getAttribute(X("name")));
+
+	FileData file_data;
+	file_data.name = path_ + getFileName( file );
+
+	std::string element_name;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+		
+			//
+			// link
+			//
+			if (element_name == "link")
+			{
+				file_data.archiv = link((DOMElement*)child);
+			}
+		}
+
+		// get next child
+		child = child->getNextSibling();
+    }
+
+	
 	return file_data;
 }
 
@@ -1083,6 +1241,156 @@ throw(CADReadException)
 	return data;
 }
 
+std::vector <HomeInstanceData>
+CADReader::findHomeInstanceData(DOMElement* element)
+throw(CADReadException)
+{
+	//
+	// need for qedo controller, find the homeplacements
+	//
+	
+	std::string element_name;
+	std::vector <HomeInstanceData> homeplacements;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+				
+			//
+			// partitioning
+			//
+			if (element_name == "partitioning")
+			{
+                homeplacements=partitioning_homeplacement((DOMElement*)child);
+
+			}
+
+			
+			
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+	return homeplacements;
+}
+
+std::vector <HostData> 
+CADReader::findHostData (DOMElement* element)
+throw(CADReadException)
+{ 
+//
+	// need for qedo controller, find the processcollocation
+	//
+	
+	std::string element_name;
+	std::vector <HostData> host_datas;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+				
+			//
+			// partitioning
+			//
+			if (element_name == "partitioning")
+			{
+                host_datas=partitioning_hostdata((DOMElement*)child);
+
+			}
+
+			
+			
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+	return host_datas;
+
+}
+
+Partitioning CADReader::findPartitioningData(DOMElement* element)
+throw(CADReadException)
+{	
+	//
+	// need for qedo controller, find the processcollocation
+	//
+	
+	std::string element_name;
+	Partitioning parti;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+				
+			//
+			// partitioning
+			//
+			if (element_name == "partitioning")
+			{
+                //parti=partitioning_data((DOMElement*)child);
+
+			}
+
+			
+			
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+	return parti;
+}
+
+
+
+std::vector <ProcessData> 
+CADReader::findProcessData(DOMElement* element)
+throw(CADReadException)
+{
+	//
+	// need for qedo controller, find the processcollocation
+	//
+	
+	std::string element_name;
+	std::vector <ProcessData> Process_datas;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+				
+			//
+			// partitioning
+			//
+			if (element_name == "partitioning")
+			{
+                Process_datas=partitioning_processdata((DOMElement*)child);
+
+			}
+
+			
+			
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+	return Process_datas;
+
+}
 
 std::string
 CADReader::homefinder (DOMElement* element)
@@ -1326,6 +1634,150 @@ throw(CADReadException)
 	return data;
 }
 
+HomeInstanceData
+CADReader::homeplacement_two (DOMElement* element)
+throw(CADReadException)
+{
+	HomeInstanceData data;
+
+	//
+	// attribute id
+	//
+	data.id = Qedo::transcode(element->getAttribute(X("id")));
+
+	//
+	// attribute cardinality
+	//
+	std::string cardinality = Qedo::transcode(element->getAttribute(X("cardinality")));
+	if( !cardinality.empty() )
+	{
+		data.cardinality = atoi( cardinality.c_str() );
+	}
+	else
+	{
+		data.cardinality = -1;
+	}
+
+	//
+	// content
+	//
+	std::string element_name;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// usagename
+			//
+			if (element_name == "usagename")
+			{
+				data.usage_name = usagename((DOMElement*)child);
+			}
+
+			//
+			// componentfileref
+			//
+			else if (element_name == "componentfileref")
+			{
+				data.file = componentfileref((DOMElement*)child);
+				
+			}
+
+			//
+			// componentimplref
+			//
+			else if (element_name == "componentimplref")
+			{
+				data.impl_id = componentimplref((DOMElement*)child);
+			}
+
+			//
+			// homeproperties
+			//
+			else if (element_name == "homeproperties")
+			{
+				data.home_prop = homeproperties((DOMElement*)child);
+			}
+
+			//
+			// componentproperties
+			//
+			else if (element_name == "componentproperties")
+			{
+				data.comp_prop = componentproperties_two((DOMElement*)child);
+			}
+
+			//
+			// registerwithhomefinder
+			//
+			else if (element_name == "registerwithhomefinder")
+			{
+				data.finder = registerwithhomefinder((DOMElement*)child);
+			}
+
+			//
+			// registerwithnaming
+			//
+			else if (element_name == "registerwithnaming")
+			{
+				data.naming = registerwithnaming((DOMElement*)child);
+			}
+
+			//
+			// registerwithtrader
+			//
+			else if (element_name == "registerwithtrader")
+			{
+				data.trader = registerwithtrader((DOMElement*)child);
+			}
+
+			//
+			// componentinstantiation
+			//
+			else if (element_name == "componentinstantiation")
+			{
+				data.instances.push_back(componentinstantiation((DOMElement*)child));
+			}
+
+			//
+			// destination
+			//
+			else if (element_name == "destination")
+			{
+				data.dest = destination_two((DOMElement*)child);
+				
+			}
+
+			//
+			// extension
+			//
+			else if (element_name == "extension")
+			{
+				extension((DOMElement*)child);
+			}
+
+			//
+			// rule
+			//
+			else if (element_name == "rule")
+			{
+				data.rules.push_back( rule((DOMElement*)child) );
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+	
+	
+
+	
+	return data;
+}
+
 
 std::string
 CADReader::homeplacementref (DOMElement* element)
@@ -1369,6 +1821,7 @@ throw(CADReadException)
 	    child = child->getNextSibling();
 	}
 
+	// if changing  -> changing homeplacement_two(qedo controller...)
 	return file.name;
 }
 
@@ -1446,6 +1899,89 @@ throw(CADReadException)
 			else if (element_name == "destination")
 			{
 				data.dest = destination((DOMElement*)child);
+			}
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	return data;
+}
+
+HostData
+CADReader::hostcollocation_two (DOMElement* element)
+throw(CADReadException)
+{
+	std::string element_name;
+	HostData data;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// usagename
+			//
+			if (element_name == "usagename")
+			{
+				data.usage_name = usagename((DOMElement*)child);
+			}
+
+			//
+			// impltype
+			//
+			else if (element_name == "impltype")
+			{
+				// todo
+			}
+
+			//
+			// homeplacement
+			//
+			else if (element_name == "homeplacement")
+			{
+				HomeInstanceData home_instance = homeplacement_two((DOMElement*)child);
+				ProcessData process;
+				process.dest = home_instance.dest;
+				process.homes.push_back(home_instance);
+				data.processes.push_back(process);
+			}
+
+			//
+			// executableplacement
+			//
+			else if (element_name == "executableplacement")
+			{
+				executableplacement((DOMElement*)child);
+			}
+
+			//
+			// processcollocation
+			//
+			else if (element_name == "processcollocation")
+			{
+				ProcessData process = processcollocation_two((DOMElement*)child);
+				data.dest = process.dest;
+				data.processes.push_back(process);
+			}
+
+			//
+			// extension
+			//
+			else if (element_name == "extension")
+			{
+				extension((DOMElement*)child);
+			}
+
+			//
+			// destination
+			//
+			else if (element_name == "destination")
+			{
+				data.dest = destination_two((DOMElement*)child);
 			}
 		}
 
@@ -1679,6 +2215,162 @@ throw(CADReadException)
 	}
 }
 
+/*
+Partitioning
+partitioning_data(DOMElement* element)
+throw(CADReadException)
+{
+	
+	std::string element_name;
+	Qedo::Partitioning parti;
+	/*
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+
+			/* ??????????
+
+			//
+			// executableplacement
+			//
+			if (element_name == "executableplacement")
+			{
+				parti executableplacement((DOMElement*)child);
+			}
+
+			????????????????
+			
+					
+			//
+			// extension
+			//
+			if (element_name == "extension")
+			{
+				Qedo::Extension extension;
+				std::string class_attr = Qedo::transcode(element->getAttribute(X("class")));
+	
+				//
+				// startorder
+			    //
+			   if( class_attr == "startorder" )
+			   {
+						std::string id = Qedo::transcode(element->getFirstChild()->getNodeValue());
+						extension.start_order_.push_back(id);
+		
+				}
+
+				parti.extensions.push_back(extension);
+			}
+			
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+		
+	}
+	
+	return parti;
+}
+*/
+std::vector <HomeInstanceData>
+CADReader::partitioning_homeplacement (DOMElement* element)
+throw(CADReadException)
+{ 
+	std::string element_name;
+	std::vector <HomeInstanceData> homeplacements;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+
+			element_name = Qedo::transcode(child->getNodeName());
+
+			//
+			// homeplacement
+			//
+			if (element_name == "homeplacement")
+			{
+				HomeInstanceData home = homeplacement_two((DOMElement*)child);
+				
+				homeplacements.push_back(home);
+			}
+
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	return homeplacements;
+}
+
+std::vector <HostData> 
+CADReader::partitioning_hostdata(DOMElement* element)
+throw(CADReadException)
+{
+	std::string element_name;
+	std::vector <HostData> host_datas;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+
+			element_name = Qedo::transcode(child->getNodeName());
+
+			if (element_name == "hostcollocation")
+			{
+				HostData host = 
+					hostcollocation_two((DOMElement*)child);
+				
+				host_datas.push_back(host);
+			}
+
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	return host_datas;
+}
+
+std::vector <ProcessData> 
+CADReader::partitioning_processdata(DOMElement* element)
+throw(CADReadException)
+{
+	std::string element_name;
+	std::vector <ProcessData> Process_datas;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+
+			element_name = Qedo::transcode(child->getNodeName());
+
+			if (element_name == "processcollocation")
+			{
+				ProcessData process = 
+					processcollocation_two((DOMElement*)child);
+				
+				Process_datas.push_back(process);
+			}
+
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	return Process_datas;
+
+}
+
 
 ProcessData
 CADReader::processcollocation (DOMElement* element)
@@ -1733,6 +2425,7 @@ throw(CADReadException)
 			else if (element_name == "destination")
 			{
 				data.dest = destination((DOMElement*)child);
+				
 			}
 		}
 
@@ -1740,6 +2433,76 @@ throw(CADReadException)
 	    child = child->getNextSibling();
 	}
 
+	
+
+	return data;
+}
+
+ProcessData
+CADReader::processcollocation_two (DOMElement* element)
+throw(CADReadException)
+{
+	std::string element_name;
+	ProcessData data;
+	DOMNode* child = element->getFirstChild();
+	while (child != 0)
+	{
+		if (child->getNodeType() == DOMNode::ELEMENT_NODE)
+		{
+			element_name = Qedo::transcode(child->getNodeName());
+			
+			//
+			// usagename
+			//
+			if (element_name == "usagename")
+			{
+				data.usage_name = usagename((DOMElement*)child);
+			}
+
+			//
+			// destination
+			//
+			else if (element_name == "destination")
+			{
+				data.dest = destination_two((DOMElement*)child);
+				
+			}
+			
+			//
+			// impltype
+			//
+			else if (element_name == "impltype")
+			{
+				// todo
+			}
+
+			//
+			// homeplacement
+			//
+			else if (element_name == "homeplacement")
+			{
+				HomeInstanceData home_instance = homeplacement_two((DOMElement*)child);
+				//data.dest = home_instance.dest;
+				
+				data.homes.push_back(home_instance);
+			}
+
+			//
+			// extension
+			//
+			else if (element_name == "extension")
+			{
+				extension((DOMElement*)child);
+			}
+
+		}
+
+        // get next child
+	    child = child->getNextSibling();
+	}
+
+	
+	
 	return data;
 }
 
@@ -2244,5 +3007,102 @@ throw(CADReadException)
 }
 
 
+std::vector <HomeInstanceData> CADReader::getHomeplacements(std::string cadfile)
+throw(CADReadException)
+{ 
+	std::vector <HomeInstanceData> Homeplacements;
+	//
+	// parse the component assembly descriptor
+    //
+	DOMXMLParser parser;
+	DOMDocument* cad_document_;
+	if ( parser.parse( const_cast<char*>(cadfile.c_str()) ) != 0 ) 
+	{
+		NORMAL_ERR2( "CADReader: error during parsing ", cadfile );
+        throw CADReadException();
+	}
+
+	cad_document_ = parser.getDocument();
+	
+	// handle componentassembly
+	Homeplacements=findHomeInstanceData(cad_document_->getDocumentElement());
+
+	return Homeplacements;
+
 }
 
+std::vector <HostData> CADReader::getHostcollocations(std::string cadfile)
+throw(CADReadException)
+{
+	std::vector <HostData> hostdatas;
+	
+	//
+	// parse the component assembly descriptor
+    //
+	DOMXMLParser parser;
+	DOMDocument* cad_document_;
+	if ( parser.parse( const_cast<char*>(cadfile.c_str()) ) != 0 ) 
+	{
+		NORMAL_ERR2( "CADReader: error during parsing ", cadfile );
+        throw CADReadException();
+	}
+
+	cad_document_ = parser.getDocument();
+	
+	// handle componentassembly
+	hostdatas = findHostData (cad_document_->getDocumentElement());
+	
+	return hostdatas;
+}
+
+std::vector <ProcessData> CADReader::getProcesscollocations(std::string cadfile)
+throw(CADReadException)
+{
+	std::vector <ProcessData> Process_datas;
+	//
+	// parse the component assembly descriptor
+    //
+	DOMXMLParser parser;
+	DOMDocument* cad_document_;
+	if ( parser.parse( const_cast<char*>(cadfile.c_str()) ) != 0 ) 
+	{
+		NORMAL_ERR2( "CADReader: error during parsing ", cadfile );
+        throw CADReadException();
+	}
+
+	cad_document_ = parser.getDocument();
+	
+	// handle componentassembly
+	Process_datas=findProcessData(cad_document_->getDocumentElement());
+
+	return Process_datas;
+
+}
+
+
+// is need for qedo controller to edit destination
+Qedo::Partitioning CADReader::getPartitioning(std::string cadfile)
+throw(CADReadException)
+{
+	Partitioning parti;
+	//
+	// parse the component assembly descriptor
+    //
+	DOMXMLParser parser;
+	DOMDocument* cad_document_;
+	if ( parser.parse( const_cast<char*>(cadfile.c_str()) ) != 0 ) 
+	{
+		NORMAL_ERR2( "CADReader: error during parsing ", cadfile );
+        throw CADReadException();
+	}
+
+	cad_document_ = parser.getDocument();
+	
+	// handle componentassembly
+	parti=findPartitioningData(cad_document_->getDocumentElement());
+
+	return parti;
+
+}
+
+}

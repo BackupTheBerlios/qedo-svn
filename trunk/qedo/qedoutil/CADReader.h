@@ -28,6 +28,7 @@
 #include "DOMXMLParser.h"
 #include "PlatformBase.h"
 #include "AssemblyData.h"
+#include "DestinationData.h"
 #include <string>
 
 
@@ -131,6 +132,13 @@ private:
 	std::string componentproperties (DOMElement*)
 		throw(CADReadException);
 
+	/* 
+	 * componentproperties_two
+	 * is need for qedo controller
+	 */
+	std::string componentproperties_two (DOMElement*)
+		throw(CADReadException);
+
 	/**
 	 * componentsupportedinterface
 	 */
@@ -191,6 +199,13 @@ private:
 	DestinationData destination (DOMElement*)
         throw(CADReadException);
 
+	/*
+	 * destination_two need for qedo controller
+	 */
+	DestinationData destination_two (DOMElement*)
+        throw(CADReadException);
+
+
 	/**
 	 * emitsidentifier
 	 */
@@ -222,16 +237,55 @@ private:
         throw(CADReadException);
 
 	/**
+	 * extension_two is need for qedo controller
+	 */
+	Extension extension_two(DOMElement*)
+		throw(CADReadException);
+
+	/**
 	 * fileinarchive
 	 */
 	FileData fileinarchive (DOMElement*)
         throw(CADReadException);
+
+	/**
+	 * fileinarchive_two
+	 * is need for qedo controller
+	 */
+	FileData fileinarchive_two (DOMElement*)
+		throw(CADReadException);
+
 
     /**
 	 * findby
 	 */
     ReferenceData findby (DOMElement*)
         throw(CADReadException);
+
+	/**
+	 * get the HomeInstanceData - need for qedo controller
+	 */
+
+	std::vector <HomeInstanceData> findHomeInstanceData(DOMElement*)
+		throw(CADReadException);
+
+	/**
+	 * get the Hostcollocation - need for qedo controller
+	 */
+	std::vector <HostData> findHostData (DOMElement*)
+		throw(CADReadException);
+
+	/**
+	 * get the Processcollocation - need for qedo controller
+	 */
+	std::vector <ProcessData> findProcessData(DOMElement*)
+		throw(CADReadException);
+
+	/**
+	 * get Partitioning Data - need for qedo controller
+	 */
+	Qedo::Partitioning findPartitioningData(DOMElement*)
+		throw(CADReadException);
 
 	/**
 	 * homefinder
@@ -252,6 +306,12 @@ private:
         throw(CADReadException);
 
 	/**
+	 * homeplacement_two need for qedo controller
+	 */
+	HomeInstanceData homeplacement_two (DOMElement*)
+        throw(CADReadException);
+
+	/**
 	 * homeplacementref
 	 */
 	std::string homeplacementref (DOMElement*)
@@ -269,6 +329,11 @@ private:
 	HostData hostcollocation (DOMElement*)
         throw(CADReadException);
 
+	/**
+	 * hostcollocation_two is need for qedo controller
+	 */
+	HostData hostcollocation_two (DOMElement*)
+		throw(CADReadException);
 	/**
 	 * installation
 	 */
@@ -300,10 +365,41 @@ private:
         throw(CADReadException);
 
 	/**
+	 * partitioning data - is need for qedo controller
+	 */
+	//Partitioning partitioning_data(DOMElement*)
+	//	throw(CADReadException);
+
+
+	/**
+	 * find homeplacement for qedo controller
+	 */
+	std::vector <HomeInstanceData> partitioning_homeplacement (DOMElement*)
+		throw(CADReadException);
+
+	/*
+	 * find hostcollocation for qedo controller
+	 */
+	std::vector <HostData> partitioning_hostdata(DOMElement*)
+		throw(CADReadException);
+	/*
+	 * find processcollocation for qedo controller
+	 */
+	std::vector <ProcessData> partitioning_processdata(DOMElement*)
+		throw(CADReadException);
+
+	/**
 	 * processcollocation
 	 */
 	ProcessData processcollocation (DOMElement*)
         throw(CADReadException);
+
+	/*
+	 * processcollocation_two need for qedo controller
+	 */
+	ProcessData processcollocation_two (DOMElement*)
+        throw(CADReadException);
+
 
 	/**
 	 * providesidentifier
@@ -428,6 +524,27 @@ public:
 	 */
 	void readCAD(std::string package, AssemblyData* data, std::string path)
 		throw(CADReadException);
+
+
+
+	/*
+	 **************************************************
+	 * need for qedo controller to edit the destination
+	 **************************************************
+	 */
+
+	Qedo::Partitioning getPartitioning(std::string cadfile)
+		throw(CADReadException);
+
+	std::vector <HostData> getHostcollocations(std::string cadfile)
+		throw(CADReadException);
+
+	std::vector <ProcessData> getProcesscollocations(std::string cadfile)
+		throw(CADReadException);
+
+	std::vector <HomeInstanceData> getHomeplacements(std::string cadfile)
+		throw(CADReadException);
+
 };
 
 /** @} */
