@@ -419,6 +419,7 @@ void
 GeneratorServantC::doComponent(IR__::ComponentDef_ptr component)
 {
 	genFacetServants(component);
+	genSourceServants(component);
 	genConsumerServants(component);
 	genContextServantBegin(component);
 	genContextServant(component);
@@ -586,7 +587,25 @@ GeneratorServantC::doSink(IR__::SinkDef_ptr sink)
 void 
 GeneratorServantC::doSource(IR__::SourceDef_ptr source)
 {
-
+	out << "\n//\n// " << source->id() << "\n//\n";
+	std::string stream_type_name = mapFullName(source->stream_type());
+	std::string stream_interface_name;
+	if (stream_type_name == "::QedoStream::h323_stream") {
+		stream_interface_name = "Components::QedoStreams::H323Streamconnection"; 
+	} else {
+		stream_interface_name = "error";
+	};
+	// get_connection_...
+	out << stream_interface_name << "_ptr\n";
+	out << class_name_ << "::provide_" << source->name() << "()\n";
+	out << "throw (CORBA::SystemException)\n{\n";
+	out.indent();
+	out << stream_interface_name << "_var prov = ";
+	out << stream_interface_name << "::_narrow (ccm_object_executor_->provide_facet(\"";
+	out << source->name() << "\"));\n\n";
+	out	<< "return prov._retn();\n";
+	out.unindent();
+	out << "}\n\n\n";
 }
 
 void 
@@ -789,6 +808,62 @@ GeneratorServantC::genFacetServants(IR__::ComponentDef_ptr component)
 		out << "static class " << class_name_ << "Factory *_" << class_name_ << "Factory = new ";
 		out << class_name_ << "Factory();\n\n\n";
 	}
+}
+
+void
+GeneratorServantC::genSourceServants(IR__::ComponentDef_ptr component)
+{
+	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Source, false);
+	CORBA::ULong len = contained_seq->length();
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
+	{
+		//
+		// facet servant
+		//
+		IR__::SourceDef_var source = IR__::SourceDef::_narrow(((*contained_seq)[i]));
+		class_name_ = string(source->name()) + "_servant";
+
+		// header
+		out << "// ================================================\n";
+		out << "// " << class_name_ << "\n";
+		out << "// ================================================\n\n";
+		
+		// constructor
+		out << class_name_ << "::" << class_name_ << "()\n{\n}\n\n\n";
+		
+		// destructor
+		out << class_name_ << "::~" << class_name_ << "()\n{\n}\n\n\n";
+
+		executor_name_ = source->name();
+		interface_name_ = mapFullNameLocal(source->stream_type());
+		//doInterface(provides->interface_type());
+		// at first hard coded stream servants
+		out << "char*\n";
+		out << class_name_ << "::get_id() {\n";
+		out << "//to be implemeted\n";
+		out << "rerutn 0;\n";
+		out << "};\n";
+		
+		//
+		// facet servant factory
+		//
+
+		// header
+		out << "// ================================================\n";
+		out << "// " << class_name_ << "Factory\n";
+		out << "// ================================================\n\n";
+
+		out << "class " << class_name_ << "Factory : public Qedo::ServantFactory\n{\n";
+		out << "public:\n";
+		out.indent();
+		out << "Qedo::ServantBase* create_servant() { return new " << class_name_ << "(); }\n";
+		out.unindent();
+		out << "};\n";
+		out << "static class " << class_name_ << "Factory *_" << class_name_ << "Factory = new ";
+		out << class_name_ << "Factory();\n\n\n";
+	}
+
 }
 
 
@@ -1225,6 +1300,8 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	genEmitterRegistration(home);
 	genPublisherRegistration(home);
 	genConsumerRegistration(home);
+	genSinkRegistration(home);
+	genSourceRegistration(home);
 	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
 	out << mapFullName(home->managed_component()) << "_var servant = ";
 	out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
@@ -1372,6 +1449,75 @@ GeneratorServantC::genConsumerRegistration(IR__::HomeDef_ptr home)
 		out << name << "_ref);\n";
 		out << "component_instance.ccm_object_executor_->add_consumer(\"";
 		out << name << "\", \"" << id << "\", " << name << "_sink);\n\n";
+	}
+}
+
+
+
+void
+GeneratorServantC::genSinkRegistration(IR__::HomeDef_ptr home)
+{
+	// handle base home
+	IR__::HomeDef_var base = home->base_home();
+	if(base)
+	{ 
+		genSinkRegistration(base);
+	}
+
+	IR__::SinkDefSeq_var sinks = home->managed_component()->sinks();
+	CORBA::ULong len = sinks->length();
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
+	{
+		std::string stream_type_name = mapFullName((*sinks)[i]->stream_type());
+		std::string interface_type;
+		if (stream_type_name == "::QedoStream::h323_stream") {
+			interface_type = "IDL:Components/QedoStreams/H323Streamconnection:1.0"; 
+		} else {
+			interface_type = "error";
+			return;
+		};
+
+		out << "component_instance.ccm_object_executor_->add_receptacle(\"";
+		out << (*sinks)[i]->name() << "\", \"" << interface_type << "\", ";
+		out << "false);\n\n";
+	}
+}
+
+void
+GeneratorServantC::genSourceRegistration(IR__::HomeDef_ptr home)
+{
+	// handle base home
+	IR__::HomeDef_var base = home->base_home();
+	if(base)
+	{ 
+		genSourceRegistration(base);
+	}
+
+	IR__::SourceDefSeq_var sources = home->managed_component()->sources();
+	CORBA::ULong len = sources->length();
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
+	{
+		std::string stream_type_name = mapFullName((*sources)[i]->stream_type());
+		std::string interface_type;
+		if (stream_type_name == "::QedoStream::h323_stream") {
+			interface_type = "IDL:Components/QedoStreams/H323Streamconnection:1.0"; 
+		} else {
+			interface_type = "error";
+			return;
+		};
+
+		std::string name = (*sources)[i]->name();
+
+		out << "CORBA::Object_var "	<< name << "_ref = this->create_object_reference(key, \"";
+		out << interface_type << "\");\n";
+		out << "PortableServer::ObjectId_var " << name << "_object_id = this->reference_to_oid (";
+		out << name << "_ref);\n";
+		out << "servant_registry_->register_servant_factory (";
+		out << name << "_object_id, _" << name << "_servantFactory);\n";
+		out << "component_instance.ccm_object_executor_->add_facet(\"";
+		out << name << "\", \"" << interface_type << "\", " << name << "_ref);\n\n";
 	}
 }
 

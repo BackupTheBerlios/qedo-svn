@@ -915,7 +915,7 @@ ComponentDef_impl::create_source
  IR__::StreamTypeDef_ptr stream_type)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "ComponentDef_impl::create_sink() called" );
+	DEBUG_OUTLINE ( "ComponentDef_impl::create_source() called" );
 
 	if ( repository_ -> check_for_id ( id ) )
 		throw CORBA::BAD_PARAM ( 2, CORBA::COMPLETED_NO );
@@ -962,7 +962,7 @@ ComponentDef_impl::create_siso
  IR__::StreamTypeDef_ptr stream_type)
 throw(CORBA::SystemException)
 {
-	DEBUG_OUTLINE ( "ComponentDef_impl::create_sink() called" );
+	DEBUG_OUTLINE ( "ComponentDef_impl::create_siso() called" );
 
 	if ( repository_ -> check_for_id ( id ) )
 		throw CORBA::BAD_PARAM ( 2, CORBA::COMPLETED_NO );

@@ -42,6 +42,7 @@ private:
 
 	void genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_ptr ret_type);
 	void genFacetServants(IR__::ComponentDef_ptr component);
+	void genSourceServants(IR__::ComponentDef_ptr component);
 	void genConsumerServants(IR__::ComponentDef_ptr component);
 	void genContextServantBegin(IR__::ComponentDef_ptr component);
 	void genContextServant(IR__::ComponentDef_ptr component);

@@ -45,6 +45,7 @@ private:
 	void doComposition(CIDL::CompositionDef_ptr composition);
 
 	void genFacetServants(IR__::ComponentDef_ptr component);
+	void genSourceServants(IR__::ComponentDef_ptr component);
 	void genConsumerServants(IR__::ComponentDef_ptr component);
 	void genContextServantBegin(IR__::ComponentDef_ptr component);
 	void genContextServant(IR__::ComponentDef_ptr component);
@@ -57,6 +58,8 @@ private:
 	void genEmitterRegistration(IR__::HomeDef_ptr home);
 	void genPublisherRegistration(IR__::HomeDef_ptr home);
 	void genConsumerRegistration(IR__::HomeDef_ptr home);
+	void genSinkRegistration(IR__::HomeDef_ptr home);
+	void genSourceRegistration(IR__::HomeDef_ptr home);
 
 public:
 

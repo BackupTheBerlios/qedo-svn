@@ -110,6 +110,7 @@ void
 GeneratorServantH::doComponent(IR__::ComponentDef_ptr component)
 {
 	genFacetServants(component);
+	genSourceServants(component);
 	genConsumerServants(component);
 	genContextServantBegin(component);
 	genContextServant(component);
@@ -205,8 +206,19 @@ GeneratorServantH::doSink(IR__::SinkDef_ptr sink)
 };
 
 void 
-GeneratorServantH::doSource(IR__::SourceDef_ptr uses)
+GeneratorServantH::doSource(IR__::SourceDef_ptr source)
 {
+	out << "\n//\n// " << source->id() << "\n//\n";
+	std::string stream_type_name = mapFullName(source->stream_type());
+	std::string stream_interface_name;
+	if (stream_type_name == "::QedoStream::h323_stream") {
+		stream_interface_name = "Components::QedoStreams::H323Streamconnection"; 
+	} else {
+		stream_interface_name = "error";
+	};
+	out << stream_interface_name << "_ptr provide_" << source->name() << "()\n";
+	out << "	throw (CORBA::SystemException);\n";
+
 };
 
 void 
@@ -402,6 +414,53 @@ GeneratorServantH::genFacetServants(IR__::ComponentDef_ptr component)
 	}
 }
 
+void
+GeneratorServantH::genSourceServants(IR__::ComponentDef_ptr component)
+{
+	// handle base component
+	IR__::ComponentDef_var base = component->base_component();
+	if(!CORBA::is_nil(base))
+	{ 
+		genSourceServants(base);
+	}
+
+	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Source, false);
+	CORBA::ULong i;
+	for( i= 0; i < contained_seq->length(); i++)
+	{
+		IR__::SourceDef_var source = IR__::SourceDef::_narrow(((*contained_seq)[i]));
+		std::string stream_type_name = mapFullName(source->stream_type());
+		std::string stream_interface_name;
+		if (stream_type_name == "::QedoStream::h323_stream") {
+			stream_interface_name = "POA_Components::QedoStreams::H323Streamconnection"; 
+		} else {
+			stream_interface_name = "error";
+			return;
+		};
+
+		std::string class_name = std::string(source->name()) + "_servant";
+		out << "class " << class_name;
+		out.indent();	
+		out << ": public " << stream_interface_name << "\n";
+		out << ", public Qedo::ServantBase\n";
+		out.unindent();
+		out << "{\n\n";
+		out << "public:\n\n";
+		out.indent();
+		out << class_name << "();\n";
+		out << "~" << class_name << "();\n";
+//		doInterface(source->stream_type());
+// do interface with the h323 interface
+		// at first hardcoded
+		out << "    virtual char* get_id()\n";
+		out << "        throw(CORBA::SystemException);\n\n"; 
+
+
+
+		out.unindent();
+		out << "};\n\n\n";
+	}
+}
 
 void
 GeneratorServantH::genConsumerServants(IR__::ComponentDef_ptr component)
