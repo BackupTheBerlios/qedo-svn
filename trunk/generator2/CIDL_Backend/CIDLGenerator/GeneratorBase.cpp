@@ -463,6 +463,8 @@ GeneratorBase::handleException(IR__::Contained_ptr contained)
 			doException(exception_seq[i]);
 		}
 		break; }
+	case CORBA__::dk_Factory :
+	case CORBA__::dk_Finder :
 	case CORBA__::dk_Operation : {
 		IR__::OperationDef_var a_operation = IR__::OperationDef::_narrow(contained);
 		exception_seq = a_operation->exceptions();
