@@ -20,13 +20,17 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #ifndef _QEDO_NO_STREAMS
 
 #include "StreamCCMObjectExecutor.h"
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: StreamCCMObjectExecutor.cpp,v 1.4 2003/12/16 13:37:32 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: StreamCCMObjectExecutor.cpp,v 1.5 2004/06/24 14:36:08 tom Exp $";
 
 namespace Qedo {
 

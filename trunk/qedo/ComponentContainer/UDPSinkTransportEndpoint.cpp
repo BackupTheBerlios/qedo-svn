@@ -21,6 +21,10 @@
 /***************************************************************************/
 
 
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #ifndef _QEDO_NO_STREAMS
 
 #ifdef _WIN32
@@ -47,7 +51,7 @@
 
 #define MAX_DGRAM_SIZE 32768
 
-static char rcsid[] UNUSED = "$Id: UDPSinkTransportEndpoint.cpp,v 1.4 2004/01/20 12:52:41 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: UDPSinkTransportEndpoint.cpp,v 1.5 2004/06/24 14:36:08 tom Exp $";
 
 
 namespace Qedo {

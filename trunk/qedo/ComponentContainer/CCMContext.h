@@ -23,6 +23,9 @@
 #ifndef __CCM_CONTEXT_H__
 #define __CCM_CONTEXT_H__
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include <CORBA.h>
 #include <Components.h>

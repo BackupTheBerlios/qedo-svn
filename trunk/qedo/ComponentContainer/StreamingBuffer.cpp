@@ -21,6 +21,10 @@
 /***************************************************************************/
 
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #ifndef _QEDO_NO_STREAMS
 
 
@@ -28,7 +32,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: StreamingBuffer.cpp,v 1.3 2003/11/14 13:57:29 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: StreamingBuffer.cpp,v 1.4 2004/06/24 14:36:08 tom Exp $";
 
 
 namespace Qedo {

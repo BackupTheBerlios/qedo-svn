@@ -23,6 +23,10 @@
 #ifndef __ASSEMBLY_H__
 #define __ASSEMBLY_H__
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 
 #include <CORBA.h>
 #include "QedoComponents_skel.h"
@@ -172,12 +176,14 @@ private:
 	 */
     void connectevent()
         throw(Components::CreateFailure);
-	
+
+#ifndef _QEDO_NO_STREAMS
 	/**
 	 * make stream connections
 	 */
-	void AssemblyImpl::connectstream()
+	void connectstream()
 		throw(Components::CreateFailure);
+#endif
 
 	/**
 	 * make all connections according to the assembly descriptor

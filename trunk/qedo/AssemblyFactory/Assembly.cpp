@@ -443,7 +443,7 @@ throw( Components::CreateFailure )
 	// for each hostcollocation
 	//
 	std::vector < HostData > ::iterator host_iter;
-	for(host_iter = data_.hosts_.begin(); 
+	for(host_iter = data_.hosts_.begin();
 		host_iter != data_.hosts_.end(); 
 		host_iter++)
 	{
@@ -1051,16 +1051,19 @@ throw(Components::CreateFailure)
 {
 	connectinterface();
 	connectevent();
+#ifndef _QEDO_NO_STREAMS
 	connectstream();
+#endif
 
 }
 
+#ifndef _QEDO_NO_STREAMS
 void
 AssemblyImpl::connectstream()
 throw(Components::CreateFailure)
 {
 	std::string consume;
-	
+
 	std::string emit;
 	//Components::CCMObject_var consumer;
 	StreamComponents::SinkStreamPort_var consumer_port;
@@ -1073,23 +1076,23 @@ throw(Components::CreateFailure)
 		iter++)
 	{
 		DEBUG_OUT( "AssemblyImpl: make stream connection" );
-		
+
 		//
 		// consumer
 		//
 		consume =  (*iter).sink.name ;
 		DEBUG_OUT2( "..... sink is ", (*iter).sink.ref.name );
 		DEBUG_OUT2( "..... port is ", consume );
-		
-		
+
+
 		consumer = StreamComponents::StreamCCMObject::_narrow(getRef((*iter).sink.ref));
-	
-		
+
+
 		try
 	    {
 
 			consumer_port = consumer->provide_sink_stream_port(consume.c_str());
-				
+
 	    }
 		catch(Components::InvalidName&)
 	    {
@@ -1106,15 +1109,15 @@ throw(Components::CreateFailure)
             emit = (*iter).source.name;
             DEBUG_OUT2( "..... source is ", (*iter).source.ref.name );
 			DEBUG_OUT2( "..... port is ", emit );
-                    
+
             //
             // connect
             //
       		try
       		{
-				
+
        			source->bind(emit.c_str(), consumer_port.in(), "CCM_TCP");
-				
+
        		}
        		catch(Components::InvalidName&)
        		{
@@ -1128,7 +1131,7 @@ throw(Components::CreateFailure)
        		}
         }
 		else
-		{ 
+		{
 			//
 			// sourceport
 			//
@@ -1140,7 +1143,7 @@ throw(Components::CreateFailure)
             //
             // connect
             //
-		
+
 		    try
        		{
 
@@ -1152,10 +1155,12 @@ throw(Components::CreateFailure)
 				NORMAL_ERR2( "AssemblyImpl: invalid source name ", emit );
 	   			throw Components::CreateFailure();
 	   		}
-			
+
         }
     }
 }
+#endif
+
 
 void
 AssemblyImpl::configurationComplete()

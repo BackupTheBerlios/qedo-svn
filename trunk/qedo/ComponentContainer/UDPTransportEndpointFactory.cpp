@@ -21,6 +21,10 @@
 /***************************************************************************/
 
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #ifndef _QEDO_NO_STREAMS
 
 
@@ -32,7 +36,7 @@
 #include <cstdlib>
 #include <cstring>
 
-static char rcsid[] UNUSED = "$Id: UDPTransportEndpointFactory.cpp,v 1.1 2003/12/16 13:37:55 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: UDPTransportEndpointFactory.cpp,v 1.2 2004/06/24 14:36:08 tom Exp $";
 
 namespace Qedo {
 

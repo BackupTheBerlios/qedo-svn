@@ -20,6 +20,9 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #ifndef _QEDO_NO_STREAMS
 
@@ -31,7 +34,7 @@
 #include <cstring>
 
 
-static char rcsid[] UNUSED = "$Id: SinkPort.cpp,v 1.5 2004/01/20 12:55:45 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: SinkPort.cpp,v 1.6 2004/06/24 14:36:07 tom Exp $";
 
 namespace Qedo {
 

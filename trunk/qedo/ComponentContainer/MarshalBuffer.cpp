@@ -20,6 +20,9 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #ifndef _QEDO_NO_STREAMS
 
@@ -28,7 +31,7 @@
 #include "Output.h"
 
 
-static char rcsid[] UNUSED = "$Id: MarshalBuffer.cpp,v 1.2 2004/01/22 12:45:13 tom Exp $";
+static char rcsid[] UNUSED = "$Id: MarshalBuffer.cpp,v 1.3 2004/06/24 14:36:07 tom Exp $";
 
 
 namespace Qedo {

@@ -21,6 +21,10 @@
 /***************************************************************************/
 
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #ifndef _QEDO_NO_STREAMS
 
 #include "SourcePort.h"
@@ -31,7 +35,7 @@
 #include <cstring>
 
 
-static char rcsid[] UNUSED = "$Id: SourcePort.cpp,v 1.4 2003/12/16 13:37:32 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: SourcePort.cpp,v 1.5 2004/06/24 14:36:08 tom Exp $";
 
 
 namespace Qedo {

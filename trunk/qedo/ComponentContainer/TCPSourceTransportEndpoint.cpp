@@ -21,6 +21,10 @@
 /***************************************************************************/
 
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #ifndef _QEDO_NO_STREAMS
 
 #ifdef _WIN32
@@ -42,7 +46,7 @@
 #include <cerrno>
 
 
-static char rcsid[] UNUSED = "$Id: TCPSourceTransportEndpoint.cpp,v 1.3 2003/12/16 13:37:32 stoinski Exp $";
+static char rcsid[] UNUSED = "$Id: TCPSourceTransportEndpoint.cpp,v 1.4 2004/06/24 14:36:08 tom Exp $";
 
 namespace Qedo {
 
