@@ -13,11 +13,14 @@
 #include "wx/artprov.h"
 #include "qcontroller.h"
 #include "MainFrame.h"
+#include "wx/image.h"
 
 IMPLEMENT_APP(QedoController)
 
 bool QedoController::OnInit()
 {
+	wxInitAllImageHandlers();
+
     wxSize main_size(800,600);
     wxPoint main_point(0,0);
     // Create the main window

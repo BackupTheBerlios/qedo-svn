@@ -19,8 +19,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;../ComponentIDL;c:\opt\wxWindows\include;C:\opt\wxWindows\lib\mswdlld;$(MICO)/include;$(XERCES)/include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_WINDOWS,WINVER=0x400,_MT;,wxUSE_GUI=1,__WXDEBUG__,WXDEBUG=1,WXUSINGDLL"
+				AdditionalIncludeDirectories=".\;../ComponentIDL;../qedoutil;c:\opt\wxWindows\include;C:\opt\wxWindows\lib\mswdlld;$(MICO)/include;$(XERCES)/include"
+				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_CONSOLE;_WINDOWS,WINVER=0x400,_MT;,wxUSE_GUI=1,__WXDEBUG__,WXDEBUG=1,WXUSINGDLL"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -114,6 +114,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="ControllerNotebook.cpp">
 			</File>
 			<File
+				RelativePath="Deployment.cpp">
+			</File>
+			<File
 				RelativePath="Launcher.cpp">
 			</File>
 			<File
@@ -131,6 +134,9 @@ copy $(TargetPath) $(QEDO)\bin
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
 				RelativePath="ControllerNotebook.h">
+			</File>
+			<File
+				RelativePath="Deployment.h">
 			</File>
 			<File
 				RelativePath="Launcher.h">

@@ -2,6 +2,7 @@
 #include "NSBrowser.h"
 #include "wx/button.h"
 #include "Launcher.h"
+#include "Deployment.h"
 
 BEGIN_EVENT_TABLE(ControllerNotebook, wxNotebook)
     EVT_BUTTON(NSD_TREE_REFRESH, ControllerNotebook::OnNSDRefresh)
@@ -23,21 +24,18 @@ void ControllerNotebook::CreateControllerPages(wxBoxSizer * sizerFrame)
 
 	 // create launcher
 	 launcher_panel_ = new Launcher (this, Launcher_ID, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE);
-
-
 	 AddPage(launcher_panel_, wxT("Launcher"), FALSE,0);
-
-
 
 	// create ns_browser page
 	ns_browser_panel = new wxPanel(this);
 	ns_browser_ = new NSBrowserTreeCtrl (ns_browser_panel, NSBrowserTree_Ctrl, wxDefaultPosition, wxSize(400,400), wxTR_DEFAULT_STYLE );
-
 	AddPage( ns_browser_panel, wxT("NS Browser"), FALSE, 0 );
 
+	// create Deployment page
+	 deployment_panel_ = new Deployment(this, DEPLOYMENT_ID, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE);
+	 AddPage(deployment_panel_, wxT("Deployment"), FALSE,0);
 
-
-    SetSelection(0);
+    SetSelection(2);
 
 }
 

@@ -56,7 +56,7 @@ Launcher::Launcher(wxWindow *parent, const wxWindowID id,
 	wxStaticBoxSizer *h_NSD_sizer = new wxStaticBoxSizer(nsbox,wxHORIZONTAL);
 	sizerLauncher->Add(h_NSD_sizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
 
-	NSDStartBtn = new wxButton(this, NSD, _T("Start Name Service"));
+	NSDStartBtn = new wxButton(this, NSD, _T("Start"));
 	NSDStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 	h_NSD_sizer-> Add(NSDStartBtn, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
@@ -71,7 +71,7 @@ Launcher::Launcher(wxWindow *parent, const wxWindowID id,
 	wxStaticBoxSizer *h_HF_sizer = new wxStaticBoxSizer(hfbox,wxHORIZONTAL);
 	sizerLauncher->Add(h_HF_sizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
 
-	HFStartBtn = new wxButton(this, HF, _T("Start Home Finder"));
+	HFStartBtn = new wxButton(this, HF, _T("Start"));
 	HFStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 	h_HF_sizer-> Add(HFStartBtn, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
@@ -80,7 +80,7 @@ Launcher::Launcher(wxWindow *parent, const wxWindowID id,
 	wxStaticBoxSizer *h_ASSF_sizer = new wxStaticBoxSizer(assfbox,wxHORIZONTAL);
 	sizerLauncher->Add(h_ASSF_sizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
 
-	ASSFStartBtn = new wxButton(this, ASSF, _T("Start ASSF"));
+	ASSFStartBtn = new wxButton(this, ASSF, _T("Start"));
 	ASSFStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 	h_ASSF_sizer-> Add(ASSFStartBtn, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
@@ -99,7 +99,7 @@ Launcher::Launcher(wxWindow *parent, const wxWindowID id,
 	wxStaticBoxSizer *h_SA_sizer = new wxStaticBoxSizer(sabox,wxHORIZONTAL);
 	sizerLauncher->Add(h_SA_sizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
 
-	SAStartBtn = new wxButton(this, SA, _T("Start SA"));
+	SAStartBtn = new wxButton(this, SA, _T("Start"));
 	SAStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 	h_SA_sizer-> Add(SAStartBtn, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
@@ -108,7 +108,7 @@ Launcher::Launcher(wxWindow *parent, const wxWindowID id,
 	wxStaticBoxSizer *h_CI_sizer = new wxStaticBoxSizer(cibox,wxHORIZONTAL);
 	sizerLauncher->Add(h_CI_sizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
 
-	CIStartBtn = new wxButton(this, CI, _T("Start SA"));
+	CIStartBtn = new wxButton(this, CI, _T("Start"));
 	CIStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 	h_CI_sizer-> Add(CIStartBtn, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
@@ -120,7 +120,7 @@ void Launcher::OnNSDStartButton(wxCommandEvent& WXUNUSED(event))
 	if (nsd_started_){
 		wxKill (nsd_pid_, wxSIGKILL);
 		nsd_started_= false;
-		NSDStartBtn->SetLabel("Start NameService");
+		NSDStartBtn->SetLabel("Start");
 		NSDStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 		NSDStartBtn->Refresh();
 	} else
@@ -148,7 +148,7 @@ void Launcher::OnNSDStartButton(wxCommandEvent& WXUNUSED(event))
 		{
 			// change Button
 			nsd_started_= true;
-			NSDStartBtn->SetLabel("Stop NameService");
+			NSDStartBtn->SetLabel("Stop");
 			NSDStartBtn -> SetBackgroundColour(wxColour(0, 255, 0));
 			NSDStartBtn->Refresh();
 
@@ -163,7 +163,7 @@ void Launcher::OnHFStartButton(wxCommandEvent& WXUNUSED(event))
 	if (hf_started_){
 		wxKill (hf_pid_, wxSIGKILL);
 		hf_started_= false;
-		HFStartBtn->SetLabel("Start Home Finder");
+		HFStartBtn->SetLabel("Start");
 		HFStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 		HFStartBtn->Refresh();
 	} else
@@ -181,7 +181,7 @@ void Launcher::OnHFStartButton(wxCommandEvent& WXUNUSED(event))
 		{
 			// change Button
 			hf_started_= true;
-			HFStartBtn->SetLabel("Stop Home Finder");
+			HFStartBtn->SetLabel("Stop");
 			HFStartBtn -> SetBackgroundColour(wxColour(0, 255, 0));
 			HFStartBtn->Refresh();
 		}
@@ -194,7 +194,7 @@ void Launcher::OnASSFStartButton(wxCommandEvent& WXUNUSED(event))
 	if (assf_started_){
 		wxKill (assf_pid_, wxSIGKILL);
 		assf_started_= false;
-		ASSFStartBtn->SetLabel("Start ASSF");
+		ASSFStartBtn->SetLabel("Start");
 		ASSFStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 		ASSFStartBtn->Refresh();
 	} else
@@ -212,7 +212,7 @@ void Launcher::OnASSFStartButton(wxCommandEvent& WXUNUSED(event))
 		{
 			// change Button
 			assf_started_= true;
-			ASSFStartBtn->SetLabel("Stop ASSF");
+			ASSFStartBtn->SetLabel("Stop");
 			ASSFStartBtn -> SetBackgroundColour(wxColour(0, 255, 0));
 			ASSFStartBtn->Refresh();
 		}
@@ -225,14 +225,14 @@ void Launcher::OnSAStartButton(wxCommandEvent& WXUNUSED(event))
 	if (sa_started_){
 		wxKill (sa_pid_, wxSIGKILL);
 		sa_started_= false;
-		SAStartBtn->SetLabel("Start SA");
+		SAStartBtn->SetLabel("Start");
 		SAStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 		SAStartBtn->Refresh();
 	} else
 	{
 		wxProcess *process = new wxProcess (this);
 		process->Redirect();
-		sa_pid_ = wxExecute("qcsa", wxEXEC_ASYNC, process);
+		sa_pid_ = wxExecute("qcsa --terminal", wxEXEC_ASYNC, process);
 		if ( !sa_pid_ )
 		{
 			wxLogError( _T("Execution of '%s' failed."), "qcsa" );
@@ -243,7 +243,7 @@ void Launcher::OnSAStartButton(wxCommandEvent& WXUNUSED(event))
 		{
 			// change Button
 			sa_started_= true;
-			SAStartBtn->SetLabel("Stop SA");
+			SAStartBtn->SetLabel("Stop");
 			SAStartBtn -> SetBackgroundColour(wxColour(0, 255, 0));
 			SAStartBtn->Refresh();
 		}
@@ -256,7 +256,7 @@ void Launcher::OnCIStartButton(wxCommandEvent& WXUNUSED(event))
 	if (ci_started_){
 		wxKill (ci_pid_, wxSIGKILL);
 		ci_started_= false;
-		CIStartBtn -> SetLabel("Start CI");
+		CIStartBtn -> SetLabel("Start");
 		CIStartBtn -> SetBackgroundColour(wxColour(255, 0, 0));
 		CIStartBtn -> Refresh();
 	} else
@@ -274,7 +274,7 @@ void Launcher::OnCIStartButton(wxCommandEvent& WXUNUSED(event))
 		{
 			// change Button
 			ci_started_= true;
-			CIStartBtn->SetLabel("Stop SA");
+			CIStartBtn->SetLabel("Stop");
 			CIStartBtn -> SetBackgroundColour(wxColour(0, 255, 0));
 			CIStartBtn->Refresh();
 		}

@@ -25,6 +25,7 @@ private:
 
 	//name-service browser page
 	wxPanel *ns_browser_panel;
+	wxPanel *deployment_panel_;
 	NSBrowserTreeCtrl *ns_browser_;
 	wxPanel * launcher_panel_;
 
