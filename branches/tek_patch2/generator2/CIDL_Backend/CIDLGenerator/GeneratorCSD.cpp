@@ -41,7 +41,7 @@ GeneratorCSD::check_for_generation(IR__::Contained_ptr item)
 	//
 	if ((this->m_recursion_set.find(item->id())) != m_recursion_set.end() || this->already_included (item)) {
 		return;
-	} 
+	}
 	else {
 		m_recursion_set.insert(item->id());
 	}
@@ -72,10 +72,10 @@ GeneratorCSD::check_for_generation(IR__::Contained_ptr item)
 			a_composition = CIDL::CompositionDef::_narrow((*contained_seq)[i]);
 			std::string id = a_composition->id();
 			std::string::size_type pos = id.find_last_of("/");
-			if(pos != std::string::npos) 
+			if(pos != std::string::npos)
 			{
 				id.replace(pos, std::string::npos, ":1.0");
-				if(!id.compare(act_module->id())) 
+				if(!id.compare(act_module->id()))
 				{
 					check_for_generation(a_composition);
 				}
@@ -175,8 +175,13 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
     out << "<processor name=\"" << processor << "\" />\n";
     out << "<compiler name=\"" << compiler << "\" version=\"" << compiler_version << "\" />\n";
     out << "<programminglanguage name=\"C++\" />\n";
-    out << "<dependency type=\"DLL\"><localfile name=\"jtcd.dll\"/></dependency>\n";
-    out << "<dependency type=\"DLL\"><localfile name=\"obd.dll\"/></dependency>\n";
+#ifdef _WIN32
++    out << "<dependency type=\"DLL\"><localfile name=\"ComponentContainer.dll\"/></dependency>\n";
++    out << "<dependency type=\"DLL\"><localfile name=\"ComponentIDL.dll\"/></dependency>\n";
+#else
+    out << "<dependency type=\"DLL\"><localfile name=\"libComponentContainer" PACKAGE_VERSION ".so\"/></dependency>\n";
+    out << "<dependency type=\"DLL\"><localfile name=\"libComponentIDL" PACKAGE_VERSION ".so\"/></dependency>\n";
+#endif
     out << "<descriptor type=\"CORBA-Component\">\n";
 	out.indent();
     out << "<fileinarchive name=\"" << name << ".ccd\" />\n";
@@ -184,14 +189,23 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
     out << "</descriptor>\n";
     out << "<code type=\"DLL\">\n";
 	out.indent();
+#ifdef _WIN32
     out << "<fileinarchive name=\"" << name << ".dll\"/>\n";
+#else
+    out << "<fileinarchive name=\"lib" << name << ".dll\"/>\n";
+
+#end
     out << "<entrypoint>create_" << composition->ccm_home()->name() << "E</entrypoint>\n";
 	out << "<usage>executor</usage>\n";
 	out.unindent();
     out << "</code>\n";
 	out << "<code type=\"DLL\">\n";
 	out.indent();
+#ifdef _WIN32
     out << "<fileinarchive name=\"" << name << "_SERVANT.dll\"/>\n";
+#else
+    out << "<fileinarchive name=\"lib" << name << "_SERVANT.dll\"/>\n";
+#endif
     out << "<entrypoint>create_" << composition->ccm_home()->name() << "S</entrypoint>\n";
 	out << "<usage>servant</usage>\n";
 	out.unindent();
