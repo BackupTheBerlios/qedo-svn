@@ -132,15 +132,32 @@ GeneratorPersistenceC::check_for_generation(IR__::Contained_ptr item)
 	case CORBA__::dk_Composition : {
 		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
 
-		// storage home
+		// home and storage home
 		if( a_composition->lifecycle()==CIDL::lc_Entity || 
 			a_composition->lifecycle()==CIDL::lc_Process )
 		{
+			IR__::HomeDef_var home = a_composition->ccm_home();
+			if( !CORBA::is_nil(home) )
+				check_for_generation(home);
+
 			IR__::StorageHomeDef_var storagehome = a_composition->home_executor()->binds_to();
 			if( !CORBA::is_nil(storagehome) )
 				check_for_generation(storagehome);
 		}
 		
+		break;
+	}
+	case CORBA__::dk_Home :
+	{
+		IR__::HomeDef_var home = IR__::HomeDef::_narrow(item);
+		IR__::PrimaryKeyDef_var pk = IR__::PrimaryKeyDef::_duplicate(home->primary_key());
+		
+		if( !CORBA::is_nil(pk) )
+		{
+            IR__::ValueDef_ptr value = pk->primary_key();
+			lValueTypes_.push_back(value);
+		}
+
 		break;
 	}
 	case CORBA__::dk_StorageHome : 
@@ -346,7 +363,7 @@ GeneratorPersistenceC::genAttributeWithOtherType(IR__::AttributeDef_ptr attribut
 	out << "{\n";
 	out.indent();
 	if( attr_type->type()->kind() == CORBA::tk_value )
-	{
+	{/*
 		std::list<IR__::ValueDef_var>::iterator valuetype_iter;
 		for(valuetype_iter = lValueTypes_.begin();
 			valuetype_iter != lValueTypes_.end();
@@ -373,7 +390,9 @@ GeneratorPersistenceC::genAttributeWithOtherType(IR__::AttributeDef_ptr attribut
 				}
 				break;
 			}
-		}
+		}*/
+		IR__::Contained_var contained = IR__::Contained::_narrow(attr_type.in());
+		out << attribute_name << "_ = (" << getAbsoluteName(contained.in()) << "*)param;\n";
 	}
 	else
 	{
@@ -1857,8 +1876,8 @@ GeneratorPersistenceC::genCreateOperation(IR__::StorageHomeDef_ptr storagehome, 
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		out << "pActObject->" << mapName(attribute) << "(";
-		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
-			out << "*"; // special for valuetype :-(
+		//if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		//	out << "*"; // special for valuetype :-(
 		out << mapName(attribute) << ");\n";
 	}
 	out << "pActObject->setStorageHome(this);\n";

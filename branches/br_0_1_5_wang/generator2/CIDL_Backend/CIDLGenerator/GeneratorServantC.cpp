@@ -1660,6 +1660,25 @@ GeneratorServantC::genContextServantBegin(IR__::ComponentDef_ptr component)
 	out << "DEBUG_OUT (\"" << class_name_ << " (context) : Destructor called\");\n";
 	out.unindent();
 	out << "}\n\n\n";
+
+	if(composition_->lifecycle()==CIDL::lc_Entity)
+	{
+		out << "void\n";
+		out << class_name_ << "::set_storage_object( ::CosPersistentState::StorageObjectBase obj )\n";
+		out << "{\n";
+		out.indent();
+		out << "obj_ = obj;\n";
+		out.unindent();
+		out << "}\n\n\n";
+
+		out << "::CosPersistentState::StorageObjectBase\n";
+		out << class_name_ << "::get_storage_object()\n";
+		out << "{\n";
+		out.indent();
+		out << "return obj_;\n";
+		out.unindent();
+		out << "}\n\n\n";
+	}
 }
 
 
@@ -1852,6 +1871,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (home servant) : Constructor called\");\n";
 	out << "pCcmStorageHome_=NULL;\n";
+	out << "pPssStorageHome_=NULL;\n";
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -1862,6 +1882,10 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "if(pCcmStorageHome_!=NULL)\n";
 	out.indent();
 	out << "pCcmStorageHome_->_remove_ref();\n";
+	out.unindent();
+	out << "if(pPssStorageHome_!=NULL)\n";
+	out.indent();
+	out << "pPssStorageHome_->_remove_ref();\n";
 	out.unindent();
 	out.unindent();
 	out << "}\n\n\n";
@@ -2083,24 +2107,64 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	genSinkRegistration(home);
 	genSourceRegistration(home);
 
-	out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
-	out << mapFullName(home->managed_component()) << "_var servant = ";
-	out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
-	
-	/*if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	if(composition_->lifecycle()==CIDL::lc_Entity || composition_->lifecycle()==CIDL::lc_Process)
 	{
-		// create storage home incarnation
-		out << "//create storage home incarnation\n";
+		out << "//create storage object incarnation\n";
 		out << "std::string strPid = component_instance.uuid_;\n";
-		out << "std::string strSpid = strPid + \"@" << home->managed_component()->name() << "Persistence\";\n";
+		out << "std::string strSpid = strPid + \"@" << storagehome_->managed_storagetype()->name() << "\";\n";
 		out << "Pid* pPid = new Pid;\n";
 		out << "ShortPid* pSpid = new ShortPid;\n";
 		out << "convertStringToPid(strPid.c_str(), *pPid);\n";
-		out << "convertStringToSpid(strSpid.c_str(), *pSpid);\n";
-		out << home->managed_component()->name() << "* p" << home->managed_component()->name() << " = dynamic_cast <" << home->managed_component()->name() << "*> (servant.in());\n";
-		out << "p" << home->managed_component()->name() << "->setStorageObject(0);\n\n";
-	}*/
+		out << "convertStringToSpid(strSpid.c_str(), *pSpid);\n\n";
+		out << strNamespace_ << "::" << storagehome_->managed_storagetype()->name() << "* pPssStorageObject = pPssStorageHome_->_create";
+		out << "(pPid, pSpid, pkey, ";
+		IR__::AttributeDefSeq state_members;
+		storagehome_->managed_storagetype()->get_state_members(state_members, CORBA__::dk_Create);
+		CORBA::ULong ulLen = state_members.length();
+		for(CORBA::ULong i=0; i<ulLen; i++)
+		{
+			IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			if( attribute->type_def()->type()->kind()==CORBA::tk_value )
+				continue;
 
+			switch ( attribute->type_def()->type()->kind() )
+			{
+				case CORBA::tk_short:
+				case CORBA::tk_long:
+				case CORBA::tk_longlong:
+				case CORBA::tk_ushort:
+				case CORBA::tk_ulong:
+				case CORBA::tk_ulonglong:
+				case CORBA::tk_float:
+				case CORBA::tk_double:
+				case CORBA::tk_longdouble:
+					out << "0";
+					break;
+				case CORBA::tk_boolean:
+					out << "false";
+					break;
+				case CORBA::tk_char:
+				case CORBA::tk_wchar:
+				case CORBA::tk_octet:
+					out << "\'\'";
+					break;
+				case CORBA::tk_string:
+				case CORBA::tk_wstring:
+					out << "\"\"";
+					break;
+				default:
+					out << "NULL";
+			}
+			if( (i+1)!=ulLen )
+				out << ", ";
+		}
+		out << ");\n";
+		out << "new_context->set_storage_object(pPssStorageObject);\n\n";
+	}
+
+	out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
+	out << mapFullName(home->managed_component()) << "_var servant = ";
+	out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
 	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
@@ -2879,7 +2943,7 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		//++++++++++++++++++++++++++++++++++++++++
 		// init_datastore(...)
 		//++++++++++++++++++++++++++++++++++++++++
-		out << "StorageHomeBase_ptr\n";
+		out << "void\n";
 		out << class_name_ << "::init_datastore(Connector_ptr pConn, Sessio_ptr pSession)\n";
 		out << "{\n";
 		out.indent();
@@ -2892,16 +2956,23 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		out << "CCM" << component->name() << "PersistenceFactory* pCcmFac" << component->name() << " = new CCM" << component->name() << "PersistenceFactory();\n";
 		out << "_pConn->register_storage_object_factory(\"" << component->name() << "Persistence\", pCcmFac" << component->name() << ");\n\n";
 		
-		out << strNamespace_ << "::PSS" << storagehome_->name() << "Factory* pPssFac" << storagehome_->name() << " = new " << strNamespace_ << "::PSS" << storagehome_->name() << "Factory();\n";
-		out << "_pConn->register_storage_home_factory(\"" << storagehome_->name() << "\", pPssFac" << storagehome_->name() << ");\n";
-		IR__::StorageTypeDef_var storagetype = storagehome_->managed_storagetype();
-		out << strNamespace_ << "::PSS" << storagetype->name() << "Factory* pPssFac" << storagetype->name() << " = new " << strNamespace_ << "::PSS" << storagetype->name() << "Factory();\n";
-		out << "_pConn->register_storage_object_factory(\"" << storagetype->name() << "\", pPssFac" << storagetype->name() << ");\n\n";
+		// there is binds_to in composition
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << strNamespace_ << "::PSS" << storagehome_->name() << "Factory* pPssFac" << storagehome_->name() << " = new " << strNamespace_ << "::PSS" << storagehome_->name() << "Factory();\n";
+			out << "_pConn->register_storage_home_factory(\"" << storagehome_->name() << "\", pPssFac" << storagehome_->name() << ");\n";
+			IR__::StorageTypeDef_var storagetype = storagehome_->managed_storagetype();
+			out << strNamespace_ << "::PSS" << storagetype->name() << "Factory* pPssFac" << storagetype->name() << " = new " << strNamespace_ << "::PSS" << storagetype->name() << "Factory();\n";
+			out << "_pConn->register_storage_object_factory(\"" << storagetype->name() << "\", pPssFac" << storagetype->name() << ");\n\n";
+		}
 		
 		out << "StorageHomeBase_var pHomebase = pSession_->find_storage_home(\"" << home->name() << "Persistence\");\n";
 		out << "pCcmStorageHome_ = dynamic_cast <" << home->name() << "Persistence*> (pHomebase.in());\n";
-		out << "StorageHomeBase_var pssHomebase = pSession_->find_storage_home(\"" << storagehome_->name() << "\");\n";
-		out << "return pssHomebase._retn();\n";
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << "StorageHomeBase_var pssHomebase = pSession_->find_storage_home(\"" << storagehome_->name() << "\");\n";
+			out << "pPssStorageHome_ = dynamic_cast <" << strNamespace_ << "::" << storagehome_->name() << "*> (pssHomebase.in());\n";
+		}
 		out.unindent();
 		out << "}\n\n";
 

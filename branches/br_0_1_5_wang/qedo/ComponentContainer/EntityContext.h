@@ -27,7 +27,6 @@
 #include <Components.h>
 #include "CCMContext.h"
 #include "Util.h"
-#include "StorageObject.h"
 
 
 namespace Qedo {
@@ -69,11 +68,6 @@ public:
     //
     Components::PrimaryKeyBase* get_primary_key();
 
-	::CosPersistentState::StorageObjectBase get_storage_object();
-
-private:
-
-	CosPersistentState::StorageObjectBase object_;
 };
 
 /** @} */

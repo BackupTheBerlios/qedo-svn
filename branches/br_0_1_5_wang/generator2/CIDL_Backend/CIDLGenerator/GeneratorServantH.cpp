@@ -72,6 +72,17 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "CORBA::Long get_library_id();\n";
 	out << "}\n\n";
 
+	// parse the namespace name from prefix, disadvantage is 
+	// that will not allow the user to use '_' in his namespace name
+	// a little farfetched ;-(
+	basic_string <char>::size_type idx;
+    static const basic_string <char>::size_type npos = -1;
+	
+	idx = file_prefix_.find("_");
+	if(idx!=npos)
+		strNamespace_ = file_prefix_.substr(0, idx);
+
+
 	doGenerate();
 
 	//
@@ -272,8 +283,10 @@ GeneratorServantH::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// determine the componentDef and HomeDef
 	//
+	composition_ = composition;
 	component_ = composition->ccm_component();
 	IR__::HomeDef_var home = composition->ccm_home();
+	storagehome_ = IR__::StorageHomeDef::_duplicate(composition->home_executor()->binds_to());
 
 	//
 	// determine lifecycle
@@ -947,7 +960,23 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component, CIDL::Lif
 	out << "~" << class_name << "();\n";
 
 	genContextServantBody(component);
+
+	if(lc==CIDL::lc_Entity)
+	{
+		out << "\nvoid set_storage_object( ::CosPersistentState::StorageObjectBase obj );\n";
+		out << "::CosPersistentState::StorageObjectBase get_storage_object();\n\n";
+	}
+
 	out.unindent();
+	
+	if(lc==CIDL::lc_Entity)
+	{
+		out << "private:\n\n";
+		out.indent();
+		out << "::CosPersistentState::StorageObjectBase obj_;\n\n";
+		out.unindent();
+	}
+
 	out << "};\n\n\n";
 }
 
@@ -1135,13 +1164,16 @@ GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
 	{
 		out << "\nvoid get_table_info(std::map<std::string, std::string>& mTables);\n\n";
-		out << "StorageHomeBase_ptr init_datastore(Connector_ptr pConn, Sessio_ptr pSession);\n";
+		out << "void init_datastore(Connector_ptr pConn, Sessio_ptr pSession);\n";
 		out.unindent();
 		out << "\nprivate:\n\n";
 		out.indent();
 		out << "bool compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b);\n\n";
 		out << "Sessio_var pSession_;\n";
-		out << home->name() << "Persistence* " << "pCcmStorageHome_;\n\n";
+		out << home->name() << "Persistence* pCcmStorageHome_;\n";
+		if( !CORBA::is_nil(storagehome_) ) // there is binds_to
+			out << strNamespace_ << "::" << storagehome_->name() << "* pPssStorageHome_;\n";
+		out << "\n";
 	}
 }
 

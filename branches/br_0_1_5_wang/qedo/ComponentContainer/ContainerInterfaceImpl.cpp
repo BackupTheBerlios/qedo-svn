@@ -38,7 +38,7 @@
 #endif
 
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.8 2004/02/24 16:59:45 hao Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.52.2.9 2004/02/29 18:40:07 hao Exp $";
 
 
 namespace Qedo {
@@ -623,7 +623,6 @@ throw (Components::Deployment::UnknownImplId,
 		throw Components::Deployment::InstallationFailure();
 	}
 
-	StorageHomeBase_var storagehome;
 	// Validate the created home servant
 	// Service or session container only accept Qedo::SessionHomeServants and process and entity containers
 	// only accept Qedo::EntityHomeServants
@@ -740,7 +739,7 @@ throw (Components::Deployment::UnknownImplId,
 		}
 		
 		//register storage object/home factory
-		storagehome = entity_home->init_datastore( pConn.in(), pSession.in() );
+		entity_home->init_datastore( pConn.in(), pSession.in() );
 		
 		break;
 	}
@@ -821,8 +820,6 @@ throw (Components::Deployment::UnknownImplId,
 	Components::CCMHome_var home_ref = qedo_home_servant->ref();
 
 	HomeExecutorContext *home_ctx = new HomeExecutorContext (home_ref);
-	if( container_type_ == CT_ENTITY || container_type_ == CT_PROCESS )
-		home_ctx->set_storage_home(storagehome.in());
 	home_executor->set_context (home_ctx);	// Qedo extension (hack): Standard home executor has no context!
 	home_ctx->_remove_ref();
 

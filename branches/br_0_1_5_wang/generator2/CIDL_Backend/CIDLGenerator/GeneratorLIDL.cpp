@@ -276,7 +276,15 @@ GeneratorLIDL::doComposition(CIDL::CompositionDef_ptr composition)
 		}
 	}
 
-	out << "\n{ };\n\n";
+	out << "\n{\n";
+	out.indent();
+	if( lc==CIDL::lc_Entity || lc==CIDL::lc_Process )
+	{
+		out << "void set_storage_object( in CosPersistentState::StorageObjectBase obj );\n";
+		out << "CosPersistentState::StorageObjectBase get_storage_object();\n";
+	}
+	out.unindent();
+	out << "};\n\n";
 
 	close_module(component_);
 }

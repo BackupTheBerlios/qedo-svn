@@ -33,7 +33,6 @@
 #include "RefCountBase.h"
 #include "Util.h"
 #include "ContainerInterfaceImpl.h"
-#include "StorageHomeBase.h"
 
 namespace Qedo {
 
@@ -277,7 +276,6 @@ class CONTAINERDLL_API HomeExecutorContext : public virtual Components::HomeCont
 {
 private:
         Components::CCMHome_var my_home_ref_;
-		StorageHomeBase_var storagehome_;
                                                                                                   
 public:
         /**
@@ -296,9 +294,6 @@ public:
          * \return The object reference of the component home.
          */
         Components::CCMHome_ptr get_CCM_home();
-
-		void set_storage_home(StorageHomeBase_ptr storagehome);
-		StorageHomeBase_ptr get_storage_home();
 };
 
 

@@ -432,7 +432,6 @@ module Components {
 			raises (IllegalState);
 		PrimaryKeyBase get_primary_key ()
 			raises (IllegalState);
-		CosPersistentState::StorageObjectBase get_storage_object();
 	};
 
 	local interface EntityComponent : EnterpriseComponent {

@@ -796,6 +796,13 @@ throw ( CannotMapType )
 		ret_string = ret_string + "&";
 		break;
 	case CORBA::tk_value:
+		if(isCopyFunc){
+			ret_string = "const ";
+			ret_string += getAbsoluteName(contained);
+			ret_string += "*";
+		} else
+			ret_string = "CosPersistentState::ForUpdate";
+		break;
 	case CORBA::tk_sequence:
 		if(isCopyFunc){
 			ret_string = "const ";

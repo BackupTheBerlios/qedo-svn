@@ -58,7 +58,6 @@ private:
 	IR__::StorageHomeDef_var	storagehome_;
 	std::set<std::string>		recursion_set_;
 	std::list<IR__::ValueDef_var>	lValueTypes_;
-	std::string					scope_name_;
 	GeneratorPersistenceC*      pc_generator_;
 
 	void check_for_generation(IR__::Contained_ptr item);

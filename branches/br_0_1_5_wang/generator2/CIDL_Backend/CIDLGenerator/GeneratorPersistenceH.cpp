@@ -135,9 +135,7 @@ GeneratorPersistenceH::check_for_generation(IR__::Contained_ptr item)
 		{
 			IR__::StorageHomeDef_var storagehome = a_composition->home_executor()->binds_to();
 			if( !CORBA::is_nil(storagehome) )
-			{
 				check_for_generation(storagehome);
-			}
 		}
 		
 		break;

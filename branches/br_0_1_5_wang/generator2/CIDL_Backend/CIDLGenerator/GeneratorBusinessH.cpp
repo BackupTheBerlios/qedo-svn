@@ -349,6 +349,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection("file_pre", 2);
 	out << "#include <CORBA.h>\n";
 	out << "#include \"" << file_prefix_ << "_BUSINESS.h\"\n";
+	out << "#include \"" << file_prefix_ << "_PSS.h\"\n";
 	out << "#include \"valuetypes.h\"\n";
 	out << "#include \"RefCountBase.h\"\n";
 	if(composition->lifecycle()==CIDL::lc_Entity)
@@ -609,10 +610,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "private:\n\n";
 	out.indent();
     out << "Components::HomeContext_var context_;\n\n";
-	if(composition->lifecycle() == CIDL::lc_Entity)
-	{
-		out << "StorageHomeBase_var storagehome_;\n\n";
-	}
 	out.unindent();
 	out << "public:\n";
 	out.indent();
