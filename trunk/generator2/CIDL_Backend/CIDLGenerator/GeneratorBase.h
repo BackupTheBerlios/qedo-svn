@@ -28,6 +28,7 @@
 
 #include "CIDLRepository_impl.h"
 #include <string>
+#include <set>
 
 
 namespace QEDO_CIDL_Generator {
@@ -53,6 +54,7 @@ protected:
 	// internal list for items to generate
 	IR__::ContainedSeq_var							m_to_generate_seq;
 	IR__::ContainedSeq_var							m_to_generate_interface_seq;
+	std::set < std::string >						id_list_;
 
 	std::string getNameFromRepId(std::string id);
 
@@ -67,6 +69,8 @@ protected:
 	bool already_included (IR__::Contained_ptr item);
 	void insert_to_generate(IR__::Contained_ptr item);
 	virtual void check_for_generation(IR__::Contained_ptr item);
+
+	bool item_well_known(IR__::Contained_ptr item);
 
 	// start generation
 	void doGenerate();
@@ -98,7 +102,7 @@ protected:
 	virtual void doComposition(CIDL::CompositionDef_ptr composition);
 
 	// attribute
-	void handleAttribute(IR__::InterfaceDef_ptr intf);
+	void handleAttribute(IR__::Container_ptr c);
 	virtual void doAttribute(IR__::AttributeDef_ptr attribute);
 
 	// operation

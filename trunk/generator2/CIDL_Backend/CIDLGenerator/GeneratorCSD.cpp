@@ -31,27 +31,9 @@ GeneratorCSD::check_for_generation(IR__::Contained_ptr item)
 	//
 	// check if item is already known
 	//
-	IR__::Contained_var restricted_contained = IR__::Contained::_narrow(item->defined_in());
-	if (!CORBA::is_nil(restricted_contained )) {
-
-		if (!strcmp(restricted_contained ->id(), "IDL:Deployment:1.0")) {
-			return;
-		};
-		if (!strcmp(restricted_contained ->id(), "IDL:omg.org/Components:1.0")) {
-			return;
-		};
-		if (!strcmp(restricted_contained ->id(), "IDL:Components:1.0")) {
-			return;
-		}
-		if (!strcmp(restricted_contained ->id(), "IDL:omg.org/CORBA:1.0")) {
-			return;
-		};
-		if (!strcmp(restricted_contained ->id(), "IDL:CORBA:1.0")) {
-			return;
-		}
-		if (!strcmp(restricted_contained ->id(), "IDL:omg.org/CosPropertyService:1.0")) {
-			return;
-		};
+	if (item_well_known(item))
+	{
+		return;
 	}
 
 	//

@@ -215,6 +215,32 @@ GeneratorBase::check_for_generation(IR__::Contained_ptr item)
 }
 
 
+bool 
+GeneratorBase::item_well_known(IR__::Contained_ptr item)
+{
+	//
+	// check if item is well known
+	//
+	IR__::Contained_var restricted_contained = IR__::Contained::_narrow(item->defined_in());
+	if (!CORBA::is_nil(restricted_contained )) 
+	{
+		std::string id = restricted_contained ->id();
+
+		if ((!id.compare("IDL:Deployment:1.0")) ||
+		    (!id.compare("IDL:omg.org/Components:1.0")) ||
+		    (!id.compare("IDL:Components:1.0")) ||
+		    (!id.compare("IDL:omg.org/CORBA:1.0")) ||
+		    (!id.compare("IDL:CORBA:1.0")) ||
+			(!id.compare("IDL:omg.org/CosPropertyService:1.0")))
+		{
+			return true;
+		};
+	}
+
+	return false;
+}
+
+
 //
 // start generation
 //
@@ -350,9 +376,9 @@ GeneratorBase::doInterface(IR__::InterfaceDef_ptr intface)
 // attribute
 //
 void 
-GeneratorBase::handleAttribute(IR__::InterfaceDef_ptr intf)
+GeneratorBase::handleAttribute(IR__::Container_ptr c)
 {
-	IR__::ContainedSeq_var contained_seq = intf->contents(CORBA__::dk_Attribute, false);
+	IR__::ContainedSeq_var contained_seq = c->contents(CORBA__::dk_Attribute, false);
 	CORBA::ULong len = contained_seq->length();
 	for(CORBA::ULong i = 0; i < len; i++)
 	{
@@ -460,7 +486,7 @@ GeneratorBase::doEvent(IR__::EventDef_ptr event)
 void
 GeneratorBase::doValue(IR__::ValueDef_ptr value)
 {
-	IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_all, false);
+/*	IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_all, false);
 	CORBA::ULong len = contained_seq->length();
 	for(CORBA::ULong i = 0; i < len; i++)
 	{
@@ -470,7 +496,7 @@ GeneratorBase::doValue(IR__::ValueDef_ptr value)
 			IR__::ValueMemberDef_var act_member = IR__::ValueMemberDef::_narrow(((*contained_seq)[i]));
 			doValueMember(act_member);
 		}
-	}
+	}*/
 }
 
 
