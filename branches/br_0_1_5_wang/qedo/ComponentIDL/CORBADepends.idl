@@ -87,7 +87,7 @@ module PortableServer {
 
 module CosPersistentState {
 
-  local interface CatalogBase;
+    local interface CatalogBase;
     local interface Connector;
     //local interface EndOfAssociationCallback;
     local interface Sessio;
