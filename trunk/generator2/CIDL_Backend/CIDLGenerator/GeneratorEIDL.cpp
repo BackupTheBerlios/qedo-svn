@@ -585,7 +585,7 @@ GeneratorEIDL::doHome(IR__::HomeDef_ptr home)
 	out << "interface " << home->name() << "Implicit : ::Components::KeylessCCMHome\n";
 	out << "{\n";
 	out.indent();
-	out << map_absolute_name(home->managed_component()) << " create();\n";
+	out << map_absolute_name(home->managed_component()) << " create() raises (Components::CreateFailure);\n";
 	out.unindent();
 	out << "};\n\n";
 
@@ -705,15 +705,13 @@ GeneratorEIDL::doOperation(IR__::OperationDef_ptr operation)
 		if(!i) {
 			out << " raises(";
 		}
-		else
-		{
+		else {
 			out << ", ";
 		}
 
 		out << tcToName((*exception_seq)[i]->type());
 	}
-	if(i)
-	{
+	if(i) {
 		out << ")";
 	}
 
@@ -737,8 +735,7 @@ GeneratorEIDL::doFactory(IR__::FactoryDef_ptr factory)
 	CORBA::ULong i;
 	for( i= len; i > 0; i--)
 	{
-		if(i < len)
-		{
+		if(i < len) {
 			out << ", ";
 		}
 
@@ -750,19 +747,16 @@ GeneratorEIDL::doFactory(IR__::FactoryDef_ptr factory)
 	IR__::ExceptionDefSeq_var exception_seq = factory->exceptions();
 	for(i = 0; i < exception_seq->length(); i++)
 	{
-		if(!i)
-		{
+		if(!i) {
 			out << " raises(";
 		}
-		else
-		{
+		else {
 			out << ", ";
 		}
 
 		out << tcToName((*exception_seq)[i]->type());
 	}
-	if(i)
-	{
+	if(i) {
 		out << ")";
 	}
 

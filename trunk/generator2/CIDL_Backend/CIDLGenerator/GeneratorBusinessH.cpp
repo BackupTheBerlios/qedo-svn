@@ -284,7 +284,8 @@ GeneratorBusinessH::doComponent(IR__::ComponentDef_ptr component)
 	if(component->contents(CORBA__::dk_Consumes, false)->length() && need_push_)
 	{
 		out << "\n//\n// IDL:Components/EventConsumerBase/push_event:1.0\n//\n";
-		out << "virtual void push_event (Components::EventBase* ev);\n";
+		out << "virtual void push_event (Components::EventBase* ev)\n";
+		out << "    throw (CORBA::SystemException);\n\n";
 		need_push_ = false;
 	}
 	handleConsumes(component);
@@ -297,8 +298,8 @@ GeneratorBusinessH::doConsumes(IR__::ConsumesDef_ptr consumes)
 	out << "\n//\n// " << consumes->id() << "\n//\n";
 
 	// push operation
-	out << "void push_" << mapName(consumes->event());
-	out << "(" << mapFullName(consumes->event()) << "* ev);\n";
+	out << "void push_" << mapName(consumes->event()) << "(" << mapFullName(consumes->event()) << "* ev)\n";
+	out << "    throw (CORBA::SystemException);\n\n";
 }
 
 
@@ -312,13 +313,13 @@ GeneratorBusinessH::doSource(IR__::SourceDef_ptr source)
 	(c_descr->value) >>= st_descr;
 	if (!strcmp("simple::h323_stream", map_absolute_name(st_def))) {
 		out << "virtual CCMStream::h323Stream_ptr ";
-		out /*<< map_absolute_under_name(component_def)*/  << "_provide_" << source->name();
-		out << "();\n\n";
+		out /*<< map_absolute_under_name(component_def)*/  << "_provide_" << source->name() << "()\n";
+		out << "    throw (CORBA::SystemException);\n\n";
 	}
 	if (!strcmp("Components::CCMStream::QoSRealStream", map_absolute_name(st_def))) {
 		out << "virtual CCMStream::QoSRealStream_ptr ";
-		out /*<< map_absolute_under_name(component_def)*/  << "_provide_" << source->name();
-		out << "();\n\n";
+		out /*<< map_absolute_under_name(component_def)*/  << "_provide_" << source->name() << "()\n";
+		out << "    throw (CORBA::SystemException);\n\n";
 	}
 #endif
 }
@@ -426,7 +427,6 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection("file_pre", 2);
 	out << "#include <OB/CORBA.h>\n";
 	out << "#include \"" << file_prefix_ << "_BUSINESS.h\"\n";
-//	out << "#include \"RefCountLocalObject.h\"\n";
 	out << "#include <string>\n\n\n";
 	out.insertUserSection("file_post", 2);
 
@@ -464,10 +464,12 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << executor_class_name << "();\n";
 	out << "~" << executor_class_name << "();\n\n";
-	out << "void set_context(" << mapFullNameLocal(composition->ccm_component()) << "_Context_ptr context);\n";
-    out << "void configuration_complete();\n";
-	out << "void stop();\n";
-    out << "void remove();\n";
+	out << "void set_context(" << mapFullNameLocal(composition->ccm_component()) << "_Context_ptr context)\n";
+	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
+    out << "void configuration_complete()\n";
+	out << "    throw (CORBA::SystemException, Components::InvalidConfiguration);\n\n";
+    out << "void remove()\n";
+	out << "    throw (CORBA::SystemException);\n\n";
 	need_push_ = true;
 	doComponent(composition->ccm_component());
 	out.unindent();
@@ -498,9 +500,10 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 		out.indent();
 		out << segment_class_name << "();\n";
 		out << "~" << segment_class_name << "();\n\n";
-		out << "void set_context(" << mapFullNameLocal(composition->ccm_component());
-		out << "_Context_ptr context);\n";
-		out << "void configuration_complete();\n\n";
+		out << "void set_context(" << mapFullNameLocal(composition->ccm_component()) << "_Context_ptr context)\n";
+		out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
+		out << "void configuration_complete()\n";
+		out << "    throw (CORBA::SystemException, Components::InvalidConfiguration);\n\n";
 		// for each implemented facet
 		IR__::ProvidesDefSeq_var provided_seq = segment_seq[i]->provided_facets();
 		for (CORBA::ULong ii = 0; ii < provided_seq->length(); ii++)
@@ -552,7 +555,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << ": public virtual CORBA::LocalObject\n";
 	out << ", public virtual " << mapLocalName(composition->ccm_home()) << "\n";
-	out.insertUserSection(string("INHERITANCE_") + home_name, 0);
+	out.insertUserSection(std::string("INHERITANCE_") + home_name, 0);
 	out.unindent();
 	out << "{\n\n";
 	out << "private:\n\n";
@@ -564,9 +567,11 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
     out << home_class_name << "();\n";
     out << "~" << home_class_name << "();\n\n";
 	out << "//\n// IDL:Components/HomeExecutorBase/set_context:1.0\n//\n";
-    out << "virtual void set_context (Components::CCMContext_ptr ctx);\n\n";
+	out << "virtual void set_context (Components::CCMContext_ptr ctx)\n";
+	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
     out << "//\n// IDL:.../create:1.0\n//\n";
-    out << "virtual ::Components::EnterpriseComponent_ptr create();\n";
+    out << "virtual ::Components::EnterpriseComponent_ptr create()\n";
+	out << "    throw (CORBA::SystemException, Components::CreateFailure);\n";
 	doHome(composition->ccm_home());
 	out.unindent();
 	out << "\n";

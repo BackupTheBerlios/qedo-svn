@@ -316,7 +316,7 @@ GeneratorLIDL::doHome(IR__::HomeDef_ptr home)
 	out << "local interface CCM_" << home->name() << "Implicit\n";
 	out << "{\n";
 	out.indent();
-	out << "::Components::EnterpriseComponent create();\n";
+	out << "::Components::EnterpriseComponent create() raises (Components::CreateFailure);\n";
 	out.unindent();
 	out << "};\n\n";
 

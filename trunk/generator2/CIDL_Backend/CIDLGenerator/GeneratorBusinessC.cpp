@@ -193,6 +193,9 @@ GeneratorBusinessC::doOperation(IR__::OperationDef_ptr operation)
 			out << map_inout_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
 		}
 	}
+	out << ")\n";
+	out << "	throw(CORBA::SystemException";
+	handleException(operation);
 	out << ")\n{\n";
 	out.insertUserSection(class_name_ + "::" + operation->name(), 0);
 	out << "}\n\n\n";
@@ -221,7 +224,9 @@ GeneratorBusinessC::doFactory(IR__::FactoryDef_ptr factory)
 		out << map_in_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
 	}
 	out << ")\n";
-	out << "{\n";
+	out << "	throw(CORBA::SystemException";
+	handleException(factory);
+	out << ")\n{\n";
 	out.insertUserSection(class_name_ + "::" + factory->name(), 0);
 	out << "}\n\n\n";
 }
@@ -249,7 +254,9 @@ GeneratorBusinessC::doFinder(IR__::FinderDef_ptr finder)
 		out << map_in_parameter_type (pardescr.type_def) << " " << mapName(string(pardescr.name));
 	}
 	out << ")\n";
-	out << "{\n";
+	out << "	throw(CORBA::SystemException";
+	handleException(finder);
+	out << ")\n{\n";
 	out.insertUserSection(class_name_ + "::" + finder->name(), 0);
 	out << "}\n\n\n";
 }
@@ -318,7 +325,8 @@ GeneratorBusinessC::doComponent(IR__::ComponentDef_ptr component)
 	if(component->contents(CORBA__::dk_Consumes, false)->length() && need_push_)
 	{
 		out << "void\n";
-		out << class_name_ << "::push_event (Components::EventBase* ev)\n{\n";
+		out << class_name_ << "::push_event (Components::EventBase* ev)\n";
+		out << "    throw (CORBA::SystemException)\n{\n";
 		out.insertUserSection(class_name_ + "::push_event", 0);
 		out << "}\n\n\n";
 		need_push_ = false;
@@ -332,8 +340,8 @@ GeneratorBusinessC::doConsumes(IR__::ConsumesDef_ptr consumes)
 {
     // push_...
 	out << "void\n";
-	out << class_name_ << "::push_" << consumes->event()->name() << "(" << mapFullName(consumes->event());
-	out << "* ev)\n{\n";
+	out << class_name_ << "::push_" << consumes->event()->name() << "(" << mapFullName(consumes->event()) << "* ev)\n";
+	out << "    throw (CORBA::SystemException)\n{\n";
 	out.insertUserSection(class_name_ + "::push_" + consumes->event()->name(), 0);
 	out << "}\n\n\n";
 }
@@ -363,7 +371,6 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	composition_ = CIDL::CompositionDef::_duplicate(composition);
 	filename_ = "";
 	CIDL::SegmentDefSeq_var segment_seq = composition->executor_def()->segments();
-
 	
 	string id = composition->id();
 	IR__::Contained_ptr module_def = 0;
@@ -378,7 +385,6 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	filename_.append(composition->name());
 	string header_name = filename_ + ".h";
 	filename_.append(".cpp");
-	
 
 	//
 	// parse for user sections and write header in output file
@@ -418,7 +424,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	
 	// set_context
 	out << "void\n";
-	out << class_name_ << "::set_context(" << context_name << "_ptr context)\n{\n";
+	out << class_name_ << "::set_context(" << context_name << "_ptr context)\n";
+	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.indent();
     out << "context_ = " << context_name << "::_duplicate(context);\n";
 	out.unindent();
@@ -426,25 +433,20 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// configuration_complete
 	out << "void\n";
-	out << class_name_ << "::configuration_complete()\n{\n";
+	out << class_name_ << "::configuration_complete()\n";
+	out << "    throw (CORBA::SystemException, Components::InvalidConfiguration)\n{\n";
 	out.insertUserSection(class_name_ + "::configuration_complete", 0);	
-	out << "}\n\n\n";
-
-	// stop
-	out << "void\n";
-	out << class_name_ << "::stop()\n{\n";
-	out.insertUserSection(class_name_ + "::stop", 0);	
 	out << "}\n\n\n";
 
 	// remove
 	out << "void\n";
-	out << class_name_ << "::remove()\n{\n";
+	out << class_name_ << "::remove()\n";
+	out << "    throw (CORBA::SystemException)\n{\n";
 	out.insertUserSection(class_name_ + "::remove", 0);	
 	out << "}\n\n\n";
 
 	need_push_ = true;
 	doComponent(composition->ccm_component());
-
 
 	//
 	// segment
@@ -466,7 +468,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 		// set context
 		out << "void\n";
-		out << class_name_ << "::set_context(" << context_name << "_ptr context)\n{\n";
+		out << class_name_ << "::set_context(" << context_name << "_ptr context)\n";
+		out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 		out.indent();
 		out << "context_ = " << context_name << "::_duplicate(context);\n";
 		out.unindent();
@@ -474,7 +477,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 		// configuration complete
 		out << "void\n";
-		out << class_name_ << "::configuration_complete()\n{\n";
+		out << class_name_ << "::configuration_complete()\n";
+		out << "    throw (CORBA::SystemException, Components::InvalidConfiguration)\n{\n";
 		out.insertUserSection(class_name_ + "::configuration_complete", 0);
 		out << "}\n\n\n";
 
@@ -486,7 +490,6 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 		}
 	}
 	
-
 	//
 	// executor locator
 	//
@@ -519,7 +522,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// obtain executor
 	out << "::CORBA::Object*\n";
-	out << class_name_ << "::obtain_executor(const char* name)\n{\n";
+	out << class_name_ << "::obtain_executor(const char* name)\n";
+	out << "    throw (CORBA::SystemException)\n{\n";
 	out.indent();
 	out << "if (! strcmp ( name, \"component\" ) ) {\n";
 	out.indent();
@@ -553,7 +557,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// release executor
 	out << "void\n";
-	out << class_name_ << "::release_executor(::CORBA::Object_ptr executor)\n{\n";
+	out << class_name_ << "::release_executor(::CORBA::Object_ptr executor)\n";
+	out << "    throw (CORBA::SystemException)\n{\n";
 	out.indent();
 	out << "CORBA::release (executor);\n";
 	out.unindent();
@@ -561,7 +566,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// configuration complete
 	out << "void\n";
-	out << class_name_ << "::configuration_complete()\n{\n";
+	out << class_name_ << "::configuration_complete()\n";
+	out << "    throw (CORBA::SystemException, Components::InvalidConfiguration)\n{\n";
 	out.indent();
 	out << "component_->configuration_complete();\n";
 	for (i = 0; i < segment_seq->length(); i++)	{
@@ -574,7 +580,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// set session context
 	out << "void\n";
-	out << class_name_ << "::set_session_context(::Components::SessionContext_ptr context)\n{\n";
+	out << class_name_ << "::set_session_context(::Components::SessionContext_ptr context)\n";
+	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.indent();
     out << "context_ = " << context_name << "::_narrow(context);\n\n";
 	out << "component_->set_context(context_);\n";
@@ -586,23 +593,25 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// ccm_activate
 	out << "void\n";
-	out << class_name_ << "::ccm_activate()\n{\n";
+	out << class_name_ << "::ccm_activate()\n";
+	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.insertUserSection(class_name_ + "::ccm_activate", 0);
 	out << "}\n\n\n";
 
 	// ccm_passivate
 	out << "void\n";
-	out << class_name_ << "::ccm_passivate()\n{\n";
+	out << class_name_ << "::ccm_passivate()\n";
+	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.insertUserSection(class_name_ + "::ccm_passivate", 0);
 	out << "}\n\n\n";
 
 	// ccm_remove
 	out << "void\n";
-	out << class_name_ << "::ccm_remove()\n{\n";
+	out << class_name_ << "::ccm_remove()\n";
+	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.insertUserSection(class_name_ + "::ccm_remove", 0);
 	out << "}\n\n\n";
 
-	
 	//
 	// home executor
 	//
@@ -621,7 +630,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// set context
 	out << "void\n";
-	out << class_name_ << "::set_context(Components::CCMContext_ptr ctx)\n{\n";
+	out << class_name_ << "::set_context(Components::CCMContext_ptr ctx)\n";
+	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.indent();
     out << "context_ = " << context_name << "::_narrow(ctx);\n";
 	out.unindent();
@@ -629,7 +639,8 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// create
 	out << "::Components::EnterpriseComponent_ptr\n";
-	out << class_name_ << "::create ()\n{\n";
+	out << class_name_ << "::create ()\n";
+	out << "    throw (CORBA::SystemException, Components::CreateFailure)\n{\n";
 	out.indent();
 	out.insertUserSection(class_name_ + "::create", 0);
 	out << "return new " << mapName(composition) << "();\n";
