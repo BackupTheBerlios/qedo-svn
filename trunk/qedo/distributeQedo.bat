@@ -33,6 +33,7 @@ mkdir %actdir%
 copy ComponentIDL\*.h %actdir%
 copy StreamComponentIDL\*.h %actdir%
 copy ComponentContainer\*.h %actdir%
+copy qedoutil\*.h %actdir%
 
 set actdir=%qedo%\idl
 echo *** Create %actdir%...
