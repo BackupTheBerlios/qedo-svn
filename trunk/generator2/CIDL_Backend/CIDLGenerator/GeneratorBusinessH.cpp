@@ -417,6 +417,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	switch(composition->lifecycle())
 	{
 	case CIDL::lc_Session :
+	case CIDL::lc_Extension :
 		out << executor_class_name << "();\n";
 		break;
 	case CIDL::lc_Entity :
@@ -563,6 +564,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	switch(composition->lifecycle())
 	{
 	case CIDL::lc_Session :
+	case CIDL::lc_Extension :
 		out << executor_locator_class_name << "();\n";
 		break;
 	case CIDL::lc_Entity :
@@ -640,6 +642,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	switch(composition->lifecycle())
 	{
 	case CIDL::lc_Session :
+	case CIDL::lc_Extension :
 		out << "virtual ::Components::EnterpriseComponent_ptr create()\n";
 		out << "    throw (CORBA::SystemException, Components::CreateFailure);\n";
 		break;

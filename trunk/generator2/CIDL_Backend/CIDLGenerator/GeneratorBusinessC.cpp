@@ -431,6 +431,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	switch(composition->lifecycle())
 	{
 	case CIDL::lc_Session :
+	case CIDL::lc_Extension :
 		out << class_name_ << "::" << class_name_ << "()\n";
 		out << "{\n";
 		out.insertUserSection(class_name_ + "::" + class_name_, 0);
@@ -552,6 +553,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	switch(composition->lifecycle())
 	{
 	case CIDL::lc_Session :
+	case CIDL::lc_Extension :
 		out << class_name_ << "::" << class_name_ << "()\n";
 		out << ":component_(new " << mapName(composition->executor_def()) << "())\n";
 		for (i = 0; i < segment_seq->length(); i++)	{
@@ -859,6 +861,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	switch(composition->lifecycle())
 	{
 	case CIDL::lc_Session :
+	case CIDL::lc_Extension :
 		out << "::Components::EnterpriseComponent_ptr\n";
 		out << class_name_ << "::create ()\n";
 		out << "    throw (CORBA::SystemException, Components::CreateFailure)\n{\n";
