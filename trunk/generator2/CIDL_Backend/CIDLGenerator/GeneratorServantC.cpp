@@ -191,7 +191,7 @@ GeneratorServantC::doAttribute(IR__::AttributeDef_ptr attribute)
 		out << interface_name_ << "_ptr facet = dynamic_cast< ";
 		out << interface_name_ << "_ptr >(current_executor_);\n";
 		out << "#else\n";
-		out << interface_name_ << "_ptr facet = ";
+		out << interface_name_ << "_var facet = ";
 		out << interface_name_ << "::_narrow (current_executor_);\n";
 		out << "#endif\n";
 		out << "if (CORBA::is_nil (facet))\n{\n";
@@ -223,7 +223,7 @@ GeneratorServantC::doAttribute(IR__::AttributeDef_ptr attribute)
 	out << interface_name_ << "_ptr facet = dynamic_cast< ";
 	out << interface_name_ << "_ptr >(current_executor_);\n";
 	out << "#else\n";
-	out << interface_name_ << "_ptr facet =  ";
+	out << interface_name_ << "_var facet = ";
 	out << interface_name_ << "::_narrow(current_executor_);\n";
 	out << "#endif\n";
 	out << "if (CORBA::is_nil (facet))\n{\n";
@@ -295,7 +295,7 @@ GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 	out << interface_name_ << "_ptr facet = dynamic_cast< ";
 	out << interface_name_ << "_ptr >(current_executor_);\n";
 	out << "#else\n";
-	out << interface_name_ << "_ptr facet = ";
+	out << interface_name_ << "_var facet = ";
 	out << interface_name_ << "::_narrow(current_executor_);\n";
 	out << "#endif\n";
 	out << "if (CORBA::is_nil (facet))\n{\n";
@@ -417,7 +417,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << "	(executor_locator, dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
 	out << "// use of servant factories\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
-	out << mapFullNameServant(home_->managed_component()) << "::factory);\n\n";
+	out << mapFullNameServant(home_->managed_component()) << "::cleaner_.factory_);\n\n";
 	out << "// Extract our Key out of the object reference\n";
 	out << "#ifdef TAO_ORB\n";
 	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
@@ -469,10 +469,10 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << home_name << "_ptr home_executor = dynamic_cast < ";
 	out << home_name << "_ptr > (home_executor_.in());\n";
 	out << "#else\n";
-	out << home_name << "_ptr home_executor = ";
+	out << home_name << "_var home_executor = ";
 	out << home_name << "::_narrow (home_executor_.in());\n";
 	out << "#endif\n";
-	out << "if (! home_executor)\n{\n";
+	out << "if (CORBA::is_nil (home_executor))\n{\n";
 	out.indent();
 	out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
 	out << "throw Components::CreateFailure();\n";
@@ -533,7 +533,7 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << "	(executor_locator, dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
 	out << "// use of servant factories\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
-	out << mapFullNameServant(home_->managed_component()) << "::factory);\n\n";
+	out << mapFullNameServant(home_->managed_component()) << "::cleaner_.factory_);\n\n";
 	out << "// Extract our Key out of the object reference\n";
 	out << "#ifdef TAO_ORB\n";
 	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
@@ -944,10 +944,10 @@ GeneratorServantC::genFacetServants(IR__::ComponentDef_ptr component)
 		// facet servant factory
 		//
 		out << "// ================================================\n";
-		out << "// " << class_name_ << "::factory\n";
+		out << "// " << class_name_ << "::cleaner_\n";
 		out << "// ================================================\n\n";
-		out << class_name_ << "::ServantFactory *" << class_name_ << "::factory = new ";
-		out << class_name_ << "::ServantFactory();\n\n\n";
+		out << "Qedo::ServantFactoryCleaner " << class_name_ << "::cleaner_ (new ";
+		out << class_name_ << "::ServantFactory());\n\n\n";
 	}
 }
 
@@ -991,10 +991,10 @@ GeneratorServantC::genSourceServants(IR__::ComponentDef_ptr component)
 		// source servant factory
 		//
 		out << "// ================================================\n";
-		out << "// " << class_name_ << "::factory\n";
+		out << "// " << class_name_ << "::cleaner_\n";
 		out << "// ================================================\n\n";
-		out << class_name_ << "::ServantFactory *" << class_name_ << "::factory = new ";
-		out << class_name_ << "::ServantFactory();\n\n\n";
+		out << "Qedo::ServantFactoryCleaner " << class_name_ << "::cleaner_ (new ";
+		out << class_name_ << "::ServantFactory());\n\n\n";
 	}
 }
 
@@ -1083,10 +1083,10 @@ GeneratorServantC::genConsumerServants(IR__::ComponentDef_ptr component)
 		// consumer servant factory
 		//
 		out << "// ================================================\n";
-		out << "// " << class_name_ << "::factory\n";
+		out << "// " << class_name_ << "::cleaner_\n";
 		out << "// ================================================\n\n";
-		out << class_name_ << "::ServantFactory *" << class_name_ << "::factory = new ";
-		out << class_name_ << "::ServantFactory();\n\n\n";
+		out << "Qedo::ServantFactoryCleaner " << class_name_ << "::cleaner_ (new ";
+		out << class_name_ << "::ServantFactory());\n\n\n";
 	}
 }
 
@@ -1101,10 +1101,10 @@ GeneratorServantC::genComponentServantBegin(IR__::ComponentDef_ptr component)
 	// component servant factory
 	//
 	out << "// ================================================\n";
-	out << "// " << class_name_ << "::factory\n";
+	out << "// " << class_name_ << "::cleaner_\n";
 	out << "// ================================================\n\n";
-	out << class_name_ << "::ServantFactory *" << class_name_ << "::factory = new ";
-	out << class_name_ << "::ServantFactory();\n\n\n";
+	out << "Qedo::ServantFactoryCleaner " << class_name_ << "::cleaner_ (new ";
+	out << class_name_ << "::ServantFactory());\n\n\n";
 
 	// header
 	out << "// ================================================\n";
@@ -1114,14 +1114,14 @@ GeneratorServantC::genComponentServantBegin(IR__::ComponentDef_ptr component)
 	// constructor
 	out << class_name_ << "::" << class_name_ << "()\n{\n";
 	out.indent();
-	out << "DEBUG_OUT (\"servant: Constructor called\");\n";
+	out << "DEBUG_OUT (\"" << class_name_ << " (component servant) : Constructor called\");\n";
 	out.unindent();
 	out << "}\n\n\n";
 
 	// desctructor
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
 	out.indent();
-	out << "DEBUG_OUT (\"servant: Destructor called\");\n";
+	out << "DEBUG_OUT (\"" << class_name_ << " (component servant) : Destructor called\");\n";
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -1178,14 +1178,14 @@ GeneratorServantC::genContextServantBegin(IR__::ComponentDef_ptr component)
 	// constructor
 	out << class_name_ << "::" << class_name_ << "()\n{\n";
 	out.indent();
-	out << "DEBUG_OUT (\"servantContext: Constructor called\");\n";
+	out << "DEBUG_OUT (\"" << class_name_ << " (context) : Constructor called\");\n";
 	out.unindent();
 	out << "}\n\n\n";
 
 	// destructor
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
 	out.indent();
-	out << "DEBUG_OUT (\"servantContext: Destructor called\");\n";
+	out << "DEBUG_OUT (\"" << class_name_ << " (context) : Destructor called\");\n";
 	out.unindent();
 	out << "}\n\n\n";
 }
@@ -1340,14 +1340,14 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out << class_name_ << "::" << class_name_ << "()\n";
 	out << ": HomeServantBase(\"" << home->id() << "\", \"" << home->managed_component()->id() << "\")\n{\n";
 	out.indent();
-	out << "DEBUG_OUT (\"homeservant: Constructor called\");\n";
+	out << "DEBUG_OUT (\"" << class_name_ << " (home servant) : Constructor called\");\n";
 	out.unindent();
 	out << "}\n\n\n";
 
 	// destructor
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
 	out.indent();
-	out << "DEBUG_OUT (\"homeservant: Destructor called\");\n";
+	out << "DEBUG_OUT (\"" << class_name_ << " (home servant) : Destructor called\");\n";
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -1361,10 +1361,10 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out << mapFullNameLocal(home) << "_ptr home_executor = dynamic_cast < ";
 	out << mapFullNameLocal(home) << "_ptr > (home_executor_.in());\n";
 	out << "#else\n";
-	out << mapFullNameLocal(home) << "_ptr home_executor = ";
+	out << mapFullNameLocal(home) << "_var home_executor = ";
 	out << mapFullNameLocal(home) << "::_narrow (home_executor_.in());\n";
 	out << "#endif\n";
-	out << "if (! home_executor)\n{\n";
+	out << "if (CORBA::is_nil (home_executor))\n{\n";
 	out.indent();
 	out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
 	out << "throw Components::CreateFailure();\n";
@@ -1413,9 +1413,9 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home)
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
 	out << "	(executor_locator, dynamic_cast < Qedo::ExecutorContext* >(new_context.in()));\n\n";
-	out << "// use of servant factories\n";
+	out << "// register servant factory\n";
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
-	out << mapFullNameServant(home->managed_component()) << "::factory);\n\n";
+	out << mapFullNameServant(home->managed_component()) << "::cleaner_.factory_);\n\n";
 	out << "// Extract our Key out of the object reference\n";
 	out << "#ifdef TAO_ORB\n";
 	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
@@ -1470,7 +1470,7 @@ GeneratorServantC::genFacetRegistration(IR__::HomeDef_ptr home)
 		out << "PortableServer::ObjectId_var " << name << "_object_id = this->reference_to_oid (";
 		out << name << "_ref);\n";
 		out << "servant_registry_->register_servant_factory (";
-		out << name << "_object_id, " << mapFullNameServant((*facets)[i]) << "::factory);\n";
+		out << name << "_object_id, " << mapFullNameServant((*facets)[i]) << "::cleaner_.factory_);\n";
 		out << "component_instance.ccm_object_executor_->add_facet(\"";
 		out << name << "\", \"" << (*facets)[i]->interface_type()->id() << "\", " << name << "_ref);\n\n";
 	}
@@ -1573,7 +1573,7 @@ GeneratorServantC::genConsumerRegistration(IR__::HomeDef_ptr home)
 		out << "CORBA::Object_var " << name << "_ref = this->create_object_reference (key, \"" << id << "\");\n";
 		out << "PortableServer::ObjectId_var " << name << "_id = this->reference_to_oid(" << name << "_ref);\n";
 		out << "servant_registry_->register_servant_factory (" << name << "_id, ";
-		out << mapFullNameServant((*consumes)[i]) << "::factory);\n";
+		out << mapFullNameServant((*consumes)[i]) << "::cleaner_.factory_);\n";
 		out << "Components::EventConsumerBase_var " << name << "_sink = Components::EventConsumerBase::_narrow(";
 		out << name << "_ref);\n";
 		out << "component_instance.ccm_object_executor_->add_consumer(\"";
@@ -1644,7 +1644,7 @@ GeneratorServantC::genSourceRegistration(IR__::HomeDef_ptr home)
 		out << "PortableServer::ObjectId_var " << name << "_object_id = this->reference_to_oid (";
 		out << name << "_ref);\n";
 		out << "servant_registry_->register_servant_factory (";
-		out << name << "_object_id, " << mapFullNameServant((*sources)[i]) << "::factory);\n";
+		out << name << "_object_id, " << mapFullNameServant((*sources)[i]) << "::cleaner_.factory_);\n";
 		out << "component_instance.ccm_object_executor_->add_facet(\"";
 		out << name << "\", \"" << interface_type << "\", " << name << "_ref);\n\n";
 	}
@@ -1689,10 +1689,10 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 			out << home_name << "_ptr home_executor = dynamic_cast < ";
 			out << home_name << "_ptr> (home_executor_.in());\n";
 			out << "#else\n";
-			out << home_name << "_ptr home_executor = ";
+			out << home_name << "_var home_executor = ";
 			out << home_name << "::_narrow (home_executor_.in());\n";
 			out << "#endif\n";
-			out << "if (! home_executor)\n{\n";
+			out << "if (CORBA::is_nil (home_executor))\n{\n";
 			out.indent();
 			out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
 			out << "throw Components::CreateFailure();\n";
@@ -1713,10 +1713,10 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 		out << home_name << "_ptr home_executor = dynamic_cast < ";
 		out << home_name << "_ptr > (home_executor_.in());\n";
 		out << "#else\n";
-		out << home_name << "_ptr home_executor = ";
+		out << home_name << "_var home_executor = ";
 		out << home_name << "::_narrow (home_executor_.in());\n";
 		out << "#endif\n";
-		out << "if (! home_executor)\n{\n";
+		out << "if (CORBA::is_nil (home_executor))\n{\n";
 		out.indent();
 		out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
 		out << "throw Components::CreateFailure();\n";
@@ -1757,10 +1757,10 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 		out << home_name << "_ptr home_executor = dynamic_cast < ";
 		out << home_name << "_ptr > (home_executor_.in());\n";
 		out << "#else\n";
-		out << home_name << "_ptr home_executor = ";
+		out << home_name << "_var home_executor = ";
 		out << home_name << "::_narrow (home_executor_.in());\n";
 		out << "#endif\n";
-		out << "if (! home_executor)\n{\n";
+		out << "if (CORBA::is_nil (home_executor))\n{\n";
 		out.indent();
 		out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
 		out << "throw Components::CreateFailure();\n";
@@ -1806,10 +1806,10 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 				out << home_name << "_ptr home_executor = dynamic_cast < ";
 				out << home_name << "_ptr> (home_executor_.in());\n";
 				out << "#else\n";
-				out << home_name << "_ptr home_executor = ";
+				out << home_name << "_var home_executor = ";
 				out << home_name << "::_narrow (home_executor_.in());\n";
 				out << "#endif\n";
-				out << "if (! home_executor)\n{\n";
+				out << "if (CORBA::is_nil (home_executor))\n{\n";
 				out.indent();
 				out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
 				out << "throw Components::CreateFailure();\n";
@@ -1830,10 +1830,10 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 			out << home_name << "_ptr home_executor = dynamic_cast < ";
 			out << home_name << "_ptr > (home_executor_.in());\n";
 			out << "#else\n";
-			out << home_name << "_ptr home_executor = ";
+			out << home_name << "_var home_executor = ";
 			out << home_name << "::_narrow (home_executor_.in());\n";
 			out << "#endif\n";
-			out << "if (! home_executor)\n{\n";
+			out << "if (CORBA::is_nil (home_executor))\n{\n";
 			out.indent();
 			out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
 			out << "throw Components::CreateFailure();\n";
@@ -1874,10 +1874,10 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home)
 			out << home_name << "_ptr home_executor = dynamic_cast < ";
 			out << home_name << "_ptr > (home_executor_.in());\n";
 			out << "#else\n";
-			out << home_name << "_ptr home_executor = ";
+			out << home_name << "_var home_executor = ";
 			out << home_name << "::_narrow (home_executor_.in());\n";
 			out << "#endif\n";
-			out << "if (! home_executor)\n{\n";
+			out << "if (CORBA::is_nil (home_executor))\n{\n";
 			out.indent();
 			out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
 			out << "throw Components::CreateFailure();\n";

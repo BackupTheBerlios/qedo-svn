@@ -528,7 +528,7 @@ GeneratorServantH::genFacetServants(IR__::ComponentDef_ptr component)
 		out << "Qedo::ServantBase* create_servant() { return new " << class_name << "(); }\n";
 		out.unindent();
 		out << "};\n";
-		out << "static class ServantFactory *factory;\n\n";
+		out << "static class Qedo::ServantFactoryCleaner cleaner_;\n\n";
 
 		out.unindent();
 		out << "};\n\n\n";
@@ -590,7 +590,7 @@ GeneratorServantH::genSourceServants(IR__::ComponentDef_ptr component)
 		out << "Qedo::ServantBase* create_servant() { return new " << class_name << "(); }\n";
 		out.unindent();
 		out << "};\n";
-		out << "static class ServantFactory *factory;\n\n";
+		out << "static class Qedo::ServantFactoryCleaner cleaner_;\n\n";
 
 		out.unindent();
 		out << "};\n\n\n";
@@ -644,7 +644,7 @@ GeneratorServantH::genConsumerServants(IR__::ComponentDef_ptr component)
 		out << "Qedo::ServantBase* create_servant() { return new " << class_name << "(); }\n";
 		out.unindent();
 		out << "};\n";
-		out << "static class ServantFactory *factory;\n\n";
+		out << "static class Qedo::ServantFactoryCleaner cleaner_;\n\n";
 
 		out.unindent();
 		out << "};\n\n\n";
@@ -683,7 +683,7 @@ GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component)
 	out << "Qedo::ServantBase* create_servant() { return new " << class_name << "(); }\n";
 	out.unindent();
 	out << "};\n";
-	out << "static class ServantFactory *factory;\n\n";
+	out << "static class Qedo::ServantFactoryCleaner cleaner_;\n\n";
 
 	genFacetServants(component);
 	genSourceServants(component);
