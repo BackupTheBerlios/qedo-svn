@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.11 2003/04/14 09:17:49 tom Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.12 2003/04/15 07:26:07 neubauer Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -248,11 +248,13 @@ throw (Components::Deployment::UnknownImplId,
 			break;
 		}
 
-		if (! strcmp (config[i]->name(), "SERVICEHOME"))
+		if (! strcmp (config[i]->name(), "CCMSERVICE"))
 		{
 			config[i]->value() >>= service_name;
 			break;
 		}
+
+		DEBUG_OUT2("ContainerInterfaceImpl: unknown config value : ", config[i]->name());
 	}
 
 	//
@@ -424,12 +426,14 @@ throw (Components::Deployment::UnknownImplId,
 	//
 	// Initialize home servant
 	//
-	qedo_home_servant->initialize (root_poa_, home_executor);
 	qedo_home_servant->container(this);
-	if(service_name) {
+	qedo_home_servant->initialize (root_poa_, home_executor);
+	if(service_name)
+	{
+		DEBUG_OUT2("..... home for CCMService installed: ", service_name);
 		qedo_home_servant->service (service_name);
 	}
-	
+
 	Components::CCMHome_var home_ref = qedo_home_servant->ref();
 
 	//

@@ -45,7 +45,9 @@ namespace Qedo {
 
 class ExecutorContext;
 class ComponentInstance;
+class ComponentInstance_var;
 class ContainerInterfaceImpl;
+class ServantRegistry;
 
 
 /**
@@ -56,6 +58,8 @@ class CONTAINERDLL_API HomeServantBase : public PortableServer::RefCountServantB
 	/** makes use of this */
 	friend class ContainerInterfaceImpl;
 	friend class PrimaryServant;
+	/** access container */
+	friend class ServantLocator;
 
 private:
 	/** poa manager */
@@ -121,14 +125,14 @@ private:
 
 protected:
 	/** poa */
-	PortableServer::POA_var					home_poa_;
+	PortableServer::POA_var						home_poa_;
 	/** home executor */
-	Components::HomeExecutorBase_var		home_executor_;
+	Components::HomeExecutorBase_var			home_executor_;
 	/** servant registry */
-	ServantRegistry*						servant_registry_;
+	Qedo::ServantRegistry*						servant_registry_;
 
 	/** list of component instances */
-	std::vector <ComponentInstance>			component_instances_;
+	std::vector <Qedo::ComponentInstance_var>	component_instances_;
 
 	/**
 	 * create an object reference

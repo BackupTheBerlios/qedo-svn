@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.10 2003/04/14 09:17:49 tom Exp $";
+static char rcsid[] = "$Id: HomeServantBase.cpp,v 1.11 2003/04/15 07:26:07 neubauer Exp $";
 
 #include "GlobalHelpers.h"
 #include "HomeServantBase.h"
@@ -34,10 +34,10 @@ HomeServantBase::HomeServantBase (const char* repository_id, const char* comp_re
 : repository_id_ (CORBA::string_dup (repository_id)),
   comp_repository_id_(CORBA::string_dup (comp_repid)),
   instance_counter_ (0),
-  servant_locator_ (new ServantLocator (this)),
   servant_registry_ (new ServantRegistry()),
   my_home_ref_ (Components::CCMHome::_nil())
 {
+  servant_locator_ = new ServantLocator (this);
 }
 
 
@@ -140,7 +140,8 @@ HomeServantBase::incarnate_component (Components::ExecutorLocator_ptr executor_l
 	PortableServer::ObjectId_var object_id = this->reference_to_oid (component_ref);
 
 	// create component instance and register it
-	ComponentInstance new_component (object_id, component_ref, executor_locator, ccm_context, this);
+	ComponentInstance* new_component;
+	new_component = new ComponentInstance (object_id, component_ref, executor_locator, ccm_context, this);
 	component_instances_.push_back (new_component);
 	
 	return component_instances_.back ();
@@ -152,13 +153,13 @@ HomeServantBase::finalize_component_incarnation (const PortableServer::ObjectId&
 {
 	// Check whether a static servant was registered for this object id and set
 	// the executor context, executor locator and ccm object executor
-	std::vector <ComponentInstance>::const_iterator components_iter;
+	std::vector <ComponentInstance_var>::const_iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
 		 components_iter++)
 	{
-		if (Qedo::compare_object_ids ((*components_iter).object_id_, object_id))
+		if (Qedo::compare_object_ids ((*components_iter)->object_id_, object_id))
 		{
 			break;
 		}
@@ -170,11 +171,9 @@ HomeServantBase::finalize_component_incarnation (const PortableServer::ObjectId&
 		return;
 	}
 
-	servant_registry_->set_variables_static_servant (object_id, 
-													 (*components_iter).executor_locator_.in(), 
-													 (*components_iter).ccm_object_executor_);
+	servant_registry_->set_variables_static_servant (*components_iter);
 
-	this->do_finalize_component_incarnation ((*components_iter).executor_locator_.in());
+	this->do_finalize_component_incarnation ((*components_iter)->executor_locator_);
 }
 
 
@@ -182,13 +181,13 @@ void
 HomeServantBase::remove_component_with_oid (const PortableServer::ObjectId& object_id)
 {
 	// Look, whether we know this component instance
-	std::vector <ComponentInstance>::iterator components_iter;
+	std::vector <ComponentInstance_var>::iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
 		 components_iter++)
 	{
-		if (Qedo::compare_object_ids ((*components_iter).object_id_, object_id))
+		if (Qedo::compare_object_ids ((*components_iter)->object_id_, object_id))
 		{
 			break;
 		}
@@ -204,7 +203,7 @@ HomeServantBase::remove_component_with_oid (const PortableServer::ObjectId& obje
 
 	// Before removing the component and associating servants, let the different homes
 	// decide, what additional things to do
-	this->before_remove_component ((*components_iter).executor_locator_);
+	this->before_remove_component ((*components_iter)->executor_locator_);
 
 	component_instances_.erase (components_iter);
 
@@ -310,13 +309,13 @@ HomeServantBase::lookup_servant (const PortableServer::ObjectId& object_id)
 	CORBA::OctetSeq_var foreign_key_seq = Key::key_value_from_object_id (object_id);
 	CORBA::OctetSeq_var our_key_seq;
 
-	std::vector <ComponentInstance>::const_iterator components_iter;
+	std::vector <Qedo::ComponentInstance_var>::const_iterator components_iter;
 
 	for (components_iter = component_instances_.begin(); 
 		 components_iter != component_instances_.end(); 
 		 components_iter++)
 	{
-		our_key_seq = Key::key_value_from_object_id ((*components_iter).object_id_);
+		our_key_seq = Key::key_value_from_object_id ((*components_iter)->object_id_);
 
 		if (Qedo::compare_OctetSeqs (foreign_key_seq, our_key_seq))
 		{
@@ -351,9 +350,8 @@ HomeServantBase::lookup_servant (const PortableServer::ObjectId& object_id)
 		return 0;
 	}
 
-	// Set variables
-	servant->executor_locator ((*components_iter).executor_locator_.in());
-	servant->ccm_object_executor ((*components_iter).ccm_object_executor_);
+	// set the instance
+	servant->set_instance(*components_iter);
 		
 	return servant;
 }
@@ -376,7 +374,7 @@ HomeServantBase::prepare_remove()
 			// We do need to construct a copy of the object key, since (*components_iter).object_id_ will
 			// get destroyed in the first part of remove_component_with_oid(), but the object key is
 			// afterwards needed in the function to remove static servants and servant factories
-			PortableServer::ObjectId_var object_id = new PortableServer::ObjectId (component_instances_[0].object_id_);
+			PortableServer::ObjectId_var object_id = new PortableServer::ObjectId (component_instances_[0]->object_id_);
 
 			this->remove_component_with_oid (object_id);
 		}

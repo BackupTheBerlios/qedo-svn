@@ -35,6 +35,7 @@
 #endif
 #include <QedoComponents_skel.h>
 #include "HomeServantBase.h"
+#include "ComponentInstance.h"
 #include "Util.h"
 #include <vector>
 #include <string>
@@ -89,8 +90,8 @@ public:
 
 
 /**
- * entry in a list of services
- * the entry is part of the list of services in the container interface class
+ * entry in a list of service references
+ * the entry is part of the list of service references in the container interface class
  */
 class ServiceReferenceEntry
 {
@@ -120,6 +121,7 @@ public:
 };
 
 
+/** the container type */
 enum ContainerType {CT_EMPTY, CT_SERVICE, CT_SESSION, CT_PROCESS, CT_ENTITY};
 
 
@@ -129,11 +131,17 @@ enum ContainerType {CT_EMPTY, CT_SERVICE, CT_SESSION, CT_PROCESS, CT_ENTITY};
 class CONTAINERDLL_API ContainerInterfaceImpl : public virtual POA_Components::Deployment::Container,
 												public virtual PortableServer::RefCountServantBase
 {
+	/** to add services */
+	friend class PrimaryServant;
+	/** to access services */
+	friend class ServantLocator;
+
 private:
 	/** the orb */
 	CORBA::ORB_var											orb_;
 	/** the poa */
 	PortableServer::POA_var									root_poa_;
+
 	/** the conatiner type */
 	ContainerType											container_type_;
 	/** the component installer */
@@ -142,8 +150,13 @@ private:
 	Qedo_Components::HomeFinder_var							home_finder_;
 	/** the list of installed homes */
 	std::vector <HomeEntry>									installed_homes_;
-	/** the list of services */
+
+	/** the list of service references */
 	std::vector <ServiceReferenceEntry>						service_references_;
+	/** the list of service components for preinvoke*/
+	std::vector <Qedo::ComponentInstance_var>				services_preinvoke_;
+	/** the list of service components for postinvoke*/
+	std::vector <Qedo::ComponentInstance_var>				services_postinvoke_;
 
 	/**
 	 * loads a shared library
@@ -166,7 +179,7 @@ public:
 
 	/**
 	 * destructor
-	*/
+	 */
 	~ContainerInterfaceImpl();
 
 	/**
@@ -196,7 +209,7 @@ public:
 	 * The ConfigValue named "HOMEFINDERNAME" is used to provide a name for home registration in a HomeFinder,
 	 * if available. Currently each home is registered automatically anyway by repository ids of home and
 	 * managed component.
-	 * The ConfigValue named "SERVICEHOME" could be used to indicate that a component of this home is a container
+	 * The ConfigValue named "CCMSERVICE" could be used to indicate that a component of this home is a container
 	 * service. This is still under development!
 	 * \param id The interface repository id of the home.
 	 * \param entrypt The name of the entry point.

@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServantBase.cpp,v 1.5 2003/04/08 07:27:16 neubauer Exp $";
+static char rcsid[] = "$Id: ServantBase.cpp,v 1.6 2003/04/15 07:26:07 neubauer Exp $";
 
 #include "ServantBase.h"
 #include "HomeServantBase.h"
@@ -40,6 +40,9 @@ ServantBase::ServantBase()
 
 ServantBase::ServantBase (const ServantBase& base)
 {
+	current_executor_ = base.current_executor_;
+	executor_locator_ = base.executor_locator_;
+	ccm_object_executor_ = base.ccm_object_executor_;
 }
 
 
@@ -74,19 +77,41 @@ ServantBase::current_executor (CORBA::Object_ptr cur_exec)
 
 
 void 
-ServantBase::executor_locator (Components::ExecutorLocator_ptr exec_loc)
+ServantBase::set_instance (Qedo::ComponentInstance* instance)
 {
-	executor_locator_ = Components::ExecutorLocator::_duplicate (exec_loc);
-
-}
-
-
-void 
-ServantBase::ccm_object_executor (CCMObjectExecutor* ccm_obj_exec)
-{
-	ccm_object_executor_ = ccm_obj_exec;
+	instance_ = instance;
+	instance->_add_ref();
+	executor_locator_ = Components::ExecutorLocator::_duplicate (instance->executor_locator_);
+	ccm_object_executor_ = instance->ccm_object_executor_;
 	ccm_object_executor_->_add_ref();
 }
+
+
+//
+// primary servant
+//
+
+PrimaryServant::PrimaryServant()
+{
+}
+
+
+PrimaryServant::PrimaryServant (const PrimaryServant& base)
+{
+}
+
+
+PrimaryServant&
+PrimaryServant::operator= (const PrimaryServant&)
+{
+	return *this;
+}
+
+
+PrimaryServant::~PrimaryServant()
+{
+}
+
 
 //
 // from Navigation
@@ -302,10 +327,20 @@ throw (Components::InvalidConfiguration, CORBA::SystemException)
 	if(ccm_object_executor_->home_servant_->service_name_ != "")
 	{
 		std::string name = ccm_object_executor_->home_servant_->service_name_;
+		Components::CCMService* service = dynamic_cast< Components::CCMService_ptr >(executor_locator_.in());
+		if (!service)
+		{
+			NORMAL_ERR("ERROR: a component shall implement a service but is no");
+		}
+
+		ContainerInterfaceImpl* container = ccm_object_executor_->home_servant_->container_;
 		
+		//
+		// register service reference
+		//
 		try
 		{
-			ccm_object_executor_->home_servant_->container_->install_service_reference(name.c_str(), 
+			container->install_service_reference(name.c_str(), 
 				ccm_object_executor_->component_primary_ref_);
 		}
 		catch(Components::CCMException)
@@ -313,8 +348,11 @@ throw (Components::InvalidConfiguration, CORBA::SystemException)
 			NORMAL_ERR("ERROR: a component shall implement a service which is already implemented in the container");
 		}
 
-		//container->set_service_executor(executor_locator_->obtain_executor("component"));
-		//servant_locator->set_service_executor(executor_locator_->obtain_executor("component"));
+		//
+		// register the service to be called in call chain
+		//
+		container->services_preinvoke_.push_back(instance_);
+		container->services_postinvoke_.push_back(instance_);
 	}
 }
 

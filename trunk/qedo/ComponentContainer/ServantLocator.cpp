@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServantLocator.cpp,v 1.4 2003/04/01 07:50:10 neubauer Exp $";
+static char rcsid[] = "$Id: ServantLocator.cpp,v 1.5 2003/04/15 07:26:07 neubauer Exp $";
 
 #include "HomeServantBase.h"
 #include "ServantLocator.h"
@@ -49,6 +49,22 @@ ServantLocator::preinvoke (const PortableServer::ObjectId& oid,
 						   PortableServer::ServantLocator::Cookie& the_cookie )
 throw (PortableServer::ForwardRequest, CORBA::SystemException)
 {
+	//
+	// call services registered for preinvoke, but exclude services itself
+	//
+	if(home_servant_->service_name_ == "")
+	{
+		std::vector <Qedo::ComponentInstance_var> ::iterator iter;
+		Components::CCMService_ptr service;
+
+		for (iter = home_servant_->container_->services_preinvoke_.begin();
+			 iter != home_servant_->container_->services_preinvoke_.end(); iter++)
+		{
+			service = dynamic_cast<Components::CCMService_ptr>((*iter)->executor_locator_.in());
+			service->preinvoke((*iter)->ccm_object_executor_->uuid_.c_str(), operation);
+		}
+	}
+
 	return home_servant_->lookup_servant (oid);
 }
 
@@ -61,6 +77,22 @@ ServantLocator::postinvoke (const PortableServer::ObjectId& oid,
 							PortableServer::Servant the_servant )
 throw (CORBA::SystemException)
 {
+	//
+	// call services registered for postinvoke
+	//
+	if(home_servant_->service_name_ == "")
+	{
+		std::vector <Qedo::ComponentInstance_var> ::iterator iter;
+		Components::CCMService_ptr service;
+
+		for (iter = home_servant_->container_->services_postinvoke_.begin();
+			 iter != home_servant_->container_->services_postinvoke_.end(); iter++)
+		{
+			service = dynamic_cast<Components::CCMService_ptr>((*iter)->executor_locator_.in());
+			service->postinvoke((*iter)->ccm_object_executor_->uuid_.c_str(), operation);
+		}
+	}
+
 	the_servant->_remove_ref();
 }
 

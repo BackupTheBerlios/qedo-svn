@@ -20,8 +20,9 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentInstance.cpp,v 1.8 2003/04/14 09:17:49 tom Exp $";
+static char rcsid[] = "$Id: ComponentInstance.cpp,v 1.9 2003/04/15 07:26:07 neubauer Exp $";
 
+#include "HomeServantBase.h"
 #include "ComponentInstance.h"
 #include "Output.h"
 
@@ -48,6 +49,7 @@ ComponentInstance::ComponentInstance (const PortableServer::ObjectId& object_id,
 
 ComponentInstance::ComponentInstance()
 {
+	ccm_object_executor_ = 0;
 }
 
 

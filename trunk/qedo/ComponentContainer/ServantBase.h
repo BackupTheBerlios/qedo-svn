@@ -26,6 +26,7 @@
 #include <CORBA.h>
 #include "Components_skel.h"
 #include "CCMObjectExecutor.h"
+#include "ComponentInstance.h"
 #include "Util.h"
 
 
@@ -38,20 +39,28 @@ namespace Qedo {
  */
 
 
+class ComponentInstance;
+
+
 /**
  * base class for all servants
  */
 class CONTAINERDLL_API ServantBase : public virtual PortableServer::RefCountServantBase
 {
+	/** needs access to executor_locator and ccm_object_executor */
+	friend class ServantLocator;
+	/** to set the instance */
+	friend class HomeServantBase;
+
 protected:
+	/** the component instance */
+	Qedo::ComponentInstance_var			instance_;
 	/** the executor locator of the component instance */
 	Components::ExecutorLocator_var		executor_locator_;
-
 	/** the generic ccm object executor for the component instance */
 	CCMObjectExecutor*					ccm_object_executor_;
-
 	/** the current executor*/
-	CORBA::Object_ptr current_executor_;
+	CORBA::Object_ptr					current_executor_;
 
 public:
 	/**
@@ -81,16 +90,10 @@ public:
 	void current_executor (CORBA::Object_ptr cur_exec);
 
 	/**
-	 * set the executor locator
-	 * \param exec_loc The executor locator.
+	 * set the component instance
+	 * \param instance The component instance.
 	 */
-	void executor_locator (Components::ExecutorLocator_ptr exec_loc);
-
-	/**
-	 * set the ccm object executor
-	 * \param ccm_obj_exec The CCMObjectExecutor.
-	 */
-	void ccm_object_executor (CCMObjectExecutor* ccm_obj_exec);
+	void set_instance (Qedo::ComponentInstance* instance);
 };
 
 
@@ -102,6 +105,28 @@ public:
 class CONTAINERDLL_API PrimaryServant : public virtual POA_Components::CCMObject,
 										public ServantBase
 {
+public:
+	/**
+	 * constructor
+	 */
+	PrimaryServant();
+
+	/**
+	 * copy constructor
+	 */
+	PrimaryServant(const PrimaryServant&);
+
+	/**
+	 * assignment operator
+	 */
+	PrimaryServant& operator= (const PrimaryServant&);
+
+	/**
+	 * destructor
+	 */
+	~PrimaryServant();
+
+private:
     //
     // from Navigation
     //
