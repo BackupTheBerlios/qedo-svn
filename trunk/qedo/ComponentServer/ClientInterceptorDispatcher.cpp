@@ -31,6 +31,7 @@
 #include "Util.h"
 #include <fstream>
 #include "ContainerClientRequestInfo.h"
+#include "Output.h"
 
 static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.13 2004/08/27 08:37:43 tom Exp $";
 
@@ -57,7 +58,7 @@ ClientInterceptorDispatcher::init_cdr ()
     	return;
 	}
 
-    /* 
+    /*
 	 * Create codec
 	 */
 
@@ -92,8 +93,9 @@ ClientInterceptorDispatcher::destroy()
 void
 ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInfo_ptr info )
 {
+#ifdef _DEBUG
 	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
-
+#endif
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
 	Components::Extension::SlotInfo slot_info;
 	slot >>= slot_info;
@@ -215,7 +217,9 @@ ClientInterceptorDispatcher::receive_other( PortableInterceptor::ClientRequestIn
 void
 ClientInterceptorDispatcher::register_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor)
 {
+#ifdef _DEBUG
 	DEBUG_OUT("ClientInterceptorDispatcher: Client COPI registered for all components");
+#endif
 
 	ClientInterceptorEntry e;
 	e.interceptor = Components::Extension::ClientContainerInterceptor::_duplicate( interceptor );
@@ -230,8 +234,9 @@ ClientInterceptorDispatcher::register_interceptor_for_all(Components::Extension:
 void
 ClientInterceptorDispatcher::unregister_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor)
 {
+#ifdef _DEBUG
 	DEBUG_OUT("ClientInterceptorDispatcher: Client COPI unregister_for_all called");
-
+#endif
 	std::vector <ClientInterceptorEntry>::iterator interceptor_iter;
 
 	for (interceptor_iter = all_client_interceptors_.begin(); interceptor_iter != all_client_interceptors_.end(); interceptor_iter++)
@@ -239,7 +244,9 @@ ClientInterceptorDispatcher::unregister_interceptor_for_all(Components::Extensio
 
 		if ((*interceptor_iter).interceptor == interceptor)
 		{
+#ifdef _DEBUG
 			DEBUG_OUT ("ClientInterceptorDispatcher: unregister_interceptor_for_all(): interceptor found");
+#endif
 			all_client_interceptors_.erase (interceptor_iter);
 
 			break;
@@ -248,7 +255,9 @@ ClientInterceptorDispatcher::unregister_interceptor_for_all(Components::Extensio
 
 	if (interceptor_iter == all_client_interceptors_.end())
 	{
+#ifdef _DEBUG
 		DEBUG_OUT ("ClientInterceptorDispatcher: Unknown interceptor");
+#endif
 	}
 
 }
