@@ -425,7 +425,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCLinkerTool\"\n";
-	out << "AdditionalDependencies=\"ComponentContainer.lib;ComponentIDL.lib;obd.lib;jtcd.lib\"\n";
+	out << "AdditionalDependencies=\"ComponentContainer.lib ComponentIDL.lib obd.lib jtcd.lib\"\n";
 	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
 	out << "LinkIncremental=\"2\"\n";
 	out << "AdditionalLibraryDirectories=\"$(QEDO)/ComponentContainer/Debug;$(QEDO)/ComponentIDL/Debug;$(ORBACUS)/lib\"\n";
