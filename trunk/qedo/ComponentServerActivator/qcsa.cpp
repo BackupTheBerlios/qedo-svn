@@ -41,7 +41,9 @@
 
 #include <signal.h>
 
-static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.13 2003/10/08 14:23:46 boehme Exp $";
+#include "Output.h"
+
+static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.14 2003/10/09 16:00:12 boehme Exp $";
 
 /**
  * addtogroup ServerActivator
@@ -162,6 +164,10 @@ main (int argc, char** argv)
 		if (! strcmp(argv[i], "--debug"))
 		{
 			debug_mode = true;
+		}
+		if (! strcmp(argv[i], "--verbose"))
+		{
+			Qedo::debug_output = true;
 		}
 		if (! strcmp(argv[i], "--enable-qos"))
 		{

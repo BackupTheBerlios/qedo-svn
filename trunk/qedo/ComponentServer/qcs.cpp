@@ -28,7 +28,7 @@
 #include <string>
 #include "version.h"
 
-static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.17 2003/09/09 17:38:48 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.18 2003/10/09 16:00:12 boehme Exp $";
 
 
 /**
@@ -44,7 +44,7 @@ usage (const char* prog_name)
 
 	usage_message = "usage: ";
 	usage_message += prog_name;
-	usage_message += " [--debug] --csa_ref component_server_activator_object_reference";
+	usage_message += " [--debug] [--verbose] --csa_ref component_server_activator_object_reference";
 	NORMAL_ERR (usage_message);
 }
 
@@ -69,6 +69,11 @@ main (int argc, char** argv)
 		if (! strcmp (argv[i], "--debug"))
 		{
 			debug_mode = true;
+		}
+
+		if (! strcmp (argv[i], "--verbose"))
+		{
+			Qedo::debug_output = true;
 		}
 
 		if (! strcmp (argv[i], "--csa_ref"))

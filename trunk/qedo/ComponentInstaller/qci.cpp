@@ -34,8 +34,9 @@
 #include "version.h"
 #include <signal.h>
 
+#include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.21 2003/10/05 18:50:01 tom Exp $";
+static char rcsid[] UNUSED = "$Id: qci.cpp,v 1.22 2003/10/09 16:00:12 boehme Exp $";
 
 
 /**
@@ -118,6 +119,14 @@ int
 main (int argc, char** argv)
 {
 	std::cout << "Qedo Component Installer " << QEDO_VERSION << std::endl;
+
+	for (int i = 1; i < argc; i++)
+	{
+		if (! strcmp (argv[i], "--verbose"))
+		{
+			Qedo::debug_output = true;
+		}
+	}
 
 	//
 	// get the qedo dir

@@ -30,7 +30,7 @@
 #include <signal.h>
 
 
-static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.15 2003/09/30 16:39:00 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.16 2003/10/09 16:00:12 boehme Exp $";
 
 /**
  * @addtogroup Assembly
@@ -108,6 +108,14 @@ int
 main (int argc, char** argv)
 {
 	std::cout << "Qedo Assembly Factory " << QEDO_VERSION << std::endl;
+
+	for (int i = 1; i < argc; i++)
+	{
+		if (! strcmp (argv[i], "--verbose"))
+		{
+			Qedo::debug_output = true;
+		}
+	}
 
 	//
 	// get the qedo dir
