@@ -34,7 +34,7 @@ CompositionDef_impl::CompositionDef_impl
 ( Container_impl *container,
   Repository_impl *repository,
   CIDL::LifecycleCategory lifecycle,
-  HomeDef_impl *home_impl )
+  HomeDef_impl *home_impl)
 : IRObject_impl ( repository ),
   Container_impl ( repository ),
   Contained_impl ( container, repository )
@@ -43,7 +43,7 @@ CompositionDef_impl::CompositionDef_impl
 
 	home_impl_ = home_impl;
 	home_impl_ -> _add_ref();
-
+	
 	lifecycle_ = lifecycle;
 	home_executor_impl_ = NULL;
 	executor_impl_ = NULL;
@@ -92,7 +92,7 @@ throw(CORBA::SystemException)
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
 	CORBA::Any any;
-	any <<= composition_desc._retn();;
+	any <<= composition_desc._retn();
 	desc -> value = any;
 
 	return desc._retn();
@@ -154,7 +154,8 @@ CIDL::HomeExecutorDef_ptr
 CompositionDef_impl::create_home_executor
 ( const char* id,
   const char* name,
-  const char* version )
+  const char* version,
+  IR__::StorageHomeDef_ptr storagehome)
 throw(CORBA::SystemException)
 {
 	DEBUG_OUTLINE ( "CompositionDef_impl::create_home_executor() called" );
@@ -165,7 +166,7 @@ throw(CORBA::SystemException)
 		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
 
 	HomeExecutorDef_impl *new_home_executor =
-		new HomeExecutorDef_impl ( this, repository_ );
+		new HomeExecutorDef_impl ( this, repository_, storagehome );
 	new_home_executor -> id ( id );
 	new_home_executor -> name ( name );
 	new_home_executor -> version ( version );
@@ -207,4 +208,3 @@ throw(CORBA::SystemException)
 }
 
 } // namespace QEDO_ComponentRepository
-

@@ -43,7 +43,9 @@ class CPPBase : public GeneratorBase
 {
 
 protected:
-
+	
+	enum RETTYPE{ _SHORT, _INT, _LONG, _FLOAT, _DOUBLE, _LONGDOUBLE, _STRING, _BOOL };
+	
 	bool open_module(Printer& out, IR__::Contained* cur_cont, std::string prefix = "");
 	void close_module(Printer& out, IR__::Contained* cur_cont);
 
@@ -58,6 +60,7 @@ protected:
 	std::string mapFullNameLocal(IR__::Contained_ptr obj);
 	std::string mapFullNameServant(IR__::Contained_ptr obj);
 	std::string mapFullNamePOA(IR__::Contained_ptr obj);
+	std::string mapFullNamePK(IR__::Contained_ptr obj);
 
 	char* getAbsoluteName (IR__::Contained_ptr contained, std::string delim = "::")
 		throw ( CannotMapAbsoluteName );
@@ -77,6 +80,18 @@ protected:
 	char* map_value_return_type ( IR__::IDLType_ptr type )
 		throw ( CannotMapType );
 
+	char* map_psdl_return_type ( IR__::IDLType_ptr type, bool isReadOnly )
+		throw ( CannotMapType );
+
+	char* map_psdl_parameter_type ( IR__::IDLType_ptr type, bool isCopyFunc )
+		throw ( CannotMapType );
+
+	char* map_psdl2sql_type ( IR__::IDLType_ptr type )
+		throw ( CannotMapType );
+
+	CPPBase::RETTYPE psdl_check_type (IR__::IDLType_ptr type )
+		throw ( CannotMapType );
+
 	char* map_attribute_type ( IR__::IDLType_ptr type )
 		throw ( CannotMapType );
 
@@ -84,6 +99,9 @@ protected:
 		throw ( CannotMapType );
 
 	char* map_idl_type ( IR__::IDLType_ptr type )
+		throw ( CannotMapType );
+
+	char* map_direct_type ( IR__::IDLType_ptr type )
 		throw ( CannotMapType );
 
 	char* map_in_parameter_type ( IR__::IDLType_ptr type )

@@ -1,7 +1,7 @@
 /*****************************************************************************/
-/* Qedo - Quality of Service Enabled Distributed Objects                     */
+/* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
 /*                                                                           */
-/* Copyright (c) 2002/2003 by the Qedo Team                                  */
+/* Copyright (c) 2002 by the Qedo Team                                       */
 /*                                                                           */
 /* http://qedo.berlios.de                                                    */
 /*                                                                           */
@@ -11,7 +11,7 @@
 /* it under the terms of the GNU General Public License as published by      */
 /* the Free Software Foundation; either version 2 of the License, or         */
 /* (at your option) any later version.                                       */
-/*                                                                           */
+/*                                                                           */ 
 /* Qedo Generator is distributed in the hope that it will be useful,         */
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of            */
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
@@ -77,7 +77,8 @@ public:
     virtual CIDL::SegmentDef_ptr create_segment(const char* id,
                                                 const char* name,
                                                 const char* version,
-                                                const IR__::ProvidesDefSeq& provided_facets)
+                                                const IR__::ProvidesDefSeq& provided_facets,
+												IR__::StorageHomeDef_ptr storagehome)
         throw(CORBA::SystemException);
 };
 

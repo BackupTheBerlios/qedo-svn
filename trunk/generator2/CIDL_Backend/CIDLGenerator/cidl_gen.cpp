@@ -8,6 +8,7 @@
 #include "GeneratorBusinessC.h"
 #include "GeneratorServantH.h"
 #include "GeneratorServantC.h"
+#include "GeneratorPSD.h"
 #include "GeneratorVC7.h"
 #include "GeneratorMakefile.h"
 #include "GeneratorValuetypesH.h"
@@ -89,7 +90,6 @@ main
 		exit ( 1 );
 	}
 
-
 	//
 	// get POA
 	//
@@ -105,8 +105,7 @@ main
 		orb -> destroy();
 		exit ( 1 );
 	}
-
-
+	
 	//
 	// get POA manager and activate it
 	//
@@ -146,6 +145,7 @@ main
 		orb->destroy();
 		exit ( 1 );
 	}
+
     for(int i = 1; i < argc;)
     {
         const char* option = argv[i];
@@ -315,6 +315,28 @@ main
 			new QEDO_CIDL_Generator::GeneratorValuetypesC(repository);
 		vtc_generator->generate(target, fileprefix);
 		vtc_generator->destroy();
+		/*
+		// generate persistent header
+		std::cout << "Generating persistent code header for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorPersistenceH *ph_generator =
+			new QEDO_CIDL_Generator::GeneratorPersistenceH(repository);
+		ph_generator->generate(target, fileprefix);
+		ph_generator->destroy();
+
+		// generate persistent code
+		std::cout << "Generating persistent code for " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorPersistenceC *pc_generator =
+			new QEDO_CIDL_Generator::GeneratorPersistenceC(repository);
+		pc_generator->generate(target, fileprefix);
+		pc_generator->destroy();
+		
+		// generate persistent descriptor
+		std::cout << "Generating persistent descriptor " << target << std::endl;
+		QEDO_CIDL_Generator::GeneratorPSD *psd_generator =
+			new QEDO_CIDL_Generator::GeneratorPSD(repository);
+		psd_generator->generate(target, fileprefix);
+		psd_generator->destroy();
+		*/
 	}
 
 	if(generateDescriptors)

@@ -31,6 +31,8 @@
 #include "Repository_impl.h"
 #include "OperationDef_impl.h"
 #include "ComponentDef_impl.h"
+#include "AbsStorageTypeDef_impl.h"
+#include "StorageTypeDef_impl.h"
 
 namespace QEDO_ComponentRepository {
 
@@ -41,6 +43,14 @@ public:
 	FactoryDef_impl ( Container_impl *container,
 						Repository_impl *repository,
 						ComponentDef_impl *component );
+
+	FactoryDef_impl ( Container_impl *container,
+						Repository_impl *repository,
+						AbstractStorageTypeDef_impl *abs_storagetype );
+
+	FactoryDef_impl ( Container_impl *container,
+						Repository_impl *repository,
+						StorageTypeDef_impl *storagetype );
 
 	~FactoryDef_impl();
 

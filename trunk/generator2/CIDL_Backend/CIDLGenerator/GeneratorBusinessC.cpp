@@ -374,6 +374,13 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	composition_ = CIDL::CompositionDef::_duplicate(composition);
 	filename_ = "";
 	CIDL::SegmentDefSeq_var segment_seq = composition->executor_def()->segments();
+
+	// get storage home
+	if( composition->lifecycle()==CIDL::lc_Entity || 
+		composition->lifecycle()==CIDL::lc_Process )
+	{
+		storagehome_ = IR__::StorageHomeDef::_duplicate(composition->home_executor()->binds_to());
+	}
 	
 	string id = composition->id();
 	IR__::Contained_ptr module_def = 0;
@@ -416,10 +423,23 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection(class_name_, 2);
 
 	// constructor
-	out << class_name_ << "::" << class_name_ << "()\n";
-	out << "{\n";
-	out.insertUserSection(class_name_ + "::" + class_name_, 0);
-	out << "}\n\n\n";
+	switch(composition->lifecycle())
+	{
+	case CIDL::lc_Session :
+		out << class_name_ << "::" << class_name_ << "()\n";
+		out << "{\n";
+		out.insertUserSection(class_name_ + "::" + class_name_, 0);
+		out << "}\n\n\n";
+		break;
+	case CIDL::lc_Entity :
+		out << class_name_ << "::" << class_name_ << "(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n";
+		out << "{\n";
+		out.insertUserSection(class_name_ + "::" + class_name_, 0);
+		out << "}\n\n\n";
+		break;
+	default :
+		out << "// not supported lifecycle\n";
+	}
 
 	// destructor
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
@@ -449,8 +469,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection(class_name_ + "::remove", 0);	
 	out << "}\n\n\n";
 
-	// for service extension
-	if(composition->lifecycle() == 0)
+	if(composition->lifecycle() == CIDL::lc_Service)
 	{
 		// preinvoke
 		out << "void\n";
@@ -525,14 +544,31 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.insertUserSection(class_name_, 2);
 
 	// constructor
-	out << class_name_ << "::" << class_name_ << "()\n";
-	out << ":component_(new " << mapName(composition->executor_def()) << "())\n";
-	for (i = 0; i < segment_seq->length(); i++)	{
-		out << ", " << segment_seq[i]->name() << "_(new " << mapName(segment_seq[i]) << "())\n";
+	switch(composition->lifecycle())
+	{
+	case CIDL::lc_Session :
+		out << class_name_ << "::" << class_name_ << "()\n";
+		out << ":component_(new " << mapName(composition->executor_def()) << "())\n";
+		for (i = 0; i < segment_seq->length(); i++)	{
+			out << ", " << segment_seq[i]->name() << "_(new " << mapName(segment_seq[i]) << "())\n";
+		}
+		out << "{\n";
+		out.insertUserSection(class_name_ + "::" + class_name_, 0);
+		out << "}\n\n\n";
+		break;
+	case CIDL::lc_Entity :
+		out << class_name_ << "::" << class_name_ << "(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n";
+		out << ":component_(new " << mapName(composition->executor_def()) << "(pkey))\n";
+		for (i = 0; i < segment_seq->length(); i++)	{
+			out << ", " << segment_seq[i]->name() << "_(new " << mapName(segment_seq[i]) << "())\n";
+		}
+		out << "{\n";
+		out.insertUserSection(class_name_ + "::" + class_name_, 0);
+		out << "}\n\n\n";
+		break;
+	default :
+		out << "// not supported lifecycle\n";
 	}
-	out << "{\n";
-	out.insertUserSection(class_name_ + "::" + class_name_, 0);
-	out << "}\n\n\n";
 
 	// destructor
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
@@ -631,6 +667,11 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 				out << class_name_ << "::set_session_context(::Components::SessionContext_ptr context)\n";
 				break;
 			}
+        case (CIDL::lc_Entity) : 
+			{
+				out << class_name_ << "::set_entity_context(::Components::EntityContext_ptr context)\n";
+				break;
+			}
 		case (CIDL::lc_Extension) :
 			{
 				out << class_name_ << "::set_extension_context(::Components::ExtensionContext_ptr context)\n";
@@ -662,8 +703,19 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	for (i = 0; i < segment_seq->length(); i++)	{
 		out << segment_seq[i]->name() << "_->set_context(context_);\n";
 	}
+
 	out.unindent();
 	out << "}\n\n\n";
+
+	// unset_entity_context for entity component
+	if(composition->lifecycle()==CIDL::lc_Entity)
+	{
+		out << "void\n";
+		out << class_name_ << "::unset_entity_context()\n";
+		out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
+		out.insertUserSection(class_name_ + "::unset_entity_context", 0);
+		out << "}\n\n\n";
+	}
 
 	// ccm_activate
 	out << "void\n";
@@ -671,6 +723,49 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.insertUserSection(class_name_ + "::ccm_activate", 0);
 	out << "}\n\n\n";
+
+	// ccm_load and ccm_store for entity component
+	if(composition->lifecycle()==CIDL::lc_Entity)
+	{
+		out << "void\n";
+		out << class_name_ << "::ccm_load()\n";
+		out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
+		out.insertUserSection(class_name_ + "::ccm_load", 0);
+		out << "}\n\n\n";
+
+		out << "void\n";
+		out << class_name_ << "::ccm_store()\n";
+		out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
+
+		out.indent();
+		out << "StorageObject* ccm_obj = dynamic_cast <StorageObject*> (context_->get_ccm_storage_object());\n";
+		out << composition->ccm_component()->name() << "Persistence* ccm_object = dynamic_cast <" << composition->ccm_component()->name() << "Persistence*> (ccm_obj);\n";
+		IR__::AttributeDefSeq state_members;
+		composition->ccm_component()->get_state_members(state_members, CORBA__::dk_Create);
+		CORBA::ULong ulLen = state_members.length();
+		for(CORBA::ULong i=0; i<ulLen; i++)
+		{
+			IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			if(attribute->type_def()->type()->kind() != CORBA::tk_value)
+				out << "ccm_object->" << mapName(attribute) << "( component_->" << mapName(attribute) << "() );\n";
+		}
+
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << "\nStorageObject* obj = dynamic_cast <StorageObject*> (context_->get_storage_object());\n";
+			out << storagehome_->managed_storagetype()->name() << "* object = dynamic_cast <" << storagehome_->managed_storagetype()->name() << "*> (obj);\n\n";
+		}
+		out.unindent();
+
+		out.insertUserSection(class_name_ + "::ccm_store", 0);
+		
+		out.indent();
+		out << "\nccm_object->write_state();\n";
+		if( !CORBA::is_nil(storagehome_) )
+			out << "object->write_state();\n";
+		out.unindent();
+		out << "}\n\n\n";
+	}
 
 	// ccm_passivate
 	out << "void\n";
@@ -684,10 +779,30 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << class_name_ << "::ccm_remove()\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.insertUserSection(class_name_ + "::ccm_remove", 0);
+	if(composition->lifecycle()==CIDL::lc_Entity)
+	{
+		out.indent();
+		out << "StorageObject* ccm_obj = dynamic_cast <StorageObject*> (context_->get_ccm_storage_object());\n";
+		out << composition->ccm_component()->name() << "Persistence* ccm_object = dynamic_cast <" << composition->ccm_component()->name() << "Persistence*> (ccm_obj);\n";
+		out << "if( ccm_object->object_exists() )\n";
+		out.indent();
+		out << "ccm_object->destroy_object();\n";
+		out.unindent();
+
+		if( !CORBA::is_nil(storagehome_) )
+		{	
+			out << "\nStorageObject* obj = dynamic_cast <StorageObject*> (context_->get_storage_object());\n";
+			out << storagehome_->managed_storagetype()->name() << "* object = dynamic_cast <" << storagehome_->managed_storagetype()->name() << "*> (obj);\n";
+			out << "if( object->object_exists() )\n";
+			out.indent();
+			out << "object->destroy_object();\n";
+			out.unindent();
+		}
+		out.unindent();
+	}
 	out << "}\n\n\n";
 
-	// for service extension
-	if(composition->lifecycle() == 0)
+	if(composition->lifecycle() == CIDL::lc_Service)
 	{
 		// preinvoke
 		out << "void\n";
@@ -731,19 +846,55 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
 	out.indent();
     // out << "context_ = " << context_name << "::_narrow(ctx);\n";		// this is wrong
-	out << "context_ = Components::HomeContext::_duplicate(ctx);\n";
+	out << "context_ = Components::HomeContext::_duplicate(ctx);\n\n";
 	out.unindent();
 	out << "}\n\n\n";
+	
+	//operations derived from implicit home
+	switch(composition->lifecycle())
+	{
+	case CIDL::lc_Session :
+		out << "::Components::EnterpriseComponent_ptr\n";
+		out << class_name_ << "::create ()\n";
+		out << "    throw (CORBA::SystemException, Components::CreateFailure)\n{\n";
+		out.indent();
+		out.insertUserSection(class_name_ + "::create", 0);
+		out << "return new " << mapName(composition) << "();\n";
+		out.unindent();
+		out << "}\n\n\n";
+		break;
+	case CIDL::lc_Entity :
+		out << "::Components::EnterpriseComponent_ptr\n";
+		out << class_name_ << "::create(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey" << ")\n";
+		out << "    throw(CORBA::SystemException, Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey)\n{\n";
+		out.indent();
+		out.insertUserSection(class_name_ + "create", 0);
+		out << "return new " << mapName(composition) << "(pkey);\n";
+		out.unindent();
+		out << "}\n\n\n";
+/*
+		out << "::Components::EnterpriseComponent_ptr\n";
+		out << class_name_ << "::find_by_primary_key(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n"; 
+		out << "	throw(CORBA::SystemException, Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey)\n{\n";
+		out.indent();
+		out.insertUserSection(class_name_ + "find_by_primary_key", 0);
+		out.unindent();
+		out << "}\n\n\n";
 
-	// create
-	out << "::Components::EnterpriseComponent_ptr\n";
-	out << class_name_ << "::create ()\n";
-	out << "    throw (CORBA::SystemException, Components::CreateFailure)\n{\n";
-	out.indent();
-	out.insertUserSection(class_name_ + "::create", 0);
-	out << "return new " << mapName(composition) << "();\n";
-	out.unindent();
-	out << "}\n\n\n";
+		out << "void\n";
+		out << class_name_ << "::remove(" << mapFullNamePK(composition->ccm_home()->primary_key()) << "* pkey)\n"; 
+		out << "	throw(CORBA::SystemException, Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey)\n{\n";
+		out.indent();
+		out.insertUserSection(class_name_ + "remove", 0);
+		out.unindent();
+		out << "}\n\n\n";
+*/
+		//get_primary_key(...)??? !!!
+
+		break;
+	default :
+		out << "// not supported lifecycle\n";
+	}
 
 	doHome(composition->ccm_home());
 

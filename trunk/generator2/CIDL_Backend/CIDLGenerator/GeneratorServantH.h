@@ -28,6 +28,7 @@
 
 #include "CPPBase.h"
 #include "Printer.h"
+#include "GeneratorPersistenceH.h"
 #include <fstream>
 #include <iostream>
 #include <set>
@@ -41,11 +42,15 @@ class GeneratorServantH : public CPPBase
 
 private:
 
+	bool						bTempGenerated_;
 	Printer						out;
 	CIDL::CompositionDef_var	composition_;
 	IR__::ComponentDef_var		component_;
+	IR__::StorageHomeDef_var	storagehome_;
 	std::set<std::string>		m_recursion_set;
-
+	std::string					strNamespace_;
+	GeneratorPersistenceH*      ph_generator_;
+	
 	void check_for_generation(IR__::Contained_ptr item);
 
 	void doAttribute(IR__::AttributeDef_ptr attribute);

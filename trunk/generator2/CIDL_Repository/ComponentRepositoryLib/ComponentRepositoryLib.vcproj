@@ -192,6 +192,12 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
+				RelativePath="AbsStorageHomeDef_impl.cpp">
+			</File>
+			<File
+				RelativePath="AbsStorageTypeDef_impl.cpp">
+			</File>
+			<File
 				RelativePath=".\AliasDef_impl.cpp">
 			</File>
 			<File
@@ -252,6 +258,9 @@
 				RelativePath=".\InterfaceDef_impl.cpp">
 			</File>
 			<File
+				RelativePath="KeyDef_impl.cpp">
+			</File>
+			<File
 				RelativePath=".\ModuleDef_impl.cpp">
 			</File>
 			<File
@@ -259,6 +268,9 @@
 			</File>
 			<File
 				RelativePath=".\OperationDef_impl.cpp">
+			</File>
+			<File
+				RelativePath="PSSPrimaryKeyDef_impl.cpp">
 			</File>
 			<File
 				RelativePath=".\PrimaryKeyDef_impl.cpp">
@@ -280,6 +292,12 @@
 			</File>
 			<File
 				RelativePath=".\SourceDef_impl.cpp">
+			</File>
+			<File
+				RelativePath="StorageHomeDef_impl.cpp">
+			</File>
+			<File
+				RelativePath="StorageTypeDef_impl.cpp">
 			</File>
 			<File
 				RelativePath=".\StreamPortDef_impl.cpp">
@@ -309,6 +327,12 @@
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="AbsStorageHomeDef_impl.h">
+			</File>
+			<File
+				RelativePath="AbsStorageTypeDef_impl.h">
+			</File>
 			<File
 				RelativePath=".\AliasDef_impl.h">
 			</File>
@@ -373,6 +397,9 @@
 				RelativePath=".\InterfaceDef_impl.h">
 			</File>
 			<File
+				RelativePath="KeyDef_impl.h">
+			</File>
+			<File
 				RelativePath=".\ModuleDef_impl.h">
 			</File>
 			<File
@@ -380,6 +407,9 @@
 			</File>
 			<File
 				RelativePath=".\OperationDef_impl.h">
+			</File>
+			<File
+				RelativePath="PSSPrimaryKeyDef_impl.h">
 			</File>
 			<File
 				RelativePath=".\PrimaryKeyDef_impl.h">
@@ -401,6 +431,12 @@
 			</File>
 			<File
 				RelativePath=".\SourceDef_impl.h">
+			</File>
+			<File
+				RelativePath="StorageHomeDef_impl.h">
+			</File>
+			<File
+				RelativePath="StorageTypeDef_impl.h">
 			</File>
 			<File
 				RelativePath=".\StreamPortDef_impl.h">

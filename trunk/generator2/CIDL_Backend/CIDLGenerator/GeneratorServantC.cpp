@@ -11,7 +11,8 @@ namespace QEDO_CIDL_Generator {
 
 GeneratorServantC::GeneratorServantC
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: CPPBase(repository)
+: CPPBase(repository),
+  pc_generator_(new GeneratorPersistenceC(repository))
 {
 }
 
@@ -19,6 +20,8 @@ GeneratorServantC::GeneratorServantC
 GeneratorServantC::~GeneratorServantC
 ()
 {
+	if(!lValueTypes_.empty())
+		lValueTypes_.clear();
 }
 
 
@@ -43,6 +46,16 @@ GeneratorServantC::generate(std::string target, std::string fileprefix)
 	out << "#include \"Output.h\"\n\n";
 	out << "#include \"cstring\"\n\n\n";
 
+	// parse the namespace name from prefix, disadvantage is 
+	// that will not allow the user to use '_' in his namespace name
+	// a little farfetched ;-(
+	basic_string <char>::size_type idx;
+    static const basic_string <char>::size_type npos = -1;
+	
+	idx = file_prefix_.find("_");
+	if(idx!=npos)
+		strNamespace_ = file_prefix_.substr(0, idx);
+
 	//
 	// dynamic library identifier
 	//
@@ -65,6 +78,10 @@ GeneratorServantC::generate(std::string target, std::string fileprefix)
 	// close file
 	//
 	out.close();
+
+	// generate source code for PSS
+	pc_generator_->generate(target, fileprefix);
+	pc_generator_->destroy();
 }
 	
 
@@ -341,11 +358,11 @@ GeneratorServantC::check_for_generation(IR__::Contained_ptr item)
 	//
 	// check if item is already in the list or currently processed
 	//
-	if ((this->m_recursion_set.find(item->id())) != m_recursion_set.end() || this->already_included (item)) {
+	if ((this->recursion_set_.find(item->id())) != recursion_set_.end() || this->already_included (item)) {
 		return;
 	} 
 	else {
-		m_recursion_set.insert(item->id());
+		recursion_set_.insert(item->id());
 	}
 
 	CORBA::ULong len;
@@ -388,14 +405,21 @@ GeneratorServantC::check_for_generation(IR__::Contained_ptr item)
 				}
 			}
 		}
-
+		
 		break; }
 	case CORBA__::dk_Composition : {
 		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
 
+		// home's primary key
+		if(a_composition->lifecycle()==CIDL::lc_Entity)
+		{
+			IR__::ValueDef_ptr value = a_composition->ccm_home()->primary_key()->primary_key();
+			lValueTypes_.push_back(value);
+		}
 		// home
 		check_for_generation(a_composition->ccm_home());
 		insert_to_generate(item);
+
 		break; }
 	case CORBA__::dk_Home : {
 		IR__::HomeDef_var a_home = IR__::HomeDef::_narrow(item);
@@ -419,7 +443,7 @@ GeneratorServantC::check_for_generation(IR__::Contained_ptr item)
 		break;
 	};
 
-	m_recursion_set.erase(item->id());
+	recursion_set_.erase(item->id());
 };
 
 
@@ -676,15 +700,43 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "Components::SessionComponent_var session_component;\n\n";
+	switch(composition_->lifecycle())
+	{
+	case CIDL::lc_Session :
+	case CIDL::lc_Service :
+		out << "Components::SessionComponent_var session_component;\n\n";
+		break;
+
+	case CIDL::lc_Entity :
+	case CIDL::lc_Process :
+		out << "Components::EntityComponent_var entity_component;\n\n";
+		break;
+		
+	default :
+		break;
+	}
 	out << "try\n{\n";
 	out.indent();
-	out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
+	switch(composition_->lifecycle())
+	{
+	case CIDL::lc_Session :
+	case CIDL::lc_Service :
+		out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
+		break;
+
+	case CIDL::lc_Entity :
+	case CIDL::lc_Process :
+		out << "entity_component = Components::EntityComponent::_narrow (enterprise_component);\n";
+		break;
+		
+	default :
+		break;
+	}
 	out.unindent();
 	out << "}\n";
 	out << "catch (CORBA::SystemException&)\n{\n";
 	out.indent();
-	out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
+	//out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
@@ -692,7 +744,21 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << mapFullNameLocal(comp) << "_ContextImpl_var new_context = new ";
 	out << comp->name() << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
-	out << "session_component->set_session_context (new_context.in());\n\n";
+	switch(composition_->lifecycle())
+	{
+	case CIDL::lc_Session :
+	case CIDL::lc_Service :
+		out << "session_component->set_session_context (new_context.in());\n\n";
+		break;
+
+	case CIDL::lc_Entity :
+	case CIDL::lc_Process :
+		out << "entity_component->set_entity_context (new_context.in());\n\n";
+		break;
+		
+	default :
+		break;
+	}
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
 	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
@@ -706,6 +772,7 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
 	out << "#endif\n";
 	out << "// register all ports\n";
+
 	genFacetRegistration(comp);
 	genReceptacleRegistration(comp);
 	genEmitterRegistration(comp);
@@ -714,6 +781,29 @@ GeneratorServantC::doFactory(IR__::FactoryDef_ptr factory)
 	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
 	out << component_name << "_var servant = ";
 	out << component_name << "::_narrow (component_instance.component_ref());\n\n";
+	/*if(composition_->lifecycle()==CIDL::lc_Entity || composition_->lifecycle()==CIDL::lc_Process)
+	{
+		out << "//create storage home incarnation\n";
+		out << "std::string strPid = component_instance.uuid_;\n";
+		out << "std::string strSpid = strPid + \"@" << home_->managed_component()->name() << "Persistence\";\n";
+		out << "Pid* pPid = new Pid;\n";
+		out << "ShortPid* pSpid = new ShortPid;\n";
+		out << "convertStringToPid(strPid.c_str(), *pPid);\n";
+		out << "convertStringToSpid(strSpid.c_str(), *pSpid);\n\n";
+		out << home_->managed_component()->name() << "Persistence* pCcmStorageObject = pCcmStorageHome_->" << factory_name;
+		out << "(pPid, pSpid, ";
+		for(i = pards->length(); i > 0; i--)
+		{
+			if(i < pards->length())
+			{
+				out << ", ";
+			}
+			IR__::ParameterDescription pardescr = (*pards)[i - 1];
+			out << mapName(string(pardescr.name));
+		};
+		out << ");\n";
+		out << "servant->setStorageObject(pCcmStorageObject);\n\n";
+	}*/
 	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
@@ -793,15 +883,43 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
-	out << "Components::SessionComponent_var session_component;\n\n";
+	switch(composition_->lifecycle())
+	{
+	case CIDL::lc_Session :
+	case CIDL::lc_Service :
+		out << "Components::SessionComponent_var session_component;\n\n";
+		break;
+
+	case CIDL::lc_Entity :
+	case CIDL::lc_Process :
+		out << "Components::EntityComponent_var entity_component;\n\n";
+		break;
+		
+	default :
+		break;
+	}
 	out << "try\n{\n";
 	out.indent();
-	out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
+	switch(composition_->lifecycle())
+	{
+	case CIDL::lc_Session :
+	case CIDL::lc_Service :
+		out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
+		break;
+
+	case CIDL::lc_Entity :
+	case CIDL::lc_Process :
+		out << "entity_component = Components::EntityComponent::_narrow (enterprise_component);\n";
+		break;
+		
+	default :
+		break;
+	}
 	out.unindent();
 	out << "}\n";
 	out << "catch (CORBA::SystemException&)\n{\n";
 	out.indent();
-	out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
+	//out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
@@ -809,7 +927,21 @@ GeneratorServantC::doFinder(IR__::FinderDef_ptr finder)
 	out << mapFullNameLocal(comp) << "_ContextImpl_var new_context = new ";
 	out << comp->name() << "_Context_callback();\n\n";
 	out << "// Set context on component\n";
-	out << "session_component->set_session_context (new_context.in());\n\n";
+	switch(composition_->lifecycle())
+	{
+	case CIDL::lc_Session :
+	case CIDL::lc_Service :
+		out << "session_component->set_session_context (new_context.in());\n\n";
+		break;
+
+	case CIDL::lc_Entity :
+	case CIDL::lc_Process :
+		out << "entity_component->set_entity_context (new_context.in());\n\n";
+		break;
+		
+	default :
+		break;
+	}
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
 	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
@@ -859,9 +991,11 @@ GeneratorServantC::doComposition (CIDL::CompositionDef_ptr composition)
 	//
 	// determine componentDef and HomeDef
 	//
+	composition_ = composition;
 	component_ = composition->ccm_component();
 	IR__::HomeDef_var home = composition->ccm_home();
-    
+	storagehome_ = composition->home_executor()->binds_to();
+	    
 	//
 	// determine lifecycle
 	//
@@ -934,8 +1068,6 @@ GeneratorServantC::generate_component(IR__::ComponentDef* a_component) {
 	genComponentServant(component_);
 
 	close_module(out, component_);
-
-
 }
 
 void
@@ -1554,7 +1686,6 @@ GeneratorServantC::genComponentServant(IR__::ComponentDef_ptr component)
 	handleSource(component);
 }
 
-
 void
 GeneratorServantC::genContextServantBegin(IR__::ComponentDef_ptr component)
 {
@@ -1578,6 +1709,44 @@ GeneratorServantC::genContextServantBegin(IR__::ComponentDef_ptr component)
 	out << "DEBUG_OUT (\"" << class_name_ << " (context) : Destructor called\");\n";
 	out.unindent();
 	out << "}\n\n\n";
+
+	if(composition_->lifecycle()==CIDL::lc_Entity)
+	{
+		out << "void\n";
+		out << class_name_ << "::set_ccm_storage_object( ::CosPersistentState::StorageObjectBase obj )\n";
+		out << "{\n";
+		out.indent();
+		out << "ccm_obj_ = obj;\n";
+		out.unindent();
+		out << "}\n\n\n";
+
+		out << "::CosPersistentState::StorageObjectBase\n";
+		out << class_name_ << "::get_ccm_storage_object()\n";
+		out << "{\n";
+		out.indent();
+		out << "return ccm_obj_;\n";
+		out.unindent();
+		out << "}\n\n\n";
+
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << "void\n";
+			out << class_name_ << "::set_storage_object( ::CosPersistentState::StorageObjectBase obj )\n";
+			out << "{\n";
+			out.indent();
+			out << "obj_ = obj;\n";
+			out.unindent();
+			out << "}\n\n\n";
+
+			out << "::CosPersistentState::StorageObjectBase\n";
+			out << class_name_ << "::get_storage_object()\n";
+			out << "{\n";
+			out.indent();
+			out << "return obj_;\n";
+			out.unindent();
+			out << "}\n\n\n";
+		}
+	}
 }
 
 
@@ -1799,6 +1968,11 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << ": HomeServantBase(\"" << home->id() << "\", \"" << comp->id() << "\")\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (home servant) : Constructor called\");\n";
+	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	{
+		out << "pCcmStorageHome_=NULL;\n";
+		out << "pPssStorageHome_=NULL;\n";
+	}
 	out.unindent();
 	out << "}\n\n\n";
 
@@ -1806,15 +1980,95 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << class_name_ << "::~" << class_name_ << "()\n{\n";
 	out.indent();
 	out << "DEBUG_OUT (\"" << class_name_ << " (home servant) : Destructor called\");\n";
+	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	{
+		out << "if(pCcmStorageHome_!=NULL)\n";
+		out.indent();
+		out << "pCcmStorageHome_->_remove_ref();\n";
+		out.unindent();
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << "if(pPssStorageHome_!=NULL)\n";
+			out.indent();
+			out << "pPssStorageHome_->_remove_ref();\n";
+			out.unindent();
+		}
+	}
 	out.unindent();
 	out << "}\n\n\n";
 
 	// create
 	out << mapFullName(component_) << "_ptr\n";
-	out << class_name_ << "::create()\n";
-	out << "throw(CORBA::SystemException, Components::CreateFailure)\n{\n";
+	switch(lc)
+	{
+	case(CIDL::lc_Session):
+	{
+		out << class_name_ << "::create()\n";
+		out << "throw(CORBA::SystemException, Components::CreateFailure)\n{\n";
+		break;
+	}
+	case(CIDL::lc_Entity):
+	{
+		out << class_name_ << "::create(" << mapFullNamePK(home->primary_key()) << "* pkey)\n";
+		out << "throw(CORBA::SystemException, Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey)\n{\n";
+		break;
+	}
+	}
 	out.indent();
-	out << "DEBUG_OUT (\"Home_servant: create() called\");\n\n";
+	if( lc==CIDL::lc_Entity || lc==CIDL::lc_Process )
+	{
+		out << "DEBUG_OUT (\"Home_servant: create(" << mapFullNamePK(home->primary_key()) << "*" << ") called\");\n\n";
+		out << "if(!pkey)\n";
+		out.indent();
+		out << "throw Components::InvalidKey();\n\n";
+		out.unindent();
+
+		out << "//check whether the key is duplicated!\n";
+		out << mapFullName(home->managed_component()) << "_var comp;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "Components::CCMObjects_var entity_components = this->get_instances();\n";
+		out << "for( CORBA::ULong i=0; i<entity_components->length(); i++ )\n{\n";
+		out.indent();
+		out << "comp = " << mapFullName(home->managed_component()) << "::_narrow( entity_components.in()[i] );\n";
+
+		//+++ find the variable name of primary key
+		IR__::AttributeDefSeq state_members;
+		home->managed_component()->get_state_members(state_members, CORBA__::dk_Self);
+		CORBA::ULong ulLen = state_members.length();
+		IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
+		for( CORBA::ULong i=0; i<ulLen; i++ )
+		{
+			attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			if( attribute->type_def()->type()->kind()==CORBA::tk_value )
+			{
+				IR__::Contained_var contained = IR__::Contained::_narrow(attribute->type_def());
+				if( strcmp(home->primary_key()->name(), contained->name())==0 )
+					break;
+			}
+		}
+		//+++ end of find
+
+		//out << mapFullNamePK(home->primary_key()) << "* pActKey = dynamic_cast <" << mapFullNamePK(home->primary_key()) << "*> (comp->get_primary_key());\n\n";
+		out << mapFullNamePK(home->primary_key()) << "* pActKey = comp->" << mapName(attribute) << "();\n\n";
+		
+		out << "if( compare_primarykey(pActKey, pkey) )\n";
+		out.indent();
+		out << "throw Components::DuplicateKeyValue();\n";
+		out.unindent();
+		out.unindent();
+		out << "}\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException&)\n{\n";
+		out.indent();
+        out << "throw Components::CreateFailure();\n";
+		out.unindent();
+        out << "}\n\n";
+	}
+	else
+		out << "DEBUG_OUT (\"Home_servant: create() called\");\n\n";
+
 	out << "#ifdef TAO_ORB\n";
 	out << mapFullNameLocal(home) << "_ptr home_executor = dynamic_cast < ";
 	out << mapFullNameLocal(home) << "_ptr > (home_executor_.in());\n";
@@ -1831,7 +2085,19 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "Components::EnterpriseComponent_var enterprise_component;\n\n";
 	out << "try\n{\n";
 	out.indent();
-	out << "enterprise_component = home_executor->create();\n";
+	switch(lc)
+	{
+	case(CIDL::lc_Session):
+	{
+		out << "enterprise_component = home_executor->create();\n";
+		break;
+	}
+	case(CIDL::lc_Entity):
+	{
+		out << "enterprise_component = home_executor->create(pkey);\n";
+		break;
+	}
+	}
 	out.unindent();
 	out << "}\n";
 	out << "catch (Components::CCMException&)\n{\n";
@@ -1858,6 +2124,11 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
             out << "Components::SessionComponent_var session_component;\n\n";
 			break;
 		}
+		case (CIDL::lc_Entity):
+		{
+            out << "Components::EntityComponent_var entity_component;\n\n";
+			break;
+		}
 		case (CIDL::lc_Extension) :
 		{
 			out << "Components::ExtensionComponent_var extension_component;\n\n";
@@ -1876,6 +2147,11 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 			out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
 			break;
 		}
+		case (CIDL::lc_Entity):
+		{
+			out << "entity_component = Components::EntityComponent::_narrow (enterprise_component);\n";
+			break;
+		}
 		case (CIDL::lc_Extension) :
 		{
 			out << "extension_component = Components::ExtensionComponent::_narrow (enterprise_component);\n";
@@ -1890,7 +2166,7 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "}\n";
 	out << "catch (CORBA::SystemException&)\n{\n";
 	out.indent();
-	out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
+	//out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
 	out << "throw Components::CreateFailure();\n";
 	out.unindent();
 	out << "}\n\n";
@@ -1907,6 +2183,11 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		case (CIDL::lc_Session):
 		{
 			out << "session_component->set_session_context (new_context.in());\n\n";
+			break;
+		}
+		case (CIDL::lc_Entity):
+		{
+			out << "entity_component->set_entity_context (new_context.in());\n\n";
 			break;
 		}
 		case (CIDL::lc_Extension) :
@@ -1926,6 +2207,17 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
 	out << mapFullNameServant(comp) << "::cleaner_.factory_);\n\n";
 	out << "// Extract our Key out of the object reference\n";
+	switch (lc) {
+	case (CIDL::lc_Session):
+        out << "DEBUG_OUT (\"Home_servant: create() called\");\n\n";
+		break;
+	case (CIDL::lc_Entity):
+        out << "DEBUG_OUT (\"Home_servant: create(" << mapFullNamePK(home->primary_key()) << "*" << ") called\");\n\n";
+		break;
+	default:
+		out << "// not supported lifecycle\n";
+	}
+
 	out << "#ifdef TAO_ORB\n";
 	out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
 	out << "#else\n";
@@ -1945,95 +2237,381 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out << "\nthis->finalize_component_incarnation(component_instance.object_id_);\n\n";
 	out << mapFullName(comp) << "_var servant = ";
 	out << mapFullName(comp) << "::_narrow (component_instance.component_ref());\n\n";
+
+	if(composition_->lifecycle()==CIDL::lc_Entity || composition_->lifecycle()==CIDL::lc_Process)
+	{
+		out << "//create storage object incarnation for entity component\n";
+		out << "std::string strCcmPid = component_instance.uuid_ + \"@CCM\";\n";
+		out << "std::string strCcmSpid = component_instance.uuid_ + \"@" << strNamespace_ << "_" << home->managed_component()->name() << "Persistence\";\n";
+		out << "Pid* pCcmPid = new Pid;\n";
+		out << "ShortPid* pCcmSpid = new ShortPid;\n";
+		out << "convertStringToPid(strCcmPid.c_str(), *pCcmPid);\n";
+		out << "convertStringToSpid(strCcmSpid.c_str(), *pCcmSpid);\n\n";
+		out << strNamespace_ << "::" << home->managed_component()->name() << "Persistence* pCcmStorageObject = pCcmStorageHome_->_create";
+		out << "(pCcmPid, pCcmSpid, pkey, ";
+		IR__::AttributeDefSeq state_members;
+		home->managed_component()->get_state_members(state_members, CORBA__::dk_Create);
+		CORBA::ULong ulLen = state_members.length();
+		for(CORBA::ULong i=0; i<ulLen; i++)
+		{
+			IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			if( attribute->type_def()->type()->kind()==CORBA::tk_value )
+				continue;
+
+			switch ( attribute->type_def()->type()->kind() )
+			{
+				case CORBA::tk_short:
+				case CORBA::tk_long:
+				case CORBA::tk_longlong:
+				case CORBA::tk_ushort:
+				case CORBA::tk_ulong:
+				case CORBA::tk_ulonglong:
+				case CORBA::tk_float:
+				case CORBA::tk_double:
+				case CORBA::tk_longdouble:
+					out << "0";
+					break;
+				case CORBA::tk_boolean:
+					out << "false";
+					break;
+				case CORBA::tk_char:
+				case CORBA::tk_wchar:
+				case CORBA::tk_octet:
+					out << "\'\'";
+					break;
+				case CORBA::tk_string:
+				case CORBA::tk_wstring:
+					out << "\"\"";
+					break;
+				default:
+					out << "NULL";
+			}
+			if( (i+1)!=ulLen )
+				out << ", ";
+		}
+		out << ");\n";
+		out << "new_context->set_ccm_storage_object(pCcmStorageObject);\n\n";
+		
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << "//create storage object incarnation for pss definition\n";
+			out << "std::string strPssPid = component_instance.uuid_ + \"@PSS\";\n";
+			out << "std::string strPssSpid = component_instance.uuid_ + \"@" << strNamespace_ << "_" << storagehome_->managed_storagetype()->name() << "\";\n";
+			out << "Pid* pPssPid = new Pid;\n";
+			out << "ShortPid* pPssSpid = new ShortPid;\n";
+			out << "convertStringToPid(strPssPid.c_str(), *pPssPid);\n";
+			out << "convertStringToSpid(strPssSpid.c_str(), *pPssSpid);\n\n";
+			out << strNamespace_ << "::" << storagehome_->managed_storagetype()->name() << "* pPssStorageObject = pPssStorageHome_->_create";
+			out << "(pPssPid, pPssSpid, pkey, ";
+			IR__::AttributeDefSeq a_state_members;
+			storagehome_->managed_storagetype()->get_state_members(a_state_members, CORBA__::dk_Create);
+			ulLen = a_state_members.length();
+			for(CORBA::ULong i=0; i<ulLen; i++)
+			{
+				IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(a_state_members[i]);
+				if( attribute->type_def()->type()->kind()==CORBA::tk_value )
+					continue;
+
+				switch ( attribute->type_def()->type()->kind() )
+				{
+					case CORBA::tk_short:
+					case CORBA::tk_long:
+					case CORBA::tk_longlong:
+					case CORBA::tk_ushort:
+					case CORBA::tk_ulong:
+					case CORBA::tk_ulonglong:
+					case CORBA::tk_float:
+					case CORBA::tk_double:
+					case CORBA::tk_longdouble:
+						out << "0";
+						break;
+					case CORBA::tk_boolean:
+						out << "false";
+						break;
+					case CORBA::tk_char:
+					case CORBA::tk_wchar:
+					case CORBA::tk_octet:
+						out << "\'\'";
+						break;
+					case CORBA::tk_string:
+					case CORBA::tk_wstring:
+						out << "\"\"";
+						break;
+					default:
+						out << "NULL";
+				}
+				if( (i+1)!=ulLen )
+					out << ", ";
+			}
+			out << ");\n";
+			out << "new_context->set_storage_object(pPssStorageObject);\n\n";
+		}
+	}
+
+	out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
+	out << mapFullName(home->managed_component()) << "_var servant = ";
+	out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
+
 	out << "return servant._retn();\n";
 	out.unindent();
 	out << "}\n\n\n";
-
-	// create_component
-	out << "Components::CCMObject_ptr\n";
-	out << class_name_ << "::create_component()\n";
-	out << "throw(CORBA::SystemException,Components::CreateFailure)\n{\n";
-	out.indent();
-	out << "return this->create();\n";
-	out.unindent();
-	out << "}\n\n\n";
-
-	// create_component_with_config
-	out << "Components::CCMObject_ptr\n";
-	out << class_name_ << "::create_component_with_config(const Components::ConfigValues& config)\n";
-	out << "throw(CORBA::SystemException, Components::CreateFailure)\n{\n";
-	out.indent();
-	out << "DEBUG_OUT (\"Home_servant: create_component_with_config() called\");\n\n";
-	out << "#ifdef TAO_ORB\n";
-	out << mapFullNameLocal(home) << "_ptr home_executor = dynamic_cast < ";
-	out << mapFullNameLocal(home) << "_ptr > (home_executor_.in());\n";
-	out << "#else\n";
-	out << mapFullNameLocal(home) << "_var home_executor = ";
-	out << mapFullNameLocal(home) << "::_narrow (home_executor_.in());\n";
-	out << "#endif\n";
-	out << "if (CORBA::is_nil (home_executor))\n{\n";
-	out.indent();
-	out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
-	out << "throw Components::CreateFailure();\n";
-	out.unindent();
-	out << "}\n\n";
-	out << "Components::EnterpriseComponent_var enterprise_component;\n\n";
-	out << "try\n{\n";
-	out.indent();
-	out << "enterprise_component = home_executor->create();\n";
-	out.unindent();
-	out << "}\n";
-	out << "catch (Components::CCMException&)\n{\n";
-	out.indent();
-	out << "throw Components::CreateFailure();\n";
-	out.unindent();
-	out << "}\n\n";
-	out << "Components::ExecutorLocator_var executor_locator;\n\n";
-	out << "try\n{\n";
-	out.indent();
-	out << "executor_locator = Components::ExecutorLocator::_narrow (enterprise_component);\n";
-	out.unindent();
-	out << "}\n";
-	out << "catch (CORBA::SystemException&)\n{\n";
-	out.indent();
-	out << "NORMAL_ERR (\"Home_servant: This container can only handle locator-based implementations\");\n";
-	out << "throw Components::CreateFailure();\n";
-	out.unindent();
-	out << "}\n\n";
+	
 	switch (lc) {
-		case (CIDL::lc_Session):
+	case (CIDL::lc_Session):
+        // create_component
+		out << "Components::CCMObject_ptr\n";
+		out << class_name_ << "::create_component()\n";
+		out << "throw(CORBA::SystemException,Components::CreateFailure)\n{\n";
+		out.indent();
+		out << "return this->create();\n";
+		out.unindent();
+		out << "}\n\n\n";
+		break;
+	case (CIDL::lc_Entity):
 		{
-            out << "Components::SessionComponent_var session_component;\n\n";
-			break;
-		}
-		case (CIDL::lc_Extension) :
+        out << mapFullName(component_) << "_ptr\n";
+		out << class_name_ << "::find_by_primary_key(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
+		out << "throw(CORBA::SystemException, Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey)\n";
+		out << "{\n";
+		out.indent();
+		out << "if(!pkey)\n";
+		out.indent();
+		out << "throw Components::InvalidKey();\n\n";
+		out.unindent();
+		out << mapFullName(home->managed_component()) << "_var servant;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "Components::CCMObjects_var entity_components = this->get_instances();\n";
+		out << "for( CORBA::ULong i=0; i<entity_components->length(); i++ )\n{\n";
+		out.indent();
+		out << "servant = " << mapFullName(home->managed_component()) << "::_narrow( entity_components.in()[i] );\n";
+		//+++ find the variable name of primary key
+		IR__::AttributeDefSeq state_members;
+		home->managed_component()->get_state_members(state_members, CORBA__::dk_Self);
+		CORBA::ULong ulLen = state_members.length();
+		IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
+		for( CORBA::ULong i=0; i<ulLen; i++ )
 		{
-			out << "Components::ExtensionComponent_var extension_component;\n\n";
-			break;
+			attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			if( attribute->type_def()->type()->kind()==CORBA::tk_value )
+			{
+				IR__::Contained_var contained = IR__::Contained::_narrow(attribute->type_def());
+				if( strcmp(home->primary_key()->name(), contained->name())==0 )
+					break;
+			}
 		}
-		default:
+		//+++ end of find
+
+		//out << mapFullNamePK(home->primary_key()) << "* pActKey = dynamic_cast <" << mapFullNamePK(servant->primary_key()) << "*> (comp->get_primary_key());\n\n";
+		out << mapFullNamePK(home->primary_key()) << "* pActKey = servant->" << mapName(attribute) << "();\n\n";
+		out << "if( compare_primarykey(pActKey, pkey) )\n";
+		out.indent();
+		out << "return servant._retn();\n";
+		out.unindent();
+		out.unindent();
+		out << "}\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException&)\n{\n";
+		out.indent();
+        out << "NORMAL_ERR (\"Home_servant: Component not found\");\n";
+        out << "throw Components::FinderFailure();\n";
+		out.unindent();
+        out << "}\n\n";
+		
+		out << strNamespace_ << "::" << home->managed_component()->name() << "Persistence* pCcmStorageObject = 0;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "pCcmStorageObject = pCcmStorageHome_->find_by_primary_key(pkey);\n";
+		out.unindent();
+		out << "}\ncatch (CosPersistentState::NotFound&)\n{\n";
+		out.indent();
+        out << "NORMAL_ERR (\"Home_servant: unknown key value\");\n";
+        out << "throw Components::UnknownKeyValue();\n";
+		out.unindent();
+        out << "}\n\n";
+		
+		if( !CORBA::is_nil(storagehome_) )
 		{
-			// not supported lifecycle
+			out << strNamespace_ << "::" << storagehome_->managed_storagetype()->name() << "* pPssStorageObject = 0;\n\n";
+			out << "try\n{\n";
+			out.indent();
+			out << "pPssStorageObject = pPssStorageHome_->find_by_primary_key(pkey);\n";
+			out.unindent();
+			out << "}\ncatch (CosPersistentState::NotFound&)\n{\n";
+			out.indent();
+			out << "NORMAL_ERR (\"Home_servant: unknown key value\");\n";
+			out << "throw Components::UnknownKeyValue();\n";
+			out.unindent();
+			out << "}\n\n";
 		}
+
+		out << "#ifdef TAO_ORB\n";
+		out << mapFullNameLocal(home) << "_ptr home_executor = dynamic_cast < ";
+		out << mapFullNameLocal(home) << "_ptr > (home_executor_.in());\n";
+		out << "#else\n";
+		out << mapFullNameLocal(home) << "_var home_executor = ";
+		out << mapFullNameLocal(home) << "::_narrow (home_executor_.in());\n";
+		out << "#endif\n";
+		out << "if (CORBA::is_nil (home_executor))\n{\n";
+		out.indent();
+		out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
+		out << "throw Components::FinderFailure();\n";
+		out.unindent();
+		out << "}\n\n";
+		out << "Components::EnterpriseComponent_var enterprise_component;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "enterprise_component = home_executor->create(pkey);\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (Components::CCMException&)\n{\n";
+		out.indent();
+		out << "NORMAL_ERR (\"Home_servant: cannot create component\");\n";
+		out << "throw Components::FinderFailure();\n";
+		out.unindent();
+		out << "}\n\n";
+		out << "Components::ExecutorLocator_var executor_locator;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "executor_locator = Components::ExecutorLocator::_narrow (enterprise_component);\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException&)\n{\n";
+		out.indent();
+		out << "NORMAL_ERR (\"Home_servant: This container can only handle locator-based implementations\");\n";
+		out << "throw Components::FinderFailure();\n";
+		out.unindent();
+		out << "}\n\n";
+		out << "Components::EntityComponent_var entity_component;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "entity_component = Components::EntityComponent::_narrow (enterprise_component);\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException&)\n{\n";
+		out.indent();
+		out << "throw Components::FinderFailure();\n";
+		out.unindent();
+		out << "}\n\n";
+		out << "// Create a new context\n";
+		out << mapFullNameLocal(home->managed_component()) << "_ContextImpl_var new_context = new ";
+		out << mapFullNameServant(home->managed_component()) << "_Context_callback();\n\n";
+		out << "// Set context on component\n";
+		out << "entity_component->set_entity_context (new_context.in());\n\n";
+		out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
+		out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
+		out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()));\n\n";
+		
+		out << "std::string strTemp = convertPidToString(pCcmStorageObject->get_pid());\n";
+		out << "std::basic_string <char>::size_type idxBegin;\n";
+		out << "static const std::basic_string <char>::size_type npos = -1;\n";
+		out << "idxBegin = strTemp.find(\"@\");\n";
+		out << "if( idxBegin==npos )\n";
+		out << "{\n";
+		out.indent();
+		out << "NORMAL_ERR( \"Invalid pid!\" );\n";
+		out << "throw Components::FinderFailure();\n";
+		out.unindent();
+		out << "}\n";
+		out << "component_instance.uuid_ = strTemp.substr(0, idxBegin);\n\n";
+
+		out << "// register servant factory\n";
+		out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
+		out << mapFullNameServant(home->managed_component()) << "::cleaner_.factory_);\n\n";
+		out << "// Extract our Key out of the object reference\n";
+		out << "DEBUG_OUT (\"Home_servant: create(" << mapFullNamePK(home->primary_key()) << "*" << ") called\");\n\n";
+		out << "#ifdef TAO_ORB\n";
+		out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n";
+		out << "#else\n";
+		out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n";
+		out << "#endif\n";
+		out << "// register all ports\n";
+		out << "CORBA::RepositoryIdSeq streamtypes;\n\n";		
+		out << "new_context->set_ccm_storage_object(pCcmStorageObject);\n";
+		out << "new_context->set_storage_object(pPssStorageObject);\n\n";
+		out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
+		out << "servant = " << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n";
+		for( CORBA::ULong i=0; i<ulLen; i++ )
+		{
+			attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			if( attribute->type_def()->type()->kind()!=CORBA::tk_value )
+			{
+				out << "servant->" << attribute->name() << "(pCcmStorageObject->" << attribute->name() << "());\n";
+			}
+		}
+		out << "\nreturn servant._retn();\n";
+		out.unindent();
+		out << "}\n\n";
+
+		out << "void\n";
+		out << class_name_ << "::remove(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
+		out << "throw(CORBA::SystemException, Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey)\n";
+		out << "{\n";
+		out.indent();
+		out << "if(!pkey)\n";
+		out.indent();
+		out << "throw Components::InvalidKey();\n\n";
+		out.unindent();
+		out << mapFullName(home->managed_component()) << "_var servant;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "Components::CCMObjects_var entity_components = this->get_instances();\n";
+		out << "for( CORBA::ULong i=0; i<entity_components->length(); i++ )\n{\n";
+		out.indent();
+		out << "servant = " << mapFullName(home->managed_component()) << "::_narrow( entity_components.in()[i] );\n";
+		//+++ find the variable name of primary key
+		for( CORBA::ULong i=0; i<ulLen; i++ )
+		{
+			attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			if( attribute->type_def()->type()->kind()==CORBA::tk_value )
+			{
+				IR__::Contained_var contained = IR__::Contained::_narrow(attribute->type_def());
+				if( strcmp(home->primary_key()->name(), contained->name())==0 )
+					break;
+			}
+		}
+		//+++ end of find
+
+		//out << mapFullNamePK(home->primary_key()) << "* pActKey = dynamic_cast <" << mapFullNamePK(servant->primary_key()) << "*> (servant->get_primary_key());\n\n";
+		out << mapFullNamePK(home->primary_key()) << "* pActKey = servant->" << mapName(attribute) << "();\n\n";
+		out << "if( compare_primarykey(pActKey, pkey) )\n";
+		out << "{\n";
+		out.indent();
+		out << "this->remove_component(entity_components.in()[i]);\n";
+		out << "return;\n";
+		out.unindent();
+		out << "}\n";
+		out.unindent();
+		out << "}\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException&)\n{\n";
+		out.indent();
+        out << "NORMAL_ERR (\"Home_servant: Component can not be removed\");\n";
+        out << "throw Components::RemoveFailure();\n";
+		out.unindent();
+        out << "}\n\n";
+		out << "throw Components::UnknownKeyValue();\n";
+		out.unindent();
+		out << "}\n\n";
+
+		out << mapFullNamePK(home->primary_key()) << "*\n";
+		out << class_name_ << "::get_primary_key(" << mapFullName(component_) << "_ptr comp)\n";
+        out << "throw(CORBA::SystemException)\n";
+		out << "{\n";
+		out.indent();
+		out << "Components::PrimaryKeyBase* pkb = comp->get_primary_key();\n";
+		out << "return (dynamic_cast <" << mapFullNamePK(home->primary_key()) << "*> (pkb));\n";
+		out.unindent();
+		out << "}\n\n";
+		
+		break;
+		}
+	default:
+		out << "// not supported lifecycle\n";
 	}
-	out << "try\n{\n";
-	out.indent();
-	switch (lc) {
-		case (CIDL::lc_Session):
-		{
-			out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
-			break;
-		}
-		case (CIDL::lc_Extension) :
-		{
-			out << "extension_component = Components::ExtensionComponent::_narrow (enterprise_component);\n";
-			break;
-		}
-		default:
-		{
-			// not supported lifecycle
-		}
-	}
+
 	out.unindent();
 	out << "}\n";
 	out << "catch (CORBA::SystemException&)\n{\n";
@@ -2055,22 +2633,150 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
    	};	
 
 	out << "// Set context on component\n";
-	switch (lc) {
+
+	if(lc==CIDL::lc_Session)
+	{
+		// create_component_with_config
+		out << "Components::CCMObject_ptr\n";
+		out << class_name_ << "::create_component_with_config(const Components::ConfigValues& config)\n";
+		out << "throw(CORBA::SystemException, Components::CreateFailure)\n{\n";
+		out.indent();
+		out << "DEBUG_OUT (\"Home_servant: create_component_with_config() called\");\n\n";
+		out << "#ifdef TAO_ORB\n";
+		out << mapFullNameLocal(home) << "_ptr home_executor = dynamic_cast < ";
+		out << mapFullNameLocal(home) << "_ptr > (home_executor_.in());\n";
+		out << "#else\n";
+		out << mapFullNameLocal(home) << "_var home_executor = ";
+		out << mapFullNameLocal(home) << "::_narrow (home_executor_.in());\n";
+		out << "#endif\n";
+		out << "if (CORBA::is_nil (home_executor))\n{\n";
+		out.indent();
+		out << "NORMAL_ERR (\"Home_servant: Cannot cast my executor\");\n";
+		out << "throw Components::CreateFailure();\n";
+		out.unindent();
+		out << "}\n\n";
+		out << "Components::EnterpriseComponent_var enterprise_component;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		switch (lc) {
 		case (CIDL::lc_Session):
-		{
-			out << "session_component->set_session_context (new_context.in());\n\n";
+			out << "enterprise_component = home_executor->create();\n";
 			break;
-		}
-		case (CIDL::lc_Extension) :
-		{
-			out << "extension_component->set_extension_context (new_context.in());\n\n";
-			break;
-		}
 		default:
-		{
-			// not supported lifecycle
+			out << "// not supported lifecycle\n";
 		}
+		out.unindent();
+		out << "}\n";
+		out << "catch (Components::CCMException&)\n{\n";
+		out.indent();
+		out << "throw Components::CreateFailure();\n";
+		out.unindent();
+		out << "}\n\n";
+		out << "Components::ExecutorLocator_var executor_locator;\n\n";
+		out << "try\n{\n";
+		out.indent();
+		out << "executor_locator = Components::ExecutorLocator::_narrow (enterprise_component);\n";
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException&)\n{\n";
+		out.indent();
+		out << "NORMAL_ERR (\"Home_servant: This container can only handle locator-based implementations\");\n";
+		out << "throw Components::CreateFailure();\n";
+		out.unindent();
+		out << "}\n\n";
+		switch (lc) {
+		case (CIDL::lc_Session):
+			{
+				out << "Components::SessionComponent_var session_component;\n\n";
+				break;
+			}
+		case (CIDL::lc_Extension) :
+			{
+				out << "Components::ExtensionComponent_var extension_component;\n\n";
+				break;
+			}
+		default:
+			{
+				out << "// not supported lifecycle\n";
+			}
+		}
+		out << "try\n{\n";
+		out.indent();
+		switch (lc) {
+			case (CIDL::lc_Session):
+			{
+				out << "session_component = Components::SessionComponent::_narrow (enterprise_component);\n";
+				break;
+			}
+			case (CIDL::lc_Extension) :
+			{
+				out << "extension_component = Components::ExtensionComponent::_narrow (enterprise_component);\n";
+				break;
+			}
+			default:
+			{
+				out << "// not supported lifecycle\n";
+			}
+		}
+		out.unindent();
+		out << "}\n";
+		out << "catch (CORBA::SystemException&)\n{\n";
+		out.indent();
+		//out << "NORMAL_ERR (\"Home_servant: This is a session container, but created component is not a session component\");\n";
+		out << "throw Components::CreateFailure();\n";
+		out.unindent();
+		out << "}\n\n";
+		out << "// Create a new context\n";
+	    out << mapFullNameLocal(comp) << "_ContextImpl_var new_context = new ";
+	    out << mapFullNameServant(comp) << "_Context_callback();\n\n";
+		if (lc==CIDL::lc_Extension) {
+			out << "// Set container interceptor registration on context\n";
+			out << "new_context -> set_server_interceptor_dispatcher_registration(server_dispatcher_.in());\n";
+			out << "new_context -> set_client_interceptor_dispatcher_registration(client_dispatcher_.in());\n";
+		out << "\n";
+		out << "new_context-> set_contract_data (config);\n\n";
+
+   		};	
+
+		out << "// Set context on component\n";
+		switch (lc) {
+		case (CIDL::lc_Session):
+			{
+				out << "session_component->set_session_context (new_context.in());\n\n";
+				break;
+			}
+		case (CIDL::lc_Extension) :
+			{
+				out << "extension_component->set_extension_context (new_context.in());\n\n";
+				break;
+			}
+		default:
+			{
+				out << "// not supported lifecycle\n";
+			}
+		}
+		out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
+		out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
+		out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()), config);\n\n";
+		out << "// register servant factory\n";
+		out << "servant_registry_->register_servant_factory(component_instance.object_id_, ";
+		out << mapFullNameServant(home->managed_component()) << "::cleaner_.factory_);\n\n";
+		out << "// Extract our Key out of the object reference\n";
+		out << "#ifdef TAO_ORB\n";
+		out << "CORBA::OctetSeq* key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
+		out << "#else\n";
+		out << "CORBA::OctetSeq_var key = Qedo::Key::key_value_from_object_id(component_instance.object_id_);\n\n";
+		out << "#endif\n";
+		out << "// register all ports\n";
+		out << "CORBA::RepositoryIdSeq streamtypes;\n\n";
+		out << "this->finalize_component_incarnation(component_instance.object_id_);\n\n";
+		out << mapFullName(home->managed_component()) << "_var servant = ";
+		out << mapFullName(home->managed_component()) << "::_narrow (component_instance.component_ref());\n\n";
+		out << "return servant._retn();\n";
+		out.unindent();
+		out << "}\n\n\n";
 	}
+
 	out << "// Incarnate our component instance (create reference, register servant factories, ...\n";
 	out << "Qedo::ComponentInstance& component_instance = this->incarnate_component\n";
 	out << "	(executor_locator, dynamic_cast < Qedo::CCMContext* >(new_context.in()), config);\n\n";
@@ -2602,7 +3308,316 @@ GeneratorServantC::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 
 	handleFactory(home);
 	handleFinder(home);
+
+	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	{
+		//++++++++++++++++++++++++++++++++++++++++
+		// SQL CREATE for get_table_info()
+		//++++++++++++++++++++++++++++++++++++++++
+		out << "void\n";
+		out << class_name_ << "::get_table_info(std::map<std::string, std::string>& mTables)\n";
+		out << "{\n";
+		out.indent();
+		out << "std::string strName;\n";
+		out << "std::stringstream sztream;\n\n";
+		genTableForAbsStorageHome();
+		out << "\nstrName = \"" << strNamespace_ + "_" << strAbsHomeName_ << "\";\n";
+		out << "mTables[strName] = sztream.str();\n\n";
+		out << "sztream.str(\"\");\n";
+		genTableForStorageHome(storagehome_);
+		out << "\nstrName = \"" << strNamespace_ + "_" << storagehome_->name() << "\";\n";
+		out << "mTables[strName] = sztream.str();\n\n";
+		out << "sztream.str(\"\");\n";
+		genTableForHome(home);
+		out << "\nstrName = \"" << strNamespace_ + "_" << home->name() << "Persistence\";\n";
+		out << "mTables[strName] = sztream.str();\n";
+		out.unindent();
+		out << "}\n\n";
+
+		//++++++++++++++++++++++++++++++++++++++++
+		// init_datastore(...)
+		//++++++++++++++++++++++++++++++++++++++++
+		out << "void\n";
+		out << class_name_ << "::init_datastore(const Connector_ptr pConn, const Sessio_ptr pSession)\n";
+		out << "{\n";
+		out.indent();
+		
+		out << strNamespace_ << "::" << home->name() << "PersistenceFactory* p" << home->name() << "Fac = new " << strNamespace_ << "::" << home->name() << "PersistenceFactory();\n";
+		out << "pConn->register_storage_home_factory(\"" << strNamespace_ << "_" << home->name() << "Persistence\", p" << home->name() << "Fac);\n";
+		IR__::ComponentDef_var component = home->managed_component();
+		out << strNamespace_ << "::" << component->name() << "PersistenceFactory* p" << component->name() << "Fac = new " << strNamespace_ << "::" << component->name() << "PersistenceFactory();\n";
+		out << "pConn->register_storage_object_factory(\"" << strNamespace_ << "_" << component->name() << "Persistence\", p" << component->name() << "Fac);\n\n";
+		
+		// there is binds_to in composition
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << strNamespace_ << "::" << storagehome_->name() << "Factory* p" << storagehome_->name() << "Fac = new " << strNamespace_ << "::" << storagehome_->name() << "Factory();\n";
+			out << "pConn->register_storage_home_factory(\"" << strNamespace_ << "_" << storagehome_->name() << "\", p" << storagehome_->name() << "Fac);\n";
+			IR__::StorageTypeDef_var storagetype = storagehome_->managed_storagetype();
+			out << strNamespace_ << "::" << storagetype->name() << "Factory* p" << storagetype->name() << "Fac = new " << strNamespace_ << "::" << storagetype->name() << "Factory();\n";
+			out << "pConn->register_storage_object_factory(\"" << strNamespace_ << "_" << storagetype->name() << "\", p" << storagetype->name() << "Fac);\n\n";
+		}
+		
+		out << "StorageHomeBase_var pCcmHomebase = pSession->find_storage_home(\"" << strNamespace_ << "_" << home->name() << "Persistence\");\n";
+		out << "pCcmStorageHome_ = dynamic_cast <" << strNamespace_ << "::" << home->name() << "Persistence*> (pCcmHomebase.in());\n";
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << "StorageHomeBase_var pPssHomebase = pSession->find_storage_home(\"" << strNamespace_ << "_" << storagehome_->name() << "\");\n";
+			out << "pPssStorageHome_ = dynamic_cast <" << strNamespace_ << "::" << storagehome_->name() << "*> (pPssHomebase.in());\n";
+		}
+		out.unindent();
+		out << "}\n\n";
+
+		//++++++++++++++++++++++++++++++++++++++++
+		// compare_primarykey(...)
+		//++++++++++++++++++++++++++++++++++++++++
+		out << "bool\n";
+		out << class_name_ << "::compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b)\n";
+		out << "{\n";
+		out.indent();
+		IR__::PrimaryKeyDef_var pk = home->primary_key();
+		IR__::ValueDef_var value = pk->primary_key();
+		contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+		out << "if( ";
+		for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+		{
+			IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+			
+			switch(psdl_check_type(vMember->type_def()))
+			{
+			case CPPBase::_SHORT:
+			case CPPBase::_INT:
+			case CPPBase::_LONG:
+			case CPPBase::_FLOAT:
+			case CPPBase::_DOUBLE:
+			case CPPBase::_LONGDOUBLE:
+			case CPPBase::_BOOL:
+				out << "(pk_a->" << mapName(vMember) << "()==pk_b->" << mapName(vMember) << "())";
+				break;
+			case CPPBase::_STRING:
+				out << "strcmp(pk_a->" << mapName(vMember) << "(), pk_b->" << mapName(vMember) << "())==0";
+				break;
+			}
+
+			if((j+1)!=contained_seq->length())
+				out << " ||\n    ";
+			else
+				out << " )\n";
+		}
+		out.indent();
+		out << "return true;\n";
+		out.unindent();
+		out << "else\n";
+		out.indent();
+		out << "return false;\n";
+		out.unindent();
+		out.unindent();
+		out << "}\n\n";
+	}
 }
+
+void
+GeneratorServantC::genTableForAbsStorageHome()
+{
+	IR__::InterfaceDefSeq_var supported_infs = storagehome_->supported_interfaces();
+	
+	for( CORBA::ULong i=0; i<supported_infs->length(); i++ )
+	{
+		IR__::AbstractStorageHomeDef_var abs_home = IR__::AbstractStorageHomeDef::_narrow((*supported_infs)[i]);
+		IR__::InterfaceDefSeq_var sub_supported_infs = abs_home->base_abstract_storagehomes();
+		CORBA::ULong ulLenSupportedInf = sub_supported_infs->length();
+
+		IR__::AbstractStorageTypeDef_var abs_type = abs_home->managed_abstract_storagetype();
+		IR__::AttributeDefSeq state_members;
+		abs_type->get_state_members(state_members, CORBA__::dk_Self);
+		CORBA::ULong ulLen = state_members.length();
+		IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
+
+		strAbsHomeName_ = abs_home->name();
+		std::string strName = "sztream";
+		std::string strContent = "CREATE TABLE ";
+		strContent += strNamespace_ + "_";
+		strContent += std::string(abs_home->name());
+		strContent += " (";
+		out << genSQLLine(strName, strContent, true, false, true);
+
+		if(ulLenSupportedInf==0)
+		{
+			strContent = "pid  VARCHAR(254)  NOT NULL  REFERENCES PID_CONTENT";
+			out << genSQLLine(strName, strContent, true, true, true);
+			strContent = "spid  VARCHAR(254)";
+			out << genSQLLine(strName, strContent, true, true, true);
+		}
+
+		for( CORBA::ULong i=0; i<ulLen; i++)
+		{
+			attribute = IR__::AttributeDef::_narrow(state_members[i]);
+			if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+			{
+				std::list<IR__::ValueDef_var>::iterator valuetype_iter;
+				int abc = lValueTypes_.size();
+				for(valuetype_iter = lValueTypes_.begin();
+					valuetype_iter != lValueTypes_.end();
+					valuetype_iter++)
+				{
+					IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+					std::string attr_type_name = map_attribute_type(attribute->type_def());
+					if(attr_type_name.find(mapName(value))!=std::string::npos)
+					{
+						IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+						for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+						{
+							IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+							strContent = "value_";
+							strContent += mapName(vMember);
+							strContent += "  ";
+							strContent.append( map_psdl2sql_type(vMember->type_def()) );
+							bool isComma = ((j+1)!=ulLen) || (ulLenSupportedInf==0);
+							out << genSQLLine(strName, strContent, true, isComma, true);
+						}
+						break;
+					}
+				}
+			}
+			else
+			{
+				strContent = mapName(attribute);
+				strContent += "  ";
+				strContent.append( map_psdl2sql_type(attribute->type_def()) );
+				bool isComma = ((i+1)!=ulLen) || (ulLenSupportedInf==0);
+				out << genSQLLine(strName, strContent, true, isComma, true);	
+			}
+		}
+		
+		if( ulLenSupportedInf>0 )
+		{
+			strContent = ") INHERITS ( ";
+						
+			for(CORBA::ULong j=0; j<ulLenSupportedInf; j++)
+			{
+				strContent.append(strNamespace_ + "_");
+				strContent.append(((*sub_supported_infs)[j])->name());
+				((j+1)!=ulLenSupportedInf) ? strContent += ", " : strContent += " );";
+				out << genSQLLine(strName, strContent, true, false, false);
+				strContent = "";
+			}
+		}
+		else
+		{
+			strContent = "CONSTRAINT PK_";
+			strContent += strNamespace_ + "_";
+			strContent += abs_home->name();
+			strContent += " PRIMARY KEY (pid)";
+			out << genSQLLine(strName, strContent, true, false, true);
+			strContent = ");";
+			out << genSQLLine(strName, strContent, true, false, false);
+		}
+	}
+}
+
+void
+GeneratorServantC::genTableForStorageHome(IR__::StorageHomeDef_ptr storagehome)
+{
+	IR__::StorageHomeDef_var base_storagehome = storagehome->base_storagehome();
+	if(base_storagehome)
+		genTableForStorageHome(base_storagehome);
+
+	IR__::InterfaceDefSeq_var supported_infs = storagehome->supported_interfaces();
+	IR__::StorageTypeDef_var storagetype = storagehome->managed_storagetype();
+	
+	CORBA::ULong ulLenSupportedInf = supported_infs->length();
+	IR__::AttributeDefSeq state_members;
+	storagetype->get_state_members(state_members, CORBA__::dk_Self);
+	CORBA::ULong ulLen = state_members.length();
+	IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
+
+	std::string strName = "sztream";
+	std::string strContent = "CREATE TABLE ";
+	strContent += strNamespace_ + "_";
+	strContent += std::string(storagehome->name());
+	strContent += " (";
+	out << genSQLLine(strName, strContent, true, false, true);
+
+	if(ulLenSupportedInf==0 && CORBA::is_nil(base_storagehome))
+	{
+		strContent = "pid  VARCHAR(254)  NOT NULL  REFERENCES PID_CONTENT";
+		out << genSQLLine(strName, strContent, true, true, true);
+		strContent = "spid  VARCHAR(254)";
+		out << genSQLLine(strName, strContent, true, true, true);
+	}
+
+	for( CORBA::ULong i=0; i<ulLen; i++)
+	{
+		attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		{
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
+			for(valuetype_iter = lValueTypes_.begin();
+				valuetype_iter != lValueTypes_.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				std::string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						strContent = "value_";
+						strContent += mapName(vMember);
+						strContent += "  ";
+						strContent.append( map_psdl2sql_type(vMember->type_def()) );
+						bool isComma = ((j+1)!=ulLen) || (ulLenSupportedInf==0);
+						out << genSQLLine(strName, strContent, true, isComma, true);
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			strContent = mapName(attribute);
+			strContent += "  ";
+			strContent.append( map_psdl2sql_type(attribute->type_def()) );
+			bool isComma = ((i+1)!=ulLen) || (ulLenSupportedInf==0);
+			out << genSQLLine(strName, strContent, true, isComma, true);	
+		}
+	}
+	
+	if( !CORBA::is_nil(base_storagehome) || ulLenSupportedInf>0 )
+	{
+		strContent = ") INHERITS ( ";
+		if(!CORBA::is_nil(base_storagehome))
+		{
+			strContent.append(strNamespace_ + "_");
+			strContent.append(base_storagehome->name());
+			(ulLenSupportedInf>0) ? strContent += ", " : strContent += " );";
+			out << genSQLLine(strName, strContent, true, false, false);
+			strContent = "";
+		}
+		
+		for(CORBA::ULong j=0; j<ulLenSupportedInf; j++)
+		{
+			strContent.append(strNamespace_ + "_");
+			strContent.append(((*supported_infs)[j])->name());
+			((j+1)!=ulLenSupportedInf) ? strContent += ", " : strContent += " );";
+			out << genSQLLine(strName, strContent, true, false, false);
+			strContent = "";
+		}
+	}
+	else
+	{
+		strContent = "CONSTRAINT PK_";
+		strContent += strNamespace_ + "_";
+		strContent += storagehome->name();
+		strContent += " PRIMARY KEY (pid)";
+		out << genSQLLine(strName, strContent, true, false, true);
+		strContent = ");";
+		out << genSQLLine(strName, strContent, true, false, false);
+	}
+}
+
 
 void
 GeneratorServantC::gen_supported_home_interface(IR__::InterfaceDef_ptr interf) 
@@ -2728,5 +3743,157 @@ GeneratorServantC::gen_supported_home_interface(IR__::InterfaceDef_ptr interf)
 			out.unindent();
 			out << "}\n\n\n";
 		}
+}
+
+void
+GeneratorServantC::genTableForHome(IR__::HomeDef_ptr home)
+{
+	IR__::HomeDef_var base_home = home_->base_home();
+	if(base_home)
+		genTableForHome(base_home);
+
+	IR__::ComponentDef_var component = home->managed_component();
+
+	CORBA::ULong i = 0;
+	std::vector<std::string> required;
+	IR__::AttributeDefSeq state_members;
+	component->get_state_members(state_members, CORBA__::dk_Self);
+	CORBA::ULong ulLen = state_members.length();
+	IR__::AttributeDef_var attribute = IR__::AttributeDef::_nil();
+
+	// check whether component has uses, emits or publishes
+	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Uses, false);
+	for( i = 0; i < contained_seq->length(); i++ )
+	{
+		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
+		required.push_back(a_uses->name());
+	}
+	
+	contained_seq = component->contents(CORBA__::dk_Emits, false);
+	for( i = 0; i < contained_seq->length(); i++ )
+	{
+		IR__::EmitsDef_var a_emits = IR__::EmitsDef::_narrow(((*contained_seq)[i]));
+		required.push_back(a_emits->name());
+	}
+
+	contained_seq = component->contents(CORBA__::dk_Publishes, false);
+	for( i = 0; i < contained_seq->length(); i++ )
+	{
+		IR__::PublishesDef_var a_publishes = IR__::PublishesDef::_narrow(((*contained_seq)[i]));
+		required.push_back(a_publishes->name());
+	}
+
+	std::string strName = "sztream";
+	std::string strContent = "CREATE TABLE ";
+	strContent += strNamespace_ + "_";
+	strContent += std::string(home_->name());
+	strContent += "Persistence (";
+	out << genSQLLine(strName, strContent, true, false, true);
+
+	if(CORBA::is_nil(base_home))
+	{
+		strContent = "pid  VARCHAR(254)  NOT NULL  REFERENCES PID_CONTENT";
+		out << genSQLLine(strName, strContent, true, true, true);
+		strContent = "spid  VARCHAR(254)";
+		out << genSQLLine(strName, strContent, true, true, true);
+	}
+
+	for( i=0; i<ulLen; i++ )
+	{
+		attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		if( attribute->type_def()->type()->kind() == CORBA::tk_value )
+		{
+			std::list<IR__::ValueDef_var>::iterator valuetype_iter;
+			for(valuetype_iter = lValueTypes_.begin();
+				valuetype_iter != lValueTypes_.end();
+				valuetype_iter++)
+			{
+				IR__::ValueDef_var value = IR__::ValueDef::_narrow(*valuetype_iter);
+				std::string attr_type_name = map_attribute_type(attribute->type_def());
+				if(attr_type_name.find(mapName(value))!=std::string::npos)
+				{
+					IR__::ContainedSeq_var contained_seq = value->contents(CORBA__::dk_ValueMember, true);
+					for(CORBA::ULong j = 0; j < contained_seq->length(); j++)
+					{
+						IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[j]);
+						strContent = "value_";
+						strContent += mapName(vMember);
+						strContent += "  ";
+						strContent.append( map_psdl2sql_type(vMember->type_def()) );
+						bool isComma = ((j+1)!=ulLen) || (CORBA::is_nil(base_home) || required.size()>0);
+						out << genSQLLine(strName, strContent, true, isComma, true);
+					}
+					break;
+				}
+			}
+		}
+		else
+		{
+			strContent = mapName(attribute);
+			strContent += "  ";
+			strContent.append( map_psdl2sql_type(attribute->type_def()) );
+			bool isComma = ((i+1)!=ulLen) || (CORBA::is_nil(base_home) || required.size()>0);
+			out << genSQLLine(strName, strContent, true, isComma, true);
+		}
+	}
+	
+	// add uses, emits or publishes
+	for( i=0; i<required.size(); i++ )
+	{
+		strContent = required[i];
+		strContent += "  VARCHAR(254)";
+		out << genSQLLine(strName, strContent, true, (i+1!=required.size()), true);
+	}
+	
+	if( !CORBA::is_nil(base_home) )
+	{
+		strContent = ") INHERITS ( ";
+		strContent.append(strNamespace_ + "_");
+		strContent.append(base_home->name());
+		strContent += "Persistence );";
+		out << genSQLLine(strName, strContent, true, false, false);
+	}
+	else
+	{
+		strContent = "CONSTRAINT PK_";
+		strContent += strNamespace_ + "_";
+		strContent += home->name();
+		strContent += "Persistence PRIMARY KEY (pid)";
+		out << genSQLLine(strName, strContent, true, false, true);
+		strContent = ");";
+		out << genSQLLine(strName, strContent, true, false, false);
+	}
+}
+
+std::string
+GeneratorServantC::genSQLLine(std::string strName, std::string strContent, bool end, bool comma, bool space, bool func)
+{
+	std::string strRet = strName;
+
+	strRet += " << ";
+	if(!func) strRet += "\"";
+	strRet += strContent;
+	if(comma) strRet += ",";
+	if(space) strRet += " ";
+	if(!func) strRet += "\"";
+	if(end) strRet += ";\n";
+
+	return strRet;
+}
+
+std::string
+GeneratorServantC::genSQLLine(std::string strContent, bool end, bool comma, bool space, bool func)
+{
+	std::string strRet = "";
+
+	strRet += " << ";
+	if(!func) strRet += "\"";
+	strRet += strContent;
+	if(comma) strRet += ",";
+	if(space) strRet += " ";
+	if(!func) strRet += "\"";
+	if(end) strRet += ";\n";
+
+	return strRet;
 }
 } //

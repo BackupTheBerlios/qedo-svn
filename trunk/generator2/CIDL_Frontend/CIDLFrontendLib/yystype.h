@@ -35,10 +35,10 @@ union YYSTYPE {
     kc::proxy_home_def yt_proxy_home_def;
     kc::home_executor_body yt_home_executor_body;
     kc::home_impl_dcl yt_home_impl_dcl;
-    kc::abstract_storage_home_binding yt_abstract_storage_home_binding;
-    kc::abstract_storage_home_name yt_abstract_storage_home_name;
+    kc::storage_home_binding yt_storage_home_binding;
+    kc::storage_home_name yt_storage_home_name;
     kc::home_persistence_dcl yt_home_persistence_dcl;
-    kc::abstract_storage_home_delegation_spec yt_abstract_storage_home_delegation_spec;
+    kc::storage_home_delegation_spec yt_storage_home_delegation_spec;
     kc::executor_delegation_spec yt_executor_delegation_spec;
     kc::storagehome_header yt_storagehome_header;
     kc::storagetype_header yt_storagetype_header;

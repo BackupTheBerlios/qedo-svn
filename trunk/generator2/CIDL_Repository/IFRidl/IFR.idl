@@ -11,7 +11,7 @@
 /* it under the terms of the GNU General Public License as published by      */
 /* the Free Software Foundation; either version 2 of the License, or         */
 /* (at your option) any later version.                                       */
-/*                                                                           */
+/*                                                                           */ 
 /* Qedo Generator is distributed in the hope that it will be useful,         */
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of            */
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
@@ -60,7 +60,13 @@ module CORBA__ {
 		// the following is the stream extension
 		, dk_StreamType, dk_Sink, dk_Source
 #endif
+		// The following extensions are for PSDL
+		, dk_AbstractStorageType, dk_StorageType
+		, dk_AbstractStorageHome, dk_StorageHome
+		, dk_Key, dk_PSSPrimaryKey
 	};
+
+	enum CollectStyle { dk_default, dk_Create, dk_Variable, dk_Self };
 
 	interface IRObject
 	{
@@ -155,9 +161,15 @@ module IR__ {
 	typedef sequence <FactoryDef> FactoryDefSeq;
 	interface FinderDef;
 	typedef sequence <FinderDef> FinderDefSeq;
+	interface KeyDef;
+	typedef sequence <KeyDef> KeyDefSeq;
 	interface PrimaryKeyDef;
 	typedef sequence <Contained> ContainedSeq;
-	
+	interface AbstractStorageTypeDef;
+	interface AbstractStorageHomeDef;
+	interface StorageTypeDef;
+	interface StorageHomeDef;
+		
 	struct StructMember {
 		Identifier name;
 		CORBA::TypeCode type;
@@ -320,6 +332,35 @@ module IR__ {
 			in ComponentDef managed_component,
 			in InterfaceDefSeq supports_interfaces,
 			in ValueDef primary_key
+		);
+		AbstractStorageTypeDef create_abstract_storagetype(
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in InterfaceDefSeq base_abstract_storagetypes
+		);
+		StorageTypeDef create_storagetype(
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in StorageTypeDef base_storagetype,
+			in InterfaceDefSeq supports_interfaces
+		);
+		AbstractStorageHomeDef create_abstract_storagehome(
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in AbstractStorageTypeDef managed_abstract_storagetype,
+			in InterfaceDefSeq base_abstract_storagehomes
+		);
+		StorageHomeDef create_storagehome(
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in StorageTypeDef managed_storagetype,
+			in StorageHomeDef base_storagehome,
+			in InterfaceDefSeq supports_interfaces,
+			in IDLType primary_key 
 		);
 	};
 	
@@ -540,6 +581,7 @@ module IR__ {
 	typedef sequence <RepositoryId> RepositoryIdSeq;
 	typedef sequence <OperationDescription> OpDescriptionSeq;
 	typedef sequence <AttributeDescription> AttrDescriptionSeq;
+	typedef sequence <AttributeDef> AttributeDefSeq;
 	
 	interface InterfaceDef : Container, Contained, IDLType {
 		// read/write interface
@@ -817,8 +859,12 @@ module IR__ {
 			in StreamTypeDef stream_type,
 			in boolean is_multiple
 		);
+		void get_state_members(
+			inout AttributeDefSeq state_members, 
+			in CORBA__::CollectStyle style
+		);
 	};
-	
+
 
 	struct ComponentDescription {
 		Identifier name;
@@ -856,6 +902,24 @@ module IR__ {
 	};
 	
 	interface FinderDef : OperationDef { // only PARAM_IN parameters
+	};
+
+	interface PSSPrimaryKeyDef : Contained {
+		// read interface
+		boolean is_a (in RepositoryId primary_key_id);
+		readonly attribute IDLType primary_key;
+	};
+	
+	struct PSSPrimaryKeyDescription {
+		Identifier name;
+		RepositoryId id;
+		RepositoryId defined_in;
+		VersionSpec version;
+		IDLType primary_key;
+	};
+
+	// similar to FinderDef
+	interface KeyDef : OperationDef { // only PARAM_IN parameters
 	};
 	
 	interface HomeDef : InterfaceDef {
@@ -904,6 +968,122 @@ module IR__ {
 		OpDescriptionSeq operations;
 		AttrDescriptionSeq attributes;
 		boolean is_basic;
+	};
+
+	interface AbstractStorageTypeDef : InterfaceDef {
+		// can be derived from more than one abstract storage types
+		attribute InterfaceDefSeq base_abstract_storagetypes;
+		void get_state_members(inout AttributeDefSeq state_members, in CORBA__::CollectStyle style);
+	};
+	
+	struct AbstractStorageTypeDescription {
+		Identifier name;
+		RepositoryId id;
+		RepositoryId defined_in;
+		VersionSpec version;
+		RepositoryIdSeq base_abstract_storagetypes;
+		AttrDescriptionSeq attributes;
+		OpDescriptionSeq operations;
+	};
+
+	interface StorageTypeDef : InterfaceDef {
+		readonly attribute StorageTypeDef base_storagetype;
+		attribute InterfaceDefSeq supported_interfaces;
+		void get_state_members(inout AttributeDefSeq state_members, in CORBA__::CollectStyle style);
+	};
+	
+	struct StorageTypeDescription {
+		Identifier name;
+		RepositoryId id;
+		RepositoryId defined_in;
+		VersionSpec version;
+		RepositoryId base_storagetype;
+		RepositoryIdSeq supports_interfaces;
+		AttrDescriptionSeq attributes;
+		OpDescriptionSeq operations;
+	};
+
+	interface AbstractStorageHomeDef : InterfaceDef {
+		// read operations
+		readonly attribute AbstractStorageTypeDef managed_abstract_storagetype;
+		// can be derived from more than one abstract storage homes
+		attribute InterfaceDefSeq base_abstract_storagehomes;
+		readonly attribute FactoryDefSeq factories;
+		readonly attribute KeyDefSeq keys;
+		// write interfaces
+		FactoryDef create_factory (
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in ParDescriptionSeq params, // only PARAM_INs
+			in ExceptionDefSeq exceptions
+		);
+		KeyDef create_key (
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in ParDescriptionSeq params // only PARAM_INs
+			//in ExceptionDefSeq exceptions
+		);
+	};
+	
+	struct AbstractStorageHomeDescription {
+		Identifier name;
+		RepositoryId id;
+		RepositoryId defined_in;
+		VersionSpec version;
+		RepositoryId managed_abstract_storagetype;
+		RepositoryIdSeq base_abstract_storagehomes;
+		AttrDescriptionSeq attributes;
+		OpDescriptionSeq operations;
+		FactoryDefSeq factories;
+		KeyDefSeq keys;
+	};
+
+	interface StorageHomeDef : InterfaceDef {
+		// read operations
+		readonly attribute StorageTypeDef managed_storagetype;
+		readonly attribute StorageHomeDef base_storagehome;
+		attribute InterfaceDefSeq supported_interfaces;
+		readonly attribute PSSPrimaryKeyDef primary_key;
+		readonly attribute FactoryDefSeq factories;
+		readonly attribute KeyDefSeq keys;
+		// write interfaces
+		PSSPrimaryKeyDef create_primary_key (
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in IDLType primary_key
+		);
+		FactoryDef create_factory (
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in ParDescriptionSeq params, // only PARAM_INs
+			in ExceptionDefSeq exceptions
+		);
+		KeyDef create_key (
+			in RepositoryId id,
+			in Identifier name,
+			in VersionSpec version,
+			in ParDescriptionSeq params // only PARAM_INs
+			//in ExceptionDefSeq exceptions
+		);
+	};
+	
+	struct StorageHomeDescription {
+		Identifier name;
+		RepositoryId id;
+		RepositoryId defined_in;
+		VersionSpec version;
+		RepositoryId managed_storagetype;
+		RepositoryId base_storagehome;
+		RepositoryIdSeq supports_interfaces;
+		AttrDescriptionSeq attributes;
+		OpDescriptionSeq operations;
+		PSSPrimaryKeyDef primary_key_def;
+		FactoryDefSeq factories;
+		KeyDefSeq keys;
 	};
 };
 

@@ -28,8 +28,10 @@
 
 #include "CPPBase.h"
 #include "Printer.h"
+#include "GeneratorPersistenceC.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <set>
 
 
@@ -45,12 +47,18 @@ private:
 	std::string					class_name_;
 	std::string					executor_name_;
 	std::string					interface_name_;
+	std::string					strName_;
+	std::string					strAbsHomeName_;
+	std::string					strContent_;
+	std::string					strNamespace_;
 	Printer						out;
+	CIDL::CompositionDef_var	composition_;
 	IR__::ComponentDef_var		component_;
 	IR__::HomeDef_var			home_;
-	std::set<std::string>		m_recursion_set;
-
-	std::string					scope_name_;
+	IR__::StorageHomeDef_var	storagehome_;
+	std::set<std::string>		recursion_set_;
+	std::list<IR__::ValueDef_var>	lValueTypes_;
+	GeneratorPersistenceC*      pc_generator_;
 
 	void check_for_generation(IR__::Contained_ptr item);
 	CORBA::ULong calculate_align (CORBA::ULong, CORBA::ULong);
@@ -95,6 +103,13 @@ private:
 
 	void generate_component(IR__::ComponentDef* a_component );
 
+	// for persistence
+	void genTableForAbsStorageHome();
+	void genTableForStorageHome(IR__::StorageHomeDef_ptr storagehome);
+	void genTableForHome(IR__::HomeDef_ptr home);
+	std::string genSQLLine(std::string strName, std::string strContent, bool end, bool comma, bool space, bool func=false);
+	std::string genSQLLine(std::string strContent, bool end, bool comma, bool space, bool func=false);
+	
 public:
 
 	GeneratorServantC(QEDO_ComponentRepository::CIDLRepository_impl *repository);

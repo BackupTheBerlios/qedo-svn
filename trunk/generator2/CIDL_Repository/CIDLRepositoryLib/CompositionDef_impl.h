@@ -1,7 +1,7 @@
 /*****************************************************************************/
-/* Qedo - Quality of Service Enabled Distributed Objects                     */
+/* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
 /*                                                                           */
-/* Copyright (c) 2002/2003 by the Qedo Team                                  */
+/* Copyright (c) 2002 by the Qedo Team                                       */
 /*                                                                           */
 /* http://qedo.berlios.de                                                    */
 /*                                                                           */
@@ -11,7 +11,7 @@
 /* it under the terms of the GNU General Public License as published by      */
 /* the Free Software Foundation; either version 2 of the License, or         */
 /* (at your option) any later version.                                       */
-/*                                                                           */
+/*                                                                           */ 
 /* Qedo Generator is distributed in the hope that it will be useful,         */
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of            */
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
@@ -45,11 +45,12 @@ class CompositionDef_impl : public virtual POA_CIDL::CompositionDef,
 	HomeDef_impl *home_impl_;
 	HomeExecutorDef_impl *home_executor_impl_;
 	ExecutorDef_impl *executor_impl_;
+	
 public:
 	CompositionDef_impl ( Container_impl *container,
-		            Repository_impl *repository,
-					CIDL::LifecycleCategory lifecycle,
-					HomeDef_impl *home_impl );
+							Repository_impl *repository,
+							CIDL::LifecycleCategory lifecycle,
+							HomeDef_impl *home_impl);
 
 	~CompositionDef_impl();
 
@@ -104,12 +105,13 @@ public:
     virtual CIDL::ExecutorDef_ptr executor_def()
         throw(CORBA::SystemException);
 
-    //
+	//
     // IDL:omg.org/CIDL/CompositionDef/create_home_executor:1.0
     //
     virtual CIDL::HomeExecutorDef_ptr create_home_executor(	const char* id,
 															const char* name,
-															const char* version	)
+															const char* version,
+															IR__::StorageHomeDef_ptr storagehome)
         throw(CORBA::SystemException);
 
     //

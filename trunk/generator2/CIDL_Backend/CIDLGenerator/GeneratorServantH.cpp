@@ -10,7 +10,9 @@ namespace QEDO_CIDL_Generator {
 
 GeneratorServantH::GeneratorServantH
 ( QEDO_ComponentRepository::CIDLRepository_impl *repository)
-: CPPBase(repository)
+: CPPBase(repository),
+  bTempGenerated_(false),
+  ph_generator_(new GeneratorPersistenceH(repository))
 {
 }
 
@@ -39,8 +41,10 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "#ifndef _" << header_name << "_H_\n";
 	out << "#define _" << header_name << "_H_\n\n\n";
 	out << "#include <CORBA.h>\n";
+	out << "#include <sstream>\n";
 	out << "#include \"" << file_prefix_ << "_LOCAL_skel.h\"\n";
 	out << "#include \"SessionContext.h\"\n";
+	out << "#include \"EntityContext.h\"\n";
 	out << "#include \"ExtensionContext.h\"\n";
 	out << "#include \"ServantBase.h\"\n";
 	out << "#ifndef _QEDO_NO_STREAMS\n";
@@ -48,9 +52,13 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "#include \"SinkStreamPortServant.h\"\n";
 	out << "#endif\n";
 	out << "#ifndef _QEDO_NO_QOS\n";
-	out << "#include \"ExtensionHomeServant.h\"\n\n\n";
+	out << "#include \"ExtensionHomeServant.h\"\n";
 	out << "#endif\n";
-	out << "#include \"SessionHomeServant.h\"\n\n\n";
+	out << "#include \"SessionHomeServant.h\"\n";
+	out << "#include \"EntityHomeServant.h\"\n";
+	out << "#include \"" << file_prefix_ << "_PSS.h\"\n";
+	out << "#include \"Connector.h\"\n\n";
+	out << "using namespace Qedo;\n\n";
 
 	//
 	// dynamic library identifier
@@ -64,6 +72,17 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	out << "CORBA::Long get_library_id();\n";
 	out << "}\n\n";
 
+	// parse the namespace name from prefix, disadvantage is 
+	// that will not allow the user to use '_' in his namespace name
+	// a little farfetched ;-(
+	basic_string <char>::size_type idx;
+    static const basic_string <char>::size_type npos = -1;
+	
+	idx = file_prefix_.find("_");
+	if(idx!=npos)
+		strNamespace_ = file_prefix_.substr(0, idx);
+
+
 	doGenerate();
 
 	//
@@ -71,6 +90,10 @@ GeneratorServantH::generate(std::string target, std::string fileprefix)
 	//
 	out << "#endif\n";
 	out.close();
+
+	// generate source code for PSS
+	ph_generator_->generate(target, fileprefix);
+	ph_generator_->destroy();
 }
 	
 
@@ -266,14 +289,16 @@ GeneratorServantH::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// determine the componentDef and HomeDef
 	//
+	composition_ = composition;
 	component_ = composition->ccm_component();
 	IR__::HomeDef_var home = composition->ccm_home();
+	storagehome_ = IR__::StorageHomeDef::_duplicate(composition->home_executor()->binds_to());
 
 	//
 	// determine lifecycle
 	//
 	CIDL::LifecycleCategory lc = composition->lifecycle();
-
+	
 	//
 	// generate home
 	//
@@ -284,6 +309,7 @@ GeneratorServantH::doComposition(CIDL::CompositionDef_ptr composition)
 
 	genHomeServantBegin(home, lc);
 	genHomeServant(home, lc);
+	
 	out.unindent();
 	out << "};\n\n\n";
 
@@ -309,7 +335,7 @@ GeneratorServantH::doComposition(CIDL::CompositionDef_ptr composition)
 
 	genContextServant(component_, lc);
 	genComponentServant(component_, lc);
-
+	
 	close_module(out, component_);
 */
 	this->generate_component(component_.in(),lc);
@@ -538,7 +564,6 @@ GeneratorServantH::genOperation(IR__::OperationDef_ptr operation, IR__::IDLType_
 	out << ");\n";
 	out.unindent();
 }
-
 
 void
 GeneratorServantH::genFacetServants(IR__::ComponentDef_ptr component)
@@ -773,6 +798,7 @@ GeneratorServantH::genComponentServant(IR__::ComponentDef_ptr component, CIDL::L
 	genConsumerServants(component);
 	genComponentServantBody(component,lc);
 	out.unindent();
+	
 	out << "};\n\n\n";
 }
 
@@ -803,7 +829,6 @@ GeneratorServantH::genComponentServantBody(IR__::ComponentDef_ptr component, CID
 	handleSource(component);
 }
 
-
 void
 GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc)
 {
@@ -815,20 +840,25 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component, CIDL::Lif
 	out.indent();
 	out << ": public " << mapFullNameLocal(component) << "_ContextImpl\n";
 	switch (lc) {
-		case (CIDL::lc_Session) :
+	case (CIDL::lc_Session) :
 		{
             out << ", public Qedo::SessionContext\n";
-			break;
-		}
-		case (CIDL::lc_Extension) :
-		{
-			out << ", public Qedo::ExtensionContext\n";
-			break;
-		}
-		default :
-		{
-			// not supported lifecycle
-		}
+		    break;
+        }
+	case (CIDL::lc_Entity) :
+        {
+            out << ", public Qedo::EntityContext\n";
+		    break;
+        }
+	case (CIDL::lc_Extension) :
+        {
+		    out << ", public Qedo::ExtensionContext\n";
+		    break;
+        }
+	default :
+        {
+		    out << "// not supported lifecycle\n";
+        }
 	}
 
 	out.unindent();
@@ -839,7 +869,32 @@ GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component, CIDL::Lif
 	out << "~" << class_name << "();\n";
 
 	genContextServantBody(component);
+
+	if(lc==CIDL::lc_Entity)
+	{
+		out << "\nvoid set_ccm_storage_object( ::CosPersistentState::StorageObjectBase obj );\n";
+		out << "::CosPersistentState::StorageObjectBase get_ccm_storage_object();\n";
+		if( !CORBA::is_nil(storagehome_) )
+		{
+			out << "\nvoid set_storage_object( ::CosPersistentState::StorageObjectBase obj );\n";
+			out << "::CosPersistentState::StorageObjectBase get_storage_object();\n";
+		}
+	}
+	out << "\n";
+
 	out.unindent();
+	
+	out << "private:\n\n";
+	out.indent();
+	if(lc==CIDL::lc_Entity)
+	{
+		out << "::CosPersistentState::StorageObjectBase ccm_obj_;\n";
+		if( !CORBA::is_nil(storagehome_) )
+            out << "::CosPersistentState::StorageObjectBase obj_;\n";
+	}
+	out << "\n";
+	out.unindent();
+
 	out << "};\n\n\n";
 }
 
@@ -949,20 +1004,25 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out.indent();
 	out << ": public " << mapFullNamePOA(home) << "\n";
 	switch (lc) {
-		case (CIDL::lc_Session) :
+	case (CIDL::lc_Session) :
 		{
-			out << ", public Qedo::SessionHomeServant\n";
-			break;
-		}
-		case (CIDL::lc_Extension) :
-		{
-			out << ",public Qedo::ExtensionHomeServant\n";
-			break;
-		}
-		default:
-		{
-			// not supported lifecycle
-		}
+		    out << ", public Qedo::SessionHomeServant\n";
+		    break;
+        }
+	case (CIDL::lc_Entity) :
+        {
+		    out << ", public Qedo::EntityHomeServant\n";
+		    break;
+        }
+	case (CIDL::lc_Extension) :
+        {
+		    out << ",public Qedo::ExtensionHomeServant\n";
+		    break;
+        }
+	default:
+        {
+		    out << "// not supported lifecycle\n";
+        }
 	}
 
 	out.unindent();
@@ -971,13 +1031,38 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 	out.indent();
     out << class_name << "();\n";
     out << "~" << class_name << "();\n\n";
-	out << mapFullName(component_) << "_ptr create()\n"; 
-	out << "	throw(CORBA::SystemException, Components::CreateFailure);\n\n";
-	out << "Components::CCMObject_ptr create_component()\n";
-	out << "	throw(CORBA::SystemException,Components::CreateFailure);\n\n";
-	out << "// COACH extension\n";
-	out << "Components::CCMObject_ptr create_component_with_config(const Components::ConfigValues& config)\n";
-	out << "	throw(CORBA::SystemException, Components::CreateFailure);\n";
+
+	switch (lc) {
+	case (CIDL::lc_Session) :
+		out << mapFullName(component_) << "_ptr create()\n"; 
+		out << "	throw(CORBA::SystemException, Components::CreateFailure);\n\n";
+		out << "Components::CCMObject_ptr create_component()\n";
+		out << "	throw(CORBA::SystemException,Components::CreateFailure);\n\n";
+		break;
+	case (CIDL::lc_Entity) :
+		out << mapFullName(component_) << "_ptr create(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
+		out << "	throw(CORBA::SystemException, Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey);\n\n";
+
+		out << mapFullName(component_) << "_ptr find_by_primary_key(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
+		out << "	throw(CORBA::SystemException, Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
+
+		out << "void remove(" << mapFullNamePK(home->primary_key()) << "* pkey)\n"; 
+		out << "	throw(CORBA::SystemException, Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
+
+		out << mapFullNamePK(home->primary_key()) << "* get_primary_key(" << mapFullName(component_) << "_ptr comp)\n"; 
+		out << "	throw(CORBA::SystemException);\n\n";
+
+		break;
+	default:
+		out << "// not supported lifecycle\n";
+	}
+
+	if(lc==CIDL::lc_Session)
+	{
+		out << "// COACH extension\n";
+		out << "Components::CCMObject_ptr create_component_with_config(const Components::ConfigValues& config)\n";
+		out << "	throw(CORBA::SystemException, Components::CreateFailure);\n";
+	}
 }
 
 
@@ -1006,9 +1091,21 @@ GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		//handleAttribute((*supp_intfs)[i]);
 		//handleOperation((*supp_intfs)[i]);
 	};
-	
+
+	if(lc==CIDL::lc_Entity || lc==CIDL::lc_Process)
+	{
+		out << "\nvoid get_table_info(std::map<std::string, std::string>& mTables);\n\n";
+		out << "void init_datastore(const Connector_ptr pConn, const Sessio_ptr pSession);\n";
+		out.unindent();
+		out << "\nprivate:\n\n";
+		out.indent();
+		out << "bool compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b);\n\n";
+		out << strNamespace_ << "::" << home->name() << "Persistence* pCcmStorageHome_;\n";
+		if( !CORBA::is_nil(storagehome_) ) // there is binds_to
+			out << strNamespace_ << "::" << storagehome_->name() << "* pPssStorageHome_;\n";
+		out << "\n";
+	}
 }
 
 
 } //
-

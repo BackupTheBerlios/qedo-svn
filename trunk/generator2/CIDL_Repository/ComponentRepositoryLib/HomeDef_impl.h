@@ -41,6 +41,7 @@ class HomeDef_impl : public virtual POA_IR__::HomeDef,
 	ComponentDef_impl *managed_component_impl_;
 	vector < InterfaceDef_impl* > supported_interface_impls_;
 	ValueDef_impl *primary_key_impl_;
+	IR__::PrimaryKeyDef_ptr primary_key_;
 public:
 	HomeDef_impl ( Container_impl *container,
 					    Repository_impl *repository,

@@ -925,6 +925,68 @@ throw(CORBA::SystemException)
 	return new_source -> _this();
 }
 
+void
+ComponentDef_impl::get_state_members
+(IR__::AttributeDefSeq& state_members, CORBA__::CollectStyle style)
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "ComponentDef_impl::get_state_members() called" );
+	
+	CORBA::ULong i = 0;
+	if(style==CORBA__::dk_Create)
+	{
+		//collect state members for home's _create operation
+		//++ begin with the base type of the component
+		IR__::ComponentDef_var component = base_component();
+		if(!CORBA::is_nil(component))
+			component->get_state_members(state_members, style);
+		
+		//++ end with the state members defined in the storage type itself
+		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
+		CORBA::ULong len = contained_seq->length();
+		CORBA::ULong ulPre = state_members.length();
+		state_members.length(ulPre+len);
+		for(i=0; i<len; i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+			state_members[i+ulPre] = (a_attribute);
+		}
+	}
+	else if(style==CORBA__::dk_Variable || style==CORBA__::dk_Self)
+	{
+		// the own attributes only
+		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
+		CORBA::ULong len = contained_seq->length();
+		CORBA::ULong ulPre = state_members.length();
+		state_members.length(ulPre+len);
+		for(i=0; i<len; i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+			state_members[i+ulPre] = (a_attribute);
+		}
+	}/*
+	else if(style==CORBA__::dk_default)
+	{
+		//********************************************************************
+		//This default case is to collect state members for comparation with 
+		//the parameters defined in KEY or FACTORY
+		//********************************************************************
+		//collect state members for storagehome's key operation
+		IR__::ContainedSeq_var contained_seq = this->contents(CORBA__::dk_Attribute, false);
+		CORBA::ULong len = contained_seq->length();
+		CORBA::ULong ulPre = state_members.length();
+		state_members.length(ulPre+len);
+		for(i=0; i<len; i++)
+		{
+			IR__::AttributeDef_var a_attribute = IR__::AttributeDef::_narrow(((*contained_seq)[i]));
+			state_members[i+ulPre] = (a_attribute);
+		}
+
+		IR__::StorageTypeDef_var storagetype = base_storagetype();
+		if(!CORBA::is_nil(storagetype))
+			storagetype->get_state_members(state_members, style);
+	}*/
+}
 
 } // namespace QEDO_ComponentRepository
 

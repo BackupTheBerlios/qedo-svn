@@ -30,11 +30,13 @@ namespace QEDO_ComponentRepository {
 
 HomeExecutorDef_impl::HomeExecutorDef_impl
 ( Container_impl *container,
-  Repository_impl *repository )
+  Repository_impl *repository,
+  IR__::StorageHomeDef_ptr binds_to)
 : Contained_impl ( container, repository ),
   IRObject_impl ( repository )
 {
 	DEBUG_OUTLINE ( "HomeExecutorDef_impl::HomeExecutorDef_impl() called" );
+	binds_to_ = binds_to;
 }
 
 HomeExecutorDef_impl::~HomeExecutorDef_impl
@@ -70,10 +72,14 @@ throw(CORBA::SystemException)
 	else
 		home_executor_desc -> defined_in = CORBA::string_dup ( "" );
 
+	home_executor_desc -> binds_to = this -> binds_to();
+	home_executor_desc -> delegations = *(this->delegations());
+	home_executor_desc -> storagehome_delegations = *(this->storagehome_delegations());
+
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
 	CORBA::Any any;
-	any <<= home_executor_desc._retn();;
+	any <<= home_executor_desc._retn();
 	desc -> value = any;
 
 	return desc._retn();
@@ -97,6 +103,44 @@ throw(CORBA::SystemException)
 	DEBUG_OUTLINE ( "HomeExecutorDef_impl::delegations(...) called" );
 
 	delegations_ = seq;
+}
+
+CIDL::StorageHomeDelegationSeq*
+HomeExecutorDef_impl::storagehome_delegations
+()
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "HomeExecutorDef_impl::storagehome_delegations() called" );
+
+	return new CIDL::StorageHomeDelegationSeq ( storagehome_delegations_ );
+}
+
+void
+HomeExecutorDef_impl::storagehome_delegations
+(const CIDL::StorageHomeDelegationSeq& seq)
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "HomeExecutorDef_impl::storagehome_delegations(...) called" );
+
+	storagehome_delegations_ = seq;
+}
+
+IR__::StorageHomeDef_ptr
+HomeExecutorDef_impl::binds_to
+()
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "HomeExecutorDef_impl::binds_to() called" );
+	return binds_to_;
+}
+
+void 
+HomeExecutorDef_impl::binds_to
+(IR__::StorageHomeDef_ptr binds_to)
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "HomeExecutorDef_impl::binds_to(...) called" );
+	binds_to_ = binds_to;
 }
 
 } // namespace QEDO_ComponentRepository

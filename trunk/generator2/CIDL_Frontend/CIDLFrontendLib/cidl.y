@@ -60,7 +60,6 @@
 	TOK_bindsTo
 	TOK_boolean
 	TOK_case
-	TOK_catalog
 	TOK_char
 	TOK_component
 	TOK_composition
@@ -148,7 +147,6 @@
 %type <yt_definition_list>		definition_list
 										storagehome_body
 										storagetype_body
-										catalog_body
 										abstract_storagehome_body
 										abstract_storagetype_body
 										opt_home_exports
@@ -167,8 +165,6 @@
                     segment_member_list
                     feature_delegation_list
 										feature_delegations
-                    catalog_use_dcl_list
-										catalog_use_dcl
 
 
 
@@ -181,8 +177,6 @@
 										except_dcl
 										except_dcl_header
 										interface
-										catalog
-                    catalog_header
 										storagehome
 										storagetype
 										module
@@ -248,7 +242,6 @@
 										storagehome_member
 										abstract_storagetype_member
 										storagetype_member
-										catalog_member
 										key_dcl
 										primary_key_dcl
 										local_op_dcl
@@ -258,7 +251,6 @@
 										psdl_state_dcl
 										store_directive
 										ref_rep_directive
-										provides_dcl_1
 										home_export
 										export
 										attr_spec
@@ -314,7 +306,6 @@
 										home_delegation_spec
                     delegation
                     feature_delegation
-                    catalog_dcl
 					streamtype_decl
 
 
@@ -355,16 +346,13 @@
 
 %type <yt_composition_body>	composition_body
 
-%type <yt_idl_name>				catalog_label
-										operation_name
-										abstract_storage_home_label
+%type <yt_idl_name>				operation_name
+										storage_home_label
 										feature_name
 										storage_member_name
 										enumerator
 
 %type <yt_idl_identifier>		scoped_name
-										catalog_type_spec
-										catalog_name
 										home_type_name
 										storagehome_name 
 										storagehome_inh_spec
@@ -387,8 +375,6 @@
 										abstract_storagetype_inh_spec
 										abstract_storagehome_inh_spec
 										abstract_storagehome_names
-										catalog_inh_spec
-										catalog_names
 										get_excep_expr
 										set_excep_expr
 										exception_list
@@ -401,9 +387,9 @@
 
 %type <yt_home_impl_dcl>		home_impl_dcl
 
-%type <yt_abstract_storage_home_binding> abstract_storage_home_binding
+%type <yt_storage_home_binding> storage_home_binding
 
-%type <yt_abstract_storage_home_name> abstract_storage_home_name
+%type <yt_storage_home_name> storage_home_name
 
 %type <yt_idl_name_list>		identifiers
 										enumerators
@@ -411,7 +397,7 @@
 										operation_list
 									  operation_names
 
-%type <yt_abstract_storage_home_delegation_spec> abstract_storage_home_delegation_spec
+%type <yt_storage_home_delegation_spec> storage_home_delegation_spec
 
 %type <yt_executor_delegation_spec> executor_delegation_spec
 
@@ -478,7 +464,6 @@ definition :
 	| const_dcl ';'
 	| except_dcl ';'
 	| interface ';'
-	| catalog ';'
 	| storagehome ';'
 	| abstract_storagehome ';'
 	| storagetype ';'
@@ -1388,9 +1373,9 @@ factory_dcl :
 	;
 
 factory_dcl_1 :
-	  TOK_factory TOK_identifier factory_parameters 
-	  { $$ = FactoryDcl1($2,$3); }
-  ;
+	  TOK_factory TOK_identifier factory_parameters
+	  { $$ = FactoryDcl1($2,$3); add_name(false,FactoryN(),$2,$$,0); }
+      ;
 
 factory_parameters :
     '(' simple_declarators ')'
@@ -1654,44 +1639,6 @@ key_dcl :
 	  { $$ = KeyDcl($2,Nildeclarators()); add_name(false,KeyN(),$2,$$,0); }
 	;
 
-catalog :
-    catalog_header '{' catalog_body '}'
-    { $$ = fix_definition($1,$3); pop_scope(); }
-	;
-
-/* differs from original grammar! catalog_header is new */
-catalog_header :
-	  TOK_catalog TOK_identifier catalog_inh_spec
-	  { $$ = Catalog($2,$3,Nildefinition_list()); add_catalog($2,$$,$3); }
-	| TOK_catalog TOK_identifier
-	  { $$ = Catalog($2,Nilidl_identifier_list(),Nildefinition_list()); add_catalog($2,$$,0); }
-	;
-
-catalog_inh_spec :
-	  ':' catalog_names
-	  { $$ = $2; }
-	;
-
-catalog_name :
-	  scoped_name;
-
-catalog_body :
-	  /* empty */
-	  { $$ = Nildefinition_list(); }
-	| catalog_member catalog_body
-	  { $$ = Consdefinition_list($1,$2); }
-	;
-
-catalog_member :
-	  provides_dcl_1 ';'
-	| local_op_dcl ';'
-	;
-
-provides_dcl_1 :
-	  TOK_provides abstract_storagehome_name simple_declarator
-	  { $$ = ProvidesDcl1($2,$3); add_provides($3,$$,$2);}
-	;
-
 storagetype :
 	  storagetype_dcl
 	| storagetype_fwd_dcl
@@ -1875,33 +1822,11 @@ category :
 	;
 
 composition_body :
-	  catalog_use_dcl home_executor_def proxy_home_def
-	  { $$ = CompositionBody($1,$2,$3); }
-	| home_executor_def proxy_home_def
-	  { $$ = CompositionBody(Nildefinition_list(),$1,$2); }
-	| catalog_use_dcl home_executor_def
-	  { $$ = CompositionBody($1,$2,NilProxyHomeDef()); }
+	home_executor_def proxy_home_def
+	{ $$ = CompositionBody($1,$2); }
 	| home_executor_def
-	  { $$ = CompositionBody(Nildefinition_list(),$1,NilProxyHomeDef()); }
+	  { $$ = CompositionBody($1,NilProxyHomeDef()); }
 	;
-
-catalog_use_dcl :
-	  TOK_uses TOK_catalog '{' catalog_use_dcl_list '}' ';'
-	  { $$ = $4; }
-	;
-
-catalog_dcl :
-	  catalog_type_spec catalog_label
-     { $$ = CatalogDcl($2,$1); 
-       add_catalog_dcl($2,$$,$1);
-     }
-	;
-
-catalog_type_spec :
-	  scoped_name;
-
-catalog_label :
-	  TOK_identifier;
 
 home_executor_def :
 	  home_executor_header '{' home_executor_body '}' ';'
@@ -1916,70 +1841,70 @@ home_executor_header :
     };
 
 home_executor_body :
-	  home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def abstract_storage_home_delegation_spec executor_delegation_spec abstract_spec
+	  home_impl_dcl storage_home_binding home_persistence_dcl executor_def storage_home_delegation_spec executor_delegation_spec abstract_spec
 	  { $$ = HomeExecutorBody($1,$2,$3,$4,$5,$6,$7); }
-	| home_impl_dcl home_persistence_dcl executor_def abstract_storage_home_delegation_spec executor_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,$4,$5,$6); }
-	| home_impl_dcl abstract_storage_home_binding executor_def abstract_storage_home_delegation_spec executor_delegation_spec abstract_spec
+	| home_impl_dcl home_persistence_dcl executor_def storage_home_delegation_spec executor_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,$4,$5,$6); }
+	| home_impl_dcl storage_home_binding executor_def storage_home_delegation_spec executor_delegation_spec abstract_spec
 	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,$4,$5,NilProxyHomeMember()); }
-	| home_impl_dcl executor_def abstract_storage_home_delegation_spec executor_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,$4,$5); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def executor_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	| home_impl_dcl executor_def storage_home_delegation_spec executor_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,$4,$5); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def executor_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
 	| home_impl_dcl home_persistence_dcl executor_def executor_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,NilAbstractStorageHomeDelegationSpec(),$4,$5); }
-	| home_impl_dcl abstract_storage_home_binding executor_def executor_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilAbstractStorageHomeDelegationSpec(),$4,$5); }
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,NilStorageHomeDelegationSpec(),$4,$5); }
+	| home_impl_dcl storage_home_binding executor_def executor_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilStorageHomeDelegationSpec(),$4,$5); }
 	| home_impl_dcl executor_def executor_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilAbstractStorageHomeDelegationSpec(),$3,$4); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def abstract_storage_home_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilStorageHomeDelegationSpec(),$3,$4); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def storage_home_delegation_spec abstract_spec
 	  { $$ = HomeExecutorBody($1,$2,$3,$4,$5,NilExecutorDelegationSpec(),$6); }
-	| home_impl_dcl home_persistence_dcl executor_def abstract_storage_home_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,$4,NilExecutorDelegationSpec(),$5); }
-	| home_impl_dcl abstract_storage_home_binding executor_def abstract_storage_home_delegation_spec abstract_spec
+	| home_impl_dcl home_persistence_dcl executor_def storage_home_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,$4,NilExecutorDelegationSpec(),$5); }
+	| home_impl_dcl storage_home_binding executor_def storage_home_delegation_spec abstract_spec
 	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,$4,NilExecutorDelegationSpec(),$5); }
-	| home_impl_dcl executor_def abstract_storage_home_delegation_spec abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,NilExecutorDelegationSpec(),$4); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def abstract_spec
-	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$5); }
+	| home_impl_dcl executor_def storage_home_delegation_spec abstract_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,NilExecutorDelegationSpec(),$4); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def abstract_spec
+	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$5); }
 	| home_impl_dcl home_persistence_dcl executor_def abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$4); }
-	| home_impl_dcl abstract_storage_home_binding executor_def abstract_spec
-	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$4); }
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$4); }
+	| home_impl_dcl storage_home_binding executor_def abstract_spec
+	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$4); }
 	| home_impl_dcl executor_def abstract_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$3); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def abstract_storage_home_delegation_spec executor_delegation_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),$3); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def storage_home_delegation_spec executor_delegation_spec
 	  { $$ = HomeExecutorBody($1,$2,$3,$4,$5,$6,NilProxyHomeMember()); }
-	| home_impl_dcl home_persistence_dcl executor_def abstract_storage_home_delegation_spec executor_delegation_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,$4,$5,NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding executor_def abstract_storage_home_delegation_spec executor_delegation_spec
+	| home_impl_dcl home_persistence_dcl executor_def storage_home_delegation_spec executor_delegation_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,$4,$5,NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding executor_def storage_home_delegation_spec executor_delegation_spec
 	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,$4,$5,NilProxyHomeMember()); }
-	| home_impl_dcl executor_def abstract_storage_home_delegation_spec executor_delegation_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,$4,NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def executor_delegation_spec
-	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilAbstractStorageHomeDelegationSpec(),$5,NilProxyHomeMember()); }
+	| home_impl_dcl executor_def storage_home_delegation_spec executor_delegation_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,$4,NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def executor_delegation_spec
+	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilStorageHomeDelegationSpec(),$5,NilProxyHomeMember()); }
 	| home_impl_dcl home_persistence_dcl executor_def executor_delegation_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,NilAbstractStorageHomeDelegationSpec(),$4,NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding executor_def executor_delegation_spec
-	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilAbstractStorageHomeDelegationSpec(),$4,NilProxyHomeMember()); }
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,NilStorageHomeDelegationSpec(),$4,NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding executor_def executor_delegation_spec
+	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilStorageHomeDelegationSpec(),$4,NilProxyHomeMember()); }
 	| home_impl_dcl executor_def executor_delegation_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilAbstractStorageHomeDelegationSpec(),$3,NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def abstract_storage_home_delegation_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilStorageHomeDelegationSpec(),$3,NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def storage_home_delegation_spec
 	  { $$ = HomeExecutorBody($1,$2,$3,$4,$5,NilExecutorDelegationSpec(),NilProxyHomeMember()); }
-	| home_impl_dcl home_persistence_dcl executor_def abstract_storage_home_delegation_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,$4,NilExecutorDelegationSpec(),NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding executor_def abstract_storage_home_delegation_spec
+	| home_impl_dcl home_persistence_dcl executor_def storage_home_delegation_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,$4,NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding executor_def storage_home_delegation_spec
 	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,$4,NilExecutorDelegationSpec(),NilProxyHomeMember()); }
-	| home_impl_dcl executor_def abstract_storage_home_delegation_spec
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,NilExecutorDelegationSpec(),NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding home_persistence_dcl executor_def
-	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	| home_impl_dcl executor_def storage_home_delegation_spec
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,$3,NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding home_persistence_dcl executor_def
+	  { $$ = HomeExecutorBody($1,$2,$3,$4,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
 	| home_impl_dcl home_persistence_dcl executor_def
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),$2,$3,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
-	| home_impl_dcl abstract_storage_home_binding executor_def
-	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),$2,$3,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	| home_impl_dcl storage_home_binding executor_def
+	  { $$ = HomeExecutorBody($1,$2,NilHomePersistenceDcl(),$3,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
 	| home_impl_dcl executor_def
-	  { $$ = HomeExecutorBody($1,NilAbstractStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilAbstractStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
+	  { $$ = HomeExecutorBody($1,NilStorageHomeBinding(),NilHomePersistenceDcl(),$2,NilStorageHomeDelegationSpec(),NilExecutorDelegationSpec(),NilProxyHomeMember()); }
 	;
 
 home_impl_dcl :
@@ -1994,23 +1919,23 @@ home_type_name :
     }
   ;
 
-abstract_storage_home_binding :
-	  TOK_bindsTo abstract_storage_home_name ';'
-	  { $$ = AbstractStorageHomeBinding($2); }
+storage_home_binding :
+	  TOK_bindsTo storage_home_name ';'
+	  { $$ = StorageHomeBinding($2); }
    ;
 
-abstract_storage_home_name :
-	  catalog_label '.' abstract_storage_home_label
-	  { $$ = AbstractStorageHomeName($1,$3); 
-      add_abstract_storage_home_name($1,$3);
+storage_home_name :
+      storage_home_label
+      { $$ = StorageHomeName($1); 
+      add_storage_home_name($1);
     }
 	;
 
-abstract_storage_home_label :
+storage_home_label :
 	  TOK_identifier;
 
 home_persistence_dcl :
-	  TOK_storedOn abstract_storage_home_name ';'
+	  TOK_storedOn storage_home_name ';'
 	  { $$ = HomePersistenceDcl($2);}
 	;
 
@@ -2059,7 +1984,7 @@ segment_member :
 	;
 
 segment_persistence_dcl :
-	  TOK_storedOn abstract_storage_home_name ';'
+	  TOK_storedOn storage_home_name ';'
 	  { $$ = SegmentPersistenceDcl($2); }
 	;
 
@@ -2088,9 +2013,9 @@ feature_delegation :
 feature_name :
 	  TOK_identifier;
 
-abstract_storage_home_delegation_spec :
-	  TOK_delegatesTo TOK_abstract TOK_storagehome delegation_list ';'
-	  { $$ = AbstractStorageHomeDelegationSpec($4); }
+storage_home_delegation_spec :
+	  TOK_delegatesTo TOK_storagehome delegation_list ';'
+	  { $$ = StorageHomeDelegationSpec($3); }
 	;
 
 executor_delegation_spec :
@@ -2274,19 +2199,7 @@ abstract_storagehome_names :
 	  { $$ = Considl_identifier_list($3,$1); }
 	;
 
-catalog_names :
-	  catalog_name
-	  { $$ = Considl_identifier_list($1,Nilidl_identifier_list()); }
-	| catalog_names ',' catalog_name
-	  { $$ = Considl_identifier_list($3,$1); }
-	;
 
-catalog_use_dcl_list :
-	  catalog_dcl
-	  { $$=Consdefinition_list($1,Nildefinition_list()); }
-	| catalog_dcl catalog_use_dcl_list
-	  { $$=Consdefinition_list($1,$2); }
-	;
 
 executor_member_list :
 	  executor_member
@@ -2493,12 +2406,6 @@ proxy_home_members :
 	(1) 	<abstract_storagehome_inh_spec>
 	(3) 	<local_op_dcl>
 	(2) 	<key_dcl>
-	(1) 	<catalog>
-	(1) 	<catalog_inh_spec>
-	(2) 	<catalog_name>
-	(1) 	<catalog_body>
-	(1) 	<catalog_member>
-	(1) 	<provides_dcl_1>
 	(1) 	<storagetype>
 	(1) 	<storagetype_dcl>
 	(1) 	<storagetype_fwd_dcl>
@@ -2524,17 +2431,13 @@ proxy_home_members :
 	(1) 	<composition>
 	(1) 	<category>
 	(1) 	<composition_body>
-	(1) 	<catalog_use_dcl>
-	(1) 	<catalog_dcl>
-	(1) 	<catalog_type_spec>
-	(2) 	<catalog_label>
 	(1) 	<home_executor_def>
 	(1) 	<home_executor_body>
 	(1) 	<home_impl_dcl>
 	(1) 	<home_type_name>
-	(1) 	<abstract_storage_home_binding>
-	(3) 	<abstract_storage_home_name>
-	(1) 	<abstract_storage_home_label>
+	(1) 	<storage_home_binding>
+	(3) 	<storage_home_name>
+	(1) 	<storage_home_label>
 	(1) 	<home_persistence_dcl>
 	(1) 	<executor_def>
 	(1) 	<executor_body>
@@ -2547,7 +2450,7 @@ proxy_home_members :
 	(1) 	<feature_delegation_list>
 	(2) 	<feature_delegation>
 	(1) 	<feature_name>
-	(1) 	<abstract_storage_home_delegation_spec>
+	(1) 	<storage_home_delegation_spec>
 	(1) 	<executor_delegation_spec>
 	(3) 	<delegation_list>
 	(2) 	<delegation>
@@ -2664,7 +2567,6 @@ proxy_home_members :
 	(1) 	service
 	(1) 	session
 	(2) 	uses
-	(2) 	catalog
 	(3) 	implements
 	(1) 	bindsTo
 	(1) 	'.'

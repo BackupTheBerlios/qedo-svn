@@ -194,6 +194,29 @@ CPPBase::mapFullNamePOA(IR__::Contained_ptr obj)
 	return mapFullNameWithPrefix(obj, "POA_");
 }
 
+/*
+ * erease the home name in PK's absolute name
+ */
+std::string
+CPPBase::mapFullNamePK(IR__::Contained_ptr obj)
+{
+	std::string name;
+	name = obj->absolute_name();
+
+	std::string::size_type pos = 0;
+	std::string::size_type begin;
+	std::string::size_type end;
+
+	pos = name.rfind("::", name.length());
+	end = pos;
+	pos -= 2;
+	pos = name.rfind("::", pos);
+	begin = pos + 1;
+
+	name.erase(begin, end-begin+1);
+
+	return name;
+}
 
 std::string 
 CPPBase::mapScopeName
@@ -476,7 +499,6 @@ throw ( CannotMapType )
 	return CORBA::string_dup ( ret_string.c_str() );
 }
 
-
 char*
 CPPBase::map_value_return_type
 ( IR__::IDLType_ptr type )
@@ -569,6 +591,345 @@ throw ( CannotMapType )
 	return CORBA::string_dup ( ret_string.c_str() );
 }
 
+char*
+CPPBase::map_psdl_return_type
+( IR__::IDLType_ptr type, bool isReadOnly )
+throw ( CannotMapType )
+{
+	string ret_string;
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
+
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
+
+	switch ( typecodekind )
+	{
+	case CORBA::tk_void:
+		ret_string = "void";
+		break;
+	case CORBA::tk_short:
+		isReadOnly ? ret_string = "CORBA::Short" : ret_string = "void";
+		break;
+	case CORBA::tk_long:
+		isReadOnly ? ret_string = "CORBA::Long" : ret_string = "void";
+		break;
+	case CORBA::tk_longlong:
+		isReadOnly ? ret_string = "CORBA::LongLong" : ret_string = "void";
+		break;
+	case CORBA::tk_ushort:
+		isReadOnly ? ret_string = "CORBA::UShort" : ret_string = "void";
+		break;
+	case CORBA::tk_ulong:
+		isReadOnly ? ret_string = "CORBA::ULong" : ret_string = "void";
+		break;
+	case CORBA::tk_ulonglong:
+		isReadOnly ? ret_string = "CORBA::ULongLong" : ret_string = "void";
+		break;
+	case CORBA::tk_float:
+		isReadOnly ? ret_string = "CORBA::Float" : ret_string = "void";
+		break;
+	case CORBA::tk_double:
+		isReadOnly ? ret_string = "CORBA::Double" : ret_string = "void";
+		break;
+	case CORBA::tk_longdouble:
+		isReadOnly ? ret_string = "CORBA::LongDouble" : ret_string = "void";
+		break;
+	case CORBA::tk_boolean:
+		isReadOnly ? ret_string = "CORBA::Boolean" : ret_string = "void";
+		break;
+	case CORBA::tk_char:
+		isReadOnly ? ret_string = "CORBA::Char" : ret_string = "void";
+		break;
+	case CORBA::tk_wchar:
+		isReadOnly ? ret_string = "CORBA::WChar" : ret_string = "void";
+		break;
+	case CORBA::tk_any:
+		isReadOnly ? ret_string = "const CORBA::Any*" : ret_string = "void";
+		break;
+	case CORBA::tk_objref:
+		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
+		if(CORBA::is_nil (contained))
+		{
+			ret_string = "CORBA::Object_ptr";
+		}
+		else
+		{
+			ret_string = getAbsoluteName (contained);
+			ret_string.append ("*");
+		}
+		break;
+	case CORBA::tk_native:
+		ret_string = getAbsoluteName (contained);
+		break;
+	case CORBA::tk_string:
+		isReadOnly ? ret_string = "const char*" : ret_string = "void";
+		break;
+	case CORBA::tk_wstring:
+		isReadOnly ? ret_string = "const wchar_t*" : ret_string = "void";
+		break;
+	case CORBA::tk_value:
+		ret_string = getAbsoluteName (contained);
+		ret_string = ret_string + "*";
+		break;
+	case CORBA::tk_struct:
+		ret_string = getAbsoluteName (contained);
+	case CORBA::tk_union:
+		ret_string = getAbsoluteName (contained);
+	case CORBA::tk_enum:
+//		ret_string = "const ";
+		ret_string = getAbsoluteName (contained);
+		ret_string = ret_string + "&";
+		break;
+	case CORBA::tk_sequence:
+		ret_string = getAbsoluteName(contained);
+		ret_string = ret_string + "*";
+		break;
+	default:
+		throw CannotMapType();
+	}
+	return CORBA::string_dup ( ret_string.c_str() );
+}
+
+char*
+CPPBase::map_psdl_parameter_type
+( IR__::IDLType_ptr type, bool isCopyFunc )
+throw ( CannotMapType )
+{
+	string ret_string;
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
+
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
+
+	switch ( typecodekind )
+	{
+	case CORBA::tk_void:
+		ret_string = "void";
+		break;
+	case CORBA::tk_short:
+		isCopyFunc ? ret_string = "const CORBA::Short" : ret_string = "CORBA::Short";
+		break;
+	case CORBA::tk_long:
+		isCopyFunc ? ret_string = "const CORBA::Long" : ret_string = "CORBA::Long";
+		break;
+	case CORBA::tk_longlong:
+		isCopyFunc ? ret_string = "const CORBA::LongLong" : ret_string = "CORBA::LongLong";
+		break;
+	case CORBA::tk_ushort:
+		isCopyFunc ? ret_string = "const CORBA::UShort" : ret_string = "CORBA::UShort";
+		break;
+	case CORBA::tk_ulong:
+		isCopyFunc ? ret_string = "const CORBA::ULong" : ret_string = "CORBA::ULong";
+		break;
+	case CORBA::tk_ulonglong:
+		isCopyFunc ? ret_string = "const CORBA::ULongLong" : ret_string = "CORBA::ULongLong";
+		break;
+	case CORBA::tk_float:
+		isCopyFunc ? ret_string = "const CORBA::Float" : ret_string = "CORBA::Float";
+		break;
+	case CORBA::tk_double:
+		isCopyFunc ? ret_string = "const CORBA::Double" : ret_string = "CORBA::Double";
+		break;
+	case CORBA::tk_longdouble:
+		isCopyFunc ? ret_string = "const CORBA::LongDouble" : ret_string = "CORBA::LongDouble";
+		break;
+	case CORBA::tk_boolean:
+		isCopyFunc ? ret_string = "const CORBA::Boolean" : ret_string = "CORBA::Boolean";
+		break;
+	case CORBA::tk_char:
+		isCopyFunc ? ret_string = "const CORBA::Char" : ret_string = "CORBA::Char";
+		break;
+	case CORBA::tk_wchar:
+		isCopyFunc ? ret_string = "const CORBA::WChar" : ret_string = "CORBA::WChar";
+		break;
+	case CORBA::tk_any:
+		isCopyFunc ? ret_string = "const CORBA::Any*" : ret_string = "CORBA::Any*";
+		break;
+	case CORBA::tk_objref:
+		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
+		if(CORBA::is_nil (contained))
+		{
+			ret_string = "CORBA::Object_ptr";
+		}
+		else
+		{
+			ret_string = getAbsoluteName (contained);
+			ret_string.append ("*");
+		}
+		break;
+	case CORBA::tk_native:
+		ret_string = getAbsoluteName (contained);
+		break;
+	case CORBA::tk_string:
+		isCopyFunc ? ret_string = "const char*" : ret_string = "char*";
+		break;
+	case CORBA::tk_wstring:
+		isCopyFunc ? ret_string = "const wchar_t*" : ret_string = "wchar_t*";
+		break;
+	case CORBA::tk_struct:
+		ret_string = getAbsoluteName (contained);
+	case CORBA::tk_union:
+		ret_string = getAbsoluteName (contained);
+	case CORBA::tk_enum:
+//		ret_string = "const ";
+		ret_string = getAbsoluteName (contained);
+		ret_string = ret_string + "&";
+		break;
+	case CORBA::tk_value:
+		if(isCopyFunc){
+			ret_string = "const ";
+			ret_string += getAbsoluteName(contained);
+			ret_string += "*";
+		} else
+			ret_string = "CosPersistentState::ForUpdate";
+		break;
+	case CORBA::tk_sequence:
+		if(isCopyFunc){
+			ret_string = "const ";
+			ret_string += getAbsoluteName(contained);
+			ret_string += "&";
+		} else
+			ret_string = "CosPersistentState::ForUpdate";
+		break;
+	default:
+		throw CannotMapType();
+	}
+	return CORBA::string_dup ( ret_string.c_str() );
+}
+
+char* 
+CPPBase::map_psdl2sql_type 
+( IR__::IDLType_ptr type )
+throw ( CannotMapType )
+{
+	string ret_string;
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
+
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
+
+	switch ( typecodekind )
+	{
+	case CORBA::tk_short:
+	case CORBA::tk_ushort:
+		ret_string = "SMALLINT";
+		break;
+	case CORBA::tk_long:
+	case CORBA::tk_ulong:
+		ret_string = "INTEGER";
+		break;
+	case CORBA::tk_longlong:
+	case CORBA::tk_ulonglong:
+		ret_string = "BIGINT";
+		break;
+	case CORBA::tk_float:
+		ret_string = "REAL";
+		break;
+	case CORBA::tk_double:
+	case CORBA::tk_longdouble:
+		ret_string = "DOUBLE";
+		break;
+	case CORBA::tk_char:
+		ret_string = "CHAR(1)";
+		break;
+	case CORBA::tk_wchar:
+		ret_string = "CHAR(2)";
+		break;
+	case CORBA::tk_string:
+	case CORBA::tk_wstring:
+		ret_string = "VARCHAR(254)";
+		break;
+	case CORBA::tk_boolean:
+		ret_string = "BOOLEAN";
+		break;
+	case CORBA::tk_octet:
+		ret_string = "BYTEA";
+		break;
+	default:
+		throw CannotMapType();
+	}
+	return CORBA::string_dup ( ret_string.c_str() );
+}
+
+CPPBase::RETTYPE
+CPPBase::psdl_check_type
+(IR__::IDLType_ptr type )
+throw ( CannotMapType )
+{
+	CORBA::TCKind typecodekind;
+	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
+
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var a_type = IR__::IDLType::_duplicate(type);
+	while(typecodekind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(a_type);
+		a_type = alias->original_type_def();
+		typecodekind = a_type->type()->kind();
+	}
+
+	switch ( typecodekind )
+	{
+	case CORBA::tk_short:
+	case CORBA::tk_ushort:
+		return _SHORT;
+	case CORBA::tk_long:
+	case CORBA::tk_ulong:
+		return _INT;
+	case CORBA::tk_longlong:
+	case CORBA::tk_ulonglong:
+		return _LONG;
+	case CORBA::tk_float:
+		return _FLOAT;
+	case CORBA::tk_double:
+		return _DOUBLE;
+	case CORBA::tk_longdouble:
+		return _LONGDOUBLE;
+	case CORBA::tk_char:
+	case CORBA::tk_wchar:
+	case CORBA::tk_string:
+	case CORBA::tk_wstring:
+	case CORBA::tk_octet:
+		return _STRING;
+	case CORBA::tk_boolean:
+		return _BOOL;
+	default:
+		throw CannotMapType();
+	}
+}
 
 char*
 CPPBase::map_idl_type
@@ -672,6 +1033,66 @@ throw ( CannotMapType )
 	return CORBA::string_dup ( ret_string.c_str() );
 }
 
+char*
+CPPBase::map_direct_type
+( IR__::IDLType_ptr type )
+throw ( CannotMapType )
+{
+	string ret_string;
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
+
+	switch ( type -> type() -> kind() )
+	{
+	case CORBA::tk_short:
+		ret_string = "short";
+		break;
+	case CORBA::tk_long:
+		ret_string = "long";
+		break;
+	case CORBA::tk_longlong:
+		ret_string = "longlong";
+		break;
+	case CORBA::tk_ushort:
+		ret_string = "unsigned short";
+		break;
+	case CORBA::tk_ulong:
+		ret_string = "unsigned long";
+		break;
+	case CORBA::tk_ulonglong:
+		ret_string = "unsigned longlong";
+		break;
+	case CORBA::tk_float:
+		ret_string = "float";
+		break;
+	case CORBA::tk_double:
+		ret_string = "double";
+		break;
+	case CORBA::tk_longdouble:
+		ret_string = "long double";
+		break;
+	case CORBA::tk_boolean:
+		ret_string = "boolean";
+		break;
+	case CORBA::tk_octet:
+		ret_string = "octet";
+		break;
+	case CORBA::tk_char:
+		ret_string = "char";
+		break;
+	case CORBA::tk_wchar:
+		ret_string = "wchar";
+		break;
+	case CORBA::tk_string:
+		ret_string = "string";
+		break;
+	case CORBA::tk_wstring:
+		ret_string = "wstring";
+		break;
+	default:
+		throw CannotMapType();
+	}
+	return CORBA::string_dup ( ret_string.c_str() );
+}
 
 char*
 CPPBase::map_attribute_type

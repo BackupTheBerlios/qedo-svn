@@ -4,8 +4,8 @@
 *   Author  : Harald Böhme
 *   e-mail  : boehme@informatik.hu-berlin.de
 *   Remark  : 
-*   $Date: 2004/03/31 15:42:07 $
-*   $Revision: 1.6 $
+*   $Date: 2004/05/13 12:48:31 $
+*   $Revision: 1.7 $
 *   
 *******************************************************************************/
 
@@ -25,7 +25,7 @@
 %}
 
 %{
-static char id[] UNUSED = "$Id: util.k,v 1.6 2004/03/31 15:42:07 boehme Exp $";
+static char id[] UNUSED = "$Id: util.k,v 1.7 2004/05/13 12:48:31 hao Exp $";
 %}
 
 /****************** generic parent, printing *************************/
@@ -146,8 +146,6 @@ extern node_flag                      the_HomeN;
 extern node_flag                      the_ComponentN;
 extern node_flag                      the_InterfaceN;
 extern node_flag                      the_ModuleN;
-extern node_flag                      the_CatalogN;
-extern node_flag                      the_CatalogLabelN;
 extern node_flag                      the_StorageTypeN;
 extern node_flag                      the_StorageHomeN;
 extern node_flag                      the_AbstractStorageTypeN;
@@ -180,8 +178,6 @@ node_flag the_HomeN = HomeN();
 node_flag the_ComponentN = ComponentN();
 node_flag the_InterfaceN = InterfaceN();
 node_flag the_ModuleN = ModuleN();
-node_flag the_CatalogN = CatalogN();
-node_flag the_CatalogLabelN = CatalogLabelN();
 node_flag the_StorageTypeN = StorageTypeN();
 node_flag the_StorageHomeN = StorageHomeN();
 node_flag the_AbstractStorageTypeN = AbstractStorageTypeN();

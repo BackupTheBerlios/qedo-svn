@@ -52,6 +52,7 @@ idl_name_list: list idl_name
 
 idl_identifier_list: list idl_identifier
     ;
+
 /*********************  SPECIFICATION  ************************************/
 
 cidl_specification:
@@ -105,7 +106,6 @@ definition:
     | StorageType( storagetype_header definition_list )
     | StorageTypeFwdDcl( idl_name )
     | StorageTypeRef( flag idl_identifier )
-    | Catalog( idl_name idl_identifier_list definition_list )
     | AbstractStorageHome( abstract_storagehome_header definition_list )
     | AbstractStorageHomeFwdDcl( idl_name )
     | AbstractStorageType( abstract_storagetype_header definition_list )
@@ -156,7 +156,7 @@ definition:
     | Member( definition  declarators )
     | HomeExecutorDef( idl_name home_executor_body )
     | ExecutorDef( idl_name definition_list /* executor_member_list */ )
-	  | SegmentPersistenceDcl( abstract_storage_home_name )
+	  | SegmentPersistenceDcl( storage_home_name )
     | FacetDcl( idl_name_list )
     | FeatureDelegation( idl_name idl_name )
     | SegmentDef( idl_name definition_list /* segment_member_list */ )
@@ -166,7 +166,6 @@ definition:
     | HomeDelegationSpec( definition_list /* delegation_list */ )
     | AbstractSpec( idl_name_list )
     | NilProxyHomeMember()
-	  | CatalogDcl( idl_name idl_identifier )
     ;
 
 
@@ -215,7 +214,7 @@ const_expression_list: list const_expression
     ;
 
 composition_body:
-      CompositionBody( definition_list /* catalog_use_dcl_list */ definition proxy_home_def )
+      CompositionBody( definition proxy_home_def )
     | NilCompositionBody()
     ;
 
@@ -225,9 +224,9 @@ proxy_home_def:
     ;
 
 home_executor_body:
-	     HomeExecutorBody( home_impl_dcl abstract_storage_home_binding 
+	     HomeExecutorBody( home_impl_dcl storage_home_binding 
 		     home_persistence_dcl definition   /* executor_def */
-		     abstract_storage_home_delegation_spec 
+		     storage_home_delegation_spec 
 		     executor_delegation_spec definition /* proxy_home_member */ )
     |  NilHomeExecutorBody()
     ;
@@ -236,23 +235,23 @@ home_impl_dcl:
 	   HomeImplDcl( idl_identifier )
     ;
 
-abstract_storage_home_binding:
-      AbstractStorageHomeBinding( abstract_storage_home_name )
-    | NilAbstractStorageHomeBinding()
+storage_home_binding:
+      StorageHomeBinding( storage_home_name )
+    | NilStorageHomeBinding()
     ;
 
-abstract_storage_home_name:
-      AbstractStorageHomeName( idl_name idl_name )
+storage_home_name:
+      StorageHomeName( idl_name )
     ;
-
+    
 home_persistence_dcl:
-      HomePersistenceDcl( abstract_storage_home_name )
+      HomePersistenceDcl( storage_home_name )
     | NilHomePersistenceDcl()
 	 ;
 
-abstract_storage_home_delegation_spec:
-      NilAbstractStorageHomeDelegationSpec()
-    | AbstractStorageHomeDelegationSpec( definition_list /* delegation_list */ )
+storage_home_delegation_spec:
+      NilStorageHomeDelegationSpec()
+    | StorageHomeDelegationSpec( definition_list /* delegation_list */ )
 	 ;
 
 executor_delegation_spec:

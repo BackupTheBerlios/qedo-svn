@@ -56,12 +56,17 @@ HomeDef_impl::HomeDef_impl ( Container_impl *container,
 	primary_key_impl_ = primary_key_impl;
 	if ( primary_key_impl_ )
 		primary_key_impl_ -> _add_ref();
+
+	primary_key_ = NULL;
 }
 
 HomeDef_impl::~HomeDef_impl
 ()
 {
 	DEBUG_OUTLINE ( "HomeDef_impl::~HomeDef_impl() called" );
+	
+	delete primary_key_;
+	primary_key_ = NULL;
 }
 
 void
@@ -330,7 +335,7 @@ throw(CORBA::SystemException)
 	// be constructed from the primary key value that was passed
 	// during creation?
 
-	return IR__::PrimaryKeyDef::_nil();
+	return primary_key_;
 }
 
 IR__::FactoryDefSeq*
@@ -470,7 +475,9 @@ throw(CORBA::SystemException)
 	repository_ -> _add_ref();
 	this -> _add_ref();
 
-	return new_primary_key -> _this();
+	primary_key_ = new_primary_key -> _this();
+	//return new_primary_key -> _this();
+	return primary_key_;
 }
 
 IR__::FactoryDef_ptr

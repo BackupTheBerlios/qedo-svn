@@ -231,6 +231,15 @@ GeneratorEIDL::check_for_generation(IR__::Contained_ptr item)
 		IR__::ComponentDef_var a_component = a_home->managed_component();
 		this->check_for_generation(a_component);
 
+		//valuetype for Primarykey defined in Home
+		/*
+		IR__::PrimaryKeyDef_var a_pk = a_home->primary_key();
+		if(!CORBA::is_nil(a_pk))
+		{
+			IR__::ValueDef_var a_valuetype = a_pk->primary_key();
+			check_for_generation(a_valuetype);
+		}
+		*/
 		break; }
 	case CORBA__::dk_Component : {
 		IR__::ComponentDef_var a_component = IR__::ComponentDef::_narrow(item);
@@ -640,13 +649,86 @@ GeneratorEIDL::doHome(IR__::HomeDef_ptr home)
 	//
 	// implicit home
 	//
-	out << "//\n// implicit home for " << home->id() << "\n//\n";
-	out << "interface " << home->name() << "Implicit : ::Components::KeylessCCMHome\n";
-	out << "{\n";
-	out.indent();
-	out << map_absolute_name(home->managed_component()) << " create() raises (Components::CreateFailure);\n";
-	out.unindent();
-	out << "};\n\n";
+	IR__::PrimaryKeyDef_ptr pk = home->primary_key();
+
+	if(!CORBA::is_nil(pk))
+	{
+		//"copying" declaration of valuetype defined for primary key into EIDL. 
+		//At the moment this is the better way to handle with it, however, 
+		//it should be improved, for it is possible, that one primary key is
+		//used by several different homes.
+		/*
+		out << "//\n// valuetype for primary key\n//\n";
+		IR__::ValueDef_var act_value = pk->primary_key();
+		out << "valuetype " << act_value->name() << "\n";
+		out.indent();
+		out << ": Components::PrimaryKeyBase\n";
+		IR__::ValueDefSeq_var support_seq = act_value->abstract_base_values();
+		CORBA::ULong len = support_seq->length();
+		for(CORBA::ULong i = 0; i < len; i++)
+		{
+			char* szTemp = ((*support_seq)[i])->name();
+			if(strcmp(szTemp, "PrimaryKeyBase")==0)
+				continue;
+
+			if(i==0)
+				out << ": " << szTemp << "\n";
+			else
+				out << ", " << szTemp << "\n";
+		}
+		out.unindent();
+		out << "{\n";
+
+		//only attributes can be defined in a valuetype which is specially for a primary key
+		IR__::ContainedSeq_var contained_seq = act_value->contents(CORBA__::dk_ValueMember, true);
+		len = contained_seq->length();
+		out.indent();
+		for(i = 0; i < len; i++)
+		{
+			IR__::ValueMemberDef_var vMember = IR__::ValueMemberDef::_narrow((*contained_seq)[i]);
+			(vMember->access()==CORBA__::PUBLIC_MEMBER) ? out << "public " : out << "private ";
+			out << map_idl_type(vMember->type_def()) << " " << vMember->name() << ";\n";
+		}
+		out.unindent();
+		out << "};\n\n";
+		*/
+		out << "//\n// implicit home for " << home->id() << "\n//\n";
+		out << "interface " << home->name() << "Implicit\n";
+		out << "{\n";
+		out.indent();
+		
+		char* szt = pk->name();
+
+		out << map_absolute_name(home->managed_component()) << " create(in " << pk->name() << " key)\n";
+		out.indent();
+		out << "raises (Components::CreateFailure, Components::DuplicateKeyValue, Components::InvalidKey);\n\n";
+		out.unindent();
+
+		out << map_absolute_name(home->managed_component()) << " find_by_primary_key(in " << pk->name() << " key)\n";
+		out.indent();
+		out << "raises (Components::FinderFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
+		out.unindent();
+
+		out << "void remove(in " << pk->name() << " key)\n";
+		out.indent();
+		out << "raises (Components::RemoveFailure, Components::UnknownKeyValue, Components::InvalidKey);\n\n";
+		out.unindent();
+
+		out << pk->name() << " get_primary_key(in " << map_absolute_name(home->managed_component()) << " comp);\n";
+		
+		out.unindent();
+		out << "};\n\n";
+	}
+	else
+	{
+		out << "//\n// implicit home for " << home->id() << "\n//\n";
+		out << "interface " << home->name() << "Implicit : ::Components::KeylessCCMHome\n";
+		out << "{\n";
+		out.indent();
+		out << map_absolute_name(home->managed_component()) << " create() raises (Components::CreateFailure);\n";
+		out.unindent();
+		out << "};\n\n";
+	}
 
 	//
 	// explicit home
@@ -661,6 +743,7 @@ GeneratorEIDL::doHome(IR__::HomeDef_ptr home)
 	else {
 		out << "::Components::CCMHome";
 	}
+
 	// supported interfaces
 	IR__::InterfaceDefSeq_var supp_intfs = home -> supported_interfaces();
 	for(CORBA::ULong i = 0; i < supp_intfs->length(); i++) {
@@ -924,8 +1007,25 @@ GeneratorEIDL::doValue(IR__::ValueDef_ptr value)
 		out << "truncatable ";
 	}
 	
-	out << "valuetype " << value->name();
-	//supports operations ???
+	out << "valuetype " << value->name() << "\n";
+
+	//handle supported interfaces
+	IR__::ValueDefSeq_var support_seq = value->abstract_base_values();
+	CORBA::ULong len = support_seq->length();
+	out.indent();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		char* szTemp = ((*support_seq)[i])->name();
+		
+		(i==0) ? out << ": " : out << ", ";
+
+		if(strcmp(szTemp, "PrimaryKeyBase")==0)
+			out << "Components::PrimaryKeyBase";
+
+		out << "\n";
+	}
+	out.unindent();
+
 	out << " {\n";
 	out.indent();
 

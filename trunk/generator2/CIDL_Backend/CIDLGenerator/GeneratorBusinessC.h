@@ -46,6 +46,7 @@ private:
 	Printer out;
 	bool need_push_;
 	CIDL::CompositionDef_var composition_;
+	IR__::StorageHomeDef_var storagehome_;
 	std::set < std::string > handled_interfaces_;
 
 	void doException(IR__::ExceptionDef_ptr except);

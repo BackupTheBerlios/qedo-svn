@@ -1,7 +1,7 @@
 /*****************************************************************************/
-/* Qedo - Quality of Service Enabled Distributed Objects                     */
+/* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
 /*                                                                           */
-/* Copyright (c) 2002/2003 by the Qedo Team                                  */
+/* Copyright (c) 2002 by the Qedo Team                                       */
 /*                                                                           */
 /* http://qedo.berlios.de                                                    */
 /*                                                                           */
@@ -11,7 +11,7 @@
 /* it under the terms of the GNU General Public License as published by      */
 /* the Free Software Foundation; either version 2 of the License, or         */
 /* (at your option) any later version.                                       */
-/*                                                                           */
+/*                                                                           */ 
 /* Qedo Generator is distributed in the hope that it will be useful,         */
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of            */
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             */
@@ -30,16 +30,21 @@
 #include "CIDL_Extension_skel.h"
 #include "Contained_impl.h"
 #include "Repository_impl.h"
+#include "AbsStorageHomeDef_impl.h"
 
 namespace QEDO_ComponentRepository {
 
 class HomeExecutorDef_impl : public virtual POA_CIDL::HomeExecutorDef,
 							 public virtual Contained_impl
 {
+	IR__::StorageHomeDef_ptr binds_to_;
 	CIDL::DelegationSeq delegations_;
+	CIDL::StorageHomeDelegationSeq storagehome_delegations_;
+
 public:
 	HomeExecutorDef_impl ( Container_impl *container,
-		            Repository_impl *repository );
+							Repository_impl *repository,
+							IR__::StorageHomeDef_ptr binds_to);
 
 	~HomeExecutorDef_impl();
 
@@ -71,9 +76,24 @@ public:
         throw(CORBA::SystemException);
     virtual void delegations(const CIDL::DelegationSeq&)
         throw(CORBA::SystemException);
+
+	//
+    // IDL:omg.org/CIDL/HomeExecutorDef/storagehome_delegations:1.0
+    //
+    virtual CIDL::StorageHomeDelegationSeq* storagehome_delegations()
+		throw(CORBA::SystemException);
+    virtual void storagehome_delegations(const CIDL::StorageHomeDelegationSeq&)
+		throw(CORBA::SystemException);
+
+    //
+    // IDL:omg.org/CIDL/HomeExecutorDef/binds_to:1.0
+    //
+    virtual IR__::StorageHomeDef_ptr binds_to()
+        throw(CORBA::SystemException);
+    virtual void binds_to(IR__::StorageHomeDef_ptr)
+        throw(CORBA::SystemException);
 };
 
 } // namespace QEDO_ComponentRepository
 
 #endif
-

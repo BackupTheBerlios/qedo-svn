@@ -112,7 +112,7 @@ frontend_feed (
   strcpy(global_input_file_name, filename.c_str());
   
   init_symtab();
-  init_lexer(true);
+  init_lexer(true,true);
 
   // defines
   foreach(name_v;idl_name_list options.defines)

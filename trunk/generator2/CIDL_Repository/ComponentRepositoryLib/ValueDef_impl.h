@@ -60,7 +60,7 @@ public:
 	virtual ~ValueDef_impl();
 
 	CORBA::TypeCode_ptr build_recursive_type_code ( vector < Contained_impl* >& seq );
-
+	
     //
     // IDL:omg.org/CORBA__/IRObject/def_kind:1.0
     //
