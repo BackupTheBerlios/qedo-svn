@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.2 2002/11/05 07:35:48 boehme Exp $";
+static char rcsid[] = "$Id: ComponentServerImpl.cpp,v 1.3 2002/11/08 10:30:09 neubauer Exp $";
 
 #include "ComponentServerImpl.h"
 #include "ContainerInterfaceImpl.h"
@@ -139,7 +139,7 @@ ComponentServerImpl::initialize()
 	installer_name.length (3);
 	installer_name[0].id = CORBA::string_dup ("Qedo");
 	installer_name[0].kind = CORBA::string_dup ("");
-	installer_name[1].id = CORBA::string_dup ("Installers");
+	installer_name[1].id = CORBA::string_dup ("ComponentInstallation");
 	installer_name[1].kind = CORBA::string_dup ("");
 	installer_name[2].id = CORBA::string_dup (hostname);
 	installer_name[2].kind = CORBA::string_dup ("");
@@ -230,7 +230,14 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	}
 
 	ContainerType container_type;
+	std::string message;
 
+	if (! container_type_string)
+	{
+		message = "..... no CONTAINER_TYPE specified";
+		DEBUG_OUT (message);
+		throw Components::InvalidConfiguration();
+	}
 	if (! strcmp (container_type_string, "Empty"))
 	{
 		container_type = CT_EMPTY;
@@ -253,11 +260,13 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	}
 	else
 	{
+		message = "..... wrong CONTAINER_TYPE specified";
+		DEBUG_OUT (message);
 		throw Components::InvalidConfiguration();
 	}
 
-	std::string message = "ComponentServerImpl: Create new ContainerInterfaceImpl with container type ";
-	message += container_type_string;
+	message = "ComponentServerImpl: Create new ContainerInterfaceImpl with container type ";
+	message.append(container_type_string);
 	DEBUG_OUT (message);
 
 	container_if = new ContainerInterfaceImpl (orb_, 
