@@ -154,6 +154,7 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="0"
 				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(MICO)\include,$(MICO)\include\windows"
 				PreprocessorDefinitions="WIN32,_DEBUG,_LIB,__STDC__,_WINDOWS"
 				BasicRuntimeChecks="3"
