@@ -65,6 +65,7 @@ GeneratorBase::getNameFromRepId(std::string id)
 
 void
 GeneratorBase::initialize(std::string target, std::string fileprefix)
+    throw (InitializeError)
 {
 	//
 	// check whether Components.idl is in the repository

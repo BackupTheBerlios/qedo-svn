@@ -1,4 +1,4 @@
-# Configuration Debug_orbacus
+# Configuration Debug_orbacus_linux
 ProjectName=CIDLGenerator
 OutDir=./Debug_orbacus_linux
 IntDir=./Debug_orbacus_linux
@@ -17,7 +17,7 @@ CC=$(CXX)
 
 all:  cidl_gend 
 
-cidl_gend : $(IntDir)/CPPBase.o $(IntDir)/GeneratorBIDL.o $(IntDir)/GeneratorBase.o $(IntDir)/GeneratorBusinessC.o $(IntDir)/GeneratorBusinessH.o $(IntDir)/GeneratorCCD.o $(IntDir)/GeneratorEIDL.o $(IntDir)/GeneratorLIDL.o $(IntDir)/GeneratorServantC.o $(IntDir)/GeneratorServantH.o $(IntDir)/GeneratorVC7.o $(IntDir)/IDLBase.o $(IntDir)/Printer.o $(IntDir)/TestMode.o $(IntDir)/main.o 
+cidl_gend : $(IntDir)/CPPBase.o $(IntDir)/GeneratorBIDL.o $(IntDir)/GeneratorBase.o $(IntDir)/GeneratorBusinessC.o $(IntDir)/GeneratorBusinessH.o $(IntDir)/GeneratorCCD.o $(IntDir)/GeneratorCSD.o $(IntDir)/GeneratorEIDL.o $(IntDir)/GeneratorLIDL.o $(IntDir)/GeneratorServantC.o $(IntDir)/GeneratorServantH.o $(IntDir)/GeneratorVC7.o $(IntDir)/IDLBase.o $(IntDir)/Printer.o $(IntDir)/TestMode.o $(IntDir)/main.o 
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 $(IntDir)/CPPBase.o:	CPPBase.cpp
@@ -26,6 +26,7 @@ $(IntDir)/GeneratorBase.o:	GeneratorBase.cpp
 $(IntDir)/GeneratorBusinessC.o:	./GeneratorBusinessC.cpp
 $(IntDir)/GeneratorBusinessH.o:	./GeneratorBusinessH.cpp
 $(IntDir)/GeneratorCCD.o:	./GeneratorCCD.cpp
+$(IntDir)/GeneratorCSD.o:	./GeneratorCSD.cpp
 $(IntDir)/GeneratorEIDL.o:	./GeneratorEIDL.cpp
 $(IntDir)/GeneratorLIDL.o:	./GeneratorLIDL.cpp
 $(IntDir)/GeneratorServantC.o:	./GeneratorServantC.cpp
