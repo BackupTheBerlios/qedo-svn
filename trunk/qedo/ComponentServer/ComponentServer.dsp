@@ -68,7 +68,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../ComponentIDL" /I "../ComponentValuetypes" /I "../ComponentContainer" /I "$(ORBACUS)\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../ComponentIDL" /I "../ComponentValuetypes" /I "../ComponentContainer" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "../ComponentIDL" /I "../ComponentInstaller" /I "../ComponentValuetypes" /I "../ComponentContainer" /I "$(ORBACUS)\include" /I "$(ORBACUS)\include\OB" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
 # ADD RSC /l 0x407 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -147,6 +147,14 @@ SOURCE=.\ComponentServerImpl.cpp
 
 SOURCE=.\main.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\ComponentInstaller\NameServiceBase.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ORBInitializerImpl.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -154,6 +162,10 @@ SOURCE=.\main.cpp
 # Begin Source File
 
 SOURCE=.\ComponentServerImpl.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ORBInitializerImpl.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

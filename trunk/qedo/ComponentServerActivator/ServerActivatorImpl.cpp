@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.5 2003/02/07 12:22:40 tom Exp $";
+static char rcsid[] = "$Id: ServerActivatorImpl.cpp,v 1.6 2003/02/07 14:08:58 tom Exp $";
 
 #include <iostream>
 
@@ -61,12 +61,12 @@ ServerActivatorImpl::initialize()
 	}
 	catch (CORBA::ORB::InvalidName&)
 	{
-		cerr << "ServerActivatorImpl: Fatal error - no root POA available." << endl;
+		std::cerr << "ServerActivatorImpl: Fatal error - no root POA available." << std::endl;
 		throw CannotInitialize();
 	}
 	catch (CORBA::SystemException&)
 	{
-		cerr << "ServerActivatorImpl: Fatal error - cannot narrow root POA." << endl;
+		std::cerr << "ServerActivatorImpl: Fatal error - cannot narrow root POA." << std::endl;
 		throw CannotInitialize();
 	}
 
@@ -84,18 +84,18 @@ ServerActivatorImpl::initialize()
 	}
 	catch (CORBA::ORB::InvalidName&)
 	{
-		cerr << "ServerActivatorImpl: Name Service not found" << endl;
+		std::cerr << "ServerActivatorImpl: Name Service not found" << std::endl;
 		throw CannotInitialize();
 	}
 	catch (CORBA::SystemException&)
 	{
-		cerr << "ServerActivatorImpl: Cannot narrow object reference of Name Service" << endl;
+		std::cerr << "ServerActivatorImpl: Cannot narrow object reference of Name Service" << std::endl;
 		throw CannotInitialize();
 	}
 
 	if (CORBA::is_nil (ns))
 	{
-		cerr << "ServerActivatorImpl: Name Service is nil" << endl;
+		std::cerr << "ServerActivatorImpl: Name Service is nil" << std::endl;
 		throw CannotInitialize();
 	}
 
@@ -114,7 +114,7 @@ ServerActivatorImpl::initialize()
 	}
 	catch (CORBA::SystemException&)
 	{
-		cerr << "ServerActivatorImpl: CORBA system exception during binding context 'Qedo'" << endl;
+		std::cerr << "ServerActivatorImpl: CORBA system exception during binding context 'Qedo'" << std::endl;
 		throw CannotInitialize();
 	}
 
@@ -132,7 +132,7 @@ ServerActivatorImpl::initialize()
 	}
 	catch (CORBA::SystemException&)
 	{
-		cerr << "ServerActivatorImpl: CORBA system exception during binding context 'Activators'" << endl;
+		std::cerr << "ServerActivatorImpl: CORBA system exception during binding context 'Activators'" << std::endl;
 		throw CannotInitialize();
 	}
 
@@ -140,11 +140,11 @@ ServerActivatorImpl::initialize()
 	char hostname[256];
 	if (gethostname (hostname, 256))
 	{
-		cerr << "ServerActivatorImpl: Cannot determine my hostname" << endl;
+		std::cerr << "ServerActivatorImpl: Cannot determine my hostname" << std::endl;
 		throw CannotInitialize();
 	}
 
-	cout << "ServerActivatorImpl: Binding Component Server Activator under Qedo/Activators/" << hostname << endl;
+	std::cout << "ServerActivatorImpl: Binding Component Server Activator under Qedo/Activators/" << hostname << std::endl;
 
 	current_name.length (3);
 	current_name[2].id = CORBA::string_dup (hostname);
@@ -164,23 +164,23 @@ ServerActivatorImpl::initialize()
 		}
 		catch (CosNaming::NamingContext::InvalidName&)
 		{
-			cerr << "ServerActivatorImpl: Name Service complains about an invalid name" << endl;
+			std::cerr << "ServerActivatorImpl: Name Service complains about an invalid name" << std::endl;
 			throw CannotInitialize();
 		}
 		catch (CORBA::SystemException&)
 		{
-			cerr << "ServerActivatorImpl: CORBA system exception in rebind()" << endl;
+			std::cerr << "ServerActivatorImpl: CORBA system exception in rebind()" << std::endl;
 			throw CannotInitialize();
 		}
 	}
 	catch (CosNaming::NamingContext::InvalidName&)
 	{
-		cerr << "ServerActivatorImpl: Name Service complains about an invalid name" << endl;
+		std::cerr << "ServerActivatorImpl: Name Service complains about an invalid name" << std::endl;
 		throw CannotInitialize();
 	}
 	catch (CORBA::SystemException&)
 	{
-		cerr << "ServerActivatorImpl: CORBA system exception during bind()" << endl;
+		std::cerr << "ServerActivatorImpl: CORBA system exception during bind()" << std::endl;
 		throw CannotInitialize();
 	}
 
@@ -191,7 +191,7 @@ ServerActivatorImpl::initialize()
 	    
 	if (event_handle_ == NULL)
 	{
-		cerr << "ServerActivatorImpl: ServerActivatorImpl: Cannot create event object for notify_component_server() operation"<< endl;
+		std::cerr << "ServerActivatorImpl: ServerActivatorImpl: Cannot create event object for notify_component_server() operation"<< std::endl;
 		throw CannotInitialize();
 	}
 #endif
@@ -202,7 +202,7 @@ Components::Deployment::ComponentServer_ptr
 ServerActivatorImpl::create_component_server (const ::Components::ConfigValues& config)
 throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, CORBA::SystemException)
 {
-	cout << "ServerActivatorImpl: create_component_server() called" << endl;
+	std::cout << "ServerActivatorImpl: create_component_server() called" << std::endl;
 
 //#ifdef HAVE_JTC
 //	JTCSynchronized sync(monitor);
@@ -216,7 +216,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	}
 	catch (CORBA::SystemException&)
 	{
-		cerr << "ServerActivatorImpl: Cannot stringify my object reference" << endl;
+		std::cerr << "ServerActivatorImpl: Cannot stringify my object reference" << std::endl;
 		throw Components::CreateFailure();
 	}
 
@@ -236,8 +236,8 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 	if (component_server_pid < 0)
 	{
-		cerr << "ServerActivatorImpl: Cannot spawn Component Server process" << endl;
-		cerr << "ServerActivatorImpl: " << strerror(errno) << endl;
+		std::cerr << "ServerActivatorImpl: Cannot spawn Component Server process" << std::endl;
+		std::cerr << "ServerActivatorImpl: " << strerror(errno) << std::endl;
 		throw Components::CreateFailure();
 	}
 
@@ -317,7 +317,7 @@ void
 ServerActivatorImpl::notify_component_server (Components::Deployment::ComponentServer_ptr server)
 throw (CORBA::SystemException)
 {
-	cout << "ServerActivatorImpl: notify_component_server() called" << endl;
+	std::cout << "ServerActivatorImpl: notify_component_server() called" << std::endl;
 
 //#ifdef HAVE_JTC
 //	JTCSynchronized sync(monitor);
