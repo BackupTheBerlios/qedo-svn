@@ -63,6 +63,33 @@ GeneratorBase::getNameFromRepId(std::string id)
 }
 
 
+/**
+ *
+ */
+std::string 
+GeneratorBase::uuidgen()
+{
+	std::string uuid = "";
+#ifdef _WIN32
+	// create uuid
+	GUID guid;
+	CoCreateGuid(&guid);
+	LPOLESTR lpolestr;
+	StringFromCLSID(guid, &lpolestr);
+	int i = wcstombs(NULL, lpolestr, 0);
+    char *buf = (char *)malloc(i);
+    wcstombs(buf, lpolestr, i);
+	// remove { and }
+	buf[i - 1] = '\0';
+	uuid = buf;
+	uuid.erase(0, 1);
+	free(buf);
+	CoTaskMemFree(lpolestr);
+#endif
+	return uuid;
+}
+
+
 void
 GeneratorBase::initialize(std::string target, std::string fileprefix)
     throw (InitializeError)

@@ -140,7 +140,7 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 	{
 		id.replace(pos, string::npos, ":1.0");
 		module_def = repository_->lookup_id(id.c_str());
-		filename_ = mapAbsoluteName(module_def, "_");
+		filename_ = getAbsoluteName(module_def, "_");
 		filename_.append("_");
 	}
 	

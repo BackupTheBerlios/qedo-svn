@@ -181,7 +181,7 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 			// if type already inherited, skip it
 			if(facet_types.find(facet_type) == facet_types.end())
 			{
-				out << ", " << mapLocalName(provided_seq[ii]->interface_type());
+				out << ", " << getLocalName(provided_seq[ii]->interface_type());
 				facet_types[facet_type] = true;
 			}
 		}
@@ -195,7 +195,7 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 	facet_types.clear();
 	out << "//\n// " << composition->executor_def()->id() << "\n//\n";
 	out << "local interface CCM_" << composition->executor_def()->name() << " : ";
-	out << mapLocalName(composition->ccm_component()) << "_Executor";
+	out << getLocalName(composition->ccm_component()) << "_Executor";
 	
 
 	// inherit from each implemented facet type
@@ -215,7 +215,7 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 				if(!facet_types.empty()) {
 					out << ", ";
 				}
-				out << mapLocalName(provides_seq[i]->interface_type());
+				out << getLocalName(provides_seq[i]->interface_type());
 			}
 		}
 	}
@@ -232,7 +232,7 @@ GeneratorBIDL::doComposition(CIDL::CompositionDef_ptr composition)
 		if(facet_types.find(facet_type) == facet_types.end())
 		{
 			facet_types[facet_type] = true;
-			out << ", " << mapLocalName(consumes_seq[i]->event()) << "Consumer";
+			out << ", " << getLocalName(consumes_seq[i]->event()) << "Consumer";
 		}
 	}
 

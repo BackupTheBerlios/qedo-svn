@@ -222,176 +222,45 @@ throw(CannotMapAbsoluteName)
 }
 
 
+/**
+ * get the absolute name of the contained type with specified delimiter
+ */
 char* 
-CPPBase::map_absolute_name
-( CORBA__::IRObject_ptr type )
-throw ( CannotMapAbsoluteName )
+CPPBase::getAbsoluteName
+(IR__::Contained_ptr type, std::string delim)
+throw (CannotMapAbsoluteName)
 {
-	string ret_string;
-
-	IR__::Contained_var contained;
-
-	try
-	{
-		contained = IR__::Contained::_narrow ( type );
-		if ( CORBA::is_nil ( contained ) ) {
-			throw CannotMapAbsoluteName();
-		}
-
-		ret_string = contained -> absolute_name ();
-	}
-	catch ( /*CORBA::SystemException& */ ...)
-	{
-		throw CannotMapAbsoluteName();
-	}
-	if ( CORBA::is_nil ( contained ) )
-		throw CannotMapAbsoluteName();
-
-	return CORBA::string_dup ( ret_string.c_str() + 2 );
-}
-
-
-char* 
-CPPBase::mapAbsoluteName
-( CORBA__::IRObject_ptr type, string delim )
-throw ( CannotMapAbsoluteName )
-{
-	string ret_string;
-
-	IR__::Contained_var contained;
-
-	try
-	{
-		contained = IR__::Contained::_narrow ( type );
-		ret_string = contained -> absolute_name ();
-	}
-	catch ( CORBA::SystemException& )
-	{
-		throw CannotMapAbsoluteName();
-	}
-	if ( CORBA::is_nil ( contained ) )
-		throw CannotMapAbsoluteName();
-
-	string::size_type index = 0;
-	string::size_type search_begin = 0;
+	std::string name = type->absolute_name ();
+	string::size_type index = name.find("::", 0);
 	while(index < string::npos)
 	{
-		index = ret_string.find("::", search_begin);
-		if(index != string::npos)
-		{
-			ret_string.replace(index, 2, delim);
-		}
+		name.replace(index, 2, delim);
+		index = name.find("::", index + 2);
 	};
 
-	return CORBA::string_dup ( ret_string.c_str() + 1 );
+	return CORBA::string_dup (name.c_str() + delim.size());
 }
 
 
+/**
+ * get the absolute name of the contained type local CCM mapping with specified delimiter
+ */
 char* 
-CPPBase::mapLocalName
-( CORBA__::IRObject_ptr type )
-throw ( CannotMapAbsoluteName )
+CPPBase::getLocalName
+(IR__::Contained_ptr type)
+throw (CannotMapAbsoluteName)
 {
-	string result;
+	std::string name = type->absolute_name();
 
-	IR__::Contained_var contained;
-
-	try	{
-		contained = IR__::Contained::_narrow ( type );
-		result = contained->absolute_name();
-	}
-	catch ( CORBA::SystemException& ) {
-		throw CannotMapAbsoluteName();
-	}
-	if ( CORBA::is_nil ( contained ) ) {
-		throw CannotMapAbsoluteName();
-	}
-
-	string::size_type pos = result.find_last_of(":");
+	string::size_type pos = name.find_last_of(":");
 	if(pos < string::npos) {
-		result.insert(++pos, "CCM_");
+		name.insert(++pos, "CCM_");
 	}
 	else {
-		result.insert(0, "CCM_");
+		name.insert(0, "CCM_");
 	}
 
-	return CORBA::string_dup(result.c_str());
-}
-
-
-char* 
-CPPBase::map_absolute_under_name
-( CORBA__::IRObject_ptr type )
-throw ( CannotMapAbsoluteName )
-{
-	string buf_string;
-	string ret_string;
-
-	IR__::Contained_var contained;
-
-	try
-	{
-		contained = IR__::Contained::_narrow ( type );
-		buf_string = contained -> absolute_name ();
-	}
-	catch ( CORBA::SystemException& )
-	{
-		contained = IR__::Contained::_nil();
-	}
-
-	if ( CORBA::is_nil ( contained ) )
-		throw CannotMapAbsoluteName();
-
-	string::size_type index, search_begin;
-	bool to_search = true;
-	search_begin=0;
-	while(to_search) {
-		index=buf_string.find("::",search_begin);
-		if (index==string::npos) {
-			to_search=false;
-		} else {
-			buf_string.replace(index,2,"_");
-		}
-	};
-	return CORBA::string_dup ( buf_string.c_str() + 1 );
-}
-
-
-char* 
-CPPBase::map_absolute_slash_name
-( CORBA__::IRObject_ptr type )
-throw ( CannotMapAbsoluteName )
-{
-	string buf_string;
-	string ret_string;
-
-	IR__::Contained_var contained;
-
-	try
-	{
-		contained = IR__::Contained::_narrow ( type );
-		buf_string = contained -> absolute_name ();
-	}
-	catch ( CORBA::SystemException& )
-	{
-		contained = IR__::Contained::_nil();
-	}
-
-	if ( CORBA::is_nil ( contained ) )
-		throw CannotMapAbsoluteName();
-
-	string::size_type index, search_begin;
-	bool to_search = true;
-	search_begin=0;
-	while(to_search) {
-		index=buf_string.find("::",search_begin);
-		if (index==string::npos) {
-			to_search=false;
-		} else {
-			buf_string.replace(index,2,"/");
-		}
-	};
-	return CORBA::string_dup ( buf_string.c_str() + 1 );
+	return CORBA::string_dup(name.c_str());
 }
 
 
@@ -401,9 +270,9 @@ CPPBase::map_return_type
 throw ( CannotMapType )
 {
 	string ret_string;
-
 	CORBA::TCKind typecodekind;
 	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
 
 	//
 	// skip typedefs
@@ -465,18 +334,18 @@ throw ( CannotMapType )
 		break;
 	case CORBA::tk_objref:
 		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
-		try
-		{
-			ret_string = map_absolute_name ( type );
-			ret_string = ret_string + "_ptr";
-		}
-		catch ( CannotMapAbsoluteName& )
+		if(CORBA::is_nil (contained))
 		{
 			ret_string = "CORBA::Object_ptr";
 		}
+		else
+		{
+			ret_string = getAbsoluteName (contained);
+			ret_string.append ("_ptr");
+		}
 		break;
 	case CORBA::tk_native:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		break;
 	case CORBA::tk_string:
 		ret_string = "char*";
@@ -485,7 +354,7 @@ throw ( CannotMapType )
 		ret_string = "CORBA::WChar*";
 		break;
 	case CORBA::tk_value:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "*";
 		break;
 	case CORBA::tk_struct:
@@ -493,14 +362,14 @@ throw ( CannotMapType )
 		//checking for fixed or variable length
 		// the check is missing yet
 		// assuming variable length
-		ret_string = map_absolute_name(type);
+		ret_string = getAbsoluteName(contained);
 		ret_string = ret_string + "*";
 		break;
 	case CORBA::tk_enum:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		break;
 	case CORBA::tk_sequence:
-		ret_string = map_absolute_name(type);
+		ret_string = getAbsoluteName(contained);
 		ret_string = ret_string + "*";
 		break;
 	case CORBA::tk_TypeCode :
@@ -519,6 +388,7 @@ CPPBase::map_value_return_type
 throw ( CannotMapType )
 {
 	string ret_string;
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
 
 	switch ( type -> type() -> kind() )
 	{
@@ -566,18 +436,18 @@ throw ( CannotMapType )
 		break;
 	case CORBA::tk_objref:
 		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
-		try
-		{
-			ret_string = map_absolute_name ( type );
-			ret_string = ret_string + "_ptr";
-		}
-		catch ( CannotMapAbsoluteName& )
+		if(CORBA::is_nil (contained))
 		{
 			ret_string = "CORBA::Object_ptr";
 		}
+		else
+		{
+			ret_string = getAbsoluteName (contained);
+			ret_string.append ("_ptr");
+		}
 		break;
 	case CORBA::tk_native:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		break;
 	case CORBA::tk_string:
 		ret_string = "char*";
@@ -586,16 +456,16 @@ throw ( CannotMapType )
 		ret_string = "CORBA::WChar*";
 		break;
 	case CORBA::tk_value:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "*";
 		break;
 	case CORBA::tk_struct:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 	case CORBA::tk_union:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 	case CORBA::tk_enum:
 //		ret_string = "const ";
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "&";
 		break;
 	default:
@@ -611,6 +481,7 @@ CPPBase::map_idl_type
 throw ( CannotMapType )
 {
 	string ret_string;
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
 
 	switch ( type -> type() -> kind() )
 	{
@@ -658,18 +529,18 @@ throw ( CannotMapType )
 		break;
 	case CORBA::tk_objref:
 		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
-		try
-		{
-			ret_string = map_absolute_name ( type );
-			ret_string = ret_string;
-		}
-		catch ( CannotMapAbsoluteName& )
+		if(CORBA::is_nil (contained))
 		{
 			ret_string = "CORBA::Object_ptr";
 		}
+		else
+		{
+			ret_string = getAbsoluteName (contained);
+			ret_string.append ("_ptr");
+		}
 		break;
 	case CORBA::tk_native:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		break;
 	case CORBA::tk_string:
 		ret_string = "string";
@@ -678,13 +549,13 @@ throw ( CannotMapType )
 		ret_string = "CORBA::WChar*";
 		break;
 	case CORBA::tk_value:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "*";
 		break;
 	case CORBA::tk_struct:
 	case CORBA::tk_union:
 	case CORBA::tk_enum:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 	//	ret_string = ret_string + "&";
 		break;
 	default:
@@ -700,9 +571,9 @@ CPPBase::map_attribute_type
 throw ( CannotMapType )
 {
 	string ret_string;
-
 	CORBA::TCKind typecodekind;
 	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
 
 	//
 	// skip typedefs
@@ -761,18 +632,18 @@ throw ( CannotMapType )
 		break;
 	case CORBA::tk_objref:
 		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
-		try
-		{
-			ret_string = map_absolute_name ( type );
-			ret_string = ret_string + "_ptr";
-		}
-		catch ( CannotMapAbsoluteName& )
+		if(CORBA::is_nil (contained))
 		{
 			ret_string = "CORBA::Object_ptr";
 		}
+		else
+		{
+			ret_string = getAbsoluteName (contained);
+			ret_string.append ("_ptr");
+		}
 		break;
 	case CORBA::tk_native:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		break;
 	case CORBA::tk_string:
 		ret_string = "char*";
@@ -781,7 +652,7 @@ throw ( CannotMapType )
 		ret_string = "CORBA::WChar*";
 		break;
 	case CORBA::tk_value:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "_var";
 		break;
 	case CORBA::tk_struct:
@@ -789,14 +660,14 @@ throw ( CannotMapType )
 		//checking for fixed or variable length
 		// the check is missing yet
 		// assuming variable length
-		ret_string = map_absolute_name(type);
+		ret_string = getAbsoluteName(contained);
 		ret_string = ret_string + "_var";
 		break;
 	case CORBA::tk_enum:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		break;
 	case CORBA::tk_sequence:
-		ret_string = map_absolute_name(type);
+		ret_string = getAbsoluteName(contained);
 		ret_string = ret_string + "*";
 		break;
 	case CORBA::tk_TypeCode :
@@ -815,10 +686,10 @@ CPPBase::assign_attribute
 throw ( CannotMapType )
 {
 	string ret_string;
-
 	CORBA::TCKind pre_typecodekind;
 	CORBA::TCKind real_typecodekind;
 	pre_typecodekind=type->type()->kind() ;
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
 
 	if(pre_typecodekind == CORBA::tk_alias) {
 		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(type);
@@ -852,18 +723,18 @@ throw ( CannotMapType )
 		break;
 	case CORBA::tk_objref:
 		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
-		try
-		{
-			ret_string = map_absolute_name ( type );
-			ret_string = ret_string + "::_duplicate(param)";
-		}
-		catch ( CannotMapAbsoluteName& )
+		if(CORBA::is_nil (contained))
 		{
 			ret_string = "CORBA::Object::_duplicate(param)";
 		}
+		else
+		{
+			ret_string = getAbsoluteName (contained);
+			ret_string.append ("::_duplicate(param)");
+		}
 		break;
 	case CORBA::tk_native:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		break;
 	case CORBA::tk_string:
 		ret_string = "CORBA::string_dup(param)";
@@ -880,7 +751,7 @@ throw ( CannotMapType )
 		// the check is missing yet
 		// assuming variable length
 		ret_string = "new ";
-		ret_string = ret_string + map_absolute_name(type);
+		ret_string = ret_string + getAbsoluteName(contained);
 		ret_string = ret_string + "(param)";
 		break;
 	case CORBA::tk_enum:
@@ -891,7 +762,7 @@ throw ( CannotMapType )
 		// the check is missing yet
 		// assuming variable length
 		ret_string = "new ";
-		ret_string = ret_string + map_absolute_name(type);
+		ret_string = ret_string + getAbsoluteName(contained);
 		ret_string = ret_string + "(param)";
 		break;
 	default:
@@ -907,9 +778,9 @@ CPPBase::map_in_parameter_type
 throw ( CannotMapType )
 {
 	string ret_string;
-
 	CORBA::TCKind typecodekind;
 	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
 
 	//
 	// skip typedefs
@@ -971,18 +842,18 @@ throw ( CannotMapType )
 		break;
 	case CORBA::tk_objref:
 		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
-		try
-		{
-			ret_string = map_absolute_name ( type );
-			ret_string = ret_string + "_ptr";
-		}
-		catch ( CannotMapAbsoluteName& )
+		if(CORBA::is_nil (contained))
 		{
 			ret_string = "CORBA::Object_ptr";
 		}
+		else
+		{
+			ret_string = getAbsoluteName (contained);
+			ret_string.append ("_ptr");
+		}
 		break;
 	case CORBA::tk_native:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		break;
 	case CORBA::tk_string:
 		ret_string = "const char*";
@@ -991,21 +862,21 @@ throw ( CannotMapType )
 		ret_string = "const CORBA::WChar*";
 		break;
 	case CORBA::tk_value:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "*";
 		break;
 	case CORBA::tk_struct:
 	case CORBA::tk_union:
 		ret_string="const ";
-		ret_string=ret_string + map_absolute_name(type);
+		ret_string=ret_string + getAbsoluteName(contained);
 		ret_string=ret_string + "&";
 		break;
 	case CORBA::tk_enum:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		break;
 	case CORBA::tk_sequence:
 		ret_string="const ";
-		ret_string=ret_string + map_absolute_name(type);
+		ret_string=ret_string + getAbsoluteName(contained);
 		ret_string=ret_string + "&";
 		break;
 	case CORBA::tk_TypeCode :
@@ -1024,9 +895,9 @@ CPPBase::map_inout_parameter_type
 throw ( CannotMapType )
 {
 	string ret_string;
-
 	CORBA::TCKind typecodekind;
 	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
 
 	//
 	// skip typedefs
@@ -1085,18 +956,18 @@ throw ( CannotMapType )
 		break;
 	case CORBA::tk_objref:
 		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
-		try
-		{
-			ret_string = map_absolute_name ( type );
-			ret_string = ret_string + "_ptr&";
-		}
-		catch ( CannotMapAbsoluteName& )
+		if(CORBA::is_nil (contained))
 		{
 			ret_string = "CORBA::Object_ptr&";
 		}
+		else
+		{
+			ret_string = getAbsoluteName (contained);
+			ret_string.append ("_ptr&");
+		}
 		break;
 	case CORBA::tk_native:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "&";
 		break;
 	case CORBA::tk_string:
@@ -1106,13 +977,13 @@ throw ( CannotMapType )
 		ret_string = "CORBA::WChar*&";
 		break;
 	case CORBA::tk_value:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "*&";
 		break;
 	case CORBA::tk_struct:
 	case CORBA::tk_union:
 	case CORBA::tk_enum:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "&";
 		break;
 	case CORBA::tk_TypeCode :
@@ -1131,9 +1002,9 @@ CPPBase::map_out_parameter_type
 throw ( CannotMapType )
 {
 	string ret_string;
-	
 	CORBA::TCKind typecodekind;
 	typecodekind=type->type()->kind();
+	IR__::Contained_ptr contained = IR__::Contained::_narrow(type);
 
 	//
 	// skip typedefs
@@ -1192,18 +1063,18 @@ throw ( CannotMapType )
 		break;
 	case CORBA::tk_objref:
 		// First test whether we are a Contained, if not we are simply CORBA::Object_ptr
-		try
-		{
-			ret_string = map_absolute_name ( type );
-			ret_string = ret_string + "_out";
-		}
-		catch ( CannotMapAbsoluteName& )
+		if(CORBA::is_nil (contained))
 		{
 			ret_string = "CORBA::Object_out";
 		}
+		else
+		{
+			ret_string = getAbsoluteName (contained);
+			ret_string.append ("_out");
+		}
 		break;
 	case CORBA::tk_native:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "&";
 		break;
 	case CORBA::tk_string:
@@ -1213,17 +1084,17 @@ throw ( CannotMapType )
 		ret_string = "CORBA::WString_out";
 		break;
 	case CORBA::tk_value:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "_out";
 		break;
 	case CORBA::tk_struct:
 	case CORBA::tk_union:
 	case CORBA::tk_enum:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "_out";
 		break;
 	case CORBA::tk_sequence:
-		ret_string = map_absolute_name ( type );
+		ret_string = getAbsoluteName (contained);
 		ret_string = ret_string + "_out";
 		break;
 	case CORBA::tk_TypeCode :

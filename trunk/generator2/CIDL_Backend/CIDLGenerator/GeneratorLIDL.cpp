@@ -253,7 +253,7 @@ GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 	IR__::ComponentDef_var base = component->base_component();
 	if(!CORBA::is_nil(base))
 	{
-		out << mapLocalName(base) << "_Executor";
+		out << getLocalName(base) << "_Executor";
 	}
 	else
 	{
@@ -288,7 +288,7 @@ GeneratorLIDL::doComponent(IR__::ComponentDef_ptr component)
 	// base component
 	if(!CORBA::is_nil(base))
 	{
-		out << mapLocalName(base) << "_Context";
+		out << getLocalName(base) << "_Context";
 	}
 	else
 	{
@@ -329,7 +329,7 @@ GeneratorLIDL::doHome(IR__::HomeDef_ptr home)
 	IR__::HomeDef_var base = home->base_home();
 	if(base)
 	{
-		out << mapLocalName(base);
+		out << getLocalName(base);
 	}
 	else
 	{

@@ -313,12 +313,12 @@ GeneratorBusinessH::doSource(IR__::SourceDef_ptr source)
 	IR__::Contained::Description* c_descr = st_def->describe(); 
 	IR__::StreamTypeDescription* st_descr;
 	(c_descr->value) >>= st_descr;
-	if (!strcmp("simple::h323_stream", map_absolute_name(st_def))) {
+	if (!strcmp("simple::h323_stream", getAbsoluteName(st_def))) {
 		out << "virtual CCMStream::h323Stream_ptr ";
 		out /*<< map_absolute_under_name(component_def)*/  << "_provide_" << source->name() << "()\n";
 		out << "    throw (CORBA::SystemException);\n\n";
 	}
-	if (!strcmp("Components::CCMStream::QoSRealStream", map_absolute_name(st_def))) {
+	if (!strcmp("Components::CCMStream::QoSRealStream", getAbsoluteName(st_def))) {
 		out << "virtual CCMStream::QoSRealStream_ptr ";
 		out /*<< map_absolute_under_name(component_def)*/  << "_provide_" << source->name() << "()\n";
 		out << "    throw (CORBA::SystemException);\n\n";
@@ -334,12 +334,12 @@ GeneratorBusinessH::doSink(IR__::SinkDef_ptr sink)
 	IR__::Contained::Description* c_descr = st_def->describe(); 
 	IR__::StreamTypeDescription* st_descr;
 	(c_descr->value) >>= st_descr;
-	if (!strcmp("simple::h323_stream", map_absolute_name(st_def))) {
+	if (!strcmp("simple::h323_stream", getAbsoluteName(st_def))) {
 		hserv << "virtual void " << endl;
 		hserv << map_absolute_under_name(component_def)  << "_connect_" << (*act_sinks)[sink_n]->name();
 		hserv << "( CCMStream::h323Stream_ptr str) = 0;" << endl;
 	}
-	if (!strcmp("Components::CCMStream::QoSRealStream", map_absolute_name(st_def))) {
+	if (!strcmp("Components::CCMStream::QoSRealStream", getAbsoluteName(st_def))) {
 		hserv << "virtual void " << endl;
 		hserv << map_absolute_under_name(component_def)  << "_connect_" << (*act_sinks)[sink_n]->name();
 		hserv << "( CCMStream::QoSRealStream_ptr str) = 0;" << endl;
@@ -354,7 +354,7 @@ GeneratorBusinessH::doSiSo(IR__::SiSoDef_ptr siso)
 	IR__::Contained::Description* c_descr = st_def->describe(); 
 	IR__::StreamTypeDescription* st_descr;
 	(c_descr->value) >>= st_descr;
-	if (!strcmp("simple::h323_stream", map_absolute_name(st_def))) {
+	if (!strcmp("simple::h323_stream", getAbsoluteName(st_def))) {
 		hserv << "virtual CCMStream::h323Stream_ptr" << endl;
 		hserv << map_absolute_under_name(component_def)  << "_provide_" << (*act_sisos)[siso_n]->name();
 		hserv << "() = 0;" << endl;
@@ -364,7 +364,7 @@ GeneratorBusinessH::doSiSo(IR__::SiSoDef_ptr siso)
 		hserv << "( CCMStream::h323Stream_ptr str) = 0;" << endl;
 
 	}
-	if (!strcmp("Components::CCMStream::QoSRealStream", map_absolute_name(st_def))) {
+	if (!strcmp("Components::CCMStream::QoSRealStream", getAbsoluteName(st_def))) {
 		hserv << "virtual CCMStream::QoSRealStream_ptr" << endl;
 		hserv << map_absolute_under_name(component_def)  << "_provide_" << (*act_sisos)[siso_n]->name();
 		hserv << "() = 0;" << endl;
@@ -410,6 +410,9 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	composition_ = CIDL::CompositionDef::_duplicate(composition);
 	filename_ = "";
 
+	//
+	// determine whether defined in module (needed for namespace opening and closing)
+	//
 	IR__::Contained_ptr module_def = 0;
 	string id = composition->id();
 	string::size_type pos = id.find_last_of("/");
@@ -417,7 +420,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	{
 		id.replace(pos, string::npos, ":1.0");
 		module_def = repository_->lookup_id(id.c_str());
-		filename_ = mapAbsoluteName(module_def, "_");
+		filename_ = getAbsoluteName(module_def, "_");
 		filename_.append("_");
 	}
 	filename_.append(composition->name());
@@ -588,7 +591,7 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "class " << home_class_name << "\n";
 	out.indent();
 	out << ": public virtual CORBA::LocalObject\n";
-	out << ", public virtual " << mapLocalName(composition->ccm_home()) << "\n";
+	out << ", public virtual " << getLocalName(composition->ccm_home()) << "\n";
 	out.insertUserSection(std::string("INHERITANCE_") + home_name, 0);
 	out.unindent();
 	out << "{\n\n";

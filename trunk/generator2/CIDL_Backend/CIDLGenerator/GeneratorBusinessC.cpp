@@ -58,7 +58,7 @@ GeneratorBusinessC::doValue(IR__::ValueDef_ptr value)
 	out << "CORBA::ValueBase *\n";
 	out << value->name() << "_factory::create_for_unmarshal ()\n{\n";
 	out.indent();
-	out << "return new " << map_absolute_under_name(value) << "_impl;\n";
+	out << "return new " << getAbsoluteName(value, "_") << "_impl;\n";
 	out.unindent();
 	out << "}\n\n\n";
 }
@@ -389,7 +389,7 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	{
 		id.replace(pos, string::npos, ":1.0");
 		module_def = repository_->lookup_id(id.c_str());
-		filename_ = mapAbsoluteName(module_def, "_");
+		filename_ = getAbsoluteName(module_def, "_");
 		filename_.append("_");
 	}
 	filename_.append(composition->name());

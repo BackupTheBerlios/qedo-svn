@@ -550,7 +550,7 @@ GeneratorServantC::doInterface(IR__::InterfaceDef_ptr intf)
 void
 GeneratorServantC::doComponent(IR__::ComponentDef_ptr component)
 {
-	/*std::string header_name = std::string(mapAbsoluteName(component, "_")) + "_SERVANT";
+	/*std::string header_name = std::string(getAbsoluteName(component, "_")) + "_SERVANT";
 	std::string filename = header_name + ".cpp";
 	out.open(filename.c_str());
 
@@ -842,7 +842,7 @@ void
 GeneratorServantC::doHome(IR__::HomeDef_ptr home)
 {
 	component_ = IR__::ComponentDef::_duplicate(home->managed_component());
-	/*std::string header_name = std::string(mapAbsoluteName(home, "_")) + "_SERVANT";
+	/*std::string header_name = std::string(getAbsoluteName(home, "_")) + "_SERVANT";
 	std::string filename = header_name + ".cpp";
 	out.open(filename.c_str());
 

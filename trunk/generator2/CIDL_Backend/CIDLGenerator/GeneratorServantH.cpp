@@ -435,7 +435,7 @@ GeneratorServantH::doHome(IR__::HomeDef_ptr home)
 	//
 	out << "\n//\n// entry point\n//\n";
 	out << "extern \"C\" {\n";
-	out << "#ifdef WIN32\n";
+	out << "#ifdef _WIN32\n";
 	out << "__declspec(dllexport)\n";
 	out << "#else\n";
 	out << "#endif\n";

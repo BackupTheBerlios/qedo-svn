@@ -31,6 +31,8 @@ protected:
 
 	std::string getNameFromRepId(std::string id);
 
+	std::string uuidgen();
+
 	// exceptions
 	class InitializeError {};
 

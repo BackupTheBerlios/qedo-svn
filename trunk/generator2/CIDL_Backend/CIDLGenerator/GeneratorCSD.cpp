@@ -118,7 +118,7 @@ GeneratorCSD::generate(std::string target, std::string fileprefix)
 	try { initialize(target, fileprefix); }
 	catch (InitializeError) { return; }
 
-	idlfilename_ = file_prefix_ + "_EQUIVALENT.idl";
+	idlfilename_ = file_prefix_ + ".idl";
 
 	doGenerate();
 }
@@ -133,27 +133,13 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// obtain uuid for the implementation
 	//
-	std::string uuid_string = "";
+	std::string uuid_string = uuidgen();
 	std::string os = "linux";
 	std::string processor = "";
 	std::string compiler = "";
 	std::string compiler_version = "";
 
 #ifdef _WIN32
-	// create uuid
-	GUID guid;
-	CoCreateGuid(&guid);
-	LPOLESTR lpolestr;
-	StringFromCLSID(guid, &lpolestr);
-	int i = wcstombs(NULL, lpolestr, 0);
-    char *buf = (char *)malloc(i);
-    wcstombs(buf, lpolestr, i);
-	// remove { and }
-	buf[i - 1] = '\0';
-	uuid_string = buf;
-	uuid_string.erase(0, 1);
-	free(buf);
-	CoTaskMemFree(lpolestr);
 	os = "WIN";
 	processor = "x86";
 	compiler = "VC++";
@@ -171,7 +157,7 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
 	{
 		id.replace(pos, string::npos, ":1.0");
 		module_def = repository_->lookup_id(id.c_str());
-		name = mapAbsoluteName(module_def, "_");
+		name = getAbsoluteName(module_def, "_");
 		name.append("_");
 	}
 	name.append(composition->name());
@@ -216,7 +202,7 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
     out << "</descriptor>\n";
     out << "<code type=\"DLL\">\n";
 	out.indent();
-    out << "<fileinarchive name=\"" << name << "_EXECUTOR.dll\"/>\n";
+    out << "<fileinarchive name=\"" << name << ".dll\"/>\n";
     out << "<entrypoint>create_" << composition->ccm_home()->name() << "E</entrypoint>\n";
 	out << "<usage>executor</usage>\n";
 	out.unindent();

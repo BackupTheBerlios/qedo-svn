@@ -32,19 +32,10 @@ protected:
 	std::string mapFullNameServant(IR__::Contained_ptr obj);
 	std::string mapFullNamePOA(IR__::Contained_ptr obj);
 
-	char* map_absolute_name ( CORBA__::IRObject_ptr contained )
+	char* getAbsoluteName (IR__::Contained_ptr contained, std::string delim = "::")
 		throw ( CannotMapAbsoluteName );
 
-	char* mapAbsoluteName ( CORBA__::IRObject_ptr contained, string delim )
-		throw ( CannotMapAbsoluteName );
-
-	char* mapLocalName ( CORBA__::IRObject_ptr contained )
-		throw ( CannotMapAbsoluteName );
-
-	char* map_absolute_under_name ( CORBA__::IRObject_ptr type )
-		throw ( CannotMapAbsoluteName );
-
-	char* map_absolute_slash_name ( CORBA__::IRObject_ptr type )
+	char* getLocalName (IR__::Contained_ptr contained)
 		throw ( CannotMapAbsoluteName );
 
 	std::string mapScopeName(IR__::Contained_ptr type)

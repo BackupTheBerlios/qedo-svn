@@ -286,7 +286,7 @@ IDLBase::map_absolute_name
 
 
 char* 
-IDLBase::mapLocalName
+IDLBase::getLocalName
 ( CORBA__::IRObject_ptr type )
 {
 	string result;

@@ -32,7 +32,7 @@ protected:
 
 	char* map_absolute_name ( CORBA__::IRObject_ptr contained );
 	char* map_idl_type ( IR__::IDLType_ptr type );
-	char* mapLocalName ( CORBA__::IRObject_ptr contained );
+	char* getLocalName ( CORBA__::IRObject_ptr contained );
 
 public:
 

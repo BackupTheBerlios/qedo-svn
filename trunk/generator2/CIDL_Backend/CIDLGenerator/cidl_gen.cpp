@@ -41,7 +41,7 @@ printUsage()
 	std::cerr << "        --business : generate business code skeletons" << std::endl;
 	std::cerr << "        --servant : generate servant code" << std::endl;
 	std::cerr << "        --out <fileprefix> : idl files will be prefixed with fileprefix" << std::endl;
-	std::cerr << "		  --vc7 : generate VC7 projects" << std::endl;
+	std::cerr << "        --vc7 : generate VC7 projects" << std::endl;
 }
 
 
