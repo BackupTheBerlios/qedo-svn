@@ -20,11 +20,12 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: qcsa.cpp,v 1.8 2003/07/25 13:57:12 tom Exp $";
+static char rcsid[] = "$Id: qcsa.cpp,v 1.9 2003/07/31 21:25:10 tom Exp $";
 
 #include "ServerActivatorImpl.h"
 #include <iostream>
 #include <cstring>
+#include "version.h"
 
 /**
  * addtogroup ServerActivator
@@ -38,7 +39,7 @@ static char rcsid[] = "$Id: qcsa.cpp,v 1.8 2003/07/25 13:57:12 tom Exp $";
 int
 main (int argc, char** argv)
 {
-	std::cout << "Qedo Component Server Activator" << std::endl;
+	std::cout << "Qedo Component Server Activator " << QEDO_VERSION << std::endl;
 
 	// Check for debug mode and enable-qos mode
 	bool debug_mode = false;

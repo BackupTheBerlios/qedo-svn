@@ -27,8 +27,9 @@
 #include <CosNaming.h>
 #endif
 #include <iostream>
+#include "version.h"
 
-static char rcsid[] UNUSED = "$Id: ci.cpp,v 1.14 2003/07/25 12:29:28 tom Exp $";
+static char rcsid[] UNUSED = "$Id: ci.cpp,v 1.15 2003/07/31 21:25:10 tom Exp $";
 
 
 /**
@@ -51,7 +52,7 @@ std::string g_qedo_dir;
 int
 main (int argc, char** argv)
 {
-	std::cout << "Qedo Component Installer" << std::endl;
+	std::cout << "Qedo Component Installer " << QEDO_VERSION << std::endl;
 
 #ifdef _WIN32
 	TCHAR tchBuffer[256];

@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: cs.cpp,v 1.11 2003/07/25 13:57:12 tom Exp $";
+static char rcsid[] = "$Id: cs.cpp,v 1.12 2003/07/31 21:25:10 tom Exp $";
 
 #include "ComponentServerImpl.h"
 #include "Synchronisation.h"
@@ -28,6 +28,7 @@ static char rcsid[] = "$Id: cs.cpp,v 1.11 2003/07/25 13:57:12 tom Exp $";
 #include "Output.h"
 #include <cstring>
 #include <string>
+#include "version.h"
 
 
 /**
@@ -54,7 +55,7 @@ usage (const char* prog_name)
 int
 main (int argc, char** argv)
 {
-	NORMAL_OUT ("Qedo Component Server");
+	NORMAL_OUT2 ("Qedo Component Server ", QEDO_VERSION);
 
 	// Check for --debug switch and check and read object reference of Component Server Activator
 	bool debug_mode = false;

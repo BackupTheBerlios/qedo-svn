@@ -536,6 +536,9 @@ copy $(TargetPath) $(QEDO)\bin
 			<File
 				RelativePath="Valuetypes.h">
 			</File>
+			<File
+				RelativePath="version.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

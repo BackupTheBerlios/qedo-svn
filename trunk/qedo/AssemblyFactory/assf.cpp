@@ -20,11 +20,11 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: assf.cpp,v 1.8 2003/07/25 12:29:28 tom Exp $";
+static char rcsid[] = "$Id: assf.cpp,v 1.9 2003/07/31 21:25:10 tom Exp $";
 
 #include "AssemblyFactory.h"
 #include "Output.h"
-
+#include "version.h"
 
 /**
  * @addtogroup Assembly
@@ -46,7 +46,7 @@ std::string g_qedo_dir;
 int
 main (int argc, char** argv)
 {
-	std::cout << "Qedo Assembly Factory" << std::endl;
+	std::cout << "Qedo Assembly Factory " << QEDO_VERSION << std::endl;
 
 	// get the qedo dir
 #ifdef _WIN32

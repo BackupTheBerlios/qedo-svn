@@ -24,8 +24,9 @@
 #include "Output.h"
 #include <cstring>
 #include <string>
+#include "version.h"
 
-static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.5 2003/07/25 12:29:28 tom Exp $";
+static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.6 2003/07/31 21:25:10 tom Exp $";
 
 
 /**
@@ -40,7 +41,7 @@ static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.5 2003/07/25 12:29:28 tom 
 int
 main (int argc, char** argv)
 {
-	std::cout << "Qedo Home Finder" << std::endl;
+	std::cout << "Qedo Home Finder " << QEDO_VERSION << std::endl;
 
 	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
 
