@@ -23,6 +23,7 @@
 
 #include "AssemblyFactory.h"
 #include "qedoutil.h"
+#include "ConfigurationReader.h"
 #include "DOMXMLParser.h"
 #include <fstream>
 #include <xercesc/util/XMLURL.hpp>
@@ -38,7 +39,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.17 2003/10/23 09:44:47 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.18 2003/10/27 12:21:50 neubauer Exp $";
 
 
 namespace Qedo {
@@ -49,6 +50,15 @@ AssemblyFactoryImpl::AssemblyFactoryImpl(CORBA::ORB_ptr orb)
 {
 	// Initialize the XML4C2 system once for all instances
 	static XMLInitializer ini;
+
+	deployment_dir_ = Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/Deployment/BaseDir");
+
+	if ( deployment_dir_.empty() )
+	{
+		deployment_dir_ =  g_qedo_dir + "/deployment" ;
+	}
+
+	packageDirectory_ = deployment_dir_ + "/assemblypackages";
 }
 
 
@@ -99,8 +109,9 @@ AssemblyFactoryImpl::initialize()
 
 	DEBUG_OUT2( "AssemblyFactoryImpl: bound under ", name );;
 
+	//
 	// directory to put the packages
-	packageDirectory_ = g_qedo_dir + "/deployment/assemblies";
+	//
 	if (makeDir(packageDirectory_))
 	{
 		NORMAL_ERR3( "AssemblyFactoryImpl: directory ", packageDirectory_, " can not be created");

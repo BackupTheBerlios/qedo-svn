@@ -66,6 +66,8 @@ private:
 	PortableServer::POAManager_var			root_poa_manager_;
 	/** the list of created assemblies */
 	std::list < AssemblyImpl* >				assemblies_;
+	/** the deployment directory */
+	std::string								deployment_dir_;
 	/** the package directory */
 	std::string								packageDirectory_;
 	/** mutex for synchronisation */

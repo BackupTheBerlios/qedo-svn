@@ -33,7 +33,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.23 2003/10/27 11:13:50 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: ComponentInstallationImpl.cpp,v 1.24 2003/10/27 12:22:07 neubauer Exp $";
 
 
 namespace Qedo {
@@ -45,7 +45,7 @@ std::string	ComponentInstallationImpl::inst_file_;
 ComponentInstallationImpl::ComponentInstallationImpl (CORBA::ORB_ptr orb)
 : orb_ (CORBA::ORB::_duplicate (orb))
 {
-	deployment_dir_ = Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/Debug/BaseDir");
+	deployment_dir_ = Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/Deployment/BaseDir");
 
 	if ( deployment_dir_.empty() )
 	{
@@ -56,6 +56,9 @@ ComponentInstallationImpl::ComponentInstallationImpl (CORBA::ORB_ptr orb)
 	{
 		inst_file_ = deployment_dir_ + "/installedComponentImplementations.xml";
 	}
+
+	packageDirectory_ = deployment_dir_ + "/packages";
+	installationDirectory_ = deployment_dir_ + "/components";
 }
 
 
@@ -115,27 +118,25 @@ ComponentInstallationImpl::initialize()
 	//
 	if (makeDir(deployment_dir_))
 	{
-		NORMAL_ERR( "ComponentInstallationImpl: deployment directory can not be created" );
+		NORMAL_ERR3( "ComponentInstallationImpl: directory ", deployment_dir_, " can not be created");
 		throw CannotInitialize();
 	}
 
 	//
 	// directory to put the component packages
 	//
-	packageDirectory_ = deployment_dir_ + "/packages";
 	if (makeDir(packageDirectory_))
 	{
-		NORMAL_ERR( "ComponentInstallationImpl: componentPackages directory can not be created" );
+		NORMAL_ERR3( "ComponentInstallationImpl: directory ", packageDirectory_, " can not be created");
 		throw CannotInitialize();
 	}
 
 	//
 	// directory to put the component implementations
 	//
-	installationDirectory_ = deployment_dir_ + "/components";
 	if (makeDir(installationDirectory_))
 	{
-		NORMAL_ERR( "ComponentInstallationImpl: componentImplementations directory can not be created" );
+		NORMAL_ERR3( "ComponentInstallationImpl: directory ", installationDirectory_, " can not be created");
 		throw CannotInitialize();
 	}
 
