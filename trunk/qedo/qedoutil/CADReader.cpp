@@ -959,6 +959,7 @@ throw(CADReadException)
 		if (new_package.extractFile(file, file_data.name) != 0)
 		{
 			NORMAL_ERR2( "CADReader: error during extracting file ", file );
+			NORMAL_ERR2( "CADReader: package is ", file_data.archiv );
 			throw CADReadException();
 		}
 	}
@@ -1214,6 +1215,14 @@ throw(CADReadException)
 
         // get next child
 	    child = child->getNextSibling();
+	}
+
+	//
+	// extension: existing home
+	//
+	if( data.file.empty() )
+	{
+		return data;
 	}
 
 	//
