@@ -34,14 +34,11 @@ CC=$(CXX)
 
 @SET_MAKE@
 
-LIBS += -L../../CIDL_Repository/IFRidl \
-		  -lIFRidl \
-		  -L../../CIDL_Repository/CIDLRepositoryLib \
-		  -lCIDLRepositoryLib \
-	-L../../CIDL_Repository/ComponentRepositoryLib \
-		  -lComponentRepositoryLib \
-        -L../../CIDL_Frontend/CIDLFrontendLib \
-		  -lCIDLFrontendLib
+LIB_FILES = ../../CIDL_Repository/IFRidl/libIFRidl.a \
+            ../../CIDL_Repository/CIDLRepositoryLib/libCIDLRepositoryLib.a \
+				../../CIDL_Repository/ComponentRepositoryLib/libComponentRepositoryLib.a \
+				../../CIDL_Frontend/CIDLFrontendLib/libCIDLFrontendLib.a
+LIBS += ${LIB_FILES}
 
 LDLIBS = ${LIBS}
 
@@ -75,7 +72,7 @@ include ../../MakeVars
 
 all: cidl_gen
 
-cidl_gen: $(OBJS)
+cidl_gen: $(OBJS) ${LIB_FILES}
 
 .PHONY:install
 
