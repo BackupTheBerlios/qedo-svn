@@ -114,6 +114,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="ControllerNotebook.cpp">
 			</File>
 			<File
+				RelativePath="Launcher.cpp">
+			</File>
+			<File
 				RelativePath="MainFrame.cpp">
 			</File>
 			<File
@@ -128,6 +131,9 @@ copy $(TargetPath) $(QEDO)\bin
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
 				RelativePath="ControllerNotebook.h">
+			</File>
+			<File
+				RelativePath="Launcher.h">
 			</File>
 			<File
 				RelativePath="MainFrame.h">

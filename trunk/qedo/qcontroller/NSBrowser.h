@@ -5,6 +5,8 @@
 //#include "wx/treebase.h"
 #include "wx/treectrl.h"
 #include "coss/CosNaming.h"
+#include "wx/notebook.h"
+#include "wx/button.h"
 
 
 class NSBrowserTreeItemData : public wxTreeItemData
@@ -37,15 +39,19 @@ public:
                const wxPoint& pos, const wxSize& size,
                long style);
     virtual ~NSBrowserTreeCtrl();
-    void Dump(wxSTD ostream& str);
+	void OnNSDRefresh();
+
 
 private:
+		wxButton *RefreshBtn;
 		int m_imageSize;
 		CosNaming::NamingContext_var nameService;
 		void CreateImageList(int size = 16);
 		void build_tree();
 		void AddItemsRecursively(const wxTreeItemId& idParent,
 									 CosNaming::NamingContext_ptr context);
+	    DECLARE_EVENT_TABLE()
+
 };
 
 #endif

@@ -22,7 +22,12 @@ DECLARE_APP(QedoController)
 enum ID_CONTROLS
 {
     ID_NOTEBOOK = wxID_HIGHEST,
-	NSBrowserTree_Ctrl
+	NSBrowserTree_Ctrl,
+	Launcher_ID,
+	NSD,
+	ID_PORTNUMBER,
+	HF,
+	NSD_TREE_REFRESH
 };
 
 #endif

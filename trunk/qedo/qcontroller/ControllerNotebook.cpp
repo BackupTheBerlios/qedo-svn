@@ -1,7 +1,12 @@
 #include "ControllerNotebook.h"
 #include "NSBrowser.h"
-//#include "Launcher.h"
+#include "wx/button.h"
+#include "Launcher.h"
 
+BEGIN_EVENT_TABLE(ControllerNotebook, wxNotebook)
+    EVT_BUTTON(NSD_TREE_REFRESH, ControllerNotebook::OnNSDRefresh)
+
+END_EVENT_TABLE()
 
 ControllerNotebook::ControllerNotebook(wxWindow *parent, wxWindowID id,
     const wxPoint& pos, const wxSize& size, long style)
@@ -17,19 +22,16 @@ void ControllerNotebook::CreateControllerPages(wxBoxSizer * sizerFrame)
 	 sizerFrame->Add(sizerNotebook_, 1, wxEXPAND | wxALL, 4);
 
 	 // create launcher
-	 wxPanel* launcher_panel = new wxPanel(this);
+	 launcher_panel_ = new Launcher (this, Launcher_ID, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE);
 
 
-	 AddPage(launcher_panel, wxT("Launcher"), FALSE,0);
+	 AddPage(launcher_panel_, wxT("Launcher"), FALSE,0);
 
 
 
 	// create ns_browser page
 	ns_browser_panel = new wxPanel(this);
-	ns_browser_ = new NSBrowserTreeCtrl (ns_browser_panel, NSBrowserTree_Ctrl, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE );
-	wxBoxSizer * ns_browser_panel_sizer = new wxBoxSizer(wxVERTICAL);
-	ns_browser_panel -> SetSizer( ns_browser_panel_sizer );
-	ns_browser_panel_sizer -> Add(ns_browser_, 1, wxEXPAND | wxALL, 4);
+	ns_browser_ = new NSBrowserTreeCtrl (ns_browser_panel, NSBrowserTree_Ctrl, wxDefaultPosition, wxSize(400,400), wxTR_DEFAULT_STYLE );
 
 	AddPage( ns_browser_panel, wxT("NS Browser"), FALSE, 0 );
 
@@ -39,9 +41,16 @@ void ControllerNotebook::CreateControllerPages(wxBoxSizer * sizerFrame)
 
 }
 
+void 
+ControllerNotebook::OnNSDRefresh(wxCommandEvent& WXUNUSED(event))
+{
+//	int sel = event.GetSelection();
+//	if (sel == 1)
+//	{
+		// rebiuld NS Browser Tree
+	ns_browser_ -> OnNSDRefresh();
+//	};
 
-void
-ControllerNotebook::Dump(wxSTD ostream& str)
- {
+};
 
- }
+

@@ -10,8 +10,6 @@ public:
         const wxSize& size = wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE);
 
     virtual ~MainFrame();
-void
-Dump(wxSTD ostream& str);
 
 private:
 	wxPanel *panel_;

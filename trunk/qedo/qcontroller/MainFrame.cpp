@@ -44,9 +44,3 @@ MainFrame::~MainFrame() {
 
 };
 
-void
-MainFrame::Dump(wxSTD ostream& str)
- {
-
- }
- 

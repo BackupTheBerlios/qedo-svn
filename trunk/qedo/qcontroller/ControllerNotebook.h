@@ -14,7 +14,9 @@ public:
         const wxSize& size = wxDefaultSize, long style = 0);
 
     void CreateControllerPages(wxBoxSizer * sizerFrame);
-    void Dump(wxSTD ostream& str);
+
+	void OnNSDRefresh(wxCommandEvent& WXUNUSED(event));
+
 
 private:
 
@@ -24,6 +26,9 @@ private:
 	//name-service browser page
 	wxPanel *ns_browser_panel;
 	NSBrowserTreeCtrl *ns_browser_;
+	wxPanel * launcher_panel_;
+
+	    DECLARE_EVENT_TABLE()
 
 };
 
