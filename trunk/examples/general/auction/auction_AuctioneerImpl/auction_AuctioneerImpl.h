@@ -57,14 +57,14 @@ namespace auction
     
     private:
     
-        ::auction::CCM_Auctioneer_Context_var context_;
+        ::auction::CCM_Auctioneer_ContextImpl_var context_;
         
     public:
     
         AuctioneerSessionImpl();
         virtual ~AuctioneerSessionImpl();
         
-        void set_context(::auction::CCM_Auctioneer_Context_ptr context)
+        void set_context(::auction::CCM_Auctioneer_ContextImpl_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
         
         void configuration_complete()
@@ -137,7 +137,7 @@ namespace auction
     
     private:
     
-        ::auction::CCM_Auctioneer_Context_var context_;
+        ::auction::CCM_Auctioneer_ContextImpl_var context_;
         
         AuctioneerSessionImpl* component_;
         
@@ -210,7 +210,7 @@ namespace auction
     
     private:
     
-        Components::CCMContext_var context_;
+        Components::HomeContext_var context_;
         
     public:
         AuctioneerHomeImpl();
@@ -219,7 +219,7 @@ namespace auction
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0
         //
-        virtual void set_context (Components::CCMContext_ptr ctx)
+        virtual void set_context (Components::HomeContext_ptr ctx)
             throw (CORBA::SystemException, Components::CCMException);
         
         //

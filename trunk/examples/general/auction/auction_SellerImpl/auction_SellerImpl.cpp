@@ -86,10 +86,10 @@ SellerSessionImpl::~SellerSessionImpl()
 
 
 void
-SellerSessionImpl::set_context(::auction::CCM_Seller_Context_ptr context)
+SellerSessionImpl::set_context(::auction::CCM_Seller_ContextImpl_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::auction::CCM_Seller_Context::_duplicate(context);
+    context_ = ::auction::CCM_Seller_ContextImpl::_duplicate(context);
 }
 
 
@@ -205,15 +205,15 @@ SellerImpl::set_session_context(::Components::SessionContext_ptr context)
     #ifdef TAO_ORB
     ::auction::CCM_Seller_Context_ptr tmp_context;
     
-    tmp_context = dynamic_cast<::auction::CCM_Seller_Context*>(context);
+    tmp_context = dynamic_cast<::auction::CCM_Seller_ContextImpl*>(context);
     
     if (tmp_context)
-        context_ = ::auction::CCM_Seller_Context::_duplicate(tmp_context);
+        context_ = ::auction::CCM_Seller_ContextImpl::_duplicate(tmp_context);
     else
-        context_ = ::auction::CCM_Seller_Context::_nil();
+        context_ = ::auction::CCM_Seller_ContextImpl::_nil();
         
     #else
-    context_ = ::auction::CCM_Seller_Context::_narrow(context);
+    context_ = ::auction::CCM_Seller_ContextImpl::_narrow(context);
     
     #endif
     component_->set_context(context_);
@@ -269,10 +269,10 @@ SellerHomeImpl::~SellerHomeImpl()
 
 
 void
-SellerHomeImpl::set_context(Components::CCMContext_ptr ctx)
+SellerHomeImpl::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = Components::CCMContext::_duplicate(ctx);
+    context_ = Components::HomeContext::_duplicate(ctx);
 }
 
 

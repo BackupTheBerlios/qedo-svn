@@ -79,10 +79,10 @@ BidderSessionImpl::~BidderSessionImpl()
 
 
 void
-BidderSessionImpl::set_context(::auction::CCM_Bidder_Context_ptr context)
+BidderSessionImpl::set_context(::auction::CCM_Bidder_ContextImpl_ptr context)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = ::auction::CCM_Bidder_Context::_duplicate(context);
+    context_ = ::auction::CCM_Bidder_ContextImpl::_duplicate(context);
 }
 
 
@@ -236,15 +236,15 @@ BidderImpl::set_session_context(::Components::SessionContext_ptr context)
     #ifdef TAO_ORB
     ::auction::CCM_Bidder_Context_ptr tmp_context;
     
-    tmp_context = dynamic_cast<::auction::CCM_Bidder_Context*>(context);
+    tmp_context = dynamic_cast<::auction::CCM_Bidder_ContextImpl*>(context);
     
     if (tmp_context)
-        context_ = ::auction::CCM_Bidder_Context::_duplicate(tmp_context);
+        context_ = ::auction::CCM_Bidder_ContextImpl::_duplicate(tmp_context);
     else
-        context_ = ::auction::CCM_Bidder_Context::_nil();
+        context_ = ::auction::CCM_Bidder_ContextImpl::_nil();
         
     #else
-    context_ = ::auction::CCM_Bidder_Context::_narrow(context);
+    context_ = ::auction::CCM_Bidder_ContextImpl::_narrow(context);
     
     #endif
     component_->set_context(context_);
@@ -298,10 +298,10 @@ BidderHomeImpl::~BidderHomeImpl()
 
 
 void
-BidderHomeImpl::set_context(Components::CCMContext_ptr ctx)
+BidderHomeImpl::set_context(Components::HomeContext_ptr ctx)
     throw (CORBA::SystemException, Components::CCMException)
 {
-    context_ = Components::CCMContext::_duplicate(ctx);
+    context_ = Components::HomeContext::_duplicate(ctx);
 }
 
 

@@ -39,14 +39,14 @@ namespace auction
     
     private:
     
-        ::auction::CCM_Bidder_Context_var context_;
+        ::auction::CCM_Bidder_ContextImpl_var context_;
         
     public:
     
         BidderSessionImpl();
         virtual ~BidderSessionImpl();
         
-        void set_context(::auction::CCM_Bidder_Context_ptr context)
+        void set_context(::auction::CCM_Bidder_ContextImpl_ptr context)
             throw (CORBA::SystemException, Components::CCMException);
         
         void configuration_complete()
@@ -122,7 +122,7 @@ namespace auction
     
     private:
     
-        ::auction::CCM_Bidder_Context_var context_;
+        ::auction::CCM_Bidder_ContextImpl_var context_;
         
         BidderSessionImpl* component_;
         
@@ -195,7 +195,7 @@ namespace auction
     
     private:
     
-        Components::CCMContext_var context_;
+        Components::HomeContext_var context_;
         
     public:
         BidderHomeImpl();
@@ -204,7 +204,7 @@ namespace auction
         //
         // IDL:Components/HomeExecutorBase/set_context:1.0
         //
-        virtual void set_context (Components::CCMContext_ptr ctx)
+        virtual void set_context (Components::HomeContext_ptr ctx)
             throw (CORBA::SystemException, Components::CCMException);
         
         //
