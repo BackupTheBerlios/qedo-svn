@@ -555,8 +555,8 @@ PhilosopherSessionImpl::configuration_complete()
 #ifdef WIN32
 	gui_thread = new GUIThread;
 #endif
-    
-    start ();
+    run();
+    //@@@ start (); 
 // END USER INSERT SECTION PhilosopherSessionImpl::configuration_complete
 }
 
@@ -763,7 +763,7 @@ PhilosopherHomeImpl::create ()
     bool right_hander = right_hander_counter_++ % 2 ? true : false;
 
     int tick = 1000 + rand() * 2000 / RAND_MAX;
-    return new PhilosopherImpl("give me a name!", tick, right_hander);
+//@@@    return new PhilosopherImpl("give me a name!", tick, right_hander);
 // END USER INSERT SECTION PhilosopherHomeImpl::create
     return new PhilosopherImpl();
 }
