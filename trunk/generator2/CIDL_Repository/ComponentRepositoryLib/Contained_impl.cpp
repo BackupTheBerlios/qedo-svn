@@ -48,7 +48,7 @@ Contained_impl::Contained_impl
 	{
 		// The container must also be a contained object
 		Contained_impl * contained = dynamic_cast<Contained_impl*>(container);
-		if ( container )
+		if ( contained )
 			DEBUG_OUTLINE ( contained -> name() )
 		else
 			DEBUG_OUTLINE ( "???" );
