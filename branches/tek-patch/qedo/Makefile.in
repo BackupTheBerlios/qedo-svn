@@ -22,6 +22,8 @@
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+bindir=@bindir@
+datadir=@datadir@
 
 SUBDIRS = ComponentIDL \
 	  ComponentContainer \
@@ -31,16 +33,20 @@ SUBDIRS = ComponentIDL \
 	  ComponentServerActivator \
 	  AssemblyFactory \
 	  HomeFinder \
-	  DeploymentClient
+	  DeploymentClient \
+          etc
 
 all: $(SUBDIRS:%=%-all)
 
 .PHONY: install-dir
 
-@bindir@:
+$(bindir):
 	mkdir -p $@
 
-$(exec_prefix)/etc:
+$(datadir)/qedo/idl:
+	mkdir -p $@
+
+$(datadir)/qedo/etc:
 	mkdir -p $@
 
 $(exec_prefix)/lib:
@@ -52,7 +58,7 @@ $(exec_prefix)/include:
 $(exec_prefix)/idl:
 	mkdir -p $@
 
-install-dir: @bindir@ $(exec_prefix)/etc $(exec_prefix)/lib $(exec_prefix)/include $(exec_prefix)/idl
+install-dir: $(bindir) $(datadir)/qedo/idl $(datadir)/qedo/etc $(exec_prefix)/lib $(exec_prefix)/include
 
 install: install-dir $(SUBDIRS:%=%-install)
 
