@@ -179,7 +179,7 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
     out << "<dependency type=\"DLL\"><localfile name=\"obd.dll\"/></dependency>\n";
     out << "<descriptor type=\"CORBA-Component\">\n";
 	out.indent();
-    out << "<fileinarchive name=\"" << name << ".ccd\" />\n";
+    out << "<fileinarchive name=\"meta-inf/" << name << ".ccd\" />\n";
 	out.unindent();
     out << "</descriptor>\n";
     out << "<code type=\"DLL\">\n";
