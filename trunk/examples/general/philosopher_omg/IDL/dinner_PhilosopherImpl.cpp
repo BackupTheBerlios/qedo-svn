@@ -805,6 +805,7 @@ create_PhilosopherHomeE(void)
     orb->register_value_factory ("IDL:DiningPhilosophers/StatusInfo:1.0", new PhilosopherStateFactory_impl());
 
 // END USER INSERT SECTION create_PhilosopherHome
+
     return new ::dinner::PhilosopherHomeImpl();
 }
 

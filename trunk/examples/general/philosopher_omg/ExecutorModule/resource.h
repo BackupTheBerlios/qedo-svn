@@ -15,12 +15,14 @@
 #define IDB_BITMAP4                     5005
 #define IDB_BITMAP5                     5007
 #define IDB_BITMAP6                     5008
+#define IDB_BITMAP9                     5009
+#define IDB_BITMAP10                    5010
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        5009
+#define _APS_NEXT_RESOURCE_VALUE        5011
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         5004
 #define _APS_NEXT_SYMED_VALUE           5000

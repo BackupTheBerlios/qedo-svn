@@ -3,10 +3,10 @@
 // Stream Container Implementation
 // (C)2000-2002 Humboldt University Berlin, Department of Computer Science
 //
-// $Id: main.cpp,v 1.5 2002/11/05 11:01:45 tom Exp $
+// $Id: main.cpp,v 1.6 2002/11/07 20:53:59 tom Exp $
 //
 
-static char rcsid[] = "$Id: main.cpp,v 1.5 2002/11/05 11:01:45 tom Exp $";
+static char rcsid[] = "$Id: main.cpp,v 1.6 2002/11/07 20:53:59 tom Exp $";
 
 #include <OB/CORBA.h>
 #include <OB/CosNaming.h>
@@ -18,12 +18,11 @@ static char rcsid[] = "$Id: main.cpp,v 1.5 2002/11/05 11:01:45 tom Exp $";
 
 #include <iostream>
 
-using namespace std;
 
 Components::Deployment::ServerActivator_ptr
 get_server_activator (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const char* hostname)
 {
-	cout << "Getting Component Server Activator from Qedo/Activators/" << hostname << endl;
+	std::cout << "Getting Component Server Activator from Qedo/Activators/" << hostname << std::endl;
 
 	CosNaming::Name server_activator_name;
 	server_activator_name.length (3);
@@ -43,13 +42,13 @@ get_server_activator (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const
 	}
 	catch (CosNaming::NamingContext::NotFound&)
 	{
-		cerr << "Component Server Activator not found in Name Service" << endl;
+		std::cerr << "Component Server Activator not found in Name Service" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
 	catch (CORBA::SystemException&)
 	{
-		cerr << "CORBA system exception during resolve()" << endl;
+		std::cerr << "CORBA system exception during resolve()" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
@@ -60,7 +59,7 @@ get_server_activator (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const
 	}
 	catch (CORBA::SystemException&)
 	{
-		cerr << "Cannot narrow Component Server Activator" << endl;
+		std::cerr << "Cannot narrow Component Server Activator" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
@@ -72,7 +71,7 @@ get_server_activator (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const
 void
 deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, const char* hostname)
 {
-	cout << "Getting Component Installation from Qedo/Installers/" << hostname << endl;
+	std::cout << "Getting Component Installation from Qedo/Installers/" << hostname << std::endl;
 
 	CosNaming::Name installer_name;
 	installer_name.length (3);
@@ -92,13 +91,13 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	}
 	catch (CosNaming::NamingContext::NotFound&)
 	{
-		cerr << "Component Installer not found in Name Service" << endl;
+		std::cerr << "Component Installer not found in Name Service" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
 	catch (CORBA::SystemException&)
 	{
-		cerr << "CORBA system exception during resolve()" << endl;
+		std::cerr << "CORBA system exception during resolve()" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
@@ -109,7 +108,7 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	}
 	catch (CORBA::SystemException&)
 	{
-		cerr << "Cannot narrow Component Installer" << endl;
+		std::cerr << "Cannot narrow Component Installer" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
@@ -122,11 +121,11 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 	}
 	catch (Components::Deployment::InvalidLocation&)
 	{
-		cerr << "Component Installer raised Components::Deployment::InvalidLocation" << endl;
+		std::cerr << "Component Installer raised Components::Deployment::InvalidLocation" << std::endl;
 	}
 	catch (Components::Deployment::InstallationFailure&)
 	{
-		cerr << "Component Installer raised Components::Deployment::InstallationFailure" << endl;
+		std::cerr << "Component Installer raised Components::Deployment::InstallationFailure" << std::endl;
 	}
 }
 
@@ -134,7 +133,7 @@ deploy_test_components (CORBA::ORB_ptr orb, CosNaming::NamingContext_ptr ns, con
 int
 main (int argc, char** argv)
 {
-	cout << "Test Client for Stream Container" << endl;
+	std::cout << "Test Client for Stream Container" << std::endl;
 
 	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
 
@@ -154,20 +153,20 @@ main (int argc, char** argv)
 	}
 	catch (CORBA::ORB::InvalidName&)
 	{
-		cerr << "Name Service not found" << endl;
+		std::cerr << "Name Service not found" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
 	catch (CORBA::SystemException&)
 	{
-		cerr << "Cannot narrow object reference of Name Service" << endl;
+		std::cerr << "Cannot narrow object reference of Name Service" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
 
 	if (CORBA::is_nil (ns))
 	{
-		cerr << "Name Service is nil" << endl;
+		std::cerr << "Name Service is nil" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
@@ -176,7 +175,7 @@ main (int argc, char** argv)
 	char hostname[256];
 	if (gethostname (hostname, 256))
 	{
-		cerr << "Cannot determine my hostname" << endl;
+		std::cerr << "Cannot determine my hostname" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
@@ -201,14 +200,14 @@ main (int argc, char** argv)
 	}
 	catch (CORBA::Exception&)
 	{
-		cerr << "Exception during test run" << endl;
+		std::cerr << "Exception during test run" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
 
 	if (CORBA::is_nil (component_server))
 	{
-		cerr << "I got a nil reference for the created Component Server" << endl;
+		std::cerr << "I got a nil reference for the created Component Server" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
@@ -226,7 +225,7 @@ main (int argc, char** argv)
 	}
 	catch (CORBA::SystemException&)
 	{
-		cerr << "CORBA system exception during creating container" << endl;
+		std::cerr << "CORBA system exception during creating container" << std::endl;
 		orb->destroy();
 		exit (1);
 	}
@@ -247,8 +246,11 @@ main (int argc, char** argv)
 	DiningPhilosophers::Philosopher_var phil1;
 	DiningPhilosophers::Philosopher_var phil2;
 	DiningPhilosophers::Philosopher_var phil3;
+	DiningPhilosophers::Philosopher_var phil4;
 	DiningPhilosophers::ForkManager_var cut1;
 	DiningPhilosophers::ForkManager_var cut2;
+	DiningPhilosophers::ForkManager_var cut3;
+	DiningPhilosophers::ForkManager_var cut4;
 	DiningPhilosophers::Observer_var obs;
 
 	try 
@@ -256,17 +258,20 @@ main (int argc, char** argv)
 		phil1 = p_home->create();
 		phil2 = p_home->create();
 		phil3 = p_home->create();
+		phil4 = p_home->create();
 		cut1 = c_home->create();
 		cut2 = c_home->create();
+		cut3 = c_home->create();
+		cut4 = c_home->create();
 		obs = o_home->create();
 	}
 	catch (Components::CreateFailure&)
 	{
-		cerr << "Create Failure exception" << endl;
+		std::cerr << "Create Failure exception" << std::endl;
 	}
 	catch (CORBA::SystemException& ex)
 	{
-		cerr << ex << endl;
+		std::cerr << ex << std::endl;
 	}
 
 	try
@@ -274,63 +279,73 @@ main (int argc, char** argv)
 		phil1->name ("Frank"); 
 		phil2->name ("Bert"); 
 		phil3->name ("Harry");
+		phil4->name ("Tom");
 		DiningPhilosophers::Fork_var a_fork;
 		a_fork = cut1->provide_the_fork();
 		phil1->connect_left (a_fork);
-		phil2->connect_left (a_fork);
-		phil3->connect_left (a_fork);
-		a_fork = cut2->provide_the_fork();
-		phil1->connect_right (a_fork);
 		phil2->connect_right (a_fork);
+		a_fork = cut2->provide_the_fork();
+		phil2->connect_left (a_fork);
 		phil3->connect_right (a_fork);
+		a_fork = cut3->provide_the_fork();
+		phil3->connect_left (a_fork);
+		phil4->connect_right (a_fork);
+		a_fork = cut4->provide_the_fork();
+		phil4->connect_left (a_fork);
+		phil1->connect_right (a_fork);
+
 		DiningPhilosophers::StatusInfoConsumer_var consumer = obs->get_consumer_info();
 		phil1->subscribe_info (consumer);
 		phil2->subscribe_info (consumer);
 		phil3->subscribe_info (consumer);
+		phil4->subscribe_info (consumer);
 		phil1->configuration_complete(); 
 		phil2->configuration_complete(); 
 		phil3->configuration_complete();
+		phil4->configuration_complete();
 		cut1->configuration_complete();
 		cut2->configuration_complete();
+		cut3->configuration_complete();
+		cut4->configuration_complete();
+
 		obs->configuration_complete();
 	}
 	catch (CORBA::SystemException& ex)
 	{
-		cerr << ex << endl;
+		std::cerr << ex << std::endl;
 	}
 
 	Sleep (10000);
-
+	std::cout << "Press 's' and RETURN to stop ... " << std::endl;
+	std::string in_string;
+	std::cin >> in_string;
 	try
 	{
-//		phil1->remove();
-//		phil2->remove();
-//		phil3->remove();
-//		c_home->remove_component (cut1);
-//		c_home->remove_component (cut2);
+		phil1->remove();
+		phil2->remove();
+		phil3->remove();
+		phil4->remove();
 	}
 	catch (Components::RemoveFailure&)
 	{
-		cerr << "Remove Failure during remove_component()" << endl;
+		std::cerr << "Remove Failure during remove_component()" << std::endl;
 	}
 	catch (CORBA::SystemException& ex)
 	{
-		cerr << ex << endl;
+		std::cerr << ex << std::endl;
 	}
-
 
 	try
 	{
-//		container->remove_home (c_home);
-//		container->remove_home (p_home);
+		container->remove();
 	}
 	catch (Components::RemoveFailure&)
 	{
-		cerr << "Remove Failure during removing home" << endl;
+		std::cerr << "Remove Failure during removing home" << std::endl;
 	}
 	catch (CORBA::SystemException& ex)
 	{
-		cerr << ex << endl;
+		std::cerr << ex << std::endl;
 	}
 
 	return 0;
