@@ -43,6 +43,8 @@ public:
 
 
 private:
+		
+		CORBA::ORB_var orbns;
 		wxButton *RefreshBtn;
 		int m_imageSize;
 		CosNaming::NamingContext_var nameService;

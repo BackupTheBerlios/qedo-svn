@@ -1,4 +1,5 @@
 #include "NSBrowser.h"
+
 #include "wx/image.h"
 #include "wx/imaglist.h"
 #include "wx/sizer.h"
@@ -10,7 +11,7 @@
 #include "icon5.xpm"
 
 
-#include "../qedoutil/ConfigurationReader.h"
+//#include "ConfigurationReader.h"
 
 BEGIN_EVENT_TABLE(NSBrowserTreeCtrl, wxTreeCtrl)
     EVT_BUTTON(NSD_TREE_REFRESH, NSBrowserTreeCtrl::OnNSDRefresh)
@@ -91,14 +92,16 @@ void
 NSBrowserTreeCtrl::build_tree()
 {
 	// resolve name service reference
+	
 	int dummy = 0;
-	CORBA::ORB_var orb = CORBA::ORB_init(dummy,0);
+	orbns = CORBA::ORB_init(dummy,0);
 
 	std::string ns;
-	ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );;
-	//ns = "corbaloc::tri:12356/NameService";
+	//ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );;
+	ns = "corbaloc::localhost:12356/NameService";
+	//CORBA::ORB_var tmp = CORBA::ORB::_duplicate(QedoController::global_orb);
 	CORBA::Object_var obj;
-	obj = orb -> string_to_object( ns.c_str() );
+	obj = orbns -> string_to_object( ns.c_str() );
 	CreateImageList();
 
 
@@ -128,32 +131,26 @@ void NSBrowserTreeCtrl::AddItemsRecursively(const wxTreeItemId& idParent,
 
 		for (CORBA::ULong i = 0; i < bl->length(); i++)
 		{
-			if ((*bl)[i].binding_type == CosNaming::ncontext)
-			{
+			// if context
+	//		if ((*bl)[i].binding_type == CosNaming::ncontext)
+	//		{
 				CosNaming::NamingContext_var child_context;
 				CORBA::Object_var tmp_obj;
-				try 
-				{
-					tmp_obj = context -> resolve((*bl)[i].binding_name);
+				tmp_obj = context -> resolve((*bl)[i].binding_name);
+				try {
 					child_context = CosNaming::NamingContext::_narrow(tmp_obj);
-				} 
-				catch (CORBA::SystemException e)
-				{
-				}
-
+				} catch (CORBA::SystemException e) {}
 				if (!CORBA::is_nil(child_context))
 				{
 					str.Printf(wxT("%s"), wxT((*bl)[i].binding_name[0].id.in()));
 					wxTreeItemId id = AppendItem(idParent, str, TreeCtrlIcon_Folder, TreeCtrlIcon_Folder, new NSBrowserTreeItemData(str));
 
 					AddItemsRecursively(id, child_context.in());
+				} else {
+					str.Printf(wxT("%s"), wxT((*bl)[i].binding_name[0].id.in()));
+					wxTreeItemId id = AppendItem(idParent, str, TreeCtrlIcon_File, TreeCtrlIcon_File, new NSBrowserTreeItemData(str));
 				}
-			}
-			else 
-			{
-				str.Printf(wxT("%s"), wxT((*bl)[i].binding_name[0].id.in()));
-				wxTreeItemId id = AppendItem(idParent, str, TreeCtrlIcon_File, TreeCtrlIcon_File, new NSBrowserTreeItemData(str));
-			}
+	//		}
 
 
 			// add to tree
