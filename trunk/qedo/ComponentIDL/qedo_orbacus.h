@@ -19,7 +19,10 @@ namespace Components
 		typedef x Function;
 		typedef void* FunctionData;
 	};
+};
 
+namespace StreamComponents
+{
 	namespace OBNative_StreamComponents
 	{
 		typedef * BufferPtr;
