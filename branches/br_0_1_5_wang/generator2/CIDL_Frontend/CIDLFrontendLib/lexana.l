@@ -44,7 +44,6 @@ static char *my_cidl_key_words[] = {
 static char *my_psdl_key_words[] = {
 "storagehome",
 "storage",
-"catalog",
 "storedOn",
 "ref",
 "key",
@@ -421,7 +420,6 @@ ENOL                    (\n|\n)
 <stream,cidl_psdl,psdl>"storagehome"	{ return TOK_storagehome; }
 <stream,cidl_psdl,psdl>"storage"	{ return TOK_storage; }
 <stream,cidl_psdl,psdl>"storedOn"	{ return TOK_storedOn; }
-<stream,cidl_psdl,psdl>"catalog"	{ return TOK_catalog; }
 <stream,cidl_psdl,psdl>"ref"	{ return TOK_ref; }
 <stream,cidl_psdl,psdl>"key"	{ return TOK_key; }
 <stream,cidl_psdl,psdl>"primary"	{ return TOK_primary; }

@@ -60,7 +60,6 @@
 	TOK_bindsTo
 	TOK_boolean
 	TOK_case
-	TOK_catalog
 	TOK_char
 	TOK_component
 	TOK_composition
@@ -148,7 +147,6 @@
 %type <yt_definition_list>		definition_list
 										storagehome_body
 										storagetype_body
-										catalog_body
 										abstract_storagehome_body
 										abstract_storagetype_body
 										opt_home_exports
@@ -167,8 +165,6 @@
                     segment_member_list
                     feature_delegation_list
 										feature_delegations
-                    catalog_use_dcl_list
-										catalog_use_dcl
 
 
 
@@ -181,8 +177,6 @@
 										except_dcl
 										except_dcl_header
 										interface
-										catalog
-                    catalog_header
 										storagehome
 										storagetype
 										module
@@ -248,7 +242,6 @@
 										storagehome_member
 										abstract_storagetype_member
 										storagetype_member
-										catalog_member
 										key_dcl
 										primary_key_dcl
 										local_op_dcl
@@ -258,7 +251,6 @@
 										psdl_state_dcl
 										store_directive
 										ref_rep_directive
-										provides_dcl_1
 										home_export
 										export
 										attr_spec
@@ -314,7 +306,6 @@
 										home_delegation_spec
                     delegation
                     feature_delegation
-                    catalog_dcl
 					streamtype_decl
 
 
@@ -355,16 +346,13 @@
 
 %type <yt_composition_body>	composition_body
 
-%type <yt_idl_name>				catalog_label
-										operation_name
+%type <yt_idl_name>				operation_name
 										abstract_storage_home_label
 										feature_name
 										storage_member_name
 										enumerator
 
 %type <yt_idl_identifier>		scoped_name
-										catalog_type_spec
-										catalog_name
 										home_type_name
 										storagehome_name 
 										storagehome_inh_spec
@@ -387,8 +375,6 @@
 										abstract_storagetype_inh_spec
 										abstract_storagehome_inh_spec
 										abstract_storagehome_names
-										catalog_inh_spec
-										catalog_names
 										get_excep_expr
 										set_excep_expr
 										exception_list
@@ -478,7 +464,6 @@ definition :
 	| const_dcl ';'
 	| except_dcl ';'
 	| interface ';'
-	| catalog ';'
 	| storagehome ';'
 	| abstract_storagehome ';'
 	| storagetype ';'
@@ -1384,9 +1369,9 @@ factory_dcl :
 	;
 
 factory_dcl_1 :
-	  TOK_factory TOK_identifier factory_parameters 
-	  { $$ = FactoryDcl1($2,$3); }
-  ;
+	  TOK_factory TOK_identifier factory_parameters
+	  { $$ = FactoryDcl1($2,$3); add_name(false,FactoryN(),$2,$$,0); }
+      ;
 
 factory_parameters :
     '(' simple_declarators ')'
@@ -1650,44 +1635,6 @@ key_dcl :
 	  { $$ = KeyDcl($2,Nildeclarators()); add_name(false,KeyN(),$2,$$,0); }
 	;
 
-catalog :
-    catalog_header '{' catalog_body '}'
-    { $$ = fix_definition($1,$3); pop_scope(); }
-	;
-
-/* differs from original grammar! catalog_header is new */
-catalog_header :
-	  TOK_catalog TOK_identifier catalog_inh_spec
-	  { $$ = Catalog($2,$3,Nildefinition_list()); add_catalog($2,$$,$3); }
-	| TOK_catalog TOK_identifier
-	  { $$ = Catalog($2,Nilidl_identifier_list(),Nildefinition_list()); add_catalog($2,$$,0); }
-	;
-
-catalog_inh_spec :
-	  ':' catalog_names
-	  { $$ = $2; }
-	;
-
-catalog_name :
-	  scoped_name;
-
-catalog_body :
-	  /* empty */
-	  { $$ = Nildefinition_list(); }
-	| catalog_member catalog_body
-	  { $$ = Consdefinition_list($1,$2); }
-	;
-
-catalog_member :
-	  provides_dcl_1 ';'
-	| local_op_dcl ';'
-	;
-
-provides_dcl_1 :
-	  TOK_provides abstract_storagehome_name simple_declarator
-	  { $$ = ProvidesDcl1($2,$3); add_provides($3,$$,$2);}
-	;
-
 storagetype :
 	  storagetype_dcl
 	| storagetype_fwd_dcl
@@ -1871,33 +1818,11 @@ category :
 	;
 
 composition_body :
-	  catalog_use_dcl home_executor_def proxy_home_def
-	  { $$ = CompositionBody($1,$2,$3); }
-	| home_executor_def proxy_home_def
-	  { $$ = CompositionBody(Nildefinition_list(),$1,$2); }
-	| catalog_use_dcl home_executor_def
-	  { $$ = CompositionBody($1,$2,NilProxyHomeDef()); }
+	home_executor_def proxy_home_def
+	{ $$ = CompositionBody($1,$2); }
 	| home_executor_def
-	  { $$ = CompositionBody(Nildefinition_list(),$1,NilProxyHomeDef()); }
+	  { $$ = CompositionBody($1,NilProxyHomeDef()); }
 	;
-
-catalog_use_dcl :
-	  TOK_uses TOK_catalog '{' catalog_use_dcl_list '}' ';'
-	  { $$ = $4; }
-	;
-
-catalog_dcl :
-	  catalog_type_spec catalog_label
-     { $$ = CatalogDcl($2,$1); 
-       add_catalog_dcl($2,$$,$1);
-     }
-	;
-
-catalog_type_spec :
-	  scoped_name;
-
-catalog_label :
-	  TOK_identifier;
 
 home_executor_def :
 	  home_executor_header '{' home_executor_body '}' ';'
@@ -1996,9 +1921,9 @@ abstract_storage_home_binding :
    ;
 
 abstract_storage_home_name :
-	  catalog_label '.' abstract_storage_home_label
-	  { $$ = AbstractStorageHomeName($1,$3); 
-      add_abstract_storage_home_name($1,$3);
+      abstract_storage_home_label
+      { $$ = AbstractStorageHomeName($1); 
+      add_abstract_storage_home_name($1);
     }
 	;
 
@@ -2270,19 +2195,7 @@ abstract_storagehome_names :
 	  { $$ = Considl_identifier_list($3,$1); }
 	;
 
-catalog_names :
-	  catalog_name
-	  { $$ = Considl_identifier_list($1,Nilidl_identifier_list()); }
-	| catalog_names ',' catalog_name
-	  { $$ = Considl_identifier_list($3,$1); }
-	;
 
-catalog_use_dcl_list :
-	  catalog_dcl
-	  { $$=Consdefinition_list($1,Nildefinition_list()); }
-	| catalog_dcl catalog_use_dcl_list
-	  { $$=Consdefinition_list($1,$2); }
-	;
 
 executor_member_list :
 	  executor_member
@@ -2489,12 +2402,6 @@ proxy_home_members :
 	(1) 	<abstract_storagehome_inh_spec>
 	(3) 	<local_op_dcl>
 	(2) 	<key_dcl>
-	(1) 	<catalog>
-	(1) 	<catalog_inh_spec>
-	(2) 	<catalog_name>
-	(1) 	<catalog_body>
-	(1) 	<catalog_member>
-	(1) 	<provides_dcl_1>
 	(1) 	<storagetype>
 	(1) 	<storagetype_dcl>
 	(1) 	<storagetype_fwd_dcl>
@@ -2520,10 +2427,6 @@ proxy_home_members :
 	(1) 	<composition>
 	(1) 	<category>
 	(1) 	<composition_body>
-	(1) 	<catalog_use_dcl>
-	(1) 	<catalog_dcl>
-	(1) 	<catalog_type_spec>
-	(2) 	<catalog_label>
 	(1) 	<home_executor_def>
 	(1) 	<home_executor_body>
 	(1) 	<home_impl_dcl>
@@ -2660,7 +2563,6 @@ proxy_home_members :
 	(1) 	service
 	(1) 	session
 	(2) 	uses
-	(2) 	catalog
 	(3) 	implements
 	(1) 	bindsTo
 	(1) 	'.'

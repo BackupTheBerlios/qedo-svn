@@ -110,7 +110,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../qedoutil;&quot;$(XERCES)/include&quot;;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;../qedoutil;../ComponentContainer;&quot;$(XERCES)/include&quot;;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_QEDO_NO_QOS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"

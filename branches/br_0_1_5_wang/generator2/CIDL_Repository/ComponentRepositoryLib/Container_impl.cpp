@@ -35,9 +35,14 @@
 #include "ExceptionDef_impl.h"
 #include "InterfaceDef_impl.h"
 #include "ValueDef_impl.h"
+#include "IDLType_impl.h"
 #include "StreamTypeDef_impl.h"
 #include "ComponentDef_impl.h"
 #include "HomeDef_impl.h"
+#include "AbsStorageTypeDef_impl.h"
+#include "AbsStorageHomeDef_impl.h"
+#include "StorageTypeDef_impl.h"
+#include "StorageHomeDef_impl.h"
 #include "Debug.h"
 
 #include <string>
@@ -883,6 +888,233 @@ throw(CORBA::SystemException)
 	this -> _add_ref();
 
 	return new_home -> _this();
+}
+
+IR__::AbstractStorageTypeDef_ptr
+Container_impl::create_abstract_storagetype
+(const char* id,
+ const char* name,
+ const char* version,
+ const IR__::InterfaceDefSeq& base_abstract_storagetypes)
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "Container_impl::create_abstract_storagetype() called" );
+
+	if ( repository_ -> check_for_id ( id ) )
+		throw CORBA::BAD_PARAM ( 2, CORBA::COMPLETED_NO );
+	if ( check_for_name ( name ) )
+		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
+
+	AbstractStorageTypeDef_impl *new_abs_storagetype = new AbstractStorageTypeDef_impl ( this, repository_ );
+
+	new_abs_storagetype -> id ( id );
+	new_abs_storagetype -> name ( name );
+	new_abs_storagetype -> version ( version );
+	new_abs_storagetype -> base_abstract_storagetypes ( base_abstract_storagetypes );
+
+	repository_ -> _add_ref();
+	this -> _add_ref();
+
+	return new_abs_storagetype -> _this();
+}
+
+IR__::StorageTypeDef_ptr
+Container_impl::create_storagetype
+(const char* id,
+ const char* name,
+ const char* version,
+ IR__::StorageTypeDef_ptr base_storagetype,
+ const IR__::InterfaceDefSeq& supports_interfaces)
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "Container_impl::create_storagetype() called" );
+
+	if ( repository_ -> check_for_id ( id ) )
+		throw CORBA::BAD_PARAM ( 2, CORBA::COMPLETED_NO );
+	if ( check_for_name ( name ) )
+		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
+
+    StorageTypeDef_impl* impl = 0;
+
+	// Test the base storage type if there is one
+	if ( !CORBA::is_nil ( base_storagetype ) )
+	{
+		try
+		{
+			PortableServer::ServantBase_var servant =
+				repository_ -> poa() -> reference_to_servant ( base_storagetype );
+			impl = dynamic_cast<StorageTypeDef_impl*>(servant.in());
+		}
+		catch(...)
+		{
+		}
+
+		if(!impl)
+		{
+			// Must be same repository
+			throw CORBA::BAD_PARAM ( 4, CORBA::COMPLETED_NO );
+		}
+	}
+
+	StorageTypeDef_impl *new_storagetype = new StorageTypeDef_impl ( this, repository_, impl );
+
+	new_storagetype -> id ( id );
+	new_storagetype -> name ( name );
+	new_storagetype -> version ( version );
+	new_storagetype -> supported_interfaces ( supports_interfaces );
+
+	repository_ -> _add_ref();
+	this -> _add_ref();
+
+	return new_storagetype -> _this();
+}
+
+IR__::AbstractStorageHomeDef_ptr 
+Container_impl::create_abstract_storagehome
+(const char* id,
+ const char* name,
+ const char* version,
+ IR__::AbstractStorageTypeDef_ptr managed_abstract_storagetype,
+ const IR__::InterfaceDefSeq& base_abstract_storagehomes)
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "Container_impl::create_abstract_storagehome() called" );
+
+	if ( repository_ -> check_for_id ( id ) )
+		throw CORBA::BAD_PARAM ( 2, CORBA::COMPLETED_NO );
+	if ( check_for_name ( name ) )
+		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
+
+    AbstractStorageTypeDef_impl* managed_abstract_storagetype_impl = 0;
+
+	// Test the managed abstract storage type
+	if ( CORBA::is_nil ( managed_abstract_storagetype ) )
+		throw CORBA::BAD_PARAM();	// Is this exception corect?
+
+	try
+	{
+		PortableServer::ServantBase_var servant =
+			repository_ -> poa() -> reference_to_servant ( managed_abstract_storagetype );
+		managed_abstract_storagetype_impl = dynamic_cast<AbstractStorageTypeDef_impl*>(servant.in());
+	}
+	catch(...)
+	{
+	}
+
+	if(!managed_abstract_storagetype_impl)
+	{
+		// Must be same repository
+		throw CORBA::BAD_PARAM ( 4, CORBA::COMPLETED_NO );
+	}
+
+	AbstractStorageHomeDef_impl *new_abs_storagehome = 
+		new AbstractStorageHomeDef_impl ( this, repository_, managed_abstract_storagetype_impl );
+
+	new_abs_storagehome -> id ( id );
+	new_abs_storagehome -> name ( name );
+	new_abs_storagehome -> version ( version );
+	new_abs_storagehome -> base_abstract_storagehomes ( base_abstract_storagehomes );
+
+	repository_ -> _add_ref();
+	this -> _add_ref();
+
+	return new_abs_storagehome -> _this();
+}
+
+IR__::StorageHomeDef_ptr
+Container_impl::create_storagehome
+(const char* id,
+ const char* name,
+ const char* version,
+ IR__::StorageTypeDef_ptr managed_storagetype,
+ IR__::StorageHomeDef_ptr base_storagehome,
+ const IR__::InterfaceDefSeq& supports_interfaces,
+ IR__::IDLType_ptr primary_key)
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "Container_impl::create_storagehome() called" );
+
+	if ( repository_ -> check_for_id ( id ) )
+		throw CORBA::BAD_PARAM ( 2, CORBA::COMPLETED_NO );
+	if ( check_for_name ( name ) )
+		throw CORBA::BAD_PARAM ( 3, CORBA::COMPLETED_NO );
+
+    StorageHomeDef_impl* base_storagehome_impl = 0;
+    StorageTypeDef_impl* managed_storagetype_impl = 0;
+    IDLType_impl* primary_key_impl = 0;
+
+	// Test the base storage home if there is one
+	if ( !CORBA::is_nil ( base_storagehome ) )
+	{
+		try
+		{
+			PortableServer::ServantBase_var servant =
+				repository_ -> poa() -> reference_to_servant ( base_storagehome );
+			base_storagehome_impl = dynamic_cast<StorageHomeDef_impl*>(servant.in());
+		}
+		catch(...)
+		{
+		}
+
+		if(!base_storagehome_impl)
+		{
+			// Must be same repository
+			throw CORBA::BAD_PARAM ( 4, CORBA::COMPLETED_NO );
+		}
+	}
+
+	// Test the managed storage type
+	if ( CORBA::is_nil ( managed_storagetype ) )
+		throw CORBA::BAD_PARAM();	// Is this exception corect?
+
+	try
+	{
+		PortableServer::ServantBase_var servant =
+			repository_ -> poa() -> reference_to_servant ( managed_storagetype );
+		managed_storagetype_impl = dynamic_cast<StorageTypeDef_impl*>(servant.in());
+	}
+	catch(...)
+	{
+	}
+
+	if(!managed_storagetype_impl)
+	{
+		// Must be same repository
+		throw CORBA::BAD_PARAM ( 4, CORBA::COMPLETED_NO );
+	}
+
+	// Test the primary key if there is one
+	if ( !CORBA::is_nil ( primary_key ) )
+	{
+		try
+		{
+			PortableServer::ServantBase_var servant =
+				repository_ -> poa() -> reference_to_servant ( primary_key );
+			primary_key_impl = dynamic_cast<IDLType_impl*>(servant.in());
+		}
+		catch(...)
+		{
+		}
+
+		if(!primary_key_impl)
+		{
+			// Must be same repository
+			throw CORBA::BAD_PARAM ( 4, CORBA::COMPLETED_NO );
+		}
+	}
+
+	StorageHomeDef_impl *new_storagehome = new StorageHomeDef_impl ( this, repository_, 
+			managed_storagetype_impl, base_storagehome_impl, primary_key_impl );
+
+	new_storagehome -> id ( id );
+	new_storagehome -> name ( name );
+	new_storagehome -> version ( version );
+	new_storagehome -> supported_interfaces ( supports_interfaces );
+
+	repository_ -> _add_ref();
+	this -> _add_ref();
+
+	return new_storagehome -> _this();
 }
 
 } // namespace QEDO_ComponentRepository

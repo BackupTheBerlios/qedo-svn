@@ -311,7 +311,7 @@ resolve_keys(
       check_item i = CheckItem(cs);
       resolve_key(name_v,type_v);
       if(i->entry) {
-          Error("state member '%k' in %k '%k' already used\n",
+          Error("state member '%k' in %k '%k' already used\n", 
                 name_v,name_v,nflag_v,name_1);
       }
       else {

@@ -188,15 +188,15 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
     out << "</componentkind>\n";
 
     out << "<threading policy=\"multithread\"/>\n";
-    out << "<configurationcomplete set=\"true\"/>\n";
+    out << "<configurationcomplete set=\"true\"/>\n\n";
 	
 	//<segment name="Seg" segmenttag="">
     //    <segmentmember facettag="the_fork"/>
     //</segment>
-    
+
 	out << "<homefeatures name=\"" << composition->ccm_home()->name();
 	out << "\" repid=\"" << composition->ccm_home()->id() << "\">\n";
-    out << "</homefeatures>\n";
+    out << "</homefeatures>\n\n";
     out << "<componentfeatures name=\"" << composition->ccm_component()->name();
 	out << "\" repid=\"" << composition->ccm_component()->id() << "\">\n";
     out.indent();

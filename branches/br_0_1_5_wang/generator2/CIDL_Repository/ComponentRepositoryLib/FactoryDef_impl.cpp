@@ -36,9 +36,37 @@ FactoryDef_impl::FactoryDef_impl
   Contained_impl ( container, repository ),
   OperationDef_impl ( container, repository )
 {
-	DEBUG_OUTLINE ( "FactoryDef_impl::FactoryDef_impl() called" );
+	DEBUG_OUTLINE ( "FactoryDef_impl::FactoryDef_impl() for component called" );
 
 	OperationDef_impl::result_def ( component -> _this() );
+	OperationDef_impl::mode ( IR__::OP_NORMAL );
+}
+
+FactoryDef_impl::FactoryDef_impl
+( Container_impl *container,
+  Repository_impl *repository,
+  AbstractStorageTypeDef_impl *abs_storagetype )
+: IRObject_impl ( repository ),
+  Contained_impl ( container, repository ),
+  OperationDef_impl ( container, repository )
+{
+	DEBUG_OUTLINE ( "FactoryDef_impl::FactoryDef_impl() for abstract storage home called" );
+
+	OperationDef_impl::result_def ( abs_storagetype -> _this() );
+	OperationDef_impl::mode ( IR__::OP_NORMAL );
+}
+
+FactoryDef_impl::FactoryDef_impl
+( Container_impl *container,
+  Repository_impl *repository,
+  StorageTypeDef_impl *storagetype )
+: IRObject_impl ( repository ),
+  Contained_impl ( container, repository ),
+  OperationDef_impl ( container, repository )
+{
+	DEBUG_OUTLINE ( "FactoryDef_impl::FactoryDef_impl() for storage home called" );
+
+	OperationDef_impl::result_def ( storagetype -> _this() );
 	OperationDef_impl::mode ( IR__::OP_NORMAL );
 }
 

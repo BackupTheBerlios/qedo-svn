@@ -4,8 +4,8 @@
 *   Author  : Harald Böhme
 *   e-mail  : boehme@informatik.hu-berlin.de
 *   Remark  :
-*   $Date: 2002/10/11 07:36:26 $
-*   $Revision: 1.1 $
+*   $Date: 2003/12/19 16:23:39 $
+*   $Revision: 1.1.1.1.18.1 $
 *
 *******************************************************************************/
 
@@ -14,7 +14,7 @@
 		   print_enum;
 
 %{
-static char id[] UNUSED = "$Id: print_idl.k,v 1.1 2002/10/11 07:36:26 neubauer Exp $";
+static char id[] UNUSED = "$Id: print_idl.k,v 1.1.1.1.18.1 2003/12/19 16:23:39 hao Exp $";
 %}
 
 GlobalName(ident_v)
@@ -340,7 +340,6 @@ StorageHome,
 StorageType,
 StorageTypeFwdDcl,
 StorageTypeRef,
-Catalog,
 AbstractStorageHome,
 AbstractStorageHomeFwdDcl,
 AbstractStorageType,

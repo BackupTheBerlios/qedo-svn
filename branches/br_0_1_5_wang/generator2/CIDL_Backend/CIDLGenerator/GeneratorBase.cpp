@@ -149,6 +149,10 @@ GeneratorBase::initialize(std::string target, std::string fileprefix)
 	case CORBA__::dk_Home :
 	case CORBA__::dk_Module : 
 	case CORBA__::dk_Composition :
+	case CORBA__::dk_AbstractStorageHome :
+	case CORBA__::dk_AbstractStorageType :
+	case CORBA__::dk_StorageHome :
+	case CORBA__::dk_StorageType :
 		break;
 	// no other targets supported
 	default :
@@ -216,6 +220,10 @@ GeneratorBase::insert_to_generate(IR__::Contained_ptr item)
 	case CORBA__::dk_Home :
 	case CORBA__::dk_Component :
 	case CORBA__::dk_Composition :
+	case CORBA__::dk_AbstractStorageHome :
+	case CORBA__::dk_AbstractStorageType :
+	case CORBA__::dk_StorageHome :
+	case CORBA__::dk_StorageType :
 		m_to_generate_interface_seq->length(m_to_generate_interface_seq->length()+1);
 		m_to_generate_interface_seq[m_to_generate_interface_seq->length()-1] = IR__::Contained::_duplicate(item);
 		break;
@@ -343,6 +351,22 @@ GeneratorBase::generate_the_item ( IR__::Contained_ptr item )
 		CIDL::CompositionDef_var a_composition = CIDL::CompositionDef::_narrow(item);
 		doComposition(a_composition);
 		break; }
+    case CORBA__::dk_AbstractStorageHome : {
+		IR__::AbstractStorageHomeDef_var abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(item);
+		doAbstractStorageHome(abs_storagehome);
+		break; }
+	case CORBA__::dk_StorageHome : {
+		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(item);
+		doStorageHome(storagehome);
+		break; }
+	case CORBA__::dk_AbstractStorageType : {
+		IR__::AbstractStorageTypeDef_var abs_storagetype = IR__::AbstractStorageTypeDef::_narrow(item);
+		doAbstractStorageType(abs_storagetype);
+		break; }
+	case CORBA__::dk_StorageType : {
+		IR__::StorageTypeDef_var storagetype = IR__::StorageTypeDef::_narrow(item);
+		doStorageType(storagetype);
+		break; }
 	default:
 		break;
 	};
@@ -378,6 +402,17 @@ void
 GeneratorBase::handleSupportedInterface(IR__::ComponentDef_ptr component)
 {
 	IR__::InterfaceDefSeq_var supported_seq = component->supported_interfaces();
+	CORBA::ULong len = supported_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++) {
+		doInterface((*supported_seq)[i]);
+	}
+}
+
+
+void 
+GeneratorBase::handleSupportedInterface(IR__::StorageTypeDef_ptr storage_type)
+{
+	IR__::InterfaceDefSeq_var supported_seq = storage_type->supported_interfaces();
 	CORBA::ULong len = supported_seq->length();
 	for(CORBA::ULong i = 0; i < len; i++) {
 		doInterface((*supported_seq)[i]);
@@ -450,12 +485,39 @@ GeneratorBase::handleFactory(IR__::HomeDef_ptr home)
 	}
 }
 
+void 
+GeneratorBase::handleFactory(IR__::AbstractStorageHomeDef_ptr abs_storage_home)
+{
+	IR__::ContainedSeq_var contained_seq = abs_storage_home->contents(CORBA__::dk_Factory, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
+		doFactory(a_factory, abs_storage_home);
+	}
+}
+
+void 
+GeneratorBase::handleFactory(IR__::StorageHomeDef_ptr storage_home)
+{
+	IR__::ContainedSeq_var contained_seq = storage_home->contents(CORBA__::dk_Factory, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
+		doFactory(a_factory, storage_home);
+	}
+}
 
 void
 GeneratorBase::doFactory(IR__::FactoryDef_ptr factory)
 {
 }
 
+void 
+GeneratorBase::doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDef_ptr inf_def)
+{
+}
 
 //
 // finder
@@ -564,6 +626,7 @@ GeneratorBase::handleException(IR__::Contained_ptr contained)
 		break; }
 	case CORBA__::dk_Factory :
 	case CORBA__::dk_Finder :
+	case CORBA__::dk_Key :
 	case CORBA__::dk_Operation : {
 		IR__::OperationDef_var a_operation = IR__::OperationDef::_narrow(contained);
 		exception_seq = a_operation->exceptions();
@@ -919,5 +982,78 @@ GeneratorBase::doComposition(CIDL::CompositionDef_ptr composition)
 {
 }
 
+//
+// abstract storage home
+//
+void 
+GeneratorBase::handleAbstractStorageHome(IR__::Container_ptr cont)
+{
+	IR__::ContainedSeq_var contained_seq = cont->contents(CORBA__::dk_AbstractStorageHome, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++) {
+		IR__::AbstractStorageHomeDef_var abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(((*contained_seq)[i]));
+		doAbstractStorageHome(abs_storagehome);
+	}
+}
+
+void 
+GeneratorBase::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home)
+{
+}
+
+//
+// storage home
+//
+void 
+GeneratorBase::handleStorageHome(IR__::Container_ptr cont)
+{
+	IR__::ContainedSeq_var contained_seq = cont->contents(CORBA__::dk_StorageHome, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++) {
+		IR__::StorageHomeDef_var storagehome = IR__::StorageHomeDef::_narrow(((*contained_seq)[i]));
+		doStorageHome(storagehome);
+	}
+}
+
+void 
+GeneratorBase::doStorageHome(IR__::StorageHomeDef_ptr storage_home)
+{
+}
+
+//
+// abstract storage type
+//
+void 
+GeneratorBase::doAbstractStorageType(IR__::AbstractStorageTypeDef_ptr abs_storage_type)
+{
+}
+
+//	
+// storage type
+//
+void 
+GeneratorBase::doStorageType(IR__::StorageTypeDef_ptr storage_type)
+{
+}
+
+//
+// Key
+//
+void 
+GeneratorBase::handleKey(IR__::InterfaceDef_ptr inf_def)
+{
+	IR__::ContainedSeq_var contained_seq = inf_def->contents(CORBA__::dk_Key, false);
+	CORBA::ULong len = contained_seq->length();
+	for(CORBA::ULong i = 0; i < len; i++)
+	{
+		IR__::KeyDef_var a_key = IR__::KeyDef::_narrow(((*contained_seq)[i]));
+		doKey(a_key, inf_def);
+	}
+}
+
+void 
+GeneratorBase::doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_def)
+{
+}
 
 } // namespace

@@ -82,6 +82,7 @@ protected:
 
 	// interface
 	void handleSupportedInterface(IR__::ComponentDef_ptr component);
+	void handleSupportedInterface(IR__::StorageTypeDef_ptr storage_type);
 	virtual void doInterface(IR__::InterfaceDef_ptr intface);
 
 	// value type
@@ -111,7 +112,10 @@ protected:
 
 	// factory
 	void handleFactory(IR__::HomeDef_ptr intf);
+	void handleFactory(IR__::AbstractStorageHomeDef_ptr abs_storage_home); //for PSS
+	void handleFactory(IR__::StorageHomeDef_ptr storage_home); //for PSS
 	virtual void doFactory(IR__::FactoryDef_ptr factory);
+	virtual void doFactory(IR__::FactoryDef_ptr factory, IR__::InterfaceDef_ptr inf_def); //for PSS
 
 	// finder
 	void handleFinder(IR__::HomeDef_ptr intf);
@@ -177,6 +181,23 @@ protected:
 	void handleSource(IR__::ComponentDef_ptr component);
 	virtual void doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr component);
 
+	// abstract storage home
+	void handleAbstractStorageHome(IR__::Container_ptr cont);
+	virtual void doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr abs_storage_home);
+
+	// storage home
+	void handleStorageHome(IR__::Container_ptr cont);
+	virtual void doStorageHome(IR__::StorageHomeDef_ptr storage_home);
+
+	// abstract storage type
+	virtual void doAbstractStorageType(IR__::AbstractStorageTypeDef_ptr abs_storage_type);
+	
+	// storage type
+	virtual void doStorageType(IR__::StorageTypeDef_ptr storage_type);
+	
+	// Key
+	void handleKey(IR__::InterfaceDef_ptr inf_def);
+	virtual void doKey(IR__::KeyDef_ptr key, IR__::InterfaceDef_ptr inf_def);
 
 public:
 
