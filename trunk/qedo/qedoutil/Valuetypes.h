@@ -52,7 +52,7 @@ public:
 };
 
 
-class CookieFactory_impl : public virtual CORBA::ValueFactoryBase
+class CONTAINERDLL_API CookieFactory_impl : public virtual CORBA::ValueFactoryBase
 {
 private:
 	virtual CORBA::ValueBase* create_for_unmarshal();
