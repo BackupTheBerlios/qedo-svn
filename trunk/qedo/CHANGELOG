@@ -1,3 +1,5 @@
+- moving output.* Synchronisation.* Valuetypes.* and StreamingVauetypes.* to the qedoutil lib
+
 version 0.4.2
 - support for deployment of additional artefacts
 - reorganizing XML stuff
