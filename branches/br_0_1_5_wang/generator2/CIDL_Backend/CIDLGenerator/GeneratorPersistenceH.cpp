@@ -59,13 +59,13 @@ GeneratorPersistenceH::generate(std::string target, std::string fileprefix)
 	out << "// BEGIN USER INSERT SECTION file_pre\n";
 	out << "// END USER INSERT SECTION file_pre\n\n";
 	out << "#include <CORBA.h>\n";
+	out << "#include <sstream>\n";
 	out << "#include \"CORBADepends.h\"\n";
 	out << "#include \"GlobalHelpers.h\"\n";
 	out << "#include \"StorageObject.h\"\n";
 	out << "#include \"StorageHomeBase.h\"\n";
 	out << "#include \"Catalog.h\"\n";
-	out << "#include \"" << file_prefix_ << "_EQUIVALENT.h\"\n";
-	out << "#include \"" << file_prefix_ << "_FD.h\"\n\n";
+	out << "#include \"" << file_prefix_ << "_EQUIVALENT.h\"\n\n";
 	out << "using namespace Qedo;\n\n";
 	out << "// BEGIN USER INSERT SECTION file_post\n";
 	out << "// END USER INSERT SECTION file_post\n";
@@ -747,6 +747,9 @@ GeneratorPersistenceH::doAbstractStorageHome(IR__::AbstractStorageHomeDef_ptr ab
 	open_module(out, abs_storagetype, "");
 	out << "\n\n";
 
+	out << "class " << std::string(abs_storagetype->name()) << ";\n";
+	out << "class " << std::string(abs_storagetype->name()) << "Ref;\n\n";
+
 	std::string strClassName = std::string(abs_storagehome->name());
 	strActBasename_ = strClassName;
 
@@ -867,6 +870,9 @@ GeneratorPersistenceH::doStorageHome(IR__::StorageHomeDef_ptr storagehome)
 	out << "\n\n";
 	open_module(out, storagetype, "");
 	out << "\n\n";
+	
+	out << "class " << std::string(storagetype->name()) << ";\n";
+	out << "class " << std::string(storagetype->name()) << "Ref;\n\n";
 
 	std::string strClassName = std::string(storagehome->name());
 	strActBasename_ = strClassName;

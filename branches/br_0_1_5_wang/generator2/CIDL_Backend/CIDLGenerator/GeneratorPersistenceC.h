@@ -83,7 +83,8 @@ private:
 	void genCreateOperation(IR__::StorageHomeDef_ptr storagehome, bool isRef);
 	void genAbstractObjsForConcreteType(IR__::AbstractStorageTypeDef_ptr abs_storagetype);
 	void genAbstractObjsForConcreteHome(IR__::AbstractStorageHomeDef_ptr abs_storagehome);
-	std::string genSQLLine(std::string strName, std::string strContent, bool start, bool comma, bool space, bool func=false);
+	std::string genSQLLine(std::string strName, std::string strContent, bool end, bool comma, bool space, bool func=false);
+	std::string genSQLLine(std::string strContent, bool end, bool comma, bool space, bool func=false);
 	IR__::AttributeDefSeq collectStateMembers(IR__::InterfaceDef_ptr inf_def, CORBA__::CollectStyle style);
 
 

@@ -204,6 +204,12 @@ public:
 										  CORBA::Boolean is_multiple)
         throw(CORBA::SystemException);
 
+	//
+    // IDL:omg.org/IR__/ComponentDef/get_state_members:1.0
+    //
+	virtual void get_state_members(IR__::AttributeDefSeq& state_members,
+                                  CORBA__::CollectStyle style)
+        throw(CORBA::SystemException);
 
 	// All inherited create_* operations except create_attribute from
 	// InterfaceDef and ContainerDef throw an exception

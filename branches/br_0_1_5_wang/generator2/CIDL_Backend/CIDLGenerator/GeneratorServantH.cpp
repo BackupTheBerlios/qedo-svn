@@ -279,8 +279,10 @@ GeneratorServantH::doComposition(CIDL::CompositionDef_ptr composition)
 	open_module(out, component_, "SERVANT_");
 	out << "\n\n";
 
+	genHomePersistence(home, lc);
 	genHomeServantBegin(home, lc);
 	genHomeServant(home, lc);
+	
 	out.unindent();
 	out << "};\n\n\n";
 
@@ -305,8 +307,9 @@ GeneratorServantH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "\n\n";
 
 	genContextServant(component_, lc);
+	genComponentPersistence(component_, lc);
 	genComponentServant(component_, lc);
-
+	
 	close_module(out, component_);
 
 }
@@ -775,6 +778,62 @@ GeneratorServantH::genComponentServantBody(IR__::ComponentDef_ptr component, CID
 	handleSource(component);
 }
 
+void
+GeneratorServantH::genMemberVariable(IR__::ComponentDef_ptr component)
+{
+	IR__::AttributeDefSeq state_members;
+	component->get_state_members(state_members, CORBA__::dk_Variable);
+	CORBA::ULong ulLen = state_members.length();
+	
+	out << "protected:\n\n";
+	out.indent();
+
+	for(CORBA::ULong i=0; i<ulLen; i++)
+	{
+		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		std::string attribute_name = mapName(attribute);
+		out << map_attribute_type(attribute->type_def()) << " " << attribute_name << "_;\n";
+	}
+
+	out.unindent();
+}
+
+void
+GeneratorServantH::genComponentPersistence(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc)
+{
+	if( lc!=CIDL::lc_Entity && lc!=CIDL::lc_Process )
+		return;
+
+	// handle base component
+	IR__::ComponentDef_var base_component = component->base_component();
+	if(base_component)
+		genComponentPersistence(base_component, lc);
+
+	out << "//\n// component persistence\n//\n";
+	out << "class " << component->name() << "Persistence\n";
+	out.indent();
+	if(base_component)
+		out << ": public virtual " << base_component->name() << "Persistence\n";
+	else
+		out << ": public virtual StorageObjectImpl\n";
+	out.unindent();
+	out << "{\n\npublic:\n\n";
+	out.indent();
+    out << component->name() << "Persistence();\n";
+	out << "~" << component->name() << "Persistence();\n";
+	
+	handleAttribute(component);
+
+	out << "\nvoid setValue(std::map<std::string, CORBA::Any> valueMap);\n\n";
+	
+	//generate _duplicate and _downcast operation
+	//genDuplAndDown(strClassName);
+	out.unindent();
+
+	genMemberVariable(component);
+
+	out << "};\n\n\n";
+}
 
 void
 GeneratorServantH::genContextServant(IR__::ComponentDef_ptr component, CIDL::LifecycleCategory lc)
@@ -962,12 +1021,13 @@ GeneratorServantH::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 		out << mapFullNamePK(home->primary_key()) << "* get_primary_key(" << mapFullName(component_) << "_ptr comp)\n"; 
 		out << "	throw(CORBA::SystemException);\n\n";
 
-		out << "std::vector<std::string> get_table_info();\n\n";
+		out << "std::vector<std::string> get_table_info();\n";
+		/*
 		out.unindent();
 		out << "private:\n\n";
 		out.indent();
 		out << "bool compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b);\n\n";
-
+		*/
 		break;
 	default:
 		out << "// not supported lifecycle\n";
@@ -1005,9 +1065,70 @@ GeneratorServantH::genHomeServant(IR__::HomeDef_ptr home, CIDL::LifecycleCategor
 		handleAttribute((*supp_intfs)[i]);
 		handleOperation((*supp_intfs)[i]);
 	};
-	
+
+	out.unindent();
+	out << "\n\nprivate:\n\n";
+	out.indent();
+	out << "bool compare_primarykey(" << mapFullNamePK(home->primary_key()) << "* pk_a, " << mapFullNamePK(home->primary_key()) << "* pk_b);\n\n";
 }
 
+void
+GeneratorServantH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::LifecycleCategory lc)
+{
+	if( lc!=CIDL::lc_Entity && lc!=CIDL::lc_Process )
+		return;
+
+	// handle base home
+	IR__::HomeDef_var base_home = home->base_home();
+	if(base_home)
+		genHomePersistence(base_home, lc);
+
+	out << "//\n// home persistence\n//\n";
+
+	// get managed component
+	IR__::ComponentDef_var component = home->managed_component();
+	out << "class " << component->name() << "Persistence;\n\n";
+
+	out << "class " << home->name() << "Persistence\n";
+	out.indent();
+	if(base_home)
+		out << ": public virtual " << home->name() << "Persistence\n";
+	else
+		out << ": public virtual StorageHomeBaseImpl\n";
+	out.unindent();
+	out << "{\n\npublic:\n\n";
+	out.indent();
+    out << home->name() << "Persistence();\n";
+	out << "~" << home->name() << "Persistence();\n\n";
+
+	int iLength = 0;
+	std::string strDummy = "";
+	char* szDisplay = map_psdl_return_type(component, false);
+	iLength = strlen(szDisplay) + 10;	
+	
+	out << component->name() << "Persistence* _create(";
+	out << "Pid* pid,\n";
+	strDummy.append(iLength, ' ');
+	out << strDummy.c_str();
+	out << "ShortPid* shortPid,\n";
+	
+	IR__::AttributeDefSeq state_members;
+	component->get_state_members(state_members, CORBA__::dk_Create);
+	CORBA::ULong ulLen = state_members.length();
+	for(CORBA::ULong i=0; i<ulLen; i++)
+	{
+		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
+		out << strDummy.c_str() << map_in_parameter_type(attribute->type_def()) << " " << mapName(attribute);
+		if( (i+1)!=ulLen )
+			out << ",\n";
+	}
+	
+	out << ");\n\n";
+
+	handleFactory(home);
+	handleFinder(home);
+	out.unindent();
+	out << "};\n\n";
+}
 
 } //
-

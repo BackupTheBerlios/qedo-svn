@@ -855,6 +855,10 @@ module IR__ {
 			in StreamTypeDef stream_type,
 			in boolean is_multiple
 		);
+		void get_state_members(
+			inout AttributeDefSeq state_members, 
+			in CORBA__::CollectStyle style
+		);
 	};
 
 

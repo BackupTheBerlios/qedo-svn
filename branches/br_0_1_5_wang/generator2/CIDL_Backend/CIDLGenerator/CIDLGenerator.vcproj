@@ -279,9 +279,6 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 				RelativePath="GeneratorPSD.cpp">
 			</File>
 			<File
-				RelativePath="GeneratorPSSFD.cpp">
-			</File>
-			<File
 				RelativePath="GeneratorPersistenceC.cpp">
 			</File>
 			<File
@@ -350,9 +347,6 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 			</File>
 			<File
 				RelativePath="GeneratorPSD.h">
-			</File>
-			<File
-				RelativePath="GeneratorPSSFD.h">
 			</File>
 			<File
 				RelativePath="GeneratorPersistenceC.h">

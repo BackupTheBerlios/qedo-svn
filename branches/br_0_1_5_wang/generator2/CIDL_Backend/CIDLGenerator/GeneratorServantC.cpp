@@ -670,6 +670,12 @@ GeneratorServantC::doComposition (CIDL::CompositionDef_ptr composition)
 void
 GeneratorServantC::doComponent(IR__::ComponentDef_ptr component)
 {
+	open_module(out, component, "SERVANT_");
+	out << "\n\n";
+	out << "//here is component\n";
+	out << "\n\n";
+	close_module(out, component);
+
 	/*std::string header_name = std::string(getAbsoluteName(component, "_")) + "_SERVANT";
 	std::string filename = header_name + ".cpp";
 	out.open(filename.c_str());
@@ -1003,6 +1009,12 @@ GeneratorServantC::doConsumes(IR__::ConsumesDef_ptr consumes, IR__::ComponentDef
 void
 GeneratorServantC::doHome(IR__::HomeDef_ptr home)
 {
+	component_ = IR__::ComponentDef::_duplicate(home->managed_component());
+	open_module(out, component_, "SERVANT_");
+	out << "\n\n";
+	out << "//here is home\n";
+	out << "\n\n";
+	close_module(out, component_);
 	/*
 	component_ = IR__::ComponentDef::_duplicate(home->managed_component());
 	
