@@ -18,10 +18,10 @@ CC=$(CXX)
 
 LIBS += -L../../CIDL_Repository/IFRidl \
 		  -lIFRidl \
-   	  -L../../CIDL_Repository/ComponentRepositoryLib \
-		  -lComponentRepositoryLib \
 		  -L../../CIDL_Repository/CIDLRepositoryLib \
 		  -lCIDLRepositoryLib \
+   	  -L../../CIDL_Repository/ComponentRepositoryLib \
+		  -lComponentRepositoryLib \
         -L../../CIDL_Frontend/CIDLFrontendLib \
 		  -lCIDLFrontendLib 
 
