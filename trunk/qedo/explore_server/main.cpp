@@ -47,15 +47,11 @@ int main (int argc, char** argv)
 		//Activate POA Manager
 		PortableServer::POAManager_var mgr=poa->the_POAManager();
 		
-		
-
 		//Create an Object
 		Explore_impl *impl = new Explore_impl;
 		impl->e_argc=argc;
 		impl->e_argv=argv;
 		impl->e_orb=orb;
-
-
 
 		//Activate the servant
 		Explore_var f=impl->_this();
@@ -69,6 +65,21 @@ int main (int argc, char** argv)
 		
 		//narrow the root naming context
 		CosNaming::NamingContext_var nc=CosNaming::NamingContext::_narrow(nsobj);
+
+	    CosNaming::NamingContext_var context; 
+		CosNaming::Name contextName;
+		contextName.length(1);
+		contextName[0].id = CORBA::string_dup("Qedo");
+		contextName[0].kind = CORBA::string_dup("");
+
+		try
+		{
+			context = nc->bind_new_context(contextName);
+		}
+		catch (const CosNaming::NamingContext::AlreadyBound&)
+		{
+			// nothing to do
+		}
 
 		//create a name entry
 		CosNaming::Name name;
@@ -102,6 +113,9 @@ int main (int argc, char** argv)
 		std::cout<<"Explore Server is running..."<<endl;
 		//run the orb
 		orb->run();
+		
+		// remove reference from NameService
+		nc -> unbind(name);
 
 		poa->destroy(TRUE,TRUE);
 		delete impl;

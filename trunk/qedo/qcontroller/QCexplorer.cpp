@@ -118,11 +118,12 @@ QCexplorerTreeCtrl::build_tree()
 
 		if (CORBA::is_nil(nsobj)) {
 				//std::cerr << "Cannot resolve NameService" << endl;
-				exit(1);
+				return;
 		}
 		
 		//narrow the root naming context
 		CosNaming::NamingContext_var nc=CosNaming::NamingContext::_narrow(nsobj);
+
 
 		//create a name component
 		CosNaming::Name name;
@@ -132,9 +133,14 @@ QCexplorerTreeCtrl::build_tree()
 		name[1].id=CORBA::string_dup("ExploreServer");
 		name[1].kind=CORBA::string_dup("");
 
-		//resolve the name component with the naming service
-		CORBA::Object_var obj=nc->resolve(name);		
-	
+		CORBA::Object_var obj;
+		try {
+			//resolve the name component with the naming service
+			obj=nc->resolve(name);		
+		} catch (...)
+		{
+			return;
+		}
 		// Narrow
 		Explore_var exp = Explore::_narrow(obj);
 		ComponentServerActivatorInfoList* CSAIL=exp->explore_qedo();
