@@ -29,7 +29,9 @@
 #include <CORBA.h>
 #include "IFR_skel.h"
 
+#ifdef _MSC_VER
 #pragma warning( disable : 4290 )
+#endif
 
 namespace QEDO_ComponentRepository {
 
