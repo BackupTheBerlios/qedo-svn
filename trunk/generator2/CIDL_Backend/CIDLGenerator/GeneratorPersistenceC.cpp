@@ -2955,7 +2955,7 @@ GeneratorPersistenceC::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	strContent_ = "\\'";
 	out << genSQLLine(strContent_, true, true, true);
 
-	for(CORBA::ULong i=0; i<ulLen; i++)
+	for(i=0; i<ulLen; i++)
 	{
 		attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		// parse valuemember from valuetype

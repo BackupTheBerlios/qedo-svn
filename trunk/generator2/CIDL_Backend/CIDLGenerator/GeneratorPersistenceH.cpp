@@ -1243,7 +1243,8 @@ GeneratorPersistenceH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	// handel other in-parameters
 	component->get_state_members(state_members, CORBA__::dk_Create);
 	CORBA::ULong ulLen = state_members.length();
-	for(CORBA::ULong i=0; i<ulLen; i++)
+	CORBA::ULong i;
+	for(i=0; i<ulLen; i++)
 	{
 		IR__::AttributeDef_var attribute = IR__::AttributeDef::_narrow(state_members[i]);
 		out << strDummy.c_str() << map_in_parameter_type(attribute->type_def()) << " " << mapName(attribute);
@@ -1256,7 +1257,6 @@ GeneratorPersistenceH::genHomePersistence(IR__::HomeDef_ptr home, CIDL::Lifecycl
 	// handel factory
 	IR__::ContainedSeq_var contained_seq = home->contents(CORBA__::dk_Factory, false);
 	CORBA::ULong len = contained_seq->length();
-	CORBA::ULong i;
 	for(i = 0; i < len; i++)
 	{
 		IR__::FactoryDef_var a_factory = IR__::FactoryDef::_narrow(((*contained_seq)[i]));
