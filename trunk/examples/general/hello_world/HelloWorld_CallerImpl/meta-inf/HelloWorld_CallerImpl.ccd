@@ -1,0 +1,21 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://qedo.berlios.de/corbacomponent.dtd">
+
+<corbacomponent>
+    <corbaversion>3.0</corbaversion>
+    <componentrepid repid="IDL:HelloWorld/Caller:1.0"/>
+    <homerepid repid="IDL:HelloWorld/CallerHome:1.0"/>
+    <componentkind>
+        <session>
+            <servant lifetime="container"/>
+        </session>
+    </componentkind>
+    <threading policy="multithread"/>
+    <configurationcomplete set="true"/>
+    <homefeatures name="CallerHome" repid="IDL:HelloWorld/CallerHome:1.0">
+    </homefeatures>
+    <componentfeatures name="Caller" repid="IDL:HelloWorld/Caller:1.0">
+        <ports>
+        </ports>
+    </componentfeatures>
+</corbacomponent>
