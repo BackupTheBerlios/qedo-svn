@@ -25,6 +25,7 @@
 #endif
 
 #include "HomeFinderImpl.h"
+#include "ConfigurationReader.h"
 #include "Output.h"
 #include <cstring>
 #include <string>
@@ -35,7 +36,7 @@
 #include "Synchronisation.h"
 #endif
 
-static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.10 2004/03/22 11:17:28 tom Exp $";
+static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.11 2004/04/26 13:31:40 neubauer Exp $";
 
 
 /**
@@ -66,7 +67,7 @@ handle_sigint
 	std::cerr << "..... unbind in NameService" << std::endl;
 
 	//
-	// unbind in naming service
+	// build name for name service
 	//
     CORBA::Object_var obj;
 	CosNaming::NamingContext_var nameService;
@@ -76,12 +77,68 @@ handle_sigint
     name[0].kind = CORBA::string_dup("");
 	name[1].id = CORBA::string_dup("HomeFinder");
     name[1].kind = CORBA::string_dup("");
-    try
-    {
-        obj = orb->resolve_initial_references("NameService");
-		nameService = CosNaming::NamingContext::_narrow(obj.in());
-		nameService->unbind(name);
-    }
+    
+	//
+	// unbind name in name service
+	//
+	try
+	{
+		//
+		// try to get name service from config values
+		//
+		std::string ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
+		if( !ns.empty() )
+		{
+			try
+			{
+				obj = orb->string_to_object( ns.c_str() );
+			}
+			catch(...)
+			{
+				NORMAL_ERR2( "qassf: can't resolve NameService ", ns );
+			}
+
+			NORMAL_OUT2( "qassf: NameService is ", ns );
+		}
+		//
+		// try to get naming service from orb
+		//
+		else
+		{
+			try
+			{
+				obj = orb->resolve_initial_references( "NameService" );
+			}
+			catch (const CORBA::ORB::InvalidName&)
+			{
+				NORMAL_ERR( "qassf: can't resolve NameService from ORB" );
+			}
+
+			if (CORBA::is_nil(obj.in()))
+			{
+				NORMAL_ERR( "qassf: NameService is a nil object reference" );
+			}
+		}
+
+		try
+		{
+			nameService = CosNaming::NamingContext::_narrow( obj.in() );
+		}
+		catch (const CORBA::Exception&)
+		{
+			NORMAL_ERR( "qassf: NameService is not running" );
+		}
+
+		if( CORBA::is_nil(nameService.in()) )
+		{
+			NORMAL_ERR( "qassf: NameService is not a NamingContext object reference" );
+		}
+
+		if (!CORBA::is_nil(nameService.in()))
+		{
+ 			nameService->unbind(name);
+		}
+	}
 	catch (const CORBA::Exception&)
 	{
 		std::cerr << "..... could not unbind" << std::endl;
