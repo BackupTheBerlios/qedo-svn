@@ -48,6 +48,7 @@ private:
 	bool need_push_;
 	CIDL::CompositionDef_var composition_;
 	IR__::StorageHomeDef_var storagehome_;
+	CIDL::StorageHomeDelegationSeq_var storagehome_delegatees_;
 	std::set < std::string > handled_interfaces_;
 	GeneratorPersistenceC*      pc_generator_;
 

@@ -188,7 +188,7 @@ throw(CORBA::SystemException)
 	IR__::Contained::Description_var desc = new IR__::Contained::Description();
 	desc -> kind = def_kind();
 	CORBA::Any any;
-	any <<= storagehome_desc._retn();;
+	any <<= storagehome_desc._retn();
 	desc -> value = any;
 
 	return desc._retn();

@@ -2395,7 +2395,8 @@ GeneratorServantC::genHomeServantBegin(IR__::HomeDef_ptr home, CIDL::LifecycleCa
 				}
 			}
 			out << ");\n";
-			out << "new_context->set_storage_object(pPssStorageObject);\n\n";
+			out << "new_context->set_storage_object(pPssStorageObject);\n";
+			out << "home_executor->set_storagehome_in_context(pPssStorageHome_);\n\n";
 		}
 	}
 

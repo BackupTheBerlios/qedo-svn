@@ -28,7 +28,7 @@
 #include "InternalConfiguration.h"
 
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.21.2.2 2004/02/29 18:40:07 hao Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.21.2.3 2004/07/30 10:24:45 hao Exp $";
 
 
 namespace Qedo {
@@ -340,7 +340,8 @@ Thread_impl::join()
 
 
 HomeExecutorContext::HomeExecutorContext (Components::CCMHome_ptr my_home_ref)
-: my_home_ref_ (Components::CCMHome::_duplicate (my_home_ref))
+: my_home_ref_ (Components::CCMHome::_duplicate (my_home_ref)),
+  pStorageHomeBase_(NULL)
 {
 }
                                                                                                   
@@ -355,6 +356,18 @@ Components::CCMHome_ptr
 HomeExecutorContext::get_CCM_home()
 {
         return Components::CCMHome::_duplicate (my_home_ref_);
+}
+
+void
+HomeExecutorContext::set_storagehome(StorageHomeBase_ptr pStorageHomeBase)
+{
+	pStorageHomeBase_ = pStorageHomeBase;
+}
+
+StorageHomeBase_ptr
+HomeExecutorContext::get_storagehome()
+{
+	return pStorageHomeBase_;
 }
 
 } // namespace Qedo

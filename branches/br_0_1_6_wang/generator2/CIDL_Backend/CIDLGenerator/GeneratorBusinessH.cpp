@@ -636,6 +636,12 @@ GeneratorBusinessH::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "//\n// IDL:Components/HomeExecutorBase/set_context:1.0\n//\n";
 	out << "virtual void set_context (Components::HomeContext_ptr ctx)\n";
 	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
+	out << "//\n// IDL:Components/HomeExecutorBase/set_storagehome_in_context:1.0\n//\n";
+	out << "virtual void set_storagehome_in_context (::CosPersistentState::StorageHomeBase_ptr storHomeBase)\n";
+	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
+	out << "//\n// IDL:Components/HomeExecutorBase/get_storagehome_from_context:1.0\n//\n";
+	out << "virtual ::CosPersistentState::StorageHomeBase_ptr get_storagehome_from_context ()\n";
+	out << "    throw (CORBA::SystemException, Components::CCMException);\n\n";
     out << "//\n// IDL:.../create:1.0\n//\n";
 	switch(composition->lifecycle())
 	{

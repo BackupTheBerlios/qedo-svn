@@ -24,7 +24,7 @@
 /*
 * This connector can know how many sessions or session pools can be established
 * in a given database. It can also control how many storagehome can share one 
-* session or session pool dynamically and explicitly
+* session or session pool dynamically and explicitly.
 * Supporting only one database is the limitation of this connector, but this
 * can be improved in the future ;-)
 */

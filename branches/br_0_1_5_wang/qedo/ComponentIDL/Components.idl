@@ -814,6 +814,10 @@ module Components {
 	{
 		void set_context (in HomeContext ctx)
 			raises (CCMException);
+		void set_storagehome_in_context(in CosPersistentState::StorageHomeBase storHomeBase)
+			raises (CCMException);
+		CosPersistentState::StorageHomeBase get_storagehome_from_context()
+			raises (CCMException);
 	};
 
 	local interface ExecutorLocator : EnterpriseComponent

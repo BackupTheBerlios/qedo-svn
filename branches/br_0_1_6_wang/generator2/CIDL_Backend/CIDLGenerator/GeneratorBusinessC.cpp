@@ -122,6 +122,21 @@ GeneratorBusinessC::doOperation(IR__::OperationDef_ptr operation)
 	handleException(operation);
 	out << ")\n{\n";
 	out.insertUserSection(class_name_ + "::" + operation->name(), 0);
+	if( composition_->lifecycle()==CIDL::lc_Entity || 
+		composition_->lifecycle()==CIDL::lc_Process )
+	{
+		for(i = 0; i<storagehome_delegatees_->length(); i++)
+		{
+			CIDL::StorageHomeDelegation delegatee = (*storagehome_delegatees_)[i];
+			std::string strDelegant = mapName(delegatee.delegated_operation->name());
+			if (strDelegant == operation_name)
+			{
+				out << storagehome_->name() << "* obj = dynamic_cast <" << storagehome_->name() << "*> (get_storagehome_from_context());\n";
+				std::string strTemp = delegatee.storagehome_op_name;
+				out << "obj->" << strTemp << ";\n";
+			}
+		}
+	}
 	out << "}\n\n\n";
 }
 
@@ -380,11 +395,12 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	filename_ = "";
 	CIDL::SegmentDefSeq_var segment_seq = composition->executor_def()->segments();
 
-	// get storage home
+	// get storage home and its delegatees, if there is any.
 	if( composition->lifecycle()==CIDL::lc_Entity || 
 		composition->lifecycle()==CIDL::lc_Process )
 	{
 		storagehome_ = IR__::StorageHomeDef::_duplicate(composition->home_executor()->binds_to());
+		storagehome_delegatees_ = composition->home_executor()->storagehome_delegations();
 	}
 	
 	string id = composition->id();
@@ -852,6 +868,40 @@ GeneratorBusinessC::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
     // out << "context_ = " << context_name << "::_narrow(ctx);\n";		// this is wrong
 	out << "context_ = Components::HomeContext::_duplicate(ctx);\n\n";
+	out.unindent();
+	out << "}\n\n\n";
+
+	// set storagehome in context
+	out << "void\n";
+	out << class_name_ << "::set_storagehome_in_context(::CosPersistentState::StorageHomeBase_ptr storHomeBase)\n";
+	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
+	out.indent();
+	if(!CORBA::is_nil(storagehome_))
+	{
+		out << "HomeExecutorContext* home_executor_context = dynamic_cast <HomeExecutorContext*> (context_.in());\n";
+		out << "home_executor_context->set_storagehome(storHomeBase);\n\n";
+	}
+	else
+	{
+		out << "return;\n";
+	}
+	out.unindent();
+	out << "}\n\n\n";
+
+	// get storagehome from context
+	out << "::CosPersistentState::StorageHomeBase_ptr\n";
+	out << class_name_ << "::get_storagehome_from_context()\n";
+	out << "    throw (CORBA::SystemException, Components::CCMException)\n{\n";
+	out.indent();
+	if(!CORBA::is_nil(storagehome_))
+	{
+		out << "HomeExecutorContext* home_executor_context = dynamic_cast <HomeExecutorContext*> (context_.in());\n";
+		out << "return home_executor_context->get_storagehome();\n\n";
+	}
+	else
+	{
+		out << "return NULL;\n";
+	}
 	out.unindent();
 	out << "}\n\n\n";
 	

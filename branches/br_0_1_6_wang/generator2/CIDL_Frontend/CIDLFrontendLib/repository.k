@@ -2609,16 +2609,15 @@ StorageHomeDelegationSpec(def_list)
       foreach(pair; definition_list def_list) {
         with(pair) {
           OperationPair(op1, Name(op2)) : {
-            CIDL::StorageHomeDelegation dele;
-            dele.delegated_operation = IR__::OperationDef::_narrow( op1->symtab_entry->irobj );
-            dele.storagehome_op_name = CORBA::string_dup( op2->name );
+            CIDL::StorageHomeDelegation_var dele = new CIDL::StorageHomeDelegation;
+            dele->storagehome_op_name = CORBA::string_dup( op2->name );
 			kc_current_view.storagehome_delegation[kc_current_view.pos] = dele;
 		    kc_current_view.pos++;
           }
           Operation(op=Name(op_name)) : {
-            CIDL::StorageHomeDelegation dele;
-            dele.delegated_operation = IR__::OperationDef::_narrow( op->symtab_entry->irobj );
-            dele.storagehome_op_name = CORBA::string_dup( op_name->name );
+            CIDL::StorageHomeDelegation_var dele = new CIDL::StorageHomeDelegation;
+            dele->delegated_operation = IR__::OperationDef::_narrow( op->symtab_entry->irobj );
+            dele->storagehome_op_name = CORBA::string_dup( op_name->name );
 			kc_current_view.storagehome_delegation[kc_current_view.pos] = dele;
 		    kc_current_view.pos++;
           }
