@@ -64,7 +64,7 @@ private:
 	QCexplorerTreeCtrl* qcexplorer_ ;
 	//wxTextCtrl* info_box_;
 	
-	
+	void start();
 	
     DECLARE_EVENT_TABLE()
 

@@ -39,6 +39,10 @@ public:
 	void OnASSFStartButton(wxCommandEvent& WXUNUSED(event));
 	void OnSAStartButton(wxCommandEvent& WXUNUSED(event));
 	void OnCIStartButton(wxCommandEvent& WXUNUSED(event));
+	void OnEdit_conf_Button(wxCommandEvent& WXUNUSED(event));
+	void OnDomain_start(wxCommandEvent& WXUNUSED(event));
+	void OnNode_start(wxCommandEvent& WXUNUSED(event));
+	void OnExplorer_start(wxCommandEvent& WXUNUSED(event));
 	//wxTextCtrl* port_number_;
 
 private:
@@ -52,15 +56,30 @@ private:
 	bool sa_started_;
 	long ci_pid_; 
 	bool ci_started_;
+	long sexp_pid_;
+	bool sexp_started_ ;
 
+	wxButton *NodeStartBtn;
+	wxButton *DomainStartBtn;
+	wxButton *EditConfBtn;
 	wxButton *NSDStartBtn; 
 	wxButton *HFStartBtn;
 	wxButton *ASSFStartBtn;
 	wxButton *SAStartBtn;
 	wxButton *CIStartBtn;
+	wxButton *QedoExplorerBtn;
 	wxTextCtrl* host_name_nsd_;
 	wxTextCtrl* port_number_;
 	
+	// domain
+	void startNSD();
+	void startHF();
+	void startASSF();
+	void startEXP();
+
+	// node
+	void startSA();
+	void startCI();
 	
 	
 	

@@ -56,7 +56,7 @@ QedoExplorer::QedoExplorer(wxWindow *parent, const wxWindowID id,
 	wxBoxSizer *sizerLauncher = new wxBoxSizer(wxVERTICAL);
 	this->SetSizer(sizerLauncher);
     this->SetAutoLayout(TRUE);
-
+/*
 	//spacer
 	sizerLauncher->Add(5, 5, 0, wxGROW | wxALL, 5);
 
@@ -107,13 +107,17 @@ QedoExplorer::QedoExplorer(wxWindow *parent, const wxWindowID id,
 	//port_client_ = new wxTextCtrl( this, ID_PORT_CLIENT, _T("12356"), wxDefaultPosition, wxDefaultSize, 0 );
 	//h_exp_c_sizer->Add(port_client_, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-	
+	*/
 	// Explorer Tree Controll
-	wxStaticBox *exp_tree_ctrl_box = new wxStaticBox(this, -1, _T("&Explorer Tree Controll"));
-	wxStaticBoxSizer *h_TC_sizer = new wxStaticBoxSizer(exp_tree_ctrl_box,wxHORIZONTAL);
+	//wxStaticBox *exp_tree_ctrl_box = new wxStaticBox(this, -1, _T("&Explorer Tree Controll"));
+	//wxStaticBoxSizer *h_TC_sizer = new wxStaticBoxSizer(exp_tree_ctrl_box,wxHORIZONTAL);
+	
+
+	// new Sizer
+	wxBoxSizer *h_TC_sizer = new wxBoxSizer(wxHORIZONTAL);
 	sizerLauncher->Add(h_TC_sizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
 
-	qcexplorer_= new QCexplorerTreeCtrl (this, QCexplorerTree_Ctrl, wxDefaultPosition, wxSize(340,300), wxTR_DEFAULT_STYLE);
+	qcexplorer_= new QCexplorerTreeCtrl (this, QCexplorerTree_Ctrl, wxDefaultPosition, wxSize(400,400), wxTR_DEFAULT_STYLE);
 	h_TC_sizer->Add(qcexplorer_,0,wxALIGN_CENTER_VERTICAL|wxALL,5);
 
 	
@@ -134,7 +138,7 @@ QedoExplorer::QedoExplorer(wxWindow *parent, const wxWindowID id,
 	rigth_sizer->Add(info_box_,0,wxALIGN_CENTER_VERTICAL|wxALL,5);*/
 
 //	qcexplorer_->set_info_box(info_box_);
-
+	start();
 
 
 }
@@ -235,4 +239,21 @@ void QedoExplorer::text_to_ib(wxString t) {
 
 }
 
+void QedoExplorer::start()
+{
+		std::string ns;
+		ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );
+
+//		qcexplorer_->cmd_ns="corbaloc::";
+//		wxString portnr_c=port_client_->GetValue();
+//		wxString hostname_c=hostname_client_->GetValue();
+//		qcexplorer_->cmd_ns.append(hostname_c);
+//		qcexplorer_->cmd_ns.append(":");
+//		qcexplorer_->cmd_ns.append(portnr_c);
+//		qcexplorer_->cmd_ns.append("/NameService");
+
+		qcexplorer_->cmd_ns=ns.c_str();
+        qcexplorer_->OnExplorerRefresh();
+	
+}
 
