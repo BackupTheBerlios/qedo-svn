@@ -230,7 +230,7 @@
 						Name="VCCustomBuildTool"
 						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico  -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --servant --target IDL:Chat/Channel_Compo:1.0 ../chat.cidl
 "
-						Outputs="Chat_Channel_Compo_LOCAL.idl;Chat_Channel_Compo_EQUIVALENT.idl;Chat_Channel_Compo_BUSINESS.idl"/>
+						Outputs="Chat_Channel_Compo_LOCAL.idl;Chat_Channel_Compo_EQUIVALENT.idl"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Debug_tao|Win32">
