@@ -53,7 +53,7 @@ bool QedoController::OnInit()
     window_title.append(QEDO_VERSION);
 
 	MainFrame *frame = new MainFrame(window_title,main_point,main_size,
-		wxMINIMIZE_BOX|wxSYSTEM_MENU|wxCAPTION);
+		wxDEFAULT_FRAME_STYLE|wxMINIMIZE_BOX|wxSYSTEM_MENU|wxCAPTION);
 	
     // Problem with generic wxNotebook implementation whereby it doesn't size
     // properly unless you set the size again

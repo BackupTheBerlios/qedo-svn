@@ -47,10 +47,13 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	hf = 0;
 	// set icon
 	SetIcon(wxIcon(qedoicon_xpm));
+	
 
+	
 	panel_ = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize,
-        wxTAB_TRAVERSAL | wxCLIP_CHILDREN | wxNO_BORDER);
+        wxTAB_TRAVERSAL | wxCLIP_CHILDREN | wxNO_BORDER );
 
+	
     wxSize notebook_size(800,600);
     wxPoint notebook_point(5,5);
 
@@ -68,24 +71,34 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	notebook_ -> SetImageList(notebook_image_list);
 
 
-	sizerFrame_ = new wxBoxSizer(wxBOTH);
+	wxBoxSizer *hori_sizer = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *hori_sizer2 = new wxBoxSizer(wxVERTICAL);
+
+	sizerFrame_ = new wxBoxSizer(wxHORIZONTAL);
+	sizerFrame_->Add(hori_sizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
+	sizerFrame_->Add(hori_sizer2, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
 
 	panel_->SetSizer(sizerFrame_);
 
-	notebook_ -> CreateControllerPages(sizerFrame_);
+	notebook_ -> CreateControllerPages(hori_sizer);
 
-
+	
 	// set Logo
 	wxBitmap qedologo_xpm( qedologo_xpm );
-    wxStaticBitmap* qedo_logo = new wxStaticBitmap( panel_, wxID_STATIC, qedologo_xpm, wxPoint(605,20), wxSize(105, 31), 0 );
+    wxStaticBitmap* qedo_logo = new wxStaticBitmap( panel_, wxID_STATIC, qedologo_xpm, wxDefaultPosition, wxSize(105, 31), 0 );
+	hori_sizer2->Add(qedo_logo, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
+
 
 
 	wxSize buttonsize(110,25);
-	help = new wxButton(panel_, ID_HELP_BUTTON, _T("Help"),wxPoint(630,470),buttonsize,0);
-	quit = new wxButton(panel_, ID_QUIT_CONTROLLER, _T("Close"), wxPoint(630,510),buttonsize,0);
+	help = new wxButton(panel_, ID_HELP_BUTTON, _T("Help"),/*wxPoint(630,470) */ wxDefaultPosition,buttonsize,0);
+	hori_sizer2->Add(help, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
+
+	quit = new wxButton(panel_, ID_QUIT_CONTROLLER, _T("Close"), /* wxPoint(630,510)*/ wxDefaultPosition ,buttonsize,0);
+	hori_sizer2->Add(quit, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5);
 
 	panel_->SetAutoLayout(TRUE);
-
+	
 }
 
 MainFrame::~MainFrame() {
