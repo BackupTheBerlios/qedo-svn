@@ -39,7 +39,7 @@ namespace Qedo
 {
 
 class CONTAINERDLL_API ConnectorImpl : public virtual CosPersistentState::Connector,
-					             public virtual RefCountLocalObject
+										public virtual RefCountLocalObject
 {
 	public:
 

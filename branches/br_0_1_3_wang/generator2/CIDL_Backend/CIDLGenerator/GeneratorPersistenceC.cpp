@@ -145,6 +145,7 @@ GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribut
 			out << "{\n";
 			out.indent();
 			out << "m_" << attribute_name << " = param;\n";
+			out << "setModified(true);\n";
 			out.unindent();
 			out << "}\n\n";
 	}
@@ -167,6 +168,7 @@ GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribut
 		default:
 			out << "m_" << attribute_name << " = param;\n";
 	}
+	out << "setModified(true);\n";
 	out.unindent();
 	out << "}\n\n";
 
@@ -180,6 +182,7 @@ GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribut
 		out << "{\n";
 		out.indent();
 		out << "m_" << attribute_name << " = (char*)param;\n";
+		out << "setModified(true);\n";
 		out.unindent();
 		out << "}\n\n";
 	}
@@ -192,6 +195,7 @@ GeneratorPersistenceC::genAttributeWithNomalType(IR__::AttributeDef_ptr attribut
 		out << "{\n";
 		out.indent();
 		out << "m_" << attribute_name << " = (char*)param;\n";
+		out << "setModified(true);\n";
 		out.unindent();
 		out << "}\n\n";
 	}
@@ -222,6 +226,7 @@ GeneratorPersistenceC::genAttributeWithOtherType(IR__::AttributeDef_ptr attribut
 	out << "{\n";
 	out.indent();
 	out << "m_" << attribute_name << " = param;\n";
+	out << "setModified(true);\n";
 	out.unindent();
 	out << "}\n\n";
 }

@@ -22,6 +22,7 @@
 
 #include "StorageObject.h"
 #include "StorageHomeBase.h"
+#include "Catalog.h"
 
 namespace Qedo
 {
@@ -41,7 +42,7 @@ StorageObjectImpl::StorageObjectImpl() :
 //associated storage object (but does not destroy any of its incarnation)
 //The standard exception PERSISTENT_STORE is raised when this operation is called
 //on the instance of an embedded storage object
-//MEMO: delete corresponding record in database;
+//MEMO: delete its record in database;
 ////////////////////////////////////////////////////////////////////////////////
 void 
 StorageObjectImpl::destroy_object() 
@@ -52,21 +53,17 @@ StorageObjectImpl::destroy_object()
 	string my_pid = PSSHelper::convertPidToString(m_pid);
 
 	string strSqlDel;
-	strSqlDel = "delete from ";
+	strSqlDel = "DELETE FROM ";
 	strSqlDel.append((const char*)homename);
-	strSqlDel += " where PID like ";
+	strSqlDel += " WHERE pid LIKE ";
 	strSqlDel += my_pid;
 	strSqlDel += ";";
-    
-	homeimpl->Open(strSqlDel.c_str());
-	homeimpl->Close();
-
-	strSqlDel = "delete from PID_CONTENT where PID like ";
+	strSqlDel += "DELETE FROM pid_content WHERE pid LIKE ";
 	strSqlDel += my_pid;
 	strSqlDel += ";";
 
-	homeimpl->Open(strSqlDel.c_str());
-	homeimpl->Close();
+	CatalogBaseImpl* cbImpl = dynamic_cast <CatalogBaseImpl*> (homeimpl->get_catalog());
+	cbImpl->ExecuteSQL(strSqlDel.c_str());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -82,9 +79,9 @@ StorageObjectImpl::object_exists()
 	string my_pid = PSSHelper::convertPidToString(m_pid);
 
 	string strSqlSel;
-	strSqlSel = "select COUNT(*) from ";
+	strSqlSel = "SELECT COUNT(*) FROM ";
 	strSqlSel.append((const char*)homename);
-	strSqlSel += " where PID like ";
+	strSqlSel += " WHERE pid LIKE ";
 	strSqlSel += my_pid;
 	strSqlSel += ";";
     
@@ -138,43 +135,19 @@ StorageObjectImpl::get_storage_home()
 	return m_storageHomeBase;
 }
 
-void
-StorageObjectImpl::setModified(bool bModified)
-{
-	m_bModified = bModified;
-}
-
-bool 
-StorageObjectImpl::isModified()
-{
-	return m_bModified;
-}
-
-string
-StorageObjectImpl::getUpdate()
-{
-	//returns the SQL-Update for CatalogBase::flush()
-	return m_strUpdate;
-}
-
-string
-StorageObjectImpl::getSelect()
-{
-	//returns the SQL-Select for CatalogBase::refresh()
-	return m_strSelect;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 //##############################################################################
-//##############################################################################
+////////////////////////////////////////////////////////////////////////////////
+
 ////////////////////////////////////////////////////////////////////////////////
 //a public default constructor that creates a null reference
 ////////////////////////////////////////////////////////////////////////////////
-/*StorageObjectRefImpl::StorageObjectRefImpl() 
+/*
+StorageObjectRefImpl::StorageObjectRefImpl() 
 	throw()
 {
-
-}*/
+}
+*/
 
 ////////////////////////////////////////////////////////////////////////////////
 //a non-explicit constructor which takes an incarnation of the target storage
@@ -183,9 +156,11 @@ StorageObjectImpl::getSelect()
 StorageObjectRefImpl::StorageObjectRefImpl(StorageObject* obj)  :
 	m_pid(NULL),
 	m_shortPid(NULL),
+	m_bModified(FALSE),
+	m_strUpdate(""),
+	m_strSelect(""),
 	m_storageHomeBase(NULL)
 {
-
 }
 ////////////////////////////////////////////////////////////////////////////////
 //a public copy constructor
@@ -193,9 +168,11 @@ StorageObjectRefImpl::StorageObjectRefImpl(StorageObject* obj)  :
 StorageObjectRefImpl::StorageObjectRefImpl(const StorageObjectRef& ref) :
 	m_pid(NULL),
 	m_shortPid(NULL),
+	m_bModified(FALSE),
+	m_strUpdate(""),
+	m_strSelect(""),
 	m_storageHomeBase(NULL)
 {
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -203,7 +180,6 @@ StorageObjectRefImpl::StorageObjectRefImpl(const StorageObjectRef& ref) :
 ////////////////////////////////////////////////////////////////////////////////
 StorageObjectRefImpl::~StorageObjectRefImpl()
 {
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -236,7 +212,8 @@ void
 StorageObjectRefImpl::release() 
 	throw()
 {
-
+	for(CORBA::ULong i=0; i<_get_refcount(); i++)
+        _remove_ref();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -261,13 +238,38 @@ StorageObjectRefImpl::deref()
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//return TRUE if and only if this reference is null
+////////////////////////////////////////////////////////////////////////////////
+CORBA::Boolean 
+StorageObjectRefImpl::is_null() const 
+	throw()
+{
+	return TRUE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //destroys the target object
 ////////////////////////////////////////////////////////////////////////////////
 void 
 StorageObjectRefImpl::destroy_object() 
 	throw(CORBA::SystemException)
 {
+	StorageHomeBaseImpl* homeimpl = dynamic_cast <StorageHomeBaseImpl*> (m_storageHomeBase);
+	char* homename = homeimpl->getStorageHomeName();
+	string my_pid = PSSHelper::convertPidToString(m_pid);
 
+	string strSqlDel;
+	strSqlDel = "DELETE FROM ";
+	strSqlDel.append((const char*)homename);
+	strSqlDel += " WHERE pid LIKE ";
+	strSqlDel += my_pid;
+	strSqlDel += ";";
+	strSqlDel += "DELETE FROM pid_content WHERE pid LIKE ";
+	strSqlDel += my_pid;
+	strSqlDel += ";";
+
+	CatalogBaseImpl* cbImpl = dynamic_cast <CatalogBaseImpl*> (homeimpl->get_catalog());
+	cbImpl->ExecuteSQL(strSqlDel.c_str());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -288,16 +290,6 @@ StorageObjectRefImpl::get_short_pid() const
 	throw(CORBA::SystemException)
 {
 	return m_shortPid;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//return TRUE if and only if this reference is null
-////////////////////////////////////////////////////////////////////////////////
-CORBA::Boolean 
-StorageObjectRefImpl::is_null() const 
-	throw()
-{
-	return TRUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

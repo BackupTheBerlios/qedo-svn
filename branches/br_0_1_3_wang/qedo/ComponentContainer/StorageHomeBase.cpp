@@ -66,9 +66,9 @@ StorageObjectBase
 StorageHomeBaseImpl::find_by_pid(string pid)
 {
 	string strToExecute;
-	strToExecute = "select * from ";
+	strToExecute = "SELECT * FROM ";
 	strToExecute.append((const char*)m_szStorageHomeName);
-	strToExecute += " where PID like ";
+	strToExecute += " WHERE pid LIKE ";
 	strToExecute += pid;
 	strToExecute += ";";
 
@@ -116,9 +116,9 @@ StorageHomeBaseImpl::find_by_short_pid(const ShortPid& short_pid)
 	string strShortPid = PSSHelper::convertSpidToString(short_pid);
 	
 	string strToExecute;
-	strToExecute = "select * from ";
+	strToExecute = "SELECT * FROM ";
 	strToExecute.append((const char*)m_szStorageHomeName);
-	strToExecute += " where SPID like ";
+	strToExecute += " WHERE spid LIKE ";
 	strToExecute += strShortPid;
 	strToExecute += ";";
 

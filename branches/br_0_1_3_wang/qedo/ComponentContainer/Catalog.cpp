@@ -114,6 +114,7 @@ CatalogBaseImpl::DriverConnect(const char* szConnStr, char* szConnStrOut, HWND h
 AccessMode 
 CatalogBaseImpl::access_mode()
 {
+	/*
 	if(!IsConnected())
 		return 0;
 	
@@ -125,6 +126,8 @@ CatalogBaseImpl::access_mode()
 		return READ_ONLY;
 	else
 		return READ_WRITE;
+	*/
+	return m_eAM;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -154,7 +157,7 @@ CatalogBaseImpl::find_storage_home(const char* storage_home_id)
 	//if not in the list, new one.
 	StorageHomeFactory factory = new OBNative_CosPersistentState::StorageHomeFactory_pre();
 	factory = m_connector->register_storage_home_factory(storage_home_id, factory);
-	StorageHomeBase* pStorageHomeBase = factory->create();
+	StorageHomeBase_ptr pStorageHomeBase = factory->create();
     StorageHomeBaseImpl* pStorageHomeBaseImpl = dynamic_cast <StorageHomeBaseImpl*> (pStorageHomeBase);
 	pStorageHomeBaseImpl->Init((dynamic_cast <CatalogBase_ptr> (this)), storage_home_id);
 
@@ -181,14 +184,14 @@ CatalogBaseImpl::find_by_pid(const Pid& the_pid)
 	QDRecordset prs;
 	prs.Init(&m_hDbc);
 
-	strToExecute = "select OWNHOME from PID_CONTENT where PID like ";
+	strToExecute = "SELECT ownhome FROM pid_content WHERE pid LIKE ";
 	strToExecute += strPid;
 	strToExecute += ";";
 
 	if(prs.Open(strToExecute.c_str()))
 	{
 		memset(szStorageHome, '\0', MAX_COL_SIZE);
-		prs.GetFieldValue("OWNHOME", szStorageHome);
+		prs.GetFieldValue("ownhome", szStorageHome);
 		prs.Close();
 		prs.Destroy();
 	}

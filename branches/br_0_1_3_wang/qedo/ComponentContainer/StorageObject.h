@@ -36,23 +36,25 @@ namespace Qedo
 {
 
 class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::StorageObject,
-						             public virtual RefCountLocalObject
+											public virtual RefCountLocalObject
 {
 	public:
 		
 		StorageObjectImpl();
 
-		string getUpdate();
+		string getUpdate() { return m_strUpdate; };
 
-		string getSelect();
+		string getSelect() { return m_strSelect; };
 
-		bool isModified();
+		bool isModified() { return m_bModified; };
 
-		void setModified(bool bModified);
+		void setModified(bool bModified) { m_bModified = bModified; };
 
 		virtual void setValue(map<string, CORBA::Any> valueMap) { throw CORBA::NO_IMPLEMENT(); };
 
+		//
 		// normal mapping of PSDL operations
+		//
 		void _add_ref() {RefCountLocalObject::_add_ref();};
 		
 		void _remove_ref() {RefCountLocalObject::_remove_ref();};
@@ -92,20 +94,36 @@ class CONTAINERDLL_API StorageObjectImpl : public virtual CosPersistentState::St
 		~StorageObjectImpl() {};
 
 	protected:
+
 		Pid* m_pid;
 		ShortPid* m_shortPid;
 		string m_strUpdate;
 		string m_strSelect;
 
 	private:
-		StorageHomeBase* m_storageHomeBase;
+
+		StorageHomeBase_ptr m_storageHomeBase;
 		bool m_bModified;
 };
 
 class CONTAINERDLL_API StorageObjectRefImpl : public virtual CosPersistentState::StorageObjectRef,
-						                public virtual RefCountLocalObject
+											public virtual RefCountLocalObject
 {
 	public:
+		
+		string getUpdate() { return m_strUpdate; };
+
+		string getSelect() { return m_strSelect; };
+
+		bool isModified() { return m_bModified; };
+
+		void setModified(bool bModified) { m_bModified = bModified; };
+
+		virtual void setValue(map<string, CORBA::Any> valueMap) { throw CORBA::NO_IMPLEMENT(); };
+		
+		//
+		// normal mapping of PSDL operations
+		//
 
 		//StorageObjectRefImpl() 
 		//	throw();
@@ -161,13 +179,15 @@ class CONTAINERDLL_API StorageObjectRefImpl : public virtual CosPersistentState:
 		}
 
 	protected:
+
 		Pid* m_pid;
 		ShortPid* m_shortPid;
 		string m_strUpdate;
 		string m_strSelect;
 
 	private:
-		StorageHomeBase* m_storageHomeBase;
+
+		StorageHomeBase_ptr m_storageHomeBase;
 		bool m_bModified;
 };
 

@@ -40,8 +40,8 @@ namespace Qedo
 {
 
 class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::StorageHomeBase,
-							           public virtual RefCountLocalObject,
-							           public virtual QDRecordset
+											public virtual RefCountLocalObject,
+											public virtual QDRecordset
 {
 	public:
 
@@ -82,11 +82,13 @@ class CONTAINERDLL_API StorageHomeBaseImpl : public virtual CosPersistentState::
 		void ValuePaser( map<string, CORBA::Any>& value_map );
 
 	protected:
+
 		char* m_szStorageHomeName; // its own table or view name!
 		CatalogBase_ptr m_pCatalogBase;
 		std::list <StorageObjectImpl*> m_lStorageObjectes;
 
 	private:
+
 		std::list <StorageObjectImpl*> m_lTempList;
 };
 

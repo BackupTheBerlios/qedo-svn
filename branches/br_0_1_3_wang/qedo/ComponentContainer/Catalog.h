@@ -37,8 +37,8 @@ namespace Qedo
 {
 
 class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::CatalogBase,
-                                   public virtual RefCountLocalObject,
-						           public virtual QDDatabase
+										public virtual RefCountLocalObject,
+										public virtual QDDatabase
 {
 	public:
 
@@ -91,7 +91,7 @@ class CONTAINERDLL_API CatalogBaseImpl : public virtual CosPersistentState::Cata
 
 	protected:
 
-		Connector* m_connector;
+		Connector_ptr m_connector;
 		std::list <StorageHomeBaseImpl*> m_lStorageHomeBases;
 
 	private:
