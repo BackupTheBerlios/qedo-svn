@@ -3,6 +3,6 @@ export LD_LIBRARY_PATH
 if [ -z "$LD_LIBRARY_PATH" ]; then
 	LD_LIBRARY_PATH=@prefix@/lib:.:@XERCESDIR@/lib:@MICODIR@/lib
 else
-	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):@prefix@/lib:.:@XERCESDIR@/lib:@MICODIR@/lib
+	LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:@prefix@/lib:.:@XERCESDIR@/lib:@MICODIR@/lib
 fi
 exec qcs "$@"
