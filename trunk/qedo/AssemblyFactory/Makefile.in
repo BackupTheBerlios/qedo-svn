@@ -1,0 +1,53 @@
+include ../MakeVars
+
+CXX = @CXX@
+CPPFLAGS+=-I. -I../ComponentIDL -I../ComponentContainer -I../ComponentInstaller @CPPFLAGS@ 
+CXXFLAGS+=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+CXXCOMPILE=@CXX@ $(CXXFLAGS)
+LIBS+=@LIBS@
+CC=$(CXX)
+
+@SET_MAKE@
+
+LIBS += -L../ComponentIDL -lComponent\
+           -L../ComponentContainer -lComponentContainer 
+
+ifeq "${XERCESDIR}" ""
+error "No xerces"
+else
+CPPFLAGS += -I${XERCESDIR}/include
+LIBS += -L${XERCESDIR}/lib -lxerces-c
+endif
+
+LDLIBS = ${LIBS}
+
+SOURCES =   Assembly.cpp \
+				AssemblyFactory.cpp \
+				Properties.cpp \
+				StandardConfigurator.cpp \
+				assf.cpp \
+				../ComponentInstaller/XMLCatalog.cpp \
+				../ComponentInstaller/libunzip.cpp \
+				../ComponentInstaller/CatalogResolver.cpp \
+				../ComponentInstaller/DOMTreeErrorReporter.cpp \
+				../ComponentInstaller/DOMXMLParser.cpp \
+				../ComponentInstaller/NameServiceBase.cpp \
+				../ComponentInstaller/Package.cpp \
+				../ComponentInstaller/PlatformBase.cpp 
+
+OBJS = ${SOURCES:.cpp=.o} ${SOURCE_C:.c=.o}
+
+
+.PHONY:all
+
+all: assf
+
+assf.cpp : main.cpp
+	@LN_S@ $^ $@
+
+assf: $(OBJS)
+
+.PHONY:install
+
+install: assf
+
