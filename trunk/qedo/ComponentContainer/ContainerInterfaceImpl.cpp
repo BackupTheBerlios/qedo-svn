@@ -32,7 +32,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.39 2003/09/29 17:00:07 neubauer Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.40 2003/10/01 08:35:01 neubauer Exp $";
 
 
 namespace Qedo {
@@ -474,9 +474,10 @@ throw (Components::Deployment::UnknownImplId,
 		throw Components::Deployment::InstallationFailure();
 	}
 	std::string install_dir = desc.substr (0, pos);
-	if(install_dir == "")
+	std::string path = install_dir;
+	if(install_dir != "")
 	{
-		install_dir = ".";
+		path.append("/");
 	}
 	desc = desc.substr (pos + 1);
 
@@ -487,7 +488,7 @@ throw (Components::Deployment::UnknownImplId,
 		std::cerr << "ContainerInterfaceImpl: Cannot extract servant module name" << std::endl;
 		throw Components::Deployment::InstallationFailure();
 	}
-	std::string servant_module = install_dir + "/" + desc.substr (0, pos);
+	std::string servant_module = path + desc.substr (0, pos);
 	desc = desc.substr (pos + 1);
 
 	// servant entry point
@@ -507,7 +508,7 @@ throw (Components::Deployment::UnknownImplId,
 		std::cerr << "ContainerInterfaceImpl: Cannot extract executor module name" << std::endl;
 		throw Components::Deployment::InstallationFailure();
 	}
-	std::string executor_module = install_dir + "/" + desc.substr (0, pos);
+	std::string executor_module = path + desc.substr (0, pos);
 	desc = desc.substr (pos + 1);
 
 	// executor entry point
