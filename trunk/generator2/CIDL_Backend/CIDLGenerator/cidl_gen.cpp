@@ -52,6 +52,19 @@ main
 	std::cout << "CIDL Generator Version " << GENERATOR_VERSION << std::endl;
 	std::cout << "Qedo Team" << std::endl;
 
+	/*
+	// disable heap checks in debug mode to fasten up the idl compilations
+	*/
+#ifdef WIN32
+	// Get current flag
+	int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
+
+	tmpFlag &= ~_CRTDBG_ALLOC_MEM_DF;
+
+	// Set flag to the new value
+	_CrtSetDbgFlag( tmpFlag );
+
+#endif
 
 	//
 	// get ORB
