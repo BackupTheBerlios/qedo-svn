@@ -22,6 +22,7 @@
 
 #include "ContainerInterfaceImpl.h"
 #include "ComponentServerImpl.h"
+#include "ConfigurationReader.h"
 #include "EntityHomeServant.h"
 #include "SessionHomeServant.h"
 #include "Output.h"
@@ -32,7 +33,7 @@
 #include <dlfcn.h>
 #endif
 
-static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.42 2003/10/17 13:22:52 stoinski Exp $";
+static char rcsid [] UNUSED = "$Id: ContainerInterfaceImpl.cpp,v 1.43 2003/10/22 12:33:12 stoinski Exp $";
 
 
 namespace Qedo {
@@ -211,16 +212,24 @@ ContainerInterfaceImpl::ContainerInterfaceImpl (CORBA::ORB_ptr orb,
 												PortableServer::POA_ptr root_poa, 
 												ContainerType container_type,
 												ComponentServerImpl* component_server,
-												Components::Deployment::ComponentInstallation_ptr component_installer,
-												EventCommunicationMode ev_comm_mode)
+												Components::Deployment::ComponentInstallation_ptr component_installer)
 : orb_ (CORBA::ORB::_duplicate (orb)),
   root_poa_ (PortableServer::POA::_duplicate (root_poa)),
   container_type_ (container_type),
   component_server_ (component_server),
-  component_installer_ (Components::Deployment::ComponentInstallation::_duplicate (component_installer)),
-  event_communication_mode_ (ev_comm_mode)
+  component_installer_ (Components::Deployment::ComponentInstallation::_duplicate (component_installer))
 {
 	component_server_->_add_ref();
+
+	// Retrieve config values
+	if (! strcmp (Qedo::ConfigurationReader::instance()->lookup_config_value ("/Events/EventDispatchingStrategy"), "asynchronous"))
+	{
+		event_communication_mode_ = EVENT_COMMUNICATION_ASYNCHRONOUS;
+	}
+	else
+	{
+		event_communication_mode_ = EVENT_COMMUNICATION_SYNCHRONOUS;
+	}
 
 	//
 	// get home finder

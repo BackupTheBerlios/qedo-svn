@@ -227,8 +227,7 @@ public:
 							PortableServer::POA_ptr, 
 							ContainerType,
 							ComponentServerImpl*,
-							Components::Deployment::ComponentInstallation_ptr,
-							EventCommunicationMode = EVENT_COMMUNICATION_ASYNCHRONOUS);
+							Components::Deployment::ComponentInstallation_ptr);
 
 	/**
 	 * destructor
