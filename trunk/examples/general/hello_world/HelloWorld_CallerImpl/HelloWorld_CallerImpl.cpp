@@ -44,6 +44,8 @@ CallerSessionImpl::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION CallerSessionImpl::configuration_complete
+	HelloWorld::Hello_var hello =  context_->get_connection_hi();
+	hello->say();
 // END USER INSERT SECTION CallerSessionImpl::configuration_complete
 }
 

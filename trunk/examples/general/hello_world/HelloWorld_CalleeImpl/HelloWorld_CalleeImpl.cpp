@@ -62,6 +62,9 @@ CalleeSessionImpl::say()
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION CalleeSessionImpl::say
+	std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+	std::cout << "!!! Hello World !!!!!!!!!!!!!!!!!!!\n";
+	std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
 // END USER INSERT SECTION CalleeSessionImpl::say
 }
 
