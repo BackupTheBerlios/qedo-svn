@@ -389,7 +389,13 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\CCMObjectExecutor.cpp">
 			</File>
 			<File
+				RelativePath="Catalog.cpp">
+			</File>
+			<File
 				RelativePath="ComponentInstance.cpp">
+			</File>
+			<File
+				RelativePath="Connector.cpp">
 			</File>
 			<File
 				RelativePath=".\ConsumerPort.cpp">
@@ -431,10 +437,19 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\Output.cpp">
 			</File>
 			<File
+				RelativePath="PSSHelper.cpp">
+			</File>
+			<File
 				RelativePath=".\PortBase.cpp">
 			</File>
 			<File
 				RelativePath=".\PublisherPort.cpp">
+			</File>
+			<File
+				RelativePath="QDDatabase.cpp">
+			</File>
+			<File
+				RelativePath="QDRecordset.cpp">
 			</File>
 			<File
 				RelativePath=".\ReceptaclePort.cpp">
@@ -456,6 +471,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="SessionHomeServant.cpp">
+			</File>
+			<File
+				RelativePath="StorageHomeBase.cpp">
+			</File>
+			<File
+				RelativePath="StorageObject.cpp">
 			</File>
 			<File
 				RelativePath="Synchronisation.cpp">
@@ -480,7 +501,13 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\CCMObjectExecutor.h">
 			</File>
 			<File
+				RelativePath="Catalog.h">
+			</File>
+			<File
 				RelativePath="ComponentInstance.h">
+			</File>
+			<File
+				RelativePath="Connector.h">
 			</File>
 			<File
 				RelativePath=".\ConsumerPort.h">
@@ -516,10 +543,19 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath=".\Output.h">
 			</File>
 			<File
+				RelativePath="PSSHelper.h">
+			</File>
+			<File
 				RelativePath=".\PortBase.h">
 			</File>
 			<File
 				RelativePath=".\PublisherPort.h">
+			</File>
+			<File
+				RelativePath="QDDatabase.h">
+			</File>
+			<File
+				RelativePath="QDRecordset.h">
 			</File>
 			<File
 				RelativePath=".\ReceptaclePort.h">
@@ -541,6 +577,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="SessionHomeServant.h">
+			</File>
+			<File
+				RelativePath="StorageHomeBase.h">
+			</File>
+			<File
+				RelativePath="StorageObject.h">
 			</File>
 			<File
 				RelativePath="Synchronisation.h">

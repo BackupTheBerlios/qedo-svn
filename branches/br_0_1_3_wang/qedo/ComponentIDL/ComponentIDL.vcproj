@@ -22,7 +22,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(ORBACUS)\include;$(ORBACUS)\include\OB"
+				AdditionalIncludeDirectories=".;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;..\ComponentContainer"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -141,7 +141,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(ORBACUS)\include;$(ORBACUS)\include\OB"
+				AdditionalIncludeDirectories=".;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;..\ComponentContainer"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -161,7 +161,7 @@
 				CommandLine="mkdir $(QEDO)\bin
 copy $(TargetPath) $(QEDO)\bin
 "
-				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
+				Outputs="$(QEDO)\bin\$(TargetFileName);"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
@@ -436,6 +436,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath=".\Components_skel.h">
+			</File>
+			<File
+				RelativePath="PSSNativeClasses.h">
+			</File>
+			<File
+				RelativePath="PSSStorageObject.h">
 			</File>
 			<File
 				RelativePath="QedoComponents.h">
