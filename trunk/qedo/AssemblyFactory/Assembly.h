@@ -24,7 +24,7 @@
 #define __ASSEMBLY_H__
 
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include "QedoComponents_skel.h"
 #include "Valuetypes.h"
 #include "Package.h"

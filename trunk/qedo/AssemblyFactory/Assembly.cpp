@@ -399,7 +399,7 @@ throw(Components::CreateFailure)
 		        {
                     name = XMLString::transcode(((DOMElement*)find_child)->getAttribute(X("name")));
                     obj = resolveName(name);
-                    if ( ! obj)
+                    if ( CORBA::is_nil(obj))
                     {
                         throw Components::CreateFailure();
                     }
@@ -552,7 +552,7 @@ throw( Components::CreateFailure )
     Components::Deployment::ComponentServer_var component_server;
 
 	CORBA::Object_var obj = resolveName(SERVER_ACTIVATOR_CONTEXT + dest);
-    if ( ! obj)
+    if ( CORBA::is_nil(obj))
     {
         DEBUG_OUT2("\nAssembly: no ServerActivator found for ", dest);
         throw Components::CreateFailure();
@@ -614,7 +614,7 @@ throw( Components::CreateFailure )
 	config->length(1);
 	CORBA::Any any;
 	any <<= "SESSION";
-	config[0] = new ConfigValue_impl("CONTAINER_TYPE", any);
+	config.inout()[0] = new ConfigValue_impl("CONTAINER_TYPE", any);
 
 	try
 	{
@@ -716,7 +716,7 @@ throw(Components::CreateFailure)
 	Qedo_Components::Deployment::ComponentInstallation_var componentInstallation;
 
 	CORBA::Object_var obj = resolveName(COMPONENT_INSTALLATION_CONTEXT + dest);
-    if ( ! obj)
+    if ( CORBA::is_nil(obj))
     {
         DEBUG_OUT2("no Object for ", dest);
         throw Components::CreateFailure();
@@ -1008,7 +1008,7 @@ throw(Components::CreateFailure)
             std::string idref = XMLString::transcode(((DOMElement*)child)->getAttribute(X("idref")));
             if (idref != "")
             {
-                if ( ! container)
+                if ( CORBA::is_nil( container))
                 {
 	                // create new Component Server
                     Components::Deployment::ComponentServer_var component_server;

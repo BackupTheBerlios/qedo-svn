@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: deploy.cpp,v 1.3 2002/12/03 07:57:46 stoinski Exp $";
+static char rcsid[] = "$Id: deploy.cpp,v 1.4 2003/02/13 13:41:17 tom Exp $";
 
 
 #include "DeploymentClient.h"
@@ -50,7 +50,7 @@ main (int argc, char** argv)
 	CORBA::ORB_var orb = CORBA::ORB_init (argc, argv);
 
 	// Register valuetype factories
-	CORBA::ValueFactoryBase_var factory;
+	CORBA::ValueFactoryBase* factory;
 	factory = new Qedo::CookieFactory_impl();
     orb -> register_value_factory ( "IDL:omg.org/Components/Cookie:1.0", factory );
 

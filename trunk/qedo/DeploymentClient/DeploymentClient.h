@@ -21,8 +21,8 @@
 /***************************************************************************/
 
 
-#include <OB/CORBA.h>
-#include <OB/CosNaming.h>
+#include <CORBA.h>
+#include <CosNaming.h>
 #include "Components.h"
 #include "Valuetypes.h"
 #include "NameServiceBase.h"

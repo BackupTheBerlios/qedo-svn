@@ -20,7 +20,7 @@
 /* Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA             */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: HomeFinder.cpp,v 1.1 2003/02/07 11:24:34 neubauer Exp $";
+static char rcsid[] = "$Id: HomeFinder.cpp,v 1.2 2003/02/13 13:41:17 tom Exp $";
 
 #include "HomeFinderImpl.h"
 #include "Output.h"
@@ -51,7 +51,7 @@ main (int argc, char** argv)
 	//
 	// register valuetype factories
 	//
-	CORBA::ValueFactoryBase_var factory;
+	CORBA::ValueFactoryBase* factory;
 	factory = new Qedo::CookieFactory_impl();
     orb->register_value_factory("IDL:omg.org/Components/Cookie:1.0", factory);
 

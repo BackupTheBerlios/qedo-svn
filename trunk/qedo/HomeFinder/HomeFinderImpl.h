@@ -24,7 +24,7 @@
 #define __HOME_FINDER_IMPL_H__
 
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include "QedoComponents_skel.h"
 #include "NameServiceBase.h"
 #include "Util.h"

@@ -23,7 +23,7 @@
 #ifndef __HOME_FINDER_ENTRY_H__
 #define __HOME_FINDER_ENTRY_H__
 
-#include <OB/CORBA.h>
+#include <CORBA.h>
 #include <Components.h>
 #include <string>
 #include <vector>

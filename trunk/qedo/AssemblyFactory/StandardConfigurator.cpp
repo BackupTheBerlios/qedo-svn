@@ -22,7 +22,9 @@
 
 #include "StandardConfigurator.h"
 #include <string>
-
+#ifdef TAO_ORB
+#include "DynamicInterface/Request.h"
+#endif
 
 namespace Qedo {
 
@@ -76,10 +78,11 @@ throw( Components::WrongComponentType )
 
 
 		// check for exceptions
-		CORBA::Exception* ex = request->env()->exception();
-		if ( ex != 0 )
+//		CORBA::Exception* ex = request->env()->exception();
+		CORBA::ExceptionList_ptr ex_list = request->exceptions();
+		if ( ex_list->count() > 0 )
 		{
-			std::cerr << "StandardConfigurator: Exception during configuration : " << ex << std::endl;
+			std::cerr << "StandardConfigurator: Exception during configuration : " << std::endl;
 		}
 	}
 }

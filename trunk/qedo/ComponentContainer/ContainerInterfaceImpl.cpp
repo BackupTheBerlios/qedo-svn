@@ -20,7 +20,7 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.5 2003/02/07 11:33:39 neubauer Exp $";
+static char rcsid[] = "$Id: ContainerInterfaceImpl.cpp,v 1.6 2003/02/13 13:41:17 tom Exp $";
 
 #include "ContainerInterfaceImpl.h"
 #include "EntityHomeServant.h"
@@ -393,7 +393,7 @@ throw (Components::Deployment::UnknownImplId,
 	//
 	Components::ConfigValue* value;
 	const char* name_forHF = "";
-	Components::Cookie_var cookie = 0;
+	Components::Cookie_var cookie;
 
 	for (CORBA::ULong i = 0; i < config.length(); i++)
 	{

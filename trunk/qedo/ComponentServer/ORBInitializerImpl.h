@@ -23,8 +23,8 @@
 #ifndef __ORB_INITIALIZER_IMPL_H__
 #define __ORB_INITIALIZER_IMPL_H__
 
-#include <OB/CORBA.h>
-#include <OB/PortableInterceptor.h>
+#include <CORBA.h>
+#include <PortableInterceptor.h>
 #include "QedoComponents_skel.h"
 #include "NameServiceBase.h"
 #include "Util.h"
