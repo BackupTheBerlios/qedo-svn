@@ -147,7 +147,7 @@ GeneratorServantC::generate_marshal_code (IR__::IDLType_ptr idl_type, std::strin
 			for (unsigned int i = 0; i < members->length(); i++)
 			{
 				new_parameter_name = "(" + parameter_name + "." + members.in()[i].name.in() + ")";
-				this->generate_marshal_code (members.in()[i].type_def, new_parameter_name, rec_depth);
+				this->generate_marshal_code (const_cast<IR__::StructMember&>(members.in()[i]).type_def, new_parameter_name, rec_depth);
 			}
 			return;
 		}
@@ -163,7 +163,7 @@ GeneratorServantC::generate_marshal_code (IR__::IDLType_ptr idl_type, std::strin
 			std::string new_parameter_name;
 			char rec_depth_str[33];
 //			itoa (rec_depth, rec_depth_str, 10); // this is not ansi and is replaced
-			sprintf(rec_depth_str,"0",rec_depth);
+			sprintf(rec_depth_str,"%d",rec_depth);
 
 			new_parameter_name = "(" + parameter_name + "[seq_count" + rec_depth_str + "])";
 
@@ -272,7 +272,7 @@ GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::str
 			for (unsigned int i = 0; i < members->length(); i++)
 			{
 				new_parameter_name = "(" + parameter_name + "." + members.in()[i].name.in() + ")";
-				generate_unmarshal_code (members.in()[i].type_def, new_parameter_name, rec_depth);
+				generate_unmarshal_code (const_cast<IR__::StructMember&>(members.in()[i]).type_def, new_parameter_name, rec_depth);
 			}
 			return;
 		}
@@ -297,7 +297,7 @@ GeneratorServantC::generate_unmarshal_code (IR__::IDLType_ptr idl_type, std::str
 			std::string new_parameter_name;
 			char rec_depth_str[33];
 //			itoa (rec_depth, rec_depth_str, 10); // this is not ansi and ist replaced by
-			sprintf(rec_depth_str,"0",rec_depth);
+			sprintf(rec_depth_str,"%d",rec_depth);
 
 			new_parameter_name = "(" + parameter_name + "[seq_count" + rec_depth_str + "])";
 
