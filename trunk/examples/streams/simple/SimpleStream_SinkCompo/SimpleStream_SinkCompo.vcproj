@@ -67,7 +67,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;../SimpleStream_SinkCompo_SERVANT"
-				PreprocessorDefinitions="BUILD_SIMPLESTREAM_SINKCOMPO_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400;_QEDO_NO_QOS"
+				PreprocessorDefinitions="BUILD_SIMPLESTREAM_SINKCOMPO_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
