@@ -29,7 +29,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.10 2003/09/09 11:57:49 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: PlatformBase.cpp,v 1.11 2003/09/12 11:46:03 neubauer Exp $";
 
 
 namespace Qedo {
@@ -87,13 +87,22 @@ PlatformBase::makeDir (std::string dir)
         return 0;
 	}
 
+	//
+	// check base directory
+	//
 	std::string::size_type pos = dir.find_last_of("/\\");
-	int err = makeDir(dir.substr(0, pos));
-	if(err)
+	if(pos != std::string::npos)
 	{
-		return err;
+		int err = makeDir(dir.substr(0, pos));
+		if(err)
+		{
+			return err;
+		}
 	}
 
+	//
+	// create directory
+	//
 #ifdef _WIN32
 	DWORD dw;
 	if( !CreateDirectory(dir.c_str(), NULL))
