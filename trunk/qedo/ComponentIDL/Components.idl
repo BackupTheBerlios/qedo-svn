@@ -340,6 +340,7 @@ module Components {
 
 	local interface Cond {
 		void wait(in Mutex m);
+		boolean wait_timed(in Mutex m, in unsigned long wait);
 		void signal();
 		void destroy();
 	};

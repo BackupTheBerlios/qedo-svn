@@ -25,7 +25,7 @@
 #include "InternalConfiguration.h"
 
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.18 2003/09/26 08:22:02 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.19 2003/10/07 14:58:03 boehme Exp $";
 
 
 namespace Qedo {
@@ -177,6 +177,7 @@ class Cond_impl : public virtual Components::Cond,
 {
 	public:
 	void wait(Components::Mutex_ptr);
+	CORBA::Boolean wait_timed(Components::Mutex_ptr, CORBA::ULong);
 	void signal() { QedoCond::signal(); }
 	void destroy() { delete this; }
 };
@@ -189,6 +190,16 @@ Cond_impl::wait(Components::Mutex_ptr x)
 	if(!m) abort();
 
 	QedoCond::wait(m);
+}
+
+CORBA::Boolean
+Cond_impl::wait_timed(Components::Mutex_ptr x, CORBA::ULong time)
+{
+	Qedo::QedoMutex* m = dynamic_cast<QedoMutex*>(x);
+
+	if(!m) abort();
+
+	return QedoCond::wait_timed(m,time);
 }
 
 Components::Cond_ptr 

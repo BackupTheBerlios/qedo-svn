@@ -28,7 +28,11 @@
 #include <signal.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.19 2003/08/27 06:32:48 neubauer Exp $";
+#ifndef _WIN32
+#include <sys/time.h>
+#endif
+
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.20 2003/10/07 14:58:03 boehme Exp $";
 
 
 namespace Qedo {
@@ -172,17 +176,7 @@ QedoCond::~QedoCond()
 void
 QedoCond::wait (const QedoMutex& m) 
 {
-#ifdef QEDO_WINTHREAD
-	const_cast<QedoMutex* const>(&m)->unlock_object();
-	if (WaitForMultipleObjects(1, &(delegate_->event_handle_), TRUE, INFINITE /*wait for ever*/) == WAIT_FAILED)
-	{
-		std::cerr << "QedoCond: wait() failed: " << GetLastError() << std::endl;
-		assert (0);
-	}
-	const_cast<QedoMutex* const>(&m)->lock_object();
-#else
-	pthread_cond_wait (&(delegate_->cond_),&(m.delegate_->mutex_));
-#endif
+	wait(&m);
 }
 
 void
@@ -201,6 +195,66 @@ QedoCond::wait(const QedoMutex* m)
 #endif
 }
 
+bool
+QedoCond::wait_timed (const QedoMutex& m, unsigned long time) 
+{
+	return wait_timed(&m,time);
+}
+
+bool
+QedoCond::wait_timed(const QedoMutex* m, unsigned long time) 
+{
+	bool ret = true;
+#ifdef QEDO_WINTHREAD
+ 	const_cast<QedoMutex* const>(m)->unlock_object();
+	long x;
+	x = WaitForMultipleObjects(1, &(delegate_->event_handle_), TRUE, time);
+
+	switch (x)
+ 	{
+		case WAIT_FAILED:
+			std::cerr << "QedoCond: qedo_wait() failed: " << GetLastError() << std::endl;
+			assert (0);
+			break;
+		case WAIT_TIMEOUT:
+			ret = false;
+			break;
+	};
+ 	const_cast<QedoMutex* const>(m)->lock_object();
+#else
+	int x;
+	struct timeval tp;
+	struct timespec abstime;
+
+	gettimeofday(&tp,0);
+	abstime.tv_sec = tp.tv_sec + time / 1000;
+	time = time % 1000;
+	time += tp.tv_usec;
+	if(time > 1000)
+	{
+		abstime.tv_sec = abstime.tv_sec + 1;
+		time -= 1000;
+	}
+	abstime.tv_nsec = time * 1000;
+	x = pthread_cond_timedwait (&(delegate_->cond_),&(m->delegate_->mutex_), &abstime);
+
+	switch (x)
+	{
+		case ETIMEDOUT:
+			ret = false;
+			break;
+		case 0:
+			break;
+		default:
+			std::cerr << "QedoCond: qedo_wait() failed " << std::endl;
+			assert (0);
+			break;
+	};
+	pthread_cond_wait (&(delegate_->cond_),&(m->delegate_->mutex_));
+#endif
+	return ret;
+}
+ 
 
 void
 QedoCond::signal() 

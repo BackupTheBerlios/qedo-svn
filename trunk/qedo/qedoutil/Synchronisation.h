@@ -170,6 +170,16 @@ public:
 	void wait (const QedoMutex*);
 
 	/**
+	 * wait
+	 */
+	bool wait_timed (const QedoMutex&, unsigned long );
+
+	/**
+	 * wait_timed
+	 */
+	bool wait_timed (const QedoMutex*, unsigned long );
+
+	/**
 	 * insert comments
 	 */
 	void signal();
