@@ -1,5 +1,5 @@
 <?xml version = '1.0' ?>
-<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://cif.sourceforge.net/componentassembly.dtd">
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://www.qedo.org/componentassembly.dtd">
 
 <componentassembly id="HelloWorld_Example">
 
@@ -43,9 +43,7 @@
                                 </componentproperties>
 			</componentinstantiation>
 
-		        <destination></destination>
 		</homeplacement>
-
 		<homeplacement id="ReaderHome">
 	        	<componentfileref idref="Reader_file"/>
 				<componentimplref idref="UUID-d4eb84e6-9929-4d07-bc41-c973b1a1f9d5"/>
@@ -55,7 +53,6 @@
 				</componentproperties>
 			</componentinstantiation>
 
-		        <destination></destination>
 		</homeplacement>
 
 	</processcollocation>
@@ -67,8 +64,6 @@
 				<componentimplref idref="UUID-1d2ee222-9592-4819-996f-8cf90d65565b"/>
 			<componentinstantiation id="channel">
 			</componentinstantiation>
-
-			<destination></destination>
 		</homeplacement>
 
 	</processcollocation>
@@ -80,7 +75,6 @@
 			<componentinstantiation id="writer">
 			</componentinstantiation>
 
-			<destination></destination>
 		</homeplacement>
 
 	</processcollocation>
