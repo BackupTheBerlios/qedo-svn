@@ -59,8 +59,8 @@ SOURCES = cidl_gen.cpp \
 			GeneratorServantC.cpp \
 			GeneratorServantH.cpp \
 			GeneratorVC7.cpp \
-			GeneratorValueTypesC.cpp \
-			GeneratorValueTypesH.cpp \
+			GeneratorValuetypesC.cpp \
+			GeneratorValuetypesH.cpp \
 			IDLBase.cpp \
 			Printer.cpp \
 			TestMode.cpp
