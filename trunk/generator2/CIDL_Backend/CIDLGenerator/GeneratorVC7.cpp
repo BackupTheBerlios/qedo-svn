@@ -1,6 +1,7 @@
 #include "GeneratorVC7.h"
 #include "Debug.h"
 #include <string>
+#include <direct.h>
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -73,7 +74,12 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	composition_name.append(composition->name());
 	project_name = composition_name + "_EXECUTOR";
 	servant_project_name = composition_name + "_SERVANT";
-	filename_ = project_name + ".vcproj";
+
+	_mkdir(project_name.c_str());
+
+	filename_ = project_name + "/";
+	filename_ = filename_ + project_name;
+	filename_ = filename_ + ".vcproj";
 	out.open(filename_.c_str());
 
 	//
@@ -107,7 +113,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << "<Configuration\n";
 	out.indent();
-	out << "Name=\"Debug|Win32\"\n";
+	out << "Name=\"Debug_orbacus|Win32\"\n";
 	out << "OutputDirectory=\"Debug\"\n";
 	out << "IntermediateDirectory=\"Debug\"\n";
 	out << "ConfigurationType=\"2\"\n";
@@ -117,7 +123,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "Name=\"VCCLCompilerTool\"\n";
 	out << "Optimization=\"0\"\n";
 	out << "AdditionalIncludeDirectories=\".;$(QEDO)/ComponentIDL;$(ORBACUS)\\include;$(ORBACUS)\\include\\OB;../IDL\"\n";
-	out << "PreprocessorDefinitions=\"WIN32;_DEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS\"\n";
+	out << "PreprocessorDefinitions=\"ORBACUS_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
 	out << "BasicRuntimeChecks=\"3\"\n";
 	out << "RuntimeLibrary=\"2\"\n";
@@ -137,7 +143,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "AdditionalDependencies=\"ComponentIDL.lib obd.lib jtcd.lib\"\n";
 	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
 	out << "LinkIncremental=\"2\"\n";
-	out << "AdditionalLibraryDirectories=\"$(QEDO)\\ComponentIDL\\Debug;$(ORBACUS)\\lib\"\n";
+	out << "AdditionalLibraryDirectories=\"$(QEDO)\\ComponentIDL\\Debug_orbacus;$(ORBACUS)\\lib\"\n";
 	out << "GenerateDebugInformation=\"TRUE\"\n";
 	out << "ProgramDatabaseFile=\"$(OutDir)/" << project_name << ".pdb\"\n";
 	out << "SubSystem=\"2\"\n";
@@ -266,15 +272,15 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "Filter=\"idl;cidl\">\n";
 	out << "<File\n";
 	out.indent();
-	out << "RelativePath=\"" << target_file_name_ << "\">\n";
+	out << "RelativePath=\"../" << target_file_name_ << "\">\n";
 	out << "<FileConfiguration\n";
 	out.indent();
-	out << "Name=\"Debug|Win32\">\n";
+	out << "Name=\"Debug_orbacus|Win32\">\n";
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
-	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl ";
-	out << "-I$(ORBACUS)/idl/OB --business --target " << target_->id() << " " << target_file_name_ << "\"\n";
+	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DORBACUS_ORB -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl ";
+	out << "-I$(ORBACUS)/idl/OB --business --target " << target_->id() << " ../" << target_file_name_ << "\"\n";
 	out << "Outputs=\"" << file_prefix_ << "_LOCAL.idl;" << file_prefix_ << "_EQUIVALENT.idl;";
 	out << file_prefix_ << "_BUSINESS.idl\"/>\n";
 	out.unindent();
@@ -287,11 +293,11 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "RelativePath=\"" << file_prefix_ << "_BUSINESS.idl\">\n";
 	out << "<FileConfiguration\n";
 	out.indent();
-	out << "Name=\"Debug|Win32\">\n";
+	out << "Name=\"Debug_orbacus|Win32\">\n";
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
-	out << "CommandLine=\"$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl ";
+	out << "CommandLine=\"$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl ";
 	out << "-I$(ORBACUS)/idl/OB " << file_prefix_ << "_BUSINESS.idl\"\n";
 	out << "Outputs=\"" << file_prefix_ << "_BUSINESS.h;" << file_prefix_ << "_BUSINESS.cpp;";
 	out << file_prefix_ << "_BUSINESS_skel.h;" << file_prefix_ << "_BUSINESS_skel.cpp\"/>\n";
@@ -305,11 +311,11 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "RelativePath=\"" << file_prefix_ << "_EQUIVALENT.idl\">\n";
 	out << "<FileConfiguration\n";
 	out.indent();
-	out << "Name=\"Debug|Win32\">\n";
+	out << "Name=\"Debug_orbacus|Win32\">\n";
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
-	out << "CommandLine=\"$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl ";
+	out << "CommandLine=\"$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl ";
 	out << "-I$(ORBACUS)/idl/OB " << file_prefix_ << "_EQUIVALENT.idl\"\n";
 	out << "Outputs=\"" << file_prefix_ << "_EQUIVALENT.h;" << file_prefix_ << "_EQUIVALENT.cpp;";
 	out << file_prefix_ << "_EQUIVALENT_skel.h;" << file_prefix_ << "_EQUIVALENT_skel.cpp\"/>\n";
@@ -323,11 +329,11 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "RelativePath=\"" << file_prefix_ << "_LOCAL.idl\">\n";
 	out << "<FileConfiguration\n";
 	out.indent();
-	out << "Name=\"Debug|Win32\">\n";
+	out << "Name=\"Debug_orbacus|Win32\">\n";
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
-	out << "CommandLine=\"$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl ";
+	out << "CommandLine=\"$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl ";
 	out << "-I$(ORBACUS)/idl/OB " << file_prefix_ << "_LOCAL.idl\"\n";
 	out << "Outputs=\"" << file_prefix_ << "_LOCAL.h;" << file_prefix_ << "_LOCAL.cpp;";
 	out << file_prefix_ << "_LOCAL_skel.h;" << file_prefix_ << "_LOCAL_skel.cpp\"/>\n";
@@ -408,7 +414,12 @@ GeneratorVC7::generateServant()
 	// build file name for servant project and open file
 	//
 	std::string project_name = file_prefix_ + "_SERVANT";
-	filename_ = project_name + ".vcproj";
+
+	_mkdir(project_name.c_str());
+
+	filename_ = project_name + "/";
+	filename_ = filename_ + project_name;
+	filename_ = filename_ + ".vcproj";
 	out.open(filename_.c_str());
 
 	//
@@ -742,7 +753,7 @@ GeneratorVC7::generateServant()
 	out << "Filter=\"idl;cidl\">\n";
 	out << "<File\n";
 	out.indent();
-	out << "RelativePath=\"" << target_file_name_ << "\">\n";
+	out << "RelativePath=\"../" << target_file_name_ << "\">\n";
 	//
 	// orbacus
 	//
@@ -753,7 +764,7 @@ GeneratorVC7::generateServant()
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
 	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DWIN32 -DORBACUS_ORB -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl ";
-	out << "-I$(ORBACUS)/idl/OB --servant --target " << target_->id() << " " << target_file_name_ << "\"\n";
+	out << "-I$(ORBACUS)/idl/OB --servant --target " << target_->id() << " ../" << target_file_name_ << "\"\n";
 	out << "Outputs=\"" << file_prefix_ << "_LOCAL.idl;" << file_prefix_ << "_EQUIVALENT.idl;";
 	out << file_prefix_ << "_BUSINESS.idl\"/>\n";
 	out.unindent();
@@ -769,7 +780,7 @@ GeneratorVC7::generateServant()
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
 	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DWIN32 -DMICO_ORB -I$(QEDO)/ComponentIDL -I$(MICO)/idl ";
-	out << "-I$(ORBACUS)/idl/OB --servant --target " << target_->id() << " " << target_file_name_ << "\"\n";
+	out << "-I$(ORBACUS)/idl/OB --servant --target " << target_->id() << " ../" << target_file_name_ << "\"\n";
 	out << "Outputs=\"" << file_prefix_ << "_LOCAL.idl;" << file_prefix_ << "_EQUIVALENT.idl;";
 	out << file_prefix_ << "_BUSINESS.idl\"/>\n";
 	out.unindent();
@@ -785,7 +796,7 @@ GeneratorVC7::generateServant()
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
 	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DWIN32 -DTAO_ORB -I$(QEDO)/ComponentIDL -I$(TAO)/idl ";
-	out << "-I$(ORBACUS)/idl/OB --servant --target " << target_->id() << " " << target_file_name_ << "\"\n";
+	out << "-I$(ORBACUS)/idl/OB --servant --target " << target_->id() << " ../" << target_file_name_ << "\"\n";
 	out << "Outputs=\"" << file_prefix_ << "_LOCAL.idl;" << file_prefix_ << "_EQUIVALENT.idl;";
 	out << file_prefix_ << "_BUSINESS.idl\"/>\n";
 	out.unindent();
@@ -805,7 +816,7 @@ GeneratorVC7::generateServant()
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
-	out << "CommandLine=\"$(ORBACUS)\\bin\\idl -DWIN32 -I$(QEDO)\\ComponentIDL -I$(ORBACUS)/idl ";
+	out << "CommandLine=\"$(ORBACUS)\\bin\\idl -DORBACUS_ORB -DWIN32 -I$(QEDO)\\ComponentIDL -I$(ORBACUS)/idl ";
 	out << "-I$(ORBACUS)/idl/OB " << file_prefix_ << "_EQUIVALENT.idl\"\n";
 	out << "Outputs=\"" << file_prefix_ << "_EQUIVALENT.h;" << file_prefix_ << "_EQUIVALENT.cpp;";
 	out << file_prefix_ << "_EQUIVALENT_skel.h;" << file_prefix_ << "_EQUIVALENT_skel.cpp\"/>\n";
@@ -858,7 +869,7 @@ GeneratorVC7::generateServant()
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
-	out << "CommandLine=\"$(ORBACUS)\\bin\\idl -DWIN32 -I$(QEDO)\\ComponentIDL -I$(ORBACUS)/idl ";
+	out << "CommandLine=\"$(ORBACUS)\\bin\\idl -DORBACUS_ORB -DWIN32 -I$(QEDO)\\ComponentIDL -I$(ORBACUS)/idl ";
 	out << "-I$(ORBACUS)/idl/OB " << file_prefix_ << "_LOCAL.idl\"\n";
 	out << "Outputs=\"" << file_prefix_ << "_LOCAL.h;" << file_prefix_ << "_LOCAL.cpp;";
 	out << file_prefix_ << "_LOCAL_skel.h;" << file_prefix_ << "_LOCAL_skel.cpp\"/>\n";
