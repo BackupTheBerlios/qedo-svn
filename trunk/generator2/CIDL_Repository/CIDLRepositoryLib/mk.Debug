@@ -1,0 +1,39 @@
+# Configuration Debug
+ProjectName=CIDLRepositoryLib
+IntDir=./Debug
+Name=Debug
+CFLAGS=-I../IFRidl -I../ComponentRepositoryLib -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -g
+CXXFLAGS=-I../IFRidl -I../ComponentRepositoryLib -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -g
+
+$(IntDir)/%.o:%.cpp
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+
+all: idl yacc lex  $(IntDir)/lib$(ProjectName).a 
+
+$(IntDir)/lib$(ProjectName).a : $(IntDir)/CIDLRepository_impl.o $(IntDir)/CompositionDef_impl.o $(IntDir)/ExecutorDef_impl.o $(IntDir)/HomeExecutorDef_impl.o $(IntDir)/SegmentDef_impl.o 
+	$(AR) $(ARFLAGS) $@ $^
+
+$(IntDir)/CIDLRepository_impl.o:	./CIDLRepository_impl.cpp
+$(IntDir)/CompositionDef_impl.o:	./CompositionDef_impl.cpp
+$(IntDir)/ExecutorDef_impl.o:	./ExecutorDef_impl.cpp
+$(IntDir)/HomeExecutorDef_impl.o:	./HomeExecutorDef_impl.cpp
+$(IntDir)/SegmentDef_impl.o:	./SegmentDef_impl.cpp
+idl:  
+
+# IDL files
+
+lex:  
+
+# LEX files
+
+yacc:  
+
+# YACC files
+
+
+# Kimwitu files
+
+
+Kimwitu:  
+

@@ -1,0 +1,73 @@
+# Configuration Release
+ProjectName=ComponentRepositoryLib
+IntDir=./Release
+Name=Release
+CFLAGS=-I -O1
+CXXFLAGS=-I -O1
+
+$(IntDir)/%.o:%.cpp
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+
+all: idl yacc lex  $(IntDir)/lib$(ProjectName).a 
+
+$(IntDir)/lib$(ProjectName).a : $(IntDir)/AliasDef_impl.o $(IntDir)/Anonymous.o $(IntDir)/AttributeDef_impl.o $(IntDir)/ComponentDef_impl.o $(IntDir)/ComponentRepository_impl.o $(IntDir)/ConstantDef_impl.o $(IntDir)/ConsumesDef_impl.o $(IntDir)/Contained_impl.o $(IntDir)/Container_impl.o $(IntDir)/EmitsDef_impl.o $(IntDir)/EnumDef_impl.o $(IntDir)/EventDef_impl.o $(IntDir)/EventPortDef_impl.o $(IntDir)/ExceptionDef_impl.o $(IntDir)/FactoryDef_impl.o $(IntDir)/FinderDef_impl.o $(IntDir)/HomeDef_impl.o $(IntDir)/IDLType_impl.o $(IntDir)/IRObject_impl.o $(IntDir)/InterfaceDef_impl.o $(IntDir)/ModuleDef_impl.o $(IntDir)/NativeDef_impl.o $(IntDir)/OperationDef_impl.o $(IntDir)/PrimaryKeyDef_impl.o $(IntDir)/PrimitiveDef_impl.o $(IntDir)/ProvidesDef_impl.o $(IntDir)/PublishesDef_impl.o $(IntDir)/Repository_impl.o $(IntDir)/SiSoDef_impl.o $(IntDir)/Sink.o $(IntDir)/SourceDef_impl.o $(IntDir)/StreamPortDef_impl.o $(IntDir)/StreamTypeDef_impl.o $(IntDir)/StructDef_impl.o $(IntDir)/TypedefDef_impl.o $(IntDir)/UnionDef_impl.o $(IntDir)/UsesDef_impl.o $(IntDir)/ValueDef_impl.o $(IntDir)/ValueMemberDef_impl.o 
+	$(AR) $(ARFLAGS) $@ $^
+
+$(IntDir)/AliasDef_impl.o:	./AliasDef_impl.cpp
+$(IntDir)/Anonymous.o:	./Anonymous.cpp
+$(IntDir)/AttributeDef_impl.o:	./AttributeDef_impl.cpp
+$(IntDir)/ComponentDef_impl.o:	./ComponentDef_impl.cpp
+$(IntDir)/ComponentRepository_impl.o:	./ComponentRepository_impl.cpp
+$(IntDir)/ConstantDef_impl.o:	./ConstantDef_impl.cpp
+$(IntDir)/ConsumesDef_impl.o:	./ConsumesDef_impl.cpp
+$(IntDir)/Contained_impl.o:	./Contained_impl.cpp
+$(IntDir)/Container_impl.o:	./Container_impl.cpp
+$(IntDir)/EmitsDef_impl.o:	./EmitsDef_impl.cpp
+$(IntDir)/EnumDef_impl.o:	./EnumDef_impl.cpp
+$(IntDir)/EventDef_impl.o:	./EventDef_impl.cpp
+$(IntDir)/EventPortDef_impl.o:	EventPortDef_impl.cpp
+$(IntDir)/ExceptionDef_impl.o:	./ExceptionDef_impl.cpp
+$(IntDir)/FactoryDef_impl.o:	./FactoryDef_impl.cpp
+$(IntDir)/FinderDef_impl.o:	./FinderDef_impl.cpp
+$(IntDir)/HomeDef_impl.o:	./HomeDef_impl.cpp
+$(IntDir)/IDLType_impl.o:	./IDLType_impl.cpp
+$(IntDir)/IRObject_impl.o:	./IRObject_impl.cpp
+$(IntDir)/InterfaceDef_impl.o:	./InterfaceDef_impl.cpp
+$(IntDir)/ModuleDef_impl.o:	./ModuleDef_impl.cpp
+$(IntDir)/NativeDef_impl.o:	./NativeDef_impl.cpp
+$(IntDir)/OperationDef_impl.o:	./OperationDef_impl.cpp
+$(IntDir)/PrimaryKeyDef_impl.o:	./PrimaryKeyDef_impl.cpp
+$(IntDir)/PrimitiveDef_impl.o:	./PrimitiveDef_impl.cpp
+$(IntDir)/ProvidesDef_impl.o:	./ProvidesDef_impl.cpp
+$(IntDir)/PublishesDef_impl.o:	./PublishesDef_impl.cpp
+$(IntDir)/Repository_impl.o:	./Repository_impl.cpp
+$(IntDir)/SiSoDef_impl.o:	./SiSoDef_impl.cpp
+$(IntDir)/Sink.o:	./Sink.cpp
+$(IntDir)/SourceDef_impl.o:	./SourceDef_impl.cpp
+$(IntDir)/StreamPortDef_impl.o:	./StreamPortDef_impl.cpp
+$(IntDir)/StreamTypeDef_impl.o:	./StreamTypeDef_impl.cpp
+$(IntDir)/StructDef_impl.o:	./StructDef_impl.cpp
+$(IntDir)/TypedefDef_impl.o:	./TypedefDef_impl.cpp
+$(IntDir)/UnionDef_impl.o:	./UnionDef_impl.cpp
+$(IntDir)/UsesDef_impl.o:	./UsesDef_impl.cpp
+$(IntDir)/ValueDef_impl.o:	./ValueDef_impl.cpp
+$(IntDir)/ValueMemberDef_impl.o:	./ValueMemberDef_impl.cpp
+idl:  
+
+# IDL files
+
+lex:  
+
+# LEX files
+
+yacc:  
+
+# YACC files
+
+
+# Kimwitu files
+
+
+Kimwitu:  
+

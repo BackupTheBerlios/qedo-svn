@@ -1,0 +1,42 @@
+# Configuration Debug_orbacus
+ProjectName=IFRidl
+IntDir=./Debug_orbacus
+Name=Debug_orbacus
+CFLAGS=-I. -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -g
+CXXFLAGS=-I. -I$(ORBACUS)/include -I$(ORBACUS)/include/OB -g
+
+$(IntDir)/%.o:%.cpp
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+
+all: idl yacc lex  $(IntDir)/lib$(ProjectName).a 
+
+$(IntDir)/lib$(ProjectName).a : $(IntDir)/CIDL_Extension.o $(IntDir)/CIDL_Extension_skel.o $(IntDir)/IFR.o $(IntDir)/IFR_skel.o 
+	$(AR) $(ARFLAGS) $@ $^
+
+$(IntDir)/CIDL_Extension.o:	./CIDL_Extension.cpp
+$(IntDir)/CIDL_Extension_skel.o:	./CIDL_Extension_skel.cpp
+$(IntDir)/IFR.o:	./IFR.cpp
+$(IntDir)/IFR_skel.o:	./IFR_skel.cpp
+idl:  IFR.h IFR.cpp IFR_skel.h IFR_skel.cpp CIDL_Extension.h CIDL_Extension.cpp CIDL_Extension_skel.h CIDL_Extension_skel.cpp 
+
+# IDL files
+IFR.h IFR.cpp IFR_skel.h IFR_skel.cpp:./IFR.idl
+	$(ORBACUS)/bin/idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --c-suffix  .cpp   IFR.idl 
+CIDL_Extension.h CIDL_Extension.cpp CIDL_Extension_skel.h CIDL_Extension_skel.cpp:./CIDL_Extension.idl
+	$(ORBACUS)/bin/idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --c-suffix .cpp   CIDL_Extension.idl 
+
+lex:  
+
+# LEX files
+
+yacc:  
+
+# YACC files
+
+
+# Kimwitu files
+
+
+Kimwitu:  
+

@@ -1,0 +1,53 @@
+# Configuration Release
+ProjectName=CIDLGenerator
+IntDir=./Release
+Name=Release
+CFLAGS=-I -O1
+CXXFLAGS=-I -O1
+LIBS=-L../../CIDL_Frontend/CIDLFrontendLib/$(IntDir) -L../../CIDL_Repository/IFRidl/$(IntDir) -L../../CIDL_Repository/ComponentRepositoryLib/$(IntDir) -L../../CIDL_Repository/CIDLRepositoryLib/$(IntDir)
+
+$(IntDir)/%.o:%.cpp
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+LDLIBS+=$(LIBS)
+
+CC=$(CXX)
+
+all: idl lex yacc  $(QEDO)/bin/cidl_gen 
+
+$(QEDO)/bin/cidl_gen : $(IntDir)/CPPBase.o $(IntDir)/GeneratorBIDL.o $(IntDir)/GeneratorBase.o $(IntDir)/GeneratorBusinessC.o $(IntDir)/GeneratorBusinessH.o $(IntDir)/GeneratorCCD.o $(IntDir)/GeneratorEIDL.o $(IntDir)/GeneratorLIDL.o $(IntDir)/GeneratorServantC.o $(IntDir)/GeneratorServantH.o $(IntDir)/GeneratorVC7.o $(IntDir)/IDLBase.o $(IntDir)/Printer.o $(IntDir)/TestMode.o $(IntDir)/main.o 
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+$(IntDir)/CPPBase.o:	CPPBase.cpp
+$(IntDir)/GeneratorBIDL.o:	./GeneratorBIDL.cpp
+$(IntDir)/GeneratorBase.o:	GeneratorBase.cpp
+$(IntDir)/GeneratorBusinessC.o:	./GeneratorBusinessC.cpp
+$(IntDir)/GeneratorBusinessH.o:	./GeneratorBusinessH.cpp
+$(IntDir)/GeneratorCCD.o:	./GeneratorCCD.cpp
+$(IntDir)/GeneratorEIDL.o:	./GeneratorEIDL.cpp
+$(IntDir)/GeneratorLIDL.o:	./GeneratorLIDL.cpp
+$(IntDir)/GeneratorServantC.o:	./GeneratorServantC.cpp
+$(IntDir)/GeneratorServantH.o:	./GeneratorServantH.cpp
+$(IntDir)/GeneratorVC7.o:	GeneratorVC7.cpp
+$(IntDir)/IDLBase.o:	IDLBase.cpp
+$(IntDir)/Printer.o:	./Printer.cpp
+$(IntDir)/TestMode.o:	./TestMode.cpp
+$(IntDir)/main.o:	./main.cpp
+idl:  
+
+# IDL files
+
+lex:  
+
+# LEX files
+
+yacc:  
+
+# YACC files
+
+
+# Kimwitu files
+
+
+Kimwitu:  
+
