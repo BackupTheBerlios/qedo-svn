@@ -19,14 +19,16 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA 
 
 CXX = @CXX@
-INCLUDES+=-I. -I../ComponentIDL @CPPFLAGS@ 
+INCLUDES+=-I. -I../ComponentIDL -I../ComponentServer $(NAMING_INCLUDES) @CPPFLAGS@ 
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS=@LIBS@
 
 @SET_MAKE@
 
-LIBS += -L../ComponentIDL -lComponentIDL -luuid
+LIBS += -L../ComponentIDL -lComponentIDL \
+		  $(NAMING_LIBS) \
+        -luuid
 
 SOURCES = Key.cpp \
      	ServantBase.cpp \
@@ -64,11 +66,6 @@ OBJS = ${SOURCES:.cpp=.o}
 CLEAN_FILES = $(OBJS) libComponentContainer.so
 
 include ../MakeVars
-
-ifeq "${ORB}" "MICO_ORB"
-LIBS += $(shell mico-config --cosslibs)
-INCLUDES += -I$(shell mico-config --prefix)/include/coss
-endif
 
 .PHONY: all
 
