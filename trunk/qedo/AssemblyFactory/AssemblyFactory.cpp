@@ -37,7 +37,7 @@
 #endif
 
 
-static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.15 2003/09/29 07:31:54 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: AssemblyFactory.cpp,v 1.16 2003/09/29 09:34:50 neubauer Exp $";
 
 
 namespace Qedo {
@@ -115,18 +115,16 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 	std::cout << "..... creating new assembly for " << assembly_loc << std::endl;
 
 	//
-	// xerces chrashes when assembly_loc is no valid uri
-	// to be fixed later
+	// get path
 	//
-	std::string loc = assembly_loc;
-	if ( loc.compare(0, 7, "file://") && loc.compare(0, 7, "http://") )
-    {
-		std::cout << "!!!!! invalid assembly location : " << "file:// or http:// prefix required" << std::endl;
-		throw Components::Deployment::InvalidLocation();
-    }
-
 	XMLURL uri(assembly_loc);
-    std::string name = XMLString::transcode(uri.getPath());
+	const XMLCh* p = uri.getPath();
+	if(!p)
+	{
+		std::cout << "!!!!! invalid assembly location" << std::endl;
+		throw Components::Deployment::InvalidLocation();
+	}
+	std::string name = XMLString::transcode(p);
     std::string::size_type pos = name.find_last_of("/");
     if (pos != std::string::npos)
     {
@@ -137,8 +135,16 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 	// copy the package in the local package directory
 	//
     URLInputSource inputSource(uri);
-	//inputSource.setIssueFatalErrorIfNotFound( false );
-    BinInputStream* inputStream = inputSource.makeStream();
+	BinInputStream* inputStream;
+	try
+	{
+		inputStream = inputSource.makeStream();
+	}
+	catch(...)
+	{
+		std::cout << "!!!!! invalid assembly location" << std::endl;
+		throw Components::Deployment::InvalidLocation();
+	}
     if (!inputStream)
     {
 		std::cout << "!!!!! invalid assembly location" << std::endl;
