@@ -31,7 +31,7 @@
 #include <signal.h>
 
 
-static char rcsid[] UNUSED = "$Id: ci.cpp,v 1.16 2003/08/28 09:22:34 neubauer Exp $";
+static char rcsid[] UNUSED = "$Id: ci.cpp,v 1.17 2003/09/05 15:04:32 boehme Exp $";
 
 
 /**
@@ -53,8 +53,9 @@ std::string g_qedo_dir;
 
 void
 handle_sigint
-( int signal )
+( int sig )
 {
+	signal(sig, SIG_IGN);
 	std::cout << "\nGot Crtl-C" << std::endl;
 	std::cerr << "..... unbind in NameService" << std::endl;
 
@@ -82,6 +83,10 @@ handle_sigint
 	catch (const CORBA::Exception&)
 	{
 		std::cerr << "..... could not unbind" << std::endl;
+	}
+	catch(...)
+	{
+		std::cerr << "..... error in signal handler" << std::endl;
 	}
 	
 	exit(1);
