@@ -600,7 +600,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Name="Source Files"
 				Filter="">
 				<File
-					RelativePath="PrimeryStreamServant.cpp">
+					RelativePath="PrimaryStreamServant.cpp">
 				</File>
 				<File
 					RelativePath="SinkPort.cpp">
