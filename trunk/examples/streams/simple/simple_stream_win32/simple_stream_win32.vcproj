@@ -122,8 +122,8 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)/bin/zip ../simple_stream_win32.zip -j ../SimpleStream_SinkCompo.zip ../SimpleStream_SourceCompo.zip
-$(QEDO)/bin/zip ../simple_stream_win32.zip meta-inf/simple_stream_win32.cad
+						CommandLine="$(cygwin)\zip ../simple_stream_win32.zip -j ../SimpleStream_SinkCompo.zip ../SimpleStream_SourceCompo.zip
+$(cygwin)\zip ../simple_stream_win32.zip meta-inf/simple_stream_win32.cad
 "
 						AdditionalDependencies=""
 						Outputs="../simple_stream_win32.zip"/>
