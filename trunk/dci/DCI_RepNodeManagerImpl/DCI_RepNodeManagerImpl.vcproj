@@ -62,12 +62,13 @@
 			OutputDirectory="Debug_mico"
 			IntermediateDirectory="Debug_mico"
 			ConfigurationType="2"
+			UseOfMFC="2"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".;..\ClientIDL;..\RepUtils;$(QEDO)/include;$(MICO)/include;"
-				PreprocessorDefinitions="BUILD_DCI_REPNODEMANAGERIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				PreprocessorDefinitions="BUILD_DCI_REPNODEMANAGERIMPL_DLL;MICO_ORB;WIN32;_DEBUG;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -80,10 +81,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib mico2311.lib micocoss2311.lib pthreadVC.lib qedoutil.lib wsock32.lib"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib mico2311.lib micocoss2311.lib pthreadVC.lib qedoutil.lib Ws2_32.lib PDH.lib ClientIDL.lib"
 				OutputFile="$(OutDir)/DCI_RepNodeManagerImpl.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib;../ClientIDL/Debug_mico"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/DCI_RepNodeManagerImpl.pdb"
 				SubSystem="2"
@@ -185,6 +186,15 @@ cp DCINodemanagerExt.zip $(QEDO)/bin
 				RelativePath="DCI_RepNodeManagerImpl_LOCAL.cpp">
 			</File>
 			<File
+				RelativePath="NodeProperties.cpp">
+			</File>
+			<File
+				RelativePath="PropertiesRepository.cpp">
+			</File>
+			<File
+				RelativePath="StdAfx.cpp">
+			</File>
+			<File
 				RelativePath="valuetypes.cpp">
 			</File>
 		</Filter>
@@ -205,6 +215,15 @@ cp DCINodemanagerExt.zip $(QEDO)/bin
 			</File>
 			<File
 				RelativePath="DCI_RepNodeManagerImpl_LOCAL.h">
+			</File>
+			<File
+				RelativePath="NodeProperties.h">
+			</File>
+			<File
+				RelativePath="PropertiesRepository.h">
+			</File>
+			<File
+				RelativePath="StdAfx.h">
 			</File>
 			<File
 				RelativePath="valuetypes.h">
