@@ -43,7 +43,7 @@ namespace Qedo {
 
 	class ServerInterceptorEntry {
 	public:
-		Components::Extension::ServerContainerInterceptor_var interceptor;
+		Components::ContainerPortableInterceptor::ServerContainerInterceptor_var interceptor;
 		std::string id;
 	};
 
@@ -51,7 +51,7 @@ namespace Qedo {
 
 
 	class ServerInterceptorDispatcher :
-		public virtual Components::Extension::ServerInterceptorRegistration,
+		public virtual Components::ContainerPortableInterceptor::ServerInterceptorRegistration,
 		public virtual CORBA::LocalObject
 	{
 	private:
@@ -105,16 +105,16 @@ namespace Qedo {
 			throw(PortableInterceptor::ForwardRequest, CORBA::SystemException);
 
 		virtual void
-		register_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor);
+		register_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor);
 
 		virtual void
-		register_interceptor_for_component(Components::Extension::ServerContainerInterceptor_ptr interceptor, const char * id);
+		register_interceptor_for_component(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor, const char * id);
 
 		virtual void
-		unregister_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor);
+		unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor);
 
 		virtual void
-		unregister_interceptor_for_component(Components::Extension::ServerContainerInterceptor_ptr interceptor, const char * id);
+		unregister_interceptor_for_component(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor, const char * id);
 
 		void
 		set_component_server(Qedo::ComponentServerImpl* component_server);

@@ -41,14 +41,14 @@ namespace Qedo {
 
 	class ClientInterceptorEntry {
 	public:
-		Components::Extension::ClientContainerInterceptor_var interceptor;
+		Components::ContainerPortableInterceptor::ClientContainerInterceptor_var interceptor;
 		std::string id;
 	};
 
 	typedef std::vector < ClientInterceptorEntry > ClientInterceptorVector;
 
 	class ClientInterceptorDispatcher :
-		public virtual Components::Extension::ClientInterceptorRegistration,
+		public virtual Components::ContainerPortableInterceptor::ClientInterceptorRegistration,
 		public virtual CORBA::LocalObject
 	{
 	private:
@@ -96,10 +96,10 @@ namespace Qedo {
 		receive_other( PortableInterceptor::ClientRequestInfo_ptr info );
 
 		virtual void
-		register_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor);
+		register_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptor_ptr interceptor);
 
 		virtual void
-		unregister_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor);
+		unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptor_ptr interceptor);
 
 		void
 		set_component_server(Qedo::ComponentServerImpl* component_server);

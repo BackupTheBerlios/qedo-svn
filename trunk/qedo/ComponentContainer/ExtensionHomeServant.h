@@ -39,16 +39,16 @@ class CONTAINERDLL_API ExtensionHomeServant : public CCMHomeServant
 {
 protected:
 	/** reference to server interceptor dispatcher intercface */
-	Components::Extension::ServerInterceptorRegistration_var server_dispatcher_;
+	Components::ContainerPortableInterceptor::ServerInterceptorRegistration_var server_dispatcher_;
 
 	/** reference to server interceptor dispatcher intercface */
-	Components::Extension::ClientInterceptorRegistration_var client_dispatcher_;
+	Components::ContainerPortableInterceptor::ClientInterceptorRegistration_var client_dispatcher_;
 
 	/** reference to stub interceptor dispatcher intercface */
-	Components::Extension::ServantInterceptorRegistration_var servant_dispatcher_;
+	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_var servant_dispatcher_;
 
 	/** reference to stub interceptor dispatcher intercface */
-	Components::Extension::StubInterceptorRegistration_var stub_dispatcher_;
+	Components::ContainerPortableInterceptor::StubInterceptorRegistration_var stub_dispatcher_;
 
 private:
 	/**
@@ -87,22 +87,22 @@ public:
 	/**
 	 * set server interceptor dispatcher interface at home servant
 	 */
-	 void set_server_interceptor_dispatcher(Components::Extension::ServerInterceptorRegistration_ptr server_dispatcher);
+	 void set_server_interceptor_dispatcher(Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_dispatcher);
 
 	/**
 	 * set server interceptor dispatcher interface at home servant
 	 */
-	 void set_client_interceptor_dispatcher(Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher);
+	 void set_client_interceptor_dispatcher(Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr client_dispatcher);
 
 	/**
 	 * set servant interceptor dispatcher interface at home servant
 	 */
-	 void set_servant_interceptor_dispatcher(Components::Extension::ServantInterceptorRegistration_ptr server_dispatcher);
+	 void set_servant_interceptor_dispatcher(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr server_dispatcher);
 
 	/**
 	 * set stub interceptor dispatcher interface at home servant
 	 */
-	 void set_stub_interceptor_dispatcher(Components::Extension::StubInterceptorRegistration_ptr server_dispatcher);
+	 void set_stub_interceptor_dispatcher(Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr server_dispatcher);
 
 }; // ExtensionHomeServant
 } // namespace Qedo

@@ -125,9 +125,9 @@ ServantBase::set_instance (Qedo::ComponentInstance& instance)
 
 #ifndef _QEDO_NO_QOS
 void
-ServantBase::set_servant_dispatcher_registry(Components::Extension::ServantInterceptorRegistration_ptr reg) 
+ServantBase::set_servant_dispatcher_registry(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr reg) 
 {
-	servant_interceptor_registry_ = Components::Extension::ServantInterceptorRegistration::_duplicate(reg);
+	servant_interceptor_registry_ = Components::ContainerPortableInterceptor::ServantInterceptorRegistration::_duplicate(reg);
 }
 
 

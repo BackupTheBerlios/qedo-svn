@@ -32,27 +32,27 @@
 
 namespace Qedo {
 
-class CONTAINERDLL_API ContainerServerRequestInfo : public virtual Components::Extension::ContainerServerRequestInfo,
+class CONTAINERDLL_API ContainerServerRequestInfo : public virtual Components::ContainerPortableInterceptor::ContainerServerRequestInfo,
 	public virtual RefCountLocalObject
 {
 private:
 	/** the identity of this component */
-	std::string		uuid_;
+//	std::string		uuid_;
 	std::string		component_id_;
-	std::string		port_id_;
+	std::string		name_;
 
 	PortableInterceptor::ServerRequestInfo_var request_info_;
 
 public:
-	ContainerServerRequestInfo (PortableInterceptor::ServerRequestInfo_ptr request_info, const char* uuid, const char* component_id, const char* port_id);
+	ContainerServerRequestInfo (PortableInterceptor::ServerRequestInfo_ptr request_info, const char* component_id, const Components::FeatureName name);
 
 	~ContainerServerRequestInfo ();
 
-    virtual char* component_uuid() ;
+//    virtual char* component_uuid() ;
 
 	virtual char* component_id() ;
 
-	virtual char* port_id();
+	virtual Components::FeatureName name();
 
     virtual PortableInterceptor::ServerRequestInfo_ptr request_info() ;
 };

@@ -43,7 +43,7 @@ ExtensionContext::~ExtensionContext()
 }
 
 void
-ExtensionContext::set_server_interceptor_dispatcher_registration(Components::Extension::ServerInterceptorRegistration_ptr registration)
+ExtensionContext::set_server_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_server_interceptor_dispatcher_registration called");
 	server_registration_ = registration;
@@ -51,60 +51,60 @@ ExtensionContext::set_server_interceptor_dispatcher_registration(Components::Ext
 
 
 void
-ExtensionContext::set_client_interceptor_dispatcher_registration(Components::Extension::ClientInterceptorRegistration_ptr registration)
+ExtensionContext::set_client_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_client_interceptor_dispatcher_registration called");
 	client_registration_ = registration;
 }
 
 void
-ExtensionContext::set_servant_interceptor_dispatcher_registration(Components::Extension::ServantInterceptorRegistration_ptr registration)
+ExtensionContext::set_servant_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_servant_interceptor_dispatcher_registration called");
 	servant_registration_ = registration;
 };
 
 void
-ExtensionContext::set_stub_interceptor_dispatcher_registration(Components::Extension::StubInterceptorRegistration_ptr registration)
+ExtensionContext::set_stub_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_stub_interceptor_dispatcher_registration called");
 	stub_registration_ = registration;
 };
 
-Components::Extension::ServerInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr
 ExtensionContext::get_server_interceptor_dispatcher_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_server_interceptor_dispatcher_registration called");
-	return Components::Extension::ServerInterceptorRegistration::_duplicate(server_registration_);
+	return Components::ContainerPortableInterceptor::ServerInterceptorRegistration::_duplicate(server_registration_);
 
 }
 
-Components::Extension::ClientInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr
 ExtensionContext::get_client_interceptor_dispatcher_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_client_interceptor_dispatcher_registration called");
-	return Components::Extension::ClientInterceptorRegistration::_duplicate(client_registration_);
+	return Components::ContainerPortableInterceptor::ClientInterceptorRegistration::_duplicate(client_registration_);
 
 }
 
-Components::Extension::ServantInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr
 ExtensionContext::get_servant_interceptor_dispatcher_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_servant_interceptor_dispatcher_registration called");
-	return Components::Extension::ServantInterceptorRegistration::_duplicate(servant_registration_);
+	return Components::ContainerPortableInterceptor::ServantInterceptorRegistration::_duplicate(servant_registration_);
 
 }
 
-Components::Extension::StubInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr
 ExtensionContext::get_stub_interceptor_dispatcher_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_stub_interceptor_dispatcher_registration called");
-	return Components::Extension::StubInterceptorRegistration::_duplicate(stub_registration_);
+	return Components::ContainerPortableInterceptor::StubInterceptorRegistration::_duplicate(stub_registration_);
 
 }
 
 void
-ExtensionContext::register_servant_locator_for_all(Components::Extension::ServerContainerInterceptor_ptr server_interceptor)
+ExtensionContext::register_servant_locator_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr server_interceptor)
 {
 
 // identify all servant locators

@@ -35,14 +35,14 @@ namespace Qedo {
 
 	class ServantInterceptorEntry {
 	public:
-		Components::Extension::ServerContainerInterceptor_var interceptor;
+		Components::ContainerPortableInterceptor::ServerContainerInterceptorExt_var interceptor;
 		std::string id;
 	};
 
 	typedef std::vector < ServantInterceptorEntry > ServantInterceptorVector;
 
 	class CONTAINERDLL_API ServantInterceptorDispatcher :
-		public virtual Components::Extension::ServantInterceptorRegistration,
+		public virtual Components::ContainerPortableInterceptor::ServantInterceptorRegistration,
 		public virtual CORBA::LocalObject
 	{
 	private:
@@ -80,10 +80,10 @@ namespace Qedo {
 		get_origin_id();
 
 		virtual void
-		register_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor);
+		register_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptorExt_ptr interceptor);
 
 		virtual void
-		unregister_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor);
+		unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptorExt_ptr interceptor);
 
 		virtual CORBA::Boolean 
 		call( const char* oper ) ;

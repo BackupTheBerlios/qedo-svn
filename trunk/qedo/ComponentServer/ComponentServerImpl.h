@@ -145,13 +145,13 @@ private:
 #ifndef _QEDO_NO_QOS
 
 	/** interceptor dispatcher for the server side */
-	Components::Extension::ServerInterceptorRegistration_var server_dispatcher_;
+	Components::ContainerPortableInterceptor::ServerInterceptorRegistration_var server_dispatcher_;
 	/** interceptor dispatcher for the client side */
-	Components::Extension::ClientInterceptorRegistration_var client_dispatcher_;
+	Components::ContainerPortableInterceptor::ClientInterceptorRegistration_var client_dispatcher_;
 	/** interceptor dispatcher for the servants */
-	Components::Extension::ServantInterceptorRegistration_var servant_dispatcher_;
+	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_var servant_dispatcher_;
 	/** interceptor dispatcher for the stubs */
-	Components::Extension::StubInterceptorRegistration_var stub_dispatcher_;
+	Components::ContainerPortableInterceptor::StubInterceptorRegistration_var stub_dispatcher_;
 #endif
 public:
 	/** the orb */
@@ -233,50 +233,50 @@ public:
 	 * set_server_dispatcher
 	 */
 	virtual void
-	set_server_dispatcher ( Components::Extension::ServerInterceptorRegistration_ptr server_dispatcher);
+	set_server_dispatcher ( Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_dispatcher);
 
 
  	/**
 	 * set_client_dispatcher
 	 */
 	virtual void
-	set_client_dispatcher ( Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher);
+	set_client_dispatcher ( Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr client_dispatcher);
 
 	/**
 	 * set_servant_dispatcher
 	 */
 	virtual void
-	set_servant_dispatcher ( Components::Extension::ServantInterceptorRegistration_ptr servant_dispatcher);
+	set_servant_dispatcher ( Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr servant_dispatcher);
 
 	/**
 	 * set_stub_dispatcher
 	 */
 	virtual void
-	set_stub_dispatcher ( Components::Extension::StubInterceptorRegistration_ptr stub_dispatcher);
+	set_stub_dispatcher ( Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_dispatcher);
 
 	/**
 	 * get_server_dispatcher
 	 */
-	virtual Components::Extension::ServerInterceptorRegistration_ptr
+	virtual Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr
 	get_server_dispatcher (  );
 
 	/**
 	 * get_client_dispatcher
 	 */
-	virtual Components::Extension::ClientInterceptorRegistration_ptr
+	virtual Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr
 	get_client_dispatcher (  );
 
 
 	/**
 	 * get_servant_dispatcher
 	 */
-	virtual Components::Extension::ServantInterceptorRegistration_ptr
+	virtual Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr
 	get_servant_dispatcher (  );
 
 	/**
 	 * get_servant_dispatcher
 	 */
-	virtual Components::Extension::StubInterceptorRegistration_ptr
+	virtual Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr
 	get_stub_dispatcher (  );
 
 	virtual ContainerList*

@@ -36,14 +36,14 @@ namespace Qedo {
 
 ContainerClientRequestInfo::ContainerClientRequestInfo (
 	PortableInterceptor::ClientRequestInfo_ptr request_info, 
-	const char* uuid, 
+//	const char* uuid, 
 	const char* component_id,
-	const char* port_id)
+	const Components::FeatureName name)
 {
 	request_info_ = PortableInterceptor::ClientRequestInfo::_duplicate(request_info);
-	uuid_ = uuid;
+//	uuid_ = uuid;
 	component_id_ = component_id;
-	port_id_ = port_id;
+	name_ = name;
 }
 
 ContainerClientRequestInfo::~ContainerClientRequestInfo ()
@@ -52,6 +52,7 @@ ContainerClientRequestInfo::~ContainerClientRequestInfo ()
 }
 
 
+/*
 char* 
 ContainerClientRequestInfo::component_uuid()
 {
@@ -59,6 +60,7 @@ ContainerClientRequestInfo::component_uuid()
 	ret_str = strdup ( uuid_.c_str() );
 	return ret_str;
 }
+*/
 
 char* 
 ContainerClientRequestInfo::component_id() 
@@ -69,10 +71,10 @@ ContainerClientRequestInfo::component_id()
 }
 
 char* 
-ContainerClientRequestInfo::port_id() 
+ContainerClientRequestInfo::name() 
 {
 	char* ret_str;
-	ret_str = strdup ( port_id_.c_str() );
+	ret_str = strdup ( name_.c_str() );
 	return ret_str;
 }
 

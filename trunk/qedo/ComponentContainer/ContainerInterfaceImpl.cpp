@@ -632,8 +632,8 @@ throw (Components::Deployment::UnknownImplId,
 	// Service or session container only accept Qedo::SessionHomeServants and process and entity containers
 	// only accept Qedo::EntityHomeServants
 #ifndef _QEDO_NO_QOS
-	Components::Extension::ServerInterceptorRegistration_var server_reg;
-	Components::Extension::ClientInterceptorRegistration_var client_reg;
+	Components::ContainerPortableInterceptor::ServerInterceptorRegistration_var server_reg;
+	Components::ContainerPortableInterceptor::ClientInterceptorRegistration_var client_reg;
 #endif
 	switch (container_type_)
 	{

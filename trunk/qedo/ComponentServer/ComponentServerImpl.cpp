@@ -600,51 +600,51 @@ ComponentServerImpl::slot_id()
 
 
 void
-ComponentServerImpl::set_server_dispatcher ( Components::Extension::ServerInterceptorRegistration_ptr server_dispatcher)
+ComponentServerImpl::set_server_dispatcher ( Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_dispatcher)
 {
 	server_dispatcher_ = server_dispatcher;
 }
 
 void
-ComponentServerImpl::set_client_dispatcher ( Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher)
+ComponentServerImpl::set_client_dispatcher ( Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr client_dispatcher)
 {
 	client_dispatcher_ = client_dispatcher;
 }
 
 void
-ComponentServerImpl::set_servant_dispatcher ( Components::Extension::ServantInterceptorRegistration_ptr servant_dispatcher)
+ComponentServerImpl::set_servant_dispatcher ( Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr servant_dispatcher)
 {
 	servant_dispatcher_ = servant_dispatcher;
 }
 
 void
-ComponentServerImpl::set_stub_dispatcher ( Components::Extension::StubInterceptorRegistration_ptr stub_dispatcher)
+ComponentServerImpl::set_stub_dispatcher ( Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_dispatcher)
 {
 	stub_dispatcher_ = stub_dispatcher;
 }
 
-Components::Extension::ServerInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr
 ComponentServerImpl::get_server_dispatcher (  )
 {
-	return Components::Extension::ServerInterceptorRegistration::_duplicate (server_dispatcher_);
+	return Components::ContainerPortableInterceptor::ServerInterceptorRegistration::_duplicate (server_dispatcher_);
 }
 
-Components::Extension::ClientInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr
 ComponentServerImpl::get_client_dispatcher (  )
 {
-	return Components::Extension::ClientInterceptorRegistration::_duplicate (client_dispatcher_);
+	return Components::ContainerPortableInterceptor::ClientInterceptorRegistration::_duplicate (client_dispatcher_);
 }
 
-Components::Extension::ServantInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr
 ComponentServerImpl::get_servant_dispatcher (  )
 {
-	return Components::Extension::ServantInterceptorRegistration::_duplicate (servant_dispatcher_);
+	return Components::ContainerPortableInterceptor::ServantInterceptorRegistration::_duplicate (servant_dispatcher_);
 }
 
-Components::Extension::StubInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr
 ComponentServerImpl::get_stub_dispatcher (  )
 {
-	return Components::Extension::StubInterceptorRegistration::_duplicate (stub_dispatcher_);
+	return Components::ContainerPortableInterceptor::StubInterceptorRegistration::_duplicate (stub_dispatcher_);
 }
 
 Qedo::ContainerList*

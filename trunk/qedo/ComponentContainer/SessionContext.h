@@ -56,11 +56,11 @@ public:
 	~SessionContext();
 #ifndef _QEDO_NO_QOS
 protected:
-	Components::Extension::StubInterceptorRegistration_var stub_registration_;
+	Components::ContainerPortableInterceptor::StubInterceptorRegistration_var stub_registration_;
 
 public:
 	virtual void
-	set_stub_interceptor_registration(Components::Extension::StubInterceptorRegistration_ptr stub_registration);
+	set_stub_interceptor_registration(Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_registration);
 #endif
     /**
 	 * implements IDL:omg.org/Components/SessionContext/get_CCM_object:1.0

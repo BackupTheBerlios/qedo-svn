@@ -215,13 +215,13 @@ main (int argc, char** argv)
 	if (qos_enabled)
 	{
 		component_server -> set_server_dispatcher (
-			Components::Extension::ServerInterceptorRegistration::_narrow(server_dispatcher));
+			Components::ContainerPortableInterceptor::ServerInterceptorRegistration::_narrow(server_dispatcher));
 		component_server -> set_client_dispatcher (
-			Components::Extension::ClientInterceptorRegistration::_narrow(client_dispatcher));
+			Components::ContainerPortableInterceptor::ClientInterceptorRegistration::_narrow(client_dispatcher));
 		component_server -> set_servant_dispatcher (
-			Components::Extension::ServantInterceptorRegistration::_narrow(servant_dispatcher));
+			Components::ContainerPortableInterceptor::ServantInterceptorRegistration::_narrow(servant_dispatcher));
 		component_server -> set_stub_dispatcher (
-			Components::Extension::StubInterceptorRegistration::_narrow(stub_dispatcher));
+			Components::ContainerPortableInterceptor::StubInterceptorRegistration::_narrow(stub_dispatcher));
 
 		server_dispatcher -> set_component_server ( component_server );
 		client_dispatcher -> set_component_server ( component_server );

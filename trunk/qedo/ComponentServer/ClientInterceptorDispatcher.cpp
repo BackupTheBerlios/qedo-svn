@@ -97,7 +97,7 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
 #endif
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
-	Components::Extension::SlotInfo slot_info;
+	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
 //	if (!slot_info.target_id)
 //	{
@@ -105,7 +105,7 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 //	}
 
 //	all_client_interceptors_mutex_.read_lock_object();
-	Components::Extension::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id,slot_info.target_id);
+	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
@@ -150,7 +150,7 @@ ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestIn
 	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
 
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
-	Components::Extension::SlotInfo slot_info;
+	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
 //	if (!slot_info.target_id)
 //	{
@@ -158,7 +158,7 @@ ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestIn
 //	}
 
 //	all_client_interceptors_mutex_.read_lock_object();
-	Components::Extension::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id,slot_info.target_id);
+	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
@@ -182,7 +182,7 @@ ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientReque
 	DEBUG_OUT ("ClientInterceptorDispatcher: receive_exception");
 
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
-	Components::Extension::SlotInfo slot_info;
+	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
 //	if (!slot_info.target_id)
 //	{
@@ -190,7 +190,7 @@ ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientReque
 //	}
 
 //	all_client_interceptors_mutex_.read_lock_object();
-	Components::Extension::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id,slot_info.target_id);
+	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
@@ -215,14 +215,14 @@ ClientInterceptorDispatcher::receive_other( PortableInterceptor::ClientRequestIn
 }
 
 void
-ClientInterceptorDispatcher::register_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor)
+ClientInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptor_ptr interceptor)
 {
 #ifdef _DEBUG
 	DEBUG_OUT("ClientInterceptorDispatcher: Client COPI registered for all components");
 #endif
 
 	ClientInterceptorEntry e;
-	e.interceptor = Components::Extension::ClientContainerInterceptor::_duplicate( interceptor );
+	e.interceptor = Components::ContainerPortableInterceptor::ClientContainerInterceptor::_duplicate( interceptor );
 
 	interceptor->set_slot_id(component_server_->slot_id_);
 	//Qedo::QedoLock l(all_client_interceptors_mutex_);
@@ -232,7 +232,7 @@ ClientInterceptorDispatcher::register_interceptor_for_all(Components::Extension:
 
 }
 void
-ClientInterceptorDispatcher::unregister_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor)
+ClientInterceptorDispatcher::unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptor_ptr interceptor)
 {
 #ifdef _DEBUG
 	DEBUG_OUT("ClientInterceptorDispatcher: Client COPI unregister_for_all called");

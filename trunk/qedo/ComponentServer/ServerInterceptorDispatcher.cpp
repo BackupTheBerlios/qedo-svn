@@ -124,8 +124,8 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	// identify th component_UUID
 	const char* uuid = 0;
 	// identify port_id
-	const char* port_id = 0;
-
+//	const char* port_id = 0;
+	Components::FeatureName port_id = 0;
 	for (container_iter = temp_container_list->begin(); container_iter != temp_container_list->end(); container_iter++)
 	{
 		for (unsigned int i = 0; i < (*container_iter) -> installed_homes_.size(); i++)
@@ -236,7 +236,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	IOP::ServiceContext_var sc = 0;
 	CORBA::Any_var context_any = new CORBA::Any();
 	CORBA::Any slot ;
-	Components::Extension::SlotInfo slot_info;
+	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	try {
 		sc = info -> get_request_service_context(100);	
 		
@@ -273,7 +273,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 	Qedo::QedoLock l_all(all_server_interceptors_mutex_);
 
-	Components::Extension::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,slot_info.target_id,port_id);
+	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,port_id);
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
 		try {
@@ -329,7 +329,7 @@ throw(CORBA::SystemException)
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 
 	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
-	Components::Extension::SlotInfo slot_info;
+	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
 //	if (!slot_info.target_id)
 //	{
@@ -337,7 +337,7 @@ throw(CORBA::SystemException)
 //	}
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
-	Components::Extension::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,slot_info.target_id,slot_info.target_id);
+	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
@@ -367,7 +367,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 
 	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
-	Components::Extension::SlotInfo slot_info;
+	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
 //	if (!slot_info.target_id)
 //	{
@@ -375,7 +375,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 //	}
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
-	Components::Extension::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,slot_info.target_id,slot_info.target_id);
+	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
@@ -399,12 +399,12 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 }
 
 void
-ServerInterceptorDispatcher::register_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor)
+ServerInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor)
 {
 	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI registered for all components");
 
 	ServerInterceptorEntry e;
-	e.interceptor = Components::Extension::ServerContainerInterceptor::_duplicate( interceptor );
+	e.interceptor = Components::ContainerPortableInterceptor::ServerContainerInterceptor::_duplicate( interceptor );
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
 
@@ -413,12 +413,12 @@ ServerInterceptorDispatcher::register_interceptor_for_all(Components::Extension:
 }
 
 void
-ServerInterceptorDispatcher::register_interceptor_for_component(Components::Extension::ServerContainerInterceptor_ptr interceptor, const char* id)
+ServerInterceptorDispatcher::register_interceptor_for_component(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor, const char* id)
 {
 	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI registered for component ");
 
 	ServerInterceptorEntry e;
-	e.interceptor = Components::Extension::ServerContainerInterceptor::_duplicate( interceptor );
+	e.interceptor = Components::ContainerPortableInterceptor::ServerContainerInterceptor::_duplicate( interceptor );
 	e.id = id;
 
 	Qedo::QedoLock l(for_component_id_server_interceptors_mutex_);
@@ -428,7 +428,7 @@ ServerInterceptorDispatcher::register_interceptor_for_component(Components::Exte
 }
 
 void
-ServerInterceptorDispatcher::unregister_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor)
+ServerInterceptorDispatcher::unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor)
 {
 	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI unregister_for_all called");
 
@@ -454,7 +454,7 @@ ServerInterceptorDispatcher::unregister_interceptor_for_all(Components::Extensio
 }
 
 void
-ServerInterceptorDispatcher::unregister_interceptor_for_component(Components::Extension::ServerContainerInterceptor_ptr interceptor, const char* id)
+ServerInterceptorDispatcher::unregister_interceptor_for_component(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor, const char* id)
 {
 	DEBUG_OUT("ServerInterceptorDispatcher: Server COPI unregister_for_component called");
 

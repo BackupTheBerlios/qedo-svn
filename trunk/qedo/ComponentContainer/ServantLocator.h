@@ -51,7 +51,7 @@ private:
 	/** the home servant */
 	HomeServantBase* home_servant_;
 #ifndef _QEDO_NO_QOS
-	Components::Extension::ServerContainerInterceptor_var server_interceptor_;
+	Components::ContainerPortableInterceptor::ServerContainerInterceptor_var server_interceptor_;
 	PortableServer::ObjectId_var oid_;
 #endif
 
@@ -102,9 +102,9 @@ public:
         throw ( CORBA::SystemException );
 #ifndef _QEDO_NO_QOS
 
-	void register_interceptor(Components::Extension::ServerContainerInterceptor_ptr interceptor);
+	void register_interceptor(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor);
 
-	void register_interceptor_with_oid(Components::Extension::ServerContainerInterceptor_ptr interceptor, PortableServer::ObjectId* oid);
+	void register_interceptor_with_oid(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor, PortableServer::ObjectId* oid);
 
 #endif
 };

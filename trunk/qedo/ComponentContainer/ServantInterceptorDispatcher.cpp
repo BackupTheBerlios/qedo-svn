@@ -64,7 +64,7 @@ ServantInterceptorDispatcher::get_target_id()
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 
 	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
-	Components::Extension::SlotInfo slot_info;
+	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
 	if (!slot_info.target_id)
 	{
@@ -86,7 +86,7 @@ ServantInterceptorDispatcher::get_origin_id()
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 
 	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
-	Components::Extension::SlotInfo slot_info;
+	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
 	if (!slot_info.origin_id)
 	{
@@ -97,12 +97,12 @@ ServantInterceptorDispatcher::get_origin_id()
 }
 
 void
-ServantInterceptorDispatcher::register_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor)
+ServantInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptorExt_ptr interceptor)
 {
 	DEBUG_OUT("ServantInterceptorDispatcher: Server COPI registered for all components");
 
 	ServantInterceptorEntry e;
-	e.interceptor = Components::Extension::ServerContainerInterceptor::_duplicate( interceptor );
+	e.interceptor = Components::ContainerPortableInterceptor::ServerContainerInterceptorExt::_duplicate( interceptor );
 
 	Qedo::QedoLock l(all_servant_interceptors_mutex_);
 
@@ -111,7 +111,7 @@ ServantInterceptorDispatcher::register_interceptor_for_all(Components::Extension
 }
 
 void
-ServantInterceptorDispatcher::unregister_interceptor_for_all(Components::Extension::ServerContainerInterceptor_ptr interceptor)
+ServantInterceptorDispatcher::unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptorExt_ptr interceptor)
 {
 	DEBUG_OUT("ServantInterceptorDispatcher: Server COPI unregister_for_all called");
 

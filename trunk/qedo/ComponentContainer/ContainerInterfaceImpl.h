@@ -238,8 +238,8 @@ private:
 		throw (Components::CCMException);
 
 #ifndef _QEDO_NO_QOS
-	Components::Extension::ServantInterceptorRegistration_var servant_reg;
-	Components::Extension::StubInterceptorRegistration_var stub_reg;
+	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_var servant_reg;
+	Components::ContainerPortableInterceptor::StubInterceptorRegistration_var stub_reg;
 
 #endif 
 

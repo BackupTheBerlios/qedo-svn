@@ -45,10 +45,10 @@ class CONTAINERDLL_API ExtensionContext : public virtual Components::ExtensionCo
 										public virtual CCMContext
 {
 private:
-	Components::Extension::ServerInterceptorRegistration_var server_registration_;
-	Components::Extension::ClientInterceptorRegistration_var client_registration_;
-	Components::Extension::ServantInterceptorRegistration_var servant_registration_;
-	Components::Extension::StubInterceptorRegistration_var stub_registration_;
+	Components::ContainerPortableInterceptor::ServerInterceptorRegistration_var server_registration_;
+	Components::ContainerPortableInterceptor::ClientInterceptorRegistration_var client_registration_;
+	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_var servant_registration_;
+	Components::ContainerPortableInterceptor::StubInterceptorRegistration_var stub_registration_;
 
 	/*
 	* list of config values to store contract inforamtion 
@@ -70,53 +70,53 @@ public:
 	 * set_server_intercpetor_registration
 	 */
 	 virtual void
-	 set_server_interceptor_dispatcher_registration(Components::Extension::ServerInterceptorRegistration_ptr registration);
+	 set_server_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr registration);
 
 	/**
 	 * set_client_intercpetor_registration
 	 */
 	 virtual void
-	 set_client_interceptor_dispatcher_registration(Components::Extension::ClientInterceptorRegistration_ptr registration);
+	 set_client_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr registration);
 
 	/**
 	 * set_servant_intercpetor_registration
 	 */
 	 virtual void
-	 set_servant_interceptor_dispatcher_registration(Components::Extension::ServantInterceptorRegistration_ptr registration);
+	 set_servant_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr registration);
 
 	/**
 	 * set_servant_intercpetor_registration
 	 */
 	 virtual void
-	 set_stub_interceptor_dispatcher_registration(Components::Extension::StubInterceptorRegistration_ptr registration);
+	 set_stub_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr registration);
 
 	 /**
 	 * get_server_intercpetor_registration
 	 */
-	 virtual Components::Extension::ServerInterceptorRegistration_ptr
+	 virtual Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr
 	 get_server_interceptor_dispatcher_registration();
 
 
 	/**
 	 * get_client_intercpetor_registration
 	 */
-	 virtual Components::Extension::ClientInterceptorRegistration_ptr
+	 virtual Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr
 	 get_client_interceptor_dispatcher_registration();
 
 	 /**
 	 * get_servant_intercpetor_registration
 	 */
-	 virtual Components::Extension::ServantInterceptorRegistration_ptr
+	 virtual Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr
 	 get_servant_interceptor_dispatcher_registration();
 
 	 /**
 	 * get_servant_intercpetor_registration
 	 */
-	 virtual Components::Extension::StubInterceptorRegistration_ptr
+	 virtual Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr
 	 get_stub_interceptor_dispatcher_registration();
 
 	 virtual void
-	 register_servant_locator_for_all(Components::Extension::ServerContainerInterceptor_ptr server_interceptor);
+	 register_servant_locator_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr server_interceptor);
 
 	 virtual void
 	 set_contract_data ( const Components::ConfigValues& contract_data);

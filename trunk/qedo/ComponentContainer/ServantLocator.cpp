@@ -86,7 +86,7 @@ throw (PortableServer::ForwardRequest, CORBA::SystemException)
 if(!CORBA::is_nil(server_interceptor_))
 {
 //	if (Qedo::compare_object_ids(oid_,oid))
-		server_interceptor_->rec_request_from_servant_locator(operation);
+//		server_interceptor_->rec_request_from_servant_locator(operation);
 
 }
 #endif
@@ -126,7 +126,7 @@ throw (CORBA::SystemException)
 
 #ifndef _QEDO_NO_QOS
 void
-ServantLocator::register_interceptor(Components::Extension::ServerContainerInterceptor_ptr interceptor)
+ServantLocator::register_interceptor(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor)
 {
 server_interceptor_ = interceptor;
 
@@ -134,7 +134,7 @@ server_interceptor_ = interceptor;
 
 
 void
-ServantLocator::register_interceptor_with_oid(Components::Extension::ServerContainerInterceptor_ptr interceptor, PortableServer::ObjectId* oid)
+ServantLocator::register_interceptor_with_oid(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr interceptor, PortableServer::ObjectId* oid)
 {
 server_interceptor_ = interceptor;
 oid_ = oid;

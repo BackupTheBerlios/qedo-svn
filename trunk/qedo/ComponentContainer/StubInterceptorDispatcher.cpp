@@ -52,12 +52,12 @@ StubInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* compo
 }
 
 void
-StubInterceptorDispatcher::register_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor)
+StubInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptorExt_ptr interceptor)
 {
 	DEBUG_OUT("StubInterceptorDispatcher: Client COPI registered for all components");
 
 	StubInterceptorEntry e;
-	e.interceptor = Components::Extension::ClientContainerInterceptor::_duplicate( interceptor );
+	e.interceptor = Components::ContainerPortableInterceptor::ClientContainerInterceptorExt::_duplicate( interceptor );
 
 	Qedo::QedoLock l(all_stub_interceptors_mutex_);
 
@@ -66,7 +66,7 @@ StubInterceptorDispatcher::register_interceptor_for_all(Components::Extension::C
 }
 
 void
-StubInterceptorDispatcher::unregister_interceptor_for_all(Components::Extension::ClientContainerInterceptor_ptr interceptor)
+StubInterceptorDispatcher::unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptorExt_ptr interceptor)
 {
 DEBUG_OUT("ServerInterceptorDispatcher: Stub interceptor Dispatcher unregister_for_all called");
 

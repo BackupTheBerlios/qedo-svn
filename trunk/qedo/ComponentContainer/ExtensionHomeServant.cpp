@@ -87,25 +87,25 @@ ExtensionHomeServant::do_finalize_component_incarnation (Components::ExecutorLoc
 
 
 void
-ExtensionHomeServant::set_server_interceptor_dispatcher(Components::Extension::ServerInterceptorRegistration_ptr server_dispatcher)
+ExtensionHomeServant::set_server_interceptor_dispatcher(Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_dispatcher)
 {
 	server_dispatcher_ = server_dispatcher;
 }
 
 void
-ExtensionHomeServant::set_client_interceptor_dispatcher(Components::Extension::ClientInterceptorRegistration_ptr client_dispatcher)
+ExtensionHomeServant::set_client_interceptor_dispatcher(Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr client_dispatcher)
 {
 	client_dispatcher_ = client_dispatcher;
 }
 
 void
-ExtensionHomeServant::set_servant_interceptor_dispatcher(Components::Extension::ServantInterceptorRegistration_ptr servant_dispatcher)
+ExtensionHomeServant::set_servant_interceptor_dispatcher(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr servant_dispatcher)
 {
 	servant_dispatcher_ = servant_dispatcher;
 }
 
 void
-ExtensionHomeServant::set_stub_interceptor_dispatcher(Components::Extension::StubInterceptorRegistration_ptr stub_dispatcher)
+ExtensionHomeServant::set_stub_interceptor_dispatcher(Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_dispatcher)
 {
 	stub_dispatcher_ = stub_dispatcher;
 }
