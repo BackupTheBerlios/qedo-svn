@@ -1,0 +1,47 @@
+# Configuration Debug_mico_linux
+ProjectName=ComponentServer
+OutDir=Debug_mico_linux
+IntDir=Debug_mico_linux
+Name=Debug_mico_linux
+CFLAGS=-I../ComponentIDL -I../ComponentValuetypes -I../ComponentContainer -I../ComponentInstaller -I$(MICO)/include -I$(MICO)/include/OB - g -DMICO_ORB
+CXXFLAGS=-I../ComponentIDL -I../ComponentValuetypes -I../ComponentContainer -I../ComponentInstaller -I$(MICO)/include -I$(MICO)/include/OB -g -DMICO_ORB
+LIBS=-L$(MICO)/lib -L../ComponentContainer/../../Runtime -L../ComponentIDL/../../Runtime  -lmico2.3.9 -lmicocoss2.3.9 -ldl -lpthread -lComponentContainer -lComponentIDL
+
+$(IntDir)/%.o:%.cpp
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+# produce Executable
+LDLIBS+=$(LIBS)
+
+CC=$(CXX)
+
+all:  ../../Runtime/cs 
+
+../../Runtime/cs : $(IntDir)/ComponentServerImpl.o $(IntDir)/../../ComponentInstaller/$(IntDir)/NameServiceBase.o $(IntDir)/ORBInitializerImpl.o $(IntDir)/main.o 
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+$(IntDir)/ComponentServerImpl.o:	ComponentServerImpl.cpp
+$(IntDir)/../../ComponentInstaller/NameServiceBase.o:		$(IntDir)/../../ComponentInstaller/NameServiceBase.cpp
+$(IntDir)/ORBInitializerImpl.o:					ORBInitializerImpl.cpp
+$(IntDir)/main.o:	main.cpp
+cidl:  
+idl:  cidl
+
+# CIDL files
+
+# IDL files
+
+lex:  
+
+# LEX files
+
+yacc:  
+
+# YACC files
+
+
+# Kimwitu files
+
+
+Kimwitu:  
+

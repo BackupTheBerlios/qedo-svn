@@ -1,0 +1,142 @@
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
+
+# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+
+PACKAGE = @PACKAGE@
+VERSION = @VERSION@
+
+PROJECT_ROOT=@project_root@
+IDL_DEPEND=sh @srcdir@/../config/idl_depend
+IDL_DIR=.
+
+IDL_CLN_H_SUFFIX=@IDL_CLN_H_SUFFIX@
+IDL_CLN_H1_SUFFIX=@IDL_CLN_H1_SUFFIX@
+IDL_CLN_CPP_SUFFIX=@IDL_CLN_CPP@
+IDL_CLN_OBJ_SUFFIX=@IDL_CLN_O@
+IDL_SRV_H_SUFFIX=@IDL_SRV_H_SUFFIX@
+IDL_SRV_H1_SUFFIX=@IDL_SRV_H1_SUFFIX@
+IDL_SRV_CPP_SUFFIX=@IDL_SRV_CPP@
+IDL_SRV_OBJ_SUFFIX=@IDL_SRV_O@
+IDL_TIE_H_SUFFIX=@IDL_TIE_H_SUFFIX@
+IDL_TIE_H1_SUFFIX=@IDL_TIE_H1_SUFFIX@
+IDL_TIE_CPP_SUFFIX=@IDL_TIE_CPP_SUFFIX@
+#
+IDL_DEPEND_FOR_COMPONENT_LIB=\
+ ( $(IDL_DEPEND) \
+ --idl-dir $(IDL_DIR) \
+ --var-prefix COMPONENT_LIB_ \
+ --cln_h_suffix    $(IDL_CLN_H_SUFFIX) \
+ --cln_h1_suffix    $(IDL_CLN_H1_SUFFIX) \
+ --cln_cpp_suffix    $(IDL_CLN_CPP_SUFFIX) \
+ --cln_obj_suffix    $(IDL_CLN_OBJ_SUFFIX) \
+ --srv_h_suffix    $(IDL_SRV_H_SUFFIX) \
+ --srv_h1_suffix    $(IDL_SRV_H1_SUFFIX) \
+ --srv_cpp_suffix    $(IDL_SRV_CPP_SUFFIX) \
+ --srv_obj_suffix    $(IDL_SRV_OBJ_SUFFIX) \
+ --tie_h_suffix    $(IDL_TIE_H_SUFFIX) \
+ --tie_h1_suffix    $(IDL_TIE_H1_SUFFIX) \
+ --tie_cpp_suffix    $(IDL_TIE_CPP_SUFFIX) \
+ ) 
+#
+CXX=@CXX@
+CPPFLAGS=-I. @CPPFLAGS@ 
+ifeq "@ORB@" "TAO"
+CPPFLAGS+=-I$(TAO_ROOT)/tao
+endif
+CXXFLAGS=$(CPPFLAGS) @DEFS@ @CXXFLAGS@
+INCLUDE=@INCLUDE@
+CXXCOMPILE=@CXX@ $(CXXFLAGS)
+
+LD=@LD@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+
+AR=@AR@
+ARFLAGS=@ARFLAGS@
+
+@SET_MAKE@
+
+IDL=@IDL@
+IDLCXX=@IDL@
+IDLFLAGS= -I. @IDLFLAGS@
+ifeq "@ORB@" "TAO"
+IDLFLAGS+=-DTAO_IDL -Gv -Ge 1
+endif
+ifeq "@ORB@" "MICO"
+IDLFLAGS+=--relative-paths -DMICO_IDL
+endif
+ifeq "@ORB@" "ORBacus"
+IDLFLAGS+=--output-dir @srcdir@
+endif
+
+ORB_PREFIX=@ORB_PREFIX@
+
+IDL_INCLUDE_DIR = @ORB_IDL_INCLUDE_DIR@
+
+INCLUDES = -I. @IDLCXXFLAGS@
+LDFLAGS = @LD_CREATE_FLAGS@ @ORB_LIBS@
+# IDL '@IDL@'
+# IDLFLAGS '@IDLFLAGS@'
+# IDLCXX '@IDLCXX@'
+# IDLCXXFLAGS '@IDLCXXFLAGS@'
+# IDL_CLN_H_SUFFIX '@IDL_CLN_H_SUFFIX@'
+# IDL_CLN_H1_SUFFIX '@IDL_CLN_H1_SUFFIX@'
+# IDL_CLN_CPP_SUFFIX '@IDL_CLN_CPP_SUFFIX@'
+# IDL_CLN_OBJ_SUFFIX '@IDL_CLN_OBJ_SUFFIX@'
+# IDL_SRV_H_SUFFIX '@IDL_SRV_H_SUFFIX@'
+# IDL_SRV_H1_SUFFIX '@IDL_SRV_H1_SUFFIX@'
+# IDL_SRV_CPP_SUFFIX '@IDL_SRV_CPP_SUFFIX@'
+# IDL_SRV_OBJ_SUFFIX '@IDL_SRV_OBJ_SUFFIX@'
+# IDL_TIE_H_SUFFIX '@IDL_TIE_H_SUFFIX@'
+# IDL_TIE_H1_SUFFIX '@IDL_TIE_H1_SUFFIX@'
+# IDL_TIE_CPP_SUFFIX '@IDL_TIE_CPP_SUFFIX@'
+# IDL_LIBDIR '@IDL_LIBDIR@'
+# ORB_PREFIX '@ORB_PREFIX@'
+# ORB_INCLUDE_PREFIX '@ORB_INCLUDE_PREFIX@'
+# OB_PREFIX '@OB_PREFIX@'
+# ORB '@ORB@'
+# ORB_LIBS '@ORB_LIBS@'
+# ORB_COSNAMING_LIB '@ORB_COSNAMING_LIB@'
+# IDL_DEPEND_ORB_FLAGS '@IDL_DEPEND_ORB_FLAGS@'
+# HAVE_ORB_IDL '@HAVE_ORB_IDL@'
+# OTS_LIB '@OTS_LIB@'
+# OTS_LIB '@OTS_LIB@'
+#IDL = @TAO_IDL@ \
+      -DTAO_IDL -Gv -hc .h -hs _skel.h -cs .cpp -ss _skel.cpp\
+		-I.  -I@TAO_ROOT@
+
+CXXFLAGS += $(INCLUDES) -MMD -g -fPIC
+
+
+.PHONY:all
+
+all: libComponent.so
+
+mkidl_options.mak:
+	$(IDL_DEPEND_FOR_COMPONENT_LIB)  > mkidl_options.mak
+
+include mkidl_options.mak
+
+build-generated: $(IDL_COMPONENT_LIB_ALL) 
+
+
+LIB_OBJS = $(IDL_COMPONENT_LIB_GEN_CORBADEPENDS_SRV_OBJS) \
+           $(IDL_COMPONENT_LIB_COMPONENTS_SRV_OBJS) \
+           $(IDL_COMPONENT_LIB_QEDOCOMPONENTS_SRV_OBJS) \
+           $(IDL_COMPONENT_LIB_HU_COMPONENTSEXTENSION_SRV_OBJS) 
+
+libComponent.so : $(LIB_OBJS)
+	@LD@ @LD_CREATE_FLAGS@ $@ $^ $(LIBS)
+#	${CXX} -shared -g -o $@ $(OBJS) $(LDFLAGS)
+
+
+include ${SOURCES:.cpp=.d}
