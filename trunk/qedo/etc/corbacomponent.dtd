@@ -45,6 +45,9 @@
 <!ATTLIST componentrepid
      repid CDATA #IMPLIED >
 
+<!ELEMENT containerextension
+     ( servant ) >
+
 <!ELEMENT containermanagedpersistence
     ( storagehome
     , pssimplementation?
