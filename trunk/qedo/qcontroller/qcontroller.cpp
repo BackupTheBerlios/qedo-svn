@@ -52,14 +52,16 @@ bool QedoController::OnInit()
     wxString window_title = "Qedo Controller ";
     window_title.append(QEDO_VERSION);
 
-    MainFrame *frame = new MainFrame( window_title, main_point, main_size);
-
+	MainFrame *frame = new MainFrame(window_title,main_point,main_size,
+		wxMINIMIZE_BOX|wxSYSTEM_MENU|wxCAPTION);
+	
     // Problem with generic wxNotebook implementation whereby it doesn't size
     // properly unless you set the size again
 #if defined(__WIN16__) || defined(__WXMOTIF__)
     int width, height;
     frame->GetSize(& width, & height);
     frame->SetSize(-1, -1, width, height);
+
 #endif
 
     frame->Show();

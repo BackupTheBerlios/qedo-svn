@@ -38,7 +38,7 @@ public:
                           const wxChar *msg);
 
 	
-
+	
 };
 
 DECLARE_APP(QedoController)
@@ -83,7 +83,10 @@ enum ID_CONTROLS
 	ID_SAVE_SETTINGS,
 	ID_SAVE_SETTINGS_AS,
 	ID_CANCEL,
-	ID_OK_READING
+	ID_OK_READING,
+	ID_HELP_BUTTON,
+	ID_QUIT_CONTROLLER
+	
 	
 
 	

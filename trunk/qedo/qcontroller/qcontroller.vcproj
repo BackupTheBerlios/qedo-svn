@@ -118,10 +118,10 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="CORBADepends.cpp">
 			</File>
 			<File
-				RelativePath="Components.cpp">
+				RelativePath="CORBADepends.cpp">
 			</File>
 			<File
-				RelativePath="CORBADepends.cpp">
+				RelativePath="Components.cpp">
 			</File>
 			<File
 				RelativePath="Components.cpp">
@@ -134,6 +134,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="DescriptorFrame.cpp">
+			</File>
+			<File
+				RelativePath="HelpFrame.cpp">
 			</File>
 			<File
 				RelativePath="Launcher.cpp">
@@ -167,10 +170,10 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="CORBADepends.h">
 			</File>
 			<File
-				RelativePath="Components.h">
+				RelativePath="CORBADepends.h">
 			</File>
 			<File
-				RelativePath="CORBADepends.h">
+				RelativePath="Components.h">
 			</File>
 			<File
 				RelativePath="Components.h">
@@ -183,6 +186,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="DescriptorFrame.h">
+			</File>
+			<File
+				RelativePath="HelpFrame.h">
 			</File>
 			<File
 				RelativePath="Launcher.h">
