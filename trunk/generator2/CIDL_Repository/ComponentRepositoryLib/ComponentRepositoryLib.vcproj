@@ -316,6 +316,9 @@
 				RelativePath=".\EventDef_impl.cpp">
 			</File>
 			<File
+				RelativePath="EventPortDef_impl.cpp">
+			</File>
+			<File
 				RelativePath=".\ExceptionDef_impl.cpp">
 			</File>
 			<File
@@ -435,6 +438,9 @@
 			</File>
 			<File
 				RelativePath=".\EventDef_impl.h">
+			</File>
+			<File
+				RelativePath="EventPortDef_impl.h">
 			</File>
 			<File
 				RelativePath=".\ExceptionDef_impl.h">
