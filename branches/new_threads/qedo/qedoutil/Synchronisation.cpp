@@ -28,7 +28,7 @@
 #include <signal.h>
 #endif
 
-static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.15.2.2 2003/08/08 13:54:06 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: Synchronisation.cpp,v 1.15.2.3 2003/08/08 15:22:59 boehme Exp $";
 
 
 namespace Qedo {
@@ -218,7 +218,7 @@ QedoCond::signal()
 
 QedoThread::QedoThread()
 {
-       delegate = new thread_delegate;
+       delegate_ = new ThreadDelegate;
 };
 
 void
@@ -226,10 +226,10 @@ QedoThread::stop()
 {
 #ifdef QEDO_WINTHREAD
        DWORD exitcode;
-       if(!TerminateThread(delegate_>th_handle,exitcode)) 
+       if(!TerminateThread(delegate_>th_handle_,exitcode)) 
                DEBUG_OUT("Error while TerminateThread");
 #else
-       if(pthread_cancel(delegate->t)) DEBUG_OUT("Error while pthread_cancel");
+       if(pthread_cancel(delegate_->t_)) DEBUG_OUT("Error while pthread_cancel");
 #endif
 }
 
@@ -239,7 +239,7 @@ QedoThread::join()
 #ifdef QEDO_WINTHREAD
 #else
        void *state;
-       if(pthread_join(delegate->t,&state)) DEBUG_OUT("Error while pthread_join");
+       if(pthread_join(delegate_->t_,&state)) DEBUG_OUT("Error while pthread_join");
 #endif
 }
 

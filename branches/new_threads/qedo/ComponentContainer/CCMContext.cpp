@@ -23,7 +23,7 @@
 #include "CCMContext.h"
 #include "Output.h"
 
-static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.11.2.2 2003/08/08 13:54:06 boehme Exp $";
+static char rcsid[] UNUSED = "$Id: CCMContext.cpp,v 1.11.2.3 2003/08/08 15:22:59 boehme Exp $";
 
 
 namespace Qedo {
@@ -100,10 +100,10 @@ throw (Components::CCMException)
 
 
 class Thread_impl : public virtual Components::Thread {
-	qedo_thread* thread;
+	QedoThread* thread;
 	Thread_impl();
 	public:
-	Thread_impl(qedo_thread* t);
+	Thread_impl(QedoThread* t);
 	void stop();
 	void join();
 };
@@ -123,13 +123,14 @@ CCMContext::queue_event(Components::EventConsumerBase_ptr consumer, Components::
 
 void 
 CCMContext::queue_event(SubscribedConsumerVector& consumers, Components::EventBase* ev, CORBA::Long module_id)
+{
 	container_->queue_event(consumers, ev, module_id);
 }
 
 
 Thread_impl::Thread_impl() {};
 
-Thread_impl::Thread_impl(qedo_thread* t)
+Thread_impl::Thread_impl(QedoThread* t)
 : thread(t)
 {
 };
