@@ -11,7 +11,7 @@
     <idl id="IDL:DiningPhilosophers/ObserverHome:1.0">
         <fileinarchive name="dinner.cidl"/>
     </idl>
-    
+
     <implementation id="UUID-5BE5DBAF-6667-4FF7-A579-0C7EFBDBF104">
         <os name="WIN" />
         <processor name="x86" />
@@ -27,6 +27,26 @@
         </code>
         <code type="DLL">
             <fileinarchive name="dinner_ObserverImpl_SERVANT.dll"/>
+            <entrypoint>create_ObserverHomeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>
+
+    <implementation id="UUID-1e852f5e-8173-443c-b68c-85e70a1fb018">
+        <os name="linux" />
+        <processor name="" />
+        <compiler name="" version="" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/dinner_ObserverImpl.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="libdinner_ObserverImpl.so"/>
+            <entrypoint>create_ObserverHomeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="libdinner_ObserverImpl_SERVANT.so"/>
             <entrypoint>create_ObserverHomeS</entrypoint>
             <usage>servant</usage>
         </code>
