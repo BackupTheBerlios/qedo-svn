@@ -31,4 +31,24 @@
             <usage>servant</usage>
         </code>
     </implementation>
+    
+    <implementation id="UUID-80164643-3114-4A57-97D0-98BB773F869F">
+        <os name="WIN" />
+        <processor name="x86" />
+        <compiler name="VC++" version="7,0" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/HelloWorld_CalleeImpl.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="HelloWorld_CalleeImpl.dll"/>
+            <entrypoint>create_CalleeHomeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="HelloWorld_CalleeImpl_SERVANT.dll"/>
+            <entrypoint>create_CalleeHomeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>
 </softpkg>
