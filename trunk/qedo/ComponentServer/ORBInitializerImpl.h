@@ -58,9 +58,11 @@ private:
 	bool m_enable_qos;
 #ifndef _QEDO_NO_QOS
 	/** interceptor dispatcher on server side */
-	PortableInterceptor::ServerRequestInterceptor_var server_dispatcher_;
+	Qedo_Components::ServerInterceptorDispatcher_var server_dispatcher_;
+//	PortableInterceptor::ServerRequestInterceptor_var server_dispatcher_;
 	/** interceptor dispatcher on client side */
-	PortableInterceptor::ClientRequestInterceptor_var client_dispatcher_;
+	Qedo_Components::ClientInterceptorDispatcher_var client_dispatcher_;
+//	PortableInterceptor::ClientRequestInterceptor_var client_dispatcher_;
 #endif
 public:
 	/**
@@ -94,13 +96,15 @@ public:
 	 * set_server_dispatcher
 	 */
 	void
-	set_server_dispatcher (PortableInterceptor::ServerRequestInterceptor_ptr server_dispatcher);
+	//	set_server_dispatcher (PortableInterceptor::ServerRequestInterceptor_ptr server_dispatcher);
+	set_server_dispatcher (Qedo_Components::ServerInterceptorDispatcher_ptr server_dispatcher);
 
 	/**
 	 * set_server_dispatcher
 	 */
 	void
-	set_client_dispatcher (PortableInterceptor::ClientRequestInterceptor_ptr client_dispatcher);
+//	set_client_dispatcher (PortableInterceptor::ClientRequestInterceptor_ptr client_dispatcher);
+	set_client_dispatcher (Qedo_Components::ClientInterceptorDispatcher_ptr client_dispatcher);
 #endif
 };
 

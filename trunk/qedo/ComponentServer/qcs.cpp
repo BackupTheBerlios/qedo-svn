@@ -182,9 +182,12 @@ main (int argc, char** argv)
 
 		// register interceptors before ORB_init
 		initializer.set_server_dispatcher (
-			PortableInterceptor::ServerRequestInterceptor::_narrow (server_dispatcher ) );
+//			PortableInterceptor::ServerRequestInterceptor::_narrow (server_dispatcher ) );
+			server_dispatcher );
+
 		initializer.set_client_dispatcher (
-			PortableInterceptor::ClientRequestInterceptor::_narrow (client_dispatcher ) );
+//			PortableInterceptor::ClientRequestInterceptor::_narrow (client_dispatcher ) );
+			client_dispatcher );
 
 	} // if qos_enabled
 #endif
