@@ -1,5 +1,5 @@
 <?xml version = '1.0' ?>
-<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://qedo.berlios.de/corbacomponent.dtd">
+<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://www.qedo.org/corbacomponent.dtd">
 
 <corbacomponent>
     <corbaversion>3.0</corbaversion>
@@ -12,10 +12,13 @@
     </componentkind>
     <threading policy="multithread"/>
     <configurationcomplete set="true"/>
+    
     <homefeatures name="CalleeHome" repid="IDL:HelloWorld/CalleeHome:1.0">
     </homefeatures>
+    
     <componentfeatures name="Callee" repid="IDL:HelloWorld/Callee:1.0">
         <ports>
+            <provides providesname="the_hello" repid="IDL:HelloWorld/Hello:1.0" facettag="1"/>
         </ports>
     </componentfeatures>
 </corbacomponent>
