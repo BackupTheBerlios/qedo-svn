@@ -103,6 +103,8 @@ GeneratorCCD::generate(std::string target, std::string fileprefix)
 	try { initialize(target, fileprefix); }
 	catch (InitializeError) { return; }
 
+	// setting counter for facettag
+	facet_number_ = 1;
 	doGenerate();
 }
 
@@ -133,7 +135,7 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 
 	out << "<?xml version = '1.0' ?>\n";
 	out << "<!DOCTYPE corbacomponent PUBLIC \"-//OMG//DTD CORBA Component Descriptor\"";
-	out << " \"http://qedo.berlios.de/corbacomponent.dtd\">\n\n";
+	out << " \"http://www.qedo.org/corbacomponent.dtd\">\n\n";
 
 	out << "<corbacomponent>\n";
 	out.indent();
@@ -201,9 +203,15 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "\" repid=\"" << composition->ccm_component()->id() << "\">\n";
     out.indent();
 	out << "<ports>\n";
-    //out << "        <provides providesname="the_fork" repid="IDL:dinner/Fork:1.0" facettag="the_fork"/>
+
+	// manage ports
+	out.indent();
+	gen_ports(composition->ccm_component());
+
+	//out << "        <provides providesname="the_fork" repid="IDL:dinner/Fork:1.0" facettag="the_fork"/>
     //        <provides providesname="the_name" repid="IDL:dinner/Named:1.0" facettag="the_name"/>
-    out << "</ports>\n";
+	out.unindent();
+	out << "</ports>\n";
 	out.unindent();
     out << "</componentfeatures>\n";
 	out.unindent();
@@ -211,6 +219,97 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 
 	// close file
 	out.close();
+}
+
+void
+GeneratorCCD::gen_ports(IR__::ComponentDef_ptr component) {
+
+	// handle base component
+	IR__::ComponentDef_var base = component->base_component();
+	if(!CORBA::is_nil(base))
+	{ 
+		gen_ports(base);
+	}
+
+	// receptacles
+	IR__::ContainedSeq_var contained_seq = component->contents(CORBA__::dk_Uses, false);
+	CORBA::ULong len = contained_seq->length();
+	CORBA::ULong i;
+	for( i= 0; i < len; i++)
+	{
+		IR__::UsesDef_var a_uses = IR__::UsesDef::_narrow(((*contained_seq)[i]));
+ 
+		out << "<uses usesname=\"";
+		out << a_uses -> name();
+		out << "\" repid=\"" ;
+		out << IR__::InterfaceDef::_narrow(a_uses -> interface_type()) -> id();
+		out << "\"/>\n";
+
+	}
+
+	// facets
+	contained_seq = component->contents(CORBA__::dk_Provides, false);
+	len = contained_seq->length();
+	for( i= 0; i < len; i++)
+	{
+		IR__::ProvidesDef_var a_provides = IR__::ProvidesDef::_narrow(((*contained_seq)[i]));
+ 
+		out << "<provides providesname=\"";
+		out << a_provides -> name();
+		out << "\" repid=\"" ;
+		out << IR__::InterfaceDef::_narrow(a_provides -> interface_type()) -> id() << "\"" ;
+		out << " facettag=\"" << facet_number_++ << "\"";
+		out << "/>\n";
+	}
+
+
+	// emitters
+	contained_seq = component->contents(CORBA__::dk_Emits, false);
+	len = contained_seq->length();
+	for( i= 0; i < len; i++)
+	{
+		IR__::EmitsDef_var a_emits = IR__::EmitsDef::_narrow(((*contained_seq)[i]));
+ 
+		out << "<emits emitsname=\"";
+		out << a_emits -> name();
+		out << "\" eventtype=\"" ;
+		out << a_emits -> event() -> id();
+		out << "\">\n";
+		out << "<eventpolicy policy=\"normal\"/>\n";
+		out << "</emits>\n";
+	}
+
+	// publisher
+	contained_seq = component->contents(CORBA__::dk_Publishes, false);
+	len = contained_seq->length();
+	for( i= 0; i < len; i++)
+	{
+		IR__::EventPortDef_var a_publishes = IR__::EventPortDef::_narrow(((*contained_seq)[i]));
+ 
+		out << "<publishes publishesname=\"";
+		out << a_publishes -> name();
+		out << "\" eventtype=\"" ;
+		out << a_publishes -> event() -> id();
+		out << "\">\n";
+		out << "<eventpolicy policy=\"normal\"/>\n";
+		out << "</publishes>\n";
+	}
+
+	// consumer
+	contained_seq = component->contents(CORBA__::dk_Consumes, false);
+	len = contained_seq->length();
+	for( i= 0; i < len; i++)
+	{
+		IR__::ConsumesDef_var a_consumes = IR__::ConsumesDef::_narrow(((*contained_seq)[i]));
+ 
+		out << "<consumes consumesname=\"";
+		out << a_consumes -> name();
+		out << "\" eventtype=\"" ;
+		out << a_consumes -> event () -> id();
+		out << "\">\n";
+		out << "<eventpolicy policy=\"normal\"/>\n";
+		out << "</consumes>\n";
+	}
 }
 
 

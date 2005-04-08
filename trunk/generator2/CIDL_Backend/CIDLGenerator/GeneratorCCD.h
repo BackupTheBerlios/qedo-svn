@@ -46,6 +46,8 @@ private:
 	std::string filename_;
 	Printer out;
 
+	long long facet_number_;
+
 	void doComposition(CIDL::CompositionDef_ptr composition);
 
 protected:
@@ -58,6 +60,7 @@ public:
 	~GeneratorCCD();
 
 	void generate(std::string target, std::string fileprefix);
+	void gen_ports(IR__::ComponentDef_ptr comp);
 
 };
 
