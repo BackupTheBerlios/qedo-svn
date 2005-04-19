@@ -1,0 +1,124 @@
+<!-- DTD for CORBA Component property file. The root element
+     is <properties>. Elements are listed alphabetically.
+  -->
+
+<!ELEMENT choice ( #PCDATA ) >
+
+<!ELEMENT choices ( choice | range )+ >
+
+<!ELEMENT defaultvalue ( #PCDATA ) >
+
+<!ELEMENT description ( #PCDATA ) >
+
+<!ELEMENT value ( #PCDATA ) >
+
+<!ELEMENT properties
+     ( description?
+     , ( simple
+       | sequence
+       | struct
+       | valuetype
+       | configuration
+       | extensionspecification
+
+       )*
+     ) >
+
+<!ELEMENT range (value, value) >
+
+<!ELEMENT simple
+     ( description?
+     , value
+     , choices?
+     , defaultvalue?
+     ) >
+<!ATTLIST simple
+     name CDATA #IMPLIED
+     type ( boolean
+          | char
+          | double
+          | float
+          | short
+          | long
+          | objref
+          | octet
+          | short
+          | string
+          | ulong
+          | ushort
+          ) #REQUIRED >
+
+<!ELEMENT sequence
+     ( description?
+     , ( simple*
+       | struct*
+       | sequence*
+       | valuetype*
+       )
+     ) >
+<!ATTLIST sequence
+     name CDATA #IMPLIED
+     type CDATA #REQUIRED >
+
+<!ELEMENT struct
+     ( description?
+     , ( simple
+       | sequence
+       | struct
+       | valuetype
+       )*
+     ) >
+<!ATTLIST struct
+     name CDATA #IMPLIED
+     type CDATA #REQUIRED >
+
+<!ELEMENT valuetype
+     ( description?
+     , ( simple
+       | sequence
+       | struct
+       | valuetype
+       )*
+     ) >
+<!ATTLIST valuetype
+     name CDATA #IMPLIED
+     type CDATA #REQUIRED
+     primarykey (true | false) "false" >
+
+<!-- QEDO extension -->
+
+<!ELEMENT configuration
+     ( simple
+     )* >
+
+<!ELEMENT extensionspecification
+    ( binding
+    , constraint
+    ) >
+    
+<!ELEMENT binding
+    ( componentid
+    , restriction
+    ) >
+    
+<!ELEMENT componentid (#PCDATA) >
+    
+<!ELEMENT restriction (#PCDATA) >
+
+<!ELEMENT constraint
+    ( characteristic )* >
+    
+<!ELEMENT characteristic
+    ( dimension )* >
+ 
+<!ATTLIST characteristic
+    name CDATA #REQUIRED >
+
+<!ELEMENT dimension (#PCDATA) > 
+   
+<!ATTLIST dimension
+    name CDATA #REQUIRED
+    statistical CDATA #IMPLIED
+    direction CDATA #IMPLIED
+    unit CDATA #REQUIRED >
+    
