@@ -253,9 +253,10 @@ If you use the MS Visual Studio 6 you have to open the workspace:
 \begin{verbatim}
 /build/win32/vc6/generator.dsw
 \end{verbatim}
+
 But the VC6 workspaces are not maintained any more.
 
-If you use the MS Visual Studio .Net 2002 you have to open the solution file:
+If you use the MS Visual Studio .Net 2003 you have to open the solution file:
 \begin{verbatim}
 /build/win32/vc7/generator.sln  solution File.
 \end{verbatim}
@@ -272,6 +273,9 @@ Then you need to build the whole solution. This will automatically install the c
 
 \section{Compiling on Unix}
 \label{sec:CompilingOnUnix}
+
+For the details of the configure script see next section.
+
 
 \chapter{Installation of Run time}
 \label{sec:InstallationOfRunTime}
@@ -301,22 +305,78 @@ Then you need to build the whole solution. This will automatically install the c
 \section{Compiling on Unix}
 \label{sec:compilingUnix}
 
-For Unix based systems Qedo support the configure, make install pattern. In the Qedo directory you can call \verb configure . This script supports currently two options. The first one is
+For Unix based systems Qedo support the configure, make install pattern. In the Qedo directory you can call \verb configure . This script supports currently the following optional features. 
 
 \begin{verbatim}
 --prefix=QEDOINSTALLDIR
 \end{verbatim}
 
-the second option is for the xerces package if it is not installed in the standard paths.
+The option determins the installation directory.
+
 \begin{verbatim}
---with-xerces-c=XERCES-CROOTDIR
+--enable-debug
 \end{verbatim}
+
+The debug option is set by default.
+
+\begin{verbatim}
+--enable-streams
+\end{verbatim}
+
+The Streams feature is set by default.
+
+\begin{verbatim}
+--diable-qos
+\end{verbatim}
+
+The compilation of QoS feature is disabled by default
+
+\begin{verbatim}
+--enable-db
+\end{verbatim}
+
+The database integration is disabled by default.
+
+
+The following optional packags are supported by the configure script.
+
+\begin{verbatim}
+--with_uuid=dir
+\end{verbatim}
+
+This option provides the path to the uuid library if it is not installed in the standard paths.
+
+\begin{verbatim}
+--with-xerces-c=dir
+\end{verbatim}
+
+This option provides the path to the xerces-c installtion if it is not installed in the standard paths.
+
+\begin{verbatim}
+--with-mico=dir
+\end{verbatim}
+
+This option provides the path to the mico installation if it is not installed in the standard paths.
+
+\begin{verbatim}
+--with-orbacus=dir
+\end{verbatim}
+
+This option provides the path to the orbacus installation if it is not installed in the standard paths.
+
+\begin{verbatim}
+--with-wxGTK=dir
+\end{verbatim}
+
+This option provides the path to the WxWidgets installation if it is not installed in the standard paths.
 
 If the configure script complains about missing or wrong xerces. You can also try to check whether you xerces installation needs special libs. If this is the case you can use the following command to work around this problem. The following will solve a problem with a missing pthread lib.
 
 \begin{verbatim}
 LDFLAGS=-lpthread ./configure
 \end{verbatim}
+
+Please review the output of the configure script carefully since it may point you to some mistakes in configuration, which lead not to an obvoice compilation error.
 
 After configuring Qedo you only need to call:
 \begin{verbatim}
