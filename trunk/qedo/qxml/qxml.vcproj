@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="qxml"
 	ProjectGUID="{4C1656FB-3C0D-43AA-A890-E1795541314E}"
 	Keyword="ManagedCProj">
@@ -16,19 +16,18 @@
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
 			CharacterSet="2"
-			ManagedExtensions="TRUE">
+			ManagedExtensions="FALSE">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\qedoutil;..\ComponentIDL;$(MICO)/include;$(XERCES)/include;&quot;$(ZLIB)&quot;"
+				AdditionalIncludeDirectories="..\qedoutil;..\ComponentIDL;&quot;$(MICO)/include&quot;;&quot;$(XERCES)/include&quot;;&quot;$(ZLIB)\include&quot;;&quot;$(WXWIDGETS)\include&quot;;&quot;$(WXWIDGETS)\lib\mswdlld&quot;"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_CONSOLE;_WINDOWS;WINVER=0x400;_MT;wxUSE_GUI=1;__WXDEBUG__;WXDEBUG=1;WXUSINGDLL"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				BufferSecurityCheck="FALSE"
 				WarningLevel="3"
-				DebugInformationFormat="4"
-				CompileAsManaged="0"/>
+				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"
 				CommandLine="mkdir $(QEDO)\bin
@@ -37,10 +36,10 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib f:\qedo\wxMSW-2.4.2\wxWindows-2.4.2\lib\wxmsw24d.lib mico2311.lib micocoss2311.lib $(MICO)\coss\micocoss2311.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxmsw24d.lib mico2311.lib micocoss2311.lib"
 				OutputFile="$(OutDir)/qxml.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="C:\opt\wxWindows\lib;$(MICO)\win32-bin\lib"
+				AdditionalLibraryDirectories="&quot;$(WXWIDGETS)\lib&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ImportLibrary="qedoutil.lib"
 				TargetMachine="1"/>
@@ -57,7 +56,13 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -93,9 +98,17 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Quelldateien"
@@ -116,13 +129,13 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="PartitioningTreeCtrl.cpp">
 			</File>
 			<File
-				RelativePath="ViewCADDialog.cpp">
-			</File>
-			<File
 				RelativePath="qxml.cpp">
 			</File>
 			<File
 				RelativePath="qxmlApp.cpp">
+			</File>
+			<File
+				RelativePath="ViewCADDialog.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -144,13 +157,13 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="PartitioningTreeCtrl.h">
 			</File>
 			<File
-				RelativePath="ViewCADDialog.h">
-			</File>
-			<File
 				RelativePath="qxml.h">
 			</File>
 			<File
 				RelativePath="qxmlApp.h">
+			</File>
+			<File
+				RelativePath="ViewCADDialog.h">
 			</File>
 		</Filter>
 		<Filter

@@ -167,7 +167,7 @@ void
 //ORBInitializerImpl::set_server_dispatcher (PortableInterceptor::ServerRequestInterceptor_ptr server_dispatcher)
 ORBInitializerImpl::set_server_dispatcher (Qedo_Components::ServerInterceptorDispatcher_ptr server_dispatcher)
 {
-	server_dispatcher_ = server_dispatcher;
+	server_dispatcher_ = Qedo_Components::ServerInterceptorDispatcher::_duplicate(server_dispatcher);
 	DEBUG_OUT("ORBInitializerImpl: server_dispatcher set");
 }
 
@@ -176,7 +176,7 @@ void
 //ORBInitializerImpl::set_client_dispatcher (PortableInterceptor::ClientRequestInterceptor_ptr client_dispatcher)
 ORBInitializerImpl::set_client_dispatcher (Qedo_Components::ClientInterceptorDispatcher_ptr client_dispatcher)
 {
-	client_dispatcher_ = client_dispatcher;
+	client_dispatcher_ = Qedo_Components::ClientInterceptorDispatcher::_duplicate(client_dispatcher);
 	DEBUG_OUT("ORBInitializerImpl: client dispatcher set");
 }
 #endif

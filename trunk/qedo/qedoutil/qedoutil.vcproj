@@ -231,6 +231,66 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
+		<Configuration
+			Name="Debug_mico_wo_qos|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;..\ComponentIDL;..\ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(ZLIB)\include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)&quot;"
+				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_WINDOWS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_USRDLL;QEDOUTIL_EXPORTS"
+				MinimalRebuild="FALSE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="xerces-c_2D.lib zdll.lib mico2311.lib micocoss2311.lib wsock32.lib pthreadVC.lib"
+				OutputFile="$(OutDir)/qedoutil.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(XERCES)\lib&quot;;&quot;$(ZLIB)\dll32&quot;;&quot;$(PTHREADS)&quot;;&quot;$(ZLIB)\lib&quot;"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/qedoutil.pdb"
+				SubSystem="0"
+				ImportLibrary="$(OutDir)/qedoutil.lib"
+				TargetMachine="0"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -248,6 +308,9 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="CCDReader.cpp">
 			</File>
 			<File
+				RelativePath=".\CCDReader4qxml.cpp">
+			</File>
+			<File
 				RelativePath="ComponentDeployment.cpp">
 			</File>
 			<File
@@ -258,6 +321,9 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="CSDReader.cpp">
+			</File>
+			<File
+				RelativePath=".\CSDReader4qxml.cpp">
 			</File>
 			<File
 				RelativePath="DOMTreeErrorReporter.cpp">
@@ -330,6 +396,12 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="CCDReader.h">
 			</File>
 			<File
+				RelativePath=".\CCDReader4qxml.h">
+			</File>
+			<File
+				RelativePath=".\CCDStruc4qxml.h">
+			</File>
+			<File
 				RelativePath="ComponentDeployment.h">
 			</File>
 			<File
@@ -346,6 +418,12 @@ copy $(TargetPath) $(QEDO)\bin
 			</File>
 			<File
 				RelativePath="CSDReader.h">
+			</File>
+			<File
+				RelativePath=".\CSDReader4qxml.h">
+			</File>
+			<File
+				RelativePath=".\CSDStruc4qxml.h">
 			</File>
 			<File
 				RelativePath="DestinationData.h">
