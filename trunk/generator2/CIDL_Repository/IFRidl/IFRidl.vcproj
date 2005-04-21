@@ -210,6 +210,57 @@
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
+		<Configuration
+			Name="Release_mico|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				AdditionalIncludeDirectories=".,$(MICO)\include,$(MICO)\include\windows"
+				PreprocessorDefinitions="_LIB,WIN32,_WINDOWS"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=".\Debug_mico/IFRidl.pch"
+				AssemblerListingLocation=".\Release_mico/"
+				ObjectFile=".\Release_mico/"
+				ProgramDataBaseFileName=".\Release_mico/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="0"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -287,6 +338,16 @@ copy CIDL_Extension.h CIDL_Extension_skel.h
 "
 						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="CIDL compiling $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -I$(MICO)\include -I$(MICO)\include\mico  --any -I. --c++-suffix cpp --c++-skel  CIDL_Extension.idl
+copy CIDL_Extension.h CIDL_Extension_skel.h
+"
+						Outputs="CIDL_Extension.h;CIDL_Extension.cpp;CIDL_Extension_skel.h;CIDL_Extension_skel.cpp"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\IFR.idl">
@@ -323,6 +384,16 @@ copy IFR.h IFR_skel.h
 						Name="VCCustomBuildTool"
 						Description="IDL compiling file $(InputPath)"
 						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)\idl -I$(ORBACUS)\idl\OB --c-suffix  .cpp   IFR.idl
+"
+						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="IDL compiling $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -I$(MICO)\include -I$(MICO)\include\mico --any --c++-suffix cpp --c++-skel IFR.idl
+copy IFR.h IFR_skel.h
 "
 						Outputs="IFR.h;IFR.cpp;IFR_skel.h;IFR_skel.cpp"/>
 				</FileConfiguration>

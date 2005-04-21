@@ -213,6 +213,58 @@
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
+		<Configuration
+			Name="Release_mico|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="4"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(MICO)\include,$(MICO)\include\windows"
+				PreprocessorDefinitions="KC_DEPRECATED;WIN32;_LIB;__STDC__;YYERROR_VERBOSE;YYDEBUG;_WINDOWS"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\Release_mico/CIDLFrontendLib.pch"
+				AssemblerListingLocation=".\Release_mico/"
+				ObjectFile=".\Release_mico/"
+				ProgramDataBaseFileName=".\Release_mico/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="0"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(IntDir)/$(ProjectName).lib"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -448,6 +500,15 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 "
 						Outputs="k.h;k.cpp;unpk.h;unpk.cpp;attributes.h;attributes.cpp;cg_io.h;cg_io.cpp;cidl_attributes.h;cidl_attributes.cpp;debug.h;debug.cpp;error.h;error.cpp;frontend.h;frontend.cpp;global.h;global.cpp;options.h;options.cpp;pretty.h;pretty.cpp;print_idl.h;print_idl.cpp;printer.h;printer.cpp;repository.h;repository.cpp;resolve_symtab.h;resolve_symtab.cpp;symtab.h;symtab.cpp;tree.h;tree.cpp;util.h;util.cpp"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="KC++ processes $(InputPath)"
+						CommandLine="$(KC++) --no-rewrite --no-csgio --no-printdot --covariant=no --yystype  --suffix=cpp *.k
+"
+						Outputs="k.h;k.cpp;unpk.h;unpk.cpp"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\util.k">
@@ -493,6 +554,15 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 "
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Lexing $(InputPath)"
+						CommandLine="$(CYGWIN)\flex -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+"
+						Outputs="lexana.cpp"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -534,6 +604,15 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 "
 						Outputs="errmsg.cpp"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Generating errmsg.cpp"
+						CommandLine="$(PYTHON) errmsg.py &lt; cidl.output &gt; errmsg.cpp
+"
+						Outputs="errmsg.cpp"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\cidl.y">
@@ -560,7 +639,7 @@ cp cidl.hpp cidl.h
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						Description="Yaccing $INputPath)"
+						Description="Yaccing $(InputPath)"
 						CommandLine="$(CYGWIN)\env LC_ALL=C $(CYGWIN)\bison -y -v -d -o cidl.cpp cidl.y
 $(CYGWIN)\cp cidl.hpp cidl.h
 "
@@ -574,6 +653,16 @@ $(CYGWIN)\cp cidl.hpp cidl.h
 						CommandLine="set LC_ALL=C
 $(YACC) -y -v -d -o cidl.cpp cidl.y
 copy cidl.hpp cidl.h
+"
+						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Yaccing $(InputPath)"
+						CommandLine="$(CYGWIN)\env LC_ALL=C $(CYGWIN)\bison -y -v -d -o cidl.cpp cidl.y
+$(CYGWIN)\cp cidl.hpp cidl.h
 "
 						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
 				</FileConfiguration>

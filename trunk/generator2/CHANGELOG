@@ -1,3 +1,4 @@
+- release configuration
 - renaming of the valuetypes.* to component_valuetypes.*
 - modification for stub interceptors
 

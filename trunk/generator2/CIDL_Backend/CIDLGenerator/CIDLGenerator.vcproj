@@ -264,6 +264,73 @@ copy Release_orbacus\cidl_gen.exe %QEDO%\bin
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
+		<Configuration
+			Name="Release_mico|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm600 "
+				Optimization="3"
+				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;..\..\CIDL_Frontend\CIDLFrontendLib;&quot;$(MICO)\include&quot;;&quot;$(MICO)\include\windows&quot;"
+				PreprocessorDefinitions="WIN32,_CONSOLE,__DEBUG__,_WINDOWS"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				PrecompiledHeaderFile=".\Release_mico/CIDLGenerator.pch"
+				AssemblerListingLocation=".\Release_mico/"
+				ObjectFile=".\Release_mico/"
+				ProgramDataBaseFileName=".\Release_mico/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="0"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib mico2311.lib odbc32.lib odbccp32.lib pthreadVC.lib"
+				OutputFile="$(OutDir)/cidl_gen.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;;&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)&quot;"
+				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="FALSE"
+				SubSystem="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\Debug_mico/CIDLGenerator.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
