@@ -447,10 +447,10 @@ copy $(TargetPath) $(QEDO)\bin
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\Debug_mico/ComponentIDL.pch"
-				AssemblerListingLocation=".\Debug_mico/"
-				ObjectFile=".\Debug_mico/"
-				ProgramDataBaseFileName=".\Debug_mico/"
+				PrecompiledHeaderFile=".\Debug_mico_wo_qos/ComponentIDL.pch"
+				AssemblerListingLocation=".\Debug_mico_wo_qos/"
+				ObjectFile=".\Debug_mico_wo_qos/"
+				ProgramDataBaseFileName=".\Debug_mico_wo_qos/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
@@ -472,8 +472,8 @@ copy $(TargetPath) $(QEDO)\bin
 				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)&quot;"
 				ModuleDefinitionFile="$(OutDir)/ComponentIDL.def"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug_mico/ComponentIDL.pdb"
-				ImportLibrary=".\Debug_mico/ComponentIDL.lib"/>
+				ProgramDatabaseFile=".\Debug_mico_wo_qos/ComponentIDL.pdb"
+				ImportLibrary="$(OutDir)/ComponentIDL.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -626,7 +626,7 @@ copy Components.h Components_skel.h
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Performing Custom Build Step on $(InputPath)"
-						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL --typecode --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 -D_QEDO_NO_QOS Components.idl
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB -D_QEDO_NO_QOS --windows-dll QEDODLL --typecode --any --c++-suffix cpp --c++-skel -I$(MICO)\include\mico  -I$(MICO)\include  -DWIN32 Components.idl
 copy Components.h Components_skel.h
 "
 						Outputs="Components.h"/>

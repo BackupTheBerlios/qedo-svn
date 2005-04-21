@@ -183,7 +183,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(MICO)\include&quot;;./;../qedoutil;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)&quot;"
-				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_WINDOWSL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				PreprocessorDefinitions="_QEDO_NO_QOS;MICO_ORB;WIN32;_DEBUG;_WINDOWSL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
