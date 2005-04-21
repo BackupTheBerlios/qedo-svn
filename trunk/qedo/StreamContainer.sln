@@ -267,10 +267,10 @@ Global
 		{FA7A5A08-C494-44E2-9C09-B276759D57D8}.Release_orbacus.Build.0 = Release|Win32
 		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug.ActiveCfg = Debug|Win32
 		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug.Build.0 = Debug|Win32
-		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug_mico.ActiveCfg = Debug|Win32
-		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug_mico.Build.0 = Debug|Win32
-		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug_mico_wo_qos.ActiveCfg = Debug|Win32
-		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug_mico_wo_qos.Build.0 = Debug|Win32
+		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug_mico.ActiveCfg = Debug_mico|Win32
+		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug_mico.Build.0 = Debug_mico|Win32
+		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug_mico_wo_qos.ActiveCfg = Debug_mico_wo_qos|Win32
+		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug_mico_wo_qos.Build.0 = Debug_mico_wo_qos|Win32
 		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug_orbacus.ActiveCfg = Debug|Win32
 		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug_orbacus.Build.0 = Debug|Win32
 		{4C1656FB-3C0D-43AA-A890-E1795541314E}.Debug_tao.ActiveCfg = Debug|Win32
