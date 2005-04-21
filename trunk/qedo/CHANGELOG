@@ -1,3 +1,4 @@
+- configuration of Release and wo_qos added to solution
 - command line option for ComponentServer
 - NoResolve option for IOR creation
 - removed old vc6 files
