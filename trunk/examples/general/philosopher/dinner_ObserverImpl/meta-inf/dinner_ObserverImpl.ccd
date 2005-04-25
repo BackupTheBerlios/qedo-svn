@@ -16,6 +16,9 @@
     </homefeatures>
     <componentfeatures name="Observer" repid="IDL:dinner/Observer:1.0">
         <ports>
+            <consumes consumesname="philosopher_state" eventtype="IDL:dinner/PhilosopherState:1.0">
+            <eventpolicy policy="normal"/>
+            </consumes>
         </ports>
     </componentfeatures>
 </corbacomponent>
