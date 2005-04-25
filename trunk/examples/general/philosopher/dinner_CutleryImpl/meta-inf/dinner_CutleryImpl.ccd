@@ -16,6 +16,8 @@
     </homefeatures>
     <componentfeatures name="Cutlery" repid="IDL:dinner/Cutlery:1.0">
         <ports>
+            <provides providesname="the_fork" repid="IDL:dinner/Fork:1.0" facettag="1"/>
+            <provides providesname="the_name" repid="IDL:dinner/Named:1.0" facettag="2"/>
         </ports>
     </componentfeatures>
 </corbacomponent>
