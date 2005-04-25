@@ -515,7 +515,11 @@ wxString PartitioningTreeCtrl::homedata(wxTreeItemId itemid)
 	ItemTyp ityp=GetItemInfo(itemid);
 	value.Append(tabtab);
 	
-	value.Append("<homeplacement>\n");
+	value.Append("<homeplacement id=");
+	value.Append(a);
+	value.Append(ityp.usagename);
+	value.Append(a);
+	value.Append(">\n");
 	value.Append(tabtab);
 	value.Append("<usagename>");
 	value.Append(ityp.usagename);

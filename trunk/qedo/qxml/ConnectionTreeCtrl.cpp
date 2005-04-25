@@ -362,8 +362,8 @@ void ConnectionTreeCtrl::onadd_c(wxMenuEvent& event)
 		"Port connection",wxPoint(50,50), wxSize(450,350),wxDEFAULT_DIALOG_STYLE,"Provideports","Useports");
 	cdialog->headline->SetLabel("Choose ports for connections");
 	
-	cdialog->setPorts1(getProvideports());
-	cdialog->setPorts2(getUseports());
+	cdialog->setPorts1(getUseports());
+	cdialog->setPorts2(getProvideports());
 
 	cdialog->Show();
 	
@@ -779,11 +779,11 @@ wxString ConnectionTreeCtrl::getConnection(Connect c, wxString Typ)
 	if (Typ=="INTERFACE") {
 		ctyp="connectinterface";
 
-		port1="providesport";
-		port2="usesport";
+		port1="usesport";
+		port2="providesport";
 		
-		port1name="providesidentifier";
-		port2name="usesidentifier";
+		port1name="usesidentifier";
+		port2name="providesidentifier";
 		
 	}
 	value.Append(tabtab);
