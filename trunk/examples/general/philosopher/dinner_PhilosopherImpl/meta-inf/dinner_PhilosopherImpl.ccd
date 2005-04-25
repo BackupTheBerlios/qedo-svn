@@ -16,6 +16,11 @@
     </homefeatures>
     <componentfeatures name="Philosopher" repid="IDL:dinner/Philosopher:1.0">
         <ports>
+            <uses usesname="left_hand" repid="IDL:dinner/Fork:1.0"/>
+            <uses usesname="right_hand" repid="IDL:dinner/Fork:1.0"/>
+            <publishes publishesname="philosopher_state" eventtype="IDL:dinner/PhilosopherState:1.0">
+            <eventpolicy policy="normal"/>
+            </publishes>
         </ports>
     </componentfeatures>
 </corbacomponent>
