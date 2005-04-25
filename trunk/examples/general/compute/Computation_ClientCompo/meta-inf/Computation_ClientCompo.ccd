@@ -18,6 +18,7 @@
     
     <componentfeatures name="Client" repid="IDL:Computation/Client:1.0">
         <ports>
+            <uses usesname="computing_server" repid="IDL:Computation/Computing_Service:1.0"/>
         </ports>
     </componentfeatures>
 </corbacomponent>
