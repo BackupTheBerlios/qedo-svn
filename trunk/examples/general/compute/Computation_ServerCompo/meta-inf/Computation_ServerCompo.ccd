@@ -18,6 +18,7 @@
     
     <componentfeatures name="Server" repid="IDL:Computation/Server:1.0">
         <ports>
+            <provides providesname="computing_interface" repid="IDL:Computation/Computing_Service:1.0" facettag="1"/>
         </ports>
     </componentfeatures>
 </corbacomponent>
