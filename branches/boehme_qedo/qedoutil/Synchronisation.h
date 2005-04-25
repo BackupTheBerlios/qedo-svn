@@ -35,13 +35,6 @@
 #define QEDO_PTHREAD
 #endif
 
-#ifdef _WIN32
-#ifndef TAO_ORB
-#include <windows.h>
-#endif
-#endif
-
-
 
 #include "qedoutil.h"
 

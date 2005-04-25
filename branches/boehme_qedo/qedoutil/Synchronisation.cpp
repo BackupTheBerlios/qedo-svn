@@ -267,7 +267,7 @@ QedoRecursivMutex::lock_object()
 
 	pthread_t t = pthread_self();
 
-	if ( rdelegate_->count > 0 && rdelegate_->thread_  == t )
+	if ( rdelegate_->count > 0 && pthread_equal(rdelegate_->thread_,t) )
 	{
 		rdelegate_->count += 1;
 	}
@@ -297,7 +297,7 @@ QedoRecursivMutex::unlock_object()
 		abort();
 	}
 
-	if ( rdelegate_->thread_ != t )
+	if ( !pthread_equal(rdelegate_->thread_ ,t) )
 	{
 		std::cerr << "QedoRecursivMutex::unlock_object unlock by wrong thread" << std::endl;
 		abort();

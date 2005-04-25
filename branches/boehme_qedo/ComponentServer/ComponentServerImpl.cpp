@@ -31,6 +31,10 @@ static char rcsid[] UNUSED = "$Id: ComponentServerImpl.cpp,v 1.37 2004/08/20 10:
 //#include "corbafwd.h"
 #endif
 
+#ifdef _WIN32
+#include <winsock2.h>
+#endif
+
 
 namespace Qedo {
 

@@ -26,9 +26,6 @@
 
 #include <CORBA.h>
 #include <string>
-#ifdef _WIN32
-#include <Windows.h>
-#endif
 
 
 #ifdef _WIN32

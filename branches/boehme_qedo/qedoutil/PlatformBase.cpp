@@ -22,10 +22,11 @@
 
 
 #include "PlatformBase.h"
-#ifndef _WIN32
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <time.h>
 #include <fcntl.h>
-#else
 #endif
 
 

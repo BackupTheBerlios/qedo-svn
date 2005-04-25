@@ -23,7 +23,7 @@
 #define __QDRECORDSET_H__
 
 #ifdef _WIN32
-#include <windows.h>
+//#include <windows.h>
 #else
 #include <dlfcn.h>
 #include <sys/types.h>
