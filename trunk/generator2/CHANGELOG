@@ -1,4 +1,5 @@
 - release configuration
+- vc7 project generator modified to fit to Qedo distribution
 - renaming of the valuetypes.* to component_valuetypes.*
 - modification for stub interceptors
 
