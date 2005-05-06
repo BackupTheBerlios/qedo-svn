@@ -1,0 +1,23 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://qedo.berlios.de/corbacomponent.dtd">
+
+<corbacomponent>
+    <corbaversion>3.0</corbaversion>
+    <componentrepid repid="IDL:QedoQoS/Reservation:1.0"/>
+    <homerepid repid="IDL:QedoQoS/ReservationHome:1.0"/>
+    <componentkind>
+        <containerextension>
+            <servant lifetime="container"/>
+        </containerextension>
+    </componentkind>
+    <threading policy="multithread"/>
+    <configurationcomplete set="true"/>
+    
+    <homefeatures name="ReservationHome" repid="IDL:QedoQoS/ReservationHome:1.0">
+    </homefeatures>
+    
+    <componentfeatures name="Reservation" repid="IDL:QedoQoS/Reservation:1.0">
+        <ports>
+        </ports>
+    </componentfeatures>
+</corbacomponent>

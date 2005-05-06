@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="RepositoryIDL"
+	ProjectGUID="{0C59D769-890F-4F38-9A4B-26133CF2660D}"
+	Keyword="Win32Proj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="Debug"
+			IntermediateDirectory="Debug"
+			ConfigurationType="4"
+			CharacterSet="2"
+			ManagedExtensions="TRUE">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/Zm500 "
+				Optimization="0"
+				AdditionalIncludeDirectories=".;&quot;$(QEDO)\include&quot;;&quot;$(MICO)\include&quot;;.."
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;MICO_ORB;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="0"
+				WarningLevel="0"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"
+				CompileAsManaged="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="../lib/RepositoryIDL.lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="Release"
+			IntermediateDirectory="Release"
+			ConfigurationType="4"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				OmitFramePointers="TRUE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				StringPooling="TRUE"
+				RuntimeLibrary="4"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)/RepositoryIDL.lib"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Quelldateien"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			<File
+				RelativePath="CorbaIdlTypes.cpp">
+			</File>
+			<File
+				RelativePath="MDE.cpp">
+			</File>
+			<File
+				RelativePath="MDE_0.cpp">
+			</File>
+			<File
+				RelativePath="MDE_1.cpp">
+			</File>
+			<File
+				RelativePath="MDE_2.cpp">
+			</File>
+			<File
+				RelativePath="MDE_3.cpp">
+			</File>
+			<File
+				RelativePath="MDE_4.cpp">
+			</File>
+			<File
+				RelativePath="PrimitiveTypes.cpp">
+			</File>
+			<File
+				RelativePath="Reflective.cpp">
+			</File>
+			<File
+				RelativePath="RepositoryRoot.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Headerdateien"
+			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="CorbaIdlTypes.h">
+			</File>
+			<File
+				RelativePath="MDE.h">
+			</File>
+			<File
+				RelativePath="MDE_0.h">
+			</File>
+			<File
+				RelativePath="MDE_1.h">
+			</File>
+			<File
+				RelativePath="MDE_2.h">
+			</File>
+			<File
+				RelativePath="MDE_3.h">
+			</File>
+			<File
+				RelativePath="MDE_4.h">
+			</File>
+			<File
+				RelativePath="PrimitiveTypes.h">
+			</File>
+			<File
+				RelativePath="Reflective.h">
+			</File>
+			<File
+				RelativePath="RepositoryRoot.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Ressourcendateien"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+		<Filter
+			Name="idl"
+			Filter="">
+			<File
+				RelativePath="CorbaIdlTypes.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -I.  --any --typecode --c++-skel --c++-suffix cpp --relative-paths CorbaIdlTypes.idl
+copy CorbaIdlTypes.h CorbaIdlTypes_skel.h
+"
+						Outputs="CorbaIdlTypes.h;CorbaIdlTypes.cpp;CorbaIdlTypes_skel.h;CorbaIdlTypes_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="MDE.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -I. -I..  --any --typecode --c++-skel --c++-suffix cpp --relative-paths MDE.idl
+copy MDE.h MDE_skel.h
+"
+						Outputs="MDE.h;MDE.cpp;MDE_skel.h;MDE_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="MDE_0.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description=""
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -I. -I.. --any --typecode --c++-skel --c++-suffix cpp --relative-paths MDE_0.idl
+copy MDE_0.h MDE_0_skel.h
+"
+						Outputs="MDE_0.h;MDE_0.cpp;MDE_0_skel.h;MDE_0_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="MDE_1.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -I. -I..  --any --typecode --c++-skel --c++-suffix cpp --relative-paths MDE_1.idl
+copy MDE_1.h MDE_1_skel.h
+"
+						Outputs="MDE_1.h;MDE_1.cpp;MDE_1_skel.h;MDE_1_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="MDE_2.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -I. -I..  --any --typecode --c++-skel --c++-suffix cpp --relative-paths MDE_2.idl
+copy MDE_2.h MDE_2_skel.h
+"
+						Outputs="MDE_2.h;MDE_2.cpp;MDE_2_skel.h;MDE_2_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="MDE_3.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -I. -I..  --any --typecode --c++-skel --c++-suffix cpp --relative-paths MDE_3.idl
+copy MDE_3.h MDE_3_skel.h
+"
+						Outputs="MDE_3.h;MDE_3.cpp;MDE_3_skel.h;MDE_3_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="MDE_4.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -I. -I..l  --any --typecode --c++-skel --c++-suffix cpp --relative-paths MDE_4.idl
+copy MDE_4.h MDE_4_skel.h
+"
+						Outputs="MDE_4.h;MDE_4.cpp;MDE_4_skel.h;MDE_4_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="PrimitiveTypes.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -I. --any --typecode --c++-skel --c++-suffix cpp --relative-paths PrimitiveTypes.idl
+copy PrimitiveTypes.h PrimitiveTypes_skel.h
+"
+						Outputs="PrimitiveTypes.h;PrimitiveTypes.cpp;PrimitiveTypes_skel.h;PrimitiveTypes_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Reflective.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -I.  --any --typecode --c++-skel --c++-suffix cpp --relative-paths  Reflective.idl
+copy Reflective.h Reflective_skel.h
+"
+						Outputs="Reflective.h;Reflective.cpp;Reflective_skel.h;Reflective_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="RepositoryRoot.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(MICO)/win32-bin/idl -DMICO_ORB -DWIN32 -I$(MICO)/include -I$(MICO)/include/mico -I. -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --relative-paths RepositoryRoot.idl
+copy RepositoryRoot.h RepositoryRoot_skel.h
+"
+						Outputs="RepositoryRoot.h;RepositoryRoot.cpp;RepositoryRoot_skel.h;RepositoryRoot_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<File
+			RelativePath="ReadMe.txt">
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

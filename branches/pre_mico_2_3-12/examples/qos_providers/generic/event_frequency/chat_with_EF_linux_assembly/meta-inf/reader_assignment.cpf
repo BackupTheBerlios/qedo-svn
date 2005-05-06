@@ -1,0 +1,20 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE properties PUBLIC "-//OMG//DTD Property File Descriptor" "http://cif.sourceforge.net/properties.dtd">
+
+<properties>
+    <configuration>
+        <simple name="assignement" type="string">
+            <value>reader</value>
+        </simple>
+    </configuration>        
+    <configuration>
+        <simple name="contract" type="string">
+            <value>EventFrequency</value>
+        </simple>
+    </configuration>
+    <configuration>
+        <simple name="frequency" type="long">
+            <value>1</value>
+        </simple>
+    </configuration>
+</properties>

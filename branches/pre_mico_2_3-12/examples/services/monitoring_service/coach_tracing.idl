@@ -1,0 +1,265 @@
+/*====================================================================
+
+COACH: Component Based Open Source Architecture for
+       Distributed Telecom Applications
+See:   http://www.objectweb.org/
+
+Copyright (C) 2003 Lucent Technologies Nederland BV
+                   Bell Labs Advanced Technologies - EMEA
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 2.1 of the License, or any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public
+License along with this library; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+USA
+
+Initial developer(s): Harold Batteram.
+Contributor(s): Wim Hellenthal.
+
+====================================================================*/
+
+#ifndef tracing_idl
+#define tracing_idl
+module org {
+    module coach {
+        module tracing {
+            module api {
+                module pi {
+                    /* local */ interface TracingService {
+                    	void start();
+                        void stop();
+                    };
+                };
+    
+    		    // identification of the type of interaction point from where an event is send
+    		    enum InteractionPoint {
+    		        STUB_OUT,
+    		        POA_IN,
+    		        POA_OUT,
+    		        POA_OUT_EXCEPTION,
+    		        STUB_IN,
+    		        STUB_IN_EXCEPTION,
+    		        ONEWAY_STUB_OUT,
+    		        ONEWAY_POA_IN
+    		    };
+    
+    		    // description of an operation parameter
+    		    struct Parameter {
+    		        string dir;
+    		        string type;
+    		        string name;
+    		    };
+    		    typedef sequence<Parameter> ParameterList;
+    
+    			// list of keys
+    			typedef sequence<long long> KeyList;
+    
+    
+    		    // list of parameter values
+    		    typedef sequence<any> AnyList;
+    
+    		    // Used to describe a sending or receiving identity such as a facet instance, component instance etc.
+    		    struct IdentityDescriptor {
+    		        string node_name;
+    		        string node_ip;
+    		        string process_id;
+    		        string cnt_name;
+    		        string cnt_type;
+    		        string cmp_name;
+    		        string cmp_type;
+    		        string object_instance_id;
+    		        string object_repository_id;
+    		    };
+    		    typedef sequence<IdentityDescriptor> TraceIdentities;
+    
+    		    struct TraceEvent {
+    		        long long time_stamp;
+    		        InteractionPoint interaction_point;
+    		        string trail_label;
+    		        string message_id;
+    		        string thread_id;
+    		        string trail_id;
+    		        long event_counter;
+    		        string op_name;
+    
+    		        IdentityDescriptor identity;
+    
+    		        ParameterList parameters;
+    		        AnyList parameter_values;
+    		    };
+    		    typedef sequence<TraceEvent> TraceEvents;
+    
+    		    interface i_Trace {
+    		       void receiveEvent(in TraceEvents events);
+    		    };
+    
+    		    // The PropagationContext is passed between CORBA invocations.
+    		    struct PropagationContext {
+    		        // user defined indentification string to mark an invocation trail
+    		        string trail_label;
+    		        string message_id;
+    
+    		        // Thread id of the originating thread at the start of the invocation chain.
+    		        string trail_id;
+    		    };
+    
+    		    enum IdentityKind {
+    		        CCM_DOMAIN,
+    		        CCM_NODE,
+    		        CCM_PROCESS,
+    		        CCM_CONTAINER,
+    		        CCM_COMPONENT,
+    		        CCM_OBJECT
+    		    };
+    
+    		    struct Identity {
+    		        IdentityKind kind;
+    		        string name;
+    		        string type;
+    		        long long linkKey;
+    		    };
+    
+    		    // TraceRecord is maintained by the EventDataBase.
+    		    // A trace viewer uses TraceRecords to display tracing information.
+    		    struct TraceRecord {
+    		        long long key_id;
+    		        long long time_stamp;
+    		        string trail_label;
+    		        string message_id;
+    		        string trail_id;
+    		        long event_counter;
+    		        string thread_id;
+    		        string op_name;
+    		        InteractionPoint interaction_point;
+    
+    		        long long identityKey;
+    		        long long parametersKey;
+    		        long long linkKey;
+    		    };
+    
+    		    exception IndexOutOfRange {};
+    		    exception InvalidKey {};
+    		    exception InvalidName {};
+    
+    		    /**
+    		     * The i_EventDataBaseConnection interface is used to retrieve TraceRecords from an
+    		     * EventDataBase. The connection is either realtime or on an existing, stored database,
+    		     * depending on the way the connection was opened. With realtime connections, the number of events
+    		     * will increase as new events are received by the database server.
+    		     */
+    		    interface i_EventDataBaseConnection {
+    		       /**
+    		        * Retrieves an event by its index number
+    		        */
+    		       TraceRecord getEventAt(in long long index) raises (IndexOutOfRange);
+    
+    		       /**
+    		        * Retrieves an event by its index number
+    		        */
+    		       string getXmlEventAt(in long long index) raises (IndexOutOfRange);
+    
+    		      	/**
+    		        * Retrieves multiple events by index number and length
+    		        */
+    		       string getXmlEvents(in long long index, in long length) raises (IndexOutOfRange);
+    
+    		       /**
+    		        * Retrieves one or more identities by there key values - returns result in XML format
+    		        */
+    		       string getXmlIdentities(in KeyList keys) raises (InvalidKey);
+    
+    		       /**
+    		        * Retrieves an event by its key value
+    		        */
+    		       TraceRecord getEvent(in long long key_id) raises (InvalidKey);
+    
+    		       /**
+    		        * Retrieves an event by its key value
+    		        */
+    		       string getXmlEvent(in long long key_id) raises (InvalidKey);
+    
+    		       /**
+    		        * Retrieves the current index order of an event.
+    		        * The index order is not constant for realtime connections as new events
+    		        * may be inserted before the current index.
+    		        * The index order value can never decrease though.
+    		        */
+    		       long long getEventIndex(in long long key_id) raises (InvalidKey);
+        
+    		       /**
+    		        * Returns the number of events in the database.
+    		        */
+    		       long long getEventCount();
+    
+    		       /**
+    		        * Returns the number of unmatched events in the database.
+    		        */
+    		       long long getUnmatchedEventCount();
+    
+    		       /**
+    		        * Returns the number of messages in the database.
+    		        */
+    		       long long getMessageCount();
+    
+    		       /**
+    		        * Retrieves the list of identities.
+    		        */
+    		       long getIdentityCount();
+    
+    		       /**
+    		        * Retrieves an identity by its key value
+    		        */
+    		       Identity getIdentity(in long long identityKey) raises (InvalidKey);
+    
+    		       /**
+    		        * Retrieves an event parameter value in XML format by its parameter key value
+    		        */
+    		       string getParameterValues(in long long parameterKey) raises (InvalidKey);
+    		    };
+    
+    		    /**
+    		     * Used to list the names of saved databases.
+    		     */
+    		    typedef sequence<string> Names;
+    
+    		    interface i_EventDataBase {
+    		       /**
+    		        * Opens an existing database for viewing.
+    		        */
+    		       i_EventDataBaseConnection open(in string name) raises (InvalidName);
+    
+    
+    		       /**
+    		        * Closes the database connection.
+    		        */
+    		       void close(in i_EventDataBaseConnection connection);
+    
+    		       /**
+    		        * Returns a list of database names which can be opened.
+    		        */
+    		       Names list();
+    
+    		       /**
+    		        * Opens a realtime connection to the current active trace server.
+    		        */
+    		       i_EventDataBaseConnection connect();
+    
+    		       /**
+    		        * Save the realtime state to the given database name.
+    		        */
+    		       void save(in string name);
+    		    };
+    		};
+    	};
+    };
+};
+#endif

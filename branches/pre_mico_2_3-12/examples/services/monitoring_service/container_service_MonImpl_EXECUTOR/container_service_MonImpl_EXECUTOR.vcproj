@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="container_service_MonImpl_EXECUTOR"
+	ProjectGUID="{1B67E960-8139-4733-BC9E-3C689B38D796}"
+	Keyword="Win32Proj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug_orbacus|Win32"
+			OutputDirectory="Debug"
+			IntermediateDirectory="Debug"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)/ComponentIDL;$(ORBACUS)\include;$(ORBACUS)\include\OB;../IDL"
+				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;EXECUTORMODULE_EXPORTS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib obd.lib jtcd.lib"
+				OutputFile="$(OutDir)/container_service_MonImpl_EXECUTOR.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)\ComponentIDL\Debug_orbacus;$(ORBACUS)\lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/container_service_MonImpl_EXECUTOR.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/container_service_MonImpl_EXECUTOR.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="wzzip.exe container_service_MonImpl.zip Debug/container_service_MonImpl_EXECUTOR.dll Debug/container_service_MonImpl_SERVANT.dll container_service_MonImpl_EQUIVALENT.idl container_service_MonImpl.ccd container_service_MonImpl.csd"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			<File
+				RelativePath="container_service_MonImpl.cpp">
+			</File>
+			<File
+				RelativePath="container_service_MonImpl_BUSINESS.cpp">
+			</File>
+			<File
+				RelativePath="container_service_MonImpl_BUSINESS_skel.cpp">
+			</File>
+			<File
+				RelativePath="container_service_MonImpl_EQUIVALENT.cpp">
+			</File>
+			<File
+				RelativePath="container_service_MonImpl_LOCAL.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="container_service_MonImpl.h">
+			</File>
+			<File
+				RelativePath="container_service_MonImpl_BUSINESS.h">
+			</File>
+			<File
+				RelativePath="container_service_MonImpl_BUSINESS_skel.h">
+			</File>
+			<File
+				RelativePath="container_service_MonImpl_EQUIVALENT.h">
+			</File>
+			<File
+				RelativePath="container_service_MonImpl_LOCAL.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="idl"
+			Filter="idl;cidl">
+			<File
+				RelativePath="../monitoring_service.cidl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(QEDO)/bin/cidl_gen -DORBACUS_ORB -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --business --target IDL:container_service/MonImpl:1.0 ../monitoring_service.cidl
+"
+						Outputs="container_service_MonImpl_LOCAL.idl;container_service_MonImpl_EQUIVALENT.idl;container_service_MonImpl_BUSINESS.idl"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="container_service_MonImpl_BUSINESS.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_BUSINESS.idl
+"
+						Outputs="container_service_MonImpl_BUSINESS.h;container_service_MonImpl_BUSINESS.cpp;container_service_MonImpl_BUSINESS_skel.h;container_service_MonImpl_BUSINESS_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="container_service_MonImpl_EQUIVALENT.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_EQUIVALENT.idl
+"
+						Outputs="container_service_MonImpl_EQUIVALENT.h;container_service_MonImpl_EQUIVALENT.cpp;container_service_MonImpl_EQUIVALENT_skel.h;container_service_MonImpl_EQUIVALENT_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="container_service_MonImpl_LOCAL.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/ComponentIDL -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB container_service_MonImpl_LOCAL.idl
+"
+						Outputs="container_service_MonImpl_LOCAL.h;container_service_MonImpl_LOCAL.cpp;container_service_MonImpl_LOCAL_skel.h;container_service_MonImpl_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+		<Filter
+			Name="xml"
+			Filter="ccd;csd">
+			<File
+				RelativePath="container_service_MonImpl.ccd">
+			</File>
+			<File
+				RelativePath="container_service_MonImpl.csd">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

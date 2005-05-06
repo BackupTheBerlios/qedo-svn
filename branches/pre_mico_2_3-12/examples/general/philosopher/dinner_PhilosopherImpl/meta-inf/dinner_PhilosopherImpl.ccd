@@ -1,0 +1,26 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://qedo.berlios.de/corbacomponent.dtd">
+
+<corbacomponent>
+    <corbaversion>3.0</corbaversion>
+    <componentrepid repid="IDL:dinner/Philosopher:1.0"/>
+    <homerepid repid="IDL:dinner/PhilosopherHome:1.0"/>
+    <componentkind>
+        <session>
+            <servant lifetime="container"/>
+        </session>
+    </componentkind>
+    <threading policy="multithread"/>
+    <configurationcomplete set="true"/>
+    <homefeatures name="PhilosopherHome" repid="IDL:dinner/PhilosopherHome:1.0">
+    </homefeatures>
+    <componentfeatures name="Philosopher" repid="IDL:dinner/Philosopher:1.0">
+        <ports>
+            <uses usesname="left_hand" repid="IDL:dinner/Fork:1.0"/>
+            <uses usesname="right_hand" repid="IDL:dinner/Fork:1.0"/>
+            <publishes publishesname="philosopher_state" eventtype="IDL:dinner/PhilosopherState:1.0">
+            <eventpolicy policy="normal"/>
+            </publishes>
+        </ports>
+    </componentfeatures>
+</corbacomponent>

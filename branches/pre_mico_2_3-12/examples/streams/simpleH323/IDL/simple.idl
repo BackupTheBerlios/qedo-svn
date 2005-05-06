@@ -1,0 +1,21 @@
+#include "Components.idl"
+
+module QedoStream {
+// predefined and already knwon stream types
+	streamtype h323_stream;
+};
+
+module simple {
+	
+	component vidconf_sink {
+		sink QedoStream::h323_stream conn_sink ;
+	};
+
+	home vid_sink_home manages vidconf_sink {};
+
+	component vidconf_source {
+		source QedoStream::h323_stream conn_source ;
+	};
+
+	home vid_source_home manages vidconf_source {};
+};

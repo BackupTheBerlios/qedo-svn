@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE QEDOCONFIG SYSTEM "QedoConfig.dtd">
+
+<!-- Qedo Configuration File -->
+
+<QEDOCONFIG>
+
+<!-- General configuration -->
+<SECTION name="General">
+
+	<CONFIGVALUE name="ResolveHostName" value="true"/>
+	<CONFIGVALUE name="VerboseOutput" value="false"/>
+	<CONFIGVALUE name="NameService" value="corbaloc::geist:3000/NameService"/>
+
+	<CONFIGVALUE name="ComponentServerKillDelay" value="50000"/>
+
+	<SECTION name ="ComponentServer">
+		<CONFIGVALUE name="CommandLine" value=""/>
+	</SECTION>	
+	<SECTION name="Debug">
+		<CONFIGVALUE name="DebugMode" value="false"/>
+	</SECTION>
+
+	<!-- deployment related configuration values -->
+	<SECTION name="Deployment">
+		<!-- the base directory for the deployment -->
+		<CONFIGVALUE name="BaseDir" value="/home/qedo"/>
+	</SECTION>
+</SECTION>
+
+	
+<!-- Event related configuration -->
+<SECTION name="Events">
+	<CONFIGVALUE name="EventDispatchingStrategy" value="asynchronous"/>
+</SECTION>
+
+	
+<!-- QoS related configuration -->
+<SECTION name="QoS">
+	<CONFIGVALUE name="EnableQoS" value="false"/>
+</SECTION>
+
+
+<!-- Streams related configuration -->
+<SECTION name="Streams">
+</SECTION>
+
+</QEDOCONFIG>

@@ -1,0 +1,13 @@
+README for the example hello_ccm
+
+
+In this example there are two components named Callee and Caller, respectively. 
+Callee provides one interface Hello that has function say, in which the "Hello World"
+will be printed. Caller "uses" this provided interface.
+Every Component should be controlled by a "Home", here are CalleeHome 
+and CallerHome.
+For invoking the function from Caller, we write some code in 
+CallerSessionImpl::configuration_complete().
+At the end, we write a small test programm, in which the two components will be connected, 
+and the say() function invoked from Caller (see main.cpp)
+ 

@@ -1,0 +1,20 @@
+#include "Components.idl"
+
+module SimpleStream {
+
+    streamtype <> LongStream;
+    
+    component StreamSink {
+    	sink LongStream input;
+    };
+    
+    home StreamSinkHome manages StreamSink {};
+    
+    component StreamSource {
+    	source LongStream output;
+    };
+    
+    home StreamSourceHome manages StreamSource {};
+    
+};
+
