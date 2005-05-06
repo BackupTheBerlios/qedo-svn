@@ -14,6 +14,7 @@
 #include "wx/imaglist.h"
 #include "PartitioningTreeCtrl.h"
 #include "AComponentTreeCtrl.h"
+#include "CCDReader4qxml.h"
 
 #include "icon1.xpm"
 #include "icon2.xpm"
@@ -28,6 +29,7 @@ BEGIN_EVENT_TABLE( PartitioningTreeCtrl, wxTreeCtrl )
 	EVT_MENU(ID_MENU_ADD_P_H,PartitioningTreeCtrl::onadd_h)
 	EVT_MENU(ID_MENU_ADD_P_C,PartitioningTreeCtrl::onadd_c)
 	EVT_MENU(ID_MENU_ADD_P_C_I,PartitioningTreeCtrl::onadd_ci)
+	EVT_MENU(ID_MENU_ADD_P_H_I,PartitioningTreeCtrl::onadd_if)
 END_EVENT_TABLE()
 
 PartitioningTreeCtrl::PartitioningTreeCtrl()
@@ -179,6 +181,28 @@ void PartitioningTreeCtrl::OnItem(wxMouseEvent& event)
 	
 			this->PopupMenu(test,event.GetPosition());
 			}
+			if (etype==inst) {
+				wxMenu *test = new wxMenu("Partitioning Component",2);
+			//test->SetTitle("ComponentPackage");
+			wxString text="Edit ";
+			//text.Append(GetItemText(compid));
+			//test->Append(ID_MENU_EDIT_P_U,"Edit Usagename","edit Usagename",TRUE);
+			test->Append(ID_MENU_ADD_P_H_I,"Add Filearchive","Add Filearchive",TRUE);
+
+			//test->Append(ID_MENU_ADD_P_H,"Add Homeplacement","Add Homeplacement",TRUE);
+
+			/*if (isimpl(GetSelection())) {
+				test->Append(ID_MENU_USE_IMP,"Use Implementation for Assembly","add this implementation to AssemblyView",TRUE);
+			}*/
+			test->AppendSeparator();
+			test->Append(ID_MENU_DELETE_P,"delete this Component","delete this Component",TRUE);
+			
+			if (this->ExistsProp(GetSelection())) {
+				test->Enable(ID_MENU_ADD_P_H_I,FALSE);
+			}
+	
+			this->PopupMenu(test,event.GetPosition());
+			}
 		}
 		if (this->GetSelection()==this->GetRootItem())
 		{
@@ -194,7 +218,8 @@ void PartitioningTreeCtrl::OnItem(wxMouseEvent& event)
 	}
 } 
 
-wxTreeItemId PartitioningTreeCtrl::get_CompId(wxTreeItemId itemid)
+wxTreeItemId 
+PartitioningTreeCtrl::get_CompId(wxTreeItemId itemid)
 { /* returns the ItemId of the ComponentPackage */
  
 	
@@ -300,7 +325,44 @@ void PartitioningTreeCtrl::onadd_c(wxMenuEvent& event)
 
 }
 
-std::vector <PartitioningTreeCtrl::Comp> PartitioningTreeCtrl::get_Comp4Con()
+void PartitioningTreeCtrl::onadd_if(wxMenuEvent& event)
+{
+	wxFileDialog* filedialog=new wxFileDialog(this,"Choose a filearchive","","","*.*",0,wxDefaultPosition);
+	int t=filedialog->ShowModal();
+	wxString fullfile,filename,filepath;
+	
+	if (t==wxID_OK) {
+		filename=filedialog->GetFilename();
+		fullfile=filedialog->GetPath();
+		filepath=filedialog->GetDirectory();
+		
+		Comp component=get_Comp(GetSelection());
+		wxString text="filearchive: ";
+		text.Append(fullfile);
+		wxTreeItemId itemid = AppendItem(GetSelection(),text,
+			TreeCtrlIcon_File,TreeCtrlIcon_FileSelected,NULL);
+		Expand(GetSelection());
+		Refresh();
+
+		ItemTyp itype;
+		itype.itemid=itemid;
+		itype.type=inst_prop;
+
+		itemtypes.push_back(itype);
+		
+		Instantiation i = get_Instantiation(GetSelection());
+		filearchive fa;
+		fa.filename=filename;
+		fa.path=filepath;
+		i.filearchive=fa;
+
+		replace_Instantiation(i);				
+	}
+	filedialog->~wxFileDialog();
+}
+
+std::vector <PartitioningTreeCtrl::Comp> 
+PartitioningTreeCtrl::get_Comp4Con()
 {
 	std::vector <Comp> c;
 
@@ -319,7 +381,8 @@ std::vector <PartitioningTreeCtrl::Comp> PartitioningTreeCtrl::get_Comp4Con()
 	return c;
 }
 
-void PartitioningTreeCtrl::onadd_ci(wxMenuEvent& event)
+void 
+PartitioningTreeCtrl::onadd_ci(wxMenuEvent& event)
 {
 
 	wxString cid= wxGetTextFromUser("Enter an identifier of instantiation","Identifier",
@@ -330,7 +393,7 @@ void PartitioningTreeCtrl::onadd_ci(wxMenuEvent& event)
 	text.Append(")");
 	wxTreeItemId itemid = AppendItem(GetSelection(),text,
 		TreeCtrlIcon_Folder,TreeCtrlIcon_FolderSelected,NULL);
-	Expand(GetRootItem());
+	Expand(GetSelection());
 	Refresh();
 	ItemTyp itype;
 	itype.itemid=itemid;
@@ -344,15 +407,78 @@ void PartitioningTreeCtrl::onadd_ci(wxMenuEvent& event)
 
 	component.instantiations.push_back(i);
 
-	
 
 	replace_component(component);
 
+	// get component information
+	// get from connectioncontroll
+	
+	add_ports_to_component_instance(component, itemid);
+
 }
 
+void
+PartitioningTreeCtrl::add_ports_to_component_instance(PartitioningTreeCtrl::Comp component, wxTreeItemId parent_itemid) {
+
+	// get port information
+	PartitioningTreeCtrl::CPort cport;
+	cport.idref=component.idref;
+	cport.instantiations=component.instantiations;
+	
+	std::string package_;
+	std::string ccdfile_name;
+	package_=""; 
+	wxString tmp_string;
+	std::string path=component.filearchive;
+	tmp_string=component.link.c_str();
+	tmp_string.Replace ("\\","/");
+
+	package_.append(tmp_string.c_str() );
+
+	Qedo::Package *package = new Qedo::Package(package_);
+
+	ccdfile_name = package->getFileNameWithSuffix( ".ccd" );
+
+	Qedo::CCDReader4qxml *ccdreader = 
+		new Qedo::CCDReader4qxml(package_,path.c_str());
+	cport.ccddata = ccdreader->getCCD();
+
+	
+
+	// now adding ports to the tree
+	std::vector < Qedo::CCDPort > :: iterator portiter;
+	for(portiter = cport.ccddata.ports.begin(); 
+		portiter != cport.ccddata.ports.end(); 
+		portiter++)
+	{
+		
+		Qedo::CCDPort ccdport=(*portiter);
+		if (ccdport.type==Qedo::providesport ) 
+		{
+			{
+				//add to tree
+				wxString text="Facet ";
+				text.Append(ccdport.identifier.c_str());
+				wxTreeItemId itemid = AppendItem(parent_itemid,text,
+					TreeCtrlIcon_Folder,TreeCtrlIcon_FolderSelected,NULL);
+				Expand(GetSelection());
+				Refresh();
+				ItemTyp itype;
+				itype.itemid=itemid;
+				itype.type=inst;
+
+				itemtypes.push_back(itype);
+
+			}
+			
+		}
+		
+	}
+};
 
 
-PartitioningTreeCtrl::ElementType PartitioningTreeCtrl::GetType(wxTreeItemId itemid)
+PartitioningTreeCtrl::ElementType 
+PartitioningTreeCtrl::GetType(wxTreeItemId itemid)
 {
 	ElementType etype;
 	std::vector <ItemTyp> ::iterator iter;
@@ -370,7 +496,8 @@ PartitioningTreeCtrl::ElementType PartitioningTreeCtrl::GetType(wxTreeItemId ite
    return etype;
 }
 
-PartitioningTreeCtrl::ItemTyp PartitioningTreeCtrl::GetItemInfo(wxTreeItemId itemid)
+PartitioningTreeCtrl::ItemTyp 
+PartitioningTreeCtrl::GetItemInfo(wxTreeItemId itemid)
 {
 	ItemTyp etype;
 	std::vector <ItemTyp> ::iterator iter;
@@ -408,7 +535,28 @@ bool PartitioningTreeCtrl::ExistsComp(wxTreeItemId itemid)
 	return value;
 }
 
-PartitioningTreeCtrl::Comp PartitioningTreeCtrl::get_Comp(wxTreeItemId itemid)
+bool PartitioningTreeCtrl::ExistsProp(wxTreeItemId itemid)
+{
+	bool value=false;
+	std::vector <ItemTyp> ::iterator iter;
+	long cookie;
+	wxTreeItemId childitem = GetFirstChild(itemid,cookie);
+
+	for(iter = itemtypes.begin(); 
+		iter != itemtypes.end(); 
+			iter++)
+			{
+				ItemTyp itype=(*iter);
+				if (itype.itemid==childitem) {
+					value=true;
+					break;
+				}
+			}
+	return value;
+}
+
+PartitioningTreeCtrl::Comp 
+PartitioningTreeCtrl::get_Comp(wxTreeItemId itemid)
 {
 	Comp c;
 	std::vector <Comp> ::iterator iter;
@@ -581,7 +729,7 @@ wxString PartitioningTreeCtrl::hostdata(wxTreeItemId itemid)
 }
 
 wxString PartitioningTreeCtrl::compdata(wxTreeItemId itemid)
-{
+{	
 	char a='"';
 	wxString tab="	";
 	wxString tabtab="		";
@@ -618,6 +766,30 @@ wxString PartitioningTreeCtrl::compdata(wxTreeItemId itemid)
 				value.Append(insta.id);
 				value.Append(a);
 				value.Append(">\n");
+
+				if (!(insta.filearchive.filename.IsEmpty())) {
+
+				// properties
+				value.Append(tabtab);
+				value.Append(tab);
+				value.Append("<componentproperties>\n");
+				value.Append(tabtab);
+				value.Append(tabtab);
+				value.Append("<fileinarchive name=");
+				value.Append(a);
+				value.Append("meta-inf/");
+				value.Append(insta.filearchive.filename);
+				value.Append(a);
+				value.Append(">\n");
+				value.Append(tabtab);
+				value.Append(tabtab);
+				value.Append("</fileinarchive>\n");
+				value.Append(tabtab);
+				value.Append(tab);
+				value.Append("</componentproperties>\n");
+				}
+				
+
 				value.Append(tabtab);
 				value.Append(tab);
 				value.Append("</componentinstantiation>\n");
@@ -627,6 +799,120 @@ wxString PartitioningTreeCtrl::compdata(wxTreeItemId itemid)
 
 }
 
+
+PartitioningTreeCtrl::Instantiation 
+	PartitioningTreeCtrl::get_Instantiation(wxTreeItemId itemid)
+{
+	Instantiation value;
+	std::vector <Comp> ::iterator iter;
+	for(iter = comps.begin(); 
+		iter != comps.end(); 
+			iter++)
+			{
+				Comp tempc=(*iter);
+				std::vector <Instantiation>::iterator inst_iter;
+				for(inst_iter = tempc.instantiations.begin();
+					inst_iter != tempc.instantiations.end();
+					inst_iter++)
+				{
+					Instantiation inst = (*inst_iter);
+					if (inst.itemid==itemid)
+					{
+						value=inst;
+						break;
+					}
+				}
+				
+			}
+	return value;
+}
+
+void PartitioningTreeCtrl::replace_Instantiation
+		(PartitioningTreeCtrl::Instantiation instantiation)
+{
+	std::vector <Comp> ::iterator iter;
+	for(iter = comps.begin(); 
+		iter != comps.end(); 
+			iter++)
+			{
+				Comp tempc=(*iter);
+				std::vector <Instantiation>::iterator inst_iter;
+				for(inst_iter = tempc.instantiations.begin();
+					inst_iter != tempc.instantiations.end();
+					inst_iter++)
+				{
+					Instantiation inst = (*inst_iter);
+					if (inst.itemid==instantiation.itemid)
+					{
+						tempc.instantiations.erase(inst_iter);
+						tempc.instantiations.push_back(instantiation);
+
+						comps.erase(iter);
+						comps.push_back(tempc);
+						break;
+					}
+				}
+				
+			}
+
+}
+
+void PartitioningTreeCtrl::copy_filearchive(wxString path)
+{
+	std::vector <Comp> ::iterator iter;
+	for(iter = comps.begin(); 
+		iter != comps.end(); 
+			iter++)
+			{
+				Comp tempc=(*iter);
+				std::vector <Instantiation>::iterator inst_iter;
+				for(inst_iter = tempc.instantiations.begin();
+					inst_iter != tempc.instantiations.end();
+					inst_iter++)
+				{
+					Instantiation inst = (*inst_iter);
+					if (!(inst.filearchive.filename.IsEmpty()))
+					{
+						wxString source=inst.filearchive.path;
+						source.Append("/");
+					    source.Append(inst.filearchive.filename);
+						
+						wxString target=path;
+						target.Append("/");
+						target.Append(inst.filearchive.filename);
+						wxCopyFile(source,target,TRUE);
+						
+					}
+				}
+				
+			}
+
+}
+void PartitioningTreeCtrl::remove_files()
+{
+	std::vector <Comp> ::iterator iter;
+	for(iter = comps.begin(); 
+		iter != comps.end(); 
+			iter++)
+			{
+				Comp tempc=(*iter);
+				std::vector <Instantiation>::iterator inst_iter;
+				for(inst_iter = tempc.instantiations.begin();
+					inst_iter != tempc.instantiations.end();
+					inst_iter++)
+				{
+					Instantiation inst = (*inst_iter);
+					if (!(inst.filearchive.filename.IsEmpty()))
+					{
+						wxString file="meta-inf/";
+						file.Append(inst.filearchive.filename);
+						wxRemoveFile(file);
+						
+					}
+				}
+				
+			}
+}
 
 void PartitioningTreeCtrl::setdummy(AComponentTreeCtrl* atc)
 {

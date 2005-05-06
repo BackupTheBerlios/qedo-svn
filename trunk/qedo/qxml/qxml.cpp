@@ -381,6 +381,11 @@ void MyDialog::OnButtton_VC( wxCommandEvent& event )
 
 void MyDialog::OnButton_GA(wxCommandEvent& event )
 {
+	wxString aid=assemblyid->GetValue();
+	if (aid.IsEmpty()) 
+	{
+		wxLogMessage("Sorry, you have to specify an AssemblyID !");
+	} else {
 	wxFileDialog* file_dialog=new wxFileDialog(this,"Save AssemblyPackage as...","","","*.zip",wxSAVE,wxDefaultPosition);
 	int t=file_dialog->ShowModal();
 	
@@ -420,6 +425,9 @@ void MyDialog::OnButton_GA(wxCommandEvent& event )
 			{
 					wxMkdir("tempqxml/meta-inf");
 			}
+			
+			// copy the instantiation properties fillearchives
+			p_TreeCtrl->copy_filearchive("tempqxml/meta-inf");
 
 			wxString cadfile="tempqxml/meta-inf/";
 			cadfile.Append(filename);
@@ -448,7 +456,7 @@ void MyDialog::OnButton_GA(wxCommandEvent& event )
 			wxString cmd2 = "zip -u ";
 			cmd2.append(filename);
 			cmd2.append(" ");
-			cmd2.append(cadfile);
+			cmd2.append("meta-inf/*.*");
 			
 			wxExecute(cmd2, wxEXEC_SYNC, NULL);
 			delete process;
@@ -467,6 +475,7 @@ void MyDialog::OnButton_GA(wxCommandEvent& event )
 								
 			}
 
+			p_TreeCtrl->remove_files();
 			wxRemoveFile(cadfile);
 			wxRmdir("meta-inf");
 
@@ -475,4 +484,5 @@ void MyDialog::OnButton_GA(wxCommandEvent& event )
 	}
 
 	file_dialog->~wxFileDialog();
+	}
 }

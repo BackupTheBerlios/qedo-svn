@@ -176,6 +176,7 @@ copy $(TargetPath) $(QEDO)\bin
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				BufferSecurityCheck="FALSE"
+				RuntimeTypeInfo="TRUE"
 				WarningLevel="3"
 				DebugInformationFormat="4"/>
 			<Tool

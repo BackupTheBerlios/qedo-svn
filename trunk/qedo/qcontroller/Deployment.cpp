@@ -133,7 +133,7 @@ void Deployment::OnFileChoiseButton(wxCommandEvent& WXUNUSED(event))
 	int t=file_dialog->ShowModal();
 	if (t==wxID_OK) {
 		assembly_name_->Clear();
-		wxString text="file:///";
+		wxString text="file:///";  
 		wxString tmp_string=file_dialog->GetPath();
 		tmp_string.Replace ("\\","/");
 		text.Append(tmp_string);

@@ -44,7 +44,7 @@ CadReaderDialogFrame::CadReaderDialogFrame(wxWindow *parent, wxString filename,b
 	
 	package_=""; 
 	wxString tmp_string;
-	
+
 	tmp_string=this->file.c_str();
 	tmp_string.Replace ("\\","/");
 	

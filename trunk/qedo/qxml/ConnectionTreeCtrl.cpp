@@ -137,8 +137,8 @@ void ConnectionTreeCtrl::OnItem(wxMouseEvent& event)
 	}
 } 
 
-void ConnectionTreeCtrl::get_portinformation
-		(std::vector <PartitioningTreeCtrl::Comp> components)
+void 
+ConnectionTreeCtrl::get_portinformation(std::vector <PartitioningTreeCtrl::Comp> components)
 {  
 	cports.clear();
 	// get information of ports

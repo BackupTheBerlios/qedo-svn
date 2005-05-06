@@ -5,6 +5,8 @@
 
 #include "wx/treectrl.h"
 #include "CSDStruc4qxml.h"
+#include "CCDStruc4qxml.h"
+
 
 #include "AComponentTreeCtrl.h"
 
@@ -16,6 +18,7 @@
 #define ID_MENU_EDIT_P_U 10320
 #define ID_MENU_ADD_P_C 10313
 #define ID_MENU_ADD_P_C_I 10314
+#define ID_MENU_ADD_P_H_I 10315
 
 ////@end control identifiers
 
@@ -46,13 +49,23 @@ public:
 
 	void setdummy(AComponentTreeCtrl* atc);
 	wxString getCADData();
+	void copy_filearchive(wxString path);
+	void remove_files();
+
+	struct filearchive
+	{
+		/* filename */
+		wxString filename;
+		/* path */
+		wxString path;
+	};
 
 	struct Instantiation
    {
 	   /* ID */
 	   wxString id;
 	   /* filearchive */
-	   wxString file;
+	   filearchive filearchive;
 	   /* Item Id*/
 	   wxTreeItemId itemid;
    };
@@ -78,26 +91,31 @@ public:
 	// get components for connections 
 	std::vector <Comp> get_Comp4Con();
 private:
-   int m_imageSize;
-   void PartitioningTreeCtrl::CreateImageList(int size);
-   short m_nValue;
-   AComponentTreeCtrl* ACTreeCtrl;
-   void OnItem(wxMouseEvent& event);
-   wxTreeItemId get_CompId(wxTreeItemId itemid);
-   void onadd_p(wxMenuEvent& event);
-   void onadd_ho(wxMenuEvent& event);
-   void onadd_h(wxMenuEvent& event);
-   void onadd_c(wxMenuEvent& event);
-   void onadd_ci(wxMenuEvent& event);
-   bool ExistsComp(wxTreeItemId itemid);
+	int m_imageSize;
+	void PartitioningTreeCtrl::CreateImageList(int size);
+	short m_nValue;
+	AComponentTreeCtrl* ACTreeCtrl;
+	void OnItem(wxMouseEvent& event);
+	wxTreeItemId get_CompId(wxTreeItemId itemid);
+	void onadd_p(wxMenuEvent& event);
+	void onadd_ho(wxMenuEvent& event);
+	void onadd_h(wxMenuEvent& event);
+	void onadd_c(wxMenuEvent& event);
+	void onadd_ci(wxMenuEvent& event);
+	void onadd_if(wxMenuEvent& event);
+	bool ExistsComp(wxTreeItemId itemid);
+	bool ExistsProp(wxTreeItemId itemid);
 
-   wxString homedata(wxTreeItemId itemid);
-   wxString hostdata(wxTreeItemId itemid);
-   wxString processdata(wxTreeItemId itemid);
+	wxString homedata(wxTreeItemId itemid);
+	wxString hostdata(wxTreeItemId itemid);
+	wxString processdata(wxTreeItemId itemid);
 
-   wxString compdata(wxTreeItemId itemid);
+	wxString compdata(wxTreeItemId itemid);
+	Instantiation get_Instantiation(wxTreeItemId itemid);
+	void replace_Instantiation(Instantiation instantiation);
    
 
+   void add_ports_to_component_instance(PartitioningTreeCtrl::Comp component,wxTreeItemId parent_itemid);
 
 
    enum ElementType
@@ -106,7 +124,9 @@ private:
       comp,
       process,
       home,
-      host
+      host,
+	  inst_prop,
+	  facet
    };
 
    struct ItemTyp
@@ -152,6 +172,16 @@ private:
 
    std::vector <ItemTyp> itemtypes;
    std::vector <Comp> comps;
+
+   struct CPort
+   {
+	   /* Component idref */
+	   wxString idref;
+	   /* instantiations */
+	   std::vector <PartitioningTreeCtrl::Instantiation> instantiations;
+	   /* ports */
+	   Qedo::CCDData ccddata;
+   };
 
    partiinfo pinfo;
 

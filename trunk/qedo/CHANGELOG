@@ -1,3 +1,5 @@
+- re-organiszation of COPI interfaces
+- qxml tool (windows version) added for creation of assembly package
 - configuration of Release and wo_qos added to solution
 - command line option for ComponentServer
 - NoResolve option for IOR creation

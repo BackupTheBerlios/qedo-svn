@@ -36,6 +36,11 @@ DescriptorFrame::DescriptorFrame(wxWindow *parent,wxString filename)
 	wxBoxSizer *sizerLauncher = new wxBoxSizer(wxVERTICAL);
 	this->SetSizer(sizerLauncher);
     this->SetAutoLayout(TRUE);
+
+	// Remove file:/// from filename to handle it on the local file system
+	// TODO: reconsideration and test of http:// string
+	filename.Replace("file:///","");
+
 	this->file=filename.c_str() ;
 
 
