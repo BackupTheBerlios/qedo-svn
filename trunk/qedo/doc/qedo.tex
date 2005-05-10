@@ -91,7 +91,7 @@ For those who are familiar with the XML stuff the following DTD is used to evalu
 <!ATTLIST CONFIGVALUE value CDATA #REQUIRED>
 
 \end{verbatim}
-It is highly recommended to use this configuration file. Default Values are used for most of the configuration parameters if they are not set. But the beavior of the runtime might be strange if the configuration file is missing.
+It is needed to use this configuration file. Default Values are used for most of the configuration parameters if they are not set. But the beaviour of the runtime might be strange if the configuration file is missing.
 
 Qedo comes with a sample file. Normally you need to modify only a few things to adapt the runtime to your needs. The file hast to be present at the \verb ${Qedo}/etc/Qedo.conf  .     
 
@@ -100,9 +100,14 @@ Qedo comes with a sample file. Normally you need to modify only a few things to 
 
 Within this section there are the following configuration values evaluated:
 \begin{itemize}
+  \item \verb TempDir  This points to a directory where some temporary files can be stored by Qedo tools and Qedo run-time. This directory shall be writeable.
+   
   \item \verb ResolveHostName  if this is set \verb true  the IORs (Interoperable Object Reference) create for Qedo daemons and Qedo components are created by using the host name instead of using the IP Address. This can sometimes cause trouble in ad-hoc or DHCP networks. To avoid such trouble this option can be set to \verb false  . This cause creation of IORs with IP addresses. 
+
 	\item \verb VerboseOutput  if this is set \verb true  the runtime environment will print out a lot of debug information to the standard out streams. If it is set to \verb false  the output will be quiet. In case there is some trouble with the components which run on top of the Qedo run-time this switch can be used for tracing such problmes.
+
 	\item \verb NameService  this is used to set the Name Service which is used by the run-time to establish the contact between various parts of the run-time. This will overwrite any ORB specific settings usually provided as an ORB dependent configuration file (e.g. \verb ~/.micorc ). Furthermore, it is strongly recommended not to use ORB specific mechanisms to provide reference to the name service. As value for this parameter a corbaloc format should be used. (e.g. \verb corbaloc::geist:3000/NameService ) 
+
 	\item \verb ComponentServerKillDelay  This parameter sets the time the component server activator will wait for the termination of a component server. Sometimes the termination of a component server may hang. This is normally caused by component implementations which may hang while they get terminated. In this case the component server is directly killed by the server activator to free the resources allocated by that component server. To decide whether a component server is still terminating or is hanging this parameter can be used. After the time set in this parameter value it is assumed that the component server is hanging.
 	
 \end{itemize}
