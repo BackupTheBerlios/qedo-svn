@@ -19,12 +19,16 @@
 #define ID_MENU_ADD_P_C 10313
 #define ID_MENU_ADD_P_C_I 10314
 #define ID_MENU_ADD_P_H_I 10315
+#define ID_MENU_ADD_R_A_N 10316
 
 ////@end control identifiers
 
 class PartitioningTreeCtrl : public wxTreeCtrl
 {
 	DECLARE_EVENT_TABLE()
+private:
+	/** the temporary path for extrating data from zip files */
+	std::string m_temp_path;
 
 public:
     enum
@@ -60,14 +64,25 @@ public:
 		wxString path;
 	};
 
+	struct FacetRegistration
+	{
+		wxString facet_name;
+		wxString ns_name;
+	};
+
 	struct Instantiation
-   {
-	   /* ID */
-	   wxString id;
-	   /* filearchive */
-	   filearchive filearchive;
-	   /* Item Id*/
-	   wxTreeItemId itemid;
+	{
+		/* ID */
+		wxString id;
+		/* filearchive */
+		filearchive filearchive;
+		/* Item Id*/
+		wxTreeItemId itemid;
+		/* name_service_registration of component */
+		wxString component_registration;
+		/* registration info for Name Service */
+		std::vector <FacetRegistration> facet_registrations;
+
    };
 
    struct Comp
@@ -103,6 +118,7 @@ private:
 	void onadd_c(wxMenuEvent& event);
 	void onadd_ci(wxMenuEvent& event);
 	void onadd_if(wxMenuEvent& event);
+	void onregister_at_name_service(wxMenuEvent& event);
 	bool ExistsComp(wxTreeItemId itemid);
 	bool ExistsProp(wxTreeItemId itemid);
 
@@ -126,7 +142,8 @@ private:
       home,
       host,
 	  inst_prop,
-	  facet
+	  facet,
+	  registration
    };
 
    struct ItemTyp

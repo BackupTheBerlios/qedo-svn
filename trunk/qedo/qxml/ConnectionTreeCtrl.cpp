@@ -12,10 +12,13 @@
 
 #include "wx/image.h"
 #include "wx/imaglist.h"
+#include "wx/choicdlg.h"
+
 #include "ConnectionTreeCtrl.h"
 #include "PartitioningTreeCtrl.h"
 #include "CCDReader4qxml.h"
 #include "CCDStruc4qxml.h"
+#include "ConfigurationReader.h"
 #include "ConnectionDialog.h"
 
 #include "icon1.xpm"
@@ -24,11 +27,14 @@
 #include "icon4.xpm"
 #include "icon5.xpm"
 
+extern std::string Qedo::g_qedo_dir;
+
 BEGIN_EVENT_TABLE( ConnectionTreeCtrl, wxTreeCtrl )
 	EVT_RIGHT_DOWN(ConnectionTreeCtrl::OnItem)
 	EVT_MENU(ID_MENU_ADD_C_B,ConnectionTreeCtrl::onadd_b)
 	EVT_MENU(ID_MENU_ADD_C_C,ConnectionTreeCtrl::onadd_c)
 	EVT_MENU(ID_MENU_ADD_C_E,ConnectionTreeCtrl::onadd_e)
+	EVT_MENU(ID_MENU_ADD_C_NS,ConnectionTreeCtrl::onadd_ns)
 END_EVENT_TABLE()
 
 ConnectionTreeCtrl::ConnectionTreeCtrl()
@@ -42,6 +48,27 @@ ConnectionTreeCtrl::ConnectionTreeCtrl( wxWindow *parent, const wxWindowID id,
 	CreateImageList(16);
 	 this->AddRoot(wxT("Connections"),TreeCtrlIcon_Folder , TreeCtrlIcon_FolderSelected , NULL);
 	Show();
+	//
+	// get the qedo dir
+	//
+	Qedo::g_qedo_dir = Qedo::getEnvironment( "QEDO" );
+	if(Qedo::g_qedo_dir == "")
+	{
+	    std::cout << "Missing Environment Variable QEDO" << std::endl;
+	    Qedo::g_qedo_dir = Qedo::getCurrentDirectory();
+	}
+	std::cout << "..... Qedo directory is " << Qedo::g_qedo_dir << std::endl;
+
+
+	// get temporal directory
+	m_temp_path = Qedo::ConfigurationReader::instance()->lookup_config_value ("General/TempDir");
+
+	if ( m_temp_path.empty() )
+	{
+		m_temp_path =  Qedo::g_qedo_dir + "/qedo_temp" ;
+	}
+	m_temp_path += "/";
+
 }
 
 void ConnectionTreeCtrl::CreateImageList(int size)
@@ -117,6 +144,8 @@ void ConnectionTreeCtrl::OnItem(wxMouseEvent& event)
 			onlyRoot->Append(ID_MENU_ADD_C_E,"Add new Event connection","add new Event connection",TRUE);
 			onlyRoot->Append(ID_MENU_ADD_C_C,"Add new Interface connection","add new Interface connection",TRUE);
 			onlyRoot->Append(ID_MENU_ADD_C_B,"Add new Stream connection","add new Stream connection",TRUE);
+			onlyRoot->Append(ID_MENU_ADD_C_NS,"Add new NameService connection","add new NameService connection",TRUE);
+
 			get_portinformation(components);
 			if (!(isEvent(components))) {
 				onlyRoot->Enable(ID_MENU_ADD_C_E,FALSE);
@@ -127,12 +156,16 @@ void ConnectionTreeCtrl::OnItem(wxMouseEvent& event)
 			if (!(isInterface(components))) {
 				onlyRoot->Enable(ID_MENU_ADD_C_C,FALSE);
 			}
-//			componentlist=components;
+
+			if (!(isReceptacle(components))) {
+				onlyRoot->Enable(ID_MENU_ADD_C_NS,FALSE);
+			}
+
+			//			componentlist=components;
 			this->PopupMenu(onlyRoot,event.GetPosition());
 			}
 			
 		}
-			
 		
 	}
 } 
@@ -167,7 +200,7 @@ ConnectionTreeCtrl::get_portinformation(std::vector <PartitioningTreeCtrl::Comp>
 				ccdfile_name = package->getFileNameWithSuffix( ".ccd" );
 			
 				Qedo::CCDReader4qxml *ccdreader = 
-					new Qedo::CCDReader4qxml(package_,path.c_str());
+					new Qedo::CCDReader4qxml(package_,m_temp_path.c_str());
 				cport.ccddata = ccdreader->getCCD();
 
 				
@@ -193,15 +226,16 @@ wxTreeItemId ConnectionTreeCtrl::get_CompId(wxTreeItemId itemid)
 }
 
 
-void ConnectionTreeCtrl::setdummy(PartitioningTreeCtrl* ptc)
+void 
+ConnectionTreeCtrl::setdummy(PartitioningTreeCtrl* ptc)
 {
 	PTreeCtrl = ptc;
 }
 
 
 
-bool ConnectionTreeCtrl::isEvent
-		(std::vector <PartitioningTreeCtrl::Comp> components)
+bool 
+ConnectionTreeCtrl::isEvent(std::vector <PartitioningTreeCtrl::Comp> components)
 {
 	bool value=false;
 	std::vector <ConnectionTreeCtrl::CPort> ::iterator iter;
@@ -293,6 +327,32 @@ bool ConnectionTreeCtrl::isInterface
 	return value;
 }
 
+bool 
+ConnectionTreeCtrl::isReceptacle(std::vector <PartitioningTreeCtrl::Comp> components)
+{
+	bool value=false;
+	std::vector <ConnectionTreeCtrl::CPort> ::iterator iter;
+	for(iter = cports.begin(); 
+		iter != cports.end(); 
+			iter++)
+			{
+				ConnectionTreeCtrl::CPort cport=(*iter);
+				std::vector < Qedo::CCDPort > :: iterator portiter;
+				for(portiter = cport.ccddata.ports.begin(); 
+					portiter != cport.ccddata.ports.end(); 
+					portiter++)
+				{
+					Qedo::CCDPort ccdport=(*portiter);
+					if (ccdport.type==Qedo::usesport ) 
+					{
+						value=true;
+						break;
+					}
+				}
+			}
+	return value;
+}
+
 void ConnectionTreeCtrl::onadd_b(wxMenuEvent& event)
 {   
 	ConnectionDialog *cdialog = new ConnectionDialog(this,-1,
@@ -359,7 +419,7 @@ void ConnectionTreeCtrl::onadd_b(wxMenuEvent& event)
 void ConnectionTreeCtrl::onadd_c(wxMenuEvent& event)
 {   
 	ConnectionDialog *cdialog = new ConnectionDialog(this,-1,
-		"Port connection",wxPoint(50,50), wxSize(450,350),wxDEFAULT_DIALOG_STYLE,"Provideports","Useports");
+		"Port connection",wxPoint(50,50), wxSize(450,350),wxDEFAULT_DIALOG_STYLE,"Receptacles","Facets");
 	cdialog->headline->SetLabel("Choose ports for connections");
 	
 	cdialog->setPorts1(getUseports());
@@ -487,7 +547,72 @@ void ConnectionTreeCtrl::onadd_e(wxMenuEvent& event)
 }
 
 
-wxArrayString ConnectionTreeCtrl::getSinkports()
+void 
+ConnectionTreeCtrl::onadd_ns(wxMenuEvent& event)
+{   
+	// create a wxString array
+	// TODO : can be improved with new WxWidgets
+	wxArrayString temp_ports = getUseports();
+	wxString choices [1000]; 
+	for (size_t i=0; i < temp_ports.GetCount(); i++){
+        	choices[i] = temp_ports[i];
+	}
+
+	//display selction of receptacles
+	wxSingleChoiceDialog receptacle_dialog(this, "select a port", "Selection", 1, choices);
+	
+	receptacle_dialog.Show();
+	
+	if (receptacle_dialog.ShowModal() == wxID_OK)
+    {
+		wxString port_name = receptacle_dialog.GetStringSelection();
+
+		// ask for naming context
+		wxString ns_context = wxGetTextFromUser("Enter a NameService Context","Context","", this,-1,-1,TRUE);
+
+		int mid=port_name.Find("::");      
+
+		wxString inst1=port_name.SubString(0,mid-1);
+		wxString portname1=port_name.SubString(mid+2,port_name.Len());
+
+		wxString binding="Connectinterface ";
+		binding.Append(inst1);
+		binding.Append("-");
+		binding.Append(ns_context);
+		wxTreeItemId itemid=AppendItem(GetRootItem(),binding,TreeCtrlIcon_Folder , TreeCtrlIcon_FolderSelected , NULL);
+		
+		ConPort p1;
+		p1.idref=inst1;
+		p1.portname=portname1;
+
+		// PROVIDEPORT
+		wxTreeItemId bindingid=AppendItem(itemid,"NS_Reference",TreeCtrlIcon_Folder, TreeCtrlIcon_FolderSelected, NULL);
+		wxString text="Port: ";
+		text.Append(ns_context);
+		AppendItem(bindingid,text,TreeCtrlIcon_File, TreeCtrlIcon_FileSelected,NULL);
+
+		// SINKPORT
+		bindingid=AppendItem(itemid,"Useport",TreeCtrlIcon_Folder, TreeCtrlIcon_FolderSelected, NULL);
+		text="Port: ";
+		text.Append(portname1);
+		AppendItem(bindingid,text,TreeCtrlIcon_File, TreeCtrlIcon_FileSelected,NULL);
+		text="Componentinstantiation: ";
+		text.Append(inst1);
+		AppendItem(bindingid,text,TreeCtrlIcon_File, TreeCtrlIcon_FileSelected,NULL);
+		
+		NS_Connect c;
+		c.port1=p1;
+		c.ns_context=ns_context;
+
+		connections.ns_connections.push_back(c);
+
+
+
+	}
+}
+
+wxArrayString 
+ConnectionTreeCtrl::getSinkports()
 {
 	wxArrayString stringarray;
 	std::vector <ConnectionTreeCtrl::CPort> ::iterator iter;
@@ -749,6 +874,14 @@ wxString ConnectionTreeCtrl::getCADData()
 				value.Append(getConnection((*iter),"INTERFACE"));
 
 			}
+	std::vector <NS_Connect> ::iterator ns_iter;
+	for(ns_iter = connections.ns_connections.begin(); 
+		ns_iter != connections.ns_connections.end(); 
+		ns_iter++)
+			{
+				value.Append(getNSConnection((*ns_iter)));
+
+			}
 	return value;
 }
 
@@ -786,6 +919,7 @@ wxString ConnectionTreeCtrl::getConnection(Connect c, wxString Typ)
 		port2name="providesidentifier";
 		
 	}
+
 	value.Append(tabtab);
 	value.Append("<");
 	value.Append(ctyp);
@@ -837,6 +971,86 @@ wxString ConnectionTreeCtrl::getConnection(Connect c, wxString Typ)
 	value.Append(c.port2.idref);
 	value.Append(a);
 	value.Append("/>\n");
+	value.Append(tabtab);
+	value.Append(tab);
+	value.Append("</");
+	value.Append(port2);
+	value.Append(">\n");
+	value.Append(tabtab);
+	value.Append("</");
+	value.Append(ctyp);
+	value.Append(">\n");
+
+
+	return value;
+}
+
+wxString 
+ConnectionTreeCtrl::getNSConnection(NS_Connect c)
+{
+	char a='"';
+	wxString tab="	";
+	wxString tabtab="		";
+	wxString value;
+	wxString port1,port2,port1name,port2name,ctyp;
+
+	ctyp="connectinterface";
+
+	port1="usesport";
+	port2="existinginterface";
+	
+	port1name="usesidentifier";
+	port2name="findby";
+		
+	value.Append(tabtab);
+	value.Append("<");
+	value.Append(ctyp);
+	value.Append(">\n");
+	value.Append(tabtab);
+	value.Append(tab);
+	value.Append("<");
+	value.Append(port1);
+	value.Append(">\n");
+    value.Append(tabtab);
+	value.Append(tabtab);
+	value.Append("<");
+	value.Append(port1name);
+	value.Append(">");
+	value.Append(c.port1.portname);
+	value.Append("</");
+	value.Append(port1name);
+	value.Append(">\n");
+	value.Append(tabtab);
+	value.Append(tabtab);
+	value.Append("<componentinstantiationref idref=");
+	value.Append(a);
+	value.Append(c.port1.idref);
+	value.Append(a);
+	value.Append("/>\n");
+	value.Append(tabtab);
+	value.Append(tab);
+	value.Append("</");
+	value.Append(port1);
+	value.Append(">\n");
+
+
+	value.Append(tabtab);
+	value.Append(tab);
+	value.Append("<");
+	value.Append(port2);
+	value.Append(">\n");
+	value.Append(tabtab);
+	value.Append(tabtab);
+	value.Append("<findby>\n");
+	value.Append(tabtab);
+	value.Append(tabtab);
+	value.Append(tab);
+	value.Append("<namingservice name=\"");
+	value.Append(c.ns_context);
+	value.Append("\"/>\n");
+	value.Append(tabtab);
+	value.Append(tabtab);
+	value.Append("</findby>\n");
 	value.Append(tabtab);
 	value.Append(tab);
 	value.Append("</");

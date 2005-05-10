@@ -61,10 +61,6 @@ ConnectionDialog::ConnectionDialog( wxWindow* parent, wxWindowID id, const wxStr
 bool ConnectionDialog::Create( wxWindow* parent, wxWindowID id, const wxString& caption, const wxPoint& pos, 
 							  const wxSize& size, long style, const wxString& portstatic1, const wxString& portstatic2 )
 {
-////@begin MyDialog member initialisation
-////@end MyDialog member initialisation
-
-////@begin MyDialog creation
     SetExtraStyle(GetExtraStyle()|wxWS_EX_BLOCK_EVENTS);
     wxDialog::Create( parent, id, caption, pos, size, style );
 
@@ -74,8 +70,8 @@ bool ConnectionDialog::Create( wxWindow* parent, wxWindowID id, const wxString& 
     GetSizer()->Fit(this);
     GetSizer()->SetSizeHints(this);
     Centre();
-////@end MyDialog creation
-    return TRUE;
+
+	return TRUE;
 }
 
 /*!
@@ -84,7 +80,6 @@ bool ConnectionDialog::Create( wxWindow* parent, wxWindowID id, const wxString& 
 
 void ConnectionDialog::CreateControls()
 {    
-////@begin MyDialog content construction
 
     ConnectionDialog* itemDialog1 = this;
 
@@ -130,7 +125,6 @@ void ConnectionDialog::CreateControls()
     wxButton* itemButton13 = new wxButton( itemDialog1, ID_BUTTON1, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer10->Add(itemButton13, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 
-////@end MyDialog content construction
 }
 
 /*!
@@ -149,9 +143,7 @@ bool ConnectionDialog::ShowToolTips()
 wxBitmap ConnectionDialog::GetBitmapResource( const wxString& name )
 {
     // Bitmap retrieval
-////@begin MyDialog bitmap retrieval
     return wxNullBitmap;
-////@end MyDialog bitmap retrieval
 }
 
 /*!
@@ -161,26 +153,19 @@ wxBitmap ConnectionDialog::GetBitmapResource( const wxString& name )
 wxIcon ConnectionDialog::GetIconResource( const wxString& name )
 {
     // Icon retrieval
-////@begin MyDialog icon retrieval
     return wxNullIcon;
-////@end MyDialog icon retrieval
 }
 
 void ConnectionDialog::OnButtonCancel( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON in MyDialog.
-    // Before editing this code, remove the block markers.
 	this->EndModal(wxID_CANCEL);
 	event.Skip();
 	
     
-////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON in MyDialog. 
 }
 
 void ConnectionDialog::OnButtonOk( wxCommandEvent& event )
 {
-////@begin wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON in MyDialog.
-    // Before editing this code, remove the block markers.
 
 	if (portlist1->GetSelection()!=portlist1->GetRootItem())
 	{
@@ -200,7 +185,6 @@ void ConnectionDialog::OnButtonOk( wxCommandEvent& event )
 			}
 		}
 	}
-////@end wxEVT_COMMAND_BUTTON_CLICKED event handler for ID_BUTTON in MyDialog. 
 }
 
 void ConnectionDialog::setPorts1(wxArrayString portlist)

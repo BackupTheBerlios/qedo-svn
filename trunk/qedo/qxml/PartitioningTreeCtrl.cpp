@@ -15,12 +15,23 @@
 #include "PartitioningTreeCtrl.h"
 #include "AComponentTreeCtrl.h"
 #include "CCDReader4qxml.h"
+#include "ConfigurationReader.h"
+
 
 #include "icon1.xpm"
 #include "icon2.xpm"
 #include "icon3.xpm"
 #include "icon4.xpm"
 #include "icon5.xpm"
+
+/**
+ * qedo namespace
+ */
+namespace Qedo {
+
+	/** the Qedo directory */
+	std::string g_qedo_dir;
+};
 
 BEGIN_EVENT_TABLE( PartitioningTreeCtrl, wxTreeCtrl )
 	EVT_RIGHT_DOWN(PartitioningTreeCtrl::OnItem)
@@ -30,6 +41,7 @@ BEGIN_EVENT_TABLE( PartitioningTreeCtrl, wxTreeCtrl )
 	EVT_MENU(ID_MENU_ADD_P_C,PartitioningTreeCtrl::onadd_c)
 	EVT_MENU(ID_MENU_ADD_P_C_I,PartitioningTreeCtrl::onadd_ci)
 	EVT_MENU(ID_MENU_ADD_P_H_I,PartitioningTreeCtrl::onadd_if)
+	EVT_MENU(ID_MENU_ADD_R_A_N,PartitioningTreeCtrl::onregister_at_name_service)
 END_EVENT_TABLE()
 
 PartitioningTreeCtrl::PartitioningTreeCtrl()
@@ -43,6 +55,28 @@ PartitioningTreeCtrl::PartitioningTreeCtrl( wxWindow *parent, const wxWindowID i
 	CreateImageList(16);
 	 this->AddRoot(wxT("Partitioning"),TreeCtrlIcon_Folder , TreeCtrlIcon_FolderSelected , NULL);
 	Show();
+
+	//
+	// get the qedo dir
+	//
+	Qedo::g_qedo_dir = Qedo::getEnvironment( "QEDO" );
+	if(Qedo::g_qedo_dir == "")
+	{
+	    std::cout << "Missing Environment Variable QEDO" << std::endl;
+	    Qedo::g_qedo_dir = Qedo::getCurrentDirectory();
+	}
+	std::cout << "..... Qedo directory is " << Qedo::g_qedo_dir << std::endl;
+
+
+	// get temporal directory
+	m_temp_path = Qedo::ConfigurationReader::instance()->lookup_config_value ("General/TempDir");
+
+	if ( m_temp_path.empty() )
+	{
+		m_temp_path =  Qedo::g_qedo_dir + "/qedo_temp" ;
+	}
+	m_temp_path += "/";
+
 }
 
 void PartitioningTreeCtrl::CreateImageList(int size)
@@ -138,72 +172,84 @@ void PartitioningTreeCtrl::OnItem(wxMouseEvent& event)
 				wxArrayString temp = ACTreeCtrl->get_CompArray();
 				
 				wxMenu *test = new wxMenu("Partitioning Homeplacement",2);
-			//test->SetTitle("ComponentPackage");
-			wxString text="Edit ";
-			//text.Append(GetItemText(compid));
-			test->Append(ID_MENU_EDIT_P_U,"Edit Usagename","edit Usagename",TRUE);
-			
-			test->Append(ID_MENU_ADD_P_C,"Add Component","Add Component",TRUE);
-			if (temp.GetCount() == 0)  {
-				test->Enable(ID_MENU_ADD_P_C,FALSE);
-			}
-			if (this->ExistsComp(GetSelection())) {
-				test->Enable(ID_MENU_ADD_P_C,FALSE);
-			}
-			//test->Append(ID_MENU_ADD_P_H,"Add Homeplacement","Add Homeplacement",TRUE);
-	
-			/*if (isimpl(GetSelection())) {
-				test->Append(ID_MENU_USE_IMP,"Use Implementation for Assembly","add this implementation to AssemblyView",TRUE);
-			}*/
-			test->AppendSeparator();
-			test->Append(ID_MENU_DELETE_P,"delete this Homeplacement","delete this Homeplacementcollocation",TRUE);
-			
-	
-			this->PopupMenu(test,event.GetPosition());
+				//test->SetTitle("ComponentPackage");
+				wxString text="Edit ";
+				//text.Append(GetItemText(compid));
+				test->Append(ID_MENU_EDIT_P_U,"Edit Usagename","edit Usagename",TRUE);
+				
+				test->Append(ID_MENU_ADD_P_C,"Add Component","Add Component",TRUE);
+				if (temp.GetCount() == 0)  {
+					test->Enable(ID_MENU_ADD_P_C,FALSE);
+				}
+				if (this->ExistsComp(GetSelection())) {
+					test->Enable(ID_MENU_ADD_P_C,FALSE);
+				}
+				//test->Append(ID_MENU_ADD_P_H,"Add Homeplacement","Add Homeplacement",TRUE);
+		
+				/*if (isimpl(GetSelection())) {
+					test->Append(ID_MENU_USE_IMP,"Use Implementation for Assembly","add this implementation to AssemblyView",TRUE);
+				}*/
+				test->AppendSeparator();
+				test->Append(ID_MENU_DELETE_P,"delete this Homeplacement","delete this Homeplacementcollocation",TRUE);
+				
+		
+				this->PopupMenu(test,event.GetPosition());
 			}
 
 			if (etype==comp) {
 				wxMenu *test = new wxMenu("Partitioning Component",2);
-			//test->SetTitle("ComponentPackage");
-			wxString text="Edit ";
-			//text.Append(GetItemText(compid));
-			//test->Append(ID_MENU_EDIT_P_U,"Edit Usagename","edit Usagename",TRUE);
-			test->Append(ID_MENU_ADD_P_C_I,"Add Instantiation","Add ComponentInstantiation",TRUE);
+				//test->SetTitle("ComponentPackage");
+				wxString text="Edit ";
+				//text.Append(GetItemText(compid));
+				//test->Append(ID_MENU_EDIT_P_U,"Edit Usagename","edit Usagename",TRUE);
+				test->Append(ID_MENU_ADD_P_C_I,"Add Instantiation","Add ComponentInstantiation",TRUE);
 
-			//test->Append(ID_MENU_ADD_P_H,"Add Homeplacement","Add Homeplacement",TRUE);
+				//test->Append(ID_MENU_ADD_P_H,"Add Homeplacement","Add Homeplacement",TRUE);
 
-			/*if (isimpl(GetSelection())) {
-				test->Append(ID_MENU_USE_IMP,"Use Implementation for Assembly","add this implementation to AssemblyView",TRUE);
-			}*/
-			test->AppendSeparator();
-			test->Append(ID_MENU_DELETE_P,"delete this Component","delete this Component",TRUE);
-			
-	
-			this->PopupMenu(test,event.GetPosition());
+				/*if (isimpl(GetSelection())) {
+					test->Append(ID_MENU_USE_IMP,"Use Implementation for Assembly","add this implementation to AssemblyView",TRUE);
+				}*/
+				test->AppendSeparator();
+				test->Append(ID_MENU_DELETE_P,"delete this Component","delete this Component",TRUE);
+				
+		
+				this->PopupMenu(test,event.GetPosition());
 			}
 			if (etype==inst) {
-				wxMenu *test = new wxMenu("Partitioning Component",2);
-			//test->SetTitle("ComponentPackage");
-			wxString text="Edit ";
-			//text.Append(GetItemText(compid));
-			//test->Append(ID_MENU_EDIT_P_U,"Edit Usagename","edit Usagename",TRUE);
-			test->Append(ID_MENU_ADD_P_H_I,"Add Filearchive","Add Filearchive",TRUE);
+				wxMenu* component_instance_menu = new wxMenu("Component Instance",2);
 
-			//test->Append(ID_MENU_ADD_P_H,"Add Homeplacement","Add Homeplacement",TRUE);
+				wxString text="Edit ";
+				component_instance_menu->Append(ID_MENU_ADD_P_H_I,"Add Filearchive","Add Filearchive",TRUE);
 
-			/*if (isimpl(GetSelection())) {
-				test->Append(ID_MENU_USE_IMP,"Use Implementation for Assembly","add this implementation to AssemblyView",TRUE);
-			}*/
-			test->AppendSeparator();
-			test->Append(ID_MENU_DELETE_P,"delete this Component","delete this Component",TRUE);
+				component_instance_menu -> AppendSeparator();
+
+				component_instance_menu -> Append (ID_MENU_ADD_R_A_N,"Register at NameService","Register at NameService",TRUE);
+
+				component_instance_menu -> AppendSeparator();
+
+				component_instance_menu -> Append(ID_MENU_DELETE_P,"delete this Component","delete this Component",TRUE);
 			
-			if (this->ExistsProp(GetSelection())) {
-				test->Enable(ID_MENU_ADD_P_H_I,FALSE);
-			}
+				if (this->ExistsProp(GetSelection())) {
+					component_instance_menu -> Enable(ID_MENU_ADD_P_H_I,FALSE);
+					component_instance_menu -> Enable(ID_MENU_ADD_R_A_N,FALSE);
+				}
 	
-			this->PopupMenu(test,event.GetPosition());
+				this->PopupMenu(component_instance_menu,event.GetPosition());
+			}
+			if (etype==facet) {
+				wxMenu* facet_menu = new wxMenu("Register",2);
+
+				facet_menu -> Append(ID_MENU_ADD_R_A_N,"Register at NameService","Register at NameService",TRUE);
+
+
+				if (this->ExistsProp(GetSelection())) {
+					facet_menu->Enable(ID_MENU_ADD_R_A_N,FALSE);
+				}
+	
+				this->PopupMenu(facet_menu,event.GetPosition());
 			}
 		}
+
 		if (this->GetSelection()==this->GetRootItem())
 		{
 			wxMenu *onlyRoot = new wxMenu("Partitioning",2);
@@ -361,6 +407,63 @@ void PartitioningTreeCtrl::onadd_if(wxMenuEvent& event)
 	filedialog->~wxFileDialog();
 }
 
+void PartitioningTreeCtrl::onregister_at_name_service(wxMenuEvent& event)
+{
+
+	// opens dialog
+	// request full scoped Naming Context name to register at
+	wxString ns_name = wxGetTextFromUser("Enter a name for registering at Name Service","Register at NameService",
+	"", this,-1,-1,TRUE);
+	wxString text="NameService: ";
+	text.Append(ns_name);
+
+	// add name to tree
+	wxTreeItemId itemid = AppendItem(GetSelection(),text,
+		TreeCtrlIcon_Folder,TreeCtrlIcon_FolderSelected,NULL);
+	Expand(GetRootItem());
+	Refresh();
+	ItemTyp itype;
+	itype.itemid=itemid;
+	itype.type=registration;
+	itype.usagename=ns_name;
+
+	itemtypes.push_back(itype);
+
+	// add information to instance or port
+
+	ElementType etype=GetType(GetSelection());
+	
+	if (etype==inst) {
+		// get instance
+		Instantiation curr_instance = get_Instantiation(GetSelection());
+
+		// add register Info to instance
+		curr_instance.component_registration = ns_name;
+		replace_Instantiation(curr_instance);				
+
+	}
+
+	if (etype==facet) {
+		// get instance
+		Instantiation curr_instance = get_Instantiation(GetItemParent(GetSelection()));
+
+
+		// create new facet-registration
+		PartitioningTreeCtrl::ItemTyp  facet_item = GetItemInfo(GetSelection());
+		FacetRegistration fr;
+		fr.facet_name = facet_item.usagename;
+		fr.ns_name = ns_name;
+		// add register Info to instance
+		
+		curr_instance.facet_registrations.push_back(fr);
+
+		replace_Instantiation(curr_instance);				
+
+	}
+
+
+}
+
 std::vector <PartitioningTreeCtrl::Comp> 
 PartitioningTreeCtrl::get_Comp4Con()
 {
@@ -429,7 +532,7 @@ PartitioningTreeCtrl::add_ports_to_component_instance(PartitioningTreeCtrl::Comp
 	std::string ccdfile_name;
 	package_=""; 
 	wxString tmp_string;
-	std::string path=component.filearchive;
+
 	tmp_string=component.link.c_str();
 	tmp_string.Replace ("\\","/");
 
@@ -440,7 +543,7 @@ PartitioningTreeCtrl::add_ports_to_component_instance(PartitioningTreeCtrl::Comp
 	ccdfile_name = package->getFileNameWithSuffix( ".ccd" );
 
 	Qedo::CCDReader4qxml *ccdreader = 
-		new Qedo::CCDReader4qxml(package_,path.c_str());
+		new Qedo::CCDReader4qxml(package_,m_temp_path.c_str());
 	cport.ccddata = ccdreader->getCCD();
 
 	
@@ -465,7 +568,8 @@ PartitioningTreeCtrl::add_ports_to_component_instance(PartitioningTreeCtrl::Comp
 				Refresh();
 				ItemTyp itype;
 				itype.itemid=itemid;
-				itype.type=inst;
+				itype.type=facet;
+				itype.usagename = ccdport.identifier.c_str();
 
 				itemtypes.push_back(itype);
 
@@ -769,24 +873,65 @@ wxString PartitioningTreeCtrl::compdata(wxTreeItemId itemid)
 
 				if (!(insta.filearchive.filename.IsEmpty())) {
 
-				// properties
-				value.Append(tabtab);
-				value.Append(tab);
-				value.Append("<componentproperties>\n");
-				value.Append(tabtab);
-				value.Append(tabtab);
-				value.Append("<fileinarchive name=");
-				value.Append(a);
-				value.Append("meta-inf/");
-				value.Append(insta.filearchive.filename);
-				value.Append(a);
-				value.Append(">\n");
-				value.Append(tabtab);
-				value.Append(tabtab);
-				value.Append("</fileinarchive>\n");
-				value.Append(tabtab);
-				value.Append(tab);
-				value.Append("</componentproperties>\n");
+					// properties
+					value.Append(tabtab);
+					value.Append(tab);
+					value.Append("<componentproperties>\n");
+					value.Append(tabtab);
+					value.Append(tabtab);
+					value.Append("<fileinarchive name=");
+					value.Append(a);
+					value.Append("meta-inf/");
+					value.Append(insta.filearchive.filename);
+					value.Append(a);
+					value.Append(">\n");
+					value.Append(tabtab);
+					value.Append(tabtab);
+					value.Append("</fileinarchive>\n");
+					value.Append(tabtab);
+					value.Append(tab);
+					value.Append("</componentproperties>\n");
+				}
+				
+				//check for registering component
+				if (!(insta.component_registration.IsEmpty())) {
+					value.Append(tabtab);
+					value.Append(tab);
+					value.Append("<registercomponent>\n");
+					value.Append(tabtab);
+					value.Append(tabtab);
+					value.Append("<registerwithnaming name=\"");
+					value.Append(insta.component_registration);
+					value.Append("\"/>\n");
+					value.Append(tabtab);
+					value.Append(tab);
+					value.Append("</registercomponent>\n");
+				}
+
+				//
+				// print out facet registrations
+				//
+				std::vector<FacetRegistration> ::iterator facet_iter;
+				for(facet_iter = insta.facet_registrations.begin(); 
+					facet_iter != insta.facet_registrations.end(); 
+					facet_iter++)
+				{
+					value.Append(tabtab);
+					value.Append(tab);
+					value.Append("<registercomponent>\n");
+					value.Append(tabtab);
+					value.Append(tabtab);
+					value.Append("<providesidentifier>");
+					value.Append((*facet_iter).facet_name);
+					value.Append("</providesidentifier>\n");
+					value.Append(tabtab);
+					value.Append(tabtab);
+					value.Append("<registerwithnaming name=\"");
+					value.Append((*facet_iter).ns_name);
+					value.Append("\"/>\n");
+					value.Append(tabtab);
+					value.Append(tab);
+					value.Append("</registercomponent>\n");
 				}
 				
 
