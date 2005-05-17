@@ -38,7 +38,11 @@ SUBDIRS = ComponentIDL \
 	  explore_server
 
 ifeq "yes" "$(HAVE_WXGTK_LIB)"
-	SUBDIRS+=qcontroller
+
+SUBDIRS += qcontroller \
+	   qxml
+
+
 endif
 
 all: $(SUBDIRS:%=%-all)
