@@ -56,7 +56,7 @@ public:
 	void copy_filearchive(wxString path);
 	void remove_files();
 
-	struct filearchive
+	struct Filearchive
 	{
 		/* filename */
 		wxString filename;
@@ -75,7 +75,7 @@ public:
 		/* ID */
 		wxString id;
 		/* filearchive */
-		filearchive filearchive;
+		Filearchive file_archive;
 		/* Item Id*/
 		wxTreeItemId itemid;
 		/* name_service_registration of component */
@@ -94,7 +94,7 @@ public:
 	   /* link to file */
 	   wxString link;
 	   /* filearchive */
-	   wxString filearchive;
+	   wxString file_archive;
 	   /* implementation */
 	   Qedo::Implementation impl;
 	   /* instantiations */

@@ -1,6 +1,3 @@
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma implementation ""
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

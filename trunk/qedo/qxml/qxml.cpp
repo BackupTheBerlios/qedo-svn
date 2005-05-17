@@ -1,17 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////
-// Name:        
-// Purpose:     
-// Author:      HEINI
-// Modified by: 
-// Created:     04/07/05 19:50:04
-// RCS-ID:      
-// Copyright:   
-// Licence:     
-/////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma implementation ""
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -44,6 +31,7 @@
  * MyDialog type definition
  */
 
+IMPLEMENT_DYNAMIC_CLASS( MyDialog, wxDialog )
 
 
 /*!

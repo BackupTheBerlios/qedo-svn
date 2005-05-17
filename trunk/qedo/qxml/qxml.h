@@ -1,17 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////
-// Name:        
-// Purpose:     
-// Author:      HEINI
-// Modified by: 
-// Created:     04/07/05 20:17:24
-// RCS-ID:      
-// Copyright:   
-// Licence:     
-/////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface ""
-#endif
 
 /*!
  * Includes
@@ -79,9 +66,9 @@
  */
 
 
-class MyDialog: public wxDialog
+class MyDialog: virtual public wxDialog
 {    
-  //  DECLARE_DYNAMIC_CLASS( MyDialog )
+    DECLARE_DYNAMIC_CLASS( MyDialog )
     DECLARE_EVENT_TABLE()
 
 public:

@@ -189,7 +189,7 @@ ConnectionTreeCtrl::get_portinformation(std::vector <PartitioningTreeCtrl::Comp>
 				std::string ccdfile_name;
 				package_=""; 
 				wxString tmp_string;
-				std::string path=tempc.filearchive;
+				std::string path=tempc.file_archive.c_str();
 				tmp_string=tempc.link.c_str();
 				tmp_string.Replace ("\\","/");
 	

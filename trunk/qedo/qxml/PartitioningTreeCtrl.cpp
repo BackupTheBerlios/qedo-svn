@@ -365,7 +365,7 @@ void PartitioningTreeCtrl::onadd_c(wxMenuEvent& event)
 	c.impl=impl;
 	
 	c.link=ACTreeCtrl->getLink(cid);
-	c.filearchive=ACTreeCtrl->getFilearchive(cid);
+	c.file_archive=ACTreeCtrl->getFilearchive(cid);
 	c.itemid=itemid;
 	comps.push_back(c);
 
@@ -397,10 +397,10 @@ void PartitioningTreeCtrl::onadd_if(wxMenuEvent& event)
 		itemtypes.push_back(itype);
 		
 		Instantiation i = get_Instantiation(GetSelection());
-		filearchive fa;
+		Filearchive fa;
 		fa.filename=filename;
 		fa.path=filepath;
-		i.filearchive=fa;
+		i.file_archive=fa;
 
 		replace_Instantiation(i);				
 	}
@@ -871,7 +871,7 @@ wxString PartitioningTreeCtrl::compdata(wxTreeItemId itemid)
 				value.Append(a);
 				value.Append(">\n");
 
-				if (!(insta.filearchive.filename.IsEmpty())) {
+				if (!(insta.file_archive.filename.IsEmpty())) {
 
 					// properties
 					value.Append(tabtab);
@@ -882,7 +882,7 @@ wxString PartitioningTreeCtrl::compdata(wxTreeItemId itemid)
 					value.Append("<fileinarchive name=");
 					value.Append(a);
 					value.Append("meta-inf/");
-					value.Append(insta.filearchive.filename);
+					value.Append(insta.file_archive.filename);
 					value.Append(a);
 					value.Append(">\n");
 					value.Append(tabtab);
@@ -1016,15 +1016,15 @@ void PartitioningTreeCtrl::copy_filearchive(wxString path)
 					inst_iter++)
 				{
 					Instantiation inst = (*inst_iter);
-					if (!(inst.filearchive.filename.IsEmpty()))
+					if (!(inst.file_archive.filename.IsEmpty()))
 					{
-						wxString source=inst.filearchive.path;
+						wxString source=inst.file_archive.path;
 						source.Append("/");
-					    source.Append(inst.filearchive.filename);
+					    source.Append(inst.file_archive.filename);
 						
 						wxString target=path;
 						target.Append("/");
-						target.Append(inst.filearchive.filename);
+						target.Append(inst.file_archive.filename);
 						wxCopyFile(source,target,TRUE);
 						
 					}
@@ -1047,10 +1047,10 @@ void PartitioningTreeCtrl::remove_files()
 					inst_iter++)
 				{
 					Instantiation inst = (*inst_iter);
-					if (!(inst.filearchive.filename.IsEmpty()))
+					if (!(inst.file_archive.filename.IsEmpty()))
 					{
 						wxString file="meta-inf/";
-						file.Append(inst.filearchive.filename);
+						file.Append(inst.file_archive.filename);
 						wxRemoveFile(file);
 						
 					}
