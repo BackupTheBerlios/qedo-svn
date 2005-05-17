@@ -257,6 +257,7 @@ AC_CONFIG_FILES([Makefile
                  HomeFinder/Makefile
                  DeploymentClient/Makefile
                  qcontroller/Makefile
+		 qxml/Makefile
 		 explore_server/Makefile
                  etc/Makefile
                  etc/MakeComponentVars
