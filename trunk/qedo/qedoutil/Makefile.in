@@ -36,9 +36,11 @@ LIBS += -L../ComponentIDL -lComponentIDL \
 SOURCES = CADReader.cpp \
 	CatalogResolver.cpp \
 	CCDReader.cpp \
+	CCDReader4qxml.cpp \
 	ConfigurationReader.cpp \
 	CPFReader.cpp \
 	CSDReader.cpp \
+	CSDReader4qxml.cpp \
 	DOMTreeErrorReporter.cpp \
 	DOMXMLParser.cpp \
 	DTMReader.cpp \
