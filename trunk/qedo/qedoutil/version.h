@@ -1,9 +1,9 @@
 /***************************************************************************/
 /* Qedo - Quality of Service Enabled Distributed Objects                   */
 /*                                                                         */
-/* http://qedo.berlios.de/                                                 */
+/* http://www.qedo.org                                                     */
 /*                                                                         */
-/* Copyright (C) 2002 by the Qedo Team                                     */
+/* Copyright (C) 2002-2005 by the Qedo Team                                */
 /*                                                                         */
 /* This library is free software; you can redistribute it and/or           */
 /* modify it under the terms of the GNU Lesser General Public              */
@@ -20,4 +20,4 @@
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
 /***************************************************************************/
 
-#define QEDO_VERSION "0.7.2"
+#define QEDO_VERSION "0.8.0"
