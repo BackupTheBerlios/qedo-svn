@@ -66,7 +66,7 @@
  */
 
 
-class MyDialog: virtual public wxDialog
+class MyDialog: public wxDialog
 {    
     DECLARE_DYNAMIC_CLASS( MyDialog )
     DECLARE_EVENT_TABLE()

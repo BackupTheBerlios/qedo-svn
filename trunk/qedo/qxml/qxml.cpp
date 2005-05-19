@@ -226,7 +226,9 @@ void MyDialog::OnAdd_Comp( wxCommandEvent& event )
 	wxString file; // Full path+file
 	wxString path; // only path without file
 	
-	wxFileDialog* file_dialog=new wxFileDialog(this,"Choose a componentfile","","","*.zip",0,wxDefaultPosition);
+	wxString default_dir = "";
+	wxString default_file = "";
+	wxFileDialog* file_dialog=new wxFileDialog(this, "Choose a componentfile", default_dir, default_file, "*.zip", 0, wxDefaultPosition);
 	int t=file_dialog->ShowModal();
 	
 	
@@ -438,6 +440,7 @@ void MyDialog::OnButton_GA(wxCommandEvent& event )
 			cmd.append(" ");
 			cmd.append("*.*");
 	
+			std::cout << cmd.c_str() << std::endl;
 	
 			wxExecute(cmd, wxEXEC_SYNC, NULL);
 			cadfile.Replace("tempqxml/","",TRUE);
