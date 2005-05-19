@@ -1,9 +1,9 @@
 /*****************************************************************************/
 /* Qedo - Qualitiy of Service Enabled Distributed Objects                    */
 /*                                                                           */
-/* Copyright (c) 2002-2005 by the Qedo Team                                       */
+/* Copyright (c) 2002-2005 by the Qedo Team                                  */
 /*                                                                           */
-/* http://www.qedo.org                                                    */
+/* http://www.qedo.org                                                       */
 /*                                                                           */
 /* This file is part of Qedo Generator                                       */
 /*                                                                           */
@@ -18,7 +18,7 @@
 /* GNU General Public License for more details.                              */
 /*                                                                           */
 /* You should have received a copy of the GNU General Public License         */
-/* along with Qedo; if not, write to the Free Software                     */
+/* along with Qedo; if not, write to the Free Software                       */
 /* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
 /*                                                                           */
 /*****************************************************************************/
