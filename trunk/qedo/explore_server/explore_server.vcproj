@@ -126,7 +126,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(MICO)\include&quot;;./;../qedoutil;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;&quot;$(MICO)\include&quot;;./;../qedoutil;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)&quot;"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_WINDOWSL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -333,7 +333,7 @@ copy $(TargetPath) $(QEDO)\bin
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)\win32-bin\idl -I%MICO%\include\mico -I../ComponentIDL -I%MICO%\include -DMICO_ORB --c++-suffix cpp explore.idl
+						CommandLine="$(MICO)\win32-bin\idl -B$(MICO) -I../ComponentIDL -I$(MICO)\include -DMICO_ORB --c++-suffix cpp explore.idl
 "
 						Outputs="explore.h;explore.cpp"/>
 				</FileConfiguration>

@@ -444,7 +444,7 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)\win32-bin\idl -I%MICO%\include\mico -I..\ComponentIDL -I%MICO%\include -DMICO_ORB --c++-suffix cpp explore.idl
+						CommandLine="$(MICO)\win32-bin\idl -B$(MICO) -I..\ComponentIDL -I$(MICO)\include -DMICO_ORB --c++-suffix cpp explore.idl
 "
 						Outputs="explore.h;explore.cpp"/>
 				</FileConfiguration>
