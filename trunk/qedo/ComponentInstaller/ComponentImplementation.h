@@ -31,7 +31,7 @@
 #include "ComponentImplementationData.h"
 
 #ifdef _WIN32
-#include <windows.h>
+//#include <windows.h>
 #define DLL_EXT "dll"
 #else
 #include <unistd.h>

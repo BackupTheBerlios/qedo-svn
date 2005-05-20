@@ -26,6 +26,12 @@
 #include "Output.h"
 #include <fstream>
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#undef WIN32_LEAN_AND_MEAN
+#endif
+
 
 static char rcsid[] UNUSED = "$Id: ComponentImplementation.cpp,v 1.22 2004/04/13 09:30:19 neubauer Exp $";
 

@@ -34,7 +34,9 @@
 static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.43 2004/09/27 12:48:26 tom Exp $";
 
 #ifdef _WIN32
-//#include <strstream>
+#define WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
+#undef WIN32_LEAN_AND_MEAN
 #include <process.h>
 #else
 #include <unistd.h>

@@ -26,7 +26,9 @@
 #include <iostream>
 #include <fstream>
 #ifdef _WIN32
-#include <Windows.h>
+#define WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
+#undef WINAN_AND_MEAN
 #include <process.h>
 #else
 #include <unistd.h>

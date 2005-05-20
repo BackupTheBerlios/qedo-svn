@@ -36,10 +36,6 @@
 #ifdef unix
 # include <unistd.h>
 # include <utime.h>
-#else
-# include <direct.h>
-# include <io.h>
-# include <wtypes.h>
 #endif
 
 #include "libunzip.h"

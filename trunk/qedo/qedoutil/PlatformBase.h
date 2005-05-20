@@ -36,11 +36,6 @@
 #ifndef _WIN32
 # include <unistd.h>
 # include <utime.h>
-#else
-# include <direct.h>
-# include <io.h>
-# include <wtypes.h>
-#include <windows.h>
 #endif
 
 #define DIRECTORY_OR_FILE 0

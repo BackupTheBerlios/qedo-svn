@@ -51,6 +51,12 @@
 #include "Synchronisation.h"
 #endif
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <winsock2.h>
+#undef WIN32_LEAN_AND_MEAN
+#endif
+
 #include <signal.h>
 
 #include "Output.h"
