@@ -240,7 +240,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..\ComponentIDL;..\ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(ZLIB)\include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)&quot;"
+				AdditionalIncludeDirectories=".;..\ComponentIDL;..\ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(ZLIB)\include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)\include&quot;"
 				PreprocessorDefinitions="_QEDO_NO_QOS;MICO_ORB;WIN32;_DEBUG;_WINDOWS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_USRDLL;QEDOUTIL_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="3"
@@ -260,11 +260,11 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2D.lib zdll.lib mico2311.lib micocoss2311.lib wsock32.lib pthreadVC.lib"
+				AdditionalDependencies="xerces-c_2D.lib zdll.lib mico2311.lib micocoss2311.lib wsock32.lib pthreadVC2.lib"
 				OutputFile="$(OutDir)/qedoutil.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(XERCES)\lib&quot;;&quot;$(ZLIB)\dll32&quot;;&quot;$(PTHREADS)&quot;;&quot;$(ZLIB)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(XERCES)\lib&quot;;&quot;$(ZLIB)\dll32&quot;;&quot;$(PTHREADS)\lib&quot;;&quot;$(ZLIB)\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/qedoutil.pdb"
 				SubSystem="0"
