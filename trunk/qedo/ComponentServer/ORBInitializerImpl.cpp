@@ -48,7 +48,7 @@ ORBInitializerImpl::ORBInitializerImpl(bool enable_qos)
     //
 	// Register our ORB initializer
 	//
-    PortableInterceptor::register_orb_initializer (this);
+	PortableInterceptor::register_orb_initializer (this);
 
 	m_enable_qos = enable_qos;
 }

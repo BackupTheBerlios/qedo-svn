@@ -1,4 +1,7 @@
-
+- csd points to the source file (*.cidl)
+- included descriptor generation in vc7 generator
+- new batch file fro creating a distribution
+- modifications for new versions of MICO, PTHREAD, xerces, zip,
 
 version 0.8.0
 - re-organiszation of COPI interfaces

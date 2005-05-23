@@ -152,7 +152,8 @@ main (int argc, char** argv)
 	//
 	// initialize ORB
 	//
-	Qedo::ORBInitializerImpl initializer(qos_enabled);
+	// will be deletet by ORB destruction
+	Qedo::ORBInitializerImpl* initializer = new Qedo::ORBInitializerImpl(qos_enabled);
 
 #ifndef _QEDO_NO_QOS
 	//
@@ -181,11 +182,11 @@ main (int argc, char** argv)
 		stub_dispatcher -> _add_ref();
 
 		// register interceptors before ORB_init
-		initializer.set_server_dispatcher (
+		initializer -> set_server_dispatcher (
 //			PortableInterceptor::ServerRequestInterceptor::_narrow (server_dispatcher ) );
 			server_dispatcher );
 
-		initializer.set_client_dispatcher (
+		initializer -> set_client_dispatcher (
 //			PortableInterceptor::ClientRequestInterceptor::_narrow (client_dispatcher ) );
 			client_dispatcher );
 
@@ -212,7 +213,7 @@ main (int argc, char** argv)
 
 	CORBA::ORB_var orb = CORBA::ORB_init (orb_argc, orb_argv);
 
-	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer.slot_id());
+	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer -> slot_id());
 
 #ifndef _QEDO_NO_QOS
 	if (qos_enabled)
