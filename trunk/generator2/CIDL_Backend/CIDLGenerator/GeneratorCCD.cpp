@@ -13,6 +13,13 @@ GeneratorCCD::GeneratorCCD
 {
 }
 
+GeneratorCCD::GeneratorCCD
+( QEDO_ComponentRepository::CIDLRepository_impl *repository, std::string dir_prefix)
+: CPPBase ( repository )
+{
+	m_dir_prefix = dir_prefix;
+}
+
 
 GeneratorCCD::~GeneratorCCD
 ()
@@ -117,6 +124,13 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 {
 	filename_ = "";
 
+	// check whether the descriptor has to be create elsewhere
+	// for usage from project generator
+	if (m_dir_prefix.length())
+	{
+		filename_ = m_dir_prefix;
+	}
+
 	std::string id = composition->id();
 	IR__::Contained_ptr module_def = 0;
 	std::string::size_type pos = id.find_last_of("/");
@@ -124,7 +138,7 @@ GeneratorCCD::doComposition(CIDL::CompositionDef_ptr composition)
 	{
 		id.replace(pos, string::npos, ":1.0");
 		module_def = repository_->lookup_id(id.c_str());
-		filename_ = getAbsoluteName(module_def, "_");
+		filename_.append(getAbsoluteName(module_def, "_"));
 		filename_.append("_");
 	}
 	

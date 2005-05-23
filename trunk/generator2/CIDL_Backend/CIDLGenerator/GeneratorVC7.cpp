@@ -11,6 +11,8 @@
 #include "sys/stat.h"
 #endif
 
+#include "GeneratorCCD.h"
+#include "GeneratorCSD.h"
 
 namespace QEDO_CIDL_Generator {
 
@@ -82,6 +84,32 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 #else
 	mkdir(project_name.c_str(), 0755);
 #endif
+
+
+	/* generate descriptor first */
+	std::string dir_prefix;
+	dir_prefix = project_name + "/";
+	dir_prefix = dir_prefix + "meta-inf/";
+
+#ifdef WIN32
+	_mkdir(dir_prefix.c_str());
+#else
+	mkdir(dir_prefix.c_str(), 0755);
+#endif
+
+	QEDO_CIDL_Generator::GeneratorCCD *ccd_generator =
+		new QEDO_CIDL_Generator::GeneratorCCD(repository_, dir_prefix);
+	ccd_generator->generate(id, "");
+	ccd_generator->destroy();
+	
+	QEDO_CIDL_Generator::GeneratorCSD *csd_generator =
+		new QEDO_CIDL_Generator::GeneratorCSD(repository_, dir_prefix);
+	csd_generator->source_file_name_ = target_file_name_;
+	csd_generator->generate(id, "");
+	csd_generator->destroy();
+	/* end descriptor generations */
+
+
 	filename_ = project_name + "/";
 	filename_ = filename_ + project_name;
 	filename_ = filename_ + ".vcproj";
@@ -102,7 +130,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "<VisualStudioProject\n";
 	out.indent();
 	out << "ProjectType=\"Visual C++\"\n";
-	out << "Version=\"7.00\"\n";
+	out << "Version=\"7.10\"\n";
 	out << "Name=\"" << project_name << "\"\n";
 	out << "ProjectGUID=\"{" << uid_++ << "}\"\n";
 	out << "Keyword=\"Win32Proj\">\n";
@@ -193,7 +221,19 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out << "<Tool\n";
 	out.indent();
+	out << "Name=\"VCXMLDataGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
 	out << "Name=\"VCWebDeploymentTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCManagedWrapperGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCAuxilaryManagedWrapperGeneratorTool\"/>\n";
 	out.unindent();
 	out.unindent();
 	out << "</Configuration>\n";
@@ -233,7 +273,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCLinkerTool\"\n";
-	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC.lib\"\n";
+	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC2.lib\"\n";
 	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
 	out << "LinkIncremental=\"2\"\n";
 	out << "AdditionalLibraryDirectories=\"$(QEDO)/lib;$(QEDO)/lib\"\n";
@@ -280,9 +320,22 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "Name=\"VCWebServiceProxyGeneratorTool\"/>\n";
 	out.unindent();
 
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCXMLDataGeneratorTool\"/>\n";
+	out.unindent();
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCWebDeploymentTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCManagedWrapperGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCAuxilaryManagedWrapperGeneratorTool\"/>\n";
 	out.unindent();
 	out.unindent();
 	out << "</Configuration>\n";
@@ -355,7 +408,19 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out << "<Tool\n";
 	out.indent();
+	out << "Name=\"VCXMLDataGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
 	out << "Name=\"VCWebDeploymentTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCManagedWrapperGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCAuxilaryManagedWrapperGeneratorTool\"/>\n";
 	out.unindent();
 	out.unindent();
 	out << "</Configuration>\n";
@@ -529,8 +594,8 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
 	out << "Description=\"..... compiling business IDL\"\n";
-	out << "CommandLine=\"$(Qedo)/bin/idl -DMICO_ORB -DWIN32 -I$(QEDO)/include/mico -I$(QEDO)/include/mico/mico -I$(QEDO)/idl ";
-	out << " --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll ";
+	out << "CommandLine=\"$(Qedo)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  ";
+	out << " --any --typecode --c++-skel --c++-suffix cpp --windows-dll ";
 	out << project_name << " " << project_name << "_BUSINESS.idl\n";
 	out << "copy " << project_name << "_BUSINESS.h " << project_name << "_BUSINESS_skel.h\"\n";
 	out << "Outputs=\"" << project_name << "_BUSINESS.h;" << project_name << "_BUSINESS.cpp;";
@@ -581,8 +646,8 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
 	out << "Description=\"..... compiling equivalent IDL\"\n";
-	out << "CommandLine=\"$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -I$(QEDO)/include/mico -I$(QEDO)/include/mico/mico -I$(QEDO)/idl  ";
-	out << "--any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll ";
+	out << "CommandLine=\"$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl ";
+	out << "--any --typecode --c++-skel --c++-suffix cpp --windows-dll ";
 	out << project_name << " " << project_name << "_EQUIVALENT.idl\n";
 	out << "copy " << project_name << "_EQUIVALENT.h " << project_name << "_EQUIVALENT_skel.h\"\n";
 	out << "Outputs=\"" << project_name << "_EQUIVALENT.h;" << project_name << "_EQUIVALENT.cpp;";
@@ -633,8 +698,8 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
 	out << "Description=\"..... compiling local IDL\"\n";
-	out << "CommandLine=\"$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -I$(QEDO)/include/mico -I$(QEDO)/include/mico/mico -I$(QEDO)/idl ";
-	out << "--any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll ";
+	out << "CommandLine=\"$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  ";
+	out << "--any --typecode --c++-skel --c++-suffix cpp --windows-dll ";
 	out << project_name << " " << project_name << "_LOCAL.idl\n";
 	out << "copy " << project_name << "_LOCAL.h " << project_name << "_LOCAL_skel.h\"\n";
 	out << "Outputs=\"" << project_name << "_LOCAL.h;" << project_name << "_LOCAL.cpp;";
@@ -783,7 +848,7 @@ GeneratorVC7::generateServant()
 	out << "<VisualStudioProject\n";
 	out.indent();
 	out << "ProjectType=\"Visual C++\"\n";
-	out << "Version=\"7.00\"\n";
+	out << "Version=\"7.10\"\n";
 	out << "Name=\"" << project_name << "\"\n";
 	out << "ProjectGUID=\"{" << uuid_string << "}\"\n";
 	out << "Keyword=\"Win32Proj\">\n";
@@ -874,7 +939,19 @@ GeneratorVC7::generateServant()
 	out.unindent();
 	out << "<Tool\n";
 	out.indent();
+	out << "Name=\"VCXMLDataGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
 	out << "Name=\"VCWebDeploymentTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCManagedWrapperGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCAuxilaryManagedWrapperGeneratorTool\"/>\n";
 	out.unindent();
 	out.unindent();
 	out << "</Configuration>\n";
@@ -912,7 +989,7 @@ GeneratorVC7::generateServant()
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCLinkerTool\"\n";
-	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib qedoutil.lib mico2311.lib pthreadVC.lib\"\n";
+	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib qedoutil.lib mico2311.lib pthreadVC2.lib\"\n";
 	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
 	out << "LinkIncremental=\"2\"\n";
 	out << "AdditionalLibraryDirectories=\"$(QEDO)/lib;$(QEDO)/lib\"\n";
@@ -948,7 +1025,19 @@ GeneratorVC7::generateServant()
 	out.unindent();
 	out << "<Tool\n";
 	out.indent();
+	out << "Name=\"VCXMLDataGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
 	out << "Name=\"VCWebDeploymentTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCManagedWrapperGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCAuxilaryManagedWrapperGeneratorTool\"/>\n";
 	out.unindent();
 	out.unindent();
 	out << "</Configuration>\n";
@@ -1021,7 +1110,19 @@ GeneratorVC7::generateServant()
 	out.unindent();
 	out << "<Tool\n";
 	out.indent();
+	out << "Name=\"VCXMLDataGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
 	out << "Name=\"VCWebDeploymentTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCManagedWrapperGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCAuxilaryManagedWrapperGeneratorTool\"/>\n";
 	out.unindent();
 	out.unindent();
 	out << "</Configuration>\n";
@@ -1139,7 +1240,7 @@ GeneratorVC7::generateServant()
 	out << "Description=\"..... compiling CIDL\"\n";
 	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 ";
 	out << " -I$(QEDO)/idl -I$(QEDO)/include/mico -I$(QEDO)/include/mico/mico --servant --target " << target_->id() << " ../" << target_file_name_ << "\"\n";
-	out << "Outputs=\"" << file_prefix_ << "_LOCAL.idl;" << file_prefix_ << "_EQUIVALENT.idl\"/>\n";
+	out << "Outputs=\"" << file_prefix_ << "_LOCAL.idl;" << file_prefix_ << "_EQUIVALENT.idl;" << file_prefix_ << "_SERVANT.cpp\"/>\n";
 	out.unindent();
 	out.unindent();
 	out << "</FileConfiguration>\n";
@@ -1185,8 +1286,8 @@ GeneratorVC7::generateServant()
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
 	out << "Description=\"..... compiling equivalent IDL\"\n";
-	out << "CommandLine=\"$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -I$(QEDO)/include/mico -I$(QEDO)/include/mico/mico -I$(QEDO)/idl ";
-	out << "--any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll ";
+	out << "CommandLine=\"$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  ";
+	out << "--any --typecode --c++-skel --c++-suffix cpp --windows-dll ";
 	out << file_prefix_ << " " << file_prefix_ << "_EQUIVALENT.idl\n";
 	out << "copy " << file_prefix_ << "_EQUIVALENT.h " << file_prefix_ << "_EQUIVALENT_skel.h\"\n";
 	out << "Outputs=\"" << file_prefix_ << "_EQUIVALENT.h;" << file_prefix_ << "_EQUIVALENT.cpp;";
@@ -1236,8 +1337,8 @@ GeneratorVC7::generateServant()
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
 	out << "Description=\"..... compiling local IDL\"\n";
-	out << "CommandLine=\"$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -I$(QEDO)/include/mico -I$(QEDO)/include/mico/mico -I$(QEDO)/idl ";
-	out << "--any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll ";
+	out << "CommandLine=\"$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  ";
+	out << "--any --typecode --c++-skel --c++-suffix cpp --windows-dll ";
 	out << file_prefix_ << " " << file_prefix_ << "_LOCAL.idl\n";
 	out << "copy " << file_prefix_ << "_LOCAL.h " << file_prefix_ << "_LOCAL_skel.h\"\n";
 	out << "Outputs=\"" << file_prefix_ << "_LOCAL.h;" << file_prefix_ << "_LOCAL.cpp;";

@@ -47,6 +47,10 @@ private:
 	std::string				idlfilename_;
 	Printer					out;
 
+	/** for using the generator in the project generator */
+	/** directory prefix is path to destination of output */
+	std::string m_dir_prefix;
+
 	void doComposition(CIDL::CompositionDef_ptr composition);
 
 protected:
@@ -54,8 +58,13 @@ protected:
 	void check_for_generation(IR__::Contained_ptr item);
 
 public:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+	/** points to the file which contains all relevant IDL and CIDL */
+	/*  of this composition. This file should be the output of an  */
+	/*  pretty printer */
+	std::string source_file_name_;
 
 	GeneratorCSD(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorCSD(QEDO_ComponentRepository::CIDLRepository_impl *repository, std::string dir_prefix);
 	~GeneratorCSD();
 
 	void generate(std::string target, std::string fileprefix);

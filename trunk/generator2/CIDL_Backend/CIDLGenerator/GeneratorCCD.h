@@ -46,7 +46,12 @@ private:
 	std::string filename_;
 	Printer out;
 
+	/** counter in the descriptor for facet ports */
 	long long facet_number_;
+
+	/** for using the generator in the project generator */
+	/** directory prefix is path to destination of output */
+	std::string m_dir_prefix;
 
 	void doComposition(CIDL::CompositionDef_ptr composition);
 
@@ -57,6 +62,7 @@ protected:
 public:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 
 	GeneratorCCD(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorCCD(QEDO_ComponentRepository::CIDLRepository_impl *repository, std::string dir_prefix);
 	~GeneratorCCD();
 
 	void generate(std::string target, std::string fileprefix);

@@ -18,6 +18,12 @@ GeneratorCSD::GeneratorCSD
 {
 }
 
+GeneratorCSD::GeneratorCSD
+( QEDO_ComponentRepository::CIDLRepository_impl *repository, std::string dir_prefix)
+: CPPBase ( repository )
+{
+	m_dir_prefix = dir_prefix;
+}
 
 GeneratorCSD::~GeneratorCSD
 ()
@@ -100,6 +106,7 @@ GeneratorCSD::generate(std::string target, std::string fileprefix)
 	try { initialize(target, fileprefix); }
 	catch (InitializeError) { return; }
 
+	// TODO: needs to be replaced by cidl pretty printer output
 	idlfilename_ = file_prefix_ + ".cidl";
 
 	doGenerate();
@@ -131,7 +138,7 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
 	//
 	// open output file
 	//
-	std::string name;
+	std::string name="";
 	std::string id = composition->id();
 	IR__::Contained_ptr module_def = 0;
 	std::string::size_type pos = id.find_last_of("/");
@@ -139,11 +146,14 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
 	{
 		id.replace(pos, string::npos, ":1.0");
 		module_def = repository_->lookup_id(id.c_str());
-		name = getAbsoluteName(module_def, "_");
+		name.append(getAbsoluteName(module_def, "_"));
 		name.append("_");
 	}
 	name.append(composition->name());
-	filename_ = name + ".csd";
+	filename_ = "";
+	filename_.append(m_dir_prefix);
+	filename_.append(name);
+	filename_.append(".csd");
 	out.open(filename_.c_str());
 
 	//
@@ -162,7 +172,7 @@ GeneratorCSD::doComposition(CIDL::CompositionDef_ptr composition)
 	// the id should be of the component but is of the home currently for deployment reason
     out << "<idl id=\"" << composition->ccm_home()->id() << "\">\n";
 	out.indent();
-	out << "<fileinarchive name=\"" << idlfilename_ << "\"/>\n";
+	out << "<fileinarchive name=\"" << source_file_name_ << "\"/>\n";
 	out.unindent();
 	out << "</idl>\n\n";
 
