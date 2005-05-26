@@ -37,8 +37,8 @@ public:
 
     virtual ~MainFrame();
 
-	void onHelp();
-	void onClose();
+	void onHelp(wxCommandEvent& event);
+	void onClose(wxCommandEvent& event);
 
 private:
 	wxPanel *panel_;

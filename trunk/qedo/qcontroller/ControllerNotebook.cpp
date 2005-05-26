@@ -79,13 +79,13 @@ void ControllerNotebook::CreateControllerPages(wxBoxSizer * sizerFrame)
 }
 
 void
-ControllerNotebook::OnNSDRefresh(wxCommandEvent& WXUNUSED(event))
+ControllerNotebook::OnNSDRefresh(wxCommandEvent& event)
 {
 //	int sel = event.GetSelection();
 //	if (sel == 1)
 //	{
 		// rebiuld NS Browser Tree
-	ns_browser_ -> OnNSDRefresh();
+	ns_browser_ -> OnNSDRefresh(event);
 //	};
 
 };

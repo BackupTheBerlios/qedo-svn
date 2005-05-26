@@ -61,31 +61,36 @@ public:
                const wxPoint& pos, const wxSize& size,
                long style);
     virtual ~NSBrowserTreeCtrl();
-	void OnNSDRefresh();
+	void OnNSDRefresh(wxCommandEvent& event);
 
 
 private:
 		
+		wxTextCtrl* message_nsbrowser;
+		wxTextCtrl* host_nsbrowser;
+		wxTextCtrl* port_nsbrowser;
+
 		CORBA::ORB_var orbns;
 		wxButton *RefreshBtn;
 		int m_imageSize;
 		CosNaming::NamingContext_var nameService;
+
 		void CreateImageList(int size = 16);
 		void build_tree();
 		void AddItemsRecursively(const wxTreeItemId& idParent,
 									 CosNaming::NamingContext_ptr context);
 		void get_host_and_ip();
 		void OnItem(wxMouseEvent& event);
-		wxTextCtrl* message_nsbrowser;
-		wxTextCtrl* host_nsbrowser;
-		wxTextCtrl* port_nsbrowser;
+
 		wxString getNSPath(wxTreeItemId item);
 		void ior(wxString path);
 		void delete_entry(wxString path);
+
 		CosNaming::Name getNameContext(wxString path);
-		void onior(wxMenuEvent& event);
-		void ondelete(wxMenuEvent& event);
-	    DECLARE_EVENT_TABLE()
+		void onior(wxCommandEvent& event);
+		void ondelete(wxCommandEvent& event);
+
+		DECLARE_EVENT_TABLE()
 
 };
 

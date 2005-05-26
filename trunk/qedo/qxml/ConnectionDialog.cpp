@@ -170,9 +170,9 @@ void ConnectionDialog::OnButtonOk( wxCommandEvent& event )
 		{
 			wxTreeItemId p1 = portlist1->GetSelection();
 			wxTreeItemId p2 = portlist2->GetSelection();
-			if (portlist1->GetParent(p1)==portlist1->GetRootItem())
+			if (portlist1->GetItemParent(p1)==portlist1->GetRootItem())
 			{
-				if (portlist2->GetParent(p2)==portlist2->GetRootItem())
+				if (portlist2->GetItemParent(p2)==portlist2->GetRootItem())
 				{
 					port1=portlist1->GetItemText(p1);
 					port2=portlist2->GetItemText(p2);

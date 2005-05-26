@@ -353,7 +353,7 @@ ConnectionTreeCtrl::isReceptacle(std::vector <PartitioningTreeCtrl::Comp> compon
 	return value;
 }
 
-void ConnectionTreeCtrl::onadd_b(wxMenuEvent& event)
+void ConnectionTreeCtrl::onadd_b(wxCommandEvent& event)
 {   
 	ConnectionDialog *cdialog = new ConnectionDialog(this,-1,
 		"Streamport Binding",wxPoint(50,50), wxSize(450,350),wxDEFAULT_DIALOG_STYLE);
@@ -416,7 +416,7 @@ void ConnectionTreeCtrl::onadd_b(wxMenuEvent& event)
     
 }
 
-void ConnectionTreeCtrl::onadd_c(wxMenuEvent& event)
+void ConnectionTreeCtrl::onadd_c(wxCommandEvent& event)
 {   
 	ConnectionDialog *cdialog = new ConnectionDialog(this,-1,
 		"Port connection",wxPoint(50,50), wxSize(450,350),wxDEFAULT_DIALOG_STYLE,"Receptacles","Facets");
@@ -482,7 +482,7 @@ void ConnectionTreeCtrl::onadd_c(wxMenuEvent& event)
 }
 
 
-void ConnectionTreeCtrl::onadd_e(wxMenuEvent& event)
+void ConnectionTreeCtrl::onadd_e(wxCommandEvent& event)
 {   
 	ConnectionDialog *cdialog = new ConnectionDialog(this,-1,
 		"Port connection",wxPoint(50,50), wxSize(450,350),wxDEFAULT_DIALOG_STYLE,"Publishports","Consumeports");
@@ -548,7 +548,7 @@ void ConnectionTreeCtrl::onadd_e(wxMenuEvent& event)
 
 
 void 
-ConnectionTreeCtrl::onadd_ns(wxMenuEvent& event)
+ConnectionTreeCtrl::onadd_ns(wxCommandEvent& event)
 {   
 	// create a wxString array
 	// TODO : can be improved with new WxWidgets

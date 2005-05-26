@@ -109,10 +109,10 @@ private:
    bool isInterface(std::vector <PartitioningTreeCtrl::Comp> components);
    bool isReceptacle(std::vector <PartitioningTreeCtrl::Comp> components);
 
-   void onadd_b(wxMenuEvent& event);
-   void onadd_c(wxMenuEvent& event);
-   void onadd_e(wxMenuEvent& event);
-   void onadd_ns(wxMenuEvent& event);
+   void onadd_b(wxCommandEvent& event);
+   void onadd_c(wxCommandEvent& event);
+   void onadd_e(wxCommandEvent& event);
+   void onadd_ns(wxCommandEvent& event);
    
    wxArrayString getSourceports();
    wxArrayString getSinkports();

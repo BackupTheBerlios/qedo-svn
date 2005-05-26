@@ -176,7 +176,7 @@ void ComponentTreeCtrl::add_implementations(wxTreeItemId ImplementationId,Qedo::
 	
 }
 
-void ComponentTreeCtrl::onadd(wxMenuEvent& event)
+void ComponentTreeCtrl::onadd(wxCommandEvent& event)
 {	wxString file; // Full path+file
 	wxString path; // only path without file
 	
@@ -259,7 +259,7 @@ wxTreeItemId ComponentTreeCtrl::get_CompId(wxTreeItemId itemid)
 
 }
 
-void ComponentTreeCtrl::ondelete(wxMenuEvent& event)
+void ComponentTreeCtrl::ondelete(wxCommandEvent& event)
 {
 	wxTreeItemId compid = get_CompId(GetSelection());
 	delete_entry_in_vector(compid);
@@ -267,7 +267,7 @@ void ComponentTreeCtrl::ondelete(wxMenuEvent& event)
 	Refresh();
 }
 
-void ComponentTreeCtrl::onuse(wxMenuEvent& event)
+void ComponentTreeCtrl::onuse(wxCommandEvent& event)
 {
 
 	wxString cid= wxGetTextFromUser("Enter a componentfile ID","ComponentFile ID",

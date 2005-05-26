@@ -279,7 +279,7 @@ PartitioningTreeCtrl::get_CompId(wxTreeItemId itemid)
 
 }
 
-void PartitioningTreeCtrl::onadd_p(wxMenuEvent& event)
+void PartitioningTreeCtrl::onadd_p(wxCommandEvent& event)
 {
 	wxString cid= wxGetTextFromUser("Enter a usagename of processcollocation","Usagename",
 	"", this,-1,-1,TRUE);
@@ -299,7 +299,7 @@ void PartitioningTreeCtrl::onadd_p(wxMenuEvent& event)
 
 }
 
-void PartitioningTreeCtrl::onadd_ho(wxMenuEvent& event)
+void PartitioningTreeCtrl::onadd_ho(wxCommandEvent& event)
 {
 	wxString cid= wxGetTextFromUser("Enter a usagename of hostcollocation","Usagename",
 	"", this,-1,-1,TRUE);
@@ -319,7 +319,7 @@ void PartitioningTreeCtrl::onadd_ho(wxMenuEvent& event)
 
 }
 
-void PartitioningTreeCtrl::onadd_h(wxMenuEvent& event)
+void PartitioningTreeCtrl::onadd_h(wxCommandEvent& event)
 {
 	wxString cid= wxGetTextFromUser("Enter a usagename of homeplacement","Usagename",
 	"", this,-1,-1,TRUE);
@@ -339,7 +339,7 @@ void PartitioningTreeCtrl::onadd_h(wxMenuEvent& event)
 
 }
 
-void PartitioningTreeCtrl::onadd_c(wxMenuEvent& event)
+void PartitioningTreeCtrl::onadd_c(wxCommandEvent& event)
 {
 	wxArrayString ac = ACTreeCtrl->get_CompArray();
 	
@@ -371,7 +371,7 @@ void PartitioningTreeCtrl::onadd_c(wxMenuEvent& event)
 
 }
 
-void PartitioningTreeCtrl::onadd_if(wxMenuEvent& event)
+void PartitioningTreeCtrl::onadd_if(wxCommandEvent& event)
 {
 	wxFileDialog* filedialog=new wxFileDialog(this,"Choose a filearchive","","","*.*",0,wxDefaultPosition);
 	int t=filedialog->ShowModal();
@@ -407,7 +407,7 @@ void PartitioningTreeCtrl::onadd_if(wxMenuEvent& event)
 	filedialog->~wxFileDialog();
 }
 
-void PartitioningTreeCtrl::onregister_at_name_service(wxMenuEvent& event)
+void PartitioningTreeCtrl::onregister_at_name_service(wxCommandEvent& event)
 {
 
 	// opens dialog
@@ -485,7 +485,7 @@ PartitioningTreeCtrl::get_Comp4Con()
 }
 
 void 
-PartitioningTreeCtrl::onadd_ci(wxMenuEvent& event)
+PartitioningTreeCtrl::onadd_ci(wxCommandEvent& event)
 {
 
 	wxString cid= wxGetTextFromUser("Enter an identifier of instantiation","Identifier",

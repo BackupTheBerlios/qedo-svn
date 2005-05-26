@@ -28,6 +28,8 @@
 #include "HelpFrame.h"
 #include "qedologo.xpm"
 
+#include "wx/imaglist.h"
+
 #include "wx/html/helpctrl.h"
 
 #include "qedoicon.xpm"
@@ -105,7 +107,7 @@ MainFrame::~MainFrame() {
 
 };
 
-void MainFrame::onHelp()
+void MainFrame::onHelp(wxCommandEvent& event)
 {
 
 	/*
@@ -123,7 +125,7 @@ void MainFrame::onHelp()
 
 }
 
-void MainFrame::onClose()
+void MainFrame::onClose(wxCommandEvent& event)
 
 {	if (hf)
 	{

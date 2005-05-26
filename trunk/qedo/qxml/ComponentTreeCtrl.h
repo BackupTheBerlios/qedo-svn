@@ -38,9 +38,9 @@ private:
    void ComponentTreeCtrl::OnItem(wxMouseEvent& event);
    void ComponentTreeCtrl::CreateImageList(int size);
    AComponentTreeCtrl* ACTreeCtrl;
-   void ComponentTreeCtrl::onadd(wxMenuEvent& event);
-   void ComponentTreeCtrl::ondelete(wxMenuEvent& event);
-   void ComponentTreeCtrl::onuse(wxMenuEvent& event);
+   void ComponentTreeCtrl::onadd(wxCommandEvent& event);
+   void ComponentTreeCtrl::ondelete(wxCommandEvent& event);
+   void ComponentTreeCtrl::onuse(wxCommandEvent& event);
 
    bool ComponentTreeCtrl::isimpl(wxTreeItemId itemid);
 

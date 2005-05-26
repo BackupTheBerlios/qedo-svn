@@ -150,10 +150,10 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxmsw24d.lib mico2311.lib micocoss2311.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxbase26d.lib wxmsw26d_core.lib wxmsw26d_html.lib mico2311.lib micocoss2311.lib"
 				OutputFile="$(OutDir)/qcontroller.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(WXWIDGETS)\lib&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(WXWIDGETS)\lib\vc_dll&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/qcontroller.pdb"
 				SubSystem="2"
@@ -199,6 +199,7 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
@@ -212,10 +213,10 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxmsw24d.lib mico2311.lib micocoss2311.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib  wxbase26d.lib wxmsw26d_core.lib wxmsw26d_html.lib mico2311.lib micocoss2311.lib"
 				OutputFile="$(OutDir)/qcontroller.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(WXWIDGETS)\lib&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(WXWIDGETS)\lib\vc_dll&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/qcontroller.pdb"
 				SubSystem="2"

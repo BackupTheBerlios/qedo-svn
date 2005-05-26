@@ -99,9 +99,13 @@ set actdir=%qedo%\bin
 echo *** Create %actdir%...
 mkdir %actdir%
 
-copy %WXWIDGETS%\lib\wxmsw24d.dll %actdir%
-copy %WXWIDGETS%\lib\wxmsw24.dll %actdir%
+copy %WXWIDGETS%\lib\vc_dll\wxmsw26d_core_vc_custom.dll %actdir%
+copy %WXWIDGETS%\lib\vc_dll\wxbase26d_vc_custom.dll %actdir%
+copy %WXWIDGETS%\lib\vc_dll\wxmsw26d_html_vc_custom.dll %actdir%
 
+copy %WXWIDGETS%\lib\vc_dll\wxmsw26_core_vc_custom.dll %actdir%
+copy %WXWIDGETS%\lib\vc_dll\wxbase26_vc_custom.dll %actdir%
+copy %WXWIDGETS%\lib\vc_dll\wxmsw26_html_vc_custom.dll %actdir%
 
 
 

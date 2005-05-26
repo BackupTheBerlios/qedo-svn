@@ -112,13 +112,13 @@ private:
 	AComponentTreeCtrl* ACTreeCtrl;
 	void OnItem(wxMouseEvent& event);
 	wxTreeItemId get_CompId(wxTreeItemId itemid);
-	void onadd_p(wxMenuEvent& event);
-	void onadd_ho(wxMenuEvent& event);
-	void onadd_h(wxMenuEvent& event);
-	void onadd_c(wxMenuEvent& event);
-	void onadd_ci(wxMenuEvent& event);
-	void onadd_if(wxMenuEvent& event);
-	void onregister_at_name_service(wxMenuEvent& event);
+	void onadd_p(wxCommandEvent& event);
+	void onadd_ho(wxCommandEvent& event);
+	void onadd_h(wxCommandEvent& event);
+	void onadd_c(wxCommandEvent& event);
+	void onadd_ci(wxCommandEvent& event);
+	void onadd_if(wxCommandEvent& event);
+	void onregister_at_name_service(wxCommandEvent& event);
 	bool ExistsComp(wxTreeItemId itemid);
 	bool ExistsProp(wxTreeItemId itemid);
 

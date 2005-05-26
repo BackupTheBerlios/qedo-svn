@@ -285,7 +285,7 @@ void QCexplorerTreeCtrl::clear() {
 	
 };
 
-void QCexplorerTreeCtrl::OnItem( ) {
+void QCexplorerTreeCtrl::OnItem(wxMouseEvent& event) {
 	
 	wxTreeItemId item=this->GetSelection() ;
 	wxString str;

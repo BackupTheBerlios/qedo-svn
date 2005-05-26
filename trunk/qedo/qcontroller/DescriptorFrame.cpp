@@ -556,7 +556,7 @@ wxTreeItemId DescriptorFrame::get_unkown_itemid(wxString node)
 			{
 				if ((*DestInfo_iter).node==node) 
 				{
-					itemid=server_ctrl_->GetParent((*DestInfo_iter).itemid);
+					itemid=server_ctrl_->GetItemParent((*DestInfo_iter).itemid);
 					break;
 				}
 			}

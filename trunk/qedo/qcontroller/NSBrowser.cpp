@@ -248,7 +248,7 @@ void NSBrowserTreeCtrl::AddItemsRecursively(const wxTreeItemId& idParent,
 }
 
 void 
-NSBrowserTreeCtrl::OnNSDRefresh()
+NSBrowserTreeCtrl::OnNSDRefresh(wxCommandEvent& WXUNUSED(event))
 {
 //	int sel = event.GetSelection();
 //	if (sel == 1)
@@ -402,14 +402,17 @@ void NSBrowserTreeCtrl::delete_entry(wxString path)
 		nsobj = orbns -> string_to_object( ns.c_str() );
 		
 			try {
-			//resolve the name component with the naming service
-			CosNaming::NamingContext_var nc=CosNaming::NamingContext::_narrow(nsobj);
-			nc->unbind(name); 
-			wxString mes="Delete "+path+": \n";
-						    mes.Append(GetItemText(GetSelection())+" was deleted by user.");
-			
-			message_nsbrowser->SetValue(mes);
-			OnNSDRefresh();
+				//resolve the name component with the naming service
+				CosNaming::NamingContext_var nc=CosNaming::NamingContext::_narrow(nsobj);
+				nc->unbind(name); 
+				wxString mes="Delete "+path+": \n";
+								mes.Append(GetItemText(GetSelection())+" was deleted by user.");
+				
+				message_nsbrowser->SetValue(mes);
+				// rebiuld NS Browser Tree
+				this->DeleteAllItems();
+				this->build_tree();
+				this->Refresh();
 			} catch(...) {};
 
 		} catch (CORBA::SystemException) {
@@ -424,7 +427,7 @@ void NSBrowserTreeCtrl::delete_entry(wxString path)
 }
 
 
-void NSBrowserTreeCtrl::onior(wxMenuEvent& event)
+void NSBrowserTreeCtrl::onior(wxCommandEvent& event)
 {
 	wxString nspath=getNSPath(this->GetSelection()).Mid(1,wxSTRING_MAXLEN);
 	
@@ -432,7 +435,7 @@ void NSBrowserTreeCtrl::onior(wxMenuEvent& event)
 
 }
 
-void NSBrowserTreeCtrl::ondelete(wxMenuEvent& event)
+void NSBrowserTreeCtrl::ondelete(wxCommandEvent& event)
 {
 	wxString nspath=getNSPath(this->GetSelection()).Mid(1,wxSTRING_MAXLEN);
 	delete_entry(nspath);

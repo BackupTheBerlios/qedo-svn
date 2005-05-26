@@ -75,7 +75,7 @@ public:
                long style);
     virtual ~QCexplorerTreeCtrl();
 	void OnExplorerRefresh();
-	void OnItem();
+	void OnItem(wxMouseEvent& event);
 	void set_info_box(wxTextCtrl* info_box_ref);
 	
 	
