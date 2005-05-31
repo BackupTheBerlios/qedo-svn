@@ -258,7 +258,7 @@ copy qedodoc\images $(QEDO)\qedodoc\images
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				AdditionalIncludeDirectories=".\;../ComponentIDL;../qedoutil;&quot;$(WXWIDGETS)\include&quot;;&quot;$(WXWIDGETS)\lib\mswdll&quot;;&quot;$(MICO)/include&quot;;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)&quot;;&quot;$(ZLIB)\include&quot;"
-				PreprocessorDefinitions="MICO_ORB;WIN32;_CONSOLE;_WINDOWS;WINVER=0x400;_MT;wxUSE_GUI=1;WXDEBUG=0;WXUSINGDLL"
+				PreprocessorDefinitions="MICO_ORB;WIN32;WIN32_LEAN_AND_MEAN;_CONSOLE;_WINDOWS;WINVER=0x400;_MT;wxUSE_GUI=1;WXDEBUG=0;WXUSINGDLL"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
