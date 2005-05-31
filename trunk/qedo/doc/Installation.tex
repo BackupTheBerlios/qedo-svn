@@ -96,7 +96,9 @@ The currently supported version of MICO is 2.3.11.
          --enable-pthreads
      \end{verbatim}
     \normalsize
-    Calling  \verb make \verb install  will compile plain version of MICO. An option might be to use the \verb --disable-coss  this will make the compilation of MICO a lot more faster but you need to compile at least the Name Service manually because Qedo depends on it.
+    Do not use the \verb --enable-ccm  option, since this is incompatible with Qedo!
+    
+    Calling  \verb make  \verb install  will compile plain version of MICO. An option might be to use the \verb --disable-coss  this will make the compilation of MICO a lot more faster but you need to compile at least the Name Service manually because Qedo depends on it.
 
 On Windows based systems you need to configure the \verb MakefVars.win32  file. Use the \verb #define  \verb RELEASE_BUILD  \verb =  \verb 1  option to decide whether to build an release or Debug version of MICO. Later on you need to activate the Threading support by uncommenting the \verb HAVE_THREADS  define. You need to configure the other threading related defines. Follow the instructions of the \verb MakeVars.win32  file to install the pthread library and to configure MICO correctly. We strongly recommend to use the second option of the pthread library \verb __CLEANUP_C .  After saving the file you need to call
     \begin{verbatim}
