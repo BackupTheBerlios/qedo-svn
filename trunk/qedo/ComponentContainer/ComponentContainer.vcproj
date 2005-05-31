@@ -494,7 +494,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentServer/;../QedoUtil;&quot;$(MICO)/include&quot;;&quot;$(PTHREADS)&quot;;&quot;$(XERCES)/include&quot;"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentServer/;../QedoUtil;&quot;$(MICO)/include&quot;;&quot;$(PTHREADS)\include&quot;;&quot;$(XERCES)/include&quot;"
 				PreprocessorDefinitions="MICO_ORB;CONTAINERDLL_EXPORTS;WIN32;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
@@ -518,11 +518,11 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="mico2311.lib micocoss2311.lib pthreadVC.lib ws2_32.lib"
+				AdditionalDependencies="mico2311.lib micocoss2311.lib pthreadVC2.lib ws2_32.lib"
 				OutputFile="$(OutDir)/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)&quot;"
+				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)\lib&quot;"
 				GenerateDebugInformation="FALSE"
 				ProgramDatabaseFile=".\Debug_mico/ComponentContainer.pdb"
 				ImportLibrary=".\Release_mico/ComponentContainer.lib"/>
