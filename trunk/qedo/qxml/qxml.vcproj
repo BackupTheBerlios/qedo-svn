@@ -225,7 +225,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\qedoutil;..\ComponentIDL;&quot;$(MICO)/include&quot;;&quot;$(XERCES)/include&quot;;&quot;$(ZLIB)\include&quot;;&quot;$(WXWIDGETS)\include&quot;;&quot;$(WXWIDGETS)\lib\mswdlld&quot;"
+				AdditionalIncludeDirectories="..\qedoutil;..\ComponentIDL;&quot;$(MICO)/include&quot;;&quot;$(XERCES)/include&quot;;&quot;$(ZLIB)\include&quot;;&quot;$(WXWIDGETS)\include&quot;;&quot;$(WXWIDGETS)\lib\mswdll&quot;"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_CONSOLE;_WINDOWS;WINVER=0x400;_MT;wxUSE_GUI=1;WXDEBUG=0;WXUSINGDLL"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -241,10 +241,10 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxmsw24.lib mico2311.lib micocoss2311.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxmsw26_core.lib wxbase26.lib mico2311.lib micocoss2311.lib"
 				OutputFile="$(OutDir)/qxml.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(WXWIDGETS)\lib&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(WXWIDGETS)\lib\vc_dll&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
 				GenerateDebugInformation="FALSE"
 				ImportLibrary="qedoutil.lib"
 				TargetMachine="1"/>

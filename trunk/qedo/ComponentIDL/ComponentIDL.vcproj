@@ -546,8 +546,8 @@ copy $(TargetPath) $(QEDO)\bin
 				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)\lib&quot;"
 				ModuleDefinitionFile="$(OutDir)/ComponentIDL.def"
 				GenerateDebugInformation="FALSE"
-				ProgramDatabaseFile=".\Debug_mico/ComponentIDL.pdb"
-				ImportLibrary=".\Debug_mico/ComponentIDL.lib"/>
+				ProgramDatabaseFile="$(OutDir)/ComponentIDL.pdb"
+				ImportLibrary="$(OutDir)/ComponentIDL.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"

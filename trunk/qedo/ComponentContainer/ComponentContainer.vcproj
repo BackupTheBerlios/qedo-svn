@@ -524,8 +524,8 @@ copy $(TargetPath) $(QEDO)\bin
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)\lib&quot;"
 				GenerateDebugInformation="FALSE"
-				ProgramDatabaseFile=".\Debug_mico/ComponentContainer.pdb"
-				ImportLibrary=".\Release_mico/ComponentContainer.lib"/>
+				ProgramDatabaseFile="$(OutDir)/ComponentContainer.pdb"
+				ImportLibrary="$(OutDir)/ComponentContainer.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
