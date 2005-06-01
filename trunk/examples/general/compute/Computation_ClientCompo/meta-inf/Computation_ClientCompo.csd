@@ -12,7 +12,7 @@
         <fileinarchive name="compute.cidl"/>
     </idl>
     
-    <implementation id="UUID-6222631A-DD06-4561-988F-BA45ECA7984A">
+    <implementation id="UUID-FBAB43D9-F7A6-42A0-B115-C24371941942">
         <os name="WIN" />
         <processor name="x86" />
         <compiler name="VC++" version="7,0" />
@@ -31,25 +31,4 @@
             <usage>servant</usage>
         </code>
     </implementation>
-
-     <implementation id="UUID-d243386c-69ec-43a6-a152-fdd2468e2c9d">
-        <os name="linux" />
-        <processor name="" />
-        <compiler name="" version="" />
-        <programminglanguage name="C++" />
-        <descriptor type="CORBA-Component">
-            <fileinarchive name="meta-inf/Computation_ClientCompo.ccd" />
-        </descriptor>
-        <code type="DLL">
-            <fileinarchive name="libComputation_ClientCompo.so"/>
-            <entrypoint>create_ClientHomeE</entrypoint>
-            <usage>executor</usage>
-        </code>
-        <code type="DLL">
-            <fileinarchive name="libComputation_ClientCompo_SERVANT.so"/>
-            <entrypoint>create_ClientHomeS</entrypoint>
-            <usage>servant</usage>
-        </code>
-    </implementation>
-
 </softpkg>
