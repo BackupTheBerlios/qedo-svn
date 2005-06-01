@@ -122,7 +122,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;$(MICO)/include/windows"
+				AdditionalIncludeDirectories=".;$(QEDO)/include/pthreads;$(QEDO)/include;$(Qedo)/include/mico"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE,MICO_ORB;_WINDOWS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -219,7 +219,7 @@
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)/win32-bin/idl -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)/idl -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --relative-paths --windows-dll container_service_MonImpl container_service_MonImpl_EQUIVALENT.idl
+						CommandLine="$(MICO)/win32-bin/idl -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --windows-dll container_service_MonImpl container_service_MonImpl_EQUIVALENT.idl
 copy container_service_MonImpl_EQUIVALENT.h container_service_MonImpl_EQUIVALENT_skel.h
 "
 						Outputs="container_service_MonImpl_EQUIVALENT.h;container_service_MonImpl_EQUIVALENT.cpp;container_service_MonImpl_EQUIVALENT_skel.h;container_service_MonImpl_EQUIVALENT_skel.cpp"/>

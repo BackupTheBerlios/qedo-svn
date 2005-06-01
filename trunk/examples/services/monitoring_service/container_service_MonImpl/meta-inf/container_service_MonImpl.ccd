@@ -1,5 +1,5 @@
 <?xml version = '1.0' ?>
-<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://qedo.berlios.de/corbacomponent.dtd">
+<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://www.qedo.org/corbacomponent.dtd">
 
 <corbacomponent>
     <corbaversion>3.0</corbaversion>
@@ -12,10 +12,13 @@
     </componentkind>
     <threading policy="multithread"/>
     <configurationcomplete set="true"/>
+    
     <homefeatures name="monitor_home" repid="IDL:container_service/monitor_home:1.0">
     </homefeatures>
+    
     <componentfeatures name="monitor" repid="IDL:container_service/monitor:1.0">
         <ports>
+            <uses usesname="to_trace_server" repid="IDL:org/coach/tracing/api/i_Trace:1.0"/>
         </ports>
     </componentfeatures>
 </corbacomponent>
