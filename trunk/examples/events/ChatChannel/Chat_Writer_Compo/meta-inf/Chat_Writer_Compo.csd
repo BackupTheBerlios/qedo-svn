@@ -5,7 +5,7 @@
 
     <pkgtype>CORBA Component</pkgtype>
     <title></title>
-    <author></author>
+    <author><name>unknown author</name></author>
     <description></description>
     <license href="" />
     <idl id="IDL:Chat/ChatWriterHome:1.0">
@@ -51,5 +51,4 @@
             <usage>servant</usage>
         </code>
     </implementation>
-
 </softpkg>

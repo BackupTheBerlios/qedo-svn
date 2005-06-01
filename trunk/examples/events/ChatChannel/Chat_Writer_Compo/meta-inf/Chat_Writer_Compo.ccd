@@ -1,5 +1,5 @@
 <?xml version = '1.0' ?>
-<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://qedo.berlios.de/corbacomponent.dtd">
+<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://www.qedo.org/corbacomponent.dtd">
 
 <corbacomponent>
     <corbaversion>3.0</corbaversion>
@@ -12,10 +12,16 @@
     </componentkind>
     <threading policy="multithread"/>
     <configurationcomplete set="true"/>
+    
     <homefeatures name="ChatWriterHome" repid="IDL:Chat/ChatWriterHome:1.0">
     </homefeatures>
+    
     <componentfeatures name="ChatWriter" repid="IDL:Chat/ChatWriter:1.0">
         <ports>
+            <provides providesname="control" repid="IDL:Chat/ClientControl:1.0" facettag="1"/>
+            <emits emitsname="to_channel" eventtype="IDL:Chat/ChatMessage:1.0">
+            <eventpolicy policy="normal"/>
+            </emits>
         </ports>
     </componentfeatures>
 </corbacomponent>

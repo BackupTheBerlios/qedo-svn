@@ -174,7 +174,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;&quot;$(MICO)\include&quot;;&quot;$(QEDO)\include&quot;"
+				AdditionalIncludeDirectories=".;$(QEDO)/include/pthreads;$(QEDO)/include;$(Qedo)/include/mico"
 				PreprocessorDefinitions="WIN32,_DEBUG,_CONSOLE,MICO_ORB;_WINDOWS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -188,10 +188,10 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib micocoss2311.lib mico2311.lib wsock32.lib pthreadVC.lib"
+				AdditionalDependencies="ComponentIDL.lib micocoss2311.lib mico2311.lib wsock32.lib pthreadVC2.lib"
 				OutputFile="$(OutDir)/Chat_TestClient.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(QEDO)\lib&quot;;&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(MICO)\coss&quot;"
+				AdditionalLibraryDirectories="&quot;$(QEDO)\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/Chat_TestClient.pdb"
 				SubSystem="1"
@@ -306,7 +306,7 @@
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)\win32-bin\idl -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)\idl -DWIN32 -DMICO_ORB --any --c++-skel --c++-suffix cpp  --relative-paths Chat_EQUIVALENT.idl
+						CommandLine="$(MICO)\win32-bin\idl -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  -DWIN32 -DMICO_ORB --any --c++-skel --c++-suffix cpp  Chat_EQUIVALENT.idl
 copy Chat_EQUIVALENT.h Chat_EQUIVALENT_skel.h
 "
 						Outputs="Chat_EQUIVALENT.cpp;Chat_EQUIVALENT.h;Chat_EQUIVALENT_skel.cpp;Chat_EQUIVALENT_skel.h"/>
