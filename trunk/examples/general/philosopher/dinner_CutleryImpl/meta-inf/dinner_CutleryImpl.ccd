@@ -1,5 +1,5 @@
 <?xml version = '1.0' ?>
-<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://qedo.berlios.de/corbacomponent.dtd">
+<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://www.qedo.org/corbacomponent.dtd">
 
 <corbacomponent>
     <corbaversion>3.0</corbaversion>
@@ -12,8 +12,10 @@
     </componentkind>
     <threading policy="multithread"/>
     <configurationcomplete set="true"/>
+    
     <homefeatures name="CutleryHome" repid="IDL:dinner/CutleryHome:1.0">
     </homefeatures>
+    
     <componentfeatures name="Cutlery" repid="IDL:dinner/Cutlery:1.0">
         <ports>
             <provides providesname="the_fork" repid="IDL:dinner/Fork:1.0" facettag="1"/>

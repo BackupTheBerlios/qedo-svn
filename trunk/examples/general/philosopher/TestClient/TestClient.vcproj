@@ -228,7 +228,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;&quot;$(QEDO)/include&quot;;&quot;$(MICO)\include&quot;;&quot;$(MICO)\include\coss&quot;"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(QEDO)/include/pthreads;$(MICO)/include;$(MICO)/include/windows;$(MICO)/include/coss"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_CONSOLE;HAVE_THREADS;HAVE_PTHREADS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -242,7 +242,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib mico2311.lib micocoss2311.lib wsock32.lib pthreadVC.lib"
+				AdditionalDependencies="ComponentIDL.lib mico2311.lib micocoss2311.lib wsock32.lib pthreadVC2.lib"
 				OutputFile="../tc.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(QEDO)/lib&quot;;$(MICO)\win32-bin\lib"
@@ -344,7 +344,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="IDL compiling $(InputPath)"
-						CommandLine="$(MICO)\win32-bin\idl -I$(MICO)/include -I$(MICO)/include/mico -I$(QEDO)\idl -DWIN32 -DMICO_ORB --any --typecode --c++-suffix cpp --relative-paths dinner_EQUIVALENT.idl
+						CommandLine="$(MICO)\win32-bin\idl -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  -DWIN32 -DMICO_ORB --any --typecode --c++-suffix cpp dinner_EQUIVALENT.idl
 "
 						Outputs="dinner_EQUIVALENT.h;dinner_EQUIVALENT.cpp"/>
 				</FileConfiguration>
