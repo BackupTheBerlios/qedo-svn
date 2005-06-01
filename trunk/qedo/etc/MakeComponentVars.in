@@ -50,10 +50,10 @@ CXXFLAGS += -I${QEDO}/include @XERCES_INCLUDES@
 
 CIDL_GEN = ${QEDO}/bin/cidl_gen
 
-IDL_FLAGS += -I${QEDO}/idl
+IDL_FLAGS += -B$(MICO) -I${QEDO}/idl
 
 %.h %.cpp %_skel.h %_skel.cpp: %.idl
-	$(MICO)/bin/idl ${IDL_FLAGS} -I. -B$(MICO)/include -I$(MICO)/include -DMICO_ORB --any --c++-suffix cpp --c++-skel $< \
+	$(MICO)/bin/idl ${IDL_FLAGS} -I. -I$(MICO)/include -DMICO_ORB --any --c++-suffix cpp --c++-skel $< \
 	&&  cp $*.h $*_skel.h
 MICO_CXXFLAGS := -DMICO_ORB $(shell mico-config --cxxflags)
 CXXFLAGS+=$(IDLCXXFLAGS) $(MICO_CXXFLAGS)
@@ -63,7 +63,7 @@ NAMING_LIBS := $(shell mico-config --cosslibs)
 NAMING_INCLUDES := -I$(shell mico-config --prefix)/include/coss
 ORB_IDL_INCLUDE += -I$(MICO)/include -I$(MICO)/include/mico 
 CIDL_ORB_DEF = -DMICO_ORB -DMICO_CIDL_GEN
-IDL_FLAGS += --relative-paths
+
 
 all:
 
