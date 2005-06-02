@@ -42,10 +42,15 @@
           | long
           | objref
           | octet
-          | short
           | string
           | ulong
           | ushort
+          | longlong
+          | ulonglong
+          | longdouble
+          | wchar
+          | wstring
+          | fixed
           ) #REQUIRED >
 
 <!ELEMENT sequence
