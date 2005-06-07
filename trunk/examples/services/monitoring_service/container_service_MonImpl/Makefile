@@ -26,7 +26,7 @@ all: libcontainer_service_MonImpl.so
 
 libcontainer_service_MonImpl.so: ${OBJ_FILES} 
 
-${IDL_FILES} valuetypes.cpp : ${CIDL_FILES} 
+${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} 
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target "IDL:container_service/MonImpl:1.0" $< 
 

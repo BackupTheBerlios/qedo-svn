@@ -43,4 +43,6 @@ package:
 	$(MAKE) -C container_service_MonImpl package
 
 assembly: package
-	$(MAKE) -C hello_with_monitor_Linux_assembly
+	$(MAKE) -C hello_with_monitor_Linux_assembly \
+	$(MAKE) -C philo_with_monitor_Linux_assembly
+
