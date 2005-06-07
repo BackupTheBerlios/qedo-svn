@@ -10,7 +10,7 @@ CPP_FILES = container_service_MonImpl_BUSINESS.cpp \
 	container_service_MonImpl.cpp \
 	ServerContainerInterceptor.cpp \
 	ClientContainerInterceptor.cpp \
-	valuetypes.cpp
+	component_valuetypes.cpp
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 

@@ -22,6 +22,7 @@ ClientContainerInterceptor::set_slot_id(PortableInterceptor::SlotId slot_id) {
 
 ClientContainerInterceptor::ClientContainerInterceptor (container_service::CCM_monitor_Context* context,container_service::MonExec* executor)
 {
+#ifdef WIN32
 	executor_ = executor;
 	context_ = context;
 
@@ -38,7 +39,7 @@ ClientContainerInterceptor::ClientContainerInterceptor (container_service::CCM_m
 	process_id_ = s;
 	
 	m_uid = s;	
-
+#endif
 }
 
 ClientContainerInterceptor::~ClientContainerInterceptor ()
@@ -50,6 +51,8 @@ ClientContainerInterceptor::send_request (Components::ContainerPortableIntercept
 {
 
 	std::cout << "COPI: send_request: " << cci->request_info()->operation() << std::endl;
+#ifdef WIN32
+
 		if ( 0 == strcmp (cci->request_info()->operation(), "receiveEvent") )
 	{
 		/*
@@ -128,7 +131,7 @@ ClientContainerInterceptor::send_request (Components::ContainerPortableIntercept
 		memcpy(sc.context_data.get_buffer(), data->get_buffer(), data->length());
 
 		cci->request_info()->add_request_service_context(sc, true);
-		
+#endif		
 }
 
 void
@@ -142,6 +145,8 @@ ClientContainerInterceptor::receive_reply (Components::ContainerPortableIntercep
 {
 	
 	std::cout << "COPI: receive_reply: " << cci->request_info()->operation() << "for id: " << std::endl;
+#ifdef WIN32
+
 	if ( 0 == strcmp (cci->request_info()->operation(), "receiveEvent") )
 	{
 		/*
@@ -218,13 +223,15 @@ ClientContainerInterceptor::receive_reply (Components::ContainerPortableIntercep
 	trace->length(1);
 	(*trace)[0] = event;
 	context_-> get_connection_to_trace_server() -> receiveEvent(trace.in());
-
+#endif
 }
 
 void
 ClientContainerInterceptor::receive_exception (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci)
 {
 	std::cout << "COPI: receive_system_exception: " << cci->request_info()->operation() << "for id: " << std::endl;
+#ifdef WIN32
+
 	if ( 0 == strcmp (cci->request_info()->operation(), "receiveEvent") )
 	{
 		/*
@@ -301,12 +308,14 @@ ClientContainerInterceptor::receive_exception (Components::ContainerPortableInte
 	trace->length(1);
 	(*trace)[0] = event;
 	context_-> get_connection_to_trace_server() -> receiveEvent(trace.in());
-
+#endif
 }
 
 void
 ClientContainerInterceptor::receive_other (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci) {
 	std::cout << "COPI: receive_user_exception: " << cci->request_info()->operation() << "for id:" << std::endl;
+#ifdef WIN32
+
 	if ( 0 == strcmp (cci->request_info()->operation(), "receiveEvent") )
 	{
 		/*
@@ -383,46 +392,8 @@ ClientContainerInterceptor::receive_other (Components::ContainerPortableIntercep
 	trace->length(1);
 	(*trace)[0] = event;
 	context_-> get_connection_to_trace_server() -> receiveEvent(trace.in());
-
+#endif
 }
 
-/*
-
-Components::Cookie* 
-ClientContainerInterceptor::connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con ) 
-{
-//	std::cout << "COPI Client: connect called" << std::endl;
-	con = true;
-	return 0;	
-}
-
-CORBA::Object_ptr 
-ClientContainerInterceptor::provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con ) 
-{
-//	std::cout << "COPI Client: provide_facet called" << std::endl;
-	return CORBA::Object::_nil();
-}
-
-Components::Cookie* 
-ClientContainerInterceptor::bind( const char* comp_id, char*& name, ::StreamComponents::SinkStreamPort_ptr& the_sink, char*& transport_profile, CORBA::Boolean_out con ) 
-{
-//	std::cout << "COPI Client: bind called" << std::endl;
-	return 0;
-}
-
-::StreamComponents::SinkStreamPort_ptr 
-ClientContainerInterceptor::unbind( const char* comp_id, char*& name, Components::Cookie*& ck, CORBA::Boolean_out con ) 
-{
-//	std::cout << "COPI Client: unbind called" << std::endl;
-	return 0;
-}
-
-CORBA::Object_ptr 
-ClientContainerInterceptor::provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) 
-{
-//	std::cout << "COPI Client: provide_sink_stream_port" << std::endl;
-	return 0;
-}
-*/
 
 }; // namespace Qedo

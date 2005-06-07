@@ -25,6 +25,8 @@ ServerContainerInterceptor::set_slot_id(PortableInterceptor::SlotId slot_id) {
 
 ServerContainerInterceptor::ServerContainerInterceptor (container_service::CCM_monitor_Context* context,container_service::MonExec* executor)
 {
+#ifdef WIN32
+
 	executor_ = executor;
 	context_ = context;
 
@@ -41,7 +43,7 @@ ServerContainerInterceptor::ServerContainerInterceptor (container_service::CCM_m
 	process_id_ = s;
 
 
-
+#endif
 }
 
 ServerContainerInterceptor::~ServerContainerInterceptor ()
@@ -59,6 +61,9 @@ ServerContainerInterceptor::receive_request_service_contexts (Components::Contai
 void
 ServerContainerInterceptor::receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
+	std::cout << "COPI: receive_request: " << csi->request_info()->operation() << "for id: " << std::endl;
+
+#ifdef WIN32
 
 		/* 
 		 * Get encoded context information
@@ -140,11 +145,15 @@ ServerContainerInterceptor::receive_request (Components::ContainerPortableInterc
 		trace->length(1);
 		(*trace)[0] = event;
 		context_-> get_connection_to_trace_server() -> receiveEvent(trace.in());
+#endif
 }
 
 void
 ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
+	std::cout << "COPI: send_reply: " << csi->request_info()->operation() << "for id: " << std::endl;
+
+#ifdef WIN32
 
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
 
@@ -206,12 +215,16 @@ ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor
 
 	csi->request_info()->add_reply_service_context(out_sc, true);
 
-
+#endif
 }
 
 void
 ServerContainerInterceptor::send_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
+	std::cout << "COPI: send_exception: " << csi->request_info()->operation() << "for id: " << std::endl;
+
+#ifdef WIN32
+
 	std::cout << "COPI: send_system_exception: " << csi->request_info()->operation() << "for id: " << std::endl;
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
 
@@ -273,12 +286,14 @@ ServerContainerInterceptor::send_exception (Components::ContainerPortableInterce
 
 	csi->request_info()->add_reply_service_context(out_sc, true);
 
-
+#endif
 }
 
 void
 ServerContainerInterceptor::send_other (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi) {
 	std::cout << "COPI: send_other: " << csi->request_info()->operation() << "for id: " << std::endl;
+#ifdef WIN32
+
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
 
 	// set time_stamp
@@ -339,64 +354,9 @@ ServerContainerInterceptor::send_other (Components::ContainerPortableInterceptor
 
 	csi->request_info()->add_reply_service_context(out_sc, true);
 
-
+#endif
 }
 
-/*
-void
-ServerContainerInterceptor::rec_request_from_servant_locator(const char * operation)
-{
-	std::cout << "operation: " << operation << " from servant locator" << std::endl;
-}
-*/
-/*
-void 
-ServerContainerInterceptor::call( const char* comp_id, const char* origin, const char* operation, CORBA::Boolean_out con ) 
-{
-
-}
-
-
-
-Components::Cookie* 
-ServerContainerInterceptor::connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con ) 
-{
-	std::cout << "QQQQQQQQQQ COPI Server: connect called" << std::endl;
-
-		return 0;
-}
-
-
-CORBA::Object_ptr 
-ServerContainerInterceptor::provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con )
-{
-std::cout << "COPI Server: provide_facet" << std::endl;
-return 0;
-}
-
-
-
-Components::Cookie* 
-ServerContainerInterceptor::bind( const char* comp_id, char*& name, ::StreamComponents::SinkStreamPort_ptr& the_sink, char*& transport_profile, CORBA::Boolean_out con ) 
-{
-//	std::cout << "COPI Server: bind called" << std::endl;
-	return 0;
-}
-
-::StreamComponents::SinkStreamPort_ptr 
-ServerContainerInterceptor::unbind( const char* comp_id, char*& name, Components::Cookie*& ck, CORBA::Boolean_out con ) 
-{
-//	std::cout << "COPI Server: unbind called" << std::endl;
-	return 0;
-}
-
-CORBA::Object_ptr 
-ServerContainerInterceptor::provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) 
-{
-//	std::cout << "COPI Server: provided_sink_stream_port called" << std::endl;
-	return 0;
-}
-
-*/
 
 }; // namespace Qedo
+
