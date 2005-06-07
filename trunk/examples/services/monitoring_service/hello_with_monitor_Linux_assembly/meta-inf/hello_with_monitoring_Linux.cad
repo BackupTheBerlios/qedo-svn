@@ -45,13 +45,13 @@
 			</componentinstantiation>
 
 		</homeplacement>
-	</processcollocation>
-
-	<processcollocation>
 		<homeplacement id="CallerHome">
 			<componentfileref idref="Caller_file"/>
 				<componentimplref idref="UUID-84628f02-c896-42ca-9644-6cdc0f88e017"/>
 			<componentinstantiation id="caller">
+			<componentproperties>
+  	        		<fileinarchive name="meta-inf/caller.cpf" />
+  	        	</componentproperties>
 			</componentinstantiation>
 
 		</homeplacement>
