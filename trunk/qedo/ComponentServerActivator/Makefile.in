@@ -36,7 +36,9 @@ LIBS += -L../ComponentIDL -lComponentIDL\
 	-L../ComponentContainer -lComponentContainer \
 	-L../qedoutil/ -lqedoutil \
 	$(NAMING_LIBS) \
-	@ODBCLIB@
+	@ODBCLIB@ \
+	@XERCES_LIBS@
+
 
 LDLIBS = ${LIBS}
 
