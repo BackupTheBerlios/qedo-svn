@@ -63,7 +63,8 @@ ServerContainerInterceptor::receive_request_service_contexts (Components::Contai
 void
 ServerContainerInterceptor::receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
-	std::cout << "COPI: receive_request: " << csi->request_info()->operation() << "for id: " << std::endl;
+	std::cout << "COPI: receive_request: " << csi->request_info()->operation();
+	std::cout << " for id:" << csi->component_id() << std::endl;
 
 #ifdef WIN32
 
@@ -153,7 +154,8 @@ ServerContainerInterceptor::receive_request (Components::ContainerPortableInterc
 void
 ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
-	std::cout << "COPI: send_reply: " << csi->request_info()->operation() << "for id: " << std::endl;
+	std::cout << "COPI: send_reply: " << csi->request_info()->operation();
+	std::cout << " for id:" << csi->component_id() << std::endl;
 
 #ifdef WIN32
 
@@ -223,7 +225,8 @@ ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor
 void
 ServerContainerInterceptor::send_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
-	std::cout << "COPI: send_exception: " << csi->request_info()->operation() << "for id: " << std::endl;
+	std::cout << "COPI: send_exception: " << csi->request_info()->operation();
+	std::cout << " for id:" << csi->component_id() << std::endl;
 
 #ifdef WIN32
 
@@ -293,7 +296,8 @@ ServerContainerInterceptor::send_exception (Components::ContainerPortableInterce
 
 void
 ServerContainerInterceptor::send_other (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi) {
-	std::cout << "COPI: send_other: " << csi->request_info()->operation() << "for id: " << std::endl;
+	std::cout << "COPI: send_other: " << csi->request_info()->operation();
+	std::cout << " for id:" << csi->component_id() << std::endl;
 #ifdef WIN32
 
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;

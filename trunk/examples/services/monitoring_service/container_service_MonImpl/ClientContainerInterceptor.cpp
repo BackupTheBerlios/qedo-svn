@@ -52,7 +52,9 @@ void
 ClientContainerInterceptor::send_request (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci)
 {
 
-	std::cout << "COPI: send_request: " << cci->request_info()->operation() << std::endl;
+	std::cout << "COPI: send_request: " << cci->request_info()->operation();
+	std::cout << " for id:" << cci->component_id() << std::endl;
+
 #ifdef WIN32
 
 		if ( 0 == strcmp (cci->request_info()->operation(), "receiveEvent") )
@@ -146,7 +148,8 @@ void
 ClientContainerInterceptor::receive_reply (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci)
 {
 	
-	std::cout << "COPI: receive_reply: " << cci->request_info()->operation() << "for id: " << std::endl;
+	std::cout << "COPI: receive_reply: " << cci->request_info()->operation();
+	std::cout << " for id:" << cci->component_id() << std::endl;
 #ifdef WIN32
 
 	if ( 0 == strcmp (cci->request_info()->operation(), "receiveEvent") )
@@ -231,7 +234,8 @@ ClientContainerInterceptor::receive_reply (Components::ContainerPortableIntercep
 void
 ClientContainerInterceptor::receive_exception (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci)
 {
-	std::cout << "COPI: receive_system_exception: " << cci->request_info()->operation() << "for id: " << std::endl;
+	std::cout << "COPI: receive_exception: " << cci->request_info()->operation();
+	std::cout << " for id:" << cci->component_id() << std::endl;
 #ifdef WIN32
 
 	if ( 0 == strcmp (cci->request_info()->operation(), "receiveEvent") )
@@ -315,7 +319,8 @@ ClientContainerInterceptor::receive_exception (Components::ContainerPortableInte
 
 void
 ClientContainerInterceptor::receive_other (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr cci) {
-	std::cout << "COPI: receive_user_exception: " << cci->request_info()->operation() << "for id:" << std::endl;
+	std::cout << "COPI: receive_other: " << cci->request_info()->operation();
+	std::cout << " for id:" << cci->component_id() << std::endl;
 #ifdef WIN32
 
 	if ( 0 == strcmp (cci->request_info()->operation(), "receiveEvent") )
