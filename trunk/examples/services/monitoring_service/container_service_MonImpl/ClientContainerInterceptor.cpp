@@ -1,6 +1,8 @@
 #include "ClientContainerInterceptor.h"
 #include <sys/timeb.h>
-
+#ifdef WIN32
+#include "winsock2.h"
+#endif
 
 namespace Qedo {
 
