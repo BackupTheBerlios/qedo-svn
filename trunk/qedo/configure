@@ -3391,9 +3391,9 @@ fi
 
 
 if test X"$use_debug" = Xno ; then
-	echo "$as_me:$LINENO: checking for wxTheApp in -lwx_base-2.6" >&5
-echo $ECHO_N "checking for wxTheApp in -lwx_base-2.6... $ECHO_C" >&6
-if test "${ac_cv_lib_wx_base_2_6_wxTheApp+set}" = set; then
+	echo "$as_me:$LINENO: checking for wxFalse in -lwx_base-2.6" >&5
+echo $ECHO_N "checking for wxFalse in -lwx_base-2.6... $ECHO_C" >&6
+if test "${ac_cv_lib_wx_base_2_6_wxFalse+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -3411,11 +3411,11 @@ extern "C"
 #endif
 /* We use char because int might match the return type of a gcc2
    builtin and then its argument prototype would still apply.  */
-char wxTheApp ();
+char wxFalse ();
 int
 main ()
 {
-wxTheApp ();
+wxFalse ();
   ;
   return 0;
 }
@@ -3442,20 +3442,20 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_lib_wx_base_2_6_wxTheApp=yes
+  ac_cv_lib_wx_base_2_6_wxFalse=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_lib_wx_base_2_6_wxTheApp=no
+ac_cv_lib_wx_base_2_6_wxFalse=no
 fi
 rm -f conftest.err conftest.$ac_objext \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_wx_base_2_6_wxTheApp" >&5
-echo "${ECHO_T}$ac_cv_lib_wx_base_2_6_wxTheApp" >&6
-if test $ac_cv_lib_wx_base_2_6_wxTheApp = yes; then
+echo "$as_me:$LINENO: result: $ac_cv_lib_wx_base_2_6_wxFalse" >&5
+echo "${ECHO_T}$ac_cv_lib_wx_base_2_6_wxFalse" >&6
+if test $ac_cv_lib_wx_base_2_6_wxFalse = yes; then
   HAVE_WXGTK_LIB=yes
 else
   HAVE_WXGTK_LIB=no
