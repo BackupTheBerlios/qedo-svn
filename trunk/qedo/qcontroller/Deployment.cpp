@@ -148,6 +148,7 @@ void
 Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
 
 {
+	try {
 	//
 	// init ORB
 	//
@@ -235,10 +236,11 @@ Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
 	}
 	
 
-	
-	
-
-	
+	}
+	catch (...)
+	{
+		wxLogMessage("Unknown Exception");	
+	}
 	
 }
 
