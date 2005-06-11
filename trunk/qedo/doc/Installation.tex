@@ -387,30 +387,6 @@ make install
 
 to build and install the Qedo run-time.
 
-\chapter{Creating a Distribution}
-\label{sec:CreatingADistribution}
-This section explains in a very short way how to build a distribution package for Qedo. 
-
-\begin{itemize}
-    \item Install and possibly compile all needed software. Then you need to compile \verb genertor2  and \verb qedo  package. Make sure you compile the right configuration. All variables need to be set before. In particular you need to set the \verb Qedo  variable. This points to the place where all compiled Qedo sources a copied to. This directory will be used later to create the distribution package.
-    
-    \item Copy \verb micocossxxx.dll  , \verb micoxx.dll  and \verb idlxxx.dll  to \verb Qedo/bin .
-    
-    \item Copy the contents of the include directory of \verb MICO  to \verb Qedo/include/mico  directory. You can leave out \verb ministl  and \verb pocketpc .
-    
-    \item Edit \verb Components.h  \verb QedoComponents.h  and  \verb CORBADepends.h  . There are a number of full-path include statements which would point to the wrong directory. (Depends on the installation directory of the target machine.)
-    
-    \item Copy header files \verb pthreads.h  \verb sched.h  and \verb semaphore.h  from \verb pthreads  to \verb Qedo/include/pthreads .
-    
-    \item Copy \verb pthreadVC.lib  to \verb Qedo/lib  directory.
-    
-    \item Copy \verb pthreadsVC.dll  to \verb Qedo/bin  directory.
-    
-    \item test
-
-\end{itemize}
-
-
 \chapter{InstallShield}
 \label{sec:InstallShield}
 This chapter will describe the installation process using the InstallShield. This is can only be used on Windows based systems.
