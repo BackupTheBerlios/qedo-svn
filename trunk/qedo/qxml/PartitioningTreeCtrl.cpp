@@ -229,10 +229,10 @@ void PartitioningTreeCtrl::OnItem(wxMouseEvent& event)
 
 				component_instance_menu -> Append(ID_MENU_DELETE_P,"delete this Component","delete this Component",TRUE);
 			
-				if (this->ExistsProp(GetSelection())) {
-					component_instance_menu -> Enable(ID_MENU_ADD_P_H_I,FALSE);
-					component_instance_menu -> Enable(ID_MENU_ADD_R_A_N,FALSE);
-				}
+			//	if (this->ExistsProp(GetSelection())) {
+			//		component_instance_menu -> Enable(ID_MENU_ADD_P_H_I,FALSE);
+			//		component_instance_menu -> Enable(ID_MENU_ADD_R_A_N,FALSE);
+			//	}
 	
 				this->PopupMenu(component_instance_menu,event.GetPosition());
 			}
