@@ -623,7 +623,7 @@ bool PartitioningTreeCtrl::ExistsComp(wxTreeItemId itemid)
 {
 	bool value=false;
 	std::vector <ItemTyp> ::iterator iter;
-	long cookie;
+	wxTreeItemIdValue cookie;
 	wxTreeItemId childitem = GetFirstChild(itemid,cookie);
 
 	for(iter = itemtypes.begin(); 
@@ -643,7 +643,7 @@ bool PartitioningTreeCtrl::ExistsProp(wxTreeItemId itemid)
 {
 	bool value=false;
 	std::vector <ItemTyp> ::iterator iter;
-	long cookie;
+	wxTreeItemIdValue cookie;
 	wxTreeItemId childitem = GetFirstChild(itemid,cookie);
 
 	for(iter = itemtypes.begin(); 
@@ -703,7 +703,7 @@ wxString PartitioningTreeCtrl::getCADData()
 	wxString value;
 	
 	wxTreeItemId root = GetRootItem();
-	long cookie;
+	wxTreeItemIdValue cookie;
 	wxTreeItemId itemid = GetFirstChild(root,cookie);
 
 	while (!(GetItemText(itemid).IsEmpty())) {
@@ -719,6 +719,10 @@ wxString PartitioningTreeCtrl::getCADData()
 		}
 	   
 	   itemid=GetNextChild(root,cookie);
+	   if (!itemid.IsOk())
+	   {
+		   break;
+	   }
 	}
 
 	
@@ -742,7 +746,7 @@ wxString PartitioningTreeCtrl::processdata(wxTreeItemId itemid)
 	value.Append(ityp.usagename);
 	value.Append("</usagename>\n");
 
-	long cookie;
+	wxTreeItemIdValue cookie;
 	wxTreeItemId childid = GetFirstChild(itemid,cookie);
 
 	while (!(GetItemText(childid).IsEmpty())) {
@@ -752,6 +756,10 @@ wxString PartitioningTreeCtrl::processdata(wxTreeItemId itemid)
 		}
 
 		childid=GetNextChild(itemid,cookie);
+		if (!childid.IsOk())
+		{
+			break;
+		};
 	}
 	value.Append(tabtab);
 	value.Append("</processcollocation>\n");
@@ -777,7 +785,7 @@ wxString PartitioningTreeCtrl::homedata(wxTreeItemId itemid)
 	value.Append(ityp.usagename);
 	value.Append("</usagename>\n");
 
-	long cookie;
+	wxTreeItemIdValue cookie;
 	wxTreeItemId childid = GetFirstChild(itemid,cookie);
 
 	while (!(GetItemText(childid).IsEmpty())) {
@@ -787,6 +795,10 @@ wxString PartitioningTreeCtrl::homedata(wxTreeItemId itemid)
 		}
 
 		childid=GetNextChild(itemid,cookie);
+		if (!childid.IsOk())
+		{
+			break;
+		};
 	}
 	value.Append(tabtab);
 	
@@ -811,7 +823,7 @@ wxString PartitioningTreeCtrl::hostdata(wxTreeItemId itemid)
 	value.Append(ityp.usagename);
 	value.Append("</usagename>\n");
 
-	long cookie;
+	wxTreeItemIdValue cookie;
 	wxTreeItemId childid = GetFirstChild(itemid,cookie);
 
 	while (!(GetItemText(childid).IsEmpty())) {
@@ -824,6 +836,10 @@ wxString PartitioningTreeCtrl::hostdata(wxTreeItemId itemid)
 		}
 
 		childid=GetNextChild(itemid,cookie);
+		if(!childid.IsOk())
+		{
+			break;
+		};
 	}
 	value.Append(tabtab);
 	value.Append("</hostcollocation>\n");
