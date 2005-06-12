@@ -387,20 +387,24 @@ void Deployment::delete_assemblie(wxTreeItemId itemid)
 
 void Deployment::OnDecriptButton (wxCommandEvent& WXUNUSED(event)) 
 {
-	if (!(assembly_name_->GetValue().empty()))
-	{
-		DescriptorFrame *descriptor_frame = new DescriptorFrame(this,assembly_name_->GetValue());
-		//descriptor_frame->SetFile(assembly_name_->GetValue().c_str() );
-	
-		int t=descriptor_frame->ShowModal();
-		if (t==wxID_OK) {
+	try {
+		if (!(assembly_name_->GetValue().empty()))
+		{
+			DescriptorFrame *descriptor_frame = new DescriptorFrame(this,assembly_name_->GetValue());
+			//descriptor_frame->SetFile(assembly_name_->GetValue().c_str() );
 		
+			int t=descriptor_frame->ShowModal();
+			if (t==wxID_OK) {
+			
+			}
+			if (t==wxID_CANCEL) {
+				descriptor_frame->~DescriptorFrame();
+			}
 		}
-		if (t==wxID_CANCEL) {
-			descriptor_frame->~DescriptorFrame();
-		}
+	} catch (...)
+	{
+		wxLogMessage ("EditDestination ended unexpected") ;	
 	}
-
 }
 
 /*

@@ -1105,6 +1105,14 @@ void DescriptorFrame::save()
 		mess_dialog->~wxMessageDialog();
 	}
 
+	/** create tomporary directory for zipping the package */
+	if (!(wxDirExists("meta-inf"))) 
+	{
+		if (!wxMkdir("meta-inf"))
+		{
+			wxLogMessage(_T("Unable to create meta-inf directory temporarily"));
+		}
+	}
 
 	cadfile_=fopen(tmp_file.c_str(),"r");
 	wxString c_file="meta-inf/";
