@@ -154,20 +154,21 @@ NSBrowserTreeCtrl::build_tree()
 	// resolve name service reference
 	
 	int dummy = 0;
+	wxString mes = "";
 	orbns = CORBA::ORB_init(dummy,0);
 
 	wxString ns;
 
-    //ns = Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" );;
 	//ns = "corbaloc::localhost:12356/NameService";
 	//CORBA::ORB_var tmp = CORBA::ORB::_duplicate(QedoController::global_orb);
+
 	ns.Append("corbaloc::");
 	ns.Append(this->host_nsbrowser->GetValue());
 	ns.Append(":");
 	ns.Append(this->port_nsbrowser->GetValue());
 	ns.Append("/NameService");
 	
-	wxString mes=message_nsbrowser->GetValue();
+	//mes=message_nsbrowser->GetValue();
 	message_nsbrowser->SetValue(mes+"\n"+"Refresh NameService"+"\n"+ns);
 
 	CORBA::Object_var obj;
@@ -180,9 +181,21 @@ NSBrowserTreeCtrl::build_tree()
 	try {
 		nameService = CosNaming::NamingContext::_narrow(obj.in());
 	} catch (CORBA::SystemException) {
-	    wxString mes="Error: Cannot narrow NameService under ";
+	    mes="Error: Cannot narrow NameService under ";
 		mes.Append(ns);
+		mes.Append("\nTried directly with Qedo.conf");
 		this->message_nsbrowser->SetValue(mes);
+
+		try {
+		    ns = (Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" )).c_str();
+			obj = orbns -> string_to_object( ns.c_str() );
+			nameService = CosNaming::NamingContext::_narrow(obj.in());
+
+		} catch (CORBA::SystemException) 
+		{
+		    mes.Append(_T(" but failed as well!"));
+			this->message_nsbrowser->SetValue(mes);
+		}
 	
 	};
 	if (!CORBA::is_nil(nameService))
@@ -196,9 +209,30 @@ NSBrowserTreeCtrl::build_tree()
 	
 		
 	} catch (CORBA::SystemException) {
-		wxString mes="Error: Cannot find NameService under ";
+		mes="Error: Cannot find NameService under ";
 		mes.Append(ns);
+		mes.Append("\nTried directly with Qedo.conf");
 		this->message_nsbrowser->SetValue(mes);};
+
+		try {
+		    ns = (Qedo::ConfigurationReader::instance()->lookup_config_value( "/General/NameService" )).c_str();
+			obj = orbns -> string_to_object( ns.c_str() );
+			nameService = CosNaming::NamingContext::_narrow(obj.in());
+
+			if (!CORBA::is_nil(nameService))
+			{
+			wxTreeItemId rootId = AddRoot(wxT("RootContext"),
+										TreeCtrlIcon_Folder , TreeCtrlIcon_FolderSelected,
+										new NSBrowserTreeItemData(wxT("Root item")));
+
+				AddItemsRecursively(rootId, nameService);
+			}
+
+		} catch (CORBA::SystemException) 
+		{
+		    mes.Append(" but failed as well!");;
+			this->message_nsbrowser->SetValue(mes);
+		}
 
 	
 }
