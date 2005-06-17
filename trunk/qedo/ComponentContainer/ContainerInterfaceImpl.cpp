@@ -1022,7 +1022,7 @@ throw (Components::CCMException)
 	for (iter = service_references_.begin(); iter != service_references_.end(); iter++)
 	{
 		if(!iter->_service_id.compare(service_id)) {
-			return iter->_service_ref;
+			return CORBA::Object::_duplicate(iter->_service_ref);
 		}
 	}
 	return component_server_ -> resolve_service_reference(service_id);

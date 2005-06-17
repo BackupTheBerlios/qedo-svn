@@ -412,7 +412,45 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	/* Name service */
 	container_if -> install_service_reference ("NameService", nameService_.in());
 
-	return container_if->_this();
+	/* Install ComponentHomeFinder */
+	// create Name
+	CosNaming::Name hf_name;
+	hf_name.length(2);
+	hf_name[0].id="Qedo";
+	hf_name[0].kind="";
+	hf_name[1].id="HomeFinder";
+	hf_name[1].kind="";
+
+	//
+	// Resolve the HomeFinder
+	//
+	Qedo_Components::HomeFinder_var home_finder;
+	CORBA::Object_var obj = nameService_ -> resolve (hf_name);
+
+	if (CORBA::is_nil(obj.in()))
+	{
+		DEBUG_OUT( "ComponentServer: HomeFinder not found");
+	} else
+	{
+		try
+		{
+			home_finder = Qedo_Components::HomeFinder::_narrow(obj);
+		}
+		catch (CORBA::SystemException&)
+		{
+			DEBUG_OUT( "ORBInitializerImpl: HomeFinder is not running");
+		}
+
+		if (CORBA::is_nil(home_finder.in()))
+		{
+			DEBUG_OUT ("ORBInitializerImpl: HomeFinder is not running" );
+		}
+	}
+    container_if -> install_service_reference ("ComponentHomeFinder", home_finder.in());
+
+
+
+	return container_if->_this(); 
 }
  
  
@@ -714,6 +752,20 @@ throw (Components::CCMException)
 		}
 	}
 
+	// try to resolve it as initial reference of the ORB
+	CORBA::Object_var anobject; 
+	try {
+		anobject = orb_->resolve_initial_references(service_id);
+	} catch (...)
+	{
+		throw Components::CCMException();
+	}
+	if (!CORBA::is_nil(anobject))
+	{
+		return anobject._retn();
+	}
+
+	// not found throw exception
 	throw Components::CCMException();
 }
 
