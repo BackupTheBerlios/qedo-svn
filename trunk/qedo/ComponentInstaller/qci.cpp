@@ -250,7 +250,7 @@ main (int argc, char** argv)
 	 signal ( SIGINT, handle_sigint );
 #endif // HAVE_SIGACTION
 #endif // HAVE_LIBPTHREAD
-	std::cout << "Qedo Component Installer " << QEDO_VERSION << std::endl;
+	std::cout << "Qedo Component Installer " << QEDO_VERSION << " " << QEDO_REVISION << std::endl;
 
 	//
 	// Resolve config values from config file

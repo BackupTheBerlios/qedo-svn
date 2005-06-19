@@ -1,13 +1,24 @@
-/////////////////////////////////////////////////////////////////////////////
-// Name:        qxmlApp.cpp
-// Purpose:     
-// Author:      HEINI
-// Modified by: 
-// Created:     04/07/05 20:32:02
-// RCS-ID:      
-// Copyright:   
-// Licence:     
-/////////////////////////////////////////////////////////////////////////////
+/***************************************************************************/
+/* Qedo - Quality of Service Enabled Distributed Objects                   */
+/*                                                                         */
+/* http://www.qedo.org                                                     */
+/*                                                                         */
+/* Copyright (C) 2002-2005 by the Qedo Team                                */
+/*                                                                         */
+/* This library is free software; you can redistribute it and/or           */
+/* modify it under the terms of the GNU Lesser General Public              */
+/* License as published by the Free Software Foundation; either            */
+/* version 2.1 of the License, or (at your option) any later version.      */
+/*                                                                         */
+/* This library is distributed in the hope that it will be useful,         */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of          */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU        */
+/* Lesser General Public License for more details.                         */
+/*                                                                         */
+/* You should have received a copy of the GNU Lesser General Public        */
+/* License along with this library; if not, write to the Free Software     */
+/* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA */
+/***************************************************************************/
 
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma implementation "qxmlApp.h"
@@ -24,15 +35,12 @@
 #include "wx/wx.h"
 #endif
 
-////@begin includes
+
 #include "qxml.h"
-////@end includes
+#include "version.h"
 
 #include "qxmlApp.h"
-//#include "qedoutil.h"
 
-////@begin XPM images
-////@end XPM images
 
 /*!
  * Application instance implementation
@@ -79,7 +87,11 @@ bool QxmlApp::OnInit()
     // Remove the comment markers above and below this block
     // to make permanent changes to the code.
 
-	MyDialog *dialog = new MyDialog(NULL,-1,"QXML",wxPoint(50,50), wxSize(450,350),wxDEFAULT_DIALOG_STYLE);
+    // Create the main window
+    wxString window_title = "Qedo qxml ";
+    window_title.append(QEDO_VERSION);
+
+	MyDialog *dialog = new MyDialog(NULL,-1,window_title,wxPoint(50,50), wxSize(450,350),wxDEFAULT_DIALOG_STYLE);
     
 
 #if wxUSE_XPM

@@ -36,7 +36,7 @@ using namespace std;
 int main (int argc, char** argv)
 
 {
-	std::cout << "Qedo Home Finder " << QEDO_VERSION << std::endl;
+	std::cout << "Qedo Explorer Server " << QEDO_VERSION << " " << QEDO_REVISION << std::endl;
 
 	Qedo::debug_output = false;
 	//

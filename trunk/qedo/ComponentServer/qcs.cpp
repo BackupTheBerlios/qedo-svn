@@ -69,7 +69,7 @@ usage (const char* prog_name)
 int
 main (int argc, char** argv)
 {
-	NORMAL_OUT2 ("Qedo Component Server ", QEDO_VERSION);
+	NORMAL_OUT3 ("Qedo Component Server ", QEDO_VERSION, QEDO_REVISION);
 
 	bool debug_mode = false;
 	bool ref_supplied = false;

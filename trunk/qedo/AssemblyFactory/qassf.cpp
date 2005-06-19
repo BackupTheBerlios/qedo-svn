@@ -247,7 +247,7 @@ main (int argc, char** argv)
 #endif
 
 #endif // HAVE_LIBPTHREAD
-	std::cout << "Qedo Assembly Factory " << QEDO_VERSION << std::endl;
+	std::cout << "Qedo Assembly Factory " << QEDO_VERSION << " " << QEDO_REVISION << std::endl;
 
 	Qedo::debug_output = false;
 	//

@@ -56,7 +56,7 @@ printUsage()
 int
 main (int argc, char** argv)
 {
-	std::cout << "qdeploy " << QEDO_VERSION << std::endl;
+	std::cout << "qdeploy " << QEDO_VERSION << " " << QEDO_REVISION << std::endl;
 
 	//
 	// process arguments

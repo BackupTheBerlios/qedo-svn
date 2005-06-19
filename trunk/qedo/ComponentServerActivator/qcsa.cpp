@@ -355,7 +355,7 @@ main (int argc, char** argv)
 #endif // HAVE_LIBPTHREAD
 
 
-	std::cout << "Qedo Component Server Activator " << QEDO_VERSION << std::endl;
+	std::cout << "Qedo Component Server Activator " << QEDO_VERSION << " " << QEDO_REVISION << std::endl;
 
 	//
 	// process arguments

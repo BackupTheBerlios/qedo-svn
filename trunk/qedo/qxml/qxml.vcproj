@@ -326,12 +326,24 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="qxmlApp.h">
 			</File>
 			<File
+				RelativePath=".\resource.h">
+			</File>
+			<File
 				RelativePath="ViewCADDialog.h">
 			</File>
 		</Filter>
 		<Filter
 			Name="Ressourcendateien"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;r">
+			<File
+				RelativePath=".\qxml.rc">
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="$(WXWIDGETS)\include"/>
+				</FileConfiguration>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
