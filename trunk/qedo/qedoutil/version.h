@@ -21,5 +21,5 @@
 /***************************************************************************/
 
 #define QEDO_VERSION "0.8.0"
-#define QEDO_REVISION "$Id$"
+#define QEDO_REVISION "$Rev$"
 
