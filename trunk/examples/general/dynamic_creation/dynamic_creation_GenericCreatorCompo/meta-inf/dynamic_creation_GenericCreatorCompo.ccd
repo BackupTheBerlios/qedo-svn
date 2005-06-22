@@ -1,0 +1,23 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://www.qedo.org/corbacomponent.dtd">
+
+<corbacomponent>
+    <corbaversion>3.0</corbaversion>
+    <componentrepid repid="IDL:dynamic_creation/GenericCreator:1.0"/>
+    <homerepid repid="IDL:dynamic_creation/GenericCreatorHome:1.0"/>
+    <componentkind>
+        <session>
+            <servant lifetime="container"/>
+        </session>
+    </componentkind>
+    <threading policy="multithread"/>
+    <configurationcomplete set="true"/>
+    
+    <homefeatures name="GenericCreatorHome" repid="IDL:dynamic_creation/GenericCreatorHome:1.0">
+    </homefeatures>
+    
+    <componentfeatures name="GenericCreator" repid="IDL:dynamic_creation/GenericCreator:1.0">
+        <ports>
+        </ports>
+    </componentfeatures>
+</corbacomponent>
