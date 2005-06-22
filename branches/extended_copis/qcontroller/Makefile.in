@@ -1,0 +1,95 @@
+# Qedo - Quality of Service Enabled Distributed Objects
+#
+# http://www.qedo.org
+#
+# Copyright (C) 2002-2004 by the Qedo Team
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+#wxWindows related
+WXWINDOWS = $(shell @WXGTKDIR@/bin/wx-config --prefix)
+WXWINDOWSCXXFLAGS = $(shell @WXGTKDIR@/bin/wx-config --cxxflags)
+WXWINDOWSLIBS = $(shell @WXGTKDIR@/bin/wx-config --libs)
+
+CXX = @CXX@
+INCLUDES+=-I. \
+	-I../qedoutil \
+	-I../ComponentIDL \
+	$(NAMING_INCLUDES) \
+	@XERCES_INCLUDES@
+CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@ $(WXWINDOWSCXXFLAGS)
+CXXCOMPILE=@CXX@ $(CXXFLAGS)
+LIBS+=@LIBS@ $(WXWINDOWSLIBS)
+CC=$(CXX)
+
+@SET_MAKE@
+
+
+LIBS += -L../qedoutil -lqedoutil \
+	-L../ComponentIDL -lComponentIDL \
+	-L../ComponentContainer -lComponentContainer \
+	$(NAMING_LIBS)\
+	@XERCES_LIBS@ \
+	-luuid \
+	@ODBCLIB@
+
+
+LDLIBS = ${LIBS}
+
+IDL_FLAGS = -I../ComponentIDL
+
+IDL_FILES = explore.idl
+
+SOURCES =	 $(IDL_FILES:.idl=.cpp) \
+		 ControllerNotebook.cpp \
+		 MainFrame.cpp \
+		 NSBrowser.cpp \
+		 Launcher.cpp \
+		 Deployment.cpp \
+		 QedoExplorer.cpp \
+		 QCexplorer.cpp \
+		 HelpFrame.cpp \
+		 DescriptorFrame.cpp \
+		 CADReaderDialog.cpp \
+		 QedoEditor.cpp \
+		 qcontroller.cpp
+
+CLEAN_FILES = $(SOURCES:.cpp=.o) qcontroller
+
+include ../MakeVars
+
+.PHONY:all
+
+all: qcontroller
+
+qcontroller: $(SOURCES:.cpp=.o)
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+.PHONY:install
+
+install: install-prog install-qedodoc
+
+.PHONY:install-prog
+
+install-prog: qcontroller
+
+install-qedodoc:
+	${INSTALL} -m $(FILE_MODE) qedodoc/*.htm  $(exec_prefix)/qedodoc
+	${INSTALL} -m $(FILE_MODE) qedodoc/*.hhp  $(exec_prefix)/qedodoc
+	${INSTALL} -m $(FILE_MODE) qedodoc/*.hhk  $(exec_prefix)/qedodoc
+	${INSTALL} -m $(FILE_MODE) qedodoc/*.hhc  $(exec_prefix)/qedodoc
+	${INSTALL} -m $(FILE_MODE) qedodoc/images/*.gif  $(exec_prefix)/qedodoc/images
+	${INSTALL} -m $(FILE_MODE) qedodoc/images/*.jpg  $(exec_prefix)/qedodoc/images
+
