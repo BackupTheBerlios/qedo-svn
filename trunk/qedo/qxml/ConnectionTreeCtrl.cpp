@@ -524,6 +524,8 @@ void ConnectionTreeCtrl::onadd_e(wxCommandEvent& event)
 
 		wxString inst1=port1.SubString(0,mid-1);
 		wxString portname1=port1.SubString(mid+2,port1.Len());
+
+		mid=port2.Find("::");
 		wxString inst2=port2.SubString(0,mid-1);
 		wxString portname2=port2.SubString(mid+2,port2.Len());
 
