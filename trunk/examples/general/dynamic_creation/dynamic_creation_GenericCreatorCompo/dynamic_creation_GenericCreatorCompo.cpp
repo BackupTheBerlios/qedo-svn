@@ -23,6 +23,7 @@ GenericCreatorSessionImpl::start()
 
 	while (!run_stopped)
 	{  
+
 		// get reference of the HomeFinder
 		// using Qedo Extension
 		CORBA::Object_var hf_object = context_ -> resolve_service_reference("ComponentHomeFinder");
