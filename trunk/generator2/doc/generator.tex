@@ -137,12 +137,13 @@ After Installing the Qedo runtime, the following steps needs to be done if you s
 \small
 \begin{verbatim} 
 
-	$(QEDO)/bin/cidl_gen -I$(QEDO)\idl -I$(MICO)\include  
-		-I$(MICO)\include\mico -DMICO_ORB -DMICO_CIDL_GEN 
+	${QEDO}/bin/cidl_gen -I${QEDO}/idl -I${MICO}/include  
+		-I${MICO}/include/mico -DMICO_ORB -DMICO_CIDL_GEN 
 		--mkfile --target CallerImpl hello.cidl}
 \end{verbatim}
 \normalsize
 
+Replace the for example the \verb ${QEDO}  by an appropriate path if needed. Use also the \verb -d  option, if you like to create an initial version of the descriptors.
 
 The target could be a composition name or a module name. It is strongly recommended to use only compositions as target. This will produce separate libraries for the servants and this may cause less trouble at runtime. Depending on the target the code generator will create new directories and within them new Makefiles. For each composition there is a servant and an executor module.
 
