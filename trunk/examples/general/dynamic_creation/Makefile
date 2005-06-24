@@ -1,6 +1,6 @@
 # Qedo - Quality of Service Enabled Distributed Objects
 #
-# http://qedo.berlios.de/
+# http://www.qedo.org
 #
 # Copyright (C) 2002-2005 by the Qedo Team
 #
