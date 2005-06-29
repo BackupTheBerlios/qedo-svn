@@ -66,6 +66,8 @@ usage (const char* prog_name)
 /**
  * starts the server for the object
  */
+bool g_qos_enabled;
+
 int
 main (int argc, char** argv)
 {
@@ -73,7 +75,7 @@ main (int argc, char** argv)
 
 	bool debug_mode = false;
 	bool ref_supplied = false;
-	bool qos_enabled = false;
+	g_qos_enabled = false;
 
 	Qedo::debug_output = false;
 
@@ -90,7 +92,7 @@ main (int argc, char** argv)
 
 	if (Qedo::ConfigurationReader::instance()->lookup_config_value ("/QoS/EnableQoS") == "true")
 	{
-		qos_enabled = true;
+		g_qos_enabled = true;
 	}
 
 	CORBA::String_var csa_string_ref;
@@ -122,7 +124,7 @@ main (int argc, char** argv)
 
 		if (! strcmp (argv[i], "--enable-qos"))
 		{
-			qos_enabled = true;
+			g_qos_enabled = true;
 		}
 
 	}
@@ -141,7 +143,7 @@ main (int argc, char** argv)
 		getchar();
 	}
 
-	if (qos_enabled)
+	if (g_qos_enabled)
 	{
 		DEBUG_OUT ("ComponentServer: Running in QoS mode");
 	} else
@@ -153,7 +155,7 @@ main (int argc, char** argv)
 	// initialize ORB
 	//
 	// will be deletet by ORB destruction
-	Qedo::ORBInitializerImpl* initializer = new Qedo::ORBInitializerImpl(qos_enabled);
+	Qedo::ORBInitializerImpl* initializer = new Qedo::ORBInitializerImpl(g_qos_enabled);
 
 #ifndef _QEDO_NO_QOS
 	//
@@ -168,7 +170,7 @@ main (int argc, char** argv)
 	// Stub Dispatcher
 	Qedo::StubInterceptorDispatcher* stub_dispatcher;
 
-	if (qos_enabled)
+	if (g_qos_enabled)
 	{
 		// create dispatchers
 		server_dispatcher = new Qedo::ServerInterceptorDispatcher();
@@ -216,7 +218,7 @@ main (int argc, char** argv)
 	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer -> slot_id());
 
 #ifndef _QEDO_NO_QOS
-	if (qos_enabled)
+	if (g_qos_enabled)
 	{
 		component_server -> set_server_dispatcher (
 			Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration::_narrow(server_dispatcher));
