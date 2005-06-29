@@ -1,0 +1,859 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="ComponentIDL"
+	ProjectGUID="{861222F4-9ADE-4721-B531-4BCDC95DCC73}"
+	SccProjectName=""
+	SccLocalPath="">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\Debug"
+			IntermediateDirectory=".\Debug"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(ORBACUS)\include;$(ORBACUS)\include\OB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Debug/ComponentIDL.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="obd.lib odbc32.lib odbccp32.lib"
+				OutputFile="../../Runtime/ComponentIDL.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(ORBACUS)\lib"
+				ModuleDefinitionFile=".\ComponentIDL.def"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Debug/ComponentIDL.pdb"
+				ImportLibrary=".\Debug/ComponentIDL.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/ComponentIDL.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Creating DEF file for ComponentIDL.dll"
+				CommandLine="perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll Debug/*.obj"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1031"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\Release"
+			IntermediateDirectory=".\Release"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;COMPONENTIDL_EXPORTS"
+				StringPooling="TRUE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Release/ComponentIDL.pch"
+				AssemblerListingLocation=".\Release/"
+				ObjectFile=".\Release/"
+				ProgramDataBaseFileName=".\Release/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile=".\Release/ComponentIDL.dll"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				ModuleDefinitionFile=".\ComponentIDL.def"
+				ProgramDatabaseFile=".\Release/ComponentIDL.pdb"
+				ImportLibrary=".\Release/ComponentIDL.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Release/ComponentIDL.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1031"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_orbacus|Win32"
+			OutputDirectory=".\Debug_orbacus"
+			IntermediateDirectory=".\Debug_orbacus"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;&quot;$(ORBACUS)\include&quot;;&quot;$(ORBACUS)\include\OB&quot;;..\ComponentContainer;..\qedoutil"
+				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;_QEDO_NO_QOS"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Debug_orbacus/ComponentIDL.pch"
+				AssemblerListingLocation=".\Debug_orbacus/"
+				ObjectFile=".\Debug_orbacus/"
+				ProgramDataBaseFileName=".\Debug_orbacus/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="obd.lib odbc32.lib odbccp32.lib"
+				OutputFile="$(OutDir)/ComponentIDL.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(ORBACUS)\lib"
+				ModuleDefinitionFile="$(OutDir)/ComponentIDL.def"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Debug_orbacus/ComponentIDL.pdb"
+				ImportLibrary=".\Debug_orbacus/ComponentIDL.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/ComponentIDL.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Creating DEF file for ComponentIDL.dll"
+				CommandLine="$(QEDO)\bin\gendef Debug_orbacus/ComponentIDL.def Debug_orbacus/ComponentIDL.dll Debug_orbacus/*.obj
+"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1031"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_mico|Win32"
+			OutputDirectory="Debug_mico"
+			IntermediateDirectory="Debug_mico"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;&quot;$(PTHREADS)/include&quot;;&quot;$(MICO)/include&quot;;..\ComponentContainer;..\qedoutil"
+				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;BUILD_QEDODLL_DLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Debug_mico/ComponentIDL.pch"
+				AssemblerListingLocation=".\Debug_mico/"
+				ObjectFile=".\Debug_mico/"
+				ProgramDataBaseFileName=".\Debug_mico/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="mico2311.lib pthreadVC2.lib"
+				OutputFile="$(OutDir)/ComponentIDL.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)\lib&quot;"
+				ModuleDefinitionFile="$(OutDir)/ComponentIDL.def"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Debug_mico/ComponentIDL.pdb"
+				ImportLibrary=".\Debug_mico/ComponentIDL.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/ComponentIDL.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Creating DEF file for ComponentIDL.dll"
+				CommandLine="$(QEDO)\bin\gendef Debug_mico/ComponentIDL.def ComponentIDL Debug_mico/*.obj"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1031"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_tao|Win32"
+			OutputDirectory="Debug_tao"
+			IntermediateDirectory="Debug_tao"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(ORBACUS)\include;$(ORBACUS)\include\OB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Debug/ComponentIDL.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="obd.lib odbc32.lib odbccp32.lib"
+				OutputFile="../../Runtime/ComponentIDL.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(ORBACUS)\lib"
+				ModuleDefinitionFile=".\ComponentIDL.def"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Debug/ComponentIDL.pdb"
+				ImportLibrary=".\Debug/ComponentIDL.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/ComponentIDL.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Creating DEF file for ComponentIDL.dll"
+				CommandLine="perl  makedef.pl ComponentIDL.def Debug/ComponentIDL.dll Debug/*.obj"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1031"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release_orbacus|Win32"
+			OutputDirectory="Release_orbacus"
+			IntermediateDirectory="Release_orbacus"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories=".;$(ORBACUS)\include;$(ORBACUS)\include\OB"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_USRDLL"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Release_orbacus/ComponentIDL.pch"
+				AssemblerListingLocation=".\Release_orbacus/"
+				ObjectFile=".\Release_orbacus/"
+				ProgramDataBaseFileName=".\Release_orbacus/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="ob.lib odbc32.lib odbccp32.lib"
+				OutputFile="../../Runtime/ComponentIDL.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(ORBACUS)\lib"
+				ModuleDefinitionFile=".\ComponentIDL.def"
+				GenerateDebugInformation="FALSE"
+				ProgramDatabaseFile=".\Debug_orbacus/ComponentIDL.pdb"
+				ImportLibrary=".\Release_orbacus/ComponentIDL.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/ComponentIDL.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Creating DEF file for ComponentIDL.dll"
+				CommandLine="perl  makedef.pl ComponentIDL.def Release_orbacus/ComponentIDL.dll Release_orbacus/*.obj"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1031"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_mico_wo_qos|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;&quot;$(PTHREADS)/include&quot;;&quot;$(MICO)/include&quot;;..\ComponentContainer;..\qedoutil"
+				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_WINDOWS;_USRDLL;BUILD_QEDODLL_DLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Debug_mico_wo_qos/ComponentIDL.pch"
+				AssemblerListingLocation=".\Debug_mico_wo_qos/"
+				ObjectFile=".\Debug_mico_wo_qos/"
+				ProgramDataBaseFileName=".\Debug_mico_wo_qos/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="mico2311.lib pthreadVC2.lib"
+				OutputFile="$(OutDir)/ComponentIDL.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)\lib&quot;"
+				ModuleDefinitionFile="$(OutDir)/ComponentIDL.def"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Debug_mico_wo_qos/ComponentIDL.pdb"
+				ImportLibrary="$(OutDir)/ComponentIDL.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/ComponentIDL.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Creating DEF file for ComponentIDL.dll"
+				CommandLine="$(QEDO)\bin\gendef Debug_mico_wo_qos/ComponentIDL.def ComponentIDL Debug_mico_wo_qos/*.obj"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1031"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release_mico|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				AdditionalIncludeDirectories=".;&quot;$(PTHREADS)/include&quot;;&quot;$(MICO)/include&quot;;..\ComponentContainer;..\qedoutil"
+				PreprocessorDefinitions="MICO_ORB;WIN32;_WINDOWS;_USRDLL;BUILD_QEDODLL_DLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Release_mico/ComponentIDL.pch"
+				AssemblerListingLocation=".\Release_mico/"
+				ObjectFile=".\Release_mico/"
+				ProgramDataBaseFileName=".\Release_mico/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="0"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Distribution:"
+				CommandLine="mkdir $(QEDO)\bin
+copy $(TargetPath) $(QEDO)\bin
+"
+				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="mico2311.lib pthreadVC2.lib"
+				OutputFile="$(OutDir)/ComponentIDL.dll"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)\lib&quot;"
+				ModuleDefinitionFile="$(OutDir)/ComponentIDL.def"
+				GenerateDebugInformation="FALSE"
+				ProgramDatabaseFile="$(OutDir)/ComponentIDL.pdb"
+				ImportLibrary="$(OutDir)/ComponentIDL.lib"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/ComponentIDL.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"
+				Description="Creating DEF file for ComponentIDL.dll"
+				CommandLine="$(QEDO)\bin\gendef Release_mico/ComponentIDL.def ComponentIDL Release_mico/*.obj"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1031"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath=".\Components.cpp">
+			</File>
+			<File
+				RelativePath=".\Components_skel.cpp">
+			</File>
+			<File
+				RelativePath="CORBADepends.cpp">
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						GeneratePreprocessedFile="0"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico_wo_qos|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						GeneratePreprocessedFile="0"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_mico|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						GeneratePreprocessedFile="0"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="CORBADepends_skel.cpp">
+			</File>
+			<File
+				RelativePath="QedoComponents.cpp">
+			</File>
+			<File
+				RelativePath="QedoComponents_skel.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath=".\Components.h">
+			</File>
+			<File
+				RelativePath=".\Components_skel.h">
+			</File>
+			<File
+				RelativePath="CORBADepends.h">
+			</File>
+			<File
+				RelativePath="CORBADepends_skel.h">
+			</File>
+			<File
+				RelativePath="PSSNativeClasses.h">
+			</File>
+			<File
+				RelativePath="qedo_orbacus.h">
+			</File>
+			<File
+				RelativePath="qedo_orbacus_skel.h">
+			</File>
+			<File
+				RelativePath="QedoComponents.h">
+			</File>
+			<File
+				RelativePath="QedoComponents_skel.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="idl"
+			Filter="idl">
+			<File
+				RelativePath=".\Components.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB Components.idl
+"
+						Outputs="Components.h;Components.cpp;Components_skel.h;Components_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCMIDLTool"
+						TargetEnvironment="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -D_QEDO_NO_QOS -DWIN32 -DORBACUS_ORB Components.idl
+"
+						Outputs="Components.h;Components.cpp;Components_skel.h;Components_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL --typecode --any --c++-suffix cpp --c++-skel -B$(MICO)  -I$(MICO)\include  -DWIN32 Components.idl
+copy Components.h Components_skel.h
+"
+						Outputs="Components.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB Components.idl
+"
+						Outputs="Components.h;Components.cpp;Components_skel.h;Components_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico_wo_qos|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB -D_QEDO_NO_QOS --windows-dll QEDODLL --typecode --any --c++-suffix cpp --c++-skel -B$(MICO)  -I$(MICO)\include  -DWIN32 Components.idl
+copy Components.h Components_skel.h
+"
+						Outputs="Components.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL --typecode --any --c++-suffix cpp --c++-skel -B$(MICO)  -I$(MICO)\include  -DWIN32 Components.idl
+copy Components.h Components_skel.h
+"
+						Outputs="Components.h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CORBADepends.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB CORBADepends.idl
+"
+						Outputs="CORBADepends.h;CORBADepends.cpp;CORBADepends_skel.h;CORBADepends_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCMIDLTool"
+						TargetEnvironment="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -D_QEDO_NO_QOS -DWIN32 -DORBACUS_ORB CORBADepends.idl
+"
+						Outputs="CORBADepends.h;CORBADepends.cpp;CORBADepends_skel.h;CORBADepends_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL --any --c++-suffix cpp --c++-skel -B$(MICO)  -I$(MICO)\include  -DWIN32 CORBADepends.idl
+copy CORBADepends.h CORBADepends_skel.h
+"
+						Outputs="CORBADepends.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB CORBADepends.idl
+"
+						Outputs="CORBADepends.h;CORBADepends.cpp;CORBADepends_skel.h;CORBADepends_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico_wo_qos|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL --any --c++-suffix cpp --c++-skel -B$(MICO)  -I$(MICO)\include  -DWIN32 -D_QEDO_NO_QOS CORBADepends.idl
+copy CORBADepends.h CORBADepends_skel.h
+"
+						Outputs="CORBADepends.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL --any --c++-suffix cpp --c++-skel -B$(MICO)  -I$(MICO)\include  -DWIN32 CORBADepends.idl
+copy CORBADepends.h CORBADepends_skel.h
+"
+						Outputs="CORBADepends.h"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="QedoComponents.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB QedoComponents.idl
+"
+						Outputs="QedoComponents.h;QedoComponents.cpp;QedoComponents_skel.h;QedoComponents_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -D_QEDO_NO_QOS -DWIN32 -DORBACUS_ORB QedoComponents.idl
+"
+						Outputs="QedoComponents.h;QedoComponents.cpp;QedoComponents_skel.h;QedoComponents_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL  --any --c++-suffix cpp --c++-skel -B$(MICO)  -I$(MICO)\include  -DWIN32 QedoComponents.idl
+copy QedoComponents.h QedoComponents_skel.h
+"
+						Outputs="QedoComponents.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(ORBACUS)\bin\idl -I. -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB -DWIN32 -DORBACUS_ORB QedoComponents.idl
+"
+						Outputs="QedoComponents.h;QedoComponents.cpp;QedoComponents_skel.h;QedoComponents_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico_wo_qos|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL  --any --c++-suffix cpp --c++-skel -B$(MICO)  -I$(MICO)\include  -DWIN32 -D_QEDO_NO_QOS QedoComponents.idl
+copy QedoComponents.h QedoComponents_skel.h
+"
+						Outputs="QedoComponents.h"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing Custom Build Step on $(InputPath)"
+						CommandLine="$(MICO)\win32-bin\idl -DMICO_ORB --windows-dll QEDODLL  --any --c++-suffix cpp --c++-skel -B$(MICO)  -I$(MICO)\include    -DWIN32 QedoComponents.idl
+copy QedoComponents.h QedoComponents_skel.h
+"
+						Outputs="QedoComponents.h"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

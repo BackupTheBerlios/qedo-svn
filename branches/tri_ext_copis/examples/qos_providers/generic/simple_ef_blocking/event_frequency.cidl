@@ -1,0 +1,11 @@
+#include "event_frequency.idl"
+module EventFrequency {
+
+	composition extension EFQoSProviderComposition {
+		home executor EFQoSProviderHomeExec {
+			implements EFQoSProviderHome;
+			manages EFQoSProviderExec;
+		};
+	};
+
+};

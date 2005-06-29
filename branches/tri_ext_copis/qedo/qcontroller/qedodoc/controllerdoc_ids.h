@@ -1,0 +1,10 @@
+#define qedo 1000
+#define Qedo_Controller 1001
+#define Launcher 1002
+#define Edit_qedoconf 1003
+#define Name_Service_Browser 1004
+#define Deployment 1005
+#define Edit_destination 1006
+#define Qedo_Explorer 1007
+#define Contents 1008
+#define Contact 1009

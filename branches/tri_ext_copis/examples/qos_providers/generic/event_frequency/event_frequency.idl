@@ -1,0 +1,14 @@
+#include "Components.idl"
+
+module EventFrequency {
+
+	local interface FreqUsage {
+		void set_frequency(in long freq);
+	};
+
+	component EFQoSProvider {
+		provides FreqUsage qos_usage;
+	};
+
+	home EFQoSProviderHome manages EFQoSProvider {};
+};

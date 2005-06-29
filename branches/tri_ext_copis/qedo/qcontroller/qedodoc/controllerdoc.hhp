@@ -1,0 +1,30 @@
+[OPTIONS]
+Compatibility=1.1
+Full-text search=Yes
+Contents file=controllerdoc.hhc
+Compiled file=controllerdoc.chm
+Default Window=Help
+Default topic=contents.htm
+Index file=controllerdoc.hhk
+Title=Qedo Controller Documentation
+
+[WINDOWS]
+Help=,"controllerdoc.hhc","controllerdoc.hhk","contents.htm",,,,,,0x2420,,0x380e,,,,,0,,,
+
+[FILES]
+qedo.htm
+qedo-controller.htm
+launcher.htm
+edit_qedo_conf.htm
+nsbrowser.htm
+deployment.htm
+destination.htm
+explorer.htm
+contents.htm
+contact.htm
+
+[ALIAS]
+#include "controllerdoc_alias.h"
+
+[MAP]
+#include "controllerdoc_ids.h"

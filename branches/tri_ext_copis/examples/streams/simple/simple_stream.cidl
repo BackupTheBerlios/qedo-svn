@@ -1,0 +1,19 @@
+#include "simple_stream.idl"
+
+module SimpleStream {
+
+	composition session SinkCompo {
+		home executor SinkHomeImpl {
+			implements SimpleStream::StreamSinkHome;
+			manages SinkImpl;
+		};
+	};
+
+	composition session SourceCompo {
+		home executor SourceHomeImpl {
+			implements SimpleStream::StreamSourceHome;
+			manages SourceImpl;
+		};
+	};
+
+};

@@ -1,0 +1,87 @@
+#include "generator.idl"
+
+module CCMGenerator {
+
+	composition session CIDLFrontEnd_compo {
+		home executor CIDLFrontendHomeImpl {
+				implements CCMGenerator::CIDLFrontendHome;
+				manages CIDLFrontendHomeSessionImpl;
+		};
+	};
+	
+	composition session MiddleEnd_compo {
+		home executor MiddleendHomeImpl {
+				implements CCMGenerator::MOFRepositoryHome;
+				manages MOFRepositorySessionImpl;
+		};
+	};
+
+	composition session EIDLBackEnd_compo {
+		home executor EIDLBackendHomeImpl {
+				implements EIDLBackendHome;
+				manages EIDLBackendSessionImpl ;
+		};  
+	};
+
+	composition session LIDLBackEnd_compo {
+		home executor LIDLBackendHomeImpl {
+				implements LIDLBackendHome;
+				manages LIDLBackendSessionImpl ;
+		};
+	};
+
+	composition session ServantCBackEnd_compo {
+		home executor ServantCBackendHomeImpl {
+				implements ServantCBackendHome;
+				manages ServantCBackendSessionImpl ;
+		};
+	};
+
+	composition session ServantHBackEnd_compo {
+		home executor ServantHBackendHomeImpl {
+				implements ServantHBackendHome;
+				manages ServantHBackendSessionImpl ;
+		};
+	};
+
+	composition session BusinessSkellCPPBackEnd_compo {
+		home executor BusinessSkellCPPBackendHomeImpl {
+				implements BusinessSkellCPPBackendHome;
+				manages BusinessSkellCPPBackendSessionImpl ;
+		};
+	};
+
+	composition session BusinessSkellHBackEnd_compo {
+		home executor BusinessSkellHBackendHomeImpl {
+				implements BusinessSkellHBackendHome;
+				manages BusinessSkellHBackendSessionImpl ;
+		};
+	};
+
+	composition session CCDBackEnd_compo {
+		home executor CCDBackendHomeImpl {
+				implements CCDBackendHome;
+				manages CCDBackendSessionImpl ;
+		};
+	};
+
+	composition session CSDBackEnd_compo {
+		home executor CSDBackendHomeImpl {
+				implements CSDBackendHome;
+				manages CSDBackendSessionImpl ;
+		};
+	};
+	composition session CADBackEnd_compo {
+		home executor CADBackendHomeImpl {
+				implements CADBackendHome;
+				manages CADBackendSessionImpl ;
+		};
+	};
+	composition session CPDBackEnd_compo {
+		home executor CPDBackendHomeImpl {
+				implements CPDBackendHome;
+				manages CPDBackendSessionImpl ;
+		};
+	};
+	
+};
