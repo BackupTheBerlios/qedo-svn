@@ -37,20 +37,20 @@ class CONTAINERDLL_API ContainerServerRequestInfo : public virtual Components::C
 {
 private:
 	/** the identity of this component */
-//	std::string		uuid_;
-	std::string		component_id_;
+	std::string		origin_id_;
+	std::string		target_id_;
 	std::string		name_;
 
 	PortableInterceptor::ServerRequestInfo_var request_info_;
 
 public:
-	ContainerServerRequestInfo (PortableInterceptor::ServerRequestInfo_ptr request_info, const char* component_id, const Components::FeatureName name);
+	ContainerServerRequestInfo (PortableInterceptor::ServerRequestInfo_ptr request_info, const char* origin_id, const char* target_id, const Components::FeatureName name);
 
 	~ContainerServerRequestInfo ();
 
-//    virtual char* component_uuid() ;
+	virtual char* origin_id() ;
 
-	virtual char* component_id() ;
+	virtual char* target_id() ;
 
 	virtual Components::FeatureName name();
 

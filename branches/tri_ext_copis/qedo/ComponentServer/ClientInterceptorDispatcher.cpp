@@ -105,7 +105,7 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 //	}
 
 //	all_client_interceptors_mutex_.read_lock_object();
-	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id);
+	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info, slot_info.origin_id, slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
@@ -158,7 +158,7 @@ ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestIn
 //	}
 
 //	all_client_interceptors_mutex_.read_lock_object();
-	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id);
+	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info, slot_info.origin_id, slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
@@ -190,7 +190,7 @@ ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientReque
 //	}
 
 //	all_client_interceptors_mutex_.read_lock_object();
-	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id);
+	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = new Qedo::ContainerClientRequestInfo(info, slot_info.origin_id, slot_info.target_id,slot_info.target_id);
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{

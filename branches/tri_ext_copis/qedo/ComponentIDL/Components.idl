@@ -467,18 +467,31 @@ module Components {
 
 #ifndef _QEDO_NO_QOS
 	module ContainerPortableInterceptor {
-		local interface ContainerServerRequestInfo {
-//			readonly attribute string component_uuid;
-			readonly attribute string component_id;
+		local interface ContainerRequestInfo {
+			readonly attribute string origin_id;
+			readonly attribute string target_id;
+
 			readonly attribute FeatureName name;
+
+		};
+
+		local interface ContainerServerRequestInfo : ContainerRequestInfo{
 			PortableInterceptor::ServerRequestInfo request_info();
 		};
 
-		local interface ContainerClientRequestInfo {
-//			readonly attribute string component_uuid;
-			readonly attribute string component_id;
-			readonly attribute FeatureName name;
+		local interface ContainerClientRequestInfo : ContainerRequestInfo {
 			PortableInterceptor::ClientRequestInfo request_info();
+		};
+
+		local interface ContainerRequestInfoExt {
+			attribute Dynamic::ParameterList arguments;
+			attribute string operation;
+		};
+
+		local interface ContainerServerRequestInfoExt : ContainerRequestInfoExt {
+		};
+
+		local interface ContainerClientRequstInfoExt : ContainerRequestInfoExt {
 		};
 
 		local interface ContainerInterceptor {
@@ -511,6 +524,10 @@ module Components {
 		};
 
 		local interface ServerContainerInterceptorExt : ServerContainerInterceptor {
+
+			void pre_comp_invoke (in ContainerServerRequestInfoExt info, out boolean con);
+			void post_com_invoke (in ContainerServerRequestInfoExt info, out boolean con);
+
 			void call (in string comp_id, in string origin, in string operation, out boolean con );
 
 			Cookie connect (in string comp_id, in FeatureName name,	in Object connection, out boolean con )
