@@ -437,8 +437,7 @@ HomeServantBase::lookup_servant (const PortableServer::ObjectId& object_id)
 
 #ifndef _QEDO_NO_QOS
 	// set servant interceptor dispatcher
-	servant -> set_servant_dispatcher_registry (
-		Components::ContainerPortableInterceptor::ServantInterceptorRegistration::_duplicate(container_ -> servant_reg));
+	servant -> set_servant_dispatcher (Qedo_Components::ServantInterceptorDispatcher::_duplicate(container_ -> servant_dispatcher_));
 
 #endif // _QEDO_NO_QOS
 	// set the instance

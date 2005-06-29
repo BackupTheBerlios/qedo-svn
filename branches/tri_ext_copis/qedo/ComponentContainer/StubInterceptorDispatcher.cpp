@@ -51,13 +51,45 @@ StubInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* compo
 
 }
 
+Components::Cookie* 
+StubInterceptorDispatcher::register_client_interceptor( Components::ContainerPortableInterceptor::ClientContainerInterceptor_ptr ci )
+{
+	// ToDo call client registration
+	return 0;
+};
+
+
+Components::ContainerPortableInterceptor::ClientContainerInterceptor_ptr 
+StubInterceptorDispatcher::unregister_client_interceptor( Components::Cookie* ck )
+{
+	// ToDo call client registration
+	return 0;
+};
+
+
+Components::Cookie* 
+StubInterceptorDispatcher::register_stub_interceptor( Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr ci )
+{
+	// ToDo
+	return 0;
+}
+
+
+Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr 
+StubInterceptorDispatcher::unregister_stub_interceptor( Components::Cookie* ck )
+{
+	// ToDo
+	return 0;
+}
+
+
 void
-StubInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptorExt_ptr interceptor)
+StubInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr interceptor)
 {
 	DEBUG_OUT("StubInterceptorDispatcher: Client COPI registered for all components");
 
 	StubInterceptorEntry e;
-	e.interceptor = Components::ContainerPortableInterceptor::ClientContainerInterceptorExt::_duplicate( interceptor );
+	e.interceptor = Components::ContainerPortableInterceptor::StubContainerInterceptor::_duplicate( interceptor );
 
 	Qedo::QedoLock l(all_stub_interceptors_mutex_);
 
@@ -66,7 +98,7 @@ StubInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPor
 }
 
 void
-StubInterceptorDispatcher::unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptorExt_ptr interceptor)
+StubInterceptorDispatcher::unregister_interceptor_for_all(Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr interceptor)
 {
 DEBUG_OUT("ServerInterceptorDispatcher: Stub interceptor Dispatcher unregister_for_all called");
 
@@ -89,6 +121,26 @@ DEBUG_OUT("ServerInterceptorDispatcher: Stub interceptor Dispatcher unregister_f
 		DEBUG_OUT ("ServerinterceptorDispatcher: Unknown interceptor");
 	}
 
+}
+
+
+char*
+StubInterceptorDispatcher::name()
+{
+	// this should not been used
+	return "StubInterceptorDispatcher";
+}
+
+void 
+StubInterceptorDispatcher::destroy() 
+{
+	// should never be called
+}
+
+void 
+StubInterceptorDispatcher::set_slot_id( ::PortableInterceptor::SlotId slot_id ) 
+{
+	// should never be called	
 }
 
 CORBA::Boolean 

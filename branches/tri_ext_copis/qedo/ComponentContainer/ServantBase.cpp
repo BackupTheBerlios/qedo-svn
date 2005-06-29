@@ -125,9 +125,10 @@ ServantBase::set_instance (Qedo::ComponentInstance& instance)
 
 #ifndef _QEDO_NO_QOS
 void
-ServantBase::set_servant_dispatcher_registry(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr reg) 
+ServantBase::set_servant_dispatcher(Qedo_Components::ServantInterceptorDispatcher_ptr servant_dispatcher) 
 {
-	servant_interceptor_registry_ = Components::ContainerPortableInterceptor::ServantInterceptorRegistration::_duplicate(reg);
+	// servant_interceptor_registry_ = Components::ContainerPortableInterceptor::ServantInterceptorRegistration::_duplicate(reg);
+	servant_dispatcher_ = Qedo_Components::ServantInterceptorDispatcher::_duplicate(servant_dispatcher);
 }
 
 
@@ -171,7 +172,7 @@ throw (Components::InvalidName, CORBA::SystemException)
 #ifndef _QEDO_NO_QOS
 	const char * comp_id = this-> get_component_id();
 	CORBA::Boolean con = true;
-	CORBA::Object_ptr anObject= servant_interceptor_registry_ -> provide_facet (comp_id, name, con);
+	CORBA::Object_ptr anObject = servant_dispatcher_ -> provide_facet (comp_id, name, con);
 	if (con)
 	{
 #endif
@@ -220,7 +221,7 @@ throw( Components::InvalidName,
 #ifndef _QEDO_NO_QOS
 	const char * comp_id = this-> get_component_id();
 	CORBA::Boolean con;
-	Components::Cookie* temp_ck = servant_interceptor_registry_ -> connect (comp_id, name, connection, con);
+	Components::Cookie* temp_ck = servant_dispatcher_ -> connect (comp_id, name, connection, con);
 	if (con)
 	{
 #endif

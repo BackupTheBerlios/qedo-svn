@@ -35,14 +35,15 @@ namespace Qedo {
 
 	class ServantInterceptorEntry {
 	public:
-		Components::ContainerPortableInterceptor::ServerContainerInterceptorExt_var interceptor;
+		Components::ContainerPortableInterceptor::ServantContainerInterceptor_var interceptor;
 		std::string id;
 	};
 
 	typedef std::vector < ServantInterceptorEntry > ServantInterceptorVector;
 
 	class CONTAINERDLL_API ServantInterceptorDispatcher :
-		public virtual Components::ContainerPortableInterceptor::ServantInterceptorRegistration,
+		public virtual Qedo_Components::ServantInterceptorDispatcher,
+//		public virtual Components::ContainerPortableInterceptor::ServantInterceptorRegistration,
 		public virtual CORBA::LocalObject
 	{
 	private:
@@ -79,11 +80,43 @@ namespace Qedo {
 		virtual char*
 		get_origin_id();
 
-		virtual void
-		register_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptorExt_ptr interceptor);
+		// Server Registration interface
+		virtual Components::Cookie* 
+		register_server_interceptor( Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr si );
+
+		virtual Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr 
+		unregister_server_interceptor( Components::Cookie* ck );
+
+		virtual Components::Cookie* 
+		register_servant_interceptor( Components::ContainerPortableInterceptor::ServantContainerInterceptor_ptr si ) ;
+
+		virtual Components::ContainerPortableInterceptor::ServantContainerInterceptor_ptr 
+		unregister_servant_interceptor( Components::Cookie* ck ) ;
 
 		virtual void
-		unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptorExt_ptr interceptor);
+		register_interceptor_for_all(Components::ContainerPortableInterceptor::ServantContainerInterceptor_ptr interceptor);
+
+		virtual void
+		unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ServantContainerInterceptor_ptr interceptor);
+
+
+		virtual char*
+		name();
+
+	    virtual void 
+		destroy();
+		
+		virtual void 
+		set_slot_id( ::PortableInterceptor::SlotId slot_id );
+
+	    virtual void 
+		pre_comp_invoke( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) ;
+
+		virtual void 
+		post_com_invoke( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) ;
+
+	    virtual void 
+		call( const char* comp_id, const char* origin, const char* operation, CORBA::Boolean_out con ) ;
 
 		virtual CORBA::Boolean 
 		call( const char* oper ) ;

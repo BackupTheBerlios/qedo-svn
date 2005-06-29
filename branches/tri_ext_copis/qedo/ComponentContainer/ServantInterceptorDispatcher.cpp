@@ -96,13 +96,49 @@ ServantInterceptorDispatcher::get_origin_id()
 
 }
 
+Components::Cookie* 
+ServantInterceptorDispatcher::register_server_interceptor( Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr si )
+{
+	DEBUG_OUT("ServantInterceptorDispatcher: Server COPI registered for all components");
+	// call server rigstration
+	return 0;
+
+}
+
+
+Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr 
+ServantInterceptorDispatcher::unregister_server_interceptor( Components::Cookie* ck )
+{
+	DEBUG_OUT("ServantInterceptorDispatcher: Server COPI unregister_for_all called");
+
+	// call servant registration
+
+	return 0;
+}
+
+
+Components::Cookie* 
+ServantInterceptorDispatcher::register_servant_interceptor( Components::ContainerPortableInterceptor::ServantContainerInterceptor_ptr si ) 
+{
+	return 0;
+}
+
+
+Components::ContainerPortableInterceptor::ServantContainerInterceptor_ptr 
+ServantInterceptorDispatcher::unregister_servant_interceptor( Components::Cookie* ck ) 
+{
+	return 0;
+}
+
+
+
 void
-ServantInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptorExt_ptr interceptor)
+ServantInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPortableInterceptor::ServantContainerInterceptor_ptr interceptor)
 {
 	DEBUG_OUT("ServantInterceptorDispatcher: Server COPI registered for all components");
 
 	ServantInterceptorEntry e;
-	e.interceptor = Components::ContainerPortableInterceptor::ServerContainerInterceptorExt::_duplicate( interceptor );
+	e.interceptor = Components::ContainerPortableInterceptor::ServantContainerInterceptor::_duplicate( interceptor );
 
 	Qedo::QedoLock l(all_servant_interceptors_mutex_);
 
@@ -111,7 +147,7 @@ ServantInterceptorDispatcher::register_interceptor_for_all(Components::Container
 }
 
 void
-ServantInterceptorDispatcher::unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptorExt_ptr interceptor)
+ServantInterceptorDispatcher::unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ServantContainerInterceptor_ptr interceptor)
 {
 	DEBUG_OUT("ServantInterceptorDispatcher: Server COPI unregister_for_all called");
 
@@ -134,6 +170,48 @@ ServantInterceptorDispatcher::unregister_interceptor_for_all(Components::Contain
 		DEBUG_OUT ("ServantInterceptorDispatcher: Unknown interceptor");
 	}
 }	
+
+
+char*
+ServantInterceptorDispatcher::name()
+{
+	// this should not been used
+	return "ServantInterceptorDispatcher";
+}
+
+void 
+ServantInterceptorDispatcher::destroy() 
+{
+	// should never be called
+}
+
+void 
+ServantInterceptorDispatcher::set_slot_id( ::PortableInterceptor::SlotId slot_id ) 
+{
+	// should never be called	
+}
+
+void 
+ServantInterceptorDispatcher::pre_comp_invoke( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) 
+{
+
+}
+
+
+void 
+ServantInterceptorDispatcher::post_com_invoke( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) 
+{
+
+}
+
+
+void 
+ServantInterceptorDispatcher::call( const char* comp_id, const char* origin, const char* operation, CORBA::Boolean_out con ) 
+{
+
+}
+
+
 
 CORBA::Boolean 
 ServantInterceptorDispatcher::call( const char* oper ) 

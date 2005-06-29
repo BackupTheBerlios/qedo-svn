@@ -64,7 +64,7 @@ throw(Components::InvalidName,
 #ifndef _QEDO_NO_QOS
 	const char * act_id = this-> get_component_id();
 	CORBA::Boolean con;
-	CORBA::Object_var anObject = servant_interceptor_registry_ -> provide_sink_stream_port (act_id, (char*&) name, con);
+	CORBA::Object_var anObject = servant_dispatcher_ -> provide_sink_stream_port (act_id, (char*&) name, con);
 	if (con) {
 #endif
 
@@ -93,7 +93,7 @@ throw(Components::InvalidName,
 #ifndef _QEDO_NO_QOS
 	const char * act_id = this-> get_component_id();
 	CORBA::Boolean con;
-	Components::Cookie* temp_ck = servant_interceptor_registry_ -> bind (act_id, (char*&) name, (StreamComponents::SinkStreamPort_ptr&) the_sink, (char*&)transport_profile, con);
+	Components::Cookie* temp_ck = servant_dispatcher_ -> bind (act_id, (char*&) name, (StreamComponents::SinkStreamPort_ptr&) the_sink, (char*&)transport_profile, con);
 	if (con)
 	{
 #endif
@@ -117,7 +117,7 @@ throw(Components::CookieRequired,
 #ifndef _QEDO_NO_QOS
 	const char * act_id = this-> get_component_id();
 	CORBA::Boolean con;
-	StreamComponents::SinkStreamPort_ptr temp_port = servant_interceptor_registry_ -> unbind (act_id, (char*&) name, ck, con);
+	StreamComponents::SinkStreamPort_ptr temp_port = servant_dispatcher_ -> unbind (act_id, (char*&) name, ck, con);
 	if (con)
 	{
 #endif

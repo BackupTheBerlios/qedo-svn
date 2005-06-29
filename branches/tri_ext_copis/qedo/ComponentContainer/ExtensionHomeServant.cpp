@@ -99,13 +99,13 @@ ExtensionHomeServant::set_client_interceptor_dispatcher(Components::ContainerPor
 }
 
 void
-ExtensionHomeServant::set_servant_interceptor_dispatcher(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr servant_dispatcher)
+ExtensionHomeServant::set_servant_interceptor_dispatcher(Qedo_Components::ServantInterceptorDispatcher_ptr servant_dispatcher)
 {
 	servant_dispatcher_ = servant_dispatcher;
 }
 
 void
-ExtensionHomeServant::set_stub_interceptor_dispatcher(Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_dispatcher)
+ExtensionHomeServant::set_stub_interceptor_dispatcher(Qedo_Components::StubInterceptorDispatcher_ptr stub_dispatcher)
 {
 	stub_dispatcher_ = stub_dispatcher;
 }

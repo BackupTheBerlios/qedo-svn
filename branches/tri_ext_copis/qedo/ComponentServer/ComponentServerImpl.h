@@ -149,9 +149,9 @@ private:
 	/** interceptor dispatcher for the client side */
 	Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_var client_dispatcher_;
 	/** interceptor dispatcher for the servants */
-	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_var servant_dispatcher_;
+	Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_var servant_dispatcher_;
 	/** interceptor dispatcher for the stubs */
-	Components::ContainerPortableInterceptor::StubInterceptorRegistration_var stub_dispatcher_;
+	Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_var stub_dispatcher_;
 #endif
 public:
 	/** the orb */
@@ -246,13 +246,13 @@ public:
 	 * set_servant_dispatcher
 	 */
 	virtual void
-	set_servant_dispatcher ( Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr servant_dispatcher);
+	set_servant_dispatcher ( Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr servant_dispatcher);
 
 	/**
 	 * set_stub_dispatcher
 	 */
 	virtual void
-	set_stub_dispatcher ( Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_dispatcher);
+	set_stub_dispatcher ( Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr stub_dispatcher);
 
 	/**
 	 * get_server_dispatcher
@@ -270,14 +270,15 @@ public:
 	/**
 	 * get_servant_dispatcher
 	 */
-	virtual Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr
+	virtual Qedo_Components::ServantInterceptorDispatcher_ptr
 	get_servant_dispatcher (  );
 
 	/**
-	 * get_servant_dispatcher
+	 * get_stub_dispatcher
 	 */
-	virtual Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr
+	virtual Qedo_Components::StubInterceptorDispatcher_ptr
 	get_stub_dispatcher (  );
+
 
 	virtual ContainerList*
 	get_all_containers();

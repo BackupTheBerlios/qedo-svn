@@ -47,8 +47,8 @@ class CONTAINERDLL_API ExtensionContext : public virtual Components::ExtensionCo
 private:
 	Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_var server_registration_;
 	Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_var client_registration_;
-	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_var servant_registration_;
-	Components::ContainerPortableInterceptor::StubInterceptorRegistration_var stub_registration_;
+	Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_var servant_registration_;
+	Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_var stub_registration_;
 
 	/*
 	* list of config values to store contract inforamtion 
@@ -82,13 +82,13 @@ public:
 	 * set_servant_intercpetor_registration
 	 */
 	 virtual void
-	 set_servant_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr registration);
+	 set_servant_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr registration);
 
 	/**
 	 * set_servant_intercpetor_registration
 	 */
 	 virtual void
-	 set_stub_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr registration);
+	 set_stub_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr registration);
 
 	 /**
 	 * get_server_intercpetor_registration
@@ -106,13 +106,13 @@ public:
 	 /**
 	 * get_servant_intercpetor_registration
 	 */
-	 virtual Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr
+	 virtual Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr
 	 get_servant_interceptor_dispatcher_registration();
 
 	 /**
 	 * get_servant_intercpetor_registration
 	 */
-	 virtual Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr
+	 virtual Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr
 	 get_stub_interceptor_dispatcher_registration();
 
 	 virtual void

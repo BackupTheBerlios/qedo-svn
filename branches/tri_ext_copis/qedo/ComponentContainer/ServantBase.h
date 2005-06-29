@@ -66,7 +66,8 @@ protected:
 	CORBA::Object_ptr					current_executor_;
 
 #ifndef _QEDO_NO_QOS
-	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_var servant_interceptor_registry_ ;
+//	Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistrationExt_var servant_interceptor_registry_ ;
+	Qedo_Components::ServantInterceptorDispatcher_var servant_dispatcher_;
 #endif
 
 public:
@@ -104,7 +105,7 @@ public:
 
 #ifndef _QEDO_NO_QOS
 	void
-	set_servant_dispatcher_registry(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr reg);
+		set_servant_dispatcher(Qedo_Components::ServantInterceptorDispatcher_ptr  servant_dispatcher);
 
 #endif
 };

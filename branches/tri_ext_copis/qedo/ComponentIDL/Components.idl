@@ -483,15 +483,15 @@ module Components {
 			PortableInterceptor::ClientRequestInfo request_info();
 		};
 
-		local interface ContainerRequestInfoExt {
+
+		local interface ContainerServantRequestInfo : ContainerRequestInfo {
 			attribute Dynamic::ParameterList arguments;
 			attribute string operation;
 		};
 
-		local interface ContainerServerRequestInfoExt : ContainerRequestInfoExt {
-		};
-
-		local interface ContainerClientRequstInfoExt : ContainerRequestInfoExt {
+		local interface ContainerStubRequstInfo : ContainerRequestInfo {
+			attribute Dynamic::ParameterList arguments;
+			attribute string operation;
 		};
 
 		local interface ContainerInterceptor {
@@ -523,10 +523,13 @@ module Components {
 
 		};
 
-		local interface ServerContainerInterceptorExt : ServerContainerInterceptor {
+		local interface ServantContainerInterceptor : ContainerInterceptor {
 
-			void pre_comp_invoke (in ContainerServerRequestInfoExt info, out boolean con);
-			void post_com_invoke (in ContainerServerRequestInfoExt info, out boolean con);
+			void 
+			pre_comp_invoke (in ContainerServantRequestInfo info, out boolean con);
+
+			void 
+			post_com_invoke (in ContainerServantRequestInfo info, out boolean con);
 
 			void call (in string comp_id, in string origin, in string operation, out boolean con );
 
@@ -569,7 +572,7 @@ module Components {
 
 		};
 
-		local interface ClientContainerInterceptorExt : ClientContainerInterceptor {
+		local interface StubContainerInterceptor : ContainerInterceptor {
 			Cookie connect (in string comp_id, in FeatureName name,	in Object connection, out boolean con )
 				/*raises (InvalidName, InvalidConnection, AlreadyConnected, ExceededConnectionLimit) */;
 
@@ -606,46 +609,32 @@ module Components {
 			unregister_server_interceptor (in Components::Cookie ck);
 		};
 
-		local interface ClientContainerInterceptorRegistrationExt : ClientContainerInterceptorRegistration {
+		local interface StubContainerInterceptorRegistration : ClientContainerInterceptorRegistration {
 			
 			Components::Cookie
-			register_ext_client_interceptor ( in ClientContainerInterceptorExt ci);
+			register_stub_interceptor ( in StubContainerInterceptor ci);
 
-			ClientContainerInterceptorExt
-			unregister_ext_client_interceptor ( in Components::Cookie ck);
+			StubContainerInterceptor
+			unregister_stub_interceptor ( in Components::Cookie ck);
 		};
 
-		local interface ServerContainerInterceptorRegistrationExt : ServerContainerInterceptorRegistration {
+		local interface ServantContainerInterceptorRegistration : ServerContainerInterceptorRegistration {
 			
 			Components::Cookie
-			register_ext_server_interceptor ( in ServerContainerInterceptorExt si);
+			register_servant_interceptor ( in ServantContainerInterceptor si);
 
-			ServerContainerInterceptorExt
-			unregister_ext_server_interceptor ( in Components::Cookie ck);
+			ServantContainerInterceptor
+			unregister_servant_interceptor ( in Components::Cookie ck);
 		};
 
+
+		/** is obsolete need to be replaced */
 /*
-		local interface ServerInterceptorRegistration : PortableInterceptor::ServerRequestInterceptor
-		{
-			void register_interceptor_for_all (in ServerContainerInterceptor server_interceptor);
-			void register_interceptor_for_component (in ServerContainerInterceptor server_interceptor, in string id);
-			void unregister_interceptor_for_all ( in ServerContainerInterceptor server_interceptor);
-			void unregister_interceptor_for_component ( in ServerContainerInterceptor server_interceptor, in string id);
-			
-		};
-
-		local interface ClientInterceptorRegistration : PortableInterceptor::ClientRequestInterceptor
-		{
-			void register_interceptor_for_all ( in ClientContainerInterceptor client_interceptor);
-			void unregister_interceptor_for_all ( in ClientContainerInterceptor client_interceptor);
-		};
-
-*/
-
 		local interface ServantInterceptorRegistration
 		{
 			void register_interceptor_for_all ( in ServerContainerInterceptorExt server_interceptor);
 			void unregister_interceptor_for_all ( in ServerContainerInterceptorExt server_interceptor);
+
 
 			boolean call(in string oper);
 			// CCMObject
@@ -667,7 +656,8 @@ module Components {
 				raises (Components::InvalidName);
 #endif
 		};
-
+*/
+/* obsolete
 		local interface StubInterceptorRegistration
 		{
 			void register_interceptor_for_all ( in ClientContainerInterceptorExt server_interceptor);
@@ -692,7 +682,7 @@ module Components {
 				raises (Components::InvalidName);
 #endif
 		};
-
+*/
 		struct SlotInfo
 		{
 			string origin_id;
@@ -710,10 +700,10 @@ module Components {
 			in Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration registration );
 
 		void set_servant_interceptor_dispatcher_registration (
-			in Components::ContainerPortableInterceptor::ServantInterceptorRegistration registration );
+			in Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration registration );
 
 		void set_stub_interceptor_dispatcher_registration (
-			in Components::ContainerPortableInterceptor::StubInterceptorRegistration registration );
+			in Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration registration );
 
 		Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration
 			get_server_interceptor_dispatcher_registration ();
@@ -721,10 +711,10 @@ module Components {
 		Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration
 			get_client_interceptor_dispatcher_registration ();
 
-		Components::ContainerPortableInterceptor::ServantInterceptorRegistration
+		Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration
 			get_servant_interceptor_dispatcher_registration();
 
-		Components::ContainerPortableInterceptor::StubInterceptorRegistration
+		Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration
 			get_stub_interceptor_dispatcher_registration();
 
 //		void register_servant_locator_for_all (in Components::ContainerPortableInterceptor::ServerContainerInterceptor server_interceptor);

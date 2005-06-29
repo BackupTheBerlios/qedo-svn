@@ -238,9 +238,11 @@ private:
 		throw (Components::CCMException);
 
 #ifndef _QEDO_NO_QOS
-	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr servant_reg;
-	Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_reg;
-
+//	Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistrationExt_ptr servant_reg;
+	Qedo_Components::ServantInterceptorDispatcher_var servant_dispatcher_;
+	
+//	Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistrationExt_ptr stub_reg;
+	Qedo_Components::StubInterceptorDispatcher_var stub_dispatcher_;
 #endif 
 
 public:
