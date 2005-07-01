@@ -143,6 +143,22 @@ StubInterceptorDispatcher::set_slot_id( ::PortableInterceptor::SlotId slot_id )
 	// should never be called	
 }
 
+void 
+StubInterceptorDispatcher::stub_send_request( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) 
+{
+	DEBUG_OUT("StubInterceptorDispatcher: stub_send_request");
+
+}
+
+
+void 
+StubInterceptorDispatcher::stub_recieve_reply( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) 
+{
+	DEBUG_OUT("StubInterceptorDispatcher: stub_receive_request");
+
+}
+
+
 CORBA::Boolean 
 StubInterceptorDispatcher::call( const char* oper ) 
 {

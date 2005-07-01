@@ -28,6 +28,7 @@
 #include <CORBA.h>
 #include <Components.h>
 #include "RefCountBase.h"
+#include "mico/pi.h"
 #include "Util.h"
 
 namespace Qedo {
@@ -55,6 +56,38 @@ public:
 	virtual Components::FeatureName name();
 
     virtual PortableInterceptor::ServerRequestInfo_ptr request_info() ;
+};
+
+class CONTAINERDLL_API ContainerServantRequestInfo : public virtual Components::ContainerPortableInterceptor::ContainerServantRequestInfo,
+	public virtual RefCountLocalObject
+{
+private:
+	/** the identity of this component */
+	std::string		origin_id_;
+	std::string		target_id_;
+	std::string		name_;
+	std::string		operation_name_;
+
+	Dynamic::ParameterList_var arguments_;
+
+public:
+	ContainerServantRequestInfo (Dynamic::ParameterList* arguments, const char* origin_id, const char* target_id, const Components::FeatureName name);
+
+	~ContainerServantRequestInfo ();
+
+	virtual char* origin_id() ;
+
+	virtual char* target_id() ;
+
+	virtual Components::FeatureName name();
+
+	virtual Dynamic::ParameterList* arguments() ;
+
+	virtual void arguments( const ::Dynamic::ParameterList& value );
+
+	virtual char* operation();
+
+	virtual void operation( const char* value ) ;
 };
 
 } //namespace Qedo

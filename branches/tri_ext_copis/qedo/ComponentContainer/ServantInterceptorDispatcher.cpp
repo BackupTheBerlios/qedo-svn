@@ -192,21 +192,21 @@ ServantInterceptorDispatcher::set_slot_id( ::PortableInterceptor::SlotId slot_id
 }
 
 void 
-ServantInterceptorDispatcher::pre_comp_invoke( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) 
+ServantInterceptorDispatcher::servant_receive_request ( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) 
 {
 
 }
 
 
 void 
-ServantInterceptorDispatcher::post_com_invoke( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) 
+ServantInterceptorDispatcher::servant_send_reply ( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) 
 {
 
 }
 
 
 void 
-ServantInterceptorDispatcher::call( const char* comp_id, const char* origin, const char* operation, CORBA::Boolean_out con ) 
+ServantInterceptorDispatcher::call ( const char* comp_id, const char* origin, const char* operation, CORBA::Boolean_out con ) 
 {
 
 }
