@@ -944,7 +944,7 @@ GeneratorServantH::genProxyStubServantBody(IR__::ComponentDef_ptr component)
 		out << "private:\n";
 		out.indent();
 		out << mapFullName (IR__::InterfaceDef::_narrow(a_uses -> interface_type())) << "_var orig_stub_;\n";
-		out << "Components::ContainerPortableInterceptor::StubInterceptorRegistration_var stub_dispatcher_;\n";
+		out << "Components::ContainerPortableInterceptor::StubContainerInterceptor_var stub_dispatcher_;\n";
 		out.unindent();
 
 		// public members
@@ -952,7 +952,7 @@ GeneratorServantH::genProxyStubServantBody(IR__::ComponentDef_ptr component)
 		// constructor
 		out << component->name() << "_" << a_uses -> name() << "_stub(";
 		out << mapFullName (IR__::InterfaceDef::_narrow(a_uses -> interface_type())) << "_ptr orig_stub, ";
-		out << "Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_dispatcher);\n\n";
+		out << "Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr stub_dispatcher);\n\n";
 
 		// handle attributes
 		out.indent();

@@ -43,7 +43,8 @@ GeneratorServantC::generate(std::string target, std::string fileprefix)
 	out << "#include \"" << header_name << ".h\"\n";
 	out << "#include \"CDRTransportCoDec.h\"\n";
 	out << "#include \"MarshalBuffer.h\"\n";
-	out << "#include \"Output.h\"\n\n";
+	out << "#include \"Output.h\"\n";
+	out << "#include \"ContainerServerRequestInfo.h\"\n";
 	out << "#include \"cstring\"\n\n\n";
 
 	// parse the namespace name from prefix, disadvantage is 
@@ -608,7 +609,7 @@ GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 	out.unindent();
 	out << "}\n\n";
 
-	// calling stub interceptor dispatcher
+	// calling servant interceptor dispatcher
 	out.unindent();
 	out.unindent();
 	out << "#ifndef _QEDO_NO_QOS\n";
@@ -616,9 +617,25 @@ GeneratorServantC::doOperation(IR__::OperationDef_ptr operation)
 	out.indent();
 	out << "// call interceptors\n";
 	out << "CORBA::Boolean con;\n";
-	out << "con = servant_interceptor_registry_ -> call (\"";
-	out << operation_name;
-	out << "\");\n";
+	out << "Dynamic::ParameterList* p_list = new Dynamic::ParameterList();\n";
+
+	// feed parameters in ParameterList
+	out << "p_list -> length(" << len << ");\n";
+	for(i = len; i > 0; i--)
+	{
+		out << "(*p_list)[" << i-1 << "].argument <<= ";
+		IR__::ParameterDescription pardescr = (*pards)[i - 1];
+		out << mapName(string(pardescr.name));
+		out << ";\n";
+		//missing mode
+	}
+	out << "Components::ContainerPortableInterceptor::ContainerServantRequestInfo* info =\n";
+	out << "  new Qedo::ContainerServantRequestInfo(p_list, \"origin\", \"target\", \"port\");\n";
+
+	out << "servant_dispatcher_ -> servant_receive_request (info, con);\n";
+//	\"";
+//	out << operation_name;
+//	out << "\", );\n";
 	out << "if (con)\n";
 	out << "{\n";
 	out.unindent();
@@ -1787,10 +1804,10 @@ GeneratorServantC::proxyInterface(IR__::UsesDef_ptr uses, IR__::InterfaceDef_ptr
 	std::string cl_name = class_name_ + "_" +string(uses->name()) + "_stub";
 	out << cl_name << "::" << cl_name << "(";
 	out << mapFullName (IR__::InterfaceDef::_narrow(uses -> interface_type())) << "_ptr orig_stub, ";
-	out << "Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_dispatcher)\n{\n";
+	out << "Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr stub_dispatcher)\n{\n";
 	out.indent();
 	out << "orig_stub_ = " << mapFullName (IR__::InterfaceDef::_narrow(uses -> interface_type())) << "::_duplicate(orig_stub);\n";
-	out << "stub_dispatcher_ = Components::ContainerPortableInterceptor::StubInterceptorRegistration::_duplicate((stub_dispatcher));\n";
+	out << "stub_dispatcher_ = Components::ContainerPortableInterceptor::StubContainerInterceptor::_duplicate((stub_dispatcher));\n";
 	out.unindent();
 	out << "};\n\n";
     
@@ -2065,7 +2082,7 @@ GeneratorServantC::genContextServant(IR__::ComponentDef_ptr component, CIDL::Lif
 				{
 					out << interface_name << "::_narrow ((*connections)[0]->objref())\n";
 				}
-				out << ", Components::ContainerPortableInterceptor::StubInterceptorRegistration::_duplicate(stub_registration_));\n";
+				out << ", Components::ContainerPortableInterceptor::StubContainerInterceptor::_duplicate(stub_registration_));\n";
 				out.unindent();
 				out.unindent();
 				out << interface_name << "_var use = new_stub;";
