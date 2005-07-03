@@ -1,5 +1,6 @@
 \documentclass[12pt,a4paper]{report}
 
+\usepackage[pdftex]{graphicx}
 
 \begin{document}
 
@@ -340,10 +341,32 @@ For further details use the on-line help of the controller by pressing its help 
 \chapter{Deployment}
 \label{sec:Deployment}
 
+\section{Interfaces}
+\label{sec:Interfaces}
+
+The deployment support of the CORBA Component Model provides a set of interfaces and a packaging concept for components and assemblies. The interfaces are either provided by the component respective the home or by the runtime environment. Those being part of the component or home are used for component instance creation and configuration, like connecting component instances. Those interfaces provided by the runtime environment are used for component installation and assembly creation. In detail there are the following interfaces:
+\begin{itemize}
+	\item \verb ComponentInstallation:  This interface is used to install, query, and remove component implementations on a single platform. There is at most one \verb ComponentInstallation  object per node.
+	
+	\item \verb Assembly:  This interface represents an assembly instantiation. It is used to build up and tear down component assemblies. Building the assembly means that it is going to instantiate all of the components in the assembly and to create connections between them as specified in the assembly descriptor. Tearing the assembly down means removing all connections and destroying the components, homes, and containers, and component servers created by this assembly.
+	
+	\item \verb AssemblyFactory:  This interface is used to create \verb Assembly  objects. A single \verb AssemblyFactory  object must be present on each node where \verb Assembly  objects are to be created. At least one \verb AssemblyFactory  object must be present in a deployment domain.
+	
+	\item \verb Container:  This interface represents a server-side framework built on the ORB, the Portable Object Adaptor (POA), and a set of CORBA services, providing the runtime environment for multiple component homes and component instances.
+	
+	\item \verb ComponentServer:  This interface acts as a singleton factory for the creation of \verb Container  objects and is used by an \verb Assembly  object during the deployment process.
+	
+	\item \verb ServerActivator:  This interface represents a singleton object that resides on each host and acts as a factory for \verb ComponentServer  objects. A \verb ServerActivator  object is used by an \verb Assembly  to create a \verb ComponentServer  object that is then used by the \verb Assembly  to create \verb Container  objects.
+	
+\end{itemize}
+
+\section{General}
+\label{sec:General}
+
 In order to deploy a component or an assembly of components, an assembly package has to be created by the assembly developer. This package is a zip file, containing an XML CORBA Component Assembly descriptor file (.cad), optional XML Component Property File descriptor files for component instances (.cpf) and Component Software Packages (zip files) for the implementation of each component. All XML descriptor files have to be put in a "meta-inf" subdirectory.
 The CORBA Component Packages as zip files in turn contain an XML Software Package descriptor (.csd), an XML CORBA Component decsriptor (.ccd) and the dynamic libraries for the components business logic and servant code. Furthermore the idl definition of the component is contained and can be used for automatic generation of servant code in future.
 
-Once the assembly package is created, it can be deployed with the Qedo deployment infrastructure. The first step therefore is to determine the target location of each component of the assembly. The target location of a component has to fullfill the requirements of at least one implementation version contained in the components Component Software Package. This information then has to be put into the CORBA Component Assembly descriptor file. Provided that all servers of the Qedo platform are running, the assembly can be deployed afterwards. There are two possibilities doing that with Qedo, the "qdeploy" tool or the implementation class "ComponentDeployment" from qedoutil for deployment integration into other software. The "qdeploy" tool is also based on the implementation class. Both versions require a running infrastructure comprising a NameService and an AssemblyFactory.  
+Once the assembly package is created, it can be deployed with the Qedo deployment infrastructure. The first step therefore is to determine the target location of each component of the assembly. The target location of a component has to fulfill the requirements of at least one implementation version contained in the components Component Software Package. This information then has to be put into the CORBA Component Assembly descriptor file. Provided that all servers of the Qedo platform are running, the assembly can be deployed afterwards. There are two possibilities doing that with Qedo, the "qdeploy" tool or the implementation class "ComponentDeployment" from qedoutil for deployment integration into other software. The "qdeploy" tool is also based on the implementation class. Both versions require a running infrastructure comprising a NameService and an AssemblyFactory.  
 
 \chapter{API Reference}
 \label{sec:APIReference}
@@ -367,7 +390,7 @@ This chapter describes the exaples that come together wit Qedo. The examples sha
 
 \section{General}
 \label{sec:General}
-This section contains exaples that shows the general use of Qedo. It explains how easy components can be used. 
+This section contains examples that shows the general use of Qedo. It explains how easy components can be used. 
 
 \subsection{Hello World}
 \label{sec:HelloWorld}
@@ -378,13 +401,59 @@ Every Component should be controlled by a "Home", here are CalleeHome
 and CallerHome.
 For invoking the function from Caller, we write some code in 
 \verb CallerSessionImpl::configuration_complete()  .
-At the end, we write a small test programm, in which the two components will be connected, 
+At the end, we write a small test program, in which the two components will be connected, 
 and the say() function invoked from Caller (see main.cpp)
 
 
 \subsection{Compute}
 \label{sec:Compute}
 This examples simple serves the purpose of having a simple server side computation which is initialted by a client component.
+
+\section{Graphical Components}
+\label{sec:GraphicalComponents}
+
+Examples in this section contain component that exposes graphical user interfaces. Components that uses graphical interface frameworks need be be programmed with special care. It is important to use a GUI kit that allows the easy integration of the event loop.
+
+\subsection{Simulation}
+\label{sec:Simulation}
+This example contains a set of components for simulating an Air Traffic Management (ATM) scenario in a very simplified way. The main purpose is to demonstrate the general usage of a graphical interface framework inside of the components while using a real world example context (simulation of ATM). 
+
+In this scenario there could be a number of planes, which are tracked by radar station whenever the plains are in their area of observation. Since the radar stations have only a limited area of observation and are located at different geographical positions it is important to combine the information that is provided by each of the radar station into one single picture.
+
+
+This example contains for component types.
+\begin{itemize}
+	\item \verb Plane: This component represents a plane in the air, that can be tracked by a radar station. It has a graphical user interface to receive commands regarding the speed and the heading of the plane. A plane component has a receptacle of type \verb PlaneInput  that is used to provide the current position of the plane to the simulation server. This demonstrates the usages of a synchronous communication.
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=0.50\textwidth]{images/plane.jpg}
+	\caption{GUI of Plane}
+	\label{fig:plane}
+\end{figure}
+		
+		
+	\item \verb SimulationServer:  This  component should be instantiated once in a simulation scenario. It retrieves the position of all planes in a synchronous manner. Radar station can get information about the planes that are in their area of observation. The simulation server computes this based on the location position provided by the radar stations. This component does not expose a graphical user interface.
+	
+	\item \verb Radar:  This component simulates a radar station. The component acquire the information about the planes that are currently in its area of observation by sending a synchronous request to the simulation server. In this request the radar station provide its own location. The information about the planes is then  presented to the user in a graphical form. Furthermore, the radar station provides the information about the planes in the area of observation to the \verb TAPDisplay  in a asynchronous manner.
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=0.50\textwidth]{images/radar.jpg}
+	\caption{GUI of Radar station}
+	\label{fig:radar}
+\end{figure}
+
+
+\item \verb TAPDisplay:  This component gets information from all radar station about the position of the radar station and the planes in the area of observation. The \verb TAPDisplay  presents the information gathered from all radar stations to the user in a single view.
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=0.50\textwidth]{images/TAPDisplay.jpg}
+	\caption{GUI of TAPDisplay}
+	\label{fig:TAPDisplay}
+\end{figure}
+ 	
+\end{itemize}
 
 
 
