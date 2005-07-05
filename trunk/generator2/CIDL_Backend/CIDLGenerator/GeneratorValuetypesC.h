@@ -60,7 +60,7 @@ private:
 
 public:
 
-	GeneratorValuetypesC(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorValuetypesC(CIDL::CIDLRepository_ptr repository);
 	~GeneratorValuetypesC();
 
 	void generate(std::string target, std::string fileprefix);

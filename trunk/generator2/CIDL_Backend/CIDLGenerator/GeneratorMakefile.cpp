@@ -16,7 +16,7 @@ namespace QEDO_CIDL_Generator {
 
 
 GeneratorMakefile::GeneratorMakefile
-( QEDO_ComponentRepository::CIDLRepository_impl *repository)
+( CIDL::CIDLRepository_ptr repository)
 : CPPBase(repository), uid_(0)
 {
 }

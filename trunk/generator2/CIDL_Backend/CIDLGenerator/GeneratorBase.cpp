@@ -21,10 +21,9 @@ namespace QEDO_CIDL_Generator {
 
 
 GeneratorBase::GeneratorBase
-(QEDO_ComponentRepository::CIDLRepository_impl *repository)
+(CIDL::CIDLRepository_ptr repository)
 {
-	repository_ = repository;
-	repository_->_add_ref();
+	repository_ = CIDL::CIDLRepository::_duplicate(repository);
 	file_prefix_ = "";
 	target_scope_id_ = "";
 	target_id_ = "";
@@ -48,7 +47,6 @@ void
 GeneratorBase::destroy
 ()
 {
-	repository_->_remove_ref();
 	delete this;
 }
 
@@ -965,7 +963,7 @@ GeneratorBase::doSource(IR__::SourceDef_ptr source, IR__::ComponentDef_ptr compo
 // composition
 //
 void 
-GeneratorBase::handleComposition(QEDO_ComponentRepository::CIDLRepository_impl *repository)
+GeneratorBase::handleComposition(CIDL::CIDLRepository_ptr repository)
 {
 	IR__::ContainedSeq_var contained_seq = repository_->contents(CORBA__::dk_Composition, true);
 	CORBA::ULong len = contained_seq->length();

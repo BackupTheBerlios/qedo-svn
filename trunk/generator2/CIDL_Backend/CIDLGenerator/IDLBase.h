@@ -61,7 +61,7 @@ protected:
 
 public:
 
-	IDLBase(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	IDLBase(CIDL::CIDLRepository_ptr repository);
 	virtual ~IDLBase();
 };
 

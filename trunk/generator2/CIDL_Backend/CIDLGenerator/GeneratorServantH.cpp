@@ -9,7 +9,7 @@ namespace QEDO_CIDL_Generator {
 
 
 GeneratorServantH::GeneratorServantH
-( QEDO_ComponentRepository::CIDLRepository_impl *repository)
+( CIDL::CIDLRepository_ptr repository)
 : CPPBase(repository),
   bTempGenerated_(false),
   ph_generator_(new GeneratorPersistenceH(repository))

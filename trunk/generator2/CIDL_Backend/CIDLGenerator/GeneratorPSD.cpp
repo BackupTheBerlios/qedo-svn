@@ -28,7 +28,7 @@
 namespace QEDO_CIDL_Generator {
 
 GeneratorPSD::GeneratorPSD
-( QEDO_ComponentRepository::CIDLRepository_impl *repository)
+( CIDL::CIDLRepository_ptr repository)
 : CPPBase(repository)
 {
 }

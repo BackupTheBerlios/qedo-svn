@@ -115,7 +115,7 @@ protected:
 
 public:
 
-	CPPBase(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	CPPBase(CIDL::CIDLRepository_ptr repository);
 	virtual ~CPPBase();
 };
 

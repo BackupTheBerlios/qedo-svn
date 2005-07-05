@@ -68,11 +68,13 @@ main
 	rep_ior = orb->object_to_string(rep_ref);
 
 	std::ofstream ior_file;
-	ior_file.open("rep.ior");
-
+	ior_file.open("repository.ior");
+	
+	std::cout << "Writing Repository Reference to repository.ior\n";
 	ior_file << rep_ior.c_str();
-
 	ior_file.close();
+
+	std::cout << "IFR Repository is running ...\n";
 
 	orb->run();
 

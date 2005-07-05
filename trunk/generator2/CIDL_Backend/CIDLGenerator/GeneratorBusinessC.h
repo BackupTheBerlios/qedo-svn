@@ -68,7 +68,7 @@ private:
 
 public:
 
-	GeneratorBusinessC(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorBusinessC(CIDL::CIDLRepository_ptr repository);
 	~GeneratorBusinessC();
 
 	void generate(std::string target, std::string fileprefix);

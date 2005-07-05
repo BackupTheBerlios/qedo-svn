@@ -56,7 +56,7 @@ private:
 
 public:
 
-	GeneratorValuetypesH(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorValuetypesH(CIDL::CIDLRepository_ptr repository);
 	~GeneratorValuetypesH();
 
 	void generate(std::string target, std::string fileprefix);

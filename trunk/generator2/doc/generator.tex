@@ -59,10 +59,57 @@ The back-end produces the code.
 
 \chapter{Usage}
 \label{sec:Usage}
-This section explain the options. ...
+This section explain how the Qedo code generator can be used.
+
+\section{IFRRepository}
+\label{sec:IFRRepository}
+The IFR Repository is a hand-written model repository, which is accessible by CORBA interfaces. This IFR is used internally by the code generator and can be started as a stand-alone applications. Is is started by calling: 
+
+\small
+\begin{verbatim}
+
+  IFRRepository
+
+\end{verbatim}
+\normalsize
 
 
-\section{VC7 Project Generator}
+If the repository is created successfully it writes the reference to the repository interface into the file \verb repository.ior .
+
+\section{Code Generator}
+\label{sec:cidlGen}
+This section describes the options of the Qedo code generator.
+
+\subsection{General Options}
+\label{sec:GeneralOptions}
+
+There are options which can be used to influence the output of the Qedo compiler tool.
+\begin{itemize}
+	\item \verb --help : list the short summary of all options
+
+	\item \verb|--out <file_prefix>|: output IDL files will prefixed with \verb <file_prefix> . 
+
+	\item \verb --servant : produces the servant code. This includes a C++ header and implementation file
+	
+	\item \verb|--business| : This produces Business code skeletons (a header and an implementation file) with user section, which are protected from overwriting if the tool is called multiple times.
+	
+	\item \verb|-d| : produces XML descriptors
+
+	\item \verb --vc7 : produces Visual Studio project files. Those project files can be included into a solution file zu build the component implementation in a very easy way.
+
+	\item \verb --mkfile : produces a makefiles similar to the Visual Studio project files. By simply calling make the component implementation is built.
+
+	\item \verb --target:  The \verb --target  command line option is used to define the scope of the compilation. Because sometimes there are many components defined in an IDL file but the equivalent and local IDL is only needed for one component. To accomplish this, the target can be a composition name. The target can also be a module name or a component type name. If the target is a module all components within this module are considered for the compilation process.
+	
+	\item \verb|--feed-ifr <repository.ior>|:  This option starts only the feeder. The Feeder reads the IDL input and stores the model in the IFR Repository. The root reference to the IFR Repository (\verb <repository.ior> ) should be given as a stringified object reference. This option is most likely used without any other output option, since it is only meant to transfers the IDL model into the IFR Model for later use. If other option are used code is generated from the externally used IFR repository.
+	
+	\item \verb|--read-ifr <repository.ior>|: Using this option omits starting the feeder. It only uses information stored in the IFR. The reference to the IFR shall be provided as stringified object reference (\verb <repository.iro ).
+	
+\end{itemize}
+
+
+
+\subsection{VC7 Project Generator}
 \label{sec:VC7ProjectGenerator}
 
 Short instructions to use the code generator
@@ -116,7 +163,7 @@ Furthermore the project file for the executor module contains a post-build step 
 
 \end{itemize}
 
-\section{Makefile Generator}
+\subsection{Makefile Generator}
 \label{sec:MakefileGenerator}
 
 Short instructions to use the code generator.

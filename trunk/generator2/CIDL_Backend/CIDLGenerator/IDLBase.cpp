@@ -5,7 +5,7 @@ namespace QEDO_CIDL_Generator {
 
 
 IDLBase::IDLBase
-(QEDO_ComponentRepository::CIDLRepository_impl *repository)
+(CIDL::CIDLRepository_ptr repository)
 : GeneratorBase(repository)
 {
 }

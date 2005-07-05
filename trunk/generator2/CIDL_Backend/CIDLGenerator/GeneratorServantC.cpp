@@ -10,7 +10,7 @@ namespace QEDO_CIDL_Generator {
 
 
 GeneratorServantC::GeneratorServantC
-( QEDO_ComponentRepository::CIDLRepository_impl *repository)
+( CIDL::CIDLRepository_ptr repository)
 : CPPBase(repository),
   pc_generator_(new GeneratorPersistenceC(repository))
 {

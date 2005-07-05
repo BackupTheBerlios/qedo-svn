@@ -58,7 +58,7 @@ protected:
 
 public:
 
-	GeneratorBIDL(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorBIDL(CIDL::CIDLRepository_ptr repository);
 	~GeneratorBIDL();
 
 	void generate(std::string target, std::string fileprefix);

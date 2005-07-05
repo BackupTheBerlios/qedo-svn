@@ -2,7 +2,8 @@
 
 void
 frontend_replacement_feed
-( QEDO_ComponentRepository::CIDLRepository_impl *repository )
+//( QEDO_ComponentRepository::CIDLRepository_impl *repository )
+(CIDL::CIDLRepository_ptr repository)
 {
 	// Component IDL constructs for our example
 

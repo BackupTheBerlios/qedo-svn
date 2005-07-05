@@ -49,7 +49,7 @@ protected:
 	std::string										file_prefix_;
 	std::string										target_id_;
 	std::string										target_scope_id_;
-	QEDO_ComponentRepository::CIDLRepository_impl	*repository_;
+	CIDL::CIDLRepository_var						repository_;
 	IR__::Contained_var								target_;
 	// internal list for items to generate
 	IR__::ContainedSeq_var							m_to_generate_seq;
@@ -99,7 +99,7 @@ protected:
 	virtual void doHome(IR__::HomeDef_ptr home);
 
 	// composition
-	void handleComposition(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	void handleComposition(CIDL::CIDLRepository_ptr repository);
 	virtual void doComposition(CIDL::CompositionDef_ptr composition);
 
 	// attribute
@@ -201,7 +201,7 @@ protected:
 
 public:
 
-	GeneratorBase(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorBase(CIDL::CIDLRepository_ptr repository);
 	virtual ~GeneratorBase();
 
 	virtual void generate(std::string target, std::string fileprefix) = 0;

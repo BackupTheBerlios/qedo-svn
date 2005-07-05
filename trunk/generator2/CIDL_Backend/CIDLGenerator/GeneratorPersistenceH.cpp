@@ -28,7 +28,7 @@
 namespace QEDO_CIDL_Generator {
 
 GeneratorPersistenceH::GeneratorPersistenceH
-( QEDO_ComponentRepository::CIDLRepository_impl *repository)
+( CIDL::CIDLRepository_ptr repository)
 : CPPBase(repository), 
   bAbstract_(true),
   bTempGenerated_(false),

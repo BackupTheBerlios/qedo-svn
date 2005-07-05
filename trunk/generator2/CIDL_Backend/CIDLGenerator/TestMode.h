@@ -30,7 +30,9 @@
 
 void
 frontend_replacement_feed
-( QEDO_ComponentRepository::CIDLRepository_impl *repository );
+(CIDL::CIDLRepository_ptr repository);
+
+//( QEDO_ComponentRepository::CIDLRepository_impl *repository );
 
 
 #endif

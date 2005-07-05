@@ -13,7 +13,7 @@ namespace QEDO_CIDL_Generator {
 
 
 GeneratorEIDL::GeneratorEIDL
-( QEDO_ComponentRepository::CIDLRepository_impl *repository, CORBA::ORB_ptr orb )
+( CIDL::CIDLRepository_ptr repository, CORBA::ORB_ptr orb )
 : IDLBase(repository), m_recursion_set()
 {
 	_orb = CORBA::ORB::_duplicate( orb );

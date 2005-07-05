@@ -71,7 +71,7 @@ class GeneratorLIDL : public virtual IDLBase
 
 public:
 
-	GeneratorLIDL(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorLIDL(CIDL::CIDLRepository_ptr repository);
 	~GeneratorLIDL();
 
 	void generate(std::string target, std::string fileprefix);

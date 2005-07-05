@@ -9,7 +9,7 @@ namespace QEDO_CIDL_Generator {
 
 
 GeneratorValuetypesH::GeneratorValuetypesH
-( QEDO_ComponentRepository::CIDLRepository_impl *repository)
+( CIDL::CIDLRepository_ptr repository)
 : CPPBase(repository)
 {
 }

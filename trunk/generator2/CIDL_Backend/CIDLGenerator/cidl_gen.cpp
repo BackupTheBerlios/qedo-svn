@@ -25,8 +25,8 @@
 using namespace std;
 
 
-QEDO_ComponentRepository::CIDLRepository_impl *repository;
-
+//QEDO_ComponentRepository::CIDLRepository_impl *repository;
+CIDL::CIDLRepository_ptr repository;
 
 void
 handle_sigint
@@ -124,7 +124,6 @@ main
 
 	signal ( SIGINT, handle_sigint );
 
-	repository = new QEDO_ComponentRepository::CIDLRepository_impl ( orb, root_poa );
 	bool generateEIDL = true;
 	bool generateLIDL = false;
 	bool generateBusiness = false;
@@ -132,6 +131,9 @@ main
 	bool generatevc7 = false;
 	bool generateMake = false;
 	bool generateDescriptors = false;
+	bool feed_ifr = false;
+	bool read_ifr = false;
+	std::string ifr_ref = "";
 	std::string target;
 	std::string fileprefix = "";
 	std::string target_file_name = argv[argc - 1];
@@ -243,21 +245,105 @@ main
             
             argc -= 2;
 		}
+		else if(strcmp(option, "--feed-ifr") == 0)
+		{
+			if(i + 1 >= argc)
+			{
+				std::cerr << "argument expected for --feed-ifr" << std::endl;
+				orb -> destroy();
+				exit ( 1 );
+			}
+
+            feed_ifr = true;
+            ifr_ref = argv[i + 1];
+            
+            for(int j = i ; j + 2 < argc ; j++)
+                argv[j] = argv[j + 2];
+            
+            argc -= 2;
+		}
+		else if(strcmp(option, "--read-ifr") == 0)
+		{
+			if(i + 1 >= argc)
+			{
+				std::cerr << "argument expected for --read-ifr" << std::endl;
+				orb -> destroy();
+				exit ( 1 );
+			}
+
+            read_ifr = true;
+            ifr_ref = argv[i + 1];
+            
+            for(int j = i ; j + 2 < argc ; j++)
+                argv[j] = argv[j + 2];
+            
+            argc -= 2;
+		}
 		else
 		{
 			i++;
 		}
 	}
 
-	if(target.empty())
+
+	if(target.empty() && !feed_ifr)
 	{
 		printUsage(argc, argv);
 		orb->destroy();
 		exit ( 1 );
 	}
 
+	if (feed_ifr) {
+		try {
+			// read ior provide object reference
+			std::ifstream ior_file;
+			ior_file.open(ifr_ref.c_str());
+
+			std::cout << "Feeder: Reading Repository Reference: " << ifr_ref << "\n";
+			char obj_string[2048];
+			ior_file >> obj_string;
+
+			CORBA::Object_var anobject = orb -> string_to_object (obj_string);
+			repository = CIDL::CIDLRepository::_narrow(anobject);
+
+		} catch (...)
+		{
+			cout << "Cannot create reference to IFR Repository!\n";
+			orb->destroy();
+			exit ( 1 );
+		};
+	} else
+	{
+		// create repository internally
+		repository = CIDL::CIDLRepository::_narrow( (new QEDO_ComponentRepository::CIDLRepository_impl ( orb, root_poa )) -> _this());
+	}
+
 	// feed repository
-	frontend_feed ( argc, argv, repository -> _this() );
+	frontend_feed ( argc, argv, repository );
+
+	if (read_ifr) {
+		try {
+			// read ior provide object reference
+			std::ifstream ior_file;
+			ior_file.open(ifr_ref.c_str());
+
+			std::cout << "Back-ends: Reading Repository Reference: " << ifr_ref << "\n";
+			char obj_string[2048];
+			ior_file >> obj_string;
+
+			CORBA::Object_var anobject = orb -> string_to_object (obj_string);
+			repository = CIDL::CIDLRepository::_narrow(anobject);
+
+			std::cout << "Using model from IFR and Ignoring idl/cidl input file.\n";
+
+		} catch (...)
+		{
+			cout << "Cannot create reference to IFR Repository!\n";
+			orb->destroy();
+			exit ( 1 );
+		};
+	}
+
 
 	if(generateEIDL)
 	{
@@ -398,7 +484,7 @@ main
 
 	signal ( SIGINT, SIG_DFL );
 
-	repository -> destroy_repository();
+	//repository -> destroy_repository();
 
 	orb -> shutdown ( false );
 

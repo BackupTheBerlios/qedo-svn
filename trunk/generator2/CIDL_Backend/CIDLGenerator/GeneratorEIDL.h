@@ -80,7 +80,7 @@ class GeneratorEIDL : public virtual IDLBase
 
 public:
 
-	GeneratorEIDL(QEDO_ComponentRepository::CIDLRepository_impl *repository, CORBA::ORB_ptr orb);
+	GeneratorEIDL(CIDL::CIDLRepository_ptr repository, CORBA::ORB_ptr orb);
 	~GeneratorEIDL();
 
 	void generate(std::string target, std::string fileprefix);

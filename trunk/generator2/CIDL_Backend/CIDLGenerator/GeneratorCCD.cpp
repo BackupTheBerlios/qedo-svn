@@ -8,13 +8,13 @@ namespace QEDO_CIDL_Generator {
 
 
 GeneratorCCD::GeneratorCCD
-( QEDO_ComponentRepository::CIDLRepository_impl *repository)
+( CIDL::CIDLRepository_ptr repository)
 : CPPBase ( repository )
 {
 }
 
 GeneratorCCD::GeneratorCCD
-( QEDO_ComponentRepository::CIDLRepository_impl *repository, std::string dir_prefix)
+( CIDL::CIDLRepository_ptr repository, std::string dir_prefix)
 : CPPBase ( repository )
 {
 	m_dir_prefix = dir_prefix;

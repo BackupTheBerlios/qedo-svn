@@ -88,7 +88,7 @@ private:
 	
 public:
 
-	GeneratorPersistenceH(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorPersistenceH(CIDL::CIDLRepository_ptr repository);
 	~GeneratorPersistenceH();
 
 	void generate(std::string target, std::string fileprefix);

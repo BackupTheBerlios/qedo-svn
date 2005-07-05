@@ -63,8 +63,8 @@ public:
 	/*  pretty printer */
 	std::string source_file_name_;
 
-	GeneratorCSD(QEDO_ComponentRepository::CIDLRepository_impl *repository);
-	GeneratorCSD(QEDO_ComponentRepository::CIDLRepository_impl *repository, std::string dir_prefix);
+	GeneratorCSD(CIDL::CIDLRepository_ptr repository);
+	GeneratorCSD(CIDL::CIDLRepository_ptr repository, std::string dir_prefix);
 	~GeneratorCSD();
 
 	void generate(std::string target, std::string fileprefix);

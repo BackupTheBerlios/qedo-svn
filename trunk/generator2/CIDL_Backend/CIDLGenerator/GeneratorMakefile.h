@@ -49,7 +49,7 @@ class GeneratorMakefile : public CPPBase {
 
 public:
 
-	GeneratorMakefile(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorMakefile(CIDL::CIDLRepository_ptr repository);
 	~GeneratorMakefile();
 
 	void generate(std::string target, std::string fileprefix);

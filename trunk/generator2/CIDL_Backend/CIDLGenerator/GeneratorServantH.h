@@ -94,7 +94,7 @@ private:
 
 public:
 
-	GeneratorServantH(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorServantH(CIDL::CIDLRepository_ptr repository);
 	~GeneratorServantH();
 
 	void generate(std::string target, std::string fileprefix);

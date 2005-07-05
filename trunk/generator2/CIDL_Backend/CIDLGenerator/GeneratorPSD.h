@@ -54,7 +54,7 @@ private:
 	
 public:
 
-	GeneratorPSD(QEDO_ComponentRepository::CIDLRepository_impl *repository);
+	GeneratorPSD(CIDL::CIDLRepository_ptr repository);
 	~GeneratorPSD();
 
 	void generate(std::string target, std::string fileprefix);
