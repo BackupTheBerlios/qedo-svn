@@ -1,0 +1,57 @@
+#
+
+QEDO 		= /opt/corba/qedo-0.5.1
+AR		= /usr/bin/ar
+ARFLAGS		= cru
+RANLIB		= ranlib
+MICO 		= /opt/corba/mico-2.3.11
+
+# operating system
+OS=Linux
+
+##### ORB #####
+# choose one out of MICO_ORB TAO_ORB ORBACUS_ORB
+ORB = MICO_ORB
+
+HAVE_MICO_CONFIG=yes
+
+# add extention for shared libraries
+SUFFIXES += .so .a
+
+# rule for shared libraries
+
+%.so:
+	${CXX} -shared ${LD_SHRAED_FLAGS} -o $@ $^ $(LIBS)
+
+%.a:
+	${AR} ${ARFLAGS} $@ $^
+	${RANLIB} $@
+
+CXXFLAGS += -I${QEDO}/include -I/opt/xerces-c-2.1.0/include -I$(MICO)/include/coss -I.
+
+%: %.o
+	${CXX} ${OBJ_FILES} $(LOADLIBES) $(LDLIBS) -o $@ 
+
+CIDL_GEN = ${QEDO}/bin/cidl_gen
+
+IDL_FLAGS = -I${QEDO}/idl
+
+%.h %.cpp %_skel.h %_skel.cpp: %.idl
+	$(MICO)/bin/idl ${IDL_FLAGS} -I. -I$(MICO)/include -I$(MICO)/include/coss -I$(MICO)/include/mico -DMICO_ORB --any --c++-suffix cpp --c++-skel $< \
+	&&  cp $*.h $*_skel.h
+MICO_CXXFLAGS := -DMICO_ORB $(shell mico-config --cxxflags)
+CXXFLAGS+=$(IDLCXXFLAGS) $(MICO_CXXFLAGS)
+LDLIBS   := $(LDMICO) $(CONFLIBS)
+LDFLAGS  := -L$(MICO)/libs $(LDFLAGS)
+MICO_LIBS := $(LDLIBS)
+LIBS+=$(MICO_LIBS)
+NAMING_LIBS := $(shell mico-config --cosslibs)
+NAMING_INCLUDES := -I$(MICO)/include/coss
+ORB_IDL_INCLUDE += -I$(MICO)/include -I$(MICO)/include/mico -I$(MICO)/include/coss
+CIDL_ORB_DEF = -DMICO_ORB -DMICO_CIDL_GEN
+IDL_FLAGS += --relative-paths
+
+all:
+
+clean:
+	-rm -rf $(CLEAN_FILES)

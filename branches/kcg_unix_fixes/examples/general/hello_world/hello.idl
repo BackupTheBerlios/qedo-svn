@@ -1,0 +1,20 @@
+#include "Components.idl"
+
+module HelloWorld {
+
+  interface Hello {
+    void say ();
+  };
+
+  component Callee {
+    provides Hello the_hello;
+  };
+
+  home CalleeHome manages Callee {};
+
+  component Caller {
+    uses Hello hi;
+  };
+
+  home CallerHome manages Caller {};
+};

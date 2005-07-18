@@ -1,0 +1,152 @@
+#include "Components.idl"
+//#include "RepositoryRoot.idl"
+
+module CCMGenerator {
+
+
+//
+// Middleend component
+//	
+	interface RootPointer {
+
+		Object get_rep_root ( );
+	};
+	
+	component MOFRepository {
+	
+		attribute Object repref;
+		
+		provides RootPointer ccm_repository;
+	};
+		
+	home MOFRepositoryHome manages MOFRepository {
+		factory create_with_ref(in string repository_reference);
+	};
+	
+
+//
+// Frontend component
+//
+	exception ParseError { string error_message; };
+
+	interface FrontEndControl {
+
+		void feed(in string file_name, in string options)
+			raises (ParseError);
+	};
+
+	component CIDLFrontend {
+		provides FrontEndControl control;
+		uses RootPointer m_repository;
+	};
+
+	home CIDLFrontendHome manages CIDLFrontend {};
+		
+			
+//
+// Backend components
+//
+
+	exception OutputError { string error_message;};
+
+	typedef sequence<string> DeploymentUnitIDList;
+	
+	interface BackEndControl {
+		void generate (in string target, in string output)
+		raises (OutputError);
+	};
+
+	interface CSDBackEndControl {
+		void generate 
+			( in string name, in string vers, in string a_name, in string a_comp, in string a_web,
+			 in string title, in string description, in string lisence, in string idl_id, in string idl_file, in string output, in DeploymentUnitIDList units)
+		raises (OutputError);
+	};
+	
+			
+	component EIDLBackend {
+		provides BackEndControl control;
+		uses RootPointer m_repository;
+		uses multiple RootPointer m_diff_repositories;
+	};
+			
+	home EIDLBackendHome manages EIDLBackend {};
+				
+	component LIDLBackend {
+		provides BackEndControl control;
+		uses RootPointer m_repository;
+		uses multiple RootPointer m_diff_repositories;
+	};
+			
+	home LIDLBackendHome manages LIDLBackend {};
+				
+	component ServantCBackend {
+		provides BackEndControl control;
+		uses RootPointer m_repository;
+		uses multiple RootPointer m_diff_repositories;
+	};
+			
+	home ServantCBackendHome manages ServantCBackend {};
+			
+	component ServantHBackend {
+		provides BackEndControl control;
+		uses RootPointer m_repository;
+		uses multiple RootPointer m_diff_repositories;
+	};
+			
+	home ServantHBackendHome manages ServantHBackend {};
+
+
+	component BusinessSkellHBackend {
+		provides BackEndControl control;
+		uses RootPointer m_repository;
+		uses multiple RootPointer m_diff_repositories;
+	};
+			
+	home BusinessSkellHBackendHome manages BusinessSkellHBackend {};
+
+	component BusinessSkellCPPBackend {
+		provides BackEndControl control;
+		uses RootPointer m_repository;
+		uses multiple RootPointer m_diff_repositories;
+	};
+			
+	home BusinessSkellCPPBackendHome manages BusinessSkellCPPBackend {};
+
+	component CCDBackend {
+		attribute Object rep_ref;
+			provides BackEndControl control;
+			uses RootPointer m_repository;
+			uses multiple RootPointer m_diff_repositories;
+	};
+			
+	home CCDBackendHome manages CCDBackend {};
+
+	component CSDBackend {
+		attribute Object rep_ref;
+			provides CSDBackEndControl control;
+			uses RootPointer m_repository;
+			uses multiple RootPointer m_diff_repositories;
+	};
+			
+	home CSDBackendHome manages CSDBackend {};
+	
+	component CADBackend {
+		attribute Object rep_ref;
+			provides BackEndControl control;
+			uses RootPointer m_repository;
+			uses multiple RootPointer m_diff_repositories;
+	};
+			
+	home CADBackendHome manages CADBackend {};
+	
+	component CPDBackend {
+		attribute Object rep_ref;
+			provides BackEndControl control;
+			uses RootPointer m_repository;
+			uses multiple RootPointer m_diff_repositories;
+	};
+			
+	home CPDBackendHome manages CPDBackend {};
+};
+

@@ -1,0 +1,125 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://cif.sourceforge.net/componentassembly.dtd">
+
+<componentassembly id="HelloWorld_Example">
+
+    <description>Example assembly"</description>
+
+    <componentfiles>
+        <componentfile id="Reader_file">
+            <fileinarchive name="meta-inf/Chat_Reader_Compo.csd">
+				<link href="Chat_Reader_Compo.zip"/>
+			</fileinarchive>				
+        </componentfile>
+
+        <componentfile id="Channel_file">
+            <fileinarchive name="meta-inf/Chat_Channel_Compo.csd">
+				<link href="Chat_Channel_Compo.zip"/>
+			</fileinarchive>
+        </componentfile>
+
+        <componentfile id="Writer_file">
+            <fileinarchive name="meta-inf/Chat_Writer_Compo.csd">
+				<link href="Chat_Writer_Compo.zip"/>
+			</fileinarchive>
+        </componentfile>
+
+        <componentfile id="EFQosProvider_file">
+            <fileinarchive name="meta-inf/EventFrequency_EFQoSProviderComposition.csd">
+				<link href="EventFrequency_EFQoSProviderComposition.zip"/>
+			</fileinarchive>
+        </componentfile>
+
+    </componentfiles>
+
+    <partitioning>
+	<processcollocation>
+		<homeplacement id="EFQoSProviderHome">
+	        	<componentfileref idref="EFQosProvider_file"/>
+				<componentimplref idref="UUID-2524C572-819A-4A2C-8193-D4B8DF56C7AA"/>
+  	        	<componentinstantiation id="EFQoSProvider">
+				<componentproperties>
+					<fileinarchive name="meta-inf/reader_assignment.cpf" />
+				</componentproperties>
+
+			</componentinstantiation>
+
+		        <destination></destination>
+		</homeplacement>
+
+		<homeplacement id="ReaderHome">
+	        	<componentfileref idref="Reader_file"/>
+				<componentimplref idref="UUID-464832FE-BCD5-4B0C-9FE9-50405E5F029A"/>
+  	        	<componentinstantiation id="reader">
+				<componentproperties>
+					<fileinarchive name="meta-inf/reader.cpf" />
+				</componentproperties>
+			</componentinstantiation>
+
+		        <destination></destination>
+		</homeplacement>
+	
+	</processcollocation>
+
+	<processcollocation>
+
+		<homeplacement id="ChannelHome">
+			<componentfileref idref="Channel_file"/>
+				<componentimplref idref="UUID-4726D107-DA4B-4C31-AA17-BBCA7F8325AE"/>
+			<componentinstantiation id="channel">
+			</componentinstantiation>
+
+			<destination></destination>
+		</homeplacement>
+
+	</processcollocation>
+	<processcollocation>
+
+		<homeplacement id="WriterHome">
+			<componentfileref idref="Writer_file"/>
+				<componentimplref idref="UUID-FB1660B4-755D-4F58-ADE8-B7BF8FAAA497"/>
+			<componentinstantiation id="writer">
+			</componentinstantiation>
+
+			<destination></destination>
+		</homeplacement>
+
+	</processcollocation>
+
+    </partitioning>
+
+
+    <connections>
+
+	<connectevent>
+            <consumesport>
+                <consumesidentifier>from_channel</consumesidentifier>
+                <componentinstantiationref idref="reader"/>
+            </consumesport>
+
+            <publishesport>
+                <publishesidentifier>to_reader</publishesidentifier>
+                <componentinstantiationref idref="channel"/>
+            </publishesport>
+        </connectevent>
+
+	<connectevent>
+            <consumesport>
+                <consumesidentifier>from_writer</consumesidentifier>
+                <componentinstantiationref idref="channel"/>
+            </consumesport>
+
+            <emitsport>
+                <emitsidentifier>to_channel</emitsidentifier>
+                <componentinstantiationref idref="writer"/>
+            </emitsport>
+        </connectevent>
+
+    </connections>
+
+    <extension class="startorder" origin="QEDO">channel</extension>
+    <extension class="startorder" origin="QEDO">reader</extension>
+    <extension class="startorder" origin="QEDO">writer</extension>
+
+</componentassembly>
+

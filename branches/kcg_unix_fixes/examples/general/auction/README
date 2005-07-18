@@ -1,0 +1,9 @@
+This example shows a tiny auction house.
+It contains 3 components; the Bidder, the Auctioneer and the Seller.
+An exmaple assembly packe can be found under asseblies.
+
+To start the example, start up Qedo (nameservice, qci, qassf, qcsa).
+Please use the --terminal option for qcsa, so you get a extra terminal for
+each component server. This is needed for the inputs of the components.
+
+Then use qdeploy for deployment of the assembly package.

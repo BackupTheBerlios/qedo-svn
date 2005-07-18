@@ -1,0 +1,1089 @@
+#ifndef __DCI_RepNodeManagerImpl_EQUIVALENT_IDL
+#define __DCI_RepNodeManagerImpl_EQUIVALENT_IDL
+
+#include "Components.idl"
+#ifndef _QEDO_NO_STREAMS
+#include "StreamComponents.idl"
+#endif
+#include "orb.idl"
+#include "CosNaming.idl"
+
+//
+// forward declarations
+//
+module DCI {
+
+    interface RepNodeManagerHome;
+};
+
+module DCI {
+
+    interface NodeManager;
+};
+
+module DCI {
+
+    interface ExtComponentInstallation;
+};
+
+module DCI {
+
+    interface NodeInformation;
+};
+
+module DCI {
+
+    interface NodeManagement;
+};
+
+module DCI {
+
+    interface RepNodeManager;
+};
+
+module DCI {
+
+    interface Repository;
+};
+
+module DCI {
+
+    interface RepFeeder;
+};
+
+module DCI {
+
+    interface RepositoryDeploymentRoot;
+};
+
+module DCI {
+
+    interface DCIManager;
+};
+
+module DCI {
+
+    interface DCIDeployment;
+};
+
+module DCI {
+
+    interface AssemblyManager;
+};
+
+module DCI {
+
+    interface AssemblyInformation;
+};
+
+module DCI {
+
+    interface DCIInformation;
+};
+
+module DCI {
+
+    interface HomeRegistration;
+};
+
+module Components__ {
+
+    module Deployment {
+    
+        interface AssemblyFactory;
+    };
+    
+};
+
+module DCI {
+
+    interface AssemblyManagerHome;
+};
+
+
+module DCI {
+
+    //
+    // IDL:DCI/NodeName:1.0
+    //
+    typedef string NodeName;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/ComponentArchive:1.0
+    //
+    typedef sequence<octet> ComponentArchive;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/DCIDescriptorType:1.0
+    //
+    enum DCIDescriptorType
+    {
+        DPD,
+        NPD,
+        CPF2
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/XML:1.0
+    //
+    typedef string XML;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/DCIDescriptor:1.0
+    //
+    struct DCIDescriptor{
+       string filename;
+       DCI::DCIDescriptorType type;
+       DCI::XML descriptor;
+    };
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/DCIDescriptors:1.0
+    //
+    typedef sequence<DCI::DCIDescriptor> DCIDescriptors;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/AlreadyRegistered:1.0
+    //
+    exception AlreadyRegistered
+    {
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/UnknownNode:1.0
+    //
+    exception UnknownNode
+    {
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/NodeChanged:1.0
+    //
+    valuetype NodeChanged : Components::EventBase
+    {
+        public DCI::NodeName node_name;
+    
+    };
+    
+    interface NodeChangedConsumer : Components::EventConsumerBase
+    {
+        void push_NodeChanged(in NodeChanged ev);
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/AssemblyArchive:1.0
+    //
+    typedef sequence<octet> AssemblyArchive;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/InvalidArchiveReason:1.0
+    //
+    enum InvalidArchiveReason
+    {
+        unknown_archive_type,
+        broken_archive,
+        missing_implementation,
+        unpack_error,
+        parser_error,
+        unknown_reason
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/InvalidArchive:1.0
+    //
+    exception InvalidArchive
+    {
+        DCI::InvalidArchiveReason reason;
+        string description;
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/AlreadyInstalled:1.0
+    //
+    exception AlreadyInstalled
+    {
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/DCIName:1.0
+    //
+    typedef string DCIName;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/UninstallationFailure:1.0
+    //
+    exception UninstallationFailure
+    {
+        string description;
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/UnknownAssembly:1.0
+    //
+    exception UnknownAssembly
+    {
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/AssemblyUsed:1.0
+    //
+    exception AssemblyUsed
+    {
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/InstanceUUID:1.0
+    //
+    typedef Components::Deployment::UUID InstanceUUID;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/CreationFailureReason:1.0
+    //
+    enum CreationFailureReason
+    {
+        resource_error,
+        node_unavailable,
+        unknown_creation_failure
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/CreationFailure:1.0
+    //
+    exception CreationFailure
+    {
+        DCI::CreationFailureReason reason;
+        string description;
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/InstanceUUIDs:1.0
+    //
+    typedef sequence<DCI::InstanceUUID> InstanceUUIDs;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/DeploymentDescriptorType:1.0
+    //
+    enum DeploymentDescriptorType
+    {
+        CAD,
+        CSD,
+        CCD,
+        CPF
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/DeploymentDescriptor:1.0
+    //
+    struct DeploymentDescriptor{
+       string filename;
+       DCI::DeploymentDescriptorType type;
+       DCI::XML descriptor;
+    };
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/DeploymentDescriptors:1.0
+    //
+    typedef sequence<DCI::DeploymentDescriptor> DeploymentDescriptors;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/HomeInfo:1.0
+    //
+    struct HomeInfo{
+       CORBA::RepositoryId home_repid;
+       CORBA::RepositoryId component_repid;
+       Components::CCMHome home_ref;
+       string uid;
+       DCI::NodeName node_name;
+    };
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/InstalledHomes:1.0
+    //
+    typedef sequence<DCI::HomeInfo> InstalledHomes;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/ComponentInfo:1.0
+    //
+    struct ComponentInfo{
+       CORBA::RepositoryId component_repid;
+       Components::CCMObject comp_ref;
+       string uid;
+       DCI::NodeName node_name;
+    };
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/RunningComponents:1.0
+    //
+    typedef sequence<DCI::ComponentInfo> RunningComponents;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/NodeManagers:1.0
+    //
+    typedef sequence<DCI::NodeManager> NodeManagers;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/DestroyError:1.0
+    //
+    exception DestroyError
+    {
+        string description;
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/AssemblyUUIDs:1.0
+    //
+    typedef sequence<Components::Deployment::UUID> AssemblyUUIDs;
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/DCIChanged:1.0
+    //
+    valuetype DCIChanged : Components::EventBase
+    {
+        public DCI::DCIManager dci_manager;
+        public DCI::NodeName node_name;
+    
+    };
+    
+    interface DCIChangedConsumer : Components::EventConsumerBase
+    {
+        void push_DCIChanged(in DCIChanged ev);
+    };
+    
+};
+
+module DCI {
+
+    //
+    // implicit home for IDL:DCI/RepNodeManagerHome:1.0
+    //
+    interface RepNodeManagerHomeImplicit : ::Components::KeylessCCMHome
+    {
+        DCI::RepNodeManager create() raises (Components::CreateFailure);
+    };
+    
+    //
+    // explicit home for IDL:DCI/RepNodeManagerHome:1.0
+    //
+    interface RepNodeManagerHomeExplicit : ::Components::CCMHome
+    {
+    };
+    
+    //
+    // IDL:DCI/RepNodeManagerHome:1.0
+    //
+    interface RepNodeManagerHome : RepNodeManagerHomeImplicit, RepNodeManagerHomeExplicit
+    {
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/NodeManager:1.0
+    //
+    interface NodeManager : ::Components::CCMObject
+    {
+        
+        //
+        // IDL:DCI/NodeManager/node_name:1.0
+        //
+        attribute DCI::NodeName node_name;
+        
+        //
+        // IDL:DCI/NodeManager/server_activator:1.0
+        //
+        Components::Deployment::ServerActivator provide_server_activator();
+        
+        //
+        // IDL:DCI/NodeManager/component_installation:1.0
+        //
+        DCI::ExtComponentInstallation provide_component_installation();
+        
+        //
+        // IDL:DCI/NodeManager/node_information:1.0
+        //
+        DCI::NodeInformation provide_node_information();
+        
+        //
+        // IDL:DCI/NodeManager/node_management:1.0
+        //
+        DCI::NodeManagement get_connection_node_management();
+        DCI::NodeManagement disconnect_node_management()
+            raises (::Components::NoConnection);
+        void connect_node_management(in DCI::NodeManagement conxn)
+            raises (::Components::AlreadyConnected, ::Components::InvalidConnection);
+        
+        //
+        // IDL:DCI/NodeManager/node_changed:1.0
+        //
+        Components::Cookie subscribe_node_changed( in DCI::NodeChangedConsumer consumer);
+        
+        DCI::NodeChangedConsumer unsubscribe_node_changed(in Components::Cookie ck);
+        
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/ExtComponentInstallation:1.0
+    //
+    interface ExtComponentInstallation : Components::Deployment::ComponentInstallation
+    {
+        
+        //
+        // IDL:DCI/ExtComponentInstallation/upload:1.0
+        //
+        Components::Deployment::Location upload(in Components::Deployment::UUID implUUID, in DCI::ComponentArchive archive)
+            raises(Components::Deployment::InstallationFailure);
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/NodeInformation:1.0
+    //
+    interface NodeInformation
+    {
+        
+        //
+        // IDL:DCI/NodeInformation/get_node_properties:1.0
+        //
+        DCI::DCIDescriptors get_node_properties();
+        
+        //
+        // IDL:DCI/NodeInformation/is_property_defined:1.0
+        //
+        boolean is_property_defined(in string property_name)
+            raises(Components::InvalidName);
+        
+        //
+        // IDL:DCI/NodeInformation/get_property_value:1.0
+        //
+        any get_property_value(in string property_name)
+            raises(Components::InvalidName);
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/NodeManagement:1.0
+    //
+    interface NodeManagement
+    {
+        
+        //
+        // IDL:DCI/NodeManagement/register_node:1.0
+        //
+        void register_node(in DCI::NodeName node_name, in DCI::NodeManager node_manager)
+            raises(Components::InvalidName, DCI::AlreadyRegistered);
+        
+        //
+        // IDL:DCI/NodeManagement/deregister_node:1.0
+        //
+        void deregister_node(in DCI::NodeName node_name)
+            raises(DCI::UnknownNode);
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/RepNodeManager:1.0
+    //
+    interface RepNodeManager : DCI::NodeManager
+    {
+        
+        //
+        // IDL:DCI/RepNodeManager/repository:1.0
+        //
+        DCI::Repository get_connection_repository();
+        DCI::Repository disconnect_repository()
+            raises (::Components::NoConnection);
+        void connect_repository(in DCI::Repository conxn)
+            raises (::Components::AlreadyConnected, ::Components::InvalidConnection);
+        
+        //
+        // IDL:DCI/RepNodeManager/dcimanager:1.0
+        //
+        DCI::DCIManager get_connection_dcimanager();
+        DCI::DCIManager disconnect_dcimanager()
+            raises (::Components::NoConnection);
+        void connect_dcimanager(in DCI::DCIManager conxn)
+            raises (::Components::AlreadyConnected, ::Components::InvalidConnection);
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/Repository:1.0
+    //
+    interface Repository : ::Components::CCMObject
+    {
+        
+        //
+        // IDL:DCI/Repository/rep_feeder:1.0
+        //
+        DCI::RepFeeder provide_rep_feeder();
+        
+        //
+        // IDL:DCI/Repository/rep_root_proxy:1.0
+        //
+        DCI::RepositoryDeploymentRoot provide_rep_root_proxy();
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/RepFeeder:1.0
+    //
+    interface RepFeeder
+    {
+        
+        //
+        // IDL:DCI/RepFeeder/feed_assembly:1.0
+        //
+        Object feed_assembly(in DCI::AssemblyArchive archive)
+            raises(Components::Deployment::InstallationFailure, DCI::InvalidArchive, DCI::AlreadyInstalled);
+        
+        //
+        // IDL:DCI/RepFeeder/feed_assembly_with_descriptor:1.0
+        //
+        Object feed_assembly_with_descriptor(in DCI::XML descriptor)
+            raises(Components::Deployment::InstallationFailure, DCI::InvalidArchive, DCI::AlreadyInstalled);
+        
+        //
+        // IDL:DCI/RepFeeder/feed_assembly_with_url:1.0
+        //
+        Object feed_assembly_with_url(in Components::Deployment::Location url)
+            raises(Components::Deployment::InstallationFailure, DCI::InvalidArchive, DCI::AlreadyInstalled);
+        
+        //
+        // IDL:DCI/RepFeeder/feed_component:1.0
+        //
+        Object feed_component(in Components::Deployment::UUID implUUID, in DCI::ComponentArchive archive)
+            raises(Components::Deployment::InstallationFailure, DCI::InvalidArchive, DCI::AlreadyInstalled);
+        
+        //
+        // IDL:DCI/RepFeeder/feed_component_with_url:1.0
+        //
+        Object feed_component_with_url(in Components::Deployment::UUID implUUID, in Components::Deployment::Location url)
+            raises(Components::Deployment::InstallationFailure, DCI::InvalidArchive, DCI::AlreadyInstalled);
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/RepositoryDeploymentRoot:1.0
+    //
+    interface RepositoryDeploymentRoot
+    {
+        
+        //
+        // IDL:DCI/RepositoryDeploymentRoot/get_root_package:1.0
+        //
+        Object get_root_package();
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/DCIManager:1.0
+    //
+    interface DCIManager : ::Components::CCMObject
+    {
+        
+        //
+        // IDL:DCI/DCIManager/dci_name:1.0
+        //
+        attribute DCI::DCIName dci_name;
+        
+        //
+        // IDL:DCI/DCIManager/dci_deployment:1.0
+        //
+        DCI::DCIDeployment provide_dci_deployment();
+        
+        //
+        // IDL:DCI/DCIManager/dci_information:1.0
+        //
+        DCI::DCIInformation provide_dci_information();
+        
+        //
+        // IDL:DCI/DCIManager/node_management:1.0
+        //
+        DCI::NodeManagement provide_node_management();
+        
+        //
+        // IDL:DCI/DCIManager/home_registration:1.0
+        //
+        DCI::HomeRegistration provide_home_registration();
+        
+        //
+        // IDL:DCI/DCIManager/ass_home:1.0
+        //
+        DCI::AssemblyManagerHome get_connection_ass_home();
+        DCI::AssemblyManagerHome disconnect_ass_home()
+            raises (::Components::NoConnection);
+        void connect_ass_home(in DCI::AssemblyManagerHome conxn)
+            raises (::Components::AlreadyConnected, ::Components::InvalidConnection);
+        
+        //
+        // IDL:DCI/DCIManager/naming_service:1.0
+        //
+        CosNaming::NamingContext get_connection_naming_service();
+        CosNaming::NamingContext disconnect_naming_service()
+            raises (::Components::NoConnection);
+        void connect_naming_service(in CosNaming::NamingContext conxn)
+            raises (::Components::AlreadyConnected, ::Components::InvalidConnection);
+        
+        //
+        // IDL:DCI/DCIManager/dci_changed:1.0
+        //
+        Components::Cookie subscribe_dci_changed( in DCI::DCIChangedConsumer consumer);
+        
+        DCI::DCIChangedConsumer unsubscribe_dci_changed(in Components::Cookie ck);
+        
+        //
+        // IDL:DCI/DCIManager/node_changed:1.0
+        //
+        DCI::NodeChangedConsumer get_consumer_node_changed();
+        
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/DCIDeployment:1.0
+    //
+    interface DCIDeployment
+    {
+        
+        //
+        // IDL:DCI/DCIDeployment/install_with_archive:1.0
+        //
+        Components::Deployment::UUID install_with_archive(in DCI::AssemblyArchive archive)
+            raises(Components::Deployment::InstallationFailure, DCI::InvalidArchive, DCI::AlreadyInstalled);
+        
+        //
+        // IDL:DCI/DCIDeployment/install_with_descriptor:1.0
+        //
+        Components::Deployment::UUID install_with_descriptor(in DCI::XML descriptor)
+            raises(Components::Deployment::InstallationFailure, DCI::AlreadyInstalled);
+        
+        //
+        // IDL:DCI/DCIDeployment/update_with_archive:1.0
+        //
+        Components::Deployment::UUID update_with_archive(in Components::Deployment::UUID old_assemblyUUID, in DCI::AssemblyArchive archive)
+            raises(DCI::UninstallationFailure, DCI::InvalidArchive, DCI::AlreadyInstalled, Components::Deployment::InstallationFailure, DCI::UnknownAssembly);
+        
+        //
+        // IDL:DCI/DCIDeployment/update_with_descriptor:1.0
+        //
+        Components::Deployment::UUID update_with_descriptor(in Components::Deployment::UUID old_assemblyUUID, in DCI::XML descriptor)
+            raises(DCI::UninstallationFailure, DCI::AlreadyInstalled, Components::Deployment::InstallationFailure, DCI::UnknownAssembly);
+        
+        //
+        // IDL:DCI/DCIDeployment/uninstall:1.0
+        //
+        void uninstall(in Components::Deployment::UUID assemblyUUID)
+            raises(DCI::UninstallationFailure, DCI::AssemblyUsed, DCI::UnknownAssembly);
+        
+        //
+        // IDL:DCI/DCIDeployment/create_assembly_instance:1.0
+        //
+        DCI::InstanceUUID create_assembly_instance(in Components::Deployment::UUID assemblyUUID)
+            raises(DCI::CreationFailure);
+        
+        //
+        // IDL:DCI/DCIDeployment/get_assembly_instances:1.0
+        //
+        DCI::InstanceUUIDs get_assembly_instances(in Components::Deployment::UUID assemblyUUID)
+            raises(DCI::UnknownAssembly);
+        
+        //
+        // IDL:DCI/DCIDeployment/get_assembly_manager:1.0
+        //
+        DCI::AssemblyManager get_assembly_manager(in DCI::InstanceUUID instance_id)
+            raises(DCI::UnknownAssembly);
+        
+        //
+        // IDL:DCI/DCIDeployment/destroy_assembly_instance:1.0
+        //
+        void destroy_assembly_instance(in DCI::InstanceUUID instance_id)
+            raises(DCI::DestroyError);
+        
+        //
+        // IDL:DCI/DCIDeployment/get_assemblies:1.0
+        //
+        DCI::AssemblyUUIDs get_assemblies();
+        
+        //
+        // IDL:DCI/DCIDeployment/lookup_assembly:1.0
+        //
+        DCI::XML lookup_assembly(in Components::Deployment::UUID assemblyUUID)
+            raises(DCI::UnknownAssembly);
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/AssemblyManager:1.0
+    //
+    interface AssemblyManager : ::Components::CCMObject
+    {
+        
+        //
+        // IDL:DCI/AssemblyManager/assembly_loc:1.0
+        //
+        attribute Components::Deployment::Location assembly_loc;
+        
+        //
+        // IDL:DCI/AssemblyManager/ass_id:1.0
+        //
+        readonly attribute DCI::InstanceUUID ass_id;
+        
+        //
+        // IDL:DCI/AssemblyManager/assembly:1.0
+        //
+        Components::Deployment::Assembly provide_assembly();
+        
+        //
+        // IDL:DCI/AssemblyManager/assembly_information:1.0
+        //
+        DCI::AssemblyInformation provide_assembly_information();
+        
+        //
+        // IDL:DCI/AssemblyManager/dci_information:1.0
+        //
+        DCI::DCIInformation get_connection_dci_information();
+        DCI::DCIInformation disconnect_dci_information()
+            raises (::Components::NoConnection);
+        void connect_dci_information(in DCI::DCIInformation conxn)
+            raises (::Components::AlreadyConnected, ::Components::InvalidConnection);
+        
+        //
+        // IDL:DCI/AssemblyManager/homes:1.0
+        //
+        struct homesConnection {
+            Components::CCMHome objref;
+            Components::Cookie ck;
+        };
+        typedef sequence < homesConnection > homesConnections;
+        
+        Components::Cookie connect_homes( in Components::CCMHome conx)
+            raises (Components::ExceededConnectionLimit, Components::InvalidConnection);
+            
+        Components::CCMHome disconnect_homes(in Components::Cookie ck)
+            raises (Components::InvalidConnection);
+            
+        homesConnections get_connections_homes();
+        
+        
+        //
+        // IDL:DCI/AssemblyManager/components:1.0
+        //
+        struct componentsConnection {
+            Components::CCMObject objref;
+            Components::Cookie ck;
+        };
+        typedef sequence < componentsConnection > componentsConnections;
+        
+        Components::Cookie connect_components( in Components::CCMObject conx)
+            raises (Components::ExceededConnectionLimit, Components::InvalidConnection);
+            
+        Components::CCMObject disconnect_components(in Components::Cookie ck)
+            raises (Components::InvalidConnection);
+            
+        componentsConnections get_connections_components();
+        
+        
+        //
+        // IDL:DCI/AssemblyManager/naming_service:1.0
+        //
+        CosNaming::NamingContext get_connection_naming_service();
+        CosNaming::NamingContext disconnect_naming_service()
+            raises (::Components::NoConnection);
+        void connect_naming_service(in CosNaming::NamingContext conxn)
+            raises (::Components::AlreadyConnected, ::Components::InvalidConnection);
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/AssemblyInformation:1.0
+    //
+    interface AssemblyInformation
+    {
+        
+        //
+        // IDL:DCI/AssemblyInformation/is_dynamic_information:1.0
+        //
+        readonly attribute boolean is_dynamic_information;
+        
+        //
+        // IDL:DCI/AssemblyInformation/descriptors:1.0
+        //
+        readonly attribute DCI::DeploymentDescriptors descriptors;
+        
+        //
+        // IDL:DCI/AssemblyInformation/get_assembly_descriptor:1.0
+        //
+        DCI::XML get_assembly_descriptor();
+        
+        //
+        // IDL:DCI/AssemblyInformation/get_homes:1.0
+        //
+        DCI::InstalledHomes get_homes();
+        
+        //
+        // IDL:DCI/AssemblyInformation/get_components:1.0
+        //
+        DCI::RunningComponents get_components();
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/DCIInformation:1.0
+    //
+    interface DCIInformation
+    {
+        
+        //
+        // IDL:DCI/DCIInformation/get_node_manager:1.0
+        //
+        DCI::NodeManager get_node_manager(in DCI::NodeName node_name)
+            raises(Components::InvalidName);
+        
+        //
+        // IDL:DCI/DCIInformation/get_node_managers:1.0
+        //
+        DCI::NodeManagers get_node_managers();
+        
+        //
+        // IDL:DCI/DCIInformation/get_dci_properties:1.0
+        //
+        DCI::DCIDescriptors get_dci_properties();
+        
+        //
+        // IDL:DCI/DCIInformation/get_node_properties:1.0
+        //
+        DCI::DCIDescriptors get_node_properties(in DCI::NodeName node_name)
+            raises(Components::InvalidName);
+    };
+    
+};
+
+module DCI {
+
+    //
+    // IDL:DCI/HomeRegistration:1.0
+    //
+    interface HomeRegistration
+    {
+        
+        //
+        // IDL:DCI/HomeRegistration/register_home:1.0
+        //
+        Components::Cookie register_home(in Components::CCMHome home_ref, in CORBA::RepositoryId home_repid, in CORBA::RepositoryId component_repid, in string name);
+        
+        //
+        // IDL:DCI/HomeRegistration/unregister_home:1.0
+        //
+        void unregister_home(in Components::Cookie ck)
+            raises(Components::CookieRequired);
+    };
+    
+};
+
+module Components__ {
+
+    module Deployment {
+    
+        //
+        // IDL:Components__/Deployment/AssemblyFactory:1.0
+        //
+        interface AssemblyFactory
+        {
+            
+            //
+            // IDL:Components__/Deployment/AssemblyFactory/create_assembly:1.0
+            //
+            Components::Cookie create_assembly(in Components::Deployment::Location assembly_loc)
+                raises(Components::Deployment::InvalidLocation, Components::CreateFailure);
+            
+            //
+            // IDL:Components__/Deployment/AssemblyFactory/lookup:1.0
+            //
+            Components::Deployment::Assembly lookup(in Components::Cookie c)
+                raises(Components::Deployment::InvalidAssembly);
+            
+            //
+            // IDL:Components__/Deployment/AssemblyFactory/destroy:1.0
+            //
+            void destroy(in Components::Cookie c)
+                raises(Components::Deployment::InvalidAssembly, Components::RemoveFailure);
+        };
+        
+    };
+    
+};
+
+module DCI {
+
+    //
+    // implicit home for IDL:DCI/AssemblyManagerHome:1.0
+    //
+    interface AssemblyManagerHomeImplicit : ::Components::KeylessCCMHome
+    {
+        DCI::AssemblyManager create() raises (Components::CreateFailure);
+    };
+    
+    //
+    // explicit home for IDL:DCI/AssemblyManagerHome:1.0
+    //
+    interface AssemblyManagerHomeExplicit : ::Components::CCMHome, Components__::Deployment::AssemblyFactory
+    {
+    };
+    
+    //
+    // IDL:DCI/AssemblyManagerHome:1.0
+    //
+    interface AssemblyManagerHome : AssemblyManagerHomeImplicit, AssemblyManagerHomeExplicit
+    {
+    };
+    
+};
+
+
+#endif

@@ -1,0 +1,2564 @@
+
+(object Petal
+    version    	45
+    _written   	"Rose 7.6.0109.2314"
+    charSet    	0)
+
+(object Design "Logical View"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"4006B50B0396"
+    defaults   	(object defaults
+	rightMargin 	0.250000
+	leftMargin 	0.250000
+	topMargin  	0.250000
+	bottomMargin 	0.500000
+	pageOverlap 	0.250000
+	clipIconLabels 	TRUE
+	autoResize 	TRUE
+	snapToGrid 	TRUE
+	gridX      	16
+	gridY      	16
+	defaultFont 	(object Font
+	    size       	10
+	    face       	"Arial"
+	    bold       	FALSE
+	    italics    	FALSE
+	    underline  	FALSE
+	    strike     	FALSE
+	    color      	0
+	    default_color 	TRUE)
+	showMessageNum 	1
+	showClassOfObject 	TRUE
+	notation   	"Unified")
+    root_usecase_package 	(object Class_Category "Use Case View"
+	quid       	"4006B50B03A0"
+	exportControl 	"Public"
+	global     	TRUE
+	logical_models 	(list unit_reference_list)
+	logical_presentations 	(list unit_reference_list
+	    (object UseCaseDiagram "Main"
+		quid       	"4006B5320203"
+		title      	"Main"
+		zoom       	100
+		max_height 	28350
+		max_width  	21600
+		origin_x   	0
+		origin_y   	0
+		items      	(list diagram_item_list))))
+    root_category 	(object Class_Category "Logical View"
+	quid       	"4006B50B0397"
+	exportControl 	"Public"
+	global     	TRUE
+	subsystem  	"Component View"
+	quidu      	"4006B50B03A1"
+	logical_models 	(list unit_reference_list
+	    (object Association "$UNNAMED$0"
+		quid       	"4006B7A8018F"
+		stereotype 	"CORBAEmits"
+		roles      	(list role_list
+		    (object Role "to_channel"
+			quid       	"4006B7A900C8"
+			label      	"to_channel"
+			supplier   	"Logical View::Channel::ChatMessage"
+			quidu      	"4006B6D7027F"
+			client_cardinality 	(value cardinality "1")
+			Containment 	"By Value")
+		    (object Role "$UNNAMED$1"
+			quid       	"4006B7A900CA"
+			supplier   	"Logical View::Channel::ChatWriter"
+			quidu      	"4006B60700DB"
+			client_cardinality 	(value cardinality "1"))))
+	    (object Association "$UNNAMED$2"
+		quid       	"4006B97200D0"
+		stereotype 	"CORBAConsumes"
+		roles      	(list role_list
+		    (object Role "from_writer"
+			quid       	"4006B97300F9"
+			label      	"from_writer"
+			supplier   	"Logical View::Channel::ChatMessage"
+			quidu      	"4006B6D7027F"
+			client_cardinality 	(value cardinality "1"))
+		    (object Role "$UNNAMED$3"
+			quid       	"4006B9730103"
+			supplier   	"Logical View::Channel::ChatChannel"
+			quidu      	"4006B8B40022"
+			client_cardinality 	(value cardinality "1"))))
+	    (object Association "$UNNAMED$4"
+		quid       	"4006BB330252"
+		stereotype 	"CORBAPublishes"
+		roles      	(list role_list
+		    (object Role "to_reader"
+			quid       	"4006BB3401F9"
+			label      	"to_reader"
+			supplier   	"Logical View::Channel::ChatMessage"
+			quidu      	"4006B6D7027F"
+			client_cardinality 	(value cardinality "1"))
+		    (object Role "$UNNAMED$5"
+			quid       	"4006BB340203"
+			supplier   	"Logical View::Channel::ChatChannel"
+			quidu      	"4006B8B40022"
+			client_cardinality 	(value cardinality "1"))))
+	    (object Association "$UNNAMED$6"
+		quid       	"4006BBD70302"
+		stereotype 	"CORBAConsumes"
+		roles      	(list role_list
+		    (object Role "from_channel"
+			quid       	"4006BBD801B9"
+			label      	"from_channel"
+			supplier   	"Logical View::Channel::ChatMessage"
+			quidu      	"4006B6D7027F"
+			client_cardinality 	(value cardinality "1"))
+		    (object Role "$UNNAMED$7"
+			quid       	"4006BBD801C3"
+			supplier   	"Logical View::Channel::ChatReader"
+			quidu      	"4006BBCA01AF"
+			client_cardinality 	(value cardinality "1"))))
+	    (object Class_Category "Channel"
+		quid       	"4006B5640041"
+		stereotype 	"CORBAModule"
+		exportControl 	"Public"
+		logical_models 	(list unit_reference_list
+		    (object Class "ChatChannel"
+			attributes 	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"cg_style"
+				value      	"CORBAComponent"))
+			quid       	"4006B8B40022"
+			stereotype 	"CORBAComponent"
+			language   	"CCM UMLProfile")
+		    (object Class "ChatMessage"
+			attributes 	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"cg_style"
+				value      	"CORBAEvent"))
+			quid       	"4006B6D7027F"
+			stereotype 	"CORBAEvent"
+			class_attributes 	(list class_attribute_list
+			    (object ClassAttribute "message"
+				quid       	"4006B74902D3"
+				type       	"string"
+				exportControl 	"Public"))
+			language   	"CCM UMLProfile")
+		    (object Class "ChatWriter"
+			attributes 	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"cg_style"
+				value      	"CORBAComponent"))
+			quid       	"4006B60700DB"
+			stereotype 	"CORBAComponent"
+			language   	"CCM UMLProfile")
+		    (object Class "ChatReader"
+			attributes 	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"cg_style"
+				value      	"CORBAComponent"))
+			quid       	"4006BBCA01AF"
+			stereotype 	"CORBAComponent"
+			language   	"CCM UMLProfile"))
+		logical_presentations 	(list unit_reference_list
+		    (object ClassDiagram "ChatWriter"
+			quid       	"4006BD2501F4"
+			title      	"ChatWriter"
+			zoom       	100
+			max_height 	28350
+			max_width  	21600
+			origin_x   	0
+			origin_y   	0
+			items      	(list diagram_item_list
+			    (object ClassView "Class" "Logical View::Channel::ChatMessage" @1
+				ShowCompartmentStereotypes 	TRUE
+				IncludeAttribute 	TRUE
+				IncludeOperation 	TRUE
+				location   	(1248, 576)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object ItemLabel
+				    Parent_View 	@1
+				    location   	(1248, 779)
+				    anchor_loc 	1
+				    nlines     	2
+				    max_width  	595
+				    justify    	0
+				    label      	"ChatMessage")
+				icon       	"CORBAEvent"
+				icon_style 	"Icon"
+				line_color 	3342489
+				fill_color 	13434879
+				quidu      	"4006B6D7027F"
+				compartment 	(object Compartment
+				    Parent_View 	@1
+				    location   	(1058, 820)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    icon_style 	"Icon"
+				    anchor     	2
+				    nlines     	2
+				    max_width  	378
+				    justify    	0)
+				annotation 	8
+				autoResize 	TRUE)
+			    (object ClassView "Class" "Logical View::Channel::ChatWriter" @2
+				ShowCompartmentStereotypes 	TRUE
+				IncludeAttribute 	TRUE
+				IncludeOperation 	TRUE
+				location   	(464, 576)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object ItemLabel
+				    Parent_View 	@2
+				    location   	(464, 759)
+				    anchor_loc 	1
+				    nlines     	2
+				    max_width  	952
+				    justify    	0
+				    label      	"ChatWriter")
+				icon       	"CORBAComponent"
+				icon_style 	"Icon"
+				line_color 	3342489
+				fill_color 	13434879
+				quidu      	"4006B60700DB"
+				height     	208
+				annotation 	8
+				autoResize 	TRUE)
+			    (object AssociationViewNew "$UNNAMED$0" @3
+				location   	(885, 576)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				stereotype 	(object SegLabel @4
+				    Parent_View 	@3
+				    location   	(868, 618)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    anchor     	10
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	"<<CORBAEmits>>"
+				    pctDist    	0.216667
+				    height     	42
+				    orientation 	1)
+				line_color 	3342489
+				quidu      	"4006B7A8018F"
+				roleview_list 	(list RoleViews
+				    (object RoleView "$UNNAMED$1" @5
+					Parent_View 	@3
+					location   	(-1147, -16)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					label      	(object SegLabel @6
+					    Parent_View 	@5
+					    location   	(676, 535)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    hidden     	TRUE
+					    anchor     	1
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	450
+					    justify    	0
+					    label      	""
+					    pctDist    	0.800000
+					    height     	42
+					    orientation 	1)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006B7A900CA"
+					client     	@3
+					supplier   	@2
+					line_style 	0
+					label      	(object SegLabel @7
+					    Parent_View 	@5
+					    location   	(648, 630)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	0))
+				    (object RoleView "to_channel" @8
+					Parent_View 	@3
+					location   	(-1147, -16)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					label      	(object SegLabel @9
+					    Parent_View 	@8
+					    location   	(1014, 536)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	1
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	226
+					    justify    	0
+					    label      	"+to_channel"
+					    pctDist    	0.490494
+					    height     	40
+					    orientation 	0)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006B7A900C8"
+					client     	@3
+					supplier   	@1
+					line_style 	0
+					label      	(object SegLabel @10
+					    Parent_View 	@8
+					    location   	(1122, 630)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	1))))))
+		    (object ClassDiagram "Chat_component_types"
+			quid       	"4006B532022A"
+			title      	"Chat_component_types"
+			zoom       	100
+			max_height 	28350
+			max_width  	21600
+			origin_x   	0
+			origin_y   	0
+			items      	(list diagram_item_list
+			    (object ClassView "Class" "Logical View::Channel::ChatWriter" @11
+				ShowCompartmentStereotypes 	TRUE
+				IncludeAttribute 	TRUE
+				IncludeOperation 	TRUE
+				location   	(624, 432)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object ItemLabel
+				    Parent_View 	@11
+				    location   	(624, 615)
+				    anchor_loc 	1
+				    nlines     	2
+				    max_width  	940
+				    justify    	0
+				    label      	"ChatWriter")
+				icon       	"CORBAComponent"
+				icon_style 	"Icon"
+				line_color 	3342489
+				fill_color 	13434879
+				quidu      	"4006B60700DB"
+				height     	208
+				annotation 	8
+				autoResize 	TRUE)
+			    (object ClassView "Class" "Logical View::Channel::ChatChannel" @12
+				ShowCompartmentStereotypes 	TRUE
+				IncludeAttribute 	TRUE
+				IncludeOperation 	TRUE
+				location   	(2336, 816)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object ItemLabel
+				    Parent_View 	@12
+				    location   	(2336, 999)
+				    anchor_loc 	1
+				    nlines     	2
+				    max_width  	944
+				    justify    	0
+				    label      	"ChatChannel")
+				icon       	"CORBAComponent"
+				icon_style 	"Icon"
+				line_color 	3342489
+				fill_color 	13434879
+				quidu      	"4006B8B40022"
+				height     	208
+				annotation 	8
+				autoResize 	TRUE)
+			    (object ClassView "Class" "Logical View::Channel::ChatReader" @13
+				ShowCompartmentStereotypes 	TRUE
+				IncludeAttribute 	TRUE
+				IncludeOperation 	TRUE
+				location   	(640, 1376)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object ItemLabel
+				    Parent_View 	@13
+				    location   	(640, 1559)
+				    anchor_loc 	1
+				    nlines     	2
+				    max_width  	950
+				    justify    	0
+				    label      	"ChatReader")
+				icon       	"CORBAComponent"
+				icon_style 	"Icon"
+				line_color 	3342489
+				fill_color 	13434879
+				quidu      	"4006BBCA01AF"
+				height     	208
+				annotation 	8
+				autoResize 	TRUE)
+			    (object ClassView "Class" "Logical View::Channel::ChatMessage" @14
+				ShowCompartmentStereotypes 	TRUE
+				IncludeAttribute 	TRUE
+				IncludeOperation 	TRUE
+				location   	(1472, 816)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object ItemLabel
+				    Parent_View 	@14
+				    location   	(1472, 1019)
+				    anchor_loc 	1
+				    nlines     	2
+				    max_width  	591
+				    justify    	0
+				    label      	"ChatMessage")
+				icon       	"CORBAEvent"
+				icon_style 	"Icon"
+				line_color 	3342489
+				fill_color 	13434879
+				quidu      	"4006B6D7027F"
+				compartment 	(object Compartment
+				    Parent_View 	@14
+				    location   	(1300, 1060)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    icon_style 	"Icon"
+				    anchor     	2
+				    nlines     	2
+				    max_width  	341
+				    justify    	0)
+				annotation 	8
+				autoResize 	TRUE)
+			    (object AssociationViewNew "$UNNAMED$0" @15
+				location   	(1229, 704)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				stereotype 	(object SegLabel @16
+				    Parent_View 	@15
+				    location   	(1308, 633)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    anchor     	10
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	"<<CORBAEmits>>"
+				    pctDist    	1.816667
+				    height     	72
+				    orientation 	0)
+				line_color 	3342489
+				quidu      	"4006B7A8018F"
+				roleview_list 	(list RoleViews
+				    (object RoleView "to_channel" @17
+					Parent_View 	@15
+					location   	(717, -112)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					label      	(object SegLabel @18
+					    Parent_View 	@17
+					    location   	(1274, 808)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	1
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	226
+					    justify    	0
+					    label      	"+to_channel"
+					    pctDist    	0.531547
+					    height     	77
+					    orientation 	1)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006B7A900C8"
+					client     	@15
+					supplier   	@14
+					line_style 	0
+					label      	(object SegLabel @19
+					    Parent_View 	@17
+					    location   	(1335, 811)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	1))
+				    (object RoleView "$UNNAMED$1" @20
+					Parent_View 	@15
+					location   	(717, -112)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006B7A900CA"
+					client     	@15
+					supplier   	@11
+					line_style 	0
+					label      	(object SegLabel @21
+					    Parent_View 	@20
+					    location   	(1080, 696)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	0))))
+			    (object AssociationViewNew "$UNNAMED$2" @22
+				location   	(1911, 575)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				stereotype 	(object SegLabel @23
+				    Parent_View 	@22
+				    location   	(1881, 617)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    anchor     	10
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	"<<CORBAConsumes>>"
+				    pctDist    	0.000000
+				    height     	42
+				    orientation 	1)
+				line_color 	3342489
+				quidu      	"4006B97200D0"
+				roleview_list 	(list RoleViews
+				    (object RoleView "from_writer" @24
+					Parent_View 	@22
+					location   	(-425, -225)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					label      	(object SegLabel @25
+					    Parent_View 	@24
+					    location   	(1600, 518)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	1
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	228
+					    justify    	0
+					    label      	"+from_writer"
+					    pctDist    	0.558874
+					    height     	58
+					    orientation 	1)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006B97300F9"
+					client     	@22
+					supplier   	@14
+					vertices   	(list Points
+					    (1911, 575)
+					    (1471, 575)
+					    (1470, 693))
+					line_style 	0
+					label      	(object SegLabel @26
+					    Parent_View 	@24
+					    location   	(1524, 636)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	0))
+				    (object RoleView "$UNNAMED$3" @27
+					Parent_View 	@22
+					location   	(-425, -225)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006B9730103"
+					client     	@22
+					supplier   	@12
+					vertices   	(list Points
+					    (1911, 575)
+					    (2333, 575)
+					    (2332, 711))
+					line_style 	0
+					label      	(object SegLabel @28
+					    Parent_View 	@27
+					    location   	(2279, 655)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	1))))
+			    (object AssociationViewNew "$UNNAMED$4" @29
+				location   	(1961, 1247)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				stereotype 	(object SegLabel @30
+				    Parent_View 	@29
+				    location   	(1945, 1195)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    anchor     	10
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	"<<CORBAPublishes>>"
+				    pctDist    	0.233333
+				    height     	53
+				    orientation 	0)
+				line_color 	3342489
+				quidu      	"4006BB330252"
+				roleview_list 	(list RoleViews
+				    (object RoleView "to_reader" @31
+					Parent_View 	@29
+					location   	(-375, 431)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					label      	(object SegLabel @32
+					    Parent_View 	@31
+					    location   	(1516, 1284)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	1
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	195
+					    justify    	0
+					    label      	"+to_reader"
+					    pctDist    	0.747899
+					    height     	37
+					    orientation 	0)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006BB3401F9"
+					client     	@29
+					supplier   	@14
+					vertices   	(list Points
+					    (1961, 1247)
+					    (1453, 1247)
+					    (1453, 1159))
+					line_style 	0
+					label      	(object SegLabel @33
+					    Parent_View 	@31
+					    location   	(1400, 1220)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	0))
+				    (object RoleView "$UNNAMED$5" @34
+					Parent_View 	@29
+					location   	(-375, 431)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006BB340203"
+					client     	@29
+					supplier   	@12
+					vertices   	(list Points
+					    (1961, 1247)
+					    (2334, 1247)
+					    (2333, 1024))
+					line_style 	0
+					label      	(object SegLabel @35
+					    Parent_View 	@34
+					    location   	(2387, 1084)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	1))))
+			    (object AssociationViewNew "$UNNAMED$6" @36
+				location   	(979, 1145)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				stereotype 	(object SegLabel @37
+				    Parent_View 	@36
+				    location   	(832, 1125)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    anchor     	10
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	"<<CORBAConsumes>>"
+				    pctDist    	-1.950000
+				    height     	21
+				    orientation 	0)
+				line_color 	3342489
+				quidu      	"4006BBD70302"
+				roleview_list 	(list RoleViews
+				    (object RoleView "from_channel" @38
+					Parent_View 	@36
+					location   	(403, 153)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					label      	(object SegLabel @39
+					    Parent_View 	@38
+					    location   	(1057, 1019)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	1
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	278
+					    justify    	0
+					    label      	"+from_channel"
+					    pctDist    	0.588069
+					    height     	64
+					    orientation 	0)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006BBD801B9"
+					client     	@36
+					supplier   	@14
+					line_style 	0
+					label      	(object SegLabel @40
+					    Parent_View 	@38
+					    location   	(1181, 1076)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	1))
+				    (object RoleView "$UNNAMED$7" @41
+					Parent_View 	@36
+					location   	(403, 153)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006BBD801C3"
+					client     	@36
+					supplier   	@13
+					line_style 	0
+					label      	(object SegLabel @42
+					    Parent_View 	@41
+					    location   	(837, 1305)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	0))))))
+		    (object ClassDiagram "ChatChannel"
+			quid       	"4006BD6C0047"
+			title      	"ChatChannel"
+			zoom       	100
+			max_height 	28350
+			max_width  	21600
+			origin_x   	0
+			origin_y   	0
+			items      	(list diagram_item_list
+			    (object ClassView "Class" "Logical View::Channel::ChatMessage" @43
+				ShowCompartmentStereotypes 	TRUE
+				IncludeAttribute 	TRUE
+				IncludeOperation 	TRUE
+				location   	(1424, 672)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object ItemLabel
+				    Parent_View 	@43
+				    location   	(1424, 875)
+				    anchor_loc 	1
+				    nlines     	2
+				    max_width  	598
+				    justify    	0
+				    label      	"ChatMessage")
+				icon       	"CORBAEvent"
+				icon_style 	"Icon"
+				line_color 	3342489
+				fill_color 	13434879
+				quidu      	"4006B6D7027F"
+				compartment 	(object Compartment
+				    Parent_View 	@43
+				    location   	(1252, 916)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    icon_style 	"Icon"
+				    anchor     	2
+				    nlines     	2
+				    max_width  	378
+				    justify    	0)
+				annotation 	8
+				autoResize 	TRUE)
+			    (object ClassView "Class" "Logical View::Channel::ChatChannel" @44
+				ShowCompartmentStereotypes 	TRUE
+				IncludeAttribute 	TRUE
+				IncludeOperation 	TRUE
+				location   	(752, 672)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object ItemLabel
+				    Parent_View 	@44
+				    location   	(752, 855)
+				    anchor_loc 	1
+				    nlines     	2
+				    max_width  	952
+				    justify    	0
+				    label      	"ChatChannel")
+				icon       	"CORBAComponent"
+				icon_style 	"Icon"
+				line_color 	3342489
+				fill_color 	13434879
+				quidu      	"4006B8B40022"
+				height     	208
+				annotation 	8
+				autoResize 	TRUE)
+			    (object AssociationViewNew "$UNNAMED$2" @45
+				location   	(1077, 350)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				stereotype 	(object SegLabel @46
+				    Parent_View 	@45
+				    location   	(1079, 267)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    anchor     	10
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	"<<CORBAConsumes>>"
+				    pctDist    	0.533333
+				    height     	84
+				    orientation 	0)
+				line_color 	3342489
+				quidu      	"4006B97200D0"
+				roleview_list 	(list RoleViews
+				    (object RoleView "$UNNAMED$3" @47
+					Parent_View 	@45
+					location   	(-347, -322)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					label      	(object SegLabel @48
+					    Parent_View 	@47
+					    location   	(709, 458)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    hidden     	TRUE
+					    anchor     	1
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	450
+					    justify    	0
+					    label      	""
+					    pctDist    	0.800000
+					    height     	42
+					    orientation 	1)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006B9730103"
+					client     	@45
+					supplier   	@44
+					vertices   	(list Points
+					    (1077, 350)
+					    (750, 350)
+					    (749, 567))
+					line_style 	0
+					label      	(object SegLabel @49
+					    Parent_View 	@47
+					    location   	(803, 513)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	0))
+				    (object RoleView "from_writer" @50
+					Parent_View 	@45
+					location   	(-347, -322)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					label      	(object SegLabel @51
+					    Parent_View 	@50
+					    location   	(1464, 439)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	1
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	228
+					    justify    	0
+					    label      	"+from_writer"
+					    pctDist    	0.800000
+					    height     	42
+					    orientation 	0)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006B97300F9"
+					client     	@45
+					supplier   	@43
+					vertices   	(list Points
+					    (1077, 350)
+					    (1422, 350)
+					    (1421, 549))
+					line_style 	0
+					label      	(object SegLabel @52
+					    Parent_View 	@50
+					    location   	(1368, 495)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	1))))
+			    (object AssociationViewNew "$UNNAMED$4" @53
+				location   	(1027, 1166)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				stereotype 	(object SegLabel @54
+				    Parent_View 	@53
+				    location   	(1027, 1047)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    anchor     	10
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	"<<CORBAPublishes>>"
+				    pctDist    	0.500000
+				    height     	120
+				    orientation 	0)
+				line_color 	3342489
+				quidu      	"4006BB330252"
+				roleview_list 	(list RoleViews
+				    (object RoleView "$UNNAMED$5" @55
+					Parent_View 	@53
+					location   	(-397, 494)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					label      	(object SegLabel @56
+					    Parent_View 	@55
+					    location   	(791, 993)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    hidden     	TRUE
+					    anchor     	1
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	450
+					    justify    	0
+					    label      	""
+					    pctDist    	0.800000
+					    height     	42
+					    orientation 	1)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006BB340203"
+					client     	@53
+					supplier   	@44
+					vertices   	(list Points
+					    (1027, 1166)
+					    (750, 1166)
+					    (749, 880))
+					line_style 	0
+					label      	(object SegLabel @57
+					    Parent_View 	@55
+					    location   	(696, 936)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	0))
+				    (object RoleView "to_reader" @58
+					Parent_View 	@53
+					location   	(-397, 494)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					label      	(object SegLabel @59
+					    Parent_View 	@58
+					    location   	(1395, 1130)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	1
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	195
+					    justify    	0
+					    label      	"+to_reader"
+					    pctDist    	0.800000
+					    height     	42
+					    orientation 	0)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006BB3401F9"
+					client     	@53
+					supplier   	@43
+					vertices   	(list Points
+					    (1027, 1166)
+					    (1438, 1166)
+					    (1431, 1015))
+					line_style 	0
+					label      	(object SegLabel @60
+					    Parent_View 	@58
+					    location   	(1488, 1070)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	1))))))
+		    (object ClassDiagram "ChatReader"
+			quid       	"4006BE0702AD"
+			title      	"ChatReader"
+			zoom       	100
+			max_height 	28350
+			max_width  	21600
+			origin_x   	0
+			origin_y   	0
+			items      	(list diagram_item_list
+			    (object ClassView "Class" "Logical View::Channel::ChatMessage" @61
+				ShowCompartmentStereotypes 	TRUE
+				IncludeAttribute 	TRUE
+				IncludeOperation 	TRUE
+				location   	(1296, 624)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object ItemLabel
+				    Parent_View 	@61
+				    location   	(1296, 827)
+				    anchor_loc 	1
+				    nlines     	2
+				    max_width  	600
+				    justify    	0
+				    label      	"ChatMessage")
+				icon       	"CORBAEvent"
+				icon_style 	"Icon"
+				line_color 	3342489
+				fill_color 	13434879
+				quidu      	"4006B6D7027F"
+				compartment 	(object Compartment
+				    Parent_View 	@61
+				    location   	(1106, 868)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    icon_style 	"Icon"
+				    anchor     	2
+				    nlines     	2
+				    max_width  	378
+				    justify    	0)
+				annotation 	8
+				autoResize 	TRUE)
+			    (object ClassView "Class" "Logical View::Channel::ChatReader" @62
+				ShowCompartmentStereotypes 	TRUE
+				IncludeAttribute 	TRUE
+				IncludeOperation 	TRUE
+				location   	(384, 624)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				label      	(object ItemLabel
+				    Parent_View 	@62
+				    location   	(384, 807)
+				    anchor_loc 	1
+				    nlines     	2
+				    max_width  	954
+				    justify    	0
+				    label      	"ChatReader")
+				icon       	"CORBAComponent"
+				icon_style 	"Icon"
+				line_color 	3342489
+				fill_color 	13434879
+				quidu      	"4006BBCA01AF"
+				height     	208
+				annotation 	8
+				autoResize 	TRUE)
+			    (object AssociationViewNew "$UNNAMED$6" @63
+				location   	(869, 624)
+				font       	(object Font
+				    size       	10
+				    face       	"Arial"
+				    bold       	FALSE
+				    italics    	FALSE
+				    underline  	FALSE
+				    strike     	FALSE
+				    color      	0
+				    default_color 	TRUE)
+				stereotype 	(object SegLabel @64
+				    Parent_View 	@63
+				    location   	(888, 664)
+				    font       	(object Font
+					size       	10
+					face       	"Arial"
+					bold       	FALSE
+					italics    	FALSE
+					underline  	FALSE
+					strike     	FALSE
+					color      	0
+					default_color 	TRUE)
+				    anchor     	10
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	450
+				    justify    	0
+				    label      	"<<CORBAConsumes>>"
+				    pctDist    	0.816667
+				    height     	40
+				    orientation 	1)
+				line_color 	3342489
+				quidu      	"4006BBD70302"
+				roleview_list 	(list RoleViews
+				    (object RoleView "$UNNAMED$7" @65
+					Parent_View 	@63
+					location   	(-1259, -112)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					label      	(object SegLabel @66
+					    Parent_View 	@65
+					    location   	(608, 583)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    hidden     	TRUE
+					    anchor     	1
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	450
+					    justify    	0
+					    label      	""
+					    pctDist    	0.800000
+					    height     	42
+					    orientation 	1)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006BBD801C3"
+					client     	@63
+					supplier   	@62
+					line_style 	0
+					label      	(object SegLabel @67
+					    Parent_View 	@65
+					    location   	(576, 678)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	0))
+				    (object RoleView "from_channel" @68
+					Parent_View 	@63
+					location   	(-1259, -112)
+					font       	(object Font
+					    size       	10
+					    face       	"Arial"
+					    bold       	FALSE
+					    italics    	FALSE
+					    underline  	FALSE
+					    strike     	FALSE
+					    color      	0
+					    default_color 	TRUE)
+					label      	(object SegLabel @69
+					    Parent_View 	@68
+					    location   	(1048, 582)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	1
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	278
+					    justify    	0
+					    label      	"+from_channel"
+					    pctDist    	0.547401
+					    height     	42
+					    orientation 	0)
+					stereotype 	TRUE
+					line_color 	3342489
+					quidu      	"4006BBD801B9"
+					client     	@63
+					supplier   	@61
+					line_style 	0
+					label      	(object SegLabel @70
+					    Parent_View 	@68
+					    location   	(1162, 678)
+					    font       	(object Font
+						size       	10
+						face       	"Arial"
+						bold       	FALSE
+						italics    	FALSE
+						underline  	FALSE
+						strike     	FALSE
+						color      	0
+						default_color 	TRUE)
+					    anchor     	2
+					    anchor_loc 	1
+					    nlines     	1
+					    max_width  	15
+					    justify    	0
+					    label      	"1"
+					    pctDist    	0.900000
+					    height     	54
+					    orientation 	1)))))))))
+	logical_presentations 	(list unit_reference_list))
+    root_subsystem 	(object SubSystem "Component View"
+	quid       	"4006B50B03A1"
+	physical_models 	(list unit_reference_list)
+	physical_presentations 	(list unit_reference_list
+	    (object Module_Diagram "Main"
+		quid       	"4006B5320202"
+		title      	"Main"
+		zoom       	100
+		max_height 	28350
+		max_width  	21600
+		origin_x   	0
+		origin_y   	0
+		items      	(list diagram_item_list))))
+    process_structure 	(object Processes
+	quid       	"4006B50B03B4"
+	ProcsNDevs 	(list
+	    (object Process_Diagram "Deployment View"
+		quid       	"4006B50B03D2"
+		title      	"Deployment View"
+		zoom       	100
+		max_height 	28350
+		max_width  	21600
+		origin_x   	0
+		origin_y   	0
+		items      	(list diagram_item_list))))
+    properties 	(object Properties
+	attributes 	(list Attribute_Set
+	    (object Attribute
+		tool       	"ANSI C++ Event Watcher"
+		name       	"HiddenTool"
+		value      	FALSE)
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"propertyId"
+		value      	"809135966")
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"Module__Category"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"prefix"
+			value      	"")))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"Association"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"setRaises"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"getRaises"
+			value      	"")))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"CORBAUses__Association"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isMultiple"
+			value      	("isMultipleBool" 0))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isMultipleBool"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"false"
+				value      	0)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"true"
+				value      	1)))))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"Attribute"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"setRaises"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"getRaises"
+			value      	"")))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"CORBAInterface__Class"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isAbstract"
+			value      	("isAbstractBool" 0))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isAbstractBool"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"false"
+				value      	0)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"true"
+				value      	1)))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isLocal"
+			value      	("isLocalBool" 0))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isLocalBool"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"false"
+				value      	0)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"true"
+				value      	1)))))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"CORBAHome__Class"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isAbstract"
+			value      	("isAbstractBool" 0))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isAbstractBool"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"false"
+				value      	0)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"true"
+				value      	1)))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isLocal"
+			value      	("isLocalBool" 0))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isLocalBool"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"false"
+				value      	0)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"true"
+				value      	1)))))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"CORBAComponentImpl__Class"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"component_category"
+			value      	("isCategory" 0))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isCategory"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"session"
+				value      	0)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"entity"
+				value      	1)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"process"
+				value      	2)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"service"
+				value      	3)))))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"CORBAComponent__Class"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"version"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"component_category"
+			value      	("isCategory" 0))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isCategory"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"session"
+				value      	0)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"entity"
+				value      	1)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"process"
+				value      	2)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"service"
+				value      	3)))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"servant_lifetime"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"transaction_use"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"security_rightsfamily"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"threading_policy"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"configurationcomplete_set"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"repository_ins"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"repository_objref_string"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"repository_link"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"repository_type"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"properties_file"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isAbstract"
+			value      	("isAbstractBool" 0))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isAbstractBool"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"false"
+				value      	0)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"true"
+				value      	1)))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isLocal"
+			value      	("isLocalBool" 0))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isLocalBool"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"false"
+				value      	0)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"true"
+				value      	1)))))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"default__Operation"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"is_oneway"
+			value      	"false")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"transaktion_use"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"right_name"
+			value      	"")))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"CORBADeploymentUnit__Module-Spec"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"code_type"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"main_memory"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"compiler_name"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"compiler_version"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"dependency_action"
+			value      	"assert")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"programmlanguage_name"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"programmlanguage_version"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"humanlanguage"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"os_name"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"os_version"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"processor"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"storage_space_min"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"storage_space_max"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"propertyfile_link"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"descriptorfile_link"
+			value      	"")))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"CORBADeploymentUnit__Module-Body"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"code_type"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"main_memory"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"compiler_name"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"compiler_version"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"dependency_action"
+			value      	"assert")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"programmlanguage_name"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"programmlanguage_version"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"humanlanguage"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"os_name"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"os_version"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"processor"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"storage_space_min"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"storage_space_max"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"propertyfile_link"
+			value      	"")
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"descriptorfile_link"
+			value      	"")))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"CORBAAssembly__Category"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"descriptor_location"
+			value      	"")))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"PropDesc__Class"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"type"
+			value      	("Types" 0))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"Types"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"boolean"
+				value      	0)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"unsigned short"
+				value      	1)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"short"
+				value      	2)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"unsigned long"
+				value      	3)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"long"
+				value      	4)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"string"
+				value      	5)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"char"
+				value      	6)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"double"
+				value      	7)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"float"
+				value      	8)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"wstring"
+				value      	9)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"wchar"
+				value      	10)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"octet"
+				value      	11)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"unsigned long long"
+				value      	12)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"long long"
+				value      	13)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"boolean sequence"
+				value      	14)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"unsigned short sequence"
+				value      	15)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"short sequence"
+				value      	16)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"unsigned long sequence"
+				value      	17)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"long sequence"
+				value      	18)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"string sequence"
+				value      	19)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"char sequence"
+				value      	20)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"double sequence"
+				value      	21)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"float sequence"
+				value      	22)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"wstring sequence"
+				value      	23)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"wchar sequence"
+				value      	24)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"octet sequence"
+				value      	25)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"unsigned long long sequence"
+				value      	26)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"long long sequence"
+				value      	27)))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"mode"
+			value      	("Mode" 0))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"Mode"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"normal"
+				value      	0)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"readonly"
+				value      	1)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"mandatory"
+				value      	2)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"readonly mandatory"
+				value      	3)))))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"CORBASegment__Class"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isSerialized"
+			value      	("isSerializedBool" 0))
+		    (object Attribute
+			tool       	"CCM UMLProfile"
+			name       	"isSerializedBool"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"false"
+				value      	0)
+			    (object Attribute
+				tool       	"CCM UMLProfile"
+				name       	"true"
+				value      	1)))))
+	    (object Attribute
+		tool       	"CCM UMLProfile"
+		name       	"HiddenTool"
+		value      	FALSE)
+	    (object Attribute
+		tool       	"Data Modeler Communicator"
+		name       	"HiddenTool"
+		value      	FALSE)
+	    (object Attribute
+		tool       	"COM"
+		name       	"propertyId"
+		value      	"783606378")
+	    (object Attribute
+		tool       	"COM"
+		name       	"default__Class"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"COM"
+			name       	"TypeKinds"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"COM"
+				name       	"enum"
+				value      	100)
+			    (object Attribute
+				tool       	"COM"
+				name       	"record"
+				value      	101)
+			    (object Attribute
+				tool       	"COM"
+				name       	"module"
+				value      	102)
+			    (object Attribute
+				tool       	"COM"
+				name       	"interface"
+				value      	103)
+			    (object Attribute
+				tool       	"COM"
+				name       	"dispinterface"
+				value      	104)
+			    (object Attribute
+				tool       	"COM"
+				name       	"coclass"
+				value      	105)
+			    (object Attribute
+				tool       	"COM"
+				name       	"alias"
+				value      	106)
+			    (object Attribute
+				tool       	"COM"
+				name       	"union"
+				value      	107)
+			    (object Attribute
+				tool       	"COM"
+				name       	"max"
+				value      	108)
+			    (object Attribute
+				tool       	"COM"
+				name       	"(none)"
+				value      	109)))
+		    (object Attribute
+			tool       	"COM"
+			name       	"Generate"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"COM"
+			name       	"kind"
+			value      	("TypeKinds" 109))
+		    (object Attribute
+			tool       	"COM"
+			name       	"uuid"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"version"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"helpstring"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"helpcontext"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"attributes"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"dllname"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"alias"
+			value      	"")))
+	    (object Attribute
+		tool       	"COM"
+		name       	"default__Operation"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"COM"
+			name       	"Generate"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"COM"
+			name       	"id"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"helpstring"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"attributes"
+			value      	"")))
+	    (object Attribute
+		tool       	"COM"
+		name       	"default__Attribute"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"COM"
+			name       	"Generate"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"COM"
+			name       	"id"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"helpstring"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"attributes"
+			value      	"")))
+	    (object Attribute
+		tool       	"COM"
+		name       	"default__Module-Spec"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"COM"
+			name       	"Generate"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"COM"
+			name       	"filename"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"library"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"uuid"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"version"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"helpstring"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"helpfile"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"helpcontext"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"lcid"
+			value      	"")
+		    (object Attribute
+			tool       	"COM"
+			name       	"attributes"
+			value      	"")))
+	    (object Attribute
+		tool       	"COM"
+		name       	"default__Param"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"COM"
+			name       	"attributes"
+			value      	"")))
+	    (object Attribute
+		tool       	"COM"
+		name       	"HiddenTool"
+		value      	FALSE)
+	    (object Attribute
+		tool       	"VisualStudio"
+		name       	"HiddenTool"
+		value      	FALSE))
+	quid       	"4006B50B03B5"))

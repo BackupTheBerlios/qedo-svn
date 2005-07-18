@@ -1,0 +1,34 @@
+#include "simdemo.idl"
+
+module Simulation{
+  composition session PlaneImpl {
+    home executor PlaneHomeImpl {
+      implements PlaneHome;
+      manages PlaneSessionImpl;
+    };
+  };
+
+  composition session SimulationServerImpl {
+    home executor SimulationServerHomeImpl {
+      implements SimulationServerHome;
+      manages SimulationServerSessionImpl;
+    };
+  };
+
+  composition session RadarImpl {
+    home executor RadarHomeImpl {
+      implements RadarHome;
+      manages RadarSessionImpl;
+    };
+  };
+
+  composition session TAPDisplayImpl {
+    home executor TAPDisplayHomeImpl {
+      implements TAPDisplayHome;
+      manages TAPDisplaySessionImpl;
+    };
+  };
+
+};
+
+  

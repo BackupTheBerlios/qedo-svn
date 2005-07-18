@@ -1,0 +1,27 @@
+#include "dinner.idl"
+
+module dinner {
+
+	composition session PhilosopherImpl {
+		home executor PhilosopherHomeImpl {
+			implements DiningPhilosophers::PhilosopherHome;
+			manages PhilosopherSessionImpl;
+		};
+	};
+
+	composition session CutleryImpl {
+		home executor CutleryHomeImpl {
+			implements DiningPhilosophers::ForkHome;
+			manages CutlerySessionImpl {
+				segment Seg { provides facet the_fork; }
+			};
+		};
+	};
+
+	composition session ObserverImpl {
+		home executor ObserverHomeImpl {
+			implements DiningPhilosophers::ObserverHome;
+			manages ObserverSessionImpl;
+		};
+	};
+};

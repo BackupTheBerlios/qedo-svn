@@ -1,0 +1,68 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE componentassembly PUBLIC "-//OMG//DTD Component Assembly Descriptor" "http://www.qedo.org/componentassembly.dtd">
+
+<componentassembly id="dinner">
+
+    <description>Windows assembly"</description>
+
+    <componentfiles>
+        <componentfile id="Cutlery_file">
+		<fileinarchive name="meta-inf/dinner_CutleryImpl.csd">
+			<link href="dinner_CutleryImpl.zip"/>
+		</fileinarchive>
+        </componentfile>
+
+        <componentfile id="Observer_file">
+		<fileinarchive name="meta-inf/dinner_ObserverImpl.csd">
+			<link href="dinner_ObserverImpl.zip"/>
+		</fileinarchive>
+        </componentfile>
+
+        <componentfile id="Philosopher_file">
+		<fileinarchive name="meta-inf/dinner_PhilosopherImpl.csd">
+			<link href="dinner_PhilosopherImpl.zip"/>
+		</fileinarchive>
+        </componentfile>
+
+    </componentfiles>
+       <partitioning>
+
+
+		<processcollocation>
+			<homeplacement id="CutleryHome">
+	        		<componentfileref idref="Cutlery_file"/>
+					<componentimplref idref="UUID-cb134dfc-e678-4eca-8e45-305e2587a80b"/>
+  			      		<componentinstantiation id="Cutlery1">
+						</componentinstantiation>
+					<destination></destination>
+			</homeplacement>
+		</processcollocation>
+
+		<processcollocation>
+			<homeplacement id="ObserverHome">
+	        		<componentfileref idref="Observer_file"/>
+					<componentimplref idref="UUID-1e852f5e-8173-443c-b68c-85e70a1fb018"/>
+  			      		<componentinstantiation id="Observer1">
+						</componentinstantiation>
+					<destination></destination>
+			</homeplacement>
+		</processcollocation>
+
+		<processcollocation>
+			<homeplacement id="PhilosopherHome">
+	        		<componentfileref idref="Philosopher_file"/>
+					<componentimplref idref="UUID-b74aa0de-aa9a-412c-a6e6-1e1d009e16f3"/>
+  			      		<componentinstantiation id="Philosopher1">
+						</componentinstantiation>
+					<destination></destination>
+			</homeplacement>
+		</processcollocation>
+
+    </partitioning>
+
+    <connections>
+
+    </connections>
+
+</componentassembly>
+

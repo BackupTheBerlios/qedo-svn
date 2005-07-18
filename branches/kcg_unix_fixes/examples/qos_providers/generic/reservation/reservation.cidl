@@ -1,0 +1,14 @@
+#include "reservation.idl"
+
+module QedoQoS {
+
+	composition extension ReservationQoSProvider 
+	{
+		home executor ReservationQoSProviderHomeImpl
+		{
+			implements ReservationHome;
+			manages ReservationQoSproviderImpl;
+		};
+	};
+
+};
