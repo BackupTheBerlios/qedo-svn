@@ -1,0 +1,10 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE properties PUBLIC "-//OMG//DTD Property File Descriptor" "http://cif.sourceforge.net/properties.dtd">
+
+<properties>
+    <configuration>
+        <simple name="id" type="string">
+            <value>fork1</value>
+        </simple>
+    </configuration>
+</properties>

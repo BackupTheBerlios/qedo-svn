@@ -1,0 +1,78 @@
+#ifndef CORBA_IDL_TYPES
+#define CORBA_IDL_TYPES
+
+#include <Reflective.idl>
+
+#pragma prefix "org.omg.mof"
+
+module CorbaIdlTypes {
+  typedef sequence < octet > OctetBag;
+  typedef sequence < octet > OctetSet;
+  typedef sequence < octet > OctetList;
+  typedef sequence < octet > OctetUList;
+  
+  typedef sequence < short > ShortBag;
+  typedef sequence < short > ShortSet;
+  typedef sequence < short > ShortList;
+  typedef sequence < short > ShortUList;
+  
+  typedef sequence < unsigned short > UShortBag;
+  typedef sequence < unsigned short > UShortSet;
+  typedef sequence < unsigned short > UShortList;
+  typedef sequence < unsigned short > UShortUList;
+  
+  typedef sequence < unsigned long > ULongBag;
+  typedef sequence < unsigned long > ULongSet;
+  typedef sequence < unsigned long > ULongList;
+  typedef sequence < unsigned long > ULongUList;
+  
+  typedef sequence < unsigned long long > ULongLongBag;
+  typedef sequence < unsigned long long > ULongLongSet;
+  typedef sequence < unsigned long long > ULongLongList;
+  typedef sequence < unsigned long long > ULongLongUList;
+
+  typedef sequence < long double > ULongDoubleBag;
+  typedef sequence < long double > ULongDoubleSet;
+  typedef sequence < long double > ULongDoubleList;
+  typedef sequence < long double > ULongDoubleUList;
+  
+  typedef sequence < string > StringBag;
+  typedef sequence < string > StringSet;
+  typedef sequence < string > StringList;
+  typedef sequence < string > StringUList;
+  
+  typedef sequence < char > CharBag;
+  typedef sequence < char > CharSet;
+  typedef sequence < char > CharList;
+  typedef sequence < char > CharUList;     
+  
+  typedef sequence < wchar > WCharBag;
+  typedef sequence < wchar > WCharSet;
+  typedef sequence < wchar > WCharList;
+  typedef sequence < wchar > WCharUList;
+    
+  interface CorbaIdlTypesPackage : Reflective::RefPackage { };
+    
+	//##ModelId=3D919B07008C
+  interface CorbaIdlTypesPackageFactory { 
+    CorbaIdlTypesPackage create_corba_idl_types_package()
+      raises (Reflective::MofError);
+  };
+/*
+proprietary extensions by IKV++ Technologies AG
+*/
+  typedef sequence < Object > ObjectBag;
+  typedef sequence < Object > ObjectSet;
+  typedef sequence < Object > ObjectList;
+  typedef sequence < Object > ObjectUList;
+
+  typedef sequence < any > AnyBag;
+  typedef sequence < any > AnySet;
+  typedef sequence < any > AnyList;
+  typedef sequence < any > AnyUList;
+
+};
+
+#pragma prefix ""
+
+#endif

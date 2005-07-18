@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.10"
+	Name="dynamic_creation_GenericCreatorCompo"
+	ProjectGUID="{B8C06CEF-2FA6-40A2-B451-DED7B3373533}"
+	Keyword="Win32Proj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug_orbacus|Win32"
+			OutputDirectory="Debug_orbacus"
+			IntermediateDirectory="Debug_orbacus"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(ORBACUS)/include;$(ORBACUS)/include/OB;"
+				PreprocessorDefinitions="ORBACUS_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS;_QEDO_NO_QOS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib obd.lib jtcd.lib"
+				OutputFile="$(OutDir)/dynamic_creation_GenericCreatorCompo.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(ORBACUS)/lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/dynamic_creation_GenericCreatorCompo.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/dynamic_creation_GenericCreatorCompo.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_mico|Win32"
+			OutputDirectory="Debug_mico"
+			IntermediateDirectory="Debug_mico"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)/include/pthreads;$(QEDO)/include;$(Qedo)/include/mico;../dynamic_creation_GenericCreatorCompo_SERVANT"
+				PreprocessorDefinitions="BUILD_DYNAMIC_CREATION_GENERICCREATORCOMPO_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC2.lib"
+				OutputFile="$(OutDir)/dynamic_creation_GenericCreatorCompo.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(QEDO)/lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/dynamic_creation_GenericCreatorCompo.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/dynamic_creation_GenericCreatorCompo.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine="$(Qedo)/bin/zip ../dynamic_creation_GenericCreatorCompo.zip -j Debug_mico/dynamic_creation_GenericCreatorCompo.dll ../dynamic_creation_GenericCreatorCompo_SERVANT/Debug_mico/dynamic_creation_GenericCreatorCompo_SERVANT.dll ../dynamic_creation.cidl
+$(Qedo)/bin/zip ../dynamic_creation_GenericCreatorCompo.zip meta-inf/dynamic_creation_GenericCreatorCompo.ccd meta-inf/dynamic_creation_GenericCreatorCompo.csd
+"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug_tao|Win32"
+			OutputDirectory="Debug_tao"
+			IntermediateDirectory="Debug_tao"
+			ConfigurationType="2"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories=".;$(QEDO)/include;$(MICO)/include;"
+				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS;_QEDO_NO_QOS"
+				MinimalRebuild="TRUE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib mico2311.lib"
+				OutputFile="$(OutDir)/dynamic_creation_GenericCreatorCompo.dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="$(OutDir)/dynamic_creation_GenericCreatorCompo.pdb"
+				SubSystem="2"
+				ImportLibrary="$(OutDir)/dynamic_creation_GenericCreatorCompo.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm">
+			<File
+				RelativePath="component_valuetypes.cpp">
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo.cpp">
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo_BUSINESS.cpp">
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo_BUSINESS_skel.cpp">
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo_EQUIVALENT.cpp">
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo_LOCAL.cpp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc">
+			<File
+				RelativePath="component_valuetypes.h">
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo.h">
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo_BUSINESS.h">
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo_BUSINESS_skel.h">
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo_EQUIVALENT.h">
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo_LOCAL.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="idl"
+			Filter="idl;cidl">
+			<File
+				RelativePath="../dynamic_creation.cidl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling CIDL"
+						CommandLine="$(QEDO)/bin/cidl_gen -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB --business --target IDL:dynamic_creation/GenericCreatorCompo:1.0 ../dynamic_creation.cidl
+"
+						Outputs="dynamic_creation_GenericCreatorCompo_LOCAL.idl;dynamic_creation_GenericCreatorCompo_EQUIVALENT.idl;dynamic_creation_GenericCreatorCompo_BUSINESS.idl"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling CIDL"
+						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 -I$(QEDO)/idl -I$(QEDO)/include/mico -I$(QEDO)/include/mico/mico --business --target IDL:dynamic_creation/GenericCreatorCompo:1.0 ../dynamic_creation.cidl
+"
+						Outputs="dynamic_creation_GenericCreatorCompo_LOCAL.idl;dynamic_creation_GenericCreatorCompo_EQUIVALENT.idl;dynamic_creation_GenericCreatorCompo_BUSINESS.idl"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dynamic_creation_GenericCreatorCompo_LOCAL.idl
+"
+						Outputs="dynamic_creation_GenericCreatorCompo_LOCAL.h;dynamic_creation_GenericCreatorCompo_LOCAL.cpp;dynamic_creation_GenericCreatorCompo_LOCAL_skel.h;dynamic_creation_GenericCreatorCompo_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo_BUSINESS.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling business IDL"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dynamic_creation_GenericCreatorCompo_BUSINESS.idl
+"
+						Outputs="dynamic_creation_GenericCreatorCompo_BUSINESS.h;dynamic_creation_GenericCreatorCompo_BUSINESS.cpp;dynamic_creation_GenericCreatorCompo_BUSINESS_skel.h;dynamic_creation_GenericCreatorCompo_BUSINESS_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling business IDL"
+						CommandLine="$(Qedo)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl   --any --typecode --c++-skel --c++-suffix cpp --windows-dll dynamic_creation_GenericCreatorCompo dynamic_creation_GenericCreatorCompo_BUSINESS.idl
+copy dynamic_creation_GenericCreatorCompo_BUSINESS.h dynamic_creation_GenericCreatorCompo_BUSINESS_skel.h
+"
+						Outputs="dynamic_creation_GenericCreatorCompo_BUSINESS.h;dynamic_creation_GenericCreatorCompo_BUSINESS.cpp;dynamic_creation_GenericCreatorCompo_BUSINESS_skel.h;dynamic_creation_GenericCreatorCompo_BUSINESS_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dynamic_creation_GenericCreatorCompo_LOCAL.idl
+"
+						Outputs="dynamic_creation_GenericCreatorCompo_LOCAL.h;dynamic_creation_GenericCreatorCompo_LOCAL.cpp;dynamic_creation_GenericCreatorCompo_LOCAL_skel.h;dynamic_creation_GenericCreatorCompo_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo_EQUIVALENT.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling equivalent IDL"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dynamic_creation_GenericCreatorCompo_EQUIVALENT.idl
+"
+						Outputs="dynamic_creation_GenericCreatorCompo_EQUIVALENT.h;dynamic_creation_GenericCreatorCompo_EQUIVALENT.cpp;dynamic_creation_GenericCreatorCompo_EQUIVALENT_skel.h;dynamic_creation_GenericCreatorCompo_EQUIVALENT_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling equivalent IDL"
+						CommandLine="$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl --any --typecode --c++-skel --c++-suffix cpp --windows-dll dynamic_creation_GenericCreatorCompo dynamic_creation_GenericCreatorCompo_EQUIVALENT.idl
+copy dynamic_creation_GenericCreatorCompo_EQUIVALENT.h dynamic_creation_GenericCreatorCompo_EQUIVALENT_skel.h
+"
+						Outputs="dynamic_creation_GenericCreatorCompo_EQUIVALENT.h;dynamic_creation_GenericCreatorCompo_EQUIVALENT.cpp;dynamic_creation_GenericCreatorCompo_EQUIVALENT_skel.h;dynamic_creation_GenericCreatorCompo_EQUIVALENT_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dynamic_creation_GenericCreatorCompo_LOCAL.idl
+"
+						Outputs="dynamic_creation_GenericCreatorCompo_LOCAL.h;dynamic_creation_GenericCreatorCompo_LOCAL.cpp;dynamic_creation_GenericCreatorCompo_LOCAL_skel.h;dynamic_creation_GenericCreatorCompo_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="dynamic_creation_GenericCreatorCompo_LOCAL.idl">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling local IDL"
+						CommandLine="$(ORBACUS)/bin/idl -DORBACUS_ORB -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dynamic_creation_GenericCreatorCompo_LOCAL.idl
+"
+						Outputs="dynamic_creation_GenericCreatorCompo_LOCAL.h;dynamic_creation_GenericCreatorCompo_LOCAL.cpp;dynamic_creation_GenericCreatorCompo_LOCAL_skel.h;dynamic_creation_GenericCreatorCompo_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="..... compiling local IDL"
+						CommandLine="$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --windows-dll dynamic_creation_GenericCreatorCompo dynamic_creation_GenericCreatorCompo_LOCAL.idl
+copy dynamic_creation_GenericCreatorCompo_LOCAL.h dynamic_creation_GenericCreatorCompo_LOCAL_skel.h
+"
+						Outputs="dynamic_creation_GenericCreatorCompo_LOCAL.h;dynamic_creation_GenericCreatorCompo_LOCAL.cpp;dynamic_creation_GenericCreatorCompo_LOCAL_skel.h;dynamic_creation_GenericCreatorCompo_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="$(ORBACUS)/bin/idl -DWIN32 -I$(QEDO)/idl -I$(ORBACUS)/idl -I$(ORBACUS)/idl/OB dynamic_creation_GenericCreatorCompo_LOCAL.idl
+"
+						Outputs="dynamic_creation_GenericCreatorCompo_LOCAL.h;dynamic_creation_GenericCreatorCompo_LOCAL.cpp;dynamic_creation_GenericCreatorCompo_LOCAL_skel.h;dynamic_creation_GenericCreatorCompo_LOCAL_skel.cpp"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+		<Filter
+			Name="meta-inf"
+			Filter="ccd;csd">
+			<File
+				RelativePath="meta-inf\dynamic_creation_GenericCreatorCompo.ccd">
+			</File>
+			<File
+				RelativePath="meta-inf\dynamic_creation_GenericCreatorCompo.csd">
+				<FileConfiguration
+					Name="Debug_orbacus|Win32">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_mico|Win32">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug_tao|Win32">
+					<Tool
+						Name="VCCustomBuildTool"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

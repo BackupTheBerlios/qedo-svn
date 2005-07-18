@@ -1,0 +1,10 @@
+#include "Components.idl"
+#include "../hello_world/hello.idl"
+
+module dynamic_creation {
+  component GenericCreator {
+  };
+  
+  home GenericCreatorHome manages GenericCreator{};
+    
+};  

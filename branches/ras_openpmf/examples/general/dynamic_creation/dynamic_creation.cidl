@@ -1,0 +1,12 @@
+#include "dynamic_creation.idl"
+
+module dynamic_creation {
+
+  composition session GenericCreatorCompo {
+    home executor GenericCreatorHomeImpl {
+      implements GenericCreatorHome;
+      manages GenericCreatorSessionImpl;
+    };
+  };
+
+};

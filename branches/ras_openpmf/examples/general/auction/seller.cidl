@@ -1,0 +1,11 @@
+#include "auction.idl"
+
+module auction {
+
+	composition session SellerImpl {
+		home executor SellerHomeImpl {
+			implements auction::Sellers;
+			manages SellerSessionImpl;
+		};
+	};
+};

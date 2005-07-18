@@ -1,0 +1,65 @@
+#ifndef PRIMITIVE_TYPES
+#define PRIMITIVE_TYPES
+
+
+#include <Reflective.idl>
+
+#pragma prefix "org.omg.mof"
+module PrimitiveTypes {
+  typedef sequence < boolean > BooleanBag;
+  typedef sequence < boolean > BooleanSet;
+  typedef sequence < boolean > BooleanList;
+  typedef sequence < boolean > BooleanUList;
+  
+/*
+IKV extension - 23-01-03
+the type Integer is part of the PrimitiveTypes package, but 
+doesn't appear in the according IDL definition. We extend the
+package here to allow usage of this type.
+*/
+  typedef sequence < short > IntegerBag;
+  typedef sequence < short > IntegerSet;
+  typedef sequence < short > IntegerList;
+  typedef sequence < short > IntegerUList;
+/*
+IKV extension end
+*/
+  typedef sequence < long > LongBag;
+  typedef sequence < long > LongSet;
+  typedef sequence < long > LongList;
+  typedef sequence < long > LongUList;
+  
+  typedef sequence < long long > LongLongBag;
+  typedef sequence < long long > LongLongSet;
+  typedef sequence < long long > LongLongList;
+  typedef sequence < long long > LongLongUList;
+  
+  typedef sequence < float > FloatBag;
+  typedef sequence < float > FloatSet;
+  typedef sequence < float > FloatList;
+  typedef sequence < float > FloatUList;
+  
+  typedef sequence < double > DoubleBag;
+  typedef sequence < double > DoubleSet;
+  typedef sequence < double > DoubleList;
+  typedef sequence < double > DoubleUList;
+  
+  typedef sequence < wstring > WStringBag;
+  typedef sequence < wstring > WStringSet;
+  typedef sequence < wstring > WStringList;
+  typedef sequence < wstring > WStringUList;  
+  
+  interface PrimitiveTypesPackage : Reflective::RefPackage { };
+  
+  
+	//##ModelId=3D919B1400B0
+  interface PrimitiveTypesPackageFactory { 
+    PrimitiveTypesPackage create_primitive_types_package()
+      raises (Reflective::MofError);
+    
+  };
+};
+
+#pragma prefix ""
+
+#endif

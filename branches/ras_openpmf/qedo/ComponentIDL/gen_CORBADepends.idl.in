@@ -1,0 +1,47 @@
+//
+// CCM Container Implementation
+// (C)2000-2002 Humboldt University Berlin, Department of Computer Science
+//
+// $Id: gen_CORBADepends.idl.in,v 1.1 2002/10/07 07:17:02 tom Exp $
+//
+
+#ifndef __CORBA_DEPENDS_IDL__
+#define __CORBA_DEPENDS_IDL__
+
+// for CORBA::OctetSeq
+#include "@ORB_IDL@"
+// for CORBA::RepositoryId
+//#include "@IR_IDL@"
+// for PortableServer::ObjectId
+#include "@POA_IDL@"
+
+#pragma prefix "omg.org"
+
+module CosPersistentState {
+
+  typedef string PTypeId;
+  typedef CORBA::OctetSeq Pid;
+
+  local interface CatalogBase {
+
+    /*readonly attribute AccessMode access_mode;
+
+    StorageHomeBase
+    find_storage_home(in string storage_home_id)
+      raises (NotFound);
+
+    StorageObjectBase
+    find_by_pid(in Pid the_pid) raises (NotFound);
+
+    void flush();
+    void refresh();
+
+    void free_all();
+
+    void close();*/
+  };
+
+};
+
+
+#endif

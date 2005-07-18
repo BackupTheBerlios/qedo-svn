@@ -1,0 +1,25 @@
+#ifndef REPOSITORY_ROOT_IDL
+#define REPOSITORY_ROOT_IDL
+
+#include <Reflective.idl>
+
+module M2C {
+module MOFRepository {
+
+typedef sequence < Object > ObjectSet;
+
+interface RepositoryRoot
+{
+	Object get_root_package_factory ();
+	Reflective::RefPackageSet get_root_packages ();
+
+    // If the repository is based on more than one metamodel,
+	// the get_root_package_factories operation returns refs
+	// to all available factories
+	ObjectSet get_root_package_factories ();
+};
+
+};
+};
+
+#endif

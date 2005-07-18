@@ -1,0 +1,4 @@
+This example demonstrates how to create component instacnes application dependant. 
+
+The component expects that the Homes of the Hello World examples are registered in the HomeFinder, which is usually done if you simply deploy this example. But it is sufficient to only create the Homes.
+
