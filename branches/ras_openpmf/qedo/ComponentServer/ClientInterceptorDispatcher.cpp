@@ -37,8 +37,9 @@ static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.13 2004/0
 
 namespace Qedo {
 
-ClientInterceptorDispatcher::ClientInterceptorDispatcher() {
-
+ClientInterceptorDispatcher::ClientInterceptorDispatcher()
+    : component_server_(NULL)
+{
 }
 
 ClientInterceptorDispatcher::~ClientInterceptorDispatcher() {
@@ -96,6 +97,13 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 #ifdef _DEBUG
 	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
 #endif
+        if (component_server_ == NULL) {
+	  //            std::cerr << "component_server_ == NULL => interceptor invocation not allowed" << std::endl;
+            return;
+        }
+        assert(component_server_ != NULL);
+	//        std::cerr << "slot id: " << component_server_->slot_id_ << std::endl;
+        assert(!CORBA::is_nil(info));
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
@@ -141,13 +149,20 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 void
 ClientInterceptorDispatcher::send_poll( PortableInterceptor::ClientRequestInfo_ptr info )
 {
-
+        if (component_server_ == NULL) {
+	  //            std::cerr << "component_server_ == NULL => interceptor invocation not allowed" << std::endl;
+            return;
+        }
 }
 
 void
 ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestInfo_ptr info )
 {
 	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
+        if (component_server_ == NULL) {
+	  //            std::cerr << "component_server_ == NULL => interceptor invocation not allowed" << std::endl;
+            return;
+        }
 
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
@@ -180,7 +195,10 @@ void
 ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientRequestInfo_ptr info )
 {
 	DEBUG_OUT ("ClientInterceptorDispatcher: receive_exception");
-
+        if (component_server_ == NULL) {
+	  //            std::cerr << "component_server_ == NULL => interceptor invocation not allowed" << std::endl;
+            return;
+        }
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
@@ -211,7 +229,10 @@ ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientReque
 void
 ClientInterceptorDispatcher::receive_other( PortableInterceptor::ClientRequestInfo_ptr info )
 {
-
+        if (component_server_ == NULL) {
+	  //            std::cerr << "component_server_ == NULL => interceptor invocation not allowed" << std::endl;
+            return;
+        }
 }
 
 
@@ -327,6 +348,7 @@ ClientInterceptorDispatcher::unregister_interceptor_for_all(Components::Containe
 void
 ClientInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* component_server)
 {
+  //    std::cerr << "set_component_server!" << std::endl;
 	component_server_ = component_server;
 
 }

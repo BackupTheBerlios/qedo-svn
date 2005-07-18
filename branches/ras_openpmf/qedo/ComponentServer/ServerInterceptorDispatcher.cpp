@@ -34,6 +34,8 @@
 #include "GlobalHelpers.h"
 #include "ContainerServerRequestInfo.h"
 
+#define USE_OPENPMF 1
+
 static char rcsid[] UNUSED = "$Id: ServerInterceptorDispatcher.cpp,v 1.19 2004/08/27 08:37:43 tom Exp $";
 
 namespace Qedo {
@@ -229,13 +231,17 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	}
 	if (!port_id)
 	{
-		port_id="QEOD_UNKNOWN_PORT_ID";
+		port_id="QEDO_UNKNOWN_PORT_ID";
 	}
+
+	std::cout << "id= " << " " << id << " "
+		  << "port_id= " << port_id 
+		  << std::endl;
 
 	// extract origin_id from service context
 	IOP::ServiceContext_var sc = 0;
 	CORBA::Any_var context_any = new CORBA::Any();
-	CORBA::Any slot ;
+	CORBA::Any slot;
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	try {
 		sc = info -> get_request_service_context(100);	
@@ -271,9 +277,24 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	slot <<= slot_info;
 	piCurrent -> set_slot(component_server_ -> slot_id_, slot);
 
+
+#ifdef USE_OPENPMF
+	CORBA::Any a;	
+	if (strcmp( id, "__QEDO__NOT_COMPONENT_ID__!!"))
+	  {
+	    std::cout << "!!!!!! COPI enforces policy\n";
+	    a <<= (CORBA::Long)0;
+	  } else {
+	    std::cout << "!!!!!! PI enforces policy\n";
+	  a <<= (CORBA::Long)1;
+	}
+	piCurrent -> set_slot(component_server_ ->pmf_slot_id_, a);
+#endif 
+
 	Qedo::QedoLock l_all(all_server_interceptors_mutex_);
 
 	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,port_id);
+
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
 		try {

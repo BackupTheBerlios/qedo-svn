@@ -42,6 +42,12 @@
 #include "StubInterceptorDispatcher.h"
 #endif
 
+#define  USE_OPENPMF 1
+#ifdef USE_OPENPMF
+#include <CORBAAdapter.h>
+#endif
+
+
 static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.38 2004/09/27 13:06:14 tom Exp $";
 
 
@@ -71,7 +77,32 @@ bool g_qos_enabled;
 int
 main (int argc, char** argv)
 {
-	NORMAL_OUT3 ("Qedo Component Server ", QEDO_VERSION, QEDO_REVISION);
+  /*
+    std::cerr << "qcs........sleeping......" << std::endl;
+    sleep(60);
+    std::cerr << "Let's go on................." << std::endl;
+	NORMAL_OUT2 ("Qedo Component Server ", QEDO_VERSION);
+  */
+#ifdef USE_OPENPMF
+
+  std::cout << "### USE_OPENPMF\n";
+  bool openpmf_enable = 0;
+  std::string policy_name;
+
+  for (int i=0; i<argc; ++i) {
+    // Dirty trick, the policy name is needed before the ORB init
+    if (strcmp (argv[i], "--OpenPMFPolicyName") == 0 && i+1<argc) {
+      policy_name = argv[i+1];
+      openpmf_enable = 1;
+    }
+  }
+
+  OpenPMF::CORBA::PMFInitializer* pmf_ini = NULL;
+  if(openpmf_enable) {
+    std::cout << "OpenPMF: Load policy: " << policy_name << std::endl;
+    pmf_ini = new OpenPMF::CORBA::PMFInitializer(policy_name);
+  }
+#endif
 
 	bool debug_mode = false;
 	bool ref_supplied = false;
@@ -190,9 +221,24 @@ main (int argc, char** argv)
 
 		initializer -> set_client_dispatcher (
 //			PortableInterceptor::ClientRequestInterceptor::_narrow (client_dispatcher ) );
-			client_dispatcher );
+		    client_dispatcher );
 
+#ifdef USE_OPENPMF
+		if(openpmf_enable) {
+		     if (pmf_ini != NULL) {
+		       std::cerr << "PMF/CCM initialized!" << std::endl;
+		       PortableInterceptor::register_orb_initializer(pmf_ini);
+		     }
+		     else {
+		       std::cerr << "PMF/CCM is OFF!" << std::endl;
+		     }
+		   }
+#endif
 	} // if qos_enabled
+
+
+
+
 #endif
 	// create arguments for ORB_init
 	char *orb_argv[27];
@@ -215,11 +261,23 @@ main (int argc, char** argv)
 
 	CORBA::ORB_var orb = CORBA::ORB_init (orb_argc, orb_argv);
 
-	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer -> slot_id());
+	PortableInterceptor::SlotId sid = initializer -> pmf_slot_id();
+	std::cout << "QCS SLOT_ID= " << sid << std::endl;
+
+	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer -> slot_id(), sid);
+#ifdef USE_OPENPMF
+	pmf_ini->set_slot(sid);
+#endif
 
 #ifndef _QEDO_NO_QOS
 	if (g_qos_enabled)
 	{
+		server_dispatcher -> set_component_server ( component_server );
+		client_dispatcher -> set_component_server ( component_server );
+
+		servant_dispatcher -> set_component_server ( component_server );
+		stub_dispatcher -> set_component_server ( component_server );
+
 		component_server -> set_server_dispatcher (
 			Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration::_narrow(server_dispatcher));
 		component_server -> set_client_dispatcher (
@@ -228,12 +286,6 @@ main (int argc, char** argv)
 			Components::ContainerPortableInterceptor::ServantInterceptorRegistration::_narrow(servant_dispatcher));
 		component_server -> set_stub_dispatcher (
 			Components::ContainerPortableInterceptor::StubInterceptorRegistration::_narrow(stub_dispatcher));
-
-		server_dispatcher -> set_component_server ( component_server );
-		client_dispatcher -> set_component_server ( component_server );
-
-		servant_dispatcher -> set_component_server ( component_server );
-		stub_dispatcher -> set_component_server ( component_server );
 
 		// set cdr
 		server_dispatcher -> init_cdr ();

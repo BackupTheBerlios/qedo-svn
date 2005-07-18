@@ -37,6 +37,7 @@ namespace Qedo {
 
 ORBInitializerImpl::ORBInitializerImpl()
 {
+  std::cout << "ORBInitializerImpl::ORBInitializerImpl\n";
 	//
 	// Register our ORB initializer
 	//
@@ -45,6 +46,7 @@ ORBInitializerImpl::ORBInitializerImpl()
 
 ORBInitializerImpl::ORBInitializerImpl(bool enable_qos)
 {
+  std::cout << "ORBInitializerImpl::ORBInitializerImpl bool\n";
     //
 	// Register our ORB initializer
 	//
@@ -62,16 +64,22 @@ ORBInitializerImpl::~ORBInitializerImpl()
 void
 ORBInitializerImpl::pre_init (PortableInterceptor::ORBInitInfo_ptr info)
 {
+  std::cout << "ORBInitializerImpl::pre_init\n";
 	//
 	// Allocate a slot id to communicate data towards our components
 	//
 	slot_id_ = info->allocate_slot_id();
+	pmf_slot_id_ = info->allocate_slot_id();
+	std::cout << "QCS ORBINIT pmf_slot_id= " << slot_id_ 
+		  << " " <<  pmf_slot_id_ << std::endl;
 }
 
 
 void
 ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 {
+  std::cout << "ORBInitializerImpl::post_init\n";
+
 	//
 	// First resolve the Name Service
 	//
@@ -160,6 +168,12 @@ PortableInterceptor::SlotId
 ORBInitializerImpl::slot_id()
 {
 	return slot_id_;
+}
+
+PortableInterceptor::SlotId
+ORBInitializerImpl::pmf_slot_id()
+{
+	return pmf_slot_id_;
 }
 
 #ifndef _QEDO_NO_QOS
