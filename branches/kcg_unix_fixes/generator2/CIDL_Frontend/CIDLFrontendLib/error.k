@@ -196,7 +196,7 @@ Error( char *format, ...)
     case msg :
       if (no_error_print) return;
     case debug :
-      vaArgs = vaArgs_new;
+      va_copy(vaArgs, vaArgs_new);
       node = 0;
       break;
     default : 
@@ -216,7 +216,7 @@ Error( char *format, ...)
     }
   }
 
-  vaArgs_print = vaArgs;
+  va_copy(vaArgs_print, vaArgs);
   init_msg_buf();
   for(f=new_format; *f;) {
     while (*f && *f++!='%'); /* skip to next % */
@@ -224,7 +224,7 @@ Error( char *format, ...)
       case '%': f++; break;
       case 'k':   /* kc node pretty printer */
         *f = 's';
-        vaArgs_new = vaArgs;
+        va_copy(vaArgs_new, vaArgs);
         node = va_arg(vaArgs,abstract_phylum);
         if (!node) {
           Error("<internal>null argument for %%k format in Error(\"%s\",...)\n",
@@ -249,7 +249,7 @@ Error( char *format, ...)
           (void)va_arg(vaArgs,int);
         } else {
           int v;
-          vaArgs_new = vaArgs;
+          va_copy(vaArgs_new, vaArgs);
           *f = 's';
           v = va_arg(vaArgs,int);
           if (vaArgs_new<vaArgs)
@@ -272,7 +272,7 @@ Error( char *format, ...)
         break;
       case 't':   /* kc tree printer (tree to stdout) */
         *f = 's';
-        vaArgs_new = vaArgs;
+        va_copy(vaArgs_new, vaArgs);
         node = va_arg(vaArgs,abstract_phylum);
         if (!node) {
           Error("<internal>null argument for %%k format in Error(\"%s\",...)\n",
@@ -292,7 +292,7 @@ Error( char *format, ...)
         break;
       case 'p':   /* table item path formatter */
         *f = 's';
-        vaArgs_new = vaArgs;
+        va_copy(vaArgs_new, vaArgs);
         node = va_arg(vaArgs,abstract_phylum);
         if (!node)
           Error("<internal>null argument for %%p format in Error\n",0);
@@ -409,7 +409,7 @@ Warning( char *format, ...)
       if (!options.verbose) { free(format); return; }
     case debug :
       if (no_error_print) return;
-      vaArgs = vaArgs_new;
+      va_copy(vaArgs, vaArgs_new);
       node = 0;
       break;
     default : 
@@ -430,7 +430,7 @@ Warning( char *format, ...)
     }
   }
 
-  vaArgs_print = vaArgs;
+  va_copy(vaArgs_print, vaArgs);
   init_msg_buf();
   for(i=0,f=new_format; *f; i++) {
     while (1) {
@@ -442,7 +442,7 @@ Warning( char *format, ...)
     switch(*f) {
       case 'k':
         *f = 's';
-        vaArgs_new = vaArgs;
+        va_copy(vaArgs_new, vaArgs);
         node = va_arg(vaArgs,abstract_phylum);
         if (!node) 
           Error("<internal>null argument for %%k format in Error\n",0);
@@ -465,7 +465,7 @@ Warning( char *format, ...)
           (void)va_arg(vaArgs,int);
         } else {
           int v;
-          vaArgs_new = vaArgs;
+          va_copy(vaArgs_new, vaArgs);
           *f = 's';
           v = va_arg(vaArgs,int);
           if (vaArgs_new<vaArgs)
@@ -488,7 +488,7 @@ Warning( char *format, ...)
         break;
       case 't':
         *f = 's';
-        vaArgs_new = vaArgs;
+        va_copy(vaArgs_new, vaArgs);
         node = va_arg(vaArgs,abstract_phylum);
         if (!node)
           Error("<internal>null argument for %%k format in Error\n",0);
@@ -506,7 +506,7 @@ Warning( char *format, ...)
         break;
       case 'p':   /* table item path formatter */
         *f = 's';
-        vaArgs_new = vaArgs;
+        va_copy(vaArgs_new, vaArgs);
         node = va_arg(vaArgs,abstract_phylum);
         if (!node)
           Error("<internal>null argument for %%p format in Error\n",0);
