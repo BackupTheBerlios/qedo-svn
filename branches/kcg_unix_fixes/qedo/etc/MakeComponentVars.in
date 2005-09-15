@@ -55,7 +55,7 @@ IDL_FLAGS += -B$(MICO) -I${QEDO}/idl
 %.h %.cpp %_skel.h %_skel.cpp: %.idl
 	$(MICO)/bin/idl ${IDL_FLAGS} -I. -I$(MICO)/include -DMICO_ORB --any --c++-suffix cpp --c++-skel $< \
 	&&  cp $*.h $*_skel.h
-MICO_CXXFLAGS := -DMICO_ORB $(shell mico-config --cxxflags)
+MICO_CXXFLAGS := -DMICO_ORB $(shell mico-config --cxxflags) $(shell mico-config --picflags) 
 CXXFLAGS+=$(IDLCXXFLAGS) $(MICO_CXXFLAGS)
 MICO_LIBS := $(shell mico-config --libs)
 LIBS+=$(MICO_LIBS)
@@ -64,6 +64,10 @@ NAMING_INCLUDES := -I$(shell mico-config --prefix)/include/coss
 ORB_IDL_INCLUDE += -I$(MICO)/include -I$(MICO)/include/mico 
 CIDL_ORB_DEF = -DMICO_ORB -DMICO_CIDL_GEN
 
+ifneq ($(OPENPMF_ROOT), )
+LDFLAGS := -L$(shell mico-config --prefix)/lib -lpmfccm2.3.11 -lpmfcorba2.3.11 -lpmf2.3.11 $(LDFLAGS)
+CXXFLAGS := -I$(shell mico-config --prefix)/include/openpmf $(CXXFLAGS) -DUSE_OPENPMF
+endif
 
 all:
 
