@@ -229,7 +229,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	}
 	if (!port_id)
 	{
-		port_id="QEOD_UNKNOWN_PORT_ID";
+		port_id="QEDO_UNKNOWN_PORT_ID";
 	}
 
 	// extract origin_id from service context
