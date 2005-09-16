@@ -37,8 +37,9 @@ static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.13 2004/0
 
 namespace Qedo {
 
-ClientInterceptorDispatcher::ClientInterceptorDispatcher() {
-
+ClientInterceptorDispatcher::ClientInterceptorDispatcher()
+    : component_server_(NULL)
+{
 }
 
 ClientInterceptorDispatcher::~ClientInterceptorDispatcher() {
