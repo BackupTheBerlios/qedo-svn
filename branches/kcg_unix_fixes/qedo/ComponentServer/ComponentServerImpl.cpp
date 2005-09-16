@@ -80,15 +80,15 @@ ContainerEntry::~ContainerEntry()
 }
 
 
-ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb,
-										  const char* csa_string_ref,
-										  PortableInterceptor::SlotId slot_id)
-: csa_string_ref_ (CORBA::string_dup (csa_string_ref)),
-  orb_ (CORBA::ORB::_duplicate (orb)),
-  slot_id_ (slot_id)
+ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb, const char* csa_string_ref, PortableInterceptor::SlotId slot_id): csa_string_ref_ (CORBA::string_dup (csa_string_ref)), orb_ (CORBA::ORB::_duplicate (orb)), slot_id_ (slot_id)
 {
 }
 
+#ifdef USE_OPENPMF
+ComponentServerImpl::ComponentServerImpl (CORBA::ORB_ptr orb, const char* csa_string_ref, PortableInterceptor::SlotId slot_id, PortableInterceptor::SlotId pmf_slot_id): csa_string_ref_ (CORBA::string_dup (csa_string_ref)), orb_ (CORBA::ORB::_duplicate (orb)), slot_id_ (slot_id), pmf_slot_id_(pmf_slot_id)
+{
+}
+#endif // USE_OPENPMF
 
 ComponentServerImpl::~ComponentServerImpl()
 {

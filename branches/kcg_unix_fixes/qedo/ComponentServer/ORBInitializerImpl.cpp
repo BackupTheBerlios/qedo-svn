@@ -66,6 +66,9 @@ ORBInitializerImpl::pre_init (PortableInterceptor::ORBInitInfo_ptr info)
 	// Allocate a slot id to communicate data towards our components
 	//
 	slot_id_ = info->allocate_slot_id();
+#ifdef USE_OPENPMF
+	pmf_slot_id_ = info->allocate_slot_id();
+#endif // USE_OPENPMF
 }
 
 
@@ -161,6 +164,14 @@ ORBInitializerImpl::slot_id()
 {
 	return slot_id_;
 }
+
+#ifdef USE_OPENPMF
+PortableInterceptor::SlotId
+ORBInitializerImpl::pmf_slot_id()
+{
+	return pmf_slot_id_;
+}
+#endif // USE_OPENPMF
 
 #ifndef _QEDO_NO_QOS
 void

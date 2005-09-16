@@ -55,6 +55,9 @@ class ORBInitializerImpl : public virtual PortableInterceptor::ORBInitializer,
 private:
 	ComponentServerImpl* comp_server_;
 	PortableInterceptor::SlotId slot_id_;
+#ifdef USE_OPENPMF
+	PortableInterceptor::SlotId pmf_slot_id_;
+#endif // USE_OPENPMF
 	bool m_enable_qos;
 #ifndef _QEDO_NO_QOS
 	/** interceptor dispatcher on server side */
@@ -91,6 +94,9 @@ public:
 	 * slot_id
 	 */
 	PortableInterceptor::SlotId slot_id();
+#ifdef USE_OPENPMF
+	PortableInterceptor::SlotId pmf_slot_id();
+#endif // USE_OPENPMF
 #ifndef _QEDO_NO_QOS
 	/**
 	 * set_server_dispatcher

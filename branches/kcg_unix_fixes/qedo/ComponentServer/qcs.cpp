@@ -42,6 +42,11 @@
 #include "StubInterceptorDispatcher.h"
 #endif
 
+#ifdef USE_OPENPMF
+#include <CORBAAdapter.h>
+#endif
+
+
 static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.38 2004/09/27 13:06:14 tom Exp $";
 
 
@@ -72,6 +77,28 @@ int
 main (int argc, char** argv)
 {
 	NORMAL_OUT3 ("Qedo Component Server ", QEDO_VERSION, QEDO_REVISION);
+#ifdef USE_OPENPMF
+	std::cout << "### USE_OPENPMF\n";
+	bool openpmf_enable = 0;
+	std::string policy_name;
+
+	for (int i=0; i<argc; ++i)
+	{
+		// Dirty trick, the policy name is needed before the ORB init
+		if (strcmp (argv[i], "--OpenPMFPolicyName") == 0 && i+1<argc)
+		{
+			policy_name = argv[i+1];
+			openpmf_enable = 1;
+		}
+	}
+
+	OpenPMF::CORBA::PMFInitializer* pmf_ini = NULL;
+	if (openpmf_enable)
+	{
+		std::cout << "OpenPMF: Load policy: " << policy_name << std::endl;
+		pmf_ini = new OpenPMF::CORBA::PMFInitializer(policy_name);
+	}
+#endif // USE_OPENPMF
 
 	bool debug_mode = false;
 	bool ref_supplied = false;
@@ -192,6 +219,19 @@ main (int argc, char** argv)
 //			PortableInterceptor::ClientRequestInterceptor::_narrow (client_dispatcher ) );
 			client_dispatcher );
 
+#ifdef USE_OPENPMF
+		if (openpmf_enable)
+		{
+			if (pmf_ini != NULL)
+			{
+				std::cerr << "PMF/CCM initialized!" << std::endl;
+				PortableInterceptor::register_orb_initializer(pmf_ini);
+			}
+			else {
+				std::cerr << "PMF/CCM is OFF!" << std::endl;
+			}
+		}
+#endif // USE_OPENPMF
 	} // if qos_enabled
 #endif
 	// create arguments for ORB_init
@@ -214,8 +254,19 @@ main (int argc, char** argv)
 	};
 
 	CORBA::ORB_var orb = CORBA::ORB_init (orb_argc, orb_argv);
-
+#ifndef USE_OPENPMF
 	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer -> slot_id());
+#else // USE_OPENPMF
+	PortableInterceptor::SlotId sid = initializer -> pmf_slot_id();
+	std::cout << "QCS SLOT_ID= " << sid << std::endl;
+
+	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer -> slot_id(), sid);
+
+	if (pmf_ini != NULL)
+	{
+		pmf_ini->set_slot(sid);
+	}
+#endif
 
 #ifndef _QEDO_NO_QOS
 	if (g_qos_enabled)

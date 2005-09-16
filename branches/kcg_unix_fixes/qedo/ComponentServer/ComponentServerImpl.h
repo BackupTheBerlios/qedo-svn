@@ -159,11 +159,16 @@ public:
 
 	/** the slot id where our interceptor stores information to be used by container services */
 	PortableInterceptor::SlotId					slot_id_;
-
+#ifdef USE_OPENPMF
+	PortableInterceptor::SlotId					pmf_slot_id_;
+#endif // USE_OPENPMF
 	/**
 	 * constructor
 	 */
 	ComponentServerImpl (CORBA::ORB_ptr, const char*, PortableInterceptor::SlotId);
+#ifdef USE_OPENPMF
+	ComponentServerImpl (CORBA::ORB_ptr, const char*, PortableInterceptor::SlotId, PortableInterceptor::SlotId);
+#endif // USE_OPENPMF
 
 	/**
 	 * destructor
