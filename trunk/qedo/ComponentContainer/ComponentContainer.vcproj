@@ -218,7 +218,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentServer/;../QedoUtil;&quot;$(MICO)/include&quot;;&quot;$(PTHREADS)/include&quot;;&quot;$(XERCES)/include&quot;"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentServer/;../QedoUtil;&quot;$(MICO)/include&quot;;&quot;$(MICO)/contrib/pthreads/&quot;;&quot;$(XERCES)/include&quot;"
 				PreprocessorDefinitions="MICO_ORB;CONTAINERDLL_EXPORTS;WIN32;_DEBUG;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -494,7 +494,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentServer/;../QedoUtil;&quot;$(MICO)/include&quot;;&quot;$(PTHREADS)\include&quot;;&quot;$(XERCES)/include&quot;"
+				AdditionalIncludeDirectories=".;../ComponentIDL;../ComponentServer/;../QedoUtil;&quot;$(MICO)/include&quot;;&quot;$(MICO)/contrib/pthreads&quot;;&quot;$(XERCES)/include&quot;"
 				PreprocessorDefinitions="MICO_ORB;CONTAINERDLL_EXPORTS;WIN32;_WINDOWS;_USRDLL;COMPONENTCONTAINER_EXPORTS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"
