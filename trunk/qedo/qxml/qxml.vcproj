@@ -343,6 +343,12 @@ copy $(TargetPath) $(QEDO)\bin
 						Name="VCResourceCompilerTool"
 						AdditionalIncludeDirectories="$(WXWIDGETS)\include"/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release_mico|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="$(WXWIDGETS)\include"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>
