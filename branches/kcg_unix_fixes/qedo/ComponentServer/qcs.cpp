@@ -190,12 +190,12 @@ main (int argc, char** argv)
 	//
 
 	//Portable Interceptors
-	Qedo::ServerInterceptorDispatcher* server_dispatcher;
-	Qedo::ClientInterceptorDispatcher* client_dispatcher;
+	Qedo::ServerInterceptorDispatcher* server_dispatcher = NULL;
+	Qedo::ClientInterceptorDispatcher* client_dispatcher = NULL;
 	// Servant Dispatcher
-	Qedo::ServantInterceptorDispatcher* servant_dispatcher;
+	Qedo::ServantInterceptorDispatcher* servant_dispatcher = NULL;
 	// Stub Dispatcher
-	Qedo::StubInterceptorDispatcher* stub_dispatcher;
+	Qedo::StubInterceptorDispatcher* stub_dispatcher = NULL;
 
 	if (g_qos_enabled)
 	{
