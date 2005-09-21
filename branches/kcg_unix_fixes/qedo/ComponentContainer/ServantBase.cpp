@@ -170,8 +170,16 @@ throw (Components::InvalidName, CORBA::SystemException)
 {
 #ifndef _QEDO_NO_QOS
 	const char * comp_id = this-> get_component_id();
-	CORBA::Boolean con = true;
-	CORBA::Object_ptr anObject= servant_interceptor_registry_ -> provide_facet (comp_id, name, con);
+	CORBA::Boolean con;
+        CORBA::Object_ptr anObject = CORBA::Object::_nil();
+        if (!CORBA::is_nil(this->servant_interceptor_registry_)) {
+            anObject= servant_interceptor_registry_ -> provide_facet (comp_id, name, con);
+        }
+        else {
+            // QOS enabled in configure time
+            // but disabled in run-time
+            con = TRUE;
+        }
 	if (con)
 	{
 #endif
@@ -220,7 +228,15 @@ throw( Components::InvalidName,
 #ifndef _QEDO_NO_QOS
 	const char * comp_id = this-> get_component_id();
 	CORBA::Boolean con;
-	Components::Cookie* temp_ck = servant_interceptor_registry_ -> connect (comp_id, name, connection, con);
+	Components::Cookie* temp_ck = NULL;
+        if (!CORBA::is_nil(this->servant_interceptor_registry_)) {
+            servant_interceptor_registry_ -> connect (comp_id, name, connection, con);
+        }
+        else {
+            // QOS enabled in configure time
+            // but disabled in run-time
+            con = TRUE;
+        }
 	if (con)
 	{
 #endif
