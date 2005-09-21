@@ -93,3 +93,27 @@ clean: $(SUBDIRS:%=%-clean)
 
 %-clean: %
 	$(MAKE) -C $< clean
+
+distclean: clean
+	rm -f config.log \
+		MakeVars \
+		Makefile \
+		config.status \
+		DeploymentClient/Makefile \
+		ComponentInstaller/Makefile \
+		qxml/Makefile \
+		qedoutil/Makefile \
+		ComponentServer/qcs.sh \
+		ComponentServer/Makefile \
+		ComponentIDL/stamp-h1 \
+		ComponentIDL/config.h \
+		ComponentIDL/Makefile \
+		explore_server/Makefile \
+		AssemblyFactory/Makefile \
+		HomeFinder/Makefile \
+		qcontroller/Makefile \
+		ComponentContainer/Makefile \
+		ComponentServerActivator/Makefile \
+		etc/MakeComponentVars \
+		etc/Makefile
+
