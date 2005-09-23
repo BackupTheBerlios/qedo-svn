@@ -1,0 +1,11 @@
+#include "openpmf_ccm.idl"
+module openpmf_ccm {
+	
+	composition extension PEP_ManagerImpl {
+		home executor HomePEP_ManagerExec {
+			implements pep_manager_home;
+			manages PEP_ManagerExec;
+		};
+	};
+
+};
