@@ -7,20 +7,20 @@ IDL_FILES = openpmf_ccm_PEP_ManagerImpl_LOCAL.idl \
 	openpmf_ccm_PEP_ManagerImpl_BUSINESS.idl
 
 CPP_FILES = openpmf_ccm_PEP_ManagerImpl_BUSINESS.cpp \
-	openpmf_ccm_PEP_ManagerImpl.cpp \
+	openpmf_ccm_PEP_Manager_impl.cpp \
 	component_valuetypes.cpp
 
 H_FILES = openpmf_ccm_PEP_ManagerImpl_BUSINESS.h \
         openpmf_ccm_PEP_ManagerImpl.h \
         component_valuetypes.h
 
-OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
+OBJ_FILES = ${CPP_FILES:%.cpp=%.o} ServerPEPInterceptor.o
 CPP_GEN_FILES = ${IDL_FILES:%.idl=%.cpp}
 H_GEN_FILES = ${IDL_FILES:%.idl=%.h}
 CPP_GEN_SKEL_FILES = ${IDL_FILES:%.idl=%_skel.cpp}
 H_GEN_SKEL_FILES = ${IDL_FILES:%.idl=%_skel.h}
 
-CLEAN_FILES = ${IDL_FILES} ${CPP_GEN_FILES} ${CPP_GEN_SKEL_FILES} ${H_GEN_FILES} ${H_GEN_SKEL_FILES} ${OBJ_FILES} libopenpmf_ccm_PEP_ManagerImpl.so OpenPMFPEPImpl.zip libOpenPMFPEPImpl.so openpmf_ccm_PEP_ManagerImpl_PSS.* component_valuetypes.* openpmf_ccm_PEP_ManagerImpl.cpp openpmf_ccm_PEP_ManagerImpl.h
+CLEAN_FILES = ${IDL_FILES} ${CPP_GEN_FILES} ${CPP_GEN_SKEL_FILES} ${H_GEN_FILES} ${H_GEN_SKEL_FILES} ${OBJ_FILES} libopenpmf_ccm_PEP_ManagerImpl.so OpenPMFPEPImpl.zip libOpenPMFPEPImpl.so openpmf_ccm_PEP_ManagerImpl_PSS.* component_valuetypes.* openpmf_ccm_PEP_ManagerImpl.cpp openpmf_ccm_PEP_ManagerImpl.h ServerPEPInterceptor.o
 
 LIBS += -L../openpmf_ccm_PEP_ManagerImpl_SERVANT -lopenpmf_ccm_PEP_ManagerImpl_SERVANT -L/usr/local/lib -lpmf2.3.11 -lpmfcorba2.3.11 -lpmfccm2.3.11
 
