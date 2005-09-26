@@ -229,7 +229,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	}
 	if (!port_id)
 	{
-		port_id="QEOD_UNKNOWN_PORT_ID";
+		port_id="QEDO_UNKNOWN_PORT_ID";
 	}
 
 	// extract origin_id from service context
@@ -270,6 +270,24 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	slot_info.target_id = CORBA::string_dup(id);
 	slot <<= slot_info;
 	piCurrent -> set_slot(component_server_ -> slot_id_, slot);
+
+
+#ifdef USE_OPENPMF
+	CORBA::Any a;	
+	if (strcmp( id, "__QEDO__NOT_COMPONENT_ID__!!") )
+	  {
+	    std::cout << "!!!!!! COPI enforces policy\n";
+	    a <<= (CORBA::Long)0;
+	    if (!strcmp( port_id, "component")) {
+	      std::cout << "!!!!!! Component Configuration!!!\n";
+	      a <<= (CORBA::Long)1;
+	    }
+	  } else {
+	    std::cout << "!!!!!! PI enforces policy\n";
+	  a <<= (CORBA::Long)1;
+	}
+	piCurrent -> set_slot(component_server_ ->pmf_slot_id_, a);
+#endif 
 
 	Qedo::QedoLock l_all(all_server_interceptors_mutex_);
 

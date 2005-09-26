@@ -72,6 +72,12 @@ MICO_LIBS := $(shell mico-config --libs)
 LIBS+=$(MICO_LIBS)
 NAMING_LIBS := $(shell mico-config --cosslibs)
 NAMING_INCLUDES := -I$(shell mico-config --prefix)/include/coss
+
+ifneq ($(OPENPMF_ROOT), )
+LDFLAGS := -L$(shell mico-config --prefix)/lib -lpmfccm2.3.11 -lpmfcorba2.3.11 -lpmf2.3.11 $(LDFLAGS)
+CXXFLAGS := -I$(shell mico-config --prefix)/include/openpmf $(CXXFLAGS) -DUSE_OPENPMF
+endif
+
 endif
 
 ifeq "ORBACUS_ORB" "${ORB}"

@@ -25,6 +25,10 @@ exec_prefix=@exec_prefix@
 bindir=@bindir@
 HAVE_WXGTK_LIB=@HAVE_WXGTK_LIB@
 
+LIBDIRS = ComponentIDL \
+          ComponentContainer \
+          qedoutil
+
 SUBDIRS = ComponentIDL \
 	  ComponentContainer \
 	  qedoutil\
@@ -46,6 +50,8 @@ SUBDIRS += qcontroller \
 endif
 
 all: $(SUBDIRS:%=%-all)
+
+lib: $(LIBDIRS:%=%-lib)
 
 .PHONY: install-dir
 
@@ -71,9 +77,15 @@ install-dir: $(bindir) $(exec_prefix)/etc $(exec_prefix)/lib $(exec_prefix)/incl
 
 install: install-dir $(SUBDIRS:%=%-install)
 
+install-lib: install-dir
+	for i in $(LIBDIRS); do $(MAKE) -C $$i install || exit 1; done
+
 clean: $(SUBDIRS:%=%-clean)
 
 %-all: %
+	$(MAKE) -C $< all
+
+%-lib: %
 	$(MAKE) -C $< all
 
 %-install: %
@@ -81,3 +93,27 @@ clean: $(SUBDIRS:%=%-clean)
 
 %-clean: %
 	$(MAKE) -C $< clean
+
+distclean: clean
+	rm -f config.log \
+		MakeVars \
+		Makefile \
+		config.status \
+		DeploymentClient/Makefile \
+		ComponentInstaller/Makefile \
+		qxml/Makefile \
+		qedoutil/Makefile \
+		ComponentServer/qcs.sh \
+		ComponentServer/Makefile \
+		ComponentIDL/stamp-h1 \
+		ComponentIDL/config.h \
+		ComponentIDL/Makefile \
+		explore_server/Makefile \
+		AssemblyFactory/Makefile \
+		HomeFinder/Makefile \
+		qcontroller/Makefile \
+		ComponentContainer/Makefile \
+		ComponentServerActivator/Makefile \
+		etc/MakeComponentVars \
+		etc/Makefile
+

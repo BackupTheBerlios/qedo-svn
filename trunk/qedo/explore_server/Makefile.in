@@ -51,7 +51,8 @@ SOURCES = 	${IDL_FILES:.idl=.cpp} ${IDL_FILES:.idl=_skel.cpp}\
 
 OBJS = ${SOURCES:.cpp=.o}
 
-CLEAN_FILES = ${SOURCES:.cpp=.o}
+CLEAN_FILES = ${SOURCES:.cpp=.o} explore_skel.h explore_skel.cpp \
+	explore.h explore_server
 
 
 include ../MakeVars

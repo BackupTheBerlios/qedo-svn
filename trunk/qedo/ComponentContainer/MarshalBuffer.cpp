@@ -52,6 +52,7 @@ MarshalBuffer::~MarshalBuffer()
 void
 MarshalBuffer::do_align (CORBA::ULong align_val)
 {
+#if SIZEOF_UNSIGNED_LONG == 4
 	CORBA::ULong data_start = reinterpret_cast <CORBA::ULong> (buffer_);
 
 	CORBA::ULong modulo = (data_start + marshal_ptr_) % align_val;
@@ -79,12 +80,17 @@ MarshalBuffer::do_align (CORBA::ULong align_val)
 	}
 
 	bytes_used_ = marshal_ptr_;
+#else // SIZEOF_UNSIGNED_LONG == 4
+        // code above is completely broken for 64bit targets
+	assert(0);
+#endif // SIZEOF_UNSIGNED_LONG == 4
 }
 
 
 void 
 MarshalBuffer::marshal_data (const char* data, CORBA::ULong data_size)
 {
+#if SIZEOF_UNSIGNED_LONG == 4
 	while (size_ - marshal_ptr_ < data_size)
 	{
 		// Grow buffer
@@ -105,6 +111,10 @@ MarshalBuffer::marshal_data (const char* data, CORBA::ULong data_size)
 	marshal_ptr_ += data_size;
 
 	bytes_used_ = marshal_ptr_;
+#else // SIZEOF_UNSIGNED_LONG == 4
+        // code above is completely broken for 64bit targets
+        assert(0);
+#endif // SIZEOF_UNSIGNED_LONG == 4
 }
 
 
@@ -123,6 +133,7 @@ UnmarshalBuffer::~UnmarshalBuffer()
 void
 UnmarshalBuffer::do_align (CORBA::ULong align_val)
 {
+#if SIZEOF_UNSIGNED_LONG == 4
 	CORBA::ULong data_start = reinterpret_cast <CORBA::ULong> (buffer_);
 
 	CORBA::ULong modulo = (data_start + unmarshal_ptr_) % align_val;
@@ -139,6 +150,10 @@ UnmarshalBuffer::do_align (CORBA::ULong align_val)
 
 		unmarshal_ptr_ += adjust_val;
 	}
+#else // SIZEOF_UNSIGNED_LONG == 4
+        // code above is completely broken for 64bit targets
+        assert(0);
+#endif // SIZEOF_UNSIGNED_LONG == 4
 }
 
 

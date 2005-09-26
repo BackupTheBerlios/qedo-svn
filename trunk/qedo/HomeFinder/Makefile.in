@@ -49,7 +49,7 @@ SOURCES =  HomeFinderEntry.cpp \
 
 OBJS = ${SOURCES:.cpp=.o} 
 
-CLEAN_FILES = ${SOURCES:.cpp=.o}
+CLEAN_FILES = ${SOURCES:.cpp=.o} homefinder
 
 
 include ../MakeVars
