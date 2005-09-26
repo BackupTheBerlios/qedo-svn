@@ -1,0 +1,23 @@
+<?xml version = '1.0' ?>
+<!DOCTYPE corbacomponent PUBLIC "-//OMG//DTD CORBA Component Descriptor" "http://www.qedo.org/corbacomponent.dtd">
+
+<corbacomponent>
+    <corbaversion>3.0</corbaversion>
+    <componentrepid repid="IDL:openpmf_ccm/pep_manager:1.0"/>
+    <homerepid repid="IDL:openpmf_ccm/pep_manager_home:1.0"/>
+    <componentkind>
+        <containerextension>
+            <servant lifetime="container"/>
+        </containerextension>
+    </componentkind>
+    <threading policy="multithread"/>
+    <configurationcomplete set="true"/>
+    
+    <homefeatures name="pep_manager_home" repid="IDL:openpmf_ccm/pep_manager_home:1.0">
+    </homefeatures>
+    
+    <componentfeatures name="pep_manager" repid="IDL:openpmf_ccm/pep_manager:1.0">
+        <ports>
+        </ports>
+    </componentfeatures>
+</corbacomponent>

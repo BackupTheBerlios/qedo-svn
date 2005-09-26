@@ -1,0 +1,10 @@
+#include "Components.idl"
+
+module openpmf_ccm {
+	
+	component pep_manager {
+	  attribute string policy_name;
+	};
+
+	home pep_manager_home manages pep_manager {};
+};
