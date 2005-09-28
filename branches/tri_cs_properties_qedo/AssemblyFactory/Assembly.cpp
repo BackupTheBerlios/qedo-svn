@@ -84,7 +84,7 @@ AssemblyImpl::operator == (Components::Cookie* cook)
 
 
 Components::Deployment::ComponentServer_ptr
-AssemblyImpl::createComponentServer (DestinationData dest)
+AssemblyImpl::createComponentServer (DestinationData dest, std::string command_line)
 throw( Components::CreateFailure )
 {
 	DEBUG_OUT( "..... create new component server" );
@@ -120,6 +120,21 @@ throw( Components::CreateFailure )
 		try
 		{
 			Components::ConfigValues_var config = new Components::ConfigValues();
+			// check for command line arguments to transmit to component server
+			if (!command_line.empty())
+			{
+				DEBUG_OUT("@@@@@@@@@found additional command line args");
+				Components::ConfigValue* command_value = new ConfigValue_impl();
+				command_value -> name(CORBA::string_dup("CommandLineArguments"));
+
+				CORBA::Any command_any;
+				command_any <<= CORBA::string_dup(command_line.c_str());
+				command_value->value(command_any);
+				config->length(1);
+				(*config)[0]=command_value;
+			}				
+
+			// create the component server
 			component_server = serverActivator->create_component_server(config);
 		}
 		catch ( CORBA::SystemException& )
@@ -585,7 +600,7 @@ throw(Components::CreateFailure)
 			{
 				if( (*iter).cardinality > 0 )
 				{
-					component_server = createComponentServer((*host_iter).dest);
+					component_server = createComponentServer((*host_iter).dest, (*process_iter).command_line);
 					(*process_iter).server = Components::Deployment::ComponentServer::_duplicate(component_server);
 					break;
 				}

@@ -306,7 +306,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 #ifdef _WIN32
 	int component_server_pid;
-	char *args[17];
+	char *args[18];
 	//const char* prog;
 	std::string prog;
 	int args_nr=0;
@@ -338,6 +338,19 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	if (verbose_mode_)
 	{
 		args[args_nr++] = "--verbose";
+	}
+
+	// check in config values for additional command line arguments
+	for (CORBA::ULong n = 0; n < config.length(); n++)
+	{
+		if (!strcmp((*config[n]).name(), "CommandLineArguments"))
+		{
+			// found a command line argument
+			const char* str;
+			(*config[n]).value() >>= str;
+			args[args_nr++] = CORBA::string_dup(str);
+			std::cout << "@@@@@@@@@@@@@@@@@@@ found @@@@@@@@@" << std::endl;
+		}
 	}
 
 	// read additional commandline arguments from Qedo.conf
@@ -378,7 +391,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	{
 		case 0 : /* child process */
 		{
-			char *args[17];
+			char *args[18];
 			const char* prog;
 			int args_nr=0;
 
@@ -404,6 +417,18 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 			if (verbose_mode_)
 			{
 				args[args_nr++] = "--verbose";
+			}
+
+			// check in config values for additional command line arguments
+			for (CORBA::ULong n = 0; n < config.length(); n++)
+			{
+				if (!strcmp((*config[n]).name(), "CommandLineArguments"))
+				{
+					// found a command line argument
+					const char* str;
+					(*config[n]).value() >>= str;
+					args[args_nr++] = CORBA::string_dup(str);
+				}
 			}
 
 			// read additional commandline arguments from Qedo.conf
