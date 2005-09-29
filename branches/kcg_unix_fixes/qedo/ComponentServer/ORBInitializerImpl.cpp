@@ -69,6 +69,21 @@ ORBInitializerImpl::pre_init (PortableInterceptor::ORBInitInfo_ptr info)
 #ifdef USE_OPENPMF
 	pmf_slot_id_ = info->allocate_slot_id();
 #endif // USE_OPENPMF
+#ifndef _QEDO_NO_QOS
+	//
+	// Install ServerInterceptorDispatcher
+	//
+	if (m_enable_qos) {
+
+		info->add_server_request_interceptor(server_dispatcher_.in());
+
+		info->add_client_request_interceptor(client_dispatcher_.in());
+
+		DEBUG_OUT("ORBInitializerImpl:post_init: interceptors dispatchers registered at ORB");
+
+	}
+
+#endif
 }
 
 
@@ -140,22 +155,6 @@ ORBInitializerImpl::post_init (PortableInterceptor::ORBInitInfo_ptr info)
 	{
 		DEBUG_OUT ("ORBInitializerImpl: NameService is not a NamingContext object reference");
 	}
-
-#ifndef _QEDO_NO_QOS
-	//
-	// Install ServerInterceptorDispatcher
-	//
-	if (m_enable_qos) {
-
-		info->add_server_request_interceptor(server_dispatcher_.in());
-
-		info->add_client_request_interceptor(client_dispatcher_.in());
-
-		DEBUG_OUT("ORBInitializerImpl:post_init: interceptors dispatchers registered at ORB");
-
-	}
-
-#endif
 }
 
 
