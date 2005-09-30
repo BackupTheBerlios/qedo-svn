@@ -421,7 +421,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 				args_v.push_back("xterm");
 				args_v.push_back("-e");
 				args_v.push_back("qcs.sh");
-				prog_v.push_back("xterm");
+				prog = "xterm";
 			}
 			else
 			{
