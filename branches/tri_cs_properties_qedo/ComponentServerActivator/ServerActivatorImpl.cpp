@@ -348,7 +348,18 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 			// found a command line argument
 			const char* str;
 			(*config[n]).value() >>= str;
-			args[args_nr++] = CORBA::string_dup(str);
+			std::string temp_str(str);
+
+			std::string::size_type pos = temp_str.find(" ");
+				while (pos !=std::string::npos)
+				{
+					args[args_nr++] = strdup(temp_str.substr(0,pos).c_str());
+					temp_str = temp_str.substr(pos+1,std::string::npos);
+					pos = temp_str.find(" ");
+				}
+
+			args[args_nr++] = strdup(temp_str.c_str());
+
 			std::cout << "@@@@@@@@@@@@@@@@@@@ found @@@@@@@@@" << std::endl;
 		}
 	}
@@ -427,10 +438,21 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 					// found a command line argument
 					const char* str;
 					(*config[n]).value() >>= str;
-					args[args_nr++] = CORBA::string_dup(str);
+					std::string temp_str(str);
+
+					std::string::size_type pos = temp_str.find(" ");
+						while (pos !=std::string::npos)
+						{
+							args[args_nr++] = strdup(temp_str.substr(0,pos).c_str());
+							temp_str = temp_str.substr(pos+1,std::string::npos);
+							pos = temp_str.find(" ");
+						}
+
+					args[args_nr++] = strdup(temp_str.c_str());
+
+					std::cout << "@@@@@@@@@@@@@@@@@@@ found @@@@@@@@@" << std::endl;
 				}
 			}
-
 			// read additional commandline arguments from Qedo.conf
 			std::string additional_cmd_line =
 				Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ComponentServer/CommandLine");

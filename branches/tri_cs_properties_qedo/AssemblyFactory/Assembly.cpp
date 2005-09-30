@@ -84,7 +84,7 @@ AssemblyImpl::operator == (Components::Cookie* cook)
 
 
 Components::Deployment::ComponentServer_ptr
-AssemblyImpl::createComponentServer (DestinationData dest, std::string command_line)
+AssemblyImpl::createComponentServer (DestinationData dest, const std::string& command_line)
 throw( Components::CreateFailure )
 {
 	DEBUG_OUT( "..... create new component server" );
