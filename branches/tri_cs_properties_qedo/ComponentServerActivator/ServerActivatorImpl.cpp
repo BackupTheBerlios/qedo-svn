@@ -478,15 +478,15 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 			args_v.push_back("--csa_ref");
 			args_v.push_back(my_string_ref.inout());
 
-			args_v.push_back(0);
+			//args_v.push_back(0);
 
 			// construct the plain array
-			char** args = new char*[args_v.size()]; 
+			char** args = new char*[args_v.size()+1]; 
 			for (unsigned int counter = 0;counter < args_v.size(); counter++)
 			{
 				args[counter] = strdup(args_v[counter]);
 			}
-
+			args[args_v.size()] = (char*) NULL;
 
 			long err = execvp (prog,args);
 
