@@ -1125,6 +1125,28 @@ throw(CADReadException)
 		std::string id = Qedo::transcode(element->getFirstChild()->getNodeValue());
 		data_->start_order_.push_back( id );
 	}
+
+}
+
+std::string
+CADReader::process_colocation_extension (DOMElement* element)
+throw(CADReadException)
+{
+	std::string class_attr = Qedo::transcode(element->getAttribute(X("class")));
+	
+	std::string ret;
+	//
+	// options for starting the component server
+	// may be used for security credentials
+	//
+	if( class_attr == "Security" )
+	{
+		ret = Qedo::transcode(element->getFirstChild()->getNodeValue());
+		
+	}
+
+	return ret;
+
 }
 
 Extension 
@@ -2484,7 +2506,7 @@ throw(CADReadException)
 			//
 			else if (element_name == "extension")
 			{
-				extension((DOMElement*)child);
+				data.command_line = process_colocation_extension((DOMElement*)child);
 			}
 
 			//

@@ -243,6 +243,13 @@ private:
         throw(CADReadException);
 
 	/**
+	 * process_colocation_extension elements
+	 * extension element in process_colocation
+	 */
+	std::string process_colocation_extension (DOMElement*)
+        throw(CADReadException);
+
+	/**
 	 * extension_two is need for qedo controller
 	 */
 	Extension extension_two(DOMElement*)

@@ -26,6 +26,7 @@
 
 #include "ServerActivatorImpl.h"
 #include "ConfigurationReader.h"
+#include "Valuetypes.h"
 
 #ifdef MICO_ORB
 #include <coss/CosNaming.h>
@@ -423,6 +424,13 @@ main (int argc, char** argv)
 	};
 
 	orb = CORBA::ORB_init (orb_argc, orb_argv);
+
+	// Register valuetype factories
+	CORBA::ValueFactoryBase* factory;
+	factory = new Qedo::ConfigValueFactory_impl();
+	orb -> register_value_factory ("IDL:omg.org/Components/ConfigValue:1.0", factory);
+	factory = new Qedo::CookieFactory_impl();
+
 
 	server_activator = new Qedo::ServerActivatorImpl (orb, debug_mode, qos_enabled, terminal_enabled, g_global_context_used, g_global_context, verbose_mode );
 

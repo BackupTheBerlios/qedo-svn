@@ -201,6 +201,8 @@ struct ProcessData
 	std::vector < HomeInstanceData >			homes;
 	/** component server */
 	Components::Deployment::ComponentServer_var	server;
+	/** command line argument */
+	std::string									command_line;
 };
 
 

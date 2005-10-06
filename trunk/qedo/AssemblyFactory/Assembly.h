@@ -94,7 +94,7 @@ private:
     /**
 	 * create new component server
 	 */
-    Components::Deployment::ComponentServer_ptr createComponentServer (DestinationData)
+	Components::Deployment::ComponentServer_ptr createComponentServer (DestinationData, const std::string& command_line)
         throw(Components::CreateFailure);
 
     /**
