@@ -46,6 +46,10 @@ void Warning (char *format, ...);
 #include "util.h"
 #include "symtab.h"
 
+#ifdef _WIN32
+#define va_copy(X,Y) X = Y
+#endif // _WIN32 
+
 int nr_errors=0;
 int nr_warnings=0;
 #define max_errors 30

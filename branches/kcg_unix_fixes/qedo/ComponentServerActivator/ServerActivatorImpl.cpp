@@ -306,10 +306,11 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 
 #ifdef _WIN32
 	int component_server_pid;
-	char *args[17];
+
+	std::vector<char*> args_v;
 	//const char* prog;
 	std::string prog;
-	int args_nr=0;
+	//int args_nr=0;
 
 	if (enable_terminal_)
 	{
@@ -319,25 +320,48 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 		GetWindowsDirectory( infoBuf, INFO_BUFFER_SIZE );
 		prog = std::string( infoBuf ) + "/system32/cmd.exe";
 		//prog = "c:/windows/system32/cmd.exe";
-		args[args_nr++] = "cmd";
-		args[args_nr++] = "/c";
-		args[args_nr++] = "start";
-		args[args_nr++] = "qcs.exe";
+		args_v.push_back("cmd");
+		args_v.push_back("/c");
+		args_v.push_back("start");
+		args_v.push_back("qcs.exe");
 	}
 	else
 	{
 		prog = "qcs.exe";
-		args[args_nr++] = "qcs.exe";
+		args_v.push_back("qcs.exe");
 	}
 
 	if (debug_mode_)
 	{
-		args[args_nr++] = "--debug";
+		args_v.push_back("--debug");
 	}
 
 	if (verbose_mode_)
 	{
-		args[args_nr++] = "--verbose";
+		args_v.push_back("--verbose");
+	}
+
+	// check in config values for additional command line arguments
+	for (CORBA::ULong n = 0; n < config.length(); n++)
+	{
+		if (!strcmp((*config[n]).name(), "CommandLineArguments"))
+		{
+			// found a command line argument
+			const char* str;
+			(*config[n]).value() >>= str;
+			std::string temp_str(str);
+
+			std::string::size_type pos = temp_str.find(" ");
+				while (pos !=std::string::npos)
+				{
+					args_v.push_back(strdup(temp_str.substr(0,pos).c_str()));
+					temp_str = temp_str.substr(pos+1,std::string::npos);
+					pos = temp_str.find(" ");
+				}
+
+			args_v.push_back(strdup(temp_str.c_str()));
+
+		}
 	}
 
 	// read additional commandline arguments from Qedo.conf
@@ -347,21 +371,30 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	std::string::size_type pos = additional_cmd_line.find(" ");
 	while (pos !=std::string::npos)
 	{
-		args[args_nr++] = strdup(additional_cmd_line.substr(0,pos).c_str());
+		args_v.push_back(strdup(additional_cmd_line.substr(0,pos).c_str()));
 		additional_cmd_line = additional_cmd_line.substr(pos+1,std::string::npos);
 		pos = additional_cmd_line.find(" ");
 	}
 
-	args[args_nr++] = (char*) additional_cmd_line.c_str();
+	args_v.push_back((char*) additional_cmd_line.c_str());
 
 
 
-	args[args_nr++] = "--csa_ref";
-	args[args_nr++] = my_string_ref.inout();
+	args_v.push_back("--csa_ref");
+	args_v.push_back(my_string_ref.inout());
 
-	args[args_nr] = 0;
+	args_v.push_back(0);
+
+	// construct the plain array
+	char** args = new char*[args_v.size()]; 
+	for (unsigned int counter = 0;counter < args_v.size(); counter++)
+	{
+		args[counter] = strdup(args_v[counter]);
+	}
 
 	component_server_pid = _spawnv(_P_NOWAIT, prog.c_str(), args);
+
+	delete [] args;
 
 	if (component_server_pid < 0)
 	{
@@ -378,34 +411,55 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	{
 		case 0 : /* child process */
 		{
-			char *args[17];
+			//char *args[18];
+			std::vector<char*> args_v;
 			const char* prog;
-			int args_nr=0;
 
 
 			if (enable_terminal_)
 			{
-				args[args_nr++] = "xterm";
-				args[args_nr++] = "-e";
-				args[args_nr++] = "qcs.sh";
+				args_v.push_back("xterm");
+				args_v.push_back("-e");
+				args_v.push_back("qcs.sh");
 				prog = "xterm";
 			}
 			else
 			{
-				args[args_nr++] = "qcs";
+				args_v.push_back("qcs");
 				prog = "qcs";
 			}
 
 			if (debug_mode_)
 			{
-				args[args_nr++] = "--debug";
+				args_v.push_back("--debug");
 			}
 
 			if (verbose_mode_)
 			{
-				args[args_nr++] = "--verbose";
+				args_v.push_back("--verbose");
 			}
 
+			// check in config values for additional command line arguments
+			for (CORBA::ULong n = 0; n < config.length(); n++)
+			{
+				if (!strcmp((*config[n]).name(), "CommandLineArguments"))
+				{
+					// found a command line argument
+					const char* str;
+					(*config[n]).value() >>= str;
+					std::string temp_str(str);
+
+					std::string::size_type pos = temp_str.find(" ");
+						while (pos !=std::string::npos)
+						{
+							args_v.push_back(strdup(temp_str.substr(0,pos).c_str()));
+							temp_str = temp_str.substr(pos+1,std::string::npos);
+							pos = temp_str.find(" ");
+						}
+
+					args_v.push_back(strdup(temp_str.c_str()));
+				}
+			}
 			// read additional commandline arguments from Qedo.conf
 			std::string additional_cmd_line =
 				Qedo::ConfigurationReader::instance()->lookup_config_value ("/General/ComponentServer/CommandLine");
@@ -413,20 +467,30 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 			std::string::size_type pos = additional_cmd_line.find(" ");
 			while (pos !=std::string::npos)
 			{
-				args[args_nr++] = strdup(additional_cmd_line.substr(0,pos).c_str());
+				args_v.push_back(strdup(additional_cmd_line.substr(0,pos).c_str()));
 				additional_cmd_line = additional_cmd_line.substr(pos+1,std::string::npos);
 				pos = additional_cmd_line.find(" ");
 			}
 
-			args[args_nr++] = (char*) additional_cmd_line.c_str();
+			args_v.push_back((char*) additional_cmd_line.c_str());
 
 
-			args[args_nr++] = "--csa_ref";
-			args[args_nr++] = my_string_ref.inout();
+			args_v.push_back("--csa_ref");
+			args_v.push_back(my_string_ref.inout());
 
-			args[args_nr] = 0;
+			//args_v.push_back(0);
+
+			// construct the plain array
+			char** args = new char*[args_v.size()+1]; 
+			for (unsigned int counter = 0;counter < args_v.size(); counter++)
+			{
+				args[counter] = strdup(args_v[counter]);
+			}
+			args[args_v.size()] = (char*) NULL;
 
 			long err = execvp (prog,args);
+
+			delete [] args;
 			if (err == -1)
 			{
 				std::cerr << "ServerActivatorImpl: execvp() for component server failed" << std::endl;

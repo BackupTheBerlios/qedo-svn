@@ -126,7 +126,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;&quot;$(MICO)\include&quot;;./;../qedoutil;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)/include&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;&quot;$(MICO)\include&quot;;./;../qedoutil;&quot;$(XERCES)/include&quot;;&quot;$(MICO)/contrib/pthreads&quot;"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_WINDOWSL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -238,7 +238,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="../ComponentIDL;&quot;$(MICO)\include&quot;;./;../qedoutil;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)/include&quot;"
+				AdditionalIncludeDirectories="../ComponentIDL;&quot;$(MICO)\include&quot;;./;../qedoutil;&quot;$(XERCES)/include&quot;;&quot;$(MICO)/contrib/pthreads&quot;"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_WINDOWSL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"

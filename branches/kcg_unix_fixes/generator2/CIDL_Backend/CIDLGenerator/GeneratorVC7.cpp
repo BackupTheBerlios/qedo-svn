@@ -239,7 +239,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "</Configuration>\n";
 	
 	//
-	// mico
+	// Debug_mico
 	//
 	out << "<Configuration\n";
 	out.indent();
@@ -339,6 +339,110 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out.unindent();
 	out << "</Configuration>\n";
+
+
+	//
+	// Release_mico
+	//
+		out << "<Configuration\n";
+	out.indent();
+	out << "Name=\"Release_mico|Win32\"\n";
+	out << "OutputDirectory=\"Release_mico\"\n";
+	out << "IntermediateDirectory=\"Release_mico\"\n";
+	out << "ConfigurationType=\"2\"\n";
+	out << "CharacterSet=\"2\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCLCompilerTool\"\n";
+	out << "Optimization=\"3\"\n";
+	out << "AdditionalIncludeDirectories=\".;$(QEDO)/include/pthreads;$(QEDO)/include;$(Qedo)/include/mico;../" << project_name << "_SERVANT\"\n";
+	out << "PreprocessorDefinitions=\"";
+	out << "BUILD_" << export_prefix_ << "_DLL;MICO_ORB;WIN32;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400\"\n";
+	out << "MinimalRebuild=\"TRUE\"\n";
+	out << "BasicRuntimeChecks=\"0\"\n";
+	out << "RuntimeLibrary=\"2\"\n";
+	out << "RuntimeTypeInfo=\"TRUE\"\n";
+	out << "UsePrecompiledHeader=\"0\"\n";
+	out << "WarningLevel=\"3\"\n";
+	out << "Detect64BitPortabilityProblems=\"FALSE\"\n";
+	out << "DebugInformationFormat=\"0\"/>\n";
+	out.unindent();
+
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"/>\n";
+	out.unindent();
+
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCLinkerTool\"\n";
+	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC2.lib\"\n";
+	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
+	out << "LinkIncremental=\"2\"\n";
+	out << "AdditionalLibraryDirectories=\"$(QEDO)/lib;$(QEDO)/lib\"\n";
+	out << "GenerateDebugInformation=\"FALSE\"\n";
+	out << "ProgramDatabaseFile=\"$(OutDir)/" << project_name << ".pdb\"\n";
+	out << "SubSystem=\"2\"\n";
+	out << "ImportLibrary=\"$(OutDir)/" << project_name << ".lib\"\n";
+	out << "TargetMachine=\"1\"/>\n";
+	out.unindent();
+
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCMIDLTool\"/>\n";
+	out.unindent();
+
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPostBuildEventTool\"\n";
+	out << "CommandLine=\"$(Qedo)/bin/zip ../" <<	project_name << ".zip -j Release_mico/";
+	out << project_name << ".dll ../" << project_name << "_SERVANT/Debug_mico/";
+	out << project_name << "_SERVANT.dll ../" << target_file_name_ << "\n";
+	out << "$(Qedo)/bin/zip ../" <<	project_name << ".zip meta-inf/";
+	out << project_name << ".ccd meta-inf/" << project_name << ".csd";
+	out << "\"/>\n";
+	out.unindent();
+
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPreBuildEventTool\"/>\n";
+	out.unindent();
+
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPreLinkEventTool\"/>\n";
+	out.unindent();
+
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCResourceCompilerTool\"/>\n";
+	out.unindent();
+
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCWebServiceProxyGeneratorTool\"/>\n";
+	out.unindent();
+
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCXMLDataGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCWebDeploymentTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCManagedWrapperGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCAuxilaryManagedWrapperGeneratorTool\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</Configuration>\n";
+
 
 	//
 	// TAO
@@ -535,10 +639,26 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out.unindent();
 	out << "</FileConfiguration>\n";
-	// mico
+	// Debug_mico
 	out << "<FileConfiguration\n";
 	out.indent();
 	out << "Name=\"Debug_mico|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "Description=\"..... compiling CIDL\"\n";
+	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32";
+	out << " -I$(QEDO)/idl -I$(QEDO)/include/mico -I$(QEDO)/include/mico/mico --business --target ";
+	out << composition->id() << " ../" << target_file_name_ << "\"\n";
+	out << "Outputs=\"" << project_name << "_LOCAL.idl;" << project_name << "_EQUIVALENT.idl;";
+	out << project_name << "_BUSINESS.idl\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	// Release_mico
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Release_mico|Win32\">\n";
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
@@ -586,10 +706,27 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out.unindent();
 	out << "</FileConfiguration>\n";
-	// mico
+	// Debug_mico
 	out << "<FileConfiguration\n";
 	out.indent();
 	out << "Name=\"Debug_mico|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "Description=\"..... compiling business IDL\"\n";
+	out << "CommandLine=\"$(Qedo)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  ";
+	out << " --any --typecode --c++-skel --c++-suffix cpp --windows-dll ";
+	out << project_name << " " << project_name << "_BUSINESS.idl\n";
+	out << "copy " << project_name << "_BUSINESS.h " << project_name << "_BUSINESS_skel.h\"\n";
+	out << "Outputs=\"" << project_name << "_BUSINESS.h;" << project_name << "_BUSINESS.cpp;";
+	out << project_name << "_BUSINESS_skel.h;" << project_name << "_BUSINESS_skel.cpp\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	// Release_mico
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Release_mico|Win32\">\n";
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
@@ -638,10 +775,27 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out.unindent();
 	out << "</FileConfiguration>\n";
-	// mico
+	// Debug_mico
 	out << "<FileConfiguration\n";
 	out.indent();
 	out << "Name=\"Debug_mico|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "Description=\"..... compiling equivalent IDL\"\n";
+	out << "CommandLine=\"$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl ";
+	out << "--any --typecode --c++-skel --c++-suffix cpp --windows-dll ";
+	out << project_name << " " << project_name << "_EQUIVALENT.idl\n";
+	out << "copy " << project_name << "_EQUIVALENT.h " << project_name << "_EQUIVALENT_skel.h\"\n";
+	out << "Outputs=\"" << project_name << "_EQUIVALENT.h;" << project_name << "_EQUIVALENT.cpp;";
+	out << project_name << "_EQUIVALENT_skel.h;" << project_name << "_EQUIVALENT_skel.cpp\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	// Release_mico
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Release_mico|Win32\">\n";
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
@@ -690,10 +844,27 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out.unindent();
 	out << "</FileConfiguration>\n";
-	// mico
+	// Debug_mico
 	out << "<FileConfiguration\n";
 	out.indent();
 	out << "Name=\"Debug_mico|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "Description=\"..... compiling local IDL\"\n";
+	out << "CommandLine=\"$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  ";
+	out << "--any --typecode --c++-skel --c++-suffix cpp --windows-dll ";
+	out << project_name << " " << project_name << "_LOCAL.idl\n";
+	out << "copy " << project_name << "_LOCAL.h " << project_name << "_LOCAL_skel.h\"\n";
+	out << "Outputs=\"" << project_name << "_LOCAL.h;" << project_name << "_LOCAL.cpp;";
+	out << project_name << "_LOCAL_skel.h;" << project_name << "_LOCAL_skel.cpp\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	// Release_mico
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Release_mico|Win32\">\n";
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
@@ -762,10 +933,20 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.unindent();
 	out.unindent();
 	out << "</FileConfiguration>\n";
-	// mico
+	// Debug_mico
 	out << "<FileConfiguration\n";
 	out.indent();
 	out << "Name=\"Debug_mico|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	// Release_mico
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Release_mico|Win32\">\n";
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"/>\n";
@@ -957,7 +1138,7 @@ GeneratorVC7::generateServant()
 	out << "</Configuration>\n";
 	
 	//
-	// mico
+	// Debug_mico
 	//
 	out << "<Configuration\n";
 	out.indent();
@@ -1042,6 +1223,94 @@ GeneratorVC7::generateServant()
 	out.unindent();
 	out << "</Configuration>\n";
 	
+
+	//
+	// Release_mico
+	//
+	out << "<Configuration\n";
+	out.indent();
+	out << "Name=\"Release_mico|Win32\"\n";
+	out << "OutputDirectory=\"Release_mico\"\n";
+	out << "IntermediateDirectory=\"Release_mico\"\n";
+	out << "ConfigurationType=\"2\"\n";
+	out << "CharacterSet=\"2\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCLCompilerTool\"\n";
+	out << "Optimization=\"3\"\n";
+	out << "AdditionalIncludeDirectories=\".;$(QEDO)/include/pthreads;$(QEDO)/include;$(Qedo)/include/mico;$(Qedo)/include/mico/windows;\"\n";
+	out << "PreprocessorDefinitions=\"";
+	out << "BUILD_" << export_prefix_ << "_DLL;MICO_ORB;WIN32;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400;\"\n";
+	out << "MinimalRebuild=\"TRUE\"\n";
+	out << "BasicRuntimeChecks=\"0\"\n";
+	out << "RuntimeLibrary=\"2\"\n";
+	out << "RuntimeTypeInfo=\"TRUE\"\n";
+	out << "UsePrecompiledHeader=\"0\"\n";
+	out << "WarningLevel=\"3\"\n";
+	out << "Detect64BitPortabilityProblems=\"FALSE\"\n";
+	out << "DebugInformationFormat=\"0\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCLinkerTool\"\n";
+	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib qedoutil.lib mico2311.lib pthreadVC2.lib\"\n";
+	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
+	out << "LinkIncremental=\"2\"\n";
+	out << "AdditionalLibraryDirectories=\"$(QEDO)/lib;$(QEDO)/lib\"\n";
+	out << "GenerateDebugInformation=\"FALSE\"\n";
+	out << "ProgramDatabaseFile=\"$(OutDir)/" << project_name << ".pdb\"\n";
+	out << "SubSystem=\"2\"\n";
+	out << "ImportLibrary=\"$(OutDir)/" << project_name << ".lib\"\n";
+	out << "TargetMachine=\"1\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCMIDLTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPostBuildEventTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPreBuildEventTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPreLinkEventTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCResourceCompilerTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCWebServiceProxyGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCXMLDataGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCWebDeploymentTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCManagedWrapperGeneratorTool\"/>\n";
+	out.unindent();
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCAuxilaryManagedWrapperGeneratorTool\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</Configuration>\n";
+
+
 	//
 	// tao
 	//
@@ -1230,10 +1499,24 @@ GeneratorVC7::generateServant()
 	out.unindent();
 	out.unindent();
 	out << "</FileConfiguration>\n";
-	// mico
+	// Debug_mico
 	out << "<FileConfiguration\n";
 	out.indent();
 	out << "Name=\"Debug_mico|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "Description=\"..... compiling CIDL\"\n";
+	out << "CommandLine=\"$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 ";
+	out << " -I$(QEDO)/idl -I$(QEDO)/include/mico -I$(QEDO)/include/mico/mico --servant --target " << target_->id() << " ../" << target_file_name_ << "\"\n";
+	out << "Outputs=\"" << file_prefix_ << "_LOCAL.idl;" << file_prefix_ << "_EQUIVALENT.idl;" << file_prefix_ << "_SERVANT.cpp\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	// Release_mico
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Release_mico|Win32\">\n";
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
@@ -1278,10 +1561,27 @@ GeneratorVC7::generateServant()
 	out.unindent();
 	out.unindent();
 	out << "</FileConfiguration>\n";
-	// mico
+	// Debug_mico
 	out << "<FileConfiguration\n";
 	out.indent();
 	out << "Name=\"Debug_mico|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "Description=\"..... compiling equivalent IDL\"\n";
+	out << "CommandLine=\"$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  ";
+	out << "--any --typecode --c++-skel --c++-suffix cpp --windows-dll ";
+	out << file_prefix_ << " " << file_prefix_ << "_EQUIVALENT.idl\n";
+	out << "copy " << file_prefix_ << "_EQUIVALENT.h " << file_prefix_ << "_EQUIVALENT_skel.h\"\n";
+	out << "Outputs=\"" << file_prefix_ << "_EQUIVALENT.h;" << file_prefix_ << "_EQUIVALENT.cpp;";
+	out << file_prefix_ << "_EQUIVALENT_skel.h;" << file_prefix_ << "_EQUIVALENT_skel.cpp\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	// Release_mico
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Release_mico|Win32\">\n";
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";
@@ -1329,10 +1629,27 @@ GeneratorVC7::generateServant()
 	out.unindent();
 	out.unindent();
 	out << "</FileConfiguration>\n";
-	// mico
+	// Debug_mico
 	out << "<FileConfiguration\n";
 	out.indent();
 	out << "Name=\"Debug_mico|Win32\">\n";
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCCustomBuildTool\"\n";
+	out << "Description=\"..... compiling local IDL\"\n";
+	out << "CommandLine=\"$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  ";
+	out << "--any --typecode --c++-skel --c++-suffix cpp --windows-dll ";
+	out << file_prefix_ << " " << file_prefix_ << "_LOCAL.idl\n";
+	out << "copy " << file_prefix_ << "_LOCAL.h " << file_prefix_ << "_LOCAL_skel.h\"\n";
+	out << "Outputs=\"" << file_prefix_ << "_LOCAL.h;" << file_prefix_ << "_LOCAL.cpp;";
+	out << file_prefix_ << "_LOCAL_skel.h;" << file_prefix_ << "_LOCAL_skel.cpp\"/>\n";
+	out.unindent();
+	out.unindent();
+	out << "</FileConfiguration>\n";
+	// Release_mico
+	out << "<FileConfiguration\n";
+	out.indent();
+	out << "Name=\"Release_mico|Win32\">\n";
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCCustomBuildTool\"\n";

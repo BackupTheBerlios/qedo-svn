@@ -1,3 +1,7 @@
+
+- command line arguments in assembly descriptor for Open PMF integration
+- some fixes in Makefiles
+- extensions for OpenPMF support
 - csd points to the source file (*.cidl)
 - included descriptor generation in vc7 generator
 - new batch file fro creating a distribution

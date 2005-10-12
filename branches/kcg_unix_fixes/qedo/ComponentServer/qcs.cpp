@@ -235,7 +235,7 @@ main (int argc, char** argv)
 	} // if qos_enabled
 #endif
 	// create arguments for ORB_init
-	char *orb_argv[27];
+	char** orb_argv = new char*[argc+10];
 	int orb_argc=argc;
 	int orb_n = 0;
 	for (orb_n = 0; orb_n < argc; orb_n++)

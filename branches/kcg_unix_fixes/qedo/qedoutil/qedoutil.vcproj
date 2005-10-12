@@ -180,7 +180,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;..\ComponentIDL;..\ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(ZLIB)\include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)/include&quot;"
+				AdditionalIncludeDirectories=".;..\ComponentIDL;..\ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(ZLIB)\include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;;&quot;$(MICO)/contrib/pthreads&quot;"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_WINDOWS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_USRDLL;QEDOUTIL_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="3"
@@ -300,7 +300,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories=".;..\ComponentIDL;..\ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(ZLIB)\include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;;&quot;$(PTHREADS)\include&quot;"
+				AdditionalIncludeDirectories=".;..\ComponentIDL;..\ComponentContainer;&quot;$(MICO)\include&quot;;&quot;$(ZLIB)\include&quot;;&quot;$(ZLIB)&quot;;&quot;$(XERCES)/include&quot;;&quot;$(MICO)/contrib/pthreads&quot;"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_WINDOWS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_USRDLL;QEDOUTIL_EXPORTS"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -431,10 +431,7 @@ copy $(TargetPath) $(QEDO)\bin
 				RelativePath="Uri.cpp">
 			</File>
 			<File
-				RelativePath="Valuetypes.cpp">
-			</File>
-			<File
-				RelativePath="Valuetypes.cpp">
+				RelativePath=".\Valuetypes.cpp">
 			</File>
 			<File
 				RelativePath="XMLCatalog.cpp">

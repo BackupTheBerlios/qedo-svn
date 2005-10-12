@@ -22,6 +22,7 @@ copy %MICO%\win32-bin\idl2311.dll %actdir%
 copy %MICO%\win32-bin\idl.exe %actdir%
 copy %MICO%\win32-bin\mico-cpp.exe %actdir%
 copy %MICO%\win32-bin\nsd.exe %actdir%
+copy %MICO%\win32-bin\pthreadVC2.dll %actdir%
 
 
 echo ************ Copy MICO ************ 
@@ -56,25 +57,15 @@ mkdir %actdir%
 copy %MICO%\win32-bin\lib\idl2311.lib %actdir%
 copy %MICO%\win32-bin\lib\mico2311.lib %actdir%
 copy %MICO%\win32-bin\lib\micocoss2311.lib %actdir%
+copy %MICO%\win32-bin\lib\pthreadVC2.lib %actdir%
 
 echo ************ Copy PTHREADS ************ 
 set actdir=%qedo%\include\pthreads
 echo *** Create %actdir%...
 mkdir %actdir%
 
-copy %PTHREADS%\include %actdir%
+copy %MICO%\contrib\pthreads\*.h  %actdir%
 
-set actdir=%qedo%\lib
-echo *** Create %actdir%...
-mkdir %actdir%
-
-copy %PTHREADS%\lib\pthreadVC2.lib %actdir%
-
-set actdir=%qedo%\bin
-echo *** Create %actdir%...
-mkdir %actdir%
-
-copy %PTHREADS%\lib\pthreadVC2.dll %actdir%
 
 echo ************ Copy XERCES ************ 
 set actdir=%qedo%\bin
