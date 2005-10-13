@@ -24,9 +24,6 @@ using namespace std;
 void scann_file(FILE *);
 extern map<string,string> *user_sections;
 
-/* procedures exported by lexana.cpp */
-void yyerror_1 (char *, int =-1);
-
 /* procedures exported by lex */
 int yylex (void);
 
@@ -40,6 +37,8 @@ extern char *yytext;
 extern int  yyleng;
 
 extern char  *input_basename;
+extern int yylinenumber;
+extern char filename[];
 extern idl_name_list g_included_files; /* contains all included files */
 void init_lexer(bool with_cidl=false,bool with_psdl=false, bool with_stream=false);
 

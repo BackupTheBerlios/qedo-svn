@@ -31,6 +31,7 @@
 #ifndef YYSTYPE
 #define YYSTYPE YYSTYPE
 #endif
+void yyerror_1 (const char *s, int state_no);
 #define yyerror(s) yyerror_1(s, yystate)
 
 %}
@@ -2252,6 +2253,8 @@ proxy_home_members :
 
 %%
 
+#include "errmsg.inc"
+#include "error_printer.cpp"
 
 /* List of symbols:
 	(0) 	<specification>

@@ -11,8 +11,8 @@
 using namespace std;
 
 static int state_before_coment = YYSTATE;
-static int yylinenumber = 1;
-static char filename[1024];
+int yylinenumber = 1;
+char filename[1024];
 static char first_filename[1024]={0,};
 char* input_basename = 0; /* base name of the input file */
 idl_name_list g_included_files = 0;
@@ -498,21 +498,6 @@ init_lexer(bool with_cidl,bool with_psdl,bool with_stream)
     }
     BEGIN(stream);
   }
-}
-
-#include "errmsg.cpp"
-
-void 
-yyerror_1 (char *s, int state_no)
-{
-  const char* s1 = "";
-  if (state_no >= 0
-      && state_no <= sizeof(error_message)/sizeof(error_message[0])
-      && error_message[state_no]
-      && error_message[state_no][0])
-    s1 = error_message[state_no];
-  fprintf(stderr, "syntax error in %s at line %d: %s:\n%s\n", filename , yylinenumber, s, s1);
-  exit(1);
 }
 
 void
