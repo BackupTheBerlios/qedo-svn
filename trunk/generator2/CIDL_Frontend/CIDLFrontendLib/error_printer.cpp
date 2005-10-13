@@ -21,7 +21,7 @@ yyerror_1(const char *s, int state_no)
 {
   int rule_pos, i;
 
-  fprintf(stderr, "syntax error in %s at line %d: %s:\n", filename , yylinenumber, s);
+  fprintf(stderr, "error at %s line %d: %s:\n", filename , yylinenumber, s);
   for (rule_pos = error_state[state_no]; error_rules[rule_pos][0] != 0; rule_pos++)
   {
     int rule = error_rules[rule_pos][0];
