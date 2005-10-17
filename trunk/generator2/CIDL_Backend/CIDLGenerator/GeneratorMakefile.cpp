@@ -224,10 +224,10 @@ GeneratorMakefile::generateServant()
     out << "CPP_FILES = " << target_name << "_EQUIVALENT.cpp \\\n";
     out << "\t" << target_name << "_EQUIVALENT_skel.cpp \\\n";
     out << "\t" << target_name << "_LOCAL.cpp \\\n";
-    out << "\t" << target_name << "_SERVANT.cpp \n\n";
+    out << "\t" << target_name << "_SERVANT.cpp \\\n";
+    out << "\t" << target_name << "_PSS.cpp \n\n";
 
-    out << "OBJ_FILES = ${CPP_FILES:%.cpp=%.o} \\\n";
-    out << "\t" << target_name << "_PSS.o \n\n";
+    out << "OBJ_FILES = ${CPP_FILES:%.cpp=%.o} \n\n";
 
     out << "CLEAN_FILES = ${IDL_FILES} \\\n";
     out << "\t${CPP_FILES} \\\n";
@@ -247,7 +247,8 @@ GeneratorMakefile::generateServant()
 
     out << "lib" << target_name << "_SERVANT.so: ${OBJ_FILES}\n\n";
 
-    out << "${IDL_FILES} " << target_name << "_SERVANT.cpp: ${CIDL_FILES}\n";
+    out << "${IDL_FILES} " << target_name << "_SERVANT.cpp ";
+    out << target_name << "_PSS.cpp : ${CIDL_FILES}\n";
     out << "\t${CIDL_GEN} -I${QEDO}/idl ${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \\\n";
     out << "\t--servant --target \"" << target_->id() << "\" $<\n\n";
 
