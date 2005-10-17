@@ -123,6 +123,7 @@ GeneratorMakefile::doComposition(CIDL::CompositionDef_ptr composition)
 //	out << "\t" << composition_name << "_EQUIVALENT.cpp \\\n";
 //	out << "\t" << composition_name << "_LOCAL.cpp \\\n";
 	out << "\t" << composition_name << ".cpp \\\n";
+
 	out << "\tcomponent_valuetypes.cpp \n\n";
 
 
@@ -223,11 +224,20 @@ GeneratorMakefile::generateServant()
     out << "CPP_FILES = " << target_name << "_EQUIVALENT.cpp \\\n";
     out << "\t" << target_name << "_EQUIVALENT_skel.cpp \\\n";
     out << "\t" << target_name << "_LOCAL.cpp \\\n";
-    out << "\t" << target_name << "_SERVANT.cpp\n\n";
+    out << "\t" << target_name << "_SERVANT.cpp \n\n";
 
-    out << "OBJ_FILES = ${CPP_FILES:%.cpp=%.o}\n\n";
+    out << "OBJ_FILES = ${CPP_FILES:%.cpp=%.o} \\\n";
+    out << "\t" << target_name << "_PSS.o \n\n";
 
-    out << "CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} lib" << target_name << "_SERVANT.so\n\n";
+    out << "CLEAN_FILES = ${IDL_FILES} \\\n";
+    out << "\t${CPP_FILES} \\\n";
+    out << "\t${CPP_FILES:%.cpp=%.h} \\\n";
+    out << "\t" << target_name << "_LOCAL_skel.cpp \\\n";
+    out << "\t" << target_name << "_LOCAL_skel.h \\\n";
+    out << "\t" << target_name << "_PSS.cpp \\\n";
+    out << "\t" << target_name << "_PSS.h \\\n";
+    out << "\t${OBJ_FILES} \\\n";
+    out << "\tlib" << target_name << "_SERVANT.so\n\n";
 
     out << "CXXFLAGS += -I.\n\n";
 
