@@ -98,13 +98,13 @@ GeneratorMakefile::doComposition(CIDL::CompositionDef_ptr composition)
 
 	QEDO_CIDL_Generator::GeneratorCCD *ccd_generator =
 		new QEDO_CIDL_Generator::GeneratorCCD(repository_, dir_prefix);
-	ccd_generator->generate(id, "");
+	ccd_generator->generate(composition->id(), "");
 	ccd_generator->destroy();
 	
 	QEDO_CIDL_Generator::GeneratorCSD *csd_generator =
 		new QEDO_CIDL_Generator::GeneratorCSD(repository_, dir_prefix);
 	csd_generator->source_file_name_ = target_file_name_;
-	csd_generator->generate(id, "");
+	csd_generator->generate(composition->id(), "");
 	csd_generator->destroy();
 	/* end descriptor generations */
 
