@@ -1281,7 +1281,7 @@ throw( Components::CreateFailure )
 	}
 	catch( CADReadException ) 
 	{
-        throw Components::CreateFailure();
+	        throw Components::CreateFailure();
 	}
 
 	//

@@ -1698,7 +1698,7 @@ throw(CADReadException)
 		catch( CSDReadException ) 
 		{
 			NORMAL_ERR2( "CADReader: error during reading .csd file ", data.file );
-			throw Components::CreateFailure();
+			throw CADReadException();
 		}
 
 		//
@@ -1707,7 +1707,7 @@ throw(CADReadException)
 		if( ccdfile.empty() )
 		{
 			NORMAL_ERR2( "CADReader: no .ccd file for ", data.impl_id );
-			throw Components::CreateFailure();
+			throw CADReadException();
 		}
 		CCDReader ccd_reader( ccdfile, path_ );
 		try 
@@ -1717,7 +1717,7 @@ throw(CADReadException)
 		catch( CSDReadException ) 
 		{
 			NORMAL_ERR2( "CADReader: error during reading .ccd file ", ccdfile );
-			throw Components::CreateFailure();
+			throw CADReadException();
 		}
 	}
 
