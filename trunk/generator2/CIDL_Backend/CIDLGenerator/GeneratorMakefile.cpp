@@ -11,6 +11,8 @@
 #include "sys/stat.h"
 #endif
 
+#include "GeneratorCCD.h"
+#include "GeneratorCSD.h"
 
 namespace QEDO_CIDL_Generator {
 
@@ -82,6 +84,31 @@ GeneratorMakefile::doComposition(CIDL::CompositionDef_ptr composition)
 #else
 	mkdir(project_name.c_str(), 0755);
 #endif
+
+	/* generate descriptor first */
+	std::string dir_prefix;
+	dir_prefix = project_name + "/";
+	dir_prefix = dir_prefix + "meta-inf/";
+
+#ifdef WIN32
+	_mkdir(dir_prefix.c_str());
+#else
+	mkdir(dir_prefix.c_str(), 0755);
+#endif
+
+	QEDO_CIDL_Generator::GeneratorCCD *ccd_generator =
+		new QEDO_CIDL_Generator::GeneratorCCD(repository_, dir_prefix);
+	ccd_generator->generate(id, "");
+	ccd_generator->destroy();
+	
+	QEDO_CIDL_Generator::GeneratorCSD *csd_generator =
+		new QEDO_CIDL_Generator::GeneratorCSD(repository_, dir_prefix);
+	csd_generator->source_file_name_ = target_file_name_;
+	csd_generator->generate(id, "");
+	csd_generator->destroy();
+	/* end descriptor generations */
+
+
 	filename_ = project_name + "/Makefile";
 	out.open(filename_.c_str());
 
