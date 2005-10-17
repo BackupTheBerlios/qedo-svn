@@ -124,7 +124,7 @@ main
 
 	signal ( SIGINT, handle_sigint );
 
-	bool generateEIDL = true;
+	bool generateEIDL = false;
 	bool generateLIDL = false;
 	bool generateBusiness = false;
 	bool generateServant = false;
@@ -169,7 +169,7 @@ main
 		else if((strcmp(option, "--business") == 0) || (strcmp(option, "-b") == 0))
 		{
 			generateBusiness = true;
-			generateLIDL = true;
+			//generateLIDL = true;
 
 			for(int j = i ; j + 1 < argc ; j++)
 				argv[j] = argv[j + 1];
@@ -180,7 +180,7 @@ main
 		{
 			generateServant = true;
 			generateLIDL = true;
-
+			generateEIDL = true;
 			for(int j = i ; j + 1 < argc ; j++)
 			argv[j] = argv[j + 1];
 

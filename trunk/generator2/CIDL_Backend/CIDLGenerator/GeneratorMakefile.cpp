@@ -115,26 +115,36 @@ GeneratorMakefile::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "ORB_IDL_INCLUDE = -I..\n\n";
 
 	out << "CIDL_FILES = ../" << target_file_name_ << "\n\n";
-	out << "IDL_FILES = " << composition_name << "_LOCAL.idl \\\n";
-	out << "\t" << composition_name << "_EQUIVALENT.idl \\\n";
-	out << "\t" << composition_name << "_BUSINESS.idl \n\n";
+//	out << "IDL_FILES = " << composition_name << "_LOCAL.idl \\\n";
+//	out << "\t" << composition_name << "_EQUIVALENT.idl \\\n";
+	out << "IDL_FILES = " << composition_name << "_BUSINESS.idl \n\n";
 
 	out << "CPP_FILES = " << composition_name << "_BUSINESS.cpp \\\n";
 //	out << "\t" << composition_name << "_EQUIVALENT.cpp \\\n";
 //	out << "\t" << composition_name << "_LOCAL.cpp \\\n";
 	out << "\t" << composition_name << ".cpp \\\n";
-
 	out << "\tcomponent_valuetypes.cpp \n\n";
 
 
 	out << "OBJ_FILES = ${CPP_FILES:%.cpp=%.o} \n\n";
 
-	out << "CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} lib" << composition_name << ".so " << composition_name << ".zip\n\n";
+	out << "CLEAN_FILES = ${IDL_FILES} \\\n";
+	out << "\t${OBJ_FILES} \\\n";
+	out << "\t" << composition_name << "_BUSINESS.cpp \\\n";
+	out << "\t" << composition_name << "_BUSINESS.h \\\n";
+	out << "\t" << composition_name << "_BUSINESS_skel.cpp \\\n";
+	out << "\t" << composition_name << "_BUSINESS_skel.h \\\n";
+	out << "\tlib" << composition_name << ".so \\\n";
+	out << "\t" << composition_name << ".zip\\\n";
+	out << "\tcomponent_valuetypes.cpp \\\n";
+	out << "\tcomponent_valuetypes.h \n\n";
 
 	out << "LIBS += -L../" << composition_name << "_SERVANT -l";
 	out << composition_name << "_SERVANT \n\n";
 
-	out << "CXXFLAGS += -I. -g\n\n";
+	out << "CXXFLAGS += -I. -g -I../" << composition_name << "_SERVANT \n\n";
+
+	out << "IDL_FLAGS += -I../" << composition_name << "_SERVANT \n\n";
 
 	out << "include ../MakeComponentVars\n\n";
 
@@ -145,9 +155,6 @@ GeneratorMakefile::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} \n";
 	out << "\t${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \\\n";
 	out << "\t--business --target \"" << composition->id() << "\" $< \n\n";
-
-	out << composition_name << "_BUSINESS.cpp: " << composition_name << "_EQUIVALENT.h ";
-	out << composition_name << "_LOCAL.h \n\n";
 
 	out << composition_name << ".cpp: " << composition_name << "_BUSINESS.h\n\n";
 
