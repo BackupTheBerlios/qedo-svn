@@ -124,7 +124,7 @@ main
 
 	signal ( SIGINT, handle_sigint );
 
-	bool generateEIDL = false;
+	bool generateEIDL = true;
 	bool generateLIDL = false;
 	bool generateBusiness = false;
 	bool generateServant = false;
@@ -168,9 +168,16 @@ main
 		}
 		else if((strcmp(option, "--business") == 0) || (strcmp(option, "-b") == 0))
 		{
-			generateBusiness = true;
-			//generateLIDL = true;
+			/* On Windows the executor needs to link equivalent and local */
+			/* On Linux the executor doesn't need it to be linked */
+			/* default the equivalent IDL is on but turned off here on Linux */
 
+			generateBusiness = true;
+#ifdef _WIN32
+			generateLIDL = true;
+#else
+			generateEIDL = false;
+#endif
 			for(int j = i ; j + 1 < argc ; j++)
 				argv[j] = argv[j + 1];
 
