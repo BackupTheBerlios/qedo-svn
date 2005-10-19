@@ -2,33 +2,40 @@ ORB_IDL_INCLUDE = -I..
 
 CIDL_FILES = ../hello.cidl
 
-IDL_FILES = HelloWorld_CalleeImpl_LOCAL.idl \
-	HelloWorld_CalleeImpl_EQUIVALENT.idl \
-	HelloWorld_CalleeImpl_BUSINESS.idl
+IDL_FILES = HelloWorld_CalleeImpl_BUSINESS.idl 
 
 CPP_FILES = HelloWorld_CalleeImpl_BUSINESS.cpp \
 	HelloWorld_CalleeImpl.cpp \
-	component_valuetypes.cpp
+	component_valuetypes.cpp 
 
-OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
+OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 
-CLEAN_FILES = ${OBJ_FILES} HelloWorld_CalleeImpl.so HelloWorld_CalleeImpl.zip ${IDL_FILES}
+CLEAN_FILES = ${IDL_FILES} \
+	${OBJ_FILES} \
+	HelloWorld_CalleeImpl_BUSINESS.cpp \
+	HelloWorld_CalleeImpl_BUSINESS.h \
+	HelloWorld_CalleeImpl_BUSINESS_skel.cpp \
+	HelloWorld_CalleeImpl_BUSINESS_skel.h \
+	libHelloWorld_CalleeImpl.so \
+	HelloWorld_CalleeImpl.zip\
+	component_valuetypes.cpp \
+	component_valuetypes.h 
 
-LIBS += -L../HelloWorld_CalleeImpl_SERVANT -lHelloWorld_CalleeImpl_SERVANT
+LIBS += -L../HelloWorld_CalleeImpl_SERVANT -lHelloWorld_CalleeImpl_SERVANT 
 
-CXXFLAGS += -I. -g
+CXXFLAGS += -I. -g -I../HelloWorld_CalleeImpl_SERVANT 
+
+IDL_FLAGS += -I../HelloWorld_CalleeImpl_SERVANT 
 
 include ../MakeComponentVars
 
-all: libHelloWorld_CalleeImpl.so
+all: libHelloWorld_CalleeImpl.so 
 
-libHelloWorld_CalleeImpl.so: ${OBJ_FILES}
+libHelloWorld_CalleeImpl.so: ${OBJ_FILES} 
 
-${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES}
+${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} 
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
-	--business --target "IDL:HelloWorld/CalleeImpl:1.0" $<
-
-HelloWorld_CalleeImpl_BUSINESS.cpp: HelloWorld_CalleeImpl_EQUIVALENT.h HelloWorld_CalleeImpl_LOCAL.h
+	--business --target "IDL:HelloWorld/CalleeImpl:1.0" $< 
 
 HelloWorld_CalleeImpl.cpp: HelloWorld_CalleeImpl_BUSINESS.h
 
