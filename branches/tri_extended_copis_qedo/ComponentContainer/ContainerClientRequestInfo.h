@@ -37,25 +37,59 @@ class CONTAINERDLL_API ContainerClientRequestInfo : public virtual Components::C
 {
 private:
 	/** the identity of this component */
-	std::string		uuid_;
-	std::string		component_id_;
+	std::string		origin_id_;
+	std::string		target_id_;
 	std::string		name_;
 
 	PortableInterceptor::ClientRequestInfo_var request_info_;
 
 public:
-	ContainerClientRequestInfo (PortableInterceptor::ClientRequestInfo_ptr request_info, const char* component_id, const Components::FeatureName name);
+	ContainerClientRequestInfo (PortableInterceptor::ClientRequestInfo_ptr request_info, const char* origin_id, const char* target_id, const Components::FeatureName name);
 
 	~ContainerClientRequestInfo ();
 
-//    virtual char* component_uuid() ;
+	virtual char* origin_id() ;
 
-	virtual char* component_id() ;
+	virtual char* target_id() ;
 
 	virtual Components::FeatureName name();
 
     virtual PortableInterceptor::ClientRequestInfo_ptr request_info() ;
 };
+
+
+class CONTAINERDLL_API ContainerStubRequestInfo : public virtual Components::ContainerPortableInterceptor::ContainerStubRequestInfo,
+	public virtual RefCountLocalObject
+{
+private:
+	/** the identity of this component */
+	std::string		origin_id_;
+	std::string		target_id_;
+	std::string		name_;
+	std::string		operation_name_;
+
+	Dynamic::ParameterList_var arguments_;
+
+public:
+	ContainerStubRequestInfo (Dynamic::ParameterList* arguments, const char* origin_id, const char* target_id, const Components::FeatureName name);
+
+	~ContainerStubRequestInfo ();
+
+	virtual char* origin_id() ;
+
+	virtual char* target_id() ;
+
+	virtual Components::FeatureName name();
+
+	virtual Dynamic::ParameterList* arguments() ;
+
+	virtual void arguments( const ::Dynamic::ParameterList& value );
+
+    virtual char* operation();
+
+	virtual void operation( const char* value ) ;
+};
+
 
 } //namespace Qedo
 #endif

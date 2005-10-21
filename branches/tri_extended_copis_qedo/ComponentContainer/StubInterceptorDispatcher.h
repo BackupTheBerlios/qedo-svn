@@ -35,14 +35,15 @@ namespace Qedo {
 
 	class StubInterceptorEntry {
 	public:
-		Components::ContainerPortableInterceptor::ClientContainerInterceptorExt_var interceptor;
+		Components::ContainerPortableInterceptor::StubContainerInterceptor_var interceptor;
 		std::string id;
 	};
 
 	typedef std::vector < StubInterceptorEntry > StubInterceptorVector;
 
 	class CONTAINERDLL_API StubInterceptorDispatcher :
-		public virtual Components::ContainerPortableInterceptor::StubInterceptorRegistration,
+//		public virtual Components::ContainerPortableInterceptor::StubInterceptorRegistration,
+		public virtual Qedo_Components::StubInterceptorDispatcher,
 		public virtual CORBA::LocalObject
 	{
 	private:
@@ -68,11 +69,40 @@ namespace Qedo {
 		virtual void
 		set_component_server(Qedo::ComponentServerImpl* component_server);
 
-		virtual void
-		register_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptorExt_ptr interceptor);
+
+		virtual Components::Cookie* 
+		register_client_interceptor( Components::ContainerPortableInterceptor::ClientContainerInterceptor_ptr ci );
+
+		virtual Components::ContainerPortableInterceptor::ClientContainerInterceptor_ptr 
+		unregister_client_interceptor( Components::Cookie* ck ) ;
+
+	    virtual void 
+			stub_send_request( Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info, CORBA::Boolean_out con ) ;
+
+		virtual void 
+		stub_recieve_reply( Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info, CORBA::Boolean_out con ) ;
+
+		virtual Components::Cookie* 
+		register_stub_interceptor( Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr ci );
+
+		virtual Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr 
+		unregister_stub_interceptor( Components::Cookie* ck );
 
 		virtual void
-		unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptorExt_ptr interceptor);
+		register_interceptor_for_all(Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr interceptor);
+
+		virtual void
+		unregister_interceptor_for_all(Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr interceptor);
+
+
+		virtual char*
+		name();
+
+	    virtual void 
+		destroy();
+		
+		virtual void 
+		set_slot_id( ::PortableInterceptor::SlotId slot_id );
 
 		virtual CORBA::Boolean 
 		call( const char* oper ) ;

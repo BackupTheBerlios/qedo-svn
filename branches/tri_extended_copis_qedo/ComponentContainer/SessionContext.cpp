@@ -48,7 +48,7 @@ SessionContext::get_CCM_object()
 
 #ifndef _QEDO_NO_QOS
 void
-SessionContext::set_stub_interceptor_registration(Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_registration)
+SessionContext::set_stub_interceptor_registration(Qedo_Components::StubInterceptorDispatcher_ptr stub_registration)
 {
 	stub_registration_ = stub_registration;
 }

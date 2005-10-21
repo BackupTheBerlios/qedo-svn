@@ -85,6 +85,20 @@ module Qedo_Components {
 		Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration
 	{
 	};
+
+	local interface StubInterceptorDispatcher
+		: Components::ContainerPortableInterceptor::StubContainerInterceptor,
+		Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration
+	{
+	};
+
+
+	local interface ServantInterceptorDispatcher 
+		: Components::ContainerPortableInterceptor::ServantContainerInterceptor,
+		Components::ContainerPortableinterceptor::ServantContainerInterceptorRegistration
+	{
+	};
+
 #endif
 };
 

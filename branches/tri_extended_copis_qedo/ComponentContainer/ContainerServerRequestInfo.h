@@ -28,6 +28,7 @@
 #include <CORBA.h>
 #include <Components.h>
 #include "RefCountBase.h"
+#include "mico/pi.h"
 #include "Util.h"
 
 namespace Qedo {
@@ -37,24 +38,56 @@ class CONTAINERDLL_API ContainerServerRequestInfo : public virtual Components::C
 {
 private:
 	/** the identity of this component */
-//	std::string		uuid_;
-	std::string		component_id_;
+	std::string		origin_id_;
+	std::string		target_id_;
 	std::string		name_;
 
 	PortableInterceptor::ServerRequestInfo_var request_info_;
 
 public:
-	ContainerServerRequestInfo (PortableInterceptor::ServerRequestInfo_ptr request_info, const char* component_id, const Components::FeatureName name);
+	ContainerServerRequestInfo (PortableInterceptor::ServerRequestInfo_ptr request_info, const char* origin_id, const char* target_id, const Components::FeatureName name);
 
 	~ContainerServerRequestInfo ();
 
-//    virtual char* component_uuid() ;
+	virtual char* origin_id() ;
 
-	virtual char* component_id() ;
+	virtual char* target_id() ;
 
 	virtual Components::FeatureName name();
 
     virtual PortableInterceptor::ServerRequestInfo_ptr request_info() ;
+};
+
+class CONTAINERDLL_API ContainerServantRequestInfo : public virtual Components::ContainerPortableInterceptor::ContainerServantRequestInfo,
+	public virtual RefCountLocalObject
+{
+private:
+	/** the identity of this component */
+	std::string		origin_id_;
+	std::string		target_id_;
+	std::string		name_;
+	std::string		operation_name_;
+
+	Dynamic::ParameterList_var arguments_;
+
+public:
+	ContainerServantRequestInfo (Dynamic::ParameterList* arguments, const char* origin_id, const char* target_id, const Components::FeatureName name);
+
+	~ContainerServantRequestInfo ();
+
+	virtual char* origin_id() ;
+
+	virtual char* target_id() ;
+
+	virtual Components::FeatureName name();
+
+	virtual Dynamic::ParameterList* arguments() ;
+
+	virtual void arguments( const ::Dynamic::ParameterList& value );
+
+	virtual char* operation();
+
+	virtual void operation( const char* value ) ;
 };
 
 } //namespace Qedo

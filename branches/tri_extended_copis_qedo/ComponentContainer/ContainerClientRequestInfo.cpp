@@ -36,13 +36,13 @@ namespace Qedo {
 
 ContainerClientRequestInfo::ContainerClientRequestInfo (
 	PortableInterceptor::ClientRequestInfo_ptr request_info, 
-//	const char* uuid, 
-	const char* component_id,
+	const char* origin_id, 
+	const char* target_id,
 	const Components::FeatureName name)
 {
 	request_info_ = PortableInterceptor::ClientRequestInfo::_duplicate(request_info);
-//	uuid_ = uuid;
-	component_id_ = component_id;
+	origin_id_ = origin_id;
+	target_id_ = target_id;
 	name_ = name;
 }
 
@@ -52,21 +52,21 @@ ContainerClientRequestInfo::~ContainerClientRequestInfo ()
 }
 
 
-/*
-char* 
-ContainerClientRequestInfo::component_uuid()
-{
-	char* ret_str;
-	ret_str = strdup ( uuid_.c_str() );
-	return ret_str;
-}
-*/
 
 char* 
-ContainerClientRequestInfo::component_id() 
+ContainerClientRequestInfo::origin_id()
 {
 	char* ret_str;
-	ret_str = strdup ( component_id_.c_str() );
+	ret_str = strdup ( origin_id_.c_str() );
+	return ret_str;
+}
+
+
+char* 
+ContainerClientRequestInfo::target_id() 
+{
+	char* ret_str;
+	ret_str = strdup ( target_id_.c_str() );
 	return ret_str;
 }
 
@@ -83,6 +83,82 @@ ContainerClientRequestInfo::request_info()
 {
 	return PortableInterceptor::ClientRequestInfo::_duplicate(request_info_);
 }
+
+
+
+// ContainerStubRequestInfo
+
+ContainerStubRequestInfo::ContainerStubRequestInfo (
+	Dynamic::ParameterList* arguments, 
+	const char* origin_id, 
+	const char* target_id,
+	const Components::FeatureName name)
+{
+	arguments_ = arguments;
+	origin_id_ = origin_id;
+	target_id_ = target_id;
+	name_ = name;
+}
+
+ContainerStubRequestInfo::~ContainerStubRequestInfo ()
+{
+
+}
+
+
+char* 
+ContainerStubRequestInfo::origin_id()
+{
+	char* ret_str;
+	ret_str = strdup ( origin_id_.c_str() );
+	return ret_str;
+}
+
+
+char* 
+ContainerStubRequestInfo::target_id() 
+{
+	char* ret_str;
+	ret_str = strdup ( target_id_.c_str() );
+	return ret_str;
+}
+
+char* 
+ContainerStubRequestInfo::name() 
+{
+	char* ret_str;
+	ret_str = strdup ( name_.c_str() );
+	return ret_str;
+}
+
+Dynamic::ParameterList*
+ContainerStubRequestInfo::arguments () 
+{
+	return arguments_;
+}
+
+void 
+ContainerStubRequestInfo::arguments( const ::Dynamic::ParameterList& value )
+{
+	arguments_ = new Dynamic::ParameterList(value);
+}
+
+char* 
+ContainerStubRequestInfo::operation()
+{
+	char* ret_str;
+	ret_str = strdup ( operation_name_.c_str() );
+	return ret_str;	
+}
+
+
+void 
+ContainerStubRequestInfo::operation( const char* value ) 
+{
+	operation_name_ = value;
+
+}
+
 
 #endif
 };

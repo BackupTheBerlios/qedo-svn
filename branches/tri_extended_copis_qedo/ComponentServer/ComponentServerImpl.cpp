@@ -654,13 +654,13 @@ ComponentServerImpl::set_client_dispatcher ( Components::ContainerPortableInterc
 }
 
 void
-ComponentServerImpl::set_servant_dispatcher ( Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr servant_dispatcher)
+ComponentServerImpl::set_servant_dispatcher ( Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr servant_dispatcher)
 {
 	servant_dispatcher_ = servant_dispatcher;
 }
 
 void
-ComponentServerImpl::set_stub_dispatcher ( Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_dispatcher)
+ComponentServerImpl::set_stub_dispatcher ( Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr stub_dispatcher)
 {
 	stub_dispatcher_ = stub_dispatcher;
 }
@@ -677,16 +677,16 @@ ComponentServerImpl::get_client_dispatcher (  )
 	return Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration::_duplicate (client_dispatcher_);
 }
 
-Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr
+Qedo_Components::ServantInterceptorDispatcher_ptr
 ComponentServerImpl::get_servant_dispatcher (  )
 {
-	return Components::ContainerPortableInterceptor::ServantInterceptorRegistration::_duplicate (servant_dispatcher_);
+	return Qedo_Components::ServantInterceptorDispatcher::_narrow (servant_dispatcher_);
 }
 
-Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr
+Qedo_Components::StubInterceptorDispatcher_ptr
 ComponentServerImpl::get_stub_dispatcher (  )
 {
-	return Components::ContainerPortableInterceptor::StubInterceptorRegistration::_duplicate (stub_dispatcher_);
+	return Qedo_Components::StubInterceptorDispatcher::_narrow (stub_dispatcher_);
 }
 
 Qedo::ContainerList*
