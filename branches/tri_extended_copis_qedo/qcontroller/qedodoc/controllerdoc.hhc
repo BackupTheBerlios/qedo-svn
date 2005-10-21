@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="HelpBlocks">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<UL>
+  <LI><OBJECT type="text/sitemap">
+      <param name="Name" value="Qedo">
+      <param name="Local" value="qedo.htm">
+      </OBJECT>
+  <LI><OBJECT type="text/sitemap">
+      <param name="Name" value="Qedo Controller">
+      <param name="Local" value="qedo-controller.htm">
+      </OBJECT>
+  <UL>
+    <LI><OBJECT type="text/sitemap">
+        <param name="Name" value="Launcher">
+        <param name="Local" value="launcher.htm">
+        </OBJECT>
+    <UL>
+      <LI><OBJECT type="text/sitemap">
+          <param name="Name" value="Edit qedo.conf">
+          <param name="Local" value="edit_qedo_conf.htm">
+          </OBJECT>
+    </UL>
+    <LI><OBJECT type="text/sitemap">
+        <param name="Name" value="Name Service Browser">
+        <param name="Local" value="nsbrowser.htm">
+        </OBJECT>
+    <LI><OBJECT type="text/sitemap">
+        <param name="Name" value="Deployment">
+        <param name="Local" value="deployment.htm">
+        </OBJECT>
+    <UL>
+      <LI><OBJECT type="text/sitemap">
+          <param name="Name" value="Edit Destination">
+          <param name="Local" value="destination.htm">
+          </OBJECT>
+    </UL>
+    <LI><OBJECT type="text/sitemap">
+        <param name="Name" value="Qedo Explorer">
+        <param name="Local" value="explorer.htm">
+        </OBJECT>
+  </UL>
+  <LI><OBJECT type="text/sitemap">
+      <param name="Name" value="Contents">
+      <param name="Local" value="contents.htm">
+      </OBJECT>
+  <LI><OBJECT type="text/sitemap">
+      <param name="Name" value="Contact">
+      <param name="Local" value="contact.htm">
+      </OBJECT>
+</UL>

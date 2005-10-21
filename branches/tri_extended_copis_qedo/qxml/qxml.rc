@@ -1,0 +1,7 @@
+
+// qxml icons
+
+QICON 	ICON "qedoicon.ico"
+// For obtaining the RGB values of standard colours
+//wxBITMAP_STD_COLOURS    BITMAP "colours.bmp"
+#include "wx/msw/wx.rc"
