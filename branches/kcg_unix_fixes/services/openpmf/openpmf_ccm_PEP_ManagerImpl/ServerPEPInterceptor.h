@@ -36,6 +36,8 @@ namespace Qedo {
     OpenPMF::RTTreeElementRef rt_policy_;
     OpenPMF::CORBA::PlatformRef pf_;
 
+    PortableInterceptor::SlotId pmf_slot_id_;
+    bool pmf_slot_set_;
   public:
     ServerPEPInterceptor(openpmf_ccm::CCM_pep_manager_Context *context,openpmf_ccm::CCM_PEP_ManagerExec *executor,OpenPMF::CORBA::Platform *pf, OpenPMF::RTTreeElement *rt_policy  );
     
@@ -65,7 +67,8 @@ namespace Qedo {
     virtual void 
       send_other (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi) ;
     
-
+    virtual void
+    set_pmf_slot_id(PortableInterceptor::SlotId id);
 	};
 }; // namespace Qedo
 

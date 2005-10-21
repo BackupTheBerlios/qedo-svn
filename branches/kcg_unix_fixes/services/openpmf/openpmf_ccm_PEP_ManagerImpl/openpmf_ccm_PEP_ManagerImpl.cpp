@@ -8,6 +8,8 @@
 // BEGIN USER INSERT SECTION file
 #include "ServerPEPInterceptor.h"
 #include <SL3_Transformer.h>
+
+extern PortableInterceptor::SlotId global_pmf_slot_id;
 // END USER INSERT SECTION file
 
 
@@ -29,6 +31,9 @@ PEP_ManagerExec::PEP_ManagerExec()
 PEP_ManagerExec::~PEP_ManagerExec()
 {
 // BEGIN USER INSERT SECTION PEP_ManagerExec::~PEP_ManagerExec
+    Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_reg =
+        context_->get_server_interceptor_dispatcher_registration();
+    server_reg->unregister_server_interceptor(server_cookie_);
 // END USER INSERT SECTION PEP_ManagerExec::~PEP_ManagerExec
 
 }
@@ -98,6 +103,7 @@ PEP_ManagerExec::configuration_complete()
   Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_reg =
     context_->get_server_interceptor_dispatcher_registration();
   server_pep_interceptor_ = new Qedo::ServerPEPInterceptor(context_,this, pf_, rt_policy_);
+  server_pep_interceptor_->set_pmf_slot_id(global_pmf_slot_id);
   server_cookie_ = server_reg->register_server_interceptor(server_pep_interceptor_);
   
 
