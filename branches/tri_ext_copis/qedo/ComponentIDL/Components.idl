@@ -575,10 +575,11 @@ module Components {
 		local interface StubContainerInterceptor : ContainerInterceptor {
 
 			void 
-			stub_send_request (in ContainerServantRequestInfo info, out boolean con);
+			stub_send_request (in ContainerStubRequestInfo info, out boolean con);
 
 			void 
-			stub_recieve_reply (in ContainerServantRequestInfo info, out boolean con);
+			stub_recieve_reply (in ContainerStubRequestInfo info, out boolean con);
+
 
 			Cookie connect (in string comp_id, in FeatureName name,	in Object connection, out boolean con )
 				/*raises (InvalidName, InvalidConnection, AlreadyConnected, ExceededConnectionLimit) */;
