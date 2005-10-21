@@ -194,13 +194,56 @@ ServantInterceptorDispatcher::set_slot_id( ::PortableInterceptor::SlotId slot_id
 void 
 ServantInterceptorDispatcher::servant_receive_request ( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) 
 {
+	DEBUG_OUT("ServantInterceptorDispatcher: servant_receive_request");
 
+	// call registered interceptors
+	con = true;
+	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
+	{
+		try {
+
+			all_servant_interceptors_[i].interceptor->servant_receive_request ( info, con);
+
+			if (!con)
+			{
+				break;
+			};
+		} catch (CORBA::SystemException e)
+		{
+			throw e;
+		} catch ( ... )
+			// catch of user exception is probably missing
+		{
+		}
+	}
 }
 
 
 void 
 ServantInterceptorDispatcher::servant_send_reply ( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) 
 {
+	DEBUG_OUT("ServantInterceptorDispatcher: servant_send_reply");
+
+	// call registered interceptors
+	con = true;
+	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
+	{
+		try {
+
+			all_servant_interceptors_[i].interceptor->servant_receive_request ( info, con);
+
+			if (!con)
+			{
+				break;
+			};
+		} catch (CORBA::SystemException e)
+		{
+			throw e;
+		} catch ( ... )
+			// catch of user exception is probably missing
+		{
+		}
+	}
 
 }
 
