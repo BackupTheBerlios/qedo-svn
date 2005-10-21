@@ -77,10 +77,10 @@ namespace Qedo {
 		unregister_client_interceptor( Components::Cookie* ck ) ;
 
 	    virtual void 
-			stub_send_request( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) ;
+			stub_send_request( Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info, CORBA::Boolean_out con ) ;
 
 		virtual void 
-		stub_recieve_reply( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) ;
+		stub_recieve_reply( Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info, CORBA::Boolean_out con ) ;
 
 		virtual Components::Cookie* 
 		register_stub_interceptor( Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr ci );

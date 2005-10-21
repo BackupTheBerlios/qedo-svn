@@ -144,7 +144,7 @@ StubInterceptorDispatcher::set_slot_id( ::PortableInterceptor::SlotId slot_id )
 }
 
 void 
-StubInterceptorDispatcher::stub_send_request( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) 
+StubInterceptorDispatcher::stub_send_request( Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info, CORBA::Boolean_out con ) 
 {
 	DEBUG_OUT("StubInterceptorDispatcher: stub_send_request");
 
@@ -152,7 +152,7 @@ StubInterceptorDispatcher::stub_send_request( Components::ContainerPortableInter
 
 
 void 
-StubInterceptorDispatcher::stub_recieve_reply( Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con ) 
+StubInterceptorDispatcher::stub_recieve_reply( Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info, CORBA::Boolean_out con ) 
 {
 	DEBUG_OUT("StubInterceptorDispatcher: stub_receive_request");
 
