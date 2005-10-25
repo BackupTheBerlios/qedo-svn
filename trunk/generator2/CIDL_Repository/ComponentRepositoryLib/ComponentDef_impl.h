@@ -90,6 +90,9 @@ public:
     virtual IR__::ComponentDef_ptr base_component()
         throw(CORBA::SystemException);
 
+    virtual void base_component( ::IR__::ComponentDef_ptr value ) 
+		throw(CORBA::SystemException);
+
     //
     // IDL:omg.org/IR__/ComponentDef/provides_interfaces:1.0
     //

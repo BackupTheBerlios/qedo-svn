@@ -802,8 +802,9 @@ module IR__ {
 	interface ComponentDef : InterfaceDef {
 		// read/write interface
 		attribute InterfaceDefSeq supported_interfaces;
+		attribute ComponentDef base_component;
+
 		// read interface
-		readonly attribute ComponentDef base_component;
 		readonly attribute ProvidesDefSeq provides_interfaces;
 		readonly attribute UsesDefSeq uses_interfaces;
 		readonly attribute EmitsDefSeq emits_events;

@@ -342,6 +342,18 @@ throw(CORBA::SystemException)
 		return IR__::ComponentDef::_nil();
 }
 
+void 
+ComponentDef_impl::base_component( ::IR__::ComponentDef_ptr value ) 
+throw(CORBA::SystemException)
+{
+	DEBUG_OUTLINE ( "ComponentDef_impl::base_component(value) called" );
+
+	PortableServer::ServantBase_var servant =
+		repository_ -> poa() -> reference_to_servant(value);
+	base_component_impl_  = dynamic_cast<ComponentDef_impl*>(servant.in());
+
+}
+
 IR__::ProvidesDefSeq*
 ComponentDef_impl::provides_interfaces
 ()
