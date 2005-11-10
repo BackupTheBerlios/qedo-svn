@@ -57,8 +57,19 @@ include ../MakeVars
 
 all: qcs
 
+#
+# This is workaround for broken FreeBSD system compiler/linker
+# Although we use -rdynamic, it also needs --export-dynamic
+# to be able to provide global pmf_slot_id in dynamic table
+# where it is needed for PMF service component
+#
+ifeq ($(OS), FreeBSD)
+qcs: $(SOURCES:.cpp=.o)
+	$(LINK.o) -Wl,--export-dynamic $^ $(LOADLIBES) $(LDLIBS) -o $@
+else
 qcs: $(SOURCES:.cpp=.o)
 	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
+endif
 
 .PHONY:install
 
