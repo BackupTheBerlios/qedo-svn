@@ -77,14 +77,14 @@ AC_CHECK_PROG(HAVE_KC_PP,[kc++],yes,no)
 AC_SUBST(HAVE_MICO_CONFIG)
 
 if test X"$UUIDDIR" != X ; then
-	LIBS="$LIBS -L$UUIDDIR"
+	LIBS="$LIBS -L$UUIDDIR/lib"
 fi
 
 # Checks for libraries.
 
-AC_CHECK_LIB([uuid], [uuid_generate],,[uuid=no])
+AC_CHECK_LIB([uuid], [uuid_generate],[uuid=yes],[uuid=no])
 
-if test X"$uuid" == Xno; then
+if test X"$uuid" != Xyes; then
   AC_MSG_ERROR([cannot find library uuid])
 fi
 
