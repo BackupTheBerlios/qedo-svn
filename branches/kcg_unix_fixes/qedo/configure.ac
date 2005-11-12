@@ -115,6 +115,8 @@ AC_SUBST(HAVE_WXGTK_LIB)
 
 if test X"$uuid" != Xyes; then
   AC_MSG_ERROR([you need a uuid library for Qedo])
+else
+  AC_DEFINE(HAVE_LIBUUID)
 fi
 
 if test X"$HAVE_MKDIR_PROG" != Xyes; then

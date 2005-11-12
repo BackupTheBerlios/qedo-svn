@@ -86,6 +86,8 @@ AC_CHECK_LIB([uuid], [uuid_generate],[uuid=yes],[uuid=no])
 
 if test X"$uuid" != Xyes; then
   AC_MSG_ERROR([cannot find library uuid])
+else
+  AC_DEFINE(HAVE_LIBUUID)
 fi
 
 if test X"$HAVE_MKDIR_PROG" != Xyes; then
