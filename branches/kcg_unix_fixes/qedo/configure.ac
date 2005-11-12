@@ -96,6 +96,7 @@ AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
 
 if test X"$UUIDDIR" != X ; then
 	LIBS="$LIBS -L$UUIDDIR/lib"
+	CPPFLAGS="$CPPFLAGS -I$UUIDDIR/include"
 fi
 
 # Checks for libraries.

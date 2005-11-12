@@ -78,6 +78,7 @@ AC_SUBST(HAVE_MICO_CONFIG)
 
 if test X"$UUIDDIR" != X ; then
 	LIBS="$LIBS -L$UUIDDIR/lib"
+	CPPFLAGS="$CPPFLAGS -I$UUIDDIR/include"
 fi
 
 # Checks for libraries.
