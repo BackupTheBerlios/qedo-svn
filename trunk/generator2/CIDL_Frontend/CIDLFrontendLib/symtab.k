@@ -1403,10 +1403,12 @@ resolve_case_labels(case_label_list list_v,definition $type_v)
     assert(0);
   }
   BooleanType() : {
-    assert(0);
   }
   CharType(), WCharType(): {
     assert(0);
+  }
+  TypeDeclarator(type_1,*) : {
+    resolve_case_labels(list_v,type_1);
   }
   NScopedName(ident_v) : {
     assert(ident_v->symtab_entry);

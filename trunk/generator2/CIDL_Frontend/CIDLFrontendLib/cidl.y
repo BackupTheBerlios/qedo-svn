@@ -31,6 +31,8 @@
 #ifndef YYSTYPE
 #define YYSTYPE YYSTYPE
 #endif
+#define YYINITDEPTH 1000
+
 void yyerror_1 (const char *s, int state_no);
 #define yyerror(s) yyerror_1(s, yystate)
 
