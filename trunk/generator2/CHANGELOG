@@ -1,3 +1,5 @@
+
+version 0.8.1
 - fixed bug 005705 (boolean switch in union)
 - fixed bug 005717 (production of array in equivalent idl)
 - fixed bug 005718 (crash in frontend)
