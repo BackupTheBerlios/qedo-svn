@@ -1,3 +1,6 @@
+- fixed bug 005705 (boolean switch in union)
+- fixed bug 005717 (production of array in equivalent idl)
+- fixed bug 005718 (crash in frontend)
 - set mehtod for base component
 - modification for new mico version (idl compiler options)
 
