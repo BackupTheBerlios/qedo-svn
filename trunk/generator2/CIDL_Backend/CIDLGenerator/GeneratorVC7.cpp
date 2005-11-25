@@ -273,7 +273,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCLinkerTool\"\n";
-	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib  mico2312RC.lib pthreadVC2.lib\"\n";
+	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib  mico2312RC2.lib pthreadVC2.lib\"\n";
 	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
 	out << "LinkIncremental=\"2\"\n";
 	out << "AdditionalLibraryDirectories=\"$(QEDO)/lib;$(QEDO)/lib\"\n";
