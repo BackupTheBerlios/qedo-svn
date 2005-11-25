@@ -325,8 +325,15 @@ main
 		repository = CIDL::CIDLRepository::_narrow( (new QEDO_ComponentRepository::CIDLRepository_impl ( orb, root_poa )) -> _this());
 	}
 
-	// feed repository
-	frontend_feed ( argc, argv, repository );
+	try {
+		// feed repository
+		frontend_feed ( argc, argv, repository );
+	} catch (...) 
+	{
+		std::cout << "Problem in parser occured ... exiting." << std::endl;
+		orb->destroy();
+		exit ( 1 );
+	}
 
 	if (read_ifr) {
 		try {
