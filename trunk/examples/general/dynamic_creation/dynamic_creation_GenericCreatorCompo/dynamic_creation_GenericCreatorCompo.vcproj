@@ -86,7 +86,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC2.lib"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  mico2312RC2.lib pthreadVC2.lib"
 				OutputFile="$(OutDir)/dynamic_creation_GenericCreatorCompo.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)/lib;$(QEDO)/lib"
