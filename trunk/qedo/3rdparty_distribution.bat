@@ -16,9 +16,9 @@ echo ************ Copy MICO DLLs ************
 set actdir=%qedo%\bin
 echo *** Create %actdir%...
 mkdir %actdir%
-copy %MICO%\win32-bin\micocoss2311.dll %actdir%
-copy %MICO%\win32-bin\mico2311.dll %actdir%
-copy %MICO%\win32-bin\idl2311.dll %actdir%
+copy %MICO%\win32-bin\micocoss2312RC2.dll %actdir%
+copy %MICO%\win32-bin\mico2312RC2.dll %actdir%
+copy %MICO%\win32-bin\idl2312RC2.dll %actdir%
 copy %MICO%\win32-bin\idl.exe %actdir%
 copy %MICO%\win32-bin\mico-cpp.exe %actdir%
 copy %MICO%\win32-bin\nsd.exe %actdir%
@@ -54,9 +54,9 @@ copy %MICO%\include\windows %actdir%\windows
 set actdir=%qedo%\lib
 echo *** Create %actdir%...
 mkdir %actdir%
-copy %MICO%\win32-bin\lib\idl2311.lib %actdir%
-copy %MICO%\win32-bin\lib\mico2311.lib %actdir%
-copy %MICO%\win32-bin\lib\micocoss2311.lib %actdir%
+copy %MICO%\win32-bin\lib\idl2312RC2.lib %actdir%
+copy %MICO%\win32-bin\lib\mico2312RC2.lib %actdir%
+copy %MICO%\win32-bin\lib\micocoss2312RC2.lib %actdir%
 copy %MICO%\win32-bin\lib\pthreadVC2.lib %actdir%
 
 echo ************ Copy PTHREADS ************ 

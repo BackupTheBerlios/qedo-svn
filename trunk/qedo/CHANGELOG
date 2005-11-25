@@ -1,4 +1,4 @@
-
+version 0.8.1
 - command line arguments in assembly descriptor for Open PMF integration
 - some fixes in Makefiles
 - extensions for OpenPMF support

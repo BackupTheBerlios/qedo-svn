@@ -198,7 +198,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="micocoss2311.lib mico2311.lib wsock32.lib pthreadVC2.lib"
+				AdditionalDependencies="micocoss2312RC2.lib mico2312RC2.lib wsock32.lib pthreadVC2.lib"
 				OutputFile="$(OutDir)/qcsa.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(MICO)\coss&quot;;&quot;$(PTHREADS)\lib&quot;"
