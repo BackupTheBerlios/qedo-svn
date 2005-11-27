@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XML Spy v3.5 NT (http://www.xmlspy.com) by Wang Hao (GMD FOKUS/ECCO) -->
+<database>
+	<name>PostgreSQL 7.3</name>
+	<connection>
+		<param name="DSN" value="PostgreSQL30">
+		</param>
+		<param name="SERVER" value="localhost">
+		</param>
+		<param name="UID" value="haowang">
+		</param>
+		<param name="PWD" value="">
+		</param>
+		<param name="DATABASE" value="psstest">
+		</param>
+	</connection>
+	<type-mapping>
+		<row-locking-template>SELECT ?1 FROM ?2 WHERE ?3 FOR UPDATE</row-locking-template>
+		<pk-constraint-template>CONSTRAINT ?1 PRIMARY KEY (?2)</pk-constraint-template>
+		<fk-constraint-template>ALTER TABLE ?1 ADD CONSTRAINT ?2 FOREIGN KEY (?3) REFERENCES ?4 (?5)</fk-constraint-template>
+		<subquery-supported>true</subquery-supported>
+		<true-mapping>TRUE</true-mapping>
+		<false-mapping>FALSE</false-mapping>
+		<mapping>
+			<corba-type>short</corba-type>
+			<cpp-type>CORBA::Short</cpp-type>
+			<cpp-native-type>
+				<SIZEOF_SHORT_E2>signed short</SIZEOF_SHORT_E2>
+				<SIZEOF_INT_E2>signed int</SIZEOF_INT_E2>
+			</cpp-native-type>
+			<sql-type>INT2</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>unsigned short</corba-type>
+			<cpp-type>CORBA::UShort</cpp-type>
+			<cpp-native-type>
+				<SIZEOF_SHORT_E2>unsigned short</SIZEOF_SHORT_E2>
+				<SIZEOF_INT_E2>unsigned int</SIZEOF_INT_E2>
+			</cpp-native-type>
+			<sql-type>INT2</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>long</corba-type>
+			<cpp-type>CORBA::Long</cpp-type>
+			<cpp-native-type>
+				<SIZEOF_INT_E4>signed int</SIZEOF_INT_E4>
+				<SIZEOF_LONG_E4>signed long</SIZEOF_LONG_E4>
+			</cpp-native-type>
+			<sql-type>INT4</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>unsigned long</corba-type>
+			<cpp-type>CORBA::ULong</cpp-type>
+			<cpp-native-type>
+				<SIZEOF_INT_E4>unsigned int</SIZEOF_INT_E4>
+				<SIZEOF_LONG_E4>unsigned long</SIZEOF_LONG_E4>
+			</cpp-native-type>
+			<sql-type>INT4</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>longlong</corba-type>
+			<cpp-type>CORBA::Longlong</cpp-type>
+			<cpp-native-type>long long</cpp-native-type>
+			<sql-type>INT8</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>unsigned longlong</corba-type>
+			<cpp-type>CORBA::ULonglong</cpp-type>
+			<cpp-native-type>unsigned long long</cpp-native-type>
+			<sql-type>INT8</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>float</corba-type>
+			<cpp-type>CORBA::Float</cpp-type>
+			<cpp-native-type>float</cpp-native-type>
+			<sql-type>REAL</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>double</corba-type>
+			<cpp-type>CORBA::Double</cpp-type>
+			<cpp-native-type>double</cpp-native-type>
+			<sql-type>DOUBLE</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>long double</corba-type>
+			<cpp-type>CORBA::LongDouble</cpp-type>
+			<cpp-native-type>long double</cpp-native-type>
+			<sql-type>DOUBLE</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>char</corba-type>
+			<cpp-type>CORBA::Char</cpp-type>
+			<cpp-native-type>char</cpp-native-type>
+			<sql-type>CHAR(1)</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>wchar</corba-type>
+			<cpp-type>CORBA::WChar</cpp-type>
+			<cpp-native-type>wchar_t</cpp-native-type>
+			<sql-type>CHAR(2)</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>string</corba-type>
+			<cpp-type>CORBA::String_var</cpp-type>
+			<cpp-native-type>char*</cpp-native-type>
+			<sql-type>VARCHAR(254)</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>wstring</corba-type>
+			<cpp-type>CORBA::WString_var</cpp-type>
+			<cpp-native-type>wchar_t*</cpp-native-type>
+			<sql-type>VARCHAR(254)</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>boolean</corba-type>
+			<cpp-type>CORBA::Boolean</cpp-type>
+			<cpp-native-type>bool</cpp-native-type>
+			<sql-type>BOOLEAN</sql-type>
+		</mapping>
+		<mapping>
+			<corba-type>octet</corba-type>
+			<cpp-type>CORBA::Octet</cpp-type>
+			<cpp-native-type>unsigned char</cpp-native-type>
+			<sql-type>CHAR(1)</sql-type>
+		</mapping>
+	</type-mapping>
+</database>
