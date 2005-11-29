@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Form builder="jigloo" ide="eclipse" style="SWT" version="2.7.2">
+<NonVisualComponents>
+		<Component class="java.lang.Object" name="object1" style="0">
+			<Constraints>
+				<LayoutConstraint/>
+			</Constraints>
+			<Properties>
+			</Properties>
+		</Component></NonVisualComponents>
+	<Component class="org.eclipse.swt.widgets.Dialog" name="CreateValueMemberDefDialog" style="0">
+		<Constraints>
+			<LayoutConstraint/>
+		</Constraints>
+		<Layout class="Grid">
+			<Property name="marginWidth" type="int" value="5"/>
+			<Property name="marginHeight" type="int" value="5"/>
+			<Property name="numColumns" type="int" value="1"/>
+			<Property name="makeColumnsEqualWidth" type="boolean" value="true"/>
+			<Property name="horizontalSpacing" type="int" value="5"/>
+			<Property name="verticalSpacing" type="int" value="5"/>
+		</Layout>
+		<Properties>
+			<Property name="text" type="String" value="add valueMember"/>
+			<Property name="size" type="Dimension">
+				<Dimension value="[476, 264]"/>
+			</Property>
+		</Properties>
+		<SubComponents>
+			<Component class="org.eclipse.swt.widgets.Composite" name="composite1" style="0">
+				<Constraints>
+					<Constraint class="org.eclipse.swt.layout.GridData"/>
+					<LayoutConstraint class="org.eclipse.swt.layout.GridData">
+						<Property name="verticalAlignment" type="int" value="2"/>
+						<Property name="horizontalAlignment" type="int" value="1"/>
+						<Property name="widthHint" type="int" value="465"/>
+						<Property name="heightHint" type="int" value="64"/>
+						<Property name="horizontalIndent" type="int" value="0"/>
+						<Property name="horizontalSpan" type="int" value="1"/>
+						<Property name="verticalSpan" type="int" value="1"/>
+						<Property name="grabExcessHorizontalSpace" type="boolean" value="false"/>
+						<Property name="grabExcessVerticalSpace" type="boolean" value="false"/>
+					</LayoutConstraint>
+				</Constraints>
+				<Layout class="Form">
+					<Property name="marginWidth" type="int" value="0"/>
+					<Property name="marginHeight" type="int" value="0"/>
+					<Property name="spacing" type="int" value="0"/>
+				</Layout>
+				<Events>
+				</Events>
+				<Properties>
+					<Property name="size" type="Dimension">
+						<Dimension value="[465, 64]"/>
+					</Property>
+					<Property name="background" type="Color">
+						<Color blue="ff" green="ff" red="ff"/>
+					</Property>
+					<Property name="bounds" type="Rectangle">
+						<Rectangle value="[5, 5, 465, 64]"/>
+					</Property>
+				</Properties>
+				<SubComponents>
+					<Component class="org.eclipse.swt.widgets.Label" name="discLb" style="0">
+						<Constraints>
+							<Constraint class="org.eclipse.swt.layout.FormData"/>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="22"/>
+								<Property name="width" type="int" value="164"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="20"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="373"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="210"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="554"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+						</Events>
+						<Properties>
+							<Property name="text" type="String" value="add valueMember"/>
+							<Property name="size" type="Dimension">
+								<Dimension value="[164, 22]"/>
+							</Property>
+							<Property name="background" type="Color">
+								<Color blue="ff" green="ff" red="ff"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[9, 13, 164, 22]"/>
+							</Property>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="12" strikeout="false" style="1" underline="false"/>
+							</Property>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+				</SubComponents>
+			</Component>
+			<Component class="org.eclipse.swt.widgets.Composite" name="composite2" style="0">
+				<Constraints>
+					<Constraint class="org.eclipse.swt.layout.GridData"/>
+					<LayoutConstraint class="org.eclipse.swt.layout.GridData">
+						<Property name="verticalAlignment" type="int" value="2"/>
+						<Property name="horizontalAlignment" type="int" value="1"/>
+						<Property name="widthHint" type="int" value="464"/>
+						<Property name="heightHint" type="int" value="136"/>
+						<Property name="horizontalIndent" type="int" value="0"/>
+						<Property name="horizontalSpan" type="int" value="1"/>
+						<Property name="verticalSpan" type="int" value="1"/>
+						<Property name="grabExcessHorizontalSpace" type="boolean" value="false"/>
+						<Property name="grabExcessVerticalSpace" type="boolean" value="false"/>
+					</LayoutConstraint>
+				</Constraints>
+				<Layout class="Form">
+					<Property name="marginWidth" type="int" value="0"/>
+					<Property name="marginHeight" type="int" value="0"/>
+					<Property name="spacing" type="int" value="0"/>
+				</Layout>
+				<Events>
+				</Events>
+				<Properties>
+					<Property name="size" type="Dimension">
+						<Dimension value="[464, 136]"/>
+					</Property>
+					<Property name="bounds" type="Rectangle">
+						<Rectangle value="[5, 74, 464, 136]"/>
+					</Property>
+				</Properties>
+				<SubComponents>
+					<Component class="org.eclipse.swt.widgets.Button" name="idlBtn" style="16777224">
+						<Constraints>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="21"/>
+								<Property name="width" type="int" value="28"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="938"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="998"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="702"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="856"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+							<EventHandler event="mouseDown" handler="idlBtnMouseDown" listener="org.eclipse.swt.events.MouseListener"/>
+						</Events>
+						<Properties>
+							<Property name="text" type="String" value="...."/>
+							<Property name="size" type="Dimension">
+								<Dimension value="[28, 21]"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[435, 95, 28, 21]"/>
+							</Property>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="10" strikeout="false" style="1" underline="false"/>
+							</Property>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+					<Component class="org.eclipse.swt.widgets.Button" name="isPublicMemberBtn" style="131104">
+						<Constraints>
+							<Constraint class="org.eclipse.swt.layout.FormData"/>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="20"/>
+								<Property name="width" type="int" value="129"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="714"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="992"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="525"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="672"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+						</Events>
+						<Properties>
+							<Property name="alignment" type="int" value="16384"/>
+							<Property name="text" type="String" value="is public member"/>
+							<Property name="size" type="Dimension">
+								<Dimension value="[129, 20]"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[331, 71, 129, 20]"/>
+							</Property>
+							<Property name="enabled" type="boolean" value="true"/>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="10" strikeout="false" style="1" underline="false"/>
+							</Property>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+					<Component class="org.eclipse.swt.widgets.Combo" name="idlTypeCmb" style="8">
+						<Constraints>
+							<Constraint class="org.eclipse.swt.layout.FormData"/>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="24"/>
+								<Property name="width" type="int" value="305"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="231"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="934"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="702"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="878"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+							<EventHandler event="widgetSelected" handler="idlTypeCmbWidgetSelected" listener="org.eclipse.swt.events.SelectionListener"/>
+						</Events>
+						<Properties>
+							<Property name="size" type="Dimension">
+								<Dimension value="[326, 24]"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[107, 95, 326, 24]"/>
+							</Property>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="10" strikeout="false" style="0" underline="false"/>
+							</Property>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+					<Component class="org.eclipse.swt.widgets.Label" name="idlTypeLb" style="0">
+						<Constraints>
+							<Constraint class="org.eclipse.swt.layout.FormData"/>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="27"/>
+								<Property name="width" type="int" value="60"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="11"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="141"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="720"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="916"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+						</Events>
+						<Properties>
+							<Property name="text" type="String" value="idl type"/>
+							<Property name="size" type="Dimension">
+								<Dimension value="[60, 27]"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[5, 97, 60, 27]"/>
+							</Property>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="10" strikeout="false" style="1" underline="false"/>
+							</Property>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+					<Component class="org.eclipse.swt.widgets.Text" name="repositoryIdTxt" style="2048">
+						<Constraints>
+							<Constraint class="org.eclipse.swt.layout.FormData"/>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="13"/>
+								<Property name="width" type="int" value="342"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="231"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="996"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="202"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="349"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+						</Events>
+						<Properties>
+							<Property name="doubleClickEnabled" type="boolean" value="false"/>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="10" strikeout="false" style="0" underline="false"/>
+							</Property>
+							<Property name="text" type="String" value=""/>
+							<Property name="editable" type="boolean" value="false"/>
+							<Property name="size" type="Dimension">
+								<Dimension value="[355, 20]"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[107, 27, 355, 20]"/>
+							</Property>
+							<Property name="enabled" type="boolean" value="false"/>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+					<Component class="org.eclipse.swt.widgets.Text" name="versionTxt" style="2048">
+						<Constraints>
+							<Constraint class="org.eclipse.swt.layout.FormData"/>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="13"/>
+								<Property name="width" type="int" value="342"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="231"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="996"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="363"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="511"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+							<EventHandler event="keyReleased" handler="versionTxtKeyReleased" listener="org.eclipse.swt.events.KeyListener"/>
+						</Events>
+						<Properties>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="10" strikeout="false" style="0" underline="false"/>
+							</Property>
+							<Property name="size" type="Dimension">
+								<Dimension value="[355, 20]"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[107, 49, 355, 20]"/>
+							</Property>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+					<Component class="org.eclipse.swt.widgets.Text" name="identifierTxt" style="2048">
+						<Constraints>
+							<Constraint class="org.eclipse.swt.layout.FormData"/>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="13"/>
+								<Property name="width" type="int" value="342"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="231"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="996"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="40"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="187"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+							<EventHandler event="keyReleased" handler="identifierTxtKeyReleased" listener="org.eclipse.swt.events.KeyListener"/>
+						</Events>
+						<Properties>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="10" strikeout="false" style="0" underline="false"/>
+							</Property>
+							<Property name="size" type="Dimension">
+								<Dimension value="[355, 20]"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[107, 5, 355, 20]"/>
+							</Property>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+					<Component class="org.eclipse.swt.widgets.Label" name="versionLb" style="0">
+						<Constraints>
+							<Constraint class="org.eclipse.swt.layout.FormData"/>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="20"/>
+								<Property name="width" type="int" value="100"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="11"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="227"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="363"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="511"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+						</Events>
+						<Properties>
+							<Property name="text" type="String" value="version"/>
+							<Property name="size" type="Dimension">
+								<Dimension value="[100, 20]"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[5, 49, 100, 20]"/>
+							</Property>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="10" strikeout="false" style="1" underline="false"/>
+							</Property>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+					<Component class="org.eclipse.swt.widgets.Label" name="repositoryIdLb" style="0">
+						<Constraints>
+							<Constraint class="org.eclipse.swt.layout.FormData"/>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="20"/>
+								<Property name="width" type="int" value="100"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="11"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="227"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="202"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="349"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+						</Events>
+						<Properties>
+							<Property name="text" type="String" value="repository ID"/>
+							<Property name="size" type="Dimension">
+								<Dimension value="[100, 20]"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[5, 27, 100, 20]"/>
+							</Property>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="10" strikeout="false" style="1" underline="false"/>
+							</Property>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+					<Component class="org.eclipse.swt.widgets.Label" name="idLb" style="0">
+						<Constraints>
+							<Constraint class="org.eclipse.swt.layout.FormData"/>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="20"/>
+								<Property name="width" type="int" value="100"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="11"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="227"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="40"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="187"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+						</Events>
+						<Properties>
+							<Property name="text" type="String" value="identifier"/>
+							<Property name="size" type="Dimension">
+								<Dimension value="[100, 20]"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[5, 5, 100, 20]"/>
+							</Property>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="10" strikeout="false" style="1" underline="false"/>
+							</Property>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+				</SubComponents>
+			</Component>
+			<Component class="org.eclipse.swt.widgets.Composite" name="composite3" style="0">
+				<Constraints>
+					<Constraint class="org.eclipse.swt.layout.GridData"/>
+					<LayoutConstraint class="org.eclipse.swt.layout.GridData">
+						<Property name="verticalAlignment" type="int" value="2"/>
+						<Property name="horizontalAlignment" type="int" value="1"/>
+						<Property name="widthHint" type="int" value="464"/>
+						<Property name="heightHint" type="int" value="45"/>
+						<Property name="horizontalIndent" type="int" value="0"/>
+						<Property name="horizontalSpan" type="int" value="1"/>
+						<Property name="verticalSpan" type="int" value="1"/>
+						<Property name="grabExcessHorizontalSpace" type="boolean" value="false"/>
+						<Property name="grabExcessVerticalSpace" type="boolean" value="false"/>
+					</LayoutConstraint>
+				</Constraints>
+				<Layout class="Form">
+					<Property name="marginWidth" type="int" value="0"/>
+					<Property name="marginHeight" type="int" value="0"/>
+					<Property name="spacing" type="int" value="0"/>
+				</Layout>
+				<Events>
+				</Events>
+				<Properties>
+					<Property name="size" type="Dimension">
+						<Dimension value="[464, 45]"/>
+					</Property>
+					<Property name="bounds" type="Rectangle">
+						<Rectangle value="[5, 215, 464, 45]"/>
+					</Property>
+				</Properties>
+				<SubComponents>
+					<Component class="org.eclipse.swt.widgets.Button" name="cancel" style="16777224">
+						<Constraints>
+							<Constraint class="org.eclipse.swt.layout.FormData"/>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="24"/>
+								<Property name="width" type="int" value="80"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="816"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="988"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="336"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="880"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+							<EventHandler event="mouseDown" handler="cancelMouseDown" listener="org.eclipse.swt.events.MouseListener"/>
+						</Events>
+						<Properties>
+							<Property name="text" type="String" value="CANCEL"/>
+							<Property name="size" type="Dimension">
+								<Dimension value="[80, 24]"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[378, 15, 80, 24]"/>
+							</Property>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="10" strikeout="false" style="1" underline="false"/>
+							</Property>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+					<Component class="org.eclipse.swt.widgets.Button" name="enter" style="16777224">
+						<Constraints>
+							<Constraint class="org.eclipse.swt.layout.FormData"/>
+							<LayoutConstraint class="org.eclipse.swt.layout.FormData">
+								<Property name="height" type="int" value="24"/>
+								<Property name="width" type="int" value="79"/>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="left">
+									<Property name="numerator" type="int" value="623"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="right">
+									<Property name="numerator" type="int" value="795"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="top">
+									<Property name="numerator" type="int" value="336"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+								<Property class="org.eclipse.swt.layout.FormAttachment" name="bottom">
+									<Property name="numerator" type="int" value="880"/>
+									<Property name="denominator" type="int" value="1000"/>
+									<Property name="offset" type="int" value="0"/>
+									<Property name="control" type="String" value="null"/>
+									<Property name="alignment" type="int" value="-1"/>
+								</Property>
+							</LayoutConstraint>
+						</Constraints>
+						<Events>
+							<EventHandler event="mouseDown" handler="enterMouseDown" listener="org.eclipse.swt.events.MouseListener"/>
+						</Events>
+						<Properties>
+							<Property name="text" type="String" value="ENTER"/>
+							<Property name="size" type="Dimension">
+								<Dimension value="[79, 24]"/>
+							</Property>
+							<Property name="bounds" type="Rectangle">
+								<Rectangle value="[289, 15, 79, 24]"/>
+							</Property>
+							<Property name="font" type="Font">
+								<Font name="Tahoma" size="10" strikeout="false" style="1" underline="false"/>
+							</Property>
+							<Property name="visible" type="boolean" value="true"/>
+						</Properties>
+					</Component>
+				</SubComponents>
+			</Component>
+		</SubComponents>
+	</Component>
+</Form>
