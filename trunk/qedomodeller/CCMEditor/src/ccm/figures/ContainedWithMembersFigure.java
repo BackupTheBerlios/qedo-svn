@@ -58,7 +58,7 @@ public class ContainedWithMembersFigure extends Figure{
 		identifierLabel.setFont(CCMConstants.font);
 		identifierLabel.setLabelAlignment(PositionConstants.LEFT);
 		classFigure.add(identifierLabel);
-		
+		 parameterFigure.setBorder(new LineBorder(ColorConstants.black,1));
 		
 		// place everything inside a ToolbarLayout
 		// and a LineBorder
@@ -91,13 +91,13 @@ public class ContainedWithMembersFigure extends Figure{
 		identifierLabel.setFont(CCMConstants.font);
 		identifierLabel.setLabelAlignment(PositionConstants.LEFT);
 		classFigure.add(identifierLabel);
-		
+		parameterFigure.setBorder(new LineBorder(ColorConstants.black,1));
 		
 		// place everything inside a ToolbarLayout
 		// and a LineBorder
 		ToolbarLayout layout = new ToolbarLayout();
 		setLayoutManager(layout);
-		setBorder(new LineBorder(ColorConstants.gray,1));
+		setBorder(new LineBorder(ColorConstants.black,1));
 		setBackgroundColor(CCMConstants.classColor);
 		setOpaque(true);
 		

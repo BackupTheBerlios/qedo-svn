@@ -37,7 +37,7 @@ public class ReceptaclePropertySource extends ContainedPropertySource  {
 	private UsesDef abstObj;
 	 
     private List values= new ArrayList();
-    
+    private String[] mutipelvalues=new String[]{"false","true"};
     
     private ModelFactory mf=new ModelFactory();
     // private CCMModelFactory factory =CCMModelManager.getFactory();
@@ -83,8 +83,14 @@ public class ReceptaclePropertySource extends ContainedPropertySource  {
          for(int i=0;i<propertyDescriptors.length;i++){
              descriptors.add(propertyDescriptors[i]);
          }
+         String cat="local";
+    		//if(object!=null)cat=cat+ object.eClass().getName();
          
-       String cat="links";
+          // Create a descriptor and set a category
+         PropertyDescriptor isAbstract = new ComboBoxPropertyDescriptor(Integer.toString(100), "is multiple",mutipelvalues);
+         isAbstract.setCategory(cat);
+         descriptors.add(isAbstract); 
+        cat="links";
       
        PropertyDescriptor  relation = new ComboBoxPropertyDescriptor(
             Integer.toString(105),
@@ -104,7 +110,9 @@ public class ReceptaclePropertySource extends ContainedPropertySource  {
     	int size;
     	String value;
 	    switch(Integer.parseInt( (String)id )){
-	     
+	    case 100:
+	        if(abstObj.isMultipleItf())return new Integer(1);
+	        else return new Integer(0);
 		    
 	    case 105:
 	    	  if(itf!=null)return new Integer(interfaces.indexOf(itf)+1);
@@ -117,11 +125,17 @@ public class ReceptaclePropertySource extends ContainedPropertySource  {
      * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
      */
     public void setPropertyValue(Object id, Object value) {
+    	int i;
 	    switch(Integer.parseInt( (String)id )){
-	     
+	    case 100:
+	        i=((Integer)value).intValue();
+	    	if(i==0)abstObj.setMultipleItf(false);
+	    	else abstObj.setMultipleItf(true);
+	    	notifyNode();
+	    	break;
 	    case 105:     
-	    	 int i=((Integer)value).intValue();
-		        if (i==0){
+	    	i=((Integer)value).intValue();
+		    if (i==0){
 		        	removeConnection();
 		        	abstObj.setInterface(null);
 		        	itf=null;

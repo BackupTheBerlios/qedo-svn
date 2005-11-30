@@ -131,6 +131,7 @@ public class EnumPropertySource  extends ContainedPropertySource {
 	    	memberList=(List)value;
 	    	enum.getMembers().clear();
 	    	enum.getMembers().addAll(memberList); 
+	    	notifyNode();
 	        break;
 	    	 
     	default:

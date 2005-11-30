@@ -29,6 +29,7 @@ import ccm.edit.policy.ModelEditPolicy;
 import ccm.edit.policy.ModelNodeRoleEditPolicy;
 import ccm.edit.policy.NodeXYLayoutEditPolicy;
 import ccm.figures.PortLabel;
+import ccm.figures.ReceptacleLabel;
 import ccm.model.CCMNotificationImpl;
 import ccm.model.ModelFactory;
 import ccm.property.ContainedPropertySource;
@@ -184,7 +185,13 @@ public class PortLabelEditPart extends CCMAbstractGraphicalEditPart implements
 		((PortLabel)getFigure()).setName(((Node)getModel()).getContained().getIdentifier());
 		
 		//every location needs a special PortLabel-layout
-		((PortLabel)getFigure()).layoutChildren(getModelNode().getLocation().getValue());		
+		PortLabel portLabel=(PortLabel)getFigure();
+		if (portLabel instanceof ReceptacleLabel){
+			((ReceptacleLabel)portLabel).setMultiple(((UsesDef)obj).isMultipleItf());
+			((ReceptacleLabel)portLabel).layoutChildren(getModelNode().getLocation().getValue());	
+		}
+		else 
+			portLabel.layoutChildren(getModelNode().getLocation().getValue());		
 	
 		dim=getFigure().getPreferredSize(-1,-1);
 		mf.setType(obj,getFigure());

@@ -38,7 +38,7 @@ public class SampleNewWizard extends Wizard implements INewWizard {
 	public SampleNewWizard() {
 		super();
 		setNeedsProgressMonitor(true);
-		System.out.println(">>>>>>>>>>>>>1");
+		 
 	}
 	
 	/**
@@ -46,7 +46,7 @@ public class SampleNewWizard extends Wizard implements INewWizard {
 	 */
 
 	public void addPages() {
-		System.out.println(">>>>>>>>>>>>>2");
+		 
 		page = new SampleNewWizardPage(selection);
 		addPage(page);
 	}

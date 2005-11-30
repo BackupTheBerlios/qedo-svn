@@ -12,6 +12,9 @@
 package ccm.edit;
 
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
@@ -24,7 +27,10 @@ import org.eclipse.ui.views.properties.IPropertySource;
 
 import CCMModel.EnumDef;
 import CCMModel.Node;
+import ccm.ProjectResources;
 import ccm.commands.delete.visual.DeleteNodeCommand;
+import ccm.figures.ContainedWithMembersFigure;
+import ccm.figures.ContainerFigureWithAttribute;
 import ccm.figures.EnumDefFigure;
 import ccm.property.ContainedPropertySource;
 import ccm.property.EnumPropertySource;
@@ -56,25 +62,46 @@ public class EnumNodeEditPart
 	//protected void refreshChildren(){};
 	protected void refreshVisuals() {
 		getEnumFigure().setName(getEnum().getIdentifier());
+		List members=getEnum().getMembers() ;
+		String[] memberStrings= new String[members.size()];
+		for (int i =0; i<members.size();i++){
+			memberStrings[i]=(String)members.get(i);
+			}
+		getEnumFigure().setAttributeLabels(memberStrings);
 	//	getEnumFigure().setAttributeFigure(getEnum().getMembers());
 		Rectangle r;
 		Point loc = new Point( getModelNode().getX(), getModelNode().getY() );
-		Dimension dim=new Dimension(-1,-1);	
+		//Dimension dim=new Dimension(-1,-1);
+		Dimension dim=new Dimension(getModelNode().getWidth(),getModelNode().getHeight());	
 		r = new Rectangle(loc ,dim);
 		((GraphicalEditPart) getParent()).setLayoutConstraint(this,getFigure(),r);
 	}
 
-	private EnumDefFigure getEnumFigure(){
-		return (EnumDefFigure) getFigure();
+	private ContainerFigureWithAttribute getEnumFigure(){
+		return (ContainerFigureWithAttribute) getFigure();
 	}
 	/**
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-		EnumDefFigure eFigure=new EnumDefFigure();
-		return eFigure;
+		List members=getEnum().getMembers() ;
+		String[] memberStrings= new String[members.size()];
+		for (int i =0; i<members.size();i++){
+			memberStrings[i]=(String)members.get(i);
+			}
+		//EnumDefFigure eFigure=new EnumDefFigure();
+//		return eFigure;
+		ContainerFigureWithAttribute opFigure=new ContainerFigureWithAttribute(getEnum().getIdentifier(),ProjectResources.ENUM_S,memberStrings);
+		return opFigure;
+		
 	}
-	
+	protected List getModelChildren2() {
+		List	allChildren=super.getModelChildren();
+		if(allChildren==null || allChildren.size()==0) 
+			allChildren= new LinkedList();
+		allChildren.addAll(getModelNode().getContents());
+		return allChildren;
+	}
 	/**
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */

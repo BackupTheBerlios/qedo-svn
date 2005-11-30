@@ -109,6 +109,11 @@ public class ProjectResources {
     public static final String RECEPTACLE_RIGHT = "icons/receptacle_right.gif"; 
     public static final String RECEPTACLE_LEFT = "icons/receptacle_left.gif"; 
 
+    public static final String RECEPTACLE_TOP1 = "icons/receptacle_top1.gif"; 
+    public static final String RECEPTACLE_BOTTOM1 = "icons/receptacle_bottom1.gif"; 
+    public static final String RECEPTACLE_RIGHT1 = "icons/receptacle_right1.gif"; 
+    public static final String RECEPTACLE_LEFT1 = "icons/receptacle_left1.gif"; 
+    
     public static final String EVENTSOURCE_TOP = "icons/eventsource_top.gif"; 
     public static final String EVENTSOURCE_BOTTOM = "icons/eventsource_bottom.gif"; 
     public static final String EVENTSOURCE_RIGHT = "icons/eventsource_right.gif"; 
@@ -206,7 +211,12 @@ public class ProjectResources {
 		else if (o instanceof OperationDef) res = OPERATION_S;
 		else if (o instanceof StructDef) res = STRUCT_S;
 		else if (o instanceof UnionDef) res = UNION_S;
-		else if (o instanceof UsesDef) res = RECEPTACLE_RIGHT;
+		else if (o instanceof UsesDef){
+			if(((UsesDef)o).isMultipleItf())
+			  res = RECEPTACLE_RIGHT;
+			else
+				res = RECEPTACLE_RIGHT1;
+		}
 		else if (o instanceof ValueBoxDef) res = VALUEBOX_S;
 		else if (o instanceof ValueDef) res = VALUE_S;
 		else if (o instanceof ValueMemberDef) res = VALUE_S;

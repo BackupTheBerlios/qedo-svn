@@ -28,6 +28,7 @@ import CCMModel.HomeInstantiation;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
+import CCMModel.UsesDef;
 import ccm.CCMEditorPlugin;
 import ccm.ProjectResources;
 

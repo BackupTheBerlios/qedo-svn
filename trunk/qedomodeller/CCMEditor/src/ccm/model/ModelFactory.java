@@ -57,7 +57,9 @@ public class ModelFactory {
 			((FacetLabel) fig).setText(((ProvidesDef)obj).getIdentifier());
 			return fig;
 		}else if(obj instanceof UsesDef){
-			if(fig==null)fig=new ReceptacleLabel();
+			
+			if(fig==null& ((UsesDef)obj).isMultipleItf())fig=new ReceptacleLabel(true);
+			if(fig==null& !((UsesDef)obj).isMultipleItf())fig=new ReceptacleLabel(false);
 			((ReceptacleLabel) fig).setText(((UsesDef)obj).getIdentifier());
 			return fig;
 		}else if(obj instanceof PublishesDef){
