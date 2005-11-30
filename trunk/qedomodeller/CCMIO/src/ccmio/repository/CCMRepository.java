@@ -14,7 +14,9 @@ import MDE.CCMPackageFactoryHelper;
 import MDE._CCMPackage;
 import MDE._CCMPackageHelper;
 import Reflective.MofError;
+import Reflective.RefPackageFactory;
 import Reflective._RefPackage;
+import Reflective.RefPackageFactorySetHelper;
 
 /**
  *	This Class represent a repository import from a ccmrepository to a ccm-model-file:
@@ -40,7 +42,7 @@ public class CCMRepository {
 	 * @param refRepRootFile = the RepositoryRoot.ref - file
 	 */
 	public CCMRepository(String	refRepRootFile) throws MofError,IOException,COMM_FAILURE{
-
+        boolean packageinRepository=false;
 		// init ORB:
 		ORB orb = ORB.init(new String[]{},null);
 		
@@ -53,13 +55,27 @@ public class CCMRepository {
 		// get Repository-Root
 		RepositoryRoot repositoryRoot = RepositoryRootHelper.narrow(repository);
 		try{	
-			CCMPackageFactory packageFactory = CCMPackageFactoryHelper.narrow(repositoryRoot.get_root_package_factory());
-
+			//RefPackageFactorySet_var packageFactory = RefPackageFactorySetHelper.narrow( repositoryRoot.get_root_package_factories());
+			CCMPackageFactory packageFactory= null;
+			RefPackageFactory[] refPkgFactories=repositoryRoot.get_root_package_factories();
+			for (int i = 0 ;i<refPkgFactories.length;i++){
+				 try{
+					packageFactory = CCMPackageFactoryHelper.narrow(refPkgFactories[i]);
+				    break;
+				 }catch (Exception e){}
+					 
+			}
+		
 			_RefPackage[] packages = repositoryRoot.list_root_packages();
-			if (packages.length == 0)	// Kein MDE-Package vorhanden? 
-				mdepackage = packageFactory.create_ccm_package();
-			else
-				mdepackage = _CCMPackageHelper.narrow(packages[0]);
+			for (int i = 0 ;i<packages.length;i++){
+				 try{
+				 	mdepackage = _CCMPackageHelper.narrow(packages[i]);
+				 	packageinRepository= true;
+			     }catch (Exception e){}
+			}
+			if (!packageinRepository)
+				mdepackage = packageFactory.create_ccm_package();		 
+			
 	}catch( MofRepositoryException e1){
 		e1.printStackTrace();
 		
