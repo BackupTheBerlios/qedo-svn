@@ -40,11 +40,13 @@ public class RepositoryPage extends WizardPage {
 	private CCMRepository repository;
 	private Tree moduleTree;
 	private ModuleDef module;
+	private ModuleDef[] modules;
 	
-	private static String refFileName ="C:\\repository\\etc\\ccmRepositoryRoot.ref";
+	//private static String refFileName ="C:\\repository\\etc\\ccmRepositoryRoot.ref";
+	private static String refFileName ="";
 	
 	private ISelection selection;
-
+     
 
 	/**
 	 * Constructor for RepositoryPage.
@@ -55,6 +57,7 @@ public class RepositoryPage extends WizardPage {
 		setTitle("CCM-Import/Export");
 		setDescription("Repository-Module");
 		this.selection = selection;
+	 
 	}
 	
 	/**
@@ -86,12 +89,13 @@ public class RepositoryPage extends WizardPage {
 		});
 
 		// Module-tree
-		moduleTree = new Tree(container,SWT.BORDER | SWT.SINGLE);
+		moduleTree = new Tree(container,SWT.BORDER |SWT.MULTI | SWT.V_SCROLL);
 		gd = new GridData(GridData.FILL_BOTH);
 		moduleTree.setLayoutData(gd);
 		moduleTree.setEnabled(false);
 		moduleTree.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
+				//moduleTree.getSelection();
 				handleSelection();
 			}
 		});
@@ -106,8 +110,16 @@ public class RepositoryPage extends WizardPage {
 	 */
 	
 	private void initialize() {
-		refFileText.setText(refFileName);
-		updateModuleTree();
+	 	refFileText.setText(refFileName);
+		if (!refFileName.equals(""))
+			updateModuleTree();
+	//	else if(!refFileName.equals("")){
+	//		try{
+	//			repository = new CCMRepository(refFileName);
+	//		}
+	//		catch (Exception e){e.printStackTrace();}
+	//	}
+			
 	}
 	/**
 	 * Uses the standard file selection dialog to
@@ -122,8 +134,10 @@ public class RepositoryPage extends WizardPage {
 		String result;
 		if ((result = dialog.open()) != null)
 			refFileText.setText(result);
-		updateModuleTree();
 		dialogChanged();
+		updateModuleTree();
+		
+		
 	}
 	/**
 	 * Uses the standard file selection dialog to
@@ -131,11 +145,15 @@ public class RepositoryPage extends WizardPage {
 	 */
 	private void handleSelection(){
 		TreeItem[] sels = moduleTree.getSelection();
-		if (sels.length > 0)
-		{
-			TreeItem sel = sels[0];
-			module = (ModuleDef) sel.getData();
+		modules= new ModuleDef[sels.length];
+		for (int i=0;i<sels.length;i++){
+			modules[i]=(ModuleDef)sels[i].getData();
 		}
+	//	if (sels.length > 0)
+	//	{
+	//		TreeItem sel = sels[0];
+	//		module = (ModuleDef) sel.getData();
+	//	}
 		dialogChanged();
 	}
 
@@ -154,6 +172,7 @@ public class RepositoryPage extends WizardPage {
 			return;
 		}
 		updateStatus(null);
+		//updateModuleTree();
 	}
 	/**
 	 * Updates the ModelTree.
@@ -234,6 +253,9 @@ public class RepositoryPage extends WizardPage {
 
 	public ModuleDef getModule(){
 		return module;
+	}
+	public ModuleDef[] getModules(){
+		return modules;
 	}
 
 }

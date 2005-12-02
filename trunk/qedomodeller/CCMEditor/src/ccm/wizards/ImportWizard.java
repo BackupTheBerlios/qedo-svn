@@ -22,6 +22,16 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -53,7 +63,9 @@ public class ImportWizard extends Wizard implements INewWizard {
 	private RepositoryPage repositoryPage;
 	private ISelection selection;
 	private String version;
-
+	public  String repModulename="";
+	public  MDE.BaseIDL.ModuleDef repModule;
+	public String inputFileName="";
 	/**
 	 * Constructor for SampleNewWizard.
 	 */
@@ -84,7 +96,8 @@ public class ImportWizard extends Wizard implements INewWizard {
 		 
 		final String containerName = page.getContainerName();
 		final String fileName = page.getFileName();
-		final MDE.BaseIDL.ModuleDef repModule  = repositoryPage.getModule();
+//		final MDE.BaseIDL.ModuleDef repModule  = repositoryPage.getModule();
+		final MDE.BaseIDL.ModuleDef[] repModules  = repositoryPage.getModules();
 		final CCMRepository repository = repositoryPage.getRepository();
 		version=page.getVersion();
 		
@@ -94,16 +107,29 @@ public class ImportWizard extends Wizard implements INewWizard {
 			MessageDialog.openError(getShell(),"Error","Container \"" + containerName + "\" does not exist.");
 		}
 		IContainer container = (IContainer) resource;
-		IFile file = container.getFile(new Path(fileName));
-		if (file.exists())
-			if (!MessageDialog.openQuestion(getShell(),
-					"Overwrite?", "File \"" + file.getName() + "\" already exists. Overwrite?"))
-				return false;
-		
+		//IFile file = container.getFile(new Path(fileName));
+		//if (file.exists())
+		//	if (!MessageDialog.openQuestion(getShell(),
+		//			"Overwrite?", "File \"" + file.getName() + "\" already exists. Overwrite?"))
+		//		return false;
+			
+//*********************************		
+for (int i=0;i<repModules.length;i++){
+	        repModule=repModules[i];
+			try{
+				repModulename=repModule.identifier();
+			}
+			catch (Exception e){}
+			//inputFileName="input"+repModulename+".ccm";
+			inputFileName=getNewFileName("input"+repModulename+".ccm");
+			 
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(containerName, fileName, repository, repModule, monitor);
+					
+						
+					doFinish(containerName, inputFileName, repository, repModule, monitor);
+					
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				} finally {
@@ -111,6 +137,7 @@ public class ImportWizard extends Wizard implements INewWizard {
 				}
 			}
 		};
+		 
 		try {
 			 
 			getContainer().run(true, false, op);
@@ -121,9 +148,55 @@ public class ImportWizard extends Wizard implements INewWizard {
 			MessageDialog.openError(getShell(), "Error", realException.getMessage());
 			return false;
 		}
+	//	try {
+	//		Thread.sleep(10000);
+	//	} catch (InterruptedException e1) {
+	//		// TODO Auto-generated catch block
+	//		e1.printStackTrace();
+	//	}
+}
 		return true;
 	}
 	
+	/**
+	 * @param string
+	 * @return
+	 */
+	private String getNewFileName(String fileName ) {
+		  //String newfilename;
+		String containerName = page.getContainerName();
+		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+		IResource resource = root.findMember(new Path(containerName));
+		if (!resource.exists() || !(resource instanceof IContainer)) {
+			MessageDialog.openError(getShell(),"Error","Container \"" + containerName + "\" does not exist.");
+		}
+		IContainer container = (IContainer) resource;
+		IFile afile = container.getFile(new Path(fileName));
+		if (afile.exists()){
+			if (MessageDialog.openQuestion(getShell(),
+					"Overwrite?", "File \"" + afile.getName() + "\" already exists. Overwrite?"))
+				 
+				return fileName;
+			else{
+				int dotLoc = fileName.lastIndexOf('.');
+				String ext = fileName.substring(0,dotLoc);
+				 
+				return getNewFileName(ext+"1"+".ccm" );
+			}
+				
+			
+		}
+		return fileName;
+	}
+	private String getnewname(){
+		InputFilePage inputpage= new InputFilePage(selection,inputFileName);
+		 
+		addPage(inputpage);
+		
+		return inputpage.getFileName();
+		
+	}
+
 	/**
 	 * The worker method. It will find the container, create the
 	 * file if missing or just replace its contents, and open
