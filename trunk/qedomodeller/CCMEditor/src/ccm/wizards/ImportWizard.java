@@ -188,14 +188,7 @@ for (int i=0;i<repModules.length;i++){
 		}
 		return fileName;
 	}
-	private String getnewname(){
-		InputFilePage inputpage= new InputFilePage(selection,inputFileName);
-		 
-		addPage(inputpage);
-		
-		return inputpage.getFileName();
-		
-	}
+	 
 
 	/**
 	 * The worker method. It will find the container, create the
