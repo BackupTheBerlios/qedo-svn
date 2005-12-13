@@ -22,6 +22,11 @@ endif
 # choose one out of MICO_ORB TAO_ORB ORBACUS_ORB
 ORB=@QEDO_ORB@
 
+YACC=@YACC@
+LEX=@LEX@
+PYTHON=@PYTHON@
+KC_PP=@KC_PP@
+
 HAVE_MICO_CONFIG=@HAVE_MICO_CONFIG@
 # MICO
 MICO = $(shell mico-config --prefix)
@@ -53,6 +58,9 @@ SUFFIXES += .so
 
 %.so:
 	${CXX} -shared @PICFLAGS@ ${LD_SHARED_FLAGS} -o $@ $^ $(LIBS)
+
+%.a:
+	$(AR) $(ARFLAGS) $@ $^
 
 CXXFLAGS +=
 

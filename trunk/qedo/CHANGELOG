@@ -6,6 +6,11 @@ version 0.8.1
 - included descriptor generation in vc7 generator
 - new batch file fro creating a distribution
 - modifications for new versions of MICO, PTHREAD, xerces, zip,
+- modification for new mico version (idl compiler options)
+- fixed bug 005705 (boolean switch in union)
+- fixed bug 005717 (production of array in equivalent idl)
+- fixed bug 005718 (crash in frontend)
+- set mehtod for base component
 
 version 0.8.0
 - re-organiszation of COPI interfaces
@@ -16,15 +21,21 @@ version 0.8.0
 - removed old vc6 files
 - first version of Stub interceptor
 - improvments of the controller (size)
+- release configuration
+- vc7 project generator modified to fit to Qedo distribution
+- renaming of the valuetypes.* to component_valuetypes.*
+- modification for stub interceptors
 
 version 0.7.2
 - improved servant interceptors
 - controller help files
 - content of StreamComponents.idl moved to Components.idl
+- modificatiosn for new flex versions
 
 version 0.7.1
 - improvements of the configuration
 - improvements of controller
+- PSS and QoS improvements
 
 version 0.7.0
 - merge of PSS branch
@@ -41,18 +52,27 @@ version0.5.0
 - configuration file
 - improved stability (deployment container)
 - moving output.* Synchronisation.* Valuetypes.* and StreamingVauetypes.* to the qedoutil lib
+- author field in the CSD
+- UUID for Component software descriptor on unix side
+- makefile generator
+- better support for component inheritance
 
 version 0.4.2
 - support for deployment of additional artefacts
 - reorganizing XML stuff
 - adaptation for MICO 2.3.11 version
 - MakeComponensVar ti be used for generated makefiles
+- first version of make file generator
+- MICO 2.3.11 adaptations
 
 version 0.4.1
 - new dynamic library qedoutil for better code reusage
 - XML stuff (DOM parser, ...) put in qedoutil
 - CCM deployment XML readers put in qedoutil
 - improve refcount memory checking
+- changed the backend to start from compositionDef not from ComponentDef
+- added extension lifecycle category
+- support generation of extension servants
 
 version 0.4.0
 - add thread interface in context
@@ -64,14 +84,23 @@ version 0.3.0
 - improved ref-counting
 - improved event handling in the container
 - version statement at start up of each server
+- support for generation of event type skeletons
+- improved vc7 project generator
 
 version 0.2.0
 - MICO integration
 - unix configure / make
 - create_assembly issue #5577
-
+- unix mico support
+- unix configur support
+- reference counting for generated executors
 
 version 0.1.1
 - doxygen documentation
+- event inheritance enabled
+- abstract events enabled
+- "home supports interfaces" is enabled
+- vc7 project generator create subdirs for each project
+- new backend for CSD
 
 version 0.1.0

@@ -2,9 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(Qedo, 0.8.0, www.qedo.org)
+AC_INIT(Qedo, 0.8.1, www.qedo.org)
 AC_CONFIG_SRCDIR([gendef/gendef.cc])
 AC_CONFIG_HEADER([ComponentIDL/config.h])
+AC_CONFIG_HEADER([CIDL_Frontend/CIDLFrontendLib/config.h])
 
 
 AC_ARG_WITH(uuid,
@@ -93,6 +94,40 @@ AC_SUBST(ORBACUSDIR)
 AC_SUBST(QEDO_ORB)
 
 AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
+AC_CHECK_PROG(HAVE_BISON,bison,yes,no)
+AC_CHECK_PROG(HAVE_FLEX,flex,yes,no)
+AC_CHECK_PROG(HAVE_PYTHON,python,yes,no)
+AC_CHECK_PROG(HAVE_KC_PP,[kc++],yes,no)
+AC_SUBST(HAVE_MICO_CONFIG)
+
+
+if test X"$HAVE_MKDIR_PROG" != Xyes; then
+  AC_MSG_ERROR([cannot mkdir program])
+fi
+
+if test X"$HAVE_BISON" != Xyes; then
+  AC_MSG_ERROR([cannot find bison program])
+fi
+YACC=bison
+AC_SUBST(YACC)
+
+if test X"$HAVE_FLEX" != Xyes; then
+  AC_MSG_ERROR([cannot find flex program])
+fi
+LEX=flex
+AC_SUBST(LEX)
+
+if test X"$HAVE_PYTHON" != Xyes; then
+  AC_MSG_ERROR([cannot find python program])
+fi
+PYTHON=python
+AC_SUBST(PYTHON)
+
+if test X"$HAVE_KC_PP" != Xyes; then
+  AC_MSG_ERROR([cannot find kc++ program])
+fi
+KC_PP="kc++"
+AC_SUBST(KC_PP)
 
 if test X"$UUIDDIR" != X ; then
 	LIBS="$LIBS -L$UUIDDIR"
@@ -102,6 +137,11 @@ fi
 AC_CHECK_LIB([dl], [dlopen])
 AC_CHECK_LIB([z], [deflate])
 AC_CHECK_LIB([uuid], [uuid_generate],,[uuid=no])
+
+if test X"$uuid" == Xno; then
+  AC_MSG_ERROR([cannot find library uuid])
+fi
+
 AC_CHECK_LIB([pthread], [pthread_sigmask])
 
 
@@ -115,10 +155,6 @@ AC_SUBST(HAVE_WXGTK_LIB)
 
 if test X"$uuid" == Xno; then
   AC_MSG_ERROR([you need a uuid library for Qedo])
-fi
-
-if test X"$HAVE_MKDIR_PROG" != Xyes; then
-  AC_MSG_ERROR([cannot mkdir program])
 fi
 
 qedo_save_LIBS=$LIBS
@@ -261,6 +297,11 @@ AC_CONFIG_FILES([Makefile
 		 explore_server/Makefile
                  etc/Makefile
                  etc/MakeComponentVars
+                 CIDL_Repository/IFRidl/Makefile
+                 CIDL_Repository/ComponentRepositoryLib/Makefile
+                 CIDL_Repository/CIDLRepositoryLib/Makefile
+                 CIDL_Frontend/CIDLFrontendLib/Makefile
+                 CIDL_Backend/CIDLGenerator/Makefile
                  ])
 
 AC_OUTPUT
