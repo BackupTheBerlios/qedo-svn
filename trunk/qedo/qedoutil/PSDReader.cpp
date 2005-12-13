@@ -48,12 +48,11 @@ std::string
 PSDReader::get_table_name (std::string name)
 throw(PSDReadException)
 {
-	std::basic_string <char>::size_type idxBegin, idxEnd;
-	static const std::basic_string <char>::size_type npos = -1;
+	std::string::size_type idxBegin, idxEnd;
 
 	idxBegin = name.find(":");
 	idxEnd = name.rfind(":");
-	if (idxBegin != npos || idxEnd != npos)
+	if (idxBegin != std::string::npos || idxEnd != std::string::npos)
 		throw PSDReadException();
 
 	return name.substr(++idxBegin, idxEnd-idxBegin);
@@ -331,7 +330,7 @@ TableBuilder::build( std::string descriptor, std::string path )
 	QDDatabase pdb;
 	PSDReader psd_reader;
 	std::string strAll, strName, strSql, strConn;
-	std::basic_string <char>::size_type idxBegin;
+	std::string::size_type idxBegin;
 
 	// get the sql sentences to create tables
 	std::list<std::string> lTable(psd_reader.readPSD( path+descriptor, path ));

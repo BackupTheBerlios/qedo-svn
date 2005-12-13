@@ -2305,7 +2305,7 @@ throw(CADReadException)
 	}
 }
 
-/*
+#if 0
 Partitioning
 partitioning_data(DOMElement* element)
 throw(CADReadException)
@@ -2313,7 +2313,7 @@ throw(CADReadException)
 	
 	std::string element_name;
 	Qedo::Partitioning parti;
-	/*
+
 	DOMNode* child = element->getFirstChild();
 	while (child != 0)
 	{
@@ -2321,7 +2321,6 @@ throw(CADReadException)
 		{
 			element_name = Qedo::transcode(child->getNodeName());
 
-			/* ??????????
 
 			//
 			// executableplacement
@@ -2364,7 +2363,8 @@ throw(CADReadException)
 	
 	return parti;
 }
-*/
+#endif
+
 std::vector <HomeInstanceData>
 CADReader::partitioning_homeplacement (DOMElement* element)
 throw(CADReadException)
