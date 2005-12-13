@@ -23,7 +23,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
-HAVE_WXGTK_LIB=@HAVE_WXGTK_LIB@
+HAVE_WX_CONFIG=@HAVE_WX_CONFIG@
 
 LIBDIRS = ComponentIDL \
           ComponentContainer \
@@ -47,7 +47,7 @@ SUBDIRS = ComponentIDL \
           CIDL_Backend/CIDLGenerator
 
 
-ifeq "yes" "$(HAVE_WXGTK_LIB)"
+ifeq "yes" "$(HAVE_WX_CONFIG)"
 
 SUBDIRS += qcontroller \
 	   qxml

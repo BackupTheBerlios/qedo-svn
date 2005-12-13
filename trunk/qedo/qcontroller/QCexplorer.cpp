@@ -194,7 +194,7 @@ QCexplorerTreeCtrl::build_tree()
 				wxString csi_tmp ;
 				csi_tmp="ComponentServer ";
 
-				csi_tmp.append(wxString::Format("%d",z));
+				csi_tmp.append(wxString::Format("%u",z));
 				csi_tmp.append(" on ");
 				csi_tmp.append(csi.host_name.in());
 				str.Printf(wxT("%s"),wxT(csi_tmp.c_str()));
@@ -211,7 +211,7 @@ QCexplorerTreeCtrl::build_tree()
 					wxString str;
 					wxString cii_tmp;
 					cii_tmp="Container ";
-					cii_tmp.append(wxString::Format("%d",y));
+					cii_tmp.append(wxString::Format("%u",y));
 					cii_tmp.append(" - ");
 					cii_tmp.append(cii.short_name);
 					str.Printf(wxT("%s"),wxT(cii_tmp.c_str()));

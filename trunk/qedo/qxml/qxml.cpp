@@ -498,3 +498,4 @@ void MyDialog::OnButton_GA(wxCommandEvent& event )
 	file_dialog->~wxFileDialog();
 	}
 }
+

@@ -349,7 +349,7 @@ CosNaming::Name NSBrowserTreeCtrl::getNameContext(wxString path)
 {
 	CosNaming::NamingContext_var context; 
 	CosNaming::Name contextName;
-	int len=path.Freq('/');
+	unsigned int len=path.Freq('/');
 		
 	contextName.length(len+1);
 	CORBA::ULong t=0;

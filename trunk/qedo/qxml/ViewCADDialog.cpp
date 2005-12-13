@@ -155,3 +155,4 @@ void ViewCADDialog::onclose(wxCommandEvent& event)
 	EndModal(wxID_OK);
 	event.Skip();
 }
+

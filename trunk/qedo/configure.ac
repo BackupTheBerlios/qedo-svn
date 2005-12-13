@@ -95,10 +95,12 @@ AC_SUBST(QEDO_ORB)
 
 AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
 AC_CHECK_PROG(HAVE_BISON,bison,yes,no)
+AC_CHECK_PROG(HAVE_WX_CONFIG,wx-config,yes,no)
 AC_CHECK_PROG(HAVE_FLEX,flex,yes,no)
 AC_CHECK_PROG(HAVE_PYTHON,python,yes,no)
 AC_CHECK_PROG(HAVE_KC_PP,[kc++],yes,no)
 AC_SUBST(HAVE_MICO_CONFIG)
+AC_SUBST(HAVE_WX_CONFIG)
 
 
 if test X"$HAVE_MKDIR_PROG" != Xyes; then
@@ -145,7 +147,7 @@ fi
 AC_CHECK_LIB([pthread], [pthread_sigmask])
 
 
-if test X"$use_debug" = Xno ; then
+if test X"$HAVE_WX_CONFIG" = Xno -a  X"$use_debug" = Xno ; then
 	AC_CHECK_LIB([wx_base-2.6], [wxFalse], [HAVE_WXGTK_LIB=yes], [HAVE_WXGTK_LIB=no], [-L$WXGTKDIR/lib/])
 else
 	AC_CHECK_LIB([wx_based-2.6], [wxFalse], [HAVE_WXGTK_LIB=yes], [HAVE_WXGTK_LIB=no], [-L$WXGTKDIR/lib/])

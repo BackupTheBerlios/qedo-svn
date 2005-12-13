@@ -311,3 +311,4 @@ std::vector <AComponentTreeCtrl::fileinfo> AComponentTreeCtrl::getFiles()
   return filelist;
 
 }
+

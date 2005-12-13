@@ -355,3 +355,4 @@ void ComponentTreeCtrl::setdummy(AComponentTreeCtrl* atc)
 {
 	ACTreeCtrl = atc;
 }
+

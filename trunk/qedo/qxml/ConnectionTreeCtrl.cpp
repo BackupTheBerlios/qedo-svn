@@ -873,7 +873,6 @@ wxArrayString ConnectionTreeCtrl::getConsumeports()
 
 wxString ConnectionTreeCtrl::getCADData()
 {
-	char a='"';
 	wxString tab="	";
 	wxString tabtab="		";
 	wxString value;
@@ -1089,3 +1088,4 @@ ConnectionTreeCtrl::getNSConnection(NS_Connect c)
 
 	return value;
 }
+

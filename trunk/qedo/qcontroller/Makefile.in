@@ -19,9 +19,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #wxWindows related
-WXWINDOWS = $(shell @WXGTKDIR@/bin/wx-config --prefix)
-WXWINDOWSCXXFLAGS = $(shell @WXGTKDIR@/bin/wx-config --cxxflags)
-WXWINDOWSLIBS = $(shell @WXGTKDIR@/bin/wx-config --libs)
+WXWINDOWS = $(shell wx-config --prefix)
+WXWINDOWSCXXFLAGS = $(shell wx-config --cxxflags)
+WXWINDOWSLIBS = $(shell wx-config --libs)
 
 CXX = @CXX@
 INCLUDES+=-I. \
