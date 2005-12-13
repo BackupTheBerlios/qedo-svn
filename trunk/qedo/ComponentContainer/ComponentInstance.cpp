@@ -68,15 +68,14 @@ ComponentInstance::ComponentInstance (const PortableServer::ObjectId& object_id,
 
 
 ComponentInstance::ComponentInstance (const ComponentInstance& component_entry)
-: object_id_ (new PortableServer::ObjectId (component_entry.object_id_)),
+: config_(component_entry.config_),
+  object_id_ (new PortableServer::ObjectId (component_entry.object_id_)),
   component_ref_ (CORBA::Object::_duplicate (component_entry.component_ref_.in())),
   executor_locator_ (Components::ExecutorLocator::_duplicate (component_entry.executor_locator_.in())),
   ccm_object_executor_ (component_entry.ccm_object_executor_)
-
 #ifndef _QEDO_NO_STREAMS
   , stream_ccm_object_executor_ (component_entry.stream_ccm_object_executor_)
 #endif
-  , config_(component_entry.config_)
 {
 	ccm_object_executor_->_add_ref();
 
