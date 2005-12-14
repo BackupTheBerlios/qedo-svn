@@ -1,3 +1,9 @@
+
+- cleanup of warnings at compile time
+- cleanup of unused variables
+- improved handling of mico-config and wx-config in make
+- move and merge of generator2 package into qedo package
+
 version 0.8.1
 - command line arguments in assembly descriptor for Open PMF integration
 - some fixes in Makefiles
