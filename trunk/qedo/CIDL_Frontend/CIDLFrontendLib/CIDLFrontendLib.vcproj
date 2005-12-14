@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="CIDLFrontendLib"
+	ProjectGUID="{7F3239CC-0D68-42B2-BCCE-643EAE579ECE}"
 	SccProjectName="CIDLFrontendLib"
 	SccLocalPath=".">
 	<Platforms>

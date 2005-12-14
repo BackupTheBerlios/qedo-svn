@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="CIDLGenerator"
+	ProjectGUID="{3BB692C3-6999-4F4D-B0DE-173C5469CB67}"
 	SccProjectName="CIDLGenerator"
 	SccLocalPath=".">
 	<Platforms>

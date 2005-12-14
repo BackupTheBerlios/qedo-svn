@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="ComponentRepositoryLib"
+	ProjectGUID="{95AF20FF-B4C7-4ED2-9C0B-7C7BD58D1696}"
 	SccProjectName="ComponentRepositoryLib"
 	SccLocalPath=".">
 	<Platforms>

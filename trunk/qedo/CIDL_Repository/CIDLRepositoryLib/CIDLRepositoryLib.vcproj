@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="CIDLRepositoryLib"
+	ProjectGUID="{A5E55364-F98A-4177-A997-6A180A74B25E}"
 	SccProjectName="CIDLRepositoryLib"
 	SccLocalPath=".">
 	<Platforms>

@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="IFRidl"
+	ProjectGUID="{D70E04EB-AA1D-4C02-B03B-B508F5166F10}"
 	SccProjectName="IFRidl"
 	SccLocalPath=".">
 	<Platforms>
