@@ -1,4 +1,4 @@
-# Qedo - Quality of Service Enabled Distributed Objects
+# Qedo - Quality of Service EnabledDistributed Objects
 #
 # http://qedo.berlios.de/
 #
@@ -23,7 +23,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
-HAVE_WX_CONFIG=@HAVE_WX_CONFIG@
+wx_config=@WX_CONFIG@
 
 LIBDIRS = ComponentIDL \
           ComponentContainer \
@@ -47,7 +47,7 @@ SUBDIRS = ComponentIDL \
           CIDL_Backend/CIDLGenerator
 
 
-ifeq "yes" "$(HAVE_WX_CONFIG)"
+ifneq "no" "$(wx_config)"
 
 SUBDIRS += qcontroller \
 	   qxml
@@ -121,5 +121,11 @@ distclean: clean
 		ComponentContainer/Makefile \
 		ComponentServerActivator/Makefile \
 		etc/MakeComponentVars \
-		etc/Makefile
+		etc/Makefile \
+		CIDL_Repository/IFRidl/Makefile \
+		CIDL_Repository/ComponentRepositoryLib/Makefile \
+		CIDL_Repository/CIDLRepositoryLib/Makefile \
+		CIDL_Frontend/CIDLFrontendLib/Makefile \
+		CIDL_Backend/CIDLGenerator/Makefile \
+		CIDL_Frontend/CIDLFrontendLib/config.h
 

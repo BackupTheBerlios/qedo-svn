@@ -28,7 +28,7 @@ AC_ARG_WITH(orbacus,
 
 AC_ARG_WITH(wxGTK,
  [  --with-wxGTK=dir        use wxGTK installed in dir],
- WXGTKDIR=$withval, WXGTKDIR="/usr")
+ WXGTKDIR=$withval, WXGTKDIR="")
 AC_SUBST(WXGTKDIR)
 
 AC_ARG_ENABLE(optimize,
@@ -76,31 +76,35 @@ else
 	if test X"$with_mico" != X ;then
 		MICODIR="$with_mico"
 		QEDO_ORB=MICO_ORB
-		AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no,[$MICODIR/bin])
+		AC_PATH_PROG(MICO_CONFIG,mico-config,no,[$MICODIR/bin])
 		AC_MSG_NOTICE([please make sure, that $MICODIR/bin/idl will run])
 	else
-		AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no)
+		AC_CHECK_PROG(MICO_CONFIG,mico-config,mico-config,no)
 	fi
-	if test "$HAVE_MICO_CONFIG" != "yes"; then
+	if test X"$MICO_CONFIG" = Xno -o X"$MICO_CONFIG" = X ; then
  		AC_MSG_ERROR([found no mico-config])
 	else
 		QEDO_ORB=MICO_ORB
 	fi
 fi
 
-AC_SUBST(HAVE_MICO_CONFIG)
+AC_SUBST(MICO_CONFIG)
 AC_SUBST(HAVE_ORBACUS)
 AC_SUBST(ORBACUSDIR)
 AC_SUBST(QEDO_ORB)
 
 AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
 AC_CHECK_PROG(HAVE_BISON,bison,yes,no)
-AC_CHECK_PROG(HAVE_WX_CONFIG,wx-config,yes,no)
 AC_CHECK_PROG(HAVE_FLEX,flex,yes,no)
 AC_CHECK_PROG(HAVE_PYTHON,python,yes,no)
 AC_CHECK_PROG(HAVE_KC_PP,[kc++],yes,no)
-AC_SUBST(HAVE_MICO_CONFIG)
-AC_SUBST(HAVE_WX_CONFIG)
+
+if test X"$WXGTKDIR" = X ; then
+	AC_CHECK_PROG(WX_CONFIG,wx-config,wx-config,no)
+else
+	AC_PATH_PROG(WX_CONFIG,wx-config,no,[$WXGTKDIR/bin])
+fi
+AC_SUBST(WX_CONFIG)
 
 
 if test X"$HAVE_MKDIR_PROG" != Xyes; then
@@ -147,7 +151,7 @@ fi
 AC_CHECK_LIB([pthread], [pthread_sigmask])
 
 
-if test X"$HAVE_WX_CONFIG" = Xno -a  X"$use_debug" = Xno ; then
+if test X"$WX_CONFIG" = Xno -a  X"$use_debug" = Xno ; then
 	AC_CHECK_LIB([wx_base-2.6], [wxFalse], [HAVE_WXGTK_LIB=yes], [HAVE_WXGTK_LIB=no], [-L$WXGTKDIR/lib/])
 else
 	AC_CHECK_LIB([wx_based-2.6], [wxFalse], [HAVE_WXGTK_LIB=yes], [HAVE_WXGTK_LIB=no], [-L$WXGTKDIR/lib/])
