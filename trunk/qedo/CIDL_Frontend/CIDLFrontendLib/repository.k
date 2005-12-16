@@ -655,14 +655,22 @@ SequenceType(def, expr)
       type = IR__::IDLType::_narrow(def->irobj);
       NOT_NIL(type);
       IR__::SequenceDef_ptr seq;
+      CORBA::LongLong l
       CORBA::ULong value;
-      expr->value >>= value;
+      expr->value >>= l;
+      if ( l < 0) {
+        Error("Exception in creating array, size should be >= 0\n", expr);
+        value=0;
+      }
+      else {
+        value=l;
+      }
       // create SequenceDef
       try {
         seq = g_repository->create_sequence(value, type);
       }
-      catch (CORBA::Exception& ex) {
-        std::cerr << "Exception in creating sequence : " << ex << std::endl;
+      catch (...) {
+        Error("Exception in creating seguence\n", expr);
       }
       irobj = seq;
     }
@@ -1080,10 +1088,9 @@ AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
       IR__::InterfaceDefSeq_var inh_abs_storagetypes;
       inh_abs_storagetypes = managed_abs_storagetype->base_abstract_storagetypes();
       int iLenAbsStorageTypes = inh_abs_storagetypes->length();
-      if(iLenAbsStorageTypes != iLenAbsStorageHomes)
-	  {
-	    std::cout << "Error in creating abstract storage home:" << std::endl;
-		std::cout << "The inheritence of abstract storagetype and abstract storagehome must appear in pairs." << std::endl;
+      if (iLenAbsStorageTypes != iLenAbsStorageHomes) {
+        Error("Error in creating abstract storage home:\n"
+              "The inheritence of abstract storagetype and abstract storagehome must appear in pairs.\n",def_v);
         throw "Exception in creating abstract storage home!";
 	  }
       
@@ -1107,8 +1114,10 @@ AbstractStorageHome(AbstractStorageHomeHeader(name, type_v, inh_v), def_list)
         
         if(!isEqual)
         {
-          std::cout << "Error in creating abstract storage home:" << std::endl;
-          std::cout << "The abstract storagetype's inherited abstract storagetype must be managed by its abstract storagehome's inherited abstract storagehome." << std::endl;
+          Error("Error in creating abstract storage home:\n" 
+                "The abstract storagetype's inherited abstract "
+                "storagetype must be managed by its abstract storagehome's "
+                "inherited abstract storagehome.\n",def_v);
           throw "Exception in creating abstract storage home!";
         }
       }
@@ -1161,14 +1170,13 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
       //NOT_NIL(base_storagetype);
       
       // check whether the inherited storagetype is managed by the inherited storagehome
-      if( (base_storagetype!=0) && (base_storagehome!=0) )
-      {
-		if( strcmp(base_storagehome->managed_storagetype()->name(), base_storagetype->name()) != 0 )
-		{
-		  std::cout << "Error in creating storage home:" << std::endl;
-		  std::cout << "The inheritence of storagetype and storagehome must appear in pairs." << std::endl;
+      if( (base_storagetype!=0) && (base_storagehome!=0) ) {
+        if( strcmp(base_storagehome->managed_storagetype()->name(), base_storagetype->name()) != 0 ) {
+          Error("Error in creating storage home:\n"
+                "The inheritence of storagetype and storagehome must "
+                "appear in pairs.\n",def_v);
           throw "Exception in creating storage home!";
-		}
+        }
       }
       
       // get the implemented abstract storagehomes
@@ -1193,35 +1201,33 @@ StorageHome(StorageHomeHeader(name, type_v, base_v, impl_v, pkey_v), def_list)
       // appears in pairs
       // 1. check whether the number of derived abstract storagetypes is equal to 
       // the number of derived abstract storagehomes
-      if(iLenAbsStorageTypes != iLenAbsStorageHomes)
-      {
-        std::cout << "Error in creating storage home:" << std::endl;
-        std::cout << "The implementation of abstract storagetype and abstract storagehome must appear in pairs." << std::endl;
+      if(iLenAbsStorageTypes != iLenAbsStorageHomes) {
+        Error("Error in creating storage home:\n"
+        "The implementation of abstract storagetype and abstract "
+        "storagehome must appear in pairs.\n",def_v);
         throw "Exception in creating storage home!";
       }
       
       // 2. check whether each derived abstract storagetype is managed by 
       // one derived abstract storagehome
       bool isEqual = false;
-      for( i=0; i<iLenAbsStorageHomes; i++ )
-      {
+      for( i=0; i<iLenAbsStorageHomes; i++ ) {
         IR__::AbstractStorageHomeDef_ptr tmp_abs_storagehome;
         tmp_abs_storagehome = IR__::AbstractStorageHomeDef::_narrow(supported_seq[i]);
         IR__::AbstractStorageTypeDef_ptr tmp_abs_storagetype;
         tmp_abs_storagetype = tmp_abs_storagehome->managed_abstract_storagetype();
-        for( j=0; j<iLenAbsStorageTypes; j++)
-        {
-          if(strcmp(tmp_abs_storagetype->name(), ((*supported_abs_storagetypes)[j])->name())==0)
-          {
+        for( j=0; j<iLenAbsStorageTypes; j++) {
+          if(strcmp(tmp_abs_storagetype->name(), ((*supported_abs_storagetypes)[j])->name())==0) {
             isEqual = true;
             break;
           }
         }
         
-        if(!isEqual)
-        {
-          std::cout << "Error in creating storage home:" << std::endl;
-          std::cout << "The storagetype's implemented abstract storagetype must be managed by its storagehome's implemented abstract storagehome." << std::endl;
+        if(!isEqual) {
+          Error("Error in creating storage home:\n"
+                "The storagetype's implemented abstract storagetype "
+                "must be managed by its storagehome's implemented "
+                "abstract storagehome.\n",def_v);
           throw "Exception in creating storage home!";
         }
       }
