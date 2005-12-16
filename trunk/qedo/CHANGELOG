@@ -1,4 +1,5 @@
-
+- removed dependencies to PTHREADS Var since pthreads are provided with mico installation
+- fixed bug 005915 (workaround)
 - cleanup of warnings at compile time
 - cleanup of unused variables
 - improved handling of mico-config and wx-config in make
@@ -53,7 +54,7 @@ version 0.5.1
 - improved qos integration
 - improved stream integration
 
-version0.5.0
+version 0.5.0
 - first version of stream extensions
 - configuration file
 - improved stability (deployment container)
