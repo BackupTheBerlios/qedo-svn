@@ -2376,8 +2376,16 @@ FixedArraySize(expr)
     { 
       IR__::ArrayDef_ptr array;
       // create ArrayDef
-      CORBA::LongLong value;
-      expr->value >>= value;
+      CORBA::LongLong l;
+      CORBA::ULong value;
+      expr->value >>= l;
+      if ( l < 0) {
+        Error("Exception in creating array, size should be >= 0\n", expr);
+       value=0;
+      }
+      else {
+             value = l;
+      }
       try {
         array = g_repository->create_array(value, kc_current_view.type);
       }
