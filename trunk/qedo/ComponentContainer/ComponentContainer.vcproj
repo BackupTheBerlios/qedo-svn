@@ -246,7 +246,7 @@ copy $(TargetPath) $(QEDO)\bin
 				OutputFile="$(OutDir)/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug_mico/ComponentContainer.pdb"
 				ImportLibrary=".\Debug_mico/ComponentContainer.lib"/>
@@ -449,7 +449,7 @@ copy $(TargetPath) $(QEDO)\bin
 				OutputFile="$(OutDir)/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug_mico/ComponentContainer.pdb"
 				ImportLibrary=".\Debug_mico/ComponentContainer.lib"/>
@@ -522,7 +522,7 @@ copy $(TargetPath) $(QEDO)\bin
 				OutputFile="$(OutDir)/ComponentContainer.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;"
 				GenerateDebugInformation="FALSE"
 				ProgramDatabaseFile="$(OutDir)/ComponentContainer.pdb"
 				ImportLibrary="$(OutDir)/ComponentContainer.lib"/>
