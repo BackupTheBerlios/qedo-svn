@@ -1258,8 +1258,31 @@ GeneratorEIDL::doUnion(IR__::UnionDef_ptr udef)
 			continue;
 		}
 
+		CORBA::TCKind act_kind;
+		act_kind = udef->discriminator_type()->kind() ;
+
+/*		if (act_kind == CORBA::tk_alias)
+		{
+			// resolove real type
+			IR__::AliasDef_var alias = IR__::AliasDef::_narrow(udef);
+
+			act_kind = alias->original_type_def()->;
+			
+		}
+		*/
+	//
+	// skip typedefs
+	//
+	IR__::IDLType_var orig_type = IR__::IDLType::_duplicate(udef->discriminator_type_def());
+	while(act_kind == CORBA::tk_alias)
+	{
+		IR__::AliasDef_var alias = IR__::AliasDef::_narrow(orig_type);
+		orig_type = alias->original_type_def();
+		act_kind = orig_type->type()->kind();
+	}
+
 		// case
-		switch (udef->discriminator_type()->kind()) {
+		switch (act_kind) {
 			case CORBA::tk_short:
 			case CORBA::tk_long:
 			case CORBA::tk_longlong:
