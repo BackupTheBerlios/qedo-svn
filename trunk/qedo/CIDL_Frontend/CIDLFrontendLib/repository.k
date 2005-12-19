@@ -655,16 +655,8 @@ SequenceType(def, expr)
       type = IR__::IDLType::_narrow(def->irobj);
       NOT_NIL(type);
       IR__::SequenceDef_ptr seq;
-      CORBA::LongLong l;
       CORBA::ULong value;
-      expr->value >>= l;
-      if ( l < 0) {
-        Error("Exception in creating array, size should be >= 0\n", expr);
-        value=0;
-      }
-      else {
-        value=l;
-      }
+      expr->value >>= value;
       // create SequenceDef
       try {
         seq = g_repository->create_sequence(value, type);
@@ -2386,7 +2378,7 @@ FixedArraySize(expr)
       CORBA::ULong value;
       expr->value >>= l;
       if ( l < 0) {
-        Error("Exception in creating array, size should be >= 0\n", expr);
+        Error("Exception in creating array, size should be >= 0\n", l);
        value=0;
       }
       else {
