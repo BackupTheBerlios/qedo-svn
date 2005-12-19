@@ -1,4 +1,6 @@
-- removed dependencies to PTHREADS Var since pthreads are provided with mico installation
+
+version 0.8.2
+- removed dependencies to PTHREADS Var from Mico configurations since pthreads are provided with mico installation
 - fixed bug 005915 (workaround)
 - cleanup of warnings at compile time
 - cleanup of unused variables

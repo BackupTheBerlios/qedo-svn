@@ -171,7 +171,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\CIDL_Backend\CIDLGenerator;..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;&quot;$(MICO)\include&quot;;&quot;$(MICO)\include\windows&quot;"
+				AdditionalIncludeDirectories="..\..\qedoutil;..\..\CIDL_Backend\CIDLGenerator;..\..\CIDL_Repository\IFRidl;..\..\CIDL_Repository\ComponentRepositoryLib;..\..\CIDL_Repository\CIDLRepositoryLib;&quot;$(MICO)\include&quot;;&quot;$(MICO)\include\windows&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_WINDOWS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"

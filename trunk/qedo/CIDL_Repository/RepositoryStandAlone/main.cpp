@@ -6,7 +6,7 @@ int
 main
 ( int argc, char **argv )
 {
-	std::cout << "CIDL Repository Version " << GENERATOR_VERSION << std::endl;
+	std::cout << "CIDL Repository Version " << QEDO_VERSION << std::endl;
 	std::cout << "Qedo Team" << std::endl;
 
 
