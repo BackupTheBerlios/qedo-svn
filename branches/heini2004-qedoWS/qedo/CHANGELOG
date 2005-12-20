@@ -1,3 +1,4 @@
+- fixed bug 005929 (typedefs in unions)
 
 version 0.8.2
 - removed dependencies to PTHREADS Var from Mico configurations since pthreads are provided with mico installation
