@@ -82,6 +82,7 @@ main
 	CORBA::ORB_var orb;
 	try
 	{
+	
 		orb = CORBA::ORB_init ( argc, argv );
 	}
 	catch ( ... )

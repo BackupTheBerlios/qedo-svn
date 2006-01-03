@@ -135,7 +135,7 @@ frontend_feed (
   command += filename;
 
   std::cout << "precompiling : " << command << std::endl;
-  if ( !(yyin = popen( command.c_str(), "r")) ) {
+  if ( !(yyin = popen( "pause" /*command.c_str()*/, "r")) ) {
     fprintf( stderr, "can not open input file <%s>\n", filename.c_str());
     return (2);
   }
