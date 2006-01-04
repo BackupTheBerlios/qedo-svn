@@ -24,6 +24,9 @@
 #include "frontend.h"
 ////@end includes
 
+// global reference
+CIDL::CIDLRepository_ptr repository;
+
 ////@begin XPM images
 
 ////@end XPM images
@@ -194,11 +197,16 @@ void GenGUI::OnLoadmenuitemClick(wxCommandEvent& event )
 		filename=file_dialog->GetFilename();
 		
 		CORBA::ORB_var orb;
-		int argc=1;
-		char test[] = "E:\\test\\CorbaCalc\\Calc.idl";
-		char *arg_[]={test};
-		char** argv=arg_;
-		
+		int argc=8;
+		char* argv[8] ;
+		argv[0] = "";
+		argv[1] = strdup("-DMICO_ORB");
+		argv[2] = strdup("-DMICO_CIDL_GEN");
+		argv[3] = strdup("-IC:\\opt\\qedo_debug\\idl");
+		argv[4] = strdup("-IC:\\opt\\qedo_debug\\include\\mico");
+		argv[5] = strdup("-IC:\\opt\\qedo_debug\\include\\mico\\mico");
+		argv[6] = strdup("-IC:\\devel\\berl_test\\trunk\\examples\\general\\compute");
+		argv[7] = strdup(file.wx_str()); 
 		
 		try
 		{
@@ -235,28 +243,31 @@ void GenGUI::OnLoadmenuitemClick(wxCommandEvent& event )
 			
 		}
 
-		CIDL::CIDLRepository_ptr repository = CIDL::CIDLRepository::_narrow( (new QEDO_ComponentRepository::CIDLRepository_impl ( orb, root_poa )) -> _this());
+		root_poa_manager -> activate();
+
+
+		repository = CIDL::CIDLRepository::_narrow( (new QEDO_ComponentRepository::CIDLRepository_impl ( orb, root_poa )) -> _this());
 		try {
 		// feed repository
-			wxMessageDialog* dialog1 = new wxMessageDialog(this,"Blöd","Message Box",wxOK | wxCANCEL, wxDefaultPosition);
-		
-		dialog1->ShowModal();
-			frontend_feed( argc, argv, repository );
+			if (frontend_feed( argc, argv, repository ))
+			{
+				wxMessageDialog* dialog_error = new wxMessageDialog(this, "Can not parse input file","Message Box",wxOK, wxDefaultPosition);
+				dialog_error->ShowModal();
+
+			}
 		} catch (...) 
 		{
 			std::cout << "Problem in parser occured ... exiting." << std::endl;
 			orb->destroy();
 			wxMessageDialog* dialog = new wxMessageDialog(this,file,"Message Box",wxOK | wxCANCEL, wxDefaultPosition);
-		
-		dialog->ShowModal();
-			
+			dialog->ShowModal();
 		}
 		
 		
 		
 	}
 
-	file_dialog->~wxFileDialog();
+	delete file_dialog;
 
 }
 

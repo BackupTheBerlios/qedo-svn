@@ -120,6 +120,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CIDLGenerator", "CIDL_Backe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GenGUI", "GenGUI\GenGUI.vcproj", "{FE62619B-8B61-481B-B9E2-498B4F4AC58A}"
 	ProjectSection(ProjectDependencies) = postProject
+		{7F3239CC-0D68-42B2-BCCE-643EAE579ECE} = {7F3239CC-0D68-42B2-BCCE-643EAE579ECE}
 	EndProjectSection
 EndProject
 Global

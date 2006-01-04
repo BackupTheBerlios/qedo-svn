@@ -38,6 +38,6 @@ yyerror_1(const char *s, int state_no)
   }
   if (strlen(yytext) > 0)
   fprintf(stderr, "\ttoken last read was: '%s'\n", yytext);
-  exit(1);
+  //exit(1);
 }
 // vim:sts=2:ts=4:cino=g0,t0,\:0
