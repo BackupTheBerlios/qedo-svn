@@ -472,9 +472,6 @@ copy $(TargetPath) $(QEDO)\bin
 			<File
 				RelativePath=".\TestMode.h">
 			</File>
-			<File
-				RelativePath="version.h">
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
