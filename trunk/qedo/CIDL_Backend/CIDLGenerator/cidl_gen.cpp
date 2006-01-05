@@ -58,7 +58,7 @@ int
 main
 ( int argc, char **argv )
 {
-	std::cout << "CIDL Generator Version " << QEDO_VERSION << std::endl;
+	std::cout << "CIDL Generator Version " << QEDO_VERSION << " (built: " << __TIMESTAMP__ << ")" << std::endl;
 	std::cout << "Qedo Team" << std::endl;
 
 	/*

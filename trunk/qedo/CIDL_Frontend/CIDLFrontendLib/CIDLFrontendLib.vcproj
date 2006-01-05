@@ -339,9 +339,6 @@
 			<File
 				RelativePath=".\util.cpp">
 			</File>
-			<File
-				RelativePath=".\version.cpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -408,9 +405,6 @@
 			</File>
 			<File
 				RelativePath=".\util.h">
-			</File>
-			<File
-				RelativePath=".\version.h">
 			</File>
 		</Filter>
 		<Filter
