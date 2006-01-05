@@ -24,6 +24,7 @@ INCLUDES+=-I. \
 			 -I../../CIDL_Repository/ComponentRepositoryLib \
 			 -I../../CIDL_Repository/CIDLRepositoryLib \
 			 -I../../CIDL_Frontend/CIDLFrontendLib \
+			 -I../../qedoutil \
 			 @CPPFLAGS@
 
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@

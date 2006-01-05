@@ -22,5 +22,7 @@
 
 #define QEDO_VERSION "0.8.2"
 #define QEDO_REVISION "$Rev$"
-
+#ifndef __TIMESTAMP__
+#define __TIMESTAMP__ __DATE__ " " __TIME__
+#endif
 
