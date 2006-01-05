@@ -125,7 +125,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(MICO)\include,$(MICO)\include\windows"
+				AdditionalIncludeDirectories="..\..\qedoutil;..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(MICO)\include,$(MICO)\include\windows"
 				PreprocessorDefinitions="KC_DEPRECATED,WIN32,_DEBUG,_LIB,__STDC__,YYERROR_VERBOSE,YYDEBUG,_WINDOWS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -225,7 +225,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(MICO)\include,$(MICO)\include\windows"
+				AdditionalIncludeDirectories="..\..\qedoutil;..\..\CIDL_Repository\IFRidl,..\..\CIDL_Repository\ComponentRepositoryLib,..\..\CIDL_Repository\CIDLRepositoryLib,$(MICO)\include,$(MICO)\include\windows"
 				PreprocessorDefinitions="KC_DEPRECATED;WIN32;_LIB;__STDC__;YYERROR_VERBOSE;YYDEBUG;_WINDOWS"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="2"

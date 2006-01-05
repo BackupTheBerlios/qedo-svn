@@ -277,7 +277,7 @@ ParseCommandLineOptions (int argc,char** argv)
                       break;
             case 'w': options.no_warnings=options.no_warnings?false:true;/*negate*/
                       break;
-            case 'V': fprintf( stderr, "IDL2IDL generator version %.2f\ncompiled at %s\non %s\nwith %s\n",__CIDL2CPP__,COMPILED_AT,COMPILED_ON,COMPILED_FLAGS);
+            case 'V': fprintf( stderr, "Qedo Generator version %.2f\ncompiled at %s\non %s\nwith %s\n",QEDO_VERSION,__TIMESTAMP__);
                       break;
             case 'v': if(options.verbose) 
                         options.verbose=0;
