@@ -22,10 +22,12 @@
 
 CXX = @CXX@
 INCLUDES+=-I. -I../../CIDL_Repository/IFRidl \
-          -I../../CIDL_Repository/ComponentRepositoryLib\
-          -I../../CIDL_Repository/CIDLRepositoryLib\
-			 -DKC_DEPRECATED -DYYERROR_VERBOSE -DYYDEBUG \
-          @CPPFLAGS@ 
+		-I../../CIDL_Repository/ComponentRepositoryLib\
+		-I../../CIDL_Repository/CIDLRepositoryLib\
+		-I../../qedoutil \
+		-DKC_DEPRECATED -DYYERROR_VERBOSE -DYYDEBUG \
+		@CPPFLAGS@ 
+
 CXXFLAGS+=$(INCLUDES) @DEFS@ @CXXFLAGS@
 CXXCOMPILE=@CXX@ $(CXXFLAGS)
 LIBS=@LIBS@
@@ -39,7 +41,6 @@ KIMWITU_OBJECT_FILES = $(KIMWITU_CPP_FILES:.cpp=.o)
 
 SOURCES = cidl.cpp \
 			lexana.cpp \
-			version.cpp \
 			getopt.cpp \
 			getopt1.cpp 
 
