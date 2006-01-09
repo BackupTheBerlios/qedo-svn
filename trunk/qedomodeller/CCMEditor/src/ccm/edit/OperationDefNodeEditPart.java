@@ -26,17 +26,13 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.eclipse.ui.views.properties.PropertySheetPage;
 
-import CCMModel.Contained;
 import CCMModel.FactoryDef;
 import CCMModel.FinderDef;
 import CCMModel.Node;
 import CCMModel.OperationDef;
 import ccm.ProjectResources;
 import ccm.commands.delete.model.DeleteContainedCommand;
-import ccm.commands.delete.visual.DeleteInterfaceCommand;
-import ccm.commands.delete.visual.DeleteNodeCommand;
 import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
 import ccm.edit.policy.ModelEditPolicy;
 import ccm.figures.ContainedWithMembersFigure;

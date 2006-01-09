@@ -18,14 +18,13 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 
-import ccm.model.CCMModelManager;
-import ccm.model.CCMNotificationImpl;
-
 import CCMModel.CCMModelFactory;
 import CCMModel.Contained;
 import CCMModel.Container;
 import CCMModel.Node;
 import CCMModel.View;
+import ccm.model.CCMModelManager;
+import ccm.model.CCMNotificationImpl;
 
 
 

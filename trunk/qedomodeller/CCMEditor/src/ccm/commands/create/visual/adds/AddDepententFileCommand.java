@@ -17,11 +17,9 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 
 import CCMModel.Aktionkind;
-import CCMModel.ContainedFile;
 import CCMModel.DependentFile;
 import CCMModel.Implementation;
 import CCMModel.Node;
-import CCMModel.ValueMemberDef;
 import ccm.commands.create.visual.CreateNodeForContainedCommand;
 import ccm.model.CCMNotificationImpl;
 import ccm.model.template.IDLKind;
@@ -31,7 +29,7 @@ import ccm.model.template.IDLTemplate;
 
 public class AddDepententFileCommand extends CreateNodeForContainedCommand{
     
-	private static final String	CreateCommand_LabelSimple = "CreateParameterCommand";
+	private static final String	CreateCommand_LabelSimple = "AddDepententFileCommand";
 
 	private Node opNode;
 	private Node parentNode;
@@ -39,7 +37,7 @@ public class AddDepententFileCommand extends CreateNodeForContainedCommand{
 	
 	private DependentFile dependentFile;
 	private Aktionkind action;
-	private String codeType,entryPoint,entryPointUsage;
+	private String location;
 	private IDLTemplate idlTemplate=new IDLTemplate(IDLKind.IDL_LITERAL);
 
 	
@@ -64,8 +62,11 @@ public class AddDepententFileCommand extends CreateNodeForContainedCommand{
 	 */
 	public void execute() {
 	    super.execute();
+	    ((Implementation)container).getDependentFiles().add(newObject);
 	    dependentFile = (DependentFile) newObject;
 		dependentFile.setAction(action);
+		dependentFile.setLocation(location);
+		dependentFile.setName(identifier);
 		 
 		 
 		Iterator it = container.getNode().iterator();
@@ -79,7 +80,7 @@ public class AddDepententFileCommand extends CreateNodeForContainedCommand{
 	    	opNode.setHeight(constraint.height);*/
 	    	parentNode.getContents().add(opNode);
 	    	opNode.eNotify(new CCMNotificationImpl(opNode, Notification.SET,
-										       CCMNotificationImpl.ATTRIBUTE_DEF, null, null,0));
+										       CCMNotificationImpl.DEPENDENTFILE, null, null,0));
 	    }
 	}
 
@@ -114,6 +115,9 @@ public class AddDepententFileCommand extends CreateNodeForContainedCommand{
 
 	public void setAction(Aktionkind action) {
 		this.action = action;
+	}
+	public void setLocation(String location) {
+		this.location = location;
 	}
 	 
     /**

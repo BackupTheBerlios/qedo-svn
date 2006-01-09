@@ -15,7 +15,9 @@ package ccm.commands.connect;
  
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.gef.commands.Command;
+
 import CCMModel.AbstractInterfaceDef;
 import CCMModel.CCMModelFactory;
 import CCMModel.Connection;

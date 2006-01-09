@@ -17,18 +17,28 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+import CCMModel.Assembly;
 import CCMModel.ComponentDef;
 import CCMModel.ComponentImplDef;
 import CCMModel.ComponentInstantiation;
 import CCMModel.Composition;
 import CCMModel.Contained;
+import CCMModel.ContainedFile;
+import CCMModel.DependentFile;
+import CCMModel.ExternalInstance;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
 import CCMModel.HomeInstantiation;
+import CCMModel.Implementation;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
-import CCMModel.UsesDef;
+import CCMModel.ProcessCollocation;
+import CCMModel.Property;
+import CCMModel.RegisterComponentInstance;
+import CCMModel.Rule;
+import CCMModel.SoftwarePackage;
+import MDE.Deployment.DeploymentRequirement;
 import ccm.CCMEditorPlugin;
 import ccm.ProjectResources;
 
@@ -127,6 +137,29 @@ public class CCMNodeTreeEditPart 	extends AbstractTreeEditPart implements  Adapt
 		    fName=ProjectResources.COMPONRNTINSTANCE;
 		else if(cont instanceof Composition)
 		    fName=ProjectResources.COMPOSITION_S;
+		
+		else if(cont instanceof SoftwarePackage)
+		    fName=ProjectResources.SOFTWAREPACKAGE;
+		else if(cont instanceof Implementation)
+		    fName=ProjectResources.IMPLEMENTATION;
+		else if(cont instanceof Assembly)
+		    fName=ProjectResources.ASSEMBLY;
+		else if(cont instanceof ProcessCollocation)
+		    fName=ProjectResources.PROCESSCOLLOCATION;
+		else if(cont instanceof Property)
+		    fName=ProjectResources.PROPERTY;
+		else if(cont instanceof Rule)
+		    fName=ProjectResources.RULE;
+		else if(cont instanceof ContainedFile)
+		    fName=ProjectResources.CONTAINEDFILE;
+		else if(cont instanceof DependentFile)
+		    fName=ProjectResources.DEPENDENTFILE;
+		else if(cont instanceof DeploymentRequirement)
+		    fName=ProjectResources.REQUIREMENT;
+		else if(cont instanceof RegisterComponentInstance)
+		    fName=ProjectResources.REGISTRYCOMPONENTINSTANCE;
+		else if(cont instanceof ExternalInstance)
+		    fName=ProjectResources.EXTERNALINSTANCE;
 		 
 		//*****************************************
 		Image image = new Image(null,CCMEditorPlugin.class.getResourceAsStream(fName));

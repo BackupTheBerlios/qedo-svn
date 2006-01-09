@@ -13,18 +13,10 @@ import java.util.List;
 import org.eclipse.emf.common.ui.celleditor.ExtendedDialogCellEditor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.LabelProvider;
- 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
- 
- 
-import ccm.CCMConstants;
-import ccm.dialogs.AddOperationDialog;
-import ccm.dialogs.CreateUnionDefDialog;
- 
- 
 import ccm.dialogs.EditUnionFieldDialog;
  
 /**

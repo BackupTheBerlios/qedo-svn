@@ -20,35 +20,25 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Combo;
 
-import CCMModel.AbstractDerivedRelation;
-import CCMModel.AbstractItfDerivedRelation;
 import CCMModel.AliasDef;
 import CCMModel.ArrayDef;
 import CCMModel.CCMModelFactory;
-import CCMModel.CompHomeRelation;
 import CCMModel.ComponentDef;
 import CCMModel.EnumDef;
-import CCMModel.EventPortEventRelation;
 import CCMModel.FixedDef;
 import CCMModel.HomeDef;
 import CCMModel.IDLType;
 import CCMModel.IDLTypeContainer;
 import CCMModel.InterfaceDef;
-import CCMModel.InterfaceRelation;
-//import CCMModel.IpmlementsRelation;
-import CCMModel.ManagersRelation;
 import CCMModel.ModuleDef;
 import CCMModel.PrimitiveDef;
-import CCMModel.Relation;
 import CCMModel.SequenceDef;
 import CCMModel.StringDef;
 import CCMModel.StructDef;
-import CCMModel.SupportsRelation;
 import CCMModel.Typed;
 import CCMModel.UnionDef;
 import CCMModel.ValueBoxDef;
 import CCMModel.ValueDef;
-import CCMModel.ValueDerivedRelation;
 import CCMModel.WstringDef;
 import ccm.model.CCMModelManager;
 import ccm.model.template.IDLKind;
@@ -75,6 +65,7 @@ public class CCMConstants {
 	public static final String 	MANAGES_LABEL="<<manages>>";
 	public static final String 	PROVIDES_INTERFACE_LABEL="<< provides interface >>";
 	public static final String 	USES_INTERFACE_LABEL="<< uses interface >>";
+	public static final String 	CREATE="<< create >>";
 	//public static final String 	IMPL_LABEL="<<implements>>";
 	
 	
@@ -249,24 +240,6 @@ public class CCMConstants {
 	
 
 	
-	public static String getRelationDescription(Relation rel) {
-		
-		if (rel instanceof CompHomeRelation) return "<< component home >>";
-		if (rel instanceof SupportsRelation) return "<< supports >>";
-		if (rel instanceof EventPortEventRelation) return "<< event_typeAss >>";
-		if (rel instanceof ManagersRelation) return "<< manages >>";
-		if (rel instanceof AbstractItfDerivedRelation) return "<< derived from >>";
-	//	if (rel instanceof IpmlementsRelation) return "<< implements >>";
-		if (rel instanceof ValueDerivedRelation) return "<< derived from >>";
-		if (rel instanceof AbstractDerivedRelation) return "<< abstract derived from >>";
-		if (rel instanceof InterfaceRelation) {
-			if (((InterfaceRelation) rel).getProvidesDef()!=null) 
-			return "<< provides interface >>";
-			else return "<< uses interface >>";
-		}
-
-		return null;
-	}
 	public static void setIDLTyped(Typed typed,IDLTemplate idlTemplate,ModuleDef root,List idlT){
 	    switch(idlTemplate.getIdlKind().getValue()){
 	    case IDLKind.IDL:

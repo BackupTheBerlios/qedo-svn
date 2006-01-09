@@ -10,7 +10,6 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 
 import CCMModel.Contained;
 import CCMModel.ModuleDef;
-import CCMModel.Relation;
 import ccm.treeedit.CCMModelTreeEditPart;
 
 public class DiagramDragSourceListener extends AbstractTransferDragSourceListener {
@@ -31,7 +30,8 @@ public class DiagramDragSourceListener extends AbstractTransferDragSourceListene
 		Object template = getTemplate();
 		if (!(template instanceof Contained
 						&& ((Contained)template).getDefinedIn() instanceof ModuleDef)
-						&& !(template instanceof Relation))
+	//					&& !(template instanceof Relation)
+						)
 			event.doit = false;
 		
 		TemplateTransfer.getInstance().setTemplate(template);

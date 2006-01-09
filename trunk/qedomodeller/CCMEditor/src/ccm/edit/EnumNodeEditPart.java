@@ -29,10 +29,7 @@ import CCMModel.EnumDef;
 import CCMModel.Node;
 import ccm.ProjectResources;
 import ccm.commands.delete.visual.DeleteNodeCommand;
-import ccm.figures.ContainedWithMembersFigure;
 import ccm.figures.ContainerFigureWithAttribute;
-import ccm.figures.EnumDefFigure;
-import ccm.property.ContainedPropertySource;
 import ccm.property.EnumPropertySource;
 
 /**

@@ -8,10 +8,8 @@ import java.util.Iterator;
 import org.eclipse.emf.common.util.EList;
 
 import CCMModel.Contained;
-import CCMModel.IDLType;
 import CCMModel.OperationDef;
 import CCMModel.ParameterDef;
-import CCMModel.Typed;
 
 public class DeleteOperationDefCommand extends DeleteContainedCommand {
 	/**

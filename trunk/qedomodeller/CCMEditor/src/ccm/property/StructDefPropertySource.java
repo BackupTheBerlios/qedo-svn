@@ -24,11 +24,9 @@ import java.util.Vector;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-import CCMModel.AttributeDef;
 import CCMModel.CCMModelFactory;
 import CCMModel.CCMModelPackage;
 import CCMModel.Contained;
@@ -45,7 +43,6 @@ import ccm.model.ModelFactory;
 import ccm.model.template.FieldTemplate;
 import ccm.model.template.IDLTemplate;
 import ccm.propertyDescriptor.FieldpropertyDescriptor;
-import ccm.propertyDescriptor.IDLtypePropertyDescriptor;
 
 /**
  * This class is intended to be a generic property source for all the objects in

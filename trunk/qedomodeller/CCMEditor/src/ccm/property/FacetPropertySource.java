@@ -5,12 +5,12 @@ package ccm.property;
 import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
+
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.PropertyDescriptor; 
-import CCMModel.CCMModelPackage;
-import CCMModel.Contained; 
-import CCMModel.HomeImplDef;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
+
+import CCMModel.Contained;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;

@@ -11,23 +11,22 @@
   */
  package ccm.figures;
 
- import org.eclipse.draw2d.BorderLayout;
  import org.eclipse.draw2d.ChopboxAnchor;
- import org.eclipse.draw2d.ColorConstants;
- import org.eclipse.draw2d.Figure;
- import org.eclipse.draw2d.IFigure;
- import org.eclipse.draw2d.Label;
- import org.eclipse.draw2d.LineBorder;
- import org.eclipse.draw2d.PositionConstants;
- import org.eclipse.draw2d.ToolbarLayout;
- import org.eclipse.draw2d.geometry.Dimension;
- import org.eclipse.draw2d.geometry.Rectangle;
- import org.eclipse.swt.graphics.Color;
- import org.eclipse.swt.graphics.Image;
+import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.PositionConstants;
+import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 
- import ccm.CCMConstants;
- import ccm.CCMEditorPlugin;
- import ccm.ProjectResources;
+import ccm.CCMConstants;
+import ccm.CCMEditorPlugin;
+import ccm.ProjectResources;
 
 
  public class ContainerFigureWithAttribute  extends Figure{

@@ -52,6 +52,7 @@ public class SetConstraintForNode
 		}
 		part.setX(newPos.x);
 		part.setY(newPos.y);
+		 
 	}
 	
 	/**

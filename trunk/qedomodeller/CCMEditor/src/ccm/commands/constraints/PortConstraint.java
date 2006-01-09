@@ -18,7 +18,6 @@ import CCMModel.PortLocation;
 import ccm.CCMConstants;
 import ccm.CCMEditorPlugin;
 import ccm.ProjectResources;
-import ccm.model.CCMNotificationImpl;
 
 /**
  * @author eduardw

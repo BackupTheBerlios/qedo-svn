@@ -19,16 +19,10 @@ import org.eclipse.gef.requests.ReconnectRequest;
 
 import CCMModel.AbstractInterfaceDef;
 import CCMModel.ComponentDef;
-import CCMModel.Composition;
 import CCMModel.Implementation;
 import CCMModel.View;
 import ccm.commands.connect.AbstItfDerivedConnectCommand;
-import ccm.commands.connect.ComponentHomeConnectCommand;
-import ccm.commands.connect.ComponentSupportsConnectCommand;
-import ccm.commands.connect.CompositionConnectHomeImplCommand;
 import ccm.commands.connect.Unit_CompositionConnectCommand;
-import ccm.edit.ComponentDefNodeEditPart;
-import ccm.edit.CompositionNodeEditPart;
 import ccm.edit.DeploymentUnitNodeEditPart;
 import ccm.model.template.RelationTemplate;
 

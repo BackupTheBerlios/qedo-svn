@@ -28,9 +28,8 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.views.properties.IPropertySource;
- 
+
 import CCMModel.CCMModelPackage;
- 
 import CCMModel.Node;
 import CCMModel.SoftwarePackage;
 import ccm.commands.create.visual.adds.AddAttributeDefCommand;
@@ -39,20 +38,13 @@ import ccm.commands.create.visual.adds.AddEventSinkCommand;
 import ccm.commands.create.visual.adds.AddEventSourceCommand;
 import ccm.commands.create.visual.adds.AddFacetCommand;
 import ccm.commands.create.visual.adds.AddReceptacleCommand;
- 
 import ccm.commands.delete.visual.DeleteNodeCommand;
- 
-import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
-import ccm.edit.policy.DeploymentunitEditPolicy;
 import ccm.edit.policy.ModelEditPolicy;
 import ccm.edit.policy.SoftwarePackageEditPolicy;
 import ccm.edit.policy.SoftwarePackageXYLayoutEditPolicy;
-import ccm.figures.ComponentFigure;
 import ccm.figures.ContainerFigure;
-import ccm.figures.ContainerFigureWithAttribute;
 import ccm.model.CCMNotificationImpl;
-import ccm.property.AbstractIntefacefPropertySource;
-import ccm.property.CompositionPropertySource;
+import ccm.property.SoftwarePackagePropertySource;
 import ccm.request.AddAttributeDefRequest;
 import ccm.request.AddEmitsSourceRequest;
 import ccm.request.AddEventSinkRequest;
@@ -109,11 +101,11 @@ public class SoftwarePackageNodeEditPart
 		Dimension dim=new Dimension(getModelNode().getWidth(),getModelNode().getHeight());
 		Dimension prefDim = getFigure().getPreferredSize(0,0);
 		
-		if(dim.height < prefDim.height)
-			dim.height = prefDim.height;
+//		if(dim.height < prefDim.height)
+//			dim.height = prefDim.height;
 		
-		if(dim.width < prefDim.width)
-			dim.width = prefDim.width;
+//		if(dim.width < prefDim.width)
+//			dim.width = prefDim.width;
 		
 		getUnitFigure().setIdentifier(getPackage().getIdentifier());
 		
@@ -129,7 +121,7 @@ public class SoftwarePackageNodeEditPart
 	 */
 	protected IFigure createFigure() {
 	//	System.out.println("category:"+getComposition().getCategory().toString());
-		ContainerFigure  compositionFigure=new ContainerFigure(getPackage().getIdentifier(),ccm.ProjectResources.COMPOSITION_S,true);
+		ContainerFigure  compositionFigure=new ContainerFigure(getPackage().getIdentifier(),ccm.ProjectResources.SOFTWAREPACKAGE,true);
 		//compositionFigure.setName(getComposition().getIdentifier());
 		return compositionFigure;
 	}
@@ -169,7 +161,7 @@ public class SoftwarePackageNodeEditPart
 	 * @return IPropertySource 
 	 */	
 	protected IPropertySource getPropertySource() {
-		propertySource = new CompositionPropertySource( getModelNode().getContained() );
+		propertySource = new SoftwarePackagePropertySource( getModelNode().getContained() );
 		return propertySource;
 	}
 

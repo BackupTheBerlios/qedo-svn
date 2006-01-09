@@ -17,17 +17,15 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.IPropertySource2;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
-import ccm.CCMConstants;
-import ccm.model.CCMNotificationImpl;
-
 import CCMModel.CCMModelPackage;
 import CCMModel.Contained;
 import CCMModel.Node;
+import ccm.CCMConstants;
+import ccm.model.CCMNotificationImpl;
 
 /**
  * This class is intended to be a generic property source for all the objects in

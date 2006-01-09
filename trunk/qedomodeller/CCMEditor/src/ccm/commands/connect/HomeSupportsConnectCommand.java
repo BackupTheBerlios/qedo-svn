@@ -25,7 +25,6 @@ import CCMModel.HomeDef;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
- 
 import CCMModel.View;
 import ccm.CCMConstants;
 import ccm.model.CCMModelManager;

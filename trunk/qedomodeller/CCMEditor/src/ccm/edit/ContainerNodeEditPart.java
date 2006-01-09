@@ -12,7 +12,6 @@
 package ccm.edit;
 
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,8 +19,6 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.ui.views.properties.IPropertySource;
 
-import CCMModel.Contained;
-import CCMModel.Container;
 import CCMModel.Node;
 import ccm.edit.policy.ModelEditPolicy;
 import ccm.property.ContainedPropertySource;

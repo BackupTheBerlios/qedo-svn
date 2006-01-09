@@ -29,7 +29,6 @@ import CCMModel.ConstantDef;
 import CCMModel.ConsumesDef;
 import CCMModel.ContainedFile;
 import CCMModel.DependentFile;
-import CCMModel.Implementation;
 import CCMModel.Deploymentrequirement;
 import CCMModel.EmitsDef;
 import CCMModel.EnumDef;
@@ -39,6 +38,7 @@ import CCMModel.Field;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
 import CCMModel.HomeInstantiation;
+import CCMModel.Implementation;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
@@ -135,7 +135,6 @@ public class GraphicalEditPartsFactory implements EditPartFactory{
 			}else if(node.getContained() instanceof ComponentImplDef){
 		    	return  new ComponentImplNodeEditPart(node);
 			}else if(node.getContained() instanceof ComponentInstantiation){
-				System.out.println( "ComponentInstanceNode---EditPart:");
 		    	return  new ComponentInstanceNodeEditPart(node);
 			}else if(node.getContained() instanceof Composition){
 		    	return  new CompositionNodeEditPart(node);	

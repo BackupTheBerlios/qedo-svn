@@ -14,8 +14,6 @@ import org.eclipse.emf.common.notify.Notification;
 
 import CCMModel.ComponentCategory;
 import CCMModel.Composition;
-import CCMModel.InterfaceDef;
-
 import ccm.model.CCMNotificationImpl;
 
 

@@ -5,14 +5,15 @@ package ccm.property;
 import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
+
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.PropertyDescriptor; 
-import CCMModel.CCMModelFactory;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
+
 import CCMModel.CCMModelPackage;
 import CCMModel.ComponentCategory;
 import CCMModel.Composition;
-import CCMModel.Contained; 
+import CCMModel.Contained;
 import CCMModel.HomeImplDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
@@ -20,12 +21,7 @@ import CCMModel.View;
 import CCMModel.impl.ConnectionImpl;
 import ccm.commands.connect.CompositionConnectHomeImplCommand;
 import ccm.commands.delete.visual.DeleteConnectionCommand;
-import ccm.model.CCMModelManager;
 import ccm.model.ModelFactory;
-import ccm.model.template.IDLTemplate;
-import ccm.model.template.ParameterTemplate;
-import ccm.propertyDescriptor.IDLtypePropertyDescriptor;
-import ccm.propertyDescriptor.ParameterPropertyDescriptor;
 
 /**
  * @author siegercn

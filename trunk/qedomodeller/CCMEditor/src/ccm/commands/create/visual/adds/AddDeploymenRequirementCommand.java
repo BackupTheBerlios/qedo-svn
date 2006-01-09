@@ -16,11 +16,9 @@ import java.util.Iterator;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 
-import CCMModel.ContainedFile;
-import CCMModel.Implementation;
 import CCMModel.Deploymentrequirement;
+import CCMModel.Implementation;
 import CCMModel.Node;
-import CCMModel.ValueMemberDef;
 import ccm.commands.create.visual.CreateNodeForContainedCommand;
 import ccm.model.CCMNotificationImpl;
 import ccm.model.template.IDLKind;
@@ -30,7 +28,7 @@ import ccm.model.template.IDLTemplate;
 
 public class AddDeploymenRequirementCommand extends CreateNodeForContainedCommand{
     
-	private static final String	CreateCommand_LabelSimple = "CreateParameterCommand";
+	private static final String	CreateCommand_LabelSimple = "AddDeploymenRequirementCommand";
 
 	private Node opNode;
 	private Node parentNode;
@@ -63,6 +61,7 @@ public class AddDeploymenRequirementCommand extends CreateNodeForContainedComman
 	 */
 	public void execute() {
 	    super.execute();
+	    ((Implementation)container).getRequirment().add(newObject);
 	    deploymenRequirement = (Deploymentrequirement) newObject;
 		deploymenRequirement.setKind(kind);
 		deploymenRequirement.setReqVersion(reqVersion);

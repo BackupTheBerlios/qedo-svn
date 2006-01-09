@@ -27,12 +27,11 @@ import org.eclipse.gef.palette.ToolEntry;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 import CCMModel.AliasDef;
+import CCMModel.Assembly;
 import CCMModel.ComponentDef;
 import CCMModel.ComponentImplDef;
-import CCMModel.ComponentInstantiation;
 import CCMModel.Composition;
 import CCMModel.ConstantDef;
-import CCMModel.Implementation;
 import CCMModel.EnumDef;
 import CCMModel.EventDef;
 import CCMModel.ExceptionDef;
@@ -40,6 +39,7 @@ import CCMModel.ExternalInstance;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
 import CCMModel.HomeInstantiation;
+import CCMModel.Implementation;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.ProcessCollocation;
@@ -245,73 +245,69 @@ public class CCMPaletteRoot extends PaletteRoot {
 				  "SoftwarePackage",
 				  "Creates a SoftwarePackage",
 				  new ModelCreationFactory(SoftwarePackage.class),
-				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.HOMEINSTANCE_S),
-				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.HOMEINSTANCE));
+				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.SOFTWAREPACKAGE),
+				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.SOFTWAREPACKAGE));
 		entries.add(tool);
 		tool =new CCMCreationToolEntry(
 				  "Implementation",
 				  "Creates a Implementation",
 				  new ModelCreationFactory(Implementation.class),
-				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.HOMEINSTANCE_S),
-				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.HOMEINSTANCE));
+				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.IMPLEMENTATION),
+				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.IMPLEMENTATION));
+		entries.add(tool);
+		tool =new CCMCreationToolEntry(
+				  "Assembly",
+				  "Creates an Assembly",
+				  new ModelCreationFactory(Assembly.class),
+				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ASSEMBLY),
+				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ASSEMBLY));
+		entries.add(tool);
+		tool =new CCMCreationToolEntry(
+				  "ProcessCollocation",
+				  "Creates a ProcessCollocation",
+				  new ModelCreationFactory(ProcessCollocation.class),
+				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.PROCESSCOLLOCATION),
+				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.PROCESSCOLLOCATION));
 		entries.add(tool);
 		tool =new CCMCreationToolEntry(
 				  "HomeInstance",
 				  "Creates a homeInstance",
 				  new ModelCreationFactory(HomeInstantiation.class),
 				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.HOMEINSTANCE_S),
-				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.HOMEINSTANCE));
+				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.HOMEINSTANCE_S));
 		entries.add(tool);
-		tool =new CCMCreationToolEntry(
-				  "ComponentInstance",
-				  "Creates a ComponentInstance",
-				  new ModelCreationFactory(ComponentInstantiation.class),
-				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.COMPONRNTINSTANCE),
-				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.COMPONRNTINSTANCE));
-		entries.add(tool);
+		//tool =new CCMCreationToolEntry(
+		//		  "ComponentInstance",
+		//		  "Creates a ComponentInstance",
+		//		  new ModelCreationFactory(ComponentInstantiation.class),
+		//		  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.COMPONRNTINSTANCE),
+		//		  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.COMPONRNTINSTANCE));
+		//entries.add(tool);
 		tool =new CCMCreationToolEntry(
 				  "ExternalInstance",
 				  "Creates a ExternalInstance",
 				  new ModelCreationFactory(ExternalInstance.class),
-				  null,
-				 null);
+				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.EXTERNALINSTANCE),
+				  ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.EXTERNALINSTANCE));
 		entries.add(tool);
-		tool =new CCMCreationToolEntry(
-				  "ProcessCollocation",
-				  "Creates a ProcessCollocation",
-				  new ModelCreationFactory(ProcessCollocation.class),
-				  null,
-				  null);
-		entries.add(tool);
+		
 		tool =new CCMConnectionCreationToolEntry(
-				"interfaceConnection",
-				"Creates a interfacecConnection",
+				"portsConnection",
+				"Creates a portsConnection",
 				new ModelCreationFactory(RelationTemplate.class,7),
 				ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ABSTRACT_DERIVED_S),
 				ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ABSTRACT_DERIVED_S));	
 										
 		        entries.add(tool);
-	    tool =new CCMConnectionCreationToolEntry(
-		        "eventConnection",
-		        "Creates a eventConnection",
-		        new ModelCreationFactory(RelationTemplate.class,8),
-		        ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ABSTRACT_DERIVED_S),
-		        ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ABSTRACT_DERIVED_S));	
-		        entries.add(tool);
-		tool =new CCMConnectionCreationToolEntry(
-		          "streamConnection",
-		          "Creates a streamConnection",
-		          new ModelCreationFactory(RelationTemplate.class,9),
-		          ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ABSTRACT_DERIVED_S),
-		          ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ABSTRACT_DERIVED_S));	    								
-		          entries.add(tool);
-	    tool =new CCMConnectionCreationToolEntry(
-				  "impl_by",
-				   "deployment unit impl_by composition",
-				   new ModelCreationFactory(RelationTemplate.class,11),
-				   ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ABSTRACT_DERIVED_S),
-				   ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ABSTRACT_DERIVED_S));	    								
-				   entries.add(tool);
+	    
+		 
+	  //  tool =new CCMConnectionCreationToolEntry(
+	//			  "impl_by",
+	//			   "deployment unit impl_by composition",
+	//			   new ModelCreationFactory(RelationTemplate.class,11),
+	//			   ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ABSTRACT_DERIVED_S),
+	//			   ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ABSTRACT_DERIVED_S));	    								
+	//			   entries.add(tool);
 		
 		drawer.addAll(entries);
 		add(drawer);

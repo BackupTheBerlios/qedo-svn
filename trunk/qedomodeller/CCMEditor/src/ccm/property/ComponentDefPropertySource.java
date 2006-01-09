@@ -6,30 +6,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-import ccm.commands.connect.ComponentHomeConnectCommand;
-import ccm.commands.connect.ComponentSupportsConnectCommand;
-import ccm.commands.connect.CompositionConnectHomeImplCommand;
-import ccm.commands.connect.HomeSupportsConnectCommand;
-import ccm.commands.delete.visual.DeleteConnectionCommand;
-import ccm.model.ModelFactory;
-import ccm.propertyDescriptor.ListPropertyDescriptor;
-import ccm.propertyDescriptor.ParameterPropertyDescriptor;
-
 import CCMModel.AbstractInterfaceDef;
-import CCMModel.CCMModelPackage;
 import CCMModel.ComponentDef;
 import CCMModel.Contained;
 import CCMModel.HomeDef;
-import CCMModel.HomeImplDef;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
 import CCMModel.View;
 import CCMModel.impl.ConnectionImpl;
+import ccm.commands.connect.ComponentSupportsConnectCommand;
+import ccm.commands.delete.visual.DeleteConnectionCommand;
+import ccm.model.ModelFactory;
+import ccm.propertyDescriptor.ListPropertyDescriptor;
 
 /**
  * This class is intended to be a generic property source for all the objects in

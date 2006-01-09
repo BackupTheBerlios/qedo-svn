@@ -24,7 +24,6 @@ import org.eclipse.gef.requests.CreateRequest;
 
 import CCMModel.Node;
 import ccm.commands.constraints.SetConstraintForNode;
-
 import ccm.edit.PortLabelEditPart;
 
 

@@ -3,6 +3,7 @@
 */
 package ccm.commands.create.visual.adds;
 
+import CCMModel.ComponentDef;
 import CCMModel.UsesDef;
 
 
@@ -35,5 +36,7 @@ public class AddReceptacleCommand extends AddPortCommand {
 		portDef=mfc.createUsesDef();
 		((UsesDef)portDef).setMultipleItf(isMultipleItf);
 		super.execute();
+		System.out.println(">>getContents():"+container.getContents());
+		System.out.println(">>getReceptacle():"+((ComponentDef)container).getReceptacle());
 	}
 }

@@ -21,32 +21,39 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.CreateRequest;
-import org.eclipse.swt.widgets.Shell;
 
 import CCMModel.AliasDef;
 import CCMModel.Assembly;
 import CCMModel.ComponentDef;
 import CCMModel.ComponentImplDef;
+import CCMModel.ComponentInstantiation;
 import CCMModel.Composition;
 import CCMModel.ConstantDef;
 import CCMModel.Contained;
+import CCMModel.ContainedFile;
 import CCMModel.Container;
-import CCMModel.Implementation;
+import CCMModel.DependentFile;
 import CCMModel.EnumDef;
 import CCMModel.EventDef;
 import CCMModel.ExceptionDef;
+import CCMModel.ExternalInstance;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
+import CCMModel.HomeInstantiation;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
-import CCMModel.Relation;
+import CCMModel.ProcessCollocation;
+import CCMModel.Property;
+import CCMModel.RegisterComponentInstance;
+import CCMModel.Rule;
 import CCMModel.SoftwarePackage;
 import CCMModel.StructDef;
 import CCMModel.UnionDef;
 import CCMModel.ValueBoxDef;
 import CCMModel.ValueDef;
 import CCMModel.View;
+import MDE.Deployment.DeploymentRequirement;
 import ccm.commands.constraints.ConstraintForComponentDefNode;
 import ccm.commands.constraints.SetConstraintForNode;
 import ccm.commands.constraints.SetConstraintForPortNode;
@@ -58,9 +65,9 @@ import ccm.commands.create.visual.CreateNodeForCompositionCommand;
 import ccm.commands.create.visual.CreateNodeForConstantDefCommand;
 import ccm.commands.create.visual.CreateNodeForContainedCommand;
 import ccm.commands.create.visual.CreateNodeForContainerCommand;
-import ccm.commands.create.visual.CreateNodeForDeploymentUnitCommand;
 import ccm.commands.create.visual.CreateNodeForEnumDefCommand;
 import ccm.commands.create.visual.CreateNodeForExceptionDefCommand;
+import ccm.commands.create.visual.CreateNodeForExternalInstanceCommand;
 import ccm.commands.create.visual.CreateNodeForHomeDefCommand;
 import ccm.commands.create.visual.CreateNodeForHomeImplCommand;
 import ccm.commands.create.visual.CreateNodeForInterfaceDefCommand;
@@ -72,7 +79,7 @@ import ccm.commands.create.visual.CreateNodeForUnionDefCommand;
 import ccm.commands.create.visual.CreateNodeForValueBoxDefCommand;
 import ccm.commands.create.visual.CreateNodeForValueDefCommand;
 import ccm.commands.dnd.AddModel2DiagramCommand;
-import ccm.commands.dnd.AddRelation2DiagramCommand;
+import ccm.commands.dnd.DragAssembly2DiagramCommand;
 import ccm.commands.dnd.DragComponent2DiagramCommand;
 import ccm.commands.dnd.DragComponentImpl2DiagramCommand;
 import ccm.commands.dnd.DragComposition2DiagramCommand;
@@ -80,6 +87,7 @@ import ccm.commands.dnd.DragEvent2DiagramCommand;
 import ccm.commands.dnd.DragHome2DiagramCommand;
 import ccm.commands.dnd.DragHomeImpl2DiagramCommand;
 import ccm.commands.dnd.DragInterface2DiagramCommand;
+import ccm.commands.dnd.DragSoftwarePackage2DiagramCommand;
 import ccm.commands.dnd.DragValue2DiagramCommand;
 import ccm.edit.AliasDefNodeEditPart;
 import ccm.edit.AssemblyNodeEditPart;
@@ -88,7 +96,6 @@ import ccm.edit.ComponentImplNodeEditPart;
 import ccm.edit.ComponentInstanceNodeEditPart;
 import ccm.edit.CompositionNodeEditPart;
 import ccm.edit.ConstantDefNodeEditPart;
-import ccm.edit.DeploymentUnitNodeEditPart;
 import ccm.edit.EnumNodeEditPart;
 import ccm.edit.ExceptionDefNodeEditPart;
 import ccm.edit.ExternalInstanceNodeEditPart;
@@ -103,7 +110,6 @@ import ccm.edit.StructDefNodeEditPart;
 import ccm.edit.UnionDefNodeEditPart;
 import ccm.edit.ValueBoxDefNodeEditPart;
 import ccm.edit.ValueDefNodeEditPart;
-import ccm.edit.ViewEditPart;
 import ccm.model.ModelFactory;
 import ccm.request.DragAndDropRequest;
 
@@ -128,7 +134,17 @@ public class ViewXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
 			// model element has been dropped on a diagram
 			
-	//*******************************************************************		
+	//*******************************************************************
+			if (req.getNewObject() instanceof SoftwarePackage) {
+				return new DragSoftwarePackage2DiagramCommand( (Contained) req.getNewObject(),
+						((View) getHost().getModel()).getDiagram(),
+						req.getLocation());
+			}
+			if (req.getNewObject() instanceof Assembly) {
+				return new DragAssembly2DiagramCommand( (Contained) req.getNewObject(),
+						((View) getHost().getModel()).getDiagram(),
+						req.getLocation());
+			}
 			if (req.getNewObject() instanceof ComponentDef) {
 				return new DragComponent2DiagramCommand( (Contained) req.getNewObject(),
 						((View) getHost().getModel()).getDiagram(),
@@ -177,16 +193,24 @@ public class ViewXYLayoutEditPolicy extends XYLayoutEditPolicy {
 						((View) getHost().getModel()).getDiagram(),
 						req.getLocation());
 			}
-			if (req.getNewObject() instanceof Contained) {
+			if (req.getNewObject() instanceof Contained && !(req.getNewObject() instanceof ContainedFile)
+					&& !(req.getNewObject() instanceof DependentFile)
+					&& !(req.getNewObject() instanceof DeploymentRequirement)
+					&& !(req.getNewObject() instanceof Property)
+					&& !(req.getNewObject() instanceof Rule)
+					&& !(req.getNewObject() instanceof ProcessCollocation)
+					&& !(req.getNewObject() instanceof HomeInstantiation)
+					&& !(req.getNewObject() instanceof ComponentInstantiation)
+					&& !(req.getNewObject() instanceof RegisterComponentInstance)) {
 				return new AddModel2DiagramCommand( (Contained) req.getNewObject(),
 						((View) getHost().getModel()).getDiagram(),
 						req.getLocation());
 			}
 			
 			// relation has been dropped on a diagram
-			if (req.getNewObject() instanceof Relation) {
-				return new AddRelation2DiagramCommand( (Relation) req.getNewObject(), ((View) getHost().getModel()).getDiagram());
-			}
+//			if (req.getNewObject() instanceof Relation) {
+//				return new AddRelation2DiagramCommand( (Relation) req.getNewObject(), ((View) getHost().getModel()).getDiagram());
+//			}
 		}
 		
 		Object	newObjectType = request.getNewObjectType();
@@ -206,6 +230,7 @@ public class ViewXYLayoutEditPolicy extends XYLayoutEditPolicy {
 			//CreateNodeForInterfaceDefCommand create=new CreateNodeForInterfaceDefCommand();
 			//request.setType(InterfaceDef.class);
 			initilizeCommandForContainer(create,request,dim);
+			setRootModule(create,getView().getModuleDef());
 			createCommand = create;
 	//	}else if(newObjectType==Implementation.class){
 	//		Dimension dim=request.getSize();
@@ -218,8 +243,18 @@ public class ViewXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	//		createCommand = create;
 		}else if(newObjectType==Assembly.class){
 			Dimension dim=request.getSize();
-			if(dim==null)dim=new Dimension(90,60);
+			if(dim==null)dim=new Dimension(460,320);
 			CreateNodeForAssemblyCommand create=new CreateNodeForAssemblyCommand();
+			//System.out.println( "CreateNodeForInterfaceDefCommand:"+create);
+			//CreateNodeForInterfaceDefCommand create=new CreateNodeForInterfaceDefCommand();
+			//request.setType(InterfaceDef.class);
+			initilizeCommandForContainer(create,request,dim);
+			setRootModule(create,getView().getModuleDef());
+			createCommand = create;
+		}else if(newObjectType==ExternalInstance.class){
+			Dimension dim=request.getSize();
+			if(dim==null)dim=new Dimension(90,60);
+			CreateNodeForExternalInstanceCommand create=new CreateNodeForExternalInstanceCommand();
 			//System.out.println( "CreateNodeForInterfaceDefCommand:"+create);
 			//CreateNodeForInterfaceDefCommand create=new CreateNodeForInterfaceDefCommand();
 			//request.setType(InterfaceDef.class);
@@ -444,7 +479,7 @@ public class ViewXYLayoutEditPolicy extends XYLayoutEditPolicy {
 			command.setRectangle((Rectangle)constraint);
 			return command;
 		}else if(child instanceof ComponentDefNodeEditPart){
-		    ConstraintForComponentDefNode command = new ConstraintForComponentDefNode();
+		    ConstraintForComponentDefNode command = new ConstraintForComponentDefNode(false);
 			command.setPart((Node)child.getModel());
 			command.setRectangle((Rectangle)constraint);
 			return command;

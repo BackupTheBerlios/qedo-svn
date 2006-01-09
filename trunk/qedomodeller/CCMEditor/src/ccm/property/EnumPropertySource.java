@@ -22,32 +22,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-import CCMModel.AttributeDef;
 import CCMModel.CCMModelFactory;
 import CCMModel.CCMModelPackage;
 import CCMModel.Contained;
 import CCMModel.EnumDef;
-import CCMModel.Field;
-import CCMModel.IDLType;
 import CCMModel.ModuleDef;
-import CCMModel.Node;
-import CCMModel.StructDef;
-import CCMModel.Typed;
-import ccm.CCMConstants;
 import ccm.model.CCMModelManager;
-import ccm.model.CCMNotificationImpl;
 import ccm.model.ModelFactory;
-import ccm.model.template.FieldTemplate;
-import ccm.model.template.IDLTemplate;
 import ccm.propertyDescriptor.EnummMumberPropertyDescriptor;
-import ccm.propertyDescriptor.FieldpropertyDescriptor;
-import ccm.propertyDescriptor.IDLtypePropertyDescriptor;
 
 /**
  * This class is intended to be a generic property source for all the objects in

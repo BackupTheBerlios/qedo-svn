@@ -13,9 +13,7 @@ import java.util.List;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.resource.Resource;
 
-import CCMModel.Contained;
 import CCMModel.IDLType;
 import CCMModel.Node;
 import CCMModel.OperationDef;

@@ -14,7 +14,6 @@ package ccm.commands.create.visual;
 import org.eclipse.emf.common.notify.Notification;
 
 import CCMModel.ComponentDef;
-
 import ccm.model.CCMNotificationImpl;
 
 

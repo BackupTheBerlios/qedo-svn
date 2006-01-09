@@ -15,18 +15,14 @@ import java.util.List;
 
 import org.eclipse.gef.commands.Command;
 
- 
 import CCMModel.CCMModelFactory;
- 
 import CCMModel.Connection;
 import CCMModel.ConnectionDiscription;
 import CCMModel.HomeDef;
 import CCMModel.ModuleDef;
- 
 import CCMModel.Node;
 import CCMModel.ValueDef;
 import CCMModel.View;
- 
 import ccm.CCMConstants;
 import ccm.model.CCMModelManager;
 

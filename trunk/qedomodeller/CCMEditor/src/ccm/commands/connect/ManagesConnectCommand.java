@@ -16,11 +16,9 @@ import java.util.List;
 import org.eclipse.gef.commands.Command;
 
 import CCMModel.CCMModelFactory;
- 
 import CCMModel.ComponentImplDef;
 import CCMModel.Connection;
 import CCMModel.ConnectionDiscription;
- 
 import CCMModel.HomeImplDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
@@ -67,8 +65,8 @@ public class ManagesConnectCommand extends Command {
 	* @see org.eclipse.gef.commands.Command#execute()
 	*/
 	public void execute() {
-		//componentImplEnd=(ComponentImplDef) target.getContained();
-	   // homeImplEnd=(HomeImplDef) source.getContained();
+		componentImplEnd=(ComponentImplDef) target.getContained();
+	    homeImplEnd=(HomeImplDef) source.getContained();
 	    ComponentImplDef componentImpl=homeImplEnd.getComponentImpl();
 	    if (componentImpl!=null && !componentImpl.equals(componentImplEnd) )
 	    	return;
@@ -191,7 +189,7 @@ public class ManagesConnectCommand extends Command {
         if(view!=null && source!=null && target!=null){
         	componentImplEnd=(ComponentImplDef) target.getContained();
     	    homeImplEnd=(HomeImplDef) source.getContained();
-        	if((homeImplEnd.getHome().getComponent()).equals(componentImplEnd.getComponent()))
+        	if(homeImplEnd.getHome().getComponent()!=null&&(homeImplEnd.getHome().getComponent()).equals(componentImplEnd.getComponent()))
         		return true;
             //if(source.getContained()!=target.getContained())
             //    return true;

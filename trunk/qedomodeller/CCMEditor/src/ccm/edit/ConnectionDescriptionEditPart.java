@@ -26,12 +26,11 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.ui.views.properties.IPropertySource;
 
+import CCMModel.ConnectionDiscription;
 import ccm.commands.connect.ConnectionDescriptionConstraint;
 import ccm.commands.connect.ConnectionDescriptionTracker;
 import ccm.edit.policy.ConnectionDescriptionMovePolicy;
 import ccm.figures.DerivedConnection;
-
-import CCMModel.ConnectionDiscription;
 
 
 

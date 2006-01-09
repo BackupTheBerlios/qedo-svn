@@ -10,14 +10,17 @@
  */
 package ccm.commands.create.visual;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.emf.common.notify.Notification;
 
-import CCMModel.ComponentCategory;
-import CCMModel.Composition;
-import CCMModel.Implementation;
-import CCMModel.InterfaceDef;
-
+import CCMModel.Assembly;
+import CCMModel.ComponentFile;
+import CCMModel.ModuleDef;
+import CCMModel.SoftwarePackage;
 import ccm.model.CCMNotificationImpl;
+import ccm.model.ModelFactory;
 
 
 
@@ -27,6 +30,7 @@ public class CreateNodeForAssemblyCommand extends CreateNodeForRuleOwnerCommand{
 	
 	 
 	private String uuid;
+	private List comFiles;
 	//private boolean isLocal=false;
 	
 	/**
@@ -44,7 +48,19 @@ public class CreateNodeForAssemblyCommand extends CreateNodeForRuleOwnerCommand{
 	public void execute() {
 		super.execute();
 		 
-		((Implementation)newObject).setUuid(uuid);
+		((Assembly)newObject).setUuid(uuid);
+		// Configuration config = factory.createConfiguration();
+		// config.setDefinedIn((Assembly)newObject);
+		//((Assembly)newObject).setConfig(config);
+		for (Iterator it =comFiles.iterator();it.hasNext();){
+			ComponentFile comFile = (ComponentFile)it.next();
+			if (comFile.getLocation()==""||comFile.getLocation()==null)
+				((Assembly)newObject).getSoftwarePackage().add(comFile.getPackage());
+			
+		}
+		((Assembly)newObject).getContents().addAll(comFiles);
+		((Assembly)newObject).getComponentFile().addAll(comFiles);
+		//((Assembly)newObject).getComponentFile().addAll(comFiles);
 		//((InterfaceDef)newObject).setIsLocal(isLocal);
 		node.eNotify(new CCMNotificationImpl(node, Notification.SET,
 			     CCMNotificationImpl.Assembly, null, null,0));
@@ -56,7 +72,16 @@ public class CreateNodeForAssemblyCommand extends CreateNodeForRuleOwnerCommand{
     public void setUUID(String uuid) {
         this.uuid = uuid;
     }
-    
+    public void setComFiles(List comFiles) {
+        this.comFiles = comFiles;
+    }
+    public List getPackages(){
+   	 
+   	ModelFactory mf = new ModelFactory();
+   	ModuleDef root=this.getRootModule();
+   	List pkgs=mf.getAllContained(root,SoftwarePackage.class);
+   	return pkgs;
+   }
 }
  
  

@@ -22,17 +22,6 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
-import ccm.CCMConstants;
-import ccm.model.CCMModelManager;
-import ccm.model.CCMNotificationImpl;
-import ccm.model.ModelFactory;
-import ccm.model.template.FieldTemplate;
-import ccm.model.template.IDLTemplate;
-import ccm.model.template.ParameterTemplate;
-import ccm.propertyDescriptor.FieldpropertyDescriptor;
-import ccm.propertyDescriptor.IDLtypePropertyDescriptor;
-
-import CCMModel.AttributeDef;
 import CCMModel.CCMModelFactory;
 import CCMModel.CCMModelPackage;
 import CCMModel.Contained;
@@ -41,9 +30,14 @@ import CCMModel.Field;
 import CCMModel.IDLType;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
-import CCMModel.ParameterDef;
-import CCMModel.ParameterMode;
 import CCMModel.Typed;
+import ccm.CCMConstants;
+import ccm.model.CCMModelManager;
+import ccm.model.CCMNotificationImpl;
+import ccm.model.ModelFactory;
+import ccm.model.template.FieldTemplate;
+import ccm.model.template.IDLTemplate;
+import ccm.propertyDescriptor.FieldpropertyDescriptor;
 
 /**
  * This class is intended to be a generic property source for all the objects in

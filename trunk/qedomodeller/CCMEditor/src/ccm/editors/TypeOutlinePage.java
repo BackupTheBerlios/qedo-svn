@@ -40,10 +40,10 @@ import org.eclipse.ui.part.PageBook;
 import CCMModel.CCM;
 import CCMModel.ModuleDef;
 import ccm.CCMEditorPlugin;
+import ccm.ProjectResources;
 import ccm.dragndrop.DiagramDragSourceListener;
 import ccm.dragndrop.DiagramDropTargetListener;
 import ccm.treeedit.TreePartFactory;
-import ccm.ProjectResources;
 
 
 /**

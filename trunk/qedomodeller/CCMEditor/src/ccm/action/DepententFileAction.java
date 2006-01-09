@@ -16,13 +16,10 @@ import CCMModel.Container;
 import CCMModel.Implementation;
 import CCMModel.Node;
 import ccm.commands.create.visual.adds.AddDepententFileCommand;
-import ccm.commands.create.visual.adds.AddStructDefCommand;
 import ccm.edit.ContainerNodeEditPart;
 import ccm.edit.DeploymentUnitNodeEditPart;
-import ccm.edit.InterfaceDefNodeEditPart;
 import ccm.model.CCMModelManager;
 import ccm.model.ModelFactory;
-import ccm.request.AddStructDefRequest;
 import ccm.treeedit.CCMModelTreeEditPart;
 
 /**

@@ -21,6 +21,7 @@ import org.eclipse.gef.commands.UnexecutableCommand;
 import org.eclipse.swt.widgets.Shell;
 
 import ccm.commands.create.model.CreateAliasDefCommand;
+import ccm.commands.create.model.CreateAssemblyCommand;
 import ccm.commands.create.model.CreateComponentDefCommand;
 import ccm.commands.create.model.CreateComponentImplDefCommand;
 import ccm.commands.create.model.CreateCompositionDefCommand;
@@ -28,10 +29,15 @@ import ccm.commands.create.model.CreateConstantDefCommand;
 import ccm.commands.create.model.CreateEnumDefCommand;
 import ccm.commands.create.model.CreateEventDefCommand;
 import ccm.commands.create.model.CreateExceptionDefCommand;
+import ccm.commands.create.model.CreateExternalInstanceCommand;
 import ccm.commands.create.model.CreateHomeDefCommand;
 import ccm.commands.create.model.CreateHomeImplDefCommand;
+import ccm.commands.create.model.CreateHomeInstanceCommand;
+import ccm.commands.create.model.CreateImplementationCommand;
 import ccm.commands.create.model.CreateInterfaceDefCommand;
 import ccm.commands.create.model.CreateModuleDefCommand;
+import ccm.commands.create.model.CreateProcessCollocationCommand;
+import ccm.commands.create.model.CreateSoftwarePackageCommand;
 import ccm.commands.create.model.CreateStructDefCommand;
 import ccm.commands.create.model.CreateUnionDefCommand;
 import ccm.commands.create.model.CreateValueBoxDefCommand;
@@ -39,15 +45,24 @@ import ccm.commands.create.model.CreateValueDefCommand;
 import ccm.commands.create.visual.CreateDiagramCommand;
 import ccm.commands.create.visual.adds.AddAliasDefCommand;
 import ccm.commands.create.visual.adds.AddAttributeDefCommand;
+import ccm.commands.create.visual.adds.AddComponentFileCommand;
+import ccm.commands.create.visual.adds.AddComponentInstanceCommand;
 import ccm.commands.create.visual.adds.AddConstantDefCommand;
+import ccm.commands.create.visual.adds.AddContainedFileCommand;
+import ccm.commands.create.visual.adds.AddDepententFileCommand;
+import ccm.commands.create.visual.adds.AddDeploymenRequirementCommand;
 import ccm.commands.create.visual.adds.AddEmitsSourceCommand;
 import ccm.commands.create.visual.adds.AddEnumDefCommand;
 import ccm.commands.create.visual.adds.AddEventSinkCommand;
 import ccm.commands.create.visual.adds.AddEventSourceCommand;
 import ccm.commands.create.visual.adds.AddExceptionDefCommand;
 import ccm.commands.create.visual.adds.AddFacetCommand;
+import ccm.commands.create.visual.adds.AddIDLCommand;
 import ccm.commands.create.visual.adds.AddOperationDefCommand;
+import ccm.commands.create.visual.adds.AddPropertyCommand;
 import ccm.commands.create.visual.adds.AddReceptacleCommand;
+import ccm.commands.create.visual.adds.AddRegisterComponentInstanceCommand;
+import ccm.commands.create.visual.adds.AddRuleCommand;
 import ccm.commands.create.visual.adds.AddStructDefCommand;
 import ccm.commands.create.visual.adds.AddUnionDefCommand;
 import ccm.commands.create.visual.adds.AddValueBoxDefCommand;
@@ -147,6 +162,75 @@ public class DelegatingCommandStack
     public void execute(Command command){
         if (null != currentCommandStack){
         	//*****************************************
+        	if(command instanceof CreateSoftwarePackageCommand){
+        		  
+          		if(!execute.canExecute((CreateSoftwarePackageCommand) command,shell))return;
+        	    }
+        	if(command instanceof CreateImplementationCommand){
+        		  
+          		if(!execute.canExecute((CreateImplementationCommand) command,shell))return;
+        	    }
+        	if(command instanceof CreateAssemblyCommand){
+        		  
+          		if(!execute.canExecute((CreateAssemblyCommand) command,shell))return;
+        	    }
+        	if(command instanceof CreateProcessCollocationCommand){
+        		  
+          		if(!execute.canExecute((CreateProcessCollocationCommand) command,shell))return;
+        	    }
+        	if(command instanceof CreateHomeInstanceCommand){
+        		  
+          		if(!execute.canExecute((CreateHomeInstanceCommand) command,shell))return;
+        	    }
+        	if(command instanceof CreateExternalInstanceCommand){
+        		  
+          		if(!execute.canExecute((CreateExternalInstanceCommand) command,shell))return;
+        	    }
+        	
+        	
+        	if(command instanceof  AddComponentFileCommand){
+      		  
+        		if(!execute.canExecute((AddComponentFileCommand) command,shell))return;
+      	    }	
+        	if(command instanceof  AddIDLCommand){
+        		  
+          		if(!execute.canExecute((AddIDLCommand) command,shell))return;
+        	    }	
+        	
+        	
+        	if(command instanceof AddComponentInstanceCommand){
+      		  
+        		if(!execute.canExecute((AddComponentInstanceCommand) command,shell))return;
+      	    }
+        	if(command instanceof AddRegisterComponentInstanceCommand){
+        		  
+          		if(!execute.canExecute((AddRegisterComponentInstanceCommand) command,shell))return;
+        	    }
+        	if(command instanceof AddRuleCommand){
+        		  
+          		if(!execute.canExecute((AddRuleCommand) command,shell))return;
+        	    }
+        	if(command instanceof AddDepententFileCommand){
+        		  
+          		if(!execute.canExecute((AddDepententFileCommand) command,shell))return;
+        	    }
+        	if(command instanceof AddPropertyCommand){
+      		  
+        		if(!execute.canExecute((AddPropertyCommand) command,shell))return;
+      	    }
+        	if(command instanceof AddContainedFileCommand){
+      		  
+        		if(!execute.canExecute((AddContainedFileCommand) command,shell))return;
+      	    }
+        	if(command instanceof AddDeploymenRequirementCommand){
+      		  
+        		if(!execute.canExecute((AddDeploymenRequirementCommand) command,shell))return;
+      	    }
+        	
+        	
+        	
+        	
+        	
         	if(command instanceof EditOperationCommand){
         		  
         		if(!execute.canExecute((EditOperationCommand) command,shell))return;

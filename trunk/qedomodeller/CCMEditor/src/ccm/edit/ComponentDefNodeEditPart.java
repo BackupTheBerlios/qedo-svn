@@ -44,7 +44,6 @@ import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
 import ccm.edit.policy.ModelEditPolicy;
 import ccm.figures.ComponentFigure;
 import ccm.model.CCMNotificationImpl;
-import ccm.property.AbstractIntefacefPropertySource;
 import ccm.property.ComponentDefPropertySource;
 import ccm.request.AddAttributeDefRequest;
 import ccm.request.AddEmitsSourceRequest;

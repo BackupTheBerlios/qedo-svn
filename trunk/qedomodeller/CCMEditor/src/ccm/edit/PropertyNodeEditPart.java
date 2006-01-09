@@ -16,19 +16,15 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.views.properties.IPropertySource;
 
-import CCMModel.DependentFile;
-import CCMModel.Deploymentrequirement;
 import CCMModel.Node;
 import CCMModel.Property;
- 
 import ccm.ProjectResources;
 import ccm.commands.delete.visual.DeleteNodeCommand;
-import ccm.edit.policy.ModelEditPolicy;
 import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
+import ccm.edit.policy.ModelEditPolicy;
 import ccm.figures.ContainedWithMembersFigure;
 import ccm.model.CCMNotificationImpl;
-import ccm.property.ContainedPropertySource;
-import ccm.property.StructDefPropertySource;
+import ccm.property.PropertyPropertySource;
 
 /**
  * @author siegercn
@@ -109,7 +105,7 @@ public class PropertyNodeEditPart
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-		ContainedWithMembersFigure opFigure=new ContainedWithMembersFigure(getProperty().getIdentifier(),ProjectResources.STRUCT_S);
+		ContainedWithMembersFigure opFigure=new ContainedWithMembersFigure(getProperty().getIdentifier(),ProjectResources.PROPERTY);
 		return opFigure;
 	}
 	/**
@@ -138,7 +134,7 @@ public class PropertyNodeEditPart
 	 * @return IPropertySource 
 	 */	
 	protected IPropertySource getPropertySource() {
-			propertySource = new StructDefPropertySource( getModelNode().getContained() );
+			propertySource = new PropertyPropertySource( getModelNode().getContained() );
 		return propertySource;
 	}
 	

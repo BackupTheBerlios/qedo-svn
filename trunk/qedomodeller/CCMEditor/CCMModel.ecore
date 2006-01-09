@@ -14,8 +14,6 @@
         upperBound="-1" eType="#//OperationDelegation"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="abstractSpec" upperBound="-1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="managesRelation" lowerBound="1"
-        eType="#//ManagersRelation" eOpposite="#//ManagersRelation/home_impl"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="home" lowerBound="1" eType="#//HomeDef"
         eOpposite="#//HomeDef/homeImpl"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="composition" upperBound="-1"
@@ -46,10 +44,6 @@
       eSuperTypes="#//Container #//IDLType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAbstract" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="isLocal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="baseRelation" upperBound="-1"
-        eType="#//AbstractItfDerivedRelation" eOpposite="#//AbstractItfDerivedRelation/base"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="derivedRelation" upperBound="-1"
-        eType="#//AbstractItfDerivedRelation" eOpposite="#//AbstractItfDerivedRelation/derived"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="baseInterface" upperBound="-1"
         eType="#//AbstractInterfaceDef" eOpposite="#//AbstractInterfaceDef/derivedInterface"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="derivedInterface" upperBound="-1"
@@ -59,16 +53,6 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAbstract" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="isCustom" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="isTruncatable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="baseRelation" upperBound="-1"
-        eType="#//ValueDerivedRelation" eOpposite="#//ValueDerivedRelation/base"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="derivedRelation" eType="#//ValueDerivedRelation"
-        eOpposite="#//ValueDerivedRelation/derived"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="abstractDerivedRelation"
-        upperBound="-1" eType="#//AbstractDerivedRelation" eOpposite="#//AbstractDerivedRelation/abstractDerived"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="abstractBaseRelation" upperBound="-1"
-        eType="#//AbstractDerivedRelation" eOpposite="#//AbstractDerivedRelation/abstractBase"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="supportsRelation" eType="#//SupportsRelation"
-        eOpposite="#//SupportsRelation/values"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="valueSupports_itf" upperBound="-1"
         eType="#//InterfaceDef" eOpposite="#//InterfaceDef/values"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="homeEnd" upperBound="-1"
@@ -89,14 +73,8 @@
         eOpposite="#//CCM/moduleDef"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="view" upperBound="-1" eType="#//View"
         eOpposite="#//View/moduleDef"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="relations" upperBound="-1"
-        eType="#//Relation" containment="true" eOpposite="#//Relation/moduleDef"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InterfaceDef" eSuperTypes="#//AbstractInterfaceDef">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="interfaceRelation" upperBound="-1"
-        eType="#//InterfaceRelation" eOpposite="#//InterfaceRelation/Itf"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="supportsRelation" upperBound="-1"
-        eType="#//SupportsRelation" eOpposite="#//SupportsRelation/supportsItf"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="components" upperBound="-1"
         eType="#//ComponentDef" eOpposite="#//ComponentDef/componentSupports_itf"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="homes" upperBound="-1"
@@ -114,25 +92,21 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ComponentDef" eSuperTypes="#//AbstractInterfaceDef #//ComponentFeature">
     <eStructuralFeatures xsi:type="ecore:EReference" name="facet" upperBound="-1"
-        eType="#//ProvidesDef" containment="true" eOpposite="#//ProvidesDef/comp"/>
+        eType="#//ProvidesDef" eOpposite="#//ProvidesDef/comp"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="receptacle" upperBound="-1"
-        eType="#//UsesDef" containment="true" eOpposite="#//UsesDef/comp"/>
+        eType="#//UsesDef" eOpposite="#//UsesDef/comp"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="emitss" upperBound="-1"
-        eType="#//EmitsDef" containment="true" eOpposite="#//EmitsDef/comp"/>
+        eType="#//EmitsDef" eOpposite="#//EmitsDef/comp"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="consumess" upperBound="-1"
-        eType="#//ConsumesDef" containment="true" eOpposite="#//ConsumesDef/comp"/>
+        eType="#//ConsumesDef" eOpposite="#//ConsumesDef/comp"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="publishesDef" upperBound="-1"
-        eType="#//PublishesDef" containment="true" eOpposite="#//PublishesDef/comp"/>
+        eType="#//PublishesDef" eOpposite="#//PublishesDef/comp"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sinkss" upperBound="-1"
-        eType="#//SinkDef" containment="true" eOpposite="#//SinkDef/comp"/>
+        eType="#//SinkDef" eOpposite="#//SinkDef/comp"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sourcess" upperBound="-1"
-        eType="#//SourceDef" containment="true" eOpposite="#//SourceDef/comp"/>
+        eType="#//SourceDef" eOpposite="#//SourceDef/comp"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="siSouss" upperBound="-1"
-        eType="#//SiSouDef" containment="true" eOpposite="#//SiSouDef/comp"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="supportsRelation" upperBound="-1"
-        eType="#//SupportsRelation" eOpposite="#//SupportsRelation/components"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="compHomeRelation" upperBound="-1"
-        eType="#//CompHomeRelation" eOpposite="#//CompHomeRelation/componentEnd"/>
+        eType="#//SiSouDef" eOpposite="#//SiSouDef/comp"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="componentImpl" upperBound="-1"
         eType="#//ComponentImplDef" eOpposite="#//ComponentImplDef/component"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="homes" upperBound="-1"
@@ -140,17 +114,13 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="componentSupports_itf"
         upperBound="-1" eType="#//InterfaceDef" eOpposite="#//InterfaceDef/components"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="package" upperBound="-1"
-        eType="#//SoftwarePackage" eOpposite="#//ComponentImplDef/component"/>
+        eType="#//SoftwarePackage" eOpposite="#//SoftwarePackage/component"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="HomeDef" eSuperTypes="#//AbstractInterfaceDef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="factorys" upperBound="-1"
         eType="#//FactoryDef" containment="true" eOpposite="#//FactoryDef/homeDef"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="finders" upperBound="-1"
         eType="#//FinderDef" containment="true" eOpposite="#//FinderDef/homeDef"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="supportsRelation" upperBound="-1"
-        eType="#//SupportsRelation" eOpposite="#//ComponentDef/homes"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="compHomeRelation" lowerBound="1"
-        eType="#//CompHomeRelation" eOpposite="#//CompHomeRelation/homeEnd"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="prefix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         defaultValueLiteral=" "/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="homeImpl" upperBound="-1"
@@ -173,8 +143,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="ComponentImplDef" eSuperTypes="#//Container #//ImplDef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="segment" lowerBound="1"
         upperBound="-1" eType="#//SegmentDef" containment="true" eOpposite="#//SegmentDef/componentImplEnd"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="managersRelation" upperBound="-1"
-        eType="#//ManagersRelation"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="category" eType="#//ComponentCategory"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="instance" upperBound="-1"
         eType="#//ComponentInstantiation" eOpposite="#//ComponentInstantiation/type"/>
@@ -195,8 +163,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="componentImplEnd" lowerBound="1"
         eType="#//ComponentImplDef" eOpposite="#//ComponentImplDef/segment"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="isSerialized" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="provideRelation" upperBound="-1"
-        eType="#//SegmentProvide"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="segmentPersistenceDcl"
         upperBound="-1" eType="#//StorageHomeBinding"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="facet" upperBound="-1"
@@ -205,51 +171,59 @@
   <eClassifiers xsi:type="ecore:EClass" name="ProvidesDef" eSuperTypes="#//ComponentFeature #//Contained">
     <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
         eOpposite="#//ComponentDef/facet"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="interfaceRelation" lowerBound="1"
-        eType="#//InterfaceRelation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="segmentRelation" upperBound="-1"
-        eType="#//SegmentProvide"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="interface" lowerBound="1"
         eType="#//InterfaceDef" eOpposite="#//InterfaceDef/facet_port"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/facet"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="UsesDef" eSuperTypes="#//ComponentFeature #//Contained">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="multipleItf" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
         eOpposite="#//ComponentDef/receptacle"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="interfaceRelation" upperBound="-1"
-        eType="#//InterfaceRelation"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="interface" lowerBound="1"
         eType="#//InterfaceDef" eOpposite="#//InterfaceDef/receptacle_port"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/receptacle"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EventPortDef" abstract="true" eSuperTypes="#//ComponentFeature #//Contained">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eventPortEvent" lowerBound="1"
-        eType="#//EventPortEventRelation"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="event" lowerBound="1" eType="#//EventDef"
         eOpposite="#//EventDef/eventPorts"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EmitsDef" eSuperTypes="#//EventPortDef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
         eOpposite="#//ComponentDef/emitss"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/emitss"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConsumesDef" eSuperTypes="#//EventPortDef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
         eOpposite="#//ComponentDef/consumess"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/consumess"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PublishesDef" eSuperTypes="#//EventPortDef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
         eOpposite="#//ComponentDef/publishesDef"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/publishesDef"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SinkDef" eSuperTypes="#//StreamProtDef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
         eOpposite="#//ComponentDef/sinkss"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/sinkss"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SourceDef" eSuperTypes="#//StreamProtDef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
         eOpposite="#//ComponentDef/sourcess"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/sourcess"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SiSouDef" eSuperTypes="#//StreamProtDef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
         eOpposite="#//ComponentDef/siSouss"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/siSouss"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="StreamProtDef" abstract="true" eSuperTypes="#//ComponentFeature #//Contained">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//MediaType"
@@ -262,8 +236,6 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="format" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EventDef" eSuperTypes="#//ValueDef">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eventPortEventRelation"
-        upperBound="-1" eType="#//EventPortEventRelation" eOpposite="#//EventPortEventRelation/type"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eventPorts" upperBound="-1"
         eType="#//EventPortDef" eOpposite="#//EventPortDef/event"/>
   </eClassifiers>
@@ -415,15 +387,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="diagram" lowerBound="1"
         eType="#//Diagram" eOpposite="#//Diagram/view"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Relation" abstract="true">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="moduleDef" lowerBound="1"
-        eType="#//ModuleDef" eOpposite="#//ModuleDef/relations"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="connection" upperBound="-1"
-        eType="#//Connection" eOpposite="#//Connection/relation"/>
-  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Connection">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="relation" lowerBound="1"
-        eType="#//Relation" eOpposite="#//Relation/connection"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectionDiscription"
         lowerBound="1" eType="#//ConnectionDiscription" containment="true" eOpposite="#//ConnectionDiscription/connection"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="view" lowerBound="1" eType="#//View"
@@ -433,6 +397,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Node"
         eOpposite="#//Node/connTarget"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="connectionKind" eType="#//ConnectionsKind"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="assemblyConnection" eType="#//AssemblyConnection"
+        eOpposite="#//AssemblyConnection/connection"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Node">
     <eStructuralFeatures xsi:type="ecore:EReference" name="view" lowerBound="1" eType="#//View"
@@ -478,12 +444,12 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//HomeImplDef"
         eOpposite="#//HomeImplDef/instance"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="comp" upperBound="-1" eType="#//ComponentInstantiation"
-        containment="true" eOpposite="#//ComponentInstantiation/thehome"/>
+        eOpposite="#//ComponentInstantiation/thehome"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="deploymentUnit" lowerBound="1"
-        eType="#//Implementation" eOpposite="#//ProcessCollocation/homeInstance"/>
+        eType="#//Implementation" eOpposite="#//Implementation/homeinstance"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="cardinality" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="prozessCollocation" eType="#//ProcessCollocation"
-        eOpposite="#//ProcessCollocation/homeInstance"/>
+        eOpposite="#//ProcessCollocation/homeInstances"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="regName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="service" lowerBound="1"
@@ -498,6 +464,22 @@
         eType="#//RegisterComponentInstance" eOpposite="#//RegisterComponentInstance/componentInstance"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="startOrder" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="cardinality" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="facet" upperBound="-1"
+        eType="#//ProvidesDef" eOpposite="#//ProvidesDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="receptacle" upperBound="-1"
+        eType="#//UsesDef" eOpposite="#//UsesDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="emitss" upperBound="-1"
+        eType="#//EmitsDef" eOpposite="#//EmitsDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="consumess" upperBound="-1"
+        eType="#//ConsumesDef" eOpposite="#//ConsumesDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="publishesDef" upperBound="-1"
+        eType="#//PublishesDef" eOpposite="#//PublishesDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sinkss" upperBound="-1"
+        eType="#//SinkDef" eOpposite="#//SinkDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourcess" upperBound="-1"
+        eType="#//SourceDef" eOpposite="#//SourceDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="siSouss" upperBound="-1"
+        eType="#//SiSouDef" eOpposite="#//SiSouDef/componentInstance"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ExternalInstance" eSuperTypes="#//Contained #//CCMInstantiation">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="objectRef" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -521,22 +503,38 @@
         defaultValueLiteral=" "/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="cCM" lowerBound="1" eType="#//CCM"
         eOpposite="#//CCM/assemblys"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="deploymentunit" upperBound="-1"
-        eType="#//Implementation"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="softwarePackage" upperBound="-1"
         eType="#//SoftwarePackage" eOpposite="#//SoftwarePackage/assembly"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//Configuration"
+        eOpposite="#//Configuration/assembly"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="componentFile" upperBound="-1"
         eType="#//ComponentFile" eOpposite="#//ComponentFile/assembly"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="connection" upperBound="-1"
         eType="#//AssemblyConnection" eOpposite="#//AssemblyConnection/assembly"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="processCollocation" upperBound="-1"
+        eType="#//ProcessCollocation" eOpposite="#//ProcessCollocation/assembly"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AssemblyConnection" eSuperTypes="#//Contained">
+  <eClassifiers xsi:type="ecore:EClass" name="Configuration" eSuperTypes="#//Container">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentFile" upperBound="-1"
+        eType="#//ComponentFile" eOpposite="#//ComponentFile/config"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connection" upperBound="-1"
+        eType="#//AssemblyConnection" eOpposite="#//AssemblyConnection/config"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="processCollocation" upperBound="-1"
+        eType="#//ProcessCollocation" eOpposite="#//ProcessCollocation/config"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="assembly" eType="#//Assembly"
+        eOpposite="#//Assembly/config"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AssemblyConnection" eSuperTypes="#//Container">
     <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
         eType="#//ConnectionEnd" eOpposite="#//ConnectionEnd/conSource"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
         eType="#//ConnectionEnd" eOpposite="#//ConnectionEnd/conTarget"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="assembly" lowerBound="1"
-        eType="#//Assembly" eOpposite="#//Assembly/connection"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//Configuration"
+        eOpposite="#//Configuration/connection"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="assembly" eType="#//Assembly"
+        eOpposite="#//Assembly/connection"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connection" upperBound="-1"
+        eType="#//Connection" eOpposite="#//Connection/assemblyConnection"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConnectionEnd" eSuperTypes="#//Contained">
     <eStructuralFeatures xsi:type="ecore:EReference" name="conSource" lowerBound="1"
@@ -565,75 +563,6 @@
         eType="#//ArrayDef" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="wstrings" upperBound="-1"
         eType="#//WstringDef" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ManagersRelation" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="home_impl" eType="#//HomeImplDef"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="component_impl" eType="#//ComponentImplDef"
-        eOpposite="#//ComponentImplDef/managersRelation"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="CompHomeRelation" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="homeEnd" lowerBound="1"
-        eType="#//HomeDef" eOpposite="#//HomeDef/compHomeRelation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="componentEnd" lowerBound="1"
-        eType="#//ComponentDef" eOpposite="#//ComponentDef/compHomeRelation"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EventPortEventRelation" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="ends" lowerBound="1" eType="#//EventPortDef"
-        eOpposite="#//EventPortDef/eventPortEvent"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//EventDef"
-        eOpposite="#//EventDef/eventPortEventRelation"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ValueDerivedRelation" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="base" lowerBound="1" eType="#//ValueDef"
-        eOpposite="#//ValueDef/baseRelation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="derived" lowerBound="1"
-        eType="#//ValueDef" eOpposite="#//ValueDef/derivedRelation"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AbstractItfDerivedRelation" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="base" lowerBound="1" eType="#//AbstractInterfaceDef"
-        eOpposite="#//AbstractInterfaceDef/baseRelation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="derived" lowerBound="1"
-        eType="#//AbstractInterfaceDef" eOpposite="#//AbstractInterfaceDef/derivedRelation"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="AbstractDerivedRelation" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="abstractBase" lowerBound="1"
-        eType="#//ValueDef" eOpposite="#//ValueDef/abstractBaseRelation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="abstractDerived" lowerBound="1"
-        eType="#//ValueDef" eOpposite="#//ValueDef/abstractDerivedRelation"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ImplRelation" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="interface" lowerBound="1"
-        eType="#//AbstractInterfaceDef"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="impl" lowerBound="1" upperBound="-1"
-        eType="#//ImplDef"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SegmentProvide" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" upperBound="-1"
-        eType="#//ComponentFeature"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="segment" lowerBound="1"
-        eType="#//SegmentDef"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InterfaceConnection" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
-        eType="#//CCMInstantiation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
-        eType="#//CCMInstantiation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" eType="#//ComponentFeature"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InterfaceRelation" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="Itf" lowerBound="1" eType="#//InterfaceDef"
-        eOpposite="#//InterfaceDef/interfaceRelation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="providesDef" lowerBound="1"
-        eType="#//ProvidesDef" eOpposite="#//ProvidesDef/interfaceRelation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="usesDef" lowerBound="1"
-        eType="#//UsesDef" eOpposite="#//UsesDef/interfaceRelation"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SupportsRelation" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="supportsItf" lowerBound="1"
-        eType="#//InterfaceDef"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="components" eType="#//ComponentDef"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="values" eType="#//ValueDef"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="homes" eType="#//HomeDef"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="PortLocation">
     <eLiterals name="TOP"/>
@@ -688,7 +617,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="composition" lowerBound="1"
         eType="#//Composition" eOpposite="#//Composition/deploymentUnit"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dependentFiles" upperBound="-1"
-        eType="#//DependentFile" eOpposite="#//HomeInstantiation/deploymentUnit"/>
+        eType="#//DependentFile" eOpposite="#//DependentFile/deploymentUnit"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="containedFile" upperBound="-1"
         eType="#//ContainedFile" eOpposite="#//ContainedFile/deploymentUnit"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="requirment" upperBound="-1"
@@ -706,7 +635,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="autor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="component" lowerBound="1"
         eType="#//ComponentDef" eOpposite="#//ComponentDef/package"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="componentFile" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentFiles" upperBound="-1"
         eType="#//ComponentFile" eOpposite="#//ComponentFile/package"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="assembly" upperBound="-1"
         eType="#//Assembly" eOpposite="#//Assembly/softwarePackage"/>
@@ -721,9 +650,11 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ComponentFile" eSuperTypes="#//File">
     <eStructuralFeatures xsi:type="ecore:EReference" name="package" lowerBound="1"
-        eType="#//SoftwarePackage" eOpposite="#//SoftwarePackage/componentFile"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="assembly" lowerBound="1"
-        eType="#//Assembly" eOpposite="#//SoftwarePackage/componentFile"/>
+        eType="#//SoftwarePackage" eOpposite="#//SoftwarePackage/componentFiles"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//Configuration"
+        eOpposite="#//Configuration/componentFile"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="assembly" eType="#//Assembly"
+        eOpposite="#//Assembly/componentFile"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Deploymentrequirement" eSuperTypes="#//Contained">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -754,12 +685,16 @@
         eType="#//Implementation" eOpposite="#//Implementation/containedFile"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ProcessCollocation" eSuperTypes="#//Container">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="homeInstance" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homeInstances" upperBound="-1"
         eType="#//HomeInstantiation" eOpposite="#//HomeInstantiation/prozessCollocation"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="cardinality" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="destination" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//Configuration"
+        eOpposite="#//Configuration/processCollocation"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="assembly" eType="#//Assembly"
+        eOpposite="#//Assembly/processCollocation"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FinderServiceKind">
     <eLiterals name="UNDEFINED" value="4"/>
@@ -776,15 +711,18 @@
   <eClassifiers xsi:type="ecore:EEnum" name="ConnectionsKind">
     <eLiterals name="CCM"/>
     <eLiterals name="COMPOSITION" value="1"/>
+    <eLiterals name="INSTANCECONNECTION" value="2"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PropOwner">
     <eStructuralFeatures xsi:type="ecore:EReference" name="propertys" upperBound="-1"
-        eType="#//Property"/>
+        eType="#//Property" eOpposite="#//Property/propetyOwner"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Property" eSuperTypes="#//Contained">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="el_name" eType="#//ElementName"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propetyOwner" lowerBound="1"
+        eType="#//PropOwner" eOpposite="#//PropOwner/propertys"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RuleOwner">
     <eStructuralFeatures xsi:type="ecore:EReference" name="rules" upperBound="-1"
@@ -799,31 +737,8 @@
         eType="#//RuleOwner" eOpposite="#//RuleOwner/rules"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="CCMInstantiation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="interfaceConnections" upperBound="-1"
-        eType="#//InterfaceConnection"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="eventConnections" upperBound="-1"
-        eType="#//EventConnection"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="streamConnections" upperBound="-1"
-        eType="#//StreamConnection"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="connectionEnd" upperBound="-1"
         eType="#//ConnectionEnd" eOpposite="#//ConnectionEnd/instance"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ImplDef">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="implRelation" lowerBound="1"
-        eType="#//ImplRelation"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EventConnection" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
-        eType="#//CCMInstantiation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
-        eType="#//CCMInstantiation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" eType="#//ComponentFeature"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="StreamConnection" eSuperTypes="#//Relation">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
-        eType="#//CCMInstantiation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
-        eType="#//CCMInstantiation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" eType="#//ComponentFeature"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ImplDef"/>
 </ecore:EPackage>

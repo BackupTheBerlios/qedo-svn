@@ -17,7 +17,6 @@ package ccm.commands.create.visual;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import CCMModel.Node;
-import CCMModel.TypedefDef;
 import CCMModel.View;
 
 

@@ -27,8 +27,6 @@ import CCMModel.Contained;
 import CCMModel.IDLType;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
-import CCMModel.ParameterDef;
-import CCMModel.ParameterMode;
 import CCMModel.Typed;
 import CCMModel.UnionDef;
 import CCMModel.UnionField;
@@ -37,10 +35,8 @@ import ccm.model.CCMModelManager;
 import ccm.model.CCMNotificationImpl;
 import ccm.model.ModelFactory;
 import ccm.model.template.IDLTemplate;
-import ccm.model.template.ParameterTemplate;
 import ccm.model.template.UnionFieldTemplate;
 import ccm.propertyDescriptor.IDLtypePropertyDescriptor;
-import ccm.propertyDescriptor.ParameterPropertyDescriptor;
 import ccm.propertyDescriptor.UnionFieldPropertyDescriptor;
 
 /**

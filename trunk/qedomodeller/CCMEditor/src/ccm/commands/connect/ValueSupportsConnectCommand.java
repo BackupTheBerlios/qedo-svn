@@ -24,7 +24,6 @@ import CCMModel.ConnectionDiscription;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
- 
 import CCMModel.ValueDef;
 import CCMModel.View;
 import ccm.CCMConstants;

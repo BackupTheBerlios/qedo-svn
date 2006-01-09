@@ -7,14 +7,8 @@
 package ccm.edit;
 
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.PolygonDecoration;
-import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.draw2d.PolylineDecoration;
-import org.eclipse.draw2d.geometry.PointList;
 
 import CCMModel.Connection;
-import CCMModel.ConnectionsKind;
-
 import ccm.figures.DerivedConnection;
 
 /**
@@ -34,11 +28,11 @@ public class DerivedRelationEditPart  extends RelationEditPart {
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure(){
-		if(link.getConnectionKind()==ConnectionsKind.COMPOSITION_LITERAL){
-			DerivedConnection f=new DerivedConnection(false);		
-			return f; 
-		}
-		DerivedConnection f=new DerivedConnection(true);		
+	//	if(link.getConnectionKind()==ConnectionsKind.COMPOSITION_LITERAL){
+	//		DerivedConnection f=new DerivedConnection(false);		
+	//		return f; 
+	//	}
+		DerivedConnection f=new DerivedConnection(link.getConnectionKind());		
 		return f;
 	}
 

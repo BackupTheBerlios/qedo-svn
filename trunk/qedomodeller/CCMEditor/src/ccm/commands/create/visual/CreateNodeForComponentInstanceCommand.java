@@ -12,11 +12,7 @@ package ccm.commands.create.visual;
 
 import org.eclipse.emf.common.notify.Notification;
 
-import CCMModel.ComponentCategory;
 import CCMModel.ComponentInstantiation;
-import CCMModel.Composition;
-import CCMModel.InterfaceDef;
-
 import ccm.model.CCMNotificationImpl;
 
 
@@ -26,6 +22,7 @@ public class CreateNodeForComponentInstanceCommand extends CreateNodeForRuleOwne
 	private static final String	CreateCommand_Label = "CreateNodeForComponentInstanceCommand";
 	
 	private int cardinality,startOder;
+	
 	//private boolean isLocal=false;
 	
 	/**

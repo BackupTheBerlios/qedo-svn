@@ -3,42 +3,42 @@ package ccm.dialogs;
 
 import java.util.List;
 
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
- 
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 import CCMModel.ComponentDef;
 import CCMModel.ModuleDef;
-
 import ccm.CCMConstants;
 /*
 * @author Siegercn
 */
  
 public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dialog implements KeyListener{
-	//private Button isLocalBtn;
-	//private Button isAbstractBtn;
 	 
+	private ComponentDef component=null;
+	private Object[] components;
 	private Button cancel;
 	private Button enter;
 	private Composite composite3;
@@ -48,40 +48,36 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 	private Label versionLb;
 	private Text licenseKeyTxt;
 	private Label licenseKeyLb;
-	private Text licenseTxtRefTxt;
-	private Label licenseTxtRefLb;
-	private Text titleTxt;
-	private Label titleLb;
+	private Text titelTxt;
+	private Label titelLb;
+	private Text licenseTxtRefTxt1;
+	private Label licenseTxtRefLb1;
 	private Text autorTxt;
 	private Label autorLb;
 	private Text typeTxt;
 	private Label typeLb;
-	
 	private Combo copmCmb;
 	private Label comLb;
 	private Label baseLb;
 	private Label localLb;
 	private Label idlFileLb;
-	private ComponentDef component=null;
 	private ModuleDef module=null;
 	private List componentDefList;
-	
 	private Label repositoryIdLb;
 	private Label idLb;
 	private Composite composite2;
-	 
 	private Shell dialogShell;
-
 	private String identifier="";
 	private String repositoryId="";
 	private String version="";
-	 
 	private boolean state=false;
 	private String discription="";
     private String absName;
-	private String uuid="";
-	private String licenseTxtRef;
-	private String licenseKey;
+	private String titel="";
+	private String type="";
+	private String autor="";
+	private String licenseTxtRef="";
+	private String licenseKey="";
 	
 	public CreateSoftwarePackageUnitDialog(Shell parent, int style) {
 		super(parent, style);
@@ -104,12 +100,12 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 			repositoryIdTxt = new Text(composite2,SWT.BORDER);
 			versionTxt = new Text(composite2,SWT.BORDER);
 			identifierTxt = new Text(composite2,SWT.BORDER);
-			titleTxt=new Text(composite2,SWT.BORDER);
+			licenseTxtRefTxt1=new Text(composite2,SWT.BORDER);
 			licenseKeyTxt = new Text(composite2,SWT.BORDER);
 			licenseKeyLb=new Label(composite2,SWT.NULL);
-			licenseTxtRefTxt = new Text(composite2,SWT.BORDER);
-			licenseTxtRefLb=new Label(composite2,SWT.NULL);
-			titleLb=new Label(composite2,SWT.NULL);
+			titelTxt = new Text(composite2,SWT.BORDER);
+			titelLb=new Label(composite2,SWT.NULL);
+			licenseTxtRefLb1=new Label(composite2,SWT.NULL);
 			versionLb = new Label(composite2,SWT.NULL);
 			repositoryIdLb = new Label(composite2,SWT.NULL);
 			idLb = new Label(composite2,SWT.NULL);
@@ -128,46 +124,111 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 			enter = new Button(composite3,SWT.PUSH| SWT.CENTER);
 	
 			dialogShell.setText("Add SoftwarePackage");
-			dialogShell.setSize(new org.eclipse.swt.graphics.Point(476,180));
+			dialogShell.setSize(new org.eclipse.swt.graphics.Point(476,255));
 	  
 	
 			GridData composite2LData = new GridData();
 			composite2LData.verticalAlignment = GridData.CENTER;
 			composite2LData.horizontalAlignment = GridData.BEGINNING;
 			composite2LData.widthHint = 464;
-			composite2LData.heightHint = 135;
+			composite2LData.heightHint = 210;
 			composite2LData.horizontalIndent = 0;
 			composite2LData.horizontalSpan = 1;
 			composite2LData.verticalSpan = 1;
 			composite2LData.grabExcessHorizontalSpace = false;
 			composite2LData.grabExcessVerticalSpace = false;
 			composite2.setLayoutData(composite2LData);
-			composite2.setSize(new org.eclipse.swt.graphics.Point(464,135));
+			composite2.setSize(new org.eclipse.swt.graphics.Point(464,210));
 	
-			 
+			final Font repositoryIdTxtfont = new Font(Display.getDefault(),"Tahoma",7,0); 
 			final Font isLocalBtnfont = new Font(Display.getDefault(),"Tahoma",8,1);
 
+			
+			FormData  TxtLData = new FormData();
+			 TxtLData.height = 13;
+			 TxtLData.width = 352;
+			 TxtLData.left =  new FormAttachment(239, 1000, 0);
+			 TxtLData.right =  new FormAttachment(996, 1000, 0);
+			 TxtLData.top =  new FormAttachment(1010, 1600, 0);
+			 TxtLData.bottom =  new FormAttachment(1160, 1600, 0);
+			typeTxt.setLayoutData( TxtLData);
+			typeTxt.setFont(repositoryIdTxtfont);
+			typeTxt.setSize(new org.eclipse.swt.graphics.Point(352,13));
+			//versionTxt.setFocus();
+			typeTxt.addKeyListener( new KeyAdapter() {
+				public void keyReleased(KeyEvent evt) {
+					typeTxtKeyReleased(evt);
+				}
+			});
+			 TxtLData = new FormData();
+			 TxtLData.height = 13;
+			 TxtLData.width = 352;
+			 TxtLData.left =  new FormAttachment(239, 1000, 0);
+			 TxtLData.right =  new FormAttachment(996, 1000, 0);
+			 TxtLData.top =  new FormAttachment(1170, 1600, 0);
+			 TxtLData.bottom =  new FormAttachment(1320, 1600, 0);
+			autorTxt.setLayoutData( TxtLData);
+			autorTxt.setFont(repositoryIdTxtfont);
+			autorTxt.setSize(new org.eclipse.swt.graphics.Point(352,13));
+			//versionTxt.setFocus();
+			autorTxt.addKeyListener( new KeyAdapter() {
+				public void keyReleased(KeyEvent evt) {
+					autorTxtKeyReleased(evt);
+				}
+			});
+			
+			FormData  KeyLbData = new FormData();
+			 KeyLbData.height = 20;
+			 KeyLbData.width = 90;
+			 KeyLbData.left =  new FormAttachment(11, 1000, 0);
+			 KeyLbData.right =  new FormAttachment(245, 1000, 0);
+			 KeyLbData.top =  new FormAttachment(1018, 1600, 0);
+			 KeyLbData.bottom =  new FormAttachment(1160, 1600, 0);
+			typeLb.setLayoutData( KeyLbData);
+			typeLb.setText("Type:");
+			typeLb.setSize(new org.eclipse.swt.graphics.Point(90,20));
+			typeLb.setFont(isLocalBtnfont);
+			
+			  KeyLbData = new FormData();
+			 KeyLbData.height = 20;
+			 KeyLbData.width = 90;
+			 KeyLbData.left =  new FormAttachment(11, 1000, 0);
+			 KeyLbData.right =  new FormAttachment(245, 1000, 0);
+			 KeyLbData.top =  new FormAttachment(1178, 1600, 0);
+			 KeyLbData.bottom =  new FormAttachment(1320, 1600, 0);
+			autorLb.setLayoutData( KeyLbData);
+			autorLb.setText("Autor:");
+			autorLb.setSize(new org.eclipse.swt.graphics.Point(90,20));
+			autorLb.setFont(isLocalBtnfont);
+			
+			
+			
 			FormData copmCmbLData = new FormData();
 			copmCmbLData.height = 24;
 			copmCmbLData.width = 214;
-			copmCmbLData.left =  new FormAttachment(334, 1000, 0);
-			copmCmbLData.right =  new FormAttachment(995, 1000, 0);
-			copmCmbLData.top =  new FormAttachment(358, 1000, 0);
-			copmCmbLData.bottom =  new FormAttachment(624, 1000, 0);
+			copmCmbLData.left =  new FormAttachment(239, 1000, 0);
+			copmCmbLData.right =  new FormAttachment(1000, 1000, 0);
+			copmCmbLData.top =  new FormAttachment(1330, 1600, 0);
+			copmCmbLData.bottom =  new FormAttachment(1480, 1600, 0);
 			copmCmb.setLayoutData(copmCmbLData);
 			copmCmb.setSize(new org.eclipse.swt.graphics.Point(214,24));
 			final Font copmCmbfont = new Font(Display.getDefault(),"Tahoma",7,0);
 			copmCmb.setFont(copmCmbfont);
+			copmCmb.addSelectionListener( new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent evt) {
+					discTypeCmbWidgetSelected(evt);
+				}
+			});
 	
 			FormData comLbLData = new FormData();
 			comLbLData.height = 17;
 			comLbLData.width = 96;
-			comLbLData.left =  new FormAttachment(21, 1000, 0);
-			comLbLData.right =  new FormAttachment(330, 1000, 0);
-			comLbLData.top =  new FormAttachment(399, 1000, 0);
-			comLbLData.bottom =  new FormAttachment(600, 1000, 0);
+			comLbLData.left =  new FormAttachment(11, 1000, 0);
+			comLbLData.right =  new FormAttachment(245, 1000, 0);
+			comLbLData.top =  new FormAttachment(1336, 1600, 0);
+			comLbLData.bottom =  new FormAttachment(1480, 1600, 0);
 			comLb.setLayoutData(comLbLData);
-			comLb.setText("ComponentEnd:");
+			comLb.setText("Component:");
 			comLb.setSize(new org.eclipse.swt.graphics.Point(96,17));
 			//final Font comLbfont = new Font(Display.getDefault(),"Tahoma",8,1);
 			comLb.setFont(isLocalBtnfont);
@@ -179,11 +240,11 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 			repositoryIdTxtLData.width = 352;
 			repositoryIdTxtLData.left =  new FormAttachment(239, 1000, 0);
 			repositoryIdTxtLData.right =  new FormAttachment(996, 1000, 0);
-			repositoryIdTxtLData.top =  new FormAttachment(210, 1000, 0);
-			repositoryIdTxtLData.bottom =  new FormAttachment(360, 1000, 0);
+			repositoryIdTxtLData.top =  new FormAttachment(215, 1600, 0);
+			repositoryIdTxtLData.bottom =  new FormAttachment(360, 1600, 0);
 			repositoryIdTxt.setLayoutData(repositoryIdTxtLData);
 			repositoryIdTxt.setDoubleClickEnabled(false);
-			final Font repositoryIdTxtfont = new Font(Display.getDefault(),"Tahoma",7,0);
+			
 			repositoryIdTxt.setFont(repositoryIdTxtfont);
 			repositoryIdTxt.setEditable(false);
 			repositoryIdTxt.setSize(new org.eclipse.swt.graphics.Point(352,13));
@@ -194,8 +255,8 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 			versionTxtLData.width = 352;
 			versionTxtLData.left =  new FormAttachment(239, 1000, 0);
 			versionTxtLData.right =  new FormAttachment(996, 1000, 0);
-			versionTxtLData.top =  new FormAttachment(370, 1000, 0);
-			versionTxtLData.bottom =  new FormAttachment(520, 1000, 0);
+			versionTxtLData.top =  new FormAttachment(370, 1600, 0);
+			versionTxtLData.bottom =  new FormAttachment(520, 1600, 0);
 			versionTxt.setLayoutData(versionTxtLData);
 			versionTxt.setFont(repositoryIdTxtfont);
 			versionTxt.setSize(new org.eclipse.swt.graphics.Point(352,13));
@@ -211,13 +272,13 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 			uuidTxtLData.width = 352;
 			uuidTxtLData.left =  new FormAttachment(239, 1000, 0);
 			uuidTxtLData.right =  new FormAttachment(996, 1000, 0);
-			uuidTxtLData.top =  new FormAttachment(530, 1000, 0);
-			uuidTxtLData.bottom =  new FormAttachment(680, 1000, 0);
-			titleTxt.setLayoutData(uuidTxtLData);
-			titleTxt.setFont(repositoryIdTxtfont);
-			titleTxt.setSize(new org.eclipse.swt.graphics.Point(352,13));
+			uuidTxtLData.top =  new FormAttachment(530, 1600, 0);
+			uuidTxtLData.bottom =  new FormAttachment(680, 1600, 0);
+			licenseTxtRefTxt1.setLayoutData(uuidTxtLData);
+			licenseTxtRefTxt1.setFont(repositoryIdTxtfont);
+			licenseTxtRefTxt1.setSize(new org.eclipse.swt.graphics.Point(352,13));
 			//versionTxt.setFocus();
-			titleTxt.addKeyListener( new KeyAdapter() {
+			licenseTxtRefTxt1.addKeyListener( new KeyAdapter() {
 				public void keyReleased(KeyEvent evt) {
 					uuidTxtKeyReleased(evt);
 				}
@@ -228,13 +289,13 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 			licenseKeyTxtData.width = 352;
 			licenseKeyTxtData.left =  new FormAttachment(239, 1000, 0);
 			licenseKeyTxtData.right =  new FormAttachment(996, 1000, 0);
-			licenseKeyTxtData.top =  new FormAttachment(690, 1000, 0);
-			licenseKeyTxtData.bottom =  new FormAttachment(840, 1000, 0);
+			licenseKeyTxtData.top =  new FormAttachment(690, 1600, 0);
+			licenseKeyTxtData.bottom =  new FormAttachment(840, 1600, 0);
 			licenseKeyTxt.setLayoutData(licenseKeyTxtData);
 			licenseKeyTxt.setFont(repositoryIdTxtfont);
 			licenseKeyTxt.setSize(new org.eclipse.swt.graphics.Point(352,13));
 			//versionTxt.setFocus();
-			titleTxt.addKeyListener( new KeyAdapter() {
+			licenseTxtRefTxt1.addKeyListener( new KeyAdapter() {
 				public void keyReleased(KeyEvent evt) {
 					licenseKeyTxtKeyReleased(evt);
 				}
@@ -245,13 +306,13 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 			licenseTxtRefTxtData.width = 352;
 			licenseTxtRefTxtData.left =  new FormAttachment(239, 1000, 0);
 			licenseTxtRefTxtData.right =  new FormAttachment(996, 1000, 0);
-			licenseTxtRefTxtData.top =  new FormAttachment(850, 1000, 0);
-			licenseTxtRefTxtData.bottom =  new FormAttachment(1000, 1000, 0);
-			licenseTxtRefTxt.setLayoutData(licenseTxtRefTxtData);
-			licenseTxtRefTxt.setFont(repositoryIdTxtfont);
-			licenseTxtRefTxt.setSize(new org.eclipse.swt.graphics.Point(352,13));
+			licenseTxtRefTxtData.top =  new FormAttachment(850, 1600, 0);
+			licenseTxtRefTxtData.bottom =  new FormAttachment(1000, 1600, 0);
+			titelTxt.setLayoutData(licenseTxtRefTxtData);
+			titelTxt.setFont(repositoryIdTxtfont);
+			titelTxt.setSize(new org.eclipse.swt.graphics.Point(352,13));
 			//versionTxt.setFocus();
-			titleTxt.addKeyListener( new KeyAdapter() {
+			licenseTxtRefTxt1.addKeyListener( new KeyAdapter() {
 				public void keyReleased(KeyEvent evt) {
 					licenseTxtRefTxtKeyReleased(evt);
 				}
@@ -262,8 +323,8 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 			identifierTxtLData.width = 352;
 			identifierTxtLData.left =  new FormAttachment(239, 1000, 0);
 			identifierTxtLData.right =  new FormAttachment(996, 1000, 0);
-			identifierTxtLData.top =  new FormAttachment(50, 1000, 0);
-			identifierTxtLData.bottom =  new FormAttachment(200, 1000, 0);
+			identifierTxtLData.top =  new FormAttachment(50, 1600, 0);
+			identifierTxtLData.bottom =  new FormAttachment(200, 1600, 0);
 			identifierTxt.setLayoutData(identifierTxtLData);
 			identifierTxt.setFont(repositoryIdTxtfont);
 			identifierTxt.setFocus();
@@ -279,8 +340,8 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 			licenseKeyLbData.width = 90;
 			licenseKeyLbData.left =  new FormAttachment(11, 1000, 0);
 			licenseKeyLbData.right =  new FormAttachment(245, 1000, 0);
-			licenseKeyLbData.top =  new FormAttachment(698, 1000, 0);
-			licenseKeyLbData.bottom =  new FormAttachment(840, 1000, 0);
+			licenseKeyLbData.top =  new FormAttachment(698, 1600, 0);
+			licenseKeyLbData.bottom =  new FormAttachment(840, 1600, 0);
 			licenseKeyLb.setLayoutData(licenseKeyLbData);
 			licenseKeyLb.setText("license Key:");
 			licenseKeyLb.setSize(new org.eclipse.swt.graphics.Point(90,20));
@@ -291,32 +352,32 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 			uuidLbLData.width = 90;
 			uuidLbLData.left =  new FormAttachment(11, 1000, 0);
 			uuidLbLData.right =  new FormAttachment(245, 1000, 0);
-			uuidLbLData.top =  new FormAttachment(538, 1000, 0);
-			uuidLbLData.bottom =  new FormAttachment(690, 1000, 0);
-			titleLb.setLayoutData(uuidLbLData);
-			titleLb.setText("UUID:");
-			titleLb.setSize(new org.eclipse.swt.graphics.Point(90,20));
-			titleLb.setFont(isLocalBtnfont);
+			uuidLbLData.top =  new FormAttachment(538, 1600, 0);
+			uuidLbLData.bottom =  new FormAttachment(690, 1600, 0);
+			licenseTxtRefLb1.setLayoutData(uuidLbLData);
+			licenseTxtRefLb1.setText("licenceTxtRef:");
+			licenseTxtRefLb1.setSize(new org.eclipse.swt.graphics.Point(90,20));
+			licenseTxtRefLb1.setFont(isLocalBtnfont);
 			
 			FormData licenseTxtRefLbData = new FormData();
 			licenseTxtRefLbData.height = 20;
 			licenseTxtRefLbData.width = 90;
 			licenseTxtRefLbData.left =  new FormAttachment(11, 1000, 0);
 			licenseTxtRefLbData.right =  new FormAttachment(245, 1000, 0);
-			licenseTxtRefLbData.top =  new FormAttachment(859, 1000, 0);
-			licenseTxtRefLbData.bottom =  new FormAttachment(1000, 1000, 0);
-			licenseTxtRefLb.setLayoutData(licenseTxtRefLbData);
-			licenseTxtRefLb.setText("licenceTxtRef:");
-			licenseTxtRefLb.setSize(new org.eclipse.swt.graphics.Point(90,20));
-			licenseTxtRefLb.setFont(isLocalBtnfont);
+			licenseTxtRefLbData.top =  new FormAttachment(859, 1600, 0);
+			licenseTxtRefLbData.bottom =  new FormAttachment(1000, 1600, 0);
+			titelLb.setLayoutData(licenseTxtRefLbData);
+			titelLb.setText("Titel:");
+			titelLb.setSize(new org.eclipse.swt.graphics.Point(90,20));
+			titelLb.setFont(isLocalBtnfont);
 			
 			FormData versionLbLData = new FormData();
 			versionLbLData.height = 20;
 			versionLbLData.width = 90;
 			versionLbLData.left =  new FormAttachment(11, 1000, 0);
 			versionLbLData.right =  new FormAttachment(245, 1000, 0);
-			versionLbLData.top =  new FormAttachment(380, 1000, 0);
-			versionLbLData.bottom =  new FormAttachment(520, 1000, 0);
+			versionLbLData.top =  new FormAttachment(380, 1600, 0);
+			versionLbLData.bottom =  new FormAttachment(520, 1600, 0);
 			versionLb.setLayoutData(versionLbLData);
 			versionLb.setText("Version:");
 			versionLb.setSize(new org.eclipse.swt.graphics.Point(90,20));
@@ -327,8 +388,8 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 			repositoryIdLbLData.width = 90;
 			repositoryIdLbLData.left =  new FormAttachment(11, 1000, 0);
 			repositoryIdLbLData.right =  new FormAttachment(245, 1000, 0);
-			repositoryIdLbLData.top =  new FormAttachment(220, 1000, 0);
-			repositoryIdLbLData.bottom =  new FormAttachment(360, 1000, 0);
+			repositoryIdLbLData.top =  new FormAttachment(220, 1600, 0);
+			repositoryIdLbLData.bottom =  new FormAttachment(360, 1600, 0);
 			repositoryIdLb.setLayoutData(repositoryIdLbLData);
 			repositoryIdLb.setText("Repository ID:");
 			repositoryIdLb.setSize(new org.eclipse.swt.graphics.Point(90,20));
@@ -339,8 +400,8 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 			idLbLData.width = 90;
 			idLbLData.left =  new FormAttachment(11, 1000, 0);
 			idLbLData.right =  new FormAttachment(245, 1000, 0);
-			idLbLData.top =  new FormAttachment(59, 1000, 0);
-			idLbLData.bottom =  new FormAttachment(200, 1000, 0);
+			idLbLData.top =  new FormAttachment(59, 1600, 0);
+			idLbLData.bottom =  new FormAttachment(200, 1600, 0);
 			idLb.setLayoutData(idLbLData);
 			idLb.setText("Identifier:");
 			idLb.setSize(new org.eclipse.swt.graphics.Point(90,20));
@@ -420,7 +481,7 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 					repositoryIdTxtfont.dispose();
 				}
 			});
-			Rectangle bounds = dialogShell.computeTrim(0, 0, 476,180);
+			Rectangle bounds = dialogShell.computeTrim(0, 0, 476,255);
 			dialogShell.setSize(bounds.width, bounds.height);
 			postInitGUI();
 			dialogShell.open();
@@ -437,8 +498,24 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 	/**
 	 * @param evt
 	 */
+	protected void autorTxtKeyReleased(KeyEvent evt) {
+		autor =autorTxt.getText();
+		
+	}
+
+	/**
+	 * @param evt
+	 */
+	protected void typeTxtKeyReleased(KeyEvent evt) {
+		type =typeTxt.getText();
+		
+	}
+
+	/**
+	 * @param evt
+	 */
 	protected void licenseTxtRefTxtKeyReleased(KeyEvent evt) {
-		licenseTxtRef =licenseTxtRefTxt.getText();
+		titel =titelTxt.getText();
 		
 	}
 
@@ -453,7 +530,7 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 	 * @param evt
 	 */
 	protected void uuidTxtKeyReleased(KeyEvent evt) {
-		uuid=titleTxt.getText();
+		this.licenseTxtRef=licenseTxtRefTxt1.getText();
 		
 	}
 
@@ -466,7 +543,10 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 	    repositoryIdTxt.setText(repositoryId);
 	    versionTxt.setText(version);
 	    
-	    dialogShell.setText(discription);
+	    //dialogShell.setText(discription);
+	    for(int i =0;i<components.length;i++){
+	    	copmCmb.add(((ComponentDef)components[i]).getIdentifier());
+	    }
 	}
 
 	/** Auto-generated main method */
@@ -540,11 +620,23 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
     /**
      * @param version The version to set.
      */
-    public void setUUID(String uuid) {
-        this.uuid = uuid;
+    public void setTitel(String titel) {
+        this.titel = titel;
     }
-    public String getUUID() {
-        return uuid;
+    public String getTitel() {
+        return titel;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
+    public String getType() {
+        return type;
+    }
+    public void setAutor(String autor) {
+        this.autor =  autor;
+    }
+    public String getAutor() {
+        return autor;
     }
     public String getLicenseKey() {
         return licenseKey;
@@ -606,6 +698,24 @@ public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dia
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+	public  ComponentDef getComponent() {
+        return component;
+    }
+    /**
+     * @param list The list to set.
+     */
+    public void setComponent( ComponentDef component) {
+       
+        this.component=component;
+    }
+    public void setComponents( java.util.List componentList) {
+        
+         this.components=componentList.toArray();
+     }
+    protected void discTypeCmbWidgetSelected(SelectionEvent evt){
+		
+		setComponent((ComponentDef)components[this.copmCmb.getSelectionIndex()]);
 	}
 }
  

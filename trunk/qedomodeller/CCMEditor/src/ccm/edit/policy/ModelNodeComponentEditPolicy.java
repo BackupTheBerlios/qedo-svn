@@ -16,7 +16,6 @@ import org.eclipse.gef.requests.GroupRequest;
 
 import CCMModel.Node;
 import CCMModel.View;
-
 import ccm.commands.delete.visual.DeleteNodeCommand;
 
 

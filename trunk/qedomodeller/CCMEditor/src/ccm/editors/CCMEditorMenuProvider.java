@@ -20,6 +20,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.ui.actions.ActionFactory;
 
 import CCMModel.AliasDef;
+import CCMModel.Assembly;
 import CCMModel.ComponentDef;
 import CCMModel.ComponentImplDef;
 import CCMModel.Composition;
@@ -27,23 +28,30 @@ import CCMModel.ConstantDef;
 import CCMModel.EnumDef;
 import CCMModel.EventDef;
 import CCMModel.ExceptionDef;
+import CCMModel.ExternalInstance;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
+import CCMModel.SoftwarePackage;
 import CCMModel.StructDef;
 import CCMModel.UnionDef;
 import CCMModel.ValueBoxDef;
 import CCMModel.ValueDef;
-
+import ccm.action.AddComponentFileAction;
 import ccm.action.AddEmitsSourceAction;
 import ccm.action.AddEventSinkAction;
 import ccm.action.AddEventSourceAction;
 import ccm.action.AddFacetAction;
+import ccm.action.AddHomeInstanceAction;
+import ccm.action.AddIDLFileAction;
+import ccm.action.AddImplementationAction;
+import ccm.action.AddProcessCollocationAction;
 import ccm.action.AddReceptacleAction;
 import ccm.action.AliasDefAction;
 import ccm.action.AttributeDefAction;
 import ccm.action.CloseDiagramAction;
+import ccm.action.ComponentInstanceAction;
 import ccm.action.ConstantDefAction;
 import ccm.action.ContainedFileAction;
 import ccm.action.DepententFileAction;
@@ -56,7 +64,6 @@ import ccm.action.FactoryDefAction;
 import ccm.action.OperationDefAction;
 import ccm.action.PropertyAction;
 import ccm.action.RegisterComponentInstanceAction;
-import ccm.action.RuleAction;
 import ccm.action.StructDefAction;
 import ccm.action.UnionDefAction;
 import ccm.action.ValueBoxDefAction;
@@ -101,6 +108,9 @@ public class CCMEditorMenuProvider extends ContextMenuProvider
 		// Here, the AddAttributeAction is added (to Add-Group) 
 		//      Here, the AddAttributeAction is added (to Add-Group)
 		
+		appendActionToAddGroup(
+				menuManager,
+				DiagramDefAction.CLASSIFIER_PROPERTY);
 		appendActionToAddGroup(
 				menuManager,
 				ModuleDef.class.getName());
@@ -153,9 +163,7 @@ public class CCMEditorMenuProvider extends ContextMenuProvider
 				menuManager,
 				UnionDef.class.getName());
 		
-		appendActionToAddGroup(
-				menuManager,
-				DiagramDefAction.CLASSIFIER_PROPERTY);
+		
 		
 		appendActionToAddGroup(
 				menuManager,
@@ -211,18 +219,19 @@ public class CCMEditorMenuProvider extends ContextMenuProvider
 		appendActionToAddGroup(
 				menuManager,
 				AddEventSinkAction.CLASSIFIER_PROPERTY);
-
-		appendActionToAddGroup(
-				menuManager,
-				AddEventSinkAction.CLASSIFIER_PROPERTY);
-
-		appendActionToAddGroup(
-				menuManager,
-				AddEventSinkAction.CLASSIFIER_PROPERTY);
+ 
 //*************************************
 		appendActionToAddGroup(
 				menuManager,
-				RuleAction.CLASSIFIER_PROPERTY);
+				AddComponentFileAction.CLASSIFIER_PROPERTY);
+		
+		//appendActionToAddGroup(
+		//		menuManager,
+		//		RuleAction.CLASSIFIER_PROPERTY);
+		appendActionToAddGroup(
+				menuManager,
+				AddIDLFileAction.CLASSIFIER_PROPERTY);
+		
 
 		appendActionToAddGroup(
 				menuManager,
@@ -241,7 +250,32 @@ public class CCMEditorMenuProvider extends ContextMenuProvider
 		appendActionToAddGroup(
 				menuManager,
 				PropertyAction.CLASSIFIER_PROPERTY);
+		appendActionToAddGroup(
+				menuManager,
+				ComponentInstanceAction.CLASSIFIER_PROPERTY);
+		 
 //		******************************************+
+		appendActionToAddGroup(
+				menuManager,
+				SoftwarePackage.class.getName());
+		appendActionToAddGroup(
+				menuManager,
+				AddImplementationAction.CLASSIFIER_PROPERTY);
+		appendActionToAddGroup(
+				menuManager,
+				Assembly.class.getName());
+		appendActionToAddGroup(
+				menuManager,
+				AddProcessCollocationAction.CLASSIFIER_PROPERTY);
+		appendActionToAddGroup(
+				menuManager,
+				AddHomeInstanceAction.CLASSIFIER_PROPERTY);
+		appendActionToAddGroup(
+				menuManager,
+				ExternalInstance.class.getName());
+		
+		
+		
 		appendActionToAddGroup(
 				menuManager,
 				Composition.class.getName());

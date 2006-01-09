@@ -9,45 +9,26 @@ import java.util.List;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import CCMModel.ComponentDef;
+import CCMModel.Contained;
+import CCMModel.Diagram;
+import CCMModel.HomeDef;
+import CCMModel.HomeImplDef;
+import CCMModel.Node;
+import CCMModel.ValueDef;
 import ccm.commands.connect.ComponentHomeConnectCommand;
-import ccm.commands.connect.CompositionConnectHomeImplCommand;
 import ccm.commands.connect.HomeKeyConnectCommand;
 import ccm.commands.connect.HomeSupportsConnectCommand;
 import ccm.commands.connect.ImplConnectCommand;
-import ccm.commands.constraints.PortConstraint;
-import ccm.commands.create.visual.CreateNodeForComponentImplCommand;
 import ccm.commands.create.visual.CreateNodeForHomeImplCommand;
-import ccm.dialogs.CreateCompositionDialog;
 import ccm.dialogs.CreateContainedDialog;
 import ccm.dialogs.DragAndDropDialog;
-import ccm.dialogs.DragAndDropForHome;
 import ccm.editors.tools.Execution;
-import ccm.model.CCMModelManager;
 import ccm.model.ModelFactory;
-
-import CCMModel.CCMModelFactory;
-import CCMModel.ComponentDef;
-import CCMModel.ComponentImplDef;
-import CCMModel.ConsumesDef;
-import CCMModel.Contained;
-import CCMModel.Container;
-import CCMModel.Diagram;
-import CCMModel.EmitsDef;
-import CCMModel.HomeDef;
-import CCMModel.HomeImplDef;
-import CCMModel.ModuleDef;
-import CCMModel.Node;
-import CCMModel.PortNode;
-import CCMModel.ProvidesDef;
-import CCMModel.PublishesDef;
-import CCMModel.UsesDef;
-import CCMModel.ValueDef;
-import CCMModel.View;
 
 /**
  * @author Siegercn
@@ -133,9 +114,9 @@ public class DragHome2DiagramCommand extends DragAbstInterface2DiagramCommand{
 				Node vn=(Node)nit.next();
 				if(component.equals(vn.getContained())){
 					ComponentHomeConnectCommand command=new ComponentHomeConnectCommand();
-					command.setSource(vn);
+					command.setSource(n);
 					//command.setLabel("");
-					command.setTarget(n);
+					command.setTarget(vn);
 					command.setView(view);
 					command.execute();
 				}

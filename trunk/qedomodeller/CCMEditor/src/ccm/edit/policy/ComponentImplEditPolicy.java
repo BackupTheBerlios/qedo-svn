@@ -15,15 +15,7 @@ import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
 
-import CCMModel.AbstractInterfaceDef;
-import CCMModel.ComponentDef;
-import CCMModel.ComponentImplDef;
-import CCMModel.View;
-import ccm.commands.connect.AbstItfDerivedConnectCommand;
-import ccm.commands.connect.ComponentHomeConnectCommand;
-import ccm.commands.connect.ComponentSupportsConnectCommand;
 import ccm.commands.connect.ManagesConnectCommand;
-import ccm.edit.ComponentDefNodeEditPart;
 import ccm.edit.ComponentImplNodeEditPart;
 import ccm.model.template.RelationTemplate;
 

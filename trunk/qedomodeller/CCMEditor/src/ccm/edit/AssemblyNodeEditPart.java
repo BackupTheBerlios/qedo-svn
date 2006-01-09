@@ -14,11 +14,13 @@ import java.util.List;
 
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.ConnectionEditPart;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.NodeEditPart;
@@ -29,8 +31,6 @@ import org.eclipse.ui.views.properties.IPropertySource;
 
 import CCMModel.Assembly;
 import CCMModel.CCMModelPackage;
-import CCMModel.ComponentDef;
-import CCMModel.Composition;
 import CCMModel.Node;
 import ccm.commands.create.visual.adds.AddAttributeDefCommand;
 import ccm.commands.create.visual.adds.AddEmitsSourceCommand;
@@ -38,17 +38,13 @@ import ccm.commands.create.visual.adds.AddEventSinkCommand;
 import ccm.commands.create.visual.adds.AddEventSourceCommand;
 import ccm.commands.create.visual.adds.AddFacetCommand;
 import ccm.commands.create.visual.adds.AddReceptacleCommand;
-import ccm.commands.delete.visual.DeleteComponentCommand;
 import ccm.commands.delete.visual.DeleteNodeCommand;
-import ccm.edit.policy.ComponentDefEditPolicy;
-import ccm.edit.policy.CompositionEditPolicy;
-import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
+import ccm.edit.policy.AssemblyEditPolicy;
+import ccm.edit.policy.AssemblyXYLayoutEditPolicy;
 import ccm.edit.policy.ModelEditPolicy;
-import ccm.figures.ComponentFigure;
-import ccm.figures.ContainerFigureWithAttribute;
+import ccm.figures.ContainerFigure;
 import ccm.model.CCMNotificationImpl;
-import ccm.property.AbstractIntefacefPropertySource;
-import ccm.property.CompositionPropertySource;
+import ccm.property.AssemblyPropertySource;
 import ccm.request.AddAttributeDefRequest;
 import ccm.request.AddEmitsSourceRequest;
 import ccm.request.AddEventSinkRequest;
@@ -77,8 +73,8 @@ public class AssemblyNodeEditPart
 	/*
 	 * return the figure casted to CORBAComponent
 	 */
-	public ContainerFigureWithAttribute getCompositionFigure(){
-		return (ContainerFigureWithAttribute) getFigure();
+	public ContainerFigure getCompositionFigure(){
+		return (ContainerFigure) getFigure();
 	}
 	
 	/**
@@ -86,9 +82,9 @@ public class AssemblyNodeEditPart
 	 */
 	protected void createEditPolicies() {
 		// install the edit policy to handle connection creation
-		installEditPolicy(EditPolicy.LAYOUT_ROLE, new ContainedNodeXYLayoutEditPolicy());
+		installEditPolicy(EditPolicy.LAYOUT_ROLE, new AssemblyXYLayoutEditPolicy());
 		installEditPolicy(EditPolicy.CONTAINER_ROLE, new ModelEditPolicy());	
-		installEditPolicy( EditPolicy.GRAPHICAL_NODE_ROLE, new CompositionEditPolicy() );
+		installEditPolicy( EditPolicy.GRAPHICAL_NODE_ROLE, new AssemblyEditPolicy() );
 	}
 
 	/**
@@ -96,18 +92,21 @@ public class AssemblyNodeEditPart
 	 */
 	protected void refreshVisuals() {
 		Point loc = new Point( getModelNode().getX(), getModelNode().getY() );
-		Dimension dim=new Dimension(getModelNode().getWidth(),getModelNode().getHeight());
+		//Dimension dim=new Dimension(getModelNode().getWidth(),getModelNode().getHeight());
 		
-		ContainerFigureWithAttribute fig = getCompositionFigure();
-		fig.setName(getAssembly().getIdentifier());
+		ContainerFigure fig = getCompositionFigure();
+		fig.setIdentifier(getAssembly().getIdentifier());
 		//fig.setAttributeLabels(new String[]{"category:"+getComposition().getCategory().toString()});
-		Dimension newDim = fig.getPreferredSize(dim);
-		if(dim.equals(-1,-1)){
-			getModelNode().setWidth(newDim.width);
-			getModelNode().setHeight(newDim.height);
-		}
+		Dimension dim=new Dimension(getModelNode().getWidth(),getModelNode().getHeight());
+		Dimension prefDim = getFigure().getPreferredSize(0,0);
 		
-		Rectangle r = new Rectangle(loc,newDim);
+//		if(dim.height < prefDim.height)
+//			dim.height = prefDim.height;
+		
+//		if(dim.width < prefDim.width)
+//			dim.width = prefDim.width;
+		
+		Rectangle r = new Rectangle(loc,dim);
 		
 		((GraphicalEditPart) getParent()).setLayoutConstraint(
 				this,
@@ -120,7 +119,10 @@ public class AssemblyNodeEditPart
 	 */
 	protected IFigure createFigure() {
 	//	System.out.println("category:"+getComposition().getCategory().toString());
-		ContainerFigureWithAttribute compositionFigure=new ContainerFigureWithAttribute(getAssembly().getIdentifier(),ccm.ProjectResources.COMPOSITION_S,null);
+	//	ContainerFigureWithAttribute compositionFigure=new ContainerFigureWithAttribute(getAssembly().getIdentifier(),ccm.ProjectResources.COMPOSITION_S,null);
+		//compositionFigure.setName(getComposition().getIdentifier());
+	//	return compositionFigure;
+		ContainerFigure  compositionFigure=new ContainerFigure(getAssembly().getIdentifier(),ccm.ProjectResources.ASSEMBLY,true);
 		//compositionFigure.setName(getComposition().getIdentifier());
 		return compositionFigure;
 	}
@@ -160,7 +162,7 @@ public class AssemblyNodeEditPart
 	 * @return IPropertySource 
 	 */	
 	protected IPropertySource getPropertySource() {
-		propertySource = new CompositionPropertySource( getModelNode().getContained() );
+		propertySource = new AssemblyPropertySource( getModelNode().getContained() );
 		return propertySource;
 	}
 
@@ -168,7 +170,7 @@ public class AssemblyNodeEditPart
      * @see org.eclipse.gef.GraphicalEditPart#getContentPane()
      */
     public IFigure getContentPane() {
-         return getCompositionFigure().getAttributeFigure();
+         return getCompositionFigure().getFiguresPanel();
     	//return null;
     }
     
@@ -211,9 +213,9 @@ public class AssemblyNodeEditPart
 		    return new AddAttributeDefCommand();
 		else if(request.getType().equals(RequestConstants.REQ_DELETE))
 			return new DeleteNodeCommand (getModelNode());   
-	    else if (request.getType().equals("add children")
-	    		|| request.getType().equals("move children"))
-	    	return null;
+	  //  else if (request.getType().equals("add children")
+	  //  		|| request.getType().equals("move children"))
+	  //  	return null;
 		else return super.getCommand(request);
 	}
 	
@@ -258,5 +260,33 @@ public class AssemblyNodeEditPart
  protected List getModelTargetConnections() {
      return getModelNode().getConnTarget();
  }
+ protected void addChildVisual(EditPart childEditPart, int index) {
+	IFigure child = ((GraphicalEditPart)childEditPart).getFigure();
+    if (child instanceof Label){
+    	getContentPane().add(child, 0);
+    }else
+        super.addChildVisual(childEditPart, 0);
 }
- 
+/**
+ * @see org.eclipse.gef.GraphicalEditPart#setLayoutConstraint(org.eclipse.gef.EditPart, org.eclipse.draw2d.IFigure, java.lang.Object)
+ */
+public void setLayoutConstraint(EditPart child, IFigure childFigure,
+        Object constraint) {
+   	IFigure childF = ((GraphicalEditPart)child).getFigure();
+    if (childF instanceof Label)
+        getContentPane().setConstraint(childFigure, constraint);
+	else
+		super.setLayoutConstraint(child, childFigure, constraint);
+}
+/* (non-Javadoc)
+ * @see org.eclipse.gef.editparts.AbstractEditPart#removeChildVisual(org.eclipse.gef.EditPart)
+ */
+protected void removeChildVisual(EditPart childEditPart) {
+	IFigure child = ((GraphicalEditPart)childEditPart).getFigure();
+	 if (child instanceof Label){
+     	getContentPane().remove(child);
+     }else
+         getContentPane().remove(child);
+}
+}
+  

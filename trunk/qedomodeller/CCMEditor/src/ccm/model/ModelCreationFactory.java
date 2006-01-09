@@ -10,8 +10,6 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.gef.requests.CreationFactory;
 
-import ccm.model.template.RelationTemplate;
-
 import CCMModel.AliasDef;
 import CCMModel.Assembly;
 import CCMModel.AttributeDef;
@@ -24,8 +22,6 @@ import CCMModel.Composition;
 import CCMModel.ConstantDef;
 import CCMModel.ContainedFile;
 import CCMModel.DependentFile;
-import CCMModel.IDLFile;
-import CCMModel.Implementation;
 import CCMModel.Deploymentrequirement;
 import CCMModel.EnumDef;
 import CCMModel.EventDef;
@@ -34,6 +30,8 @@ import CCMModel.ExternalInstance;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
 import CCMModel.HomeInstantiation;
+import CCMModel.IDLFile;
+import CCMModel.Implementation;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.OperationDef;
@@ -46,8 +44,8 @@ import CCMModel.StructDef;
 import CCMModel.UnionDef;
 import CCMModel.ValueBoxDef;
 import CCMModel.ValueDef;
-import CCMModel.ValueDerivedRelation;
 import CCMModel.ValueMemberDef;
+import ccm.model.template.RelationTemplate;
 
 
 /**
@@ -84,8 +82,8 @@ public class ModelCreationFactory implements CreationFactory {
 			
 		if( template.equals( RelationTemplate.class ) ) {
 			result = new RelationTemplate(relationKind);
-		}else if( template.equals( ValueDerivedRelation.class ) ) {
-			result = factory.createValueDerivedRelation();
+//		}else if( template.equals( ValueDerivedRelation.class ) ) {
+//			result = factory.createValueDerivedRelation();
 		}else if( template.equals( ModuleDef.class ) ) {
 			result = factory.createModuleDef();
 		}else if (template.equals(ComponentDef.class)){

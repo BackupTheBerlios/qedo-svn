@@ -23,7 +23,6 @@ import CCMModel.Connection;
 import CCMModel.ConnectionDiscription;
 import CCMModel.EventDef;
 import CCMModel.EventPortDef;
- 
 import CCMModel.ModuleDef;
 import CCMModel.Node;
 import CCMModel.View;

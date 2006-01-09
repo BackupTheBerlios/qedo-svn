@@ -2,33 +2,15 @@ package ccm.action;
 
 import java.util.List;
 
-import org.eclipse.core.internal.dtree.DeletedNode;
-import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.ui.actions.SelectionAction;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.widgets.Item;
 import org.eclipse.ui.IWorkbenchPart;
 
-import CCMModel.Container;
 import CCMModel.Diagram;
-import CCMModel.Node;
 import CCMModel.View;
-//import ccm.commands.adds.AddEventSourceCommand;
-//import ccm.commands.adds.AddFacetCommand;
 import ccm.commands.delete.visual.CloseDiagramCommand;
-import ccm.edit.ComponentDefNodeEditPart;
-import ccm.edit.ContainerNodeEditPart;
-import ccm.edit.StartPageEditPart;
-//import ccm.edit.StartPageEditPart;
 import ccm.edit.ViewEditPart;
-import ccm.editors.AbstractCCMPage;
 import ccm.editors.CCMEditor;
-import ccm.editors.DiagramPage;
-import ccm.editors.IDLTypesPage;
-import ccm.model.ModelFactory;
-import ccm.request.AddEventSourceRequest;
-//import ccm.request.CloseDiagramRequest;
 import ccm.treeedit.CCMModelTreeEditPart;
 
 public class CloseDiagramAction extends SelectionAction {

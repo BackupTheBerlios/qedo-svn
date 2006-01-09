@@ -9,40 +9,23 @@ import java.util.List;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import ccm.commands.connect.AbstItfDerivedConnectCommand;
+import CCMModel.ComponentDef;
+import CCMModel.ComponentImplDef;
+import CCMModel.Contained;
+import CCMModel.Diagram;
+import CCMModel.Node;
 import ccm.commands.connect.ComponentHomeConnectCommand;
 import ccm.commands.connect.ComponentSupportsConnectCommand;
 import ccm.commands.connect.ImplConnectCommand;
-import ccm.commands.constraints.PortConstraint;
 import ccm.commands.create.visual.CreateNodeForComponentImplCommand;
-import ccm.dialogs.CreateCompositionDialog;
 import ccm.dialogs.CreateContainedDialog;
 import ccm.dialogs.DragAndDropDialog;
 import ccm.editors.tools.Execution;
-import ccm.model.CCMModelManager;
 import ccm.model.ModelFactory;
-
-import CCMModel.AbstractInterfaceDef;
-import CCMModel.CCMModelFactory;
-import CCMModel.ComponentDef;
-import CCMModel.ComponentImplDef;
-import CCMModel.ConsumesDef;
-import CCMModel.Contained;
-import CCMModel.Container;
-import CCMModel.Diagram;
-import CCMModel.EmitsDef;
-import CCMModel.ModuleDef;
-import CCMModel.Node;
-import CCMModel.PortNode;
-import CCMModel.ProvidesDef;
-import CCMModel.PublishesDef;
-import CCMModel.UsesDef;
-import CCMModel.View;
 
 /**
  * @author Siegercn

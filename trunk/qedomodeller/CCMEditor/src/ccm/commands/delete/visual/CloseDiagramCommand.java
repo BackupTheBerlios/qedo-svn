@@ -1,17 +1,12 @@
 package ccm.commands.delete.visual;
 
-import java.util.Iterator;
-
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.IWorkbenchPart;
 
-import ccm.editors.CCMEditor;
-
-import CCMModel.Contained;
 import CCMModel.Diagram;
 import CCMModel.Node;
 import CCMModel.View;
-import CCMModel.impl.ViewImpl;
+import ccm.editors.CCMEditor;
 
 public class CloseDiagramCommand  extends Command {
 	

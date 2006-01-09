@@ -32,7 +32,6 @@ import ccm.figures.PortLabel;
 import ccm.figures.ReceptacleLabel;
 import ccm.model.CCMNotificationImpl;
 import ccm.model.ModelFactory;
-import ccm.property.ContainedPropertySource;
 import ccm.property.EventPortDefPropertySource;
 import ccm.property.FacetPropertySource;
 import ccm.property.ReceptaclePropertySource;

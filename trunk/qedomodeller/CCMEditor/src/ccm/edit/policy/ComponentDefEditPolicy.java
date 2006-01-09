@@ -19,7 +19,6 @@ import org.eclipse.gef.requests.ReconnectRequest;
 
 import CCMModel.AbstractInterfaceDef;
 import CCMModel.ComponentDef;
-import CCMModel.HomeDef;
 import CCMModel.View;
 import ccm.commands.connect.AbstItfDerivedConnectCommand;
 import ccm.commands.connect.ComponentHomeConnectCommand;
@@ -82,7 +81,7 @@ public class ComponentDefEditPolicy extends GraphicalNodeEditPolicy {
 		     if(rel.getKind()==0){
 		        ComponentDef derComponent=(ComponentDef) getComponentDefEditPart().getModelNode().getContained();
 		        //OCL base->size()<=1
-		        if(derComponent.getDerivedRelation().size()==1) return null;
+		       // if(derComponent.getDerivedRelation().size()==1) return null;
 		        AbstItfDerivedConnectCommand command = new AbstItfDerivedConnectCommand();
 		        command.setView((View) getComponentDefEditPart().getParent().getModel());
 		        command.setSource(getComponentDefEditPart().getModelNode());

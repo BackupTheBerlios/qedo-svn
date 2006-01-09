@@ -88,7 +88,7 @@ public class ValueDefEditPolicy extends GraphicalNodeEditPolicy {
 		    if(rel.getKind()==0){
 		        ValueDef derValue=(ValueDef) getValueDefEditPart().getModelNode().getContained();
 		        //OCL at most only one base(Cardinality)
-		        if(derValue.getDerivedRelation()!=null) return null;
+		      //  if(derValue.get.getDerivedRelation()!=null) return null;
 		        //OCL isAbstract implies  base->isEmpty
 		        if(derValue.isIsAbstract())return null;
 		        ValueDerivedConnectCommand command = new ValueDerivedConnectCommand();
@@ -104,7 +104,7 @@ public class ValueDefEditPolicy extends GraphicalNodeEditPolicy {
 		        return command;
 		    }else if(rel.getKind()==13){
 		        ValueDef value=(ValueDef) getValueDefEditPart().getModelNode().getContained();
-		        if(value.getSupportsRelation()!=null)return null;
+		       // if(value.get.getSupportsRelation()!=null)return null;
 		        ValueSupportsConnectCommand command = new ValueSupportsConnectCommand();
 		        command.setView((View) getValueDefEditPart().getParent().getModel());
 		        command.setSource(getValueDefEditPart().getModelNode());

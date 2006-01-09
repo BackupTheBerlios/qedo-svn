@@ -10,25 +10,17 @@
  */
 package ccm.commands.create.visual;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import CCMModel.ComponentCategory;
 import CCMModel.ComponentDef;
 import CCMModel.ComponentImplDef;
-import CCMModel.Composition;
-import CCMModel.HomeDef;
-import CCMModel.HomeImplDef;
-import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
-
 import ccm.commands.connect.ImplConnectCommand;
-import ccm.commands.connect.ManagesConnectCommand;
 import ccm.model.CCMNotificationImpl;
 import ccm.model.ModelFactory;
 
@@ -57,7 +49,7 @@ public class CreateNodeForComponentImplCommand extends CreateNodeForContainerCom
 	 * @see org.eclipse.gef.commands.Command#execute()
 	 */
 	public void execute() {
-		 System.out.println( "canExecute 5");
+	 
 		super.execute();
 		
 		((ComponentImplDef)newObject).setCategory(category);

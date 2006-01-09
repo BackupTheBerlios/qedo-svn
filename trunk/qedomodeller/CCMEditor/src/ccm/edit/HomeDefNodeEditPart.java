@@ -41,7 +41,6 @@ import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
 import ccm.edit.policy.HomeDefEditPolicy;
 import ccm.figures.HomeDefFigure;
 import ccm.model.CCMNotificationImpl;
-import ccm.property.AbstractIntefacefPropertySource;
 import ccm.property.HomeDefPropertySource;
 import ccm.request.AddFactoryRequest;
 

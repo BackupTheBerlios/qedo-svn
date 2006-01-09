@@ -11,28 +11,25 @@
 package ccm.commands.create.visual.adds;
 
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 
+import CCMModel.ComponentFeature;
 import CCMModel.ComponentInstantiation;
-import CCMModel.ContainedFile;
-//import CCMModel.DeploymentUnit;
 import CCMModel.FinderServiceKind;
 import CCMModel.Node;
 import CCMModel.RegisterComponentInstance;
-import CCMModel.ValueMemberDef;
 import ccm.commands.create.visual.CreateNodeForContainedCommand;
 import ccm.model.CCMNotificationImpl;
-import ccm.model.template.IDLKind;
-import ccm.model.template.IDLTemplate;
-
-
+ 
 
 public class AddRegisterComponentInstanceCommand extends CreateNodeForContainedCommand{
     
-	private static final String	CreateCommand_LabelSimple = "CreateParameterCommand";
+	private static final String	CreateCommand_LabelSimple = "AddRegisterComponentInstanceCommand";
 
 	private Node opNode;
 	private Node parentNode;
@@ -41,7 +38,8 @@ public class AddRegisterComponentInstanceCommand extends CreateNodeForContainedC
 	private RegisterComponentInstance registerInstance;
 	private FinderServiceKind service;
 	private String regName;
-	private IDLTemplate idlTemplate=new IDLTemplate(IDLKind.IDL_LITERAL);
+	private ComponentFeature feature;
+	//private IDLTemplate idlTemplate=new IDLTemplate(IDLKind.IDL_LITERAL);
 
 	
 	/**
@@ -68,20 +66,21 @@ public class AddRegisterComponentInstanceCommand extends CreateNodeForContainedC
 	    registerInstance = (RegisterComponentInstance) newObject;
 		registerInstance.setRegName(regName);
 		registerInstance.setService(service);
-	 
+		registerInstance.setFeature(feature);
+	    ((ComponentInstantiation)container).getRegistration().add(newObject);
 		 
 		Iterator it = container.getNode().iterator();
 	    while(it.hasNext()) {
 	    	parentNode = (Node) it.next();
 	    	opNode=factory.createNode();
 	    	registerInstance.getNode().add(opNode);
-	    	/*opNode.setX(constraint.x);
-	    	opNode.setY(constraint.y);
-	    	opNode.setWidth(constraint.width);
-	    	opNode.setHeight(constraint.height);*/
+	    	opNode.setX(5);
+	    	opNode.setY(5);
+	    	opNode.setWidth(50);
+	    	opNode.setHeight(30);
 	    	parentNode.getContents().add(opNode);
 	    	opNode.eNotify(new CCMNotificationImpl(opNode, Notification.SET,
-										       CCMNotificationImpl.ATTRIBUTE_DEF, null, null,0));
+										       CCMNotificationImpl.RegisterComponentInstance, null, null,0));
 	    }
 	}
 
@@ -133,9 +132,22 @@ public class AddRegisterComponentInstanceCommand extends CreateNodeForContainedC
     public void setParentNode(Node parentNode) {
         this.parentNode = parentNode;
     }
-    /**
-     * @return Returns the idlTemplate.
-     */
+    public void setFeature(ComponentFeature feature ){
+    	this.feature=feature;
+    }
+    public List getComponentfeatures(){
+    	List features= new ArrayList();
+    	features.add(((ComponentInstantiation)container).getType().getComponent());
+    	features.addAll(((ComponentInstantiation)container).getFacet());
+    	features.addAll(((ComponentInstantiation)container).getReceptacle());
+    	features.addAll(((ComponentInstantiation)container).getConsumess());
+    	features.addAll(((ComponentInstantiation)container).getPublishesDef());
+    	features.addAll(((ComponentInstantiation)container).getEmitss());
+    	features.addAll(((ComponentInstantiation)container).getSinkss());
+    	features.addAll(((ComponentInstantiation)container).getSiSouss());
+    	features.addAll(((ComponentInstantiation)container).getSourcess());
+    	return features;
+    }
     
 }
  

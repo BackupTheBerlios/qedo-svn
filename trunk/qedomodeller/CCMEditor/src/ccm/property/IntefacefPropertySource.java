@@ -3,9 +3,11 @@ package ccm.property;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Vector; 
+import java.util.Vector;
+
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.PropertyDescriptor; 
+import org.eclipse.ui.views.properties.PropertyDescriptor;
+
 import CCMModel.Contained;
 import CCMModel.InterfaceDef;
  

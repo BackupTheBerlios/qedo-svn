@@ -7,6 +7,7 @@ package ccm.commands.delete.visual;
 import java.util.Iterator;
 import java.util.Vector;
 
+import CCMModel.ComponentDef;
 import CCMModel.Node;
 import CCMModel.PortNode;
 import CCMModel.impl.ConnectionImpl;
@@ -43,7 +44,11 @@ public class DeleteComponentCommand extends DeleteNodeCommand {
 			
 			// remove port
 			port.getContained().getNode().remove(port);
-			node.getView().getNode().remove(port);
+			if(node.getContained() instanceof ComponentDef)
+				node.getView().getNode().remove(port);
+			else{
+				node.getDefineIn().getContents().remove(port);
+			}
 		}
 		
 		node.getPortNode().clear();

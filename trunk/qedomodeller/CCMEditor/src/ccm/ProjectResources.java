@@ -13,31 +13,42 @@ package ccm;
 
 import org.eclipse.swt.graphics.Image;
 
-import CCMModel.AbstractItfDerivedRelation;
+import CCMModel.Assembly;
 import CCMModel.AttributeDef;
 import CCMModel.ComponentDef;
+import CCMModel.ComponentFile;
 import CCMModel.ComponentImplDef;
 import CCMModel.ComponentInstantiation;
 import CCMModel.Composition;
 import CCMModel.ConstantDef;
 import CCMModel.ConsumesDef;
 import CCMModel.Contained;
+import CCMModel.ContainedFile;
+import CCMModel.DependentFile;
+import CCMModel.Deploymentrequirement;
 import CCMModel.Diagram;
 import CCMModel.EmitsDef;
 import CCMModel.EnumDef;
 import CCMModel.EventDef;
 import CCMModel.ExceptionDef;
+import CCMModel.ExternalInstance;
 import CCMModel.FactoryDef;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
 import CCMModel.HomeInstantiation;
+import CCMModel.IDLFile;
+import CCMModel.Implementation;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.OperationDef;
 import CCMModel.PortLocation;
+import CCMModel.ProcessCollocation;
+import CCMModel.Property;
 import CCMModel.ProvidesDef;
 import CCMModel.PublishesDef;
-import CCMModel.Relation;
+import CCMModel.RegisterComponentInstance;
+import CCMModel.Rule;
+import CCMModel.SoftwarePackage;
 import CCMModel.StructDef;
 import CCMModel.Typed;
 import CCMModel.TypedefDef;
@@ -46,6 +57,7 @@ import CCMModel.UsesDef;
 import CCMModel.ValueBoxDef;
 import CCMModel.ValueDef;
 import CCMModel.ValueMemberDef;
+
 
 
 /**
@@ -58,13 +70,28 @@ public class ProjectResources {
 	 public static final String HOMEIMPL="icons/homeImpl_m.gif";
 	 public static final String HOMEIMPL_S="icons/homeImpl_s.gif";
 	 //public static final String HOMEIMPL_S="icons/component.gif";
-	 public static final String HOMEINSTANCE="icons/homeInstance_m.gif";
+	// public static final String HOMEINSTANCE="icons/homeInstance_m.gif";
 	 public static final String HOMEINSTANCE_S="icons/homeInstance_s.gif";
 	 //public static final String HOMEINSTANCE_S="icons/component.gif";
 	 public static final String COMPONENTIMPL="icons/componentImpl.gif";
 	 public static final String COMPONRNTINSTANCE="icons/componentInstance.gif";
 	 public static final String COMPOSITION="icons/composition_m.gif";
 	 public static final String COMPOSITION_S="icons/composition_s.gif";
+	 
+	 public static final String ASSEMBLY="icons/assembly.jpg";
+	 public static final String PROCESSCOLLOCATION="icons/processCollocation.jpg";
+	 public static final String HOSTCOLLOCATION="icons/hostCollocation.jpg";
+	 public static final String SOFTWAREPACKAGE="icons/softwarePackage.jpg";
+	 public static final String IMPLEMENTATION="icons/implementation.jpg";
+	 public static final String PROPERTY="icons/property.jpg";
+	 public static final String RULE="icons/rule.jpg";
+	 public static final String REGISTRYCOMPONENTINSTANCE="icons/registerComponentInstance.jpg";
+	 public static final String CONTAINEDFILE="icons/containedFile.jpg";
+	 public static final String DEPENDENTFILE="icons/dependentFile.jpg";
+	 public static final String REQUIREMENT="icons/requirement.jpg";
+	 public static final String IDLFILE="icons/idlFile.jpg";
+	 public static final String EXTERNALINSTANCE="icons/externalInstance.jpg";
+	 public static final String COMPONENTFILE="icons/componentFile.jpg";
 	 
     public static final String HOME_S="icons/home_s.gif";
 	 //public static final String HOME_S="icons/component.gif";
@@ -73,7 +100,7 @@ public class ProjectResources {
     public static final String ITF_S= "icons/itf_s.bmp";
     public static final String ITF_M="icons/itf_m.bmp";						  
 
-    public static final String MODULE_S= "icons/module_s.gif";
+    public static final String MODULE_S= "icons/module.jpg";
     public static final String MODULE_M="icons/module_m.bmp";								  
     public static final String VALUE_S="icons/value_s.bmp";
     public static final String VALUE_M="icons/value_m.bmp";						  
@@ -187,7 +214,7 @@ public class ProjectResources {
 		if (o instanceof ModuleDef) res = MODULE_S;
 		else if (o instanceof AttributeDef) res = ATTRIBUE_S;
 		else if (o instanceof ConstantDef) res = CONST_S;
-		else if (o instanceof AbstractItfDerivedRelation) res = ABSTRACT_DERIVED_S;
+		 
 		else if (o instanceof ComponentDef) res = COMPONENT_S;
 		else if (o instanceof ConsumesDef) res = EVENTSINK_RIGHT;
 		else if (o instanceof Diagram) res = OUTLINE;
@@ -199,15 +226,34 @@ public class ProjectResources {
 		else if (o instanceof HomeDef) res = HOME_S;
 		//****************************************************
 		else if (o instanceof HomeImplDef) res = HOMEIMPL_S;
-		else if (o instanceof HomeInstantiation) res = HOMEINSTANCE;
+		else if (o instanceof HomeInstantiation) res = HOMEINSTANCE_S;
 		else if (o instanceof ComponentImplDef) res = COMPONENTIMPL;
 		else if (o instanceof ComponentInstantiation) res = COMPONRNTINSTANCE;
 		else if (o instanceof Composition) res = COMPOSITION_S;
+		
+		else if (o instanceof SoftwarePackage) res = SOFTWAREPACKAGE;
+		else if (o instanceof Implementation) res = IMPLEMENTATION;
+		else if (o instanceof Assembly) res = ASSEMBLY;
+		else if (o instanceof ProcessCollocation) res = PROCESSCOLLOCATION;
+		else if (o instanceof Property) res = PROPERTY;
+		else if (o instanceof Rule) res = RULE;
+		else if (o instanceof DependentFile) res = DEPENDENTFILE;
+		else if (o instanceof ContainedFile) res = CONTAINEDFILE;
+		else if (o instanceof Deploymentrequirement) res = REQUIREMENT;
+		else if (o instanceof RegisterComponentInstance) res = REGISTRYCOMPONENTINSTANCE;
+		else if (o instanceof IDLFile) res = IDLFILE;
+		else if (o instanceof ExternalInstance) res = EXTERNALINSTANCE;
+		else if (o instanceof ComponentFile) res =COMPONENTFILE;
+		
+		
+		
+		
+	
 		//****************************************************
 		else if (o instanceof InterfaceDef) res = ITF_S;	     
 		else if (o instanceof ProvidesDef) res = FACET_ALL;
 		else if (o instanceof PublishesDef) res = EVENTSOURCE_RIGHT;
-		else if (o instanceof Relation) res = DERIVED_S;
+		 
 		else if (o instanceof OperationDef) res = OPERATION_S;
 		else if (o instanceof StructDef) res = STRUCT_S;
 		else if (o instanceof UnionDef) res = UNION_S;

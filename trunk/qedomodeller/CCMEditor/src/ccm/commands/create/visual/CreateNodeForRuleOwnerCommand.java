@@ -10,15 +10,6 @@
  */
 package ccm.commands.create.visual;
 
-import org.eclipse.emf.common.notify.Notification;
-
-import CCMModel.ComponentCategory;
-import CCMModel.Composition;
-import CCMModel.Implementation;
-import CCMModel.InterfaceDef;
-import CCMModel.RuleOwner;
-
-import ccm.model.CCMNotificationImpl;
 
 
 

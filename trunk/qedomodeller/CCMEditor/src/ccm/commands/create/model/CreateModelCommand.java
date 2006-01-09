@@ -3,12 +3,9 @@
  */
 package ccm.commands.create.model;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.gef.commands.Command;
 
 import CCMModel.ArrayDef;
@@ -18,12 +15,10 @@ import CCMModel.Container;
 import CCMModel.FixedDef;
 import CCMModel.IDLType;
 import CCMModel.ModuleDef;
-import CCMModel.Node;
 import CCMModel.SequenceDef;
 import CCMModel.StringDef;
 import CCMModel.Typed;
 import CCMModel.WstringDef;
-import CCMModel.impl.NodeImpl;
 import ccm.CCMConstants;
 import ccm.model.CCMModelManager;
 import ccm.model.ModelFactory;
@@ -212,7 +207,8 @@ public class CreateModelCommand extends Command {
      * @return Returns the rootModule.
      */
     public ModuleDef getRootModule() {
-        return (ModuleDef)container;
+        //return (ModuleDef)container;
+    	return rootModule;
     }
     /**
      * @param rootModule The rootModule to set.

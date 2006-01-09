@@ -22,7 +22,6 @@ import CCMModel.CCMModelFactory;
 import CCMModel.Connection;
 import CCMModel.ConnectionDiscription;
 import CCMModel.InterfaceDef;
- 
 import CCMModel.ModuleDef;
 import CCMModel.Node;
 import CCMModel.ProvidesDef;

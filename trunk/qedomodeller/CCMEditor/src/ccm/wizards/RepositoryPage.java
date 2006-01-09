@@ -89,7 +89,8 @@ public class RepositoryPage extends WizardPage {
 		});
 
 		// Module-tree
-		moduleTree = new Tree(container,SWT.BORDER |SWT.MULTI | SWT.V_SCROLL);
+		//moduleTree = new Tree(container,SWT.BORDER |SWT.MULTI | SWT.V_SCROLL);
+		moduleTree = new Tree(container,SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_BOTH);
 		moduleTree.setLayoutData(gd);
 		moduleTree.setEnabled(false);
@@ -145,15 +146,15 @@ public class RepositoryPage extends WizardPage {
 	 */
 	private void handleSelection(){
 		TreeItem[] sels = moduleTree.getSelection();
-		modules= new ModuleDef[sels.length];
-		for (int i=0;i<sels.length;i++){
-			modules[i]=(ModuleDef)sels[i].getData();
+		//modules= new ModuleDef[sels.length];
+		//for (int i=0;i<sels.length;i++){
+		//	modules[i]=(ModuleDef)sels[i].getData();
+		//}
+		if (sels.length > 0)
+		{
+			TreeItem sel = sels[0];
+			module = (ModuleDef) sel.getData();
 		}
-	//	if (sels.length > 0)
-	//	{
-	//		TreeItem sel = sels[0];
-	//		module = (ModuleDef) sel.getData();
-	//	}
 		dialogChanged();
 	}
 

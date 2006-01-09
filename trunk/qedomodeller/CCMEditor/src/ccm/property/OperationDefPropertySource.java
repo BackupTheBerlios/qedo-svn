@@ -10,54 +10,33 @@
  */
 package ccm.property;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
- 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.ui.celleditor.ExtendedDialogCellEditor;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.tools.SelectionTool;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.eclipse.ui.views.properties.PropertySheetPage;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
-import CCMModel.ArrayDef;
 import CCMModel.CCMModelFactory;
 import CCMModel.CCMModelPackage;
 import CCMModel.Contained;
-import CCMModel.FixedDef;
 import CCMModel.IDLType;
-import CCMModel.IDLTypeContainer;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
 import CCMModel.OperationDef;
 import CCMModel.ParameterDef;
 import CCMModel.ParameterMode;
-import CCMModel.SequenceDef;
-import CCMModel.StringDef;
 import CCMModel.Typed;
-import CCMModel.WstringDef;
 import ccm.CCMConstants;
-import ccm.dialogs.AddOperationDialog;
-import ccm.dialogs.EditIDLTypeDialog;
-import ccm.edit.OperationDefNodeEditPart;
 import ccm.model.CCMModelManager;
 import ccm.model.CCMNotificationImpl;
 import ccm.model.ModelFactory;
-import ccm.model.template.IDLKind;
 import ccm.model.template.IDLTemplate;
 import ccm.model.template.ParameterTemplate;
 import ccm.propertyDescriptor.IDLtypePropertyDescriptor;

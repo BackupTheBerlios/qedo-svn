@@ -4,11 +4,11 @@
 package ccm.figures;
 
 import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
-import org.eclipse.draw2d.PolylineDecoration;
 import org.eclipse.draw2d.geometry.PointList;
+
+import CCMModel.ConnectionsKind;
 
 /**
  * @author eduardw
@@ -17,14 +17,14 @@ import org.eclipse.draw2d.geometry.PointList;
  */
 public class DerivedConnection extends PolylineConnection {
 
-    public DerivedConnection(boolean isCCMConnection) {
+    public DerivedConnection(ConnectionsKind kind) {
         super();
         //PolylineDecoration arrow = new PolylineDecoration();
         PolygonDecoration arrow = new PolygonDecoration();
         arrow.setBackgroundColor(ColorConstants.black);
         
         PointList supportsArrowPointList = new PointList();
-        if(isCCMConnection){
+        if(kind==ConnectionsKind.CCM_LITERAL){
         
         supportsArrowPointList.addPoint(-2,1);
         supportsArrowPointList.addPoint(0,0);
@@ -33,7 +33,7 @@ public class DerivedConnection extends PolylineConnection {
         arrow.setLineWidth(3);
         setTargetDecoration(arrow);
         }
-        else{
+        else if(kind==ConnectionsKind.COMPOSITION_LITERAL){
         	supportsArrowPointList.addPoint(0,0);
 			supportsArrowPointList.addPoint(-2,2);
 			supportsArrowPointList.addPoint(-4,0);

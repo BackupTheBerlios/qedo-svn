@@ -4,6 +4,8 @@
  */
 package ccm.treeedit;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -21,49 +23,53 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.views.properties.IPropertySource;
 
-import CCMModel.AbstractDerivedRelation;
-import CCMModel.AbstractItfDerivedRelation;
 import CCMModel.AliasDef;
+import CCMModel.Assembly;
+import CCMModel.AssemblyConnection;
 import CCMModel.AttributeDef;
-import CCMModel.CompHomeRelation;
 import CCMModel.ComponentDef;
+import CCMModel.ComponentFile;
 import CCMModel.ComponentImplDef;
+import CCMModel.ComponentInstantiation;
 import CCMModel.Composition;
 import CCMModel.ConstantDef;
 import CCMModel.Contained;
+import CCMModel.ContainedFile;
+import CCMModel.DependentFile;
 import CCMModel.Diagram;
 import CCMModel.EnumDef;
 import CCMModel.EventDef;
 import CCMModel.EventPortDef;
-import CCMModel.EventPortEventRelation;
 import CCMModel.ExceptionDef;
+import CCMModel.ExternalInstance;
 import CCMModel.Field;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
+import CCMModel.HomeInstantiation;
+import CCMModel.IDLFile;
+import CCMModel.Implementation;
 import CCMModel.InterfaceDef;
-import CCMModel.InterfaceRelation;
-import CCMModel.ProvidesDef;
-import CCMModel.UsesDef;
-import CCMModel.View;
-//import CCMModel.IpmlementsRelation;
-import CCMModel.ImplRelation;
-import CCMModel.ManagersRelation;
 import CCMModel.ModuleDef;
 import CCMModel.OperationDef;
 import CCMModel.ParameterDef;
-import CCMModel.Relation;
+import CCMModel.ProcessCollocation;
+import CCMModel.Property;
+import CCMModel.ProvidesDef;
+import CCMModel.RegisterComponentInstance;
+import CCMModel.Rule;
+import CCMModel.SoftwarePackage;
 import CCMModel.StructDef;
-import CCMModel.SupportsRelation;
 import CCMModel.Typed;
 import CCMModel.TypedefDef;
 import CCMModel.UnionDef;
 import CCMModel.UnionField;
+import CCMModel.UsesDef;
 import CCMModel.ValueBoxDef;
 import CCMModel.ValueDef;
-import CCMModel.ValueDerivedRelation;
-import CCMModel.impl.RelationImpl;
+import MDE.Deployment.DeploymentRequirement;
 import ccm.ProjectResources;
 import ccm.commands.create.model.CreateAliasDefCommand;
+import ccm.commands.create.model.CreateAssemblyCommand;
 import ccm.commands.create.model.CreateComponentDefCommand;
 import ccm.commands.create.model.CreateComponentImplDefCommand;
 import ccm.commands.create.model.CreateCompositionDefCommand;
@@ -71,10 +77,12 @@ import ccm.commands.create.model.CreateConstantDefCommand;
 import ccm.commands.create.model.CreateEnumDefCommand;
 import ccm.commands.create.model.CreateEventDefCommand;
 import ccm.commands.create.model.CreateExceptionDefCommand;
+import ccm.commands.create.model.CreateExternalInstanceCommand;
 import ccm.commands.create.model.CreateHomeDefCommand;
 import ccm.commands.create.model.CreateHomeImplDefCommand;
 import ccm.commands.create.model.CreateInterfaceDefCommand;
 import ccm.commands.create.model.CreateModuleDefCommand;
+import ccm.commands.create.model.CreateSoftwarePackageCommand;
 import ccm.commands.create.model.CreateStructDefCommand;
 import ccm.commands.create.model.CreateUnionDefCommand;
 import ccm.commands.create.model.CreateValueBoxDefCommand;
@@ -97,11 +105,10 @@ import ccm.commands.create.visual.adds.AddValueMemberDefCommand;
 import ccm.commands.delete.model.DeleteContainedCommand;
 import ccm.commands.delete.model.DeleteExceptionDefCommand;
 import ccm.commands.delete.model.DeleteOperationDefCommand;
-import ccm.commands.delete.model.DeleteRelationCommand;
 import ccm.commands.delete.model.DeleteStructDefCommand;
 import ccm.commands.delete.model.DeleteUnionDefCommand;
 import ccm.commands.dnd.AddModel2DiagramCommand;
-import ccm.commands.dnd.AddRelation2DiagramCommand;
+import ccm.commands.dnd.DragAssembly2DiagramCommand;
 import ccm.commands.dnd.DragComponent2DiagramCommand;
 import ccm.commands.dnd.DragComponentImpl2DiagramCommand;
 import ccm.commands.dnd.DragComposition2DiagramCommand;
@@ -109,29 +116,42 @@ import ccm.commands.dnd.DragEvent2DiagramCommand;
 import ccm.commands.dnd.DragHome2DiagramCommand;
 import ccm.commands.dnd.DragHomeImpl2DiagramCommand;
 import ccm.commands.dnd.DragInterface2DiagramCommand;
+import ccm.commands.dnd.DragSoftwarePackage2DiagramCommand;
 import ccm.commands.dnd.DragValue2DiagramCommand;
 import ccm.commands.dnd.MoveModelCommand;
 import ccm.dragndrop.CCMDragTracker;
 import ccm.editors.CCMTreeViewer;
 import ccm.property.AbstractIntefacefPropertySource;
+import ccm.property.AssemblyPropertySource;
 import ccm.property.AttributeDefPropertySource;
 import ccm.property.ComponentDefPropertySource;
-import ccm.property.ComponentImplPropertySource;
+import ccm.property.ComponentInstancePropertySource;
 import ccm.property.CompositionPropertySource;
 import ccm.property.ConstantDefPropertySource;
+import ccm.property.ContainedFilePropertySource;
 import ccm.property.ContainedPropertySource;
+import ccm.property.DependentFilePropertySource;
+import ccm.property.DeploymentRequirementPropertySource;
 import ccm.property.EnumPropertySource;
 import ccm.property.EventDefPropertySource;
 import ccm.property.EventPortDefPropertySource;
 import ccm.property.ExceptionDefPropertySource;
+import ccm.property.ExternalInstancePropertySource;
 import ccm.property.FacetPropertySource;
+import ccm.property.FilePropertySource;
 import ccm.property.HomeDefPropertySource;
 import ccm.property.HomeImplPropertySource;
+import ccm.property.HomeInstancePropertySource;
+import ccm.property.ImplementationPropertySource;
 import ccm.property.IntefacefPropertySource;
 import ccm.property.ModuleDefPropertySource;
 import ccm.property.OperationDefPropertySource;
+import ccm.property.ProcessCollocationPropertySource;
+import ccm.property.PropertyPropertySource;
 import ccm.property.ReceptaclePropertySource;
-import ccm.property.RelationPropertySource;
+import ccm.property.RegisterComponentInstancePropertySource;
+import ccm.property.RulePropertySource;
+import ccm.property.SoftwarePackagePropertySource;
 import ccm.property.StructDefPropertySource;
 import ccm.property.TypeDefPropertySource;
 import ccm.property.TypedPropertySource;
@@ -185,6 +205,37 @@ public class CCMModelTreeEditPart extends AbstractTreeEditPart implements  Adapt
 	private Object getPropertySource() {
 		Object propertySource = null;
 		//***************************************
+		
+		if(getModel() instanceof SoftwarePackage)
+			return new SoftwarePackagePropertySource((Contained) getModel());
+		if(getModel() instanceof IDLFile)	
+			return new FilePropertySource((Contained) getModel());
+		if(getModel() instanceof Implementation)	
+			return new ImplementationPropertySource((Contained) getModel());
+		if(getModel() instanceof ContainedFile)
+			return new ContainedFilePropertySource((Contained) getModel());
+		if(getModel() instanceof DependentFile)
+			return new DependentFilePropertySource((Contained) getModel());	
+		if(getModel() instanceof DeploymentRequirement)
+			return new DeploymentRequirementPropertySource((Contained) getModel());
+		
+		if(getModel() instanceof Assembly)
+			return new AssemblyPropertySource((Contained) getModel());
+		if(getModel() instanceof ProcessCollocation)
+			return new ProcessCollocationPropertySource((Contained) getModel());
+		if(getModel() instanceof ExternalInstance)
+			return new ExternalInstancePropertySource((Contained) getModel());
+		if(getModel() instanceof HomeInstantiation)
+			return new HomeInstancePropertySource((Contained) getModel());
+		if(getModel() instanceof ComponentInstantiation)
+			return new ComponentInstancePropertySource((Contained) getModel());
+		if(getModel() instanceof RegisterComponentInstance)
+			return new RegisterComponentInstancePropertySource((Contained) getModel());
+		if(getModel() instanceof Rule)
+			return new RulePropertySource((Contained) getModel());
+		if(getModel() instanceof Property)
+			return new PropertyPropertySource((Contained) getModel());
+		
 		if(getModel() instanceof Composition)
 			return new CompositionPropertySource((Contained) getModel());
 		if(getModel() instanceof HomeImplDef)
@@ -235,8 +286,8 @@ public class CCMModelTreeEditPart extends AbstractTreeEditPart implements  Adapt
 			return new ValueDefPropertySource( (Contained) getModel() );
 		if(getModel() instanceof TypedefDef)
 			return new TypeDefPropertySource( (Contained) getModel() );
-		if(getModel() instanceof Relation)
-			return new RelationPropertySource( (Relation) getModel() );
+//		if(getModel() instanceof Relation)
+//			return new RelationPropertySource( (Relation) getModel() );
 		if(getModel() instanceof Typed && !(getModel() instanceof Contained))
 			return new TypedPropertySource( (Typed) getModel() );
 		if( propertySource == null ) {
@@ -258,6 +309,28 @@ public class CCMModelTreeEditPart extends AbstractTreeEditPart implements  Adapt
 		if(request instanceof CreateModelRequest
 				&& request.getType().equals(HomeImplDef.class))
 				return new CreateHomeImplDefCommand();
+		
+		
+		
+		if(request instanceof CreateModelRequest
+				&& request.getType().equals(SoftwarePackage.class))
+				return new CreateSoftwarePackageCommand();
+	//	if(request instanceof CreateModelRequest
+	//			&& request.getType().equals(Implementation.class))
+	//			return new CreateImplementationCommand();
+		if(request instanceof CreateModelRequest
+				&& request.getType().equals(Assembly.class))
+				return new CreateAssemblyCommand();
+	//	if(request instanceof CreateModelRequest
+	//			&& request.getType().equals(ProcessCollocation.class))
+	//			return new CreateProcessCollocationCommand();
+	//	if(request instanceof CreateModelRequest
+	//			&& request.getType().equals(HomeInstantiation.class))
+	//			return new CreateHomeInstanceCommand();
+		if(request instanceof CreateModelRequest
+				&& request.getType().equals(ExternalInstance.class))
+				return new CreateExternalInstanceCommand();
+		
 		//******************************************
 		if(request instanceof CreateModelRequest
 			&& request.getType().equals(ModuleDef.class))
@@ -316,8 +389,8 @@ public class CCMModelTreeEditPart extends AbstractTreeEditPart implements  Adapt
 				return new DeleteOperationDefCommand((Contained) getModel());
 			if(getModel() instanceof Contained)
 				return new DeleteContainedCommand((Contained) getModel());
-			if(getModel() instanceof Relation)
-				return new DeleteRelationCommand((Relation)getModel());
+//			if(getModel() instanceof Relation)
+//				return new DeleteRelationCommand((Relation)getModel());
 		}
 
 		// handle drag and drop requests
@@ -326,6 +399,15 @@ public class CCMModelTreeEditPart extends AbstractTreeEditPart implements  Adapt
 			DragAndDropRequest req = (DragAndDropRequest) request;
 
 	//******************************************************
+			if (getModel() instanceof Diagram &&req.getNewObject() instanceof SoftwarePackage) {
+				return new DragSoftwarePackage2DiagramCommand( (Contained) req.getNewObject(),
+						(Diagram) getModel());
+			}
+			if (getModel() instanceof Diagram &&req.getNewObject() instanceof Assembly) {
+				return new DragAssembly2DiagramCommand( (Contained) req.getNewObject(),
+						(Diagram) getModel());
+			}
+			
 			if (getModel() instanceof Diagram &&req.getNewObject() instanceof ComponentDef) {
 				return new DragComponent2DiagramCommand( (Contained) req.getNewObject(),
 						(Diagram) getModel());
@@ -368,17 +450,35 @@ public class CCMModelTreeEditPart extends AbstractTreeEditPart implements  Adapt
 			
 	//***********************************************************
 			// model element has been dropped on a diagram
-			if (getModel() instanceof Diagram && req.getNewObject() instanceof Contained) {
+			if (getModel() instanceof Diagram && req.getNewObject() instanceof Contained
+					&& !(req.getNewObject() instanceof ContainedFile)
+					&& !(req.getNewObject() instanceof DependentFile)
+					&& !(req.getNewObject() instanceof DeploymentRequirement)
+					&& !(req.getNewObject() instanceof Property)
+					&& !(req.getNewObject() instanceof Rule)
+					&& !(req.getNewObject() instanceof ProcessCollocation)
+					&& !(req.getNewObject() instanceof HomeInstantiation)
+					&& !(req.getNewObject() instanceof ComponentInstantiation)
+					&& !(req.getNewObject() instanceof RegisterComponentInstance)) {
 				return new AddModel2DiagramCommand( (Contained) req.getNewObject(), (Diagram) getModel() );
 			}
 			
 			// relation has been dropped on a diagram
-			if (getModel() instanceof Diagram && req.getNewObject() instanceof Relation) {
-				return new AddRelation2DiagramCommand( (Relation) req.getNewObject(), (Diagram) getModel() );
-			}
+//			if (getModel() instanceof Diagram && req.getNewObject() instanceof Relation) {
+//				return new AddRelation2DiagramCommand( (Relation) req.getNewObject(), (Diagram) getModel() );
+//			}
 			
 			// model element has been dropped on a module
-			if (getModel() instanceof ModuleDef && req.getNewObject() instanceof Contained) {
+			if (getModel() instanceof ModuleDef && req.getNewObject() instanceof Contained
+					&& !(req.getNewObject() instanceof ContainedFile)
+					&& !(req.getNewObject() instanceof DependentFile)
+					&& !(req.getNewObject() instanceof DeploymentRequirement)
+					&& !(req.getNewObject() instanceof Property)
+					&& !(req.getNewObject() instanceof Rule)
+					&& !(req.getNewObject() instanceof ProcessCollocation)
+					&& !(req.getNewObject() instanceof HomeInstantiation)
+					&& !(req.getNewObject() instanceof ComponentInstantiation)
+					&& !(req.getNewObject() instanceof RegisterComponentInstance)) {
 				return new MoveModelCommand( (ModuleDef) getModel(), (Contained) req.getNewObject() );
 			}
 		}
@@ -445,7 +545,38 @@ public class CCMModelTreeEditPart extends AbstractTreeEditPart implements  Adapt
 	 * @return <code>null</code>
 	 */
 	protected List getModelChildren() {
-		return getEObject().eContents();	
+		List objs=getEObject().eContents();
+		List connections= new ArrayList();
+		List cons= new ArrayList();
+		List other= new ArrayList();
+		if(getEObject() instanceof Assembly){
+			for(Iterator it =objs.iterator();it.hasNext();){
+				Object obj =it.next();
+				cons.add(obj);
+				if (obj instanceof AssemblyConnection||obj instanceof Rule
+						||obj instanceof ComponentFile)
+					connections.add(obj);			
+		}
+		cons.removeAll(connections);
+		return cons;
+		}
+		if(getEObject() instanceof ModuleDef){
+			for(Iterator it =objs.iterator();it.hasNext();){
+				Object obj =it.next();
+				if (obj instanceof Diagram)
+					cons.add(obj);	
+				else if (obj instanceof ModuleDef)
+					connections.add(obj);
+				else
+					other.add(obj);
+		}
+		cons.addAll(connections);
+		cons.addAll(other);
+		return cons;
+			
+		}
+		return objs;
+		
 	}
 	
 	/**
@@ -463,25 +594,24 @@ public class CCMModelTreeEditPart extends AbstractTreeEditPart implements  Adapt
 			return;
 		}
 
-		if (m instanceof RelationImpl) {
-			
-			Contained source = getRelationSource((RelationImpl) m); 
-			Contained target = getRelationTarget((RelationImpl) m);
-			
-			if (source!=null && target!=null) {
-				setWidgetText(source.getIdentifier() + " -> " + target.getIdentifier());
-			}
-			else {
-				setWidgetText("unknown source/target");
-			}
-			
-		}
+//		if (m instanceof RelationImpl) {
+//			
+//			Contained source = getRelationSource((RelationImpl) m); 
+//			Contained target = getRelationTarget((RelationImpl) m);
+//			
+//			if (source!=null && target!=null) {
+//				setWidgetText(source.getIdentifier() + " -> " + target.getIdentifier());
+//			}
+//			else {
+//				setWidgetText("unknown source/target");
+//			}
+//			
+//		}
 		else if (m instanceof Contained) setWidgetText(((Contained) m).getIdentifier());
 		else if (m instanceof UnionField) setWidgetText(((UnionField) m).getIdentifier());
 		else if (m instanceof Field) setWidgetText(((Field) m).getIdentifier());
 		else if (m instanceof ParameterDef) setWidgetText(((ParameterDef) m).getIdentifier());
 		else setWidgetText(m.getClass().getName());
-			
 		Image image = ProjectResources.getIcon(getEObject());	
 		TreeItem item = (TreeItem) getWidget();
 
@@ -497,56 +627,56 @@ public class CCMModelTreeEditPart extends AbstractTreeEditPart implements  Adapt
 	 * Returns the target if current item is a relation, otherwise <code>null</null>.
 	 * @return target of relation.
 	 */
-	public static Contained getRelationSource(Relation rel) {
-
-		if (rel instanceof CompHomeRelation) return ((CompHomeRelation) rel).getComponentEnd();
-		if (rel instanceof SupportsRelation) {
-			if(((SupportsRelation) rel).getHomes() != null)
-				return ((SupportsRelation) rel).getHomes();
-			else
-				return ((SupportsRelation) rel).getComponents();
-		}
-		if (rel instanceof EventPortEventRelation) return ((EventPortEventRelation) rel).getType();
-		if (rel instanceof ManagersRelation) return ((ManagersRelation) rel).getHome_impl();
-		if (rel instanceof AbstractItfDerivedRelation) return ((AbstractItfDerivedRelation) rel).getDerived();
-//		if (rel instanceof ImplRelation) return ((ImplRelation) rel).getImpl();
-		if (rel instanceof ValueDerivedRelation) return ((ValueDerivedRelation) rel).getBase();
-		if (rel instanceof AbstractDerivedRelation) return ((AbstractDerivedRelation) rel).getAbstractDerived();
-
-		if (rel instanceof InterfaceRelation) {
-
-			/*List provides = ((InterfaceRelation) rel).getProvidesDef();
-			List uses = ((InterfaceRelation) rel).getUsesDef();
-			if (provides!=null && !provides.isEmpty()) return (Contained) provides.get(0);
-			if (uses!=null && !uses.isEmpty()) return (Contained) uses.get(0);*/
-			if (((InterfaceRelation) rel).getProvidesDef()!=null)
-				return ((InterfaceRelation) rel).getProvidesDef();
-			if (((InterfaceRelation) rel).getUsesDef()!=null)
-				return ((InterfaceRelation) rel).getUsesDef();
-		}
-
-		return null;
-	}
-	
-	
-	/**
-	 * Returns the target if current item is a relation, otherwise <code>null</null>.
-	 * @return target of relation.
-	 */
-	public static Contained getRelationTarget(Relation rel) {
-
-		if (rel instanceof CompHomeRelation) return ((CompHomeRelation) rel).getHomeEnd();
-		if (rel instanceof SupportsRelation) return ((SupportsRelation) rel).getSupportsItf();
-		if (rel instanceof EventPortEventRelation) return ((EventPortEventRelation) rel).getEnds();
-		if (rel instanceof ManagersRelation) return ((ManagersRelation) rel).getComponent_impl();
-		if (rel instanceof AbstractItfDerivedRelation) return ((AbstractItfDerivedRelation) rel).getBase();
-//		if (rel instanceof IpmlementsRelation) return ((IpmlementsRelation) rel).getComponentEnd();
-		if (rel instanceof ValueDerivedRelation) return ((ValueDerivedRelation) rel).getDerived();
-		if (rel instanceof AbstractDerivedRelation) return ((AbstractDerivedRelation) rel).getAbstractBase();
-		if (rel instanceof InterfaceRelation) return ((InterfaceRelation) rel).getItf();
-
-		return null;
-	}
+////	public static Contained getRelationSource(Relation rel) {
+//
+//		if (rel instanceof CompHomeRelation) return ((CompHomeRelation) rel).getComponentEnd();
+//		if (rel instanceof SupportsRelation) {
+//			if(((SupportsRelation) rel).getHomes() != null)
+//				return ((SupportsRelation) rel).getHomes();
+//			else
+//				return ((SupportsRelation) rel).getComponents();
+//		}
+//		if (rel instanceof EventPortEventRelation) return ((EventPortEventRelation) rel).getType();
+//		if (rel instanceof ManagersRelation) return ((ManagersRelation) rel).getHome_impl();
+//		if (rel instanceof AbstractItfDerivedRelation) return ((AbstractItfDerivedRelation) rel).getDerived();
+////		if (rel instanceof ImplRelation) return ((ImplRelation) rel).getImpl();
+//		if (rel instanceof ValueDerivedRelation) return ((ValueDerivedRelation) rel).getBase();
+//		if (rel instanceof AbstractDerivedRelation) return ((AbstractDerivedRelation) rel).getAbstractDerived();
+//
+//		if (rel instanceof InterfaceRelation) {
+//
+//			/*List provides = ((InterfaceRelation) rel).getProvidesDef();
+//			List uses = ((InterfaceRelation) rel).getUsesDef();
+//			if (provides!=null && !provides.isEmpty()) return (Contained) provides.get(0);
+//			if (uses!=null && !uses.isEmpty()) return (Contained) uses.get(0);*/
+//			if (((InterfaceRelation) rel).getProvidesDef()!=null)
+//				return ((InterfaceRelation) rel).getProvidesDef();
+//			if (((InterfaceRelation) rel).getUsesDef()!=null)
+//				return ((InterfaceRelation) rel).getUsesDef();
+//		}
+//
+//		return null;
+//	}
+//	
+//	
+//	/**
+//	 * Returns the target if current item is a relation, otherwise <code>null</null>.
+//	 * @return target of relation.
+//	 */
+//	public static Contained getRelationTarget(Relation rel) {
+//
+//		if (rel instanceof CompHomeRelation) return ((CompHomeRelation) rel).getHomeEnd();
+//		if (rel instanceof SupportsRelation) return ((SupportsRelation) rel).getSupportsItf();
+//		if (rel instanceof EventPortEventRelation) return ((EventPortEventRelation) rel).getEnds();
+//		if (rel instanceof ManagersRelation) return ((ManagersRelation) rel).getComponent_impl();
+//		if (rel instanceof AbstractItfDerivedRelation) return ((AbstractItfDerivedRelation) rel).getBase();
+////		if (rel instanceof IpmlementsRelation) return ((IpmlementsRelation) rel).getComponentEnd();
+//		if (rel instanceof ValueDerivedRelation) return ((ValueDerivedRelation) rel).getDerived();
+//		if (rel instanceof AbstractDerivedRelation) return ((AbstractDerivedRelation) rel).getAbstractBase();
+//		if (rel instanceof InterfaceRelation) return ((InterfaceRelation) rel).getItf();
+//
+//		return null;
+//	}
 	
 	
 	/**

@@ -21,16 +21,12 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
-import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.views.properties.IPropertySource;
 
-import CCMModel.Assembly;
 import CCMModel.CCMModelPackage;
-import CCMModel.ComponentDef;
-import CCMModel.Composition;
 import CCMModel.Implementation;
 import CCMModel.Node;
 import ccm.commands.create.visual.adds.AddAttributeDefCommand;
@@ -39,18 +35,13 @@ import ccm.commands.create.visual.adds.AddEventSinkCommand;
 import ccm.commands.create.visual.adds.AddEventSourceCommand;
 import ccm.commands.create.visual.adds.AddFacetCommand;
 import ccm.commands.create.visual.adds.AddReceptacleCommand;
-import ccm.commands.delete.visual.DeleteComponentCommand;
 import ccm.commands.delete.visual.DeleteNodeCommand;
-import ccm.edit.policy.ComponentDefEditPolicy;
-import ccm.edit.policy.CompositionEditPolicy;
 import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
 import ccm.edit.policy.DeploymentunitEditPolicy;
 import ccm.edit.policy.ModelEditPolicy;
-import ccm.figures.ComponentFigure;
 import ccm.figures.ContainerFigureWithAttribute;
 import ccm.model.CCMNotificationImpl;
-import ccm.property.AbstractIntefacefPropertySource;
-import ccm.property.CompositionPropertySource;
+import ccm.property.ImplementationPropertySource;
 import ccm.request.AddAttributeDefRequest;
 import ccm.request.AddEmitsSourceRequest;
 import ccm.request.AddEventSinkRequest;
@@ -124,7 +115,7 @@ public class DeploymentUnitNodeEditPart
 	 */
 	protected IFigure createFigure() {
 	//	System.out.println("category:"+getComposition().getCategory().toString());
-		ContainerFigureWithAttribute compositionFigure=new ContainerFigureWithAttribute(getUnit().getIdentifier(),ccm.ProjectResources.COMPOSITION_S,null);
+		ContainerFigureWithAttribute compositionFigure=new ContainerFigureWithAttribute(getUnit().getIdentifier(),ccm.ProjectResources.IMPLEMENTATION,null);
 		//compositionFigure.setName(getComposition().getIdentifier());
 		return compositionFigure;
 	}
@@ -164,7 +155,7 @@ public class DeploymentUnitNodeEditPart
 	 * @return IPropertySource 
 	 */	
 	protected IPropertySource getPropertySource() {
-		propertySource = new CompositionPropertySource( getModelNode().getContained() );
+		propertySource = new ImplementationPropertySource( getModelNode().getContained() );
 		return propertySource;
 	}
 

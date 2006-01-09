@@ -32,7 +32,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.IPageSite;
 
 import CCMModel.View;
-
 import ccm.CCMEditorPlugin;
 
 public abstract class AbstractCCMPage

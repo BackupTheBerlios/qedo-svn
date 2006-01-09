@@ -19,7 +19,6 @@ import org.eclipse.emf.common.notify.Notification;
 import CCMModel.ContainedFile;
 import CCMModel.Implementation;
 import CCMModel.Node;
-import CCMModel.ValueMemberDef;
 import ccm.commands.create.visual.CreateNodeForContainedCommand;
 import ccm.model.CCMNotificationImpl;
 import ccm.model.template.IDLKind;
@@ -29,7 +28,7 @@ import ccm.model.template.IDLTemplate;
 
 public class AddContainedFileCommand extends CreateNodeForContainedCommand{
     
-	private static final String	CreateCommand_LabelSimple = "CreateParameterCommand";
+	private static final String	CreateCommand_LabelSimple = "AddContainedFileCommand";
 
 	private Node opNode;
 	private Node parentNode;
@@ -37,7 +36,7 @@ public class AddContainedFileCommand extends CreateNodeForContainedCommand{
 	
 	private ContainedFile containedFile;
 	
-	private String codeType,entryPoint,entryPointUsage;
+	private String codeType,entryPoint,entryPointUsage,location;
 	private IDLTemplate idlTemplate=new IDLTemplate(IDLKind.IDL_LITERAL);
 
 	
@@ -62,10 +61,13 @@ public class AddContainedFileCommand extends CreateNodeForContainedCommand{
 	 */
 	public void execute() {
 	    super.execute();
+	    ((Implementation)container).getContainedFile().add(newObject);
 	    containedFile = (ContainedFile) newObject;
 		containedFile.setEntryPoint(entryPoint);
 		containedFile.setUsage(entryPointUsage);
 		containedFile.setCodeType(codeType);
+		containedFile.setLocation(location);
+		containedFile.setName(identifier);
 		 
 		Iterator it = container.getNode().iterator();
 	    while(it.hasNext()) {
@@ -78,7 +80,7 @@ public class AddContainedFileCommand extends CreateNodeForContainedCommand{
 	    	opNode.setHeight(constraint.height);*/
 	    	parentNode.getContents().add(opNode);
 	    	opNode.eNotify(new CCMNotificationImpl(opNode, Notification.SET,
-										       CCMNotificationImpl.ATTRIBUTE_DEF, null, null,0));
+										       CCMNotificationImpl.CONTAINEDFILE, null, null,0));
 	    }
 	}
 
@@ -119,6 +121,9 @@ public class AddContainedFileCommand extends CreateNodeForContainedCommand{
 	}
 	public void setcodeType(String codeType) {
 		this.codeType =codeType;
+	}
+	public void setLocation(String location) {
+		this.location =location;
 	}
     /**
      * @return Returns the parentNode.

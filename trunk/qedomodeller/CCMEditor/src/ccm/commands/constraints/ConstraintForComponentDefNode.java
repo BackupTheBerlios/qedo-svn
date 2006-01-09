@@ -21,12 +21,9 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Image;
 
-import ccm.CCMConstants;
-import ccm.CCMEditorPlugin;
-import ccm.ProjectResources;
-
 import CCMModel.ComponentDef;
 import CCMModel.ConsumesDef;
+import CCMModel.Contained;
 import CCMModel.EmitsDef;
 import CCMModel.Node;
 import CCMModel.PortLocation;
@@ -35,6 +32,9 @@ import CCMModel.ProvidesDef;
 import CCMModel.PublishesDef;
 import CCMModel.UsesDef;
 import CCMModel.View;
+import ccm.CCMConstants;
+import ccm.CCMEditorPlugin;
+import ccm.ProjectResources;
 
 
 
@@ -52,12 +52,15 @@ public class ConstraintForComponentDefNode
 	private Point newPos;
 	private Point oldPos;
 	private Node part;
-	
+	private boolean isInstance=false;
 	private Dimension newSize=new Dimension(0,0);
 	private Dimension oldSize=new Dimension(0,0);
 	
 	private List portNodes=new LinkedList();
-	
+	public ConstraintForComponentDefNode(boolean isInstance){
+		super();
+		this.isInstance=isInstance;
+	}
 	/**
 	 * Execution of this command node and resizes 
 	 * a constraint
@@ -68,21 +71,21 @@ public class ConstraintForComponentDefNode
 		
 		portNodes.clear();
 	    View view=part.getView();
-		ComponentDef obj=(ComponentDef) part.getContained();
-		 Iterator it=view.getNode().iterator();
-		 while(it.hasNext()){
-		        Node n=(Node) it.next();
-		        if(n.getContained() instanceof ProvidesDef ||
-		        		n.getContained() instanceof UsesDef ||
-						n.getContained() instanceof EmitsDef ||
-						n.getContained() instanceof ConsumesDef ||
-						n.getContained() instanceof PublishesDef)
-		            if(n.getContained().eContainer().equals(obj)
-							&& ((PortNode) n).getHostNode() == part)
-						portNodes.add(n);
+	    List pNodes;
+	    if(!isInstance)
+	    	pNodes=view.getNode();
+	    else
+	    	pNodes=part.getDefineIn().getContents();
+	  
+		for(Iterator pit=pNodes.iterator();pit.hasNext();){
+		    Node pnode=(Node) pit.next();
+		    Contained con=pnode.getContained();
+		    if(pnode instanceof PortNode &&((PortNode)pnode).getHostNode().equals(part))
+				portNodes.add(pnode);
 		  }
-
-		it=portNodes.iterator();
+	    
+	 
+		Iterator it=portNodes.iterator();
 		while(it.hasNext()){
 		    Node n=(Node) it.next();
 		    
@@ -145,7 +148,8 @@ public class ConstraintForComponentDefNode
 						n.getContained() instanceof EmitsDef ||
 						n.getContained() instanceof ConsumesDef ||
 						n.getContained() instanceof PublishesDef)
-		            if(n.getContained().eContainer().equals(obj))portNodes.add(n);
+		            if(n.getContained().eContainer().equals(obj))
+		            	portNodes.add(n);
 		  }
 
 		it=portNodes.iterator();

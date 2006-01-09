@@ -51,7 +51,6 @@ import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
 import ccm.edit.policy.InterfaceDefEditPolicy;
 import ccm.figures.ContainerFigure;
 import ccm.model.CCMNotificationImpl;
-import ccm.property.AbstractIntefacefPropertySource;
 import ccm.property.IntefacefPropertySource;
 import ccm.request.AddAliasDefRequest;
 import ccm.request.AddAttributeDefRequest;
@@ -102,11 +101,11 @@ public class InterfaceDefNodeEditPart
 		Dimension dim=new Dimension(getModelNode().getWidth(),getModelNode().getHeight());
 		Dimension prefDim = getFigure().getPreferredSize(0,0);
 		
-		if(dim.height < prefDim.height)
-			dim.height = prefDim.height;
+	//	if(dim.height < prefDim.height)
+	//		dim.height = prefDim.height;
 		
-		if(dim.width < prefDim.width)
-			dim.width = prefDim.width;
+	//	if(dim.width < prefDim.width)
+	//		dim.width = prefDim.width;
 		
 		getInterfaceFigure().setIdentifier(getInterface().getIdentifier());
 		

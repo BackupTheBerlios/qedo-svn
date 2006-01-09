@@ -18,15 +18,12 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
 
 import CCMModel.Node;
-
 import ccm.commands.constraints.SetConstraintForNode;
-import ccm.edit.OperationDefNodeEditPart;
 
 
 
@@ -85,14 +82,14 @@ public class ContainedNodeXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	 * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#createChangeConstraintCommand(org.eclipse.gef.EditPart, java.lang.Object)
 	 */
 	protected Command createChangeConstraintCommand(ChangeBoundsRequest request,EditPart child, Object constraint) {
-		System.out.println(" for homes child :"+child);
+		 
 		SetConstraintForNode command = new SetConstraintForNode();
 		command.setPart((Node)child.getModel());
 		command.setRectangle((Rectangle)constraint);
 		return command;
 	}
 	protected Command createChangeConstraintCommand(EditPart child, Object constraint) {
-		System.out.println("createChangeConstraintCommand for homes child :"+child);
+		 
 		SetConstraintForNode command = new SetConstraintForNode();
 		command.setPart((Node)child.getModel());
 		command.setRectangle((Rectangle)constraint);

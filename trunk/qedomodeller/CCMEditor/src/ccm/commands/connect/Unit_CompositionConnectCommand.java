@@ -20,7 +20,6 @@ import CCMModel.Composition;
 import CCMModel.Connection;
 import CCMModel.ConnectionDiscription;
 import CCMModel.ConnectionsKind;
-//import CCMModel.Implementation;
 import CCMModel.Implementation;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
@@ -204,6 +203,9 @@ public class Unit_CompositionConnectCommand extends Command {
      */
     public Node getSource() {
         return source;
+    }
+    public Node getTarget() {
+        return target;
     }
 }
  

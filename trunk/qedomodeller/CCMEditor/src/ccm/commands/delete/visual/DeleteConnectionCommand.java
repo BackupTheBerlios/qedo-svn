@@ -3,34 +3,36 @@
 */
 package ccm.commands.delete.visual;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.commands.Command;
-import ccm.CCMConstants;
-import ccm.model.CCMNotificationImpl;
 
 import CCMModel.AbstractInterfaceDef;
+import CCMModel.AssemblyConnection;
 import CCMModel.ComponentDef;
 import CCMModel.ComponentImplDef;
 import CCMModel.Composition;
+import CCMModel.ConsumesDef;
 import CCMModel.Contained;
 import CCMModel.EventDef;
 import CCMModel.EventPortDef;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
 import CCMModel.ImplDef;
+import CCMModel.Implementation;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
-import CCMModel.Node;
 import CCMModel.ProvidesDef;
+import CCMModel.SiSouDef;
+import CCMModel.SinkDef;
+import CCMModel.SoftwarePackage;
 import CCMModel.UsesDef;
 import CCMModel.ValueDef;
 import CCMModel.View;
 import CCMModel.impl.ConnectionImpl;
+import ccm.CCMConstants;
 
 /**
  * @author Holger Kinscher
@@ -110,7 +112,7 @@ public class DeleteConnectionCommand extends Command {
 			if(connectionsLabel==CCMConstants.DERIVED_LABEL){
 				abstitf.getBaseInterface().remove(targetModel);	
 			}	
-			
+			return;
 		}
 		if (sourceModel instanceof HomeDef){
 			HomeDef home=(HomeDef)sourceModel;
@@ -121,7 +123,7 @@ public class DeleteConnectionCommand extends Command {
 			if(connectionsLabel==CCMConstants.HOME_KEY_LABEL){
 				home.setPrimaryKey(null);	
 			}
-			
+			return;	
 		}
 		if (sourceModel instanceof ComponentDef){
 			ComponentDef component=(ComponentDef)sourceModel;
@@ -132,7 +134,7 @@ public class DeleteConnectionCommand extends Command {
 			if(connectionsLabel==CCMConstants.COMPONENT_HOME_LABEL){
 				component.getHomes().remove(targetModel);	
 			}
-			
+			return;
 		}
 	//	if (sourceModel instanceof InterfaceDef){
 			
@@ -149,32 +151,49 @@ public class DeleteConnectionCommand extends Command {
 			if(connectionsLabel==CCMConstants.DERIVED_LABEL){
 				value.setBasevalue(null);	
 			}
-			
+			return;
 		}
 	//	if (sourceModel instanceof EventDef){
 			
 	//	}
-		if (sourceModel instanceof EventPortDef){
+		if (sourceModel instanceof EventPortDef && targetModel instanceof EventDef){
 			EventPortDef eventPort=(EventPortDef)sourceModel;
 			if(connectionsLabel==CCMConstants.EVENTPORT_EVENT_LABEL){
 				eventPort.setEvent(null);	
 			}
-			
+			return;
 		}
-		if (sourceModel instanceof ProvidesDef){
+		if (sourceModel instanceof ProvidesDef && targetModel instanceof InterfaceDef){
 			ProvidesDef facet=(ProvidesDef)sourceModel;
 			if(connectionsLabel==CCMConstants.PROVIDES_INTERFACE_LABEL){
 				facet.setInterface(null);	
 			}
-			
+			return;
 		}
-		if (sourceModel instanceof UsesDef){
+		
+		if (sourceModel instanceof UsesDef && targetModel instanceof InterfaceDef){
 			UsesDef receptacle=(UsesDef)sourceModel;
 			if(connectionsLabel==CCMConstants.USES_INTERFACE_LABEL){
 				receptacle.setInterface(null);	
 			}
+			return;
+		}
+		if (sourceModel instanceof UsesDef || sourceModel instanceof SinkDef
+				|| sourceModel instanceof SiSouDef|| sourceModel instanceof ConsumesDef){
+			AssemblyConnection aConnection=connection.getAssemblyConnection();
+			aConnection.getTarget().setInstance(null);
+			aConnection.getTarget().setFeature(null);
+			aConnection.getSource().setInstance(null);
+			aConnection.getSource().setFeature(null);
+			//connetion.getSource().setInstance(null);
+			aConnection.setAssembly(null);
+			aConnection.setDefinedIn(null);
+			aConnection.getConnection().clear();
+			 
+			//connection.getAssemblyConnection().getConnection().clear();
 			
 		}
+		
 		if (sourceModel instanceof ComponentImplDef){
 			
 		}
@@ -183,14 +202,14 @@ public class DeleteConnectionCommand extends Command {
 			if(connectionsLabel==CCMConstants.MANAGES_LABEL){
 				homeImpl.setComponentImpl(null);	
 			}
-			
+			return;
 		}
 		if (sourceModel instanceof Composition){
 			Composition composition=(Composition)sourceModel;
 			if(connectionsLabel==CCMConstants.COMPOSITION_HOME_LABEL){
 				composition.setHomeImpl(null);	
 			}
-			
+			return;
 		}
 		 
 		
@@ -200,6 +219,10 @@ public class DeleteConnectionCommand extends Command {
 	 */
 	public boolean canExecute() {
 		if(sourceModel instanceof ImplDef &&targetModel instanceof AbstractInterfaceDef)
+			return false;
+		if(sourceModel instanceof Implementation &&targetModel instanceof Composition)
+			return false;
+		if(sourceModel instanceof SoftwarePackage&&targetModel instanceof ComponentDef)
 			return false;
 		return super.canExecute();
 	}

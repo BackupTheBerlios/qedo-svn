@@ -19,7 +19,6 @@ import java.util.List;
 import org.eclipse.gef.commands.Command;
 
 import CCMModel.CCMModelFactory;
- 
 import CCMModel.ComponentDef;
 import CCMModel.Connection;
 import CCMModel.ConnectionDiscription;

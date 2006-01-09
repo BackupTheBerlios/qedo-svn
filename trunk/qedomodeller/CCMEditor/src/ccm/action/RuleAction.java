@@ -17,19 +17,13 @@ import CCMModel.ComponentInstantiation;
 import CCMModel.Container;
 import CCMModel.HomeInstantiation;
 import CCMModel.Node;
-import ccm.commands.create.visual.adds.AddContainedFileCommand;
-import ccm.commands.create.visual.adds.AddDepententFileCommand;
 import ccm.commands.create.visual.adds.AddRuleCommand;
-import ccm.commands.create.visual.adds.AddStructDefCommand;
 import ccm.edit.AssemblyNodeEditPart;
 import ccm.edit.ComponentInstanceNodeEditPart;
 import ccm.edit.ContainerNodeEditPart;
-import ccm.edit.DeploymentUnitNodeEditPart;
 import ccm.edit.HomeInstanceNodeEditPart;
-import ccm.edit.InterfaceDefNodeEditPart;
 import ccm.model.CCMModelManager;
 import ccm.model.ModelFactory;
-import ccm.request.AddStructDefRequest;
 import ccm.treeedit.CCMModelTreeEditPart;
 
 /**

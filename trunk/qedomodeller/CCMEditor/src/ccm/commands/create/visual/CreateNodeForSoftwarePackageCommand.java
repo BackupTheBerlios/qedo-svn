@@ -12,22 +12,13 @@ package ccm.commands.create.visual;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.ecore.EPackage;
 
-import CCMModel.CCMModelFactory;
-import CCMModel.CCMModelPackage;
-import CCMModel.ComponentCategory;
 import CCMModel.ComponentDef;
-import CCMModel.Composition;
-import CCMModel.IDLFile;
-import CCMModel.Implementation;
-import CCMModel.InterfaceDef;
+import CCMModel.ModuleDef;
 import CCMModel.Node;
 import CCMModel.SoftwarePackage;
-
 import ccm.commands.connect.ImplConnectCommand;
 import ccm.model.CCMNotificationImpl;
 import ccm.model.ModelFactory;
@@ -68,19 +59,9 @@ public class CreateNodeForSoftwarePackageCommand extends CreateNodeForContainerC
 		((SoftwarePackage)newObject).setType(type);
 		((SoftwarePackage)newObject).setAutor(autor);
 		((SoftwarePackage)newObject).setComponent(component);
-		ModelFactory mf = new ModelFactory();
-		Map registry = EPackage.Registry.INSTANCE;
-		String ccmURI = CCMModelPackage.eNS_URI;
-		CCMModelPackage ccmPackage =
-		(CCMModelPackage) registry.get(ccmURI);
-		CCMModelFactory factory = ccmPackage.getCCMModelFactory();
-		IDLFile idlFile=factory.createIDLFile();
-		idlFile.setName(idlFileName);
-		idlFile.setLocation(idlFileLocation);
-		idlFile.setIdentifier(newObject.getIdentifier()+".idlFileName");
-		idlFile.setVersion(newObject.getVersion());
-		idlFile.setRepositoryId(newObject.getRepositoryId());
-		idlFile.setDefinedIn((SoftwarePackage)newObject);
+		 
+		//ModelFactory mf = new ModelFactory();
+		
 		//((InterfaceDef)newObject).setIsLocal(isLocal);
 		
 		List nodeList = view.getNode();
@@ -96,7 +77,7 @@ public class CreateNodeForSoftwarePackageCommand extends CreateNodeForContainerC
 		//	}
 		//}
 		//ComponentDef component=((ComponentImplDef)newObject).getComponent();
-		if(component!=null){
+		//if(component!=null){
 			ImplConnectCommand command=new ImplConnectCommand("<<realized_comp>>");
 			command.setSource(node);
 			command.setView(view);
@@ -120,7 +101,7 @@ public class CreateNodeForSoftwarePackageCommand extends CreateNodeForContainerC
 			view.getNode().add(vn);
 			command.setTarget(vn);
 			command.execute();
-		}
+		//}
 		
 		
 		
@@ -137,7 +118,7 @@ public class CreateNodeForSoftwarePackageCommand extends CreateNodeForContainerC
 	 public void setIDLFileLocation(String location) {
         this.idlFileLocation = location;
     }
-    public void setTitle(String title) {
+    public void setTitel (String title) {
         this.title = title;
     }
     public void setType(String type) {
@@ -146,16 +127,25 @@ public class CreateNodeForSoftwarePackageCommand extends CreateNodeForContainerC
     public void setAutor(String autor) {
         this.autor = autor;
     }
-    public void setComponent(ComponentDef component) {
-        this.component = component;
-    }
+    
     public void setLicenseKey(String licenseKey) {
         this.licenseKey = licenseKey;
     }
   
     public void setLicenseTextRef(String licensetextRef) {
-        this.licenseTextRef = licenseTextRef;
+        this.licenseTextRef = licensetextRef;
     }
+    public List getComponentDefs(){
+    	ModelFactory mf = new ModelFactory();
+    	ModuleDef root=this.getRootModule();
+    	List componentdefs=mf.getAllContained(root,ComponentDef.class);
+    	return componentdefs;
+    }
+    public void setComponent(ComponentDef component) {
+		this.component=component;
+		
+	}
+  
   
 }
  

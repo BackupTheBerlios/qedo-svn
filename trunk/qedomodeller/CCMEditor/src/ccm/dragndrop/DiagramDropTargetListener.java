@@ -12,7 +12,6 @@ import CCMModel.Contained;
 import CCMModel.Container;
 import CCMModel.Diagram;
 import CCMModel.ModuleDef;
-import CCMModel.Relation;
 import ccm.edit.ViewEditPart;
 import ccm.request.DragAndDropRequest;
 import ccm.treeedit.CCMModelTreeEditPart;
@@ -41,7 +40,8 @@ public class DiagramDropTargetListener extends TemplateTransferDropTargetListene
 	protected CreationFactory getFactory(Object template) {
 		if ((template instanceof Contained
 				&& ((Contained)template).getDefinedIn() instanceof ModuleDef)
-				|| (template instanceof Relation)) {
+		//		|| (template instanceof Relation)
+				) {
 			source = template;	// memorize source
 			return new DropFactory(template);
 		}

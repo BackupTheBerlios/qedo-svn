@@ -29,7 +29,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 import CCMModel.CCMModelPackage;
-import CCMModel.ComponentDef;
+import CCMModel.ExternalInstance;
 import CCMModel.Node;
 import ccm.commands.create.visual.adds.AddAttributeDefCommand;
 import ccm.commands.create.visual.adds.AddEmitsSourceCommand;
@@ -38,12 +38,12 @@ import ccm.commands.create.visual.adds.AddEventSourceCommand;
 import ccm.commands.create.visual.adds.AddFacetCommand;
 import ccm.commands.create.visual.adds.AddReceptacleCommand;
 import ccm.commands.delete.visual.DeleteComponentCommand;
-import ccm.edit.policy.ComponentDefEditPolicy;
 import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
+import ccm.edit.policy.ExternalInstanceEditPolicy;
 import ccm.edit.policy.ModelEditPolicy;
-import ccm.figures.ComponentFigure;
+import ccm.figures.ContainerFigureWithAttribute;
 import ccm.model.CCMNotificationImpl;
-import ccm.property.AbstractIntefacefPropertySource;
+import ccm.property.ExternalInstancePropertySource;
 import ccm.request.AddAttributeDefRequest;
 import ccm.request.AddEmitsSourceRequest;
 import ccm.request.AddEventSinkRequest;
@@ -65,15 +65,15 @@ public class ExternalInstanceNodeEditPart
 	
     public ExternalInstanceNodeEditPart(){}
 	
-	public ComponentDef getComponent(){
-		return (ComponentDef)((Node) getModel()).getContained();
+	public ExternalInstance getInstance(){
+		return (ExternalInstance)((Node) getModel()).getContained();
 	}
     
 	/*
 	 * return the figure casted to CORBAComponent
 	 */
-	public ComponentFigure getComponentFigure(){
-		return (ComponentFigure) getFigure();
+	public ContainerFigureWithAttribute getComponentFigure(){
+		return (ContainerFigureWithAttribute) getFigure();
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class ExternalInstanceNodeEditPart
 		// install the edit policy to handle connection creation
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, new ContainedNodeXYLayoutEditPolicy());
 		installEditPolicy(EditPolicy.CONTAINER_ROLE, new ModelEditPolicy());	
-		installEditPolicy( EditPolicy.GRAPHICAL_NODE_ROLE, new ComponentDefEditPolicy() );
+		installEditPolicy( EditPolicy.GRAPHICAL_NODE_ROLE, new ExternalInstanceEditPolicy() );
 	}
 
 	/**
@@ -93,8 +93,8 @@ public class ExternalInstanceNodeEditPart
 		Point loc = new Point( getModelNode().getX(), getModelNode().getY() );
 		Dimension dim=new Dimension(getModelNode().getWidth(),getModelNode().getHeight());
 		
-		ComponentFigure fig = getComponentFigure();
-		fig.setName(getComponent().getIdentifier());
+		ContainerFigureWithAttribute fig = getComponentFigure();
+		fig.setName(getInstance().getIdentifier());
 		
 		Dimension newDim = fig.getPreferredSize(dim);
 		if(dim.equals(-1,-1)){
@@ -114,8 +114,8 @@ public class ExternalInstanceNodeEditPart
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-		ComponentFigure opFigure=new ComponentFigure();
-		opFigure.setName(getComponent().getIdentifier());
+		ContainerFigureWithAttribute opFigure=new ContainerFigureWithAttribute(getInstance().getIdentifier(),ccm.ProjectResources.EXTERNALINSTANCE,null);
+		//opFigure.setName(getHomeInstance().getIdentifier());
 		return opFigure;
 	}
 
@@ -149,7 +149,7 @@ public class ExternalInstanceNodeEditPart
 	 * @return IPropertySource 
 	 */	
 	protected IPropertySource getPropertySource() {
-		propertySource = new AbstractIntefacefPropertySource( getModelNode().getContained() );
+		propertySource = new ExternalInstancePropertySource( getModelNode().getContained() );
 		return propertySource;
 	}
 

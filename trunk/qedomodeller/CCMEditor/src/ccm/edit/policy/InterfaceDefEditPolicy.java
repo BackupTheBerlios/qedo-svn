@@ -10,9 +10,6 @@
  */
 package ccm.edit.policy;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.GraphicalNodeEditPolicy;
 import org.eclipse.gef.requests.CreateConnectionRequest;
@@ -58,8 +55,10 @@ public class InterfaceDefEditPolicy extends GraphicalNodeEditPolicy {
 	        // OCL isAbstract implies base->forAll(isAbstract)
 	        if(derAbstItf.isIsAbstract())
 	            if(! baseAbstItf.isIsAbstract())return null;
-	        if(!checkedAbstractItfDerivedRelation(derAbstItf,baseAbstItf))return null;
-			command.setTarget(getInterfaceDefEditPart().getModelNode());
+	       // if(!checkedAbstractItfDerivedRelation(derAbstItf,baseAbstItf))return null;
+	           if( derAbstItf.getBaseInterface().contains(baseAbstItf)) 
+				return null;
+	        command.setTarget(getInterfaceDefEditPart().getModelNode());
 		    return command;
 		}else if(request.getStartCommand() instanceof UsesItfConnectCommand){
 		    UsesItfConnectCommand command=(UsesItfConnectCommand) request.getStartCommand();
@@ -111,19 +110,19 @@ public class InterfaceDefEditPolicy extends GraphicalNodeEditPolicy {
 	
 	}
 	
-	private boolean checkedAbstractItfDerivedRelation(AbstractInterfaceDef base,AbstractInterfaceDef derived){
-	    Iterator it=base.getBaseRelation().iterator();
-	    List derivedList=derived.getDerivedRelation(); 
-	    while(it.hasNext()){
-	        if(derivedList.contains(it.next()))return false;
-	    }
-	    it=derived.getBaseRelation().iterator();
-	    derivedList=base.getDerivedRelation();
-	    while(it.hasNext()){
-	        if(derivedList.contains(it.next()))return false;
-	    }
-	    return true;
-	}
+//	private boolean checkedAbstractItfDerivedRelation(AbstractInterfaceDef base,AbstractInterfaceDef derived){
+//	    Iterator it=base.getBaseRelation().iterator();
+//	    List derivedList=derived.getDerivedRelation(); 
+//	    while(it.hasNext()){
+//	        if(derivedList.contains(it.next()))return false;
+//	    }
+//	    it=derived.getBaseRelation().iterator();
+//	    derivedList=base.getDerivedRelation();
+//	    while(it.hasNext()){
+//	        if(derivedList.contains(it.next()))return false;
+//	    }
+//	    return true;
+//	}
 
 	private InterfaceDefNodeEditPart getInterfaceDefEditPart(){
 	    return (InterfaceDefNodeEditPart) getHost();

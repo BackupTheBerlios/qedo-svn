@@ -17,12 +17,10 @@ package ccm.commands.create.visual.adds;
 import java.util.Iterator;
 
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.emf.common.notify.Notification;
 
 import CCMModel.Node;
 import CCMModel.TypedefDef;
 import ccm.commands.create.visual.CreateNodeForContainedCommand;
-import ccm.model.CCMNotificationImpl;
 
 
 

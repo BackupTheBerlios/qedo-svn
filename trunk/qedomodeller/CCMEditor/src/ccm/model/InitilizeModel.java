@@ -9,10 +9,8 @@ import CCMModel.CCM;
 import CCMModel.CCMModelFactory;
 import CCMModel.IDLTypeContainer;
 import CCMModel.ModuleDef;
-import CCMModel.Node;
 import CCMModel.PrimitiveDef;
 import CCMModel.PrimitiveKind;
-import CCMModel.View;
 //import CCMModel.ViewKind;
 
 /**

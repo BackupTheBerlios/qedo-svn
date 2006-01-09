@@ -22,16 +22,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -65,7 +55,7 @@ public class ImportWizard extends Wizard implements INewWizard {
 	private String version;
 	public  String repModulename="";
 	public  MDE.BaseIDL.ModuleDef repModule;
-	public String inputFileName="";
+//	public String inputFileName="";
 	/**
 	 * Constructor for SampleNewWizard.
 	 */
@@ -96,8 +86,8 @@ public class ImportWizard extends Wizard implements INewWizard {
 		 
 		final String containerName = page.getContainerName();
 		final String fileName = page.getFileName();
-//		final MDE.BaseIDL.ModuleDef repModule  = repositoryPage.getModule();
-		final MDE.BaseIDL.ModuleDef[] repModules  = repositoryPage.getModules();
+		final MDE.BaseIDL.ModuleDef repModule  = repositoryPage.getModule();
+		//final MDE.BaseIDL.ModuleDef[] repModules  = repositoryPage.getModules();
 		final CCMRepository repository = repositoryPage.getRepository();
 		version=page.getVersion();
 		
@@ -107,30 +97,31 @@ public class ImportWizard extends Wizard implements INewWizard {
 			MessageDialog.openError(getShell(),"Error","Container \"" + containerName + "\" does not exist.");
 		}
 		IContainer container = (IContainer) resource;
-		//IFile file = container.getFile(new Path(fileName));
-		//if (file.exists())
-		//	if (!MessageDialog.openQuestion(getShell(),
-		//			"Overwrite?", "File \"" + file.getName() + "\" already exists. Overwrite?"))
-		//		return false;
+		IFile file = container.getFile(new Path(fileName));
+		if (file.exists())
+			if (!MessageDialog.openQuestion(getShell(),
+					"Overwrite?", "File \"" + file.getName() + "\" already exists. Overwrite?"))
+				return false;
 			
-//*********************************		
-for (int i=0;i<repModules.length;i++){
-	        repModule=repModules[i];
-			try{
-				repModulename=repModule.identifier();
-			}
-			catch (Exception e){}
+		//*********************************		
+		//for (int i=0;i<repModules.length;i++){
+	    //    repModule=repModules[i];
+		//	try{
+		//		repModulename=repModule.identifier();
+		//	}
+		//	catch (Exception e){}
 			//inputFileName="input"+repModulename+".ccm";
-			inputFileName=getNewFileName("input"+repModulename+".ccm");
+		//	inputFileName=getNewFileName("input"+repModulename+".ccm");
 			 
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
 					
 						
-					doFinish(containerName, inputFileName, repository, repModule, monitor);
+					doFinish(containerName, fileName, repository, repModule, monitor);
 					
 				} catch (CoreException e) {
+					//e.printStackTrace();
 					throw new InvocationTargetException(e);
 				} finally {
 					monitor.done();
@@ -142,8 +133,10 @@ for (int i=0;i<repModules.length;i++){
 			 
 			getContainer().run(true, false, op);
 		} catch (InterruptedException e) {
+			//e.printStackTrace();
 			return false;
 		} catch (InvocationTargetException e) {
+			//e.printStackTrace();
 			Throwable realException = e.getTargetException();
 			MessageDialog.openError(getShell(), "Error", realException.getMessage());
 			return false;
@@ -154,7 +147,7 @@ for (int i=0;i<repModules.length;i++){
 	//		// TODO Auto-generated catch block
 	//		e1.printStackTrace();
 	//	}
-}
+
 		return true;
 	}
 	
@@ -223,7 +216,7 @@ for (int i=0;i<repModules.length;i++){
 
 		getShell().getDisplay().asyncExec(new Runnable() {
 			public void run() {
-				System.out.println(">>>>>>>>>>>>>import 5");
+				 
 				IWorkbenchPage page =
 					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 				try {
@@ -298,7 +291,9 @@ for (int i=0;i<repModules.length;i++){
 			CCMImport.imports(repository,module,ccm);
 		}
 		catch (MofError ex)
-		{ throwCoreException("Mof Error : " + ex.getMessage()); }
+
+		{   //ex.printStackTrace();
+			throwCoreException("Mof Error : " + ex.getMessage()); }
 
 		monitor.worked(2);
 		monitor.setTaskName("save ccm model to file...");
@@ -306,6 +301,8 @@ for (int i=0;i<repModules.length;i++){
 			modelManager.save(path);
 		}
 		catch (IOException ex)
-		{ throwCoreException("can't save the imported model to the new file : " + ex.getMessage()); }
+		
+		{ //ex.printStackTrace();
+			throwCoreException("can't save the imported model to the new file : " + ex.getMessage()); }
 	}
 }

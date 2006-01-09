@@ -12,21 +12,16 @@
 package ccm.edit;
 
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.gef.GraphicalEditPart;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 import CCMModel.AttributeDef;
 import CCMModel.Node;
-import ccm.CCMEditorPlugin;
 import ccm.ProjectResources;
 import ccm.figures.ContainedWithMembersFigure;
 import ccm.model.CCMNotificationImpl;

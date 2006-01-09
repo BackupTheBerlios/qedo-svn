@@ -12,10 +12,7 @@
 package ccm.edit;
 
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -24,12 +21,10 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 import CCMModel.AliasDef;
 import CCMModel.Node;
-import ccm.CCMEditorPlugin;
 import ccm.ProjectResources;
 import ccm.commands.delete.visual.DeleteNodeCommand;
 import ccm.figures.ContainedWithMembersFigure;

@@ -4,38 +4,35 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 import CCMModel.ComponentDef;
 import CCMModel.ModuleDef;
 
 /**
-* This code was generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a
-* for-profit company or business) then you should purchase
-* a license - please visit www.cloudgarden.com for details.
+*@author Siegercn
 */
 public class CreateCopmonentImplDialog extends org.eclipse.swt.widgets.Dialog implements KeyListener{
 	 
@@ -101,6 +98,11 @@ public class CreateCopmonentImplDialog extends org.eclipse.swt.widgets.Dialog im
 			copmCmb.setSize(new org.eclipse.swt.graphics.Point(214,24));
 			final Font copmCmbfont = new Font(Display.getDefault(),"Tahoma",7,0);
 			copmCmb.setFont(copmCmbfont);
+			copmCmb.addSelectionListener( new SelectionAdapter() {
+				public void widgetSelected(SelectionEvent evt) {
+					copmCmbWidgetSelected(evt);
+				}
+			});
 	
 			FormData comLbLData = new FormData();
 			comLbLData.height = 17;
@@ -219,6 +221,20 @@ public class CreateCopmonentImplDialog extends org.eclipse.swt.widgets.Dialog im
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * @param evt
+	 */
+	protected void copmCmbWidgetSelected(SelectionEvent evt) {
+		setComponent((ComponentDef)componentDefList.get(copmCmb.getSelectionIndex()));
+	}
+
+	/**
+	 * @param implementation
+	 */
+	private void setComponent(ComponentDef comp) {
+		this.component=comp;
+	}
+
 	/** Add your pre-init code in here 	*/
 	public void preInitGUI(){
 	}
@@ -227,7 +243,7 @@ public class CreateCopmonentImplDialog extends org.eclipse.swt.widgets.Dialog im
 	public void postInitGUI(){
 		copmCmb.removeAll();
 		componentDefList=new LinkedList();
-	 	Iterator it=module.getContents().iterator();
+		Iterator it=module.getContents().iterator();
 	 	while(it.hasNext()){
 			Object o=it.next();
 			if(o instanceof ComponentDef){
@@ -235,7 +251,7 @@ public class CreateCopmonentImplDialog extends org.eclipse.swt.widgets.Dialog im
 				componentDefList.add(o);
 			}
 		}
-		copmCmb.select(0);
+		//copmCmb.select(0);
 	}
 
 	/** Auto-generated main method */

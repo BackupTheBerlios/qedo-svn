@@ -11,7 +11,9 @@
  */
 package ccm.commands.connect;
 
-import org.eclipse.draw2d.*;
+import org.eclipse.draw2d.FigureUtilities;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.Locator;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 

@@ -29,7 +29,6 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 import CCMModel.CCMModelPackage;
-import CCMModel.ComponentDef;
 import CCMModel.HomeInstantiation;
 import CCMModel.Node;
 import ccm.commands.create.visual.adds.AddAttributeDefCommand;
@@ -39,13 +38,12 @@ import ccm.commands.create.visual.adds.AddEventSourceCommand;
 import ccm.commands.create.visual.adds.AddFacetCommand;
 import ccm.commands.create.visual.adds.AddReceptacleCommand;
 import ccm.commands.delete.visual.DeleteComponentCommand;
-import ccm.edit.policy.ComponentDefEditPolicy;
 import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
+import ccm.edit.policy.HomeInstanceEditPolicy;
 import ccm.edit.policy.ModelEditPolicy;
-import ccm.figures.ComponentFigure;
 import ccm.figures.ContainerFigureWithAttribute;
 import ccm.model.CCMNotificationImpl;
-import ccm.property.AbstractIntefacefPropertySource;
+import ccm.property.HomeInstancePropertySource;
 import ccm.request.AddAttributeDefRequest;
 import ccm.request.AddEmitsSourceRequest;
 import ccm.request.AddEventSinkRequest;
@@ -85,7 +83,7 @@ public class HomeInstanceNodeEditPart
 		// install the edit policy to handle connection creation
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, new ContainedNodeXYLayoutEditPolicy());
 		installEditPolicy(EditPolicy.CONTAINER_ROLE, new ModelEditPolicy());	
-		installEditPolicy( EditPolicy.GRAPHICAL_NODE_ROLE, new ComponentDefEditPolicy() );
+		installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new HomeInstanceEditPolicy() );
 	}
 
 	/**
@@ -117,7 +115,7 @@ public class HomeInstanceNodeEditPart
 	 */
 	protected IFigure createFigure() {
 		//ComponentFigure opFigure=new ComponentFigure();
-		ContainerFigureWithAttribute opFigure=new ContainerFigureWithAttribute(getHomeInstance().getIdentifier(),ccm.ProjectResources.HOMEINSTANCE,null);
+		ContainerFigureWithAttribute opFigure=new ContainerFigureWithAttribute(getHomeInstance().getIdentifier(),ccm.ProjectResources.HOMEINSTANCE_S,null);
 		//opFigure.setName(getHomeInstance().getIdentifier());
 		return opFigure;
 	}
@@ -152,7 +150,7 @@ public class HomeInstanceNodeEditPart
 	 * @return IPropertySource 
 	 */	
 	protected IPropertySource getPropertySource() {
-		propertySource = new AbstractIntefacefPropertySource( getModelNode().getContained() );
+		propertySource = new HomeInstancePropertySource( getModelNode().getContained() );
 		return propertySource;
 	}
 

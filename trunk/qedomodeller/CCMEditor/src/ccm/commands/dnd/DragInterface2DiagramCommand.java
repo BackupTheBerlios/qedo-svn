@@ -5,26 +5,18 @@ package ccm.commands.dnd;
 
 import java.util.Iterator;
 import java.util.List;
- 
-import org.eclipse.draw2d.geometry.Point;
- 
 
-import ccm.commands.connect.AbstItfDerivedConnectCommand;
+import org.eclipse.draw2d.geometry.Point;
+
+import CCMModel.Contained;
+import CCMModel.Diagram;
+import CCMModel.InterfaceDef;
+import CCMModel.Node;
 import ccm.commands.connect.ComponentSupportsConnectCommand;
 import ccm.commands.connect.HomeSupportsConnectCommand;
 import ccm.commands.connect.ProvidesItfConnectCommand;
 import ccm.commands.connect.UsesItfConnectCommand;
 import ccm.commands.connect.ValueSupportsConnectCommand;
- 
-
-import CCMModel.AbstractInterfaceDef;
-import CCMModel.InterfaceDef;
- 
-import CCMModel.Contained;
- 
-import CCMModel.Diagram;
- 
-import CCMModel.Node;
  
  
 

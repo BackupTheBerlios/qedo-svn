@@ -22,10 +22,6 @@ import ccmio.repository.CCMExport;
 import ccmio.repository.CCMRepository;
 
 
-
-
-
-
 public class ExportWizard extends Wizard implements IExportWizard {
 
 	private RepositoryPage repository_page;
@@ -61,11 +57,10 @@ public class ExportWizard extends Wizard implements IExportWizard {
 			
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					System.out.println(">>>>>>>>>>>>>export 2");
 					export(repository, file, monitor); 
-					System.out.println(">>>>>>>>>>>>>export 3");
 					} 
 				catch (CoreException e) {
+					//e.printStackTrace();
 					throw new InvocationTargetException(e);
 				} finally {
 					monitor.done();
@@ -81,6 +76,7 @@ public class ExportWizard extends Wizard implements IExportWizard {
 		catch (InterruptedException e) {
 			return false;
 		} catch (InvocationTargetException e) {
+			//e.printStackTrace();
 			Throwable realException = e.getTargetException();
 			MessageDialog.openError(getShell(), "Error", realException.getMessage());
 			return false;
@@ -120,9 +116,15 @@ public class ExportWizard extends Wizard implements IExportWizard {
 			monitor.worked(2);		
 			
 		}
-		catch (MofError ex) {throwCoreException("MOF Error: " + ex.getMessage()); }
-		catch (IOException e) {throwCoreException("Error loading file."); }
-		catch (COMM_FAILURE ex) {throwCoreException("Error connecting to Repository."); }
+		catch (MofError ex) {
+			//ex.printStackTrace();
+			throwCoreException("MOF Error: " + ex.getMessage()); }
+		catch (IOException e) {
+			//e.printStackTrace();
+			throwCoreException("Error loading file."); }
+		catch (COMM_FAILURE ex) {
+			//ex.printStackTrace();
+			throwCoreException("Error connecting to Repository."); }
 
 	}
 	

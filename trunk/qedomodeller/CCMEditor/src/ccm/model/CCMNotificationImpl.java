@@ -41,15 +41,20 @@ public class CCMNotificationImpl extends NotificationImpl
   public static final int HOMEIINSTANCE=122;
   public static final int COMPONENTIMPL=123;
   public static final int COMPONENTINSTACE=124;
+public static final int PROCESSCOLLOCATION = 135;
   public static final int COMPOSITION=125;
+
   public static final int EXTERNALINSTANCE=126;
+public static final int RegisterComponentInstance = 134;
   public static final int CONNECTION=127;
   public static final int DeploymentUnit=128;
   public static final int Assembly=129;
   public static final int DependentFile=130;
   public static final int ContainedFile=131;
   public static final int SoftwarePackage=132;
-  
+  public static final int Property = 133;
+public static final int DEPENDENTFILE = 136;
+public static final int CONTAINEDFILE = 137;
   public CCMNotificationImpl(Object notifier, int eventType, int feature, Object oldValue, Object newValue, int position)
   {
     super(eventType, oldValue, newValue, position);

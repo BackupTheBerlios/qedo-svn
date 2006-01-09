@@ -5,12 +5,14 @@ package ccm.commands.dnd;
 
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.draw2d.geometry.Point; 
-import ccm.commands.connect.EventPortEventConnectCommand;
-import CCMModel.EventDef; 
-import CCMModel.Contained; 
-import CCMModel.Diagram; 
+
+import org.eclipse.draw2d.geometry.Point;
+
+import CCMModel.Contained;
+import CCMModel.Diagram;
+import CCMModel.EventDef;
 import CCMModel.Node;
+import ccm.commands.connect.EventPortEventConnectCommand;
 
 /**
  * @author siegercn

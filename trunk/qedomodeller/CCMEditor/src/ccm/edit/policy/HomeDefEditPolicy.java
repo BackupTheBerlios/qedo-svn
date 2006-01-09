@@ -71,7 +71,8 @@ public class HomeDefEditPolicy extends GraphicalNodeEditPolicy {
 		    RelationTemplate rel=(RelationTemplate) request.getNewObject();
 		    if(rel.getKind()==0){
 		        HomeDef derHome=(HomeDef) getHomeDefEditPart().getModelNode().getContained();
-		        if(derHome.getDerivedRelation().size()==1) return null;
+		  //      if(derHome.getDerivedRelation().size()==1) return null;
+		        //if(derHome.get)
 		        AbstItfDerivedConnectCommand command = new AbstItfDerivedConnectCommand();
 		        command.setView((View) getHomeDefEditPart().getParent().getModel());
 		        command.setSource(getHomeDefEditPart().getModelNode());

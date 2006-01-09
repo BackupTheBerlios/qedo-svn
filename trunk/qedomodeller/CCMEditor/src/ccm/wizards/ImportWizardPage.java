@@ -79,20 +79,20 @@ public class ImportWizardPage extends WizardPage {
 		});
 		
 		// file
-	 	//label = new Label(container, SWT.NULL);
-	 	//label.setText("&File name:");
+	 	label = new Label(container, SWT.NULL);
+	 	label.setText("&File name:");
 
-	 	//fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
-	 	//gd = new GridData(GridData.FILL_HORIZONTAL);
-	 	//fileText.setLayoutData(gd);
-	 	//fileText.addModifyListener(new ModifyListener() {
-	 	//	public void modifyText(ModifyEvent e) {
-	 	//		dialogChanged();
-	 	//	}
-	 	//});
+	 	fileText = new Text(container, SWT.BORDER | SWT.SINGLE);
+	 	gd = new GridData(GridData.FILL_HORIZONTAL);
+	 	fileText.setLayoutData(gd);
+	 	fileText.addModifyListener(new ModifyListener() {
+	 		public void modifyText(ModifyEvent e) {
+	 			dialogChanged();
+	 		}
+	 	});
 
-	 	//label = new Label(container, SWT.NULL);
-	 	//label.setText("");
+	 	label = new Label(container, SWT.NULL);
+	 	label.setText("");
 
 		// version
 		label = new Label(container, SWT.NULL);
@@ -126,7 +126,7 @@ public class ImportWizardPage extends WizardPage {
 				containerText.setText(container.getFullPath().toString());
 			}
 		}
-	//	fileText.setText("import.ccm");
+		fileText.setText("import.ccm");
 		versionText.setText("1.0");
 	}
 	/**
@@ -184,8 +184,8 @@ public class ImportWizardPage extends WizardPage {
 		return containerText.getText();
 	}
 	public String getFileName() {
-		//return fileText.getText();
-		return "import.ccm";
+		return fileText.getText();
+		//return "import.ccm";
 	}
 	public String getVersion(){
 	    return versionText.getText();

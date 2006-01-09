@@ -26,10 +26,13 @@ import ccm.commands.create.visual.CreateNodeForConstantDefCommand;
 import ccm.commands.create.visual.CreateNodeForDeploymentUnitCommand;
 import ccm.commands.create.visual.CreateNodeForEnumDefCommand;
 import ccm.commands.create.visual.CreateNodeForExceptionDefCommand;
+import ccm.commands.create.visual.CreateNodeForExternalInstanceCommand;
 import ccm.commands.create.visual.CreateNodeForHomeDefCommand;
 import ccm.commands.create.visual.CreateNodeForHomeImplCommand;
+import ccm.commands.create.visual.CreateNodeForHomeInstanceCommand;
 import ccm.commands.create.visual.CreateNodeForInterfaceDefCommand;
 import ccm.commands.create.visual.CreateNodeForModuleDefCommand;
+import ccm.commands.create.visual.CreateNodeForProcessCollocationCommand;
 import ccm.commands.create.visual.CreateNodeForSoftwarePackageCommand;
 import ccm.commands.create.visual.CreateNodeForStructDefCommand;
 import ccm.commands.create.visual.CreateNodeForUnionDefCommand;
@@ -95,6 +98,26 @@ public class CCMCreationTool extends CreationTool {
             if(!execute.canExecute((CreateNodeForValueDefCommand) command,shell))return;     
         }
         //*******************************************************
+        if(command instanceof CreateNodeForAssemblyCommand){
+            
+                if(!execute.canExecute((CreateNodeForAssemblyCommand) command,shell))return;     
+            }
+        if(command instanceof CreateNodeForExternalInstanceCommand){
+            
+                if(!execute.canExecute((CreateNodeForExternalInstanceCommand) command,shell))return;     
+            }
+        if(command instanceof CreateNodeForHomeInstanceCommand){
+            
+                if(!execute.canExecute((CreateNodeForHomeInstanceCommand) command,shell))return;     
+            }
+        
+        if(command instanceof CreateNodeForProcessCollocationCommand){
+            
+                if(!execute.canExecute((CreateNodeForProcessCollocationCommand) command,shell))return;     
+            }
+        
+        
+        
         if(command instanceof CreateNodeForSoftwarePackageCommand){
             
                 if(!execute.canExecute((CreateNodeForSoftwarePackageCommand) command,shell))return;     
@@ -103,10 +126,7 @@ public class CCMCreationTool extends CreationTool {
         
             if(!execute.canExecute((CreateNodeForDeploymentUnitCommand) command,shell))return;     
         }
-        if(command instanceof CreateNodeForAssemblyCommand){
-        	 
-            if(!execute.canExecute((CreateNodeForAssemblyCommand) command,shell))return;     
-        }
+       
         if(command instanceof CreateNodeForCompositionCommand){
         	 
             if(!execute.canExecute((CreateNodeForCompositionCommand) command,shell))return;     

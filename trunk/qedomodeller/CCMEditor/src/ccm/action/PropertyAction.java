@@ -11,25 +11,18 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.IWorkbenchPart;
 
-import CCMModel.Assembly;
 import CCMModel.CCMModelFactory;
-import CCMModel.ComponentInstantiation;
 import CCMModel.Container;
-import CCMModel.Implementation;
 import CCMModel.HomeInstantiation;
+import CCMModel.Implementation;
 import CCMModel.Node;
-import ccm.commands.create.visual.adds.AddContainedFileCommand;
-import ccm.commands.create.visual.adds.AddDepententFileCommand;
 import ccm.commands.create.visual.adds.AddPropertyCommand;
-import ccm.commands.create.visual.adds.AddRuleCommand;
-import ccm.commands.create.visual.adds.AddStructDefCommand;
+import ccm.edit.ComponentInstanceNodeEditPart;
 import ccm.edit.ContainerNodeEditPart;
 import ccm.edit.DeploymentUnitNodeEditPart;
 import ccm.edit.HomeInstanceNodeEditPart;
-import ccm.edit.InterfaceDefNodeEditPart;
 import ccm.model.CCMModelManager;
 import ccm.model.ModelFactory;
-import ccm.request.AddStructDefRequest;
 import ccm.treeedit.CCMModelTreeEditPart;
 
 /**
@@ -85,13 +78,11 @@ public class PropertyAction extends SelectionAction {
 			EditPart part = (EditPart) selectedEditParts.get(0);
 			
 			if (part instanceof DeploymentUnitNodeEditPart ||part instanceof HomeInstanceNodeEditPart||
-					part instanceof ComponentInstantiation||
+					part instanceof ComponentInstanceNodeEditPart||
 					(part instanceof CCMModelTreeEditPart&& (part.getModel()instanceof HomeInstantiation
 							||part.getModel()instanceof Implementation))) {
 				
-				//AddStructDefRequest req = new AddStructDefRequest(getCommandType());
-				//if (!part.understandsRequest(req)) return null;
-				//else {
+				 
 					ModelFactory mf = new ModelFactory();
 					AddPropertyCommand command = new AddPropertyCommand();
 						//(AddStructDefCommand) part.getCommand(req);

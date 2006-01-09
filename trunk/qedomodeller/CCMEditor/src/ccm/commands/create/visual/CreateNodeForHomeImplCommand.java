@@ -10,25 +10,17 @@
  */
 package ccm.commands.create.visual;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.emf.common.notify.Notification;
 
 import CCMModel.ComponentCategory;
-import CCMModel.ComponentDef;
-import CCMModel.ComponentImplDef;
-import CCMModel.Composition;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
-import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
-import CCMModel.impl.HomeDefImpl;
-
 import ccm.commands.connect.ImplConnectCommand;
-import ccm.commands.connect.ManagesConnectCommand;
 import ccm.model.CCMNotificationImpl;
 import ccm.model.ModelFactory;
 

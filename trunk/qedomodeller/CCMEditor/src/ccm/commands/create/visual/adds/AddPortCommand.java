@@ -10,6 +10,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 import CCMModel.CCMModelFactory;
 import CCMModel.ComponentDef;
+import CCMModel.ComponentInstantiation;
 import CCMModel.ConsumesDef;
 import CCMModel.Contained;
 import CCMModel.Container;
@@ -33,8 +34,8 @@ import ccm.model.CCMModelManager;
 public class AddPortCommand extends CreateNodeForContainedCommand {
 	
 //	 Names for Label and Description of this Command
-	protected String Command_Label 		= "";
-	protected String Command_Description	= "";
+	protected String Command_Label = "";
+	protected String Command_Description = "";
 	
 
 	protected CCMModelFactory mfc = CCMModelManager.getFactory();
@@ -42,7 +43,8 @@ public class AddPortCommand extends CreateNodeForContainedCommand {
 	protected Contained portDef=null;
 	protected View view=null;
 	protected Node componentNode;
-
+    protected boolean forInstance=false;
+ 
 	
 	/**
 	 * Constructor, simply calls the superclass
@@ -52,14 +54,19 @@ public class AddPortCommand extends CreateNodeForContainedCommand {
 		super();
 		setLabel(Command_Label);
 	}
-	
+	public AddPortCommand(boolean forInstance){
+		super();
+		setLabel(Command_Label);
+		this.forInstance=forInstance;
+	}
 
 	/**
 	 * This method returns true, if a source (ClassifierRole, see class-members)
 	 * is specified. 
 	 */
 	public boolean canExecute() {
-		if (container==null || !(container instanceof ComponentDef)) return false;
+		if (container==null || !(container instanceof ComponentDef)
+				) return false;
 		return true;
 	}
 	
@@ -72,50 +79,92 @@ public class AddPortCommand extends CreateNodeForContainedCommand {
 	 */
 	public void execute() {
 		this.setNewObject(portDef);
-
-		super.execute();
-		ComponentDef component=(ComponentDef)container;
-		if(portDef instanceof ProvidesDef)
-			component.getFacet().add(portDef);
-		if(portDef instanceof UsesDef)
-			component.getReceptacle().add(portDef);
-		if(portDef instanceof PublishesDef)
-			component.getPublishesDef().add(portDef);
-		if(portDef instanceof ConsumesDef)
-			component.getConsumess().add(portDef);
-		if(portDef instanceof EmitsDef)
-			component.getEmitss().add(portDef);
-		if(portDef instanceof SinkDef)
-			component.getSinkss().add(portDef);
-		if(portDef instanceof SourceDef)
-			component.getSourcess().add(portDef);
-		if(portDef instanceof SiSouDef)
-			component.getSiSouss().add(portDef);
+        if(!forInstance){
+        	
+        	super.execute();
+        	ComponentDef component=(ComponentDef)container;
+        	if(portDef instanceof ProvidesDef)
+        		component.getFacet().add(portDef);
+        	if(portDef instanceof UsesDef)
+        		component.getReceptacle().add(portDef);
+        	if(portDef instanceof PublishesDef)
+        		component.getPublishesDef().add(portDef);
+        	if(portDef instanceof ConsumesDef)
+        		component.getConsumess().add(portDef);
+        	if(portDef instanceof EmitsDef)
+        		component.getEmitss().add(portDef);
+        	if(portDef instanceof SinkDef)
+				component.getSinkss().add(portDef);
+        	if(portDef instanceof SourceDef)
+        		component.getSourcess().add(portDef);
+        	if(portDef instanceof SiSouDef)
+        		component.getSiSouss().add(portDef);
+        	
+        	Iterator it = container.getNode().iterator();
+    		while(it.hasNext()) {
+    			componentNode = (Node) it.next();
+    			 
+    			if (componentNode!=null) {
+    				
+    				portNode = mfc.createPortNode();
+    				portNode.setContained(portDef);
+    				portNode.setHostNode(componentNode);
+    				
+    				PortConstraint constraint=new PortConstraint(new Rectangle(componentNode.getX(),componentNode.getY(),
+    						componentNode.getWidth(),componentNode.getHeight()));
+    				constraint.setPortLoc(new Point(componentNode.getX(),componentNode.getY()),newObject,0);
+    				Point loc=constraint.getXyPoint();
+    				portNode.setX(loc.x);
+    				portNode.setY(loc.y);
+    				portNode.setLocation(constraint.getPortLocation());
+    				 
+    				view = componentNode.getView();
+    				view.getNode().add(portNode);
+    				 
+    				 
+    			}
+    		}
+        }
+        else{
+        	ComponentInstantiation componentInstance=(ComponentInstantiation)container;
+        	//ComponentDef component=(ComponentDef)container;
+        	if(portDef instanceof ProvidesDef)
+        		componentInstance.getFacet().add(portDef);
+        	if(portDef instanceof UsesDef)
+        		componentInstance.getReceptacle().add(portDef);
+        	if(portDef instanceof PublishesDef)
+        		componentInstance.getPublishesDef().add(portDef);
+        	if(portDef instanceof ConsumesDef)
+        		componentInstance.getConsumess().add(portDef);
+        	if(portDef instanceof EmitsDef)
+        		componentInstance.getEmitss().add(portDef);
+        	if(portDef instanceof SinkDef)
+        		componentInstance.getSinkss().add(portDef);
+        	if(portDef instanceof SourceDef)
+        		componentInstance.getSourcess().add(portDef);
+        	if(portDef instanceof SiSouDef)
+        		componentInstance.getSiSouss().add(portDef);
+        	//container.getContents().add(portDef);
+       
+        	portNode = mfc.createPortNode();
+			portNode.setContained(portDef);
+			portNode.setHostNode(componentNode);
+			
+			PortConstraint constraint=new PortConstraint(new Rectangle(componentNode.getX(),componentNode.getY(),
+					componentNode.getWidth(),componentNode.getHeight()));
+			constraint.setPortLoc(new Point(componentNode.getX(),componentNode.getY()),newObject,0);
+			Point loc=constraint.getXyPoint();
+			portNode.setX(loc.x);
+			portNode.setY(loc.y);
+			portNode.setLocation(constraint.getPortLocation());
+			 
+			componentNode.getDefineIn().getContents().add(portNode);
 		
-		//container.getContents().add(portDef);
+        
+        }
 		//portDef.setDefinedIn(container);
 		 
-		Iterator it = container.getNode().iterator();
-		while(it.hasNext()) {
-			componentNode = (Node) it.next();
-			 
-			if (componentNode!=null) {
-				view = componentNode.getView();
-				portNode = mfc.createPortNode();
-				portNode.setContained(portDef);
-				portNode.setHostNode(componentNode);
-				
-				PortConstraint constraint=new PortConstraint(new Rectangle(componentNode.getX(),componentNode.getY(),
-						componentNode.getWidth(),componentNode.getHeight()));
-				constraint.setPortLoc(new Point(componentNode.getX(),componentNode.getY()),newObject,0);
-				Point loc=constraint.getXyPoint();
-				portNode.setX(loc.x);
-				portNode.setY(loc.y);
-				portNode.setLocation(constraint.getPortLocation());
-				
-				view.getNode().add(portNode);
-			}
-		}
+	
 	}
 	
 	
@@ -146,6 +195,9 @@ public class AddPortCommand extends CreateNodeForContainedCommand {
 	public Container getContainer() {
 		return container;
 	}
+	public void setContained(Contained con){
+		portDef=con;
+	}
 	/**
 	 * @param container The container to set.
 	 */
@@ -164,10 +216,17 @@ public class AddPortCommand extends CreateNodeForContainedCommand {
 	public void setView(View view) {
 		this.view = view;
 	}
+	public PortNode getPortNode() {
+		return this.portNode;
+	}
     /**
      * @param componentNode The componentNode to set.
      */
     public void setComponentNode(Node componentNode) {
         this.componentNode = componentNode;
     }
+	/**
+	 * @param processNode
+	 */
+	 
 }

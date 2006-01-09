@@ -9,27 +9,17 @@
 
 package ccm.commands.delete.visual;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.util.EObjectWithInverseResolvingEList;
 import org.eclipse.gef.commands.Command;
 
-import CCMModel.CCMModelPackage;
-import CCMModel.ComponentDef;
-import CCMModel.Connection;
 import CCMModel.Contained;
-import CCMModel.EventPortDef;
 import CCMModel.Node;
 import CCMModel.PortNode;
-import CCMModel.ProvidesDef;
-import CCMModel.UsesDef;
 import CCMModel.View;
 import CCMModel.impl.ConnectionImpl;
-import CCMModel.impl.ViewImpl;
 
 
 /**
@@ -81,6 +71,17 @@ public class DeleteNodeCommand extends Command {
 	
 	
 	public void execute() {
+		List nodeList=node.getContents();
+		if(nodeList.size()>0){
+		DeleteNodeCommand[]delNodes=new DeleteNodeCommand[nodeList.size()] ;
+		for (int k=0;k<nodeList.size();k++){
+			Node n=(Node)nodeList.get(k);
+			delNodes[k]=new DeleteNodeCommand(n, n.getView(), n.getContained());
+		}
+		for (int k=0;k<delNodes.length;k++){
+			delNodes[k].execute();
+		}
+		}
 		execute(node);
 	}
 	

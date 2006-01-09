@@ -5,20 +5,15 @@ package ccm.commands.dnd;
 
 import java.util.Iterator;
 import java.util.List;
- 
+
 import org.eclipse.draw2d.geometry.Point;
- 
- 
+
+import CCMModel.Contained;
+import CCMModel.Diagram;
+import CCMModel.Node;
+import CCMModel.ValueDef;
 import ccm.commands.connect.AbstractDerivedConnectCommand;
 import ccm.commands.connect.ValueDerivedConnectCommand;
- 
-import CCMModel.ValueDef;
- 
-import CCMModel.Contained;
- 
-import CCMModel.Diagram;
- 
-import CCMModel.Node;
  
  
 

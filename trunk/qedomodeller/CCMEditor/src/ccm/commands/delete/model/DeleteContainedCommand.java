@@ -7,44 +7,52 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.commands.Command;
 
-import ccm.commands.delete.DeleteCommandFactory;
-import ccm.commands.delete.visual.DeleteComponentCommand;
-import ccm.commands.delete.visual.DeleteNodeCommand;
-import ccm.editors.CCMEditor;
-import ccm.model.CCMModelManager;
-import ccm.model.CCMNotificationImpl;
-import ccm.model.ModelFactory;
-
 import CCMModel.AbstractInterfaceDef;
-import CCMModel.CCM;
+import CCMModel.Assembly;
+import CCMModel.AssemblyConnection;
+import CCMModel.CCMInstantiation;
 import CCMModel.ComponentDef;
+import CCMModel.ComponentFeature;
+import CCMModel.ComponentFile;
 import CCMModel.ComponentImplDef;
+import CCMModel.ComponentInstantiation;
 import CCMModel.Composition;
-import CCMModel.Connection;
+import CCMModel.ConnectionEnd;
 import CCMModel.ConsumesDef;
 import CCMModel.Contained;
+import CCMModel.ContainedFile;
 import CCMModel.Container;
+import CCMModel.DependentFile;
+import CCMModel.Deploymentrequirement;
 import CCMModel.Diagram;
 import CCMModel.EmitsDef;
 import CCMModel.EventDef;
 import CCMModel.EventPortDef;
 import CCMModel.ExceptionDef;
+import CCMModel.ExternalInstance;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
+import CCMModel.HomeInstantiation;
+import CCMModel.IDLFile;
 import CCMModel.IDLType;
+import CCMModel.Implementation;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
 import CCMModel.OperationDef;
+import CCMModel.ProcessCollocation;
+import CCMModel.PropOwner;
+import CCMModel.Property;
 import CCMModel.ProvidesDef;
 import CCMModel.PublishesDef;
-import CCMModel.Relation;
+import CCMModel.RegisterComponentInstance;
+import CCMModel.Rule;
+import CCMModel.RuleOwner;
 import CCMModel.SiSouDef;
 import CCMModel.SinkDef;
+import CCMModel.SoftwarePackage;
 import CCMModel.SourceDef;
 import CCMModel.StructDef;
 import CCMModel.Typed;
@@ -52,6 +60,10 @@ import CCMModel.UnionDef;
 import CCMModel.UsesDef;
 import CCMModel.ValueDef;
 import CCMModel.View;
+import ccm.commands.delete.visual.DeleteComponentCommand;
+import ccm.commands.delete.visual.DeleteNodeCommand;
+import ccm.editors.CCMEditor;
+ 
 
 public class DeleteContainedCommand extends Command {
 
@@ -86,12 +98,14 @@ public class DeleteContainedCommand extends Command {
 		//	Command cmd1 = new DeleteOperationDefCommand(model);
 		//	cmd1.execute();
 		//}
+		
 		Iterator nodes = (new Vector(model.getNode())).iterator(); // NEED TO COPY THE LIST!
 		while (nodes.hasNext()) {
 			Node node = (Node) nodes.next();
-			System.out.println("************** node.contd*: "+node.getContained());
+			 
 			Command cmd = null;
-			if (model instanceof ComponentDef) cmd = new DeleteComponentCommand(node);
+			if (model instanceof ComponentDef||model instanceof ComponentInstantiation) 
+				cmd = new DeleteComponentCommand(node);
 		
 			else cmd = new DeleteNodeCommand(node, node.getView(), node.getContained());
 			//if (cmd.canExecute()) 
@@ -132,33 +146,35 @@ public class DeleteContainedCommand extends Command {
 			if (editor!=null) editor.closeDiagramPage((Diagram) model);
 			View v = ((Diagram) model).getView();
 			
-			if(v.eContainer() instanceof CCM)
-				((CCM)v.eContainer()).getView().remove(v);
+	//		if(v.eContainer() instanceof CCM)
+	//			((CCM)v.eContainer()).getView().remove(v);
 			v.setCCM(null);
 			
-			v.getModuleDef().getView().remove(v);
+	//		v.getModuleDef().getView().remove(v);
 			v.setModuleDef(null);
 			
 			Iterator nodeIt = v.getNode().iterator();
 			while(nodeIt.hasNext()) {
 				Node n = (Node) nodeIt.next();
-				DeleteCommandFactory dcf = new DeleteCommandFactory();
-				Command cmd = dcf.getDeleteCommand(n);
-				cmd.execute();
-				
-				nodeIt = v.getNode().iterator();
+			 deleteNode(n);
 			}
+	//			DeleteCommandFactory dcf = new DeleteCommandFactory();
+	//			Command cmd = dcf.getDeleteCommand(n);
+	//			cmd.execute();
+				
+	//			nodeIt = v.getNode().iterator();
+	//		}
 			
-			Iterator conIt = v.getConnection().iterator();
-			while(conIt.hasNext()) {
-				Connection n = (Connection) conIt.next();
-				v.getConnection().remove(n);
-				n.setView(null);
-				if(n.getRelation() != null)
-					n.getRelation().getConnection().remove(n);
+	//		Iterator conIt = v.getConnection().iterator();
+	//		while(conIt.hasNext()) {
+	//			Connection n = (Connection) conIt.next();
+	//			v.getConnection().remove(n);
+	//			n.setView(null);
+	//			if(n.getRelation() != null)
+	//				n.getRelation().getConnection().remove(n);
 				
-				conIt = v.getConnection().iterator();
-			}
+	//			conIt = v.getConnection().iterator();
+	//		}
 		}
 		
 		if(model instanceof Typed) {
@@ -167,14 +183,161 @@ public class DeleteContainedCommand extends Command {
 				idlt.getTyped().remove(model);
 		}
 		
+		
+		if(model instanceof ComponentFeature) {
+			((ComponentFeature)model).getConnectionEnd().clear();	
+			((ComponentFeature)model).getRegisterComponentInstance().clear();
+			
+		}
+		if(model instanceof PropOwner) {
+			((PropOwner)model).getPropertys().clear();	
+			 
+			
+		}
+		if(model instanceof RuleOwner) {
+			((RuleOwner)model).getRules().clear();	
+		 
+			
+		}
+		
+		if(model instanceof SoftwarePackage) {
+			((SoftwarePackage)model).getAssembly().clear();
+			
+			List objs=((SoftwarePackage)model).getComponentFiles();
+			DeleteContainedCommand[] conmmands=new DeleteContainedCommand[objs.size()];
+			for (int i=0;i<objs.size();i++){
+			 		conmmands[i]=new DeleteContainedCommand((Contained)objs.get(i));
+			}
+			for (int i=0;i<conmmands.length;i++){
+		 		conmmands[i].execute();
+		    }
+			//((SoftwarePackage)model).getComponentFiles().clear();
+			((SoftwarePackage)model).setComponent(null);
+			
+		}
+		if(model instanceof Implementation) {
+			((Implementation)model).setPckage(null);
+			((Implementation)model).setComposition(null);
+			((Implementation)model).getHomeinstance().clear();
+		}
+		if(model instanceof ContainedFile) {
+			((ContainedFile)model).setDeploymentUnit(null);
+		}
+		if(model instanceof DependentFile) {
+			((DependentFile)model).setDeploymentUnit(null);
+		}
+		if(model instanceof Deploymentrequirement) {
+			((Deploymentrequirement)model).setUnit(null);
+		}
+		if(model instanceof Property) {
+			((Property)model).setPropetyOwner(null);
+		}
+		if(model instanceof Rule) {
+			((Rule)model).setRuleOwner(null);
+			
+		}
+		if(model instanceof ComponentFile) {
+			((ComponentFile)model).setPackage(null);
+			((ComponentFile)model).setAssembly(null);
+			
+		}
+		if(model instanceof IDLFile) {
+			((IDLFile)model).setPackage(null);	 
+			
+		}
+		if(model instanceof Assembly) {
+			 ((Assembly)model).getSoftwarePackage().clear();	
+			
+		}
+		if(model instanceof ProcessCollocation) {
+			((ProcessCollocation)model).setAssembly(null);
+			 	
+		}
+		if(model instanceof CCMInstantiation) {
+			List connectionEnds=((CCMInstantiation)model).getConnectionEnd();
+		//	for (int i=0;i<connectionEnds.size();i++){
+			for (Iterator cit=connectionEnds.iterator();cit.hasNext();){
+				ConnectionEnd connectionend=(ConnectionEnd)cit.next();
+				connectionend.setInstance(null);
+				connectionend.setFeature(null);
+				if(connectionend.getConSource()!=null){
+					AssemblyConnection connetion=connectionend.getConSource();
+					connetion.getTarget().setInstance(null);
+					connetion.getTarget().setFeature(null);
+					//connetion.getSource().setInstance(null);
+					connetion.setAssembly(null);
+					connetion.setDefinedIn(null);
+					connetion.getConnection().clear();
+				}else{
+					AssemblyConnection connetion=connectionend.getConTarget();
+					connetion.getSource().setInstance(null);
+					connetion.getSource().setFeature(null);
+					//connetion.getTarget().setInstance(null);
+					connetion.setAssembly(null);
+					connetion.setDefinedIn(null);
+					connetion.getConnection().clear();
+				}
+				 cit=connectionEnds.iterator();
+			}
+		 	
+	   }
+		if(model instanceof ExternalInstance) {
+			
+		 	
+	    }
+		if(model instanceof HomeInstantiation) {
+			((HomeInstantiation)model).setProzessCollocation(null);
+			 ((HomeInstantiation)model).setDeploymentUnit(null);
+			 ((HomeInstantiation)model).setType(null);
+			 
+			 
+				
+			
+		}
+		if(model instanceof ComponentInstantiation) {
+			//Implementation impl=((ComponentInstantiation)model).getDeploymentUnit();
+			//impl.getHomeinstance().remove(model);
+		//	if(((ComponentInstantiation)model).getConnectionEnd()!=null){
+		//		fffff
+		//	}
+			ComponentImplDef compImpl=((ComponentInstantiation)model).getType();
+			compImpl.getInstance().remove(model);
+			((ComponentInstantiation)model).setThehome(null);
+			
+			 
+			((ComponentInstantiation)model).getFacet().clear();		 
+			((ComponentInstantiation)model).getEmitss().clear();
+			((ComponentInstantiation)model).getConsumess().clear();
+			((ComponentInstantiation)model).getPublishesDef().clear();	
+			((ComponentInstantiation)model).getReceptacle().clear();
+			((ComponentInstantiation)model).getSinkss().clear();
+			((ComponentInstantiation)model).getSiSouss().clear();
+			((ComponentInstantiation)model).getSourcess().clear();		
+			
+		}
+		if(model instanceof RegisterComponentInstance) {
+			((RegisterComponentInstance)model).setComponentInstance(null);
+			((RegisterComponentInstance)model).setFeature(null);
+		}
+		
 		if(model instanceof Composition) {
 			HomeImplDef homeImpl=((Composition)model).getHomeImpl();
 			//System.out.println("homeImpl.getCompose()"+homeImpl.getCompose());
 			if (homeImpl!=null){
-				System.out.println("homeImpl.getCompose()"+homeImpl.getComposition());
+		//		System.out.println("homeImpl.getCompose()"+homeImpl.getComposition());
 				homeImpl.getComposition().remove(model);
-				System.out.println("homeImpl.getCompose()"+homeImpl.getComposition());
+		//		System.out.println("homeImpl.getCompose()"+homeImpl.getComposition());
 			}
+			List objs;
+			DeleteContainedCommand[]conmmands;
+			objs=((Composition)model).getDeploymentUnit();
+			conmmands=new DeleteContainedCommand[objs.size()];
+			for (int i=0;i<objs.size();i++){
+			 		conmmands[i]=new DeleteContainedCommand((Contained)objs.get(i));
+			}
+			for (int i=0;i<conmmands.length;i++){
+		 		conmmands[i].execute();
+		    }
 			
 			//if (homeImpl!=null){
 			//	ModelFactory factory= new ModelFactory();
@@ -203,7 +366,19 @@ public class DeleteContainedCommand extends Command {
 			for (int i=0;i<homeImpls.size();i++){
 				Object o=homeImpls.get(i);
 			  ((HomeImplDef)o).setComponentImpl(null);
-			}	
+			}
+			List objs;
+			DeleteContainedCommand[]conmmands;
+			objs=((ComponentImplDef)model).getInstance();
+			conmmands=new DeleteContainedCommand[0];
+			conmmands=new DeleteContainedCommand[objs.size()];
+			for (int i=0;i<objs.size();i++){
+			 		conmmands[i]=new DeleteContainedCommand((Contained)objs.get(i));
+			}
+			for (int i=0;i<conmmands.length;i++){
+		 		conmmands[i].execute();
+		    }
+			//((ComponentImplDef)model).getInstance().clear();
 		}
 		if(model instanceof HomeImplDef) {
 			 
@@ -216,7 +391,19 @@ public class DeleteContainedCommand extends Command {
 			List compositions=((HomeImplDef)model).getComposition();
 			for (int i=0;i<compositions.size();i++){
 				((Composition)compositions.get(i)).setHomeImpl(null);
-			}	
+			}
+			List objs;
+			DeleteContainedCommand[]conmmands;
+			objs=((HomeImplDef)model).getInstance();
+			conmmands=new DeleteContainedCommand[0];
+			conmmands=new DeleteContainedCommand[objs.size()];
+			for (int i=0;i<objs.size();i++){
+			 		conmmands[i]=new DeleteContainedCommand((Contained)objs.get(i));
+			}
+			for (int i=0;i<conmmands.length;i++){
+		 		conmmands[i].execute();
+		    }
+			//((HomeImplDef)model).getInstance().clear();
 		}
 		if(model instanceof HomeDef) {
 			List HomeSupports_itfs=((HomeDef)model).getHomeSupports_itf();
@@ -234,33 +421,56 @@ public class DeleteContainedCommand extends Command {
 			//HomeDef home =((HomeImplDef)model).getHome();
 			//if (home!=null)
              //      home.getHomeImpl().remove(model);
-			List homeImpls=((HomeDef)model).getHomeImpl();
-			for (int i=0;i<homeImpls.size();i++){
-				((HomeImplDef)homeImpls.get(i)).setHome(null);
-			}	
+			List objs;
+			DeleteContainedCommand[]conmmands;
+			objs=((HomeDef)model).getHomeImpl();
+			conmmands=new DeleteContainedCommand[0];
+			conmmands=new DeleteContainedCommand[objs.size()];
+			for (int i=0;i<objs.size();i++){
+			 		conmmands[i]=new DeleteContainedCommand((Contained)objs.get(i));
+			}
+			for (int i=0;i<conmmands.length;i++){
+		 		conmmands[i].execute();
+		    }
+			 	
 		}
 		if(model instanceof ComponentDef) {
-			List componentImpls=((ComponentDef)model).getComponentImpl();
-			for (Iterator sit =componentImpls.iterator();sit.hasNext(); ){
-				((ComponentImplDef)sit.next()).setComponent(null);
+			List objs;
+			DeleteContainedCommand[]conmmands;
+			objs=((ComponentDef)model).getPackage();
+			conmmands=new DeleteContainedCommand[objs.size()];
+			for (int i=0;i<objs.size();i++){
+			 		conmmands[i]=new DeleteContainedCommand((Contained)objs.get(i));
 			}
-			List homes=((ComponentDef)model).getHomes();
-			for (int i=0;i<homes.size();i++){
-				((HomeDef)homes.get(i)).setComponent(null);
-			}	
-			
-			List ComponentSupports_itfs= ((ComponentDef)model).getComponentSupports_itf();
-			for (int i=0;i<ComponentSupports_itfs.size();i++){
-				((InterfaceDef)ComponentSupports_itfs.get(i)).getComponents().remove(model);
-			}	
+			for (int i=0;i<conmmands.length;i++){
+		 		conmmands[i].execute();
+		    }
+		//	((ComponentDef)model).getPackage().clear();
+			//((ComponentDef)model).getReceptacle().clear();
+			//((ComponentDef)model).getSinkss().clear();
+			//((ComponentDef)model).getSiSouss().clear();
+			//((ComponentDef)model).getSourcess().clear();
+			//((ComponentDef)model).getEmitss().clear();
+			//((ComponentDef)model).getPublishesDef().clear();
+			//((ComponentDef)model).getConsumess().clear();
+			objs=((ComponentDef)model).getComponentImpl();
+			conmmands=new DeleteContainedCommand[objs.size()];
+			for (int i=0;i<objs.size();i++){
+			 		conmmands[i]=new DeleteContainedCommand((Contained)objs.get(i));
+			}
+			for (int i=0;i<conmmands.length;i++){
+		 		conmmands[i].execute();
+		    }
+			// ((ComponentDef)model).getComponentImpl().clear();
+			 ((ComponentDef)model).getHomes().clear();
+			 ((ComponentDef)model).getComponentSupports_itf().clear();
+			 	
 			 
 		}
 			
 		if(model instanceof InterfaceDef) {
-				List components=((InterfaceDef)model).getComponents();
-				for (int i=0;i<components.size();i++){
-					((ComponentDef)components.get(i)).getComponentSupports_itf().remove(model);
-				}	
+				 ((InterfaceDef)model).getComponents().clear();
+				 
 				List homes=((InterfaceDef)model).getHomes();
 				for (int i=0;i<homes.size();i++){
 					((HomeDef)homes.get(i)).getHomeSupports_itf().remove(model);
@@ -317,10 +527,8 @@ public class DeleteContainedCommand extends Command {
 		}
 		if(model instanceof EventDef) {
 			 
-			List eventPorts=((EventDef)model).getEventPorts();
-			for (int i=0;i<eventPorts.size();i++){
-				((EventDef)eventPorts.get(i)).getEventPorts().remove(model);
-			}	
+			 ((EventDef)model).getEventPorts().clear();
+			 
 		}
 		if(model instanceof EventPortDef) {
 				 
@@ -330,37 +538,72 @@ public class DeleteContainedCommand extends Command {
 				 
 		}
 		if(model instanceof ProvidesDef){
-			ComponentDef c=((ProvidesDef)model).getComp();
-			c.getFacet().remove(model);
+			((ProvidesDef)model).setInterface(null);
+			((ProvidesDef)model).setComp(null);
+			((ProvidesDef)model).setComponentInstance(null);
 		}
 		else if(model instanceof UsesDef){
-			((UsesDef)model).getComp().getReceptacle().remove(model);
+			//((UsesDef)model).getComp().getReceptacle().remove(model);
+			((UsesDef)model).setComp(null);
+			((UsesDef)model).setInterface(null);
+			((UsesDef)model).setComponentInstance(null);
 		}
 		else if(model instanceof ConsumesDef){
-			((ConsumesDef)model).getComp().getConsumess().remove(model);
+			//((ConsumesDef)model).getComp().getConsumess().remove(model);
+			((ConsumesDef)model).setEvent(null);
+			((ConsumesDef)model).setComp(null);
+			((ConsumesDef)model).setComponentInstance(null);
+			 
 		}
 		else if(model instanceof EmitsDef){
-			((EmitsDef)model).getComp().getEmitss().remove(model);
+			//((EmitsDef)model).getComp().getEmitss().remove(model);
+			((EmitsDef)model).setComp(null);
+			((EmitsDef)model).setEvent(null);
+			((EmitsDef)model).setComponentInstance(null);
 		}
 		else if(model instanceof PublishesDef){
-			((PublishesDef)model).getComp().getPublishesDef().remove(model);
+			//((PublishesDef)model).getComp().getPublishesDef().remove(model);
+			((PublishesDef)model).setComp(null);
+			((PublishesDef)model).setEvent(null);
+			((PublishesDef)model).setComponentInstance(null);
 		}
 		else if(model instanceof SourceDef){
-			((SourceDef)model).getComp().getPublishesDef().remove(model);
+			//((SourceDef)model).getComp().getPublishesDef().remove(model);
+			((SourceDef)model).setComp(null);
+			((SourceDef)model).setComponentInstance(null);
+			((SourceDef)model).setType(null);
 		}
 		else if(model instanceof SinkDef){
-			((SinkDef)model).getComp().getPublishesDef().remove(model);
+			//((SinkDef)model).getComp().getPublishesDef().remove(model);
+			((SinkDef)model).setComp(null);
+			((SinkDef)model).setType(null);
+			((SinkDef)model).setComponentInstance(null);
 		}
 		else if(model instanceof SiSouDef){
-			((SiSouDef)model).getComp().getPublishesDef().remove(model);
+			//((SiSouDef)model).getComp().getPublishesDef().remove(model);
+			((SiSouDef)model).setComp(null);
+			((SiSouDef)model).setType(null);
+			((SiSouDef)model).setComponentInstance(null);
 		}
-		else{
+		//else{
 		 Container container=model.getDefinedIn();
 		 container.getContents().remove(model);
-		}
+		//}
 
 	}
 	
+	/**
+	 * @param n
+	 */
+	private void deleteNode(Node n) {
+		n.setContained(null);
+		List nodes=n.getContents();
+		for (Iterator nit=nodes.iterator();nit.hasNext();){
+			deleteNode((Node)nit.next());
+		}
+		
+	}
+
 	/**
 	 * Redoes an undo.
 	 */
@@ -390,68 +633,68 @@ public class DeleteContainedCommand extends Command {
 
 
 	
-	public Vector getRelations(Contained model) {
+//	public Vector getRelations(Contained model) {
 
-		Vector rel = new Vector();
+//		Vector rel = new Vector();
 		
-		if (model instanceof AbstractInterfaceDef){
-			rel.addAll(((AbstractInterfaceDef)model).getDerivedRelation());
-			rel.addAll(((AbstractInterfaceDef)model).getBaseRelation());
-		}
-		if (model instanceof ModuleDef){
-			rel.addAll(((ModuleDef)model).getRelations());
-		}
-		if (model instanceof InterfaceDef){
-			rel.addAll(((InterfaceDef)model).getSupportsRelation());
-			rel.addAll(((InterfaceDef)model).getInterfaceRelation());
-		}
-		if (model instanceof ComponentDef){
-			rel.addAll(((ComponentDef)model).getSupportsRelation());
-			rel.addAll(((ComponentDef)model).getCompHomeRelation());
-			//rel.addAll(((ComponentDef)model).getCompHomeRelation());
-		}
-		if (model instanceof HomeDef){
-			rel.addAll(((HomeDef)model).getSupportsRelation());
-			rel.add(((HomeDef)model).getCompHomeRelation());
-			//rel.add(((HomeDef)model).getIpmlementsRelation());
-		}
-		if (model instanceof ValueDef){
-			rel.add(((ValueDef)model).getSupportsRelation());
-			rel.add(((ValueDef)model).getBaseRelation());
-			rel.add(((ValueDef)model).getDerivedRelation());
-			rel.add(((ValueDef)model).getAbstractBaseRelation());
-			rel.add(((ValueDef)model).getAbstractDerivedRelation());
-		}
-		if (model instanceof ProvidesDef) {
-			rel.add(((ProvidesDef)model).getInterfaceRelation());
-		}
-		if (model instanceof PublishesDef) {
-			rel.add(((PublishesDef)model).getEventPortEvent());
-		}
-		if (model instanceof EmitsDef) {
-			rel.add(((EmitsDef)model).getEventPortEvent());
-		}
-
-		return rel;
-
-	}
-
-	
-	private void deleteRelations(Contained model) {
-		
-		Iterator relations = getRelations(model).iterator();
-		
-		while (relations.hasNext()) {
-			Relation rel = (Relation) relations.next();
-			if (rel==null) continue;
-			DeleteRelationCommand cmd = new DeleteRelationCommand(rel);
-			if (cmd.canExecute()) {
-				cmd.execute();
-				
-			}
-		}
-
-	}
+//		if (model instanceof AbstractInterfaceDef){
+//			rel.addAll(((AbstractInterfaceDef)model).getDerivedRelation());
+//			rel.addAll(((AbstractInterfaceDef)model).getBaseRelation());
+//		}
+//		if (model instanceof ModuleDef){
+//			rel.addAll(((ModuleDef)model).getRelations());
+//		}
+//		if (model instanceof InterfaceDef){
+//			rel.addAll(((InterfaceDef)model).getSupportsRelation());
+//			rel.addAll(((InterfaceDef)model).getInterfaceRelation());
+//		}
+//		if (model instanceof ComponentDef){
+//			rel.addAll(((ComponentDef)model).getSupportsRelation());
+//			rel.addAll(((ComponentDef)model).getCompHomeRelation());
+//			//rel.addAll(((ComponentDef)model).getCompHomeRelation());
+//		}
+//		if (model instanceof HomeDef){
+//			rel.addAll(((HomeDef)model).getSupportsRelation());
+//			rel.add(((HomeDef)model).getCompHomeRelation());
+//			//rel.add(((HomeDef)model).getIpmlementsRelation());
+//		}
+//		if (model instanceof ValueDef){
+//			rel.add(((ValueDef)model).getSupportsRelation());
+//			rel.add(((ValueDef)model).getBaseRelation());
+//			rel.add(((ValueDef)model).getDerivedRelation());
+//			rel.add(((ValueDef)model).getAbstractBaseRelation());
+//			rel.add(((ValueDef)model).getAbstractDerivedRelation());
+//		}
+//		if (model instanceof ProvidesDef) {
+//			rel.add(((ProvidesDef)model).getInterfaceRelation());
+//		}
+//		if (model instanceof PublishesDef) {
+//			rel.add(((PublishesDef)model).getEventPortEvent());
+//		}
+//		if (model instanceof EmitsDef) {
+//			rel.add(((EmitsDef)model).getEventPortEvent());
+//		}
+//
+//		return rel;
+//
+//	}
+//
+//	
+//	private void deleteRelations(Contained model) {
+//		
+//		Iterator relations = getRelations(model).iterator();
+//		
+//		while (relations.hasNext()) {
+//			Relation rel = (Relation) relations.next();
+//			if (rel==null) continue;
+//			DeleteRelationCommand cmd = new DeleteRelationCommand(rel);
+//			if (cmd.canExecute()) {
+//				cmd.execute();
+//				
+//			}
+//		}
+//
+//	}
 	
 
 	

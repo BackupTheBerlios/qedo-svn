@@ -27,7 +27,7 @@ public class DiagramDefAction extends SelectionAction {
     private final String commandType;
 
     // The name shown in the Context-Menu
-    public static final String CLASSIFIER_PROPERTY = "add diagram";
+    public static final String CLASSIFIER_PROPERTY = "create a diagram";
     
 	protected CCMModelFactory factory=CCMModelManager.getFactory();
 

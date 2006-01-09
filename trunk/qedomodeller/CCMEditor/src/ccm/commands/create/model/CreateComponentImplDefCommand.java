@@ -3,11 +3,9 @@
 */
 package ccm.commands.create.model;
 
-import CCMModel.ComponentCategory;
 import CCMModel.ComponentDef;
 import CCMModel.ComponentImplDef;
 import CCMModel.Composition;
-import CCMModel.ModuleDef;
 
 /**
  * @author Siegercn

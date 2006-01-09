@@ -36,13 +36,11 @@ import CCMModel.StructDef;
 import CCMModel.Typed;
 import ccm.ProjectResources;
 import ccm.commands.delete.visual.DeleteNodeCommand;
-import ccm.edit.policy.ModelEditPolicy;
 import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
+import ccm.edit.policy.ModelEditPolicy;
 import ccm.figures.ContainedWithMembersFigure;
 import ccm.model.CCMModelManager;
 import ccm.model.CCMNotificationImpl;
-import ccm.model.template.FieldTemplate;
-import ccm.property.ContainedPropertySource;
 import ccm.property.StructDefPropertySource;
 
 /**

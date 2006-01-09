@@ -16,19 +16,15 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.views.properties.IPropertySource;
 
-import CCMModel.DependentFile;
-import CCMModel.Deploymentrequirement;
 import CCMModel.Node;
 import CCMModel.RegisterComponentInstance;
- 
 import ccm.ProjectResources;
 import ccm.commands.delete.visual.DeleteNodeCommand;
-import ccm.edit.policy.ModelEditPolicy;
 import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
+import ccm.edit.policy.ModelEditPolicy;
 import ccm.figures.ContainedWithMembersFigure;
 import ccm.model.CCMNotificationImpl;
-import ccm.property.ContainedPropertySource;
-import ccm.property.StructDefPropertySource;
+import ccm.property.RegisterComponentInstancePropertySource;
 
 /**
  * @author siegercn
@@ -76,7 +72,7 @@ public class RegisterComponentInstanceNodeEditPart
 	public void notifyChanged(Notification notification) {
 		int featureId = notification.getFeatureID(CCMNotificationImpl.class);
 		switch( featureId ) {
-			case CCMNotificationImpl.STRUCT_DEF:
+			case CCMNotificationImpl.RegisterComponentInstance:
 			case CCMNotificationImpl.CONTAINED:
 				refreshVisuals();
 				break;
@@ -109,7 +105,7 @@ public class RegisterComponentInstanceNodeEditPart
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-		ContainedWithMembersFigure opFigure=new ContainedWithMembersFigure(getRegister().getIdentifier(),ProjectResources.STRUCT_S);
+		ContainedWithMembersFigure opFigure=new ContainedWithMembersFigure(getRegister().getIdentifier(),ProjectResources.REGISTRYCOMPONENTINSTANCE);
 		return opFigure;
 	}
 	/**
@@ -138,7 +134,7 @@ public class RegisterComponentInstanceNodeEditPart
 	 * @return IPropertySource 
 	 */	
 	protected IPropertySource getPropertySource() {
-			propertySource = new StructDefPropertySource( getModelNode().getContained() );
+			propertySource = new RegisterComponentInstancePropertySource( getModelNode().getContained() );
 		return propertySource;
 	}
 	

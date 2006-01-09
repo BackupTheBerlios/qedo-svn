@@ -4,7 +4,6 @@
 package ccm.commands.create.model;
 
 import CCMModel.ComponentCategory;
-import CCMModel.ComponentDef;
 import CCMModel.Composition;
 import CCMModel.ModuleDef;
 

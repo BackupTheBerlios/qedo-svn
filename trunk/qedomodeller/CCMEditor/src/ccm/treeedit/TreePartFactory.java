@@ -26,10 +26,14 @@ public class TreePartFactory implements EditPartFactory{
 			return new CCMTreeEditPart((CCM) model);
 		else if (model instanceof View)
 			return new CCMViewTreeEditPart(model);
-		else if (model instanceof Node)
+		else if (model instanceof Node){
+			
 			return new CCMNodeTreeEditPart(model);
-		else
+		}
+		else{
+			 
 			return new CCMModelTreeEditPart((EObject) model);
+		}
 	}
 
 }

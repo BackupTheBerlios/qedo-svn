@@ -17,14 +17,11 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.notify.Notification;
 
 import CCMModel.ComponentInstantiation;
-import CCMModel.ContainedFile;
-import CCMModel.Implementation;
 import CCMModel.ElementName;
 import CCMModel.HomeInstantiation;
+import CCMModel.Implementation;
 import CCMModel.Node;
 import CCMModel.Property;
-import CCMModel.Rule;
-import CCMModel.ValueMemberDef;
 import ccm.commands.create.visual.CreateNodeForContainedCommand;
 import ccm.model.CCMNotificationImpl;
 import ccm.model.template.IDLKind;
@@ -34,7 +31,7 @@ import ccm.model.template.IDLTemplate;
 
 public class AddPropertyCommand extends CreateNodeForContainedCommand{
     
-	private static final String	CreateCommand_LabelSimple = "CreateParameterCommand";
+	private static final String	CreateCommand_LabelSimple = "AddPropertyCommand";
 
 	private Node opNode;
 	private Node parentNode;
@@ -58,10 +55,11 @@ public class AddPropertyCommand extends CreateNodeForContainedCommand{
 	 * @see org.eclipse.gef.commands.Command#canExecute()
 	 */
 	public boolean canExecute() {
-		if (container==null ||!(container instanceof Implementation)
-				||!(container instanceof ComponentInstantiation)
-				||!(container instanceof HomeInstantiation)) return false;
-		return true;
+		if (container instanceof Implementation
+				||container instanceof ComponentInstantiation
+				||container instanceof HomeInstantiation) 
+			return true;
+		return false;
 	}
 	/**
 	 * The execution of this command creates a new ClassifierNode
@@ -69,6 +67,12 @@ public class AddPropertyCommand extends CreateNodeForContainedCommand{
 	 */
 	public void execute() {
 	    super.execute();
+	    if(container instanceof Implementation)
+	    ((Implementation)container).getPropertys().add(newObject);
+	    if(container instanceof ComponentInstantiation)
+		    ((ComponentInstantiation)container).getPropertys().add(newObject);
+	    if(container instanceof HomeInstantiation)
+		    ((HomeInstantiation)container).getPropertys().add(newObject);
 	    property = (Property) newObject;
 		property.setEl_name(el_name);
 		property.setType(type);
@@ -79,10 +83,10 @@ public class AddPropertyCommand extends CreateNodeForContainedCommand{
 	    	parentNode = (Node) it.next();
 	    	opNode=factory.createNode();
 	    	property.getNode().add(opNode);
-	    	/*opNode.setX(constraint.x);
+	    	opNode.setX(constraint.x);
 	    	opNode.setY(constraint.y);
 	    	opNode.setWidth(constraint.width);
-	    	opNode.setHeight(constraint.height);*/
+	    	opNode.setHeight(constraint.height);
 	    	parentNode.getContents().add(opNode);
 	    	opNode.eNotify(new CCMNotificationImpl(opNode, Notification.SET,
 										       CCMNotificationImpl.ATTRIBUTE_DEF, null, null,0));

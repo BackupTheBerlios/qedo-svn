@@ -17,17 +17,15 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 import CCMModel.ContainedFile;
-import CCMModel.DependentFile;
 import CCMModel.Node;
- 
 import ccm.ProjectResources;
 import ccm.commands.delete.visual.DeleteNodeCommand;
-import ccm.edit.policy.ModelEditPolicy;
 import ccm.edit.policy.ContainedNodeXYLayoutEditPolicy;
+import ccm.edit.policy.ModelEditPolicy;
 import ccm.figures.ContainedWithMembersFigure;
 import ccm.model.CCMNotificationImpl;
-import ccm.property.ContainedPropertySource;
-import ccm.property.StructDefPropertySource;
+import ccm.property.ContainedFilePropertySource;
+
 
 /**
  * @author siegercn
@@ -108,7 +106,7 @@ public class ContainedFileNodeEditPart
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-		ContainedWithMembersFigure opFigure=new ContainedWithMembersFigure(getFile().getIdentifier(),ProjectResources.STRUCT_S);
+		ContainedWithMembersFigure opFigure=new ContainedWithMembersFigure(getFile().getIdentifier(),ProjectResources.CONTAINEDFILE);
 		return opFigure;
 	}
 	/**
@@ -137,7 +135,7 @@ public class ContainedFileNodeEditPart
 	 * @return IPropertySource 
 	 */	
 	protected IPropertySource getPropertySource() {
-			propertySource = new StructDefPropertySource( getModelNode().getContained() );
+			propertySource = new ContainedFilePropertySource( getModelNode().getContained() );
 		return propertySource;
 	}
 	

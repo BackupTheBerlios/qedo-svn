@@ -17,17 +17,14 @@ import org.eclipse.gef.commands.Command;
 
 import CCMModel.AbstractInterfaceDef;
 import CCMModel.CCMModelFactory;
- 
 import CCMModel.ComponentImplDef;
 import CCMModel.Connection;
 import CCMModel.ConnectionDiscription;
- 
 import CCMModel.HomeImplDef;
 import CCMModel.ImplDef;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
 import CCMModel.View;
-import ccm.CCMConstants;
 import ccm.model.CCMModelManager;
 
 
@@ -72,7 +69,7 @@ public class ImplConnectCommand extends Command {
 	    connection =factory.createConnection();
 	//    relation=factory.createCompHomeRelation();
 	    description=factory.createConnectionDiscription();
-	    description.setLabel( CCMConstants.IMPL_LABEL );
+	    description.setLabel( type );
 	    abstractInterfaceEnd=(AbstractInterfaceDef) target.getContained();
 	//    implEnd=(ImplDef) source.getContained();
 	//    moduleDef=view.getModuleDef();

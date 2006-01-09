@@ -12,17 +12,11 @@ import java.util.List;
 import org.eclipse.emf.common.ui.celleditor.ExtendedDialogCellEditor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-import CCMModel.OperationDef;
-import CCMModel.Typed;
-
-import ccm.CCMConstants;
 import ccm.dialogs.EditIDLTypeDialog;
-import ccm.model.ModelFactory;
 import ccm.model.template.IDLTemplate;
 
 /**

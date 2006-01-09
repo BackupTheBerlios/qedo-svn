@@ -14,16 +14,13 @@ package ccm.commands.create.visual.adds;
 import java.util.Iterator;
 
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.emf.common.notify.Notification;
 
 import CCMModel.Assembly;
-import CCMModel.ContainedFile;
-import CCMModel.Implementation;
+import CCMModel.ComponentInstantiation;
+import CCMModel.HomeInstantiation;
 import CCMModel.Node;
 import CCMModel.Rule;
-import CCMModel.ValueMemberDef;
 import ccm.commands.create.visual.CreateNodeForContainedCommand;
-import ccm.model.CCMNotificationImpl;
 import ccm.model.template.IDLKind;
 import ccm.model.template.IDLTemplate;
 
@@ -31,7 +28,7 @@ import ccm.model.template.IDLTemplate;
 
 public class AddRuleCommand extends CreateNodeForContainedCommand{
     
-	private static final String	CreateCommand_LabelSimple = "CreateParameterCommand";
+	private static final String	CreateCommand_LabelSimple = "AddRuleCommand";
 
 	private Node opNode;
 	private Node parentNode;
@@ -55,11 +52,11 @@ public class AddRuleCommand extends CreateNodeForContainedCommand{
 	 * @see org.eclipse.gef.commands.Command#canExecute()
 	 */
 	public boolean canExecute() {
-		if(container==null||!(container instanceof Assembly)
-				||!(container instanceof Implementation)
-				||!(container instanceof Implementation))
-			return false;
-		return true;
+		if (container instanceof Assembly
+				||container instanceof ComponentInstantiation
+				||container instanceof HomeInstantiation)
+			return true;
+		return false;
 	}
 	/**
 	 * The execution of this command creates a new ClassifierNode
@@ -67,23 +64,30 @@ public class AddRuleCommand extends CreateNodeForContainedCommand{
 	 */
 	public void execute() {
 	    super.execute();
+	    
+	    if (container instanceof Assembly)
+	    	((Assembly)container).getRules().add(newObject);
+	    if (container instanceof ComponentInstantiation)
+	    	((ComponentInstantiation)container).getRules().add(newObject);
+	    if (container instanceof HomeInstantiation)
+	    	((HomeInstantiation)container).getRules().add(newObject);
 	    rule = (Rule) newObject;
 		rule.setName(name);
 		rule.setCondition(condition);
 		rule.setAction(action);
 		rule.setLanguage(language) ;
-		Iterator it = container.getNode().iterator();
-	    while(it.hasNext()) {
-	    	parentNode = (Node) it.next();
-	    	opNode=factory.createNode();
-	    	rule.getNode().add(opNode);
-	    	/*opNode.setX(constraint.x);
-	    	opNode.setY(constraint.y);
-	    	opNode.setWidth(constraint.width);
-	    	opNode.setHeight(constraint.height);*/
-	    	parentNode.getContents().add(opNode);
-	    	opNode.eNotify(new CCMNotificationImpl(opNode, Notification.SET,
-										       CCMNotificationImpl.ATTRIBUTE_DEF, null, null,0));
+		if (!(container instanceof Assembly)){
+			Iterator it = container.getNode().iterator();
+			while(it.hasNext()) {
+				parentNode = (Node) it.next();
+				opNode=factory.createNode();
+				rule.getNode().add(opNode);
+				opNode.setX(constraint.x);
+				opNode.setY(constraint.y);
+				opNode.setWidth(constraint.width);
+				opNode.setHeight(constraint.height);
+				parentNode.getContents().add(opNode);
+			}
 	    }
 	}
 
@@ -119,7 +123,7 @@ public class AddRuleCommand extends CreateNodeForContainedCommand{
 	public void setName(String name) {
 		this.name = name;
 	}
-	public void setCondition(String entryPoint) {
+	public void setCondition(String condition) {
 		this.condition = condition;
 	}
 	public void setAction(String action) {

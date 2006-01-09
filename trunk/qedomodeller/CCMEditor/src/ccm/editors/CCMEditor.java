@@ -86,33 +86,42 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.PropertySheetPage;
 
 import CCMModel.AliasDef;
+import CCMModel.Assembly;
 import CCMModel.CCM;
 import CCMModel.ComponentDef;
 import CCMModel.ComponentImplDef;
 import CCMModel.Composition;
 import CCMModel.ConstantDef;
+import CCMModel.Diagram;
 import CCMModel.EnumDef;
 import CCMModel.EventDef;
 import CCMModel.ExceptionDef;
+import CCMModel.ExternalInstance;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
 import CCMModel.InterfaceDef;
 import CCMModel.ModuleDef;
-import CCMModel.Diagram;
+import CCMModel.SoftwarePackage;
 import CCMModel.StructDef;
 import CCMModel.UnionDef;
 import CCMModel.ValueBoxDef;
 import CCMModel.ValueDef;
 import ccm.CCMEditorPlugin;
 import ccm.ProjectResources;
+import ccm.action.AddComponentFileAction;
 import ccm.action.AddEmitsSourceAction;
 import ccm.action.AddEventSinkAction;
 import ccm.action.AddEventSourceAction;
 import ccm.action.AddFacetAction;
+import ccm.action.AddHomeInstanceAction;
+import ccm.action.AddIDLFileAction;
+import ccm.action.AddImplementationAction;
+import ccm.action.AddProcessCollocationAction;
 import ccm.action.AddReceptacleAction;
 import ccm.action.AliasDefAction;
 import ccm.action.AttributeDefAction;
 import ccm.action.CloseDiagramAction;
+import ccm.action.ComponentInstanceAction;
 import ccm.action.ConstantDefAction;
 import ccm.action.ContainedFileAction;
 import ccm.action.DepententFileAction;
@@ -125,7 +134,6 @@ import ccm.action.FactoryDefAction;
 import ccm.action.OperationDefAction;
 import ccm.action.PropertyAction;
 import ccm.action.RegisterComponentInstanceAction;
-import ccm.action.RuleAction;
 import ccm.action.StructDefAction;
 import ccm.action.UnionDefAction;
 import ccm.action.ValueBoxDefAction;
@@ -464,7 +472,20 @@ public class CCMEditor extends MultiPageEditorPart implements IAdaptable
 				ComponentImplDef.class));
 		addEditPartAction(new CreateModelAction(this, 
 				HomeImplDef.class));
+		addEditPartAction(new CreateModelAction(this, 
+				SoftwarePackage.class));
 		
+		//addEditPartAction(new CreateModelAction(this, 
+		//		Implementation.class));
+		addEditPartAction(new CreateModelAction(this, 
+				Assembly.class));
+		//addEditPartAction(new CreateModelAction(this, 
+		//		ProcessCollocation.class));
+		//addEditPartAction(new CreateModelAction(this, 
+		//		HomeInstantiation.class));
+		addEditPartAction(new CreateModelAction(this, 
+				ExternalInstance.class));
+		 
 		//***************************************************
 		
 		addEditPartAction(new CreateModelAction(this, 
@@ -579,8 +600,11 @@ public class CCMEditor extends MultiPageEditorPart implements IAdaptable
 //		***************************************************
 		addEditPartAction(new CloseDiagramAction(this, 
 				CloseDiagramAction.CLASSIFIER_PROPERTY));
-		addEditPartAction(new RuleAction(this, 
-				RuleAction.CLASSIFIER_PROPERTY));
+	//	addEditPartAction(new RuleAction(this, 
+	//			RuleAction.CLASSIFIER_PROPERTY));
+		addEditPartAction(new AddIDLFileAction(this, 
+				AddIDLFileAction.CLASSIFIER_PROPERTY));
+		
 		addEditPartAction(new ContainedFileAction(this, 
 				ContainedFileAction.CLASSIFIER_PROPERTY));
 		addEditPartAction(new DepententFileAction(this, 
@@ -591,7 +615,18 @@ public class CCMEditor extends MultiPageEditorPart implements IAdaptable
 				RegisterComponentInstanceAction.CLASSIFIER_PROPERTY));
 		addEditPartAction(new PropertyAction(this, 
 				PropertyAction.CLASSIFIER_PROPERTY));
-		 
+		addEditPartAction(new ComponentInstanceAction(this, 
+				ComponentInstanceAction.CLASSIFIER_PROPERTY));
+		
+		addEditPartAction(new AddImplementationAction(this, 
+				AddImplementationAction.CLASSIFIER_PROPERTY));
+		addEditPartAction(new AddProcessCollocationAction(this, 
+				AddProcessCollocationAction.CLASSIFIER_PROPERTY));
+		addEditPartAction(new AddHomeInstanceAction(this, 
+				AddHomeInstanceAction.CLASSIFIER_PROPERTY));
+		  
+		addEditPartAction(new AddComponentFileAction(this, 
+				AddComponentFileAction.CLASSIFIER_PROPERTY));
 		
 		addEditPartAction(new EditOperationAction(this, 
 				EditOperationAction.CLASSIFIER_PROPERTY));
@@ -1251,6 +1286,7 @@ public class CCMEditor extends MultiPageEditorPart implements IAdaptable
 			try{
 				modelManager.load(file.getFullPath());
 			}catch (Exception e){
+				e.printStackTrace();
 				modelManager.createModelView(file);
 			}
 
