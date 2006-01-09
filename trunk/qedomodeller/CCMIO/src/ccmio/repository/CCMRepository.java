@@ -16,7 +16,6 @@ import MDE._CCMPackageHelper;
 import Reflective.MofError;
 import Reflective.RefPackageFactory;
 import Reflective._RefPackage;
-import Reflective.RefPackageFactorySetHelper;
 
 /**
  *	This Class represent a repository import from a ccmrepository to a ccm-model-file:

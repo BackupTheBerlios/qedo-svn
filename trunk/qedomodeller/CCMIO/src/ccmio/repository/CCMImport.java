@@ -1,32 +1,33 @@
 package ccmio.repository;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.omg.CORBA.BAD_PARAM;
 
-import CCMModel.AbstractDerivedRelation;
-import CCMModel.AbstractInterfaceDef;
-import CCMModel.AbstractItfDerivedRelation;
+import CCMModel.Aktionkind;
 import CCMModel.ArrayDef;
+import CCMModel.AssemblyConnection;
 import CCMModel.AttributeDef;
 import CCMModel.CCM;
+import CCMModel.CCMInstantiation;
 import CCMModel.CCMModelFactory;
-import CCMModel.CompHomeRelation;
 import CCMModel.ComponentCategory;
 import CCMModel.ComponentDef;
+import CCMModel.ComponentFeature;
 import CCMModel.ComponentImplDef;
 import CCMModel.Composition;
 import CCMModel.ConstantDef;
 import CCMModel.ConsumesDef;
 import CCMModel.Contained;
 import CCMModel.Container;
+import CCMModel.Deploymentrequirement;
 import CCMModel.EmitsDef;
 import CCMModel.EnumDef;
 import CCMModel.EventDef;
-import CCMModel.EventPortDef;
-import CCMModel.EventPortEventRelation;
 import CCMModel.ExceptionDef;
 import CCMModel.FactoryDef;
 import CCMModel.Field;
@@ -34,13 +35,10 @@ import CCMModel.FinderDef;
 import CCMModel.FixedDef;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
+import CCMModel.IDLFile;
 import CCMModel.IDLType;
 import CCMModel.IDLTypeContainer;
 import CCMModel.InterfaceDef;
-import CCMModel.InterfaceRelation;
-import CCMModel.PublishesDef;
-//import CCMModel.IpmlementsRelation;
-import CCMModel.ManagersRelation;
 import CCMModel.MediaType;
 import CCMModel.ModuleDef;
 import CCMModel.OperationDef;
@@ -49,18 +47,18 @@ import CCMModel.ParameterMode;
 import CCMModel.PrimitiveDef;
 import CCMModel.PrimitiveKind;
 import CCMModel.ProvidesDef;
+import CCMModel.PublishesDef;
 import CCMModel.SegmentDef;
 import CCMModel.SequenceDef;
+import CCMModel.SoftwarePackage;
 import CCMModel.StreamProtDef;
 import CCMModel.StringDef;
 import CCMModel.StructDef;
-import CCMModel.SupportsRelation;
 import CCMModel.Typed;
 import CCMModel.UnionDef;
 import CCMModel.UnionField;
 import CCMModel.UsesDef;
 import CCMModel.ValueDef;
-import CCMModel.ValueDerivedRelation;
 import CCMModel.ValueMemberDef;
 import CCMModel.WstringDef;
 import MDE.BaseIDL.AliasDefHelper;
@@ -88,7 +86,6 @@ import MDE.BaseIDL.ValueMemberDefHelper;
 import MDE.BaseIDL.WstringDefHelper;
 import MDE.BaseIDL._BaseIDLPackage;
 import MDE.CIF.ComponentImplDefHelper;
-import MDE.CIF.CompositionDef;
 import MDE.CIF.CompositionDefHelper;
 import MDE.CIF.HomeImplDefHelper;
 import MDE.CIF.SegmentDefHelper;
@@ -97,7 +94,6 @@ import MDE.ComponentIDL.ComponentDefHelper;
 import MDE.ComponentIDL.ConsumesDefHelper;
 import MDE.ComponentIDL.EmitsDefHelper;
 import MDE.ComponentIDL.EventDefHelper;
-import MDE.ComponentIDL.EventPortDefHelper;
 import MDE.ComponentIDL.FactoryDefHelper;
 import MDE.ComponentIDL.FinderDefHelper;
 import MDE.ComponentIDL.HomeDefHelper;
@@ -110,6 +106,34 @@ import MDE.ComponentIDL.SourceDefHelper;
 import MDE.ComponentIDL.StreamPortDefHelper;
 import MDE.ComponentIDL.UsesDefHelper;
 import MDE.ComponentIDL._ComponentIDLPackage;
+import MDE.Deployment.Assembly;
+import MDE.Deployment.AssemblyHelper;
+import MDE.Deployment.ComponentFile;
+import MDE.Deployment.ComponentInstantiation;
+import MDE.Deployment.ComponentInstantiationHelper;
+import MDE.Deployment.Configuration;
+import MDE.Deployment.ConfigurationHelper;
+import MDE.Deployment.Connection;
+import MDE.Deployment.ConnectionEnd;
+import MDE.Deployment.ConnectionEndHelper;
+import MDE.Deployment.ConnectionHelper;
+import MDE.Deployment.ContainedFile;
+import MDE.Deployment.ContainedFileHelper;
+import MDE.Deployment.DependentFile;
+import MDE.Deployment.DeploymentRequirement;
+import MDE.Deployment.ExternalInstance;
+import MDE.Deployment.ExternalInstanceHelper;
+import MDE.Deployment.HomeInstantiation;
+import MDE.Deployment.HomeInstantiationHelper;
+import MDE.Deployment.Implementation;
+import MDE.Deployment.ProcessCollocation;
+import MDE.Deployment.ProcessCollocationHelper;
+import MDE.Deployment.Property;
+import MDE.Deployment.PropertyHelper;
+import MDE.Deployment.RegisterComponentInstance;
+import MDE.Deployment.RegisterComponentInstanceHelper;
+import MDE.Deployment._SoftwarePackage;
+import MDE.Deployment._SoftwarePackageHelper;
 import Reflective.MofError;
 import Reflective.NotSet;
 
@@ -167,7 +191,7 @@ public class CCMImport {
  	 */
 	private static ModuleDef createRoot(MDE.BaseIDL.ModuleDef repositoryModule) throws MofError
 	{
-		System.out.println("rootmodule: " + repositoryModule.identifier());
+		//System.out.println("rootmodule: " + repositoryModule.identifier());
 		ModuleDef root = ccm.getModuleDef();
 		{
 			root.setAbsoluteName(repositoryModule.identifier());
@@ -228,7 +252,135 @@ public class CCMImport {
 	private static Contained create(MDE.BaseIDL.Contained contained) throws MofError
 	{
 		Contained emf;
-		System.out.println("\t" + contained.identifier());
+		//System.out.println("\t" + contained.identifier());
+		 
+		try{
+			MDE.Deployment._SoftwarePackage pkg=_SoftwarePackageHelper.narrow(contained);
+			emf = CCMModelFactory.eINSTANCE.createSoftwarePackage();
+			((SoftwarePackage)emf ).setLicensekey(pkg.licensekey());
+			((SoftwarePackage)emf ).setLicensetextref(pkg.licensetextref());
+			((SoftwarePackage)emf ).setTitle(pkg.title());
+			((SoftwarePackage)emf ).setType(pkg.type());
+			((SoftwarePackage)emf ).setAutor(pkg.author());
+			return emf;
+		
+		}catch(Exception e) {}
+		try{
+			Implementation impl= MDE.Deployment.ImplementationHelper.narrow(contained);
+		    emf=CCMModelFactory.eINSTANCE.createImplementation();
+		    ((CCMModel.Implementation)emf).setUuid(impl.uuid());
+			return emf;
+		}catch(Exception e) {}
+		try{
+			ContainedFile file=ContainedFileHelper.narrow(contained);
+			emf=CCMModelFactory.eINSTANCE.createContainedFile();
+			((CCMModel.ContainedFile)emf).setName(file.filename());
+			((CCMModel.ContainedFile)emf).setLocation(file.location());
+			((CCMModel.ContainedFile)emf).setCodeType(file.codetype());
+			((CCMModel.ContainedFile)emf).setEntryPoint(file.entrypoint());
+			((CCMModel.ContainedFile)emf).setUsage(file.entrypointusage());
+			return emf;
+		}catch(Exception e) {}
+		try{
+			MDE.Deployment.DependentFile file=MDE.Deployment.DependentFileHelper.narrow(contained);
+			emf=CCMModelFactory.eINSTANCE.createDependentFile();
+			((CCMModel.DependentFile)emf).setName(file.filename());
+			((CCMModel.DependentFile)emf).setLocation(file.location());
+			((CCMModel.DependentFile)emf).setAction(getActionKind(file.action()));
+			return emf;
+		}catch(Exception e) {}
+		try{
+			MDE.Deployment.IDLFile file=MDE.Deployment.IDLFileHelper.narrow(contained);
+			emf=CCMModelFactory.eINSTANCE.createIDLFile();
+			((CCMModel.IDLFile)emf).setName(file.filename());
+			((CCMModel.IDLFile)emf).setLocation(file.location());
+			return emf;
+		}catch(Exception e) {}
+		try{
+			MDE.Deployment.ComponentFile file=MDE.Deployment.ComponentFileHelper.narrow(contained);
+			emf=CCMModelFactory.eINSTANCE.createComponentFile();
+			((CCMModel.ComponentFile)emf).setName(file.filename());
+			((CCMModel.ComponentFile)emf).setLocation(file.location());
+			return emf;
+		}catch(Exception e) {}
+		try{
+			DeploymentRequirement req=MDE.Deployment.DeploymentRequirementHelper.narrow(contained);
+			emf=CCMModelFactory.eINSTANCE.createDeploymentrequirement();
+			((Deploymentrequirement)emf).setKind(req.kind());
+			((Deploymentrequirement)emf).setReqVersion(req.req_version());
+			return emf;
+		}catch(Exception e) {}
+//		if(contained.identifier().equals("ass"))
+//			System.out.println("\t" + contained.identifier());
+		try{
+			Assembly ass= AssemblyHelper.narrow(contained);
+			emf=CCMModelFactory.eINSTANCE.createAssembly();
+			((CCMModel.Assembly)emf).setUuid(ass.uuid());
+			return emf;
+		}catch(Exception e) {}
+		try{
+			ProcessCollocation process= ProcessCollocationHelper.narrow(contained);
+			emf= CCMModelFactory.eINSTANCE.createProcessCollocation();
+			((CCMModel.ProcessCollocation)emf).setCardinality(process.cardinality());
+			((CCMModel.ProcessCollocation)emf).setDestination(process.destination());
+			return emf;
+		}catch(Exception e) {}
+		try{
+			HomeInstantiation homeInstance= HomeInstantiationHelper.narrow(contained);
+			emf=CCMModelFactory.eINSTANCE.createHomeInstantiation();
+			((CCMModel.HomeInstantiation)emf).setCardinality(homeInstance.cardinality());
+			((CCMModel.HomeInstantiation)emf).setRegName(homeInstance.registerwith().regname());
+			((CCMModel.HomeInstantiation)emf).setService(getServiceKind(homeInstance.registerwith().service()));
+			return emf;
+		}catch(Exception e) {}
+		try{
+			ComponentInstantiation compInstance= ComponentInstantiationHelper.narrow(contained);
+			emf= CCMModelFactory.eINSTANCE.createComponentInstantiation();
+			((CCMModel.ComponentInstantiation)emf).setCardinality(compInstance.cardinality());
+			((CCMModel.ComponentInstantiation)emf).setStartOrder(compInstance.startorder());
+			return emf;
+		}catch(Exception e) {}
+		try{
+			RegisterComponentInstance register=RegisterComponentInstanceHelper.narrow(contained);
+			emf=CCMModelFactory.eINSTANCE.createRegisterComponentInstance();
+			((CCMModel.RegisterComponentInstance)emf).setRegName(register.regname());
+			((CCMModel.RegisterComponentInstance)emf).setService(getServiceKind(register.service()));
+			return emf;
+		}catch(Exception e) {}
+		try{
+			ExternalInstance external=ExternalInstanceHelper.narrow(contained);
+			emf=CCMModelFactory.eINSTANCE.createExternalInstance();
+			((CCMModel.ExternalInstance)emf).setObjectRef(external.objectref());
+			((CCMModel.ExternalInstance)emf).setRegName(external.findby().regname());
+			((CCMModel.ExternalInstance)emf).setService(getServiceKind(external.findby().service()));
+			return emf;
+		}catch(Exception e) {}
+		try{
+			Property property=PropertyHelper.narrow(contained);
+			emf=CCMModelFactory.eINSTANCE.createProperty();
+			((CCMModel.Property)emf).setValue(property.value());
+			((CCMModel.Property)emf).setType(property.type());
+			((CCMModel.Property)emf).setEl_name(getElname(property.el_name()));
+			return emf;
+		}catch(Exception e) {}
+		try{
+			Connection connection=ConnectionHelper.narrow(contained);
+			emf=CCMModelFactory.eINSTANCE.createAssemblyConnection();
+			return emf;
+		}catch(Exception e) {}
+		try{
+			ConnectionEnd conEnd=ConnectionEndHelper.narrow(contained);
+			emf=CCMModelFactory.eINSTANCE.createConnectionEnd();
+			return emf;
+		}catch(Exception e) {}
+		
+		try{
+			Configuration con=ConfigurationHelper.narrow(contained);
+			emf=null;
+			return emf;
+		}catch(Exception e) {}
+		
+		
 		try{ 
 			MDE.BaseIDL.ModuleDef moduleDef = ModuleDefHelper.narrow(contained);
 			emf = CCMModelFactory.eINSTANCE.createModuleDef(); // Module
@@ -249,14 +401,6 @@ public class CCMImport {
 		try{ 
 			MDE.ComponentIDL.ComponentDef componentDef = ComponentDefHelper.narrow(contained);
 			emf = CCMModelFactory.eINSTANCE.createComponentDef(); // Component
-			((ComponentDef)emf).getConsumess().addAll(createContents(componentDef.consumess()));
-			((ComponentDef)emf).getEmitss().addAll(createContents(componentDef.emitss()));
-			((ComponentDef)emf).getFacet().addAll(createContents(componentDef.facet()));
-			((ComponentDef)emf).getPublishesDef().addAll(createContents(componentDef.publishess()));
-			((ComponentDef)emf).getReceptacle().addAll(createContents(componentDef.receptacle()));
-			((ComponentDef)emf).getSinkss().addAll(createContents(componentDef.sinkss()));
-			((ComponentDef)emf).getSourcess().addAll(createContents(componentDef.sourcess()));
-			((ComponentDef)emf).getSiSouss().addAll(createContents(componentDef.sisouss()));
 			((ComponentDef)emf).setIsAbstract(componentDef.is_abstract());
 			((ComponentDef)emf).setIsLocal(componentDef.is_local());
 			return emf;
@@ -613,6 +757,37 @@ public class CCMImport {
 		else 
 			return ComponentCategory.EXTENSION_LITERAL;
 	}
+	private static Aktionkind getActionKind(MDE.Deployment.ActionKind action) {
+		if(action==MDE.Deployment.ActionKind.ASSERT)
+			return CCMModel.Aktionkind.ASSERT_LITERAL;
+		else
+			return Aktionkind.INSTALL_LITERAL;
+		 
+			 
+	}
+	private static CCMModel.ElementName getElname(MDE.Deployment.ElementName elname){
+		if(elname==MDE.Deployment.ElementName.SEQUENCE_EL)
+			return CCMModel.ElementName.SEQUENCE_EL_LITERAL;
+		else if(elname==MDE.Deployment.ElementName.SIMPLE_EL)
+			return CCMModel.ElementName.SIMPLE_EL_LITERAL;
+		else if(elname==MDE.Deployment.ElementName.STRUCT_EL)
+			return CCMModel.ElementName.STRUCT_EL_LITERAL;
+		else 
+			return CCMModel.ElementName.VALUETYPE_EL_LITERAL;
+		 
+			 
+	}
+	private static CCMModel.FinderServiceKind getServiceKind(MDE.Deployment.FinderServiceKind kind){
+		if(kind==MDE.Deployment.FinderServiceKind.HOMEFINDER)
+			return CCMModel.FinderServiceKind.HOMEFINDER_LITERAL;
+		else if(kind==MDE.Deployment.FinderServiceKind.NAMING)
+			return CCMModel.FinderServiceKind.NAMING_LITERAL;
+		else if(kind==MDE.Deployment.FinderServiceKind.TRADING)
+			return CCMModel.FinderServiceKind.TRADING_LITERAL;
+		else
+			return CCMModel.FinderServiceKind.UNDEFINED_LITERAL;
+		 
+	}
 	/**
 	 * gets the PrimiticeDef like the repository-object repPrimitiveDef.
 	 * @param repPrimitiveDef = repository-PrimitiveDef to create
@@ -701,153 +876,153 @@ public class CCMImport {
 //		ipmlementsRelation.setSegsH(homeImplDef);
 //		return ipmlementsRelation;
 //	}
-	/**
-	 * create a interface-relation between a ProvidesDef and a InterfaceDef.
-	 * @param providesDef = the ProvidesDef
- 	 * @param interfaceDef = the InterfaceDef
-	 * @return the new relation
-	 */
-	private static InterfaceRelation createInterfaceRelation (ProvidesDef providesDef,InterfaceDef interfaceDef) throws MofError
-	{
-		System.out.println("\tInterfaceRelation");
-		InterfaceRelation interfaceRelation = CCMModelFactory.eINSTANCE.createInterfaceRelation();
-		interfaceRelation.setProvidesDef(providesDef);
-		interfaceRelation.setItf(interfaceDef);
-		return interfaceRelation;
-	}
-	/**
-	 * create a interface-relation between a UsesDef and a InterfaceDef.
-	 * @param usesDef = the UsesDef
- 	 * @param interfaceDef = the InterfaceDef
-	 * @return the new relation
-	 */
-	private static InterfaceRelation createInterfaceRelation (UsesDef usesDef,InterfaceDef interfaceDef) throws MofError
-	{
-		System.out.println("\tInterfaceRelation");
-		InterfaceRelation interfaceRelation = CCMModelFactory.eINSTANCE.createInterfaceRelation();
-		interfaceRelation.setUsesDef(usesDef);
-		interfaceRelation.setItf(interfaceDef);
-		return interfaceRelation;
-	}
-	/**
-	 * create a supports-relation between a HomeDef and a InterfaceDef.
-	 * @param homeDef = the HomeDef
- 	 * @param interfaceDef = the InterfaceDef
-	 * @return the new relation
-	 */
-	private static SupportsRelation createSupportsRelation (HomeDef homeDef,InterfaceDef interfaceDef) throws MofError
-	{
-		System.out.println("\tSupportsRelation");
-		SupportsRelation supportsRelation = CCMModelFactory.eINSTANCE.createSupportsRelation();
-		supportsRelation.setHomes(homeDef);
-		supportsRelation.setSupportsItf(interfaceDef);
-		return supportsRelation;
-	}
-	/**
-	 * create a supports-relation between a ComponentDef and a InterfaceDef.
-	 * @param componentDef = the ComponentDef
- 	 * @param interfaceDef = the InterfaceDef
-	 * @return the new relation
-	 */
-	private static SupportsRelation createSupportsRelation (ComponentDef componentDef,InterfaceDef interfaceDef) throws MofError
-	{
-		System.out.println("\tSupportsRelation");
-		SupportsRelation supportsRelation = CCMModelFactory.eINSTANCE.createSupportsRelation();
-		supportsRelation.setComponents(componentDef);
-		supportsRelation.setSupportsItf(interfaceDef);
-		return supportsRelation;
-	}
-	/**
-	 * create a managers-relation between a ComponentImplDef and a HomeImplDef.
- 	 * @param componentImplDef = the ComponentImplDef
- 	 * @param homeImplDef = the HomeImplDef
-	 * @return the new relation
-	 */
-	private static ManagersRelation createManagersRelation (ComponentImplDef componentImplDef,HomeImplDef homeImplDef) throws MofError
-	{
-		System.out.println("\tManagersRelation");
-		ManagersRelation managersRelation = CCMModelFactory.eINSTANCE.createManagersRelation();
-		managersRelation.setComponent_impl(componentImplDef);
-		managersRelation.setHome_impl(homeImplDef);
-		return managersRelation;
-	}
-	/**
-	 * create a compHome-relation between a ComponentDef and a HomeDef.
-	 * @param componentDef = the ComponentDef
- 	 * @param homeDef = the HomeDef
-	 * @return the new relation
-	 */
-	private static CompHomeRelation createCompHomeRelation (ComponentDef componentDef,HomeDef homeDef) throws MofError
-	{
-		CompHomeRelation compHomeRelation = CCMModelFactory.eINSTANCE.createCompHomeRelation();
-		System.out.println("\tCompHomeRelation");
-		compHomeRelation.setComponentEnd(componentDef);
-		compHomeRelation.setHomeEnd(homeDef);
-		return compHomeRelation;
-	}
-	/**
-	 * This methode creates a abstractDerivedRelation between 2 ValueDefs.
-	 * @param abstractBase = the abstractBase
-	 * @param abstractDerived = the abstractDerived
- 	 * @return the new relation
- 	 */
-	private static AbstractDerivedRelation createAbstractDerivedRelation (ValueDef abstractBase, ValueDef abstractDerived) 
-	throws MofError
-	{
-		AbstractDerivedRelation abstractDerivedRelation = CCMModelFactory.eINSTANCE.createAbstractDerivedRelation();
-		System.out.println("\tabstractDerivedRelation");
-		abstractDerivedRelation.setAbstractBase(abstractBase);
-		abstractDerivedRelation.setAbstractDerived(abstractDerived);
-		return abstractDerivedRelation;
-	}
-	/**
-	 * This methode creates a abstractItfDerivedRelation.
-	 * @param base = the Base
-	 * @param derived = the Derived
-	 * @return the new relation
- 	 */
-	private static AbstractItfDerivedRelation createAbstractItfDerivedRelation (AbstractInterfaceDef base, AbstractInterfaceDef derived) 
-	throws MofError
-	{
-		AbstractItfDerivedRelation abstractItfDerivedRelation = 
-			CCMModelFactory.eINSTANCE.createAbstractItfDerivedRelation();
-		System.out.println("\tabstractItfDerivedRelation");
-		abstractItfDerivedRelation.setBase(base);
-		abstractItfDerivedRelation.setDerived(derived);
-		return abstractItfDerivedRelation;
-	}
-	/**
-	 * This methode creates a valueDerivedRelation.
-	 * @param base = the Base
-	 * @param derived = the Derived
-	 * @return the new relation
- 	 */
-	private static ValueDerivedRelation createValueDerivedRelation (ValueDef base, ValueDef derived) 
-	throws MofError
-	{
-		ValueDerivedRelation valueDerivedRelation =
-			CCMModelFactory.eINSTANCE.createValueDerivedRelation();
-		System.out.println("\tvalueDerivedRelation");
-		valueDerivedRelation.setBase(base);
-		valueDerivedRelation.setDerived(derived);
-		return valueDerivedRelation;
-	}
-	/**
-	 * This methode creates a eventPortEventRelation.
-	 * @param eventPortDef = the eventPortDef
-	 * @param eventDef = the eventDef
-	 * @return the new relation
- 	 */
-	private static EventPortEventRelation createEventPortEventRelation (EventPortDef eventPortDef, EventDef eventDef) 
-	throws MofError
-	{
-		EventPortEventRelation eventPortEventRelation =
-			CCMModelFactory.eINSTANCE.createEventPortEventRelation();
-		System.out.println("\tEventPortEventRelation");
-		eventPortEventRelation.setEnds(eventPortDef);
-		eventPortEventRelation.setType(eventDef);
-		return eventPortEventRelation;
-	}
+//	/**
+//	 * create a interface-relation between a ProvidesDef and a InterfaceDef.
+//	 * @param providesDef = the ProvidesDef
+// 	 * @param interfaceDef = the InterfaceDef
+//	 * @return the new relation
+//	 */
+//	private static InterfaceRelation createInterfaceRelation (ProvidesDef providesDef,InterfaceDef interfaceDef) throws MofError
+//	{
+//		System.out.println("\tInterfaceRelation");
+//		InterfaceRelation interfaceRelation = CCMModelFactory.eINSTANCE.createInterfaceRelation();
+//		interfaceRelation.setProvidesDef(providesDef);
+//		interfaceRelation.setItf(interfaceDef);
+//		return interfaceRelation;
+//	}
+//	/**
+//	 * create a interface-relation between a UsesDef and a InterfaceDef.
+//	 * @param usesDef = the UsesDef
+// 	 * @param interfaceDef = the InterfaceDef
+//	 * @return the new relation
+//	 */
+//	private static InterfaceRelation createInterfaceRelation (UsesDef usesDef,InterfaceDef interfaceDef) throws MofError
+//	{
+//		System.out.println("\tInterfaceRelation");
+//		InterfaceRelation interfaceRelation = CCMModelFactory.eINSTANCE.createInterfaceRelation();
+//		interfaceRelation.setUsesDef(usesDef);
+//		interfaceRelation.setItf(interfaceDef);
+//		return interfaceRelation;
+//	}
+//	/**
+//	 * create a supports-relation between a HomeDef and a InterfaceDef.
+//	 * @param homeDef = the HomeDef
+// 	 * @param interfaceDef = the InterfaceDef
+//	 * @return the new relation
+//	 */
+//	private static SupportsRelation createSupportsRelation (HomeDef homeDef,InterfaceDef interfaceDef) throws MofError
+//	{
+//		System.out.println("\tSupportsRelation");
+//		SupportsRelation supportsRelation = CCMModelFactory.eINSTANCE.createSupportsRelation();
+//		supportsRelation.setHomes(homeDef);
+//		supportsRelation.setSupportsItf(interfaceDef);
+//		return supportsRelation;
+//	}
+//	/**
+//	 * create a supports-relation between a ComponentDef and a InterfaceDef.
+//	 * @param componentDef = the ComponentDef
+// 	 * @param interfaceDef = the InterfaceDef
+//	 * @return the new relation
+//	 */
+//	private static SupportsRelation createSupportsRelation (ComponentDef componentDef,InterfaceDef interfaceDef) throws MofError
+//	{
+//		System.out.println("\tSupportsRelation");
+//		SupportsRelation supportsRelation = CCMModelFactory.eINSTANCE.createSupportsRelation();
+//		supportsRelation.setComponents(componentDef);
+//		supportsRelation.setSupportsItf(interfaceDef);
+//		return supportsRelation;
+//	}
+//	/**
+//	 * create a managers-relation between a ComponentImplDef and a HomeImplDef.
+// 	 * @param componentImplDef = the ComponentImplDef
+// 	 * @param homeImplDef = the HomeImplDef
+//	 * @return the new relation
+//	 */
+//	private static ManagersRelation createManagersRelation (ComponentImplDef componentImplDef,HomeImplDef homeImplDef) throws MofError
+//	{
+//		System.out.println("\tManagersRelation");
+//		ManagersRelation managersRelation = CCMModelFactory.eINSTANCE.createManagersRelation();
+//		managersRelation.setComponent_impl(componentImplDef);
+//		managersRelation.setHome_impl(homeImplDef);
+//		return managersRelation;
+//	}
+//	/**
+//	 * create a compHome-relation between a ComponentDef and a HomeDef.
+//	 * @param componentDef = the ComponentDef
+// 	 * @param homeDef = the HomeDef
+//	 * @return the new relation
+//	 */
+//	private static CompHomeRelation createCompHomeRelation (ComponentDef componentDef,HomeDef homeDef) throws MofError
+//	{
+//		CompHomeRelation compHomeRelation = CCMModelFactory.eINSTANCE.createCompHomeRelation();
+//		System.out.println("\tCompHomeRelation");
+//		compHomeRelation.setComponentEnd(componentDef);
+//		compHomeRelation.setHomeEnd(homeDef);
+//		return compHomeRelation;
+//	}
+//	/**
+//	 * This methode creates a abstractDerivedRelation between 2 ValueDefs.
+//	 * @param abstractBase = the abstractBase
+//	 * @param abstractDerived = the abstractDerived
+// 	 * @return the new relation
+// 	 */
+//	private static AbstractDerivedRelation createAbstractDerivedRelation (ValueDef abstractBase, ValueDef abstractDerived) 
+//	throws MofError
+//	{
+//		AbstractDerivedRelation abstractDerivedRelation = CCMModelFactory.eINSTANCE.createAbstractDerivedRelation();
+//		System.out.println("\tabstractDerivedRelation");
+//		abstractDerivedRelation.setAbstractBase(abstractBase);
+//		abstractDerivedRelation.setAbstractDerived(abstractDerived);
+//		return abstractDerivedRelation;
+//	}
+//	/**
+//	 * This methode creates a abstractItfDerivedRelation.
+//	 * @param base = the Base
+//	 * @param derived = the Derived
+//	 * @return the new relation
+// 	 */
+//	private static AbstractItfDerivedRelation createAbstractItfDerivedRelation (AbstractInterfaceDef base, AbstractInterfaceDef derived) 
+//	throws MofError
+//	{
+//		AbstractItfDerivedRelation abstractItfDerivedRelation = 
+//			CCMModelFactory.eINSTANCE.createAbstractItfDerivedRelation();
+//		System.out.println("\tabstractItfDerivedRelation");
+//		abstractItfDerivedRelation.setBase(base);
+//		abstractItfDerivedRelation.setDerived(derived);
+//		return abstractItfDerivedRelation;
+//	}
+//	/**
+//	 * This methode creates a valueDerivedRelation.
+//	 * @param base = the Base
+//	 * @param derived = the Derived
+//	 * @return the new relation
+// 	 */
+//	private static ValueDerivedRelation createValueDerivedRelation (ValueDef base, ValueDef derived) 
+//	throws MofError
+//	{
+//		ValueDerivedRelation valueDerivedRelation =
+//			CCMModelFactory.eINSTANCE.createValueDerivedRelation();
+//		System.out.println("\tvalueDerivedRelation");
+//		valueDerivedRelation.setBase(base);
+//		valueDerivedRelation.setDerived(derived);
+//		return valueDerivedRelation;
+//	}
+//	/**
+//	 * This methode creates a eventPortEventRelation.
+//	 * @param eventPortDef = the eventPortDef
+//	 * @param eventDef = the eventDef
+//	 * @return the new relation
+// 	 */
+//	private static EventPortEventRelation createEventPortEventRelation (EventPortDef eventPortDef, EventDef eventDef) 
+//	throws MofError
+//	{
+//		EventPortEventRelation eventPortEventRelation =
+//			CCMModelFactory.eINSTANCE.createEventPortEventRelation();
+//		System.out.println("\tEventPortEventRelation");
+//		eventPortEventRelation.setEnds(eventPortDef);
+//		eventPortEventRelation.setType(eventDef);
+//		return eventPortEventRelation;
+//	}
 	
 	/* --------------------------------- UPADTE ------------------------------------------------ */
 	/**
@@ -855,18 +1030,18 @@ public class CCMImport {
  	 */
 	private static void updateEMFModel() throws MofError
 	{
-		System.out.println("Updates");
+		//System.out.println("Updates");
 		// updates the properties of the emf-objects like the objects in the repository
 		for (int i=0; i<emfmodel.size();i++)
 		{
 			EObject emf = (EObject)emfmodel.get(i);
 			org.omg.CORBA.Object rep = (org.omg.CORBA.Object)repmodel.get(i);
-
-			System.out.println("\t" + emf.getClass().getName() + " : ");
+            List objs;
+            Iterator it;
+			//System.out.println("\t" + emf.getClass().getName() + " : ");
 			
 			try {
-				if (emf instanceof ComponentDef)
-				{
+				if (emf instanceof ComponentDef){
 					MDE.ComponentIDL.ComponentDef componentDef = ComponentDefHelper.narrow(rep);
 					
 					MDE.CIF.ComponentImplDef[] componentImplDefs = componentDef.segs();
@@ -900,14 +1075,214 @@ public class CCMImport {
 							((HomeDef)emfHomeDefs).setComponent((ComponentDef)emf);
 							//createCompHomeRelation((ComponentDef)emf,(HomeDef)emfHomeDefs);
 					}
+					MDE.ComponentIDL.ProvidesDef[] facets=componentDef.facet();
+					for (int j=0;j<facets.length;j++){
+						ProvidesDef eport=(ProvidesDef)rep2emf(facets[j]);
+						eport.setComp((ComponentDef)emf);
+						
+					}
+					MDE.ComponentIDL.UsesDef[] receptacles=componentDef.receptacle();
+					for (int j=0;j<receptacles.length;j++){
+						UsesDef eport=(UsesDef)rep2emf(receptacles[j]);
+						eport.setComp((ComponentDef)emf);
+					}
+					MDE.ComponentIDL.PublishesDef[] publishes=componentDef.publishess();
+					for (int j=0;j<publishes.length;j++){
+						PublishesDef eport=(PublishesDef)rep2emf(publishes[j]);
+						eport.setComp((ComponentDef)emf);
+					}
+					MDE.ComponentIDL.EmitsDef[] emitts=componentDef.emitss();
+					for (int j=0;j<emitts.length;j++){
+						EmitsDef eport=(EmitsDef)rep2emf(emitts[j]);
+						eport.setComp((ComponentDef)emf);
+					}
+					MDE.ComponentIDL.ConsumesDef[] sinks=componentDef.consumess();
+					for (int j=0;j<sinks.length;j++){
+						ConsumesDef eport=(ConsumesDef)rep2emf(sinks[j]);
+						eport.setComp((ComponentDef)emf);
+					}
 
 				}
+				
+				
+				else if (emf instanceof SoftwarePackage){
+					_SoftwarePackage pkg=_SoftwarePackageHelper.narrow(rep);
+					if(repmodel.contains(pkg.idl()))
+						((SoftwarePackage)emf).setIdlFile((IDLFile)rep2emf(pkg.idl()));
+					if(repmodel.contains(pkg.realized_c()))
+						((SoftwarePackage)emf).setComponent((CCMModel.ComponentDef)rep2emf(pkg.realized_c()));
+					Implementation[]impls=pkg.impls();
+					for (int j=0;j<impls.length;j++){
+						((SoftwarePackage)emf).getImpl().add(rep2emf(impls[j]));
+						CCMModel.Implementation eimpl=(CCMModel.Implementation)rep2emf(impls[j]);
+						if(repmodel.contains(impls[j].compos()))
+								eimpl.setComposition((Composition)rep2emf(impls[j].compos()));
+						ContainedFile[] conFiles=impls[j].contained_file();
+						for (int k=0;k<conFiles.length;k++){
+							eimpl.getContainedFile().add((CCMModel.ContainedFile)rep2emf(conFiles[k]));
+						}
+						DependentFile[] depFiles=impls[j].dependent_file();
+						for (int k=0;k<depFiles.length;k++){
+							eimpl.getDependentFiles().add((CCMModel.DependentFile)rep2emf(depFiles[k]));
+						}
+						DeploymentRequirement[] reqs=impls[j].req();
+						for (int k=0;k<reqs.length;k++){
+							eimpl.getRequirment().add((Deploymentrequirement)rep2emf(reqs[k]));
+						}
+						Property[] pros=impls[j].prop();
+						for (int k=0;k<pros.length;k++){
+							eimpl.getPropertys().add(rep2emf(pros[k]));
+						}
+						
+						
+					}
+				
+				}
+				
+				else if (emf instanceof CCMModel.Assembly){
+					Assembly ass= AssemblyHelper.narrow(rep);
+					_SoftwarePackage[] pkgs=ass.files();
+					for (int j=0;j<pkgs.length;j++)
+						((CCMModel.Assembly)emf).getSoftwarePackage().add(rep2emf(pkgs[j]));
+					try{
+						Configuration con=ass.config();
+						Connection[] conns=con.conn();
+						for (int k=0;k<conns.length;k++){
+							AssemblyConnection econn= (AssemblyConnection)rep2emf(conns[k]);
+							((CCMModel.Assembly)emf).getConnection().add(econn)	;
+							ConnectionEnd sourceEnd=conns[k].source_end();
+							CCMModel.ConnectionEnd esource=(CCMModel.ConnectionEnd)rep2emf(sourceEnd);
+							try{
+								if(repmodel.contains(conns[k].source_end().int_comp_inst()))
+						
+									esource.setInstance((CCMInstantiation)rep2emf(conns[k].source_end().int_comp_inst()));
+							}catch(Exception e){}
+							try{
+								if(repmodel.contains(conns[k].source_end().int_home_inst()))
+								
+									esource.setInstance((CCMInstantiation)rep2emf(conns[k].source_end().int_home_inst()));
+							}catch(Exception e){}
+							try{
+								if(repmodel.contains(conns[k].source_end().ext_inst()))
+							
+									esource.setInstance((CCMInstantiation)rep2emf(conns[k].source_end().ext_inst()));
+							}catch(Exception e){}
+							try{
+								if(repmodel.contains(conns[k].source_end().thefeature()))
+							
+									esource.setFeature((ComponentFeature)rep2emf(conns[k].source_end().thefeature()));
+							}catch(Exception e){}
+							
+							 
+							ConnectionEnd targetEnd=conns[k].target_end();
+							CCMModel.ConnectionEnd etarget=(CCMModel.ConnectionEnd)rep2emf(targetEnd);
+					
+							try{
+								if(repmodel.contains(conns[k].target_end().int_comp_inst()))
+									etarget.setInstance((CCMInstantiation)rep2emf(conns[k].target_end().int_comp_inst()));
+							}catch(Exception e){}
+							try{
+								if(repmodel.contains(conns[k].target_end().int_home_inst()))
+								etarget.setInstance((CCMInstantiation)rep2emf(conns[k].target_end().int_home_inst()));
+							}catch(Exception e){}
+							try{
+								
+								if(repmodel.contains(conns[k].target_end().ext_inst()))
+								etarget.setInstance((CCMInstantiation)rep2emf(conns[k].target_end().ext_inst()));
+							}catch(Exception e){}
+							try{
+								if(repmodel.contains(conns[k].target_end().thefeature()))
+								etarget.setFeature((ComponentFeature)rep2emf(conns[k].target_end().thefeature()));
+							}catch(Exception e){}
+							econn.setSource(esource);
+							econn.setTarget(etarget);
+							
+							 
+						}
+					
+						ComponentFile[] confiles=con.install_dest();
+						for (int k=0;k<confiles.length;k++){
+							CCMModel.ComponentFile ecomFile=(CCMModel.ComponentFile)rep2emf(confiles[k]);
+							((CCMModel.Assembly)emf).getComponentFile().add(ecomFile);
+							if(repmodel.contains(confiles[k].pack()))
+									ecomFile.setPackage((SoftwarePackage)rep2emf(confiles[k].pack()));
+							
+						}
+						ProcessCollocation[]  processes=con.coloc();
+						for (int k=0;k<processes.length;k++){
+							CCMModel.ProcessCollocation eprocess=(CCMModel.ProcessCollocation)rep2emf(processes[k]);
+							((CCMModel.Assembly)emf).getProcessCollocation().add(eprocess);
+							HomeInstantiation[] homeInstances=processes[k].thehome();
+							for (int l=0;l<homeInstances.length;l++){
+								CCMModel.HomeInstantiation ehomeInstance=(CCMModel.HomeInstantiation)rep2emf(homeInstances[l]);
+								eprocess.getHomeInstances().add(ehomeInstance);
+								if(repmodel.contains(homeInstances[l].unit()))
+									ehomeInstance.setDeploymentUnit((CCMModel.Implementation)rep2emf(homeInstances[l].unit()));
+								if(repmodel.contains(homeInstances[l].type()))
+									ehomeInstance.setType((HomeImplDef)rep2emf(homeInstances[l].type()));
+					
+								
+								ComponentInstantiation[] compInstances=homeInstances[l].comp();
+								for (int m=0;m<compInstances.length;m++){
+									CCMModel.ComponentInstantiation ecompInstance=(CCMModel.ComponentInstantiation)rep2emf(compInstances[m]);
+									ecompInstance.setThehome(ehomeInstance);
+									if(repmodel.contains(compInstances[m].type())){
+										ecompInstance.setType((ComponentImplDef)rep2emf(compInstances[m].type()));
+										if(repmodel.contains(compInstances[m].type().component_end())){
+											MDE.ComponentIDL.ComponentDef componentDef=compInstances[m].type().component_end();
+											MDE.ComponentIDL.ProvidesDef[] facets=componentDef.facet();
+											for (int j=0;j<facets.length;j++){
+												ProvidesDef eport=(ProvidesDef)rep2emf(facets[j]);
+												eport.setComponentInstance(ecompInstance);
+												
+											}
+											MDE.ComponentIDL.UsesDef[] receptacles=componentDef.receptacle();
+											for (int j=0;j<receptacles.length;j++){
+												UsesDef eport=(UsesDef)rep2emf(receptacles[j]);
+												eport.setComponentInstance(ecompInstance);
+											}
+											MDE.ComponentIDL.PublishesDef[] publishes=componentDef.publishess();
+											for (int j=0;j<publishes.length;j++){
+												PublishesDef eport=(PublishesDef)rep2emf(publishes[j]);
+												eport.setComponentInstance(ecompInstance);
+											}
+											MDE.ComponentIDL.EmitsDef[] emitts=componentDef.emitss();
+											for (int j=0;j<emitts.length;j++){
+												EmitsDef eport=(EmitsDef)rep2emf(emitts[j]);
+												eport.setComponentInstance(ecompInstance);
+											}
+											MDE.ComponentIDL.ConsumesDef[] sinks=componentDef.consumess();
+											for (int j=0;j<sinks.length;j++){
+												ConsumesDef eport=(ConsumesDef)rep2emf(sinks[j]);
+												eport.setComponentInstance(ecompInstance);
+											}
+
+										}
+									}
+									RegisterComponentInstance[] registers=compInstances[m].registration();
+									for (int n=0;n<registers.length;n++){
+										CCMModel.RegisterComponentInstance eregister=(CCMModel.RegisterComponentInstance)rep2emf(registers[n]);
+										eregister.setComponentInstance(ecompInstance);
+										
+										if(repmodel.contains(registers[n].thefeature()))
+											eregister.setFeature((ComponentFeature)rep2emf(registers[n].thefeature()));
+											
+									}
+								}	
+							}
+						}	
+					}
+					catch (Exception e){}
+					
+						
+				}
+				
 				else if (emf instanceof HomeDef)
 				{
 					MDE.ComponentIDL.HomeDef home = HomeDefHelper.narrow(rep);
 					//home.component_end();
 					MDE.BaseIDL.InterfaceDef[] interfaceDefs = home.supports_itf();
-					System.out.println("Updates1");
+				 
 					for (int j=0;j<interfaceDefs.length;j++)
 					{
 						EObject emfInterfaceDef = rep2emf(interfaceDefs[j]);
@@ -915,17 +1290,16 @@ public class CCMImport {
 							((HomeDef)emf).getHomeSupports_itf().add((InterfaceDef)emfInterfaceDef);
 							//createSupportsRelation((HomeDef)emf,(InterfaceDef)emfInterfaceDef);
 					
-						System.out.println("Updates2");
 						}
 					MDE.CIF.HomeImplDef[] homeImplDefs = home.segs();
-					System.out.println("Updates3");
+				 
 					for (int j=0;j<homeImplDefs.length;j++)
 					{
 						EObject emfHomeImplDef = rep2emf(homeImplDefs[j]);
 						if (emfHomeImplDef != null)
 						((HomeImplDef)emfHomeImplDef).setHome((HomeDef)emf);	
 							//createImplementsRelation((HomeDef)emf,(HomeImplDef)emfHomeImplDef);
-						System.out.println("Updates4");
+			 
 					}
 
 				}
@@ -1036,7 +1410,8 @@ public class CCMImport {
 	private static EObject rep2emf(org.omg.CORBA.Object rep) throws MofError
 	{
 		if (rep == null) return null;
-		int index = ids.indexOf(fullScopeName(rep));
+		//int index = ids.indexOf(fullScopeName(rep));
+		int index =repmodel.indexOf(rep);
 		return (index >= 0) ? (Contained)emfmodel.get(index) : null;
 	}
 	/**

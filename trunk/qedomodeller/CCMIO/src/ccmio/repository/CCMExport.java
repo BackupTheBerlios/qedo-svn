@@ -6,30 +6,31 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
-import org.omg.CORBA.BAD_PARAM;
 
-import CCMModel.AbstractDerivedRelation;
-import CCMModel.AbstractInterfaceDef;
-import CCMModel.AbstractItfDerivedRelation;
+import CCMModel.Aktionkind;
 import CCMModel.AliasDef;
 import CCMModel.ArrayDef;
+import CCMModel.Assembly;
+import CCMModel.AssemblyConnection;
 import CCMModel.AttributeDef;
 import CCMModel.CCM;
-import CCMModel.CompHomeRelation;
 import CCMModel.ComponentCategory;
 import CCMModel.ComponentDef;
+import CCMModel.ComponentFile;
 import CCMModel.ComponentImplDef;
+import CCMModel.ComponentInstantiation;
 import CCMModel.Composition;
+import CCMModel.ConnectionEnd;
 import CCMModel.ConstantDef;
 import CCMModel.ConsumesDef;
 import CCMModel.Contained;
+import CCMModel.ContainedFile;
 import CCMModel.Container;
-import CCMModel.Diagram;
+import CCMModel.DependentFile;
+import CCMModel.Deploymentrequirement;
 import CCMModel.EmitsDef;
 import CCMModel.EnumDef;
 import CCMModel.EventDef;
-import CCMModel.EventPortDef;
-import CCMModel.EventPortEventRelation;
 import CCMModel.ExceptionDef;
 import CCMModel.FactoryDef;
 import CCMModel.Field;
@@ -37,11 +38,10 @@ import CCMModel.FinderDef;
 import CCMModel.FixedDef;
 import CCMModel.HomeDef;
 import CCMModel.HomeImplDef;
+import CCMModel.HomeInstantiation;
 import CCMModel.IDLType;
+import CCMModel.Implementation;
 import CCMModel.InterfaceDef;
-import CCMModel.InterfaceRelation;
-//import CCMModel.IpmlementsRelation;
-import CCMModel.ManagersRelation;
 import CCMModel.MediaType;
 import CCMModel.ModuleDef;
 import CCMModel.OperationDef;
@@ -49,18 +49,20 @@ import CCMModel.ParameterDef;
 import CCMModel.ParameterMode;
 import CCMModel.PrimitiveDef;
 import CCMModel.PrimitiveKind;
+import CCMModel.ProcessCollocation;
+import CCMModel.Property;
 import CCMModel.ProvidesDef;
 import CCMModel.PublishesDef;
-import CCMModel.Relation;
+import CCMModel.RegisterComponentInstance;
 import CCMModel.SegmentDef;
 import CCMModel.SequenceDef;
 import CCMModel.SiSouDef;
 import CCMModel.SinkDef;
+import CCMModel.SoftwarePackage;
 import CCMModel.SourceDef;
 import CCMModel.StreamProtDef;
 import CCMModel.StringDef;
 import CCMModel.StructDef;
-import CCMModel.SupportsRelation;
 import CCMModel.Typed;
 import CCMModel.TypedefDef;
 import CCMModel.UnionDef;
@@ -68,7 +70,6 @@ import CCMModel.UnionField;
 import CCMModel.UsesDef;
 import CCMModel.ValueBoxDef;
 import CCMModel.ValueDef;
-import CCMModel.ValueDerivedRelation;
 import CCMModel.ValueMemberDef;
 import CCMModel.WstringDef;
 import CCMModel.impl.DiagramImpl;
@@ -80,18 +81,17 @@ import MDE.BaseIDL.TypedHelper;
 import MDE.BaseIDL.UnionDefHelper;
 import MDE.BaseIDL.ValueDefHelper;
 import MDE.BaseIDL._BaseIDLPackage;
-
-import MDE.CIF.CompositionDef;
 import MDE.CIF.ComponentImplDefHelper;
+import MDE.CIF.CompositionDef;
 import MDE.CIF.CompositionDefHelper;
 import MDE.CIF.HomeImplDefHelper;
 import MDE.CIF.SegmentDefHelper;
 import MDE.CIF._CIFPackage;
 import MDE.ComponentIDL.ComponentDefHelper;
+import MDE.ComponentIDL.ComponentFeatureHelper;
 import MDE.ComponentIDL.ConsumesDefHelper;
 import MDE.ComponentIDL.EmitsDefHelper;
 import MDE.ComponentIDL.EventDefHelper;
-import MDE.ComponentIDL.EventPortDefHelper;
 import MDE.ComponentIDL.FactoryDefHelper;
 import MDE.ComponentIDL.FinderDefHelper;
 import MDE.ComponentIDL.HomeDefHelper;
@@ -104,7 +104,29 @@ import MDE.ComponentIDL.SourceDefHelper;
 import MDE.ComponentIDL.StreamPortDefHelper;
 import MDE.ComponentIDL.UsesDefHelper;
 import MDE.ComponentIDL._ComponentIDLPackage;
+import MDE.Deployment.ActionKind;
+import MDE.Deployment.AssemblyHelper;
+import MDE.Deployment.ComponentFileHelper;
+import MDE.Deployment.ComponentInstantiationHelper;
+import MDE.Deployment.Configuration;
+import MDE.Deployment.Connection;
+import MDE.Deployment.ConnectionEndHelper;
+import MDE.Deployment.ConnectionHelper;
+import MDE.Deployment.ContainedFileHelper;
+import MDE.Deployment.DependentFileHelper;
+import MDE.Deployment.DeploymentRequirementHelper;
+import MDE.Deployment.ElementName;
+import MDE.Deployment.ExternalInstanceHelper;
+import MDE.Deployment.FinderService;
+import MDE.Deployment.FinderServiceKind;
+import MDE.Deployment.HomeInstantiationHelper;
+import MDE.Deployment.IDLFile;
+import MDE.Deployment.ImplementationHelper;
+import MDE.Deployment.ProcessCollocationHelper;
+import MDE.Deployment.PropertyHelper;
 import MDE.Deployment._DeploymentPackage;
+import MDE.Deployment._SoftwarePackage;
+import MDE.Deployment._SoftwarePackageHelper;
 import Reflective.MofError;
 
 
@@ -143,12 +165,13 @@ public class CCMExport {
 		//createRoot(rootModule);
 		MDE.BaseIDL.ModuleDef repRootModule = ModuleDefHelper.narrow(create(rootModule));
 		// 3. creates relations 
-		System.out.println("Create model in repository.");
+		//System.out.println("Create model in repository.");
 		MDE.BaseIDL.Contained[] contents = 
 			createContents(rootModule.getContents());
-		System.out.println("Create model in repository.");
+		//System.out.println("Create model in repository.");
 		for (int i=0;i<contents.length;i++)
-		{   System.out.println("contents[i]. "+contents[i]);
+		{  
+			//System.out.println("contents[i]. "+contents[i]);
 			if(contents[i] != null) {
 				repRootModule.add_contents(contents[i]);
 				contents[i].set_defined_in(repRootModule);
@@ -172,7 +195,7 @@ public class CCMExport {
    	 	MDE.BaseIDL.ModuleDef repRootModule = ModuleDefHelper.narrow(create(rootModule));
    	 	repmodel.add(repRootModule); emfmodel.add(rootModule);
    	 	// create the contens of the RootModule
-   	 	System.out.println("Create model in repository.");
+   	 	//System.out.println("Create model in repository.");
 		MDE.BaseIDL.Contained[] contents = 
 			createContents(rootModule.getContents());
 		for (int i=0;i<contents.length;i++)
@@ -211,7 +234,9 @@ public class CCMExport {
 				{
 					// container --> create contents
 					MDE.BaseIDL.Container repcontainer = ContainerHelper.narrow(repcontents[i]);
-					MDE.BaseIDL.Contained[] cns = createContents(((Container)emfContained).getContents());
+					EList containeds=((Container)emfContained).getContents();
+				 
+					MDE.BaseIDL.Contained[] cns = createContents(containeds);
 					for (int j=0;j<cns.length;j++)
 					{
 						if(cns[j] != null) {
@@ -233,40 +258,116 @@ public class CCMExport {
 	private static MDE.BaseIDL.Contained create(Contained contained) throws MofError
 	{
 		MDE.BaseIDL.Contained result;
-		System.out.println("\t" + contained.getClass().getName() + " : " + contained.getIdentifier());
+		//System.out.println("\t" + contained.getClass().getName() + " : " + contained.getIdentifier());
 		if (contained instanceof ModuleDef)
 		{
 			//relations.addAll(((ModuleDef)contained).getRelations());
 			result = baseIDLPackage.module_def_ref().create_module_def( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(), ((ModuleDef)contained).getPrefix());
 		}
-		else if (contained instanceof ComponentDef)
-			{
+		else if (contained instanceof SoftwarePackage){
+			
+			IDLFile idlfile=null;
+			CCMModel.IDLFile eidlfile=((SoftwarePackage)contained).getIdlFile();
+			if(eidlfile!=null){
+				idlfile=deploymentPackage.idlfile_ref().create_idlfile(eidlfile.getIdentifier(),
+					eidlfile.getRepositoryId(),eidlfile.getVersion(),eidlfile.getName(),eidlfile.getLocation());
+				repmodel.add(idlfile); emfmodel.add(eidlfile);
+			}
+			MDE.Deployment._SoftwarePackage softwarePackage=
+				deploymentPackage.software_package_ref().create_software_package( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+						((SoftwarePackage)contained).getLicensekey(),((SoftwarePackage)contained).getLicensetextref(),
+						((SoftwarePackage)contained).getTitle(),((SoftwarePackage)contained).getType(),
+						((SoftwarePackage)contained).getAutor(),idlfile);
+			 
+			result=softwarePackage;
+			return result;
+			
+		}
+		else if (contained instanceof Implementation){
+			result=deploymentPackage.implementation_ref().create_implementation(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					((Implementation)contained).getUuid());
+			return result;
+			
+		}
+		else if (contained instanceof ContainedFile){
+			result=deploymentPackage.contained_file_ref().create_contained_file(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					((ContainedFile)contained).getName(),((ContainedFile)contained).getLocation(),
+					((ContainedFile)contained).getCodeType(),((ContainedFile)contained).getEntryPoint(),
+					((ContainedFile)contained).getUsage());
+			return result;
+			
+		}
+		else if (contained instanceof DependentFile){
+			result=deploymentPackage.dependent_file_ref().create_dependent_file(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					((DependentFile)contained).getName(),((DependentFile)contained).getLocation(),
+					getActionKind(((DependentFile)contained).getAction()));
+			return result;
+			
+		}
+		else if (contained instanceof Deploymentrequirement){
+			result=deploymentPackage.deployment_requirement_ref().create_deployment_requirement(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					((Deploymentrequirement)contained).getKind(),((Deploymentrequirement)contained).getReqVersion());
+			return result;
+		}
+		else if (contained instanceof Assembly){
+			Configuration con=deploymentPackage.configuration_ref().create_configuration(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion());
+			MDE.Deployment.Assembly ass=deploymentPackage.assembly_ref().create_assembly(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					((Assembly)contained).getUuid());
+			ass.set_config(con);
+			result=ass;
+			return result;
+			
+			
+		}
+		else if (contained instanceof ComponentFile){
+			result=deploymentPackage.component_file_ref().create_component_file(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					((ComponentFile)contained).getName(),((ComponentFile)contained).getLocation());
+			return result;
+		}
+		else if (contained instanceof ProcessCollocation){
+			result=deploymentPackage.process_collocation_ref().create_process_collocation(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					(int)((ProcessCollocation)contained).getCardinality(),((ProcessCollocation)contained).getDestination());
+		}
+		else if (contained instanceof HomeInstantiation){
+			FinderService finderservice=deploymentPackage.finder_service_ref().create_finder_service(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					getServiceKind(((HomeInstantiation)contained).getService()),((HomeInstantiation)contained).getRegName());
+			
+			result=deploymentPackage.home_instantiation_ref().create_home_instantiation(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					((HomeInstantiation)contained).getCardinality(),finderservice);
+		}
+		else if (contained instanceof ComponentInstantiation){
+			result=deploymentPackage.component_instantiation_ref().create_component_instantiation(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					((ComponentInstantiation)contained).getCardinality(),((ComponentInstantiation)contained).getStartOrder());
+		}
+		else if (contained instanceof RegisterComponentInstance){
+			result=deploymentPackage.register_component_instance_ref().create_register_component_instance(
+					contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					getServiceKind(((RegisterComponentInstance)contained).getService()),((RegisterComponentInstance)contained).getRegName());
+		}
+		else if (contained instanceof Property){
+			result=deploymentPackage.property_ref().create_property(
+					contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					((Property)contained).getValue(),((Property)contained).getType(),
+					getElname(((Property)contained).getEl_name()));
+		}
+		 else if (contained instanceof AssemblyConnection){
+		 	result=deploymentPackage.connection_ref().create_connection(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion());
+		 }
+		 else if (contained instanceof ConnectionEnd){
+		 	result=deploymentPackage.connection_end_ref().create_connection_end("","","",
+		 			MDE.Deployment.ConnectionEndKind.SIMPLEINTERFACE);
+		 }
+		 
+		 else if (contained instanceof CCMModel.IDLFile){
+		 	result=deploymentPackage.idlfile_ref().create_idlfile(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
+					((CCMModel.IDLFile)contained).getName(),((CCMModel.IDLFile)contained).getLocation());
+		 }
+		
+		
+		else if (contained instanceof ComponentDef){
 				MDE.ComponentIDL.ComponentDef repcomponent = 
 					componentIDLPackage.component_def_ref().create_component_def( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(), ((ComponentDef)contained).isIsAbstract(), ((ComponentDef)contained).isIsLocal());
-				MDE.ComponentIDL.ConsumesDef[] consumess = createConsumess(((ComponentDef)contained).getConsumess());
-				MDE.ComponentIDL.EmitsDef[] emitss = createEmitss(((ComponentDef)contained).getEmitss());
-				MDE.ComponentIDL.ProvidesDef[] facets = createProvides(((ComponentDef)contained).getFacet());
-				MDE.ComponentIDL.PublishesDef[] publishess = createPublishess(((ComponentDef)contained).getPublishesDef());
-				MDE.ComponentIDL.UsesDef[] receptacles = createUses(((ComponentDef)contained).getReceptacle());
-				MDE.ComponentIDL.SinkDef[] sinkss = createSinks(((ComponentDef)contained).getSinkss());
-				MDE.ComponentIDL.SiSouDef[] sisouss = createSiSous(((ComponentDef)contained).getSiSouss());
-				MDE.ComponentIDL.SourceDef[] sourcess = createSourcess(((ComponentDef)contained).getSourcess());
-				for (int j=0;j<consumess.length;j++) {
-					repcomponent.add_consumess(consumess[j]); consumess[j].set_comp(repcomponent); }
-				for (int j=0;j<emitss.length;j++) {
-					repcomponent.add_emitss(emitss[j]); emitss[j].set_comp(repcomponent); }
-				for (int j=0;j<facets.length;j++) {
-					repcomponent.add_facet(facets[j]); facets[j].set_comp(repcomponent); }
-				for (int j=0;j<publishess.length;j++) {
-					repcomponent.add_publishess(publishess[j]); publishess[j].set_comp(repcomponent); }
-				for (int j=0;j<receptacles.length;j++) {
-					repcomponent.add_receptacle(receptacles[j]); receptacles[j].set_comp(repcomponent); }
-				for (int j=0;j<sinkss.length;j++) {
-					repcomponent.add_sinkss(sinkss[j]); sinkss[j].set_comp(repcomponent); }
-				for (int j=0;j<sisouss.length;j++) {
-					repcomponent.add_sisouss(sisouss[j]); sisouss[j].set_comp(repcomponent); }
-				for (int j=0;j<sourcess.length;j++) {
-					repcomponent.add_sourcess(sourcess[j]); sourcess[j].set_comp(repcomponent); }
+				
 				result =  repcomponent;
 			}
 		else if (contained instanceof ComponentImplDef)
@@ -387,6 +488,11 @@ public class CCMExport {
 		}
 		return result;
 	}
+	/**
+	 * @param action
+	 * @return
+	 */
+	
 	/**
 	 * This methode creates an IDLType in Repository.
 	 * @param emfIDLType = the IDLType to add to the model
@@ -654,6 +760,22 @@ public class CCMExport {
 				(componentCategory.getName() == "SERVICE") 	? MDE.CIF.ComponentCategory.SERVICE :
 				MDE.CIF.ComponentCategory.EXTENSION;
 	}
+	private static ActionKind getActionKind(Aktionkind action) {
+		return 	(action.getName() == "ASSERT") 	? ActionKind.ASSERT :ActionKind.INSTALL ;
+			 
+	}
+	private static FinderServiceKind getServiceKind(CCMModel.FinderServiceKind kind){
+		return 	(kind.getName() == "HOMEFINDER") 	? MDE.Deployment.FinderServiceKind.HOMEFINDER :
+			(kind.getName() == "NAMING") 	? MDE.Deployment.FinderServiceKind.NAMING :
+			(kind.getName() == "TRADING") 	? MDE.Deployment.FinderServiceKind.TRADING :
+			MDE.Deployment.FinderServiceKind.UNDEFINED;
+	}
+	private static ElementName getElname(CCMModel.ElementName elname){
+		return 	(elname.getName() == "SEQUENCE_EL") 	? ElementName.SEQUENCE_EL :
+			(elname.getName() == "SIMPLE_EL") 	? ElementName.SIMPLE_EL :
+			(elname.getName() == "STRUCT_EL") 	? ElementName.STRUCT_EL :
+			 ElementName.VALUETYPE_EL ;
+	}
 	/**
 	 * This methode converts emf-primitivekind to repository-primitivekind.
 	 * @param emfPrimitiveKind = the ccmmodel-PrimitiveKind
@@ -687,93 +809,93 @@ public class CCMExport {
 	/**
 	 * This methode creates the relations between the model-objects in Repository.
  	 */
-	private static void createRelations() throws MofError
-	{
-		System.out.println("relations : ");
-		for (int i=0; i<relations.size(); i++)
-		{
-			Relation relation = (Relation)relations.get(i);
-			try
-			{
-//			if (relation instanceof IpmlementsRelation)
-//				createImplementsRelation((IpmlementsRelation)relation);
-			  if (relation instanceof InterfaceRelation)
-				createInterfaceRelation((InterfaceRelation)relation);
-			else if (relation instanceof SupportsRelation)
-				createSupportsRelation((SupportsRelation)relation);
-			else if (relation instanceof ManagersRelation)
-				createManagersRelation((ManagersRelation)relation);
-			else if (relation instanceof CompHomeRelation)
-				createCompHomeRelation((CompHomeRelation)relation);
-			else if (relation instanceof AbstractDerivedRelation)
-				createAbstractDerivedRelation((AbstractDerivedRelation)relation);
-			else if (relation instanceof AbstractItfDerivedRelation)
-				createAbstractItfDerivedRelation((AbstractItfDerivedRelation)relation);
-			else if (relation instanceof ValueDerivedRelation)
-				createValueDerivedRelation((ValueDerivedRelation)relation);
-			else if (relation instanceof EventPortEventRelation)
-				createEventPortEventRelation((EventPortEventRelation)relation);
-			}
-			catch (Exception e){ System.out.println("\tcan´t create Relation"); }
-		}
-	}
-	/**
-	 * This methode creates a abstractDerivedRelation in Repository.
-	 * @param abstractDerivedRelation = the abstractDerivedRelation to add to the model
- 	 */
-	private static void createAbstractDerivedRelation (AbstractDerivedRelation abstractDerivedRelation) 
-	throws MofError,BAD_PARAM
-	{
-		System.out.println("\tabstractDerivedRelation");
-		ValueDef abstractDerived = abstractDerivedRelation.getAbstractDerived();
-		ValueDef abstractBase = abstractDerivedRelation.getAbstractBase();
-
-		if (abstractDerived != null && abstractBase != null)
-		{
-			MDE.BaseIDL.ValueDef repAbstractDerived = ValueDefHelper.narrow(emf2rep(abstractDerived));
-			MDE.BaseIDL.ValueDef repAbstractBase = ValueDefHelper.narrow(emf2rep(abstractBase));
-			if (repAbstractDerived != null && repAbstractBase != null)
-				repAbstractDerived.add_abstract_base(repAbstractBase);
-		}
-	}
-	/**
-	 * This methode creates a abstractItfDerivedRelation in Repository.
-	 * @param abstractItfDerivedRelation = the abstractItfDerivedRelation to add to the model
- 	 */
-	private static void createAbstractItfDerivedRelation (AbstractItfDerivedRelation abstractItfDerivedRelation) 
-	throws MofError,BAD_PARAM
-	{
-		System.out.println("\tabstractItfDerivedRelation");
-		AbstractInterfaceDef derived = abstractItfDerivedRelation.getDerived();
-		AbstractInterfaceDef base = abstractItfDerivedRelation.getBase();
-
-		if (derived != null && base != null)
-		{
-			MDE.BaseIDL.InterfaceDef repDerived = InterfaceDefHelper.narrow(emf2rep(derived));
-			MDE.BaseIDL.InterfaceDef repBase = InterfaceDefHelper.narrow(emf2rep(base));
-			if (repDerived != null && repBase != null)
-				repDerived.add_base(repBase);
-		}
-	}
-	/**
-	 * This methode creates a valueDerivedRelation in Repository.
-	 * @param valueDerivedRelation = the valueDerivedRelation to add to the model
- 	 */
-	private static void createValueDerivedRelation (ValueDerivedRelation valueDerivedRelation) 
-	throws MofError,BAD_PARAM
-	{
-		System.out.println("\tvalueDerivedRelation");
-		ValueDef derived = valueDerivedRelation.getDerived();
-		ValueDef base = valueDerivedRelation.getBase();
-
-		if (derived != null && base != null)
-		{
-			MDE.BaseIDL.ValueDef repDerived = ValueDefHelper.narrow(emf2rep(derived));
-			MDE.BaseIDL.ValueDef repBase = ValueDefHelper.narrow(emf2rep(base));
-			if (repDerived != null && repBase != null)
-				repDerived.add_abstract_base(repBase);
-		}
-	}
+//	private static void createRelations() throws MofError
+//	{
+//		System.out.println("relations : ");
+//		for (int i=0; i<relations.size(); i++)
+//		{
+//			Relation relation = (Relation)relations.get(i);
+//			try
+//			{
+////			if (relation instanceof IpmlementsRelation)
+////				createImplementsRelation((IpmlementsRelation)relation);
+//			  if (relation instanceof InterfaceRelation)
+//				createInterfaceRelation((InterfaceRelation)relation);
+//			else if (relation instanceof SupportsRelation)
+//				createSupportsRelation((SupportsRelation)relation);
+//			else if (relation instanceof ManagersRelation)
+//				createManagersRelation((ManagersRelation)relation);
+//			else if (relation instanceof CompHomeRelation)
+//				createCompHomeRelation((CompHomeRelation)relation);
+//			else if (relation instanceof AbstractDerivedRelation)
+//				createAbstractDerivedRelation((AbstractDerivedRelation)relation);
+//			else if (relation instanceof AbstractItfDerivedRelation)
+//				createAbstractItfDerivedRelation((AbstractItfDerivedRelation)relation);
+//			else if (relation instanceof ValueDerivedRelation)
+//				createValueDerivedRelation((ValueDerivedRelation)relation);
+//			else if (relation instanceof EventPortEventRelation)
+//				createEventPortEventRelation((EventPortEventRelation)relation);
+//			}
+//			catch (Exception e){ System.out.println("\tcan´t create Relation"); }
+//		}
+//	}
+//	/**
+//	 * This methode creates a abstractDerivedRelation in Repository.
+//	 * @param abstractDerivedRelation = the abstractDerivedRelation to add to the model
+// 	 */
+//	private static void createAbstractDerivedRelation (AbstractDerivedRelation abstractDerivedRelation) 
+//	throws MofError,BAD_PARAM
+//	{
+//		System.out.println("\tabstractDerivedRelation");
+//		ValueDef abstractDerived = abstractDerivedRelation.getAbstractDerived();
+//		ValueDef abstractBase = abstractDerivedRelation.getAbstractBase();
+//
+//		if (abstractDerived != null && abstractBase != null)
+//		{
+//			MDE.BaseIDL.ValueDef repAbstractDerived = ValueDefHelper.narrow(emf2rep(abstractDerived));
+//			MDE.BaseIDL.ValueDef repAbstractBase = ValueDefHelper.narrow(emf2rep(abstractBase));
+//			if (repAbstractDerived != null && repAbstractBase != null)
+//				repAbstractDerived.add_abstract_base(repAbstractBase);
+//		}
+//	}
+//	/**
+//	 * This methode creates a abstractItfDerivedRelation in Repository.
+//	 * @param abstractItfDerivedRelation = the abstractItfDerivedRelation to add to the model
+// 	 */
+//	private static void createAbstractItfDerivedRelation (AbstractItfDerivedRelation abstractItfDerivedRelation) 
+//	throws MofError,BAD_PARAM
+//	{
+//		System.out.println("\tabstractItfDerivedRelation");
+//		AbstractInterfaceDef derived = abstractItfDerivedRelation.getDerived();
+//		AbstractInterfaceDef base = abstractItfDerivedRelation.getBase();
+//
+//		if (derived != null && base != null)
+//		{
+//			MDE.BaseIDL.InterfaceDef repDerived = InterfaceDefHelper.narrow(emf2rep(derived));
+//			MDE.BaseIDL.InterfaceDef repBase = InterfaceDefHelper.narrow(emf2rep(base));
+//			if (repDerived != null && repBase != null)
+//				repDerived.add_base(repBase);
+//		}
+//	}
+//	/**
+//	 * This methode creates a valueDerivedRelation in Repository.
+//	 * @param valueDerivedRelation = the valueDerivedRelation to add to the model
+// 	 */
+//	private static void createValueDerivedRelation (ValueDerivedRelation valueDerivedRelation) 
+//	throws MofError,BAD_PARAM
+//	{
+//		System.out.println("\tvalueDerivedRelation");
+//		ValueDef derived = valueDerivedRelation.getDerived();
+//		ValueDef base = valueDerivedRelation.getBase();
+//
+//		if (derived != null && base != null)
+//		{
+//			MDE.BaseIDL.ValueDef repDerived = ValueDefHelper.narrow(emf2rep(derived));
+//			MDE.BaseIDL.ValueDef repBase = ValueDefHelper.narrow(emf2rep(base));
+//			if (repDerived != null && repBase != null)
+//				repDerived.add_abstract_base(repBase);
+//		}
+//	}
 	/**
 	 * This methode creates a ipmlementsRelation in Repository.
 	 * @param ipmlementsRelation = the ipmlementsRelation to add to the model
@@ -807,136 +929,136 @@ public class CCMExport {
 	 * This methode creates a interfaceRelation in Repository.
 	 * @param interfaceRelation = the interfaceRelation to add to the model
  	 */
-	private static void createInterfaceRelation (InterfaceRelation interfaceRelation) 
-	throws MofError,BAD_PARAM
-	{
-		System.out.println("\tInterfaceRelation");
-		InterfaceDef itf = interfaceRelation.getItf();
-		ProvidesDef providesDefs = interfaceRelation.getProvidesDef();
-		UsesDef usesDefs = interfaceRelation.getUsesDef();
-
-		/*if (itf != null)
-		{
-			MDE.BaseIDL.InterfaceDef repItf = InterfaceDefHelper.narrow(emf2rep(itf));
-
-			if (repItf !=  null)
-			{
-				for (int i=0;i<providesDefs.size();i++)
-				{
-					MDE.ComponentIDL.ProvidesDef repProvidesDef = 
-						(ProvidesDefHelper.narrow(emf2rep((EObject)providesDefs.get(i))));
-					if (repProvidesDef != null)
-						repProvidesDef.set_provides_itf(repItf);
-				}
-				for (int i=0;i<usesDefs.size();i++)
-				{
-					MDE.ComponentIDL.UsesDef repUsesDef = 
-						(UsesDefHelper.narrow(emf2rep((EObject)usesDefs.get(i))));
-					if (repUsesDef != null)
-						repUsesDef.set_uses_itf(repItf);
-				}
-			}
-		}*/
-		MDE.BaseIDL.InterfaceDef repItf = InterfaceDefHelper.narrow(emf2rep(itf));
-		
-		MDE.ComponentIDL.ProvidesDef repProvidesDef = 
-			(ProvidesDefHelper.narrow(emf2rep((EObject)providesDefs)));
-		if (repProvidesDef != null)
-			repProvidesDef.set_provides_itf(repItf);
-		
-		MDE.ComponentIDL.UsesDef repUsesDef = 
-			(UsesDefHelper.narrow(emf2rep((EObject)usesDefs)));
-		if (repUsesDef != null)
-			repUsesDef.set_uses_itf(repItf);
-	}
-	/**
-	 * This methode creates a supportsRelation in Repository.
-	 * @param supportsRelation = the supportsRelation to add to the model
- 	 */
-	private static void createSupportsRelation (SupportsRelation supportsRelation) 
-	throws MofError,BAD_PARAM
-	{
-		System.out.println("\tSupportsRelation");
-		HomeDef home = supportsRelation.getHomes();
-		ComponentDef component = supportsRelation.getComponents();
-		InterfaceDef itf = supportsRelation.getSupportsItf();
-
-		if (home != null && itf != null) 
-		{
-			MDE.ComponentIDL.HomeDef repHome = (HomeDefHelper.narrow(emf2rep(home)));
-			if (repHome != null)
-				repHome.add_supports_itf(InterfaceDefHelper.narrow(emf2rep(itf)));
-		}
-		if (component != null && itf != null)
-		{
-			MDE.ComponentIDL.ComponentDef repComponent = (ComponentDefHelper.narrow(emf2rep(component)));
-			if (repComponent != null)
-				repComponent.add_supports_itf(InterfaceDefHelper.narrow(emf2rep(itf)));
-		}
-	}
-	/**
-	 * This methode creates a managersRelation in Repository.
-	 * @param managersRelation = the managersRelation to add to the model
- 	 */
-	private static void createManagersRelation (ManagersRelation managersRelation) 
-	throws MofError,BAD_PARAM
-	{
-		System.out.println("\tManagersRelation");
-		ComponentImplDef componentimpl = managersRelation.getComponent_impl();
-		HomeImplDef homeimpl = managersRelation.getHome_impl();
-
-		if (componentimpl != null && homeimpl != null)
-		{
-			MDE.CIF.ComponentImplDef repComponentImpl = ComponentImplDefHelper.narrow(emf2rep(componentimpl));
-			MDE.CIF.HomeImplDef repHomeImpl = HomeImplDefHelper.narrow(emf2rep(homeimpl));
-			if (repComponentImpl != null && repHomeImpl != null)
-			{
-				repComponentImpl.add_home_impl(repHomeImpl);
-				repHomeImpl.set_component_impl(repComponentImpl);
-			}
-		}
-	}
-	/**
-	 * This methode creates a compHomeRelation in Repository.
-	 * @param compHomeRelation = the compHomeRelation to add to the model
- 	 */
-	private static void createCompHomeRelation (CompHomeRelation compHomeRelation) 
-	throws MofError,BAD_PARAM
-	{
-		System.out.println("\tCompHomeRelation");
-		ComponentDef component = compHomeRelation.getComponentEnd();
-		HomeDef home = compHomeRelation.getHomeEnd();
-
-		if (component != null && home != null)
-		{
-			MDE.ComponentIDL.ComponentDef repComponent = ComponentDefHelper.narrow(emf2rep(component));
-			MDE.ComponentIDL.HomeDef repHome = HomeDefHelper.narrow(emf2rep(home));
-			if (repComponent != null && repHome != null)
-			{
-				repComponent.add_home_end(repHome);
-				repHome.set_component_end(repComponent);
-			}
-		}
-	}
-	/**
-	 * This methode creates a eventPortEventRelation in Repository.
-	 * @param eventPortEventRelation = the eventPortEventRelation to add to the model
- 	 */
-	private static void createEventPortEventRelation (EventPortEventRelation eventPortEventRelation) 
-	throws MofError,BAD_PARAM
-	{
-		System.out.println("\teventPortEventRelation");
-		EventPortDef eventPortDef = eventPortEventRelation.getEnds();
-		EventDef eventDef = eventPortEventRelation.getType();
-
-		if (eventPortDef != null && eventDef != null)
-		{
-			MDE.ComponentIDL.EventPortDef repEventPortDef = EventPortDefHelper.narrow(emf2rep(eventPortDef));
-			MDE.ComponentIDL.EventDef repEventDef = EventDefHelper.narrow(emf2rep(eventDef));
-			if (repEventPortDef != null && repEventDef != null)
-				repEventPortDef.set_type(repEventDef);
-		}
-	}
+//	private static void createInterfaceRelation (InterfaceRelation interfaceRelation) 
+//	throws MofError,BAD_PARAM
+//	{
+//		System.out.println("\tInterfaceRelation");
+//		InterfaceDef itf = interfaceRelation.getItf();
+//		ProvidesDef providesDefs = interfaceRelation.getProvidesDef();
+//		UsesDef usesDefs = interfaceRelation.getUsesDef();
+//
+//		/*if (itf != null)
+//		{
+//			MDE.BaseIDL.InterfaceDef repItf = InterfaceDefHelper.narrow(emf2rep(itf));
+//
+//			if (repItf !=  null)
+//			{
+//				for (int i=0;i<providesDefs.size();i++)
+//				{
+//					MDE.ComponentIDL.ProvidesDef repProvidesDef = 
+//						(ProvidesDefHelper.narrow(emf2rep((EObject)providesDefs.get(i))));
+//					if (repProvidesDef != null)
+//						repProvidesDef.set_provides_itf(repItf);
+//				}
+//				for (int i=0;i<usesDefs.size();i++)
+//				{
+//					MDE.ComponentIDL.UsesDef repUsesDef = 
+//						(UsesDefHelper.narrow(emf2rep((EObject)usesDefs.get(i))));
+//					if (repUsesDef != null)
+//						repUsesDef.set_uses_itf(repItf);
+//				}
+//			}
+//		}*/
+//		MDE.BaseIDL.InterfaceDef repItf = InterfaceDefHelper.narrow(emf2rep(itf));
+//		
+//		MDE.ComponentIDL.ProvidesDef repProvidesDef = 
+//			(ProvidesDefHelper.narrow(emf2rep((EObject)providesDefs)));
+//		if (repProvidesDef != null)
+//			repProvidesDef.set_provides_itf(repItf);
+//		
+//		MDE.ComponentIDL.UsesDef repUsesDef = 
+//			(UsesDefHelper.narrow(emf2rep((EObject)usesDefs)));
+//		if (repUsesDef != null)
+//			repUsesDef.set_uses_itf(repItf);
+//	}
+//	/**
+//	 * This methode creates a supportsRelation in Repository.
+//	 * @param supportsRelation = the supportsRelation to add to the model
+// 	 */
+//	private static void createSupportsRelation (SupportsRelation supportsRelation) 
+//	throws MofError,BAD_PARAM
+//	{
+//		System.out.println("\tSupportsRelation");
+//		HomeDef home = supportsRelation.getHomes();
+//		ComponentDef component = supportsRelation.getComponents();
+//		InterfaceDef itf = supportsRelation.getSupportsItf();
+//
+//		if (home != null && itf != null) 
+//		{
+//			MDE.ComponentIDL.HomeDef repHome = (HomeDefHelper.narrow(emf2rep(home)));
+//			if (repHome != null)
+//				repHome.add_supports_itf(InterfaceDefHelper.narrow(emf2rep(itf)));
+//		}
+//		if (component != null && itf != null)
+//		{
+//			MDE.ComponentIDL.ComponentDef repComponent = (ComponentDefHelper.narrow(emf2rep(component)));
+//			if (repComponent != null)
+//				repComponent.add_supports_itf(InterfaceDefHelper.narrow(emf2rep(itf)));
+//		}
+//	}
+//	/**
+//	 * This methode creates a managersRelation in Repository.
+//	 * @param managersRelation = the managersRelation to add to the model
+// 	 */
+//	private static void createManagersRelation (ManagersRelation managersRelation) 
+//	throws MofError,BAD_PARAM
+//	{
+//		System.out.println("\tManagersRelation");
+//		ComponentImplDef componentimpl = managersRelation.getComponent_impl();
+//		HomeImplDef homeimpl = managersRelation.getHome_impl();
+//
+//		if (componentimpl != null && homeimpl != null)
+//		{
+//			MDE.CIF.ComponentImplDef repComponentImpl = ComponentImplDefHelper.narrow(emf2rep(componentimpl));
+//			MDE.CIF.HomeImplDef repHomeImpl = HomeImplDefHelper.narrow(emf2rep(homeimpl));
+//			if (repComponentImpl != null && repHomeImpl != null)
+//			{
+//				repComponentImpl.add_home_impl(repHomeImpl);
+//				repHomeImpl.set_component_impl(repComponentImpl);
+//			}
+//		}
+//	}
+//	/**
+//	 * This methode creates a compHomeRelation in Repository.
+//	 * @param compHomeRelation = the compHomeRelation to add to the model
+// 	 */
+//	private static void createCompHomeRelation (CompHomeRelation compHomeRelation) 
+//	throws MofError,BAD_PARAM
+//	{
+//		System.out.println("\tCompHomeRelation");
+//		ComponentDef component = compHomeRelation.getComponentEnd();
+//		HomeDef home = compHomeRelation.getHomeEnd();
+//
+//		if (component != null && home != null)
+//		{
+//			MDE.ComponentIDL.ComponentDef repComponent = ComponentDefHelper.narrow(emf2rep(component));
+//			MDE.ComponentIDL.HomeDef repHome = HomeDefHelper.narrow(emf2rep(home));
+//			if (repComponent != null && repHome != null)
+//			{
+//				repComponent.add_home_end(repHome);
+//				repHome.set_component_end(repComponent);
+//			}
+//		}
+//	}
+//	/**
+//	 * This methode creates a eventPortEventRelation in Repository.
+//	 * @param eventPortEventRelation = the eventPortEventRelation to add to the model
+// 	 */
+//	private static void createEventPortEventRelation (EventPortEventRelation eventPortEventRelation) 
+//	throws MofError,BAD_PARAM
+//	{
+//		System.out.println("\teventPortEventRelation");
+//		EventPortDef eventPortDef = eventPortEventRelation.getEnds();
+//		EventDef eventDef = eventPortEventRelation.getType();
+//
+//		if (eventPortDef != null && eventDef != null)
+//		{
+//			MDE.ComponentIDL.EventPortDef repEventPortDef = EventPortDefHelper.narrow(emf2rep(eventPortDef));
+//			MDE.ComponentIDL.EventDef repEventDef = EventDefHelper.narrow(emf2rep(eventDef));
+//			if (repEventPortDef != null && repEventDef != null)
+//				repEventPortDef.set_type(repEventDef);
+//		}
+//	}
 
 	/* --------------------------------- UPADTE ------------------------------------------------ */
 	/**
@@ -944,7 +1066,7 @@ public class CCMExport {
  	 */
 	private static void updateRepModel() throws MofError
 	{
-		System.out.println("Updates");
+		//System.out.println("Updates");
 		Iterator it;
 		List eObjs;
 		for (int i=0; i<emfmodel.size();i++)
@@ -966,12 +1088,181 @@ public class CCMExport {
 					repHome.set_component_end(component);	
 					component.add_home_end(repHome);
 				}
-			}else if (emf instanceof ComponentDef){
+			}
+			
+			else if (emf instanceof SoftwarePackage){
+				SoftwarePackage epkg=(SoftwarePackage)emf;
+			    _SoftwarePackage pkg=_SoftwarePackageHelper.narrow(rep);
+			    ComponentDef ecomp=epkg.getComponent();
+			    if(ecomp!=null){
+			    	MDE.ComponentIDL.ComponentDef component= ComponentDefHelper.narrow(emf2rep(ecomp));
+			    	pkg.set_realized_c(component);
+			    }
+			    eObjs= epkg.getComponentFiles();
+			  //  for (it=eObjs.iterator();it.hasNext();)
+			//		pkg.set.add_supports_itf(InterfaceDefHelper.narrow(emf2rep(it.next())));
+			    eObjs=epkg.getImpl();
+			   // eObjs=epkg.getAssembly();
+			    for (it=eObjs.iterator();it.hasNext();){
+			    	Implementation eimpl=(Implementation)it.next();
+			    	MDE.Deployment.Implementation impl=MDE.Deployment.ImplementationHelper.narrow(emf2rep(eimpl));
+					pkg.add_impls(impl);
+					Composition ecomposition=eimpl.getComposition();
+					if(ecomposition!=null){
+						CompositionDef compo= CompositionDefHelper.narrow(emf2rep(ecomposition));
+						impl.set_compos(compo);
+						}
+					//eimpl.getHomeinstance();
+					//impl.s
+					List objs=eimpl.getContainedFile();
+					for (Iterator oit=objs.iterator();oit.hasNext();)
+						impl.add_contained_file(ContainedFileHelper.narrow(emf2rep(oit.next())));
+					objs=eimpl.getDependentFiles();
+					for (Iterator oit=objs.iterator();oit.hasNext();)
+						impl.add_dependent_file(DependentFileHelper.narrow(emf2rep(oit.next())));
+					objs=eimpl.getRequirment();
+					for (Iterator oit=objs.iterator();oit.hasNext();)
+						impl.add_req(DeploymentRequirementHelper.narrow(emf2rep(oit.next())));
+					objs=eimpl.getPropertys();
+					for (Iterator oit=objs.iterator();oit.hasNext();)
+						impl.add_prop(PropertyHelper.narrow(emf2rep(oit.next())));
+			    
+			    
+			    }
+			}
+			else if (emf instanceof Assembly){
+				Assembly eass= (Assembly)emf;
+				MDE.Deployment.Assembly ass=AssemblyHelper.narrow(rep);
+				try{
+					Configuration con= ass.config();
+					eObjs=eass.getComponentFile();
+					for (it=eObjs.iterator();it.hasNext();){
+						ComponentFile file=(ComponentFile)it.next();
+						MDE.Deployment.ComponentFile efile=ComponentFileHelper.narrow(emf2rep(file));
+						if(file.getPackage()!=null){
+							efile.set_pack(MDE.Deployment._SoftwarePackageHelper.narrow(emf2rep(file.getPackage())));
+						}
+						con.add_install_dest(efile) ;
+					}
+					eObjs=eass.getSoftwarePackage();
+					for (it=eObjs.iterator();it.hasNext();){
+						ass.add_files(MDE.Deployment._SoftwarePackageHelper.narrow(emf2rep(it.next())));
+					}
+					eObjs=eass.getConnection();
+					for (it=eObjs.iterator();it.hasNext();){
+						 AssemblyConnection econnection=(AssemblyConnection)it.next();
+						 Connection connection = ConnectionHelper.narrow(emf2rep(econnection));
+						 con.add_conn(connection);
+						 ConnectionEnd esource= econnection.getSource();
+						 MDE.Deployment.ConnectionEnd source=ConnectionEndHelper.narrow(emf2rep(esource));
+						 CCMModel.CCMInstantiation sourceInstance=esource.getInstance();
+						 if(sourceInstance instanceof ComponentInstantiation){
+						 	source.set_int_comp_inst(ComponentInstantiationHelper.narrow(emf2rep(sourceInstance)));
+						 }
+						 if(sourceInstance instanceof HomeInstantiation){
+						 	source.set_int_home_inst(MDE.Deployment.HomeInstantiationHelper.narrow(emf2rep(sourceInstance)));
+						 }
+						 if(sourceInstance instanceof CCMModel.ExternalInstance){
+						 	source.set_ext_inst(ExternalInstanceHelper.narrow(emf2rep(sourceInstance)));
+						 }
+						 if(esource.getFeature()!=null)
+						 	source.set_thefeature(ComponentFeatureHelper.narrow(emf2rep(esource.getFeature())));
+						
+						 ConnectionEnd etarget= econnection.getTarget();
+						 MDE.Deployment.ConnectionEnd target=ConnectionEndHelper.narrow(emf2rep(etarget));
+						 CCMModel.CCMInstantiation targetInstance=etarget.getInstance();
+						 if(targetInstance instanceof ComponentInstantiation){
+						 	target.set_int_comp_inst(ComponentInstantiationHelper.narrow(emf2rep(targetInstance)));
+						 }
+						 if(targetInstance instanceof HomeInstantiation){
+						 	target.set_int_home_inst(MDE.Deployment.HomeInstantiationHelper.narrow(emf2rep(targetInstance)));
+						 }
+						 if(targetInstance instanceof CCMModel.ExternalInstance){
+						 	target.set_ext_inst(ExternalInstanceHelper.narrow(emf2rep(targetInstance)));
+						 }
+						 if(etarget.getFeature()!=null)
+						 	target.set_thefeature(ComponentFeatureHelper.narrow(emf2rep(etarget.getFeature())));
+						 connection.set_source_end(source);
+						 connection.set_target_end(target);
+						 
+						 
+					}
+				
+				
+					eObjs=eass.getProcessCollocation();
+					for (it=eObjs.iterator();it.hasNext();){
+						ProcessCollocation eProcess=(ProcessCollocation)it.next();
+						MDE.Deployment.ProcessCollocation process=ProcessCollocationHelper.narrow(emf2rep(eProcess));
+						con.add_coloc(process);
+						List ehomeInstances=eProcess.getHomeInstances();
+						for (Iterator hit=ehomeInstances.iterator();hit.hasNext();){
+							HomeInstantiation ehomeInstance=(HomeInstantiation)hit.next();
+							MDE.Deployment.HomeInstantiation homeInstance=HomeInstantiationHelper.narrow(emf2rep(ehomeInstance));
+							process.add_thehome(homeInstance);
+							if(ehomeInstance.getType()!=null)
+								homeInstance.set_type(HomeImplDefHelper.narrow(emf2rep(ehomeInstance.getType())));
+							if(ehomeInstance.getDeploymentUnit()!=null)
+								homeInstance.set_unit(ImplementationHelper.narrow(emf2rep(ehomeInstance.getDeploymentUnit())));
+							List objs=ehomeInstance.getPropertys();
+							for (Iterator pit=objs.iterator();pit.hasNext();){
+								homeInstance.add_prop(PropertyHelper.narrow(emf2rep(pit.next())));
+							}
+							objs=ehomeInstance.getComp();
+							for (Iterator pit=objs.iterator();pit.hasNext();){
+								ComponentInstantiation ecompInstance=(ComponentInstantiation)pit.next();
+								MDE.Deployment.ComponentInstantiation compInstance=ComponentInstantiationHelper.narrow(emf2rep(ecompInstance));
+								homeInstance.add_comp(compInstance);
+								if(ecompInstance.getType()!=null)
+									compInstance.set_type(ComponentImplDefHelper.narrow(emf2rep(ecompInstance.getType())));
+								
+								List list=ecompInstance.getPropertys();
+								for (Iterator cit=list.iterator();cit.hasNext();)
+								  compInstance.add_prop(PropertyHelper.narrow(emf2rep(cit.next())));
+								list=ecompInstance.getRegistration();
+								for (Iterator cit=list.iterator();cit.hasNext();){
+									RegisterComponentInstance eregister=(RegisterComponentInstance)cit.next();
+									MDE.Deployment.RegisterComponentInstance register=MDE.Deployment.RegisterComponentInstanceHelper.narrow(emf2rep(eregister));
+									compInstance.add_registration(register);
+									if(eregister.getFeature()!=null)
+										register.set_thefeature(ComponentFeatureHelper.narrow(emf2rep(eregister.getFeature())));
+								}
+							}
+						}	
+					}	
+				}
+				catch (Exception e){}
+			}
+			
+			else if (emf instanceof ComponentDef){
 				ComponentDef econponent=(ComponentDef)emf;
 				MDE.ComponentIDL.ComponentDef component=ComponentDefHelper.narrow(rep);
 				eObjs=econponent.getComponentSupports_itf();
 				for (it=eObjs.iterator();it.hasNext();)
 					component.add_supports_itf(InterfaceDefHelper.narrow(emf2rep(it.next())));
+				eObjs=econponent.getFacet();
+				for (it=eObjs.iterator();it.hasNext();)
+					component.add_facet(ProvidesDefHelper.narrow(emf2rep(it.next())));
+				eObjs=econponent.getReceptacle();
+				for (it=eObjs.iterator();it.hasNext();)
+					component.add_receptacle(UsesDefHelper.narrow(emf2rep(it.next())));
+				eObjs=econponent.getPublishesDef();
+				for (it=eObjs.iterator();it.hasNext();)
+					component.add_publishess(PublishesDefHelper.narrow(emf2rep(it.next())));
+				eObjs=econponent.getEmitss();
+				for (it=eObjs.iterator();it.hasNext();)
+					component.add_emitss(EmitsDefHelper.narrow(emf2rep(it.next())));
+				eObjs=econponent.getConsumess();
+				for (it=eObjs.iterator();it.hasNext();)
+					component.add_consumess(ConsumesDefHelper.narrow(emf2rep(it.next())));
+				eObjs=econponent.getSinkss();
+				for (it=eObjs.iterator();it.hasNext();)
+					component.add_sinkss(SinkDefHelper.narrow(emf2rep(it.next())));
+				eObjs=econponent.getSiSouss();
+				for (it=eObjs.iterator();it.hasNext();)
+					component.add_sisouss(MDE.ComponentIDL.SiSouDefHelper.narrow(emf2rep(it.next())));
+				eObjs=econponent.getSourcess();
+				for (it=eObjs.iterator();it.hasNext();)
+					component.add_sourcess(SourceDefHelper.narrow(emf2rep(it.next())));
 				
 				
 			}else if (emf instanceof ValueDef){
@@ -1085,12 +1376,7 @@ public class CCMExport {
 					homeImpl.set_composition(facet);
 				}
 				//MDE.BaseIDL
-			}else if (emf instanceof UnionDef){	
-			}else if (emf instanceof UnionDef){	
-			}else if (emf instanceof UnionDef){
-			}else if (emf instanceof UnionDef){	
-			}else if (emf instanceof UnionDef){	
-			}else if (emf instanceof UnionDef){	
+			 
 			}else if (emf instanceof UnionDef)
 			{
 				UnionDef emfUnionDef = (UnionDef)emf;
@@ -1099,7 +1385,7 @@ public class CCMExport {
 				if (repDiscriminatorType != null)
 				{
 					repUnionDef.set_discriminator_type(IDLTypeHelper.narrow(repDiscriminatorType));
-					System.out.println("\t" + emfUnionDef.getIdentifier());
+					//System.out.println("\t" + emfUnionDef.getIdentifier());
 				}
 			}
 			else if (emf instanceof StreamProtDef)
@@ -1110,7 +1396,7 @@ public class CCMExport {
 				if (repMediaType != null)
 				{
 					repStreamPort.set_type(MediaTypeHelper.narrow(repMediaType));
-					System.out.println("\t" + emfStreamPort.getIdentifier());
+					//System.out.println("\t" + emfStreamPort.getIdentifier());
 				}
 			}
 			if (emf instanceof Typed)
@@ -1122,8 +1408,8 @@ public class CCMExport {
 				if (repIDLType != null)
 				{
 					repTyped.set_idl_type(IDLTypeHelper.narrow(repIDLType));
-					if (emf instanceof Contained)
-						System.out.println("\t" + ((Contained)emf).getIdentifier());
+					//if (emf instanceof Contained)
+					//	System.out.println("\t" + ((Contained)emf).getIdentifier());
 				}
 			}
 		}		
