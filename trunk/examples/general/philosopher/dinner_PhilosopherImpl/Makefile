@@ -2,33 +2,40 @@ ORB_IDL_INCLUDE = -I..
 
 CIDL_FILES = ../philosophers.cidl
 
-IDL_FILES = dinner_PhilosopherImpl_LOCAL.idl \
-	dinner_PhilosopherImpl_EQUIVALENT.idl \
-	dinner_PhilosopherImpl_BUSINESS.idl
+IDL_FILES = dinner_PhilosopherImpl_BUSINESS.idl 
 
 CPP_FILES = dinner_PhilosopherImpl_BUSINESS.cpp \
 	dinner_PhilosopherImpl.cpp \
-	component_valuetypes.cpp
+	component_valuetypes.cpp 
 
-OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
+OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 
-CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} libdinner_PhilosopherImpl.so dinner_PhilosopherImpl.zip
+CLEAN_FILES = ${IDL_FILES} \
+	${OBJ_FILES} \
+	dinner_PhilosopherImpl_BUSINESS.cpp \
+	dinner_PhilosopherImpl_BUSINESS.h \
+	dinner_PhilosopherImpl_BUSINESS_skel.cpp \
+	dinner_PhilosopherImpl_BUSINESS_skel.h \
+	libdinner_PhilosopherImpl.so \
+	dinner_PhilosopherImpl.zip\
+	component_valuetypes.cpp \
+	component_valuetypes.h 
 
-LIBS += -L../dinner_PhilosopherImpl_SERVANT -ldinner_PhilosopherImpl_SERVANT
+LIBS += -L../dinner_PhilosopherImpl_SERVANT -ldinner_PhilosopherImpl_SERVANT 
 
-CXXFLAGS += -I. -g
+CXXFLAGS += -I. -g -I../dinner_PhilosopherImpl_SERVANT 
+
+IDL_FLAGS += -I../dinner_PhilosopherImpl_SERVANT 
 
 include ../MakeComponentVars
 
-all: libdinner_PhilosopherImpl.so
+all: libdinner_PhilosopherImpl.so 
 
-libdinner_PhilosopherImpl.so: ${OBJ_FILES}
+libdinner_PhilosopherImpl.so: ${OBJ_FILES} 
 
 ${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} 
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target "IDL:dinner/PhilosopherImpl:1.0" $< 
-
-dinner_PhilosopherImpl_BUSINESS.cpp: dinner_PhilosopherImpl_EQUIVALENT.h dinner_PhilosopherImpl_LOCAL.h 
 
 dinner_PhilosopherImpl.cpp: dinner_PhilosopherImpl_BUSINESS.h
 
