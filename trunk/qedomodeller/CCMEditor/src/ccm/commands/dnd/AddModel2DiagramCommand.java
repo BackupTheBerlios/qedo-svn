@@ -503,7 +503,7 @@ public class AddModel2DiagramCommand extends Command {
 			
 			 
 		}
-		List containeds=((Container) contained).getContents();
+		List containeds=new ArrayList(((Container) contained).getContents());
 		if(contained instanceof ComponentDef){
 			containeds.removeAll(((ComponentDef) contained).getFacet());
 			containeds.removeAll(((ComponentDef) contained).getReceptacle());
