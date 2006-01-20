@@ -22,10 +22,10 @@ import CCMModel.AbstractInterfaceDef;
 import CCMModel.CCMModelFactory;
 import CCMModel.Connection;
 import CCMModel.ConnectionDiscription;
+import CCMModel.ConnectionsKind;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
 import CCMModel.View;
-import ccm.CCMConstants;
 import ccm.model.CCMModelManager;
 
 
@@ -75,9 +75,10 @@ public class AbstItfDerivedConnectCommand extends Command {
 	*/
 	public void execute() {
 	    connection =factory.createConnection();
+	    connection.setConnectionKind(ConnectionsKind.GENERALIZATION_LITERAL);
 	   // relation=factory.createAbstractItfDerivedRelation();
-	    description=factory.createConnectionDiscription();
-	    description.setLabel(CCMConstants.DERIVED_LABEL);
+	   // description=factory.createConnectionDiscription();
+	   // description.setLabel(CCMConstants.DERIVED_LABEL);
 	    derivedValue=(AbstractInterfaceDef) source.getContained();
 	    baseValue=(AbstractInterfaceDef) target.getContained();
 	  //  moduleDef=view.getModuleDef();

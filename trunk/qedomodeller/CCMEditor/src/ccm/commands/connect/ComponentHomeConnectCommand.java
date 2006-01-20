@@ -77,7 +77,7 @@ public class ComponentHomeConnectCommand extends Command {
 	    connection =factory.createConnection();
 	    //relation=factory.createCompHomeRelation();
 	    description=factory.createConnectionDiscription();
-	    description.setLabel(CCMConstants.COMPONENT_HOME_LABEL);
+	    description.setLabel(CCMConstants.MANAGES_LABEL);
 	    componentEnd=(ComponentDef) target.getContained();
 	    homeEnd=(HomeDef) source.getContained();
 	   

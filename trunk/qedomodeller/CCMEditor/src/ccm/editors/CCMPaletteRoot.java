@@ -127,7 +127,7 @@ public class CCMPaletteRoot extends PaletteRoot {
 		
 		
 		tool =new CCMConnectionCreationToolEntry(
-				"component_home",
+				"manages",
 				"Creates a component_home",
 				new ModelCreationFactory(RelationTemplate.class,2),
 				ImageDescriptor.createFromFile(CCMEditorPlugin.class, ProjectResources.ABSTRACT_DERIVED_S),

@@ -21,11 +21,11 @@ import org.eclipse.gef.commands.Command;
 import CCMModel.CCMModelFactory;
 import CCMModel.Connection;
 import CCMModel.ConnectionDiscription;
+import CCMModel.ConnectionsKind;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
 import CCMModel.ValueDef;
 import CCMModel.View;
-import ccm.CCMConstants;
 import ccm.model.CCMModelManager;
 
 
@@ -73,10 +73,10 @@ public class AbstractDerivedConnectCommand extends Command {
 	* @see org.eclipse.gef.commands.Command#execute()
 	*/
 	public void execute() {
-	   // relation=factory.createAbstractDerivedRelation();
-	    connection =factory.createConnection();
-	    description=factory.createConnectionDiscription();
-	    description.setLabel(CCMConstants.ABSTRACT_DERIVED_LABEL);
+	    
+	    connection =factory.createConnection(); connection.setConnectionKind(ConnectionsKind.GENERALIZATION_LITERAL);
+	   // description=factory.createConnectionDiscription();
+	   // description.setLabel(CCMConstants.ABSTRACT_DERIVED_LABEL);
 	    derivedValue=(ValueDef) source.getContained();
 	    baseValue=(ValueDef) target.getContained();
 	    //moduleDef=view.getModuleDef();

@@ -13,8 +13,8 @@ package ccm.commands.connect;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.tools.DragEditPartsTracker;
+import ccm.edit.CCMRelationEditPart;
 
-import ccm.edit.RelationEditPart;
 
 
 /**
@@ -29,9 +29,9 @@ import ccm.edit.RelationEditPart;
 public class ConnectionDescriptionTracker extends DragEditPartsTracker
 {
 
-	RelationEditPart connection;
+	CCMRelationEditPart connection;
 
-	public ConnectionDescriptionTracker(EditPart source, RelationEditPart connection)
+	public ConnectionDescriptionTracker(EditPart source, CCMRelationEditPart connection)
 	{
 		super(source);
 		this.connection = connection;

@@ -80,7 +80,7 @@ public class GraphicalEditPartsFactory implements EditPartFactory{
 		if(obj instanceof View)
 			return new ViewEditPart((View)obj);
 		else if(obj instanceof Connection)
-		    return new DerivedRelationEditPart((Connection)obj);
+		    return new CCMRelationEditPart((Connection)obj);
 		else if(obj instanceof ConnectionDiscription)
 		    return new ConnectionDescriptionEditPart((ConnectionDiscription) obj);
 		else if(obj instanceof DiagramImpl)

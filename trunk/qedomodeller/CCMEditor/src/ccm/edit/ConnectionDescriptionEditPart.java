@@ -92,7 +92,7 @@ public class ConnectionDescriptionEditPart extends AbstractGraphicalEditPart imp
 	 * @see org.eclipse.gef.EditPart#getDragTracker(org.eclipse.gef.Request)
 	 */
 	public DragTracker getDragTracker(Request request){
-		return new ConnectionDescriptionTracker(this, (DerivedRelationEditPart) getParent());
+		return new ConnectionDescriptionTracker(this, (CCMRelationEditPart) getParent());
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class ConnectionDescriptionEditPart extends AbstractGraphicalEditPart imp
 		Point offset = new Point(role.getX(), role.getY());
 		Label figure = (Label)getFigure();
 		figure.setText(text);
-		DerivedRelationEditPart parent = (DerivedRelationEditPart)getParent();
+		CCMRelationEditPart parent = (CCMRelationEditPart)getParent();
 		DerivedConnection connFigure = (DerivedConnection)parent.getFigure();
 		ConnectionDescriptionConstraint constraint =
 					 new ConnectionDescriptionConstraint(text, offset, connFigure);

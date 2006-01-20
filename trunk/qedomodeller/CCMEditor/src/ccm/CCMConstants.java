@@ -56,7 +56,7 @@ public class CCMConstants {
 	 */
 	public static final String 	SUPPORT_LABEL="<< supports >>";
 	public static final String 	DERIVED_LABEL="<< derived from >>";
-	public static final String 	COMPONENT_HOME_LABEL="<< component home >>";
+	//public static final String 	COMPONENT_HOME_LABEL="<< component home >>";
 	public static final String 	COMPOSITION_HOME_LABEL="<<composite>>";
 	public static final String 	EVENTPORT_EVENT_LABEL="<< event_type >>";
 	public static final String 	HOME_KEY_LABEL= "<<home_key>>";

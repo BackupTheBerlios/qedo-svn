@@ -22,7 +22,7 @@ import org.eclipse.gef.requests.ChangeBoundsRequest;
 import CCMModel.ConnectionDiscription;
 import ccm.commands.connect.MoveConnectionDescriptionCommand;
 import ccm.edit.ConnectionDescriptionEditPart;
-import ccm.edit.RelationEditPart;
+import ccm.edit.CCMRelationEditPart;
 
 
 
@@ -43,7 +43,7 @@ public class ConnectionDescriptionMovePolicy extends NonResizableEditPolicy
 
 	public Figure getParentFigure()
 	{
-		RelationEditPart edge = (RelationEditPart)getHost().getParent();
+		CCMRelationEditPart edge = (CCMRelationEditPart)getHost().getParent();
 		return (Figure) edge.getFigure();
 	}
 

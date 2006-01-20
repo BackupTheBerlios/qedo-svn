@@ -39,16 +39,19 @@ public class DerivedConnection extends PolylineConnection {
 			supportsArrowPointList.addPoint(-4,0);
 			supportsArrowPointList.addPoint(-2,-2);
 			supportsArrowPointList.addPoint(0,0);
-			arrow.setTemplate(supportsArrowPointList);
-			 
+			arrow.setTemplate(supportsArrowPointList); 
 			arrow.setBackgroundColor(ColorConstants.white);
-			 
 			setSourceDecoration(arrow);
         }
+        else if(kind==ConnectionsKind.GENERALIZATION_LITERAL){
+        	supportsArrowPointList.addPoint(0,0);
+			supportsArrowPointList.addPoint(-2,3);
+			supportsArrowPointList.addPoint(-2,-3);
+			arrow.setTemplate(supportsArrowPointList);
+			arrow.setBackgroundColor(ColorConstants.white);
+			setTargetDecoration(arrow);
+        }
     }
-   //  public void paintFigure(Graphics graphics) {	
-   //  	graphics.setForegroundColor(ColorConstants.black);
-    	
-  //   }
     
+  
 }

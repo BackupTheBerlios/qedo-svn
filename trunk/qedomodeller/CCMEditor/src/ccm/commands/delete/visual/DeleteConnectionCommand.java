@@ -131,7 +131,7 @@ public class DeleteConnectionCommand extends Command {
 				component.getComponentSupports_itf().remove(targetModel);	
 			}
 			 
-			if(connectionsLabel==CCMConstants.COMPONENT_HOME_LABEL){
+			if(connectionsLabel==CCMConstants.MANAGES_LABEL){
 				component.getHomes().remove(targetModel);	
 			}
 			return;
