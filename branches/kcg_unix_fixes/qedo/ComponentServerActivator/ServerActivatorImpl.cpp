@@ -45,6 +45,7 @@ static char rcsid[] UNUSED = "$Id: ServerActivatorImpl.cpp,v 1.43 2004/09/27 12:
 #include <signal.h>
 #endif
 
+using namespace std;
 
 namespace Qedo {
 
@@ -311,7 +312,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	//const char* prog;
 	std::string prog;
 	//int args_nr=0;
-
+        enable_terminal_ = true;
 	if (enable_terminal_)
 	{
 		#define INFO_BUFFER_SIZE MAX_PATH+4
@@ -323,7 +324,7 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 		args_v.push_back("cmd");
 		args_v.push_back("/c");
 		args_v.push_back("start");
-		args_v.push_back("qcs.exe");
+		args_v.push_back("qcs.bat");
 	}
 	else
 	{
@@ -376,7 +377,9 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 		pos = additional_cmd_line.find(" ");
 	}
 
-	args_v.push_back((char*) additional_cmd_line.c_str());
+	if (additional_cmd_line.size() > 0) {
+	    args_v.push_back((char*) additional_cmd_line.c_str());
+	}
 
 
 
@@ -389,9 +392,15 @@ throw (Components::CreateFailure, Components::Deployment::InvalidConfiguration, 
 	char** args = new char*[args_v.size()]; 
 	for (unsigned int counter = 0;counter < args_v.size(); counter++)
 	{
+	if (args_v[counter] != 0) {
+            cerr << "additional argument for qcs: " << args_v[counter] << endl;
+	}
+	else {
+            cerr << "additional argument for qcs == NULL" << endl;
+	}
 		args[counter] = strdup(args_v[counter]);
 	}
-
+        cerr << "spawn process: " << prog << endl;
 	component_server_pid = _spawnv(_P_NOWAIT, prog.c_str(), args);
 
 	delete [] args;

@@ -36,6 +36,10 @@
 #include "Synchronisation.h"
 #endif
 
+#ifdef USE_OPENPMF
+#include <pmf_init.h>
+#endif // USE_OPENPMF
+
 static char rcsid[] UNUSED = "$Id: HomeFinder.cpp,v 1.12 2004/08/23 09:15:35 tom Exp $";
 
 

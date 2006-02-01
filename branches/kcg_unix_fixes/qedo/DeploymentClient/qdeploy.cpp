@@ -29,6 +29,9 @@
 #include <unistd.h>
 #endif
 
+#ifdef USE_OPENPMF
+#include <pmf_init.h>
+#endif // USE_OPENPMF
 
 static char rcsid[] UNUSED = "$Id: qdeploy.cpp,v 1.16 2003/11/14 15:18:31 boehme Exp $";
 

@@ -49,8 +49,15 @@
 
 static char rcsid[] UNUSED = "$Id: qcs.cpp,v 1.38 2004/09/27 13:06:14 tom Exp $";
 
+#ifndef _WIN32
 PortableInterceptor::SlotId global_pmf_slot_id;
+#else // !_WIN32
+extern void
+set_global_pmf_slot_id(PortableInterceptor::SlotId);
 
+extern PortableInterceptor::SlotId
+get_global_pmf_slot_id;
+#endif // !_WIN32
 /**
  * @addtogroup ComponentServer
  * @{
@@ -260,7 +267,11 @@ main (int argc, char** argv)
 #else // USE_OPENPMF
 	PortableInterceptor::SlotId sid = initializer -> pmf_slot_id();
 	std::cout << "QCS SLOT_ID= " << sid << std::endl;
+#ifndef _WIN32
         global_pmf_slot_id = sid;
+#else // _WIN32
+    set_global_pmf_slot_id(sid);
+#endif // _WIN32
 	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer -> slot_id(), sid);
 
 	if (pmf_ini != NULL)

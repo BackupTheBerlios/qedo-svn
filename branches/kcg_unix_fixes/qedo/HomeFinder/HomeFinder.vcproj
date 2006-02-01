@@ -179,8 +179,8 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;../QedoUtil;&quot;$(MICO)\include&quot;;&quot;$(XERCES)\include&quot;;&quot;$(MICO)/contrib/pthreads&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE,MICO_ORB,_WINDOWS;;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				AdditionalIncludeDirectories="../ComponentIDL;../ComponentContainer;../ComponentInstaller;../QedoUtil;&quot;$(MICO)\include&quot;;&quot;$(XERCES)\include&quot;;&quot;$(MICO)/contrib/pthreads&quot;;&quot;$(MICO)/openpmf/include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;MICO_ORB;USE_OPENPMF;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -198,7 +198,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mico2311.lib micocoss2311.lib wsock32.lib pthreadVC2.lib"
+				AdditionalDependencies="pmf2311.lib pmfcorba2311.lib mico2311.lib micocoss2311.lib wsock32.lib pthreadVC2.lib"
 				OutputFile="$(OutDir)/homefinder.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(MICO)/coss&quot;;&quot;$(PTHREADS)\lib&quot;"
