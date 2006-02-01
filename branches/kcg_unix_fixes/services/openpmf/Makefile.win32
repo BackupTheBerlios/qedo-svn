@@ -1,0 +1,18 @@
+
+
+SUBDIRS = openpmf_ccm_PEP_ManagerImpl_SERVANT \
+	openpmf_ccm_PEP_ManagerImpl \
+
+all:
+	for %i in ( $(SUBDIRS) ); do cmd /c "cd %%i & $(MAKE) /f Makefile.win32"
+	
+clean:
+	for %i in ( $(SUBDIRS) ); do cmd /c "cd %%i & $(MAKE) /f Makefile.win32 clean"
+
+package: all
+	cmd /c "cd openpmf_ccm_PEP_ManagerImpl & $(MAKE) /f Makefile.win32 package"
+
+distclean: clean
+
+install: package
+	-cmd /c "cd openpmf_ccm_PEP_ManagerImpl & $(MAKE) /f Makefile.win32 install"

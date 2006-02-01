@@ -1,0 +1,66 @@
+
+CXXFLAGS        = /I. /I$(MICO)/include /I$(QEDO)/include /DMICO_ORB /DBUILD_OPENPMF_CCM_DLL /nologo /EHsc /GX /GR /TP /Zi /MDd
+LINKFLAGS       = /nologo /debug /subsystem:console /incremental:no
+LINKDLLFLAGS    = /nologo /debug /dll /incremental:no
+LIBS			= $(MICO)\win32-bin\lib\pmf2311.lib $(MICO)\win32-bin\lib\pmfcorba2311.lib \
+	$(MICO)\win32-bin\lib\mico2311.lib $(QEDO)\lib\ComponentIDL.lib $(QEDO)\lib\ComponentContainer.lib $(QEDO)\lib\qedoutil.lib \
+	$(MICO)\win32-bin\lib\libeay32.lib $(MICO)\win32-bin\lib\ssleay32.lib \
+	$(MICO)\win32-bin\lib\pthreadVC2.lib
+
+ORB_IDL_INCLUDE = -DMICO_ORB -DMICO_CIDL_GEN
+
+CIDL_FILES = ..\openpmf_ccm.cidl
+
+IDL_FILES = openpmf_ccm_PEP_ManagerImpl_LOCAL.idl \
+	openpmf_ccm_PEP_ManagerImpl_EQUIVALENT.idl
+
+CPP_FILES = openpmf_ccm_PEP_ManagerImpl_EQUIVALENT.cpp \
+	openpmf_ccm_PEP_ManagerImpl_EQUIVALENT_skel.cpp \
+	openpmf_ccm_PEP_ManagerImpl_LOCAL.cpp \
+	openpmf_ccm_PEP_ManagerImpl_LOCAL_skel.cpp \
+	openpmf_ccm_PEP_ManagerImpl_SERVANT.cpp \
+	openpmf_ccm_PEP_ManagerImpl_PSS.cpp
+
+OBJ_FILES = $(CPP_FILES:.cpp=.obj)
+
+H_FILES = $(CPP_FILES:.cpp=.h)
+
+CLEAN_FILES = $(IDL_FILES) $(CPP_FILES) $(H_FILES) $(OBJ_FILES) libopenpmf_ccm_PEP_ManagerImpl_SERVANT.dll
+
+CPP_IDL_FILES = $(IDL_FILES:.idl=.cpp)
+
+H_SKEL_COPIES = openpmf_ccm_PEP_ManagerImpl_EQUIVALENT_skel.h \
+	openpmf_ccm_PEP_ManagerImpl_LOCAL_skel.h
+
+
+all: libopenpmf_ccm_PEP_ManagerImpl_SERVANT.dll
+
+.SUFFIXES:
+.SUFFIXES:	.cpp .obj .idl
+
+.idl.cpp:
+	$(MICO)\win32-bin\idl -I$(MICO)\include -B$(MICO) -I$(QEDO)\idl -DMICO_ORB --any --c++-skel --c++-suffix cpp --windows-dll OPENPMF_CCM $<
+
+.cpp.obj:
+	cl $(CXXFLAGS) /c $<
+
+libopenpmf_ccm_PEP_ManagerImpl_SERVANT.dll: $(CPP_FILES) $(H_SKEL_COPIES) $(OBJ_FILES) libopenpmf_ccm_PEP_ManagerImpl_SERVANT.def
+	link $(LINKDLLFLAGS) $(OBJ_FILES) $(LIBS) /out:libopenpmf_ccm_PEP_ManagerImpl_SERVANT.dll \
+		/def:libopenpmf_ccm_PEP_ManagerImpl_SERVANT.def \
+		/implib:libopenpmf_ccm_PEP_ManagerImpl_SERVANT.lib
+
+$(IDL_FILES) openpmf_ccm_PEP_ManagerImpl_SERVANT.cpp openpmf_ccm_PEP_ManagerImpl_PSS.cpp: $(CIDL_FILES)
+	$(QEDO)\bin\cidl_gen -I$(QEDO)/idl $(ORB_IDL_INCLUDE) -I$(MICO)/include -I$(MICO)/include/mico \
+	--servant --target "IDL:openpmf_ccm/PEP_ManagerImpl:1.0" $(CIDL_FILES)
+
+$(H_SKEL_COPIES): $(IDL_FILES)
+	copy openpmf_ccm_PEP_ManagerImpl_EQUIVALENT.h openpmf_ccm_PEP_ManagerImpl_EQUIVALENT_skel.h
+	copy openpmf_ccm_PEP_ManagerImpl_LOCAL.h openpmf_ccm_PEP_ManagerImpl_LOCAL_skel.h
+
+libopenpmf_ccm_PEP_ManagerImpl_SERVANT.def:
+	gendef libopenpmf_ccm_PEP_ManagerImpl_SERVANT.def libopenpmf_ccm_PEP_ManagerImpl_SERVANT $(OBJ_FILES)
+
+install:
+
+clean:
+	del /q $(CLEAN_FILES) *.def *.pdb *.lib *.exp

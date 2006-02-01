@@ -9,7 +9,12 @@
 #include "ServerPEPInterceptor.h"
 #include <SL3_Transformer.h>
 
+#ifndef _WIN32
 extern PortableInterceptor::SlotId global_pmf_slot_id;
+#else // _WIN32
+extern PortableInterceptor::SlotId
+get_global_pmf_slot_id();
+#endif // _WIN32
 // END USER INSERT SECTION file
 
 
@@ -103,7 +108,11 @@ PEP_ManagerExec::configuration_complete()
   Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_reg =
     context_->get_server_interceptor_dispatcher_registration();
   server_pep_interceptor_ = new Qedo::ServerPEPInterceptor(context_,this, pf_, rt_policy_);
+#ifndef _WIN32
   server_pep_interceptor_->set_pmf_slot_id(global_pmf_slot_id);
+#else // _WIN32
+  server_pep_interceptor_->set_pmf_slot_id(get_global_pmf_slot_id());
+#endif // _WIN32
   server_cookie_ = server_reg->register_server_interceptor(server_pep_interceptor_);
   
 
@@ -139,6 +148,7 @@ PEP_ManagerExec::policy_name()
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PEP_ManagerExec::policy_name
+    return CORBA::string_dup(this->policy_name_.c_str());
 // END USER INSERT SECTION PEP_ManagerExec::policy_name
 }
 

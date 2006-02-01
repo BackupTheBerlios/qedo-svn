@@ -1,0 +1,79 @@
+
+CXXFLAGS        = /I. /I$(MICO)/include /I$(MICO)/openpmf/include /I$(QEDO)/include /DMICO_ORB /DBUILD_OPENPMF_CCM_DLL /nologo /EHsc /GX /GR /TP /Zi /MDd
+LINKFLAGS       = /nologo /debug /subsystem:console /incremental:no
+LINKDLLFLAGS    = /nologo /debug /dll /incremental:no
+LIBS			= ..\openpmf_ccm_PEP_ManagerImpl_SERVANT\libopenpmf_ccm_PEP_ManagerImpl_SERVANT.lib \
+	$(MICO)\win32-bin\lib\pmf2311.lib $(MICO)\win32-bin\lib\pmfcorba2311.lib $(MICO)\win32-bin\lib\pmfccm2311.lib \
+	$(MICO)\win32-bin\lib\mico2311.lib $(QEDO)\lib\ComponentIDL.lib $(QEDO)\lib\ComponentContainer.lib $(QEDO)\lib\qedoutil.lib \
+	$(MICO)\win32-bin\lib\libeay32.lib $(MICO)\win32-bin\lib\ssleay32.lib \
+	$(MICO)\win32-bin\lib\pthreadVC2.lib
+
+ORB_IDL_INCLUDE = -I$(MICO)\include -I$(MICO)\include\mico
+CIDL_ORB_DEF = -DMICO_ORB -DMICO_CIDL_GEN
+CIDL_FILES = ../openpmf_ccm.cidl
+
+IDL_FILES = openpmf_ccm_PEP_ManagerImpl_LOCAL.idl \
+	openpmf_ccm_PEP_ManagerImpl_EQUIVALENT.idl \
+	openpmf_ccm_PEP_ManagerImpl_BUSINESS.idl
+
+CPP_FILES = openpmf_ccm_PEP_ManagerImpl_BUSINESS.cpp \
+	openpmf_ccm_PEP_ManagerImpl.cpp \
+	component_valuetypes.cpp
+
+H_FILES = $(CPP_FILES:.cpp=.h)
+
+OBJ_FILES = $(CPP_FILES:.cpp=.obj) ServerPEPInterceptor.obj
+
+CPP_GEN_FILES = $(IDL_FILES:.idl=.cpp)
+H_GEN_FILES = $(IDL_FILES:.idl=.h)
+CPP_GEN_SKEL_FILES = $(IDL_FILES:.idl=_skel.cpp)
+H_GEN_SKEL_FILES = $(IDL_FILES:.idl=_skel.h)
+
+CLEAN_FILES = $(IDL_FILES) $(CPP_GEN_FILES) $(CPP_GEN_SKEL_FILES) $(H_GEN_FILES) $(H_GEN_SKEL_FILES) $(OBJ_FILES) libopenpmf_ccm_PEP_ManagerImpl.* OpenPMFPEPImpl.zip libOpenPMFPEPImpl.dll openpmf_ccm_PEP_ManagerImpl_PSS.* component_valuetypes.* *.obj *.pdb
+
+all: libopenpmf_ccm_PEP_ManagerImpl.dll
+
+#libopenpmf_ccm_PEP_ManagerImpl.dll: $(IDL_FILES) $(OBJ_FILES) 
+libopenpmf_ccm_PEP_ManagerImpl.dll: $(IDL_FILES) $(CPP_FILES) $(CPP_GEN_FILES) $(H_GEN_FILES) $(CPP_GEN_SKEL_FILES) $(OBJ_FILES) libopenpmf_ccm_PEP_ManagerImpl.def
+	link $(LINKDLLFLAGS) $(OBJ_FILES) $(LIBS) /out:libopenpmf_ccm_PEP_ManagerImpl.dll \
+		/def:libopenpmf_ccm_PEP_ManagerImpl.def \
+		/implib:libopenpmf_ccm_PEP_ManagerImpl.lib
+
+.SUFFIXES:
+.SUFFIXES:	.cc .cpp .obj .idl .h
+
+.idl.cpp:
+	$(MICO)\win32-bin\idl -I$(MICO)\include -B$(MICO) -I$(QEDO)\idl -DMICO_ORB --any --c++-skel --c++-suffix cpp --windows-dll OPENPMF_CCM $<
+
+.idl.h:
+	$(MICO)\win32-bin\idl -I$(MICO)\include -B$(MICO) -I$(QEDO)\idl -DMICO_ORB --any --c++-skel --c++-suffix cpp --windows-dll OPENPMF_CCM $<
+
+.cpp.obj:
+	cl $(CXXFLAGS) /c $<
+
+.cc.obj:
+	cl $(CXXFLAGS) /c $<
+
+$(IDL_FILES) component_valuetypes.cpp openpmf_ccm_PEP_ManagerImpl.cpp : $(CIDL_FILES)
+	$(QEDO)\bin\cidl_gen -I$(QEDO)/idl $(ORB_IDL_INCLUDE) $(CIDL_ORB_DEF) \
+	--business --target "IDL:openpmf_ccm/PEP_ManagerImpl:1.0" $(CIDL_FILES) 
+
+libopenpmf_ccm_PEP_ManagerImpl.def:
+	gendef libopenpmf_ccm_PEP_ManagerImpl.def libopenpmf_ccm_PEP_ManagerImpl $(OBJ_FILES)
+
+openpmf_ccm_PEP_ManagerImpl_BUSINESS.cpp: openpmf_ccm_PEP_ManagerImpl_EQUIVALENT.h openpmf_ccm_PEP_ManagerImpl_LOCAL.h 
+
+OpenPMFPEPImpl.cpp: openpmf_ccm_PEP_ManagerImpl_BUSINESS.h
+
+package: OpenPMFPEPImpl.zip
+
+OpenPMFPEPImpl.zip:
+	$(CYGWIN)\bin\zip OpenPMFPEPImpl.zip -j ../openpmf_ccm_PEP_ManagerImpl_SERVANT/libopenpmf_ccm_PEP_ManagerImpl_SERVANT.dll libopenpmf_ccm_PEP_ManagerImpl.dll $(CIDL_FILES)
+	$(CYGWIN)\bin\zip OpenPMFPEPImpl.zip meta-inf/openpmf_ccm_PEP_ManagerImpl.ccd meta-inf/openpmf_ccm_PEP_ManagerImpl.csd
+
+install: package
+	-mkdir $(QEDO)\services
+	copy OpenPMFPEPImpl.zip $(QEDO)\services\.
+
+clean:
+	del /q $(CLEAN_FILES)

@@ -31,4 +31,25 @@
             <usage>servant</usage>
         </code>
     </implementation>
+
+    <implementation id="UUID-bc3f4b61-4f79-41f3-9b5b-22d75e50f6ca">
+        <os name="WIN" />
+        <processor name="x86" />
+        <compiler name="VC++" version="7.0" />
+        <programminglanguage name="C++" />
+        <descriptor type="CORBA-Component">
+            <fileinarchive name="meta-inf/openpmf_ccm_PEP_ManagerImpl.ccd" />
+        </descriptor>
+        <code type="DLL">
+            <fileinarchive name="libopenpmf_ccm_PEP_ManagerImpl.dll"/>
+            <entrypoint>create_pep_manager_homeE</entrypoint>
+            <usage>executor</usage>
+        </code>
+        <code type="DLL">
+            <fileinarchive name="libopenpmf_ccm_PEP_ManagerImpl_SERVANT.dll"/>
+            <entrypoint>create_pep_manager_homeS</entrypoint>
+            <usage>servant</usage>
+        </code>
+    </implementation>
+
 </softpkg>
