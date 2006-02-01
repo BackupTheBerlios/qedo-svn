@@ -3,6 +3,8 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="CIDLFrontendLib"
+	ProjectGUID="{040DE806-08DF-456D-88D7-F8DA9E1AA82A}"
+	RootNamespace="CIDLFrontendLib"
 	SccProjectName="CIDLFrontendLib"
 	SccLocalPath=".">
 	<Platforms>
@@ -128,6 +130,10 @@
 				PreprocessorDefinitions="KC_DEPRECATED,WIN32,_DEBUG,_LIB,__STDC__,YYERROR_VERBOSE,YYDEBUG,_WINDOWS"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
+				DisableLanguageExtensions="FALSE"
+				DefaultCharIsUnsigned="FALSE"
+				TreatWChar_tAsBuiltInType="FALSE"
+				ForceConformanceInForLoopScope="FALSE"
 				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\Debug_mico/CIDLFrontendLib.pch"
@@ -541,7 +547,7 @@ $(cygwin)/bin/cpp  -E -P -ifblank -DCIDL_COMPILER -I..\..\CIDL_Repository\IFRidl
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Lexing $(InputPath)"
-						CommandLine="$(CYGWIN)\flex -tw -Sflex.skel lexana.l  &gt; lexana.cpp
+						CommandLine="$(CYGWIN)\bin\flex -tw -Sflex.skel lexana.l  &gt; lexana.cpp
 "
 						Outputs="lexana.cpp"/>
 				</FileConfiguration>
@@ -640,8 +646,8 @@ cp cidl.hpp cidl.h
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Yaccing $(InputPath)"
-						CommandLine="$(CYGWIN)\env LC_ALL=C $(CYGWIN)\bison -y -v -d -o cidl.cpp cidl.y
-$(CYGWIN)\cp cidl.hpp cidl.h
+						CommandLine="$(CYGWIN)\bin\env LC_ALL=C $(CYGWIN)\bin\bison -y -v -d -o cidl.cpp cidl.y
+$(CYGWIN)\bin\cp cidl.hpp cidl.h
 "
 						Outputs="cidl.cpp;cidl.h;cidl.hpp;cidl.output"/>
 				</FileConfiguration>
