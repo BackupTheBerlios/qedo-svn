@@ -231,10 +231,24 @@ public class CCMImport {
 			{
 				MDE.BaseIDL.IDLType type = TypedHelper.narrow(contents[i]).idl_type();
 				IDLType emftype;
-				if (type != null)
-					if ((emftype = createIDLType(type)) != null)
-						((Typed)emfcontained).setIDLType(emftype);
+				if (type != null){
+					if (repmodel.contains(type))
+						emftype=(IDLType)rep2emf(type);
+                    else{ 
+                    	emftype = createIDLType(type);
+                    	try{
+                    		if(TypedefDefHelper.narrow(type)!=null)
+                    		result.add(emftype);
+                    	}catch (Exception e){}
+                    	emfmodel.add(emftype);
+        				repmodel.add(type);
+                    	
+                    }
+					 
+					((Typed)emfcontained).setIDLType(emftype);
+				}
 			}
+
 			if (emfcontained instanceof Container)
 			{
 				MDE.BaseIDL.Contained[] cns = ContainerHelper.narrow(contents[i]).contents();
@@ -632,9 +646,17 @@ public class CCMImport {
 			emfmodel.add(emfArrayDef); repmodel.add(arrayDef); ids.add("array");
 			MDE.BaseIDL.IDLType repIDLType2 = arrayDef.idl_type();
 			IDLType emfIDLType2;
-			if (repIDLType2 != null)
-				if ((emfIDLType2 = createIDLType(repIDLType2)) != null)
-					emfArrayDef.setIDLType(emfIDLType2);
+			if (repIDLType2 != null){
+				if (repmodel.contains(repIDLType2))
+					emfIDLType2=(IDLType)rep2emf(repIDLType2);
+                else {
+            	   emfIDLType2 = createIDLType(repIDLType2);
+            	   emfmodel.add(emfIDLType2);
+   				   repmodel.add(repIDLType2);
+                }
+			    ((Typed)emfArrayDef).setIDLType(emfIDLType2);
+		
+	        }
 			idlcontainer.getArrays().add(emfArrayDef);
 			return emfArrayDef;
 		}catch (Exception e){}
@@ -646,9 +668,18 @@ public class CCMImport {
 			emfmodel.add(emfSequenceDef); repmodel.add(sequenceDef); ids.add("sequence");
 			MDE.BaseIDL.IDLType repIDLType2 = sequenceDef.idl_type();
 			IDLType emfIDLType2;
-			if (repIDLType2 != null)
-				if ((emfIDLType2 = createIDLType(repIDLType2)) != null)
-					emfSequenceDef.setIDLType(emfIDLType2);
+			if (repIDLType2 != null){
+				if (repmodel.contains(repIDLType2))
+					emfIDLType2=(IDLType)rep2emf(repIDLType2);
+                else {
+            	   emfIDLType2 = createIDLType(repIDLType2);
+				   emfmodel.add(emfIDLType2);
+ 				   repmodel.add(repIDLType2);
+                }
+			 
+			    ((Typed)emfSequenceDef).setIDLType(emfIDLType2);
+		
+	        }
 			idlcontainer.getSequences().add(emfSequenceDef);
 			return emfSequenceDef;
 		}catch (Exception e){}
@@ -679,6 +710,7 @@ public class CCMImport {
 		try{
 			MDE.BaseIDL.PrimitiveDef primitiveDef = PrimitiveDefHelper.narrow(repIDLType);
 			PrimitiveDef emfPrimitiveDef = getPrimitiveDef(primitiveDef); 
+		 
 			return emfPrimitiveDef;
 		}catch (Exception e){}
 
@@ -1411,8 +1443,10 @@ public class CCMImport {
 	{
 		if (rep == null) return null;
 		//int index = ids.indexOf(fullScopeName(rep));
+		List a= repmodel;
+		List b= emfmodel;
 		int index =repmodel.indexOf(rep);
-		return (index >= 0) ? (Contained)emfmodel.get(index) : null;
+		return (index >= 0) ?  (EObject)emfmodel.get(index) : null;
 	}
 	/**
 	 * returns the fullScopeName of the repository-object.
