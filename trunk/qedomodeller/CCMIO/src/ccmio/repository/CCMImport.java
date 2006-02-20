@@ -69,10 +69,12 @@ import MDE.BaseIDL.ContainedHelper;
 import MDE.BaseIDL.ContainerHelper;
 import MDE.BaseIDL.EnumDefHelper;
 import MDE.BaseIDL.ExceptionDefHelper;
+import MDE.BaseIDL.FieldHelper;
 import MDE.BaseIDL.FixedDefHelper;
 import MDE.BaseIDL.InterfaceDefHelper;
 import MDE.BaseIDL.ModuleDefHelper;
 import MDE.BaseIDL.OperationDefHelper;
+import MDE.BaseIDL.ParameterDefHelper;
 import MDE.BaseIDL.PrimitiveDefHelper;
 import MDE.BaseIDL.SequenceDefHelper;
 import MDE.BaseIDL.StringDefHelper;
@@ -266,7 +268,7 @@ public class CCMImport {
 	private static Contained create(MDE.BaseIDL.Contained contained) throws MofError
 	{
 		Contained emf;
-		//System.out.println("\t" + contained.identifier());
+		System.out.println("\t" + contained.identifier());
 		 
 		try{
 			MDE.Deployment._SoftwarePackage pkg=_SoftwarePackageHelper.narrow(contained);
@@ -734,10 +736,17 @@ public class CCMImport {
 				(direction == MDE.BaseIDL.ParameterMode.PARAM_IN) ? ParameterMode.PARAM_IN_LITERAL :
 				(direction == MDE.BaseIDL.ParameterMode.PARAM_OUT) ? ParameterMode.PARAM_OUT_LITERAL:
 				ParameterMode.PARAM_INOUT_LITERAL );
+
+			MDE.BaseIDL.ParameterDef repParameter = parameters[i];
+			
+			emfmodel.add(emfparameter);
+			repmodel.add(repParameter);
+			
 			result.add(emfparameter);
 		}
 		return result;
 	}
+	
 	/**
 	 * create fields in the emf-model like the repository-Fields fields.
 	 * @param fields = repository-Fields to create
@@ -750,6 +759,12 @@ public class CCMImport {
 		{
 			Field emffield = CCMModelFactory.eINSTANCE.createField();
 			emffield.setIdentifier(fields[i].identifier());
+			
+			MDE.BaseIDL.Field repField = fields[i];
+
+			emfmodel.add(emffield);
+			repmodel.add(repField);
+
 			result.add(emffield);
 		}
 		return result;
@@ -1432,6 +1447,57 @@ public class CCMImport {
 					}catch(Exception e){}
 				}
 			}
+
+			// update the type of a field
+			if (emf instanceof Field)
+			{
+				Field emfField = (Field)emf;
+
+				if (emfField.getIDLType() == null) // idltype not already set
+				{
+					MDE.BaseIDL.Field repField = FieldHelper.narrow(rep);
+					MDE.BaseIDL.IDLType repIDLType = repField.idl_type();
+					try{
+						EObject emfIDLType = rep2emf(repIDLType);
+						if (emfIDLType != null)
+						{
+							emfField.setIDLType((IDLType)emfIDLType);
+						} else
+						{
+							MDE.BaseIDL.PrimitiveDef primitiveDef = PrimitiveDefHelper.narrow(repIDLType);
+							PrimitiveDef emfPrimitiveDef = getPrimitiveDef(primitiveDef); 
+							emfField.setIDLType((IDLType)emfPrimitiveDef);
+
+						}
+					}catch(Exception e){}
+				}
+				
+			}
+
+			//update the type of a parameter
+			if (emf instanceof ParameterDef)
+			{
+				ParameterDef emfParameter = (ParameterDef)emf;
+
+				if (emfParameter.getIDLType() == null) // idltype not already set
+				{
+					MDE.BaseIDL.ParameterDef repParameter = ParameterDefHelper.narrow(rep);
+					MDE.BaseIDL.IDLType repIDLType = repParameter.idl_type();
+					try{
+						EObject emfIDLType = rep2emf(repIDLType);
+						if (emfIDLType != null)
+						{
+							emfParameter.setIDLType((IDLType)emfIDLType);
+						} else
+						{
+							MDE.BaseIDL.PrimitiveDef primitiveDef = PrimitiveDefHelper.narrow(repIDLType);
+							PrimitiveDef emfPrimitiveDef = getPrimitiveDef(primitiveDef); 
+							emfParameter.setIDLType((IDLType)emfPrimitiveDef);
+						}
+					}catch(Exception e){}
+				}				
+			}
+		
 		}		
 	}
 	/**
