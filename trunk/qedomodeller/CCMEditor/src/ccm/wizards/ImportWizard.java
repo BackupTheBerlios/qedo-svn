@@ -133,10 +133,10 @@ public class ImportWizard extends Wizard implements INewWizard {
 			 
 			getContainer().run(true, false, op);
 		} catch (InterruptedException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			return false;
 		} catch (InvocationTargetException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			Throwable realException = e.getTargetException();
 			MessageDialog.openError(getShell(), "Error", realException.getMessage());
 			return false;
