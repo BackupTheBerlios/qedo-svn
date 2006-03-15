@@ -16,7 +16,7 @@ namespace QedoQoS_Reservation {
 
 namespace QedoQoS_Reservation {
 
-	class ServerContainerInterceptor: public virtual Components::Extension::ServerContainerInterceptor
+	class ServerContainerInterceptor: public virtual Components::ContainerPortableInterceptor::ServerContainerInterceptor
 	{
 	private:
 		QedoQoS::CCM_Reservation_ContextImpl* context_;
@@ -52,11 +52,15 @@ namespace QedoQoS_Reservation {
 
 		virtual void add_contract(const char *component_id, Components::ConfigValues);
 
+		virtual char* name();
+		virtual void destroy();
 		virtual void set_slot_id(PortableInterceptor::SlotId slot_id);
-		virtual void receive_request (Components::Extension::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_reply (Components::Extension::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_system_exception (Components::Extension::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_user_exception (Components::Extension::ContainerServerRequestInfo_ptr info) ;
+
+		virtual void receive_request_service_contexts (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+		virtual void receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+		virtual void send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+		virtual void send_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+		virtual void send_other (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
 
 	    virtual void call( const char* comp_id, const char* origin, const char* operation, CORBA::Boolean_out con ) ;
 
