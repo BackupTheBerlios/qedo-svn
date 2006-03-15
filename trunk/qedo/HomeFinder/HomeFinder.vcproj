@@ -198,7 +198,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mico2312RC2.lib micocoss2312RC2.lib wsock32.lib pthreadVC2.lib"
+				AdditionalDependencies="mico2312.lib micocoss2312.lib wsock32.lib pthreadVC2.lib"
 				OutputFile="$(OutDir)/homefinder.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(MICO)/coss&quot;"

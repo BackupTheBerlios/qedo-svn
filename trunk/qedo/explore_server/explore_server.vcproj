@@ -144,7 +144,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mico2312RC2.lib micocoss2312RC2.lib ws2_32.lib wsock32.lib pthreadVC2.lib"
+				AdditionalDependencies="mico2312.lib micocoss2312.lib ws2_32.lib wsock32.lib pthreadVC2.lib"
 				OutputFile="$(OutDir)/explore_server.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="mpr.lib;msock32.lib;&quot;$(MICO)\win32-bin\lib&quot;"
