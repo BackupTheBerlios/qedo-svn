@@ -86,7 +86,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fltkd.lib  wsock32.lib  comctl32.lib  ComponentIDL.lib ComponentContainer.lib  mico2311.lib pthreadVC2.lib"
+				AdditionalDependencies="fltkd.lib  wsock32.lib  comctl32.lib  ComponentIDL.lib ComponentContainer.lib  mico2312.lib pthreadVC2.lib"
 				OutputFile="$(OutDir)/Simulation_TAPDisplayImpl.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(QEDO)/lib&quot;;&quot;$(MICO)/win32-bin/lib&quot;;&quot;$(FLTK)\lib&quot;"
