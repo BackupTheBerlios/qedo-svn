@@ -62,12 +62,12 @@ ServerPEPInterceptor::receive_request (Components::ContainerPortableInterceptor:
 		  << std::endl;
         std::cerr << ">>>>>>>>>>>>>>PMF slot ID: " << this->pmf_slot_id_ << std::endl;
 	CORBA::ORB_var orb = CORBA::ORB_instance("mico-local-orb", FALSE);
-        Object_var obj = orb -> resolve_initial_references ("PICurrent");
-        assert(!is_nil(obj));
-        Long evaluate_policy = 0;
+        CORBA::Object_var obj = orb -> resolve_initial_references ("PICurrent");
+        assert(!CORBA::is_nil(obj));
+        CORBA::Long evaluate_policy = 0;
         if (this->pmf_slot_set_) {
             PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
-            Any* v = piCurrent->get_slot(this->pmf_slot_id_);
+            CORBA::Any* v = piCurrent->get_slot(this->pmf_slot_id_);
             *v >>= evaluate_policy;
             std::cout << "SPEPI: received in slot: " << evaluate_policy << std::endl;
         }
