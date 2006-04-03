@@ -3,6 +3,8 @@ include ../MakeComponentVars
 
 all: hello_$(OS).zip
 
+CLEAN_FILES = hello_$(OS).zip HelloWorld_CalleeImpl.zip HelloWorld_CallerImpl.zip
+
 hello_$(OS).zip: HelloWorld_CalleeImpl.zip HelloWorld_CallerImpl.zip meta-inf/hello_$(OS).cad
 	zip hello_$(OS).zip HelloWorld_CalleeImpl.zip HelloWorld_CallerImpl.zip meta-inf/hello_$(OS).cad
 

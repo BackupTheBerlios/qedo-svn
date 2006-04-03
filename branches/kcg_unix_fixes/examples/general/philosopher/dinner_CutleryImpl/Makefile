@@ -2,33 +2,38 @@ ORB_IDL_INCLUDE = -I..
 
 CIDL_FILES = ../philosophers.cidl
 
-IDL_FILES = dinner_CutleryImpl_LOCAL.idl \
-	dinner_CutleryImpl_EQUIVALENT.idl \
-	dinner_CutleryImpl_BUSINESS.idl
+IDL_FILES = dinner_CutleryImpl_BUSINESS.idl 
 
 CPP_FILES = dinner_CutleryImpl_BUSINESS.cpp \
 	dinner_CutleryImpl.cpp \
-	component_valuetypes.cpp
+	component_valuetypes.cpp 
 
-OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
+OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 
-CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} libdinner_CutleryImpl.so dinner_CutleryImpl.zip
+CLEAN_FILES = ${IDL_FILES} \
+	${OBJ_FILES} \
+	dinner_CutleryImpl_BUSINESS.cpp \
+	dinner_CutleryImpl_BUSINESS.h \
+	dinner_CutleryImpl_BUSINESS_skel.cpp \
+	dinner_CutleryImpl_BUSINESS_skel.h \
+	libdinner_CutleryImpl.so \
+	dinner_CutleryImpl.zip
 
-LIBS += -L../dinner_CutleryImpl_SERVANT -ldinner_CutleryImpl_SERVANT
+LIBS += -L../dinner_CutleryImpl_SERVANT -ldinner_CutleryImpl_SERVANT 
 
-CXXFLAGS += -I. -g
+CXXFLAGS += -I. -g -I../dinner_CutleryImpl_SERVANT 
+
+IDL_FLAGS += -I../dinner_CutleryImpl_SERVANT 
 
 include ../MakeComponentVars
 
-all: libdinner_CutleryImpl.so
+all: libdinner_CutleryImpl.so 
 
-libdinner_CutleryImpl.so: ${OBJ_FILES}
+libdinner_CutleryImpl.so: ${OBJ_FILES} 
 
-${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES}
+${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} 
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target "IDL:dinner/CutleryImpl:1.0" $< 
-
-dinner_CutleryImpl_BUSINESS.cpp: dinner_CutleryImpl_EQUIVALENT.h dinner_CutleryImpl_LOCAL.h 
 
 dinner_CutleryImpl.cpp: dinner_CutleryImpl_BUSINESS.h
 

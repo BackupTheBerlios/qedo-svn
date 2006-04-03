@@ -2,21 +2,30 @@ ORB_IDL_INCLUDE = -I..
 
 CIDL_FILES = ../simdemo.cidl
 
-IDL_FILES = Simulation_PlaneImpl_LOCAL.idl \
-	Simulation_PlaneImpl_EQUIVALENT.idl \
-	Simulation_PlaneImpl_BUSINESS.idl 
+IDL_FILES = Simulation_PlaneImpl_BUSINESS.idl 
 
 CPP_FILES = Simulation_PlaneImpl_BUSINESS.cpp \
 	Simulation_PlaneImpl.cpp \
-	valuetypes.cpp 
+	component_valuetypes.cpp 
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 
-CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} libSimulation_PlaneImpl.so Simulation_PlaneImpl.zip
+CLEAN_FILES = ${IDL_FILES} \
+	${OBJ_FILES} \
+	Simulation_PlaneImpl_BUSINESS.cpp \
+	Simulation_PlaneImpl_BUSINESS.h \
+	Simulation_PlaneImpl_BUSINESS_skel.cpp \
+	Simulation_PlaneImpl_BUSINESS_skel.h \
+	libSimulation_PlaneImpl.so \
+	Simulation_PlaneImpl.zip\
+	component_valuetypes.cpp \
+	component_valuetypes.h 
 
-LIBS += -L../Simulation_PlaneImpl_SERVANT -lSimulation_PlaneImpl_SERVANT 
+LIBS += -L../Simulation_PlaneImpl_SERVANT -lSimulation_PlaneImpl_SERVANT -L/usr/X11/lib -lfltk 
 
-CXXFLAGS += -I. -g
+CXXFLAGS += -I. -g -I../Simulation_PlaneImpl_SERVANT -I/usr/X11/include
+
+IDL_FLAGS += -I../Simulation_PlaneImpl_SERVANT 
 
 include ../MakeComponentVars
 
@@ -24,11 +33,9 @@ all: libSimulation_PlaneImpl.so
 
 libSimulation_PlaneImpl.so: ${OBJ_FILES} 
 
-${IDL_FILES} valuetypes.cpp : ${CIDL_FILES} 
+${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} 
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target "IDL:Simulation/PlaneImpl:1.0" $< 
-
-Simulation_PlaneImpl_BUSINESS.cpp: Simulation_PlaneImpl_EQUIVALENT.h Simulation_PlaneImpl_LOCAL.h 
 
 Simulation_PlaneImpl.cpp: Simulation_PlaneImpl_BUSINESS.h
 

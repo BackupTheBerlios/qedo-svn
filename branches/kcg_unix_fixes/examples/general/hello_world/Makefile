@@ -29,6 +29,7 @@ SUBDIRS = HelloWorld_CalleeImpl_SERVANT \
 all: MakeComponentVars $(SUBDIRS:%=%-all)
 
 clean: $(SUBDIRS:%=%-clean)
+	$(MAKE)	-C hello_linux_assembly clean 
 
 
 %-all: %

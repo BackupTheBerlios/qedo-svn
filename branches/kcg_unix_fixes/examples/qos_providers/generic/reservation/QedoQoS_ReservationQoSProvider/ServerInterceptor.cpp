@@ -5,11 +5,23 @@
 
 namespace QedoQoS_Reservation {
 
+char*
+ServerContainerInterceptor::name()
+{
+	return "Reservation";
+};
+
 void 
 ServerContainerInterceptor::set_slot_id(PortableInterceptor::SlotId slot_id) {
 	slot_id_ = slot_id;
 
 };
+
+void
+ServerContainerInterceptor::destroy()
+{
+};
+
 
 ServerContainerInterceptor::ServerContainerInterceptor (QedoQoS::CCM_Reservation_ContextImpl* context, QedoQoS::ReservationQoSproviderImpl* executor)
 {
@@ -102,7 +114,7 @@ ServerContainerInterceptor::add_contract(const char *component_id, Components::C
 
 
 void
-ServerContainerInterceptor::receive_request (Components::Extension::ContainerServerRequestInfo_ptr info)
+ServerContainerInterceptor::receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
 {
 //	std::cout << "ServerCOPI: receive_request: " << info->request_info()->operation() << "for id: " << info -> component_id() << std::endl;
 
@@ -139,7 +151,7 @@ ServerContainerInterceptor::receive_request (Components::Extension::ContainerSer
 }
 
 void
-ServerContainerInterceptor::send_reply (Components::Extension::ContainerServerRequestInfo_ptr info)
+ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
 {
 //	std::cout << "ServerCOPI: send_reply: " << info->request_info()->operation() << "for id: " << info -> component_id() << std::endl;
 
@@ -162,7 +174,7 @@ ServerContainerInterceptor::send_reply (Components::Extension::ContainerServerRe
 }
 
 void
-ServerContainerInterceptor::send_system_exception (Components::Extension::ContainerServerRequestInfo_ptr info)
+ServerContainerInterceptor::send_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
 {
 //	std::cout << "ServerCOPI: send_system_exception: " << info->request_info()->operation() << "for id: " << std::endl;
 
@@ -186,7 +198,7 @@ ServerContainerInterceptor::send_system_exception (Components::Extension::Contai
 }
 
 void
-ServerContainerInterceptor::send_user_exception (Components::Extension::ContainerServerRequestInfo_ptr info) {
+ServerContainerInterceptor::send_other (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) {
 
 }
 

@@ -111,3 +111,4 @@ void DOMTreeErrorReporter::resetErrors()
 {
     // No-op in this case
 }
+

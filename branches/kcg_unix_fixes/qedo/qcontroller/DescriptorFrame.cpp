@@ -1189,8 +1189,8 @@ wxString DescriptorFrame::get_partitioning_str(wxString partit)
 wxString DescriptorFrame::edit_partit(wxString partit)
 {
 	
-	int erase_s=partit.Replace("<partitioning>","");
-	int erase_e=partit.Replace("</partitioning>","");
+	partit.Replace("<partitioning>","");
+	partit.Replace("</partitioning>","");
 
 
 	int erase_start=partit.find("<hostcollocation>");

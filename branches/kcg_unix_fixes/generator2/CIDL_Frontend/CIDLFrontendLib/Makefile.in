@@ -46,7 +46,7 @@ SOURCES = cidl.cpp \
 
 FULL_CLEAN_FILES = $(KIMWITU_HEADER_FILES) $(KIMWITU_CPP_FILES) \
                    cidl.cpp cidl.h cidl.output lexana.cpp \
-                   errmsg.cpp errmsg.h \
+                   errmsg.inc \
 				       lexana.cpp \
                    .kc_timestamp 
 
@@ -68,13 +68,14 @@ $(KIMWITU_HEADER_FILES) $(KIMWITU_CPP_FILES) : .kc_timestamp
 	$(KIMWITU_FILES)
 	date > .kc_timestamp
 
-lexana.cpp : lexana.l errmsg.cpp
+lexana.cpp : lexana.l
 	$(LEX) -t -w lexana.l > lexana.cpp
 
 cidl.cpp cidl.h cidl.output : k.h yystype.h cidl.y
 	env LC_ALL=C $(YACC) -y -v -d -o cidl.cpp cidl.y
 	@mv cidl.hpp cidl.h
 
-errmsg.cpp errmsg.h: cidl.output errmsg.py
-	echo "extern char *error_message[];" > errmsg.h
-	$(PYTHON) errmsg.py < cidl.output > errmsg.cpp
+cidl.o : error_printer.cpp errmsg.inc
+
+errmsg.inc : cidl.output errmsg.py
+	$(PYTHON) errmsg.py cidl.output errmsg.inc

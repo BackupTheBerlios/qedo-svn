@@ -293,7 +293,7 @@ throw(InstallationReadException)
 	DOMElement* root = document_->getDocumentElement();
 	std::string element_name;
     DOMNode* child = root->getFirstChild();
-	DOMNode* text_child;
+	DOMNode* text_child=0;
 	while (child != 0)
 	{
 		if (child->getNodeType() == DOMNode::ELEMENT_NODE)

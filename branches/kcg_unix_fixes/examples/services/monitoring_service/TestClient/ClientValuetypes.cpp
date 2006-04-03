@@ -100,7 +100,7 @@ FacetDescription_impl::FacetDescription_impl (const char* name,
 {
     this->name(name);
     this->type_id(type_id);
-    this->ref (ref);
+	this->facet_ref (ref);
 }
 
 

@@ -811,7 +811,9 @@ void* startFunc(void* p) {
 	T_Start* t = (T_Start*) p;
 	void* (*f)(void*) = t->p;
 	void* arg = t->a;
+#ifndef _QEDO_NO_QOS
 	PortableInterceptor::SlotId slot_id = t->slot_id;
+#endif
 	CORBA::Any* slot_content=0;
 	slot_content = t->slot_content;
 	ThreadDelegate* d = t->d;

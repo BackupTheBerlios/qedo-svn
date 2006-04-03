@@ -606,7 +606,7 @@ PartitioningTreeCtrl::add_ports_to_component_instance(PartitioningTreeCtrl::Comp
 PartitioningTreeCtrl::ElementType 
 PartitioningTreeCtrl::GetType(wxTreeItemId itemid)
 {
-	ElementType etype;
+	ElementType etype=home;
 	std::vector <ItemTyp> ::iterator iter;
 	for(iter = itemtypes.begin(); 
 		iter != itemtypes.end(); 
@@ -719,7 +719,6 @@ void PartitioningTreeCtrl::replace_component(Comp component)
 
 wxString PartitioningTreeCtrl::getCADData()
 {
-	char a='"';
 	wxString tab="	";
 	wxString tabtab="		";
 	wxString value;
@@ -754,7 +753,6 @@ wxString PartitioningTreeCtrl::getCADData()
 
 wxString PartitioningTreeCtrl::processdata(wxTreeItemId itemid)
 {
-	char a='"';
 	wxString tab="	";
 	wxString tabtab="		";
 	wxString value;
@@ -831,7 +829,6 @@ wxString PartitioningTreeCtrl::homedata(wxTreeItemId itemid)
 
 wxString PartitioningTreeCtrl::hostdata(wxTreeItemId itemid)
 {
-	char a='"';
 	wxString tab="	";
 	wxString tabtab="		";
 	wxString value;
@@ -1101,3 +1098,4 @@ void PartitioningTreeCtrl::setdummy(AComponentTreeCtrl* atc)
 {
 	ACTreeCtrl = atc;
 }
+

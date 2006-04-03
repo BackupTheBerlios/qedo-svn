@@ -187,7 +187,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxmsw26d_core.lib wxbase26d.lib mico2311.lib micocoss2311.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib wxmsw26d_core.lib wxbase26d.lib mico2312.lib micocoss2312.lib"
 				OutputFile="$(OutDir)/qxml.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(WXWIDGETS)\lib\vc_dll&quot;;&quot;$(MICO)\win32-bin\lib&quot;"

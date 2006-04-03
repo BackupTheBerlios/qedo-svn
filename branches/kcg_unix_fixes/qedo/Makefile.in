@@ -1,4 +1,4 @@
-# Qedo - Quality of Service Enabled Distributed Objects
+# Qedo - Quality of Service EnabledDistributed Objects
 #
 # http://qedo.berlios.de/
 #
@@ -23,7 +23,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
-HAVE_WXGTK_LIB=@HAVE_WXGTK_LIB@
+wx_config=@WX_CONFIG@
 
 LIBDIRS = ComponentIDL \
           ComponentContainer \
@@ -39,9 +39,15 @@ SUBDIRS = ComponentIDL \
 	  HomeFinder \
 	  DeploymentClient \
 	  etc \
-	  explore_server
+	  explore_server\
+          CIDL_Repository/IFRidl\
+          CIDL_Repository/ComponentRepositoryLib \
+          CIDL_Repository/CIDLRepositoryLib \
+          CIDL_Frontend/CIDLFrontendLib \
+          CIDL_Backend/CIDLGenerator
 
-ifeq "yes" "$(HAVE_WXGTK_LIB)"
+
+ifneq "no" "$(wx_config)"
 
 SUBDIRS += qcontroller \
 	   qxml
@@ -51,12 +57,27 @@ endif
 
 all: $(SUBDIRS:%=%-all)
 
-lib: $(LIBDIRS:%=%-lib)
+clean: $(SUBDIRS:%=%-clean)
+
+%-all: %
+	$(MAKE) -C $< all
 
 .PHONY: install-dir
 
 $(bindir):
 	mkdir -p $@
+
+install-dir: $(bindir) $(exec_prefix)/etc $(exec_prefix)/lib $(exec_prefix)/include $(exec_prefix)/idl $(exec_prefix)/qedodoc
+
+install: install-dir $(SUBDIRS:%=%-install)
+
+%-install: %
+	$(MAKE) -C $< install
+
+%-clean: %
+	$(MAKE) -C $< clean
+
+lib: $(LIBDIRS:%=%-lib)
 
 $(exec_prefix)/etc:
 	mkdir -p $@
@@ -73,26 +94,11 @@ $(exec_prefix)/idl:
 $(exec_prefix)/qedodoc:
 	mkdir -p $@; mkdir -p $@/images
 
-install-dir: $(bindir) $(exec_prefix)/etc $(exec_prefix)/lib $(exec_prefix)/include $(exec_prefix)/idl $(exec_prefix)/qedodoc
-
-install: install-dir $(SUBDIRS:%=%-install)
-
 install-lib: install-dir
 	for i in $(LIBDIRS); do $(MAKE) -C $$i install || exit 1; done
 
-clean: $(SUBDIRS:%=%-clean)
-
-%-all: %
-	$(MAKE) -C $< all
-
 %-lib: %
 	$(MAKE) -C $< all
-
-%-install: %
-	$(MAKE) -C $< install
-
-%-clean: %
-	$(MAKE) -C $< clean
 
 distclean: clean
 	rm -f config.log \
@@ -115,5 +121,11 @@ distclean: clean
 		ComponentContainer/Makefile \
 		ComponentServerActivator/Makefile \
 		etc/MakeComponentVars \
-		etc/Makefile
+		etc/Makefile \
+		CIDL_Repository/IFRidl/Makefile \
+		CIDL_Repository/ComponentRepositoryLib/Makefile \
+		CIDL_Repository/CIDLRepositoryLib/Makefile \
+		CIDL_Frontend/CIDLFrontendLib/Makefile \
+		CIDL_Backend/CIDLGenerator/Makefile \
+		CIDL_Frontend/CIDLFrontendLib/config.h
 

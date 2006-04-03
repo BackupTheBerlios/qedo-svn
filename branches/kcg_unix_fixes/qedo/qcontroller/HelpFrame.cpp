@@ -53,4 +53,5 @@ HelpFrame::HelpFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 HelpFrame::~HelpFrame()
 {
 
-};
+}
+

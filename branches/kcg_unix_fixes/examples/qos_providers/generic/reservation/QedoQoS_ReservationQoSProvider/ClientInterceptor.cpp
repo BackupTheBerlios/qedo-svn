@@ -3,6 +3,17 @@
 
 namespace QedoQoS_Reservation {
 
+char*
+ClientContainerInterceptor::name()
+{
+	return "Reservation";
+};
+
+void
+ClientContainerInterceptor::destroy()
+{
+};
+
 void 
 ClientContainerInterceptor::set_slot_id(PortableInterceptor::SlotId slot_id) {
 	slot_id_ = slot_id;
@@ -48,6 +59,17 @@ ClientContainerInterceptor::send_request (Components::Extension::ContainerClient
 }
 
 void
+ClientContainerInterceptor::send_poll (Components::Extension::ContainerClientRequestInfo_ptr info)
+{
+	//std::cout << "ClientCOPI: send_request: " << info->request_info()->operation() << std::endl;
+
+	CORBA::Any any;
+	// This needs to be re´placed by own id
+	// get it from the current slot
+	any <<= "id";
+}
+
+void
 ClientContainerInterceptor::receive_reply (Components::Extension::ContainerClientRequestInfo_ptr info)
 {
 	
@@ -79,7 +101,7 @@ ClientContainerInterceptor::receive_reply (Components::Extension::ContainerClien
 }
 
 void
-ClientContainerInterceptor::receive_system_exception (Components::Extension::ContainerClientRequestInfo_ptr info)
+ClientContainerInterceptor::receive_exception (Components::Extension::ContainerClientRequestInfo_ptr info)
 {
 //	std::cout << "ClientCOPI: receive_system_exception: " << info->request_info()->operation() << std::endl;
 
@@ -87,7 +109,7 @@ ClientContainerInterceptor::receive_system_exception (Components::Extension::Con
 }
 
 void
-ClientContainerInterceptor::receive_user_exception (Components::Extension::ContainerClientRequestInfo_ptr info) {
+ClientContainerInterceptor::receive_other (Components::Extension::ContainerClientRequestInfo_ptr info) {
 //	std::cout << "ClientCOPI: receive_user_exception: " << info->request_info()->operation() << std::endl;
 
 }

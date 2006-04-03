@@ -148,7 +148,6 @@ UDPSinkTransportEndpoint::do_recv()
 
 		StreamComponents::UDPProfileHeader* header = reinterpret_cast <StreamComponents::UDPProfileHeader*> (datagram);
 
-		CORBA::UShort stream_number = ntohs (header->stream_number);
 		CORBA::ULong seq_length = ntohl (header->seq_length);
 
 		UnmarshalBuffer* buffer;

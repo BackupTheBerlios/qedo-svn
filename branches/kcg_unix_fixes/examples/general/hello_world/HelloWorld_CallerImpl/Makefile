@@ -2,33 +2,40 @@ ORB_IDL_INCLUDE = -I..
 
 CIDL_FILES = ../hello.cidl
 
-IDL_FILES = HelloWorld_CallerImpl_LOCAL.idl \
-	HelloWorld_CallerImpl_EQUIVALENT.idl \
-	HelloWorld_CallerImpl_BUSINESS.idl
+IDL_FILES = HelloWorld_CallerImpl_BUSINESS.idl 
 
 CPP_FILES = HelloWorld_CallerImpl_BUSINESS.cpp \
 	HelloWorld_CallerImpl.cpp \
-	component_valuetypes.cpp
+	component_valuetypes.cpp 
 
-OBJ_FILES = ${CPP_FILES:%.cpp=%.o}
+OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 
-CLEAN_FILES = ${OBJ_FILES} HelloWorld_CallerImpl.so HelloWorld_CallerImpl.zip
+CLEAN_FILES = ${IDL_FILES} \
+	${OBJ_FILES} \
+	HelloWorld_CallerImpl_BUSINESS.cpp \
+	HelloWorld_CallerImpl_BUSINESS.h \
+	HelloWorld_CallerImpl_BUSINESS_skel.cpp \
+	HelloWorld_CallerImpl_BUSINESS_skel.h \
+	libHelloWorld_CallerImpl.so \
+	HelloWorld_CallerImpl.zip\
+	component_valuetypes.cpp \
+	component_valuetypes.h 
 
-LIBS += -L../HelloWorld_CallerImpl_SERVANT -lHelloWorld_CallerImpl_SERVANT
+LIBS += -L../HelloWorld_CallerImpl_SERVANT -lHelloWorld_CallerImpl_SERVANT 
 
-CXXFLAGS += -I. -g
+CXXFLAGS += -I. -g -I../HelloWorld_CallerImpl_SERVANT 
+
+IDL_FLAGS += -I../HelloWorld_CallerImpl_SERVANT 
 
 include ../MakeComponentVars
 
-all: libHelloWorld_CallerImpl.so
+all: libHelloWorld_CallerImpl.so 
 
-libHelloWorld_CallerImpl.so: ${OBJ_FILES}
+libHelloWorld_CallerImpl.so: ${OBJ_FILES} 
 
 ${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} 
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target "IDL:HelloWorld/CallerImpl:1.0" $< 
-
-HelloWorld_CallerImpl_BUSINESS.cpp: HelloWorld_CallerImpl_EQUIVALENT.h HelloWorld_CallerImpl_LOCAL.h 
 
 HelloWorld_CallerImpl.cpp: HelloWorld_CallerImpl_BUSINESS.h
 

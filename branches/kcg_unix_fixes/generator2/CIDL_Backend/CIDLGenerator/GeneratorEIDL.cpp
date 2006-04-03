@@ -1199,7 +1199,7 @@ GeneratorEIDL::doAlias(IR__::AliasDef_ptr adef)
 		break; }
 	case CORBA__::dk_Array : {
 		IR__::ArrayDef_var arr = IR__::ArrayDef::_narrow(adef->original_type_def());
-		out << "typedef " << "todo" << " " << adef -> name () << ";\n";
+		out << "typedef " << tcToName(arr -> element_type()) << " " << adef -> name () << "[" << arr -> length() << "];\n";
 		break; }
     case CORBA__::dk_Wstring : {
 		IR__::WstringDef_var str = IR__::WstringDef::_narrow(adef->original_type_def());
@@ -1274,17 +1274,22 @@ GeneratorEIDL::doUnion(IR__::UnionDef_ptr udef)
 			case CORBA::tk_boolean: {
 				CORBA::Boolean b;
 				a_any >>= CORBA::Any::to_boolean(b);
-				label << b;
+				//label << b;
+				if (b == TRUE) { label << "TRUE"; }
+				if (b == FALSE) { label << "FALSE"; }
+				break;
 									}
 			case CORBA::tk_char: {
 				CORBA::Char c;
 				a_any >>= CORBA::Any::to_char(c);
 				label << c;
+				break;
 								 }
 			case CORBA::tk_wchar: {
 				CORBA::WChar w;
 				a_any >>= CORBA::Any::to_wchar(w);
 				label << w;
+				break;
 								  }
 			case CORBA::tk_enum: {
 				DynamicAny::DynAnyFactory_var factory;
@@ -1296,8 +1301,10 @@ GeneratorEIDL::doUnion(IR__::UnionDef_ptr udef)
 				{
 					std::cerr << "Error during DynAny stuff" << std::endl;
 				}
+
 				DynamicAny::DynEnum_var dyn_enum;
 				dyn_enum = DynamicAny::DynEnum::_narrow ( factory -> create_dyn_any( a_any ) );
+
 				label << dyn_enum->get_as_string();
 								 }
 			case CORBA::tk_alias: {

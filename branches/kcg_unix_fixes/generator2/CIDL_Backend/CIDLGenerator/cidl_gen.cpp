@@ -168,9 +168,16 @@ main
 		}
 		else if((strcmp(option, "--business") == 0) || (strcmp(option, "-b") == 0))
 		{
-			generateBusiness = true;
-			generateLIDL = true;
+			/* On Windows the executor needs to link equivalent and local */
+			/* On Linux the executor doesn't need it to be linked */
+			/* default the equivalent IDL is on but turned off here on Linux */
 
+			generateBusiness = true;
+#ifdef _WIN32
+			generateLIDL = true;
+#else
+			generateEIDL = false;
+#endif
 			for(int j = i ; j + 1 < argc ; j++)
 				argv[j] = argv[j + 1];
 
@@ -180,7 +187,7 @@ main
 		{
 			generateServant = true;
 			generateLIDL = true;
-
+			generateEIDL = true;
 			for(int j = i ; j + 1 < argc ; j++)
 			argv[j] = argv[j + 1];
 
@@ -318,8 +325,15 @@ main
 		repository = CIDL::CIDLRepository::_narrow( (new QEDO_ComponentRepository::CIDLRepository_impl ( orb, root_poa )) -> _this());
 	}
 
-	// feed repository
-	frontend_feed ( argc, argv, repository );
+	try {
+		// feed repository
+		frontend_feed ( argc, argv, repository );
+	} catch (...) 
+	{
+		std::cout << "Problem in parser occured ... exiting." << std::endl;
+		orb->destroy();
+		exit ( 1 );
+	}
 
 	if (read_ifr) {
 		try {

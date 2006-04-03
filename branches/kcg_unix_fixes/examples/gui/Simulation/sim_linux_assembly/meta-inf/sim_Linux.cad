@@ -43,7 +43,6 @@
 							<fileinarchive name="meta-inf/plane1.cpf"/>
 						</componentproperties>
 					</componentinstantiation>
-				<destination></destination>
 			</homeplacement>
 		</processcollocation>
 
@@ -57,7 +56,6 @@
 							</componentproperties>
 						</componentinstantiation>
 
-					<destination></destination>
 			</homeplacement>
 		</processcollocation>
 
@@ -67,7 +65,6 @@
 					<componentimplref idref="UUID-db269830-d1c7-4f43-9e02-5c75331f0dfe"/>
   			      		<componentinstantiation id="SimulationServer">
 						</componentinstantiation>
-					<destination></destination>
 			</homeplacement>
 		</processcollocation>
 
@@ -80,7 +77,6 @@
 							<fileinarchive name="meta-inf/radar1.cpf"/>
 						</componentproperties>
 					</componentinstantiation>
-				<destination></destination>
 			</homeplacement>
 		</processcollocation>
 
@@ -93,7 +89,6 @@
 								<fileinarchive name="meta-inf/radar2.cpf"/>
 							</componentproperties>
 						</componentinstantiation>
-					<destination></destination>
 			</homeplacement>
 		</processcollocation>
 
@@ -106,7 +101,6 @@
 								<fileinarchive name="meta-inf/tapdisplay1.cpf"/>
 							</componentproperties>
 						</componentinstantiation>
-					<destination></destination>
 			</homeplacement>
 		</processcollocation>
 

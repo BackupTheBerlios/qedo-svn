@@ -2,9 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(Qedo, 0.8.0, www.qedo.org)
+AC_INIT(Qedo, 0.8.1, www.qedo.org)
 AC_CONFIG_SRCDIR([gendef/gendef.cc])
 AC_CONFIG_HEADER([ComponentIDL/config.h])
+AC_CONFIG_HEADER([CIDL_Frontend/CIDLFrontendLib/config.h])
 
 
 AC_ARG_WITH(uuid,
@@ -27,7 +28,7 @@ AC_ARG_WITH(orbacus,
 
 AC_ARG_WITH(wxGTK,
  [  --with-wxGTK=dir        use wxGTK installed in dir],
- WXGTKDIR=$withval, WXGTKDIR="/usr")
+ WXGTKDIR=$withval, WXGTKDIR="")
 AC_SUBST(WXGTKDIR)
 
 AC_ARG_ENABLE(optimize,
@@ -75,24 +76,64 @@ else
 	if test X"$with_mico" != X ;then
 		MICODIR="$with_mico"
 		QEDO_ORB=MICO_ORB
-		AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no,[$MICODIR/bin])
+		AC_PATH_PROG(MICO_CONFIG,mico-config,no,[$MICODIR/bin])
 		AC_MSG_NOTICE([please make sure, that $MICODIR/bin/idl will run])
 	else
-		AC_CHECK_PROG(HAVE_MICO_CONFIG,mico-config,yes,no)
+		AC_CHECK_PROG(MICO_CONFIG,mico-config,mico-config,no)
 	fi
-	if test "$HAVE_MICO_CONFIG" != "yes"; then
+	if test X"$MICO_CONFIG" = Xno -o X"$MICO_CONFIG" = X ; then
  		AC_MSG_ERROR([found no mico-config])
 	else
 		QEDO_ORB=MICO_ORB
 	fi
 fi
 
-AC_SUBST(HAVE_MICO_CONFIG)
+AC_SUBST(MICO_CONFIG)
 AC_SUBST(HAVE_ORBACUS)
 AC_SUBST(ORBACUSDIR)
 AC_SUBST(QEDO_ORB)
 
 AC_CHECK_PROG(HAVE_MKDIR_PROG,mkdir,yes,no)
+AC_CHECK_PROG(HAVE_BISON,bison,yes,no)
+AC_CHECK_PROG(HAVE_FLEX,flex,yes,no)
+AC_CHECK_PROG(HAVE_PYTHON,python,yes,no)
+AC_CHECK_PROG(HAVE_KC_PP,[kc++],yes,no)
+
+if test X"$WXGTKDIR" = X ; then
+	AC_CHECK_PROG(WX_CONFIG,wx-config,wx-config,no)
+else
+	AC_PATH_PROG(WX_CONFIG,wx-config,no,[$WXGTKDIR/bin])
+fi
+AC_SUBST(WX_CONFIG)
+
+
+if test X"$HAVE_MKDIR_PROG" != Xyes; then
+  AC_MSG_ERROR([cannot mkdir program])
+fi
+
+if test X"$HAVE_BISON" != Xyes; then
+  AC_MSG_ERROR([cannot find bison program])
+fi
+YACC=bison
+AC_SUBST(YACC)
+
+if test X"$HAVE_FLEX" != Xyes; then
+  AC_MSG_ERROR([cannot find flex program])
+fi
+LEX=flex
+AC_SUBST(LEX)
+
+if test X"$HAVE_PYTHON" != Xyes; then
+  AC_MSG_ERROR([cannot find python program])
+fi
+PYTHON=python
+AC_SUBST(PYTHON)
+
+if test X"$HAVE_KC_PP" != Xyes; then
+  AC_MSG_ERROR([cannot find kc++ program])
+fi
+KC_PP="kc++"
+AC_SUBST(KC_PP)
 
 if test X"$UUIDDIR" != X ; then
 	LIBS="$LIBS -L$UUIDDIR/lib"
@@ -103,10 +144,15 @@ fi
 AC_CHECK_LIB([dl], [dlopen])
 AC_CHECK_LIB([z], [deflate])
 AC_CHECK_LIB([uuid], [uuid_generate],[uuid=yes],[uuid=no])
+
+if test X"$uuid" == Xno; then
+  AC_MSG_ERROR([cannot find library uuid])
+fi
+
 AC_CHECK_LIB([pthread], [pthread_sigmask])
 
 
-if test X"$use_debug" = Xno ; then
+if test X"$WX_CONFIG" = Xno -a  X"$use_debug" = Xno ; then
 	AC_CHECK_LIB([wx_base-2.6], [wxFalse], [HAVE_WXGTK_LIB=yes], [HAVE_WXGTK_LIB=no], [-L$WXGTKDIR/lib/])
 else
 	AC_CHECK_LIB([wx_based-2.6], [wxFalse], [HAVE_WXGTK_LIB=yes], [HAVE_WXGTK_LIB=no], [-L$WXGTKDIR/lib/])
@@ -118,10 +164,6 @@ if test X"$uuid" != Xyes; then
   AC_MSG_ERROR([you need a uuid library for Qedo])
 else
   AC_DEFINE(HAVE_LIBUUID)
-fi
-
-if test X"$HAVE_MKDIR_PROG" != Xyes; then
-  AC_MSG_ERROR([cannot mkdir program])
 fi
 
 qedo_save_LIBS=$LIBS
@@ -264,6 +306,11 @@ AC_CONFIG_FILES([Makefile
 		 explore_server/Makefile
                  etc/Makefile
                  etc/MakeComponentVars
+                 CIDL_Repository/IFRidl/Makefile
+                 CIDL_Repository/ComponentRepositoryLib/Makefile
+                 CIDL_Repository/CIDLRepositoryLib/Makefile
+                 CIDL_Frontend/CIDLFrontendLib/Makefile
+                 CIDL_Backend/CIDLGenerator/Makefile
                  ])
 
 AC_OUTPUT

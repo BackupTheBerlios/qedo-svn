@@ -141,7 +141,7 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 	const XMLCh* p = uri.getPath();
 	if(!p)
 	{
-		NORMAL_ERR( "AssemblyFactoryImpl: invalid assembly location" );
+		NORMAL_ERR2( "AssemblyFactoryImpl: invalid assembly location: ", assembly_loc );
 		throw Components::Deployment::InvalidLocation();
 	}
 	std::string name = Qedo::transcode(p);
@@ -162,12 +162,12 @@ throw (Components::Deployment::InvalidLocation, Components::CreateFailure)
 	}
 	catch(...)
 	{
-		NORMAL_ERR( "AssemblyFactoryImpl: invalid assembly location" );
+		NORMAL_ERR2( "AssemblyFactoryImpl: invalid assembly location: ", assembly_loc );
 		throw Components::Deployment::InvalidLocation();
 	}
     if (!inputStream)
     {
-		NORMAL_ERR( "AssemblyFactoryImpl: invalid assembly location" );
+		NORMAL_ERR2( "AssemblyFactoryImpl: invalid assembly location", assembly_loc );
 		throw Components::Deployment::InvalidLocation();
     }
 

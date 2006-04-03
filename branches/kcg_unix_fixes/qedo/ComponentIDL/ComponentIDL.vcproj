@@ -252,11 +252,11 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="mico2311.lib pthreadVC2.lib"
+				AdditionalDependencies="mico2312.lib pthreadVC2.lib"
 				OutputFile="$(OutDir)/ComponentIDL.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(PTHREADS)\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;"
 				ModuleDefinitionFile="$(OutDir)/ComponentIDL.def"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug_mico/ComponentIDL.pdb"

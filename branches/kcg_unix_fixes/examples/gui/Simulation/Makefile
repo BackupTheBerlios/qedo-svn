@@ -33,6 +33,7 @@ SUBDIRS = Simulation_PlaneImpl_SERVANT \
 all: MakeComponentVars $(SUBDIRS:%=%-all)
 
 clean: $(SUBDIRS:%=%-clean)
+	${MAKE} -C sim_linux_assembly clean
 
 
 %-all: %

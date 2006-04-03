@@ -51,7 +51,7 @@ string get_short_name(char *full_scope_name) {
 
 
 	int len = strlen(full_scope_name); // Die Länge des Strings ermitteln
-	int ende, start; // Start und Ende Position in der RepID
+	int ende=-1, start=0; // Start und Ende Position in der RepID
 
 	const char* short_name="" ; // Rückgabe wert
 
@@ -184,7 +184,7 @@ string get_short_name(char *full_scope_name) {
 		DEBUG_OUT3 ( "ServerActivator has ", component_servers->length() , " component server. ");
 
 		ComponentServerActivatorInfo ComponentServerActivator;
-		const char* host="schlepptop";
+		//const char* host="schlepptop";
 		ComponentServerActivator.host_name=CORBA::string_dup(b.binding_name[0].id);
 		ComponentServerActivator.component_server_activator_ref=server_activator;
 	
@@ -203,7 +203,7 @@ string get_short_name(char *full_scope_name) {
 
 			// the information about the host name ist missing
 			// should be removed
-			const char* host="schlepptop";
+			// const char* host="schlepptop";
 			ComponentServer.host_name=(const char*)CORBA::string_dup(b.binding_name[0].id);
 			ComponentServer.component_server_ref=comp_server;
 
@@ -256,8 +256,8 @@ string get_short_name(char *full_scope_name) {
 					ComponentInstanceInfoList ComponentList;
 					ComponentList.length(homeinstances->length());
 
-					CORBA::ULong a = 0;
-					for (int a = 0; a < homeinstances -> length(); a++) {
+					CORBA::ULong a;
+					for (a = 0; a < homeinstances -> length(); a++) {
 				
 						Components::CCMObject_var inst=
 							Components::CCMObject::_duplicate((*homeinstances)[a]);

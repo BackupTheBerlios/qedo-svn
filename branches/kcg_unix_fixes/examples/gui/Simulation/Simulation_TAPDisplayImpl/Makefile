@@ -2,21 +2,30 @@ ORB_IDL_INCLUDE = -I..
 
 CIDL_FILES = ../simdemo.cidl
 
-IDL_FILES = Simulation_TAPDisplayImpl_LOCAL.idl \
-	Simulation_TAPDisplayImpl_EQUIVALENT.idl \
-	Simulation_TAPDisplayImpl_BUSINESS.idl 
+IDL_FILES = Simulation_TAPDisplayImpl_BUSINESS.idl 
 
 CPP_FILES = Simulation_TAPDisplayImpl_BUSINESS.cpp \
 	Simulation_TAPDisplayImpl.cpp \
-	valuetypes.cpp 
+	component_valuetypes.cpp 
 
 OBJ_FILES = ${CPP_FILES:%.cpp=%.o} 
 
-CLEAN_FILES = ${IDL_FILES} ${OBJ_FILES} libSimulation_TAPDisplayImpl.so Simulation_TAPDisplayImpl.zip
+CLEAN_FILES = ${IDL_FILES} \
+	${OBJ_FILES} \
+	Simulation_TAPDisplayImpl_BUSINESS.cpp \
+	Simulation_TAPDisplayImpl_BUSINESS.h \
+	Simulation_TAPDisplayImpl_BUSINESS_skel.cpp \
+	Simulation_TAPDisplayImpl_BUSINESS_skel.h \
+	libSimulation_TAPDisplayImpl.so \
+	Simulation_TAPDisplayImpl.zip\
+	component_valuetypes.cpp \
+	component_valuetypes.h 
 
-LIBS += -L../Simulation_TAPDisplayImpl_SERVANT -lSimulation_TAPDisplayImpl_SERVANT 
+LIBS += -L../Simulation_TAPDisplayImpl_SERVANT -lSimulation_TAPDisplayImpl_SERVANT -L/usr/X11/lib -lfltk 
 
-CXXFLAGS += -I. -g
+CXXFLAGS += -I. -g -I../Simulation_TAPDisplayImpl_SERVANT -I/usr/X11/include
+
+IDL_FLAGS += -I../Simulation_TAPDisplayImpl_SERVANT 
 
 include ../MakeComponentVars
 
@@ -24,11 +33,9 @@ all: libSimulation_TAPDisplayImpl.so
 
 libSimulation_TAPDisplayImpl.so: ${OBJ_FILES} 
 
-${IDL_FILES} valuetypes.cpp : ${CIDL_FILES} 
+${IDL_FILES} component_valuetypes.cpp : ${CIDL_FILES} 
 	${CIDL_GEN} -I${QEDO}/idl -I${ORB_IDL_INCLUDE} ${CIDL_ORB_DEF} \
 	--business --target "IDL:Simulation/TAPDisplayImpl:1.0" $< 
-
-Simulation_TAPDisplayImpl_BUSINESS.cpp: Simulation_TAPDisplayImpl_EQUIVALENT.h Simulation_TAPDisplayImpl_LOCAL.h 
 
 Simulation_TAPDisplayImpl.cpp: Simulation_TAPDisplayImpl_BUSINESS.h
 

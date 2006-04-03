@@ -113,3 +113,4 @@ void QedoEditor::on_close(wxCommandEvent& WXUNUSED(event))
 		delete(this);
 	}
 }
+

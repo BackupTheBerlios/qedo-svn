@@ -207,7 +207,7 @@ void ConnectionDialog::OnButtonOk( wxCommandEvent& event )
 
 void ConnectionDialog::setPorts1(wxArrayString portlist)
 {
-	for (int i=0; i<portlist.GetCount();i++)
+	for (unsigned int i=0; i<portlist.GetCount();i++)
 	{
 		portlist1->AppendItem(portlist1->GetRootItem(),portlist.Item(i),-1,-1,NULL);
 		
@@ -220,7 +220,7 @@ void ConnectionDialog::setPorts1(wxArrayString portlist)
 
 void ConnectionDialog::setPorts2( wxArrayString portlist)
 {
-	for (int i=0; i<portlist.GetCount();i++)
+	for (unsigned int i=0; i<portlist.GetCount();i++)
 	{
 		portlist2->AppendItem(portlist2->GetRootItem(),portlist.Item(i),-1,-1,NULL);
 	}

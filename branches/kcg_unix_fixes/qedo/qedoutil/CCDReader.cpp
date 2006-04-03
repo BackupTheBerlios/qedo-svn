@@ -334,7 +334,6 @@ CCDReader::sink (DOMElement* element)
 throw(CCDReadException)
 {
 	
-    DOMNode* child = element->getFirstChild();
 	Port port;
 	ComponentFeature componentfeature;
 	StreamSinkPort stream_sink_port;
@@ -382,7 +381,6 @@ CCDReader::source (DOMElement* element)
 throw(CCDReadException)
 {
 	
-    DOMNode* child = element->getFirstChild();
 	Port port;
 	ComponentFeature componentfeature;
 	StreamSourcePort stream_source_port;

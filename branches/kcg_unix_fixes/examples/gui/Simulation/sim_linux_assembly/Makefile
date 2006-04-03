@@ -3,6 +3,11 @@ include ../MakeComponentVars
 
 all: sim_$(OS).zip
 
+CLEAN_FILES = sim_$(OS).zip Simulation_PlaneImpl.zip \
+	Simulation_RadarImpl.zip \
+	Simulation_SimulationServerImpl.zip \
+	Simulation_TAPDisplayImpl.zip
+
 sim_$(OS).zip: Simulation_PlaneImpl.zip Simulation_RadarImpl.zip Simulation_SimulationServerImpl.zip Simulation_TAPDisplayImpl.zip meta-inf/sim_$(OS).cad
 	zip sim_$(OS).zip Simulation_PlaneImpl.zip Simulation_RadarImpl.zip Simulation_SimulationServerImpl.zip Simulation_TAPDisplayImpl.zip meta-inf/sim_$(OS).cad meta-inf/plane1.cpf meta-inf/plane2.cpf meta-inf/radar1.cpf meta-inf/radar2.cpf meta-inf/tapdisplay1.cpf
 

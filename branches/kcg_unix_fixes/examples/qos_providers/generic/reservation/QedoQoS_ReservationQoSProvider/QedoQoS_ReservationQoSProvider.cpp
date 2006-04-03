@@ -22,24 +22,24 @@ ReservationQoSproviderImpl::register_copis()
 	server_interceptor_ = new QedoQoS_Reservation::ServerContainerInterceptor(context_, this);
 
 	//server
-	Components::Extension::ServerInterceptorRegistration_ptr server_reg =
+	Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_reg =
 		context_->get_server_interceptor_dispatcher_registration();
-	server_reg->register_interceptor_for_all(server_interceptor_);
+	server_reg->register_server_interceptor(server_interceptor_);
 
 	//Client
-	Components::Extension::ClientInterceptorRegistration_ptr client_reg =
+	Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr client_reg =
 		context_->get_client_interceptor_dispatcher_registration();
-	client_reg->register_interceptor_for_all(client_interceptor_);
+	client_reg->register_client_interceptor(client_interceptor_);
 
 	//Servant
-	Components::Extension::ServantInterceptorRegistration_ptr servant_reg =
+	Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr servant_reg =
 		context_->get_servant_interceptor_dispatcher_registration();
-	servant_reg->register_interceptor_for_all(server_interceptor_);
+	servant_reg->register_servant_interceptor(server_interceptor_);
 
 	//Stub
-	Components::Extension::StubInterceptorRegistration_ptr stub_reg =
+	Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr stub_reg =
 		context_ -> get_stub_interceptor_dispatcher_registration();
-	stub_reg -> register_interceptor_for_all(client_interceptor_);
+	stub_reg -> register_stub_interceptor(client_interceptor_);
 }
 
 void
@@ -48,22 +48,22 @@ ReservationQoSproviderImpl::unregister_copis()
 	std::cout << "ReservationQoSProvider: unregister_copis" << std::endl;
 
 	//server
-	Components::Extension::ServerInterceptorRegistration_ptr server_reg =
+	Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_reg =
 		context_->get_server_interceptor_dispatcher_registration();
 	server_reg->unregister_interceptor_for_all(server_interceptor_);
 
 	//Client
-	Components::Extension::ClientInterceptorRegistration_ptr client_reg =
+	Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr client_reg =
 		context_->get_client_interceptor_dispatcher_registration();
 	client_reg->register_interceptor_for_all(client_interceptor_);
 
 	//Servant
-	Components::Extension::ServantInterceptorRegistration_ptr servant_reg =
+	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr servant_reg =
 		context_->get_servant_interceptor_dispatcher_registration();
 	servant_reg->register_interceptor_for_all(server_interceptor_);
 
 	//Stub
-	Components::Extension::StubInterceptorRegistration_ptr stub_reg =
+	Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_reg =
 		context_ -> get_stub_interceptor_dispatcher_registration();
 	stub_reg -> unregister_interceptor_for_all(client_interceptor_);
 }

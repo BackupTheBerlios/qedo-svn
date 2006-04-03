@@ -86,7 +86,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  qedoutil.lib mico2311.lib pthreadVC2.lib Ws2_32.lib"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  qedoutil.lib mico2312.lib pthreadVC2.lib Ws2_32.lib"
 				OutputFile="$(OutDir)/container_service_MonImpl.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)/lib;$(QEDO)/lib"
