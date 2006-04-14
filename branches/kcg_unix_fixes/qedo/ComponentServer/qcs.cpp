@@ -100,11 +100,11 @@ main (int argc, char** argv)
 		}
 	}
 
-	OpenPMF::CORBA::PMFInitializer* pmf_ini = NULL;
+	PMFCORBA::PMFInitializer* pmf_ini = NULL;
 	if (openpmf_enable)
 	{
 		std::cout << "OpenPMF: Load policy: " << policy_name << std::endl;
-		pmf_ini = new OpenPMF::CORBA::PMFInitializer(policy_name);
+		pmf_ini = new PMFCORBA::PMFInitializer(policy_name);
 	}
 #endif // USE_OPENPMF
 

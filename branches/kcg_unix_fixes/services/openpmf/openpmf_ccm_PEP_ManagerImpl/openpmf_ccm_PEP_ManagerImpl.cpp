@@ -8,6 +8,9 @@
 // BEGIN USER INSERT SECTION file
 #include "ServerPEPInterceptor.h"
 #include <SL3_Transformer.h>
+#include <CCM_Transformer.h>
+#include <cpm_admin.h>
+#include <pep_ccm_impl.h>
 
 #ifndef _WIN32
 extern PortableInterceptor::SlotId global_pmf_slot_id;
@@ -15,6 +18,13 @@ extern PortableInterceptor::SlotId global_pmf_slot_id;
 extern PortableInterceptor::SlotId
 get_global_pmf_slot_id();
 #endif // _WIN32
+
+
+using namespace PMFCCM;
+using namespace OpenPMF;
+using namespace PortableServer;
+using namespace CORBA;
+
 // END USER INSERT SECTION file
 
 
@@ -61,42 +71,56 @@ PEP_ManagerExec::configuration_complete()
 	    << policy_name_ 
 	    << std::endl;
 
-  pf_ = new OpenPMF::CORBA::Platform;
-  rt_policy_ = new OpenPMF::RTTreeElement;
+  PMFCORBA::PlatformRef pf = new PMFCORBA::Platform;
 
-  pf_->add_transformer("client.name", new OpenPMF::CORBA::SL3::TLSIdentityTransformer
-                             (NULL, new OpenPMF::CORBA::SL3::ClientTransformer));
-  pf_->add_transformer("initiator.name", new OpenPMF::CORBA::SL3::InitiatorTransformer);
-  pf_->add_transformer("target.name", new OpenPMF::CCM::TargetTransformer(NULL, NULL));
-  pf_->add_transformer("operation.name", new OpenPMF::CCM::OperationTransformer(NULL, NULL));
-  pf_->add_transformer("target.type", new OpenPMF::CCM::TypeTransformer(NULL, NULL));
+  pf->add_transformer("client.name", new PMFCORBA_SL3::TLSIdentityTransformer
+                             (NULL, new PMFCORBA_SL3::ClientTransformer));
+  pf->add_transformer("initiator.name", new PMFCORBA_SL3::InitiatorTransformer);
+  pf->add_transformer("target.name", new OpenPMF::CCM::TargetTransformer(NULL, NULL));
+  pf->add_transformer("operation.name", new OpenPMF::CCM::OperationTransformer(NULL, NULL));
+  pf->add_transformer("target.type", new OpenPMF::CCM::TypeTransformer(NULL, NULL));
 
   std::cout << "Transformer OK"
     	    << policy_name_ 
 	    << std::endl;
   
   ORB_var orb = ORB_instance("mico-local-orb", FALSE);
-  Object_var obj = orb->resolve_initial_references("PolicyRepository");
-  OpenPMF::PMFRepository_var pmf_repository = OpenPMF::PMFRepository::_narrow (obj);
-  if (is_nil (pmf_repository)) {
-    std::cout << "oops: could not locate PMFRepository server" << std::endl;
-      exit (1);
+  Bootstrap_var boot = Bootstrap::_nil();
+  CORBA::Object_var obj = CORBA::Object::_nil();
+  try {
+      obj = orb->resolve_initial_references
+          ("PolicyManagementFramework");
+      boot = Bootstrap::_narrow(obj);
+      assert(!is_nil(boot));
   }
-  std::cout << "get root policy\n";
-  OpenPMF::Policy_var pc = pmf_repository->root_policy();  
-  assert(!is_nil(pc));
-  std::cout << "get root policy OK!"
-	    << policy_name_ 
-	    << std::endl;
-  //  Policy_var pc1 = PolicyLoader::find(pc, policy_name_.c_str());
-  std::cout << "find policy " 
-	    << policy_name_;
-  OpenPMF::Policy_var pc1 = OpenPMF::CORBA::PolicyLoader::find(pc, policy_name_);
-  
-  std::cout << "find policy OK\n";
-  OpenPMF::CORBA::PolicyLoader::load(pf_, pc1, rt_policy_);
-  assert(rt_policy_);
-  std::cout << "policy loaded\n";
+  catch (const ORB::InvalidName& ex) {
+  }
+  PolicyEnforcementPoint_impl* pep_impl = new PolicyEnforcementPoint_impl
+      (orb, pf, "<unspecified>", "CCM",
+       "<unspecified>", this->policy_name_);
+  pep_impl->reload_policy();
+  if (!is_nil(boot)) {
+      obj = orb->resolve_initial_references("RootPOA");
+      POA_var poa = POA::_narrow(obj);
+      assert(!is_nil(poa));
+      CORBA::PolicyList pl(0);
+      POA_var pep_poa = POA::_nil();
+      try {
+          pep_poa = poa->create_POA("OpenPMF/PEP_POA", POAManager::_nil(), pl);
+      }
+      catch (const POA::AdapterAlreadyExists& ex) {
+          pep_poa = poa->find_POA("OpenPMF/PEP_POA", FALSE);
+      }
+      assert(!is_nil(pep_poa));
+      POAManager_var mgr = pep_poa->the_POAManager();
+      mgr->activate();
+      PolicyManagement_var pm = boot->policy_management();
+      PEPRegistry_var pep_regs = pm->pep_registry();
+      ObjectId_var oid = pep_poa->activate_object(pep_impl);
+      obj = pep_poa->id_to_reference(oid);
+      PolicyEnforcementPoint_var pep = PolicyEnforcementPoint::_narrow(obj);
+      pep_regs->register_PEP(pep);
+  }
 
   //  server_interceptor_ = new Qedo::ServerPEPInterceptor(pf_, rt_policy_);
 
@@ -107,7 +131,7 @@ PEP_ManagerExec::configuration_complete()
 
   Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_reg =
     context_->get_server_interceptor_dispatcher_registration();
-  server_pep_interceptor_ = new Qedo::ServerPEPInterceptor(context_,this, pf_, rt_policy_);
+  server_pep_interceptor_ = new Qedo::ServerPEPInterceptor(context_,this, pep_impl);
 #ifndef _WIN32
   server_pep_interceptor_->set_pmf_slot_id(global_pmf_slot_id);
 #else // _WIN32

@@ -20,14 +20,6 @@
 
 // BEGIN USER INSERT SECTION file_post
 #include "ServerPEPInterceptor.h"
-#include <CORBA_Transformer.h>
-#include <RequestInfoHolder.h>
-#include <CCM_Transformer.h>
-//#include <CCMRequestInfoHolder.h>
-#include <SL3_Transformer.h>
-#include <CORBAAdapter.h>
-using namespace ::CORBA;
-//using namespace OpenPMF;
 // END USER INSERT SECTION file_post
 
 
@@ -79,8 +71,6 @@ namespace openpmf_ccm
     Qedo::ServerPEPInterceptor* server_pep_interceptor_;
     Components::Cookie_var server_cookie_;
     std::string policy_name_;
-    OpenPMF::RTTreeElementRef rt_policy_;
-    OpenPMF::CORBA::PlatformRef pf_;
 // END USER INSERT SECTION PEP_ManagerExec
 
     };

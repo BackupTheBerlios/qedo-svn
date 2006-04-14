@@ -7,10 +7,9 @@
 #include "openpmf_ccm_PEP_ManagerImpl_LOCAL.h"
 #include <Attribute.h>
 #include <Transformer.h>
-#include <RTTreeElement.h>
 #define MICO_CONF_INTERCEPT
 #include <PMFRepository.h>
-#include <Platform.h>
+#include <pep_impl.h>
 
 
 
@@ -33,13 +32,12 @@ namespace Qedo {
 
     std::string name_;
     std::string policy_name_;
-    OpenPMF::RTTreeElementRef rt_policy_;
-    OpenPMF::CORBA::PlatformRef pf_;
+    PMFIMPL::PolicyEnforcementPoint_impl* pep_;
 
     PortableInterceptor::SlotId pmf_slot_id_;
     bool pmf_slot_set_;
   public:
-    ServerPEPInterceptor(openpmf_ccm::CCM_pep_manager_Context *context,openpmf_ccm::CCM_PEP_ManagerExec *executor,OpenPMF::CORBA::Platform *pf, OpenPMF::RTTreeElement *rt_policy  );
+    ServerPEPInterceptor(openpmf_ccm::CCM_pep_manager_Context *context,openpmf_ccm::CCM_PEP_ManagerExec *executor, PMFIMPL::PolicyEnforcementPoint_impl* pep);
     
     ~ServerPEPInterceptor();
     

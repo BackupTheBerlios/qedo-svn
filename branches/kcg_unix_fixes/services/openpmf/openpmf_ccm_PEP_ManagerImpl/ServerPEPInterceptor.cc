@@ -26,18 +26,12 @@ ServerPEPInterceptor::set_slot_id(PortableInterceptor::SlotId slot_id) {
 
 };
 
-  ServerPEPInterceptor::ServerPEPInterceptor (openpmf_ccm::CCM_pep_manager_Context* context,openpmf_ccm::CCM_PEP_ManagerExec* executor,OpenPMF::CORBA::Platform *pf, OpenPMF::RTTreeElement *rt_policy   )
+  ServerPEPInterceptor::ServerPEPInterceptor (openpmf_ccm::CCM_pep_manager_Context* context,openpmf_ccm::CCM_PEP_ManagerExec* executor, PMFIMPL::PolicyEnforcementPoint_impl* pep)
 {
   std::cout << "ServerPEPInterceptor::ServerPEPInterceptor\n";
   context_ = context;
   executor_ = executor;
-  pf_ = pf;
-  pf_->_ref();
-  rt_policy_ = rt_policy;
-  rt_policy_->_ref();
-  std::cout << ">>>>>>>>>>>>>>>>>>rt_policy: " << rt_policy_->_refcnt() << std::endl;
-  assert(pf_);
-  assert(rt_policy_);
+  pep_ = pep;
   pmf_slot_set_ = false;
 }
 
@@ -79,10 +73,7 @@ ServerPEPInterceptor::receive_request (Components::ContainerPortableInterceptor:
 	std::cout << "Got CSI\n";
         if (evaluate_policy == 0) {
             std::cerr << "SPEPI: going to evaluate policy..." << std::endl;
-            if (rt_policy_->evaluate(riref) == 0) {
-                std::cerr << "ServerPEPInterceptor: un-successful evaluation => throw CORBA::NO_PERMISSION" << std::endl;
-                mico_throw(CORBA::NO_PERMISSION());
-            }
+            pep_->evaluate(riref);
         }
         else {
             std::cerr << "SPEPI: evaluator NOT CALLED" << std::endl;
