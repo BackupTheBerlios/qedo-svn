@@ -10,7 +10,7 @@
 #include <SL3_Transformer.h>
 #include <CCM_Transformer.h>
 #include <cpm_admin.h>
-#include <pep_ccm_impl.h>
+#include <pep_impl.h>
 
 #ifndef _WIN32
 extern PortableInterceptor::SlotId global_pmf_slot_id;
@@ -20,7 +20,7 @@ get_global_pmf_slot_id();
 #endif // _WIN32
 
 
-using namespace PMFCCM;
+using namespace PMFIMPL;
 using namespace OpenPMF;
 using namespace PortableServer;
 using namespace CORBA;
@@ -85,42 +85,10 @@ PEP_ManagerExec::configuration_complete()
 	    << std::endl;
   
   ORB_var orb = ORB_instance("mico-local-orb", FALSE);
-  Bootstrap_var boot = Bootstrap::_nil();
-  CORBA::Object_var obj = CORBA::Object::_nil();
-  try {
-      obj = orb->resolve_initial_references
-          ("PolicyManagementFramework");
-      boot = Bootstrap::_narrow(obj);
-      assert(!is_nil(boot));
-  }
-  catch (const ORB::InvalidName& ex) {
-  }
-  PolicyEnforcementPoint_impl* pep_impl = new PolicyEnforcementPoint_impl
-      (orb, pf, "<unspecified>", "CCM",
+  CORBA::PolicyList pl(0);
+  PolicyEnforcementPoint_impl* pep_impl = PEPFactory::create_PEP
+      (orb, pl, pf, "<unspecified>", "CCM",
        "<unspecified>", this->policy_name_);
-  pep_impl->reload_policy();
-  if (!is_nil(boot)) {
-      obj = orb->resolve_initial_references("RootPOA");
-      POA_var poa = POA::_narrow(obj);
-      assert(!is_nil(poa));
-      CORBA::PolicyList pl(0);
-      POA_var pep_poa = POA::_nil();
-      try {
-          pep_poa = poa->create_POA("OpenPMF/PEP_POA", POAManager::_nil(), pl);
-      }
-      catch (const POA::AdapterAlreadyExists& ex) {
-          pep_poa = poa->find_POA("OpenPMF/PEP_POA", FALSE);
-      }
-      assert(!is_nil(pep_poa));
-      POAManager_var mgr = pep_poa->the_POAManager();
-      mgr->activate();
-      PolicyManagement_var pm = boot->policy_management();
-      PEPRegistry_var pep_regs = pm->pep_registry();
-      ObjectId_var oid = pep_poa->activate_object(pep_impl);
-      obj = pep_poa->id_to_reference(oid);
-      PolicyEnforcementPoint_var pep = PolicyEnforcementPoint::_narrow(obj);
-      pep_regs->register_PEP(pep);
-  }
 
   //  server_interceptor_ = new Qedo::ServerPEPInterceptor(pf_, rt_policy_);
 
