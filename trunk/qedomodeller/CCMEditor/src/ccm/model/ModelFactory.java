@@ -182,6 +182,7 @@ public class ModelFactory {
 	            nameList.add(idl.getKind().getName().substring(3));   
 	        }else{
 	            Contained idl=(Contained) o;
+	            // TODO check wehter the absolute name is sufficient
 	            String name=idl.getAbsoluteName()+":"+idl.getIdentifier();
 	            nameList.add(name);
 	        }

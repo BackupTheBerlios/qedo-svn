@@ -49,7 +49,7 @@ public class InitilizeModel {
 		//view.setModuleDef(rootmodule);
 		//rootmodule.getView().add(view);
 		rootmodule.setIdentifier(rootName);
-		rootmodule.setRepositoryId("IDL: root: "+ version);
+		rootmodule.setRepositoryId("IDL:" + rootName +":" + version);
 		rootmodule.setVersion(version);
 		rootmodule.setAbsoluteName("");
 		ccm.setModuleDef(rootmodule);	
