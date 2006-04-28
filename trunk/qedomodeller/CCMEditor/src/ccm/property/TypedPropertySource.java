@@ -11,9 +11,12 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
+import CCMModel.ArrayDef;
 import CCMModel.CCMModelPackage;
+import CCMModel.EnumDef;
 import CCMModel.IDLType;
 import CCMModel.PrimitiveDef;
+import CCMModel.StructDef;
 import CCMModel.Typed;
 
 
@@ -78,8 +81,23 @@ public class TypedPropertySource implements IPropertySource {
 		if (id == CCMModelPackage.IDL_TYPE) {
 			IDLType type = typed.getIDLType();
 			if (type instanceof PrimitiveDef) 
+			{
 				value = ((PrimitiveDef) type).getKind().getName();
+			}
+			if (type instanceof EnumDef)
+			{
+				value = ((EnumDef) type).getAbsoluteName();
+			}
+			if (type instanceof ArrayDef)
+			{
+
+			}
+			if (type instanceof StructDef)
+			{
+				value = ((StructDef) type).getAbsoluteName();
+			}
 		}
+		
 //		if (id == CCMModelPackage.FIELD__IDENTIFIER) {
 //			value = field.getIdentifier();
 //		}

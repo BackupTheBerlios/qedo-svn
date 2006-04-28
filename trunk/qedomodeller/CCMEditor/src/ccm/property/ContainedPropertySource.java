@@ -98,7 +98,7 @@ public class ContainedPropertySource implements IPropertySource2 {
 	public Object getPropertyValue(Object id) {
 	    int i=Integer.parseInt( (String)id );
 		if(i==CCMModelPackage.CONTAINED__ABSOLUTE_NAME)
-		    return getAbsoluteName();
+		    return object.getAbsoluteName();
 		if(i==CCMModelPackage.CONTAINED__IDENTIFIER)
 		    return object.getIdentifier();
 		if(i==CCMModelPackage.CONTAINED__REPOSITORY_ID)
@@ -113,8 +113,12 @@ public class ContainedPropertySource implements IPropertySource2 {
 	
 	private String getAbsoluteName(){
 	    String str=object.getAbsoluteName();
-		if(str.trim().length()!=0)str=str + ":"+object.getIdentifier();
+
+	    // TODO this method is probable not needed anymore
+	    /* disabled by tri
+	    if(str.trim().length()!=0)str=str + ":"+object.getIdentifier();
 		else str=object.getIdentifier();
+		*/
 		return str;
 	}
 
@@ -134,6 +138,7 @@ public class ContainedPropertySource implements IPropertySource2 {
 	 * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
 	 */
 	public void setPropertyValue(Object id, Object value) {
+		// TODO check the creation of the repository id
 	    int i= Integer.parseInt( (String)id) ;
 	    if(CCMModelPackage.CONTAINED__VERSION==i){
 	        EStructuralFeature	feature = object.eClass().getEStructuralFeature(CCMModelPackage.CONTAINED__REPOSITORY_ID);
