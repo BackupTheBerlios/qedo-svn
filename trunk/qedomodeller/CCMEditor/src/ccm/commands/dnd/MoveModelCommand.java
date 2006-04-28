@@ -29,6 +29,7 @@ public class MoveModelCommand extends Command {
 	
 		model.setDefinedIn(module);
 		
+		// TODO check if the right absolute name ist computed
 		// update absolute name
 		String absname = module.getIdentifier();
 		if (module.getAbsoluteName()!=null && module.getAbsoluteName().length()!=0) {

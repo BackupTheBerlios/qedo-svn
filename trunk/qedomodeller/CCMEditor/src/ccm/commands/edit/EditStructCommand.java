@@ -79,10 +79,18 @@ public class EditStructCommand extends CreateNodeForContainedCommand{
 	    //*****************************
 	    newObject.setIdentifier(identifier);
 		newObject.setVersion(version);
+		/* modified by tri */
+		newObject.setAbsoluteName(container.getAbsoluteName() +":" + identifier);
+		
+		/*
 		if(container.getAbsoluteName().trim().length()!=0)
 		    newObject.setAbsoluteName(container.getAbsoluteName() + ":" + container.getIdentifier());
 		else
 		    newObject.setAbsoluteName(container.getIdentifier());
+		    
+		*/
+		
+		// TODO
 		newObject.setRepositoryId(CCMConstants.getRepositoryIdString(newObject.getAbsoluteName(),identifier,version));
 	   // container.getContents().add(newObject);
 	    //********************

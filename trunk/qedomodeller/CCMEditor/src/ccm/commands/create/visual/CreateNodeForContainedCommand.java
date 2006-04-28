@@ -67,10 +67,18 @@ public abstract class CreateNodeForContainedCommand extends Command{
 	public void execute() {
 		newObject.setIdentifier(identifier);
 		newObject.setVersion(version);
+		/* modified by tri */
+		newObject.setAbsoluteName(container.getAbsoluteName() +":" + identifier);
+		
+		/*
 		if(container.getAbsoluteName().trim().length()!=0)
 		    newObject.setAbsoluteName(container.getAbsoluteName() + ":" + container.getIdentifier());
 		else
 		    newObject.setAbsoluteName(container.getIdentifier());
+		    
+		*/
+		
+		// TODO
 		newObject.setRepositoryId(CCMConstants.getRepositoryIdString(newObject.getAbsoluteName(),identifier,version));
 	    container.getContents().add(newObject);
 	}
@@ -177,10 +185,15 @@ public abstract class CreateNodeForContainedCommand extends Command{
      * @return Returns the repositoryId.
      */
     public String getAbsoluteName() {    
-		if(container.getAbsoluteName().trim().length()!=0)
+    	/* modified by tri */
+    	String str = container.getAbsoluteName() + newObject.getIdentifier();
+    	return str;
+    	/*
+    	if(container.getAbsoluteName().trim().length()!=0)
 		    return container.getAbsoluteName() + ":" + container.getIdentifier();
 		else
 		    return container.getIdentifier();
+	*/
     }
 
     /**
