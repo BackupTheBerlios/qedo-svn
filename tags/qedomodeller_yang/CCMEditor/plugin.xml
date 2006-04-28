@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="CCMEditor"
+   name="CCMEditor Plug-in"
+   version="1.0.0"
+   provider-name=""
+   class="ccm.CCMEditorPlugin">
+
+   <runtime>
+      <library name="ccm.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime" export="false"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.gef"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.emf.ecore.xmi"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.emf.edit.ui"/>
+      <import plugin="CCMIO"/>
+      <import plugin="CCMModel"/>
+   </requires>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="CCM Editor"
+            extensions="ccm"
+            icon="bin/ccm/icons/editor_icon.gif"
+            contributorClass="ccm.editors.MultiPageEditorContributor"
+            class="ccm.editors.CCMEditor"
+            id="ccm.editors.CCMEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="CCM Development"
+            id="CCMEditor">
+      </category>
+      <wizard
+            name="CCM Project"
+            icon="bin/ccm/icons/editor_icon.gif"
+            category="CCMEditor"
+            class="ccm.wizards.SampleNewWizard"
+            id="ccm.wizards.SampleNewWizard">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            icon="bin/ccm/icons/editor_icon.gif"
+            class="ccm.wizards.ImportWizard"
+            name="Import CCM-Model from Repository"
+            id="ccm.wizards.ImportWizard"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Sample Category"
+            id="CCMEditor"/>
+      <view
+            class="CCMEditor.views.SampleView"
+            icon="bin/ccm/icons/editor_icon.gif"
+            category="CCMEditor"
+            name="Sample View"
+            id="CCMEditor.views.SampleView"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <wizard
+            icon="bin/ccm/icons/editor_icon.gif"
+            class="ccm.wizards.ExportWizard"
+            name="Export CCM-Model to Repository"
+            id="ccm.wizards.ExportWizard"/>
+   </extension>
+
+</plugin>
