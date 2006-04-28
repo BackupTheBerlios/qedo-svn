@@ -1,6 +1,8 @@
 package ccm.wizards;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.ListIterator;
 
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
@@ -18,11 +20,13 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.omg.CORBA.COMM_FAILURE;
 
+import MDE._CCMPackage;
+import MDE._CCMPackageHelper;
 import MDE.BaseIDL.Contained;
 import MDE.BaseIDL.ModuleDef;
 import MDE.BaseIDL.ModuleDefHelper;
 import Reflective.MofError;
-import Reflective.NotSet;
+import Reflective.__RefPackageStub;
 import ccmio.repository.CCMRepository;
 
 
@@ -38,12 +42,13 @@ public class RepositoryPage extends WizardPage {
 	private Text moduleText;
 	private Text refFileText;
 	private CCMRepository repository;
-	private Tree moduleTree;
+	private Tree packageTree;
 	private ModuleDef module;
+	private _CCMPackage current_package;
 	private ModuleDef[] modules;
 	
-	//private static String refFileName ="C:\\repository\\etc\\ccmRepositoryRoot.ref";
-	private static String refFileName ="";
+	private static String refFileName ="C:\\repository\\etc\\ccmRepositoryRoot.ref";
+	//private static String refFileName ="";
 	
 	private ISelection selection;
      
@@ -90,11 +95,11 @@ public class RepositoryPage extends WizardPage {
 
 		// Module-tree
 		//moduleTree = new Tree(container,SWT.BORDER |SWT.MULTI | SWT.V_SCROLL);
-		moduleTree = new Tree(container,SWT.BORDER | SWT.SINGLE);
+		packageTree = new Tree(container,SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_BOTH);
-		moduleTree.setLayoutData(gd);
-		moduleTree.setEnabled(false);
-		moduleTree.addSelectionListener(new SelectionAdapter() {
+		packageTree.setLayoutData(gd);
+		packageTree.setEnabled(false);
+		packageTree.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				//moduleTree.getSelection();
 				handleSelection();
@@ -113,7 +118,7 @@ public class RepositoryPage extends WizardPage {
 	private void initialize() {
 	 	refFileText.setText(refFileName);
 		if (!refFileName.equals(""))
-			updateModuleTree();
+			updatePackageTree();
 	//	else if(!refFileName.equals("")){
 	//		try{
 	//			repository = new CCMRepository(refFileName);
@@ -136,7 +141,7 @@ public class RepositoryPage extends WizardPage {
 		if ((result = dialog.open()) != null)
 			refFileText.setText(result);
 		dialogChanged();
-		updateModuleTree();
+		updatePackageTree();
 		
 		
 	}
@@ -145,7 +150,7 @@ public class RepositoryPage extends WizardPage {
 	 * choose the new value for the module field.
 	 */
 	private void handleSelection(){
-		TreeItem[] sels = moduleTree.getSelection();
+		TreeItem[] sels = packageTree.getSelection();
 		//modules= new ModuleDef[sels.length];
 		//for (int i=0;i<sels.length;i++){
 		//	modules[i]=(ModuleDef)sels[i].getData();
@@ -153,7 +158,7 @@ public class RepositoryPage extends WizardPage {
 		if (sels.length > 0)
 		{
 			TreeItem sel = sels[0];
-			module = (ModuleDef) sel.getData();
+			current_package = (_CCMPackage) sel.getData();
 		}
 		dialogChanged();
 	}
@@ -168,8 +173,8 @@ public class RepositoryPage extends WizardPage {
 			updateStatus("RepositoryRoot.ref - File name must be specified");
 			return;
 		}
-		if (module == null){
-			updateStatus("Choose a Repository-Module.");
+		if (current_package == null){
+			updateStatus("Choose a Repository-Package.");
 			return;
 		}
 		updateStatus(null);
@@ -178,33 +183,45 @@ public class RepositoryPage extends WizardPage {
 	/**
 	 * Updates the ModelTree.
 	 */
-	private void updateModuleTree()
+	private void updatePackageTree()
 	{
 		
 		try
 		{
 			repository = new CCMRepository(refFileName);
 			// gets all module
-			MDE.BaseIDL.ModuleDef[] repmodules = 
-				repository.getMDE().base_idl_ref().module_def_ref().all_of_class_module_def();
-			moduleTree.removeAll();
-			moduleTree.setEnabled(false);
-			for (int i=0;i<repmodules.length;i++)
-				try { repmodules[i].defined_in(); }
-				catch (NotSet e)
-				{
-					TreeItem  module = new TreeItem(moduleTree,SWT.NULL);
-					module.setText(repmodules[i].identifier());
-					module.setData(repmodules[i]);
+			List reppackages = 
+				repository.getMDE();
+//				repository.getMDE().base_idl_ref().module_def_ref().all_of_class_module_def();
+			packageTree.removeAll();
+			packageTree.setEnabled(false);
+			ListIterator package_iter;
+			for (ListIterator it = reppackages.listIterator(); it.hasNext();)
+//			for (int i=0;i< reppackages.length;i++)
+			{
+//					_CCMPackage temp_package = _CCMPackageHelper.narrow(it.next());
+					__RefPackageStub ref_pack = (__RefPackageStub)it.next();
+					_CCMPackage temp_package;
+					try {
+						temp_package = _CCMPackageHelper.narrow(ref_pack);
+					} catch (Exception e)
+					{
+						// not a CCM Package
+						break;
+					}
+					TreeItem  tree_package = new TreeItem(packageTree,SWT.NULL);
+					tree_package.setText(temp_package.medini_get_name());
+					tree_package.setData(temp_package);
 					// module.setExpanded(true);
-					updateModuleTree(module,repmodules[i]);
-				}
-			if (repmodules.length == 0){
-				updateStatus("Can´t find Module in Repository"); 
+					// disabled for now
+					//	updatePackageTree(tree_package,reppackages[i]);
+			}
+			if (reppackages.isEmpty()){
+				updateStatus("Can´t find Package in Repository"); 
 				return;
 			}
 			
-			moduleTree.setEnabled(true);
+			packageTree.setEnabled(true);
 			updateStatus(null);
 		}
 		catch (IOException ex)
@@ -217,7 +234,7 @@ public class RepositoryPage extends WizardPage {
 	}
 	
 	
-	private void updateModuleTree(TreeItem treeItem,ModuleDef repmodule) throws MofError
+	private void updatePackageTree(TreeItem treeItem,ModuleDef repmodule) throws MofError
 	{
 		Contained[] contens = repmodule.contents();
 		for (int i=0;i<contens.length;i++)
@@ -228,7 +245,7 @@ public class RepositoryPage extends WizardPage {
 				module.setText(moduleDef.identifier());
 				module.setData(moduleDef);
 				// module.setExpanded(true);
-				updateModuleTree(module,moduleDef);
+				updatePackageTree(module,moduleDef);
 			}
 			catch (Exception e) {}
 		}
@@ -252,8 +269,8 @@ public class RepositoryPage extends WizardPage {
 		return repository;
 	}
 
-	public ModuleDef getModule(){
-		return module;
+	public _CCMPackage getPackage(){
+		return current_package;
 	}
 	public ModuleDef[] getModules(){
 		return modules;
