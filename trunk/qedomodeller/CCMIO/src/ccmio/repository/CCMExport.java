@@ -73,6 +73,7 @@ import CCMModel.ValueDef;
 import CCMModel.ValueMemberDef;
 import CCMModel.WstringDef;
 import CCMModel.impl.DiagramImpl;
+import MDE._CCMPackage;
 import MDE.BaseIDL.ContainerHelper;
 import MDE.BaseIDL.IDLTypeHelper;
 import MDE.BaseIDL.InterfaceDefHelper;
@@ -137,11 +138,11 @@ import Reflective.MofError;
  */
 public class CCMExport {
 
-	private static _BaseIDLPackage baseIDLPackage;
-	private static _ComponentIDLPackage componentIDLPackage;
-	private static _CIFPackage CIFPackage;
-	private static _DeploymentPackage deploymentPackage;
-	private static ArrayList 	relations,			// lists of all relations, 
+	private _BaseIDLPackage baseIDLPackage;
+	private _ComponentIDLPackage componentIDLPackage;
+	private _CIFPackage CIFPackage;
+	private _DeploymentPackage deploymentPackage;
+	private ArrayList 	relations,			// lists of all relations, 
 								repmodel, emfmodel;	// objects in repository and emf-model
 
 	/**
@@ -150,25 +151,37 @@ public class CCMExport {
  	 * @param ccm = the CCM-Object that represents the ccmmodel
  	 * @param name = identifier of the rootModule in the repository
  	 */
-	public static void exports(CCMRepository repository,CCM ccm) throws MofError
+	public void exports(CCMRepository repository,CCM ccm) throws MofError
 	{
-		emfmodel = new ArrayList(); repmodel = new ArrayList();
+		emfmodel = new ArrayList();
+		repmodel = new ArrayList();
 		relations = new ArrayList();
 
-		baseIDLPackage = repository.getMDE().base_idl_ref();
-		componentIDLPackage = repository.getMDE().component_idl_ref();
-		CIFPackage = repository.getMDE().cif_ref();
-		deploymentPackage = repository.getMDE().deployment_ref();
+		_CCMPackage temp_package;
+		// identify the name of Package
+		// asuming first Module represents the package name
+		ModuleDef package_module = ccm.getModuleDef();
+		String package_name = package_module.getIdentifier();
+
+		// creste root ccm package in CCM repositry
+		temp_package = (_CCMPackage) repository.create_package(package_name);
+		
+		// idenfy local vars
+		baseIDLPackage = temp_package.base_idl_ref();
+		componentIDLPackage = temp_package.component_idl_ref();
+		CIFPackage = temp_package.cif_ref();
+		deploymentPackage = temp_package.deployment_ref();
 		
 		// 1. & 2. create the rootModule and its contents
-		ModuleDef rootModule = ccm.getModuleDef();
+
 		//createRoot(rootModule);
-		MDE.BaseIDL.ModuleDef repRootModule = ModuleDefHelper.narrow(create(rootModule));
+//		MDE.BaseIDL.ModuleDef repRootModule = ModuleDefHelper.narrow(create(package_module));
 		// 3. creates relations 
 		//System.out.println("Create model in repository.");
 		MDE.BaseIDL.Contained[] contents = 
-			createContents(rootModule.getContents());
+			createContents(package_module.getContents());
 		//System.out.println("Create model in repository.");
+/*
 		for (int i=0;i<contents.length;i++)
 		{  
 			//System.out.println("contents[i]. "+contents[i]);
@@ -177,7 +190,7 @@ public class CCMExport {
 				contents[i].set_defined_in(repRootModule);
 			}
 		}
-	
+	*/
 		
 		//createRelations();
 		
@@ -190,8 +203,12 @@ public class CCMExport {
 	 * This methode creates the Root-Module and its contens in in Repository.
 	 * @param rootModule = the root-module of our modell.
  	 */
-	private static void createRoot(ModuleDef rootModule) throws MofError
+	
+	// not used
+	/*
+	private void createRoot(ModuleDef rootModule) throws MofError
 	{
+		
    	 	MDE.BaseIDL.ModuleDef repRootModule = ModuleDefHelper.narrow(create(rootModule));
    	 	repmodel.add(repRootModule); emfmodel.add(rootModule);
    	 	// create the contens of the RootModule
@@ -206,13 +223,14 @@ public class CCMExport {
 			}
 		}
 	}
+	*/
 	/* --------------------------------- CREATE ------------------------------------------------ */
 	/**
 	 * This methode creates a List of Contained in Repository.
 	 * @param contents = the objects to add to the model
 	 * @return the new repository-objects
  	 */
-	private static MDE.BaseIDL.Contained[] createContents(EList contents) throws MofError
+	private MDE.BaseIDL.Contained[] createContents(EList contents) throws MofError
 	{	 
 		MDE.BaseIDL.Contained[]  repcontents = new MDE.BaseIDL.Contained[contents.size()];
 		for (int i=0; i<contents.size(); i++)
@@ -255,7 +273,7 @@ public class CCMExport {
 	 * @param contained = the object to add to the model
 	 * @return the new repository-object
  	 */
-	private static MDE.BaseIDL.Contained create(Contained contained) throws MofError
+	private MDE.BaseIDL.Contained create(Contained contained) throws MofError
 	{
 		MDE.BaseIDL.Contained result;
 		//System.out.println("\t" + contained.getClass().getName() + " : " + contained.getIdentifier());
@@ -271,7 +289,8 @@ public class CCMExport {
 			if(eidlfile!=null){
 				idlfile=deploymentPackage.idlfile_ref().create_idlfile(eidlfile.getIdentifier(),
 					eidlfile.getRepositoryId(),eidlfile.getVersion(),eidlfile.getName(),eidlfile.getLocation());
-				repmodel.add(idlfile); emfmodel.add(eidlfile);
+				repmodel.add(idlfile);
+				emfmodel.add(eidlfile);
 			}
 			MDE.Deployment._SoftwarePackage softwarePackage=
 				deploymentPackage.software_package_ref().create_software_package( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
@@ -498,7 +517,7 @@ public class CCMExport {
 	 * @param emfIDLType = the IDLType to add to the model
 	 * @return the new repository-IDLType
  	 */
-	private static MDE.BaseIDL.IDLType createIDLType(IDLType emfIDLType) throws MofError
+	private MDE.BaseIDL.IDLType createIDLType(IDLType emfIDLType) throws MofError
 	{
 		if (emfIDLType instanceof TypedefDef)
 			return (MDE.BaseIDL.IDLType)create((TypedefDef)emfIDLType);
@@ -506,7 +525,8 @@ public class CCMExport {
 		else if (emfIDLType instanceof ArrayDef)
 		{
 			MDE.BaseIDL.ArrayDef repArray = baseIDLPackage.array_def_ref().create_array_def((int)((ArrayDef)emfIDLType).getBound());
-			emfmodel.add(emfIDLType);repmodel.add(repArray);
+			emfmodel.add(emfIDLType);
+			repmodel.add(repArray);
 			IDLType emfIDLType2 = ((Typed)emfIDLType).getIDLType();
 			MDE.BaseIDL.IDLType repIDLType2;
 			if (emfIDLType2 != null)
@@ -518,7 +538,8 @@ public class CCMExport {
 		else if (emfIDLType instanceof SequenceDef)
 		{
 			MDE.BaseIDL.SequenceDef repSequence = baseIDLPackage.sequence_def_ref().create_sequence_def((int)((SequenceDef)emfIDLType).getBound());
-			emfmodel.add(emfIDLType);repmodel.add(repSequence);
+			emfmodel.add(emfIDLType);
+			repmodel.add(repSequence);
 			IDLType emfIDLType2 = ((Typed)emfIDLType).getIDLType();
 			MDE.BaseIDL.IDLType repIDLType2;
 			if (emfIDLType2 != null)
@@ -544,7 +565,7 @@ public class CCMExport {
 	 * @param consumess = the consumess to add to the model
 	 * @return the new repository-consumess
  	 */
-	private static MDE.ComponentIDL.ConsumesDef[] createConsumess(EList consumess) throws MofError
+	private MDE.ComponentIDL.ConsumesDef[] createConsumess(EList consumess) throws MofError
 	{
 		MDE.BaseIDL.Contained[] rep = createContents(consumess);
 		MDE.ComponentIDL.ConsumesDef[] result = new MDE.ComponentIDL.ConsumesDef[rep.length];
@@ -557,7 +578,7 @@ public class CCMExport {
 	 * @param emitss = the emitss to add to the model
 	 * @return the new repository-emitss
  	 */
-	private static MDE.ComponentIDL.EmitsDef[] createEmitss(EList emitss) throws MofError
+	private MDE.ComponentIDL.EmitsDef[] createEmitss(EList emitss) throws MofError
 	{
 		MDE.BaseIDL.Contained[] rep = createContents(emitss);
 		MDE.ComponentIDL.EmitsDef[] result = new MDE.ComponentIDL.EmitsDef[rep.length];
@@ -570,7 +591,7 @@ public class CCMExport {
 	 * @param providess = the providess to add to the model
 	 * @return the new repository-providess
  	 */
-	private static MDE.ComponentIDL.ProvidesDef[] createProvides(EList providess) throws MofError
+	private MDE.ComponentIDL.ProvidesDef[] createProvides(EList providess) throws MofError
 	{
 		MDE.BaseIDL.Contained[] rep = createContents(providess);
 		MDE.ComponentIDL.ProvidesDef[] result = new MDE.ComponentIDL.ProvidesDef[rep.length];
@@ -583,7 +604,7 @@ public class CCMExport {
 	 * @param publishess = the publishess to add to the model
 	 * @return the new repository-publishess
  	 */
-	private static MDE.ComponentIDL.PublishesDef[] createPublishess(EList publishess) throws MofError
+	private MDE.ComponentIDL.PublishesDef[] createPublishess(EList publishess) throws MofError
 	{
 		MDE.BaseIDL.Contained[] rep = createContents(publishess);
 		MDE.ComponentIDL.PublishesDef[] result = new MDE.ComponentIDL.PublishesDef[rep.length];
@@ -596,7 +617,7 @@ public class CCMExport {
 	 * @param uses = the uses to add to the model
 	 * @return the new repository-uses
  	 */
-	private static MDE.ComponentIDL.UsesDef[] createUses(EList uses) throws MofError
+	private MDE.ComponentIDL.UsesDef[] createUses(EList uses) throws MofError
 	{
 		MDE.BaseIDL.Contained[] rep = createContents(uses);
 		MDE.ComponentIDL.UsesDef[] result = new MDE.ComponentIDL.UsesDef[rep.length];
@@ -609,7 +630,7 @@ public class CCMExport {
 	 * @param sinks = the sinks to add to the model
 	 * @return the new repository-sinks
  	 */
-	private static MDE.ComponentIDL.SinkDef[] createSinks(EList sinks) throws MofError
+	private MDE.ComponentIDL.SinkDef[] createSinks(EList sinks) throws MofError
 	{
 		MDE.BaseIDL.Contained[] rep = createContents(sinks);
 		MDE.ComponentIDL.SinkDef[] result = new MDE.ComponentIDL.SinkDef[rep.length];
@@ -622,7 +643,7 @@ public class CCMExport {
 	 * @param sisous = the sisous to add to the model
 	 * @return the new repository-sisous
  	 */
-	private static MDE.ComponentIDL.SiSouDef[] createSiSous(EList sisous) throws MofError
+	private MDE.ComponentIDL.SiSouDef[] createSiSous(EList sisous) throws MofError
 	{
 		MDE.BaseIDL.Contained[] rep = createContents(sisous);
 		MDE.ComponentIDL.SiSouDef[] result = new MDE.ComponentIDL.SiSouDef[rep.length];
@@ -635,7 +656,7 @@ public class CCMExport {
 	 * @param sourcess = the sourcess to add to the model
 	 * @return the new repository-sourcess
  	 */
-	private static MDE.ComponentIDL.SourceDef[] createSourcess(EList sourcess) throws MofError
+	private MDE.ComponentIDL.SourceDef[] createSourcess(EList sourcess) throws MofError
 	{
 		MDE.BaseIDL.Contained[] rep = createContents(sourcess);
 		MDE.ComponentIDL.SourceDef[] result = new MDE.ComponentIDL.SourceDef[rep.length];
@@ -648,7 +669,7 @@ public class CCMExport {
 	 * @param segments = the segments to add to the model
 	 * @return the new repository-segments
  	 */
-	private static MDE.CIF.SegmentDef[] createSegments(EList segments) throws MofError
+	private MDE.CIF.SegmentDef[] createSegments(EList segments) throws MofError
 	{
 		MDE.BaseIDL.Contained[] rep = createContents(segments);
 		MDE.CIF.SegmentDef[] result = new MDE.CIF.SegmentDef[rep.length];
@@ -661,7 +682,7 @@ public class CCMExport {
 	 * @param factorys = the factorys to add to the model
 	 * @return the new repository-factorys
  	 */
-	private static MDE.ComponentIDL.FactoryDef[] createFactorys(EList factorys) throws MofError
+	private MDE.ComponentIDL.FactoryDef[] createFactorys(EList factorys) throws MofError
 	{
 		MDE.BaseIDL.Contained[] rep = createContents(factorys);
 		MDE.ComponentIDL.FactoryDef[] result = new MDE.ComponentIDL.FactoryDef[rep.length];
@@ -674,7 +695,7 @@ public class CCMExport {
 	 * @param finders = the finders to add to the model
 	 * @return the new repository-finders
  	 */
-	private static MDE.ComponentIDL.FinderDef[] createFinders(EList finders) throws MofError
+	private MDE.ComponentIDL.FinderDef[] createFinders(EList finders) throws MofError
 	{
 		MDE.BaseIDL.Contained[] rep = createContents(finders);
 		MDE.ComponentIDL.FinderDef[] result = new MDE.ComponentIDL.FinderDef[rep.length];
@@ -687,7 +708,7 @@ public class CCMExport {
 	 * @param parameters = the parameters to add to the model
 	 * @return the new repository-parameters
  	 */
-	private static MDE.BaseIDL.ParameterDef[] createParameters(EList parameters) throws MofError
+	private MDE.BaseIDL.ParameterDef[] createParameters(EList parameters) throws MofError
 	{
 		MDE.BaseIDL.ParameterDef[] repparameter = new MDE.BaseIDL.ParameterDef[parameters.size()];
 		for (int i=0;i<parameters.size();i++) 
@@ -699,12 +720,19 @@ public class CCMExport {
 					(direction == ParameterMode.PARAM_IN_LITERAL) ? MDE.BaseIDL.ParameterMode.PARAM_IN :
 					(direction == ParameterMode.PARAM_OUT_LITERAL) ? MDE.BaseIDL.ParameterMode.PARAM_OUT :
 					MDE.BaseIDL.ParameterMode.PARAM_INOUT );
+			emfmodel.add(parameter);
+			repmodel.add(repparameter[i]);
+
+// TODO : check whether this is correct
+/*
 			IDLType emfIDLType = parameter.getIDLType();
 			MDE.BaseIDL.IDLType repIDLType;
 			if (emfIDLType != null)
 				if ((repIDLType = createIDLType(emfIDLType)) != null)
 					repparameter[i].set_idl_type(repIDLType);
+*/
 		}
+
 		return repparameter;
 	}
 	/**
@@ -712,7 +740,7 @@ public class CCMExport {
 	 * @param fields = the fields to add to the model
 	 * @return the new repository-fields
  	 */
-	private static MDE.BaseIDL.Field[] createFields(EList fields) throws MofError
+	private MDE.BaseIDL.Field[] createFields(EList fields) throws MofError
 	{
 		MDE.BaseIDL.Field[] repfields = new MDE.BaseIDL.Field[fields.size()];
 		for (int i=0;i<fields.size();i++)
@@ -732,7 +760,7 @@ public class CCMExport {
 	 * @param unionfields = the unionfields to add to the model
 	 * @return the new repository-unionfields
  	 */
-	private static MDE.BaseIDL.UnionField[] createUnionFields(EList unionfields) throws MofError
+	private MDE.BaseIDL.UnionField[] createUnionFields(EList unionfields) throws MofError
 	{
 		MDE.BaseIDL.UnionField[] repunionfields = new MDE.BaseIDL.UnionField[unionfields.size()];
 		for (int i=0;i<unionfields.size();i++)
@@ -752,7 +780,7 @@ public class CCMExport {
 	 * @param componentCategory = the ccmmodel-componentCategory
 	 * @return the repository-componentCategory
  	 */
-	private static MDE.CIF.ComponentCategory getComponentCategory(ComponentCategory componentCategory) throws MofError
+	private MDE.CIF.ComponentCategory getComponentCategory(ComponentCategory componentCategory) throws MofError
 	{
 		return 	(componentCategory.getName() == "PROCESS") 	? MDE.CIF.ComponentCategory.PROCESS :
 				(componentCategory.getName() == "SESSION") 	? MDE.CIF.ComponentCategory.SESSION :
@@ -760,17 +788,17 @@ public class CCMExport {
 				(componentCategory.getName() == "SERVICE") 	? MDE.CIF.ComponentCategory.SERVICE :
 				MDE.CIF.ComponentCategory.EXTENSION;
 	}
-	private static ActionKind getActionKind(Aktionkind action) {
+	private ActionKind getActionKind(Aktionkind action) {
 		return 	(action.getName() == "ASSERT") 	? ActionKind.ASSERT :ActionKind.INSTALL ;
 			 
 	}
-	private static FinderServiceKind getServiceKind(CCMModel.FinderServiceKind kind){
+	private FinderServiceKind getServiceKind(CCMModel.FinderServiceKind kind){
 		return 	(kind.getName() == "HOMEFINDER") 	? MDE.Deployment.FinderServiceKind.HOMEFINDER :
 			(kind.getName() == "NAMING") 	? MDE.Deployment.FinderServiceKind.NAMING :
 			(kind.getName() == "TRADING") 	? MDE.Deployment.FinderServiceKind.TRADING :
 			MDE.Deployment.FinderServiceKind.UNDEFINED;
 	}
-	private static ElementName getElname(CCMModel.ElementName elname){
+	private ElementName getElname(CCMModel.ElementName elname){
 		return 	(elname.getName() == "SEQUENCE_EL") 	? ElementName.SEQUENCE_EL :
 			(elname.getName() == "SIMPLE_EL") 	? ElementName.SIMPLE_EL :
 			(elname.getName() == "STRUCT_EL") 	? ElementName.STRUCT_EL :
@@ -781,7 +809,7 @@ public class CCMExport {
 	 * @param emfPrimitiveKind = the ccmmodel-PrimitiveKind
 	 * @return the repository-PrimitiveKind
  	 */
-	private static MDE.BaseIDL.PrimitiveKind getPrimitiveKind(PrimitiveKind emfPrimitiveKind) throws MofError
+	private MDE.BaseIDL.PrimitiveKind getPrimitiveKind(PrimitiveKind emfPrimitiveKind) throws MofError
 	{
 		return 
 			(emfPrimitiveKind == PrimitiveKind.PK_BOOLEAN_LITERAL) ? MDE.BaseIDL.PrimitiveKind.PK_Boolean :
@@ -1064,7 +1092,7 @@ public class CCMExport {
 	/**
 	 * This methode updates all missing properties in the Repository.
  	 */
-	private static void updateRepModel() throws MofError
+	private void updateRepModel() throws MofError
 	{
 		//System.out.println("Updates");
 		Iterator it;
@@ -1405,11 +1433,19 @@ public class CCMExport {
 				MDE.BaseIDL.Typed repTyped = TypedHelper.narrow(rep);
 				IDLType emfIDLType = emfTyped.getIDLType();
 				org.omg.CORBA.Object repIDLType = emf2rep(emfIDLType);
+				MDE.BaseIDL.IDLType temp_type; 
 				if (repIDLType != null)
 				{
-					repTyped.set_idl_type(IDLTypeHelper.narrow(repIDLType));
+					temp_type = IDLTypeHelper.narrow(repIDLType);
+					repTyped.set_idl_type(temp_type);
 					//if (emf instanceof Contained)
 					//	System.out.println("\t" + ((Contained)emf).getIdentifier());
+				} else
+				{
+					if ((temp_type = createIDLType(emfIDLType)) != null)
+					{
+						repTyped.set_idl_type(temp_type);
+					}
 				}
 			}
 		}		
@@ -1419,7 +1455,7 @@ public class CCMExport {
 	 * @param emf = the objects to search for
 	 * @return the repository-object
  	 */
-	private static org.omg.CORBA.Object emf2rep(Object emf) throws MofError
+	private org.omg.CORBA.Object emf2rep(Object emf) throws MofError
 	{
 		int index = emfmodel.indexOf(emf);
 		return (index >= 0) ? (org.omg.CORBA.Object)repmodel.get(index) : null;

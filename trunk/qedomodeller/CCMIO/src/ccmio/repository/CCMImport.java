@@ -1,6 +1,7 @@
 package ccmio.repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -61,6 +62,7 @@ import CCMModel.UsesDef;
 import CCMModel.ValueDef;
 import CCMModel.ValueMemberDef;
 import CCMModel.WstringDef;
+import MDE._CCMPackage;
 import MDE.BaseIDL.AliasDefHelper;
 import MDE.BaseIDL.ArrayDefHelper;
 import MDE.BaseIDL.AttributeDefHelper;
@@ -146,14 +148,14 @@ import Reflective.NotSet;
  */
 public class CCMImport {
 
-	private static _BaseIDLPackage baseIDLPackage;
-	private static _ComponentIDLPackage componentIDLPackage;
-	private static _CIFPackage CIFPackage;
-	private static CCM ccm;
-	private static IDLTypeContainer idlcontainer;
+	private _BaseIDLPackage baseIDLPackage;
+	private _ComponentIDLPackage componentIDLPackage;
+	private _CIFPackage CIFPackage;
+	private CCM ccm;
+	private IDLTypeContainer idlcontainer;
 
 	// lists of all objects in repository and emf-model to search in.. 
-	private static ArrayList 	ids,repmodel,emfmodel;
+	private ArrayList 	ids,repmodel,emfmodel;
 
 	/**
 	 * This methode connect to a repository and adds its contens to a emf-model.
@@ -162,27 +164,39 @@ public class CCMImport {
 	 * @param ccm = to this CCM-Object the contens of the repository will be add
 	 * @return Error-String or null if imported successfully
 	 */
-	public static void imports(CCMRepository repository, MDE.BaseIDL.ModuleDef repositoryModule, CCM ccm) 
+	public void imports(CCMRepository repository, _CCMPackage current_package, CCM ccm) 
 	throws MofError
 	{
-		CCMImport.ccm = ccm;
+		this.ccm = ccm;
 		
 		// initialize the lists
-		ids = new ArrayList();repmodel = new ArrayList();emfmodel = new ArrayList();
+		ids = new ArrayList();
+		repmodel = new ArrayList();
+		emfmodel = new ArrayList();
 		
 		// get all needed packages
-		baseIDLPackage = repository.getMDE().base_idl_ref();
-		componentIDLPackage = repository.getMDE().component_idl_ref();
-		CIFPackage = repository.getMDE().cif_ref();
+		baseIDLPackage = current_package.base_idl_ref();
+		componentIDLPackage = current_package.component_idl_ref();
+		CIFPackage = current_package.cif_ref();
 
 		idlcontainer = ccm.getIdlContainer();
 		
+		// 0. identfy root module
+		MDE.BaseIDL.ModuleDef[] repmodules = 
+			current_package.base_idl_ref().module_def_ref().all_of_class_module_def();		
+		
+		// TODO: Currently Assuming that only one root module exists
+		
 		// 1. updates the rootmodule
-		ModuleDef root = createRoot(repositoryModule);
+		ModuleDef root = createRoot(repmodules[0]);
 		
 		// 2. create the contens of the rootmodule
-		root.getContents().addAll(createContents(repositoryModule.contents()));
+//		root.getContents().addAll(createContents(repositoryModule.contents()));
+		MDE.BaseIDL.Contained temp_contained [] = new MDE.BaseIDL.Contained[1];
+		temp_contained[0] = (MDE.BaseIDL.Contained) repmodules[0];
 		
+		root.getContents().addAll(createContents(temp_contained));
+			
 		// 3. & 4. create the relations and updates the missing properties 
 		updateEMFModel();
 	}
@@ -191,10 +205,11 @@ public class CCMImport {
 	 * This methode updates the Root-Module and create its contens in Repository.
 	 * @param repositoryModule = the root-module to import to the ccm-file. 
  	 */
-	private static ModuleDef createRoot(MDE.BaseIDL.ModuleDef repositoryModule) throws MofError
+	
+	private ModuleDef createRoot(MDE.BaseIDL.ModuleDef repositoryModule) throws MofError
 	{
 		//System.out.println("rootmodule: " + repositoryModule.identifier());
-		ModuleDef root = ccm.getModuleDef();
+		ModuleDef root = this.ccm.getModuleDef();
 		{
 			root.setAbsoluteName(repositoryModule.identifier());
 			root.setIdentifier(repositoryModule.identifier());
@@ -205,12 +220,15 @@ public class CCMImport {
 		return root;
 	}
 	/* --------------------------------- CREATE ------------------------------------------------ */
+
+
+	
 	/**
 	 * creates the repository-objects in our emf-model and returns them
 	 * @param contents = list of repository-contained-objects to create
 	 * @return list of the new created ccmmodel-objects
 	 */
-	private static ArrayList createContents(MDE.BaseIDL.Contained[] contents) throws MofError
+	private ArrayList createContents(MDE.BaseIDL.Contained[] contents) throws MofError
 	{
 		ArrayList result = new ArrayList();
 		for (int i=0; i<contents.length;i++)
@@ -229,28 +247,27 @@ public class CCMImport {
 				ids.add(absoluteName);
 				result.add(emfcontained);
 			}
+/*			
 			if (emfcontained instanceof Typed)
 			{
 				MDE.BaseIDL.IDLType type = TypedHelper.narrow(contents[i]).idl_type();
 				IDLType emftype;
 				if (type != null){
 					if (repmodel.contains(type))
+					{
 						emftype=(IDLType)rep2emf(type);
-                    else{ 
+					}
+                    else
+                    { 
                     	emftype = createIDLType(type);
-                    	try{
-                    		if(TypedefDefHelper.narrow(type)!=null)
-                    		result.add(emftype);
-                    	}catch (Exception e){}
                     	emfmodel.add(emftype);
-        				repmodel.add(type);
-                    	
+                    	repmodel.add(type);
                     }
 					 
 					((Typed)emfcontained).setIDLType(emftype);
 				}
 			}
-
+*/
 			if (emfcontained instanceof Container)
 			{
 				MDE.BaseIDL.Contained[] cns = ContainerHelper.narrow(contents[i]).contents();
@@ -265,8 +282,13 @@ public class CCMImport {
 	 * @param rep = repository-contained-object to create
 	 * @return the new created ccmmodel-object
 	 */
-	private static Contained create(MDE.BaseIDL.Contained contained) throws MofError
+	private Contained create(MDE.BaseIDL.Contained contained) throws MofError
 	{
+		// check whether container is known
+		
+		
+		// end check container is known
+		
 		Contained emf;
 		System.out.println("\t" + contained.identifier());
 		 
@@ -634,18 +656,24 @@ public class CCMImport {
 	 * @param repIDLType = repository-IDLType to create
 	 * @return the new ccmmodel-IDLType
 	 */
-	private static IDLType createIDLType(MDE.BaseIDL.IDLType repIDLType) throws MofError
+	private IDLType createIDLType(MDE.BaseIDL.IDLType repIDLType) throws MofError
 	{
 		try{
 			MDE.BaseIDL.TypedefDef typedefDef = TypedefDefHelper.narrow(repIDLType);
-			return (IDLType)create(typedefDef);
+//			return (IDLType)create(typedefDef);
+			MDE.BaseIDL.Contained temp_contained[] = new MDE.BaseIDL.Contained[1];
+			temp_contained[0] = ContainedHelper.narrow(typedefDef);
+			ArrayList result = createContents(temp_contained);
+			return (IDLType)result.get(1);
 		}catch (Exception e){}
 
 		try{
 			MDE.BaseIDL.ArrayDef arrayDef = ArrayDefHelper.narrow(repIDLType);
 			ArrayDef emfArrayDef = CCMModelFactory.eINSTANCE.createArrayDef();
 			emfArrayDef.setBound(arrayDef.bound());
-			emfmodel.add(emfArrayDef); repmodel.add(arrayDef); ids.add("array");
+			emfmodel.add(emfArrayDef); 
+			repmodel.add(arrayDef);
+			ids.add("array");
 			MDE.BaseIDL.IDLType repIDLType2 = arrayDef.idl_type();
 			IDLType emfIDLType2;
 			if (repIDLType2 != null){
@@ -667,7 +695,9 @@ public class CCMImport {
 			MDE.BaseIDL.SequenceDef sequenceDef = SequenceDefHelper.narrow(repIDLType);
 			SequenceDef emfSequenceDef = CCMModelFactory.eINSTANCE.createSequenceDef();
 			emfSequenceDef.setBound(sequenceDef.bound());
-			emfmodel.add(emfSequenceDef); repmodel.add(sequenceDef); ids.add("sequence");
+			emfmodel.add(emfSequenceDef);
+			repmodel.add(sequenceDef);
+			ids.add("sequence");
 			MDE.BaseIDL.IDLType repIDLType2 = sequenceDef.idl_type();
 			IDLType emfIDLType2;
 			if (repIDLType2 != null){
@@ -724,7 +754,7 @@ public class CCMImport {
 	 * @param parameters = repository-ParameterDefs to create
 	 * @return list of the new ccmmodel-ParameterDefs
 	 */
-	private static ArrayList createParameters(MDE.BaseIDL.ParameterDef[] parameters) throws MofError
+	private ArrayList createParameters(MDE.BaseIDL.ParameterDef[] parameters) throws MofError
 	{
 		ArrayList result = new ArrayList();
 		for (int i=0;i<parameters.length;i++) 
@@ -752,7 +782,7 @@ public class CCMImport {
 	 * @param fields = repository-Fields to create
 	 * @return list of the new ccmmodel-Fields
 	 */
-	private static ArrayList createFields(MDE.BaseIDL.Field[] fields) throws MofError
+	private ArrayList createFields(MDE.BaseIDL.Field[] fields) throws MofError
 	{
 		ArrayList result = new ArrayList();
 		for (int i=0;i<fields.length;i++) 
@@ -774,7 +804,7 @@ public class CCMImport {
 	 * @param unionfields = repository-unionfields to create
 	 * @return list of the new ccmmodel-unionfields
 	 */
-	private static ArrayList createUnionFields(MDE.BaseIDL.UnionField[] unionfields) throws MofError
+	private ArrayList createUnionFields(MDE.BaseIDL.UnionField[] unionfields) throws MofError
 	{
 		ArrayList result = new ArrayList();
 		for (int i=0;i<unionfields.length;i++) 
@@ -791,7 +821,7 @@ public class CCMImport {
 	 * @param componentCategory = repository-componentCategory
 	 * @return the new ccmmodel-componentCategory
 	 */
-	private static ComponentCategory getComponentCategory(MDE.CIF.ComponentCategory componentCategory) throws MofError
+	private ComponentCategory getComponentCategory(MDE.CIF.ComponentCategory componentCategory) throws MofError
 	{
 		if (componentCategory == MDE.CIF.ComponentCategory.PROCESS)
 			return ComponentCategory.PROCESS_LITERAL;
@@ -804,7 +834,7 @@ public class CCMImport {
 		else 
 			return ComponentCategory.EXTENSION_LITERAL;
 	}
-	private static Aktionkind getActionKind(MDE.Deployment.ActionKind action) {
+	private Aktionkind getActionKind(MDE.Deployment.ActionKind action) {
 		if(action==MDE.Deployment.ActionKind.ASSERT)
 			return CCMModel.Aktionkind.ASSERT_LITERAL;
 		else
@@ -812,7 +842,7 @@ public class CCMImport {
 		 
 			 
 	}
-	private static CCMModel.ElementName getElname(MDE.Deployment.ElementName elname){
+	private CCMModel.ElementName getElname(MDE.Deployment.ElementName elname){
 		if(elname==MDE.Deployment.ElementName.SEQUENCE_EL)
 			return CCMModel.ElementName.SEQUENCE_EL_LITERAL;
 		else if(elname==MDE.Deployment.ElementName.SIMPLE_EL)
@@ -840,7 +870,7 @@ public class CCMImport {
 	 * @param repPrimitiveDef = repository-PrimitiveDef to create
 	 * @return the new ccmmodel-PrimitiveDef
 	 */
-	private static PrimitiveDef getPrimitiveDef(MDE.BaseIDL.PrimitiveDef repPrimitiveDef) throws MofError
+	private PrimitiveDef getPrimitiveDef(MDE.BaseIDL.PrimitiveDef repPrimitiveDef) throws MofError
 	{
 		MDE.BaseIDL.PrimitiveKind primitiveKind = repPrimitiveDef.kind();
 		EList primitiveDefs = idlcontainer.getPrimitiveTypes();
@@ -856,7 +886,7 @@ public class CCMImport {
 	 * @param repPrimitiveKind = repository-PrimitiveKind to create
 	 * @return the new PrimitiveKind
 	 */
-	private static PrimitiveKind getPrimitiveKind(MDE.BaseIDL.PrimitiveKind repPrimitiveKind)
+	private PrimitiveKind getPrimitiveKind(MDE.BaseIDL.PrimitiveKind repPrimitiveKind)
 	{
 		return
 			(repPrimitiveKind == MDE.BaseIDL.PrimitiveKind.PK_Boolean) ? PrimitiveKind.PK_BOOLEAN_LITERAL :
@@ -1075,7 +1105,7 @@ public class CCMImport {
 	/**
 	 * This methode updates all missing properties in the CCMEditor-file.
  	 */
-	private static void updateEMFModel() throws MofError
+	private void updateEMFModel() throws MofError
 	{
 		//System.out.println("Updates");
 		// updates the properties of the emf-objects like the objects in the repository
@@ -1444,7 +1474,11 @@ public class CCMImport {
 						EObject emfIDLType = rep2emf(typedefDef);
 						if (emfIDLType != null)
 							emfTyped.setIDLType((IDLType)emfIDLType);
-					}catch(Exception e){}
+					}catch(Exception e)
+					{
+						System.out.print("test");
+						emfTyped.setIDLType(createIDLType(repIDLType));
+					}
 				}
 			}
 
@@ -1505,7 +1539,7 @@ public class CCMImport {
 	 * @param rep = the repository-object
 	 * @return the ccmmodel-object or null if it doesn´t exist
 	 */
-	private static EObject rep2emf(org.omg.CORBA.Object rep) throws MofError
+	private EObject rep2emf(org.omg.CORBA.Object rep) throws MofError
 	{
 		if (rep == null) return null;
 		//int index = ids.indexOf(fullScopeName(rep));

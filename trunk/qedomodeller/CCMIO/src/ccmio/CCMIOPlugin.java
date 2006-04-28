@@ -12,6 +12,7 @@ import org.osgi.framework.BundleContext;
 public class CCMIOPlugin extends AbstractUIPlugin {
 	//The shared instance.
 	private static CCMIOPlugin plugin;
+
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
 	
