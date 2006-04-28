@@ -112,7 +112,8 @@ public class ExportWizard extends Wizard implements IExportWizard {
 			monitor.worked(1);			
 
 			//monitor.setTaskName("Exporting CCM Project...");
-			CCMExport.exports(repository, manager.getModel());
+			CCMExport exporter = new CCMExport();
+			exporter.exports(repository, manager.getModel());
 			monitor.worked(2);		
 			
 		}
