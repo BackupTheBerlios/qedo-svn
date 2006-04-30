@@ -14,9 +14,6 @@
       <library name="MDENEW.jar">
          <export name="*"/>
       </library>
-      <library name="lib/antlr-2.7.5.jar">
-         <export name="*"/>
-      </library>
    </runtime>
    
    <requires>
@@ -24,6 +21,7 @@
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="CCMModel"/>
+      <import plugin="org.antlr"/>
    </requires>
 
 </plugin>
