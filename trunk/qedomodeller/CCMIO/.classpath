@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="MDENEW.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-2.7.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
