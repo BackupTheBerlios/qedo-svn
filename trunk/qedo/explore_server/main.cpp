@@ -78,6 +78,7 @@ int main (int argc, char** argv)
 
 		// Initialize orb
 		CORBA::ORB_var orb=CORBA::ORB_init(orb_argc,orb_argv);
+		Qedo::set_ORB(orb);
 
 		// Get reference to Root POA
 		CORBA::Object_var obj = orb->resolve_initial_references("RootPOA");

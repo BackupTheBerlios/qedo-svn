@@ -155,7 +155,7 @@ NSBrowserTreeCtrl::build_tree()
 	
 	int dummy = 0;
 	wxString mes = "";
-	orbns = CORBA::ORB_init(dummy,0);
+	orbns = Qedo::get_created_ORB();
 
 	wxString ns;
 
@@ -372,7 +372,7 @@ void NSBrowserTreeCtrl::ior(wxString path)
 {
 		
 		int dummy = 0;
-		orbns = CORBA::ORB_init(dummy,0);
+		orbns = Qedo::get_created_ORB();
 
 		wxString ns;
 		CosNaming::Name name=getNameContext(path);
@@ -420,7 +420,7 @@ void NSBrowserTreeCtrl::delete_entry(wxString path)
 {
 		
 		int dummy = 0;
-		orbns = CORBA::ORB_init(dummy,0);
+		orbns = Qedo::get_created_ORB();
 
 		wxString ns;
 		CosNaming::Name name=getNameContext(path);

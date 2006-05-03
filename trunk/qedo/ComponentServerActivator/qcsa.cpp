@@ -424,6 +424,7 @@ main (int argc, char** argv)
 	};
 
 	orb = CORBA::ORB_init (orb_argc, orb_argv);
+	Qedo::set_ORB(orb);
 
 	// Register valuetype factories
 	CORBA::ValueFactoryBase* factory;

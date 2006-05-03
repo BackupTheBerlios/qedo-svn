@@ -588,7 +588,7 @@ void DescriptorFrame::addServerActivators()
 	//
 	
 	int dummy=0;
-	e_orb = CORBA::ORB_init (dummy, 0);
+	e_orb = Qedo::get_created_ORB();
 
 	// get name services reference
 

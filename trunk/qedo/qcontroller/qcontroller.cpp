@@ -37,14 +37,19 @@
 #include "MainFrame.h"
 #include "wx/image.h"
 #include "../qedoutil/version.h"
+#include "../qedoutil/qedoutil.h"
 
 IMPLEMENT_APP(QedoController)
 
 bool QedoController::OnInit()
 {
 
+    // Init the global ORB varibale in qedoutil
+    int dummy = 0;
+    CORBA::ORB_var orb = CORBA::ORB_init(dummy,0);
+    Qedo::set_ORB(orb);
 
-	wxInitAllImageHandlers();
+    wxInitAllImageHandlers();
 
     wxSize main_size(800,600);
     wxPoint main_point(0,0);

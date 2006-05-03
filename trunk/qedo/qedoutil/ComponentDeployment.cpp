@@ -49,7 +49,7 @@ ComponentDeployment::init()
 throw (DeploymentFailure)
 {
 	int dummy = 0;
-	CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+	CORBA::ORB_var orb = get_created_ORB();
 
     //
 	// get NameService

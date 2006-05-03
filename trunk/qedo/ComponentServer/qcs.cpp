@@ -254,6 +254,10 @@ main (int argc, char** argv)
 	};
 
 	CORBA::ORB_var orb = CORBA::ORB_init (orb_argc, orb_argv);
+
+	// Register the global ORB variable
+	Qedo::set_ORB(orb);
+
 #ifndef USE_OPENPMF
 	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer -> slot_id());
 #else // USE_OPENPMF

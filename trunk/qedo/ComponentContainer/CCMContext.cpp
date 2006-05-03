@@ -255,7 +255,7 @@ CCMContext::start_thread( Components::Function func, Components::FunctionData da
 	Thread_impl* thread ;
 #ifndef _QEDO_NO_QOS
 	int dummy = 0;
-    CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+	CORBA::ORB_var orb = Qedo::get_created_ORB();
 	CORBA::Object_var obj = orb->resolve_initial_references ("PICurrent");
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 	CORBA::Any* slot_content = 0;

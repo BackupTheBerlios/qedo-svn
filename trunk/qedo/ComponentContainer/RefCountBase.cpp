@@ -311,7 +311,7 @@ ValueFactoryCleaner::ValueFactoryCleaner (class CORBA::ValueFactoryBase* factory
   factory_ (factory)
 {
 	int dummy = 0;
-    CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+	CORBA::ORB_var orb = Qedo::get_created_ORB();
 
 	// check whether there is already a factory
 	if (orb->lookup_value_factory( repid ))
@@ -332,7 +332,7 @@ ValueFactoryCleaner::~ValueFactoryCleaner()
 	if (is_registered_)
 	{
 		int dummy = 0;
-		CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+		CORBA::ORB_var orb = Qedo::get_created_ORB();
 		DEBUG_OUT2( "..... unregister factory for ", repid_ );
 		orb->unregister_value_factory( repid_.c_str() );
 	}
