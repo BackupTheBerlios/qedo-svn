@@ -173,6 +173,23 @@ QEDOUTIL_API
 std::string
 createUUID();
 
+/**
+ * get the application ORB
+ * \return the ORB ptr.
+ */
+QEDOUTIL_API
+CORBA::ORB_ptr
+get_created_ORB();
+
+/**
+ * set the application ORB
+ * 
+ */
+QEDOUTIL_API
+void
+set_ORB(CORBA::ORB_ptr the_orb);
+}
+
 }
 
 /** @} */

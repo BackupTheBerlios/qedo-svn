@@ -479,5 +479,20 @@ createUUID()
 	return id;
 }
 
+static CORBA::ORB_var _the_appliaction_orb;
+
+CORBA::ORB_ptr
+get_created_ORB()
+{
+    assert(!CORBA::is_nil(_the_appliaction_orb));
+    return _the_appliaction_orb;
+}
+
+void
+set_ORB(CORBA::ORB_ptr the_orb)
+{
+    _the_appliaction_orb = the_orb;
+}
+
 }
 
