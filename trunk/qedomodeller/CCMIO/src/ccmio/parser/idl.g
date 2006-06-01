@@ -34,11 +34,40 @@ options {
 
 tokens {
 	SPECIFICATION;
-	MODULE;
+	BASE_TYPE_SPEC;
+	CASE_STMT;
+	CASE_STMT_LIST;
+	CONST_DEF;
 	DEFINITION;
 	DEFINITION_LIST;
+	DOUBLE_TYPE;
 	ENUM;
 	ENUMERATOR_LIST;
+	EXCEPTION_TYPE;
+	EXPORT_LIST;
+	FLOAT_TYPE;
+	INTERFACE;
+	INTERFACE_INHERITANCE;
+	LONG_DOUBLE_TYPE;
+	MODULE;
+	OPERATION_DEF;
+	PARAMETER_DEF;
+	PARAMETER_LIST;
+	RAISES;
+	SCOPED_NAME;
+	SEQUENCE;
+	SIGNED_SHORT_INT;
+	SIGNED_LONG_INT;
+	SIGNED_LONGLONG_INT;
+	STRING_TYPE;
+	STRUCT_MEMBER;
+	STRUCT_TYPE;
+	TYPEDEF;
+	UNION_TYPE;
+	UNSIGNED_SHORT_INT;
+	UNSIGNED_LONG_INT;
+	UNSIGNED_LONGLONG_INT;
+	WSTRING_TYPE;
 }
 
 specification
@@ -72,17 +101,17 @@ module
 definition_list
 	:   (definition)+
 	{#definition_list = #(#[DEFINITION_LIST,"DEFINITION_LIST"], definition_list);}
-	
 	;
 
 interf
 	:   ( "abstract" | "local" )?
-	    "interface"^
+	    "interface"!
 	    identifier
 	    // interface_name_dcl
 	    (   interface_dcl
 	    |   // forward_dcl
 	    )
+	    {#interf = #(#[INTERFACE,"INTERFACE"], interf);}
 	;
 
 interface_dcl
@@ -107,6 +136,7 @@ interface_header
 
 interface_body
 	:   ( export )*
+	{#interface_body = #(#[EXPORT_LIST,"EXPORT_LIST"], interface_body);}
 	;
 
 export
@@ -122,7 +152,8 @@ export
 
 
 interface_inheritance_spec
-	:   COLON^ scoped_name_list
+	:   COLON! scoped_name_list
+		{#interface_inheritance_spec = #(#[INTERFACE_INHERITANCE, "INTERFACE_INHERITANCE"], interface_inheritance_spec); }
 	;
 
 interface_name
@@ -136,6 +167,9 @@ scoped_name_list
 
 scoped_name
 	:   ( SCOPEOP^ )? IDENT^ /* identifier */ (SCOPEOP! identifier)*
+	{
+		#scoped_name = #(#[SCOPED_NAME, "SCOPED_NAME"], scoped_name);
+	}
 	;
 
 value
@@ -251,7 +285,10 @@ init_param_attribute
 	;
 
 const_dcl
-	:   "const"^ const_type identifier ASSIGN! const_exp
+	:   "const"! const_type identifier ASSIGN! const_exp
+	{
+		#const_dcl = #(#[CONST_DEF,"CONST_DEF"], const_dcl);
+	}
 	;
 
 const_type
@@ -398,7 +435,10 @@ positive_int_const
 
 
 type_dcl
-	:   "typedef"^ type_declarator
+	:   "typedef"! type_declarator
+	{
+		{#type_dcl = #(#[TYPEDEF,"TYPEDEF"], type_dcl);}
+	}
 	|   (struct_type) => struct_type
 	|   (union_type) => union_type
 	|   enum_type
@@ -417,8 +457,13 @@ type_spec
 
 simple_type_spec
 	:   base_type_spec
+	{
+		#simple_type_spec = #(#[BASE_TYPE_SPEC,"BASE_TYPE_SPEC"], simple_type_spec);
+	}
 	|   template_type_spec
 	|   scoped_name
+	{
+	}
 	;
 
 base_type_spec
@@ -464,9 +509,12 @@ complex_declarator
 	;
 
 floating_pt_type
-	:   "float"
-	|   "double"
-	|   "long"^ "double"
+	:   "float"!
+	{ #floating_pt_type = #(#[FLOAT_TYPE,"FLOAT_TYPE"], floating_pt_type);}
+	|   "double"!
+	{ #floating_pt_type = #(#[DOUBLE_TYPE,"DOUBLE_TYPE"], floating_pt_type);}
+	|   "long"! "double"!
+	{ #floating_pt_type = #(#[LONG_DOUBLE_TYPE,"LONG_DOUBLE_TYPE"], floating_pt_type);}	
 	;
 
 integer_type
@@ -481,15 +529,18 @@ signed_int
 	;
 
 signed_short_int
-	:  "short"
+	:  "short"!
+	{ #signed_short_int  = #(#[SIGNED_SHORT_INT,"SIGNED_SHORT_INT"], signed_short_int);}
 	;
 
 signed_long_int
-	:  "long"
+	:  "long"!
+	{ #signed_long_int  = #(#[SIGNED_LONG_INT,"SIGNED_LONG_INT"], signed_long_int);}
 	;
 
 signed_longlong_int
-	:  "long" "long"
+	:  "long"! "long"!
+	{ #signed_longlong_int  = #(#[SIGNED_LONGLONG_INT,"SIGNED_LONGLONG_INT"], signed_longlong_int);}
 	;
 
 unsigned_int
@@ -499,15 +550,19 @@ unsigned_int
 	;
 
 unsigned_short_int
-	:  "unsigned" "short"
+	:  "unsigned"! "short"!
+		{ #unsigned_short_int  = #(#[UNSIGNED_SHORT_INT,"UNSIGNED_SHORT_INT"], unsigned_short_int);}
+	
 	;
 
 unsigned_long_int
-	:  "unsigned" "long"
+	:  "unsigned"! "long"!
+	{ #unsigned_long_int  = #(#[UNSIGNED_LONG_INT,"UNSIGNED_LONG_INT"], unsigned_long_int);}
 	;
 
 unsigned_longlong_int
-	:  "unsigned" "long" "long"
+	:  "unsigned"! "long"! "long"!
+	{ #unsigned_longlong_int  = #(#[UNSIGNED_LONGLONG_INT,"UNSIGNED_LONGLONG_INT"], unsigned_longlong_int);}
 	;
 
 char_type
@@ -535,9 +590,13 @@ object_type
 	;
 
 struct_type
-	:   "struct"^
+	:   "struct"!
 	    identifier
 	    LCURLY! member_list RCURLY!
+	    {
+	    	#struct_type = #(#[STRUCT_TYPE,"STRUCT_TYPE"], struct_type);
+	    }
+	    
 	;
 
 member_list
@@ -546,13 +605,19 @@ member_list
 
 member
 	:   type_spec declarators SEMI!
+	{
+		#member = #(#[STRUCT_MEMBER,"STRUCT_MEMBER"], member);
+	}
 	;
 
 union_type
-	:   "union"^
+	:   "union"!
 	    identifier
 	    "switch"! LPAREN! switch_type_spec RPAREN!
 	    LCURLY! switch_body RCURLY!
+	    {
+	    	#union_type = #(#[UNION_TYPE,"UNION_TYPE"], union_type);
+	    }
 	;
 
 switch_type_spec
@@ -565,6 +630,8 @@ switch_type_spec
 
 switch_body
 	:   case_stmt_list
+		{#switch_body = #(#[CASE_STMT_LIST,"CASE_STMT_LIST"], switch_body);}
+	
 	;
 
 case_stmt_list
@@ -577,6 +644,8 @@ case_stmt
 	    | "default"^ COLON!
 	    )+
 	    element_spec SEMI!
+		{#case_stmt = #(#[CASE_STMT,"CASE_STMT"], case_stmt);}
+
 	;
 
 // case_label_list
@@ -609,8 +678,9 @@ enumerator
 	;
 
 sequence_type
-	:   "sequence"^
+	:   "sequence"!
 	     LT! simple_type_spec opt_pos_int GT!
+	     {#sequence_type = #(#[SEQUENCE,"SEQUENCE"], sequence_type);}
 	;
 
 opt_pos_int
@@ -618,11 +688,13 @@ opt_pos_int
 	;
 
 string_type
-	:   "string"^ (LT! positive_int_const GT!)?
+	:   "string"! (LT! positive_int_const GT!)?
+		{#string_type =#(#[STRING_TYPE,"STRING_TYPE"], string_type);}
 	;
 
 wide_string_type
-	:   "wstring"^ (LT! positive_int_const GT!)?
+	:   "wstring"! (LT! positive_int_const GT!)?
+		{#wide_string_type =#(#[WSTRING_TYPE,"WSTRING_TYPE"], wide_string_type);}
 	;
 
 array_declarator
@@ -640,9 +712,13 @@ attr_dcl
 	;
 
 except_dcl
-	:   "exception"^
+	:   "exception"!
 	    identifier
 	    LCURLY! opt_member_list RCURLY!
+	    {
+	    	#except_dcl = #(#[EXCEPTION_TYPE,"EXCEPTION_TYPE"], except_dcl);
+	    }
+	    
 	;
 
 
@@ -653,10 +729,13 @@ opt_member_list
 op_dcl
 	:   (op_attribute)?
 	    op_type_spec
-	    IDENT^				// identifier
+	    IDENT				// identifier
 	    parameter_dcls
 	    (raises_expr)?
 	    (context_expr)?
+	    { 
+	    	#op_dcl = #(#[OPERATION_DEF,"OPERATION_DEF"], op_dcl);
+	    }
 	;
 
 op_attribute
@@ -670,6 +749,9 @@ op_type_spec
 
 parameter_dcls
 	:   LPAREN! (param_dcl_list)? RPAREN!
+	{
+		#parameter_dcls =#(#[PARAMETER_LIST,"PARAMETER_LIST"], parameter_dcls);
+	}
 	;
 
 param_dcl_list
@@ -677,8 +759,11 @@ param_dcl_list
 	;
 
 param_dcl
-	:   ("in"^ | "out"^ | "inout"^)		// param_attribute
+	:   ("in" | "out" | "inout")		// param_attribute
 	    param_type_spec simple_declarator
+	    {
+	    	#param_dcl = #(#[PARAMETER_DEF,"PARAMETER_DEF"], param_dcl);
+	    }
 	;
 
 // param_attribute
@@ -688,7 +773,10 @@ param_dcl
 // 	;
 
 raises_expr
-	:   "raises"^ LPAREN! scoped_name_list RPAREN!
+	:   "raises"! LPAREN! scoped_name_list RPAREN!
+	{
+		#raises_expr = #(#[RAISES,"RAISES"], raises_expr);
+	}
 	;
 
 context_expr

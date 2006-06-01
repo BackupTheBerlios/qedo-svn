@@ -62,8 +62,11 @@ public class IDLImport {
 		
 		ASTFrame frame = new ASTFrame("AST JTree Example", t);
 		frame.setVisible(true);
+		
+		//instantiate helper object
+		IdlTreeWalkerHelper helper = new IdlTreeWalkerHelper(ccm);
 
-		IDLTreeParser walker = new IDLTreeParser();
+		IDLTreeParser walker = new IDLTreeParser(helper);
 		
 		try {
 			walker.specification(t, root);
