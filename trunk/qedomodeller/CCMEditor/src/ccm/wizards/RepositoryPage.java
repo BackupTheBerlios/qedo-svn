@@ -47,8 +47,8 @@ public class RepositoryPage extends WizardPage {
 	private _CCMPackage current_package;
 	private ModuleDef[] modules;
 	
-	private static String refFileName ="C:\\repository\\etc\\ccmRepositoryRoot.ref";
-	//private static String refFileName ="";
+	//private static String refFileName ="C:\\repository\\etc\\ccmRepositoryRoot.ref";
+	private static String refFileName ="";
 	
 	private ISelection selection;
      
@@ -62,7 +62,7 @@ public class RepositoryPage extends WizardPage {
 		setTitle("CCM-Import/Export");
 		setDescription("Repository-Module");
 		this.selection = selection;
-	 
+//	    refFileName = System.getProperty("java.io.tmpdir") + "eUMLRepositoryRoot.ref"; 
 	}
 	
 	/**
