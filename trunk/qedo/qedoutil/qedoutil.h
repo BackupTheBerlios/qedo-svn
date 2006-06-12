@@ -188,12 +188,9 @@ get_created_ORB();
 QEDOUTIL_API
 void
 set_ORB(CORBA::ORB_ptr the_orb);
-}
 
 }
 
 /** @} */
-
-
 #endif
 
