@@ -87,7 +87,8 @@ definition_AS [CCMModel.Container container] returns [CCMModel.Contained contain
 	| #(ENUM identifier=identifierAS enumerator_list=enumerator_listAS)
 	{
 		System.out.println("found Enum");
-		contained = helper.createEnumerationDefinition(identifier, enumerator_list);
+		contained = helper.createEnumerationDefinition(identifier, enumerator_list, container);
+		container.getContents().add(contained);
 		
 	}
 	| #(INTERFACE identifier = identifierAS contained = interface_createAS[identifier, container])
@@ -358,6 +359,7 @@ struct_memberAS returns [Field field]
 	}
 ;
 
+/*
 enum_typeAS returns [CCMModel.EnumDef enumDef]
 	{
 		System.out.println("enum_type");
@@ -369,6 +371,7 @@ enum_typeAS returns [CCMModel.EnumDef enumDef]
 		enumDef = helper.createEnumerationDefinition(enumName, enumerator_list);
 	}	
 	;
+*/	
 	
 enumerator_listAS returns [List enumerator_list]
 	{ String name; 
@@ -389,10 +392,9 @@ typeAS returns [CCMModel.IDLType type]
 	{
 		System.out.println("found simple type spec");
 	}
-	| #(SCOPED_NAME s:IDENT)
+	| #(SCOPED_NAME sc_name = scoped_nameAS)
 	{
 		System.out.println("found scoped name");
-		sc_name = s.getText();
 		type = helper.find_idl_type_by_sc_name(sc_name);
 	}
 	| #(SEQUENCE temp_type = typeAS (i:INT)?)
@@ -403,6 +405,22 @@ typeAS returns [CCMModel.IDLType type]
 	| type = concrete_typeAS
 ;
 
+scoped_nameAS returns [String name]
+	{
+		System.out.println("SC");
+		String rest = "";
+	}
+	: (s:IDENT (rest = scoped_nameAS)?)
+	{
+		name = s.getText();
+		if (!rest.equals(""))
+		{
+			name = name + "::";
+			name = name + rest;			
+		}
+	}
+;
+	 
 concrete_typeAS returns [CCMModel.IDLType type]
 	: FLOAT_TYPE
 	{

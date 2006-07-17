@@ -9,7 +9,6 @@ package ccmio.parser;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
-import java.util.List;
 
 import CCMModel.CCM;
 import antlr.RecognitionException;
@@ -26,11 +25,14 @@ import antlr.debug.misc.ASTFrame;
 
 public class IDLImport {
 	
-	public void imports(CCM ccm, String inputFileName) throws FileNotFoundException 
+	public void imports(CCM ccm,
+			String inputFileName,
+			boolean merge) throws FileNotFoundException 
 	{
 		CCMModel.ModuleDef root = ccm.getModuleDef();
+		if (!merge)
 		{
-			root.setAbsoluteName("testetst");
+			root.setAbsoluteName("");
 			root.setIdentifier("TETS");
 			root.setRepositoryId("TET");
 			root.setVersion("1.0");

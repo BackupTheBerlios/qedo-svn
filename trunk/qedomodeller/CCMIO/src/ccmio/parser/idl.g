@@ -166,7 +166,7 @@ scoped_name_list
 
 
 scoped_name
-	:   ( SCOPEOP^ )? IDENT^ /* identifier */ (SCOPEOP! identifier)*
+	:   ( SCOPEOP! )? IDENT /* identifier */ (SCOPEOP! identifier)*
 	{
 		#scoped_name = #(#[SCOPED_NAME, "SCOPED_NAME"], scoped_name);
 	}

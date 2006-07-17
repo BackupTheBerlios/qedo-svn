@@ -6,8 +6,6 @@
  */
 package ccmio.parser;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
@@ -31,12 +29,9 @@ import CCMModel.PrimitiveDef;
 import CCMModel.PrimitiveKind;
 import CCMModel.SequenceDef;
 import CCMModel.StructDef;
+import CCMModel.Typed;
 import CCMModel.UnionDef;
 import CCMModel.UnionField;
-import antlr.ASTFactory;
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
-import antlr.collections.AST;
 
 /**
  * @author tri
@@ -82,7 +77,7 @@ public class IdlTreeWalkerHelper {
 	
 	public AliasDef create_alias(CCMModel.IDLType type, String Name, CCMModel.Container container)
 	{
-		String absolute_name = container.getAbsoluteName() + Name;
+		String absolute_name = container.getAbsoluteName() + "::" + Name;
 		AliasDef aliasDef = cCMModelFactory.createAliasDef();
 		aliasDef.setIdentifier(Name);
 		aliasDef.setAbsoluteName(absolute_name);
@@ -96,7 +91,7 @@ public class IdlTreeWalkerHelper {
 
 	public ConstantDef create_const(CCMModel.IDLType type, String Name, String value, CCMModel.Container container)
 	{
-		String absolute_name = container.getAbsoluteName() + Name;
+		String absolute_name = container.getAbsoluteName() + "::" + Name;
 		ConstantDef constDef = cCMModelFactory.createConstantDef();
 		constDef.setIdentifier(Name);
 		constDef.setAbsoluteName(absolute_name);
@@ -122,7 +117,7 @@ public class IdlTreeWalkerHelper {
 
 	public StructDef create_struct(String name, List fields, CCMModel.Container container)
 	{
-		String absolute_name = container.getAbsoluteName() + name;
+		String absolute_name = container.getAbsoluteName() + "::" + name;
 		StructDef structDef = cCMModelFactory.createStructDef();
 		structDef.setIdentifier(name);
 		structDef.setAbsoluteName(absolute_name);
@@ -135,7 +130,7 @@ public class IdlTreeWalkerHelper {
 
 	public ExceptionDef create_exception(String name, List fields, CCMModel.Container container)
 	{
-		String absolute_name = container.getAbsoluteName() + name;
+		String absolute_name = container.getAbsoluteName() + "::" + name;
 		ExceptionDef exceptionDef = cCMModelFactory.createExceptionDef();
 		exceptionDef.setIdentifier(name);
 		exceptionDef.setAbsoluteName(absolute_name);
@@ -148,7 +143,7 @@ public class IdlTreeWalkerHelper {
 	
 	public UnionDef create_union(String name, IDLType type, List union_fields, CCMModel.Container container)
 	{
-		String absolute_name = container.getAbsoluteName() + name;
+		String absolute_name = container.getAbsoluteName() + "::" + name;
 		UnionDef unionDef = cCMModelFactory.createUnionDef();
 		unionDef.setIdentifier(name);
 		unionDef.setAbsoluteName(absolute_name);
@@ -176,21 +171,62 @@ public class IdlTreeWalkerHelper {
 		TreeIterator itr = ccm.eAllContents();
 		Object obj = null;
 		obj = itr.next();
-		for (;itr.hasNext();itr.next())
+		for (;itr.hasNext();obj=itr.next())
 		{
 			if (obj instanceof CCMModel.Contained) {
 				contained = (CCMModel.Contained) obj;
 
-				if (sc_name == contained.getAbsoluteName())
+				if (sc_name_type_match(sc_name, contained))
 				{
-					return (IDLType)contained;
+					if (contained instanceof IDLType )
+					{
+						return (IDLType)contained;
+					}
+					if (contained instanceof Typed )
+					{
+						return ((Typed)contained).getIDLType();
+					}
+					System.out.println("problem");
 				}
-			}
+			} 
 		}
+		System.out.println("!!!!!!Did not find the type of scoped name: " + sc_name );
+		
 		return null;		
 	}
 	
 
+	public boolean sc_name_type_match(String sc_name, CCMModel.Contained contained)
+	{
+		// check for identifier in correct scope
+		// TODO: find the correct code
+		// check for identifier
+
+		if (sc_name.equals(contained.getIdentifier()))
+		{
+			return true;
+		}
+
+		String contained_name = contained.getAbsoluteName();
+		
+		// check for absolute name with leading "::"
+		if (sc_name.equals(contained_name))
+		{
+			return true;
+		}
+		
+		// check for absolute name without leading "::"
+		if (contained_name.startsWith("::"))
+		{
+			String temp_string = contained_name.substring(2); // cutof the first "::"
+			if (sc_name.equals(temp_string))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 	public PrimitiveDef find_primitive_type(PrimitiveKind type_kind)
 	{
 		
@@ -206,7 +242,7 @@ public class IdlTreeWalkerHelper {
 	}
 	
 	public OperationDef createOperationDefinition(boolean op_attr, String Name, IDLType type, List params, CCMModel.Container container) {
-		String absolute_name = container.getAbsoluteName() + Name;
+		String absolute_name = container.getAbsoluteName() + "::" + Name;
 		OperationDef operationDef = cCMModelFactory.createOperationDef();
 		operationDef.setIdentifier(Name);
 		operationDef.setAbsoluteName(absolute_name);
@@ -223,7 +259,7 @@ public class IdlTreeWalkerHelper {
 	}
 
 	public ModuleDef createModuleDefinition(String Name, CCMModel.Container container) {
-		String absolute_name = container.getAbsoluteName() + Name;
+		String absolute_name = container.getAbsoluteName() + "::" + Name;
 		ModuleDef modDef = cCMModelFactory.createModuleDef();
 		modDef.setIdentifier(Name);
 		modDef.setAbsoluteName(absolute_name);
@@ -238,7 +274,7 @@ public class IdlTreeWalkerHelper {
 
 	public InterfaceDef createInterfaceDefinition(String Name, CCMModel.Container container)
 	{
-		String absolute_name = container.getAbsoluteName() + Name;
+		String absolute_name = container.getAbsoluteName() + "::" + Name;
 		InterfaceDef intDef = cCMModelFactory.createInterfaceDef();
 		intDef.setIdentifier(Name);
 		intDef.setAbsoluteName(absolute_name);
@@ -249,9 +285,16 @@ public class IdlTreeWalkerHelper {
 		return intDef;
 		
 	}
-	public EnumDef createEnumerationDefinition(String enumerationName, List enumerationLiterals) {
+	public EnumDef createEnumerationDefinition(String Name, 
+			List enumerationLiterals, 
+			CCMModel.Container container) 
+	{
+		String absolute_name = container.getAbsoluteName() + "::" + Name;
 		EnumDef enumDef = cCMModelFactory.createEnumDef();
-		enumDef.setIdentifier(enumerationName);
+		enumDef.setAbsoluteName(absolute_name);
+		enumDef.setIdentifier(Name);
+		enumDef.setRepositoryId("IDL:" + Name + ":1.0");
+		enumDef.setVersion("1.0");
 		enumDef.getMembers().addAll(enumerationLiterals);
 		return enumDef;
 	}

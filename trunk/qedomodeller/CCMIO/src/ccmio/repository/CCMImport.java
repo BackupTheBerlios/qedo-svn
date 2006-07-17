@@ -167,6 +167,7 @@ public class CCMImport {
 	public void imports(CCMRepository repository, _CCMPackage current_package, CCM ccm) 
 	throws MofError
 	{
+		// set the ccm link
 		this.ccm = ccm;
 		
 		// initialize the lists
@@ -180,22 +181,33 @@ public class CCMImport {
 		CIFPackage = current_package.cif_ref();
 
 		idlcontainer = ccm.getIdlContainer();
-		
-		// 0. identfy root module
+
+		// find module with no defined in
 		MDE.BaseIDL.ModuleDef[] repmodules = 
 			current_package.base_idl_ref().module_def_ref().all_of_class_module_def();		
+		int i = 0;
+		for (i = 0; i < repmodules.length; i++)
+		{
+			try {
+				repmodules[i].defined_in();
+			} catch (Exception e)
+			{
+				// found the root_module
+				break;
+			}
+		}
+		// 1. crreate the rootmodule representing the package
+		ModuleDef root = createRoot(repmodules[i]);
 		
-		// TODO: Currently Assuming that only one root module exists
+		// 2. identfy contained modules
+		// TODO: Assuming everthing is contained in a module
 		
-		// 1. updates the rootmodule
-		ModuleDef root = createRoot(repmodules[0]);
-		
+	
 		// 2. create the contens of the rootmodule
 //		root.getContents().addAll(createContents(repositoryModule.contents()));
-		MDE.BaseIDL.Contained temp_contained [] = new MDE.BaseIDL.Contained[1];
-		temp_contained[0] = (MDE.BaseIDL.Contained) repmodules[0];
+//		MDE.BaseIDL.Contained temp_contained [] = (MDE.BaseIDL.Contained[]) repmodules[i].contents();
 		
-		root.getContents().addAll(createContents(temp_contained));
+		root.getContents().addAll(createContents(repmodules[i].contents()));
 			
 		// 3. & 4. create the relations and updates the missing properties 
 		updateEMFModel();
@@ -206,17 +218,18 @@ public class CCMImport {
 	 * @param repositoryModule = the root-module to import to the ccm-file. 
  	 */
 	
-	private ModuleDef createRoot(MDE.BaseIDL.ModuleDef repositoryModule) throws MofError
+	private ModuleDef createRoot(MDE.BaseIDL.ModuleDef  rep_root_module) throws MofError
 	{
 		//System.out.println("rootmodule: " + repositoryModule.identifier());
-		ModuleDef root = this.ccm.getModuleDef();
+		ModuleDef root = CCMModelFactory.eINSTANCE.createModuleDef();
 		{
-			root.setAbsoluteName(repositoryModule.identifier());
-			root.setIdentifier(repositoryModule.identifier());
-			root.setRepositoryId(repositoryModule.repository_id());
-			root.setVersion(repositoryModule.version());
-			root.setPrefix(repositoryModule.prefix());
+			root.setAbsoluteName("");
+			root.setIdentifier(rep_root_module.identifier());
+			root.setRepositoryId("");
+			root.setVersion("1.0");
+			root.setPrefix("");
 		}
+		this.ccm.setModuleDef(root);
 		return root;
 	}
 	/* --------------------------------- CREATE ------------------------------------------------ */
@@ -285,11 +298,17 @@ public class CCMImport {
 	private Contained create(MDE.BaseIDL.Contained contained) throws MofError
 	{
 		// check whether container is known
-		
+		EObject anEObject = null;
+		anEObject = rep2emf(contained);
+		if (anEObject != null)
+		{
+		   return (Contained)anEObject;	
+		}
 		
 		// end check container is known
 		
-		Contained emf;
+		Contained emf = null;
+		
 		System.out.println("\t" + contained.identifier());
 		 
 		try{
@@ -414,7 +433,8 @@ public class CCMImport {
 		
 		try{
 			Configuration con=ConfigurationHelper.narrow(contained);
-			emf=null;
+//			emf=null;
+			emf = CCMModelFactory.eINSTANCE.createConfiguration();
 			return emf;
 		}catch(Exception e) {}
 		
@@ -423,6 +443,8 @@ public class CCMImport {
 			MDE.BaseIDL.ModuleDef moduleDef = ModuleDefHelper.narrow(contained);
 			emf = CCMModelFactory.eINSTANCE.createModuleDef(); // Module
 			((ModuleDef) emf).setPrefix(moduleDef.prefix());
+			repmodel.add(contained);
+			emfmodel.add(emf);
 			return emf;
 		} catch(Exception e) {}
 		
@@ -1280,7 +1302,7 @@ public class CCMImport {
 						ComponentFile[] confiles=con.install_dest();
 						for (int k=0;k<confiles.length;k++){
 							CCMModel.ComponentFile ecomFile=(CCMModel.ComponentFile)rep2emf(confiles[k]);
-							((CCMModel.Assembly)emf).getComponentFile().add(ecomFile);
+							((CCMModel.Assembly)emf).getConfig().getComponentFile().add(ecomFile);
 							if(repmodel.contains(confiles[k].pack()))
 									ecomFile.setPackage((SoftwarePackage)rep2emf(confiles[k].pack()));
 							
@@ -1288,7 +1310,7 @@ public class CCMImport {
 						ProcessCollocation[]  processes=con.coloc();
 						for (int k=0;k<processes.length;k++){
 							CCMModel.ProcessCollocation eprocess=(CCMModel.ProcessCollocation)rep2emf(processes[k]);
-							((CCMModel.Assembly)emf).getProcessCollocation().add(eprocess);
+							((CCMModel.Assembly)emf).getConfig().getProcessCollocation().add(eprocess);
 							HomeInstantiation[] homeInstances=processes[k].thehome();
 							for (int l=0;l<homeInstances.length;l++){
 								CCMModel.HomeInstantiation ehomeInstance=(CCMModel.HomeInstantiation)rep2emf(homeInstances[l]);

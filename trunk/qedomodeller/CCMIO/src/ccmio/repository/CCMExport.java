@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.omg.CORBA.Object;
 
 import CCMModel.Aktionkind;
 import CCMModel.AliasDef;
@@ -160,7 +161,7 @@ public class CCMExport {
 		_CCMPackage temp_package;
 		// identify the name of Package
 		// asuming first Module represents the package name
-		ModuleDef package_module = ccm.getModuleDef();
+		CCMModel.ModuleDef package_module = ccm.getModuleDef();
 		String package_name = package_module.getIdentifier();
 
 		// creste root ccm package in CCM repositry
@@ -173,13 +174,15 @@ public class CCMExport {
 		deploymentPackage = temp_package.deployment_ref();
 		
 		// 1. & 2. create the rootModule and its contents
+		createRootAndContents(package_module);
+		
+//		MDE.BaseIDL.Contained[] contents = 
+//			createContents(root_module.getContents());
 
-		//createRoot(rootModule);
+		//
 //		MDE.BaseIDL.ModuleDef repRootModule = ModuleDefHelper.narrow(create(package_module));
 		// 3. creates relations 
 		//System.out.println("Create model in repository.");
-		MDE.BaseIDL.Contained[] contents = 
-			createContents(package_module.getContents());
 		//System.out.println("Create model in repository.");
 /*
 		for (int i=0;i<contents.length;i++)
@@ -205,25 +208,26 @@ public class CCMExport {
  	 */
 	
 	// not used
-	/*
-	private void createRoot(ModuleDef rootModule) throws MofError
+
+	private void createRootAndContents(ModuleDef rootModule) throws MofError
 	{
 		
-   	 	MDE.BaseIDL.ModuleDef repRootModule = ModuleDefHelper.narrow(create(rootModule));
-   	 	repmodel.add(repRootModule); emfmodel.add(rootModule);
+   	 	MDE.BaseIDL.ModuleDef repRootModule;
+		repRootModule = baseIDLPackage.module_def_ref().create_module_def( rootModule.getIdentifier(), rootModule.getRepositoryId(), rootModule.getVersion(), rootModule.getPrefix());
+
+   	 	repmodel.add(repRootModule);
+   	 	emfmodel.add(rootModule);
+   	 	
+  
    	 	// create the contens of the RootModule
    	 	//System.out.println("Create model in repository.");
 		MDE.BaseIDL.Contained[] contents = 
-			createContents(rootModule.getContents());
-		for (int i=0;i<contents.length;i++)
-		{	
-				if(contents[i] != null) {
-				repRootModule.add_contents(contents[i]);
-				contents[i].set_defined_in(repRootModule);
-			}
-		}
+			createContents_fromContainer(rootModule, repRootModule); 
+
+		repRootModule.set_contents(contents);
+		
 	}
-	*/
+   	 	
 	/* --------------------------------- CREATE ------------------------------------------------ */
 	/**
 	 * This methode creates a List of Contained in Repository.
@@ -247,7 +251,9 @@ public class CCMExport {
 			repcontents[i] = create(emfContained);
 			if (repcontents[i] != null)
 			{
-				repmodel.add(repcontents[i]); emfmodel.add(emfContained);
+				repmodel.add(repcontents[i]);
+				emfmodel.add(emfContained);
+				
 				if (emfContained instanceof Container) 
 				{
 					// container --> create contents
@@ -268,6 +274,49 @@ public class CCMExport {
 		}
 		return repcontents;
 	}
+
+	private MDE.BaseIDL.Contained[] createContents_fromContainer(Container emf_container, MDE.BaseIDL.Container rep_container) throws MofError
+	{	 
+		EList emf_contents = emf_container.getContents();
+
+		// MDE.BaseIDL.Contained[]  repcontents = new MDE.BaseIDL.Contained[emf_contents.size()];
+		List repcontents = new ArrayList();
+		
+		for (int i=0; i<emf_container.getContents().size(); i++)
+		{
+			Contained emfContained = (Contained)emf_contents.get(i);
+			
+			if(emfContained instanceof DiagramImpl){
+//				repcontents[i]=null;
+//				emfContained.getDefinedIn().getContents().remove(emfContained);
+//				((Diagram)emfContained).getView().setDiagram(null);
+				continue;
+			}
+			
+//			repcontents[i] = create(emfContained);
+			MDE.BaseIDL.Contained cont = create(emfContained);
+			if (cont != null)
+			{
+				repmodel.add(cont);
+				emfmodel.add(emfContained);
+				cont.set_defined_in(rep_container);
+				repcontents.add(cont);
+
+			} 
+			else 
+			{
+				System.out.println("can´t create: " + emfContained.getIdentifier());
+			}
+		}
+		MDE.BaseIDL.Contained[] return_cont = new MDE.BaseIDL.Contained[repcontents.size()];
+		for (int counter = 0; counter < repcontents.size();counter++)
+		{
+			return_cont[counter] = (MDE.BaseIDL.Contained)repcontents.get(counter);
+		}
+		return return_cont;
+	}
+	
+	
 	/**
 	 * This methode  creates a contained in repository.
 	 * @param contained = the object to add to the model
@@ -275,12 +324,15 @@ public class CCMExport {
  	 */
 	private MDE.BaseIDL.Contained create(Contained contained) throws MofError
 	{
+
+		
 		MDE.BaseIDL.Contained result;
 		//System.out.println("\t" + contained.getClass().getName() + " : " + contained.getIdentifier());
 		if (contained instanceof ModuleDef)
 		{
 			//relations.addAll(((ModuleDef)contained).getRelations());
-			result = baseIDLPackage.module_def_ref().create_module_def( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(), ((ModuleDef)contained).getPrefix());
+			MDE.BaseIDL.ModuleDef module = baseIDLPackage.module_def_ref().create_module_def( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(), ((ModuleDef)contained).getPrefix());
+			result = module;
 		}
 		else if (contained instanceof SoftwarePackage){
 			
@@ -406,8 +458,11 @@ public class CCMExport {
 				for (int j=0;j<factorys.length;j++) {
 					rephome.add_factorys(factorys[j]); factorys[j].set_homedef(rephome); }
 				MDE.ComponentIDL.FinderDef[] finders = createFinders(((HomeDef)contained).getFinders());
-				for (int j=0;j<finders.length;j++) {
-					rephome.add_finders(finders[j]); finders[j].set_homedef(rephome); }
+				for (int j=0;j<finders.length;j++) 
+				{
+					rephome.add_finders(finders[j]);
+					finders[j].set_homedef(rephome); 
+				}
 				result =  rephome;
 	    }else if (contained instanceof Composition) {
 	    	 
@@ -497,14 +552,40 @@ public class CCMExport {
 		else if (contained instanceof ValueMemberDef)
 			result =  baseIDLPackage.value_member_def_ref().create_value_member_def( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(), ((ValueMemberDef)contained).isIsPublicMember());
 		else result =  null;
+
+/*
 		if (contained instanceof Typed && result != null)
 		{
 			IDLType emfIDLType = ((Typed)contained).getIDLType();
 			MDE.BaseIDL.IDLType repIDLType;
 			if (emfIDLType != null)
-				if ((repIDLType = createIDLType(emfIDLType)) != null)
+			{
+				repIDLType = createIDLType(emfIDLType);
+				if (repIDLType != null)
+				{
 					TypedHelper.narrow(result).set_idl_type(repIDLType);
+				}
+				else 
+				{
+					repIDLType = (MDE.BaseIDL.IDLTypeHelper.narrow(create((Contained)emfIDLType))); 
+					if (repIDLType != null)
+					{
+						TypedHelper.narrow(result).set_idl_type(repIDLType);
+					}
+
+				}
+			}
 		}
+*/ // this is done in update RepModel
+
+		if (contained instanceof Container)
+		{
+			MDE.BaseIDL.Container temp_container = MDE.BaseIDL.ContainerHelper.narrow(result);
+			MDE.BaseIDL.Contained[] temp_list = createContents_fromContainer((Container)contained, temp_container) ;
+			
+			temp_container.set_contents(temp_list);
+		}
+
 		return result;
 	}
 	/**
@@ -519,6 +600,13 @@ public class CCMExport {
  	 */
 	private MDE.BaseIDL.IDLType createIDLType(IDLType emfIDLType) throws MofError
 	{
+		// check if the type already exists
+		Object rep_type = emf2rep(emfIDLType);
+		if (rep_type != null)
+		{
+			return MDE.BaseIDL.IDLTypeHelper.narrow(rep_type);
+		}
+
 		if (emfIDLType instanceof TypedefDef)
 			return (MDE.BaseIDL.IDLType)create((TypedefDef)emfIDLType);
 
@@ -548,75 +636,34 @@ public class CCMExport {
 			return repSequence;
 		}
 		
-		if (emfIDLType instanceof WstringDef)
+		else if (emfIDLType instanceof WstringDef)
+		{
 			return baseIDLPackage.wstring_def_ref().create_wstring_def((int)((WstringDef)emfIDLType).getBound());
-		if (emfIDLType instanceof StringDef)
+		}
+		else if (emfIDLType instanceof StringDef)
+		{
 			return baseIDLPackage.string_def_ref().create_string_def((int)((StringDef)emfIDLType).getBound());
-		if (emfIDLType instanceof FixedDef)
+		}
+		else if (emfIDLType instanceof FixedDef)
+		{
 			return baseIDLPackage.fixed_def_ref().create_fixed_def(((FixedDef)emfIDLType).getDigits(),((FixedDef)emfIDLType).getScale());
-
-		if (emfIDLType instanceof PrimitiveDef)
+		}
+		
+		else if (emfIDLType instanceof PrimitiveDef)
+		{
 			return baseIDLPackage.primitive_def_ref().create_primitive_def(getPrimitiveKind(((PrimitiveDef)emfIDLType).getKind()));
-
+		}
+		
+		else if (emfIDLType instanceof AliasDef)
+		{
+			
+			return MDE.BaseIDL.AliasDefHelper.narrow(create((Contained)emfIDLType));
+		}
+		
 		return null;
 	}
-	/**
-	 * This methode creates a List of consumess in Repository.
-	 * @param consumess = the consumess to add to the model
-	 * @return the new repository-consumess
- 	 */
-	private MDE.ComponentIDL.ConsumesDef[] createConsumess(EList consumess) throws MofError
-	{
-		MDE.BaseIDL.Contained[] rep = createContents(consumess);
-		MDE.ComponentIDL.ConsumesDef[] result = new MDE.ComponentIDL.ConsumesDef[rep.length];
-		for (int i=0; i<rep.length; i++)
-			result[i] = ConsumesDefHelper.narrow(rep[i]);
-		return result;
-	}
-	/**
-	 * This methode creates a List of emitss in Repository.
-	 * @param emitss = the emitss to add to the model
-	 * @return the new repository-emitss
- 	 */
-	private MDE.ComponentIDL.EmitsDef[] createEmitss(EList emitss) throws MofError
-	{
-		MDE.BaseIDL.Contained[] rep = createContents(emitss);
-		MDE.ComponentIDL.EmitsDef[] result = new MDE.ComponentIDL.EmitsDef[rep.length];
-		for (int i=0; i<rep.length; i++)
-			result[i] = EmitsDefHelper.narrow(rep[i]);
-		return result;
-	}
-	/**
-	 * This methode creates a List of providess in Repository.
-	 * @param providess = the providess to add to the model
-	 * @return the new repository-providess
- 	 */
-	private MDE.ComponentIDL.ProvidesDef[] createProvides(EList providess) throws MofError
-	{
-		MDE.BaseIDL.Contained[] rep = createContents(providess);
-		MDE.ComponentIDL.ProvidesDef[] result = new MDE.ComponentIDL.ProvidesDef[rep.length];
-		for (int i=0; i<rep.length; i++)
-			result[i] = ProvidesDefHelper.narrow(rep[i]);
-		return result;
-	}
-	/**
-	 * This methode creates a List of publishess in Repository.
-	 * @param publishess = the publishess to add to the model
-	 * @return the new repository-publishess
- 	 */
-	private MDE.ComponentIDL.PublishesDef[] createPublishess(EList publishess) throws MofError
-	{
-		MDE.BaseIDL.Contained[] rep = createContents(publishess);
-		MDE.ComponentIDL.PublishesDef[] result = new MDE.ComponentIDL.PublishesDef[rep.length];
-		for (int i=0; i<rep.length; i++)
-			result[i] = PublishesDefHelper.narrow(rep[i]);
-		return result;
-	}
-	/**
-	 * This methode creates a List of uses in Repository.
-	 * @param uses = the uses to add to the model
-	 * @return the new repository-uses
- 	 */
+
+	/*
 	private MDE.ComponentIDL.UsesDef[] createUses(EList uses) throws MofError
 	{
 		MDE.BaseIDL.Contained[] rep = createContents(uses);
@@ -625,45 +672,7 @@ public class CCMExport {
 			result[i] = UsesDefHelper.narrow(rep[i]);
 		return result;
 	}
-	/**
-	 * This methode creates a List of sinks in Repository.
-	 * @param sinks = the sinks to add to the model
-	 * @return the new repository-sinks
- 	 */
-	private MDE.ComponentIDL.SinkDef[] createSinks(EList sinks) throws MofError
-	{
-		MDE.BaseIDL.Contained[] rep = createContents(sinks);
-		MDE.ComponentIDL.SinkDef[] result = new MDE.ComponentIDL.SinkDef[rep.length];
-		for (int i=0; i<rep.length; i++)
-			result[i] = SinkDefHelper.narrow(rep[i]);
-		return result;
-	}
-	/**
-	 * This methode creates a List of sisous in Repository.
-	 * @param sisous = the sisous to add to the model
-	 * @return the new repository-sisous
- 	 */
-	private MDE.ComponentIDL.SiSouDef[] createSiSous(EList sisous) throws MofError
-	{
-		MDE.BaseIDL.Contained[] rep = createContents(sisous);
-		MDE.ComponentIDL.SiSouDef[] result = new MDE.ComponentIDL.SiSouDef[rep.length];
-		for (int i=0; i<rep.length; i++)
-			result[i] = SiSouDefHelper.narrow(rep[i]);
-		return result;
-	}
-	/**
-	 * This methode creates a List of sourcess in Repository.
-	 * @param sourcess = the sourcess to add to the model
-	 * @return the new repository-sourcess
- 	 */
-	private MDE.ComponentIDL.SourceDef[] createSourcess(EList sourcess) throws MofError
-	{
-		MDE.BaseIDL.Contained[] rep = createContents(sourcess);
-		MDE.ComponentIDL.SourceDef[] result = new MDE.ComponentIDL.SourceDef[rep.length];
-		for (int i=0; i<rep.length; i++)
-			result[i] = SourceDefHelper.narrow(rep[i]);
-		return result;
-	}
+	*/
 	/**
 	 * This methode creates a List of segments in Repository.
 	 * @param segments = the segments to add to the model
@@ -750,8 +759,17 @@ public class CCMExport {
 			IDLType emfIDLType = field.getIDLType();
 			MDE.BaseIDL.IDLType repIDLType;
 			if (emfIDLType != null)
-				if ((repIDLType = createIDLType(emfIDLType)) != null)
+			{
+				repIDLType = MDE.BaseIDL.IDLTypeHelper.narrow(createIDLType(emfIDLType));
+				if (repIDLType != null)
+				{
+					repfields[i].set_idl_type(repIDLType);					
+				} 
+				else if ((repIDLType = createIDLType(emfIDLType)) != null)
+				{
 					repfields[i].set_idl_type(repIDLType);
+				} 
+			}
 		}
 		return repfields;
 	}
@@ -1101,24 +1119,44 @@ public class CCMExport {
 		{
 			EObject emf = (EObject)emfmodel.get(i);
 			org.omg.CORBA.Object rep = (org.omg.CORBA.Object)repmodel.get(i);
-			if (emf instanceof HomeDef){
+/*
+			if (emf instanceof ModuleDef)
+			{
+				// set defined_in attribute
+				ModuleDef emf_module = (ModuleDef)emf;
+				MDE.BaseIDL.ModuleDef rep_module = ModuleDefHelper.narrow(rep);
 				
+				try {
+					rep_module.set_defined_in(ContainerHelper.narrow(emf2rep(emf_module.getDefinedIn())));
+				} catch (Exception e)
+				{
+					System.out.println("found a module with a missing defined in link, which should occur exaclty one time");
+				}
+			}
+*/ // This is replace by createContents from container method
+			
+			if (emf instanceof HomeDef)
+			{
 				HomeDef eHome=(HomeDef)emf;
 				MDE.ComponentIDL.HomeDef repHome = HomeDefHelper.narrow(rep);
 				
 				eObjs=eHome.getHomeSupports_itf();
 				for (it=eObjs.iterator();it.hasNext();)
+				{
 					repHome.add_supports_itf(InterfaceDefHelper.narrow(emf2rep(it.next())));
-					
+				}
+				
 				ComponentDef ecomponent= eHome.getComponent();
-				if(ecomponent!=null){
+				if(ecomponent!=null)
+				{
 					MDE.ComponentIDL.ComponentDef component= ComponentDefHelper.narrow(emf2rep(ecomponent));
 					repHome.set_component_end(component);	
 					component.add_home_end(repHome);
 				}
 			}
 			
-			else if (emf instanceof SoftwarePackage){
+			else if (emf instanceof SoftwarePackage)
+			{
 				SoftwarePackage epkg=(SoftwarePackage)emf;
 			    _SoftwarePackage pkg=_SoftwarePackageHelper.narrow(rep);
 			    ComponentDef ecomp=epkg.getComponent();
@@ -1131,7 +1169,8 @@ public class CCMExport {
 			//		pkg.set.add_supports_itf(InterfaceDefHelper.narrow(emf2rep(it.next())));
 			    eObjs=epkg.getImpl();
 			   // eObjs=epkg.getAssembly();
-			    for (it=eObjs.iterator();it.hasNext();){
+			    for (it=eObjs.iterator();it.hasNext();)
+			    {
 			    	Implementation eimpl=(Implementation)it.next();
 			    	MDE.Deployment.Implementation impl=MDE.Deployment.ImplementationHelper.narrow(emf2rep(eimpl));
 					pkg.add_impls(impl);
@@ -1144,27 +1183,37 @@ public class CCMExport {
 					//impl.s
 					List objs=eimpl.getContainedFile();
 					for (Iterator oit=objs.iterator();oit.hasNext();)
+					{
 						impl.add_contained_file(ContainedFileHelper.narrow(emf2rep(oit.next())));
+					}
 					objs=eimpl.getDependentFiles();
+					
 					for (Iterator oit=objs.iterator();oit.hasNext();)
+					{
 						impl.add_dependent_file(DependentFileHelper.narrow(emf2rep(oit.next())));
+					}
 					objs=eimpl.getRequirment();
+					
 					for (Iterator oit=objs.iterator();oit.hasNext();)
+					{
 						impl.add_req(DeploymentRequirementHelper.narrow(emf2rep(oit.next())));
+					}
 					objs=eimpl.getPropertys();
 					for (Iterator oit=objs.iterator();oit.hasNext();)
+					{
 						impl.add_prop(PropertyHelper.narrow(emf2rep(oit.next())));
-			    
-			    
+					}
 			    }
 			}
-			else if (emf instanceof Assembly){
+			else if (emf instanceof Assembly)
+			{
 				Assembly eass= (Assembly)emf;
 				MDE.Deployment.Assembly ass=AssemblyHelper.narrow(rep);
 				try{
 					Configuration con= ass.config();
-					eObjs=eass.getComponentFile();
-					for (it=eObjs.iterator();it.hasNext();){
+					eObjs=eass.getConfig().getComponentFile();
+					for (it=eObjs.iterator();it.hasNext();)
+					{
 						ComponentFile file=(ComponentFile)it.next();
 						MDE.Deployment.ComponentFile efile=ComponentFileHelper.narrow(emf2rep(file));
 						if(file.getPackage()!=null){
@@ -1173,29 +1222,35 @@ public class CCMExport {
 						con.add_install_dest(efile) ;
 					}
 					eObjs=eass.getSoftwarePackage();
-					for (it=eObjs.iterator();it.hasNext();){
+					for (it=eObjs.iterator();it.hasNext();)
+					{
 						ass.add_files(MDE.Deployment._SoftwarePackageHelper.narrow(emf2rep(it.next())));
 					}
 					eObjs=eass.getConnection();
-					for (it=eObjs.iterator();it.hasNext();){
+					for (it=eObjs.iterator();it.hasNext();)
+					{
 						 AssemblyConnection econnection=(AssemblyConnection)it.next();
 						 Connection connection = ConnectionHelper.narrow(emf2rep(econnection));
 						 con.add_conn(connection);
 						 ConnectionEnd esource= econnection.getSource();
 						 MDE.Deployment.ConnectionEnd source=ConnectionEndHelper.narrow(emf2rep(esource));
 						 CCMModel.CCMInstantiation sourceInstance=esource.getInstance();
-						 if(sourceInstance instanceof ComponentInstantiation){
+						 if(sourceInstance instanceof ComponentInstantiation)
+						 {
 						 	source.set_int_comp_inst(ComponentInstantiationHelper.narrow(emf2rep(sourceInstance)));
 						 }
-						 if(sourceInstance instanceof HomeInstantiation){
+						 if(sourceInstance instanceof HomeInstantiation)
+						 {
 						 	source.set_int_home_inst(MDE.Deployment.HomeInstantiationHelper.narrow(emf2rep(sourceInstance)));
 						 }
-						 if(sourceInstance instanceof CCMModel.ExternalInstance){
+						 if(sourceInstance instanceof CCMModel.ExternalInstance)
+						 {
 						 	source.set_ext_inst(ExternalInstanceHelper.narrow(emf2rep(sourceInstance)));
 						 }
 						 if(esource.getFeature()!=null)
+						 {
 						 	source.set_thefeature(ComponentFeatureHelper.narrow(emf2rep(esource.getFeature())));
-						
+						 }
 						 ConnectionEnd etarget= econnection.getTarget();
 						 MDE.Deployment.ConnectionEnd target=ConnectionEndHelper.narrow(emf2rep(etarget));
 						 CCMModel.CCMInstantiation targetInstance=etarget.getInstance();
@@ -1217,7 +1272,7 @@ public class CCMExport {
 					}
 				
 				
-					eObjs=eass.getProcessCollocation();
+					eObjs=eass.getConfig().getProcessCollocation();
 					for (it=eObjs.iterator();it.hasNext();){
 						ProcessCollocation eProcess=(ProcessCollocation)it.next();
 						MDE.Deployment.ProcessCollocation process=ProcessCollocationHelper.narrow(emf2rep(eProcess));
@@ -1409,11 +1464,24 @@ public class CCMExport {
 			{
 				UnionDef emfUnionDef = (UnionDef)emf;
 				MDE.BaseIDL.UnionDef repUnionDef = UnionDefHelper.narrow(rep);
-				org.omg.CORBA.Object  repDiscriminatorType = emf2rep(emfUnionDef.getDiscriminatorType());
+				org.omg.CORBA.Object  repDiscriminatorType = createIDLType(emfUnionDef.getDiscriminatorType());
 				if (repDiscriminatorType != null)
 				{
 					repUnionDef.set_discriminator_type(IDLTypeHelper.narrow(repDiscriminatorType));
 					//System.out.println("\t" + emfUnionDef.getIdentifier());
+				}
+			}else if (emf instanceof AliasDef)
+			{
+				AliasDef emfAliasDef = (AliasDef)emf;
+				MDE.BaseIDL.AliasDef repAliasDef = MDE.BaseIDL.AliasDefHelper.narrow(rep);
+				org.omg.CORBA.Object  alias_type = createIDLType(emfAliasDef.getIDLType());
+				if (alias_type != null)
+				{
+					repAliasDef.set_idl_type(IDLTypeHelper.narrow(alias_type));
+					//System.out.println("\t" + emfUnionDef.getIdentifier());
+				} else
+				{
+					repAliasDef.set_idl_type(createIDLType(emfAliasDef.getIDLType()));
 				}
 			}
 			else if (emf instanceof StreamProtDef)
@@ -1455,7 +1523,7 @@ public class CCMExport {
 	 * @param emf = the objects to search for
 	 * @return the repository-object
  	 */
-	private org.omg.CORBA.Object emf2rep(Object emf) throws MofError
+	private org.omg.CORBA.Object emf2rep(java.lang.Object emf) throws MofError
 	{
 		int index = emfmodel.indexOf(emf);
 		return (index >= 0) ? (org.omg.CORBA.Object)repmodel.get(index) : null;
