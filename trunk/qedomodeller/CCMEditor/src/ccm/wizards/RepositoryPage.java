@@ -207,7 +207,7 @@ public class RepositoryPage extends WizardPage {
 					} catch (Exception e)
 					{
 						// not a CCM Package
-						break;
+						continue;
 					}
 					TreeItem  tree_package = new TreeItem(packageTree,SWT.NULL);
 					tree_package.setText(temp_package.medini_get_name());

@@ -124,7 +124,7 @@ public class CreateHomeInstanceCommand extends CreateModelCommand{
     	ModelFactory mf = new ModelFactory();
     	ModuleDef root=mf.getRootModule(container);
     	List impls= new ArrayList();
-    	List componentfiles=((ProcessCollocation)container).getAssembly().getComponentFile();
+    	List componentfiles=((ProcessCollocation)container).getConfig().getComponentFile();
     	for (Iterator it=componentfiles.iterator();it.hasNext();){
     		impls.addAll(((ComponentFile)it.next()).getPackage().getImpl());
     	}

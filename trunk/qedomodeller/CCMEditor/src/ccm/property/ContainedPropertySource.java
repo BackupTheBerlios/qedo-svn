@@ -147,11 +147,20 @@ public class ContainedPropertySource implements IPropertySource2 {
 	                												(String)value));
 	    }
 	    if(CCMModelPackage.CONTAINED__IDENTIFIER==i){
-	 	        EStructuralFeature	feature = object.eClass().getEStructuralFeature(CCMModelPackage.CONTAINED__REPOSITORY_ID);
+	    		
+	 	        EStructuralFeature	feature_absname = 
+	 	        	object.eClass().getEStructuralFeature(CCMModelPackage.CONTAINED__ABSOLUTE_NAME);
+	 	        object.eSet( feature_absname,CCMConstants.getNewAbsName(
+	 	        		object.getAbsoluteName(),
+	 	        		(String)value)
+						);
+
+	 	        EStructuralFeature	feature = 
+	 	        	object.eClass().getEStructuralFeature(CCMModelPackage.CONTAINED__REPOSITORY_ID);
 	 	        object.eSet( feature,CCMConstants.getRepositoryIdString(object.getAbsoluteName(),
-	 	                												(String)value,
 	 	                												object.getVersion()));
-	 	}
+
+	    }
 		EStructuralFeature	feature = object.eClass().getEStructuralFeature(i);
 		object.eSet( feature, value );
 		notifyNode();

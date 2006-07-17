@@ -48,17 +48,19 @@ public class CreateAssemblyCommand extends CreateModelCommand{
 		super.execute();
 		((Assembly)newObject).setUuid(uuid);
 		
-//		 Configuration config = factory.createConfiguration();
-//		 config.setDefinedIn((Assembly)newObject);
-//		((Assembly)newObject).setConfig(config);
+		 CCMModel.Configuration config = factory.createConfiguration();
+		 config.setDefinedIn((Assembly)newObject);
+		((Assembly)newObject).setConfig(config);
+		((Assembly)newObject).getContents().add(config);
+		
 		for (Iterator it =comFiles.iterator();it.hasNext();){
 			ComponentFile comFile = (ComponentFile)it.next();
 			if (comFile.getLocation()==""||comFile.getLocation()==null)
 				((Assembly)newObject).getSoftwarePackage().add(comFile.getPackage());
 			
 		}
-		((Assembly)newObject).getContents().addAll(comFiles);
-		((Assembly)newObject).getComponentFile().addAll(comFiles);
+		((Assembly)newObject).getConfig().getContents().addAll(comFiles);
+		((Assembly)newObject).getConfig().getComponentFile().addAll(comFiles);
 		 
 	}
 

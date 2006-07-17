@@ -66,7 +66,7 @@ public class AddComponentFileCommand extends CreateNodeForContainedCommand{
 	 */
 	public void execute() {
 	    super.execute();
-	    ((Assembly)container).getComponentFile().add(newObject);
+	    ((Assembly)container).getConfig().getComponentFile().add(newObject);
 	    compFile = (ComponentFile) newObject;
 		compFile.setLocation(location);
 		compFile.setName(fileName);

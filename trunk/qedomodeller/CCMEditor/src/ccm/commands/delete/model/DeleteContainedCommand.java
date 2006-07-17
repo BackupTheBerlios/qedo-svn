@@ -238,7 +238,7 @@ public class DeleteContainedCommand extends Command {
 		}
 		if(model instanceof ComponentFile) {
 			((ComponentFile)model).setPackage(null);
-			((ComponentFile)model).setAssembly(null);
+			((ComponentFile)model).setConfig(null);
 			
 		}
 		if(model instanceof IDLFile) {
@@ -250,7 +250,7 @@ public class DeleteContainedCommand extends Command {
 			
 		}
 		if(model instanceof ProcessCollocation) {
-			((ProcessCollocation)model).setAssembly(null);
+			((ProcessCollocation)model).setConfig(null);
 			 	
 		}
 		if(model instanceof CCMInstantiation) {

@@ -96,10 +96,42 @@ public class CCMConstants {
 	 * @return full repository identifier of this instance
 	 */
 	public static final String getRepositoryIdString(String absName,String identifier,String version){
-	    return "IDL:"+absName+":"+identifier+":"+version;
+	    return "IDL:" + replaceDelimeter(absName) + "/" + identifier + ":" + version;
 	}
 	
+	/**
+	 * create full repository identifier of this instance
+	 * @param absName absolute name of instance
+	 * @param version version of instance
+	 * @return full repository identifier of this instance
+	 */
+	public static final String getRepositoryIdString(String absName,String version){
+	    return "IDL:" + replaceDelimeter(absName) + ":" + version;
+	}
+
+	/**
+	 * create full repository identifier of this instance
+	 * @param absName absolute name of instance
+	 * @param version version of instance
+	 * @return full repository identifier of this instance
+	 */
+	public static final String getNewAbsName(String absName, String identifier){
+		int i = absName.lastIndexOf(":");
+		String temp_string = absName.substring(0,i);
+		temp_string = temp_string + ":" + identifier;
+		
+	    return temp_string;
+	}
+
 	
+	private static final String replaceDelimeter(String absName)
+	{
+		String ret = absName;
+		ret = ret.replaceFirst(":","");
+		
+		ret = ret.replaceAll(":","/");
+		return ret;
+	}
 	/**
 	 * adds to the idlTypeCmb new item and select this,if idlTemp kind is WSTRING, ARRAY,SEQUENCE, STRING or FIXED
 	 * else select item in the idlTypeCmb that identicate with idlTemp

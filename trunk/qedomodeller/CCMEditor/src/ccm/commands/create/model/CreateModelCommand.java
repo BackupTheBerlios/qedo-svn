@@ -78,7 +78,7 @@ public class CreateModelCommand extends Command {
 		*/
 		
 		// TODO
-		newObject.setRepositoryId(CCMConstants.getRepositoryIdString(newObject.getAbsoluteName(),identifier,version));
+		newObject.setRepositoryId(CCMConstants.getRepositoryIdString(newObject.getAbsoluteName(),version));
 
 		if(! (container instanceof ModuleDef))
 	    	container = (Container)container.getDefinedIn();
@@ -192,14 +192,23 @@ public class CreateModelCommand extends Command {
     	// TODO check if this is really needed
     	
     	/* modified by tri */
+    	/*
     	String str = container.getAbsoluteName() + newObject.getIdentifier();
     	return str;
-    	/*
+    	*/
+/*    	
 		if(container.getAbsoluteName().trim().length()!=0)
-		    return container.getAbsoluteName() + ":" + container.getIdentifier();
+		{
+//		    return container.getAbsoluteName() + ":" + container.getIdentifier();
+	    	String str = container.getAbsoluteName() + newObject.getIdentifier();
+	    	return str;
+		}
 		else
+		{
 		    return container.getIdentifier();
-		*/
+		}
+*/
+    	return container.getAbsoluteName();
     }
 
     /**

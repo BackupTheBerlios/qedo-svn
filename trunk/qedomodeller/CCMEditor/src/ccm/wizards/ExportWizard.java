@@ -76,7 +76,7 @@ public class ExportWizard extends Wizard implements IExportWizard {
 		catch (InterruptedException e) {
 			return false;
 		} catch (InvocationTargetException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			Throwable realException = e.getTargetException();
 			MessageDialog.openError(getShell(), "Error", realException.getMessage());
 			return false;

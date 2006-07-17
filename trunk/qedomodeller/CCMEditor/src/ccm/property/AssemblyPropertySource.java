@@ -84,7 +84,7 @@ public class AssemblyPropertySource extends ContainedPropertySource {
         // Create a descriptor and set a category
         PropertyDescriptor parameters = new ComponentFilePropertyDescriptor(
 				Integer.toString(101),
-				"componentFiles", abstObj.getComponentFile(), packages) ;
+				"componentFiles", abstObj.getConfig().getComponentFile(), packages) ;
         	
         parameters.setCategory(cat);
         descriptors.add(parameters);
@@ -125,7 +125,7 @@ public class AssemblyPropertySource extends ContainedPropertySource {
 	   
 	    case 101:
 	    	 
-	    	for(Iterator it =abstObj.getComponentFile().iterator();it.hasNext();){
+	    	for(Iterator it =abstObj.getConfig().getComponentFile().iterator();it.hasNext();){
 	    		String paraname =((ComponentFile)it.next()).getIdentifier();
 	    		if (paraNames.equals(""))
 	    			paraNames=paraNames+paraname;
@@ -256,7 +256,7 @@ public class AssemblyPropertySource extends ContainedPropertySource {
 		 
 		 
 		 
-    	List conFList=abstObj.getComponentFile();
+    	List conFList=abstObj.getConfig().getComponentFile();
 		for (Iterator it =conFList.iterator();it.hasNext();){
 			ComponentFile comFile= (ComponentFile )it.next();
 			if(!componentFiles.contains(comFile))
@@ -277,7 +277,7 @@ public class AssemblyPropertySource extends ContainedPropertySource {
 		}
 	    if( componentFiles.size()>0){
 	    	abstObj.getContents().addAll(componentFiles);
-	    	abstObj.getComponentFile().addAll(componentFiles);
+	    	abstObj.getConfig().getComponentFile().addAll(componentFiles);
 	    }
     }
 	private void createConnections(Contained source,Contained target, AssemblyConnection acon){  

@@ -59,7 +59,7 @@ public class CreateProcessCollocationCommand extends CreateModelCommand{
 	    
 //		Configuration config =((Assembly)container).getConfig();
 		container.getContents().add(newObject);
-		((Assembly)container).getProcessCollocation().add(newObject);
+		((Assembly)container).getConfig().getProcessCollocation().add(newObject);
 		 
 		((ProcessCollocation)newObject).setCardinality(cardinality);
 		((ProcessCollocation)newObject).setDestination(destination);

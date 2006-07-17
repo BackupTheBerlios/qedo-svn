@@ -659,7 +659,7 @@ public class EditConnectionDialog2 extends org.eclipse.swt.widgets.Dialog {
 		 */
 		public void setAssembly(Assembly ass) {
 			this.ass=ass;
-			List processes=ass.getProcessCollocation();
+			List processes=ass.getConfig().getProcessCollocation();
 			for (Iterator it =processes.iterator();it.hasNext();){
 				List homes=((ProcessCollocation)it.next()).getHomeInstances();
 				for (Iterator hit =homes.iterator();hit.hasNext();){

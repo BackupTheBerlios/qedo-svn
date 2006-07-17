@@ -52,6 +52,7 @@ public class IDLImportWizard  extends Wizard implements INewWizard{
 	private ISelection selection;
 	private IDLImportWizardPage page;
 	private String version;
+	private boolean try_merge;
 
 	public IDLImportWizard()
 	{
@@ -84,15 +85,24 @@ public class IDLImportWizard  extends Wizard implements INewWizard{
 		IContainer container = (IContainer) resource;
 		IFile file = container.getFile(new Path(fileName));
 		if (file.exists())
+		{
 			if (!MessageDialog.openQuestion(getShell(),
 					"Overwrite?", "File \"" + file.getName() + "\" already exists. Overwrite?"))
 				return false;
+		}	
+
+		try_merge = false;
+		if (MessageDialog.openQuestion(getShell(),
+				"Merge?", "File \"" + file.getName() + "\" already exists. Merge?"))
+		{
+			try_merge = true;
+		}
+
 			
-			 
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor) throws InvocationTargetException {
 				try {
-					doFinish(containerName, fileName, inputFileName, monitor);
+					doFinish(containerName, fileName, inputFileName, monitor, try_merge);
 					
 				} catch (CoreException e) {
 					e.printStackTrace();
@@ -161,7 +171,8 @@ public class IDLImportWizard  extends Wizard implements INewWizard{
 		String containerName,
 		String fileName,
 		String inputFileName,
-		IProgressMonitor monitor)
+		IProgressMonitor monitor,
+		boolean merge)
 		throws CoreException
 	{
 		// create a sample file
@@ -179,7 +190,7 @@ public class IDLImportWizard  extends Wizard implements INewWizard{
 		
 		monitor.worked(1);
 		monitor.setTaskName("create ccm model...");
-		createCCMFile(file, inputFileName, monitor);
+		createCCMFile(file, inputFileName, monitor, merge);
 
 		monitor.worked(3);
 		monitor.setTaskName("Opening file for editing...");
@@ -226,24 +237,36 @@ public class IDLImportWizard  extends Wizard implements INewWizard{
 	private void createCCMFile(
 			IFile file,
 			String inputFileName,
-			IProgressMonitor monitor) throws CoreException
+			IProgressMonitor monitor,
+			boolean merge) throws CoreException
 	{ 
 		CCMModelManager modelManager = new CCMModelManager();
 		IPath path = file.getFullPath();
 		CCM ccm= null;
 
-		try { // try to create file
-			InputStream stream = openContentStream();
-			if (!file.exists())
-				file.create(stream, true, monitor);
-			else
-				file.setContents(stream,true,true,monitor);
-			stream.close();
-		} catch (IOException e) {
-			throwCoreException("can´t create File \"" + file.getName() + "\".");
+		if (!merge)
+		{
+			try { // try to create file
+				InputStream stream = openContentStream();
+				if (!file.exists())
+					file.create(stream, true, monitor);
+				else
+					file.setContents(stream,true,true,monitor);
+				stream.close();
+			} catch (IOException e) {
+				throwCoreException("can´t create File \"" + file.getName() + "\".");
+			}
+			modelManager.createModelView(file);
+		} else
+		{
+			try {
+				modelManager.load(file.getFullPath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-
-		modelManager.createModelView(file);
+		
 
 		Resource resource = modelManager.resource;
 		
@@ -257,7 +280,7 @@ public class IDLImportWizard  extends Wizard implements INewWizard{
 		{
 			// here the IDL Importer has to be called
 			IDLImport idl_import = new IDLImport();
-			idl_import.imports(ccm, inputFileName);
+			idl_import.imports(ccm, inputFileName, merge);
 
 		}
 		catch (Exception ex)
