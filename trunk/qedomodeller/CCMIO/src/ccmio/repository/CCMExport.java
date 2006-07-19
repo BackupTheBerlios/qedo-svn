@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.omg.CORBA.Object;
 
 import CCMModel.Aktionkind;
@@ -78,7 +79,6 @@ import MDE._CCMPackage;
 import MDE.BaseIDL.ContainerHelper;
 import MDE.BaseIDL.IDLTypeHelper;
 import MDE.BaseIDL.InterfaceDefHelper;
-import MDE.BaseIDL.ModuleDefHelper;
 import MDE.BaseIDL.TypedHelper;
 import MDE.BaseIDL.UnionDefHelper;
 import MDE.BaseIDL.ValueDefHelper;
@@ -100,7 +100,6 @@ import MDE.ComponentIDL.HomeDefHelper;
 import MDE.ComponentIDL.MediaTypeHelper;
 import MDE.ComponentIDL.ProvidesDefHelper;
 import MDE.ComponentIDL.PublishesDefHelper;
-import MDE.ComponentIDL.SiSouDefHelper;
 import MDE.ComponentIDL.SinkDefHelper;
 import MDE.ComponentIDL.SourceDefHelper;
 import MDE.ComponentIDL.StreamPortDefHelper;
@@ -130,6 +129,7 @@ import MDE.Deployment._DeploymentPackage;
 import MDE.Deployment._SoftwarePackage;
 import MDE.Deployment._SoftwarePackageHelper;
 import Reflective.MofError;
+import org.eclipse.jface.dialogs.MessageDialog;
 
 
 /**
@@ -351,13 +351,14 @@ public class CCMExport {
 						((SoftwarePackage)contained).getAutor(),idlfile);
 			 
 			result=softwarePackage;
-			return result;
+			//return result;
 			
 		}
 		else if (contained instanceof Implementation){
 			result=deploymentPackage.implementation_ref().create_implementation(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
 					((Implementation)contained).getUuid());
-			return result;
+
+			//return result;
 			
 		}
 		else if (contained instanceof ContainedFile){
@@ -365,20 +366,20 @@ public class CCMExport {
 					((ContainedFile)contained).getName(),((ContainedFile)contained).getLocation(),
 					((ContainedFile)contained).getCodeType(),((ContainedFile)contained).getEntryPoint(),
 					((ContainedFile)contained).getUsage());
-			return result;
+			//return result;
 			
 		}
 		else if (contained instanceof DependentFile){
 			result=deploymentPackage.dependent_file_ref().create_dependent_file(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
 					((DependentFile)contained).getName(),((DependentFile)contained).getLocation(),
 					getActionKind(((DependentFile)contained).getAction()));
-			return result;
+			//return result;
 			
 		}
 		else if (contained instanceof Deploymentrequirement){
 			result=deploymentPackage.deployment_requirement_ref().create_deployment_requirement(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
 					((Deploymentrequirement)contained).getKind(),((Deploymentrequirement)contained).getReqVersion());
-			return result;
+			//return result;
 		}
 		else if (contained instanceof Assembly){
 			Configuration con=deploymentPackage.configuration_ref().create_configuration(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion());
@@ -386,26 +387,31 @@ public class CCMExport {
 					((Assembly)contained).getUuid());
 			ass.set_config(con);
 			result=ass;
-			return result;
-			
-			
+			//return result;
 		}
-		else if (contained instanceof ComponentFile){
+
+		else if (contained instanceof ComponentFile)
+		{
 			result=deploymentPackage.component_file_ref().create_component_file(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
 					((ComponentFile)contained).getName(),((ComponentFile)contained).getLocation());
 			return result;
 		}
-		else if (contained instanceof ProcessCollocation){
+		
+		else if (contained instanceof ProcessCollocation)
+		{
 			result=deploymentPackage.process_collocation_ref().create_process_collocation(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
 					(int)((ProcessCollocation)contained).getCardinality(),((ProcessCollocation)contained).getDestination());
 		}
-		else if (contained instanceof HomeInstantiation){
+		
+		else if (contained instanceof HomeInstantiation)
+		{
 			FinderService finderservice=deploymentPackage.finder_service_ref().create_finder_service(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
 					getServiceKind(((HomeInstantiation)contained).getService()),((HomeInstantiation)contained).getRegName());
 			
 			result=deploymentPackage.home_instantiation_ref().create_home_instantiation(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
 					((HomeInstantiation)contained).getCardinality(),finderservice);
 		}
+		
 		else if (contained instanceof ComponentInstantiation){
 			result=deploymentPackage.component_instantiation_ref().create_component_instantiation(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),
 					((ComponentInstantiation)contained).getCardinality(),((ComponentInstantiation)contained).getStartOrder());
@@ -434,6 +440,9 @@ public class CCMExport {
 					((CCMModel.IDLFile)contained).getName(),((CCMModel.IDLFile)contained).getLocation());
 		 }
 		
+		 else if (contained instanceof CCMModel.Configuration){
+		 	result=deploymentPackage.configuration_ref().create_configuration(contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion());
+		 }
 		
 		else if (contained instanceof ComponentDef){
 				MDE.ComponentIDL.ComponentDef repcomponent = 
@@ -442,16 +451,17 @@ public class CCMExport {
 				result =  repcomponent;
 			}
 		else if (contained instanceof ComponentImplDef)
-			{
-				MDE.CIF.ComponentImplDef repcomponentimpl = 
-					CIFPackage.component_impl_def_ref().create_component_impl_def( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),	getComponentCategory(((ComponentImplDef)contained).getCategory()));
-				MDE.CIF.SegmentDef[] segments = createSegments(((ComponentImplDef)contained).getSegment());
-				for (int j=0;j<segments.length;j++) {
-					repcomponentimpl.add_segment(segments[j]); segments[j].set_component_impl_end(repcomponentimpl); }
-				result =  repcomponentimpl;
-			}
+		{
+			MDE.CIF.ComponentImplDef repcomponentimpl = 
+				CIFPackage.component_impl_def_ref().create_component_impl_def( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),	getComponentCategory(((ComponentImplDef)contained).getCategory()));
+			MDE.CIF.SegmentDef[] segments = createSegments(((ComponentImplDef)contained).getSegment());
+			for (int j=0;j<segments.length;j++) {
+				repcomponentimpl.add_segment(segments[j]); segments[j].set_component_impl_end(repcomponentimpl); }
+			result =  repcomponentimpl;
+		}
+
 		else if (contained instanceof HomeDef) 
-			{
+		{
 				MDE.ComponentIDL.HomeDef rephome =
 					componentIDLPackage.home_def_ref().create_home_def( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(), ((HomeDef)contained).isIsAbstract(), ((HomeDef)contained).isIsLocal());
 				MDE.ComponentIDL.FactoryDef[] factorys = createFactorys(((HomeDef)contained).getFactorys());
@@ -464,11 +474,13 @@ public class CCMExport {
 					finders[j].set_homedef(rephome); 
 				}
 				result =  rephome;
-	    }else if (contained instanceof Composition) {
-	    	 
-					result =  CIFPackage.composition_def_ref().create_composition_def( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),getComponentCategory(((Composition)contained).getCategory()));
-					 
 	    }
+		
+		else if (contained instanceof Composition) 
+		{
+			result =  CIFPackage.composition_def_ref().create_composition_def( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(),getComponentCategory(((Composition)contained).getCategory()));			
+		}
+
 		else if (contained instanceof HomeImplDef) 
 			result =  CIFPackage.home_impl_def_ref().create_home_impl_def( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion());
 		else if (contained instanceof EventDef) 
@@ -551,7 +563,10 @@ public class CCMExport {
 			result =  baseIDLPackage.value_box_def_ref().create_value_box_def( contained.getIdentifier(), contained.getRepositoryId(),	contained.getVersion());
 		else if (contained instanceof ValueMemberDef)
 			result =  baseIDLPackage.value_member_def_ref().create_value_member_def( contained.getIdentifier(), contained.getRepositoryId(), contained.getVersion(), ((ValueMemberDef)contained).isIsPublicMember());
-		else result =  null;
+		else 
+		{
+			result =  null;
+		}
 
 /*
 		if (contained instanceof Typed && result != null)
@@ -789,7 +804,9 @@ public class CCMExport {
 			MDE.BaseIDL.IDLType repIDLType;
 			if (emfIDLType != null)
 				if ((repIDLType = createIDLType(emfIDLType)) != null)
+				{
 					repunionfields[i].set_idl_type(repIDLType);
+				}
 		}
 		return repunionfields;
 	}
@@ -1226,7 +1243,7 @@ public class CCMExport {
 					{
 						ass.add_files(MDE.Deployment._SoftwarePackageHelper.narrow(emf2rep(it.next())));
 					}
-					eObjs=eass.getConnection();
+					eObjs=eass.getConfig().getConnection();
 					for (it=eObjs.iterator();it.hasNext();)
 					{
 						 AssemblyConnection econnection=(AssemblyConnection)it.next();

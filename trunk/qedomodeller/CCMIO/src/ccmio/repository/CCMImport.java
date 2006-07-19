@@ -9,6 +9,8 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 import org.omg.CORBA.BAD_PARAM;
 
+import sun.reflect.generics.tree.FieldTypeSignature;
+
 import CCMModel.Aktionkind;
 import CCMModel.ArrayDef;
 import CCMModel.AssemblyConnection;
@@ -435,6 +437,8 @@ public class CCMImport {
 			Configuration con=ConfigurationHelper.narrow(contained);
 //			emf=null;
 			emf = CCMModelFactory.eINSTANCE.createConfiguration();
+			repmodel.add(contained);
+			emfmodel.add(emf);
 			return emf;
 		}catch(Exception e) {}
 		
@@ -1241,14 +1245,28 @@ public class CCMImport {
 				else if (emf instanceof CCMModel.Assembly){
 					Assembly ass= AssemblyHelper.narrow(rep);
 					_SoftwarePackage[] pkgs=ass.files();
+					// add packages to the assembly which are contained in the assembly	
 					for (int j=0;j<pkgs.length;j++)
+					{
 						((CCMModel.Assembly)emf).getSoftwarePackage().add(rep2emf(pkgs[j]));
+					}
+					
+					// add configuration to the assembly
+					try{
+						Configuration con = ass.config();
+						CCMModel.Configuration emfconfig = (CCMModel.Configuration)rep2emf(con);
+						((CCMModel.Assembly)emf).setConfig(emfconfig);
+					} catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+					// add all connections defined as part of the configuration
 					try{
 						Configuration con=ass.config();
 						Connection[] conns=con.conn();
 						for (int k=0;k<conns.length;k++){
 							AssemblyConnection econn= (AssemblyConnection)rep2emf(conns[k]);
-							((CCMModel.Assembly)emf).getConnection().add(econn)	;
+							((CCMModel.Assembly)emf).getConfig().getConnection().add(econn)	;
 							ConnectionEnd sourceEnd=conns[k].source_end();
 							CCMModel.ConnectionEnd esource=(CCMModel.ConnectionEnd)rep2emf(sourceEnd);
 							try{
@@ -1304,8 +1322,9 @@ public class CCMImport {
 							CCMModel.ComponentFile ecomFile=(CCMModel.ComponentFile)rep2emf(confiles[k]);
 							((CCMModel.Assembly)emf).getConfig().getComponentFile().add(ecomFile);
 							if(repmodel.contains(confiles[k].pack()))
+							{
 									ecomFile.setPackage((SoftwarePackage)rep2emf(confiles[k].pack()));
-							
+							}
 						}
 						ProcessCollocation[]  processes=con.coloc();
 						for (int k=0;k<processes.length;k++){
@@ -1465,6 +1484,7 @@ public class CCMImport {
 			
 			if (emf instanceof UnionDef)
 			{
+				// create the discrimator type
 				UnionDef emfUnionDef = (UnionDef)emf;
 				MDE.BaseIDL.UnionDef repUnionDef = UnionDefHelper.narrow(rep);
 				MDE.BaseIDL.IDLType repDiscriminatorType = repUnionDef.discriminator_type();
@@ -1472,8 +1492,36 @@ public class CCMImport {
 					MDE.BaseIDL.TypedefDef typedefDef = TypedefDefHelper.narrow(repDiscriminatorType);
 					EObject emfDiscriminatorType = rep2emf(typedefDef);
 					if (emfDiscriminatorType != null)
+					{
 						emfUnionDef.setDiscriminatorType((IDLType)emfDiscriminatorType);
-				}catch(Exception e){}
+					}
+				}catch(Exception e)
+				{
+					System.out.println("type");
+					emfUnionDef.setDiscriminatorType(createIDLType(repDiscriminatorType));
+				}
+				
+				// create the union field types
+				EList emffields = emfUnionDef.getUnionMembers();
+				MDE.BaseIDL.UnionField[] rep_fields = repUnionDef.union_members();
+				for (int field_counter = 0; field_counter < emffields.size(); field_counter++)
+				{
+					try{
+						MDE.BaseIDL.TypedefDef fieldtypedefDef = TypedefDefHelper.narrow((rep_fields[field_counter]).idl_type());
+						EObject emfFieldType = rep2emf(fieldtypedefDef);
+						if (emfFieldType != null)
+						{
+							UnionField emffield = (UnionField)emffields.get(field_counter);
+							emffield.setIDLType((IDLType)emfFieldType);
+						}
+					}catch(Exception e)
+					{
+						System.out.println("union_field type");
+						UnionField emffield = (UnionField)emffields.get(field_counter);
+						emffield.setIDLType(createIDLType((rep_fields[field_counter]).idl_type()));
+					}
+					
+				}
 			}
 			else if (emf instanceof StreamProtDef)
 			{
