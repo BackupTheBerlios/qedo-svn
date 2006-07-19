@@ -33,7 +33,7 @@ public class ConnectionPropertyDescriptor  extends PropertyDescriptor{
 		super(id,displayName);
 	 
 		this.ass=ass;
-		aConnections=ass.getConnection();
+		aConnections=ass.getConfig().getConnection();
 	}
 	public CellEditor createPropertyEditor(Composite parent){
 	 

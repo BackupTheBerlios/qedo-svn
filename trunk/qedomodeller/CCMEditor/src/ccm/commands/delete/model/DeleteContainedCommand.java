@@ -265,7 +265,7 @@ public class DeleteContainedCommand extends Command {
 					connetion.getTarget().setInstance(null);
 					connetion.getTarget().setFeature(null);
 					//connetion.getSource().setInstance(null);
-					connetion.setAssembly(null);
+					connetion.setConfig(null);
 					connetion.setDefinedIn(null);
 					connetion.getConnection().clear();
 				}else{
@@ -273,7 +273,7 @@ public class DeleteContainedCommand extends Command {
 					connetion.getSource().setInstance(null);
 					connetion.getSource().setFeature(null);
 					//connetion.getTarget().setInstance(null);
-					connetion.setAssembly(null);
+					connetion.setConfig(null);
 					connetion.setDefinedIn(null);
 					connetion.getConnection().clear();
 				}

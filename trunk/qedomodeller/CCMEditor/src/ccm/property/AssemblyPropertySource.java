@@ -82,12 +82,18 @@ public class AssemblyPropertySource extends ContainedPropertySource {
         
        
         // Create a descriptor and set a category
+        try {
         PropertyDescriptor parameters = new ComponentFilePropertyDescriptor(
 				Integer.toString(101),
 				"componentFiles", abstObj.getConfig().getComponentFile(), packages) ;
         	
         parameters.setCategory(cat);
         descriptors.add(parameters);
+        } catch (Exception e)
+		{
+        	e.printStackTrace();
+		}
+        
         
         PropertyDescriptor containedPackage = new  PropertyDescriptor(
             Integer.toString(102),
@@ -152,7 +158,7 @@ public class AssemblyPropertySource extends ContainedPropertySource {
     		}
         return paraNames;
     case 104:
-    	for(Iterator it =abstObj.getConnection().iterator();it.hasNext();){
+    	for(Iterator it =abstObj.getConfig().getConnection().iterator();it.hasNext();){
     		String paraname =((AssemblyConnection)it.next()).getIdentifier();
     		if (paraNames.equals(""))
     			paraNames=paraNames+paraname;
@@ -190,7 +196,7 @@ public class AssemblyPropertySource extends ContainedPropertySource {
 	 * @param list
 	 */
 	private void addConnections(List acons) {
-		List aconList= abstObj.getConnection();
+		List aconList= abstObj.getConfig().getConnection();
 		for (Iterator it =aconList.iterator();it.hasNext();){
 			AssemblyConnection acon =(AssemblyConnection)it.next();
 			acon.setDefinedIn(null);
@@ -211,7 +217,7 @@ public class AssemblyPropertySource extends ContainedPropertySource {
 		}
 		aconList.clear();
 		abstObj.getContents().addAll(acons);
-		abstObj.getConnection().addAll(acons);
+		abstObj.getConfig().getConnection().addAll(acons);
 		for (Iterator it =acons.iterator();it.hasNext();){
 			AssemblyConnection acon =(AssemblyConnection)it.next();
 			Contained source;

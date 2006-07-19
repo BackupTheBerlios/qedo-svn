@@ -424,7 +424,7 @@ public class EditConnectionDialog extends org.eclipse.swt.widgets.Dialog impleme
     	    originalcon.setSource(sourceEnd);
     	    originalcon.setTarget(targetEnd);
     	    originalcon.setDefinedIn(ass);
-    	    originalcon.setAssembly(ass);
+    	    originalcon.setConfig(ass.getConfig());
     	    
 		    EditConnectionDialog2 d=new EditConnectionDialog2(this.dialogShell, 0);
 			// d=new CreateComponentFileDialog(this.dialogShell,0);

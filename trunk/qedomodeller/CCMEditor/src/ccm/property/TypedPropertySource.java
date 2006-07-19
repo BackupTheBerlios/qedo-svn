@@ -11,13 +11,10 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-import CCMModel.ArrayDef;
 import CCMModel.CCMModelPackage;
 import CCMModel.Contained;
-import CCMModel.EnumDef;
 import CCMModel.IDLType;
 import CCMModel.PrimitiveDef;
-import CCMModel.StructDef;
 import CCMModel.Typed;
 
 

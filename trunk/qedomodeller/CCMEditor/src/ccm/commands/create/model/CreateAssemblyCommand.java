@@ -49,6 +49,7 @@ public class CreateAssemblyCommand extends CreateModelCommand{
 		((Assembly)newObject).setUuid(uuid);
 		
 		 CCMModel.Configuration config = factory.createConfiguration();
+		 config.setIdentifier("Configuration");
 		 config.setDefinedIn((Assembly)newObject);
 		((Assembly)newObject).setConfig(config);
 		((Assembly)newObject).getContents().add(config);

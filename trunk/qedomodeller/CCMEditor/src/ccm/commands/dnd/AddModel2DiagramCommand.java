@@ -334,7 +334,7 @@ public class AddModel2DiagramCommand extends Command {
 	//			}
 	//		}
 	//		}
-			aplist= ((Assembly)contained).getConnection();
+			aplist= ((Assembly)contained).getConfig().getConnection();
 			for (Iterator conit=aplist.iterator();conit.hasNext();){
 				AssemblyConnection acon=(AssemblyConnection)conit.next();
 				ComponentFeature tfeature=acon.getTarget().getFeature();

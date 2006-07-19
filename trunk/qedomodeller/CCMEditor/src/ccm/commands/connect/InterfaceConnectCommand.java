@@ -140,7 +140,7 @@ public class InterfaceConnectCommand extends Command {
         aConnection.setTarget(targetEnd);
         
         ass.getContents().add(aConnection);
-        ass.getConnection().add(aConnection);
+        ass.getConfig().getConnection().add(aConnection);
 	    //aConnection.setConfig(config);
 	   // aConnection.setDefinedIn(ass);
 	    aConnection.setVersion(ass.getVersion());
