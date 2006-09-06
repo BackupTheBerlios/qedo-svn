@@ -21,6 +21,7 @@ import CCMModel.Contained;
 import CCMModel.Container;
 import CCMModel.EmitsDef;
 import CCMModel.EnumDef;
+import CCMModel.ExceptionDef;
 import CCMModel.HomeDef;
 import CCMModel.IDLTypeContainer;
 import CCMModel.InterfaceDef;
@@ -182,11 +183,28 @@ public class ModelFactory {
 	            nameList.add(idl.getKind().getName().substring(3));   
 	        }else{
 	            Contained idl=(Contained) o;
-	            String name=idl.getAbsoluteName()+":"+idl.getIdentifier();
+	            String name=idl.getAbsoluteName();
 	            nameList.add(name);
 	        }
 	    }
 	    return nameList;
 	}
-	
+
+	public List getExceptionDefs(Container m){
+	    List list=new LinkedList();
+	    Iterator it=m.getContents().iterator();
+	    while(it.hasNext()){
+	        Contained con=(Contained) it.next();
+	        if(con instanceof ExceptionDef)
+	        {
+	            list.add(con);
+	        }else if(con instanceof ModuleDef ||
+	        		con instanceof InterfaceDef)
+	        {
+	            list.addAll(getExceptionDefs((Container)con));
+	        }
+	    }
+	    return list;
+	}
+
 }

@@ -76,7 +76,7 @@ public class ExportWizard extends Wizard implements IExportWizard {
 		catch (InterruptedException e) {
 			return false;
 		} catch (InvocationTargetException e) {
-			//e.printStackTrace();
+			e.printStackTrace();
 			Throwable realException = e.getTargetException();
 			MessageDialog.openError(getShell(), "Error", realException.getMessage());
 			return false;
@@ -112,7 +112,8 @@ public class ExportWizard extends Wizard implements IExportWizard {
 			monitor.worked(1);			
 
 			//monitor.setTaskName("Exporting CCM Project...");
-			CCMExport.exports(repository, manager.getModel());
+			CCMExport exporter = new CCMExport();
+			exporter.exports(repository, manager.getModel());
 			monitor.worked(2);		
 			
 		}

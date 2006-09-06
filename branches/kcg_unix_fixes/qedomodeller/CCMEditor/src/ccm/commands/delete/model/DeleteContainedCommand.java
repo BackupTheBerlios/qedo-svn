@@ -238,7 +238,7 @@ public class DeleteContainedCommand extends Command {
 		}
 		if(model instanceof ComponentFile) {
 			((ComponentFile)model).setPackage(null);
-			((ComponentFile)model).setAssembly(null);
+			((ComponentFile)model).setConfig(null);
 			
 		}
 		if(model instanceof IDLFile) {
@@ -250,7 +250,7 @@ public class DeleteContainedCommand extends Command {
 			
 		}
 		if(model instanceof ProcessCollocation) {
-			((ProcessCollocation)model).setAssembly(null);
+			((ProcessCollocation)model).setConfig(null);
 			 	
 		}
 		if(model instanceof CCMInstantiation) {
@@ -265,7 +265,7 @@ public class DeleteContainedCommand extends Command {
 					connetion.getTarget().setInstance(null);
 					connetion.getTarget().setFeature(null);
 					//connetion.getSource().setInstance(null);
-					connetion.setAssembly(null);
+					connetion.setConfig(null);
 					connetion.setDefinedIn(null);
 					connetion.getConnection().clear();
 				}else{
@@ -273,7 +273,7 @@ public class DeleteContainedCommand extends Command {
 					connetion.getSource().setInstance(null);
 					connetion.getSource().setFeature(null);
 					//connetion.getTarget().setInstance(null);
-					connetion.setAssembly(null);
+					connetion.setConfig(null);
 					connetion.setDefinedIn(null);
 					connetion.getConnection().clear();
 				}

@@ -253,6 +253,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="isOneway" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="context" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exceptionDef" upperBound="-1"
+        eType="#//ExceptionDef"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ComponentFeature">
     <eStructuralFeatures xsi:type="ecore:EReference" name="registerComponentInstance"
@@ -507,12 +509,6 @@
         eType="#//SoftwarePackage" eOpposite="#//SoftwarePackage/assembly"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//Configuration"
         eOpposite="#//Configuration/assembly"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="componentFile" upperBound="-1"
-        eType="#//ComponentFile" eOpposite="#//ComponentFile/assembly"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="connection" upperBound="-1"
-        eType="#//AssemblyConnection" eOpposite="#//AssemblyConnection/assembly"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="processCollocation" upperBound="-1"
-        eType="#//ProcessCollocation" eOpposite="#//ProcessCollocation/assembly"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Configuration" eSuperTypes="#//Container">
     <eStructuralFeatures xsi:type="ecore:EReference" name="componentFile" upperBound="-1"
@@ -531,8 +527,6 @@
         eType="#//ConnectionEnd" eOpposite="#//ConnectionEnd/conTarget"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//Configuration"
         eOpposite="#//Configuration/connection"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="assembly" eType="#//Assembly"
-        eOpposite="#//Assembly/connection"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="connection" upperBound="-1"
         eType="#//Connection" eOpposite="#//Connection/assemblyConnection"/>
   </eClassifiers>
@@ -653,8 +647,6 @@
         eType="#//SoftwarePackage" eOpposite="#//SoftwarePackage/componentFiles"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//Configuration"
         eOpposite="#//Configuration/componentFile"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="assembly" eType="#//Assembly"
-        eOpposite="#//Assembly/componentFile"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Deploymentrequirement" eSuperTypes="#//Contained">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -693,8 +685,6 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//Configuration"
         eOpposite="#//Configuration/processCollocation"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="assembly" eType="#//Assembly"
-        eOpposite="#//Assembly/processCollocation"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FinderServiceKind">
     <eLiterals name="UNDEFINED" value="4"/>

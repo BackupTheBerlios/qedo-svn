@@ -57,9 +57,9 @@ public class CreateProcessCollocationCommand extends CreateModelCommand{
 		    newObject.setAbsoluteName(container.getIdentifier());
 		newObject.setRepositoryId(CCMConstants.getRepositoryIdString(newObject.getAbsoluteName(),identifier,version));
 	    
-//		Configuration config =((Assembly)container).getConfig();
-		container.getContents().add(newObject);
-		((Assembly)container).getProcessCollocation().add(newObject);
+		CCMModel.Configuration config =((Assembly)container).getConfig();
+		config.getContents().add(newObject);
+		config.getProcessCollocation().add(newObject);
 		 
 		((ProcessCollocation)newObject).setCardinality(cardinality);
 		((ProcessCollocation)newObject).setDestination(destination);

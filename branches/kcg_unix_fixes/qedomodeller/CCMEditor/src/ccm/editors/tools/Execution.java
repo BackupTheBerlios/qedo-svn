@@ -1221,7 +1221,7 @@ public class Execution {
 	    createDialog.open();
         if(!createDialog.isState() )
         	return false;
-        for (Iterator it =( command.getContainer()).getComponentFile().iterator(); it.hasNext();){
+        for (Iterator it =( command.getContainer()).getConfig().getComponentFile().iterator(); it.hasNext();){
 			if (createDialog.getPackage().equals(((ComponentFile)it.next()).getPackage())){
 				MessageDialog.openInformation(shell, "warn",  "a component file with the same package\nis already exsit" ); 	
 				return false;

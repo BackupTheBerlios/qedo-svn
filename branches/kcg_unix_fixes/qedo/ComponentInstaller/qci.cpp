@@ -306,6 +306,7 @@ main (int argc, char** argv)
 	// init ORB
 	//
 	orb = CORBA::ORB_init (orb_argc, orb_argv);
+	Qedo::set_ORB(orb);
 
 	Qedo::ComponentInstallationImpl* component_installation = new Qedo::ComponentInstallationImpl (orb);
 

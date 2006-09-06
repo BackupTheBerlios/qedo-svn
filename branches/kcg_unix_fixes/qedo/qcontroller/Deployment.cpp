@@ -154,7 +154,7 @@ Deployment::OnDeployButton(wxCommandEvent& WXUNUSED(event))
 	//
 	
 	int dummy=0;
-	orb = CORBA::ORB_init (dummy, 0);
+	orb = Qedo::get_created_ORB();
 
 	//
 	// Register valuetype factories

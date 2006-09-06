@@ -58,8 +58,8 @@ public class CreateNodeForAssemblyCommand extends CreateNodeForRuleOwnerCommand{
 				((Assembly)newObject).getSoftwarePackage().add(comFile.getPackage());
 			
 		}
-		((Assembly)newObject).getContents().addAll(comFiles);
-		((Assembly)newObject).getComponentFile().addAll(comFiles);
+		((Assembly)newObject).getConfig().getContents().addAll(comFiles);
+		((Assembly)newObject).getConfig().getComponentFile().addAll(comFiles);
 		//((Assembly)newObject).getComponentFile().addAll(comFiles);
 		//((InterfaceDef)newObject).setIsLocal(isLocal);
 		node.eNotify(new CCMNotificationImpl(node, Notification.SET,

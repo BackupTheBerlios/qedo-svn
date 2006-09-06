@@ -57,10 +57,18 @@ public class CreateNodeForHomeInstanceCommand extends CreateNodeForContainerComm
 		//super.execute();
 		newObject.setIdentifier(identifier);
 		newObject.setVersion(version);
+		/* modified by tri */
+		newObject.setAbsoluteName(container.getAbsoluteName() +":" + identifier);
+		
+		/*
 		if(container.getAbsoluteName().trim().length()!=0)
 		    newObject.setAbsoluteName(container.getAbsoluteName() + ":" + container.getIdentifier());
 		else
 		    newObject.setAbsoluteName(container.getIdentifier());
+		    
+		*/
+		
+		// TODO
 		newObject.setRepositoryId(CCMConstants.getRepositoryIdString(newObject.getAbsoluteName(),identifier,version));
 	    container.getContents().add(newObject);
 	    
@@ -111,7 +119,7 @@ public class CreateNodeForHomeInstanceCommand extends CreateNodeForContainerComm
     	ModelFactory mf = new ModelFactory();
     	ModuleDef root=mf.getRootModule(container);
     	List impls= new ArrayList();
-    	List componentfiles=((ProcessCollocation)container).getAssembly().getComponentFile();
+    	List componentfiles=((ProcessCollocation)container).getConfig().getComponentFile();
     	for (Iterator it=componentfiles.iterator();it.hasNext();){
     		impls.addAll(((ComponentFile)it.next()).getPackage().getImpl());
     	}

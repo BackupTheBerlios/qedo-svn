@@ -108,9 +108,9 @@ public class DragComponent2DiagramCommand extends DragAbstInterface2DiagramComma
 				Node vn=(Node)nit.next();
 				if(Homes.contains(vn.getContained())){
 					ComponentHomeConnectCommand command=new ComponentHomeConnectCommand();
-					command.setSource(n);
+					command.setSource(vn);
 					//command.setLabel("");
-					command.setTarget(vn);
+					command.setTarget(n);
 					command.setView(view);
 					command.execute();
 				}

@@ -214,6 +214,7 @@ main (int argc, char** argv)
 	std::cout << "Qedo Home Finder " << QEDO_VERSION << " " << QEDO_REVISION << std::endl;
 
 	orb = CORBA::ORB_init (orb_argc, orb_argv);
+	Qedo::set_ORB(orb);
 
 #ifdef HAVE_LIBPTHREAD
 	// block SIGINT

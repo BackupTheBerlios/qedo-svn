@@ -369,7 +369,8 @@ public class EditFieldDialog extends org.eclipse.swt.widgets.Dialog implements K
 		try {
 			Display display = Display.getDefault();
 			Shell shell = new Shell(display);
-			CreateExceptionDefDialog inst = new CreateExceptionDefDialog(shell, SWT.NULL);
+			//CreateExceptionDefDialog inst = new CreateExceptionDefDialog(shell, SWT.NULL);
+			EditFieldDialog inst = new EditFieldDialog(shell, SWT.NULL);
 			inst.open();
 		} catch (Exception e) {
 			e.printStackTrace();

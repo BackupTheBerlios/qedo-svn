@@ -41,6 +41,7 @@ public class CreateDiagramCommand extends CreateNodeForContainerCommand {
 		diagram.setIdentifier(identifier);
 		diagram.setVersion(version);
 
+		// TODO
 		if(container.getAbsoluteName().trim().length()!=0) {
 		    diagram.setAbsoluteName(container.getAbsoluteName() + ":" + container.getIdentifier());
 		}

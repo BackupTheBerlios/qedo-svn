@@ -133,7 +133,7 @@ public class EventConnectCommand extends Command {
 	    aConnection.setSource(sourceEnd);
         aConnection.setTarget(targetEnd);
         ass.getContents().add(aConnection);
-        ass.getConnection().add(aConnection);
+        ass.getConfig().getConnection().add(aConnection);
 	    //aConnection.setConfig(config);
 	   // aConnection.setDefinedIn(ass);
 	    aConnection.setVersion(ass.getVersion());

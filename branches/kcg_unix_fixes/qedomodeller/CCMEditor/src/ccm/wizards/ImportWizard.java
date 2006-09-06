@@ -32,6 +32,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 
 import CCMModel.CCM;
+import MDE._CCMPackage;
 import Reflective.MofError;
 import ccm.model.CCMModelManager;
 import ccmio.repository.CCMImport;
@@ -61,8 +62,7 @@ public class ImportWizard extends Wizard implements INewWizard {
 	 */
 	public ImportWizard() {
 		super();
-		setNeedsProgressMonitor(true);
-		 
+		setNeedsProgressMonitor(true);		 
 	}
 	
 	/**
@@ -86,7 +86,8 @@ public class ImportWizard extends Wizard implements INewWizard {
 		 
 		final String containerName = page.getContainerName();
 		final String fileName = page.getFileName();
-		final MDE.BaseIDL.ModuleDef repModule  = repositoryPage.getModule();
+//		final MDE.BaseIDL.ModuleDef repModule  = repositoryPage.getPackage();
+		final _CCMPackage repPackage  = repositoryPage.getPackage();		
 		//final MDE.BaseIDL.ModuleDef[] repModules  = repositoryPage.getModules();
 		final CCMRepository repository = repositoryPage.getRepository();
 		version=page.getVersion();
@@ -118,10 +119,10 @@ public class ImportWizard extends Wizard implements INewWizard {
 				try {
 					
 						
-					doFinish(containerName, fileName, repository, repModule, monitor);
+					doFinish(containerName, fileName, repository, repPackage, monitor);
 					
 				} catch (CoreException e) {
-					//e.printStackTrace();
+					e.printStackTrace();
 					throw new InvocationTargetException(e);
 				} finally {
 					monitor.done();
@@ -193,7 +194,7 @@ public class ImportWizard extends Wizard implements INewWizard {
 		String containerName,
 		String fileName,
 		CCMRepository repository,
-		MDE.BaseIDL.ModuleDef module,
+		_CCMPackage current_package,
 		IProgressMonitor monitor)
 		throws CoreException
 	{
@@ -209,7 +210,7 @@ public class ImportWizard extends Wizard implements INewWizard {
 		final IFile file = container.getFile(new Path(fileName));
 		monitor.worked(1);
 		monitor.setTaskName("create ccm model...");
-		createCCMFile(file,repository,module,monitor);
+		createCCMFile(file,repository,current_package,monitor);
 
 		monitor.worked(3);
 		monitor.setTaskName("Opening file for editing...");
@@ -258,7 +259,7 @@ public class ImportWizard extends Wizard implements INewWizard {
 	private void createCCMFile(
 			IFile file,
 			CCMRepository repository,
-			MDE.BaseIDL.ModuleDef module,
+			_CCMPackage current_package,
 			IProgressMonitor monitor) throws CoreException
 	{ 
 		CCMModelManager modelManager = new CCMModelManager();
@@ -288,11 +289,13 @@ public class ImportWizard extends Wizard implements INewWizard {
 
 		try
 		{
-			CCMImport.imports(repository,module,ccm);
+			CCMImport ccm_import = new CCMImport();
+			ccm_import.imports(repository,current_package,ccm);
 		}
 		catch (MofError ex)
 
-		{   //ex.printStackTrace();
+		{   
+			ex.printStackTrace();
 			throwCoreException("Mof Error : " + ex.getMessage()); }
 
 		monitor.worked(2);

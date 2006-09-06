@@ -28,6 +28,7 @@
 #include "wx/statbox.h"
 #include "explore.h"
 #include "QedoExplorer.h"
+#include "../qedoutil/qedoutil.h"
 
 
 #include "component.xpm"
@@ -124,7 +125,7 @@ QCexplorerTreeCtrl::build_tree()
 	CreateImageList();
 	int dummy=0;
 	try {
-		CORBA::ORB_var orb = CORBA::ORB_init(dummy,0);
+	    CORBA::ORB_var orb = Qedo::get_created_ORB();
 	
 		// resolve the naming service
 		std::string ns;

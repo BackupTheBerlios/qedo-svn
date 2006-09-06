@@ -68,7 +68,8 @@ public class ExportToRepository extends EditorPartAction {
 		// connect to repository
 		try{
 			CCMRepository repository = new CCMRepository(RepositoryRootRefFile);
-			CCMExport.exports(repository,ccm);
+			CCMExport exporter = new CCMExport();
+			exporter.exports(repository,ccm);
 			MessageDialog.openInformation(null,"Result","Export successfull");	
 		}
 		catch(MofError ex)

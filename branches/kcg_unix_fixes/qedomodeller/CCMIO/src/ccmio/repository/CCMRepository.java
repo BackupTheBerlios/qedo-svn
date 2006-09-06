@@ -2,6 +2,8 @@ package ccmio.repository;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.ORB;
@@ -12,7 +14,6 @@ import M2C.MOFRepository.RepositoryRootHelper;
 import MDE.CCMPackageFactory;
 import MDE.CCMPackageFactoryHelper;
 import MDE._CCMPackage;
-import MDE._CCMPackageHelper;
 import Reflective.MofError;
 import Reflective.RefPackageFactory;
 import Reflective._RefPackage;
@@ -27,32 +28,39 @@ public class CCMRepository {
 	/**
 	 * Referenz to the MDE-Package of the repository.
 	 */
-	private _CCMPackage mdepackage;
+//	private _CCMPackage[]  mdepackages;
+	private String refRepRoot;
+	
+	private RepositoryRoot repositoryRoot;
+	
+	private List mdepackages;
 	/**
 	 * returns the MDE-Package of the repository.
 	 * @return the MDE-Package of the repository.
 	 */
-	public _CCMPackage getMDE()
+	public List getMDE()
 	{
-		return mdepackage;
+		return mdepackages;
 	}
 	/**
 	 * Construktor of the CCMRepository.
 	 * @param refRepRootFile = the RepositoryRoot.ref - file
 	 */
 	public CCMRepository(String	refRepRootFile) throws MofError,IOException,COMM_FAILURE{
-        boolean packageinRepository=false;
+
+		mdepackages = new ArrayList();
+		boolean packageinRepository=false;
 		// init ORB:
 		ORB orb = ORB.init(new String[]{},null);
 		
 		// get Repository-Reference from RepositoryRoot.ref-File
-		String refRepRoot =	getRefFromFile(refRepRootFile);
+		refRepRoot = getRefFromFile(refRepRootFile);
 
 		// cast Repository-Reference-String to CORBA.Object
 		org.omg.CORBA.Object repository = orb.string_to_object(refRepRoot);
 
 		// get Repository-Root
-		RepositoryRoot repositoryRoot = RepositoryRootHelper.narrow(repository);
+		repositoryRoot = RepositoryRootHelper.narrow(repository);
 		try{	
 			//RefPackageFactorySet_var packageFactory = RefPackageFactorySetHelper.narrow( repositoryRoot.get_root_package_factories());
 			CCMPackageFactory packageFactory= null;
@@ -68,19 +76,45 @@ public class CCMRepository {
 			_RefPackage[] packages = repositoryRoot.list_root_packages();
 			for (int i = 0 ;i<packages.length;i++){
 				 try{
-				 	mdepackage = _CCMPackageHelper.narrow(packages[i]);
+				 	mdepackages.add(packages[i]);
 				 	packageinRepository= true;
-			     }catch (Exception e){}
+			     }catch (Exception e){
+			     	e.printStackTrace();
+			     }
 			}
-			if (!packageinRepository)
-				mdepackage = packageFactory.create_ccm_package();		 
 			
-	}catch( MofRepositoryException e1){
-		e1.printStackTrace();
+		}catch( MofRepositoryException e1){
+			e1.printStackTrace();
+		}
 		
 	}
+	
+	public _CCMPackage create_package(String name)
+	{
+		// init ORB:
+		ORB orb = ORB.init(new String[]{},null);
 		
+		CCMPackageFactory ccmFactory = null;
+		_CCMPackage new_package = null;
+		try {
+			RefPackageFactory[] refPkgFactories=repositoryRoot.get_root_package_factories();
+			for (int i = 0 ;i<refPkgFactories.length;i++){
+				 try{
+					ccmFactory = CCMPackageFactoryHelper.narrow(refPkgFactories[i]);
+				    break;
+				 }catch (Exception e){}
+					 
+			}
+			
+			new_package = ccmFactory.create_ccm_package();
+			new_package.medini_set_name(name);
+
+		} catch (MofRepositoryException e) {}
+		catch (MofError e) {};
+		return new_package;
 	}
+
+	
 	/**
 	 * gets the reference from the .ref - file.
 	 * @param file = full path of the .ref - file

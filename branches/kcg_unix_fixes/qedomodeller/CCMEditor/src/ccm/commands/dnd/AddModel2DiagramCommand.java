@@ -174,7 +174,7 @@ public class AddModel2DiagramCommand extends Command {
 			}
 			View v=((Node)contained.getNode().get(0)).getView();
 			Map map= new HashMap();
-			List processes= ((Assembly)contained).getProcessCollocation();
+			List processes= ((Assembly)contained).getConfig().getProcessCollocation();
 			int processSize=processes.size();
 			for (int i=0;i<processSize;i++){
 				ProcessCollocation process=(ProcessCollocation) processes.get(i);
@@ -334,7 +334,7 @@ public class AddModel2DiagramCommand extends Command {
 	//			}
 	//		}
 	//		}
-			aplist= ((Assembly)contained).getConnection();
+			aplist= ((Assembly)contained).getConfig().getConnection();
 			for (Iterator conit=aplist.iterator();conit.hasNext();){
 				AssemblyConnection acon=(AssemblyConnection)conit.next();
 				ComponentFeature tfeature=acon.getTarget().getFeature();

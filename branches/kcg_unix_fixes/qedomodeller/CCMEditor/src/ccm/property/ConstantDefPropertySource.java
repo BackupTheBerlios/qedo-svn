@@ -92,6 +92,8 @@ public class ConstantDefPropertySource extends ContainedPropertySource {
 	    switch(Integer.parseInt( (String)id )){
 	    case CCMModelPackage.ATTRIBUTE_DEF__IDL_TYPE: 
 	        return CCMConstants.getIDLName(idlTemp,mf.getIDLTTypedNames(idlT)); 
+	    case CCMModelPackage.CONSTANT_DEF__CONST_VALUE: 
+	        return constant.getConstValue(); 
 	    }
         return super.getPropertyValue(id);
     }

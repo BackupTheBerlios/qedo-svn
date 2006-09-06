@@ -822,7 +822,7 @@ void* startFunc(void* p) {
 #ifndef _QEDO_NO_QOS
 	if (slot_content) {
 	    int dummy = 0;
-	    CORBA::ORB_var orb = CORBA::ORB_init (dummy, 0);
+	    CORBA::ORB_var orb = Qedo::get_created_ORB();
 	    CORBA::Object_var obj = orb->resolve_initial_references ("PICurrent");
 	    PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 	    try {

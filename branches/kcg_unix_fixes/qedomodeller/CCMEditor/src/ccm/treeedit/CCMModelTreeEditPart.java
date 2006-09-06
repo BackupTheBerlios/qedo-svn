@@ -286,6 +286,8 @@ public class CCMModelTreeEditPart extends AbstractTreeEditPart implements  Adapt
 			return new ValueDefPropertySource( (Contained) getModel() );
 		if(getModel() instanceof TypedefDef)
 			return new TypeDefPropertySource( (Contained) getModel() );
+		if(getModel() instanceof AliasDef)
+			return new TypeDefPropertySource( (Contained) getModel() );
 //		if(getModel() instanceof Relation)
 //			return new RelationPropertySource( (Relation) getModel() );
 		if(getModel() instanceof Typed && !(getModel() instanceof Contained))

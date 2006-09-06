@@ -99,7 +99,8 @@ public class StreamConnectCommand extends Command {
 		    //  moduleDef=view.getModuleDef();
 		    ComponentInstantiation componentinstance=(ComponentInstantiation)((PortNode)source).getHostNode().getContained();
 		    ass=(Assembly) source.getDefineIn().getDefineIn().getContained();
-//Configuration config = ass.getConfig();
+
+		    CCMModel.Configuration config = ass.getConfig();
 		    process=(ProcessCollocation) source.getDefineIn().getContained();
 		    aConnection=factory.createAssemblyConnection();
 
@@ -135,9 +136,9 @@ public class StreamConnectCommand extends Command {
 		    aConnection.setSource(sourceEnd);
 	        aConnection.setTarget(targetEnd);
 	        ass.getContents().add(aConnection);
-	        ass.getConnection().add(aConnection);
-		    //aConnection.setConfig(config);
-		   // aConnection.setDefinedIn(ass);
+	        ass.getConfig().getConnection().add(aConnection);
+		    aConnection.setConfig(config);
+		    aConnection.setDefinedIn(ass);
 		    aConnection.setVersion(ass.getVersion());
 		    aConnection.setRepositoryId(ass.getRepositoryId());
 		    

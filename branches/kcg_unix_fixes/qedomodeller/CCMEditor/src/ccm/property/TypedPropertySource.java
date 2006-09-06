@@ -12,6 +12,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 import CCMModel.CCMModelPackage;
+import CCMModel.Contained;
 import CCMModel.IDLType;
 import CCMModel.PrimitiveDef;
 import CCMModel.Typed;
@@ -47,10 +48,14 @@ public class TypedPropertySource implements IPropertySource {
     	PropertyDescriptor typeDescriptor;
 		
     	String cat="basic of ";
-       	if (typed!=null) cat = cat + typed.eClass().getName();
+       	if (typed!=null)
+       	{
+       		cat = cat + typed.eClass().getName();
+       	}
 
        	typeDescriptor = new PropertyDescriptor(Integer.toString(CCMModelPackage.IDL_TYPE), "IDL type");
        	typeDescriptor.setCategory(cat);
+       	
        	
        	propertyDescriptors = new IPropertyDescriptor[] { typeDescriptor };
         return propertyDescriptors;
@@ -78,8 +83,29 @@ public class TypedPropertySource implements IPropertySource {
 		if (id == CCMModelPackage.IDL_TYPE) {
 			IDLType type = typed.getIDLType();
 			if (type instanceof PrimitiveDef) 
+			{
 				value = ((PrimitiveDef) type).getKind().getName();
+			} else if (type instanceof Contained  )
+			{
+				value = ((Contained) type).getAbsoluteName();
+			}
+			
+/*			
+			if (type instanceof EnumDef)
+			{
+				value = ((EnumDef) type).getAbsoluteName();
+			}
+			if (type instanceof ArrayDef)
+			{
+				value = ((ArrayDef) type).getAbsoluteName();
+			}
+			if (type instanceof StructDef)
+			{
+				value = ((StructDef) type).getAbsoluteName();
+			}
+			*/
 		}
+		
 //		if (id == CCMModelPackage.FIELD__IDENTIFIER) {
 //			value = field.getIdentifier();
 //		}

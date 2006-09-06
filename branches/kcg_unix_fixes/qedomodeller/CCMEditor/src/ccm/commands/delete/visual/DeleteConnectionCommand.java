@@ -186,7 +186,7 @@ public class DeleteConnectionCommand extends Command {
 			aConnection.getSource().setInstance(null);
 			aConnection.getSource().setFeature(null);
 			//connetion.getSource().setInstance(null);
-			aConnection.setAssembly(null);
+			aConnection.setConfig(null);
 			aConnection.setDefinedIn(null);
 			aConnection.getConnection().clear();
 			 

@@ -26,6 +26,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import CCMModel.CCMModelFactory;
 import CCMModel.CCMModelPackage;
 import CCMModel.Contained;
+import CCMModel.ExceptionDef;
 import CCMModel.IDLType;
 import CCMModel.ModuleDef;
 import CCMModel.Node;
@@ -40,6 +41,7 @@ import ccm.model.ModelFactory;
 import ccm.model.template.IDLTemplate;
 import ccm.model.template.ParameterTemplate;
 import ccm.propertyDescriptor.IDLtypePropertyDescriptor;
+import ccm.propertyDescriptor.OperationExceptionsPropertyDescriptor;
 import ccm.propertyDescriptor.ParameterPropertyDescriptor;
 
 /**
@@ -64,7 +66,8 @@ public class OperationDefPropertySource extends ContainedPropertySource {
     private ModuleDef root;
     private IDLTemplate idlTemp;
     private List idlT=new LinkedList();
-    private List idlTypeNames=new LinkedList();
+    private List idlTypeNames = new LinkedList();
+    private List exceptionTypes = new LinkedList();
     private List paras=new LinkedList();
     private boolean isSet=false;
     
@@ -77,10 +80,15 @@ public class OperationDefPropertySource extends ContainedPropertySource {
         	super(element);
         	 
         	abstObj=(OperationDef) element;
+
+        	// compute current IDL types
         	root= mf.getRootModule(abstObj);
         	idlT.clear();
         	idlT.addAll(mf.getIDLTypes(root));
         	idlTypeNames=mf.getIDLTTypedNames(idlT);
+        	
+        	
+        	exceptionTypes = mf.getExceptionDefs(root);
         //	ModuleDef moduldef= mf.getRootModule(abstObj );
         //	idlT.addAll(mf.getIDLTypes(moduldef));
         	idlTemp=CCMConstants.getIDLTemplate(abstObj.getIDLType(),idlT);
@@ -131,9 +139,17 @@ public class OperationDefPropertySource extends ContainedPropertySource {
         PropertyDescriptor parameters = new ParameterPropertyDescriptor(
 				Integer.toString(CCMModelPackage.OPERATION_DEF__PARAMETERS),
 				"parameters",paras, idlTypeNames) ;
-        	
         parameters.setCategory(cat);
         descriptors.add(parameters);
+
+        // exceptions
+        PropertyDescriptor exceptions = new OperationExceptionsPropertyDescriptor(
+        		Integer.toString(CCMModelPackage.OPERATION_DEF__EXCEPTION_DEF),
+				"exceptions", abstObj.getExceptionDef(), exceptionTypes);
+        exceptions.setCategory(cat);
+        descriptors.add(exceptions);
+        
+        
         propertyDescriptors=(IPropertyDescriptor[])descriptors.toArray( new IPropertyDescriptor[] {} );
         return propertyDescriptors;
     }
@@ -145,13 +161,28 @@ public class OperationDefPropertySource extends ContainedPropertySource {
 	    case CCMModelPackage.OPERATION_DEF__IS_ONEWAY:
 	        if(abstObj.isIsOneway())return new Integer(1);
 	        else return new Integer(0);
-	    case CCMModelPackage.OPERATION_DEF__IDL_TYPE: 
+	    case CCMModelPackage.OPERATION_DEF__IDL_TYPE:
+	    {
 	        return CCMConstants.getIDLName(idlTemp,mf.getIDLTTypedNames(idlT)); 
+	    }
 	    
-      case CCMModelPackage.OPERATION_DEF__PARAMETERS: 
+	    case CCMModelPackage.OPERATION_DEF__PARAMETERS: 
+	    {
+	      	String paraNames=""; 
+	    	for(Iterator it =paras.iterator();it.hasNext();){
+	    		String paraname =((ParameterTemplate)it.next()).getIdentifier();
+	    		if (paraNames.equals(""))
+	    			paraNames=paraNames+paraname;
+	    		else
+	    			paraNames=paraNames+","+paraname;
+	    		}
+	        return paraNames;
+	       // return CCMConstants.getIDLName(idlTemp,mf.getIDLTTypedNames(idlT)); 
+	    }
+    case CCMModelPackage.OPERATION_DEF__EXCEPTION_DEF: 
       	String paraNames=""; 
-    	for(Iterator it =paras.iterator();it.hasNext();){
-    		String paraname =((ParameterTemplate)it.next()).getIdentifier();
+    	for(Iterator it =abstObj.getExceptionDef().iterator();it.hasNext();){
+    		String paraname =((ExceptionDef)it.next()).getIdentifier();
     		if (paraNames.equals(""))
     			paraNames=paraNames+paraname;
     		else
@@ -160,7 +191,7 @@ public class OperationDefPropertySource extends ContainedPropertySource {
         return paraNames;
        // return CCMConstants.getIDLName(idlTemp,mf.getIDLTTypedNames(idlT)); 
     }
-        return super.getPropertyValue(id);
+    return super.getPropertyValue(id);
     }
     
   
