@@ -3,8 +3,8 @@ CXXFLAGS        = /I. /I$(MICO)/include /I$(MICO)/openpmf/include /I$(QEDO)/incl
 LINKFLAGS       = /nologo /debug /subsystem:console /incremental:no
 LINKDLLFLAGS    = /nologo /debug /dll /incremental:no
 LIBS			= ..\openpmf_ccm_PEP_ManagerImpl_SERVANT\libopenpmf_ccm_PEP_ManagerImpl_SERVANT.lib \
-	$(MICO)\win32-bin\lib\pmf2311.lib $(MICO)\win32-bin\lib\pmfcorba2311.lib $(MICO)\win32-bin\lib\pmfccm2311.lib \
-	$(MICO)\win32-bin\lib\mico2311.lib $(QEDO)\lib\ComponentIDL.lib $(QEDO)\lib\ComponentContainer.lib $(QEDO)\lib\qedoutil.lib \
+	$(MICO)\win32-bin\lib\pmf2312.lib $(MICO)\win32-bin\lib\pmfcorba2312.lib $(MICO)\win32-bin\lib\pmfccm2312.lib \
+	$(MICO)\win32-bin\lib\mico2312.lib $(QEDO)\lib\ComponentIDL.lib $(QEDO)\lib\ComponentContainer.lib $(QEDO)\lib\qedoutil.lib \
 	$(MICO)\win32-bin\lib\libeay32.lib $(MICO)\win32-bin\lib\ssleay32.lib \
 	$(MICO)\win32-bin\lib\pthreadVC2.lib
 
@@ -68,8 +68,8 @@ OpenPMFPEPImpl.cpp: openpmf_ccm_PEP_ManagerImpl_BUSINESS.h
 package: OpenPMFPEPImpl.zip
 
 OpenPMFPEPImpl.zip:
-	$(CYGWIN)\bin\zip OpenPMFPEPImpl.zip -j ../openpmf_ccm_PEP_ManagerImpl_SERVANT/libopenpmf_ccm_PEP_ManagerImpl_SERVANT.dll libopenpmf_ccm_PEP_ManagerImpl.dll $(CIDL_FILES)
-	$(CYGWIN)\bin\zip OpenPMFPEPImpl.zip meta-inf/openpmf_ccm_PEP_ManagerImpl.ccd meta-inf/openpmf_ccm_PEP_ManagerImpl.csd
+	$(CYGWIN)\zip OpenPMFPEPImpl.zip -j ../openpmf_ccm_PEP_ManagerImpl_SERVANT/libopenpmf_ccm_PEP_ManagerImpl_SERVANT.dll libopenpmf_ccm_PEP_ManagerImpl.dll $(CIDL_FILES)
+	$(CYGWIN)\zip OpenPMFPEPImpl.zip meta-inf/openpmf_ccm_PEP_ManagerImpl.ccd meta-inf/openpmf_ccm_PEP_ManagerImpl.csd
 
 install: package
 	-mkdir $(QEDO)\services

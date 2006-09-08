@@ -2,8 +2,8 @@
 CXXFLAGS        = /I. /I$(MICO)/include /I$(QEDO)/include /DMICO_ORB /DBUILD_OPENPMF_CCM_DLL /nologo /EHsc /GX /GR /TP /Zi /MDd
 LINKFLAGS       = /nologo /debug /subsystem:console /incremental:no
 LINKDLLFLAGS    = /nologo /debug /dll /incremental:no
-LIBS			= $(MICO)\win32-bin\lib\pmf2311.lib $(MICO)\win32-bin\lib\pmfcorba2311.lib \
-	$(MICO)\win32-bin\lib\mico2311.lib $(QEDO)\lib\ComponentIDL.lib $(QEDO)\lib\ComponentContainer.lib $(QEDO)\lib\qedoutil.lib \
+LIBS			= $(MICO)\win32-bin\lib\pmf2312.lib $(MICO)\win32-bin\lib\pmfcorba2312.lib \
+	$(MICO)\win32-bin\lib\mico2312.lib $(QEDO)\lib\ComponentIDL.lib $(QEDO)\lib\ComponentContainer.lib $(QEDO)\lib\qedoutil.lib \
 	$(MICO)\win32-bin\lib\libeay32.lib $(MICO)\win32-bin\lib\ssleay32.lib \
 	$(MICO)\win32-bin\lib\pthreadVC2.lib
 
