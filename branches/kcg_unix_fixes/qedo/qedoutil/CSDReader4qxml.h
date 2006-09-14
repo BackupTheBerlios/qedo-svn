@@ -93,7 +93,7 @@ private:
 	//LocationData fileinarchive (DOMElement*)
       //  throw(CSDReadException);
 	std::string
-	CSDReader4qxml::fileinarchive (DOMElement*)
+	fileinarchive (DOMElement*)
 		throw(CSDReadException);
 
     /**
