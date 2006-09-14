@@ -49,12 +49,16 @@ ServerPEPInterceptor::receive_request_service_contexts (Components::ContainerPor
 void
 ServerPEPInterceptor::receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
-	std::cout << "ServerPEPInterceptor:::receive_request " << " "
-		  << csi->request_info()->target_most_derived_interface() << " "
-		  << csi->component_id() << " "
-		  << csi->request_info()->operation() << " "
-		  << std::endl;
-        std::cerr << ">>>>>>>>>>>>>>PMF slot ID: " << this->pmf_slot_id_ << std::endl;
+    PortableInterceptor::ServerRequestInfo_var rinfo = csi->request_info();
+    CORBA::String_var tmdi = rinfo->target_most_derived_interface();
+    CORBA::String_var compid = csi->component_id();
+    CORBA::String_var oper = rinfo->operation();
+    std::cout << "ServerPEPInterceptor:::receive_request " << " "
+              << tmdi.in() << " "
+              << compid.in() << " "
+              << oper.in() << " "
+              << std::endl;
+    std::cerr << ">>>>>>>>>>>>>>PMF slot ID: " << this->pmf_slot_id_ << std::endl;
 	CORBA::ORB_var orb = CORBA::ORB_instance("mico-local-orb", FALSE);
         CORBA::Object_var obj = orb -> resolve_initial_references ("PICurrent");
         assert(!CORBA::is_nil(obj));
@@ -84,24 +88,31 @@ ServerPEPInterceptor::receive_request (Components::ContainerPortableInterceptor:
 void
 ServerPEPInterceptor::send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
-	std::cout << "COPI: send_reply: " << csi->request_info()->operation();
-	std::cout << " for id:" << csi->component_id() << std::endl;
-
-
+    PortableInterceptor::RequestInfo_var rinfo = csi->request_info();
+    CORBA::String_var compid = csi->component_id();
+    CORBA::String_var oper = rinfo->operation();
+    std::cout << "COPI: send_reply: " << oper.in();
+    std::cout << " for id:" << compid.in()<< std::endl;
 }
 
 void
 ServerPEPInterceptor::send_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
-	std::cout << "COPI: send_exception: " << csi->request_info()->operation();
-	std::cout << " for id:" << csi->component_id() << std::endl;
-
+    PortableInterceptor::RequestInfo_var rinfo = csi->request_info();
+    CORBA::String_var compid = csi->component_id();
+    CORBA::String_var oper = rinfo->operation();
+    std::cout << "COPI: send_exception: " << oper.in();
+    std::cout << " for id:" << compid.in()<< std::endl;
 }
 
 void
-ServerPEPInterceptor::send_other (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi) {
-	std::cout << "COPI: send_other: " << csi->request_info()->operation();
-	std::cout << " for id:" << csi->component_id() << std::endl;
+ServerPEPInterceptor::send_other (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
+{
+    PortableInterceptor::RequestInfo_var rinfo = csi->request_info();
+    CORBA::String_var compid = csi->component_id();
+    CORBA::String_var oper = rinfo->operation();
+    std::cout << "COPI: send_other: " << oper.in();
+    std::cout << " for id:" << compid.in()<< std::endl;
 }
 
 void
