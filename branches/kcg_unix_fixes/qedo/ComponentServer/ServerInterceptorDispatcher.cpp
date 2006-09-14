@@ -116,7 +116,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 	// determine the id
 	// all containers
-	Qedo::ContainerList* temp_container_list = component_server_ -> get_all_containers();
+	Qedo::ContainerList temp_container_list = component_server_ -> get_all_containers();
 	std::list <ContainerInterfaceImpl*>::iterator container_iter;
 
 	//identify the component id
@@ -125,8 +125,9 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	const char* uuid = 0;
 	// identify port_id
 //	const char* port_id = 0;
-	Components::FeatureName port_id = 0;
-	for (container_iter = temp_container_list->begin(); container_iter != temp_container_list->end(); container_iter++)
+	Components::FeatureName_var port_id = "";
+        CORBA::OctetSeq_var objid = info->object_id();
+	for (container_iter = temp_container_list.begin(); container_iter != temp_container_list.end(); container_iter++)
 	{
 		for (unsigned int i = 0; i < (*container_iter) -> installed_homes_.size(); i++)
 		{
@@ -134,7 +135,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 			{
 
 				// search for the oid
-				if (Qedo::compare_OctetSeqs((*info->object_id()),((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_[j].object_id_))
+				if (Qedo::compare_OctetSeqs(objid,((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_[j].object_id_))
 				{
 					port_id = "component";
 					temp_config = ((*container_iter)->installed_homes_)[i].home_servant_->component_instances_[j].config_;
@@ -161,7 +162,8 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 				// search for facets
 				for (unsigned int k = 0; k < ((*container_iter)->installed_homes_)[i].home_servant_->component_instances_[j].ccm_object_executor_->facets_.size(); k++)
 				{
-					if (Qedo::compare_OctetSeqs((*info->object_id()),*((*container_iter) -> installed_homes_)[i].home_servant_->reference_to_oid(((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_[j].ccm_object_executor_->facets_[k].facet_ref())))
+                                    PortableServer::ObjectId_var refid = (*container_iter)->installed_homes_[i].home_servant_->reference_to_oid((*container_iter)->installed_homes_[i].home_servant_->component_instances_[j].ccm_object_executor_->facets_[k].facet_ref());
+                                    if (Qedo::compare_OctetSeqs(objid, refid))
 					{
 						port_id = strdup(((*container_iter) -> installed_homes_)[i].home_servant_->component_instances_[j].ccm_object_executor_->facets_[k].port_name().c_str());
 
@@ -227,7 +229,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	{
 		id="__QEDO__NOT_COMPONENT_ID__!!";
 	}
-	if (!port_id)
+	if (strcmp(port_id.in(), "") == 0)
 	{
 		port_id="QEDO_UNKNOWN_PORT_ID";
 	}
@@ -278,7 +280,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	  {
 	    std::cout << "!!!!!! COPI enforces policy\n";
 	    a <<= (CORBA::Long)0;
-	    if (!strcmp( port_id, "component")) {
+	    if (!strcmp( port_id.in(), "component")) {
 	      std::cout << "!!!!!! Component Configuration!!!\n";
 	      a <<= (CORBA::Long)1;
 	    }

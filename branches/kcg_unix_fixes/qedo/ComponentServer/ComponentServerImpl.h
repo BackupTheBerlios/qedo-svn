@@ -284,7 +284,7 @@ public:
 	virtual Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr
 	get_stub_dispatcher (  );
 
-	virtual ContainerList*
+	virtual ContainerList
 	get_all_containers();
 
 #endif

@@ -689,14 +689,14 @@ ComponentServerImpl::get_stub_dispatcher (  )
 	return Components::ContainerPortableInterceptor::StubInterceptorRegistration::_duplicate (stub_dispatcher_);
 }
 
-Qedo::ContainerList*
+Qedo::ContainerList
 ComponentServerImpl::get_all_containers()
 {
-	ContainerList* list = new ContainerList();
+	ContainerList list;
 
 	for (unsigned int i = 0; i < containers_.size(); i++)
 	{
-		list->push_back( containers_[i].container_ );
+		list.push_back( containers_[i].container_ );
 	}
 
 	return list;
