@@ -65,14 +65,14 @@ ServerPEPInterceptor::receive_request (Components::ContainerPortableInterceptor:
         CORBA::Long evaluate_policy = 0;
         if (this->pmf_slot_set_) {
             PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
-            CORBA::Any* v = piCurrent->get_slot(this->pmf_slot_id_);
-            *v >>= evaluate_policy;
+            CORBA::Any_var v = piCurrent->get_slot(this->pmf_slot_id_);
+            v >>= evaluate_policy;
             std::cout << "SPEPI: received in slot: " << evaluate_policy << std::endl;
         }
         else {
             std::cerr << "ERROR!!! SPEPI: pmf_slot_id_ NOT set!" << std::endl;
         }
-	OpenPMF::CCM::RequestInfoHolder* riref
+	OpenPMF::CCM::RequestInfoHolderRef riref
 	  = new OpenPMF::CCM::RequestInfoHolder(orb,csi );
 	std::cout << "Got CSI\n";
         if (evaluate_policy == 0) {
