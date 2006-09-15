@@ -278,14 +278,14 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	CORBA::Any a;	
 	if (strcmp( id, "__QEDO__NOT_COMPONENT_ID__!!") )
 	  {
-	    std::cout << "!!!!!! COPI enforces policy\n";
+            //std::cout << "!!!!!! COPI enforces policy\n";
 	    a <<= (CORBA::Long)0;
 	    if (!strcmp( port_id.in(), "component")) {
-	      std::cout << "!!!!!! Component Configuration!!!\n";
+              //std::cout << "!!!!!! Component Configuration!!!\n";
 	      a <<= (CORBA::Long)1;
 	    }
 	  } else {
-	    std::cout << "!!!!!! PI enforces policy\n";
+            //std::cout << "!!!!!! PI enforces policy\n";
 	  a <<= (CORBA::Long)1;
 	}
 	piCurrent -> set_slot(component_server_ ->pmf_slot_id_, a);
