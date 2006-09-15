@@ -25,6 +25,8 @@ using namespace OpenPMF;
 using namespace PortableServer;
 using namespace CORBA;
 
+
+#undef DEBUG
 // END USER INSERT SECTION file
 
 
@@ -38,7 +40,9 @@ namespace openpmf_ccm {
 PEP_ManagerExec::PEP_ManagerExec()
 {
 // BEGIN USER INSERT SECTION PEP_ManagerExec::PEP_ManagerExec
+#ifdef DEBUG
   std::cout << "PEP_ManagerExec::PEP_ManagerExec()\n";
+#endif // DEBUG
 // END USER INSERT SECTION PEP_ManagerExec::PEP_ManagerExec
 }
 
@@ -67,9 +71,11 @@ PEP_ManagerExec::configuration_complete()
     throw (CORBA::SystemException, Components::InvalidConfiguration)
 {
 // BEGIN USER INSERT SECTION PEP_ManagerExec::configuration_complete
+#ifdef DEBUG
   std::cout << "PEP_ManagerExec::configuration_complete " 
 	    << policy_name_ 
 	    << std::endl;
+#endif // DEBUG
 
   PMFCORBA::PlatformRef pf = new PMFCORBA::Platform;
 
@@ -80,9 +86,11 @@ PEP_ManagerExec::configuration_complete()
   pf->add_transformer("operation.name", new OpenPMF::CCM::OperationTransformer(NULL, NULL));
   pf->add_transformer("target.type", new OpenPMF::CCM::TypeTransformer(NULL, NULL));
 
+#ifdef DEBUG
   std::cout << "Transformer OK"
     	    << policy_name_ 
 	    << std::endl;
+#endif // DEBUG
   
   ORB_var orb = ORB_instance("mico-local-orb", FALSE);
   CORBA::PolicyList pl(0);
@@ -93,7 +101,9 @@ PEP_ManagerExec::configuration_complete()
   //  server_interceptor_ = new Qedo::ServerPEPInterceptor(pf_, rt_policy_);
 
   //  server_reg->register_interceptor_for_all(server_interceptor_);
+#ifdef DEBUG
   std::cout << "PEP_ManagerExec::configuration_complete COPI init OK\n";
+#endif // DEBUG
 
 
 
@@ -129,7 +139,9 @@ PEP_ManagerExec::policy_name(const char* param)
 	throw(CORBA::SystemException)
 {
 // BEGIN USER INSERT SECTION PEP_ManagerExec::_policy_name
+#ifdef DEBUG
   std::cout << "PEP_ManagerExec::policy_name= " << param << std::endl;
+#endif // DEBUG
   policy_name_ = param;
 // END USER INSERT SECTION PEP_ManagerExec::_policy_name
 }
@@ -153,7 +165,9 @@ PEP_ManagerImpl::PEP_ManagerImpl()
 :component_(new PEP_ManagerExec())
 {
 // BEGIN USER INSERT SECTION PEP_ManagerImpl::PEP_ManagerImpl
+#ifdef DEBUG
   std::cout << "PEP_ManagerImpl::PEP_ManagerImpl\n";
+#endif // DEBUG
 
 // END USER INSERT SECTION PEP_ManagerImpl::PEP_ManagerImpl
 }
@@ -195,9 +209,11 @@ PEP_ManagerImpl::configuration_complete()
     component_->configuration_complete();
 
 // BEGIN USER INSERT SECTION PEP_ManagerImpl::configuration_complete
+#ifdef DEBUG
     std::cout << "PEP_ManagerImpl::configuration_complete "
       //	      << policy_name 
 	      << std::cout;
+#endif // DEBUG
 // END USER INSERT SECTION PEP_ManagerImpl::configuration_complete
 }
 
