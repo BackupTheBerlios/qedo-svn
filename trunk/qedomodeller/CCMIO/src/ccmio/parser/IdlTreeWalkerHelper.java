@@ -81,7 +81,7 @@ public class IdlTreeWalkerHelper {
 		AliasDef aliasDef = cCMModelFactory.createAliasDef();
 		aliasDef.setIdentifier(Name);
 		aliasDef.setAbsoluteName(absolute_name);
-		aliasDef.setRepositoryId("IDL:" + Name + ":1.0");
+		aliasDef.setRepositoryId("IDL:" + make_underline_from_double_colon(absolute_name) + ":1.0");
 		aliasDef.setVersion("1.0");
 		aliasDef.setDefinedIn(container);
 		aliasDef.setIDLType(type);
@@ -95,7 +95,7 @@ public class IdlTreeWalkerHelper {
 		ConstantDef constDef = cCMModelFactory.createConstantDef();
 		constDef.setIdentifier(Name);
 		constDef.setAbsoluteName(absolute_name);
-		constDef.setRepositoryId("IDL:" + Name + ":1.0");
+		constDef.setRepositoryId("IDL:" + make_underline_from_double_colon(absolute_name) + ":1.0");
 		constDef.setVersion("1.0");
 		constDef.setDefinedIn(container);
 		constDef.setIDLType(type);
@@ -121,7 +121,7 @@ public class IdlTreeWalkerHelper {
 		StructDef structDef = cCMModelFactory.createStructDef();
 		structDef.setIdentifier(name);
 		structDef.setAbsoluteName(absolute_name);
-		structDef.setRepositoryId("IDL:" + name + ":1.0");
+		structDef.setRepositoryId("IDL:" + make_underline_from_double_colon(absolute_name) + ":1.0");
 		structDef.setVersion("1.0");
 		structDef.setDefinedIn(container);
 		structDef.getMembers().addAll(fields);
@@ -134,7 +134,7 @@ public class IdlTreeWalkerHelper {
 		ExceptionDef exceptionDef = cCMModelFactory.createExceptionDef();
 		exceptionDef.setIdentifier(name);
 		exceptionDef.setAbsoluteName(absolute_name);
-		exceptionDef.setRepositoryId("IDL:" + name + ":1.0");
+		exceptionDef.setRepositoryId("IDL:" + make_underline_from_double_colon(absolute_name)+ ":1.0");
 		exceptionDef.setVersion("1.0");
 		exceptionDef.setDefinedIn(container);
 		exceptionDef.getMembers().addAll(fields);
@@ -147,7 +147,7 @@ public class IdlTreeWalkerHelper {
 		UnionDef unionDef = cCMModelFactory.createUnionDef();
 		unionDef.setIdentifier(name);
 		unionDef.setAbsoluteName(absolute_name);
-		unionDef.setRepositoryId("IDL:" + name + ":1.0");
+		unionDef.setRepositoryId("IDL:" + make_underline_from_double_colon(absolute_name) + ":1.0");
 		unionDef.setVersion("1.0");
 		unionDef.setDiscriminatorType(type);
 		unionDef.setDefinedIn(container);
@@ -246,7 +246,7 @@ public class IdlTreeWalkerHelper {
 		OperationDef operationDef = cCMModelFactory.createOperationDef();
 		operationDef.setIdentifier(Name);
 		operationDef.setAbsoluteName(absolute_name);
-		operationDef.setRepositoryId("IDL:" + Name + ":1.0");
+		operationDef.setRepositoryId("IDL:" + make_underline_from_double_colon(absolute_name) + ":1.0");
 		operationDef.setVersion("1.0");
 		operationDef.setDefinedIn(container);
 
@@ -264,7 +264,7 @@ public class IdlTreeWalkerHelper {
 		modDef.setIdentifier(Name);
 		modDef.setAbsoluteName(absolute_name);
 		modDef.setPrefix("");
-		modDef.setRepositoryId("IDL:" + Name + ":1.0");
+		modDef.setRepositoryId("IDL:" + make_underline_from_double_colon(absolute_name) + ":1.0");
 		modDef.setVersion("1.0");
 		modDef.setDefinedIn(container);
 
@@ -278,7 +278,7 @@ public class IdlTreeWalkerHelper {
 		InterfaceDef intDef = cCMModelFactory.createInterfaceDef();
 		intDef.setIdentifier(Name);
 		intDef.setAbsoluteName(absolute_name);
-		intDef.setRepositoryId("IDL:" + Name + ":1.0");
+		intDef.setRepositoryId("IDL:" + make_underline_from_double_colon(absolute_name) + ":1.0");
 		intDef.setVersion("1.0");
 		intDef.setDefinedIn(container);
 
@@ -293,12 +293,21 @@ public class IdlTreeWalkerHelper {
 		EnumDef enumDef = cCMModelFactory.createEnumDef();
 		enumDef.setAbsoluteName(absolute_name);
 		enumDef.setIdentifier(Name);
-		enumDef.setRepositoryId("IDL:" + Name + ":1.0");
+		enumDef.setRepositoryId("IDL:" + make_underline_from_double_colon(absolute_name)+ ":1.0");
 		enumDef.setVersion("1.0");
 		enumDef.getMembers().addAll(enumerationLiterals);
 		return enumDef;
 	}
 
+	
+	public String make_underline_from_double_colon (String col_name)
+	{
+		if (col_name.startsWith("::"))
+		{
+			col_name = col_name.substring(2);
+		}
+		return col_name.replaceAll("::","/");
+	}
 /*	
 	public void main(String[] args) throws RecognitionException, TokenStreamException {
 

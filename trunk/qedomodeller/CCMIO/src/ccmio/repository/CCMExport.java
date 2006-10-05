@@ -152,7 +152,7 @@ public class CCMExport {
  	 * @param ccm = the CCM-Object that represents the ccmmodel
  	 * @param name = identifier of the rootModule in the repository
  	 */
-	public void exports(CCMRepository repository,CCM ccm) throws MofError
+	public void exports(CCMRepository repository, String package_name, CCM ccm) throws MofError
 	{
 		emfmodel = new ArrayList();
 		repmodel = new ArrayList();
@@ -162,7 +162,7 @@ public class CCMExport {
 		// identify the name of Package
 		// asuming first Module represents the package name
 		CCMModel.ModuleDef package_module = ccm.getModuleDef();
-		String package_name = package_module.getIdentifier();
+		//String package_name = package_module.getIdentifier();
 
 		// creste root ccm package in CCM repositry
 		temp_package = (_CCMPackage) repository.create_package(package_name);
