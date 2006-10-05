@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="CCMModel"
+    nsURI="http://CCMModel" nsPrefix="CCMModel">
+  <eClassifiers xsi:type="ecore:EClass" name="HomeImplDef" eSuperTypes="#//Container #//ImplDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instance" upperBound="-1"
+        eType="#//HomeInstantiation" eOpposite="#//HomeInstantiation/type"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="storageHomeBinding" eType="#//StorageHomeBinding"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homePersistenceDcl" eType="#//StorageHomeBinding"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homeDelegationSpec" upperBound="-1"
+        eType="#//OperationDelegation"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="executorDelegationSpec"
+        upperBound="-1" eType="#//OperationDelegation"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="abstractSpec" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="home" lowerBound="1" eType="#//HomeDef"
+        eOpposite="#//HomeDef/homeImpl"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="composition" upperBound="-1"
+        eType="#//Composition" eOpposite="#//Composition/homeImpl"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentImpl" eType="#//ComponentImplDef"
+        eOpposite="#//ComponentImplDef/homeImpl"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Container" abstract="true" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="contents" upperBound="-1"
+        eType="#//Contained" containment="true" eOpposite="#//Contained/definedIn"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Contained" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="definedIn" eType="#//Container"
+        eOpposite="#//Container/contents"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="identifier" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="repositoryId" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="absoluteName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="node" upperBound="-1" eType="#//Node"
+        eOpposite="#//Node/contained"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isContained" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AbstractInterfaceDef" abstract="true"
+      eSuperTypes="#//Container #//IDLType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAbstract" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isLocal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="baseInterface" upperBound="-1"
+        eType="#//AbstractInterfaceDef" eOpposite="#//AbstractInterfaceDef/derivedInterface"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="derivedInterface" upperBound="-1"
+        eType="#//AbstractInterfaceDef" eOpposite="#//AbstractInterfaceDef/baseInterface"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ValueDef" eSuperTypes="#//Container #//IDLType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isAbstract" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isCustom" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isTruncatable" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="valueSupports_itf" upperBound="-1"
+        eType="#//InterfaceDef" eOpposite="#//InterfaceDef/values"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homeEnd" upperBound="-1"
+        eType="#//HomeDef" eOpposite="#//HomeDef/primaryKey"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="basevalue" eType="#//ValueDef"
+        eOpposite="#//ValueDef/derivedValue"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="derivedValue" upperBound="-1"
+        eType="#//ValueDef" eOpposite="#//ValueDef/basevalue"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="AbstractBaseValue" upperBound="-1"
+        eType="#//ValueDef" eOpposite="#//ValueDef/abstractDerivedValue"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="abstractDerivedValue" upperBound="-1"
+        eType="#//ValueDef" eOpposite="#//ValueDef/AbstractBaseValue"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModuleDef" eSuperTypes="#//Container">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="prefix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cCM" lowerBound="1" eType="#//CCM"
+        eOpposite="#//CCM/moduleDef"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="view" upperBound="-1" eType="#//View"
+        eOpposite="#//View/moduleDef"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InterfaceDef" eSuperTypes="#//AbstractInterfaceDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="components" upperBound="-1"
+        eType="#//ComponentDef" eOpposite="#//ComponentDef/componentSupports_itf"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homes" upperBound="-1"
+        eType="#//HomeDef" eOpposite="#//HomeDef/homeSupports_itf"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+        eType="#//ValueDef" eOpposite="#//ValueDef/valueSupports_itf"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="facet_port" upperBound="-1"
+        eType="#//ProvidesDef" eOpposite="#//ProvidesDef/interface"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="receptacle_port" upperBound="-1"
+        eType="#//UsesDef" eOpposite="#//UsesDef/interface"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InterfaceImpl" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="inteface" lowerBound="1"
+        eType="#//InterfaceDef"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentDef" eSuperTypes="#//AbstractInterfaceDef #//ComponentFeature">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="facet" upperBound="-1"
+        eType="#//ProvidesDef" eOpposite="#//ProvidesDef/comp"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="receptacle" upperBound="-1"
+        eType="#//UsesDef" eOpposite="#//UsesDef/comp"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="emitss" upperBound="-1"
+        eType="#//EmitsDef" eOpposite="#//EmitsDef/comp"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="consumess" upperBound="-1"
+        eType="#//ConsumesDef" eOpposite="#//ConsumesDef/comp"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="publishesDef" upperBound="-1"
+        eType="#//PublishesDef" eOpposite="#//PublishesDef/comp"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sinkss" upperBound="-1"
+        eType="#//SinkDef" eOpposite="#//SinkDef/comp"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourcess" upperBound="-1"
+        eType="#//SourceDef" eOpposite="#//SourceDef/comp"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="siSouss" upperBound="-1"
+        eType="#//SiSouDef" eOpposite="#//SiSouDef/comp"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentImpl" upperBound="-1"
+        eType="#//ComponentImplDef" eOpposite="#//ComponentImplDef/component"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homes" upperBound="-1"
+        eType="#//HomeDef" eOpposite="#//HomeDef/component"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentSupports_itf"
+        upperBound="-1" eType="#//InterfaceDef" eOpposite="#//InterfaceDef/components"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="package" upperBound="-1"
+        eType="#//SoftwarePackage" eOpposite="#//SoftwarePackage/component"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HomeDef" eSuperTypes="#//AbstractInterfaceDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="factorys" upperBound="-1"
+        eType="#//FactoryDef" containment="true" eOpposite="#//FactoryDef/homeDef"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="finders" upperBound="-1"
+        eType="#//FinderDef" containment="true" eOpposite="#//FinderDef/homeDef"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="prefix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homeImpl" upperBound="-1"
+        eType="#//HomeImplDef" eOpposite="#//HomeImplDef/home"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="component" eType="#//ComponentDef"
+        eOpposite="#//ComponentDef/homes"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homeSupports_itf" upperBound="-1"
+        eType="#//InterfaceDef" eOpposite="#//InterfaceDef/homes"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryKey" eType="#//ValueDef"
+        eOpposite="#//ValueDef/homeEnd"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IDLType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="typed" upperBound="-1"
+        eType="#//Typed" eOpposite="#//Typed/iDLType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unionDef" upperBound="-1"
+        eType="#//UnionDef" eOpposite="#//UnionDef/discriminatorType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nodeFromIDL" upperBound="-1"
+        eType="#//Node" eOpposite="#//Node/idl"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentImplDef" eSuperTypes="#//Container #//ImplDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="segment" lowerBound="1"
+        upperBound="-1" eType="#//SegmentDef" containment="true" eOpposite="#//SegmentDef/componentImplEnd"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="category" eType="#//ComponentCategory"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instance" upperBound="-1"
+        eType="#//ComponentInstantiation" eOpposite="#//ComponentInstantiation/type"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="featureDelegationSpec"
+        upperBound="-1" eType="#//FeatureDelegation"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="component" lowerBound="1"
+        eType="#//ComponentDef" eOpposite="#//ComponentDef/componentImpl"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homeImpl" upperBound="-1"
+        eType="#//HomeImplDef" eOpposite="#//HomeImplDef/componentImpl"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Typed" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="iDLType" lowerBound="1"
+        eType="#//IDLType" eOpposite="#//IDLType/typed"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nodeFromTyped" upperBound="-1"
+        eType="#//Node" eOpposite="#//Node/typed"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SegmentDef" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentImplEnd" lowerBound="1"
+        eType="#//ComponentImplDef" eOpposite="#//ComponentImplDef/segment"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isSerialized" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="segmentPersistenceDcl"
+        upperBound="-1" eType="#//StorageHomeBinding"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="facet" upperBound="-1"
+        eType="#//ComponentFeature"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ProvidesDef" eSuperTypes="#//ComponentFeature #//Contained">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
+        eOpposite="#//ComponentDef/facet"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="interface" lowerBound="1"
+        eType="#//InterfaceDef" eOpposite="#//InterfaceDef/facet_port"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/facet"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UsesDef" eSuperTypes="#//ComponentFeature #//Contained">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multipleItf" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
+        eOpposite="#//ComponentDef/receptacle"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="interface" lowerBound="1"
+        eType="#//InterfaceDef" eOpposite="#//InterfaceDef/receptacle_port"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/receptacle"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EventPortDef" abstract="true" eSuperTypes="#//ComponentFeature #//Contained">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="event" lowerBound="1" eType="#//EventDef"
+        eOpposite="#//EventDef/eventPorts"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EmitsDef" eSuperTypes="#//EventPortDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
+        eOpposite="#//ComponentDef/emitss"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/emitss"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConsumesDef" eSuperTypes="#//EventPortDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
+        eOpposite="#//ComponentDef/consumess"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/consumess"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PublishesDef" eSuperTypes="#//EventPortDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
+        eOpposite="#//ComponentDef/publishesDef"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/publishesDef"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SinkDef" eSuperTypes="#//StreamProtDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
+        eOpposite="#//ComponentDef/sinkss"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/sinkss"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SourceDef" eSuperTypes="#//StreamProtDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
+        eOpposite="#//ComponentDef/sourcess"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/sourcess"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SiSouDef" eSuperTypes="#//StreamProtDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="comp" lowerBound="1" eType="#//ComponentDef"
+        eOpposite="#//ComponentDef/siSouss"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/siSouss"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StreamProtDef" abstract="true" eSuperTypes="#//ComponentFeature #//Contained">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//MediaType"
+        eOpposite="#//MediaType/ends"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MediaType" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ends" upperBound="-1" eType="#//StreamProtDef"
+        eOpposite="#//StreamProtDef/type"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="format" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EventDef" eSuperTypes="#//ValueDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="eventPorts" upperBound="-1"
+        eType="#//EventPortDef" eOpposite="#//EventPortDef/event"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FactoryDef" eSuperTypes="#//OperationDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homeDef" lowerBound="1"
+        eType="#//HomeDef" eOpposite="#//HomeDef/factorys"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FinderDef" eSuperTypes="#//OperationDef">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homeDef" lowerBound="1"
+        eType="#//HomeDef" eOpposite="#//HomeDef/finders"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OperationDef" eSuperTypes="#//Contained #//Typed">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" upperBound="-1"
+        eType="#//ParameterDef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isOneway" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="context" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="exceptionDef" upperBound="-1"
+        eType="#//ExceptionDef"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentFeature">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="registerComponentInstance"
+        upperBound="-1" eType="#//RegisterComponentInstance" eOpposite="#//RegisterComponentInstance/feature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connectionEnd" upperBound="-1"
+        eType="#//ConnectionEnd" eOpposite="#//ConnectionEnd/feature"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExceptionDef" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="members" upperBound="-1"
+        eType="#//Field" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeCode" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AttributeDef" eSuperTypes="#//Contained #//Typed">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isReadonly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConstantDef" eSuperTypes="#//Contained #//Typed">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="constValue" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TypedefDef" abstract="true" eSuperTypes="#//Contained #//IDLType #//Typed"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ValueMemberDef" eSuperTypes="#//Contained #//Typed">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isPublicMember" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StructDef" eSuperTypes="#//Contained #//IDLType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="members" upperBound="-1"
+        eType="#//Field" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UnionDef" eSuperTypes="#//Contained #//IDLType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unionMembers" upperBound="-1"
+        eType="#//UnionField" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="discriminatorType" lowerBound="1"
+        eType="#//IDLType" eOpposite="#//IDLType/unionDef"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AliasDef" eSuperTypes="#//Typed #//Contained #//IDLType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ValueBoxDef" eSuperTypes="#//TypedefDef #//Typed"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EnumDef" eSuperTypes="#//Contained #//IDLType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="members" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Field" eSuperTypes="#//Typed">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="identifier" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ParameterDef" eSuperTypes="#//Typed">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="identifier" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="direction" eType="#//ParameterMode"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="UnionField" eSuperTypes="#//Typed">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="identifier" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ArrayDef" eSuperTypes="#//Typed #//IDLType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="bound" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SequenceDef" eSuperTypes="#//Typed #//IDLType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="bound" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StringDef" eSuperTypes="#//IDLType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="bound" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="WstringDef" eSuperTypes="#//IDLType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="bound" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FixedDef" eSuperTypes="#//IDLType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="digits" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EShort"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="scale" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EShort"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PrimitiveDef" eSuperTypes="#//IDLType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" eType="#//PrimitiveKind"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PrimitiveKind">
+    <eLiterals name="PK_VOID"/>
+    <eLiterals name="PK_SHORT" value="1"/>
+    <eLiterals name="PK_LONG" value="2"/>
+    <eLiterals name="PK_USHORT" value="3"/>
+    <eLiterals name="PK_ULONG" value="4"/>
+    <eLiterals name="PK_FLOAT" value="5"/>
+    <eLiterals name="PK_DOUBLE" value="6"/>
+    <eLiterals name="PK_BOOLEAN" value="7"/>
+    <eLiterals name="PK_CHAR" value="8"/>
+    <eLiterals name="PK_OCTET" value="9"/>
+    <eLiterals name="PK_ANY" value="10"/>
+    <eLiterals name="PK_LONGDOUBLE" value="11"/>
+    <eLiterals name="PK_WSTRING" value="12"/>
+    <eLiterals name="PK_TYPECODE" value="13"/>
+    <eLiterals name="PK_WCHAR" value="14"/>
+    <eLiterals name="PK_STRING" value="15"/>
+    <eLiterals name="PK_ULONGLONG" value="16"/>
+    <eLiterals name="PK_OBJREF" value="17"/>
+    <eLiterals name="PK_LONGLONG" value="18"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ParameterMode">
+    <eLiterals name="PARAM_IN"/>
+    <eLiterals name="PARAM_OUT" value="1"/>
+    <eLiterals name="PARAM_INOUT" value="2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ComponentCategory">
+    <eLiterals name="PROCESS"/>
+    <eLiterals name="SESSION" value="1"/>
+    <eLiterals name="ENTITY" value="2"/>
+    <eLiterals name="SERVICE" value="3"/>
+    <eLiterals name="EXTENSION" value="4"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Aktionkind">
+    <eLiterals name="INSTALL"/>
+    <eLiterals name="ASSERT" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CCM">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="view" upperBound="-1" eType="#//View"
+        containment="true" eOpposite="#//View/cCM"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="moduleDef" lowerBound="1"
+        eType="#//ModuleDef" containment="true" eOpposite="#//ModuleDef/cCM"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="assemblys" upperBound="-1"
+        eType="#//Assembly" containment="true" eOpposite="#//Assembly/cCM"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="idlContainer" lowerBound="1"
+        eType="#//IDLTypeContainer" containment="true" eOpposite="#//IDLTypeContainer/ccmObj"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="View">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cCM" eType="#//CCM" eOpposite="#//CCM/view"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="moduleDef" eType="#//ModuleDef"
+        eOpposite="#//ModuleDef/view"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connection" upperBound="-1"
+        eType="#//Connection" containment="true" eOpposite="#//Connection/view"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="node" upperBound="-1" eType="#//Node"
+        containment="true" eOpposite="#//Node/view"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="iDLC" eType="#//IDLTypeContainer"
+        eOpposite="#//IDLTypeContainer/idlView"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="diagram" lowerBound="1"
+        eType="#//Diagram" eOpposite="#//Diagram/view"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Connection">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connectionDiscription"
+        lowerBound="1" eType="#//ConnectionDiscription" containment="true" eOpposite="#//ConnectionDiscription/connection"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="view" lowerBound="1" eType="#//View"
+        eOpposite="#//View/connection"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
+        eType="#//Node" eOpposite="#//Node/conSource"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Node"
+        eOpposite="#//Node/connTarget"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="connectionKind" eType="#//ConnectionsKind"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="assemblyConnection" eType="#//AssemblyConnection"
+        eOpposite="#//AssemblyConnection/connection"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Node">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="view" lowerBound="1" eType="#//View"
+        eOpposite="#//View/node"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="contained" eType="#//Contained"
+        eOpposite="#//Contained/node"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="conSource" upperBound="-1"
+        eType="#//Connection" eOpposite="#//Connection/source"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connTarget" upperBound="-1"
+        eType="#//Connection" eOpposite="#//Connection/target"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="contents" upperBound="-1"
+        eType="#//Node" containment="true" eOpposite="#//Node/defineIn"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defineIn" eType="#//Node"
+        eOpposite="#//Node/contents"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="x" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="y" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="width" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="height" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="idl" eType="#//IDLType"
+        eOpposite="#//IDLType/nodeFromIDL"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="typed" eType="#//Typed"
+        eOpposite="#//Typed/nodeFromTyped"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" eType="#//PortLocation"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" eType="#//ComponentFeature"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="portNode" upperBound="-1"
+        eType="#//PortNode" eOpposite="#//PortNode/hostNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="childrenNode" upperBound="-1"
+        eType="#//Node"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PortNode" eSuperTypes="#//Node">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="hostNode" lowerBound="1"
+        eType="#//Node" eOpposite="#//Node/portNode"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConnectionDiscription">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connection" lowerBound="1"
+        eType="#//Connection" eOpposite="#//Connection/connectionDiscription"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="x" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="y" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HomeInstantiation" eSuperTypes="#//PropOwner #//RuleOwner #//Container #//CCMInstantiation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//HomeImplDef"
+        eOpposite="#//HomeImplDef/instance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="comp" upperBound="-1" eType="#//ComponentInstantiation"
+        eOpposite="#//ComponentInstantiation/thehome"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deploymentUnit" lowerBound="1"
+        eType="#//Implementation" eOpposite="#//Implementation/homeinstance"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cardinality" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="prozessCollocation" eType="#//ProcessCollocation"
+        eOpposite="#//ProcessCollocation/homeInstances"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="regName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="service" lowerBound="1"
+        eType="#//FinderServiceKind"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentInstantiation" eSuperTypes="#//Container #//PropOwner #//RuleOwner #//CCMInstantiation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" lowerBound="1" eType="#//ComponentImplDef"
+        eOpposite="#//ComponentImplDef/instance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="thehome" lowerBound="1"
+        eType="#//HomeInstantiation" eOpposite="#//HomeInstantiation/comp"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="registration" upperBound="-1"
+        eType="#//RegisterComponentInstance" eOpposite="#//RegisterComponentInstance/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startOrder" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cardinality" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="facet" upperBound="-1"
+        eType="#//ProvidesDef" eOpposite="#//ProvidesDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="receptacle" upperBound="-1"
+        eType="#//UsesDef" eOpposite="#//UsesDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="emitss" upperBound="-1"
+        eType="#//EmitsDef" eOpposite="#//EmitsDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="consumess" upperBound="-1"
+        eType="#//ConsumesDef" eOpposite="#//ConsumesDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="publishesDef" upperBound="-1"
+        eType="#//PublishesDef" eOpposite="#//PublishesDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sinkss" upperBound="-1"
+        eType="#//SinkDef" eOpposite="#//SinkDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sourcess" upperBound="-1"
+        eType="#//SourceDef" eOpposite="#//SourceDef/componentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="siSouss" upperBound="-1"
+        eType="#//SiSouDef" eOpposite="#//SiSouDef/componentInstance"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ExternalInstance" eSuperTypes="#//Contained #//CCMInstantiation">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="objectRef" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="regName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="service" lowerBound="1"
+        eType="#//FinderServiceKind"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RegisterComponentInstance" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="regName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" lowerBound="1"
+        eType="#//ComponentFeature" eOpposite="#//ComponentFeature/registerComponentInstance"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="service" lowerBound="1"
+        eType="#//FinderServiceKind"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentInstance" lowerBound="1"
+        eType="#//ComponentInstantiation" eOpposite="#//ComponentInstantiation/registration"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Assembly" eSuperTypes="#//RuleOwner #//Container">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=" "/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="cCM" lowerBound="1" eType="#//CCM"
+        eOpposite="#//CCM/assemblys"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="softwarePackage" upperBound="-1"
+        eType="#//SoftwarePackage" eOpposite="#//SoftwarePackage/assembly"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//Configuration"
+        eOpposite="#//Configuration/assembly"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Configuration" eSuperTypes="#//Container">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentFile" upperBound="-1"
+        eType="#//ComponentFile" eOpposite="#//ComponentFile/config"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connection" upperBound="-1"
+        eType="#//AssemblyConnection" eOpposite="#//AssemblyConnection/config"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="processCollocation" upperBound="-1"
+        eType="#//ProcessCollocation" eOpposite="#//ProcessCollocation/config"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="assembly" eType="#//Assembly"
+        eOpposite="#//Assembly/config"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AssemblyConnection" eSuperTypes="#//Container">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
+        eType="#//ConnectionEnd" eOpposite="#//ConnectionEnd/conSource"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
+        eType="#//ConnectionEnd" eOpposite="#//ConnectionEnd/conTarget"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//Configuration"
+        eOpposite="#//Configuration/connection"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connection" upperBound="-1"
+        eType="#//Connection" eOpposite="#//Connection/assemblyConnection"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConnectionEnd" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="conSource" lowerBound="1"
+        eType="#//AssemblyConnection" eOpposite="#//AssemblyConnection/source"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="conTarget" lowerBound="1"
+        eType="#//AssemblyConnection" eOpposite="#//AssemblyConnection/target"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="instance" lowerBound="1"
+        eType="#//CCMInstantiation" eOpposite="#//CCMInstantiation/connectionEnd"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="feature" eType="#//ComponentFeature"
+        eOpposite="#//ComponentFeature/connectionEnd"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IDLTypeContainer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ccmObj" lowerBound="1"
+        eType="#//CCM" eOpposite="#//CCM/idlContainer"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="idlView" lowerBound="1"
+        eType="#//View" eOpposite="#//View/iDLC"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="primitiveTypes" upperBound="-1"
+        eType="#//PrimitiveDef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="strings" upperBound="-1"
+        eType="#//StringDef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="fixeds" upperBound="-1"
+        eType="#//FixedDef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sequences" upperBound="-1"
+        eType="#//SequenceDef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="arrays" upperBound="-1"
+        eType="#//ArrayDef" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="wstrings" upperBound="-1"
+        eType="#//WstringDef" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PortLocation">
+    <eLiterals name="TOP"/>
+    <eLiterals name="BOTTOM" value="2"/>
+    <eLiterals name="LEFT" value="3"/>
+    <eLiterals name="RIGHT" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Diagram" eSuperTypes="#//Container">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="view" lowerBound="1" eType="#//View"
+        eOpposite="#//View/diagram"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Composition" eSuperTypes="#//Container">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="catalogs" upperBound="-1"
+        eType="#//Catalog"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="category" lowerBound="1"
+        eType="#//ComponentCategory"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homeImpl" lowerBound="1"
+        eType="#//HomeImplDef" eOpposite="#//HomeImplDef/composition"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="proxyHome" eType="#//ProxyHomeDef"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deploymentUnit" upperBound="-1"
+        eType="#//Implementation" eOpposite="#//Implementation/composition"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Catalog" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeSpec" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StorageHomeBinding" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="storageHomeLabel" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="catalog" lowerBound="1"
+        eType="#//Catalog"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FeatureDelegation" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="featureName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="storageMemberName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OperationDelegation" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="oprerationName" lowerBound="1"
+        upperBound="2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ProxyHomeDef" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homeDelegationSpec" upperBound="-1"
+        eType="#//OperationDelegation"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="operationName" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Implementation" eSuperTypes="#//PropOwner #//Container">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uuid" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="composition" lowerBound="1"
+        eType="#//Composition" eOpposite="#//Composition/deploymentUnit"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependentFiles" upperBound="-1"
+        eType="#//DependentFile" eOpposite="#//DependentFile/deploymentUnit"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="containedFile" upperBound="-1"
+        eType="#//ContainedFile" eOpposite="#//ContainedFile/deploymentUnit"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="requirment" upperBound="-1"
+        eType="#//Deploymentrequirement" eOpposite="#//Deploymentrequirement/unit"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homeinstance" upperBound="-1"
+        eType="#//HomeInstantiation" eOpposite="#//HomeInstantiation/deploymentUnit"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="pckage" lowerBound="1"
+        eType="#//SoftwarePackage" eOpposite="#//SoftwarePackage/impl"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SoftwarePackage" eSuperTypes="#//Container">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="licensekey" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="licensetextref" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="autor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="component" lowerBound="1"
+        eType="#//ComponentDef" eOpposite="#//ComponentDef/package"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="componentFiles" upperBound="-1"
+        eType="#//ComponentFile" eOpposite="#//ComponentFile/package"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="assembly" upperBound="-1"
+        eType="#//Assembly" eOpposite="#//Assembly/softwarePackage"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="idlFile" eType="#//IDLFile"
+        eOpposite="#//IDLFile/package"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="impl" lowerBound="1" upperBound="-1"
+        eType="#//Implementation" eOpposite="#//Implementation/pckage"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IDLFile" eSuperTypes="#//File">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="package" lowerBound="1"
+        eType="#//SoftwarePackage" eOpposite="#//SoftwarePackage/idlFile"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComponentFile" eSuperTypes="#//File">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="package" lowerBound="1"
+        eType="#//SoftwarePackage" eOpposite="#//SoftwarePackage/componentFiles"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//Configuration"
+        eOpposite="#//Configuration/componentFile"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Deploymentrequirement" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reqVersion" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unit" lowerBound="1" eType="#//Implementation"
+        eOpposite="#//Implementation/requirment"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="File" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="signaturdata" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="securityAlgrithm" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DependentFile" eSuperTypes="#//File">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="action" lowerBound="1"
+        eType="#//Aktionkind"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deploymentUnit" lowerBound="1"
+        eType="#//Implementation" eOpposite="#//Implementation/dependentFiles"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ContainedFile" eSuperTypes="#//File">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="codeType" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="entryPoint" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="usage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="deploymentUnit" lowerBound="1"
+        eType="#//Implementation" eOpposite="#//Implementation/containedFile"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ProcessCollocation" eSuperTypes="#//Container">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="homeInstances" upperBound="-1"
+        eType="#//HomeInstantiation" eOpposite="#//HomeInstantiation/prozessCollocation"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="cardinality" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="destination" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="config" eType="#//Configuration"
+        eOpposite="#//Configuration/processCollocation"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="FinderServiceKind">
+    <eLiterals name="UNDEFINED" value="4"/>
+    <eLiterals name="HOMEFINDER" value="3"/>
+    <eLiterals name="TRADING" value="1"/>
+    <eLiterals name="NAMING"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ElementName">
+    <eLiterals name="SIMPLE_EL"/>
+    <eLiterals name="STRUCT_EL" value="1"/>
+    <eLiterals name="SEQUENCE_EL" value="2"/>
+    <eLiterals name="VALUETYPE_EL" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ConnectionsKind">
+    <eLiterals name="CCM"/>
+    <eLiterals name="COMPOSITION" value="1"/>
+    <eLiterals name="INSTANCECONNECTION" value="2"/>
+    <eLiterals name="GENERALIZATION" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PropOwner">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertys" upperBound="-1"
+        eType="#//Property" eOpposite="#//Property/propetyOwner"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Property" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="el_name" eType="#//ElementName"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propetyOwner" lowerBound="1"
+        eType="#//PropOwner" eOpposite="#//PropOwner/propertys"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RuleOwner">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rules" upperBound="-1"
+        eType="#//Rule" eOpposite="#//Rule/ruleOwner"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Rule" eSuperTypes="#//Contained">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="condition" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="language" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="action" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ruleOwner" lowerBound="1"
+        eType="#//RuleOwner" eOpposite="#//RuleOwner/rules"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CCMInstantiation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="connectionEnd" upperBound="-1"
+        eType="#//ConnectionEnd" eOpposite="#//ConnectionEnd/instance"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ImplDef"/>
+</ecore:EPackage>
