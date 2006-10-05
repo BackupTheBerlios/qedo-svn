@@ -186,7 +186,15 @@ public abstract class CreateNodeForContainedCommand extends Command{
      */
     public String getAbsoluteName() {    
     	/* modified by tri */
-    	String str = container.getAbsoluteName() + newObject.getIdentifier();
+    	String str;
+    	str = container.getAbsoluteName();
+		if (container.getAbsoluteName().trim().length()!= 0)
+    	{
+    		str = container.getAbsoluteName() + newObject.getIdentifier();
+    	} else
+    	{
+    		str = newObject.getIdentifier();
+    	}
     	return str;
     	/*
     	if(container.getAbsoluteName().trim().length()!=0)

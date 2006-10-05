@@ -24,7 +24,7 @@ import ccmio.repository.CCMRepository;
 
 public class ExportWizard extends Wizard implements IExportWizard {
 
-	private RepositoryPage repository_page;
+	private ExportToRepositoryPage repository_page;
 	private IStructuredSelection selection;
 
 
@@ -36,7 +36,7 @@ public class ExportWizard extends Wizard implements IExportWizard {
 	
 
 	public void addPages() {
-		repository_page = new RepositoryPage(selection);
+		repository_page = new ExportToRepositoryPage(selection);
 		addPage(repository_page);
 	}
 
@@ -113,7 +113,7 @@ public class ExportWizard extends Wizard implements IExportWizard {
 
 			//monitor.setTaskName("Exporting CCM Project...");
 			CCMExport exporter = new CCMExport();
-			exporter.exports(repository, manager.getModel());
+			exporter.exports(repository, repository_page.getModelName(), manager.getModel());
 			monitor.worked(2);		
 			
 		}

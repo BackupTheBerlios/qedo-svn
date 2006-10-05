@@ -69,7 +69,9 @@ public class ExportToRepository extends EditorPartAction {
 		try{
 			CCMRepository repository = new CCMRepository(RepositoryRootRefFile);
 			CCMExport exporter = new CCMExport();
-			exporter.exports(repository,ccm);
+			// TODO: is this needed here?
+			// this is unexpected exporter.exports(repository,ccm);
+			MessageDialog.openInformation(null,"Result","unexpected call");	
 			MessageDialog.openInformation(null,"Result","Export successfull");	
 		}
 		catch(MofError ex)

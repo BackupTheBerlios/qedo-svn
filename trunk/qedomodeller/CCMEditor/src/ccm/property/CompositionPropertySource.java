@@ -39,7 +39,7 @@ public class CompositionPropertySource extends ContainedPropertySource {
    // private HomeImplDef[]homeImpls;
     private String[]homeImplNames;
     private List homeImplList;
-    private String[]categoryNames={"PROCESS","SESSION","ENTITY","SERVICE"};
+    private String[]categoryNames={"PROCESS","SESSION","ENTITY","SERVICE", "EXTENSION"};
    // private List category=new util.ArrayList( {ComponentCategory.PROCESS_LITERAL,
    // 		ComponentCategory.SESSION_LITERAL,ComponentCategory.ENTITY_LITERAL,ComponentCategory.SERVICE_LITERAL});
      
@@ -162,6 +162,11 @@ public class CompositionPropertySource extends ContainedPropertySource {
 	    		if (i==3&&category!=ComponentCategory.SERVICE_LITERAL){
 	    			category= ComponentCategory.SERVICE_LITERAL;
 	    			abstObj.setCategory(ComponentCategory.SERVICE_LITERAL);
+	    			notifyNode();
+	    		}
+	    		if (i==4&&category!=ComponentCategory.EXTENSION_LITERAL){
+	    			category= ComponentCategory.EXTENSION_LITERAL;
+	    			abstObj.setCategory(ComponentCategory.EXTENSION_LITERAL);
 	    			notifyNode();
 	    		}
 	    		
