@@ -97,6 +97,8 @@ public:
 
 	//
 	DOMDocument* getDocument();
+
+        void reset();
 };
 
 

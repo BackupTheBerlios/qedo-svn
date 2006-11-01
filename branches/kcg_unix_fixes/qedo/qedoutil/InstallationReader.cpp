@@ -270,6 +270,7 @@ throw(InstallationReadException)
 		std::cerr << "An error occurred during creation of output transcoder. Msg is:" << std::endl;
 		std::cerr << StrX(e.getMessage()) << std::endl;
     }
+        parser_.reset();
 }
 
 
@@ -353,6 +354,7 @@ throw(InstallationReadException)
 		std::cerr << "An error occurred during creation of output transcoder. Msg is:" << std::endl;
 		std::cerr << StrX(e.getMessage()) << std::endl;
     }
+        parser_.reset();
 }
 
 
