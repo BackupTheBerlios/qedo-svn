@@ -149,7 +149,7 @@ protected:
 	 * \param qedo_key The qedo internal key.
 	 * \param rep_id The repository id.
 	 */
-	CORBA::Object_ptr HomeServantBase::create_object_reference (const CORBA::OctetSeq* qedo_key, const char* rep_id);
+	CORBA::Object_ptr create_object_reference (const CORBA::OctetSeq* qedo_key, const char* rep_id);
 
 	/**
 	 * start component incarnation
@@ -225,7 +225,7 @@ public:
 	Components::CCMHome_ptr ref();
 
 	// This is a helper function to implement our get_component()
-	Components::CCMObject_ptr HomeServantBase::lookup_component (const PortableServer::ObjectId&);
+	Components::CCMObject_ptr lookup_component (const PortableServer::ObjectId&);
 
 	/**
 	 * extract the object id from the given object reference

@@ -138,8 +138,6 @@ public:
 };
 
 
-// Export template class
-CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<SinkPort_smartptr>;
 typedef std::vector<SinkPort_smartptr> SinkVector;
 
 

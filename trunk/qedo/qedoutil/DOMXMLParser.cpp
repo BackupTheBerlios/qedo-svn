@@ -170,5 +170,11 @@ DOMXMLParser::getDocument()
 }
 
 
+void
+DOMXMLParser::reset()
+{
+    parser_->resetDocumentPool();
+}
+
 }
 

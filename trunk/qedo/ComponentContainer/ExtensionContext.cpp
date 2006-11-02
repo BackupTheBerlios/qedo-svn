@@ -108,11 +108,11 @@ ExtensionContext::register_servant_locator_for_all(Components::ContainerPortable
 {
 
 // identify all servant locators
-	Qedo::ContainerList* temp_container_list = container_->component_server_->get_all_containers();
+	Qedo::ContainerList temp_container_list = container_->component_server_->get_all_containers();
 
 	std::list <ContainerInterfaceImpl*>::iterator container_iter;
 
-	for (container_iter = temp_container_list->begin(); container_iter != temp_container_list->end(); container_iter++)
+	for (container_iter = temp_container_list.begin(); container_iter != temp_container_list.end(); container_iter++)
 	{
 		for (unsigned int i = 0; i < (*container_iter) -> installed_homes_.size(); i++)
 		{

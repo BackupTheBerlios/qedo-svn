@@ -62,6 +62,10 @@
 
 #include "Output.h"
 
+#ifdef USE_OPENPMF
+#include <pmf_init.h>
+#endif // USE_OPENPMF
+
 static char rcsid[] UNUSED = "$Id: qcsa.cpp,v 1.28 2004/08/23 09:14:54 tom Exp $";
 
 /**

@@ -65,7 +65,7 @@ ORB_IDL_INCLUDE += -I$(MICO)/include -I$(MICO)/include/mico
 CIDL_ORB_DEF = -DMICO_ORB -DMICO_CIDL_GEN
 
 ifneq ($(OPENPMF_ROOT), )
-LDFLAGS := -L$(shell mico-config --prefix)/lib -lpmfccm2.3.11 -lpmfcorba2.3.11 -lpmf2.3.11 $(LDFLAGS)
+LDFLAGS := -L$(shell mico-config --prefix)/lib -lpmfccm$(MICO_VERSION) -lpmfcorba$(MICO_VERSION) -lpmf$(MICO_VERSION) $(LDFLAGS)
 CXXFLAGS := -I$(shell mico-config --prefix)/include/openpmf $(CXXFLAGS) -DUSE_OPENPMF
 endif
 

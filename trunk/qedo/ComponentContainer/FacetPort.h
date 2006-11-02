@@ -97,8 +97,6 @@ public:
 CONTAINERDLL_API    const CORBA::Object_ptr facet_ref() const;
 };
 
-// Export template class
-CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<FacetPort>;
 typedef std::vector<FacetPort> FacetVector;
 
 /** @} */

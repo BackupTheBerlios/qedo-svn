@@ -112,8 +112,6 @@ public:
         throw (Components::NoConnection);
 };
 
-// Export template class
-CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<EmitterPort>;	
 typedef std::vector<EmitterPort> EmitterVector;
 
 /** @} */

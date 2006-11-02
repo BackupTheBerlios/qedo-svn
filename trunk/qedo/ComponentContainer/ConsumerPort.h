@@ -93,8 +93,6 @@ public:
 	CONTAINERDLL_API    const Components::EventConsumerBase_ptr consumer() const;
 };
 
-// Export template class
-CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<ConsumerPort>;
 typedef std::vector<ConsumerPort> ConsumerVector;
 
 /** @} */

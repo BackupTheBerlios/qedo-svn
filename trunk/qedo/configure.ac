@@ -136,13 +136,19 @@ KC_PP="kc++"
 AC_SUBST(KC_PP)
 
 if test X"$UUIDDIR" != X ; then
-	LIBS="$LIBS -L$UUIDDIR"
+	LIBS="$LIBS -L$UUIDDIR/lib"
+	CPPFLAGS="$CPPFLAGS -I$UUIDDIR/include"
 fi
 
 # Checks for libraries.
 AC_CHECK_LIB([dl], [dlopen])
 AC_CHECK_LIB([z], [deflate])
-AC_CHECK_LIB([uuid], [uuid_generate],,[uuid=no])
+AC_CHECK_LIB([uuid], [uuid_generate],[uuid=yes],[uuid=no])
+
+if test X"$uuid" == Xno; then
+  AC_MSG_ERROR([cannot find library uuid])
+fi
+
 
 if test X"$uuid" == Xno; then
   AC_MSG_ERROR([cannot find library uuid])
@@ -159,8 +165,10 @@ else
 fi
 AC_SUBST(HAVE_WXGTK_LIB)
 
-if test X"$uuid" == Xno; then
+if test X"$uuid" != Xyes; then
   AC_MSG_ERROR([you need a uuid library for Qedo])
+else
+  AC_DEFINE(HAVE_LIBUUID)
 fi
 
 qedo_save_LIBS=$LIBS

@@ -40,6 +40,10 @@
 #undef WIN32_LEAN_AND_MEAN
 #endif
 
+#ifdef USE_OPENPMF
+#include <pmf_init.h>
+#endif // USE_OPENPMF
+
 static char rcsid[] UNUSED = "$Id: qassf.cpp,v 1.24 2004/08/23 09:13:21 tom Exp $";
 
 

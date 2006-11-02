@@ -114,8 +114,6 @@ public:
 	CORBA::Boolean same_consumer (Components::Cookie* cookie) const;
 };
 
-// Export template class
-CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<SubscribedConsumer>;
 typedef std::vector <SubscribedConsumer> SubscribedConsumerVector;
 
 
@@ -193,8 +191,6 @@ public:
         throw (Components::InvalidConnection);
 };
 
-// Export template class
-CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<PublisherPort>;	
 typedef std::vector<PublisherPort> PublisherVector;
 
 /** @} */

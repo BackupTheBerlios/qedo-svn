@@ -120,8 +120,6 @@ public:
 	CORBA::Boolean same_connection (Components::Cookie* cookie) const;
 };
 
-// Export template class
-CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<ReceptacleConnection>;
 typedef std::vector<ReceptacleConnection> ConnectionVector;
 
 
@@ -205,8 +203,6 @@ public:
 		       Components::NoConnection);
 };
 
-// Export template class
-CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<ReceptaclePort>;
 typedef std::vector<ReceptaclePort> ReceptacleVector;
 
 /** @} */

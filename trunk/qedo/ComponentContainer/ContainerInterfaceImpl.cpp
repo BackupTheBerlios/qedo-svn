@@ -902,6 +902,19 @@ throw (Components::RemoveFailure, CORBA::SystemException)
 			DEBUG_OUT ("ContainerInterfaceImpl: remove_home(): Home servant found");
 			break;
 		}
+#ifdef MICO_ORB
+                else {
+                    // kcg: not equal, trying to see if the string representation is the same
+                    // This is workaround for problem with MICO SSL, where while binding
+                    // to default interface (0.0.0.0) SSL address is not compared successfully
+                    // to the default NIC IP address (uname -n)
+                    CORBA::String_var r1 = home_ref->_orbnc()->object_to_string(home_ref);
+                    CORBA::String_var r2 = home_ref->_orbnc()->object_to_string(href);
+                    if (strcmp(r1.in(), r2.in()) == 0) {
+                        break;
+                    }
+                }
+#endif // MICO_ORB
 	}
 
 	if (homes_iter == installed_homes_.end())

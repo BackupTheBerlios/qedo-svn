@@ -88,8 +88,6 @@ public:
 	CORBA::Boolean same_binding (Components::Cookie* cookie) const;
 };
 
-// Export template class
-CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<SourceBinding>;
 typedef std::vector<SourceBinding> BindingVector;
 
 
@@ -169,7 +167,6 @@ public:
 };
 
 
-CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<StreamComponents::StreamingBuffer_ptr>;
 typedef std::vector<DispatcherEntry_smartptr> DispatcherVector;
 
 
@@ -293,8 +290,6 @@ public:
 };
 
 
-// Export template class
-CONTAINERDLL_EXTERN template class CONTAINERDLL_API std::vector<SourcePort_smartptr>;
 typedef std::vector<SourcePort_smartptr> SourceVector;
 
 
