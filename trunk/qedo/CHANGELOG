@@ -1,3 +1,7 @@
+version 0.9.0
+- OpenOMF integration established
+- several mem leaks fixed
+
 version 0.8.3
 - adapt to version 2.3.12 of MICO
 - fixed bug 005929 (typedefs in unions)
