@@ -86,7 +86,6 @@ main (int argc, char** argv)
 {
 	NORMAL_OUT3 ("Qedo Component Server ", QEDO_VERSION, QEDO_REVISION);
 #ifdef USE_OPENPMF
-	std::cout << "### USE_OPENPMF\n";
 	bool openpmf_enable = 0;
 	std::string policy_name;
 
@@ -103,7 +102,6 @@ main (int argc, char** argv)
 	PMFCORBA::PMFInitializer* pmf_ini = NULL;
 	if (openpmf_enable)
 	{
-		std::cout << "OpenPMF: Load policy: " << policy_name << std::endl;
 		pmf_ini = new PMFCORBA::PMFInitializer(policy_name);
 	}
 #endif // USE_OPENPMF
@@ -232,11 +230,7 @@ main (int argc, char** argv)
 		{
 			if (pmf_ini != NULL)
 			{
-				std::cerr << "PMF/CCM initialized!" << std::endl;
 				PortableInterceptor::register_orb_initializer(pmf_ini);
-			}
-			else {
-				std::cerr << "PMF/CCM is OFF!" << std::endl;
 			}
 		}
 #endif // USE_OPENPMF
@@ -270,7 +264,6 @@ main (int argc, char** argv)
 	Qedo::ComponentServerImpl* component_server = new Qedo::ComponentServerImpl (orb, csa_string_ref, initializer -> slot_id());
 #else // USE_OPENPMF
 	PortableInterceptor::SlotId sid = initializer -> pmf_slot_id();
-	std::cout << "QCS SLOT_ID= " << sid << std::endl;
 #ifndef _WIN32
         global_pmf_slot_id = sid;
 #else // _WIN32
