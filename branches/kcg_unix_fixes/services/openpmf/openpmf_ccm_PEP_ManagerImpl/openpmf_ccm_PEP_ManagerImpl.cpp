@@ -94,9 +94,13 @@ PEP_ManagerExec::configuration_complete()
   
   ORB_var orb = ORB_instance("mico-local-orb", FALSE);
   CORBA::PolicyList pl(0);
+  char hostname[200];
+  int ret = gethostname(hostname, 200);
+  assert(ret == 0);
+  std::string host = CORBA::string_dup(hostname);
   PolicyEnforcementPoint_impl* pep_impl = PEPFactory::create_PEP
       (orb, pl, pf, "<unspecified>", "CCM",
-       "<unspecified>", this->policy_name_);
+       host, this->policy_name_);
 
   //  server_interceptor_ = new Qedo::ServerPEPInterceptor(pf_, rt_policy_);
 
