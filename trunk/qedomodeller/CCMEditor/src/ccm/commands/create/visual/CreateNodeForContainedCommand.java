@@ -190,7 +190,8 @@ public abstract class CreateNodeForContainedCommand extends Command{
     	str = container.getAbsoluteName();
 		if (container.getAbsoluteName().trim().length()!= 0)
     	{
-    		str = container.getAbsoluteName() + newObject.getIdentifier();
+			// TODO: This is still not solved. NewObject seems to be not set
+    		str = container.getAbsoluteName();// + newObject.getIdentifier();
     	} else
     	{
     		str = newObject.getIdentifier();
