@@ -32,12 +32,12 @@ namespace Qedo {
 
     std::string name_;
     std::string policy_name_;
-    PMFIMPL::PolicyEnforcementPoint_impl* pep_;
+    PMFIMPL::AbstractPolicyEnforcementPoint* pep_;
 
     PortableInterceptor::SlotId pmf_slot_id_;
     bool pmf_slot_set_;
   public:
-    ServerPEPInterceptor(openpmf_ccm::CCM_pep_manager_Context *context,openpmf_ccm::CCM_PEP_ManagerExec *executor, PMFIMPL::PolicyEnforcementPoint_impl* pep);
+    ServerPEPInterceptor(openpmf_ccm::CCM_pep_manager_Context *context,openpmf_ccm::CCM_PEP_ManagerExec *executor, PMFIMPL::AbstractPolicyEnforcementPoint* pep);
     
     ~ServerPEPInterceptor();
     

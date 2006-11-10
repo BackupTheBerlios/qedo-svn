@@ -9,7 +9,6 @@
 #include "ServerPEPInterceptor.h"
 #include <SL3_Transformer.h>
 #include <CCM_Transformer.h>
-#include <cpm_admin.h>
 #include <pep_impl.h>
 
 #ifndef _WIN32
@@ -98,7 +97,7 @@ PEP_ManagerExec::configuration_complete()
   int ret = gethostname(hostname, 200);
   assert(ret == 0);
   std::string host = CORBA::string_dup(hostname);
-  PolicyEnforcementPoint_impl* pep_impl = PEPFactory::create_PEP
+  AbstractPolicyEnforcementPoint* pep = PEPFactory::create_PEP
       (orb, pl, pf, "<unspecified>", "CCM",
        host, this->policy_name_);
 
@@ -113,7 +112,7 @@ PEP_ManagerExec::configuration_complete()
 
   Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_reg =
     context_->get_server_interceptor_dispatcher_registration();
-  server_pep_interceptor_ = new Qedo::ServerPEPInterceptor(context_,this, pep_impl);
+  server_pep_interceptor_ = new Qedo::ServerPEPInterceptor(context_,this, pep);
 #ifndef _WIN32
   server_pep_interceptor_->set_pmf_slot_id(global_pmf_slot_id);
 #else // _WIN32

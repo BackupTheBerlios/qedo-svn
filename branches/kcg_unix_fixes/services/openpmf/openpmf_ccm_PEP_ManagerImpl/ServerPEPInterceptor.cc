@@ -29,7 +29,7 @@ ServerPEPInterceptor::set_slot_id(PortableInterceptor::SlotId slot_id) {
 
 };
 
-  ServerPEPInterceptor::ServerPEPInterceptor (openpmf_ccm::CCM_pep_manager_Context* context,openpmf_ccm::CCM_PEP_ManagerExec* executor, PMFIMPL::PolicyEnforcementPoint_impl* pep)
+  ServerPEPInterceptor::ServerPEPInterceptor (openpmf_ccm::CCM_pep_manager_Context* context,openpmf_ccm::CCM_PEP_ManagerExec* executor, PMFIMPL::AbstractPolicyEnforcementPoint* pep)
 {
 #ifdef DEBUG
   std::cout << "ServerPEPInterceptor::ServerPEPInterceptor\n";
