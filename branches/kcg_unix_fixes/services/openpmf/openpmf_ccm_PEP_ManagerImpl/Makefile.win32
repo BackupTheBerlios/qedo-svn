@@ -6,7 +6,7 @@ LIBS			= ..\openpmf_ccm_PEP_ManagerImpl_SERVANT\libopenpmf_ccm_PEP_ManagerImpl_S
 	$(MICO)\win32-bin\lib\pmf2312.lib $(MICO)\win32-bin\lib\pmfcorba2312.lib $(MICO)\win32-bin\lib\pmfccm2312.lib \
 	$(MICO)\win32-bin\lib\mico2312.lib $(QEDO)\lib\ComponentIDL.lib $(QEDO)\lib\ComponentContainer.lib $(QEDO)\lib\qedoutil.lib \
 	$(MICO)\win32-bin\lib\libeay32.lib $(MICO)\win32-bin\lib\ssleay32.lib \
-	$(MICO)\win32-bin\lib\pthreadVC2.lib
+	$(MICO)\win32-bin\lib\pthreadVC2.lib wsock32.lib
 
 ORB_IDL_INCLUDE = -I$(MICO)\include -I$(MICO)\include\mico
 CIDL_ORB_DEF = -DMICO_ORB -DMICO_CIDL_GEN

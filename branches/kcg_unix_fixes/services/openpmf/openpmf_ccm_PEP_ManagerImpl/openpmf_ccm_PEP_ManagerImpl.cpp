@@ -10,6 +10,9 @@
 #include <SL3_Transformer.h>
 #include <CCM_Transformer.h>
 #include <pep_impl.h>
+#ifdef _WIN32
+#include <winsock.h>
+#endif // _WIN32
 
 #ifndef _WIN32
 extern PortableInterceptor::SlotId global_pmf_slot_id;
