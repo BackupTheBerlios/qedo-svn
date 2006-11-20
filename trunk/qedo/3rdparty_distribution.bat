@@ -26,11 +26,11 @@ copy %MICO%\win32-bin\pthreadVC2.dll %actdir%
 
 
 echo ************ Copy MICO ************ 
-set actdir=%qedo%\include
+set actdir=%qedo%\mico
 echo *** Create %actdir%...
 mkdir %actdir%
 
-set actdir=%qedo%\include\mico
+set actdir=%qedo%\mico\include
 echo *** Create %actdir%...
 mkdir %actdir%
 
