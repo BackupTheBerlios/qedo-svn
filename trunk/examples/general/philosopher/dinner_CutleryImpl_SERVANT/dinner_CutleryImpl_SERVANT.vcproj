@@ -72,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/include/pthreads;$(QEDO)/include;$(Qedo)/include/mico;$(Qedo)/include/mico/windows;"
+				AdditionalIncludeDirectories=".;$(QEDO)/mico/include;$(QEDO)/mico/include/windows;$(Qedo)/include/pthreads;$(QEDO)/include"
 				PreprocessorDefinitions="BUILD_DINNER_CUTLERYIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400;"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -230,7 +230,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="..... compiling CIDL"
-						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32  -I$(QEDO)/idl -I$(QEDO)/include/mico -I$(QEDO)/include/mico/mico --servant --target IDL:dinner/CutleryImpl:1.0 ../philosophers.cidl
+						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(Qedo)/mico/include  -I$(Qedo)/mico/include/mico  -DMICO_ORB -DMICO_CIDL_GEN -DWIN32  --servant --target IDL:dinner/CutleryImpl:1.0 ../philosophers.cidl
 "
 						Outputs="dinner_CutleryImpl_LOCAL.idl;dinner_CutleryImpl_EQUIVALENT.idl;dinner_CutleryImpl_SERVANT.cpp"/>
 				</FileConfiguration>
@@ -259,7 +259,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="..... compiling equivalent IDL"
-						CommandLine="$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --windows-dll dinner_CutleryImpl dinner_CutleryImpl_EQUIVALENT.idl
+						CommandLine="$(Qedo)/bin/idl -DMICO_ORB -DWIN32 -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --windows-dll dinner_CutleryImpl dinner_CutleryImpl_EQUIVALENT.idl
 copy dinner_CutleryImpl_EQUIVALENT.h dinner_CutleryImpl_EQUIVALENT_skel.h
 "
 						Outputs="dinner_CutleryImpl_EQUIVALENT.h;dinner_CutleryImpl_EQUIVALENT.cpp;dinner_CutleryImpl_EQUIVALENT_skel.h;dinner_CutleryImpl_EQUIVALENT_skel.cpp"/>
@@ -289,7 +289,7 @@ copy dinner_CutleryImpl_EQUIVALENT.h dinner_CutleryImpl_EQUIVALENT_skel.h
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="..... compiling local IDL"
-						CommandLine="$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --windows-dll dinner_CutleryImpl dinner_CutleryImpl_LOCAL.idl
+						CommandLine="$(Qedo)/bin/idl -DMICO_ORB -DWIN32 -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --windows-dll dinner_CutleryImpl dinner_CutleryImpl_LOCAL.idl
 copy dinner_CutleryImpl_LOCAL.h dinner_CutleryImpl_LOCAL_skel.h
 "
 						Outputs="dinner_CutleryImpl_LOCAL.h;dinner_CutleryImpl_LOCAL.cpp;dinner_CutleryImpl_LOCAL_skel.h;dinner_CutleryImpl_LOCAL_skel.cpp"/>

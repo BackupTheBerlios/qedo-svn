@@ -72,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/include/pthreads;$(QEDO)/include;$(Qedo)/include/mico;../dinner_PhilosopherImpl_SERVANT"
+				AdditionalIncludeDirectories=".;$(QEDO)/mico/include;$(QEDO)/mico/include/windows;$(Qedo)/include/pthreads;$(QEDO)/include"
 				PreprocessorDefinitions="BUILD_DINNER_PHILOSOPHERIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -239,7 +239,7 @@ $(Qedo)/bin/zip ../dinner_PhilosopherImpl.zip meta-inf/dinner_PhilosopherImpl.cc
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="..... compiling CIDL"
-						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 -I$(QEDO)/idl -I$(QEDO)/include/mico -I$(QEDO)/include/mico/mico --business --target IDL:dinner/PhilosopherImpl:1.0 ../philosophers.cidl
+						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(Qedo)/mico/include  -I$(Qedo)/mico/include/mico  -DMICO_ORB -DMICO_CIDL_GEN -DWIN32   --business --target IDL:dinner/PhilosopherImpl:1.0 ../philosophers.cidl
 "
 						Outputs="dinner_PhilosopherImpl_LOCAL.idl;dinner_PhilosopherImpl_EQUIVALENT.idl;dinner_PhilosopherImpl_BUSINESS.idl"/>
 				</FileConfiguration>
@@ -268,7 +268,7 @@ $(Qedo)/bin/zip ../dinner_PhilosopherImpl.zip meta-inf/dinner_PhilosopherImpl.cc
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="..... compiling business IDL"
-						CommandLine="$(Qedo)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl   --any --typecode --c++-skel --c++-suffix cpp --windows-dll dinner_PhilosopherImpl dinner_PhilosopherImpl_BUSINESS.idl
+						CommandLine="$(Qedo)/bin/idl -DMICO_ORB -DWIN32 -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --windows-dll dinner_PhilosopherImpl dinner_PhilosopherImpl_BUSINESS.idl
 copy dinner_PhilosopherImpl_BUSINESS.h dinner_PhilosopherImpl_BUSINESS_skel.h
 "
 						Outputs="dinner_PhilosopherImpl_BUSINESS.h;dinner_PhilosopherImpl_BUSINESS.cpp;dinner_PhilosopherImpl_BUSINESS_skel.h;dinner_PhilosopherImpl_BUSINESS_skel.cpp"/>
@@ -298,7 +298,7 @@ copy dinner_PhilosopherImpl_BUSINESS.h dinner_PhilosopherImpl_BUSINESS_skel.h
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="..... compiling equivalent IDL"
-						CommandLine="$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl --any --typecode --c++-skel --c++-suffix cpp --windows-dll dinner_PhilosopherImpl dinner_PhilosopherImpl_EQUIVALENT.idl
+						CommandLine="$(Qedo)/bin/idl -DMICO_ORB -DWIN32 -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --windows-dll dinner_PhilosopherImpl dinner_PhilosopherImpl_EQUIVALENT.idl
 copy dinner_PhilosopherImpl_EQUIVALENT.h dinner_PhilosopherImpl_EQUIVALENT_skel.h
 "
 						Outputs="dinner_PhilosopherImpl_EQUIVALENT.h;dinner_PhilosopherImpl_EQUIVALENT.cpp;dinner_PhilosopherImpl_EQUIVALENT_skel.h;dinner_PhilosopherImpl_EQUIVALENT_skel.cpp"/>
@@ -328,7 +328,7 @@ copy dinner_PhilosopherImpl_EQUIVALENT.h dinner_PhilosopherImpl_EQUIVALENT_skel.
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="..... compiling local IDL"
-						CommandLine="$(QEDO)/bin/idl -DMICO_ORB -DWIN32 -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --windows-dll dinner_PhilosopherImpl dinner_PhilosopherImpl_LOCAL.idl
+						CommandLine="$(Qedo)/bin/idl -DMICO_ORB -DWIN32 -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --windows-dll dinner_PhilosopherImpl dinner_PhilosopherImpl_LOCAL.idl
 copy dinner_PhilosopherImpl_LOCAL.h dinner_PhilosopherImpl_LOCAL_skel.h
 "
 						Outputs="dinner_PhilosopherImpl_LOCAL.h;dinner_PhilosopherImpl_LOCAL.cpp;dinner_PhilosopherImpl_LOCAL_skel.h;dinner_PhilosopherImpl_LOCAL_skel.cpp"/>

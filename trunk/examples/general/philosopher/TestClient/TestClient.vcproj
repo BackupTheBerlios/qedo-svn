@@ -228,7 +228,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/include;$(QEDO)/include/pthreads;$(MICO)/include;$(MICO)/include/windows;$(MICO)/include/coss"
+				AdditionalIncludeDirectories=".;$(QEDO)/mico/include;$(QEDO)/mico/include/windows;$(Qedo)/include/pthreads;$(QEDO)/include;$(QEDO)/mico/include/coss"
 				PreprocessorDefinitions="MICO_ORB;WIN32;_DEBUG;_CONSOLE;HAVE_THREADS;HAVE_PTHREADS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -320,7 +320,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="CIDL compiler processes $(InputPath)"
-						CommandLine="$(QEDO)\bin\cidl_gen -I$(QEDO)\idl -I$(MICO)\include  -I$(MICO)\include\mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --target dinner ..\philosophers.cidl
+						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(Qedo)/mico/include  -I$(Qedo)/mico/include/mico  -DMICO_ORB -DMICO_CIDL_GEN -DWIN32  --target dinner ..\philosophers.cidl
 "
 						Outputs="dinner_EQUIVALENT.idl"/>
 				</FileConfiguration>
@@ -344,7 +344,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="IDL compiling $(InputPath)"
-						CommandLine="$(MICO)\win32-bin\idl -B$(MICO)  -I$(QEDO)/include/mico  -I$(QEDO)/idl  -DWIN32 -DMICO_ORB --any --typecode --c++-suffix cpp dinner_EQUIVALENT.idl
+						CommandLine="$(Qedo)/bin/idl -DMICO_ORB -DWIN32 -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl  --any --typecode --c++-suffix cpp dinner_EQUIVALENT.idl
 "
 						Outputs="dinner_EQUIVALENT.h;dinner_EQUIVALENT.cpp"/>
 				</FileConfiguration>
