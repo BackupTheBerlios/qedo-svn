@@ -72,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(QEDO)\include\pthreads&quot;;.;&quot;$(QEDO)\include&quot;;&quot;$(MICO)\include&quot;"
+				AdditionalIncludeDirectories=".;$(QEDO)/mico/include;$(QEDO)/mico/include/windows;$(Qedo)/include/pthreads;$(QEDO)/include"
 				PreprocessorDefinitions="BUILD_HELLOWORLD_CALLEEIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;EXECUTORMODULE_EXPORTS;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -89,7 +89,7 @@
 				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  mico2312.lib"
 				OutputFile="$(OutDir)/HelloWorld_CalleeImpl.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(QEDO)\lib;$(MICO)\win32-bin\lib"
+				AdditionalLibraryDirectories="$(QEDO)\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/HelloWorld_CalleeImpl.pdb"
 				SubSystem="2"
@@ -231,7 +231,7 @@ $(CYGWIN)\zip ../HelloWorld_CalleeImpl.zip meta-inf/HelloWorld_CalleeImpl.ccd me
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --business --target IDL:HelloWorld/CalleeImpl:1.0 ../hello.cidl
+						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(Qedo)/mico/include  -I$(Qedo)/mico/include/mico  -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --business --target IDL:HelloWorld/CalleeImpl:1.0 ../hello.cidl
 "
 						Outputs="HelloWorld_CalleeImpl_LOCAL.idl;HelloWorld_CalleeImpl_EQUIVALENT.idl;HelloWorld_CalleeImpl_BUSINESS.idl"/>
 				</FileConfiguration>
@@ -258,7 +258,7 @@ $(CYGWIN)\zip ../HelloWorld_CalleeImpl.zip meta-inf/HelloWorld_CalleeImpl.ccd me
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)/win32-bin/idl -I$(MICO)/include -B$(MICO) -I$(QEDO)/idl -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --windows-dll HelloWorld_CalleeImpl HelloWorld_CalleeImpl_BUSINESS.idl
+						CommandLine="$(Qedo)/bin/idl -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl   -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --windows-dll HelloWorld_CalleeImpl HelloWorld_CalleeImpl_BUSINESS.idl
 copy HelloWorld_CalleeImpl_BUSINESS.h HelloWorld_CalleeImpl_BUSINESS_skel.h
 "
 						Outputs="HelloWorld_CalleeImpl_BUSINESS.h;HelloWorld_CalleeImpl_BUSINESS.cpp;HelloWorld_CalleeImpl_BUSINESS_skel.h;HelloWorld_CalleeImpl_BUSINESS_skel.cpp"/>
@@ -286,7 +286,7 @@ copy HelloWorld_CalleeImpl_BUSINESS.h HelloWorld_CalleeImpl_BUSINESS_skel.h
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)/win32-bin/idl -I$(MICO)/include -B$(MICO) -I$(QEDO)/idl  -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --windows-dll HelloWorld_CalleeImpl HelloWorld_CalleeImpl_EQUIVALENT.idl
+						CommandLine="$(Qedo)/bin/idl -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl   -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --windows-dll HelloWorld_CalleeImpl HelloWorld_CalleeImpl_EQUIVALENT.idl
 copy HelloWorld_CalleeImpl_EQUIVALENT.h HelloWorld_CalleeImpl_EQUIVALENT_skel.h
 "
 						Outputs="HelloWorld_CalleeImpl_EQUIVALENT.h;HelloWorld_CalleeImpl_EQUIVALENT.cpp;HelloWorld_CalleeImpl_EQUIVALENT_skel.h;HelloWorld_CalleeImpl_EQUIVALENT_skel.cpp"/>
@@ -314,7 +314,7 @@ copy HelloWorld_CalleeImpl_EQUIVALENT.h HelloWorld_CalleeImpl_EQUIVALENT_skel.h
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)/win32-bin/idl -I$(MICO)/include -B$(MICO) -I$(QEDO)/idl -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --windows-dll HelloWorld_CalleeImpl HelloWorld_CalleeImpl_LOCAL.idl
+						CommandLine="$(Qedo)/bin/idl -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl   -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --windows-dll HelloWorld_CalleeImpl HelloWorld_CalleeImpl_LOCAL.idl
 copy HelloWorld_CalleeImpl_LOCAL.h HelloWorld_CalleeImpl_LOCAL_skel.h
 "
 						Outputs="HelloWorld_CalleeImpl_LOCAL.h;HelloWorld_CalleeImpl_LOCAL.cpp;HelloWorld_CalleeImpl_LOCAL_skel.h;HelloWorld_CalleeImpl_LOCAL_skel.cpp"/>

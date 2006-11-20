@@ -396,7 +396,7 @@
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN  --target HelloWorld ../hello.idl
+						CommandLine="$(Qedo)/bin/idl -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl   -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN  --target HelloWorld ../hello.idl
 "
 						Outputs="HelloWorld_EQUIVALENT.idl; HelloWorld_LOCAL.idl"/>
 				</FileConfiguration>
@@ -416,7 +416,7 @@
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)\win32-bin\idl -I$(MICO)/include -B$(MICO) -I$(QEDO)\idl -DWIN32 -DMICO_ORB --any --c++-skel --c++-suffix cpp   HelloWorld_EQUIVALENT.idl
+						CommandLine="$(Qedo)/bin/idl -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl  -DWIN32 -DMICO_ORB --any --c++-skel --c++-suffix cpp   HelloWorld_EQUIVALENT.idl
 copy HelloWorld_EQUIVALENT.h HelloWorld_EQUIVALENT_skel.h
 "
 						Outputs="HelloWorld_EQUIVALENT.h;HelloWorld_EQUIVALENT.cpp;HelloWorld_EQUIVALENT_skel.h;HelloWorld_EQUIVALENT_skel.cpp"/>

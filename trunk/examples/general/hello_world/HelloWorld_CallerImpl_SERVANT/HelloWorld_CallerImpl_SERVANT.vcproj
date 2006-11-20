@@ -72,7 +72,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;&quot;$(QEDO)/include&quot;;&quot;$(MICO)/include&quot;;&quot;$(MICO)/include/windows&quot;;&quot;$(QEDO)/include/pthreads&quot;"
+				AdditionalIncludeDirectories=".;$(QEDO)/mico/include;$(QEDO)/mico/include/windows;$(Qedo)/include/pthreads;$(QEDO)/include"
 				PreprocessorDefinitions="BUILD_HELLOWORLD_CALLERIMPL_DLL;WIN32;_DEBUG;_USRDLL;SERVANTMODULE_EXPORTS;MICO_ORB;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -89,7 +89,7 @@
 				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib qedoutil.lib mico2312.lib pthreadVC2.lib"
 				OutputFile="$(OutDir)/HelloWorld_CallerImpl_SERVANT.dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(QEDO)/lib;$(MICO)/win32-bin/lib"
+				AdditionalLibraryDirectories="$(QEDO)/lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/HelloWorld_CallerImpl_SERVANT.pdb"
 				SubSystem="2"
@@ -228,7 +228,7 @@
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(MICO)/include -I$(MICO)/include/mico  -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --servant --target IDL:HelloWorld/CallerImpl:1.0 ../hello.cidl
+						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(Qedo)/mico/include  -I$(Qedo)/mico/include/mico  -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN --servant --target IDL:HelloWorld/CallerImpl:1.0 ../hello.cidl
 "
 						Outputs="HelloWorld_CallerImpl_LOCAL.idl;HelloWorld_CallerImpl_EQUIVALENT.idl;"/>
 				</FileConfiguration>
@@ -255,7 +255,7 @@
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)/win32-bin/idl -I$(MICO)/include -B$(MICO) -I$(QEDO)/idl -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp --windows-dll HelloWorld_CallerImpl HelloWorld_CallerImpl_EQUIVALENT.idl
+						CommandLine="$(Qedo)/bin/idl -DMICO_ORB -DWIN32 -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl  --any --typecode --c++-skel --c++-suffix cpp --windows-dll HelloWorld_CallerImpl HelloWorld_CallerImpl_EQUIVALENT.idl
 copy HelloWorld_CallerImpl_EQUIVALENT.h HelloWorld_CallerImpl_EQUIVALENT_skel.h
 "
 						Outputs="HelloWorld_CallerImpl_EQUIVALENT.h;HelloWorld_CallerImpl_EQUIVALENT.cpp;HelloWorld_CallerImpl_EQUIVALENT_skel.h;HelloWorld_CallerImpl_EQUIVALENT_skel.cpp"/>
@@ -283,7 +283,7 @@ copy HelloWorld_CallerImpl_EQUIVALENT.h HelloWorld_CallerImpl_EQUIVALENT_skel.h
 					Name="Debug_mico|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="$(MICO)/win32-bin/idl -I$(MICO)/include -B$(MICO) -I$(QEDO)/idl -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp  --windows-dll HelloWorld_CallerImpl HelloWorld_CallerImpl_LOCAL.idl
+						CommandLine="$(Qedo)/bin/idl -I$(Qedo)/include/mico -B$(QEDO)/mico  -I$(QEDO)/mico/include -I$(QEDO)/idl  -DWIN32 -DMICO_ORB --any --typecode --c++-skel --c++-suffix cpp  --windows-dll HelloWorld_CallerImpl HelloWorld_CallerImpl_LOCAL.idl
 copy HelloWorld_CallerImpl_LOCAL.h HelloWorld_CallerImpl_LOCAL_skel.h
 "
 						Outputs="HelloWorld_CallerImpl_LOCAL.h;HelloWorld_CallerImpl_LOCAL.cpp;HelloWorld_CallerImpl_LOCAL_skel.h;HelloWorld_CallerImpl_LOCAL_skel.cpp"/>
