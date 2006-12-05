@@ -334,7 +334,7 @@ main (int argc, char** argv)
 #endif // HAVE_LIBPTHREAD
 
 	component_installation->_remove_ref();
-
+        orb->destroy();
 	return 0;
 }
 

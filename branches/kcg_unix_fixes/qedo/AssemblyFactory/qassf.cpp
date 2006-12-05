@@ -341,6 +341,7 @@ main (int argc, char** argv)
 
     orb->unregister_value_factory("IDL:omg.org/Components/Cookie:1.0");
     orb->unregister_value_factory("IDL:omg.org/Components/ConfigValue:1.0");
+    orb->destroy();
 	 delete assembly_factory;
 	 delete factory1;
 	 delete factory;

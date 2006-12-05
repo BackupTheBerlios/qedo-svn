@@ -464,7 +464,7 @@ main (int argc, char** argv)
 #endif // HAVE_LIBPTHREAD
 
 	server_activator->_remove_ref();
-
+        orb->destroy();
 	return 0;
 }
 

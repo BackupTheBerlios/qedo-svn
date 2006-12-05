@@ -286,7 +286,7 @@ main (int argc, char** argv)
 	signal_thread->stop();
 	signal_thread->join();
 #endif // HAVE_LIBPTHREAD
-
+        orb->destroy();
 	return 0;
 }
 
