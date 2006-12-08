@@ -20,6 +20,7 @@
 
 // BEGIN USER INSERT SECTION file_post
 #include "ServerPEPInterceptor.h"
+#include <pep_impl.h>
 // END USER INSERT SECTION file_post
 
 
@@ -71,6 +72,7 @@ namespace openpmf_ccm
     Qedo::ServerPEPInterceptor* server_pep_interceptor_;
     Components::Cookie_var server_cookie_;
     std::string policy_name_;
+    PMFIMPL::AbstractPolicyEnforcementPoint* pep_;
 // END USER INSERT SECTION PEP_ManagerExec
 
     };

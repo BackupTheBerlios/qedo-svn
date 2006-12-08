@@ -9,7 +9,6 @@
 #include "ServerPEPInterceptor.h"
 #include <SL3_Transformer.h>
 #include <CCM_Transformer.h>
-#include <pep_impl.h>
 #ifdef _WIN32
 #include <winsock.h>
 #endif // _WIN32
@@ -100,9 +99,8 @@ PEP_ManagerExec::configuration_complete()
   int ret = gethostname(hostname, 200);
   assert(ret == 0);
   std::string host = CORBA::string_dup(hostname);
-  AbstractPolicyEnforcementPoint* pep = PEPFactory::create_PEP
-      (orb, pl, pf, "<unspecified>", "CCM",
-       host, this->policy_name_);
+  pep_ = PEPFactory::create_PEP(orb, pl, pf, "<unspecified>", "CCM",
+                                host, this->policy_name_);
 
   //  server_interceptor_ = new Qedo::ServerPEPInterceptor(pf_, rt_policy_);
 
@@ -115,7 +113,7 @@ PEP_ManagerExec::configuration_complete()
 
   Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_reg =
     context_->get_server_interceptor_dispatcher_registration();
-  server_pep_interceptor_ = new Qedo::ServerPEPInterceptor(context_,this, pep);
+  server_pep_interceptor_ = new Qedo::ServerPEPInterceptor(context_,this, pep_);
 #ifndef _WIN32
   server_pep_interceptor_->set_pmf_slot_id(global_pmf_slot_id);
 #else // _WIN32
@@ -269,6 +267,7 @@ PEP_ManagerImpl::ccm_remove()
     throw (CORBA::SystemException, Components::CCMException)
 {
 // BEGIN USER INSERT SECTION PEP_ManagerImpl::ccm_remove
+    this->component_->pep_->destroy();
 // END USER INSERT SECTION PEP_ManagerImpl::ccm_remove
 }
 
