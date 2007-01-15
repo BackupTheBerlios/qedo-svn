@@ -33,9 +33,9 @@ public class CompartmentFigure extends Figure {
         setBackgroundColor(classColor);
         layout.setMinorAlignment(ToolbarLayout.ALIGN_TOPLEFT);
         layout.setStretchMinorAxis(true);
-        layout.setSpacing(2);
+        layout.setSpacing(0);
         setLayoutManager(layout);
-        setBorder(new CompartmentFigureBorder());
+        //setBorder(new CompartmentFigureBorder());
     }
     
     public Dimension getPreferredSize(int wHint, int hHint) {

@@ -48,7 +48,7 @@ public class EnumPropertySource  extends ContainedPropertySource {
     
     
     
-    EnumDef enum;
+    EnumDef enum_def;
     private ModelFactory mf=new ModelFactory();
     private CCMModelFactory factory =CCMModelManager.getFactory();
      
@@ -62,10 +62,10 @@ public class EnumPropertySource  extends ContainedPropertySource {
      */
     public EnumPropertySource (Contained element) {
         	super(element);
-        	enum=(EnumDef)element;
-        	root= mf.getRootModule(enum);
+        	enum_def=(EnumDef)element;
+        	root= mf.getRootModule(enum_def);
         	 
-        	memberList= enum.getMembers();
+        	memberList= enum_def.getMembers();
         	 
         	 
     }
@@ -114,8 +114,8 @@ public class EnumPropertySource  extends ContainedPropertySource {
 	    switch(Integer.parseInt( (String)id )){
 	    case CCMModelPackage.ENUM_DEF__MEMBERS: 
 	    	memberList=(List)value;
-	    	enum.getMembers().clear();
-	    	enum.getMembers().addAll(memberList); 
+	    	enum_def.getMembers().clear();
+	    	enum_def.getMembers().addAll(memberList); 
 	    	notifyNode();
 	        break;
 	    	 
