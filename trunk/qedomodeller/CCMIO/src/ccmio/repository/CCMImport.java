@@ -140,6 +140,7 @@ import MDE.Deployment.RegisterComponentInstance;
 import MDE.Deployment.RegisterComponentInstanceHelper;
 import MDE.Deployment._SoftwarePackage;
 import MDE.Deployment._SoftwarePackageHelper;
+import MDE.QosFramework._QosFrameworkPackage;
 import Reflective.MofError;
 import Reflective.NotSet;
 
@@ -155,7 +156,8 @@ public class CCMImport {
 	private _CIFPackage CIFPackage;
 	private CCM ccm;
 	private IDLTypeContainer idlcontainer;
-
+	private _QosFrameworkPackage QoSPackage;
+	
 	// lists of all objects in repository and emf-model to search in.. 
 	private ArrayList 	ids,repmodel,emfmodel;
 
@@ -181,6 +183,7 @@ public class CCMImport {
 		baseIDLPackage = current_package.base_idl_ref();
 		componentIDLPackage = current_package.component_idl_ref();
 		CIFPackage = current_package.cif_ref();
+		QoSPackage = current_package.qos_framework_ref();
 
 		idlcontainer = ccm.getIdlContainer();
 
@@ -213,6 +216,23 @@ public class CCMImport {
 			
 		// 3. & 4. create the relations and updates the missing properties 
 		updateEMFModel();
+		
+		// 5. read QoS properteis
+		//readQoS();
+	}
+	private void readQoS() {
+		MDE.QosFramework.QosContext[] qosContexts = 
+			QoSPackage.qos_context_ref().all_of_class_qos_context();
+		if (qosContexts.length!=0)
+		{
+			System.out.println("found something:");
+			try {
+				System.out.println(qosContexts[0].name());
+			} catch (MofError e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	/* --------------------------------- CREATEROOT ------------------------------------------------ */
 	/**

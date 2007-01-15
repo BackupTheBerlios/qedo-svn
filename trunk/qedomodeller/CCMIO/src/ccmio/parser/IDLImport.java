@@ -62,8 +62,8 @@ public class IDLImport {
 
 		System.out.println(t.toStringList());
 		
-		ASTFrame frame = new ASTFrame("AST JTree Example", t);
-		frame.setVisible(true);
+		//ASTFrame frame = new ASTFrame("AST JTree Example", t);
+		//frame.setVisible(true);
 		
 		//instantiate helper object
 		IdlTreeWalkerHelper helper = new IdlTreeWalkerHelper(ccm);
