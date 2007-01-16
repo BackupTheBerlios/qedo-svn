@@ -11,7 +11,6 @@ import CCMModel.IDLTypeContainer;
 import CCMModel.ModuleDef;
 import CCMModel.PrimitiveDef;
 import CCMModel.PrimitiveKind;
-//import CCMModel.ViewKind;
 
 /**
  * @author eduardw

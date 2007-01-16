@@ -21,8 +21,8 @@ import org.eclipse.gef.requests.ChangeBoundsRequest;
 
 import CCMModel.ConnectionDiscription;
 import ccm.commands.connect.MoveConnectionDescriptionCommand;
-import ccm.edit.ConnectionDescriptionEditPart;
 import ccm.edit.CCMRelationEditPart;
+import ccm.edit.ConnectionDescriptionEditPart;
 
 
 

@@ -30,9 +30,6 @@ import org.eclipse.swt.widgets.Text;
 
 import CCMModel.Composition;
 import ccm.CCMConstants;
-/*
-* @author Siegercn
-*/
  
 public class CreateImplementationDialog extends org.eclipse.swt.widgets.Dialog implements KeyListener{
 	//private Button isLocalBtn;

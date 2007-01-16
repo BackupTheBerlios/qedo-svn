@@ -24,9 +24,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import ccm.CCMConstants;
-/*
-* @author Siegercn
-*/
  
 public class CreateContainedDialog extends org.eclipse.swt.widgets.Dialog implements KeyListener{
 	//private Button isLocalBtn;

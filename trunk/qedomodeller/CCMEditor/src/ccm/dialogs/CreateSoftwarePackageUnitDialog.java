@@ -31,9 +31,6 @@ import org.eclipse.swt.widgets.Text;
 import CCMModel.ComponentDef;
 import CCMModel.ModuleDef;
 import ccm.CCMConstants;
-/*
-* @author Siegercn
-*/
  
 public class CreateSoftwarePackageUnitDialog extends org.eclipse.swt.widgets.Dialog implements KeyListener{
 	 
