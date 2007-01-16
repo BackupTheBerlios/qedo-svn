@@ -13,6 +13,7 @@ package ccm.commands.connect;
 
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.tools.DragEditPartsTracker;
+
 import ccm.edit.CCMRelationEditPart;
 
 
