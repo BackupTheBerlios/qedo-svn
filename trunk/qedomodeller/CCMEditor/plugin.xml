@@ -11,6 +11,45 @@
       <library name="ccm.jar">
          <export name="*"/>
       </library>
+      <library name="org.eclipse.mddi.modelbus.adapter.jar">
+         <export name="*"/>
+      </library>
+      <library name="activation.jar">
+         <export name="*"/>
+      </library>
+      <library name="axis.jar">
+         <export name="*"/>
+      </library>
+      <library name="commons-discovery-0.2.jar">
+         <export name="*"/>
+      </library>
+      <library name="commons-httpclient-3.0-rc2.jar">
+         <export name="*"/>
+      </library>
+      <library name="commons-logging-1.0.4.jar">
+         <export name="*"/>
+      </library>
+      <library name="jaxrpc.jar">
+         <export name="*"/>
+      </library>
+      <library name="log4j-1.2.8.jar">
+         <export name="*"/>
+      </library>
+      <library name="org.eclipse.mddi.modelbus.description.jar">
+         <export name="*"/>
+      </library>
+      <library name="RepositoryResult.jar">
+         <export name="*"/>
+      </library>
+      <library name="saaj.jar">
+         <export name="*"/>
+      </library>
+      <library name="simpleweb.jar">
+         <export name="*"/>
+      </library>
+      <library name="wsdl4j-1.5.1.jar">
+         <export name="*"/>
+      </library>
    </runtime>
 
    <requires>
@@ -22,9 +61,9 @@
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.gef"/>
       <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.emf.ecore.xmi"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.emf.edit.ui"/>
+      <import plugin="org.eclipse.emf.ecore.xmi"/>
       <import plugin="CCMIO"/>
       <import plugin="CCMModel"/>
    </requires>
@@ -66,6 +105,11 @@
             class="ccm.wizards.IDLImportWizard"
             name="CCMEditor.IDLImportWizard"
             id="CCMEditor.IDLImportWizard"/>
+      <wizard
+            class="ccm.wizards.ModelBus.ImportModelBusWizard"
+            icon="bin/ccm/icons/qedoicon.ico"
+            id="ModelBusImport"
+            name="ModelBusImport"/>
    </extension>
    <extension
          point="org.eclipse.ui.views">

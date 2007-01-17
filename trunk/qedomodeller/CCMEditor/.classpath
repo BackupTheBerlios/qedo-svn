@@ -4,5 +4,18 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/CCMIO/MDENEW.jar"/>
+	<classpathentry kind="lib" path="activation.jar"/>
+	<classpathentry kind="lib" path="axis.jar"/>
+	<classpathentry kind="lib" path="commons-discovery-0.2.jar"/>
+	<classpathentry kind="lib" path="commons-httpclient-3.0-rc2.jar"/>
+	<classpathentry kind="lib" path="commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="jaxrpc.jar"/>
+	<classpathentry kind="lib" path="log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="org.eclipse.mddi.modelbus.adapter.jar"/>
+	<classpathentry kind="lib" path="org.eclipse.mddi.modelbus.description.jar"/>
+	<classpathentry kind="lib" path="RepositoryResult.jar"/>
+	<classpathentry kind="lib" path="saaj.jar"/>
+	<classpathentry kind="lib" path="simpleweb.jar"/>
+	<classpathentry kind="lib" path="wsdl4j-1.5.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
