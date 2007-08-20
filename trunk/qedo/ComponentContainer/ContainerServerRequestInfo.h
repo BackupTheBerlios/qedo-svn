@@ -36,21 +36,23 @@ class CONTAINERDLL_API ContainerServerRequestInfo : public virtual Components::C
 	public virtual RefCountLocalObject
 {
 private:
-	/** the identity of this component */
-//	std::string		uuid_;
-	std::string		component_id_;
-	std::string		name_;
+    CORBA::OctetSeq_var	origin_id_;
+    CORBA::OctetSeq_var	target_id_;
+	std::string	    name_;
 
 	PortableInterceptor::ServerRequestInfo_var request_info_;
 
 public:
-	ContainerServerRequestInfo (PortableInterceptor::ServerRequestInfo_ptr request_info, const char* component_id, const Components::FeatureName name);
+    ContainerServerRequestInfo (
+        PortableInterceptor::ServerRequestInfo_ptr request_info, 
+        const CORBA::OctetSeq& origin_id, 
+        const CORBA::OctetSeq& target_id, 
+        const Components::FeatureName name);
 
 	~ContainerServerRequestInfo ();
 
-//    virtual char* component_uuid() ;
-
-	virtual char* component_id() ;
+    virtual ::CORBA::OctetSeq* origin_id();
+    virtual ::CORBA::OctetSeq* target_id();
 
 	virtual Components::FeatureName name();
 

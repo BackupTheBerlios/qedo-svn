@@ -644,12 +644,13 @@ throw (Components::Deployment::UnknownImplId,
 		session_home = dynamic_cast <Qedo::SessionHomeServant*> (qedo_home_servant);
 
 #ifndef _QEDO_NO_QOS
-		servant_reg = component_server_ -> get_servant_dispatcher ();
-		session_home -> set_servant_interceptor_dispatcher (servant_reg);
+//		servant_reg = component_server_ -> get_servant_dispatcher ();
+		servant_dispatcher_= component_server_ -> get_servant_dispatcher ();
+        session_home -> set_servant_interceptor_dispatcher (servant_dispatcher_.in());
 		DEBUG_OUT("ContainerInterfaceImpl: servant dispatcher set at home");
 
-		stub_reg = component_server_ -> get_stub_dispatcher ();
-		session_home -> set_stub_interceptor_dispatcher (stub_reg);
+		stub_dispatcher_ = component_server_ -> get_stub_dispatcher ();
+		session_home -> set_stub_interceptor_dispatcher (stub_dispatcher_.in());
 		DEBUG_OUT("ContainerInterfaceImpl: stub dispatcher set at home");
 #endif
 
@@ -782,12 +783,12 @@ throw (Components::Deployment::UnknownImplId,
 		extension_home -> set_client_interceptor_dispatcher (client_reg);
 		DEBUG_OUT("ContainerInterfaceImpl: client dispatcher set at home");
 
-		servant_reg = component_server_ -> get_servant_dispatcher ();
-		extension_home -> set_servant_interceptor_dispatcher (servant_reg);
+		servant_dispatcher_ = component_server_ -> get_servant_dispatcher ();
+		extension_home -> set_servant_interceptor_dispatcher (servant_dispatcher_.in());
 		DEBUG_OUT("ContainerInterfaceImpl: servant dispatcher set at home");
 
-		stub_reg = component_server_ -> get_stub_dispatcher ();
-		extension_home -> set_stub_interceptor_dispatcher (stub_reg);
+		stub_dispatcher_ = component_server_ -> get_stub_dispatcher ();
+		extension_home -> set_stub_interceptor_dispatcher (stub_dispatcher_.in());
 		DEBUG_OUT("ContainerInterfaceImpl: servant dispatcher set at home");
 #endif
 		break;

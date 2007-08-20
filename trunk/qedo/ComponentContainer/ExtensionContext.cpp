@@ -58,14 +58,14 @@ ExtensionContext::set_client_interceptor_dispatcher_registration(Components::Con
 }
 
 void
-ExtensionContext::set_servant_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr registration)
+ExtensionContext::set_servant_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_servant_interceptor_dispatcher_registration called");
 	servant_registration_ = registration;
 };
 
 void
-ExtensionContext::set_stub_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr registration)
+ExtensionContext::set_stub_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_stub_interceptor_dispatcher_registration called");
 	stub_registration_ = registration;
@@ -87,19 +87,19 @@ ExtensionContext::get_client_interceptor_dispatcher_registration()
 
 }
 
-Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr
 ExtensionContext::get_servant_interceptor_dispatcher_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_servant_interceptor_dispatcher_registration called");
-	return Components::ContainerPortableInterceptor::ServantInterceptorRegistration::_duplicate(servant_registration_);
+	return Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration::_duplicate(servant_registration_);
 
 }
 
-Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr
+Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr
 ExtensionContext::get_stub_interceptor_dispatcher_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_stub_interceptor_dispatcher_registration called");
-	return Components::ContainerPortableInterceptor::StubInterceptorRegistration::_duplicate(stub_registration_);
+	return Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration::_duplicate(stub_registration_);
 
 }
 
@@ -140,12 +140,20 @@ ExtensionContext::get_contract_data ( ) {
 	return ret_contract;
 }
 
-void
+Components::Cookie_ptr
 ExtensionContext::install_service_reference(const char* id, CORBA::Object_ptr obj)
 {
-	container_ -> component_server_ -> install_service_reference(id, obj);
+	return container_ -> component_server_ -> install_service_reference(id, obj);
 
 }
+
+CORBA::Object_ptr
+ExtensionContext::uninstall_service_reference(Components::Cookie_ptr ck)
+{
+    return container_ -> component_server_ -> uninstall_service_reference (ck);
+}
+
+
 
 CORBA::Object_ptr
 ExtensionContext::get_CCM_object()

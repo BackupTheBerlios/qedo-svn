@@ -654,15 +654,15 @@ ComponentServerImpl::set_client_dispatcher ( Components::ContainerPortableInterc
 }
 
 void
-ComponentServerImpl::set_servant_dispatcher ( Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr servant_dispatcher)
+ComponentServerImpl::set_servant_dispatcher ( Components::QoS::ServantInterceptorDispatcher_ptr servant_dispatcher)
 {
-	servant_dispatcher_ = servant_dispatcher;
+    servant_dispatcher_ = Components::QoS::ServantInterceptorDispatcher::_duplicate(servant_dispatcher);
 }
 
 void
-ComponentServerImpl::set_stub_dispatcher ( Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_dispatcher)
+ComponentServerImpl::set_stub_dispatcher ( Components::QoS::StubInterceptorDispatcher_ptr stub_dispatcher)
 {
-	stub_dispatcher_ = stub_dispatcher;
+    stub_dispatcher_ = Components::QoS::StubInterceptorDispatcher::_duplicate(stub_dispatcher);
 }
 
 Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr
@@ -677,16 +677,16 @@ ComponentServerImpl::get_client_dispatcher (  )
 	return Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration::_duplicate (client_dispatcher_);
 }
 
-Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr
+Components::QoS::ServantInterceptorDispatcher_ptr
 ComponentServerImpl::get_servant_dispatcher (  )
 {
-	return Components::ContainerPortableInterceptor::ServantInterceptorRegistration::_duplicate (servant_dispatcher_);
+	return Components::QoS::ServantInterceptorDispatcher::_duplicate (servant_dispatcher_);
 }
 
-Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr
+Components::QoS::StubInterceptorDispatcher_ptr
 ComponentServerImpl::get_stub_dispatcher (  )
 {
-	return Components::ContainerPortableInterceptor::StubInterceptorRegistration::_duplicate (stub_dispatcher_);
+	return Components::QoS::StubInterceptorDispatcher::_duplicate (stub_dispatcher_);
 }
 
 Qedo::ContainerList
@@ -704,18 +704,20 @@ ComponentServerImpl::get_all_containers()
 
 #endif //_QEDO_NO_QOS
 
-void
+Components::Cookie_ptr
 ComponentServerImpl::install_service_reference(const char* id, CORBA::Object_ptr ref)
 throw (Components::CCMException, CORBA::SystemException)
 {
 	//
 	// check whether a service for this id is already in our list of services
 	//
-	std::vector <ServiceReferenceEntry>::iterator iter;
+    std::vector<Qedo::ServiceReferenceEntry>::iterator iter;
 
 	QedoLock lock (service_references_mutex_);
 
-	for (iter = service_references_.begin(); iter != service_references_.end(); iter++)
+	for (iter = service_references_.begin(); 
+        iter != service_references_.end();
+        iter++)
 	{
 		if(!iter->_service_id.compare(id)) {
 			// throw an exception
@@ -731,6 +733,15 @@ throw (Components::CCMException, CORBA::SystemException)
 	service_references_.push_back (new_entry);
 
 	DEBUG_OUT2("ComponentServerImpl: service registered for ", id);
+    Components::Cookie_var ret_ck = new Qedo::Cookie_impl();
+    return ret_ck;
+}
+
+CORBA::Object_ptr
+ComponentServerImpl::uninstall_service_reference(Components::Cookie_ptr ck)
+throw (Components::CCMException, CORBA::SystemException)
+{
+    return CORBA::Object::_nil();
 }
 
 

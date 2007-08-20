@@ -81,15 +81,15 @@ SessionHomeServant::do_finalize_component_incarnation (Components::ExecutorLocat
 
 #ifndef _QEDO_NO_QOS
 void
-SessionHomeServant::set_servant_interceptor_dispatcher(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr servant_dispatcher)
+SessionHomeServant::set_servant_interceptor_dispatcher(Components::QoS::ServantInterceptorDispatcher_ptr servant_dispatcher)
 {
-	servant_dispatcher_ = servant_dispatcher;
+    servant_dispatcher_ = Components::QoS::ServantInterceptorDispatcher::_duplicate(servant_dispatcher);
 }
 void
 
-SessionHomeServant::set_stub_interceptor_dispatcher(Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_dispatcher)
+SessionHomeServant::set_stub_interceptor_dispatcher(Components::QoS::StubInterceptorDispatcher_ptr stub_dispatcher)
 {
-	stub_dispatcher_ = stub_dispatcher;
+    stub_dispatcher_ = Components::QoS::StubInterceptorDispatcher::_duplicate(stub_dispatcher);
 }
 #endif
 } // namespace Qedo

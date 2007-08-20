@@ -40,6 +40,7 @@
 
 namespace Qedo {
 
+    class ComponentServerImpl;
 
 	class ServerInterceptorEntry {
 	public:

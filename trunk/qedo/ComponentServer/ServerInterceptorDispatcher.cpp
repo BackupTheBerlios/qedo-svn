@@ -250,12 +250,17 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 		const char* temp_id;
 		context_any >>= temp_id;
-		slot_info.origin_id = CORBA::string_dup(temp_id);
+//		slot_info.origin_id = CORBA::string_dup(temp_id);
+
+	    for (unsigned int i = 0; i < strlen(temp_id); i++)
+	    {
+		    slot_info.origin_id[i] = temp_id[i];
+	    }
 		
 	} catch (CORBA::BAD_PARAM&)
 	{
 		//no service context for tracing
-		slot_info.origin_id = CORBA::string_dup("NO_ORIGIN");
+        slot_info.origin_id.length(0);
 	} catch (...)
 	{
 		//return;
@@ -269,8 +274,15 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 
-	slot_info.target_id = CORBA::string_dup(id);
-	slot <<= slot_info;
+//	slot_info.target_id = CORBA::string_dup(id);
+    int str_size = strlen(id);
+    slot_info.target_id.length(str_size);
+	for (unsigned int i = 0; i < str_size; i++)
+	{
+		slot_info.target_id[i] = id[i];
+	}
+
+    slot <<= slot_info;
 	piCurrent -> set_slot(component_server_ -> slot_id_, slot);
 
 
@@ -293,7 +305,8 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 	Qedo::QedoLock l_all(all_server_interceptors_mutex_);
 
-	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,port_id);
+	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = 
+        new Qedo::ContainerServerRequestInfo(info,slot_info.origin_id, slot_info.target_id,port_id);
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
 		try {
@@ -358,7 +371,8 @@ throw(CORBA::SystemException)
 //	}
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
-	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,slot_info.target_id);
+	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = 
+        new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,slot_info.target_id,"to_be_implemented");
 
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
@@ -396,7 +410,8 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 //	}
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
-	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,slot_info.target_id);
+	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = 
+        new Qedo::ContainerServerRequestInfo(info, slot_info.target_id, slot_info.target_id, "to_be_implemented");
 
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{

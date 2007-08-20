@@ -52,93 +52,77 @@ ServantInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* co
 }
 
 
-char*
+CORBA::OctetSeq*
 ServantInterceptorDispatcher::get_target_id()
 {
 
 	CORBA::Object_var obj = component_server_ -> orb_ -> resolve_initial_references ("PICurrent");
 
 	if ( CORBA::is_nil (obj) )
-		return "UNKNOWN_COMP_ID";
-
+    {
+        return new CORBA::OctetSeq();
+    }
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 
 	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
-	if (!slot_info.target_id)
+	if (slot_info.target_id.length() == 0)
 	{
-		return "UNKNOWN_COMP_ID";
+        return new CORBA::OctetSeq();
 	}
-	return strdup(slot_info.target_id);
+    return new CORBA::OctetSeq(slot_info.target_id);
 
 }
 
-char*
+CORBA::OctetSeq*
 ServantInterceptorDispatcher::get_origin_id()
 {
 
 	CORBA::Object_var obj = component_server_ -> orb_ -> resolve_initial_references ("PICurrent");
 
 	if ( CORBA::is_nil (obj) )
-		return "UNKNOWN_COMP_ID";
+        return new CORBA::OctetSeq();
 
 	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
 
 	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
-	if (!slot_info.origin_id)
+	if (slot_info.origin_id.length() == 0)
 	{
-		return "UNKNOWN_COMP_ID";
+        return new CORBA::OctetSeq();
 	}
-	return strdup(slot_info.origin_id);
+    return new CORBA::OctetSeq(slot_info.origin_id);
 
 }
 
-void
-ServantInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptorExt_ptr interceptor)
+Components::Cookie_ptr
+ServantInterceptorDispatcher::register_servant_interceptor(Components::ContainerPortableInterceptor::ServantContainerInterceptor_ptr interceptor)
 {
 	DEBUG_OUT("ServantInterceptorDispatcher: Server COPI registered for all components");
 
 	ServantInterceptorEntry e;
-	e.interceptor = Components::ContainerPortableInterceptor::ServerContainerInterceptorExt::_duplicate( interceptor );
+	e.interceptor = Components::ContainerPortableInterceptor::ServantContainerInterceptor::_duplicate( interceptor );
 
 	Qedo::QedoLock l(all_servant_interceptors_mutex_);
 
 	all_servant_interceptors_.push_back(e);
 
+    return new Qedo::Cookie_impl();
 }
 
-void
-ServantInterceptorDispatcher::unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptorExt_ptr interceptor)
+Components::ContainerPortableInterceptor::ServantContainerInterceptor_ptr
+ServantInterceptorDispatcher::unregister_servant_interceptor(Components::Cookie_ptr ck)
 {
-	DEBUG_OUT("ServantInterceptorDispatcher: Server COPI unregister_for_all called");
-
-	std::vector <ServantInterceptorEntry>::iterator interceptor_iter;
-
-	for (interceptor_iter = all_servant_interceptors_.begin(); interceptor_iter != all_servant_interceptors_.end(); interceptor_iter++)
-	{
-
-		if ((*interceptor_iter).interceptor == interceptor)
-		{
-			DEBUG_OUT ("ServantInterceptorDispatcher: unregister_interceptor_for_all(): interceptor found");
-			all_servant_interceptors_.erase (interceptor_iter);
-
-			break;
-		}
-	}
-
-	if (interceptor_iter == all_servant_interceptors_.end())
-	{
-		DEBUG_OUT ("ServantInterceptorDispatcher: Unknown interceptor");
-	}
+    // TODO: to be implemented
+    return Components::ContainerPortableInterceptor::ServantContainerInterceptor::_nil();
 }	
 
 CORBA::Boolean 
-ServantInterceptorDispatcher::call( const char* oper ) 
+ServantInterceptorDispatcher::servant_receive_request( const char* oper ) 
 {
-	DEBUG_OUT("ServantInterceptorDispatcher: get call");
+	DEBUG_OUT("ServantInterceptorDispatcher: servant_receive_request");
 
 	// call registered interceptors
 	CORBA::Boolean con = true;
@@ -146,8 +130,8 @@ ServantInterceptorDispatcher::call( const char* oper )
 	{
 		try {
 
-			all_servant_interceptors_[i].interceptor->call( get_target_id(), get_origin_id(), oper, con);
-
+//			all_servant_interceptors_[i].interceptor->call( get_target_id(), get_origin_id(), oper, con);
+            assert(0);
 			if (!con)
 			{
 				return false;
@@ -168,20 +152,22 @@ ServantInterceptorDispatcher::call( const char* oper )
 	// an out parameter of type any is needed to return a possible return type
 }
 
-Components::Cookie* 
-ServantInterceptorDispatcher::connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con )
+CORBA::Boolean 
+ServantInterceptorDispatcher::servant_send_reply( const char* oper ) 
 {
-	std::cout << "ServantInterceptor: get connect()" << std::endl;
-	Components::Cookie* temp_ck;
+	DEBUG_OUT("ServantInterceptorDispatcher: get call");
+
+	// call registered interceptors
+	CORBA::Boolean con = true;
 	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
 	{
 		try {
 
-			temp_ck = all_servant_interceptors_[i].interceptor->connect( comp_id, name, connection, con);
-
+//			all_servant_interceptors_[i].interceptor->call( get_target_id(), get_origin_id(), oper, con);
+            assert(0);
 			if (!con)
 			{
-				return temp_ck;
+				return false;
 				break;
 			};
 		} catch (CORBA::SystemException e)
@@ -193,24 +179,28 @@ ServantInterceptorDispatcher::connect( const char* comp_id, const char* name, CO
 		}
 	}
 	con = true;
-	return 0;
+	return true ;
 
+	// return true if the execution shall continue
+	// an out parameter of type any is needed to return a possible return type
 }
 
-
-CORBA::Object_ptr 
-ServantInterceptorDispatcher::provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con ) 
+CORBA::Boolean 
+ServantInterceptorDispatcher::servant_send_exception( const char* oper ) 
 {
-	CORBA::Object_var anObject;
+	DEBUG_OUT("ServantInterceptorDispatcher: get call");
+
+	// call registered interceptors
+	CORBA::Boolean con = true;
 	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
 	{
 		try {
 
-			anObject = all_servant_interceptors_[i].interceptor->provide_facet( comp_id, name, con);
-
+//			all_servant_interceptors_[i].interceptor->call( get_target_id(), get_origin_id(), oper, con);
+            assert(0);
 			if (!con)
 			{
-				return anObject;
+				return false;
 				break;
 			};
 		} catch (CORBA::SystemException e)
@@ -222,103 +212,196 @@ ServantInterceptorDispatcher::provide_facet( const char* comp_id, const char* na
 		}
 	}
 	con = true;
-	return CORBA::Object::_nil();
+	return true ;
 
-
+	// return true if the execution shall continue
+	// an out parameter of type any is needed to return a possible return type
 }
+
+CORBA::Boolean 
+ServantInterceptorDispatcher::servant_send_other( const char* oper ) 
+{
+	DEBUG_OUT("ServantInterceptorDispatcher: get call");
+
+	// call registered interceptors
+	CORBA::Boolean con = true;
+	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
+	{
+		try {
+
+//			all_servant_interceptors_[i].interceptor->call( get_target_id(), get_origin_id(), oper, con);
+            assert(0);
+			if (!con)
+			{
+				return false;
+				break;
+			};
+		} catch (CORBA::SystemException e)
+		{
+			throw e;
+		} catch ( ... )
+			// catch of user exception is probably missing
+		{
+		}
+	}
+	con = true;
+	return true ;
+
+	// return true if the execution shall continue
+	// an out parameter of type any is needed to return a possible return type
+}
+
+//Components::Cookie* 
+//ServantInterceptorDispatcher::connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con )
+//{
+//	std::cout << "ServantInterceptor: get connect()" << std::endl;
+//	Components::Cookie* temp_ck;
+//	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
+//	{
+//		try {
+//
+//			temp_ck = all_servant_interceptors_[i].interceptor->connect( comp_id, name, connection, con);
+//
+//			if (!con)
+//			{
+//				return temp_ck;
+//				break;
+//			};
+//		} catch (CORBA::SystemException e)
+//		{
+//			throw e;
+//		} catch ( ... )
+//			// catch of user exception is probably missing
+//		{
+//		}
+//	}
+//	con = true;
+//	return 0;
+//
+//}
+
+
+//CORBA::Object_ptr 
+//ServantInterceptorDispatcher::provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con ) 
+//{
+//	CORBA::Object_var anObject;
+//	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
+//	{
+//		try {
+//
+//			anObject = all_servant_interceptors_[i].interceptor->provide_facet( comp_id, name, con);
+//
+//			if (!con)
+//			{
+//				return anObject;
+//				break;
+//			};
+//		} catch (CORBA::SystemException e)
+//		{
+//			throw e;
+//		} catch ( ... )
+//			// catch of user exception is probably missing
+//		{
+//		}
+//	}
+//	con = true;
+//	return CORBA::Object::_nil();
+//
+//
+//}
 
 #ifndef _QEDO_NO_STREAMS
 
-Components::Cookie* 
-ServantInterceptorDispatcher::bind(const char* comp_id, char*&  name,
-                           StreamComponents::SinkStreamPort_ptr& the_sink,
-						   char*& transport_profile,
-						   CORBA::Boolean_out con)
-{
-
-	Components::Cookie* temp_ck;
-	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
-	{
-		try {
-
-			temp_ck = all_servant_interceptors_[i].interceptor->bind( comp_id, name, the_sink, transport_profile, con);
-
-			if (!con)
-			{
-				return temp_ck;
-				break;
-			};
-		} catch (CORBA::SystemException e)
-		{
-			throw e;
-		} catch ( ... )
-			// catch of user exception is probably missing
-		{
-		}
-	}
-	con = true;
-	return 0;
-}
-
-StreamComponents::SinkStreamPort_ptr 
-ServantInterceptorDispatcher::unbind(const char* comp_id, char*&  name,
-									 Components::Cookie*& ck,
-									CORBA::Boolean_out con)
-{
-
-	StreamComponents::SinkStreamPort_ptr temp_port;
-	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
-	{
-		try {
-
-			temp_port = all_servant_interceptors_[i].interceptor->unbind( comp_id, name, ck, con);
-
-			if (!con)
-			{
-				return temp_port;
-				break;
-			};
-		} catch (CORBA::SystemException e)
-		{
-			throw e;
-		} catch ( ... )
-			// catch of user exception is probably missing
-		{
-		}
-	}
-	con = true;
-	return StreamComponents::SinkStreamPort::_nil();
-
-
-}
-
-CORBA::Object_ptr 
-ServantInterceptorDispatcher::provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) 
-{
-	CORBA::Object_var anObject;
-	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
-	{
-		try {
-
-			anObject = all_servant_interceptors_[i].interceptor->provide_sink_stream_port( comp_id, name, con);
-
-			if (!con)
-			{
-				return anObject;
-				break;
-			};
-		} catch (CORBA::SystemException e)
-		{
-			throw e;
-		} catch ( ... )
-			// catch of user exception is probably missing
-		{
-		}
-	}
-	con = true;
-	return CORBA::Object::_nil();
-
-}
+//Components::Cookie* 
+//ServantInterceptorDispatcher::bind(const char* comp_id, char*&  name,
+//                           StreamComponents::SinkStreamPort_ptr& the_sink,
+//						   char*& transport_profile,
+//						   CORBA::Boolean_out con)
+//{
+//
+//	Components::Cookie* temp_ck;
+//	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
+//	{
+//		try {
+//
+//			temp_ck = all_servant_interceptors_[i].interceptor->bind( comp_id, name, the_sink, transport_profile, con);
+//
+//			if (!con)
+//			{
+//				return temp_ck;
+//				break;
+//			};
+//		} catch (CORBA::SystemException e)
+//		{
+//			throw e;
+//		} catch ( ... )
+//			// catch of user exception is probably missing
+//		{
+//		}
+//	}
+//	con = true;
+//	return 0;
+//}
+//
+//StreamComponents::SinkStreamPort_ptr 
+//ServantInterceptorDispatcher::unbind(const char* comp_id, char*&  name,
+//									 Components::Cookie*& ck,
+//									CORBA::Boolean_out con)
+//{
+//
+//	StreamComponents::SinkStreamPort_ptr temp_port;
+//	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
+//	{
+//		try {
+//
+//			temp_port = all_servant_interceptors_[i].interceptor->unbind( comp_id, name, ck, con);
+//
+//			if (!con)
+//			{
+//				return temp_port;
+//				break;
+//			};
+//		} catch (CORBA::SystemException e)
+//		{
+//			throw e;
+//		} catch ( ... )
+//			// catch of user exception is probably missing
+//		{
+//		}
+//	}
+//	con = true;
+//	return StreamComponents::SinkStreamPort::_nil();
+//
+//
+//}
+//
+//CORBA::Object_ptr 
+//ServantInterceptorDispatcher::provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) 
+//{
+//	CORBA::Object_var anObject;
+//	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
+//	{
+//		try {
+//
+//			anObject = all_servant_interceptors_[i].interceptor->provide_sink_stream_port( comp_id, name, con);
+//
+//			if (!con)
+//			{
+//				return anObject;
+//				break;
+//			};
+//		} catch (CORBA::SystemException e)
+//		{
+//			throw e;
+//		} catch ( ... )
+//			// catch of user exception is probably missing
+//		{
+//		}
+//	}
+//	con = true;
+//	return CORBA::Object::_nil();
+//
+//}
 
 #endif //_QEDO_NO_STREAMS
 

@@ -33,16 +33,18 @@
 
 namespace Qedo {
 
+    class ComponentServerImpl;
+
 	class StubInterceptorEntry {
 	public:
-		Components::ContainerPortableInterceptor::ClientContainerInterceptorExt_var interceptor;
+		Components::ContainerPortableInterceptor::StubContainerInterceptor_var interceptor;
 		std::string id;
 	};
 
 	typedef std::vector < StubInterceptorEntry > StubInterceptorVector;
 
 	class CONTAINERDLL_API StubInterceptorDispatcher :
-		public virtual Components::ContainerPortableInterceptor::StubInterceptorRegistration,
+		public virtual Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration,
 		public virtual CORBA::LocalObject
 	{
 	private:
@@ -68,34 +70,34 @@ namespace Qedo {
 		virtual void
 		set_component_server(Qedo::ComponentServerImpl* component_server);
 
-		virtual void
-		register_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptorExt_ptr interceptor);
+        virtual Components::Cookie_ptr
+		register_stub_interceptor(Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr interceptor);
 
-		virtual void
-		unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptorExt_ptr interceptor);
+		virtual Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr
+		unregister_stub_interceptor(Components::Cookie_ptr ck);
 
 		virtual CORBA::Boolean 
 		call( const char* oper ) ;
 //CCMObject
-		virtual Components::Cookie* connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con ) ;
-		virtual CORBA::Object_ptr provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con );
+		//virtual Components::Cookie* connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con ) ;
+		// virtual CORBA::Object_ptr provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con );
 
 #ifndef _QEDO_NO_STREAMS
 
 // StreamCCMObject
-		virtual Components::Cookie* 
-		bind(const char* comp_id, char*& name,
-                           StreamComponents::SinkStreamPort_ptr& the_sink,
-						   char*& transport_profile,
-						   CORBA::Boolean_out con);
+		//virtual Components::Cookie* 
+		//bind(const char* comp_id, char*& name,
+  //                         StreamComponents::SinkStreamPort_ptr& the_sink,
+		//				   char*& transport_profile,
+		//				   CORBA::Boolean_out con);
 
-		virtual StreamComponents::SinkStreamPort_ptr 
-		unbind(const char* comp_id, char*& name,
-                           Components::Cookie*& ck,
-						   CORBA::Boolean_out con);
+		//virtual StreamComponents::SinkStreamPort_ptr 
+		//unbind(const char* comp_id, char*& name,
+  //                         Components::Cookie*& ck,
+		//				   CORBA::Boolean_out con);
 
-		virtual CORBA::Object_ptr 
-		provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) ;
+		//virtual CORBA::Object_ptr 
+		//provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) ;
 
 #endif //_QEDO_NO_STREAMS
 

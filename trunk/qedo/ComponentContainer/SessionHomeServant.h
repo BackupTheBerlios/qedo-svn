@@ -44,10 +44,10 @@ class CONTAINERDLL_API SessionHomeServant : public CCMHomeServant
 #ifndef _QEDO_NO_QOS
 protected:
 	/** reference to servant interceptor dispatcher intercface */
-	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_var servant_dispatcher_;
+	Components::QoS::ServantInterceptorDispatcher_var servant_dispatcher_;
 
 	/** reference to stub interceptor dispatcher intercface */
-	Components::ContainerPortableInterceptor::StubInterceptorRegistration_var stub_dispatcher_;
+	Components::QoS::StubInterceptorDispatcher_var stub_dispatcher_;
 #endif
 private:
 	/**
@@ -86,12 +86,12 @@ public:
 	/**
 	 * set servant interceptor dispatcher interface at home servant
 	 */
-	 void set_servant_interceptor_dispatcher(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr server_dispatcher);
+	 void set_servant_interceptor_dispatcher(Components::QoS::ServantInterceptorDispatcher_ptr server_dispatcher);
 
 	 /**
 	 * set stub interceptor dispatcher interface at home servant
 	 */
-	 void set_stub_interceptor_dispatcher(Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_dispatcher);
+	 void set_stub_interceptor_dispatcher(Components::QoS::StubInterceptorDispatcher_ptr stub_dispatcher);
 
 #endif
 

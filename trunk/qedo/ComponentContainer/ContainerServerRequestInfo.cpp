@@ -35,13 +35,13 @@ namespace Qedo {
 
 ContainerServerRequestInfo::ContainerServerRequestInfo (
 	PortableInterceptor::ServerRequestInfo_ptr request_info, 
-//	const char* uuid, 
-	const char* component_id,
+    const CORBA::OctetSeq& origin_id, 
+    const CORBA::OctetSeq& target_id,
 	const Components::FeatureName name)
 {
 	request_info_ = PortableInterceptor::ServerRequestInfo::_duplicate(request_info);
-//	uuid_ = uuid;
-	component_id_ = component_id;
+    origin_id_ = new CORBA::OctetSeq(origin_id);
+    target_id_ = new CORBA::OctetSeq(target_id);
 	name_ = name;
 }
 
@@ -50,22 +50,17 @@ ContainerServerRequestInfo::~ContainerServerRequestInfo ()
 
 }
 
-/*
-char* 
-ContainerServerRequestInfo::component_uuid()
+CORBA::OctetSeq*
+ContainerServerRequestInfo::origin_id() 
 {
-	char* ret_str;
-	ret_str = strdup ( uuid_.c_str() );
-	return ret_str;
+	return origin_id_;
 }
-*/
 
-char* 
-ContainerServerRequestInfo::component_id() 
+
+CORBA::OctetSeq*
+ContainerServerRequestInfo::target_id() 
 {
-	char* ret_str;
-	ret_str = strdup ( component_id_.c_str() );
-	return ret_str;
+	return target_id_;
 }
 
 char* 

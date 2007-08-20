@@ -124,12 +124,17 @@ ServantBase::set_instance (Qedo::ComponentInstance& instance)
 }
 
 #ifndef _QEDO_NO_QOS
-void
-ServantBase::set_servant_dispatcher_registry(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr reg) 
-{
-	servant_interceptor_registry_ = Components::ContainerPortableInterceptor::ServantInterceptorRegistration::_duplicate(reg);
-}
+//void
+//ServantBase::set_servant_dispatcher_registry(Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr reg) 
+//{
+//    servant_interceptor_registry_ = Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration::_duplicate(reg);
+//}
 
+void
+ServantBase::set_servant_dispatcher(Components::QoS::ServantInterceptorDispatcher_ptr dispatcher) 
+{
+    servant_interceptor_dispatcher_ = Components::QoS::ServantInterceptorDispatcher::_duplicate(dispatcher);
+}
 
 #endif
 
@@ -170,10 +175,12 @@ throw (Components::InvalidName, CORBA::SystemException)
 {
 #ifndef _QEDO_NO_QOS
 	const char * comp_id = this-> get_component_id();
-	CORBA::Boolean con;
+	CORBA::Boolean con = true;
         CORBA::Object_ptr anObject = CORBA::Object::_nil();
-        if (!CORBA::is_nil(this->servant_interceptor_registry_)) {
-            anObject= servant_interceptor_registry_ -> provide_facet (comp_id, name, con);
+        if (!CORBA::is_nil(this->servant_interceptor_dispatcher_)) {
+            //anObject= servant_interceptor_registry_ -> provide_facet (comp_id, name, con);
+            // fill requestinfo object
+//            anObject = servant_interceptor_registry_ -> servant_receive_request ("provide_facet");
         }
         else {
             // QOS enabled in configure time
@@ -188,6 +195,9 @@ throw (Components::InvalidName, CORBA::SystemException)
 
 #ifndef _QEDO_NO_QOS
 	}
+       
+//    servant_interceptor_registry_ -> servant_send_reply ("provide_facet");
+
 	return anObject;
 #endif 
 }
@@ -227,10 +237,10 @@ throw( Components::InvalidName,
 {
 #ifndef _QEDO_NO_QOS
 	const char * comp_id = this-> get_component_id();
-	CORBA::Boolean con;
+	CORBA::Boolean con = true;
 	Components::Cookie* temp_ck = NULL;
-        if (!CORBA::is_nil(this->servant_interceptor_registry_)) {
-            servant_interceptor_registry_ -> connect (comp_id, name, connection, con);
+        if (!CORBA::is_nil(this->servant_interceptor_dispatcher_)) {
+//            servant_interceptor_registry_ -> connect (comp_id, name, connection, con);
         }
         else {
             // QOS enabled in configure time

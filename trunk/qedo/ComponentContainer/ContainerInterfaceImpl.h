@@ -36,10 +36,14 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include "ServantInterceptorDispatcher.h"
+#include "StubInterceptorDispatcher.h"
+
 
 
 namespace Qedo {
 
+    class StubInterceptorDispatcher;
 
 /**
  * @addtogroup ComponentContainer
@@ -238,9 +242,11 @@ private:
 		throw (Components::CCMException);
 
 #ifndef _QEDO_NO_QOS
-	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr servant_reg;
-	Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_reg;
+//	Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr servant_reg;
+//	Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr stub_reg;
 
+    Components::QoS::ServantInterceptorDispatcher_var servant_dispatcher_;
+    Components::QoS::StubInterceptorDispatcher_var  stub_dispatcher_;
 #endif 
 
 public:

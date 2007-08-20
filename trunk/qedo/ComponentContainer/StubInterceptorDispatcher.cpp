@@ -51,44 +51,25 @@ StubInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* compo
 
 }
 
-void
-StubInterceptorDispatcher::register_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptorExt_ptr interceptor)
+Components::Cookie_ptr
+StubInterceptorDispatcher::register_stub_interceptor(Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr interceptor)
 {
 	DEBUG_OUT("StubInterceptorDispatcher: Client COPI registered for all components");
 
 	StubInterceptorEntry e;
-	e.interceptor = Components::ContainerPortableInterceptor::ClientContainerInterceptorExt::_duplicate( interceptor );
+	e.interceptor = Components::ContainerPortableInterceptor::StubContainerInterceptor::_duplicate( interceptor );
 
 	Qedo::QedoLock l(all_stub_interceptors_mutex_);
 
 	all_stub_interceptors_.push_back(e);
 
+    return new Qedo::Cookie_impl();
 }
 
-void
-StubInterceptorDispatcher::unregister_interceptor_for_all(Components::ContainerPortableInterceptor::ClientContainerInterceptorExt_ptr interceptor)
+Components::ContainerPortableInterceptor::StubContainerInterceptor_ptr
+StubInterceptorDispatcher::unregister_stub_interceptor(Components::Cookie_ptr ck)
 {
-DEBUG_OUT("ServerInterceptorDispatcher: Stub interceptor Dispatcher unregister_for_all called");
-
-	std::vector <StubInterceptorEntry>::iterator interceptor_iter;
-
-	for (interceptor_iter = all_stub_interceptors_.begin(); interceptor_iter != all_stub_interceptors_.end(); interceptor_iter++)
-	{
-
-		if ((*interceptor_iter).interceptor == interceptor)
-		{
-			DEBUG_OUT ("StubInterceptorDispatcher: unregister_interceptor_for_all(): interceptor found");
-			all_stub_interceptors_.erase (interceptor_iter);
-
-			break;
-		}
-	}
-
-	if (interceptor_iter == all_stub_interceptors_.end())
-	{
-		DEBUG_OUT ("ServerinterceptorDispatcher: Unknown interceptor");
-	}
-
+    return Components::ContainerPortableInterceptor::StubContainerInterceptor::_nil();
 }
 
 CORBA::Boolean 
@@ -102,156 +83,156 @@ StubInterceptorDispatcher::call( const char* oper )
 	return true;
 }
 
-Components::Cookie* 
-StubInterceptorDispatcher::connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con )
-{
-	Components::Cookie* temp_ck;
-	for (unsigned int i = 0; i < all_stub_interceptors_.size(); i++)
-	{
-		try {
-
-			temp_ck = all_stub_interceptors_[i].interceptor->connect( comp_id, name, connection, con);
-
-			if (!con)
-			{
-				return temp_ck;
-				break;
-			};
-		} catch (CORBA::SystemException e)
-		{
-			throw e;
-		} catch ( ... )
-			// catch of user exception is probably missing
-		{
-		}
-	}
-	con = true;
-	return 0;
-
-}
-
-
-CORBA::Object_ptr 
-StubInterceptorDispatcher::provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con ) 
-{
-	CORBA::Object_var anObject;
-	for (unsigned int i = 0; i < all_stub_interceptors_.size(); i++)
-	{
-		try {
-
-			anObject = all_stub_interceptors_[i].interceptor->provide_facet( comp_id, name, con);
-
-			if (!con)
-			{
-				return anObject;
-				break;
-			};
-		} catch (CORBA::SystemException e)
-		{
-			throw e;
-		} catch ( ... )
-			// catch of user exception is probably missing
-		{
-		}
-	}
-	con = true;
-	return CORBA::Object::_nil();
-
-
-}
+//Components::Cookie* 
+//StubInterceptorDispatcher::connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con )
+//{
+//	Components::Cookie* temp_ck;
+//	for (unsigned int i = 0; i < all_stub_interceptors_.size(); i++)
+//	{
+//		try {
+//
+//			temp_ck = all_stub_interceptors_[i].interceptor->connect( comp_id, name, connection, con);
+//
+//			if (!con)
+//			{
+//				return temp_ck;
+//				break;
+//			};
+//		} catch (CORBA::SystemException e)
+//		{
+//			throw e;
+//		} catch ( ... )
+//			// catch of user exception is probably missing
+//		{
+//		}
+//	}
+//	con = true;
+//	return 0;
+//
+//}
+//
+//
+//CORBA::Object_ptr 
+//StubInterceptorDispatcher::provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con ) 
+//{
+//	CORBA::Object_var anObject;
+//	for (unsigned int i = 0; i < all_stub_interceptors_.size(); i++)
+//	{
+//		try {
+//
+//			anObject = all_stub_interceptors_[i].interceptor->provide_facet( comp_id, name, con);
+//
+//			if (!con)
+//			{
+//				return anObject;
+//				break;
+//			};
+//		} catch (CORBA::SystemException e)
+//		{
+//			throw e;
+//		} catch ( ... )
+//			// catch of user exception is probably missing
+//		{
+//		}
+//	}
+//	con = true;
+//	return CORBA::Object::_nil();
+//
+//
+//}
 
 #ifndef _QEDO_NO_STREAMS
 
-Components::Cookie* 
-StubInterceptorDispatcher::bind(const char* comp_id, char*&  name,
-                           StreamComponents::SinkStreamPort_ptr& the_sink,
-						   char*& transport_profile,
-						   CORBA::Boolean_out con)
-{
-
-	Components::Cookie* temp_ck;
-	for (unsigned int i = 0; i < all_stub_interceptors_.size(); i++)
-	{
-		try {
-
-			temp_ck = all_stub_interceptors_[i].interceptor->bind( comp_id, name, the_sink, transport_profile, con);
-
-			if (!con)
-			{
-				return temp_ck;
-				break;
-			};
-		} catch (CORBA::SystemException e)
-		{
-			throw e;
-		} catch ( ... )
-			// catch of user exception is probably missing
-		{
-		}
-	}
-	con = true;
-	return 0;
-}
-
-StreamComponents::SinkStreamPort_ptr 
-StubInterceptorDispatcher::unbind(const char* comp_id, char*&  name,
-									 Components::Cookie*& ck,
-									CORBA::Boolean_out con)
-{
-
-	StreamComponents::SinkStreamPort_ptr temp_port;
-	for (unsigned int i = 0; i < all_stub_interceptors_.size(); i++)
-	{
-		try {
-
-			temp_port = all_stub_interceptors_[i].interceptor->unbind( comp_id, name, ck, con);
-
-			if (!con)
-			{
-				return temp_port;
-				break;
-			};
-		} catch (CORBA::SystemException e)
-		{
-			throw e;
-		} catch ( ... )
-			// catch of user exception is probably missing
-		{
-		}
-	}
-	con = true;
-	return StreamComponents::SinkStreamPort::_nil();
-
-
-}
-
-CORBA::Object_ptr 
-StubInterceptorDispatcher::provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) 
-{
-	CORBA::Object_var anObject;
-	for (unsigned int i = 0; i < all_stub_interceptors_.size(); i++)
-	{
-		try {
-
-			anObject = all_stub_interceptors_[i].interceptor->provide_sink_stream_port( comp_id, name, con);
-
-			if (!con)
-			{
-				return anObject;
-				break;
-			};
-		} catch (CORBA::SystemException e)
-		{
-			throw e;
-		} catch ( ... )
-			// catch of user exception is probably missing
-		{
-		}
-	}
-	con = true;
-	return CORBA::Object::_nil();
-
-}
+//Components::Cookie* 
+//StubInterceptorDispatcher::bind(const char* comp_id, char*&  name,
+//                           StreamComponents::SinkStreamPort_ptr& the_sink,
+//						   char*& transport_profile,
+//						   CORBA::Boolean_out con)
+//{
+//
+//	Components::Cookie* temp_ck;
+//	for (unsigned int i = 0; i < all_stub_interceptors_.size(); i++)
+//	{
+//		try {
+//
+//			temp_ck = all_stub_interceptors_[i].interceptor->bind( comp_id, name, the_sink, transport_profile, con);
+//
+//			if (!con)
+//			{
+//				return temp_ck;
+//				break;
+//			};
+//		} catch (CORBA::SystemException e)
+//		{
+//			throw e;
+//		} catch ( ... )
+//			// catch of user exception is probably missing
+//		{
+//		}
+//	}
+//	con = true;
+//	return 0;
+//}
+//
+//StreamComponents::SinkStreamPort_ptr 
+//StubInterceptorDispatcher::unbind(const char* comp_id, char*&  name,
+//									 Components::Cookie*& ck,
+//									CORBA::Boolean_out con)
+//{
+//
+//	StreamComponents::SinkStreamPort_ptr temp_port;
+//	for (unsigned int i = 0; i < all_stub_interceptors_.size(); i++)
+//	{
+//		try {
+//
+//			temp_port = all_stub_interceptors_[i].interceptor->unbind( comp_id, name, ck, con);
+//
+//			if (!con)
+//			{
+//				return temp_port;
+//				break;
+//			};
+//		} catch (CORBA::SystemException e)
+//		{
+//			throw e;
+//		} catch ( ... )
+//			// catch of user exception is probably missing
+//		{
+//		}
+//	}
+//	con = true;
+//	return StreamComponents::SinkStreamPort::_nil();
+//
+//
+//}
+//
+//CORBA::Object_ptr 
+//StubInterceptorDispatcher::provide_sink_stream_port( const char* comp_id, char*& name, CORBA::Boolean_out con ) 
+//{
+//	CORBA::Object_var anObject;
+//	for (unsigned int i = 0; i < all_stub_interceptors_.size(); i++)
+//	{
+//		try {
+//
+//			anObject = all_stub_interceptors_[i].interceptor->provide_sink_stream_port( comp_id, name, con);
+//
+//			if (!con)
+//			{
+//				return anObject;
+//				break;
+//			};
+//		} catch (CORBA::SystemException e)
+//		{
+//			throw e;
+//		} catch ( ... )
+//			// catch of user exception is probably missing
+//		{
+//		}
+//	}
+//	con = true;
+//	return CORBA::Object::_nil();
+//
+//}
 
 #endif //_QEDO_NO_STREAMS
 

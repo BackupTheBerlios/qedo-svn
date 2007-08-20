@@ -28,7 +28,8 @@
 #include "CCMObjectExecutor.h"
 #include "ComponentInstance.h"
 #include "Util.h"
-
+#include "ServantInterceptorDispatcher.h"
+#include "ComponentServerImpl.h"
 
 namespace Qedo {
 
@@ -40,7 +41,7 @@ namespace Qedo {
 
 
 class ComponentInstance;
-
+class ServantInterceptorDispatcher;
 
 /**
  * base class for all servants
@@ -66,7 +67,8 @@ protected:
 	CORBA::Object_ptr					current_executor_;
 
 #ifndef _QEDO_NO_QOS
-	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_var servant_interceptor_registry_ ;
+//	Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_var servant_interceptor_registry_ ;
+    Components::QoS::ServantInterceptorDispatcher* servant_interceptor_dispatcher_;
 #endif
 
 public:
@@ -103,8 +105,11 @@ public:
 	void set_instance (Qedo::ComponentInstance& instance);
 
 #ifndef _QEDO_NO_QOS
-	void
-	set_servant_dispatcher_registry(Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr reg);
+	//void
+	//set_servant_dispatcher_registry(Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr reg);
+
+   	void
+        set_servant_dispatcher(Components::QoS::ServantInterceptorDispatcher_ptr dispatcher);
 
 #endif
 };

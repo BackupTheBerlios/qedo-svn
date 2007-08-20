@@ -37,20 +37,24 @@ class CONTAINERDLL_API ContainerClientRequestInfo : public virtual Components::C
 {
 private:
 	/** the identity of this component */
-	std::string		uuid_;
-	std::string		component_id_;
-	std::string		name_;
+    CORBA::OctetSeq_var	origin_id_;
+    CORBA::OctetSeq_var	target_id_;
+	std::string	    name_;
 
 	PortableInterceptor::ClientRequestInfo_var request_info_;
 
 public:
-	ContainerClientRequestInfo (PortableInterceptor::ClientRequestInfo_ptr request_info, const char* component_id, const Components::FeatureName name);
+	ContainerClientRequestInfo (
+        PortableInterceptor::ClientRequestInfo_ptr request_info, 
+        const CORBA::OctetSeq& origin_id,
+        const CORBA::OctetSeq& target_id, 
+        const Components::FeatureName name);
 
 	~ContainerClientRequestInfo ();
 
-//    virtual char* component_uuid() ;
+    virtual CORBA::OctetSeq* origin_id() ;
 
-	virtual char* component_id() ;
+    virtual CORBA::OctetSeq* target_id() ;
 
 	virtual Components::FeatureName name();
 
