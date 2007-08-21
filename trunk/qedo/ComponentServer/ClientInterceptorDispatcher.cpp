@@ -130,7 +130,7 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 
 		IOP::ServiceContext sc;
 
-		sc.context_id = 100;
+        sc.context_id = IOP::COPI;
 
 		sc.context_data.length(data->length());
 

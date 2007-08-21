@@ -43,7 +43,7 @@ ExtensionContext::~ExtensionContext()
 }
 
 void
-ExtensionContext::set_server_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr registration)
+ExtensionContext::set_server_interceptor_registration(Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_server_interceptor_dispatcher_registration called");
 	server_registration_ = registration;
@@ -51,28 +51,28 @@ ExtensionContext::set_server_interceptor_dispatcher_registration(Components::Con
 
 
 void
-ExtensionContext::set_client_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr registration)
+ExtensionContext::set_client_interceptor_registration(Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_client_interceptor_dispatcher_registration called");
 	client_registration_ = registration;
 }
 
 void
-ExtensionContext::set_servant_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr registration)
+ExtensionContext::set_servant_interceptor_registration(Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_servant_interceptor_dispatcher_registration called");
 	servant_registration_ = registration;
 };
 
 void
-ExtensionContext::set_stub_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr registration)
+ExtensionContext::set_stub_interceptor_registration(Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr registration)
 {
 	DEBUG_OUT ( "ExtensionContext: set_stub_interceptor_dispatcher_registration called");
 	stub_registration_ = registration;
 };
 
 Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr
-ExtensionContext::get_server_interceptor_dispatcher_registration()
+ExtensionContext::get_server_interceptor_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_server_interceptor_dispatcher_registration called");
 	return Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration::_duplicate(server_registration_);
@@ -80,7 +80,7 @@ ExtensionContext::get_server_interceptor_dispatcher_registration()
 }
 
 Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr
-ExtensionContext::get_client_interceptor_dispatcher_registration()
+ExtensionContext::get_client_interceptor_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_client_interceptor_dispatcher_registration called");
 	return Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration::_duplicate(client_registration_);
@@ -88,7 +88,7 @@ ExtensionContext::get_client_interceptor_dispatcher_registration()
 }
 
 Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr
-ExtensionContext::get_servant_interceptor_dispatcher_registration()
+ExtensionContext::get_servant_interceptor_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_servant_interceptor_dispatcher_registration called");
 	return Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration::_duplicate(servant_registration_);
@@ -96,7 +96,7 @@ ExtensionContext::get_servant_interceptor_dispatcher_registration()
 }
 
 Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr
-ExtensionContext::get_stub_interceptor_dispatcher_registration()
+ExtensionContext::get_stub_interceptor_registration()
 {
 	DEBUG_OUT ( "ExtensionContext: get_stub_interceptor_dispatcher_registration called");
 	return Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration::_duplicate(stub_registration_);

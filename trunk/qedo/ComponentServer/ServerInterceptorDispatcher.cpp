@@ -240,7 +240,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	CORBA::Any slot ;
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	try {
-		sc = info -> get_request_service_context(100);	
+        sc = info -> get_request_service_context(IOP::COPI);	
 		
 		CORBA::OctetSeq data;
 

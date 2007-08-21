@@ -468,6 +468,12 @@ module Components {
 #ifndef _QEDO_NO_QOS
 	module ContainerPortableInterceptor {
 
+        struct COPIServiceContext
+        {
+            sequence<octet> origin_id;
+            sequence<octet> target_id;
+        };
+
         // basic general request info object
         local interface ContainerRequestInfo {
             readonly attribute CORBA::OctetSeq origin_id;
@@ -704,20 +710,20 @@ module Components {
 
 	local interface ExtensionContext : CCMContext
 	{
-        /*
-		void set_server_interceptor_dispatcher_registration (
+        // extension für Qedo
+		void set_server_interceptor_registration (
 			in Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration registration);
 
-		void set_client_interceptor_dispatcher_registration (
+		void set_client_interceptor_registration (
 			in Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration registration );
 
-		void set_servant_interceptor_dispatcher_registration (
-			in Components::ContainerPortableInterceptor::ServantInterceptorRegistration registration );
+		void set_servant_interceptor_registration (
+			in Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration registration );
 
-		void set_stub_interceptor_dispatcher_registration (
-			in Components::ContainerPortableInterceptor::StubInterceptorRegistration registration );
-
-        */
+		void set_stub_interceptor_registration (
+			in Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration registration );
+        // ende extension für Qedo
+        
 
         Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration
         get_client_interceptor_registration ()
@@ -749,21 +755,18 @@ module Components {
 
         
         Object get_CCM_object();
-      };
 
 //		void register_servant_locator_for_all (in Components::ContainerPortableInterceptor::ServerContainerInterceptor server_interceptor);
 
-    /*
+
+        // Qedo extensions
 		Components::ConfigValues
 		get_contract_data ();
 
 		void
 		set_contract_data (in Components::ConfigValues contracts);
 
-		void 
-		install_service_reference(in string id, in Object objref) raises (CCMException);
-*/
-
+      };
 
 	local interface ExtensionComponent : EnterpriseComponent
 	{

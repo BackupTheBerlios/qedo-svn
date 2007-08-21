@@ -70,50 +70,51 @@ public:
 	 * set_server_intercpetor_registration
 	 */
 	 virtual void
-	 set_server_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr registration);
+	 set_server_interceptor_registration(Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr registration);
 
 	/**
 	 * set_client_intercpetor_registration
 	 */
 	 virtual void
-	 set_client_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr registration);
+	 set_client_interceptor_registration(Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr registration);
 
 	/**
 	 * set_servant_intercpetor_registration
 	 */
 	 virtual void
-	 set_servant_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr registration);
+	 set_servant_interceptor_registration(Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr registration);
 
 	/**
 	 * set_servant_intercpetor_registration
 	 */
 	 virtual void
-	 set_stub_interceptor_dispatcher_registration(Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr registration);
+	 set_stub_interceptor_registration(Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr registration);
 
 	 /**
 	 * get_server_intercpetor_registration
 	 */
 	 virtual Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr
-	 get_server_interceptor_dispatcher_registration();
+	 get_server_interceptor_registration();
 
 
 	/**
 	 * get_client_intercpetor_registration
 	 */
 	 virtual Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr
-	 get_client_interceptor_dispatcher_registration();
+	 get_client_interceptor_registration();
+
 
 	 /**
 	 * get_servant_intercpetor_registration
 	 */
 	 virtual Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr
-	 get_servant_interceptor_dispatcher_registration();
+	 get_servant_interceptor_registration();
 
 	 /**
 	 * get_servant_intercpetor_registration
 	 */
 	 virtual Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr
-	 get_stub_interceptor_dispatcher_registration();
+	 get_stub_interceptor_registration();
 
 	 virtual void
 	 register_servant_locator_for_all(Components::ContainerPortableInterceptor::ServerContainerInterceptor_ptr server_interceptor);

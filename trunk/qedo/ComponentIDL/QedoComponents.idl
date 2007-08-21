@@ -25,6 +25,10 @@
 
 #include "Components.idl"
 
+module IOP
+{
+    const ServiceID COPI = 18;
+};
 
 module Qedo_Components {
 
