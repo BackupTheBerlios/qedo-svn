@@ -72,8 +72,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;$(QEDO)/include/pthreads;$(QEDO)/include;$(Qedo)/include/mico;../container_service_MonImpl_SERVANT"
-				PreprocessorDefinitions="BUILD_CONTAINER_SERVICE_MONIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
+				AdditionalIncludeDirectories=".;$(QEDO)/mico/include;$(QEDO)/mico/include/windows;$(Qedo)/include/pthreads;$(QEDO)/include;../container_service_MonImpl_SERVANT"
+				PreprocessorDefinitions="__NO_SERVER__;BUILD_CONTAINER_SERVICE_MONIMPL_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -251,7 +251,8 @@ $(Qedo)/bin/zip ../container_service_MonImpl.zip meta-inf/container_service_MonI
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="..... compiling CIDL"
-						CommandLine="$(QEDO)/bin/cidl_gen -DMICO_ORB -DMICO_CIDL_GEN -DWIN32 -I$(QEDO)/idl -I$(QEDO)/include/mico -I$(QEDO)/include/mico/mico --business --target IDL:container_service/MonImpl:1.0 ../monitoring_service.cidl
+						CommandLine="$(QEDO)/bin/cidl_gen -I$(QEDO)/idl -I$(Qedo)/mico/include  -I$(Qedo)/mico/include/mico  -DWIN32 -DMICO_ORB -DMICO_CIDL_GEN  --business --target IDL:container_service/MonImpl:1.0 ../monitoring_service.cidl
+
 "
 						Outputs="container_service_MonImpl_LOCAL.idl;container_service_MonImpl_EQUIVALENT.idl;container_service_MonImpl_BUSINESS.idl"/>
 				</FileConfiguration>

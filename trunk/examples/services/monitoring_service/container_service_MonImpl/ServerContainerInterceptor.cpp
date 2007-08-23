@@ -4,7 +4,21 @@
 #include "winsock2.h"
 #endif
 
+#include "GlobalHelpers.h"
+
 namespace Qedo {
+
+char *
+octet_to_string(CORBA::OctetSeq* seq)
+{
+    std::string temp_id_str;
+    for (unsigned int counter = 0; counter < seq->length(); counter++)
+    {
+        temp_id_str.push_back((char)(*seq)[counter]);
+    }
+    return CORBA::string_dup(temp_id_str.c_str());
+}
+
 
 char* 
 ServerContainerInterceptor::name () 
@@ -63,10 +77,11 @@ ServerContainerInterceptor::receive_request_service_contexts (Components::Contai
 void
 ServerContainerInterceptor::receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
-	std::cout << "COPI: receive_request: " << csi->request_info()->operation();
-	std::cout << " for id:" << csi->component_id() << std::endl;
+	std::cout << "Mon COPI receive_request for id:" << octet_to_string(csi->target_id()) << std::endl;
+	std::cout << "Mon COPI receive_request from id:" << octet_to_string(csi->origin_id()) << std::endl;
 
 #ifdef WIN32
+#ifndef __NO_SERVER__
 
 		/* 
 		 * Get encoded context information
@@ -127,11 +142,17 @@ ServerContainerInterceptor::receive_request (Components::ContainerPortableInterc
 
 		event->trail_id	= CORBA::string_dup ("");
 		
+        std::string temp_id_str;
+        for (unsigned int counter = 0; counter < csi->target_id()->length(); counter++)
+        {
+            temp_id_str.push_back((char)(&(csi->target_id())[counter]));
+        }
+
 		event->event_counter  = event_number;
 		event->op_name = CORBA::string_dup (CORBA::string_dup(csi->request_info()->operation()));
 		event->identity.object_instance_id		= CORBA::string_dup (csi->name());
 		event->identity.object_repository_id	= CORBA::string_dup (csi->request_info()->target_most_derived_interface());
-		event->identity.cmp_name				= CORBA::string_dup (csi->component_id());
+		event->identity.cmp_name				= CORBA::string_dup (temp_id_str.c_str());
 		event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 		event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
 		event->identity.cnt_type				= CORBA::string_dup ("UNKONWN_CONTAINER_TYPE");
@@ -149,15 +170,18 @@ ServerContainerInterceptor::receive_request (Components::ContainerPortableInterc
 		(*trace)[0] = event;
 		context_-> get_connection_to_trace_server() -> receiveEvent(trace.in());
 #endif
+#endif
 }
 
 void
 ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
-	std::cout << "COPI: send_reply: " << csi->request_info()->operation();
-	std::cout << " for id:" << csi->component_id() << std::endl;
+	std::cout << "Mon COPI send_reply for id:" << octet_to_string(csi->target_id()) << std::endl;
+	std::cout << "Mon COPI send_reply from id:" << octet_to_string(csi->origin_id()) << std::endl;
+
 
 #ifdef WIN32
+#ifndef __NO_SERVER__
 
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
 
@@ -182,12 +206,18 @@ ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor
 	event->thread_id = CORBA::string_dup ("");
 	
 	event->trail_id	= CORBA::string_dup (messageid.c_str());
+
+    std::string temp_id_str;
+        for (unsigned int counter = 0; counter < csi->target_id()->length(); counter++)
+        {
+            temp_id_str.push_back((char)(&(csi->target_id())[counter]));
+        }
 	
 	event->event_counter  = event_number;
 	event->op_name = CORBA::string_dup (CORBA::string_dup(csi->request_info()->operation()));
 	event->identity.object_instance_id		= CORBA::string_dup (csi->name());
 	event->identity.object_repository_id	= CORBA::string_dup ("TE");
-	event->identity.cmp_name				= CORBA::string_dup (csi->component_id());
+	event->identity.cmp_name				= CORBA::string_dup (temp_id_str.c_str());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 	event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
 	event->identity.cnt_type				= CORBA::string_dup ("UNKONWN_CONTAINER_TYPE");
@@ -220,15 +250,18 @@ ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor
 	csi->request_info()->add_reply_service_context(out_sc, true);
 
 #endif
+#endif
 }
 
 void
 ServerContainerInterceptor::send_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi)
 {
 	std::cout << "COPI: send_exception: " << csi->request_info()->operation();
-	std::cout << " for id:" << csi->component_id() << std::endl;
+	std::cout << " for id:" << csi->target_id() << std::endl;
+	std::cout << " from id:" << csi->origin_id() << std::endl;
 
 #ifdef WIN32
+#ifndef __NO_SERVER__
 
 	std::cout << "COPI: send_system_exception: " << csi->request_info()->operation() << "for id: " << std::endl;
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
@@ -254,12 +287,17 @@ ServerContainerInterceptor::send_exception (Components::ContainerPortableInterce
 	event->thread_id = CORBA::string_dup ("");
 	
 	event->trail_id	= CORBA::string_dup (messageid.c_str());
+        std::string temp_id_str;
+        for (unsigned int counter = 0; counter < csi->target_id()->length(); counter++)
+        {
+            temp_id_str.push_back((char)(&(csi->target_id())[counter]));
+        }
 	
 	event->event_counter  = event_number;
 	event->op_name = CORBA::string_dup (CORBA::string_dup(csi->request_info()->operation()));
 	event->identity.object_instance_id		= CORBA::string_dup (csi->name());
 	event->identity.object_repository_id	= CORBA::string_dup ("TE");
-	event->identity.cmp_name				= CORBA::string_dup (csi->component_id());
+    event->identity.cmp_name				= CORBA::string_dup (temp_id_str.c_str());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 	event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
 	event->identity.cnt_type				= CORBA::string_dup ("UNKONWN_CONTAINER_TYPE");
@@ -292,13 +330,17 @@ ServerContainerInterceptor::send_exception (Components::ContainerPortableInterce
 	csi->request_info()->add_reply_service_context(out_sc, true);
 
 #endif
+#endif
 }
 
 void
 ServerContainerInterceptor::send_other (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr csi) {
 	std::cout << "COPI: send_other: " << csi->request_info()->operation();
-	std::cout << " for id:" << csi->component_id() << std::endl;
+	std::cout << " for id:" << csi->target_id() << std::endl;
+	std::cout << " from id:" << csi->origin_id() << std::endl;
+
 #ifdef WIN32
+#ifndef __NO_SERVER__
 
 	org::coach::tracing::api::TraceEvent_var event = new org::coach::tracing::api::TraceEvent;
 
@@ -323,12 +365,17 @@ ServerContainerInterceptor::send_other (Components::ContainerPortableInterceptor
 	event->thread_id = CORBA::string_dup ("");
 	
 	event->trail_id	= CORBA::string_dup (messageid.c_str());
-	
+	        std::string temp_id_str;
+        for (unsigned int counter = 0; counter < csi->target_id()->length(); counter++)
+        {
+            temp_id_str.push_back((char)(&(csi->target_id())[counter]));
+        }
+
 	event->event_counter  = event_number;
 	event->op_name = CORBA::string_dup (CORBA::string_dup(csi->request_info()->operation()));
 	event->identity.object_instance_id		= CORBA::string_dup (csi->name());
 	event->identity.object_repository_id	= CORBA::string_dup ("TE");
-	event->identity.cmp_name				= CORBA::string_dup (csi->component_id());
+    event->identity.cmp_name				= CORBA::string_dup (temp_id_str.c_str());
 	event->identity.cmp_type				= CORBA::string_dup ("UNKNOWN_COMPONENT_TYPE");
 	event->identity.cnt_name				= CORBA::string_dup ("UNKNOW_CONTAINER_NAME");
 	event->identity.cnt_type				= CORBA::string_dup ("UNKONWN_CONTAINER_TYPE");
@@ -360,6 +407,7 @@ ServerContainerInterceptor::send_other (Components::ContainerPortableInterceptor
 
 	csi->request_info()->add_reply_service_context(out_sc, true);
 
+#endif
 #endif
 }
 
