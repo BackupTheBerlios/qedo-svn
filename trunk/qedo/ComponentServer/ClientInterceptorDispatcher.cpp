@@ -96,18 +96,25 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 {
 #ifdef _DEBUG
 	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
+    DEBUG_OUT (info->operation());
+
 #endif
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
-//	if (!slot_info.target_id)
+
+    //// @@@ identifie the remote id
+    slot_info.remote_id.length(0);
+//	if (!slot_info.remote_id)
 //	{
 //		id = "UNKNOWN_COMP_ID";
 //	}
+    std::cout << "!ClientDispatcher send_request  slotinfo component id:" << OctetSeq_to_string(slot_info.component_id) << std::endl;
+    std::cout << "!ClinetDispatcher send_request:  slotinfo remote id:" << OctetSeq_to_string(slot_info.remote_id) << std::endl;
 
 //	all_client_interceptors_mutex_.read_lock_object();
 	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = 
-        new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id, "to be implemented");
+        new Qedo::ContainerClientRequestInfo(info,slot_info.component_id,slot_info.remote_id, "to be implemented");
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
@@ -125,8 +132,12 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 
 	// set service context to transmit the caller identity to callee
 		CORBA::Any context_any;
-		context_any <<= slot_info.target_id;
-		CORBA::OctetSeq_var data = m_cdrCodec -> encode_value(context_any);
+        Components::ContainerPortableInterceptor::COPIServiceContext service_context;
+        service_context.origin_id = slot_info.component_id;
+        service_context.target_id = slot_info.remote_id;
+		context_any <<= service_context;
+//		CORBA::OctetSeq_var data = m_cdrCodec -> encode_value(context_any);
+		CORBA::OctetSeq_var data = m_cdrCodec -> encode(context_any);
 
 		IOP::ServiceContext sc;
 
@@ -154,6 +165,10 @@ ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestIn
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
+
+    std::cout << "!ClientDispatcher receive_reply  slotinfo component id:" << OctetSeq_to_string(slot_info.component_id) << std::endl;
+    std::cout << "!ClinetDispatcher receive_reply  slotinfo remote id:" << OctetSeq_to_string(slot_info.remote_id) << std::endl;
+
 //	if (!slot_info.target_id)
 //	{
 //		id = "UNKNOWN_COMP_ID";
@@ -161,7 +176,7 @@ ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestIn
 
 //	all_client_interceptors_mutex_.read_lock_object();
 	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = 
-        new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id, "to be implemented");
+        new Qedo::ContainerClientRequestInfo(info,slot_info.component_id,slot_info.remote_id, "to be implemented");
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{
@@ -187,6 +202,8 @@ ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientReque
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
+
+    /// @@@@ identify the remote id 
 //	if (!slot_info.target_id)
 //	{
 //		id = "UNKNOWN_COMP_ID";
@@ -194,7 +211,7 @@ ClientInterceptorDispatcher::receive_exception( PortableInterceptor::ClientReque
 
 //	all_client_interceptors_mutex_.read_lock_object();
 	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = 
-        new Qedo::ContainerClientRequestInfo(info,slot_info.target_id,slot_info.target_id, "to be implemented");
+        new Qedo::ContainerClientRequestInfo(info,slot_info.component_id,slot_info.remote_id, "to be implemented");
 
 	for (unsigned int i = 0; i < all_client_interceptors_.size(); i++)
 	{

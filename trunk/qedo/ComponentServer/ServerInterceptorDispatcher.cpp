@@ -107,7 +107,6 @@ ServerInterceptorDispatcher::receive_request(PortableInterceptor::ServerRequestI
 throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 {
 
-	DEBUG_OUT ("ServerInterceptorDispatcher: receive_request");
 
 	// call for regsitered COPI
 		Components::ConfigValues* temp_config=0;
@@ -246,23 +245,31 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 		data.length(sc->context_data.length());
 		memcpy(data.get_buffer(), sc->context_data.get_buffer(), sc->context_data.length());
-		context_any = m_cdrCodec -> decode_value(data, CORBA::_tc_string);
+//		context_any = m_cdrCodec -> decode_value(data, CORBA::_tc_);
+		context_any = m_cdrCodec -> decode(data);
 
-		const char* temp_id;
-		context_any >>= temp_id;
-//		slot_info.origin_id = CORBA::string_dup(temp_id);
+//		const char* temp_id;
+//		context_any >>= temp_id;
+        Components::ContainerPortableInterceptor::COPIServiceContext service_context;
 
-	    for (unsigned int i = 0; i < strlen(temp_id); i++)
+        context_any >>= service_context;
+
+        //		slot_info.origin_id = CORBA::string_dup(temp_id);
+
+        slot_info.remote_id.length(service_context.origin_id.length());
+	    for (unsigned int i = 0; i < (service_context.origin_id).length(); i++)
 	    {
-		    slot_info.origin_id[i] = temp_id[i];
+		    slot_info.remote_id[i] = (service_context.origin_id)[i];
 	    }
-		
+
+
 	} catch (CORBA::BAD_PARAM&)
 	{
 		//no service context for tracing
-        slot_info.origin_id.length(0);
-	} catch (...)
+        slot_info.remote_id.length(0);
+    } catch (CORBA::SystemException& ex)
 	{
+        DEBUG_OUT ("Coud not decode service context");
 		//return;
 	}
 	// set identity in the slot
@@ -276,15 +283,17 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 //	slot_info.target_id = CORBA::string_dup(id);
     int str_size = strlen(id);
-    slot_info.target_id.length(str_size);
+    slot_info.component_id.length(str_size);
 	for (unsigned int i = 0; i < str_size; i++)
 	{
-		slot_info.target_id[i] = id[i];
+		slot_info.component_id[i] = id[i];
 	}
 
     slot <<= slot_info;
 	piCurrent -> set_slot(component_server_ -> slot_id_, slot);
 
+    std::cout << "!ServerDispatcher receive_request  slotinfo component id:" << OctetSeq_to_string(slot_info.component_id) << std::endl;
+    std::cout << "!ServerDispatcher receive_request slotinfo remote id:" << OctetSeq_to_string(slot_info.remote_id) << std::endl;
 
 #ifdef USE_OPENPMF
 	CORBA::Any a;	
@@ -306,7 +315,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 	Qedo::QedoLock l_all(all_server_interceptors_mutex_);
 
 	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = 
-        new Qedo::ContainerServerRequestInfo(info,slot_info.origin_id, slot_info.target_id,port_id);
+        new Qedo::ContainerServerRequestInfo(info,slot_info.remote_id, slot_info.component_id,port_id);
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
 		try {
@@ -372,7 +381,7 @@ throw(CORBA::SystemException)
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
 	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = 
-        new Qedo::ContainerServerRequestInfo(info,slot_info.target_id,slot_info.target_id,"to_be_implemented");
+        new Qedo::ContainerServerRequestInfo(info,slot_info.remote_id,slot_info.component_id,"to_be_implemented");
 
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{
@@ -411,7 +420,7 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 
 	Qedo::QedoLock l(all_server_interceptors_mutex_);
 	Components::ContainerPortableInterceptor::ContainerServerRequestInfo_var container_info = 
-        new Qedo::ContainerServerRequestInfo(info, slot_info.target_id, slot_info.target_id, "to_be_implemented");
+        new Qedo::ContainerServerRequestInfo(info, slot_info.remote_id, slot_info.component_id, "to_be_implemented");
 
 	for (unsigned int i = 0; i < all_server_interceptors_.size(); i++)
 	{

@@ -51,6 +51,10 @@ CONTAINERDLL_API PortableServer::ObjectId* create_object_id (const CORBA::OctetS
  */
 CONTAINERDLL_API bool compare_OctetSeqs (const CORBA::OctetSeq&, const CORBA::OctetSeq&);
 
+/**
+ *
+ */
+CONTAINERDLL_API char* OctetSeq_to_string (CORBA::OctetSeq );
 
 /**
  *

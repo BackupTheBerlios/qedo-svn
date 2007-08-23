@@ -90,6 +90,17 @@ compare_OctetSeqs (const CORBA::OctetSeq& seq1, const CORBA::OctetSeq& seq2)
 	return true;
 }
 
+char* 
+OctetSeq_to_string (CORBA::OctetSeq seq)
+{
+    std::string temp_id_str;
+    for (unsigned int counter = 0; counter < seq.length(); counter++)
+    {
+        temp_id_str.push_back((char)(seq[counter]));
+    }
+    return CORBA::string_dup(temp_id_str.c_str());
+    
+}
 
 bool
 compare_object_ids (const PortableServer::ObjectId& id1, const PortableServer::ObjectId& id2)

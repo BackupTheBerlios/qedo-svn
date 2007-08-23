@@ -77,10 +77,10 @@ namespace Qedo {
 
 		// helper functions
         virtual CORBA::OctetSeq*
-		get_target_id();
+		get_component_id();
 
 		virtual CORBA::OctetSeq*
-		get_origin_id();
+		get_remote_id();
 
         virtual Components::Cookie_ptr
 		register_servant_interceptor(Components::ContainerPortableInterceptor::ServantContainerInterceptor_ptr interceptor);

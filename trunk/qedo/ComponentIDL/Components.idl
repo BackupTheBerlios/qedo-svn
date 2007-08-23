@@ -702,8 +702,8 @@ module Components {
         // not standard
 		struct SlotInfo
 		{
-            CORBA::OctetSeq origin_id;
-			CORBA::OctetSeq target_id;
+            CORBA::OctetSeq component_id;
+			CORBA::OctetSeq remote_id;
 		};
 
 	}; // ContainerPortableInterceptor

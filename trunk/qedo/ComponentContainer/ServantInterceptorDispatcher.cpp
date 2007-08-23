@@ -53,7 +53,7 @@ ServantInterceptorDispatcher::set_component_server(Qedo::ComponentServerImpl* co
 
 
 CORBA::OctetSeq*
-ServantInterceptorDispatcher::get_target_id()
+ServantInterceptorDispatcher::get_component_id()
 {
 
 	CORBA::Object_var obj = component_server_ -> orb_ -> resolve_initial_references ("PICurrent");
@@ -67,16 +67,18 @@ ServantInterceptorDispatcher::get_target_id()
 	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
-	if (slot_info.target_id.length() == 0)
+	if (slot_info.component_id.length() == 0)
 	{
-        return new CORBA::OctetSeq();
+        CORBA::OctetSeq_var ret_id = new CORBA::OctetSeq();
+        ret_id->length(0);
+        return ret_id;
 	}
-    return new CORBA::OctetSeq(slot_info.target_id);
+    return new CORBA::OctetSeq(slot_info.component_id);
 
 }
 
 CORBA::OctetSeq*
-ServantInterceptorDispatcher::get_origin_id()
+ServantInterceptorDispatcher::get_remote_id()
 {
 
 	CORBA::Object_var obj = component_server_ -> orb_ -> resolve_initial_references ("PICurrent");
@@ -89,11 +91,13 @@ ServantInterceptorDispatcher::get_origin_id()
 	CORBA::Any_var slot = piCurrent->get_slot (component_server_ -> slot_id_);
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
-	if (slot_info.origin_id.length() == 0)
+	if (slot_info.remote_id.length() == 0)
 	{
-        return new CORBA::OctetSeq();
+        CORBA::OctetSeq_var ret_id = new CORBA::OctetSeq();
+        ret_id->length(0);
+        return ret_id;
 	}
-    return new CORBA::OctetSeq(slot_info.origin_id);
+    return new CORBA::OctetSeq(slot_info.remote_id);
 
 }
 
