@@ -51,6 +51,9 @@ AC_ARG_ENABLE(db,
  [  --disable-db            compile Database support in container (default off)],
  use_db=$enableval, use_db=no)
 
+# check the system
+AC_CANONICAL_SYSTEM
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_MAKE_SET
@@ -136,7 +139,14 @@ KC_PP="kc++"
 AC_SUBST(KC_PP)
 
 if test X"$UUIDDIR" != X ; then
-	LIBS="$LIBS -L$UUIDDIR/lib"
+   	case $target in
+	*solaris*)
+		LIBS="$LIBS -L$UUIDDIR/lib -L/lib -ldlpi"
+		;;
+	*)
+		LIBS="$LIBS -L$UUIDDIR/lib"
+		;;
+	esac
 	CPPFLAGS="$CPPFLAGS -I$UUIDDIR/include"
 fi
 
