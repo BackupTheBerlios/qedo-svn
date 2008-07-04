@@ -100,7 +100,7 @@ PEP_ManagerExec::configuration_complete()
   assert(ret == 0);
   std::string host = CORBA::string_dup(hostname);
   pep_ = PEPFactory::create_PEP(orb, pl, pf, "<unspecified>", "CCM",
-                                host, this->policy_name_);
+                                host, this->policy_name_, 1);
 
   //  server_interceptor_ = new Qedo::ServerPEPInterceptor(pf_, rt_policy_);
 
