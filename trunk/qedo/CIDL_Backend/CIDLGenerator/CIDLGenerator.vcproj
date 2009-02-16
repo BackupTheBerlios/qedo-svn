@@ -46,7 +46,7 @@ copy $(TargetPath) $(QEDO)\bin
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib mico2312.lib odbc32.lib odbccp32.lib pthreadVC2.lib"
+				AdditionalDependencies="CIDLFrontendLib.lib CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib mico2313.lib odbc32.lib odbccp32.lib pthreadVC2d.lib"
 				OutputFile="$(OutDir)/cidl_gen.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
