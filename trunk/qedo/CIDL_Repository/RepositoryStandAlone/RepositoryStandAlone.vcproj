@@ -190,7 +190,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib mico2312.lib pthreadVC2.lib"
+				AdditionalDependencies="CIDLRepositoryLib.lib ComponentRepositoryLib.lib IFRidl.lib mico2313.lib pthreadVC2d.lib"
 				OutputFile="$(OutDir)/IFRRepository.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\CIDL_Frontend\CIDLFrontendLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\IFRidl\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\ComponentRepositoryLib\$(IntDir)&quot;;&quot;..\..\CIDL_Repository\CIDLRepositoryLib\$(IntDir)&quot;;&quot;$(MICO)\win32-bin\lib&quot;"
