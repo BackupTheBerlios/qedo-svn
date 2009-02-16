@@ -199,7 +199,7 @@ copy $(TargetPath) $(QEDO)\bin
 				Outputs="$(QEDO)\bin\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2D.lib zdll.lib mico2312.lib micocoss2312.lib wsock32.lib pthreadVC2.lib"
+				AdditionalDependencies="xerces-c_2D.lib zdll.lib mico2313.lib micocoss2313.lib wsock32.lib pthreadVC2d.lib"
 				OutputFile="$(OutDir)/qassf.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(MICO)\win32-bin\lib&quot;;&quot;$(MICO)/coss&quot;;&quot;$(XERCES)\lib&quot;;&quot;$(ZLIB)\lib&quot;"
