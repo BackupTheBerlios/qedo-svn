@@ -252,7 +252,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out.indent();
 	out << "Name=\"VCCLCompilerTool\"\n";
 	out << "Optimization=\"0\"\n";
-	out << "AdditionalIncludeDirectories=\".;$(QEDO)/mico/include;$(QEDO)/mico/include/windows;$(Qedo)/include/pthreads;$(QEDO)/include" << project_name << "_SERVANT\"\n";
+	out << "AdditionalIncludeDirectories=\".;$(QEDO)/mico/include;$(QEDO)/mico/include/windows;$(Qedo)/include/pthreads;$(QEDO)/include\"\n";
 	out << "PreprocessorDefinitions=\"";
 	out << "BUILD_" << export_prefix_ << "_DLL;MICO_ORB;WIN32;_DEBUG;_USRDLL;HAVE_THREADS;HAVE_PTHREADS;PtW32NoCatchWarn;__CLEANUP_C;_WIN32_WINNT=0x400\"\n";
 	out << "MinimalRebuild=\"TRUE\"\n";
@@ -273,7 +273,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCLinkerTool\"\n";
-	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib  mico2312.lib pthreadVC2.lib\"\n";
+	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib  mico2313.lib pthreadVC2d.lib\"\n";
 	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
 	out << "LinkIncremental=\"2\"\n";
 	out << "AdditionalLibraryDirectories=\"$(QEDO)/lib\"\n";
@@ -292,11 +292,13 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCPostBuildEventTool\"\n";
-	out << "CommandLine=\"$(Qedo)/bin/zip ../" <<	project_name << ".zip -j Debug_mico/";
+	out << "CommandLine=\"$(cygwin)/zip ../" <<	project_name << ".zip -j Debug_mico/";
 	out << project_name << ".dll ../" << project_name << "_SERVANT/Debug_mico/";
 	out << project_name << "_SERVANT.dll ../" << target_file_name_ << "\n";
-	out << "$(Qedo)/bin/zip ../" <<	project_name << ".zip meta-inf/";
+	out << "$(cygwin)/zip ../" <<	project_name << ".zip meta-inf/";
 	out << project_name << ".ccd meta-inf/" << project_name << ".csd";
+	out << "\n";
+	out << "copy Debug_mico\\" << project_name << ".dll ..\\" << project_name << ".dll";
 	out << "\"/>\n";
 	out.unindent();
 
@@ -395,12 +397,15 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCPostBuildEventTool\"\n";
-	out << "CommandLine=\"$(Qedo)/bin/zip ../" <<	project_name << ".zip -j Release_mico/";
+	out << "CommandLine=\"$(cygwin)/zip ../" <<	project_name << ".zip -j Release_mico/";
 	out << project_name << ".dll ../" << project_name << "_SERVANT/Debug_mico/";
 	out << project_name << "_SERVANT.dll ../" << target_file_name_ << "\n";
-	out << "$(Qedo)/bin/zip ../" <<	project_name << ".zip meta-inf/";
+	out << "$(cygwin)/zip ../" <<	project_name << ".zip meta-inf/";
 	out << project_name << ".ccd meta-inf/" << project_name << ".csd";
+	out << "\n";
+	out << "copy Debug_mico\\" << project_name << ".dll ..\\" << project_name << ".dll";
 	out << "\"/>\n";
+
 	out.unindent();
 
 	out << "<Tool\n";
@@ -1185,7 +1190,7 @@ GeneratorVC7::generateServant()
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCLinkerTool\"\n";
-	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib qedoutil.lib mico2312.lib pthreadVC2.lib\"\n";
+	out << "AdditionalDependencies=\"ComponentIDL.lib ComponentContainer.lib qedoutil.lib mico2313.lib pthreadVC2d.lib\"\n";
 	out << "OutputFile=\"$(OutDir)/" << project_name << ".dll\"\n";
 	out << "LinkIncremental=\"2\"\n";
 	out << "AdditionalLibraryDirectories=\"$(QEDO)/lib\"\n";
@@ -1199,6 +1204,15 @@ GeneratorVC7::generateServant()
 	out.indent();
 	out << "Name=\"VCMIDLTool\"/>\n";
 	out.unindent();
+
+	out << "<Tool\n";
+	out.indent();
+	out << "Name=\"VCPostBuildEventTool\"\n";
+	out << "CommandLine=\"copy Debug_mico\\" << project_name << ".dll ..\\" << project_name << ".dll";
+	out << "\"/>\n";
+	out.unindent();
+
+
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCPostBuildEventTool\"/>\n";

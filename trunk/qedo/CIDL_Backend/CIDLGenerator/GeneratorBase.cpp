@@ -67,7 +67,7 @@ GeneratorBase::getNameFromRepId(std::string id)
 
 	// replace "/" by "_"
 	std::string::size_type pos = name.find("/");
-	if (pos != std::string::npos)
+	while (pos != std::string::npos)
 	{
 		name.replace(pos, 1 , "_");
 		pos = name.find("/");
