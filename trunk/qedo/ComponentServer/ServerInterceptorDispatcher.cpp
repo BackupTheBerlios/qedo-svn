@@ -233,6 +233,8 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
 		port_id="QEDO_UNKNOWN_PORT_ID";
 	}
 
+	DEBUG_OUT2("component id:", id);
+
 	// extract origin_id from service context
 	IOP::ServiceContext_var sc = 0;
 	CORBA::Any_var context_any = new CORBA::Any();
@@ -292,8 +294,8 @@ throw(PortableInterceptor::ForwardRequest, CORBA::SystemException)
     slot <<= slot_info;
 	piCurrent -> set_slot(component_server_ -> slot_id_, slot);
 
-    std::cout << "!ServerDispatcher receive_request  slotinfo component id:" << OctetSeq_to_string(slot_info.component_id) << std::endl;
-    std::cout << "!ServerDispatcher receive_request slotinfo remote id:" << OctetSeq_to_string(slot_info.remote_id) << std::endl;
+//    std::cout << "!ServerDispatcher receive_request  slotinfo component id:" << OctetSeq_to_string(slot_info.component_id) << std::endl;
+//    std::cout << "!ServerDispatcher receive_request slotinfo remote id:" << OctetSeq_to_string(slot_info.remote_id) << std::endl;
 
 #ifdef USE_OPENPMF
 	CORBA::Any a;	

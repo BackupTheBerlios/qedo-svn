@@ -32,6 +32,7 @@
 #include <fstream>
 #include "ContainerClientRequestInfo.h"
 #include "Output.h"
+#include "qedoutil.h"
 
 static char rcsid[] UNUSED = "$Id: ClientInterceptorDispatcher.cpp,v 1.13 2004/08/27 08:37:43 tom Exp $";
 
@@ -94,11 +95,9 @@ ClientInterceptorDispatcher::destroy()
 void
 ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInfo_ptr info )
 {
-#ifdef _DEBUG
 	DEBUG_OUT ("ClientInterceptorDispatcher: send_request");
     DEBUG_OUT (info->operation());
 
-#endif
 	CORBA::Any_var slot = info->get_slot(component_server_ -> slot_id_);
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
@@ -109,8 +108,8 @@ ClientInterceptorDispatcher::send_request( PortableInterceptor::ClientRequestInf
 //	{
 //		id = "UNKNOWN_COMP_ID";
 //	}
-    std::cout << "!ClientDispatcher send_request  slotinfo component id:" << OctetSeq_to_string(slot_info.component_id) << std::endl;
-    std::cout << "!ClinetDispatcher send_request:  slotinfo remote id:" << OctetSeq_to_string(slot_info.remote_id) << std::endl;
+    DEBUG_OUT2 ("ClientDispatcher send_request  slotinfo component id:", OctetSeq_to_string(slot_info.component_id));
+	DEBUG_OUT2 ("ClinetDispatcher send_request:  slotinfo remote id:", OctetSeq_to_string(slot_info.remote_id)) ;
 
 //	all_client_interceptors_mutex_.read_lock_object();
 	Components::ContainerPortableInterceptor::ContainerClientRequestInfo_var container_info = 
@@ -166,8 +165,8 @@ ClientInterceptorDispatcher::receive_reply( PortableInterceptor::ClientRequestIn
 	Components::ContainerPortableInterceptor::SlotInfo slot_info;
 	slot >>= slot_info;
 
-    std::cout << "!ClientDispatcher receive_reply  slotinfo component id:" << OctetSeq_to_string(slot_info.component_id) << std::endl;
-    std::cout << "!ClinetDispatcher receive_reply  slotinfo remote id:" << OctetSeq_to_string(slot_info.remote_id) << std::endl;
+//    std::cout << "!ClientDispatcher receive_reply  slotinfo component id:" << OctetSeq_to_string(slot_info.component_id) << std::endl;
+//    std::cout << "!ClinetDispatcher receive_reply  slotinfo remote id:" << OctetSeq_to_string(slot_info.remote_id) << std::endl;
 
 //	if (!slot_info.target_id)
 //	{

@@ -298,7 +298,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "$(cygwin)/zip ../" <<	project_name << ".zip meta-inf/";
 	out << project_name << ".ccd meta-inf/" << project_name << ".csd";
 	out << "\n";
-	out << "copy Debug_mico\\" << project_name << ".dll ..\\" << project_name << ".dll";
+	out << "copy Debug_mico\\" << project_name << ".dll ..\\" << composition->name() << ".dll";
 	out << "\"/>\n";
 	out.unindent();
 
@@ -403,7 +403,7 @@ GeneratorVC7::doComposition(CIDL::CompositionDef_ptr composition)
 	out << "$(cygwin)/zip ../" <<	project_name << ".zip meta-inf/";
 	out << project_name << ".ccd meta-inf/" << project_name << ".csd";
 	out << "\n";
-	out << "copy Debug_mico\\" << project_name << ".dll ..\\" << project_name << ".dll";
+	out << "copy Debug_mico\\" << project_name << ".dll ..\\" << composition->name() << ".dll";
 	out << "\"/>\n";
 
 	out.unindent();
@@ -1208,7 +1208,7 @@ GeneratorVC7::generateServant()
 	out << "<Tool\n";
 	out.indent();
 	out << "Name=\"VCPostBuildEventTool\"\n";
-	out << "CommandLine=\"copy Debug_mico\\" << project_name << ".dll ..\\" << project_name << ".dll";
+	out << "CommandLine=\"copy Debug_mico\\" << project_name << ".dll ..\\" << target_->name() << "_SERVANT.dll";
 	out << "\"/>\n";
 	out.unindent();
 

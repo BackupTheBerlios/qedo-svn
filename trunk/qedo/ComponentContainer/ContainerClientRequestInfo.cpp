@@ -79,5 +79,93 @@ ContainerClientRequestInfo::request_info()
 	return PortableInterceptor::ClientRequestInfo::_duplicate(request_info_);
 }
 
+
+//////////////////////////////////////////////////////////
+ContainerStubRequestInfo::ContainerStubRequestInfo (
+    const CORBA::OctetSeq& origin_id, 
+	const CORBA::OctetSeq& target_id,
+	const Components::FeatureName name)
+{
+    origin_id_ = new CORBA::OctetSeq(origin_id);
+    target_id_ = new CORBA::OctetSeq(target_id);
+	name_ = name;
+}
+
+ContainerStubRequestInfo::~ContainerStubRequestInfo ()
+{
+
+}
+
+CORBA::OctetSeq* 
+ContainerStubRequestInfo::origin_id() 
+{
+	return origin_id_;
+}
+
+CORBA::OctetSeq* 
+ContainerStubRequestInfo::target_id() 
+{
+	return target_id_;
+}
+
+char* 
+ContainerStubRequestInfo::name() 
+{
+	char* ret_str;
+	ret_str = strdup ( name_.c_str() );
+	return ret_str;
+}
+
+	::Dynamic::ParameterList* 
+	ContainerStubRequestInfo::arguments() {
+		assert(0);
+		return 0;
+	};
+
+    void 
+	ContainerStubRequestInfo::arguments( const ::Dynamic::ParameterList& value ) {
+		assert (0);
+	};
+
+    char* 
+	ContainerStubRequestInfo::operation() {
+		assert (0);
+		return 0;
+		};
+
+    CORBA::Any* 
+	ContainerStubRequestInfo::result() {
+		assert (0);
+		return 0;
+	};
+
+    void 
+	ContainerStubRequestInfo::result( const CORBA::Any& value ) {
+		assert(0);
+		};
+
+    CORBA::Object_ptr
+	ContainerStubRequestInfo::target() {
+		assert (0);
+		return 0;
+};
+
+    void 
+		ContainerStubRequestInfo::target( CORBA::Object_ptr value ) {
+		assert (0);
+		};
+
+    CORBA::Any* 
+		ContainerStubRequestInfo::the_exception() {
+		assert (0);
+		return 0;
+		};
+
+	void 
+		ContainerStubRequestInfo::the_exception( const CORBA::Any& value ) {
+		assert (0);
+	};
+
+
 #endif
 };

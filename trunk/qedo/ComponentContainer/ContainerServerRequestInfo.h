@@ -59,6 +59,46 @@ public:
     virtual PortableInterceptor::ServerRequestInfo_ptr request_info() ;
 };
 
+
+
+class CONTAINERDLL_API ContainerServantRequestInfo : public virtual Components::ContainerPortableInterceptor::ContainerServantRequestInfo,
+	public virtual RefCountLocalObject
+{
+private:
+	/** the identity of this component */
+    CORBA::OctetSeq_var	origin_id_;
+    CORBA::OctetSeq_var	target_id_;
+	std::string	    name_;
+
+
+public:
+	ContainerServantRequestInfo (
+        const CORBA::OctetSeq& origin_id,
+        const CORBA::OctetSeq& target_id, 
+        const Components::FeatureName name);
+
+	~ContainerServantRequestInfo ();
+
+    virtual CORBA::OctetSeq* origin_id() ;
+
+    virtual CORBA::OctetSeq* target_id() ;
+
+	virtual Components::FeatureName name();
+
+    virtual ::Dynamic::ParameterList* arguments() ;
+    virtual void arguments( const ::Dynamic::ParameterList& value ) ;
+    virtual char* operation() ;
+    virtual CORBA::Any* result() ;
+    virtual void result( const CORBA::Any& value ) ;
+    virtual ::Components::EnterpriseComponent_ptr target() ;
+    virtual void target( ::Components::EnterpriseComponent_ptr value ) ;
+    virtual CORBA::Any* the_exception() ;
+    virtual void the_exception( const CORBA::Any& value ) ;
+
+
+};
+
+
 } //namespace Qedo
 #endif
 #endif

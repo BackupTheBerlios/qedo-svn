@@ -29,6 +29,7 @@
 #include "Util.h"
 #include "Output.h"
 #include <fstream>
+#include "ContainerServerRequestInfo.h"
 
 static char rcsid[] UNUSED = "$Id: ServantInterceptorDispatcher.cpp,v 1.5 2004/08/27 08:37:43 tom Exp $";
 
@@ -128,14 +129,31 @@ ServantInterceptorDispatcher::servant_receive_request( const char* oper )
 {
 	DEBUG_OUT("ServantInterceptorDispatcher: servant_receive_request");
 
+		// set identity in the slot
+
+	CORBA::Any_var slot ;
+	Components::ContainerPortableInterceptor::SlotInfo slot_info;
+
+	CORBA::Object_var obj = component_server_ -> orb_ -> resolve_initial_references ("PICurrent");
+
+	if ( CORBA::is_nil (obj) )
+		return false;
+
+	PortableInterceptor::Current_var piCurrent = PortableInterceptor::Current::_narrow (obj);
+
+	slot = piCurrent -> get_slot(component_server_ -> slot_id_);
+	slot >>= slot_info ;
+
 	// call registered interceptors
 	CORBA::Boolean con = true;
+	Components::ContainerPortableInterceptor::ContainerServantRequestInfo_var container_info = 
+		new Qedo::ContainerServantRequestInfo(slot_info.remote_id, slot_info.component_id, CORBA::string_dup(oper));
 	for (unsigned int i = 0; i < all_servant_interceptors_.size(); i++)
 	{
 		try {
 
-//			all_servant_interceptors_[i].interceptor->call( get_target_id(), get_origin_id(), oper, con);
-            assert(0);
+			all_servant_interceptors_[i].interceptor->servant_receive_request( container_info , con);
+            //assert(0);
 			if (!con)
 			{
 				return false;
