@@ -86,7 +86,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  mico2312.lib pthreadVC2.lib"
+				AdditionalDependencies="ComponentIDL.lib ComponentContainer.lib  mico2313.lib pthreadVC2.lib Winmm.lib"
 				OutputFile="$(OutDir)/Computation_ClientCompo.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(QEDO)/lib"
@@ -99,8 +99,8 @@
 				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(Qedo)/bin/zip ../Computation_ClientCompo.zip -j Debug_mico/Computation_ClientCompo.dll ../Computation_ClientCompo_SERVANT/Debug_mico/Computation_ClientCompo_SERVANT.dll ../compute.cidl
-$(Qedo)/bin/zip ../Computation_ClientCompo.zip meta-inf/Computation_ClientCompo.ccd meta-inf/Computation_ClientCompo.csd
+				CommandLine="$(cygwin)/zip ../Computation_ClientCompo.zip -j Debug_mico/Computation_ClientCompo.dll ../Computation_ClientCompo_SERVANT/Debug_mico/Computation_ClientCompo_SERVANT.dll ../compute.cidl
+$(cygwin)/zip ../Computation_ClientCompo.zip meta-inf/Computation_ClientCompo.ccd meta-inf/Computation_ClientCompo.csd
 "/>
 			<Tool
 				Name="VCPreBuildEventTool"/>

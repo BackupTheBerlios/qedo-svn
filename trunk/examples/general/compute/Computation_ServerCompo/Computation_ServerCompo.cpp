@@ -63,7 +63,8 @@ ServerExec::compute(CORBA::Long argument_of_function)
 {
 // BEGIN USER INSERT SECTION ServerExec::compute
 	// take some time
-	for (int n = 0; n < 100; n++);
+	Qedo::QedoLock l(computation_mutex_);
+	for (int n = 0; n < 10000000; n++);
 	return 9 ;
 // END USER INSERT SECTION ServerExec::compute
 }

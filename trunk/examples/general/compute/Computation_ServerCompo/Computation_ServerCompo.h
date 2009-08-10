@@ -63,6 +63,7 @@ namespace Computation
         	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION ServerExec
+		Qedo::QedoMutex										computation_mutex_;
 // END USER INSERT SECTION ServerExec
 
     };

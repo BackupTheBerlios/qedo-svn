@@ -6,6 +6,9 @@
 
 
 // BEGIN USER INSERT SECTION file
+#include "sys/types.h"
+#include "sys/timeb.h"
+#include "mmsystem.h"
 // END USER INSERT SECTION file
 
 
@@ -47,6 +50,13 @@ ClientExec::client_thread()
 	__time64_t current_time;
 	_time64( &current_time);
 
+	struct _timeb t1;
+	struct _timeb t2;
+
+	DWORD dt1;
+	DWORD dt2;
+
+	dt1 = timeGetTime();
 	while (true)
 //	for (n = 0; n < 500 ; n++)
 	{
@@ -69,15 +79,20 @@ ClientExec::client_thread()
 		{
 			un_calls++;
 		}
-		if (calls > 500)
+		if (calls > 100)
 		{ break;}
 	}
 
 	_time64( &ltime_end );
+	dt2 = timeGetTime();
 
 	std::cout << "@@@ calling compute ended after " << ltime_end - ltime_start << " seconds" << std::endl;
 	std::cout << "successful calls: " << calls << std::endl;
 	std::cout << "unsuccessful calls: " << un_calls << std::endl;
+
+	std::cout << dt1 << std::endl;
+	std::cout << dt2 << std::endl;
+	std::cout << dt2-dt1 << std::endl;
 }
 // END USER INSERT SECTION ClientExec
 
