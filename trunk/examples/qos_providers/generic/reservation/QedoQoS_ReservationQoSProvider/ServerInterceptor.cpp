@@ -1,7 +1,9 @@
 #include "ServerInterceptor.h"
 #include <sys/timeb.h>
 #include "valuetypes.h"
-
+#include "Output.h"
+#include "qedoutil.h"
+#include "GlobalHelpers.h"
 
 namespace QedoQoS_Reservation {
 
@@ -112,9 +114,8 @@ ServerContainerInterceptor::add_contract(const char *component_id, Components::C
 	
 }
 
-
 void
-ServerContainerInterceptor::receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
+ServerContainerInterceptor::receive_request_service_contexts (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
 {
 //	std::cout << "ServerCOPI: receive_request: " << info->request_info()->operation() << "for id: " << info -> component_id() << std::endl;
 
@@ -124,6 +125,7 @@ ServerContainerInterceptor::receive_request (Components::ContainerPortableInterc
 		 */
 	
 /*	 
+
 		IOP::ServiceContext_var sc = 0;
 		char *message_data;
 		CORBA::Any_var any = new CORBA::Any;
@@ -151,7 +153,49 @@ ServerContainerInterceptor::receive_request (Components::ContainerPortableInterc
 }
 
 void
-ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
+ServerContainerInterceptor::servant_receive_request (Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con)
+{
+	DEBUG_OUT2 ("ServerCOPI: receive_request: ", info->operation());
+	DEBUG_OUT2 ("for id: ", Qedo::OctetSeq_to_string(*(info -> target_id())));
+	DEBUG_OUT2 ("from id: ", Qedo::OctetSeq_to_string(*(info -> origin_id())));
+
+	// test implementaiton
+	// set time_stamp
+
+	std::string operation = "compute";
+	con = true;
+	if (!operation.compare(info->operation()))
+	{
+		__time64_t current_time;
+		_time64( &current_time);
+		if ((current_time - time_stamp) > 1)
+		{
+			// reset time-stamp
+			_time64( &time_stamp);
+			// reset counter
+			number_of_calls = 0;
+		}
+		con = true;
+		if (number_of_calls < 15 )   
+		{
+			//client has not used all of its reservations
+			std::string origin = Qedo::OctetSeq_to_string(*(info -> origin_id()));
+			if(origin.compare("client"))
+			{
+				con = false;
+				return;
+			} else
+			{
+				number_of_calls++;
+				con = true;
+			}
+		}
+	}
+
+}
+
+void
+ServerContainerInterceptor::servant_send_reply (Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con)
 {
 //	std::cout << "ServerCOPI: send_reply: " << info->request_info()->operation() << "for id: " << info -> component_id() << std::endl;
 
@@ -174,7 +218,7 @@ ServerContainerInterceptor::send_reply (Components::ContainerPortableInterceptor
 }
 
 void
-ServerContainerInterceptor::send_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info)
+ServerContainerInterceptor::servant_send_exception (Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con)
 {
 //	std::cout << "ServerCOPI: send_system_exception: " << info->request_info()->operation() << "for id: " << std::endl;
 
@@ -198,7 +242,7 @@ ServerContainerInterceptor::send_exception (Components::ContainerPortableInterce
 }
 
 void
-ServerContainerInterceptor::send_other (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) {
+ServerContainerInterceptor::servant_send_other (Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info) {
 
 }
 
@@ -259,7 +303,7 @@ ServerContainerInterceptor::connect( const char* comp_id, const char* name, CORB
 		CORBA::Object_var temp_obj = connection -> _get_component();
 		Components::CCMObject_var temp_comp = Components::CCMObject::_narrow(temp_obj);
 		CORBA::Object_var nego_obj = temp_comp -> provide_facet("_qos_negotiation_external");
-		Components::Extension::Negotiation_var nego = Components::Extension::Negotiation::_narrow(nego_obj);
+		Components::QoS::Negotiation_var nego = Components::QoS::Negotiation::_narrow(nego_obj);
 		
 		std::cout << "req_offer" << std::endl;
 		
@@ -269,36 +313,37 @@ ServerContainerInterceptor::connect( const char* comp_id, const char* name, CORB
 		CORBA::ULong freq = 5;
 		an_any <<= freq;
 
-		Components::Extension::ContractDescription requirements;
-		requirements.dimensions.length(2);
+		Components::QoS::QoSConstraint requirements;
+		requirements.instances.length(2);
 
-		requirements.contract_type = CORBA::string_dup("Reservation");
+		requirements.characteristic = CORBA::string_dup("Reservation");
 
 		// start with 1 because the first one is the already checked name= Reservation
 
-		Components::ConfigValues dims;
 		CORBA::Any content_any;
 		//(data->value()) >>= content_any;
 		//content_any = (data->value());
 		//content_any >>= dims;
-		requirements.dimensions[0] = 
-			(*data)[1];
-		requirements.dimensions[1] = (*data)[2];
+		requirements.instances[0].dimension = (*data)[1] -> name();
+		requirements.instances[0].value = (*data)[1] -> value();
+		requirements.instances[1].dimension = (*data)[2] -> name();
+		requirements.instances[1].value = (*data)[2] -> value();
+//		requirements.instances[1] = (*data)[2];
 
-		Components::Extension::ContractDescription *offer = nego -> req_offer(requirements, comp_id);
+		contract_cookie = nego -> require_qos(requirements, comp_id);
 		std::cout << "got answer" << std::endl;
 		// check offer
 
 		// does it fit the needs
 
 		// accept
-		if (nego -> accept(*offer, comp_id))
-		{
+//		if (nego -> accept(*offer, comp_id))
+//		{
 			// store information
 			
 //			std::cout << "contract established" << std::endl;
 		}
-	}	
+//	}	
 
 		return 0;
 }

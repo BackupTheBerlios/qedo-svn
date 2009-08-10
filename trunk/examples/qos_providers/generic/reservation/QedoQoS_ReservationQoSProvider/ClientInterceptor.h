@@ -15,7 +15,7 @@ namespace QedoQoS_Reservation {
 
 namespace QedoQoS_Reservation {
 
-	class ClientContainerInterceptor: public virtual Components::ContainerPortableInterceptor::ClientContainerInterceptor
+	class ClientContainerInterceptor: public virtual Components::ContainerPortableInterceptor::StubContainerInterceptor
 	{
 	private:
 		QedoQoS::CCM_Reservation_ContextImpl* context_;
@@ -33,11 +33,11 @@ namespace QedoQoS_Reservation {
 		virtual void destroy();
         virtual void set_slot_id(PortableInterceptor::SlotId slot_id);
 
-		virtual void send_request (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info) ;
+		virtual void stub_send_request (Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info, CORBA::Boolean_out con) ;
 		virtual void send_poll (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info) ;
-		virtual void receive_reply (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info) ;
-		virtual void receive_exception (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info) ;
-		virtual void receive_other (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info) ;
+		virtual void stub_receive_reply (Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info, CORBA::Boolean_out con) ;
+		virtual void stub_receive_exception (Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info, CORBA::Boolean_out con) ;
+		virtual void stub_receive_other (Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info) ;
 
 		virtual Components::Cookie* connect( const char* comp_id, const char* name, CORBA::Object_ptr connection, CORBA::Boolean_out con ) ;
 		virtual CORBA::Object_ptr provide_facet( const char* comp_id, const char* name, CORBA::Boolean_out con ) ;

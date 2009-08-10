@@ -23,6 +23,7 @@ namespace QedoQoS {
 // BEGIN USER INSERT SECTION file_post
 #include "ClientInterceptor.h"
 #include "ServerInterceptor.h"
+#include "valuetypes.h"
 // END USER INSERT SECTION file_post
 
 
@@ -62,27 +63,23 @@ namespace QedoQoS
         
         
         //
-        // IDL:Components/Extension/Negotiation/trigger_negotiation:1.0
+        // IDL:Components/QoS/Negotiation/require_qos:1.0
         //
-        virtual void trigger_negotiation()
-        	throw(CORBA::SystemException);
+        virtual Components::Cookie* require_qos(const Components::QoS::QoSConstraint& requirements, const char* client_id)
+        	throw(CORBA::SystemException, ::Components::CCMException);
         
         //
-        // IDL:Components/Extension/Negotiation/req_offer:1.0
+        // IDL:Components/QoS/Negotiation/release_qos:1.0
         //
-        virtual Components::Extension::ContractDescription* req_offer(const Components::Extension::ContractDescription& requirements, const char* client_id)
-        	throw(CORBA::SystemException);
-        
-        //
-        // IDL:Components/Extension/Negotiation/accept:1.0
-        //
-        virtual CORBA::Boolean accept(const Components::Extension::ContractDescription& requirements, const char* client_id)
+        virtual void release_qos(Components::Cookie* ck)
         	throw(CORBA::SystemException);
     
 // BEGIN USER INSERT SECTION ReservationQoSproviderImpl
 	private:
 		QedoQoS_Reservation::ClientContainerInterceptor* client_interceptor_;
 		QedoQoS_Reservation::ServerContainerInterceptor* server_interceptor_;
+		Components::Cookie_var client_ck;
+		Components::Cookie_var server_ck;
 	public:
 		void
 		register_copis();

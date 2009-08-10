@@ -16,7 +16,7 @@ namespace QedoQoS_Reservation {
 
 namespace QedoQoS_Reservation {
 
-	class ServerContainerInterceptor: public virtual Components::ContainerPortableInterceptor::ServerContainerInterceptor
+	class ServerContainerInterceptor: public virtual Components::ContainerPortableInterceptor::ServantContainerInterceptor
 	{
 	private:
 		QedoQoS::CCM_Reservation_ContextImpl* context_;
@@ -25,6 +25,7 @@ namespace QedoQoS_Reservation {
 		std::string		m_uid;
 		QedoQoS::ReservationQoSproviderImpl* executor_;
 
+		Components::Cookie_var contract_cookie;
 		// this is an short cut for the reservation 
 		CORBA::ULong number_of_calls;
 		__time64_t time_stamp;
@@ -57,10 +58,10 @@ namespace QedoQoS_Reservation {
 		virtual void set_slot_id(PortableInterceptor::SlotId slot_id);
 
 		virtual void receive_request_service_contexts (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
-		virtual void receive_request (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_reply (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_exception (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
-		virtual void send_other (Components::ContainerPortableInterceptor::ContainerServerRequestInfo_ptr info) ;
+		virtual void servant_receive_request (Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con) ;
+		virtual void servant_send_reply (Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con) ;
+		virtual void servant_send_exception (Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info, CORBA::Boolean_out con) ;
+		virtual void servant_send_other (Components::ContainerPortableInterceptor::ContainerServantRequestInfo_ptr info) ;
 
 	    virtual void call( const char* comp_id, const char* origin, const char* operation, CORBA::Boolean_out con ) ;
 

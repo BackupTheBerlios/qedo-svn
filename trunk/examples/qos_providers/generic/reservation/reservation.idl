@@ -3,7 +3,7 @@
 module QedoQoS {
 
 	component Reservation {
-		provides Components::Extension::Negotiation nego_external;
+		provides Components::QoS::Negotiation nego_external;
 	};
 	
 	home ReservationHome manages Reservation {};

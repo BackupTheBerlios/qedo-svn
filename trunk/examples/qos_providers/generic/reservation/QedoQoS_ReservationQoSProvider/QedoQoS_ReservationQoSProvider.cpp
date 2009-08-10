@@ -23,23 +23,23 @@ ReservationQoSproviderImpl::register_copis()
 
 	//server
 	Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_reg =
-		context_->get_server_interceptor_dispatcher_registration();
-	server_reg->register_server_interceptor(server_interceptor_);
+		context_->get_server_interceptor_registration();
+//	server_ck = server_reg->register_server_interceptor(server_interceptor_);
 
 	//Client
 	Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr client_reg =
-		context_->get_client_interceptor_dispatcher_registration();
-	client_reg->register_client_interceptor(client_interceptor_);
+		context_->get_client_interceptor_registration();
+	//client_ck = client_reg->register_client_interceptor(client_interceptor_);
 
 	//Servant
 	Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr servant_reg =
-		context_->get_servant_interceptor_dispatcher_registration();
-	servant_reg->register_servant_interceptor(server_interceptor_);
+		context_->get_servant_interceptor_registration();
+	server_ck = servant_reg->register_servant_interceptor(server_interceptor_);
 
 	//Stub
 	Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr stub_reg =
-		context_ -> get_stub_interceptor_dispatcher_registration();
-	stub_reg -> register_stub_interceptor(client_interceptor_);
+		context_ -> get_stub_interceptor_registration();
+//	client_ck = stub_reg -> register_stub_interceptor(client_interceptor_);
 }
 
 void
@@ -48,24 +48,24 @@ ReservationQoSproviderImpl::unregister_copis()
 	std::cout << "ReservationQoSProvider: unregister_copis" << std::endl;
 
 	//server
-	Components::ContainerPortableInterceptor::ServerInterceptorRegistration_ptr server_reg =
-		context_->get_server_interceptor_dispatcher_registration();
-	server_reg->unregister_interceptor_for_all(server_interceptor_);
+	Components::ContainerPortableInterceptor::ServerContainerInterceptorRegistration_ptr server_reg =
+		context_->get_server_interceptor_registration();
+	//server_reg->unregister_server_interceptor(server_ck);
 
 	//Client
-	Components::ContainerPortableInterceptor::ClientInterceptorRegistration_ptr client_reg =
-		context_->get_client_interceptor_dispatcher_registration();
-	client_reg->register_interceptor_for_all(client_interceptor_);
+	Components::ContainerPortableInterceptor::ClientContainerInterceptorRegistration_ptr client_reg =
+		context_->get_client_interceptor_registration();
+	//client_reg->unregister_client_interceptor(client_ck);
 
 	//Servant
-	Components::ContainerPortableInterceptor::ServantInterceptorRegistration_ptr servant_reg =
-		context_->get_servant_interceptor_dispatcher_registration();
-	servant_reg->register_interceptor_for_all(server_interceptor_);
+	Components::ContainerPortableInterceptor::ServantContainerInterceptorRegistration_ptr servant_reg =
+		context_->get_servant_interceptor_registration();
+	servant_reg->unregister_servant_interceptor(server_ck);
 
 	//Stub
-	Components::ContainerPortableInterceptor::StubInterceptorRegistration_ptr stub_reg =
-		context_ -> get_stub_interceptor_dispatcher_registration();
-	stub_reg -> unregister_interceptor_for_all(client_interceptor_);
+	Components::ContainerPortableInterceptor::StubContainerInterceptorRegistration_ptr stub_reg =
+		context_ -> get_stub_interceptor_registration();
+	stub_reg -> unregister_stub_interceptor(client_ck);
 }
 
 void
@@ -203,51 +203,23 @@ ReservationQoSproviderImpl::remove()
 }
 
 
+Components::Cookie*
+ReservationQoSproviderImpl::require_qos(const Components::QoS::QoSConstraint& requirements, const char* client_id)
+	throw(CORBA::SystemException, ::Components::CCMException)
+{
+// BEGIN USER INSERT SECTION ReservationQoSproviderImpl::require_qos
+	Components::Cookie_var ret_ck = new Qedo::Cookie_impl();
+	return ret_ck._retn();
+// END USER INSERT SECTION ReservationQoSproviderImpl::require_qos
+}
+
+
 void
-ReservationQoSproviderImpl::trigger_negotiation()
+ReservationQoSproviderImpl::release_qos(Components::Cookie* ck)
 	throw(CORBA::SystemException)
 {
-// BEGIN USER INSERT SECTION ReservationQoSproviderImpl::trigger_negotiation
-// END USER INSERT SECTION ReservationQoSproviderImpl::trigger_negotiation
-}
-
-
-Components::Extension::ContractDescription*
-ReservationQoSproviderImpl::req_offer(const Components::Extension::ContractDescription& requirements, const char* client_id)
-	throw(CORBA::SystemException)
-{
-// BEGIN USER INSERT SECTION ReservationQoSproviderImpl::req_offer
-	std::cout << "@@@@@@@@ got req_contract" << std::endl;
-	// check for availability
-
-	// create offer
-
-	// store offer information and reserver resources for the offer
-
-	// return offer
-	return new Components::Extension::ContractDescription(requirements); 
-// END USER INSERT SECTION ReservationQoSproviderImpl::req_offer
-}
-
-
-CORBA::Boolean
-ReservationQoSproviderImpl::accept(const Components::Extension::ContractDescription& requirements, const char* client_id)
-	throw(CORBA::SystemException)
-{
-// BEGIN USER INSERT SECTION ReservationQoSproviderImpl::accept
-	std::cout << "@@@@@@@@ got accept" << std::endl;
-
-	// check for offer reservation
-
-	// use ressources
-
-	// store contract info
-	server_interceptor_ -> add_contract(client_id, requirements.dimensions);
-
-	// return an identfier
-	// true meanwhile
-	return true;
-// END USER INSERT SECTION ReservationQoSproviderImpl::accept
+// BEGIN USER INSERT SECTION ReservationQoSproviderImpl::release_qos
+// END USER INSERT SECTION ReservationQoSproviderImpl::release_qos
 }
 
 

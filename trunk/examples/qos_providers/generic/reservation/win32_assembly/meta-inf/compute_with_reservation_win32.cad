@@ -30,7 +30,7 @@
 	<processcollocation>
 		<homeplacement id="ServerHome">
 	        	<componentfileref idref="Server_file"/>
-				<componentimplref idref="UUID-D5BCA6EC-3759-41EC-9733-4CE717244A5C"/>
+				<componentimplref idref="UUID-D3FD2777-8EBF-4417-9ACC-B8A5FDD7E76C"/>
   	        	<componentinstantiation id="server">
   	        	<componentproperties>
   	        		<fileinarchive name="meta-inf/server.cpf" />
@@ -49,7 +49,7 @@
 
 		<homeplacement id="ClientHome">
 			<componentfileref idref="Client_file"/>
-				<componentimplref idref="UUID-6222631A-DD06-4561-988F-BA45ECA7984A"/>
+				<componentimplref idref="UUID-FBAB43D9-F7A6-42A0-B115-C24371941942"/>
 			<componentinstantiation id="client">
   	        	<componentproperties>
   	        		<fileinarchive name="meta-inf/client.cpf" />
@@ -71,7 +71,7 @@
 	<processcollocation>
 		<homeplacement id="ClientHome2">
 			<componentfileref idref="Client_file"/>
-				<componentimplref idref="UUID-6222631A-DD06-4561-988F-BA45ECA7984A"/>
+				<componentimplref idref="UUID-FBAB43D9-F7A6-42A0-B115-C24371941942"/>
 			<componentinstantiation id="load1">
   	        	<componentproperties>
   	        		<fileinarchive name="meta-inf/load1.cpf" />
@@ -82,21 +82,10 @@
 	<processcollocation>
 		<homeplacement id="ClientHome3">
 			<componentfileref idref="Client_file"/>
-				<componentimplref idref="UUID-6222631A-DD06-4561-988F-BA45ECA7984A"/>
+				<componentimplref idref="UUID-FBAB43D9-F7A6-42A0-B115-C24371941942"/>
 			<componentinstantiation id="load2">
   	        	<componentproperties>
   	        		<fileinarchive name="meta-inf/load2.cpf" />
-  	        	</componentproperties>
-			</componentinstantiation>
-		</homeplacement>
-	</processcollocation>
-	<processcollocation>
-		<homeplacement id="ClientHome4">
-			<componentfileref idref="Client_file"/>
-				<componentimplref idref="UUID-6222631A-DD06-4561-988F-BA45ECA7984A"/>
-			<componentinstantiation id="load3">
-  	        	<componentproperties>
-  	        		<fileinarchive name="meta-inf/load3.cpf" />
   	        	</componentproperties>
 			</componentinstantiation>
 		</homeplacement>
@@ -139,17 +128,6 @@
 			<componentinstantiationref idref="server"/>
 	    	</providesport>
 	</connectinterface>
-	<connectinterface>
-		<usesport>
-			<usesidentifier>computing_server</usesidentifier>
-			<componentinstantiationref idref="load3"/>
-	    	</usesport>
-
-		<providesport>
-			<providesidentifier>computing_interface</providesidentifier>
-			<componentinstantiationref idref="server"/>
-	    	</providesport>
-	</connectinterface>
     </connections>
 
     <extension class="startorder" origin="QEDO">qosprovider_client</extension>
@@ -158,7 +136,6 @@
     <extension class="startorder" origin="QEDO">client</extension>
     <extension class="startorder" origin="QEDO">load1</extension>
     <extension class="startorder" origin="QEDO">load2</extension>
-    <extension class="startorder" origin="QEDO">load3</extension>
 
 </componentassembly>
 

@@ -1,5 +1,10 @@
 #include "ClientInterceptor.h"
 #include "valuetypes.h"
+#include "output.h"
+#include "qedoutil.h"
+#include "Util.h"
+#include "GlobalHelpers.h"
+
 
 namespace QedoQoS_Reservation {
 
@@ -34,10 +39,15 @@ ClientContainerInterceptor::~ClientContainerInterceptor ()
 
 
 void
-ClientContainerInterceptor::send_request (Components::Extension::ContainerClientRequestInfo_ptr info)
+ClientContainerInterceptor::stub_send_request (Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info, CORBA::Boolean_out con)
 {
-	//std::cout << "ClientCOPI: send_request: " << info->request_info()->operation() << std::endl;
-
+	std::cout << "ClientCOPI: send_request: " << info->operation();
+	CORBA::OctetSeq* temp_seq;
+	temp_seq = info->origin_id();
+	CORBA::String_var temp_string;
+	//temp_string = Qedo::OctetSeq_to_string(*temp_seq); 
+	//std::cout << Qedo::OctetSeq_to_string(*temp_seq) << std::endl;
+	DEBUG_OUT2 ("for id: ", Qedo::OctetSeq_to_string(*temp_seq));
 	CORBA::Any any;
 	// This needs to be re´placed by own id
 	// get it from the current slot
@@ -59,7 +69,7 @@ ClientContainerInterceptor::send_request (Components::Extension::ContainerClient
 }
 
 void
-ClientContainerInterceptor::send_poll (Components::Extension::ContainerClientRequestInfo_ptr info)
+ClientContainerInterceptor::send_poll (Components::ContainerPortableInterceptor::ContainerClientRequestInfo_ptr info)
 {
 	//std::cout << "ClientCOPI: send_request: " << info->request_info()->operation() << std::endl;
 
@@ -70,7 +80,7 @@ ClientContainerInterceptor::send_poll (Components::Extension::ContainerClientReq
 }
 
 void
-ClientContainerInterceptor::receive_reply (Components::Extension::ContainerClientRequestInfo_ptr info)
+ClientContainerInterceptor::stub_receive_reply (Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info,CORBA::Boolean_out con)
 {
 	
 //	std::cout << "ClientCOPI: receive_reply: " << info->request_info()->operation() << std::endl;
@@ -101,7 +111,7 @@ ClientContainerInterceptor::receive_reply (Components::Extension::ContainerClien
 }
 
 void
-ClientContainerInterceptor::receive_exception (Components::Extension::ContainerClientRequestInfo_ptr info)
+ClientContainerInterceptor::stub_receive_exception (Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info, CORBA::Boolean_out con)
 {
 //	std::cout << "ClientCOPI: receive_system_exception: " << info->request_info()->operation() << std::endl;
 
@@ -109,7 +119,7 @@ ClientContainerInterceptor::receive_exception (Components::Extension::ContainerC
 }
 
 void
-ClientContainerInterceptor::receive_other (Components::Extension::ContainerClientRequestInfo_ptr info) {
+ClientContainerInterceptor::stub_receive_other (Components::ContainerPortableInterceptor::ContainerStubRequestInfo_ptr info) {
 //	std::cout << "ClientCOPI: receive_user_exception: " << info->request_info()->operation() << std::endl;
 
 }
