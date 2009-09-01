@@ -87,14 +87,14 @@ main (int argc, char** argv)
 	NORMAL_OUT3 ("Qedo Component Server ", QEDO_VERSION, QEDO_REVISION);
 #ifdef USE_OPENPMF
 	bool openpmf_enable = 0;
-	std::string policy_name;
+        std::vector<std::string> policies_names;
 
 	for (int i=0; i<argc; ++i)
 	{
 		// Dirty trick, the policy name is needed before the ORB init
 		if (strcmp (argv[i], "--OpenPMFPolicyName") == 0 && i+1<argc)
 		{
-			policy_name = argv[i+1];
+                        policies_names.push_back(argv[i+1]);
 			openpmf_enable = 1;
 		}
 	}
@@ -102,7 +102,7 @@ main (int argc, char** argv)
 	PMFCORBA::PMFInitializer* pmf_ini = NULL;
 	if (openpmf_enable)
 	{
-		pmf_ini = new PMFCORBA::PMFInitializer(policy_name);
+		pmf_ini = new PMFCORBA::PMFInitializer(policies_names);
 	}
 #endif // USE_OPENPMF
 

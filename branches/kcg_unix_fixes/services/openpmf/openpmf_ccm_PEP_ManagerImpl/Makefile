@@ -20,7 +20,7 @@ H_GEN_SKEL_FILES = ${IDL_FILES:%.idl=%_skel.h}
 
 CLEAN_FILES = ${IDL_FILES} ${CPP_GEN_FILES} ${CPP_GEN_SKEL_FILES} ${H_GEN_FILES} ${H_GEN_SKEL_FILES} ${OBJ_FILES} libopenpmf_ccm_PEP_ManagerImpl.so OpenPMFPEPImpl.zip libOpenPMFPEPImpl.so openpmf_ccm_PEP_ManagerImpl_PSS.* component_valuetypes.* ServerPEPInterceptor.o
 
-LIBS += -L../openpmf_ccm_PEP_ManagerImpl_SERVANT -lopenpmf_ccm_PEP_ManagerImpl_SERVANT -L/usr/local/lib -lpmf2.3.12 -lpmfcorba2.3.12 -lpmfccm2.3.12
+LIBS += -L../openpmf_ccm_PEP_ManagerImpl_SERVANT -lopenpmf_ccm_PEP_ManagerImpl_SERVANT -L/usr/local/lib -lpmf2.3.13 -lpmfcorba2.3.13 -lpmfccm2.3.13 -lpmfldap2.3.13 -lpmfutils2.3.13
 
 CXXFLAGS += -I. -I../openpmf_ccm_PEP_ManagerImpl_SERVANT/
 
