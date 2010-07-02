@@ -82,7 +82,7 @@ NAMING_LIBS := $(shell $(mico_config) --cosslibs)
 NAMING_INCLUDES := -I$(shell $(mico_config) --prefix)/include/coss
 
 ifneq ($(OPENPMF_ROOT), )
-LDFLAGS := -L$(shell $(mico_config) --prefix)/lib -lpmfccm$(shell $(mico_config) --version) -lpmfcorba$(shell $(mico_config) --version) -lpmfldap$(shell $(mico_config) --version) -lpmfutils$(shell $(mico_config) --version) -lpmf$(shell $(mico_config) --version) -lldap $(LDFLAGS)
+LDFLAGS := -L$(shell $(mico_config) --prefix)/lib -lpmfccm$(shell $(mico_config) --version) -lpmfcorba$(shell $(mico_config) --version) -lpmfutils$(shell $(mico_config) --version) -lpmf$(shell $(mico_config) --version) -lldap $(LDFLAGS)
 CXXFLAGS := -I$(shell $(mico_config) --prefix)/include/openpmf $(CXXFLAGS) -DUSE_OPENPMF
 endif
 
