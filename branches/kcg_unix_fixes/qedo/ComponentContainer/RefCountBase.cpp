@@ -3,7 +3,7 @@
 /*                                                                         */
 /* http://qedo.berlios.de/                                                 */
 /*                                                                         */
-/* Copyright (C) 2002 by the Qedo Team                                     */
+/* Copyright (C) 2002, 2010 by the Qedo Team                               */
 /*                                                                         */
 /* This library is free software; you can redistribute it and/or           */
 /* modify it under the terms of the GNU Lesser General Public              */
@@ -31,6 +31,14 @@
 #include <set>
 #endif
 
+#ifdef _DEBUG
+#if defined(HAVE_CXXABI_H) && defined(HAVE___CXA_DEMANGLE) && defined(__GNUC__)
+namespace __cxxabiv1 {
+	class __class_type_info;
+};
+#include <cxxabi.h>
+#endif // HAVE_CXXABI_H && HAVE___CXA_DEMANGLE && __GNUC__
+#endif // _DEBUG
 static char rcsid[] UNUSED = "$Id: RefCountBase.cpp,v 1.21 2003/12/16 13:37:32 stoinski Exp $";
 
 
@@ -201,10 +209,6 @@ CreateDestructCORBAObjectCounter::~CreateDestructCORBAObjectCounter()
 
 #ifdef _DEBUG
 #if defined(HAVE_CXXABI_H) && defined(HAVE___CXA_DEMANGLE) && defined(__GNUC__)
-namespace __cxxabiv1 {
-	class __class_type_info;
-};
-#include <cxxabi.h>
 static void
 demangle(const char* name)
 {
